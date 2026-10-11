@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -103,6 +103,49 @@ public class Given_RemoteControlInputTranslator
 		Assert.AreEqual(0, sut.BackRequests);
 	}
 
+	[TestMethod]
+	public void When_Key_Handler_Throws_On_Press_Then_Press_And_Release_Go_To_System()
+	{
+		var sut = new Sut(handleKeys: true) { ThrowOnKey = _ => true };
+
+		Assert.IsFalse(sut.Translator.OnButtonDown(RemoteControlButton.Select));
+		Assert.IsFalse(sut.Translator.OnButtonUp(RemoteControlButton.Select));
+
+		Assert.AreEqual(2, sut.Errors.Count);
+	}
+
+	[TestMethod]
+	public void When_Key_Handler_Throws_On_Release_Then_Release_Stays_With_Its_Press()
+	{
+		var sut = new Sut(handleKeys: true) { ThrowOnKey = isDown => !isDown };
+
+		Assert.IsTrue(sut.Translator.OnButtonDown(RemoteControlButton.Select));
+		Assert.IsTrue(sut.Translator.OnButtonUp(RemoteControlButton.Select));
+
+		Assert.AreEqual(1, sut.Errors.Count);
+	}
+
+	[TestMethod]
+	public void When_Back_Handler_Throws_Then_Menu_Press_And_Release_Go_To_System()
+	{
+		var sut = new Sut(handleKeys: false) { ThrowOnBack = true };
+
+		Assert.IsFalse(sut.Translator.OnButtonDown(RemoteControlButton.Menu));
+		Assert.IsFalse(sut.Translator.OnButtonUp(RemoteControlButton.Menu));
+
+		Assert.AreEqual(1, sut.Errors.Count);
+	}
+
+	[TestMethod]
+	public void When_Key_Handler_Throws_On_Swipe_Then_Error_Reported()
+	{
+		var sut = new Sut(handleKeys: true) { ThrowOnKey = _ => true };
+
+		sut.Translator.OnSwipe(RemoteControlButton.Up);
+
+		Assert.AreEqual(2, sut.Errors.Count);
+	}
+
 	private sealed class Sut
 	{
 		public Sut(bool handleKeys, bool handleBack = false)
@@ -112,14 +155,21 @@ public class Given_RemoteControlInputTranslator
 				(key, isDown) =>
 				{
 					Keys.Add((key, isDown));
-					return handleKeys;
+					return ThrowOnKey?.Invoke(isDown) == true ? throw new InvalidOperationException("KeyDown handler") : handleKeys;
 				},
 				() =>
 				{
 					BackRequests++;
-					return HandleBack;
-				});
+					return ThrowOnBack ? throw new InvalidOperationException("BackRequested handler") : HandleBack;
+				},
+				Errors.Add);
 		}
+
+		public Func<bool, bool>? ThrowOnKey { get; init; }
+
+		public bool ThrowOnBack { get; init; }
+
+		public List<Exception> Errors { get; } = new();
 
 		public RemoteControlInputTranslator Translator { get; }
 
