@@ -382,15 +382,14 @@ internal sealed partial class WindowChrome : ContentControl
 	private RectInt32 GetScreenRect(UIElement uiElement)
 	{
 		var scale = _window.AppWindow.NativeAppWindow.RasterizationScale;
-		var transform = uiElement.TransformToVisual(null);
-		var point = transform.TransformPoint(new Windows.Foundation.Point(0, 0));
-		var size = new Windows.Foundation.Size(uiElement.RenderSize.Width, uiElement.RenderSize.Height);
+		// TransformBounds rather than the origin alone: under RightToLeft the local origin is the element's right edge.
+		var bounds = uiElement.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, uiElement.RenderSize.Width, uiElement.RenderSize.Height));
 		return new RectInt32
 		{
-			X = (int)(point.X * scale),
-			Y = (int)(point.Y * scale),
-			Width = (int)(size.Width * scale),
-			Height = (int)(size.Height * scale)
+			X = (int)(bounds.X * scale),
+			Y = (int)(bounds.Y * scale),
+			Width = (int)(bounds.Width * scale),
+			Height = (int)(bounds.Height * scale)
 		};
 	}
 
