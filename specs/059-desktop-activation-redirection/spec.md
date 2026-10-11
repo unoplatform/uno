@@ -46,7 +46,8 @@ Three hosts feed that funnel today:
 | Android | `NativeApplication.ReportActivation` (`src/Uno.UI.Runtime.Android/NativeApplication.cs`) | ✅ | ✅ |
 | iOS / tvOS | `AppleUIKitActivation.Report` (`src/Uno.UI.Runtime.AppleUIKit/AppleUIKitActivation.cs:59`) | ✅ | ✅ |
 | WebAssembly | `WebAssemblyBrowserHost.TryReportProtocolActivation` (`…/Hosting/WebAssemblyBrowserHost.cs:172-189`) | ✅ | n/a |
-| **Win32 / macOS / X11 / FrameBuffer** | **none** | ❌ | ❌ |
+| macOS | `MacOSActivation.TryReportUrl` (`src/Uno.UI.Runtime.MacOS/ApplicationModel/Activation/MacOSActivation.cs`), from `application:openURLs:` | ✅ | ✅ |
+| **Win32 / X11 / FrameBuffer** | **none** | ❌ | ❌ |
 
 `ActivationRegistrationManager` is entirely `[Uno.NotImplemented]` on every target
 (`src/Uno.WinRT/Generated/3.0.0.0/Microsoft.Windows.AppLifecycle/ActivationRegistrationManager.cs`).
@@ -419,13 +420,14 @@ a `typedef`'d function pointer, a setter, and a getter). Managed side:
 | `src/Uno.UI.Runtime.MacOS/Hosting/MacOSHost.cs` | register the `[UnmanagedCallersOnly]` callback next to the existing registrations; classify the command line in `StartApp` (`:156-180`) before `Application.Start` (`:172`) |
 | `src/Uno.UI.Runtime.MacOS/UnoNativeMac/UnoNativeMac.xcodeproj/project.pbxproj` | no new file, so no membership change needed |
 
-**Ordering trap.** `application:openURLs:` for a cold URL launch can arrive *before*
-`applicationDidFinishLaunching:` completes, and therefore before `Application.Start` has run and
-before `Application.Current` exists. The callback must be safe to invoke at that point:
-`AppInstance.GetCurrent()` is backed by a `Lazy<AppInstance>` with no dependency on `Application`,
-so reporting into it early is correct by construction — the activation is simply *stored*, and
-`NotifyLaunched` is not called until `Application.InvokeOnLaunched` runs. This must be covered by a
-manual matrix row, because a regression here shows up as "cold URL launch loses the URL".
+**Ordering.** For a cold URL launch AppKit delivers `application:openURLs:` *before*
+`applicationDidFinishLaunching:`, and therefore before `Application.Start` has run and before
+`Application.Current` exists (verified on macOS 26 with a LaunchServices-registered bundle:
+`openURLs:` → `applicationDidFinishLaunching:` → `OnLaunched`, which reads the URL from
+`GetActivatedEventArgs()`). The callback is safe at that point: `AppInstance.GetCurrent()` is backed
+by a `Lazy<AppInstance>` with no dependency on `Application`, so the activation is simply *stored*,
+and `NotifyLaunched` is not called until `Application.InvokeOnLaunched` runs. Should AppKit ever
+deliver it after launch instead, it is raised through `Activated` rather than lost.
 
 **Command line still matters on macOS.** A bundle run from a terminal (`open -a`, or the binary
 directly) gets arguments, not `openURLs:`. Both paths report into the same funnel.

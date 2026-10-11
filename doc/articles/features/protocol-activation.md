@@ -17,7 +17,8 @@ App SDK app would write.
 |**iOS**|✅ Available|On a cold start, and while the app is already running — through the scene delegate for apps declaring a scene manifest, and through the application delegate otherwise.|
 |**tvOS**|✅ Available|As iOS.|
 |**WebAssembly**|✅ Available|Cold start only: `registerProtocolHandler` navigates the browser, so the app is always started fresh and `AppInstance.Activated` never fires for a protocol activation.|
-|**Skia Desktop (Windows, macOS, Linux)**|❌ Not yet|No activation is delivered. `GetActivatedEventArgs()` reports an `ExtendedActivationKind.Launch` over the process command line.|
+|**Skia Desktop (macOS)**|✅ Available|On a cold start, and while the app is already running. Requires the app to run as an app bundle.|
+|**Skia Desktop (Windows, Linux)**|❌ Not yet|No activation is delivered. `GetActivatedEventArgs()` reports an `ExtendedActivationKind.Launch` over the process command line.|
 |**Windows (Windows App SDK head)**|✅ Available|Delivered by the Windows App SDK itself.|
 
 `Microsoft.Windows.AppLifecycle.ActivationRegistrationManager` is not implemented on any Uno Platform
@@ -26,7 +27,7 @@ runtime.
 
 ## Registering custom scheme
 
-### iOS & tvOS
+### iOS, tvOS & macOS
 
 Declare your custom URL scheme in `info.plist` in the platform head:
 
@@ -44,8 +45,10 @@ Declare your custom URL scheme in `info.plist` in the platform head:
 </array>
 ```
 
-The same declaration is how a macOS bundle registers a scheme, but the Skia desktop head does not yet
-deliver the resulting activation to the app.
+On the Skia desktop head on macOS, add the same entry to a custom `Info.plist` and publish the app as an
+app bundle with `-p:PackageFormat=app -p:UnoMacOSCustomInfoPlist=path/to/Info.plist`, as described in
+[macOS advanced publishing](xref:uno.publishing.desktop.macos.advanced). LaunchServices only routes a URL
+to a registered bundle, so an app started with `dotnet run` does not receive protocol activations.
 
 ### Android
 
@@ -246,9 +249,9 @@ public partial class App : Application
 
 Points worth knowing:
 
-- **Android, iOS, tvOS and WebAssembly** deliver protocol activation; **Skia Desktop (Windows, macOS
-  and Linux) does not yet**. On desktop the code above still compiles and runs — it simply only ever
-  sees a `Launch` activation.
+- **Android, iOS, tvOS, WebAssembly and macOS** deliver protocol activation; **Skia Desktop on Windows
+  and Linux does not yet**. There the code above still compiles and runs — it simply only ever sees a
+  `Launch` activation.
 - **On WebAssembly the activation arrives as a cold start**, because `registerProtocolHandler` makes the
   browser navigate. `Activated` therefore does not fire for a protocol activation on that target today,
   so read it from `GetActivatedEventArgs()`. An installed progressive web app can ask the browser to
@@ -266,8 +269,9 @@ Points worth knowing:
 - **Single-instancing is not implemented yet.** `AppInstance.FindOrRegisterForKey` always claims the key
   for, and returns, the current instance, and `RedirectActivationToAsync` does nothing. The canonical
   Windows App SDK pattern therefore compiles and behaves as it would on a platform that can only run one
-  instance — which is correct on Android, iOS and WebAssembly, but means a second desktop launch starts a
-  second instance rather than redirecting into the first.
+  instance — which is correct on Android, iOS, WebAssembly and a macOS app bundle (LaunchServices hands
+  the URL to the running bundle), but means a second launch on Windows or Linux starts a second instance
+  rather than redirecting into the first.
 - **An activation is not attributed to a window.** `AppInstance` holds one activation for the process,
   matching the Windows App SDK, so an app that opens several windows decides for itself which one should
   act on it.
