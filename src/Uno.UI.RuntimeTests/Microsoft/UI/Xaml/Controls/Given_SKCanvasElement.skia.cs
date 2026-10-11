@@ -46,7 +46,7 @@ public class Given_SKCanvasElement
 		// A backend without a native SKCanvas (WebGPU) draws through a GL island that comes up a few frames after load;
 		// its output composites on the frame after its first render.
 		await UITestHelper.WaitFor(() => SUT.Rendered, timeoutMS: 5000);
-		await UITestHelper.WaitForRender(2);
+		await UITestHelper.WaitForRender(2, timeoutMS: 5000);
 
 		var bitmap = await UITestHelper.ScreenShot(border);
 
