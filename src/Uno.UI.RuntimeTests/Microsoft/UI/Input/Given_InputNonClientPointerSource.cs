@@ -1,9 +1,12 @@
 ﻿#if HAS_UNO_WINUI || WINDOWS
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AwesomeAssertions;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Windows.Graphics;
 
@@ -78,5 +81,34 @@ public class Given_InputNonClientPointerSource
 
 	[DllImport("user32.dll")]
 	private static extern nint SendMessage(nint hWnd, uint msg, nuint wParam, nint lParam);
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_TitleBar_Element_Is_RightToLeft_Caption_Rect_Is_Inside_Window()
+	{
+		var titleBar = new Border { Height = 48, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+		var window = new Window { Content = new Grid { FlowDirection = FlowDirection.RightToLeft, Children = { titleBar } } };
+		window.ExtendsContentIntoTitleBar = true;
+		window.SetTitleBar(titleBar);
+		var activated = false;
+		try
+		{
+			window.Activated += (s, e) => activated = true;
+			window.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated && titleBar.ActualWidth > 0);
+
+			var source = InputNonClientPointerSource.GetForWindowId(window.AppWindow.Id);
+			var expectedHeight = (int)(titleBar.ActualHeight * titleBar.XamlRoot!.RasterizationScale);
+			await TestServices.WindowHelper.WaitFor(() => source.GetRegionRects(NonClientRegionKind.Caption).Any(r => r.Height == expectedHeight));
+
+			source.GetRegionRects(NonClientRegionKind.Caption)
+				.Should().OnlyContain(r => r.X >= 0 && r.X + r.Width <= window.AppWindow.ClientSize.Width);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			window.Close();
+		}
+	}
 }
 #endif
