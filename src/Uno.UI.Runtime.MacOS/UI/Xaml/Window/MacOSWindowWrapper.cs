@@ -15,10 +15,14 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase, INativeInputNonClie
 {
 	private readonly MacOSWindowNative _nativeWindow;
 	private readonly NonClientRegionSet _nonClientRegions = new();
+	private Size _hostSize;
+	private Point _hostPosition;
 
 	public MacOSWindowWrapper(MacOSWindowNative nativeWindow, Window window, XamlRoot xamlRoot, Size initialSize) : base(window, xamlRoot)
 	{
 		_nativeWindow = nativeWindow;
+		// The physical sizes and position below are derived from it.
+		RasterizationScale = (float)nativeWindow.Host.RasterizationScale;
 
 		nativeWindow.Host.Closing += OnWindowClosing;
 		nativeWindow.Host.RasterizationScaleChanged += Host_RasterizationScaleChanged;
@@ -36,13 +40,13 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase, INativeInputNonClie
 		// the initial event occurred before the managed side was ready to handle it
 		NativeUno.uno_window_get_position(nativeWindow.Handle, out var x, out var y);
 		OnHostPositionChanged(x, y);
-
-		RasterizationScale = (float)_nativeWindow.Host.RasterizationScale;
 	}
 
 	private void Host_RasterizationScaleChanged(object? sender, EventArgs args)
 	{
 		RasterizationScale = (float)_nativeWindow.Host.RasterizationScale;
+		OnHostSizeChanged(_hostSize);
+		OnHostPositionChanged(_hostPosition.X, _hostPosition.Y);
 		UpdateTitleBarInsets();
 	}
 
@@ -181,6 +185,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase, INativeInputNonClie
 
 	private void OnHostPositionChanged(double x, double y)
 	{
+		_hostPosition = new Point(x, y);
 		// in physical pixels
 		var sx = (int)(x * RasterizationScale);
 		var sy = (int)(y * RasterizationScale);
@@ -189,6 +194,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase, INativeInputNonClie
 
 	private void OnHostSizeChanged(Size size)
 	{
+		_hostSize = size;
 		var bounds = new Rect(default, size);
 		// in logical pixels
 		SetBoundsAndVisibleBounds(bounds, bounds);
