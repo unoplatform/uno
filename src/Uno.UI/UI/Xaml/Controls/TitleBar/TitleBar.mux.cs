@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TitleBar.cpp, commit fc2f82117
 
@@ -83,6 +83,7 @@ partial class TitleBar
 		m_inputActivationChangedToken.Disposable = null;
 		m_inputActivationListener = null;
 		m_insetsChangedRevoker.Disposable = null;
+		m_paddingLayoutUpdatedRevoker.Disposable = null;
 	}
 
 	// Uno specific: implements WinUI's "TODO 50724421: Bind to appTitleBar Left and Right inset changed event".
@@ -530,8 +531,25 @@ partial class TitleBar
 
 					rightColumn.Width = GridLengthHelper.FromPixels(rightColumnInset);
 				}
+
+				UpdateRegionsAfterLayout();
 			}
 		}
+	}
+
+	// Uno specific: the padding moves the interactive parts without resizing the TitleBar, and resizing is what
+	// refreshes the regions in WinUI. Without this, they stay where the parts were, e.g. after an inset or FlowDirection change.
+	private void UpdateRegionsAfterLayout()
+	{
+		void OnLayoutUpdated(object sender, object args)
+		{
+			m_paddingLayoutUpdatedRevoker.Disposable = null;
+			UpdateDragRegion();
+			UpdateIconRegion();
+		}
+
+		LayoutUpdated += OnLayoutUpdated;
+		m_paddingLayoutUpdatedRevoker.Disposable = Disposable.Create(() => LayoutUpdated -= OnLayoutUpdated);
 	}
 
 	private void UpdateTitle()
