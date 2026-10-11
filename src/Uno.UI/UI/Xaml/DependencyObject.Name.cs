@@ -23,19 +23,9 @@ public partial class DependencyObject
 				coerceValueCallback: static (_, baseValue, _) => baseValue ?? "",
 				backingFieldUpdateCallback: static (instance, newValue) =>
 				{
-					// WinUI keeps the name in a field (CDependencyObject::m_strName); VSM lookups read it on every GoToState.
-					var name = (string)newValue;
-					switch (instance)
+					if (instance is FrameworkElement frameworkElement)
 					{
-						case FrameworkElement frameworkElement:
-							frameworkElement.NameCache = name;
-							break;
-						case VisualState visualState:
-							visualState.NameCache = name;
-							break;
-						case VisualStateGroup visualStateGroup:
-							visualStateGroup.NameCache = name;
-							break;
+						frameworkElement.NameCache = (string)newValue;
 					}
 				}));
 	}
