@@ -296,7 +296,10 @@ internal sealed partial class WindowChrome : ContentControl
 		// 2. Default caption area (area to the left of caption buttons or nothing if collapsed)
 		// + User defined titlebar UIElement (that is always added in addition to either of the above)
 
-		var captionElementRect = m_userTitleBar is not null ? GetScreenRect(m_userTitleBar) : default;
+		// Like CWindowChrome::OnTitleBarSizeChanged, the user title bar only drags while the content extends into the title bar.
+		var captionElementRect = m_userTitleBar is not null && _window.AppWindow.TitleBar.ExtendsContentIntoTitleBar
+			? GetScreenRect(m_userTitleBar)
+			: default;
 
 		RectInt32[] precedenceRects;
 		if (_window.AppWindow.TitleBar.DragRectangles.Length > 0)
