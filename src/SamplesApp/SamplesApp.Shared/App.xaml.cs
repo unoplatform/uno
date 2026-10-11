@@ -625,8 +625,13 @@ namespace SamplesApp
 		static void ParseCommandLineFeatureFlags()
 		{
 #if HAS_UNO
+#if __APPLE_UIKIT__
+			// Environment.GetCommandLineArgs() is empty on iOS/tvOS.
+			var commandLineArgs = Foundation.NSProcessInfo.ProcessInfo.Arguments;
+#else
 			var commandLineArgs = Environment.GetCommandLineArgs();
-			if (commandLineArgs.Length == 1)
+#endif
+			if (commandLineArgs.Length <= 1)
 			{
 				return;
 			}
