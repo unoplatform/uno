@@ -1440,7 +1440,13 @@ NSOperatingSystemVersion _osVersion;
         ? self.styleMask | NSWindowStyleMaskFullSizeContentView
         : self.styleMask & ~NSWindowStyleMaskFullSizeContentView;
     if (style != self.styleMask) {
+        // AppKit keeps the content size and moves the frame instead. Like Win32, keep the window where it is and
+        // let the content grow under (or shrink out of) the title bar.
+        NSRect frame = self.frame;
         self.styleMask = style;
+        if (!NSEqualRects(frame, self.frame) && (style & NSWindowStyleMaskFullScreen) == 0) {
+            [self setFrame:frame display:YES];
+        }
     }
     self.titlebarAppearsTransparent = fullSize;
     self.titleVisibility = fullSize ? NSWindowTitleHidden : NSWindowTitleVisible;
