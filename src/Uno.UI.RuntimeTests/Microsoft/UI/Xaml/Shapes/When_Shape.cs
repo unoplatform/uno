@@ -308,6 +308,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			}
 		}
 
+		// Dashes scale by the declared StrokeThickness, not the layout-rounded one the stroke is drawn with.
+		[TestMethod]
+		public async Task When_StrokeThickness_Fractional_Then_Dashes_Use_Declared_Thickness()
+		{
+			var container = new Grid { Width = 220, Height = 40, Background = new SolidColorBrush(Colors.White) };
+			container.Children.Add(new Line
+			{
+				X1 = 10,
+				Y1 = 20,
+				X2 = 210,
+				Y2 = 20,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 2.6,
+				StrokeDashArray = new DoubleCollection { 5, 5 },
+			});
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// 13px dashes and gaps.
+			for (var i = 0; i < 12; i++)
+			{
+				ImageAssert.HasColorAt(screenshot, 16 + i * 13, 20, i % 2 == 0 ? Colors.Red : Colors.White, tolerance: 30);
+			}
+		}
+
+		// WinUI's EllipseGeometry figure starts at 3 o'clock, so that is where its dash pattern begins.
+		[TestMethod]
+		public async Task When_EllipseGeometry_Dashed_Then_Pattern_Starts_At_Three_OClock()
+		{
+			var container = new Grid { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
+			container.Children.Add(new Path
+			{
+				Data = new EllipseGeometry { Center = new Point(50, 50), RadiusX = 40, RadiusY = 40 },
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 4,
+				StrokeDashArray = new DoubleCollection { 1.5, 500 },
+			});
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			ImageAssert.HasColorAt(screenshot, 90, 53, Colors.Red, tolerance: 30);
+			ImageAssert.HasColorAt(screenshot, 53, 10, Colors.White, tolerance: 30);
+		}
+
+		// WinUI starts a rounded Rectangle's figure, and so its dash pattern, where the top-left arc begins.
+		[TestMethod]
+		public async Task When_Rectangle_Rounded_Dashed_Then_Pattern_Starts_At_Top_Left_Arc()
+		{
+			var container = new Grid { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
+			container.Children.Add(new Rectangle
+			{
+				Width = 84,
+				Height = 84,
+				RadiusX = 20,
+				RadiusY = 20,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 4,
+				StrokeDashArray = new DoubleCollection { 1.5, 500 },
+			});
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// The outline is inset by half the thickness: the arc starts at (10, 30) and ends at (30, 10).
+			ImageAssert.HasColorAt(screenshot, 10, 27, Colors.Red, tolerance: 30);
+			ImageAssert.HasColorAt(screenshot, 33, 10, Colors.White, tolerance: 30);
+		}
+
 		[TestMethod]
 		public async Task When_StrokeLineCap_Properties_Are_Set()
 		{
