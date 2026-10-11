@@ -581,4 +581,55 @@ public class Given_CompositionSpriteShape
 			ImageAssert.HasColorAt(screenshot, 15 + i * 10, 20, isDash ? Microsoft.UI.Colors.Red : Microsoft.UI.Colors.White, tolerance: 30);
 		}
 	}
+
+	// WinUI trims first and dashes what is left, starting the pattern at the trim start.
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Dashed_And_Trimmed_Then_Dashes_Start_At_Trim()
+	{
+		var screenshot = await RenderDashedShape(220, 40, c =>
+		{
+			var line = c.CreateLineGeometry();
+			line.Start = new Vector2(10, 20);
+			line.End = new Vector2(210, 20);
+			line.TrimStart = 0.5f;
+			return line;
+		}, 10f, 10f);
+
+		ImageAssert.HasColorAt(screenshot, 15, 20, Microsoft.UI.Colors.White, tolerance: 30);
+		ImageAssert.HasColorAt(screenshot, 95, 20, Microsoft.UI.Colors.White, tolerance: 30);
+		for (var i = 0; i < 8; i++)
+		{
+			ImageAssert.HasColorAt(screenshot, 115 + i * 10, 20, i % 2 == 0 ? Microsoft.UI.Colors.Red : Microsoft.UI.Colors.White, tolerance: 30);
+		}
+	}
+
+	private static async Task<RawBitmap> RenderDashedShape(int width, int height, Func<Compositor, CompositionGeometry> geometry, float dash, float gap)
+	{
+		var anchor = new Border { Width = 1, Height = 1 };
+		await UITestHelper.Load(anchor);
+		var compositor = ElementCompositionPreview.GetElementVisual(anchor).Compositor;
+
+		var shape = compositor.CreateSpriteShape(geometry(compositor));
+		shape.StrokeThickness = 4f;
+		shape.StrokeBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Red);
+		shape.StrokeDashArray.Add(dash);
+		shape.StrokeDashArray.Add(gap);
+
+		var shapeVisual = compositor.CreateShapeVisual();
+		shapeVisual.Shapes.Add(shape);
+		shapeVisual.Size = new Vector2(width, height);
+
+		var host = new Border
+		{
+			Width = width,
+			Height = height,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+		};
+		ElementCompositionPreview.SetElementChildVisual(host, shapeVisual);
+
+		await UITestHelper.Load(host);
+		await UITestHelper.WaitForIdle();
+		return await UITestHelper.ScreenShot(host);
+	}
 }
