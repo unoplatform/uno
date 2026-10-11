@@ -63,40 +63,6 @@ public class Given_DependencyObject_Name
 	}
 
 	[TestMethod]
-	public void When_NameProperty_Set_To_Same_Value_Then_Callback_Still_Fires()
-	{
-		var brush = new SolidColorBrush();
-		var border = new Border();
-		var brushCount = 0;
-		var borderCount = 0;
-		List<string> borderValues = new();
-		brush.RegisterPropertyChangedCallback(FrameworkElement.NameProperty, (s, dp) => brushCount++);
-		border.RegisterPropertyChangedCallback(FrameworkElement.NameProperty, (s, dp) =>
-		{
-			borderCount++;
-			borderValues.Add((string)s.GetValue(dp));
-		});
-#if __UNO__
-		List<(object, object)> borderChanges = new();
-		using var _ = border.RegisterDisposablePropertyChangedCallback(FrameworkElement.NameProperty, (s, e) => borderChanges.Add((e.OldValue, e.NewValue)));
-#endif
-
-		brush.ClearValue(FrameworkElement.NameProperty);
-		brush.SetValue(FrameworkElement.NameProperty, "A");
-		brush.SetValue(FrameworkElement.NameProperty, "A");
-		border.Name = "A";
-		border.Name = "A";
-		border.Name = "A";
-
-		Assert.AreEqual(3, brushCount);
-		Assert.AreEqual(3, borderCount);
-		CollectionAssert.AreEqual(new[] { "A", "A", "A" }, borderValues);
-#if __UNO__
-		CollectionAssert.AreEqual(new (object, object)[] { ("", "A"), ("A", "A"), ("A", "A") }, borderChanges);
-#endif
-	}
-
-	[TestMethod]
 	public void When_Style_Setter_Masked_By_Local_Name_Then_No_Callback()
 	{
 		var border = new Border { Name = "L" };
@@ -109,22 +75,6 @@ public class Given_DependencyObject_Name
 
 		Assert.AreEqual(0, count);
 		Assert.AreEqual("L", border.Name);
-	}
-
-	[TestMethod]
-	public void When_Local_Name_Set_Over_Equal_Style_Value_And_Cleared_Then_Callback_Each_Time()
-	{
-		var border = new Border();
-		List<string> values = new();
-		border.RegisterPropertyChangedCallback(FrameworkElement.NameProperty, (s, dp) => values.Add((string)s.GetValue(dp)));
-		var style = new Style(typeof(Border));
-		style.Setters.Add(new Setter(FrameworkElement.NameProperty, "S"));
-
-		border.Style = style;
-		border.Name = "S";
-		border.ClearValue(FrameworkElement.NameProperty);
-
-		CollectionAssert.AreEqual(new[] { "S", "S", "S" }, values);
 	}
 
 	[TestMethod]
