@@ -146,5 +146,38 @@ public class Given_InputNonClientPointerSource
 			window.Close();
 		}
 	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_SetTitleBar_Without_Extending_No_Caption_Rect()
+	{
+		var titleBar = new Border { Height = 48, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+		var window = new Window { Content = new Grid { Children = { titleBar } } };
+		window.SetTitleBar(titleBar);
+		var activated = false;
+		try
+		{
+			window.Activated += (s, e) => activated = true;
+			window.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated && titleBar.ActualWidth > 0);
+
+			// Like WinUI, the title bar element only becomes a drag region while the content extends into the title bar.
+			var source = InputNonClientPointerSource.GetForWindowId(window.AppWindow.Id);
+			var expectedHeight = (int)(titleBar.ActualHeight * titleBar.XamlRoot!.RasterizationScale);
+			await TestServices.WindowHelper.WaitForIdle();
+			source.GetRegionRects(NonClientRegionKind.Caption).Should().BeEmpty();
+
+			window.ExtendsContentIntoTitleBar = true;
+			await TestServices.WindowHelper.WaitFor(() => source.GetRegionRects(NonClientRegionKind.Caption).Any(r => r.Height == expectedHeight));
+
+			window.ExtendsContentIntoTitleBar = false;
+			await TestServices.WindowHelper.WaitFor(() => source.GetRegionRects(NonClientRegionKind.Caption).Length == 0);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			window.Close();
+		}
+	}
 }
 #endif
