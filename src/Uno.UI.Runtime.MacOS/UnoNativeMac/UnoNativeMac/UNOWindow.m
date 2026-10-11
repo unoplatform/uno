@@ -632,7 +632,11 @@ void uno_window_minimize(NSWindow *window, bool activateWindow)
 #if DEBUG
     NSLog(@"uno_window_minimize %@ %s", window, activateWindow ? "true" : "false");
 #endif
-    // miniaturize: rather than performMiniaturize:, which needs a minimize button (hidden with a custom title bar)
+    // miniaturize: rather than performMiniaturize:, which needs a minimize button (hidden with a custom title bar).
+    // Before the window is shown it does nothing, so record the state uno_window_activate applies later.
+    if ([window isKindOfClass:[UNOWindow class]]) {
+        ((UNOWindow*)window).overlappedPresenterState = OverlappedPresenterStateMinimized;
+    }
     [window miniaturize:nil];
     if (activateWindow && window.canBecomeMainWindow) {
         [window makeMainWindow];
@@ -1448,12 +1452,10 @@ NSOperatingSystemVersion _osVersion;
 
     [self layoutCaptionButtons];
 
-    // The content view now covers (or no longer covers) the title bar. The Metal view reports its new drawable
-    // size on its own, the software fallback relies on windowDidResize which a style change does not raise.
-    if (self.metalViewDelegate == nil) {
-        CGSize size = [self contentRectForFrameRect:self.frame].size;
-        uno_get_window_resize_event_callback()(self, size.width, size.height);
-    }
+    // The content view now covers (or no longer covers) the title bar. A style change raises no windowDidResize,
+    // and the paused Metal view does not report its new drawable size either.
+    CGSize size = [self contentRectForFrameRect:self.frame].size;
+    uno_get_window_resize_event_callback()(self, size.width, size.height);
 }
 
 - (void)layoutCaptionButtons {
