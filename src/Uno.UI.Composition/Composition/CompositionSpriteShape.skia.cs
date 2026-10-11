@@ -363,20 +363,12 @@ namespace Microsoft.UI.Composition
 
 			// A window covering the whole path draws it untrimmed, whatever the offset — wrapping its endpoints
 			// into [0,1) would otherwise collapse it to nothing.
-			if (geometry is not { } g
-				|| (g.TrimStart <= 0f && g.TrimEnd >= 1f)
-				|| (g.TrimOffset != 0f && g.TrimEnd - g.TrimStart >= 1f))
+			if (geometry is not { } g || g.TrimEnd - g.TrimStart >= 1f)
 			{
 				return false;
 			}
 
-			if (g.TrimOffset == 0f)
-			{
-				start = g.TrimStart;
-				end = g.TrimEnd;
-				return true;
-			}
-
+			// Like WinUI, a start past the end wraps through the path origin even without an offset.
 			start = Wrap01(g.TrimStart + g.TrimOffset);
 			end = Wrap01(g.TrimEnd + g.TrimOffset);
 
