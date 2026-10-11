@@ -361,6 +361,9 @@ internal static partial class NativeUno
 	internal static partial void uno_window_set_extends_content_into_title_bar(nint window, [MarshalAs(UnmanagedType.I1)] bool extend, double titleBarHeight, [MarshalAs(UnmanagedType.I1)] bool showCaptionButtons);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial int uno_window_get_caption_buttons_state(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_window_get_caption_buttons_bounds(nint window, out double minX, out double maxX, out double windowWidth);
 

@@ -87,6 +87,12 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase, INativeInputNonClie
 	}
 
 	/// <summary>
+	/// Visibility and enabled state of the traffic lights: bit 2i is "shown" and bit 2i+1 "enabled" for close, minimize and zoom.
+	/// </summary>
+	internal int GetCaptionButtonsState()
+		=> _nativeWindow.Handle == nint.Zero ? 0 : NativeUno.uno_window_get_caption_buttons_state(_nativeWindow.Handle);
+
+	/// <summary>
 	/// What a left-button press at the given content point, in logical pixels, does while extended into the title bar.
 	/// </summary>
 	internal MacOSNonClientPointerAction HitTestNonClient(double x, double y)

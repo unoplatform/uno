@@ -10,6 +10,7 @@
 #import "UNODragDrop.h"
 
 static NSWindow *main_window;
+static NSArray<NSButton*>* uno_window_get_caption_buttons(NSWindow *window);
 static NSMutableSet<NSWindow*> *windows;
 static id windowDidChangeScreen;
 
@@ -408,7 +409,17 @@ void uno_window_close(NSWindow *window)
 #if DEBUG
     NSLog(@"uno_window_close %@", window);
 #endif
-    [window performClose:nil];
+    NSButton *closeButton = [window standardWindowButton:NSWindowCloseButton];
+    if (closeButton != nil && !closeButton.hidden && closeButton.enabled) {
+        [window performClose:nil];
+        return;
+    }
+
+    // performClose: only beeps without a usable close button (e.g. a custom XAML title bar), so ask the delegate here
+    id<NSWindowDelegate> delegate = window.delegate;
+    if (![delegate respondsToSelector:@selector(windowShouldClose:)] || [delegate windowShouldClose:window]) {
+        [window close];
+    }
 }
 
 void uno_window_move(NSWindow *window, double x, double y)
@@ -610,7 +621,10 @@ void uno_window_maximize(NSWindow *window)
 #if DEBUG
     NSLog(@"uno_window_maximize %@", window);
 #endif
-    [window performZoom:nil];
+    // zoom: rather than performZoom:, which needs a zoom button (hidden with a custom title bar) and toggles back when already zoomed
+    if (!window.isZoomed) {
+        [window zoom:nil];
+    }
 }
 
 void uno_window_minimize(NSWindow *window, bool activateWindow)
@@ -618,7 +632,8 @@ void uno_window_minimize(NSWindow *window, bool activateWindow)
 #if DEBUG
     NSLog(@"uno_window_minimize %@ %s", window, activateWindow ? "true" : "false");
 #endif
-    [window performMiniaturize:nil];
+    // miniaturize: rather than performMiniaturize:, which needs a minimize button (hidden with a custom title bar)
+    [window miniaturize:nil];
     if (activateWindow && window.canBecomeMainWindow) {
         [window makeMainWindow];
     }
@@ -666,14 +681,24 @@ void uno_window_set_always_on_top(NSWindow* window, bool isAlwaysOnTop)
     window.level = level;
 }
 
+static bool uno_window_is_maximizable(NSWindow *window)
+{
+    return window.collectionBehavior != (NSWindowCollectionBehaviorFullScreenAuxiliary|NSWindowCollectionBehaviorFullScreenNone|NSWindowCollectionBehaviorFullScreenDisallowsTiling);
+}
+
+// Disabled, not hidden, like other macOS apps. Set explicitly: AppKit recreates the buttons when the title bar comes back.
+static void uno_window_update_caption_button_states(NSWindow *window)
+{
+    [[window standardWindowButton:NSWindowMiniaturizeButton] setEnabled:(window.styleMask & NSWindowStyleMaskMiniaturizable) != 0];
+    [[window standardWindowButton:NSWindowZoomButton] setEnabled:(window.styleMask & NSWindowStyleMaskResizable) != 0 && uno_window_is_maximizable(window)];
+}
+
 void uno_window_set_border_and_title_bar(NSWindow *window, bool hasBorder, bool hasTitleBar)
 {
+    // Without a title bar the window keeps its native frame (shadow, rounded corners, resizing) and only hides the
+    // title bar and traffic lights, so the app can draw its own. Only dropping the border as well makes it untitled.
     NSWindowStyleMask style = window.styleMask;
-    if (!hasBorder)
-        style |= NSWindowStyleMaskBorderless;
-    else
-        style &= ~NSWindowStyleMaskBorderless;
-    if (hasTitleBar)
+    if (hasBorder || hasTitleBar)
         style |= NSWindowStyleMaskTitled;
     else
         style &= ~NSWindowStyleMaskTitled;
@@ -682,6 +707,12 @@ void uno_window_set_border_and_title_bar(NSWindow *window, bool hasBorder, bool 
           hasBorder ? "true" : "false", hasTitleBar ? "true" : "false", (uint)style);
 #endif
     window.styleMask = style;
+    if ([window isKindOfClass:[UNOWindow class]]) {
+        UNOWindow *unoWindow = (UNOWindow*)window;
+        unoWindow.hasPresenterTitleBar = hasTitleBar;
+        [unoWindow applyTitleBarStyle];
+    }
+    uno_window_update_caption_button_states(window);
 }
 
 void uno_window_set_maximizable(NSWindow* window, bool isMaximizable)
@@ -693,11 +724,10 @@ void uno_window_set_maximizable(NSWindow* window, bool isMaximizable)
     // `windowShouldZoom:toFrame:` will check the collectionBehavior to [dis]allow zooming
     if (isMaximizable) {
         [window setCollectionBehavior:NSWindowCollectionBehaviorDefault];
-        [[window standardWindowButton:NSWindowZoomButton] setEnabled:YES];
     } else {
         [window setCollectionBehavior:NSWindowCollectionBehaviorFullScreenAuxiliary|NSWindowCollectionBehaviorFullScreenNone|NSWindowCollectionBehaviorFullScreenDisallowsTiling];
-        [[window standardWindowButton:NSWindowZoomButton] setEnabled:NO];
     }
+    uno_window_update_caption_button_states(window);
 #if DEBUG
     NSLog(@"uno_window_set_maximizable %@ 0x%x %s 0x%x", window, (uint)cb, isMaximizable ? "true" : "false", (uint)window.collectionBehavior);
 #endif
@@ -714,6 +744,7 @@ void uno_window_set_minimizable(NSWindow* window, bool isMinimizable)
     NSLog(@"uno_window_set_minimizable %@ 0x%x %s 0x%x", window, (uint)window.styleMask, isMinimizable ? "true" : "false", (uint)style);
 #endif
     window.styleMask = style;
+    uno_window_update_caption_button_states(window);
 }
 
 bool uno_window_set_modal(NSWindow *window, bool isModal)
@@ -733,6 +764,7 @@ void uno_window_set_resizable(NSWindow *window, bool isResizable)
     NSLog(@"uno_window_set_resizable %@ 0x%x %s 0x%x", window, (uint)window.styleMask, isResizable ? "true" : "false", (uint)style);
 #endif
     window.styleMask = style;
+    uno_window_update_caption_button_states(window);
 }
 
 inline window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void)
@@ -1021,33 +1053,26 @@ void uno_window_set_extends_content_into_title_bar(UNOWindow* window, bool exten
 #if DEBUG
     NSLog(@"uno_window_set_extends_content_into_title_bar %@ extend %s height %g showCaptionButtons %s", window, extend ? "true" : "false", titleBarHeight, showCaptionButtons ? "true" : "false");
 #endif
-    bool wasExtended = window.extendsContentIntoTitleBar;
     window.extendsContentIntoTitleBar = extend;
     window.titleBarHeight = extend ? titleBarHeight : 0;
+    window.showCaptionButtons = showCaptionButtons;
+    [window applyTitleBarStyle];
+}
 
-    NSWindowStyleMask style = extend
-        ? window.styleMask | NSWindowStyleMaskFullSizeContentView
-        : window.styleMask & ~NSWindowStyleMaskFullSizeContentView;
-    if (style != window.styleMask) {
-        window.styleMask = style;
+int32_t uno_window_get_caption_buttons_state(NSWindow* window)
+{
+    int32_t state = 0;
+    NSWindowButton types[] = { NSWindowCloseButton, NSWindowMiniaturizeButton, NSWindowZoomButton };
+    for (int i = 0; i < 3; i++) {
+        NSButton *button = [window standardWindowButton:types[i]];
+        if (button != nil && !button.hidden && (window.styleMask & NSWindowStyleMaskTitled) != 0) {
+            state |= 1 << (2 * i);
+        }
+        if (button != nil && button.enabled) {
+            state |= 1 << (2 * i + 1);
+        }
     }
-    window.titlebarAppearsTransparent = extend;
-    window.titleVisibility = extend ? NSWindowTitleHidden : NSWindowTitleVisible;
-
-    for (NSButton *button in uno_window_get_caption_buttons(window)) {
-        button.hidden = extend && !showCaptionButtons;
-    }
-
-    if (extend || wasExtended) {
-        [window layoutCaptionButtons];
-    }
-
-    // The content view now covers (or no longer covers) the title bar. The Metal view reports its new drawable
-    // size on its own, the software fallback relies on windowDidResize which a style change does not raise.
-    if (window.metalViewDelegate == nil) {
-        CGSize size = [window contentRectForFrameRect:window.frame].size;
-        uno_get_window_resize_event_callback()(window, size.width, size.height);
-    }
+    return state;
 }
 
 bool uno_window_get_caption_buttons_bounds(UNOWindow* window, double* minX, double* maxX, double* windowWidth)
@@ -1389,6 +1414,8 @@ NSOperatingSystemVersion _osVersion;
     if (self) {
         self.delegate = self;
         self.overlappedPresenterState = OverlappedPresenterStateRestored;
+        self.hasPresenterTitleBar = true;
+        self.showCaptionButtons = true;
     }
     return self;
 }
@@ -1398,6 +1425,36 @@ NSOperatingSystemVersion _osVersion;
 }
 
 @synthesize overlappedPresenterState;
+
+- (bool)isContentUnderTitleBar {
+    return self.extendsContentIntoTitleBar || !self.hasPresenterTitleBar;
+}
+
+- (void)applyTitleBarStyle {
+    bool fullSize = [self isContentUnderTitleBar];
+    NSWindowStyleMask style = fullSize
+        ? self.styleMask | NSWindowStyleMaskFullSizeContentView
+        : self.styleMask & ~NSWindowStyleMaskFullSizeContentView;
+    if (style != self.styleMask) {
+        self.styleMask = style;
+    }
+    self.titlebarAppearsTransparent = fullSize;
+    self.titleVisibility = fullSize ? NSWindowTitleHidden : NSWindowTitleVisible;
+
+    bool hidden = !self.hasPresenterTitleBar || (self.extendsContentIntoTitleBar && !self.showCaptionButtons);
+    for (NSButton *button in uno_window_get_caption_buttons(self)) {
+        button.hidden = hidden;
+    }
+
+    [self layoutCaptionButtons];
+
+    // The content view now covers (or no longer covers) the title bar. The Metal view reports its new drawable
+    // size on its own, the software fallback relies on windowDidResize which a style change does not raise.
+    if (self.metalViewDelegate == nil) {
+        CGSize size = [self contentRectForFrameRect:self.frame].size;
+        uno_get_window_resize_event_callback()(self, size.width, size.height);
+    }
+}
 
 - (void)layoutCaptionButtons {
     if (!self.extendsContentIntoTitleBar && !self.captionButtonsMoved) {
@@ -1433,7 +1490,7 @@ NSOperatingSystemVersion _osVersion;
 }
 
 - (TitleBarEventRoute)routeTitleBarEvent:(NSEvent *)event {
-    if (!self.extendsContentIntoTitleBar) {
+    if (![self isContentUnderTitleBar]) {
         return TitleBarEventRouteDefault;
     }
 

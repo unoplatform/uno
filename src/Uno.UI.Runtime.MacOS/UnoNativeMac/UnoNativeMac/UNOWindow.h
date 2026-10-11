@@ -48,6 +48,13 @@ typedef NS_ENUM(sint32, OverlappedPresenterState) {
 @property bool extendsContentIntoTitleBar;
 /// Height, in points, the traffic lights are vertically centered in while extended (0 = native layout).
 @property CGFloat titleBarHeight;
+/// False when extended with PreferredHeightOption.Collapsed.
+@property bool showCaptionButtons;
+/// OverlappedPresenter.HasTitleBar: false hides the title bar and traffic lights but keeps the native frame.
+@property bool hasPresenterTitleBar;
+
+/// Applies the title bar related properties above to the native window.
+- (void)applyTitleBarStyle;
 
 /// Re-applies the traffic-light placement, which AppKit resets on its own titlebar layout passes.
 - (void)layoutCaptionButtons;
@@ -118,6 +125,10 @@ void uno_window_set_extends_content_into_title_bar(UNOWindow* window, bool exten
 // Horizontal extent of the visible traffic lights, in points from the window's left edge.
 // Returns false when they are not shown over the content (not extended, no title bar, hidden or full screen).
 bool uno_window_get_caption_buttons_bounds(UNOWindow* window, double* minX, double* maxX, double* windowWidth);
+
+// Visibility and enabled state of the traffic lights, for tests: for close, miniaturize and zoom (i = 0, 1, 2),
+// bit 2i is set when the button is shown and bit 2i+1 when it is enabled.
+int32_t uno_window_get_caption_buttons_state(NSWindow* window);
 
 // keep in sync with MacOSTitleBarMath.cs
 typedef NS_ENUM(sint32, NonClientPointerAction) {
