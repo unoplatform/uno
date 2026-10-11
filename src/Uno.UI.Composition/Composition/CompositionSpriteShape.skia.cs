@@ -326,6 +326,7 @@ namespace Microsoft.UI.Composition
 		/// <summary>Strokes <paramref name="geometry"/> through the resolved trim window (see <see cref="TryResolveTrim"/>).</summary>
 		private IGeometry GetTrimmedStrokeGeometry(IGeometry geometry, float scale = 1f)
 		{
+			var dashed = _strokeDashArray is { Count: > 0 };
 			if (!TryResolveTrim(Geometry, out var start, out var end, out var wrapEnd))
 			{
 				return geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f), scale);
@@ -334,6 +335,11 @@ namespace Microsoft.UI.Composition
 			if (IsEmptyTrim(start, end, wrapEnd))
 			{
 				return EmptyGeometry();
+			}
+
+			if (dashed)
+			{
+				return GetTrimmedDashedStrokeGeometry(geometry, start, end, wrapEnd, scale);
 			}
 
 			var trimmed = geometry.GetStrokeFillGeometry(GetStrokeStyle(start, end), scale);
@@ -346,6 +352,56 @@ namespace Microsoft.UI.Composition
 			using (var head = geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, wrapped), scale))
 			{
 				return trimmed.Combine(head, GeometryCombineMode.Union, scale);
+			}
+		}
+
+		// WinUI trims first and then dashes the trimmed path, so the pattern starts at the trim start and runs on
+		// across a window that wraps through the path origin.
+		private IGeometry GetTrimmedDashedStrokeGeometry(IGeometry geometry, float start, float end, float? wrapEnd, float scale)
+		{
+			using var path = geometry.GetFilledGeometry(start, end, scale);
+			var trimmed = path.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f), scale);
+			if (wrapEnd is not { } wrapped || wrapped <= 0f)
+			{
+				return trimmed;
+			}
+
+			var headStyle = GetStrokeStyle(0f, 0f) with { DashOffset = StrokeDashOffset + PathLength.Of(path, scale) };
+			using (trimmed)
+			using (var headPath = geometry.GetFilledGeometry(0f, wrapped, scale))
+			using (var head = headPath.GetStrokeFillGeometry(headStyle, scale))
+			{
+				return trimmed.Combine(head, GeometryCombineMode.Union, scale);
+			}
+		}
+
+		private sealed class PathLength : IFlattenedPathSink
+		{
+			private Vector2 _start;
+			private Vector2 _last;
+			private float _length;
+
+			public static float Of(IGeometry geometry, float scale)
+			{
+				var sink = new PathLength();
+				geometry.StreamFlattened(sink, scale);
+				return sink._length;
+			}
+
+			public void BeginContour(Vector2 start) => _start = _last = start;
+
+			public void LineTo(Vector2 point)
+			{
+				_length += Vector2.Distance(_last, point);
+				_last = point;
+			}
+
+			public void EndContour(bool closed)
+			{
+				if (closed)
+				{
+					LineTo(_start);
+				}
 			}
 		}
 

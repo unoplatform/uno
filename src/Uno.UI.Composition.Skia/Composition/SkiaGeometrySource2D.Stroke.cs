@@ -86,14 +86,15 @@ namespace Microsoft.UI.Composition
 			}
 
 			SKPathEffect? trim = null;
-			SKPathEffect? sum = null;
+			SKPathEffect? composed = null;
 			if (style.TrimStart != default || style.TrimEnd != default)
 			{
 				trim = SKPathEffect.CreateTrim(style.TrimStart, style.TrimEnd);
 				if (dashEffect is not null)
 				{
-					sum = SKPathEffect.CreateSum(dashEffect, trim);
-					paint.PathEffect = sum;
+					// Trim first, then dash the trimmed path (as the managed stroker does).
+					composed = SKPathEffect.CreateCompose(dashEffect, trim);
+					paint.PathEffect = composed;
 				}
 				else
 				{
@@ -106,7 +107,7 @@ namespace Microsoft.UI.Composition
 			paint.GetFillPath(_geometry, builder);
 			// The spare paint outlives this call, so drop its native reference before releasing the effects.
 			paint.PathEffect = null;
-			sum?.Dispose();
+			composed?.Dispose();
 			trim?.Dispose();
 			dashEffect?.Dispose();
 
