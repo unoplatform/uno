@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Foundation;
 using Microsoft.UI.Xaml;
@@ -17,7 +17,10 @@ internal sealed class TvRemoteInputHandler
 	private readonly RemoteControlInputTranslator _translator;
 
 	public TvRemoteInputHandler(UnoKeyboardInputSource keyboardSource)
-		=> _translator = new(keyboardSource.RaiseKey, SystemNavigationManager.GetForCurrentView().RequestBack);
+		=> _translator = new(
+			keyboardSource.RaiseKey,
+			SystemNavigationManager.GetForCurrentView().RequestBack,
+			e => Application.Current.RaiseRecoverableUnhandledException(e));
 
 	internal void AttachSwipeRecognizers(UIView view)
 	{
@@ -41,16 +44,7 @@ internal sealed class TvRemoteInputHandler
 
 		foreach (var press in presses)
 		{
-			var handled = false;
-			try
-			{
-				handled = ToRemoteControlButton(press.Type) is { } button && handle(button);
-			}
-			catch (Exception e)
-			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
-			}
-
+			var handled = ToRemoteControlButton(press.Type) is { } button && handle(button);
 			if (!handled)
 			{
 				(unhandled ??= new()).Add(press);
@@ -61,19 +55,7 @@ internal sealed class TvRemoteInputHandler
 	}
 
 	private void AddSwipeRecognizer(UIView view, UISwipeGestureRecognizerDirection direction, RemoteControlButton button)
-		=> view.AddGestureRecognizer(new UISwipeGestureRecognizer(() => OnSwipe(button)) { Direction = direction });
-
-	private void OnSwipe(RemoteControlButton button)
-	{
-		try
-		{
-			_translator.OnSwipe(button);
-		}
-		catch (Exception e)
-		{
-			Application.Current.RaiseRecoverableUnhandledException(e);
-		}
-	}
+		=> view.AddGestureRecognizer(new UISwipeGestureRecognizer(() => _translator.OnSwipe(button)) { Direction = direction });
 
 	private static RemoteControlButton? ToRemoteControlButton(UIPressType type) => type switch
 	{

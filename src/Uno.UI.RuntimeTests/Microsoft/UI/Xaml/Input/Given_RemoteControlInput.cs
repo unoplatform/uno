@@ -1,9 +1,11 @@
-#nullable enable
+﻿#nullable enable
 
 // RemoteControlInputTranslator is the Uno-internal bridge used by TV remotes (tvOS Siri Remote),
 // so the whole fixture is Uno-only.
 #if HAS_UNO
 
+using System;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -132,7 +134,7 @@ public class Given_RemoteControlInput
 			button.Focus(FocusState.Keyboard);
 			await WindowHelper.WaitForIdle();
 
-			var translator = new RemoteControlInputTranslator(RaiseKey, navigationManager.RequestBack);
+			var translator = new RemoteControlInputTranslator(RaiseKey, navigationManager.RequestBack, Rethrow);
 			Assert.IsTrue(translator.OnButtonDown(RemoteControlButton.Menu));
 			Assert.IsTrue(translator.OnButtonUp(RemoteControlButton.Menu));
 
@@ -152,8 +154,10 @@ public class Given_RemoteControlInput
 		{
 			counter.Count++;
 			return true;
-		});
+		}, Rethrow);
 	}
+
+	private static void Rethrow(Exception e) => ExceptionDispatchInfo.Capture(e).Throw();
 
 	// Goes through the InputManager, so the key is routed from the focused element like a real remote press.
 	private static bool RaiseKey(VirtualKey key, bool isDown)

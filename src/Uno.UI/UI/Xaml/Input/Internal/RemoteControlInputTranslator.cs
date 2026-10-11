@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -31,14 +31,17 @@ internal sealed class RemoteControlInputTranslator
 
 	private readonly Func<VirtualKey, bool, bool> _raiseKey;
 	private readonly Func<bool> _requestBack;
+	private readonly Action<Exception> _onError;
 	private readonly HashSet<RemoteControlButton> _forwardedToSystem = new();
 
 	/// <param name="raiseKey">Raises a key down (true) or up (false) through the keyboard pipeline, returning whether it was handled.</param>
 	/// <param name="requestBack">Raises SystemNavigationManager.BackRequested, returning whether it was handled.</param>
-	public RemoteControlInputTranslator(Func<VirtualKey, bool, bool> raiseKey, Func<bool> requestBack)
+	/// <param name="onError">Reports an exception thrown by an app handler, which then counts as not handling the input.</param>
+	public RemoteControlInputTranslator(Func<VirtualKey, bool, bool> raiseKey, Func<bool> requestBack, Action<Exception> onError)
 	{
 		_raiseKey = raiseKey;
 		_requestBack = requestBack;
+		_onError = onError;
 	}
 
 	internal static VirtualKey ToVirtualKey(RemoteControlButton button) => button switch
@@ -59,12 +62,12 @@ internal sealed class RemoteControlInputTranslator
 	/// </returns>
 	public bool OnButtonDown(RemoteControlButton button)
 	{
-		var handled = _raiseKey(ToVirtualKey(button), true);
+		var handled = TryRaiseKey(button, isDown: true);
 
 		// Like B on Xbox, an unhandled Menu press is a back request.
 		if (!handled && button == RemoteControlButton.Menu)
 		{
-			handled = _requestBack();
+			handled = TryInvoke(_requestBack);
 		}
 
 		if (!handled)
@@ -80,7 +83,7 @@ internal sealed class RemoteControlInputTranslator
 	/// </returns>
 	public bool OnButtonUp(RemoteControlButton button)
 	{
-		_raiseKey(ToVirtualKey(button), false);
+		TryRaiseKey(button, isDown: false);
 
 		return !_forwardedToSystem.Remove(button);
 	}
@@ -90,7 +93,24 @@ internal sealed class RemoteControlInputTranslator
 	/// </summary>
 	public void OnSwipe(RemoteControlButton direction)
 	{
-		_raiseKey(ToVirtualKey(direction), true);
-		_raiseKey(ToVirtualKey(direction), false);
+		TryRaiseKey(direction, isDown: true);
+		TryRaiseKey(direction, isDown: false);
+	}
+
+	private bool TryRaiseKey(RemoteControlButton button, bool isDown)
+		=> TryInvoke(() => _raiseKey(ToVirtualKey(button), isDown));
+
+	// Caught here rather than by the caller, so a throwing handler can't skip the press/release bookkeeping.
+	private bool TryInvoke(Func<bool> handler)
+	{
+		try
+		{
+			return handler();
+		}
+		catch (Exception e)
+		{
+			_onError(e);
+			return false;
+		}
 	}
 }
