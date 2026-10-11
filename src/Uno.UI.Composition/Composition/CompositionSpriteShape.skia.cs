@@ -329,6 +329,12 @@ namespace Microsoft.UI.Composition
 			var dashed = _strokeDashArray is { Count: > 0 };
 			if (!TryResolveTrim(Geometry, out var start, out var end, out var wrapEnd))
 			{
+				if (dashed && Geometry?.BuildDashGeometry() is { } dashSource)
+				{
+					using var dashGeometry = dashSource.Transform(_geometryTransform);
+					return dashGeometry.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f), scale);
+				}
+
 				return geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f), scale);
 			}
 

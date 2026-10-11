@@ -18,6 +18,8 @@ namespace Microsoft.UI.Composition
 		private static SKPathBuilder? _strokeSpareBuilderTls;
 		private static SKPathBuilder _strokeSpareBuilder => _strokeSpareBuilderTls ??= new();
 
+		private const float DashMeasureResolution = 16f;
+
 		[ThreadStatic]
 		private static SKPoint[]? _spareMiterPointsTls;
 		private static SKPoint[] _spareMiterPoints => _spareMiterPointsTls ??= new SKPoint[4];
@@ -45,7 +47,11 @@ namespace Microsoft.UI.Composition
 			return new SkiaGeometrySource2D(builder.Detach());
 		}
 
-		IGeometry IGeometry.GetStrokeFillGeometry(in StrokeStyle style)
+		IGeometry IGeometry.GetStrokeFillGeometry(in StrokeStyle style) => GetStrokeFillGeometry(style, 1f);
+
+		IGeometry IGeometry.GetStrokeFillGeometry(in StrokeStyle style, float scale) => GetStrokeFillGeometry(style, scale);
+
+		private IGeometry GetStrokeFillGeometry(in StrokeStyle style, float scale)
 		{
 			var paint = _strokeSparePaint;
 			paint.Reset();
@@ -102,9 +108,12 @@ namespace Microsoft.UI.Composition
 				}
 			}
 
+			// Dashes are laid out by arc length, which Skia measures on a flattened curve: at the default resolution small
+			// arcs come out short enough to shift the pattern visibly after each corner. Measure at device resolution and finer.
+			var resScale = dashValues is not null ? MathF.Max(1f, scale) * DashMeasureResolution : 1f;
 			var builder = _strokeSpareBuilder;
 			builder.Reset();
-			paint.GetFillPath(_geometry, builder);
+			paint.GetFillPath(_geometry, builder, resScale);
 			// The spare paint outlives this call, so drop its native reference before releasing the effects.
 			paint.PathEffect = null;
 			composed?.Dispose();
