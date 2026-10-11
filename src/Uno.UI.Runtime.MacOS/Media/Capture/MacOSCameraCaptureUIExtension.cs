@@ -94,11 +94,15 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 	{
 		var operationId = Interlocked.Increment(ref _nextOperationId);
 
-		string? Capture() => _mode switch
+		// Snapshot the settings now: the capture runs on a later run-loop pass, and another Customize call may change them first.
+		var mode = _mode;
+		var useJpeg = _photoFormat == CameraCaptureUIPhotoFormat.Jpeg;
+
+		string? Capture() => mode switch
 		{
 			CameraCaptureUIMode.Video => NativeUno.uno_capture_video(operationId),
 			// PhotoOrVideo captures a photo, as on iOS and Android: the capture window offers no photo/video choice.
-			_ => NativeUno.uno_capture_photo(operationId, _photoFormat == CameraCaptureUIPhotoFormat.Jpeg),
+			_ => NativeUno.uno_capture_photo(operationId, useJpeg),
 		};
 
 		// Run the blocking native modal from the main *run loop*, not the GCD main queue (which is
