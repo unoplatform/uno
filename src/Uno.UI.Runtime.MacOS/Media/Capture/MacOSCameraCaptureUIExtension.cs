@@ -79,10 +79,12 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 			var tempPath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + ext);
 			File.Move(nativePath, tempPath);
 
-			// Prevent cleanup of the moved file in the finally block.
+			// The finally block owns the moved file until it is handed to the caller.
+			nativePath = tempPath;
+			var file = await StorageFile.GetFileFromPathAsync(tempPath);
 			nativePath = null;
 
-			return await StorageFile.GetFileFromPathAsync(tempPath);
+			return file;
 		}
 		finally
 		{
