@@ -604,6 +604,41 @@ public class Given_CompositionSpriteShape
 		}
 	}
 
+	// WinUI trims an ellipse from 12 o'clock but starts its dash pattern at 9 o'clock. A single short dash shows where.
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Ellipse_Dashed_Then_Pattern_Starts_At_Nine_OClock()
+	{
+		var screenshot = await RenderDashedShape(100, 100, c =>
+		{
+			var ellipse = c.CreateEllipseGeometry();
+			ellipse.Center = new Vector2(50, 50);
+			ellipse.Radius = new Vector2(40, 40);
+			return ellipse;
+		}, 6f, 1000f);
+
+		ImageAssert.HasColorAt(screenshot, 10, 47, Microsoft.UI.Colors.Red, tolerance: 30);
+		ImageAssert.HasColorAt(screenshot, 53, 10, Microsoft.UI.Colors.White, tolerance: 30);
+	}
+
+	// A rounded rectangle's dash pattern starts where its top-left arc begins; trims start where that arc ends.
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_RoundedRectangle_Dashed_Then_Pattern_Starts_At_Top_Left_Arc()
+	{
+		var screenshot = await RenderDashedShape(100, 100, c =>
+		{
+			var rect = c.CreateRoundedRectangleGeometry();
+			rect.Offset = new Vector2(10, 10);
+			rect.Size = new Vector2(80, 80);
+			rect.CornerRadius = new Vector2(20, 20);
+			return rect;
+		}, 6f, 1000f);
+
+		ImageAssert.HasColorAt(screenshot, 11, 27, Microsoft.UI.Colors.Red, tolerance: 30);
+		ImageAssert.HasColorAt(screenshot, 33, 10, Microsoft.UI.Colors.White, tolerance: 30);
+	}
+
 	private static async Task<RawBitmap> RenderDashedShape(int width, int height, Func<Compositor, CompositionGeometry> geometry, float dash, float gap)
 	{
 		var anchor = new Border { Width = 1, Height = 1 };
