@@ -57,7 +57,7 @@ namespace Benchmarks.Shared.Controls
 		{
 			this.InitializeComponent();
 
-			ActualThemeChanged += (_, _) => _logger?.ApplyTheme(ActualTheme);
+			ShellThemeBrushes.ObserveActualTheme(this, () => _logger?.ApplyTheme(ActualTheme));
 
 			if (ShellFunctions.IsTouchShell)
 			{

@@ -259,7 +259,29 @@ public class Given_ShellLayout
 #endif
 
 	[TestMethod]
-	public async Task When_Theme_Changes_Current_Pane_Destination_Follows()
+	public Task When_Theme_Changes_Current_Pane_Destination_Follows() => AssertCurrentPaneDestinationFollowsTheme();
+
+	[TestMethod]
+	public async Task When_Shell_Reenters_Window_Current_Pane_Destination_Still_Follows_Theme()
+	{
+		// What a [RequiresFullWindow] test does to the shell around it.
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var content = window.Content;
+		try
+		{
+			window.Content = new Border();
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			window.Content = content;
+		}
+
+		await TestServices.WindowHelper.WaitFor(() => SampleChooserViewModel.Instance.Owner.IsLoaded);
+		await AssertCurrentPaneDestinationFollowsTheme();
+	}
+
+	private static async Task AssertCurrentPaneDestinationFollowsTheme()
 	{
 		var vm = SampleChooserViewModel.Instance;
 		var owner = vm.Owner;

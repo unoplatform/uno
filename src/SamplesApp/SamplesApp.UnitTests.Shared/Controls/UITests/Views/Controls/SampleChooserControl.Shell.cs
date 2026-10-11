@@ -108,12 +108,12 @@ partial class SampleChooserControl
 
 		DataContextChanged += OnShellDataContextChanged;
 		Loaded += OnShellLoaded;
-		ActualThemeChanged += (_, _) =>
+		ShellThemeBrushes.ObserveActualTheme(this, () =>
 		{
 			UpdateFavoriteIcon();
 			SyncRailSelection();
 			UpdateManualTestsChip();
-		};
+		});
 
 		ShellPaneBenchmarksButton.RegisterPropertyChangedCallback(VisibilityProperty, (_, _) => UpdatePaneDestinationColumns());
 		SplitView.RegisterPropertyChangedCallback(SplitView.DisplayModeProperty, (_, _) => UpdateBackdropState());

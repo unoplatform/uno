@@ -92,7 +92,7 @@ public sealed partial class UnitTestsControl
 		ShellColumnSplitter.KeyboardResize += (_, delta) => ResizeOutput(delta);
 		ShellColumnSplitter.ResetRequested += (_, _) => outputColumn.Width = new GridLength(1, GridUnitType.Star);
 
-		ActualThemeChanged += (_, _) => ApplyResultRowBrushes();
+		ShellThemeBrushes.ObserveActualTheme(this, ApplyResultRowBrushes);
 		SizeChanged += (_, _) => UpdateHeaderMaxHeight();
 
 		if (ShellFunctions.IsTouchShell)
