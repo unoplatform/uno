@@ -257,9 +257,11 @@ public class Given_AppWindowTitleBar
 			presenter.Restore();
 			await TestServices.WindowHelper.WaitFor(() => presenter.State == OverlappedPresenterState.Restored);
 
-			// Restoring from the Dock is left to manual testing: CI VMs block the main thread for seconds on the minimize animation.
 			presenter.Minimize();
 			await TestServices.WindowHelper.WaitFor(() => presenter.State == OverlappedPresenterState.Minimized);
+			// CI VMs block the main thread for seconds on the Dock animations.
+			presenter.Restore();
+			await TestServices.WindowHelper.WaitFor(() => presenter.State == OverlappedPresenterState.Restored, timeoutMS: 30000);
 		}
 		finally
 		{
