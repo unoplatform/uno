@@ -42,12 +42,9 @@ namespace Microsoft.UI.Xaml
 
 		public VisualState CurrentState => _current.state;
 
-		// Mirrors the DP value, set by its backing field callback.
-		internal string NameCache { private get; set; } = "";
-
 		public string Name
 		{
-			get => NameCache;
+			get => (string)GetValue(NameProperty);
 			internal set => SetValue(NameProperty, value);
 		}
 

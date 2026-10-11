@@ -28,12 +28,9 @@ namespace Microsoft.UI.Xaml
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		// Mirrors the DP value, set by its backing field callback.
-		internal string NameCache { private get; set; } = "";
-
 		public string Name
 		{
-			get => NameCache;
+			get => (string)GetValue(NameProperty);
 			internal set => SetValue(NameProperty, value);
 		}
 
