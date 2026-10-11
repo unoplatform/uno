@@ -286,7 +286,11 @@ public class Given_SplitView
 
 		if (!startOpen)
 		{
+			// The open transition slides the content in; a software-rendered frame can outlast a fixed delay.
+			var opened = false;
+			sut.PaneOpened += (_, _) => opened = true;
 			sut.IsPaneOpen = true;
+			await UITestHelper.WaitFor(() => opened, timeoutMS: 5000);
 		}
 
 		await UITestHelper.WaitForIdle();
