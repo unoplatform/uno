@@ -68,7 +68,8 @@ If your target framework is Android 12, you must also add `Exported = true` to t
 `CategoryDefault` is required (must be included for all implicit intents) and `CategoryBrowsable` is optional (allows opening the custom URI from the browser).
 
 > [!IMPORTANT]
-> The activity must also declare a `LaunchMode` that reuses the running instance:
+> The activity must also declare the `SingleTask` launch mode, so an incoming intent reuses the running
+> instance:
 >
 > ```csharp
 > [Activity(
@@ -78,11 +79,20 @@ If your target framework is Android 12, you must also add `Exported = true` to t
 > ```
 >
 > Android's default `standard` launch mode creates a **new** activity instance for every incoming
-> intent. A deep link arriving while your app is running therefore stacks a second instance on top of
-> the first, and because the app's window belongs to the first one, the second shows nothing — the app
-> appears to go black, with no error. `SingleTask` (or `SingleTop`) delivers the intent to the existing
-> instance through `OnNewIntent` instead, which is also what lets the activation reach
-> `AppInstance.Activated` while the app is running.
+> intent. A deep link arriving while your app is running therefore stacks a second copy of the activity
+> on top of the first. The app's window moves to the new copy, and when that copy is closed, for example
+> with Back, the window closes with it and leaves the first copy empty. `SingleTask` keeps a single
+> instance and delivers the intent to it through `OnNewIntent`, which reaches the app as
+> `AppInstance.Activated`.
+>
+> `SingleTop` is not a substitute: it only reuses the activity when it is already on top of the task the
+> intent opens in. A link tapped in another app, such as a mail or chat client, usually opens in that
+> app's task, which still creates a second copy.
+>
+> `SingleTask` has one side effect: when an intent brings the app back, including a tap on its launcher
+> icon, Android finishes every activity stacked above it in its task. An activity your app started into
+> its own task, such as an external camera opened for a result, is closed if the user leaves the app and
+> returns through the launcher icon, and its result is lost.
 
 ### WebAssembly
 
