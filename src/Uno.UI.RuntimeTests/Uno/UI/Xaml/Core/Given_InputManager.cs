@@ -719,13 +719,14 @@ public class Given_InputManager
 	public async Task When_DirectManipulationInertial_Then_AllSubsequentEventsIgnored()
 	{
 		Border elt;
+		ScrollViewer sv;
 		var root = new Grid
 		{
 			Width = 200,
 			Height = 200,
 			Children =
 			{
-				new ScrollViewer
+				(sv = new ScrollViewer
 				{
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = elt = new Border
@@ -735,7 +736,7 @@ public class Given_InputManager
 						Width = 800,
 						Height = 80000,
 					}
-				},
+				}),
 			}
 		};
 
@@ -750,7 +751,8 @@ public class Given_InputManager
 		var events = root.SubscribeToPointerEvents();
 		elt.SubscribeToPointerEvents(events);
 
-		await UITestHelper.WaitForIdle(waitForCompositionAnimations: false); // Give opportunity to ui thread to doe some work
+		// Press as soon as inertia is running: on slow frames a fixed idle wait lets it run out first.
+		await TestServices.WindowHelper.WaitFor(() => sv.VerticalOffset > 0, timeoutMS: 30000, message: "the flick never started scrolling");
 
 		finger.Press(bounds.GetCenter());
 		finger.Release(bounds.GetCenter());
