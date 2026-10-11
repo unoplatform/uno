@@ -457,7 +457,9 @@ static char* _Nullable CapturePhoto(UNOCaptureOperation *operation, bool useJpeg
         NSString *filePath = [tempDir stringByAppendingPathComponent:fileName];
 
         if ([outputData writeToFile:filePath atomically:YES]) {
+#if DEBUG
             NSLog(@"Camera capture saved to: %@", filePath);
+#endif
             return strdup([filePath UTF8String]);
         }
 
@@ -656,7 +658,9 @@ static char* _Nullable CaptureVideo(UNOCaptureOperation *operation)
             return NULL;
         }
 
+#if DEBUG
         NSLog(@"Video capture exported to: %@", mp4Path);
+#endif
         return strdup([mp4Path UTF8String]);
     }
 }
