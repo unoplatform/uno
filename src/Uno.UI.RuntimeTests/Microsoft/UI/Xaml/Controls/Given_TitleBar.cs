@@ -137,7 +137,7 @@ public class Given_TitleBar
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Insets_Change_Passthrough_Regions_Follow()
 	{
 		var rightHeader = new Button { Content = "Right" };
@@ -171,7 +171,7 @@ public class Given_TitleBar
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_FlowDirection_Changes_Passthrough_Regions_Follow()
 	{
 		var rightHeader = new Button { Content = "Right" };

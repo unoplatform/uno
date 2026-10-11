@@ -119,7 +119,7 @@ public class Given_InputNonClientPointerSource
 	private static extern nint SendMessage(nint hWnd, uint msg, nuint wParam, nint lParam);
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_TitleBar_Element_Is_RightToLeft_Caption_Rect_Is_Inside_Window()
 	{
 		var titleBar = new Border { Height = 48, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
