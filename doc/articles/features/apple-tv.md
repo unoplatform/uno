@@ -51,6 +51,13 @@ SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) =>
 
 Like an Xbox app, a tvOS app treats the remote as the last used input device from startup. The first focusable element of the app gets keyboard focus, with its focus visual, without the user having to press anything first.
 
+### Control defaults
+
+Controls that adapt to Xbox in WinUI treat tvOS the same way:
+
+- `NavigationView` hides its back button when `IsBackButtonVisible` is `Auto`, as Menu already goes back. Set it to `Visible` to show it anyway.
+- `SplitView`, `AppBar` and `CommandBar` show their light-dismiss overlay when `LightDismissOverlayMode` is `Auto`.
+
 ### Touch surface
 
 The touch surface of the Siri Remote is not a pointer: its touches are not raised as pointer events. Swipes move the focus, and clicks are reported as the presses above.
