@@ -246,6 +246,7 @@ public class Given_CompositionTarget
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaAndroid)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24963")]
 	public async Task When_Host_Reports_Vsync_Then_Frame_Time_Is_The_Vsync()
 	{
 		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
@@ -256,7 +257,8 @@ public class Given_CompositionTarget
 		target.FrameStarting += driver;
 		try
 		{
-			await TestServices.WindowHelper.WaitFor(() => timestamps.Count >= 40, message: "the driver should keep ticking");
+			// 40 frames take over a second at 30Hz.
+			await TestServices.WindowHelper.WaitFor(() => timestamps.Count >= 40, timeoutMS: 5000, message: "the driver should keep ticking");
 		}
 		finally
 		{
@@ -269,6 +271,7 @@ public class Given_CompositionTarget
 		// on the render thread jitters by milliseconds.
 		var intervals = timestamps.Skip(5).Zip(timestamps.Skip(6), (a, b) => b - a).ToArray();
 		var period = intervals.OrderBy(i => i).ElementAt(intervals.Length / 2);
+		Assert.IsTrue(period > 0, $"most frames repeated the previous frame's time: {string.Join(", ", intervals)}");
 		var tolerance = TimeSpan.TicksPerMillisecond * 0.3;
 		var worst = intervals.Max(i => Math.Abs(i - Math.Max(1, Math.Round(i / (double)period)) * period));
 		Assert.IsTrue(
