@@ -843,6 +843,14 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		_registeredRawActionAccessor = null;
 		_registeredFocusAccessor = null;
 		_registeredFocusedNodeAccessor = null;
+		ReleaseNodeState();
+		StopTrackingAccessibilityState();
+		_adapter = null;
+	}
+
+	// Drops native focus and every virtual-node mapping, so the next client query rebuilds the tree from scratch.
+	internal void ReleaseNodeState()
+	{
 		if (_nativeFocusedId >= 0)
 		{
 			ClearNativeAccessibilityFocus(_nativeFocusedId);
@@ -869,8 +877,6 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		_resourceSegmentByAutomationId.Clear();
 		_automationIdByResourceSegment.Clear();
 		MarkAccessibilityTreeDirty();
-		StopTrackingAccessibilityState();
-		_adapter = null;
 	}
 
 	private bool PerformRawAction(int virtualViewId, int action)

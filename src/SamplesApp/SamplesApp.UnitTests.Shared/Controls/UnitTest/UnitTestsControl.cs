@@ -1172,6 +1172,10 @@ namespace Uno.UI.Samples.Tests
 						_log?.Warn("The test left UWP styles applied (StyleHelper.UseUwpStyles was not disposed); restored Fluent styles.");
 					}
 
+#if HAS_UNO
+					Uno.UI.RuntimeTests.Helpers.AccessibilityBridgeHelper.DisableMobileAccessibility(TestServices.WindowHelper.XamlRoot);
+#endif
+
 					if (config.IsUnloadingTestContent)
 					{
 						TestServices.WindowHelper.WindowContent = null;

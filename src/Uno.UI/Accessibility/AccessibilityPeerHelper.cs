@@ -631,9 +631,17 @@ internal static class AccessibilityPeerHelper
 
 	internal static Action<XamlRoot>? AndroidClearAccessibilityEventsAction { get; set; }
 
+	/// <summary>
+	/// Turns the bridge back off after a client or test hook enabled it, so later tests start from a disabled bridge.
+	/// </summary>
+	internal static Action<XamlRoot>? AndroidDisableAccessibilityAction { get; set; }
+
 	internal static Func<XamlRoot, AccessibilityNativeEventRecord[]?>? IOSAccessibilityEventsAccessor { get; set; }
 
 	internal static Action<XamlRoot>? IOSClearAccessibilityEventsAction { get; set; }
+
+	/// <inheritdoc cref="AndroidDisableAccessibilityAction"/>
+	internal static Action<XamlRoot>? IOSDisableAccessibilityAction { get; set; }
 
 	internal static Func<XamlRoot, int>? IOSAccessibilityRebuildGenerationAccessor { get; set; }
 
