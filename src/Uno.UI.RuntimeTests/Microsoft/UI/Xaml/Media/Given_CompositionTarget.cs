@@ -246,6 +246,7 @@ public class Given_CompositionTarget
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaWin32)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24963")]
 	public async Task When_Host_Reports_Vsync_Then_Frame_Time_Is_The_Vsync()
 	{
 		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
@@ -281,6 +282,7 @@ public class Given_CompositionTarget
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24963")]
 	public async Task When_Host_Reports_Vsync_Then_Frames_Are_Whole_Periods_Apart()
 	{
 		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
