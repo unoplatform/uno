@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Runtime.Skia.Vulkan;
 
@@ -32,12 +33,12 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
 
-	private bool _firstFramePresented;
+	private bool _lastFramePresented;
 
-	// The Vulkan render image is stable across frames once the first frame has been presented on this swapchain,
-	// so subsequent frames can repaint only the damaged region. On a newly initialized swapchain, the previous
-	// frame's contents are not preserved and the entire frame must be repainted.
-	public bool PreservesContents => _firstFramePresented;
+	// The Vulkan render image keeps the previous frame's pixels, so the next frame can repaint only the damaged
+	// region, but only when that frame actually reached the screen. A new swapchain, or a frame that was skipped
+	// by a failed acquire/present, forces a full repaint.
+	public bool PreservesContents => _lastFramePresented;
 
 	// Neutral device face — the GRVkBackendContext inputs the Skia backend reads to build its GRContext-Vulkan.
 	public nint Instance => _vk.InstancePtr;
@@ -77,8 +78,13 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 			return;
 		}
 
-		_vk.BlitAndPresent();
-		_firstFramePresented = true;
+		var presented = _vk.BlitAndPresent();
+		_lastFramePresented = presented;
+		if (!presented && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("AndroidVulkanGraphicsContext: frame was not presented (swapchain acquire or present failed); the next frame will repaint fully");
+		}
+
 		_frameLock.Dispose();
 		_frameLock = null;
 	}
@@ -97,6 +103,5 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 		// The device is owned by UnoVulkanView and reused for the next surface; only the window-scoped
 		// swapchain/render image are released here.
 		_vk.DisposeSurfaceResources();
-		_firstFramePresented = false;
 	}
 }
