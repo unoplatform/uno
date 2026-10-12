@@ -29,6 +29,7 @@ internal sealed class AppCommandHandler
 	{
 		["start"] = "uno_app_start",
 		["close"] = "uno_app_close",
+		["restart"] = "uno_app_restart",
 		["info"] = "uno_app_get_runtime_info",
 		["hot-reload-status"] = "uno_app_hot_reload_status",
 		["screenshot"] = "uno_app_get_screenshot",
