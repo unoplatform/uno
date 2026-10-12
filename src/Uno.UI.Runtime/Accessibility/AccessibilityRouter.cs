@@ -21,17 +21,25 @@ namespace Uno.UI.Runtime;
 /// Registration slots claimed by this router:
 ///   * AutomationPeer.AutomationPeerListener
 ///   * AccessibilityAnnouncer.AccessibilityImpl
-///   * UIElementAccessibilityHelper.ExternalOnChildAdded / ExternalOnChildRemoved
+///   * UIElementAccessibilityHelper.ExternalOnChildAdded / ExternalOnChildRemoved / ExternalOnTextControlStateChanged
 ///   * VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged
+///     (these once a bridge is enabled, see <see cref="EnsureTreeNotifications"/>)
 ///
 /// Per-window instances MUST NOT write to these slots directly; they receive
 /// fan-out calls via the <c>Route*</c> methods on <see cref="SkiaAccessibilityBase"/>.
 /// </remarks>
 internal static class AccessibilityRouter
 {
-	private static IAccessibilityOwner? _activeOwner;
-	private static bool _initialized;
+	private static volatile IAccessibilityOwner? _activeOwner;
+	private static volatile bool _initialized;
+	private static volatile bool _anyBridgeEnabled;
 	private static readonly object _gate = new();
+
+	/// <summary>
+	/// Whether any window's bridge has been enabled since startup. Sticky: until then no bridge can consume a
+	/// signal, so the router drops it before resolving the owning window.
+	/// </summary>
+	internal static bool IsAnyBridgeEnabled => _anyBridgeEnabled;
 
 	/// <summary>
 	/// Claims the framework's single-slot accessibility registrations and
@@ -53,14 +61,23 @@ internal static class AccessibilityRouter
 			}
 
 			AccessibilityAnnouncer.AccessibilityImpl = new RouterAnnouncerShim();
-			UIElementAccessibilityHelper.ExternalOnChildAdded = OnChildAdded;
-			UIElementAccessibilityHelper.ExternalOnChildRemoved = OnChildRemoved;
-			UIElementAccessibilityHelper.ExternalOnTextControlStateChanged = OnTextControlStateChanged;
-			VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = OnVisualOffsetOrSizeChanged;
 			AutomationPeer.AutomationPeerListener = new RouterAutomationPeerListener();
 
 			_initialized = true;
 		}
+	}
+
+	/// <summary>
+	/// Starts routing visual tree changes, which costs every layout pass a lookup. A bridge calls this once it is
+	/// enabled: it builds its tree from scratch then, so the changes it missed don't matter.
+	/// </summary>
+	public static void EnsureTreeNotifications()
+	{
+		_anyBridgeEnabled = true;
+		UIElementAccessibilityHelper.ExternalOnChildAdded = OnChildAdded;
+		UIElementAccessibilityHelper.ExternalOnChildRemoved = OnChildRemoved;
+		UIElementAccessibilityHelper.ExternalOnTextControlStateChanged = OnTextControlStateChanged;
+		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = OnVisualOffsetOrSizeChanged;
 	}
 
 	/// <summary>Updates the sticky active-owner reference.</summary>
@@ -68,13 +85,18 @@ internal static class AccessibilityRouter
 	/// Called by wrappers on platform activation signals:
 	///   * Win32: WM_ACTIVATE with WA_ACTIVE or WA_CLICKACTIVE.
 	///   * macOS: NSWindowDidBecomeMainNotification.
+	///   * Android: Activity resume/window-focus activation.
+	///   * iOS: Window/controller activation.
 	/// Never called on deactivation; the last-active owner is retained so
 	/// source-less announcements that arrive while the app is inactive
 	/// still have a target when the user returns.
 	/// </remarks>
 	public static void SetActive(IAccessibilityOwner owner)
 	{
-		_activeOwner = owner;
+		lock (_gate)
+		{
+			_activeOwner = owner;
+		}
 	}
 
 	/// <summary>
@@ -84,9 +106,12 @@ internal static class AccessibilityRouter
 	/// </summary>
 	public static void NotifyDisposed(IAccessibilityOwner owner)
 	{
-		if (ReferenceEquals(_activeOwner, owner))
+		lock (_gate)
 		{
-			_activeOwner = FindAnyLiveOwner();
+			if (ReferenceEquals(_activeOwner, owner))
+			{
+				_activeOwner = FindAnyLiveOwner(owner);
+			}
 		}
 	}
 
@@ -97,7 +122,10 @@ internal static class AccessibilityRouter
 	/// <summary>Resolves an automation peer to its owning window's instance, or null.</summary>
 	public static SkiaAccessibilityBase? Resolve(AutomationPeer peer)
 	{
-		if (!SkiaAccessibilityBase.TryGetPeerOwner(peer, out var element))
+		var providerPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
+		if (!SkiaAccessibilityBase.TryGetPeerOwner(providerPeer, peer, out var element) &&
+			(providerPeer is ItemAutomationPeer ||
+				!providerPeer.TryGetProviderOwner(out element)))
 		{
 			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Trace))
 			{
@@ -113,7 +141,16 @@ internal static class AccessibilityRouter
 	/// <summary>Resolves a UIElement to its owning window's instance, or null.</summary>
 	public static SkiaAccessibilityBase? Resolve(UIElement element)
 	{
-		if (element.XamlRoot is not { } xamlRoot)
+		var current = element;
+		var xamlRoot = current.XamlRoot;
+		while (xamlRoot is null &&
+			current.GetUIElementAdjustedParentInternal() is { } adjustedParent)
+		{
+			current = adjustedParent;
+			xamlRoot = current.XamlRoot;
+		}
+
+		if (xamlRoot is null)
 		{
 			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Trace))
 			{
@@ -135,11 +172,12 @@ internal static class AccessibilityRouter
 	public static SkiaAccessibilityBase? TryGetActive()
 		=> _activeOwner?.Accessibility;
 
-	internal static IAccessibilityOwner? FindAnyLiveOwner()
+	internal static IAccessibilityOwner? FindAnyLiveOwner(IAccessibilityOwner? excludedOwner = null)
 	{
 		foreach (var pair in XamlRootMap.Enumerate())
 		{
 			if (pair.Value is IAccessibilityOwner { Accessibility: { } accessibility } owner &&
+				!ReferenceEquals(owner, excludedOwner) &&
 				accessibility.IsAccessibilityEnabled)
 			{
 				return owner;
@@ -174,31 +212,80 @@ internal static class AccessibilityRouter
 	//  Fan-out shims — automation peer listener / announcer
 	// ────────────────────────────────────────────────────────────────
 
+	// Every bridge ignores a signal while disabled and rebuilds its tree when enabled, so a signal is dropped before
+	// the owner lookup until one is.
 	private sealed class RouterAutomationPeerListener : IAutomationPeerListener
 	{
 		public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty property, object oldValue, object newValue)
-			=> Resolve(peer)?.NotifyPropertyChangedEvent(peer, property, oldValue, newValue);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyPropertyChangedEvent(peer, property, oldValue, newValue);
+			}
+		}
 
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
-			=> Resolve(peer)?.NotifyAutomationEvent(peer, eventId);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyAutomationEvent(peer, eventId);
+			}
+		}
+
+		public void NotifyAccessibilityViewChanged(
+			UIElement element,
+			AccessibilityView oldValue,
+			AccessibilityView newValue)
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(element)?.NotifyAccessibilityViewChanged(element, oldValue, newValue);
+			}
+		}
 
 		public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child)
-			=> Resolve(peer)?.NotifyStructureChangedEvent(peer, structureChangeType, child);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyStructureChangedEvent(peer, structureChangeType, child);
+			}
+		}
 
 		public void NotifyInvalidatePeer(AutomationPeer peer)
-			=> Resolve(peer)?.NotifyInvalidatePeer(peer);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyInvalidatePeer(peer);
+			}
+		}
 
 		public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind kind, AutomationNotificationProcessing processing, string displayString, string activityId)
-			=> Resolve(peer)?.NotifyNotificationEvent(peer, kind, processing, displayString, activityId);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyNotificationEvent(peer, kind, processing, displayString, activityId);
+			}
+		}
 
 		public void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
-			=> Resolve(peer)?.NotifyTextEditTextChangedEvent(peer, changeType, changedData);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyTextEditTextChangedEvent(peer, changeType, changedData);
+			}
+		}
 
+		// Asked on every TextBlock text change, so it must not allocate.
 		public bool ListenerExistsHelper(AutomationEvents eventId)
 		{
-			foreach (var pair in XamlRootMap.Enumerate())
+			if (!_anyBridgeEnabled)
 			{
-				if (pair.Value is IAccessibilityOwner { Accessibility: { } accessibility }
+				return false;
+			}
+
+			foreach (var host in XamlRootMap.Hosts)
+			{
+				if (host is IAccessibilityOwner { Accessibility: { } accessibility }
 					&& accessibility.ListenerExistsHelper(eventId))
 				{
 					return true;
@@ -227,7 +314,7 @@ internal static class AccessibilityRouter
 			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Debug))
 			{
 				typeof(AccessibilityRouter).Log().Debug(
-					$"[A11y] Source-less polite announcement dropped — no active accessibility owner (FR-008). Text=\"{text}\"");
+					"[A11y] Source-less polite announcement dropped because no accessibility owner is active.");
 			}
 		}
 
@@ -242,7 +329,7 @@ internal static class AccessibilityRouter
 			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Debug))
 			{
 				typeof(AccessibilityRouter).Log().Debug(
-					$"[A11y] Source-less assertive announcement dropped — no active accessibility owner (FR-008). Text=\"{text}\"");
+					"[A11y] Source-less assertive announcement dropped because no accessibility owner is active.");
 			}
 		}
 	}

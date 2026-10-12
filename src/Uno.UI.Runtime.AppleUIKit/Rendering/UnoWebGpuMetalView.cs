@@ -23,6 +23,27 @@ internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
 	private readonly float _scale;
 	private Thread? _renderThread;
 
+	// VoiceOver, Switch Control and XCTest read the accessibility elements through these; the first read builds them.
+	[Export("accessibilityElements")]
+	public NSObject[]? GetAccessibilityElements() => _owner?.GetAccessibilityElements();
+
+	[Export("automationElements")]
+	public NSObject[]? GetAutomationElements() => _owner?.GetAccessibilityElements();
+
+	[Export("accessibilityElementCount")]
+	public nint GetAccessibilityElementCount() => _owner?.GetAccessibilityElementCount() ?? 0;
+
+	[Export("accessibilityElementAtIndex:")]
+	public NSObject? GetAccessibilityElementAt(nint index) => _owner?.GetAccessibilityElementAt(index);
+
+	[Export("indexOfAccessibilityElement:")]
+	public nint GetIndexOfAccessibilityElement(NSObject? element)
+		=> _owner?.GetIndexOfAccessibilityElement(element) ?? NSRange.NotFound;
+
+	[Export("accessibilityHitTest:withEvent:")]
+	public NSObject? AccessibilityHitTest(CGPoint point, UIEvent? uievent)
+		=> _owner?.AccessibilityHitTest(point);
+
 	[Export("layerClass")]
 	public static Class LayerClass() => new Class(typeof(CAMetalLayer));
 

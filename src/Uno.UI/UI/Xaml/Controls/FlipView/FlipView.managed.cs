@@ -170,7 +170,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				strAutomationName = AutomationProperties.GetName(m_tpPreviousButtonHorizontalPart);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS);
 					AutomationProperties.SetName(m_tpPreviousButtonHorizontalPart, strAutomationName);
@@ -188,7 +188,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				strAutomationName = AutomationProperties.GetName(m_tpNextButtonHorizontalPart);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_NEXT);
 					AutomationProperties.SetName(m_tpNextButtonHorizontalPart, strAutomationName);
@@ -207,7 +207,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				strAutomationName = AutomationProperties.GetName(m_tpPreviousButtonVerticalPart);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS);
 					AutomationProperties.SetName(m_tpPreviousButtonVerticalPart, strAutomationName);
@@ -225,7 +225,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				strAutomationName = AutomationProperties.GetName(m_tpNextButtonVerticalPart);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_NEXT);
 					AutomationProperties.SetName(m_tpNextButtonVerticalPart, strAutomationName);

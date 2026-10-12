@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -58,7 +59,9 @@ namespace SamplesApp.UITests.Extensions
 #if IS_RUNTIME_UI_TESTS
 			return null;
 #else
-			var byte64Image = app.InvokeGeneric("browser:SampleRunner|GetScreenshot", "0")?.ToString();
+			var byte64Image = GetInAppScreenshotData(
+				() => app.InvokeGeneric("browser:SampleRunner|GetScreenshot", "0")?.ToString(),
+				TimeSpan.FromSeconds(15));
 
 			var array = Convert.FromBase64String(byte64Image);
 
@@ -72,5 +75,33 @@ namespace SamplesApp.UITests.Extensions
 			return new(finalPath);
 #endif
 		}
+
+#if !IS_RUNTIME_UI_TESTS
+		internal static string GetInAppScreenshotData(Func<string> getScreenshot, TimeSpan timeout)
+		{
+			var elapsed = Stopwatch.StartNew();
+			while (true)
+			{
+				// WaitFor swallows predicate exceptions; a failed capture must not start another request.
+				var response = getScreenshot();
+				if (response != "pending")
+				{
+					if (string.IsNullOrEmpty(response))
+					{
+						throw new InvalidOperationException("The screenshot bridge returned no capture result.");
+					}
+
+					return response;
+				}
+
+				if (elapsed.Elapsed >= timeout)
+				{
+					throw new TimeoutException("The screenshot bridge did not complete within the polling timeout.");
+				}
+
+				Thread.Sleep(50);
+			}
+		}
+#endif
 	}
 }
