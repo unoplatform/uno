@@ -47,9 +47,10 @@ internal class Program
 			WriteCommand("app wait [--timeoutSeconds 120] [--ready]", "Wait until an app is connected, and with --ready until its Hot Reload is Ready; exit code 1 on timeout");
 			WriteCommand("app find --automationId <id> [--waitForMs <ms>]", "Find elements; exit code 1 when nothing matched");
 			WriteCommand("app assert <find options> [--state tok,..] [--absent] [--count N]", "Find with a verdict: every match has the state tokens (!tok = must not), or nothing matched; exit code 1 on fail");
-			WriteCommand("app hot-reload-status --file <path> --waitForMs <ms>", "Report whether Hot Reload applied a saved edit (saving triggers it); exit code 1 when not applied, 3 when a rude edit needs a start");
+			WriteCommand("app hot-reload-status --file <path> --waitForMs <ms>", "Report whether Hot Reload applied a saved edit (saving triggers it); exit code 1 when not applied, 3 when a rude edit needs a restart");
+			WriteCommand("app restart [--connectionTimeoutSeconds <s>]", "Restart the app with the last start's arguments (after a rude edit)");
 			WriteCommand("app screenshot --fileType png [--out <file>]", "Save a screenshot of the app window");
-			WriteCommand("app <verb|tool> [--param value]... [--json] [--out <file>] [--no-start]", "Verbs: start, close, info, wait, hot-reload-status, screenshot, tree, find, assert, invoke, action, click, key, type, datacontext, memory, diag. On an App MCP whose element tools take only elementRef, --name is resolved through the tree");
+			WriteCommand("app <verb|tool> [--param value]... [--json] [--out <file>] [--no-start]", "Verbs: start, close, restart, info, wait, hot-reload-status, screenshot, tree, find, assert, invoke, action, click, key, type, datacontext, memory, diag. On an App MCP whose element tools take only elementRef, --name is resolved through the tree");
 			WriteOption("--no-start", "Do not start a DevServer when none runs for the solution: exit code 2 instead (for hooks and scripts)");
 			WriteOption("Exit codes", "0 ok; 1 the tool reported an error, find matched nothing, or the edit is not applied; 2 bad arguments, no DevServer with --no-start, or tool not offered; 3 rude edit");
 			Console.WriteLine();
