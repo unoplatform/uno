@@ -188,9 +188,9 @@ public class Given_Compositor
 		var raw = TimeSpan.TicksPerSecond;
 		for (var i = 0; i < stamps.Length; i++)
 		{
-			// 60Hz, then a hitch slow enough to flip the median yet short of the idle-gap rejection at four
-			// periods, then 60Hz again.
-			raw += i is >= 60 and < 80 ? 58 * TimeSpan.TicksPerMillisecond : Vsync;
+			// 60Hz, then a hitch slow enough to flip the median yet under both gap rejections (the 50ms cap
+			// and four periods), then 60Hz again.
+			raw += i is >= 60 and < 80 ? 48 * TimeSpan.TicksPerMillisecond : Vsync;
 			stamps[i] = clock.NextTimestamp(raw);
 		}
 
