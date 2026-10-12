@@ -688,7 +688,7 @@ public partial class Given_Parser
 
 		test.ExpectedDiagnostics.Add(
 			DiagnosticResult.CompilerError("UXAML0001")
-				.WithSpan("//Project/0/MainPage.xaml", 5, 4, 5, 4)
+				.WithSpan("//Project/0/MainPage.xaml", 5, 9, 5, 9)
 				.WithArguments("The type '{using:Removed.Namespace}MissingOwner' could not be found"));
 
 		await test.RunAsync();
