@@ -215,7 +215,6 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 		_program = 0;
 		_texture = 0;
 		_glInitialized = false;
-		_firstFramePresented = false;
 
 		_quadBuffer?.Dispose();
 		_quadBuffer = null;
