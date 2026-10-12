@@ -36,10 +36,18 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 	private int _width, _height;
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private readonly ApplicationActivity _activity;
+	private readonly ChoreographerFramePacer _framePacer;
 
 	public UnoWebGpuView(ApplicationActivity activity) : base(activity)
 	{
 		_activity = activity;
+
+		// Frames start on vsync, and the vsync time travels with the request to the render thread.
+		_framePacer = new ChoreographerFramePacer(() =>
+		{
+			_renderRequested = true;
+			_renderEvent.Set();
+		});
 
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
@@ -57,8 +65,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 
 	public void InvalidateRender()
 	{
-		_renderRequested = true;
-		_renderEvent.Set();
+		_framePacer.RequestFrame();
 	}
 
 	protected override void OnSizeChanged(int width, int height, int oldWidth, int oldHeight)
@@ -152,7 +159,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		{
 			while (_surfaceReady && !_disposed && ReferenceEquals(Volatile.Read(ref _renderThread), Thread.CurrentThread))
 			{
-				_renderEvent.Wait(TimeSpan.FromMilliseconds(100));
+				_renderEvent.Wait();
 				_renderEvent.Reset();
 
 				if (!_surfaceReady || _disposed || !_renderRequested)
@@ -229,7 +236,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		try
 		{
 			compositionTarget.Renderer = session.Renderer!;
-			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
+			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context, vsyncTimestamp: _framePacer.TakeVsyncTimestamp());
 
 			if (_activity.NativeLayerHost is { } nativeLayerHost)
 			{
@@ -377,6 +384,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 			return;
 		}
 
+		_framePacer.Dispose();
 		_renderEvent.Dispose();
 	}
 
