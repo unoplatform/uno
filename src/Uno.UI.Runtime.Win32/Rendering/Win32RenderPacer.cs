@@ -60,8 +60,6 @@ internal sealed class Win32RenderPacer : IDisposable
 	/// <returns>The <see cref="Stopwatch"/> time of the vsync the frame starts on, or null when frames aren't on vsync.</returns>
 	public long? BeginFrame()
 	{
-		_framePacer.OnFrameStart();
-
 		var now = Stopwatch.GetTimestamp();
 		if (now < _vsyncRetryTimestamp || !Win32Vsync.TryGetLatestVsync(now, out var vsync, out var period))
 		{
@@ -75,6 +73,12 @@ internal sealed class Win32RenderPacer : IDisposable
 
 		return _frameVsync != 0 ? _frameVsync : null;
 	}
+
+	/// <summary>
+	/// Call as a frame is about to be presented: only those move the timer's deadline, or a tick with nothing to
+	/// present would push the next real frame back by an extra interval.
+	/// </summary>
+	public void OnFramePresenting() => _framePacer.OnFrameStart();
 
 	/// <summary>
 	/// Blocks until the next frame is due: the vsync after the one this frame started on (or the matching later one

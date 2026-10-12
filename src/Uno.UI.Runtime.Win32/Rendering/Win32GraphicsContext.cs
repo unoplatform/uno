@@ -209,6 +209,8 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PresentRepo
 		}
 		_frameAcquired = false;
 
+		_pacer?.OnFramePresenting();
+
 		_retained.BlitToDefault();
 
 		var success = PInvoke.SwapBuffers(_hdc);
@@ -380,6 +382,8 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PresentRe
 			return;
 		}
 		_frameAcquired = false;
+
+		_pacer.OnFramePresenting();
 
 		var paintDc = PInvoke.GetDC(_hwnd);
 		if (paintDc == new HDC(IntPtr.Zero))

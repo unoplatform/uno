@@ -99,6 +99,8 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 			return;
 		}
 
+		_pacer.OnFramePresenting();
+
 		if (_skipPresent)
 		{
 			_skipPresent = false;
