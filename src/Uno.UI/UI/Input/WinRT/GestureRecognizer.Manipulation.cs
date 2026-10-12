@@ -97,6 +97,12 @@ namespace Windows.UI.Input
 			/// </summary>
 			public InertiaProcessor? Inertia => _inertia;
 
+			/// <summary>
+			/// Timestamp (in microseconds) of the pointer samples behind the update being raised.
+			/// This is input time, unlike a clock read taken while dispatching the event on the UI thread.
+			/// </summary>
+			internal ulong CurrentTimestampInMicroseconds => _head.Timestamp;
+
 			public GestureSettings Settings => _settings;
 			public bool IsTranslateXEnabled => _isTranslateXEnabled;
 			public bool IsTranslateYEnabled => _isTranslateYEnabled;
@@ -426,6 +432,7 @@ namespace Windows.UI.Input
 						break;
 
 					case ManipulationStatus.Started when pointerAdded:
+					case ManipulationStatus.Started when _recognizer.ReportsUnquantizedDeltas:
 					case ManipulationStatus.Started when changeSet.Delta.IsSignificant(_deltaThresholds):
 					case ManipulationStatus.Inertia: // No IsSignificant check for inertia, we prefer smooth animations!
 						CommitChanges(changeSet);

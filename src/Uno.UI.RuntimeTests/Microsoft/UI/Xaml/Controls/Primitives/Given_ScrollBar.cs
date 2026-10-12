@@ -13,6 +13,7 @@ using Uno.UI.DevTools.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 
@@ -185,8 +186,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		// once an axis overflows, so the opt-in has to hold for a bar which appears after everything else.
 		[DataRow(ScrollBarVisibility.Visible)]
 		[DataRow(ScrollBarVisibility.Auto)]
-#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_SCROLL_PRESENTER
-		[Ignore("This test only applies to the managed scroll presenter and requires the input injector.")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Touch_Drags_ScrollViewer_Thumb_Then_Scrolls(ScrollBarVisibility verticalScrollBarVisibility)
 		{
@@ -233,8 +234,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		// once an axis overflows, so the opt-in has to hold for a bar which appears after everything else.
 		[DataRow(ScrollBarVisibility.Visible)]
 		[DataRow(ScrollBarVisibility.Auto)]
-#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_SCROLL_PRESENTER
-		[Ignore("This test only applies to the managed scroll presenter and requires the input injector.")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Touch_Panned_Then_Thumb_Is_Still_Draggable(ScrollBarVisibility verticalScrollBarVisibility)
 		{
@@ -303,8 +304,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 		[TestMethod]
-#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_SCROLL_PRESENTER
-		[Ignore("This test only applies to the managed scroll presenter and requires the input injector.")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Reloaded_Then_Touch_Thumb_Drag_Survives()
 		{

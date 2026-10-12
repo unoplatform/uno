@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -282,7 +283,7 @@ public partial class Given_DependencyProperty_PropMethodCall
 			var control = (PropMethodCallTestControl)instance;
 			if (isGet)
 			{
-				return Boxes.Box(control._testBool);
+				return Boxer.Box(control._testBool);
 			}
 
 			var newValue = (bool)valueToSet!;

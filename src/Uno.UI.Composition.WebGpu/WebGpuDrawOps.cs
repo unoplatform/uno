@@ -168,6 +168,10 @@ internal sealed class WebGpuGeometryCache
 	public long SitesFrame;
 	public long ContentKey;
 	public long IdleSince;
+	// Its bags were handed back to free atlas room; the next replay rebuilds it. See WebGpuFrame.EvictAtlasHolders.
+	public bool Evicted;
+	// Built while the atlas had no room, so some of its fills fell back to geometry: rebuilt once an eviction ran.
+	public long StarvedBeforeEviction = -1;
 	// The command list this was built from, kept for the equality check that guards against a hash collision.
 	public List<WebGpuCommand> Src;
 }

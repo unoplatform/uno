@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI;
 using Windows.UI;
 using Uno.UI.Samples.Controls;
 

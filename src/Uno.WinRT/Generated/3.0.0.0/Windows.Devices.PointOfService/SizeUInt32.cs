@@ -6,7 +6,7 @@ namespace Windows.Devices.PointOfService
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct SizeUInt32
+	public partial struct SizeUInt32 : global::System.IEquatable<global::Windows.Devices.PointOfService.SizeUInt32>
 	{
 		// Forced skipping of method Windows.Devices.PointOfService.SizeUInt32.SizeUInt32()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,32 @@ namespace Windows.Devices.PointOfService
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.SizeUInt32.SizeUInt32(uint, uint)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(SizeUInt32 x, SizeUInt32 y)
+			=> x.Width == y.Width
+			&& x.Height == y.Height;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(SizeUInt32 x, SizeUInt32 y)
+			=> !(x.Width == y.Width
+				&& x.Height == y.Height);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(SizeUInt32 other)
+			=> Width == other.Width
+			&& Height == other.Height;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is SizeUInt32 that
+			&& Width == that.Width
+			&& Height == that.Height;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> Width.GetHashCode()
+			^ Height.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Width;
 #endif

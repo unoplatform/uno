@@ -11,6 +11,7 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 #if !WINAPPSDK
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Islands;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
@@ -106,6 +107,46 @@ public class Given_Window
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24679")]
+	public async Task When_Secondary_Window_Closed_Then_Initial_Window_Visible()
+	{
+		AssertSupportsMultipleWindows();
+
+		var initialWindow = TestServices.WindowHelper.CurrentTestWindow;
+		var sut = new Window();
+
+		var activated = false;
+		sut.Activated += (s, e) => activated = true;
+		sut.Activate();
+		await TestServices.WindowHelper.WaitFor(() => activated);
+
+		sut.Close();
+
+		// On iOS, closing the scene that was in front must not leave the app without a foreground scene.
+		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible, timeoutMS: 15000);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24679")]
+	public async Task When_Secondary_Window_Closed_Before_Shown_Then_Initial_Window_Visible()
+	{
+		AssertSupportsMultipleWindows();
+
+		var initialWindow = TestServices.WindowHelper.CurrentTestWindow;
+		var sut = new Window();
+
+		sut.Activate();
+		sut.Close();
+
+		// On iOS the scene requested by Activate still connects after the close and gets discarded,
+		// which must not take the app's foreground scene with it.
+		await Task.Delay(TimeSpan.FromSeconds(2));
+		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible, timeoutMS: 15000);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	[RequiresFullWindow]
 	public async Task When_Secondary_Window_No_Background_Light_Dark()
 	{
@@ -164,7 +205,6 @@ public class Given_Window
 
 		await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
 
-		// Verify that center of window is red
 		var rootElement = sut.Content.XamlRoot.VisualTree.RootElement;
 		Assert.IsInstanceOfType(rootElement, typeof(Panel));
 		var rootElementAsPanel = (Panel)rootElement;
@@ -173,6 +213,85 @@ public class Given_Window
 		var rootElementBackgroundAsSolidColorBrush = (SolidColorBrush)rootElementBackground;
 		Assert.AreEqual(expectedColor, rootElementBackgroundAsSolidColorBrush.Color);
 	}
+
+#if __SKIA__
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24189")]
+	public async Task When_Transparent_Background_Then_Root_Keeps_Its_Brush()
+	{
+		var content = new Border { Width = 100, Height = 100 };
+		TestServices.WindowHelper.WindowContent = content;
+		await TestServices.WindowHelper.WaitForLoaded(content);
+
+		var root = (XamlIslandRoot)content.XamlRoot.VisualTree.RootElement;
+		var background = root.Background;
+		var previousMode = root.BackdropBackground;
+
+		Assert.IsInstanceOfType(background, typeof(SolidColorBrush));
+
+		try
+		{
+			root.SetBackdropBackground(BackdropBackgroundMode.Transparent);
+
+			// Only the rendered primitive changes - the property keeps its theme brush, so a later
+			// theme change still resolves against it.
+			Assert.IsTrue(root.HasTransparentBackground);
+			Assert.AreSame(background, root.Background);
+
+			root.SetBackdropBackground(BackdropBackgroundMode.Fallback);
+
+			Assert.IsFalse(root.HasTransparentBackground);
+			Assert.AreSame(background, root.Background);
+
+			root.SetBackdropBackground(BackdropBackgroundMode.None);
+
+			Assert.AreSame(background, root.Background);
+		}
+		finally
+		{
+			root.SetBackdropBackground(previousMode);
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24189")]
+	public async Task When_SystemBackdrop_Set_Then_Content_Background_Is_Untouched()
+	{
+		var red = new SolidColorBrush(Colors.Red);
+		var content = new Grid { Background = red, Width = 100, Height = 100 };
+		TestServices.WindowHelper.WindowContent = content;
+		await TestServices.WindowHelper.WaitForLoaded(content);
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var previousBackdrop = window.SystemBackdrop;
+
+		try
+		{
+			window.SystemBackdrop = new MicaBackdrop();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// WinUI leaves app content alone when a backdrop is applied, so an opaque page keeps
+			// hiding the material rather than being rewritten to transparent.
+			Assert.AreSame(red, content.Background);
+
+			window.SystemBackdrop = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreSame(red, content.Background);
+		}
+		finally
+		{
+			window.SystemBackdrop = previousBackdrop;
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+#endif
+
 #endif
 
 	[TestMethod]
@@ -244,7 +363,6 @@ public class Given_Window
 		sut.Activate();
 		await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
 
-		// Verify that center of window is red
 		var initialScreenshot = await UITestHelper.ScreenShot(sut.Content as FrameworkElement);
 
 		var color = initialScreenshot.GetPixel(initialScreenshot.Width / 2, initialScreenshot.Height / 2);

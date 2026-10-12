@@ -6,7 +6,7 @@ namespace Windows.Gaming.Input.Custom
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct GameControllerVersionInfo
+	public partial struct GameControllerVersionInfo : global::System.IEquatable<global::Windows.Gaming.Input.Custom.GameControllerVersionInfo>
 	{
 		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.GameControllerVersionInfo()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,42 @@ namespace Windows.Gaming.Input.Custom
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.GameControllerVersionInfo(ushort, ushort, ushort, ushort)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(GameControllerVersionInfo x, GameControllerVersionInfo y)
+			=> x.Major == y.Major
+			&& x.Minor == y.Minor
+			&& x.Build == y.Build
+			&& x.Revision == y.Revision;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(GameControllerVersionInfo x, GameControllerVersionInfo y)
+			=> !(x.Major == y.Major
+				&& x.Minor == y.Minor
+				&& x.Build == y.Build
+				&& x.Revision == y.Revision);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(GameControllerVersionInfo other)
+			=> Major == other.Major
+			&& Minor == other.Minor
+			&& Build == other.Build
+			&& Revision == other.Revision;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is GameControllerVersionInfo that
+			&& Major == that.Major
+			&& Minor == that.Minor
+			&& Build == that.Build
+			&& Revision == that.Revision;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> Major.GetHashCode()
+			^ Minor.GetHashCode()
+			^ Build.GetHashCode()
+			^ Revision.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ushort Major;
 #endif

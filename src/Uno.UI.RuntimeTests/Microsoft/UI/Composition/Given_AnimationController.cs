@@ -18,9 +18,8 @@ public partial class Given_AnimationController
 	// setting the controller's Progress. A single-association controller would freeze every animation
 	// except the last one registered.
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("AnimationController scrubbing is Skia-only")]
-#endif
+	// WinUI's CompositionPropertySet.TryGetScalar returns the stored value, not the animated one (reads 0).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Shared_Controller_Scrubs_All_Associated_Animations()
 	{
 		var border = new Border() { Width = 100, Height = 100 };
@@ -62,9 +61,6 @@ public partial class Given_AnimationController
 	}
 
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("AnimationController is Skia-only")]
-#endif
 	public async Task When_PlaybackRate_Is_Set_It_Round_Trips()
 	{
 		var border = new Border() { Width = 100, Height = 100 };
@@ -92,9 +88,8 @@ public partial class Given_AnimationController
 	// AnimatedVisualPlayer starts a reverse play at the end). Clock advancement itself is not asserted
 	// here because the runtime-test host does not pump continuous composition frames.
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("AnimationController is Skia-only")]
-#endif
+	// WinUI's CompositionPropertySet.TryGetScalar returns the stored value, not the animated one (reads 0).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Progress_Set_On_Running_Controller_Repositions()
 	{
 		var border = new Border() { Width = 100, Height = 100 };

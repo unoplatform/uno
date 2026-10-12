@@ -11,7 +11,7 @@
 		<AssemblyName>Uno.UI.RuntimeTests</AssemblyName>
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
 
-		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<UnoEnableImplicitXamlNamespaces>true</UnoEnableImplicitXamlNamespaces>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
@@ -72,7 +72,7 @@
 		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj" />
-		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition.Drawing\Uno.UI.Composition.Drawing.csproj" />
@@ -84,7 +84,6 @@
 
 	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">
 		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
-		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">
@@ -101,6 +100,7 @@
 		<Compile Remove="Microsoft\UI\Xaml\Controls\Given_Image.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Controls\Given_SKCanvasElement.skia.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Controls\Given_TextBlock.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Documents\Given_GlyphRunRenderer.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Media\Given_AcrylicBrush.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Media\Given_Geometry.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Media\Given_IFont_AlternativeBackend.cs" />

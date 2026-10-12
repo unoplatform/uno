@@ -30,7 +30,7 @@ namespace Windows.Networking.Connectivity
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.N)
 			{
 				// Use NetworkCallback method
-				_connectivityManager = (AndroidConnectivityManager)ContextHelper.Current.GetSystemService(Context.ConnectivityService);
+				_connectivityManager = (AndroidConnectivityManager)ContextHelper.ApplicationContext.GetSystemService(Context.ConnectivityService);
 				_networkCallbackListener = new NetworkCallbackListener();
 				_connectivityManager.RegisterDefaultNetworkCallback(_networkCallbackListener);
 			}

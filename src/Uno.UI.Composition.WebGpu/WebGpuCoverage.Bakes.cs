@@ -116,9 +116,10 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	// One atlas entry's bake, on the placement AppendAtlasQuad draws with: the fill's own origin, shifted a pixel so
-	// an edge sitting exactly on the bbox boundary still has the pixel it partly covers.
-	private void QueueEntryBake(PathCmd pf, WebGpuShapeCache.Shape shape, WebGpuPathAtlas.Slot slot, Vector2 scale)
-		=> AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, slot.W, slot.H, shape.Edges, new Vector2(slot.OriginX, slot.OriginY) - pf.Offset, scale, pf.EvenOdd);
+	// an edge sitting exactly on the bbox boundary still has the pixel it partly covers. The snap moves the outline
+	// from its own fraction onto the phase the entry is keyed at.
+	private void QueueEntryBake(PathCmd pf, WebGpuShapeCache.Shape shape, WebGpuPathAtlas.Slot slot, Vector2 scale, Vector2 snap = default)
+		=> AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, slot.W, slot.H, shape.Edges, new Vector2(slot.OriginX, slot.OriginY) - pf.Offset - snap / scale, scale, pf.EvenOdd);
 
 	// Bakes every pending batch: one accumulate pass over all its edges into a scratch accumulator covering the
 	// union of its slots, one resolve pass writing the slots into the target. Runs before a render pass begins, so

@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using Windows.Graphics.Display;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Data;

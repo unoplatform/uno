@@ -56,5 +56,18 @@
 	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'=='false'">
 		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SKCanvasElement_Simple.xaml" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SKCanvasElement_Simple.xaml.cs" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubContributions\GitHubContributions.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubContributions\GitHubContributions.xaml.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubContributions\ContributionsCanvas.cs" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubTerrain\GitHubTerrain.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubTerrain\GitHubTerrain.xaml.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubTerrain\TerrainCanvas.cs" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\ScrollableShapes\ScrollableShapes.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\ScrollableShapes\ScrollableShapes.xaml.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\ScrollableShapes\ShapesCanvas.cs" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SculpturesInWords\SculpturesInWords.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SculpturesInWords\SculpturesInWords.xaml.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SculpturesInWords\MeshCanvas.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SculpturesInWords\SculptureCanvas.cs" />
 	</ItemGroup>
 </Project>

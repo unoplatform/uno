@@ -6,7 +6,7 @@ namespace Windows.Perception.People
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct JointPose
+	public partial struct JointPose : global::System.IEquatable<global::Windows.Perception.People.JointPose>
 	{
 		// Forced skipping of method Windows.Perception.People.JointPose.JointPose()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,42 @@ namespace Windows.Perception.People
 		}
 #endif
 		// Forced skipping of method Windows.Perception.People.JointPose.JointPose(System.Numerics.Quaternion, System.Numerics.Vector3, float, Windows.Perception.People.JointPoseAccuracy)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(JointPose x, JointPose y)
+			=> x.Orientation == y.Orientation
+			&& x.Position == y.Position
+			&& x.Radius == y.Radius
+			&& x.Accuracy == y.Accuracy;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(JointPose x, JointPose y)
+			=> !(x.Orientation == y.Orientation
+				&& x.Position == y.Position
+				&& x.Radius == y.Radius
+				&& x.Accuracy == y.Accuracy);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(JointPose other)
+			=> Orientation == other.Orientation
+			&& Position == other.Position
+			&& Radius == other.Radius
+			&& Accuracy == other.Accuracy;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is JointPose that
+			&& Orientation == that.Orientation
+			&& Position == that.Position
+			&& Radius == that.Radius
+			&& Accuracy == that.Accuracy;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> Orientation.GetHashCode()
+			^ Position.GetHashCode()
+			^ Radius.GetHashCode()
+			^ Accuracy.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Quaternion Orientation;
 #endif

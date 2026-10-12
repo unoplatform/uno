@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Microsoft.UI;
 using Windows.Foundation.Collections;
 using Windows.Storage.Streams;
 using Windows.UI;
@@ -163,13 +164,11 @@ namespace Windows.ApplicationModel.DataTransfer
 		public ICollection<string> Keys
 		{
 			get => _values.Keys;
-			set => throw new InvalidOperationException("Setting Keys is not allowed.");
 		}
 
 		public ICollection<object> Values
 		{
 			get => _values.Values;
-			set => throw new InvalidOperationException("Setting Values is not allowed.");
 		}
 
 		public void Add(KeyValuePair<string, object> item) => _values.Add(item.Key, item.Value);
@@ -206,13 +205,11 @@ namespace Windows.ApplicationModel.DataTransfer
 		public int Count
 		{
 			get => _values.Count;
-			set => throw new InvalidOperationException("Setting Count is not allowed.");
 		}
 
 		public bool IsReadOnly
 		{
 			get => false;
-			set => throw new InvalidOperationException("Setting IsReadOnly is not allowed");
 		}
 
 		public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => _values.GetEnumerator();

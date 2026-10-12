@@ -9,6 +9,10 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	partial class ElementSoundPlayer
 	{
+		internal ElementSoundPlayer()
+		{
+		}
+
 		/// <summary>
 		/// Gets or sets the volume of the sounds played by the Play method.
 		/// </summary>

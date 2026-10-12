@@ -24,12 +24,12 @@ public class Given_XYFocusBubbling
 	[TestMethod]
 	public async Task VerifyXYFocusPropertyRetrieval()
 	{
-		var element = new Control();
+		var element = new PlainControl();
 
-		var elementLeft = new Control();
-		var elementRight = new Control();
-		var elementUp = new Control();
-		var elementDown = new Control();
+		var elementLeft = new PlainControl();
+		var elementRight = new PlainControl();
+		var elementUp = new PlainControl();
+		var elementDown = new PlainControl();
 
 		element.SetValue(UIElement.XYFocusLeftProperty, elementLeft);
 		element.SetValue(UIElement.XYFocusRightProperty, elementRight);
@@ -59,18 +59,18 @@ public class Given_XYFocusBubbling
 	[TestMethod]
 	public void VerifyNullWhenXYFocusPropertyRetrievalFailed()
 	{
-		var element = new Control();
+		var element = new PlainControl();
 		Assert.IsNull(GetDirectionOverride(element, null, FocusNavigationDirection.Left));
 	}
 
 	[TestMethod]
 	public async Task VerifyCorrectOverrideChosenWhenTargetElementHasOverride()
 	{
-		var element = new Control();
-		var candidate = new Control();
+		var element = new PlainControl();
+		var candidate = new PlainControl();
 		var parent = new Grid();
-		var directionOverrideOfParent = new Control();
-		var overrideElement = new Control();
+		var directionOverrideOfParent = new PlainControl();
+		var overrideElement = new PlainControl();
 
 		parent.Children.Add(element);
 
@@ -97,10 +97,10 @@ public class Given_XYFocusBubbling
 	[TestMethod]
 	public async Task VerifyCorrectOverrideChosenWhenBubbling()
 	{
-		var element = new Control();
-		var candidate = new Control();
+		var element = new PlainControl();
+		var candidate = new PlainControl();
 		var parent = new Grid();
-		var directionOverrideOfParent = new Control();
+		var directionOverrideOfParent = new PlainControl();
 
 		parent.Children.Add(element);
 
@@ -125,10 +125,10 @@ public class Given_XYFocusBubbling
 	[TestMethod]
 	public void VerifyCandidateChosenWhenDescendant()
 	{
-		var element = new Control();
-		var candidate = new Control();
+		var element = new PlainControl();
+		var candidate = new PlainControl();
 		var parent = new Grid();
-		var directionOverrideOfParent = new Control();
+		var directionOverrideOfParent = new PlainControl();
 
 		parent.Children.Add(element);
 		parent.Children.Add(candidate);
@@ -142,7 +142,7 @@ public class Given_XYFocusBubbling
 	[TestMethod]
 	public void VerifyNullWhenCandidateNull()
 	{
-		var element = new Control();
+		var element = new PlainControl();
 		Assert.IsNull(TryXYFocusBubble(element, null, null, FocusNavigationDirection.Right));
 	}
 
@@ -174,6 +174,10 @@ public class Given_XYFocusBubbling
 
 		var retrieved = GetDirectionOverride(element, null, FocusNavigationDirection.Left, true);
 		Assert.AreEqual(elementLeft, retrieved);
+	}
+
+	private sealed partial class PlainControl : Control
+	{
 	}
 }
 #endif

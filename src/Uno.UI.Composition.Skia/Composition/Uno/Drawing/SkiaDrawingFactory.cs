@@ -62,13 +62,19 @@ internal sealed class SkiaDrawingFactory :
 
 
 	// Typed present per kind: the target arrives already narrowed, so there is no cast/switch here.
-	public IPresentSession BeginPresent(IGLRenderTarget target) => PresentForGL(target);
+	public IPresentSession BeginPresent(IGLRenderTarget target, ReadOnlySpan<Rect> damage) => Damaged(PresentForGL(target), damage);
 
-	public IPresentSession BeginPresent(ISoftwareRenderTarget target) => SkiaPresentSession.ForSoftware(target, this);
+	public IPresentSession BeginPresent(ISoftwareRenderTarget target, ReadOnlySpan<Rect> damage) => Damaged(SkiaPresentSession.ForSoftware(target, this), damage);
 
-	public IPresentSession BeginPresent(IMetalRenderTarget target) => PresentForMetal(target);
+	public IPresentSession BeginPresent(IMetalRenderTarget target, ReadOnlySpan<Rect> damage) => Damaged(PresentForMetal(target), damage);
 
-	public IPresentSession BeginPresent(IVulkanRenderTarget target) => PresentForVulkan(target);
+	public IPresentSession BeginPresent(IVulkanRenderTarget target, ReadOnlySpan<Rect> damage) => Damaged(PresentForVulkan(target), damage);
+
+	private static IPresentSession Damaged(IPresentSession session, ReadOnlySpan<Rect> damage)
+	{
+		if (session is SkiaPresentSession skia) { skia.ClipToDamage(damage); }
+		return session;
+	}
 
 	// Build/reuse a GRContext-Vulkan from the host's device context and wrap the per-frame render VkImage as an
 	// SKSurface (cached, rebuilt on image/size change). ResetContext each frame because the host's external
@@ -219,6 +225,12 @@ internal sealed class SkiaDrawingFactory :
 			_glWidth = gl.Width;
 			_glHeight = gl.Height;
 		}
+
+		// A host that retains through its own framebuffer blits with raw GL calls at present, which rebinds
+		// GL_FRAMEBUFFER behind Skia's back. Skia caches GL state, so without this it keeps believing the host's
+		// framebuffer is bound and draws into the default one instead — the window then freezes on the last frame
+		// the blit legitimately copied.
+		_glContext.ResetContext();
 
 		// Straight into whatever framebuffer the host handed over; retention (so the damage region survives the
 		// host's present) is the host's business, not the backend's.

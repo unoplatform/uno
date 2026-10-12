@@ -17,12 +17,9 @@
         <StackPanel>
             <Border Height="300" />
             <TextBlock Text="Styled slider" />
-            <Slider x:Name="styledSlider" not_win:Style="{StaticResource XamlDefaultSlider}" />
+            <Slider x:Name="styledSlider" />
             <TextBlock Text="Styled slider with IsTrackerEnabled = false" />
-            <Slider
-                x:Name="styledSliderNonTracking"
-                not_win:IsTrackerEnabled="false"
-                not_win:Style="{StaticResource XamlDefaultSlider}" />
+            <Slider x:Name="styledSliderNonTracking" not_win:IsTrackerEnabled="false" />
 
             <TextBlock Text="Native slider" />
             <Slider x:Name="nativeSlider" Header="Native slider" />

@@ -15,13 +15,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 [RunsOnUIThread]
 public class Given_ShapeVisual
 {
-#if !__SKIA__
-	[Ignore]
-#endif
 	[RequiresFullWindow]
 	[RequiresScaling(1f)]
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Test times out in CI https://github.com/unoplatform/uno-private/issues/805
+	// SkiaUIKit: test times out in CI https://github.com/unoplatform/uno-private/issues/805
+	// NativeWinUI: the reference images are Uno renders (see the ShapeVisual.Paint clipping note below), and WinUI's output differs from them.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ShapeVisual_ViewBox_Shape_Combinations()
 	{
 		if (OperatingSystem.IsBrowser())

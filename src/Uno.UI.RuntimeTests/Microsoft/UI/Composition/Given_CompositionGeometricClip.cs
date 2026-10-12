@@ -10,6 +10,7 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Microsoft.UI;
 using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;

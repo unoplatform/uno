@@ -88,6 +88,28 @@ public partial class AppWindowTitleBar
 		}
 	}
 
+	/// <summary>
+	/// Gets the width of the system-reserved region of the upper-left corner of the app window.
+	/// </summary>
+	public int LeftInset { get; private set; }
+
+	/// <summary>
+	/// Gets the width of the system-reserved region of the upper-right corner of the app window.
+	/// </summary>
+	public int RightInset { get; private set; }
+
+	internal event EventHandler? InsetsChanged;
+
+	internal void SetInsets(int leftInset, int rightInset)
+	{
+		if (LeftInset != leftInset || RightInset != rightInset)
+		{
+			LeftInset = leftInset;
+			RightInset = rightInset;
+			InsetsChanged?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
 	internal RectInt32[] DragRectangles { get; private set; } = [];
 
 	/// <summary>

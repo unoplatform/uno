@@ -25,11 +25,7 @@ using Windows.UI.ViewManagement;
 using Private.Infrastructure;
 using Combinatorial.MSTest;
 
-#if HAS_UNO_WINUI || WINAPPSDK || WINUI
 using Colors = Microsoft.UI.Colors;
-#else
-using Colors = Windows.UI.Colors;
-#endif
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -703,6 +699,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(height1, height3);
 			height2.Should().BeGreaterThan(height1);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12839")]
+		public async Task When_Implicit_Style_Preserves_Default_Template()
+		{
+			var style = new Style(typeof(TextBox))
+			{
+				Setters =
+				{
+					new Setter(FrameworkElement.MarginProperty, new Thickness(8)),
+				},
+			};
+			var textBox = new TextBox { Text = "Hi" };
+			var host = new Grid
+			{
+				Children = { textBox },
+			};
+			host.Resources.Add(typeof(TextBox), style);
+
+			try
+			{
+				await UITestHelper.Load(host);
+
+				Assert.AreEqual(new Thickness(8), textBox.Margin);
+				Assert.IsNotNull(textBox.Template);
+				Assert.IsTrue(VisualTreeHelper.GetChildrenCount(textBox) > 0);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]

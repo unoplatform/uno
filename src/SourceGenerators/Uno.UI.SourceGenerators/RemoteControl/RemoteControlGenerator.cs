@@ -39,8 +39,6 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			"DefineExplicitDefaults",
 			"Platform",
 			"RuntimeIdentifier",
-			"UnoRuntimeIdentifier",
-			"UnoWinRTRuntimeIdentifier",
 			"SolutionPath",
 			"SolutionName",
 			"VSIDEResolvedNonMSBuildProjectOutputs",

@@ -129,6 +129,14 @@ public class CompositionPropertySetTests
 		{
 		}
 
+		public event EventHandler<long> FrameStarting
+		{
+			add { }
+			remove { }
+		}
+
+		public long FrameIntervalInTicks => TimeSpan.TicksPerSecond / 60;
+
 		public void TryRedirectForManipulation(PointerPoint pointerPoint, InteractionTracker tracker)
 		{
 		}

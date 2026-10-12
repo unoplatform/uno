@@ -9,6 +9,10 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class PersonPictureTemplateSettings : DependencyObject
 {
+	internal PersonPictureTemplateSettings()
+	{
+	}
+
 	public ImageBrush ActualImageBrush
 	{
 		get => (ImageBrush)GetValue(ActualImageBrushProperty);

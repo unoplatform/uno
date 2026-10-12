@@ -4,6 +4,7 @@ using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI;
 using Windows.UI;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl

@@ -58,7 +58,7 @@ namespace TestRepro
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
-							new Microsoft.UI.Xaml.ElementStub( () => 
+							new Microsoft.UI.Xaml.ElementStub(() => 
 							new global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton
 							{
 								IsParsing = true,
@@ -83,7 +83,7 @@ namespace TestRepro
 							{
 							__p1.Name = "LoadElement";
 							_LoadElementSubject.ElementInstance = __p1;
-							__p1.SetBinding(
+							global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 								global::Microsoft.UI.Xaml.ElementStub.LoadProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
@@ -140,7 +140,7 @@ namespace TestRepro
 							__nameScope.RegisterName("button1", __p1);
 							__that.button1 = __p1;
 							// FieldModifier public
-							__p1.SetBinding(
+							global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 								global::Microsoft.UI.Xaml.Controls.Button.IsEnabledProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
@@ -177,6 +177,7 @@ namespace TestRepro
 						)
 						,
 					}
+					,
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 				{
@@ -221,19 +222,19 @@ namespace TestRepro
 			this.Bindings.StopTracking();
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LoadElementSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LoadElementSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "LoadElement");
 		public global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton LoadElement
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_LoadElementSubject.ElementInstance;
 			set => _LoadElementSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _ToggleLoadSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _ToggleLoadSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "ToggleLoad");
 		public global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton ToggleLoad
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_ToggleLoadSubject.ElementInstance;
 			set => _ToggleLoadSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _button1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _button1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "button1");
 		public global::Microsoft.UI.Xaml.Controls.Button button1
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Button)_button1Subject.ElementInstance;
@@ -273,12 +274,7 @@ namespace TestRepro
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
-			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			private global::System.WeakReference _ownerReference;
-			private global::TestRepro.MainPage Owner { get => (global::TestRepro.MainPage)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
-			#else
 			private global::TestRepro.MainPage Owner { get; set; }
-			#endif
 			public MainPage_Bindings(global::TestRepro.MainPage owner)
 			{
 				Owner = owner;

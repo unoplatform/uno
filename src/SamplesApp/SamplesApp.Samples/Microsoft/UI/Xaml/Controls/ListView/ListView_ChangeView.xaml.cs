@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

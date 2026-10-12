@@ -50,7 +50,7 @@ namespace TestRepro
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
-							new Microsoft.UI.Xaml.ElementStub( () => 
+							new Microsoft.UI.Xaml.ElementStub(() => 
 							new global::Microsoft.UI.Xaml.Controls.Grid
 							{
 								IsParsing = true,
@@ -84,6 +84,7 @@ namespace TestRepro
 												)
 												,
 											}
+											,
 										}
 										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 										{
@@ -142,6 +143,7 @@ namespace TestRepro
 												)
 												,
 											}
+											,
 										}
 										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 										{
@@ -154,6 +156,7 @@ namespace TestRepro
 									)
 									,
 								}
+								,
 							}
 							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 							{
@@ -170,7 +173,7 @@ namespace TestRepro
 							{
 							__p1.Name = "outerGrid";
 							_outerGridSubject.ElementInstance = __p1;
-							__p1.SetBinding(
+							global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 								global::Microsoft.UI.Xaml.ElementStub.LoadProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
@@ -221,6 +224,7 @@ namespace TestRepro
 						)
 						,
 					}
+					,
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
@@ -271,37 +275,37 @@ namespace TestRepro
 			this.Bindings.StopTracking();
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "inner1");
 		private global::Microsoft.UI.Xaml.Controls.StackPanel inner1
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.StackPanel)_inner1Subject.ElementInstance;
 			set => _inner1Subject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "inner1Button");
 		private global::Microsoft.UI.Xaml.Controls.Button inner1Button
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Button)_inner1ButtonSubject.ElementInstance;
 			set => _inner1ButtonSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner2Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner2Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "inner2");
 		private global::Microsoft.UI.Xaml.Controls.Button inner2
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Button)_inner2Subject.ElementInstance;
 			set => _inner2Subject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "inner3");
 		private global::Microsoft.UI.Xaml.Controls.StackPanel inner3
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.StackPanel)_inner3Subject.ElementInstance;
 			set => _inner3Subject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "inner3Button");
 		private global::Microsoft.UI.Xaml.Controls.Button inner3Button
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Button)_inner3ButtonSubject.ElementInstance;
 			set => _inner3ButtonSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _outerGridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _outerGridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "outerGrid");
 		private global::Microsoft.UI.Xaml.Controls.Grid outerGrid
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Grid)_outerGridSubject.ElementInstance;
@@ -356,6 +360,7 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 						.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 						{
@@ -379,13 +384,13 @@ namespace TestRepro
 					}
 					return __rootInstance;
 				}
-				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideGridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideGridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "gridInsideGridInsideTemplate");
 				private global::Microsoft.UI.Xaml.Controls.Grid gridInsideGridInsideTemplate
 				{
 					get => (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideGridInsideTemplateSubject.ElementInstance;
 					set => _gridInsideGridInsideTemplateSubject.ElementInstance = value;
 				}
-				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "gridInsideTemplate");
 				private global::Microsoft.UI.Xaml.Controls.Grid gridInsideTemplate
 				{
 					get => (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideTemplateSubject.ElementInstance;
@@ -421,12 +426,7 @@ namespace TestRepro
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
-			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			private global::System.WeakReference _ownerReference;
-			private global::TestRepro.MainPage Owner { get => (global::TestRepro.MainPage)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
-			#else
 			private global::TestRepro.MainPage Owner { get; set; }
-			#endif
 			public MainPage_Bindings(global::TestRepro.MainPage owner)
 			{
 				Owner = owner;

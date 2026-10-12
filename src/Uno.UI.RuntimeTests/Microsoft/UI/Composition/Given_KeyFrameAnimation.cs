@@ -19,9 +19,6 @@ public partial class Given_KeyFrameAnimation
 	// fatal on macOS where the exception escapes the native draw callback.
 
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("UIElement.StartAnimation is only implemented on Skia")]
-#endif
 	public async Task When_Element_StartAnimation_With_KeyFrameAnimation()
 	{
 		var border = new Border()
@@ -32,7 +29,8 @@ public partial class Given_KeyFrameAnimation
 
 		await UITestHelper.Load(border);
 
-		var compositor = ElementCompositionPreview.GetElementVisual(border).Compositor;
+		// Not GetElementVisual(border): on WinUI that locks the element's Scale APIs, so StartAnimation would throw.
+		var compositor = Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread();
 
 		var scaleAnimation = compositor.CreateVector3KeyFrameAnimation();
 		scaleAnimation.InsertKeyFrame(1.0f, new Vector3(1.0f, 1.0f, 1.0f));
@@ -51,9 +49,6 @@ public partial class Given_KeyFrameAnimation
 	}
 
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("UIElement.StartAnimation is only implemented on Skia")]
-#endif
 	public async Task When_Element_StartAnimation_With_KeyFrameAnimation_Translation()
 	{
 		var border = new Border()
@@ -83,9 +78,6 @@ public partial class Given_KeyFrameAnimation
 	}
 
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("UIElement.StartAnimation is only implemented on Skia")]
-#endif
 	public async Task When_Element_StartAnimation_With_Implicit_Start_KeyFrame()
 	{
 		// Mirrors TeachingTip's elevation animation: a single keyframe at progress 1.0 and no explicit
@@ -116,9 +108,6 @@ public partial class Given_KeyFrameAnimation
 	}
 
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("KeyFrameAnimation evaluation is Skia-only")]
-#endif
 	public async Task When_KeyFrameAnimation_Has_No_Value_KeyFrames()
 	{
 		var border = new Border()
@@ -157,9 +146,6 @@ public partial class Given_KeyFrameAnimation
 	}
 
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("KeyFrameAnimation evaluation is Skia-only")]
-#endif
 	public async Task When_Vector3_Expression_KeyFrame_Is_Evaluated()
 	{
 		var border = new Border()
@@ -198,9 +184,6 @@ public partial class Given_KeyFrameAnimation
 	}
 
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("KeyFrameAnimation evaluation is Skia-only")]
-#endif
 	public async Task When_Vector4_Expression_KeyFrame_Is_Evaluated()
 	{
 		var border = new Border()
@@ -236,9 +219,8 @@ public partial class Given_KeyFrameAnimation
 	}
 
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("KeyFrameAnimation evaluation is Skia-only")]
-#endif
+	// WinUI rejects starting this animation on the property set with E_INVALIDARG.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Boolean_Expression_KeyFrame_Is_Evaluated()
 	{
 		var border = new Border()
@@ -274,9 +256,6 @@ public partial class Given_KeyFrameAnimation
 	}
 
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("KeyFrameAnimation evaluation is Skia-only")]
-#endif
 	public async Task When_Vector3_Expression_KeyFrame_References_This_Target()
 	{
 		var border = new Border()
@@ -312,4 +291,46 @@ public partial class Given_KeyFrameAnimation
 			TestServices.WindowHelper.WindowContent = null;
 		}
 	}
+
+#if __SKIA__
+	// An animation that runs out between two frames (a slow renderer) ends on its first evaluation. ScrollContentPresenter
+	// reads the animated AnchorPoint in Stopped to report the final scroll offset, so it must already hold the final value.
+	[TestMethod]
+	public async Task When_KeyFrameAnimation_Ends_On_First_Frame_Then_Stopped_Sees_Final_Value()
+	{
+		var border = new Border()
+		{
+			Width = 100,
+			Height = 100,
+		};
+
+		await UITestHelper.Load(border);
+
+		var compositor = ElementCompositionPreview.GetElementVisual(border).Compositor;
+		var sprite = compositor.CreateSpriteVisual();
+		ElementCompositionPreview.SetElementChildVisual(border, sprite);
+
+		var target = new Vector2(10, 20);
+		var animation = compositor.CreateVector2KeyFrameAnimation();
+		animation.InsertKeyFrame(1.0f, target);
+		animation.Duration = TimeSpan.FromTicks(1);
+
+		Vector2? valueWhenStopped = null;
+		animation.Stopped += (_, _) => valueWhenStopped = sprite.AnchorPoint;
+
+		try
+		{
+			sprite.StartAnimation(nameof(Visual.AnchorPoint), animation);
+
+			// One frame, but a software-rendered host (SwiftShader WebGPU) can take seconds to present it.
+			await TestServices.WindowHelper.WaitFor(() => valueWhenStopped is not null, timeoutMS: 30000, message: "the animation should stop on its first frame");
+			Assert.AreEqual(target, valueWhenStopped);
+		}
+		finally
+		{
+			sprite.StopAnimation(nameof(Visual.AnchorPoint));
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+#endif
 }

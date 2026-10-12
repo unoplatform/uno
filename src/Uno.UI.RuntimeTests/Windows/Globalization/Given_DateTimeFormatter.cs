@@ -219,4 +219,16 @@ public class Given_DateTimeFormatter
 
 		Assert.AreEqual("longtime", formatter.Template);
 	}
+
+	// "it-US" is well-formed BCP-47, but runtimes with strict culture data (iOS in #12423) have no culture for it.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12423")]
+	public void When_Languages_Contains_Unsupported_Culture_Should_Not_Throw()
+	{
+		var formatter = new DateTimeFormatter("longdate", new[] { "it-US", "en-US" });
+
+		Assert.IsNotNull(formatter);
+		var formatted = formatter.Format(new DateTimeOffset(2024, 1, 15, 0, 0, 0, TimeSpan.Zero));
+		Assert.IsFalse(string.IsNullOrEmpty(formatted), "Formatter should produce a non-empty string even when the preferred language is unsupported.");
+	}
 }

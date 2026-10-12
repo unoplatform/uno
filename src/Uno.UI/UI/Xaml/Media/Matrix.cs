@@ -5,7 +5,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Media
 {
-	public partial struct Matrix
+	public partial struct Matrix : IFormattable
 	{
 		internal Matrix(Matrix3x2 matrix)
 		{
@@ -34,12 +34,12 @@ namespace Microsoft.UI.Xaml.Media
 
 		public bool IsIdentity => this.Equals(Identity);
 
-		public double M11;
-		public double M12;
-		public double M21;
-		public double M22;
-		public double OffsetX;
-		public double OffsetY;
+		public double M11 { get; set; }
+		public double M12 { get; set; }
+		public double M21 { get; set; }
+		public double M22 { get; set; }
+		public double OffsetX { get; set; }
+		public double OffsetY { get; set; }
 
 		public bool Equals(Matrix value) => this == value;
 
@@ -50,7 +50,30 @@ namespace Microsoft.UI.Xaml.Media
 			=> ToMatrix3x2().GetHashCode();
 
 		public override string ToString()
-			=> $"{M11},{M12},{M21},{M22},{OffsetX},{OffsetY}";
+			=> ConvertToString(null, null);
+
+		public string ToString(IFormatProvider provider)
+			=> ConvertToString(null, provider);
+
+		string IFormattable.ToString(string format, IFormatProvider provider)
+			=> ConvertToString(format, provider);
+
+		private string ConvertToString(string format, IFormatProvider provider)
+		{
+			if (IsIdentity)
+			{
+				return "Identity";
+			}
+
+			return string.Join(
+				TokenizerHelper.GetNumericListSeparator(provider),
+				M11.ToString(format, provider),
+				M12.ToString(format, provider),
+				M21.ToString(format, provider),
+				M22.ToString(format, provider),
+				OffsetX.ToString(format, provider),
+				OffsetY.ToString(format, provider));
+		}
 
 		public Point Transform(Point point)
 		{

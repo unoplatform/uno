@@ -4,6 +4,10 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	public partial class BlockCollection : DependencyObjectCollection<Block>, IList<Block>, IEnumerable<Block>
 	{
+		internal BlockCollection()
+		{
+		}
+
 		/// <remarks>For backward compatibility</remarks>
 		public new void Add(Block block)
 		{

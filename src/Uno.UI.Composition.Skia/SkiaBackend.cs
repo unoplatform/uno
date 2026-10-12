@@ -6,23 +6,27 @@ using Uno.UI.Composition.Drawing;
 namespace Uno.UI.Composition.Skia;
 
 /// <summary>
-/// The SkiaSharp backend's bootstrap surface, invoked by reflection from the host builder (which keeps no
-/// compile-time dependency on this backend). Each factory returns a public neutral-seam instance that the
-/// framework registers through its own internal registrars, so no Drawing internal or IVT is needed here.
+/// Entry point to the SkiaSharp backend. Each factory returns the neutral seam, for an app to register on the host
+/// builder (e.g. <c>builder.FontProvider(SkiaBackend.CreateFontProvider())</c>, as a trimmed or AOT head must); the
+/// host builder's own defaults are created through the same methods, by name. The implementations stay internal.
 /// </summary>
 public static class SkiaBackend
 {
-	// Per-seam Skia defaults, each returning a public seam instance the host builder registers. Public because a
-	// trimmed or AOT head (iOS, tvOS) cannot be reached by the host builder's reflective light-up and has to
-	// register them itself; the implementations stay internal.
 	public static IFontProvider CreateFontProvider() => new SkiaFontProvider();
 
 	public static IImageEncoderDecoder CreateImageDecoder() => new SkiaImageDecoderBackend();
 
 	public static IGeometryFactory CreateGeometryFactory() => new SkiaGeometryFactory();
 
+	/// <summary>The Skottie <see cref="ILottieRenderer"/>.</summary>
+	public static ILottieRenderer CreateLottieRenderer() => new SkottieLottieRenderer();
+
 	/// <summary>The Skia graphics provider (the backend negotiation picks a context and builds its drawing factory).</summary>
-	internal static IGraphicsProvider CreateGraphicsProvider() => new SkiaGraphicsProvider();
+	public static IGraphicsProvider CreateGraphicsProvider() => new SkiaGraphicsProvider();
+
+	/// <summary>The Skia graphics provider, negotiating the given context kinds in this order (e.g.
+	/// <see cref="GraphicsContextKind.Software"/> alone forces software rendering).</summary>
+	public static IGraphicsProvider CreateGraphicsProvider(params GraphicsContextKind[] preferred) => new SkiaGraphicsProvider(preferred);
 
 	/// <summary>The neutral default renderer for heads that don't install their own (e.g. the native Skia path).</summary>
 	internal static IDrawingFactory CreateDefaultRenderer() => new SkiaDrawingFactory();

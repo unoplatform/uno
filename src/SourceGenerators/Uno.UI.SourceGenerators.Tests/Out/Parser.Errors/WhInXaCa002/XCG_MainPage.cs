@@ -171,7 +171,7 @@ namespace TestRepro
 													__that._component_1 = __p1;
 													global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Button.Sync");
 													global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "DefaultButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-													__p1.SetBinding(
+													global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 														global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 														new Microsoft.UI.Xaml.Data.Binding()
 														{
@@ -197,7 +197,7 @@ namespace TestRepro
 													__that._component_2 = __p1;
 													global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Button.Push");
 													global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "AccentButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-													__p1.SetBinding(
+													global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 														global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 														new Microsoft.UI.Xaml.Data.Binding()
 														{
@@ -211,6 +211,7 @@ namespace TestRepro
 												)
 												,
 											}
+											,
 										}
 										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 										{
@@ -222,6 +223,7 @@ namespace TestRepro
 									)
 									,
 								}
+								,
 							}
 							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 							{
@@ -287,14 +289,14 @@ namespace TestRepro
 										__nameScope.RegisterName("ActivitiesList", __p1);
 										__that.ActivitiesList = __p1;
 										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.ListView.ItemContainerStyleProperty, "DefaultListViewItemStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-										__p1.SetBinding(
+										global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 											global::Microsoft.UI.Xaml.Controls.ListView.SelectedItemProperty,
 											new Microsoft.UI.Xaml.Data.Binding()
 											{
 												Path = @"SelectedActivity",
 											}
 										);
-										__p1.SetBinding(
+										global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 											global::Microsoft.UI.Xaml.Controls.ListView.ItemsSourceProperty,
 											new Microsoft.UI.Xaml.Data.Binding()
 											{
@@ -336,7 +338,7 @@ namespace TestRepro
 															/* _isTopLevelDictionary:False */
 															__that._component_4 = __p1;
 															global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Detail.Title");
-															__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
@@ -362,7 +364,7 @@ namespace TestRepro
 															{
 															/* _isTopLevelDictionary:False */
 															__that._component_5 = __p1;
-															__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
@@ -406,7 +408,7 @@ namespace TestRepro
 															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
 															{
 															global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Detail.Duration");
-															__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																global::Microsoft.UI.Xaml.Controls.NumberBox.ValueProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
@@ -441,14 +443,14 @@ namespace TestRepro
 																		__that._component_7 = __p1;
 																		global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Detail.Button.Approve");
 																		global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "AccentButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-																		__p1.SetBinding(
+																		global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																			global::Microsoft.UI.Xaml.Controls.Button.CommandParameterProperty,
 																			new Microsoft.UI.Xaml.Data.Binding()
 																			{
 																				Path = @"SelectedActivity",
 																			}
 																		);
-																		__p1.SetBinding(
+																		global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																			global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 																			new Microsoft.UI.Xaml.Data.Binding()
 																			{
@@ -475,14 +477,14 @@ namespace TestRepro
 																		__that._component_8 = __p1;
 																		global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Detail.Button.Skip");
 																		global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "DefaultButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-																		__p1.SetBinding(
+																		global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																			global::Microsoft.UI.Xaml.Controls.Button.CommandParameterProperty,
 																			new Microsoft.UI.Xaml.Data.Binding()
 																			{
 																				Path = @"SelectedActivity",
 																			}
 																		);
-																		__p1.SetBinding(
+																		global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																			global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 																			new Microsoft.UI.Xaml.Data.Binding()
 																			{
@@ -496,6 +498,7 @@ namespace TestRepro
 																	)
 																	,
 																}
+																,
 															}
 															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 															{
@@ -506,6 +509,7 @@ namespace TestRepro
 														)
 														,
 													}
+													,
 												}
 												.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 												{
@@ -527,6 +531,7 @@ namespace TestRepro
 									)
 									,
 								}
+								,
 							}
 							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 							{
@@ -560,7 +565,7 @@ namespace TestRepro
 										__that._component_9 = __p1;
 										global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Button.LoadMore");
 										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "DefaultButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-										__p1.SetBinding(
+										global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 											global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 											new Microsoft.UI.Xaml.Data.Binding()
 											{
@@ -574,6 +579,7 @@ namespace TestRepro
 									)
 									,
 								}
+								,
 							}
 							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 							{
@@ -585,6 +591,7 @@ namespace TestRepro
 						)
 						,
 					}
+					,
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 				{
@@ -631,19 +638,19 @@ namespace TestRepro
 			this.Bindings.UpdateResources();
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _ActivitiesListSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _ActivitiesListSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "ActivitiesList");
 		private global::Microsoft.UI.Xaml.Controls.ListView ActivitiesList
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.ListView)_ActivitiesListSubject.ElementInstance;
 			set => _ActivitiesListSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _DetailPanelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _DetailPanelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "DetailPanel");
 		private global::Microsoft.UI.Xaml.Controls.Border DetailPanel
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Border)_DetailPanelSubject.ElementInstance;
 			set => _DetailPanelSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _PreviewColumnSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _PreviewColumnSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "PreviewColumn");
 		private global::Microsoft.UI.Xaml.Controls.ColumnDefinition PreviewColumn
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.ColumnDefinition)_PreviewColumnSubject.ElementInstance;
@@ -760,7 +767,7 @@ namespace TestRepro
 													.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 													{
 													global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-													__p1.SetBinding(
+													global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 														global::Microsoft.UI.Xaml.Controls.Image.SourceProperty,
 														new Microsoft.UI.Xaml.Data.Binding()
 														{
@@ -813,7 +820,7 @@ namespace TestRepro
 																				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
 																				{
 																				global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-																				__p1.SetBinding(
+																				global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																					global::Microsoft.UI.Xaml.Documents.Run.TextProperty,
 																					new Microsoft.UI.Xaml.Data.Binding()
 																					{
@@ -871,7 +878,7 @@ namespace TestRepro
 																				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
 																				{
 																				global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-																				__p1.SetBinding(
+																				global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																					global::Microsoft.UI.Xaml.Documents.Run.TextProperty,
 																					new Microsoft.UI.Xaml.Data.Binding()
 																					{
@@ -897,6 +904,7 @@ namespace TestRepro
 																)
 																,
 															}
+															,
 														}
 														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 														{
@@ -920,7 +928,7 @@ namespace TestRepro
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 														/* _isTopLevelDictionary:False */
 														__that._component_1 = __p1;
-														__p1.SetBinding(
+														global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
@@ -947,7 +955,7 @@ namespace TestRepro
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 														/* _isTopLevelDictionary:False */
 														__that._component_2 = __p1;
-														__p1.SetBinding(
+														global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
@@ -962,6 +970,7 @@ namespace TestRepro
 													)
 													,
 												}
+												,
 											}
 											.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 											{
@@ -994,7 +1003,7 @@ namespace TestRepro
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 														/* _isTopLevelDictionary:False */
 														__that._component_3 = __p1;
-														__p1.SetBinding(
+														global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
@@ -1031,7 +1040,7 @@ namespace TestRepro
 																	{
 																	global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 																	global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.NumberBox.Duration");
-																	__p1.SetBinding(
+																	global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																		global::Microsoft.UI.Xaml.Controls.NumberBox.ValueProperty,
 																		new Microsoft.UI.Xaml.Data.Binding()
 																		{
@@ -1058,16 +1067,17 @@ namespace TestRepro
 																	/* _isTopLevelDictionary:False */
 																	__that._component_4 = __p1;
 																	global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "DefaultButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-																	__p1.SetBinding(
+																	global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																		global::Microsoft.UI.Xaml.Controls.Button.CommandParameterProperty,
 																		new Microsoft.UI.Xaml.Data.Binding()
 																	);
-																	__p1.SetBinding(
+																	global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																		global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 																		new Microsoft.UI.Xaml.Data.Binding()
 																		{
 																			Path = @"EditDurationCommand",
-																			ElementName = _ActivitiesListSubject,
+																			ElementName = "ActivitiesList",
+																			ElementNameSubject = _ActivitiesListSubject,
 																		}
 																	);
 																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
@@ -1077,6 +1087,7 @@ namespace TestRepro
 																)
 																,
 															}
+															,
 														}
 														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 														{
@@ -1108,7 +1119,7 @@ namespace TestRepro
 																	{
 																	global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 																	global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Check.Export");
-																	__p1.SetBinding(
+																	global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																		global::Microsoft.UI.Xaml.Controls.CheckBox.IsCheckedProperty,
 																		new Microsoft.UI.Xaml.Data.Binding()
 																		{
@@ -1122,6 +1133,7 @@ namespace TestRepro
 																)
 																,
 															}
+															,
 														}
 														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 														{
@@ -1133,6 +1145,7 @@ namespace TestRepro
 													)
 													,
 												}
+												,
 											}
 											.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 											{
@@ -1145,6 +1158,7 @@ namespace TestRepro
 										)
 										,
 									}
+									,
 								}
 								.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 								{
@@ -1308,12 +1322,7 @@ namespace TestRepro
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
-			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			private global::System.WeakReference _ownerReference;
-			private global::TestRepro.MainPage Owner { get => (global::TestRepro.MainPage)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
-			#else
 			private global::TestRepro.MainPage Owner { get; set; }
-			#endif
 			public MainPage_Bindings(global::TestRepro.MainPage owner)
 			{
 				Owner = owner;

@@ -11,11 +11,11 @@
 
     <Grid>
         <StackPanel>
-            <Button Style="{StaticResource XamlDefaultButton}">Some implicit content</Button>
-            <Button Style="{StaticResource XamlDefaultButton}">
+            <Button>Some implicit content</Button>
+            <Button>
                 <TextBlock>Some TextBlock Implicit Content</TextBlock>
             </Button>
-            <Button Style="{StaticResource XamlDefaultButton}">
+            <Button>
                 <Button.Content>
                     Some explicit content
                 </Button.Content>

@@ -23,6 +23,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
@@ -70,9 +71,6 @@ namespace Microsoft.UI.Xaml
 			var uiElement = typeof(UIElement);
 			VisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 			Microsoft.UI.Xaml.Controls.Control.IsEnabledProperty.GetMetadata(typeof(Microsoft.UI.Xaml.Controls.Control)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-#if UNO_HAS_MANAGED_POINTERS
-			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-#endif
 		}
 
 		#region ManipulationMode (DP)
@@ -108,7 +106,7 @@ namespace Microsoft.UI.Xaml
 			nameof(CanDrag),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(default(bool), OnCanDragChanged));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnCanDragChanged));
 
 		private static void OnCanDragChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
 		{
@@ -133,7 +131,7 @@ namespace Microsoft.UI.Xaml
 			nameof(AllowDrop),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public bool AllowDrop
 		{
@@ -636,8 +634,6 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		// Not implemented for native pointers (i.e. !UNO_HAS_MANAGED_POINTERS)
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public bool CancelDirectManipulations()
 		{
 #if UNO_HAS_MANAGED_POINTERS
@@ -1458,7 +1454,7 @@ namespace Microsoft.UI.Xaml
 		#endregion
 
 		#region Pointer pressed state (Updated by the partial API OnNative***, should not be updated externaly)
-		private readonly HashSet<uint> _pressedPointers = new();
+		private HashSet<uint> _pressedPointers;
 
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState).
@@ -1471,7 +1467,7 @@ namespace Microsoft.UI.Xaml
 		/// So it means that this flag will be maintained only if you subscribe at least to one pointer event
 		/// (or override one of the OnPointer*** methods).
 		/// </remarks>
-		internal bool IsPointerPressed => _pressedPointers.Count != 0;
+		internal bool IsPointerPressed => _pressedPointers is { Count: > 0 };
 
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
@@ -1490,9 +1486,9 @@ namespace Microsoft.UI.Xaml
 		/// you will get only one 'PointerPressed' and one 'PointerReleased'.
 		/// Same thing if you release left first (press left => press right => release left => release right), and for the pen's barrel button.
 		/// </remarks>
-		internal bool IsPressed(Pointer pointer) => _pressedPointers.Contains(pointer.PointerId);
+		internal bool IsPressed(Pointer pointer) => _pressedPointers?.Contains(pointer.PointerId) ?? false;
 
-		internal bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
+		internal bool IsPressed(uint pointerId) => _pressedPointers?.Contains(pointerId) ?? false;
 
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, BubblingContext ctx)
 		{
@@ -1515,7 +1511,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (hasNotChanged is false)
 				{
-					_pressedPointers.Add(args.Pointer.PointerId);
+					(_pressedPointers ??= new()).Add(args.Pointer.PointerId);
 				}
 
 				return RaisePointerEvent(PointerPressedEvent, args, ctx);
@@ -1524,14 +1520,14 @@ namespace Microsoft.UI.Xaml
 			{
 				if (hasNotChanged is false)
 				{
-					_pressedPointers.Remove(args.Pointer.PointerId);
+					_pressedPointers?.Remove(args.Pointer.PointerId);
 				}
 
 				return RaisePointerEvent(PointerReleasedEvent, args, ctx);
 			}
 		}
 
-		private void ClearPressed() => _pressedPointers.Clear();
+		private void ClearPressed() => _pressedPointers?.Clear();
 		#endregion
 
 		#region Pointer capture state (Updated by the partial API OnNative***, should not be updated externaly)

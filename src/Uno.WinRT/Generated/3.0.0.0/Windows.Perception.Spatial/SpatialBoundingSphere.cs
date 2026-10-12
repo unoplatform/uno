@@ -6,7 +6,7 @@ namespace Windows.Perception.Spatial
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct SpatialBoundingSphere
+	public partial struct SpatialBoundingSphere : global::System.IEquatable<global::Windows.Perception.Spatial.SpatialBoundingSphere>
 	{
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingSphere.SpatialBoundingSphere()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,32 @@ namespace Windows.Perception.Spatial
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingSphere.SpatialBoundingSphere(System.Numerics.Vector3, float)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(SpatialBoundingSphere x, SpatialBoundingSphere y)
+			=> x.Center == y.Center
+			&& x.Radius == y.Radius;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(SpatialBoundingSphere x, SpatialBoundingSphere y)
+			=> !(x.Center == y.Center
+				&& x.Radius == y.Radius);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(SpatialBoundingSphere other)
+			=> Center == other.Center
+			&& Radius == other.Radius;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is SpatialBoundingSphere that
+			&& Center == that.Center
+			&& Radius == that.Radius;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> Center.GetHashCode()
+			^ Radius.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Center;
 #endif

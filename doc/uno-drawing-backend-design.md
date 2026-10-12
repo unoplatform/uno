@@ -620,10 +620,10 @@ build (null), first survivor wins. `Initialize` is shared; only the `IGraphicsCo
 **Composition-root inputs (pluggable choices, set independently):**
 
 ```csharp
-GraphicsRegistry.Register(new IGraphicsProvider[] { new SkiaGraphicsProvider() });   // renderer(s)
+GraphicsRegistry.Register(new IGraphicsProvider[] { SkiaBackend.CreateGraphicsProvider() });   // renderer(s)
 DrawingFactory.Register(new SkiaManagedGeometryDrawingFactory());                    // any path implementor = a backend
-ImageDecoder.Current = new ManagedImageDecoderBackend();                             // or Skia / platform codec
-FontProvider.Current  = new ManagedFontProvider();                                  // or Skia / CoreText / DirectWrite
+ImageDecoder.Current = ManagedBackend.CreateImageDecoder();                          // or Skia / platform codec
+FontProvider.Current  = ManagedBackend.CreateFontProvider();                         // or Skia / CoreText / DirectWrite
 ```
 
 **`Initialize`-derived outputs (never user-assigned):**

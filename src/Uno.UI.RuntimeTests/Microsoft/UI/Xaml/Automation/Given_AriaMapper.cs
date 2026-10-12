@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation

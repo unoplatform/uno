@@ -9,17 +9,17 @@ public partial class InputFocusController : global::Microsoft.UI.Input.InputObje
 
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__SKIA__")]
 	public FocusNavigationResult DepartFocus(FocusNavigationRequest request) => FocusNavigationResult.NotMoved;
 
 #pragma warning disable CS0067 // Unused members
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__SKIA__")]
 	public event TypedEventHandler<InputFocusController, FocusChangedEventArgs> GotFocus;
 
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__SKIA__")]
 	public event TypedEventHandler<InputFocusController, FocusChangedEventArgs> LostFocus;
 #pragma warning restore CS0067
 
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__SKIA__")]
 	public bool HasFocus => false;
 }

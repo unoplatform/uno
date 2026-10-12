@@ -45,7 +45,7 @@ public class Given_CompositionSpriteShape
 			Content = new Path
 			{
 				Margin = new(0, 0, -600, -600),
-				Fill = new SolidColorBrush(Windows.UI.Colors.Black),
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Black),
 				Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry),
 				"""
 					M656.5 400.5C656.5 350.637 598.572 307.493 514.292 286.708C493.507 
@@ -165,7 +165,7 @@ public class Given_CompositionSpriteShape
 			Height = 200,
 			VerticalAlignment = VerticalAlignment.Top,
 			HorizontalAlignment = HorizontalAlignment.Left,
-			Fill = new SolidColorBrush(Windows.UI.Colors.Black)
+			Fill = new SolidColorBrush(Microsoft.UI.Colors.Black)
 		};
 
 		await RenderPath(new CompositionPath(CanvasGeometry.CreateCircle(CanvasDevice.GetSharedDevice(), new(100, 100), 100)), expected);
@@ -183,7 +183,7 @@ public class Given_CompositionSpriteShape
 			RadiusY = 16,
 			VerticalAlignment = VerticalAlignment.Top,
 			HorizontalAlignment = HorizontalAlignment.Left,
-			Fill = new SolidColorBrush(Windows.UI.Colors.Black)
+			Fill = new SolidColorBrush(Microsoft.UI.Colors.Black)
 		};
 
 		await RenderPath(new CompositionPath(CanvasGeometry.CreateRoundedRectangle(CanvasDevice.GetSharedDevice(), new(0, 0, 200, 200), 16, 16)), expected);
@@ -203,7 +203,7 @@ public class Given_CompositionSpriteShape
 			Height = 200,
 			VerticalAlignment = VerticalAlignment.Top,
 			HorizontalAlignment = HorizontalAlignment.Left,
-			Fill = new SolidColorBrush(Windows.UI.Colors.Black),
+			Fill = new SolidColorBrush(Microsoft.UI.Colors.Black),
 			Points = pointCollection
 		};
 
@@ -475,7 +475,7 @@ public class Given_CompositionSpriteShape
 			shape.Offset = offset.Value;
 		}
 
-		shape.FillBrush = compositor.CreateColorBrush(color ?? Windows.UI.Colors.Black);
+		shape.FillBrush = compositor.CreateColorBrush(color ?? Microsoft.UI.Colors.Black);
 
 		visual.Shapes.Add(shape);
 		visual.Size = new((float)expected.Width, (float)expected.Height);

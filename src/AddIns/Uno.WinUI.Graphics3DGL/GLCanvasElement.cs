@@ -58,6 +58,10 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	// Rate-limits the pending-GL-error warning in Render to once per element.
 	private bool _warnedPendingGlError;
 
+	// Set when Loaded ran before this element had been arranged, so there was no size to build a
+	// framebuffer from. UpdateFramebuffer resumes initialization once layout provides one.
+	private bool _initializationDeferred;
+
 	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
 	// These are valid if and only if IsLoaded and _nativeOpenGlWrapper is not null
@@ -339,29 +343,58 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 				return;
 			}
 
-			try
+			if (_details is null)
 			{
-				// Bind the element's offscreen framebuffer before Init so initialization runs against
-				// the same valid draw framebuffer used while rendering. FrameBufferDetails leaves FBO 0
-				// bound, but on iOS/tvOS there is no usable default framebuffer (EAGL has no window-backed
-				// FBO 0), so framebuffer-dependent init calls such as glValidateProgram would otherwise
-				// fail with "Current draw framebuffer is invalid".
-				_gl.BindFramebuffer(GLEnum.Framebuffer, _details!.Framebuffer);
-				_readbackAsRgbaWithSwap = NeedsRgbaReadbackSwap(_gl);
-				Init(_gl);
+				// An element that stretches to fill its parent is loaded before it is first
+				// arranged, so there is no size yet. Wait for one instead of treating it as a
+				// failure, which would disable the element permanently.
+				_initializationDeferred = true;
+				return;
 			}
-			catch (Exception e)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"{nameof(GLCanvasElement)} initialization failed. The element will not render.", e);
-				}
 
-				IsGLInitialized = false;
+			if (!TryInitializeGl())
+			{
 				return;
 			}
 		}
 
+		ObserveHostClosing();
+		IsGLInitialized = true;
+	}
+
+	/// <summary>
+	/// Runs <see cref="Init"/> against this element's framebuffer. The context must already be
+	/// current.
+	/// </summary>
+	/// <returns><see langword="false"/> when initialization failed and the element must not render.</returns>
+	private bool TryInitializeGl()
+	{
+		try
+		{
+			// Bind the element's offscreen framebuffer before Init so initialization runs against
+			// the same valid draw framebuffer used while rendering. FrameBufferDetails leaves FBO 0
+			// bound, but on iOS/tvOS there is no usable default framebuffer (EAGL has no window-backed
+			// FBO 0), so framebuffer-dependent init calls such as glValidateProgram would otherwise
+			// fail with "Current draw framebuffer is invalid".
+			_gl!.BindFramebuffer(GLEnum.Framebuffer, _details!.Framebuffer);
+			_readbackAsRgbaWithSwap = NeedsRgbaReadbackSwap(_gl);
+			Init(_gl);
+			return true;
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(GLCanvasElement)} initialization failed. The element will not render.", e);
+			}
+
+			IsGLInitialized = false;
+			return false;
+		}
+	}
+
+	private void ObserveHostClosing()
+	{
 		var window =
 #if WINAPPSDK
 			_getWindowFunc!();
@@ -372,12 +405,10 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		{
 			window.Closed += OnClosed;
 		}
-		else if (XamlRoot.Content is FrameworkElement fe) // for Uno Islands
+		else if (XamlRoot?.Content is FrameworkElement fe) // for Uno Islands
 		{
 			fe.Unloaded += OnClosed;
 		}
-
-		IsGLInitialized = true;
 	}
 
 	private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
@@ -457,6 +488,15 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			this.Log().Debug($"Updating backing framebuffer with size={RenderSize}");
 		}
 
+		if (RenderSize.Width < 1 || RenderSize.Height < 1)
+		{
+			// A framebuffer with a zero-sized attachment is incomplete, so there is nothing to
+			// build until layout gives this element a size.
+			_details?.Dispose();
+			_details = null;
+			return;
+		}
+
 		using (_nativeOpenGlWrapper!.MakeCurrent())
 		{
 			try
@@ -488,6 +528,23 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		_backBuffer = new WriteableBitmap((int)RenderSize.Width, (int)RenderSize.Height);
 		((ImageBrush)Background).ImageSource = _backBuffer;
 
+		if (_initializationDeferred)
+		{
+			_initializationDeferred = false;
+
+			using (_nativeOpenGlWrapper.MakeCurrent())
+			{
+				if (!TryInitializeGl())
+				{
+					OnGLUnavailable();
+					return;
+				}
+			}
+
+			ObserveHostClosing();
+			IsGLInitialized = true;
+		}
+
 		Invalidate();
 	}
 
@@ -498,7 +555,13 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			return;
 		}
 
-		global::System.Diagnostics.Debug.Assert(_gl is not null && _details is not null && _backBuffer is not null);
+		if (_details is null || _backBuffer is null)
+		{
+			// Still waiting for a size; nothing to render into yet.
+			return;
+		}
+
+		global::System.Diagnostics.Debug.Assert(_gl is not null);
 
 		using var _ = _nativeOpenGlWrapper!.MakeCurrent();
 

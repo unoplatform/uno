@@ -14,6 +14,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using Windows.Storage;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -33,9 +34,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresScaling(1f)]
-#if !__SKIA__
-		[Ignore("TODO: Fix on other platforms")]
-#endif
+		// WinUI: the image's color bands land 1px off these bounds (green 20,41,19,18 at 250% display scale).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Parent_Has_BorderThickness()
 		{
 			var image = new Image()
@@ -74,17 +74,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var pinkBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 35, 233), tolerance: 10); // 12x20
 
 			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
-#if __SKIA__
 			Assert.AreEqual(new Rect(20, 30, 59, 19), redBounds);
 			Assert.AreEqual(new Rect(20, 40, 19, 19), greenBounds);
 			Assert.AreEqual(new Rect(44, 40, 19, 19), yellowBounds);
 			Assert.AreEqual(new Rect(68, 40, 11, 19), pinkBounds);
-#else
-			Assert.AreEqual(new Rect(20, 38, 59, 18), redBounds);
-			Assert.AreEqual(new Rect(20, 41, 19, 17), greenBounds);
-			Assert.AreEqual(new Rect(44, 41, 19, 17), yellowBounds);
-			Assert.AreEqual(new Rect(68, 41, 11, 17), pinkBounds);
-#endif
 		}
 
 		[TestMethod]
@@ -501,6 +494,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
 			TestServices.WindowHelper.WindowContent = image;
 			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // No sockets in the browser
+		public async Task When_SVGImageSource_Assigned_While_Opening()
+		{
+			// The source starts opening as soon as its UriSource is set, so an Image given the source in the same tick
+			// subscribes while that open is still in flight. A slow server keeps it in flight deterministically.
+			const string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='red'/></svg>";
+			using var server = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+			server.Start();
+			var port = ((System.Net.IPEndPoint)server.LocalEndpoint).Port;
+			var serving = ServeOnceAsync(server, svg);
+
+			var svgImageSource = new SvgImageSource(new Uri($"http://127.0.0.1:{port}/red.svg"));
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+			await serving;
+			await WindowHelper.WaitFor(() => imageOpened);
+
+			var screenshot = await UITestHelper.ScreenShot(border);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Colors.Red, tolerance: 10);
+
+			static async Task ServeOnceAsync(System.Net.Sockets.TcpListener server, string body)
+			{
+				using var client = await server.AcceptTcpClientAsync();
+				using var stream = client.GetStream();
+				var buffer = new byte[4096];
+				_ = await stream.ReadAsync(buffer);
+				await Task.Delay(200);
+
+				var payload = Encoding.UTF8.GetBytes(body);
+				var header = Encoding.ASCII.GetBytes($"HTTP/1.1 200 OK\r\nContent-Type: image/svg+xml\r\nContent-Length: {payload.Length}\r\nConnection: close\r\n\r\n");
+				try
+				{
+					await stream.WriteAsync(header);
+					await stream.WriteAsync(payload);
+				}
+				catch (System.IO.IOException)
+				{
+					// The client gave up on the request; the assertions report the outcome.
+				}
+			}
 		}
 
 		[TestMethod]

@@ -80,13 +80,14 @@ namespace Microsoft.UI.Xaml
 							newBinding.Mode = binding.Mode;
 							newBinding.TargetNullValue = binding.TargetNullValue;
 							newBinding.ElementName = binding.ElementName;
+							newBinding.ElementNameSubject = binding.ElementNameSubject;
 							newBinding.FallbackValue = binding.FallbackValue;
 							if (binding.RelativeSource is { } relativeSource)
 							{
 								newBinding.RelativeSource = new RelativeSource(relativeSource.Mode);
 							}
 
-							otherStore.SetBinding(newDP, newBinding);
+							otherStore.SetBindingInternal(newDP, newBinding);
 						}
 					}
 				}

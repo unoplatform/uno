@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.UI.Composition.Drawing;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;

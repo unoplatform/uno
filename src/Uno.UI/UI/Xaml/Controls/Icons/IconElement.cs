@@ -54,14 +54,6 @@ public partial class IconElement : FrameworkElement
 			)
 		);
 
-
-	public static implicit operator IconElement(string symbol) =>
-		new SymbolIcon()
-		{
-			Symbol = Enum.Parse<Symbol>(symbol, true)
-		};
-
-
 	protected override Size MeasureOverride(Size availableSize)
 	{
 		if (_rootGrid is not null)

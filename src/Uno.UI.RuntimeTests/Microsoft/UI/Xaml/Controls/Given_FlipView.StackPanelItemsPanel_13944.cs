@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI;
 using Windows.UI;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;

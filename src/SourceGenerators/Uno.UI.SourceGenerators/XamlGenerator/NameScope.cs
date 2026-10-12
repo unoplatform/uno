@@ -40,11 +40,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		public List<XBindEventInitializerDefinition> xBindEventsHandlers { get; } = [];
 
-		/// <summary>
-		/// Lists the ElementStub builder holder variables used to pin references for implicit pinning platforms
-		/// </summary>
-		public List<string> ElementStubHolders { get; } = [];
-
 		public HashSet<string> ReferencedElementNames { get; } = [];
 
 		public Dictionary<string, Subclass> Subclasses { get; } = [];

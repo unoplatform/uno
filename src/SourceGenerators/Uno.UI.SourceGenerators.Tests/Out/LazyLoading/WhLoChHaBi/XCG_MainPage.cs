@@ -43,7 +43,7 @@ namespace TestRepro
 			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
-				new Microsoft.UI.Xaml.ElementStub( () => 
+				new Microsoft.UI.Xaml.ElementStub(() => 
 				new global::Microsoft.UI.Xaml.Controls.ContentControl
 				{
 					IsParsing = true,
@@ -64,7 +64,7 @@ namespace TestRepro
 						__nameScope.RegisterName("innerTextBlock", __p1);
 						__that.innerTextBlock = __p1;
 						// FieldModifier public
-						__p1.SetBinding(
+						global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 							global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 							new Microsoft.UI.Xaml.Data.Binding()
 							{
@@ -162,13 +162,13 @@ namespace TestRepro
 			this.Bindings.StopTracking();
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "innerTextBlock");
 		public global::Microsoft.UI.Xaml.Controls.TextBlock innerTextBlock
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_innerTextBlockSubject.ElementInstance;
 			set => _innerTextBlockSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelContentSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelContentSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "topLevelContent");
 		public global::Microsoft.UI.Xaml.Controls.ContentControl topLevelContent
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.ContentControl)_topLevelContentSubject.ElementInstance;
@@ -202,12 +202,7 @@ namespace TestRepro
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
-			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			private global::System.WeakReference _ownerReference;
-			private global::TestRepro.MainPage Owner { get => (global::TestRepro.MainPage)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
-			#else
 			private global::TestRepro.MainPage Owner { get; set; }
-			#endif
 			public MainPage_Bindings(global::TestRepro.MainPage owner)
 			{
 				Owner = owner;

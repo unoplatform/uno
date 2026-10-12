@@ -5,6 +5,10 @@
 /// </summary>
 public partial class ScrollPatternIdentifiers
 {
+	internal ScrollPatternIdentifiers()
+	{
+	}
+
 	/// <summary>
 	/// Identifies the HorizontalScrollPercent automation property.
 	/// </summary>

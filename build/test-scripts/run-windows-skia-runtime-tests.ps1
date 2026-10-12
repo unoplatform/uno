@@ -11,8 +11,9 @@ function Assert-ExitCodeIsZero()
 }
 
 
-$UNO_TESTS_FAILED_LIST="$env:BUILD_SOURCESDIRECTORY\build\uitests-failure-results\failed-tests-windows-runtimetests-windows-$env:UITEST_RUNTIME_TEST_GROUP.txt"
-$TEST_RESULTS_FILE="$env:build_sourcesdirectory\build\skia-windows-runtime-tests-results.xml"
+# UNO_TEST_RESULT_LABEL keeps apart the results of lanes that share this script (e.g. "-webgpu").
+$UNO_TESTS_FAILED_LIST="$env:BUILD_SOURCESDIRECTORY\build\uitests-failure-results\failed-tests-windows-runtimetests-windows$env:UNO_TEST_RESULT_LABEL-$env:UITEST_RUNTIME_TEST_GROUP.txt"
+$TEST_RESULTS_FILE="$env:build_sourcesdirectory\build\skia-windows$env:UNO_TEST_RESULT_LABEL-runtime-tests-results.xml"
 
 # Create the failed-tests directory up front so a crashed run still has somewhere to write,
 # and PublishBuildArtifacts@1 does not retry a missing PathtoPublish.

@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;

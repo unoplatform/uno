@@ -1,4 +1,4 @@
-// Encoding ops into a render pass: one case per DrawKind, the backdrop's pass-segment split, and the per-frame
+﻿// Encoding ops into a render pass: one case per DrawKind, the backdrop's pass-segment split, and the per-frame
 // stats dump.
 #nullable disable
 using System;
@@ -158,7 +158,8 @@ internal sealed unsafe partial class WebGpuFrame
 			// A widenable op's tight AABB is cull-only (checked above); the applied scissor is the full
 			// surface, so consecutive such ops dedup to a single SetScissorRect.
 			if (!split && op.SiteSlot == 0 && ScissorWidenable(op.Clip)) { sx = 0; sy = 0; sw = (int)(BasisW / BasisScale); sh = (int)(BasisH / BasisScale); }
-			// On the layer sheet every draw stays inside its layer's slot, whatever its clip says.
+			// On the layer sheet every draw stays inside its layer's slot, whatever its clip says; under damage it
+			// stays inside the repainted region.
 			if (_bound.X > float.MinValue)
 			{
 				if (!TryScissor(_bound, out var bx, out var by, out var bw, out var bh)) { continue; }

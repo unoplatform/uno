@@ -368,6 +368,24 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
+		/// <summary>
+		/// WinUI also accepts an attached property in a setter target without parentheses
+		/// (e.g. <c>ContentRoot.Grid.Column</c>), which the property path syntax would read as a sub-property.
+		/// </summary>
+		private string ParenthesizeBareAttachedProperty(string propertyName)
+		{
+			if (propertyName.Contains('('))
+			{
+				return propertyName;
+			}
+
+			var parts = propertyName.Split('.');
+
+			return parts.Length == 2 && TypeResolver.FindType(parts[0]) is { } ownerType && TypeResolver.IsAttachedProperty(ownerType, parts[1])
+				? "(" + propertyName + ")"
+				: propertyName;
+		}
+
 		private string RewriteAttachedPropertyPath(string? value)
 		{
 			value ??= "";
@@ -662,7 +680,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// This builds property setters for specified member setter.
 				var separatorIndex = targetPath.IndexOf('.');
 				var elementName = targetPath.Substring(0, separatorIndex);
-				var propertyName = targetPath.Substring(separatorIndex + 1);
+				var propertyName = ParenthesizeBareAttachedProperty(targetPath.Substring(separatorIndex + 1));
 
 				if (instance is Setter setter)
 				{
@@ -1131,7 +1149,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				if (dependencyProperty != null)
 				{
-					provider.SetBinding(dependencyProperty, binding);
+					provider.SetBindingInternal(dependencyProperty, binding);
 				}
 				else if (TypeResolver.GetPropertyByName(member.Owner.Type, member.Member.Name) is PropertyInfo propertyInfo)
 				{
@@ -1197,10 +1215,14 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 					case nameof(Binding.ElementName):
 						var subject = new ElementNameSubject();
-						binding.ElementName = subject;
+						binding.ElementNameSubject = subject;
 
 						if (bindingProperty.Value?.ToString() is { } value)
 						{
+							// Keep the public string in sync so binding.ElementName roundtrips (WinUI parity);
+							// resolution still goes through the subject.
+							binding.ElementName = value;
+							subject.Name = value;
 							AddElementName(value, subject);
 						}
 						break;

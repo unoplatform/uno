@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml
 
 		public static T Binding<T>(this T element, string property, BindingBase binding) where T : DependencyObject
 		{
-			(element as DependencyObject).SetBinding(property, binding);
+			(element as DependencyObject).SetBindingInternal(property, binding);
 
 			return element;
 		}

@@ -30,7 +30,7 @@ namespace Uno.UI.Tests.GridTests
 		{
 			try
 			{
-				var gridLength = (GridLength)value;
+				var gridLength = GridLength.FromString(value);
 				Assert.AreEqual(isAbsolute, gridLength.IsAbsolute);
 				Assert.AreEqual(isStar, gridLength.IsStar);
 				Assert.AreEqual(isAuto, gridLength.IsAuto);

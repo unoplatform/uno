@@ -65,13 +65,14 @@ struct PassU { basis: vec4<f32> };
 // space rather than folded into each op: that is what lets a move rewrite this one block instead of every op's.
 // xoff.zw = the pass basis: those clips are ABSOLUTE device pixels, while the fragment position they are tested at
 // is relative to the target - a layer sheet slot does not share the window's origin (ClipU folds the same shift
-// into finv).
+// into finv). rect.y = device pixels per target pixel, above 1 for a shadow layer rendered smaller than it covers
+// (0 reads as 1).
 struct SiteU { xform: vec4<f32>, xoff: vec4<f32>, ctrl: vec4<f32>, rect: vec4<f32>, inner: vec4<f32>, entries: array<ClipEntry, 4> };
 @group(3) @binding(0) var<uniform> site: SiteU;
 // The site's clips at fp, the fragment's position in the target, lifted to the device space they were recorded in.
 fn siteCov(fp: vec2<f32>) -> f32 {
   if (site.ctrl.x < 0.5 && site.ctrl.y < 0.5) { return 1.0; }
-  let dp = fp + site.xoff.zw;
+  let dp = fp * max(site.rect.y, 1.0) + site.xoff.zw;
   if (all(dp >= site.inner.xy) && all(dp <= site.inner.zw)) { return 1.0; }
   var cov = 1.0;
   if (site.ctrl.y > 0.5) {
@@ -243,6 +244,16 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32>, @locat
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.rp, i.uv, i.p.xy)); }";
 	// Draws a texture over the whole target (a fullscreen triangle, exact texel fetch): the effect evaluator's final
 	// draw. Optional colour matrix (params.x); params.z = a sub-rect at m1.xy of size m0.zw.
+	// Fills the scissor with one colour, replacing what is there. A render pass clears its WHOLE attachment, so a
+	// partial repaint cannot clear through the load op and clears by drawing this instead.
+	private const string ClearRectWgsl = @"
+@group(0) @binding(0) var<uniform> col: vec4<f32>;
+@vertex fn vs(@builtin(vertex_index) vi: u32) -> @builtin(position) vec4<f32> {
+  var pts = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+  return vec4<f32>(pts[vi], 0.0, 1.0);
+}
+@fragment fn fs() -> @location(0) vec4<f32> { return col; }";
+
 	private const string CompositeWgsl = @"
 struct CU { params: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec4<f32>, m3: vec4<f32>, off: vec4<f32> };
 @group(0) @binding(0) var src: texture_2d<f32>;

@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -967,14 +968,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					{
 						Height = 150,
 						Width = 150,
-						CornerRadius = 50,
-						BorderBrush = Colors.Red,
+						CornerRadius = new CornerRadius(50),
+						BorderBrush = new SolidColorBrush(Colors.Red),
 						BorderThickness = new Thickness(20),
 						Child = !addBorderChild ? null : new Rectangle
 						{
 							Width = 150,
 							Height = 150,
-							Fill = Colors.Green
+							Fill = new SolidColorBrush(Colors.Green)
 						}.Apply(r => r.PointerPressed += (_, args) =>
 						{
 							rectanglePressedCount++;

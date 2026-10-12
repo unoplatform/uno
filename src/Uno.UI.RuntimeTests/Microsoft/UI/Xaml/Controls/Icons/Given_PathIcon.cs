@@ -6,6 +6,7 @@ using MUXControlsTestApp.Utilities;
 using Path = Microsoft.UI.Xaml.Shapes.Path;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI;
 using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Icons;

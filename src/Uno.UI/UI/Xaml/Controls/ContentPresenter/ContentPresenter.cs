@@ -13,9 +13,11 @@ using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 using Uno.UI;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Microsoft.UI.Composition;
 using Uno.UI.Controls;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 
@@ -83,8 +85,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	internal bool IsNativeHost { get; set; }
 
 	internal DataTemplate SelectedContentTemplate => _dataTemplateUsedLastUpdate;
-
-	protected override bool IsSimpleLayout => true;
 
 	#region Content DependencyProperty
 
@@ -243,7 +243,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	public double FontSize
 	{
 		get { return (double)this.GetValue(FontSizeProperty); }
-		set { this.SetValue(FontSizeProperty, value); }
+		set { this.SetValue(FontSizeProperty, Boxer.Box(value)); }
 	}
 
 	public static DependencyProperty FontSizeProperty { get; } =
@@ -274,7 +274,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(bool),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				true,
+				BoolBoxes.True,
 #if __SKIA__
 				// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
 				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
@@ -373,7 +373,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	public int MaxLines
 	{
 		get { return (int)this.GetValue(MaxLinesProperty); }
-		set { this.SetValue(MaxLinesProperty, value); }
+		set { this.SetValue(MaxLinesProperty, Boxer.Box(value)); }
 	}
 
 	public static DependencyProperty MaxLinesProperty { get; } =
@@ -382,7 +382,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(int),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0,
+				defaultValue: IntBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnMaxLinesChanged()
 			)
@@ -510,7 +510,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(Thickness),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				(Thickness)Thickness.Empty,
+				default(Thickness),
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 			)
@@ -537,7 +537,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(Thickness),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				(Thickness)Thickness.Empty,
+				default(Thickness),
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 			)
@@ -578,7 +578,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	#endregion
 
 	#region CornerRadius DependencyProperty
-	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+	private static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
 	[GeneratedDependencyProperty(ChangedCallback = true)]
 	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();

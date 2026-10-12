@@ -109,9 +109,6 @@ public enum UnoFeature
 	WebGpu,
 
 	[UnoArea(UnoArea.Core)]
-	Lottie,
-
-	[UnoArea(UnoArea.Core)]
 	Svg,
 
 	[UnoArea(UnoArea.Core)]

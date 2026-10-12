@@ -30,5 +30,5 @@ var UnoAppManifest = {
 ## See also
 
 - [WebAssembly: Supported AppManifest properties](xref:Uno.Development.SplashScreen#5-webassembly)
-- [Deep-dive: How Uno works on WebAssembly](xref:Uno.Contributing.Wasm#web-webassembly)
+- [Deep-dive: How Uno works on WebAssembly](xref:Uno.Contributing.Wasm)
 - [Get Started: Get the Uno Platform templates](xref:Uno.GetStarted)

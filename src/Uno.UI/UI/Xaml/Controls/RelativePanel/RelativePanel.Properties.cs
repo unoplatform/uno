@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
@@ -56,7 +57,7 @@ public partial class RelativePanel
 		set => SetBorderThicknessValue(value);
 	}
 
-	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+	private static Thickness GetBorderThicknessDefaultValue() => default(Thickness);
 
 	/// <summary>
 	/// Identifies the BorderThickness dependency property.
@@ -79,7 +80,7 @@ public partial class RelativePanel
 		set => SetPaddingValue(value);
 	}
 
-	private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
+	private static Thickness GetPaddingDefaultValue() => default(Thickness);
 
 	/// <summary>
 	/// Identifies the Padding dependency property.
@@ -102,7 +103,7 @@ public partial class RelativePanel
 		set => SetCornerRadiusValue(value);
 	}
 
-	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+	private static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
 	/// <summary>
 	/// Identifies the CornerRadius dependency property.
@@ -144,7 +145,7 @@ public partial class RelativePanel
 			"AlignBottomWithPanel",
 			typeof(bool),
 			typeof(RelativePanel),
-			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignLeftWithPanel XAML attached property for the target element.
@@ -172,7 +173,7 @@ public partial class RelativePanel
 			"AlignLeftWithPanel",
 			typeof(bool),
 			typeof(RelativePanel),
-			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignRightWithPanel XAML attached property for the target element.
@@ -200,7 +201,7 @@ public partial class RelativePanel
 			"AlignRightWithPanel",
 			typeof(bool),
 			typeof(RelativePanel),
-			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignTopWithPanel XAML attached property for the target element.
@@ -228,7 +229,7 @@ public partial class RelativePanel
 			"AlignTopWithPanel",
 			typeof(bool),
 			typeof(RelativePanel),
-			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignHorizontalCenterWithPanel XAML attached property for the target element.
@@ -256,7 +257,7 @@ public partial class RelativePanel
 			"AlignHorizontalCenterWithPanel",
 			typeof(bool),
 			typeof(RelativePanel),
-			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignVerticalCenterWithPanel XAML attached property for the target element.
@@ -284,7 +285,7 @@ public partial class RelativePanel
 			"AlignVerticalCenterWithPanel",
 			typeof(bool),
 			typeof(RelativePanel),
-			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	#endregion
 

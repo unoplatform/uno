@@ -60,8 +60,24 @@ internal static class WebGpuLoader
 			}
 		}
 
-		// Desktop and WASM: decline so the runtime's default resolution handles "webgpu" (desktop finds the
+		// Desktop: an app built on one OS ships every desktop platform's native under runtimes/<rid>/native (the
+		// names collide across architectures, so they cannot all sit next to the app); load this platform's.
+		if (!OperatingSystem.IsBrowser() && TryLoadFromRuntimesFolder() is var ridNative && ridNative != IntPtr.Zero)
+		{
+			return ridNative;
+		}
+
+		// Otherwise decline so the runtime's default resolution handles "webgpu" (desktop finds the
 		// DllImport-named artifact; WASM resolves the emdawnwebgpu-linked symbols).
 		return IntPtr.Zero;
+	}
+
+	private static IntPtr TryLoadFromRuntimesFolder()
+	{
+		var fileName = OperatingSystem.IsWindows() ? "webgpu.dll"
+			: OperatingSystem.IsMacOS() ? "libwebgpu.dylib"
+			: "libwebgpu.so";
+		var path = System.IO.Path.Combine(AppContext.BaseDirectory, "runtimes", RuntimeInformation.RuntimeIdentifier, "native", fileName);
+		return System.IO.File.Exists(path) && NativeLibrary.TryLoad(path, out var handle) ? handle : IntPtr.Zero;
 	}
 }

@@ -8,9 +8,6 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 	{
 		public ContentPresenter_Content_DataContext()
 		{
-#if HAS_UNO
-			FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
-#endif
 			this.InitializeComponent();
 		}
 	}

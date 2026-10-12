@@ -10,6 +10,7 @@ using Uno.Extensions;
 using Uno.UI.DevTools.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 

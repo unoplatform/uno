@@ -15,7 +15,7 @@ uid: Uno.Features.Compass
 |------------------|---------|---------|-----|------------|-------|--------------|--------------|
 | `GetDefault`     | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
 | `ReadingChanged` | ✔       | ✔       | ✔   | ✔          | ✖     | ✖            | ✖            |
-| `ReportInterval` | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
+| `ReportInterval` | ✔       | ✔       | ✖   | ✔          | ✖     | ✖            | ✖            |
 
 ## Using Compass with Uno
 

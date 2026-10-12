@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Xaml.Controls.Primitives;
 
@@ -45,13 +45,13 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 		private void TryResolveScrollBars()
 		{
-			_verticalScrollBar ??= Viewport.FindFirstDescendant<ScrollBarControl>("VerticalScrollBar");
-			_horizontalScrollBar ??= Viewport.FindFirstDescendant<ScrollBarControl>("HorizontalScrollBar");
+			_verticalScrollBar ??= FindDescendant<ScrollBarControl>(Viewport, "VerticalScrollBar");
+			_horizontalScrollBar ??= FindDescendant<ScrollBarControl>(Viewport, "HorizontalScrollBar");
 
 			if (_verticalScrollBar is { } verticalScrollBar)
 			{
-				_verticalInteractiveRoot ??= verticalScrollBar.FindFirstDescendant<FrameworkElement>("VerticalRoot");
-				_verticalThumb ??= verticalScrollBar.FindFirstDescendant<FrameworkElement>("VerticalThumb");
+				_verticalInteractiveRoot ??= FindDescendant<FrameworkElement>(verticalScrollBar, "VerticalRoot");
+				_verticalThumb ??= FindDescendant<FrameworkElement>(verticalScrollBar, "VerticalThumb");
 			}
 
 			foreach (var scrollBar in GetScrollBars())
@@ -63,6 +63,20 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			}
 
 			ApplyOptIn();
+		}
+
+		private static T FindDescendant<T>(DependencyObject reference, string name) where T : FrameworkElement
+		{
+			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(reference); i++)
+			{
+				var child = VisualTreeHelper.GetChild(reference, i);
+				if ((child is T element && element.Name == name ? element : FindDescendant<T>(child, name)) is { } match)
+				{
+					return match;
+				}
+			}
+
+			return null;
 		}
 
 		private void OptIn_Changed(object sender, RoutedEventArgs e) => ApplyOptIn();

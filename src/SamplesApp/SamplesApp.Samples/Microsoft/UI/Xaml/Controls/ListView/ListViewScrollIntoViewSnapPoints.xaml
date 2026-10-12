@@ -5,10 +5,9 @@
     xmlns:controls="using:Uno.UI.Samples.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:not_win="http://uno.ui/not_win"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    mc:Ignorable="d not_win">
+    mc:Ignorable="d">
 
     <StackPanel>
         <Button Click="Button_Click" Content="Next" />
@@ -36,7 +35,6 @@
                         BorderThickness="{TemplateBinding BorderThickness}">
                         <ScrollViewer
                             x:Name="ScrollViewer"
-                            not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}"
                             AutomationProperties.AccessibilityView="Raw"
                             BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
                             HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"

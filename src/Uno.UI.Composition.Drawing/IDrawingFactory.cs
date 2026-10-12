@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -119,5 +119,11 @@ public interface IDrawingFactory<in TTarget> : IDrawingFactory where TTarget : I
 	/// Begins composing onto <paramref name="target"/>. The cycle replays a recorded frame
 	/// (<see cref="IRenderRecord.Replay"/>) and draws any overlay into the returned session, then disposes it to present.
 	/// </summary>
-	IPresentSession BeginPresent(TTarget target);
+	/// <param name="damage">
+	/// The disjoint regions that changed since the last present; the rest of the target still holds what that
+	/// present drew. Empty means repaint everything. Permission to repaint less, not a clip -- a backend may ignore
+	/// it, or confine the whole session to it, so the caller must not draw outside it. Only passed where the target
+	/// preserves its contents (<see cref="IGraphicsContext.PreservesContents"/>).
+	/// </param>
+	IPresentSession BeginPresent(TTarget target, ReadOnlySpan<Rect> damage);
 }

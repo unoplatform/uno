@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;

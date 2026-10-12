@@ -5,7 +5,7 @@ namespace Windows.Graphics;
 /// <summary>
 /// Defines the size and location of a rectangular surface.
 /// </summary>
-public partial struct RectInt32
+public partial struct RectInt32 : IEquatable<RectInt32>
 {
 	// Parameter names mirror the WinAppSDK/CsWinRT metadata (enforced by the sync generator); keep as-is.
 	public RectInt32(int _X, int _Y, int _Width, int _Height)
@@ -36,7 +36,9 @@ public partial struct RectInt32
 	/// </summary>
 	public int Height;
 
-	public override bool Equals(object obj) => obj is RectInt32 @int && X == @int.X && Y == @int.Y && Width == @int.Width && Height == @int.Height;
+	public bool Equals(RectInt32 other) => X == other.X && Y == other.Y && Width == other.Width && Height == other.Height;
+
+	public override bool Equals(object obj) => obj is RectInt32 other && Equals(other);
 
 	public override int GetHashCode() => HashCode.Combine(X, Y, Width, Height);
 

@@ -8,8 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
-	/// Provides Lottie animated visual sources to Uno.UI, supplied by the Uno.UI.Lottie
-	/// add-in through ApiExtensibility.
+	/// Provides Lottie animated visual sources to Uno.UI, registered through ApiExtensibility.
 	/// </summary>
 	public interface ILottieVisualSourceProvider
 	{

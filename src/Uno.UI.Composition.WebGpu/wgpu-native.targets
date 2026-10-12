@@ -78,12 +78,27 @@
 	     evaluated BEFORE its DependsOnTargets run, so it would still be empty here — the task-level conditions below
 	     (evaluated after _SelectWgpuAsset has run) are the correct guard. -->
 	<Target Name="_FetchWgpuNative" DependsOnTargets="_SelectWgpuAsset">
-		<MakeDir Directories="$(WgpuNativeCacheDir)" Condition="'$(_WgpuAsset)' != ''" />
-		<DownloadFile Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)$(_WgpuAsset)')"
+		<!-- Every project importing this file, and each of its target frameworks, shares the cache, so a cold parallel
+		     build fetches it several times at once: writing the same zip concurrently failed with "being used by another
+		     process". Each fetch downloads and unzips into its own staging folder and only copies the result in. -->
+		<PropertyGroup>
+			<_WgpuNeedsFetch Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)')">true</_WgpuNeedsFetch>
+			<_WgpuStageDir>$(WgpuNativeCacheDir)stage\$([System.Guid]::NewGuid().ToString('N'))\</_WgpuStageDir>
+		</PropertyGroup>
+		<MakeDir Directories="$(_WgpuStageDir)" Condition="'$(_WgpuNeedsFetch)' == 'true'" />
+		<DownloadFile Condition="'$(_WgpuNeedsFetch)' == 'true'"
 			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/$(_WgpuAsset)"
-			DestinationFolder="$(WgpuNativeCacheDir)" Retries="3" />
-		<Microsoft.Build.Tasks.Unzip Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)')"
-			SourceFiles="$(WgpuNativeCacheDir)$(_WgpuAsset)" DestinationFolder="$(WgpuNativeCacheDir)" />
+			DestinationFolder="$(_WgpuStageDir)" Retries="3" />
+		<Microsoft.Build.Tasks.Unzip Condition="'$(_WgpuNeedsFetch)' == 'true'"
+			SourceFiles="$(_WgpuStageDir)$(_WgpuAsset)" DestinationFolder="$(_WgpuStageDir)" />
+		<ItemGroup Condition="'$(_WgpuNeedsFetch)' == 'true'">
+			<_WgpuStagedFile Include="$(_WgpuStageDir)**\*" Exclude="$(_WgpuStageDir)$(_WgpuAsset)" />
+		</ItemGroup>
+		<!-- Unzip keeps the archive's timestamps, so a fetch that lost the race skips the files the winner copied. -->
+		<Copy Condition="'$(_WgpuNeedsFetch)' == 'true'" SourceFiles="@(_WgpuStagedFile)"
+			DestinationFiles="@(_WgpuStagedFile->'$(WgpuNativeCacheDir)%(RecursiveDir)%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true" Retries="10" RetryDelayMilliseconds="500" />
+		<RemoveDir Condition="'$(_WgpuNeedsFetch)' == 'true'" Directories="$(_WgpuStageDir)" ContinueOnError="true" />
 	</Target>
 
 	<!-- Packaging provisions every RID the package ships, not just the build host's: the packages job runs on one
@@ -124,11 +139,47 @@
 	     app straight out of bin/. Guard on OutDir (AfterTargets=Build also fires in the outer multi-TFM pass where
 	     OutDir is empty → an unguarded Copy throws MSB3023). Only for app heads (OutputType != Library): a referenced
 	     library would otherwise leave a loose desktop .so next to its dll, which .NET-Android harvests transitively and
-	     packs into every APK lib/<abi>/, shadowing the real per-ABI bionic binaries (dlopen then fails on libdl.so.2). -->
-	<Target Name="ProvisionWgpuNative" AfterTargets="Build" DependsOnTargets="_FetchWgpuNative">
+	     packs into every APK lib/<abi>/, shadowing the real per-ABI bionic binaries (dlopen then fails on libdl.so.2).
+	     The Library check sits on the target so a library never fetches a native it would not copy. -->
+	<Target Name="ProvisionWgpuNative" AfterTargets="Build" DependsOnTargets="_FetchWgpuNative" Condition="'$(OutputType)' != 'Library'">
 		<Message Importance="high" Text="ProvisionWgpuNative: asset=$(_WgpuAsset) outputType=$(OutputType) -> $(OutDir)$(_WgpuOutputFile)" />
-		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != '' And '$(OutputType)' != 'Library'"
+		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != '' And '$(_UnoWebGpuNativeUnused)' != 'true'"
 			SourceFiles="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" DestinationFiles="$(OutDir)$(_WgpuOutputFile)" SkipUnchangedFiles="true" />
+	</Target>
+
+	<!-- A desktop head built on one OS runs on the others (CI builds the desktop SamplesApp once, on Windows, for
+	     every desktop lane), so it also carries each desktop platform's native under runtimes/<rid>/native, where
+	     WebGpuLoader looks for the current platform's. The names collide across architectures (both macOS slices
+	     are libwebgpu.dylib), hence a folder per RID rather than next to the app. -->
+	<Target Name="_ProvisionWgpuNativeDesktopRids" AfterTargets="Build"
+			Condition="'$(OutputType)' != 'Library' And '$(OutDir)' != '' And ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop')">
+		<ItemGroup>
+			<_WgpuDesktopRid Include="win-x64"><Asset>wgpu-windows-x86_64-msvc-release.zip</Asset><Native>wgpu_native.dll</Native><Name>webgpu.dll</Name></_WgpuDesktopRid>
+			<_WgpuDesktopRid Include="linux-x64"><Asset>wgpu-linux-x86_64-release.zip</Asset><Native>libwgpu_native.so</Native><Name>libwebgpu.so</Name></_WgpuDesktopRid>
+			<_WgpuDesktopRid Include="osx-x64"><Asset>wgpu-macos-x86_64-release.zip</Asset><Native>libwgpu_native.dylib</Native><Name>libwebgpu.dylib</Name></_WgpuDesktopRid>
+			<_WgpuDesktopRid Include="osx-arm64"><Asset>wgpu-macos-aarch64-release.zip</Asset><Native>libwgpu_native.dylib</Native><Name>libwebgpu.dylib</Name></_WgpuDesktopRid>
+		</ItemGroup>
+		<MakeDir Directories="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" />
+		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)')"
+			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/%(_WgpuDesktopRid.Asset)"
+			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" Retries="3" />
+		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\lib\%(_WgpuDesktopRid.Native)')"
+			SourceFiles="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)"
+			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" />
+		<Copy SourceFiles="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\lib\%(_WgpuDesktopRid.Native)"
+			DestinationFiles="$(OutDir)runtimes\%(_WgpuDesktopRid.Identity)\native\%(_WgpuDesktopRid.Name)" SkipUnchangedFiles="true" />
+		<ItemGroup>
+			<_WgpuDesktopRidPublish Include="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\lib\%(_WgpuDesktopRid.Native)">
+				<RelativePath>runtimes\%(_WgpuDesktopRid.Identity)\native\%(_WgpuDesktopRid.Name)</RelativePath>
+			</_WgpuDesktopRidPublish>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_AddWgpuNativeDesktopRidsToPublish" AfterTargets="ComputeFilesToPublish" DependsOnTargets="_ProvisionWgpuNativeDesktopRids"
+			Condition="'$(OutputType)' != 'Library' And ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop')">
+		<ItemGroup>
+			<ResolvedFileToPublish Include="@(_WgpuDesktopRidPublish)" CopyToPublishDirectory="PreserveNewest" />
+		</ItemGroup>
 	</Target>
 
 	<!-- Publish: register the native as a real publish item so `dotnet publish` (incl. `-o <dir>` and self-contained)
@@ -137,7 +188,7 @@
 	     to the ResolvedFileToPublish that ComputeFilesToPublish just built, before the copy targets consume it. -->
 	<Target Name="_AddWgpuNativeToPublish" AfterTargets="ComputeFilesToPublish" DependsOnTargets="_FetchWgpuNative">
 		<ItemGroup>
-			<ResolvedFileToPublish Include="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" Condition="'$(_WgpuNativeFile)' != ''">
+			<ResolvedFileToPublish Include="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" Condition="'$(_WgpuNativeFile)' != '' And '$(_UnoWebGpuNativeUnused)' != 'true'">
 				<RelativePath>$(_WgpuOutputFile)</RelativePath>
 				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 			</ResolvedFileToPublish>
@@ -164,8 +215,12 @@
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so')"
 			SourceFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip"
 			DestinationFolder="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" />
+		<!-- Packed under the DllImport's own name, as on desktop: a Release APK resolves the p/invoke itself
+		     (libwebgpu.so) without consulting the managed DllImportResolver. -->
+		<Copy SourceFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so"
+			DestinationFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\named\libwebgpu.so" SkipUnchangedFiles="true" />
 		<ItemGroup>
-			<AndroidNativeLibrary Include="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so">
+			<AndroidNativeLibrary Include="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\named\libwebgpu.so">
 				<Abi>%(_WgpuAndroidAbi.Abi)</Abi>
 			</AndroidNativeLibrary>
 		</ItemGroup>

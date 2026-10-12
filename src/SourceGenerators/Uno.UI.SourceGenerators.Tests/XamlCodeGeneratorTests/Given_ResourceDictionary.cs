@@ -259,4 +259,131 @@ public class Given_ResourceDictionary
 
 		await Verify.AssertXamlGenerator(test);
 	}
+
+	// Reproduction for https://github.com/unoplatform/uno/issues/13373
+	// Custom Dictionary subclass declared in XAML produces invalid Add(...) calls
+	// because the generator targets the IDictionary Add that requires (key, value)
+	// but omits the key, emitting a single-argument Add(value) call, surfacing as CS7036.
+	[TestMethod]
+	public async Task When_Custom_Dictionary_Class_Used_In_XAML_13373()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+			"""
+			<Page
+				x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro">
+
+				<Page.Resources>
+					<local:MyDictionary x:Key="MyDict">
+						<x:String x:Key="One">One</x:String>
+						<x:String x:Key="Two">Two</x:String>
+					</local:MyDictionary>
+				</Page.Resources>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System.Collections.Generic;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+
+						public class MyDictionary : Dictionary<string, string> { }
+					}
+					"""
+				}
+			}
+		};
+		test.TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_XName_Used_As_Resource_Key()
+	{
+		// The shapes WinUI's generic.xaml relies on: an x:Name'd (not x:Key'd) ControlTemplate referenced
+		// before its definition (ScrollViewerScrollBarlessTemplate), and the same x:Name'd inline Style
+		// declared in two templates' Grid.Resources (DeleteButtonStyle in TextBox and AutoSuggestBox).
+		var xamlFile = new XamlFile("Themes.xaml", """
+			<ResourceDictionary
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Style TargetType="TextBox">
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="TextBox">
+								<Grid>
+									<Grid.Resources>
+										<Style x:Name="DeleteButtonStyle" TargetType="Button">
+											<Setter Property="Background" Value="Transparent" />
+										</Style>
+									</Grid.Resources>
+									<ScrollViewer x:Name="ContentElement" Template="{StaticResource ScrollViewerScrollBarlessTemplate}" />
+									<Button x:Name="DeleteButton" Style="{StaticResource DeleteButtonStyle}" />
+								</Grid>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+				<Style x:Key="QueryBoxStyle" TargetType="TextBox">
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="TextBox">
+								<Grid>
+									<Grid.Resources>
+										<Style x:Name="DeleteButtonStyle" TargetType="Button">
+											<Setter Property="Background" Value="Red" />
+										</Style>
+										<Style x:Name="QueryButtonStyle" TargetType="Button">
+											<Setter Property="Background" Value="Blue" />
+										</Style>
+									</Grid.Resources>
+									<ScrollViewer x:Name="ContentElement" Template="{StaticResource ScrollViewerScrollBarlessTemplate}" />
+									<Button x:Name="DeleteButton" Style="{StaticResource DeleteButtonStyle}" />
+									<Button x:Name="QueryButton" Style="{StaticResource QueryButtonStyle}" />
+								</Grid>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+				<ControlTemplate TargetType="ScrollViewer" x:Name="ScrollViewerScrollBarlessTemplate">
+					<Grid Background="{TemplateBinding Background}">
+						<ScrollContentPresenter x:Name="ScrollContentPresenter" />
+					</Grid>
+				</ControlTemplate>
+			</ResourceDictionary>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					string.Empty, // https://github.com/dotnet/roslyn-sdk/issues/1121
+				}
+			},
+			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
+		};
+
+		await test.RunAsync();
+	}
 }

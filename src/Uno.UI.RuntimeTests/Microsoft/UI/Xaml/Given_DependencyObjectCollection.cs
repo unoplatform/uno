@@ -95,7 +95,7 @@ public class Given_DependencyObjectCollection
 	}
 
 	/// <remarks>
-	/// Same collections as <see cref="When_Theme_Changes_Then_Items_In_Collections_Are_Updated"/>, but
+	/// Same collections as <see cref="When_Subtree_Reenters_Tree_Then_Items_In_Collections_Are_Updated"/>, but
 	/// resolved by the Enter walk when the subtree joins the tree with a theme already set.
 	/// </remarks>
 	[TestMethod]

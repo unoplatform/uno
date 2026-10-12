@@ -8,9 +8,11 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -1657,15 +1659,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			for (int i = 0; i < 3; i++)
 			{
-				ScrollTo(list, 1000000); // Scroll to end
+				// The scrolls are animated: wait for each to settle rather than for a fixed time, which a renderer
+				// slower than the one the delays were tuned on outlasts.
+				await ScrollToAndWait(list, 1000000); // Scroll to end
 
-				await Task.Delay(200);
-				await WindowHelper.WaitForIdle();
-
-				ScrollTo(list, 5); // Scroll back up
-
-				await Task.Delay(600);
-				await WindowHelper.WaitForIdle();
+				await ScrollToAndWait(list, 5); // Scroll back up
 
 				var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
 
@@ -1722,16 +1720,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForIdle();
 
-			ScrollTo(list, 1000000); // Scroll to end
-
-			await Task.Delay(200);
-			await WindowHelper.WaitForIdle();
+			// The scrolls are animated: wait for each to settle rather than for a fixed time.
+			await ScrollToAndWait(list, 1000000); // Scroll to end
 
 			ScrollTo(list, 50); // scroll back up but not all the way
-			ScrollTo(list, 0);
-
-			await Task.Delay(600);
-			await WindowHelper.WaitForIdle();
+			await ScrollToAndWait(list, 0);
 
 			var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
 
@@ -3319,15 +3312,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
+			var automationPeer = FrameworkElementAutomationPeer.CreatePeerForElement(SUT);
+			Assert.IsNotNull(automationPeer);
+			_ = automationPeer.GetChildren();
+
 			source.RemoveAt(0);
 
 			await WindowHelper.WaitForIdle();
+			_ = automationPeer.GetChildren();
 
 			await AssertCollectedReference(refSource[0]);
 
 			source.Clear();
 
 			await WindowHelper.WaitForIdle();
+			_ = automationPeer.GetChildren();
 
 			foreach (var itemRef in refSource)
 			{
@@ -3796,15 +3795,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(1000);
 			var initial = GetCurrenState();
 
-			// scroll to bottom
-			ScrollTo(list, 10000);
-			await Task.Delay(500);
+			// scroll to bottom; the next batch arrives over a few frames, so wait for it rather than for a fixed time
+			await ScrollToAndWait(list, 10000);
+			await WindowHelper.WaitFor(() => source.Count >= initial.Count + BatchSize && GetCurrenState().LastMaterialized > initial.LastMaterialized, timeoutMS: 5000);
 			await WindowHelper.WaitForIdle();
 			var first = GetCurrenState();
 
 			// scroll to bottom
-			ScrollTo(list, 10000);
-			await Task.Delay(500);
+			await ScrollToAndWait(list, 10000);
+			await WindowHelper.WaitFor(() => source.Count >= first.Count + BatchSize && GetCurrenState().LastMaterialized > first.LastMaterialized, timeoutMS: 5000);
 			await WindowHelper.WaitForIdle();
 			var second = GetCurrenState();
 
@@ -4308,6 +4307,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		// For this test to work, make sure you are running the SampleApp with LightTheme enabled.
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		[Ignore("A theme change does not reach the ListViewItem content foreground yet, see https://github.com/unoplatform/uno/pull/23491")]
 		public async Task When_ThemeChange()
 		{
 			const double TotalHeight = 500; // The ListView height.
@@ -4338,26 +4338,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = grid;
 			await WindowHelper.WaitForIdle();
 			var exploredTextBlocks = new HashSet<TextBlock>();
+			var expectedLightForeground = Windows.UI.Color.FromArgb(0xE4, 0, 0, 0);
+			var expectedDarkForeground = Colors.White;
 			foreach (var listViewItem in GetPanelVisibleChildren(SUT))
 			{
 				var tb = listViewItem.FindFirstDescendant<TextBlock>();
 				exploredTextBlocks.Add(tb);
-				Assert.AreEqual(Colors.Black, ((SolidColorBrush)tb.Foreground).Color);
+				Assert.AreEqual(expectedLightForeground, ((SolidColorBrush)tb.Foreground).Color);
 			}
 
 			using (ThemeHelper.UseDarkTheme())
 			{
 				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight;
 
-				ScrollTo(SUT, scrollPosition);
-				await Task.Delay(500);
-				await WindowHelper.WaitForIdle();
+				await ScrollToAndWait(SUT, scrollPosition);
 				var seenNewTextBlock = false;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
 				{
 					var tb = listViewItem.FindFirstDescendant<TextBlock>();
 					seenNewTextBlock |= exploredTextBlocks.Add(tb);
-					Assert.AreEqual(Colors.White, ((SolidColorBrush)tb.Foreground).Color);
+					Assert.AreEqual(expectedDarkForeground, ((SolidColorBrush)tb.Foreground).Color);
 				}
 
 				Assert.IsTrue(seenNewTextBlock);
@@ -4861,9 +4861,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/257")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-		[Ignore("This test is only for managed scrollers.")]
-#endif
 		public async Task When_ListView_Unloaded_Loaded_Scroll_Position()
 		{
 			var SUT = new ListView
@@ -5593,7 +5590,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			protected override DataTemplate SelectTemplateCore(object item)
 			{
-				if (!_itemsSource.Contains(item))
+				// WinUI can invoke the selector with a null item while recycling a container.
+				if (item is not null && !_itemsSource.Contains(item))
 				{
 					var ex = new InvalidOperationException($"Selector called for item not in source ({item})");
 					Exception = Exception ?? ex;

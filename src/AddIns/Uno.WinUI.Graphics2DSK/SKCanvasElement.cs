@@ -1,6 +1,5 @@
 using System;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
@@ -8,8 +7,9 @@ using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
 
 #if CROSSRUNTIME
-using Microsoft.Extensions.Logging;
-using Uno.Extensions;
+using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
+using Uno.Graphics;
 using Uno.UI.Composition.Drawing;
 #endif
 
@@ -27,9 +27,9 @@ public abstract partial class SKCanvasElement : Grid
 {
 #if CROSSRUNTIME
 	private SKCanvasVisual? _canvasVisual;
-	// Typed as FrameworkElement (not SkiaGLCanvasElement) so holding the field never type-loads the optional
-	// Graphics3DGL add-in. Concrete-island references are isolated in NoInlining methods guarded by a presence check.
-	private FrameworkElement? _island;
+	// Provided by the optional Graphics3DGL add-in through ApiExtensibility, so this assembly never references it:
+	// AOT and eager linkers fail on a reference the package doesn't carry.
+	private IGLIsland? _island;
 	private bool _islandRequested;
 	// The last resort when the backend exposes no SKCanvas and the GL island is unavailable or failed: draw into a
 	// raster SKSurface and hand its pixels to the active backend as a texture. Slower than either, never blank.
@@ -64,13 +64,12 @@ public abstract partial class SKCanvasElement : Grid
 		}
 		_islandRequested = true;
 
-		if (!IsGLCanvasElementAvailable())
+		if (!ApiExtensibility.IsRegistered<IGLIsland>())
 		{
-			// Graphics3DGL isn't referenced — no GL island, and don't touch SkiaGLCanvasElement (keeps its base
-			// assembly unloaded). Draw through the software surface instead.
+			// Graphics3DGL isn't referenced — no GL island. Draw through the software surface instead.
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
-				this.Log().LogInformation($"{nameof(SKCanvasElement)}: the active backend exposes no SKCanvas and Uno.WinUI.Graphics3DGL is not referenced; drawing through a software surface.");
+				this.Log().Info($"{nameof(SKCanvasElement)}: the active backend exposes no SKCanvas and Uno.WinUI.Graphics3DGL is not referenced; drawing through a software surface.");
 			}
 
 			_software = true;
@@ -85,7 +84,7 @@ public abstract partial class SKCanvasElement : Grid
 	{
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
-			this.Log().LogInformation($"{nameof(SKCanvasElement)}: the GL island is unavailable; drawing through a software surface.");
+			this.Log().Info($"{nameof(SKCanvasElement)}: the GL island is unavailable; drawing through a software surface.");
 		}
 
 		_software = true;
@@ -94,7 +93,7 @@ public abstract partial class SKCanvasElement : Grid
 		{
 			if (_island is not null)
 			{
-				Children.Remove(_island);
+				Children.Remove(_island.Element);
 				_island = null;
 			}
 			_canvasVisual?.Invalidate();
@@ -138,17 +137,12 @@ public abstract partial class SKCanvasElement : Grid
 		session.Restore();
 	}
 
-	private static bool IsGLCanvasElementAvailable()
-		=> Type.GetType("Uno.WinUI.Graphics3DGL.GLCanvasElement, Uno.WinUI.Graphics3DGL") is not null;
-
-	// Isolated so the SkiaGLCanvasElement token is JIT-resolved only once Graphics3DGL is confirmed present.
-	[MethodImpl(MethodImplOptions.NoInlining)]
 	private void CreateIsland()
 	{
-		if (_island is null)
+		if (_island is null && ApiExtensibility.CreateInstance<IGLIsland>(new SkiaGLIslandRenderer(this), out var island))
 		{
-			_island = new SkiaGLCanvasElement(this);
-			Children.Add(_island);
+			_island = island;
+			Children.Add(island.Element);
 			// The fallback was reached from a paint that already returned; re-invalidate so the visual repaints now
 			// that the island is a child (otherwise the island — and thus the drawing — never composites).
 			_canvasVisual?.Invalidate();
@@ -165,15 +159,8 @@ public abstract partial class SKCanvasElement : Grid
 	public void Invalidate()
 	{
 		_canvasVisual?.Invalidate();
-		if (_island is not null)
-		{
-			InvalidateIsland();
-		}
+		_island?.Invalidate();
 	}
-
-	// Isolated: the SkiaGLCanvasElement cast is JIT-resolved only when an island exists (i.e. Graphics3DGL is present).
-	[MethodImpl(MethodImplOptions.NoInlining)]
-	private void InvalidateIsland() => ((SkiaGLCanvasElement)_island!).Invalidate();
 
 	internal void InvokeRenderOverride(SKCanvas canvas, Size area) => RenderOverride(canvas, area);
 #else

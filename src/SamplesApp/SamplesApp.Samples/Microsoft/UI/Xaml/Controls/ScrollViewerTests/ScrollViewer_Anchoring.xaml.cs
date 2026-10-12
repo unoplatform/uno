@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
+using Microsoft.UI;
 using Windows.UI;
 
 namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests

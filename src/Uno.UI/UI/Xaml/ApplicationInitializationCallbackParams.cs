@@ -8,5 +8,8 @@ namespace Microsoft.UI.Xaml
 {
 	public sealed partial class ApplicationInitializationCallbackParams
 	{
+		internal ApplicationInitializationCallbackParams()
+		{
+		}
 	}
 }

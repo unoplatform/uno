@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml.Media;
 

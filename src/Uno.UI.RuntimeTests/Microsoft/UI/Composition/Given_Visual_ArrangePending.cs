@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -76,9 +77,7 @@ public class Given_Visual_ArrangePending
 	// screenshot helpers render synchronously and would pass whether or not a frame was ever scheduled.
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
-	[Ignore("Render suppression before the first arrange is specific to the Skia compositor.")]
-#endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Observes Uno's compositor frame requests, no WinUI equivalent.
 	public void When_ArrangePending_Changes_Then_A_New_Frame_Is_Requested()
 	{
 #if __SKIA__
@@ -144,6 +143,14 @@ public class Given_Visual_ArrangePending
 		}
 
 		public void RequestNewFrame() => NewFrameRequests++;
+
+		public event EventHandler<long>? FrameStarting
+		{
+			add { }
+			remove { }
+		}
+
+		public long FrameIntervalInTicks => TimeSpan.TicksPerSecond / 60;
 
 		public void AddDamage(Windows.Foundation.Rect bounds) { }
 

@@ -1,12 +1,14 @@
 #nullable enable
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
@@ -152,9 +154,79 @@ public class Given_AccessibleScrollViewer
 			"aria-roledescription must never be emitted on an element with no accessible name (FR-014).");
 	}
 
+	/// <summary>
+	/// Mirroring XAML focus into the semantic DOM must not let the browser scroll the semantic scroller
+	/// to reveal the node, as that scroll is fed back into the ScrollViewer. Programmatic focus does not
+	/// bring an element into view.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Programmatic_Focus_Outside_Viewport_Then_Not_Scrolled()
+	{
+		await EnsureAccessibilityEnabledAsync();
 
+		var target = new Button { Content = "Target" };
+		var scrollViewer = new ScrollViewer
+		{
+			Height = 200,
+			Content = new StackPanel
+			{
+				Children =
+				{
+					new Button { Content = "Top" },
+					new Border { Height = 2000 },
+					target,
+				},
+			},
+		};
 
+		await UITestHelper.Load(scrollViewer);
+		await UITestHelper.WaitFor(() => SemanticElementExists(target), timeoutMS: 5000,
+			message: "Timed out waiting for the target's semantic node.");
 
+		target.Focus(FocusState.Programmatic);
+
+		// A browser-driven scroll can land a few frames after Focus(), so keep watching.
+		var stopwatch = Stopwatch.StartNew();
+		while (stopwatch.ElapsedMilliseconds < 500)
+		{
+			var semanticScrollTop = InvokeBrowserJs($"(function(){{let e = document.getElementById('{GetSemanticElementId(target)}'); let top = 0; while (e) {{ top = Math.max(top, e.scrollTop); e = e.parentElement; }} return String(top); }})()");
+			Assert.AreEqual("0", semanticScrollTop, "The browser scrolled a semantic ancestor to reveal the focused node.");
+			await Task.Delay(50);
+		}
+
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(0, scrollViewer.VerticalOffset);
+	}
 
 #endif
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+	public async Task When_ScrollViewer_Scrollable_On_Mobile_Then_Native_Scroll_Details_Populated()
+	{
+#if __SKIA__
+		var scrollViewer = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			Content = new Border { Width = 50, Height = 2000 },
+		};
+		AutomationProperties.SetName(scrollViewer, "Article Content");
+		AutomationProperties.SetAutomationId(scrollViewer, "scrollviewer-scroll-t045");
+
+		await UITestHelper.Load(scrollViewer);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var snapshot = MobileAccessibilityTestHelper.TryGetNativeSnapshot(scrollViewer);
+		Assert.IsNotNull(snapshot, "Native snapshot must be available on mobile Skia.");
+		Assert.IsNotNull(snapshot.Details?.Scroll, "Scroll must be populated for a scrollable ScrollViewer.");
+		Assert.IsTrue(
+			snapshot.Details!.Scroll!.IsVerticallyScrollable,
+			"A vertically overflowing ScrollViewer must report IsVerticallyScrollable=true.");
+#endif
+	}
 }

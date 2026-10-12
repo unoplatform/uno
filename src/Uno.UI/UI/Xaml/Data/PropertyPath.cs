@@ -16,20 +16,6 @@
 			return new PropertyPath(path);
 		}
 
-		public static implicit operator string(PropertyPath path)
-		{
-			if (path != null)
-			{
-				return path.Path;
-			}
-			else
-			{
-				// An null path is an empty string, particularly when initializing a simple binding.
-				// This is similar to the cleanup made in the CleanupPath method.
-				return "";
-			}
-		}
-
 		static string CleanupPath(string path)
 		{
 			if (string.IsNullOrEmpty(path))

@@ -47,6 +47,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_Uno_Detached_CalendarViewDayItem_Patterns_Are_Queried()
+		{
+			var item = new CalendarViewDayItem();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(item);
+
+			Assert.IsNotNull(peer);
+			Assert.IsNull(peer.GetPattern(PatternInterface.Window));
+			Assert.IsNull(peer.GetPattern(PatternInterface.GridItem));
+			Assert.IsNotNull(peer.GetPattern(PatternInterface.ScrollItem));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public void When_AutomationPeer_Default_GetAcceleratorKey()
 		{
 			var automationPeer = new TestAutomationPeer();

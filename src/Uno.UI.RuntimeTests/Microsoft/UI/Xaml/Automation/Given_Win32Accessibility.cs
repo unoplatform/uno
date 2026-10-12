@@ -326,10 +326,58 @@ public class Given_Win32Accessibility
 		}
 	}
 
+	// No BoundingRectangle change is raised on layout (WinUI raises none either), so clients rely on
+	// pulling fresh bounds after an element moves.
+	[TestMethod]
+	public async Task When_Element_Moves_BoundingRectangle_Is_Current()
+	{
+		var button = new Button
+		{
+			Content = "Subject",
+			Width = 120,
+			Height = 40,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			VerticalAlignment = VerticalAlignment.Top,
+			Margin = new Thickness(10, 10, 0, 0),
+		};
+
+		try
+		{
+			await UITestHelper.Load(new Grid
+			{
+				Width = 300,
+				Height = 200,
+				Children = { button },
+			});
+
+			var accessibility = ResolveAccessibility(button)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+			var provider = GetOrCreateProvider(accessibility, button)
+				?? throw new InvalidOperationException("Button provider not found.");
+			var scale = button.XamlRoot?.RasterizationScale
+				?? throw new InvalidOperationException("XamlRoot not found.");
+			var before = GetBoundingRectangle(provider);
+
+			button.Margin = new Thickness(70, 50, 0, 0);
+			await WindowHelper.WaitForIdle();
+
+			var after = GetBoundingRectangle(provider);
+
+			Assert.AreEqual(before.Left + 60 * scale, after.Left, 2 * scale);
+			Assert.AreEqual(before.Top + 40 * scale, after.Top, 2 * scale);
+			Assert.AreEqual(before.Width, after.Width, 2 * scale);
+			Assert.AreEqual(before.Height, after.Height, 2 * scale);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	[TestMethod]
 	public void When_Traversing_Deep_Cyclic_Descendants()
 	{
-		var accessibilityType = FindType("Uno.UI.Runtime.Skia.Win32.Win32Accessibility")
+		var accessibilityType = FindType("Uno.UI.Runtime.Win32.Win32Accessibility")
 			?? throw new InvalidOperationException("Win32Accessibility type not found.");
 		var traverse = accessibilityType.GetMethod(
 			"TraverseDescendants",
@@ -380,7 +428,7 @@ public class Given_Win32Accessibility
 
 	private static object? ResolveAccessibility(UIElement element)
 	{
-		var router = FindType("Uno.UI.Runtime.Skia.AccessibilityRouter")
+		var router = FindType("Uno.UI.Runtime.AccessibilityRouter")
 			?? throw new InvalidOperationException("AccessibilityRouter type not found.");
 		var resolve = router.GetMethod(
 			"Resolve",

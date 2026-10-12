@@ -14,7 +14,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
+		<UnoRuntimeVariant>Reference</UnoRuntimeVariant>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.Foundation</CommonOverridePackageId>

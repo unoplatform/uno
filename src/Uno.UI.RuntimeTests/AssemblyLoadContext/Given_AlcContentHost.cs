@@ -241,7 +241,7 @@ public class Given_AlcContentHost
 		// A fresh host carrying its OWN consumer-defined Light theme dictionary.
 		var probe = new AlcContentHost();
 		var hostOwnedLight = new ResourceDictionary();
-		hostOwnedLight["HostOwnedThemeColor"] = Windows.UI.Colors.Red;
+		hostOwnedLight["HostOwnedThemeColor"] = Microsoft.UI.Colors.Red;
 		probe.Resources.ThemeDictionaries["Light"] = hostOwnedLight;
 
 		// Project the secondary app's resources: its Light dictionary overwrites the host's same-key one.
@@ -718,7 +718,7 @@ public class Given_AlcContentHost
 		};
 
 		// Set first content — event should fire once.
-		var content1 = new Border { Background = new SolidColorBrush(Windows.UI.Colors.Blue) };
+		var content1 = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.Blue) };
 		host.Content = content1;
 
 		Assert.AreEqual(1, fireCount, "ContentChanged should fire once after the first content is set.");
@@ -843,6 +843,28 @@ public class Given_AlcContentHost
 		Assert.IsTrue(activatedFired, "Activated event should fire when registered before Frame content is set");
 		Assert.AreEqual(Windows.UI.Core.CoreWindowActivationState.CodeActivated, activationState,
 			"Activation state should be CodeActivated when activated after deferred Frame content is applied");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_AlcWindow_ContentSet_Then_ContentChangedRaised()
+	{
+		var (_, alcWindow) = await StartSecondaryAlcAppWithWindowAsync(new[] { "--defer-content" });
+
+		UIElement? contentAtEvent = null;
+		var fireCount = 0;
+		alcWindow.ContentChanged += (_, _) =>
+		{
+			fireCount++;
+			contentAtEvent = alcWindow.Content;
+		};
+
+		ApplyDeferredContentFromSecondaryApp();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, fireCount, "ContentChanged should fire when secondary ALC content is redirected to the host");
+		Assert.IsNotNull(contentAtEvent, "Window.Content should already reflect the hosted content when ContentChanged fires");
+		Assert.AreSame(alcWindow.Content, contentAtEvent);
 	}
 
 	[TestMethod]

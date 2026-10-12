@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using static Private.Infrastructure.TestServices;
 

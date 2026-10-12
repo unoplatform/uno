@@ -2,6 +2,10 @@
 {
 	public partial class DatePickerFlyoutItem : DependencyObject
 	{
+		internal DatePickerFlyoutItem()
+		{
+		}
+
 		//void InitializeImpl()
 		//{
 		//	//wrl.ComPtr<xaml.IDependencyObjectFactory> spInnerFactory;

@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Markup
 #if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct XmlnsDefinition
+	public partial struct XmlnsDefinition : global::System.IEquatable<global::Microsoft.UI.Xaml.Markup.XmlnsDefinition>
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.XmlnsDefinition()
 #if __SKIA__
@@ -17,6 +17,32 @@ namespace Microsoft.UI.Xaml.Markup
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.XmlnsDefinition(string, string)
+#if __SKIA__
+		public static bool operator ==(XmlnsDefinition x, XmlnsDefinition y)
+			=> x.XmlNamespace == y.XmlNamespace
+			&& x.Namespace == y.Namespace;
+#endif
+#if __SKIA__
+		public static bool operator !=(XmlnsDefinition x, XmlnsDefinition y)
+			=> !(x.XmlNamespace == y.XmlNamespace
+				&& x.Namespace == y.Namespace);
+#endif
+#if __SKIA__
+		public bool Equals(XmlnsDefinition other)
+			=> XmlNamespace == other.XmlNamespace
+			&& Namespace == other.Namespace;
+#endif
+#if __SKIA__
+		public override bool Equals(object obj)
+			=> obj is XmlnsDefinition that
+			&& XmlNamespace == that.XmlNamespace
+			&& Namespace == that.Namespace;
+#endif
+#if __SKIA__
+		public override int GetHashCode()
+			=> XmlNamespace.GetHashCode()
+			^ Namespace.GetHashCode();
+#endif
 #if __SKIA__
 		public string XmlNamespace;
 #endif

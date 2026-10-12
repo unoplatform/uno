@@ -3,271 +3,42 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Text
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class RichEditTextDocument
 	{
-#if __SKIA__
-		internal RichEditTextDocument()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool AlignmentIncludesTrailingWhitespace
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "AlignmentIncludesTrailingWhitespace");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "AlignmentIncludesTrailingWhitespace");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Text.CaretType CaretType
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "CaretType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "CaretType");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public float DefaultTabStop
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "DefaultTabStop");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "DefaultTabStop");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IgnoreTrailingCharacterSpacing
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "IgnoreTrailingCharacterSpacing");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "IgnoreTrailingCharacterSpacing");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Text.ITextSelection Selection
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "Selection");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public uint UndoLimit
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "UndoLimit");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "UndoLimit");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool CanCopy()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "CanCopy()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool CanPaste()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "CanPaste()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool CanRedo()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "CanRedo()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool CanUndo()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "CanUndo()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public int ApplyDisplayUpdates()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "ApplyDisplayUpdates()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public int BatchDisplayUpdates()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "BatchDisplayUpdates()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void BeginUndoGroup()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "BeginUndoGroup()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void EndUndoGroup()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "EndUndoGroup()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Text.ITextCharacterFormat GetDefaultCharacterFormat()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "GetDefaultCharacterFormat()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Text.ITextParagraphFormat GetDefaultParagraphFormat()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "GetDefaultParagraphFormat()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Text.ITextRange GetRange(int startPosition, int endPosition)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "GetRange(int startPosition, int endPosition)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Text.ITextRange GetRangeFromPoint(global::Windows.Foundation.Point point, global::Microsoft.UI.Text.PointOptions options)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "GetRangeFromPoint(Point point, PointOptions options)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void GetText(global::Microsoft.UI.Text.TextGetOptions options, out string value)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "GetText(TextGetOptions options, out string value)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void LoadFromStream(global::Microsoft.UI.Text.TextSetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "LoadFromStream(TextSetOptions options, IRandomAccessStream value)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void Redo()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "Redo()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void SaveToStream(global::Microsoft.UI.Text.TextGetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "SaveToStream(TextGetOptions options, IRandomAccessStream value)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void SetDefaultCharacterFormat(global::Microsoft.UI.Text.ITextCharacterFormat value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "SetDefaultCharacterFormat(ITextCharacterFormat value)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void SetDefaultParagraphFormat(global::Microsoft.UI.Text.ITextParagraphFormat value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "SetDefaultParagraphFormat(ITextParagraphFormat value)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void SetText(global::Microsoft.UI.Text.TextSetOptions options, string value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "SetText(TextSetOptions options, string value)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void Undo()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "Undo()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void ClearUndoRedoHistory()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "ClearUndoRedoHistory()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Text.RichEditMathMode GetMathMode()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "GetMathMode()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void SetMathMode(global::Microsoft.UI.Text.RichEditMathMode mode)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "SetMathMode(RichEditMathMode mode)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void GetMathML(out string value)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "GetMathML(out string value)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void SetMathML(string value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "SetMathML(string value)");
-		}
-#endif
+		// Skipping already declared property AlignmentIncludesTrailingWhitespace
+		// Skipping already declared property CaretType
+		// Skipping already declared property DefaultTabStop
+		// Skipping already declared property IgnoreTrailingCharacterSpacing
+		// Skipping already declared property Selection
+		// Skipping already declared property UndoLimit
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.CanCopy()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.CanPaste()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.CanRedo()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.CanUndo()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.ApplyDisplayUpdates()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.BatchDisplayUpdates()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.BeginUndoGroup()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.EndUndoGroup()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.GetDefaultCharacterFormat()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.GetDefaultParagraphFormat()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.GetRange(int, int)
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.GetRangeFromPoint(Windows.Foundation.Point, Microsoft.UI.Text.PointOptions)
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.GetText(Microsoft.UI.Text.TextGetOptions, out string)
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.LoadFromStream(Microsoft.UI.Text.TextSetOptions, Windows.Storage.Streams.IRandomAccessStream)
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.Redo()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.SaveToStream(Microsoft.UI.Text.TextGetOptions, Windows.Storage.Streams.IRandomAccessStream)
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.SetDefaultCharacterFormat(Microsoft.UI.Text.ITextCharacterFormat)
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.SetDefaultParagraphFormat(Microsoft.UI.Text.ITextParagraphFormat)
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.SetText(Microsoft.UI.Text.TextSetOptions, string)
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.Undo()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.ClearUndoRedoHistory()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.GetMathMode()
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.SetMathMode(Microsoft.UI.Text.RichEditMathMode)
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.GetMathML(out string)
+		// Skipping already declared method Microsoft.UI.Text.RichEditTextDocument.SetMathML(string)
 		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.AlignmentIncludesTrailingWhitespace.get
 		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.AlignmentIncludesTrailingWhitespace.set
 		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.CaretType.get

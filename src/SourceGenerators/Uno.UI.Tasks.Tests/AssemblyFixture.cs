@@ -82,7 +82,7 @@ internal sealed class PackageCacheFixture : IDisposable
 
 	/// <summary>
 	/// Builds a package shaped like Uno.WinRT: a platform-neutral compile surface under lib/&lt;neutral&gt;, a
-	/// per-platform implementation under lib/&lt;platform&gt;, and uno-runtime/&lt;tfm&gt;/&lt;rid&gt; folders.
+	/// per-platform implementation under lib/&lt;platform&gt;, and uno-runtime/&lt;tfm&gt;/&lt;variant&gt; folders.
 	/// </summary>
 	/// <returns>The PackageBasePath the package's own props would pass, i.e. its buildTransitive folder.</returns>
 	public string AddRuntimeEnabledPackage(

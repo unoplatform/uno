@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
 using System.Numerics;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.Foundation.Metadata;
 using RatingControl = Microsoft.UI.Xaml.Controls.RatingControl;

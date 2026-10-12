@@ -42,7 +42,7 @@ Every `async void` is a latent crash waiting for an unhandled exception; on WASM
 
 ### 3. WASM lock-free / mono-thread discipline
 
-Flag new `lock`, `Monitor.Enter`, `Mutex`, synchronous `SemaphoreSlim.Wait()`, or other blocking synchronization primitives **unless** guarded by `#if !__WASM__` with a comment explaining the WASM-safe alternative. On WASM a managed thread waiting on another managed thread deadlocks immediately. Correct alternatives: `Interlocked.*` / `Volatile.*` for scalar state, `ConcurrentDictionary`/`ImmutableInterlocked`, `SemaphoreSlim.WaitAsync()` for bounded async throttling. Severity: **blocker** when added without a guard.
+Flag new `lock`, `Monitor.Enter`, `Mutex`, synchronous `SemaphoreSlim.Wait()`, or other blocking synchronization primitives **unless** the path is kept off the browser with a comment explaining the WASM-safe alternative. `Uno.UI` is a single Skia build that also runs in the browser, so `__WASM__` is never defined there and `#if !__WASM__` guards nothing — use `OperatingSystem.IsBrowser()`; `#if !__WASM__` works only in WinRT-layer files compiled by the Wasm variant. On WASM a managed thread waiting on another managed thread deadlocks immediately. Correct alternatives: `Interlocked.*` / `Volatile.*` for scalar state, `ConcurrentDictionary`/`ImmutableInterlocked`, `SemaphoreSlim.WaitAsync()` for bounded async throttling. Severity: **blocker** when added without a guard.
 
 ### 4. Source-generator performance (`.claude/rules/source-generators.md`)
 

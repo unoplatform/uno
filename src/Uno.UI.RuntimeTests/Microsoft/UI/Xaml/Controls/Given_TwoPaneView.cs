@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -16,6 +17,8 @@ public partial class Given_TwoPaneView
 	{
 		internal bool TemplateApplied { get; private set; }
 		internal Exception ExceptionThrown { get; private set; }
+		internal DependencyObject Pane1ScrollViewer => GetTemplateChild("PART_Pane1ScrollViewer");
+		internal DependencyObject Pane2ScrollViewer => GetTemplateChild("PART_Pane2ScrollViewer");
 
 		protected override void OnApplyTemplate()
 		{
@@ -40,5 +43,8 @@ public partial class Given_TwoPaneView
 		await TestServices.WindowHelper.WaitForIdle();
 		Assert.IsTrue(SUT.TemplateApplied);
 		Assert.IsNull(SUT.ExceptionThrown);
+		Assert.IsNotNull(SUT.Template);
+		Assert.IsNotNull(SUT.Pane1ScrollViewer);
+		Assert.IsNotNull(SUT.Pane2ScrollViewer);
 	}
 }

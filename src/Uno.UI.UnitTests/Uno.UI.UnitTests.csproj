@@ -9,6 +9,8 @@
 		<UnoForceHotReloadCodeGen>true</UnoForceHotReloadCodeGen>
 		<AssemblyName>Uno.UI.UnitTests</AssemblyName>
 		<RootNamespace>Uno.UI.Tests</RootNamespace>
+		<!-- We don't care about boxing allocations in tests -->
+		<NoWarn>$(NoWarn);UnoInternal0002</NoWarn>
 		<!--
 			This define lets the test runner alone signal it is the unit-test host
 			(distinct from runtime-test or production builds) so files Compile-linked
@@ -118,6 +120,10 @@
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourceQualifierPathResolver.cs">
 			<Link>Resources\ResourceQualifierPathResolver.cs</Link>
 		</Compile>
+		<!-- Pure math split out of the Win32/X11 pointer input sources so it's testable without a real
+		     HWND/X11 display (neither runtime host project has its own unit test harness). -->
+		<Compile Include="..\Uno.UI.Runtime.Win32\Devices\Input\Win32PointerCoordinateMath.cs" Link="Windows_UI_Input\Win32PointerCoordinateMath.cs" />
+		<Compile Include="..\Uno.UI.Runtime.X11\Devices\Input\X11PointerCoordinateMath.cs" Link="Windows_UI_Input\X11PointerCoordinateMath.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<!--
@@ -129,20 +135,20 @@
 			deploy time), but the unit-test runner is its own .exe and needs the real
 			Skia partials so HasThreadAccessOverride and DispatchOverride exist.
 		-->
-		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" />
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Generic.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
+		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Generic.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
 
-		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibraryProps\Uno.UI.Tests.ViewLibraryProps.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -36,6 +36,7 @@
     -->
     <UnoFeatures>
     </UnoFeatures>
+    <UnoFeatures Condition=" '$(UnoFeaturesOverride)' != '' ">$(UnoFeaturesOverride)</UnoFeatures>
 
     <NoWarn>$(NoWarn);NU1605;IL2026;IL2008;IL2104</NoWarn>
   </PropertyGroup>

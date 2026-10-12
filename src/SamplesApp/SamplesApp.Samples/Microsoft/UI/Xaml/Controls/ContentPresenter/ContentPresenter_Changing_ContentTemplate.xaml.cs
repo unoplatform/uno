@@ -13,9 +13,6 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 	{
 		public ContentPresenter_Changing_ContentTemplate()
 		{
-#if HAS_UNO
-			FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
-#endif
 			this.InitializeComponent();
 		}
 

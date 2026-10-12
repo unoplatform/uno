@@ -1,89 +1,68 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
-using System.Diagnostics;
 using System.Numerics;
-using System.Threading;
 
 namespace Microsoft.UI.Composition.Interactions;
 
-internal class InteractionTrackerPointerWheelInertiaHandler : IInteractionTrackerInertiaHandler
+/// <summary>
+/// WinUI scrolls a notch with a sine ease-out keyframe animation from the current position to the clamped target,
+/// D·sin(π/2·t/T) over T = 250ms, shortened by the share of the move the clamp left
+/// (dwmcorei CInteractionTracker::ScrollToPosition and CalculatePositionAnimationDuration).
+/// </summary>
+internal class InteractionTrackerPointerWheelInertiaHandler : InteractionTrackerFrameInertiaHandler
 {
-	// InteractionTracker works at 60 FPS, per documentation
-	// https://learn.microsoft.com/en-us/windows/uwp/composition/interaction-tracker-manipulations#why-use-interactiontracker
-	// > InteractionTracker was built to utilize the new Animation engine that operates on an independent thread at 60 FPS,resulting in smooth motion.
-	private const int IntervalInMilliseconds = 17; // Ceiling of 1000/60
+	private const float DurationInSeconds = 0.25f;
+	private const float MinDurationInSeconds = 0.001f;
 
-	private Timer? _timer;
-	private Stopwatch? _stopwatch;
-
-	private readonly InteractionTracker _interactionTracker;
 	private readonly Vector3 _minPosition;
 	private readonly Vector3 _maxPosition;
 	private readonly Vector3 _initialPosition;
-	private readonly Vector3 _calculatedFinalPosition;
+	private readonly Vector3 _distance;
+	private readonly Vector3 _target;
+	private readonly double _durationInSeconds;
 
-	public InteractionTrackerPointerWheelInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities)
+	public InteractionTrackerPointerWheelInertiaHandler(InteractionTracker interactionTracker, Vector3 target)
+		: base(interactionTracker, requestId: 0)
 	{
-		_interactionTracker = interactionTracker;
 		_minPosition = interactionTracker.MinPosition;
 		_maxPosition = interactionTracker.MaxPosition;
-		_initialPosition = _interactionTracker.Position;
+		_initialPosition = interactionTracker.Position;
 
-		InitialVelocity = translationVelocities;
+		_target = Vector3.Clamp(target, _minPosition, _maxPosition);
+		_distance = _target - _initialPosition;
 
-		// This handler works with constant velocity for 0.25 second.
-		_calculatedFinalPosition = interactionTracker.Position + InitialVelocity * 0.25f;
+		var duration = _target == target
+			? DurationInSeconds
+			: Math.Max(DurationInSeconds * _distance.Length() / (target - _initialPosition).Length(), MinDurationInSeconds);
+		_durationInSeconds = duration;
+
+		InitialVelocity = _distance * (MathF.PI / 2 / duration);
 	}
 
-	public Vector3 InitialVelocity { get; }
+	public override Vector3 InitialVelocity { get; }
 
-	public Vector3 FinalPosition => Vector3.Clamp(_calculatedFinalPosition, _minPosition, _maxPosition);
+	public override Vector3 FinalPosition => _target;
 
-	public Vector3 FinalModifiedPosition => FinalPosition;
+	public override Vector3 FinalModifiedPosition => _target;
 
-	public float FinalScale => _interactionTracker.Scale; // TODO: Scale not yet implemented
-
-	public void Start()
+	protected override void Advance(long elapsedTicks)
 	{
-		if (_timer is not null)
+		var s = elapsedTicks / (double)TimeSpan.TicksPerSecond / _durationInSeconds;
+		if (s >= 1)
 		{
-			throw new InvalidOperationException("Cannot start inertia timer twice.");
-		}
-
-		_stopwatch = Stopwatch.StartNew();
-		_timer = new Timer(OnTick, null, 0, IntervalInMilliseconds);
-	}
-
-	public void Stop()
-	{
-		_timer?.Dispose();
-		_stopwatch?.Stop();
-	}
-
-	private void OnTick(object? state)
-	{
-		var currentElapsed = _stopwatch!.ElapsedMilliseconds;
-
-		if (currentElapsed >= 250)
-		{
-			_interactionTracker.SetPosition(FinalModifiedPosition, requestId: 0);
-			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
-			_timer!.Dispose();
-			_stopwatch!.Stop();
+			Complete();
 			return;
 		}
 
-		var newPosition = _initialPosition + (currentElapsed / 1000.0f) * InitialVelocity;
+		var newPosition = _initialPosition + _distance * (float)Math.Sin(Math.PI / 2 * s);
 		var clampedNewPosition = Vector3.Clamp(newPosition, _minPosition, _maxPosition);
 
-		_interactionTracker.SetPosition(clampedNewPosition, requestId: 0);
+		InteractionTracker.SetPosition(clampedNewPosition, RequestId);
 
 		if (clampedNewPosition.Equals(FinalModifiedPosition))
 		{
-			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
-			_timer!.Dispose();
-			_stopwatch!.Stop();
+			Complete();
 		}
 	}
 }

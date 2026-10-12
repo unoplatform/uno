@@ -6,7 +6,7 @@ namespace Windows.Storage.AccessCache
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct AccessListEntry
+	public partial struct AccessListEntry : global::System.IEquatable<global::Windows.Storage.AccessCache.AccessListEntry>
 	{
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntry.AccessListEntry()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,32 @@ namespace Windows.Storage.AccessCache
 		}
 #endif
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntry.AccessListEntry(string, string)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(AccessListEntry x, AccessListEntry y)
+			=> x.Token == y.Token
+			&& x.Metadata == y.Metadata;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(AccessListEntry x, AccessListEntry y)
+			=> !(x.Token == y.Token
+				&& x.Metadata == y.Metadata);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(AccessListEntry other)
+			=> Token == other.Token
+			&& Metadata == other.Metadata;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is AccessListEntry that
+			&& Token == that.Token
+			&& Metadata == that.Metadata;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> Token.GetHashCode()
+			^ Metadata.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public string Token;
 #endif

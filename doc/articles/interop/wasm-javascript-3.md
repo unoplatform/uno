@@ -208,7 +208,7 @@ Create a new _JavaScript_ file `flatpickrloader.js` in the `Platforms/WebAssembl
             f(element, options);
        }});";
    
-       this.ExecuteJavascript(javascript);
+       _element?.ExecuteJavascript(javascript);
    }
    ```
 
@@ -219,17 +219,6 @@ Create a new _JavaScript_ file `flatpickrloader.js` in the `Platforms/WebAssembl
 ### Troubleshooting
 
 If your JavaScript integration is not behaving properly, you can troubleshoot with hints below.
-
-#### My JavaScript control does not accept pointer input
-
-When using the WebAssembly Native renderer, in the constructor of your wrapper control, add the following:
-
-```csharp
-// XAML behavior: a non-null background is required on an element to be "visible to pointers".
-// Uno reproduces this behavior, so we must set it here even if we're not using the background.
-// Not doing this will lead to a `pointer-events: none` CSS style on the control.
-Background = new SolidColorBrush(Colors.Transparent);
-```
 
 #### `TextBlock` content is not visible in browsers with the dark theme
 

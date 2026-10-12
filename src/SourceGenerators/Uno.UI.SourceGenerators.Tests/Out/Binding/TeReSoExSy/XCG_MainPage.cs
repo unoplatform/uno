@@ -50,7 +50,7 @@ namespace TestRepro
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
-				__p1.SetBinding(
+				global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 					global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 					new Microsoft.UI.Xaml.Data.Binding()
 					{

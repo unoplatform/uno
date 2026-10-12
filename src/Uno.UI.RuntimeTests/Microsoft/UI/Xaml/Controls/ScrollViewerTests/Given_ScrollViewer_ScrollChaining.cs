@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI;
 using Windows.UI;
 
 using static Private.Infrastructure.TestServices;
@@ -21,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ScrollViewerTests;
 [RunsOnUIThread]
 public class Given_ScrollViewer_ScrollChaining
 {
-#if HAS_UNO && UNO_HAS_MANAGED_SCROLL_PRESENTER
+#if HAS_UNO
 	private const double ViewportSize = 200;
 	private const double InnerContentHeight = 500;
 	private const double OuterContentHeight = 2000;

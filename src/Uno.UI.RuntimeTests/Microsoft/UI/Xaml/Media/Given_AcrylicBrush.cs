@@ -97,8 +97,8 @@ public class Given_AcrylicBrush
 	private async Task<(RawBitmap expected, RawBitmap actual)> Render(FrameworkElement expected, FrameworkElement actual)
 	{
 		// making sure the viewport is big enough for elements to fully render (and also accounting for DPI calculations)
-		var expectedElm = new Grid { Width = 500, Height = 500, Children = { expected }, Background = new SolidColorBrush(Windows.UI.Colors.White) };
-		var actualElm = new Grid { Width = 500, Height = 500, Children = { actual }, Background = new SolidColorBrush(Windows.UI.Colors.White) };
+		var expectedElm = new Grid { Width = 500, Height = 500, Children = { expected }, Background = new SolidColorBrush(Microsoft.UI.Colors.White) };
+		var actualElm = new Grid { Width = 500, Height = 500, Children = { actual }, Background = new SolidColorBrush(Microsoft.UI.Colors.White) };
 		await UITestHelper.Load(new StackPanel()
 		{
 			Spacing = 10,

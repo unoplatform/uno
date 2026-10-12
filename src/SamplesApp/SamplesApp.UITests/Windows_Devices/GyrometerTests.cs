@@ -1,4 +1,6 @@
-﻿using System;
+// [UITest -> runtime-test migration] NOT migrated to a runtime test:
+// Device-sensor test (real Gyrometer hardware, Android/iOS only via ActivePlatforms) — Skia's Gyrometer.GetDefault() always returns null (see Gyrometer.unsupported.cs), so there is no sensor to attach/read in a Skia runtime test.
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

@@ -15,7 +15,7 @@ namespace Uno.UI.Composition.Drawing;
 /// Register as <see cref="ImageEncoderDecoder.Current"/> so an image-bearing app can run with no native libSkiaSharp.
 /// Formats the managed decoder can't handle return false (there is no Skia fallback here).
 /// </summary>
-public sealed class ManagedImageDecoderBackend : IImageEncoderDecoder
+internal sealed class ManagedImageDecoderBackend : IImageEncoderDecoder
 {
 	public bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageFrames? frames)
 	{

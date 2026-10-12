@@ -4,6 +4,7 @@ using System;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

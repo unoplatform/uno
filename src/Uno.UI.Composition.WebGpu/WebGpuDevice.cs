@@ -40,6 +40,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public IntPtr ColorFuncBgl;
 	public IntPtr EffectNoise;          // procedural WhiteNoise generator (no input)
 	public IntPtr EffectNoiseBgl;
+	public IntPtr ClearRectPipe;        // solid fill under a scissor: the damaged rect's clear on a partial repaint
+	public IntPtr ClearRectBgl;
 	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public IntPtr RampTex, RampView;        // one row per gradient: its colour ramp sampled by t (see RampRow)
 	public IntPtr DummyClipMore;            // one-entry placeholder for the clip overflow binding when a draw has four clips or fewer
@@ -156,6 +158,44 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// Escape hatch for the occlusion prepass: it changes what reaches the rasteriser, so a driver that gets the
 	// depth comparison wrong can be told apart from a bug in the geometry without a rebuild.
 	internal static readonly bool NoDepthOcclusion = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_DEPTH_OCCLUSION") == "1";
+
+	// Submissions the GPU may not have finished yet, oldest first.
+	private readonly Queue<ulong> _inFlight = new();
+
+	/// <summary>How many frames the CPU may submit ahead of the GPU. A swapchain caps this for presented frames,
+	/// but nothing does for frames that are never presented (offscreen renders, a window whose present is skipped):
+	/// on a slow device those pile up with every resource they hold, faster than the GPU retires them.</summary>
+	internal const int MaxFramesInFlight = 3;
+
+	/// <summary>
+	/// Submits a frame's commands. Natively the CPU runs ahead of the GPU by a few frames, no more: pooled-buffer
+	/// reuse is queue-ordered and transient textures are refcount-released, so a frame's resources live until the GPU
+	/// has finished it. The browser has neither submission indices nor a blocking poll, and paces frames itself.
+	/// </summary>
+	internal void SubmitFrame(IntPtr commandBuffer)
+	{
+		if (OperatingSystem.IsBrowser())
+		{
+			wgpuQueueSubmit(Q, 1, (IntPtr)(&commandBuffer));
+			return;
+		}
+
+		ThrottleSubmission(wgpuQueueSubmitForIndex(Q, 1, (IntPtr)(&commandBuffer)));
+	}
+
+	/// <summary>Records a frame's submission and blocks on the oldest one once more than
+	/// <see cref="MaxFramesInFlight"/> are outstanding, then pumps the device without waiting.</summary>
+	private void ThrottleSubmission(ulong submission)
+	{
+		_inFlight.Enqueue(submission);
+		while (_inFlight.Count > MaxFramesInFlight)
+		{
+			var oldest = _inFlight.Dequeue();
+			_ = wgpuDevicePoll(Dev, 1u, &oldest);
+		}
+
+		_ = wgpuDevicePoll(Dev, 0u, null);
+	}
 
 	public void BeginFrameResources()
 	{
@@ -395,6 +435,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	/// </summary>
 	public WebGpuPathAtlas PathAtlas { get; } = new();
 
+	/// <summary>An entry was refused for want of room with every page open; the next frame evicts idle holders.</summary>
+	internal bool AtlasStarved;
+
+	/// <summary>Evictions run so far, so an entry built while starved can tell whether room has been made since.</summary>
+	internal long AtlasEvictions;
+
 	/// <summary>Opens another atlas page. Pages are added when the existing ones are exhausted.</summary>
 	public void AddPathAtlasPage()
 	{
@@ -498,6 +544,9 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		ColorFuncBgl = wgpuRenderPipelineGetBindGroupLayout(ColorFunc, 0);
 		EffectNoise = Pipeline(Module(EffectNoiseWgsl), IntPtr.Zero, &replace, ColorFormat);
 		EffectNoiseBgl = wgpuRenderPipelineGetBindGroupLayout(EffectNoise, 0);
+		// Replace, so the fill writes the colour and its alpha exactly as a load-op clear would.
+		ClearRectPipe = Pipeline(Module(ClearRectWgsl), IntPtr.Zero, &replace, ColorFormat);
+		ClearRectBgl = wgpuRenderPipelineGetBindGroupLayout(ClearRectPipe, 0);
 
 		var sd = new WGPUSamplerDescriptor { AddressModeU = WGPUAddressMode.ClampToEdge, AddressModeV = WGPUAddressMode.ClampToEdge, MagFilter = WGPUFilterMode.Linear, MinFilter = WGPUFilterMode.Linear, MipmapFilter = WGPUMipmapFilterMode.Linear, MaxAnisotropy = 1 };
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);

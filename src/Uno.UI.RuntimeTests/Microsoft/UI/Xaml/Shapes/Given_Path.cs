@@ -50,9 +50,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18694")]
-#if !__SKIA__
-		[Ignore("PathFigure.IsFilled's interaction with Path is only implemented on Skia.")]
-#endif
 		public async Task When_PathGeometry_Figures_Not_Filled_ColorBrush()
 		{
 			var SUT = new Path
@@ -121,9 +118,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18694")]
-#if !__SKIA__
-		[Ignore("PathFigure.IsFilled's interaction with Path is only implemented on Skia.")]
-#endif
 		public async Task When_PathGeometry_Figures_Not_Filled_ImageBrush()
 		{
 			var brush = new ImageBrush() { ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/rect.png")) };
@@ -357,9 +351,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2228")]
-#if !__SKIA__
-		[Ignore("StreamGeometry elliptical arcs are only implemented on Skia (issue #2228 scope).")]
-#endif
+		// WinUI measures a Path that isn't in the live tree as 0x0.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_SvgPath_String_With_Elliptical_Arc_Parses()
 		{
 			// SVG path strings with elliptical arc commands (rx != ry) used to throw
@@ -456,5 +449,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			Assert.IsLessThanOrEqualTo(1, Math.Abs(40 - path.DesiredSize.Height), $"Height: {path.DesiredSize}");
 		}
 #endif
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4563")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Path_In_Nested_Canvas_With_MatrixTransform_Renders_Transformed()
+		{
+			var root = (Microsoft.UI.Xaml.FrameworkElement)XamlReader.Load(
+				@"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+					   xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+					   Width='200' Height='200'
+					   Background='Black'>
+					<Viewbox>
+						<Canvas x:Name='layer1' Width='53' Height='53'>
+							<Canvas x:Name='g958'>
+								<Canvas.RenderTransform>
+									<MatrixTransform Matrix='1.1048446, 0, 0, 1.1959561, -67.035883, -96.098854'/>
+								</Canvas.RenderTransform>
+								<Canvas x:Name='g920'>
+									<Canvas.RenderTransform>
+										<TranslateTransform X='3.6170566' Y='26.121871'/>
+									</Canvas.RenderTransform>
+									<Path x:Name='path882' Fill='#FFFFFFFF' Data='m 89.844925 86.908932 -5.484915 -9.50015 -5.484913 -9.500149 10.969828 -10e-7 10.969825 0 -5.484911 9.50015 z'>
+										<Path.RenderTransform>
+											<MatrixTransform Matrix='0.99974084, 0, 0, 1.0590767, 0.02096173, -5.1400261'/>
+										</Path.RenderTransform>
+									</Path>
+								</Canvas>
+								<Rectangle Canvas.Left='68.170586' Canvas.Top='85.901428' Width='38.119644' Height='2.9399648' x:Name='rect9016' Fill='#FFFFFFFF'/>
+							</Canvas>
+						</Canvas>
+					</Viewbox>
+				</Grid>");
+
+			await UITestHelper.Load(root);
+			var screenshot = await UITestHelper.ScreenShot(root);
+
+			// Expected positions come from composing the Viewbox scale (200/53) with the three nested transforms.
+			ImageAssert.HasColorAt(screenshot, new Point(137, 87), Colors.White); // triangle centroid
+			ImageAssert.HasColorAt(screenshot, new Point(110, 31), Colors.White); // bar centre
+			ImageAssert.HasColorAt(screenshot, new Point(137, 47), Colors.Black); // gap between bar and triangle
+			ImageAssert.HasColorAt(screenshot, new Point(40, 120), Colors.Black); // empty canvas area
+		}
 	}
 }

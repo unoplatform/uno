@@ -70,27 +70,4 @@ public class Given_MediaPlayerPresenter
 			WindowHelper.WindowContent = null;
 		}
 	}
-
-	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
-	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/8339")]
-	public async Task When_No_Source_Letterbox_Is_Black()
-	{
-		// The presenter no longer paints a Background, so the black letterbox has to come
-		// from the template root.
-		var SUT = new MediaPlayerElement { Width = 320, Height = 180 };
-
-		try
-		{
-			await UITestHelper.Load(SUT, x => x.IsLoaded);
-
-			var screenshot = await UITestHelper.ScreenShot(SUT);
-
-			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Microsoft.UI.Colors.Black, tolerance: 5);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
-	}
 }

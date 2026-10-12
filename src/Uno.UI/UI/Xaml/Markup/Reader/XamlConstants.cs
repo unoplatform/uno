@@ -50,6 +50,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			public const string MediaImaging = BaseXamlNamespace + ".Media.Imaging";
 			public const string Shapes = BaseXamlNamespace + ".Shapes";
 			public const string Input = BaseXamlNamespace + ".Input";
+			public const string Automation = BaseXamlNamespace + ".Automation";
 
 			public static readonly string[] PresentationNamespaces =
 			{
@@ -69,6 +70,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				Text,
 				Documents,
 				XamlText,
+				Automation,
 				"System",
 			};
 
@@ -127,7 +129,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			public const string FontFamily = Namespaces.Media + ".FontFamily";
 
 			// Controls
-			public const string NativePage = Namespaces.Controls + ".NativePage"; // Should remains in Umbrella
+			public const string NativePage = "Uno.UI.Runtime.Android.NativePage";
 			public const string Border = Namespaces.Controls + ".Border";
 			public const string TextBlock = Namespaces.Controls + ".TextBlock";
 			public const string UserControl = Namespaces.Controls + ".UserControl";

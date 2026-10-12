@@ -43,7 +43,7 @@ public class Given_BrowserPointerInputSource
 	{
 		var type =
 			Type.GetType("Uno.UI.Runtime.BrowserPointerInputSource, Uno.UI")
-			?? Type.GetType("Uno.UI.Runtime.Skia.BrowserPointerInputSource, Uno.UI.Runtime.Skia.WebAssembly.Browser");
+			?? Type.GetType("Uno.UI.Runtime.BrowserPointerInputSource, Uno.UI.Runtime.WebAssembly.Browser");
 
 		Assert.IsNotNull(type, "BrowserPointerInputSource type was not found in the loaded WASM assemblies.");
 

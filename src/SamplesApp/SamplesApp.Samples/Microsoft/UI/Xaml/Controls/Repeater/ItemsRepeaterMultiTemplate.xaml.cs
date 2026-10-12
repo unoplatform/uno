@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -126,6 +127,19 @@ public sealed partial class ItemsRepeaterMultiTemplate : Page
 		foreach (var item in GenerateItems(start, 20))
 		{
 			_items.Add(item);
+		}
+
+		UpdateStatus();
+	}
+
+	private void OnRemoveExpandersClick(object sender, RoutedEventArgs e)
+	{
+		for (var i = _items.Count - 1; i >= 0; i--)
+		{
+			if (_items[i].ItemType == FeedItemType.DetailSection)
+			{
+				_items.RemoveAt(i);
+			}
 		}
 
 		UpdateStatus();
