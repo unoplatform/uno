@@ -24,6 +24,7 @@ public sealed partial class AppTaskInfoTests : Page
 	];
 
 	private readonly List<AppTaskInfo> _trackedTasks = new();
+	private readonly Dictionary<string, string> _contentDescriptions = new(StringComparer.Ordinal);
 	private readonly List<string> _logEntries = new();
 	private AppTaskInfo? _primaryTask;
 	private int _primaryStepIndex;
@@ -83,14 +84,15 @@ public sealed partial class AppTaskInfoTests : Page
 		}
 
 		_primaryStepIndex = 0;
+		var content = CreateSequenceContent(_primaryStepIndex);
 		_primaryTask = AppTaskInfo.Create(
 			title: "Publish release notes",
 			subtitle: "Preparing changelog",
 			deepLink: DemoDeepLink,
 			iconUri: DemoIconUri,
-			content: CreateSequenceContent(_primaryStepIndex));
+			content: content.Content);
 
-		TrackTask(_primaryTask);
+		TrackTask(_primaryTask, content.Description);
 		Log($"Created primary task '{_primaryTask.Title}'.");
 		RefreshVisualState();
 	}
@@ -109,7 +111,7 @@ public sealed partial class AppTaskInfoTests : Page
 		}
 
 		_primaryStepIndex++;
-		task.Update(AppTaskState.Running, CreateSequenceContent(_primaryStepIndex));
+		UpdateTask(task, AppTaskState.Running, CreateSequenceContent(_primaryStepIndex));
 		Log($"Advanced the primary task to '{_primarySteps[_primaryStepIndex]}'.");
 		RefreshVisualState();
 	}
@@ -123,14 +125,15 @@ public sealed partial class AppTaskInfoTests : Page
 
 		_secondaryTaskCounter++;
 
+		var content = CreatePreviewContent($"Syncing batch {_secondaryTaskCounter}");
 		var task = AppTaskInfo.Create(
 			title: $"Background sync {_secondaryTaskCounter}",
 			subtitle: "Uploading assets",
 			deepLink: CreateDeepLink($"secondary-{_secondaryTaskCounter}"),
 			iconUri: DemoIconUri,
-			content: CreatePreviewContent($"Syncing batch {_secondaryTaskCounter}"));
+			content: content.Content);
 
-		TrackTask(task);
+		TrackTask(task, content.Description);
 		Log($"Created extra running task '{task.Title}'.");
 		RefreshVisualState();
 	}
@@ -163,7 +166,7 @@ public sealed partial class AppTaskInfoTests : Page
 
 		// NeedsAttention requires content that carries a question, so the state is updated together
 		// with sequence content that sets one.
-		task.Update(AppTaskState.NeedsAttention, CreateSequenceContent(_primaryStepIndex));
+		UpdateTask(task, AppTaskState.NeedsAttention, CreateSequenceContent(_primaryStepIndex));
 		Log("Marked the primary task as needing attention.");
 		RefreshVisualState();
 	}
@@ -175,7 +178,7 @@ public sealed partial class AppTaskInfoTests : Page
 			return;
 		}
 
-		task.Update(AppTaskState.Running, CreateSequenceContent(_primaryStepIndex));
+		UpdateTask(task, AppTaskState.Running, CreateSequenceContent(_primaryStepIndex));
 		Log("Resumed the primary task with sequence content.");
 		RefreshVisualState();
 	}
@@ -187,7 +190,7 @@ public sealed partial class AppTaskInfoTests : Page
 			return;
 		}
 
-		task.Update(AppTaskState.Error, AppTaskContent.CreateTextSummaryResult("Upload failed. Check your network connection and try again."));
+		UpdateTask(task, AppTaskState.Error, CreateTextSummary("Upload failed. Check your network connection and try again."));
 		Log("Marked the primary task as failed.");
 		RefreshVisualState();
 	}
@@ -211,7 +214,7 @@ public sealed partial class AppTaskInfoTests : Page
 			return;
 		}
 
-		task.Update(AppTaskState.Running, CreatePreviewContent("Rendering thumbnail preview"));
+		UpdateTask(task, AppTaskState.Running, CreatePreviewContent("Rendering thumbnail preview"));
 		Log("Updated the primary task with preview thumbnail content.");
 		RefreshVisualState();
 	}
@@ -223,7 +226,7 @@ public sealed partial class AppTaskInfoTests : Page
 			return;
 		}
 
-		task.Update(AppTaskState.Completed, CreateGeneratedAssetsContent());
+		UpdateTask(task, AppTaskState.Completed, CreateGeneratedAssetsContent());
 		Log("Updated the primary task with generated assets content.");
 		RefreshVisualState();
 	}
@@ -258,23 +261,32 @@ public sealed partial class AppTaskInfoTests : Page
 
 	private void CompletePrimaryTask(AppTaskInfo task, string logMessage)
 	{
-		task.Update(AppTaskState.Completed, AppTaskContent.CreateTextSummaryResult("Release notes exported successfully."));
+		UpdateTask(task, AppTaskState.Completed, CreateTextSummary("Release notes exported successfully."));
 		Log(logMessage);
 		RefreshVisualState();
 	}
 
-	private void TrackTask(AppTaskInfo task)
+	private void UpdateTask(AppTaskInfo task, AppTaskState state, SampleContent content)
+	{
+		task.Update(state, content.Content);
+		_contentDescriptions[task.Id] = content.Description;
+	}
+
+	private void TrackTask(AppTaskInfo task, string contentDescription)
 	{
 		if (_trackedTasks.All(existing => existing.Id != task.Id))
 		{
 			_trackedTasks.Add(task);
 		}
+
+		_contentDescriptions[task.Id] = contentDescription;
 	}
 
 	private void RemoveTrackedTask(AppTaskInfo task, bool logAction = false)
 	{
 		task.Remove();
 		_trackedTasks.Remove(task);
+		_contentDescriptions.Remove(task.Id);
 
 		if (ReferenceEquals(task, _primaryTask))
 		{
@@ -299,6 +311,7 @@ public sealed partial class AppTaskInfoTests : Page
 		}
 
 		_trackedTasks.Clear();
+		_contentDescriptions.Clear();
 		_primaryTask = null;
 		_primaryStepIndex = 0;
 		_secondaryTaskCounter = 0;
@@ -362,16 +375,51 @@ public sealed partial class AppTaskInfoTests : Page
 			return "Primary task: not created.";
 		}
 
-		var completedSteps = _primaryTask.GetCompletedSteps();
+		return $"Primary task: {_primaryTask.Title} — {_primaryTask.State}. ID: {_primaryTask.Id}. Hidden: {_primaryTask.HiddenByUser}. {DescribeContent(_primaryTask)}";
+	}
+
+	// The public AppTaskInfo API only exposes step data after a restore, so content created in this session
+	// is described from what the sample applied, and restored content is described from its steps.
+	private string DescribeContent(AppTaskInfo task)
+	{
+		if (_contentDescriptions.TryGetValue(task.Id, out var description))
+		{
+			return description;
+		}
+
+		try
+		{
+			return $"{DescribeSteps(task.GetCompletedSteps(), task.GetExecutingStep())} Restored preview, summary, and asset details are not exposed by AppTaskInfo.";
+		}
+		catch (ArgumentException)
+		{
+			// Tasks created without content reject the step accessors.
+			return "Content: none.";
+		}
+	}
+
+	private static int GetCompletedStepCount(AppTaskInfo task)
+	{
+		try
+		{
+			return task.GetCompletedSteps().Length;
+		}
+		catch (ArgumentException)
+		{
+			return 0;
+		}
+	}
+
+	private static string DescribeSteps(string[] completedSteps, string executingStep)
+	{
 		var completedDescription = completedSteps.Length > 0
 			? $"Completed: {string.Join(" → ", completedSteps)}"
 			: "Completed: none";
-		var executingStep = _primaryTask.GetExecutingStep();
 		var executingDescription = string.IsNullOrWhiteSpace(executingStep)
 			? "Current step: none"
 			: $"Current step: {executingStep}";
 
-		return $"Primary task: {_primaryTask.Title} — {_primaryTask.State}. ID: {_primaryTask.Id}. Hidden: {_primaryTask.HiddenByUser}. {completedDescription}. {executingDescription}.";
+		return $"{completedDescription}. {executingDescription}.";
 	}
 
 	private void Log(string message)
@@ -380,41 +428,38 @@ public sealed partial class AppTaskInfoTests : Page
 		LogListView.ItemsSource = _logEntries.ToArray();
 	}
 
-	private static string FormatTask(AppTaskInfo task)
+	private string FormatTask(AppTaskInfo task)
 	{
-		var completedSteps = task.GetCompletedSteps();
-		var completedDescription = completedSteps.Length > 0
-			? $"Completed: {string.Join(" → ", completedSteps)}"
-			: "Completed: none";
-		var executingStep = string.IsNullOrWhiteSpace(task.GetExecutingStep())
-			? "Current step: none"
-			: $"Current step: {task.GetExecutingStep()}";
 		var endedAt = task.EndTime is { } endTime
 			? $" | Ended: {endTime:HH:mm:ss}"
 			: string.Empty;
 
-		return $"{task.Title} — {task.State} | ID: {task.Id} | Hidden: {task.HiddenByUser} | {task.Subtitle} | {completedDescription} | {executingStep}{endedAt}";
+		return $"{task.Title} — {task.State} | ID: {task.Id} | Hidden: {task.HiddenByUser} | {task.Subtitle} | {DescribeContent(task)}{endedAt}";
 	}
 
-	private static AppTaskContent CreateSequenceContent(int currentStepIndex)
+	private static SampleContent CreateSequenceContent(int currentStepIndex)
 	{
 		var completedSteps = _primarySteps.Take(currentStepIndex).ToArray();
-		var content = AppTaskContent.CreateSequenceOfSteps(completedSteps, _primarySteps[Math.Min(currentStepIndex, _primarySteps.Length - 1)]);
+		var executingStep = _primarySteps[Math.Min(currentStepIndex, _primarySteps.Length - 1)];
+		var content = AppTaskContent.CreateSequenceOfSteps(completedSteps, executingStep);
 		content.SetQuestion("Leave this task running in the background?");
 		content.AddButton("Open details", CreateDeepLink("details"));
 		content.AddButton("Pause", CreateDeepLink("pause"));
 		content.SetTextInput("Add a note", "sample-app://shelltasks/note?text={userTextInput}");
-		return content;
+		return new(content, DescribeSteps(completedSteps, executingStep));
 	}
 
-	private static AppTaskContent CreatePreviewContent(string executingStep)
+	private static SampleContent CreatePreviewContent(string executingStep)
 	{
 		var content = AppTaskContent.CreatePreviewThumbnail(DemoPreviewUri, executingStep);
 		content.AddButton("Open preview", CreateDeepLink("preview"));
-		return content;
+		return new(content, $"Preview thumbnail ({DemoPreviewUri}). Current step: {executingStep}.");
 	}
 
-	private static AppTaskContent CreateGeneratedAssetsContent()
+	private static SampleContent CreateTextSummary(string text) =>
+		new(AppTaskContent.CreateTextSummaryResult(text), $"Text summary: {text}");
+
+	private static SampleContent CreateGeneratedAssetsContent()
 	{
 		var content = AppTaskContent.CreateGeneratedAssetsResult(
 		[
@@ -422,7 +467,7 @@ public sealed partial class AppTaskInfoTests : Page
 			new AppTaskResultAsset("Preview.png", "Preview image", DemoIconUri, DemoPreviewUri),
 		]);
 		content.AddButton("Open output", CreateDeepLink("output"));
-		return content;
+		return new(content, "Generated assets: ReleaseNotes.md (Generated markdown summary), Preview.png (Preview image).");
 	}
 
 	private static Uri CreateDeepLink(string action)
@@ -441,7 +486,7 @@ public sealed partial class AppTaskInfoTests : Page
 
 		_trackedTasks.AddRange(AppTaskInfo.FindAll());
 		_primaryTask = _trackedTasks.FirstOrDefault(task => task.Title.StartsWith("Publish release notes", StringComparison.Ordinal));
-		_primaryStepIndex = Math.Min(_primaryTask?.GetCompletedSteps().Length ?? 0, _primarySteps.Length - 1);
+		_primaryStepIndex = _primaryTask is null ? 0 : Math.Min(GetCompletedStepCount(_primaryTask), _primarySteps.Length - 1);
 	}
 
 #if __ANDROID__
@@ -456,4 +501,6 @@ public sealed partial class AppTaskInfoTests : Page
 		}
 	}
 #endif
+
+	private readonly record struct SampleContent(AppTaskContent Content, string Description);
 }
