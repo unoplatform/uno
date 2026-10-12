@@ -10,8 +10,8 @@ namespace Uno.UI.Runtime.X11;
 /// </summary>
 internal interface IX11Renderer : IDisposable
 {
-
-	void Render();
+	/// <param name="vsyncTimestamp">The Stopwatch time of the vsync this frame starts on, when it is on one.</param>
+	void Render(long? vsyncTimestamp);
 }
 
 /// <summary>

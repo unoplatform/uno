@@ -31,7 +31,7 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 		_renderer = renderer;
 	}
 
-	public void Render()
+	public void Render(long? vsyncTimestamp)
 	{
 		if (_host is X11XamlRootHost { Closed.IsCompleted: true })
 		{
@@ -47,7 +47,7 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 		// the factory (and its GRContext) is per-window and must not be shared across windows.
 		compositionTarget.Renderer = _renderer;
 
-		var nativeElementClipPath = compositionTarget.OnNativePlatformFrameRequested(_context);
+		var nativeElementClipPath = compositionTarget.OnNativePlatformFrameRequested(_context, vsyncTimestamp: vsyncTimestamp);
 		ApplyAirspaceClip(nativeElementClipPath);
 	}
 
