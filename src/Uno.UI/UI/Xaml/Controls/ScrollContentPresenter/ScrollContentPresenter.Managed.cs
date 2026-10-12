@@ -853,7 +853,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Stops a wheel motion that is cut short, making sure the offsets it reached are still published as final:
 		/// <see cref="OnWheelMotionFrame"/> is the only place that would otherwise do it.
 		/// </summary>
-		private void StopWheelMotionAndPublishFinalOffsets()
+		internal void StopWheelMotionAndPublishFinalOffsets()
 		{
 			if (!_isWheelMotionRunning)
 			{
