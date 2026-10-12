@@ -482,24 +482,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				for (var i = 0; i < 4; i++)
 				{
 					await KeyboardHelper.Down();
-					await Task.Delay(30);
+					await UITestHelper.WaitForRender(frameCount: 2);
 				}
 
 				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
+
+				Assert.AreEqual(4 * 26d, SUT.VerticalOffset, "four arrow presses should land exactly four lines down");
+				Assert.AreEqual(1, finals, "each key should add to the glide in flight instead of ending it");
+
+				var moving = positions.Zip(positions.Skip(1), (a, b) => b - a).Count(step => step > 0.01);
+				Assert.IsTrue(moving >= 10, $"expected a glide over many frames, got {moving} moving frames");
+				for (var i = 1; i < positions.Count; i++)
+				{
+					Assert.IsTrue(positions[i] >= positions[i - 1] - 0.01, $"the glide stepped back at frame {i}: {positions[i - 1]} -> {positions[i]}");
+				}
 			}
 			finally
 			{
 				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
+				WindowHelper.WindowContent = null;
 			}
+		}
 
-			Assert.AreEqual(4 * 26d, SUT.VerticalOffset, "four arrow presses should land exactly four lines down");
-			Assert.AreEqual(1, finals, "each key should add to the glide in flight instead of ending it");
-
-			var moving = positions.Zip(positions.Skip(1), (a, b) => b - a).Count(step => step > 0.01);
-			Assert.IsTrue(moving >= 10, $"expected a glide over many frames, got {moving} moving frames");
-			for (var i = 1; i < positions.Count; i++)
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Home_Right_After_Arrow_Then_Overrides_The_Glide()
+		{
+			var content = new Border { Width = 2000, Height = 2000, Child = new ItemsControl() };
+			var SUT = new ScrollViewer
 			{
-				Assert.IsTrue(positions[i] >= positions[i - 1] - 0.01, $"the glide stepped back at frame {i}: {positions[i - 1]} -> {positions[i]}");
+				Width = 175,
+				Height = 175,
+				VerticalScrollMode = ScrollMode.Enabled,
+				Content = content,
+			};
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				content.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				// No frame in between: the glide has not moved the offsets yet, so Home asks for the offset they still hold.
+				await KeyboardHelper.PressKeySequence("$d$_down#$u$_down#$d$_home#$u$_home");
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+				Assert.AreEqual(0, SUT.VerticalOffset, "Home right after an arrow should not leave the arrow's glide running");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
 			}
 		}
 
