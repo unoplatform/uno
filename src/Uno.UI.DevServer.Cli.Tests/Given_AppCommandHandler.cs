@@ -15,6 +15,7 @@ public class Given_AppCommandHandler
 
 		parsed.Error.Should().BeNull();
 		parsed.ToolName.Should().Be("uno_app_find_elements");
+		AppCommandHandler.Parse(["hot-reload-status", "--file", "a.xaml"]).ToolName.Should().Be("uno_app_hot_reload_status");
 		parsed.Json.Should().BeTrue();
 		parsed.Arguments["automationId"].Should().Be("Save");
 		((JsonElement)parsed.Arguments["waitForMs"]!).GetInt32().Should().Be(5000);
