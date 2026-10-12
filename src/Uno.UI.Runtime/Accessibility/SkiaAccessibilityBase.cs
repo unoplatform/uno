@@ -142,6 +142,10 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 	protected virtual bool ShouldInvalidateOnScroll => IsAccessibilityEnabled;
 
+	// Bridges that pull text on demand discard the value passed to UpdateTextValue; reading it
+	// anyway would materialize a whole RichEditBox story on every edit.
+	protected virtual bool PushesTextValue => true;
+
 	// ──────────────────────────────────────────────────────────────
 	//  Abstract: Tree management
 	// ──────────────────────────────────────────────────────────────
@@ -617,7 +621,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 	private void UpdateTextValueFromProvider(AutomationPeer peer, UIElement element)
 	{
-		if (peer.IsPassword())
+		if (peer.IsPassword() || !PushesTextValue)
 		{
 			UpdateTextValue(element.Visual.Handle, null);
 		}
