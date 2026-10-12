@@ -149,6 +149,7 @@ public partial class CompositionTarget
 	private static IGeometry? _lastNativeClipPath;
 	private float _lastRasterizationScale = 1;
 	private static IGeometry? _lastScaledNativeClipPath;
+	private bool _lastDrawLeftTargetUnchanged;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	// UNO_FORCE_FULL_REPAINT=1 disables damage-clipped partial repaints (benchmarking: measures true full-frame cost).
@@ -464,6 +465,8 @@ public partial class CompositionTarget
 			_fpsHelper.OnFramePresentRequested();
 		}
 
+		_lastDrawLeftTargetUnchanged = true;
+
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
 			return FrameRenderHelper.EmptyClipPath;
@@ -490,7 +493,7 @@ public partial class CompositionTarget
 			var target = swapChain.AcquireRenderTarget(
 				(int)Math.Round(xamlRootBounds.Width * rasterizationScale),
 				(int)Math.Round(xamlRootBounds.Height * rasterizationScale));
-			var resized = _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
+			var resized = IsResized(_lastCanvasSize, _lastRasterizationScale, xamlRootBounds, rasterizationScale);
 			if (resized)
 			{
 				_lastCanvasSize = xamlRootBounds;
@@ -523,12 +526,9 @@ public partial class CompositionTarget
 				// Detach returns null both for "nothing was damaged" and for "no damage information", but a frame
 				// is only ever recorded with tracking on, so on an unresized frame null means nothing changed. The
 				// target still holds the previous frame, so the clear+replay is skipped rather than repainted whole.
-				var nothingChanged = !resized
-					&& lastRenderedFrame.damage is null
-					&& preservesContents
-					&& !overlayEnabled
-					&& !_forceFullRepaint;
+				var nothingChanged = IsTargetUnchanged(resized, lastRenderedFrame.damage, preservesContents, overlayEnabled, _forceFullRepaint);
 				presentedUnchanged = nothingChanged;
+				_lastDrawLeftTargetUnchanged = CanSkipPresent(nothingChanged, FrameRenderHelper.FpsHelper.IsEnabled, overlay is not null);
 
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();
@@ -598,6 +598,17 @@ public partial class CompositionTarget
 		}
 	}
 
+
+	internal static bool IsResized(Size lastSize, float lastScale, Size size, float scale)
+		=> lastSize != size || lastScale != scale;
+
+	/// <summary>Whether the target still holds the previous frame as is.</summary>
+	internal static bool IsTargetUnchanged(bool resized, Rect[]? damage, bool preservesContents, bool damageOverlay, bool forceFullRepaint)
+		=> !resized && damage is null && preservesContents && !damageOverlay && !forceFullRepaint;
+
+	/// <summary>Whether a frame leaves the window as the last present did, the overlays drawing anew every frame.</summary>
+	internal static bool CanSkipPresent(bool targetUnchanged, bool fpsOverlay, bool hostOverlay)
+		=> targetUnchanged && !fpsOverlay && !hostOverlay;
 
 	private void ReturnFrame((FrameHold frame, IGeometry nativeElementClipPath, Rect[]? damage) frame)
 	{
