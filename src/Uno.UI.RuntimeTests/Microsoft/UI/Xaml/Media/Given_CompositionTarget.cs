@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -730,65 +729,72 @@ public class Given_CompositionTarget
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24963")]
 	public async Task When_Changed_After_Idle_Then_Change_Is_Drawn_Without_Waiting_A_Frame()
 	{
 		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
-		await UITestHelper.Load(border);
-		var target = (CompositionTarget)border.Visual.CompositionTarget!;
-		var lastNativeFrame = typeof(CompositionTarget).GetField("_lastNativeFrameTimestamp", BindingFlags.Instance | BindingFlags.NonPublic)!;
-		long LastNativeFrame() => (long)lastNativeFrame.GetValue(target)!;
-
-		var delays = new[] { new List<double>(), new List<double>() };
-		for (var i = 0; i < 16; i++)
+		try
 		{
-			var longIdle = i % 2;
-			await Task.Delay(longIdle == 1 ? 1200 : 300);
+			await UITestHelper.Load(border);
+			var target = (CompositionTarget)border.Visual.CompositionTarget!;
+			long LastNativeFrame() => target.LastNativeFrameTimestamp;
 
-			long recorded = 0;
-			Action onRendered = () => Interlocked.CompareExchange(ref recorded, Stopwatch.GetTimestamp(), 0);
-
-			// Every native frame start in the next 100ms; each one overwrites the last, so watch closely.
-			var changed = Stopwatch.GetTimestamp();
-			var frames = Task.Run(() =>
+			var delays = new[] { new List<double>(), new List<double>() };
+			for (var i = 0; i < 16; i++)
 			{
-				var starts = new List<long>();
-				var seen = LastNativeFrame();
-				while (Stopwatch.GetTimestamp() < changed + Stopwatch.Frequency / 10)
+				var longIdle = i % 2;
+				await Task.Delay(longIdle == 1 ? 1200 : 300);
+
+				long recorded = 0;
+				Action onRendered = () => Interlocked.CompareExchange(ref recorded, Stopwatch.GetTimestamp(), 0);
+
+				// Every native frame start in the next 100ms; each one overwrites the last, so watch closely.
+				var changed = Stopwatch.GetTimestamp();
+				var frames = Task.Run(() =>
 				{
-					if (LastNativeFrame() is var frame && frame != seen)
+					var starts = new List<long>();
+					var seen = LastNativeFrame();
+					while (Stopwatch.GetTimestamp() < changed + Stopwatch.Frequency / 10)
 					{
-						starts.Add(seen = frame);
+						if (LastNativeFrame() is var frame && frame != seen)
+						{
+							starts.Add(seen = frame);
+						}
+
+						Thread.Yield();
 					}
 
-					Thread.Yield();
+					return starts;
+				});
+
+				target.FrameRendered += onRendered;
+				try
+				{
+					border.Background = new SolidColorBrush(i % 4 < 2 ? Colors.Blue : Colors.Red);
+					var starts = await frames;
+
+					// The record asks for the frame that draws it just before it reports, so that frame may start a
+					// hair before; a frame asked for by the change itself starts well before the record.
+					var drawing = starts.FirstOrDefault(start => recorded != 0 && start > recorded - Stopwatch.Frequency / 5000);
+					delays[longIdle].Add(drawing == 0 ? double.PositiveInfinity : (drawing - changed) * 1000.0 / Stopwatch.Frequency);
 				}
-
-				return starts;
-			});
-
-			target.FrameRendered += onRendered;
-			try
-			{
-				border.Background = new SolidColorBrush(i % 4 < 2 ? Colors.Blue : Colors.Red);
-				var starts = await frames;
-
-				// The record asks for the frame that draws it just before it reports, so that frame may start a
-				// hair before; a frame asked for by the change itself starts well before the record.
-				var drawing = starts.FirstOrDefault(start => recorded != 0 && start > recorded - Stopwatch.Frequency / 5000);
-				delays[longIdle].Add(drawing == 0 ? double.PositiveInfinity : (drawing - changed) * 1000.0 / Stopwatch.Frequency);
+				finally
+				{
+					target.FrameRendered -= onRendered;
+				}
 			}
-			finally
+
+			// The lower quartile, not the median: an inactive window's drawables stall for ~1s every now and then, holding
+			// up whichever change comes next.
+			foreach (var group in delays)
 			{
-				target.FrameRendered -= onRendered;
+				var quartile = group.OrderBy(d => d).ElementAt(group.Count / 4);
+				Assert.IsTrue(quartile < 8, $"the change took {quartile:F1}ms to get its frame ({string.Join(", ", group.Select(d => d.ToString("F1")))})");
 			}
 		}
-
-		// The lower quartile, not the median: an inactive window's drawables stall for ~1s every now and then, holding
-		// up whichever change comes next.
-		foreach (var group in delays)
+		finally
 		{
-			var quartile = group.OrderBy(d => d).ElementAt(group.Count / 4);
-			Assert.IsTrue(quartile < 8, $"the change took {quartile:F1}ms to get its frame ({string.Join(", ", group.Select(d => d.ToString("F1")))})");
+			TestServices.WindowHelper.WindowContent = null;
 		}
 	}
 

@@ -78,6 +78,8 @@ public partial class CompositionTarget
 	// the UI thread.
 	private long _lastNativeFrameTimestamp = Stopwatch.GetTimestamp();
 
+	internal long LastNativeFrameTimestamp => Interlocked.Read(ref _lastNativeFrameTimestamp);
+
 	// The latest native frame's time, written on the host's render thread and read by the frame tick.
 	private readonly Lock _nativeFrameTimestampGate = new();
 	private long _nativeFrameTimestamp;
