@@ -211,9 +211,10 @@
 		<PackageReference Include="BenchmarkDotNet" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
-		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug'" />
+		<!-- Not on wasm: Microsoft.Graph alone is ~40 MB of the staging download, for a single MSAL sample. -->
+		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug' AND '$(_Platform)' != 'browserwasm'" />
 		<!-- Override vulnerable transitive Microsoft.Kiota.Abstractions 1.9.1 pulled in by Microsoft.Graph -->
-		<PackageReference Include="Microsoft.Kiota.Abstractions" Condition="'$(Configuration)'!='Debug'" />
+		<PackageReference Include="Microsoft.Kiota.Abstractions" Condition="'$(Configuration)'!='Debug' AND '$(_Platform)' != 'browserwasm'" />
 	</ItemGroup>
 
 	<!-- Skia-only packages (desktop/wasm/android/ios/tvos, NOT windows) -->

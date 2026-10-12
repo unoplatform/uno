@@ -1,5 +1,7 @@
 ﻿#if DEBUG // Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617
 #define DISABLE_GRAPH
+#elif __WASM__ // Microsoft.Graph is not referenced on wasm, see SamplesApp.csproj
+#define DISABLE_GRAPH
 #endif
 using System;
 using System.Collections.Generic;
