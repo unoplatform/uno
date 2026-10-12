@@ -31,6 +31,14 @@ namespace Uno.UI.Tests.TextBoxTests
 				Assert.AreSame(ValuePatternIdentifiers.IsReadOnlyProperty, listener.Property);
 				Assert.AreEqual(false, listener.OldValue);
 				Assert.AreEqual(true, listener.NewValue);
+
+				sut.IsReadOnly = false;
+
+				Assert.AreEqual(2, listener.NotificationCount);
+				Assert.AreSame(peer, listener.Peer);
+				Assert.AreSame(ValuePatternIdentifiers.IsReadOnlyProperty, listener.Property);
+				Assert.AreEqual(true, listener.OldValue);
+				Assert.AreEqual(false, listener.NewValue);
 			}
 			finally
 			{

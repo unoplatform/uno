@@ -1458,6 +1458,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		{
 			return Win32UIAutomationInterop.UIA_ValueValuePropertyId;
 		}
+		if (ReferenceEquals(property, ValuePatternIdentifiers.IsReadOnlyProperty))
+		{
+			return Win32UIAutomationInterop.UIA_ValueIsReadOnlyPropertyId;
+		}
 		if (ReferenceEquals(property, ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty))
 		{
 			return Win32UIAutomationInterop.UIA_ExpandCollapseExpandCollapseStatePropertyId;

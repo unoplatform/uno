@@ -116,6 +116,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreSame(first, second, "The sentinel must be cached; clients compare it by identity.");
 		}
 
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+		public void When_Value_IsReadOnly_Changes_Then_Property_Is_Mapped_To_Uia()
+		{
+			var accessibilityType = Type.GetType(
+				"Uno.UI.Runtime.Win32.Win32Accessibility, Uno.UI.Runtime.Win32",
+				throwOnError: false);
+			Assert.IsNotNull(accessibilityType, "Unable to locate Uno.UI.Runtime.Win32.Win32Accessibility at runtime.");
+
+			var method = accessibilityType!.GetMethod(
+				"MapAutomationPropertyToUia",
+				BindingFlags.Static | BindingFlags.NonPublic);
+			Assert.IsNotNull(method, "Unable to locate Win32Accessibility.MapAutomationPropertyToUia().");
+
+			var propertyId = method!.Invoke(
+				obj: null,
+				parameters: new object[] { ValuePatternIdentifiers.IsReadOnlyProperty });
+
+			Assert.AreEqual(30046, propertyId, "Value.IsReadOnly changes must use UIA_ValueIsReadOnlyPropertyId.");
+		}
+
 		/// <summary>
 		/// Returns the first window owned by the UI thread that answers <c>WM_GETOBJECT</c> for
 		/// <c>UiaRootObjectId</c>, or <c>0</c>. The HWND is discovered instead of read from the
