@@ -1156,8 +1156,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		private bool TryWaitForFrameStart(out long now, out long? vsync)
 		{
 			now = Stopwatch.GetTimestamp();
-			var hasGrid = TryGetVsyncGrid(now, out var latestVsync, out var period);
-			(var start, vsync) = _scheduler.GetNextFrame(now, _followVsync && hasGrid ? latestVsync : null, period);
+			// The lookup resumes the display link, which a fixed frame rate has no use for.
+			long latestVsync = 0, period = 0;
+			var hasGrid = _followVsync && TryGetVsyncGrid(now, out latestVsync, out period);
+			(var start, vsync) = _scheduler.GetNextFrame(now, hasGrid ? latestVsync : null, period);
 
 			// Rounded up, so a frame never starts before the vsync it is stamped with.
 			while ((now = Stopwatch.GetTimestamp()) < start)
