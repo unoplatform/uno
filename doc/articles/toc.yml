@@ -402,8 +402,6 @@
         href: uno-development/debugging-uno-ui.md
       - name: Using Codespaces
         href: features/working-with-codespaces.md
-      - name: Using Ona
-        href: features/working-with-gitpod.md
       - name: Inspecting the visual tree
         href: uno-development/debugging-inspect-visual-tree.md
       - name: Guidelines for code style
