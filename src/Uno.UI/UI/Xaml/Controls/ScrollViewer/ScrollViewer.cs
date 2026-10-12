@@ -1335,19 +1335,28 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <summary>
 		/// Scrolls for a key press as WinUI does through DManip: animated rather than a jump. Arrows glide on the wheel's
-		/// decay, each press adding to the glide in flight so a held key's auto-repeat keeps one continuous motion; the
+		/// curve, each press retargeting the glide in flight so a held key's auto-repeat keeps one continuous motion; the
 		/// page and extent keys animate like an animated ChangeView.
 		/// </summary>
 		private void GlideForKeyboard(VirtualKey key, double? horizontalOffset, double? verticalOffset)
 		{
 			if (key is VirtualKey.PageUp or VirtualKey.PageDown or VirtualKey.Home or VirtualKey.End)
 			{
+				// A glide that has not reached a frame yet leaves the offsets where they were, which ChangeView would
+				// take as nothing to do.
+				Presenter?.StopWheelMotionAndPublishFinalOffsets();
 				ChangeView(horizontalOffset, verticalOffset, null, disableAnimation: false);
 				return;
 			}
 
-			_horizontalOffsetIntent = horizontalOffset ?? _horizontalOffsetIntent;
-			_verticalOffsetIntent = verticalOffset ?? _verticalOffsetIntent;
+			if (horizontalOffset is double h)
+			{
+				_horizontalOffsetIntent = ValidateHorizontalOffsetIntent(h);
+			}
+			if (verticalOffset is double v)
+			{
+				_verticalOffsetIntent = ValidateVerticalOffsetIntent(v);
+			}
 
 			AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, null, canBypassSingle: true);
 			Presenter?.GlideTo(horizontalOffset, verticalOffset);
