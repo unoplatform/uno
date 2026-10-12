@@ -45,9 +45,9 @@ internal class Program
 			WriteCommand("app tools", "List the tools the DevServer offers and their verbs");
 			WriteCommand("app start --projectPath <csproj> --targetFramework <tfm> [--connectionTimeoutSeconds 120]", "Build and start the app with Hot Reload");
 			WriteCommand("app find --automationId <id> [--waitForMs <ms>]", "Find elements; exit code 1 when nothing matched");
-			WriteCommand("app hot-reload --file <path> --waitForMs <ms>", "Wait for the Hot Reload result of an edit; exit code 1 when not applied, 3 when a rude edit needs a start");
+			WriteCommand("app hot-reload-status --file <path> --waitForMs <ms>", "Report whether Hot Reload applied a saved edit (saving triggers it); exit code 1 when not applied, 3 when a rude edit needs a start");
 			WriteCommand("app screenshot --fileType png [--out <file>]", "Save a screenshot of the app window");
-			WriteCommand("app <verb|tool> [--param value]... [--json] [--out <file>] [--no-start]", "Verbs: start, close, info, hot-reload, screenshot, tree, find, invoke, action, click, key, type, datacontext, memory, diag");
+			WriteCommand("app <verb|tool> [--param value]... [--json] [--out <file>] [--no-start]", "Verbs: start, close, info, hot-reload-status, screenshot, tree, find, invoke, action, click, key, type, datacontext, memory, diag");
 			WriteOption("--no-start", "Do not start a DevServer when none runs for the solution: exit code 2 instead (for hooks and scripts)");
 			WriteOption("Exit codes", "0 ok; 1 the tool reported an error, find matched nothing, or the edit is not applied; 2 bad arguments, no DevServer with --no-start, or tool not offered; 3 rude edit");
 			Console.WriteLine();

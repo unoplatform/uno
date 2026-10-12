@@ -30,7 +30,7 @@ internal sealed class AppCommandHandler
 		["start"] = "uno_app_start",
 		["close"] = "uno_app_close",
 		["info"] = "uno_app_get_runtime_info",
-		["hot-reload"] = "uno_app_hot_reload_status",
+		["hot-reload-status"] = "uno_app_hot_reload_status",
 		["screenshot"] = "uno_app_get_screenshot",
 		["tree"] = "uno_app_visualtree_snapshot",
 		["find"] = "uno_app_find_elements",
@@ -128,7 +128,7 @@ internal sealed class AppCommandHandler
 		return value;
 	}
 
-	/// <summary>Exit code of <c>app hot-reload --file</c> when only a restart can apply the edit (RudeEdit).</summary>
+	/// <summary>Exit code of <c>app hot-reload-status --file</c> when only a restart can apply the edit (RudeEdit).</summary>
 	internal const int RestartNeededExitCode = 3;
 
 	/// <summary>
