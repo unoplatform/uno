@@ -714,10 +714,10 @@ public partial class DependencyObject
 	{
 		_isUpdatingChildResourceBindings = true;
 
-		foreach (var propertyDetail in _properties.GetAllDetails())
+		foreach (var propertyDetail in AllPropertyDetails)
 		{
 			if (propertyDetail == null
-				|| propertyDetail == _properties.DataContextPropertyDetails)
+				|| propertyDetail == DataContextPropertyDetails)
 			{
 				continue;
 			}
@@ -846,8 +846,7 @@ public partial class DependencyObject
 		// the now-removed legacy OnThemeChanged binding refresh handled); UpdateBindingExpressions both
 		// re-resolves the value and re-applies it (only when changed), so no second refresh pass is needed.
 		if ((updateReason & (ResourceUpdateReason.ThemeResource | ResourceUpdateReason.HotReload)) != 0 &&
-			_properties.HasBindings &&
-			_properties.HasThemeResourceBindingExpressions)
+			_properties is { HasBindings: true, HasThemeResourceBindingExpressions: true })
 		{
 			dictionariesInScope = GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 			for (var i = dictionariesInScope.Length - 1; i >= 0; i--)

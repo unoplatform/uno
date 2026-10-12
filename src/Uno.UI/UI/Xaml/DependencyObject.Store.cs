@@ -57,7 +57,33 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly IEventProvider _trace = Tracing.Get(DependencyObjectTraceProvider.Id);
 
-		private readonly DependencyPropertyDetailsCollection _properties;
+		// Created on first use, so data-only objects (Binding, Setter, ...) that never touch a DP don't pay for it.
+		private DependencyPropertyDetailsCollection? _properties;
+
+		private DependencyPropertyDetailsCollection Properties
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _properties ?? CreateProperties();
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		private DependencyPropertyDetailsCollection CreateProperties()
+		{
+			var properties = new DependencyPropertyDetailsCollection(this, _dataContextProperty);
+			if (_bindingsSuspended)
+			{
+				properties.SuspendBindings();
+			}
+
+			return _properties = properties;
+		}
+
+		// Null for a non-FrameworkElement owner, which has no DataContext property.
+		private DependencyPropertyDetails? DataContextPropertyDetails
+			=> _dataContextProperty is null ? null : Properties.DataContextPropertyDetails;
+
+		private DependencyPropertyDetails?[] AllPropertyDetails
+			=> _properties?.GetAllDetails() ?? Array.Empty<DependencyPropertyDetails?>();
 		private ResourceBindingCollection? _resourceBindings;
 		private ThemeResourceMap? _themeResources;
 
@@ -192,7 +218,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void ClonePropertiesToAnotherStoreForHotReload(DependencyObject otherStore)
 		{
-			_properties.CloneToForHotReload(otherStore._properties, this, otherStore);
+			_properties?.CloneToForHotReload(otherStore.Properties, this, otherStore);
 		}
 
 		public DependencyObject()
@@ -216,8 +242,6 @@ namespace Microsoft.UI.Xaml
 			var effectiveOwner = originalObject ?? this;
 			_originalObjectType = effectiveOwner.GetType();
 			_dataContextProperty = effectiveOwner is FrameworkElement ? FrameworkElement.DataContextProperty : null;
-
-			_properties = new DependencyPropertyDetailsCollection(this, _dataContextProperty);
 
 			__InitializeBinder();
 
@@ -294,7 +318,7 @@ namespace Microsoft.UI.Xaml
 				return GetValueFromMethodCall(property);
 			}
 
-			if (_properties.DataContextPropertyDetails?.Property == property)
+			if (DataContextPropertyDetails?.Property == property)
 			{
 				// Historically, we didn't have this fast path for default value.
 				// We add this to maintain the original behavior in GetValue(DependencyPropertyDetails) overload.
@@ -302,7 +326,7 @@ namespace Microsoft.UI.Xaml
 				TryRegisterInheritedProperties(force: true);
 			}
 
-			DependencyPropertyDetails? propertyDetails = _properties.FindPropertyDetails(property);
+			DependencyPropertyDetails? propertyDetails = _properties?.FindPropertyDetails(property);
 			if (propertyDetails is null)
 			{
 				// Performance: Avoid force-creating DependencyPropertyDetails when not needed.
@@ -321,7 +345,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns></returns>
 		internal object? ReadLocalValueInternal(DependencyProperty property)
 		{
-			var details = _properties.FindPropertyDetails(property);
+			var details = _properties?.FindPropertyDetails(property);
 			if (property == _dataContextProperty)
 			{
 				TryRegisterInheritedProperties(force: true);
@@ -347,7 +371,7 @@ namespace Microsoft.UI.Xaml
 
 		internal object? ReadInheritedValueOrDefaultValue(DependencyProperty property)
 		{
-			var details = _properties.FindPropertyDetails(property);
+			var details = _properties?.FindPropertyDetails(property);
 			if (property == _dataContextProperty)
 			{
 				TryRegisterInheritedProperties(force: true);
@@ -390,7 +414,7 @@ namespace Microsoft.UI.Xaml
 
 		private (ModifiedValue? modifiedValue, DependencyPropertyDetails? details) GetModifiedValue(DependencyProperty property)
 		{
-			var details = _properties.FindPropertyDetails(property);
+			var details = _properties?.FindPropertyDetails(property);
 			if (details is null)
 			{
 				return (null, null);
@@ -406,7 +430,7 @@ namespace Microsoft.UI.Xaml
 				return GetValueFromMethodCall(propertyDetails.Property);
 			}
 
-			if (propertyDetails == _properties.DataContextPropertyDetails)
+			if (propertyDetails == DataContextPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
@@ -453,7 +477,7 @@ namespace Microsoft.UI.Xaml
 		{
 			// There is no need to force-create property details here.
 			// If it's not yet created, then simply the precedence is DefaultValue
-			return _properties.FindPropertyDetails(property)?.CurrentHighestValuePrecedence ?? DependencyPropertyValuePrecedences.DefaultValue;
+			return _properties?.FindPropertyDetails(property)?.CurrentHighestValuePrecedence ?? DependencyPropertyValuePrecedences.DefaultValue;
 		}
 
 		/// <summary>
@@ -599,7 +623,7 @@ namespace Microsoft.UI.Xaml
 				ValidatePropertyOwner(property);
 
 				// Resolve the stack once for the instance, for performance.
-				propertyDetails ??= _properties.GetPropertyDetails(property);
+				propertyDetails ??= Properties.GetPropertyDetails(property);
 
 				if (precedence <= DependencyPropertyValuePrecedences.Local)
 				{
@@ -725,7 +749,7 @@ namespace Microsoft.UI.Xaml
 						&& !ReferenceEquals(childProviderClearNewValue.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderClearNewValue.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails!));
+						childProviderClearNewValue.RestoreInheritedDataContext(GetHighestValueFromDetails(DataContextPropertyDetails!));
 					}
 				}
 
@@ -736,7 +760,7 @@ namespace Microsoft.UI.Xaml
 						&& !ReferenceEquals(childProviderSet.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderSet.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails!));
+						childProviderSet.RestoreInheritedDataContext(GetHighestValueFromDetails(DataContextPropertyDetails!));
 					}
 
 					if (previousValue is DependencyObject childProviderSetNewValue)
@@ -751,7 +775,7 @@ namespace Microsoft.UI.Xaml
 		// The inherited (mentor/parent) DataContext value as this store currently holds it: a FrameworkElement owner
 		// keeps it under its DataContextProperty; a non-FE owner has no DataContextProperty and caches it.
 		internal object? GetInheritedDataContextValue()
-			=> _dataContextProperty is { } dcProperty ? GetValue(dcProperty) : _properties.InheritedDataContext;
+			=> _dataContextProperty is { } dcProperty ? GetValue(dcProperty) : _properties?.InheritedDataContext;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void ClearInheritedDataContext()
@@ -970,7 +994,7 @@ namespace Microsoft.UI.Xaml
 
 		internal IDisposable RegisterPropertyChangedCallback(DependencyProperty property, PropertyChangedCallback callback, DependencyPropertyDetails? propertyDetails = null)
 		{
-			propertyDetails ??= _properties.GetPropertyDetails(property);
+			propertyDetails ??= Properties.GetPropertyDetails(property);
 
 			if (ReferenceEquals(callback.Target, ActualInstance))
 			{
@@ -1251,7 +1275,7 @@ namespace Microsoft.UI.Xaml
 
 		internal (object? value, DependencyPropertyValuePrecedences precedence) GetBaseValue(DependencyProperty property)
 		{
-			var details = _properties.FindPropertyDetails(property);
+			var details = _properties?.FindPropertyDetails(property);
 			if (property == _dataContextProperty)
 			{
 				TryRegisterInheritedProperties(force: true);
@@ -1300,7 +1324,7 @@ namespace Microsoft.UI.Xaml
 				// This should be for OnDemand DPs in general which we don't yet support
 				dp == UIElement.KeyboardAcceleratorsProperty)
 			{
-				_properties.GetPropertyDetails(dp).SetValue(defaultValue, DependencyPropertyValuePrecedences.Local);
+				Properties.GetPropertyDetails(dp).SetValue(defaultValue, DependencyPropertyValuePrecedences.Local);
 			}
 
 			return defaultValue;
@@ -1313,7 +1337,7 @@ namespace Microsoft.UI.Xaml
 
 		internal DependencyPropertyDetails GetPropertyDetails(DependencyProperty property)
 		{
-			return _properties.GetPropertyDetails(property);
+			return Properties.GetPropertyDetails(property);
 		}
 
 		// Keep a list of inherited properties that have been updated so they can be reset.
@@ -1396,7 +1420,7 @@ namespace Microsoft.UI.Xaml
 					// these cases may be required in case the
 					// graph is built in reverse (such as with the
 					// XamlReader)
-					|| _properties.HasBindings
+					|| _properties is { HasBindings: true }
 					|| _childrenStores.Count != 0
 				)
 			)
@@ -1500,7 +1524,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_parentDataContextProperty.UniqueId == property.UniqueId)
 			{
-				return (_dataContextProperty, _properties.DataContextPropertyDetails);
+				return (_dataContextProperty, DataContextPropertyDetails);
 			}
 			else
 			{
@@ -1509,7 +1533,7 @@ namespace Microsoft.UI.Xaml
 
 				if (localProperty != null)
 				{
-					var propertyDetails = _properties.GetPropertyDetails(localProperty);
+					var propertyDetails = Properties.GetPropertyDetails(localProperty);
 
 					if (localProperty.IsInherited)
 					{
@@ -1520,7 +1544,7 @@ namespace Microsoft.UI.Xaml
 					&& property.IsInherited
 				)
 				{
-					return (property, _properties.GetPropertyDetails(property));
+					return (property, Properties.GetPropertyDetails(property));
 				}
 			}
 
