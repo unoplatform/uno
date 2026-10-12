@@ -33,6 +33,9 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 	private Func<XamlRoot, AccessibilityNativeEventRecord[]?>? _registeredEventsAccessor;
 	private Action<XamlRoot>? _registeredClearEventsAction;
 	private Action<XamlRoot>? _registeredDisableAction;
+	private Func<XamlRoot, bool>? _registeredEnabledAccessor;
+	private Action<XamlRoot>? _registeredRefocusAction;
+	private Action<XamlRoot, int>? _registeredKeyDownAction;
 
 	// Handles that received property updates before their virtual ID was assigned;
 	// cleared when the ID is allocated so the node gets invalidated on first query.
@@ -159,7 +162,31 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 
 		_registeredDisableAction = DisableAccessibility;
 		AccessibilityPeerHelper.AndroidDisableAccessibilityAction = _registeredDisableAction;
+
+		_registeredEnabledAccessor = root => IsForRoot(root) && IsAccessibilityEnabled;
+		AccessibilityPeerHelper.AndroidIsAccessibilityEnabledAccessor = _registeredEnabledAccessor;
+
+		_registeredRefocusAction = root =>
+		{
+			if (IsForRoot(root))
+			{
+				_helper?.RefocusHost();
+			}
+		};
+		AccessibilityPeerHelper.AndroidRefocusRenderViewAction = _registeredRefocusAction;
+
+		_registeredKeyDownAction = (root, keyCode) =>
+		{
+			if (IsForRoot(root))
+			{
+				_helper?.DispatchKeyDownToHost(keyCode);
+			}
+		};
+		AccessibilityPeerHelper.AndroidRenderViewKeyDownAction = _registeredKeyDownAction;
 	}
+
+	private bool IsForRoot(XamlRoot xamlRoot)
+		=> _xamlRootRef.TryGetTarget(out var root) && ReferenceEquals(root, xamlRoot);
 
 	internal void Detach()
 	{
@@ -193,9 +220,27 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 			AccessibilityPeerHelper.AndroidDisableAccessibilityAction = null;
 		}
 
+		if (AccessibilityPeerHelper.AndroidIsAccessibilityEnabledAccessor == _registeredEnabledAccessor)
+		{
+			AccessibilityPeerHelper.AndroidIsAccessibilityEnabledAccessor = null;
+		}
+
+		if (AccessibilityPeerHelper.AndroidRefocusRenderViewAction == _registeredRefocusAction)
+		{
+			AccessibilityPeerHelper.AndroidRefocusRenderViewAction = null;
+		}
+
+		if (AccessibilityPeerHelper.AndroidRenderViewKeyDownAction == _registeredKeyDownAction)
+		{
+			AccessibilityPeerHelper.AndroidRenderViewKeyDownAction = null;
+		}
+
 		_registeredEventsAccessor = null;
 		_registeredClearEventsAction = null;
 		_registeredDisableAction = null;
+		_registeredEnabledAccessor = null;
+		_registeredRefocusAction = null;
+		_registeredKeyDownAction = null;
 		Trace("Detached Android accessibility adapter.");
 	}
 
@@ -248,7 +293,7 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 	/// </summary>
 	internal void DisableAccessibility(XamlRoot xamlRoot)
 	{
-		if (!_xamlRootRef.TryGetTarget(out var root) || !ReferenceEquals(root, xamlRoot))
+		if (!IsForRoot(xamlRoot))
 		{
 			return;
 		}

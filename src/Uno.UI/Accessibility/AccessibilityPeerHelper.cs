@@ -636,12 +636,38 @@ internal static class AccessibilityPeerHelper
 	/// </summary>
 	internal static Action<XamlRoot>? AndroidDisableAccessibilityAction { get; set; }
 
+	/// <summary>
+	/// Whether the root's bridge keeps a native tree in sync, i.e. a client query or a running service enabled it.
+	/// </summary>
+	internal static Func<XamlRoot, bool>? AndroidIsAccessibilityEnabledAccessor { get; set; }
+
+	/// <summary>
+	/// Moves native focus off and back onto the root's render view, as Android does when the view regains focus.
+	/// </summary>
+	internal static Action<XamlRoot>? AndroidRefocusRenderViewAction { get; set; }
+
+	/// <summary>
+	/// Dispatches a key-down with the given Android key code to the root's render view.
+	/// </summary>
+	internal static Action<XamlRoot, int>? AndroidRenderViewKeyDownAction { get; set; }
+
+	/// <summary>
+	/// The router's sticky "a bridge was enabled" flag, which lets a test start again as an app no client ever queried.
+	/// </summary>
+	internal static Func<bool>? IsAnyAccessibilityBridgeEnabledAccessor { get; set; }
+
+	/// <inheritdoc cref="IsAnyAccessibilityBridgeEnabledAccessor"/>
+	internal static Action<bool>? SetAnyAccessibilityBridgeEnabledAction { get; set; }
+
 	internal static Func<XamlRoot, AccessibilityNativeEventRecord[]?>? IOSAccessibilityEventsAccessor { get; set; }
 
 	internal static Action<XamlRoot>? IOSClearAccessibilityEventsAction { get; set; }
 
 	/// <inheritdoc cref="AndroidDisableAccessibilityAction"/>
 	internal static Action<XamlRoot>? IOSDisableAccessibilityAction { get; set; }
+
+	/// <inheritdoc cref="AndroidIsAccessibilityEnabledAccessor"/>
+	internal static Func<XamlRoot, bool>? IOSIsAccessibilityEnabledAccessor { get; set; }
 
 	internal static Func<XamlRoot, int>? IOSAccessibilityRebuildGenerationAccessor { get; set; }
 

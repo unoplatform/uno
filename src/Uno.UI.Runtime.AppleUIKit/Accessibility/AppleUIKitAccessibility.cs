@@ -244,6 +244,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			AccessibilityPeerHelper.IOSDisableAccessibilityAction =
 				root => FindAdapterForRoot(root)?.DisableAccessibility();
 
+			AccessibilityPeerHelper.IOSIsAccessibilityEnabledAccessor =
+				root => FindAdapterForRoot(root)?.IsAccessibilityEnabled is true;
+
 			AccessibilityPeerHelper.IOSAccessibilityRebuildGenerationAccessor =
 				root => FindClientAdapterForRoot(root)?._rebuildGeneration ?? 0;
 
