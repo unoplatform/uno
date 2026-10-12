@@ -76,10 +76,12 @@ static const CFTimeInterval MaxVsyncAge = 0.5;
         CADisplayLink* link = self.vsyncLink;
         if (link == nil) return -1;
 
-        atomic_store(&_idleVsyncs, 0);
-        if (link.paused)
+        // The link belongs to the main run loop, so only that thread resumes it.
+        if (atomic_exchange(&_idleVsyncs, 0) >= IdleVsyncs)
         {
-            link.paused = NO;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                link.paused = NO;
+            });
         }
 
         CFTimeInterval lastVsync = atomic_load(&_lastVsync);
