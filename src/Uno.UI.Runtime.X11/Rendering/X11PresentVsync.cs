@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
 
@@ -56,11 +57,14 @@ internal sealed unsafe class X11PresentVsync : IDisposable
 		_fd = Xcb.xcb_get_file_descriptor(connection);
 	}
 
-	/// <summary>The refresh period in Stopwatch ticks, 0 until two vsyncs were seen.</summary>
-	public long Period => _period;
+	/// <summary>The refresh period in Stopwatch ticks, 0 until two vsyncs were seen. Readable from any thread.</summary>
+	public long Period => Volatile.Read(ref _period);
 
-	/// <summary>The latest vsync the server reported, as a Stopwatch time; 0 before the first.</summary>
-	public long LastVsync => _lastVsync;
+	/// <summary>The latest vsync the server reported, as a Stopwatch time; 0 before the first. Readable from any thread.</summary>
+	public long LastVsync => Volatile.Read(ref _lastVsync);
+
+	/// <summary>Measures the period again from the next vsyncs, e.g. after the display's refresh rate changed. Any thread.</summary>
+	public void InvalidatePeriod() => Volatile.Write(ref _period, 0);
 
 	public static X11PresentVsync? TryCreate(string? displayName, nint window)
 	{

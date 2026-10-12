@@ -37,6 +37,7 @@ internal partial class X11XamlRootHost
 	private int _consecutiveVsyncFailures;
 	private long _vsyncRetryTimestamp;
 	private bool _vsyncSuspendedLogged;
+	private double _displayRefreshRate;
 
 	// Windows are created unmapped, and a vsync request on one never completes.
 	private volatile bool _isUnmapped = true;
@@ -148,6 +149,13 @@ internal partial class X11XamlRootHost
 
 	internal void UpdateRenderTimerFps(double fps)
 	{
+		// A fixed FrameRate the old rate wasn't a multiple of is paced by the timer, which never measures the new one.
+		if (fps != _displayRefreshRate)
+		{
+			_displayRefreshRate = fps;
+			_vsync?.InvalidatePeriod();
+		}
+
 		if (FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate)
 		{
 			_framePacer.UpdateTargetFps(fps);
