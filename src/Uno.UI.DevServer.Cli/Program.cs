@@ -41,6 +41,14 @@ internal class Program
 			WriteCommand("disco", "Discover environment and SDK details");
 			WriteCommand("health", "Report Uno DevServer health for the current workspace");
 			Console.WriteLine();
+			Console.WriteLine("App commands (one App MCP tool call; starts the DevServer when needed):");
+			WriteCommand("app tools", "List the tools the DevServer offers and their verbs");
+			WriteCommand("app start --projectPath <csproj> --targetFramework <tfm> [--connectionTimeoutSeconds 120]", "Build and start the app with Hot Reload");
+			WriteCommand("app find --automationId <id> [--waitForMs <ms>]", "Find elements; exit code 1 when nothing matched");
+			WriteCommand("app hot-reload --file <path> --waitForMs <ms>", "Wait for the Hot Reload result of an edit");
+			WriteCommand("app screenshot --fileType png [--out <file>]", "Save a screenshot of the app window");
+			WriteCommand("app <verb|tool> [--param value]... [--json] [--out <file>]", "Verbs: start, close, info, hot-reload, screenshot, tree, find, invoke, action, click, key, type, datacontext, memory, diag");
+			Console.WriteLine();
 			Console.WriteLine("MCP setup commands:");
 			WriteCommand("mcp serve", "Start the MCP STDIO proxy (alias: --mcp-app)");
 			WriteCommand("mcp status", "Report installation state of MCP servers across clients");
@@ -81,7 +89,8 @@ internal class Program
 		// structured output (e.g. `disco --json`, `health --json`). The default
 		// LogToStandardErrorThreshold is LogLevel.None, which would send everything
 		// (including errors) to stdout and corrupt JSON output.
-		var isMcpMode = IsMcpMode(args);
+		// `app` prints the tool result on stdout, so its logs go to stderr too.
+		var isMcpMode = IsMcpMode(args) || IsAppCommand(args);
 
 		var services = new ServiceCollection();
 		services.AddLogging(builder =>
@@ -175,6 +184,25 @@ internal class Program
 			}
 		}
 		return null;
+	}
+
+	internal static bool IsAppCommand(string[] args)
+	{
+		for (int i = 0; i < args.Length; i++)
+		{
+			if (string.Equals(args[i], "app", StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+
+			// Skip the value of --solution-dir, --log-level, --file-log and their short forms.
+			if (args[i].StartsWith('-') && i + 1 < args.Length && !args[i + 1].StartsWith('-'))
+			{
+				i++;
+			}
+		}
+
+		return false;
 	}
 
 	internal static bool IsMcpMode(string[] args)
