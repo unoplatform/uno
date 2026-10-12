@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using DirectUI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
@@ -442,7 +443,9 @@ public partial class CompositionTarget
 				(int)Math.Round(xamlRootBounds.Height * rasterizationScale));
 			var swapChainRecreated = _lastSwapChain != swapChain;
 			_lastSwapChain = swapChain;
-			var resized = swapChainRecreated || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
+			// Tolerance, not exact equality: DPI scales are floats, and a sub-epsilon difference is not a resize.
+			var scaleChanged = !DoubleUtil.AreWithinTolerance(_lastRasterizationScale, rasterizationScale, 0.0001);
+			var resized = swapChainRecreated || _lastCanvasSize != xamlRootBounds || scaleChanged;
 			if (resized)
 			{
 				_lastCanvasSize = xamlRootBounds;
