@@ -26,7 +26,8 @@ internal struct ScrollWheelSimulation
 	private double _from;
 	private double _target;
 
-	// 0 until the first frame after a notch, which the curve restarts from.
+	// The curve restarts from the first frame after a notch.
+	private bool _hasStartTimestamp;
 	private long _startTimestampInTicks;
 
 	public readonly bool IsRunning => _isRunning;
@@ -57,7 +58,7 @@ internal struct ScrollWheelSimulation
 		_isRunning = true;
 		_target = target;
 		_from = _position;
-		_startTimestampInTicks = 0;
+		_hasStartTimestamp = false;
 	}
 
 	/// <summary>Advances to <paramref name="timestampInTicks"/>, clamped to [<paramref name="min"/>, <paramref name="max"/>].</summary>
@@ -69,8 +70,9 @@ internal struct ScrollWheelSimulation
 			return false;
 		}
 
-		if (_startTimestampInTicks == 0)
+		if (!_hasStartTimestamp)
 		{
+			_hasStartTimestamp = true;
 			_startTimestampInTicks = timestampInTicks;
 		}
 
