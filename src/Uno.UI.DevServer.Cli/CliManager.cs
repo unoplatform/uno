@@ -82,7 +82,7 @@ internal class CliManager
 				var appWorkingDirectory = appWorkspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
 				return await new AppCommandHandler(_logger).RunAsync(
 					originalArgs[1..],
-					() => EnsureHostAsync(appWorkingDirectory, appWorkspaceResolution.SelectedSolutionPath));
+					noStart => EnsureHostAsync(appWorkingDirectory, appWorkspaceResolution.SelectedSolutionPath, noStart));
 			}
 
 			var isDisco = originalArgs is { Length: > 0 } &&
@@ -941,9 +941,10 @@ internal class CliManager
 
 	/// <summary>
 	/// Returns the HTTP port of a ready DevServer for the solution, starting one the same way
-	/// <c>start</c> does when none is registered. Null when no solution was resolved or the start failed.
+	/// <c>start</c> does when none is registered, unless <paramref name="noStart"/>. Null when no solution was
+	/// resolved, no host may be started, or the start failed.
 	/// </summary>
-	private async Task<int?> EnsureHostAsync(string workingDirectory, string? solutionPath)
+	private async Task<int?> EnsureHostAsync(string workingDirectory, string? solutionPath, bool noStart)
 	{
 		if (string.IsNullOrWhiteSpace(solutionPath))
 		{
@@ -956,6 +957,12 @@ internal class CliManager
 		{
 			_logger.LogDebug("Using DevServer on port {Port} (PID {Pid}) for {Solution}", existing.Port, existing.ProcessId, solutionPath);
 			return existing.Port;
+		}
+
+		if (noStart)
+		{
+			_logger.LogError("No DevServer is running for {Solution} (--no-start); run `uno-devserver start` first.", solutionPath);
+			return null;
 		}
 
 		var hostLaunchPlan = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
