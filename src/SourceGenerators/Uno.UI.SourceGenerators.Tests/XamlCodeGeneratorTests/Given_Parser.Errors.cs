@@ -666,6 +666,43 @@ public partial class Given_Parser
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25221")]
+	public async Task When_Conditional_Prefixes_Set_The_Same_Member()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+				      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				      xmlns:not_win="http://uno.ui/not_win"
+				      xmlns:desktop="http://uno.ui/desktop"
+				      mc:Ignorable="desktop">
+				  <Button not_win:IsEnabled="True" desktop:IsEnabled="False" />
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+			.AddSource(_emptyCodeBehind)
+			.AddGeneratedSources();
+		test.TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck;
+		test.GlobalConfigOverride = new()
+		{
+			["build_property.IncludeXamlNamespacesProperty"] = "not_win,desktop",
+		};
+
+		test.ExpectedDiagnostics.Add(
+			DiagnosticResult.CompilerError("UXAML0001")
+				.WithSpan("//Project/0/MainPage.xaml", 8, 36, 8, 36)
+				.WithArguments("Member 'IsEnabled' is set more than once on this element (by 'not_win:IsEnabled' and 'desktop:IsEnabled'). [Line: 8 Position: 36]"));
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_WMC0913_xLoad_ImplicitResDict_Root()
 	{
 		var xamlFiles = new[]

@@ -537,6 +537,7 @@ namespace Uno.Xaml
 			}
 
 			var atts = new Dictionary<string,string> ();
+			var attributeNames = new Dictionary<string,string> ();
 
 			if (r.MoveToFirstAttribute ()) {
 				do {
@@ -578,7 +579,21 @@ namespace Uno.Xaml
 						}
 
 						if (updatedNamespace == string.Empty  || updatedNamespace == r.LookupNamespace("")) {
+							if (attributeNames.TryGetValue(r.LocalName, out var previousAttributeName)) {
+								throw new XamlParseException(
+									string.Format(
+										CultureInfo.InvariantCulture,
+										"Member '{0}' is set more than once on this element (by '{1}' and '{2}').",
+										r.LocalName,
+										previousAttributeName,
+										r.Name),
+									null,
+									LineNumber,
+									LinePosition);
+							}
+
 							atts.Add (r.LocalName, r.Value);
+							attributeNames.Add(r.LocalName, r.Name);
 							continue;
 						}
 						if (updatedNamespace.StartsWith("using:", StringComparison.Ordinal) || updatedNamespace.Contains("#using:")) {
