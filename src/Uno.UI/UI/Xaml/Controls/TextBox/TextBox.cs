@@ -432,9 +432,22 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					BoolBoxes.False,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnIsReadonlyChanged()
+					propertyChangedCallback: OnIsReadOnlyChanged
 				)
 			);
+
+		private static void OnIsReadOnlyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		{
+			var owner = (TextBox)sender;
+			owner._core.OnIsReadonlyChanged();
+			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(owner);
+
+			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged)
+				&& owner.GetOrCreateAutomationPeer() is TextBoxAutomationPeer peer)
+			{
+				peer.RaiseIsReadOnlyPropertyChangedEvent((bool)args.OldValue, (bool)args.NewValue);
+			}
+		}
 
 
 
