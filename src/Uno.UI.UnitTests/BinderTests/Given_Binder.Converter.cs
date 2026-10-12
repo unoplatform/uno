@@ -67,6 +67,48 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(TestEnum.World, enumSource.Value);
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25250")]
+		public void When_ConverterLanguage_Is_Set()
+		{
+			AssertConverterLanguage("de-DE-x-uno-25250", setConverterLanguage: true);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25250")]
+		public void When_ConverterLanguage_Is_Not_Set()
+		{
+			AssertConverterLanguage(string.Empty, setConverterLanguage: false);
+		}
+
+		private static void AssertConverterLanguage(string expectedLanguage, bool setConverterLanguage)
+		{
+			var sut = new MyControl();
+			var converter = new LanguageRecordingConverter();
+			var source = new StringSource { Value = "hello" };
+			var binding = new Binding
+			{
+				Path = new PropertyPath(nameof(StringSource.Value)),
+				Converter = converter,
+				Mode = BindingMode.TwoWay,
+			};
+
+			if (setConverterLanguage)
+			{
+				binding.ConverterLanguage = expectedLanguage;
+			}
+
+			sut.SetBinding(MyControl.MyPropertyProperty, binding);
+			sut.DataContext = source;
+
+			Assert.AreEqual(expectedLanguage, converter.ConvertLanguage);
+
+			sut.MyProperty = "world";
+
+			Assert.AreEqual(expectedLanguage, converter.ConvertBackLanguage);
+			Assert.AreEqual("world", source.Value);
+		}
+
 		public class EnumSource
 		{
 			public TestEnum Value { get; set; }
@@ -105,6 +147,29 @@ namespace Uno.UI.Tests.BinderTests
 			public object? Convert(object value, Type targetType, object parameter, string language) => OutputValue(value);
 
 			public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+		}
+
+		internal class LanguageRecordingConverter : IValueConverter
+		{
+			public string? ConvertLanguage { get; private set; }
+			public string? ConvertBackLanguage { get; private set; }
+
+			public object Convert(object value, Type targetType, object parameter, string language)
+			{
+				ConvertLanguage = language;
+				return value;
+			}
+
+			public object ConvertBack(object value, Type targetType, object parameter, string language)
+			{
+				ConvertBackLanguage = language;
+				return value;
+			}
+		}
+
+		public class StringSource
+		{
+			public string Value { get; set; } = string.Empty;
 		}
 
 		public partial class MyControl : FrameworkElement
