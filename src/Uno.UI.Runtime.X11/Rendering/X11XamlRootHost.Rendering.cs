@@ -38,7 +38,8 @@ internal partial class X11XamlRootHost
 	private long _vsyncRetryTimestamp;
 	private bool _vsyncSuspendedLogged;
 
-	private volatile bool _isUnmapped;
+	// Windows are created unmapped, and a vsync request on one never completes.
+	private volatile bool _isUnmapped = true;
 	private volatile bool _isFullyObscured;
 
 	private FramePacer CreateFramePacer()
