@@ -15,7 +15,13 @@ public partial class AnalyticsVersionInfo
 	/// <summary>
 	/// Gets a string that represents the type of device the application is running on.
 	/// </summary>
-	public string DeviceFamily { get; private set; } = $"{Environment.OSVersion.Platform}.Desktop";
+	public string DeviceFamily { get; private set; } = GetDeviceFamily(
+		OperatingSystem.IsWindows(),
+		Environment.OSVersion.Platform,
+		"Desktop");
+
+	internal static string GetDeviceFamily(bool isWindows, PlatformID platform, string deviceForm) =>
+		$"{(isWindows ? "Windows" : platform.ToString())}.{deviceForm}";
 
 	/// <summary>
 	/// Gets the version within the device family.

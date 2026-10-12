@@ -11,10 +11,13 @@ public class Given_AnalyticsVersionInfo
 {
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25259")]
-	public void When_DeviceFamily_Is_Initialized()
+	public void When_Windows_DeviceFamily_Is_Initialized_With_Non_Windows_Platform()
 	{
-		var expectedOsName = OperatingSystem.IsWindows() ? "Windows" : Environment.OSVersion.Platform.ToString();
+		var deviceFamily = AnalyticsVersionInfo.GetDeviceFamily(
+			isWindows: true,
+			platform: PlatformID.Unix,
+			deviceForm: "Desktop");
 
-		Assert.AreEqual($"{expectedOsName}.{AnalyticsInfo.DeviceForm}", AnalyticsInfo.VersionInfo.DeviceFamily);
+		Assert.AreEqual("Windows.Desktop", deviceFamily);
 	}
 }
