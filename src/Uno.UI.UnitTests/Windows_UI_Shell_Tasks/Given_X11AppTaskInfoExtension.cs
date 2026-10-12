@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -67,15 +66,25 @@ public class Given_X11AppTaskInfoExtension
 	}
 
 	[TestMethod]
-	public void When_Disposed_Then_Probe_Timer_Does_Not_Keep_Extension_Alive()
+	public async Task When_Disposed_Then_Probe_Timer_Stops()
 	{
-		var extension = CreateDisposedExtension();
+		var service = new TestNotificationService { Owner = ":1.1" };
+		using var extension = new X11AppTaskInfoExtension(service, TimeSpan.FromMilliseconds(10));
+		for (var attempt = 0; attempt < 100 && service.ProbeCount < 2; attempt++)
+		{
+			await Task.Delay(10);
+		}
 
-		GC.Collect();
-		GC.WaitForPendingFinalizers();
-		GC.Collect();
+		Assert.IsTrue(service.ProbeCount >= 2, "The probe timer should fire before disposal.");
 
-		Assert.IsFalse(extension.IsAlive);
+		extension.Dispose();
+		// Allow a timer callback that was already running at disposal to finish before taking the baseline.
+		await Task.Delay(50);
+		var probesAfterDispose = service.ProbeCount;
+
+		await Task.Delay(100);
+
+		Assert.AreEqual(probesAfterDispose, service.ProbeCount);
 	}
 
 	[TestMethod]
@@ -247,13 +256,6 @@ public class Given_X11AppTaskInfoExtension
 		return context;
 	}
 
-	[MethodImpl(MethodImplOptions.NoInlining)]
-	private static WeakReference CreateDisposedExtension()
-	{
-		using var extension = new X11AppTaskInfoExtension(new TestNotificationService(), TimeSpan.FromMinutes(1));
-		return new WeakReference(extension);
-	}
-
 	private static AppTaskInfoSnapshot CreateSnapshot() => new(
 		Guid.NewGuid().ToString("B"),
 		"Task",
@@ -275,12 +277,17 @@ public class Given_X11AppTaskInfoExtension
 		internal Task<AppTaskNotificationSupport>? PendingProbe { get; set; }
 		internal int ResetCount { get; private set; }
 		internal int DisposeCount { get; private set; }
+		private int _probeCount;
+		internal int ProbeCount => Volatile.Read(ref _probeCount);
 		internal List<(string Owner, uint ReplacesId)> Notifications { get; } = new();
 		internal List<(string Owner, uint Id)> Closed { get; } = new();
 		internal TaskCompletionSource<string> Republished { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
 		public Task<AppTaskNotificationSupport> ProbeAsync()
-			=> PendingProbe ?? Task.FromResult(new AppTaskNotificationSupport(Owner is not null || CanActivate, Owner));
+		{
+			Interlocked.Increment(ref _probeCount);
+			return PendingProbe ?? Task.FromResult(new AppTaskNotificationSupport(Owner is not null || CanActivate, Owner));
+		}
 
 		public Task<string> GetOwnerAsync()
 		{
@@ -332,8 +339,9 @@ public class Given_X11AppTaskInfoExtension
 			{
 				callback(state);
 			}
-			catch (Exception error)
+			catch (Exception error) when (error is not OutOfMemoryException)
 			{
+				// Capture callback failures for assertions; out-of-memory must still reach the runtime.
 				Error = error;
 			}
 		}
