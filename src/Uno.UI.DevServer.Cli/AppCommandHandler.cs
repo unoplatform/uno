@@ -155,6 +155,25 @@ internal sealed class AppCommandHandler
 			return 1;
 		}
 
+		// App MCP 2.0 hosts put the count and the verdict in structuredContent; the text checks below are for older ones.
+		if (result.StructuredContent is { ValueKind: JsonValueKind.Object } structured)
+		{
+			if (toolName == FindTool && structured.TryGetProperty("matched", out var matched))
+			{
+				return matched.GetInt32() == 0 ? 1 : 0;
+			}
+
+			if (toolName == HotReloadStatusTool && structured.TryGetProperty("verdict", out var verdictValue))
+			{
+				return verdictValue.GetString() switch
+				{
+					"applied" => 0,
+					"rudeEdit" => RestartNeededExitCode,
+					_ => 1,
+				};
+			}
+		}
+
 		var text = TextOf(result);
 
 		// ponytail: the zero-match signal is the "0 matched" prefix of the find_elements text; a structured

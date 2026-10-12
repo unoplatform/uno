@@ -82,6 +82,21 @@ public class Given_AppCommandHandler
 	}
 
 	[TestMethod]
+	[Description("structuredContent, when the host sends it, decides the exit code before any text is read")]
+	public void WhenStructuredContent_ExitCodeReadsIt()
+	{
+		static CallToolResult With(string json, string text = "prose that would say otherwise")
+			=> new() { Content = [new TextContentBlock { Text = text }], StructuredContent = JsonSerializer.Deserialize<JsonElement>(json) };
+
+		AppCommandHandler.ExitCodeFor("uno_app_find_elements", With("""{"matched":0,"elements":[]}""", "3 matched")).Should().Be(1);
+		AppCommandHandler.ExitCodeFor("uno_app_find_elements", With("""{"matched":2,"elements":[]}""", "0 matched")).Should().Be(0);
+		AppCommandHandler.ExitCodeFor("uno_app_hot_reload_status", With("""{"state":"Ready","verdict":"applied"}""")).Should().Be(0);
+		AppCommandHandler.ExitCodeFor("uno_app_hot_reload_status", With("""{"state":"Ready","verdict":"notApplied","diagnostics":["x"]}""")).Should().Be(1);
+		AppCommandHandler.ExitCodeFor("uno_app_hot_reload_status", With("""{"state":"Ready","verdict":"rudeEdit"}""")).Should().Be(AppCommandHandler.RestartNeededExitCode);
+		AppCommandHandler.ExitCodeFor("uno_app_hot_reload_status", With("""{"state":"Ready"}""")).Should().Be(0);
+	}
+
+	[TestMethod]
 	[Description("assert passes when every match carries the state tokens, a !token is absent, the count matches, or nothing matched with --absent")]
 	public void WhenAssert_VerdictFollowsMatchesAndState()
 	{
