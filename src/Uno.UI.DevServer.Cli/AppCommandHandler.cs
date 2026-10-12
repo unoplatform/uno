@@ -338,7 +338,7 @@ internal sealed class AppCommandHandler
 		var arguments = new Dictionary<string, object?>(parsed.Arguments);
 
 		// App MCP tools appear once the add-in has checked the licence, shortly after the host is ready.
-		if (await WaitForToolAsync(client, toolName, ct) is not { } mcpTool)
+		if (await WaitForToolAsync(client, toolName, parsed.NoStart, ct) is not { } mcpTool)
 		{
 			_logger.LogError("Tool '{Tool}' is not available on the DevServer. Run `uno-devserver app tools` to list the tools, and `uno-devserver health` when the list is empty.", toolName);
 			return 2;
@@ -428,7 +428,7 @@ internal sealed class AppCommandHandler
 		var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(TakeInt(arguments, "timeoutSeconds") ?? 120);
 		var ready = TakeBool(arguments, "ready");
 
-		if (await WaitForToolAsync(client, RuntimeInfoTool, ct) is null)
+		if (await WaitForToolAsync(client, RuntimeInfoTool, parsed.NoStart, ct) is null)
 		{
 			_logger.LogError("Tool '{Tool}' is not available on the DevServer.", RuntimeInfoTool);
 			return 2;
@@ -529,9 +529,13 @@ internal sealed class AppCommandHandler
 	private static bool TakeBool(Dictionary<string, object?> arguments, string name)
 		=> TakeString(arguments, name) is { } value && !string.Equals(value, "false", StringComparison.OrdinalIgnoreCase);
 
-	private async Task<McpClientTool?> WaitForToolAsync(McpClient client, string toolName, CancellationToken ct)
+	/// <summary>
+	/// The tool, waiting for the add-in's licence check after a host start. With <c>--no-start</c> the host was
+	/// already running, so a tool it does not list now is not coming: a hook must not pay the wait on every edit.
+	/// </summary>
+	private async Task<McpClientTool?> WaitForToolAsync(McpClient client, string toolName, bool noStart, CancellationToken ct)
 	{
-		var deadline = DateTime.UtcNow + ToolListTimeout;
+		var deadline = DateTime.UtcNow + (noStart ? TimeSpan.Zero : ToolListTimeout);
 		while (true)
 		{
 			var tools = await client.ListToolsAsync(cancellationToken: ct);
