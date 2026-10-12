@@ -2986,6 +2986,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_UNO
 		[Ignore("The scroll simulations are internal to Uno.")]
 #endif
+		public void When_Wheel_First_Frame_At_Zero_Timestamp_Then_Progresses()
+		{
+#if HAS_UNO
+			const long Frame = TimeSpan.TicksPerSecond / 120;
+
+			ScrollWheelSimulation wheel = new();
+			wheel.Start(0);
+			wheel.AddDistance(100);
+
+			wheel.Tick(0, 0, 10_000);
+			wheel.Tick(Frame, 0, 10_000);
+
+			Assert.IsTrue(wheel.Position > 0.22 * 100, $"the curve did not advance past its first frame (at {wheel.Position})");
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_UNO
+		[Ignore("The scroll simulations are internal to Uno.")]
+#endif
 		[DataRow(30)]
 		[DataRow(60)]
 		[DataRow(144)]
@@ -3202,20 +3222,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Height = height,
 				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
 			};
-			var bounds = await UITestHelper.Load(SUT);
-
-			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
-			using var mouse = input.GetMouse();
-			mouse.MoveTo(bounds.GetCenter());
-
-			for (var i = 0; i < events; i++)
+			try
 			{
-				mouse.Wheel(-delta);
+				var bounds = await UITestHelper.Load(SUT);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				using var mouse = input.GetMouse();
+				mouse.MoveTo(bounds.GetCenter());
+
+				for (var i = 0; i < events; i++)
+				{
+					mouse.Wheel(-delta);
+				}
+
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+				Assert.AreEqual(expected, SUT.VerticalOffset, 0.01);
 			}
-
-			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
-
-			Assert.AreEqual(expected, SUT.VerticalOffset, 0.01);
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 #else
 			await Task.CompletedTask;
 #endif
@@ -3236,36 +3263,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Height = 200,
 				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
 			};
-			var bounds = await UITestHelper.Load(SUT);
-
-			var stopwatch = new System.Diagnostics.Stopwatch();
-			double? settledMs = null;
-			SUT.ViewChanged += (_, e) =>
+			try
 			{
-				if (!e.IsIntermediate)
+				var bounds = await UITestHelper.Load(SUT);
+
+				var stopwatch = new System.Diagnostics.Stopwatch();
+				double? settledMs = null;
+				SUT.ViewChanged += (_, e) =>
 				{
-					settledMs = stopwatch.Elapsed.TotalMilliseconds;
+					if (!e.IsIntermediate)
+					{
+						settledMs = stopwatch.Elapsed.TotalMilliseconds;
+					}
+				};
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				using var mouse = input.GetMouse();
+				mouse.MoveTo(bounds.GetCenter());
+
+				for (var i = 0; i < 3; i++)
+				{
+					mouse.WheelDown();
+					await Task.Delay(60);
 				}
-			};
 
-			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
-			using var mouse = input.GetMouse();
-			mouse.MoveTo(bounds.GetCenter());
-
-			for (var i = 0; i < 3; i++)
-			{
+				settledMs = null;
+				stopwatch.Start();
 				mouse.WheelDown();
-				await Task.Delay(60);
+
+				await WindowHelper.WaitFor(() => settledMs is not null, timeoutMS: 3000, message: "the wheel scroll never settled");
+
+				// 220ms of curve, plus a few frames (at as low as 30Hz) between the input and the frame it starts on.
+				Assert.IsTrue(settledMs <= 360, $"the scroll settled {settledMs:F0}ms after the last notch");
+				Assert.AreEqual(4 * 30, SUT.VerticalOffset, 0.01, "four notches of 15% of the viewport");
 			}
-
-			stopwatch.Start();
-			mouse.WheelDown();
-
-			await WindowHelper.WaitFor(() => settledMs is not null, timeoutMS: 3000, message: "the wheel scroll never settled");
-
-			// 220ms of curve, plus up to a couple of frames between the input and the frame it starts on.
-			Assert.IsTrue(settledMs <= 255, $"the scroll settled {settledMs:F0}ms after the last notch");
-			Assert.AreEqual(4 * 30, SUT.VerticalOffset, 0.01, "four notches of 15% of the viewport");
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 #else
 			await Task.CompletedTask;
 #endif
