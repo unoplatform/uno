@@ -3679,6 +3679,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								IEventSymbol? eventSymbol = null;
 								var declaringTypeSymbol = FindType(member.Member.DeclaringType);
+								if (declaringTypeSymbol is null)
+								{
+									throw new XamlGenerationException($"The type '{member.Member.DeclaringType}' could not be found", member);
+								}
+
 								if (
 									!IsType(declaringTypeSymbol, objectDefinitionType)
 									|| IsAttachedProperty(member)
