@@ -11,7 +11,7 @@ namespace Uno.UI.Runtime;
 // default framebuffer).
 internal partial class WebGlBrowserRenderer : IBrowserRenderer
 {
-	private record struct JsInfo(JSObject NativeInstance, uint FboId, int Stencil, int Samples, int Depth);
+	private record struct JsInfo(JSObject NativeInstance, uint FboId, int Stencil, int Samples, int Depth, bool UsesWorkerClock);
 
 	private readonly JsInfo _jsInfo;
 
@@ -31,7 +31,8 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 				FboId: (uint)jsObject.GetPropertyAsInt32("fboId"),
 				Stencil: jsObject.GetPropertyAsInt32("stencil"),
 				Samples: jsObject.GetPropertyAsInt32("samples"),
-				Depth: jsObject.GetPropertyAsInt32("depth")
+				Depth: jsObject.GetPropertyAsInt32("depth"),
+				UsesWorkerClock: jsObject.GetPropertyAsBoolean("usesWorkerClock")
 			);
 			renderer = new WebGlBrowserRenderer(jsInfo);
 			typeof(WebGlBrowserRenderer).LogInfo()?.Info($"WebGL context created successfully: {jsInfo}");
@@ -50,7 +51,14 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 	public IRenderTarget Resize(int width, int height)
 		=> new WebGlRenderTarget(_jsInfo.FboId, _jsInfo.Samples, _jsInfo.Stencil, width, height);
 
-	public void Flush() { }
+	// On the page canvas the browser presents on its own; with the worker clock, the drawn frame is handed over.
+	public void Flush()
+	{
+		if (_jsInfo.UsesWorkerClock)
+		{
+			NativeMethods.Present(_jsInfo.NativeInstance);
+		}
+	}
 
 	public bool NeedsForceResize() => false;
 
@@ -72,5 +80,8 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 		[JSImport($"globalThis.Uno.UI.Runtime.{nameof(WebGlBrowserRenderer)}.makeCurrent")]
 		internal static partial void MakeCurrent(JSObject nativeInstance);
+
+		[JSImport($"globalThis.Uno.UI.Runtime.{nameof(WebGlBrowserRenderer)}.present")]
+		internal static partial void Present(JSObject nativeInstance);
 	}
 }

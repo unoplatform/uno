@@ -15,6 +15,8 @@ internal sealed class WasmGLGraphicsContext : ISwapChain, IGLDeviceContext
 	private IRenderTarget? _target;
 	private int _width;
 	private int _height;
+	// A tick that drew nothing must not present: handed to the worker clock, an undrawn buffer shows as blank.
+	private bool _frameAcquired;
 
 	public WasmGLGraphicsContext(WebGlBrowserRenderer renderer) => _renderer = renderer;
 
@@ -39,10 +41,20 @@ internal sealed class WasmGLGraphicsContext : ISwapChain, IGLDeviceContext
 			_height = height;
 		}
 
+		_frameAcquired = true;
 		return _target;
 	}
 
-	public void Present() => _renderer.Flush();
+	public void Present()
+	{
+		if (!_frameAcquired)
+		{
+			return;
+		}
+		_frameAcquired = false;
+
+		_renderer.Flush();
+	}
 
 	public void Dispose() { }
 }
