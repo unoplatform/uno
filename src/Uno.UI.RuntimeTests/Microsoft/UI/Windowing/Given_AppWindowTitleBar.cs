@@ -8,6 +8,8 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Uno.UI.Extensions;
+using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Windowing;
 
@@ -298,6 +300,182 @@ public class Given_AppWindowTitleBar
 			titleBar.ButtonInactiveForegroundColor = null;
 		}
 	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Window_Extends_Caption_Button_Backgrounds_Default_To_Transparent()
+	{
+		var window = new Window { Content = new Grid() };
+		var titleBar = window.AppWindow.TitleBar;
+		try
+		{
+			await ActivateAsync(window);
+			titleBar.ButtonBackgroundColor.Should().BeNull();
+
+			window.ExtendsContentIntoTitleBar = true;
+			titleBar.ButtonBackgroundColor.Should().Be(global::Microsoft.UI.Colors.Transparent);
+			titleBar.ButtonInactiveBackgroundColor.Should().Be(global::Microsoft.UI.Colors.Transparent);
+
+			// Only the first opt-in resets them, so colors set afterwards survive turning it off and on again.
+			var color = Color.FromArgb(255, 10, 20, 30);
+			titleBar.ButtonBackgroundColor = color;
+			window.ExtendsContentIntoTitleBar = false;
+			window.ExtendsContentIntoTitleBar = true;
+			titleBar.ButtonBackgroundColor.Should().Be(color);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			window.Close();
+		}
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Button_Colors_Change_On_Win32_Caption_Buttons_Follow()
+	{
+		var window = new Window { Content = new Grid() };
+		var titleBar = window.AppWindow.TitleBar;
+		try
+		{
+			window.ExtendsContentIntoTitleBar = true;
+			await ActivateAndWaitForActiveAsync(window);
+			var minimize = await GetCaptionButtonAsync(window, "MinimizeButton");
+			var defaultForeground = GetColor(minimize.Foreground);
+
+			titleBar.ButtonForegroundColor = Color.FromArgb(128, 200, 0, 0);
+			titleBar.ButtonBackgroundColor = Color.FromArgb(128, 0, 0, 200);
+
+			// Like WinUI, only the background colors keep their alpha channel.
+			GetColor(minimize.Foreground).Should().Be(Color.FromArgb(255, 200, 0, 0));
+			GetColor(minimize.Background).Should().Be(Color.FromArgb(128, 0, 0, 200));
+
+			titleBar.ButtonForegroundColor = Color.FromArgb(255, 0, 200, 0);
+			GetColor(minimize.Foreground).Should().Be(Color.FromArgb(255, 0, 200, 0));
+
+			titleBar.ButtonForegroundColor = null;
+			GetColor(minimize.Foreground).Should().Be(defaultForeground);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			window.Close();
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Caption_Button_Hovered_Or_Pressed_On_Win32_Colors_Follow_Except_Close()
+	{
+		var window = new Window { Content = new Grid() };
+		var titleBar = window.AppWindow.TitleBar;
+		var hoverBackground = Color.FromArgb(255, 1, 2, 3);
+		var hoverForeground = Color.FromArgb(255, 4, 5, 6);
+		var pressedBackground = Color.FromArgb(255, 7, 8, 9);
+		var pressedForeground = Color.FromArgb(255, 10, 11, 12);
+		try
+		{
+			window.ExtendsContentIntoTitleBar = true;
+			await ActivateAndWaitForActiveAsync(window);
+			var minimize = await GetCaptionButtonAsync(window, "MinimizeButton");
+			var close = await GetCaptionButtonAsync(window, "CloseButton");
+
+			titleBar.ButtonHoverBackgroundColor = hoverBackground;
+			titleBar.ButtonHoverForegroundColor = hoverForeground;
+			titleBar.ButtonPressedBackgroundColor = pressedBackground;
+			titleBar.ButtonPressedForegroundColor = pressedForeground;
+
+			VisualStateManager.GoToState(minimize, "PointerOver", false);
+			GetColor(minimize.Background).Should().Be(hoverBackground);
+			GetColor(minimize.Foreground).Should().Be(hoverForeground);
+
+			VisualStateManager.GoToState(minimize, "Pressed", false);
+			GetColor(minimize.Background).Should().Be(pressedBackground);
+			GetColor(minimize.Foreground).Should().Be(pressedForeground);
+
+			// The Close button always keeps the system hover and pressed colors.
+			VisualStateManager.GoToState(close, "PointerOver", false);
+			GetColor(close.Background).Should().NotBe(hoverBackground);
+			GetColor(close.Foreground).Should().NotBe(hoverForeground);
+
+			VisualStateManager.GoToState(close, "Pressed", false);
+			GetColor(close.Background).Should().NotBe(pressedBackground);
+			GetColor(close.Foreground).Should().NotBe(pressedForeground);
+
+			VisualStateManager.GoToState(minimize, "Normal", false);
+			VisualStateManager.GoToState(close, "Normal", false);
+			GetColor(minimize.Background).Should().NotBe(hoverBackground);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			window.Close();
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Window_Deactivated_On_Win32_Inactive_Button_Colors_Apply()
+	{
+		var window = new Window { Content = new Grid() };
+		var other = new Window { Content = new Grid() };
+		var titleBar = window.AppWindow.TitleBar;
+		var activeForeground = Color.FromArgb(255, 200, 0, 0);
+		var inactiveForeground = Color.FromArgb(255, 0, 0, 200);
+		var inactiveBackground = Color.FromArgb(255, 0, 200, 0);
+		try
+		{
+			titleBar.ButtonForegroundColor = activeForeground;
+			titleBar.ButtonInactiveForegroundColor = inactiveForeground;
+			window.ExtendsContentIntoTitleBar = true;
+			titleBar.ButtonInactiveBackgroundColor = inactiveBackground;
+
+			WindowActivationState? state = null;
+			window.Activated += (s, e) => state = e.WindowActivationState;
+			window.Activate();
+			await TestServices.WindowHelper.WaitFor(() => state is not null and not WindowActivationState.Deactivated);
+			var minimize = await GetCaptionButtonAsync(window, "MinimizeButton");
+			GetColor(minimize.Foreground).Should().Be(activeForeground);
+
+			other.Activate();
+			await TestServices.WindowHelper.WaitFor(() => state is WindowActivationState.Deactivated);
+
+			GetColor(minimize.Foreground).Should().Be(inactiveForeground);
+			GetColor(minimize.Background).Should().Be(inactiveBackground);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			other.Close();
+			window.Close();
+		}
+	}
+
+	private static async Task ActivateAndWaitForActiveAsync(Window window)
+	{
+		WindowActivationState? state = null;
+		window.Activated += (s, e) => state = e.WindowActivationState;
+		window.Activate();
+		await TestServices.WindowHelper.WaitFor(() => state is not null and not WindowActivationState.Deactivated);
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	private static async Task<Button> GetCaptionButtonAsync(Window window, string name)
+	{
+		DependencyObject element = window.Content;
+		while (element is not null and not Uno.UI.Xaml.Controls.WindowChrome)
+		{
+			element = global::Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(element);
+		}
+
+		var button = ((FrameworkElement)element).FindFirstDescendant<Button>(name)!;
+		await TestServices.WindowHelper.WaitFor(() => button.ActualWidth > 0);
+		return button;
+	}
+
+	private static Color GetColor(global::Microsoft.UI.Xaml.Media.Brush brush) => ((global::Microsoft.UI.Xaml.Media.SolidColorBrush)brush).Color;
+#endif
 
 	private static async Task ActivateAsync(Window window)
 	{
