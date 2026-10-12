@@ -8,10 +8,12 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Windows.Graphics;
+using Windows.UI;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -27,6 +29,7 @@ internal sealed partial class WindowChrome : ContentControl
 	private readonly SerialDisposable m_minimizeButtonClickedEventHandler = new();
 	private readonly SerialDisposable m_maximizeButtonClickedEventHandler = new();
 	private readonly SerialDisposable m_presenterDisposable = new();
+	private readonly SerialDisposable m_captionButtonStatesChangedEventHandler = new();
 	private SerialDisposable m_userTitleBarDisposable = new();
 	private UIElement? m_userTitleBar;
 	private readonly Window _window;
@@ -35,6 +38,7 @@ internal sealed partial class WindowChrome : ContentControl
 	private Button? m_tpCloseButtonPart;
 	private Button? m_tpMinimizeButtonPart;
 	private Button? m_tpMaximizeButtonPart;
+	private bool _isWindowActive = true;
 
 	private Dictionary<NonClientRegionKind, RectInt32[]> _nonClientRegions = new();
 
@@ -54,7 +58,9 @@ internal sealed partial class WindowChrome : ContentControl
 		parent.AppWindow.Changed += OnAppWindowChanged;
 		parent.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
 		parent.AppWindow.TitleBar.Changed += OnTitleBarChanged;
+		parent.AppWindow.TitleBar.ButtonColorsChanged += (_, _) => UpdateCaptionButtonColors();
 		parent.Activated += OnActivate;
+		ActualThemeChanged += (_, _) => UpdateCaptionButtonColors();
 		Loaded += OnLoaded;
 	}
 
@@ -97,14 +103,9 @@ internal sealed partial class WindowChrome : ContentControl
 		// See: https://github.com/unoplatform/uno/issues/21688
 		DefaultBrushes.ResetDefaultThemeBrushes();
 		this.SetValue(ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
-		if (e.WindowActivationState is WindowActivationState.CodeActivated or WindowActivationState.PointerActivated)
-		{
-			VisualStateManager.GoToState(this, "Normal", true);
-		}
-		else
-		{
-			VisualStateManager.GoToState(this, "WindowInactive", true);
-		}
+		_isWindowActive = e.WindowActivationState is WindowActivationState.CodeActivated or WindowActivationState.PointerActivated;
+		VisualStateManager.GoToState(this, _isWindowActive ? "Normal" : "WindowInactive", true);
+		UpdateCaptionButtonColors();
 	}
 
 	private void OnAppWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
@@ -149,6 +150,7 @@ internal sealed partial class WindowChrome : ContentControl
 		m_closeButtonClickedEventHandler.Disposable = null;
 		m_minimizeButtonClickedEventHandler.Disposable = null;
 		m_maximizeButtonClickedEventHandler.Disposable = null;
+		m_captionButtonStatesChangedEventHandler.Disposable = null;
 
 		base.OnApplyTemplate();
 
@@ -225,8 +227,72 @@ internal sealed partial class WindowChrome : ContentControl
 			SetTooltip(m_tpMaximizeButtonPart, IsWindowMaximized() ? ToolTipRestore : ToolTipMaximize);
 		}
 
+		m_captionButtonStatesChangedEventHandler.Disposable = new CompositeDisposable(
+			ObserveCommonStates(m_tpMinimizeButtonPart),
+			ObserveCommonStates(m_tpMaximizeButtonPart),
+			ObserveCommonStates(m_tpCloseButtonPart));
+		UpdateCaptionButtonColors();
+
 		ConfigureWindowChrome();
 		ResizeCaptionButtons();
+	}
+
+	private IDisposable ObserveCommonStates(Button? button)
+	{
+		button?.ApplyTemplate();
+		if (button is null || GetCommonStates(button) is not { } commonStates)
+		{
+			return Disposable.Empty;
+		}
+
+		void OnCurrentStateChanged(object? sender, VisualStateChangedEventArgs args) => UpdateCaptionButtonColors(button);
+
+		commonStates.CurrentStateChanged += OnCurrentStateChanged;
+		return Disposable.Create(() => commonStates.CurrentStateChanged -= OnCurrentStateChanged);
+	}
+
+	private static VisualStateGroup? GetCommonStates(Button button)
+		=> VisualTreeHelper.GetChildrenCount(button) > 0 && VisualTreeHelper.GetChild(button, 0) is FrameworkElement templateRoot
+			? VisualStateManager.GetVisualStateGroups(templateRoot).FirstOrDefault(g => g.Name == "CommonStates")
+			: null;
+
+	private void UpdateCaptionButtonColors()
+	{
+		UpdateCaptionButtonColors(m_tpMinimizeButtonPart);
+		UpdateCaptionButtonColors(m_tpMaximizeButtonPart);
+		UpdateCaptionButtonColors(m_tpCloseButtonPart);
+	}
+
+	// Mirrors the system caption buttons WinUI relies on: a null AppWindowTitleBar color means the theme default,
+	// and the Close button keeps its system hover and pressed colors.
+	private void UpdateCaptionButtonColors(Button? button)
+	{
+		if (button is null)
+		{
+			return;
+		}
+
+		var titleBar = _window.AppWindow.TitleBar;
+		var isClose = button == m_tpCloseButtonPart;
+
+		(Color? background, string backgroundKey, Color? foreground, string foregroundKey) colors = GetCommonStates(button)?.CurrentState?.Name switch
+		{
+			"Pressed" when isClose => (null, "CloseButtonBackgroundPressed", null, "CloseButtonStrokePressed"),
+			"Pressed" => (titleBar.ButtonPressedBackgroundColor, "WindowCaptionButtonBackgroundPressed", titleBar.ButtonPressedForegroundColor, "WindowCaptionButtonStrokePressed"),
+			"PointerOver" when isClose => (null, "CloseButtonBackgroundPointerOver", null, "CloseButtonStrokePointerOver"),
+			"PointerOver" => (titleBar.ButtonHoverBackgroundColor, "WindowCaptionButtonBackgroundPointerOver", titleBar.ButtonHoverForegroundColor, "WindowCaptionButtonStrokePointerOver"),
+			_ when _isWindowActive => (titleBar.ButtonBackgroundColor, "WindowCaptionButtonBackground", titleBar.ButtonForegroundColor, "WindowCaptionForeground"),
+			_ => (titleBar.ButtonInactiveBackgroundColor, "WindowCaptionButtonBackground", titleBar.ButtonInactiveForegroundColor, "WindowCaptionForegroundDisabled"),
+		};
+
+		button.Background = colors.background is { } background
+			? new SolidColorBrush(background)
+			: ResourceResolver.ResolveTopLevelResource(colors.backgroundKey) as Brush;
+
+		// Like WinUI, only the background colors keep their alpha channel.
+		button.Foreground = colors.foreground is { } foreground
+			? new SolidColorBrush(Color.FromArgb(255, foreground.R, foreground.G, foreground.B))
+			: ResourceResolver.ResolveTopLevelResource(colors.foregroundKey) as Brush;
 	}
 
 	private void SetTooltip(DependencyObject element, string resourceStringID)

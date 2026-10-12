@@ -15,6 +15,14 @@ public partial class AppWindowTitleBar
 	private bool _extendsContentIntoTitleBar;
 	private TitleBarHeightOption _preferredHeightOption;
 	private readonly AppWindow _appWindow;
+	private Color? _buttonBackgroundColor;
+	private Color? _buttonForegroundColor;
+	private Color? _buttonHoverBackgroundColor;
+	private Color? _buttonHoverForegroundColor;
+	private Color? _buttonInactiveBackgroundColor;
+	private Color? _buttonInactiveForegroundColor;
+	private Color? _buttonPressedBackgroundColor;
+	private Color? _buttonPressedForegroundColor;
 
 	internal AppWindowTitleBar(AppWindow appWindow)
 	{
@@ -113,6 +121,17 @@ public partial class AppWindowTitleBar
 
 	internal RectInt32[] DragRectangles { get; private set; } = [];
 
+	internal event EventHandler? ButtonColorsChanged;
+
+	private void SetButtonColor(ref Color? field, Color? value)
+	{
+		if (!Nullable.Equals(field, value))
+		{
+			field = value;
+			ButtonColorsChanged?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
 	/// <summary>
 	/// Gets or sets the background color of the title bar.
 	/// </summary>
@@ -122,50 +141,82 @@ public partial class AppWindowTitleBar
 	/// <summary>
 	/// Gets or sets the button background color of the title bar.
 	/// </summary>
-	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
-	public Color? ButtonBackgroundColor { get; set; }
+	/// <remarks>Applied to the caption buttons on Desktop Windows. Stored only on Desktop macOS, where the system draws the traffic lights.</remarks>
+	public Color? ButtonBackgroundColor
+	{
+		get => _buttonBackgroundColor;
+		set => SetButtonColor(ref _buttonBackgroundColor, value);
+	}
 
 	/// <summary>
 	/// Gets or sets the button foreground color of the title bar.
 	/// </summary>
-	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
-	public Color? ButtonForegroundColor { get; set; }
+	/// <remarks>Applied to the caption buttons on Desktop Windows. Stored only on Desktop macOS, where the system draws the traffic lights.</remarks>
+	public Color? ButtonForegroundColor
+	{
+		get => _buttonForegroundColor;
+		set => SetButtonColor(ref _buttonForegroundColor, value);
+	}
 
 	/// <summary>
 	/// Gets or sets the button hover background color of the title bar.
 	/// </summary>
-	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
-	public Color? ButtonHoverBackgroundColor { get; set; }
+	/// <remarks>Applied to the caption buttons on Desktop Windows. Stored only on Desktop macOS, where the system draws the traffic lights.</remarks>
+	public Color? ButtonHoverBackgroundColor
+	{
+		get => _buttonHoverBackgroundColor;
+		set => SetButtonColor(ref _buttonHoverBackgroundColor, value);
+	}
 
 	/// <summary>
 	/// Gets or sets the button hover foreground color of the title bar.
 	/// </summary>
-	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
-	public Color? ButtonHoverForegroundColor { get; set; }
+	/// <remarks>Applied to the caption buttons on Desktop Windows. Stored only on Desktop macOS, where the system draws the traffic lights.</remarks>
+	public Color? ButtonHoverForegroundColor
+	{
+		get => _buttonHoverForegroundColor;
+		set => SetButtonColor(ref _buttonHoverForegroundColor, value);
+	}
 
 	/// <summary>
 	/// Gets or sets the button inactive background color of the title bar.
 	/// </summary>
-	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
-	public Color? ButtonInactiveBackgroundColor { get; set; }
+	/// <remarks>Applied to the caption buttons on Desktop Windows. Stored only on Desktop macOS, where the system draws the traffic lights.</remarks>
+	public Color? ButtonInactiveBackgroundColor
+	{
+		get => _buttonInactiveBackgroundColor;
+		set => SetButtonColor(ref _buttonInactiveBackgroundColor, value);
+	}
 
 	/// <summary>
 	/// Gets or sets the button inactive foreground color of the title bar.
 	/// </summary>
-	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
-	public Color? ButtonInactiveForegroundColor { get; set; }
+	/// <remarks>Applied to the caption buttons on Desktop Windows. Stored only on Desktop macOS, where the system draws the traffic lights.</remarks>
+	public Color? ButtonInactiveForegroundColor
+	{
+		get => _buttonInactiveForegroundColor;
+		set => SetButtonColor(ref _buttonInactiveForegroundColor, value);
+	}
 
 	/// <summary>
 	/// Gets or sets the button pressed background color of the title bar.
 	/// </summary>
-	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
-	public Color? ButtonPressedBackgroundColor { get; set; }
+	/// <remarks>Applied to the caption buttons on Desktop Windows. Stored only on Desktop macOS, where the system draws the traffic lights.</remarks>
+	public Color? ButtonPressedBackgroundColor
+	{
+		get => _buttonPressedBackgroundColor;
+		set => SetButtonColor(ref _buttonPressedBackgroundColor, value);
+	}
 
 	/// <summary>
 	/// Gets or sets the button pressed foreground color of the title bar.
 	/// </summary>
-	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
-	public Color? ButtonPressedForegroundColor { get; set; }
+	/// <remarks>Applied to the caption buttons on Desktop Windows. Stored only on Desktop macOS, where the system draws the traffic lights.</remarks>
+	public Color? ButtonPressedForegroundColor
+	{
+		get => _buttonPressedForegroundColor;
+		set => SetButtonColor(ref _buttonPressedForegroundColor, value);
+	}
 
 	/// <summary>
 	/// Gets or sets the foreground color of the title bar.

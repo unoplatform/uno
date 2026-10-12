@@ -409,8 +409,23 @@ public partial class Window
 	public bool ExtendsContentIntoTitleBar
 	{
 		get => AppWindow.TitleBar.ExtendsContentIntoTitleBar;
-		set => AppWindow.TitleBar.ExtendsContentIntoTitleBar = value;
+		set
+		{
+			var titleBar = AppWindow.TitleBar;
+			titleBar.ExtendsContentIntoTitleBar = value;
+
+			// Like CWindowChrome::ConfigureWindowChrome, the first opt-in makes the caption button backgrounds transparent,
+			// and only the first one, so colors set later survive turning it off and on again.
+			if (value && !_captionButtonBackgroundsDefaulted)
+			{
+				_captionButtonBackgroundsDefaulted = true;
+				titleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+				titleBar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
+			}
+		}
 	}
+
+	private bool _captionButtonBackgroundsDefaulted;
 
 	internal bool HasSupportedSystemBackdrop
 	{

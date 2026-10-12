@@ -225,6 +225,18 @@ On macOS, the window keeps its native close, minimize and zoom buttons (the "tra
 * `OverlappedPresenter.IsMinimizable`, `IsMaximizable` and `IsResizable` set to `false` disable (grey out) the minimize and zoom buttons, as macOS apps do, rather than hiding them. To hide the buttons and draw your own, use `SetBorderAndTitleBar(true, false)`.
 * Title bar colors (`ButtonForegroundColor`, `BackgroundColor`, etc.) and `IconShowOptions` can be set but have no effect, because macOS draws the title bar and its buttons and offers no way to recolor them. The same code can set them for WinAppSDK.
 
+#### Caption button colors on Windows
+
+On Desktop Windows, Uno draws the minimize, maximize and close buttons itself while the content extends into the title bar. They follow the `AppWindowTitleBar` button colors, as the system caption buttons do on WinAppSDK:
+
+* `ButtonForegroundColor` and `ButtonBackgroundColor` apply while the window is active, `ButtonInactiveForegroundColor` and `ButtonInactiveBackgroundColor` while it is not.
+* `ButtonHoverForegroundColor`, `ButtonHoverBackgroundColor`, `ButtonPressedForegroundColor` and `ButtonPressedBackgroundColor` apply while the pointer is over a button or presses it. The close button keeps its system hover and pressed colors.
+* `null` restores the theme default, and changes apply immediately.
+* Only the background colors keep their alpha channel.
+* As on WinAppSDK, the first time `Window.ExtendsContentIntoTitleBar` is set to `true`, `ButtonBackgroundColor` and `ButtonInactiveBackgroundColor` are set to `Colors.Transparent`.
+
+`BackgroundColor`, `ForegroundColor`, `InactiveBackgroundColor`, `InactiveForegroundColor` and `IconShowOptions` can be set but are not applied yet.
+
 ### Configuring title bar height
 
 When extending content into the title bar, you can control the height of the title bar using the `PreferredHeightOption` property:
