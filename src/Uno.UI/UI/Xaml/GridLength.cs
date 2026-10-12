@@ -23,12 +23,6 @@ namespace Microsoft.UI.Xaml
 
 		public bool IsStar { get { return GridUnitType == Xaml.GridUnitType.Star; } }
 
-		public static implicit operator GridLength(string value)
-			=> FromString(value);
-
-		public static implicit operator GridLength(double value)
-			=> new GridLength(value);
-
 		public GridLength(double pixels) : this(pixels, GridUnitType.Pixel)
 		{
 		}
@@ -118,9 +112,9 @@ namespace Microsoft.UI.Xaml
 			return result;
 		}
 
-		public bool Equals(GridLength other)
+		public bool Equals(GridLength gridLength)
 		{
-			if (other.GridUnitType == GridUnitType)
+			if (gridLength.GridUnitType == GridUnitType)
 			{
 				if (GridUnitType == GridUnitType.Auto)
 				{
@@ -128,7 +122,7 @@ namespace Microsoft.UI.Xaml
 				}
 				else
 				{
-					return other.Value == Value;
+					return gridLength.Value == Value;
 				}
 			}
 			else
@@ -137,7 +131,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public override bool Equals(object obj) => obj is GridLength other ? Equals(other) : false;
+		public override bool Equals(object oCompare) => oCompare is GridLength other && Equals(other);
 
 		public override int GetHashCode() => GridUnitType.GetHashCode() ^ Value.GetHashCode();
 

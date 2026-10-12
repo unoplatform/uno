@@ -24,6 +24,7 @@
         <UnoFeatures>
             SkiaRenderer;
         </UnoFeatures>
+        <UnoFeatures Condition=" '$(UnoFeaturesOverride)' != '' ">$(UnoFeaturesOverride)</UnoFeatures>
     </PropertyGroup>
 
     <ItemGroup>

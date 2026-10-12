@@ -87,11 +87,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _shouldAnnotateGeneratedXaml;
 
-		/// <summary>
-		/// When set, Visual State Manager children will be initialized lazily for performance
-		/// </summary>
-		private readonly bool _isLazyVisualStateManagerEnabled = true;
-
 		private readonly bool _isUiAutomationMappingEnabled;
 
 		/// <summary>
@@ -131,6 +126,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> FrameworkElementSymbol { get; }
 		internal Lazy<INamedTypeSymbol> UIElementSymbol { get; }
 		internal Lazy<INamedTypeSymbol> DependencyObjectSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> XNameProviderSymbol { get; }
 		internal Lazy<INamedTypeSymbol> MarkupExtensionSymbol { get; }
 		internal Lazy<INamedTypeSymbol> BrushSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ImageSourceSymbol { get; }
@@ -139,7 +135,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol?> AndroidContentContextSymbol { get; }
 		internal Lazy<INamedTypeSymbol?> AndroidViewSymbol { get; }
 		internal Lazy<INamedTypeSymbol?> IOSViewSymbol { get; }
-		internal Lazy<INamedTypeSymbol?> AppKitViewSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ICollectionSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ICollectionOfTSymbol { get; }
 		internal Lazy<INamedTypeSymbol> IConvertibleSymbol { get; }
@@ -226,11 +221,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (bool.TryParse(context.GetMSBuildPropertyValue("ShouldAnnotateGeneratedXaml"), out var shouldAnnotateGeneratedXaml))
 			{
 				_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
-			}
-
-			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlLazyVisualStateManagerEnabled"), out var isLazyVisualStateManagerEnabled))
-			{
-				_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
 			}
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlResourcesTrimming"), out var xamlResourcesTrimming))
@@ -332,6 +322,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			ImageSourceSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ImageSource);
 			ImageSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Image);
 			DependencyObjectSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.DependencyObject);
+			XNameProviderSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.IXNameProvider);
 			MarkupExtensionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.MarkupExtension);
 			BrushSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Brush);
 			DependencyObjectParseSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.IDependencyObjectParse);
@@ -350,7 +341,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			AndroidContentContextSymbol = GetOptionalSymbolAsLazy("Android.Content.Context");
 			AndroidViewSymbol = GetOptionalSymbolAsLazy("Android.Views.View");
 			IOSViewSymbol = GetOptionalSymbolAsLazy("UIKit.UIView");
-			AppKitViewSymbol = GetOptionalSymbolAsLazy("AppKit.NSView");
 			CreateFromStringAttributeSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.CreateFromStringAttribute);
 			NativePageSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.NativePage);
 			WindowSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.Window);
@@ -533,7 +523,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
 							isUnoAssembly: IsUnoAssembly,
 							isUnoFluentAssembly: IsUnoFluentAssembly,
-							isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
 							enableFuzzyMatching: _enableFuzzyMatching,
 							disableBindableTypeProvidersGeneration: _disableBindableTypeProvidersGeneration,
 							enableAlcAppSupport: _enableAlcAppSupport,

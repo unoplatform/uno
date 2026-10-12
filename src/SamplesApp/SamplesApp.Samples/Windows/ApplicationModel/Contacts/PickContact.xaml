@@ -71,7 +71,7 @@
                     <DataTemplate x:DataType="contacts:ContactPhone">
                         <Border
                             Padding="8"
-                            x:DefaultBindMode="OneWay"
+                            x:DefaultBindMode="OneTime"
                             BorderBrush="Black"
                             BorderThickness="1">
                             <StackPanel>
@@ -101,7 +101,7 @@
                     <DataTemplate x:DataType="contacts:ContactAddress">
                         <Border
                             Padding="8"
-                            x:DefaultBindMode="OneWay"
+                            x:DefaultBindMode="OneTime"
                             BorderBrush="Black"
                             BorderThickness="1">
                             <StackPanel>
@@ -147,7 +147,7 @@
                     <DataTemplate x:DataType="contacts:ContactEmail">
                         <Border
                             Padding="8"
-                            x:DefaultBindMode="OneWay"
+                            x:DefaultBindMode="OneTime"
                             BorderBrush="Black"
                             BorderThickness="1">
                             <StackPanel>

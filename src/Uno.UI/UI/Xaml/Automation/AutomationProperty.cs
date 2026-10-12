@@ -4,5 +4,8 @@ namespace Microsoft.UI.Xaml.Automation
 {
 	public partial class AutomationProperty
 	{
+		internal AutomationProperty()
+		{
+		}
 	}
 }

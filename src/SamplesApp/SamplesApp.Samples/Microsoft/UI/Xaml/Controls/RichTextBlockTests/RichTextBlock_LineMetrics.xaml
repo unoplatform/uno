@@ -1,0 +1,126 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.RichTextBlockTests.RichTextBlock_LineMetrics"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.RichTextBlockTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock TextWrapping="Wrap">
+                <Run FontWeight="SemiBold" Text="Manual test: line-metrics playground. Move the controls below and verify the RichTextBlock re-flows as described." />
+                <LineBreak />
+                <Run Text="- LineHeight=0 (default) uses each line's natural font height regardless of the selected strategy." />
+                <LineBreak />
+                <Run Text="- MaxHeight: line advance is the LARGER of the natural line height and LineHeight (LineHeight only sets a floor; the oversized inline Run below still grows the line that contains it)." />
+                <LineBreak />
+                <Run Text="- BlockLineHeight: every line advance is forced to exactly LineHeight; text is repositioned inside that fixed box, so a small LineHeight can make the oversized inline Run visually clip/overlap neighboring lines." />
+                <LineBreak />
+                <Run Text="- BaselineToBaseline: the distance between consecutive baselines equals LineHeight, except the first/last line which keep their natural leading above/below the paragraph." />
+                <LineBreak />
+                <Run Text="- TextIndent only indents the first line of each paragraph, not wrapped continuation lines." />
+                <LineBreak />
+                <Run Text="- The red marker line tracks BaselineOffset (distance from the top of the control to the baseline of the first line) - it should stay glued to the visual baseline of the first line of text as LineHeight/strategy change." />
+            </TextBlock>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock
+                    Width="150"
+                    VerticalAlignment="Center"
+                    Text="LineHeight" />
+                <Slider
+                    x:Name="LineHeightSlider"
+                    Width="260"
+                    HorizontalAlignment="Left"
+                    Maximum="60"
+                    Minimum="0"
+                    StepFrequency="1"
+                    ValueChanged="OnLineHeightChanged"
+                    Value="0" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock
+                    Width="150"
+                    VerticalAlignment="Center"
+                    Text="LineStackingStrategy" />
+                <ComboBox
+                    x:Name="StrategyCombo"
+                    Width="260"
+                    SelectedIndex="0"
+                    SelectionChanged="OnStrategyChanged">
+                    <x:String>MaxHeight</x:String>
+                    <x:String>BlockLineHeight</x:String>
+                    <x:String>BaselineToBaseline</x:String>
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock
+                    Width="150"
+                    VerticalAlignment="Center"
+                    Text="Paragraph TextIndent" />
+                <Slider
+                    x:Name="TextIndentSlider"
+                    Width="260"
+                    HorizontalAlignment="Left"
+                    Maximum="60"
+                    Minimum="0"
+                    StepFrequency="1"
+                    ValueChanged="OnTextIndentChanged"
+                    Value="0" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock
+                    Width="150"
+                    VerticalAlignment="Center"
+                    Text="TextAlignment" />
+                <ComboBox
+                    x:Name="AlignmentCombo"
+                    Width="260"
+                    SelectedIndex="0"
+                    SelectionChanged="OnAlignmentChanged">
+                    <x:String>Left</x:String>
+                    <x:String>Center</x:String>
+                    <x:String>Right</x:String>
+                    <x:String>Justify</x:String>
+                </ComboBox>
+            </StackPanel>
+
+            <TextBlock
+                x:Name="ReadoutText"
+                FontFamily="Consolas"
+                FontSize="12"
+                TextWrapping="Wrap" />
+
+            <Border
+                Width="380"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                BorderThickness="1">
+                <Grid>
+                    <RichTextBlock x:Name="Rtb" TextWrapping="Wrap">
+                        <Paragraph x:Name="FirstParagraph">
+                            <Run Text="First paragraph: a short line of text used to visualize the baseline marker and the effect of TextIndent on the first wrapped line versus continuation lines." />
+                        </Paragraph>
+                        <Paragraph x:Name="SecondParagraph">
+                            <Run Text="Second paragraph mixes an " />
+                            <Run FontSize="30" Text="OVERSIZED" />
+                            <Run Text=" inline run with normal text so line-height clipping/growth is easy to spot when LineHeight is small and LineStackingStrategy is BlockLineHeight or BaselineToBaseline." />
+                        </Paragraph>
+                    </RichTextBlock>
+                    <Border
+                        x:Name="BaselineMarker"
+                        Height="2"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Background="Red"
+                        IsHitTestVisible="False" />
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

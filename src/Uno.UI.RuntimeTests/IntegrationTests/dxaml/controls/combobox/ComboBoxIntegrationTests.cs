@@ -486,7 +486,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
 #endif
 	public async Task ValidateOpenComboBoxWithAllItemsLongWidth()
@@ -1042,7 +1042,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
 #endif
 	public async Task CanOpenWithTouch()
@@ -1244,7 +1244,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
 #endif
 	public async Task CanLightDismissDropdown()
@@ -1951,7 +1951,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//}
 
 	[TestMethod]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
 #endif
 	public async Task CanSelectItemWithTap()
@@ -2796,7 +2796,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
 #endif
 	public async Task ValidateFocusStateForComboBoxOpenedWithTouch()
@@ -2805,7 +2805,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 	[Ignore("We currently only support InputHelper.LeftMouseClick properly on input injector targets. #17988")]
 #endif
 	public async Task ValidateFocusStateForComboBoxOpenedWithMouse()
@@ -2882,7 +2882,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
 #endif
 	public async Task ValidateFocusStateOfClosedComboBoxWhenOpenedWithTouchAndClosedWithKeyboard()
@@ -2891,7 +2891,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
 #endif
 	public async Task ValidateFocusStateOfClosedComboBoxWhenOpenedWithTouchAndClosedWithGamepad()
@@ -2900,7 +2900,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 	[Ignore("We currently only support InputHelper.LeftMouseClick properly on input injector targets. #17988")]
 #endif
 	public async Task ValidateFocusStateOfClosedComboBoxWhenOpenedWithMouseAndClosedWithKeyboard()
@@ -2909,7 +2909,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 	[Ignore("We currently only support InputHelper.LeftMouseClick properly on input injector targets. #17988")]
 #endif
 	public async Task ValidateFocusStateOfClosedComboBoxWhenOpenedWithMouseAndClosedWithGamepad()
@@ -4622,36 +4622,24 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
-#endif
 	public async Task CanRaiseTextSubmittedEventComboBoxClosed()
 	{
 		await CanRaiseTextSubmittedEventComboBox(false);
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
-#endif
 	public async Task CanRaiseTextSubmittedEventComboBoxOpened()
 	{
 		await CanRaiseTextSubmittedEventComboBox(true);
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
-#endif
 	public async Task ValidateItemAutoMatchOnTextSubmitted()
 	{
 		await CanRaiseTextSubmittedEventComboBox(false, true);
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
-#endif
 	public async Task ValidateTextSubmittedHandledProperty()
 	{
 		await CanRaiseTextSubmittedEventComboBox(false, false, true);
@@ -4759,18 +4747,12 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
-#endif
 	public async Task ValidateEditableModeSearchAndSelectionComboBoxClosed()
 	{
 		await ValidateEditableModeSearchAndSelection(false);
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
-#endif
 	public async Task ValidateEditableModeSearchAndSelectionComboBoxOpened()
 	{
 		await ValidateEditableModeSearchAndSelection(true);
@@ -4890,9 +4872,6 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("Focus does not behave correctly in this case because we move it asynchronously in TextBox.ProcessFocusChanged #17988")]
-#endif
 	public async Task ValidateEditableModeGamePadInteraction()
 	{
 		Size size = new(400, 400);
@@ -5178,9 +5157,6 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
-#endif
 	public async Task ValidateSettingSelectedIndexUpdatesTextBoxText()
 	{
 		var comboBox = await SetupBasicComboBoxTest(5, true, true);
@@ -5219,9 +5195,6 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
-#endif
 	public async Task ValidateSelectionTriggerAlwaysCanSetCustomValueAgain()
 	{
 		Size size = new(400, 400);
@@ -5301,7 +5274,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
 #endif
 	public async Task ValidateDropDownArrowClosesPopupOnEditableComboBox()

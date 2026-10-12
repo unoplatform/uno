@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Enterprise;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Microsoft.UI;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;
 

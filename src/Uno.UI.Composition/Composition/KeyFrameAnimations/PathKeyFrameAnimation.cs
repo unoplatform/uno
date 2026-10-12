@@ -4,7 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SkiaSharp;
+using System.Numerics;
+using Uno.UI.Composition.Drawing;
+using Windows.Graphics;
 
 namespace Microsoft.UI.Composition;
 
@@ -12,10 +14,8 @@ public partial class PathKeyFrameAnimation : KeyFrameAnimation
 {
 	private readonly SortedDictionary<float, AnimationKeyFrame<CompositionPath?>> _keyFrames = new();
 
-	// Keyframe CompositionPaths converted to SKPath once, so per-frame interpolation is cheap. The
-	// cached paths are independent copies so a temporary CompositionPathGeometry being collected can't
-	// dispose the SKPath out from under us.
-	private readonly Dictionary<CompositionPath, SKPath?> _skPathCache = new();
+	// Keyframe CompositionPaths converted to a segment stream once, so per-frame interpolation is cheap.
+	private readonly Dictionary<CompositionPath, PathSegments?> _segmentCache = new();
 
 	internal PathKeyFrameAnimation(Compositor compositor) : base(compositor)
 	{
@@ -62,89 +62,155 @@ public partial class PathKeyFrameAnimation : KeyFrameAnimation
 			return to;
 		}
 
-		var fromPath = GetSKPath(from);
-		var toPath = GetSKPath(to);
+		var fromSegments = GetSegments(from);
+		var toSegments = GetSegments(to);
 
-		if (fromPath is not null && toPath is not null && TryMorph(fromPath, toPath, amount) is { } morphed)
+		if (fromSegments is not null && toSegments is not null
+			&& TryMorph(fromSegments, toSegments, amount) is IGeometrySource2D morphed)
 		{
-			return new CompositionPath(new SkiaGeometrySource2D(morphed));
+			return new CompositionPath(morphed);
 		}
 
 		// Different topology -> hold the from-keyframe until the next one (step behaviour).
 		return from;
 	}
 
-	// Builds a new path whose points are the per-vertex linear interpolation of two topologically
-	// identical paths. Returns null when the verb streams differ (WinUI likewise only morphs paths of
-	// equal structure). 'amount' runs 0..1 from 'from' to 'to'.
-	private static SKPath? TryMorph(SKPath from, SKPath to, float amount)
+	/// <summary>
+	/// Builds a geometry whose points are the per-vertex linear interpolation of two topologically identical
+	/// paths. Returns null when the segment streams differ (WinUI likewise only morphs paths of equal
+	/// structure). <paramref name="amount"/> runs 0..1 from <paramref name="from"/> to <paramref name="to"/>.
+	/// </summary>
+	private static IGeometry? TryMorph(PathSegments from, PathSegments to, float amount)
 	{
-		using var builder = new SKPathBuilder { FillType = from.FillType };
-		using var fromIt = from.CreateRawIterator();
-		using var toIt = to.CreateRawIterator();
-		var fp = new SKPoint[4];
-		var tp = new SKPoint[4];
-
-		while (true)
+		if (from.Verbs.Count != to.Verbs.Count || from.Points.Count != to.Points.Count)
 		{
-			var vf = fromIt.Next(fp);
-			var vt = toIt.Next(tp);
-			if (vf != vt)
+			return null;
+		}
+
+		for (var i = 0; i < from.Verbs.Count; i++)
+		{
+			if (from.Verbs[i] != to.Verbs[i])
 			{
 				return null;
 			}
+		}
 
-			switch (vf)
+		var builder = GeometryFactory.Current.CreatePathBuilder();
+		builder.FillRule = from.FillRule;
+
+		var p = 0;
+		Vector2 Mix() { var m = Vector2.Lerp(from.Points[p], to.Points[p], amount); p++; return m; }
+
+		foreach (var verb in from.Verbs)
+		{
+			switch (verb)
 			{
-				case SKPathVerb.Move:
-					builder.MoveTo(Mix(fp[0], tp[0], amount));
+				case PathVerb.Move:
+					builder.MoveTo(Mix());
 					break;
-				case SKPathVerb.Line:
-					builder.LineTo(Mix(fp[1], tp[1], amount));
+				case PathVerb.Line:
+					builder.LineTo(Mix());
 					break;
-				case SKPathVerb.Quad:
-					builder.QuadTo(Mix(fp[1], tp[1], amount), Mix(fp[2], tp[2], amount));
+				case PathVerb.Quad:
+					builder.QuadraticTo(Mix(), Mix());
 					break;
-				case SKPathVerb.Conic:
-					// Only topologically identical paths are morphed, so both conic weights match.
-					builder.ConicTo(Mix(fp[1], tp[1], amount), Mix(fp[2], tp[2], amount), fromIt.ConicWeight());
+				case PathVerb.Cubic:
+					builder.CubicTo(Mix(), Mix(), Mix());
 					break;
-				case SKPathVerb.Cubic:
-					builder.CubicTo(Mix(fp[1], tp[1], amount), Mix(fp[2], tp[2], amount), Mix(fp[3], tp[3], amount));
-					break;
-				case SKPathVerb.Close:
+				case PathVerb.Close:
 					builder.Close();
 					break;
-				case SKPathVerb.Done:
-					return builder.Detach();
 			}
 		}
+
+		return builder.Build();
 	}
 
-	private static SKPoint Mix(SKPoint from, SKPoint to, float amount)
-		=> new(from.X + (to.X - from.X) * amount, from.Y + (to.Y - from.Y) * amount);
-
-	private SKPath? GetSKPath(CompositionPath path)
+	private PathSegments? GetSegments(CompositionPath path)
 	{
-		if (_skPathCache.TryGetValue(path, out var cached))
+		if (_segmentCache.TryGetValue(path, out var cached))
 		{
 			return cached;
 		}
 
 		var geometry = Compositor.CreatePathGeometry();
 		geometry.Path = path;
-		var built = geometry.GetSKPath();
-		var copy = built is null ? null : new SKPath(built);
 
-		// Only dispose the geometry when it built its own source. A SkiaGeometrySource2D-backed
-		// CompositionPath is adopted by reference, so disposing would free the caller's SKPath.
-		if (path.GeometrySource is not SkiaGeometrySource2D)
+		PathSegments? segments = null;
+		if (geometry.GetBuiltGeometry() is { } built)
+		{
+			segments = new PathSegments(built.FillRule);
+			built.StreamSegments(segments);
+		}
+
+		// Only dispose the geometry when it built its own source. A geometry-backed CompositionPath is adopted
+		// by reference, so disposing would free the caller's geometry.
+		if (path.GeometrySource is not IGeometry)
 		{
 			geometry.Dispose();
 		}
 
-		_skPathCache[path] = copy;
-		return copy;
+		_segmentCache[path] = segments;
+		return segments;
+	}
+
+	private enum PathVerb
+	{
+		Move,
+		Line,
+		Quad,
+		Cubic,
+		Close,
+	}
+
+	/// <summary>
+	/// A path recorded as a verb stream plus the points those verbs consume, which is what makes two paths
+	/// comparable for morphing: identical verbs in the same order means the points line up one for one.
+	/// </summary>
+	private sealed class PathSegments : IGeometrySink
+	{
+		public PathSegments(GeometryFillRule fillRule) => FillRule = fillRule;
+
+		public GeometryFillRule FillRule { get; }
+
+		public List<PathVerb> Verbs { get; } = new();
+
+		public List<Vector2> Points { get; } = new();
+
+		public void BeginFigure(Vector2 start)
+		{
+			Verbs.Add(PathVerb.Move);
+			Points.Add(start);
+		}
+
+		public void LineTo(Vector2 point)
+		{
+			Verbs.Add(PathVerb.Line);
+			Points.Add(point);
+		}
+
+		public void QuadTo(Vector2 control, Vector2 point)
+		{
+			Verbs.Add(PathVerb.Quad);
+			Points.Add(control);
+			Points.Add(point);
+		}
+
+		public void CubicTo(Vector2 control1, Vector2 control2, Vector2 point)
+		{
+			Verbs.Add(PathVerb.Cubic);
+			Points.Add(control1);
+			Points.Add(control2);
+			Points.Add(point);
+		}
+
+		public void EndFigure(bool closed)
+		{
+			if (closed)
+			{
+				Verbs.Add(PathVerb.Close);
+			}
+		}
 	}
 }
 #endif

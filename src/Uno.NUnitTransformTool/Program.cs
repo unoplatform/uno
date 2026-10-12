@@ -65,6 +65,9 @@ namespace Uno.ReferenceImplComparer
 				// This is used to remove the test parameters from the test name, which are not used by the nunit-console runner.
 				var simpleName = SimpleNameRegex().Replace(name, "");
 
+				// A failed [TestCleanup] is reported as "<test> Cleanup", which no filter matches; retry the test it ran after.
+				simpleName = CleanupSuffixRegex().Replace(simpleName, "");
+
 				failedTests.Add(simpleName);
 			}
 
@@ -95,5 +98,8 @@ namespace Uno.ReferenceImplComparer
 
 		[GeneratedRegex(@"\(([^)]*)\)")]
 		private static partial Regex SimpleNameRegex();
+
+		[GeneratedRegex(@" Cleanup$")]
+		private static partial Regex CleanupSuffixRegex();
 	}
 }

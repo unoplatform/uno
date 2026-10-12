@@ -36,6 +36,9 @@ namespace Microsoft.UI.Xaml
 		private readonly bool _isFrameworkElement;
 		internal readonly MaterializableList<UIElement> _children = new MaterializableList<UIElement>();
 
+		// Lets VisualTreeHelper index _children directly while no x:Load placeholder is in it (nearly always).
+		internal int _elementStubChildrenCount;
+
 		// Even if this a concept of FrameworkElement, the loaded state is handled by the UIElement in order to avoid
 		// to cast to FrameworkElement each time a child is added or removed.
 		internal bool IsLoaded { get; set; }

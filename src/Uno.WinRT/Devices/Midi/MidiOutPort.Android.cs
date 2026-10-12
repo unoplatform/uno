@@ -34,7 +34,7 @@ namespace Windows.Devices.Midi
 			MidiDeviceInfo deviceInfo,
 			MidiDeviceInfo.PortInfo portInfo)
 		{
-			_midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
+			_midiManager = ContextHelper.ApplicationContext.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
 			DeviceId = deviceId ?? throw new ArgumentNullException(nameof(deviceId));
 			_deviceInfo = deviceInfo ?? throw new ArgumentNullException(nameof(deviceInfo));
 			_portInfo = portInfo ?? throw new ArgumentNullException(nameof(portInfo));

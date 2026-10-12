@@ -1,9 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
-using SkiaSharp;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition;
 
@@ -12,7 +12,7 @@ namespace Microsoft.UI.Composition;
 /// The alpha mask is rendered as white content on transparent background,
 /// where the alpha channel represents the shape of the original content.
 /// </summary>
-internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, ISkiaSurface
+internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, IPaintableSurface
 {
 	private readonly WeakReference<Visual> _visual;
 
@@ -27,30 +27,30 @@ internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, ISkiaS
 		0, 0, 0, 1, 0,    // A: output = input alpha
 	};
 
-	private static readonly SKColorFilter _alphaMaskColorFilter = SKColorFilter.CreateColorMatrix(AlphaMaskColorMatrix);
-	private static readonly SKPaint _alphaMaskPaint = new SKPaint { ColorFilter = _alphaMaskColorFilter, IsAntialias = true };
+	private static IColorFilter? _alphaMaskColorFilter;
 
 	internal AlphaMaskSurface(Compositor compositor, Visual visual) : base(compositor)
 	{
 		_visual = new WeakReference<Visual>(visual);
 	}
 
-	Vector2 ISkiaSurface.Size => _visual.TryGetTarget(out var visual) ? visual.Size : Vector2.Zero;
+	Vector2 IPaintableSurface.Size => _visual.TryGetTarget(out var visual) ? visual.Size : Vector2.Zero;
 
-	void ISkiaSurface.Paint(SKCanvas canvas, float opacity)
+	void IPaintableSurface.Paint(IDrawingSession session, float opacity, global::Windows.Foundation.Rect bounds)
 	{
 		if (!_visual.TryGetTarget(out var visual))
 		{
 			return;
 		}
 
-		// Apply the alpha mask color filter to convert all colors to white
-		// while preserving the alpha channel.
-		canvas.SaveLayer(_alphaMaskPaint);
+		_alphaMaskColorFilter ??= session.Factory.CreateColorMatrixColorFilter(AlphaMaskColorMatrix);
+
+		// Apply the alpha mask color filter to convert all colors to white while preserving the alpha channel.
+		session.SaveLayer(_alphaMaskColorFilter!);
 
 		// Render the visual at its natural position
-		visual.RenderRootVisual(canvas, Vector2.Zero);
+		visual.RenderRootVisual(session, Vector2.Zero);
 
-		canvas.Restore();
+		session.Restore();
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Media.Animation;
 
@@ -69,6 +70,15 @@ namespace Uno.UI.Tests.Animations
 			Assert.IsFalse(RepeatBehavior.Equals(behavior, new RepeatBehavior(8)));
 
 			Assert.AreEqual("00:00:24", behavior.ToString());
+		}
+
+		[TestMethod]
+		public void When_Formatted_Through_IFormattable()
+		{
+			Assert.AreEqual("2.50x", ((IFormattable)new RepeatBehavior(2.5)).ToString("F2", CultureInfo.InvariantCulture));
+			Assert.AreEqual("2,5x", string.Format(new CultureInfo("de-DE"), "{0}", new RepeatBehavior(2.5)));
+			Assert.AreEqual("00:00:24", ((IFormattable)new RepeatBehavior(TimeSpan.FromSeconds(24))).ToString("F2", CultureInfo.InvariantCulture));
+			Assert.AreEqual("Forever", ((IFormattable)RepeatBehavior.Forever).ToString("F2", CultureInfo.InvariantCulture));
 		}
 
 		public static IEnumerable<object[]> GetParsingTestData()

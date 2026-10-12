@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -10,7 +11,7 @@ public partial class ScrollView : Control
 	public Visibility ComputedHorizontalScrollBarVisibility
 	{
 		get { return (Visibility)GetValue(ComputedHorizontalScrollBarVisibilityProperty); }
-		set { SetValue(ComputedHorizontalScrollBarVisibilityProperty, value); }
+		internal set { SetValue(ComputedHorizontalScrollBarVisibilityProperty, value); }
 	}
 
 	public static DependencyProperty ComputedHorizontalScrollBarVisibilityProperty { get; } =
@@ -23,7 +24,7 @@ public partial class ScrollView : Control
 	public ScrollingScrollMode ComputedHorizontalScrollMode
 	{
 		get => (ScrollingScrollMode)GetValue(ComputedHorizontalScrollModeProperty);
-		set => SetValue(ComputedHorizontalScrollModeProperty, value);
+		internal set => SetValue(ComputedHorizontalScrollModeProperty, value);
 	}
 
 	public static DependencyProperty ComputedHorizontalScrollModeProperty { get; } =
@@ -36,7 +37,7 @@ public partial class ScrollView : Control
 	public Visibility ComputedVerticalScrollBarVisibility
 	{
 		get => (Visibility)GetValue(ComputedVerticalScrollBarVisibilityProperty);
-		set => SetValue(ComputedVerticalScrollBarVisibilityProperty, value);
+		internal set => SetValue(ComputedVerticalScrollBarVisibilityProperty, value);
 	}
 
 	public static DependencyProperty ComputedVerticalScrollBarVisibilityProperty { get; } =
@@ -50,7 +51,7 @@ public partial class ScrollView : Control
 	public ScrollingScrollMode ComputedVerticalScrollMode
 	{
 		get => (ScrollingScrollMode)GetValue(ComputedVerticalScrollModeProperty);
-		set => SetValue(ComputedVerticalScrollModeProperty, value);
+		internal set => SetValue(ComputedVerticalScrollModeProperty, value);
 	}
 
 	public static DependencyProperty ComputedVerticalScrollModeProperty { get; } =
@@ -89,7 +90,7 @@ public partial class ScrollView : Control
 	public double HorizontalAnchorRatio
 	{
 		get => (double)GetValue(HorizontalAnchorRatioProperty);
-		set => SetValue(HorizontalAnchorRatioProperty, value);
+		set => SetValue(HorizontalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty HorizontalAnchorRatioProperty { get; } =
@@ -97,7 +98,7 @@ public partial class ScrollView : Control
 			nameof(HorizontalAnchorRatio),
 			typeof(double),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(0.0d, propertyChangedCallback: OnHorizontalAnchorRatioPropertyChanged));
+			new FrameworkPropertyMetadata(DoubleBoxes.Zero, propertyChangedCallback: OnHorizontalAnchorRatioPropertyChanged));
 
 	public ScrollingScrollBarVisibility HorizontalScrollBarVisibility
 	{
@@ -161,7 +162,7 @@ public partial class ScrollView : Control
 	public double MaxZoomFactor
 	{
 		get => (double)GetValue(MaxZoomFactorProperty);
-		set => SetValue(MaxZoomFactorProperty, value);
+		set => SetValue(MaxZoomFactorProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty MaxZoomFactorProperty { get; } =
@@ -174,7 +175,7 @@ public partial class ScrollView : Control
 	public double MinZoomFactor
 	{
 		get => (double)GetValue(MinZoomFactorProperty);
-		set => SetValue(MinZoomFactorProperty, value);
+		set => SetValue(MinZoomFactorProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty MinZoomFactorProperty { get; } =
@@ -222,7 +223,7 @@ public partial class ScrollView : Control
 	public double VerticalAnchorRatio
 	{
 		get => (double)GetValue(VerticalAnchorRatioProperty);
-		set => SetValue(VerticalAnchorRatioProperty, value);
+		set => SetValue(VerticalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty VerticalAnchorRatioProperty { get; } =
@@ -230,7 +231,7 @@ public partial class ScrollView : Control
 			nameof(VerticalAnchorRatio),
 			typeof(double),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(0.0d, propertyChangedCallback: OnVerticalAnchorRatioPropertyChanged));
+			new FrameworkPropertyMetadata(DoubleBoxes.Zero, propertyChangedCallback: OnVerticalAnchorRatioPropertyChanged));
 
 	public ScrollingScrollBarVisibility VerticalScrollBarVisibility
 	{

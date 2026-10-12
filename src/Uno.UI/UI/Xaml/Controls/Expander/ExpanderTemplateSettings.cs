@@ -3,6 +3,7 @@
 // MUX reference ExpanderTemplateSettings.properties.cpp, commit 8d20a91
 
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -22,7 +23,7 @@ public sealed partial class ExpanderTemplateSettings : DependencyObject
 	public double ContentHeight
 	{
 		get => (double)GetValue(ContentHeightProperty);
-		internal set => SetValue(ContentHeightProperty, value);
+		internal set => SetValue(ContentHeightProperty, Boxer.Box(value));
 	}
 
 	private static DependencyProperty ContentHeightProperty { get; } =
@@ -30,7 +31,7 @@ public sealed partial class ExpanderTemplateSettings : DependencyObject
 			nameof(ContentHeight),
 			typeof(double),
 			typeof(ExpanderTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the height of the Expander content when the expand direction is negative.
@@ -38,7 +39,7 @@ public sealed partial class ExpanderTemplateSettings : DependencyObject
 	public double NegativeContentHeight
 	{
 		get => (double)GetValue(NegativeContentHeightProperty);
-		internal set => SetValue(NegativeContentHeightProperty, value);
+		internal set => SetValue(NegativeContentHeightProperty, Boxer.Box(value));
 	}
 
 	private static DependencyProperty NegativeContentHeightProperty { get; } =
@@ -46,5 +47,5 @@ public sealed partial class ExpanderTemplateSettings : DependencyObject
 			nameof(NegativeContentHeight),
 			typeof(double),
 			typeof(ExpanderTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 }

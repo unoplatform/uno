@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Media;

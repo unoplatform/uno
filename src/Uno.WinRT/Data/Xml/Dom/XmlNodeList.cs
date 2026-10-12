@@ -23,7 +23,6 @@ namespace Windows.Data.Xml.Dom
 		public IXmlNode this[int index]
 		{
 			get => (IXmlNode)_owner.Wrap(_backingList[index]);
-			set => throw new InvalidOperationException("List is read-only");
 		}
 
 		public IEnumerator<IXmlNode> GetEnumerator() => new SystemXmlNodeListEnumerator(_owner, _backingList.GetEnumerator());
@@ -34,7 +33,6 @@ namespace Windows.Data.Xml.Dom
 		public int Count
 		{
 			get => _backingList.Count;
-			set => throw new InvalidOperationException("List is read-only");
 		}
 
 		private class SystemXmlNodeListEnumerator : IEnumerator<IXmlNode>

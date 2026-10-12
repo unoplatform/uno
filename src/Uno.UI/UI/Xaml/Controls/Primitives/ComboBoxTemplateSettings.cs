@@ -4,6 +4,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ComboBoxTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
+		internal ComboBoxTemplateSettings()
+		{
+		}
+
 		[global::Uno.NotImplemented]
 		public double DropDownClosedHeight
 		{

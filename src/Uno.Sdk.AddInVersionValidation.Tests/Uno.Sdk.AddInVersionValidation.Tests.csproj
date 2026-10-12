@@ -53,7 +53,7 @@
 
 	<!--
 		Inline MSBuild task: read a manifest group's version from packages.json. Lets the
-		add-in PackageReferences below pull their versions from the single source of truth
+		add-in package downloads below pull their versions from the single source of truth
 		(the same manifest Uno.Sdk.Private itself consumes), so there is no manual sync
 		requirement and no drift between this test and the SDK that ships the add-ins.
 	-->
@@ -100,8 +100,8 @@
 		</Task>
 	</UsingTask>
 
-	<Target Name="_InjectAddInPackageReferencesFromManifest"
-	        BeforeTargets="CollectPackageReferences;Restore">
+	<Target Name="_InjectAddInPackagesFromManifest"
+	        BeforeTargets="CollectPackageDownloads;Restore;GetAssemblyAttributes">
 
 		<ReadManifestGroupVersion ManifestPath="$(UnoSdkManifestPath)" GroupName="settings">
 			<Output TaskParameter="Version" PropertyName="_UnoSettingsDevServerVersion" />
@@ -113,16 +113,21 @@
 			<Output TaskParameter="Version" PropertyName="_UnoUIAppMcpVersion" />
 		</ReadManifestGroupVersion>
 
+		<!--
+			PackageDownload, not PackageReference: the test only reads the package folders.
+			Referencing them would flow the analyzers and buildTransitive targets of their
+			Uno.WinUI dependencies, and Uno.WinUI.DevServer fails Release builds (UNOB0019).
+		-->
 		<ItemGroup>
-			<PackageReference Include="Uno.Settings.DevServer"
-			                  Version="$(_UnoSettingsDevServerVersion)"
-			                  GeneratePathProperty="true" />
-			<PackageReference Include="Uno.UI.HotDesign"
-			                  Version="$(_UnoUIHotDesignVersion)"
-			                  GeneratePathProperty="true" />
-			<PackageReference Include="Uno.UI.App.Mcp"
-			                  Version="$(_UnoUIAppMcpVersion)"
-			                  GeneratePathProperty="true" />
+			<PackageDownload Include="Uno.Settings.DevServer" Version="[$(_UnoSettingsDevServerVersion)]" />
+			<PackageDownload Include="Uno.UI.HotDesign" Version="[$(_UnoUIHotDesignVersion)]" />
+			<PackageDownload Include="Uno.UI.App.Mcp" Version="[$(_UnoUIAppMcpVersion)]" />
+		</ItemGroup>
+
+		<ItemGroup>
+			<AssemblyMetadata Include="UnoSettingsDevServerPath" Value="$([System.IO.Path]::Combine($(NuGetPackageRoot), 'uno.settings.devserver', $(_UnoSettingsDevServerVersion.ToLowerInvariant())))" />
+			<AssemblyMetadata Include="UnoUIHotDesignPath" Value="$([System.IO.Path]::Combine($(NuGetPackageRoot), 'uno.ui.hotdesign', $(_UnoUIHotDesignVersion.ToLowerInvariant())))" />
+			<AssemblyMetadata Include="UnoUIAppMcpPath" Value="$([System.IO.Path]::Combine($(NuGetPackageRoot), 'uno.ui.app.mcp', $(_UnoUIAppMcpVersion.ToLowerInvariant())))" />
 		</ItemGroup>
 	</Target>
 
@@ -137,9 +142,6 @@
 		the direct `bin/<config>/<tfm>/` layout.
 	-->
 	<ItemGroup>
-		<AssemblyMetadata Include="UnoSettingsDevServerPath" Value="$(PkgUno_Settings_DevServer)" Condition="'$(PkgUno_Settings_DevServer)' != ''" />
-		<AssemblyMetadata Include="UnoUIHotDesignPath" Value="$(PkgUno_UI_HotDesign)" Condition="'$(PkgUno_UI_HotDesign)' != ''" />
-		<AssemblyMetadata Include="UnoUIAppMcpPath" Value="$(PkgUno_UI_App_Mcp)" Condition="'$(PkgUno_UI_App_Mcp)' != ''" />
 		<AssemblyMetadata Include="UnoHostBinDir" Value="$(MSBuildThisFileDirectory)..\Uno.UI.RemoteControl.Host\bin\$(Configuration)\$(NetCurrent)" />
 		<AssemblyMetadata Include="UnoSdkManifestPath" Value="$(UnoSdkManifestPath)" />
 	</ItemGroup>

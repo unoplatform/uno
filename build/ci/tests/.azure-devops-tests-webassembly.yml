@@ -1,0 +1,130 @@
+parameters:
+  vmLinuxImage: ''
+  # A self-hosted pool to run on instead of the hosted image. The WebGPU job needs one: Chrome's SwiftShader
+  # renders on the CPU and scales with cores, and the hosted agents are too small to finish a group in time.
+  vmLinuxPool: ''
+  XAML_FLAVOR_BUILD: ''
+  jobName: 'Skia_Browser_Runtime_Tests_Build'
+  # Names the job and its test run; the job name is concatenated with the matrix group name.
+  renderer: 'Skia'
+  testResultLabel: ''
+  # UNO_* variables handed to the app through the URL's env= parameter, e.g. 'UNO_WEBGPU=1'.
+  appEnvironment: ''
+  chromeFlags: ''
+  # One matrix job per group; the suite is split evenly across them.
+  testGroups: [0, 1, 2, 3]
+  # Browser window (and virtual screen) size, as WIDTHxHEIGHT.
+  browserSize: '1920x1080'
+  # How long a group may run before it is reported as stalled; the job timeout leaves room for the setup steps.
+  resultsTimeoutMinutes: 35
+  jobTimeoutInMinutes: 60
+  # Overrides the job's run condition, e.g. to skip a lane on pull requests that don't need it.
+  condition: ''
+
+jobs:
+##
+## WebAssembly Skia
+##
+- job: ${{ parameters.jobName }}
+  displayName: '${{ parameters.renderer }}'
+  timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
+  cancelTimeoutInMinutes: 0
+
+  ${{ if ne(parameters.vmLinuxPool, '') }}:
+    pool: ${{ parameters.vmLinuxPool }}
+  ${{ else }}:
+    pool:
+      vmImage: ${{ parameters.vmLinuxImage }}
+
+  dependsOn: Skia_Tests_Build_Browser
+  ${{ if ne(parameters.condition, '') }}:
+    condition: ${{ parameters.condition }}
+
+  strategy:
+    matrix:
+      ${{ each group in parameters.testGroups }}:
+        'Runtime Tests ${{ group }}':
+          UITEST_RUNTIME_TEST_GROUP: ${{ group }}
+          UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ length(parameters.testGroups) }}
+
+  variables:
+    SamplesAppArtifactName: $[ dependencies.Skia_Tests_Build_Browser.outputs['set_samples_artifact.SamplesAppArtifactName'] ]
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
+    inputs:
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+  - task: DownloadPipelineArtifact@2
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+      artifact: runtime-tests-wasm-skia${{ parameters.testResultLabel }}-failures
+      path: '$(build.sourcesdirectory)/build/uitests-failure-results'
+
+  # Marks the test step as not-yet-reached. The publish tasks below key off this so a job killed
+  # during dependency install reports one failure (the real one) instead of also claiming the
+  # results file is missing. Fail-safe: only an explicit 'false' suppresses the publish.
+  - bash: echo "##vso[task.setvariable variable=UNO_TESTS_STEP_RAN]false"
+    displayName: Arm the test-step sentinel
+
+  - template: ../templates/dotnet-install.yml
+
+  - template: ../templates/linux-install-deps.yml
+    parameters:
+      # This job only runs Chrome under a virtual display. The vlc/gtk/webkit -dev packages in
+      # the default set exist for the Skia desktop X11 host and pull ~200 MB nothing here loads.
+      packages: 'xvfb fluxbox'
+
+  - bash: |
+        set -euo pipefail
+        set -x
+        # We use google-chrome instead of chromium-browser because ubuntu uses snap
+        # for the chromium package, and snapd isn't available in CI
+        wget --tries=3 --timeout=60 https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        # No apt-get update here: the .deb carries its own dependency list, and refreshing the
+        # mirror indexes is exactly where the long stalls happen.
+        apt_opts="-o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Dpkg::Use-Pty=0"
+        if ! sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts ./google-chrome-stable_current_amd64.deb; then
+          # Chrome pulls its runtime dependencies from the .deb; refresh the indexes only if
+          # they turn out not to be resolvable from the pre-baked ones.
+          sudo dpkg --configure -a || true
+          sudo timeout --kill-after=30s 3m apt-get update $apt_opts
+          sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts ./google-chrome-stable_current_amd64.deb
+        fi
+    displayName: Install chrome
+    timeoutInMinutes: 10
+
+  - bash: build/test-scripts/wasm-run-skia-runtime-tests.sh
+    displayName: Run WebAssembly ${{ parameters.renderer }} Runtime Tests
+    env:
+      UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
+      UNO_TEST_APP_ENVIRONMENT: ${{ parameters.appEnvironment }}
+      UNO_TEST_CHROME_FLAGS: ${{ parameters.chromeFlags }}
+      UNO_TEST_BROWSER_SIZE: ${{ parameters.browserSize }}
+      UNO_TEST_RESULTS_TIMEOUT_MINUTES: ${{ parameters.resultsTimeoutMinutes }}
+
+  - task: PublishTestResults@2
+    condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))
+    inputs:
+      testRunTitle: 'WebAssembly ${{ parameters.renderer }} Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm${{ parameters.testResultLabel }}-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+
+  - task: PublishBuildArtifacts@1
+    condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))
+    displayName: Publish Failed Tests Results
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: runtime-tests-wasm-skia${{ parameters.testResultLabel }}-failures
+      ArtifactType: Container

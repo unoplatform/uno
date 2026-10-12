@@ -9,7 +9,7 @@ using Windows.Foundation;
 
 namespace Windows.ApplicationModel.Email
 {
-	public partial class EmailManager
+	public static partial class EmailManager
 	{
 		private const int HandlerPickerResultCode = 0;
 

@@ -3,7 +3,7 @@ using Uno.Foundation.Logging;
 
 namespace Windows.System.Power;
 
-partial class PowerManager
+static partial class PowerManager
 {
 	/// <summary>
 	/// Initializes the PowerManager.

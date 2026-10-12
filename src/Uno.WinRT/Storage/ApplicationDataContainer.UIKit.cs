@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Foundation;
+using Uno.Storage.Internal;
 using Windows.Foundation.Collections;
 
 namespace Windows.Storage
@@ -18,25 +19,15 @@ namespace Windows.Storage
 
 		private class NSUserDefaultsPropertySet : IPropertySet
 		{
-
-			public NSUserDefaultsPropertySet()
-			{
-			}
-
 			public object this[string key]
 			{
-				get
-				{
-					var value = NSUserDefaults.StandardUserDefaults.ValueForKey((NSString)key)?.ToString();
-
-					return DataTypeSerializer.Deserialize(value);
-				}
+				get => DataTypeSerializer.Deserialize(GetRawValue(key));
 				set
 				{
 					if (value != null)
 					{
 						var nativeObject = NSObject.FromObject(DataTypeSerializer.Serialize(value));
-						NSUserDefaults.StandardUserDefaults.SetValueForKey(nativeObject, (NSString)key);
+						UnoUserDefaults.Instance.SetValueForKey(nativeObject, (NSString)key);
 					}
 					else
 					{
@@ -46,17 +37,19 @@ namespace Windows.Storage
 			}
 
 			public ICollection<string> Keys
-				=> NSUserDefaults.StandardUserDefaults.ToDictionary().Keys.Select(k => k.ToString()).ToList();
+				=> UnoUserDefaults.Domain
+				.Keys
+				.Select(key => key.ToString())
+				.ToList();
 
 			public ICollection<object> Values
-				=> NSUserDefaults.StandardUserDefaults
-				.ToDictionary()
+				=> UnoUserDefaults.Domain
 				.Values
-				.Select(k => DataTypeSerializer.Deserialize(k?.ToString()))
+				.Select(value => DataTypeSerializer.Deserialize(value?.ToString()))
 				.ToList();
 
 			public int Count
-				=> (int)NSUserDefaults.StandardUserDefaults.ToDictionary().Count;
+				=> (int)UnoUserDefaults.Domain.Count;
 
 			public bool IsReadOnly => false;
 
@@ -73,35 +66,33 @@ namespace Windows.Storage
 				if (value != null)
 				{
 					var nativeObject = NSObject.FromObject(DataTypeSerializer.Serialize(value));
-					NSUserDefaults.StandardUserDefaults.SetValueForKey(nativeObject, (NSString)key);
+					UnoUserDefaults.Instance.SetValueForKey(nativeObject, (NSString)key);
 				}
 			}
 
 			public void Add(KeyValuePair<string, object> item)
 				=> Add(item.Key, item.Value);
 
+			// Drops the whole suite in one native call instead of marshaling a removal per key.
 			public void Clear()
 			{
-				foreach (var pair in NSUserDefaults.StandardUserDefaults.ToDictionary())
-				{
-					Remove(pair.Key.ToString());
-				}
+				UnoUserDefaults.Instance.RemovePersistentDomain(UnoUserDefaults.SuiteName);
+				UnoUserDefaults.Instance.Synchronize();
 			}
 
 			public bool Contains(KeyValuePair<string, object> item)
 				=> throw new NotSupportedException();
 
 			public bool ContainsKey(string key)
-				=> NSUserDefaults.StandardUserDefaults.ToDictionary().ContainsKey((NSString)key);
+				=> UnoUserDefaults.Domain.ContainsKey((NSString)key);
 
 			public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 				=> throw new NotSupportedException();
 
 			public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
 			{
-				return NSUserDefaults.StandardUserDefaults
-					.ToDictionary()
-					.Select(k => new KeyValuePair<string, object>(k.Key.ToString(), DataTypeSerializer.Deserialize(k.Key.ToString())))
+				return UnoUserDefaults.Domain
+					.Select(pair => new KeyValuePair<string, object>(pair.Key.ToString(), DataTypeSerializer.Deserialize(pair.Value?.ToString())))
 					.GetEnumerator();
 			}
 
@@ -112,8 +103,8 @@ namespace Windows.Storage
 					return false;
 				}
 
-				NSUserDefaults.StandardUserDefaults.RemoveObject((NSString)key);
-				NSUserDefaults.StandardUserDefaults.Synchronize();
+				UnoUserDefaults.Instance.RemoveObject(key);
+				UnoUserDefaults.Instance.Synchronize();
 
 				return true;
 			}
@@ -122,9 +113,9 @@ namespace Windows.Storage
 
 			public bool TryGetValue(string key, out object value)
 			{
-				if (NSUserDefaults.StandardUserDefaults.ToDictionary().TryGetValue((NSString)key, out var nsvalue))
+				if (UnoUserDefaults.Domain.TryGetValue((NSString)key, out var nativeValue))
 				{
-					value = DataTypeSerializer.Deserialize(nsvalue?.ToString());
+					value = DataTypeSerializer.Deserialize(nativeValue?.ToString());
 					return true;
 				}
 
@@ -133,6 +124,9 @@ namespace Windows.Storage
 			}
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+			private static string GetRawValue(string key)
+				=> UnoUserDefaults.Domain.TryGetValue((NSString)key, out var value) ? value?.ToString() : null;
 		}
 	}
 }

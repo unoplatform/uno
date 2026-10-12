@@ -3,26 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class RichEditBoxTextChangingEventArgs
 	{
-#if __SKIA__
-		internal RichEditBoxTextChangingEventArgs()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsContentChanging
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs", "IsContentChanging");
-			}
-		}
-#endif
+		// Skipping already declared property IsContentChanging
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.IsContentChanging.get
 	}
 }

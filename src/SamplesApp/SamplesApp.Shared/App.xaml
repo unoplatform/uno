@@ -32,7 +32,7 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <win:XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-                <ResourceDictionary Source="ms-appx:///Windows/UI/Xaml/Controls/ListView/MeasureDetectorControl/MeasureDetectorControl.xaml" />
+                <ResourceDictionary Source="ms-appx:///Microsoft/UI/Xaml/Controls/ListView/MeasureDetectorControl/MeasureDetectorControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <local:StringToStyleDictionary x:Key="MyResource">

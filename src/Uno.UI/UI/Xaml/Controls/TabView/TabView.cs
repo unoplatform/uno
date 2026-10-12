@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TabView.cpp, tag winui3/release/1.8.0, commit 61382c07e6cd8d
+// MUX Reference TabView.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -1642,8 +1642,9 @@ public partial class TabView : Control
 		control.IsTabStop = true;
 
 		// We checked focusability above, so we should never be in a situation where Focus() returns false.
-		MUX_ASSERT(control.Focus(FocusState.Keyboard));
-		return true;
+		bool focusResult = control.Focus(FocusState.Keyboard);
+		MUX_ASSERT(focusResult);
+		return focusResult;
 	}
 
 	private bool MoveSelection(bool moveForward)

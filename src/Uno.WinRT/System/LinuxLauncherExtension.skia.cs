@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Uno.UI.Runtime.Skia.Extensions.System.LauncherHelpers;
+using Uno.UI.Runtime.Extensions.System.LauncherHelpers;
 using Windows.System;
 using Uno.Extensions.System;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia.Extensions.System
+namespace Uno.UI.Runtime.Extensions.System
 {
 	internal class LinuxLauncherExtension : ILauncherExtension
 	{

@@ -5,6 +5,10 @@
 /// </summary>
 public partial class ExpandCollapsePatternIdentifiers
 {
+	internal ExpandCollapsePatternIdentifiers()
+	{
+	}
+
 	/// <summary>
 	/// Identifies the ExpandCollapseState automation property.
 	/// </summary>

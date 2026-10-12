@@ -16,9 +16,9 @@ public partial class Page : IBorderInfoProvider
 
 	Brush? IBorderInfoProvider.BorderBrush => null;
 
-	Thickness IBorderInfoProvider.BorderThickness => Thickness.Empty;
+	Thickness IBorderInfoProvider.BorderThickness => default(Thickness);
 
-	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadius.None;
+	CornerRadius IBorderInfoProvider.CornerRadius => default(CornerRadius);
 
 	BorderVisual IBorderInfoProvider.BorderVisual => Visual as BorderVisual ?? throw new InvalidCastException($"{nameof(IBorderInfoProvider)}s should use a {nameof(BorderVisual)}.");
 }

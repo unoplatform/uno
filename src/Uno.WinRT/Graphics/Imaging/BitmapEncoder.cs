@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
 
-#if __ANDROID__
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using Foundation;
-using UIKit;
-#elif __SKIA__
-using SkiaSharp;
-#endif
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Uno.UI.Composition.Drawing;
 
 namespace Windows.Graphics.Imaging;
 
@@ -38,29 +33,48 @@ partial class BitmapEncoder
 	// _encoderMap is defined here to  make sure they are initialized after the encoder ID Guids above.
 	// Static field initializers are executed in textual order. When dealing with partial classes, the order is undefined.
 
-#if __ANDROID__
-	private static readonly IDictionary<Guid, Bitmap.CompressFormat> _encoderMap =
-		new Dictionary<Guid, Bitmap.CompressFormat>()
+	// Uniform across all platforms: the neutral output format. FlushAsync resolves the neutral codec (ResolveEncode,
+	// which lazily lights up the Skia/managed codec on a Skia head) and only falls back to the platform's native
+	// encoder on a native-only head where no codec exists.
+	private static readonly IDictionary<Guid, BitmapEncoderFormat> _encoderMap =
+		new Dictionary<Guid, BitmapEncoderFormat>()
 		{
-			{JpegEncoderId, Bitmap.CompressFormat.Jpeg},
-			{PngEncoderId, Bitmap.CompressFormat.Png},
+			{BmpEncoderId, BitmapEncoderFormat.Bmp},
+			{GifEncoderId, BitmapEncoderFormat.Gif},
+			{JpegEncoderId, BitmapEncoderFormat.Jpeg},
+			{PngEncoderId, BitmapEncoderFormat.Png},
+			{HeifEncoderId, BitmapEncoderFormat.Heif},
 		};
-#elif __APPLE_UIKIT__
-	private static readonly Dictionary<Guid, Func<UIImage, NSData>> _encoderMap =
-		new()
+
+	/// <summary>
+	/// The registered neutral image codec's encode entry point, or null when none has been registered yet. Assigned
+	/// top-down by the image-codec registration in the composition layer (which references this assembly and hands its
+	/// <c>IImageEncoderDecoder.Encode</c> down as a plain delegate) — so this assembly needs no reference to, and no
+	/// reflection into, the codec. Prefer <see cref="ResolveEncode"/> over reading this directly.
+	/// Signature: (destination, pixels, width, height, pixelFormat, alphaMode, format, quality).
+	/// Internal (not part of the WinUI <c>BitmapEncoder</c> surface): the setter is reached from the composition layer via InternalsVisibleTo.
+	/// </summary>
+	internal static Action<Stream, byte[], int, int, BitmapPixelFormat, BitmapAlphaMode, BitmapEncoderFormat, int>? Encode { get; set; }
+
+	/// <summary>
+	/// Downward trigger to the UI layer's default codec resolution, wired top-down at startup by the host builder
+	/// (<c>UnoPlatformHostBuilder</c>) — this assembly sits below it and can't reach it directly. Lets an encode that
+	/// ran without going through the host builder still light up a Skia codec on first use. Null (or a no-op) on a
+	/// SkiaSharp-free / native-only head.
+	/// </summary>
+	internal static Action? EnsureCodec { get; set; }
+
+	/// <summary>
+	/// Returns the registered codec, triggering the composition layer's lazy registration once if none is set yet.
+	/// Null only when there is genuinely no codec (a native-only head), where callers use the platform encoder instead.
+	/// </summary>
+	internal static Action<Stream, byte[], int, int, BitmapPixelFormat, BitmapAlphaMode, BitmapEncoderFormat, int>? ResolveEncode()
+	{
+		if (Encode is null)
 		{
-			{JpegEncoderId, AsJPEG},
-			{PngEncoderId, AsPNG},
-		};
-#elif __SKIA__
-	private static readonly IDictionary<Guid, SKEncodedImageFormat> _encoderMap =
-		new Dictionary<Guid, SKEncodedImageFormat>()
-		{
-			{BmpEncoderId, SKEncodedImageFormat.Bmp},
-			{GifEncoderId, SKEncodedImageFormat.Gif},
-			{JpegEncoderId, SKEncodedImageFormat.Jpeg},
-			{PngEncoderId, SKEncodedImageFormat.Png},
-			{HeifEncoderId, SKEncodedImageFormat.Heif},
-		};
-#endif
+			EnsureCodec?.Invoke();
+		}
+
+		return Encode;
+	}
 }

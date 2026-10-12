@@ -29,7 +29,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <inheritdoc />
 		public bool Remove(SwipeItem item)
-			=> m_items.Remove(item);
+		{
+			var index = IndexOf(item);
+			if (index < 0)
+			{
+				return false;
+			}
+
+			RemoveAt(index);
+			return true;
+		}
 
 		/// <inheritdoc />
 		public int Count => m_items.Count;

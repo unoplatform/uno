@@ -25,7 +25,14 @@ namespace Uno.UI.RuntimeTests.Helpers
 			var appResources = Application.Current.Resources;
 			appResources.MergedDictionaries.Add(resources);
 
-			return Disposable.Create(() => appResources.MergedDictionaries.Remove(resources));
+			return Disposable.Create(() =>
+			{
+				// The runner doesn't unload content between tests, so a view left in the window keeps
+				// referencing these entries after they are gone. The next app-wide theme change then
+				// re-resolves them, which native WinUI raises as a process-killing unhandled exception.
+				TestServices.WindowHelper.WindowContent = null;
+				appResources.MergedDictionaries.Remove(resources);
+			});
 		}
 
 		/// <summary>
@@ -49,17 +56,52 @@ namespace Uno.UI.RuntimeTests.Helpers
 			resources.MergedDictionaries.Remove(xamlResources);
 			ForceReload();
 
-			return new DisposableAction(() =>
+			IDisposable restore = null;
+			restore = Disposable.Create(() =>
 			{
+				_pendingUwpStylesRestores.Remove(restore);
 				resources.MergedDictionaries.Insert(0, xamlResources);
 				ForceReload();
 			});
+			_pendingUwpStylesRestores.Add(restore);
+
+			return restore;
 
 			static void ForceReload()
 			{
 				DefaultBrushes.ResetDefaultThemeBrushes();
 				ResetIslandRootForeground();
 			}
+#endif
+		}
+
+#if !WINAPPSDK
+		private static readonly List<IDisposable> _pendingUwpStylesRestores = new();
+#endif
+
+		/// <summary>
+		/// Restores Fluent styles if a test exited without disposing <see cref="UseUwpStyles"/>,
+		/// so the leak does not cascade into every later test of the run.
+		/// </summary>
+		/// <returns>True if UWP styles had leaked and Fluent styles were restored.</returns>
+		public static bool RestoreFluentStyles()
+		{
+#if WINAPPSDK
+			return false;
+#else
+			NativeDispatcher.CheckThreadAccess();
+
+			if (_pendingUwpStylesRestores.Count == 0)
+			{
+				return false;
+			}
+
+			for (var i = _pendingUwpStylesRestores.Count - 1; i >= 0; i--)
+			{
+				_pendingUwpStylesRestores[i].Dispose();
+			}
+
+			return true;
 #endif
 		}
 

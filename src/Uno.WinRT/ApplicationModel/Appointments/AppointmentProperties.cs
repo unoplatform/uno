@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Appointments;
 /// <summary>
 /// Provides strings that identify the properties of an appointment.
 /// </summary>
-public partial class AppointmentProperties
+public static partial class AppointmentProperties
 {
 	/// <summary>
 	/// Gets the name of the AllDay property.

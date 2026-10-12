@@ -28,7 +28,7 @@ jobs:
   - template: ../templates/dotnet-install.yml
 
   - bash: |
-      cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac
+      cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.MacOS/UnoNativeMac
       chmod +x build.sh
       ./build.sh
     displayName: Build Skia macOS native
@@ -36,5 +36,5 @@ jobs:
   - task: PublishPipelineArtifact@1
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
+      targetPath: $(build.sourcesdirectory)/src/Uno.UI.Runtime.MacOS/UnoNativeMac/build/Release
       artifactName: native-assets-macos${{ parameters.AssetNativeSuffix }}

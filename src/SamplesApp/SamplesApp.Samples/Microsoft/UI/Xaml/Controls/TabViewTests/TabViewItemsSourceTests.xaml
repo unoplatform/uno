@@ -28,11 +28,11 @@
         </muxc:TabView.TabStripHeader>
         <muxc:TabView.TabItemTemplate>
             <DataTemplate x:DataType="local:TabItemViewModel">
-                <muxc:TabViewItem Header="{x:Bind Header, Mode=OneWay}" IsClosable="False">
+                <muxc:TabViewItem Header="{x:Bind Header, Mode=OneTime}" IsClosable="False">
                     <Button
                         x:Name="ContentButton"
                         Margin="5"
-                        Content="{x:Bind Header, Mode=OneWay}" />
+                        Content="{x:Bind Header, Mode=OneTime}" />
                 </muxc:TabViewItem>
             </DataTemplate>
         </muxc:TabView.TabItemTemplate>

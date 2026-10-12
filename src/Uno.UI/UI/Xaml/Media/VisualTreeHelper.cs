@@ -33,6 +33,10 @@ namespace Microsoft.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
+		internal VisualTreeHelper()
+		{
+		}
+
 		[Uno.NotImplemented]
 		public static void DisconnectChildrenRecursive(UIElement element)
 		{
@@ -96,19 +100,67 @@ namespace Microsoft.UI.Xaml.Media
 			throw new NotSupportedException();
 		}
 
+		// Both accessors below walk the children by index rather than through LINQ. Enumerating a
+		// MaterializableList goes through its Materialized copy -- a fresh List<T> whenever the collection
+		// has been touched -- and LINQ additionally boxes the enumerator. These two run for every element
+		// on every measure (FrameworkElement.HasTemplateChild) and for every node of every tree walk.
 		public static DependencyObject/* ? */ GetChild(DependencyObject reference, int childIndex)
 		{
-			return (reference as UIElement)?
-				.GetChildren()
-				.Where(c => c is not ElementStub)
-				.ElementAtOrDefault(childIndex);
+			// Matches ElementAtOrDefault: any out-of-range index yields null. Negative indices are rejected
+			// up front so they stay O(1), as they were with ElementAtOrDefault's own short-circuit.
+			if (childIndex < 0 || reference is not UIElement element)
+			{
+				return null;
+			}
+
+			var children = element.GetChildren();
+			if (element._elementStubChildrenCount == 0)
+			{
+				return childIndex < children.Count ? children[childIndex] : null;
+			}
+
+			for (var i = 0; i < children.Count; i++)
+			{
+				var child = children[i];
+				if (child is ElementStub)
+				{
+					continue;
+				}
+
+				if (childIndex == 0)
+				{
+					return child;
+				}
+
+				childIndex--;
+			}
+
+			return null;
 		}
 
 		public static int GetChildrenCount(DependencyObject reference)
 		{
-			return (reference as UIElement)?
-				.GetChildren()
-				.Count(c => c is not ElementStub) ?? 0;
+			if (reference is not UIElement element)
+			{
+				return 0;
+			}
+
+			var children = element.GetChildren();
+			if (element._elementStubChildrenCount == 0)
+			{
+				return children.Count;
+			}
+
+			var count = 0;
+			for (var i = 0; i < children.Count; i++)
+			{
+				if (children[i] is not ElementStub)
+				{
+					count++;
+				}
+			}
+
+			return count;
 		}
 
 		internal static int GetViewGroupChildrenCount(_ViewGroup reference)
@@ -234,72 +286,8 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 
-		/// <summary>
-		/// Adapts a native view by wrapping it in a <see cref="FrameworkElement"/> container so that it can be added to the managed visual tree.
-		/// </summary>
-		/// <remarks>
-		/// This method is present to support adding native view types on Android, iOS and MacOS to Uno's visual tree.
-		///
-		/// Calling it with a type that's already a <see cref="FrameworkElement"/> will throw an <see cref="InvalidOperationException"/>.
-		/// If there's a possibility that the wrapped type may be a <see cref="FrameworkElement"/>, use <see cref="TryAdaptNative(_View)"/>
-		/// instead.
-		/// </remarks>
-		public static FrameworkElement AdaptNative(_View nativeView)
-		{
-			if (nativeView is FrameworkElement)
-			{
-				throw new InvalidOperationException($"{nameof(AdaptNative)}() should only be called for non-{nameof(FrameworkElement)} native views." +
-					$"Use {nameof(TryAdaptNative)} if it's not known whether view will be native.");
-			}
-
-			var host = new ContentPresenter
-			{
-				IsNativeHost = true,
-				Content = nativeView,
-				ContentTemplate = null
-			};
-
-			// Propagate layout-related attached properties to the managed wrapper, so the host panel takes them into account
-			PropagateAttachedProperties(
-				host,
-				nativeView,
-				Grid.RowProperty,
-				Grid.RowSpanProperty,
-				Grid.ColumnProperty,
-				Grid.ColumnSpanProperty,
-				Canvas.LeftProperty,
-				Canvas.TopProperty,
-				Canvas.ZIndexProperty
-			);
-
-			return host;
-		}
-
-		private static void PropagateAttachedProperties(FrameworkElement host, _View nativeView, params DependencyProperty[] properties)
-		{
-			foreach (var property in properties)
-			{
-				host.SetValue(property, nativeView.GetValue(property));
-			}
-		}
-
-		/// <summary>
-		/// Adapts a native view by wrapping it in a <see cref="FrameworkElement"/> container so that it can be added to the managed visual tree.
-		///
-		/// This method is safe to call for any view. If <paramref name="view"/> is a <see cref="FrameworkElement"/>, it will simply be returned unmodified.
-		/// </summary>
-		public static FrameworkElement TryAdaptNative(_View view)
-		{
-			if (view is FrameworkElement fe)
-			{
-				return fe;
-			}
-
-			return AdaptNative(view);
-		}
-
 #nullable enable
-		public static IEnumerable<T> GetChildren<T>(DependencyObject view)
+		internal static IEnumerable<T> GetChildren<T>(DependencyObject view)
 			=> (view as _ViewGroup)
 				?.GetChildren()
 				.OfType<T>()
@@ -312,7 +300,7 @@ namespace Microsoft.UI.Xaml.Media
 			=> element._children;
 #endif
 
-		public static IEnumerable<DependencyObject> GetChildren(DependencyObject view)
+		internal static IEnumerable<DependencyObject> GetChildren(DependencyObject view)
 			=> GetChildren<DependencyObject>(view);
 
 		internal static void AddChild(UIElement view, UIElement child)

@@ -87,6 +87,12 @@ internal partial class RootVisual : Panel, IRootElement
 			var x = child.GetOffsetX();
 			var y = child.GetOffsetY();
 
+			// Uno specific: the app content scrolls above the input pane (see UnoRootElementLogic).
+			if (child == AssociatedVisualTree?.PublicRootVisual)
+			{
+				y -= (float)_rootElementLogic.InputPaneVerticalOffset;
+			}
+
 			if (true)//child.GetIsArrangeDirty() || child.GetIsOnArrangeDirtyPath())
 			{
 				child.EnsureLayoutStorage();

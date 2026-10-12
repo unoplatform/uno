@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using Uno.UITest;
 
 #if IS_RUNTIME_UI_TESTS
+using Microsoft.UI;
 using Windows.UI;
 
 using Rectangle = System.Drawing.Rectangle;

@@ -1,5 +1,7 @@
 #nullable enable
 
+using Uno.Web.WebView2.Core;
+
 namespace Microsoft.Web.WebView2.Core;
 
 /// <remarks>

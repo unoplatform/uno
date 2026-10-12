@@ -79,7 +79,8 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 		_recognizer = new GestureRecognizer(this)
 		{
 			GestureSettings = GestureSettingsHelper.Manipulations,
-			PatchCases = WinRTFeatureConfiguration.GestureRecognizer.PatchCasesForDirectManipulation
+			PatchCases = WinRTFeatureConfiguration.GestureRecognizer.PatchCasesForDirectManipulation,
+			ReportsUnquantizedDeltas = true
 		};
 		_recognizer.ManipulationStarting += _onDirectManipulationStarting;
 		_recognizer.ManipulationStarted += _onDirectManipulationStarted;
@@ -184,6 +185,12 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 				// For now we do not support multi-touch direct-manipulations, so we complete the previous manipulation and start a new one.
 				// This has be changed to support pinch to zoom.
 				using var _ = WithCurrent(args);
+
+				// The completion below is suppressed for a resume, and the new manipulation only reports Started
+				// once the finger has moved past the start threshold, so a handler that settles the inertia
+				// itself would otherwise keep animating under a finger held still.
+				_inertiaHandler.OnInertiaInterrupted(_recognizer);
+
 				_recognizer.CompleteGesture();
 				_recognizer.ProcessDownEvent(args.CurrentPoint); // Starts a new manipulation (in starting state for now).
 			}

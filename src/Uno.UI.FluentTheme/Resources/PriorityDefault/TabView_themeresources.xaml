@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference TabView_themeresources.xaml, tag winui3/release/1.8.0, commit 61382c07e6cd8d -->
+<!-- MUX Reference src\controls\dev\TabView\TabView_themeresources.xaml, tag winui3/release/2.5.1, commit ba3a8d59e -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary x:Key="Light">
@@ -269,4 +269,3 @@
   <Thickness x:Key="TabViewSelectedItemBorderThickness">1,1,1,0</Thickness>
   <Thickness x:Key="TabViewSelectedItemHeaderMargin">-1,0,-1,1</Thickness>
 </ResourceDictionary>
-

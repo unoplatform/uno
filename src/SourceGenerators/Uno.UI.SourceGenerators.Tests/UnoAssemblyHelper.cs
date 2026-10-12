@@ -24,7 +24,7 @@ internal static partial class UnoAssemblyHelper
 				"Uno.WinRT",
 				"Uno.WinRT.dll",
 				[
-					"Uno.WinRT.Skia",
+					"Uno.WinRT.Generic",
 					"Uno.WinRT.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
@@ -33,7 +33,7 @@ internal static partial class UnoAssemblyHelper
 				"Uno.Foundation",
 				"Uno.Foundation.dll",
 				[
-					"Uno.Foundation.Skia",
+					"Uno.Foundation.Generic",
 					"Uno.Foundation.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
@@ -50,7 +50,7 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI.Dispatching",
 				"Uno.UI.Dispatching.dll",
 				[
-					"Uno.UI.Dispatching.Skia",
+					"Uno.UI.Dispatching.Generic",
 					"Uno.UI.Dispatching.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
@@ -67,7 +67,7 @@ internal static partial class UnoAssemblyHelper
 			"Uno.UI.Extras",
 			"Uno.UI.Extras.dll",
 			[
-				"Uno.UI.Extras.Skia",
+				"Uno.UI.Extras.Generic",
 				"Uno.UI.Extras.Reference",
 			],
 			[TFMPrevious, TFMCurrent]

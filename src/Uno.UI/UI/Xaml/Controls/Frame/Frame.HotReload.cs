@@ -27,53 +27,14 @@ partial class Frame
 				return;
 			}
 
-			if (frame._useWinUIBehavior)
+			foreach (var type in updatedTypes)
 			{
-				foreach (var type in updatedTypes)
-				{
-					// Note: Does not support CNOMUA
-					frame.RemovePageFromCache(type.FullName);
-					frame.RemovePageFromCache(Navigation.PageStackEntry.BuildDescriptor(type));
-				}
-
-				PatchStrandedContent(frame, updatedTypes);
+				// Note: Does not support CNOMUA
+				frame.RemovePageFromCache(type.FullName);
+				frame.RemovePageFromCache(Navigation.PageStackEntry.BuildDescriptor(type));
 			}
-			else // Uno's legacy implementation
-			{
-				foreach (var entry in frame.BackStack)
-				{
-					var expectedType = entry.SourcePageType.GetReplacementType();
-					if (entry.Instance is not null &&
-						entry.Instance.GetType() != expectedType)
-					{
-						if (typeof(FrameElementMetadataUpdateHandler).Log().IsEnabled(LogLevel.Trace))
-						{
-							typeof(FrameElementMetadataUpdateHandler).Log().Trace($"Backstack entry instance {entry.Instance.GetType().Name} replaced by instance of {expectedType.Name}");
-						}
 
-						var dc = entry.Instance.DataContext;
-						entry.Instance = Activator.CreateInstance(expectedType) as Page;
-						if (entry.Instance is not null)
-						{
-							entry.Instance.Frame = frame;
-							entry.Instance.DataContext = dc;
-						}
-					}
-
-					if (entry.SourcePageType is not null &&
-						entry.SourcePageType != expectedType)
-					{
-						if (typeof(FrameElementMetadataUpdateHandler).Log().IsEnabled(LogLevel.Trace))
-						{
-							typeof(FrameElementMetadataUpdateHandler).Log().Trace($"Backstack entry SourcePageType changed from {entry.SourcePageType.Name} to {expectedType.Name}");
-						}
-
-						entry.SourcePageType = expectedType;
-					}
-				}
-
-				PatchStrandedContent(frame, updatedTypes);
-			}
+			PatchStrandedContent(frame, updatedTypes);
 		}
 
 		/// <summary>
@@ -91,11 +52,8 @@ partial class Frame
 			newPage.Frame = frame;
 			frame.SetContent(newPage);
 
-			// Legacy mode syncs CurrentEntry in OnContentChanged; the WinUI-behavior
-			// history entry must be patched explicitly.
-			if (frame._useWinUIBehavior && frame.GetCurrentPageStackEntry() is { } entry)
+			if (frame.GetCurrentPageStackEntry() is { } entry)
 			{
-				entry.Instance = newPage;
 				SetSourcePageType(entry, newPage.GetType());
 			}
 

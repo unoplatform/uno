@@ -4,15 +4,8 @@ uid: Uno.Contributing.iOS
 
 # How Uno works on iOS
 
-This article explores iOS-specific details of Uno's internals, with a focus on information that's useful for contributors to Uno. For an overview of how Uno works on all platforms, see [this article](uno-internals-overview.md).
+iOS is supported through the Skia rendering backend. The native iOS target (where `UIElement` inherited from `UIView` and layout was driven by the UIKit layout cycle) was removed in Uno Platform 7.0. The UI is now drawn with the same Skia-based rendering pipeline as the other platforms, and Uno runs measure and arrange itself.
 
-## UIElement inherits from UIView
+The iOS host lives in [`Uno.UI.Runtime.AppleUIKit`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI.Runtime.AppleUIKit). `UnoUIApplicationDelegate` handles the application lifecycle, and `UnoMetalView` presents the frames drawn by Skia. Native UIKit views can still be embedded alongside the Skia-rendered tree, see [Embedding Native Elements in Skia Apps](xref:Uno.Skia.Embedding.Native).
 
-`UIElement` in Uno is a native view on iOS, inheriting from the general `UIView` type. To elaborate, `UIElement`'s base classes are the following:
-`UIKit.UIView` → `Uno.UI.Controls.BindableUIView` → `Windows.UI.Xaml.UIElement`
-
-Recall that `UIElement` implements `DependencyObject` [as an interface](uno-internals-overview.md) in Uno.
-
-## Layouting
-
-Uno's measure and arrange logic is triggered from the native iOS layout cycle. For a schematic of the control flow, see [Layouting in iOS](Uno-UI-Layouting-iOS.md).
+For details on how the Skia backend works, see the [overview article](uno-internals-overview.md).

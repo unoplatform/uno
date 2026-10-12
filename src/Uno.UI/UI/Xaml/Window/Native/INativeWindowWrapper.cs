@@ -7,6 +7,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Windowing.Native;
 using Microsoft.UI.Content;
+using Windows.Graphics;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -46,5 +47,23 @@ internal interface INativeWindowWrapper : INativeAppWindow
 
 	void ExtendContentIntoTitleBar(bool extend);
 
+	PointInt32 ConvertLocalToScreen(Point localPoint);
+
+	Point ConvertScreenToLocal(PointInt32 screenPoint);
+
+	bool TryConvertLocalToScreen(Point localPoint, out PointInt32 screenPoint);
+
+	bool TryConvertScreenToLocal(PointInt32 screenPoint, out Point localPoint);
+
 	void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop);
+
+	/// <summary>
+	/// Gets whether this window can actually render <paramref name="backdrop"/>.
+	/// </summary>
+	/// <remarks>
+	/// Only heads that implement <see cref="SetSystemBackdrop"/> render a material, and even those are
+	/// gated on the OS version. Callers use this to decide whether to drop the root's opaque background,
+	/// so a head that would leave nothing behind it must answer false.
+	/// </remarks>
+	bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop);
 }

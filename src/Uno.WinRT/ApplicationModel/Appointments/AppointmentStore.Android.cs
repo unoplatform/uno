@@ -17,6 +17,10 @@ namespace Windows.ApplicationModel.Appointments;
 /// </summary>
 public partial class AppointmentStore
 {
+	internal AppointmentStore()
+	{
+	}
+
 	private const int DefaultReminderInMinutes = 15;
 
 	private static readonly IReadOnlyDictionary<string, string> _appointmentPropertyMap =

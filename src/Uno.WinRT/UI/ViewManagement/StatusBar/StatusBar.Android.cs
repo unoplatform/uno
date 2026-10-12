@@ -4,6 +4,7 @@ using Android.App;
 using Android.OS;
 using Android.Views;
 using AndroidX.Core.View;
+using Microsoft.UI;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;

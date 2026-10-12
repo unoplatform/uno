@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.Content.Res;
+using Uno;
 
 namespace Windows.Storage.Helpers;
 
@@ -30,18 +31,9 @@ partial class StorageFileHelper
 			return Task.FromResult(true);
 		}
 
-		//If not asset found and we detect "/" in filename means we are looking for a nested resource file.
-		//In this case we need to replace '/, -, .' by '_' and remove filename extension before trying to pull it from app resources.
-		var normalizedResName = fileName.ToLowerInvariant();
-		var nameArray = normalizedResName.Split("/");
-		normalizedResName = Path.GetFileNameWithoutExtension(normalizedResName).Replace('.', '_').Replace('-', '_');
-		if (nameArray.Length > 1)
-		{
-			//Replace original filename in our array by our normalized resource filename.
-			nameArray[nameArray.Length - 1] = normalizedResName;
-			//Join our normalized elements without extension
-			normalizedResName = string.Join("_", nameArray);
-		}
+		// Not an asset, so it may have been retargeted to a drawable. The name has to come from the
+		// same encoder RetargetAssets bundled it with; Android lowercases resource names when packaging.
+		var normalizedResName = AndroidResourceNameEncoder.EncodeDrawableResourceName(fileName).ToLowerInvariant();
 
 		//Look in drawable resources***
 		var resources = context.Resources;

@@ -6,6 +6,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Uno.Media;
 using Microsoft.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 
 namespace Microsoft.UI.Xaml.Shapes
@@ -48,7 +49,8 @@ namespace Microsoft.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private SkiaGeometrySource2D GetPath()
+#nullable enable
+		private IGeometry? GetPath()
 		{
 			var points = Points;
 			if (points == null || points.Count <= 1)
@@ -65,8 +67,9 @@ namespace Microsoft.UI.Xaml.Shapes
 				}
 			});
 
-			return streamGeometry.GetGeometrySource2D();
+			return streamGeometry.GetTransformedGeometry();
 		}
+#nullable disable
 
 	}
 }

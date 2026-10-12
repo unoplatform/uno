@@ -15,7 +15,6 @@ using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Uno.UI.Extensions;
-using System.Runtime.InteropServices;
 
 
 #if WINAPPSDK
@@ -70,12 +69,6 @@ namespace SampleControl.Presentation
 				).AsTask(ct);
 			return folder;
 		}
-
-		[DllImport("User32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-		private static extern int GetDpiForWindow(IntPtr hwnd);
-
-		private static int GetDpi()
-			=> GetDpiForWindow(WinRT.Interop.WindowNative.GetWindowHandle(SamplesApp.App.MainWindow));
 	}
 }
 #endif

@@ -17,7 +17,6 @@ using Uno.Foundation.Logging;
 
 #if __SKIA__
 using System.Runtime.InteropServices;
-using SkiaSharp;
 using System.Runtime.InteropServices.JavaScript;
 #endif
 
@@ -48,7 +47,9 @@ internal static partial class ImageSourceHelpers
 
 		if (OperatingSystem.IsBrowser() && attemptLoadingWithBrowserCanvasApi && !hasTargetSize)
 		{
-			var decodedBufferObject = await LoadFromArray(buffer);
+			// The JS object holds the decoded pixels until it is released, and its finalizer only runs when the GC
+			// happens to collect: allocations outside the managed heap don't prompt one.
+			using var decodedBufferObject = await LoadFromArray(buffer);
 
 			if (decodedBufferObject.GetPropertyAsString("error") is { } errorMessage)
 			{
@@ -65,35 +66,32 @@ internal static partial class ImageSourceHelpers
 				}
 
 				var bytes = decodedBufferObject.GetPropertyAsByteArray("bytes");
-				SKImage image;
-				unsafe
+				if (bytes is null)
 				{
-					var gcHandle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-					fixed (void* ptr = bytes)
+					return ImageData.Empty;
+				}
+
+				try
+				{
+					// The browser Canvas API returns RGBA; the neutral image surface takes BGRA — swap R/B in place,
+					// as the bytes are already a managed copy of the JS buffer.
+					for (var i = 0; i + 3 < bytes.Length; i += 4)
 					{
-						try
-						{
-							image = SKImage.FromPixels(new SKPixmap(new SKImageInfo(width, height, SKColorType.Rgba8888), new IntPtr(ptr)), static (_, gcHandle) =>
-							{
-								((GCHandle)gcHandle).Free();
-							}, gcHandle);
-							if (image == null)
-							{
-								throw new InvalidOperationException($"{nameof(SKImage)}.{nameof(SKImage.FromPixels)} returned null.");
-							}
-							return ImageData.FromCompositionSurface(new SkiaCompositionSurface(image));
-						}
-						catch (Exception e)
-						{
-							gcHandle.Free();
-							return ImageData.FromError(e);
-						}
+						(bytes[i], bytes[i + 2]) = (bytes[i + 2], bytes[i]);
 					}
+
+					var browserSurface = new CompositionImageSurface();
+					browserSurface.CopyPixels(width, height, bytes);
+					return ImageData.FromCompositionSurface(browserSurface);
+				}
+				catch (Exception e)
+				{
+					return ImageData.FromError(e);
 				}
 			}
 		}
 
-		var surface = new SkiaCompositionSurface();
+		var surface = new CompositionImageSurface();
 		var result = surface.LoadFromStream(targetWidth, targetHeight, new MemoryStream(buffer));
 
 		if (result.success)
@@ -108,7 +106,7 @@ internal static partial class ImageSourceHelpers
 	}
 
 	// https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/6.0/byte-array-interop#receive-byte-array-in-javascript-from-net-1
-	[JSImport($"globalThis.Uno.UI.Runtime.Skia.ImageLoader.loadFromArray")]
+	[JSImport($"globalThis.Uno.UI.Runtime.ImageLoader.loadFromArray")]
 	private static partial Task<JSObject> LoadFromArray(byte[] array);
 #endif
 

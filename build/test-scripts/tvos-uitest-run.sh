@@ -30,6 +30,13 @@ report_harness_crash() {
 
 	if [ "$status" -ne 0 ] && [ "$UNO_TVOS_TESTS_STARTED" != "true" ]; then
 		echo "##vso[task.setvariable variable=UNO_TVOS_HARNESS_CRASHED]true"
+
+		# A failed first step fails the job even when the re-run step then passes, so leave the
+		# verdict to the re-run.
+		if [ "${UNO_HARNESS_RERUN_PENDING:-}" = "true" ]; then
+			echo "##vso[task.logissue type=warning]The test harness failed before any test started (exit $status); the re-run step will retry it."
+			exit 0
+		fi
 	fi
 }
 trap report_harness_crash EXIT
@@ -158,8 +165,12 @@ wait_for_boot() {
 }
 
 echo "Waiting for the simulator to finish booting (started $(date))"
-if ! wait_for_boot "$UITEST_TVOSDEVICE_ID" 180; then
-	echo "##vso[task.logissue type=warning]UNOBLD006: The simulator did not report a completed boot within 180s. Continuing anyway; the app install below will surface a hard failure if it is genuinely unusable."
+# A first boot runs the data migration, which alone took over 3 minutes on slow agents. Every job
+# that went on to launch the app on a half-booted simulator failed anyway (the app died or hung
+# until the job timeout), so give up instead: the harness re-run step then waits once more.
+if ! wait_for_boot "$UITEST_TVOSDEVICE_ID" 480; then
+	echo "##vso[task.logissue type=error]UNOBLD006: The simulator did not report a completed boot within 480s."
+	exit 1
 fi
 echo "Simulator boot wait finished ($(date))"
 
@@ -199,7 +210,12 @@ fi
 echo "Starting runtime tests group ${UITEST_RUNTIME_TEST_GROUP} of ${UITEST_RUNTIME_TEST_GROUP_COUNT}"
 
 UNO_TVOS_TESTS_STARTED=true
-xcrun simctl launch "$UITEST_TVOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
+# Capture the app's own output into the published logs. Without this a startup failure leaves nothing to go
+# on: the managed exception reaches neither the device log nor the crash report. stderr matters most -- simctl
+# notes that log output usually goes there.
+APP_STDOUT="$LOG_FILEPATH/app-stdout-${UITEST_RUNTIME_TEST_GROUP}.log"
+APP_STDERR="$LOG_FILEPATH/app-stderr-${UITEST_RUNTIME_TEST_GROUP}.log"
+xcrun simctl launch --stdout="$APP_STDOUT" --stderr="$APP_STDERR" "$UITEST_TVOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 
 # get the process id for the app
 export APP_PID=`xcrun simctl spawn "$UITEST_TVOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}'`
@@ -208,6 +224,9 @@ echo "App PID: $APP_PID"
 # Set the timeout in seconds
 UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
 TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
+# Collecting the device logs, the transform tool and the publish steps need several minutes.
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-job-budget.sh
+TIMEOUT=$(uno_job_wait_budget "$TIMEOUT" 600)
 INTERVAL=15
 END_TIME=$((SECONDS+TIMEOUT))
 

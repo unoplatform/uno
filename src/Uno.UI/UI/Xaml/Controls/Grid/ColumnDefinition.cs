@@ -39,11 +39,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		public static implicit operator ColumnDefinition(string value)
-		{
-			return new ColumnDefinition { Width = GridLength.ParseGridLength(value).First() };
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = 0d, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty MinWidthProperty { get; } = CreateMinWidthProperty();
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
@@ -31,23 +30,6 @@ namespace Microsoft.UI.Xaml
 			}
 			return null;
 		}
-
-		#region Transitions Dependency Property
-
-		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static DependencyProperty TransitionsProperty { get; } = CreateTransitionsProperty();
-
-		public TransitionCollection Transitions
-		{
-			get => GetTransitionsValue();
-			set => SetTransitionsValue(value);
-		}
-
-		private void OnTransitionsChanged(DependencyPropertyChangedEventArgs args)
-		{
-
-		}
-		#endregion
 
 		public object FindName(string name)
 			=> IFrameworkElementHelper.FindName(this, this, name);

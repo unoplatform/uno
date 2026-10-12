@@ -1,0 +1,309 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
+using SamplesApp.UITests;
+using Uno.UI.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
+using static Private.Infrastructure.TestServices;
+
+#if HAS_UNO && !HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+#endif
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
+
+#if !WINAPPSDK
+[TestClass]
+[RunsOnUIThread]
+public class Given_CalendarView
+{
+	const int DEFAULT_MIN_MAX_DATE_YEAR_OFFSET = 100;
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16123")]
+	[Ignore("Test is unstable on CI: https://github.com/unoplatform/uno/issues/16123")]
+	public async Task When_ReMeasure_After_Changing_MaxDate()
+	{
+		var contentDialog = new ContentDialog();
+		contentDialog.XamlRoot = TestServices.WindowHelper.XamlRoot;
+		var calendarView = new CalendarView();
+		contentDialog.Content = calendarView;
+
+		// Set MaxDate, show dialog, screenshot it, and hide it.
+		calendarView.MaxDate = DateTimeOffset.Now.AddDays(1);
+		var task = contentDialog.ShowAsync();
+		await TestServices.WindowHelper.WaitForIdle();
+		var screenshot1 = await UITestHelper.ScreenShot(calendarView);
+		task.Cancel();
+
+		// Change MaxDate, show dialog, screenshot it, and hide it.
+		calendarView.MaxDate = DateTimeOffset.Now.AddDays(2);
+		task = contentDialog.ShowAsync();
+		await TestServices.WindowHelper.WaitForIdle();
+		var screenshot2 = await UITestHelper.ScreenShot(calendarView);
+		task.Cancel();
+
+		await ImageAssert.AreEqualAsync(screenshot1, screenshot2);
+	}
+
+	[TestMethod]
+	public async Task When_MinDate_Has_Different_Offset()
+	{
+		var calendarView = new CalendarView();
+		calendarView.MinDate = new DateTimeOffset(new DateTime(2010, 1, 1, 22, 0, 0), TimeSpan.Zero);
+		calendarView.MaxDate = new DateTimeOffset(new DateTime(2010, 1, 31), TimeSpan.FromHours(2));
+
+		await UITestHelper.Load(calendarView);
+	}
+
+	[TestMethod]
+	public async Task When_Scroll_To_MaxDate()
+	{
+		var calendarView = new CalendarView()
+		{
+			DisplayMode = CalendarViewDisplayMode.Decade
+		};
+
+		await UITestHelper.Load(calendarView);
+
+		Type calendarViewType = typeof(CalendarView);
+		MethodInfo ChangeVisualStateInfo = calendarViewType.GetMethod("ChangeVisualState", BindingFlags.NonPublic | BindingFlags.Instance);
+
+		// Scroll to max date
+		calendarView.SetDisplayDate(calendarView.MaxDate);
+
+		// Switch to Year view
+		calendarView.DisplayMode = CalendarViewDisplayMode.Year;
+		ChangeVisualStateInfo.Invoke(calendarView, new object[] { false });
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Switch back to Decade view
+		calendarView.DisplayMode = CalendarViewDisplayMode.Decade;
+		ChangeVisualStateInfo.Invoke(calendarView, new object[] { false });
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Decade viewport should be full of items (no missing row)
+		calendarView.GetActiveGeneratorHost(out var pHost);
+		var maxDecadeIndex = DEFAULT_MIN_MAX_DATE_YEAR_OFFSET * 2;
+		var maxDisplayedItems = pHost.Panel.Rows * pHost.Panel.Cols;
+
+		// The first visible index should be less than the max possible index minus the max items we can display
+		// Worst case scenario is that the last row only has 1 item
+		Assert.IsLessThanOrEqualTo(maxDecadeIndex - (maxDisplayedItems - pHost.Panel.Rows - 1), pHost.Panel.FirstVisibleIndex);
+	}
+
+	[TestMethod]
+	public async Task SelectedDatesBorder()
+	{
+		DateTimeOffset day1 = new DateTimeOffset(DateTime.Now.AddDays(-3));
+		DateTimeOffset day2 = new DateTimeOffset(DateTime.Now.AddDays(4));
+		Type type = typeof(CalendarViewBaseItem);
+		MethodInfo GetItemBorderBrushInfo = type.GetMethod("GetItemBorderBrush", BindingFlags.NonPublic | BindingFlags.Instance);
+		Type dayItemType = typeof(CalendarViewDayItem);
+		MethodInfo OnTappedInfo = dayItemType.GetMethod("OnTapped", BindingFlags.NonPublic | BindingFlags.Instance);
+		CalendarViewDayItem dayItem1, dayItem2;
+		Brush brush1, brush2;
+		//Single Mode
+		//Init SelectedDates as day1. { } => { day1 }
+		CalendarView calendar = new CalendarView
+		{
+			SelectedDates = { day1 },
+			SelectionMode = CalendarViewSelectionMode.Single,
+			MinDate = DateTimeOffset.Now.AddDays(-10),
+			MaxDate = DateTimeOffset.Now.AddDays(10)
+		};
+		TestServices.WindowHelper.WindowContent = calendar;
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.HasCount(1, calendar.SelectedDates);
+		Assert.AreEqual(day1, calendar.SelectedDates[0]);
+		dayItem1 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date.Date == calendar.SelectedDates[0].Date);
+		Assert.IsNotNull(dayItem1);
+		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
+		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
+
+		//Click day1. { day1 } => { }
+		OnTappedInfo.Invoke(dayItem1, new object[] { new TappedRoutedEventArgs() });
+		await TestServices.WindowHelper.WaitForIdle();
+		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
+		Assert.IsEmpty(calendar.SelectedDates);
+		Assert.AreEqual(calendar.CalendarItemBorderBrush, brush1);
+
+		//Add day2 to SelectedDatesItem. { } => { day2 }
+		calendar.SelectedDates.Add(day2);
+		Assert.HasCount(1, calendar.SelectedDates);
+		Assert.AreEqual(day2, calendar.SelectedDates[0]);
+		await TestServices.WindowHelper.WaitForIdle();
+		dayItem2 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date.Date == calendar.SelectedDates[0].Date);
+		Assert.IsNotNull(dayItem2);
+		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
+		Assert.AreEqual(calendar.SelectedBorderBrush, brush2);
+
+		//Click day1. { day2 } => { day1 }
+		OnTappedInfo.Invoke(dayItem1, new object[] { new TappedRoutedEventArgs() });
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.HasCount(1, calendar.SelectedDates);
+		Assert.AreEqual(dayItem1.Date, calendar.SelectedDates[0]);
+		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
+		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
+		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
+		Assert.AreEqual(calendar.CalendarItemBorderBrush, brush2);
+
+
+		//MultipleMode
+		//Init SelectedDates with multiple dates. { } => { day1, day2 }
+		calendar = new CalendarView
+		{
+			SelectionMode = CalendarViewSelectionMode.Multiple,
+			SelectedDates = { day1, day2 },
+			MinDate = DateTimeOffset.Now.AddDays(-10),
+			MaxDate = DateTimeOffset.Now.AddDays(10)
+		};
+
+		Assert.HasCount(2, calendar.SelectedDates);
+		Assert.AreEqual(day1, calendar.SelectedDates[0]);
+		Assert.AreEqual(day2, calendar.SelectedDates[1]);
+		TestServices.WindowHelper.WindowContent = calendar;
+		await TestServices.WindowHelper.WaitForIdle();
+		dayItem1 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date.Date == calendar.SelectedDates[0].Date);
+		Assert.IsNotNull(dayItem1);
+		dayItem2 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date.Date == calendar.SelectedDates[1].Date);
+		Assert.IsNotNull(dayItem2);
+		await TestServices.WindowHelper.WaitForIdle();
+		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
+		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
+		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
+		Assert.AreEqual(calendar.SelectedBorderBrush, brush2);
+
+		//Click day1. { day1, day2 } => { day2 }
+		OnTappedInfo.Invoke(dayItem1, new object[] { new TappedRoutedEventArgs() });
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.HasCount(1, calendar.SelectedDates);
+		Assert.AreEqual(day2, calendar.SelectedDates[0]);
+		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
+		Assert.AreEqual(calendar.CalendarItemBorderBrush, brush1);
+		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
+		Assert.AreEqual(calendar.SelectedBorderBrush, brush2);
+
+		//Click day2. { day2 } => { }
+		OnTappedInfo.Invoke(dayItem2, new object[] { new TappedRoutedEventArgs() });
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.IsEmpty(calendar.SelectedDates);
+		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
+		Assert.AreEqual(calendar.CalendarItemBorderBrush, brush1);
+		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
+		Assert.AreEqual(calendar.CalendarItemBorderBrush, brush2);
+
+		//Click day1. { } => { day1 }
+		OnTappedInfo.Invoke(dayItem1, new object[] { new TappedRoutedEventArgs() });
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.HasCount(1, calendar.SelectedDates);
+		Assert.AreEqual(dayItem1.Date, calendar.SelectedDates[0]);
+		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
+		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
+		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
+		Assert.AreEqual(calendar.CalendarItemBorderBrush, brush2);
+
+		//Click day2. { day1 } => { day1, day2 }
+		OnTappedInfo.Invoke(dayItem2, new object[] { new TappedRoutedEventArgs() });
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.HasCount(2, calendar.SelectedDates);
+		Assert.AreEqual(dayItem1.Date, calendar.SelectedDates[0]);
+		Assert.AreEqual(dayItem2.Date, calendar.SelectedDates[1]);
+		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
+		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
+		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
+		Assert.AreEqual(calendar.SelectedBorderBrush, brush2);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20575")]
+	public async Task When_Year_Mode_Shown()
+	{
+		var now = DateTimeOffset.UtcNow;
+		var calendarView = new Microsoft.UI.Xaml.Controls.CalendarView();
+
+		TestServices.WindowHelper.WindowContent = calendarView;
+
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+
+		calendarView.DisplayMode = CalendarViewDisplayMode.Year;
+
+		// Switching to Year mode updates the header asynchronously; poll for it rather than asserting
+		// after a single WaitForIdle, which raced on slower runtimes (e.g. WASM).
+		await TestServices.WindowHelper.WaitFor(
+			() => calendarView.TemplateSettings.HeaderText,
+			now.Year.ToString(),
+			messageBuilder: actual => $"Year-mode header should end with {now.Year}, was '{actual}'",
+			comparer: (actual, year) => actual is not null && actual.EndsWith(year, StringComparison.Ordinal),
+			timeoutMS: 3000);
+	}
+
+	[TestMethod]
+	// SkiaWasm excluded: rapid-click month scroll animations re-target/rewind under the headless xvfb browser (flaky). #23524
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
+	public async Task When_NextMonth_InQuickSequence()
+	{
+		var sut = new CalendarView() { DisplayMode = CalendarViewDisplayMode.Month };
+		await UITestHelper.Load(sut);
+
+		var sv = sut.FindFirstDescendantOrThrow<ScrollViewer>("MonthViewScrollViewer");
+		var nextButton = sut.FindFirstDescendantOrThrow<Button>("NextButton");
+
+		var sw = Stopwatch.StartNew();
+		var logs = new List<(double timestamp, double Offset, bool IsIntermediate)>();
+		sv.ViewChanged += (s, e) => logs.Add((sw.ElapsedMilliseconds, sv.VerticalOffset, e.IsIntermediate));
+
+		// Simulate user quickly clicking "next" multiple times
+		nextButton.ProgrammaticClick();
+		await Task.Delay(200);
+		nextButton.ProgrammaticClick();
+		await UITestHelper.WaitForIdle();
+		await UITestHelper.WaitFor(() => logs.Any() && logs[^1].IsIntermediate == false, timeoutMS: 2500, message: "timeout on waiting for CalendarView to finish scrolling");
+		await Task.Delay(FeatureConfiguration.ScrollViewer.SnapDelay * 2); // ample wait time
+
+		var offsets = logs.Select(x => x.Offset).ToArray();
+		Assert.IsTrue(
+			offsets.Zip(offsets.Skip(1)).All(x => x.Second >= x.First),
+			$"should never rewind back: (v-offsets: {string.Join(", ", offsets)})"
+		);
+	}
+
+	[TestMethod]
+	public async Task When_Spanish_Language()
+	{
+		var calendarView = new CalendarView()
+		{
+			Language = "es-ES"
+		};
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+		await UITestHelper.WaitFor(() => calendarView.TemplateSettings.HeaderText == "enero de 2024", message: "HeaderText was not set to expected Spanish value");
+	}
+
+	[TestMethod]
+	public async Task When_English_Language()
+	{
+		var calendarView = new CalendarView()
+		{
+			Language = "en-US"
+		};
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+		await UITestHelper.WaitFor(() => calendarView.TemplateSettings.HeaderText == "January 2024", message: "HeaderText was not set to expected English value");
+	}
+}
+#endif

@@ -9,7 +9,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AwesomeAssertions" />
-		<PackageReference Include="ModelContextProtocol" Version="1.1.0" />
+		<PackageReference Include="ModelContextProtocol" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -6,11 +6,16 @@ namespace Microsoft.UI
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct DisplayId
+	public partial struct DisplayId : global::System.IEquatable<global::Microsoft.UI.DisplayId>
 	{
 		// Forced skipping of method Microsoft.UI.DisplayId.DisplayId()
 		// Skipping already declared method Microsoft.UI.DisplayId.DisplayId(ulong)
 		// Forced skipping of method Microsoft.UI.DisplayId.DisplayId(ulong)
+		// Skipping already declared method Microsoft.UI.DisplayId.operator ==(Microsoft.UI.DisplayId, Microsoft.UI.DisplayId)
+		// Skipping already declared method Microsoft.UI.DisplayId.operator !=(Microsoft.UI.DisplayId, Microsoft.UI.DisplayId)
+		// Skipping already declared method Microsoft.UI.DisplayId.Equals(Microsoft.UI.DisplayId)
+		// Skipping already declared method Microsoft.UI.DisplayId.Equals(object)
+		// Skipping already declared method Microsoft.UI.DisplayId.GetHashCode()
 		// Skipping already declared field Microsoft.UI.DisplayId.Value
 	}
 }

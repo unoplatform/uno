@@ -1,0 +1,49 @@
+﻿#nullable enable
+
+using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
+using Uno.Foundation.Extensibility;
+using Uno.Graphics;
+using Uno.UI.Hosting;
+using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
+using Uno.Web.WebView2.Core;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+
+namespace Uno.UI.Runtime.Android;
+
+internal static class ExtensionsRegistrar
+{
+	private static bool _registered;
+
+	internal static void Register()
+	{
+		if (_registered)
+		{
+			return;
+		}
+
+		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new AndroidSkiaWindowFactory());
+		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource),
+			host => (host as AndroidSkiaXamlRootHost)?.PointerSource ?? throw new ArgumentException($"{nameof(host)} must be an {nameof(AndroidSkiaXamlRootHost)} instance"));
+		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource),
+			host => (host as AndroidSkiaXamlRootHost)?.KeyboardSource ?? throw new ArgumentException($"{nameof(host)} must be an {nameof(AndroidSkiaXamlRootHost)} instance"));
+		ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => AndroidSkiaTextBoxNotificationsProviderSingleton.Instance);
+		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new AndroidSkiaNativeElementHostingExtension(o));
+		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new AndroidNativeWebViewProvider(o));
+		ApiExtensibility.Register(typeof(ISkiaNativeDatePickerProviderExtension), _ => new AndroidSkiaDatePickerProvider());
+		ApiExtensibility.Register(typeof(ISkiaNativeTimePickerProviderExtension), _ => new AndroidSkiaTimePickerProvider());
+		ApiExtensibility.Register(typeof(IInputPaneExtension), _ => new InputPaneExtension());
+		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new AndroidSkiaMediaPlayerPresenterExtension(o));
+		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => new AndroidImeTextBoxExtension());
+		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new AndroidNativeOpenGLWrapper(xamlRoot));
+
+		ContextHelper.WindowContextResolver = static window
+			=> AndroidSkiaXamlRootHost.GetActivity((window as Window)?.RootElement?.XamlRoot);
+
+		_registered = true;
+	}
+}

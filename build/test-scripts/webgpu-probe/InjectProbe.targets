@@ -1,0 +1,13 @@
+<Project>
+
+	<!--
+	Compiles WebGpuProbe.cs into the project named by UnoWebGpuProbeProject, so a scenario can make an app reach
+	the WebGPU backend either directly or through a library it references. It arrives as
+	CustomBeforeMicrosoftCommonTargets, which every project in the graph imports, hence the name check.
+	-->
+
+	<ItemGroup Condition="'$(UnoWebGpuProbeProject)' != '' And '$(MSBuildProjectName)' == '$(UnoWebGpuProbeProject)'">
+		<Compile Include="$(MSBuildThisFileDirectory)WebGpuProbe.cs" />
+	</ItemGroup>
+
+</Project>

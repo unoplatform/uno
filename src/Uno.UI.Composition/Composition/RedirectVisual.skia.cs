@@ -1,32 +1,32 @@
-﻿#nullable enable
+#nullable enable
 
 using System.Numerics;
-using SkiaSharp;
+using Windows.Foundation;
+using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition
 {
 	public partial class RedirectVisual : ContainerVisual
 	{
-		internal override SKPath? Paint(in PaintingSession session)
+		internal override void Paint(in PaintingSession session)
 		{
 			base.Paint(in session);
 
-			if (Source is not null && session.Canvas is { } canvas)
+			if (Source is not null)
 			{
-				Source.RenderRootVisual(canvas, null);
+				Source.RenderRootVisual(session.Session, null);
 			}
-
-			return null;
 		}
 
 		// What gets painted here is the Source's whole subtree, and that subtree paints even when the Source
 		// visual itself doesn't (an element visual leaves the painting to its children).
 		internal override bool CanPaint() => Source is not null;
 
-		internal override bool TryGetLocalContentBounds(out SKRect localBounds)
+		internal override bool TryGetLocalContentBounds(out Rect localBounds)
 		{
-			localBounds = SKRect.Empty;
+			localBounds = default;
 
 			if (Source is not { } source)
 			{
@@ -40,14 +40,14 @@ namespace Microsoft.UI.Composition
 
 			// Paint undoes the source parent's transform (see Visual.RenderRootVisual), so what lands in
 			// this visual's local coordinates is the source subtree measured in its parent's space.
-			if (!content.IsEmpty && source.Parent is { } parent)
+			if (!IsRectEmpty(content) && source.Parent is { } parent)
 			{
 				if (!Matrix4x4.Invert(parent.TotalMatrix, out var invertedParentTotalMatrix))
 				{
 					return false;
 				}
 
-				content = invertedParentTotalMatrix.ToSKMatrix().MapRect(content);
+				content = content.Transform(invertedParentTotalMatrix.ToMatrix3x2());
 			}
 
 			if (ShadowState is not null)

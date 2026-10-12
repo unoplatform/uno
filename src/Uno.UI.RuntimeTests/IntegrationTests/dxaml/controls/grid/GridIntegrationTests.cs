@@ -561,9 +561,6 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore]
-#endif
 		public async Task CanZeroWeightedCellsShrinkToZeroSize()
 		{
 			TestCleanupWrapper cleanup;
@@ -708,9 +705,6 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore] // ViewportHeight is not implemented in Wasm
-#endif
 		public async Task CanLayoutWithColumnSpan()
 		{
 			TestCleanupWrapper cleanup;
@@ -1109,12 +1103,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 			// size of its rows, columns and content.
 			await TestServices.RunOnUIThread(() =>
 			{
-#if __WASM__
-				// HTML Text rounding causes the length to be off by half a pixel.
-				TestServices.VERIFY_ARE_EQUAL(grid.DesiredSize.Width, 169.5f);
-#else
 				TestServices.VERIFY_ARE_EQUAL(grid.DesiredSize.Width, 170.0f);
-#endif
 
 				TestServices.VERIFY_ARE_EQUAL(grid.DesiredSize.Height, 137.0f);
 			});

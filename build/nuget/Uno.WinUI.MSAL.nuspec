@@ -56,8 +56,8 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net10.0\Uno.UI.MSAL.*" target="lib\net10.0" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net11.0\Uno.UI.MSAL.*" target="lib\net11.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Generic\Release\net10.0\Uno.UI.MSAL.*" target="lib\net10.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Generic\Release\net11.0\Uno.UI.MSAL.*" target="lib\net11.0" />
 
 		<!-- BEGIN UWP-specific
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\uap10.0.19041\Uno.UI.MSAL.*" target="lib\uap10.0.19041" />

@@ -562,7 +562,8 @@ public partial class FrameworkElement
 		}
 		else if (this is Controls.RichTextBlock)
 		{
-			return Controls.RichTextBlock.ForegroundProperty;
+			// Looked up rather than read off the static, which would root RichTextBlock for the trimmer.
+			return DependencyProperty.GetProperty(typeof(Controls.RichTextBlock), nameof(Controls.RichTextBlock.Foreground));
 		}
 		return null;
 	}

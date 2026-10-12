@@ -19,7 +19,7 @@ using System.Threading;
 
 namespace Microsoft.UI.Xaml.Media
 {
-	public partial class LoadedImageSurface : IDisposable, ICompositionSurface, ISkiaCompositionSurfaceProvider
+	public partial class LoadedImageSurface : IDisposable, ICompositionSurface, ICompositionImageSurfaceProvider
 	{
 		private Size _decodedPhysicalSize;
 		private Size _decodedSize;
@@ -35,9 +35,9 @@ namespace Microsoft.UI.Xaml.Media
 
 		private double _dpi = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 
-		internal SkiaCompositionSurface? InternalSurface;
+		internal CompositionImageSurface? InternalSurface;
 
-		SkiaCompositionSurface? ISkiaCompositionSurfaceProvider.SkiaCompositionSurface => InternalSurface;
+		CompositionImageSurface? ICompositionImageSurfaceProvider.ImageSurface => InternalSurface;
 
 		internal LoadedImageSurface(Action<LoadedImageSurface> loadAction)
 		{
@@ -100,14 +100,14 @@ namespace Microsoft.UI.Xaml.Media
 
 						if (stream is not null)
 						{
-							var surface = new SkiaCompositionSurface();
+							var surface = new CompositionImageSurface();
 							var (success, _) = surface.LoadFromStream(width, height, stream);
 
 							if (success)
 							{
 								imgSurf.InternalSurface = surface;
 
-								imgSurf._decodedSize = new Size((double?)surface.Image?.Width ?? 0, (double?)surface.Image?.Height ?? 0);
+								imgSurf._decodedSize = new Size((double?)surface.Image?.PixelWidth ?? 0, (double?)surface.Image?.PixelHeight ?? 0);
 								imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Width * imgSurf._dpi, imgSurf._decodedSize.Height * imgSurf._dpi);
 								imgSurf._naturalPhysicalSize = imgSurf._decodedPhysicalSize;
 							}
@@ -144,14 +144,14 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			var retVal = new LoadedImageSurface((LoadedImageSurface imgSurf) =>
 			{
-				var surface = new SkiaCompositionSurface();
+				var surface = new CompositionImageSurface();
 				var result = surface.LoadFromStream(width, height, stream.AsStream());
 
 				if (result.success)
 				{
 					imgSurf.InternalSurface = surface;
 
-					imgSurf._decodedSize = new Size((double?)surface.Image?.Width ?? 0, (double?)surface.Image?.Height ?? 0);
+					imgSurf._decodedSize = new Size((double?)surface.Image?.PixelWidth ?? 0, (double?)surface.Image?.PixelHeight ?? 0);
 					imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Width * imgSurf._dpi, imgSurf._decodedSize.Height * imgSurf._dpi);
 					imgSurf._naturalPhysicalSize = imgSurf._decodedPhysicalSize;
 				}
@@ -164,7 +164,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		public void Dispose()
 		{
-			InternalSurface?.Image?.Dispose();
+			InternalSurface?.Dispose();
 		}
 	}
 }

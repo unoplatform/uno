@@ -12,6 +12,10 @@ namespace Microsoft.UI.Xaml
 	/// </remarks>
 	public partial class RectHelper
 	{
+		internal RectHelper()
+		{
+		}
+
 		public static Rect Empty { get; } = new Rect(0, 0, 0, 0); // Value is different than Rect.Empty!
 		public static Rect FromCoordinatesAndDimensions(float x, float y, float width, float height) => new Rect(x, y, width, height);
 		public static Rect FromPoints(Point point1, Point point2) => new Rect(point1, point2);

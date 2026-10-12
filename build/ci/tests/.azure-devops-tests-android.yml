@@ -1,0 +1,199 @@
+parameters:
+  vmLinuxPool: ''
+  XAML_FLAVOR_BUILD: ''
+  jobTimeoutInMinutes: 50
+  jobName: 'Android_Tests'
+  # Names the job and its test run; the job name is concatenated with the matrix group name.
+  renderer: 'Skia'
+  testResultLabel: ''
+  # Intent extras handed to the app, e.g. '-e UNO_WEBGPU 1'.
+  appExtras: ''
+  # Overrides the job's run condition, e.g. to skip a lane on pull requests that don't need it.
+  condition: ''
+
+jobs:
+##
+## Android Skia
+##
+
+- job: ${{ parameters.jobName }}
+  displayName: '${{ parameters.renderer }}'
+  timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
+  cancelTimeoutInMinutes: 0
+  dependsOn: Skia_Android_Tests_Build
+  ${{ if ne(parameters.condition, '') }}:
+    condition: ${{ parameters.condition }}
+  pool: ${{ parameters.vmLinuxPool }}
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+    SAMPLEAPP_ARTIFACT_NAME: $[ dependencies.Skia_Android_Tests_Build.outputs['set_android_artifact.SamplesAppArtifactName'] ]
+
+  strategy:
+    matrix:
+
+      'Runtime Tests 0':
+        ANDROID_SIMULATOR_APILEVEL: 34
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
+
+      'Runtime Tests 1':
+        ANDROID_SIMULATOR_APILEVEL: 34
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
+
+      'Runtime Tests 2':
+        ANDROID_SIMULATOR_APILEVEL: 34
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 2
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
+
+      'Runtime Tests 3':
+        ANDROID_SIMULATOR_APILEVEL: 34
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 3
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
+
+      'Runtime Tests 4':
+        ANDROID_SIMULATOR_APILEVEL: 34
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 4
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
+
+  steps:
+  - template: ../templates/job-deadline.yml
+    parameters:
+      timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
+
+  - checkout: self
+    clean: true
+
+  - bash: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    displayName: 'Enable KVM'
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SAMPLEAPP_ARTIFACT_NAME)
+    inputs:
+      artifact: $(SAMPLEAPP_ARTIFACT_NAME)
+      path: '$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android'
+
+  - task: DownloadPipelineArtifact@2
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+      artifact: runtime-tests-android-skia${{ parameters.testResultLabel }}-failures
+      path: '$(build.sourcesdirectory)/build/uitests-failure-results'
+
+  - template: ../templates/dotnet-install.yml
+
+  - bash: |
+      chmod +x $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
+      $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
+
+    displayName: Run Android ${{ parameters.renderer }} Runtime Tests
+    env:
+      UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
+      UNO_TEST_APP_EXTRAS: ${{ parameters.appExtras }}
+
+  - pwsh: |
+      $env:ANDROID_HOME = "$(build.sourcesdirectory)/build/android-sdk"
+      $env:ANDROID_SDK_ROOT = $env:ANDROID_HOME
+      $env:UNO_UITEST_PLATFORM = "Android"
+      $env:UNO_UITEST_APP_ID = "uno.platform.samplesapp.skia"
+      $env:UITEST_VARIANT = "skia"
+      $env:UNO_UITEST_ANDROIDAPK_PATH = "$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android/$($env:UNO_UITEST_APP_ID)-Signed.apk"
+      if (-not (Test-Path -LiteralPath $env:UNO_UITEST_ANDROIDAPK_PATH -PathType Leaf))
+      {
+        throw "Android Skia test APK was not found: $($env:UNO_UITEST_ANDROIDAPK_PATH)"
+      }
+
+      # Match android-uitest-run.sh: Xamarin.UITest needs the assembly-store marker and must sign both APKs.
+      $apk = [System.IO.Compression.ZipFile]::Open($env:UNO_UITEST_ANDROIDAPK_PATH, [System.IO.Compression.ZipArchiveMode]::Update)
+      try
+      {
+        if ($null -eq $apk.GetEntry("assemblies.blob"))
+        {
+          $null = $apk.CreateEntry("assemblies.blob")
+        }
+      }
+      finally
+      {
+        $apk.Dispose()
+      }
+
+      $adb = Join-Path $env:ANDROID_HOME "platform-tools/adb"
+      $device = (& $adb devices) |
+        Select-Object -Skip 1 |
+        Where-Object { $_ -match "\sdevice$" } |
+        Select-Object -First 1
+      if (-not $device)
+      {
+        throw "No Android emulator is available for the Skia UIAutomator tests."
+      }
+      $env:ANDROID_SERIAL = ($device -split "\s+")[0]
+      $installedPackage = & $adb -s $env:ANDROID_SERIAL shell pm path $env:UNO_UITEST_APP_ID
+      if ($LASTEXITCODE -ne 0 -or -not ($installedPackage -match "^package:"))
+      {
+        throw "Android Skia package $($env:UNO_UITEST_APP_ID) is not installed on $($env:ANDROID_SERIAL)."
+      }
+
+      dotnet test "$(build.sourcesdirectory)/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj" `
+        -c Release `
+        -p:UnoTargetFrameworkOverride=$(netCurrentTargetFramework)-android `
+        -p:UnoFastDevBuild=true `
+        --filter "FullyQualifiedName~MobileAccessibility_Android_UiAutomator_Tests|FullyQualifiedName~ScreenshotBridge_Tests|FullyQualifiedName~ScreenshotPolling_Tests"
+      if ($LASTEXITCODE -ne 0)
+      {
+        exit $LASTEXITCODE
+      }
+    displayName: Run Android Skia accessibility UIAutomator tests
+    # Once per run: the accessibility helper is shared by every renderer lane.
+    condition: and(eq(variables['UITEST_RUNTIME_TEST_GROUP'], '0'), eq('${{ parameters.renderer }}', 'Skia'))
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Android ${{ parameters.renderer }} Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/*TestResult*.xml'
+      failTaskOnFailedTests: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: runtime-tests-android-skia${{ parameters.testResultLabel }}-results
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    displayName: Publish Failed Tests Results
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: runtime-tests-android-skia${{ parameters.testResultLabel }}-failures
+      ArtifactType: Container

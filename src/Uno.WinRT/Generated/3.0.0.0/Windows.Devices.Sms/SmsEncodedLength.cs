@@ -6,7 +6,7 @@ namespace Windows.Devices.Sms
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct SmsEncodedLength
+	public partial struct SmsEncodedLength : global::System.IEquatable<global::Windows.Devices.Sms.SmsEncodedLength>
 	{
 		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.SmsEncodedLength()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,47 @@ namespace Windows.Devices.Sms
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.SmsEncodedLength(uint, uint, uint, uint, uint)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(SmsEncodedLength x, SmsEncodedLength y)
+			=> x.SegmentCount == y.SegmentCount
+			&& x.CharacterCountLastSegment == y.CharacterCountLastSegment
+			&& x.CharactersPerSegment == y.CharactersPerSegment
+			&& x.ByteCountLastSegment == y.ByteCountLastSegment
+			&& x.BytesPerSegment == y.BytesPerSegment;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(SmsEncodedLength x, SmsEncodedLength y)
+			=> !(x.SegmentCount == y.SegmentCount
+				&& x.CharacterCountLastSegment == y.CharacterCountLastSegment
+				&& x.CharactersPerSegment == y.CharactersPerSegment
+				&& x.ByteCountLastSegment == y.ByteCountLastSegment
+				&& x.BytesPerSegment == y.BytesPerSegment);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(SmsEncodedLength other)
+			=> SegmentCount == other.SegmentCount
+			&& CharacterCountLastSegment == other.CharacterCountLastSegment
+			&& CharactersPerSegment == other.CharactersPerSegment
+			&& ByteCountLastSegment == other.ByteCountLastSegment
+			&& BytesPerSegment == other.BytesPerSegment;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is SmsEncodedLength that
+			&& SegmentCount == that.SegmentCount
+			&& CharacterCountLastSegment == that.CharacterCountLastSegment
+			&& CharactersPerSegment == that.CharactersPerSegment
+			&& ByteCountLastSegment == that.ByteCountLastSegment
+			&& BytesPerSegment == that.BytesPerSegment;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> SegmentCount.GetHashCode()
+			^ CharacterCountLastSegment.GetHashCode()
+			^ CharactersPerSegment.GetHashCode()
+			^ ByteCountLastSegment.GetHashCode()
+			^ BytesPerSegment.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint SegmentCount;
 #endif

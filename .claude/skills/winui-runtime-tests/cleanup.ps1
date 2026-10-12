@@ -9,11 +9,12 @@ param(
     [switch]$CleanBuild
 )
 
-# Uninstall all SamplesApp packages
+# Covers both flows: Remove-AppxPackage handles the MSIX install, and also deregisters the
+# development-mode registration that `winapp run` creates from the build output folder.
 $packages = Get-AppxPackage -Name '*SamplesApp*' -ErrorAction SilentlyContinue
 if ($packages) {
     foreach ($pkg in $packages) {
-        Write-Host "Removing: $($pkg.PackageFullName)"
+        Write-Host "Removing: $($pkg.PackageFullName) (development mode: $($pkg.IsDevelopmentMode))"
         Remove-AppxPackage -Package $pkg.PackageFullName -ErrorAction SilentlyContinue
     }
     Write-Host "SamplesApp uninstalled."

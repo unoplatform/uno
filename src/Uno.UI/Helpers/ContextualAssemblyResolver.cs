@@ -46,9 +46,7 @@ namespace Uno.UI.Helpers
 	///   </item>
 	///   <item>
 	///     <description>
-	///       <see cref="Microsoft.UI.Xaml.DependencyObject.SetBinding(Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)"/>
-	///       and the string-based overload
-	///       <c>DependencyObject.SetBinding(string, BindingBase)</c> —
+	///       <see cref="Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)"/> —
 	///       when the property path contains an attached-property segment such as
 	///       <c>(MyNamespace:MyType.MyProperty)</c>, the type name is resolved via
 	///       <c>DependencyProperty.GetProperty → DependencyPropertyDescriptor.Parse → SearchTypeInLoadedAssemblies → GetRelevantAssemblies</c>.
@@ -75,7 +73,7 @@ namespace Uno.UI.Helpers
 	/// // Bindings with cross-ALC attached-property paths:
 	/// using (alc.EnterContextualReflection())
 	/// {
-	///     myElement.SetBinding("(local:MyAttached.Value)", new Binding { Path = new PropertyPath("Value") });
+	///     myElement.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("(local:MyAttached.Value)") });
 	/// }
 	/// </code>
 	/// When the scope is not set (or the default ALC is active), the resolver falls back to

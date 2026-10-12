@@ -5,6 +5,10 @@
 /// </summary>
 public partial class TogglePatternIdentifiers
 {
+	internal TogglePatternIdentifiers()
+	{
+	}
+
 	/// <summary>
 	/// Identifies the ToggleState automation property.
 	/// </summary>

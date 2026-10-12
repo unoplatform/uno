@@ -11,7 +11,7 @@ uid: Uno.Features.WSPower
 
 ## `PowerManager`
 
-**Legend**
+### Legend
 
 * ✔  Supported
 * ✖ Not supported

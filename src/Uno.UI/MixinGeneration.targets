@@ -14,9 +14,4 @@
 		<DefineConstants>$(DefineConstants);UNO_MIXIN_GENERATION</DefineConstants>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<AdditionalFiles Include="$(MSBuildThisFileDirectory)UI\Xaml\FrameworkElement.EffectiveViewport.cs"
-						 SourceItemGroup="EffectiveViewportTemplate" />
-	</ItemGroup>
-
 </Project>

@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using DirectUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Input;
@@ -27,6 +28,10 @@ internal partial class InputManager : IInputInjectorTarget
 		ConstructKeyboardManager();
 
 		ConstructPointerManager();
+
+#if HAS_INPUT_INJECTOR
+		InputInjector.SetTargetForCurrentThread(this);
+#endif
 	}
 
 	internal ContextMenuProcessor ContextMenuProcessor => _contextMenuProcessor;
@@ -53,7 +58,8 @@ internal partial class InputManager : IInputInjectorTarget
 	internal bool Initialized { get; private set; }
 
 	//TODO Uno: Set along with user input - this needs to be adjusted soon
-	internal InputDeviceType LastInputDeviceType { get; set; } = InputDeviceType.None;
+	// InputDeviceCache::Init: start with a good default for Xbox, will re-establish this when first user input comes in
+	internal InputDeviceType LastInputDeviceType { get; set; } = XboxUtility.IsOnXbox() ? InputDeviceType.GamepadOrRemote : InputDeviceType.None;
 
 	internal FocusInputDeviceKind LastFocusInputDeviceKind =>
 		LastInputDeviceType switch
@@ -78,7 +84,11 @@ internal partial class InputManager : IInputInjectorTarget
 		//TODO Uno: match WinUI
 		if (bringIntoView)
 		{
-			((UIElement)focusedElement).StartBringIntoView(new BringIntoViewOptions
+			// A Hyperlink is focusable without being a UIElement, so fall back to the element containing it.
+			var target = focusedElement as UIElement
+				?? FocusableHelper.GetContainingFrameworkElementIfFocusable(focusedElement);
+
+			target?.StartBringIntoView(new BringIntoViewOptions
 			{
 				AnimationDesired = animateIfBringIntoView
 			});

@@ -16,7 +16,7 @@ namespace Windows.ApplicationModel.Appointments;
 /// Provides API to interact with the user’s Appointments provider app (for example, the Calendar app).
 /// Call static methods to display provider-specific UI so that the user can perform tasks.
 /// </summary>
-public partial class AppointmentManager
+public static partial class AppointmentManager
 {
 	/// <summary>
 	/// Shows the Appointments provider app's primary UI.

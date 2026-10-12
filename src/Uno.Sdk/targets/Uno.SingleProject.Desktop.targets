@@ -62,13 +62,14 @@
 
 	</Target>
 
-	<!-- 
-		Removes the WebView2 WPF reference by default. When using `.UseWindows()`, 
-		setting `UnoUseWebView2WPF` to true is required by the user
+	<!--
+		The `webview` feature's `Microsoft.Web.WebView2` package pulls in the WPF-specific
+		Microsoft.Web.WebView2.Wpf reference even on a plain (non-WPF) desktop head; strip it
+		by default. Set `UnoDisableWebView2Workarounds` to keep it.
 	-->
 	<Target Name="_UnoWebView2RemoveWpf"
 			BeforeTargets="ResolveAssemblyReferences"
-			Condition=" '$(UnoUseWebView2WPF)' != 'true' and '$(UnoDisableWebView2Workarounds)' != 'true' ">
+			Condition=" '$(UnoDisableWebView2Workarounds)' != 'true' ">
 		<ItemGroup>
 			<_wpfWebViewReference Include="@(Reference)" Condition="'%(Reference.FileName)' == 'Microsoft.Web.WebView2.Wpf'" />
 		</ItemGroup>

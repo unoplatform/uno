@@ -25,6 +25,11 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.GridLength.IsAuto.get
 		// Forced skipping of method Microsoft.UI.Xaml.GridLength.IsStar.get
 		// Forced skipping of method Microsoft.UI.Xaml.GridLength.Auto.get
+		// Skipping already declared method Microsoft.UI.Xaml.GridLength.operator ==(Microsoft.UI.Xaml.GridLength, Microsoft.UI.Xaml.GridLength)
+		// Skipping already declared method Microsoft.UI.Xaml.GridLength.operator !=(Microsoft.UI.Xaml.GridLength, Microsoft.UI.Xaml.GridLength)
+		// Skipping already declared method Microsoft.UI.Xaml.GridLength.Equals(object)
+		// Skipping already declared method Microsoft.UI.Xaml.GridLength.Equals(Microsoft.UI.Xaml.GridLength)
+		// Skipping already declared method Microsoft.UI.Xaml.GridLength.GetHashCode()
 		// Skipping already declared method Microsoft.UI.Xaml.GridLength.ToString()
 	}
 }

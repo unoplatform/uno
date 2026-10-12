@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct PackageInstallProgress
+	public partial struct PackageInstallProgress : global::System.IEquatable<global::Windows.ApplicationModel.PackageInstallProgress>
 	{
 		// Forced skipping of method Windows.ApplicationModel.PackageInstallProgress.PackageInstallProgress()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,27 @@ namespace Windows.ApplicationModel
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.PackageInstallProgress.PackageInstallProgress(uint)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(PackageInstallProgress x, PackageInstallProgress y)
+			=> x.PercentComplete == y.PercentComplete;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(PackageInstallProgress x, PackageInstallProgress y)
+			=> !(x.PercentComplete == y.PercentComplete);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(PackageInstallProgress other)
+			=> PercentComplete == other.PercentComplete;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is PackageInstallProgress that
+			&& PercentComplete == that.PercentComplete;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> PercentComplete.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint PercentComplete;
 #endif

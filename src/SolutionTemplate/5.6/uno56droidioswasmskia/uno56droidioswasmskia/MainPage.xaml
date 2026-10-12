@@ -11,5 +11,6 @@
           Text="Hello Uno Platform"
           HorizontalAlignment="Center" />
     <local2:UserControl1 />
+    <TextBlock x:Name="PlatformAssetResult" TextWrapping="Wrap" MaxWidth="360" />
   </StackPanel>
 </Page>

@@ -38,11 +38,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		public static implicit operator RowDefinition(string value)
-		{
-			return new RowDefinition { Height = GridLength.ParseGridLength(value).First() };
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = 0d, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty MinHeightProperty { get; } = CreateMinHeightProperty();
 

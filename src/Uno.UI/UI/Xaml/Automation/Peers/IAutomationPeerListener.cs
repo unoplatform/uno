@@ -1,5 +1,8 @@
 ﻿#nullable enable
 
+using System.Collections.Generic;
+using Microsoft.UI.Xaml.Automation;
+
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
 internal interface IAutomationPeerListener
@@ -7,6 +10,16 @@ internal interface IAutomationPeerListener
 	void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue);
 	void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId);
 	void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child);
+	void NotifyAccessibilityViewChanged(
+		global::Microsoft.UI.Xaml.UIElement element,
+		AccessibilityView oldValue,
+		AccessibilityView newValue)
+	{
+		if (element.GetOrCreateAutomationPeer() is { } peer)
+		{
+			NotifyAutomationEvent(peer, AutomationEvents.StructureChanged);
+		}
+	}
 
 	/// <summary>
 	/// Mirrors WinUI's <c>CAutomationPeer::InvalidatePeer</c>: re-evaluate the peer's
@@ -18,7 +31,7 @@ internal interface IAutomationPeerListener
 	/// </summary>
 	void NotifyInvalidatePeer(AutomationPeer peer);
 	void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId);
-	void NotifyTextEditTextChangedEvent(AutomationPeer peer, global::Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, global::System.Collections.Generic.IReadOnlyList<string> changedData);
+	void NotifyTextEditTextChangedEvent(AutomationPeer peer, AutomationTextEditChangeType changeType, IReadOnlyList<string> changedData);
 	void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId);
 	bool ListenerExistsHelper(AutomationEvents eventId);
 }

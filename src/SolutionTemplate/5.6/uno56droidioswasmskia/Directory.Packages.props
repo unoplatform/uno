@@ -7,5 +7,6 @@
   -->
   <ItemGroup>
     <PackageVersion Include="Uno56NugetLibrary" Version="1.0.0" />
+    <PackageVersion Include="Uno56NugetPlainLibrary" Version="1.0.0" />
   </ItemGroup>
 </Project>

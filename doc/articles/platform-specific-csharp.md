@@ -50,22 +50,32 @@ Console.WriteLine("Windows - Built with Microsoft's own tooling");
 
 If the supplied condition is not met, e.g. if `__UNO__` is not defined, then the enclosed code will be ignored by the compiler.
 
-The following conditional symbols are predefined for each Uno platform:
+The following conditional symbols are predefined for each Uno platform. Application heads and class libraries get the same set, whether or not they use the Uno.Sdk:
 
 | Platform        | Symbol             | Remarks |
 | --------------- | ------------------ | ------- |
-| Android         | `__ANDROID__`      | |
-| iOS             | `__IOS__`          | |
-| tvOS            | `__TVOS__`         | |
-| iOS or tvOS     | `__APPLE_UIKIT__`  | |
-| WebAssembly     | `__WASM__`         | Only available in the `net10.0-browserwasm` target framework |
-| Desktop         | `__DESKTOP__`      | Only available in the `net10.0-desktop` target framework. |
-| Skia            | `__UNO_SKIA__`     | |
-| _Non-Windows_   | `__UNO__`          | To learn about symbols available when `__UNO__` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
-| _Non-Windows_   | `HAS_UNO`          | Identical to `__UNO__`. This is the C# equivalent of the `not_winappsdk:` XAML prefix and of `*.crossruntime.cs` |
-| _Non-Windows_   | `UNO_REFERENCE_API`| Identical to `HAS_UNO`, under a legacy name. Despite the name it has nothing to do with reference assemblies, and it _is_ defined on `net10.0-android` and `net10.0-ios`. Prefer `HAS_UNO` in new code |
+| Android         | `__ANDROID__`      | `net10.0-android` |
+| iOS             | `__IOS__`          | `net10.0-ios` |
+| tvOS            | `__TVOS__`         | `net10.0-tvos` |
+| iOS or tvOS     | `__APPLE_UIKIT__`  | `net10.0-ios` and `net10.0-tvos` |
+| WebAssembly     | `__WASM__`         | `net10.0-browserwasm`. The .NET SDK also defines `BROWSERWASM` for this target framework |
+| Desktop         | `__DESKTOP__`      | `net10.0-desktop`. The .NET SDK also defines `DESKTOP` for this target framework |
+| _Non-Windows_   | `__UNO__`          | Every target framework except the WinAppSDK one. This is the C# equivalent of the `not_winappsdk:` XAML prefix and of `*.crossruntime.cs`. To learn about symbols available when `__UNO__` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
+| _Non-Windows_   | `HAS_UNO`          | Identical to `__UNO__` |
 
-**Each symbol is only defined in the target framework that provides it.** In an application head, which targets `net10.0-ios`, `net10.0-android`, `net10.0-browserwasm`, and `net10.0-desktop` directly, `#if` blocks behave as described above.
+Symbols such as `__SKIA__`, `__CROSSRUNTIME__` or `WINAPPSDK` appear in the Uno Platform source code but are never defined in your projects. See [Preprocessor symbols in the Uno Platform repository](xref:Uno.Contributing.PreprocessorSymbols) for what they mean and what to use instead.
+
+### Legacy symbols
+
+These symbols are defined wherever `__UNO__` is, so existing code keeps compiling. Use `__UNO__` in new code.
+
+| Symbol              | Remarks |
+| ------------------- | ------- |
+| `UNO_REFERENCE_API` | Despite the name, it has nothing to do with reference assemblies |
+| `HAS_UNO_WINUI`     | Dates from when Uno Platform shipped both a UWP and a WinUI flavor |
+| `HAS_UNO_SKIA`, `__UNO_SKIA__` | **Deprecated**, planned for removal in Uno Platform 8.0. They do not name a drawing backend: `Uno.UI` is compiled once and resolves its backend at run time |
+
+**Each platform symbol is only defined in the target framework that provides it.** In an application head, which targets `net10.0-ios`, `net10.0-android`, `net10.0-browserwasm`, and `net10.0-desktop` directly, `#if` blocks behave as described above.
 
 In a class library, `#if` blocks behave the same way. The asset built for `net10.0-ios` or `net10.0-android` is the one an iOS or Android head consumes, so its conditional code is the code that runs — see [Implications for iOS/Android class libraries](xref:uno.features.renderer.skia#implications-for-iosandroid-class-libraries). A library that targets only `net10.0` has none of the platform symbols defined; use `OperatingSystem.IsXXX` runtime checks there.
 
@@ -76,12 +86,15 @@ In a class library, `#if` blocks behave the same way. The asset built for `net10
 
 On `net10.0-windows10.0.xxxxx` target framework, an Uno Platform application isn't using Uno.UI at all. It's compiled using Microsoft's own tooling. For that reason, the `__UNO__` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
 
-Apps generated with the default `unoapp` solution template use **Windows App SDK** when targeting Windows. While this is the recommended path for new Windows apps, some solutions instead use **UWP** to target Windows. Both app models define a different conditional symbol:
+Apps targeting Windows use **Windows App SDK**. The following symbols are available there:
 
 | App model   | Symbol        | Remarks       |
 | ----------- | ------------- | ------------- |
+| Windows App SDK | `WINDOWS` | Defined by the .NET SDK for `net10.0-windows10.0.xxxxx` |
 | Windows App SDK | `WINDOWS10_0_18362_0_OR_GREATER`  | Depending on the `TargetFramework` value, the _18362_ part may need adjustment |
-| Universal Windows Platform         | `NETFX_CORE`  | No longer defined in new apps by default |
+| Windows App SDK, packaged | `WINAPPSDK_PACKAGED` | Defined by the Uno.Sdk when the app is packaged as MSIX (`WindowsPackageType` is `MSIX`, the default when a `Package.appxmanifest` is present) |
+
+UWP heads, and the `NETFX_CORE` symbol they defined, are not supported as of Uno Platform 7.0.
 
 ## Type aliases
 
@@ -93,7 +106,7 @@ using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 ...
@@ -175,3 +188,6 @@ public partial class NativeWrapperControl : Control {
 ```
 
 You can use [partial methods](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods#partial-methods) when only one platform needs specialized logic.
+
+> [!TIP]
+> To place the native view this pattern creates into the visual tree, see [Embedding native controls](xref:Uno.Skia.Embedding.Native).

@@ -1,0 +1,955 @@
+using System;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation.Text;
+using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
+using Uno.UI;
+using Uno.UI.RuntimeTests.Helpers;
+
+#if HAS_UNO
+using Uno.UI.Runtime;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
+#endif
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
+{
+	/// <summary>
+	/// Runtime tests for accessible text box behavior.
+	/// Tests automation peer properties, value pattern, and ARIA attribute mapping.
+	/// </summary>
+	[TestClass]
+	public partial class Given_AccessibleTextBox
+	{
+		[TestCleanup]
+		public void Cleanup()
+		{
+			TestServices.WindowHelper.WindowContent = null;
+#if HAS_UNO
+			DisableAccessibility();
+#endif
+		}
+
+		/// <summary>
+		/// T046: Verifies that a focused textbox exposes its text value
+		/// via the IValueProvider pattern.
+		/// </summary>
+		/// <remarks>
+		/// Excluded on NativeWinUI: WinUI surfaces the TextBox Value/Text patterns at the native
+		/// UIA layer via the windowless RichEdit provider, not through the managed
+		/// AutomationPeer.GetPattern. So peer.GetPattern(PatternInterface.Value) returns null on
+		/// WinUI, whereas Uno's TextBoxAutomationPeer implements IValueProvider directly.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_TextBox_Focused_Then_Value_Exposed()
+		{
+			// Arrange
+			var textBox = new TextBox
+			{
+				Text = "Hello world"
+			};
+
+			await UITestHelper.Load(textBox);
+
+			// Act
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
+			var valueProvider = peer?.GetPattern(PatternInterface.Value) as IValueProvider;
+
+			// Assert
+			Assert.IsNotNull(peer, "TextBox should have an automation peer");
+			Assert.IsNotNull(valueProvider, "TextBox should support IValueProvider");
+			Assert.AreEqual("Hello world", valueProvider.Value, "Value should match TextBox.Text");
+		}
+
+		/// <summary>
+		/// T047: Verifies that setting text via IValueProvider.SetValue()
+		/// updates the underlying TextBox. This is the path used when text
+		/// is entered in the semantic input element.
+		/// </summary>
+		/// <remarks>
+		/// Excluded on NativeWinUI: the managed AutomationPeer does not expose IValueProvider for
+		/// TextBox on WinUI (the Value pattern comes from the windowless RichEdit UIA provider),
+		/// so this Uno-specific peer-level value sync cannot be asserted there.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Text_Entered_Then_Value_Syncs()
+		{
+			// Arrange
+			var textBox = new TextBox { Text = "" };
+
+			await UITestHelper.Load(textBox);
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
+			var valueProvider = peer?.GetPattern(PatternInterface.Value) as IValueProvider;
+
+			Assert.IsNotNull(valueProvider, "TextBox should support IValueProvider");
+
+			// Act - Simulate text input via automation peer
+			valueProvider.SetValue("New text");
+
+			// Assert
+			Assert.AreEqual("New text", textBox.Text, "TextBox.Text should be updated");
+			Assert.AreEqual("New text", valueProvider.Value, "ValueProvider should report updated value");
+		}
+
+		/// <summary>
+		/// T048: Verifies that a PasswordBox has correct automation properties.
+		/// When mapped to semantic DOM, this should create input[type=password].
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_PasswordBox_Then_Input_Type_Is_Password()
+		{
+			// Arrange
+			var passwordBox = new PasswordBox
+			{
+				Password = "secret"
+			};
+
+			await UITestHelper.Load(passwordBox);
+
+			// Act
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(passwordBox);
+
+			// Assert
+			Assert.IsNotNull(peer, "PasswordBox should have an automation peer");
+			Assert.IsTrue(peer.IsPassword(), "PasswordBox peer should report IsPassword=true");
+
+#if HAS_UNO
+			// Verify AriaMapper produces Password element type
+			var elementType = AriaMapper.GetSemanticElementType(peer);
+			Assert.AreEqual(SemanticElementType.Password, elementType, "PasswordBox should map to Password element type");
+#endif
+		}
+
+		/// <summary>
+		/// Verifies that TextBox automation peer has correct control type.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextBox_Created_Then_Has_Edit_ControlType()
+		{
+			// Arrange
+			var textBox = new TextBox();
+			await UITestHelper.Load(textBox);
+
+			// Act
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
+			var controlType = peer?.GetAutomationControlType();
+
+			// Assert
+			Assert.AreEqual(AutomationControlType.Edit, controlType);
+		}
+
+		/// <summary>
+		/// Verifies that TextBox with AutomationProperties.Name exposes correct name.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextBox_Has_AutomationName_Then_Name_Is_Exposed()
+		{
+			// Arrange
+			var textBox = new TextBox();
+			AutomationProperties.SetName(textBox, "Enter your name");
+
+			await UITestHelper.Load(textBox);
+
+			// Act
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
+			var name = peer?.GetName();
+
+			// Assert
+			Assert.AreEqual("Enter your name", name);
+		}
+
+		/// <summary>
+		/// Verifies that a read-only TextBox reports correct state.
+		/// </summary>
+		/// <remarks>
+		/// Excluded on NativeWinUI: TextBox does not expose IValueProvider via the managed
+		/// AutomationPeer on WinUI (the Value pattern is provided by the windowless RichEdit UIA
+		/// provider), so peer.GetPattern(PatternInterface.Value) is null there.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_TextBox_IsReadOnly_Then_ValueProvider_IsReadOnly()
+		{
+			// Arrange
+			var textBox = new TextBox
+			{
+				Text = "Read only text",
+				IsReadOnly = true
+			};
+			await UITestHelper.Load(textBox);
+
+			// Act
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
+			var valueProvider = peer?.GetPattern(PatternInterface.Value) as IValueProvider;
+
+			// Assert
+			Assert.IsNotNull(valueProvider);
+			Assert.IsTrue(valueProvider.IsReadOnly, "Read-only TextBox should report IsReadOnly=true");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_RichEditBox_Is_Empty_Then_Name_Is_Not_Exposed_As_Value()
+		{
+			var richEditBox = new RichEditBox
+			{
+				Header = "Notes",
+				PlaceholderText = "Enter notes",
+			};
+
+			try
+			{
+				await UITestHelper.Load(richEditBox);
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(richEditBox);
+				var valueProvider = peer?.GetPattern(PatternInterface.Value) as IValueProvider;
+
+				Assert.IsNotNull(peer);
+				Assert.AreEqual("Notes", peer!.GetName());
+				Assert.IsNull(valueProvider, "RichEditBox exposes Text/Text2, but not the Value pattern.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_RichEditBox_TextPattern_Then_Selection_And_Caret_Are_Exposed()
+		{
+			var richEditBox = new RichEditBox();
+			try
+			{
+				await UITestHelper.Load(richEditBox);
+				richEditBox.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, "hello");
+				richEditBox.Document.Selection.SetRange(1, 4);
+				richEditBox.Focus(FocusState.Programmatic);
+				await UITestHelper.WaitForIdle();
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(richEditBox);
+				var textProvider = peer?.GetPattern(PatternInterface.Text) as ITextProvider;
+				var textProvider2 = peer?.GetPattern(PatternInterface.Text2) as ITextProvider2;
+
+				Assert.IsNotNull(textProvider);
+				Assert.IsNotNull(textProvider2);
+				var provider = textProvider!;
+				var provider2 = textProvider2!;
+				Assert.AreEqual(SupportedTextSelection.Single, provider.SupportedTextSelection);
+				Assert.AreEqual("hello", provider.DocumentRange.GetText(-1));
+
+				var selection = provider.GetSelection();
+				Assert.AreEqual(1, selection.Length);
+				Assert.AreEqual("ell", selection[0].GetText(-1));
+
+				var caret = provider2.GetCaretRange(out var isActive);
+				Assert.IsTrue(isActive);
+				Assert.AreEqual(0, caret.CompareEndpoints(TextPatternRangeEndpoint.Start, selection[0], TextPatternRangeEndpoint.End));
+
+				var selectedByAutomation = provider.DocumentRange.Clone();
+				selectedByAutomation.MoveEndpointByUnit(TextPatternRangeEndpoint.Start, TextUnit.Character, 2);
+				selectedByAutomation.MoveEndpointByUnit(TextPatternRangeEndpoint.End, TextUnit.Character, -1);
+				selectedByAutomation.Select();
+
+				Assert.AreEqual(2, richEditBox.Document.Selection.StartPosition);
+				Assert.AreEqual(4, richEditBox.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_TextBox_And_TextBlock_Ranges_Are_Retained_Offsets_Remain_Snapshots()
+		{
+			try
+			{
+				var textBox = new TextBox { Text = "hello" };
+				await UITestHelper.Load(textBox);
+				var textBoxPeer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
+				var textBoxProvider = textBoxPeer?.GetPattern(PatternInterface.Text) as ITextProvider;
+				var textBoxRange = textBoxProvider?.DocumentRange.FindText("ell", false, false);
+				Assert.IsNotNull(textBoxRange);
+
+				textBox.Text = "Xhello";
+				await UITestHelper.WaitForIdle();
+				Assert.AreEqual("hel", textBoxRange.GetText(-1));
+
+				var textBlock = new TextBlock { Text = "hello" };
+				await UITestHelper.Load(textBlock);
+				var textBlockPeer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+				var textBlockProvider = textBlockPeer?.GetPattern(PatternInterface.Text) as ITextProvider;
+				var textBlockRange = textBlockProvider?.DocumentRange.FindText("ell", false, false);
+				Assert.IsNotNull(textBlockRange);
+
+				textBlock.Text = "Xhello";
+				await UITestHelper.WaitForIdle();
+				Assert.AreEqual("hel", textBlockRange.GetText(-1));
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+#if __SKIA__
+		/// <summary>
+		/// Verifies that browser-originated typing through the semantic textbox keeps
+		/// the caret at the browser-managed position instead of jumping back to the start.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_SemanticTextBox_Receives_Input_Then_Text_Order_And_Caret_Are_Preserved()
+		{
+			var textBox = new TextBox();
+
+			await UITestHelper.Load(textBox);
+			textBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+			await UITestHelper.WaitForIdle();
+
+			TypeCharacterIntoSemanticTextBox(textBox, "a");
+			await UITestHelper.WaitForIdle();
+			TypeCharacterIntoSemanticTextBox(textBox, "b");
+			await UITestHelper.WaitForIdle();
+			TypeCharacterIntoSemanticTextBox(textBox, "c");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("abc", textBox.Text, "Semantic typing should preserve text order in the managed TextBox.");
+			Assert.AreEqual("abc", GetSemanticTextBoxValue(textBox), "Semantic textbox DOM value should stay in sync with managed text.");
+			Assert.AreEqual("3", GetSemanticTextBoxCaret(textBox), "Caret should remain at the end after sequential semantic input.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Accessibility_Is_Enabled_After_Text_Exists_Then_SemanticTyping_Appends_At_Current_Caret()
+		{
+			var textBox = new TextBox
+			{
+				Text = "test"
+			};
+
+			try
+			{
+				await UITestHelper.Load(textBox);
+				textBox.Focus(FocusState.Programmatic);
+				textBox.Select(textBox.Text.Length, 0);
+				textBox.GetOrCreateAutomationPeer();
+
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual("test", GetSemanticTextBoxValue(textBox), "Semantic textbox should mirror the existing managed value when accessibility is enabled.");
+				Assert.AreEqual("4", GetSemanticTextBoxCaret(textBox), "Semantic textbox should inherit the managed caret position when created.");
+				// The hidden native <input> is detached asynchronously once the semantic textbox owns focus;
+				// poll for it instead of asserting synchronously, which raced on the slower WASM scheduler.
+				await UITestHelper.WaitFor(() => !HiddenNativeTextBoxExists(), timeoutMS: 5000,
+					message: "The hidden browser textbox should be detached once the semantic textbox owns focus.");
+
+				TypeTextIntoSemanticTextBox(textBox, "test");
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual("testtest", textBox.Text, "Semantic typing should append at the current caret instead of inserting in reverse at the start.");
+				Assert.AreEqual("testtest", GetSemanticTextBoxValue(textBox), "Semantic textbox DOM value should stay aligned after appending text.");
+				Assert.AreEqual("8", GetSemanticTextBoxCaret(textBox), "Caret should remain at the end after appending to preexisting text.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <summary>
+		/// T046/FR-016 (WASM DOM): a single-line TextBox emits a native &lt;input type="text"&gt; semantic element
+		/// whose value mirrors TextBox.Text.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBox_Then_Dom_Is_Text_Input_With_Value()
+		{
+			var textBox = new TextBox { Text = "Hello world" };
+
+			await UITestHelper.Load(textBox);
+			textBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("input", GetSemanticElementTagName(textBox), "A single-line TextBox must emit a native <input> semantic element.");
+			Assert.AreEqual("text", GetSemanticInputType(textBox), "A single-line TextBox must emit input[type=text].");
+			Assert.AreEqual("Hello world", GetSemanticTextBoxValue(textBox), "The semantic input value must mirror TextBox.Text.");
+		}
+
+		/// <summary>
+		/// FR-016 (WASM DOM): a multiline TextBox (AcceptsReturn=true) emits a &lt;textarea&gt; semantic element
+		/// instead of an &lt;input&gt;.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBox_AcceptsReturn_Then_Dom_Is_Textarea()
+		{
+			var textBox = new TextBox { AcceptsReturn = true, Text = "Line 1" };
+
+			await UITestHelper.Load(textBox);
+			textBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the multiline semantic textbox to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("textarea", GetSemanticElementTagName(textBox), "A multiline TextBox (AcceptsReturn=true) must emit a <textarea> semantic element.");
+		}
+
+		/// <summary>
+		/// FR-016 (WASM DOM): a read-only TextBox emits a semantic input carrying the readonly attribute.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBox_IsReadOnly_Then_Dom_Input_Is_ReadOnly()
+		{
+			var textBox = new TextBox { Text = "Read only text", IsReadOnly = true };
+
+			await UITestHelper.Load(textBox);
+			textBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the read-only semantic textbox to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsTrue(SemanticElementHasAttribute(textBox, "readonly"), "A read-only TextBox must emit a semantic input with the readonly attribute set.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_RichEditBox_Then_Dom_Is_Textarea_With_Tom_State()
+		{
+			var richEditBox = new RichEditBox
+			{
+				PlaceholderText = "Enter notes",
+			};
+			richEditBox.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, "Hello world");
+			richEditBox.Document.Selection.SetRange(7, 2);
+			richEditBox.IsReadOnly = true;
+
+			try
+			{
+				await UITestHelper.Load(richEditBox);
+				var peer = richEditBox.GetOrCreateAutomationPeer();
+
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(richEditBox), timeoutMS: 5000, message: "Timed out waiting for the semantic RichEditBox to be created.");
+				await UITestHelper.WaitForIdle();
+
+				Assert.IsNull(peer.GetPattern(PatternInterface.Value), "RichEditBox must not expose the Value pattern.");
+				Assert.AreEqual("textarea", GetSemanticElementTagName(richEditBox), "RichEditBox must emit a native <textarea> semantic element.");
+				Assert.AreEqual("Hello world", GetSemanticTextControlValue(richEditBox), "The semantic textarea must initialize from the TOM document.");
+				Assert.AreEqual("2", GetSemanticTextControlSelectionStart(richEditBox));
+				Assert.AreEqual("7", GetSemanticTextControlSelectionEnd(richEditBox));
+				Assert.AreEqual("backward", GetSemanticTextControlSelectionDirection(richEditBox));
+				Assert.AreEqual("true", GetSemanticTextControlSpellCheck(richEditBox));
+				Assert.IsTrue(SemanticElementHasAttribute(richEditBox, "readonly"));
+				Assert.AreEqual("Enter notes", GetSemanticAttribute(richEditBox, "placeholder"));
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		public async Task When_RichEditBox_Relations_And_Editor_State_Update_Independently()
+		{
+			var richEditBox = new RichEditBox { PlaceholderText = "Notes" };
+			richEditBox.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, "abcdef");
+			richEditBox.Document.Selection.SetRange(5, 1);
+			var description = new TextBlock { Text = "Document help" };
+			var targets = new DependencyObjectCollection { description };
+			richEditBox.SetValue(AutomationProperties.DescribedByProperty, targets);
+			var panel = new StackPanel { Children = { richEditBox, description } };
+			try
+			{
+				await UITestHelper.Load(panel);
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(
+					() => SemanticElementExists(description)
+						&& GetSemanticAttribute(richEditBox, "aria-describedby") == GetSemanticElementId(description),
+					timeoutMS: 5000,
+					message: "The rich editor's description must resolve after the target enters the semantic tree.");
+
+				richEditBox.IsSpellCheckEnabled = false;
+				richEditBox.IsReadOnly = true;
+				richEditBox.PlaceholderText = "Updated hint";
+				await UITestHelper.WaitFor(
+					() => GetSemanticTextControlSpellCheck(richEditBox) == "false"
+						&& SemanticElementHasAttribute(richEditBox, "readonly")
+						&& GetSemanticAttribute(richEditBox, "placeholder") == "Updated hint",
+					timeoutMS: 5000,
+					message: "Rich-editor state notifications must still reach the semantic textarea.");
+
+				targets.Clear();
+				await UITestHelper.WaitFor(
+					() => !SemanticElementHasAttribute(richEditBox, "aria-describedby"),
+					timeoutMS: 5000,
+					message: "Clearing an automation relation must clear its DOM IDREF.");
+				Assert.AreEqual("textarea", GetSemanticElementTagName(richEditBox));
+				Assert.AreEqual("abcdef", GetSemanticTextControlValue(richEditBox));
+				Assert.AreEqual("1", GetSemanticTextControlSelectionStart(richEditBox));
+				Assert.AreEqual("5", GetSemanticTextControlSelectionEnd(richEditBox));
+				Assert.AreEqual("backward", GetSemanticTextControlSelectionDirection(richEditBox));
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_RichEditBox_Has_Inline_Objects_Then_Textarea_Does_Not_Emit_Invalid_Children()
+		{
+			var richEditBox = new RichEditBox();
+			richEditBox.Document.SetText(
+				Microsoft.UI.Text.TextSetOptions.FormatRtf,
+				@"{\rtf1{\field{\*\fldinst HYPERLINK ""https://example.invalid""}{\fldrslt link}}"
+				+ @"{\object\objemb{\*\objclass Package}{\*\objdata 01020304}}}");
+
+			try
+			{
+				await UITestHelper.Load(richEditBox);
+				var peer = richEditBox.GetOrCreateAutomationPeer();
+
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(richEditBox), timeoutMS: 5000, message: "Timed out waiting for the semantic RichEditBox to be created.");
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual(2, peer.GetChildren().Count, "The managed automation tree must retain link/image text-object children.");
+				Assert.IsNull(peer.GetPattern(PatternInterface.Value), "RichEditBox must continue to expose Text/Text2 rather than Value.");
+				Assert.AreEqual("textarea", GetSemanticElementTagName(richEditBox));
+				Assert.AreEqual("0", GetSemanticTextControlChildCount(richEditBox), "HTML textarea descendants cannot represent inline semantic children.");
+				Assert.IsFalse(SemanticElementHasAttribute(richEditBox, "aria-owns"), "Synthetic owned nodes would duplicate editable text announcements.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_RichEditBox_Tom_State_Changes_Then_Dom_Updates()
+		{
+			var richEditBox = new RichEditBox();
+
+			try
+			{
+				await UITestHelper.Load(richEditBox);
+				richEditBox.GetOrCreateAutomationPeer();
+
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(richEditBox), timeoutMS: 5000, message: "Timed out waiting for the semantic RichEditBox to be created.");
+
+				richEditBox.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, "updated text");
+				richEditBox.Document.Selection.SetRange(8, 1);
+				richEditBox.IsSpellCheckEnabled = false;
+
+				await UITestHelper.WaitFor(
+					() => GetSemanticTextControlValue(richEditBox) == "updated text",
+					timeoutMS: 5000,
+					message: "Timed out waiting for the semantic RichEditBox value to match TOM.");
+				await UITestHelper.WaitFor(
+					() => GetSemanticTextControlSelectionStart(richEditBox) == "1"
+						&& GetSemanticTextControlSelectionEnd(richEditBox) == "8"
+						&& GetSemanticTextControlSelectionDirection(richEditBox) == "backward",
+					timeoutMS: 5000,
+					message: "Timed out waiting for the semantic RichEditBox selection to match TOM.");
+				await UITestHelper.WaitFor(
+					() => GetSemanticTextControlSpellCheck(richEditBox) == "false",
+					timeoutMS: 5000,
+					message: "Timed out waiting for the semantic RichEditBox spellcheck state to match TOM.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_RichEditBox_Semantic_Input_Changes_Then_Formatting_Is_Preserved()
+		{
+			var richEditBox = new RichEditBox();
+			richEditBox.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, "abcdef");
+			richEditBox.Document.GetRange(0, 3).CharacterFormat.ForegroundColor = Microsoft.UI.Colors.Red;
+			richEditBox.Document.GetRange(3, 6).CharacterFormat.ForegroundColor = Microsoft.UI.Colors.Blue;
+
+			try
+			{
+				await UITestHelper.Load(richEditBox);
+				richEditBox.GetOrCreateAutomationPeer();
+
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(richEditBox), timeoutMS: 5000, message: "Timed out waiting for the semantic RichEditBox to be created.");
+
+				SetSemanticTextControlValueAndSelection(richEditBox, "abcXdef", 4, 4);
+				await UITestHelper.WaitFor(
+					() => richEditBox.GetAccessibilityText() == "abcXdef",
+					timeoutMS: 5000,
+					message: "Timed out waiting for semantic input to update the TOM document.");
+
+				Assert.AreEqual(Microsoft.UI.Colors.Red, richEditBox.Document.GetRange(0, 3).CharacterFormat.ForegroundColor);
+				Assert.AreEqual(Microsoft.UI.Colors.Blue, richEditBox.Document.GetRange(4, 7).CharacterFormat.ForegroundColor);
+				Assert.AreEqual(4, richEditBox.Document.Selection.StartPosition);
+				Assert.AreEqual(4, richEditBox.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_RichEditBox_Semantic_Selection_Changes_Then_Tom_Updates()
+		{
+			var richEditBox = new RichEditBox();
+			richEditBox.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, "abcdef");
+
+			try
+			{
+				await UITestHelper.Load(richEditBox);
+				richEditBox.GetOrCreateAutomationPeer();
+
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(richEditBox), timeoutMS: 5000, message: "Timed out waiting for the semantic RichEditBox to be created.");
+
+				SetSemanticTextControlSelection(richEditBox, 1, 5, isBackward: true);
+				await UITestHelper.WaitFor(
+					() => richEditBox.Document.Selection.StartPosition == 1
+						&& richEditBox.Document.Selection.EndPosition == 5
+						&& richEditBox.Document.Selection.Options.HasFlag(Microsoft.UI.Text.SelectionOptions.StartActive),
+					timeoutMS: 5000,
+					message: "Timed out waiting for the browser selection to update TOM.");
+
+				Assert.AreEqual(
+					"backward",
+					GetSemanticTextControlSelectionDirection(richEditBox),
+					"The managed selection sync must preserve the browser's backward selectionDirection.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <summary>
+		/// T048/FR-016 (WASM DOM): a PasswordBox emits a native &lt;input type="password"&gt; semantic element so
+		/// the browser masks the value.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_PasswordBox_Then_Dom_Input_Type_Is_Password()
+		{
+			var passwordBox = new PasswordBox { Password = "secret" };
+
+			await UITestHelper.Load(passwordBox);
+			passwordBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(passwordBox), timeoutMS: 5000, message: "Timed out waiting for the password semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("input", GetSemanticElementTagName(passwordBox), "A PasswordBox must emit a native <input> semantic element.");
+			Assert.AreEqual("password", GetSemanticInputType(passwordBox), "A PasswordBox must emit input[type=password].");
+		}
+
+
+		// TextBox-specific accessors. Generic helpers (existence, attribute, tag name, input type,
+		// attribute presence) live in WasmSemanticDomHelper and are used directly via the
+		// `using static` above; only TextBox-only behaviors (value, caret, character injection,
+		// hidden native input check) stay local.
+
+		private static string GetSemanticTextBoxValue(TextBox textBox)
+			=> GetSemanticTextControlValue(textBox);
+
+		private static string GetSemanticTextBoxCaret(TextBox textBox)
+			=> GetSemanticTextControlSelectionStart(textBox);
+
+		private static string GetSemanticTextControlValue(UIElement element)
+			=> InvokeBrowserJs($"(function(){{const semanticElement = document.getElementById('{GetSemanticElementId(element)}'); return semanticElement ? semanticElement.value : '';}})()");
+
+		private static string GetSemanticTextControlSelectionStart(UIElement element)
+			=> InvokeBrowserJs($"(function(){{const semanticElement = document.getElementById('{GetSemanticElementId(element)}'); return semanticElement ? String(semanticElement.selectionStart ?? -1) : '-1';}})()");
+
+		private static string GetSemanticTextControlSelectionEnd(UIElement element)
+			=> InvokeBrowserJs($"(function(){{const semanticElement = document.getElementById('{GetSemanticElementId(element)}'); return semanticElement ? String(semanticElement.selectionEnd ?? -1) : '-1';}})()");
+
+		private static string GetSemanticTextControlSelectionDirection(UIElement element)
+			=> InvokeBrowserJs($"(function(){{const semanticElement = document.getElementById('{GetSemanticElementId(element)}'); return semanticElement ? String(semanticElement.selectionDirection ?? 'none') : 'missing';}})()");
+
+		private static string GetSemanticTextControlSpellCheck(UIElement element)
+			=> GetSemanticAttribute(element, "spellcheck");
+
+		private static string GetSemanticTextControlChildCount(UIElement element)
+			=> InvokeBrowserJs($"(function(){{const semanticElement = document.getElementById('{GetSemanticElementId(element)}'); return semanticElement ? String(semanticElement.childElementCount) : '-1';}})()");
+
+		private static void SetSemanticTextControlValueAndSelection(UIElement element, string value, int selectionStart, int selectionEnd)
+		{
+			var escapedValue = EscapeJavaScriptString(value);
+			InvokeBrowserJs($"(function(){{const semanticElement = document.getElementById('{GetSemanticElementId(element)}'); if (!semanticElement) {{ return 'missing'; }} semanticElement.focus(); semanticElement.value = '{escapedValue}'; semanticElement.setSelectionRange({selectionStart}, {selectionEnd}); semanticElement.dispatchEvent(new Event('input', {{ bubbles: true }})); return semanticElement.value; }})()");
+		}
+
+		private static void SetSemanticTextControlSelection(
+			UIElement element,
+			int selectionStart,
+			int selectionEnd,
+			bool isBackward = false)
+			=> InvokeBrowserJs($"(function(){{const semanticElement = document.getElementById('{GetSemanticElementId(element)}'); if (!semanticElement) {{ return 'missing'; }} semanticElement.focus(); semanticElement.setSelectionRange({selectionStart}, {selectionEnd}, '{(isBackward ? "backward" : "forward")}'); semanticElement.dispatchEvent(new Event('select', {{ bubbles: true }})); return 'ok'; }})()");
+
+		private static bool HiddenNativeTextBoxExists()
+			=> InvokeBrowserJs("(function(){return document.getElementById('uno-input') ? '1' : '0';})()") == "1";
+
+		private static void TypeCharacterIntoSemanticTextBox(TextBox textBox, string character)
+		{
+			var escapedCharacter = character
+				.Replace("\\", "\\\\")
+				.Replace("'", "\\'");
+
+			InvokeBrowserJs($"(function(){{const element = document.getElementById('{GetSemanticElementId(textBox)}'); if (!element) {{ return 'missing'; }} element.focus(); const start = element.selectionStart ?? 0; const end = element.selectionEnd ?? start; const character = '{escapedCharacter}'; element.value = element.value.slice(0, start) + character + element.value.slice(end); const caret = start + character.length; element.setSelectionRange(caret, caret); element.dispatchEvent(new Event('input', {{ bubbles: true }})); return element.value; }})()");
+		}
+
+		private static void TypeTextIntoSemanticTextBox(TextBox textBox, string text)
+		{
+			foreach (var character in text)
+			{
+				TypeCharacterIntoSemanticTextBox(textBox, character.ToString());
+			}
+		}
+
+		private static string EscapeJavaScriptString(string value)
+			=> value
+				.Replace("\\", "\\\\")
+				.Replace("'", "\\'")
+				.Replace("\r", "\\r")
+				.Replace("\n", "\\n");
+
+#endif
+
+#if HAS_UNO
+		/// <summary>
+		/// Verifies that AriaMapper correctly identifies TextBox semantic element type.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextBox_Mapped_Then_SemanticElementType_Is_TextBox()
+		{
+			// Arrange
+			var textBox = new TextBox();
+			await UITestHelper.Load(textBox);
+
+			// Act
+			var peer = textBox.GetOrCreateAutomationPeer();
+			var elementType = AriaMapper.GetSemanticElementType(peer);
+
+			// Assert
+			Assert.AreEqual(SemanticElementType.TextBox, elementType);
+		}
+
+		/// <summary>
+		/// Verifies that multiline TextBox maps to TextArea element type.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextBox_AcceptsReturn_Then_SemanticElementType_Is_TextArea()
+		{
+			// Arrange
+			var textBox = new TextBox { AcceptsReturn = true };
+			await UITestHelper.Load(textBox);
+
+			// Act
+			var peer = textBox.GetOrCreateAutomationPeer();
+			var elementType = AriaMapper.GetSemanticElementType(peer);
+
+			// Assert
+			Assert.AreEqual(SemanticElementType.TextArea, elementType);
+		}
+
+		/// <summary>
+		/// Verifies that AriaMapper correctly detects value capability.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextBox_Mapped_Then_PatternCapabilities_CanValue_Is_True()
+		{
+			// Arrange
+			var textBox = new TextBox();
+			await UITestHelper.Load(textBox);
+
+			// Act
+			var peer = textBox.GetOrCreateAutomationPeer();
+			var capabilities = AriaMapper.GetPatternCapabilities(peer);
+
+			// Assert
+			Assert.IsTrue(capabilities.CanValue, "TextBox should have CanValue capability");
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+		public async Task When_TextBox_On_Mobile_Then_Native_TextState_Is_Editable()
+		{
+#if __SKIA__
+			var textBox = new TextBox { Text = "editable content" };
+			AutomationProperties.SetAutomationId(textBox, "textbox-textstate-t045");
+
+			await UITestHelper.Load(textBox);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var snapshot = MobileAccessibilityTestHelper.TryGetNativeSnapshot(textBox);
+			Assert.IsNotNull(snapshot, "Native snapshot must be available on mobile Skia.");
+			Assert.IsNotNull(snapshot.Details?.TextState, "TextState must be populated for a TextBox.");
+
+			var ts = snapshot.Details!.TextState!;
+			Assert.IsTrue(ts.IsEditable, "An enabled TextBox must report IsEditable=true.");
+			Assert.IsFalse(ts.IsReadOnly, "A non-read-only TextBox must report IsReadOnly=false.");
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Range_Expanded_To_Paragraph_Then_Document_Is_Covered()
+		{
+			var textBlock = new TextBlock { Text = "First paragraph line.\nSecond paragraph line." };
+			await UITestHelper.Load(textBlock);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+			Assert.IsNotNull(peer);
+			var textProvider = peer.GetPattern(PatternInterface.Text) as ITextProvider;
+			Assert.IsNotNull(textProvider, "A TextBlock must expose the Text pattern.");
+
+			var range = textProvider!.DocumentRange;
+			Assert.IsNotNull(range);
+
+			// TextBlock does not expose paragraph boundaries through the native WinUI
+			// provider, so paragraph expansion falls back to the document unit.
+			range.MoveEndpointByUnit(TextPatternRangeEndpoint.Start, TextUnit.Paragraph, 1);
+			range.MoveEndpointByUnit(TextPatternRangeEndpoint.End, TextUnit.Paragraph, -1);
+			range.ExpandToEnclosingUnit(TextUnit.Paragraph);
+
+			var expanded = range.GetText(-1);
+			Assert.AreEqual(
+				textBlock.Text,
+				expanded,
+				"Paragraph expansion must match WinUI's document-unit fallback.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Range_Moved_By_Word_Then_Word_Granularity_Is_Used()
+		{
+			var textBlock = new TextBlock { Text = "alpha beta gamma" };
+			await UITestHelper.Load(textBlock);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+			var textProvider = peer!.GetPattern(PatternInterface.Text) as ITextProvider;
+			Assert.IsNotNull(textProvider, "A TextBlock must expose the Text pattern.");
+
+			var range = textProvider!.DocumentRange;
+			var moved = range.Move(TextUnit.Word, 1);
+			Assert.AreEqual(1, moved, "Moving by one word must report one unit moved.");
+
+			range.ExpandToEnclosingUnit(TextUnit.Word);
+			var word = range.GetText(-1);
+			Assert.IsTrue(
+				word.Length > 1,
+				$"Move(Word) must move by a word, not a character (got '{word}').");
+			StringAssert.Contains(word, "beta");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Collapsed_Range_Is_Inside_A_Word_Then_Expansion_Returns_The_Whole_Word()
+		{
+			var textBlock = new TextBlock { Text = "alpha beta" };
+			await UITestHelper.Load(textBlock);
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+			var textProvider = peer!.GetPattern(PatternInterface.Text) as ITextProvider;
+			Assert.IsNotNull(textProvider);
+
+			var range = textProvider!.DocumentRange.Clone();
+			range.MoveEndpointByUnit(TextPatternRangeEndpoint.Start, TextUnit.Character, 1);
+			range.MoveEndpointByRange(
+				TextPatternRangeEndpoint.End,
+				range,
+				TextPatternRangeEndpoint.Start);
+			range.ExpandToEnclosingUnit(TextUnit.Word);
+
+			Assert.AreEqual("alpha", range.GetText(-1).Trim());
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Range_Moves_By_Int32_MinValue_Then_It_Clamps_Without_Overflow()
+		{
+			var textBlock = new TextBlock { Text = "alpha beta gamma" };
+			await UITestHelper.Load(textBlock);
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+			var textProvider = peer!.GetPattern(PatternInterface.Text) as ITextProvider;
+			Assert.IsNotNull(textProvider);
+
+			var range = textProvider!.DocumentRange.Clone();
+			range.MoveEndpointByRange(
+				TextPatternRangeEndpoint.Start,
+				range,
+				TextPatternRangeEndpoint.End);
+
+			var moved = range.Move(TextUnit.Word, int.MinValue);
+
+			Assert.IsTrue(moved < 0);
+			Assert.AreEqual(0, range.CompareEndpoints(
+				TextPatternRangeEndpoint.Start,
+				textProvider!.DocumentRange,
+				TextPatternRangeEndpoint.Start));
+		}
+	}
+}

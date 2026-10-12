@@ -174,59 +174,22 @@ A theme qualifier can be specified for the image loader to use an asset based on
 
 ### Custom (platform)
 
-Sometimes, you might want to use a different asset depending on the platform. Because there is no `platform` qualifier on WinUI/UWP, Uno Platform provides the `custom` qualifier.
+Sometimes, you might want to use a different asset depending on the platform. Because there is no `platform` qualifier on WinUI, Uno Platform provides the `custom` qualifier. It is only interpreted on Android and iOS/tvOS heads — on WinUI, desktop, and WebAssembly heads nothing reads it, so every `custom-*` variant is copied and none is selected.
 
 | Platform | Qualifier value |
 |----------|-----------------|
-| UWP      | `uwp`           |
 | iOS      | `ios`           |
+| tvOS     | `ios` (tvOS shares iOS's resource converter) |
 | Android  | `android`       |
 
-Because the `custom` qualifier has no special meaning on WinUI/UWP, we have to interpret its value manually.
-
-On iOS and Android, Uno.UI's `RetargetAssets` task automatically interprets these values and excludes unsupported platforms.
-
-On UWP, you must add the following code to your `App.cs` or `App.xaml.cs` constructor:
-
-```csharp
-#if WINDOWS_UWP
-    Windows.ApplicationModel.Resources.Core.ResourceContext.SetGlobalQualifierValue("custom", "uwp");
-#endif
-```
+Uno.UI's `RetargetAssets` task interprets these values on iOS/tvOS and Android heads and excludes the variants that do not match the current platform.
 
 #### Examples
 
 ```paths
-\Assets\Images\custom-uwp\logo.png
 \Assets\Images\custom-ios\logo.png
 \Assets\Images\custom-android\logo.png
 
-\Assets\Images\logo.custom-uwp.png
 \Assets\Images\logo.custom-ios.png
 \Assets\Images\logo.custom-android.png
 ```
-
-## Android: setting a custom image handler
-
-On Android, to handle the loading of images from a remote URL, the Image control has to be provided a
-`ImageSource.DefaultImageLoader`, such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
-
-This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022). If not using the solution template. You can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code from your application's App constructor:
-
-```csharp
-private void ConfigureUniversalImageLoader()
-{
-    // Create global configuration and initialize ImageLoader with this config
-    ImageLoaderConfiguration config = new ImageLoaderConfiguration
-        .Builder(Context)
-        .Build();
-
-    ImageLoader.Instance.Init(config);
-
-    ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
-}
-```
-
-## iOS/tvOS: referencing bundle images
-
-On iOS/tvOS, bundle images can be selected using "bundle://" (e.g. bundle:///SplashScreen). When selecting the bundle resource, do not include the zoom factor, nor the file extension.

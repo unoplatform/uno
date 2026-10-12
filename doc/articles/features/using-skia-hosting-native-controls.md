@@ -4,9 +4,6 @@ uid: Uno.Skia.Embedding.Native
 
 # Embedding Native Elements in Skia Apps
 
-> [!NOTE]
-> This document describes Skia renderer native embedding, for other platforms/renderers see the [native views](xref:Uno.Development.NativeViews) documentation.
-
 Uno Platform apps always render with Skia, and you can embed native controls in them. This is useful if you want to use a native control for a specific task, for instance, to integrate an existing native platform control.
 
 Each target platform has its own idea of a native element.
@@ -79,7 +76,7 @@ If a drag over negotiated content does not scroll the enclosing `ScrollViewer`:
 
 - Confirm `InputPolicy` is set to `Negotiated` — it is `NativeOnly` by default, and it must be set on the element that is assigned as the `ContentPresenter`/`ContentControl` content, not on a nested element.
 - Confirm the target is not inside an `iframe`, a form control, or a `contenteditable` region.
-- Enable `Debug` logging on `Uno.UI.Runtime.Skia.BrowserNativeElementHostingExtension` — it logs when a delta arrives for an unknown element and when no `ScrollViewer` in the ancestry consumed one.
+- Enable `Debug` logging on `Uno.UI.Runtime.BrowserNativeElementHostingExtension` — it logs when a delta arrives for an unknown element and when no `ScrollViewer` in the ancestry consumed one.
 
 ## Limitations
 
