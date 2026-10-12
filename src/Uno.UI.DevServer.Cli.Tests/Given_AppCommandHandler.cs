@@ -80,4 +80,35 @@ public class Given_AppCommandHandler
 		AppCommandHandler.ExitCodeFor(tool, Status("NOT applied — server op #5 RudeEdit in 0.9 s (a rude edit cannot be hot-reloaded: restart with uno_app_start).")).Should().Be(AppCommandHandler.RestartNeededExitCode);
 		AppCommandHandler.ExitCodeFor(tool, new CallToolResult { Content = [new TextContentBlock { Text = "Hot Reload: Ready (0 operations)" }] }).Should().Be(0);
 	}
+
+	[TestMethod]
+	[Description("assert passes when every match carries the state tokens, a !token is absent, the count matches, or nothing matched with --absent")]
+	public void WhenAssert_VerdictFollowsMatchesAndState()
+	{
+		const string two = "2 matched automationId 'Row'\nListViewItem ^3a #Row1 [s] {selected items=3}  \"A\"\nListViewItem ^3b #Row2 [s] {items=3}  \"B\"\n";
+		const string none = "0 matched automationId 'Gone' (waited 2s). The match is exact.";
+
+		AppCommandHandler.AssertFailure(two, [], false, null).Should().BeNull();
+		AppCommandHandler.AssertFailure(two, ["items=3"], false, 2).Should().BeNull();
+		AppCommandHandler.AssertFailure(two, ["selected"], false, null).Should().Contain("Row2");
+		AppCommandHandler.AssertFailure(two, ["!selected"], false, null).Should().Contain("Row1");
+		AppCommandHandler.AssertFailure(two, [], false, 1).Should().Contain("expected 1");
+		AppCommandHandler.AssertFailure(two, [], true, null).Should().Contain("2 matched");
+		AppCommandHandler.AssertFailure(none, [], true, null).Should().BeNull();
+		AppCommandHandler.AssertFailure(none, [], false, null).Should().Contain("0 matched");
+	}
+
+	[TestMethod]
+	[Description("--name resolves to the one ^ref whose #Name matches; none or several is an error naming the refs")]
+	public void WhenNameResolved_RefComesFromTheSnapshot()
+	{
+		const string tree = "Page ^1\n  Button ^5k #Save [i] \"Save\"\n  Button ^5m #Cancel [i] \"Cancel\"\n  TextBlock ^5n #Save\n";
+
+		AppCommandHandler.ResolveRefByName(tree, "Cancel", out var error).Should().Be("5m");
+		error.Should().BeNull();
+		AppCommandHandler.ResolveRefByName(tree, "Nope", out error).Should().BeNull();
+		error.Should().Contain("Nope");
+		AppCommandHandler.ResolveRefByName(tree, "Save", out error).Should().BeNull();
+		error.Should().Contain("5k").And.Contain("5n");
+	}
 }

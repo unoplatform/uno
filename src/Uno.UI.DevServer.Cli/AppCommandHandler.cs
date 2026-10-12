@@ -46,6 +46,17 @@ internal sealed class AppCommandHandler
 
 	internal const string ToolsVerb = "tools";
 
+	/// <summary><c>app wait [--timeoutSeconds 120] [--ready]</c>: until an app is connected (and Hot Reload is Ready).</summary>
+	internal const string WaitVerb = "wait";
+
+	/// <summary><c>app assert &lt;find selectors&gt; [--state tok,..] [--absent] [--count N]</c>: a find with a verdict.</summary>
+	internal const string AssertVerb = "assert";
+
+	private const string FindTool = "uno_app_find_elements";
+	private const string RuntimeInfoTool = "uno_app_get_runtime_info";
+	private const string HotReloadStatusTool = "uno_app_hot_reload_status";
+	private const string SnapshotTool = "uno_app_visualtree_snapshot";
+
 	private static readonly TimeSpan ToolCallTimeout = TimeSpan.FromMinutes(5);
 	private static readonly TimeSpan ToolListTimeout = TimeSpan.FromSeconds(15);
 
@@ -144,17 +155,17 @@ internal sealed class AppCommandHandler
 			return 1;
 		}
 
-		var text = string.Concat(result.Content.OfType<TextContentBlock>().Select(t => t.Text));
+		var text = TextOf(result);
 
 		// ponytail: the zero-match signal is the "0 matched" prefix of the find_elements text; a structured
 		// count in the result would replace this string check.
-		if (toolName == "uno_app_find_elements" && text.StartsWith("0 matched", StringComparison.Ordinal))
+		if (toolName == FindTool && text.StartsWith("0 matched", StringComparison.Ordinal))
 		{
 			return 1;
 		}
 
 		// ponytail: the file verdict is the text after "edit to '<file>': "; a structured verdict would replace this.
-		if (toolName == "uno_app_hot_reload_status"
+		if (toolName == HotReloadStatusTool
 			&& text.Split('\n').FirstOrDefault(l => l.StartsWith("edit to '", StringComparison.Ordinal)) is { } verdict)
 		{
 			var separator = verdict.IndexOf("': ", StringComparison.Ordinal);
@@ -168,6 +179,82 @@ internal sealed class AppCommandHandler
 		}
 
 		return 0;
+	}
+
+	private static string TextOf(CallToolResult result)
+		=> string.Concat(result.Content.OfType<TextContentBlock>().Select(t => t.Text)).Replace("\r", "");
+
+	/// <summary>
+	/// The verdict of <c>app assert</c> on a find result: null when it passes, otherwise why it failed.
+	/// <paramref name="state"/> tokens must all be in every match's <c>{...}</c> group, a <c>!token</c> must be
+	/// in none; <paramref name="absent"/> passes on zero matches; <paramref name="count"/> is an exact count.
+	/// </summary>
+	internal static string? AssertFailure(string findText, string[] state, bool absent, int? count)
+	{
+		var lines = findText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+		var matched = lines.Length > 0 && int.TryParse(lines[0].Split(' ')[0], out var n) ? n : 0;
+
+		if (absent)
+		{
+			return matched == 0 ? null : $"expected no match, {matched} matched";
+		}
+
+		if (count is { } expected && matched != expected)
+		{
+			return $"expected {expected} matched, got {matched}";
+		}
+
+		if (matched == 0)
+		{
+			return "expected a match, 0 matched";
+		}
+
+		foreach (var line in lines.Skip(1))
+		{
+			// ponytail: the state group is the first "{a b c}" on the match line; tokens are space separated.
+			var open = line.IndexOf('{');
+			var close = open < 0 ? -1 : line.IndexOf('}', open);
+			var tokens = close < 0 ? [] : line[(open + 1)..close].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+			foreach (var token in state)
+			{
+				var negated = token.StartsWith('!');
+				var present = tokens.Contains(negated ? token[1..] : token, StringComparer.Ordinal);
+				if (present == negated)
+				{
+					return $"expected {token} on: {line.Trim()}";
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/// <summary>
+	/// The <c>^ref</c> of the one snapshot line whose <c>#Name</c> is <paramref name="name"/>, for App MCP versions
+	/// whose element tools take only <c>elementRef</c>. Null when none or several match (the error says which).
+	/// </summary>
+	internal static string? ResolveRefByName(string snapshotText, string name, out string? error)
+	{
+		var refs = new List<string>();
+		foreach (var line in snapshotText.Split('\n'))
+		{
+			// ponytail: "Type ^ref #Name ..." with whitespace-delimited tokens; a name with spaces is not resolved.
+			var tokens = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			var refIndex = Array.FindIndex(tokens, t => t.StartsWith('^'));
+			if (refIndex >= 0 && refIndex + 1 < tokens.Length && tokens[refIndex + 1] == "#" + name)
+			{
+				refs.Add(tokens[refIndex][1..]);
+			}
+		}
+
+		error = refs.Count switch
+		{
+			0 => $"No element named '{name}' in the visual tree (names show as #Name in `app tree`).",
+			1 => null,
+			_ => $"{refs.Count} elements named '{name}'; pass --elementRef with one of: {string.Join(", ", refs)}",
+		};
+		return refs.Count == 1 ? refs[0] : null;
 	}
 
 	/// <summary>
@@ -222,17 +309,65 @@ internal sealed class AppCommandHandler
 			return 0;
 		}
 
-		// App MCP tools appear once the add-in has checked the licence, shortly after the host is ready.
-		if (!await WaitForToolAsync(client, parsed.ToolName, ct))
+		if (parsed.ToolName == WaitVerb)
 		{
-			_logger.LogError("Tool '{Tool}' is not available on the DevServer. Run `uno-devserver app tools` to list the tools, and `uno-devserver health` when the list is empty.", parsed.ToolName);
+			return await WaitAsync(client, parsed, ct);
+		}
+
+		var toolName = parsed.ToolName == AssertVerb ? FindTool : parsed.ToolName;
+		var arguments = new Dictionary<string, object?>(parsed.Arguments);
+
+		// App MCP tools appear once the add-in has checked the licence, shortly after the host is ready.
+		if (await WaitForToolAsync(client, toolName, ct) is not { } mcpTool)
+		{
+			_logger.LogError("Tool '{Tool}' is not available on the DevServer. Run `uno-devserver app tools` to list the tools, and `uno-devserver health` when the list is empty.", toolName);
 			return 2;
 		}
 
-		using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-		timeoutCts.CancelAfter(ToolCallTimeout);
+		string[] assertState = [];
+		var assertAbsent = false;
+		int? assertCount = null;
+		if (parsed.ToolName == AssertVerb)
+		{
+			assertState = (TakeString(arguments, "state") ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+			assertAbsent = TakeBool(arguments, "absent");
+			assertCount = TakeInt(arguments, "count");
+		}
 
-		var result = await client.CallToolAsync(parsed.ToolName, parsed.Arguments, cancellationToken: timeoutCts.Token);
+		// Older App MCP element tools take only elementRef: resolve --name through a snapshot here.
+		if (!HasParameter(mcpTool, "name") && HasParameter(mcpTool, "elementRef") && TakeString(arguments, "name") is { } name)
+		{
+			var snapshot = await CallAsync(client, SnapshotTool, new Dictionary<string, object?> { ["detail"] = "compact" }, ct);
+			if (snapshot.IsError == true)
+			{
+				_logger.LogError("{Error}", TextOf(snapshot));
+				return 1;
+			}
+
+			if (ResolveRefByName(TextOf(snapshot), name, out var error) is not { } elementRef)
+			{
+				_logger.LogError("{Error}", error);
+				return 1;
+			}
+
+			arguments["elementRef"] = elementRef;
+		}
+
+		if (!HasParameter(mcpTool, "automationId") && arguments.ContainsKey("automationId"))
+		{
+			_logger.LogError("This App MCP's {Tool} takes elementRef only and the visual tree does not show automation ids: pass --name (x:Name) or --elementRef (from `app tree`).", toolName);
+			return 2;
+		}
+
+		var result = await CallAsync(client, toolName, arguments, ct);
+
+		if (parsed.ToolName == AssertVerb && result.IsError != true)
+		{
+			var failure = AssertFailure(TextOf(result), assertState, assertAbsent, assertCount);
+			Console.WriteLine(TextOf(result).TrimEnd());
+			Console.WriteLine(failure is null ? "assert: pass" : $"assert: fail ({failure})");
+			return failure is null ? 0 : 1;
+		}
 
 		if (parsed.Json)
 		{
@@ -259,23 +394,135 @@ internal sealed class AppCommandHandler
 			}
 		}
 
-		return ExitCodeFor(parsed.ToolName, result);
+		return ExitCodeFor(toolName, result);
 	}
 
-	private async Task<bool> WaitForToolAsync(McpClient client, string toolName, CancellationToken ct)
+	/// <summary>
+	/// Polls the runtime info until an app is connected, then with <c>--ready</c> until its Hot Reload is Ready
+	/// (through the status tool when offered, else by the clock the skill uses). 0 when done, 1 on timeout or
+	/// when Hot Reload is disabled, 2 when the runtime info tool is not offered.
+	/// </summary>
+	private async Task<int> WaitAsync(McpClient client, AppCommandArgs parsed, CancellationToken ct)
+	{
+		var arguments = new Dictionary<string, object?>(parsed.Arguments);
+		var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(TakeInt(arguments, "timeoutSeconds") ?? 120);
+		var ready = TakeBool(arguments, "ready");
+
+		if (await WaitForToolAsync(client, RuntimeInfoTool, ct) is null)
+		{
+			_logger.LogError("Tool '{Tool}' is not available on the DevServer.", RuntimeInfoTool);
+			return 2;
+		}
+
+		string info;
+		while (true)
+		{
+			info = TextOf(await CallAsync(client, RuntimeInfoTool, new Dictionary<string, object?>(), ct));
+			if (info.Contains("Process Id:", StringComparison.Ordinal))
+			{
+				break;
+			}
+
+			if (DateTime.UtcNow >= deadline)
+			{
+				Console.WriteLine(info.TrimEnd());
+				return 1;
+			}
+
+			await Task.Delay(1000, ct);
+		}
+
+		if (!ready)
+		{
+			Console.WriteLine(info.TrimEnd());
+			return 0;
+		}
+
+		var tools = await client.ListToolsAsync(cancellationToken: ct);
+		while (true)
+		{
+			var state = info.Split('\n').FirstOrDefault(l => l.StartsWith("Hot Reload: ", StringComparison.Ordinal))?["Hot Reload: ".Length..].Split('.', ' ')[0];
+			switch (state)
+			{
+				case "Ready" or "Processing":
+					Console.WriteLine(info.TrimEnd());
+					return 0;
+				case null or "unknown":
+					// An add-in that does not report the state: the first edit is safe about 15 s after the connection.
+					_logger.LogInformation("The app does not report its Hot Reload state; waiting 15 s after the connection instead.");
+					await Task.Delay(TimeSpan.FromSeconds(15), ct);
+					Console.WriteLine(info.TrimEnd());
+					return 0;
+				case "Initializing":
+					break;
+				default:
+					Console.WriteLine(info.TrimEnd());
+					return 1; // Disabled and the like: the text says what to do.
+			}
+
+			var remaining = deadline - DateTime.UtcNow;
+			if (remaining <= TimeSpan.Zero)
+			{
+				Console.WriteLine(info.TrimEnd());
+				return 1;
+			}
+
+			if (tools.Any(t => t.Name == HotReloadStatusTool))
+			{
+				var waitForMs = (int)Math.Min(remaining.TotalMilliseconds, 20000); // the tool's own cap
+				info = TextOf(await CallAsync(client, HotReloadStatusTool, new Dictionary<string, object?> { ["waitForReady"] = true, ["waitForMs"] = waitForMs }, ct));
+			}
+			else
+			{
+				await Task.Delay(1000, ct);
+				info = TextOf(await CallAsync(client, RuntimeInfoTool, new Dictionary<string, object?>(), ct));
+			}
+		}
+	}
+
+	private static async Task<CallToolResult> CallAsync(McpClient client, string toolName, IReadOnlyDictionary<string, object?> arguments, CancellationToken ct)
+	{
+		using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+		timeoutCts.CancelAfter(ToolCallTimeout);
+		return await client.CallToolAsync(toolName, arguments, cancellationToken: timeoutCts.Token);
+	}
+
+	private static bool HasParameter(McpClientTool tool, string name)
+		=> tool.ProtocolTool.InputSchema.TryGetProperty("properties", out var properties)
+			&& properties.ValueKind == JsonValueKind.Object
+			&& properties.TryGetProperty(name, out _);
+
+	/// <summary>Removes a CLI-side option from the tool arguments and returns it; values arrive as string or JsonElement.</summary>
+	private static string? TakeString(Dictionary<string, object?> arguments, string name)
+	{
+		if (!arguments.Remove(name, out var value))
+		{
+			return null;
+		}
+
+		return value is JsonElement json ? json.ToString() : value?.ToString();
+	}
+
+	private static int? TakeInt(Dictionary<string, object?> arguments, string name)
+		=> int.TryParse(TakeString(arguments, name), out var value) ? value : null;
+
+	private static bool TakeBool(Dictionary<string, object?> arguments, string name)
+		=> TakeString(arguments, name) is { } value && !string.Equals(value, "false", StringComparison.OrdinalIgnoreCase);
+
+	private async Task<McpClientTool?> WaitForToolAsync(McpClient client, string toolName, CancellationToken ct)
 	{
 		var deadline = DateTime.UtcNow + ToolListTimeout;
 		while (true)
 		{
 			var tools = await client.ListToolsAsync(cancellationToken: ct);
-			if (tools.Any(t => t.Name == toolName))
+			if (tools.FirstOrDefault(t => t.Name == toolName) is { } tool)
 			{
-				return true;
+				return tool;
 			}
 
 			if (DateTime.UtcNow >= deadline)
 			{
-				return false;
+				return null;
 			}
 
 			_logger.LogDebug("Tool {Tool} not listed yet ({Count} tools); waiting", toolName, tools.Count);
