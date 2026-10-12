@@ -42,7 +42,11 @@ internal sealed class FrameClock
 	/// below <see cref="MinSamples"/> the interval falls back to 1/60s, which would mis-step every motion on a
 	/// display that is not 60Hz.
 	/// </summary>
-	public void Reset() => _lastRaw = 0;
+	public void Reset()
+	{
+		_lastRaw = 0;
+		_lastVsync = 0;
+	}
 
 	public long NextTimestamp(long raw)
 	{

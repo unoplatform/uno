@@ -79,7 +79,7 @@ public partial class CompositionTarget
 	private long _lastNativeFrameTimestamp = Stopwatch.GetTimestamp();
 
 	// The latest native frame's time, written on the host's render thread and read by the frame tick.
-	private readonly object _nativeFrameTimestampGate = new();
+	private readonly Lock _nativeFrameTimestampGate = new();
 	private long _nativeFrameTimestamp;
 	private bool _isNativeFrameTimestampVsync;
 	private long _lastStalledRenderLogTimestamp;
