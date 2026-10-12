@@ -27,6 +27,19 @@ internal class McpStdioServer(
 	/// <summary>Maximum time to wait for the upstream to connect during uno_app_initialize.</summary>
 	internal const int InitializeTimeoutMs = 120_000; // 2 minutes
 
+	/// <summary>
+	/// How the app tools are meant to be used, sent in the initialize result. Kept in step with the
+	/// Uno.UI.App.Mcp add-in's own ServerInstructions (MCPServicesRegistration.cs), which direct HTTP
+	/// clients of the host receive instead.
+	/// </summary>
+	internal const string AppToolsInstructions =
+		"""
+		Tools for a running Uno Platform app, to validate its actual behavior instead of relying on implicit knowledge. When only uno_health, uno_discover_tools and uno_execute_tool are listed, call uno_discover_tools once, then run each app tool as uno_execute_tool(toolName, arguments).
+		Start the app with uno_app_start(projectPath, targetFramework, connectionTimeoutSeconds: 120), never with dotnet run; its result ends with a 'Hot Reload:' line.
+		After editing a .xaml or .cs file, do not build, close or start again: call uno_app_hot_reload_status(file, waitForMs: 10000) to confirm the edit was applied (its result carries the compiler diagnostics when it was not), then assert with uno_app_find_elements. Start again only to change launch arguments, platform or app data, for a Release build, or when that result reports RudeEdit.
+		Locate and act on elements by automationId or name; take a visual tree snapshot only to discover a screen, and a screenshot only for a visual check. Close the app with uno_app_close.
+		""";
+
 	// ── Meta-tool definitions ──────────────────────────────────────────
 	// These tools provide a stable compatibility layer while the direct upstream
 	// tool set changes during DevServer startup, reconnects, or license-driven
@@ -123,6 +136,13 @@ internal class McpStdioServer(
 					Name = "uno-devserver",
 					Version = AssemblyVersionHelper.GetAssemblyVersion(typeof(McpStdioServer).Assembly),
 				};
+
+				// Sent once in the initialize result and kept by the client for the whole session: the
+				// place to state how the app tools are meant to be used, which no tool description or
+				// skill reaches as reliably (uno.app-mcp#191 measurements, FieldCheck runs of 2026-10-09/10).
+				// Static because initialize answers before the upstream host is connected, so the add-in's
+				// own ServerInstructions cannot be forwarded.
+				options.ServerInstructions = AppToolsInstructions;
 			})
 			.WithStdioServerTransport()
 			.WithCallToolHandler(async (ctx, ct) =>
