@@ -2,13 +2,13 @@ namespace Uno.UI.Runtime {
 	export class BrowserRenderer {
 		private readonly managedHandle: number;
 		private readonly canvas: HTMLCanvasElement;
-		private readonly requestRender: () => void;
+		private readonly requestRender: (frameAgeInMilliseconds: number) => void;
 
 		constructor(managedHandle: number, canvas: HTMLCanvasElement) {
 			this.canvas = canvas;
 			this.managedHandle = managedHandle;
 			const skiaSharpExports = WebAssemblyWindowWrapper.getAssemblyExports();
-			this.requestRender = () => skiaSharpExports.Uno.UI.Runtime.BrowserRenderer.RenderFrame(this.managedHandle);
+			this.requestRender = frameAge => skiaSharpExports.Uno.UI.Runtime.BrowserRenderer.RenderFrame(this.managedHandle, frameAge);
 
 			this.setCanvasSize();
 			window.addEventListener("resize", x => this.setCanvasSize());
@@ -45,8 +45,10 @@ namespace Uno.UI.Runtime {
 		}
 
 		static invalidate(instance: BrowserRenderer) {
-			window.requestAnimationFrame(() => {
-				instance.requestRender();
+			// The callback's time is when this frame started, on the vsync. Passed as an age so managed code
+			// doesn't have to know how its clock relates to performance.now().
+			window.requestAnimationFrame(frameTime => {
+				instance.requestRender(performance.now() - frameTime);
 			});
 		}
 	}

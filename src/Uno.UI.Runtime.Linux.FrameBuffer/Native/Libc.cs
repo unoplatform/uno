@@ -20,6 +20,8 @@ namespace Uno.UI.Runtime.Native
 
 		public const int MAP_SHARED = 0x01;
 
+		public const int CLOCK_MONOTONIC = 1;
+
 		public const int EPERM = 1;
 		public const int EACCES = 13;
 
@@ -49,5 +51,15 @@ namespace Uno.UI.Runtime.Native
 
 		[DllImport("libc", SetLastError = true)]
 		public static extern int poll(pollfd* fds, IntPtr nfds, int timeout);
+
+		[DllImport("libc", SetLastError = true)]
+		public static extern int clock_gettime(int clockId, out Timespec time);
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct Timespec
+		{
+			public nint tv_sec;
+			public nint tv_nsec;
+		}
 	}
 }

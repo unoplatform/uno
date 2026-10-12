@@ -142,6 +142,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	}
 
 	/// <summary>
+	/// The <see cref="Stopwatch.GetTimestamp"/> time of the display's latest vsync, or <c>null</c> when it isn't known.
+	/// </summary>
+	private long? GetVsyncTimestamp()
+	{
+		var age = NativeUno.uno_window_get_vsync_age(_nativeWindow.Handle);
+		return age < 0 ? null : Stopwatch.GetTimestamp() - (long)(age * Stopwatch.Frequency);
+	}
+
+	/// <summary>
 	/// Frame rate the render thread should be paced at: the screen's refresh rate when it is known
 	/// and <see cref="FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate"/> is set,
 	/// otherwise the configured rate.
@@ -193,7 +202,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		ct.Renderer = _renderer;
 		// Present (drawable acquire + blit) happens inside this call, through the context.
-		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context);
+		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context, vsyncTimestamp: GetVsyncTimestamp());
 
 		// uno_window_clip_svg mutates AppKit view layers, which must be touched only on the
 		// main thread; this method runs on the render thread, so marshal the update there.
