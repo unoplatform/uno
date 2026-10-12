@@ -205,10 +205,19 @@ internal sealed unsafe class X11PresentVsync : IDisposable
 		}
 
 		// A request the server couldn't queue on a vblank completes at once, without the MSC moving on.
-		if (msc <= _lastMsc)
+		if (msc == _lastMsc)
 		{
 			failure = "completed without a new vsync";
 			return null;
+		}
+
+		// Each CRTC counts on its own, so a window that moved to another one (or a modeset) can go backwards.
+		if (msc < _lastMsc)
+		{
+			_baseVsync = _lastVsync = vsync;
+			_baseMsc = _lastMsc = msc;
+			failure = null;
+			return vsync;
 		}
 
 		var interval = (vsync - _lastVsync) / (long)(msc - _lastMsc);
