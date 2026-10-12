@@ -458,6 +458,51 @@ public class Given_ScrollViewer_Anchoring
 	[TestMethod]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Anchoring_Shift_During_Touch_Then_Touch_Offset_Holds()
+	{
+#if HAS_UNO
+		var (sv, panel, items) = BuildVertical();
+		sv.VerticalAnchorRatio = 0.5;
+
+		WindowHelper.WindowContent = sv;
+		await WindowHelper.WaitForLoaded(sv);
+
+		foreach (var item in items)
+		{
+			sv.RegisterAnchorCandidate(item);
+		}
+
+		await ScrollToVerticalAsync(sv, 400);
+
+		// A touch press clears the programmatic intent before the manipulation takes over.
+		sv.ClearOffsetIntents();
+
+		// Content grows above the anchor mid-drag, so anchoring shifts the offset to compensate.
+		panel.Children.Insert(0, new Border { Width = 200, Height = 100 });
+		sv.UpdateLayout();
+		await WindowHelper.WaitForIdle();
+		var anchoredOffset = sv.VerticalOffset;
+		Assert.AreEqual(500, anchoredOffset, 2.0, "Anchoring should have compensated the 100px inserted above.");
+
+		// The touch fling then carries the offset to the end of the content.
+		var flungTo = sv.ScrollableHeight;
+		sv.Presenter!.Set(verticalOffset: flungTo, disableAnimation: true, isTouch: true);
+		await WindowHelper.WaitForIdle();
+
+		sv.InvalidateMeasure();
+		sv.UpdateLayout();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(flungTo, sv.VerticalOffset, 2.0,
+			$"The anchoring shift to {anchoredOffset} must not be replayed as a programmatic intent once the touch motion ends.");
+#else
+		Assert.Inconclusive("Relies on internal ScrollViewer hooks.");
+#endif
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task Anchoring_PreservesPosition_OnContentShrinkAbove()
 	{
 		// Semantic guarantee: removing content above the anchor keeps the anchor at the
