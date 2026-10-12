@@ -14,6 +14,7 @@ internal sealed record AppCommandArgs(
 	IReadOnlyDictionary<string, object?> Arguments,
 	bool Json,
 	string? OutputFile,
+	bool NoStart,
 	string? Error);
 
 /// <summary>
@@ -58,19 +59,20 @@ internal sealed class AppCommandHandler
 	/// <summary>
 	/// Parses the arguments after the <c>app</c> verb. <c>--name value</c> becomes a tool argument; a value that
 	/// parses as JSON (number, bool, object, array) is sent typed, anything else as a string, and a bare
-	/// <c>--flag</c> is <c>true</c>. <c>--json</c> and <c>--out</c> are the command's own options.
+	/// <c>--flag</c> is <c>true</c>. <c>--json</c>, <c>--out</c> and <c>--no-start</c> are the command's own options.
 	/// </summary>
 	public static AppCommandArgs Parse(string[] args)
 	{
 		if (args.Length == 0)
 		{
-			return new AppCommandArgs("", new Dictionary<string, object?>(), false, null, "Missing verb. Try: uno-devserver app tools");
+			return new AppCommandArgs("", new Dictionary<string, object?>(), false, null, false, "Missing verb. Try: uno-devserver app tools");
 		}
 
 		var verb = args[0];
 		var toolName = Verbs.TryGetValue(verb, out var mapped) ? mapped : verb;
 		var arguments = new Dictionary<string, object?>();
 		var json = false;
+		var noStart = false;
 		string? outputFile = null;
 
 		for (var i = 1; i < args.Length; i++)
@@ -78,7 +80,7 @@ internal sealed class AppCommandHandler
 			var arg = args[i];
 			if (!arg.StartsWith("--", StringComparison.Ordinal) || arg.Length == 2)
 			{
-				return new AppCommandArgs(toolName, arguments, json, outputFile, $"Unexpected argument '{arg}'. Tool parameters are passed as --name value.");
+				return new AppCommandArgs(toolName, arguments, json, outputFile, noStart, $"Unexpected argument '{arg}'. Tool parameters are passed as --name value.");
 			}
 
 			var name = arg[2..];
@@ -88,11 +90,15 @@ internal sealed class AppCommandHandler
 			{
 				json = true;
 			}
+			else if (string.Equals(name, "no-start", StringComparison.OrdinalIgnoreCase))
+			{
+				noStart = true;
+			}
 			else if (string.Equals(name, "out", StringComparison.OrdinalIgnoreCase))
 			{
 				if (!hasValue)
 				{
-					return new AppCommandArgs(toolName, arguments, json, outputFile, "Missing value for --out");
+					return new AppCommandArgs(toolName, arguments, json, outputFile, noStart, "Missing value for --out");
 				}
 				outputFile = args[++i];
 			}
@@ -102,7 +108,7 @@ internal sealed class AppCommandHandler
 			}
 		}
 
-		return new AppCommandArgs(toolName, arguments, json, outputFile, null);
+		return new AppCommandArgs(toolName, arguments, json, outputFile, noStart, null);
 	}
 
 	internal static object? ParseValue(string value)
@@ -122,9 +128,14 @@ internal sealed class AppCommandHandler
 		return value;
 	}
 
+	/// <summary>Exit code of <c>app hot-reload --file</c> when only a restart can apply the edit (RudeEdit).</summary>
+	internal const int RestartNeededExitCode = 3;
+
 	/// <summary>
 	/// 0 when the tool succeeded, 1 when it reported an error. A find that matched nothing is also 1, so
-	/// <c>app find --automationId X --waitForMs 5000</c> works as an assertion in a script.
+	/// <c>app find --automationId X --waitForMs 5000</c> works as an assertion in a script. A hot-reload status
+	/// for a file is 0 only when the app runs the edit, 1 when it does not (the text says why), and
+	/// <see cref="RestartNeededExitCode"/> when it was a rude edit, so a hook can act on the code alone.
 	/// </summary>
 	internal static int ExitCodeFor(string toolName, CallToolResult result)
 	{
@@ -133,12 +144,27 @@ internal sealed class AppCommandHandler
 			return 1;
 		}
 
+		var text = string.Concat(result.Content.OfType<TextContentBlock>().Select(t => t.Text));
+
 		// ponytail: the zero-match signal is the "0 matched" prefix of the find_elements text; a structured
 		// count in the result would replace this string check.
-		if (toolName == "uno_app_find_elements"
-			&& result.Content.OfType<TextContentBlock>().Any(t => t.Text.StartsWith("0 matched", StringComparison.Ordinal)))
+		if (toolName == "uno_app_find_elements" && text.StartsWith("0 matched", StringComparison.Ordinal))
 		{
 			return 1;
+		}
+
+		// ponytail: the file verdict is the text after "edit to '<file>': "; a structured verdict would replace this.
+		if (toolName == "uno_app_hot_reload_status"
+			&& text.Split('\n').FirstOrDefault(l => l.StartsWith("edit to '", StringComparison.Ordinal)) is { } verdict)
+		{
+			var separator = verdict.IndexOf("': ", StringComparison.Ordinal);
+			var outcome = separator < 0 ? verdict : verdict[(separator + 3)..];
+			if (outcome.StartsWith("applied", StringComparison.Ordinal))
+			{
+				return 0;
+			}
+
+			return outcome.Contains("RudeEdit", StringComparison.Ordinal) ? RestartNeededExitCode : 1;
 		}
 
 		return 0;
@@ -146,9 +172,9 @@ internal sealed class AppCommandHandler
 
 	/// <summary>
 	/// Runs one tool call. <paramref name="resolvePort"/> returns the HTTP port of a ready host for the
-	/// workspace, starting one when needed, or null when that failed (already logged).
+	/// workspace, starting one when needed unless told not to, or null when that failed (already logged).
 	/// </summary>
-	public async Task<int> RunAsync(string[] args, Func<Task<int?>> resolvePort, CancellationToken ct = default)
+	public async Task<int> RunAsync(string[] args, Func<bool, Task<int?>> resolvePort, CancellationToken ct = default)
 	{
 		var parsed = Parse(args);
 		if (parsed.Error is not null)
@@ -157,10 +183,11 @@ internal sealed class AppCommandHandler
 			return 2;
 		}
 
-		var port = await resolvePort();
+		var port = await resolvePort(parsed.NoStart);
 		if (port is null)
 		{
-			return 1;
+			// With --no-start, no host is "nothing to talk to" (2), like a tool that is not offered.
+			return parsed.NoStart ? 2 : 1;
 		}
 
 		var transport = new HttpClientTransport(new()
