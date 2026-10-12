@@ -78,7 +78,6 @@
 				AndroidXWearVersion="$(AndroidXWearVersion)"
 				AndroidXWearTilesVersion="$(AndroidXWearTilesVersion)"
 				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)"
-				MicrosoftWebView2Version="$(MicrosoftWebView2Version)"
 				VlcNativeWindowsAssetsVersion="$(VlcNativeWindowsAssetsVersion)"
 				Condition=" '$(TargetFramework)' != '' ">
 			<Output ItemName="_UnoImplicitPackageReference"
