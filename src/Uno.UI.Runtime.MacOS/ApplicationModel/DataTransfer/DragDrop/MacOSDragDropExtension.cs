@@ -129,11 +129,7 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 		{
 			try
 			{
-				var streamRef = await view.GetBitmapAsync();
-				await using var stream = (await streamRef.OpenReadAsync()).AsStream();
-				using var ms = new MemoryStream();
-				await stream.CopyToAsync(ms);
-				bitmapBytes = ms.ToArray();
+				bitmapBytes = await MacOSClipboardExtension.ReadBitmapAsync(await view.GetBitmapAsync());
 			}
 			catch (Exception e) when (this.Log().IsEnabled(LogLevel.Warning))
 			{

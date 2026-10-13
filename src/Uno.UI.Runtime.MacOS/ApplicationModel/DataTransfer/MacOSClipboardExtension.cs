@@ -146,10 +146,7 @@ internal class MacOSClipboardExtension : IClipboardExtension
 
 		if (data.Contains(StandardDataFormats.Bitmap))
 		{
-			await using var stream = (await (await data.GetBitmapAsync()).OpenReadAsync()).AsStream();
-			using var ms = new MemoryStream();
-			await stream.CopyToAsync(ms);
-			clipboard.BitmapData = ms.ToArray();
+			clipboard.BitmapData = await ReadBitmapAsync(await data.GetBitmapAsync());
 		}
 
 		var uri = DataPackage.CombineUri(
@@ -168,6 +165,28 @@ internal class MacOSClipboardExtension : IClipboardExtension
 		}
 
 		NativeUno.uno_clipboard_set_content(ref clipboard);
+	}
+
+	// A reference created from a stream hands out the caller's stream: rewind it, restore it and leave it open.
+	internal static async Task<byte[]> ReadBitmapAsync(RandomAccessStreamReference reference)
+	{
+		var stream = await reference.OpenReadAsync();
+		using var ownedStream = reference.OwnsOpenedStream ? stream : null;
+		var position = stream.Position;
+		stream.Seek(0);
+		try
+		{
+			using var buffer = new MemoryStream();
+			await stream.AsStreamForRead().CopyToAsync(buffer);
+			return buffer.ToArray();
+		}
+		finally
+		{
+			if (ownedStream is null)
+			{
+				stream.Seek(position);
+			}
+		}
 	}
 
 	public void StartContentChanged() => NativeUno.uno_clipboard_start_content_changed();
