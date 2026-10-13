@@ -252,6 +252,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly Dictionary<int, global::Microsoft.UI.Text.TabLeader>? _tabLeaders;
 	private readonly Size _availableSize;
 	private readonly bool _layoutUsesAvailableWidth;
+	private readonly bool _sizeUsesAvailableWidth;
 	private readonly bool _layoutUsesAvailableHeight;
 
 	internal unsafe UnicodeText(
@@ -431,6 +432,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				|| _textAlignment is TextAlignment.Center or TextAlignment.Right or TextAlignment.Justify
 				|| endingParagraphAlignment is not null
 				|| endingParagraphLayout is not null;
+			_sizeUsesAvailableWidth = endingParagraphAlignment is not null || endingParagraphLayout is not null;
 			_xyTable = [];
 			_indexToCluster = [];
 			_inlineObjects = null;
@@ -1239,6 +1241,14 @@ internal readonly partial struct UnicodeText : IParsedText
 			|| paragraphLayouts is not null
 			|| endingParagraphAlignment is not null
 			|| endingParagraphLayout is not null;
+		// Alignment only offsets the lines; right-to-left text only moves the caret.
+		_sizeUsesAvailableWidth = textWrapping != TextWrapping.NoWrap
+			|| textTrimming != TextTrimming.None
+			|| _textAlignment is TextAlignment.Justify
+			|| paragraphAlignments is not null
+			|| paragraphLayouts is not null
+			|| endingParagraphAlignment is not null
+			|| endingParagraphLayout is not null;
 	}
 
 	/// <summary>
@@ -1247,6 +1257,14 @@ internal readonly partial struct UnicodeText : IParsedText
 	/// </summary>
 	internal bool IsLayoutValidFor(Size availableSize)
 		=> (!_layoutUsesAvailableWidth || availableSize.Width == _availableSize.Width)
+		&& (!_layoutUsesAvailableHeight || availableSize.Height == _availableSize.Height);
+
+	/// <summary>
+	/// Whether laying the same text out in <paramref name="availableSize"/> would give the same lines and size, though they
+	/// may be positioned differently.
+	/// </summary>
+	internal bool IsSizeValidFor(Size availableSize)
+		=> (!_sizeUsesAvailableWidth || availableSize.Width == _availableSize.Width)
 		&& (!_layoutUsesAvailableHeight || availableSize.Height == _availableSize.Height);
 
 	// Printable ASCII (plus tab) has no mandatory line breaks and needs no ICU break analysis for NoWrap text.

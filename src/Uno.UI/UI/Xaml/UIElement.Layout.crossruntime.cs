@@ -40,6 +40,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
+			OnMeasureInvalidated();
 
 			if (!IsMeasureDirtyPathDisabled)
 			{
@@ -53,6 +54,13 @@ namespace Microsoft.UI.Xaml
 					XamlRoot.InvalidateMeasure();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Called when this element's own measure becomes dirty, as opposed to being measured again under a new constraint.
+		/// </summary>
+		private protected virtual void OnMeasureInvalidated()
+		{
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
