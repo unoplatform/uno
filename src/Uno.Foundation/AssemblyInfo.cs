@@ -19,6 +19,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Linux.FrameBuffer")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Headless")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.X11")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Wayland")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Android")]

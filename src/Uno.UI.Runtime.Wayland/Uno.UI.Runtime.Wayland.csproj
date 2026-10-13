@@ -1,0 +1,75 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<Import Project="../Uno.UI.Runtime.Linux.Shared/Uno.UI.Runtime.Linux.Shared.props" />
+
+	<Import Project="../targetframework-override-noplatform.props" />
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<Description>This package provides the Wayland host for Uno Platform projects.</Description>
+
+		<PackageId>Uno.WinUI.Runtime.Wayland</PackageId>
+
+		<RootNamespace>Uno.UI.Runtime.Wayland</RootNamespace>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+		<None Update="Protocols/LICENSE.txt" Pack="true" PackagePath="licenses/wayland-protocols.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.Runtime\Uno.UI.Runtime.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Generic.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Generic.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="buildTransitive/*.*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
+	</ItemGroup>
+
+	<!-- Protocol bindings are generated at build time from the vendored protocol XMLs, see Uno.UI.Runtime.Wayland.Scanner. -->
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.Runtime.Wayland.Scanner\Uno.UI.Runtime.Wayland.Scanner.csproj" ReferenceOutputAssembly="false" OutputItemType="WaylandScanner" PrivateAssets="all" TreatAsPackageReference="false" />
+		<WaylandProtocol Include="Protocols/*.xml" />
+		<Compile Remove="Protocols/*.g.cs" />
+	</ItemGroup>
+
+	<Target Name="PrepareWaylandProtocols" DependsOnTargets="ResolveProjectReferences">
+		<WriteLinesToFile File="$(IntermediateOutputPath)WaylandProtocolInputs.txt" Lines="@(WaylandProtocol->'%(FullPath)')" Overwrite="true" WriteOnlyWhenDifferent="true" />
+		<ReadLinesFromFile File="$(IntermediateOutputPath)WaylandProtocols/.outputs" Condition="Exists('$(IntermediateOutputPath)WaylandProtocols/.outputs')">
+			<Output TaskParameter="Lines" ItemName="WaylandProtocolOutput" />
+		</ReadLinesFromFile>
+	</Target>
+
+	<Target Name="GenerateWaylandProtocols" DependsOnTargets="PrepareWaylandProtocols" Inputs="@(WaylandScanner);@(WaylandProtocol);$(IntermediateOutputPath)WaylandProtocolInputs.txt" Outputs="$(IntermediateOutputPath)WaylandProtocols/.outputs;$(IntermediateOutputPath)WaylandProtocols/ProtocolCatalog.g.cs;@(WaylandProtocolOutput)">
+		<PropertyGroup>
+			<WaylandScannerDotNetHost Condition="'$(DotNetHostPath)' != ''">$(DotNetHostPath)</WaylandScannerDotNetHost>
+			<WaylandScannerDotNetHost Condition="'$(WaylandScannerDotNetHost)' == ''">dotnet</WaylandScannerDotNetHost>
+		</PropertyGroup>
+		<RemoveDir Directories="$(IntermediateOutputPath)WaylandProtocols/" />
+		<Exec Command="&quot;$(WaylandScannerDotNetHost)&quot; &quot;@(WaylandScanner)&quot; &quot;$(MSBuildProjectDirectory)/Protocols&quot; &quot;$(IntermediateOutputPath)WaylandProtocols/&quot;" />
+		<ItemGroup>
+			<GeneratedWaylandProtocol Include="$(IntermediateOutputPath)WaylandProtocols/*.g.cs" />
+		</ItemGroup>
+		<WriteLinesToFile File="$(IntermediateOutputPath)WaylandProtocols/.outputs" Lines="@(GeneratedWaylandProtocol->'%(FullPath)')" Overwrite="true" />
+	</Target>
+
+	<Target Name="CompileWaylandProtocols" BeforeTargets="CoreCompile" DependsOnTargets="GenerateWaylandProtocols">
+		<ItemGroup>
+			<Compile Include="$(IntermediateOutputPath)WaylandProtocols/*.g.cs" />
+			<FileWrites Include="$(IntermediateOutputPath)WaylandProtocols/*;$(IntermediateOutputPath)WaylandProtocolInputs.txt" />
+		</ItemGroup>
+	</Target>
+
+</Project>
