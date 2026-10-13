@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests;
 
-[TestClass]
+[UITestClass]
 public class DependencyProperty_Type
 {
 	private readonly (string owner, string propertyName)[] _dpDataTypesIgnoreList = new (string, string)[]

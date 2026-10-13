@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_TextBlock
 	{
 		private const double DefaultFontSize = 14.0;

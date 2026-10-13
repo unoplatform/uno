@@ -19,7 +19,7 @@ using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Implicit_Style
 	{
 		private Thickness DefaultButtonPadding => Given_Explicit_Style.DefaultButtonPadding;

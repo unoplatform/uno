@@ -6,7 +6,7 @@ using Uno.UI.Helpers;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Automation;
 
-[TestClass]
+[UITestClass]
 public class Given_AutomationPeerProviderTargets
 {
 	[TestInitialize]

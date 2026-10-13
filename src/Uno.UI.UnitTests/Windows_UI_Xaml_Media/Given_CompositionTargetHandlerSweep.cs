@@ -16,7 +16,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Media;
 /// coalescing them lets a collectible-ALC method survive behind a default-ALC target. Covers the
 /// all-non-default (global teardown) and single-dying-ALC (scoped) paths.
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_CompositionTargetHandlerSweep
 {
 	/// <summary>Hosts the handler shapes; also re-loaded into collectible ALCs by the tests.</summary>

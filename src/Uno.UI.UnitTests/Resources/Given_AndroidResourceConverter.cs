@@ -4,7 +4,7 @@ using Windows.ApplicationModel.Resources.Core;
 
 namespace Uno.UI.Tests.Resources
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_AndroidResourceConverter
 	{
 		private const string DefaultLanguage = "en";
@@ -49,7 +49,7 @@ namespace Uno.UI.Tests.Resources
 		}
 	}
 
-	[TestClass]
+	[UITestClass]
 	public class Given_AndroidResourceNameEncoder
 	{
 		[TestMethod]

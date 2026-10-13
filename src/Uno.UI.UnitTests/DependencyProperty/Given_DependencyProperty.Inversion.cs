@@ -14,7 +14,7 @@ using System.Globalization;
 
 namespace Uno.UI.Tests.BinderTests.Inversion
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty_Inversion
 	{
 		[TestMethod]

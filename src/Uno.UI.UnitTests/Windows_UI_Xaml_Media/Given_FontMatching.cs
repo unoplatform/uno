@@ -10,7 +10,7 @@ using Windows.UI.Text;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Media;
 
-[TestClass]
+[UITestClass]
 public class Given_FontManifest
 {
 	[TestMethod]

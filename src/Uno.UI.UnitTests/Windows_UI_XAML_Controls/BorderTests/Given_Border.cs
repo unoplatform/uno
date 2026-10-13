@@ -16,7 +16,7 @@ using AwesomeAssertions.Execution;
 
 namespace Uno.UI.Tests.BorderTests
 {
-	[TestClass]
+	[UITestClass]
 #if !IS_UNIT_TESTS
 	[RuntimeTests.RunsOnUIThread]
 #endif

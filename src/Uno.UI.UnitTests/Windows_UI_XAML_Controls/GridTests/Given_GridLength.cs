@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Tests.GridTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_GridLength
 	{
 		[TestMethod]

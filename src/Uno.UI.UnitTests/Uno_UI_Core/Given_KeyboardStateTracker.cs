@@ -5,7 +5,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Tests.Uno_UI_Core
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_KeyboardStateTracker
 	{
 		// The tracker is process-wide static state, so each test uses its own key.

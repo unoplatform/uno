@@ -18,7 +18,7 @@ namespace Uno.UI.Tests.Lottie
 	/// Covers the JSON parse/serialize contract of <see cref="ThemableLottieVisualSource"/>, whose
 	/// output is handed to Skottie as a string.
 	/// </summary>
-	[TestClass]
+	[UITestClass]
 	public class Given_ThemableLottieVisualSource_Json
 	{
 		[TestMethod]

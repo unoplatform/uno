@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Explicit_Style
 	{
 		internal static readonly Thickness DefaultButtonPadding = new Thickness(8, 4, 8, 5);

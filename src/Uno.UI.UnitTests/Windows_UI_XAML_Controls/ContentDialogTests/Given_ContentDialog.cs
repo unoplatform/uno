@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.ContentDialogTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ContentDialog
 	{
 		[TestInitialize]

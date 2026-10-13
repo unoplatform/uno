@@ -5,7 +5,7 @@ using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Internal;
 
-[TestClass]
+[UITestClass]
 public class Given_TextScaleHelper
 {
 	[TestMethod]

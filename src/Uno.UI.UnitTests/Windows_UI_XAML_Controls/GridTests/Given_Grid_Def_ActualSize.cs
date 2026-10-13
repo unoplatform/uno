@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 namespace Uno.UI.Tests.GridTests
 {
 
-	[TestClass]
+	[UITestClass]
 	public class Given_Grid_Def_ActualSize
 	{
 		[TestMethod]

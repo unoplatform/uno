@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.xLoad
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_xLoadSetters
 	{
 		[TestMethod]

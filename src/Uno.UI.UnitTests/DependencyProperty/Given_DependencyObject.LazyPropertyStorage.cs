@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests;
 
-[TestClass]
+[UITestClass]
 public class Given_DependencyObject_LazyPropertyStorage
 {
 	[TestMethod]

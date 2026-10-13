@@ -9,7 +9,7 @@ using Windows.Foundation.Collections;
 
 namespace Uno.UI.Tests.Windows_Foundation_Collections
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ObservableVector
 	{
 		[TestMethod]

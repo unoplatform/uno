@@ -14,7 +14,7 @@ using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 {
-	[TestClass]
+	[UITestClass]
 	public class VisualStateManager_Lazy
 	{
 		[TestInitialize]

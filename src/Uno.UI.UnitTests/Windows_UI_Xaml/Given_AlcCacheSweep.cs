@@ -19,7 +19,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml;
 /// throwing sweep from aborting the rest of the teardown chain (and silently re-leaking the ALC).</item>
 /// </list>
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_AlcCacheSweep
 {
 	[TestMethod]

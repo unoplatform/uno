@@ -12,7 +12,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests;
 /// Regression tests for issue #24752: DependencyObject should not eagerly allocate
 /// _inheritedForwardedProperties and _propertyChangedTokens dictionaries.
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_DependencyObject_LazyDictionaries
 {
 	private static readonly FieldInfo s_inheritedForwardedPropertiesField =
