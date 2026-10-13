@@ -561,7 +561,8 @@ public class Given_InputPane
 	[RunsOnUIThread]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
-	public async Task When_Viewport_Blips_During_Text_Entry_Then_Overlay_SplitView_Pane_Stays_Open()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25380")]
+	public async Task When_Viewport_Blips_As_Soft_Keyboard_Hides_Then_Overlay_SplitView_Pane_Stays_Open()
 	{
 		var textBox = new TextBox { Height = 40, PlaceholderText = "pane field", VerticalAlignment = VerticalAlignment.Top };
 		var splitView = new SplitView
@@ -577,13 +578,15 @@ public class Given_InputPane
 			splitView.IsPaneOpen = true;
 			await WindowHelper.WaitForIdle();
 			await FocusNativeTextInput(textBox);
+			await ShowSoftKeyboard();
 
-			await SimulateKeyboardHideViewportBlip();
+			await HideSoftKeyboardWithViewportBlip();
 
 			Assert.IsTrue(splitView.IsPaneOpen, "The pane closed on the transient viewport resize.");
 		}
 		finally
 		{
+			await RestoreViewport();
 			WindowHelper.WindowContent = null;
 		}
 	}
@@ -592,7 +595,8 @@ public class Given_InputPane
 	[RunsOnUIThread]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
-	public async Task When_Viewport_Blips_During_Text_Entry_Then_Flyout_Stays_Open()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25380")]
+	public async Task When_Viewport_Blips_As_Soft_Keyboard_Hides_Then_Flyout_Stays_Open()
 	{
 		var textBox = new TextBox { Width = 200, Height = 40, PlaceholderText = "flyout field" };
 		var flyout = new Flyout { Content = textBox };
@@ -604,14 +608,16 @@ public class Given_InputPane
 			flyout.ShowAt(target);
 			await WindowHelper.WaitFor(() => flyout.IsOpen && textBox.IsLoaded, message: "The flyout did not open.");
 			await FocusNativeTextInput(textBox);
+			await ShowSoftKeyboard();
 
-			await SimulateKeyboardHideViewportBlip();
+			await HideSoftKeyboardWithViewportBlip();
 
 			Assert.IsTrue(flyout.IsOpen, "The flyout closed on the transient viewport resize.");
 		}
 		finally
 		{
 			flyout.Hide();
+			await RestoreViewport();
 			WindowHelper.WindowContent = null;
 		}
 	}
@@ -620,7 +626,36 @@ public class Given_InputPane
 	[RunsOnUIThread]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
-	public async Task When_Viewport_Height_Changes_During_Text_Entry_Then_Window_Resized_Once_Settled()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25380")]
+	public async Task When_Viewport_Height_Changes_With_Soft_Keyboard_Then_Window_Resized_Once_Settled()
+	{
+		var textBox = new TextBox { Height = 40, PlaceholderText = "field", VerticalAlignment = VerticalAlignment.Top };
+		var initialHeight = WindowHeight;
+
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { textBox } });
+			await FocusNativeTextInput(textBox);
+			await ShowSoftKeyboard();
+
+			InvokeBrowserJs($"document.documentElement.style.height = '{initialHeight + 52}px'; window.dispatchEvent(new Event('resize')); ''");
+
+			await WindowHelper.WaitFor(() => WindowHeight > initialHeight + 50, message: "The settled viewport height was not reported.");
+		}
+		finally
+		{
+			await RestoreViewport();
+			await WindowHelper.WaitFor(() => Math.Abs(WindowHeight - initialHeight) < 1, message: "The window height was not restored.");
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// Dragging the bottom edge of a desktop browser window while a TextBox is focused must keep the layout in sync.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Viewport_Height_Changes_During_Text_Entry_Without_Soft_Keyboard_Then_Window_Resized_Immediately()
 	{
 		var textBox = new TextBox { Height = 40, PlaceholderText = "field", VerticalAlignment = VerticalAlignment.Top };
 		var initialHeight = WindowHeight;
@@ -632,11 +667,11 @@ public class Given_InputPane
 
 			InvokeBrowserJs($"document.documentElement.style.height = '{initialHeight + 52}px'; window.dispatchEvent(new Event('resize')); ''");
 
-			await WindowHelper.WaitFor(() => WindowHeight > initialHeight + 50, message: "The settled viewport height was not reported.");
+			Assert.IsTrue(WindowHeight > initialHeight + 50, $"The window height ({WindowHeight}) did not follow the viewport ({initialHeight + 52}).");
 		}
 		finally
 		{
-			InvokeBrowserJs("document.documentElement.style.height = ''; window.dispatchEvent(new Event('resize')); ''");
+			await RestoreViewport();
 			await WindowHelper.WaitFor(() => Math.Abs(WindowHeight - initialHeight) < 1, message: "The window height was not restored.");
 			WindowHelper.WindowContent = null;
 		}
@@ -650,16 +685,40 @@ public class Given_InputPane
 			message: "The native text input did not take focus.");
 	}
 
-	// Grows the layout viewport by a toolbar's height and restores it after a layout pass, as Edge does.
-	private static async Task SimulateKeyboardHideViewportBlip()
+	// Headless browsers have no soft keyboard: stand in a visual viewport that it shrinks, and raise its resize.
+	private static async Task ShowSoftKeyboard()
+	{
+		InvokeBrowserJs("""
+			(() => {
+				const real = window.__unoTestRealViewport ??= window.visualViewport;
+				const height = document.documentElement.getBoundingClientRect().height;
+				window.__unoTestViewport = { width: innerWidth, height: height / 2, offsetTop: 0 };
+				Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => window.__unoTestViewport });
+				real.dispatchEvent(new Event('resize'));
+				return '';
+			})()
+			""");
+
+		await WindowHelper.WaitFor(() => InputPane.GetForCurrentView().Visible, message: "The simulated soft keyboard was not reported.");
+		await WindowHelper.WaitForIdle();
+	}
+
+	// Edge's sequence: the keyboard leaves the visual viewport, then the layout viewport grows by the toolbar
+	// height and shrinks back once the toolbar is re-attached.
+	private static async Task HideSoftKeyboardWithViewportBlip()
 	{
 		InvokeBrowserJs("""
 			(() => {
 				const root = document.documentElement;
-				root.style.height = (root.getBoundingClientRect().height + 52) + 'px';
+				const height = root.getBoundingClientRect().height;
+				root.style.height = (height + 52) + 'px';
+				window.__unoTestViewport = { width: innerWidth, height: height + 52, offsetTop: 0 };
+				window.__unoTestRealViewport.dispatchEvent(new Event('resize'));
 				window.dispatchEvent(new Event('resize'));
 				setTimeout(() => {
 					root.style.height = '';
+					window.__unoTestViewport = { width: innerWidth, height: height, offsetTop: 0 };
+					window.__unoTestRealViewport.dispatchEvent(new Event('resize'));
 					window.dispatchEvent(new Event('resize'));
 				}, 150);
 				return '';
@@ -667,6 +726,26 @@ public class Given_InputPane
 			""");
 
 		await Task.Delay(800);
+		await WindowHelper.WaitForIdle();
+	}
+
+	private static async Task RestoreViewport()
+	{
+		InvokeBrowserJs("""
+			(() => {
+				document.documentElement.style.height = '';
+				delete window.visualViewport;
+				window.__unoTestRealViewport?.dispatchEvent(new Event('resize'));
+				window.dispatchEvent(new Event('resize'));
+				return '';
+			})()
+			""");
+
+		InputPane.GetForCurrentView().OccludedRect = new Rect(0, 0, 0, 0);
+
+		// Height-only resizes are held back for a moment after the soft keyboard hides.
+		await Task.Delay(1100);
+		InvokeBrowserJs("window.dispatchEvent(new Event('resize')); ''");
 		await WindowHelper.WaitForIdle();
 	}
 
