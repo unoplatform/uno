@@ -146,6 +146,59 @@ public partial class FramebufferHostBuilder : IPlatformHostBuilder
 	}
 
 	/// <summary>
+	/// Sets the orientation the app starts in, and returns a setter that changes it while the app runs.
+	/// </summary>
+	/// <param name="orientation">The orientation the app starts in.</param>
+	/// <param name="setOrientation">
+	/// Rotates the app to the given orientation. It can be called at any time and from any thread; the change is
+	/// applied on the UI thread, updating the window bounds and raising
+	/// <see cref="DisplayInformation.OrientationChanged"/>. It throws <see cref="ArgumentOutOfRangeException"/>
+	/// for anything but <see cref="DisplayOrientations.Landscape"/>, <see cref="DisplayOrientations.Portrait"/>,
+	/// <see cref="DisplayOrientations.LandscapeFlipped"/> or <see cref="DisplayOrientations.PortraitFlipped"/>.
+	/// </param>
+	public FramebufferHostBuilder Orientation(DisplayOrientations orientation, out Action<DisplayOrientations> setOrientation)
+	{
+		DisplayOrientation = orientation;
+		setOrientation = SetOrientation;
+		return this;
+	}
+
+	private void SetOrientation(DisplayOrientations orientation)
+	{
+		if (orientation is not (DisplayOrientations.Landscape
+			or DisplayOrientations.Portrait
+			or DisplayOrientations.LandscapeFlipped
+			or DisplayOrientations.PortraitFlipped))
+		{
+			throw new ArgumentOutOfRangeException(nameof(orientation), orientation, "Expected a single orientation.");
+		}
+
+		lock (_hostGate)
+		{
+			// Before the host exists, the call only changes the orientation the app will start in.
+			if (_host is { } host)
+			{
+				host.SetOrientation(orientation);
+			}
+			else
+			{
+				DisplayOrientation = orientation;
+			}
+		}
+	}
+
+	private readonly object _hostGate = new();
+	private FrameBufferHost? _host;
+
+	internal void AttachHost(FrameBufferHost host)
+	{
+		lock (_hostGate)
+		{
+			_host = host;
+		}
+	}
+
+	/// <summary>
 	/// Determines if OpenGLES+EGL initialized with DRM+GBM should be used for hardware-accelerated rendering on the
 	/// Linux Framebuffer target instead of software rendering. If not called, we try to create an OpenGLES context if possible.
 	/// Otherwise, software rendering will be used.
