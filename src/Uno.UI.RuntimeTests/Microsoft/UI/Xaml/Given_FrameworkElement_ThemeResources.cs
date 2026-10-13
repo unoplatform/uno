@@ -100,6 +100,129 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
+		[TestMethod]
+		public async Task When_Nearer_Ancestor_Overrides_Style_And_Template_ThemeResource()
+		{
+			var root = (Grid)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				      RequestedTheme="Light">
+					<Grid.Resources>
+						<ResourceDictionary>
+							<ResourceDictionary.ThemeDictionaries>
+								<ResourceDictionary x:Key="Light">
+									<SolidColorBrush x:Key="ProbeBrush" Color="#FFFF0000" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="Dark">
+									<SolidColorBrush x:Key="ProbeBrush" Color="#FF800000" />
+								</ResourceDictionary>
+							</ResourceDictionary.ThemeDictionaries>
+							<Style TargetType="ContentControl">
+								<Setter Property="Background" Value="{ThemeResource ProbeBrush}" />
+							</Style>
+							<ControlTemplate x:Key="ProbeTemplate" TargetType="ContentControl">
+								<Border Width="20" Height="20" Background="{ThemeResource ProbeBrush}" />
+							</ControlTemplate>
+						</ResourceDictionary>
+					</Grid.Resources>
+					<StackPanel>
+						<StackPanel.Resources>
+							<ResourceDictionary>
+								<ResourceDictionary.ThemeDictionaries>
+									<ResourceDictionary x:Key="Light">
+										<SolidColorBrush x:Key="ProbeBrush" Color="#FF00FF00" />
+									</ResourceDictionary>
+									<ResourceDictionary x:Key="Dark">
+										<SolidColorBrush x:Key="ProbeBrush" Color="#FF008000" />
+									</ResourceDictionary>
+								</ResourceDictionary.ThemeDictionaries>
+							</ResourceDictionary>
+						</StackPanel.Resources>
+						<ContentControl x:Name="Styled" />
+						<ContentControl x:Name="Templated" Template="{StaticResource ProbeTemplate}" />
+					</StackPanel>
+				</Grid>
+				""");
+
+			WindowHelper.WindowContent = root;
+			await WindowHelper.WaitForLoaded(root);
+			await WindowHelper.WaitForIdle();
+
+			var styled = (ContentControl)root.FindName("Styled");
+			var templatePart = (Border)VisualTreeHelper.GetChild((ContentControl)root.FindName("Templated"), 0);
+
+			// The nearest dictionary wins over the one the style and the template were declared in.
+			Assert.AreEqual(Color.FromArgb(0xFF, 0x00, 0xFF, 0x00), (styled.Background as SolidColorBrush)?.Color, "Style setter, Light");
+			Assert.AreEqual(Color.FromArgb(0xFF, 0x00, 0xFF, 0x00), (templatePart.Background as SolidColorBrush)?.Color, "Template part, Light");
+
+			root.RequestedTheme = Microsoft.UI.Xaml.ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Color.FromArgb(0xFF, 0x00, 0x80, 0x00), (styled.Background as SolidColorBrush)?.Color, "Style setter, Dark");
+			Assert.AreEqual(Color.FromArgb(0xFF, 0x00, 0x80, 0x00), (templatePart.Background as SolidColorBrush)?.Color, "Template part, Dark");
+		}
+
+		[TestMethod]
+		public async Task When_Styled_Element_Moves_Under_Overriding_Ancestor()
+		{
+			var root = (Grid)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				      RequestedTheme="Light">
+					<Grid.Resources>
+						<ResourceDictionary>
+							<ResourceDictionary.ThemeDictionaries>
+								<ResourceDictionary x:Key="Light">
+									<SolidColorBrush x:Key="ProbeBrush" Color="#FFFF0000" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="Dark">
+									<SolidColorBrush x:Key="ProbeBrush" Color="#FF800000" />
+								</ResourceDictionary>
+							</ResourceDictionary.ThemeDictionaries>
+							<Style TargetType="ContentControl">
+								<Setter Property="Background" Value="{ThemeResource ProbeBrush}" />
+							</Style>
+						</ResourceDictionary>
+					</Grid.Resources>
+					<StackPanel>
+						<StackPanel x:Name="Plain">
+							<ContentControl x:Name="Styled" Width="20" Height="20" />
+						</StackPanel>
+						<StackPanel x:Name="Overriding">
+							<StackPanel.Resources>
+								<ResourceDictionary>
+									<ResourceDictionary.ThemeDictionaries>
+										<ResourceDictionary x:Key="Light">
+											<SolidColorBrush x:Key="ProbeBrush" Color="#FF00FF00" />
+										</ResourceDictionary>
+										<ResourceDictionary x:Key="Dark">
+											<SolidColorBrush x:Key="ProbeBrush" Color="#FF008000" />
+										</ResourceDictionary>
+									</ResourceDictionary.ThemeDictionaries>
+								</ResourceDictionary>
+							</StackPanel.Resources>
+						</StackPanel>
+					</StackPanel>
+				</Grid>
+				""");
+
+			WindowHelper.WindowContent = root;
+			await WindowHelper.WaitForLoaded(root);
+			await WindowHelper.WaitForIdle();
+
+			var styled = (ContentControl)root.FindName("Styled");
+			Assert.AreEqual(Color.FromArgb(0xFF, 0xFF, 0x00, 0x00), (styled.Background as SolidColorBrush)?.Color);
+
+			((StackPanel)root.FindName("Plain")).Children.Remove(styled);
+			((StackPanel)root.FindName("Overriding")).Children.Add(styled);
+			await WindowHelper.WaitFor(() => styled.IsLoaded);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Color.FromArgb(0xFF, 0x00, 0xFF, 0x00), (styled.Background as SolidColorBrush)?.Color, "Re-entering resolves against the new ancestors");
+		}
+
 		private static async Task OpenAndCheckComboBox(ComboBox comboBox, Color expectedForeground, Color expectedBackground)
 		{
 			try
