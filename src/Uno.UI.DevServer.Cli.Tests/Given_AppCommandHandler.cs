@@ -27,7 +27,7 @@ public class Given_AppCommandHandler
 	public void WhenToolDeclaresAString_ATypedValueIsSentAsText()
 	{
 		var schema = JsonDocument.Parse("""{"type":"object","properties":{"elementRef":{"type":["string","null"]},"name":{"type":"string"},"waitForMs":{"type":"integer"}}}""").RootElement;
-		var arguments = AppCommandHandler.Parse(["invoke", "--elementRef", "1", "--name", "42", "--waitForMs", "5000"]).Arguments;
+		var arguments = new Dictionary<string, object?>(AppCommandHandler.Parse(["invoke", "--elementRef", "1", "--name", "42", "--waitForMs", "5000"]).Arguments);
 
 		AppCommandHandler.CoerceStrings(schema, arguments);
 
