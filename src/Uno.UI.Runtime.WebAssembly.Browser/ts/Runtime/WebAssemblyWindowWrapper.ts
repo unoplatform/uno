@@ -13,7 +13,9 @@
 		private lastObservedViewportSize: { width: number, height: number } | undefined;
 		private lastReportedSize: { width: number, height: number } | undefined;
 		private pendingResizeTimer: number | undefined;
-		private static readonly textEntryResizeSettleDelay = 300;
+		private softKeyboardHiddenAt = Number.NEGATIVE_INFINITY;
+		private static readonly softKeyboardResizeSettleDelay = 300;
+		private static readonly softKeyboardTransitionWindow = 1000;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
 		private static readonly loadingElementId = "uno-loading";
 		private static readonly unoKeepLoaderClassName = "uno-keep-loader";
@@ -138,7 +140,7 @@
 			// single zero only if the last report was non-zero.
 			if (document.activeElement?.id !== UnoDomIds.input) {
 				if (this.lastReportedOcclusion !== 0) {
-					this.lastReportedOcclusion = 0;
+					this.onSoftKeyboardOcclusionChanged(0);
 					this.onViewportOcclusionChanged(this.owner, 0, 0, 0);
 				}
 				return;
@@ -150,8 +152,20 @@
 				return;
 			}
 
-			this.lastReportedOcclusion = occludedHeight;
+			this.onSoftKeyboardOcclusionChanged(occludedHeight);
 			this.onViewportOcclusionChanged(this.owner, layout.width, layout.height, occludedHeight);
+		}
+
+		private onSoftKeyboardOcclusionChanged(occludedHeight: number) {
+			if (this.lastReportedOcclusion > 0 && occludedHeight === 0) {
+				this.softKeyboardHiddenAt = performance.now();
+			}
+			this.lastReportedOcclusion = occludedHeight;
+		}
+
+		private isSoftKeyboardTransition() {
+			return this.lastReportedOcclusion > 0
+				|| performance.now() - this.softKeyboardHiddenAt < WebAssemblyWindowWrapper.softKeyboardTransitionWindow;
 		}
 
 		public static removeLoading() {
@@ -214,19 +228,19 @@
 
 			// Hiding the soft keyboard, Edge on Android grows the layout viewport for a moment before its
 			// toolbar settles back. Reported as-is, that blip light-dismisses open flyouts and panes, so a
-			// height-only change during text entry is only reported once it has settled.
+			// height-only change around the soft keyboard is only reported once it has settled.
 			const last = this.lastReportedSize;
 			if (last
 				&& rect.width === last.width
 				&& rect.height !== last.height
-				&& document.activeElement?.id === UnoDomIds.input) {
+				&& this.isSoftKeyboardTransition()) {
 				this.pendingResizeTimer = window.setTimeout(() => {
 					this.pendingResizeTimer = undefined;
 					const settled = document.documentElement.getBoundingClientRect();
 					if (settled.width !== this.lastReportedSize?.width || settled.height !== this.lastReportedSize?.height) {
 						this.reportSize(settled);
 					}
-				}, WebAssemblyWindowWrapper.textEntryResizeSettleDelay);
+				}, WebAssemblyWindowWrapper.softKeyboardResizeSettleDelay);
 				return;
 			}
 
