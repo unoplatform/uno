@@ -6,7 +6,7 @@ using static Microsoft.UI.Xaml.Controls.Primitives.ListViewBaseItemPresenter;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Controls;
 
-[TestClass]
+[UITestClass]
 public class Given_ListViewBaseItemChrome_StateTables
 {
 	[TestMethod]
