@@ -23,6 +23,20 @@ public class Given_AppCommandHandler
 	}
 
 	[TestMethod]
+	[Description("A value that parsed as JSON goes back to text when the tool declares the parameter as a (nullable) string: --elementRef 1")]
+	public void WhenToolDeclaresAString_ATypedValueIsSentAsText()
+	{
+		var schema = JsonDocument.Parse("""{"type":"object","properties":{"elementRef":{"type":["string","null"]},"name":{"type":"string"},"waitForMs":{"type":"integer"}}}""").RootElement;
+		var arguments = AppCommandHandler.Parse(["invoke", "--elementRef", "1", "--name", "42", "--waitForMs", "5000"]).Arguments;
+
+		AppCommandHandler.CoerceStrings(schema, arguments);
+
+		arguments["elementRef"].Should().Be("1");
+		arguments["name"].Should().Be("42");
+		((JsonElement)arguments["waitForMs"]!).GetInt32().Should().Be(5000);
+	}
+
+	[TestMethod]
 	[Description("An unknown verb is sent to the host as the tool name, so dynamic app_* tools work too")]
 	public void WhenUnknownVerb_ItIsTheToolName()
 	{
