@@ -21,6 +21,7 @@ internal sealed class WaylandKeyboardInputSource : IUnoKeyboardInputSource, IDis
 	event TypedEventHandler<object, CharacterReceivedEventArgs>? IUnoKeyboardInputSource.CharacterReceived { add { } remove { } }
 	private readonly Action<Action> _dispatch;
 	private readonly Action<bool> _activate;
+	private readonly Action<string> _commitText;
 	private readonly IWaylandInputConnection _connection;
 	private readonly Dictionary<uint, PressedKey> _pressed = new();
 	private WaylandKeyboardCompose? _compose;
@@ -34,11 +35,12 @@ internal sealed class WaylandKeyboardInputSource : IUnoKeyboardInputSource, IDis
 		get; private set;
 	}
 
-	public WaylandKeyboardInputSource(IWaylandInputConnection connection, Action<Action> dispatch, Action<bool> activate)
+	public WaylandKeyboardInputSource(IWaylandInputConnection connection, Action<Action> dispatch, Action<bool> activate, Action<string>? commitText = null)
 	{
 		_connection = connection;
 		_dispatch = dispatch;
 		_activate = activate;
+		_commitText = commitText ?? CommitFocusedText;
 	}
 
 	public void Keymap(uint format, int fd, uint size)
@@ -273,15 +275,7 @@ internal sealed class WaylandKeyboardInputSource : IUnoKeyboardInputSource, IDis
 			// Like input method text, complete strings raise no key events: a KeyDown without UnicodeKey would still
 			// insert the key's own character. Without an input method, the composition callbacks insert the string
 			// once, replacing the selection.
-			_dispatch(() =>
-			{
-				if (ImeSessionCoordinator.ActiveHost is { CanAcceptTextInput: true } host
-					&& host.XamlRoot is { } root && XamlRootMap.GetHostForRoot(root) is WaylandXamlRootHost rootHost
-					&& rootHost.KeyboardSource == this)
-				{
-					CommitText(host, completeText);
-				}
-			});
+			_dispatch(() => _commitText(completeText));
 			return false;
 		}
 		var args = new KeyEventArgs("keyboard", vk, Modifiers, new CorePhysicalKeyStatus
@@ -305,6 +299,18 @@ internal sealed class WaylandKeyboardInputSource : IUnoKeyboardInputSource, IDis
 		});
 		return true;
 	}
+
+	private void CommitFocusedText(string text)
+	{
+		if (ImeSessionCoordinator.ActiveHost is { CanAcceptTextInput: true } host
+			&& host.XamlRoot is { } root && XamlRootMap.GetHostForRoot(root) is WaylandXamlRootHost rootHost
+			&& rootHost.KeyboardSource == this
+			&& (ImeSessionCoordinator.GetExtension(host) is not WaylandImeTextBoxExtension ime || !ime.TryCommitKeyboardText(host, text)))
+		{
+			CommitText(host, text);
+		}
+	}
+
 	private static void CommitText(IImeSessionHost host, string text)
 	{
 		if (!host.IsComposing)
