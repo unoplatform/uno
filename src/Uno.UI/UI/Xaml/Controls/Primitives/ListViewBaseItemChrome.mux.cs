@@ -76,10 +76,10 @@ partial class ListViewBaseItemPresenter
 
 	// Dead WinUI code: s_checkMarkPoints belongs to the removed checkmark path.
 
+#if false
 	// ListViewItem focus border thickness
-#pragma warning disable IDE0051 // Kept for 1:1 parity with ListViewBaseItemChrome.cpp
 	private const float s_listViewItemFocusBorderThickness = 1.0f;
-#pragma warning restore IDE0051
+#endif
 
 	// ListViewItem focus border thickness
 	private const float s_gridViewItemFocusBorderThickness = 2.0f;
