@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
@@ -47,6 +48,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// thing that knows which device the result is destined for.
 	private static ICommandRecorder CreateRecording(IDrawingFactory renderer)
 		=> ForceFallbackRetainedRendering ? new CommandListRecorder(renderer) : renderer.CreateRecording();
+
+	// Records the subtree in the visual's own space: child.Render reapplies each TotalMatrix, and inverse takes the visual's own
+	// back out. A generalized inverse G (a flattening TotalMatrix) makes TotalMatrix * G a projection rather than identity, so the
+	// recording starts there, and a child that inherits the matrix gets TotalMatrix * G like one that sets its own.
+	private static void CreateRecordingSession(Visual visual, ICommandRecorder recording, ref Matrix4x4 inverse, bool isExactInverse, in PaintingSession session, out PaintingSession recordingSession)
+	{
+		_factory.CreateInstance(visual, recording, ref inverse, session.Opacity, session.Damage, out recordingSession);
+		if (!isExactInverse)
+		{
+			recordingSession.Session.SetMatrix(visual.TotalMatrix * inverse);
+		}
+	}
 
 	private bool _enablePictureCollapsingOptimization;
 	private int _pictureCollapsingOptimizationFrameThreshold;
@@ -463,7 +476,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var initialTransform = drawingSession.TotalMatrix;
 		if (Parent?.TotalMatrix is { } parentTotalMatrix)
 		{
-			Matrix4x4.Invert(parentTotalMatrix, out var invertedParentTotalMatrix);
+			if (!CompositionMathHelpers.TryGetSubtreeInverse(parentTotalMatrix, out var invertedParentTotalMatrix, out _)
+				&& this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Visual '{Comment}' renders blank as a root: its parent's transform collapses it onto a line or a point.");
+			}
+
 			initialTransform = invertedParentTotalMatrix * initialTransform;
 		}
 
@@ -566,7 +584,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			ApplyPrePaintingClipping(session.Session);
 
-			if (ShadowState is null || TryRenderAnalyticShadow(session.Session, ShadowState))
+			if (ShadowState is null || TryRenderAnalyticShadow(session.Session, ShadowState)
+				// The fallback records the subtree in this visual's space, which a degenerate TotalMatrix doesn't have. It then
+				// collapses onto a line or a point, so neither it nor its shadow shows.
+				|| !CompositionMathHelpers.TryGetSubtreeInverse(TotalMatrix, out var rootTransform, out var isExactInverse))
 			{
 				if (_shadowFallbackContent is not null)
 				{
@@ -590,9 +611,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					|| _shadowFallbackOpacity != session.Opacity)
 				{
 					var recording = CreateRecording(parentSession.Session.Factory);
-					// child.Render will reapply the total transform matrix, so we need to invert ours.
-					Matrix4x4.Invert(TotalMatrix, out var rootTransform);
-					_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
+					CreateRecordingSession(this, recording, ref rootTransform, isExactInverse, session, out var childSession);
 					using (childSession)
 					{
 						PaintStep(this, childSession, clipChanged, clipBounds);
@@ -729,7 +748,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			else if (!visual._enablePictureCollapsingOptimization
 					 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
 					 || !applyChildOptimization
-					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold)
+					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold
+					 // A recording is made in the visual's own space, which a degenerate TotalMatrix doesn't have.
+					 || !CompositionMathHelpers.TryGetSubtreeInverse(visual.TotalMatrix, out var rootTransform, out var isExactInverse))
 			{
 				var childCullRect = visual.NarrowCullRect(cullRect);
 				foreach (var child in visual.GetChildrenInRenderOrder())
@@ -740,9 +761,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			else
 			{
 				var recording = CreateRecording(session.Session.Factory);
-				// child.Render will reapply the total transform matrix, so we need to invert ours.
-				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
-				_factory.CreateInstance(visual, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
+				CreateRecordingSession(visual, recording, ref rootTransform, isExactInverse, session, out var childSession);
 				using (childSession)
 				{
 					foreach (var child in visual.GetChildrenInRenderOrder())

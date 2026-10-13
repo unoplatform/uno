@@ -136,23 +136,30 @@ public partial class ContainerVisual : Visual
 		}
 
 		source = rect;
-		if (isAncestorClip)
+		if (isAncestorClip && GetChildToParentTransform() is { IsIdentity: false } matrix)
 		{
-			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
-			var childToParentTransform = (Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted;
-			if (!childToParentTransform.IsIdentity)
+			if (matrix.M12 != 0 || matrix.M21 != 0)
 			{
-				var matrix = childToParentTransform.ToMatrix3x2();
-				if (matrix.M12 != 0 || matrix.M21 != 0)
-				{
-					mapping = matrix;
-				}
-
-				rect = rect.Transform(matrix);
+				mapping = matrix;
 			}
+
+			rect = rect.Transform(matrix);
 		}
 
 		return rect;
+	}
+
+	private Matrix3x2 GetChildToParentTransform()
+	{
+		var parentTotalMatrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
+		if (Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted))
+		{
+			return (parentTotalMatrix * totalMatrixInverted).ToMatrix3x2();
+		}
+
+		// A TotalMatrix that flattens Z has no inverse, but its 2D part, which is all the clip uses, can still have one.
+		Matrix3x2.Invert(TotalMatrix.ToMatrix3x2(), out var inverted2D);
+		return parentTotalMatrix.ToMatrix3x2() * inverted2D;
 	}
 
 	/// <summary>The arrange clip as a shape, which a rotated ancestor clip needs: its bounding box would let

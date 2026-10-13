@@ -42,12 +42,18 @@ namespace Microsoft.UI.Composition
 			// this visual's local coordinates is the source subtree measured in its parent's space.
 			if (!IsRectEmpty(content) && source.Parent is { } parent)
 			{
-				if (!Matrix4x4.Invert(parent.TotalMatrix, out var invertedParentTotalMatrix))
+				// A parent that flattens Z has no inverse, but its 2D part, which is all these bounds use, can still have one.
+				Matrix3x2 parentToLocal;
+				if (Matrix4x4.Invert(parent.TotalMatrix, out var invertedParentTotalMatrix))
+				{
+					parentToLocal = invertedParentTotalMatrix.ToMatrix3x2();
+				}
+				else if (!Matrix3x2.Invert(parent.TotalMatrix.ToMatrix3x2(), out parentToLocal))
 				{
 					return false;
 				}
 
-				content = content.Transform(invertedParentTotalMatrix.ToMatrix3x2());
+				content = content.Transform(parentToLocal);
 			}
 
 			if (ShadowState is not null)
