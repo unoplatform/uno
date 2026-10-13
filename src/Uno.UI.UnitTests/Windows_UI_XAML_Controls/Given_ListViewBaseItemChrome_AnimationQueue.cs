@@ -10,7 +10,7 @@ using DragDropState = Microsoft.UI.Xaml.Controls.Primitives.ListViewBaseItemAnim
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Controls;
 
-[TestClass]
+[UITestClass]
 public class Given_ListViewBaseItemChrome_AnimationQueue
 {
 	[TestMethod]
