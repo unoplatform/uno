@@ -1,35 +1,46 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.UI.ViewManagement;
 using Tmds.DBus.Protocol;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
-using Uno.UI.Runtime.X11.DBus;
+using Uno.UI.Runtime.Linux.DBus;
 
-namespace Uno.UI.Runtime.X11;
+namespace Uno.UI.Runtime.Linux;
 
 // https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.FileChooser.html
 
 /// <summary>
-/// This class implements v4 of the org.freedesktop.portal.FileChooser portal for files as defined by freedesktop.org
+/// This class implements v3 of the org.freedesktop.portal.FileChooser portal for files as defined by freedesktop.org.
 /// v4 is backwards compatible with v3, so this file also implements v4.
 /// </summary>
-internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerExtension
+internal class LinuxFilePickerExtension(IFilePicker picker, IPortalParentWindowProvider parentWindowProvider) : IFileOpenPickerExtension, IFolderPickerExtension
 {
 	private const string Service = "org.freedesktop.portal.Desktop";
 	private const string ObjectPath = "/org/freedesktop/portal/desktop";
 	private const string ResultObjectPathPrefix = "/org/freedesktop/portal/desktop/request";
 
-	public async Task<StorageFile?> PickSaveFileAsync(CancellationToken token)
+	public async Task<StorageFile?> PickSingleFileAsync(CancellationToken token)
+		=> await PickFilesAsync(token, false, false)
+			.ContinueWith(task => task.Result.Select(StorageFile.GetFileFromPath).FirstOrDefault((StorageFile?)null), token);
+
+	public async Task<IReadOnlyList<StorageFile>> PickMultipleFilesAsync(CancellationToken token)
+		=> await PickFilesAsync(token, true, false)
+			.ContinueWith(task => task.Result.Select(StorageFile.GetFileFromPath).ToList(), token);
+
+	public async Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
+		=> await PickFilesAsync(token, false, true)
+			.ContinueWith(task => task.Result.Select(path => StorageFolder.GetFolderFromPathAsync(path).GetResults()).FirstOrDefault((StorageFolder?)null), token);
+
+	public async Task<IReadOnlyList<string>> PickFilesAsync(CancellationToken token, bool multiple, bool directory)
 	{
 		var sessionsAddressBus = DBusAddress.Session;
 		if (sessionsAddressBus is null)
@@ -38,12 +49,12 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			{
 				this.Log().Error($"Can not determine DBus session bus address");
 			}
-			return null;
+			return ImmutableList<string>.Empty;
 		}
 
 		if (token.IsCancellationRequested)
 		{
-			return null;
+			return ImmutableList<string>.Empty;
 		}
 
 		using var connection = new DBusConnection(sessionsAddressBus);
@@ -58,7 +69,7 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			{
 				this.Log().Error($"Timed out while trying to connect to DBus");
 			}
-			return null;
+			return ImmutableList<string>.Empty;
 		}
 
 		try
@@ -68,7 +79,7 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 
 			if (token.IsCancellationRequested)
 			{
-				return null;
+				return ImmutableList<string>.Empty;
 			}
 
 			var version = await chooser.GetVersionAsync();
@@ -78,17 +89,18 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 				{
 					this.Log().Error($"File pickers are only implemented for version 3 and above of the File chooser portal, but version {version} was found");
 				}
-				return null;
+				return ImmutableList<string>.Empty;
 			}
 
-			if (!X11Helper.XamlRootHostFromApplicationView(ApplicationView.GetForCurrentViewSafe(), out var host))
+			using var parentWindow = await parentWindowProvider.GetParentWindowAsync(token);
+			if (parentWindow is null)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"Unable to get the {nameof(X11XamlRootHost)} instance from the application view.");
+					this.Log().Error("Unable to get the native window of the application view.");
 				}
 
-				return null;
+				return ImmutableList<string>.Empty;
 			}
 
 			var handleToken = "UnoFileChooser" + Random.Shared.NextInt64();
@@ -96,7 +108,7 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 
 			if (token.IsCancellationRequested)
 			{
-				return null;
+				return ImmutableList<string>.Empty;
 			}
 
 			// We listen for the signal BEFORE we send the request. The spec API reference
@@ -117,19 +129,26 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 
 			if (token.IsCancellationRequested)
 			{
-				return null;
+				return ImmutableList<string>.Empty;
 			}
 
-			var actualRequestPath = await chooser.SaveFileAsync(
-				parentWindow: "x11:" + host.RootX11Window.Window.ToString("X", CultureInfo.InvariantCulture),
-				title: ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE"),
+			var actualRequestPath = await chooser.OpenFileAsync(
+				parentWindow: parentWindow.Identifier,
+				title: (multiple, directory) switch
+				{
+					(true, true) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_DIRECTORY_MULTIPLE"),
+					(true, false) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_FILE_MULTIPLE"),
+					(false, true) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_DIRECTORY_SINGLE"),
+					(false, false) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_FILE_SINGLE")
+				},
 				options: new Dictionary<string, VariantValue>
 				{
 					{ "handle_token", handleToken },
-					{ "accept_label", string.IsNullOrEmpty(picker.CommitButtonText) ? ResourceAccessor.GetLocalizedStringResource("FILE_SAVER_ACCEPT_LABEL") : picker.CommitButtonText },
-					{ "filters", GetPortalFilters(picker.FileTypeChoices) },
-					{ "current_name", picker.SuggestedFileName },
-					{ "current_folder", new Array<byte>(Encoding.UTF8.GetBytes(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocation)).Append((byte)'\0')) }
+					{ "accept_label", string.IsNullOrEmpty(picker.CommitButtonTextInternal) ? ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_ACCEPT_LABEL") : picker.CommitButtonTextInternal },
+					{ "multiple", multiple },
+					{ "directory", directory },
+					{ "filters", GetPortalFilters() },
+					{ "current_folder", new Array<byte>(Encoding.UTF8.GetBytes(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocationInternal)).Append((byte)'\0')) }
 				});
 
 			if (actualRequestPath != requestPath)
@@ -139,7 +158,7 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 					this.Log().Error($"{nameof(chooser.OpenFileAsync)} returned a path '{actualRequestPath}' that is different from supplied handle_token -based path '{requestPath}'");
 				}
 
-				return null;
+				return ImmutableList<string>.Empty;
 			}
 
 			var (response, results) = await responseTcs.Task;
@@ -151,8 +170,9 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 					this.Log().Error($"FileChooser returned an invalid response number {response}.");
 				}
 
-				return null;
+				return ImmutableList<string>.Empty;
 			}
+
 
 			if ((Response)response is not Response.Success)
 			{
@@ -161,10 +181,10 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 					this.Log().Error($"FileChooser's response indicates an unsuccessful operation {(Response)response}");
 				}
 
-				return null;
+				return ImmutableList<string>.Empty;
 			}
 
-			return StorageFile.GetFileFromPath(new Uri(results["uris"].GetArray<string>()[0]).LocalPath);
+			return results["uris"].GetArray<string>().Select(s => new Uri(s).LocalPath).ToImmutableList();
 		}
 		catch (Exception e)
 		{
@@ -173,11 +193,11 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 				this.Log().Error($"DBus FileChooser error, see https://aka.platform.uno/x11-dbus-troubleshoot for troubleshooting information.", e);
 			}
 
-			return null;
+			return ImmutableList<string>.Empty;
 		}
 	}
 
-	private Array<Struct<string, Array<Struct<uint, string>>>> GetPortalFilters(IDictionary<string, IList<string>> filterDictionary)
+	private Array<Struct<string, Array<Struct<uint, string>>>> GetPortalFilters()
 	{
 		// Except from the API reference
 		// filters (a(sa(us)))
@@ -194,13 +214,30 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 		//
 		// Note that filters are purely there to aid the user in making a useful selection. The portal may still allow the user to select files that don’t match any filter criteria, and applications must be prepared to handle that.
 
+		// We don't have a way to map a filter to a category (e.g. image/png -> Images), so we make every filter its own category
 		var list = new Array<Struct<string, Array<Struct<uint, string>>>>();
-		foreach (var (category, filters) in filterDictionary)
+		foreach (var pattern in picker.FileTypeFilterInternal.Distinct())
 		{
-			var adjustedFilters = filters
-				.Where(pattern => pattern.StartsWith('.') && pattern[1..] is var ext && ext.All(char.IsLetterOrDigit))
-				.Select(pattern => Struct.Create((uint)0, $"*{pattern}")); // pattern should be `.extension`. The portal wants a `*.extension` format.
-			list.Add(Struct.Create(category, new Array<Struct<uint, string>>(adjustedFilters)));
+			if (pattern is null)
+			{
+				continue;
+			}
+
+			if (pattern == "*")
+			{
+				list.Add(Struct.Create("All Files", new Array<Struct<uint, string>>(new[] { Struct.Create((uint)0, "*") })));
+			}
+			else if (pattern.StartsWith('.') && pattern[1..] is var ext && ext.All(char.IsLetterOrDigit))
+			{
+				list.Add(Struct.Create($"{ext.ToUpperInvariant()} Files", new Array<Struct<uint, string>>(new[] { Struct.Create((uint)0, $"*.{ext}") })));
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Skipping invalid file extension filter: '{pattern}'");
+				}
+			}
 		}
 
 		return list;

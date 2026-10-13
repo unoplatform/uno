@@ -1,0 +1,14 @@
+<Project>
+	<!-- Display-server independent Linux desktop services (XDG desktop portals over D-Bus), compiled into each Linux host. -->
+	<ItemGroup>
+		<PackageReference Include="Tmds.DBus.Protocol" />
+		<PackageReference Include="Tmds.DBus.Generator" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)**/*.cs" Link="Linux/%(RecursiveDir)%(Filename)%(Extension)" />
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)dbus-interfaces/org.freedesktop.portal.FileChooser.xml" Namespace="Uno.UI.Runtime.Linux.DBus" GenerateDBusTypes="true" />
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)dbus-interfaces/org.freedesktop.portal.Request.xml" Namespace="Uno.UI.Runtime.Linux.DBus" GenerateDBusTypes="true" />
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)dbus-interfaces/org.freedesktop.portal.Settings.xml" Namespace="Uno.UI.Runtime.Linux.DBus" GenerateDBusTypes="true" />
+	</ItemGroup>
+</Project>

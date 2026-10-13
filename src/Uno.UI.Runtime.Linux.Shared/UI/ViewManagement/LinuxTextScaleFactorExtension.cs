@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 using Tmds.DBus.Protocol;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
-using Uno.UI.Runtime.X11.DBus;
+using Uno.UI.Runtime.Linux.DBus;
 using Windows.UI.ViewManagement;
 
-namespace Uno.UI.Runtime.X11;
+namespace Uno.UI.Runtime.Linux;
 
 // Reads GNOME text-scaling-factor via freedesktop Settings portal
-internal class X11TextScaleFactorExtension : ITextScaleFactorExtension
+internal class LinuxTextScaleFactorExtension : ITextScaleFactorExtension
 {
 	private const string Service = "org.freedesktop.portal.Desktop";
 	private const string ObjectPath = "/org/freedesktop/portal/desktop";
@@ -36,9 +36,9 @@ internal class X11TextScaleFactorExtension : ITextScaleFactorExtension
 
 	public double GetTextScaleFactor() => CurrentScale;
 
-	public static X11TextScaleFactorExtension Instance { get; } = new();
+	public static LinuxTextScaleFactorExtension Instance { get; } = new();
 
-	private X11TextScaleFactorExtension()
+	private LinuxTextScaleFactorExtension()
 	{
 		_ = Initialize().ConfigureAwait(false);
 	}
@@ -113,6 +113,13 @@ internal class X11TextScaleFactorExtension : ITextScaleFactorExtension
 					CurrentScale = tuple.Value.GetDouble();
 				}
 			});
+		}
+		catch (DBusErrorReplyException e) when (e.ErrorName == "org.freedesktop.portal.Error.NotFound")
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("The Settings portal does not provide text-scaling-factor.");
+			}
 		}
 		catch (Exception e)
 		{

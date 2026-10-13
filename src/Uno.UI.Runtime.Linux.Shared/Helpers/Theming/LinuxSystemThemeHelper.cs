@@ -4,9 +4,9 @@ using Tmds.DBus.Protocol;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Dispatching;
-using Uno.UI.Runtime.X11.DBus;
+using Uno.UI.Runtime.Linux.DBus;
 
-namespace Uno.UI.Runtime.X11;
+namespace Uno.UI.Runtime.Linux;
 
 // https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.Settings.html
 
