@@ -344,6 +344,8 @@ internal sealed class AppCommandHandler
 			return 2;
 		}
 
+		CoerceStrings(mcpTool.ProtocolTool.InputSchema, arguments);
+
 		string[] assertState = [];
 		var assertAbsent = false;
 		int? assertCount = null;
@@ -511,6 +513,32 @@ internal sealed class AppCommandHandler
 		=> tool.ProtocolTool.InputSchema.TryGetProperty("properties", out var properties)
 			&& properties.ValueKind == JsonValueKind.Object
 			&& properties.TryGetProperty(name, out _);
+
+	/// <summary>
+	/// A value that parsed as JSON goes back to its text when the tool declares the parameter as a string:
+	/// an elementRef handle is a number on the command line (`--elementRef 1`) and a string to the tool.
+	/// </summary>
+	internal static void CoerceStrings(JsonElement inputSchema, Dictionary<string, object?> arguments)
+	{
+		if (!inputSchema.TryGetProperty("properties", out var properties) || properties.ValueKind != JsonValueKind.Object)
+		{
+			return;
+		}
+
+		foreach (var (name, value) in arguments.ToArray())
+		{
+			// A nullable parameter is declared as "type": ["string", "null"].
+			if (value is JsonElement { ValueKind: not JsonValueKind.String } json
+				&& properties.TryGetProperty(name, out var property)
+				&& property.TryGetProperty("type", out var type)
+				&& (type.ValueKind == JsonValueKind.String
+					? type.GetString() == "string"
+					: type.ValueKind == JsonValueKind.Array && type.EnumerateArray().Any(t => t.ValueKind == JsonValueKind.String && t.GetString() == "string")))
+			{
+				arguments[name] = json.ValueKind is JsonValueKind.Object or JsonValueKind.Array ? json.GetRawText() : json.ToString();
+			}
+		}
+	}
 
 	/// <summary>Removes a CLI-side option from the tool arguments and returns it; values arrive as string or JsonElement.</summary>
 	private static string? TakeString(Dictionary<string, object?> arguments, string name)
