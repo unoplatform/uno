@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Controls;
 
-[TestClass]
+[UITestClass]
 public class Given_ListViewItemTemplateSettings
 {
 	[TestMethod]
