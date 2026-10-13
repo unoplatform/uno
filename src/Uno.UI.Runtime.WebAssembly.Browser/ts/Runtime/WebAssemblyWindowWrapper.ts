@@ -11,6 +11,9 @@
 		private lastReportedOcclusion: number = -1;
 		private viewportResizeObserver: ResizeObserver | undefined;
 		private lastObservedViewportSize: { width: number, height: number } | undefined;
+		private lastReportedSize: { width: number, height: number } | undefined;
+		private pendingResizeTimer: number | undefined;
+		private static readonly textEntryResizeSettleDelay = 300;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
 		private static readonly loadingElementId = "uno-loading";
 		private static readonly unoKeepLoaderClassName = "uno-keep-loader";
@@ -205,6 +208,33 @@
 			// Measures the same element observeViewportSize() watches — keep the two in sync.
 			var rect = document.documentElement.getBoundingClientRect();
 			this.lastObservedViewportSize = { width: rect.width, height: rect.height };
+
+			window.clearTimeout(this.pendingResizeTimer);
+			this.pendingResizeTimer = undefined;
+
+			// Hiding the soft keyboard, Edge on Android grows the layout viewport for a moment before its
+			// toolbar settles back. Reported as-is, that blip light-dismisses open flyouts and panes, so a
+			// height-only change during text entry is only reported once it has settled.
+			const last = this.lastReportedSize;
+			if (last
+				&& rect.width === last.width
+				&& rect.height !== last.height
+				&& document.activeElement?.id === UnoDomIds.input) {
+				this.pendingResizeTimer = window.setTimeout(() => {
+					this.pendingResizeTimer = undefined;
+					const settled = document.documentElement.getBoundingClientRect();
+					if (settled.width !== this.lastReportedSize?.width || settled.height !== this.lastReportedSize?.height) {
+						this.reportSize(settled);
+					}
+				}, WebAssemblyWindowWrapper.textEntryResizeSettleDelay);
+				return;
+			}
+
+			this.reportSize(rect);
+		}
+
+		private reportSize(rect: DOMRect) {
+			this.lastReportedSize = { width: rect.width, height: rect.height };
 			this.onResize(this.owner, rect.width, rect.height, globalThis.devicePixelRatio);
 		}
 
