@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Microsoft.UI.Xaml;
@@ -131,6 +132,26 @@ public partial class Given_Validation_Controls
 		Assert.IsTrue(Validation.GetHasErrors(comboBox));
 	}
 
+	[TestMethod]
+	public void When_Global_Switch_Off_Then_Template_Application_Skips_Validation_States()
+	{
+		// Template application runs for every templated control in every app, so the off path must not even
+		// attempt a state change.
+		FeatureConfiguration.InputValidation.IsEnabled = false;
+
+		var root = ApplyRecordingTemplate();
+
+		CollectionAssert.AreEqual(Array.Empty<string>(), root.States);
+	}
+
+	[TestMethod]
+	public void When_Global_Switch_On_Then_Template_Application_Applies_Disabled_State()
+	{
+		var root = ApplyRecordingTemplate();
+
+		CollectionAssert.AreEqual(new[] { "ValidationDisabled" }, root.States);
+	}
+
 	private static (T ComboBox, Model Source) BindComboBox<T>(T comboBox, DependencyProperty property, string path)
 		where T : Microsoft.UI.Xaml.Controls.ComboBox
 	{
@@ -144,7 +165,33 @@ public partial class Given_Validation_Controls
 		return (comboBox, source);
 	}
 
+	private static StateRecordingRoot ApplyRecordingTemplate()
+	{
+		var root = new StateRecordingRoot();
+		var control = new TemplatedControl { Template = new ControlTemplate(null, (_, _) => root) };
+
+		control.ApplyTemplate();
+
+		return root;
+	}
+
 	private static DependencyProperty? Resolve<T>() => FeatureConfiguration.InputValidation.ValidationProperties[typeof(T)];
+
+	private partial class TemplatedControl : Control;
+
+	/// <summary>
+	/// Sees every state request made on its control, including those for which it has no visual state group.
+	/// </summary>
+	private partial class StateRecordingRoot : Grid
+	{
+		public List<string> States { get; } = new();
+
+		protected override bool GoToElementStateCore(string stateName, bool useTransitions)
+		{
+			States.Add(stateName);
+			return false;
+		}
+	}
 
 	private partial class CustomTextBox : TextBox;
 

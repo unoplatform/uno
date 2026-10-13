@@ -135,6 +135,13 @@ public partial class Control
 	/// </remarks>
 	internal void OnValidationTemplateApplied()
 	{
+		// Runs for every templated control, so the feature-off path must stay free. A template just realized
+		// has no validation state to leave, so skipping the disabled state here loses nothing.
+		if (!FeatureConfiguration.InputValidation.IsEnabled)
+		{
+			return;
+		}
+
 		UpdateValidationStatesInternal();
 
 		if (IsValidationParticipant && HasValidationErrors)
