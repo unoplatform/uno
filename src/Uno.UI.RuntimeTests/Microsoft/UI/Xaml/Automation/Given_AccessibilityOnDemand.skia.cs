@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -14,7 +13,6 @@ using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.Helpers;
 using Uno.UI.Extensions;
-using Uno.UI.Hosting;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
@@ -91,7 +89,7 @@ public class Given_AccessibilityOnDemand
 			?? AccessibilityPeerHelper.IOSAllNodeSnapshotsForRootAccessor?.Invoke(xamlRoot)
 			?? Array.Empty<AccessibilityNativeNodeSnapshot>();
 
-		Assert.IsTrue(IsAccessibilityEnabled(GetAccessibility(xamlRoot)), "Reading the tree must enable the bridge.");
+		Assert.IsTrue(AccessibilityBridgeHelper.IsMobileAccessibilityEnabled(xamlRoot), "Reading the tree must enable the bridge.");
 		Assert.IsTrue(
 			snapshots.Any(snapshot => snapshot.Name == "Added without a client"),
 			"The first read must see content added while no client listened.");
@@ -207,103 +205,31 @@ public class Given_AccessibilityOnDemand
 	// Earlier tests enabled a bridge, which the router remembers for the rest of the run.
 	private sealed class RouterBridgeState : IDisposable
 	{
-		private readonly FieldInfo _field;
 		private readonly bool _wasEnabled;
 
-		private RouterBridgeState(FieldInfo field)
+		private RouterBridgeState()
 		{
-			_field = field;
-			_wasEnabled = field.GetValue(null) is true;
-			field.SetValue(null, false);
+			_wasEnabled = IsAnyBridgeEnabled;
+			AccessibilityPeerHelper.SetAnyAccessibilityBridgeEnabledAction!(false);
 		}
 
-		public bool IsAnyBridgeEnabled => _field.GetValue(null) is true;
+		public bool IsAnyBridgeEnabled => AccessibilityPeerHelper.IsAnyAccessibilityBridgeEnabledAccessor?.Invoke() is true;
 
 		public static RouterBridgeState ResetToNeverEnabled()
-		{
-			var router = AppDomain.CurrentDomain.GetAssemblies()
-				.Select(assembly => assembly.GetType("Uno.UI.Runtime.AccessibilityRouter", throwOnError: false))
-				.FirstOrDefault(type => type is not null)
-				?? throw new InvalidOperationException("AccessibilityRouter type not found.");
-			var field = router.GetField("_anyBridgeEnabled", BindingFlags.Static | BindingFlags.NonPublic)
-				?? throw new InvalidOperationException("AccessibilityRouter._anyBridgeEnabled not found.");
-			return new RouterBridgeState(field);
-		}
+			=> AccessibilityPeerHelper.IsAnyAccessibilityBridgeEnabledAccessor is null || AccessibilityPeerHelper.SetAnyAccessibilityBridgeEnabledAction is null
+				? throw new InvalidOperationException("The accessibility router is not initialized.")
+				: new RouterBridgeState();
 
 		public void Dispose()
 		{
 			if (_wasEnabled)
 			{
-				_field.SetValue(null, true);
+				AccessibilityPeerHelper.SetAnyAccessibilityBridgeEnabledAction?.Invoke(true);
 			}
 		}
 	}
 
-	// Earlier tests read the tree, which enables the mobile bridges for the rest of the run: start again from an app
-	// no client ever queried, and resume afterwards the way a client's next query would.
-	private static async Task<IDisposable> SuspendAccessibilityClient()
-	{
-		// Lets an already queued native tree rebuild run before the content under test exists.
-		await TestServices.WindowHelper.WaitForIdle();
-
-		var accessibility = GetAccessibility(TestServices.WindowHelper.XamlRoot);
-		var type = accessibility?.GetType();
-		var requestedField = type?.GetField("_clientRequestedTree", BindingFlags.Instance | BindingFlags.NonPublic);
-		var ensureRequested = type?.GetMethod("EnsureTreeRequested", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-		if (accessibility is null || requestedField is null || ensureRequested is null)
-		{
-			return new Resume(null);
-		}
-
-		var recordingField = type!.GetField("_recordEvents", BindingFlags.Instance | BindingFlags.NonPublic);
-		var wasRequested = requestedField.GetValue(accessibility) is true;
-		var wasRecording = recordingField?.GetValue(accessibility) is true;
-		requestedField.SetValue(accessibility, false);
-		recordingField?.SetValue(accessibility, false);
-
-		var resume = new Resume(() =>
-		{
-			if (wasRequested)
-			{
-				ensureRequested.Invoke(accessibility, null);
-			}
-			else
-			{
-				// The test's own query enabled the bridge, possibly with routing it then reset: go back to never queried,
-				// so the next client's query enables everything again.
-				MobileAccessibilityTestHelper.ReleaseClientRequest(accessibility, requestedField, recordingField);
-			}
-
-			recordingField?.SetValue(accessibility, wasRecording);
-		});
-
-		if (IsAccessibilityEnabled(accessibility))
-		{
-			resume.Dispose();
-			Assert.Inconclusive("An accessibility service is running on this device.");
-		}
-
-		return resume;
-	}
-
-	private sealed class Resume(Action? resume) : IDisposable
-	{
-		private Action? _resume = resume;
-
-		public void Dispose()
-		{
-			_resume?.Invoke();
-			_resume = null;
-		}
-	}
-
-	private static object? GetAccessibility(XamlRoot xamlRoot)
-		=> XamlRootMap.GetHostForRoot(xamlRoot) is { } host
-			? host.GetType().GetProperty("Accessibility", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(host)
-			: null;
-
-	private static bool IsAccessibilityEnabled(object? accessibility)
-		=> accessibility?.GetType().GetProperty("IsAccessibilityEnabled", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(accessibility) is true;
+	private static Task<IDisposable> SuspendAccessibilityClient() => AccessibilityBridgeHelper.SuspendMobileAccessibilityClient();
 
 	private static IEnumerable<UIElement> EnumerateSubtree(UIElement root)
 	{

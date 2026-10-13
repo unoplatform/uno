@@ -73,6 +73,27 @@ public class Given_MobileAccessibilityEvents_iOS
 		Assert.IsNotNull(AccessibilityPeerHelper.IOSClearAccessibilityEventsAction);
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_iOS_Disabled_Then_Bridge_Stops_Listening_Until_Read_Again()
+	{
+		var button = new Button { Content = "Disable Test" };
+		await UITestHelper.Load(button);
+		var root = button.XamlRoot!;
+		ClearEvents(root);
+		Assert.IsTrue(AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged), "Reading events should start listening.");
+
+		AccessibilityPeerHelper.IOSDisableAccessibilityAction?.Invoke(root);
+
+		Assert.IsFalse(AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged), "Disabling should stop listening.");
+		AutomationProperties.SetName(button, "Changed while disabled");
+		await UITestHelper.WaitForIdle();
+
+		Assert.IsEmpty(GetEvents(root), "Nothing should be recorded while disabled.");
+		Assert.IsTrue(AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged), "Reading events again should re-enable listening.");
+		Assert.IsNotNull(GetSnapshot(button));
+	}
+
 	// Property changes produce one coalesced native invalidation per dispatcher cycle.
 
 	[TestMethod]

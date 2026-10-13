@@ -491,6 +491,16 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 	}
 
+	// Test hooks: the render view's own overrides are not reachable through reflection once NativeAOT trims them.
+	internal void DispatchKeyDownToHost(int keyCode)
+		=> _host.DispatchKeyEvent(new KeyEvent(KeyEventActions.Down, (Keycode)keyCode));
+
+	internal void RefocusHost()
+	{
+		OnHostFocusChanged(false, (int)FocusSearchDirection.Forward, null);
+		OnHostFocusChanged(true, (int)FocusSearchDirection.Forward, null);
+	}
+
 	// Forwarded by the render view. AndroidX would move the virtual keyboard focus by geometry when the host gains
 	// native focus (e.g. TextInputPlugin requesting it for a TextBox), but XAML owns keyboard focus: mirror it instead.
 	internal void OnHostFocusChanged(bool gainFocus, int direction, global::Android.Graphics.Rect? previouslyFocusedRect)
@@ -843,6 +853,14 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		_registeredRawActionAccessor = null;
 		_registeredFocusAccessor = null;
 		_registeredFocusedNodeAccessor = null;
+		ReleaseNodeState();
+		StopTrackingAccessibilityState();
+		_adapter = null;
+	}
+
+	// Drops native focus and every virtual-node mapping, so the next client query rebuilds the tree from scratch.
+	internal void ReleaseNodeState()
+	{
 		if (_nativeFocusedId >= 0)
 		{
 			ClearNativeAccessibilityFocus(_nativeFocusedId);
@@ -869,8 +887,6 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		_resourceSegmentByAutomationId.Clear();
 		_automationIdByResourceSegment.Clear();
 		MarkAccessibilityTreeDirty();
-		StopTrackingAccessibilityState();
-		_adapter = null;
 	}
 
 	private bool PerformRawAction(int virtualViewId, int action)

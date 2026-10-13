@@ -663,6 +663,30 @@ public class Given_MobileAccessibilityEvents_Android
 			"Expected WindowChanged after MenuOpened.");
 	}
 
+	// Disable undoes what test hooks latched on -----------------------------------
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Disabled_Then_Bridge_Stops_Listening_Until_Read_Again()
+	{
+		var button = new Button { Content = "Disable Test" };
+		await UITestHelper.Load(button);
+		var root = button.XamlRoot!;
+		EnsureVirtualId(button);
+		GetAndClearEvents(root);
+		Assert.IsTrue(AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged), "Reading events should start listening.");
+
+		AccessibilityPeerHelper.AndroidDisableAccessibilityAction?.Invoke(root);
+
+		Assert.IsFalse(AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged), "Disabling should stop listening.");
+		AutomationProperties.SetName(button, "Changed while disabled");
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsEmpty(GetAndClearEvents(root), "Nothing should be recorded while disabled.");
+		Assert.IsTrue(AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged), "Reading events again should re-enable listening.");
+		Assert.IsNotNull(AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(button));
+	}
+
 	// ClearEvents resets the log ------------------------------------------------
 
 	[TestMethod]
