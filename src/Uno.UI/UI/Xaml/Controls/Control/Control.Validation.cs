@@ -5,7 +5,6 @@
 
 #nullable enable
 
-using Uno.Extras.Input;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation.Collections;

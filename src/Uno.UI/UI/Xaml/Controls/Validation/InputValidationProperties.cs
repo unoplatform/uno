@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml;
 namespace Uno.UI.Xaml.Controls;
 
 /// <summary>
-/// The attached properties of <c>Uno.Extras.Input.Validation</c>, which Uno.UI.Extras owns and hands over
+/// The attached properties of <c>Uno.UI.Xaml.Controls.Validation</c>, which Uno.UI.Extras owns and hands over
 /// from its static constructor so that the engine here can read and write them.
 /// </summary>
 /// <remarks>

@@ -9,7 +9,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extras.Input;
 using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.InputValidation;

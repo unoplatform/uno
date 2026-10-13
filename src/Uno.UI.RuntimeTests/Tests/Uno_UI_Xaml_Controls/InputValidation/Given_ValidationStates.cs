@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Uno.Extras.Input;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation.Collections;
 using static Private.Infrastructure.TestServices;
@@ -199,7 +199,7 @@ public class Given_ValidationStates
 		// to one, which is why the properties are not mirrored onto the controls.
 		var style = (Style)XamlReader.Load("""
 			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-				   xmlns:input="using:Uno.Extras.Input"
+				   xmlns:input="using:Uno.UI.Xaml.Controls"
 				   TargetType="TextBox">
 				<Setter Property="input:Validation.Mode" Value="Auto" />
 				<Setter Property="input:Validation.Kind" Value="Inline" />

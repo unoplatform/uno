@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extras.Input;
 using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.InputValidation;
@@ -147,14 +146,14 @@ public partial class Given_InputValidationProperty
 			Border.TagProperty,
 			new Binding
 			{
-				Path = new PropertyPath("(Uno.Extras.Input:Validation.HasErrors)"),
+				Path = new PropertyPath("(Uno.UI.Xaml.Controls:Validation.HasErrors)"),
 				Source = source,
 			});
 		errors.SetBinding(
 			Border.TagProperty,
 			new Binding
 			{
-				Path = new PropertyPath("(Uno.Extras.Input:Validation.Errors)"),
+				Path = new PropertyPath("(Uno.UI.Xaml.Controls:Validation.Errors)"),
 				Source = source,
 			});
 

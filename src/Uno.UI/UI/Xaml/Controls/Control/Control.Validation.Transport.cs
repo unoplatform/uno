@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.UI.Xaml.Data;
-using Uno.Extras.Input;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation.Collections;
@@ -15,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// Routes the validation errors of a binding source to the control that bound to it.
 /// </summary>
 /// <remarks>
-/// Plumbing rather than API: the surface an application uses is the <c>Uno.Extras.Input.Validation</c>
+/// Plumbing rather than API: the surface an application uses is the <c>Uno.UI.Xaml.Controls.Validation</c>
 /// attached properties of Uno.UI.Extras.
 /// Requires <see cref="Uno.UI.FeatureConfiguration.InputValidation.IsEnabled"/> to be set before the first
 /// binding is registered, and the control's type to declare an
