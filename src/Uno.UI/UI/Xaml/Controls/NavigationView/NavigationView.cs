@@ -275,6 +275,9 @@ public partial class NavigationView : ContentControl
 	private void OnSelectionModelSelectionChanged(SelectionModel selectionModel, SelectionModelSelectionChangedEventArgs e)
 	{
 		var selectedItem = selectionModel.SelectedItem;
+#if HAS_UNO
+		// Uno-specific workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/11927
+		// and https://github.com/unoplatform/uno/issues/24508: refresh ancestor selection and guard against reentrant change.
 		if (m_appliedTemplate && (selectedItem is null || selectedItem != SelectedItem))
 		{
 			// An index-only change preserves ancestor identities and may precede repeater index updates.
@@ -285,6 +288,7 @@ public partial class NavigationView : ContentControl
 				return;
 			}
 		}
+#endif
 
 		// Ignore this callback if:
 		// 1. the SelectedItem property of NavigationView is already set to the item
@@ -1036,7 +1040,13 @@ public partial class NavigationView : ContentControl
 					}
 					else if (!IsPaneOpen && indexPath.GetSize() == 0)
 					{
+#if HAS_UNO
+						// Uno-specific workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/11927
+						// and https://github.com/unoplatform/uno/issues/24508
 						UpdateIsChildSelected(null); // Update IsChildSelected Property of Parent Chain
+#else
+						UpdateIsChildSelected(indexPathFromModel, null); // Update IsChildSelected Property of Parent Chain
+#endif
 						if (m_prevIndicator == null && m_nextIndicator == null && m_activeIndicator != null)
 						{
 							// Remove selection indication if we are not in the middle of an ongoing animation
@@ -1357,7 +1367,11 @@ public partial class NavigationView : ContentControl
 				SetNavigationViewItemRevokers(nvi);
 
 				var item = MenuItemFromContainer(nvi);
+#if HAS_UNO
+				// Uno-specific workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/11927
+				// and https://github.com/unoplatform/uno/issues/24508
 				UpdateIsChildSelectedForContainer(nvi);
+#endif
 
 				if (SelectedItem == item && IsVisible(nvi))
 				{
@@ -1404,10 +1418,14 @@ public partial class NavigationView : ContentControl
 	{
 		if (args.Element is NavigationViewItemBase nvib)
 		{
+#if HAS_UNO
+			// Uno-specific workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/11927
+			// and https://github.com/unoplatform/uno/issues/24508
 			if (nvib is NavigationViewItem item)
 			{
 				SetIsChildSelected(item, false);
 			}
+#endif
 
 			var nvibImpl = nvib;
 			nvibImpl.Depth = 0;
@@ -2664,10 +2682,22 @@ public partial class NavigationView : ContentControl
 
 	private void UpdateSelectionModelSelection(IndexPath ip)
 	{
+#if HAS_UNO
+		// Uno-specific workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/11927
+		// and https://github.com/unoplatform/uno/issues/24508
 		m_selectionModel.SelectAt(ip);
 		UpdateIsChildSelected(m_selectionModel.SelectedIndex);
+#else
+		var prevIndexPath = m_selectionModel.SelectedIndex;
+		m_selectionModel.SelectAt(ip);
+		UpdateIsChildSelected(prevIndexPath, ip);
+#endif
 	}
 
+#if HAS_UNO
+	// Uno-specific workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/11927
+	// and https://github.com/unoplatform/uno/issues/24508: track selected ancestor containers
+	// across collection mutations so IsChildSelected state is cleared reliably.
 	private void UpdateIsChildSelected(IndexPath nextIP)
 	{
 		var selectedItem = m_selectionModel.SelectedItem;
@@ -2753,6 +2783,48 @@ public partial class NavigationView : ContentControl
 		}
 		container.IsChildSelected = isChildSelected;
 	}
+#else
+	private void UpdateIsChildSelected(IndexPath prevIP, IndexPath nextIP)
+	{
+		if (prevIP != null && prevIP.GetSize() > 0)
+		{
+			UpdateIsChildSelectedForIndexPath(prevIP, false /*isChildSelected*/);
+		}
+
+		if (nextIP != null && nextIP.GetSize() > 0)
+		{
+			UpdateIsChildSelectedForIndexPath(nextIP, true /*isChildSelected*/);
+		}
+	}
+
+	private void UpdateIsChildSelectedForIndexPath(IndexPath ip, bool isChildSelected)
+	{
+		// Update the isChildSelected property for every container on the IndexPath (with the exception of the actual container pointed to by the indexpath)
+		var container = GetContainerForIndex(ip.GetAt(1), ip.GetAt(0) == c_footerMenuBlockIndex /*inFooter*/);
+		// first index is fo mainmenu or footer
+		// second is index of item in mainmenu or footer
+		// next in menuitem children
+		var index = 2;
+		while (container != null)
+		{
+			if (container is NavigationViewItem nvi)
+			{
+				nvi.IsChildSelected = isChildSelected;
+				var nextIR = nvi.GetRepeater();
+				if (nextIR != null)
+				{
+					if (index < ip.GetSize() - 1)
+					{
+						container = nextIR.TryGetElement(ip.GetAt(index));
+						index++;
+						continue;
+					}
+				}
+			}
+			container = null;
+		}
+	}
+#endif
 
 	private void RaiseItemInvoked(
 		object item,

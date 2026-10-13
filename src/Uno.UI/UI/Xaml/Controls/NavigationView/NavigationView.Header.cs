@@ -164,7 +164,12 @@ public partial class NavigationView
 	private TopNavigationViewDataProvider m_topDataProvider;
 
 	private SelectionModel m_selectionModel = new();
+#if HAS_UNO
+	// Uno-specific workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/11927
+	// and https://github.com/unoplatform/uno/issues/24508: track selected ancestor containers
+	// across collection mutations so IsChildSelected state is cleared reliably.
 	private readonly List<global::System.WeakReference<NavigationViewItem>> m_selectedAncestors = new();
+#endif
 	private IList<object> m_selectionModelSource;
 
 	private ItemsSourceView m_menuItemsSource;
