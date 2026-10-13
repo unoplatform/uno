@@ -1210,8 +1210,10 @@ partial class ListViewBaseItem
 			var width = ActualWidth;
 			var height = ActualHeight;
 
+			// Uno-specific: only when the pointer is still tracked as over, since an exit raised during the drag is not raised again.
 			if (dragPointRelativeToLVBI.X >= 0.0 && dragPointRelativeToLVBI.X <= width &&
-				dragPointRelativeToLVBI.Y >= 0.0 && dragPointRelativeToLVBI.Y <= height)
+				dragPointRelativeToLVBI.Y >= 0.0 && dragPointRelativeToLVBI.Y <= height &&
+				IsPointerOver)
 			{
 				// Pointer is within item's boundaries. Use the PointerOver visual state.
 				m_shouldEnterPointerOver = true;
