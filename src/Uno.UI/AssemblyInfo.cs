@@ -37,6 +37,7 @@ using Uno.Foundation.Extensibility;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Linux.FrameBuffer")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Headless")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.X11")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Wayland")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.HRApp")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly.Browser")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Android")]
