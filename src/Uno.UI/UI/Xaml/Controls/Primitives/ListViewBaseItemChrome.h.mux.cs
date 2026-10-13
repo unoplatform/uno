@@ -3,6 +3,7 @@
 // MUX Reference ListViewBaseItemChrome.h, tag winui3/release/2.5.1
 
 #nullable enable
+#pragma warning disable IDE0051 // Unused members kept for 1:1 parity with ListViewBaseItemChrome.h
 
 using System;
 using System.Collections.Generic;

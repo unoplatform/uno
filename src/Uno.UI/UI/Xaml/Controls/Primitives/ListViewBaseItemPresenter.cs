@@ -5,6 +5,7 @@
 
 #nullable enable
 
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -39,11 +40,11 @@ public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 
 			if (property == ListViewItemPresenter.SelectionIndicatorVisualEnabledProperty)
 			{
-				defaultValue = forRoundedListViewBaseItemChrome;
+				defaultValue = Boxer.Box(forRoundedListViewBaseItemChrome);
 			}
 			else if (property == ListViewItemPresenter.DisabledOpacityProperty || property == GridViewItemPresenter.DisabledOpacityProperty)
 			{
-				defaultValue = (double)ListViewBaseItemPresenter.GetDefaultDisabledOpacity(forRoundedListViewBaseItemChrome);
+				defaultValue = Boxer.Box((double)ListViewBaseItemPresenter.GetDefaultDisabledOpacity(forRoundedListViewBaseItemChrome));
 			}
 			else
 			{
