@@ -236,6 +236,209 @@ public class Given_ContainerVisual
 		}
 	}
 
+	// Flat content renders the same under a transform that flattens Z (M33 = 0, as Lottie's Scale(x, y, 0) gives) as
+	// under the same transform with M33 = 1. Each test compares the two pixel for pixel.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
+	[DataRow(false, false)]
+	[DataRow(true, false)]
+	[DataRow(false, true)]
+	[DataRow(true, true)]
+	public async Task When_Children_Under_Flattening_Transform(bool collapse, bool commandList)
+	{
+		var forceFallbackRetainedRendering = global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering;
+		try
+		{
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = commandList;
+			var flattened = CreateScaledSquares(flattensZ: true, collapse);
+			var expected = CreateScaledSquares(flattensZ: false, collapse);
+			await UITestHelper.Load(new StackPanel { Children = { flattened.Host, expected.Host } });
+
+			await AssertRendersLike(flattened.Host, expected.Host, Colors.Red, Colors.Blue);
+
+			// Repainting the offset square re-records the children, and the identity square's matrix is no longer dirty
+			// this time, so it renders with the matrix the recording starts with.
+			flattened.OffsetSquare.Brush = flattened.OffsetSquare.Compositor.CreateColorBrush(Colors.Green);
+			expected.OffsetSquare.Brush = expected.OffsetSquare.Compositor.CreateColorBrush(Colors.Green);
+			await AssertRendersLike(flattened.Host, expected.Host, Colors.Green, Colors.Blue);
+
+			// Moving the container replays that recording under the new matrix.
+			flattened.Container.Offset = expected.Container.Offset = new Vector3(4, 4, 0);
+			await AssertRendersLike(flattened.Host, expected.Host, Colors.Green, Colors.Blue);
+		}
+		finally
+		{
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = forceFallbackRetainedRendering;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
+	public async Task When_Redirect_Source_Under_Flattening_Transform()
+	{
+		var flattened = CreateScaledSquares(flattensZ: true, collapse: false);
+		var expected = CreateScaledSquares(flattensZ: false, collapse: false);
+		var flattenedRedirect = CreateRedirectHost(flattened.OffsetSquare);
+		var expectedRedirect = CreateRedirectHost(expected.OffsetSquare);
+		await UITestHelper.Load(new StackPanel { Children = { flattened.Host, expected.Host, flattenedRedirect, expectedRedirect } });
+
+		await AssertRendersLike(flattenedRedirect, expectedRedirect, Colors.Red);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
+	public async Task When_Shadow_Fallback_Under_Flattening_Transform()
+	{
+		var flattened = CreateShadowedCard(flattensZ: true);
+		var expected = CreateShadowedCard(flattensZ: false);
+		await UITestHelper.Load(new StackPanel { Children = { flattened, expected } });
+
+		// Only the card's content is compared: Skia draws the drop shadow filter itself differently under M33 = 0.
+		var expectedScreenshot = await UITestHelper.ScreenShot(expected);
+		AssertHasColor(expectedScreenshot, Colors.LimeGreen);
+		Assert.AreEqual(
+			ImageAssert.GetColorBounds(expectedScreenshot, Colors.LimeGreen, tolerance: 10),
+			ImageAssert.GetColorBounds(await UITestHelper.ScreenShot(flattened), Colors.LimeGreen, tolerance: 10));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
+	public async Task When_Panel_Layout_Clip_Under_Flattening_Transform()
+	{
+		var flattened = CreateClippedPanel(flattensZ: true);
+		var expected = CreateClippedPanel(flattensZ: false);
+		await UITestHelper.Load(new StackPanel { Children = { flattened, expected } });
+
+		await AssertRendersLike(flattened, expected, Colors.Red);
+	}
+
+	private static async Task AssertRendersLike(FrameworkElement actual, FrameworkElement expected, params Color[] colors)
+	{
+		var expectedScreenshot = await UITestHelper.ScreenShot(expected);
+		foreach (var color in colors)
+		{
+			AssertHasColor(expectedScreenshot, color);
+		}
+
+		await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(actual), expectedScreenshot);
+	}
+
+	// The reference must render, or two blank screenshots would compare equal.
+	private static void AssertHasColor(RawBitmap screenshot, Color color)
+		=> ImageAssert.HasColorInRectangle(screenshot, new global::System.Drawing.Rectangle(0, 0, screenshot.Width, screenshot.Height), color, tolerance: 10);
+
+	// A blue square with an identity local transform and a red one with an offset, under a 2x scale container.
+	private static (Border Host, global::Microsoft.UI.Composition.ContainerVisual Container, global::Microsoft.UI.Composition.SpriteVisual OffsetSquare) CreateScaledSquares(bool flattensZ, bool collapse)
+	{
+		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
+		var enable = global::Microsoft.UI.Composition.Visual.EnablePictureCollapsingOptimization;
+		var frameThreshold = global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold;
+		var countThreshold = global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold;
+		global::Microsoft.UI.Composition.ContainerVisual container;
+		global::Microsoft.UI.Composition.SpriteVisual offsetSquare;
+		try
+		{
+			if (collapse)
+			{
+				// Visuals capture these when created, so only the ones built here collapse: the host, built after, doesn't.
+				global::Microsoft.UI.Composition.Visual.EnablePictureCollapsingOptimization = true;
+				global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold = 0;
+				global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold = 0;
+			}
+
+			container = compositor.CreateContainerVisual();
+			container.TransformMatrix = new Matrix4x4(
+				2, 0, 0, 0,
+				0, 2, 0, 0,
+				0, 0, flattensZ ? 0 : 1, 0,
+				10, 10, 0, 1);
+
+			var identitySquare = compositor.CreateSpriteVisual();
+			identitySquare.Size = new Vector2(20, 20);
+			identitySquare.Brush = compositor.CreateColorBrush(Colors.Blue);
+			container.Children.InsertAtTop(identitySquare);
+
+			offsetSquare = compositor.CreateSpriteVisual();
+			offsetSquare.Size = new Vector2(20, 20);
+			offsetSquare.Offset = new Vector3(20, 20, 0);
+			offsetSquare.Brush = compositor.CreateColorBrush(Colors.Red);
+			container.Children.InsertAtTop(offsetSquare);
+		}
+		finally
+		{
+			global::Microsoft.UI.Composition.Visual.EnablePictureCollapsingOptimization = enable;
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold = frameThreshold;
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold = countThreshold;
+		}
+
+		var host = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
+		global::Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetElementChildVisual(host, container);
+		return (host, container, offsetSquare);
+	}
+
+	private static Border CreateRedirectHost(global::Microsoft.UI.Composition.Visual source)
+	{
+		var redirect = TestServices.WindowHelper.XamlRoot.Compositor.CreateRedirectVisual(source);
+		redirect.Size = new Vector2(100, 100);
+		var host = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
+		global::Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetElementChildVisual(host, redirect);
+		return host;
+	}
+
+	// A translucent gradient can't take the analytic shadow, so the card records its subtree for the fallback one.
+	private static FrameworkElement CreateShadowedCard(bool flattensZ)
+	{
+		var gradient = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(1, 1) };
+		gradient.GradientStops.Add(new GradientStop { Color = Color.FromArgb(0x80, 0xFF, 0xA5, 0x00), Offset = 0 });
+		gradient.GradientStops.Add(new GradientStop { Color = Colors.Purple, Offset = 1 });
+
+		return new Grid
+		{
+			Width = 180,
+			Height = 180,
+			Background = new SolidColorBrush(Colors.White),
+			Projection = CreateZScale(flattensZ),
+			Children =
+			{
+				new Border
+				{
+					Width = 100,
+					Height = 100,
+					Background = gradient,
+					HorizontalAlignment = HorizontalAlignment.Center,
+					VerticalAlignment = VerticalAlignment.Center,
+					Shadow = new ThemeShadow(),
+					Translation = new Vector3(0, 0, 32),
+					Child = new Ellipse { Width = 50, Height = 50, Fill = new SolidColorBrush(Colors.LimeGreen) },
+				},
+			},
+		};
+	}
+
+	// The Grid is wider than its slot, so it gets a layout clip, which a Panel applies as an ancestor clip.
+	private static FrameworkElement CreateClippedPanel(bool flattensZ)
+		=> new Border
+		{
+			Width = 150,
+			Height = 100,
+			Background = new SolidColorBrush(Colors.White),
+			Projection = CreateZScale(flattensZ),
+			Child = new Border
+			{
+				Width = 100,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				Child = new Grid
+				{
+					Width = 140,
+					HorizontalAlignment = HorizontalAlignment.Left,
+					Children = { new Rectangle { Fill = new SolidColorBrush(Colors.Red) } },
+				},
+			},
+		};
+
+	private static Matrix3DProjection CreateZScale(bool flattensZ)
+		=> new() { ProjectionMatrix = new global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, flattensZ ? 0 : 1, 0, 0, 0, 0, 1) };
+
 	private static FrameworkElement BuildRenderComparisonScene()
 	{
 		var gradient = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(1, 1) };
