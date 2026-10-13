@@ -854,6 +854,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Measured_With_Another_Constraint_Then_Font_Change_Laid_Out()
+		{
+			var SUT = new TextBlock { Text = "ABC", FontSize = 20 };
+			var host = new Border { Width = 200, Height = 100, Child = SUT };
+			await UITestHelper.Load(host);
+
+			var height = SUT.ActualHeight;
+
+			SUT.FontSize = 40;
+			host.Width = 300;
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.ActualHeight > height, $"Laid out with the new font size (height {SUT.ActualHeight}).");
+		}
+
+		[TestMethod]
 		public async Task When_Wrapping_Measured_With_Narrower_Constraint_Then_Laid_Out_Again()
 		{
 			var SUT = new TextBlock { Text = "ABC DEF GHI JKL", FontSize = 20, TextWrapping = TextWrapping.Wrap };
