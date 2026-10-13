@@ -1173,6 +1173,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(320, outerScrollViewer.VerticalOffset);
 		}
 
+		// The inner content is stretched past its desired size, so the inner viewport is taller than that content
+		// asks for: the request must still reach the outer ScrollViewer instead of being dropped as out of view.
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Nested_Stretched_Content_BringIntoView_Then_Outer_Scrolls()
+		{
+			var item = new Border
+			{
+				Background = new SolidColorBrush(Colors.Red),
+				Width = 100,
+				Height = 40,
+				VerticalAlignment = VerticalAlignment.Bottom,
+			};
+			var innerScrollViewer = new ScrollViewer
+			{
+				Height = 200,
+				Margin = new Thickness(0, 400, 0, 0),
+				Content = new Grid { Children = { item } },
+			};
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Width = 200,
+				Content = innerScrollViewer,
+			};
+			try
+			{
+				WindowHelper.WindowContent = outerScrollViewer;
+				await WindowHelper.WaitForLoaded(item);
+
+				item.StartBringIntoView(new BringIntoViewOptions() { AnimationDesired = false });
+
+				await WindowHelper.WaitFor(
+					() => Math.Abs(outerScrollViewer.VerticalOffset - 300) < 1,
+					message: $"The outer ScrollViewer did not scroll the item into view (offset {outerScrollViewer.VerticalOffset}, expected 300).");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 
 		[TestMethod]
 		[RunsOnUIThread]
