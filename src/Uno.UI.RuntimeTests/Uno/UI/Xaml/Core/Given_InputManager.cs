@@ -82,6 +82,67 @@ public class Given_InputManager
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
+	public async Task When_LeaveRemovesUnrelatedElement_Then_OriginalSourceNotHitTestedAgain()
+	{
+		Border col1, col3;
+		HitTestCountingBorder col2;
+		var ui = new Grid
+		{
+			Width = 300,
+			Height = 100,
+			ColumnDefinitions =
+			{
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+			},
+			Children =
+			{
+				(col1 = new Border { Background = new SolidColorBrush(Colors.DeepPink) }),
+				(col2 = new HitTestCountingBorder { Background = new SolidColorBrush(Colors.DeepSkyBlue) }),
+				(col3 = new Border { Background = new SolidColorBrush(Colors.Gold) }),
+			}
+		};
+
+		Grid.SetColumn(col1, 0);
+		Grid.SetColumn(col2, 1);
+		Grid.SetColumn(col3, 2);
+
+		var position = await UITestHelper.Load(ui);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		var entered = 0;
+		col1.PointerExited += (snd, args) => ui.Children.Remove(col3);
+		col2.PointerEntered += (snd, args) => entered++;
+
+		mouse.MoveTo(position.Location.Offset(50, 50), steps: 1);
+		await TestServices.WindowHelper.WaitForIdle();
+		col2.HitTests = 0;
+
+		mouse.MoveTo(position.Location.Offset(150, 50), steps: 1);
+
+		Assert.IsNull(col3.Parent, "The pointer leaving col1 should have removed col3.");
+		Assert.AreEqual(1, entered);
+		Assert.AreEqual(1, col2.HitTests, "Removing an element outside of col2's branch cannot change the hit-test result.");
+	}
+
+	private sealed class HitTestCountingBorder : Border
+	{
+		public int HitTests { get; set; }
+
+		internal override bool HitTest(Point point)
+		{
+			HitTests++;
+			return base.HitTest(point);
+		}
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_LeaveElementWhileManipulating_Then_CaptureNotLost()
 	{
 		Border sut;
