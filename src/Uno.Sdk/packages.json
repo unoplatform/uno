@@ -15,6 +15,7 @@
 			"Uno.WinUI.Runtime.Linux.FrameBuffer",
 			"Uno.WinUI.Runtime.MacOS",
 			"Uno.WinUI.Runtime.Win32",
+			"Uno.WinUI.Runtime.Wayland",
 			"Uno.WinUI.Runtime.X11",
 			"Uno.WinUI.Runtime.Android",
 			"Uno.WinUI.Runtime.AppleUIKit",

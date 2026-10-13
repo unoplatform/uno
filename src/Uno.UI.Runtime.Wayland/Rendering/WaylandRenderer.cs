@@ -2,9 +2,7 @@
 
 using System;
 using System.Threading;
-using Microsoft.UI.Xaml.Media;
 using Uno.UI.Composition.Drawing;
-using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Wayland.Rendering;
 
@@ -17,17 +15,39 @@ internal interface IWaylandFrameGate
 	/// <summary>Called before Uno draws its latest recorded frame.</summary>
 	void BeginFrame();
 
+	/// <summary>After <see cref="BeginFrame"/>: whether Uno's latest frame was recorded for the configured generation.</summary>
+	bool IsFrameReady { get; }
+
 	/// <summary>Called right before the commit, with the drawn frame's size and the configured buffer size.</summary>
 	bool CanPresent(int frameWidth, int frameHeight, int bufferWidth, int bufferHeight);
+
+	/// <summary>Called after a frame was committed or consumed by the liveness fallback.</summary>
+	void EndFrame(bool presented);
+
+	/// <summary>Called at a display callback or liveness opportunity, independently of layout readiness.</summary>
+	void FrameOpportunity();
+}
+
+/// <summary>
+/// The window's Uno frame producer (its CompositionTarget once content exists). All members run on the
+/// window's render thread.
+/// </summary>
+internal interface IWaylandFrameProducer
+{
+	/// <summary>Replays Uno's latest frame into the swap chain; false when the window has no content yet.</summary>
+	bool TryRequestFrame(ISwapChain swapChain);
+
+	/// <summary>Declines the latest frame without replaying it; Uno still releases the next UI frame.</summary>
+	void SkipFrame();
 }
 
 /// <summary>
 /// Drives one window's frames over its negotiated graphics context, paced by wl_surface frame callbacks.
 /// Rendering and graphics lifecycle run on the window's render thread.
 /// </summary>
-internal sealed class WaylandRenderer : IDisposable
+internal sealed class WaylandRenderer : IDisposable, ISwapChain
 {
-	private readonly IXamlRootHost _host;
+	private readonly IWaylandFrameProducer _frames;
 	private readonly IWaylandFrameGate _gate;
 	private readonly WaylandFrameScheduler _scheduler;
 	private IWaylandGraphicsContext _context;
@@ -38,14 +58,14 @@ internal sealed class WaylandRenderer : IDisposable
 	private bool _commitAllowed;
 	private bool _disposed;
 
-	public WaylandRenderer(IXamlRootHost host, IWaylandFrameGate gate, WaylandRenderScale scale, IWaylandGraphicsContext context, IDrawingFactory drawingFactory, Protocols.WlSurface surface, Action<Action> postToOwner)
+	public WaylandRenderer(IWaylandFrameProducer frames, IWaylandFrameGate gate, WaylandRenderScale scale, IWaylandGraphicsContext context, IDrawingFactory drawingFactory, Protocols.WlSurface surface, Action<Action> postToOwner)
 	{
-		_host = host;
+		_frames = frames;
 		_gate = gate;
 		Scale = scale;
 		_context = context;
 		_drawingFactory = drawingFactory;
-		_scheduler = new WaylandFrameScheduler(surface, Render, ProduceUnpresentedFrame, postToOwner);
+		_scheduler = new WaylandFrameScheduler(surface, Render, ProduceUnpresentedFrame, postToOwner, _gate.FrameOpportunity);
 		Attach(context);
 	}
 
@@ -120,17 +140,42 @@ internal sealed class WaylandRenderer : IDisposable
 
 	private bool Draw(bool commit)
 	{
-		if (_disposed
-			|| _context is WaylandEglGraphicsContext { IsLost: true }
-			|| _host.RootElement?.Visual.CompositionTarget is not CompositionTarget compositionTarget)
+		if (_disposed || _context is WaylandEglGraphicsContext { IsLost: true })
 		{
 			return false;
 		}
-		_commitAllowed = commit;
 		_gate.BeginFrame();
-		compositionTarget.OnNativePlatformFrameRequested(_context);
-		return commit && _context.Committed;
+		if (!_gate.IsFrameReady)
+		{
+			// The UI is still laying out a newer configure: its last frame would be rejected at the commit, so
+			// replaying it is wasted work. Uno schedules its next UI frame from this request, so release it anyway.
+			_frames.SkipFrame();
+			return false;
+		}
+		_commitAllowed = commit;
+		if (!_frames.TryRequestFrame(this))
+		{
+			_gate.EndFrame(false);
+			return false;
+		}
+		var presented = commit && _context.Committed;
+		if (presented || !commit)
+		{
+			_gate.EndFrame(presented);
+		}
+		return presented;
 	}
+
+	GraphicsContextKind IGraphicsContext.Kind => _context.Kind;
+	bool ISwapChain.PreservesContents => _context.PreservesContents;
+
+	IRenderTarget ISwapChain.AcquireRenderTarget(int width, int height)
+	{
+		var size = WaylandRenderTargetSize.GetSize(_configured, _width, _height, Scale.EffectiveScale, width, height);
+		return _context.AcquireRenderTarget(size.Width, size.Height);
+	}
+
+	void ISwapChain.Present() => _context.Present();
 
 	private void Attach(IWaylandGraphicsContext context)
 	{

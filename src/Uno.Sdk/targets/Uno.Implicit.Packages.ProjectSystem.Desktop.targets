@@ -29,6 +29,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Linux.FrameBuffer" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.MacOS" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Win32" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Wayland" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.X11" ProjectSystem="true" />
 
 		<!-- Native libraries are referenced explicitly rather than left to the managed SkiaSharp / HarfBuzzSharp
