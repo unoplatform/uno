@@ -45,7 +45,7 @@ namespace Windows.Storage.Streams
 			=> new RandomAccessStreamReference(ct =>
 			{
 				return Task.FromResult(stream.TrySetContentType());
-			});
+			}, ownsOpenedStream: false);
 
 		private readonly Func<IAsyncOperation<IRandomAccessStreamWithContentType>> _open;
 
@@ -54,10 +54,14 @@ namespace Windows.Storage.Streams
 			_open = open;
 		}
 
-		internal RandomAccessStreamReference(Func<CancellationToken, Task<IRandomAccessStreamWithContentType>> open)
+		internal RandomAccessStreamReference(Func<CancellationToken, Task<IRandomAccessStreamWithContentType>> open, bool ownsOpenedStream = true)
 			: this(() => AsyncOperation.FromTask(open))
 		{
+			OwnsOpenedStream = ownsOpenedStream;
 		}
+
+		/// <summary>False when <see cref="OpenReadAsync"/> returns a caller-supplied stream that readers must not dispose.</summary>
+		internal bool OwnsOpenedStream { get; } = true;
 
 		public IAsyncOperation<IRandomAccessStreamWithContentType> OpenReadAsync()
 			=> _open();
