@@ -2488,6 +2488,7 @@ partial class ListViewBaseItemPresenter
 			RemoveChild(m_innerSelectionBorder);
 		}
 
+		m_recycledInnerSelectionBorder = m_innerSelectionBorder; // Uno-specific, see CreateOrReuseBorder
 		m_innerSelectionBorder = null;
 	}
 
@@ -2499,6 +2500,7 @@ partial class ListViewBaseItemPresenter
 
 		RemoveChild(m_outerBorder!);
 
+		m_recycledOuterBorder = m_outerBorder; // Uno-specific, see CreateOrReuseBorder
 		m_outerBorder = null;
 
 		if (m_backplateRectangle is not null)
@@ -2656,7 +2658,8 @@ partial class ListViewBaseItemPresenter
 
 		if (m_innerSelectionBorder is null)
 		{
-			m_innerSelectionBorder = new Border();
+			// Uno-specific: WinUI creates a new CBorder.
+			m_innerSelectionBorder = CreateOrReuseBorder(ref m_recycledInnerSelectionBorder);
 
 			m_innerSelectionBorder.IsHitTestVisible = false;
 
@@ -2689,7 +2692,8 @@ partial class ListViewBaseItemPresenter
 
 		if (m_outerBorder is null)
 		{
-			m_outerBorder = new Border();
+			// Uno-specific: WinUI creates a new CBorder.
+			m_outerBorder = CreateOrReuseBorder(ref m_recycledOuterBorder);
 
 			m_outerBorder.IsHitTestVisible = false;
 			m_outerBorder.Background = null;
