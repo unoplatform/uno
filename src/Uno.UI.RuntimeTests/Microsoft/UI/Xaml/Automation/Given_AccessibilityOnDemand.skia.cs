@@ -252,6 +252,8 @@ public class Given_AccessibilityOnDemand
 		var ensureRequested = type?.GetMethod("EnsureTreeRequested", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 		if (accessibility is null || requestedField is null || ensureRequested is null)
 		{
+			// Win32 has no per-app request to reset: it serves whichever UIA client is listening, machine-wide.
+			AssertNoListeningClient(new Resume(null));
 			return new Resume(null);
 		}
 
@@ -283,7 +285,18 @@ public class Given_AccessibilityOnDemand
 			Assert.Inconclusive("An accessibility service is running on this device.");
 		}
 
+		AssertNoListeningClient(resume);
 		return resume;
+	}
+
+	// A listening client is entitled to the peers, so the test can't tell an unwanted peer from a requested one.
+	private static void AssertNoListeningClient(IDisposable resume)
+	{
+		if (AutomationPeer.ListenerExists(AutomationEvents.StructureChanged))
+		{
+			resume.Dispose();
+			Assert.Inconclusive("An accessibility client is listening on this machine.");
+		}
 	}
 
 	private sealed class Resume(Action? resume) : IDisposable
