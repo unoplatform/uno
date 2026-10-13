@@ -216,6 +216,7 @@ public partial class DependencyObject
 	// Uno-specific: whether a theme reference was registered without being resolved against the live ancestors
 	// since the last UpdateAllThemeReferences pass that did. WinUI only refreshes theme references at Enter
 	// (depends.cpp:1056-1060); Uno repeats the pass at Loading, which only matters for the references added since.
+	// TODO Uno: drop the Loading pass once the setter flows resolve through the live ancestor walk.
 	private bool _hasThemeReferencesPendingLiveUpdate;
 
 	private void MarkThemeReferencesPendingLiveUpdate() => _hasThemeReferencesPendingLiveUpdate = true;
@@ -881,7 +882,7 @@ public partial class DependencyObject
 		// MUX Reference: CDependencyObject::UpdateAllThemeReferences() in Theming.cpp
 		// The Loading pass skips a live element whose references were all resolved at Enter.
 		if ((updateReason & ResourceUpdateReason.ThemeResource) != 0
-			&& ((updateReason & ResourceUpdateReason.StaticResourceLoading) == 0
+			&& ((updateReason & (ResourceUpdateReason.StaticResourceLoading | ResourceUpdateReason.HotReload)) != ResourceUpdateReason.StaticResourceLoading
 				|| _hasThemeReferencesPendingLiveUpdate
 				|| !IsLiveUIElement))
 		{
