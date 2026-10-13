@@ -4927,37 +4927,25 @@ public class Given_ElementTheme
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25313")]
 	[RequiresFullWindow]
 	[CombinatorialData]
-	public async Task When_Style_Removed_BuiltInStyle_ThemeResource_Resolves_Against_Element_Theme(bool applicationDark, bool localThemeDictionary)
+	public async Task When_Style_Removed_BuiltInStyle_ThemeResource_Resolves_Against_Element_Theme(bool applicationDark, bool localThemeDictionary, bool implicitStyle)
 	{
 		using var _ = applicationDark ? ThemeHelper.UseApplicationDarkTheme() : ThemeHelper.UseApplicationLightTheme();
 		var applicationTheme = applicationDark ? ElementTheme.Dark : ElementTheme.Light;
 		var elementTheme = applicationDark ? ElementTheme.Light : ElementTheme.Dark;
 
-		// The local ThemeDictionaries override the built-in Style's ButtonForeground for the subtree (lightweight styling).
-		var subtreeResources = localThemeDictionary
-			? """
-				<StackPanel.Resources>
-					<ResourceDictionary>
-						<ResourceDictionary.ThemeDictionaries>
-							<ResourceDictionary x:Key="Light">
-								<SolidColorBrush x:Key="ButtonForeground" Color="#FF102030" />
-							</ResourceDictionary>
-							<ResourceDictionary x:Key="Dark">
-								<SolidColorBrush x:Key="ButtonForeground" Color="#FFE0D0C0" />
-							</ResourceDictionary>
-						</ResourceDictionary.ThemeDictionaries>
-					</ResourceDictionary>
-				</StackPanel.Resources>
-				"""
-			: "";
-
+		// The implicit Style becomes the active one once the explicit Style is removed, and doesn't set Foreground either.
 		var root = (StackPanel)XamlReader.Load(
 			$$"""
 			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 				<Button x:Name="Outside" Content="Outside" />
 				<StackPanel x:Name="Subtree">
-					{{subtreeResources}}
+					<StackPanel.Resources>
+						<ResourceDictionary>
+							{{(localThemeDictionary ? ButtonForegroundOverride : "")}}
+							{{(implicitStyle ? ImplicitButtonStyle : "")}}
+						</ResourceDictionary>
+					</StackPanel.Resources>
 					<Button x:Name="Reference" Content="Reference" />
 					<Button x:Name="Host" Content="Host">
 						<Button.Style>
@@ -4984,10 +4972,7 @@ public class Given_ElementTheme
 		Assert.AreNotEqual(GetForegroundColor(outside), elementThemeColor, "The reference Button should follow the subtree theme switch");
 		if (localThemeDictionary)
 		{
-			var expected = elementTheme == ElementTheme.Dark
-				? Windows.UI.Color.FromArgb(0xFF, 0xE0, 0xD0, 0xC0)
-				: Windows.UI.Color.FromArgb(0xFF, 0x10, 0x20, 0x30);
-			Assert.AreEqual(expected, elementThemeColor, "The reference Button should use the subtree's ButtonForeground override");
+			Assert.AreEqual(GetButtonForegroundOverride(elementTheme), elementThemeColor, "The reference Button should use the subtree's ButtonForeground override");
 		}
 
 		host.Style = null;
@@ -5001,7 +4986,107 @@ public class Given_ElementTheme
 
 		Assert.AreNotEqual(elementThemeColor, GetForegroundColor(reference), "The reference Button should follow the subtree theme switch back");
 		Assert.AreEqual(GetForegroundColor(reference), GetForegroundColor(host), "The restored built-in Style value should keep following theme changes");
+		if (localThemeDictionary)
+		{
+			Assert.AreEqual(GetButtonForegroundOverride(applicationTheme), GetForegroundColor(host));
+		}
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25313")]
+	[RequiresFullWindow]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Local_Value_Cleared_Before_Load_BuiltInStyle_ThemeResource_Resolves_Against_Element_Theme(bool applicationDark)
+	{
+		using var _ = applicationDark ? ThemeHelper.UseApplicationDarkTheme() : ThemeHelper.UseApplicationLightTheme();
+		var applicationTheme = applicationDark ? ElementTheme.Dark : ElementTheme.Light;
+		var elementTheme = applicationDark ? ElementTheme.Light : ElementTheme.Dark;
+
+		// Cleared before the built-in Style is applied, so that style layer has no theme reference yet.
+		var host = new Button { Content = "Host", Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+		host.ClearValue(Control.ForegroundProperty);
+
+		var root = (StackPanel)XamlReader.Load(
+			$$"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<StackPanel x:Name="Subtree" RequestedTheme="{{elementTheme}}">
+					<StackPanel.Resources>
+						<ResourceDictionary>
+							{{ButtonForegroundOverride}}
+						</ResourceDictionary>
+					</StackPanel.Resources>
+				</StackPanel>
+			</StackPanel>
+			""");
+		var subtree = (StackPanel)root.FindName("Subtree");
+		subtree.Children.Add(host);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(host);
+
+		Assert.AreEqual(GetButtonForegroundOverride(elementTheme), GetForegroundColor(host));
+
+		subtree.RequestedTheme = applicationTheme;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(GetButtonForegroundOverride(applicationTheme), GetForegroundColor(host), "The built-in Style value should keep following theme changes");
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25313")]
+	[RequiresFullWindow]
+	public async Task When_Local_Value_Cleared_HotReload_StaticResource_Setter_Does_Not_Follow_Theme()
+	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
+
+		// With hot reload, a {StaticResource} setter also carries a ThemeResourceKey, without being a theme resource.
+		var setter = global::Uno.UI.Helpers.Xaml.SetterExtensions.ApplyThemeResourceUpdateValues(
+			new Setter(Control.ForegroundProperty, new SolidColorBrush(Microsoft.UI.Colors.Red)),
+			"TextFillColorPrimaryBrush",
+			parseContext: null,
+			isTheme: false,
+			isHotReload: true);
+		var host = new ContentControl { Content = "Host", Style = new Style(typeof(ContentControl)) { Setters = { setter } } };
+		var subtree = new Grid { Children = { host } };
+		WindowHelper.WindowContent = subtree;
+		await WindowHelper.WaitForLoaded(host);
+
+		host.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+		await WindowHelper.WaitForIdle();
+		host.ClearValue(Control.ForegroundProperty);
+		await WindowHelper.WaitForIdle();
+		var staticColor = GetForegroundColor(host);
+
+		subtree.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(staticColor, GetForegroundColor(host), "A {StaticResource} value should not follow theme changes");
+	}
+#endif
+
+	// Lightweight styling: overrides the built-in Button Style's ButtonForeground for the subtree.
+	private const string ButtonForegroundOverride = """
+		<ResourceDictionary.ThemeDictionaries>
+			<ResourceDictionary x:Key="Light">
+				<SolidColorBrush x:Key="ButtonForeground" Color="#FF102030" />
+			</ResourceDictionary>
+			<ResourceDictionary x:Key="Dark">
+				<SolidColorBrush x:Key="ButtonForeground" Color="#FFE0D0C0" />
+			</ResourceDictionary>
+		</ResourceDictionary.ThemeDictionaries>
+		""";
+
+	private const string ImplicitButtonStyle = """
+		<Style TargetType="Button">
+			<Setter Property="Padding" Value="12" />
+		</Style>
+		""";
+
+	private static Windows.UI.Color GetButtonForegroundOverride(ElementTheme theme)
+		=> theme == ElementTheme.Dark ? Windows.UI.Color.FromArgb(0xFF, 0xE0, 0xD0, 0xC0) : Windows.UI.Color.FromArgb(0xFF, 0x10, 0x20, 0x30);
 
 	private static Windows.UI.Color GetForegroundColor(Control control) => ((SolidColorBrush)control.Foreground).Color;
 
