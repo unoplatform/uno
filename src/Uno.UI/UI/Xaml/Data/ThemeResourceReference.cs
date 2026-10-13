@@ -111,9 +111,7 @@ internal sealed class ThemeResourceReference
 		BindingPath? setterBindingPath = null)
 	{
 		ResourceKey = resourceKey;
-		_targetDictionary = targetDictionary is not null
-			? new WeakReference<ResourceDictionary>(targetDictionary)
-			: null;
+		_targetDictionary = targetDictionary?.WeakSelf;
 		LastResolvedValue = initialValue;
 		IsResolved = isResolved;
 		ParseContext = parseContext;
@@ -230,9 +228,7 @@ internal sealed class ThemeResourceReference
 	/// </summary>
 	internal void SetTargetDictionary(ResourceDictionary? dictionary)
 	{
-		_targetDictionary = dictionary is not null
-			? new WeakReference<ResourceDictionary>(dictionary)
-			: null;
+		_targetDictionary = dictionary?.WeakSelf;
 	}
 
 	/// <summary>

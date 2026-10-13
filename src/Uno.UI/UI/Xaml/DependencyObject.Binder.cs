@@ -338,11 +338,6 @@ namespace Microsoft.UI.Xaml
 			{
 				Properties.SetBinding(dependencyProperty, fullBinding, SelfWeakReference);
 			}
-			else if (binding is ResourceBinding resourceBinding)
-			{
-				_resourceBindings = _resourceBindings ?? new ResourceBindingCollection();
-				_resourceBindings.Add(dependencyProperty, resourceBinding);
-			}
 			else
 			{
 				throw new NotSupportedException("Only Microsoft.UI.Xaml.Data.Binding is supported for bindings.");
@@ -356,8 +351,15 @@ namespace Microsoft.UI.Xaml
 				precedence = _overriddenPrecedences.Peek();
 			}
 
-			var binding = new ResourceBinding(resourceKey, updateReason, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
-			SetBindingInternal(dependencyProperty, binding);
+			if (dependencyProperty == null)
+			{
+				throw new ArgumentNullException(nameof(dependencyProperty));
+			}
+
+			TryRegisterInheritedProperties(force: true);
+
+			_resourceBindings ??= new ResourceBindingCollection();
+			_resourceBindings.Add(dependencyProperty, new ResourceBinding(resourceKey, updateReason, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath));
 		}
 
 		internal void SetBindingInternal(string dependencyProperty, BindingBase binding)

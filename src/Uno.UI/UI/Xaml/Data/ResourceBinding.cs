@@ -8,9 +8,13 @@ using Uno.UI.DataBinding;
 namespace Microsoft.UI.Xaml.Data
 {
 	/// <summary>
-	/// Binding used for resource resolution at load time. 
+	/// Binding used for resource resolution at load time.
 	/// </summary>
-	internal class ResourceBinding : BindingBase
+	/// <remarks>
+	/// A plain object rather than a <see cref="BindingBase"/>: every {ThemeResource}/{StaticResource} assignment
+	/// allocates one, and a <see cref="DependencyObject"/> would cost a full property store each.
+	/// </remarks>
+	internal sealed class ResourceBinding
 	{
 		/// <summary>
 		/// The resource key.

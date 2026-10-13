@@ -1607,6 +1607,35 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
+		/// Looks <paramref name="resourceKey"/> up in the same dictionaries as <c>GetResourceDictionaries(includeAppResources: false)</c>,
+		/// nearest first, without allocating an enumerator.
+		/// </summary>
+		internal bool TryGetValueFromResourceDictionaries(in SpecializedResourceDictionary.ResourceKey resourceKey, out object? value)
+		{
+			var candidate = ActualInstance;
+			while (candidate is not null)
+			{
+				if (candidate is FrameworkElement fe)
+				{
+					if (fe.TryGetResources() is { IsEmpty: false } resources
+						&& resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+					{
+						return true;
+					}
+
+					candidate = fe.Parent;
+				}
+				else
+				{
+					candidate = VisualTreeHelper.GetParent(candidate);
+				}
+			}
+
+			value = null;
+			return false;
+		}
+
+		/// <summary>
 		/// Retrieve the implicit Style for <see cref="ActualInstance"/> by walking the visual tree.
 		/// </summary>
 		internal Style? GetImplicitStyle(in SpecializedResourceDictionary.ResourceKey styleKey)

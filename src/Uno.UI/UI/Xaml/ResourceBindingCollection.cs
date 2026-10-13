@@ -1,95 +1,82 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Uno.Buffers;
-using Uno.Extensions;
-using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml;
 
+/// <summary>
+/// Per-object storage of <see cref="ResourceBinding"/>s, keyed by (property, precedence).
+/// </summary>
+/// <remarks>
+/// A flat list scanned linearly, like <see cref="ThemeResourceMap"/>: even a ListViewItemPresenter carries only ~40
+/// entries, few enough for a scan to cost less than a dictionary per property.
+/// </remarks>
 internal class ResourceBindingCollection
 {
-	private readonly Dictionary<DependencyProperty, Dictionary<DependencyPropertyValuePrecedences, ResourceBinding>> _bindings = new(DependencyPropertyComparer.Default);
+	private readonly List<BindingEntry> _bindings = new();
 	private BindingEntry[]? _cachedAllBindings;
 
-	public bool HasBindings
-	{
-		get
-		{
-			// Avoiding the use of LINQ here to reduce unnecessary enumerator boxing.
-			if (_bindings.Count > 0)
-			{
-				foreach (var entry in _bindings)
-				{
-					if (entry.Value.Count > 0)
-					{
-						return true;
-					}
-				}
-			}
-
-			return false;
-		}
-	}
+	public bool HasBindings => _bindings.Count > 0;
 
 	public record struct BindingEntry(DependencyProperty Property, ResourceBinding Binding);
 
 	public BindingEntry[] GetAllBindings()
-	{
-		if (_cachedAllBindings is null)
-		{
-			List<BindingEntry> allBindings = new();
-
-			foreach (var kvp in _bindings)
-			{
-				foreach (var kvpInner in kvp.Value)
-				{
-					allBindings.Add(new(kvp.Key, kvpInner.Value));
-				}
-			}
-
-			// We return a fully materialized list every time
-			// as the callers may enumerate the list and new items
-			// can be added when resource bindings are evaluated.
-			_cachedAllBindings = allBindings.ToArray();
-		}
-
-		return _cachedAllBindings;
-	}
+		// We return a fully materialized snapshot as the callers may enumerate it
+		// and new items can be added when resource bindings are evaluated.
+		=> _cachedAllBindings ??= _bindings.ToArray();
 
 	public IEnumerable<ResourceBinding>? GetBindingsForProperty(DependencyProperty property)
 	{
-		if (_bindings.TryGetValue(property, out var bindingsForProperty))
+		List<ResourceBinding>? result = null;
+
+		foreach (var entry in _bindings)
 		{
-			return bindingsForProperty.Values;
+			if (entry.Property == property)
+			{
+				(result ??= new()).Add(entry.Binding);
+			}
 		}
 
-		return null;
+		return result;
 	}
 
 	public void Add(DependencyProperty property, ResourceBinding resourceBinding)
 	{
-		if (!_bindings.TryGetValue(property, out var dict))
-		{
-			_bindings[property] = dict = new();
-		}
-
-		dict[resourceBinding.Precedence] = resourceBinding;
-
 		_cachedAllBindings = null;
+
+		var index = IndexOf(property, resourceBinding.Precedence);
+		if (index >= 0)
+		{
+			_bindings[index] = new(property, resourceBinding);
+		}
+		else
+		{
+			_bindings.Add(new(property, resourceBinding));
+		}
 	}
 
 	public void ClearBinding(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 	{
-		if (_bindings.TryGetValue(property, out var bindingsByPrecedence))
+		var index = IndexOf(property, precedence);
+		if (index >= 0)
 		{
-			bindingsByPrecedence.Remove(precedence);
-
+			_bindings.RemoveAt(index);
 			_cachedAllBindings = null;
 		}
+	}
+
+	private int IndexOf(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
+	{
+		for (var i = 0; i < _bindings.Count; i++)
+		{
+			var entry = _bindings[i];
+			if (entry.Property == property && entry.Binding.Precedence == precedence)
+			{
+				return i;
+			}
+		}
+
+		return -1;
 	}
 }
