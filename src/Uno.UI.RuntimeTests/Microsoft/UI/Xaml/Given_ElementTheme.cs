@@ -4926,39 +4926,81 @@ public class Given_ElementTheme
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25313")]
 	[RequiresFullWindow]
-	[DataRow(false)]
-	[DataRow(true)]
-	public async Task When_Style_Removed_BuiltInStyle_ThemeResource_Resolves_Against_Element_Theme(bool applicationDark)
+	[CombinatorialData]
+	public async Task When_Style_Removed_BuiltInStyle_ThemeResource_Resolves_Against_Element_Theme(bool applicationDark, bool localThemeDictionary)
 	{
 		using var _ = applicationDark ? ThemeHelper.UseApplicationDarkTheme() : ThemeHelper.UseApplicationLightTheme();
+		var applicationTheme = applicationDark ? ElementTheme.Dark : ElementTheme.Light;
 		var elementTheme = applicationDark ? ElementTheme.Light : ElementTheme.Dark;
 
-		var outside = new Button { Content = "Outside" };
-		var reference = new Button { Content = "Reference" };
-		var button = new Button
-		{
-			Content = "Button",
-			Style = new Style(typeof(Button))
-			{
-				Setters = { new Setter(Control.ForegroundProperty, new SolidColorBrush(Microsoft.UI.Colors.Red)) },
-			},
-		};
-		var subtree = new StackPanel { Children = { reference, button } };
-		var root = new StackPanel { Children = { outside, subtree } };
+		// The local ThemeDictionaries override the built-in Style's ButtonForeground for the subtree (lightweight styling).
+		var subtreeResources = localThemeDictionary
+			? """
+				<StackPanel.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="ButtonForeground" Color="#FF102030" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="ButtonForeground" Color="#FFE0D0C0" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</StackPanel.Resources>
+				"""
+			: "";
+
+		var root = (StackPanel)XamlReader.Load(
+			$$"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Button x:Name="Outside" Content="Outside" />
+				<StackPanel x:Name="Subtree">
+					{{subtreeResources}}
+					<Button x:Name="Reference" Content="Reference" />
+					<Button x:Name="Host" Content="Host">
+						<Button.Style>
+							<Style TargetType="Button">
+								<Setter Property="Foreground" Value="Red" />
+							</Style>
+						</Button.Style>
+					</Button>
+				</StackPanel>
+			</StackPanel>
+			""");
+
 		WindowHelper.WindowContent = root;
-		await WindowHelper.WaitForLoaded(button);
+		var host = (Button)root.FindName("Host");
+		await WindowHelper.WaitForLoaded(host);
+		var outside = (Button)root.FindName("Outside");
+		var subtree = (StackPanel)root.FindName("Subtree");
+		var reference = (Button)root.FindName("Reference");
 
 		subtree.RequestedTheme = elementTheme;
 		await WindowHelper.WaitForIdle();
 
 		var elementThemeColor = GetForegroundColor(reference);
 		Assert.AreNotEqual(GetForegroundColor(outside), elementThemeColor, "The reference Button should follow the subtree theme switch");
+		if (localThemeDictionary)
+		{
+			var expected = elementTheme == ElementTheme.Dark
+				? Windows.UI.Color.FromArgb(0xFF, 0xE0, 0xD0, 0xC0)
+				: Windows.UI.Color.FromArgb(0xFF, 0x10, 0x20, 0x30);
+			Assert.AreEqual(expected, elementThemeColor, "The reference Button should use the subtree's ButtonForeground override");
+		}
 
-		button.Style = null;
+		host.Style = null;
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(elementThemeColor, GetForegroundColor(button),
+		Assert.AreEqual(elementThemeColor, GetForegroundColor(host),
 			"Removing the Style's setter should restore the built-in Style's {ThemeResource} resolved for the element's own theme");
+
+		subtree.RequestedTheme = applicationTheme;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreNotEqual(elementThemeColor, GetForegroundColor(reference), "The reference Button should follow the subtree theme switch back");
+		Assert.AreEqual(GetForegroundColor(reference), GetForegroundColor(host), "The restored built-in Style value should keep following theme changes");
 	}
 
 	private static Windows.UI.Color GetForegroundColor(Control control) => ((SolidColorBrush)control.Foreground).Color;
