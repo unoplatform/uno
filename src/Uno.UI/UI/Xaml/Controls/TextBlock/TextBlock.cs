@@ -638,7 +638,11 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				OnForegroundChangedPartial();
-				InvalidateTextBlock();
+
+				if (!TryUpdateForegrounds())
+				{
+					InvalidateTextBlock();
+				}
 			}
 			catch (Exception e)
 			{
@@ -650,6 +654,23 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnForegroundChangedPartial();
+
+		/// <summary>
+		/// Repaints the laid-out text with the current foregrounds, as a brush does not change the layout.
+		/// </summary>
+		/// <returns>False when the text has to be laid out again.</returns>
+		internal bool TryUpdateForegrounds()
+		{
+			if (CustomTextLayout is null
+				&& ParsedText is UnicodeText parsed
+				&& parsed.TryUpdateForegrounds(Inlines.TraversedTree.leafTree, Foreground))
+			{
+				Visual.Compositor.InvalidateRender(Visual);
+				return true;
+			}
+
+			return false;
+		}
 
 		#endregion
 
