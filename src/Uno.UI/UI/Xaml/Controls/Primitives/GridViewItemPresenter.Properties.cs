@@ -6,6 +6,7 @@
 
 using System;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -24,7 +25,7 @@ partial class GridViewItemPresenter
 		set => SetSelectionCheckMarkVisualEnabledValue(value);
 	}
 
-	private static bool GetSelectionCheckMarkVisualEnabledDefaultValue() => ListViewBaseItemPresenter.GetDefaultSelectionCheckMarkVisualEnabled();
+	private static object GetSelectionCheckMarkVisualEnabledDefaultValue() => Boxer.Box(ListViewBaseItemPresenter.GetDefaultSelectionCheckMarkVisualEnabled());
 
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty SelectionCheckMarkVisualEnabledProperty { get; } = CreateSelectionCheckMarkVisualEnabledProperty();
@@ -269,7 +270,7 @@ partial class GridViewItemPresenter
 		set => SetDragOpacityValue(value);
 	}
 
-	private static double GetDragOpacityDefaultValue() => ListViewBaseItemPresenter.GetDefaultDragOpacity();
+	private static object GetDragOpacityDefaultValue() => Boxer.Box(ListViewBaseItemPresenter.GetDefaultDragOpacity());
 
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty DragOpacityProperty { get; } = CreateDragOpacityProperty();
@@ -287,7 +288,7 @@ partial class GridViewItemPresenter
 		set => SetReorderHintOffsetValue(value);
 	}
 
-	private static double GetReorderHintOffsetDefaultValue() => ListViewBaseItemPresenter.GetDefaultGridViewItemReorderHintOffset();
+	private static object GetReorderHintOffsetDefaultValue() => Boxer.Box(ListViewBaseItemPresenter.GetDefaultGridViewItemReorderHintOffset());
 
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty ReorderHintOffsetProperty { get; } = CreateReorderHintOffsetProperty();
