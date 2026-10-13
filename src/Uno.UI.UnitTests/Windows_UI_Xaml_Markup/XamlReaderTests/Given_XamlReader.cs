@@ -24,7 +24,7 @@ using System.Numerics;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_XamlReader : Context
 	{
 		[TestInitialize]

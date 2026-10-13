@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.TimePickerTests;
 
-[TestClass]
+[UITestClass]
 public class Given_TimePicker
 {
 	[TestMethod]

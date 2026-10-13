@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.Tests.Animations
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_RepeatBehavior
 	{
 		// note: Do not compare it against literal 'null'. Because we actually implemented an

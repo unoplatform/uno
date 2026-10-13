@@ -11,7 +11,7 @@ using Windows.ApplicationModel.VoiceCommands;
 
 namespace Uno.UI.Tests.DependencyPropertyTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty
 	{
 		[TestMethod]

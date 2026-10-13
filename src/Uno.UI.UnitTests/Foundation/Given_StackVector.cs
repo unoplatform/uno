@@ -5,7 +5,7 @@ using Uno.Collections;
 
 namespace Uno.UI.Tests.Foundation
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_StackVector
 	{
 		private struct MyStruct

@@ -10,7 +10,7 @@ using Uno.UI.Diagnostics;
 
 namespace Uno.UI.Tests.Diagnostics;
 
-[TestClass]
+[UITestClass]
 public class Given_ElementRefHandleRegistry
 {
 	private bool _savedDisableThreadingCheck;

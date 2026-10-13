@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_CollectionViewSource
 	{
 		[TestMethod]

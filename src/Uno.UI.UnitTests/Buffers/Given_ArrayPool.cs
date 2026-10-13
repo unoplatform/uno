@@ -11,7 +11,7 @@ using Windows.System;
 
 namespace Uno.UI.Tests.Buffers
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ArrayPool
 	{
 		private List<Action> _cleanup = new();

@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Text
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_TextContainer_Invalidation
 	{
 		private static InlineCollection HostedInlines(params Inline[] inlines)

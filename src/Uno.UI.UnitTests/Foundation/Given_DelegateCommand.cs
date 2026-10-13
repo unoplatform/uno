@@ -4,7 +4,7 @@ using Uno.UI.Common;
 
 namespace Uno.UI.Tests.Foundation
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_DelegateCommand
 	{
 		[TestMethod]

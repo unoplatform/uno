@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.BinderTests_StandardProperty
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty_StandardProperty
 	{
 		[TestMethod]

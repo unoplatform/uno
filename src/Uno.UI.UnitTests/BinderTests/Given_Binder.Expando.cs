@@ -13,7 +13,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Binder_Expando
 	{
 		[TestMethod]

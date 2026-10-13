@@ -5,7 +5,7 @@ using Uno.UI.Helpers;
 
 namespace Uno.UI.Tests.Helpers;
 
-[TestClass]
+[UITestClass]
 public class Given_DeviceTargetHelper
 {
 	private const string IPadDesktopSiteUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15";

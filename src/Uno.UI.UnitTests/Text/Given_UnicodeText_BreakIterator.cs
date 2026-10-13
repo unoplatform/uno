@@ -13,7 +13,7 @@ using Windows.Foundation;
 
 namespace Uno.UI.Tests.Text;
 
-[TestClass]
+[UITestClass]
 public class Given_UnicodeText_BreakIterator
 {
 	private const string LongText = "The quick brown fox jumps over the lazy dog while the band plays on and on into the night.";

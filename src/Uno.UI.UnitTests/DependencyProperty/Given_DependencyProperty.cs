@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty
 	{
 		[ClassInitialize]

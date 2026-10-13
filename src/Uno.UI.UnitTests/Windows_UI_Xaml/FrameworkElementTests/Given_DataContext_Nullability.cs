@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests;
 
-[TestClass]
+[UITestClass]
 public class Given_DataContext_Nullability
 {
 	// WinUI ships no nullable annotations, so DataContext must stay oblivious.

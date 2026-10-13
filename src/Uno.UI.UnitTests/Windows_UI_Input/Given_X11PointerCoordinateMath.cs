@@ -8,7 +8,7 @@ namespace Uno.UI.Tests.Windows_UI_Input;
 /// XTranslateCoordinates workaround (XTranslateCoordinates itself only accepts whole pixels, so
 /// the sub-pixel fraction of the XInput2 event position has to be re-added after translation).
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_X11PointerCoordinateMath
 {
 	private const double Tolerance = 0.0001;

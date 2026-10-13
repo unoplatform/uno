@@ -7,7 +7,7 @@ namespace Uno.UI.Tests.Windows_UI_Input;
 /// Tests for <see cref="Win32PointerCoordinateMath"/>, the pure part of the pointer screen-to-client
 /// conversion (GetPointerDeviceRects and ScreenToClient themselves need a live device and HWND).
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_Win32PointerCoordinateMath
 {
 	private const double Tolerance = 0.01;

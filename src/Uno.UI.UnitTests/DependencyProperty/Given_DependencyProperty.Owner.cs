@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests
 {
-	[TestClass]
+	[UITestClass]
 	public class DependencyProperty_Owner
 	{
 		private readonly (string owner, string propertyName)[] _ignoreList = new (string, string)[]

@@ -977,29 +977,29 @@ namespace Uno.UI
 		/// <summary>
 		/// Push a new Resources source to the current xaml scope.
 		/// </summary>
-		internal static void PushSourceToScope(ManagedWeakReference source)
-		{
-			var current = _scopeStack.Pop();
-			_scopeStack.Push(current.Push(source));
-		}
+		internal static void PushSourceToScope(ManagedWeakReference source) => ReplaceCurrentScope(CurrentScope.Push(source));
 		/// <summary>
 		/// Pop Resources source from current xaml scope.
 		/// </summary>
-		internal static void PopSourceFromScope()
+		internal static void PopSourceFromScope() => ReplaceCurrentScope(CurrentScope.Pop());
+
+		// The new scope is computed before touching the stack, so a failing XamlScope.Pop() can't drop a level.
+		private static void ReplaceCurrentScope(XamlScope scope)
 		{
-			var current = _scopeStack.Pop();
-			_scopeStack.Push(current.Pop());
+			_scopeStack.Pop();
+			_scopeStack.Push(scope);
 		}
 		/// <summary>
 		/// Pop current <see cref="XamlScope"/>, typically because template materialization is complete.
 		/// </summary>
 		internal static void PopScope()
 		{
-			_scopeStack.Pop();
-			if (_scopeStack.Count == 0)
+			if (_scopeStack.Count == 1)
 			{
 				throw new InvalidOperationException("Base scope should never be popped.");
 			}
+
+			_scopeStack.Pop();
 		}
 
 		/// <summary>

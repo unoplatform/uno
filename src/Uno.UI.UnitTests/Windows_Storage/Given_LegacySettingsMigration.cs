@@ -7,7 +7,7 @@ using Uno.Storage.Internal;
 
 namespace Uno.UI.Tests.Windows_Storage;
 
-[TestClass]
+[UITestClass]
 public class Given_LegacySettingsMigration
 {
 	[TestMethod]

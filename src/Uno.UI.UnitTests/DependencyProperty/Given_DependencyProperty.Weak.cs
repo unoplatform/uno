@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.BinderTests_Weak
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty_Weak
 	{
 		[TestMethod]

@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Windows_UI
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Color
 	{
 		[TestMethod]

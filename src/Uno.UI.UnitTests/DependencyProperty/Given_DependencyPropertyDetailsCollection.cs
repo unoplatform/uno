@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests;
 
-[TestClass]
+[UITestClass]
 public partial class Given_DependencyPropertyDetailsCollection
 {
 	private const int PaddedPropertyCount = 256;

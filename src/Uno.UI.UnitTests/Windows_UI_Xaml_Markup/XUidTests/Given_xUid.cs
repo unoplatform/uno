@@ -17,7 +17,7 @@ using Uno.UI.Tests.Windows_UI_Xaml_Markup.XUidTests.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XUidTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_xUid
 	{
 		[TestInitialize]

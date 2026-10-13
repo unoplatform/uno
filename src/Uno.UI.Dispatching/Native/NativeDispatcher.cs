@@ -491,12 +491,18 @@ namespace Uno.UI.Dispatching
 			{
 				EnqueueNative(priority);
 			}
+			else
+			{
+				OnEnqueuedBehindPendingDispatch(priority);
+			}
 		}
 
 		/// <summary>
 		/// Enqueues an operation on the native UI thread.
 		/// </summary>
 		partial void EnqueueNative(NativeDispatcherPriority priority);
+
+		partial void OnEnqueuedBehindPendingDispatch(NativeDispatcherPriority priority);
 
 		partial void Initialize();
 
