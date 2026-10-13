@@ -270,7 +270,7 @@ public partial class CompositionTarget
 		}
 	}
 
-	internal void OnRenderFrameOpportunity()
+	internal void OnRenderFrameOpportunity(bool forceRecord = false)
 	{
 		// If we get an opportunity to get call Render earlier than EnqueuePaintCallback, then we do that
 		// but skip the Render call in the next EnqueuePaintCallback so that overall we're still keeping
@@ -284,10 +284,12 @@ public partial class CompositionTarget
 			{
 				LogRenderState();
 				AssertRenderStateMachine();
-				if (RenderRequested && !_renderedAheadOfTime)
+				// A host-applied resize invalidates an earlier ahead-of-time picture before its native draw.
+				if (forceRecord || (RenderRequested && !_renderedAheadOfTime))
 				{
 					RenderRequested = false;
 					_renderedAheadOfTime = true;
+					_renderRequestedAfterAheadOfTimePaint = false;
 					shouldRender = true;
 				}
 				AssertRenderStateMachine();

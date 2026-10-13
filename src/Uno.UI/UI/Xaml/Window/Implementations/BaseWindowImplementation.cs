@@ -174,7 +174,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	private void OnNativeSizeChanged(object? sender, Size size)
 	{
-		if (_lastSize == size)
+		if (_isClosed || _lastSize == size)
 		{
 			return;
 		}
@@ -193,7 +193,10 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 		RaiseSizeChanged(windowSizeChanged);
 
-		XamlRoot?.RaiseChangedEvent();
+		if (!_isClosed)
+		{
+			XamlRoot?.RaiseChangedEvent();
+		}
 	}
 
 	private void OnNativeVisibleBoundsChanged(object? sender, Rect args) => SetVisibleBoundsFromNative();
@@ -393,7 +396,12 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		{
 			NativeWindowWrapper?.Show(true);
 
-			OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
+			// A host returning false must raise activation itself once its native state is applied. On xdg-shell
+			// the surface is only mapped after the initial configure, so a window that never gets one is never shown.
+			if (NativeWindowWrapper is not { IsReadyForActivation: false })
+			{
+				OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
+			}
 
 			if (!_splashDismissed)
 			{
