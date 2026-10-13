@@ -183,6 +183,11 @@ internal static partial class VirtualKeyHelper
 			modifiers |= VirtualKeyModifiers.Control;
 		}
 
+		if ((flags & MetaKeyStates.AltMask) != 0)
+		{
+			modifiers |= VirtualKeyModifiers.Menu;
+		}
+
 		if ((flags & MetaKeyStates.MetaMask) != 0)
 		{
 			modifiers |= VirtualKeyModifiers.Windows;
