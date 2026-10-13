@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
@@ -150,14 +149,7 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60, bool preloadVlc = false, bool useSystemHarfBuzz = false)
 	{
-		// libHarfBuzzSharp is, at the time of writing, almost but not exactly identical to libharfbuzz.so.0 that ships with
-		// most Linux environments and, unlike libSkiaSharp, does not have any extra helper functions to help with marshalling, etc.
-		// However, we need to avoid symbol clashes when other dependencies also depend on harfbuzz. Concretely, when a
-		// WebView is loaded, it loads libgtk-3 which in turn depends on libharfbuzz.so.0. Afterward, we can get crashes
-		// when SkiaSharp makes a HarfBuzz call to symbols that were first resolved by libgtk-3 to be in libharfbuzz.so.0.
-		// In this scenario, the call starts in libHarfBuzzSharp.so but then jumps to symbols in libharfbuzz.so.0
-		// (the symbols are also in libHarfBuzzSharp.so, but libharfbuzz.so.0 resolved them first).
-		IsolateHarfBuzz(useSystemHarfBuzz);
+		LinuxHarfBuzz.Isolate(useSystemHarfBuzz);
 
 		if (preloadVlc && Type.GetType("Uno.UI.MediaPlayer.X11.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.X11") is { } mediaExtensionType)
 		{
@@ -192,77 +184,6 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 			CoreDispatcher.DispatchOverride(
 				() => _isDispatcherThread = true,
 				Uno.UI.Dispatching.NativeDispatcherPriority.Normal);
-		}
-	}
-
-	// HarfBuzzSharp is the font providers' dependency, not the host's: an app whose font provider doesn't use it
-	// has nothing to isolate.
-	private static void IsolateHarfBuzz(bool useSystemHarfBuzz)
-	{
-		if (TryLoadHarfBuzzSharp() is not { } harfBuzzSharp)
-		{
-			return;
-		}
-
-		if (useSystemHarfBuzz)
-		{
-			// We can choose to ignore libHarfBuzzSharp entirely by redirecting all calls to libharfbuzz.so.0.
-			NativeLibrary.SetDllImportResolver(harfBuzzSharp, HarfBuzzResolver);
-			static IntPtr HarfBuzzResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
-			{
-				if (libraryName == "libHarfBuzzSharp" && NativeLibrary.TryLoad("libharfbuzz.so.0", assembly, searchPath, out var lib))
-				{
-					return lib;
-				}
-				else
-				{
-					return IntPtr.Zero;
-				}
-			}
-		}
-		else
-		{
-			// Alternatively, we can preload libHarfBuzzSharp with RTLD_DEEPBIND to ensure its symbols are used
-			try
-			{
-				var search = AppContext.GetData("NATIVE_DLL_SEARCH_DIRECTORIES")?.ToString() ?? "";
-
-				var success = false;
-				foreach (var path in search.Split(Path.PathSeparator))
-				{
-					var libPath = Path.Combine(path, "libHarfBuzzSharp.so");
-
-					if (File.Exists(libPath))
-					{
-						if (LibDl.dlopen(libPath, false) != IntPtr.Zero)
-						{
-							success = true;
-							break;
-						}
-					}
-				}
-
-				if (!success)
-				{
-					throw new FileNotFoundException($"Could not find libHarfBuzzSharp.so in the configured native DLL search directories. Searched directories: {search}");
-				}
-			}
-			catch (Exception ex)
-			{
-				typeof(X11ApplicationHost).LogError()?.Error($"Could not preload HarfBuzz with RTLD_DEEPBIND: {ex.Message}");
-			}
-		}
-	}
-
-	private static Assembly? TryLoadHarfBuzzSharp()
-	{
-		try
-		{
-			return Assembly.Load("HarfBuzzSharp");
-		}
-		catch (FileNotFoundException)
-		{
-			return null;
 		}
 	}
 
