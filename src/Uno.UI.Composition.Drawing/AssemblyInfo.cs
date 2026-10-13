@@ -16,6 +16,7 @@ using System.Runtime.CompilerServices;
 // host-plumbing, not third-party API, so it is internal + IVT'd to the Skia hosts; the third-party backend SPI
 // (IGraphicsProvider/IGraphicsContext/GraphicsContextKind/IDrawingFactory) stays public.
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.X11")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Wayland")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.MacOS")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly.Browser")]
