@@ -544,20 +544,34 @@ public partial class DependencyObject
 	}
 
 	/// <summary>
-	/// Resolves the {ThemeResource} a Style (<see cref="DependencyPropertyValuePrecedences.Style"/>) or
-	/// built-in Style (<see cref="DependencyPropertyValuePrecedences.BuiltInStyle"/>) setter registered on
-	/// this object, for when that layer becomes the base value again. The caller scopes this object's theme
-	/// onto the requested-theme-for-subtree slot.
+	/// Resolves the {ThemeResource} that <paramref name="style"/>, applied at <paramref name="stylePrecedence"/>
+	/// (<see cref="DependencyPropertyValuePrecedences.Style"/> or <see cref="DependencyPropertyValuePrecedences.BuiltInStyle"/>),
+	/// sets <paramref name="property"/> to, for when that layer becomes the base value again. The caller scopes
+	/// this object's theme onto the requested-theme-for-subtree slot.
 	/// </summary>
 	/// <remarks>
 	/// MUX Reference: on ClearValue, CDependencyObject::EvaluateBaseValue (PropertySystem.cpp) takes the
 	/// setter's CThemeResource from GetValueFromStyle, and TryProcessingThemeResourcePropertyValue
-	/// (Theming.cpp) applies it through SetThemeResourceBinding, which resolves it under this
-	/// object's theme. Re-reading the setter instead resolves it against top-level resources only.
+	/// (Theming.cpp) applies it through SetThemeResourceBinding, which resolves it under this object's
+	/// theme and stores the reference so later theme changes update the value. The reference registered
+	/// when the style was applied is reused; a setter that never registered one (e.g. a built-in setter
+	/// that an explicit Style overrode) registers it here. Re-reading the setter instead resolves it
+	/// against top-level resources only, and nothing updates it afterwards.
 	/// </remarks>
-	private bool TryResolveStyleThemeResource(DependencyProperty property, DependencyPropertyValuePrecedences stylePrecedence, out object? value)
+	private bool TryResolveStyleThemeResource(Style? style, DependencyProperty property, DependencyPropertyValuePrecedences stylePrecedence, out object? value)
 	{
-		if (_themeResources?.Get(property, stylePrecedence) is { } themeRef)
+		var themeRef = _themeResources?.Get(property, stylePrecedence);
+		if (themeRef is null
+			&& style is not null
+			&& style.TryGetThemeResourceSetter(property, out var setter))
+		{
+			// The same registrations ResourceResolver.ApplyResource makes when the style applies the setter.
+			themeRef = ResourceResolver.CreateThemeResourceReference(setter.ThemeResourceKey!.Value, setter.ResourceBindingUpdateReason, setter.ThemeResourceContext, stylePrecedence);
+			SetThemeResource(property, themeRef, stylePrecedence);
+			SetResourceBinding(property, themeRef.ResourceKey, setter.ResourceBindingUpdateReason, setter.ThemeResourceContext!, stylePrecedence, setterBindingPath: null);
+		}
+
+		if (themeRef is not null)
 		{
 			try
 			{

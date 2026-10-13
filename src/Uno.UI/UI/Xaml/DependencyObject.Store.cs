@@ -2182,25 +2182,31 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			// A {ThemeResource} setter resolves for this element's own theme: through the reference it registered, unless that
-			// reference belongs to the layer being cleared (it is still registered at this point), else re-read from the Style.
-			// TODO Uno: register a reference for a re-read {ThemeResource} too, as SetThemeResourceBinding does, so it follows theme changes.
 			using var themeScope = ScopeOwnerTheme(fe);
 
 			var property = propertyDetails.Property;
-			if (((clearedPrecedence != DependencyPropertyValuePrecedences.Style && TryResolveStyleThemeResource(property, DependencyPropertyValuePrecedences.Style, out var valueFromStyle))
-					|| fe.TryGetValueFromStyle(property, out valueFromStyle)) &&
-				valueFromStyle != DependencyProperty.UnsetValue)
+			if (TryGetStyleLayerValue(fe.GetActiveStyle(), property, DependencyPropertyValuePrecedences.Style, clearedPrecedence, out var value))
 			{
-				SetValueInternal(valueFromStyle, DependencyPropertyValuePrecedences.Style, propertyDetails);
+				SetValueInternal(value, DependencyPropertyValuePrecedences.Style, propertyDetails);
 			}
-			else if (fe is Control control &&
-				((clearedPrecedence != DependencyPropertyValuePrecedences.BuiltInStyle && TryResolveStyleThemeResource(property, DependencyPropertyValuePrecedences.BuiltInStyle, out var valueFromBuiltInStyle))
-					|| control.TryGetValueFromBuiltInStyle(property, out valueFromBuiltInStyle)) &&
-				valueFromBuiltInStyle != DependencyProperty.UnsetValue)
+			else if (fe is Control control
+				&& TryGetStyleLayerValue(control.GetBuiltInStyle(), property, DependencyPropertyValuePrecedences.BuiltInStyle, clearedPrecedence, out value))
 			{
-				SetValueInternal(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.BuiltInStyle, propertyDetails);
+				SetValueInternal(value, DependencyPropertyValuePrecedences.BuiltInStyle, propertyDetails);
 			}
+		}
+
+		// A {ThemeResource} setter resolves for this element's own theme through the reference of its layer, unless that layer is the
+		// one being cleared (its reference is still registered at this point); any other setter is re-read from the style.
+		private bool TryGetStyleLayerValue(Style? style, DependencyProperty property, DependencyPropertyValuePrecedences stylePrecedence, DependencyPropertyValuePrecedences clearedPrecedence, out object? value)
+		{
+			if (stylePrecedence != clearedPrecedence && TryResolveStyleThemeResource(style, property, stylePrecedence, out value))
+			{
+				return true;
+			}
+
+			value = null;
+			return style is not null && style.TryGetPropertyValue(property, out value);
 		}
 
 		/// <summary>
