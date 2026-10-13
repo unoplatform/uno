@@ -23,7 +23,7 @@ namespace Uno.UI.Tests.InputValidation;
 /// The doubles in <see cref="Given_Validation_Transport"/> cannot prove it: they are in this assembly, which
 /// does see Uno.UI's internals.
 /// </remarks>
-[TestClass]
+[UITestClass]
 public partial class Given_Validation_ThirdParty
 {
 	[TestInitialize]

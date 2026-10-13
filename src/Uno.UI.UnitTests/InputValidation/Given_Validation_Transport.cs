@@ -17,7 +17,7 @@ using Windows.Foundation.Collections;
 
 namespace Uno.UI.Tests.InputValidation;
 
-[TestClass]
+[UITestClass]
 public partial class Given_Validation_Transport
 {
 	[TestInitialize]

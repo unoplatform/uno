@@ -25,7 +25,7 @@ public static class AttachedPathTestOwner
 	public static void SetMarker(DependencyObject owner, string value) => owner.SetValue(MarkerProperty, value);
 }
 
-[TestClass]
+[UITestClass]
 public partial class Given_DependencyProperty_AttachedPath
 {
 	[TestMethod]

@@ -14,7 +14,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.InputValidation;
 
-[TestClass]
+[UITestClass]
 public partial class Given_Validation_Controls
 {
 	[TestInitialize]

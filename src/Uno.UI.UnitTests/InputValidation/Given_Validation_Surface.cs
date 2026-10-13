@@ -15,7 +15,7 @@ namespace Uno.UI.Tests.InputValidation;
 /// own visual state code through <c>UpdateValidationStates</c>. Everything else is reached from the
 /// <c>Uno.UI.Xaml.Controls.Validation</c> attached properties, through InternalsVisibleTo.
 /// </remarks>
-[TestClass]
+[UITestClass]
 public class Given_Validation_Surface
 {
 	[TestMethod]
