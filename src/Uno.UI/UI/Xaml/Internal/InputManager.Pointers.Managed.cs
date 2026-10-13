@@ -775,7 +775,7 @@ internal partial class InputManager
 				}
 
 				// #1.1 - Refresh OriginalSource
-				if (isOriginalSourceStale)
+				if (isOriginalSourceStale && !IsStillHitTarget(originalSource))
 				{
 					HitTestOrRoot(args.CoreArgs, out originalSource!, reason: "after_leave_with_capture", entryPoint, entryLine);
 					isOriginalSourceStale = false;
@@ -816,7 +816,7 @@ internal partial class InputManager
 				}
 
 				// #1.1 - Refresh OriginalSource
-				if (isOriginalSourceStale)
+				if (isOriginalSourceStale && !IsStillHitTarget(originalSource))
 				{
 					HitTestOrRoot(args.CoreArgs, out originalSource!, reason: "after_leave", entryPoint, entryLine);
 					isOriginalSourceStale = false;
@@ -829,7 +829,7 @@ internal partial class InputManager
 			}
 
 			// #2.1 - Refresh OriginalSource
-			if (isOriginalSourceStale && needsNonStaleOriginalSource)
+			if (isOriginalSourceStale && needsNonStaleOriginalSource && !IsStillHitTarget(originalSource))
 			{
 				HitTestOrRoot(args.CoreArgs, out originalSource!, reason: "after_enter", entryPoint, entryLine);
 			}
@@ -838,6 +838,12 @@ internal partial class InputManager
 		}
 
 		#region Helpers
+
+		// The tree is flagged as altered when an element is removed, collapsed or recycled. Unless that was the original
+		// source or one of its ancestors, the source is still the topmost hit, as layout has not run since the hit test.
+		// Uno-specific: WinUI raises enter/leave from a single hit test.
+		private static bool IsStillHitTarget(UIElement originalSource)
+			=> originalSource.IsActiveInVisualTree && originalSource.GetHitTestVisibility() == HitTestability.Visible;
 
 		private void HitTestIfStale(
 			PointerEventDispatchResult result,
