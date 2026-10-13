@@ -18,6 +18,28 @@ partial class ListViewBaseItemPresenter : IBorderInfoProvider
 	// Over-content layer, hosted by the presenter visual or the secondary chrome visual.
 	private ShapeVisual? m_overContentLayerVisual;
 
+	// The last removed outer and inner selection borders, re-added by the next Ensure call: GridView items add and remove
+	// them on every pointer-over and selection change, and a new Border costs far more in Uno than a CBorder in WinUI.
+	private Border? m_recycledOuterBorder;
+	private Border? m_recycledInnerSelectionBorder;
+
+	private static Border CreateOrReuseBorder(ref Border? recycled)
+	{
+		var border = recycled;
+		recycled = null;
+
+		// WinUI's nested-border quirk can leave a removed border inside the detached outer one.
+		if (border is null || border.GetParent() is not null || border.Child is not null)
+		{
+			return new Border();
+		}
+
+		// The only property the chrome sets conditionally; the Set*Properties calls set the others.
+		border.ClearValue(MarginProperty);
+
+		return border;
+	}
+
 	private protected override ContainerVisual CreateElementVisual() => new ListViewBaseItemChromeVisual(Compositor.GetSharedCompositor());
 
 	private ListViewBaseItemChromeVisual ChromeVisual => (ListViewBaseItemChromeVisual)Visual;
