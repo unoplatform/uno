@@ -815,6 +815,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Foreground_Changes_Then_Repainted_Without_Layout()
+		{
+			var SUT = new TextBlock { Text = "ABC", FontSize = 30, Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black) };
+			var canvas = new Canvas { Width = 300, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Children = { SUT } };
+			await UITestHelper.Load(canvas);
+			await UITestHelper.WaitForRender();
+
+			var parsed = SUT.ParsedText;
+
+			SUT.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.IsTrue(ReferenceEquals(parsed, SUT.ParsedText), "A brush change does not lay the text out again.");
+			var bitmap = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), Microsoft.UI.Colors.Red, tolerance: 15);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), Microsoft.UI.Colors.Black, tolerance: 15);
+		}
+
+		[TestMethod]
+		public async Task When_Foreground_Brush_Color_Changes_Then_Repainted_Without_Layout()
+		{
+			var brush = new SolidColorBrush(Microsoft.UI.Colors.Black);
+			var SUT = new TextBlock { Text = "ABC", FontSize = 30, Foreground = brush };
+			var canvas = new Canvas { Width = 300, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Children = { SUT } };
+			await UITestHelper.Load(canvas);
+			await UITestHelper.WaitForRender();
+
+			var parsed = SUT.ParsedText;
+
+			brush.Color = Microsoft.UI.Colors.Blue;
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.IsTrue(ReferenceEquals(parsed, SUT.ParsedText), "A brush color change does not lay the text out again.");
+			var bitmap = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), Microsoft.UI.Colors.Blue, tolerance: 15);
+		}
+
+		[TestMethod]
+		public async Task When_Inherited_Foreground_Changes_Then_Runs_Repainted_Without_Layout()
+		{
+			var local = new Run { Text = "DEF", Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green) };
+			var SUT = new TextBlock { FontSize = 30, Inlines = { new Run { Text = "ABC" }, new Span { Inlines = { local } } } };
+			var host = new ContentControl { Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black), Content = SUT };
+			var canvas = new Canvas { Width = 300, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Children = { host } };
+			await UITestHelper.Load(canvas);
+			await UITestHelper.WaitForRender();
+
+			var parsed = SUT.ParsedText;
+
+			host.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.IsTrue(ReferenceEquals(parsed, SUT.ParsedText), "An inherited brush change does not lay the text out again.");
+			var bitmap = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), Microsoft.UI.Colors.Red, tolerance: 15);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), Microsoft.UI.Colors.Green, tolerance: 15);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), Microsoft.UI.Colors.Black, tolerance: 15);
+		}
+
+		[TestMethod]
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 300, 50, false, DisplayName = "Single line, height differs")]
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 200, 300, false, DisplayName = "Single left-aligned line, width differs")]
 		[DataRow("ABC", TextAlignment.Center, TextWrapping.NoWrap, 200, 300, true, DisplayName = "Centred, width differs")]
