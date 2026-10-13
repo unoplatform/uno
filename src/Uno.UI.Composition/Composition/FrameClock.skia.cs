@@ -5,8 +5,13 @@ using System;
 namespace Uno.UI.Composition;
 
 /// <summary>
-/// The timestamps per-frame motion evaluates against, and an estimate of the interval between frames.
+/// A uniform frame clock for per-frame motion to evaluate against.
 /// </summary>
+/// <remarks>
+/// Frames present one per vsync, but the UI thread reaches each frame with milliseconds of jitter. Motion
+/// evaluated against that raw instant turns the jitter into v·Δt of position error, so it gets the grid the
+/// frames are actually shown on instead, recovered from the median frame interval.
+/// </remarks>
 internal sealed class FrameClock
 {
 	private const int Window = 32;
@@ -31,34 +36,32 @@ internal sealed class FrameClock
 	public long IntervalInTicks => _count >= MinSamples ? _median : TimeSpan.TicksPerSecond / 60;
 
 	/// <summary>
-	/// Forgets the last frame, so the gap to the next one is not sampled as an interval. The sample window
-	/// survives: below <see cref="MinSamples"/> the interval falls back to 1/60s, which would mis-step every
-	/// motion on a display that is not 60Hz.
+	/// Drops the grid's phase so the next timestamp re-anchors on the real clock. The sample window survives:
+	/// below <see cref="MinSamples"/> the interval falls back to 1/60s, which would mis-step every motion on a
+	/// display that is not 60Hz.
 	/// </summary>
 	public void Reset() => _lastRaw = 0;
 
 	public long NextTimestamp(long raw)
 	{
-		if (_lastRaw != 0)
+		var previous = _clock;
+
+		if (_lastRaw == 0)
 		{
-			Sample(raw - _lastRaw);
+			_lastRaw = raw;
+			return _clock = Math.Max(raw, previous);
 		}
 
+		var delta = raw - _lastRaw;
 		_lastRaw = raw;
 
-		// A backward step makes elapsed time negative, which a curve reads as "not started yet".
-		return _clock = Math.Max(raw, _clock);
-	}
-
-	private void Sample(long delta)
-	{
 		var period = _count >= MinSamples ? _median : 0;
 
 		// Admitting an idle gap would skew the median, which motion also back-dates its launch by. The absolute
 		// bound matters while frames are sparse: gaps are all there is to sample, and the median would become one.
 		if (delta > MaxFrameIntervalInTicks || (period > 0 && delta >= period * IdleGapPeriods))
 		{
-			return;
+			return _clock = Math.Max(raw, previous);
 		}
 
 		_deltas[_index] = delta;
@@ -72,6 +75,29 @@ internal sealed class FrameClock
 		{
 			_median = Median();
 		}
+
+		if (period <= 0)
+		{
+			return _clock = Math.Max(raw, previous);
+		}
+
+		// Advance by whole frames, never fewer than one, then correct a sixteenth of the sub-period phase.
+		// Rounding unconditionally keeps a period that is a whole multiple of the tick rate from flipping
+		// sides on jitter.
+		var frames = Math.Max(1, (long)Math.Round((raw - _clock) / (double)period, MidpointRounding.AwayFromZero));
+		_clock += frames * period;
+		_clock += (raw - _clock) / 16;
+
+		// The one-frame floor banks lead on intervals shorter than a period. Unbounded, a median that then
+		// shrinks turns that lead into a run of repeated timestamps once clamped below.
+		var maxLead = period / 2;
+		if (_clock - raw > maxLead)
+		{
+			_clock = raw + maxLead;
+		}
+
+		// A backward step makes elapsed time negative, which a curve reads as "not started yet".
+		return _clock = Math.Max(_clock, previous);
 	}
 
 	private long Median()
