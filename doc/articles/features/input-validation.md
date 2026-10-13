@@ -42,10 +42,10 @@ Errors are only read from the binding on the validated property. A control has a
 
     The flag is read when each binding is set, which for bindings declared in XAML happens during `InitializeComponent`. Bindings set before the flag is turned on are never validated. When the flag is off (the default), validation adds no cost to bindings.
 
-1. Opt each control in by setting the `Validation.Mode` attached property from the `Uno.Extras.Input` namespace:
+1. Opt each control in by setting the `Validation.Mode` attached property from the `Uno.UI.Xaml.Controls` namespace:
 
     ```xml
-    <Page xmlns:input="using:Uno.Extras.Input">
+    <Page xmlns:input="using:Uno.UI.Xaml.Controls">
         <TextBox Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  input:Validation.Mode="Auto" />
     </Page>
@@ -311,7 +311,7 @@ A registration applies to every instance of the type, and replaces the validated
 
 ## API summary
 
-Attached properties of `Uno.Extras.Input.Validation`, available on any `Control`:
+Attached properties of `Uno.UI.Xaml.Controls.Validation`, available on any `Control`:
 
 | Property | Type | Default | Set by |
 |---|---|---|---|
@@ -323,8 +323,8 @@ Attached properties of `Uno.Extras.Input.Validation`, available on any `Control`
 
 Related types:
 
-- `Uno.Extras.Input.InputValidationMode`: `Auto`, `Default`, `Disabled`.
-- `Uno.Extras.Input.InputValidationKind`: `Auto`, `Compact`, `Inline`.
-- `Uno.Extras.Input.InputValidationError`: a single error, with its `ErrorMessage`.
+- `Uno.UI.Xaml.Controls.InputValidationMode`: `Auto`, `Default`, `Disabled`.
+- `Uno.UI.Xaml.Controls.InputValidationKind`: `Auto`, `Compact`, `Inline`.
+- `Uno.UI.Xaml.Controls.InputValidationError`: a single error, with its `ErrorMessage`.
 - `Uno.UI.FeatureConfiguration.InputValidation`: the `IsEnabled` switch and the `ValidationProperties` map.
 - `Uno.UI.Xaml.Controls.InputValidationPropertyAttribute`: declares the validated property of a control type.

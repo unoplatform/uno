@@ -40,7 +40,7 @@ property on the control, and its errors arrive on `Validation.HasErrors` / `Vali
 markup can render them. As shipped ([§10d](#10d-the-surface-moves-to-unouiextras)):
 
 ```xml
-<!-- xmlns:input="using:Uno.Extras.Input" -->
+<!-- xmlns:input="using:Uno.UI.Xaml.Controls" -->
 <StackPanel>
     <TextBox x:Name="UserNameBox" Text="{Binding UserName}" input:Validation.Mode="Auto" />
     <TextBlock Foreground="Red"
@@ -67,7 +67,7 @@ Two unrelated static classes in this document sit next to each other, and are de
 - **`Uno.UI.FeatureConfiguration.InputValidation`** — the global switch and the public validation-property
   map (§3.4).
 - **`Validation`** — the attached-property owner holding `IsEnabled` / `HasErrors` / `Errors` (§4.1). Which
-  namespace *this* one lands in is [Q3](#9-open-decisions). As shipped, it is `Uno.Extras.Input.Validation`
+  namespace *this* one lands in is [Q3](#9-open-decisions). As shipped, it is `Uno.UI.Xaml.Controls.Validation`
   in Uno.UI.Extras ([§10d](#10d-the-surface-moves-to-unouiextras)).
 
 They are named for the same feature and are otherwise unrelated — the `InputValidation` prefix on the first
@@ -460,7 +460,7 @@ The half of the presentation layer that ships in 059. The visuals are spec 060.
 > **Superseded twice.** [§10b](#10b-superseded-by-the-winui-alignment-pass) moved this read model onto
 > per-control dependency properties behind `IInputValidationControl`;
 > [§10d](#10d-the-surface-moves-to-unouiextras) moved it back to attached properties, on
-> `Uno.Extras.Input.Validation` in Uno.UI.Extras, with `IsEnabled` spelled `Mode`. The section is kept because
+> `Uno.UI.Xaml.Controls.Validation` in Uno.UI.Extras, with `IsEnabled` spelled `Mode`. The section is kept because
 > both are written against it.
 
 A static class owning attached dependency properties, scoped to `Control`.
@@ -575,7 +575,7 @@ class SignUpViewModel2 : /* ObservableValidator, or any INotifyDataErrorInfo imp
 ```
 
 That is the whole opt-in: one attached property on the control, and a binding whose source implements
-`INotifyDataErrorInfo`, with `xmlns:input="using:Uno.Extras.Input"`
+`INotifyDataErrorInfo`, with `xmlns:input="using:Uno.UI.Xaml.Controls"`
 ([§10d](#10d-the-surface-moves-to-unouiextras)). Rendering the errors is the app's job in this slice — see §1.
 
 ## 7. Decisions (locked)
@@ -793,7 +793,7 @@ do the same. None of it is public API in WinAppSDK — it is all `PrivateApiCont
 growing WinUI types a surface WinUI does not have. It now lives in **Uno.UI.Extras**, as attached properties
 on a static class:
 
-| `Uno.Extras.Input.Validation` | Type | Default | Accessors |
+| `Uno.UI.Xaml.Controls.Validation` | Type | Default | Accessors |
 |---|---|---|---|
 | `Mode` | `InputValidationMode` | `Disabled` | get / set |
 | `Kind` | `InputValidationKind` | `Auto` | get / set |
@@ -824,10 +824,12 @@ on a static class:
   `GetValidationProperty` lookup is gone. A third-party control now declares its input and nothing else. Of
   the twelve protected `Control` members, only `UpdateValidationStates` remains, for a control's own visual
   state code. `Uno.UI.Tests.ViewLibrary` still proves this at compile time, without referencing Uno.UI.Extras.
-- **The value types moved to `Uno.Extras.Input`**: `InputValidationMode`, `InputValidationKind` and
+- **The value types moved to `Uno.UI.Xaml.Controls`**: `InputValidationMode`, `InputValidationKind` and
   `InputValidationError`. They stay in Uno.UI, because the engine uses them, and are compile-linked into the
   WinAppSDK build of Uno.UI.Extras. So the same full names exist on both platforms, and none is declared
   inside WinAppSDK's own `Microsoft.UI.Xaml.Controls`. This reverses §10b's Q3 / Q11 parity risk.
+- **The namespace is `Uno.UI.Xaml.Controls`, not `Uno.Extras.*`.** Uno.UI.Extras is an assembly split, not a
+  namespace root: its types live under `Uno.UI.*`, next to `CommandBarExtensions` and `SplitViewExtensions`.
 - **On WinAppSDK the class compiles, but its handlers are `#if HAS_UNO`'d out**, so markup that sets these
   properties stays portable and does nothing there.
 
