@@ -9,6 +9,8 @@
 		<UnoForceHotReloadCodeGen>true</UnoForceHotReloadCodeGen>
 		<AssemblyName>Uno.UI.UnitTests</AssemblyName>
 		<RootNamespace>Uno.UI.Tests</RootNamespace>
+		<!-- Fake native entry points (UnmanagedCallersOnly function pointers) for the GL framebuffer tests. -->
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<!-- We don't care about boxing allocations in tests -->
 		<NoWarn>$(NoWarn);UnoInternal0002</NoWarn>
 		<!--
@@ -125,6 +127,8 @@
 		<Compile Include="..\Uno.UI.Runtime.Win32\Devices\Input\Win32PointerCoordinateMath.cs" Link="Windows_UI_Input\Win32PointerCoordinateMath.cs" />
 		<Compile Include="..\Uno.UI.Runtime.X11\Devices\Input\X11PointerCoordinateMath.cs" Link="Windows_UI_Input\X11PointerCoordinateMath.cs" />
 		<Compile Include="..\Uno.UI.Runtime.MacOS\UI\Windowing\MacOSTitleBarMath.cs" Link="Windows_UI_Input\MacOSTitleBarMath.cs" />
+		<!-- Shared by every GL host; resolves its entry points through a caller-supplied loader, so a fake GL exercises it. -->
+		<Compile Include="..\Uno.UI.Runtime\Rendering\GLRetainedFramebuffer.cs" Link="Uno_UI_Runtime\GLRetainedFramebuffer.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<!--

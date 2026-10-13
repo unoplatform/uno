@@ -71,6 +71,7 @@
       "Uno.UI.Runtime.Win32.Support\\Uno.UI.Runtime.Win32.Support.csproj",
       "Uno.UI.Runtime.Win32\\Uno.UI.Runtime.Win32.csproj",
       "Uno.UI.Runtime.Wayland\\Uno.UI.Runtime.Wayland.csproj",
+      "Uno.UI.Runtime.Wayland.Tests\\Uno.UI.Runtime.Wayland.Tests.csproj",
       "Uno.UI.Runtime.Wayland.Scanner\\Uno.UI.Runtime.Wayland.Scanner.csproj",
       "Uno.UI.Runtime.X11\\Uno.UI.Runtime.X11.csproj",
       "Uno.UI.Runtime\\Uno.UI.Runtime.csproj",

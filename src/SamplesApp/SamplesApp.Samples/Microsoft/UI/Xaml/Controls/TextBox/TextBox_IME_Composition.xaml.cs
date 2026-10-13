@@ -92,6 +92,11 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 				BackendText.Text = "macOS IME extension";
 				AddLog("Platform: macOS Skia — IME via MacOSImeTextBoxExtension");
 			}
+			else if (OperatingSystem.IsLinux())
+			{
+				BackendText.Text = "Linux desktop IME";
+				AddLog("Platform: Linux — compositor IME on Wayland or X11 input method");
+			}
 			else
 			{
 				BackendText.Text = "Unknown platform";

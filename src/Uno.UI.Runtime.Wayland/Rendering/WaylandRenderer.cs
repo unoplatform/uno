@@ -193,19 +193,24 @@ internal sealed class WaylandRenderer : IDisposable, ISwapChain
 		{
 			software.BufferAvailable -= OnBufferAvailable;
 		}
+		ReleaseGraphics(_context, _drawingFactory);
+	}
+
+	internal static void ReleaseGraphics(IWaylandGraphicsContext context, IDrawingFactory drawingFactory)
+	{
 		try
 		{
 			// The backend factory owns GPU resources bound to the context, so it goes first, with the context current.
 			// A context that cannot be made current is abandoned so the backend issues no GL calls into it.
-			if (_context is IWaylandGpuTeardownContext gpu && !gpu.TryMakeCurrentForTeardown())
+			if (context is IWaylandGpuTeardownContext gpu && !gpu.TryMakeCurrentForTeardown())
 			{
-				(_drawingFactory as IGpuDrawingFactory)?.AbandonContext();
+				(drawingFactory as IGpuDrawingFactory)?.AbandonContext();
 			}
-			(_drawingFactory as IDisposable)?.Dispose();
+			(drawingFactory as IDisposable)?.Dispose();
 		}
 		finally
 		{
-			_context.Dispose();
+			context.Dispose();
 		}
 	}
 
