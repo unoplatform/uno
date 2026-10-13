@@ -4776,6 +4776,147 @@ public class Given_ElementTheme
 			$"Focused ContentElement foreground should be light in dark theme, but was {foreground.Color}");
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25313")]
+	[RequiresFullWindow]
+	[DataRow(false, true, false)]
+	[DataRow(true, true, false)]
+	[DataRow(false, false, false)]
+	[DataRow(true, false, false)]
+	[DataRow(false, true, true)]
+	[DataRow(true, false, true)]
+	public async Task When_Local_Value_Cleared_Style_ThemeResource_Resolves_Against_Element_Theme(bool applicationDark, bool switchAtRuntime, bool localThemeDictionary)
+	{
+		using var _ = applicationDark ? ThemeHelper.UseApplicationDarkTheme() : ThemeHelper.UseApplicationLightTheme();
+		var elementTheme = applicationDark ? ElementTheme.Light : ElementTheme.Dark;
+		var resourceKey = localThemeDictionary ? "Issue25313Brush" : "TextFillColorPrimaryBrush";
+
+		var root = (Grid)XamlReader.Load(
+			$$"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  RequestedTheme="{{(switchAtRuntime ? ElementTheme.Default : elementTheme)}}">
+				<Grid.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="Issue25313Brush" Color="#FF102030" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="Issue25313Brush" Color="#FFE0D0C0" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+						<Style x:Key="ThemedHost" TargetType="ContentControl">
+							<Setter Property="Foreground" Value="{ThemeResource {{resourceKey}}}" />
+						</Style>
+					</ResourceDictionary>
+				</Grid.Resources>
+				<ContentControl x:Name="Host" Style="{StaticResource ThemedHost}">
+					<TextBlock Text="hello" />
+				</ContentControl>
+			</Grid>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		var host = (ContentControl)root.FindName("Host");
+		var applicationThemeColor = ((SolidColorBrush)host.Foreground).Color;
+
+		if (switchAtRuntime)
+		{
+			root.RequestedTheme = elementTheme;
+			await WindowHelper.WaitForIdle();
+		}
+
+		var elementThemeColor = ((SolidColorBrush)host.Foreground).Color;
+		Assert.AreEqual(elementTheme, host.ActualTheme);
+		if (switchAtRuntime)
+		{
+			Assert.AreNotEqual(applicationThemeColor, elementThemeColor, "The Style's {ThemeResource} should follow the subtree theme switch");
+		}
+
+		if (localThemeDictionary)
+		{
+			var expected = elementTheme == ElementTheme.Dark
+				? Windows.UI.Color.FromArgb(0xFF, 0xE0, 0xD0, 0xC0)
+				: Windows.UI.Color.FromArgb(0xFF, 0x10, 0x20, 0x30);
+			Assert.AreEqual(expected, elementThemeColor);
+		}
+
+		host.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+		await WindowHelper.WaitForIdle();
+		host.ClearValue(Control.ForegroundProperty);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(elementTheme, host.ActualTheme);
+		Assert.AreEqual(elementThemeColor, ((SolidColorBrush)host.Foreground).Color,
+			"Clearing the local value should restore the Style's {ThemeResource} resolved for the element's own theme");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25313")]
+	[RequiresFullWindow]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Local_Value_Cleared_BuiltInStyle_ThemeResource_Resolves_Against_Element_Theme(bool applicationDark)
+	{
+		using var _ = applicationDark ? ThemeHelper.UseApplicationDarkTheme() : ThemeHelper.UseApplicationLightTheme();
+		var elementTheme = applicationDark ? ElementTheme.Light : ElementTheme.Dark;
+
+		var button = new Button { Content = "Button" };
+		var root = new Grid { Children = { button } };
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+		var applicationThemeColor = ((SolidColorBrush)button.Foreground).Color;
+
+		root.RequestedTheme = elementTheme;
+		await WindowHelper.WaitForIdle();
+
+		var elementThemeColor = ((SolidColorBrush)button.Foreground).Color;
+		Assert.AreNotEqual(applicationThemeColor, elementThemeColor, "The built-in Style's {ThemeResource} should follow the subtree theme switch");
+
+		button.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+		await WindowHelper.WaitForIdle();
+		button.ClearValue(Control.ForegroundProperty);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(elementThemeColor, ((SolidColorBrush)button.Foreground).Color,
+			"Clearing the local value should restore the built-in Style's {ThemeResource} resolved for the element's own theme");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25313")]
+	[RequiresFullWindow]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Style_Removed_BuiltInStyle_ThemeResource_Resolves_Against_Element_Theme(bool applicationDark)
+	{
+		using var _ = applicationDark ? ThemeHelper.UseApplicationDarkTheme() : ThemeHelper.UseApplicationLightTheme();
+		var elementTheme = applicationDark ? ElementTheme.Light : ElementTheme.Dark;
+
+		var reference = new Button { Content = "Reference" };
+		var button = new Button
+		{
+			Content = "Button",
+			Style = new Style(typeof(Button))
+			{
+				Setters = { new Setter(Control.ForegroundProperty, new SolidColorBrush(Microsoft.UI.Colors.Red)) },
+			},
+		};
+		var root = new StackPanel { Children = { reference, button } };
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		root.RequestedTheme = elementTheme;
+		await WindowHelper.WaitForIdle();
+
+		button.Style = null;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(((SolidColorBrush)reference.Foreground).Color, ((SolidColorBrush)button.Foreground).Color,
+			"Removing the Style's setter should restore the default Style's {ThemeResource} resolved for the element's own theme");
+	}
+
 	// Positive control: the Focused state's BorderElement background proves the state actually
 	// ran and resolved Dark — all Dark-theme text-control foregrounds alias the same light
 	// brush, so a foreground assert alone can't tell "resolved correctly" from "never applied".
