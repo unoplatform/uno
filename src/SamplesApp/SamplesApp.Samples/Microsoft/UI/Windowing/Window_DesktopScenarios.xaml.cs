@@ -6,6 +6,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using SamplesApp;
 using Uno.UI.Samples.Controls;
 using Windows.Graphics;
 
@@ -19,12 +20,16 @@ public sealed partial class Window_DesktopScenarios : Page
 	private Button? _titleButton;
 	private XamlRoot? _titleRoot;
 	private bool _regions;
+	private DispatcherTimer? _smokeTimer;
+	private int _smokeStep;
 
 	public Window_DesktopScenarios()
 	{
 		this.InitializeComponent();
+		Loaded += OnLoaded;
 		Unloaded += (_, _) =>
 		{
+			_smokeTimer?.Stop();
 			_window?.Close();
 		};
 	}
@@ -156,5 +161,65 @@ public sealed partial class Window_DesktopScenarios : Page
 		var source = InputNonClientPointerSource.GetForWindowId(_window.AppWindow.Id);
 		source.SetRegionRects(NonClientRegionKind.Caption, [Bounds(_titleBar)]);
 		source.SetRegionRects(NonClientRegionKind.Passthrough, [Bounds(_titleButton)]);
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+#if __SKIA__
+		// CI lifecycle smoke: a timer-driven state machine that exercises window states and closes the
+		// window; build/test-scripts/linux-skia-runtime-tests.sh enables it and reads its console output.
+		if (Environment.GetEnvironmentVariable("UNO_WAYLAND_LIFECYCLE_SMOKE") != "1" || _smokeTimer is not null)
+		{
+			return;
+		}
+		var smokeTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+		_smokeTimer = smokeTimer;
+		smokeTimer.Tick += (_, _) =>
+		{
+			try
+			{
+				if (_smokeStep == 1 && (_titleBar?.IsLoaded != true || _titleBar.ActualWidth <= 0))
+				{
+					return;
+				}
+				switch (_smokeStep++)
+				{
+					case 0: CreateWindow(); break;
+					case 1: ResizeWindow(this, new RoutedEventArgs()); break;
+					case 2: MaximizeWindow(this, new RoutedEventArgs()); break;
+					case 3: RestoreWindow(this, new RoutedEventArgs()); break;
+					case 4: SetRegions(this, new RoutedEventArgs()); break;
+					case 5: ResetTitleBar(this, new RoutedEventArgs()); break;
+					case 6: _window!.Close(); break;
+					case 7:
+						if (_window is not null)
+						{
+							throw new InvalidOperationException("Secondary window did not close.");
+						}
+						CreateWindow();
+						break;
+					case 8: _window!.Close(); break;
+					case 9:
+						smokeTimer.Stop();
+						if (_window is not null)
+						{
+							throw new InvalidOperationException("Reopened window did not close.");
+						}
+						Console.WriteLine("Wayland lifecycle: windows closed");
+						App.MainWindow?.Close();
+						break;
+				}
+			}
+			catch (Exception error)
+			{
+				smokeTimer.Stop();
+				Console.Error.WriteLine(error);
+				Environment.ExitCode = 1;
+				_window?.Close();
+				App.MainWindow?.Close();
+			}
+		};
+		smokeTimer.Start();
+#endif
 	}
 }
