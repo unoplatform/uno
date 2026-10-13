@@ -1832,9 +1832,9 @@ namespace Microsoft.UI.Xaml.Controls
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
 
 			// There's no reason to re-parse the text if the available size hasn't changed since the last measure/arrange.
-			// Note that MeasureOverride doesn't have these checks. If something in the text block has changed that would
-			// require a re-parse, the ParseText call during the measure pass will catch it. There are no changes that
-			// would require a re-parse that would invalidate arrange but not measure, except TextAlignment, which we explicitly check.
+			// If something in the text block has changed that would require a re-parse, the measure pass re-parses it, as its
+			// measure was invalidated. There are no changes that would require a re-parse that would invalidate arrange but
+			// not measure, except TextAlignment, which we explicitly check.
 			// A size change only counts in a dimension the layout used: a single left-aligned line is arranged at any height.
 			var arrangedSize = _lastParsedTextCreationValues.outSize;
 			var sizeChanged = _lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding

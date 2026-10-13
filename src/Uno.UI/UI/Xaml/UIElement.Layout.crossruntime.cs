@@ -29,6 +29,8 @@ namespace Microsoft.UI.Xaml
 
 		public void InvalidateMeasure()
 		{
+			OnMeasureInvalidated();
+
 			if (ShouldInterceptInvalidate || IsMeasureDirty || IsLayoutFlagSet(LayoutFlag.MeasuringSelf))
 			{
 				return;
@@ -40,7 +42,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
-			OnMeasureInvalidated();
 
 			if (!IsMeasureDirtyPathDisabled)
 			{
@@ -57,7 +58,8 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Called when this element's own measure becomes dirty, as opposed to being measured again under a new constraint.
+		/// Called when this element's own measure is invalidated, as opposed to being measured again under a new constraint;
+		/// also when the invalidation is ignored, during its own measure or while invalidations are intercepted.
 		/// </summary>
 		private protected virtual void OnMeasureInvalidated()
 		{
