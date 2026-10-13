@@ -124,7 +124,7 @@ public class Given_InputManager
 		mouse.MoveTo(position.Location.Offset(150, 50), steps: 1);
 
 		Assert.IsNull(col3.Parent, "The pointer leaving col1 should have removed col3.");
-		Assert.AreEqual(1, entered);
+		Assert.AreEqual(1, entered, "col2 should be entered exactly once.");
 		Assert.AreEqual(1, col2.HitTests, "Removing an element outside of col2's branch cannot change the hit-test result.");
 	}
 
