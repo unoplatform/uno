@@ -3,6 +3,7 @@
 // MUX Reference ListViewBaseItem_Partial.h, ListViewBaseItem_Partial.cpp (constants), tag winui3/release/2.5.1
 
 #nullable enable
+#pragma warning disable IDE0051 // Unused members kept for 1:1 parity with ListViewBaseItem_Partial.h
 
 using Windows.Foundation;
 
