@@ -16,6 +16,7 @@ internal sealed class WaylandFrameScheduler : IDisposable
 	private readonly WlSurface _surface;
 	private readonly Func<bool> _render;
 	private readonly Action _stalled;
+	private readonly Action? _frameOpportunity;
 	private readonly Action<Action> _postToOwner;
 	private readonly Timer _stallTimer;
 	private WlCallback? _callback;
@@ -25,11 +26,12 @@ internal sealed class WaylandFrameScheduler : IDisposable
 	private int _presentedWhenArmed;
 	private bool _disposed;
 
-	public WaylandFrameScheduler(WlSurface surface, Func<bool> render, Action stalled, Action<Action> postToOwner)
+	public WaylandFrameScheduler(WlSurface surface, Func<bool> render, Action stalled, Action<Action> postToOwner, Action? frameOpportunity = null)
 	{
 		_surface = surface;
 		_render = render;
 		_stalled = stalled;
+		_frameOpportunity = frameOpportunity;
 		_postToOwner = postToOwner;
 		_stallTimer = new Timer(_ => _postToOwner(OnStallTimer));
 	}
@@ -104,6 +106,7 @@ internal sealed class WaylandFrameScheduler : IDisposable
 		}
 		// Not re-armed here: the UI's next invalidation does that, so an idle UI stops producing frames.
 		_stalled();
+		_frameOpportunity?.Invoke();
 	}
 
 	private void OnDone(object? sender, WlCallback.DoneEventArgs args)
@@ -117,6 +120,7 @@ internal sealed class WaylandFrameScheduler : IDisposable
 			}
 			CancelCallback();
 			TryRender();
+			_frameOpportunity?.Invoke();
 		});
 	}
 
