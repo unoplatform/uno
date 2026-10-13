@@ -549,7 +549,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				foreach (var inline in paragraph.Inlines)
 				{
-					((DependencyObject)inline).UpdateResourceBindings(updateReason, resourceContextProvider: this);
+					UpdateChildThemeBindings(inline, updateReason, this);
 				}
 			}
 		}

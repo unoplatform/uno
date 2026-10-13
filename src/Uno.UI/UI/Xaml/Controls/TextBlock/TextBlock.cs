@@ -1448,7 +1448,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var enumerator = _inlines.GetEnumeratorFast();
 				while (enumerator.MoveNext())
 				{
-					((DependencyObject)enumerator.Current).UpdateResourceBindings(updateReason, resourceContextProvider: this);
+					UpdateChildThemeBindings((DependencyObject)enumerator.Current, updateReason, this);
 				}
 			}
 		}

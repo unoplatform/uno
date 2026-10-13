@@ -767,10 +767,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				}
 			}
 
-			// Delay resolve static resources
+			// Delay resolve static resources. Theme resources are resolved here too, so a reference to a sibling
+			// pins this dictionary as its target, like WinUI's ResourceResolver::GetDictionaryForThemeReference.
 			foreach (var provider in delayedResolutionList)
 			{
-				provider.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, containingDictionary: rd);
+				provider.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading | ResourceUpdateReason.ThemeResource, containingDictionary: rd);
 			}
 		}
 
