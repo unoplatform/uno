@@ -224,6 +224,10 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 				return true;
 			}
 		}
+		if (WaylandDiagnostics.IsEnabled)
+		{
+			WaylandDiagnostics.Trace($"display: command dropped ({(DispatchError is null ? "stopping" : "dispatch failed")})");
+		}
 		rejected?.Invoke();
 		return false;
 	}

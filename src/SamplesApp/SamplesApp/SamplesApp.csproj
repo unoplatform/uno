@@ -165,13 +165,14 @@
 		<TrimmerRootAssembly Include="Uno.UI.Extras" />
 	</ItemGroup>
 
-	<!-- Desktop framework variants + runtimes + AddIns (Win32/X11/FrameBuffer/macOS) -->
+	<!-- Desktop framework variants + runtimes + AddIns (Win32/Wayland/X11/FrameBuffer/macOS) -->
 	<ItemGroup Condition="'$(_Platform)' == 'desktop'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Win32\Uno.UI.Runtime.Win32.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Win32.Support\Uno.UI.Runtime.Win32.Support.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Wayland\Uno.UI.Runtime.Wayland.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.X11\Uno.UI.Runtime.X11.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Linux.FrameBuffer\Uno.UI.Runtime.Linux.FrameBuffer.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.MacOS\Uno.UI.Runtime.MacOS.csproj" />

@@ -41,6 +41,16 @@ internal static class Program
 					global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Uno.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.X11.X11NativeWebViewProvider(o));
 				}
 			})
+			// Before X11: taken only when a Wayland compositor is reachable, X11 (including XWayland) otherwise.
+			.UseWayland(hostBuilder =>
+			{
+				// Dev/test affordance: force the Wayland render backend via env (e.g. UNO_WAYLAND_RENDERER=OpenGLES|Software).
+				if (Environment.GetEnvironmentVariable("UNO_WAYLAND_RENDERER") is { } rb
+					&& Enum.TryParse<global::Uno.UI.Hosting.WaylandRenderingBackend>(rb, ignoreCase: true, out var backend))
+				{
+					hostBuilder.ForceRenderingBackend(backend);
+				}
+			})
 			.UseX11(hostBuilder =>
 			{
 				hostBuilder.PreloadMediaPlayer(true);
