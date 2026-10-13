@@ -58,10 +58,12 @@ variables:
   windowsScaledPool: 'Windows2025-20260406-1'
   linuxVMImage: 'ubuntu-24.04'
   linuxScaledPool: 'Ubuntu2404-20251016'
-  macOSVMImage: 'macOS-15'
-  macOSVMImage_UITests: 'macOS-14'
+  macOSVMImage: 'macOS-26'
+  # .NET for iOS 26.1 requires exactly Xcode 26.1.
   xCodeRoot: '/Applications/Xcode_26.1.1.app'
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_15.3.app'
+  # macOS-26 has no iOS 26.1 simulator runtime: Select Xcode downloads it for the build jobs (actool
+  # needs it), while the simulator tests use this Xcode, whose runtime is preinstalled.
+  xCodeRootSimulator: '/Applications/Xcode_26.6.app'
 
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline
