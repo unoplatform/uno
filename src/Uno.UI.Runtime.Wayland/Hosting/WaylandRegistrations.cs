@@ -6,15 +6,19 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.ApplicationModel.Core;
 using Uno.ApplicationModel.DataTransfer;
+using Uno.Extensions.Storage.Pickers;
 using Uno.Extensions.System;
 using Uno.Foundation.Extensibility;
+using Uno.Graphics;
 using Uno.Helpers.Theming;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Extensions.System;
 using Uno.UI.Runtime.Linux;
 using Uno.UI.UI.Input.Internal;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
+using Windows.Storage.Pickers;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
@@ -48,6 +52,16 @@ internal static class WaylandRegistrations
 		{
 			ApiExtensibility.Register<DragDropManager>(typeof(IDragDropExtension), manager => new WaylandDragDropExtension(manager, dataDevice));
 		}
+		if (WaylandImeTextBoxExtension.TryCreate(connection) is { } ime)
+		{
+			ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => ime);
+			ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => new WaylandTextBoxNotificationsProviderSingleton(ime));
+		}
+		var portalParentWindow = new WaylandPortalParentWindowProvider(connection);
+		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), picker => new LinuxFilePickerExtension(picker, portalParentWindow));
+		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), picker => new LinuxFilePickerExtension(picker, portalParentWindow));
+		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), picker => new LinuxFileSaverExtension(picker, portalParentWindow));
+		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new WaylandNativeOpenGLWrapper(xamlRoot, connection));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => LinuxSystemThemeHelper.Instance);
 		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => LinuxTextScaleFactorExtension.Instance);
 		_registered = true;
