@@ -14,7 +14,7 @@ partial class TransitionTarget
 	internal double Opacity
 	{
 		get => (double)GetValue(OpacityProperty);
-		set => SetValue(OpacityProperty, value);
+		set => SetValue(OpacityProperty, Boxer.Box(value));
 	}
 
 	internal static DependencyProperty OpacityProperty { get; } =
