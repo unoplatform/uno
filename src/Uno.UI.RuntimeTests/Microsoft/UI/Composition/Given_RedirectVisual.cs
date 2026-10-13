@@ -91,6 +91,7 @@ public class Given_RedirectVisual
 		redirect.Size = new Vector2(100, 100);
 		var redirected = CreateTiltedHost(compositor, tilt, redirect);
 
+		using var _ = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(new StackPanel { Children = { inPlace, redirected } });
 
 		var expected = ImageAssert.GetColorBounds(await UITestHelper.ScreenShot(inPlace), Microsoft.UI.Colors.Red, tolerance: 10);
