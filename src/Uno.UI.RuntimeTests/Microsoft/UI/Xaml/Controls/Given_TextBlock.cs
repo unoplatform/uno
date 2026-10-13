@@ -855,6 +855,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Text_And_Foreground_Change_Together_Then_Laid_Out_In_New_Color()
+		{
+			var SUT = new TextBlock { Text = "ABC", FontSize = 30, Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black) };
+			var canvas = new Canvas { Width = 400, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Children = { SUT } };
+			await UITestHelper.Load(canvas);
+			await UITestHelper.WaitForRender();
+
+			var width = SUT.ActualWidth;
+
+			SUT.Text = "ABCDEFGH";
+			SUT.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.IsTrue(SUT.ActualWidth > width, $"Laid out with the new text (width {SUT.ActualWidth}).");
+			var bitmap = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), Microsoft.UI.Colors.Red, tolerance: 15);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), Microsoft.UI.Colors.Black, tolerance: 15);
+		}
+
+		[TestMethod]
 		public async Task When_Inherited_Foreground_Changes_Then_Runs_Repainted_Without_Layout()
 		{
 			var local = new Run { Text = "DEF", Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green) };
