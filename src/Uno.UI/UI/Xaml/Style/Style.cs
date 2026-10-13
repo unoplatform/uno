@@ -231,17 +231,8 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
-		internal bool TryGetThemeResourceSetter(DependencyProperty dp, [NotNullWhen(true)] out Setter? setter)
-		{
-			if (EnsureSetterMap().TryGetValue(dp, out var setterBase) && setterBase is Setter { ThemeResourceKey: not null } themeResourceSetter)
-			{
-				setter = themeResourceSetter;
-				return true;
-			}
-
-			setter = null;
-			return false;
-		}
+		internal bool TryGetSetter(DependencyProperty dp, [NotNullWhen(true)] out SetterBase? setter)
+			=> EnsureSetterMap().TryGetValue(dp, out setter);
 
 		/// <summary>
 		/// Creates a flattened list of setter methods for the whole hierarchy of

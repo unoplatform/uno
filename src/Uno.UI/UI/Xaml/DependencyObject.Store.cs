@@ -2185,28 +2185,44 @@ namespace Microsoft.UI.Xaml
 			using var themeScope = ScopeOwnerTheme(fe);
 
 			var property = propertyDetails.Property;
-			if (TryGetStyleLayerValue(fe.GetActiveStyle(), property, DependencyPropertyValuePrecedences.Style, clearedPrecedence, out var value))
+			if (TryEvaluateStyleLayerValue(fe, property, DependencyPropertyValuePrecedences.Style, clearedPrecedence, out var value))
 			{
 				SetValueInternal(value, DependencyPropertyValuePrecedences.Style, propertyDetails);
 			}
-			else if (fe is Control control
-				&& TryGetStyleLayerValue(control.GetBuiltInStyle(), property, DependencyPropertyValuePrecedences.BuiltInStyle, clearedPrecedence, out value))
+			else if (fe is Control
+				&& TryEvaluateStyleLayerValue(fe, property, DependencyPropertyValuePrecedences.BuiltInStyle, clearedPrecedence, out value))
 			{
 				SetValueInternal(value, DependencyPropertyValuePrecedences.BuiltInStyle, propertyDetails);
 			}
 		}
 
-		// A {ThemeResource} setter resolves for this element's own theme through the reference of its layer, unless that layer is the
-		// one being cleared (its reference is still registered at this point); any other setter is re-read from the style.
-		private bool TryGetStyleLayerValue(Style? style, DependencyProperty property, DependencyPropertyValuePrecedences stylePrecedence, DependencyPropertyValuePrecedences clearedPrecedence, out object? value)
+		// A {ThemeResource} setter resolves for this element's own theme through the reference of its layer, registered here if the
+		// setter never did, except for the layer being cleared (its reference is still registered at this point). Any other setter is
+		// re-read from the style.
+		private bool TryEvaluateStyleLayerValue(FrameworkElement fe, DependencyProperty property, DependencyPropertyValuePrecedences stylePrecedence, DependencyPropertyValuePrecedences clearedPrecedence, out object? value)
 		{
-			if (stylePrecedence != clearedPrecedence && TryResolveStyleThemeResource(style, property, stylePrecedence, out value))
+			var canUseReference = stylePrecedence != clearedPrecedence;
+			if (canUseReference && TryResolveStyleThemeResource(property, stylePrecedence, setter: null, out value))
 			{
 				return true;
 			}
 
-			value = null;
-			return style is not null && style.TryGetPropertyValue(property, out value);
+			var style = stylePrecedence == DependencyPropertyValuePrecedences.Style ? fe.GetActiveStyle() : (fe as Control)?.GetBuiltInStyle();
+			if (style is null || !style.TryGetSetter(property, out var setter))
+			{
+				value = null;
+				return false;
+			}
+
+			if (canUseReference
+				&& setter is Setter { IsThemeResource: true } themeResourceSetter
+				&& _themeResources?.Get(property, stylePrecedence) is null
+				&& TryResolveStyleThemeResource(property, stylePrecedence, themeResourceSetter, out value))
+			{
+				return true;
+			}
+
+			return setter.TryGetSetterValue(out value) && value != DependencyProperty.UnsetValue;
 		}
 
 		/// <summary>
