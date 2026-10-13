@@ -2147,7 +2147,7 @@ namespace Microsoft.UI.Xaml
 
 			if (value == DependencyProperty.UnsetValue && precedence >= DependencyPropertyValuePrecedences.Local)
 			{
-				ReevaluateBaseValue(propertyDetails);
+				ReevaluateBaseValue(propertyDetails, precedence);
 			}
 
 			if (propertyDetails.Property.IsPropMethodCall)
@@ -2172,19 +2172,31 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void ReevaluateBaseValue(DependencyPropertyDetails propertyDetails)
+		private void ReevaluateBaseValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences clearedPrecedence)
 		{
 			// When local value or style value are cleared, we want to re-evaluate base value and set the value with the right precedence.
 			// The new base value will either be an applied style (explicit or implicit) or the built-in style.
-			var actualInstance = ActualInstance;
-			if (actualInstance is FrameworkElement fe &&
-				fe.TryGetValueFromStyle(propertyDetails.Property, out var valueFromStyle) &&
+			if (ActualInstance is not FrameworkElement fe)
+			{
+				return;
+			}
+
+			// A {ThemeResource} setter resolves for this element's own theme: through the reference it registered when there is
+			// one (still registered for the layer being cleared, so only layers below it qualify), else re-read from the Style.
+			using var themeScope = IsProcessingThemeWalk
+				? default
+				: Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ThemeResolution.ResolveOwnerTheme(fe));
+
+			var property = propertyDetails.Property;
+			if (((clearedPrecedence < DependencyPropertyValuePrecedences.Style && TryResolveStyleThemeResource(property, DependencyPropertyValuePrecedences.Style, out var valueFromStyle))
+					|| fe.TryGetValueFromStyle(property, out valueFromStyle)) &&
 				valueFromStyle != DependencyProperty.UnsetValue)
 			{
 				SetValueInternal(valueFromStyle, DependencyPropertyValuePrecedences.Style, propertyDetails);
 			}
-			else if (actualInstance is Control control &&
-				control.TryGetValueFromBuiltInStyle(propertyDetails.Property, out var valueFromBuiltInStyle) &&
+			else if (fe is Control control &&
+				((clearedPrecedence < DependencyPropertyValuePrecedences.BuiltInStyle && TryResolveStyleThemeResource(property, DependencyPropertyValuePrecedences.BuiltInStyle, out var valueFromBuiltInStyle))
+					|| control.TryGetValueFromBuiltInStyle(property, out valueFromBuiltInStyle)) &&
 				valueFromBuiltInStyle != DependencyProperty.UnsetValue)
 			{
 				SetValueInternal(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.BuiltInStyle, propertyDetails);
