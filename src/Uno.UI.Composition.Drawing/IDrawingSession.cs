@@ -18,7 +18,10 @@ public readonly record struct PathInstance(IGeometry Geometry, Vector2 Offset);
 
 public interface IDrawingSession
 {
-	/// <summary>The current total transform, from the drawing origin to the current coordinate space.</summary>
+	/// <summary>
+	/// The current total transform, from the drawing origin to the current coordinate space. It is the full 4x4:
+	/// right after <see cref="SetMatrix"/> it returns that matrix unchanged, Z row and column included.
+	/// </summary>
 	Matrix4x4 TotalMatrix { get; }
 
 	/// <summary>
