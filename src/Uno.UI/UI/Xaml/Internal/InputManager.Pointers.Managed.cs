@@ -839,9 +839,8 @@ internal partial class InputManager
 
 		#region Helpers
 
-		// The tree is flagged as altered when an element is removed, collapsed or recycled. Unless that was the original
-		// source or one of its ancestors, the source is still the topmost hit, as layout has not run since the hit test.
-		// Uno-specific: WinUI raises enter/leave from a single hit test.
+		// The tree is flagged as altered when an element is removed, collapsed or recycled. A source that is still live and
+		// hit-test visible is kept, as WinUI dispatches all the events of an input from a single hit test.
 		private static bool IsStillHitTarget(UIElement originalSource)
 			=> originalSource.IsActiveInVisualTree && originalSource.GetHitTestVisibility() == HitTestability.Visible;
 
@@ -853,7 +852,7 @@ internal partial class InputManager
 			[CallerMemberName] string entryPoint = "",
 			[CallerLineNumber] int entryLine = -1)
 		{
-			if (result is { VisualTreeAltered: true })
+			if (result is { VisualTreeAltered: true } && !IsStillHitTarget(originalSource))
 			{
 				// The visual tree has been modified in a way that requires performing a new hit test.
 				// Note: we mute the nullable annotation for the originalSource as at this point it's impossible to return null.
