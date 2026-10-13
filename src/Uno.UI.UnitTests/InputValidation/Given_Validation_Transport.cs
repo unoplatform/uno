@@ -150,6 +150,21 @@ public partial class Given_Validation_Transport
 	}
 
 	[TestMethod]
+	public void When_Application_Adds_An_Error_Then_Next_Synchronization_Removes_It()
+	{
+		// The source owns the contents: an error added beside it does not survive the next synchronization.
+		var (control, source) = Bind();
+		source.SetErrors(nameof(Person.Name), "required");
+
+		control.Errors.Add(new InputValidationError("taken"));
+		source.SetErrors(nameof(Person.Name), "required");
+
+		CollectionAssert.AreEqual(
+			new object[] { "required" },
+			control.Errors.Select(e => e.ErrorMessage).ToArray());
+	}
+
+	[TestMethod]
 	public void When_Mode_Set_After_The_Binding()
 	{
 		// Generated XAML applies the binding before the attached property.

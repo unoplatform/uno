@@ -144,8 +144,9 @@ public static class Validation
 	/// The errors currently reported for the control's input.
 	/// </summary>
 	/// <remarks>
-	/// Created on first read and stable for the life of the control, so never null on Uno. Mutable: an
-	/// application may add to it to report an error that does not come from the binding source.
+	/// Created on first read and stable for the life of the control, so never null on Uno. Its contents mirror
+	/// the binding source and are replaced on every synchronization with it, so an error an application adds
+	/// is removed at the next one.
 	/// </remarks>
 	public static DependencyProperty ErrorsProperty { get; } =
 		DependencyProperty.RegisterAttached(
