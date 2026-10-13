@@ -1508,6 +1508,9 @@ internal readonly partial struct UnicodeText : IParsedText
 		Draw(owner, session, caret, highlighters, compositionRange, false, null);
 	}
 
+	// Without a highlighter, one unset segment covers every cluster.
+	private static readonly IReadOnlyList<RangeSlicer<(CompositionBrush? background, Brush foreground)>.Segment> s_noHighlighterSegments = [new(0, long.MaxValue, default, false)];
+
 	internal void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
 		IEnumerable<TextHighlighter> highlighters,
@@ -1527,14 +1530,15 @@ internal readonly partial struct UnicodeText : IParsedText
 			? WithOpacity(highContrastBackground, effectiveOpacity)
 			: default;
 
-		var highlighterSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, _text.Length);
+		// Most text has no highlighter, so the slicer is only created for one.
+		RangeSlicer<(CompositionBrush? background, Brush foreground)>? highlighterSlicer = null;
 		foreach (var highlighter in highlighters)
 		{
 			foreach (var range in highlighter.Ranges)
 			{
 				if (range.Length != 0 && range.StartIndex < _text.Length && _text.Length > 0)
 				{
-					highlighterSlicer.Mark(
+					(highlighterSlicer ??= new(0, _text.Length)).Mark(
 						Math.Min(range.StartIndex, _text.Length),
 						Math.Min(range.StartIndex + range.Length, _text.Length),
 						(highlighter.Background?.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
@@ -1544,18 +1548,18 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		Dictionary<(Color color, bool outline), Dictionary<IFont, (List<ushort> glyphs, List<Vector2> positions, float fontSize)>> colorAndOutlineToFontToGlyphs = new();
-		List<TextDecorationDrawInfo> textDecorations = new();
+		List<TextDecorationDrawInfo>? textDecorations = null;
 		List<(float x1, float x2, float baseline, Color color, FontDetails font, global::Microsoft.UI.Text.TabLeader leader)>? tabLeaders = null;
-		Dictionary<(int wordIndex, int lineIndex, float scale), (float left, float right, float y)> spellCheckUnderlines = new();
-		List<(float x1, float x2, float y, Color color)> compositionUnderlines = new();
+		Dictionary<(int wordIndex, int lineIndex, float scale), (float left, float right, float y)>? spellCheckUnderlines = null;
+		List<(float x1, float x2, float y, Color color)>? compositionUnderlines = null;
 		List<(IImage image, object key, Rect destination)>? inlineObjectImages = null;
-		List<(float x1, float x2, float top, float thickness, Color color)> textDecorationLines = new();
+		List<(float x1, float x2, float top, float thickness, Color color)>? textDecorationLines = null;
 
 		Rect? caretRect = default;
 
 		var runBreakIndex = 0;
 		var wordBoundariesIndex = 0;
-		var highlighterSlices = highlighterSlicer.GetSegments();
+		IReadOnlyList<RangeSlicer<(CompositionBrush? background, Brush foreground)>.Segment> highlighterSlices = highlighterSlicer?.GetSegments() ?? s_noHighlighterSegments;
 		var highlighterIndex = 0;
 		Rect? pendingHighContrastBackplate = null;
 		for (var clusterIndex = 0; clusterIndex < _clustersInLogicalOrder.Count; clusterIndex++)
@@ -1729,6 +1733,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					underlineY = Math.Min(underlineY, y + line.lineHeight - (amplitude + scale));
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
+					spellCheckUnderlines ??= new();
 					spellCheckUnderlines[(wordBoundariesIndex, lineIndex, scale)] =
 						spellCheckUnderlines.TryGetValue((wordBoundariesIndex, lineIndex, scale), out var span)
 							? (Math.Min(span.left, underlineLeftX), Math.Max(span.right, underlineRightX), underlineY)
@@ -1752,7 +1757,7 @@ internal readonly partial struct UnicodeText : IParsedText
 								: highContrastForeground,
 							effectiveOpacity)
 						: BrushToColor(_runBreaks[runBreakIndex].foreground, effectiveOpacity);
-					compositionUnderlines.Add((underlineLeftX, underlineRightX, underlineY, foreColor));
+					(compositionUnderlines ??= new()).Add((underlineLeftX, underlineRightX, underlineY, foreColor));
 				}
 			}
 
@@ -1810,7 +1815,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					if (hasUnderline && underline is global::Microsoft.UI.Text.UnderlineType.Single or global::Microsoft.UI.Text.UnderlineType.Words)
 					{
 						AddDecoration(
-							textDecorationLines,
+							textDecorationLines ??= new(),
 							decorationLeftX,
 							decorationRightX,
 							decorationBaseline + (decorationMetrics.UnderlinePosition ?? fontDetails.FontSize * FallbackUnderlinePositionRatio),
@@ -1819,7 +1824,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					}
 					else if (hasUnderline)
 					{
-						textDecorations.Add(new TextDecorationDrawInfo(
+						(textDecorations ??= new()).Add(new TextDecorationDrawInfo(
 							decorationLeftX,
 							decorationRightX,
 							decorationBaseline + (decorationMetrics.UnderlinePosition ?? fontDetails.FontSize * FallbackUnderlinePositionRatio),
@@ -1832,7 +1837,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					if ((runDecorations & TextDecorations.Strikethrough) != 0)
 					{
 						AddDecoration(
-							textDecorationLines,
+							textDecorationLines ??= new(),
 							decorationLeftX,
 							decorationRightX,
 							decorationBaseline + (decorationMetrics.StrikeoutPosition ?? fontDetails.FontSize * FallbackStrikethroughPositionRatio),
@@ -1865,10 +1870,17 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		// WinUI renders the decoration lines before the glyphs (D2DTextDrawingContext::HWRender calls
 		// HWRenderLines then HWRenderGlyphTextures), so a decoration never covers the text it belongs to.
-		DrawTextDecorations(drawingSession, textDecorations);
-		foreach (var (x1, x2, top, thickness, color) in textDecorationLines)
+		if (textDecorations is not null)
 		{
-			drawingSession.DrawRect(new Rect(new Point(x1, top), new Point(x2, top + thickness)), color);
+			DrawTextDecorations(drawingSession, textDecorations);
+		}
+
+		if (textDecorationLines is not null)
+		{
+			foreach (var (x1, x2, top, thickness, color) in textDecorationLines)
+			{
+				drawingSession.DrawRect(new Rect(new Point(x1, top), new Point(x2, top + thickness)), color);
+			}
 		}
 
 		// Outline glyphs are assembled into a path (drawn neutrally); color glyphs (emoji) become images.
@@ -1906,26 +1918,32 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		foreach (var ((_, _, scale), (left, right, midY)) in spellCheckUnderlines)
+		if (spellCheckUnderlines is not null)
 		{
-			using var path = BuildSpellCheckSquigglyPath(midY, left, right, scale);
-			// Widened here rather than handed to StrokePath, which implies flat caps: the wave has round joins and caps.
-			using var stroke = path.GetStrokeFillGeometry(new StrokeStyle
+			foreach (var ((_, _, scale), (left, right, midY)) in spellCheckUnderlines)
 			{
-				Thickness = scale,
-				StartCap = StrokeCap.Round,
-				EndCap = StrokeCap.Round,
-				LineJoin = StrokeJoin.Round,
-			});
-			drawingSession.DrawPath(stroke, WithOpacity(Colors.Red, effectiveOpacity));
+				using var path = BuildSpellCheckSquigglyPath(midY, left, right, scale);
+				// Widened here rather than handed to StrokePath, which implies flat caps: the wave has round joins and caps.
+				using var stroke = path.GetStrokeFillGeometry(new StrokeStyle
+				{
+					Thickness = scale,
+					StartCap = StrokeCap.Round,
+					EndCap = StrokeCap.Round,
+					LineJoin = StrokeJoin.Round,
+				});
+				drawingSession.DrawPath(stroke, WithOpacity(Colors.Red, effectiveOpacity));
+			}
 		}
 
-		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
+		if (compositionUnderlines is not null)
 		{
-			drawingSession.DrawLine(
-				new Vector2(x1, underlineY),
-				new Vector2(x2, underlineY),
-					color, 1);
+			foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
+			{
+				drawingSession.DrawLine(
+					new Vector2(x1, underlineY),
+					new Vector2(x2, underlineY),
+						color, 1);
+			}
 		}
 
 		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text
