@@ -5,6 +5,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.ApplicationModel.Core;
+using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.System;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
@@ -13,6 +14,7 @@ using Uno.UI.Runtime.Extensions.System;
 using Uno.UI.Runtime.Linux;
 using Uno.UI.UI.Input.Internal;
 using Uno.UI.Xaml.Controls;
+using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
@@ -39,6 +41,13 @@ internal static class WaylandRegistrations
 		ApiExtensibility.Register(typeof(IApplicationViewExtension), owner => new WaylandApplicationViewExtension(owner, connection));
 		ApiExtensibility.Register(typeof(ILauncherExtension), owner => new LinuxLauncherExtension(owner));
 		ApiExtensibility.Register(typeof(IInputInjectorKeyboardTargetPolicy), _ => connection.KeyboardInjectionPolicy);
+		var dataDevice = WaylandDataDevice.Create(connection);
+		var clipboard = new WaylandClipboardExtension(dataDevice, connection.PostToUI);
+		ApiExtensibility.Register(typeof(IClipboardExtension), _ => clipboard);
+		if (dataDevice is not null)
+		{
+			ApiExtensibility.Register<DragDropManager>(typeof(IDragDropExtension), manager => new WaylandDragDropExtension(manager, dataDevice));
+		}
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => LinuxSystemThemeHelper.Instance);
 		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => LinuxTextScaleFactorExtension.Instance);
 		_registered = true;
