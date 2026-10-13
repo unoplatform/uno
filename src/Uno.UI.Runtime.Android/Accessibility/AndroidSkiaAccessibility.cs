@@ -88,6 +88,8 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 	protected override bool ShouldInvalidateOnScroll
 		=> !IsDisposed && _helper?.IsTouchExplorationEnabled == true;
 
+	protected override bool PushesTextValue => false;
+
 	// Checking the modal builds the node tree, which only a client should cause.
 	protected override bool IsBlockedByActiveModal(UIElement element)
 		=> IsAccessibilityEnabled && _helper?.IsBlockedByActiveModal(element) is true;

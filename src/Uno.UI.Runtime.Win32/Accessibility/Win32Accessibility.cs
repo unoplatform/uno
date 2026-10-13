@@ -138,6 +138,8 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	public override bool IsAccessibilityEnabled => !IsDisposed && _hwnd != nint.Zero;
 
+	protected override bool PushesTextValue => false;
+
 	public override bool ListenerExistsHelper(AutomationEvents eventId) =>
 		IsAccessibilityEnabled
 		&& (eventId == AutomationEvents.AutomationFocusChanged || AreUiaClientsListening());

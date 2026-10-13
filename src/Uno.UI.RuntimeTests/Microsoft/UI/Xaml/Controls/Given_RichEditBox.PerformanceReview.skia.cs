@@ -79,6 +79,51 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+	public async Task When_Android_Accessibility_Listens_Large_Story_Key_Edit_Stays_Range_Based()
+	{
+		using var imeDisposable = RichEditBox.SetImeExtensionForTesting(new FakeImeTextBoxExtension());
+		const int length = 128 * 1024;
+		var editor = new RichEditBox
+		{
+			Width = 480,
+			Height = 120,
+			TextWrapping = TextWrapping.NoWrap,
+		};
+		try
+		{
+			editor.Document.SetText(TextSetOptions.None, new string('a', length));
+			WindowHelper.WindowContent = editor;
+			await WindowHelper.WaitForLoaded(editor);
+			editor.Focus(FocusState.Programmatic);
+			editor.Document.Selection.SetRange(length / 2, length / 2);
+			await WindowHelper.WaitForIdle();
+
+			// Reading events latches the bridge on, as any earlier test or accessibility client does.
+			var root = editor.XamlRoot!;
+			AccessibilityPeerHelper.AndroidClearAccessibilityEventsAction?.Invoke(root);
+			Assert.IsNotNull(AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(editor));
+			await WindowHelper.WaitForIdle();
+			AccessibilityPeerHelper.AndroidClearAccessibilityEventsAction?.Invoke(root);
+			editor.Document.ResetTextBufferDiagnosticsForTesting();
+
+			RaiseKey(editor, VirtualKey.None, unicodeKey: 'Z');
+			await WindowHelper.WaitForIdle();
+
+			var events = AccessibilityPeerHelper.AndroidAccessibilityEventsAccessor?.Invoke(root) ?? [];
+			Assert.IsTrue(events.Any(e => e.Kind == AccessibilityNativeEventKind.TextChanged));
+			Assert.IsTrue(events.Any(e => e.Kind == AccessibilityNativeEventKind.SelectionChanged));
+			Assert.AreEqual("aZa", editor.Document.GetTextInRange(length / 2 - 1, length / 2 + 2));
+			Assert.AreEqual(0, editor.Document.TextBufferFullMaterializationCount);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Large_List_Paragraphs_Are_Locally_Edited_Layout_Stays_Incremental()
 	{
 		const int paragraphCount = 1_000;
