@@ -149,6 +149,7 @@ public class Given_GridViewItemPresenter
 		grid.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 		var lightBorder = ((SolidColorBrush)presenter.SelectedBorderBrush!).Color;
+		var lightOuter = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
 
 		// The borders sit detached, waiting for reuse, while the theme changes.
 		grid.SelectedIndex = -1;
@@ -161,6 +162,7 @@ public class Given_GridViewItemPresenter
 
 		var outer = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
 		var inner = ChromeTestHelper.GetField<Border>(presenter, "m_innerSelectionBorder");
+		Assert.AreSame(lightOuter, outer, "Precondition: the border detached during the theme change is the one reused");
 		Assert.AreNotEqual(lightBorder, ((SolidColorBrush)presenter.SelectedBorderBrush!).Color, "The selected border brush differs between Light and Dark");
 		Assert.AreSame(presenter.SelectedBorderBrush, outer.BorderBrush);
 		Assert.AreSame(presenter.SelectedInnerBorderBrush, inner.BorderBrush);
