@@ -1,6 +1,5 @@
 #nullable enable
 
-using Uno.Extras.Input;
 using Windows.Foundation.Collections;
 
 namespace Uno.UI.Xaml.Controls;

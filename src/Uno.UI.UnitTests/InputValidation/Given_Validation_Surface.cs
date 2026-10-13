@@ -13,7 +13,7 @@ namespace Uno.UI.Tests.InputValidation;
 /// <remarks>
 /// A control outside Uno.UI participates by declaring its input, and drives the validation states from its
 /// own visual state code through <c>UpdateValidationStates</c>. Everything else is reached from the
-/// <c>Uno.Extras.Input.Validation</c> attached properties, through InternalsVisibleTo.
+/// <c>Uno.UI.Xaml.Controls.Validation</c> attached properties, through InternalsVisibleTo.
 /// </remarks>
 [TestClass]
 public class Given_Validation_Surface

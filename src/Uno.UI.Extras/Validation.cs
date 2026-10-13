@@ -7,7 +7,7 @@ using Windows.Foundation.Collections;
 using Uno.UI.Xaml.Controls;
 #endif
 
-namespace Uno.Extras.Input;
+namespace Uno.UI.Xaml.Controls;
 
 /// <summary>
 /// Input validation: surfaces the <see cref="System.ComponentModel.INotifyDataErrorInfo"/> errors of a binding

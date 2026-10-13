@@ -5,7 +5,7 @@
 
 #nullable enable
 
-namespace Uno.Extras.Input;
+namespace Uno.UI.Xaml.Controls;
 
 /// <summary>
 /// Whether a control participates in input validation.
