@@ -1,6 +1,7 @@
 using System;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Linux;
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -58,7 +59,7 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 		var cleanState = state & ~(1u << 30);
 
 		var keySym = (nint)keyVal;
-		var vk = X11KeyTransform.VirtualKeyFromKeySym(keySym);
+		var vk = LinuxKeyMap.FromKeysym((uint)keySym);
 		var modifiers = X11XamlRootHost.XModifierMaskToVirtualKeyModifiers((XModifierMask)cleanState);
 
 		var args = new KeyEventArgs(
@@ -157,7 +158,7 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 		}
 		else if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"ProcessKeyboardEvent pressed={pressed}: keycode={keyEvent.keycode} keySym={keySym} vk={X11KeyTransform.VirtualKeyFromKeySym(keySym)} text='{text}' nbytes={nbytes}");
+			this.Log().Trace($"ProcessKeyboardEvent pressed={pressed}: keycode={keyEvent.keycode} keySym={keySym} vk={LinuxKeyMap.FromKeysym((uint)keySym)} text='{text}' nbytes={nbytes}");
 		}
 
 		string? symbols = null;
@@ -173,12 +174,12 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"Dispatching {(pressed ? "KeyDown" : "KeyUp")}: vk={X11KeyTransform.VirtualKeyFromKeySym(keySym)} unicodeKey={(symbols?.Length > 0 ? symbols[0].ToString() : "null")}");
+			this.Log().Trace($"Dispatching {(pressed ? "KeyDown" : "KeyUp")}: vk={LinuxKeyMap.FromKeysym((uint)keySym)} unicodeKey={(symbols?.Length > 0 ? symbols[0].ToString() : "null")}");
 		}
 
 		var args = new KeyEventArgs(
 			"keyboard",
-			X11KeyTransform.VirtualKeyFromKeySym(keySym),
+			LinuxKeyMap.FromKeysym((uint)keySym),
 			X11XamlRootHost.XModifierMaskToVirtualKeyModifiers(keyEvent.state),
 			new CorePhysicalKeyStatus
 			{

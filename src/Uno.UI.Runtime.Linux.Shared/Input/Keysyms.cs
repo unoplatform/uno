@@ -1,3 +1,4 @@
+#nullable enable
 // The MIT License (MIT)
 //
 // Copyright (c) .NET Foundation and Contributors
@@ -26,9 +27,9 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
 // ReSharper disable CommentTypo
-namespace Uno.UI.Runtime.X11
+namespace Uno.UI.Runtime.Linux
 {
-	internal enum X11Key
+	internal enum Keysym
 	{
 		VoidSymbol = 0xffffff /* Void symbol */,
 		BackSpace = 0xff08 /* Back space, back char */,

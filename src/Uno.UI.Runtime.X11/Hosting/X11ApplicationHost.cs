@@ -20,6 +20,7 @@ using Uno.Helpers.Theming;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime;
 using Uno.UI.Runtime.Extensions.System;
+using Uno.UI.Runtime.Linux;
 using Uno.UI.Xaml.Controls;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
@@ -103,9 +104,9 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 		ApiExtensibility.Register(typeof(Uno.UI.Xaml.Controls.Extensions.IImeTextBoxExtension), _ => X11ImeTextBoxExtension.Instance);
 		ApiExtensibility.Register(typeof(Uno.UI.Xaml.Controls.Extensions.ITextBoxNotificationsProviderSingleton), _ => X11TextBoxNotificationsProviderSingleton.Instance);
 
-		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o));
-		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o));
-		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new LinuxFileSaverExtension(o));
+		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o, X11PortalParentWindowProvider.Instance));
+		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o, X11PortalParentWindowProvider.Instance));
+		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new LinuxFileSaverExtension(o, X11PortalParentWindowProvider.Instance));
 
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new X11NativeElementHostingExtension(o));
 
@@ -114,7 +115,7 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
 
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => LinuxSystemThemeHelper.Instance);
-		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => X11TextScaleFactorExtension.Instance);
+		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => LinuxTextScaleFactorExtension.Instance);
 
 		if (Type.GetType("Uno.UI.MediaPlayer.X11.X11MediaPlayerPresenterExtension, Uno.UI.MediaPlayer.X11") is { } mediaPresenterExtensionType
 			&& Type.GetType("Uno.UI.MediaPlayer.X11.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.X11") is { } mediaExtensionType)
