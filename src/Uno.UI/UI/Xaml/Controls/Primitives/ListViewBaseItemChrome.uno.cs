@@ -20,8 +20,8 @@ partial class ListViewBaseItemPresenter : IBorderInfoProvider
 
 	// The last removed outer and inner selection borders, re-added by the next Ensure call: GridView items add and remove
 	// them on every pointer-over and selection change, and a new Border costs far more in Uno than a CBorder in WinUI.
-	private Border? m_recycledOuterBorder;
-	private Border? m_recycledInnerSelectionBorder;
+	private Border? m_removedOuterBorder;
+	private Border? m_removedInnerSelectionBorder;
 
 	private static Border CreateOrReuseBorder(ref Border? recycled)
 	{
