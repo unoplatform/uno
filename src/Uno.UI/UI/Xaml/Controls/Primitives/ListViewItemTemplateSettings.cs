@@ -12,7 +12,7 @@ public partial class ListViewItemTemplateSettings : ListViewBaseItemTemplateSett
 	public int DragItemsCount
 	{
 		get => (int)GetValue(DragItemsCountProperty);
-		internal set => SetValue(DragItemsCountProperty, value);
+		internal set => SetValue(DragItemsCountProperty, Boxer.Box(value));
 	}
 
 	private static DependencyProperty DragItemsCountProperty { get; } =
