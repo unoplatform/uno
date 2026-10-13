@@ -1,4 +1,5 @@
 ﻿#if CROSSRUNTIME
+using System;
 using Microsoft.UI.Composition;
 using SkiaSharp;
 using Uno.UI.Composition.Drawing;
@@ -25,10 +26,19 @@ internal sealed class SKCanvasVisual(SKCanvasElement owner, Compositor composito
 		// RenderOverride can't leak canvas state into the frame, and clip so drawing stays inside the element's area.
 		if (session.Session.NativeSurface is SKCanvas canvas)
 		{
-			canvas.Save();
-			canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y), antialias: true);
+			var saveCount = canvas.Save();
+			var area = new SKRect(0, 0, Size.X, Size.Y);
+			canvas.ClipRect(area, antialias: true);
+
+			// Other visuals fold the accumulated opacity into their own paints; the user's SkiaSharp drawing can't, so it is composited as a layer.
+			using var opacityPaint = session.Opacity < 1f ? new SKPaint { Color = SKColors.Black.WithAlpha((byte)Math.Round(Math.Clamp(session.Opacity, 0f, 1f) * 255)) } : null;
+			if (opacityPaint is not null)
+			{
+				canvas.SaveLayer(area, opacityPaint);
+			}
+
 			owner.InvokeRenderOverride(canvas, new Size(Size.X, Size.Y));
-			canvas.Restore();
+			canvas.RestoreToCount(saveCount);
 		}
 		else
 		{
