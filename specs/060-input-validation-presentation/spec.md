@@ -261,7 +261,7 @@ template work above lands.
 ## 5. `IInputValidationControl.ErrorTemplate`
 
 > **Shipped differently.** There is no `IInputValidationControl` any more: `ErrorTemplate` is an attached
-> property on `Uno.Extras.Input.Validation`, alongside the rest of the surface (059 §10d). The sketch below is
+> property on `Uno.UI.Xaml.Controls.Validation`, alongside the rest of the surface (059 §10d). The sketch below is
 > the original proposal.
 
 Held back from spec 059 deliberately: with no templated error presenter it would have had no consumer, and
