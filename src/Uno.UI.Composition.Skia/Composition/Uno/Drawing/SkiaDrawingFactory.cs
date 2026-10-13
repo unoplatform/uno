@@ -11,15 +11,15 @@ using Windows.UI;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// The default <see cref="IDrawingFactory"/>, backed by SkiaSharp. Installed as <see cref="DrawingFactory.Current"/>
-/// only through negotiation — it is the factory the Skia provider (<see cref="SkiaGraphicsProvider"/>) carries, so
-/// the registry installs it when Skia wins negotiation.
+/// An <see cref="IDrawingFactory"/> backed by SkiaSharp, created per graphics context by
+/// <see cref="SkiaGraphicsProvider"/> when Skia wins negotiation.
 /// </summary>
 internal sealed class SkiaDrawingFactory :
 	IDrawingFactory<IGLRenderTarget>,
 	IDrawingFactory<ISoftwareRenderTarget>,
 	IDrawingFactory<IMetalRenderTarget>,
 	IDrawingFactory<IVulkanRenderTarget>,
+	IGpuDrawingFactory,
 	System.IDisposable
 {
 	private const long WebGlResourceCacheBytes = 256 * 1024 * 1024;
@@ -235,6 +235,13 @@ internal sealed class SkiaDrawingFactory :
 		// Straight into whatever framebuffer the host handed over; retention (so the damage region survives the
 		// host's present) is the host's business, not the backend's.
 		return new SkiaPresentSession(_glSurface.Canvas, this);
+	}
+
+	public void AbandonContext()
+	{
+		_glContext?.AbandonContext(releaseResources: false);
+		_vulkanContext?.AbandonContext(releaseResources: false);
+		_metalContext?.AbandonContext(releaseResources: false);
 	}
 
 	public void Dispose()
