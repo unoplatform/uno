@@ -1990,13 +1990,14 @@ internal readonly partial struct UnicodeText : IParsedText
 	/// Points the runs at the current foregrounds of <paramref name="inlines"/>, the inlines this text was laid out from.
 	/// </summary>
 	/// <returns>False when the inlines no longer match the runs, or an ending paragraph marker paints with the default foreground.</returns>
-	internal bool TryUpdateForegrounds(IEnumerable<Inline> inlines, Brush? defaultForeground)
+	internal bool TryUpdateForegrounds(Inline[] inlines, Brush? defaultForeground)
 	{
 		if (!ReferenceEquals(defaultForeground, _defaultForeground) && _endingParagraphLayout is { MarkerText.Length: > 0 })
 		{
 			return false;
 		}
 
+		// The constructor makes one run per non-empty inline, in order.
 		var index = 0;
 		foreach (var inline in inlines)
 		{

@@ -661,7 +661,9 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <returns>False when the text has to be laid out again.</returns>
 		internal bool TryUpdateForegrounds()
 		{
-			if (CustomTextLayout is null
+			// A pending measure lays the text out again anyway, from inlines that may no longer match the runs.
+			if (!IsMeasureDirty
+				&& CustomTextLayout is null
 				&& ParsedText is UnicodeText parsed
 				&& parsed.TryUpdateForegrounds(Inlines.TraversedTree.leafTree, Foreground))
 			{
