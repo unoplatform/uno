@@ -116,6 +116,83 @@ public class Given_GridViewItemPresenter
 	}
 
 	[TestMethod]
+	public async Task When_PointerOver_Repeats_Outer_Border_Is_Reused()
+	{
+		var (_, item, presenter) = await CreateGridView();
+
+		VisualStateManager.GoToState(item, "PointerOver", false);
+		var first = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
+
+		VisualStateManager.GoToState(item, "Normal", false);
+		Assert.IsNull(first.GetParent());
+
+		VisualStateManager.GoToState(item, "PointerOver", false);
+		var second = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
+
+		Assert.AreSame(first, second, "The removed outer border is added back instead of a new one");
+		Assert.AreSame(presenter, second.GetParent());
+		Assert.AreSame(((ListViewItemPresenter)presenter).PointerOverBorderBrush, second.BorderBrush);
+		Assert.AreEqual(1, second.BorderThickness.Left, 0.5);
+	}
+
+	[TestMethod]
+	public async Task When_Theme_Changes_While_Deselected_Reselected_Borders_Use_New_Theme()
+	{
+		var grid = new GridView { Width = 400, Height = 300, ItemsSource = new[] { "Item 0", "Item 1" } };
+		var root = new Grid { RequestedTheme = ElementTheme.Light, Children = { grid } };
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(grid);
+		await WindowHelper.WaitForIdle();
+
+		var presenter = (ListViewItemPresenter)VisualTreeHelper.GetChild(grid.ContainerFromIndex(0), 0);
+
+		grid.SelectedIndex = 0;
+		await WindowHelper.WaitForIdle();
+		var lightBorder = ((SolidColorBrush)presenter.SelectedBorderBrush!).Color;
+
+		// The borders sit detached, waiting for reuse, while the theme changes.
+		grid.SelectedIndex = -1;
+		await WindowHelper.WaitForIdle();
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		grid.SelectedIndex = 0;
+		await WindowHelper.WaitForIdle();
+
+		var outer = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
+		var inner = ChromeTestHelper.GetField<Border>(presenter, "m_innerSelectionBorder");
+		Assert.AreNotEqual(lightBorder, ((SolidColorBrush)presenter.SelectedBorderBrush!).Color, "The selected border brush differs between Light and Dark");
+		Assert.AreSame(presenter.SelectedBorderBrush, outer.BorderBrush);
+		Assert.AreSame(presenter.SelectedInnerBorderBrush, inner.BorderBrush);
+	}
+
+	[TestMethod]
+	public async Task When_Reselected_Unnested_Reused_Inner_Border_Drops_Nested_Margin()
+	{
+		var (grid, _, presenter) = await CreateGridView();
+
+		grid.SelectedIndex = 0;
+		await WindowHelper.WaitForIdle();
+
+		var nested = ChromeTestHelper.GetField<Border>(presenter, "m_innerSelectionBorder");
+		Assert.AreEqual(-1, nested.Margin.Left, 0.5, "A nested inner border overlaps the outer one by 1 px");
+
+		grid.SelectedIndex = -1;
+		await WindowHelper.WaitForIdle();
+
+		// A translucent outer border no longer hosts the inner one.
+		((ListViewItemPresenter)presenter).SelectedBorderBrush = new SolidColorBrush(Color.FromArgb(0x80, 0xFF, 0x00, 0x00));
+		grid.SelectedIndex = 0;
+		await WindowHelper.WaitForIdle();
+
+		var inner = ChromeTestHelper.GetField<Border>(presenter, "m_innerSelectionBorder");
+		Assert.AreSame(nested, inner, "The removed inner border is added back instead of a new one");
+		Assert.AreSame(presenter, inner.GetParent());
+		Assert.AreEqual(default(Thickness), inner.Margin);
+		Assert.AreEqual(new CornerRadius(4), inner.CornerRadius);
+	}
+
+	[TestMethod]
 	public async Task When_CornerRadius_Changes_On_Selected_Item_Borders_Follow()
 	{
 		var (grid, _, presenter) = await CreateGridView();
