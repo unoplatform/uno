@@ -20,8 +20,8 @@ public partial class GridViewItemPresenter
 	// Skipping already declared property GridViewItemPresenterPaddingProperty
 	// Skipping already declared property GridViewItemPresenterVerticalContentAlignmentProperty
 	// Skipping already declared property PlaceholderBackgroundProperty
-	// Skipping already declared property PointerOverBackgroundProperty
 	// Skipping already declared property PointerOverBackgroundMarginProperty
+	// Skipping already declared property PointerOverBackgroundProperty
 	// Skipping already declared property ReorderHintOffsetProperty
 	// Skipping already declared property SelectedBackgroundProperty
 	// Skipping already declared property SelectedBorderThicknessProperty
@@ -51,6 +51,7 @@ public partial class GridViewItemPresenter
 	// Skipping already declared property SelectedPointerOverBackground
 	// Skipping already declared property SelectedPointerOverBorderBrush
 	// Skipping already declared property SelectionCheckMarkVisualEnabled
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.GridViewItemPresenter()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.GridViewItemPresenter()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.CheckBrushProperty.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.CheckHintBrushProperty.get
