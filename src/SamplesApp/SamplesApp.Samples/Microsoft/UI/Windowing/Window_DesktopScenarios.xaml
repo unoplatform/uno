@@ -1,0 +1,22 @@
+<Page
+    x:Class="UITests.Microsoft_UI_Windowing.Window_DesktopScenarios"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock Text="Open a secondary Uno Platform window, then check resize, presenters and title bars." TextWrapping="Wrap" />
+            <Button Click="OpenWindow" Content="Open window" />
+            <Button Click="ResizeWindow" Content="Resize to 900 x 600" />
+            <Button Click="MaximizeWindow" Content="Maximize" />
+            <Button Click="RestoreWindow" Content="Restore" />
+            <Button Click="MinimizeWindow" Content="Minimize" />
+            <Button Click="ToggleFullScreen" Content="Toggle full screen" />
+            <Button Click="SetTitleBar" Content="Use Window.SetTitleBar" />
+            <Button Click="SetRegions" Content="Use caption and passthrough regions" />
+            <Button Click="ResetTitleBar" Content="Restore system title bar" />
+            <Button Click="CloseWindow" Content="Close window" />
+            <TextBlock x:Name="Status" TextWrapping="Wrap" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

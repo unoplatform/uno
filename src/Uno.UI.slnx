@@ -340,6 +340,9 @@
     <Project Path="Uno.UI.Runtime.Wayland/Uno.UI.Runtime.Wayland.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
+    <Project Path="Uno.UI.Runtime.Wayland.Tests/Uno.UI.Runtime.Wayland.Tests.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
     <Project Path="Uno.UI.Runtime.X11/Uno.UI.Runtime.X11.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
