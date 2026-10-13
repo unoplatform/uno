@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Windows.Foundation;
@@ -16,6 +17,10 @@ namespace Uno.UI.Runtime
 		private readonly AutoResetEvent _renderInvalidationEvent = new(false);
 		private readonly Thread _renderThread;
 		private volatile bool _disposed;
+
+		// Used when the device can't wait for vsync: without it, animations would render frames back to back.
+		private static readonly long _fallbackFrameIntervalTicks = Stopwatch.Frequency / 60;
+		private long _lastFrameTimestamp;
 
 		// A backend-neutral BGRA8888 staging buffer the Skia-free backend composes into; converted+blitted to the
 		// framebuffer after VSync (the framebuffer's own layout may be BGRA/RGBA/RGB565, honored on copy).
@@ -47,7 +52,10 @@ namespace Uno.UI.Runtime
 							break;
 						}
 						Render();
-						_fbDev.VSync();
+						if (!_fbDev.VSync())
+						{
+							WaitForFallbackFrameInterval();
+						}
 						BlitToFramebuffer();
 					}
 					catch (Exception ex)
@@ -82,6 +90,17 @@ namespace Uno.UI.Runtime
 		}
 
 		public override void InvalidateRender() => _renderInvalidationEvent.Set();
+
+		private void WaitForFallbackFrameInterval()
+		{
+			var remainingTicks = _lastFrameTimestamp + _fallbackFrameIntervalTicks - Stopwatch.GetTimestamp();
+			if (remainingTicks > 0)
+			{
+				Thread.Sleep(TimeSpan.FromSeconds((double)remainingTicks / Stopwatch.Frequency));
+			}
+
+			_lastFrameTimestamp = Stopwatch.GetTimestamp();
+		}
 
 		protected override IDisposable MakeCurrent() => Disposable.Empty;
 
