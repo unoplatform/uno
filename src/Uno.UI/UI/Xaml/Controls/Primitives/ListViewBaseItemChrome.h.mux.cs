@@ -3,7 +3,6 @@
 // MUX Reference ListViewBaseItemChrome.h, tag winui3/release/2.5.1
 
 #nullable enable
-#pragma warning disable IDE0051 // Unused members kept for 1:1 parity with ListViewBaseItemChrome.h
 
 using System;
 using System.Collections.Generic;
@@ -178,7 +177,6 @@ partial class ListViewBaseItemPresenter
 	internal static readonly Thickness s_selectedBorderThicknessRounded = new(2.0);
 	internal static readonly Thickness s_selectedBorderThickness = new(0.0);
 
-#pragma warning disable CS0169, CS0414, CS0649 // Fields used by the chrome parts not ported yet.
 	// Uno-specific: a strong reference; the item unlinks it (SetGridViewItemChrome) when retemplated.
 	private ContentControl? m_pParentListViewBaseItemNoRef;
 	private ListViewBaseItemSecondaryChrome? m_pSecondaryChrome;
@@ -229,21 +227,24 @@ partial class ListViewBaseItemPresenter
 	private bool m_shouldRenderChrome;
 	private bool m_isInIndicatorSelect; // true when states are in MultiSelectStates_MultiSelectDisabled + SelectionIndicatorStates_SelectionIndicatorEnabled
 	private bool m_isInMultiSelect;     // true when states are in MultiSelectStates_MultiSelectEnabled  + SelectionIndicatorStates_SelectionIndicatorDisabled
-#pragma warning restore CS0169, CS0414, CS0649
 
 	private static bool? s_isRoundedListViewBaseItemChromeEnabled;
 
 	// Uno-specific: WinUI stores these DPs in chrome fields shared by LVIP and GVIP (a GVIP leaves the LVIP-only ones null),
 	// Uno reads the presenter's own DP.
 	// Dead WinUI code: m_pCurrentEarmarkBrush is only used by the removed secondary chrome earmark.
+#if false
 	private Brush? m_pCheckHintBrush => GetBrush(ListViewItemPresenter.CheckHintBrushProperty, GridViewItemPresenter.CheckHintBrushProperty);
 	private Brush? m_pCheckSelectingBrush => GetBrush(ListViewItemPresenter.CheckSelectingBrushProperty, GridViewItemPresenter.CheckSelectingBrushProperty);
+#endif
 	private Brush? m_pCheckBrush => GetBrush(ListViewItemPresenter.CheckBrushProperty, GridViewItemPresenter.CheckBrushProperty);
 	private Brush? m_pCheckPressedBrush => GetBrush(ListViewItemPresenter.CheckPressedBrushProperty, null);
 	private Brush? m_pCheckDisabledBrush => GetBrush(ListViewItemPresenter.CheckDisabledBrushProperty, null);
+#if false
 	private Brush? m_pDragBackground => GetBrush(ListViewItemPresenter.DragBackgroundProperty, GridViewItemPresenter.DragBackgroundProperty);
 	private Brush? m_pDragForeground => GetBrush(ListViewItemPresenter.DragForegroundProperty, GridViewItemPresenter.DragForegroundProperty);
 	private Brush? m_pFocusBorderBrush => GetBrush(ListViewItemPresenter.FocusBorderBrushProperty, GridViewItemPresenter.FocusBorderBrushProperty);
+#endif
 	private Brush? m_pPlaceholderBackground => GetBrush(ListViewItemPresenter.PlaceholderBackgroundProperty, GridViewItemPresenter.PlaceholderBackgroundProperty);
 	private Brush? m_pPointerOverBorderBrush => GetBrush(ListViewItemPresenter.PointerOverBorderBrushProperty, null);
 	private Brush? m_pPointerOverBackground => GetBrush(ListViewItemPresenter.PointerOverBackgroundProperty, GridViewItemPresenter.PointerOverBackgroundProperty);
@@ -275,7 +276,9 @@ partial class ListViewBaseItemPresenter
 	private Brush? m_pSelectionIndicatorPointerOverBrush => GetBrush(ListViewItemPresenter.SelectionIndicatorPointerOverBrushProperty, null);
 	private Brush? m_pSelectionIndicatorPressedBrush => GetBrush(ListViewItemPresenter.SelectionIndicatorPressedBrushProperty, null);
 	private Brush? m_pSelectionIndicatorDisabledBrush => GetBrush(ListViewItemPresenter.SelectionIndicatorDisabledBrushProperty, null);
+#if false
 	private Brush? m_pFocusSecondaryBorderBrush => GetBrush(ListViewItemPresenter.FocusSecondaryBorderBrushProperty, null);
+#endif
 
 	private Thickness m_contentMargin => (Thickness)GetValue(this is ListViewItemPresenter ? ListViewItemPresenter.ContentMarginProperty : GridViewItemPresenter.ContentMarginProperty);
 

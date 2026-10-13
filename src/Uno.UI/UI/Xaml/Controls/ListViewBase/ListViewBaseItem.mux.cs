@@ -740,10 +740,12 @@ partial class ListViewBaseItem
 	internal void ClearInteractionState()
 	{
 		ClearPointerState();
+#if false
 		m_isCheckingForMouseDrag = false;
 		m_inReorderHintState = false;
 		m_inSelectionHintState = false;
 		m_isTopmost = false;
+#endif
 	}
 
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
@@ -802,7 +804,9 @@ partial class ListViewBaseItem
 		m_inCheckboxPressedForTouch = false;
 		m_isLeftButtonPressed = false;
 		m_isRightButtonPressed = false;
+#if false
 		m_isCheckingForMouseDrag = false;
+#endif
 		m_isKeyboardPressed = false;
 	}
 

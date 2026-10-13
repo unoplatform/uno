@@ -3,7 +3,6 @@
 // MUX Reference ListViewBaseItem_Partial.h, ListViewBaseItem_Partial.cpp (constants), tag winui3/release/2.5.1
 
 #nullable enable
-#pragma warning disable IDE0051 // Unused members kept for 1:1 parity with ListViewBaseItem_Partial.h
 
 using Windows.Foundation;
 
@@ -11,6 +10,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ListViewBaseItem
 {
+#if false
 	// The ZIndex used by ListViewBaseItem during user interaction.
 	// Note that ZIndex==1 is used by opaque headers which should be above rest items but below dragged one
 	private const int LISTVIEWBASEITEM_INTERACTION_ZINDEX = 2;
@@ -20,17 +20,20 @@ partial class ListViewBaseItem
 	private const string LISTVIEWBASEITEM_NO_SELECTION_HINT_STATE_NAME = "NoSelectionHint";
 	// The name of the NoReorderHint VisualState.
 	private const string LISTVIEWBASEITEM_NO_REORDER_HINT_STATE_NAME = "NoReorderHint";
+#endif
 	// The name of the content container template part (the bit that becomes the drag visual).
 	private const string LISTVIEWBASEITEM_CONTENT_CONTAINER_PART_NAME = "ContentContainer";
 	// (phone only) The name of the checkbox container template part (used to determine the source of a PointerPress).
 	private const string LISTVIEWBASEITEM_CHECKBOX_CONTAINER_PART_NAME = "CheckboxContainer";
 
+#if false
 	// The standard Windows mouse drag box size is defined by SM_CXDRAG and SM_CYDRAG.
 	// ListViewBaseItem uses the standard box size with dimensions multiplied by this constant.
 	// This arrangement is in place as accidentally triggering a drag was deemed too easy while
 	// selecting several items with the mouse in quick succession.
 	// See bug 103860: Jupiter moco: Reorder  kicks in before DropTargetItemThemeAnimation starts
 	private const double LISTVIEWBASEITEM_MOUSE_DRAG_THRESHOLD_MULTIPLIER = 2.0;
+#endif
 
 	// The delay time before going to the Pressed state after the initial touch
 	private const int LISTVIEWBASEITEM_TOUCH_PRESSED_DELAY = 100;
@@ -45,13 +48,15 @@ partial class ListViewBaseItem
 	private const double GRIDVIEWITEM_DRAGOVER_OUTSIDE_MARGIN = 0.3;
 
 	private static readonly Point s_center = new(0.5f, 0.5f);
+#if false
 	private const double s_holdingVisualOpacity = 0.8;
 	private const double s_holdingVisualScale = 1.05;
+#endif
 
-#pragma warning disable CS0169, CS0414 // Fields used by the not-yet-ported drag, hint and holding paths.
-
+#if false
 	// Latest position the mouse left button was pushed. Used to initiate a mouse drag and drop.
 	private Point m_lastMouseLeftButtonDownPosition;
+#endif
 
 	// Latest position the user first made contact with the screen.
 	private Point m_lastTouchDownPosition;
@@ -100,6 +105,7 @@ partial class ListViewBaseItem
 	// Whether or not the user is Holding over this ListViewBaseItem.
 	private bool m_isHolding;
 
+#if false
 	// UIAutomation Property: whether or not this element is currently grabbed (i.e. being dragged).
 	private bool m_fDragIsGrabbed;
 
@@ -124,6 +130,7 @@ partial class ListViewBaseItem
 	// a pan from occurring). However, we want to release the viewport in other
 	// CaptureLost invocations.
 	private bool m_isStartingDrag;
+#endif
 
 	// This boolean is set to true after we take a capture of the drag visual
 	private bool m_dragVisualCaptured;
@@ -134,8 +141,6 @@ partial class ListViewBaseItem
 
 	// This boolean is used to indicate whether the Item should go into the DragOver visual
 	private bool m_isDragOver;
-
-#pragma warning restore CS0169, CS0414
 
 	// Clears the previously cached arguments
 	internal void ClearLastTouchPressedArgs() => m_tpLastTouchPressedArgs = null;
