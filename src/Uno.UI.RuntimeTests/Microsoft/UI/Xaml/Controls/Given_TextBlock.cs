@@ -815,6 +815,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[DataRow(TextAlignment.Left, DisplayName = "Left")]
+		[DataRow(TextAlignment.Center, DisplayName = "Centered")]
+		public async Task When_Measured_With_Another_Constraint_Then_Single_Line_Not_Laid_Out_Again(TextAlignment alignment)
+		{
+			// A single unwrapped line has the same size under any constraint; only arrange positions it.
+			var SUT = new TextBlock { Text = "ABC", FontSize = 20, TextAlignment = alignment, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+			var host = new Border { Width = 200, Height = 100, Child = SUT };
+			await UITestHelper.Load(host);
+			await UITestHelper.WaitForRender();
+
+			var parsed = SUT.ParsedText;
+			var desired = SUT.DesiredSize;
+
+			host.Width = 300;
+			await UITestHelper.WaitForIdle();
+			host.Width = 200;
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsTrue(ReferenceEquals(parsed, SUT.ParsedText), "The line is not laid out again.");
+			Assert.AreEqual(desired, SUT.DesiredSize);
+		}
+
+		[TestMethod]
+		public async Task When_Measured_With_Another_Constraint_Then_Content_Change_Laid_Out()
+		{
+			var SUT = new TextBlock { Text = "ABC", FontSize = 20 };
+			var host = new Border { Width = 200, Height = 100, Child = SUT };
+			await UITestHelper.Load(host);
+
+			var width = SUT.ActualWidth;
+
+			SUT.Text = "ABCDEF";
+			host.Width = 300;
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.ActualWidth > width, $"Laid out with the new text (width {SUT.ActualWidth}).");
+		}
+
+		[TestMethod]
+		public async Task When_Wrapping_Measured_With_Narrower_Constraint_Then_Laid_Out_Again()
+		{
+			var SUT = new TextBlock { Text = "ABC DEF GHI JKL", FontSize = 20, TextWrapping = TextWrapping.Wrap };
+			var host = new Border { Width = 400, Height = 200, Child = SUT };
+			await UITestHelper.Load(host);
+
+			var height = SUT.ActualHeight;
+
+			host.Width = 60;
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.ActualHeight > height, $"Wrapped onto more lines (height {SUT.ActualHeight}).");
+		}
+
+		[TestMethod]
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 300, 50, false, DisplayName = "Single line, height differs")]
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 200, 300, false, DisplayName = "Single left-aligned line, width differs")]
 		[DataRow("ABC", TextAlignment.Center, TextWrapping.NoWrap, 200, 300, true, DisplayName = "Centred, width differs")]
