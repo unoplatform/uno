@@ -126,7 +126,7 @@ longer tested by Uno Platform.
 | `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 | `Xamarin.AndroidX.Legacy.Support.V4` no longer injected (Android) | The `Uno.Sdk` added it to every Android app head. It is the AndroidX wrapper for the Android Support Library v4, whose job was bridging pre-AndroidX *view* code — with the native Android Views renderer gone, nothing needs it. Ten packages leave the graph: `Legacy.Support.V4`, `Legacy.Support.Core.UI`, `Legacy.Support.Core.Utils`, `AsyncLayoutInflater`, `LocalBroadcastManager`, `Media`, `Print`, `SlidingPaneLayout`, `Window` and its `Window.*Core*` companions. Nothing changes version. `AndroidX.Window` still arrives with the `foldable` feature. If *your own* code uses any of these, add an explicit `PackageReference`. The `AndroidXLegacySupportV4Version` property is removed and is silently ignored if still set. |
-| `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly. Do **not** add an explicit `PackageReference` to `SkiaSharp.Views.Uno.WinUI`: every published build still references the `Uno.UI.Toolkit` and `Uno` assemblies, which 7.0 renamed to `Uno.UI.Extras` and `Uno.WinRT` without shipping type forwarders for either, so the app throws `FileNotFoundException` from `SkiaSharp.Views.Windows.GlobalStaticResources.Initialize()` at startup. |
+| `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly. Do **not** add an explicit `PackageReference` to `SkiaSharp.Views.Uno.WinUI`: every published build was compiled against Uno Platform 6.x assemblies that 7.0 no longer ships, so the app throws `FileNotFoundException` from `SkiaSharp.Views.Windows.GlobalStaticResources.Initialize()` at startup. |
 | Runtime hosts no longer carry SkiaSharp or HarfBuzz native assets | The browser host linked `libSkiaSharp.a` into every WebAssembly head, so a WebGPU-only app shipped about 6 MB of Skia it never used, and every `Uno.WinUI.Runtime.*` host referenced HarfBuzzSharp whichever font provider the app used. The native libraries now come with the head: with the `Uno.Sdk`, nothing changes, because it references the `HarfBuzzSharp.NativeAssets.*` package for each target, and the `SkiaSharp.NativeAssets.*` package when the `Skia` feature is on. A head that doesn't use the `Uno.Sdk` adds those `PackageReference`s itself, for every target it builds. |
 | `Microsoft.Windows.Compatibility` no longer referenced implicitly (WebAssembly) | The `Uno.Sdk` added this .NET Framework porting meta-package to every WebAssembly executable, pulling in 56 extra packages — 47% of a blank app's restore graph — including 21 RID-specific native packages for a target that has no RIDs. It arrived as a .NET 5 migration workaround and nothing in Uno Platform uses it. Most of what it provides is Windows-only and throws `PlatformNotSupportedException` in a browser regardless. If *your own* code uses one of its assemblies, add an explicit `PackageReference` to that specific package — the ones that genuinely work in a browser are `System.ServiceModel.*`, `System.ServiceModel.Syndication`, `System.Runtime.Caching`, `System.IO.Packaging`, `System.Configuration.ConfigurationManager`, `System.ComponentModel.Composition`, `System.CodeDom`, `System.Reflection.Context` and `System.Security.Cryptography.Pkcs`/`.Xml` — or reference `Microsoft.Windows.Compatibility` itself. The `WindowsCompatibilityVersion` MSBuild property is removed with it; specify a version on your own `PackageReference`. |
 | `LibVLCSharp` no longer referenced implicitly | `Uno.WinUI.Runtime.X11` — which every desktop head references implicitly — carried a `LibVLCSharp` dependency it never used, so the managed assembly landed in every desktop app's output. It now arrives only with the `MediaPlayerElement` (or `MediaElement`) feature, through `Uno.WinUI.MediaPlayer.X11` / `Uno.WinUI.MediaPlayer.Win32`, which have always declared it themselves. `MediaPlayerElement` is unaffected — it already required that feature. If *your own* code uses `LibVLCSharp` types directly, add an explicit `PackageReference`. |
@@ -136,11 +136,9 @@ longer tested by Uno Platform.
 | `Uno.HotTesting.Reactive` referenced implicitly by MVUX in non-optimized builds | Projects using the `MVUX` feature, class libraries included, now restore MVUX feed mocks when `$(Optimize)` is not `true`, so the Debug/Release lock-file and `--no-restore` guidance of the `Uno.UI.HotDesign` row applies to them too. Code using its types must only compile in non-optimized builds. Set `UnoDisableHotTesting` to `true` to opt out; see [MVUX feed mocks](xref:Uno.Features.Uno.Sdk#mvux-feed-mocks-in-non-optimized-builds). |
 
 > [!IMPORTANT]
-> This is a hard rename — there is no type-forwarder and no `xmlns` alias. `Uno.UI.Toolkit.dll`
-> and `Uno.UI.Extras.dll` are *different assembly identities*, so a library compiled against
-> Uno 6.x can no longer bind: its references into `Uno.UI.Toolkit` resolve to nothing and the
-> build fails with `CS0012`. Recompile every dependent library against 7.0 rather than mixing
-> majors.
+> The `Uno.UI.Toolkit` namespace move is a hard rename — there is no type-forwarder and no
+> `xmlns` alias, so a library compiled against Uno 6.x that uses those types no longer binds.
+> Recompile every dependent library against 7.0 rather than mixing majors.
 
 <!-- Separates the two alerts: one alert per blockquote, without an MD028 blank-line-only gap. -->
 
@@ -172,7 +170,7 @@ XAML declarations follow the same mapping, for example
 `ElevatedView` and the `CommandBar`/`SplitView` extensions, or
 `xmlns:uub="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`.
 
-The other namespaces carried by that assembly keep their names, so code using
+The other Uno Platform-specific namespaces keep their names, so code using
 `DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
 `ColorExtensions` / `ImageHelper` (`Uno.Helpers`) needs no change.
 
@@ -512,8 +510,8 @@ own target framework, the library's calls included.
   `isNative` parameter; it is `[EditorBrowsable(Never)]` and normally only called from
   XAML-generated code, so rebuilding regenerates the correct call.
 - **`Uno.UI.Toolkit` members that only ever ran on native targets:**
-  `Uno.UI.ViewHelper` (the `Uno.UI.Toolkit` one, whose only member `Architecture` always
-  returned `null` — the unrelated `Uno.UI.ViewHelper` in `Uno.UI` stays) and
+  `Uno.UI.ViewHelper.Architecture`, which always returned `null` (the rest of
+  `Uno.UI.ViewHelper` stays), and
   `UICommandExtensions.SetDestructive`. To flag a destructive `UICommand`, set
   `UICommand.IsDestructive` directly from an iOS-targeted head.
 
@@ -620,11 +618,11 @@ own target framework, the library's calls included.
 
 - **`PrettyPrint` / `ViewExtensions.TreeGraph` are no longer public on WinAppSDK.**
   `Uno.UI.Extensions.PrettyPrint` and `ViewExtensions` (`TreeGraph`, `FindFirstAncestor`,
-  `FindFirstDescendant`, …) were accidentally public in the WinAppSDK build of
-  `Uno.UI.Extras` — a guard that was meant to keep them internal there always evaluated to
-  `false`. They are now internal on WinAppSDK, matching the intended Skia-only public surface
-  (they remain public in the Skia `Uno.UI` build). There is no known WinAppSDK consumer; if
-  you called these from a WinAppSDK head, copy the extension methods into your own project.
+  `FindFirstDescendant`, …) were accidentally public in the WinAppSDK build of `Uno.WinUI` —
+  a guard that was meant to keep them internal there always evaluated to `false`. They are
+  now internal on WinAppSDK, matching the intended Skia-only public surface (they remain
+  public in the Skia build). There is no known WinAppSDK consumer; if you called these from
+  a WinAppSDK head, copy the extension methods into your own project.
 - **`VisualTreeHelper.GetChildren` is no longer public.** It does not exist in WinUI.
   `VisualTreeHelper.GetChildren(DependencyObject)` and `GetChildren<T>(DependencyObject)` are
   now internal; enumerate children with the WinUI API instead:
