@@ -790,6 +790,8 @@
         href: xref:Uno.DevServer
       - name: Diagnostics (disco)
         href: xref:Uno.Features.DevServerDisco
+      - name: Driving the app from a shell (app)
+        href: xref:Uno.Features.DevServerAppCommands
     - name: Xaml Merging
       href: external/uno.xamlmerge.task/doc/toc.yml
     - name: Uno Resizetizer
