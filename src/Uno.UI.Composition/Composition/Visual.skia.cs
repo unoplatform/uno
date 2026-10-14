@@ -515,6 +515,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			var totalOffset = GetTotalOffset();
 			var translation = Matrix4x4.Identity with { M41 = -(offset.X + totalOffset.X + AnchorPoint.X), M42 = -(offset.Y + totalOffset.Y + AnchorPoint.Y) };
+			if (relativeTo is not null && Matrix3x2.Invert(relativeTo.TotalMatrix.ToMatrix3x2(), out var parentToLocal))
+			{
+				// The invertible path applies the translation between the parent's transform and its inverse; through the
+				// parent's 2D part, that is the same translation taken into the parent's space.
+				var moved = Vector2.TransformNormal(new Vector2(translation.M41, translation.M42), parentToLocal);
+				translation = translation with { M41 = moved.X, M42 = moved.Y };
+			}
+
 			initialTransform = translation * initialTransform;
 		}
 

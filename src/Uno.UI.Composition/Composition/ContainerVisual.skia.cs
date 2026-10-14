@@ -140,8 +140,8 @@ public partial class ContainerVisual : Visual
 		{
 			if (GetChildToParentTransform() is not { } matrix)
 			{
-				// This visual's own transform collapses it onto a line, so none of it is inside the clip.
-				return new Rect();
+				// Not mapped at all rather than mapped wrongly: the clip then narrows nothing.
+				return default;
 			}
 
 			if (!matrix.IsIdentity)
@@ -165,15 +165,10 @@ public partial class ContainerVisual : Visual
 			return ((Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted).ToMatrix3x2();
 		}
 
-		// A TotalMatrix that flattens Z has no inverse. The mapping is this visual's own transform inverted, which has
-		// one when the flattening comes from an ancestor; when it is its own, the 2D part the clip uses can still have one.
+		// A TotalMatrix that flattens Z has no inverse, but the clip only needs to undo this visual's own transform on its
+		// plane: the 2D part, unless that is projective or collapses the visual onto a line.
 		var localMatrix = LocalMatrix;
-		if (Matrix4x4.Invert(localMatrix, out var localMatrixInverted))
-		{
-			return localMatrixInverted.ToMatrix3x2();
-		}
-
-		return Matrix3x2.Invert(localMatrix.ToMatrix3x2(), out var inverted2D) ? inverted2D : null;
+		return localMatrix.IsPlanarAffine() && Matrix3x2.Invert(localMatrix.ToMatrix3x2(), out var inverted2D) ? inverted2D : null;
 	}
 
 	/// <summary>The arrange clip as a shape, which a rotated ancestor clip needs: its bounding box would let
