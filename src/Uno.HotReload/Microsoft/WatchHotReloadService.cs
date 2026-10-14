@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Immutable;
 using System.Data;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -20,15 +21,15 @@ namespace Uno.HotReload.Microsoft;
 /// 5.6, verified). The historical target, <c>ExternalAccess.Watch.Api.WatchHotReloadService</c>,
 /// was removed from Microsoft.CodeAnalysis.Features between Roslyn 5.0 and 5.3; the UnitTesting
 /// twin differs by taking the capabilities at <c>StartSessionAsync</c> (instead of the
-/// constructor), by an explicit <c>commitUpdates</c> flag on emit (Watch always committed ready
-/// updates — passing <c>true</c> preserves that behavior), and by forwarding the capabilities
+/// constructor), by an explicit <c>commitUpdates</c> flag on emit (see
+/// <see cref="EmitSolutionUpdateAsync"/> for when it is set), and by forwarding the capabilities
 /// verbatim where Watch implicitly granted runtime-supported-but-undeclared ones (restored by
 /// <see cref="AddImplicitCapabilities"/>).
 /// </summary>
 internal partial class WatchHotReloadService
 {
 	private readonly Func<Solution, CancellationToken, Task>? _startSessionAsync;
-	private readonly Func<Solution, CancellationToken, Task<ITuple>>? _emitSolutionUpdateAsync;
+	private readonly Func<Solution, bool, CancellationToken, Task<ITuple>>? _emitSolutionUpdateAsync;
 	private readonly Action? _endSession;
 	private readonly object? _targetInstance;
 
@@ -66,12 +67,9 @@ internal partial class WatchHotReloadService
 					var emitSolutionUpdateAsync = emitSolutionUpdateAsyncMethod
 						.CreateDelegate<Func<Solution, bool, CancellationToken, Task>>(_targetInstance);
 
-					_emitSolutionUpdateAsync = async (s, ct) =>
+					_emitSolutionUpdateAsync = async (s, commitUpdates, ct) =>
 					{
-						// commitUpdates: true == the historical Watch behavior (the EnC service
-						// commits the emitted solution update when its status is Ready, making it
-						// the baseline of the next emit).
-						var task = emitSolutionUpdateAsync(s, true, ct);
+						var task = emitSolutionUpdateAsync(s, commitUpdates, ct);
 
 						await task.ConfigureAwait(false);
 
@@ -183,7 +181,20 @@ internal partial class WatchHotReloadService
 			throw new InvalidOperationException($"_emitSolutionUpdateAsync cannot be null");
 		}
 
-		var ret = await _emitSolutionUpdateAsync(solution, cancellationToken).ConfigureAwait(false);
+		// Roslyn 5.x reports a blocking rude edit as a Ready update (the project is marked to rebuild), and
+		// committing it adopts the rejected text and discards the project's emit baseline: later deltas then
+		// restart at generation 0 while the app is at generation N (#25378). Commit only a clean update.
+		// ponytail: emits twice on success; bind IEditAndContinueService.Commit/DiscardSolutionUpdate if the cost shows.
+		var (updates, diagnostics) = await EmitAsync(solution, commitUpdates: false, cancellationToken).ConfigureAwait(false);
+
+		return updates.IsEmpty || diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)
+			? (updates, diagnostics)
+			: await EmitAsync(solution, commitUpdates: true, cancellationToken).ConfigureAwait(false);
+	}
+
+	private async Task<(ImmutableArray<Update> updates, ImmutableArray<Diagnostic> diagnostics)> EmitAsync(Solution solution, bool commitUpdates, CancellationToken cancellationToken)
+	{
+		var ret = await _emitSolutionUpdateAsync!(solution, commitUpdates, cancellationToken).ConfigureAwait(false);
 
 		var updatesSource = (IEnumerable)ret[0]!;
 		var diagnostics = (ImmutableArray<Diagnostic>)ret[1]!;

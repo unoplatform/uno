@@ -297,9 +297,7 @@ public sealed class HotReloadManager : IDisposable
 			// generator error then degrades to stale generated output instead of blocking hot reload.
 			// Generated code that genuinely does NOT compile still reports a C# error and is handled by the
 			// (true, true) audit / rude-edit branches below. The suppression is applied to the emit itself,
-			// not as a retry after a blocked emit: EmitSolutionUpdateAsync advances the EnC baseline as a
-			// side effect, so a throwaway first emit would consume the change and leave a second nothing to
-			// apply.
+			// not as a retry after a blocked emit, so a pass never pays for a blocked emit first.
 			var generatorErrors = await GetGeneratorErrorsAsync(auditedProjects, ct).ConfigureAwait(false);
 			if (!generatorErrors.IsEmpty)
 			{
