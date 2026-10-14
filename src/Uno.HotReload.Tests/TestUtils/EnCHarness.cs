@@ -53,7 +53,13 @@ internal sealed class EnCHarness : IDisposable
 	public static SourceText AppText(string expression)
 		=> SourceText.From(AppSource(expression), Encoding.UTF8);
 
-	public static async Task<EnCHarness> CreateAsync(TempDirectory temp, CancellationToken ct)
+	/// <param name="appText">The baseline text of App.cs; defaults to a <c>C.M()</c> using ConflictLib v1.</param>
+	/// <param name="additionalReferences">References added to the project on top of CoreLib and ConflictLib v1.</param>
+	public static async Task<EnCHarness> CreateAsync(
+		TempDirectory temp,
+		CancellationToken ct,
+		SourceText? appText = null,
+		IEnumerable<MetadataReference>? additionalReferences = null)
 	{
 		var v1 = EmitLibrary(temp, "ConflictLib", "1.0.0.0", ConflictLibSource, subdir: "v1");
 
@@ -76,7 +82,7 @@ internal sealed class EnCHarness : IDisposable
 						documentId,
 						name: "App.cs",
 						loader: TextLoader.From(TextAndVersion.Create(
-							AppText("\"v\" + Conflict.Info.Version"),
+							appText ?? AppText("\"v\" + Conflict.Info.Version"),
 							VersionStamp.Create(),
 							appPath)),
 						filePath: appPath),
@@ -85,6 +91,7 @@ internal sealed class EnCHarness : IDisposable
 				[
 					MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
 					MetadataReference.CreateFromFile(v1),
+					.. additionalReferences ?? [],
 				])
 			.WithCompilationOutputInfo(default(CompilationOutputInfo).WithAssemblyPath(appDll));
 
