@@ -52,7 +52,7 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 
 		var width = _width;
 		var height = _height;
-		_vk = Interlocked.Exchange(ref _devicePrewarm, null) is { } prewarm
+		_vk = ClaimDevicePrewarm() is { } prewarm
 			? prewarm.Claim(
 				vk => TryCompleteForWindow(vk, hwnd, width, height),
 				() => CreateForWindow(hwnd, width, height))
@@ -92,7 +92,9 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 	}
 
 	/// <summary>Releases a prewarmed device no window claimed (the negotiation picked another kind).</summary>
-	internal static void DiscardDevicePrewarm() => Interlocked.Exchange(ref _devicePrewarm, null)?.Discard();
+	internal static void DiscardDevicePrewarm() => ClaimDevicePrewarm()?.Discard();
+
+	private static BackgroundPrewarm<VulkanContext>? ClaimDevicePrewarm() => Interlocked.Exchange(ref _devicePrewarm, null);
 
 	private static bool TryCompleteForWindow(VulkanContext vk, HWND hwnd, int width, int height)
 	{
