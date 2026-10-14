@@ -1260,6 +1260,21 @@ XAML is unaffected: `Background="Red"`, `Width="Auto"`, `Icon="Add"` and `{Bindi
 keep working. Implicit conversions that WinUI's own C# projection also has (`Duration` and
 `KeyTime` from `TimeSpan`, `GridLength.Auto`, `Duration.Forever`, …) are kept.
 
+### Collection initializers on panels, `Border` and `ScrollViewer` removed
+
+Uno's `FrameworkElement` and `ContentControl` implemented `IEnumerable`, and `Border`, `Panel` and
+`ScrollViewer` had public `Add` helpers. WinUI has neither. Together they let C# collection-initializer
+syntax compile, so C# Markup-style or hand-written C# UI may use it. 7.0 removes them, so this code
+is now a compile error. Set the content property instead:
+
+| Removed | Replacement |
+| --- | --- |
+| `new StackPanel { a, b }` (any `Panel`) | `new StackPanel { Children = { a, b } }` |
+| `new Border { child }` | `new Border { Child = child }` |
+| `new ScrollViewer { content }` | `new ScrollViewer { Content = content }` |
+
+XAML is unaffected.
+
 ### Constructor accessibility (WinUI parity)
 
 Constructors now have the accessibility WinUI gives them. Code that only constructs the concrete
@@ -1673,7 +1688,8 @@ recommended and templated form. Windows App SDK heads are likewise unaffected.
    application heads, and replace `UnoRuntimeIdentifier` with `UnoRuntimeVariant` in cross-runtime libraries —
    UNOB0024 points them out.
 20. Replace Uno-only implicit conversions (`Brush brush = Colors.Red`, `GridLength width = "Auto"`, …) and
-   `Thickness.Empty` / `CornerRadius.None` with explicit constructors.
+   `Thickness.Empty` / `CornerRadius.None` with explicit constructors, and collection initializers on
+   panels, `Border` and `ScrollViewer` with `Children = { … }`, `Child =` or `Content =`.
 21. Convert the application to a single `Sdk="Uno.Sdk"` project and delete the per-platform head
     projects.
 22. Replace every `Application.OnActivated` override with `AppInstance.GetCurrent().GetActivatedEventArgs()`
