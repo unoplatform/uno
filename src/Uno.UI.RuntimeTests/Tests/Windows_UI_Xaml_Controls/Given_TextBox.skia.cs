@@ -5315,6 +5315,120 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Task When_Touch_Tap_Collapses_Selection_iOS()
 			=> AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention.iOS);
 
+		[TestMethod]
+		public Task When_Touch_Tap_Above_Text_Places_Caret_By_X_Android()
+			=> AssertTouchTapAboveTextPlacesCaretByX(TextBox.TouchTextSelectionConvention.Android);
+
+		[TestMethod]
+		public Task When_Touch_Tap_Above_Text_Places_Caret_By_X_iOS()
+			=> AssertTouchTapAboveTextPlacesCaretByX(TextBox.TouchTextSelectionConvention.iOS);
+
+		// A tap in the TextBox's top padding (above the text line) must still place the caret by its X position,
+		// not at the start of the text: a finger on a tablet easily lands there when tapping right of the content.
+		private static async Task AssertTouchTapAboveTextPlacesCaretByX(TextBox.TouchTextSelectionConvention convention)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var aboveTextY = GetYAboveText(SUT);
+
+			// Right of the content, well clear of the DeleteButton that appears once focused.
+			finger.Press(new Point(SUT.GetAbsoluteBoundsRect().Left + 250, aboveTextY));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart, "a tap above the text, right of the content, should place the caret at the end");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Above the boundary between "Some " and "Text": the caret follows the X position.
+			await Task.Delay(600); // past the multi-tap window, so this is a fresh single tap
+			finger.Press(new Point(GetXOfIndex(SUT, 5), aboveTextY));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.SelectionStart, "a tap above the text should place the caret under the finger's X position");
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Touch_Tap_Above_Multiline_Text_Uses_First_Line()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				AcceptsReturn = true,
+				Text = "Some\rText on the second line",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Right of both lines: the first one ends after "Some", the last one at the end of the text.
+			finger.Press(new Point(SUT.GetAbsoluteBoundsRect().Left + 250, GetYAboveText(SUT)));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(4, SUT.SelectionStart, "a tap above the text should hit-test the first line");
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Mouse_Drag_Above_Text_Selects_By_X()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(new Point(SUT.GetAbsoluteBoundsRect().Left + 250, SUT.TextBoxView.DisplayBlock.GetAbsoluteBoundsRect().GetMidY()));
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+
+			// Drag into the top padding, above the boundary between "Some " and "Text".
+			mouse.MoveTo(new Point(GetXOfIndex(SUT, 5), GetYAboveText(SUT)));
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.SelectionStart, "dragging above the text should select up to the pointer's X position, not to the start");
+			Assert.AreEqual(4, SUT.SelectionLength);
+		}
+
+		// A point inside the TextBox's top padding, above its first line of text.
+		private static double GetYAboveText(TextBox textBox)
+		{
+			var boxTop = textBox.GetAbsoluteBoundsRect().Top;
+			var textTop = textBox.TextBoxView.DisplayBlock.GetAbsoluteBoundsRect().Top;
+			Assert.IsTrue(textTop - boxTop >= 4, $"the TextBox needs room above its text (box top {boxTop}, text top {textTop})");
+			return (boxTop + textTop) / 2;
+		}
+
+		private static double GetXOfIndex(TextBox textBox, int index)
+		{
+			var displayBlock = textBox.TextBoxView.DisplayBlock;
+			return displayBlock.TransformToVisual(null).TransformPoint(new Point(displayBlock.ParsedText.GetRectForIndex(index).X, 0)).X;
+		}
+
 		// Native iOS/Android: a single tap places a caret (it does NOT select a word like the Windows convention).
 		private static async Task AssertTouchSingleTapPlacesCaret(TextBox.TouchTextSelectionConvention convention, TextBox.CaretDisplayMode expectedCaret)
 		{

@@ -1155,9 +1155,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			return extendedSelection ? 0 : -1;
 		}
 
-		if (p.Y < 0)
+		var isAboveContent = p.Y < 0;
+		if (isAboveContent && !extendedSelection)
 		{
-			return extendedSelection ? 0 : -1;
+			return -1;
 		}
 
 		if (p.Y >= _xyTable[^1].prefixSummedHeight + (_endingNewLineLineHeight ?? 0))
@@ -1184,14 +1185,23 @@ internal readonly partial struct UnicodeText : IParsedText
 			return extendedSelection ? _lines[^1].end - (ignoreEndingNewLine ? TrailingCRLFInLine(_lines[^1]) : 0) : -1;
 		}
 
-		var lineIndex = _xyTable.BinarySearch(
-			((float)p.Y, null!, default),
-			Comparer<(float prefixSummedHeight, List<(float sumUntilAfterCluster, Cluster cluster)> prefixSummedWidths, Line line)>.Create(
-				static (a, b) => a.prefixSummedHeight.CompareTo(b.prefixSummedHeight)));
-
-		if (lineIndex < 0)
+		int lineIndex;
+		if (isAboveContent)
 		{
-			lineIndex = ~lineIndex;
+			// Above the text (e.g. a TextBox's top padding): hit-test the first line by X instead of snapping to its start.
+			lineIndex = 0;
+		}
+		else
+		{
+			lineIndex = _xyTable.BinarySearch(
+				((float)p.Y, null!, default),
+				Comparer<(float prefixSummedHeight, List<(float sumUntilAfterCluster, Cluster cluster)> prefixSummedWidths, Line line)>.Create(
+					static (a, b) => a.prefixSummedHeight.CompareTo(b.prefixSummedHeight)));
+
+			if (lineIndex < 0)
+			{
+				lineIndex = ~lineIndex;
+			}
 		}
 
 		var line = _xyTable[lineIndex].line;
