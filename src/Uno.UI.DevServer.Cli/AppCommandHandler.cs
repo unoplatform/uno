@@ -53,6 +53,62 @@ internal sealed class AppCommandHandler
 	/// <summary><c>app assert &lt;find selectors&gt; [--state tok,..] [--absent] [--count N]</c>: a find with a verdict.</summary>
 	internal const string AssertVerb = "assert";
 
+	/// <summary>The reference printed by <c>app --help</c>, <c>app help</c> and a bare <c>app</c>.</summary>
+	internal static string HelpText => $$"""
+		Usage: uno-devserver [--solution-dir <path>] app <verb|tool> [--param value]... [--json] [--out <file>] [--no-start]
+
+		Calls one App MCP tool on the DevServer of the solution in the current folder (or --solution-dir) and exits
+		with a code a script can test. Starts the DevServer when none runs, unless --no-start.
+		The tool result goes to stdout, logs go to stderr.
+
+		Discover the tools and their parameters (the list depends on the App MCP version and the license):
+		  app tools                 One line per tool: verb (tool name): description
+		  app tools --json          The tools with their input schemas: parameter names, types, required ones
+
+		Verbs (any other name is sent as a tool name, e.g. app uno_app_get_screenshot --fileType png):
+		{{string.Join(Environment.NewLine, Verbs.Select(v => $"  {v.Key,-24}{v.Value}"))}}
+
+		Script verbs:
+		  wait [--timeoutSeconds 120] [--ready]
+		      Wait until an app is connected; with --ready, until its Hot Reload is Ready.
+		      Exit 1 on timeout, or when Hot Reload is disabled.
+		  assert <find parameters> [--state tok,..] [--absent] [--count N]
+		      Run find, then check every match: each tok must be in the match's {...} state group, a !tok must not.
+		      --absent passes when nothing matched, --count N on an exact count. Prints "assert: pass" or "assert: fail (why)".
+
+		Parameters:
+		  --name value              Passed to the tool as "name". JSON values (numbers, true, false, null, {...}, [...]) are
+		                            sent typed, anything else as text; a parameter the tool declares as a string gets text.
+		  --name                    Alone (last, or followed by another --option): true.
+		  --json                    Print the raw MCP CallToolResult as JSON instead of its text.
+		  --out <file>              Where an image result is saved (default: uno-app-<timestamp>.png in the current folder).
+		                            The saved path is printed.
+		  --no-start                Never start a DevServer, and do not wait for tools it does not list yet: exit 2 instead.
+		                            For hooks that run on every edit.
+		  On an App MCP whose element tools take only --elementRef (from `app tree`), --name <x:Name> is resolved
+		  through the visual tree. --automationId cannot be resolved that way.
+
+		Exit codes:
+		  0  The tool succeeded.
+		  1  The tool reported an error; find matched nothing; assert failed; hot-reload-status: the edit is not applied;
+		     wait timed out; the DevServer could not start.
+		  2  Bad arguments; no DevServer with --no-start; the tool is not offered.
+		  3  hot-reload-status: a rude edit, only `app restart` applies it.
+
+		Examples:
+		  uno-devserver app start --projectPath src/MyApp/MyApp.csproj --targetFramework net10.0-desktop
+		  uno-devserver app wait --ready
+		  uno-devserver app tree
+		  uno-devserver app find --automationId SaveButton --waitForMs 5000
+		  uno-devserver app assert --automationId Row --state selected --count 2
+		  uno-devserver app hot-reload-status --file src/MyApp/MainPage.xaml --waitForMs 10000 --no-start
+		  uno-devserver app screenshot --fileType png --out shot.png
+		  uno-devserver app close
+
+		When `app` starts the DevServer itself, the DevServer inherits stdout, so `uno-devserver app ... | tail` waits
+		until the DevServer exits. Run `uno-devserver start` first, pass --no-start, or redirect stdout to a file.
+		""";
+
 	private const string FindTool = "uno_app_find_elements";
 	private const string RuntimeInfoTool = "uno_app_get_runtime_info";
 	private const string HotReloadStatusTool = "uno_app_hot_reload_status";
@@ -77,7 +133,7 @@ internal sealed class AppCommandHandler
 	{
 		if (args.Length == 0)
 		{
-			return new AppCommandArgs("", new Dictionary<string, object?>(), false, null, false, "Missing verb. Try: uno-devserver app tools");
+			return new AppCommandArgs("", new Dictionary<string, object?>(), false, null, false, "Missing verb. Try: uno-devserver app --help");
 		}
 
 		var verb = args[0];
@@ -283,6 +339,12 @@ internal sealed class AppCommandHandler
 	/// </summary>
 	public async Task<int> RunAsync(string[] args, Func<bool, Task<int?>> resolvePort, CancellationToken ct = default)
 	{
+		if (args.Length == 0 || string.Equals(args[0], "help", StringComparison.OrdinalIgnoreCase))
+		{
+			Console.WriteLine(HelpText);
+			return 0;
+		}
+
 		var parsed = Parse(args);
 		if (parsed.Error is not null)
 		{
