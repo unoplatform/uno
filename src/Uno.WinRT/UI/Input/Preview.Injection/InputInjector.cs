@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
+using Uno.Foundation.Extensibility;
 using Uno.UI.Core;
 using Windows.Devices.Input;
 using Windows.System;
@@ -46,7 +47,7 @@ public partial class InputInjector
 	/// <summary>
 	/// Finds the first live target, pruning collected ones on the way so closed windows do not pile up.
 	/// </summary>
-	private static IInputInjectorTarget? FindTarget(bool activeOnly)
+	private static IInputInjectorTarget? FindTarget(bool activeOnly, bool keyboardOnly = false, IInputInjectorKeyboardTargetPolicy? policy = null)
 	{
 		if (_inputManagers is { } managers)
 		{
@@ -58,7 +59,7 @@ public partial class InputInjector
 					continue;
 				}
 
-				if (!activeOnly || target.IsActive)
+				if ((!keyboardOnly || target.IsReadyForKeyboardInput) && (!activeOnly || (policy?.IsActive(target) ?? target.IsActive)))
 				{
 					return target;
 				}
@@ -124,10 +125,12 @@ public partial class InputInjector
 	internal InjectedInputState? Pen => _pen?.state;
 
 	private readonly IInputInjectorTarget _target;
+	private readonly IInputInjectorKeyboardTargetPolicy? _keyboardTargetPolicy;
 
 	private InputInjector(IInputInjectorTarget target)
 	{
 		_target = target;
+		ApiExtensibility.CreateInstance(this, out _keyboardTargetPolicy);
 	}
 
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
@@ -423,24 +426,20 @@ public partial class InputInjector
 	/// Resolves the target owning the active window, so injected keys reach the focused window's
 	/// focus manager. Falls back to the injector's own target when no window reports as active.
 	/// </summary>
-	/// <remarks>
-	/// Hosts that never report activation (macOS today) leave every window in the default
-	/// <see cref="CoreWindowActivationState.CodeActivated"/> state, so the first registered target
-	/// wins there and multi-window injection is not yet supported on them.
-	/// </remarks>
 	private IInputInjectorTarget ResolveKeyboardTarget()
 	{
-		if (FindTarget(activeOnly: true) is { } target)
+		if (FindTarget(activeOnly: true, keyboardOnly: true, policy: _keyboardTargetPolicy) is { } target)
 		{
 			return target;
 		}
 
-		if (this.Log().IsEnabled(LogLevel.Debug))
+		// Only hosts that opt in may choose a different target without native activation.
+		if (_keyboardTargetPolicy?.GetFallbackTarget() is { IsReadyForKeyboardInput: true, IsVisibleForKeyboardInput: true } fallback)
 		{
-			this.Log().Debug("No active window found for keyboard injection; using the injector's original target.");
+			return fallback;
 		}
 
-		return _target;
+		return _target.IsReadyForKeyboardInput ? _target : throw new InvalidOperationException("No initialized live window is available for keyboard injection.");
 	}
 
 	/// <summary>

@@ -28,4 +28,10 @@ internal interface IXamlRootHost
 	/// Resigns native first responder
 	/// </summary>
 	void ResignNativeFocus() { }
+
+	/// <summary>
+	/// Records a committed managed-focus change synchronously, including clearing focus.
+	/// Opt-in hosts must only record state here, without moving focus or dispatching callbacks.
+	/// </summary>
+	void OnManagedFocusChanged(bool hasFocus) { }
 }
