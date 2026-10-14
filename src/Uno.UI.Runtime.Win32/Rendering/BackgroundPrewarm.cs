@@ -30,6 +30,8 @@ internal sealed class BackgroundPrewarm<T> where T : class, IDisposable
 		try
 		{
 			var waitStart = Stopwatch.GetTimestamp();
+			// Blocking is safe: the task runs on its own thread, not the caller's context. It is unbounded on purpose,
+			// as a fallback after a timeout would call into the same driver the stalled thread still holds.
 			warmed = _task.GetAwaiter().GetResult();
 			var waited = Stopwatch.GetElapsedTime(waitStart);
 			if (tryComplete(warmed))

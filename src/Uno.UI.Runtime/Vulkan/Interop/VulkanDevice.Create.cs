@@ -153,7 +153,9 @@ internal unsafe partial class VulkanDevice
 					continue;
 			}
 			if (supportsPresentation is not null && !supportsPresentation(physicalDevice, (uint)c))
+			{
 				continue;
+			}
 
 			return new DeviceInfo
 			{
