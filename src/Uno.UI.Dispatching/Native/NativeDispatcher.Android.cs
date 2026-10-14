@@ -30,7 +30,12 @@ namespace Uno.UI.Dispatching
 
 		partial void Initialize()
 		{
-			_handler = new Handler(Looper.MainLooper);
+			// Async messages are not held behind the view system's sync barriers. One is posted every vsync while a
+			// traversal keeps being rescheduled (e.g. the first-frame gate's OnPreDraw returning false), which
+			// otherwise lets through a single dispatcher item per frame.
+			_handler = OperatingSystem.IsAndroidVersionAtLeast(28)
+				? Handler.CreateAsync(Looper.MainLooper)
+				: new Handler(Looper.MainLooper);
 			_implementor = new NativeDispatcherImplementor(DispatchItems);
 
 			_choreographer = Choreographer.Instance;
@@ -39,7 +44,16 @@ namespace Uno.UI.Dispatching
 
 		partial void EnqueueNative(NativeDispatcherPriority priority)
 		{
-			_handler.Post(_implementor);
+			if (OperatingSystem.IsAndroidVersionAtLeast(28))
+			{
+				_handler.Post(_implementor);
+			}
+			else
+			{
+				var message = Message.Obtain(_handler, _implementor)!;
+				message.Asynchronous = true;
+				_handler.SendMessage(message);
+			}
 		}
 
 		private bool GetHasThreadAccess() => Looper.MyLooper() == Android.OS.Looper.MainLooper;
