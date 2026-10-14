@@ -36,6 +36,13 @@ partial class InputManager
 	bool IInputInjectorTarget.IsActive
 		=> ContentRoot.GetOwnerWindow()?.NativeWrapper?.ActivationState
 			is not (null or CoreWindowActivationState.Deactivated);
+
+	bool IInputInjectorTarget.IsReadyForKeyboardInput
+		=> Initialized && ContentRoot.GetOwnerWindow() is { NativeWrapper.WasShown: true } window
+			&& ApplicationHelper.WindowsInternal.Contains(window);
+
+	bool IInputInjectorTarget.IsVisibleForKeyboardInput
+		=> ContentRoot.GetOwnerWindow()?.NativeWrapper?.IsVisible is true;
 	#endregion
 
 	internal sealed class KeyboardManager
