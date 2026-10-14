@@ -171,6 +171,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private void GenerateProviderTable(IndentedStringBuilder writer)
 			{
 				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
+				writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
 				using (writer.BlockInvariant("public class BindableMetadataProvider : global::Uno.UI.DataBinding.IBindableMetadataProvider"))
 				{
 					GenerateTypeTable(writer);
