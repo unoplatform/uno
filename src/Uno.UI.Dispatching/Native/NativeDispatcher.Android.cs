@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Runtime.Versioning;
 
 using Android.OS;
 using Android.Runtime;
@@ -14,6 +15,9 @@ namespace Uno.UI.Dispatching
 	internal sealed partial class NativeDispatcher
 	{
 		private static readonly string[] _animationArray = ["Animation"];
+
+		[SupportedOSPlatformGuard("android28.0")]
+		private static readonly bool _hasAsyncHandler = OperatingSystem.IsAndroidVersionAtLeast(28);
 
 		private Handler _handler;
 		private NativeDispatcherImplementor _implementor;
@@ -33,7 +37,7 @@ namespace Uno.UI.Dispatching
 			// Async messages are not held behind the view system's sync barriers. One is posted every vsync while a
 			// traversal keeps being rescheduled (e.g. the first-frame gate's OnPreDraw returning false), which
 			// otherwise lets through a single dispatcher item per frame.
-			_handler = OperatingSystem.IsAndroidVersionAtLeast(28)
+			_handler = _hasAsyncHandler
 				? Handler.CreateAsync(Looper.MainLooper)
 				: new Handler(Looper.MainLooper);
 			_implementor = new NativeDispatcherImplementor(DispatchItems);
@@ -44,7 +48,7 @@ namespace Uno.UI.Dispatching
 
 		partial void EnqueueNative(NativeDispatcherPriority priority)
 		{
-			if (OperatingSystem.IsAndroidVersionAtLeast(28))
+			if (_hasAsyncHandler)
 			{
 				_handler.Post(_implementor);
 			}
