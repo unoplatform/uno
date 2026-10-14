@@ -140,4 +140,19 @@ public class Given_AppCommandHandler
 		AppCommandHandler.ResolveRefByName(tree, "Save", out error).Should().BeNull();
 		error.Should().Contain("5k").And.Contain("5n");
 	}
+
+	[TestMethod]
+	[Description("app help and a bare app print the reference, listing every verb, without touching a DevServer")]
+	public async Task WhenHelp_TheReferenceIsPrintedWithoutAHost()
+	{
+		var handler = new AppCommandHandler(Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance);
+		Func<bool, Task<int?>> noHost = _ => throw new InvalidOperationException("help must not resolve a DevServer");
+
+		(await handler.RunAsync(["help"], noHost)).Should().Be(0);
+		(await handler.RunAsync([], noHost)).Should().Be(0);
+		foreach (var verb in AppCommandHandler.Verbs.Keys.Concat([AppCommandHandler.ToolsVerb, AppCommandHandler.WaitVerb, AppCommandHandler.AssertVerb]))
+		{
+			AppCommandHandler.HelpText.Should().Contain($" {verb} ");
+		}
+	}
 }
