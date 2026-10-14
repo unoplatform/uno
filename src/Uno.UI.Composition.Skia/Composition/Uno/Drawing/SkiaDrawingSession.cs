@@ -176,7 +176,7 @@ internal class SkiaDrawingSession : IDrawingSession
 			return;
 		}
 
-		DrawTextBlob(skiaFont, glyphs, positions, baselineY, FillPaint(color));
+		DrawTextBlob(skiaFont, glyphs, positions, baselineY, GlyphPaint(FillPaint(color), color));
 	}
 
 	public void StrokeGlyphRun(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color, float strokeWidth)
@@ -187,7 +187,61 @@ internal class SkiaDrawingSession : IDrawingSession
 			return;
 		}
 
-		DrawTextBlob(skiaFont, glyphs, positions, baselineY, StrokePaint(color, strokeWidth));
+		DrawTextBlob(skiaFont, glyphs, positions, baselineY, GlyphPaint(StrokePaint(color, strokeWidth), color));
+	}
+
+	// Skia runs every antialiased glyph mask through a gamma/contrast table picked by the paint colour's luminance
+	// (SK_GAMMA_EXPONENT / SK_GAMMA_CONTRAST). With SkiaSharp's build constants, black text at 1x keeps about 78% of
+	// the FreeType coverage and white text on black gets about 130%, while Qt, GTK and cairo blend that coverage
+	// as is, so Uno's dark text looked thinner and lighter than the desktop's. SkiaSharp exposes neither the
+	// constants nor SkSurfaceProps text gamma. Skia only computes that luminance for a plain colour paint: a colour
+	// shader behind a colour filter reports none and selects the neutral mid-luminance table, which is the same
+	// for dark and light text and approximately linear. UNO_SKIA_TEXT_GAMMA=skia restores Skia's tables.
+	internal static bool UsesNeutralGlyphCoverage { get; } =
+		OperatingSystem.IsLinux() && Environment.GetEnvironmentVariable("UNO_SKIA_TEXT_GAMMA")?.Trim().ToLowerInvariant() is not "skia";
+
+	private const int MaxGlyphShaders = 64;
+
+	// Shaders are immutable and keyed by the opaque text colour, cached per drawing thread like _sparePaint.
+	[ThreadStatic]
+	private static Dictionary<uint, SKShader>? _glyphShaders;
+
+	private static SKPaint GlyphPaint(SKPaint paint, Color color)
+	{
+		if (!UsesNeutralGlyphCoverage)
+		{
+			return paint;
+		}
+
+		// Only the paint's alpha applies once a shader is set; the shader carries the opaque colour.
+		var opaque = new SKColor(color.R, color.G, color.B);
+		var shaders = _glyphShaders ??= new Dictionary<uint, SKShader>();
+		if (!shaders.TryGetValue((uint)opaque, out var shader))
+		{
+			if (shaders.Count >= MaxGlyphShaders)
+			{
+				foreach (var cached in shaders.Values)
+				{
+					cached.Dispose();
+				}
+
+				shaders.Clear();
+			}
+
+			using var identity = SKColorFilter.CreateColorMatrix(
+			[
+				1, 0, 0, 0, 0,
+				0, 1, 0, 0, 0,
+				0, 0, 1, 0, 0,
+				0, 0, 0, 1, 0,
+			]);
+			using var colorShader = SKShader.CreateColor(opaque);
+			shader = colorShader.WithColorFilter(identity);
+			shaders.Add((uint)opaque, shader);
+		}
+
+		paint.Shader = shader;
+		return paint;
 	}
 
 	private void DrawTextBlob(SkiaFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, SKPaint paint)
