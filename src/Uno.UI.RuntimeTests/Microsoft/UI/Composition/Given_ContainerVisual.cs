@@ -402,17 +402,28 @@ public class Given_ContainerVisual
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
 	// WebGPU composes a replayed recording with its destination in 2D, which drops the depth even without flattening.
 	[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)]
-	public async Task When_Collapsed_Under_Flattening_Transform_Then_Tilted()
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Collapsed_Under_Flattening_Transform_Then_Tilted(bool commandList)
 	{
 		using var _ = UITestHelper.ResetWindowContent();
-		var collapsed = CreateLiftedSquare(flattensZ: true, collapse: true);
-		var live = CreateLiftedSquare(flattensZ: true, collapse: false);
-		await UITestHelper.Load(new StackPanel { Children = { collapsed.Host, live.Host } });
+		var forceFallbackRetainedRendering = global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering;
+		try
+		{
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = commandList;
+			var collapsed = CreateLiftedSquare(flattensZ: true, collapse: true);
+			var live = CreateLiftedSquare(flattensZ: true, collapse: false);
+			await UITestHelper.Load(new StackPanel { Children = { collapsed.Host, live.Host } });
 
-		await AssertRendersLike(collapsed.Host, live.Host, Colors.Red);
+			await AssertRendersLike(collapsed.Host, live.Host, Colors.Red);
 
-		collapsed.Container.TransformMatrix = live.Container.TransformMatrix = Matrix4x4.CreateRotationX(MathF.PI / 3);
-		await AssertRendersLike(collapsed.Host, live.Host, Colors.Red);
+			collapsed.Container.TransformMatrix = live.Container.TransformMatrix = Matrix4x4.CreateRotationX(MathF.PI / 3);
+			await AssertRendersLike(collapsed.Host, live.Host, Colors.Red);
+		}
+		finally
+		{
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = forceFallbackRetainedRendering;
+		}
 	}
 
 	// A redirect draws its source without the source's ancestors, so a parent that flattens Z must not flatten the
