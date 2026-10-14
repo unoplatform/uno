@@ -13,7 +13,7 @@ namespace Uno.UI.Tests.Hosting;
 /// <see cref="GraphicsRegistry.FirstCandidateKind"/> picks what the Win32 host prewarms, so it must name the kind
 /// negotiation asks the host for first.
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_GraphicsRegistry
 {
 	private static readonly FieldInfo _backendsField =
