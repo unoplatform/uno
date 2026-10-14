@@ -8,7 +8,7 @@ namespace Uno.UI.Tests.Windows_UI_Input;
 /// Tests for <see cref="MacOSTitleBarMath"/>, the pure part of the macOS title bar support
 /// (the traffic-light bounds and the hit-test callback themselves need a live NSWindow).
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_MacOSTitleBarMath
 {
 	// Standard traffic lights: close at x = 7pt, zoom ending at x = 59pt.

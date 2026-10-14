@@ -5,7 +5,7 @@ using Windows.Graphics;
 
 namespace Uno.UI.Tests.Windows_UI_Input;
 
-[TestClass]
+[UITestClass]
 public class Given_NonClientRegionSet
 {
 	[TestMethod]
