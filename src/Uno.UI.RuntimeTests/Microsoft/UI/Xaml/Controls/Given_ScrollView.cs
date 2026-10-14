@@ -223,6 +223,36 @@ public class Given_ScrollView
 			$"frames do not lie on the WinUI curve, implied starts (ms): {string.Join(", ", starts.Select(start => start.ToString("F1")))}");
 	}
 
+	/// <summary>
+	/// A wheel over a gap between items must still scroll: WinUI's ScrollPresenter is a Panel with a Transparent
+	/// background, so the gap hits it rather than falling through to the root.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Wheel_Over_Gap_In_Content_Then_Scrolls()
+	{
+		var items = new StackPanel { Spacing = 100 };
+		for (var i = 0; i < 50; i++)
+		{
+			items.Children.Add(new Rectangle { Height = 50, Fill = new SolidColorBrush(Colors.SteelBlue) });
+		}
+
+		var sut = new ScrollView { Width = 300, Height = 300, Content = items };
+		var bounds = await UITestHelper.Load(sut);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		// The first item spans [0, 50] and the second starts at 150, so this point is in the gap between them.
+		mouse.MoveTo(new Point(bounds.X + bounds.Width / 2, bounds.Y + 100));
+		mouse.WheelDown();
+
+		await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "a wheel over a gap in the content should scroll");
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+		Assert.AreEqual(InteractionTracker.PixelsPerWheelDetent, sut.VerticalOffset, 0.1);
+	}
+
 	/// <summary>A finger pressed and held on coasting content stops it, without having to move first.</summary>
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24730")]
