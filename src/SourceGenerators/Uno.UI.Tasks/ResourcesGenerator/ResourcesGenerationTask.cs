@@ -289,19 +289,20 @@ public class ResourcesGenerationTask_v0 : Task
 		if (Directory.Exists(resourcesDirectory))
 		{
 			var generated = new HashSet<string>(generatedPaths, StringComparer.OrdinalIgnoreCase);
-			foreach (var file in Directory.EnumerateFiles(resourcesDirectory, "*" + AndroidResourceFileSuffix, SearchOption.AllDirectories).ToArray())
+			var staleFiles = Directory
+				.EnumerateFiles(resourcesDirectory, "*" + AndroidResourceFileSuffix, SearchOption.AllDirectories)
+				.Where(file => !generated.Contains(Path.GetFullPath(file)))
+				.ToArray();
+			foreach (var file in staleFiles)
 			{
-				if (!generated.Contains(Path.GetFullPath(file)))
-				{
-					TraceLog($"Removing stale resources file {file}");
-					File.Delete(file);
-					_androidResourcesWritten = true;
+				TraceLog($"Removing stale resources file {file}");
+				File.Delete(file);
+				_androidResourcesWritten = true;
 
-					var directory = Path.GetDirectoryName(file);
-					if (!Directory.EnumerateFileSystemEntries(directory).Any())
-					{
-						Directory.Delete(directory);
-					}
+				var directory = Path.GetDirectoryName(file);
+				if (!Directory.EnumerateFileSystemEntries(directory).Any())
+				{
+					Directory.Delete(directory);
 				}
 			}
 		}
