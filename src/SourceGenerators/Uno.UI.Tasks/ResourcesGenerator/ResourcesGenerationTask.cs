@@ -20,6 +20,10 @@ public class ResourcesGenerationTask_v0 : Task
 	Tool name: {0}
 	Source: {1}
 ";
+	private const string AndroidResourceFileSuffix = "_resw-strings.xml";
+
+	private bool _androidResourcesWritten;
+
 	[Required]
 	public ITaskItem[] Resources { get; set; }
 
@@ -41,6 +45,11 @@ public class ResourcesGenerationTask_v0 : Task
 	[Required]
 	public string DefaultLanguage { get; set; }
 
+	/// <summary>
+	/// The `StampFile` of the generated Android resource directory, which the Android SDK uses to invalidate its cached file list.
+	/// </summary>
+	public string AndroidStampFile { get; set; }
+
 	[Output]
 	public ITaskItem[] GeneratedFiles { get; set; }
 
@@ -57,6 +66,11 @@ public class ResourcesGenerationTask_v0 : Task
 				.SelectMany(GetResourcesForItem)
 				.Where(r => r != null)
 				.ToArray();
+
+			if (TargetPlatform == "android")
+			{
+				UpdateAndroidOutputs();
+			}
 
 			return true;
 		}
@@ -233,7 +247,7 @@ public class ResourcesGenerationTask_v0 : Task
 
 		// The file name have to be unique, otherwise it could be overwritten by a file with the same named defined directly in the application's head
 		var resourceMapName = Path.GetFileNameWithoutExtension(resource.ItemSpec)?.ToLowerInvariant();
-		var logicalTargetPath = Path.Combine("r", localizedDirectory, $"{resourceMapName}_resw-strings.xml");
+		var logicalTargetPath = Path.Combine("r", localizedDirectory, resourceMapName + AndroidResourceFileSuffix);
 		var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
 
 		var targetLastWriteTime = new FileInfo(actualTargetPath).LastWriteTimeUtc;
@@ -243,6 +257,7 @@ public class ResourcesGenerationTask_v0 : Task
 			TraceLog($"Writing resources to {actualTargetPath}");
 
 			AndroidResourcesWriter.Write(resources, actualTargetPath, comment);
+			_androidResourcesWritten = true;
 		}
 		else
 		{
@@ -258,6 +273,53 @@ public class ResourcesGenerationTask_v0 : Task
 				{ "LogicalName", logicalTargetPath }
 			}
 		);
+	}
+
+	private void UpdateAndroidOutputs()
+	{
+		var generatedPaths = GeneratedFiles
+			.Where(file => file.GetMetadata("UnoResourceTarget") == "Android")
+			.Select(file => Path.GetFullPath(file.ItemSpec))
+			.OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+			.ToArray();
+
+		// The directory name of a culture can differ between build hosts (e.g. nb vs no for nb-NO),
+		// so files from another host must not survive to be compiled alongside the current ones.
+		var resourcesDirectory = Path.Combine(OutputPath, "r");
+		if (Directory.Exists(resourcesDirectory))
+		{
+			var generated = new HashSet<string>(generatedPaths, StringComparer.OrdinalIgnoreCase);
+			foreach (var file in Directory.EnumerateFiles(resourcesDirectory, "*" + AndroidResourceFileSuffix, SearchOption.AllDirectories).ToArray())
+			{
+				if (!generated.Contains(Path.GetFullPath(file)))
+				{
+					TraceLog($"Removing stale resources file {file}");
+					File.Delete(file);
+					_androidResourcesWritten = true;
+
+					var directory = Path.GetDirectoryName(file);
+					if (!Directory.EnumerateFileSystemEntries(directory).Any())
+					{
+						Directory.Delete(directory);
+					}
+				}
+			}
+		}
+
+		if (string.IsNullOrEmpty(AndroidStampFile))
+		{
+			return;
+		}
+
+		// The Android SDK reuses its cached list of the directory's files until the stamp is newer than that cache.
+		var stampContent = string.Join("\n", generatedPaths);
+		if (_androidResourcesWritten || !File.Exists(AndroidStampFile) || File.ReadAllText(AndroidStampFile) != stampContent)
+		{
+			TraceLog($"Updating {AndroidStampFile}");
+
+			Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(AndroidStampFile)));
+			File.WriteAllText(AndroidStampFile, stampContent);
+		}
 	}
 
 	private void TraceLog(string message)
