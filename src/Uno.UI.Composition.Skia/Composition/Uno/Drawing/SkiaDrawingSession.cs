@@ -106,7 +106,8 @@ internal class SkiaDrawingSession : IDrawingSession
 		}
 	}
 
-	public void Concat(in Matrix4x4 matrix) => _canvas.Concat(matrix.ToSKMatrix());
+	// The full 4x4 like SetMatrix: going through an SKMatrix would drop the Z row and column.
+	public void Concat(in Matrix4x4 matrix) => _canvas.Concat((SKMatrix44)matrix);
 
 	public void Translate(float dx, float dy) => _canvas.Translate(dx, dy);
 
