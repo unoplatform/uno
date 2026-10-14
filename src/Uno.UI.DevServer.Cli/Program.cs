@@ -190,23 +190,7 @@ internal class Program
 	}
 
 	internal static bool IsAppCommand(string[] args)
-	{
-		for (int i = 0; i < args.Length; i++)
-		{
-			if (string.Equals(args[i], "app", StringComparison.OrdinalIgnoreCase))
-			{
-				return true;
-			}
-
-			// Skip the value of --solution-dir, --log-level, --file-log and their short forms.
-			if (args[i].StartsWith('-') && i + 1 < args.Length && !args[i + 1].StartsWith('-'))
-			{
-				i++;
-			}
-		}
-
-		return false;
-	}
+		=> AppCommandHandler.AppVerbIndex(args) >= 0;
 
 	internal static bool IsMcpMode(string[] args)
 	{

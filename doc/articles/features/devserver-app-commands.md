@@ -89,6 +89,7 @@ These verbs combine tool calls on the CLI side:
 |---|---|
 | `--<name> <value>` | Sent to the tool as the `<name>` parameter. A value that parses as JSON (a number, `true`, `false`, `null`, `{...}`, `[...]`) is sent typed, anything else as text. A parameter that the tool declares as a string always gets text. |
 | `--<name>` | Without a value (last, or followed by another `--option`): `true`. |
+| `--log-level`, `-l`, `--file-log`, `-fl` | The global logging options. They work before or after the verb and are not sent to the tool. |
 | `--json` | Print the raw MCP `CallToolResult` as JSON instead of its text. |
 | `--out <file>` | Where an image result is saved. Default: `uno-app-<timestamp>.png` in the current folder. The saved path is printed. |
 | `--no-start` | Never start a DevServer, and do not wait for tools it does not list yet: exit with 2 instead. Use it in hooks that run on every edit. |
@@ -100,9 +101,19 @@ Older App MCP versions identify elements by `--elementRef` only, using the `^ref
 | Code | Meaning |
 |---|---|
 | 0 | The tool succeeded. |
-| 1 | The tool reported an error, `find` matched nothing, `assert` failed, `hot-reload-status` reports the edit as not applied, `wait` timed out, or the DevServer could not start. |
+| 1 | The tool reported an error, `find` matched nothing, `assert` failed, `wait` timed out, or the DevServer could not start. |
 | 2 | Bad arguments, no DevServer with `--no-start`, or the tool is not offered. |
-| 3 | `hot-reload-status`: a rude edit that only `app restart` can apply. |
+
+`hot-reload-status --file` maps the verdict of the edit to its own codes:
+
+| Code | Verdicts | Meaning |
+|---|---|---|
+| 0 | `applied`, `noChanges`, `superseded`, `ignored` | Nothing left to do: the edit is applied, made no change, was folded into a newer operation, or is in a file Hot Reload ignores. |
+| 1 | `notApplied`, `noOperation`, `probablyNotApplied`, `unknown` | The edit is not running in the app, or no verdict was reported. The text says why. |
+| 3 | `rudeEdit` | A rude edit: only `app restart` applies it. |
+| 4 | `queued`, `processing`, `notReceived`, `applying` | The edit is still on its way: call again with `--waitForMs`. |
+
+With `--json`, the verdict is in the `verdict` field of `structuredContent`.
 
 ## Examples
 
@@ -130,8 +141,9 @@ From a hook that runs after each file edit, report whether Hot Reload applied th
 ```bash
 uno-devserver app hot-reload-status --file src/MyApp/MainPage.xaml --waitForMs 10000 --no-start
 case $? in
-  0) echo "applied" ;;
+  0) echo "nothing to do" ;;
   3) uno-devserver app restart ;;
+  4) echo "still applying, ask again with a longer --waitForMs" ;;
   *) echo "not applied, see the output above" ;;
 esac
 ```
