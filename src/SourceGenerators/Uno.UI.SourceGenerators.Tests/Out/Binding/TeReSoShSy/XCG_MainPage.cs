@@ -54,7 +54,7 @@ namespace TestRepro
 					global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 					new Microsoft.UI.Xaml.Data.Binding()
 					{
-						Path = @"ThePath",
+						Path = "ThePath",
 						RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
 					}
 				);
