@@ -317,6 +317,55 @@ public class Given_ContainerVisual
 		await AssertRendersLike(flattened, expected, Colors.Red);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
+	public void When_Ancestor_Clip_Under_Flattening_Transform_Then_Maps_To_Element_Space()
+	{
+		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
+		var parent = compositor.CreateContainerVisual();
+		parent.TransformMatrix = new Matrix4x4(
+			2, 0, 0, 0,
+			0, 2, 0, 0,
+			0, 0, 0, 0,
+			0, 0, 0, 1);
+		var visual = compositor.CreateContainerVisual();
+		visual.Offset = new Vector3(30, 20, 0);
+		visual.LayoutClip = (new Rect(30, 20, 50, 40), true);
+		parent.Children.InsertAtTop(visual);
+
+		var rect = visual.GetArrangeClipPathInElementCoordinateSpace();
+
+		Assert.IsNotNull(rect);
+		Assert.AreEqual(0, rect.Value.X, 0.01);
+		Assert.AreEqual(0, rect.Value.Y, 0.01);
+		Assert.AreEqual(50, rect.Value.Width, 0.01);
+		Assert.AreEqual(40, rect.Value.Height, 0.01);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
+	public void When_Ancestor_Clip_On_Visual_Collapsed_To_A_Line_Then_Clips_Everything()
+	{
+		var visual = TestServices.WindowHelper.XamlRoot.Compositor.CreateContainerVisual();
+		visual.TransformMatrix = Matrix4x4.CreateScale(0, 1, 0);
+		visual.LayoutClip = (new Rect(30, 20, 50, 40), true);
+
+		Assert.AreEqual(new Rect(), visual.GetArrangeClipPathInElementCoordinateSpace());
+	}
+
+	// A visual surface renders its source as a root, from SourceOffset, so the source's parent must not reach it.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
+	public async Task When_Visual_Surface_Source_Under_Flattening_Transform()
+	{
+		using var _ = UITestHelper.ResetWindowContent();
+		var flattened = CreateVisualSurfaceHost(flattensZ: true);
+		var expected = CreateVisualSurfaceHost(flattensZ: false);
+		await UITestHelper.Load(new StackPanel { Children = { flattened, expected } });
+
+		await AssertRendersLike(flattened, expected, Colors.Red, Colors.Blue);
+	}
+
 	// A collapsed container keeps its recording when its own transform changes, so the recording can't depend on the
 	// flattening above it: tilting the container brings back the depth of a child lifted along Z.
 	[TestMethod]
@@ -428,6 +477,45 @@ public class Given_ContainerVisual
 
 		var host = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
 		global::Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetElementChildVisual(host, redirect);
+		return host;
+	}
+
+	// Two squares in a source under a parent that only moves it, flattening Z or not, shown through a visual surface
+	// that starts at SourceOffset.
+	private static Border CreateVisualSurfaceHost(bool flattensZ)
+	{
+		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
+		var parent = compositor.CreateContainerVisual();
+		parent.TransformMatrix = new Matrix4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, flattensZ ? 0 : 1, 0,
+			10, 10, 0, 1);
+
+		var source = compositor.CreateContainerVisual();
+		source.Offset = new Vector3(5, 5, 0);
+		foreach (var (offset, color) in new[] { (new Vector3(10, 20, 0), Colors.Red), (new Vector3(40, 40, 0), Colors.Blue) })
+		{
+			var square = compositor.CreateSpriteVisual();
+			square.Size = new Vector2(20, 20);
+			square.Offset = offset;
+			square.Brush = compositor.CreateColorBrush(color);
+			source.Children.InsertAtTop(square);
+		}
+
+		parent.Children.InsertAtTop(source);
+
+		var surface = compositor.CreateVisualSurface();
+		surface.SourceVisual = source;
+		surface.SourceOffset = new Vector2(10, 10);
+		surface.SourceSize = new Vector2(80, 80);
+
+		var sprite = compositor.CreateSpriteVisual();
+		sprite.Size = new Vector2(80, 80);
+		sprite.Brush = compositor.CreateSurfaceBrush(surface);
+
+		var host = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
+		global::Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetElementChildVisual(host, sprite);
 		return host;
 	}
 
