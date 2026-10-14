@@ -37,8 +37,10 @@ public class Given_GlyphRunRenderer
 
 		var (run, positions, info, baseline) = Layout(font, fontSize);
 
+		// A CPU Skia factory: these surfaces are Skia, whatever backend the window presents with.
+		using var factory = new SkiaDrawingFactory();
 		using var actual = CreateSurface(info);
-		new SkiaDrawingSession(actual.Canvas, DrawingFactory.Current).DrawGlyphRun(font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
+		new SkiaDrawingSession(actual.Canvas, factory).DrawGlyphRun(font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
 
 		// Spelled out rather than read from SkiaFontProvider so the Windows-only grayscale edging is covered too.
 		var edging = OperatingSystem.IsWindows() ? SKFontEdging.Antialias : SKFontEdging.SubpixelAntialias;
@@ -76,8 +78,10 @@ public class Given_GlyphRunRenderer
 
 		var (run, positions, info, baseline) = Layout(font, fontSize);
 
+		// A CPU Skia factory: these surfaces are Skia, whatever backend the window presents with.
+		using var factory = new SkiaDrawingFactory();
 		using var actual = CreateSurface(info);
-		new SkiaDrawingSession(actual.Canvas, DrawingFactory.Current).StrokeGlyphRun(font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black, strokeWidth);
+		new SkiaDrawingSession(actual.Canvas, factory).StrokeGlyphRun(font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black, strokeWidth);
 
 		using var expected = CreateSurface(info);
 		using (var builder = new SKTextBlobBuilder())
@@ -109,11 +113,13 @@ public class Given_GlyphRunRenderer
 
 		var (run, positions, info, baseline) = Layout(font, fontSize);
 
+		// A CPU Skia factory: these surfaces are Skia, whatever backend the window presents with.
+		using var factory = new SkiaDrawingFactory();
 		using var actual = CreateSurface(info);
-		new SkiaDrawingSession(actual.Canvas, DrawingFactory.Current).DrawGlyphRun(new ForeignFont(font), run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
+		new SkiaDrawingSession(actual.Canvas, factory).DrawGlyphRun(new ForeignFont(font), run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
 
 		using var expected = CreateSurface(info);
-		GlyphRunRenderer.Draw(new SkiaDrawingSession(expected.Canvas, DrawingFactory.Current), font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
+		GlyphRunRenderer.Draw(new SkiaDrawingSession(expected.Canvas, factory), font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
 
 		var mismatches = CountMismatches(actual, expected, info, out var inked);
 		Assert.IsTrue(inked > 0, "The fallback drew nothing.");
@@ -152,15 +158,16 @@ public class Given_GlyphRunRenderer
 
 		try
 		{
+			using var factory = new SkiaDrawingFactory();
 			using var surface = SKSurface.Create(new SKImageInfo(8, 8));
-			var paint = new SkiaDrawingSession(surface.Canvas, DrawingFactory.Current);
+			var paint = new SkiaDrawingSession(surface.Canvas, factory);
 			var textures = new ITexture[count];
 			for (var i = 0; i < count; i++)
 			{
 				textures[i] = GlyphRunRenderer.ImageTextureCache.Get(paint, images[i].Key, images[i].Image);
 			}
 
-			var repaint = new SkiaDrawingSession(surface.Canvas, DrawingFactory.Current);
+			var repaint = new SkiaDrawingSession(surface.Canvas, factory);
 			var hits = 0;
 			for (var i = 0; i < count; i++)
 			{
@@ -195,8 +202,9 @@ public class Given_GlyphRunRenderer
 		Assert.IsNotNull(originalImage);
 		Assert.IsNotNull(cloneImage);
 
+		using var factory = new SkiaDrawingFactory();
 		using var surface = SKSurface.Create(new SKImageInfo(8, 8));
-		var session = new SkiaDrawingSession(surface.Canvas, DrawingFactory.Current);
+		var session = new SkiaDrawingSession(surface.Canvas, factory);
 		Assert.AreSame(
 			GlyphRunRenderer.ImageTextureCache.Get(session, original.TextureKey, originalImage),
 			GlyphRunRenderer.ImageTextureCache.Get(session, clone.TextureKey, cloneImage));

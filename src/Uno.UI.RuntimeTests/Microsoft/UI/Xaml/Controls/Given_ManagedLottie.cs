@@ -228,7 +228,9 @@ public class Given_ManagedLottie
 			.Load(json, global::Uno.UI.Composition.Drawing.GeometryFactory.Current);
 		Assert.IsNotNull(animation, "The animation should load.");
 
-		var factory = global::Uno.UI.Composition.Drawing.DrawingFactory.Current;
+		// The main window's negotiated backend: a factory belongs to the window that negotiated it.
+		var factory = Private.Infrastructure.TestServices.WindowHelper.XamlRoot?.VisualTree.RootElement?.Visual.CompositionTarget?.Renderer
+			?? throw new InvalidOperationException("The test window has no negotiated renderer.");
 		using var texture = factory.RenderOffscreen(40, 40, session =>
 		{
 			session.Clear(Colors.White);
