@@ -5,7 +5,6 @@
 	<PropertyGroup>
 		<UnoWebGpuIosLibDir Condition="'$(UnoWebGpuIosLibDir)' == ''">$(MSBuildThisFileDirectory)native\</UnoWebGpuIosLibDir>
 		<UnoWebGpuPortDir Condition="'$(UnoWebGpuPortDir)' == ''">$(MSBuildThisFileDirectory)emdawnwebgpu\emdawnwebgpu_pkg\</UnoWebGpuPortDir>
-		<UnoWebGpuStubPath Condition="'$(UnoWebGpuStubPath)' == ''">$(MSBuildThisFileDirectory)emdawnwebgpu\wgpu_wasm_stubs.c</UnoWebGpuStubPath>
 	</PropertyGroup>
 
 	<!--
@@ -54,11 +53,6 @@
 		<WgpuWasmCacheDir Condition="'$(WgpuWasmCacheDir)' == ''">$([MSBuild]::NormalizeDirectory($(MSBuildProjectDirectory), $(IntermediateOutputPath), 'wgpu-wasm-emcache'))</WgpuWasmCacheDir>
 		<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
 	</PropertyGroup>
-
-	<ItemGroup Condition="'$(_UnoWebGpuWasm)' == 'true'">
-		<!-- The wgpu-native-only imports Dawn does not export, so the static link resolves. Never called on WASM. -->
-		<NativeFileReference Include="$(UnoWebGpuStubPath)" ScanForPInvokes="false" />
-	</ItemGroup>
 
 	<!-- On Windows the writable cache must sit on the emscripten toolchain's drive: building a system-lib variant
 	     computes a relpath between the two, which throws across drives. Resolved in a target because the workload

@@ -4,8 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
+using Buffer = Silk.NET.WebGPU.Buffer;
 using Uno.UI.Composition.Drawing;
 using WColor = Windows.UI.Color;
 
@@ -177,7 +177,7 @@ internal sealed unsafe partial class WebGpuFrame
 					AppendAaRect(_scratch, rcj.Color, rcj.P0, rcj.P1, rcj.P2, rcj.P3);
 					j++;
 				}
-				var rop = DrawOp.Own(DrawKind.RoundedRect, Vbuf(_scratch, VertexStride.RoundedRect, owned), (uint)((j - ci) * 6), IntPtr.Zero, rc0.Clip, MakeClipBg(rc0.Clip, owned));
+				var rop = DrawOp.Own(DrawKind.RoundedRect, Vbuf(_scratch, VertexStride.RoundedRect, owned), (uint)((j - ci) * 6), null, rc0.Clip, MakeClipBg(rc0.Clip, owned));
 				// Only a run of one: a longer run's rects need not tile the box they share, so its box is not painted.
 				if (j == ci + 1)
 				{
@@ -220,8 +220,8 @@ internal sealed unsafe partial class WebGpuFrame
 			v[o] = tris[i] + off.X; v[o + 1] = tris[i + 1] + off.Y; v[o + 2] = r; v[o + 3] = g; v[o + 4] = b; v[o + 5] = ca; v[o + 6] = 0f; v[o + 7] = 0f;
 		}
 		ops.Add(owned is null
-			? DrawOp.Shared(DrawKind.Solid, start, count, IntPtr.Zero, pc.Clip, clipBg)
-			: DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, VertexStride.Solid, owned), count, IntPtr.Zero, pc.Clip, clipBg));
+			? DrawOp.Shared(DrawKind.Solid, start, count, null, pc.Clip, clipBg)
+			: DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, VertexStride.Solid, owned), count, null, pc.Clip, clipBg));
 	}
 
 	// A fill without tiling triangles (self-overlap, too thin for the ring, or simply refused) draws through an exact
@@ -271,7 +271,7 @@ internal sealed unsafe partial class WebGpuFrame
 					var rn = (uint)AppendRrect(tmp, rrc, rrc.P0, rrc.P1, rrc.P2, rrc.P3);
 					var buf = Vbuf(tmp, VertexStride.RoundedRect, owned);
 					ReturnRrect(tmp);
-					var rrop = DrawOp.Own(DrawKind.RoundedRect, buf, rn, IntPtr.Zero, rrc.Clip, MakeClipBg(rrc.Clip, owned));
+					var rrop = DrawOp.Own(DrawKind.RoundedRect, buf, rn, null, rrc.Clip, MakeClipBg(rrc.Clip, owned));
 					rrop.Bounds = AaRect(rrc.P0, rrc.P1, rrc.P2, rrc.P3);
 					rrop.Cover = OpaqueRrect(rrc) ? Meet(RrectCover(rrc, rrop.Bounds), ClipInner(rrc.Clip)) : default;
 					ops.Add(rrop);
@@ -281,16 +281,16 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	// A recording-owned gradient uniform; per frame the gradient slab hands out a slot instead.
-	private IntPtr GradientBg(float[] uniform, OwnedResources owned)
+	private BindGroup* GradientBg(float[] uniform, OwnedResources owned)
 	{
 		var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
 		var ubuf = Ubuf((int)bytes, owned);
-		fixed (float* p = uniform) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, bytes); }
-		var e = stackalloc WGPUBindGroupEntry[3];
-		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
-		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = _d.RampView };
-		e[2] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
-		var bgd = new WGPUBindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 3, Entries = e };
+		fixed (float* p = uniform) { Api.QueueWriteBuffer(_d.Q, ubuf, 0, p, bytes); }
+		var e = stackalloc BindGroupEntry[3];
+		e[0] = new BindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
+		e[1] = new BindGroupEntry { Binding = 1, TextureView = _d.RampView };
+		e[2] = new BindGroupEntry { Binding = 3, Sampler = _d.Smp };
+		var bgd = new BindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 3, Entries = e };
 		return Bg(ref bgd, owned);
 	}
 
@@ -303,7 +303,7 @@ internal sealed unsafe partial class WebGpuFrame
 
 	// The image draw's bind group: texture, the sampler for its edge extension, and the uniform carrying opacity,
 	// tint, colour matrix, uv rect and the edge-antialiasing flag.
-	private IntPtr ImageBg(ImageCmd im, OwnedResources owned)
+	private BindGroup* ImageBg(ImageCmd im, OwnedResources owned)
 	{
 		var ubuf = Ubuf(WebGpuDevice.ImageUniformBytes, owned);
 		var op = stackalloc float[36];
@@ -322,12 +322,12 @@ internal sealed unsafe partial class WebGpuFrame
 			op[20] = mm[15]; op[21] = mm[16]; op[22] = mm[17]; op[23] = mm[18];  // m3
 			op[24] = mm[4]; op[25] = mm[9]; op[26] = mm[14]; op[27] = mm[19];    // off (5th column)
 		}
-		wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, WebGpuDevice.ImageUniformBytes);
-		var entries = stackalloc WGPUBindGroupEntry[3];
-		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = im.View };
-		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.TiledSampler(im.ExtendX, im.ExtendY) };
-		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = WebGpuDevice.ImageUniformBytes };
-		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
+		Api.QueueWriteBuffer(_d.Q, ubuf, 0, op, WebGpuDevice.ImageUniformBytes);
+		var entries = stackalloc BindGroupEntry[3];
+		entries[0] = new BindGroupEntry { Binding = 0, TextureView = im.View };
+		entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.TiledSampler(im.ExtendX, im.ExtendY) };
+		entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = WebGpuDevice.ImageUniformBytes };
+		var bgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
 		return Bg(ref bgd, owned);
 	}
 

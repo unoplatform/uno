@@ -4,8 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
+using Buffer = Silk.NET.WebGPU.Buffer;
 
 namespace Uno.UI.Composition.WebGpu;
 
@@ -18,11 +18,11 @@ internal sealed unsafe partial class WebGpuFrame
 	/// still encoded exactly once with no prefix re-render.
 	/// </summary>
 	/// <returns>The newly opened pass, which the caller is responsible for ending.</returns>
-	private IntPtr EncodeBackdropSegment(BackdropCmd backdrop, ref PassOps pst)
+	private RenderPassEncoder* EncodeBackdropSegment(BackdropCmd backdrop, ref PassOps pst)
 	{
 		var target = pst.Target;
-		wgpuRenderPassEncoderEnd(pst.Pass);
-		wgpuRenderPassEncoderRelease(pst.Pass);
+		Api.RenderPassEncoderEnd(pst.Pass);
+		Api.RenderPassEncoderRelease(pst.Pass);
 
 		// Blur only the element AABB, not the whole framebuffer -- and not a padded version of it either: a
 		// backdrop samples the element's OWN backdrop, so reaching outside pulls in whatever sits behind the
@@ -34,25 +34,25 @@ internal sealed unsafe partial class WebGpuFrame
 		float regionH = MathF.Max(1f, MathF.Min(Target.Height, aabb.W) - regionY);
 		var blurred = Effects.BlurPyramidRegion(target.View, Target.Width, Target.Height, regionX, regionY, regionW, regionH, effect.SigmaX, effect.SigmaY);
 
-		var color = new WGPURenderPassColorAttachment
+		var color = new RenderPassColorAttachment
 		{
 			DepthSlice = uint.MaxValue,
 			View = target.View,
-			LoadOp = WGPULoadOp.Load,
-			StoreOp = WGPUStoreOp.Store,   // a following segment, or another backdrop, reloads it
+			LoadOp = LoadOp.Load,
+			StoreOp = StoreOp.Store,   // a following segment, or another backdrop, reloads it
 		};
 		// The reopened segment must carry the same attachments as the pass it continues -- a pipeline is only valid
 		// against a matching set -- so the depth buffer comes back, LOADED, and occlusion carries across the split.
-		var bda = new WGPURenderPassDepthStencilAttachment
+		var bda = new RenderPassDepthStencilAttachment
 		{
 			View = _depthView,
-			DepthLoadOp = WGPULoadOp.Load,
-			DepthStoreOp = WGPUStoreOp.Store,
-			StencilLoadOp = WGPULoadOp.Undefined,
-			StencilStoreOp = WGPUStoreOp.Undefined,
+			DepthLoadOp = LoadOp.Load,
+			DepthStoreOp = StoreOp.Store,
+			StencilLoadOp = LoadOp.Undefined,
+			StencilStoreOp = StoreOp.Undefined,
 		};
-		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = _depthView != IntPtr.Zero ? &bda : null };
-		var pass = wgpuCommandEncoderBeginRenderPass(Encoder, &desc);
+		var desc = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = _depthView != null ? &bda : null };
+		var pass = Api.CommandEncoderBeginRenderPass(Encoder, &desc);
 
 		pst.Pass = pass;
 		pst.Enc.Rebind(pass);
@@ -74,7 +74,7 @@ internal sealed unsafe partial class WebGpuFrame
 	/// Draws the blurred backdrop over its region. Luminosity, noise and opacity ride in the image uniform,
 	/// so the acrylic recipe costs one textured quad.
 	/// </summary>
-	private void DrawBlurredBackdrop(ref PassOps pst, BackdropCmd backdrop, IntPtr blurred, Vector2 origin, Vector2 size)
+	private void DrawBlurredBackdrop(ref PassOps pst, BackdropCmd backdrop, TextureView* blurred, Vector2 origin, Vector2 size)
 	{
 		var uniform = MakeUniform(WebGpuDevice.ImageUniformBytes);
 		var fields = stackalloc float[36];
@@ -84,24 +84,24 @@ internal sealed unsafe partial class WebGpuFrame
 		fields[3] = 1f;
 		fields[4] = lum.R / 255f; fields[5] = lum.G / 255f; fields[6] = lum.B / 255f; fields[7] = lum.A / 255f;
 		fields[24] = backdrop.Effect.Noise;
-		wgpuQueueWriteBuffer(_d.Q, uniform, 0, (IntPtr)fields, WebGpuDevice.ImageUniformBytes);
+		Api.QueueWriteBuffer(_d.Q, uniform, 0, fields, WebGpuDevice.ImageUniformBytes);
 
-		var entries = stackalloc WGPUBindGroupEntry[3];
-		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurred };
-		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = uniform, Offset = 0, Size = WebGpuDevice.ImageUniformBytes };
-		var bgDesc = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
-		var imageBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgDesc));
+		var entries = stackalloc BindGroupEntry[3];
+		entries[0] = new BindGroupEntry { Binding = 0, TextureView = blurred };
+		entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+		entries[2] = new BindGroupEntry { Binding = 2, Buffer = uniform, Offset = 0, Size = WebGpuDevice.ImageUniformBytes };
+		var bgDesc = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
+		var imageBg = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &bgDesc));
 
 		var verts = MakeBuffer(TexturedQuad(origin, size));
 		var clipBg = MakeClipBg(backdrop.Clip);
 
 		pst.Enc.Pipe(UseDepth ? _d.ImagePipeD : _d.ImagePipe);
-		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 0, pst.PassBg, 0, (uint*)null);
-		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 1, (IntPtr)imageBg, 0, (uint*)null);
-		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 2, (IntPtr)clipBg, 0, (uint*)null);
-		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 3, _d.IdentitySiteBg, 0, (uint*)null);
-		wgpuRenderPassEncoderSetVertexBuffer(pst.Pass, 0, (IntPtr)verts, 0, (nuint)(24 * sizeof(float)));
+		Api.RenderPassEncoderSetBindGroup(pst.Pass, 0, pst.PassBg, 0, null);
+		Api.RenderPassEncoderSetBindGroup(pst.Pass, 1, imageBg, 0, null);
+		Api.RenderPassEncoderSetBindGroup(pst.Pass, 2, clipBg, 0, null);
+		Api.RenderPassEncoderSetBindGroup(pst.Pass, 3, _d.IdentitySiteBg, 0, null);
+		Api.RenderPassEncoderSetVertexBuffer(pst.Pass, 0, verts, 0, (nuint)(24 * sizeof(float)));
 		pst.Enc.Reset();
 		pst.Enc.Draw(6);
 	}
@@ -124,10 +124,10 @@ internal sealed unsafe partial class WebGpuFrame
 		var clipBg = MakeClipBg(backdrop.Clip);
 
 		pst.Enc.Pipe(UseDepth ? _d.SolidPipeD : _d.SolidPipe);
-		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 0, pst.PassBg, 0, (uint*)null);
-		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 1, (IntPtr)clipBg, 0, (uint*)null);
-		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 3, _d.IdentitySiteBg, 0, (uint*)null);
-		wgpuRenderPassEncoderSetVertexBuffer(pst.Pass, 0, (IntPtr)buf, 0, (nuint)(6 * VertexStride.Solid * sizeof(float)));
+		Api.RenderPassEncoderSetBindGroup(pst.Pass, 0, pst.PassBg, 0, null);
+		Api.RenderPassEncoderSetBindGroup(pst.Pass, 1, clipBg, 0, null);
+		Api.RenderPassEncoderSetBindGroup(pst.Pass, 3, _d.IdentitySiteBg, 0, null);
+		Api.RenderPassEncoderSetVertexBuffer(pst.Pass, 0, buf, 0, (nuint)(6 * VertexStride.Solid * sizeof(float)));
 		pst.Enc.Reset();
 		pst.Enc.Draw(6);
 	}
@@ -181,33 +181,45 @@ internal sealed unsafe partial class WebGpuFrame
 				count += nx.Count; oi++;
 			}
 
-			var (pipe, stride) = op.Kind switch
+			var pipe = op.Kind switch
 			{
-				DrawKind.Solid => (UseDepth ? _d.SolidPipeD : _d.SolidPipe, VertexStride.Solid),
-				DrawKind.RoundedRect => (UseDepth ? _d.RrPipeD : _d.RrPipe, VertexStride.RoundedRect),
-				DrawKind.Image => (UseDepth ? _d.ImagePipeD : _d.ImagePipe, VertexStride.Quad),
-				DrawKind.Mask => (UseDepth ? _d.ImageDstInPipeD : _d.ImageDstInPipe, VertexStride.Quad),
-				_ => (UseDepth ? _d.GradientPipeD : _d.GradientPipe, VertexStride.Quad),
+				DrawKind.Solid => UseDepth ? _d.SolidPipeD : _d.SolidPipe,
+				DrawKind.RoundedRect => UseDepth ? _d.RrPipeD : _d.RrPipe,
+				DrawKind.Image => UseDepth ? _d.ImagePipeD : _d.ImagePipe,
+				DrawKind.Mask => UseDepth ? _d.ImageDstInPipeD : _d.ImageDstInPipe,
+				_ => UseDepth ? _d.GradientPipeD : _d.GradientPipe,
 			};
-			var (buf, bytes) = op.SharesBuffer ? SharedBuffer(op.Kind, ref pst) : (op.Verts, (nuint)((op.FirstVertex + count) * stride * sizeof(float)));
+			var stride = op.Kind switch
+			{
+				DrawKind.Solid => VertexStride.Solid,
+				DrawKind.RoundedRect => VertexStride.RoundedRect,
+				_ => VertexStride.Quad,
+			};
+			Buffer* buf;
+			nuint bytes;
+			if (op.SharesBuffer) { buf = SharedBuffer(op.Kind, ref pst, out bytes); }
+			else { buf = (Buffer*)op.Verts; bytes = (nuint)((op.FirstVertex + count) * stride * sizeof(float)); }
 			pst.Enc.Pipe(pipe);
 			pst.Enc.Bg(0, pst.PassBg);
-			if (op.Group1 != IntPtr.Zero) { pst.Enc.Bg(1, op.Group1); pst.Enc.Bg(2, op.ClipBg); }
+			if (op.Group1 != null) { pst.Enc.Bg(1, op.Group1); pst.Enc.Bg(2, op.ClipBg); }
 			else { pst.Enc.Bg(1, op.ClipBg); }
-			pst.Enc.Bg(3, op.SiteBg != IntPtr.Zero ? op.SiteBg : _d.IdentitySiteBg);
+			pst.Enc.Bg(3, op.SiteBg != null ? op.SiteBg : _d.IdentitySiteBg);
 			pst.Enc.Vb(buf, 0, bytes);
 			pst.Enc.Draw(count, op.FirstVertex);
 		}
 	}
 
 	// The pass's shared vertex buffer for a kind, bound whole so a run of its ops binds it once.
-	private static (IntPtr Buf, nuint Bytes) SharedBuffer(DrawKind kind, ref PassOps pst) => kind switch
+	private static Buffer* SharedBuffer(DrawKind kind, ref PassOps pst, out nuint bytes)
 	{
-		DrawKind.Solid => (pst.SolidBuf, pst.SolidBufBytes),
-		DrawKind.RoundedRect => (pst.RrectBuf, pst.RrectBufBytes),
-		DrawKind.Gradient => (pst.GradBuf, pst.GradBufBytes),
-		_ => (pst.QuadBuf, pst.QuadBufBytes),
-	};
+		switch (kind)
+		{
+			case DrawKind.Solid: bytes = pst.SolidBufBytes; return pst.SolidBuf;
+			case DrawKind.RoundedRect: bytes = pst.RrectBufBytes; return pst.RrectBuf;
+			case DrawKind.Gradient: bytes = pst.GradBufBytes; return pst.GradBuf;
+			default: bytes = pst.QuadBufBytes; return pst.QuadBuf;
+		}
+	}
 
 	/// <summary>
 	/// Dumps the frame's encode counters (<c>UNO_WEBGPU_STATS=1</c>, every 60th frame) and clears them: how much got

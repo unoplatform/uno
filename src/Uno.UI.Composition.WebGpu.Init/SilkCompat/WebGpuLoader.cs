@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace Uno.WebGpu.Native;
+namespace Uno.UI.Composition.WebGpu.SilkCompat;
 
 internal static class WebGpuLoader
 {
@@ -29,7 +29,20 @@ internal static class WebGpuLoader
 	}
 #pragma warning restore CA2255
 
+	/// <summary>The library the "webgpu" [DllImport]s bound to, once one has been called.</summary>
+	internal static IntPtr Resolved { get; private set; }
+
 	private static IntPtr Resolve(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+	{
+		var handle = ResolveCore(libraryName);
+		if (handle != IntPtr.Zero)
+		{
+			Resolved = handle;
+		}
+		return handle;
+	}
+
+	private static IntPtr ResolveCore(string libraryName)
 	{
 		if (libraryName != "webgpu")
 		{

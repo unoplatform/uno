@@ -8,8 +8,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
 using Uno.UI.Composition.Drawing;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Effects.Interop;
@@ -77,9 +76,9 @@ public sealed partial class WebGpuDrawingFactory
 		int w = Math.Max(bg.PixelWidth, fg.PixelWidth), h = Math.Max(bg.PixelHeight, fg.PixelHeight);
 		var surface = new WebGpuRenderSurface(_device, w, h, "offscreen-effect1");
 		new WebGpuFrame(_device, surface).Effects.BlendInto(bg, fg, shaderMode);
-		var (tex, view) = surface.DetachColor();
+		var texture = surface.DetachTexture(_device);
 		surface.Dispose();
-		return new WebGpuTexture(_device, tex, view, w, h);
+		return texture;
 	}
 
 	// out = k0*A + k1*B + k2*(A*B) + k3 (or A masked by B's alpha) into a fresh offscreen texture.
@@ -88,18 +87,18 @@ public sealed partial class WebGpuDrawingFactory
 		int w = Math.Max(a.PixelWidth, b.PixelWidth), h = Math.Max(a.PixelHeight, b.PixelHeight);
 		var surface = new WebGpuRenderSurface(_device, w, h, "offscreen-effect2");
 		new WebGpuFrame(_device, surface).Effects.CombineInto(a, b, k0, k1, k2, k3, alphaMask);
-		var (tex, view) = surface.DetachColor();
+		var texture = surface.DetachTexture(_device);
 		surface.Dispose();
-		return new WebGpuTexture(_device, tex, view, w, h);
+		return texture;
 	}
 
 	private ITexture RunNoise(int w, int h, System.Numerics.Vector2 freq, System.Numerics.Vector2 offset)
 	{
 		var surface = new WebGpuRenderSurface(_device, w, h, "offscreen-effect3");
 		new WebGpuFrame(_device, surface).Effects.NoiseInto(freq.X, freq.Y, offset.X, offset.Y, w, h);
-		var (tex, view) = surface.DetachColor();
+		var texture = surface.DetachTexture(_device);
 		surface.Dispose();
-		return new WebGpuTexture(_device, tex, view, w, h);
+		return texture;
 	}
 
 	private WebGpuTexture Blur(WebGpuTexture src, float sigmaX, float sigmaY)
@@ -107,9 +106,9 @@ public sealed partial class WebGpuDrawingFactory
 		int w = src.PixelWidth, h = src.PixelHeight;
 		var surface = new WebGpuRenderSurface(_device, w, h, "offscreen-effect4");
 		new WebGpuFrame(_device, surface).Effects.BlurInto(src, sigmaX, sigmaY);
-		var (tex, view) = surface.DetachColor();
+		var texture = surface.DetachTexture(_device);
 		surface.Dispose();
-		return new WebGpuTexture(_device, tex, view, w, h);
+		return texture;
 	}
 
 	// Contrast / GammaTransfer: a per-channel function of one input.
@@ -118,9 +117,9 @@ public sealed partial class WebGpuDrawingFactory
 		int w = src.PixelWidth, h = src.PixelHeight;
 		var surface = new WebGpuRenderSurface(_device, w, h, "offscreen-effect5");
 		new WebGpuFrame(_device, surface).Effects.ColorFuncInto(src, u20);
-		var (tex, view) = surface.DetachColor();
+		var texture = surface.DetachTexture(_device);
 		surface.Dispose();
-		return new WebGpuTexture(_device, tex, view, w, h);
+		return texture;
 	}
 
 	// General evaluator for NON-backdrop trees (leaves + colour-matrix + blur + blend/composite + Unsupported→source).

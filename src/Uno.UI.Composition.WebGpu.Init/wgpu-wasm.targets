@@ -1,15 +1,14 @@
 <Project>
 	<!-- Links Dawn's emdawnwebgpu (modern webgpu.h ABI) into a Microsoft.NET.Sdk.WebAssembly app so the WebGPU
 	     backend's [DllImport("webgpu")] resolves in the browser. Import from any Skia-on-WASM app head that
-	     renders with the WebGPU backend. The generated binding (Native/WebGpuInterop.cs) is shared with desktop;
-	     the 18 wgpu-native-only functions Dawn lacks are satisfied by Native/wgpu_wasm_stubs.c (never called on
-	     WASM). Requires the SkiaSharp-proven library_webgpu.js patch to load under the .NET-pinned Emscripten. -->
+	     renders with the WebGPU backend. The generated binding (SilkCompat.Native.Generated.cs) is shared with desktop;
+	     wgpu-native's own functions are bound at run time rather than imported, so the link needs nothing Dawn
+	     lacks. Requires the SkiaSharp-proven library_webgpu.js patch to load under the .NET-pinned Emscripten. -->
 	<PropertyGroup>
 		<EmdawnTag>v20260624.223603</EmdawnTag>
 		<EmdawnCacheDir>$(MSBuildThisFileDirectory)obj\emdawnwebgpu\$(EmdawnTag)\</EmdawnCacheDir>
 		<EmdawnPkgDir>$(EmdawnCacheDir)emdawnwebgpu_pkg\</EmdawnPkgDir>
 		<UnoWebGpuPortDir>$(EmdawnPkgDir)</UnoWebGpuPortDir>
-		<UnoWebGpuStubPath>$(MSBuildThisFileDirectory)Native\wgpu_wasm_stubs.c</UnoWebGpuStubPath>
 		<!-- A writable emcc cache (a copy of the SDK's) so emcc can build the port + its extra stdlibs; pointing
 		     WasmCachePath off the SDK's default dir makes the SDK pass EM_FROZEN_CACHE=0 (BrowserWasmApp.targets).
 		     On Windows this is relocated next to the SDK cache (see _AnchorWgpuWasmCacheToToolchainDrive below);
@@ -35,12 +34,11 @@
 				// Two helpers grafted onto Module: importJsDevice (JS-created device -> C handle) and jsObject
 				// (resolve a wgpu handle ptr back to its JS object, so managed code can mapAsync a readback buffer
 				// off the event loop — the in-WASM DevicePoll busy-spin can't yield for the map to complete).
-				// importTexture/importTextureView let the browser context create the offscreen resolve target in JS
-				// (jsDevice.createTexture) — JS-primary, symmetric with the JS-created device — then import both into the
-				// C handle table for present, while the JS GPUTextureView crosses the seam as IWebGpuRenderTarget.JsColorView.
+				// importTexture lets the browser context create the offscreen resolve target in JS (jsDevice.createTexture),
+				// symmetric with the JS-created device, then import it into the C handle table.
 				if (!patched.Contains("unoWebGpuImportDevice")) {
 					patched = patched.Replace("$WebGPU__deps: [],",
-						"$WebGPU__deps: [],\n  $WebGPU__postset: \"Module['unoWebGpuImportDevice'] = function(d, p) { return WebGPU.importJsDevice(d, p); }; Module['unoWebGpuJsObject'] = function(p) { return WebGPU.Internals.jsObjects[p]; }; Module['unoWebGpuImportTexture'] = function(t, p) { return WebGPU.importJsTexture(t, p); }; Module['unoWebGpuImportTextureView'] = function(v, p) { return WebGPU.importJsTextureView(v, p); };\",");
+						"$WebGPU__deps: [],\n  $WebGPU__postset: \"Module['unoWebGpuImportDevice'] = function(d, p) { return WebGPU.importJsDevice(d, p); }; Module['unoWebGpuJsObject'] = function(p) { return WebGPU.Internals.jsObjects[p]; }; Module['unoWebGpuImportTexture'] = function(t, p) { return WebGPU.importJsTexture(t, p); };\",");
 				} else {
 					if (!patched.Contains("unoWebGpuJsObject")) {
 						patched = patched.Replace("return WebGPU.importJsDevice(d, p); };",
@@ -48,7 +46,7 @@
 					}
 					if (!patched.Contains("unoWebGpuImportTexture'")) {
 						patched = patched.Replace("return WebGPU.Internals.jsObjects[p]; };",
-							"return WebGPU.Internals.jsObjects[p]; }; Module['unoWebGpuImportTexture'] = function(t, p) { return WebGPU.importJsTexture(t, p); }; Module['unoWebGpuImportTextureView'] = function(v, p) { return WebGPU.importJsTextureView(v, p); };");
+							"return WebGPU.Internals.jsObjects[p]; }; Module['unoWebGpuImportTexture'] = function(t, p) { return WebGPU.importJsTexture(t, p); };");
 					}
 				}
 				if (patched != text) { System.IO.File.WriteAllText(File, patched); }

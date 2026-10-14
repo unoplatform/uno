@@ -5,8 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 using WColor = Windows.UI.Color;
@@ -17,6 +16,7 @@ internal sealed unsafe partial class WebGpuCoverage
 {
 	private readonly WebGpuFrame _f;
 	private readonly WebGpuDevice _d;
+	private WebGPU Api => _d.Api;
 
 	internal WebGpuCoverage(WebGpuFrame f, WebGpuDevice d)
 	{
@@ -39,7 +39,7 @@ internal sealed unsafe partial class WebGpuCoverage
 
 	// A clip's path masks: one mask entry per path (its slot in View), so nesting has no limit and no product bake. All
 	// of one clip's masks live in ONE texture, the single mask binding a draw has.
-	internal struct MaskSet { public IntPtr View; public ClipEntry[] Entries; }
+	internal struct MaskSet { public TextureView* View; public ClipEntry[] Entries; }
 
 	// Per frame. Keyed on the composed path list AND the owning bag: the list is shared by every command under
 	// one clip (ClipCompose memoizes it), so a clip is baked once per frame; the bag is part of the key because a
@@ -123,7 +123,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		if (!(owned is null && TryReserveSheetSlots(rects, pos, out var batch)))
 		{
 			PackOwn(rects, pos, out var tw, out var th);
-			var (view, tex) = NewMaskTexture(tw, th);
+			var view = NewMaskTexture(tw, th, out var tex);
 			if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
 			else { _d.DeferTextureRelease(view, tex); }
 			batch = BatchFor(view, tw, th, load: false);
@@ -141,19 +141,19 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	// A w x h mask in the device's swapchain format, which is what the resolve pipelines target -- not DefaultColorFormat.
-	internal (IntPtr view, IntPtr tex) NewMaskTexture(int w, int h)
+	internal TextureView* NewMaskTexture(int w, int h, out Texture* tex)
 	{
-		var td = new WGPUTextureDescriptor
+		var td = new TextureDescriptor
 		{
-			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
+			Size = new Extent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
 			Format = _d.ColorFormat,
 			MipLevelCount = 1,
 			SampleCount = 1,
-			Dimension = WGPUTextureDimension._2D,
-			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
+			Dimension = TextureDimension.Dimension2D,
+			Usage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding,
 		};
-		var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
-		return (wgpuTextureCreateView(tex, null), tex);
+		tex = Api.DeviceCreateTexture(_d.Dev, &td);
+		return Api.TextureCreateView(tex, null);
 	}
 
 	internal static int FillMasksBaked, FillMaskHits;
@@ -187,7 +187,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		}
 
 		// A per-frame fill goes on the frame's sheet and samples its slot; a cached recording's gets a texture of its own.
-		IntPtr view; var uv = new Vector4(0f, 0f, 1f, 1f);
+		TextureView* view; var uv = new Vector4(0f, 0f, 1f, 1f);
 		var origin = new Vector2((ox + 1) / scale.X, (oy + 1) / scale.Y) - pf.Offset;
 		if (owned is null && TryReserveSheetSlot(w, h, out var sheet, out var sx, out var sy))
 		{
@@ -197,7 +197,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		}
 		else
 		{
-			(view, var tex) = NewMaskTexture(w, h);
+			view = NewMaskTexture(w, h, out var tex);
 			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, shape.Edges, origin, scale, pf.EvenOdd);
 			if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
 			else { _d.DeferTextureRelease(view, tex); }
@@ -208,7 +208,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		// draw an atlas entry uses, so it coalesces and re-stamps like one.
 		var clip = WithCoverage(pf.Clip, view, filtered);
 		var q = CoverageQuad(new Vector2(ox / scale.X, oy / scale.Y), new Vector2(w / scale.X, h / scale.Y), pf.Color, uv);
-		op = DrawOp.Own(DrawKind.Solid, _f.Vbuf(q, VertexStride.Solid, owned), 6, IntPtr.Zero, clip, _f.MakeClipBg(clip, owned));
+		op = DrawOp.Own(DrawKind.Solid, _f.Vbuf(q, VertexStride.Solid, owned), 6, null, clip, _f.MakeClipBg(clip, owned));
 		return true;
 	}
 }
