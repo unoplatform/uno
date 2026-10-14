@@ -392,7 +392,8 @@ public class Given_ContainerVisual
 		var expected = CreateVisualSurfaceHost(flattensZ: false, projective);
 		await UITestHelper.Load(new StackPanel { Children = { flattened, expected } });
 
-		await AssertRendersLike(flattened, expected, Colors.Red, Colors.Blue);
+		// Under perspective the two paths round the matrix differently, which can shift an antialiased edge by a level.
+		await AssertRendersLike(flattened, expected, tolerance: projective ? (byte)2 : (byte)0, Colors.Red, Colors.Blue);
 	}
 
 	// A collapsed container keeps its recording when its own transform changes, so the recording can't depend on the
@@ -430,7 +431,10 @@ public class Given_ContainerVisual
 		await AssertRendersLike(flattenedRedirect, expectedRedirect, Colors.Red);
 	}
 
-	private static async Task AssertRendersLike(FrameworkElement actual, FrameworkElement expected, params Color[] colors)
+	private static Task AssertRendersLike(FrameworkElement actual, FrameworkElement expected, params Color[] colors)
+		=> AssertRendersLike(actual, expected, tolerance: 0, colors);
+
+	private static async Task AssertRendersLike(FrameworkElement actual, FrameworkElement expected, byte tolerance, params Color[] colors)
 	{
 		var expectedScreenshot = await UITestHelper.ScreenShot(expected);
 		foreach (var color in colors)
@@ -438,7 +442,7 @@ public class Given_ContainerVisual
 			AssertHasColor(expectedScreenshot, color);
 		}
 
-		await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(actual), expectedScreenshot);
+		await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(actual), expectedScreenshot, tolerance);
 	}
 
 	// The reference must render, or two blank screenshots would compare equal.
