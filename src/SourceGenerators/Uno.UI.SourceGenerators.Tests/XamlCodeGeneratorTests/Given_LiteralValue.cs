@@ -119,4 +119,48 @@ public class Given_LiteralValue
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task When_Object_Property_With_Line_Separators()
+	{
+		// Valid in verbatim literals but CS1010 in regular ones.
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<StackPanel>
+					<Border Tag="a&#x2028;b" />
+					<Border Tag="a&#x2029;b" />
+					<Border Tag="a&#x85;b" />
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			},
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }
