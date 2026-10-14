@@ -10,7 +10,7 @@
 		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>4.151.1</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>14.2.1.1</HarfbuzzSharpVersion>
-		<UnoICUVersion>77.3.0-dev.4</UnoICUVersion>
+		<UnoICUVersion>77.3.2</UnoICUVersion>
 		<!-- Uno.icu-tvos was introduced after that line and only ships 77.4.0-dev.1, which in turn
 		     is not published for -wasm/-win. Same ICU major, so the _77 symbol suffix still matches.
 		     Fold this back into UnoICUVersion once one version exists for every platform. -->
@@ -50,7 +50,7 @@
 		<PackageVersion Include="IdentityModel.OidcClient" Version="6.0.0" />
 		<PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
 		<PackageVersion Include="LibVLCSharp" Version="3.9.7.1" />
-		<PackageVersion Include="MessagePack" Version="3.1.7" />
+		<PackageVersion Include="MessagePack" Version="3.1.12" />
 		<PackageVersion Include="Microsoft.AppCenter" Version="5.0.3" />
 		<PackageVersion Include="Microsoft.Bcl.TimeProvider" Version="9.0.9" />
 		<PackageVersion Include="Microsoft.Build" Version="18.7.1" />
@@ -87,10 +87,6 @@
 		<PackageVersion Include="Microsoft.Kiota.Abstractions" Version="1.22.2" />
 		<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
 		<PackageVersion Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.9" />
-		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
-		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
-		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
-		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
 		<PackageVersion Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
 		<PackageVersion Include="Microsoft.Testing.Extensions.HangDump" Version="$(MicrosoftTestingPlatformVersion)" />
 		<PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="$(MicrosoftTestingPlatformVersion)" />
@@ -104,7 +100,7 @@
 		<PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28" />
 		<PackageVersion Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
 		<PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
-		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="11.0.0-rc.1.26425.128" />
+		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="11.0.0-rc.2.26504.105" />
 		<PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
 		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
 		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.6.0" />
