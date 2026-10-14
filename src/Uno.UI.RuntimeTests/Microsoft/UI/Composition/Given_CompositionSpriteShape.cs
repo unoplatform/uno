@@ -31,6 +31,19 @@ public class Given_CompositionSpriteShape
 #if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25351")]
+	public async Task When_Default_StrokeMiterLimit()
+	{
+		var anchor = new Border { Width = 1, Height = 1 };
+		await UITestHelper.Load(anchor);
+		var compositor = ElementCompositionPreview.GetElementVisual(anchor).Compositor;
+		var shape = compositor.CreateSpriteShape();
+
+		Assert.AreEqual(1f, shape.StrokeMiterLimit);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Using_Path()
 	{
 		Vector2 scale = new(200f / 570f);
