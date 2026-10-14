@@ -136,30 +136,44 @@ public partial class ContainerVisual : Visual
 		}
 
 		source = rect;
-		if (isAncestorClip && GetChildToParentTransform() is { IsIdentity: false } matrix)
+		if (isAncestorClip)
 		{
-			if (matrix.M12 != 0 || matrix.M21 != 0)
+			if (GetChildToParentTransform() is not { } matrix)
 			{
-				mapping = matrix;
+				// This visual's own transform collapses it onto a line, so none of it is inside the clip.
+				return new Rect();
 			}
 
-			rect = rect.Transform(matrix);
+			if (!matrix.IsIdentity)
+			{
+				if (matrix.M12 != 0 || matrix.M21 != 0)
+				{
+					mapping = matrix;
+				}
+
+				rect = rect.Transform(matrix);
+			}
 		}
 
 		return rect;
 	}
 
-	private Matrix3x2 GetChildToParentTransform()
+	private Matrix3x2? GetChildToParentTransform()
 	{
-		var parentTotalMatrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
 		if (Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted))
 		{
-			return (parentTotalMatrix * totalMatrixInverted).ToMatrix3x2();
+			return ((Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted).ToMatrix3x2();
 		}
 
-		// A TotalMatrix that flattens Z has no inverse, but its 2D part, which is all the clip uses, can still have one.
-		Matrix3x2.Invert(TotalMatrix.ToMatrix3x2(), out var inverted2D);
-		return parentTotalMatrix.ToMatrix3x2() * inverted2D;
+		// A TotalMatrix that flattens Z has no inverse. The mapping is this visual's own transform inverted, which has
+		// one when the flattening comes from an ancestor; when it is its own, the 2D part the clip uses can still have one.
+		var localMatrix = LocalMatrix;
+		if (Matrix4x4.Invert(localMatrix, out var localMatrixInverted))
+		{
+			return localMatrixInverted.ToMatrix3x2();
+		}
+
+		return Matrix3x2.Invert(localMatrix.ToMatrix3x2(), out var inverted2D) ? inverted2D : null;
 	}
 
 	/// <summary>The arrange clip as a shape, which a rotated ancestor clip needs: its bounding box would let

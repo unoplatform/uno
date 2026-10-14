@@ -313,7 +313,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	// TotalMatrix without the parent's: this visual's own transform and position within its parent.
-	private Matrix4x4 LocalMatrix => GetTransform() * GetOffsetMatrix();
+	private protected Matrix4x4 LocalMatrix => GetTransform() * GetOffsetMatrix();
 
 	// The transforms between an ancestor and this visual, composed from their local matrices. This exists even when the
 	// ancestor's TotalMatrix flattens Z and has no inverse to take back out of this visual's.
