@@ -515,12 +515,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			var totalOffset = GetTotalOffset();
 			var translation = Matrix4x4.Identity with { M41 = -(offset.X + totalOffset.X + AnchorPoint.X), M42 = -(offset.Y + totalOffset.Y + AnchorPoint.Y) };
-			if (relativeTo is not null && Matrix3x2.Invert(relativeTo.TotalMatrix.ToMatrix3x2(), out var parentToLocal))
+			if (relativeTo is not null)
 			{
-				// The invertible path applies the translation between the parent's transform and its inverse; through the
-				// parent's 2D part, that is the same translation taken into the parent's space.
-				var moved = Vector2.TransformNormal(new Vector2(translation.M41, translation.M42), parentToLocal);
-				translation = translation with { M41 = moved.X, M42 = moved.Y };
+				// The invertible path puts the translation between the parent's transform and its inverse. With Z kept apart
+				// from X, Y and W, that doesn't depend on M33: the parent with an identity Z part gives it, perspective included.
+				var planarParent = relativeTo.TotalMatrix with { M13 = 0, M23 = 0, M43 = 0, M31 = 0, M32 = 0, M34 = 0, M33 = 1 };
+				if (Matrix4x4.Invert(planarParent, out var invertedPlanarParent))
+				{
+					translation = planarParent * translation * invertedPlanarParent;
+				}
 			}
 
 			initialTransform = translation * initialTransform;
