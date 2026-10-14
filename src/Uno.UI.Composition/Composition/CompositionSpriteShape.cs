@@ -13,7 +13,7 @@ namespace Microsoft.UI.Composition
 		// AnimatedChevronUpDownSmallVisualSource that don't set StrokeThickness explicitly).
 		private float _strokeThickness = 1.0f;
 		private CompositionStrokeCap _strokeStartCap;
-		private float _strokeMiterLimit;
+		private float _strokeMiterLimit = 1.0f;
 		private CompositionStrokeLineJoin _strokeLineJoin;
 		private CompositionStrokeCap _strokeEndCap;
 		private float _strokeDashOffset;
