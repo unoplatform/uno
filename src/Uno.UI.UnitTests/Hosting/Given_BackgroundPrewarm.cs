@@ -10,7 +10,7 @@ namespace Uno.UI.Tests.Hosting;
 /// Tests for <see cref="BackgroundPrewarm{T}"/>, which starts the Win32 Vulkan device creation off the UI thread
 /// and hands it to the first window (the Vulkan calls themselves need a real driver).
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_BackgroundPrewarm
 {
 	private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
