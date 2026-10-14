@@ -147,19 +147,29 @@ internal static class GraphicsRegistry
 				backends = _backends;
 			}
 
-			var disabledKinds = DisabledContextKinds;
-			foreach (var backend in backends)
+			foreach (var (_, kind, isDisabled) in EnumerateCandidates(backends, DisabledContextKinds))
 			{
-				foreach (var kind in backend.PreferredContexts)
+				if (!isDisabled)
 				{
-					if (!disabledKinds.Contains(kind))
-					{
-						return kind;
-					}
+					return kind;
 				}
 			}
 
 			return null;
+		}
+	}
+
+	// The negotiation order, shared so FirstCandidateKind cannot drift from what InitializeAsync tries.
+	private static IEnumerable<(IGraphicsProvider Backend, GraphicsContextKind Kind, bool IsDisabled)> EnumerateCandidates(
+		IReadOnlyList<IGraphicsProvider> backends,
+		IReadOnlyCollection<GraphicsContextKind> disabledKinds)
+	{
+		foreach (var backend in backends)
+		{
+			foreach (var kind in backend.PreferredContexts)
+			{
+				yield return (backend, kind, disabledKinds.Contains(kind));
+			}
 		}
 	}
 
@@ -196,74 +206,70 @@ internal static class GraphicsRegistry
 			?? throw new InvalidOperationException(
 				"No host graphics context factory set. The host must set GraphicsRegistry.ContextFactory before initializing.");
 
-		var disabledKinds = DisabledContextKinds;
 		var attempts = new StringBuilder();
-		foreach (var backend in backends)
+		foreach (var (backend, kind, isDisabled) in EnumerateCandidates(backends, DisabledContextKinds))
 		{
-			foreach (var kind in backend.PreferredContexts)
+			if (isDisabled)
 			{
-				if (disabledKinds.Contains(kind))
-				{
-					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: excluded by the host builder");
-					continue;
-				}
+				attempts.Append($"\n  - {backend.GetType().Name}/{kind}: excluded by the host builder");
+				continue;
+			}
 
-				ISwapChain? context;
-				try
+			ISwapChain? context;
+			try
+			{
+				// The host creates the window+context for this kind (or null to decline). WebGpu/Vulkan redirect
+				// to a shared GPU-API helper inside the host; GL/software are the host's own.
+				context = await factory(kind).ConfigureAwait(true);
+			}
+			catch (Exception e)
+			{
+				attempts.Append($"\n  - {backend.GetType().Name}/{kind}: context factory threw ({e.GetType().Name})");
+				if (typeof(GraphicsRegistry).Log().IsEnabled(LogLevel.Debug))
 				{
-					// The host creates the window+context for this kind (or null to decline). WebGpu/Vulkan redirect
-					// to a shared GPU-API helper inside the host; GL/software are the host's own.
-					context = await factory(kind).ConfigureAwait(true);
+					typeof(GraphicsRegistry).Log().Debug($"Graphics negotiation: {backend.GetType().Name}/{kind} context factory threw: {e}");
 				}
-				catch (Exception e)
-				{
-					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: context factory threw ({e.GetType().Name})");
-					if (typeof(GraphicsRegistry).Log().IsEnabled(LogLevel.Debug))
-					{
-						typeof(GraphicsRegistry).Log().Debug($"Graphics negotiation: {backend.GetType().Name}/{kind} context factory threw: {e}");
-					}
-					continue;
-				}
+				continue;
+			}
 
-				if (context is null)
-				{
-					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: host declined (kind unavailable or opted out)");
-					continue;
-				}
+			if (context is null)
+			{
+				attempts.Append($"\n  - {backend.GetType().Name}/{kind}: host declined (kind unavailable or opted out)");
+				continue;
+			}
 
-				try
+			try
+			{
+				// Narrow the context to the device face this kind implies and hand it to the matching typed
+				// provider. Null when the backend doesn't implement that instantiation → decline.
+				var backendFactory = CreateGraphics(kind, backend, context);
+				if (backendFactory is null)
 				{
-					// Narrow the context to the device face this kind implies and hand it to the matching typed
-					// provider. Null when the backend doesn't implement that instantiation → decline.
-					var backendFactory = CreateGraphics(kind, backend, context);
-					if (backendFactory is null)
-					{
-						attempts.Append($"\n  - {backend.GetType().Name}/{kind}: backend does not implement IGraphicsProvider<T> for this kind");
-						context.Dispose();
-						continue;
-					}
-
-					// Capability gate: the backend must also implement the typed IDrawingFactory<TTarget> matching
-					// this kind, else it could win a kind it can't present (crashing at the first frame).
-					if (!CanPresent(kind, backendFactory))
-					{
-						attempts.Append($"\n  - {backend.GetType().Name}/{kind}: backend does not implement IDrawingFactory<T> for this kind");
-						(backendFactory as IDisposable)?.Dispose();
-						context.Dispose();
-						continue;
-					}
-
-					if (typeof(GraphicsRegistry).Log().IsEnabled(LogLevel.Information))
-					{
-						typeof(GraphicsRegistry).Log().Info($"Graphics backend '{backend.GetType().Name}' won negotiation on context kind '{kind}'.");
-					}
-					return new GraphicsInitialization(backend, context, backendFactory);
-				}
-				catch (Exception e)
-				{
-					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: CreateGraphics threw ({e.GetType().Name}: {e.Message})");
+					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: backend does not implement IGraphicsProvider<T> for this kind");
 					context.Dispose();
+					continue;
 				}
+
+				// Capability gate: the backend must also implement the typed IDrawingFactory<TTarget> matching
+				// this kind, else it could win a kind it can't present (crashing at the first frame).
+				if (!CanPresent(kind, backendFactory))
+				{
+					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: backend does not implement IDrawingFactory<T> for this kind");
+					(backendFactory as IDisposable)?.Dispose();
+					context.Dispose();
+					continue;
+				}
+
+				if (typeof(GraphicsRegistry).Log().IsEnabled(LogLevel.Information))
+				{
+					typeof(GraphicsRegistry).Log().Info($"Graphics backend '{backend.GetType().Name}' won negotiation on context kind '{kind}'.");
+				}
+				return new GraphicsInitialization(backend, context, backendFactory);
+			}
+			catch (Exception e)
+			{
+				attempts.Append($"\n  - {backend.GetType().Name}/{kind}: CreateGraphics threw ({e.GetType().Name}: {e.Message})");
+				context.Dispose();
 			}
 		}
 
