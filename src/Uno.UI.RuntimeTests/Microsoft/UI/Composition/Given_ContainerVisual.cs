@@ -1,4 +1,5 @@
 #if __SKIA__
+using System;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -246,6 +247,7 @@ public class Given_ContainerVisual
 	[DataRow(true, true)]
 	public async Task When_Children_Under_Flattening_Transform(bool collapse, bool commandList)
 	{
+		using var _ = UITestHelper.ResetWindowContent();
 		var forceFallbackRetainedRendering = global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering;
 		try
 		{
@@ -276,6 +278,7 @@ public class Given_ContainerVisual
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
 	public async Task When_Redirect_Source_Under_Flattening_Transform()
 	{
+		using var _ = UITestHelper.ResetWindowContent();
 		var flattened = CreateScaledSquares(flattensZ: true, collapse: false);
 		var expected = CreateScaledSquares(flattensZ: false, collapse: false);
 		var flattenedRedirect = CreateRedirectHost(flattened.OffsetSquare);
@@ -289,6 +292,7 @@ public class Given_ContainerVisual
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
 	public async Task When_Shadow_Fallback_Under_Flattening_Transform()
 	{
+		using var _ = UITestHelper.ResetWindowContent();
 		var flattened = CreateShadowedCard(flattensZ: true);
 		var expected = CreateShadowedCard(flattensZ: false);
 		await UITestHelper.Load(new StackPanel { Children = { flattened, expected } });
@@ -305,11 +309,47 @@ public class Given_ContainerVisual
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
 	public async Task When_Panel_Layout_Clip_Under_Flattening_Transform()
 	{
+		using var _ = UITestHelper.ResetWindowContent();
 		var flattened = CreateClippedPanel(flattensZ: true);
 		var expected = CreateClippedPanel(flattensZ: false);
 		await UITestHelper.Load(new StackPanel { Children = { flattened, expected } });
 
 		await AssertRendersLike(flattened, expected, Colors.Red);
+	}
+
+	// A collapsed container keeps its recording when its own transform changes, so the recording can't depend on the
+	// flattening above it: tilting the container brings back the depth of a child lifted along Z.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
+	// WebGPU composes a replayed recording with its destination in 2D, which drops the depth even without flattening.
+	[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)]
+	public async Task When_Collapsed_Under_Flattening_Transform_Then_Tilted()
+	{
+		using var _ = UITestHelper.ResetWindowContent();
+		var collapsed = CreateLiftedSquare(flattensZ: true, collapse: true);
+		var live = CreateLiftedSquare(flattensZ: true, collapse: false);
+		await UITestHelper.Load(new StackPanel { Children = { collapsed.Host, live.Host } });
+
+		await AssertRendersLike(collapsed.Host, live.Host, Colors.Red);
+
+		collapsed.Container.TransformMatrix = live.Container.TransformMatrix = Matrix4x4.CreateRotationX(MathF.PI / 3);
+		await AssertRendersLike(collapsed.Host, live.Host, Colors.Red);
+	}
+
+	// A redirect draws its source without the source's ancestors, so a parent that flattens Z must not flatten the
+	// source's own depth, which a tilted destination shows.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
+	public async Task When_Redirect_Source_Under_Flattening_Transform_Then_Tilted()
+	{
+		using var _ = UITestHelper.ResetWindowContent();
+		var flattened = CreateLiftedSquare(flattensZ: true, collapse: false);
+		var expected = CreateLiftedSquare(flattensZ: false, collapse: false);
+		var flattenedRedirect = CreateRedirectHost(flattened.Container, tilted: true);
+		var expectedRedirect = CreateRedirectHost(expected.Container, tilted: true);
+		await UITestHelper.Load(new StackPanel { Children = { flattened.Host, expected.Host, flattenedRedirect, expectedRedirect } });
+
+		await AssertRendersLike(flattenedRedirect, expectedRedirect, Colors.Red);
 	}
 
 	private static async Task AssertRendersLike(FrameworkElement actual, FrameworkElement expected, params Color[] colors)
@@ -376,13 +416,66 @@ public class Given_ContainerVisual
 		return (host, container, offsetSquare);
 	}
 
-	private static Border CreateRedirectHost(global::Microsoft.UI.Composition.Visual source)
+	private static Border CreateRedirectHost(global::Microsoft.UI.Composition.Visual source, bool tilted = false)
 	{
 		var redirect = TestServices.WindowHelper.XamlRoot.Compositor.CreateRedirectVisual(source);
 		redirect.Size = new Vector2(100, 100);
+		if (tilted)
+		{
+			redirect.Offset = new Vector3(0, 20, 0);
+			redirect.TransformMatrix = Matrix4x4.CreateRotationX(MathF.PI / 3);
+		}
+
 		var host = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
 		global::Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetElementChildVisual(host, redirect);
 		return host;
+	}
+
+	// A red square lifted 10 along Z, in a container under a 2x scale that flattens Z or not.
+	private static (Border Host, global::Microsoft.UI.Composition.ContainerVisual Container) CreateLiftedSquare(bool flattensZ, bool collapse)
+	{
+		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
+		var scale = compositor.CreateContainerVisual();
+		scale.TransformMatrix = new Matrix4x4(
+			2, 0, 0, 0,
+			0, 2, 0, 0,
+			0, 0, flattensZ ? 0 : 1, 0,
+			10, 10, 0, 1);
+
+		var enable = global::Microsoft.UI.Composition.Visual.EnablePictureCollapsingOptimization;
+		var frameThreshold = global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold;
+		var countThreshold = global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold;
+		global::Microsoft.UI.Composition.ContainerVisual container;
+		try
+		{
+			if (collapse)
+			{
+				// Visuals capture these when created, so only the container collapses.
+				global::Microsoft.UI.Composition.Visual.EnablePictureCollapsingOptimization = true;
+				global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold = 0;
+				global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold = 0;
+			}
+
+			container = compositor.CreateContainerVisual();
+		}
+		finally
+		{
+			global::Microsoft.UI.Composition.Visual.EnablePictureCollapsingOptimization = enable;
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold = frameThreshold;
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold = countThreshold;
+		}
+
+		var square = compositor.CreateSpriteVisual();
+		square.Size = new Vector2(20, 20);
+		square.Offset = new Vector3(10, 20, 0);
+		square.TransformMatrix = Matrix4x4.CreateTranslation(0, 0, 10);
+		square.Brush = compositor.CreateColorBrush(Colors.Red);
+		container.Children.InsertAtTop(square);
+		scale.Children.InsertAtTop(container);
+
+		var host = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
+		global::Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetElementChildVisual(host, scale);
+		return (host, container);
 	}
 
 	// A translucent gradient can't take the analytic shadow, so the card records its subtree for the fallback one.
