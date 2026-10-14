@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+
+		<RootNamespace>Uno.WinUI.Graphics3DWebGpu</RootNamespace>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<Description>WebGpuCanvasElement: draw with your own WebGPU commands inside an Uno Platform app running the WebGPU backend.</Description>
+
+		<Nullable>enable</Nullable>
+		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
+	</PropertyGroup>
+
+	<Import Project="../../targetframework-override.props" />
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" PrivateAssets="all" />
+		<!-- Inheritors render with Silk.NET.WebGPU, through the API the backend hands over at run time. -->
+		<PackageReference Include="Silk.NET.WebGPU" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+</Project>

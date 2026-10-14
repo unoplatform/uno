@@ -545,6 +545,8 @@
               href: controls/Frame.md
             - name: GLCanvasElement
               href: xref:Uno.Controls.GLCanvasElement
+            - name: WebGpuCanvasElement
+              href: xref:Uno.Controls.WebGpuCanvasElement
             - name: Image
               href: xref:Uno.Features.Image
             - name: ListView and GridView
