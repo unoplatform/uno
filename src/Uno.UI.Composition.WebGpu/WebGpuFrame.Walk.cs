@@ -745,6 +745,9 @@ internal sealed unsafe partial class WebGpuFrame
 			// stands -- no per-op work at all, which is the point of the site block.
 			if (siteCarries && !fresh && slot.SiteOps)
 			{
+				// The slot now serves this site: a later site still matching the old placement would rewrite the
+				// uniform these ops read and draw this site there.
+				slot.Xform = rm; slot.Clip = session; slot.Basis = basis; slot.SessionEntries = sessionEntries;
 				slot.Frame = _d.FrameSeq;
 				AppendSite(ops, slot.Ops, rm, session, siteDepth);
 				return;
