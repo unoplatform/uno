@@ -452,16 +452,3 @@ With version 0.14 (and later) you can override the location of `msbuild.exe` by:
 1. Setting the location where your `msbuild.exe` is located
 
 ![settings](Assets/quick-start/vs-code-settings-msbuild.png)
-
-## Hot Reload Errors
-
-### UNOHR0001
-
-The compiler could not produce a Hot Reload update for a change: the C# compiler failed with an exception while emitting the update, instead of reporting the change as unsupported. The DevServer reports it as a rude edit, and the exception is in the DevServer log.
-
-The change was not applied, and the running app is unaffected. Hot Reload stays on the last version it applied, so to keep going:
-
-- Undo the change and save. Hot Reload reports no changes, and the following edits apply as usual.
-- Or restart the app to pick up the change.
-
-A known cause is [dotnet/roslyn#86045](https://github.com/dotnet/roslyn/issues/86045): adding or changing an async lambda that awaits a `dynamic` value. Uno.Extensions MVUX generated such code for commands before [unoplatform/uno.extensions#3227](https://github.com/unoplatform/uno.extensions/issues/3227), so changing a command's parameters could trigger it.
