@@ -73,18 +73,6 @@ namespace Uno.UI.Runtime {
 			return module && typeof module.unoWebGpuJsObject === "function" ? module.unoWebGpuJsObject(handlePtr >>> 0) : null;
 		}
 
-		// Imports a JS GPUDevice into emdawn's handle table and returns its wgpu WGPUDevice pointer.
-		public static importDevice(device: any, instancePtr: number): number {
-			const module = (window as any).Module;
-			if (!module || typeof module.unoWebGpuImportDevice !== "function") {
-				console.error("WebGpuInit.importDevice: Module.unoWebGpuImportDevice is missing");
-				return 0;
-			}
-			const ptr = module.unoWebGpuImportDevice(device, instancePtr) >>> 0;
-			console.log("WebGpuInit: (backend) imported device ptr=" + ptr);
-			return ptr;
-		}
-
 		// Creates the offscreen resolve texture in JS (JS-primary) and imports it into emdawn's handle table.
 		public static createAndImportOffscreenTexture(device: any, width: number, height: number, usage: number): number {
 			const module = (window as any).Module;
@@ -99,16 +87,6 @@ namespace Uno.UI.Runtime {
 				usage: usage >>> 0,
 			});
 			return module.unoWebGpuImportTexture(tex, 0) >>> 0;
-		}
-
-		// Imports a JS GPUTextureView into emdawn's handle table and returns its wgpu view pointer.
-		public static importTextureView(view: any, parentPtr: number): number {
-			const module = (window as any).Module;
-			if (!module || typeof module.unoWebGpuImportTextureView !== "function") {
-				console.error("WebGpuInit.importTextureView: Module.unoWebGpuImportTextureView is missing");
-				return 0;
-			}
-			return module.unoWebGpuImportTextureView(view, parentPtr >>> 0) >>> 0;
 		}
 
 		// Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects it as RGBA8 (rows padded to

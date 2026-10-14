@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Silk.NET.WebGPU;
 
 namespace Uno.UI.Composition.WebGpu;
 
@@ -97,7 +98,8 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// </summary>
 	internal sealed class Page
 	{
-		public IntPtr Texture, View;
+		public Texture* Texture;
+		public TextureView* View;
 		public int W = Size, H = Size;
 		// A page sized to one big entry: never shelf-packed, retired as soon as that entry is freed.
 		public bool Standalone;
@@ -114,7 +116,7 @@ internal sealed unsafe class WebGpuPathAtlas
 
 	public IReadOnlyList<Page> Pages => _pages;
 
-	public Page AddPage(IntPtr texture, IntPtr view)
+	public Page AddPage(Texture* texture, TextureView* view)
 	{
 		var page = new Page { Texture = texture, View = view };
 		_pages.Add(page);
@@ -133,7 +135,7 @@ internal sealed unsafe class WebGpuPathAtlas
 	}
 
 	/// <summary>An entry with a texture of its own: same key, reference count and idle sweep as a page slot.</summary>
-	public Slot AddStandalone(in Key key, int w, int h, float originX, float originY, IntPtr texture, IntPtr view)
+	public Slot AddStandalone(in Key key, int w, int h, float originX, float originY, Texture* texture, TextureView* view)
 	{
 		var page = new Page { Texture = texture, View = view, W = w, H = h, Standalone = true, Live = 1 };
 		_pages.Add(page);

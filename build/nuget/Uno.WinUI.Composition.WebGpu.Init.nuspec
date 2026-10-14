@@ -13,9 +13,13 @@
 		<dependencies>
 			<group targetFramework="net10.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="Silk.NET.WebGPU" version="2.23.0" />
+				<dependency id="Silk.NET.WebGPU.Extensions.WGPU" version="2.23.0" />
 			</group>
 			<group targetFramework="net11.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="Silk.NET.WebGPU" version="2.23.0" />
+				<dependency id="Silk.NET.WebGPU.Extensions.WGPU" version="2.23.0" />
 			</group>
 		</dependencies>
 	</metadata>

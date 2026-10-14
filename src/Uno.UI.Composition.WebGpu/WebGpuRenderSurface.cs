@@ -7,8 +7,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
 using Uno.UI.Composition.Drawing;
 using Windows.Graphics.Effects.Interop;
 using Windows.Foundation;
@@ -21,8 +20,8 @@ namespace Uno.UI.Composition.WebGpu;
 // pass. Not the neutral seam type — that is the host's WebGpuSwapchainTarget.
 internal sealed unsafe class WebGpuRenderSurface
 {
-	public IntPtr Tex;
-	public IntPtr View;              // the colour the pass renders into, sampled afterwards as a layer / coverage / readback source
+	public Texture* Tex;
+	public TextureView* View;        // the colour the pass renders into, sampled afterwards as a layer / coverage / readback source
 	public int Width { get; }
 	public int Height { get; }
 	public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
@@ -30,28 +29,30 @@ internal sealed unsafe class WebGpuRenderSurface
 	// Only the dedicated offscreen owns its colour. A pooled surface's is reclaimed by the pool; a swapchain surface's
 	// is the per-frame acquired image, borrowed from the context, which releases it in Present.
 	private readonly bool _ownsColor;
+	private readonly WebGPU _api;
 
 	public void Dispose()
 	{
 		if (!_ownsColor) { return; }
-		if (View != IntPtr.Zero) { wgpuTextureViewRelease(View); View = IntPtr.Zero; }
-		if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); wgpuTextureRelease(Tex); Tex = IntPtr.Zero; }
+		if (View != null) { _api.TextureViewRelease(View); View = null; }
+		if (Tex != null) { _api.TextureDestroy(Tex); _api.TextureRelease(Tex); Tex = null; }
 	}
 
 	// A dedicated offscreen (RenderOffscreen, effect evaluation): TextureBinding so the result can be sampled, CopySrc
 	// so it can be read back.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, string what = "offscreen")
 	{
+		_api = device.Api;
 		Width = width; Height = height;
 		_ownsColor = true;
-		var td = new WGPUTextureDescriptor
+		var td = new TextureDescriptor
 		{
-			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
+			Size = new Extent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
 			Format = device.ColorFormat,
 			MipLevelCount = 1,
 			SampleCount = 1,
-			Dimension = WGPUTextureDimension._2D,
-			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.CopySrc | WGPUTextureUsage.TextureBinding,
+			Dimension = TextureDimension.Dimension2D,
+			Usage = TextureUsage.RenderAttachment | TextureUsage.CopySrc | TextureUsage.TextureBinding,
 		};
 		if (device.OffscreenPool.TryRent(width, height, out var pooled, out var pooledView))
 		{
@@ -60,30 +61,32 @@ internal sealed unsafe class WebGpuRenderSurface
 			return;
 		}
 
-		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
-		View = wgpuTextureCreateView(Tex, null);
+		Tex = _api.DeviceCreateTexture(device.Dev, &td);
+		View = _api.TextureCreateView(Tex, null);
 	}
 
 	// The main pass: the colour is the acquired swapchain image, set per frame by the factory.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, bool externalColor)
 	{
+		_api = device.Api;
 		Width = width; Height = height;
 	}
 
 	// A transient offscreen (a layer, a sheet) rented from the pool, so a steady-state frame allocates nothing.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, WebGpuTexturePool pool)
 	{
+		_api = device.Api;
 		Width = width; Height = height;
-		View = pool.Rent(width, height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, device.ColorFormat);
+		View = pool.Rent(width, height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding | TextureUsage.CopySrc, device.ColorFormat);
 		Tex = pool.TexForView(View);
 	}
 
 	// Hands the colour to a longer-lived owner (RenderOffscreen -> ITexture); Dispose then has nothing left to release.
-	internal (IntPtr tex, IntPtr view) DetachColor()
+	internal WebGpuTexture DetachTexture(WebGpuDevice device)
 	{
-		var t = Tex; var v = View;
-		Tex = IntPtr.Zero; View = IntPtr.Zero;
-		return (t, v);
+		var texture = new WebGpuTexture(device, Tex, View, Width, Height);
+		Tex = null; View = null;
+		return texture;
 	}
 }
 
