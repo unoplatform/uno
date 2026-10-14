@@ -207,6 +207,8 @@ public class Given_MobileAccessibilityEvents_iOS
 		var button = new Button { Content = "Clear" };
 		await UITestHelper.Load(button);
 		var root = button.XamlRoot!;
+		// The bridge is disabled between tests and only records once a client reads the log.
+		ClearEvents(root);
 
 		AutomationProperties.SetName(button, "Pre-clear");
 		await UITestHelper.WaitForIdle();
