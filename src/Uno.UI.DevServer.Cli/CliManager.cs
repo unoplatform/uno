@@ -75,13 +75,13 @@ internal class CliManager
 					mcpWorkspaceResolution);
 			}
 
-			if (originalArgs is { Length: > 0 } &&
-				string.Equals(originalArgs[0], "app", StringComparison.OrdinalIgnoreCase))
+			// Like Program.IsAppCommand: the global options (--log-level, --file-log) may come before the verb.
+			if (AppCommandHandler.AppVerbIndex(originalArgs) is var appIndex and >= 0)
 			{
 				var appWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
 				var appWorkingDirectory = appWorkspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
 				return await new AppCommandHandler(_logger).RunAsync(
-					originalArgs[1..],
+					originalArgs[(appIndex + 1)..],
 					noStart => EnsureHostAsync(appWorkingDirectory, appWorkspaceResolution.SelectedSolutionPath, noStart));
 			}
 

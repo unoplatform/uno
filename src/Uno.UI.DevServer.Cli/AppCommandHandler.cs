@@ -85,15 +85,20 @@ internal sealed class AppCommandHandler
 		                            The saved path is printed.
 		  --no-start                Never start a DevServer, and do not wait for tools it does not list yet: exit 2 instead.
 		                            For hooks that run on every edit.
+		  --log-level, -l, --file-log, -fl
+		                            Global logging options: before or after the verb, never sent to the tool.
 		  On an App MCP whose element tools take only --elementRef (from `app tree`), --name <x:Name> is resolved
 		  through the visual tree. --automationId cannot be resolved that way.
 
 		Exit codes:
-		  0  The tool succeeded.
-		  1  The tool reported an error; find matched nothing; assert failed; hot-reload-status: the edit is not applied;
-		     wait timed out; the DevServer could not start.
+		  0  The tool succeeded. hot-reload-status --file: nothing left to do (the edit is applied, made no change,
+		     was superseded by a newer operation, or is in a file Hot Reload ignores).
+		  1  The tool reported an error; find matched nothing; assert failed; wait timed out; the DevServer could not start.
+		     hot-reload-status --file: the edit is not applied, or no verdict was reported.
 		  2  Bad arguments; no DevServer with --no-start; the tool is not offered.
-		  3  hot-reload-status: a rude edit, only `app restart` applies it.
+		  3  hot-reload-status --file: a rude edit, only `app restart` applies it.
+		  4  hot-reload-status --file: the edit is still on its way (queued, compiling, or not applied by the app yet):
+		     call again with --waitForMs.
 
 		Examples:
 		  uno-devserver app start --projectPath src/MyApp/MyApp.csproj --targetFramework net10.0-desktop
@@ -146,6 +151,12 @@ internal sealed class AppCommandHandler
 		for (var i = 1; i < args.Length; i++)
 		{
 			var arg = args[i];
+			if (IsGlobalOptionWithValue(arg))
+			{
+				i++; // Already applied by Program: not a tool parameter.
+				continue;
+			}
+
 			if (!arg.StartsWith("--", StringComparison.Ordinal) || arg.Length == 2)
 			{
 				return new AppCommandArgs(toolName, arguments, json, outputFile, noStart, $"Unexpected argument '{arg}'. Tool parameters are passed as --name value.");
@@ -179,6 +190,31 @@ internal sealed class AppCommandHandler
 		return new AppCommandArgs(toolName, arguments, json, outputFile, noStart, null);
 	}
 
+	/// <summary>The global options that take a value, accepted before or after the <c>app</c> verb.</summary>
+	internal static bool IsGlobalOptionWithValue(string arg)
+		=> arg is "--log-level" or "-l" or "--file-log" or "-fl" or "--solution-dir";
+
+	/// <summary>
+	/// The index of the <c>app</c> verb when it is the command, after any global options; -1 otherwise.
+	/// <c>--solution-dir app list</c> is the <c>list</c> command.
+	/// </summary>
+	internal static int AppVerbIndex(string[] args)
+	{
+		for (var i = 0; i < args.Length; i++)
+		{
+			if (IsGlobalOptionWithValue(args[i]))
+			{
+				i++;
+			}
+			else if (!args[i].StartsWith('-'))
+			{
+				return string.Equals(args[i], "app", StringComparison.OrdinalIgnoreCase) ? i : -1;
+			}
+		}
+
+		return -1;
+	}
+
 	internal static object? ParseValue(string value)
 	{
 		if (value.Length > 0 && (char.IsDigit(value[0]) || value[0] is '-' or '{' or '[' || value is "true" or "false" or "null"))
@@ -199,13 +235,16 @@ internal sealed class AppCommandHandler
 	/// <summary>Exit code of <c>app hot-reload-status --file</c> when only a restart can apply the edit (RudeEdit).</summary>
 	internal const int RestartNeededExitCode = 3;
 
+	/// <summary>Exit code of <c>app hot-reload-status --file</c> while the edit is still on its way: call again with a wait.</summary>
+	internal const int PendingExitCode = 4;
+
 	/// <summary>
 	/// 0 when the tool succeeded, 1 when it reported an error. A find that matched nothing is also 1, so
 	/// <c>app find --automationId X --waitForMs 5000</c> works as an assertion in a script. A hot-reload status
-	/// for a file is 0 only when the app runs the edit, 1 when it does not (the text says why), and
-	/// <see cref="RestartNeededExitCode"/> when it was a rude edit, so a hook can act on the code alone.
+	/// for a file maps its verdict (<see cref="HotReloadVerdictExitCode"/>), so a hook can act on the code alone;
+	/// a file query without a verdict is 1, never a success.
 	/// </summary>
-	internal static int ExitCodeFor(string toolName, CallToolResult result)
+	internal static int ExitCodeFor(string toolName, CallToolResult result, bool fileQuery = false)
 	{
 		if (result.IsError == true)
 		{
@@ -220,14 +259,11 @@ internal sealed class AppCommandHandler
 				return matched.GetInt32() == 0 ? 1 : 0;
 			}
 
-			if (toolName == HotReloadStatusTool && structured.TryGetProperty("verdict", out var verdictValue))
+			if (toolName == HotReloadStatusTool
+				&& structured.TryGetProperty("verdict", out var verdictValue)
+				&& verdictValue.ValueKind == JsonValueKind.String)
 			{
-				return verdictValue.GetString() switch
-				{
-					"applied" => 0,
-					"rudeEdit" => RestartNeededExitCode,
-					_ => 1,
-				};
+				return HotReloadVerdictExitCode(verdictValue.GetString());
 			}
 		}
 
@@ -254,8 +290,23 @@ internal sealed class AppCommandHandler
 			return outcome.Contains("RudeEdit", StringComparison.Ordinal) ? RestartNeededExitCode : 1;
 		}
 
-		return 0;
+		// No verdict for a file asked about, e.g. the host's "hot reload status unavailable" answer.
+		return toolName == HotReloadStatusTool && fileQuery ? 1 : 0;
 	}
+
+	/// <summary>
+	/// The exit code of a <c>uno_app_hot_reload_status</c> verdict (uno.app-mcp's <c>HotReloadVerdict</c>): 0 when there
+	/// is nothing left to do, <see cref="PendingExitCode"/> while the edit is on its way, <see cref="RestartNeededExitCode"/>
+	/// for a rude edit, and 1 for everything else, including <c>unknown</c> and codes added later.
+	/// </summary>
+	internal static int HotReloadVerdictExitCode(string? verdict)
+		=> verdict switch
+		{
+			"applied" or "noChanges" or "superseded" or "ignored" => 0,
+			"queued" or "processing" or "notReceived" or "applying" => PendingExitCode,
+			"rudeEdit" => RestartNeededExitCode,
+			_ => 1,
+		};
 
 	private static string TextOf(CallToolResult result)
 		=> string.Concat(result.Content.OfType<TextContentBlock>().Select(t => t.Text)).Replace("\r", "");
@@ -478,7 +529,7 @@ internal sealed class AppCommandHandler
 			}
 		}
 
-		return ExitCodeFor(toolName, result);
+		return ExitCodeFor(toolName, result, arguments.ContainsKey("file"));
 	}
 
 	/// <summary>

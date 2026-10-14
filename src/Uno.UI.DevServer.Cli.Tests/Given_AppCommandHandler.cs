@@ -58,6 +58,26 @@ public class Given_AppCommandHandler
 	}
 
 	[TestMethod]
+	[Description("The global logging options after the verb are applied by Program, not sent to the tool or rejected")]
+	public void WhenGlobalOptionsFollowTheVerb_TheyAreNotToolParameters()
+	{
+		var parsed = AppCommandHandler.Parse(["find", "--automationId", "Save", "--log-level", "debug", "-l", "trace", "-fl", "out.log", "--file-log", "out.log"]);
+
+		parsed.Error.Should().BeNull();
+		parsed.Arguments.Keys.Should().BeEquivalentTo(["automationId"]);
+	}
+
+	[TestMethod]
+	[Description("app is the command after any global options, and not when it is only an option value or a later argument")]
+	public void WhenGlobalOptionsPrecedeTheVerb_AppVerbIndexSkipsThem()
+	{
+		AppCommandHandler.AppVerbIndex(["app", "tools"]).Should().Be(0);
+		AppCommandHandler.AppVerbIndex(["--log-level", "trace", "-fl", "out.log", "app", "tools"]).Should().Be(4);
+		AppCommandHandler.AppVerbIndex(["--solution-dir", "app", "list"]).Should().Be(-1);
+		AppCommandHandler.AppVerbIndex(["list", "app"]).Should().Be(-1);
+	}
+
+	[TestMethod]
 	[Description("JSON-looking values are typed, text that only starts like JSON stays a string")]
 	public void WhenValueParsed_JsonOrString()
 	{
@@ -93,6 +113,43 @@ public class Given_AppCommandHandler
 		AppCommandHandler.ExitCodeFor(tool, Status("no Hot Reload operation covered it within 10 s. The file was last written 11 s ago.")).Should().Be(1);
 		AppCommandHandler.ExitCodeFor(tool, Status("NOT applied — server op #5 RudeEdit in 0.9 s (a rude edit cannot be hot-reloaded: restart with uno_app_start).")).Should().Be(AppCommandHandler.RestartNeededExitCode);
 		AppCommandHandler.ExitCodeFor(tool, new CallToolResult { Content = [new TextContentBlock { Text = "Hot Reload: Ready (0 operations)" }] }).Should().Be(0);
+	}
+
+	[TestMethod]
+	[Description("A file query the host answers without a verdict (status unavailable) is 1, never a success; a status-only query stays 0")]
+	public void WhenFileQueryHasNoVerdict_ExitCodeIsOne()
+	{
+		var unavailable = new CallToolResult { Content = [new TextContentBlock { Text = "# hot reload status unavailable (the connected app returned no report — it may be a version mismatch)" }] };
+
+		AppCommandHandler.ExitCodeFor("uno_app_hot_reload_status", unavailable, fileQuery: true).Should().Be(1);
+		AppCommandHandler.ExitCodeFor("uno_app_hot_reload_status", unavailable, fileQuery: false).Should().Be(0);
+	}
+
+	[TestMethod]
+	[Description("Every uno.app-mcp HotReloadVerdict code maps to its exit code: 0 nothing left to do, 4 still on its way, 3 rude edit, 1 otherwise")]
+	[DataRow("applied", 0)]
+	[DataRow("noChanges", 0)]
+	[DataRow("superseded", 0)]
+	[DataRow("ignored", 0)]
+	[DataRow("queued", 4)]
+	[DataRow("processing", 4)]
+	[DataRow("notReceived", 4)]
+	[DataRow("applying", 4)]
+	[DataRow("rudeEdit", 3)]
+	[DataRow("notApplied", 1)]
+	[DataRow("noOperation", 1)]
+	[DataRow("probablyNotApplied", 1)]
+	[DataRow("unknown", 1)]
+	[DataRow("aCodeAddedLater", 1)]
+	public void WhenHotReloadVerdict_ExitCodeFollowsIt(string verdict, int exitCode)
+	{
+		var result = new CallToolResult
+		{
+			Content = [new TextContentBlock { Text = "prose that would say otherwise" }],
+			StructuredContent = JsonSerializer.Deserialize<JsonElement>($$"""{"state":"Ready","file":"MainPage.xaml","verdict":"{{verdict}}"}"""),
+		};
+
+		AppCommandHandler.ExitCodeFor("uno_app_hot_reload_status", result, fileQuery: true).Should().Be(exitCode);
 	}
 
 	[TestMethod]
