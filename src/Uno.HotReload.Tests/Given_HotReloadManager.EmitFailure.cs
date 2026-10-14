@@ -107,7 +107,7 @@ public sealed class Given_HotReloadManager_EmitFailure
 		update.Deltas.Should().BeEmpty();
 		var diagnostic = update.Diagnostics.Should().ContainSingle().Subject;
 		diagnostic.Severity.Should().Be(DiagnosticSeverity.Error);
-		diagnostic.Id.Should().Be("ENC1002");
+		diagnostic.Id.Should().Be("UNOHR0001");
 		diagnostic.GetMessage().Should().StartWith("The compiler could not produce a Hot Reload update for this change (Unexpected value '");
 		diagnostic.GetMessage().Should().EndWith("). Undo the change to keep going, or restart the app.");
 		reporter.Warnings.Should().Contain(
