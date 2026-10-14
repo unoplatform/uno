@@ -342,15 +342,42 @@ public class Given_ContainerVisual
 		Assert.AreEqual(40, rect.Value.Height, 0.01);
 	}
 
+	// Neither a projective transform nor one that collapses the visual onto a line fits in a 2D matrix, so the
+	// clip isn't mapped at all rather than mapped wrongly.
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
-	public void When_Ancestor_Clip_On_Visual_Collapsed_To_A_Line_Then_Clips_Everything()
+	[DataRow(false)]
+	[DataRow(true)]
+	public void When_Ancestor_Clip_Under_Unmappable_Flattening_Transform_Then_Narrows_Nothing(bool projective)
 	{
 		var visual = TestServices.WindowHelper.XamlRoot.Compositor.CreateContainerVisual();
-		visual.TransformMatrix = Matrix4x4.CreateScale(0, 1, 0);
+		visual.TransformMatrix = projective
+			? new Matrix4x4(
+				1, 0, 0, 0.01f,
+				0, 1, 0, 0,
+				0, 0, 0, 0,
+				0, 0, 0, 1)
+			: Matrix4x4.CreateScale(0, 1, 0);
 		visual.LayoutClip = (new Rect(30, 20, 50, 40), true);
 
-		Assert.AreEqual(new Rect(), visual.GetArrangeClipPathInElementCoordinateSpace());
+		Assert.IsNull(visual.GetArrangeClipPathInElementCoordinateSpace());
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
+	public void When_Redirect_Source_Under_Flattening_Transform_Then_Bounds()
+	{
+		var source = CreateLiftedSquare(flattensZ: true, collapse: false).Container;
+		var redirect = TestServices.WindowHelper.XamlRoot.Compositor.CreateRedirectVisual(source);
+
+		// Z reaches nothing else, so the parent's 2D part maps the bounds back.
+		Assert.IsTrue(redirect.TryGetLocalContentBounds(out var bounds));
+		Assert.AreEqual(new Rect(10, 20, 20, 20), bounds);
+
+		// Perspective from Z divides the lifted square by its depth, which the 2D part can't undo.
+		var parent = (global::Microsoft.UI.Composition.ContainerVisual)source.Parent!;
+		parent.TransformMatrix = parent.TransformMatrix with { M34 = 0.01f };
+		Assert.IsFalse(redirect.TryGetLocalContentBounds(out _));
 	}
 
 	// A visual surface renders its source as a root, from SourceOffset, so the source's parent must not reach it.
@@ -480,15 +507,15 @@ public class Given_ContainerVisual
 		return host;
 	}
 
-	// Two squares in a source under a parent that only moves it, flattening Z or not, shown through a visual surface
-	// that starts at SourceOffset.
+	// Two squares in a source under a 2x scale, flattening Z or not, shown through a visual surface that starts at
+	// SourceOffset.
 	private static Border CreateVisualSurfaceHost(bool flattensZ)
 	{
 		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
 		var parent = compositor.CreateContainerVisual();
 		parent.TransformMatrix = new Matrix4x4(
-			1, 0, 0, 0,
-			0, 1, 0, 0,
+			2, 0, 0, 0,
+			0, 2, 0, 0,
 			0, 0, flattensZ ? 0 : 1, 0,
 			10, 10, 0, 1);
 
