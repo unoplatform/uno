@@ -123,6 +123,14 @@ internal class McpStdioServer(
 					Name = "uno-devserver",
 					Version = AssemblyVersionHelper.GetAssemblyVersion(typeof(McpStdioServer).Assembly),
 				};
+
+				// The proxy sends notifications/tools/list_changed once the upstream host
+				// connects (and when its tool set changes). The SDK only infers
+				// ListChanged=true from a DI ToolCollection, not from WithListToolsHandler,
+				// so it must be declared explicitly or spec-compliant clients ignore it.
+				options.Capabilities ??= new ServerCapabilities();
+				options.Capabilities.Tools ??= new ToolsCapability();
+				options.Capabilities.Tools.ListChanged = true;
 			})
 			.WithStdioServerTransport()
 			.WithCallToolHandler(async (ctx, ct) =>

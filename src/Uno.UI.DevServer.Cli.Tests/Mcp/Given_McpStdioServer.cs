@@ -386,6 +386,30 @@ public class Given_McpStdioServer
 			.EnumerateArray().First().GetString().Should().Be("toolName");
 	}
 
+	[TestMethod]
+	[Description("The stdio server declares tools.listChanged because it forwards notifications/tools/list_changed once upstream connects (#145)")]
+	public void BuildHost_DeclaresToolsListChangedCapability()
+	{
+		var server = CreateMcpStdioServer();
+		var (host, _) = server.BuildHost(
+			(_, _, _) => Task.CompletedTask,
+			McpStdioServer.InitializeTool,
+			ProxyLifecycleManager.SelectSolutionTool,
+			() => false,
+			() => [],
+			_ => Task.CompletedTask,
+			(_, _) => Task.FromResult(new CallToolResult()));
+
+		using (host)
+		{
+			var options = host.Services
+				.GetRequiredService<Microsoft.Extensions.Options.IOptions<ModelContextProtocol.Server.McpServerOptions>>()
+				.Value;
+
+			options.Capabilities?.Tools?.ListChanged.Should().BeTrue();
+		}
+	}
+
 	private static McpStdioServer CreateMcpStdioServer()
 	{
 		var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
