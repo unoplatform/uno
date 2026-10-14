@@ -145,7 +145,8 @@ public class Given_ShapeVisual
 	// which nothing the ShapeVisual paints can reach.
 	private static Border CreateViewBoxShapes(bool repaintsEveryFrame, bool greenAsChild)
 	{
-		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
+		var host = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.White) };
+		var compositor = ElementCompositionPreview.GetElementVisual(host).Compositor;
 		CompositionBrush fill = compositor.CreateColorBrush(Microsoft.UI.Colors.Red);
 		if (repaintsEveryFrame)
 		{
@@ -179,7 +180,6 @@ public class Given_ShapeVisual
 		root.Children.InsertAtTop(shapeVisual);
 		(greenAsChild ? shapeVisual : root).Children.InsertAtTop(green);
 
-		var host = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.White) };
 		ElementCompositionPreview.SetElementChildVisual(host, root);
 		return host;
 	}
