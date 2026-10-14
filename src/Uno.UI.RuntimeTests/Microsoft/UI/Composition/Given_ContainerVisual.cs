@@ -383,11 +383,13 @@ public class Given_ContainerVisual
 	// A visual surface renders its source as a root, from SourceOffset, so the source's parent must not reach it.
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25393")]
-	public async Task When_Visual_Surface_Source_Under_Flattening_Transform()
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Visual_Surface_Source_Under_Flattening_Transform(bool projective)
 	{
 		using var _ = UITestHelper.ResetWindowContent();
-		var flattened = CreateVisualSurfaceHost(flattensZ: true);
-		var expected = CreateVisualSurfaceHost(flattensZ: false);
+		var flattened = CreateVisualSurfaceHost(flattensZ: true, projective);
+		var expected = CreateVisualSurfaceHost(flattensZ: false, projective);
 		await UITestHelper.Load(new StackPanel { Children = { flattened, expected } });
 
 		await AssertRendersLike(flattened, expected, Colors.Red, Colors.Blue);
@@ -507,14 +509,14 @@ public class Given_ContainerVisual
 		return host;
 	}
 
-	// Two squares in a source under a 2x scale, flattening Z or not, shown through a visual surface that starts at
-	// SourceOffset.
-	private static Border CreateVisualSurfaceHost(bool flattensZ)
+	// Two squares in a source under a 2x scale, flattening Z or not and with perspective or not, shown through a visual
+	// surface that starts at SourceOffset.
+	private static Border CreateVisualSurfaceHost(bool flattensZ, bool projective)
 	{
 		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
 		var parent = compositor.CreateContainerVisual();
 		parent.TransformMatrix = new Matrix4x4(
-			2, 0, 0, 0,
+			2, 0, 0, projective ? 0.002f : 0,
 			0, 2, 0, 0,
 			0, 0, flattensZ ? 0 : 1, 0,
 			10, 10, 0, 1);
