@@ -19,6 +19,11 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+
+		<NoWarn>
+			$(NoWarn)
+			;NU5104 <!-- A stable release of a package should not have a prerelease dependency; Uno.Core.Extensions.Logging >= 5.0 is only -dev! -->
+		</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>
