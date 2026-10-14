@@ -90,13 +90,11 @@ public sealed class HotReloadManager : IDisposable
 		return new HotReloadManager(solution.Workspace, watch, handler, changesDetector, solutionUpdater, tracker, solution);
 	}
 
-	// Synthesized for a compiler exception during the EnC emit, which completes the pass as a rude edit. Roslyn's own
-	// id for this case (EditAndContinueErrorCode.CannotApplyChangesUnexpectedError, an internal error treated as a
-	// blocking rude edit); the message adds how to recover, since the EnC baseline does not move.
+	// Synthesized for a compiler exception during the EnC emit, which completes the pass as a rude edit.
 #pragma warning disable RS2008 // Enable analyzer release tracking
 	private static readonly DiagnosticDescriptor _emitFailureDescriptor = new(
-		"ENC1002",
-		"Cannot apply changes",
+		"UNOHR0001",
+		"Hot Reload update could not be emitted",
 		"The compiler could not produce a Hot Reload update for this change ({0}). Undo the change to keep going, or restart the app.",
 		"HotReload",
 		DiagnosticSeverity.Error,
@@ -332,7 +330,8 @@ public sealed class HotReloadManager : IDisposable
 
 			// emitDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
 			// of unrecoverable errors that a user cannot fix and requires an app rebuild.
-			var rudeEdits = emitDiagnostics.RemoveAll(d => d.Severity <= DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
+			var rudeEdits = emitDiagnostics.RemoveAll(d => d.Severity <= DiagnosticSeverity.Warning
+				|| !(d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal) || d.Descriptor == _emitFailureDescriptor));
 
 			_tracker.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
 
