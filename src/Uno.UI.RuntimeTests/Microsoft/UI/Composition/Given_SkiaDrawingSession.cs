@@ -33,8 +33,9 @@ public class Given_SkiaDrawingSession
 		using var surface = SKSurface.Create(new SKImageInfo(16, 16));
 		surface.Canvas.Translate(10, 20);
 		surface.Canvas.Scale(2, 3);
+		using var factory = new SkiaDrawingFactory();
 
-		var session = new SkiaDrawingSession(surface.Canvas, DrawingFactory.Current);
+		var session = new SkiaDrawingSession(surface.Canvas, factory);
 
 		Assert.AreEqual(Matrix4x4.CreateScale(2, 3, 1) * Matrix4x4.CreateTranslation(10, 20, 0), session.TotalMatrix);
 	}
@@ -42,7 +43,8 @@ public class Given_SkiaDrawingSession
 	private static void AssertRoundTrips(Matrix4x4 matrix)
 	{
 		using var surface = SKSurface.Create(new SKImageInfo(16, 16));
-		var session = new SkiaDrawingSession(surface.Canvas, DrawingFactory.Current);
+		using var factory = new SkiaDrawingFactory();
+		var session = new SkiaDrawingSession(surface.Canvas, factory);
 
 		session.SetMatrix(matrix);
 
