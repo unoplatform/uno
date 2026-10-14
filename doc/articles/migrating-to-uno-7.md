@@ -31,6 +31,7 @@ WebAssembly all remain supported — they now all render with Skia. The one exce
 - Code that referenced native rendering types, native element hosting, or native-only
   `FeatureConfiguration` flags (see below).
 - Apps that still build a **Mac Catalyst** (`net*-maccatalyst`) head.
+- Apps and libraries that still target **.NET 9** (`net9.0-*`).
 
 Apps already running on Skia on every target need only recompile against 7.0 and remove
 native bootstrap/heads.
@@ -76,6 +77,13 @@ The `IsMacCatalyst` and `IsIOSOrCatalyst` MSBuild properties are also gone — r
 with `IsIOS` and `IsAppleUIKit` respectively. A condition that references either property
 as a bare boolean (for example `Condition="$(IsAndroid) or $(IsIOSOrCatalyst)"`) now fails
 with `MSB4100` instead of silently evaluating to `false`, since the property is undefined.
+
+### .NET 9 is no longer supported
+
+Uno Platform 7.0 ships `net10.0` and `net11.0` assets only. The `net9.0` assets that 6.x shipped are
+removed, so a head or library that still targets `net9.0-*` fails to restore against 7.0 with
+`NU1202`. Retarget it to `net10.0-*` (or `net11.0-*`) before upgrading. See
+[.NET version support](xref:Uno.Development.NetVersionSupport) for the supported versions.
 
 ### Minimum OS versions raised
 
@@ -1679,6 +1687,7 @@ recommended and templated form. Windows App SDK heads are likewise unaffected.
 25. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
    bring pre-7.0 application settings into the `UnoApplicationData` container, and update any
    native/interop code that read them from `NSUserDefaults.StandardUserDefaults`.
+26. Retarget any `net9.0-*` head or library to `net10.0-*`: 7.0 ships no `net9.0` assets.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
 for the full Android/iOS/WebAssembly Skia bootstrapping steps.
