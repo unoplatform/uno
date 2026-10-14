@@ -412,7 +412,7 @@ internal sealed unsafe class WebGpuReadbackImage : DrawingResource, IImage
 /// it, so a SkiaSharp-free app registers the managed geometry engine (<c>ManagedBackend.CreateGeometryFactory()</c>)
 /// and links zero SkiaSharp for drawing.
 /// </summary>
-public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
+public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>, IWebGpuTextureInterop
 {
 	private readonly WebGpuDevice _device;
 
@@ -494,6 +494,32 @@ public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRender
 
 	public ITexture CreateTexture(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
 		=> new WebGpuTexture(_device, pixelWidth, pixelHeight, bgraPremul);
+
+	unsafe WebGPU IWebGpuTextureInterop.Api => Api;
+	unsafe Instance* IWebGpuTextureInterop.Instance => _device.Inst;
+	unsafe Adapter* IWebGpuTextureInterop.Adapter => _device.Adapter;
+	unsafe Device* IWebGpuTextureInterop.Device => _device.Dev;
+	unsafe Queue* IWebGpuTextureInterop.Queue => _device.Q;
+	TextureFormat IWebGpuTextureInterop.RenderTextureFormat => TextureFormat.Rgba8Unorm;
+
+	// RGBA like the uploaded textures, so the image pipeline samples it the same way.
+	unsafe ITexture IWebGpuTextureInterop.CreateRenderTexture(int pixelWidth, int pixelHeight, out Texture* texture, out TextureView* textureView)
+	{
+		pixelWidth = Math.Max(1, pixelWidth);
+		pixelHeight = Math.Max(1, pixelHeight);
+		var descriptor = new TextureDescriptor
+		{
+			Size = new Extent3D { Width = (uint)pixelWidth, Height = (uint)pixelHeight, DepthOrArrayLayers = 1 },
+			Format = TextureFormat.Rgba8Unorm,
+			MipLevelCount = 1,
+			SampleCount = 1,
+			Dimension = TextureDimension.Dimension2D,
+			Usage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding | TextureUsage.CopySrc | TextureUsage.CopyDst,
+		};
+		texture = Api.DeviceCreateTexture(_device.Dev, &descriptor);
+		textureView = Api.TextureCreateView(texture, null);
+		return new WebGpuTexture(_device, texture, textureView, pixelWidth, pixelHeight);
+	}
 
 	// Offscreen rasterization on the WebGPU device (record → present into a dedicated offscreen surface) and hand
 	// back the resolved color texture as a sampleable ITexture — no CPU read-back, so a nine-slice/glyph/SVG
