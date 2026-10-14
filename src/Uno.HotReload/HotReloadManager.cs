@@ -320,11 +320,7 @@ public sealed class HotReloadManager : IDisposable
 			{
 				(updates, emitDiagnostics) = await _watchService.EmitSolutionUpdateAsync(emitSolution, ct).ConfigureAwait(false);
 			}
-			catch (OperationCanceledException)
-			{
-				throw;
-			}
-			catch (Exception e)
+			catch (Exception e) when (e is not OperationCanceledException || !ct.IsCancellationRequested)
 			{
 				// The compiler itself threw while emitting the delta (e.g. dotnet/roslyn#86045). The EnC
 				// baseline does not move, so every later pass would hit the same crash until the edit is
