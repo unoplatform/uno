@@ -399,7 +399,8 @@ internal class ProxyLifecycleManager
 	///   │   └─ null → log warning, done
 	///   │
 	///   ├─ ResolveAsync(rootPath)
-	///   │   ├─ Found Uno solution → IsResolved=true → ApplyTransition(Start)
+	///   │   ├─ Found Uno solution → IsResolved=true → ApplyTransition (Start before a DevServer runs;
+	///   │   │     Ignore once one runs or a solution was selected explicitly)
 	///   │   └─ No Uno solution found → IsResolved=false
 	///   │       └─ Directory.Exists(rootPath)?
 	///   │           ├─ YES → accept as workspace root, start monitoring
@@ -414,9 +415,9 @@ internal class ProxyLifecycleManager
 		var processRootsStopwatch = Stopwatch.StartNew();
 		_logger.LogTrace("Processing MCP Client Roots: {Roots}", string.Join(", ", _roots));
 
-		// The StartOnceGuard inside StartDevServerMonitor() prevents concurrent starts.
-		// We don't early-return here so that roots from the MCP client can trigger
-		// the monitor when no --solution-dir was provided.
+		// The StartOnceGuard inside StartDevServerMonitor() prevents concurrent starts. Whether the roots may change
+		// anything is decided under the transition gate by WorkspaceTransitionDecisions (Ignore once a DevServer runs
+		// or a solution was selected explicitly).
 
 		if (_roots.FirstOrDefault() is { } rootUri)
 		{
@@ -616,26 +617,26 @@ internal class ProxyLifecycleManager
 						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
 
+				case WorkspaceTransitionAction.Ignore:
+					_logger.LogInformation(
+						"{Trigger} pointed to another workspace ({IncomingWorkspace}, {ResolutionKind}) than the running one ({CurrentWorkspace}); keeping the running workspace. Use uno_app_select_solution to change it.",
+						trigger,
+						nextResolution.EffectiveWorkspaceDirectory ?? nextResolution.RequestedWorkingDirectory,
+						nextResolution.ResolutionKind,
+						_workspaceResolution?.EffectiveWorkspaceDirectory);
+					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
+						$"trigger={trigger};action={transitionAction};workspace={_workspaceResolution?.EffectiveWorkspaceDirectory}");
+					return transitionAction;
+
 				case WorkspaceTransitionAction.Diagnose:
-					if (_workspaceResolution?.IsResolved == true && nextResolution.IsResolved &&
-						trigger == WorkspaceTransitionTrigger.McpRoots)
-					{
-						_logger.LogWarning(
-							"MCP roots resolved to a different workspace ({IncomingWorkspace}) than the running workspace ({CurrentWorkspace}); keeping the existing workspace for this session",
-							nextResolution.EffectiveWorkspaceDirectory,
-							_workspaceResolution.EffectiveWorkspaceDirectory);
-					}
-					else
-					{
-						_logger.LogWarning(
-							"{Trigger} did not resolve to a valid Uno workspace ({ResolutionKind}); staying in diagnostic mode for this session",
-							trigger,
-							nextResolution.ResolutionKind);
-						_workspaceResolution = nextResolution;
-						UpdateHealthSelectionSnapshot(nextResolution);
-						_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
-						await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
-					}
+					_logger.LogWarning(
+						"{Trigger} did not resolve to a valid Uno workspace ({ResolutionKind}); staying in diagnostic mode for this session",
+						trigger,
+						nextResolution.ResolutionKind);
+					_workspaceResolution = nextResolution;
+					UpdateHealthSelectionSnapshot(nextResolution);
+					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
+					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 
 					SetConnectionState(ConnectionState.Degraded);
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
