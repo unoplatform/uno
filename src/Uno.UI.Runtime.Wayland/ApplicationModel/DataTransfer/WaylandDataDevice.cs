@@ -28,6 +28,8 @@ internal sealed class WaylandDataDevice : IWaylandClipboardDevice
 	// UI thread.
 	private readonly List<WaylandDragDropExtension> _dropTargets = new();
 	private WaylandDragDropExtension? _dropTarget;
+	// UI thread: the drag this client started and that has not completed, so its own windows recognise the offer.
+	internal WaylandOutgoingDrag? OutgoingDrag { get; set; }
 
 	private WaylandDataDevice(WaylandConnection connection, WlDataDeviceManager manager, WlSeat seat)
 	{
@@ -111,6 +113,8 @@ internal sealed class WaylandDataDevice : IWaylandClipboardDevice
 
 	internal WaylandDisplay Display => _connection.Display;
 
+	internal WaylandConnection Connection => _connection;
+
 	internal void PostToUI(Action action) => _connection.PostToUI(action);
 
 	/// <summary>Raised on the dispatch thread when the selection changes while one of our surfaces has keyboard focus.</summary>
@@ -127,11 +131,17 @@ internal sealed class WaylandDataDevice : IWaylandClipboardDevice
 		}
 	}
 
+	// Sources before wl_data_source v3 never learn a drag's outcome, so drags are only handed to the compositor from v3.
+	internal bool SupportsDragOutcome => _manager.Version >= 3;
+
 	// Dispatch thread.
 	internal WlDataSource CreateSource() => _manager.CreateDataSource();
 
 	// Dispatch thread. A null source clears the selection.
 	internal void SetSelection(WlDataSource? source) => _device.SetSelection(source, _selectionSerial.Serial);
+
+	// Dispatch thread. The serial must be the button press or touch down of the implicit grab being converted.
+	internal void StartDrag(WlDataSource source, WlSurface origin, WlSurface? icon, uint serial) => _device.StartDrag(source, origin, icon, serial);
 
 	internal void RequestSelection(Action publish, Action? cancel = null) => _selectionSerial.Request(publish, cancel);
 

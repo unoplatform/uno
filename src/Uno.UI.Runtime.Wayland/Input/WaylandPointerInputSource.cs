@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.UI.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -37,6 +38,7 @@ internal sealed class WaylandPointerInputSource : IUnoCorePointerInputSource
 	private uint _lastTimestamp;
 	private ulong _timestampEpoch;
 	private bool _entered;
+	private bool _nativeDrag, _nativeDragCaptureLost;
 	private CoreCursor _cursor = new(CoreCursorType.Arrow, 0);
 
 	public WaylandPointerInputSource(IWaylandInputConnection connection, Action<Action> dispatch, Func<VirtualKeyModifiers> modifiers)
@@ -202,13 +204,40 @@ internal sealed class WaylandPointerInputSource : IUnoCorePointerInputSource
 		}
 	}
 
+	// The id of the latest pointer frame handed to Uno; later synthetic drag frames must count past it.
+	public uint LastFrameId => Volatile.Read(ref _frame);
+
+	// Dispatch thread, before wl_data_device.start_drag: the compositor then ends the implicit grab with a leave,
+	// which must not cancel the drag Uno keeps running until the drag source completes.
+	public void BeginNativeDrag() => _nativeDrag = true;
+
+	// Dispatch thread, once the drag source completed: the suppressed cancellation is delivered now, after the
+	// drop result was reported, so the dragged element ends its gesture and releases its pointer capture.
+	public void EndNativeDrag()
+	{
+		_nativeDrag = false;
+		if (_nativeDragCaptureLost)
+		{
+			_nativeDragCaptureLost = false;
+			Emit(PointerCancelled);
+			Emit(PointerCaptureLost);
+		}
+	}
+
 	public void ResetPointer()
 	{
 		if (_buttons != 0)
 		{
 			_buttons = 0;
-			Emit(PointerCancelled);
-			Emit(PointerCaptureLost);
+			if (_nativeDrag)
+			{
+				_nativeDragCaptureLost = true;
+			}
+			else
+			{
+				Emit(PointerCancelled);
+				Emit(PointerCaptureLost);
+			}
 		}
 		_entered = false;
 		Array.Clear(_axis);

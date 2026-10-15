@@ -67,7 +67,7 @@ This option requires `libharfbuzz.so.0` to be installed and available to the dyn
 | `wp_viewporter`, `wp_fractional_scale_v1` | No | Fractional scaling. Without both protocols, surfaces at version 6 or later use the integer scale from `wl_surface.preferred_buffer_scale`; older surfaces use the largest `wl_output.scale` among the outputs entered by the window. |
 | `zxdg_decoration_manager_v1` | No | Negotiating server-side decorations; client-side decorations are used otherwise |
 | `wl_subcompositor` | No | Client-side decoration surfaces |
-| `wl_data_device_manager` | No | Clipboard and incoming drag and drop |
+| `wl_data_device_manager` | No | Clipboard and drag and drop |
 | `zwp_text_input_manager_v3` | No | Compositor IME sessions |
 | `zxdg_exporter_v2` | No | Exporting a parent window for desktop portals |
 | `xdg_activation_v1` | No | Compositor-mediated activation |
@@ -83,6 +83,8 @@ When the compositor grants server-side decorations, it draws the window frame. O
 ### Clipboard, drag and drop, and text input
 
 Clipboard and incoming drag and drop support text, HTML, images and local file lists through the core data-device protocol. Copy/move negotiation follows the operations supported by both applications. Wayland ties clipboard ownership to a focused input serial, so set clipboard content in response to user input in the focused window. A background client cannot take the clipboard arbitrarily.
+
+Drags started in the app are handed to the compositor as soon as they start, so they can be dropped on other applications, including windows that overlap the app's own window. The dragged content is offered as local file lists (also readable as text), images, HTML and text, and the drag visual is shown as the compositor's drag icon. The operation completed by the target is reported back as the drop result. Content made only of app-private formats, or a drag without a pointer or touch grab, stays an in-app drag, as does any drag when the compositor's data device is older than version 3.
 
 Keyboard input supports XKB layouts, dead keys and compose sequences. Compositors that advertise `text-input-v3` also provide IME preedit, commit, surrounding text and deletion for `TextBox` and `RichEditBox`. Configure the desktop's input-method service for its Wayland session; without the protocol, keyboard and compose input remain available but compositor IME composition is unavailable.
 
@@ -116,7 +118,6 @@ Enable Debug logging for the `Uno.UI.Runtime.Wayland.WaylandDiagnostics` categor
 
 ### Limitations
 
-- Outgoing drag and drop to other applications is not implemented.
 - `WebView2` and `MediaPlayerElement` embed X11 windows, so they are not supported by the Wayland host.
 - Input uses the first seat advertised by the compositor. Output tracking follows the outputs entered by the window; the compositor determines its scale.
 - Wayland does not expose global window coordinates. Window placement and focus remain under compositor control.
