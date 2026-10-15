@@ -45,6 +45,21 @@ internal static class WaylandFileUris
 		return builder.ToString();
 	}
 
+	/// <summary>The file URIs as plain text, one per line like Qt and GTK file managers expose their file lists as text.</summary>
+	internal static string FormatUriText(IEnumerable<string> paths)
+	{
+		var builder = new StringBuilder();
+		foreach (var path in paths)
+		{
+			if (builder.Length > 0)
+			{
+				builder.Append('\n');
+			}
+			builder.Append(ToFileUri(path));
+		}
+		return builder.ToString();
+	}
+
 	internal static string FormatGnomeCopiedFiles(IEnumerable<string> paths)
 	{
 		var builder = new StringBuilder("copy");
