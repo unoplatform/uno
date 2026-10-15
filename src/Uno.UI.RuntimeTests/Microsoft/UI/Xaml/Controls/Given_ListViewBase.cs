@@ -33,6 +33,7 @@ using Uno.UI;
 #endif
 
 using Point = Windows.Foundation.Point;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using TabView = Microsoft.UI.Xaml.Controls.TabView;
 using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
 
@@ -902,6 +903,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[DataRow(PointerDeviceType.Touch, false, false)]
+#if HAS_UNO // Pen injection is not available on WinAppSDK
+		[DataRow(PointerDeviceType.Pen, false, false)]
+#endif
+		[DataRow(PointerDeviceType.Touch, true, false)]
+		[DataRow(PointerDeviceType.Touch, false, true)]
+		public async Task When_Hold_Item_Then_No_ItemClick_Nor_Selection(PointerDeviceType device, bool isGridView, bool holdingTimerOnly)
+		{
+			ListViewBase list = isGridView ? new GridView() : new ListView();
+			list.IsItemClickEnabled = true;
+			list.SelectionMode = ListViewSelectionMode.Single;
+			list.ItemsSource = new[] { "0", "1", "2" };
+
+			var itemClickCount = 0;
+			var holdingCount = 0;
+			list.ItemClick += (_, _) => itemClickCount++;
+			if (holdingTimerOnly)
+			{
+				// Like a ContextFlyout, a Holding handler runs the holding timer, which can see the hold before the pointer timestamps do.
+				list.Holding += (_, _) => holdingCount++;
+			}
+
+			try
+			{
+				await UITestHelper.Load(list);
+
+				var pointer = (InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector")).GetPointer(device);
+				using var pointerScope = pointer as IDisposable;
+				var center = ((FrameworkElement)list.ContainerFromIndex(1)).GetAbsoluteCenter();
+
+				// On WinUI a ListViewItem runs its tap interaction only when a Tapped follows, while a touch or pen hold is a right-tap.
+				await pointer.Hold(center, advanceTimestamps: !holdingTimerOnly);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, itemClickCount);
+				Assert.AreEqual(-1, list.SelectedIndex);
+				Assert.AreEqual(holdingTimerOnly ? 2 : 0, holdingCount); // Started and Completed
+
+				if (!holdingTimerOnly) // Otherwise the injected timestamps never advanced: the next press would have the held one's timestamp.
+				{
+					pointer.Press(center);
+					pointer.Release();
+					await WindowHelper.WaitForIdle();
+
+					Assert.AreEqual(1, itemClickCount);
+					Assert.AreEqual(1, list.SelectedIndex);
+				}
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 
 #if HAS_UNO
 		[TestMethod]
