@@ -13,6 +13,12 @@ partial class ScrollPresenter : IBorderInfoProvider
 
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 
+	// WinUI's ScrollPresenter derives from Panel, so its (default Transparent) Background makes it hit-testable,
+	// e.g. in the gaps between items.
+	internal override bool IsViewHit() => Border.IsViewHitImpl(this);
+
+	partial void OnBackgroundChangedPartial();
+
 	Brush IBorderInfoProvider.Background => Background;
 
 	BackgroundSizing IBorderInfoProvider.BackgroundSizing => BackgroundSizing.InnerBorderEdge;
