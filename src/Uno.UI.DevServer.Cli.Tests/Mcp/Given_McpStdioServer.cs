@@ -357,6 +357,54 @@ public class Given_McpStdioServer
 		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("absolute path");
 	}
 
+	[TestMethod]
+	[Description("A solutionPath that uno_app_initialize cannot select is returned as the answer instead of being discarded")]
+	public async Task SelectInitialSolutionAsync_WhenSelectionIsRejected_ReturnsTheRejectionAndSaysTheWorkspaceWasApplied()
+	{
+		var rejection = new CallToolResult { Content = [new TextContentBlock { Text = """{"status":"rejected"}""" }], IsError = true };
+
+		var result = await McpStdioServer.SelectInitialSolutionAsync("/repo/App.slnx", (_, _) => Task.FromResult(rejection));
+
+		result.Should().NotBeNull();
+		result!.IsError.Should().BeTrue();
+		result.Content.OfType<TextContentBlock>().Select(block => block.Text).Should().Equal(
+			"""{"status":"rejected"}""",
+			McpStdioServer.InitialSelectionRejectedNote);
+	}
+
+	[TestMethod]
+	[Description("An accepted or absent solutionPath lets uno_app_initialize go on to wait for the DevServer")]
+	public async Task SelectInitialSolutionAsync_WhenSelectionIsAcceptedOrAbsent_ReturnsNull()
+	{
+		var calls = 0;
+		Task<CallToolResult> Accept(string path, bool forceRestart)
+		{
+			calls++;
+			return Task.FromResult(new CallToolResult { Content = [new TextContentBlock { Text = """{"status":"started"}""" }] });
+		}
+
+		(await McpStdioServer.SelectInitialSolutionAsync("/repo/App.slnx", Accept)).Should().BeNull();
+		(await McpStdioServer.SelectInitialSolutionAsync(null, Accept)).Should().BeNull();
+		calls.Should().Be(1);
+	}
+
+	[TestMethod]
+	[OSCondition(OperatingSystems.Windows)]
+	[Description("uno_app_initialize refuses a network (UNC) workspaceDirectory before any file-system access")]
+	public void TryGetInitializeArgs_WhenWorkspaceDirectoryIsUnc_ReturnsError()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["workspaceDirectory"] = JsonSerializer.SerializeToElement(@"\\server\share\repo"),
+		};
+
+		var success = McpStdioServer.TryGetInitializeArgs(arguments, out _, out _, out var errorResult);
+
+		success.Should().BeFalse();
+		errorResult.IsError.Should().BeTrue();
+		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("local path");
+	}
+
 	// -------------------------------------------------------------------
 	// InitializeTool definition
 	// -------------------------------------------------------------------
