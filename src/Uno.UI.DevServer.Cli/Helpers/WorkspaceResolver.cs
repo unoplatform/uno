@@ -178,6 +178,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 					: WorkspaceResolutionKind.NoValidWorkspace,
 				CandidateSolutions = candidateSolutions,
 				SelectionSource = selectionSource,
+				IsExplicitSolutionSelection = true,
 			};
 		}
 
@@ -187,13 +188,16 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 			candidateSolutions,
 			selectionSource,
 			globalJsonCache);
-		return resolved ?? new WorkspaceResolution
-		{
-			RequestedWorkingDirectory = normalizedRequestedDirectory,
-			ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
-			CandidateSolutions = candidateSolutions,
-			SelectionSource = selectionSource,
-		};
+		return resolved is not null
+			? resolved with { IsExplicitSolutionSelection = true }
+			: new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = normalizedRequestedDirectory,
+				ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
+				CandidateSolutions = candidateSolutions,
+				SelectionSource = selectionSource,
+				IsExplicitSolutionSelection = true,
+			};
 	}
 
 	private async Task<WorkspaceResolution?> ResolveSolutionCoreAsync(
@@ -303,6 +307,13 @@ internal sealed record WorkspaceResolution
 	public required WorkspaceResolutionKind ResolutionKind { get; init; }
 	public WorkspaceSelectionSource SelectionSource { get; init; } = WorkspaceSelectionSource.Automatic;
 	public IReadOnlyList<string> CandidateSolutions { get; init; } = [];
+
+	/// <summary>
+	/// The solution was chosen explicitly (uno_app_select_solution or a solution path at startup), not discovered: file
+	/// changes re-resolve this solution instead of auto-discovering the workspace again. A directory override such as
+	/// --solution-dir does not set it.
+	/// </summary>
+	public bool IsExplicitSolutionSelection { get; init; }
 
 	public bool IsResolved => !string.IsNullOrWhiteSpace(EffectiveWorkspaceDirectory);
 }
