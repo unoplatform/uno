@@ -35,7 +35,11 @@ using Foundation;
 #endif
 
 using Point = Windows.Foundation.Point;
+#if HAS_UNO_WINUI
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
 using TabView = Microsoft.UI.Xaml.Controls.TabView;
 using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
 
