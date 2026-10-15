@@ -60,6 +60,20 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		public override bool Execute()
 		{
+			try
+			{
+				return ExecuteCore();
+			}
+			finally
+			{
+				// It caches every reference it resolved, open, for as long as the task host lives.
+				_assemblyResolver?.Dispose();
+				_assemblyResolver = null;
+			}
+		}
+
+		private bool ExecuteCore()
+		{
 			// Debugger.Launch();
 
 			BuildReferences();
@@ -197,6 +211,20 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				select asm
 			);
 
+			// The task host outlives this task, so an assembly left open keeps its pass output locked against the
+			// next invocation's linker, which writes the same paths.
+			try
+			{
+				return BuildResultingFeaturesList(assemblies);
+			}
+			finally
+			{
+				assemblies.ForEach(a => a.Dispose());
+			}
+		}
+
+		private Dictionary<string, string> BuildResultingFeaturesList(List<AssemblyDefinition> assemblies)
+		{
 			var features = new Dictionary<string, string>();
 
 			var originalLinkerHints = FindAvailableLinkerHintsFromOriginalList();
