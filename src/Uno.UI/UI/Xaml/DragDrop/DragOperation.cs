@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml
 
 			// A platform that routes the drag itself from the start also shows the drag visual, and reports the
 			// pointer through the extension (see IDragDropExtension) instead of pointer events.
-			if (extension is IImmediateDragDropExtension immediate && immediate.TryStartNativeDrag(info, Complete))
+			if (extension is IImmediateDragDropExtension immediate && immediate.TryStartNativeDrag(info, CompleteFromNative))
 			{
 				_hasRequestedNativeDrag = true;
 				_viewHandle.Dispose();
@@ -184,12 +184,15 @@ namespace Microsoft.UI.Xaml
 			_viewHandle.Dispose();
 			if (!_hasRequestedNativeDrag)
 			{
-				_extension?.StartNativeDrag(Info, Complete);
+				_extension?.StartNativeDrag(Info, CompleteFromNative);
 				_hasRequestedNativeDrag = true;
 			}
 		}
 
-		private async Task RaiseFinalLeave(CancellationToken ct)
+		private Task RaiseFinalLeave(CancellationToken ct)
+			=> RaiseFinalLeave(ct, DataPackageOperation.None);
+
+		private async Task RaiseFinalLeave(CancellationToken ct, DataPackageOperation result)
 		{
 			try
 			{
@@ -204,7 +207,29 @@ namespace Microsoft.UI.Xaml
 			}
 			finally
 			{
-				Complete(DataPackageOperation.None);
+				Complete(result);
+			}
+		}
+
+		/// <summary>
+		/// Completion reported by the native drag. A target this operation entered before the platform took over
+		/// (the pointer may never have left the window bounds) still gets its leave, exactly once, before the result.
+		/// It ** MUST ** be invoked on the UI thread.
+		/// </summary>
+		private void CompleteFromNative(DataPackageOperation result)
+		{
+			if (_state == State.Completing)
+			{
+				// A drop or final leave in flight completes with the handlers' result.
+				return;
+			}
+			if (_state == State.Over)
+			{
+				Enqueue(ct => RaiseFinalLeave(ct, result));
+			}
+			else
+			{
+				Complete(result);
 			}
 		}
 
