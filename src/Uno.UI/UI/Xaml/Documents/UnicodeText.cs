@@ -2139,13 +2139,19 @@ internal readonly partial struct UnicodeText : IParsedText
 		builder.MoveTo(new Vector2(decoration.X1, decoration.Y));
 		builder.LineTo(new Vector2(decoration.X2, decoration.Y));
 		using var path = builder.Build();
+		var dashes = new float[dashArray.Length];
+		for (var i = 0; i < dashArray.Length; i++)
+		{
+			dashes[i] = dashArray[i] * thickness;
+		}
+
 		using var stroke = path.GetStrokeFillGeometry(new StrokeStyle
 		{
 			Thickness = thickness,
 			StartCap = cap,
 			EndCap = cap,
 			DashCap = cap,
-			DashArray = dashArray,
+			DashArray = dashes,
 		});
 		session.DrawPath(stroke, decoration.Color);
 	}

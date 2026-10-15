@@ -14,11 +14,11 @@ using Microsoft.UI.Xaml.Markup;
 using Path = Microsoft.UI.Xaml.Shapes.Path;
 using System.Numerics;
 using Windows.Foundation;
+using Uno.UI.RuntimeTests.Helpers;
 
 #if __SKIA__
 using Private.Infrastructure;
 using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas;
 #endif
@@ -533,4 +533,138 @@ public class Given_CompositionSpriteShape
 		return points;
 	}
 #endif
+
+	// Composition dash intervals are absolute (geometry units), unlike XAML Shape.StrokeDashArray which is in
+	// multiples of StrokeThickness. A {10, 10} dash at thickness 6 must alternate every 10px, not every 60px.
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(0f, true)]
+	[DataRow(10f, false)]
+	public async Task When_StrokeDashArray_Then_Absolute_Units(float dashOffset, bool startsWithDash)
+	{
+		var anchor = new Border { Width = 1, Height = 1 };
+		await UITestHelper.Load(anchor);
+		var compositor = ElementCompositionPreview.GetElementVisual(anchor).Compositor;
+
+		var line = compositor.CreateLineGeometry();
+		line.Start = new Vector2(10, 20);
+		line.End = new Vector2(210, 20);
+
+		var shape = compositor.CreateSpriteShape(line);
+		shape.StrokeThickness = 6f;
+		shape.StrokeBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Red);
+		shape.StrokeDashCap = CompositionStrokeCap.Flat;
+		shape.StrokeDashArray.Add(10f);
+		shape.StrokeDashArray.Add(10f);
+		shape.StrokeDashOffset = dashOffset;
+
+		var shapeVisual = compositor.CreateShapeVisual();
+		shapeVisual.Shapes.Add(shape);
+		shapeVisual.Size = new Vector2(220, 40);
+
+		var host = new Border
+		{
+			Width = 220,
+			Height = 40,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+		};
+		ElementCompositionPreview.SetElementChildVisual(host, shapeVisual);
+
+		await UITestHelper.Load(host);
+		await UITestHelper.WaitForIdle();
+		var screenshot = await UITestHelper.ScreenShot(host);
+
+		// Centre of each 10px interval along the line.
+		for (var i = 0; i < 8; i++)
+		{
+			var isDash = (i % 2 == 0) == startsWithDash;
+			ImageAssert.HasColorAt(screenshot, 15 + i * 10, 20, isDash ? Microsoft.UI.Colors.Red : Microsoft.UI.Colors.White, tolerance: 30);
+		}
+	}
+
+	// WinUI trims first and dashes what is left, starting the pattern at the trim start.
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Dashed_And_Trimmed_Then_Dashes_Start_At_Trim()
+	{
+		var screenshot = await RenderDashedShape(220, 40, c =>
+		{
+			var line = c.CreateLineGeometry();
+			line.Start = new Vector2(10, 20);
+			line.End = new Vector2(210, 20);
+			line.TrimStart = 0.5f;
+			return line;
+		}, 10f, 10f);
+
+		ImageAssert.HasColorAt(screenshot, 15, 20, Microsoft.UI.Colors.White, tolerance: 30);
+		ImageAssert.HasColorAt(screenshot, 95, 20, Microsoft.UI.Colors.White, tolerance: 30);
+		for (var i = 0; i < 8; i++)
+		{
+			ImageAssert.HasColorAt(screenshot, 115 + i * 10, 20, i % 2 == 0 ? Microsoft.UI.Colors.Red : Microsoft.UI.Colors.White, tolerance: 30);
+		}
+	}
+
+	// WinUI trims an ellipse from 12 o'clock but starts its dash pattern at 9 o'clock. A single short dash shows where.
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Ellipse_Dashed_Then_Pattern_Starts_At_Nine_OClock()
+	{
+		var screenshot = await RenderDashedShape(100, 100, c =>
+		{
+			var ellipse = c.CreateEllipseGeometry();
+			ellipse.Center = new Vector2(50, 50);
+			ellipse.Radius = new Vector2(40, 40);
+			return ellipse;
+		}, 6f, 1000f);
+
+		ImageAssert.HasColorAt(screenshot, 10, 47, Microsoft.UI.Colors.Red, tolerance: 30);
+		ImageAssert.HasColorAt(screenshot, 53, 10, Microsoft.UI.Colors.White, tolerance: 30);
+	}
+
+	// A rounded rectangle's dash pattern starts where its top-left arc begins; trims start where that arc ends.
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_RoundedRectangle_Dashed_Then_Pattern_Starts_At_Top_Left_Arc()
+	{
+		var screenshot = await RenderDashedShape(100, 100, c =>
+		{
+			var rect = c.CreateRoundedRectangleGeometry();
+			rect.Offset = new Vector2(10, 10);
+			rect.Size = new Vector2(80, 80);
+			rect.CornerRadius = new Vector2(20, 20);
+			return rect;
+		}, 6f, 1000f);
+
+		ImageAssert.HasColorAt(screenshot, 11, 27, Microsoft.UI.Colors.Red, tolerance: 30);
+		ImageAssert.HasColorAt(screenshot, 33, 10, Microsoft.UI.Colors.White, tolerance: 30);
+	}
+
+	private static async Task<RawBitmap> RenderDashedShape(int width, int height, Func<Compositor, CompositionGeometry> geometry, float dash, float gap)
+	{
+		var anchor = new Border { Width = 1, Height = 1 };
+		await UITestHelper.Load(anchor);
+		var compositor = ElementCompositionPreview.GetElementVisual(anchor).Compositor;
+
+		var shape = compositor.CreateSpriteShape(geometry(compositor));
+		shape.StrokeThickness = 4f;
+		shape.StrokeBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Red);
+		shape.StrokeDashArray.Add(dash);
+		shape.StrokeDashArray.Add(gap);
+
+		var shapeVisual = compositor.CreateShapeVisual();
+		shapeVisual.Shapes.Add(shape);
+		shapeVisual.Size = new Vector2(width, height);
+
+		var host = new Border
+		{
+			Width = width,
+			Height = height,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+		};
+		ElementCompositionPreview.SetElementChildVisual(host, shapeVisual);
+
+		await UITestHelper.Load(host);
+		await UITestHelper.WaitForIdle();
+		return await UITestHelper.ScreenShot(host);
+	}
 }
