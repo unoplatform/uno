@@ -11,6 +11,7 @@ using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.Devices.Input;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -77,6 +78,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private uint _goToStateRequest;
 		private TimeSpan _pauseStateUpdateUntil;
 		private bool _canRaiseClickOnPointerRelease;
+		private (PointerIdentifier Pointer, ulong Timestamp) _clickPress;
 
 		protected SelectorItem()
 		{
@@ -438,13 +440,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
+			var point = args.GetCurrentPoint(this);
 			if (ShouldHandlePressed
 				&& IsItemClickEnabled
-				&& args.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+				&& point.Properties.IsLeftButtonPressed)
 			{
 				// Note: We do allow PointerCaptureResult.AlreadyCaptured as if element has been flagged as CanDrag
 				//		 (common in ListView that do allow re-ordering ;) ),
 				//		 the pointer might have already been captured for this SelectorItem.
+
+				// Another finger does not replace the press which armed the click: its release decides whether it was a hold.
+				if (!_canRaiseClickOnPointerRelease || _clickPress.Pointer == point.Pointer)
+				{
+					_clickPress = (point.Pointer, point.Timestamp);
+				}
 
 				_canRaiseClickOnPointerRelease = true;
 			}
@@ -472,13 +481,39 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				{
 					_canRaiseClickOnPointerRelease = false;
 
-					update = ManipulationUpdateKind.Clicked;
-					Selector?.OnItemClicked(this, args.KeyModifiers);
+					if (!IsListViewBaseItemHold(args))
+					{
+						update = ManipulationUpdateKind.Clicked;
+						Selector?.OnItemClicked(this, args.KeyModifiers);
+					}
 				}
 
 				args.Handled = ShouldHandlePressed;
 				UpdateCommonStatesWithoutNeedsLayout(true, (PointerDeviceType)args.Pointer.PointerDeviceType, update);
 			}
+		}
+
+		// WinUI's ListViewBaseItem runs its tap interaction (ItemClick and selection) only when a Tapped follows (ListViewBaseItem_Partial.cpp, OnPointerReleased),
+		// while a touch or pen hold is followed by a RightTapped. ListBoxItem and ComboBoxItem still select on a hold.
+		// TODO Uno: Use args.GestureFollowing once implemented (it is always None for now).
+		private bool IsListViewBaseItemHold(PointerRoutedEventArgs args)
+		{
+			if (!IsListViewBaseItem
+				|| (PointerDeviceType)args.Pointer.PointerDeviceType is not (PointerDeviceType.Touch or PointerDeviceType.Pen))
+			{
+				return false;
+			}
+
+			var release = args.GetCurrentPoint(null);
+			var isHold = release.Pointer == _clickPress.Pointer
+				&& Microsoft.UI.Input.GestureRecognizer.IsHold(release.Pointer, _clickPress.Timestamp, release.Timestamp);
+
+			if (isHold && this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"{release.Pointer} hold of {release.Timestamp - _clickPress.Timestamp} µs on {this}: no ItemClick nor selection.");
+			}
+
+			return isHold;
 		}
 
 		/// <inheritdoc />
