@@ -29,9 +29,10 @@ internal class ProxyLifecycleManager
 	{
 		Name = "uno_app_select_solution",
 		Description =
-			"Selects a specific Uno solution when multiple solutions exist in the workspace. "
-			+ "This restarts the DevServer. Typically called when uno_health reports a WorkspaceAmbiguous issue, "
-			+ "or when you need to switch to a different solution. "
+			"Selects the Uno solution the DevServer serves for this session and (re)starts the DevServer for it. "
+			+ "Accepts the absolute local path of any existing .sln or .slnx whose nearest global.json declares the Uno SDK, "
+			+ "inside or outside the current workspace; uno_health lists the discovered candidateSolutions as suggestions. "
+			+ "The selection stays in place until another one is made. Use it when uno_health reports WorkspaceAmbiguous or to change solutions. "
 			+ "Pass forceRestart=true to force a restart even when the same solution is already selected.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
 			"""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."},"forceRestart":{"type":"boolean","description":"When true, forces a full DevServer restart even if the solution is already selected. Useful after external changes such as editing global.json or running dotnet restore."}}}"""),
@@ -224,8 +225,7 @@ internal class ProxyLifecycleManager
 						Code = IssueCode.WorkspaceNotResolved,
 						Severity = ValidationSeverity.Warning,
 						Message = "The requested solution path is invalid.",
-						Remediation =
-							"Call uno_health to inspect candidateSolutions, then provide an absolute path to one of those solutions.",
+						Remediation = SelectSolutionPathRemediation,
 					},
 				]);
 		}
@@ -246,73 +246,86 @@ internal class ProxyLifecycleManager
 						Code = IssueCode.WorkspaceNotResolved,
 						Severity = ValidationSeverity.Warning,
 						Message = "The requested solution path could not be normalized.",
-						Remediation =
-							"Call uno_health to inspect candidateSolutions, then provide a valid absolute path to one of those solutions.",
+						Remediation = SelectSolutionPathRemediation,
 					},
 				]);
 		}
 
+		if (!LocalPathGuard.IsLocalPath(normalizedSolutionPath))
+		{
+			return CreateRejectedSelectionResult(
+				normalizedSolutionPath,
+				"The solutionPath argument must be a local path; network (UNC) and device paths are refused.",
+				[
+					new ValidationIssue
+					{
+						Code = IssueCode.WorkspaceNotResolved,
+						Severity = ValidationSeverity.Warning,
+						Message = "The requested solution is on a network share or device path, which the DevServer does not open.",
+						Remediation = SelectSolutionPathRemediation,
+					},
+				]);
+		}
+
+		if (!IsSolutionFile(normalizedSolutionPath))
+		{
+			return CreateRejectedSelectionResult(
+				normalizedSolutionPath,
+				"The solutionPath argument must point to a .sln or .slnx file.",
+				[
+					new ValidationIssue
+					{
+						Code = IssueCode.WorkspaceNotResolved,
+						Severity = ValidationSeverity.Warning,
+						Message = "The requested path is not a solution file.",
+						Remediation = SelectSolutionPathRemediation,
+					},
+				]);
+		}
+
+		if (!File.Exists(normalizedSolutionPath))
+		{
+			return CreateRejectedSelectionResult(
+				normalizedSolutionPath,
+				"Solution file not found.",
+				[
+					new ValidationIssue
+					{
+						Code = IssueCode.WorkspaceNotResolved,
+						Severity = ValidationSeverity.Warning,
+						Message = $"No file exists at '{normalizedSolutionPath}'.",
+						Remediation = SelectSolutionPathRemediation,
+					},
+				]);
+		}
+
+		var solutionDirectory = Path.GetDirectoryName(normalizedSolutionPath) ?? normalizedSolutionPath;
 		var observationRoot =
 			GetWorkspaceObservationRoot()
 				?? _solutionDirectory
 				?? _currentDirectory
-				?? Path.GetDirectoryName(normalizedSolutionPath);
+				?? solutionDirectory;
 
-		if (string.IsNullOrWhiteSpace(observationRoot))
-		{
-			return CreateRejectedSelectionResult(
-				normalizedSolutionPath,
-				"Unable to determine the workspace root for this session.",
-				[
-					new ValidationIssue
-					{
-						Code = IssueCode.WorkspaceNotResolved,
-						Severity = ValidationSeverity.Warning,
-						Message = "The MCP bridge could not determine a workspace root for this session.",
-						Remediation =
-							"Call uno_health for diagnostics, or restart the MCP bridge from the intended repository.",
-					},
-				]);
-		}
-
-		var availableSolutions = GetCandidateSolutionsForSelection(observationRoot);
+		var suggestedSolutions = GetCandidateSolutionsForSelection(observationRoot);
 		LogTimeline(
 			"select-solution.scan-candidates.complete",
 			selectionStopwatch.ElapsedMilliseconds,
-			$"root={observationRoot};count={availableSolutions.Count}");
-		if (!availableSolutions.Any(candidate => PathComparison.PathsEqual(candidate, normalizedSolutionPath)))
-		{
-			return CreateRejectedSelectionResult(
-				normalizedSolutionPath,
-				"The requested solution is not one of the current candidate solutions for this session.",
-				[
-					new ValidationIssue
-					{
-						Code = IssueCode.WorkspaceNotResolved,
-						Severity = ValidationSeverity.Warning,
-						Message =
-							"The requested solution is outside the candidate solution set for the current MCP session.",
-						Remediation =
-							"Call uno_health to inspect candidateSolutions, then choose one of those paths or restart the MCP bridge from a different repository root.",
-					},
-				]);
-		}
+			$"root={observationRoot};count={suggestedSolutions.Count}");
 
 		var nextResolution = await _workspaceResolver.ResolveSolutionAsync(
 			observationRoot,
 			normalizedSolutionPath,
-			availableSolutions);
+			suggestedSolutions);
 		LogTimeline(
 			"select-solution.resolve-workspace.complete",
 			selectionStopwatch.ElapsedMilliseconds,
 			$"kind={nextResolution.ResolutionKind};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 		if (!nextResolution.IsResolved)
 		{
-			var discovery = await BuildDiscoveryInfoForSelectionAsync(observationRoot, nextResolution);
 			return CreateRejectedSelectionResult(
 				normalizedSolutionPath,
-				"The requested solution does not resolve to a valid Uno workspace.",
-				DiscoveryIssueMapper.MapDiscoveryIssues(discovery));
+				"The DevServer cannot start for this solution: no global.json declaring an Uno SDK applies to it.",
+				[CreateNoUnoSdkIssue(solutionDirectory)]);
 		}
 
 		var previousResolution = _workspaceResolution;
@@ -333,6 +346,31 @@ internal class ProxyLifecycleManager
 			Message = BuildSelectionMessage(selectedResolution, transitionAction),
 		};
 	}
+
+	private const string SelectSolutionPathRemediation =
+		"Provide the absolute path to the intended .sln or .slnx file; uno_health lists discovered candidateSolutions as suggestions.";
+
+	private static bool IsSolutionFile(string path)
+		=> string.Equals(Path.GetExtension(path), ".sln", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(Path.GetExtension(path), ".slnx", StringComparison.OrdinalIgnoreCase);
+
+	// The resolver stops at the nearest global.json, as the .NET SDK does: say which one applies, or that none does.
+	private static ValidationIssue CreateNoUnoSdkIssue(string solutionDirectory)
+		=> GlobalJsonLocator.FindGlobalJson(solutionDirectory) is { } globalJsonPath
+			? new ValidationIssue
+			{
+				Code = IssueCode.WorkspaceNotResolved,
+				Severity = ValidationSeverity.Fatal,
+				Message = $"The nearest global.json ({globalJsonPath}) does not declare Uno.Sdk or Uno.Sdk.Private in msbuild-sdks.",
+				Remediation = "Add the Uno SDK to that global.json's msbuild-sdks, or choose another solution, then call uno_app_select_solution again.",
+			}
+			: new ValidationIssue
+			{
+				Code = IssueCode.WorkspaceNotResolved,
+				Severity = ValidationSeverity.Fatal,
+				Message = $"No global.json was found in {solutionDirectory} or any parent folder.",
+				Remediation = "Add a global.json declaring Uno.Sdk in msbuild-sdks next to the solution or above it, or choose another solution, then call uno_app_select_solution again.",
+			};
 
 	private async Task<CallToolResult> SelectSolution(string solutionPath, bool forceRestart = false)
 	{
@@ -567,8 +605,7 @@ internal class ProxyLifecycleManager
 		var fileName = Path.GetFileName(path);
 		return string.Equals(fileName, "global.json", StringComparison.OrdinalIgnoreCase)
 			|| string.Equals(fileName, "project.assets.json", StringComparison.OrdinalIgnoreCase)
-			|| string.Equals(Path.GetExtension(path), ".sln", StringComparison.OrdinalIgnoreCase)
-			|| string.Equals(Path.GetExtension(path), ".slnx", StringComparison.OrdinalIgnoreCase);
+			|| IsSolutionFile(path);
 	}
 
 	private string? GetRootPath(string rootUri)
@@ -1261,13 +1298,6 @@ internal class ProxyLifecycleManager
 		}
 	}
 
-	private async Task<DiscoveryInfo> BuildDiscoveryInfoForSelectionAsync(string observationRoot,
-		WorkspaceResolution resolution)
-	{
-		var unoToolsLocator =
-			new UnoToolsLocator(Microsoft.Extensions.Logging.Abstractions.NullLogger<UnoToolsLocator>.Instance);
-		return await unoToolsLocator.DiscoverAsync(observationRoot, resolution);
-	}
 
 	private static string DetermineSelectionStatus(
 		WorkspaceResolution? previousResolution,
