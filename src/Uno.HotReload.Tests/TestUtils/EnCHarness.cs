@@ -34,6 +34,9 @@ internal sealed class EnCHarness : IDisposable
 	public required ProjectId ProjectId { get; init; }
 	public required DocumentId DocumentId { get; init; }
 
+	/// <summary>The single document of the second project, when one was requested.</summary>
+	public DocumentId? OtherDocumentId { get; init; }
+
 	/// <summary>
 	/// Whether disposing the harness ends the EnC session. Defaults to <see langword="true"/>
 	/// (shim-level tests drive <see cref="Watch"/> directly); tests that hand <see cref="Watch"/>
@@ -53,13 +56,22 @@ internal sealed class EnCHarness : IDisposable
 	public static SourceText AppText(string expression)
 		=> SourceText.From(AppSource(expression), Encoding.UTF8);
 
+	/// <summary>
+	/// Wraps a complete document body, for the tests that need a baseline shape
+	/// <see cref="AppSource"/> cannot express (a base type, several types, …).
+	/// </summary>
+	public static SourceText RawText(string source)
+		=> SourceText.From(source, Encoding.UTF8);
+
 	/// <param name="appText">The baseline text of App.cs; defaults to a <c>C.M()</c> using ConflictLib v1.</param>
 	/// <param name="additionalReferences">References added to the project on top of CoreLib and ConflictLib v1.</param>
+	/// <param name="otherText">When set, the baseline text of a second, independent project.</param>
 	public static async Task<EnCHarness> CreateAsync(
 		TempDirectory temp,
 		CancellationToken ct,
 		SourceText? appText = null,
-		IEnumerable<MetadataReference>? additionalReferences = null)
+		IEnumerable<MetadataReference>? additionalReferences = null,
+		SourceText? otherText = null)
 	{
 		var v1 = EmitLibrary(temp, "ConflictLib", "1.0.0.0", ConflictLibSource, subdir: "v1");
 
@@ -97,6 +109,34 @@ internal sealed class EnCHarness : IDisposable
 
 		var workspace = new AdhocWorkspace();
 		workspace.AddProject(projectInfo);
+
+		DocumentId? otherDocumentId = null;
+		if (otherText is not null)
+		{
+			var otherProjectId = ProjectId.CreateNewId();
+			otherDocumentId = DocumentId.CreateNewId(otherProjectId);
+			var otherPath = Path.Join(temp.Path, "Other.cs");
+
+			workspace.AddProject(ProjectInfo.Create(
+					otherProjectId,
+					VersionStamp.Create(),
+					name: "Other",
+					assemblyName: "Other",
+					language: LanguageNames.CSharp,
+					filePath: Path.Join(temp.Path, "Other.csproj"),
+					compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+					documents:
+					[
+						DocumentInfo.Create(
+							otherDocumentId,
+							name: "Other.cs",
+							loader: TextLoader.From(TextAndVersion.Create(otherText, VersionStamp.Create(), otherPath)),
+							filePath: otherPath),
+					],
+					metadataReferences: [MetadataReference.CreateFromFile(typeof(object).Assembly.Location)])
+				.WithCompilationOutputInfo(default(CompilationOutputInfo).WithAssemblyPath(Path.Join(temp.Path, "bin", "Other.dll"))));
+		}
+
 		var solution = workspace.CurrentSolution;
 
 		var emitted = await solution.EmitCompilationOutputAsync(ct);
@@ -111,6 +151,7 @@ internal sealed class EnCHarness : IDisposable
 			Solution = solution,
 			ProjectId = projectId,
 			DocumentId = documentId,
+			OtherDocumentId = otherDocumentId,
 		};
 	}
 
