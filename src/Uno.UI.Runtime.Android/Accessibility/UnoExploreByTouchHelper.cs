@@ -1041,12 +1041,12 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			TryGetElement(id, out var element) &&
 			element is UIElement uiElement &&
 			uiElement.GetOrCreateAutomationPeer() is { } peer &&
-			AccessibilityPeerHelper.TryGetText(peer, out var text, out _) &&
+			AccessibilityPeerHelper.TryGetTextLength(peer, out var textLength) &&
 			AccessibilityPeerHelper.TryGetTextSelection(peer, out var selectionStart, out var selectionEnd))
 		{
 			_clearedTextSelectionIds.Remove(id);
 			_textSelectionByVirtualId[id] = (selectionStart, selectionEnd);
-			SendTextSelectionChangedEvent(id, selectionStart, selectionEnd, text.Length);
+			SendTextSelectionChangedEvent(id, selectionStart, selectionEnd, textLength);
 			return true;
 		}
 

@@ -45,6 +45,16 @@ public class Given_BindableTypeProvidersSourceGenerator
 		test.GeneratedCode.Should().Contain("""$"The Bindable attribute is missing and the type [{type.FullName}] is not known by the MetadataProvider.""");
 	}
 
+	[TestMethod]
+	public async Task When_Provider_Generated_Then_Hidden_From_IntelliSense()
+	{
+		var test = CreateTest(1);
+
+		await test.RunAsync();
+
+		test.GeneratedCode.Should().MatchRegex(@"EditorBrowsable\(global::System\.ComponentModel\.EditorBrowsableState\.Never\)\]\s+public class BindableMetadataProvider\b");
+	}
+
 	private static Test CreateTest(int typeCount, params string[] preprocessorSymbols)
 	{
 		var test = new Test(preprocessorSymbols, isDictionaryMode: typeCount >= DictionaryModeTypeCount)

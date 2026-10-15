@@ -8,10 +8,12 @@ namespace Uno.UI.Runtime.MacOS;
 internal class MacOSNativeOverlappedPresenter : INativeOverlappedPresenter
 {
 	private readonly nint _handle;
+	private readonly Action _onBorderAndTitleBarChanged;
 
-	public MacOSNativeOverlappedPresenter(MacOSWindowNative window)
+	public MacOSNativeOverlappedPresenter(MacOSWindowNative window, Action onBorderAndTitleBarChanged)
 	{
 		_handle = window.Handle;
+		_onBorderAndTitleBarChanged = onBorderAndTitleBarChanged;
 	}
 
 	public OverlappedPresenterState State => (OverlappedPresenterState)NativeUno.uno_window_get_overlapped_presenter_state(_handle);
@@ -22,7 +24,11 @@ internal class MacOSNativeOverlappedPresenter : INativeOverlappedPresenter
 
 	public void Restore(bool activateWindow) => NativeUno.uno_window_restore(_handle, activateWindow);
 
-	public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar) => NativeUno.uno_window_set_border_and_title_bar(_handle, hasBorder, hasTitleBar);
+	public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
+	{
+		NativeUno.uno_window_set_border_and_title_bar(_handle, hasBorder, hasTitleBar);
+		_onBorderAndTitleBarChanged();
+	}
 
 	public void SetIsAlwaysOnTop(bool isAlwaysOnTop) => NativeUno.uno_window_set_always_on_top(_handle, isAlwaysOnTop);
 

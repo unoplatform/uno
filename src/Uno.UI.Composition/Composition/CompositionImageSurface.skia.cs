@@ -57,7 +57,7 @@ namespace Microsoft.UI.Composition
 		/// The framework-owned GPU texture for the current frame's image, created once via the active backend
 		/// factory and reused across frames (recreated only when the frame changes). Disposed with the surface.
 		/// </summary>
-		internal ITexture? GetTexture()
+		internal ITexture? GetTexture(IDrawingFactory factory)
 		{
 			// A directly-retained texture (e.g. rendered SVG) is already backend-resident — return it as-is,
 			// no derive-from-IImage / no readback. Its lifetime is the surface's.
@@ -72,10 +72,8 @@ namespace Microsoft.UI.Composition
 				DisposeTexture();
 				return null;
 			}
-			// Keyed on the factory as well as the image: a texture belongs to one device, and a renderer re-bind
-			// (an Android GL context loss, or another window registering) leaves the cached one bound to a device
-			// nothing draws on any more.
-			var factory = DrawingFactory.Current;
+			// Keyed on the factory as well as the image: a texture belongs to one device, and the factory comes from
+			// the session being painted, so two windows on different devices each get their own.
 			if (!ReferenceEquals(img, _texturedImage) || !ReferenceEquals(factory, _textureFactory))
 			{
 				DisposeTexture();

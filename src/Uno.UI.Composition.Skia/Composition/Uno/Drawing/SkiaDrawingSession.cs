@@ -91,7 +91,9 @@ internal class SkiaDrawingSession : IDrawingSession
 		opacityPaint?.Dispose();
 	}
 
-	public Matrix4x4 TotalMatrix => _canvas.TotalMatrix.ToMatrix4x4();
+	// Read back the full 4x4 SetMatrix stored: the 3x3 TotalMatrix drops the Z row and column, so a
+	// flattening transform (M33 = 0, as AnimatedVisuals produce) would come back as M33 = 1.
+	public Matrix4x4 TotalMatrix => _canvas.TotalMatrix44;
 
 	public void SetMatrix(in Matrix4x4 matrix)
 	{

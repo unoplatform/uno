@@ -990,6 +990,27 @@ internal static class AccessibilityPeerHelper
 		return success;
 	}
 
+	// Reads the document range bounds rather than its text, so a large RichEditBox story stays unmaterialized.
+	internal static bool TryGetTextLength(AutomationPeer peer, out int length)
+	{
+		var value = 0;
+		var success = TryPerform(() =>
+		{
+			var provider = GetProvider<ITextProvider>(ResolveProviderPeer(peer), PatternInterface.Text);
+			if (provider is null ||
+				!TryGetTextRangeOffsets(provider, provider.DocumentRange, out var start, out var end))
+			{
+				return false;
+			}
+
+			value = end - start;
+			return true;
+		});
+
+		length = value;
+		return success;
+	}
+
 	internal static bool TryGetTextSelection(
 		AutomationPeer peer,
 		out int selectionStart,

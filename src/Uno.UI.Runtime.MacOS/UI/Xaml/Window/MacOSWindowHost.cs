@@ -23,6 +23,7 @@ using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
 using Microsoft.UI.Input;
+using Uno.UI.UI.Input.Internal;
 using Microsoft.UI.Xaml.Media;
 using Window = Microsoft.UI.Xaml.Window;
 using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
@@ -43,6 +44,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private ISwapChain _context = null!;
 	// The per-window backend factory, installed on this window's CompositionTarget each frame.
 	private IDrawingFactory _renderer = null!;
+
+	// Read by this window's CompositionTarget when it first needs a backend, so a frame is never recorded
+	// under one backend and presented under another.
+	IDrawingFactory? IXamlRootHost.Renderer => _renderer;
 	private MacOSRenderThread? _metalRenderThread;
 	// Written by the software/legacy draw paths on the main thread and by the Metal render thread.
 	private volatile bool _initializationCompleted;
@@ -191,7 +196,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			return false;
 		}
 
-		ct.Renderer = _renderer;
 		// Present (drawable acquire + blit) happens inside this call, through the context.
 		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context);
 
@@ -250,7 +254,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		var ct = (CompositionTarget)RootElement!.Visual.CompositionTarget!;
-		ct.Renderer = _renderer;
 		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context);
 
 		string? clip = null;
@@ -292,7 +295,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		// The rendered buffer is read back out of the context's target and handed to the native SoftDraw.
 		var ct = (CompositionTarget)RootElement!.Visual.CompositionTarget!;
-		ct.Renderer = _renderer;
 		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context);
 		var softwareTarget = (_context as MacOSSoftwareGraphicsContext)?.CurrentTarget;
 
@@ -332,6 +334,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => (o as IUnoCorePointerInputSource)!);
 
 		NativeUno.uno_set_window_close_callbacks(&WindowShouldClose, &WindowClose);
+		NativeUno.uno_set_window_activation_changed_callback(&WindowActivationChanged);
+		NativeUno.uno_set_window_non_client_hit_test_callback(&WindowNonClientHitTest);
+		ApiExtensibility.Register<AppWindow>(typeof(INativeInputNonClientPointerSource), appWindow => (appWindow.NativeAppWindow as MacOSWindowWrapper)!);
 
 		NativeUno.uno_set_ime_callbacks(&OnImeInsertText, &OnImeSetMarkedText, &OnImeUnmarkText, &OnImeGetCaretRect);
 
@@ -881,6 +886,44 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			Application.Current.RaiseRecoverableUnhandledException(e);
 			return 0;
+		}
+	}
+
+	/// <summary>
+	/// Raised when the native window becomes (true) or stops being (false) the key window.
+	/// </summary>
+	internal event EventHandler<(bool IsActive, bool ByPointer)>? ActivationChanged;
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static void WindowActivationChanged(nint handle, int isActive, int byPointer)
+	{
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?.ActivationChanged?.Invoke(window, (isActive != 0, byPointer != 0));
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	/// <summary>
+	/// Resolves what a left-button press at a content point (in logical pixels) does while the content extends into the title bar.
+	/// </summary>
+	internal Func<double, double, MacOSNonClientPointerAction>? NonClientHitTest { get; set; }
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static MacOSNonClientPointerAction WindowNonClientHitTest(nint handle, double x, double y)
+	{
+		try
+		{
+			return GetWindowHost(handle)?.NonClientHitTest?.Invoke(x, y) ?? MacOSNonClientPointerAction.Client;
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+			return MacOSNonClientPointerAction.Client;
 		}
 	}
 

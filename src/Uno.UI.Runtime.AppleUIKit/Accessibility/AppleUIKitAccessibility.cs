@@ -337,6 +337,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	protected override bool ShouldInvalidateOnScroll
 		=> IsAccessibilityEnabled && IsAssistiveTechnologyRunning;
 
+	protected override bool PushesTextValue => false;
+
 	private static bool IsAssistiveTechnologyRunning
 		=> UIAccessibility.IsVoiceOverRunning || UIAccessibility.IsSwitchControlRunning;
 

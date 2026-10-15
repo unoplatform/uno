@@ -228,6 +228,34 @@ public class Given_AppWindow
 		}
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_Activated_ClientSize_Is_Physical_Content_Size()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var content = new Microsoft.UI.Xaml.Controls.Grid();
+		var newWindow = new Window { Content = content };
+		var activated = false;
+		try
+		{
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated && content.ActualWidth > 0);
+
+			// Without any resize or move: macOS used to report 0 until the next one.
+			var xamlRoot = content.XamlRoot;
+			var clientSize = newWindow.AppWindow.ClientSize;
+			clientSize.Width.Should().BeCloseTo((int)(xamlRoot.Size.Width * xamlRoot.RasterizationScale), 2);
+			clientSize.Height.Should().BeCloseTo((int)(xamlRoot.Size.Height * xamlRoot.RasterizationScale), 2);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			newWindow.Close();
+		}
+	}
+
 	private void AssertPositioningAndSizingSupport()
 	{
 		if (!OperatingSystem.IsLinux() &&
