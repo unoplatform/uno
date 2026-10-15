@@ -17,6 +17,13 @@ internal static class WorkspaceTransitionDecisions
 		var previousResolved = previous?.IsResolved == true;
 		var currentResolved = current.IsResolved;
 
+		// MCP roots are a hint (deprecated by SEP-2577): they never override a solution selected explicitly, even one
+		// that does not resolve right now (a refresh would drop the selection too).
+		if (trigger == WorkspaceTransitionTrigger.McpRoots && previous?.IsExplicitSolutionSelection == true)
+		{
+			return WorkspaceTransitionAction.Ignore;
+		}
+
 		if (previousResolved && currentResolved && IsSameWorkspace(previous!, current))
 		{
 			if ((trigger == WorkspaceTransitionTrigger.McpRoots || trigger == WorkspaceTransitionTrigger.UserSelection) && !devServerStarted)
@@ -25,6 +32,13 @@ internal static class WorkspaceTransitionDecisions
 			}
 
 			return WorkspaceTransitionAction.Refresh;
+		}
+
+		// Nor do roots replace or degrade another workspace whose DevServer runs. Before a DevServer starts (deferred
+		// roots startup) they still decide where it starts.
+		if (trigger == WorkspaceTransitionTrigger.McpRoots && previousResolved && devServerStarted)
+		{
+			return WorkspaceTransitionAction.Ignore;
 		}
 
 		if (!previousResolved && currentResolved)
@@ -50,7 +64,7 @@ internal static class WorkspaceTransitionDecisions
 
 			return trigger == WorkspaceTransitionTrigger.FileSystem
 				? WorkspaceTransitionAction.Restart
-				: WorkspaceTransitionAction.Diagnose;
+				: WorkspaceTransitionAction.Start;
 		}
 
 		return WorkspaceTransitionAction.Diagnose;
@@ -80,4 +94,7 @@ internal enum WorkspaceTransitionAction
 	Stop,
 	Restart,
 	Diagnose,
+
+	/// <summary>The trigger only hints at a workspace; the current one is kept as is.</summary>
+	Ignore,
 }
