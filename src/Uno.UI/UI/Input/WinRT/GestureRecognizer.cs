@@ -71,6 +71,43 @@ namespace Windows.UI.Input
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public GestureRecognizerSuspiciousCases PatchCases { get; set; } = WinRTFeatureConfiguration.GestureRecognizer._defaultPatchSuspiciousCases;
 
+<<<<<<< HEAD
+=======
+		/// <summary>
+		/// Reports every pointer move as a manipulation delta, instead of accumulating until the
+		/// per-device delta threshold is crossed.
+		/// </summary>
+		/// <remarks>
+		/// Set for the direct-manipulation (scrolling) recognizer only. The threshold exists to bound the
+		/// volume of public ManipulationDelta events, but on the scroll path it acts as a motion quantizer:
+		/// content does not move until 2 logical px have accumulated, then jumps by the whole amount. A slow
+		/// drag therefore advances every other frame. Inertia already bypasses the threshold for the same reason.
+		/// </remarks>
+		internal bool ReportsUnquantizedDeltas { get; init; }
+
+		/// <summary>
+		/// Never reports a touch or pen hold as a tap, even when <see cref="GestureSettings.RightTap"/> is not enabled.
+		/// </summary>
+		/// <remarks>
+		/// Set for UIElement recognizers: on WinUI, Tapped and Holding are mutually exclusive and a touch or pen hold is followed by a RightTapped.
+		/// </remarks>
+		internal bool SuppressesTapOnHold { get; init; }
+
+		// The press (pointer and down timestamp) for which a UIElement recognizer last raised Holding.
+		private static (PointerIdentifier Pointer, ulong Timestamp) _lastHeldPress;
+
+		/// <summary>
+		/// Determines whether a press is a hold: it lasted longer than <see cref="HoldMinDelayMicroseconds"/>,
+		/// or a UIElement recognizer already raised Holding for it (the holding timer can elapse before the pointer timestamps do).
+		/// </summary>
+		internal static bool IsHold(PointerIdentifier pointer, ulong pressedTimestamp, ulong currentTimestamp)
+			=> IsLongPress(pressedTimestamp, currentTimestamp)
+				|| _lastHeldPress == (pointer, pressedTimestamp);
+
+		internal static bool IsLongPress(ulong pressedTimestamp, ulong currentTimestamp)
+			=> currentTimestamp - pressedTimestamp > HoldMinDelayMicroseconds;
+
+>>>>>>> 3e11bd3 (fix(input): Never report a touch or pen hold as a tap)
 		internal bool IsDragging => _manipulation?.IsDragManipulation ?? false;
 
 		/// <summary>
