@@ -60,6 +60,41 @@ internal static class WaylandDataFormats
 		return mimeTypes;
 	}
 
+	/// <summary>
+	/// The MIME types a drag of <paramref name="view"/> offers. Unlike the clipboard it carries no cut/copy verb,
+	/// and a file list is also readable as text so terminals and editors can take the paths.
+	/// </summary>
+	internal static List<string> GetDragMimeTypes(DataPackageView view)
+	{
+		var formats = view.AvailableFormats;
+		var mimeTypes = new List<string>();
+		var hasFiles = formats.Contains(StandardDataFormats.StorageItems) || formats.Contains(WaylandFileUris.UriListMimeType);
+		if (hasFiles)
+		{
+			mimeTypes.Add(WaylandFileUris.UriListMimeType);
+		}
+		if (formats.Contains(StandardDataFormats.Bitmap))
+		{
+			mimeTypes.Add(ImageMimeTypes[0]);
+		}
+		if (formats.Contains(StandardDataFormats.Html))
+		{
+			mimeTypes.Add(HtmlMimeType);
+		}
+		if (hasFiles || formats.Contains(StandardDataFormats.Text) || formats.Contains(StandardDataFormats.Uri) || formats.Contains(StandardDataFormats.WebLink))
+		{
+			mimeTypes.AddRange(TextMimeTypes);
+		}
+		foreach (var format in formats)
+		{
+			if (format.Contains('/') && !mimeTypes.Contains(format))
+			{
+				mimeTypes.Add(format);
+			}
+		}
+		return mimeTypes;
+	}
+
 	/// <summary>Serializes the content of <paramref name="view"/> for <paramref name="mimeType"/>; null if it has no such content.</summary>
 	internal static async Task<byte[]?> GetBytesAsync(DataPackageView view, string mimeType)
 	{
@@ -75,8 +110,7 @@ internal static class WaylandDataFormats
 		}
 		if (mimeType is WaylandFileUris.UriListMimeType or WaylandFileUris.GnomeCopiedFilesMimeType && formats.Contains(StandardDataFormats.StorageItems))
 		{
-			var paths = (await view.GetStorageItemsAsync()).Select(item => item.Path).Where(path => !string.IsNullOrEmpty(path));
-			var localPaths = paths.ToArray();
+			var localPaths = await GetLocalPathsAsync(view);
 			return await Task.Run(() => Encoding.UTF8.GetBytes(mimeType == WaylandFileUris.UriListMimeType
 				? WaylandFileUris.FormatUriList(localPaths)
 				: WaylandFileUris.FormatGnomeCopiedFiles(localPaths)));
@@ -95,11 +129,30 @@ internal static class WaylandDataFormats
 			var text = formats.Contains(StandardDataFormats.Text) ? await view.GetTextAsync()
 				: formats.Contains(StandardDataFormats.Uri) ? (await view.GetUriAsync()).ToString()
 				: formats.Contains(StandardDataFormats.WebLink) ? (await view.GetWebLinkAsync()).ToString()
-				: null;
+				: await GetFileListTextAsync(view);
 			return text is null ? null : await EncodeAsync(text, mimeType == "STRING" ? Encoding.Latin1 : Encoding.UTF8);
 		}
 		return null;
 	}
+
+	// A file list offered as text, for formats produced by GetDragMimeTypes.
+	private static async Task<string?> GetFileListTextAsync(DataPackageView view)
+	{
+		var formats = view.AvailableFormats;
+		if (formats.Contains(WaylandFileUris.UriListMimeType))
+		{
+			return await view.GetDataAsync(WaylandFileUris.UriListMimeType) switch
+			{
+				string text => WaylandFileUris.FormatUriText(WaylandFileUris.ParseUriList(text)),
+				byte[] bytes => WaylandFileUris.FormatUriText(WaylandFileUris.ParseUriList(Encoding.UTF8.GetString(bytes))),
+				_ => null,
+			};
+		}
+		return formats.Contains(StandardDataFormats.StorageItems) ? WaylandFileUris.FormatUriText(await GetLocalPathsAsync(view)) : null;
+	}
+
+	private static async Task<string[]> GetLocalPathsAsync(DataPackageView view)
+		=> (await view.GetStorageItemsAsync()).Select(item => item.Path).Where(path => !string.IsNullOrEmpty(path)).ToArray();
 
 	private static Task<byte[]> EncodeAsync(string text, Encoding encoding)
 		=> Task.Run(() => encoding.GetBytes(text));

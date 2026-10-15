@@ -34,6 +34,10 @@ internal sealed class WaylandProtocolInputConnection : IWaylandInputConnection
 	// Raised on the dispatch thread for buttons on this window's surface, before the pointer source posts them
 	// to the UI thread.
 	public event EventHandler<WlPointer.ButtonEventArgs>? PointerButton;
+	private readonly WaylandGrabSerial _grab = new();
+	// The serial of the implicit grab (button or touch) in progress on this window's surface, which a
+	// wl_data_device.start_drag needs; null once that grab ended. Updated on the dispatch thread, readable anywhere.
+	public uint? GrabSerial => _grab.Serial;
 
 	public IDisposable GetPointer(WaylandPointerInputSource sink)
 	{
@@ -51,9 +55,9 @@ internal sealed class WaylandProtocolInputConnection : IWaylandInputConnection
 			Trace($"input: pointer enter serial={e.Serial} at {e.SurfaceX.ToDouble():0.##},{e.SurfaceY.ToDouble():0.##} owned={focused}");
 			if (focused) { sink.Enter(e.Serial, e.SurfaceX.ToDouble(), e.SurfaceY.ToDouble()); }
 		};
-		EventHandler<WlPointer.LeaveEventArgs> leave = (_, e) => { if (focused) { Trace($"input: pointer leave"); sink.Leave(); } focused = false; };
+		EventHandler<WlPointer.LeaveEventArgs> leave = (_, e) => { if (focused) { Trace($"input: pointer leave"); _grab.ClearPointer(); sink.Leave(); } focused = false; };
 		EventHandler<WlPointer.MotionEventArgs> motion = (_, e) => { if (focused) { Trace($"input: pointer motion {e.SurfaceX.ToDouble():0.##},{e.SurfaceY.ToDouble():0.##}"); sink.Motion(e.Time, e.SurfaceX.ToDouble(), e.SurfaceY.ToDouble()); } };
-		EventHandler<WlPointer.ButtonEventArgs> button = (_, e) => { if (focused) { Trace($"input: pointer button 0x{e.Button:x} state={e.State}"); PointerButton?.Invoke(this, e); sink.Button(e.Time, e.Button, e.State); } };
+		EventHandler<WlPointer.ButtonEventArgs> button = (_, e) => { if (focused) { Trace($"input: pointer button 0x{e.Button:x} state={e.State}"); if (e.State == 1) { _grab.Press(e.Serial, e.Button); } else { _grab.Release(e.Button); } PointerButton?.Invoke(this, e); sink.Button(e.Time, e.Button, e.State); } };
 		EventHandler<WlPointer.AxisEventArgs> axis = (_, e) => { if (focused) { Trace($"input: pointer axis {e.Axis} value={e.Value.ToDouble():0.##}"); sink.Axis(e.Time, e.Axis, e.Value.ToDouble()); if (proxy.Version < 5) { sink.Frame(); } } };
 		EventHandler<WlPointer.AxisDiscreteEventArgs> discrete = (_, e) => { if (focused) { sink.AxisDiscrete(e.Axis, e.Discrete); } };
 		EventHandler<WlPointer.AxisValue120EventArgs> value120 = (_, e) => { if (focused) { Trace($"input: pointer axis {e.Axis} value120={e.Value120}"); sink.AxisValue120(e.Axis, e.Value120); } };
@@ -73,6 +77,7 @@ internal sealed class WaylandProtocolInputConnection : IWaylandInputConnection
 		binding.Remove.Add(() => proxy.Button -= buttonSerial);
 		binding.Remove.Add(() =>
 		{
+			_grab.ClearPointer();
 			PointerReleasing?.Invoke(this, EventArgs.Empty);
 			Pointer = null;
 			proxy.Enter -= enter;
@@ -139,17 +144,17 @@ internal sealed class WaylandProtocolInputConnection : IWaylandInputConnection
 		var proxy = _seat.GetTouch();
 		var binding = new Binding(proxy);
 		var ids = new HashSet<int>();
-		EventHandler<WlTouch.DownEventArgs> down = (_, e) => { if (_ownsSurface(e.Surface)) { ids.Add(e.Id); InputSerial?.Invoke(this, e.Serial); sink.TouchDown(e.Time, e.Id, e.X.ToDouble(), e.Y.ToDouble()); } };
-		EventHandler<WlTouch.UpEventArgs> up = (_, e) => { if (ids.Remove(e.Id)) { InputSerial?.Invoke(this, e.Serial); sink.TouchUp(e.Time, e.Id); } };
+		EventHandler<WlTouch.DownEventArgs> down = (_, e) => { if (_ownsSurface(e.Surface)) { ids.Add(e.Id); _grab.TouchDown(e.Serial, e.Id); InputSerial?.Invoke(this, e.Serial); sink.TouchDown(e.Time, e.Id, e.X.ToDouble(), e.Y.ToDouble()); } };
+		EventHandler<WlTouch.UpEventArgs> up = (_, e) => { if (ids.Remove(e.Id)) { _grab.TouchUp(e.Id); InputSerial?.Invoke(this, e.Serial); sink.TouchUp(e.Time, e.Id); } };
 		EventHandler<WlTouch.MotionEventArgs> motion = (_, e) => { if (ids.Contains(e.Id)) { sink.TouchMotion(e.Time, e.Id, e.X.ToDouble(), e.Y.ToDouble()); } };
 		EventHandler<WlTouch.FrameEventArgs> frame = (_, _) => sink.TouchFrame();
-		EventHandler<WlTouch.CancelEventArgs> cancel = (_, _) => { ids.Clear(); sink.TouchCancel(); };
+		EventHandler<WlTouch.CancelEventArgs> cancel = (_, _) => { ids.Clear(); _grab.ClearTouch(); sink.TouchCancel(); };
 		proxy.Down += down;
 		proxy.Up += up;
 		proxy.Motion += motion;
 		proxy.Frame += frame;
 		proxy.Cancel += cancel;
-		binding.Remove.Add(() => { proxy.Down -= down; proxy.Up -= up; proxy.Motion -= motion; proxy.Frame -= frame; proxy.Cancel -= cancel; });
+		binding.Remove.Add(() => { _grab.ClearTouch(); proxy.Down -= down; proxy.Up -= up; proxy.Motion -= motion; proxy.Frame -= frame; proxy.Cancel -= cancel; });
 		return binding;
 	}
 	private static void Trace(FormattableString message)
