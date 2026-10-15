@@ -727,6 +727,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			// If setting Content to a new View, recreate the template
 			ContentTemplateRoot = null;
 		}
+		else if (newValue is null && ContentTemplateRoot is ImplicitTextBlock)
+		{
+			// WinUI only materializes the implicit text block while the content is non-null
+			// (CContentPresenter::ApplyTemplate), so drop it here as well: an emptied text block
+			// still reserves a line of height, so the space would never be reclaimed.
+			ContentTemplateRoot = null;
+		}
 
 		// We need to overrides the local value of DataContext with Content's value here.
 		// But if the content value is the result of a binding without explicit sources: TemplatedParent, ElementName...
