@@ -29,6 +29,23 @@ body {
     overflow: hidden;
 }
 
+#uno-root,
+#uno-body {
+  /* The app draws its own text and selection: a long-press must not select or call out the host. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Hosted HTML and editable semantic elements keep the native selection (WebKit inherits -webkit-user-select).
+   :where() keeps it at zero specificity, so hosted pages can still style their own elements. */
+:where(#uno-native-element-host),
+:where(#uno-root, #uno-body) :where(input, textarea, [contenteditable]:not([contenteditable="false"])) {
+  user-select: text;
+  -webkit-user-select: text;
+  -webkit-touch-callout: default;
+}
+
 #uno-loading {
   position: fixed;
   width: 100%;
