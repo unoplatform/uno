@@ -50,17 +50,17 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 	}
 
 	/// <summary>
-	/// Set to true when the monitor has scanned for solutions and found none.
-	/// Reset to false when a solution is found. Used by HealthService to report
-	/// a clear message to the agent.
+	/// Set to true when the monitor has no solution to launch: the scan found none and the workspace
+	/// resolution selected none that exists. Reset to false when a solution is found. Used by HealthService
+	/// to report a clear message to the agent.
 	/// </summary>
 	public bool SolutionNotFound { get; private set; }
 
 	/// <summary>
-	/// The list of solution files discovered during the last scan, stored as
-	/// paths relative to <see cref="_currentDirectory"/>. Exposed via
-	/// <see cref="HealthService"/> so the MCP agent can see which solutions
-	/// were found.
+	/// The solution files of the last scan, plus the resolved solution when the depth-limited scan did not
+	/// reach it, stored as paths relative to <see cref="_currentDirectory"/> (a selection outside that
+	/// directory starts with <c>..</c>). Exposed via <see cref="HealthService"/> so the MCP agent can see
+	/// which solutions were found.
 	/// </summary>
 	public IReadOnlyList<string> DiscoveredSolutions { get; private set; } = [];
 
@@ -165,12 +165,25 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 					solutionFiles.Length,
 					_currentDirectory);
 
-				SolutionNotFound = solutionFiles.Length == 0;
-				DiscoveredSolutions = solutionFiles
+				// Decided before the no-solution gate: a resolved solution the scan cannot reach still launches (#25524).
+				var solution = DetermineSolutionToLaunch(solutionFiles, _workspaceResolution);
+				LogTimeline("determine-solution.complete", monitorCycleStopwatch.ElapsedMilliseconds,
+					solution ?? "<none>");
+				WarnIfSolutionWasNotChosen(solutionFiles, solution);
+
+				SolutionNotFound = solution is null;
+				IEnumerable<string> discoveredSolutions = solutionFiles;
+				// The result is either a scanned instance or the selection the scan missed: ordinal is enough.
+				if (solution is not null && !solutionFiles.Contains(solution, StringComparer.Ordinal))
+				{
+					discoveredSolutions = discoveredSolutions.Append(solution);
+				}
+
+				DiscoveredSolutions = discoveredSolutions
 					.Select(f => Path.GetRelativePath(_currentDirectory, f))
 					.ToArray();
 
-				if (solutionFiles.Length != 0)
+				if (solution is not null)
 				{
 					// Run full discovery to get DiscoveryInfo (used by health reports)
 					var discoveryStopwatch = System.Diagnostics.Stopwatch.StartNew();
@@ -220,11 +233,6 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 						{
 							_logger.LogDebug($"Using user-specified port {port}");
 						}
-
-						var solution =
-							DetermineSolutionToLaunch(solutionFiles, _workspaceResolution);
-						LogTimeline("determine-solution.complete", monitorCycleStopwatch.ElapsedMilliseconds,
-							solution ?? "<none>");
 
 						_logger.LogTrace(
 							"DevServerMonitor launching server from {HostPath} in {WorkingDirectory} on port {Port}",
@@ -423,6 +431,12 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		}
 	}
 
+	/// <summary>
+	/// The solution the host is launched with. The resolved <see cref="WorkspaceResolution.SelectedSolutionPath"/>
+	/// wins whenever the file exists: the scanned path when the rescan lists it (it keeps the on-disk casing), the
+	/// selected path itself otherwise, since the rescan is depth-limited. The first scanned solution in sorted order
+	/// is used only when no existing solution is resolved.
+	/// </summary>
 	internal static string? DetermineSolutionToLaunch(IReadOnlyList<string> solutionFiles,
 		WorkspaceResolution? workspaceResolution)
 	{
@@ -436,11 +450,38 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			{
 				return matchingSolution;
 			}
+
+			if (File.Exists(selectedSolutionPath))
+			{
+				return selectedSolutionPath;
+			}
 		}
 
 		return solutionFiles
 			.OrderBy(PathComparison.Normalize, StringComparer.Ordinal)
 			.FirstOrDefault();
+	}
+
+	// Logged once per launch attempt: a healthy host keeps the loop from coming back here, and the no-host path
+	// stops after MaxNoHostRetries cycles.
+	private void WarnIfSolutionWasNotChosen(IReadOnlyList<string> solutionFiles, string? solution)
+	{
+		var selectedSolutionPath = _workspaceResolution?.SelectedSolutionPath;
+		if (!string.IsNullOrWhiteSpace(selectedSolutionPath))
+		{
+			if (solution is not null && !PathComparison.PathsEqual(solution, selectedSolutionPath))
+			{
+				_logger.LogWarning(
+					"The selected solution {SelectedSolution} no longer exists; launching {Solution} instead",
+					selectedSolutionPath, solution);
+			}
+		}
+		else if (solutionFiles.Count > 1)
+		{
+			_logger.LogWarning(
+				"No solution was selected and {Count} were found in {Directory}; launching {Solution}. Select one with uno_app_select_solution.",
+				solutionFiles.Count, _currentDirectory, solution);
+		}
 	}
 
 	private async Task<MonitorDecisions.ReadinessProbeResult> WaitForServerReadyAsync(int port, CancellationToken ct)
