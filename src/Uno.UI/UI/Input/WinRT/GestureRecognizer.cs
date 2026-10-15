@@ -83,6 +83,28 @@ namespace Windows.UI.Input
 		/// </remarks>
 		internal bool ReportsUnquantizedDeltas { get; init; }
 
+		/// <summary>
+		/// Never reports a touch or pen hold as a tap, even when <see cref="GestureSettings.RightTap"/> is not enabled.
+		/// </summary>
+		/// <remarks>
+		/// Set for UIElement recognizers: on WinUI, Tapped and Holding are mutually exclusive and a touch or pen hold is followed by a RightTapped.
+		/// </remarks>
+		internal bool SuppressesTapOnHold { get; init; }
+
+		// The press (pointer and down timestamp) for which a UIElement recognizer last raised Holding.
+		private static (PointerIdentifier Pointer, ulong Timestamp) _lastHeldPress;
+
+		/// <summary>
+		/// Determines whether a press is a hold: it lasted longer than <see cref="HoldMinDelayMicroseconds"/>,
+		/// or a UIElement recognizer already raised Holding for it (the holding timer can elapse before the pointer timestamps do).
+		/// </summary>
+		internal static bool IsHold(PointerIdentifier pointer, ulong pressedTimestamp, ulong currentTimestamp)
+			=> IsLongPress(pressedTimestamp, currentTimestamp)
+				|| _lastHeldPress == (pointer, pressedTimestamp);
+
+		internal static bool IsLongPress(ulong pressedTimestamp, ulong currentTimestamp)
+			=> currentTimestamp - pressedTimestamp > HoldMinDelayMicroseconds;
+
 		internal bool IsDragging => _manipulation?.IsDragManipulation ?? false;
 
 		/// <summary>
