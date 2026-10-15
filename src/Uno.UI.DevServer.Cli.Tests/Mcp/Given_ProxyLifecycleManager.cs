@@ -287,8 +287,11 @@ public class Given_ProxyLifecycleManager
 
 			result.Status.Should().Be("rejected");
 			result.DevServerAction.Should().Be("None");
-			result.Issues.Should().NotBeNull();
-			result.Issues!.Should().Contain(issue => issue.Code == IssueCode.WorkspaceNotResolved || issue.Code == IssueCode.UnoSdkNotInGlobalJson || issue.Code == IssueCode.NoSolutionFound);
+			result.Message.Should().Contain("cannot start");
+			var issue = result.Issues.Should().ContainSingle().Subject;
+			issue.Code.Should().Be(IssueCode.WorkspaceNotResolved);
+			issue.Message.Should().Contain(Path.Combine(workspaceDirectory, "global.json"), "the issue names the global.json that applies");
+			issue.Remediation.Should().Contain("uno_app_select_solution", "fixing global.json and selecting again is enough, no bridge restart");
 			healthService.DevServerStarted.Should().BeFalse();
 		}
 		finally
@@ -298,15 +301,16 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
-	[Description("Selecting a solution that is not one of the current candidates is rejected cleanly")]
-	public async Task WhenSelectingSolutionOutsideCandidates_RequestIsRejected()
+	[Description("A solution outside the session's candidate set is accepted and started: discovery suggests solutions, it does not restrict the agent's choice (#25524)")]
+	public async Task WhenSelectingSolutionOutsideCandidates_SelectionIsAccepted()
 	{
 		var root = CreateTempDirectory();
 		var externalRoot = CreateTempDirectory();
+		DevServerMonitor? monitor = null;
 
 		try
 		{
-			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
+			await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
 			var externalWorkspace = await CreateUnoWorkspaceAsync(externalRoot, "other", "Other.slnx", "6.6.0-dev.2");
 			var externalSolution = Path.Combine(externalWorkspace, "Other.slnx");
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
@@ -315,20 +319,136 @@ public class Given_ProxyLifecycleManager
 			var created = CreateSubject();
 			var subject = created.Subject;
 			var healthService = created.HealthService;
+			monitor = created.Monitor;
 			SetPrivateField(subject, "_currentDirectory", root);
 			SetPrivateField(subject, "_workspaceResolution", workspaceResolution);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
 
 			var result = await subject.SelectSolutionAsync(externalSolution);
 
+			result.Status.Should().Be("started");
+			result.SelectedSolutionPath.Should().Be(externalSolution);
+			result.EffectiveWorkspaceDirectory.Should().Be(externalWorkspace);
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
+			healthService.DevServerStarted.Should().BeTrue();
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+			await DeleteDirectoryWithRetriesAsync(externalRoot);
+		}
+	}
+
+	[TestMethod]
+	[Description("A solution deeper than the candidate scan is accepted, with the workspace of the nearest Uno global.json above it (#25524)")]
+	public async Task WhenSelectingSolutionDeeperThanTheScan_SelectionIsAccepted()
+	{
+		var root = CreateTempDirectory();
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+			var libraryDirectory = Directory.CreateDirectory(Path.Combine(root, "a", "Lib")).FullName;
+			await File.WriteAllTextAsync(Path.Combine(libraryDirectory, "Lib.slnx"), string.Empty);
+			var appDirectory = Directory.CreateDirectory(Path.Combine(root, "a", "b", "c", "d")).FullName;
+			var appSolution = Path.Combine(appDirectory, "App.slnx");
+			await File.WriteAllTextAsync(appSolution, string.Empty);
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+
+			var created = CreateSubject();
+			var subject = created.Subject;
+			monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", await resolver.ResolveAsync(root));
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			var result = await subject.SelectSolutionAsync(appSolution);
+
+			result.Status.Should().Be("started");
+			result.SelectedSolutionPath.Should().Be(appSolution);
+			result.EffectiveWorkspaceDirectory.Should().Be(root);
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[OSCondition(OperatingSystems.Windows)]
+	[Description("A network (UNC) solution path is refused before any file-system access, which would authenticate the user to that server")]
+	public async Task WhenSelectingUncSolutionPath_RequestIsRejected()
+	{
+		var created = CreateSubject();
+
+		var result = await created.Subject.SelectSolutionAsync(@"\\server\share\repo\App.slnx");
+
+		result.Status.Should().Be("rejected");
+		result.Message.Should().Contain("local path");
+		created.HealthService.DevServerStarted.Should().BeFalse();
+	}
+
+	[TestMethod]
+	[Description("A path to an existing file that is not a .sln or .slnx is rejected, naming the expected extensions")]
+	public async Task WhenSelectingFileThatIsNotASolution_RequestIsRejected()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
+			var projectPath = Path.Combine(workspaceDirectory, "MyApp.csproj");
+			await File.WriteAllTextAsync(projectPath, "<Project />");
+			var created = CreateSubject();
+			SetPrivateField(created.Subject, "_currentDirectory", root);
+
+			var result = await created.Subject.SelectSolutionAsync(projectPath);
+
 			result.Status.Should().Be("rejected");
-			result.Message.Should().ContainEquivalentOf("candidate");
-			result.Issues.Should().NotBeNull();
-			healthService.DevServerStarted.Should().BeFalse();
+			result.Message.Should().Contain(".slnx");
+			created.HealthService.DevServerStarted.Should().BeFalse();
 		}
 		finally
 		{
 			await DeleteDirectoryWithRetriesAsync(root);
-			await DeleteDirectoryWithRetriesAsync(externalRoot);
+		}
+	}
+
+	[TestMethod]
+	[Description("A solution path that does not exist is rejected as not found")]
+	public async Task WhenSelectingMissingSolution_RequestIsRejected()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
+			var missingSolution = Path.Combine(workspaceDirectory, "Missing.slnx");
+			var created = CreateSubject();
+			SetPrivateField(created.Subject, "_currentDirectory", root);
+
+			var result = await created.Subject.SelectSolutionAsync(missingSolution);
+
+			result.Status.Should().Be("rejected");
+			result.Message.Should().ContainEquivalentOf("not found");
+			created.HealthService.DevServerStarted.Should().BeFalse();
+		}
+		finally
+		{
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -1261,7 +1381,7 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
-	[Description("Explicit solution selection uses filesystem-aware path comparison when validating candidate solutions")]
+	[Description("Explicit solution selection follows filesystem path semantics: a differently-cased path selects the solution only where the filesystem is case-insensitive")]
 	public async Task WhenSelectingSolutionWithDifferentCase_UsesFilesystemPathSemantics()
 	{
 		var root = CreateTempDirectory();
@@ -1282,7 +1402,8 @@ public class Given_ProxyLifecycleManager
 
 			var result = await subject.SelectSolutionAsync(alteredCaseSolutionPath);
 
-			if (PathComparison.PathsEqual(solutionPath, alteredCaseSolutionPath))
+			// The selection stands or falls with the file system: case-insensitive volumes find the file, others do not.
+			if (File.Exists(alteredCaseSolutionPath))
 			{
 				result.Status.Should().NotBe("rejected");
 			}
