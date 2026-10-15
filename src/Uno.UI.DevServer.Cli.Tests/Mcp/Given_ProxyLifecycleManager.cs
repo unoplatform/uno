@@ -803,10 +803,11 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
-	[Description("Late MCP roots that point to a different Uno workspace degrade the session instead of switching workspaces")]
-	public async Task WhenRootsPointToDifferentWorkspace_SessionBecomesDiagnostic()
+	[Description("Late MCP roots that point to a different Uno workspace are a hint only: the running workspace is kept and the session is not degraded (#25524)")]
+	public async Task WhenRootsPointToDifferentWorkspaceWhileRunning_RunningWorkspaceIsKept()
 	{
 		var root = CreateTempDirectory();
+		DevServerMonitor? monitor = null;
 
 		try
 		{
@@ -823,22 +824,135 @@ public class Given_ProxyLifecycleManager
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 			var workspaceResolution = await resolver.ResolveAsync(workspaceA);
 
-			var (subject, healthService, _) = CreateSubject();
+			var (subject, healthService, createdMonitor) = CreateSubject();
+			monitor = createdMonitor;
 			SetPrivateField(subject, "_currentDirectory", root);
 			SetPrivateField(subject, "_workspaceResolution", workspaceResolution);
+			monitor.StartMonitoring(workspaceA, port: 0, forwardedArgs: [], workspaceResolution);
+			healthService.DevServerStarted = true;
 
 			await InvokeSetRootsAsync(subject, [new Uri(workspaceB).AbsoluteUri]);
 
-			subject.ConnectionState.Should().Be(ConnectionState.Degraded);
-			healthService.ConnectionState.Should().Be(ConnectionState.Degraded);
-			healthService.DevServerStarted.Should().BeFalse();
-
-			var currentResolution = GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution");
-			currentResolution.EffectiveWorkspaceDirectory.Should().Be(workspaceA);
+			subject.ConnectionState.Should().NotBe(ConnectionState.Degraded);
+			healthService.DevServerStarted.Should().BeTrue();
+			GetPrivateField<string>(monitor, "_currentDirectory").Should().Be(workspaceA);
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").EffectiveWorkspaceDirectory.Should().Be(workspaceA);
 		}
 		finally
 		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
 			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("Before any DevServer started (deferred roots startup), MCP roots naming another Uno workspace start it there instead of waiting on the unused one")]
+	public async Task WhenRootsPointToDifferentWorkspaceBeforeStartup_RootsWorkspaceStarts()
+	{
+		var root = CreateTempDirectory();
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			var workspaceA = await CreateUnoWorkspaceAsync(root, "srcA", "AppA.slnx", "6.6.0-dev.1");
+			var workspaceB = await CreateUnoWorkspaceAsync(root, "srcB", "AppB.slnx", "6.6.0-dev.2");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+
+			var (subject, healthService, createdMonitor) = CreateSubject();
+			monitor = createdMonitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", await resolver.ResolveAsync(workspaceA));
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			await InvokeSetRootsAsync(subject, [new Uri(workspaceB).AbsoluteUri]);
+
+			healthService.DevServerStarted.Should().BeTrue();
+			GetPrivateField<string>(monitor, "_currentDirectory").Should().Be(workspaceB);
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("MCP roots do not take over a selected solution that currently does not resolve: it stays selected (#25524)")]
+	public async Task WhenRootsArriveWhileSelectedSolutionDoesNotResolve_SelectionIsKept()
+	{
+		var root = CreateTempDirectory();
+		var otherRoot = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var (_, appSolution) = await CreateDeepAppLayoutAsync(root);
+			var otherWorkspace = await CreateUnoWorkspaceAsync(otherRoot, "src", "Other.slnx", "6.6.0-dev.2");
+			var created = CreateSubject();
+			subject = created.Subject;
+			await StartSessionAsync(subject, root);
+			(await subject.SelectSolutionAsync(appSolution)).Status.Should().Be("started");
+			File.Delete(appSolution);
+			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+
+			await InvokeSetRootsAsync(subject, [new Uri(otherWorkspace).AbsoluteUri]);
+
+			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(appSolution);
+			created.HealthService.DevServerStarted.Should().BeFalse("roots must not start the other workspace in place of the selection");
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+			await DeleteDirectoryWithRetriesAsync(otherRoot);
+		}
+	}
+
+	[TestMethod]
+	[Description("MCP roots never replace a solution the agent selected explicitly, whatever workspace they point to (#25524)")]
+	public async Task WhenRootsArriveAfterExplicitSelection_SelectionIsKept()
+	{
+		var root = CreateTempDirectory();
+		var otherRoot = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var (_, appSolution) = await CreateDeepAppLayoutAsync(root);
+			var otherWorkspace = await CreateUnoWorkspaceAsync(otherRoot, "src", "Other.slnx", "6.6.0-dev.2");
+			var created = CreateSubject();
+			subject = created.Subject;
+			await StartSessionAsync(subject, root);
+			(await subject.SelectSolutionAsync(appSolution)).Status.Should().Be("started");
+
+			await InvokeSetRootsAsync(subject, [new Uri(otherWorkspace).AbsoluteUri]);
+
+			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(appSolution);
+			created.HealthService.DevServerStarted.Should().BeTrue();
+			subject.ConnectionState.Should().NotBe(ConnectionState.Degraded);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+			await DeleteDirectoryWithRetriesAsync(otherRoot);
 		}
 	}
 
