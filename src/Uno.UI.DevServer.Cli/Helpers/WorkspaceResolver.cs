@@ -153,6 +153,11 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 		return await ResolveSolutionAsync(normalizedRequestedDirectory, solutionPath, candidateSolutions, selectionSource);
 	}
 
+	/// <summary>
+	/// Resolves the workspace of an explicitly chosen solution, wherever it is: <paramref name="candidateSolutions"/>
+	/// are suggestions reported alongside the result, never a filter. The workspace is the folder of the nearest
+	/// global.json above the solution, which must declare an Uno SDK.
+	/// </summary>
 	internal async Task<WorkspaceResolution> ResolveSolutionAsync(
 		string requestedDirectory,
 		string solutionPath,
@@ -163,8 +168,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
 		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(StringComparer.Ordinal);
 
-		if (!File.Exists(normalizedSolutionPath)
-			|| !candidateSolutions.Any(candidate => PathComparison.PathsEqual(candidate, normalizedSolutionPath)))
+		if (!File.Exists(normalizedSolutionPath))
 		{
 			return new WorkspaceResolution
 			{

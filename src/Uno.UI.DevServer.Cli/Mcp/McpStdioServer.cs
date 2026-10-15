@@ -39,9 +39,9 @@ internal class McpStdioServer(
 		Description =
 			"Initializes the Uno DevServer for a workspace. Sets the root directory, resolves the Uno solution, and starts the DevServer. "
 			+ "Call this ONCE at the start of a session. After initialization succeeds, the Uno app tools become available. "
-			+ "Do NOT call uno_app_select_solution after a successful initialization unless uno_health reports a WorkspaceAmbiguous issue.",
+			+ "To switch solutions afterwards, call uno_app_select_solution rather than initializing again.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
-			"""{"type":"object","required":["workspaceDirectory"],"properties":{"workspaceDirectory":{"type":"string","description":"Absolute path to the workspace root directory."},"solutionPath":{"type":"string","description":"Optional absolute path to the .sln or .slnx file to use."}}}"""),
+			"""{"type":"object","required":["workspaceDirectory"],"properties":{"workspaceDirectory":{"type":"string","description":"Absolute path to the workspace root directory."},"solutionPath":{"type":"string","description":"Optional absolute path to the .sln or .slnx file to use; it may be outside workspaceDirectory."}}}"""),
 		Annotations = new() { Title = "Initialize Workspace", DestructiveHint = false, IdempotentHint = true, ReadOnlyHint = false, OpenWorldHint = false },
 	};
 
@@ -141,9 +141,9 @@ internal class McpStdioServer(
 
 					await setRootsHandler([workspaceDir!]);
 
-					if (!string.IsNullOrWhiteSpace(initSolutionPath))
+					if (await SelectInitialSolutionAsync(initSolutionPath, selectSolutionHandler) is { } rejectedSelection)
 					{
-						await selectSolutionHandler(initSolutionPath, false);
+						return rejectedSelection;
 					}
 
 					// Wait for upstream to connect unless the workspace already entered
@@ -551,6 +551,34 @@ internal class McpStdioServer(
 		return true;
 	}
 
+	internal const string InitialSelectionRejectedNote =
+		"The workspaceDirectory was still applied: the DevServer serves the solution resolved from it (see uno_health). "
+		+ "Fix solutionPath and call uno_app_select_solution to change it.";
+
+	/// <summary>
+	/// Applies the optional <c>solutionPath</c> of <c>uno_app_initialize</c>, after the roots. Returns the selection's
+	/// rejection, followed by a note that the workspace itself was applied, so initialization answers with the reason
+	/// instead of waiting for the DevServer; <see langword="null"/> when no solution was given or it was accepted.
+	/// </summary>
+	internal static async Task<CallToolResult?> SelectInitialSolutionAsync(
+		string? solutionPath,
+		Func<string, bool, Task<CallToolResult>> selectSolutionHandler)
+	{
+		if (string.IsNullOrWhiteSpace(solutionPath))
+		{
+			return null;
+		}
+
+		var selectionResult = await selectSolutionHandler(solutionPath, false);
+		return selectionResult.IsError == true
+			? new CallToolResult
+			{
+				Content = [.. selectionResult.Content, new TextContentBlock { Text = InitialSelectionRejectedNote }],
+				IsError = true,
+			}
+			: null;
+	}
+
 	internal static bool TryGetInitializeArgs(
 		IDictionary<string, JsonElement>? arguments,
 		out string? workspaceDirectory,
@@ -596,6 +624,22 @@ internal class McpStdioServer(
 					new TextContentBlock()
 					{
 						Text = "The 'workspaceDirectory' argument must be a non-empty absolute path."
+					}
+				],
+				IsError = true
+			};
+			return false;
+		}
+
+		if (!LocalPathGuard.IsLocalPath(workspaceDirectory))
+		{
+			errorResult = new CallToolResult()
+			{
+				Content =
+				[
+					new TextContentBlock()
+					{
+						Text = "The 'workspaceDirectory' argument must be a local path; network (UNC) and device paths are refused."
 					}
 				],
 				IsError = true
