@@ -301,7 +301,9 @@ internal class ProxyLifecycleManager
 
 		var solutionDirectory = Path.GetDirectoryName(normalizedSolutionPath) ?? normalizedSolutionPath;
 		var observationRoot =
-			GetWorkspaceObservationRoot()
+			(GetSelectedSolution(_workspaceResolution) is not null
+				? _workspaceResolution?.RequestedWorkingDirectory
+				: GetWorkspaceObservationRoot())
 				?? _solutionDirectory
 				?? _currentDirectory
 				?? solutionDirectory;
@@ -473,8 +475,68 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
-		var nextResolution = await _workspaceResolver.ResolveAsync(workspaceRoot);
+		var nextResolution = GetSelectedSolution(_workspaceResolution) is { } selectedSolution
+			? await ReevaluateSelectedSolutionAsync(selectedSolution)
+			: await _workspaceResolver.ResolveAsync(workspaceRoot);
 		await ApplyWorkspaceResolutionAsync(nextResolution, trigger, ct: ct);
+	}
+
+	/// <summary>
+	/// The explicitly selected solution of <paramref name="resolution"/> (see
+	/// <see cref="WorkspaceResolution.IsExplicitSolutionSelection"/>), or <see langword="null"/>.
+	/// </summary>
+	private static string? GetSelectedSolution(WorkspaceResolution? resolution)
+		=> resolution is { IsExplicitSolutionSelection: true, SelectedSolutionPath: { Length: > 0 } selectedSolution }
+			? selectedSolution
+			: null;
+
+	private async Task<WorkspaceResolution> ReevaluateSelectedSolutionAsync(string selectedSolution)
+	{
+		// The suggestions keep coming from where the session was when the solution was selected.
+		var suggestionsRoot = _workspaceResolution?.RequestedWorkingDirectory ?? Path.GetDirectoryName(selectedSolution) ?? selectedSolution;
+		var nextResolution = await _workspaceResolver.ResolveSolutionAsync(suggestionsRoot, selectedSolution);
+		if (nextResolution.IsResolved)
+		{
+			return nextResolution;
+		}
+
+		// Kept unresolved but still selected: the session degrades, and starts again on this solution once it is back.
+		if (_workspaceResolution?.IsResolved == true)
+		{
+			_logger.LogWarning(
+				"The selected solution {Solution} no longer resolves (deleted, or its global.json no longer declares an Uno SDK); its DevServer is stopped until it does.",
+				selectedSolution);
+		}
+
+		return nextResolution with { SelectedSolutionPath = selectedSolution };
+	}
+
+	/// <summary>
+	/// Where to watch a selected solution: its workspace while it resolves; otherwise the folder of the nearest
+	/// global.json above it (whose Uno SDK may come back), or the nearest folder that still exists (the solution's own
+	/// folder may be gone, e.g. during a branch switch), so restoring it is seen and restarts the session.
+	/// </summary>
+	private static string GetSelectedSolutionObservationRoot(WorkspaceResolution? resolution, string selectedSolution)
+	{
+		if (resolution?.EffectiveWorkspaceDirectory is { Length: > 0 } workspaceDirectory)
+		{
+			return workspaceDirectory;
+		}
+
+		var solutionDirectory = Path.GetDirectoryName(selectedSolution) ?? selectedSolution;
+		if (GlobalJsonLocator.FindGlobalJson(solutionDirectory) is { } globalJsonPath
+			&& Path.GetDirectoryName(globalJsonPath) is { } globalJsonDirectory)
+		{
+			return globalJsonDirectory;
+		}
+
+		var directory = solutionDirectory;
+		while (!Directory.Exists(directory) && Path.GetDirectoryName(directory) is { } parent)
+		{
+			directory = parent;
+		}
+
+		return directory;
 	}
 
 	internal async Task<WorkspaceTransitionAction> ApplyWorkspaceResolutionAsync(WorkspaceResolution nextResolution,
@@ -1022,6 +1084,12 @@ internal class ProxyLifecycleManager
 
 	private string? GetWorkspaceObservationRoot()
 	{
+		// An explicit selection is watched where it lives, wherever the session started.
+		if (GetSelectedSolution(_workspaceResolution) is { } selectedSolution)
+		{
+			return GetSelectedSolutionObservationRoot(_workspaceResolution, selectedSolution);
+		}
+
 		if (!string.IsNullOrWhiteSpace(_currentDirectory))
 		{
 			var activeWorkspace = _workspaceResolution?.EffectiveWorkspaceDirectory;
