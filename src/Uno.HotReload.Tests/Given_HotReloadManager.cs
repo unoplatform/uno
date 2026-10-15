@@ -494,4 +494,26 @@ public class Given_HotReloadManager
 
 	private sealed record MarkerSolutionUpdateResult(Solution Solution, ChangeSet IgnoredChanges, string Marker)
 		: SolutionUpdateResult(Solution, IgnoredChanges, []);
+
+	[TestMethod]
+	[Description(
+		"A project the engine names as needing a rebuild completes as a RudeEdit even without an ENC " +
+		"error, and the 'must be rebuilt' line reaches Output once, not on every save.")]
+	public async Task When_ProjectRequiresRebuild_Then_RudeEdit_AndReportedOnce()
+	{
+		using var harness = new HotReloadManagerHarness(
+			_ => Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(([], [])),
+			projectsToRebuild: ["App"]);
+
+		for (var pass = 0; pass < 2; pass++)
+		{
+			var batch = ImmutableHashSet.Create("/work/Model.cs");
+			await harness.Manager.ProcessFileChanges(Task.FromResult(batch), CancellationToken.None).WaitAsync(_testTimeout);
+
+			harness.Tracker.Last!.Result.Should().Be(HotReloadOperationResult.RudeEdit);
+		}
+
+		harness.Reporter.Outputs.Should().ContainSingle(o => o.Contains("cannot update App", StringComparison.Ordinal));
+		harness.Reporter.VerboseMessages.Should().Contain(o => o.Contains("cannot update App", StringComparison.Ordinal));
+	}
 }

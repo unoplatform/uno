@@ -20,7 +20,8 @@ internal sealed class HotReloadManagerHarness : IDisposable
 	public HotReloadManagerHarness(
 		Func<int, Task<(ImmutableArray<Update> Updates, ImmutableArray<Diagnostic> Diagnostics)>> onEmit,
 		Func<Solution, SolutionUpdateResult>? onUpdate = null,
-		bool warmCompilation = false)
+		bool warmCompilation = false,
+		ImmutableArray<string> projectsToRebuild = default)
 	{
 		_workspace = new AdhocWorkspace();
 		var project = _workspace.AddProject("TestProject", LanguageNames.CSharp);
@@ -44,7 +45,7 @@ internal sealed class HotReloadManagerHarness : IDisposable
 
 		Manager = new HotReloadManager(
 			_workspace,
-			new StubWatchService(onEmit),
+			new StubWatchService(onEmit, projectsToRebuild.IsDefault ? [] : projectsToRebuild),
 			Handler,
 			detector,
 			updater,
@@ -124,12 +125,23 @@ internal sealed class HotReloadManagerHarness : IDisposable
 	}
 
 	private sealed class StubWatchService(
-		Func<int, Task<(ImmutableArray<Update> Updates, ImmutableArray<Diagnostic> Diagnostics)>> onEmit) : IWatchHotReloadService
+		Func<int, Task<(ImmutableArray<Update> Updates, ImmutableArray<Diagnostic> Diagnostics)>> onEmit,
+		ImmutableArray<string> projectsToRebuild) : IWatchHotReloadService
 	{
 		private int _calls;
 
-		public Task<(ImmutableArray<Update> updates, ImmutableArray<Diagnostic> diagnostics)> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
-			=> onEmit(Interlocked.Increment(ref _calls));
+		public async Task<HotReloadEmitResult> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
+		{
+			var (updates, diagnostics) = await onEmit(Interlocked.Increment(ref _calls)).ConfigureAwait(false);
+
+			return new HotReloadEmitResult
+			{
+				Status = updates.IsEmpty ? HotReloadEmitStatus.NoChanges : HotReloadEmitStatus.Ready,
+				Deltas = updates,
+				Diagnostics = diagnostics,
+				ProjectsToRebuild = projectsToRebuild,
+			};
+		}
 
 		public void EndSession()
 		{
