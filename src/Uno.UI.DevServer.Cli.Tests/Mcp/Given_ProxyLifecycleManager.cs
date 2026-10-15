@@ -428,6 +428,219 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Description("A file change after an explicit selection re-resolves the selected solution instead of auto-discovering another one (#25524)")]
+	public async Task WhenWorkspaceChangesAfterExplicitSelection_SelectionIsKept()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var (librarySolution, appSolution) = await CreateDeepAppLayoutAsync(root);
+			var created = CreateSubject();
+			subject = created.Subject;
+			await StartSessionAsync(subject, root);
+			(await subject.SelectSolutionAsync(appSolution)).Status.Should().Be("started");
+
+			await File.WriteAllTextAsync(Path.Combine(Path.GetDirectoryName(librarySolution)!, "Lib2.slnx"), string.Empty);
+			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+
+			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(appSolution);
+			created.HealthService.CurrentSelection.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
+			created.HealthService.DevServerStarted.Should().BeTrue();
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("A deleted selected solution degrades the session but stays selected, so the DevServer starts again on it once the file is back (#25524)")]
+	public async Task WhenExplicitlySelectedSolutionIsDeletedAndRestored_SessionDegradesThenRestarts()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var (_, appSolution) = await CreateDeepAppLayoutAsync(root);
+			var created = CreateSubject();
+			subject = created.Subject;
+			await StartSessionAsync(subject, root);
+			(await subject.SelectSolutionAsync(appSolution)).Status.Should().Be("started");
+
+			File.Delete(appSolution);
+			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+
+			subject.ConnectionState.Should().Be(ConnectionState.Degraded);
+			created.HealthService.DevServerStarted.Should().BeFalse();
+			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(appSolution);
+			GetWorkspaceObservationRoot(subject).Should().Be(root, "the workspace above the missing solution stays watched, so restoring it is seen");
+
+			await File.WriteAllTextAsync(appSolution, string.Empty);
+			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+
+			created.HealthService.DevServerStarted.Should().BeTrue();
+			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(appSolution);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("A selected solution whose global.json loses the Uno SDK degrades the session, which watches that global.json and restarts once the SDK is back (#25524)")]
+	public async Task WhenSelectedSolutionGlobalJsonLosesUnoSdk_SessionDegradesThenRestartsWhenFixed()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var (_, appSolution) = await CreateDeepAppLayoutAsync(root);
+			var globalJsonPath = Path.Combine(root, "global.json");
+			var created = CreateSubject();
+			subject = created.Subject;
+			await StartSessionAsync(subject, root);
+			(await subject.SelectSolutionAsync(appSolution)).Status.Should().Be("started");
+
+			await File.WriteAllTextAsync(globalJsonPath, """{"sdk":{"version":"10.0.100"}}""");
+			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+
+			subject.ConnectionState.Should().Be(ConnectionState.Degraded);
+			GetWorkspaceObservationRoot(subject).Should().Be(root, "the global.json that lost the SDK is watched");
+
+			await File.WriteAllTextAsync(globalJsonPath, """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+
+			created.HealthService.DevServerStarted.Should().BeTrue();
+			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(appSolution);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("A solution selected outside the startup directory is watched in its own workspace, while the suggestions stay those of the startup directory (#25524)")]
+	public async Task WhenSolutionOutsideStartDirectoryIsSelected_ItsWorkspaceIsWatchedAndSuggestionsStay()
+	{
+		var root = CreateTempDirectory();
+		var externalRoot = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var localWorkspace = await CreateUnoWorkspaceAsync(root, "src", "Local.slnx", "6.6.0-dev.1");
+			var externalWorkspace = await CreateUnoWorkspaceAsync(externalRoot, "other", "Other.slnx", "6.6.0-dev.2");
+			var externalSolution = Path.Combine(externalWorkspace, "Other.slnx");
+			var created = CreateSubject();
+			subject = created.Subject;
+			await StartSessionAsync(subject, root);
+			(await subject.SelectSolutionAsync(externalSolution)).Status.Should().Be("started");
+
+			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+
+			GetWorkspaceObservationRoot(subject).Should().Be(externalWorkspace);
+			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(externalSolution);
+			created.HealthService.CurrentSelection.CandidateSolutions.Should().Contain(Path.Combine(localWorkspace, "Local.slnx"));
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+			await DeleteDirectoryWithRetriesAsync(externalRoot);
+		}
+	}
+
+	[TestMethod]
+	[Description("A workspace chosen as a directory (--solution-dir) does not pin the solution discovery picked: file changes still re-run discovery")]
+	public async Task WhenWorkspaceWasChosenAsDirectory_FileChangesStillRediscoverTheSolution()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var workspace = await CreateUnoWorkspaceAsync(root, "src", "App.sln", "6.6.0-dev.1");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var directoryResolution = await resolver.ResolveExplicitWorkspaceAsync(workspace);
+			directoryResolution.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
+			var created = CreateSubject();
+			subject = created.Subject;
+			SetPrivateField(subject, "_currentDirectory", workspace);
+			SetPrivateField(subject, "_workspaceResolution", directoryResolution);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			var migratedSolution = Path.Combine(workspace, "App.slnx");
+			await File.WriteAllTextAsync(migratedSolution, string.Empty);
+			File.Delete(Path.Combine(workspace, "App.sln"));
+			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+
+			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(migratedSolution);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	private static string? GetWorkspaceObservationRoot(ProxyLifecycleManager subject)
+		=> (string?)typeof(ProxyLifecycleManager)
+			.GetMethod("GetWorkspaceObservationRoot", BindingFlags.Instance | BindingFlags.NonPublic)!
+			.Invoke(subject, null);
+
+	// root/global.json (Uno), a library solution within the solution scan depth, and the app solution below it.
+	private static async Task<(string LibrarySolution, string AppSolution)> CreateDeepAppLayoutAsync(string root)
+	{
+		await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+		var libraryDirectory = Directory.CreateDirectory(Path.Combine(root, "a", "Lib")).FullName;
+		var librarySolution = Path.Combine(libraryDirectory, "Lib.slnx");
+		await File.WriteAllTextAsync(librarySolution, string.Empty);
+		var appDirectory = Directory.CreateDirectory(Path.Combine(root, "a", "b", "c", "d")).FullName;
+		var appSolution = Path.Combine(appDirectory, "App.slnx");
+		await File.WriteAllTextAsync(appSolution, string.Empty);
+		return (librarySolution, appSolution);
+	}
+
+	private static async Task StartSessionAsync(ProxyLifecycleManager subject, string root)
+	{
+		var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+		SetPrivateField(subject, "_currentDirectory", root);
+		SetPrivateField(subject, "_workspaceResolution", await resolver.ResolveAsync(root));
+		SetPrivateField(subject, "_devServerPort", 0);
+		SetPrivateField(subject, "_forwardedArgs", new List<string>());
+	}
+
+	[TestMethod]
 	[Description("A solution path that does not exist is rejected as not found")]
 	public async Task WhenSelectingMissingSolution_RequestIsRejected()
 	{
