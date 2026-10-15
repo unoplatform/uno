@@ -54,6 +54,14 @@ namespace Microsoft.UI.Xaml
 			_view.SetLocation(Info.Position);
 			_viewHandle = inputManager.OpenDragAndDrop(_view);
 			_viewOverride = new CoreDragUIOverride(); // UWP does re-use the same instance for each update on _target
+
+			// A platform that routes the drag itself from the start also shows the drag visual, and reports the
+			// pointer through the extension (see IDragDropExtension) instead of pointer events.
+			if (extension is IImmediateDragDropExtension immediate && immediate.TryStartNativeDrag(info, Complete))
+			{
+				_hasRequestedNativeDrag = true;
+				_viewHandle.Dispose();
+			}
 		}
 
 		public CoreDragInfo Info { get; }
