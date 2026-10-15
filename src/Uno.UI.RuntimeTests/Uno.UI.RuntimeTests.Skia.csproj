@@ -86,6 +86,13 @@
 		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
+		<!-- Graphics3DGL brings this package, whose Uno.Extensions.LogExtensionPoint makes the tests' Log() calls ambiguous
+		     with Uno.Foundation.Logging's. -->
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" ExcludeAssets="compile" />
+	</ItemGroup>
+
 	<PropertyGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">
 		<DefineConstants>$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
 	</PropertyGroup>
