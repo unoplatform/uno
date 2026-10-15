@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
@@ -156,7 +157,7 @@ internal partial class WatchHotReloadService
 	/// Every reflective lookup <see cref="EnCEngine"/> needs, resolved once per session from the emit
 	/// method's own signature, so a Roslyn bump that moves a member fails at session creation, naming it.
 	/// </summary>
-	private sealed class EngineShape
+	internal sealed class EngineShape
 	{
 		private const BindingFlags AnyInstance = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 		private const BindingFlags AnyStatic = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
@@ -175,18 +176,13 @@ internal partial class WatchHotReloadService
 			SpanProvider = RequireField(serviceType, "s_solutionActiveStatementSpanProvider").GetValue(null)
 				?? throw Missing(serviceType, "s_solutionActiveStatementSpanProvider", "is null");
 
-			Emit = encServiceType
-				.GetMethods(AnyInstance)
-				.SingleOrDefault(m => m.Name == "EmitSolutionUpdateAsync")
-				?? throw Missing(encServiceType, "EmitSolutionUpdateAsync", "was not found, or is overloaded");
+			Emit = RequireMethod(encServiceType, "EmitSolutionUpdateAsync", parameterCount: 5);
 			Commit = RequireMethod(encServiceType, "CommitSolutionUpdate", parameterCount: 1);
 			Discard = RequireMethod(encServiceType, "DiscardSolutionUpdate", parameterCount: 1);
 
 			// 4.x takes an IImmutableSet<ProjectId>, 5.x an ImmutableDictionary<ProjectId, …>; this host
 			// runs no project the engine could restart, so an empty one of either will do.
-			var runningProjectsType = Emit.GetParameters() is { Length: 5 } parameters
-				? parameters[2].ParameterType
-				: throw Missing(encServiceType, "EmitSolutionUpdateAsync", $"takes {Emit.GetParameters().Length} parameters where 5 were expected");
+			var runningProjectsType = Emit.GetParameters()[2].ParameterType;
 			var concreteRunningProjects = runningProjectsType.IsInterface
 				? typeof(ImmutableHashSet<>).MakeGenericType(runningProjectsType.GetGenericArguments())
 				: runningProjectsType;
@@ -273,12 +269,13 @@ internal partial class WatchHotReloadService
 		/// <remarks>
 		/// <c>ProjectsToRestart</c> holds <see cref="ProjectId"/>s on 4.x and is keyed by one on 5.x.
 		/// </remarks>
-		private static ProjectSet RequireProjectSet(Type type, string name)
+		internal static ProjectSet RequireProjectSet(Type type, string name)
 		{
 			var property = RequireProperty(type, name, typeof(IEnumerable));
-			var entryType = property.PropertyType.IsGenericType
-				? property.PropertyType.GetGenericArguments()[0]
-				: null;
+			var entryType = property.PropertyType.GetInterfaces()
+				.Append(property.PropertyType)
+				.FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+				?.GetGenericArguments()[0];
 
 			if (entryType == typeof(ProjectId))
 			{
