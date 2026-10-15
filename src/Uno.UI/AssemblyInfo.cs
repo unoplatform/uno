@@ -23,6 +23,7 @@ using Uno.Foundation.Extensibility;
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics2DSK")]
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DWebGpu")]
 
 [assembly: AssemblyMetadata("IsTrimmable", "True")]
 

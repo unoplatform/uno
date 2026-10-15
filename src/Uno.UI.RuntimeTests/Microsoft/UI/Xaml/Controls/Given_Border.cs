@@ -201,6 +201,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Identical_Border_Is_Inserted_Before_Another_Then_Both_Render()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			// Identical content lets a backend share one recording between the two sites; the newcomer is drawn
+			// first and must not take over the placement the existing one is drawn at.
+			var brush = new SolidColorBrush(Colors.Red);
+			Border CreateCard(double left)
+			{
+				var card = new Border { Width = 40, Height = 40, Background = brush, CornerRadius = new CornerRadius(4) };
+				Canvas.SetLeft(card, left);
+				return card;
+			}
+
+			var existing = CreateCard(120);
+			var SUT = new Canvas { Width = 200, Height = 40, Background = new SolidColorBrush(Colors.White) };
+			SUT.Children.Add(existing);
+
+			await UITestHelper.Load(SUT);
+			await UITestHelper.ScreenShot(SUT);
+
+			SUT.Children.Insert(0, CreateCard(20));
+			await WindowHelper.WaitForIdle();
+
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorAt(screenshot, 40, 20, Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 140, 20, Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 90, 20, Colors.White, tolerance: 10);
+		}
+
+		[TestMethod]
 		public async Task When_Nested_Rounded_Clips_Exceed_Four()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))

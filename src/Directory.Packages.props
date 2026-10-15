@@ -127,7 +127,9 @@
 		<PackageVersion Include="PolySharp" Version="1.14.1" />
 		<PackageVersion Include="Refit" Version="8.0.0" />
 		<PackageVersion Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
-		<PackageVersion Include="Silk.NET.OpenGL" Version="2.16.0" />
+		<PackageVersion Include="Silk.NET.OpenGL" Version="2.23.0" />
+		<PackageVersion Include="Silk.NET.WebGPU" Version="2.23.0" />
+		<PackageVersion Include="Silk.NET.WebGPU.Extensions.WGPU" Version="2.23.0" />
 		<PackageVersion Include="SkiaSharp" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />

@@ -144,6 +144,7 @@
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DWebGpu\Uno.WinUI.Graphics3DWebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 
 	</ItemGroup>
@@ -311,10 +312,6 @@
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\SamplesApp.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.RuntimeTests.dll" />
-		<!-- The WebGPU interop layer stays interpreted: its wgpu callbacks take WGPUStringView by value, and an
-		     AOT-compiled call site and Dawn disagree on that shape, so the app traps with "function signature
-		     mismatch" on the first render. Nothing on the hot path lives here - the renderer itself is AOT. -->
-		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.Composition.WebGpu.Init.dll" />
 		<!-- HarfBuzz reaches back into managed code through DelegateProxies.ReferenceTableProxyImplementation
 		     while creating a font; AOT-compiled, that native-to-managed wrapper does not match what HarfBuzz
 		     calls, and the app dies during startup with "function signature mismatch" (symbolicated stack:

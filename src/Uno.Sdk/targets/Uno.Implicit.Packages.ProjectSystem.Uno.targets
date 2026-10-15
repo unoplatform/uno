@@ -22,6 +22,10 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';webgpucanvas;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DWebGpu" ProjectSystem="true" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(UnoFeatures.Contains(';spellchecking;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.SpellChecking" ProjectSystem="true" />
 	</ItemGroup>

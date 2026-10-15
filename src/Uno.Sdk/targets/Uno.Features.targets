@@ -16,6 +16,9 @@
 		<UnoFeatures>$(UnoFeatures.Replace(';lottie;', ';'))</UnoFeatures>
 		<UnoFeatures>$(UnoFeatures.Replace(';skiarenderer;', ';skia;'))</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And '$(IsWinAppSdk)' != 'true'">$(UnoFeatures)skia;</UnoFeatures>
+		<!-- WebGpuCanvasElement draws only with the WebGPU backend, so 'webgpucanvas' brings it in. It is added after
+		     the renderer default above, so it adds WebGPU next to Skia rather than replacing it. -->
+		<UnoFeatures Condition="$(UnoFeatures.Contains(';webgpucanvas;')) And !$(UnoFeatures.Contains(';webgpu;')) And '$(IsWinAppSdk)' != 'true'">$(UnoFeatures)webgpu;</UnoFeatures>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">

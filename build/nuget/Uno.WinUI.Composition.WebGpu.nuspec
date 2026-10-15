@@ -61,7 +61,6 @@
 		     port ships already patched (the package folder is shared and read-only) and the targets points emcc
 		     at it. -->
 		<file src="..\..\src\Uno.UI.Composition.WebGpu.Init\obj\emdawnwebgpu\v20260624.223603\emdawnwebgpu_pkg\**" target="buildTransitive\emdawnwebgpu\emdawnwebgpu_pkg" />
-		<file src="..\..\src\Uno.UI.Composition.WebGpu.Init\Native\wgpu_wasm_stubs.c" target="buildTransitive\emdawnwebgpu" />
 	</files>
 
 </package>

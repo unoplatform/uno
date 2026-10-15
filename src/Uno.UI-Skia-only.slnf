@@ -12,6 +12,7 @@
       "AddIns\\Uno.UI.WebView.X11\\Uno.UI.WebView.X11.csproj",
       "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.Crossruntime.csproj",
       "AddIns\\Uno.WinUI.Graphics3DGL\\Uno.WinUI.Graphics3DGL.csproj",
+      "AddIns\\Uno.WinUI.Graphics3DWebGpu\\Uno.WinUI.Graphics3DWebGpu.csproj",
       "AddIns\\Uno.WinUI.SpellChecking\\Uno.WinUI.SpellChecking.csproj",
       "FontFallbackPreprocessor\\FontFallbackPreprocessor.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
