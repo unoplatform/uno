@@ -73,11 +73,11 @@ namespace TestRepro
 							}
 							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 							{
-							__p1.SetBinding(
+							global::Uno.UI.Xaml.BindingHelper.SetBinding(__p1,
 								"DataContext",
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
-									Path = @"PreviewDropViewModel",
+									Path = "PreviewDropViewModel",
 								}
 							);
 							}
@@ -85,6 +85,7 @@ namespace TestRepro
 						)
 						,
 					}
+					,
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 				{
@@ -147,12 +148,7 @@ namespace TestRepro
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
-			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			private global::System.WeakReference _ownerReference;
-			private global::TestRepro.MainPage Owner { get => (global::TestRepro.MainPage)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
-			#else
 			private global::TestRepro.MainPage Owner { get; set; }
-			#endif
 			public MainPage_Bindings(global::TestRepro.MainPage owner)
 			{
 				Owner = owner;

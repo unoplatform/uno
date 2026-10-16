@@ -9,22 +9,22 @@ namespace Microsoft.UI.Xaml.Media.Media3D;
 /// </summary>
 public partial struct Matrix3D : IFormattable
 {
-	public double M11;
-	public double M12;
-	public double M13;
-	public double M14;
-	public double M21;
-	public double M22;
-	public double M23;
-	public double M24;
-	public double M31;
-	public double M32;
-	public double M33;
-	public double M34;
-	public double OffsetX;
-	public double OffsetY;
-	public double OffsetZ;
-	public double M44;
+	public double M11 { get; set; }
+	public double M12 { get; set; }
+	public double M13 { get; set; }
+	public double M14 { get; set; }
+	public double M21 { get; set; }
+	public double M22 { get; set; }
+	public double M23 { get; set; }
+	public double M24 { get; set; }
+	public double M31 { get; set; }
+	public double M32 { get; set; }
+	public double M33 { get; set; }
+	public double M34 { get; set; }
+	public double OffsetX { get; set; }
+	public double OffsetY { get; set; }
+	public double OffsetZ { get; set; }
+	public double M44 { get; set; }
 
 	/// <summary>
 	/// Initializes a new instance of the Matrix3D structure.
@@ -164,17 +164,16 @@ public partial struct Matrix3D : IFormattable
 	}
 
 	/// <inheritdoc/>
-	public override string ToString() => ToString(null, null);
+	public override string ToString() => ConvertToString(null, null);
 
 	/// <summary>
 	/// Creates a string representation of this Matrix3D.
 	/// </summary>
-	public string ToString(IFormatProvider provider) => ToString(null, provider);
+	public string ToString(IFormatProvider provider) => ConvertToString(null, provider);
 
-	/// <summary>
-	/// Creates a string representation of this Matrix3D.
-	/// </summary>
-	public string ToString(string format, IFormatProvider provider)
+	string IFormattable.ToString(string format, IFormatProvider provider) => ConvertToString(format, provider);
+
+	private string ConvertToString(string format, IFormatProvider provider)
 	{
 		if (IsIdentity)
 		{

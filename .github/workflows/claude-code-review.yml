@@ -50,7 +50,9 @@ jobs:
     # Only run for repo users (owners/members/collaborators), never for
     # forks or outside/first-time contributors — keeps the review key off
     # untrusted code and stops the "anyone who can open a PR" delivery vector.
+    # Drafts are skipped; `ready_for_review` triggers the first review.
     if: >
+      !github.event.pull_request.draft &&
       github.event.pull_request.head.repo.full_name == github.repository &&
       contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)
     runs-on: ubuntu-latest
@@ -96,7 +98,7 @@ jobs:
         # blocks exfil URL patterns (`gh ... view https://attacker/<secret>`),
         # run-summary disabled by default, and ignoring issues/comments edited
         # after trigger.
-        uses: anthropics/claude-code-action@a874e9ecd7bb36efdad65429c6b35815f5a08f10 # v1.0.210
+        uses: anthropics/claude-code-action@cab360f6565aa35a51d6ce9e43f1f4287c0a32ea # v1.0.241
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_CODEREVIEW_KEY }}
           # Use the job's scoped Actions token instead of OIDC/GitHub App auth,
@@ -106,7 +108,7 @@ jobs:
           track_progress: true
           prompt: ${{ steps.review_prompt.outputs.prompt }}
           claude_args: |
-            --model "claude-sonnet-5"
+            --model "claude-sonnet-5-5"
             --allowedTools "mcp__github_inline_comment__create_inline_comment,mcp__github_comment__update_claude_comment,Bash(gh pr diff:*),Bash(gh pr view:*)"
 
       - name: Report failure as a warning

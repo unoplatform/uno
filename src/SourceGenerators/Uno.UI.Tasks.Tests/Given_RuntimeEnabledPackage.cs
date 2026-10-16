@@ -5,9 +5,9 @@ using Uno.UI.Tasks.RuntimeAssetsSelector;
 namespace Uno.UI.Tasks.Tests;
 
 /// <summary>
-/// Covers the two-layer selection Uno.WinRT and Uno.Foundation rely on: the UI assemblies come from the Skia
-/// runtime folder while the WinRT ones are redirected to the implementation matching the head's platform. This is
-/// what lets a library built for a plain netX.0 call a WinRT API and still reach the platform implementation.
+/// Covers the selection Uno.WinRT and Uno.Foundation rely on: the assemblies come from the generic runtime
+/// folder while the WinRT ones are redirected to the implementation matching the head's platform. This is what
+/// lets a library built for a plain netX.0 call a WinRT API and still reach the platform implementation.
 /// </summary>
 [TestClass]
 public class Given_RuntimeEnabledPackage
@@ -15,23 +15,33 @@ public class Given_RuntimeEnabledPackage
 	private const string NeutralTargetFramework = "net10.0";
 	private const string AndroidTargetFramework = "net10.0-android30.0";
 
+	/// <summary>
+	/// The target platform and the lib folder it must resolve to.
+	/// </summary>
+	private static readonly (string Platform, string TargetFramework)[] MobilePlatforms =
+	[
+		("android", "net10.0-android30.0"),
+		("ios", "net10.0-ios18.0"),
+		("tvos", "net10.0-tvos18.0"),
+	];
+
 	private static readonly string[] WinRTAssemblies = ["Uno.WinRT", "Uno.Foundation", "Uno.UI.Dispatching"];
 	private static readonly string[] OtherAssemblies = ["Contoso.CrossRuntime"];
 
 	private static (RuntimeAssetsSelectorTask_v0 Task, string PackageBasePath) CreateTask(
 		PackageCacheFixture fixture,
-		string unoRuntimeIdentifier,
-		string unoUIRuntimeIdentifier,
-		string unoWinRTRuntimeIdentifier)
+		string targetPlatformIdentifier,
+		string platformTargetFramework = AndroidTargetFramework,
+		string libraryRuntimeVariant = "")
 	{
 		var packageBasePath = fixture.AddRuntimeEnabledPackage(
 			"Uno.WinRT",
 			"1.0.0",
 			NeutralTargetFramework,
-			AndroidTargetFramework,
+			platformTargetFramework,
 			WinRTAssemblies,
 			OtherAssemblies,
-			["skia", "webassembly"]);
+			["generic", "wasm"]);
 
 		// A plain netX.0 library: it only ships a platform-neutral asset and is not runtime-enabled.
 		var plainLibrary = fixture.AddPackage("Contoso.Sensors", "2.0.0", "net10.0-android35.0", NeutralTargetFramework, []);
@@ -41,9 +51,8 @@ public class Given_RuntimeEnabledPackage
 		{
 			BuildEngine = new RecordingBuildEngine(),
 			UnoRuntimeEnabledPackage = [PackageCacheFixture.Item("Uno.WinRT", ("PackageBasePath", packageBasePath))],
-			UnoRuntimeIdentifier = unoRuntimeIdentifier,
-			UnoUIRuntimeIdentifier = unoUIRuntimeIdentifier,
-			UnoWinRTRuntimeIdentifier = unoWinRTRuntimeIdentifier,
+			TargetPlatformIdentifier = targetPlatformIdentifier,
+			LibraryRuntimeVariant = libraryRuntimeVariant,
 			TargetFrameworkVersion = "v10.0",
 			ResolvedCompileFileDefinitionsInput =
 			[
@@ -69,10 +78,14 @@ public class Given_RuntimeEnabledPackage
 		=> (items ?? []).Select(item => item.ItemSpec.Replace('\\', '/'));
 
 	[TestMethod]
-	public void When_AndroidHead_Then_WinRT_Assemblies_Come_From_The_Platform_Implementation()
+	[DynamicData(nameof(MobilePlatformData))]
+	public void When_MobileHead_Then_WinRT_Assemblies_Come_From_The_Platform_Implementation(string platform, string platformTargetFramework)
 	{
-		using var fixture = new PackageCacheFixture(nameof(When_AndroidHead_Then_WinRT_Assemblies_Come_From_The_Platform_Implementation));
-		var (task, _) = CreateTask(fixture, unoRuntimeIdentifier: "", unoUIRuntimeIdentifier: "skia", unoWinRTRuntimeIdentifier: "android");
+		using var fixture = new PackageCacheFixture($"{nameof(When_MobileHead_Then_WinRT_Assemblies_Come_From_The_Platform_Implementation)}_{platform}");
+		var (task, _) = CreateTask(
+			fixture,
+			targetPlatformIdentifier: platform,
+			platformTargetFramework: platformTargetFramework);
 
 		task.Execute().Should().BeTrue();
 
@@ -81,21 +94,38 @@ public class Given_RuntimeEnabledPackage
 		foreach (var winRTAssembly in WinRTAssemblies)
 		{
 			added.Should().Contain(
-				path => path.EndsWith($"lib/{AndroidTargetFramework}/{winRTAssembly}.dll", StringComparison.Ordinal),
-				$"{winRTAssembly} must resolve to the Android implementation");
+				path => path.EndsWith($"lib/{platformTargetFramework}/{winRTAssembly}.dll", StringComparison.Ordinal),
+				$"{winRTAssembly} must resolve to the {platform} implementation");
 		}
 
-		// Everything else stays on the Skia build.
-		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
-		added.Should().NotContain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Uno.WinRT.dll", StringComparison.Ordinal));
-		added.Should().NotContain(path => path.Contains("/webassembly/", StringComparison.Ordinal));
+		// Everything else stays on the shared build.
+		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
+		added.Should().NotContain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/Uno.WinRT.dll", StringComparison.Ordinal));
+		added.Should().NotContain(path => path.Contains("/wasm/", StringComparison.Ordinal));
+	}
+
+	public static IEnumerable<object[]> MobilePlatformData
+		=> MobilePlatforms.Select(platform => new object[] { platform.Platform, platform.TargetFramework });
+
+	[TestMethod]
+	public void When_WebAssemblyHead_Then_Compile_References_Are_Not_Rewritten()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_WebAssemblyHead_Then_Compile_References_Are_Not_Rewritten));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "browserwasm");
+
+		task.Execute().Should().BeTrue();
+
+		// The mobile heads swap compile references so a WinRT call binds the platform implementation; the browser
+		// head deliberately does not. This asymmetry is the only behaviour the two-layer split still carries.
+		task.ResolvedCompileFileDefinitionsToAdd.Should().BeEmpty();
+		task.ResolvedCompileFileDefinitionsToRemove.Should().BeEmpty();
 	}
 
 	[TestMethod]
-	public void When_WebAssemblyHead_Then_WinRT_Assemblies_Come_From_The_WebAssembly_Runtime()
+	public void When_WebAssemblyHead_Then_WinRT_Assemblies_Come_From_The_Wasm_Runtime()
 	{
-		using var fixture = new PackageCacheFixture(nameof(When_WebAssemblyHead_Then_WinRT_Assemblies_Come_From_The_WebAssembly_Runtime));
-		var (task, _) = CreateTask(fixture, unoRuntimeIdentifier: "", unoUIRuntimeIdentifier: "skia", unoWinRTRuntimeIdentifier: "webassembly");
+		using var fixture = new PackageCacheFixture(nameof(When_WebAssemblyHead_Then_WinRT_Assemblies_Come_From_The_Wasm_Runtime));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "browserwasm");
 
 		task.Execute().Should().BeTrue();
 
@@ -104,17 +134,22 @@ public class Given_RuntimeEnabledPackage
 		foreach (var winRTAssembly in WinRTAssemblies)
 		{
 			added.Should().Contain(
-				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/webassembly/{winRTAssembly}.dll", StringComparison.Ordinal));
+				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/wasm/{winRTAssembly}.dll", StringComparison.Ordinal));
 		}
 
-		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
+		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
 	}
 
+	/// <summary>
+	/// A no-host cross-runtime library (UnoRuntimeVariant=Wasm, no head) has no
+	/// TargetPlatformIdentifier to derive a variant from - it is empty for both generic and wasm library
+	/// builds alike. LibraryRuntimeVariant is what tells the task apart, for every asset, not just WinRT ones.
+	/// </summary>
 	[TestMethod]
-	public void When_DesktopHead_Then_Everything_Comes_From_The_Skia_Runtime()
+	public void When_WasmLibrary_Then_Everything_Comes_From_The_Wasm_Runtime()
 	{
-		using var fixture = new PackageCacheFixture(nameof(When_DesktopHead_Then_Everything_Comes_From_The_Skia_Runtime));
-		var (task, _) = CreateTask(fixture, unoRuntimeIdentifier: "skia", unoUIRuntimeIdentifier: "", unoWinRTRuntimeIdentifier: "");
+		using var fixture = new PackageCacheFixture(nameof(When_WasmLibrary_Then_Everything_Comes_From_The_Wasm_Runtime));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeVariant: "wasm");
 
 		task.Execute().Should().BeTrue();
 
@@ -123,19 +158,157 @@ public class Given_RuntimeEnabledPackage
 		foreach (var assembly in WinRTAssemblies.Concat(OtherAssemblies))
 		{
 			added.Should().Contain(
-				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/{assembly}.dll", StringComparison.Ordinal));
+				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/wasm/{assembly}.dll", StringComparison.Ordinal),
+				$"{assembly} must come from the wasm folder for a wasm-variant library");
 		}
 
-		// Single-layer heads keep compiling against the platform-neutral surface.
+		added.Should().NotContain(path => path.Contains("/generic/", StringComparison.Ordinal));
+	}
+
+	[TestMethod]
+	public void When_GenericLibrary_Then_Everything_Comes_From_The_Generic_Runtime()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_GenericLibrary_Then_Everything_Comes_From_The_Generic_Runtime));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeVariant: "generic");
+
+		task.Execute().Should().BeTrue();
+
+		var added = Paths(task.RuntimeCopyLocalItemsToAdd).ToList();
+
+		foreach (var assembly in WinRTAssemblies.Concat(OtherAssemblies))
+		{
+			added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/{assembly}.dll", StringComparison.Ordinal));
+		}
+	}
+
+	[TestMethod]
+	public void When_DesktopHead_Then_Everything_Comes_From_The_Generic_Runtime()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_DesktopHead_Then_Everything_Comes_From_The_Generic_Runtime));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "desktop");
+
+		task.Execute().Should().BeTrue();
+
+		var added = Paths(task.RuntimeCopyLocalItemsToAdd).ToList();
+
+		foreach (var assembly in WinRTAssemblies.Concat(OtherAssemblies))
+		{
+			added.Should().Contain(
+				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/{assembly}.dll", StringComparison.Ordinal));
+		}
+
+		// Desktop heads keep compiling against the platform-neutral surface.
 		task.ResolvedCompileFileDefinitionsToAdd.Should().BeEmpty();
 		task.ResolvedCompileFileDefinitionsToRemove.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void When_HeadlessHead_Then_Everything_Comes_From_The_Generic_Runtime()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_HeadlessHead_Then_Everything_Comes_From_The_Generic_Runtime));
+
+		// A headless head is a plain netX.0 project: no target platform, but a runtime host all the same.
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "");
+
+		task.Execute().Should().BeTrue();
+
+		var added = Paths(task.RuntimeCopyLocalItemsToAdd).ToList();
+
+		foreach (var assembly in WinRTAssemblies.Concat(OtherAssemblies))
+		{
+			added.Should().Contain(
+				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/{assembly}.dll", StringComparison.Ordinal));
+		}
+	}
+
+	[TestMethod]
+	public void When_Package_Uses_The_Pre_7_Folder_Names_Then_Nothing_Is_Resolved()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_Package_Uses_The_Pre_7_Folder_Names_Then_Nothing_Is_Resolved));
+		var packageBasePath = fixture.AddRuntimeEnabledPackage(
+			"Contoso.Legacy",
+			"1.0.0",
+			NeutralTargetFramework,
+			AndroidTargetFramework,
+			[],
+			["Contoso.Legacy"],
+			["skia", "webassembly"]);
+
+		var task = new RuntimeAssetsSelectorTask_v0
+		{
+			BuildEngine = new RecordingBuildEngine(),
+			UnoRuntimeEnabledPackage = [PackageCacheFixture.Item("Contoso.Legacy", ("PackageBasePath", packageBasePath))],
+			TargetPlatformIdentifier = "desktop",
+			TargetFrameworkVersion = "v10.0",
+			ResolvedCompileFileDefinitionsInput = [],
+			RuntimeCopyLocalItemsInput = [],
+		};
+
+		// ReplaceUnoRuntime turns this empty result into UNOB0023 rather than deploying the reference facade.
+		task.Execute().Should().BeTrue();
+		task.RuntimeCopyLocalItemsToAdd.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void When_Platform_Has_No_Runtime_Assets_Then_It_Is_An_Error()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_Platform_Has_No_Runtime_Assets_Then_It_Is_An_Error));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "maccatalyst");
+
+		task.Execute().Should().BeFalse();
+
+		var error = ((RecordingBuildEngine)task.BuildEngine).Errors.Should().ContainSingle().Subject;
+		error.Code.Should().Be("UNOB0023");
+		error.Message.Should().Contain("'maccatalyst'").And.Contain("browserwasm");
+	}
+
+	[TestMethod]
+	public void When_Platform_Implementation_Is_Missing_Then_UNOB0023_Names_The_Package()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_Platform_Implementation_Is_Missing_Then_UNOB0023_Names_The_Package));
+
+		// The package only ships an Android implementation, so an iOS head has nothing to redirect to.
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "ios", platformTargetFramework: AndroidTargetFramework);
+
+		task.Execute().Should().BeFalse();
+
+		var error = ((RecordingBuildEngine)task.BuildEngine).Errors.Should().ContainSingle().Subject;
+		error.Code.Should().Be("UNOB0023");
+		error.HelpLink.Should().Be("https://aka.platform.uno/UNOB0023");
+		error.Message.Should().Contain("'Uno.WinRT'").And.Contain("netX.0-ios");
+	}
+
+	[TestMethod]
+	public void When_Unresolved_Assets_Are_Not_Reported_Then_The_Selector_Does_Not_Fail()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_Unresolved_Assets_Are_Not_Reported_Then_The_Selector_Does_Not_Fail));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "ios", platformTargetFramework: AndroidTargetFramework);
+
+		// What a design-time build, or UnoDisableUNOB0023Validation, passes.
+		task.ReportUnresolvedAssets = false;
+
+		task.Execute().Should().BeTrue();
+		((RecordingBuildEngine)task.BuildEngine).Errors.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void When_Library_Variant_Is_Unknown_Then_UNOB0023_Names_UnoRuntimeVariant()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_Library_Variant_Is_Unknown_Then_UNOB0023_Names_UnoRuntimeVariant));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeVariant: "skia");
+
+		task.Execute().Should().BeFalse();
+
+		var error = ((RecordingBuildEngine)task.BuildEngine).Errors.Should().ContainSingle().Subject;
+		error.Code.Should().Be("UNOB0023");
+		error.Message.Should().Contain("UnoRuntimeVariant 'skia'");
 	}
 
 	[TestMethod]
 	public void When_AndroidHead_Then_A_Plain_Library_Asset_Is_Untouched()
 	{
 		using var fixture = new PackageCacheFixture(nameof(When_AndroidHead_Then_A_Plain_Library_Asset_Is_Untouched));
-		var (task, _) = CreateTask(fixture, unoRuntimeIdentifier: "", unoUIRuntimeIdentifier: "skia", unoWinRTRuntimeIdentifier: "android");
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "android");
 
 		task.Execute().Should().BeTrue();
 
@@ -149,7 +322,7 @@ public class Given_RuntimeEnabledPackage
 	public void When_AndroidHead_Then_Non_WinRT_Assemblies_Compile_Against_The_Neutral_Surface()
 	{
 		using var fixture = new PackageCacheFixture(nameof(When_AndroidHead_Then_Non_WinRT_Assemblies_Compile_Against_The_Neutral_Surface));
-		var (task, _) = CreateTask(fixture, unoRuntimeIdentifier: "", unoUIRuntimeIdentifier: "skia", unoWinRTRuntimeIdentifier: "android");
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "android");
 
 		task.Execute().Should().BeTrue();
 

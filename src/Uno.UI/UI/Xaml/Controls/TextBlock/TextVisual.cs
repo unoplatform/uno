@@ -1,5 +1,4 @@
-﻿using SkiaSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -13,6 +12,7 @@ using Windows.UI.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 #nullable enable
 
@@ -27,14 +27,12 @@ namespace Microsoft.UI.Composition
 			_owner = new WeakReference<TextBlock>(owner);
 		}
 
-		internal override SKPath? Paint(in PaintingSession session)
+		internal override void Paint(in PaintingSession session)
 		{
 			if (_owner.TryGetTarget(out var owner))
 			{
 				owner.Draw(in session);
 			}
-
-			return null;
 		}
 
 		internal override bool CanPaint() => true;

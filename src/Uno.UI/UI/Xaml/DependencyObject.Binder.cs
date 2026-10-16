@@ -148,7 +148,7 @@ namespace Microsoft.UI.Xaml
 
 			if (_inheritanceContextEnabled)
 			{
-				SetValue(dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails!);
+				SetValue(dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance, DataContextPropertyDetails!);
 			}
 			else
 			{
@@ -160,17 +160,17 @@ namespace Microsoft.UI.Xaml
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
 		internal void ApplyCompiledBindings()
-			=> _properties.ApplyCompiledBindings();
+			=> _properties?.ApplyCompiledBindings();
 
 		internal void SuspendCompiledBindings()
 			// ignoring local _bindingsSuspended flag, since this operation is applied on the BindingExpression level.
-			=> _properties.SuspendCompiledBindings();
+			=> _properties?.SuspendCompiledBindings();
 
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
 		internal void ApplyElementNameBindings()
-			=> _properties.ApplyElementNameBindings();
+			=> _properties?.ApplyElementNameBindings();
 
 		static void InitializeStaticBinder()
 		{
@@ -186,7 +186,7 @@ namespace Microsoft.UI.Xaml
 		internal void SuspendBindings()
 		{
 			_bindingsSuspended = true;
-			_properties.SuspendBindings();
+			_properties?.SuspendBindings();
 		}
 
 		/// <summary>
@@ -195,12 +195,12 @@ namespace Microsoft.UI.Xaml
 		internal void ResumeBindings()
 		{
 			_bindingsSuspended = false;
-			_properties.ResumeBindings();
+			_properties?.ResumeBindings();
 		}
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
 		{
-			if (precedence == DependencyPropertyValuePrecedences.Inheritance && _properties.FindDataContextBinding() is { } dataContextBinding)
+			if (precedence == DependencyPropertyValuePrecedences.Inheritance && DataContextPropertyDetails?.GetBinding() is { } dataContextBinding)
 			{
 				// Set the DataContext for the bindings using the current DataContext, except for the
 				// binding to the DataContext itself, which must use the inherited DataContext.
@@ -262,7 +262,10 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			_properties.ApplyDataContext(actualDataContext);
+			if (_properties is not null || actualDataContext is not null)
+			{
+				Properties.ApplyDataContext(actualDataContext);
+			}
 			ApplyChildrenBindable(actualDataContext);
 			ApplyMentoredChildrenDataContext(actualDataContext);
 
@@ -304,7 +307,7 @@ namespace Microsoft.UI.Xaml
 
 			if (target is DependencyObject provider)
 			{
-				provider.SetBinding(dependencyProperty, binding);
+				provider.SetBindingInternal(dependencyProperty, binding);
 			}
 			else
 			{
@@ -333,7 +336,7 @@ namespace Microsoft.UI.Xaml
 
 			if (binding is Binding fullBinding)
 			{
-				_properties.SetBinding(dependencyProperty, fullBinding, SelfWeakReference);
+				Properties.SetBinding(dependencyProperty, fullBinding, SelfWeakReference);
 			}
 			else if (binding is ResourceBinding resourceBinding)
 			{
@@ -354,7 +357,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var binding = new ResourceBinding(resourceKey, updateReason, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
-			SetBinding(dependencyProperty, binding);
+			SetBindingInternal(dependencyProperty, binding);
 		}
 
 		internal void SetBindingInternal(string dependencyProperty, BindingBase binding)
@@ -380,7 +383,7 @@ namespace Microsoft.UI.Xaml
 
 				if (boundProperty != null)
 				{
-					_properties.SetBinding(boundProperty, fullBinding, SelfWeakReference);
+					Properties.SetBinding(boundProperty, fullBinding, SelfWeakReference);
 				}
 			}
 			else
@@ -391,7 +394,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty)
 		{
-			SetBinding(
+			SetBindingInternal(
 				targetProperty,
 				new Binding
 				{
@@ -463,7 +466,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void SetBindingValue(object value, DependencyProperty property)
 		{
-			_properties.SetSourceValue(property, value);
+			Properties.SetSourceValue(property, value);
 		}
 
 		/// <summary>
@@ -482,7 +485,7 @@ namespace Microsoft.UI.Xaml
 				}
 				return;
 			}
-			_properties.SetSourceValue(propertyDetails, value);
+			Properties.SetSourceValue(propertyDetails, value);
 		}
 
 		/// <summary>
@@ -626,7 +629,7 @@ namespace Microsoft.UI.Xaml
 				if (newValue is DependencyObject addedProvider
 					&& addedProvider.DataContextPropertyInternal is null
 					&& (addedProvider.GetParent() is not { } addedParent || ReferenceEquals(addedParent, ActualInstance))
-					&& _properties.DataContextPropertyDetails is { } dataContextDetails)
+					&& DataContextPropertyDetails is { } dataContextDetails)
 				{
 					var currentDataContext = GetValue(dataContextDetails);
 					if (currentDataContext is not null && currentDataContext != DependencyProperty.UnsetValue)
@@ -791,7 +794,7 @@ namespace Microsoft.UI.Xaml
 				newValue.SetMentor(ActualInstance);
 
 				// Immediately propagate current DataContext (null when this mentor is not a FrameworkElement).
-				var currentDC = _properties.DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
+				var currentDC = DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
 				newValue.SetInheritedDataContext(currentDC);
 			}
 			else
@@ -863,20 +866,20 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var currentDC = _properties.DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
+			var currentDC = DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
 			ApplyMentoredChildrenDataContext(currentDC);
 		}
 
 		#endregion
 
 		internal BindingExpression? GetBindingExpressionInternal(DependencyProperty dependencyProperty)
-			=> _properties.GetBindingExpression(dependencyProperty);
+			=> Properties.GetBindingExpression(dependencyProperty);
 
 		internal Microsoft.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
 			=> GetBindingExpressionInternal(dependencyProperty)?.ParentBinding;
 
 		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
-			=> _properties.IsPropertyTemplateBound(dependencyProperty);
+			=> _properties?.IsPropertyTemplateBound(dependencyProperty) ?? false;
 
 		/// <summary>
 		/// BindingPath Registration handler for DependencyProperty instances

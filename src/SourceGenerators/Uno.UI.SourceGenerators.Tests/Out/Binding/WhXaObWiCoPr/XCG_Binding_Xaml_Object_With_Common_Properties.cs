@@ -62,7 +62,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							{
 								IsParsing = true,
 								Name = "topLevel",
-								Tag = @"42",
+								Tag = "42",
 								// Source Binding_Xaml_Object_With_Common_Properties.xaml (Line 14:10)
 							}
 							.Binding_Xaml_Object_With_Common_Properties_32c9951cc1e205007e0c313480b9e8bf_XamlApply((Binding_Xaml_Object_With_Common_Properties_32c9951cc1e205007e0c313480b9e8bfXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
@@ -72,21 +72,22 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							__nameScope.RegisterName("topLevel", __p1);
 							__that.topLevel = __p1;
 							// FieldModifier public
-							__p1.SetBinding(
+							global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 								global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
-									Path = @"Tag",
-									ElementName = _topLevelSubject,
+									Path = "Tag",
+									ElementName = "topLevel",
+									ElementNameSubject = _topLevelSubject,
 									Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
-									ConverterParameter = @"topLevel",
+									ConverterParameter = "topLevel",
 									ConverterLanguage = "topLevel",
 									UpdateSourceTrigger = global::Microsoft.UI.Xaml.Data.UpdateSourceTrigger.Default,
-									TargetNullValue = @"TargetNullValue",
-									FallbackValue = @"FallbackValue",
+									TargetNullValue = "TargetNullValue",
+									FallbackValue = "FallbackValue",
 									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
 									RelativeSource = new RelativeSource(RelativeSourceMode.None),
-									Source = @"Source",
+									Source = "Source",
 								}
 							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_Xaml_Object_With_Common_Properties_32c9951cc1e205007e0c313480b9e8bf);
@@ -96,6 +97,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						)
 						,
 					}
+					,
 				}
 				.Binding_Xaml_Object_With_Common_Properties_32c9951cc1e205007e0c313480b9e8bf_XamlApply((Binding_Xaml_Object_With_Common_Properties_32c9951cc1e205007e0c313480b9e8bfXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
@@ -133,7 +135,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			this.Bindings.UpdateResources();
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "topLevel");
 		public global::Microsoft.UI.Xaml.Controls.TextBlock topLevel
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_topLevelSubject.ElementInstance;
@@ -161,12 +163,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class Binding_Xaml_Object_With_Common_Properties_Bindings : IBinding_Xaml_Object_With_Common_Properties_Bindings
 		{
-			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			private global::System.WeakReference _ownerReference;
-			private global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties Owner { get => (global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
-			#else
 			private global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties Owner { get; set; }
-			#endif
 			public Binding_Xaml_Object_With_Common_Properties_Bindings(global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties owner)
 			{
 				Owner = owner;

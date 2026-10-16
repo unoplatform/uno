@@ -90,7 +90,7 @@ namespace TestRepro
 			return new __MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.__PagΞ0_ConCon_ConTemΞ0_DatTem().Build(__owner, __settings);
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _rootSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _rootSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "root");
 		private global::Microsoft.UI.Xaml.Controls.ContentControl root
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.ContentControl)_rootSubject.ElementInstance;
@@ -129,7 +129,7 @@ namespace TestRepro
 						global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 						/* _isTopLevelDictionary:False */
 						__that._component_0 = __p1;
-						__p1.SetBinding(
+						global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 							global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 							new Microsoft.UI.Xaml.Data.Binding()
 							{

@@ -6,7 +6,7 @@ namespace Windows.Graphics.Holographic
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct HolographicStereoTransform
+	public partial struct HolographicStereoTransform : global::System.IEquatable<global::Windows.Graphics.Holographic.HolographicStereoTransform>
 	{
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.HolographicStereoTransform()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,32 @@ namespace Windows.Graphics.Holographic
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.HolographicStereoTransform(System.Numerics.Matrix4x4, System.Numerics.Matrix4x4)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(HolographicStereoTransform x, HolographicStereoTransform y)
+			=> x.Left == y.Left
+			&& x.Right == y.Right;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(HolographicStereoTransform x, HolographicStereoTransform y)
+			=> !(x.Left == y.Left
+				&& x.Right == y.Right);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(HolographicStereoTransform other)
+			=> Left == other.Left
+			&& Right == other.Right;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is HolographicStereoTransform that
+			&& Left == that.Left
+			&& Right == that.Right;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> Left.GetHashCode()
+			^ Right.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Matrix4x4 Left;
 #endif

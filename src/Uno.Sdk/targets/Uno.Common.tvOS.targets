@@ -11,5 +11,5 @@
 		<IsMSALSupported>true</IsMSALSupported>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.tvOS.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.tvOS.targets" Condition=" $(_IsUnoSingleProject) == 'true' " />
 </Project>

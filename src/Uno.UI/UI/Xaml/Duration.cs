@@ -228,9 +228,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public static bool Equals(Duration first, Duration second)
+		public static bool Equals(Duration t1, Duration t2)
 		{
-			return first.Equals(second);
+			return t1.Equals(t2);
 		}
 
 		public int CompareTo(Duration other)

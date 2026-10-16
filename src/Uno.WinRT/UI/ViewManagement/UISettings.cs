@@ -2,6 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 using System;
 using System.Collections.Concurrent;
+using Microsoft.UI;
 using Uno;
 using Uno.Helpers.Theming;
 using Windows.Foundation;
@@ -241,7 +242,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 		[NotImplemented]
-		public bool AutoHideScrollBars { get; set; } = true;
+		public bool AutoHideScrollBars { get; internal set; } = true;
 
 		[NotImplemented]
 		public global::Windows.UI.Color UIElementColor(global::Windows.UI.ViewManagement.UIElementType desiredElement)

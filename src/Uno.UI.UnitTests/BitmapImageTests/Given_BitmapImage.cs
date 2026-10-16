@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.BitmapImageTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_BitmapImage
 	{
 		[TestMethod]

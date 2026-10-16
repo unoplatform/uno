@@ -1,0 +1,50 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Composition.SculpturesInWords.SculpturesInWords"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid x:Name="root" RowDefinitions="Auto,*">
+
+        <StackPanel
+            Padding="12"
+            Orientation="Horizontal"
+            Spacing="16">
+            <ComboBox
+                x:Name="figureCombo"
+                Width="190"
+                VerticalAlignment="Center" />
+            <TextBlock VerticalAlignment="Center" Text="Letters" />
+            <Slider
+                x:Name="countSlider"
+                Width="200"
+                VerticalAlignment="Center"
+                Maximum="18000"
+                Minimum="500"
+                StepFrequency="1000"
+                Value="3000" />
+            <CheckBox
+                x:Name="compareCheck"
+                VerticalAlignment="Center"
+                Content="Show sculpture"
+                IsChecked="True" />
+            <TextBlock
+                x:Name="statsText"
+                VerticalAlignment="Center"
+                FontFamily="Consolas"
+                Text="—" />
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="shadedColumn" Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="shadedHost" Grid.Column="0" />
+            <Grid x:Name="host" Grid.Column="1" />
+        </Grid>
+    </Grid>
+</Page>

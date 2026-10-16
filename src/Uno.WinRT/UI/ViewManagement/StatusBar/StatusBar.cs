@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.UI;
 using Uno.Helpers.Theming;
 #if __IOS__
 using Foundation;

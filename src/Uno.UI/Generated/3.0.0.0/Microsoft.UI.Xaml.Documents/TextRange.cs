@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Documents
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct TextRange
+	public partial struct TextRange : global::System.IEquatable<global::Microsoft.UI.Xaml.Documents.TextRange>
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.TextRange()
 #if __SKIA__
@@ -17,6 +17,11 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.TextRange(int, int)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextRange.operator ==(Microsoft.UI.Xaml.Documents.TextRange, Microsoft.UI.Xaml.Documents.TextRange)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextRange.operator !=(Microsoft.UI.Xaml.Documents.TextRange, Microsoft.UI.Xaml.Documents.TextRange)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextRange.Equals(Microsoft.UI.Xaml.Documents.TextRange)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextRange.Equals(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextRange.GetHashCode()
 		// Skipping already declared field Microsoft.UI.Xaml.Documents.TextRange.StartIndex
 		// Skipping already declared field Microsoft.UI.Xaml.Documents.TextRange.Length
 	}

@@ -33,6 +33,7 @@ public partial class CompositionTarget : ICompositionTarget
 		};
 
 		_targets.Add(this, null);
+		CompositorFrameTicks.AddHost(this);
 		var xamlRoot = ContentRoot.GetOrCreateXamlRoot();
 		xamlRoot.Changed += (_, _) => UpdateXamlRootBounds();
 		void UpdateXamlRootBounds()

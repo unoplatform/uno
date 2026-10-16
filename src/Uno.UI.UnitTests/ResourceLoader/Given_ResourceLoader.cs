@@ -12,7 +12,7 @@ using _ResourceLoader = Windows.ApplicationModel.Resources.ResourceLoader;
 
 namespace Uno.UI.Tests.ResourceLoaderTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ResourceLoader
 	{
 		private const string DefaultLanguage = "en-US";

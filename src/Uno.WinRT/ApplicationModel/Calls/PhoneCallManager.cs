@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Windows.ApplicationModel.Calls
 {
-	public partial class PhoneCallManager
+	public static partial class PhoneCallManager
 	{
 		private static readonly char[] _allowedChars = new char[]
 		{

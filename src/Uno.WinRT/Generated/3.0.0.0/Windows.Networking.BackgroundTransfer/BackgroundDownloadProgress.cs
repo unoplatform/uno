@@ -6,7 +6,7 @@ namespace Windows.Networking.BackgroundTransfer
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct BackgroundDownloadProgress
+	public partial struct BackgroundDownloadProgress : global::System.IEquatable<global::Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress>
 	{
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress.BackgroundDownloadProgress()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,47 @@ namespace Windows.Networking.BackgroundTransfer
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress.BackgroundDownloadProgress(ulong, ulong, Windows.Networking.BackgroundTransfer.BackgroundTransferStatus, bool, bool)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(BackgroundDownloadProgress x, BackgroundDownloadProgress y)
+			=> x.BytesReceived == y.BytesReceived
+			&& x.TotalBytesToReceive == y.TotalBytesToReceive
+			&& x.Status == y.Status
+			&& x.HasResponseChanged == y.HasResponseChanged
+			&& x.HasRestarted == y.HasRestarted;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(BackgroundDownloadProgress x, BackgroundDownloadProgress y)
+			=> !(x.BytesReceived == y.BytesReceived
+				&& x.TotalBytesToReceive == y.TotalBytesToReceive
+				&& x.Status == y.Status
+				&& x.HasResponseChanged == y.HasResponseChanged
+				&& x.HasRestarted == y.HasRestarted);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(BackgroundDownloadProgress other)
+			=> BytesReceived == other.BytesReceived
+			&& TotalBytesToReceive == other.TotalBytesToReceive
+			&& Status == other.Status
+			&& HasResponseChanged == other.HasResponseChanged
+			&& HasRestarted == other.HasRestarted;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is BackgroundDownloadProgress that
+			&& BytesReceived == that.BytesReceived
+			&& TotalBytesToReceive == that.TotalBytesToReceive
+			&& Status == that.Status
+			&& HasResponseChanged == that.HasResponseChanged
+			&& HasRestarted == that.HasRestarted;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> BytesReceived.GetHashCode()
+			^ TotalBytesToReceive.GetHashCode()
+			^ Status.GetHashCode()
+			^ HasResponseChanged.GetHashCode()
+			^ HasRestarted.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong BytesReceived;
 #endif

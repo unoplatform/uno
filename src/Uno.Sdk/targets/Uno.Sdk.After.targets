@@ -42,24 +42,7 @@
 		<When Condition="
 				'$(BuildingInsideVisualStudio)' == 'true'
 				AND '$(UnoDisableFirstTargetFrameworkRewrite)' != 'true'
-				AND 
-				(
-					(
-						$([MSBuild]::VersionLessThan($(MSBuildVersion), 17.12.0))
-						AND (
-							$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
-							OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'desktop'
-							OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'windows'
-						)
-					)
-					OR
-					(
-						$([MSBuild]::VersionGreaterThanOrEquals($(MSBuildVersion), 17.12.0))
-						AND (
-							$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
-						)
-					)
-				)
+				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
 				AND '$(TargetFrameworks)' != ''
 				AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'
 				AND $(TargetFrameworks.Contains('$(_UnoSelectedTargetFramework);'))">
@@ -102,42 +85,6 @@
 
 		<Warning Code="UNOB0010"
 				 Text="The browserwasm TargetFramework must not be placed first in the TargetFrameworks property in order for HotReload to work properly. (See https://aka.platform.uno/UNOB0010)" />
-	</Target>
-
-	<Target Name="_UnoVSWarnDesktopIsFirst"
-				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems;ResolveFrameworkReferences"
-				Condition="
-				'$(UnoDisableVSWarnDesktopIsFirst)' != 'true'
-				AND '$(BuildingInsideVisualStudio)' == 'true'
-				AND '$(OutputType)'!='Library'
-				AND $([MSBuild]::VersionLessThan($(MSBuildVersion), 17.12.0))
-				AND '$(_UnoTargetFrameworkCount)' != ''
-				AND $(_UnoTargetFrameworkCount) &gt; 1
-				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'desktop'">
-
-		<Warning Code="UNOB0011"
-					Text="The desktop TargetFramework must not be placed first in the TargetFrameworks property in order for other platforms debugging to work. (See https://aka.platform.uno/UNOB0011)" />
-	</Target>
-
-	<Target Name="_UnoVSWarnDesktopIsNotFirst"
-				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems;ResolveFrameworkReferences"
-				Condition="
-				'$(UnoDisableVSWarnDesktopIsNotFirst)' != 'true'
-				AND '$(BuildingInsideVisualStudio)' == 'true'
-				AND '$(OutputType)'!='Library'
-				AND $([MSBuild]::VersionGreaterThanOrEquals($(MSBuildVersion), 17.12.0))
-				AND $([MSBuild]::VersionLessThan($(MSBuildVersion), 17.13.0))
-				AND '$(_UnoTargetFrameworkCount)' != ''
-				AND $(_UnoTargetFrameworkCount) &gt; 1
-				AND $(TargetFrameworks.Contains('-desktop'))
-				AND (
-					$(TargetFrameworks.Contains('-ios'))
-					OR $(TargetFrameworks.Contains('-android'))
-				)
-				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) != 'desktop'">
-
-		<Warning Code="UNOB0015"
-					Text="The desktop TargetFramework must be placed first in the TargetFrameworks property in order for WSL debugging to work, when mobile targets are also used. (See https://aka.platform.uno/UNOB0015)" />
 	</Target>
 
 	<Target Name="_UnoVSWarnWindowsIsFirst"

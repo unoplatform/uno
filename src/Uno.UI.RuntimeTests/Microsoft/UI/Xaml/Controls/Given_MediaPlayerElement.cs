@@ -1,0 +1,690 @@
+﻿using System;
+using Windows.Media.Core;
+using Windows.Media.Playback;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using static Private.Infrastructure.TestServices;
+using System.Threading.Tasks;
+using SamplesApp.UITests.TestFramework;
+using Uno.UITest.Helpers.Queries;
+using System.Threading;
+
+#if HAS_UNO
+using Uno.Foundation.Extensibility;
+using Uno.UI.Extensions;
+using Uno.Media.Playback;
+#endif
+
+using _MediaPlayer = Windows.Media.Playback.MediaPlayer; // alias to avoid same name root namespace from ios/macos
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
+
+[TestClass]
+[RunsOnUIThread]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+// Every test streams a remote video into a native child window that no drawing backend renders. Under WebGPU on a
+// GPU-less host, WARP rasterizes on every core and the player's TLS handshake to the video times out, so the tests
+// would measure the agent's spare CPU rather than the element.
+[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)]
+public partial class Given_MediaPlayerElement
+{
+	private static readonly Uri TestVideoUrl = new Uri("https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4");
+
+	// The element is sized, and so loaded, only once the remote video has been fetched and opened: on a contended agent
+	// (e.g. one also software-rasterizing the window) that takes well over the few seconds it does on a workstation.
+	private const int LoadTimeoutMS = 20000;
+
+	// Playback state changes come from the player's own threads, which a contended agent schedules late too.
+	private const int PlaybackTimeoutMS = 15000;
+
+	// The test video is remote, and a hosted agent intermittently fails to reach it (TLS handshake / HTTP connection
+	// failures in the player's log). That is the network, not the element: report it as inconclusive, but only when
+	// the player itself said it could not open the media.
+	private static async Task WaitForMediaLoaded(MediaPlayerElement sut)
+	{
+		// The element creates its player when its template applies, so watch for it while waiting.
+		Windows.Media.Playback.MediaPlayer watched = null;
+		var failed = false;
+		await WindowHelper.WaitFor(
+			() =>
+			{
+				if (watched is null && sut.MediaPlayer is { } player)
+				{
+					watched = player;
+					player.MediaFailed += (_, _) => failed = true;
+				}
+
+				return failed || (sut.IsLoaded && sut.ActualWidth > 0 && sut.ActualHeight > 0);
+			},
+			timeoutMS: LoadTimeoutMS,
+			message: $"Timeout waiting on {sut.GetType()} to be loaded");
+
+		if (failed)
+		{
+			Assert.Inconclusive($"The media player could not open {TestVideoUrl}.");
+		}
+	}
+
+	[TestCleanup]
+	public void Cleanup() => WindowHelper.WindowContent = null;
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
+	// WASM (HTML5) never leaves Opening so Paused is unreachable; macOS (AVPlayer) times out at load.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_MediaPlayerElement_NotAutoPlay_Source()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = false,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+			Width = 100,
+		};
+		WindowHelper.WindowContent = sut;
+		await WaitForMediaLoaded(sut);
+
+		// PlaybackState should transition out of Opening state when the video is ready to play.
+		await WindowHelper.WaitFor(
+			condition: () => sut.MediaPlayer?.PlaybackSession?.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Paused,
+			timeoutMS: PlaybackTimeoutMS,
+			message: "Timeout waiting for the media player to enter Paused state."
+		);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
+	// The macOS (AVPlayer) and WASM (HTML5) backends never leave Opening, so the Paused wait below times out.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_MediaPlayerElement_AutoPlay_Source()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+		};
+		WindowHelper.WindowContent = sut;
+		await WaitForMediaLoaded(sut);
+
+#if __SKIA__
+		// AutoPlay is not working on Skia for now.
+		await WindowHelper.WaitFor(
+			condition: () => sut.MediaPlayer?.PlaybackSession?.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Paused,
+			timeoutMS: PlaybackTimeoutMS,
+			message: "Timeout waiting for the media player to enter Playing state on Auto Play."
+		);
+#else
+		// PlaybackState should transition out of Opening state when the video is ready to play.
+		await WindowHelper.WaitFor(
+			condition: () => sut.MediaPlayer?.PlaybackSession?.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Playing,
+			timeoutMS: PlaybackTimeoutMS,
+			message: "Timeout waiting for the media player to enter Playing state on Auto Play."
+		);
+#endif
+	}
+
+	[TestMethod]
+	public void When_MediaPlayerElement_Not_SetSource_Property_Value()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement();
+		sut.SetMediaPlayer(new Windows.Media.Playback.MediaPlayer());
+		Assert.IsNull(sut.Source);
+	}
+
+	[TestMethod]
+	public async Task When_MediaPlayerElement_Added_In_Opening()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+		};
+
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WaitForMediaLoaded(sut);
+
+		sut.MediaPlayer.Play();
+
+		var mediaTransportControls = sut.TransportControls as MediaTransportControls;
+		Assert.IsNotNull(mediaTransportControls);
+
+		var mediaPlayer = sut.MediaPlayer as Windows.Media.Playback.MediaPlayer;
+		Assert.IsNotNull(mediaPlayer);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14735")]
+	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+		};
+
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WaitForMediaLoaded(sut);
+
+		sut.MediaPlayer.Play();
+
+		try
+		{
+			var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
+			var mpp = (FrameworkElement)root.FindName("MediaPlayerPresenter");
+			var currentWidth = mpp.ActualWidth;
+
+			sut.IsFullWindow = true;
+			await Task.Delay(2000);
+
+			if (mpp != null)
+			{
+				Assert.AreNotEqual(mpp.ActualWidth, currentWidth);
+			}
+		}
+		finally
+		{
+			sut.IsFullWindow = false;
+#if HAS_UNO
+			sut.MediaPlayer.Stop();
+#endif
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15471")]
+	public async Task When_MediaPlayerElement_SetSource_Check_Play()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+		};
+
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WaitForMediaLoaded(sut);
+
+		sut.MediaPlayer.Play();
+		await WindowHelper.WaitFor(
+				condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
+				timeoutMS: PlaybackTimeoutMS,
+				message: "Timeout waiting for the playback session state changing to Play."
+			);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24068")]
+	// Stop() intermittently fails to leave Playing on the LibVLC backend: failed in 2 of 3 CI builds on each.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_MediaPlayerElement_SetSource_Check_PlayStop()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+		};
+
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WaitForMediaLoaded(sut);
+
+		// step 1: Test Play
+		sut.MediaPlayer.Play();
+		await WindowHelper.WaitFor(
+					condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
+					timeoutMS: PlaybackTimeoutMS,
+					message: "Timeout waiting for the playback session state changing to playing on PlayStop."
+				);
+
+		// step 2: Test Stop
+#if !HAS_UNO
+		sut.MediaPlayer.Pause();
+		sut.MediaPlayer.Source = null;
+#else
+		sut.MediaPlayer.Stop();
+#endif
+		await WindowHelper.WaitFor(
+					condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing,
+					timeoutMS: PlaybackTimeoutMS,
+					message: "Timeout waiting for the playback session state changing to Stop on PlayStop."
+				);
+#if !HAS_UNO
+		sut.MediaPlayer.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
+#endif
+
+	}
+
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12692")]
+	[TestMethod]
+	public async Task When_MediaPlayerElement_SetSource_Check_PlayPause()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+		};
+
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WaitForMediaLoaded(sut);
+
+		// step 1: Test Play
+		sut.MediaPlayer.Play();
+		await WindowHelper.WaitFor(
+					condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
+					timeoutMS: PlaybackTimeoutMS,
+					message: "Timeout waiting for the playback session state changing to playing on PlayPause."
+				);
+
+		// step 1: Test Pause
+		//Needed to GTK change State from Opening to Playing
+		await Task.Delay(3000);
+		sut.MediaPlayer.Pause();
+		await WindowHelper.WaitFor(
+			condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing,
+			timeoutMS: PlaybackTimeoutMS,
+			message: "Timeout waiting for the playback session state changing to Pause on PlayPause."
+		);
+	}
+
+#if !HAS_UNO
+	[Ignore("Test ignored on windows. Could not find the element by name")]
+#endif
+	[TestMethod]
+	public async Task When_MediaPlayerElement_Check_TransportControlVisibility()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+		};
+
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WaitForMediaLoaded(sut);
+
+		sut.AreTransportControlsEnabled = false;
+
+		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
+		var tcp = (FrameworkElement)root.FindName("TransportControlsPresenter");
+
+		Assert.AreEqual(Visibility.Collapsed, tcp.Visibility);
+		sut.AreTransportControlsEnabled = true;
+		Assert.AreEqual(Visibility.Visible, tcp.Visibility);
+		sut.AreTransportControlsEnabled = false;
+		Assert.AreEqual(Visibility.Collapsed, tcp.Visibility);
+	}
+
+#if !HAS_UNO
+	[Ignore("Test ignored on windows. Could not find the element by name")]
+#endif
+	[TestMethod]
+	public async Task When_MediaPlayerElement_Check_TransportControlButonsVisibility()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+			AreTransportControlsEnabled = true
+		};
+
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WaitForMediaLoaded(sut);
+
+		// step 1: disalbe ShowAndHideAutomatically
+		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
+		sut.TransportControls.ShowAndHideAutomatically = false;
+
+		//// step 2: Make sure all buttons are enabled
+		sut.TransportControls.IsFastForwardEnabled = true;
+		sut.TransportControls.IsFastRewindEnabled = true;
+		sut.TransportControls.IsPlaybackRateEnabled = true;
+#if !WINAPPSDK && !__SKIA__ // Full window mode is not supported on Skia yet https://github.com/unoplatform/uno-private/issues/1276
+		sut.TransportControls.IsFullWindowEnabled = true;
+#endif
+		sut.TransportControls.IsRepeatEnabled = true;
+		sut.TransportControls.IsSeekEnabled = true;
+		sut.TransportControls.IsSkipBackwardEnabled = true;
+		sut.TransportControls.IsStopEnabled = true;
+		sut.TransportControls.IsVolumeEnabled = true;
+		sut.TransportControls.IsZoomEnabled = true;
+#if !WINAPPSDK
+		sut.TransportControls.IsCompactOverlayEnabled = true;
+#endif
+		sut.TransportControls.IsSkipForwardEnabled = true;
+
+		//// step 3: Collapsed Visibility from all to make sure that we have space
+		sut.TransportControls.IsFastForwardButtonVisible = false;
+		sut.TransportControls.IsFastRewindButtonVisible = false;
+#if !WINAPPSDK && !__SKIA__ // Full window mode is not supported on Skia yet https://github.com/unoplatform/uno-private/issues/1276
+		sut.TransportControls.IsFullWindowButtonVisible = false;
+#endif
+		sut.TransportControls.IsNextTrackButtonVisible = false;
+		sut.TransportControls.IsPlaybackRateButtonVisible = false;
+		sut.TransportControls.IsPreviousTrackButtonVisible = false;
+		sut.TransportControls.IsRepeatButtonVisible = false;
+		sut.TransportControls.IsSeekBarVisible = false;
+		sut.TransportControls.IsSkipBackwardButtonVisible = false;
+		sut.TransportControls.IsSkipForwardButtonVisible = false;
+		sut.TransportControls.IsStopButtonVisible = false;
+		sut.TransportControls.IsVolumeButtonVisible = false;
+		sut.TransportControls.IsZoomButtonVisible = false;
+#if !WINAPPSDK
+		sut.TransportControls.IsCompactOverlayButtonVisible = false;
+#endif
+
+		// step 4: Start to validate one by one.
+		sut.TransportControls.IsFastForwardButtonVisible = true;
+		var esut = (FrameworkElement)root.FindName("FastForwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls FastForwardButton Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsFastForwardButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("FastForwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls FastForwardButton Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsFastRewindButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("RewindButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls FastRewindButton Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsFastRewindButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("RewindButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls FastRewindButton Visibility Collapsed when Auto Hide."
+				);
+
+#if !WINAPPSDK && !__SKIA__ // Full window mode is not supported on Skia yet https://github.com/unoplatform/uno-private/issues/1276
+		sut.TransportControls.IsFullWindowButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("FullWindowButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsFullWindowButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsFullWindowButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("FullWindowButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsFullWindowButtonVisible Visibility Collapsed when Auto Hide."
+				);
+#endif
+
+		sut.TransportControls.IsNextTrackButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("NextTrackButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsNextTrackButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsNextTrackButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("NextTrackButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsNextTrackButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+
+#if __SKIA__
+		//PlaybackRate is not implemented in Android and IOS
+		sut.TransportControls.IsPlaybackRateButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("PlaybackRateButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsPlaybackRateButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsPlaybackRateButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("PlaybackRateButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsPlaybackRateButtonVisible Visibility Collapsed when Auto Hide."
+				);
+#endif
+
+		sut.TransportControls.IsPreviousTrackButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("PreviousTrackButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsPreviousTrackButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsPreviousTrackButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("PreviousTrackButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsPreviousTrackButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		//Just works on the fluent layout for now. The generic is show
+		//Issue: https://github.com/unoplatform/uno/issues/12664
+		//sut.TransportControls.IsRepeatButtonVisible = false;
+		//esut = (FrameworkElement)root.FindName("RepeatButton");
+		//await WindowHelper.WaitFor(
+		//			condition: () => esut.Visibility == Visibility.Collapsed,
+		//			timeoutMS: 3000,
+		//			message: "Timeout waiting for TransportControls IsRepeatButtonVisible Visibility Collapsed when Auto Hide."
+		//		);
+		//sut.TransportControls.IsRepeatButtonVisible = true;
+		//esut = (FrameworkElement)root.FindName("RepeatButton");
+		//await WindowHelper.WaitFor(
+		//			condition: () => esut.Visibility == Visibility.Visible,
+		//			timeoutMS: 3000,
+		//			message: "Timeout waiting for TransportControls IsRepeatButtonVisible Visibility Collapsed when Auto Hide."
+		//		);
+
+		sut.TransportControls.IsSkipBackwardButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("SkipBackwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSkipBackwardButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsSkipBackwardButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("SkipBackwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSkipBackwardButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsSkipForwardButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("SkipForwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSkipForwardButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsSkipForwardButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("SkipForwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSkipForwardButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsStopButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("StopButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsStopButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsStopButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("StopButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsStopButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsVolumeButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("VolumeMuteButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsVolumeButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsVolumeButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("VolumeMuteButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsVolumeButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsZoomButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("ZoomButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsZoomButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsZoomButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("ZoomButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsZoomButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsSeekBarVisible = true;
+		esut = (FrameworkElement)root.FindName("MediaTransportControls_Timeline_Border");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSeekBarVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsSeekBarVisible = false;
+		esut = (FrameworkElement)root.FindName("MediaTransportControls_Timeline_Border");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSeekBarVisible Visibility Collapsed when Auto Hide."
+				);
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	// Uno-specific: WinUI's MediaPlayerPresenter has no visibility logic; Uno collapses the templated presenter until a source shows up.
+	// The macOS AVPlayer extension reports a source change while initializing, which shows the presenter right away.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_MediaPlayerElement_Loaded_Without_Source_Presenter_Collapsed()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement();
+		WindowHelper.WindowContent = sut;
+		// Without a source the element can measure to zero, so only wait for Loaded.
+		await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
+		await WindowHelper.WaitForIdle();
+
+		var presenter = sut.FindFirstChild<MediaPlayerPresenter>();
+		Assert.IsNotNull(presenter);
+		Assert.AreEqual(Visibility.Collapsed, presenter.Visibility);
+	}
+
+	[TestMethod]
+	// Uno-specific: WinUI's template leaves the presenter's IsFullWindow unbound, and WinUI 3 disables full window.
+	public async Task When_MediaPlayerElement_IsFullWindow_Set_Before_Template_Enters_Full_Window()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement() { IsFullWindow = true };
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
+			await WindowHelper.WaitForIdle();
+
+			var fullWindowContent = sut.XamlRoot!.VisualTree.FullWindowMediaRoot.Child;
+			Assert.IsNotNull(fullWindowContent);
+
+			var presenter = fullWindowContent.FindFirstChild<MediaPlayerPresenter>();
+			Assert.IsNotNull(presenter);
+			Assert.IsTrue(presenter.IsFullWindow);
+		}
+		finally
+		{
+			sut.IsFullWindow = false;
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	// Uno-specific: WinUI's MediaPlayerPresenter has no visibility logic.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_MediaPlayerElement_Retemplated_With_Source_Presenter_Stays_Visible()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement() { Source = MediaSource.CreateFromUri(TestVideoUrl) };
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
+			await WindowHelper.WaitFor(() => sut.FindFirstChild<MediaPlayerPresenter>()?.Visibility == Visibility.Visible);
+
+			var template = sut.Template;
+			sut.Template = null;
+			sut.Template = template;
+			sut.ApplyTemplate();
+			await WindowHelper.WaitForIdle();
+
+			var presenter = sut.FindFirstChild<MediaPlayerPresenter>();
+			Assert.IsNotNull(presenter);
+			Assert.AreEqual(Visibility.Visible, presenter.Visibility);
+		}
+		finally
+		{
+			sut.MediaPlayer?.Pause();
+			WindowHelper.WindowContent = null;
+		}
+	}
+#endif
+
+	private void CheckMediaPlayerExtensionAvailability()
+	{
+#if HAS_UNO
+		if (_MediaPlayer.ImplementedByExtensions && !ApiExtensibility.IsRegistered<IMediaPlayerExtension>())
+		{
+			Assert.Inconclusive("Platform not supported.");
+		}
+#endif
+	}
+}
