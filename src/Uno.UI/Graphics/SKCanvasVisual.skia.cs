@@ -21,5 +21,9 @@ internal class SKCanvasVisual(Action<object, Size> renderCallback, Compositor co
 	}
 
 	internal override bool CanPaint() => true;
+
+	// Paint clips to Size, so damage can be bounded by it instead of falling back to the whole clip.
+	internal override bool PaintsWithinOwnSize => true;
+
 	public override void Invalidate() => Compositor.InvalidateRender(this);
 }
