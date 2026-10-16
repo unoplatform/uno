@@ -57,13 +57,7 @@ partial class TextBox
 	}
 
 	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty CanPasteClipboardContentProperty { get; } = CreateCanPasteClipboardContentProperty();
-
-	public bool CanPasteClipboardContent
-	{
-		get => GetCanPasteClipboardContentValue();
-		private set => SetCanPasteClipboardContentValue(value);
-	}
+	public partial bool CanPasteClipboardContent { get; private set; }
 
 	bool ITextBoxHost.CanPasteClipboardContent
 	{
