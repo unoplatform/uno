@@ -1,7 +1,9 @@
 using Windows.Foundation;
 using System;
 using Uno.Media;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -11,7 +13,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double X1
 		{
 			get => (double)GetValue(X1Property);
-			set => SetValue(X1Property, value);
+			set => SetValue(X1Property, Boxer.Box(value));
 		}
 
 		public static DependencyProperty X1Property { get; } = DependencyProperty.Register(
@@ -19,7 +21,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -29,7 +31,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double X2
 		{
 			get => (double)GetValue(X2Property);
-			set => SetValue(X2Property, value);
+			set => SetValue(X2Property, Boxer.Box(value));
 		}
 
 		public static DependencyProperty X2Property { get; } = DependencyProperty.Register(
@@ -37,7 +39,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -47,7 +49,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double Y1
 		{
 			get => (double)GetValue(Y1Property);
-			set => SetValue(Y1Property, value);
+			set => SetValue(Y1Property, Boxer.Box(value));
 		}
 
 		public static DependencyProperty Y1Property { get; } = DependencyProperty.Register(
@@ -55,7 +57,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -65,7 +67,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double Y2
 		{
 			get => (double)GetValue(Y2Property);
-			set => SetValue(Y2Property, value);
+			set => SetValue(Y2Property, Boxer.Box(value));
 		}
 
 		public static DependencyProperty Y2Property { get; } = DependencyProperty.Register(
@@ -73,7 +75,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -86,7 +88,8 @@ namespace Microsoft.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private SkiaGeometrySource2D GetPath()
+#nullable enable
+		private IGeometry? GetPath()
 		{
 			if (Math.Abs(X1 - X2) > double.Epsilon || Math.Abs(Y1 - Y2) > double.Epsilon)
 			{
@@ -96,11 +99,12 @@ namespace Microsoft.UI.Xaml.Shapes
 					c.LineTo(new Point(X2, Y2), false, false);
 				});
 
-				return streamGeometry.GetGeometrySource2D();
+				return streamGeometry.GetTransformedGeometry();
 			}
 
 			return null;
 		}
+#nullable disable
 		#endregion
 
 	}

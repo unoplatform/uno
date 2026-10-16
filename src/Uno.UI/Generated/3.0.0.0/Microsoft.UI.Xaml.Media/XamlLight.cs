@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Media
 	{
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Composition.CompositionLight CompositionLight
+		protected global::Microsoft.UI.Composition.CompositionLight CompositionLight
 		{
 			get
 			{

@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 
 
@@ -27,6 +28,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private Panel? _layoutRoot;
 		private double _oldValue = 0d;
 		private LoadedAsset _loadedAsset;
+		private Action? _foregroundBrushChanged;
+		private Action? _backgroundBrushChanged;
+		private IDisposable? _foregroundBrushSubscription;
+		private IDisposable? _backgroundBrushSubscription;
 
 		private enum LoadedAsset : byte
 		{
@@ -36,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsActiveProperty { get; } = DependencyProperty.Register(
-			nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(true, OnIsActivePropertyChanged));
+			nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(BoolBoxes.True, OnIsActivePropertyChanged));
 
 		// Hides the internal DependencyObject.IsActive (live-tree state).
 		public new bool IsActive
@@ -46,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsIndeterminateProperty { get; } = DependencyProperty.Register(
-			nameof(IsIndeterminate), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(true, OnIsIndeterminatePropertyChanged));
+			nameof(IsIndeterminate), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(BoolBoxes.True, OnIsIndeterminatePropertyChanged));
 
 
 		public bool IsIndeterminate
@@ -58,16 +63,16 @@ namespace Microsoft.UI.Xaml.Controls
 		public double Value
 		{
 			get { return (double)GetValue(ValueProperty); }
-			set { SetValue(ValueProperty, value); }
+			set { SetValue(ValueProperty, Boxer.Box(value)); }
 		}
 
 		public static DependencyProperty ValueProperty { get; } = DependencyProperty.Register(
-			nameof(Value), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(0d, (s, e) => (s as ProgressRing)?.OnValuePropertyChanged(e)));
+			nameof(Value), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(DoubleBoxes.Zero, (s, e) => (s as ProgressRing)?.OnValuePropertyChanged(e)));
 
 		public double Maximum
 		{
 			get { return (double)GetValue(MaximumProperty); }
-			set { SetValue(MaximumProperty, value); }
+			set { SetValue(MaximumProperty, Boxer.Box(value)); }
 		}
 
 		public static DependencyProperty MaximumProperty { get; } = DependencyProperty.Register(
@@ -76,11 +81,11 @@ namespace Microsoft.UI.Xaml.Controls
 		public double Minimum
 		{
 			get { return (double)GetValue(MinimumProperty); }
-			set { SetValue(MinimumProperty, value); }
+			set { SetValue(MinimumProperty, Boxer.Box(value)); }
 		}
 
 		public static DependencyProperty MinimumProperty { get; } = DependencyProperty.Register(
-			nameof(Minimum), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(0d, (s, e) => (s as ProgressRing)?.OnMinimumPropertyChanged(e)));
+			nameof(Minimum), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(DoubleBoxes.Zero, (s, e) => (s as ProgressRing)?.OnMinimumPropertyChanged(e)));
 
 
 
@@ -134,9 +139,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty dp) => SetLottieForegroundColor();
+		// A brush can change colour without the property changing - a re-evaluated theme resource is
+		// mutated in place - so follow the assigned brush too, not just the property it is assigned to.
+		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty dp)
+		{
+			_foregroundBrushSubscription?.Dispose();
+			_foregroundBrushSubscription = Brush.SetupBrushChanged(Foreground, ref _foregroundBrushChanged, SetLottieForegroundColor);
+		}
 
-		private void OnBackgroundPropertyChanged(DependencyObject sender, DependencyProperty dp) => SetLottieBackgroundColor();
+		private void OnBackgroundPropertyChanged(DependencyObject sender, DependencyProperty dp)
+		{
+			_backgroundBrushSubscription?.Dispose();
+			_backgroundBrushSubscription = Brush.SetupBrushChanged(Background, ref _backgroundBrushChanged, SetLottieBackgroundColor);
+		}
 
 		private void SetLottieForegroundColor()
 		{

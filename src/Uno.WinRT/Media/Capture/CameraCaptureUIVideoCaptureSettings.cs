@@ -4,6 +4,10 @@ namespace Windows.Media.Capture
 {
 	public partial class CameraCaptureUIVideoCaptureSettings
 	{
+		internal CameraCaptureUIVideoCaptureSettings()
+		{
+		}
+
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__
 		[global::Uno.NotImplemented]
 		public global::Windows.Media.Capture.CameraCaptureUIMaxVideoResolution MaxResolution

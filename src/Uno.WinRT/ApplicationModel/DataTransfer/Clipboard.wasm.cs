@@ -324,6 +324,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			return package.GetView();
 		}
 
+		internal static bool IsTextAvailable() => true;
+
 		private static void SetKnownContent(DataPackage package, ClipboardContentData data)
 		{
 			var lease = data.Handles.Length > 0 ? new ClipboardHandleLease(data.Handles) : null;

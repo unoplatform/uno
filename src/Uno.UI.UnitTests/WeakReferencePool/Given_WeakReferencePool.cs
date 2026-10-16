@@ -10,7 +10,7 @@ using Uno.UI.DataBinding;
 
 namespace Uno.UI.Tests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_WeakReferencePool
 	{
 		[TestInitialize]

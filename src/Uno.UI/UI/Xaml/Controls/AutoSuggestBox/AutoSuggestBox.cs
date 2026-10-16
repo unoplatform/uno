@@ -255,10 +255,12 @@ namespace Microsoft.UI.Xaml.Controls
 					windowRect.Height -= inputPaneRect.Height;
 				}
 
-				var popupTransform = (MatrixTransform)popup.TransformToVisual(XamlRoot.Content);
+				// Measure in window coordinates, like windowRect: the content is offset from the window while it
+				// scrolls above the input pane.
+				var popupTransform = (MatrixTransform)popup.TransformToVisual(null);
 				var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
 
-				var containerTransform = (MatrixTransform)_layoutRoot.TransformToVisual(XamlRoot.Content);
+				var containerTransform = (MatrixTransform)_layoutRoot.TransformToVisual(null);
 				var containerRect = new Rect(containerTransform.Matrix.OffsetX, containerTransform.Matrix.OffsetY, _layoutRoot.ActualWidth, _layoutRoot.ActualHeight);
 				var textBoxHeight = _layoutRoot.ActualHeight;
 

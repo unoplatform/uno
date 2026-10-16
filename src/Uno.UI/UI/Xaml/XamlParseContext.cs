@@ -45,6 +45,12 @@ namespace Uno.UI.Xaml
 		// so repeated misses don't re-scan AppDomain on every access.
 		private bool _assemblyLoadContextResolved;
 
+		// The distinct load contexts of every loaded copy of AssemblyName, recorded when the lazy
+		// resolution found MORE than one. Held weakly for the same collectibility reason as the
+		// resolved ALC. While at least two of them are alive the context stays ambiguous (see
+		// IsAssemblyLoadContextAmbiguous); once unloads leave a single copy the scan re-runs and latches it.
+		private System.WeakReference<System.Runtime.Loader.AssemblyLoadContext>[] _ambiguousAssemblyLoadContexts;
+
 		public System.Runtime.Loader.AssemblyLoadContext AssemblyLoadContext
 		{
 			get
@@ -70,6 +76,19 @@ namespace Uno.UI.Xaml
 					_assemblyLoadContextResolved = false;
 				}
 
+				if (_ambiguousAssemblyLoadContexts is { } candidates)
+				{
+					if (CountAlive(candidates) >= 2)
+					{
+						// Still loaded in several contexts: the name alone cannot say which copy this is.
+						return null;
+					}
+
+					// Enough copies were unloaded that a single one may remain: re-scan and latch it.
+					_ambiguousAssemblyLoadContexts = null;
+					_assemblyLoadContextResolved = false;
+				}
+
 				if (_assemblyLoadContextResolved)
 				{
 					return null;
@@ -81,17 +100,62 @@ namespace Uno.UI.Xaml
 				// Without this, ResourceResolver.TryTopLevelRetrieval would fall back to
 				// Application.Current (the host) and miss resources defined only in the
 				// secondary application's Resources.
+				//
+				// The name identifies an assembly, not a copy of it. When the same assembly is
+				// loaded in several contexts — a library the host and a hosted app both reference,
+				// each side holding its own copy — no choice is right for every caller, and taking
+				// the first match would silently pick the host's copy for the app's XAML. That case
+				// is recorded as ambiguous and resolves to null; ResourceResolver then treats the
+				// lookup as provisional (see ShouldDeferStaticResourceToLoading) instead of final.
 				_assemblyLoadContextResolved = true;
 				if (!string.IsNullOrEmpty(AssemblyName))
 				{
+					System.Runtime.Loader.AssemblyLoadContext single = null;
+					List<System.Runtime.Loader.AssemblyLoadContext> distinct = null;
+
 					foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies())
 					{
-						if (string.Equals(assembly.GetName().Name, AssemblyName, System.StringComparison.Ordinal))
+						if (!string.Equals(assembly.GetName().Name, AssemblyName, System.StringComparison.Ordinal))
 						{
-							var resolved = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
-							SetAssemblyLoadContext(resolved);
-							return resolved;
+							continue;
 						}
+
+						var candidate = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
+						if (candidate is null)
+						{
+							continue;
+						}
+
+						if (single is null)
+						{
+							single = candidate;
+						}
+						else if (!ReferenceEquals(single, candidate))
+						{
+							distinct ??= new List<System.Runtime.Loader.AssemblyLoadContext> { single };
+							if (!distinct.Contains(candidate))
+							{
+								distinct.Add(candidate);
+							}
+						}
+					}
+
+					if (distinct is not null)
+					{
+						var weak = new System.WeakReference<System.Runtime.Loader.AssemblyLoadContext>[distinct.Count];
+						for (var i = 0; i < weak.Length; i++)
+						{
+							weak[i] = new System.WeakReference<System.Runtime.Loader.AssemblyLoadContext>(distinct[i]);
+						}
+
+						_ambiguousAssemblyLoadContexts = weak;
+						return null;
+					}
+
+					if (single is not null)
+					{
+						SetAssemblyLoadContext(single);
+						return single;
 					}
 				}
 
@@ -100,8 +164,40 @@ namespace Uno.UI.Xaml
 			set => SetAssemblyLoadContext(value);
 		}
 
+		/// <summary>
+		/// True when <see cref="AssemblyName"/> is loaded in more than one <see cref="System.Runtime.Loader.AssemblyLoadContext"/>
+		/// and no context was stamped explicitly, so <see cref="AssemblyLoadContext"/> cannot identify
+		/// the copy this context belongs to and returns null. Resource lookups made through an ambiguous
+		/// context are provisional: they cannot be attributed to an owning application up front.
+		/// </summary>
+		internal bool IsAssemblyLoadContextAmbiguous
+		{
+			get
+			{
+				// Runs the lazy resolution (and its re-scan after unloads) so the answer is current.
+				_ = AssemblyLoadContext;
+				return _ambiguousAssemblyLoadContexts is not null;
+			}
+		}
+
+		private static int CountAlive(System.WeakReference<System.Runtime.Loader.AssemblyLoadContext>[] candidates)
+		{
+			var alive = 0;
+			foreach (var candidate in candidates)
+			{
+				if (candidate.TryGetTarget(out _))
+				{
+					alive++;
+				}
+			}
+
+			return alive;
+		}
+
 		private void SetAssemblyLoadContext(System.Runtime.Loader.AssemblyLoadContext value)
 		{
+			_ambiguousAssemblyLoadContexts = null;
+
 			if (value is null)
 			{
 				_defaultAssemblyLoadContext = null;

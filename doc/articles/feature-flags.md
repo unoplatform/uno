@@ -18,14 +18,10 @@ Use `Uno.UI.FeatureConfiguration.Font.MaximumTextScaleFactor` to control this.
 
 ## Rendering backend (Skia)
 
-The rendering backend for the Skia renderer can be configured per platform. On desktop, the preferred approach is the [host builder API](xref:Uno.Skia.Vulkan). The feature flags below are kept for backwards compatibility and for platforms (like Android) that don't use a host builder.
+The rendering backend for the Skia renderer can be configured per platform. On desktop (X11, Win32) it is configured through the [host builder API](xref:Uno.Skia.Vulkan) (`ForceRenderingBackend` / `DisableRenderingBackends`), not feature flags. The feature flags below apply to platforms (like Android) that don't use a host builder.
 
 - `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid` — Enables Vulkan rendering on Android (Skia). Default: `true` since Uno Platform 7.0. Set to `false` to fall back to OpenGL ES.
-- `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnX11` — Enables Vulkan rendering on Linux/X11. Default: `true` since Uno Platform 7.0. Set to `false` to fall back to OpenGL.
-- `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnWin32` — Enables Vulkan rendering on Windows/Win32. Default: `true` since Uno Platform 7.0. Set to `false` to fall back to OpenGL.
 - `Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid` — Enables OpenGL ES rendering on Android (Skia). Default: `true`.
-- `Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnX11` — Enables OpenGL rendering on Linux/X11. Default: `null` (auto-detect).
-- `Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnWin32` — Enables OpenGL rendering on Windows/Win32. Default: `null` (auto-detect).
 
 For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
@@ -43,7 +39,7 @@ By default, `ComboBox` popup is placed in such a way that the currently selected
 
 ### Constraining by visible bounds
 
-By default we don't constrain popups by the visible bounds of the application view on Skia renderer targets. This is different from native renderer where popups are automatically padded by the visible bounds, which ensures the popup does not flow below the system UI (e.g. mobile device status bar or navigation bar). The `ConstrainByVisibleBounds` property allows you to control this behavior. Please note that in case the property is set to `false` (which is the default for Skia renderer), you are responsible for ensuring the content of your popups has appropriate padding around its content. This can be achieved using the [`SafeArea` control in Uno Toolkit](xref:Toolkit.Controls.SafeArea).
+By default we don't constrain popups by the visible bounds of the application view, so a popup can flow below the system UI (e.g. mobile device status bar or navigation bar). The `ConstrainByVisibleBounds` property allows you to control this behavior. Please note that in case the property is set to `false` (which is the default), you are responsible for ensuring the content of your popups has appropriate padding around its content. This can be achieved using the [`SafeArea` control in Uno Toolkit](xref:Toolkit.Controls.SafeArea).
 
 ### Prevent light dismiss on window deactivation
 

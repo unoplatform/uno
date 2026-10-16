@@ -54,7 +54,7 @@ Uno Platform supports a number of non-visual APIs from Windows Runtime namespace
 ## Core functionality
 
 * [Enable and configure logging](logging.md)
-* [Configure build telemetry](uno-toolchain-telemetry.md)
+* [Configure tools telemetry](uno-toolchain-telemetry.md)
 * [Add native views to the visual tree](native-views.md)
 
 ## Common development tasks

@@ -6,7 +6,7 @@ namespace Windows.UI.Input.Preview.Injection
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct InjectedInputPoint
+	public partial struct InjectedInputPoint : global::System.IEquatable<global::Windows.UI.Input.Preview.Injection.InjectedInputPoint>
 	{
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPoint.InjectedInputPoint()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,11 @@ namespace Windows.UI.Input.Preview.Injection
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPoint.InjectedInputPoint(int, int)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPoint.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputPoint, Windows.UI.Input.Preview.Injection.InjectedInputPoint)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPoint.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputPoint, Windows.UI.Input.Preview.Injection.InjectedInputPoint)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPoint.Equals(Windows.UI.Input.Preview.Injection.InjectedInputPoint)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPoint.Equals(object)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPoint.GetHashCode()
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPoint.PositionX
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPoint.PositionY
 	}

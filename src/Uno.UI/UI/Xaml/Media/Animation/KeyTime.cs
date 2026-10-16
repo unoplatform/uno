@@ -8,10 +8,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial struct KeyTime : IEquatable<KeyTime>, IComparable<KeyTime>
 	{
-		public TimeSpan TimeSpan;
+		private KeyTime(TimeSpan timeSpan) => TimeSpan = timeSpan;
+
+		public TimeSpan TimeSpan { get; }
 
 		public static KeyTime FromTimeSpan(TimeSpan timeSpan)
-			=> new KeyTime() { TimeSpan = timeSpan };
+			=> new KeyTime(timeSpan);
 
 		public static implicit operator KeyTime(string timeSpan)
 			=> FromTimeSpan(TimeSpan.Parse(timeSpan, CultureInfo.InvariantCulture));
@@ -23,20 +25,20 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public override int GetHashCode()
 			=> TimeSpan.GetHashCode();
 
-		public override bool Equals(object obj)
-			=> obj is KeyTime other && Equals(this, other);
+		public override bool Equals(object value)
+			=> value is KeyTime other && Equals(this, other);
 
-		public bool Equals(KeyTime other)
-			=> Equals(this, other);
+		public bool Equals(KeyTime value)
+			=> Equals(this, value);
 
-		public static bool Equals(KeyTime first, KeyTime second)
-			=> first.TimeSpan.Equals(second.TimeSpan);
+		public static bool Equals(KeyTime keyTime1, KeyTime keyTime2)
+			=> keyTime1.TimeSpan.Equals(keyTime2.TimeSpan);
 
-		public static bool operator ==(KeyTime t1, KeyTime t2)
-			=> Equals(t1, t2);
+		public static bool operator ==(KeyTime keyTime1, KeyTime keyTime2)
+			=> Equals(keyTime1, keyTime2);
 
-		public static bool operator !=(KeyTime t1, KeyTime t2)
-			=> !Equals(t1, t2);
+		public static bool operator !=(KeyTime keyTime1, KeyTime keyTime2)
+			=> !Equals(keyTime1, keyTime2);
 		#endregion
 
 		#region Comparision

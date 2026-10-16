@@ -17,12 +17,6 @@ Uno Platform implements the WinUI [UI Automation](https://learn.microsoft.com/wi
 | Linux                  | Skia      | —                              | Planned |
 | Android                | Skia      | TalkBack                       | WIP    |
 | iOS                    | Skia      | VoiceOver                      | WIP    |
-| Android                | Native    | TalkBack                       | ✔      |
-| iOS                    | Native    | VoiceOver                      | ✔      |
-| Web (WASM)             | Native    | Any screen reader (via ARIA)   | ✔      |
-
-> [!NOTE]
-> This documentation focuses primarily on the **Skia rendering** accessibility implementation. Native rendering on Android, iOS, and WASM maps `AutomationProperties` directly to the platform's native accessibility APIs (e.g., `contentDescription` on Android, `accessibilityLabel` on iOS, `aria-label` on WASM).
 
 ## How it works
 
@@ -85,29 +79,16 @@ WinRTFeatureConfiguration.Accessibility.HighContrastScheme = "High Contrast Whit
 
 When `WinRTFeatureConfiguration.Accessibility.HighContrast` changes, the `AccessibilitySettings.HighContrastChanged` event is raised.
 
-## Text scaling (iOS and Android native rendering)
+## SimpleAccessibility mode (legacy)
 
-On iOS and Android with native rendering, the OS provides accessibility text scaling. To opt out:
+When SimpleAccessibility mode is enabled, an accessible element's name is the concatenation of the names of its visible children, and those children are excluded from accessibility focus. This mirrors how VoiceOver reads list items on iOS. To keep an element's children focusable, set `AutomationProperties.AccessibilityView` to `Raw` on that element.
 
 ```csharp
-Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor = true;
+Uno.UI.FeatureConfiguration.AutomationPeer.UseSimpleAccessibility = true;
 ```
 
 > [!NOTE]
-> On Skia targets, text scaling is handled by the OS or browser zoom level and is not controlled by this property.
-
-## SimpleAccessibility mode (legacy)
-
-> [!IMPORTANT]
-> This applies only to **iOS and Android native rendering**. It is not used on Skia targets.
-
-On iOS, VoiceOver reads all inner accessible names of a list item concatenated but does not let the user focus individual children. SimpleAccessibility mode brings this behavior to Android for consistency:
-
-```csharp
-#if __IOS__ || __ANDROID__
-FeatureConfiguration.AutomationPeer.UseSimpleAccessibility = true;
-#endif
-```
+> This mode doesn't match WinUI's accessibility model, and it prevents nesting interactive elements: only the outer element of a `Button` inside a `Button` is focusable.
 
 ## See also
 

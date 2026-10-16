@@ -1,16 +1,23 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Android.App;
 using Android.OS;
 using Android.Views;
+using Java.Interop;
 using Microsoft.Identity.Client;
 using Microsoft.UI.Xaml;
+using Uno.UI.Runtime.Android;
 
 namespace SamplesApp.Droid
 {
 	[Activity(
 			Exported = true,
 			MainLauncher = true,
+			// Without it, a protocol activation stacks a second instance of this activity rather than
+			// reaching the running one through OnNewIntent; the window moves to it and closes with it.
+			LaunchMode = global::Android.Content.PM.LaunchMode.SingleTask,
 			WindowSoftInputMode = SoftInput.AdjustNothing | SoftInput.StateHidden,
 			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges
 		)]
@@ -32,12 +39,13 @@ namespace SamplesApp.Droid
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : ApplicationActivity
 	{
+		private Task<string> _screenshotTask;
 
 		protected override void OnCreate(Bundle bundle)
 		{
 			AndroidX.Core.SplashScreen.SplashScreen.InstallSplashScreen(this);
 
-			var externalFilesDir = Microsoft.UI.Xaml.NativeApplication.Context.GetExternalFilesDir(null);
+			var externalFilesDir = NativeApplication.Context.GetExternalFilesDir(null);
 			if (externalFilesDir != null)
 			{
 				string fullPath = Path.Combine(externalFilesDir.AbsolutePath, "primestorage.txt");
@@ -51,12 +59,13 @@ namespace SamplesApp.Droid
 					"UITEST_RUNTIME_TEST_GROUP",
 					"UITEST_RUNTIME_TEST_GROUP_COUNT",
 					"UITEST_RUNTIME_AUTOSTART_RESULT_FILE",
-					"UITEST_RUNTIME_TESTS_FILTER"
+					"UITEST_RUNTIME_TESTS_FILTER",
 				];
 
 				foreach (var key in extras.KeySet())
 				{
-					if (knownVariables.Contains(key))
+					// UNO_* switches (e.g. UNO_WEBGPU) are read when the host is built, once this activity has started.
+					if (knownVariables.Contains(key) || key.StartsWith("UNO_", System.StringComparison.Ordinal))
 					{
 						var value = extras.GetString(key);
 						System.Environment.SetEnvironmentVariable(key, value);
@@ -66,11 +75,107 @@ namespace SamplesApp.Droid
 
 			base.OnCreate(bundle);
 		}
+
+		[Export("RunTest")]
+		public string RunTest(string metadataName) => App.RunTest(metadataName);
+
+		[Export("IsTestDone")]
+		public bool IsTestDone(string testId) => App.IsTestDone(testId);
+
+		[Export("GetDisplayScreenScaling")]
+		public string GetDisplayScreenScaling(string displayId) => App.GetDisplayScreenScaling(displayId);
+
+		[Export("GetScreenshot")]
+		public string GetScreenshot(string displayId)
+		{
+			var screenshotTask = _screenshotTask;
+			if (screenshotTask is null)
+			{
+				// The capture retains its bitmap until PixelCopy completes, even if polling times out.
+				_screenshotTask = CaptureScreenshotAsync().WaitAsync(TimeSpan.FromSeconds(10));
+				return "pending";
+			}
+
+			if (!screenshotTask.IsCompleted)
+			{
+				return "pending";
+			}
+
+			_screenshotTask = null;
+			return screenshotTask.GetAwaiter().GetResult();
+		}
+
+		private async Task<string> CaptureScreenshotAsync()
+		{
+			var rootView = Window.DecorView;
+			using var bitmap = Android.Graphics.Bitmap.CreateBitmap(
+				rootView.Width,
+				rootView.Height,
+				Android.Graphics.Bitmap.Config.Argb8888);
+			using var scope = new Android.Graphics.Rect(0, 0, rootView.Width, rootView.Height);
+
+			using var handler = new Handler(Looper.MainLooper);
+			var completion = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+			var listener = new PixelCopyListener(completion);
+			var requested = false;
+			try
+			{
+				PixelCopy.Request(Window, scope, bitmap, listener, handler);
+				requested = true;
+			}
+			finally
+			{
+				if (!requested)
+				{
+					listener.Dispose();
+				}
+			}
+
+			var copyResult = await completion.Task.ConfigureAwait(false);
+			if (copyResult != (int)PixelCopyResult.Success)
+			{
+				throw new InvalidOperationException($"PixelCopy screenshot failed: {(PixelCopyResult)copyResult} ({copyResult}).");
+			}
+
+			using var memoryStream = new MemoryStream();
+			if (!bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, memoryStream))
+			{
+				throw new IOException("Unable to encode the screenshot as PNG.");
+			}
+			return Convert.ToBase64String(memoryStream.ToArray());
+		}
+
+		[Export("SetFullScreenMode")]
+		public void SetFullScreenMode(bool fullscreen)
+		{
+			if (fullscreen)
+			{
+				Window.AddFlags(WindowManagerFlags.Fullscreen);
+			}
+			else
+			{
+				Window.ClearFlags(WindowManagerFlags.Fullscreen);
+			}
+		}
+
 		// Required for the MSAL sample "MsalLoginAndGraph"
 		protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
 		{
 			base.OnActivityResult(requestCode, resultCode, data);
 			AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
+		}
+
+		private sealed class PixelCopyListener : Java.Lang.Object, PixelCopy.IOnPixelCopyFinishedListener
+		{
+			private readonly TaskCompletionSource<int> _completion;
+
+			internal PixelCopyListener(TaskCompletionSource<int> completion) => _completion = completion;
+
+			public void OnPixelCopyFinished(int copyResult)
+			{
+				_completion.TrySetResult(copyResult);
+				Dispose();
+			}
 		}
 	}
 

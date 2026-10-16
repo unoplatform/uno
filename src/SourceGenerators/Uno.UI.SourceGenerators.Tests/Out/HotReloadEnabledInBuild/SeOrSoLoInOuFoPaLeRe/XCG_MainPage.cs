@@ -61,6 +61,7 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 						.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ0_Sty)
 					)
@@ -89,6 +90,7 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 						.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ1_Sty)
 					)
@@ -243,13 +245,14 @@ namespace TestRepro
 									new global::Microsoft.UI.Xaml.Controls.Button
 									{
 										IsParsing = true,
-										Content = @"DoSomething",
+										Content = "DoSomething",
 										// Source MainPage.xaml (Line 16:10)
 									}
 									.GenericApply(__that, __nameScope, __settings, ApplyTo_Ξ0_StaPanΞ1_But)
 								)
 								,
 							}
+							,
 						}
 						.GenericApply(__that, __nameScope, __settings, ApplyTo_Ξ0_StaPan)
 					)
@@ -286,11 +289,11 @@ namespace TestRepro
 				private void ApplyTo_Ξ0_StaPanΞ0_TexBlo(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-					__p1.SetBinding(
+					global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 						new Microsoft.UI.Xaml.Data.Binding()
 						{
-							Path = @"",
+							Path = "",
 						}
 					);
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a, "file://///Project/0/MainPage.xaml", 15, 10);
@@ -356,12 +359,7 @@ namespace TestRepro
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
-			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			private global::System.WeakReference _ownerReference;
-			private global::TestRepro.MainPage Owner { get => (global::TestRepro.MainPage)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
-			#else
 			private global::TestRepro.MainPage Owner { get; set; }
-			#endif
 			public MainPage_Bindings(global::TestRepro.MainPage owner)
 			{
 				Owner = owner;
