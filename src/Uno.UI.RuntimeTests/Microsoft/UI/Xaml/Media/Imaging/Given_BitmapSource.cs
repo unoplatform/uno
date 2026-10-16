@@ -514,16 +514,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #if UNO_DRAWING_SKIA
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25541")]
 		public async Task When_Browser_Workers_Are_Reused()
 		{
 			// The workers are called directly because a failed browser decode falls back to SKCodec, so the image would
 			// still open. One more decode than there are workers makes at least one of them decode again after its reset.
 			var workers = int.Parse(WasmSemanticDomHelper.InvokeBrowserJs("String(navigator.hardwareConcurrency)"));
-			var images = new (byte[] Png, int Width, int Height, (int R, int G, int B, int A) PremultipliedFirstPixel)[]
+			var images = new (byte[] Png, int Width, int Height, (int B, int G, int R, int A) PremultipliedFirstPixel)[]
 			{
-				(CreatePng(300, 200, new SKColor(200, 100, 50, 128)), 300, 200, (100, 50, 25, 128)),
-				(CreatePng(2, 3, SKColors.Blue), 2, 3, (0, 0, 255, 255)),
-				(CreatePng(5, 4, SKColors.Red), 5, 4, (255, 0, 0, 255)),
+				(CreatePng(300, 200, new SKColor(200, 100, 50, 128)), 300, 200, (25, 50, 100, 128)),
+				(CreatePng(2, 3, SKColors.Blue), 2, 3, (255, 0, 0, 255)),
+				(CreatePng(5, 4, SKColors.Red), 5, 4, (0, 0, 255, 255)),
 			};
 			var batch = Enumerable.Range(0, workers + 1).Select(i => images[i % images.Length]).ToArray();
 
@@ -547,7 +548,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			return data.ToArray();
 		}
 
-		private static void AssertDecoded(string result, int width, int height, (int R, int G, int B, int A) premultipliedFirstPixel)
+		private static void AssertDecoded(string result, int width, int height, (int B, int G, int R, int A) premultipliedFirstPixel)
 		{
 			Assert.IsFalse(result.StartsWith("error:", StringComparison.Ordinal) || result.StartsWith("exception:", StringComparison.Ordinal), $"The browser worker failed to decode the image: {result}");
 			var values = result.Split(',').Select(int.Parse).ToArray();
@@ -555,15 +556,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			Assert.AreEqual(width, values[0], $"Width ({result})");
 			Assert.AreEqual(height, values[1], $"Height ({result})");
 			Assert.AreEqual(width * height * 4, values[2], $"Byte count ({result})");
-			var (r, g, b, a) = premultipliedFirstPixel;
+			var (b, g, r, a) = premultipliedFirstPixel;
 			Assert.IsTrue(
-				Math.Abs(values[3] - r) <= 2 && Math.Abs(values[4] - g) <= 2 && Math.Abs(values[5] - b) <= 2 && Math.Abs(values[6] - a) <= 2,
-				$"First pixel is RGBA {values[3]},{values[4]},{values[5]},{values[6]}, expected {r},{g},{b},{a}.");
+				Math.Abs(values[3] - b) <= 2 && Math.Abs(values[4] - g) <= 2 && Math.Abs(values[5] - r) <= 2 && Math.Abs(values[6] - a) <= 2,
+				$"First pixel is BGRA {values[3]},{values[4]},{values[5]},{values[6]}, expected {b},{g},{r},{a}.");
 		}
 
 		private static int _browserDecodeCalls;
 
-		// Decodes the images concurrently and returns, for each, "width,height,byteCount,r,g,b,a", "error: <reason>" or
+		// Decodes the images concurrently and returns, for each, "width,height,byteCount,b,g,r,a", "error: <reason>" or
 		// "exception: <reason>".
 		private static async Task<string[]> DecodeInBrowser(params byte[][] images)
 		{
