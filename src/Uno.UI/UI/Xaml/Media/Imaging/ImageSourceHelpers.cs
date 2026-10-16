@@ -39,10 +39,17 @@ internal static partial class ImageSourceHelpers
 
 #if __SKIA__
 	public static async Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct, bool attemptLoadingWithBrowserCanvasApi = true, int? targetWidth = null, int? targetHeight = null)
+		=> await DecodeAsCompositionSurface(await ReadAllAsync(imageStream, ct), attemptLoadingWithBrowserCanvasApi, targetWidth, targetHeight);
+
+	private static async Task<byte[]> ReadAllAsync(Stream imageStream, CancellationToken ct)
 	{
 		var buffer = new byte[imageStream.Length - imageStream.Position];
 		await imageStream.ReadExactlyAsync(buffer, 0, buffer.Length, ct);
+		return buffer;
+	}
 
+	private static async Task<ImageData> DecodeAsCompositionSurface(byte[] buffer, bool attemptLoadingWithBrowserCanvasApi, int? targetWidth, int? targetHeight)
+	{
 		bool hasTargetSize = targetWidth is not null || targetHeight is not null;
 
 		if (OperatingSystem.IsBrowser() && attemptLoadingWithBrowserCanvasApi && !hasTargetSize)
@@ -92,7 +99,7 @@ internal static partial class ImageSourceHelpers
 		}
 
 		var surface = new CompositionImageSurface();
-		var result = surface.LoadFromStream(targetWidth, targetHeight, new MemoryStream(buffer));
+		var result = surface.LoadFromStream(targetWidth, targetHeight, new MemoryStream(buffer, writable: false));
 
 		if (result.success)
 		{
@@ -124,12 +131,47 @@ internal static partial class ImageSourceHelpers
 	}
 
 #if __SKIA__
-	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct, int? targetWidth = null, int? targetHeight = null)
+	/// <param name="useEncodedCache">Whether the encoded bytes of a downloaded image are kept and reused (see <see cref="EncodedImageCache"/>).</param>
+	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct, int? targetWidth = null, int? targetHeight = null, bool useEncodedCache = false)
 	{
 		try
 		{
-			using var stream = await AppDataUriEvaluator.ToStream(uri, ct);
-			return await ReadFromStreamAsCompositionSurface(stream, ct, !IsAnimatableImageFormat(uri), targetWidth, targetHeight);
+			var attemptLoadingWithBrowserCanvasApi = !IsAnimatableImageFormat(uri);
+			useEncodedCache &= EncodedImageCache.CanCache(uri);
+
+			if (useEncodedCache && EncodedImageCache.TryGet(uri, out var encoded))
+			{
+				return await DecodeAsCompositionSurface(encoded, attemptLoadingWithBrowserCanvasApi, targetWidth, targetHeight);
+			}
+
+			byte[] buffer;
+			if (useEncodedCache)
+			{
+				// Only http and https get here. Bytes the server asks not to reuse without revalidation are not kept; their
+				// freshness (max-age, ETag) is not checked otherwise.
+				var download = await AppDataUriEvaluator.DownloadAsync(uri, ct);
+				using (download.Content)
+				{
+					buffer = await ReadAllAsync(download.Content, ct);
+				}
+
+				useEncodedCache = download.IsReusable;
+			}
+			else
+			{
+				using var stream = await AppDataUriEvaluator.ToStream(uri, ct);
+				buffer = await ReadAllAsync(stream, ct);
+			}
+
+			var data = await DecodeAsCompositionSurface(buffer, attemptLoadingWithBrowserCanvasApi, targetWidth, targetHeight);
+
+			// Only bytes that decode: a truncated or corrupt download is downloaded again.
+			if (useEncodedCache && data.HasData)
+			{
+				EncodedImageCache.Add(uri, buffer);
+			}
+
+			return data;
 		}
 		catch (Exception e)
 		{
