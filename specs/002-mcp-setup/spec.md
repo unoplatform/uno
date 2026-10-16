@@ -71,7 +71,7 @@ The server definitions written to client config files use `--mcp-app` (not `mcp 
 ### Subcommand: `mcp serve`
 
 ```
-uno.devserver mcp serve [--port <port>] [--mcp-wait-tools-list] [--force-roots-fallback] [--force-generate-tool-cache] [--solution-dir <path>]
+uno.devserver mcp serve [--port <port>] [--mcp-wait-tools-list] [--force-roots-fallback] [--force-generate-tool-cache] [--solution-dir <path>] [--solution <path>]
 ```
 
 This is the existing MCP STDIO proxy. All current options remain:
@@ -83,6 +83,7 @@ This is the existing MCP STDIO proxy. All current options remain:
 | `--force-roots-fallback` | **Legacy explicit override.** The proxy auto-detects when the MCP client does not advertise the `roots` capability and the workspace is not already resolved, and in that case automatically exposes the `uno_app_initialize` tool and defers workspace resolution until the tool is called. `uno_app_initialize` takes `workspaceDirectory` (required) and `solutionPath` (optional), blocks until the DevServer is connected, and returns status plus available tools. The provided directory is always accepted as workspace root, even when no Uno solution is found yet — the file watcher monitors the directory and auto-starts the DevServer when a solution appears. The CLI flag is still accepted but is rarely needed and is not encoded in any IDE registration profile. |
 | `--force-generate-tool-cache` | **Deprecated (no-op)**. Kept for backward compatibility but does nothing. The tool cache (`tools-cache.json`) has been removed; meta-tools (`uno_discover_tools` and `uno_execute_tool`) replace the cache as the stable compatibility mechanism for accessing upstream tools as the direct tool set changes during the session. |
 | `--solution-dir <path>` | Explicit solution root |
+| `--solution <path>` | Explicit `.sln`/`.slnx` to serve, wherever it is: selected like `uno_app_select_solution`, kept across file changes and MCP roots, takes precedence over `--solution-dir`. Consumed by the bridge (not forwarded to the host). |
 
 ### Subcommand: `mcp status`
 
