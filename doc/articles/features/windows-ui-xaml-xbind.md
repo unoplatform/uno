@@ -57,6 +57,8 @@ Uno supports the [`x:Bind`](https://learn.microsoft.com/windows/uwp/xaml-platfor
     <TextBlock Text="{x:Bind TestString(x:Null)}" />
     ```
 
+    In this context, `x:True`, `x:False`, and `x:Null` are literal arguments scoped to `{x:Bind ...}` function calls; they are not general-purpose values that can be assigned to `FallbackValue`, `TargetNullValue`, or arbitrary XAML properties.
+
   - Quote escaping
 
     ```xml
