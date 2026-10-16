@@ -80,13 +80,10 @@ namespace Windows.ApplicationModel.DataTransfer
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.Clipboard", "IsRoamingEnabled()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool SetContentWithOptions(global::Windows.ApplicationModel.DataTransfer.DataPackage content, global::Windows.ApplicationModel.DataTransfer.ClipboardContentOptions options)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.Clipboard", "SetContentWithOptions(DataPackage content, ClipboardContentOptions options)");
-		}
-#endif
+
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.Clipboard.SetContentWithOptions(Windows.ApplicationModel.DataTransfer.DataPackage, Windows.ApplicationModel.DataTransfer.ClipboardContentOptions)
+
+
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.HistoryChanged.add
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.HistoryChanged.remove
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.HistoryEnabledChanged.add

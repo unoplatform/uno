@@ -69,6 +69,9 @@ namespace Windows.ApplicationModel.DataTransfer
 		public IAsyncOperation<string> GetTextAsync()
 			=> GetData<string>(StandardDataFormats.Text);
 
+		public IAsyncOperation<string> GetTextAsync(string formatId)
+			 => GetData<string>(formatId);
+
 		public IAsyncOperation<Uri> GetUriAsync()
 			=> GetData<Uri>(StandardDataFormats.Uri);
 
