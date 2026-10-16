@@ -443,10 +443,8 @@ namespace Microsoft.UI.Xaml
 		// WinUI resolves DependencyObject_Name by name only in directive-aware lookups (parser, Setter). Bindings never do,
 		// even on FrameworkElement, so they read the CLR Name without change notifications. Uno resolves it on
 		// FrameworkElement types (a known leniency); elsewhere "Name" keeps resolving the CLR property (or nothing).
-		// The owner check comes first so other lookups don't register the Name DP ahead of FrameworkElement's statics.
 		private static bool IsNameVisibleOn(DependencyProperty property, Type requestedType)
-			=> property.OwnerType != typeof(DependencyObject)
-				|| !ReferenceEquals(property, DependencyObject.NameProperty)
+			=> !ReferenceEquals(property, DependencyObject.NameProperty)
 				|| requestedType == typeof(DependencyObject)
 				|| typeof(FrameworkElement).IsAssignableFrom(requestedType);
 
