@@ -1,4 +1,6 @@
-﻿// MUX Reference RadioButton_Partial.cpp, commit 2b8c7757e
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference RadioButton_Partial.cpp, commit 2b8c7757e
 
 #nullable enable
 
