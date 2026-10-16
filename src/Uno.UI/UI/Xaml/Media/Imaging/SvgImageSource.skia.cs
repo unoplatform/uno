@@ -18,7 +18,7 @@ partial class SvgImageSource
 
 	private protected unsafe override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 	{
-		if (TryOpenSvgImageData(ct, out var imageTask))
+		if (TryOpenSvgImageData(out var imageTask))
 		{
 			asyncImage = imageTask.ContinueWith(task =>
 			{
