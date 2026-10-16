@@ -38,6 +38,7 @@ namespace TestRepro
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
+			__nameScope.Owner = this;
 			var __that = this;
 			base.IsParsing = true;
 			Resources["TestButtonResource"] = 
@@ -100,6 +101,7 @@ namespace TestRepro
 			}
 			))
 			;
+			__nameScope.MarkOwnerAsPossiblyHavingDefinitionName();
 			OnInitializeCompleted();
 
 		}

@@ -379,9 +379,9 @@ partial class MenuFlyoutItem
 	}
 
 	// MUX Reference: MenuFlyoutItem::EnterImpl in MenuFlyoutItem_Partial.cpp
-	private protected override void EnterImpl(bool live)
+	private protected override void EnterManagedPeerImpl(bool live)
 	{
-		base.EnterImpl(live);
+		base.EnterManagedPeerImpl(live);
 
 		if (live)
 		{
@@ -406,9 +406,9 @@ partial class MenuFlyoutItem
 	}
 
 	// MUX Reference: MenuFlyoutItem::LeaveImpl in MenuFlyoutItem_Partial.cpp
-	private protected override void LeaveImpl(bool live)
+	private protected override void LeaveManagedPeerImpl(bool live)
 	{
-		base.LeaveImpl(live);
+		base.LeaveManagedPeerImpl(live);
 
 		if (live && m_epCanExecuteChangedHandler.Disposable is not null)
 		{

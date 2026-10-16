@@ -9,16 +9,16 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class SplitMenuFlyoutItem
 {
 	// MUX Reference: CSplitMenuFlyoutItem::EnterImpl in SplitMenuFlyoutItem.cpp
-	internal override void EnterImpl(EnterParams @params, int depth)
+	internal override void EnterImpl(DependencyObject namescopeOwner, EnterParams @params)
 	{
-		base.EnterImpl(@params, depth);
+		base.EnterImpl(namescopeOwner, @params);
 		MenuFlyout.KeyboardAcceleratorFlyoutItemEnter(this, this, SplitMenuFlyoutItem.ItemsProperty, @params);
 	}
 
 	// MUX Reference: CSplitMenuFlyoutItem::LeaveImpl in SplitMenuFlyoutItem.cpp
-	internal override void LeaveImpl(LeaveParams @params)
+	internal override void LeaveImpl(DependencyObject namescopeOwner, LeaveParams @params)
 	{
-		base.LeaveImpl(@params);
+		base.LeaveImpl(namescopeOwner, @params);
 		MenuFlyout.KeyboardAcceleratorFlyoutItemLeave(this, this, SplitMenuFlyoutItem.ItemsProperty, @params);
 	}
 }
