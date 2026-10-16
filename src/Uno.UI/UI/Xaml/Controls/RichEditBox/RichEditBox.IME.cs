@@ -34,6 +34,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// composition events and should NOT be swallowed by the IsComposing check.
 		private bool _compositionAppliedByPlatform;
 		private bool _platformTextApplyInProgress;
+		// A TextCompositionChanged held back until the platform's text sync lands, so handlers see the text
+		// the range refers to, with what its automation events need: the preedit and the prior conversion target.
+		private (string Text, bool HadConversionTarget, int PreviousStart, int PreviousEnd)? _pendingCompositionChange;
 		private int _compositionStartIndex;
 		private int _compositionLength;
 		private int _compositionResolvedLength;
@@ -161,6 +164,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// fire, so subsequent key events aren't swallowed at the IsComposing check in OnPostKeyDown.
 			_compositionAppliedByPlatform = false;
 			_platformTextApplyInProgress = false;
+			_pendingCompositionChange = null;
 			if (_isComposing)
 			{
 				var compositionText = GetCurrentCompositionText();
@@ -201,6 +205,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_isComposing = true;
 			_compositionAppliedByPlatform = false;
 			_platformTextApplyInProgress = false;
+			_pendingCompositionChange = null;
 			_compositionHasCommittedText = false;
 			_compositionStartIndex = _selection.start;
 			// Initialize from the current selection length so the first ReplaceCompositionText replaces
@@ -226,6 +231,11 @@ namespace Microsoft.UI.Xaml.Controls
 				conversionTarget: true,
 				out var previousConversionStart,
 				out var previousConversionEnd);
+			if (startIndex >= 0)
+			{
+				_compositionStartIndex = Math.Min(startIndex, GetPlainTextLength());
+			}
+
 			if (textAlreadyApplied)
 			{
 				// The platform (e.g., Android InputConnection) already applied the text. Suppress the
@@ -245,13 +255,40 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			_compositionResolvedLength = Math.Clamp(resolvedLength, 0, _compositionLength);
 
+			if (textChangePending)
+			{
+				_pendingCompositionChange = (compositionText, hadConversionTarget, previousConversionStart, previousConversionEnd);
+				return;
+			}
+
+			RaiseCompositionChanged(compositionText, hadConversionTarget, previousConversionStart, previousConversionEnd, _compositionStartIndex, _compositionLength);
+		}
+
+		private void RaiseCompositionChanged(string compositionText, bool hadConversionTarget, int previousConversionStart, int previousConversionEnd, int start, int length)
+		{
 			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.Composition, compositionText);
 			RaiseConversionTargetChangedIfNeeded(
 				hadConversionTarget,
 				previousConversionStart,
 				previousConversionEnd);
-			var args = new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength);
+			var args = new TextCompositionChangedEventArgs(start, length);
 			InvokeCompositionEvent(() => TextCompositionChanged?.Invoke(this, args));
+		}
+
+		// Called once the platform's text sync has landed (after TextChanging, as TextBox and WinUI order them).
+		private void RaisePendingCompositionChange()
+		{
+			if (_pendingCompositionChange is not { } pending)
+			{
+				return;
+			}
+
+			_pendingCompositionChange = null;
+			// The text may have been coerced shorter than the preedit the platform applied.
+			var textLength = GetPlainTextLength();
+			var start = Math.Min(_compositionStartIndex, textLength);
+			var length = Math.Min(_compositionLength, textLength - start);
+			RaiseCompositionChanged(pending.Text, pending.HadConversionTarget, pending.PreviousStart, pending.PreviousEnd, start, length);
 		}
 
 		void IImeSessionHost.OnImeCompositionPartiallyCommitted(
@@ -297,13 +334,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				RaiseTextEditCompositionEvent(AutomationTextEditChangeType.CompositionFinalized, committedText);
 			}
-			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.Composition, compositionText);
-			RaiseConversionTargetChangedIfNeeded(
-				hadConversionTarget,
-				previousConversionStart,
-				previousConversionEnd);
-			var args = new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength);
-			InvokeCompositionEvent(() => TextCompositionChanged?.Invoke(this, args));
+			RaiseCompositionChanged(compositionText, hadConversionTarget, previousConversionStart, previousConversionEnd, _compositionStartIndex, _compositionLength);
 		}
 
 		void IImeSessionHost.OnImeCompositionCompleted(string committedText, bool textAlreadyApplied)
@@ -333,6 +364,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_isComposing = false;
 				_compositionAppliedByPlatform = false;
 				_platformTextApplyInProgress = false;
+				_pendingCompositionChange = null;
 				_compositionLength = 0;
 				_compositionStartIndex = 0;
 				_compositionResolvedLength = 0;
@@ -358,6 +390,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_compositionAppliedByPlatform = false;
 				_platformTextApplyInProgress = false;
+				_pendingCompositionChange = null;
 				return;
 			}
 
@@ -380,6 +413,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_isComposing = false;
 				_compositionAppliedByPlatform = false;
 				_platformTextApplyInProgress = false;
+				_pendingCompositionChange = null;
 				_compositionLength = 0;
 				_compositionStartIndex = 0;
 				_compositionResolvedLength = 0;
@@ -413,6 +447,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_compositionAppliedByPlatform = false;
 				_platformTextApplyInProgress = false;
+				_pendingCompositionChange = null;
 				CloseCompositionUndoGroup();
 				return;
 			}
@@ -428,6 +463,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_isComposing = false;
 			_compositionAppliedByPlatform = false;
 			_platformTextApplyInProgress = false;
+			_pendingCompositionChange = null;
 			_compositionLength = 0;
 			_compositionStartIndex = 0;
 			_compositionResolvedLength = 0;
@@ -602,6 +638,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_isComposing = false;
 			_compositionAppliedByPlatform = false;
 			_platformTextApplyInProgress = false;
+			_pendingCompositionChange = null;
 			_compositionLength = 0;
 			_compositionStartIndex = 0;
 			_compositionResolvedLength = 0;

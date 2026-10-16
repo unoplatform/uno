@@ -624,6 +624,51 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_Composition_Reopened_On_Existing_Text_Changed_Sees_The_Preedit()
+	{
+		var sut = new RichEditBox();
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Document.SetText(TextSetOptions.None, "abc@");
+			sut.Document.Selection.SetRange(4, 4);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var changes = new List<string>();
+			sut.TextChanging += (_, _) => changes.Add("changing");
+			sut.TextCompositionChanged += (_, e) =>
+			{
+				GetTextWithoutFinalEop(sut.Document, out var current);
+				changes.Add($"{e.StartIndex}+{e.Length} {current}");
+			};
+
+			// Gboard re-opens the composition on the whole token when a letter follows it: the preedit
+			// starts before the caret, and the input event after compositionupdate puts it in the value.
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'abc@d'}));input.value='abc@d';input.setSelectionRange(5,5);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'abc@d'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			CollectionAssert.AreEqual(new[] { "changing", "0+5 abc@d" }, changes);
+			Assert.IsTrue(sut.IsComposing);
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionend',{data:'abc@d'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			GetTextWithoutFinalEop(sut.Document, out var text);
+			Assert.AreEqual("abc@d", text);
+			Assert.IsFalse(sut.IsComposing);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Wasm_External_Edit_Invalidates_Stale_Composition_Callbacks()
 	{
 		var sut = new RichEditBox();
