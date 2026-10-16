@@ -864,5 +864,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
+
+		[TestMethod]
+		public async Task When_Moved_To_Another_Owner_While_Open_Then_Former_Owner_Not_Followed()
+		{
+			// The tooltip is set on a second element while it is open for the first one, then removed from the first:
+			// changes to the first element's DataContext must no longer reach it, as on WinUI.
+			var first = new Button { Content = "first", DataContext = "First" };
+			var second = new Button { Content = "second", DataContext = "Second" };
+			var SUT = new ToolTip { Content = "tooltip" };
+			ToolTipService.SetToolTip(first, SUT);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = new StackPanel { Children = { first, second } };
+				await TestServices.WindowHelper.WaitForLoaded(second);
+
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("First", SUT.DataContext);
+
+				ToolTipService.SetToolTip(second, SUT);
+				SUT.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				ToolTipService.SetToolTip(first, null);
+				first.DataContext = "First2";
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreNotEqual("First2", SUT.DataContext, "The tooltip still follows an element it is no longer set on.");
+			}
+			finally
+			{
+				SUT.IsOpen = false;
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }

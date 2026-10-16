@@ -42,6 +42,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// only positions the tooltip; the DataContext comes from the container, as in WinUI.
 		private FrameworkElement? _container;
 
+		// The elements whose theme and DataContext changes are followed while the tooltip is open. The anchor and the
+		// container can be replaced in the meantime (the tooltip set on another element), so closing unsubscribes from these.
+		private FrameworkElement? _themeSource;
+		private FrameworkElement? _dataContextSource;
+
 		internal Popup Popup
 		{
 			get
@@ -228,26 +233,29 @@ namespace Microsoft.UI.Xaml.Controls
 			var ownerFe = GetOwnerFrameworkElement();
 			if (ownerFe is not null)
 			{
+				_themeSource = ownerFe;
 				ownerFe.ActualThemeChanged += OnOwnerActualThemeChanged;
 			}
 
 			if (GetDataContextOwner() is { } dataContextOwner)
 			{
+				_dataContextSource = dataContextOwner;
 				dataContextOwner.DataContextChanged += OnOwnerDataContextChanged;
 			}
 		}
 
 		private void UnsubscribeOwnerThemeChanged()
 		{
-			var ownerFe = GetOwnerFrameworkElement();
-			if (ownerFe is not null)
+			if (_themeSource is { } themeSource)
 			{
-				ownerFe.ActualThemeChanged -= OnOwnerActualThemeChanged;
+				_themeSource = null;
+				themeSource.ActualThemeChanged -= OnOwnerActualThemeChanged;
 			}
 
-			if (GetDataContextOwner() is { } dataContextOwner)
+			if (_dataContextSource is { } dataContextSource)
 			{
-				dataContextOwner.DataContextChanged -= OnOwnerDataContextChanged;
+				_dataContextSource = null;
+				dataContextSource.DataContextChanged -= OnOwnerDataContextChanged;
 			}
 		}
 
