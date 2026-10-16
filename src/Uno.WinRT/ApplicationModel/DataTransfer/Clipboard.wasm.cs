@@ -324,7 +324,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			return package.GetView();
 		}
 
-		internal static bool IsTextAvailable() => true;
+		// Answered from what GetContent reports, so a clipboard known to hold no text reads as empty.
+		internal static bool IsTextAvailable() => GetContent().Contains(StandardDataFormats.Text);
 
 		private static void SetKnownContent(DataPackage package, ClipboardContentData data)
 		{
