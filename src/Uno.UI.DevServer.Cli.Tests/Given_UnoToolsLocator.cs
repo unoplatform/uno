@@ -2,6 +2,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Versioning;
+using System.Xml.Linq;
 using AwesomeAssertions;
 using Uno.UI.DevServer.Cli.Helpers;
 
@@ -356,5 +359,19 @@ public class Given_UnoToolsLocator
 				Directory.Delete(root, recursive: true);
 			}
 		}
+	}
+
+	[TestMethod]
+	[Description("The cold-cache Uno.Sdk installer project must target the same TFM as the tool " +
+		"itself: the tool promises to run on its lowest supported SDK, and that SDK cannot restore " +
+		"a project targeting a newer major (NETSDK1045), leaving the Uno.Sdk lookup null.")]
+	public void When_Building_Installer_Project_Then_Tfm_Matches_Tool_Floor()
+	{
+		var frameworkName = typeof(UnoToolsLocator).Assembly.GetCustomAttribute<TargetFrameworkAttribute>()!.FrameworkName;
+		var toolTfm = $"net{new FrameworkName(frameworkName).Version.ToString(2)}";
+
+		var project = XDocument.Parse(UnoToolsLocator.GetInstallerProjectContents("Uno.Sdk", "1.0.0"));
+
+		project.Descendants("TargetFramework").Single().Value.Should().Be(toolTfm);
 	}
 }

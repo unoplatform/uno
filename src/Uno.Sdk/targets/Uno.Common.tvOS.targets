@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<IsAppleUIKit>true</IsAppleUIKit>
 		<IsTvOS>true</IsTvOS>
-		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.2</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">15.0</SupportedOSPlatformVersion>
 
 		<EnableDefaulttvOSItems Condition="$(EnableDefaulttvOSItems) == ''">false</EnableDefaulttvOSItems>
 
@@ -11,5 +11,5 @@
 		<IsMSALSupported>true</IsMSALSupported>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.tvOS.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.tvOS.targets" Condition=" $(_IsUnoSingleProject) == 'true' " />
 </Project>

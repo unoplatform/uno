@@ -136,7 +136,6 @@ internal class PackageManifest
 		public const string VlcNativeWindowsAssets = nameof(VlcNativeWindowsAssets);
 		public const string MicrosoftWebView2 = nameof(MicrosoftWebView2);
 		public const string CoreLogging = nameof(CoreLogging);
-		public const string UniversalImageLoading = nameof(UniversalImageLoading);
 		public const string Dsp = nameof(Dsp);
 		public const string Resizetizer = nameof(Resizetizer);
 		public const string SdkExtras = nameof(SdkExtras);
@@ -144,6 +143,7 @@ internal class PackageManifest
 		public const string HotDesign = nameof(HotDesign);
 		public const string AppMcp = nameof(AppMcp);
 		public const string SkiaSharp = nameof(SkiaSharp);
+		public const string HarfBuzzSharp = nameof(HarfBuzzSharp);
 		public const string SvgSkia = nameof(SvgSkia);
 		public const string WinAppSdk = nameof(WinAppSdk);
 		public const string WinAppSdkBuildTools = nameof(WinAppSdkBuildTools);
@@ -154,7 +154,6 @@ internal class PackageManifest
 		public const string Prism = nameof(Prism);
 		public const string UnoFonts = nameof(UnoFonts);
 		public const string AndroidMaterial = nameof(AndroidMaterial);
-		public const string AndroidXLegacySupportV4 = nameof(AndroidXLegacySupportV4);
 		public const string AndroidXSplashScreen = nameof(AndroidXSplashScreen);
 		public const string AndroidXAppCompat = nameof(AndroidXAppCompat);
 		public const string AndroidXRecyclerView = nameof(AndroidXRecyclerView);

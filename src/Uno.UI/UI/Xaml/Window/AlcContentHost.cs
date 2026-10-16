@@ -80,6 +80,14 @@ public sealed partial class AlcContentHost : ContentControl
 		}
 	}
 
+	/// <summary>
+	/// The application whose resources this host projects, or null when it projects the current application.
+	/// </summary>
+	internal Application? SourceApplication
+		=> _sourceApplicationOverride
+			?? _contentApplication
+			?? Application.GetForInstance(Content);
+
 	protected override void OnContentChanged(object oldContent, object newContent)
 	{
 		base.OnContentChanged(oldContent, newContent);
@@ -158,10 +166,7 @@ public sealed partial class AlcContentHost : ContentControl
 			return;
 		}
 
-		var sourceApp = _sourceApplicationOverride
-			?? _contentApplication
-			?? Application.GetForInstance(Content)
-			?? Application.Current;
+		var sourceApp = SourceApplication ?? Application.Current;
 
 		if (sourceApp?.Resources is null)
 		{

@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -20,7 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.BinderTests_Weak
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty_Weak
 	{
 		[TestMethod]
@@ -46,7 +45,7 @@ namespace Uno.UI.Tests.BinderTests_Weak
 		{
 			var SUT = new MyNativeObject();
 			var source = new MyObject();
-			SUT.SetBinding(
+			SUT.SetBindingInternal(
 					MyNativeObject.MyValueProperty,
 					new Binding
 					{
@@ -67,7 +66,7 @@ namespace Uno.UI.Tests.BinderTests_Weak
 		{
 			var SUT = new MyNativeObject();
 			var source = new MyObject();
-			SUT.SetBinding(
+			SUT.SetBindingInternal(
 					MyNativeObject.MyValueProperty,
 					new Binding
 					{

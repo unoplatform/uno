@@ -11,13 +11,19 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 	private readonly IInteractionTrackerInertiaHandler _handler;
 	private readonly int _requestId;
 
-	public InteractionTrackerInertiaState(InteractionTracker interactionTracker, Vector3 translationVelocities, int requestId, bool isFromPointerWheel) : base(interactionTracker)
+	public InteractionTrackerInertiaState(InteractionTracker interactionTracker, Vector3 translationVelocities, int requestId)
+		: this(interactionTracker, new InteractionTrackerActiveInputInertiaHandler(interactionTracker, translationVelocities, requestId), requestId)
+	{
+	}
+
+	private InteractionTrackerInertiaState(InteractionTracker interactionTracker, IInteractionTrackerInertiaHandler handler, int requestId) : base(interactionTracker)
 	{
 		_requestId = requestId;
-		_handler = isFromPointerWheel
-			? new InteractionTrackerPointerWheelInertiaHandler(interactionTracker, translationVelocities)
-			: new InteractionTrackerActiveInputInertiaHandler(interactionTracker, translationVelocities, _requestId);
+		_handler = handler;
 	}
+
+	internal static InteractionTrackerInertiaState ForPointerWheel(InteractionTracker interactionTracker, Vector3 target)
+		=> new(interactionTracker, new InteractionTrackerPointerWheelInertiaHandler(interactionTracker, target), requestId: 0);
 
 	protected override void EnterState(IInteractionTrackerOwner? owner)
 	{
@@ -50,9 +56,13 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 		//var position = _interactionTracker.Position;
 		//_interactionTracker.MinPosition = Vector3.Min(_interactionTracker.MinPosition, position);
 		//_interactionTracker.MaxPosition = Vector3.Max(_interactionTracker.MaxPosition, position);
-
-		_handler.Start();
 	}
+
+	// Not from the enqueued EnterState: that would start every inertia a dispatcher hop late.
+	internal override void OnActivated() => _handler.Start();
+
+	internal override void InterruptInertia()
+		=> _interactionTracker.ChangeState(new InteractionTrackerInteractingState(_interactionTracker, isInterruptingInertia: true));
 
 	internal override void StartUserManipulation()
 	{
@@ -71,19 +81,17 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 	{
 	}
 
-	internal override void ReceivePointerWheel(int delta, bool isHorizontal)
+	internal override void ReceivePointerWheel(double delta, bool isHorizontal)
 	{
-		var newDelta = isHorizontal ? new Vector3(delta, 0, 0) : new Vector3(0, delta, 0);
-		var totalDelta = (_handler.FinalModifiedPosition - _interactionTracker.Position) + newDelta;
-		// Constant velocity for 250ms
-		var velocity = totalDelta / 0.25f;
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocity, requestId: 0, isFromPointerWheel: true));
+		// A wheel scroll in flight is a position animation, which WinUI extends from its target.
+		var from = _handler is InteractionTrackerPointerWheelInertiaHandler ? _handler.FinalModifiedPosition : _interactionTracker.Position;
+		ScrollByPointerWheel(from, delta, isHorizontal);
 	}
 
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId)
 	{
 		// Inertia is restarted (state re-enters inertia) and inertia modifiers are evaluated with requested velocity added to current velocity
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, _handler.InitialVelocity + velocityInPixelsPerSecond, requestId, isFromPointerWheel: false));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, _handler.InitialVelocity + velocityInPixelsPerSecond, requestId));
 	}
 
 	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId)

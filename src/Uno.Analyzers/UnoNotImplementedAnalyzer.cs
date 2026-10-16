@@ -123,23 +123,11 @@ namespace Uno.Analyzers
 				{
 					Debug.Assert(constant.Kind == TypedConstantKind.Array);
 
-					var notImplementedPlatforms = constant.Values.Select(v => v.Value?.ToString()).ToArray();
+					var notImplementedFlavors = constant.Values.Select(v => v.Value?.ToString()).ToArray();
 
-					if (directives.Contains("UNO_REFERENCE_API")
-						&& !directives.Contains("__SKIA__")
-						&& !directives.Contains("__WASM__"))
-					{
-						// Uno reference API is a special case where if a member or symbol
-						// is implementer for either __SKIA__ or __WASM__, the member is considered
-						// implemented. The code may be running in either environments, and we cannot
-						// statically determine if a member will be available.
-						return notImplementedPlatforms.Any(p => p == "__SKIA__")
-							&& notImplementedPlatforms.Any(p => p == "__WASM__");
-					}
-					else
-					{
-						return notImplementedPlatforms.Any(d => directives.Contains(d));
-					}
+					return IsPerFlavorAssembly(namedSymbol.ContainingAssembly)
+						? IsNotImplementedInFlavor(notImplementedFlavors, directives)
+						: IsNotImplementedInSingleBuild(notImplementedFlavors, directives);
 				}
 				else
 				{
@@ -149,6 +137,60 @@ namespace Uno.Analyzers
 
 			return false;
 		}
+
+		/// <summary>
+		/// The WinRT-layer assemblies are built once per flavor, and their attribute tokens name those flavors:
+		/// __ANDROID__, __IOS__, __TVOS__, __APPLE_UIKIT__, __WASM__, __SKIA__ (desktop) and __NETSTD_REFERENCE__.
+		/// </summary>
+		private static bool IsPerFlavorAssembly(IAssemblySymbol? assembly)
+			=> assembly?.Name is "Uno.WinRT" or "Uno.Foundation" or "Uno.UI.Dispatching";
+
+		private static bool IsNotImplementedInFlavor(string?[] notImplementedFlavors, string[] directives)
+		{
+			if (GetConsumerFlavors(directives) is { } flavors)
+			{
+				return notImplementedFlavors.Any(f => flavors.Contains(f));
+			}
+
+			// A platform-less library runs on whichever flavor the head deploys, so only report
+			// what is missing on both the desktop and WebAssembly flavors.
+			return notImplementedFlavors.Contains("__SKIA__") && notImplementedFlavors.Contains("__WASM__");
+		}
+
+		private static string[]? GetConsumerFlavors(string[] directives)
+		{
+			bool Has(string symbol) => directives.Contains(symbol);
+
+			if (Has("__ANDROID__") || Has("ANDROID"))
+			{
+				return ["__ANDROID__"];
+			}
+			if (Has("__TVOS__") || Has("TVOS"))
+			{
+				return ["__TVOS__", "__APPLE_UIKIT__"];
+			}
+			if (Has("__IOS__") || Has("IOS"))
+			{
+				return ["__IOS__", "__APPLE_UIKIT__"];
+			}
+			if (Has("__WASM__") || Has("BROWSERWASM"))
+			{
+				return ["__WASM__"];
+			}
+			if (Has("__DESKTOP__") || Has("DESKTOP"))
+			{
+				return ["__SKIA__"];
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Uno.UI and the libraries built on it compile once, for Skia, so __SKIA__ means "not implemented on any
+		/// Uno target". Other tokens are read as the consumer's own conditional compilation symbols.
+		/// </summary>
+		private static bool IsNotImplementedInSingleBuild(string?[] notImplementedFlavors, string[] directives)
+			=> notImplementedFlavors.Any(f => f == "__SKIA__" || directives.Contains(f));
 
 		private static bool IsUnoSymbol(ISymbol? symbol)
 		{

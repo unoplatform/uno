@@ -24,7 +24,7 @@ namespace Windows.Storage
 		internal static StorageFile GetFileFromPath(string path)
 			=> new StorageFile(new Local(path));
 
-		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		[NotImplemented("__NETSTD_REFERENCE__")]
 		public static IAsyncOperation<StorageFile> GetFileFromApplicationUriAsync(Uri uri)
 			=> AsyncOperation.FromTask(ct =>
 			{

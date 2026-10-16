@@ -1,0 +1,88 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.RichTextBlockTests.RichTextBlock_TextPointers"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.RichTextBlockTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock TextWrapping="Wrap">
+                Click anywhere in the paragraph below to probe the TextPointer at that pixel.
+                The offset is read out and a marker rectangle is drawn from GetCharacterRect over
+                the hit character. Use the sliders + "Select Range" to build two TextPointers via
+                GetPositionAtOffset and select the text between them with RichTextBlock.Select.
+            </TextBlock>
+
+            <StackPanel Spacing="2">
+                <TextBlock x:Name="ContentStartText" Text="ContentStart.Offset: n/a" />
+                <TextBlock x:Name="ContentEndText" Text="ContentEnd.Offset: n/a" />
+                <TextBlock x:Name="BaselineOffsetText" Text="BaselineOffset: n/a" />
+                <TextBlock x:Name="PointerOffsetText" Text="Last click offset: n/a" />
+            </StackPanel>
+
+            <Border
+                Padding="12"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                BorderThickness="1">
+                <Grid>
+                    <RichTextBlock
+                        x:Name="ContentBlock"
+                        Width="520"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        PointerPressed="OnContentPointerPressed">
+                        <Paragraph>
+                            <Run Text="TextPointer lets you inspect exact character positions within rich text content." />
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="This paragraph mixes " />
+                            <Bold>bold</Bold>
+                            <Run Text=", " />
+                            <Italic>italic</Italic>
+                            <Run Text=" and a " />
+                            <Hyperlink NavigateUri="https://platform.uno">
+                                <Run Text="hyperlink" />
+                            </Hyperlink>
+                            <Run Text=" run, so offsets have to span inline elements correctly." />
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="Click anywhere in this text to see its character offset and rectangle highlighted above." />
+                        </Paragraph>
+                    </RichTextBlock>
+
+                    <Canvas x:Name="MarkerCanvas" IsHitTestVisible="False">
+                        <Border
+                            x:Name="ClickMarker"
+                            Background="#6000AEEF"
+                            IsHitTestVisible="False"
+                            Visibility="Collapsed" />
+                    </Canvas>
+                </Grid>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock VerticalAlignment="Center" Text="Start offset:" />
+                <Slider
+                    x:Name="StartOffsetSlider"
+                    Width="160"
+                    Maximum="50"
+                    Minimum="0"
+                    Value="0" />
+                <TextBlock VerticalAlignment="Center" Text="End offset:" />
+                <Slider
+                    x:Name="EndOffsetSlider"
+                    Width="160"
+                    Maximum="50"
+                    Minimum="0"
+                    Value="10" />
+                <Button Click="OnSelectRange" Content="Select Range" />
+            </StackPanel>
+
+            <TextBlock x:Name="SelectionResultText" Text="Selection: n/a" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

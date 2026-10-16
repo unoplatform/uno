@@ -1,49 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project>
 	<ItemGroup>
-		<Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Media\RevealBrushes\**" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Media\RevealBrushes\**" />
-		<None Include="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Media\RevealBrushes\**"
-		      Link="Windows\UI\Xaml\Media\RevealBrushes\%(RecursiveDir)%(Filename)%(Extension)" />
+		<Page Remove="$(MSBuildThisFileDirectory)Msal\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Msal\**" />
+
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Media\RevealBrushes\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Media\RevealBrushes\**" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Media\RevealBrushes\**"
+		      Link="Microsoft\UI\Xaml\Media\RevealBrushes\%(RecursiveDir)%(Filename)%(Extension)" />
 
 		<Page Remove="$(MSBuildThisFileDirectory)Windows\Phone\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Windows\Phone\**" />
 		<None Include="$(MSBuildThisFileDirectory)Windows\Phone\**"
 		      Link="Windows\Phone\%(RecursiveDir)%(Filename)%(Extension)" />
 
-		<Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs" />
-		<None Include="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml"
-		      Link="Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml" />
-		<None Include="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs"
-		      Link="Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml"
+		      Link="Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs"
+		      Link="Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs" />
 
 		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\PagerControlTests\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\PagerControlTests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\PagerControlTests\**"
 		      Link="Microsoft\UI\Xaml\Controls\PagerControlTests\%(RecursiveDir)%(Filename)%(Extension)" />
-
-		<!--
-		Wasm_CustomEvent drives the DOM directly - UIElement.HtmlId, RegisterHtmlEventHandler and a
-		document.getElementById script - which only ever existed on the native WebAssembly backend that
-		7.0 removes. It compiled until now only because nothing defined __WASM__ where the samples were
-		built; the browserwasm head does. Excluded rather than deleted because SamplesApp.UITests still
-		carries six tests against it (Given_CustomEvents, WasmTests), and retiring the sample and those
-		together is a separate call.
-		-->
-		<Page Remove="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml.cs" />
-		<None Include="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml"
-		      Link="Wasm\Wasm_CustomEvent.xaml" />
-		<None Include="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml.cs"
-		      Link="Wasm\Wasm_CustomEvent.xaml.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(UseWinUI)'=='true'">
-		<Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\WebView\**" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\WebView\**" />
-		<None Include="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\WebView\**"
-		      Link="Windows\UI\Xaml\Controls\WebView\%(RecursiveDir)%(Filename)%(Extension)" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView\**" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView\**"
+		      Link="Microsoft\UI\Xaml\Controls\WebView\%(RecursiveDir)%(Filename)%(Extension)" />
 
 		<!-- Some samples rely on internal types -->
 		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\ScrollViewTests\**" />
@@ -63,5 +51,23 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView2Tests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView2Tests\**"
 		      Link="Microsoft\UI\Xaml\Controls\WebView2Tests\%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+	<!-- SkiaSharp-free build: SKCanvasElement exposes raw SKCanvas (Uno.WinUI.Graphics2DSK) and cannot be neutral. -->
+	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'=='false'">
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SKCanvasElement_Simple.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SKCanvasElement_Simple.xaml.cs" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubContributions\GitHubContributions.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubContributions\GitHubContributions.xaml.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubContributions\ContributionsCanvas.cs" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubTerrain\GitHubTerrain.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubTerrain\GitHubTerrain.xaml.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\GitHubTerrain\TerrainCanvas.cs" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\ScrollableShapes\ScrollableShapes.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\ScrollableShapes\ScrollableShapes.xaml.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\ScrollableShapes\ShapesCanvas.cs" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SculpturesInWords\SculpturesInWords.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SculpturesInWords\SculpturesInWords.xaml.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SculpturesInWords\MeshCanvas.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SculpturesInWords\SculptureCanvas.cs" />
 	</ItemGroup>
 </Project>

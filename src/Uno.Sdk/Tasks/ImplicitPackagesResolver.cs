@@ -21,8 +21,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public bool SdkDebugging { get; set; }
 
-	public bool SingleProject { get; set; }
-
 	[Required]
 	public string OutputType { get; set; } = null!;
 
@@ -38,11 +36,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	private string TargetFrameworkVersion = null!;
 
-	private string TargetRuntime = null!;
-
-	[Required]
-	public string ProjectName { get; set; } = null!;
-
 	public string? UnoExtensionsVersion { get; set; }
 
 	public string? UnoToolkitVersion { get; set; }
@@ -55,6 +48,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? SkiaSharpVersion { get; set; }
 
+	public string? HarfBuzzSharpVersion { get; set; }
+
 	public string? SvgSkiaVersion { get; set; }
 
 	public string? UnoLoggingVersion { get; set; }
@@ -65,11 +60,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? UnoWasmBootstrapVersion { get; set; }
 
-	public string? UnoUniversalImageLoaderVersion { get; set; }
-
 	public string? AndroidMaterialVersion { get; set; }
-
-	public string? AndroidXLegacySupportV4Version { get; set; }
 
 	public string? AndroidXSplashScreenVersion { get; set; }
 
@@ -146,22 +137,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	{
 		try
 		{
-			if (TargetFramework.Contains('-'))
-			{
-				var frameworkParts = TargetFramework.Split('-');
-				TargetFrameworkVersion = frameworkParts[0];
-				var runtime = frameworkParts[1].ToLowerInvariant();
-				TargetRuntime = runtime;
-			}
-			else
-			{
-				TargetFrameworkVersion = TargetFramework;
-				TargetRuntime = UnoTarget.Reference;
-				if (ProjectName.EndsWith("Skia.Linux.FrameBuffer", StringComparison.InvariantCultureIgnoreCase))
-				{
-					TargetRuntime = UnoTarget.SkiaLinuxFramebuffer;
-				}
-			}
+			TargetFrameworkVersion = TargetFramework.Split('-')[0];
 
 			_manifest = new PackageManifest(Log, TargetFrameworkVersion);
 			if (NuGetVersion.TryParse(_manifest.UnoVersion, out var unoVersion))
@@ -246,7 +222,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.VlcNativeWindowsAssets, VlcNativeWindowsAssetsVersion)
 			.UpdateManifest(PackageManifest.Group.MicrosoftWebView2, MicrosoftWebView2Version)
 			.UpdateManifest(PackageManifest.Group.CoreLogging, UnoCoreLoggingSingletonVersion)
-			.UpdateManifest(PackageManifest.Group.UniversalImageLoading, UnoUniversalImageLoaderVersion)
 			.UpdateManifest(PackageManifest.Group.Dsp, UnoDspTasksVersion)
 			.UpdateManifest(PackageManifest.Group.Resizetizer, UnoResizetizerVersion)
 			.UpdateManifest(PackageManifest.Group.SdkExtras, UnoSdkExtrasVersion)
@@ -254,6 +229,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.HotDesign, UnoHotDesignVersion)
 			.UpdateManifest(PackageManifest.Group.AppMcp, UnoAppMcpVersion)
 			.UpdateManifest(PackageManifest.Group.SkiaSharp, SkiaSharpVersion)
+			.UpdateManifest(PackageManifest.Group.HarfBuzzSharp, HarfBuzzSharpVersion)
 			.UpdateManifest(PackageManifest.Group.SvgSkia, SvgSkiaVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdk, WinAppSdkVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildTools, WinAppSdkBuildToolsVersion)
@@ -264,7 +240,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.Prism, PrismVersion)
 			.UpdateManifest(PackageManifest.Group.UnoFonts, UnoFontsVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidMaterial, AndroidMaterialVersion)
-			.UpdateManifest(PackageManifest.Group.AndroidXLegacySupportV4, AndroidXLegacySupportV4Version)
 			.UpdateManifest(PackageManifest.Group.AndroidXSplashScreen, AndroidXSplashScreenVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXAppCompat, AndroidXAppCompatVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXRecyclerView, AndroidXRecyclerViewVersion)
@@ -396,6 +371,25 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 		// 2) Load the Version from the PackageManifest. This will get the version whether it was set through MSBuild or the bundled packages.json
 		var version = _manifest!.GetPackageVersion(packageId);
 
+		// 2.1) An optional package is skipped, never fetched from nuget.org, when its group version predates it
+		if (metadata.TryGetValue(PackageReference.AvailableSinceMetadata, out var availableSince)
+			&& !IsAvailable(version, availableSince))
+		{
+			Log.LogMessage(subcategory: null,
+				code: "UNOB0028",
+				helpKeyword: null,
+				file: null,
+				lineNumber: 0,
+				columnNumber: 0,
+				endLineNumber: 0,
+				endColumnNumber: 0,
+				MessageImportance.Normal,
+				message: string.IsNullOrEmpty(version)
+					? $"The implicit reference to '{packageId}' was skipped: the Uno.Sdk package manifest has no version for it."
+					: $"The implicit reference to '{packageId}' was skipped: it is available from version {availableSince}, and the resolved version is '{version}'.");
+			return;
+		}
+
 		// 3) Validate the version has a value. If not attempt to get the latest version from NuGet.org
 		if (string.IsNullOrEmpty(version))
 		{
@@ -404,6 +398,21 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			var isUnoPreview = _unoVersion?.IsPreview ?? false;
 			var preview = packageId.StartsWith("Uno.", StringComparison.InvariantCulture) && isUnoPreview;
 			version = client.GetVersion(packageId, preview);
+			if (version is null)
+			{
+				Log.LogError(subcategory: "",
+					errorCode: "UNOB0021",
+					helpKeyword: null,
+					helpLink: "https://aka.platform.uno/UNOB0021",
+					file: null,
+					lineNumber: 0,
+					columnNumber: 0,
+					endLineNumber: 0,
+					endColumnNumber: 0,
+					message: $"The package '{packageId}' has no version in the Uno.Sdk package manifest and does not exist on nuget.org. Update the Uno.Sdk, or add a PackageReference with an explicit version.");
+				return;
+			}
+
 			Log.LogMessage(MessageImportance.High, "Retrieved the latest package version '{0}' for the package '{1}'.", version, packageId);
 		}
 
@@ -424,6 +433,21 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 		// 5) Add the Implicit Package Reference
 		Debug("Adding Implicit Reference for '{0}' with version: '{1}'.", packageId, version);
 		_implicitPackages.Add(new PackageReference(packageId, version, metadata));
+	}
+
+	/// <remarks>
+	/// Compares the numeric parts only, so every prerelease of a version counts as that version. A version that
+	/// can't be compared (a float, a range) is treated as unavailable: the package is optional.
+	/// </remarks>
+	private static bool IsAvailable(string? version, string availableSince)
+	{
+		static Version Normalize(Version v) => new(v.Major, v.Minor, Math.Max(v.Build, 0), Math.Max(v.Revision, 0));
+
+		return version?.Trim() is { } exact
+			&& exact.IndexOfAny(['*', '[', '(', ',']) < 0
+			&& NuGetVersion.TryParse(exact, out var resolved)
+			&& NuGetVersion.TryParse(availableSince, out var since)
+			&& Normalize(resolved.Version) >= Normalize(since.Version);
 	}
 
 	private void Debug(string message, params object[] args)

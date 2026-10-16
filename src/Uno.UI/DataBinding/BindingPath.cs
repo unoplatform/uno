@@ -209,6 +209,10 @@ namespace Uno.UI.DataBinding
 						// Don't get the source value if we're not accessing a dependency property.
 						// WinUI does not read the property value before setting the value for a
 						// non-dependency property source.
+						// Animations and VisualState setters always write, like WinUI's SetAnimatedValue: an
+						// equal effective value may come from a lower precedence, and the write must also
+						// retake precedence over a local value set after the animation.
+						|| _value.IsForAnimations
 						|| DependencyObject.AreDifferent(value, _value.GetSourceValue())
 					))
 				{

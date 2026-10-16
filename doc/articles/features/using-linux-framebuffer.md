@@ -116,13 +116,29 @@ fb.ReverseMouseWheel();
 
 ### Display Orientation
 
-- **`Orientation(DisplayOrientations orientation)`** — Sets the display orientation. The default is `DisplayOrientations.Landscape`. This rotates how pointer coordinates and rendering are mapped to the framebuffer.
+- **`Orientation(DisplayOrientations orientation)`** — Sets the display orientation the app starts in. The default is `DisplayOrientations.Landscape`. This rotates how pointer coordinates and rendering are mapped to the framebuffer.
 
 Available values: `Landscape`, `Portrait`, `LandscapeFlipped`, `PortraitFlipped`.
 
 ```csharp
 fb.Orientation(DisplayOrientations.Portrait);
 ```
+
+To change the orientation while the app runs, use the overload that also returns a setter, and keep the setter:
+
+```csharp
+Action<DisplayOrientations>? setOrientation = null;
+
+var host = UnoPlatformHostBuilder.Create()
+    .App(() => new App())
+    .UseLinuxFrameBuffer(fb => fb.Orientation(DisplayOrientations.Landscape, out setOrientation))
+    .Build();
+
+// Later, from any thread:
+setOrientation?.Invoke(DisplayOrientations.PortraitFlipped);
+```
+
+The change is applied on the UI thread: the window's bounds are updated (raising `SizeChanged` when width and height swap), and `DisplayInformation.OrientationChanged` is raised. `DisplayInformation.CurrentOrientation` reports the current orientation. The setter only accepts a single orientation (`Landscape`, `Portrait`, `LandscapeFlipped` or `PortraitFlipped`). Called before the app starts, it changes the orientation the app starts in. The setter stays `null` when the app does not run on the Linux framebuffer, since the configuration callback only runs for the host that is used.
 
 ### Hardware-Accelerated Rendering (KMS/DRM)
 

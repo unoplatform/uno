@@ -1,5 +1,6 @@
 ﻿using Uno;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -10,13 +11,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 /// </summary>
 public partial class AppBarToggleButtonTemplateSettings : DependencyObject, IAppBarButtonTemplateSettings
 {
+	internal AppBarToggleButtonTemplateSettings()
+	{
+	}
+
 	/// <summary>
 	/// Gets the minimum width allocated for the accelerator key tip of an AppBarToggleButton.
 	/// </summary>
 	public double KeyboardAcceleratorTextMinWidth
 	{
 		get => (double)GetValue(KeyboardAcceleratorTextMinWidthProperty);
-		internal set => SetValue(KeyboardAcceleratorTextMinWidthProperty, value);
+		internal set => SetValue(KeyboardAcceleratorTextMinWidthProperty, Boxer.Box(value));
 	}
 
 	internal static DependencyProperty KeyboardAcceleratorTextMinWidthProperty { get; } =
@@ -24,7 +29,7 @@ public partial class AppBarToggleButtonTemplateSettings : DependencyObject, IApp
 			nameof(KeyboardAcceleratorTextMinWidth),
 			typeof(double),
 			typeof(AppBarToggleButtonTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 	double IAppBarButtonTemplateSettings.KeyboardAcceleratorTextMinWidth
 	{

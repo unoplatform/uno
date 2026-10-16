@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using DirectUI;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -79,6 +80,10 @@ namespace Microsoft.UI.Xaml.Documents
 			event RoutedEventHandler LostFocus;
 
 		internal void OnLostFocus(RoutedEventArgs args) => LostFocus?.Invoke(this, args);
+
+		// Hyperlink.cpp CHyperlink::UnderlineVisibleResourceDirective: a missing resource means the underline is visible.
+		internal static bool UnderlineVisibleResourceDirective()
+			=> ResourceResolver.ResolveTopLevelResource(new SpecializedResourceDictionary.ResourceKey("HyperlinkUnderlineVisible"), true) is not false;
 
 		public Hyperlink()
 		{
@@ -163,6 +168,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		#region Click
 		private Pointer _pressedPointer;
+		private bool _isLinkNavigationKeyDown;
 		internal void SetPointerPressed(Pointer pointer)
 		{
 			_pressedPointer = pointer;
@@ -182,6 +188,30 @@ namespace Microsoft.UI.Xaml.Documents
 			else
 			{
 				return false;
+			}
+		}
+
+		// CHyperlink::IsLinkNavigationKey
+		private static bool IsLinkNavigationKey(VirtualKey key) => key is VirtualKey.Enter or VirtualKey.Space;
+
+		// CHyperlink::KeyDownEventListener - leaves the event unhandled, so it keeps bubbling to the host.
+		internal override void OnKeyDown(VirtualKey key)
+		{
+			if (IsLinkNavigationKey(key))
+			{
+				_isLinkNavigationKeyDown = true;
+				SetCurrentForeground();
+			}
+		}
+
+		// CHyperlink::KeyUpEventListener - only navigate when this link saw a navigation key down.
+		internal override void OnKeyUp(VirtualKey key)
+		{
+			if (_isLinkNavigationKeyDown && IsLinkNavigationKey(key))
+			{
+				_isLinkNavigationKeyDown = false;
+				SetCurrentForeground();
+				OnClick();
 			}
 		}
 
@@ -226,7 +256,8 @@ namespace Microsoft.UI.Xaml.Documents
 			var core = Uno.UI.Xaml.Core.CoreServices.Instance;
 			var ownerTheme = ThemeResolution.ResolveOwnerTheme(GetContainingFrameworkElement());
 
-			if (_pressedPointer is { })
+			// HYPERLINK_PRESSED covers both a held pointer and a held navigation key.
+			if (_pressedPointer is { } || _isLinkNavigationKeyDown)
 			{
 				var pressedBrush = core.LookupThemeResource(ownerTheme, HyperlinkForegroundPressedKey)
 					?? core.LookupThemeResource(ownerTheme, "SystemControlHighlightBaseMediumLowBrush");
@@ -267,7 +298,7 @@ namespace Microsoft.UI.Xaml.Documents
 		public FocusState FocusState
 		{
 			get => GetFocusStateValue();
-			set => SetFocusStateValue(value);
+			internal set => SetFocusStateValue(value);
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = default(FocusState))]
@@ -284,7 +315,7 @@ namespace Microsoft.UI.Xaml.Documents
 				nameof(IsTabStop),
 				typeof(bool),
 				typeof(Hyperlink),
-				new FrameworkPropertyMetadata(defaultValue: (bool)true)
+				new FrameworkPropertyMetadata(defaultValue: BoolBoxes.True)
 			);
 
 		public int TabIndex

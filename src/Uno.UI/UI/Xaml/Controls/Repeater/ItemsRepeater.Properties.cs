@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -46,7 +47,9 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Layout (DP - With default callback)
 		public static DependencyProperty LayoutProperty { get; } = DependencyProperty.Register(
 			"Layout", typeof(Layout), typeof(ItemsRepeater), new FrameworkPropertyMetadata(
-				defaultValue: new StackLayout(),
+				// WinUI defaults Layout to null and treats a null Layout as a thread-local default
+				// StackLayout via GetEffectiveLayout() / EnsureDefaultLayoutState() in ItemsRepeater.mux.cs.
+				defaultValue: null,
 				propertyChangedCallback: OnPropertyChanged
 			));
 
@@ -81,7 +84,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double HorizontalCacheLength
 		{
 			get => (double)GetValue(HorizontalCacheLengthProperty);
-			set => SetValue(HorizontalCacheLengthProperty, value);
+			set => SetValue(HorizontalCacheLengthProperty, Boxer.Box(value));
 		}
 		#endregion
 
@@ -92,7 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double VerticalCacheLength
 		{
 			get => (double)GetValue(VerticalCacheLengthProperty);
-			set => SetValue(VerticalCacheLengthProperty, value);
+			set => SetValue(VerticalCacheLengthProperty, Boxer.Box(value));
 		}
 		#endregion
 

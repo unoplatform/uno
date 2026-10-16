@@ -84,42 +84,11 @@
                             Glyph="{TemplateBinding Content}" />
 
                         <VisualStateManager.VisualStateGroups>
+                            <!--  WindowChrome applies the colors for these states from AppWindowTitleBar and the theme  -->
                             <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Normal">
-                                    <VisualState.Setters>
-                                        <Setter Target="LayoutRoot.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
-                                        <Setter Target="Path.Stroke" Value="{ThemeResource WindowCaptionForeground}" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                                <VisualState x:Name="PointerOver">
-                                    <VisualState.Setters>
-                                        <Setter Target="LayoutRoot.Background" Value="{ThemeResource WindowCaptionButtonBackgroundPointerOver}" />
-                                        <Setter Target="Path.Stroke" Value="{ThemeResource WindowCaptionForeground}" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                                <VisualState x:Name="Pressed">
-                                    <VisualState.Setters>
-                                        <Setter Target="LayoutRoot.Background" Value="{ThemeResource WindowCaptionButtonBackgroundPressed}" />
-                                        <Setter Target="Path.Stroke" Value="{ThemeResource WindowCaptionForegroundDisabled}" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <!--  these 2 states are only for Close button, needed because they use fixed colors for a theme and cannot be changed by user  -->
-                                <VisualState x:Name="CloseButtonPointerOver">
-                                    <VisualState.Setters>
-                                        <Setter Target="LayoutRoot.Background" Value="{ThemeResource WindowCaptionButtonBackgroundPointerOver}" />
-                                        <Setter Target="Path.Stroke" Value="{ThemeResource WindowCaptionButtonStrokePointerOver}" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                                <VisualState x:Name="CloseButtonPressed">
-                                    <VisualState.Setters>
-                                        <Setter Target="LayoutRoot.Background" Value="{ThemeResource WindowCaptionButtonBackgroundPressed}" />
-                                        <Setter Target="Path.Stroke" Value="{ThemeResource WindowCaptionButtonStrokePressed}" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerOver" />
+                                <VisualState x:Name="Pressed" />
                             </VisualStateGroup>
 
                             <VisualStateGroup x:Name="MinMaxStates">
@@ -184,32 +153,7 @@
                                     AutomationProperties.AutomationId="_CloseButton"
                                     AutomationProperties.Name="Close"
                                     Content="&#xE8BB;"
-                                    Style="{StaticResource WindowCaptionButton}">
-                                    <Button.Resources>
-                                        <ResourceDictionary>
-                                            <ResourceDictionary.ThemeDictionaries>
-                                                <ResourceDictionary x:Key="Light">
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPointerOver" ResourceKey="CloseButtonBackgroundPointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPressed" ResourceKey="CloseButtonBackgroundPressed" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePointerOver" ResourceKey="CloseButtonStrokePointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePressed" ResourceKey="CloseButtonStrokePressed" />
-                                                </ResourceDictionary>
-                                                <ResourceDictionary x:Key="Dark">
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPointerOver" ResourceKey="CloseButtonBackgroundPointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPressed" ResourceKey="CloseButtonBackgroundPressed" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePointerOver" ResourceKey="CloseButtonStrokePointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePressed" ResourceKey="CloseButtonStrokePressed" />
-                                                </ResourceDictionary>
-                                                <ResourceDictionary x:Key="HighContrast">
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPointerOver" ResourceKey="CloseButtonBackgroundPointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPressed" ResourceKey="CloseButtonBackgroundPressed" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePointerOver" ResourceKey="CloseButtonStrokePointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePressed" ResourceKey="CloseButtonStrokePressed" />
-                                                </ResourceDictionary>
-                                            </ResourceDictionary.ThemeDictionaries>
-                                        </ResourceDictionary>
-                                    </Button.Resources>
-                                </Button>
+                                    Style="{StaticResource WindowCaptionButton}" />
                             </Grid>
                         </Grid>
                         <VisualStateManager.VisualStateGroups>
@@ -217,23 +161,11 @@
                                 <VisualState x:Name="Normal">
                                     <VisualState.Setters>
                                         <Setter Target="TitleBarMinMaxCloseContainer.Background" Value="{ThemeResource WindowCaptionBackground}" />
-                                        <Setter Target="MinimizeButton.Foreground" Value="{ThemeResource WindowCaptionForeground}" />
-                                        <Setter Target="MinimizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
-                                        <Setter Target="MaximizeButton.Foreground" Value="{ThemeResource WindowCaptionForeground}" />
-                                        <Setter Target="MaximizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
-                                        <Setter Target="CloseButton.Foreground" Value="{ThemeResource WindowCaptionForeground}" />
-                                        <Setter Target="CloseButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="WindowInactive">
                                     <VisualState.Setters>
                                         <Setter Target="TitleBarMinMaxCloseContainer.Background" Value="{ThemeResource WindowCaptionBackgroundDisabled}" />
-                                        <Setter Target="MinimizeButton.Foreground" Value="{ThemeResource WindowCaptionForegroundDisabled}" />
-                                        <Setter Target="MinimizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
-                                        <Setter Target="MaximizeButton.Foreground" Value="{ThemeResource WindowCaptionForegroundDisabled}" />
-                                        <Setter Target="MaximizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
-                                        <Setter Target="CloseButton.Foreground" Value="{ThemeResource WindowCaptionForegroundDisabled}" />
-                                        <Setter Target="CloseButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>

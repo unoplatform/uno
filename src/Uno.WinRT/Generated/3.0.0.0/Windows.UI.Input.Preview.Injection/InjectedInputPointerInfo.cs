@@ -6,7 +6,7 @@ namespace Windows.UI.Input.Preview.Injection
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct InjectedInputPointerInfo
+	public partial struct InjectedInputPointerInfo : global::System.IEquatable<global::Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo>
 	{
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.InjectedInputPointerInfo()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,11 @@ namespace Windows.UI.Input.Preview.Injection
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.InjectedInputPointerInfo(uint, Windows.UI.Input.Preview.Injection.InjectedInputPointerOptions, Windows.UI.Input.Preview.Injection.InjectedInputPoint, uint, ulong)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo, Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo, Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.Equals(Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.Equals(object)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.GetHashCode()
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.PointerId
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.PointerOptions
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.PixelLocation

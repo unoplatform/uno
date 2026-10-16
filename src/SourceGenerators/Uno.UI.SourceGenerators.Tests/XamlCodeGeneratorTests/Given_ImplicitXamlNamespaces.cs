@@ -97,8 +97,8 @@ public class Given_ImplicitXamlNamespaces
 			DiagnosticResult.CompilerError("UXAML0005")
 				.WithArguments("The type 'SharedControl' was found in multiple global XAML namespaces: 'TestRepro.NsA', 'TestRepro.NsB'. Use an explicit xmlns prefix to disambiguate."),
 			DiagnosticResult.CompilerError("CS0246")
-				// Path.Combine, not hardcoded '\': the generated document path uses the host separator.
-				.WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 54, 9, 54, 22)
+				// Path.Join, not hardcoded '\': the generated document path uses the host separator.
+				.WithSpan(Path.Join("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 46, 9, 46, 22)
 				.WithArguments("SharedControl"),
 		]);
 

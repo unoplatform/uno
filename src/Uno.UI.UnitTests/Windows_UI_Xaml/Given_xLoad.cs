@@ -17,7 +17,7 @@ using Uno.UI.Extensions;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_xLoad
 	{
 		[TestInitialize]

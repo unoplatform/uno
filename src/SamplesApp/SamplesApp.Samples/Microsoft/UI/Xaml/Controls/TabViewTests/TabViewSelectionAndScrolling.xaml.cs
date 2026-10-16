@@ -21,9 +21,13 @@ using TabViewTabCloseRequestedEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabC
 using TabViewTabDragStartingEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs;
 using TabViewTabDragCompletedEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs;
 
+using System.Numerics;
+using Microsoft.UI.Xaml.Media;
+
+#if !WINAPPSDK
 using static Uno.UI.Extensions.ViewExtensions;
 using static Uno.UI.Extensions.PrettyPrint;
-using System.Numerics;
+#endif
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests;
 
@@ -49,9 +53,12 @@ public sealed partial class TabViewSelectionAndScrolling : Page
 
 	private void DebugVT(object sender, RoutedEventArgs e)
 	{
+#if !WINAPPSDK
 		var tree = (SUT as FrameworkElement).TreeGraph(DescribeVT);
+#endif
 	}
 
+#if !WINAPPSDK
 	private IEnumerable<string> DescribeVT(object x)
 	{
 #if __ANDROID__
@@ -66,7 +73,6 @@ public sealed partial class TabViewSelectionAndScrolling : Page
 			yield return $"Abs=[Rect {view.Frame.Width:0.#}x{view.Frame.Height:0.#}@{abs.X:0.#},{abs.Y:0.#}]";
 		}
 #endif
-#if !WINAPPSDK && !WINDOWS_UWP
 		if (x is FrameworkElement fe)
 		{
 			yield return $"Desired={FormatSize(fe.DesiredSize)}";
@@ -80,12 +86,26 @@ public sealed partial class TabViewSelectionAndScrolling : Page
 		{
 			yield return $"Offset=({sv.HorizontalOffset},{sv.VerticalOffset}), Viewport=({sv.ViewportHeight},{sv.ViewportWidth}), Extent=({sv.ExtentHeight},{sv.ExtentWidth})";
 		}
-#endif
 		if (x is ContentPresenter cp) yield return $"Content={FormatObject(cp.Content)}";
 		if (x is ListViewItem lvi)
 		{
 			yield return $"Index={(ItemsControl.ItemsControlFromItemContainer(lvi)?.IndexFromContainer(lvi) ?? -1)}";
 		}
+	}
+#endif
+
+	private static ListView? FindListView(DependencyObject reference)
+	{
+		for (var i = 0; i < VisualTreeHelper.GetChildrenCount(reference); i++)
+		{
+			var child = VisualTreeHelper.GetChild(reference, i);
+			if ((child as ListView ?? FindListView(child)) is { } match)
+			{
+				return match;
+			}
+		}
+
+		return null;
 	}
 
 	private void SelectItem(object sender, RoutedEventArgs e)
@@ -100,7 +120,7 @@ public sealed partial class TabViewSelectionAndScrolling : Page
 	{
 		if (sender is Button btn && int.TryParse(btn.Tag as string, out int index))
 		{
-			var lv = SUT as object as ListView ?? SUT.FindFirstDescendant<ListView>()!;
+			var lv = SUT as object as ListView ?? FindListView(SUT)!;
 			lv.ScrollIntoView(ViewModel.Tabs?.ElementAtOrDefault(index));
 		}
 	}
@@ -109,7 +129,7 @@ public sealed partial class TabViewSelectionAndScrolling : Page
 	{
 		if (sender is Button btn && int.TryParse(btn.Tag as string, out int index))
 		{
-			var lv = SUT as object as ListView ?? SUT.FindFirstDescendant<ListView>()!;
+			var lv = SUT as object as ListView ?? FindListView(SUT)!;
 			lv.ScrollIntoView(ViewModel.Tabs?.ElementAtOrDefault(index), ScrollIntoViewAlignment.Leading);
 		}
 	}

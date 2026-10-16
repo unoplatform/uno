@@ -19,6 +19,7 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Media;
 
 using _View = Microsoft.UI.Xaml.UIElement;
@@ -341,6 +342,11 @@ namespace Microsoft.UI.Xaml
 			get { return _name; }
 		}
 
+		// Matching by owner and name keeps the trimmer from rooting RichTextBlock: reading one of its statics
+		// keeps its static constructor, and Register's ownerType annotation then keeps the whole control.
+		internal bool IsRichTextBlockProperty(string name)
+			=> _ownerType == typeof(RichTextBlock) && _name == name;
+
 		/// <summary>
 		/// Determines if the property is an attached property
 		/// </summary>
@@ -509,7 +515,7 @@ namespace Microsoft.UI.Xaml
 			if (this == TextElement.ForegroundProperty ||
 				this == TextBlock.ForegroundProperty ||
 				this == Control.ForegroundProperty ||
-				this == RichTextBlock.ForegroundProperty ||
+				IsRichTextBlockProperty(nameof(RichTextBlock.Foreground)) ||
 				this == ContentPresenter.ForegroundProperty ||
 				this == IconElement.ForegroundProperty)
 			{
@@ -551,14 +557,14 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType.IsAssignableTo(typeof(UserControl)))
 				{
-					return Boxes.BooleanBoxes.BoxedFalse;
+					return BoolBoxes.False;
 				}
 				else if (forType.IsAssignableTo(typeof(Control)))
 				{
-					return Boxes.BooleanBoxes.BoxedTrue;
+					return BoolBoxes.True;
 				}
 
-				return Boxes.BooleanBoxes.BoxedFalse;
+				return BoolBoxes.False;
 			}
 
 #if __SKIA__
@@ -571,7 +577,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			if (this == TextBlock.SelectionFlyoutProperty ||
-				this == RichTextBlock.SelectionFlyoutProperty)
+				IsRichTextBlockProperty(nameof(RichTextBlock.SelectionFlyout)))
 			{
 				return GetDefaultTextControlSelectionFlyout();
 			}
@@ -581,7 +587,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
 				{
-					return Boxes.StretchBoxes.Fill;
+					return StretchBoxes.Fill;
 				}
 			}
 

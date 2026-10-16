@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 		// Skipping already declared property FocusStateProperty
 		// Skipping already declared property GettingFocusEvent
@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsAccessKeyScope), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -79,15 +79,16 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsDoubleTapEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
+		// Skipping already declared property IsHitTestVisibleProperty
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsHoldingEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsHoldingEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -95,7 +96,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsRightTapEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 		// Skipping already declared property IsTabStopProperty
 #if __SKIA__
@@ -104,7 +105,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsTapEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 		// Skipping already declared property KeyDownEvent
 #if __SKIA__
@@ -113,7 +114,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipHorizontalOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -137,7 +138,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipVerticalOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 		// Skipping already declared property KeyUpEvent
 		// Skipping already declared property KeyboardAcceleratorPlacementModeProperty
@@ -158,6 +159,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property ManipulationStartedEvent
 		// Skipping already declared property ManipulationStartingEvent
 		// Skipping already declared property NoFocusCandidateFoundEvent
+		// Skipping already declared property OpacityProperty
 		// Skipping already declared property PointerCanceledEvent
 		// Skipping already declared property PointerCaptureLostEvent
 		// Skipping already declared property PointerCapturesProperty
@@ -170,6 +172,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property PreviewKeyDownEvent
 		// Skipping already declared property PreviewKeyUpEvent
 		// Skipping already declared property ProjectionProperty
+		// Skipping already declared property RenderTransformOriginProperty
+		// Skipping already declared property RenderTransformProperty
 		// Skipping already declared property RightTappedEvent
 		// Skipping already declared property ShadowProperty
 		// Skipping already declared property TabFocusNavigationProperty
@@ -183,8 +187,10 @@ namespace Microsoft.UI.Xaml
 			typeof(global::Microsoft.UI.Xaml.UIElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Media3D.Transform3D)));
 #endif
+		// Skipping already declared property TransitionsProperty
 		// Skipping already declared property UseLayoutRoundingProperty
 		// Skipping already declared property UseSystemFocusVisualsProperty
+		// Skipping already declared property VisibilityProperty
 		// Skipping already declared property XYFocusDownNavigationStrategyProperty
 		// Skipping already declared property XYFocusDownProperty
 		// Skipping already declared property XYFocusKeyboardNavigationProperty
@@ -282,7 +288,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, value);
+				this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -298,7 +304,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(IsAccessKeyScopeProperty, value);
+				this.SetValue(IsAccessKeyScopeProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -312,10 +318,11 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(IsDoubleTapEnabledProperty, value);
+				this.SetValue(IsDoubleTapEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
+		// Skipping already declared property IsHitTestVisible
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsHoldingEnabled
@@ -326,7 +333,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(IsHoldingEnabledProperty, value);
+				this.SetValue(IsHoldingEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -340,7 +347,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(IsRightTapEnabledProperty, value);
+				this.SetValue(IsRightTapEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -355,7 +362,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(IsTapEnabledProperty, value);
+				this.SetValue(IsTapEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -369,7 +376,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(KeyTipHorizontalOffsetProperty, value);
+				this.SetValue(KeyTipHorizontalOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -411,7 +418,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(KeyTipVerticalOffsetProperty, value);
+				this.SetValue(KeyTipVerticalOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -429,6 +436,7 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property ManipulationMode
+		// Skipping already declared property Opacity
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.ScalarTransition OpacityTransition
@@ -461,6 +469,8 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property RenderSize
+		// Skipping already declared property RenderTransform
+		// Skipping already declared property RenderTransformOrigin
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public float Rotation
@@ -562,6 +572,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
+		// Skipping already declared property Transitions
 		// Skipping already declared property Translation
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -579,6 +590,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property UseLayoutRounding
 		// Skipping already declared property UseSystemFocusVisuals
+		// Skipping already declared property Visibility
 		// Skipping already declared property XYFocusDown
 		// Skipping already declared property XYFocusDownNavigationStrategy
 		// Skipping already declared property XYFocusKeyboardNavigation
