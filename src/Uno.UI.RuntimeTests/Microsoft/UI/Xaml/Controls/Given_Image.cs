@@ -546,6 +546,83 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_SVGImageSource_SetSourceAsync_File_Stream(bool assignSourceFirst)
+		{
+			// The file stream is read asynchronously, so the load is still in flight when anything re-opens the source.
+			var file = await CreateSvgFileAsync("red");
+			var svgImageSource = new SvgImageSource();
+			var opened = false;
+			SvgImageSourceLoadStatus? failedStatus = null;
+			svgImageSource.Opened += (_, _) => opened = true;
+			svgImageSource.OpenFailed += (_, e) => failedStatus = e.Status;
+
+			var image = new Image() { Width = 100, Height = 100 };
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+
+			if (assignSourceFirst)
+			{
+				image.Source = svgImageSource;
+			}
+
+			using (var stream = await file.OpenReadAsync())
+			{
+				Assert.AreEqual(SvgImageSourceLoadStatus.Success, await svgImageSource.SetSourceAsync(stream));
+			}
+
+			if (!assignSourceFirst)
+			{
+				image.Source = svgImageSource;
+			}
+
+			await WindowHelper.WaitFor(() => opened, message: "SvgImageSource.Opened was not raised.");
+			Assert.IsNull(failedStatus);
+			await AssertCenterColor(border, Colors.Red);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_SetSourceAsync_Twice()
+		{
+			var svgImageSource = new SvgImageSource();
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+
+			await SetSourceAndAssert("red", Colors.Red);
+			await SetSourceAndAssert("blue", Colors.Blue);
+
+			async Task SetSourceAndAssert(string fill, Color expectedColor)
+			{
+				var file = await CreateSvgFileAsync(fill);
+				using (var stream = await file.OpenReadAsync())
+				{
+					Assert.AreEqual(SvgImageSourceLoadStatus.Success, await svgImageSource.SetSourceAsync(stream));
+				}
+
+				await AssertCenterColor(border, expectedColor);
+			}
+		}
+
+		private static async Task<StorageFile> CreateSvgFileAsync(string fill)
+		{
+			// A file of its own for each call: the source may keep the stream it was given open.
+			var file = await ApplicationData.Current.LocalFolder.CreateFileAsync($"svg-stream-{fill}.svg", CreationCollisionOption.GenerateUniqueName);
+			await FileIO.WriteTextAsync(file, $"<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='{fill}'/></svg>");
+			return file;
+		}
+
+		private static async Task AssertCenterColor(FrameworkElement element, Color expected)
+		{
+			await WindowHelper.WaitForIdle();
+			var screenshot = await UITestHelper.ScreenShot(element);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, expected, tolerance: 10);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_SVGImageSource_Uri_Is_Null()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
