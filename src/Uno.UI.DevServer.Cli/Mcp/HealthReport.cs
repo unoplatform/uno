@@ -121,4 +121,5 @@ internal enum IssueCode
 	WorkspaceAmbiguous,
 	WorkspaceNotResolved,
 	HostMcpEndpointNotAvailable,
+	NoToolsRegistered,
 }

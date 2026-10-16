@@ -52,6 +52,8 @@ internal class HealthService(
 		var upstreamConnected = upstreamTask.IsCompletedSuccessfully;
 
 		var toolCount = toolListManager.SnapshotToolCount;
+		// The host always contributes its own uno_health tool; anything else comes from add-ins.
+		var appToolCount = toolCount - (toolListManager.IsKnownUpstreamTool(HealthTool.Name) ? 1 : 0);
 
 		var discoveredSolutions = devServerMonitor.DiscoveredSolutions is { Count: > 0 }
 			? devServerMonitor.DiscoveredSolutions
@@ -75,6 +77,7 @@ internal class HealthService(
 				: null,
 			forceRootsFallback: ForceRootsFallback,
 			rootsProvided: RootsProvided,
-			hostRespondedNoMcp: devServerMonitor.HostRespondedNoMcp);
+			hostRespondedNoMcp: devServerMonitor.HostRespondedNoMcp,
+			upstreamHasNoAppTools: upstreamConnected && toolListManager.HasFetchedTools && appToolCount <= 0);
 	}
 }
