@@ -62,6 +62,18 @@ internal sealed class GatedImageServer : IDisposable
 		set => _failNextRequest = value;
 	}
 
+	/// <summary>
+	/// A response header added to the image, such as "Cache-Control: no-store".
+	/// </summary>
+	public string? ExtraHeader { get; set; }
+
+	public string Status { get; set; } = "200 OK";
+
+	/// <summary>
+	/// Whether a request for <see cref="Uri"/> is redirected to another path, which serves the image.
+	/// </summary>
+	public bool RedirectRequests { get; set; }
+
 	public void ReleaseResponses() => Volatile.Read(ref _release).TrySetResult();
 
 	/// <summary>
@@ -131,7 +143,15 @@ internal sealed class GatedImageServer : IDisposable
 				return;
 			}
 
-			var headers = $"HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: {_body.Length}\r\nConnection: close\r\n\r\n";
+			if (RedirectRequests && Encoding.ASCII.GetString(request, 0, read).StartsWith($"GET {Uri.AbsolutePath} ", StringComparison.Ordinal))
+			{
+				await stream.WriteAsync(Encoding.ASCII.GetBytes("HTTP/1.1 302 Found\r\nLocation: /redirected.png\r\nContent-Length: 0\r\nConnection: close\r\n\r\n")).ConfigureAwait(false);
+				await stream.FlushAsync().ConfigureAwait(false);
+				return;
+			}
+
+			var extra = ExtraHeader is { Length: > 0 } header ? header + "\r\n" : "";
+			var headers = $"HTTP/1.1 {Status}\r\nContent-Type: image/png\r\nContent-Length: {_body.Length}\r\nConnection: close\r\n{extra}\r\n";
 			await stream.WriteAsync(Encoding.ASCII.GetBytes(headers)).ConfigureAwait(false);
 			await stream.FlushAsync().ConfigureAwait(false);
 
