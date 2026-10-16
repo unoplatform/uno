@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -10,6 +13,39 @@ namespace Uno.UI.Tests.TextBoxTests
 	[UITestClass]
 	public class Given_TextBox
 	{
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25252")]
+		public void When_IsReadOnly_Changes_Then_AutomationPeer_Raises_PropertyChanged()
+		{
+			var sut = new TextBox();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(sut);
+			var listener = new ReadOnlyPropertyChangedListener();
+			var previous = AutomationPeer.TestAutomationPeerListener;
+			try
+			{
+				AutomationPeer.TestAutomationPeerListener = listener;
+				sut.IsReadOnly = true;
+
+				Assert.AreEqual(1, listener.NotificationCount);
+				Assert.AreSame(peer, listener.Peer);
+				Assert.AreSame(ValuePatternIdentifiers.IsReadOnlyProperty, listener.Property);
+				Assert.AreEqual(false, listener.OldValue);
+				Assert.AreEqual(true, listener.NewValue);
+
+				sut.IsReadOnly = false;
+
+				Assert.AreEqual(2, listener.NotificationCount);
+				Assert.AreSame(peer, listener.Peer);
+				Assert.AreSame(ValuePatternIdentifiers.IsReadOnlyProperty, listener.Property);
+				Assert.AreEqual(true, listener.OldValue);
+				Assert.AreEqual(false, listener.NewValue);
+			}
+			finally
+			{
+				AutomationPeer.TestAutomationPeerListener = previous;
+			}
+		}
+
 		[TestMethod]
 		public void When_TextChanging_Modifying_Text()
 		{
@@ -201,6 +237,41 @@ namespace Uno.UI.Tests.TextBoxTests
 			Assert.AreEqual(String.Empty, sut.Text);
 			Assert.AreEqual(0, sut.SelectionStart);
 			Assert.AreEqual(0, sut.SelectionLength);
+		}
+
+		private sealed class ReadOnlyPropertyChangedListener : IAutomationPeerListener
+		{
+			public int NotificationCount { get; private set; }
+			public AutomationPeer Peer { get; private set; }
+			public AutomationProperty Property { get; private set; }
+			public object OldValue { get; private set; }
+			public object NewValue { get; private set; }
+
+			public bool ListenerExistsHelper(AutomationEvents eventId) => true;
+
+			public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId) { }
+
+			public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) { }
+
+			public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer child) { }
+
+			public void NotifyTextEditTextChangedEvent(AutomationPeer peer, AutomationTextEditChangeType changeType, IReadOnlyList<string> changedData) { }
+
+			public void NotifyInvalidatePeer(AutomationPeer peer) { }
+
+			public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
+			{
+				if (ReferenceEquals(automationProperty, ValuePatternIdentifiers.IsReadOnlyProperty))
+				{
+					NotificationCount++;
+					Peer = peer;
+					Property = automationProperty;
+					OldValue = oldValue;
+					NewValue = newValue;
+				}
+			}
+
+			public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) { }
 		}
 
 		public class MySource : System.ComponentModel.INotifyPropertyChanged
