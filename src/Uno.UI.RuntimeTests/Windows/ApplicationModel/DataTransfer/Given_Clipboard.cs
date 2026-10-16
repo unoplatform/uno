@@ -557,6 +557,70 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(Include, SkiaWasm)]
+	public async Task When_Empty_Paste_Follows_Visible_Content()
+	{
+#if HAS_UNO
+		var package = new DataPackage();
+		package.SetText(TestString);
+		Clipboard.SetContent(package);
+
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Text));
+		Assert.IsFalse(Clipboard.GetContent().Contains(StandardDataFormats.Html));
+
+		// A paste would show the text written; one showing nothing means the clipboard changed, so
+		// the state is unknown (which advertises HTML optimistically).
+		DispatchSyntheticPaste("const dt = new DataTransfer();");
+		Assert.IsTrue(Clipboard.GetContent().Contains(StandardDataFormats.Html));
+
+		// The same goes for what an earlier paste showed.
+		DispatchSyntheticPaste(
+			"""
+			const dt = new DataTransfer();
+			dt.items.add('pasted-content', 'text/plain');
+			""");
+		Assert.IsFalse(Clipboard.GetContent().Contains(StandardDataFormats.Html));
+
+		DispatchSyntheticPaste("const dt = new DataTransfer();");
+		Assert.IsTrue(Clipboard.GetContent().Contains(StandardDataFormats.Html));
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, SkiaWasm)]
+	public async Task When_Empty_Paste_Follows_Own_Custom_Format()
+	{
+#if HAS_UNO
+		const string customFormat = "application/x-uno-test";
+
+		var package = new DataPackage();
+		package.SetData(customFormat, "custom-payload");
+		Clipboard.SetContent(package);
+
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(customFormat));
+
+		// A paste never shows web custom formats, so one showing nothing says nothing about them.
+		// This is the paste Chromium delivers for such content: a single empty text item.
+		DispatchSyntheticPaste(
+			"""
+			const dt = new DataTransfer();
+			dt.items.add('', 'text/plain');
+			""");
+
+		var view = Clipboard.GetContent();
+		Assert.IsTrue(view.Contains(customFormat));
+		Assert.IsFalse(view.Contains(StandardDataFormats.Html));
+		Assert.AreEqual("custom-payload", await view.GetDataAsync(customFormat) as string);
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Copy_Event_Invalidates_Paste()
 	{
 #if HAS_UNO

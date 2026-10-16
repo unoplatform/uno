@@ -183,6 +183,9 @@ namespace Uno.Utils {
 			try {
 				const snapshot = Clipboard.capturePaste(event);
 				if (!snapshot) {
+					if (event.clipboardData) {
+						Clipboard.onEmptyPaste();
+					}
 					return;
 				}
 
@@ -246,14 +249,29 @@ namespace Uno.Utils {
 			}
 
 			// No usable entry does not mean an empty clipboard: representations the DataTransfer
-			// cannot carry, such as web custom formats, are invisible here, so what is known of
-			// the content stays known. An emptied clipboard is caught by the copy, cut and focus
-			// events instead.
+			// cannot carry, such as web custom formats, are invisible here (see onEmptyPaste).
 			if (texts.length === 0 && files.length === 0) {
 				return null;
 			}
 
 			return { time: performance.now(), texts: texts, files: files };
+		}
+
+		// A paste that shows nothing proves the clipboard no longer holds what an earlier paste
+		// showed, nor own content a paste would show (text, HTML, an image). Own content made only
+		// of web custom formats, which a paste never shows, may still be there and stays known.
+		private static onEmptyPaste() {
+			Clipboard.lastPaste = null;
+			const own = Clipboard.ownContent;
+			if (own && (own.imageBlob || own.texts.some(t => (t.type === "text/plain" || t.type === "text/html") && !!t.value))) {
+				Clipboard.ownContent = null;
+			}
+
+			// A view built for the paste shortcut has nothing to wait for.
+			const waiters = Clipboard.pasteWaiters.splice(0, Clipboard.pasteWaiters.length);
+			for (const waiter of waiters) {
+				waiter(null);
+			}
 		}
 
 		private static getFreshPasteSnapshot(): PasteSnapshot {

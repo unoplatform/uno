@@ -80,6 +80,7 @@ declare namespace Uno.Utils {
         private static onKeyDownCaptured;
         private static onPasteCaptured;
         private static capturePaste;
+        private static onEmptyPaste;
         private static getFreshPasteSnapshot;
         private static getPasteImageFile;
         private static emptyContent;
