@@ -12,22 +12,22 @@ Platform-specific assets such as [`BundleResource`](https://learn.microsoft.com/
 
 ## Supported asset types
 
-At the moment, the following image file types are supported as `Content` assets:
+The following image file types are supported as `Content` assets:
 
-|             | `.bmp` (Win BMP) | `.gif`‡ | `.heic` (Apple) | `.jpg` & `.jpeg` (JFIF) | `.png` | `.webp` | `.pdf` | `.svg` |
-| ----------- | :-------------: | :---: | :-----------: | :-----------------: | :--: | :---: | :--: | :--: |
-| WinUI       |       ✔️        |   ✔️   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
-| Android 10  |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ✔️   |  ✔️   |  ✔️   |
-| iOS 13      |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ❌   |  ✔️   |
-| macOS       |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ✔️   |  ❌   |
-| WebAssembly†       |       ✔️        |  ✔️‡   |      ❌†       |          ✔️          |  ✔️   |  ❌†   |  ❌†  |  ✔️   |
-| Skia Desktop |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
+|                                    | `.bmp` (Win BMP) | `.gif` | `.heic` (Apple) | `.jpg` & `.jpeg` (JFIF) | `.png` | `.webp` | `.pdf` | `.svg` |
+| ---------------------------------- | :--------------: | :----: | :-------------: | :---------------------: | :----: | :-----: | :----: | :----: |
+| WinUI                              |        ✔️        |   ✔️   |       ❌        |           ✔️            |   ✔️   |   ✔️    |   ❌   |   ✔️   |
+| Skia renderer¹                     |        ✔️        |  ✔️²   |       ❌³       |           ✔️            |   ✔️   |   ✔️²   |   ❌   |  ✔️⁴   |
+| Android native renderer (6.x)¹     |       ❌⁵        |  ✔️⁶   |       ❌⁵       |           ✔️            |   ✔️   |   ❌⁵   |   ❌   |  ✔️⁴   |
+| iOS/tvOS native renderer (6.x)¹    |        ✔️        |  ✔️⁶   |       ✔️        |           ✔️            |   ✔️   |   ✔️⁶   |   ❌   |  ✔️⁴   |
+| WebAssembly native renderer (6.x)¹ |        ✔️        |  ✔️²   |       ❌³       |           ✔️            |   ✔️   |   ✔️²   |  ❌³   |   ✔️   |
 
-* † Actual WebAssembly image format support is browser dependent. For example, `.webp` is not working on Safari on macOS, but works on Chromium-based browsers. Check-marks (✔️) indicate a format that can safely be expected to work on all browsers able to run Wasm applications.
-* ‡ **Gif animation support**:
-  * Play/Pause not implemented in Uno yet
-  * Always animated on Wasm
-  * Not animated on other Uno platforms
+1. Every target uses the Skia renderer from Uno Platform 7.0. In 6.x, Desktop always does, and Android, iOS/tvOS and WebAssembly do when `UnoFeatures` includes `SkiaRenderer` (the default for new projects). Without it, they use the native renderers.
+2. Animated images always play. `BitmapImage.AutoPlay`, `IsPlaying`, `Play()` and `Stop()` are not implemented.
+3. Depends on the browser on WebAssembly. For example, Safari decodes `.heic` and Chrome doesn't.
+4. Uno Platform 6.x needs the `Svg` Uno feature. See [Using SVG images](xref:Uno.Features.SVG).
+5. Doesn't load as an `ms-appx:///` asset, because the native Android renderer only packages `.png`, `.jpg`, `.jpeg` and `.gif` files as images. It loads from a stream or a web URL.
+6. Animated images show only the first frame.
 
 ## Adding an asset to your project
 
