@@ -38,7 +38,7 @@ jobs:
   - checkout: self
     clean: true
 
-  # Install android 35 as we're running on macos-15
+  # Install android 35, which the image does not preinstall
   - bash: |
       echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-35' | tr '\r' '\n' | uniq
     displayName: Install Android 35
