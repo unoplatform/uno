@@ -428,19 +428,12 @@ public partial class DependencyObject
 			// from Enter onward (incl. after reparenting, before Loaded re-fires), not only once Loaded.
 			// Resources declared locally and unreachable from the live tree (reparented popup content) simply
 			// don't resolve here and fall through to the parse-time pinned dictionary in Phase B.
-			if (owner is UIElement { IsActiveInVisualTree: true })
+			if (owner is UIElement { IsActiveInVisualTree: true }
+				&& TryGetValueFromResourceDictionaries(themeRef.ResourceKey, out var ancestorValue))
 			{
-				var dicts = GetResourceDictionaries(includeAppResources: false);
-				foreach (var dict in dicts)
-				{
-					if (dict.TryGetValue(themeRef.ResourceKey, out var ancestorValue, shouldCheckSystem: false))
-					{
-						// MUX: Theming.cpp:332-336 — SetLastResolvedValue; the refresh below is skipped.
-						themeRef.SetLastResolvedValue(ancestorValue);
-						resolved = true;
-						break;
-					}
-				}
+				// MUX: Theming.cpp:332-336 — SetLastResolvedValue; the refresh below is skipped.
+				themeRef.SetLastResolvedValue(ancestorValue);
+				resolved = true;
 			}
 
 			// Uno: a provisional reference (unattributable parse context) is pinned to whatever the top-level lookup found
