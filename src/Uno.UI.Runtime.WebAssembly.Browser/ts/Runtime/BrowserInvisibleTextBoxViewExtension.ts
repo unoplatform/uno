@@ -46,7 +46,9 @@
 		// soft keyboard's), so that each is raised once: those whose keydown was seen as Enter's (the ones
 		// that have a code are raised by BrowserKeyboardInputSource), and those the line break raised,
 		// release included. A press can outlive the input it started on (a handler moving focus off it),
-		// so an entry lasts until the keyup of its key, wherever that goes, or its next keydown.
+		// so an entry lasts until the keyup of its key, wherever that goes, or its next keydown. A keyup that
+		// never comes (the page losing focus while the key is down) leaves the entry until that keydown; a
+		// keyup of the key that comes before it, with no keydown of its own, is taken for the lost one.
 		private static enterKeyDowns = new Set<string>();
 		private static enterLineBreaks = new Set<string>();
 		// The code of the last keydown when it can be Enter's: the line break that follows is that key's.
@@ -395,12 +397,12 @@
 					? BrowserInvisibleTextBoxViewExtension.acceptsReturn
 					: acceptsReturn;
 
-				// The line break raised the key, its release included. A keyup that has the code
-				// BrowserKeyboardInputSource tells the key by must not reach it, or it would raise the
-				// release again.
+				// The line break raised the key, its release included. BrowserKeyboardInputSource raises the
+				// release of a keyup that has the code it tells the key by.
 				const enterCode = BrowserInvisibleTextBoxViewExtension.enterCodeOf(ev);
 				const raisedByLineBreak = BrowserInvisibleTextBoxViewExtension.enterLineBreaks.has(enterCode);
 				if (raisedByLineBreak && enterCode !== "") {
+					// Released along with the line break's press: not to be raised again from the document.
 					ev.stopPropagation();
 				}
 
@@ -417,8 +419,7 @@
 					&& !raisedByLineBreak
 					&& !ev.isComposing) {
 					ev.preventDefault();
-					// OnEnterKeyPressed raises the release along with the press. A keyup that has a code
-					// must not reach BrowserKeyboardInputSource, or it would raise the release again.
+					// OnEnterKeyPressed raises the release along with the press: not to be raised again from the document.
 					ev.stopPropagation();
 					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
 				}
