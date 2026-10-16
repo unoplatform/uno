@@ -489,7 +489,7 @@
 	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
 		<!-- https://github.com/dotnet/runtime/issues/109966 -->
 		<_IsDedupEnabled>false</_IsDedupEnabled>
-		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-arm64</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'ios' AND '$(BuildForTestFlight)' == 'true'">
@@ -514,7 +514,7 @@
 		<PackageReference Include="JetBrains.Annotations" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'tvos'">
-		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-arm64</RuntimeIdentifier>
 
 		<!-- Only a default: a contributor or CI without that profile installed can override it. -->
 		<CodesignProvision Condition="'$(CodesignProvision)' == ''">Uno Dev Samples</CodesignProvision>
