@@ -831,6 +831,7 @@ public class Given_FlowDirection
 	public async Task When_MenuFlyout_Shown_At_Point(FlowDirection flowDirection)
 	{
 		// A menu opens towards the trailing side of its point: to the right in left-to-right, to the left in right-to-left.
+		using var _ = UITestHelper.ResetWindowContent();
 		var target = new Border { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.LightGray), FlowDirection = flowDirection };
 		var root = new Grid { Width = 600, Height = 400, Children = { target } };
 		var flyout = new MenuFlyout { Items = { new MenuFlyoutItem { Text = "First item" }, new MenuFlyoutItem { Text = "Second item" } } };
@@ -880,6 +881,7 @@ public class Given_FlowDirection
 	{
 		// The side the flyout opens on follows the target's flow direction (Left opens on the right in right-to-left),
 		// but edge alignments like BottomEdgeAlignedLeft stay physical, matching WinUI.
+		using var _ = UITestHelper.ResetWindowContent();
 		var content = new Border { Width = 80, Height = 40, Background = new SolidColorBrush(Colors.Red) };
 		var flyout = new Flyout { Content = content, Placement = placement };
 		var target = new Button { Content = "Target", Width = 200, Height = 60, FlowDirection = flowDirection, Flyout = flyout, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
@@ -916,6 +918,51 @@ public class Given_FlowDirection
 			{
 				Assert.IsTrue(bounds.Top >= targetBounds.Bottom - 1, $"Expected the flyout ({bounds}) below the target ({targetBounds}).");
 				Assert.AreEqual(targetBounds.Left, bounds.Left, 2, "Expected the flyout to be aligned with the target's physical left edge regardless of flow direction.");
+			}
+		}
+		finally
+		{
+			flyout.Hide();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[DataRow(FlowDirection.LeftToRight)]
+	[DataRow(FlowDirection.RightToLeft)]
+	public async Task When_Flyout_Shown_At_Point_With_Left_Placement(FlowDirection flowDirection)
+	{
+		// A flyout shown at a point also follows the target's flow direction: Left opens on the right of the point in right-to-left.
+		using var _ = UITestHelper.ResetWindowContent();
+		var content = new Border { Width = 80, Height = 40, Background = new SolidColorBrush(Colors.Red) };
+		var flyout = new Flyout { Content = content, Placement = FlyoutPlacementMode.Left };
+		var target = new Border { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.LightGray), FlowDirection = flowDirection };
+		var root = new Grid { Width = 600, Height = 400, Children = { target } };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+
+		var position = new Point(100, 100);
+		flyout.ShowAt(target, new FlyoutShowOptions { Position = position });
+
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var presenter = content.FindFirstParent<FlyoutPresenter>();
+			Assert.IsNotNull(presenter);
+			var bounds = GetVisualBounds(presenter);
+			var expectedPoint = target.TransformToVisual(null).TransformPoint(position);
+
+			if (flowDirection is FlowDirection.LeftToRight)
+			{
+				Assert.AreEqual(expectedPoint.X, bounds.Right, 2, "The flyout should open on the left of the point.");
+			}
+			else
+			{
+				Assert.AreEqual(expectedPoint.X, bounds.Left, 2, "The flyout should open on the right of the point.");
 			}
 		}
 		finally
