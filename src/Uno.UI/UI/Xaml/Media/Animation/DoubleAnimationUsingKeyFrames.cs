@@ -22,6 +22,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private int _replayCount = 1;
 		private double? _startingValue;
 		private double _finalValue;
+		private double _initialValue;
 
 		private List<IValueAnimator> _animators;
 		private IValueAnimator _currentAnimator;
@@ -67,6 +68,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// If Begin(), Stop(), Begin() are called successively in sequence,
 			// we want _wasRequestedToStop to be false.
 			_wasRequestedToStop = false;
+
+			if (IsThemeGenerated)
+			{
+				// Theme-generated keyframes carry no bindings, so start right away and read the
+				// current (possibly animated) value like WinUI's CAnimation::OnBegin does.
+				// WinUI registers and takes control even without keyframes (animation.cpp:592-599).
+				TakeControlOfTarget();
+
+				if (KeyFrames.Count < 1)
+				{
+					return;
+				}
+
+				_activeDuration.Restart();
+				_replayCount = 1;
+
+				Play();
+				return;
+			}
 
 			if (!_wasBeginScheduled)
 			{
@@ -192,6 +212,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_currentAnimator?.Cancel(); // stop could be called before the initialization
 			_startingValue = null;
 			ClearValue();
+			ReleaseControlOfTarget();
 
 			State = TimelineState.Stopped;
 			_wasRequestedToStop = true;
@@ -218,6 +239,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				_currentAnimator.StartDelay = (long)BeginTime.Value.TotalMilliseconds;
 			}
 
+			if (IsThemeGenerated && (BeginTime ?? TimeSpan.Zero) <= TimeSpan.Zero)
+			{
+				// Write the t=0 value now: the animator only writes on its first tick, after the next render.
+				// Must precede Start, as a zero-duration animator completes synchronously inside it.
+				SetValue(_initialValue);
+			}
+
 			_currentAnimator.Start();
 			State = TimelineState.Active;
 		}
@@ -230,6 +258,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			var startingValue = ComputeFromValue();
 
 			var fromValue = startingValue;
+			_initialValue = startingValue;
 			double toValue;
 			var previousKeyTime = TimeSpan.Zero;
 
@@ -240,6 +269,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			foreach (var keyFrame in KeyFrames.OrderBy(k => k.KeyTime.TimeSpan))
 			{
 				toValue = keyFrame.Value;
+				if (index == 0 && keyFrame.KeyTime.TimeSpan <= TimeSpan.Zero)
+				{
+					_initialValue = toValue;
+				}
 				if (index + 1 == KeyFrames.Count)
 				{
 					_finalValue = toValue;
@@ -337,6 +370,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				State = TimelineState.Stopped;
 				ClearValue();
+				ReleaseControlOfTarget();
 			}
 
 			OnCompleted();

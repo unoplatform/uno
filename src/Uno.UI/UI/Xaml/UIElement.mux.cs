@@ -915,6 +915,9 @@ namespace Microsoft.UI.Xaml
 
 		private UIElementFlag _uiElementFlags;
 
+		// The element Enter/Leave walk tracks its own bit, separate from DependencyObject.IsProcessingEnterLeave.
+		internal bool IsProcessingElementEnterLeave => (_uiElementFlags & UIElementFlag.IsProcessingEnterLeave) != 0;
+
 		// NOTE: This should actually be on DependencyObject, not UIElement.
 		// We'll be able to do it once DependencyObject is a class instead of an interface.
 		internal void Enter(EnterParams @params, int depth)

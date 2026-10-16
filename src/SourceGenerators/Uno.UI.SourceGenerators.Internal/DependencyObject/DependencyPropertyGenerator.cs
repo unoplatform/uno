@@ -366,7 +366,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						{
 							for (int j = 0; j < 32; j++)
 							{
-								builder.AppendLineIndented($"DPFlag{j} = 1 << {j},");
+								builder.AppendLineIndented($"DPFlag{j} = 1u << {j},");
 							}
 						}
 					}
@@ -379,7 +379,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						{
 							for (int i = 0; i < lastEnumMemberCount; i++)
 							{
-								builder.AppendLineIndented($"DPFlag{i} = 1 << {i},");
+								builder.AppendLineIndented($"DPFlag{i} = 1u << {i},");
 							}
 						}
 					}

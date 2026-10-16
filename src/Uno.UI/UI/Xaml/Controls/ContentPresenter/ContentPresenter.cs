@@ -589,12 +589,26 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		set => SetCornerRadiusValue(value);
 	}
 
-	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+	private protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
 		this.UpdateCornerRadius();
 	}
 
 	#endregion
+
+	// MUX Reference ContentPresenter.cpp (CContentPresenter::ApplyTemplate), tag winui3/release/2.5.1
+	// The implicit Content/ContentTemplate bindings are set up from the measure pass, so the first layout already
+	// presents the templated parent's content. Uno-specific: they live in OnApplyTemplate, also run on Loaded.
+	private protected override void ApplyTemplate(out bool addedVisuals)
+	{
+		base.ApplyTemplate(out addedVisuals);
+
+		if (!_appliedTemplate)
+		{
+			_appliedTemplate = true;
+			OnApplyTemplate();
+		}
+	}
 
 	protected override void OnApplyTemplate()
 	{
@@ -1093,7 +1107,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		var child = this.FindFirstChild();
+		var child = GetTemplateChildNoRef();
 
 		if (child != null)
 		{
@@ -1191,7 +1205,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		var padding = Padding;
 		var borderThickness = BorderThickness;
 
-		var child = this.FindFirstChild();
+		var child = GetTemplateChildNoRef();
 		Size measuredSize = default;
 		if (child is not null)
 		{

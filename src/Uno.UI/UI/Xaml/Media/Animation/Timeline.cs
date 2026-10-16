@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
@@ -20,6 +21,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private BindingPath _propertyInfo;
 		private List<ITimelineListener> _timelineListeners = new();
 		private List<EventHandler<object>> _completedHandlers;
+
+		// MUX Reference: CTimeManager::Get/SetAnimationOnProperty, keyed by the leaf object + property name.
+		// TODO Uno: generalize ownership to all timelines
+		private static readonly ConditionalWeakTable<object, Dictionary<string, WeakReference<Timeline>>> _animationsOnProperty = new();
+
+		private bool _hasControlOfTarget;
+		private WeakReference<object> _registeredTarget;
+		private string _registeredPropertyName;
 
 		public event EventHandler<object> Completed
 		{
@@ -59,6 +68,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// distinguishes <see cref="TimelineState.Active"/> from <see cref="TimelineState.Paused"/>.
 		/// </summary>
 		internal TimelineState State { get; private protected set; }
+
+		/// <summary>
+		/// Set by ThemeGeneratorHelper for the timelines it builds. Such timelines begin synchronously
+		/// and only write or clear the target while they own it, which makes Begin-new-then-Stop-old hand off.
+		/// </summary>
+		/// <remarks>XAML timelines keep the dispatched Begin, so DoubleKeyFrame.Value TemplatedParent bindings resolve first.</remarks>
+		internal bool IsThemeGenerated { get; set; }
 
 		public TimeSpan? BeginTime
 		{
@@ -296,6 +312,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				);
 			}
 
+			if (IsThemeGenerated && !_hasControlOfTarget)
+			{
+				// MUX Reference: CAnimation::DoAnimationValueOperation (animation.cpp:1078), gated by m_hasControlOfTarget
+				return;
+			}
+
 			PropertyInfo.Value = value;
 		}
 
@@ -309,7 +331,74 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				this.Log().DebugFormat("Clearing [{0} / {1}]", Storyboard.GetTargetName(this), Storyboard.GetTargetProperty(this));
 			}
 
+			if (IsThemeGenerated && !_hasControlOfTarget)
+			{
+				// MUX Reference: CAnimation::DoAnimationValueOperation (animation.cpp:1078), gated by m_hasControlOfTarget
+				return;
+			}
+
 			PropertyInfo.ClearValue();
+		}
+
+		// MUX Reference: CAnimation::OnBegin (animation.cpp:475-494, 592-599) + TakeControlOfTarget (animation.cpp:797-808)
+		private protected void TakeControlOfTarget()
+		{
+			if (!IsThemeGenerated)
+			{
+				return;
+			}
+
+			// Before we go on to a new target, remove our old one
+			ClearAnimationOnRegisteredTarget();
+
+			// TODO Uno: ResolveLocalTarget errors out on an unresolved target; we just own nothing.
+			if (PropertyInfo is { DataItem: { } target, LeafPropertyName: { } propertyName })
+			{
+				var animations = _animationsOnProperty.GetOrCreateValue(target);
+				if (animations.TryGetValue(propertyName, out var previousRef)
+					&& previousRef.TryGetTarget(out var previous)
+					&& previous != this)
+				{
+					// TODO Uno: animation composition in the same timing tree is not reported (animation.cpp:517-541)
+					previous._hasControlOfTarget = false;
+				}
+
+				animations[propertyName] = new WeakReference<Timeline>(this);
+				_registeredTarget = new WeakReference<object>(target);
+				_registeredPropertyName = propertyName;
+			}
+
+			_hasControlOfTarget = true;
+		}
+
+		// MUX Reference: CAnimation::FinalizeIteration (animation.cpp:816-861) ClearAnimationOnProperty + ReleaseControlOfTarget
+		private protected void ReleaseControlOfTarget()
+		{
+			if (!IsThemeGenerated)
+			{
+				return;
+			}
+
+			ClearAnimationOnRegisteredTarget();
+
+			_hasControlOfTarget = false;
+		}
+
+		private void ClearAnimationOnRegisteredTarget()
+		{
+			if (_registeredTarget is not null
+				&& _registeredPropertyName is not null
+				&& _registeredTarget.TryGetTarget(out var target)
+				&& _animationsOnProperty.TryGetValue(target, out var animations)
+				&& animations.TryGetValue(_registeredPropertyName, out var ownerRef)
+				&& ownerRef.TryGetTarget(out var owner)
+				&& owner == this)
+			{
+				animations.Remove(_registeredPropertyName);
+			}
+
+			_registeredTarget = null;
+			_registeredPropertyName = null;
 		}
 
 		void ITimeline.Begin()

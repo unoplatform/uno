@@ -329,7 +329,7 @@ public class Given_DependencyPropertyGenerator
 								private GeneratedDependencyPropertyFlags0 _generatedDependencyPropertyFlags0;
 								private enum GeneratedDependencyPropertyFlags0 : uint
 								{
-									DPFlag0 = 1 << 0,
+									DPFlag0 = 1u << 0,
 								}
 								#region MyValue Dependency Property
 								private int GetMyValueValue()
@@ -471,8 +471,8 @@ public class Given_DependencyPropertyGenerator
 								private GeneratedDependencyPropertyFlags0 _generatedDependencyPropertyFlags0;
 								private enum GeneratedDependencyPropertyFlags0 : uint
 								{
-									DPFlag0 = 1 << 0,
-									DPFlag1 = 1 << 1,
+									DPFlag0 = 1u << 0,
+									DPFlag1 = 1u << 1,
 								}
 								#region MyValue Dependency Property
 								private bool GetMyValueValue()
@@ -612,7 +612,7 @@ public class Given_DependencyPropertyGenerator
 								private GeneratedDependencyPropertyFlags0 _generatedDependencyPropertyFlags0;
 								private enum GeneratedDependencyPropertyFlags0 : uint
 								{
-									DPFlag0 = 1 << 0,
+									DPFlag0 = 1u << 0,
 								}
 								#region MyValue Dependency Property
 								private double GetMyValueValue()

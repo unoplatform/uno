@@ -17,7 +17,7 @@ Here's what to look for:
 - Use `x:Load={x:Bind MyVisibility}` where appropriate as toggling from `true` to `false` effectively removes a part of the visual tree from memory. Note that setting back to true re-creates the visual tree.
 - `ListView` and `GridView`
   - Don't use template selectors inside the ItemTemplate, prefer using the `ItemTemplateSelector` on `ListView`/`GridView`.
-  - The default [`ListViewItem` and `GridViewItem` styles](https://github.com/unoplatform/uno/blob/74b7d5d0e953fcdd94223f32f51665af7ce15c60/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L951) are very feature-rich, yet that makes them quite slow. For instance, if you know that you're not likely to use selection features for a specific ListView, create a simpler ListViewItem style that some visual states, or the elements that are only used for selection.
+  - The default `ListViewItem` and `GridViewItem` styles use the lightweight `ListViewItemPresenter`, which draws the selection, check box and focus chrome itself instead of creating extra elements per item. Prefer customizing its brush and mode properties over re-templating items with a full visual tree.
   - Avoid controls that contain inline popups, menus, or flyouts. Doing so will create as many popups as there are items visible on the screen. As in general, there is only one popup visible at a time, it is generally best to move the popup to a separate static resource.
 
 - Updating items in `ItemsControl` can be quite expensive, using `ItemsRepeater` is generally faster at rendering similar content.
