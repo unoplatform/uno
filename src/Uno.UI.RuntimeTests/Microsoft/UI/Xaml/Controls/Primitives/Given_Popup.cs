@@ -529,6 +529,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands)] // An island has no window to report a state for.
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25170")]
+		public async Task When_Window_Deactivated_Then_LightDismiss_Popup_Without_Child_Left_Open()
+		{
+			var (isOpen, _) = await ChangeWindowActivationWithLightDismissPopup(CoreWindowActivationState.CodeActivated, CoreWindowActivationState.Deactivated, hasChild: false);
+
+			Assert.IsTrue(isOpen);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands)] // An island has no window to report a state for.
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25170")]
 		public async Task When_Window_Deactivated_And_Flyout_Closing_Canceled()
 		{
 			var nativeWindow = GetNativeWindowWrapper();
@@ -648,14 +659,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		// added before the popup opened.
 		private static async Task<(bool isOpen, bool wasOpenForHandler)> ChangeWindowActivationWithLightDismissPopup(
 			CoreWindowActivationState openedIn,
-			CoreWindowActivationState changedTo)
+			CoreWindowActivationState changedTo,
+			bool hasChild = true)
 		{
 			var window = WindowHelper.XamlRoot.HostWindow;
 			var nativeWindow = GetNativeWindowWrapper();
 			var initialState = nativeWindow.ActivationState;
 			var popup = new Popup
 			{
-				Child = new Button() { Content = "Test" },
+				Child = hasChild ? new Button() { Content = "Test" } : null,
 				IsLightDismissEnabled = true
 			};
 			var wasOpenForHandler = false;
