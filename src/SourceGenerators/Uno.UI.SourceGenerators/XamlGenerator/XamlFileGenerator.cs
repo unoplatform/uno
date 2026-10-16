@@ -4332,6 +4332,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
+						// Binding by name on the host would silently target an unrelated property of the same name.
+						if (declaringType is null
+							&& member.Member.DeclaringType is { } unresolvedOwnerType
+							&& member.Owner is { } hostObject
+							&& FindType(hostObject.Type) is not null
+							&& IsRelevantNamespace(member.Member.PreferredXamlNamespace)
+							&& IsRelevantProperty(member.Member))
+						{
+							GenerateError(
+								writer,
+								$"Property '{unresolvedOwnerType.Name}.{member.Member.Name}' cannot be bound: the type '{unresolvedOwnerType.Name}' could not be found in '{unresolvedOwnerType.PreferredXamlNamespace}'",
+								member);
+						}
+
 						var target = isOwnerDependencyObject ? bindingTarget : $"{bindingTarget}.GetDependencyObjectForXBind()";
 
 						using (writer.Indent($"global::Uno.UI.Xaml.BindingHelper.SetBinding({target},", $"){postfix}"))
