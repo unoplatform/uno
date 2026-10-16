@@ -9,7 +9,8 @@ jobs:
 
 - job: Android_CorCLR_Tests
   displayName: ' ' ## Name is concatenated with the matrix group name
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  # TEMP (#25552): also run on pull requests, to get the whole branch build on this PR. Revert before merging.
+  condition: succeeded()
   timeoutInMinutes: 45
   cancelTimeoutInMinutes: 0
   dependsOn: Skia_Android_CoreCLR_Tests_Build

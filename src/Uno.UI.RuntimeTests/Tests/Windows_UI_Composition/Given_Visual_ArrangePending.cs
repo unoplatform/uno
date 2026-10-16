@@ -21,7 +21,8 @@ using Uno.UI.Composition;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
 [TestClass]
-public class Given_Visual_ArrangePending
+// Partial: on the native Android head the source generator extends the nested panel, which needs it.
+public partial class Given_Visual_ArrangePending
 {
 	// A child its parent measured but never arranged has no layout slot. Text is laid out from measure,
 	// so its ink exists independently of any arrange, and a visual's content is not bounded by its Size —
