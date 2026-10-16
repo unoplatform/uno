@@ -47,11 +47,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
 
+		// Where a glide in flight comes to rest, rather than where it is now.
 		internal double TargetHorizontalOffset =>
-			HorizontalOffset;
+			_isWheelMotionRunning ? _wheelMotionH.ProjectedEnd : HorizontalOffset;
 
 		internal double TargetVerticalOffset =>
-			VerticalOffset;
+			_isWheelMotionRunning ? _wheelMotionV.ProjectedEnd : VerticalOffset;
 
 		public static DependencyProperty SizesContentToTemplatedParentProperty { get; } = DependencyProperty.Register(
 			nameof(SizesContentToTemplatedParent),
