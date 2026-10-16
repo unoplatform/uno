@@ -25,4 +25,10 @@ internal interface IVulkanPlatformSurfaceFactory
 	/// Create a VkSurfaceKHR from the platform's native window handle.
 	/// </summary>
 	ulong CreateSurface(VulkanInstance instance, IntPtr nativeWindowHandle);
+
+	/// <summary>
+	/// LUID of the adapter that scans out the window, so presenting needs no cross-adapter copy; null when the
+	/// platform doesn't expose one.
+	/// </summary>
+	long? GetPresentingAdapterLuid(IntPtr nativeWindowHandle) => null;
 }
