@@ -41,7 +41,7 @@ public partial class Given_TextBox
 
 		// Focused from code, the input has no soft keyboard on iOS.
 		await FocusFromCode(SUT);
-		CountHiddenInputFocusCalls();
+		using var focusCalls = CountHiddenInputFocusCalls();
 
 		// The tap finds the TextBox focused already. The input is focused again for it, and not blurred.
 		Tap(injector, SUT);
@@ -56,7 +56,7 @@ public partial class Given_TextBox
 		// So is it for any later tap, which no change of focus state comes with, and the trailing-click guard
 		// is armed for it.
 		await Task.Delay(MultiTapDelay);
-		CountHiddenInputFocusCalls();
+		using var laterFocusCalls = CountHiddenInputFocusCalls();
 		DisarmTrailingClickGuard();
 		Tap(injector, SUT);
 		await WindowHelper.WaitForIdle();
@@ -82,7 +82,7 @@ public partial class Given_TextBox
 
 		// Other browsers show the keyboard for a focus from code as they see fit.
 		await FocusFromCode(SUT);
-		CountHiddenInputFocusCalls();
+		using var focusCalls = CountHiddenInputFocusCalls();
 		DisarmTrailingClickGuard();
 
 		Tap(injector, SUT);
@@ -112,7 +112,7 @@ public partial class Given_TextBox
 		// The input is handed over from one TextBox to the other without losing focus, so the tap that moves
 		// focus has to focus it again as well.
 		await FocusFromCode(first);
-		CountHiddenInputFocusCalls();
+		using var focusCalls = CountHiddenInputFocusCalls();
 
 		Tap(injector, SUT);
 		await WindowHelper.WaitForIdle();
@@ -139,7 +139,7 @@ public partial class Given_TextBox
 		using var platform = SimulateIOS(true, pointerType: "mouse");
 
 		await FocusFromCode(SUT);
-		CountHiddenInputFocusCalls();
+		using var focusCalls = CountHiddenInputFocusCalls();
 		DisarmTrailingClickGuard();
 
 		// A mouse, as an iPad can have. The input is focused again for its click as well, but no mousedown trails
@@ -194,12 +194,13 @@ public partial class Given_TextBox
 		return Disposable.Create(() => InvokeBrowserJs($"(function(){{ const bridge = {HiddenInputBridge}; bridge.detach(); Object.assign(bridge, window.__unoBridge); return ''; }})()"));
 	}
 
-	// Counts the calls that blur or focus the hidden input from here on. Calls rather than events: a tab in the
+	// Counts the calls that blur or focus the hidden input until disposed. Calls rather than events: a tab in the
 	// background raises no focus events.
-	private static void CountHiddenInputFocusCalls()
-		=> InvokeBrowserJs($$"""
+	private static IDisposable CountHiddenInputFocusCalls()
+	{
+		InvokeBrowserJs($$"""
 			(function() {
-				const input = {{HiddenInputBridge}}.inputElement;
+				const input = window.__unoFocusCallsInput = {{HiddenInputBridge}}.inputElement;
 				const calls = window.__unoFocusCalls = { blur: 0, focus: 0 };
 				const prototype = Object.getPrototypeOf(input);
 				input.blur = function() { calls.blur++; prototype.blur.call(input); };
@@ -207,6 +208,9 @@ public partial class Given_TextBox
 				return '';
 			})()
 			""");
+
+		return Disposable.Create(() => InvokeBrowserJs("(function(){ const input = window.__unoFocusCallsInput; if (input) { delete input.blur; delete input.focus; } delete window.__unoFocusCallsInput; return ''; })()"));
+	}
 
 	private static (int Blurs, int Focuses) GetHiddenInputFocusCalls()
 	{
