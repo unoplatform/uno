@@ -11,7 +11,12 @@ internal sealed class BrowserSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 	}
 
-	public void OnFocused(TextBoxCore core) => SyncTextBox(core);
+	// Raised for a TextBox taking focus as well as for a tap on the one that has it.
+	public void OnFocused(TextBoxCore core)
+	{
+		SyncTextBox(core);
+		BrowserInvisibleTextBoxViewExtension.RefocusNativeInput();
+	}
 
 	public void OnUnfocused(TextBoxCore core)
 	{
