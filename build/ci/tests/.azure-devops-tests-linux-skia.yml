@@ -23,7 +23,8 @@ jobs:
     pool:
       vmImage: ${{ parameters.vmLinuxImage }}
 
-    condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['SetScope.SkiaScreenshots'], 'true')))
+    # TEMP (#25552): also run on pull requests, to get the whole branch build on this PR. Revert before merging.
+    condition: succeeded()
 
     variables:
       SamplesAppArtifactName: samplesapp-desktop-skia
