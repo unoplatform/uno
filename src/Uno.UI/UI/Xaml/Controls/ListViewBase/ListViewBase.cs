@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
-using System.Windows.Input;
 using View = Microsoft.UI.Xaml.FrameworkElement;
 using Uno;
 using Uno.Extensions;
@@ -490,37 +488,6 @@ namespace Microsoft.UI.Xaml.Controls
 			SelectionChanged += OnSelectionChanged;
 		}
 
-
-		private ICommand _itemClickCommand;
-		//TODO: Remove this as it doesn't exist on Windows
-		public ICommand ItemClickCommand
-		{
-			get { return _itemClickCommand; }
-			set
-			{
-				_itemClickCommand = value;
-				OnItemClickCommandChangedPartial(value);
-			}
-		}
-
-		partial void OnItemClickCommandChangedPartial(ICommand value);
-
-		//Note: by a hackishly convenient coincidence, the binding u:ListViewBaseCommand.Command="{Binding [DoSomething]}" will bind to this property on Uno,
-		// because the xaml source generation fails to find ListViewBaseCommand and ignores that part entirely. So...when this property is removed, port ListViewBaseCommand
-		// to Xamarin, and all will be well.
-		/// <summary>
-		/// Deprecated, use ItemClickCommand instead.
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public ICommand Command
-		{
-			get { return ItemClickCommand; }
-			set
-			{
-				ItemClickCommand = value;
-			}
-		}
-
 		public IList<object> SelectedItems { get; }
 
 		internal (int index, SelectorItem container, object item) FocusedIndexContainerItem { get; set; } = (-1, null, null);
@@ -583,7 +550,6 @@ namespace Microsoft.UI.Xaml.Controls
 				// This is required for the NavigationView which references a non-public issue (#17546992 in NavigationViewList)
 				IsItemItsOwnContainerOverride(clickedItem);
 
-				ItemClickCommand.ExecuteIfPossible(clickedItem);
 				ItemClick?.Invoke(this, new ItemClickEventArgs { ClickedItem = clickedItem });
 			}
 
