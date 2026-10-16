@@ -69,6 +69,29 @@ public class Given_WorkspaceResolver
 	}
 
 	[TestMethod]
+	public async Task WhenExplicitSolutionDoesNotResolve_ItStaysSelected()
+	{
+		var root = CreateTempDirectory();
+		try
+		{
+			await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"sdk":{"version":"10.0.100"}}""");
+			var solutionPath = Path.Combine(root, "App.slnx");
+			await File.WriteAllTextAsync(solutionPath, string.Empty);
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance, new CountingSolutionFileFinder([]));
+
+			var result = await resolver.ResolveSolutionAsync(root, solutionPath);
+
+			result.IsResolved.Should().BeFalse();
+			result.SelectedSolutionPath.Should().Be(solutionPath, "an unresolved explicit selection keeps its path so it stays watched and selected");
+			result.IsExplicitSolutionSelection.Should().BeTrue();
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	public async Task WhenSingleValidWorkspaceIsNested_AutoDescendsToWorkspace()
 	{
 		var root = CreateTempDirectory();

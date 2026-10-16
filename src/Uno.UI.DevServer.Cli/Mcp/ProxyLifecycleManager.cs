@@ -251,49 +251,28 @@ internal class ProxyLifecycleManager
 				]);
 		}
 
-		if (!LocalPathGuard.IsLocalPath(normalizedSolutionPath))
+		var pathProblem = SolutionPathRules.Check(normalizedSolutionPath);
+		if (pathProblem != SolutionPathRules.Problem.None)
 		{
+			var (message, issueMessage) = pathProblem switch
+			{
+				SolutionPathRules.Problem.NotLocal => (
+					"The solutionPath argument must be a local path; network (UNC) and device paths are refused.",
+					"The requested solution is on a network share or device path, which the DevServer does not open."),
+				SolutionPathRules.Problem.NotSolutionFile => (
+					"The solutionPath argument must point to a .sln or .slnx file.",
+					"The requested path is not a solution file."),
+				_ => ("Solution file not found.", $"No file exists at '{normalizedSolutionPath}'."),
+			};
 			return CreateRejectedSelectionResult(
 				normalizedSolutionPath,
-				"The solutionPath argument must be a local path; network (UNC) and device paths are refused.",
+				message,
 				[
 					new ValidationIssue
 					{
 						Code = IssueCode.WorkspaceNotResolved,
 						Severity = ValidationSeverity.Warning,
-						Message = "The requested solution is on a network share or device path, which the DevServer does not open.",
-						Remediation = SelectSolutionPathRemediation,
-					},
-				]);
-		}
-
-		if (!IsSolutionFile(normalizedSolutionPath))
-		{
-			return CreateRejectedSelectionResult(
-				normalizedSolutionPath,
-				"The solutionPath argument must point to a .sln or .slnx file.",
-				[
-					new ValidationIssue
-					{
-						Code = IssueCode.WorkspaceNotResolved,
-						Severity = ValidationSeverity.Warning,
-						Message = "The requested path is not a solution file.",
-						Remediation = SelectSolutionPathRemediation,
-					},
-				]);
-		}
-
-		if (!File.Exists(normalizedSolutionPath))
-		{
-			return CreateRejectedSelectionResult(
-				normalizedSolutionPath,
-				"Solution file not found.",
-				[
-					new ValidationIssue
-					{
-						Code = IssueCode.WorkspaceNotResolved,
-						Severity = ValidationSeverity.Warning,
-						Message = $"No file exists at '{normalizedSolutionPath}'.",
+						Message = issueMessage,
 						Remediation = SelectSolutionPathRemediation,
 					},
 				]);
@@ -351,10 +330,6 @@ internal class ProxyLifecycleManager
 
 	private const string SelectSolutionPathRemediation =
 		"Provide the absolute path to the intended .sln or .slnx file; uno_health lists discovered candidateSolutions as suggestions.";
-
-	private static bool IsSolutionFile(string path)
-		=> string.Equals(Path.GetExtension(path), ".sln", StringComparison.OrdinalIgnoreCase)
-			|| string.Equals(Path.GetExtension(path), ".slnx", StringComparison.OrdinalIgnoreCase);
 
 	// The resolver stops at the nearest global.json, as the .NET SDK does: say which one applies, or that none does.
 	private static ValidationIssue CreateNoUnoSdkIssue(string solutionDirectory)
@@ -501,7 +476,8 @@ internal class ProxyLifecycleManager
 			return nextResolution;
 		}
 
-		// Kept unresolved but still selected: the session degrades, and starts again on this solution once it is back.
+		// Unresolved but still selected (the resolver keeps the path): the session degrades, and starts again on this
+		// solution once it is back.
 		if (_workspaceResolution?.IsResolved == true)
 		{
 			_logger.LogWarning(
@@ -509,7 +485,7 @@ internal class ProxyLifecycleManager
 				selectedSolution);
 		}
 
-		return nextResolution with { SelectedSolutionPath = selectedSolution };
+		return nextResolution;
 	}
 
 	/// <summary>
@@ -668,7 +644,7 @@ internal class ProxyLifecycleManager
 		var fileName = Path.GetFileName(path);
 		return string.Equals(fileName, "global.json", StringComparison.OrdinalIgnoreCase)
 			|| string.Equals(fileName, "project.assets.json", StringComparison.OrdinalIgnoreCase)
-			|| IsSolutionFile(path);
+			|| SolutionFileFinder.IsSolutionFile(path);
 	}
 
 	private string? GetRootPath(string rootUri)
@@ -720,7 +696,8 @@ internal class ProxyLifecycleManager
 
 	private void EnsureDevServerStartedFromSolutionDirectory()
 	{
-		if (_forceRootsFallback)
+		// An explicitly selected solution (e.g. --solution) does not wait for roots: they could not change it anyway.
+		if (_forceRootsFallback && GetSelectedSolution(_workspaceResolution) is null)
 		{
 			_logger.LogTrace("Roots fallback is enabled; skipping initial DevServer start (waiting for roots)");
 			return;
