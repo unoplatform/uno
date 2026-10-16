@@ -184,9 +184,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (actualParent is null || ReferenceEquals(actualParent, Popup.PopupPanel))
 			{
-				// Captured before any parenting: joining the popup panel inherits the panel's own
-				// DataContext, and the one the owner provides through ToolTipService.ToolTip must win.
-				var ownerDataContext = DataContext;
+				// Captured before any parenting: joining the popup panel inherits the panel's own DataContext, and the
+				// one the owner provides through ToolTipService.ToolTip must win. Only the inherited value is carried
+				// over; a DataContext set or bound on the tooltip itself sits above it.
+				var ownerDataContext = this.ReadInheritedValueOrDefaultValue(DataContextProperty);
 
 				// Popup.Child adds the tooltip to the popup panel, which stays its parent while it is showing: layout
 				// invalidations raised by the tooltip content (an image whose bitmap arrives after the tooltip opened,
@@ -209,12 +210,12 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// Leaving the parent drops the inherited DataContext, and the owner only pushes its own
 				// again when it changes: keep it, so the closed tooltip's bindings stay resolved.
-				var dataContext = DataContext;
+				var inheritedDataContext = this.ReadInheritedValueOrDefaultValue(DataContextProperty);
 
 				// As in WinUI's ToolTip::Close, the popup lets go of the tooltip, which takes it out of the
 				// popup panel: Parent is null while closed.
 				_popup.Child = null;
-				this.SetValue(DataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
+				this.SetValue(DataContextProperty, inheritedDataContext, DependencyPropertyValuePrecedences.Inheritance);
 			}
 		}
 
