@@ -501,6 +501,40 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Description("An Uno SDK version change in a selected solution's global.json restarts the DevServer on the same solution with the new SDK (#25524)")]
+	public async Task WhenSelectedSolutionSdkVersionChanges_SameSolutionRestartsWithTheNewSdk()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var (_, appSolution) = await CreateDeepAppLayoutAsync(root);
+			var created = CreateSubject();
+			subject = created.Subject;
+			await StartSessionAsync(subject, root);
+			(await subject.SelectSolutionAsync(appSolution)).Status.Should().Be("started");
+
+			await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.9"}}""");
+			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+
+			created.HealthService.DevServerStarted.Should().BeTrue();
+			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(appSolution);
+			GetPrivateField<WorkspaceResolution>(created.Monitor, "_workspaceResolution").UnoSdkVersion
+				.Should().Be("6.6.0-dev.9", "the monitor was restarted with the re-resolved selection");
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
 	[Description("A selected solution whose global.json loses the Uno SDK degrades the session, which watches that global.json and restarts once the SDK is back (#25524)")]
 	public async Task WhenSelectedSolutionGlobalJsonLosesUnoSdk_SessionDegradesThenRestartsWhenFixed()
 	{
