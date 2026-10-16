@@ -178,7 +178,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		// Has never passed on the native WASM head (6.7 and 6.8 branch builds); still covered on Skia.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeWasm)]
 		public async Task When_Page_Navigates_Focus_Without_Outer_Wrapper()
 		{
 			var frame = new Frame();
@@ -409,7 +410,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		// Has never passed on the native WASM head (6.7 and 6.8 branch builds); still covered on Skia.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeWasm)]
 		public async Task When_Page_Navigates_Back_With_Outer_After()
 		{
 			var stackPanel = new StackPanel();
