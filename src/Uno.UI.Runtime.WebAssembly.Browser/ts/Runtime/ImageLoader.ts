@@ -27,13 +27,16 @@ onmessage = async (e) => {
 		// alpha-premultiplied because using SKAlphaType.Unpremul is not working
 		// correctly (see also https://github.com/unoplatform/uno/issues/20727),
 		// so we multiply the RGB values by the alpha by hand instead.
-		// This is somehow a LOT faster than doing it with webgl in a fragment shader
+		// This is somehow a LOT faster than doing it with webgl in a fragment shader.
+		// The same pass swaps R and B (the canvas gives RGBA, the image seam takes BGRA),
+		// so the UI thread makes no per-pixel pass of its own.
 		const buffer = imageData.data;
 		for (let i = 0; i < buffer.byteLength; i += 4) {
+			const r = buffer[i];
 			const a = buffer[i + 3];
-			buffer[i] = (buffer[i] * a) / 255;
+			buffer[i] = (buffer[i + 2] * a) / 255;
 			buffer[i + 1] = (buffer[i + 1] * a) / 255;
-			buffer[i + 2] = (buffer[i + 2] * a) / 255;
+			buffer[i + 2] = (r * a) / 255;
 		}
 		postMessage({
 			seqNo: seqNo,
