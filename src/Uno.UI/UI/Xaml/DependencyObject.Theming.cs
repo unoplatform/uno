@@ -392,12 +392,26 @@ public partial class DependencyObject
 			// owner's own inheritance chain.
 			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
 
+			// A VisualState setter value comes from outside its target's subtree, so when the same
+			// state applied a RequestedTheme boundary onto the target, resolve the setter's
+			// {ThemeResource} under the surrounding ambient theme instead — even mid-walk, where
+			// the slot carries the boundary theme (#24021).
+			if (themeRef.SetterBindingPath is not null
+				&& GetVisualStateSetterResolutionTheme() is { } setterAmbientTheme)
+			{
+				prevSlotTheme = core.GetRequestedThemeForSubTree();
+				if (prevSlotTheme != Theming.GetBaseValue(setterAmbientTheme))
+				{
+					core.SetRequestedThemeForSubTree(setterAmbientTheme);
+					popSlotTheme = true;
+				}
+			}
 			// MUX: Theming.cpp:368-376 — "Push theme that resource lookup should use to get the
 			// property value": only OUTSIDE a theme walk (`!IsProcessingThemeWalk()`) and when the
 			// owner's base theme differs from the slot. During a walk the slot already carries the
 			// walk's theme (set in NotifyThemeChanged, Theming.cpp:137-149) while the owner's
 			// per-object theme is not yet persisted — pushing here would re-scope to the stale theme.
-			if (!IsProcessingThemeWalk)
+			else if (!IsProcessingThemeWalk)
 			{
 				prevSlotTheme = core.GetRequestedThemeForSubTree();
 				if (prevSlotTheme != Theming.GetBaseValue(ownerTheme))
@@ -427,6 +441,21 @@ public partial class DependencyObject
 						break;
 					}
 				}
+			}
+
+			// Uno: a provisional reference (unattributable parse context) is pinned to whatever the top-level lookup found
+			// at parse time — the host's dictionary. Under an AlcContentHost, resolve it for the owning app instead.
+			if (!resolved
+				&& owner is not null
+				&& ResourceResolver.TryOwningApplicationRetrieval(themeRef.ResourceKey, themeRef.ParseContext, owner, out var owningAppValue, out var owningAppDictionary))
+			{
+				if (owningAppDictionary is not null)
+				{
+					themeRef.SetTargetDictionary(owningAppDictionary);
+				}
+
+				themeRef.SetLastResolvedValue(owningAppValue);
+				resolved = true;
 			}
 
 			// Phase B: Pinned dict fallback (WinUI: themeResource->RefreshValue())
@@ -501,6 +530,50 @@ public partial class DependencyObject
 				core.SetRequestedThemeForSubTree(prevSlotTheme);
 			}
 		}
+	}
+
+	/// <summary>
+	/// Gets the theme a VisualState setter's {ThemeResource} value must resolve under when the
+	/// visual state itself applied a RequestedTheme boundary onto the setter's target, or null
+	/// to resolve under the target's own theme as usual.
+	/// </summary>
+	/// <remarks>
+	/// The setter lives outside its target's subtree (in the template's VisualStateGroups), so in
+	/// WinUI its resource reference never resolves under the target's RequestedTheme — e.g.
+	/// ComboBoxTextBoxStyle's Focused state sets both ContentElement.Foreground and
+	/// ContentElement.RequestedTheme=Light (#24021). Scoped to state-applied (Animations
+	/// precedence) boundaries only, so a XAML-authored RequestedTheme keeps Uno's element-level
+	/// theming semantics for setter targets.
+	/// </remarks>
+	internal Theme? GetVisualStateSetterResolutionTheme()
+	{
+		if (ActualInstance is not FrameworkElement fe
+			|| fe.RequestedTheme == ElementTheme.Default
+			|| GetCurrentHighestValuePrecedence(FrameworkElement.RequestedThemeProperty)
+				!= DependencyPropertyValuePrecedences.Animations)
+		{
+			return null;
+		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		// The ambient theme surrounding the target: mid-walk the parent's persisted theme is
+		// stale (persisted only after its subtree completes) but its walk theme is current.
+		if (Parent is DependencyObject { IsProcessingThemeWalk: true } walkingParent)
+		{
+			return walkingParent.WalkTheme;
+		}
+
+		// An app that never switches theme at runtime has no established per-object themes (only
+		// a theme walk persists them), and ResolveOwnerTheme's owner-less fallback reads the
+		// requested-theme-for-subtree slot — mid-boundary already carrying the very theme being
+		// escaped. Use the application base theme instead (#24021).
+		if ((Parent as DependencyObject)?.GetTheme() is null or Theme.None)
+		{
+			return Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetBaseTheme();
+		}
+#endif
+
+		return ThemeResolution.ResolveOwnerTheme(Parent as DependencyObject);
 	}
 
 	#endregion
@@ -641,10 +714,10 @@ public partial class DependencyObject
 	{
 		_isUpdatingChildResourceBindings = true;
 
-		foreach (var propertyDetail in _properties.GetAllDetails())
+		foreach (var propertyDetail in AllPropertyDetails)
 		{
 			if (propertyDetail == null
-				|| propertyDetail == _properties.DataContextPropertyDetails)
+				|| propertyDetail == DataContextPropertyDetails)
 			{
 				continue;
 			}
@@ -662,17 +735,17 @@ public partial class DependencyObject
 				(propertyValue is ICollection || propertyValue is DependencyObjectCollectionBase)
 			)
 			{
-				foreach (var innerValue in dependencyObjectCollection)
+				foreach (var innerValue in new DependencyObjectItems(dependencyObjectCollection))
 				{
-					UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
+					UpdateResourceBindingsIfNeeded((DependencyObject)innerValue, updateReason, resourceContextProvider);
 				}
 			}
 
 			if (propertyValue is IAdditionalChildrenProvider updateable)
 			{
-				foreach (var innerValue in updateable.GetAdditionalChildObjects())
+				foreach (var innerValue in new DependencyObjectItems(updateable.GetAdditionalChildObjects()))
 				{
-					UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
+					UpdateResourceBindingsIfNeeded((DependencyObject)innerValue, updateReason, resourceContextProvider);
 				}
 			}
 
@@ -726,6 +799,26 @@ public partial class DependencyObject
 		}
 	}
 
+	/// <summary>
+	/// Propagates a resource update to a child that is not stored as a property value (e.g. TextBlock inlines).
+	/// </summary>
+	/// <remarks>
+	/// During a theme walk the child joins the walk, as WinUI's property walk notifies it (Theming.cpp:218-221).
+	/// Resolving it against <paramref name="resourceContextProvider"/> instead would use that element's
+	/// per-object theme, which is only persisted once its walk completes.
+	/// </remarks>
+	internal void UpdateChildThemeBindings(DependencyObject child, ResourceUpdateReason updateReason, FrameworkElement resourceContextProvider)
+	{
+		if (IsProcessingThemeWalk)
+		{
+			child.NotifyThemeChanged(_walkTheme, _walkForceRefresh);
+		}
+		else
+		{
+			child.UpdateResourceBindings(updateReason, resourceContextProvider);
+		}
+	}
+
 	#endregion
 
 	#region Resource binding orchestration — WinUI: NotifyThemeChangedCoreImpl + FxCallbacks (Theming.cpp lines 166-255)
@@ -773,8 +866,7 @@ public partial class DependencyObject
 		// the now-removed legacy OnThemeChanged binding refresh handled); UpdateBindingExpressions both
 		// re-resolves the value and re-applies it (only when changed), so no second refresh pass is needed.
 		if ((updateReason & (ResourceUpdateReason.ThemeResource | ResourceUpdateReason.HotReload)) != 0 &&
-			_properties.HasBindings &&
-			_properties.HasThemeResourceBindingExpressions)
+			_properties is { HasBindings: true, HasThemeResourceBindingExpressions: true })
 		{
 			dictionariesInScope = GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 			for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
@@ -856,6 +948,23 @@ public partial class DependencyObject
 		}
 	}
 
+	/// <summary>
+	/// Whether <paramref name="binding"/> is a {StaticResource} whose parse-time value is provisional (see
+	/// <see cref="ResourceResolver.ShouldDeferStaticResourceToLoading"/>).
+	/// </summary>
+	private static bool IsProvisionalBinding(ResourceBinding binding)
+		=> Application.HasSecondaryApps
+			&& (binding.UpdateReason & ResourceUpdateReason.StaticResourceLoading) != 0
+			&& ResourceResolver.ShouldDeferStaticResourceToLoading(binding.ParseContext);
+
+	/// <summary>
+	/// Whether <paramref name="binding"/> is provisional on an object that has not entered the live tree yet, such as
+	/// a template part completed before it is parented, or a brush it owns. Only the top-level lookup can answer there,
+	/// and settling on its value would consume the binding before the load-time walk runs.
+	/// </summary>
+	private bool IsProvisionalBindingOutsideLiveTree(ResourceBinding binding)
+		=> IsProvisionalBinding(binding) && !IsActive;
+
 	/// <remarks>
 	/// This method contains or is called by a try/catch containing method and
 	/// can be significantly slower than other methods as a result on WebAssembly.
@@ -873,6 +982,13 @@ public partial class DependencyObject
 		// The Light/Dark sub-dictionary is selected at the dictionary leaf by the ambient active theme —
 		// the owner's effective theme scoped onto the core requested-theme-for-subtree slot by
 		// UpdateResourceBindings (EnsureActiveThemeDictionary, Resources.cpp:764-768).
+
+		// Same VisualState-setter ambient rule as UpdateThemeReference (#24021): a state-applied
+		// value resolves outside the state-applied RequestedTheme boundary of its target.
+		using var setterAmbientScope = binding.SetterBindingPath is not null
+			&& GetVisualStateSetterResolutionTheme() is { } setterAmbientTheme
+				? Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(setterAmbientTheme)
+				: default;
 
 		// Note: we intentionally do NOT skip theme resource bindings here even though
 		// Phase 1 (UpdateAllThemeReferences) may have already resolved them. The Phase 2
@@ -916,6 +1032,16 @@ public partial class DependencyObject
 
 			if (!wasSet)
 			{
+				if (IsProvisionalBindingOutsideLiveTree(binding))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"Keeping provisional {{StaticResource {binding.ResourceKey.Key}}} on {ActualInstance?.GetType().Name}.{property.Name} until it enters the live tree.");
+					}
+
+					return;
+				}
+
 				// The resource wasn't found in the in-scope (non-app) dictionaries, but an application-level
 				// dictionary may provide it — e.g. an app-merged ThemeDictionaries override of a stock Fluent
 				// control brush (CheckBoxCheckBackgroundFillChecked, ...). Resolve it AND re-pin the providing
@@ -926,8 +1052,15 @@ public partial class DependencyObject
 				// ObjectAnimationUsingKeyFrames.EnsureKeyFrameThemeResources on every storyboard begin)
 				// otherwise keeps resolving the stock value and shadows the app-level override, leaving a checked
 				// CheckBox blank until a pointer-over repaints it. Restores the #23388 re-pin dropped by #23416.
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value, out var providingDict))
+				var resolvedForOwningApp = ResourceResolver.TryOwningApplicationRetrieval(binding.ResourceKey, binding.ParseContext, ActualInstance, out var value, out var providingDict);
+				if (resolvedForOwningApp
+					|| ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out value, out providingDict))
 				{
+					if (this.Log().IsEnabled(LogLevel.Debug) && IsProvisionalBinding(binding))
+					{
+						this.Log().Debug($"Provisional {{StaticResource {binding.ResourceKey.Key}}} on {ActualInstance?.GetType().Name}.{property.Name} found nothing in scope; settling on the {(resolvedForOwningApp ? "owning application's" : "top-level")} value.");
+					}
+
 					SetResourceBindingValue(property, binding, value);
 
 					if (providingDict is not null && _themeResources is not null)

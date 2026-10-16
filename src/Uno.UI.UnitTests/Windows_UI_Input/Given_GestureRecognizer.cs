@@ -17,7 +17,7 @@ using static Uno.UI.Tests.Windows_UI_Input.GestureRecognizerTestExtensions;
 
 namespace Uno.UI.Tests.Windows_UI_Input
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_GestureRecognizer
 	{
 		private const int MicrosecondsPerMillisecond = 1000;

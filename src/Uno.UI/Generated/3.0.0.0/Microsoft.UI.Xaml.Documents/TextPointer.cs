@@ -3,70 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Documents
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TextPointer
 	{
-#if __SKIA__
-		internal TextPointer()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.Documents.LogicalDirection LogicalDirection
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "LogicalDirection");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public int Offset
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "Offset");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.DependencyObject Parent
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "Parent");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.FrameworkElement VisualParent
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "VisualParent");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Windows.Foundation.Rect GetCharacterRect(global::Microsoft.UI.Xaml.Documents.LogicalDirection direction)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "GetCharacterRect(LogicalDirection direction)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer GetPositionAtOffset(int offset, global::Microsoft.UI.Xaml.Documents.LogicalDirection direction)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "GetPositionAtOffset(int offset, LogicalDirection direction)");
-		}
-#endif
+		// Skipping already declared property LogicalDirection
+		// Skipping already declared property Offset
+		// Skipping already declared property Parent
+		// Skipping already declared property VisualParent
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextPointer.GetCharacterRect(Microsoft.UI.Xaml.Documents.LogicalDirection)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextPointer.GetPositionAtOffset(int, Microsoft.UI.Xaml.Documents.LogicalDirection)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.LogicalDirection.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.Offset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.Parent.get

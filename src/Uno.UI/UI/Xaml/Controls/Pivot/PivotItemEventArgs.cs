@@ -4,7 +4,7 @@
 	public partial class PivotItemEventArgs
 	{
 #if __SKIA__
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("__SKIA__")]
 		public PivotItem Item
 		{
 			get
@@ -18,7 +18,7 @@
 		}
 #endif
 #if __SKIA__
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("__SKIA__")]
 		public PivotItemEventArgs()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.PivotItemEventArgs", "PivotItemEventArgs.PivotItemEventArgs()");

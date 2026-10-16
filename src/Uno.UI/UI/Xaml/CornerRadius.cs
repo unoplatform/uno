@@ -1,4 +1,4 @@
-using Uno.Extensions;
+﻿using Uno.Extensions;
 using System;
 using System.ComponentModel;
 using System.Globalization;
@@ -63,8 +63,8 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 			&& left.BottomRight == right.BottomRight;
 
 	/// <inheritdoc />
-	public bool Equals(CornerRadius other)
-		=> Equals(this, other);
+	public bool Equals(CornerRadius cornerRadius)
+		=> Equals(this, cornerRadius);
 
 	/// <inheritdoc />
 	public override bool Equals(object obj)
@@ -77,22 +77,16 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 			^ BottomLeft.GetHashCode()
 			^ BottomRight.GetHashCode();
 
+	// Compile-linked into Uno.UI.Composition, which cannot see Uno.UI.Helpers.Boxes - and these are
+	// diagnostic-only paths where the boxing does not matter.
+#pragma warning disable UnoInternal0002
 	/// <inheritdoc />
 	public override string ToString()
 		=> "TopLeft: {0}, TopRight: {1}, BottomRight: {2}, BottomLeft: {3}".InvariantCultureFormat(TopLeft, TopRight, BottomRight, BottomLeft);
 
 	internal string ToStringCompact()
 		=> string.Format(CultureInfo.InvariantCulture, "[CornerRadius: {0}-{1}-{2}-{3}]", TopLeft, TopRight, BottomRight, BottomLeft);
-
-	/// <summary>
-	/// Provides a Zero-valued corner radius.
-	/// </summary>
-	public static readonly CornerRadius None = new CornerRadius(0);
-
-	/// <summary>
-	/// Builds a uniform radius from a double;
-	/// </summary>
-	public static implicit operator CornerRadius(double uniformRadius) => new CornerRadius(uniformRadius);
+#pragma warning restore UnoInternal0002
 
 	/// <summary>
 	/// Determines if two CornerRadius instances are equal.
@@ -112,7 +106,7 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 	/// <returns>Full corner radius.</returns>
 	internal FullCornerRadius GetRadii(Size elementSize, Thickness borderThickness)
 	{
-		if (this == None)
+		if (this == default)
 		{
 			return FullCornerRadius.None;
 		}

@@ -70,11 +70,23 @@ partial class App
 			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER", runtimeTestFilter);
 		}
 
+		if (argsPairs.TryGetValue("--runtime-tests-iterations", out var runtimeTestIterations))
+		{
+			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TESTS_ITERATIONS", runtimeTestIterations);
+		}
+
+		if (argsPairs.TryGetValue("--runtime-tests-attempts", out var runtimeTestAttempts))
+		{
+			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TESTS_ATTEMPTS", runtimeTestAttempts);
+		}
+
 		Console.WriteLine(
 			$"Automated runtime tests output file: {runtimeTestResultFilePath} (" +
 			$"UITEST_RUNTIME_TEST_GROUP: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP")}, " +
 			$"UITEST_RUNTIME_TEST_GROUP_COUNT: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT")}, " +
-			$"UITEST_RUNTIME_TESTS_FILTER: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER")}" +
+			$"UITEST_RUNTIME_TESTS_FILTER: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER")}, " +
+			$"UITEST_RUNTIME_TESTS_ITERATIONS: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_ITERATIONS")}, " +
+			$"UITEST_RUNTIME_TESTS_ATTEMPTS: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_ATTEMPTS")}" +
 			$")");
 
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
@@ -85,19 +97,104 @@ partial class App
 			// let the app finish its startup
 			await Task.Delay(TimeSpan.FromSeconds(5));
 
+			// The theme lives on the shell's root, which a slow machine may not have loaded yet.
+			for (var i = 0; i < 600 && SampleControl.Presentation.SampleChooserViewModel.Instance.Owner?.XamlRoot is null; i++)
+			{
+				await Task.Delay(100);
+			}
+
 			// Runtime tests should run in light theme by default
 			SampleControl.Presentation.SampleChooserViewModel.Instance.IsAppThemeLight = true;
 
 			await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
 				CancellationToken.None,
 				runtimeTestResultFilePath,
-				() => System.Environment.Exit(0));
+				exitCode => System.Environment.Exit(exitCode));
 
 			return true;
 		}
 
 		return false;
 	}
+
+	/// <summary>The key/value pairs of the <c>sample=</c> launch argument, so a sample can take its own options.</summary>
+	internal static IReadOnlyDictionary<string, string>? LaunchQuery { get; private set; }
+
+	/// <summary>
+	/// Flags runs driven by automation (runtime tests, screenshots, perf hooks) before the
+	/// shell is created, so it skips persisted settings, recents and Home.
+	/// </summary>
+	private static void DetectAutomationLaunch(string args)
+	{
+		var unescaped = Uri.UnescapeDataString(args);
+
+		var isAutomation =
+			unescaped.Contains("--runtime-tests", StringComparison.Ordinal)
+			|| unescaped.Contains("--auto-screenshots", StringComparison.Ordinal)
+			|| !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("UITEST_RUNTIME_AUTOSTART_RESULT_FILE"))
+			|| !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP"))
+			|| !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT"))
+			|| Environment.GetEnvironmentVariables().Keys.OfType<string>().Any(k => k.StartsWith("UNO_PERF_", StringComparison.Ordinal));
+
+		if (isAutomation)
+		{
+			Console.WriteLine("Automation launch detected: persisted shell settings, recents and Home are skipped.");
+		}
+
+		SampleControl.Presentation.SampleChooserViewModel.IsAutomationLaunch = isAutomation;
+	}
+
+	/// <summary>
+	/// Applies an optional <c>theme=Light|Dark|System</c> launch argument without persisting it,
+	/// and returns the arguments without it.
+	/// </summary>
+	private static string ApplyLaunchTheme(string args)
+	{
+		args = RemoveLaunchTheme(args, out var value);
+		if (value is null)
+		{
+			return args;
+		}
+
+		Microsoft.UI.Xaml.ElementTheme? theme = value.ToLowerInvariant() switch
+		{
+			"light" => Microsoft.UI.Xaml.ElementTheme.Light,
+			"dark" => Microsoft.UI.Xaml.ElementTheme.Dark,
+			"system" or "default" => Microsoft.UI.Xaml.ElementTheme.Default,
+			_ => null,
+		};
+
+		if (theme is { } requested && SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm)
+		{
+			Console.WriteLine($"Applying launch theme {requested}");
+			vm.ApplyTransientTheme(requested);
+		}
+		else
+		{
+			Console.WriteLine($"Ignored launch theme '{value}' (use Light, Dark or System).");
+		}
+
+		return args;
+	}
+
+	/// <summary>Removes a <c>theme=</c> argument; <paramref name="value"/> is null when there is none.</summary>
+	internal static string RemoveLaunchTheme(string args, out string? value)
+	{
+		var match = ThemeArgRegex().Match(args);
+		if (!match.Success)
+		{
+			value = null;
+			return args;
+		}
+
+		value = match.Groups["value"].Value;
+
+		// A leftover separator alone would open the "Launch arguments" dialog.
+		return args.Remove(match.Index, match.Length).Trim().TrimEnd('&').TrimEnd();
+	}
+
+	[System.Text.RegularExpressions.GeneratedRegex(@"(?<=^|[&?\s])theme=(?<value>[A-Za-z]+)&?", System.Text.RegularExpressions.RegexOptions.IgnoreCase)]
+	private static partial System.Text.RegularExpressions.Regex ThemeArgRegex();
 
 	private static Dictionary<string, string> ParseArgs(string args)
 		=> args.Split('&').ToDictionary(
@@ -147,6 +244,8 @@ partial class App
 						Uno.UI.FeatureConfiguration.TextBox.HideCaret = true;
 #endif
 
+						SampleControl.Presentation.SampleChooserViewModel.Instance.EnterUITestAutomation();
+
 						var t = SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
 						var timeout = Task.Delay(30000);
 
@@ -186,6 +285,14 @@ partial class App
 	{
 #if __SKIA__
 		if (string.IsNullOrEmpty(args))
+		{
+			return false;
+		}
+
+		// System.CommandLine's parse-error path calls Console.ResetColor(), which throws PlatformNotSupportedException
+		// on WASM. Only invoke it for an actual --auto-screenshots command so other launch args (e.g. "sample=...")
+		// fall through to TryNavigateToLaunchSample instead of crashing launch-argument handling.
+		if (!args.Contains("--auto-screenshots", StringComparison.Ordinal))
 		{
 			return false;
 		}
@@ -255,23 +362,30 @@ partial class App
 
 	private bool TryNavigateToLaunchSample(string args)
 	{
-		const string samplePrefix = "sample=";
 		try
 		{
-			args = Uri.UnescapeDataString(args);
+			// TrimStart('?') accepts the same value the in-app "copy link" button produces
+			// (SampleChooserContent.QueryString), which is prefixed for use as a URL query string.
+			var query = ParseArgs(Uri.UnescapeDataString(args).TrimStart('?'));
+			LaunchQuery = query;
 
-			if (string.IsNullOrEmpty(args) || !args.StartsWith(samplePrefix))
+			if (!query.TryGetValue("sample", out var identifier))
 			{
 				return false;
 			}
 
-			args = args.Substring(samplePrefix.Length);
+			// Further space-separated launch args (e.g. --FeatureConfiguration overrides) are not part
+			// of the sample identifier.
+			identifier = identifier.Split(' ', 2)[0];
 
-			var pathParts = args.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-			var category = pathParts[0];
-			var sampleName = pathParts[1];
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { IsSampleIndexLoaded: true } vm)
+			{
+				// A definitive no-match falls through to the regular launch-argument handling.
+				return vm.TrySelectSample(CancellationToken.None, identifier);
+			}
 
-			SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, category, sampleName);
+			// Sample discovery is async and races the launch: wait until the chooser knows its samples.
+			_ = NavigateWithRetriesAsync(identifier);
 			return true;
 		}
 		catch (Exception ex)
@@ -279,6 +393,33 @@ partial class App
 			_log?.Error($"Could not navigate to initial sample - {ex}");
 		}
 		return false;
+	}
+
+	private static async Task NavigateWithRetriesAsync(string identifier)
+	{
+		try
+		{
+			for (var i = 0; i < 40; i++)
+			{
+				if (SampleControl.Presentation.SampleChooserViewModel.Instance is { IsSampleIndexLoaded: true } vm)
+				{
+					if (!vm.TrySelectSample(CancellationToken.None, identifier))
+					{
+						Console.WriteLine(vm.DumpSampleIndexForDiagnostics(identifier.Split('/')[0]));
+					}
+
+					return;
+				}
+
+				await Task.Delay(250);
+			}
+
+			Console.WriteLine($"Launch sample '{identifier}' was not resolved: the sample index did not load in time.");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Launch sample navigation failed: {ex}");
+		}
 	}
 
 #if __IOS__

@@ -7,8 +7,9 @@
 		     props below still maps UnoTargetFrameworkOverride onto the matching platform-less TFM. -->
 		<_ShouldUseNoPlatformOverride>false</_ShouldUseNoPlatformOverride>
 		<_ShouldUseNoPlatformOverride Condition="
-			$(MSBuildProjectFile.EndsWith('.Skia.csproj')) 
-			OR $(MSBuildProjectFile.EndsWith('.Wasm.csproj')) 
+			$(MSBuildProjectFile.EndsWith('.Generic.csproj'))
+			OR $(MSBuildProjectFile.EndsWith('.Skia.csproj'))
+			OR $(MSBuildProjectFile.EndsWith('.Wasm.csproj'))
 			OR $(MSBuildProjectFile.EndsWith('.Reference.csproj'))
 			OR '$(UnoShouldUseNoPlatformOverride)' == 'true'
 		">true</_ShouldUseNoPlatformOverride>

@@ -20,7 +20,7 @@
 		                                   Condition="$(_IsExecutable) == 'true' AND '$(UnoDisableWinAppRunSupport)' != 'true'" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';svg;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;'))">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 

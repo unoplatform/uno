@@ -64,7 +64,8 @@ namespace Microsoft.UI.Xaml
 		internal bool HasCompositionChildVisual { get; set; }
 
 		private InputCursor _protectedCursor;
-		private SerialDisposable _disposedEventDisposable = new();
+		// Only ever used by the ProtectedCursor setter below, which almost no element touches.
+		private SerialDisposable _disposedEventDisposable;
 
 
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
@@ -108,9 +109,15 @@ namespace Microsoft.UI.Xaml
 		internal Matrix3x2 GetFlowDirectionTransform()
 		{
 			var inMirroredSubtree = ShouldMirrorVisual();
-			var isMirroredTextBlock = this is TextBlock { FlowDirection: FlowDirection.RightToLeft };
 
-			return inMirroredSubtree ^ isMirroredTextBlock
+			// Text surfaces lay their own content out for right-to-left: the engines emit glyphs in
+			// visual order and align the lines themselves, so the element-level flip would mirror
+			// output that is already correct. WinUI cancels the flip with a second mirror inside its
+			// text drawing context; here it is suppressed instead.
+			var isMirroredTextSurface = this is FrameworkElement { FlowDirection: FlowDirection.RightToLeft }
+				and (TextBlock or RichTextBlock or RichTextBlockOverflow);
+
+			return inMirroredSubtree ^ isMirroredTextSurface
 				? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f)
 				: Matrix3x2.Identity;
 		}
@@ -1403,10 +1410,9 @@ namespace Microsoft.UI.Xaml
 			return returnValue;
 		}
 
-		private static double XcpRound(double x)
-		{
-			return Math.Round(x);
-		}
+		// MUX Reference inlined.cpp: XcpFloor(x + 0.5). Math.Round would round midpoints to even, placing e.g. a
+		// slot centred at 28.5 one pixel off from WinUI.
+		private static double XcpRound(double x) => Math.Floor(x + 0.5);
 #endif
 
 		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
@@ -1502,7 +1508,7 @@ namespace Microsoft.UI.Xaml
 
 				if (value is { } cursor)
 				{
-					_disposedEventDisposable.Disposable = cursor.RegisterDisposedEvent((_, _) =>
+					(_disposedEventDisposable ??= new()).Disposable = cursor.RegisterDisposedEvent((_, _) =>
 					{
 						CalculatedFinalCursor = null;
 						_disposedEventDisposable.Disposable?.Dispose();
@@ -1522,15 +1528,15 @@ namespace Microsoft.UI.Xaml
 		/// <remarks>
 		/// The code was moved here to override the LogLevel.
 		/// </remarks>
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.UIElement, global::Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs> AccessKeyInvoked
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
@@ -1657,11 +1663,13 @@ namespace Microsoft.UI.Xaml
 			{
 				var currentVisual = _children[actualIndex];
 				_children.Insert(actualIndex, child);
+				TrackStubChild(child, 1);
 				Visual.Children.InsertAbove(child.Visual, currentVisual.Visual);
 			}
 			else
 			{
 				_children.Add(child);
+				TrackStubChild(child, 1);
 				Visual.Children.InsertAtTop(child.Visual);
 			}
 
@@ -1727,6 +1735,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_children.Remove(child))
 			{
+				TrackStubChild(child, -1);
 				UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(this, child);
 				InnerRemoveChild(child);
 
@@ -1766,7 +1775,16 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_children.Clear();
+			_elementStubChildrenCount = 0;
 			InvalidateMeasure();
+		}
+
+		private void TrackStubChild(UIElement child, int delta)
+		{
+			if (child is ElementStub)
+			{
+				_elementStubChildrenCount += delta;
+			}
 		}
 
 		private void InnerRemoveChild(UIElement child)
@@ -1875,7 +1893,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				OnArrangeVisual(newRect, clippedFrame);
-				OnViewportUpdated();
 			}
 			else
 			{

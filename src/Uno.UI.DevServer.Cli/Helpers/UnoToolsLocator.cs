@@ -377,21 +377,24 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 	private async Task<(string? globalJsonPath, string? sdkPackage, string? sdkVersion)> ParseGlobalJsonForUnoSdk(string searchDirectory)
 		=> await GlobalJsonLocator.ParseGlobalJsonForUnoSdkAsync(searchDirectory, _logger);
 
-	private async Task InstallUnoSdk(string packageId, string version)
-	{
-		// Here we pre-install the uno.sdk/uno.sdk.private package in order to get all the packages
-		// that are needed for the devserver to work properly.
-
-		var csprojContents =
-			$"""
+	// Targets the tool's own floor so the lowest supported SDK can still restore it
+	internal static string GetInstallerProjectContents(string packageId, string version)
+		=> $"""
 			<Project Sdk="{packageId}/{version}">
 				<PropertyGroup>
-					<TargetFramework>net11.0</TargetFramework>
+					<TargetFramework>net10.0</TargetFramework>
 					<UnoSingleProject>true</UnoSingleProject>
 					<OutputType>exe</OutputType>
 				</PropertyGroup>
 			</Project>
 			""";
+
+	private async Task InstallUnoSdk(string packageId, string version)
+	{
+		// Here we pre-install the uno.sdk/uno.sdk.private package in order to get all the packages
+		// that are needed for the devserver to work properly.
+
+		var csprojContents = GetInstallerProjectContents(packageId, version);
 
 		var tempPath = Path.Combine(Path.GetTempPath(), $"uno-sdk-installer-{Guid.NewGuid()}");
 

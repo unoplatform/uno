@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.Animations
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Duration
 	{
 		[TestMethod]

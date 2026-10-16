@@ -12,7 +12,7 @@ namespace Windows.Foundation;
 
 [DebuggerDisplay("{DebugDisplay,nq}")]
 [Uno.Foundation.Internals.Bindable]
-public partial struct Point
+public partial struct Point : IFormattable
 {
 	// These are public in WinUI (with the underscore!), but we don't want to expose it for now at least.
 	private float _x;
@@ -76,6 +76,17 @@ public partial struct Point
 
 	public override string ToString()
 		=> "[{0}, {1}]".InvariantCultureFormat(X, Y);
+
+	public string ToString(IFormatProvider provider)
+		=> ConvertToString(null, provider);
+
+	string IFormattable.ToString(string format, IFormatProvider provider)
+		=> ConvertToString(format, provider);
+
+	private string ConvertToString(string format, IFormatProvider provider)
+		=> _x.ToString(format, provider)
+			+ TokenizerHelper.GetNumericListSeparator(provider)
+			+ _y.ToString(format, provider);
 
 	internal string ToDebugString()
 		=> FormattableString.Invariant($"{X:F2},{Y:F2}");

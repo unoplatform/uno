@@ -11,16 +11,11 @@ uid: Uno.Controls.Frame
 
 ## Using Frame with Uno
 
-To improve performance during navigation, `Frame` on Android, iOS, and WebAssembly targets operates in different way than in WinUI. Whereas WinUI follows `NavigationCacheMode` property on individual `Page` instances, on iOS and Android we keep the individual page instances in the back stack in memory by default. This way they can be quickly surfaced back to the user during back navigation. This behavior can be controlled using the `FeatureConfiguration.Frame.UseWinUIBehavior` property. This defaults to `true` on Skia targets and to `false` on Android, iOS and WebAssembly.
-
-If you set `UseWinUIBehavior` to `true` on Android and iOS, you also need to override the default style for the control. You can do this by explicitly setting the `Style` to `XamlDefaultFrame`:
+`Frame` follows the WinUI navigation model on every platform. Page instances are created and cached according to each page's `NavigationCacheMode` and the frame's `CacheSize`, so a page with the default `NavigationCacheMode.Disabled` is recreated when you navigate back to it. To keep a page and its state alive across back navigation, set `NavigationCacheMode` to `Enabled` or `Required` on the page:
 
 ```xml
-<Frame Style="{StaticResource XamlDefaultFrame}" />
+<Page NavigationCacheMode="Required">
 ```
 
-Or by creating an implicit style based on `XamlDefaultFrame`:
-
-```xml
-<Style TargetType="Frame" BasedOn="XamlDefaultFrame" />
-```
+> [!NOTE]
+> Before Uno Platform 7.0, `Frame` on Android, iOS and WebAssembly kept every back-stack page in memory unless `FeatureConfiguration.Frame.UseWinUIBehavior` was set to `true`. That mode and the flag have been removed; see [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).

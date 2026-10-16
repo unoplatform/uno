@@ -16,13 +16,7 @@ namespace Windows.UI.Input.Preview.Injection
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InputInjector", "TryCreateForAppBroadcastOnly()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void InjectKeyboardInput(global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo> input)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InputInjector", "InjectKeyboardInput(IEnumerable<InjectedInputKeyboardInfo> input)");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.InjectKeyboardInput(System.Collections.Generic.IEnumerable<Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo>)
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.InjectMouseInput(System.Collections.Generic.IEnumerable<Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo>)
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.InitializeTouchInjection(Windows.UI.Input.Preview.Injection.InjectedInputVisualizationMode)
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.InjectTouchInput(System.Collections.Generic.IEnumerable<Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo>)

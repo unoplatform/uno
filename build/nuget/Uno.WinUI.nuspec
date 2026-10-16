@@ -29,36 +29,41 @@
 			<!-- END UWP-excluded -->
 
 			<!--
-				SkiaSharp/HarfBuzzSharp are declared here because lib/ now carries the Skia build:
-				Uno.UI.Composition binds SkiaSharp and Uno.UI binds HarfBuzzSharp. Omitting them
-				yields CS0012 for any consumer touching a SkiaSharp-typed member.
+				HarfBuzzSharp is declared here because Uno.UI.Composition.Managed binds it for text
+				shaping. Nothing in this package binds SkiaSharp any more: the drawing backends ship
+				separately, so a head whose renderer is not Skia pulls in no SkiaSharp at all.
 
-				nuspec does not expand MSBuild properties, so the SkiaSharp/HarfBuzzSharp versions
-				below are literals that must be updated by hand to match $(SkiaSharpVersion) and
-				$(HarfbuzzSharpVersion) in src/Directory.Build.targets whenever those are bumped.
+				nuspec does not expand MSBuild properties, so the HarfBuzzSharp version below is a
+				literal that must be updated by hand to match $(HarfbuzzSharpVersion) in
+				src/Directory.Packages.props whenever it is bumped.
+			-->
+
+			<!--
+				Uno.Foundation.Logging and Uno.WinRT below are placeholders: PrepareNuGetPackage
+				(build/Uno.UI.Build.csproj) rewrites them to $(NBGV_SemVer2) at pack time.
+				"to-be-set-by-ci" is deliberate: it fails the pack loudly if that substitution ever
+				stops matching, where a plausible literal would silently ship a wrong floor.
+
+				Everything else here ships verbatim and is maintained by hand, including the other
+				Uno.* entries (Uno.Diagnostics.Eventing, Uno.Fonts.Fluent). No poke exists for those
+				ids, so giving them the placeholder would break the pack instead of substituting it.
 			-->
 
 			<!-- .NET 10 -->
 			<group targetFramework="net10.0">
-				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
-				<dependency id="System.Numerics.Vectors" version="4.5.0" />
-				<dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
-				<dependency id="System.Memory" version="4.5.2" />
+				<dependency id="Uno.Foundation.Logging" version="to-be-set-by-ci" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="System.Collections.Immutable" version="1.3.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.9.4" />
-				<dependency id="Uno.WinRT" version="2.4.5" />
-				<dependency id="SkiaSharp" version="4.151.1" />
+				<dependency id="Uno.WinRT" version="to-be-set-by-ci" />
 				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
 			</group>
 
 			<!-- .NET 11 -->
 			<group targetFramework="net11.0">
-				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
+				<dependency id="Uno.Foundation.Logging" version="to-be-set-by-ci" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.9.4" />
-				<dependency id="Uno.WinRT" version="2.4.5" />
-				<dependency id="SkiaSharp" version="4.151.1" />
+				<dependency id="Uno.WinRT" version="to-be-set-by-ci" />
 				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
 			</group>
 		</dependencies>
@@ -69,6 +74,8 @@
 				<reference file="Uno.Xaml.dll" />
 				<reference file="Uno.UI.dll" />
 				<reference file="Uno.UI.Composition.dll" />
+				<reference file="Uno.UI.Composition.Drawing.dll" />
+				<reference file="Uno.UI.Composition.Managed.dll" />
 				<reference file="Uno.UI.Extras.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
 			</group>
@@ -78,13 +85,10 @@
 				<reference file="Uno.Xaml.dll" />
 				<reference file="Uno.UI.dll" />
 				<reference file="Uno.UI.Composition.dll" />
+				<reference file="Uno.UI.Composition.Drawing.dll" />
+				<reference file="Uno.UI.Composition.Managed.dll" />
 				<reference file="Uno.UI.Extras.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
-			</group>
-
-			<!-- Windows -->
-			<group targetFramework="uap10.0.19041">
-				<reference file="Uno.UI.Extras.dll" />
 			</group>
 
 		</references>
@@ -114,11 +118,10 @@
 		<!-- END UWP-excluded -->
 
 		<!--
-			The Skia build is the compile-time reference. The Reference flavor was folded away
-			for the UI layer: with native WASM rendering gone, `skia` was the only possible
-			runtime replacement, so lib/ and uno-runtime/<tfm>/skia were the same assembly in
-			all but name. Uno / Uno.Foundation / Uno.UI.Dispatching still ship both flavors
-			and keep their uno-runtime folders (see Uno.WinRT.nuspec).
+			The Skia build is the compile-time reference: the UI layer has a single runtime, so
+			there is no Reference variant and no uno-runtime folder to replace it with.
+			Uno.WinRT / Uno.Foundation / Uno.UI.Dispatching still ship their generic and wasm
+			variants under uno-runtime (see Uno.WinRT.nuspec).
 		-->
 
 		<!-- net11.0 -->
@@ -127,12 +130,16 @@
 		<file src="..\..\src\Uno.UI\bin\Uno.UI\Release\net11.0\*.xml" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net11.0\Uno.UI.Composition.dll" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net11.0\Uno.UI.Composition.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net11.0\Uno.UI.Composition.Drawing.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net11.0\Uno.UI.Composition.Drawing.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net11.0\Uno.UI.Composition.Managed.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net11.0\Uno.UI.Composition.Managed.pdb" target="lib\net11.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net11.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net11.0\Uno.UI.FluentTheme.dll" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net11.0\Uno.UI.FluentTheme.pdb" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net11.0\Uno.UI.Extras.dll" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net11.0\Uno.UI.Extras.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Generic\Release\net11.0\Uno.UI.Extras.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Generic\Release\net11.0\Uno.UI.Extras.pdb" target="lib\net11.0" />
 
 		<!-- net10.0 -->
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI\Release\net10.0\Uno.UI.dll" target="lib\net10.0" />
@@ -140,12 +147,16 @@
 		<file src="..\..\src\Uno.UI\bin\Uno.UI\Release\net10.0\*.xml" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net10.0\Uno.UI.Composition.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net10.0\Uno.UI.Composition.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net10.0\Uno.UI.Composition.Drawing.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net10.0\Uno.UI.Composition.Drawing.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net10.0\Uno.UI.Composition.Managed.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net10.0\Uno.UI.Composition.Managed.pdb" target="lib\net10.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net10.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net10.0\Uno.UI.FluentTheme.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net10.0\Uno.UI.FluentTheme.pdb" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net10.0\Uno.UI.Extras.dll" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net10.0\Uno.UI.Extras.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Generic\Release\net10.0\Uno.UI.Extras.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Generic\Release\net10.0\Uno.UI.Extras.pdb" target="lib\net10.0" />
 
 		<!-- Analyzers -->
 		<file src="..\..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.dll" target="analyzers/dotnet/cs" />
@@ -189,20 +200,9 @@
 		<file src="uno.winui.cross-runtime.targets" target="buildTransitive" />
 		<file src="uno.winui.common.targets" target="buildTransitive" />
 		<file src="uno.winui.common.props" target="buildTransitive" />
-		<file src="uno.winui.single-project.targets" target="buildTransitive" />
 		<file src="uno.winui.runtime-replace.targets" target="buildTransitive" />
 		<file src="uno.winui.winappsdk.targets" target="buildTransitive" />
 		<file src="..\..\src\SourceGenerators\Uno.UI.Tasks\Content\**" target="buildTransitive" />
-
-		<!-- Force UAP to ignore netstandard 2.0 -->
-		<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />
-		<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.16299" />
-
-		<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.17763\uno.winui.targets" />
-		<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.17763" />
-
-		<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.19041\uno.winui.targets" />
-		<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.19041" />
 
 		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />
 

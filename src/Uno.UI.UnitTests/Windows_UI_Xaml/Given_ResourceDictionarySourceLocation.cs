@@ -14,7 +14,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 	/// <remarks>
 	/// This project sets UnoForceHotReloadCodeGen, so the locations are always generated here.
 	/// </remarks>
-	[TestClass]
+	[UITestClass]
 	public class Given_ResourceDictionarySourceLocation
 	{
 		private const string DeclaringFile = "ResourceDictionarySourceLocation.xaml";

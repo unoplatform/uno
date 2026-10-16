@@ -890,21 +890,43 @@ public partial class EntryPoint : IDisposable
 
 		try
 		{
-			_ct.Cancel(false);
-			_dte.Events.BuildEvents.OnBuildBegin -= _onBuildBeginHandler;
-			_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
-			_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
-			_globalJsonObserver?.Dispose();
-			_debuggerObserver?.Dispose();
-			_infoBarFactory?.Dispose();
-			_unoMenuCommand?.Dispose();
-			_appLaunchIdeBridge?.Dispose();
-			_appLaunchStateConsumer?.Dispose();
+			// DTE events, InfoBars and menu commands are UI-thread-affine COM objects, but Dispose
+			// can be invoked from any thread (e.g. the Studio VSIX disposes the entry point from a
+			// thread-pool task while the solution is closing).
+			if (ThreadHelper.CheckAccess())
+			{
+				DisposeCore();
+			}
+			else
+			{
+				ThreadHelper.JoinableTaskFactory.Run(async () =>
+				{
+					await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+					DisposeCore();
+				});
+			}
 		}
 		catch (Exception e)
 		{
 			_debugAction?.Invoke($"Failed to dispose Remote Control server: {e}");
 		}
+	}
+
+	private void DisposeCore()
+	{
+		ThreadHelper.ThrowIfNotOnUIThread();
+
+		_ct.Cancel(false);
+		_dte.Events.BuildEvents.OnBuildBegin -= _onBuildBeginHandler;
+		_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
+		_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
+		_globalJsonObserver?.Dispose();
+		_debuggerObserver?.Dispose();
+		_infoBarFactory?.Dispose();
+		_unoMenuCommand?.Dispose();
+		_appLaunchIdeBridge?.Dispose();
+		_appLaunchStateConsumer?.Dispose();
 	}
 
 	protected IServiceProvider VisualStudioServiceProvider

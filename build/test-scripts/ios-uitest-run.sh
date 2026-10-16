@@ -7,28 +7,15 @@
 #   1. Picks the NUnit test filter from $UITEST_SNAPSHOTS_ONLY /
 #      $UITEST_AUTOMATED_GROUP (snapshot groups, automated groups 1-5,
 #      RuntimeTests, Benchmarks).
-#   2. Waits for the target simulator runtime/device to exist and boots it.
-#   3. Installs the pre-built SamplesApp bundle on the simulator with `idb`
-#      (Meta's iOS Development Bridge, https://github.com/facebook/idb):
-#      `xcrun simctl install` was historically unreliable for this
-#      (see microsoft/appcenter#2389), idb is the dependable path.
+#   2. Resolves the iPad simulator on the runtime that matches the selected
+#      Xcode, creating the device when the image ships none, and boots it.
+#   3. Installs the pre-built SamplesApp bundle with `xcrun simctl install`.
+#      This used to go through idb (Meta's iOS Development Bridge) because simctl
+#      was unreliable on older Xcodes (microsoft/appcenter#2389), but installing
+#      idb from Homebrew/PyPI cost ~6 minutes per shard and simctl has been the
+#      only installer on the tvOS runner without trouble.
 #   4. Runs the tests through the NUnit console, transforms the results and
 #      maintains the failed-tests re-run list for retry stages.
-#
-# Tooling / supply-chain notes (idb):
-#   - `idb-companion` comes from Meta's Homebrew tap `facebook/fb`
-#     (github.com/facebook/homebrew-fb). The formula pins the binary artifact
-#     of facebook/idb release v1.1.8 together with its sha256, so what gets
-#     installed is reproducible byte-for-byte.
-#   - The tap is pinned to a specific revision: its tip now ships idb-companion
-#     1.5.0.b2, which declares `depends_on macos: :sequoia` and
-#     `depends_on xcode: "26.0"`. The UI test agents run macOS 14
-#     ($(macOSVMImage_UITests) in .vsts-ci.yml), so brew rejects that formula
-#     outright — see the install section below.
-#   - Newer Homebrew refuses formulas from third-party taps unless explicitly
-#     trusted (`brew trust`) — see the install section below.
-#   - `fb-idb` (the Python client) is installed from PyPI via pipx, pinned to
-#     Python 3.12 (asyncio breakage under 3.14) and to the version CI already runs.
 # ===========================================================================
 set -euo pipefail
 IFS=$'\n\t'
@@ -49,6 +36,13 @@ report_harness_crash() {
 
 	if [ "$status" -ne 0 ] && [ "$UNO_IOS_TESTS_STARTED" != "true" ]; then
 		echo "##vso[task.setvariable variable=UNO_IOS_HARNESS_CRASHED]true"
+
+		# A failed first step fails the job even when the re-run step then passes, so leave the
+		# verdict to the re-run.
+		if [ "${UNO_HARNESS_RERUN_PENDING:-}" = "true" ]; then
+			echo "##vso[task.logissue type=warning]The test harness failed before any test started (exit $status); the re-run step will retry it."
+			exit 0
+		fi
 	fi
 }
 trap report_harness_crash EXIT
@@ -158,13 +152,15 @@ export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
 ## Create the failed-tests directory up front, next to the log directory above: an abort
-## between here and the transform tool (a failed idb install, a sick simulator during
+## between here and the transform tool (a failed app install, a sick simulator during
 ## teardown) otherwise leaves `PublishBuildArtifacts@1` retrying a missing PathtoPublish.
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 mkdir -p $(dirname ${UNO_TESTS_RUNTIMETESTS_FAILED_LIST})
 
-export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-17-5"
-export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
+# A device the image pre-creates: one created here spends 5-8 minutes in its first-boot data
+# migration, sometimes past the boot watchdog. The 13-inch iPad Pro is the closest pre-created match to
+# the 12.9-inch screen the tests were written against.
+export UNO_UITEST_SIMULATOR_NAME="${UNO_UITEST_SIMULATOR_NAME:=iPad Pro 13-inch (M5)}"
 
 _TFM="${TFM:=net10.0-ios26.0}"
 export UnoTargetFrameworkOverride="$_TFM"
@@ -181,96 +177,87 @@ fi
 echo "Current system date"
 date
 
-# Wait while ios runtime 16.1 is not having simulators. The install process may 
-# take a few seconds and "simctl list devices" may not return devices.
-while true; do
-	export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
-	export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .dataPath'`
+# Use the runtime that ships with the selected Xcode, so moving to a newer image or Xcode needs no
+# edit here. The Select Xcode step has already made sure that runtime is installed.
+if [ -z "${UNO_UITEST_SIMULATOR_VERSION-}" ]; then
+	IOS_SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
 
-	if [ -n "$UITEST_IOSDEVICE_ID" ]; then
-		break
+	# simctl can list an incomplete set right after a runtime install or an Xcode switch.
+	for attempt in 1 2 3 4 5 6; do
+		UNO_UITEST_SIMULATOR_VERSION=$(xcrun simctl list runtimes --json | jq -r --arg ver "$IOS_SDK_VERSION" '
+			.runtimes
+			| map(select(.isAvailable == true and (.identifier | test("SimRuntime\\.iOS")) and (.version | startswith($ver))))
+			| sort_by(.version | split(".") | map(tonumber? // 0))
+			| .[-1].identifier // empty')
+
+		[ -n "$UNO_UITEST_SIMULATOR_VERSION" ] && break
+		echo "Waiting for an iOS $IOS_SDK_VERSION simulator runtime to be listed (attempt $attempt)"
+		sleep 5
+	done
+
+	if [ -z "$UNO_UITEST_SIMULATOR_VERSION" ]; then
+		echo "##vso[task.logissue type=error]UNOBLD008: No iOS $IOS_SDK_VERSION simulator runtime is available on this agent."
+		xcrun simctl list runtimes || true
+		exit 1
+	fi
+fi
+export UNO_UITEST_SIMULATOR_VERSION
+
+find_ios_device() {
+	xcrun simctl list devices --json | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '
+		(.devices[$sim] // [])
+		| map(select(.name == $name and .isAvailable == true))
+		| .[0].udid // empty'
+}
+
+UITEST_IOSDEVICE_ID=$(find_ios_device)
+
+# Create the device when the image does not ship it (an override, or an image without it).
+if [ -z "$UITEST_IOSDEVICE_ID" ]; then
+	for attempt in 1 2 3 4 5 6; do
+		IOS_DEVICETYPE_ID=$(xcrun simctl list devicetypes --json | jq -r --arg name "$UNO_UITEST_SIMULATOR_NAME" '
+			.devicetypes
+			| map(select(.name == $name))
+			| .[0].identifier // empty')
+
+		[ -n "$IOS_DEVICETYPE_ID" ] && break
+		echo "Waiting for the '$UNO_UITEST_SIMULATOR_NAME' device type to be listed (attempt $attempt)"
+		sleep 5
+	done
+
+	if [ -z "$IOS_DEVICETYPE_ID" ]; then
+		echo "##vso[task.logissue type=error]UNOBLD009: No '$UNO_UITEST_SIMULATOR_NAME' simulator device type is available on this agent."
+		xcrun simctl list devicetypes || true
+		exit 1
 	fi
 
-	echo "Waiting for the simulator to be available"
-	sleep 5
-done
+	echo "Creating '$UNO_UITEST_SIMULATOR_NAME' ($IOS_DEVICETYPE_ID / $UNO_UITEST_SIMULATOR_VERSION)"
+	UITEST_IOSDEVICE_ID=$(xcrun simctl create "$UNO_UITEST_SIMULATOR_NAME" "$IOS_DEVICETYPE_ID" "$UNO_UITEST_SIMULATOR_VERSION")
+fi
+
+export UITEST_IOSDEVICE_ID
 
 export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
 echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
 xcrun simctl list devices --json > $DEVICELIST_FILEPATH
 
-# Check for the presence of idb, and install it if it's not present
-# NOTE: fb-idb currently breaks under Python 3.14 (asyncio get_event_loop change),
-# so we pin fb-idb to Python 3.12 to avoid "There is no current event loop in thread 'MainThread'".
-# Historical context: prior installs referenced an App Center issue/workaround.
-# https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
-export PATH=$PATH:~/.local/bin
-
-if ! command -v idb >/dev/null 2>&1
-then
-	echo "Installing idb (fb-idb + idb-companion) pinned to Python 3.12"
-
-	# 1) Make sure we have a usable python3.12, but don't fail if Homebrew linking conflicts
-	if ! command -v python3.12 >/dev/null 2>&1; then
-		# Install, but ignore link-step failure; we'll use the keg path explicitly
-		brew list --versions python@3.12 >/dev/null 2>&1 || brew install python@3.12 || true
-	fi
-	# Prefer an existing python3.12 on PATH; otherwise use the keg path
-	PY312_BIN="$(command -v python3.12 || echo "$(brew --prefix)/opt/python@3.12/bin/python3.12")"
-	export PIPX_DEFAULT_PYTHON="$PY312_BIN"
-	echo "Using Python for pipx: $PIPX_DEFAULT_PYTHON"
-
-	# 2) Install helpers
-	brew list --versions pipx >/dev/null 2>&1 || brew install pipx
-	brew tap facebook/fb >/dev/null 2>&1 || true
-	# Pin the tap to the v1.1.8 formula. Its tip (1.5.0.b2) requires macOS
-	# Sequoia and Xcode 26, which the macOS 14 UI test agents cannot satisfy,
-	# so `brew install idb-companion` aborts with "Unsatisfied requirements".
-	# Detaching the tap checkout is enough: brew reads the formula straight
-	# from the working tree. HOMEBREW_NO_AUTO_UPDATE keeps a later `brew
-	# install` from fast-forwarding the tap back to its default branch.
-	export HOMEBREW_NO_AUTO_UPDATE=1
-	IDB_TAP_REVISION=c0386793f59da10c619787f2aa18d938ef1d69c9
-	IDB_TAP_REPO="$(brew --repo facebook/fb)"
-	if [ ! -d "$IDB_TAP_REPO/.git" ]; then
-		echo "Tap facebook/fb is not checked out at $IDB_TAP_REPO — cannot pin idb-companion." >&2
-		exit 1
-	fi
-	git -C "$IDB_TAP_REPO" fetch --depth 1 origin "$IDB_TAP_REVISION" \
-		|| git -C "$IDB_TAP_REPO" fetch --unshallow origin \
-		|| git -C "$IDB_TAP_REPO" fetch origin
-	git -C "$IDB_TAP_REPO" checkout --detach --force "$IDB_TAP_REVISION"
-
-	# Newer Homebrew on the runner images gates third-party taps: installing
-	# idb-companion fails with "Refusing to load formula facebook/fb/idb-companion
-	# from untrusted tap facebook/fb" unless explicitly trusted. Trust only the
-	# formula we need (least privilege); fall back to tap-level trust for brew
-	# versions that only support that form. Older brews have no `trust` command
-	# at all — best effort, the install below still surfaces any real failure.
-	brew trust --formula facebook/fb/idb-companion >/dev/null 2>&1 \
-		|| brew trust facebook/fb >/dev/null 2>&1 \
-		|| true
-	brew list --versions idb-companion >/dev/null 2>&1 || brew install idb-companion
-
-	# 3) Install fb-idb under Python 3.12
-	pipx uninstall fb-idb >/dev/null 2>&1 || true
-	# Pinned: the companion is pinned to a tap revision, so leaving the Python client floating
-	# means an upstream release can change the harness under a fixed simulator/Xcode pair.
-	pipx install --force 'fb-idb==1.1.7'
-else
-	echo "Using idb from: $(command -v idb)"
-fi
-
-##
-## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
-##
+# The boot takes minutes on the hosted agents; start it first so the transform tool build overlaps it.
 echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
+
+# Build the transform tool in the background; it is only needed once the tests have run.
+TRANSFORM_TOOL_BUILD_LOG=$LOG_FILEPATH/NUnitTransformTool-build.log
+dotnet build $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool > "$TRANSFORM_TOOL_BUILD_LOG" 2>&1 &
+TRANSFORM_TOOL_BUILD_PID=$!
+
+##
+## Pre-install the application
+##
 
 # `xcrun simctl bootstatus -b` blocks until the device reports a finished boot, but it has no
 # timeout of its own and macOS ships no timeout(1). Run it under a watchdog: a simulator that
 # never finishes booting is then reported here, instead of surfacing further down as an opaque
-# "Timed out after 0:02:00 secs on command --list 1" from idb.
+# app install or launch failure.
 wait_for_boot() {
 	local udid="$1"
 	local limit="$2"
@@ -291,38 +278,41 @@ wait_for_boot() {
 }
 
 echo "Waiting for the simulator to finish booting (started $(date))"
-if ! wait_for_boot "$UITEST_IOSDEVICE_ID" 180; then
-	echo "##vso[task.logissue type=warning]UNOBLD006: The simulator did not report a completed boot within 180s. Continuing anyway; the app install below will surface a hard failure if it is genuinely unusable."
+# A first boot runs the data migration, which alone took over 3 minutes on slow agents. Every job
+# that went on to launch the app on a half-booted simulator failed anyway (the app died or hung
+# until the job timeout), so give up instead: the harness re-run step then waits once more.
+if ! wait_for_boot "$UITEST_IOSDEVICE_ID" 480; then
+	echo "##vso[task.logissue type=error]UNOBLD006: The simulator did not report a completed boot within 480s."
+	exit 1
 fi
 echo "Simulator boot wait finished ($(date))"
 
-# echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
-# xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
-# A single idb command timeout used to abort the whole job. Retry once with verbose logging,
-# then fall back to simctl. simctl install is only the fallback because it was historically
-# unreliable here (microsoft/appcenter#2389), but an install that works is better than a
-# stage retry that pays for the artifact download and the toolchain install all over again.
-if ! idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; then
-	echo "##vso[task.logissue type=warning]idb install failed; retrying once with debug logging"
-	idb kill >/dev/null 2>&1 || true
+# Imported app bundle from artifacts is not executable, and simctl validates it while installing.
+sudo chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
 
-	if ! idb --log DEBUG install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; then
-		echo "##vso[task.logissue type=warning]UNOBLD007: idb install failed twice; falling back to xcrun simctl install"
-		xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
+echo "Installing the app on the simulator: $UITEST_IOSDEVICE_ID"
+if ! xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; then
+	echo "##vso[task.logissue type=warning]UNOBLD007: xcrun simctl install failed; retrying once"
+	sleep 10
+
+	if ! xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; then
+		echo "##vso[task.logissue type=error]UNOBLD007: xcrun simctl install failed twice on simulator $UITEST_IOSDEVICE_ID."
+		xcrun simctl list devices || true
+		exit 1
 	fi
 fi
 
-## Pre-build the transform tool to get early warnings
-pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-dotnet build
-popd
+## Fail early if the transform tool did not build
+if ! wait "$TRANSFORM_TOOL_BUILD_PID"; then
+	cat "$TRANSFORM_TOOL_BUILD_LOG"
+	echo "##vso[task.logissue type=error]The NUnitTransformTool build failed"
+	exit 1
+fi
+cat "$TRANSFORM_TOOL_BUILD_LOG"
 
 cd $BUILD_SOURCESDIRECTORY/build
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
-
-# Imported app bundle from artifacts is not executable
-sudo chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
 
 # Move to the screenshot directory so that the output path is the proper one, as
 # required by Xamarin.UITest
@@ -363,7 +353,12 @@ then
 	fi
 
 	UNO_IOS_TESTS_STARTED=true
-	xcrun simctl launch "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
+	# Capture the app's own output into the published logs, as the tvOS runner does: a startup failure
+	# otherwise leaves nothing to diagnose, since the managed exception reaches neither the device log nor the
+	# crash report. stderr carries it -- simctl notes log output usually goes there.
+	APP_STDOUT="$LOG_FILEPATH/app-stdout-${UITEST_RUNTIME_TEST_GROUP}.log"
+	APP_STDERR="$LOG_FILEPATH/app-stderr-${UITEST_RUNTIME_TEST_GROUP}.log"
+	xcrun simctl launch --stdout="$APP_STDOUT" --stderr="$APP_STDERR" "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 
 	# get the process id for the app
 	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}'`
@@ -372,6 +367,9 @@ then
 	# Set the timeout in seconds 
 	UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
 	TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
+	# Collecting the device logs, the transform tool and the publish steps need several minutes.
+	source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-job-budget.sh
+	TIMEOUT=$(uno_job_wait_budget "$TIMEOUT" 600)
 	INTERVAL=15
 	END_TIME=$((SECONDS+TIMEOUT))
 
@@ -434,15 +432,22 @@ find $UNO_TESTS_LOCAL_TESTS_FILE -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
 ## Take a screenshot
 xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png || true
 
-## Capture the device logs
-xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH || true
+# Collecting, shutting down and dumping the device logs costs 2-6 minutes per shard and only helps
+# diagnose a failing shard, so skip it for a run that produced results with no failures. A crash
+# mid-run leaves no results file (runtime tests write it once, at the end), so it still collects.
+if [ -f "$UNO_ORIGINAL_TEST_RESULTS" ] && ! grep -Eq 'result="(Failed|Error)"' "$UNO_ORIGINAL_TEST_RESULTS"; then
+	echo "All tests passed; skipping the device log collection"
+else
+	## Capture the device logs
+	xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH || true
 
-## Shutting down simulator to reclaim memory
-echo "Shutting down simulator"
-xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
+	## Shutting down simulator to reclaim memory
+	echo "Shutting down simulator"
+	xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
-echo "Dumping device logs to $LOG_FILEPATH_FULL"
-log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
+	echo "Dumping device logs to $LOG_FILEPATH_FULL"
+	log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
+fi
 
 echo "Searching for failures in device logs"
 if [ ! -s "$LOG_FILEPATH_FULL" ]; then
@@ -473,19 +478,19 @@ pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 echo "Running NUnitTransformTool"
 
 ## Fail the build when no test results could be read
-dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
+dotnet run --no-build fail-empty $UNO_ORIGINAL_TEST_RESULTS
 
 if [ $? -eq 0 ]; then
-	dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+	dotnet run --no-build list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
 fi
 
 if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
 then
 	## Fail the build when no runtime test results could be read
-	dotnet run fail-empty $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE
+	dotnet run --no-build fail-empty $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE
 
 	if [ $? -eq 0 ]; then
-		dotnet run list-failed $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_TESTS_RUNTIMETESTS_FAILED_LIST
+		dotnet run --no-build list-failed $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_TESTS_RUNTIMETESTS_FAILED_LIST
 	fi
 fi
 

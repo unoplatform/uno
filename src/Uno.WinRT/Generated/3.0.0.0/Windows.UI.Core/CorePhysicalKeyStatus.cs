@@ -6,7 +6,7 @@ namespace Windows.UI.Core
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct CorePhysicalKeyStatus
+	public partial struct CorePhysicalKeyStatus : global::System.IEquatable<global::Windows.UI.Core.CorePhysicalKeyStatus>
 	{
 		// Forced skipping of method Windows.UI.Core.CorePhysicalKeyStatus.CorePhysicalKeyStatus()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,11 @@ namespace Windows.UI.Core
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CorePhysicalKeyStatus.CorePhysicalKeyStatus(uint, uint, bool, bool, bool, bool)
+		// Skipping already declared method Windows.UI.Core.CorePhysicalKeyStatus.operator ==(Windows.UI.Core.CorePhysicalKeyStatus, Windows.UI.Core.CorePhysicalKeyStatus)
+		// Skipping already declared method Windows.UI.Core.CorePhysicalKeyStatus.operator !=(Windows.UI.Core.CorePhysicalKeyStatus, Windows.UI.Core.CorePhysicalKeyStatus)
+		// Skipping already declared method Windows.UI.Core.CorePhysicalKeyStatus.Equals(Windows.UI.Core.CorePhysicalKeyStatus)
+		// Skipping already declared method Windows.UI.Core.CorePhysicalKeyStatus.Equals(object)
+		// Skipping already declared method Windows.UI.Core.CorePhysicalKeyStatus.GetHashCode()
 		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.RepeatCount
 		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.ScanCode
 		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.IsExtendedKey

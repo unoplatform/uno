@@ -21,11 +21,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			TapOnPoint(elementCenter);
 		}
 
-		internal static void TapOnPoint(Point point)
-		{
-			// TODO
-			throw new NotImplementedException("TapOnPoint not implemented yet");
-		}
+		internal static void TapOnPoint(Point point) => Private.Infrastructure.TestServices.InputHelper.Tap(point);
 
 		internal static async Task<Point> GetElementPosition(FrameworkElement element, float fractionOfWidth, float fractionOfHeight)
 		{

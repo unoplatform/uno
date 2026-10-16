@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_GoToStateCoreOverride
 	{
 		[TestMethod]

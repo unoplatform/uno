@@ -5,7 +5,7 @@ using Windows.ApplicationModel.Resources.Core;
 
 namespace Uno.UI.Tests.Resources;
 
-[TestClass]
+[UITestClass]
 public class Given_ResourceQualifierPathResolver
 {
 	// Absolute item spec inside the project: everything above the project is dropped.

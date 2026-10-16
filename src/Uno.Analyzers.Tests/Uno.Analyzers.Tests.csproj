@@ -7,20 +7,19 @@
 		<TargetFramework>$(NetUnitTests)</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<OutputType>Exe</OutputType>
-		<CodeAnalysisVersionForAnalyzersTests>4.14.0</CodeAnalysisVersionForAnalyzersTests>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
+		<PackageReference Include="Microsoft.CodeAnalysis" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" />
 
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.2" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" />
 
-		<PackageReference Include="NuGet.Packaging" Version="6.0.2" />
+		<PackageReference Include="NuGet.Packaging" />
 	</ItemGroup>
 
 	<ItemGroup>
