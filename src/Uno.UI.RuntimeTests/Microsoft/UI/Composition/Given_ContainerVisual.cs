@@ -29,6 +29,38 @@ public class Given_ContainerVisual
 {
 	[TestMethod]
 	[RunsOnUIThread]
+	public void When_InsertAbove_And_InsertBelow()
+	{
+		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
+		var containerVisual = compositor.CreateContainerVisual();
+		Microsoft.UI.Composition.Visual a = compositor.CreateSpriteVisual();
+		Microsoft.UI.Composition.Visual b = compositor.CreateSpriteVisual();
+		containerVisual.Children.InsertAtTop(a);
+		containerVisual.Children.InsertAtTop(b);
+
+		// Directly above A: rendered after A, before B
+		Microsoft.UI.Composition.Visual c = compositor.CreateSpriteVisual();
+		containerVisual.Children.InsertAbove(c, a);
+		CollectionAssert.AreEqual(new[] { a, c, b }, containerVisual.Children.ToArray());
+
+		// Directly below A: first in the list
+		Microsoft.UI.Composition.Visual d = compositor.CreateSpriteVisual();
+		containerVisual.Children.InsertBelow(d, a);
+		CollectionAssert.AreEqual(new[] { d, a, c, b }, containerVisual.Children.ToArray());
+
+		// Directly below B: between C and B
+		Microsoft.UI.Composition.Visual e = compositor.CreateSpriteVisual();
+		containerVisual.Children.InsertBelow(e, b);
+		CollectionAssert.AreEqual(new[] { d, a, c, e, b }, containerVisual.Children.ToArray());
+
+		// Directly above the last child: appended
+		Microsoft.UI.Composition.Visual f = compositor.CreateSpriteVisual();
+		containerVisual.Children.InsertAbove(f, b);
+		CollectionAssert.AreEqual(new[] { d, a, c, e, b, f }, containerVisual.Children.ToArray());
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public void When_Children_Change()
 	{
 		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
