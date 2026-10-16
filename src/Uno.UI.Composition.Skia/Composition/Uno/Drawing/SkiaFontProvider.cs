@@ -2,6 +2,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -38,6 +39,10 @@ internal sealed class SkiaFontProvider : IFontProvider
 	// shaping (e.g. Arabic joining).
 	private readonly Dictionary<(string Family, int Weight, FontStretch Stretch, FontStyle Style, float Size), IFont> _matchedFamilyCache = new();
 	private readonly object _matchCharacterGate = new();
+
+	// The installed families don't change during a session, and the lookup can scan them all (fontconfig), so each
+	// name is checked once rather than once per requested size. Ordinal, because the platform lookups may not ignore case.
+	private static readonly ConcurrentDictionary<string, bool> _familyExists = new(StringComparer.Ordinal);
 
 	public IFont? CreateFont(byte[] data, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
@@ -124,10 +129,11 @@ internal sealed class SkiaFontProvider : IFontProvider
 	}
 
 	private static bool FamilyExists(string familyName)
-	{
-		using var styles = SKFontManager.Default.GetFontStyles(familyName);
-		return styles is { Count: > 0 };
-	}
+		=> _familyExists.GetOrAdd(familyName, static name =>
+		{
+			using var styles = SKFontManager.Default.GetFontStyles(name);
+			return styles is { Count: > 0 };
+		});
 
 	public ValueTask<IFont?> MatchCharacterAsync(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
