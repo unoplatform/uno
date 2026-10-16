@@ -83,4 +83,42 @@ public partial class Given_PasswordBox
 			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 		}
 	}
+
+	// Starting focused from the keyboard, the touch release's pointer focus must not reset the caret mode the hold set:
+	// the hold takes pointer focus when it starts. No selection flyout: with one open, the release doesn't reach the box.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+	public async Task When_Touch_Hold_Keyboard_Focused_Keeps_Handles_Android()
+	{
+		var SUT = new PasswordBox
+		{
+			Width = 300,
+			Password = "secret words",
+			SelectionFlyout = null,
+			TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+		};
+
+		await UITestHelper.Load(SUT);
+		SUT.Focus(FocusState.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual(FocusState.Keyboard, SUT.FocusState, "premise: the password box starts focused from the keyboard");
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		try
+		{
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await TestServices.WindowHelper.WaitFor(() => SUT.Core.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, timeoutMS: 5000, message: "the hold should select with both handles");
+
+			finger.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.Core.CaretMode, "the release must keep the selection handles");
+		}
+		finally
+		{
+			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+		}
+	}
 }

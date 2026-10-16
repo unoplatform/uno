@@ -6750,6 +6750,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "the release must keep the selection handles");
 		}
 
+		// Same for a text control focused from the keyboard: the touch release takes pointer focus, and the focus state change
+		// resets the caret mode, so the hold must take pointer focus when it starts for the selection handles to survive.
+		// No selection flyout: with one open, the release doesn't reach the text box.
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_LongPress_Keyboard_Focused_Keeps_Handles_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				SelectionFlyout = null,
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(FocusState.Keyboard, SUT.FocusState, "premise: the text box starts focused from the keyboard");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await WindowHelper.WaitFor(() => SUT.SelectedText == "Text", timeoutMS: 5000, message: "the hold should have selected the word");
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Text", SUT.SelectedText, "the release must keep the word selected");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "the release must keep the selection handles");
+		}
+
 		// A hold that can't take focus doesn't act (TextBoxCore.OnHolding). The delayed ContextRequested of the same hold (the
 		// text viewport is pannable) must not select the word unfocused either, nor open a flyout instead. Not focusable rather
 		// than a cancelled GettingFocus, which Focus() reports as a success (UpdateFocus, as in WinUI).

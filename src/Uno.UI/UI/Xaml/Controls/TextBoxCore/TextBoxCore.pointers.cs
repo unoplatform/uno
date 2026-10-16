@@ -366,11 +366,13 @@ internal sealed partial class TextBoxCore
 		var textBoxPoint = e.GetPosition(Owner);
 
 		// Touch defers focus to the release (ShouldFocusOnPointerPressed), but the hold acts now: unfocused, the selection
-		// or caret drag isn't rendered. As in WinUI's TextSelectionManager::OnHolding (selectable text), a hold that can't
-		// take focus doesn't act. It is still handled: these conventions replace the context flyout, so the delayed
-		// ContextRequested of the hold must neither act unfocused nor open the flyout.
+		// or caret drag isn't rendered. Pointer focus is also taken when focused another way (keyboard): the release would
+		// take it otherwise, and that focus state change resets the caret mode the hold set.
+		// As in WinUI's TextSelectionManager::OnHolding (selectable text), a hold that can't take focus doesn't act. It is
+		// still handled: these conventions replace the context flyout, so the delayed ContextRequested of the hold must
+		// neither act unfocused nor open the flyout.
 		_touchHoldHandled = true;
-		if (Owner.FocusState == FocusState.Unfocused && !Owner.Focus(FocusState.Pointer))
+		if (Owner.FocusState != FocusState.Pointer && !Owner.Focus(FocusState.Pointer))
 		{
 			return;
 		}
