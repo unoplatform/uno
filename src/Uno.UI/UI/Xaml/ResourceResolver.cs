@@ -330,12 +330,6 @@ namespace Uno.UI
 		{
 			var isThemeResource = (updateReason & ResourceUpdateReason.ThemeResource) != 0;
 
-			// If the invocation comes from XAML and from theme resources, resolution
-			// must happen lazily, done through walking the visual tree.
-			var immediateResolution =
-				(updateReason & ResourceUpdateReason.XamlParser) != 0
-				&& isThemeResource;
-
 			var effectivePrecedence = precedence ?? DependencyPropertyValuePrecedences.Local;
 
 			if (isThemeResource)
@@ -345,30 +339,7 @@ namespace Uno.UI
 				// CDependencyObject::SetThemeResourceBinding (Theming.cpp:349-400) then refreshes,
 				// applies the resolved value and stores the reference — that full sequence lives on the
 				// store, so this branch only constructs the reference and delegates.
-				ThemeResourceReference themeRef;
-
-				// Resolve the initial value from statically-available top-level resources, capturing the
-				// providing dictionary. Mirrors WinUI's CThemeResource::SetInitialValueAndTargetDictionary
-				// (ThemeResource.cpp:39-51): the providing dictionary is pinned into the
-				// ThemeResourceReference so RefreshValue can re-resolve from it after the element is
-				// reparented (e.g. popup/flyout/tooltip content moved under PopupRoot), where the load-time
-				// visual-tree walk can no longer reach the opener's local ThemeDictionaries. TryGetValue
-				// returns the dictionary that OWNS the ThemeDictionaries (not the Light/Dark
-				// sub-dictionary), so a later theme change re-selects the correct sub-dictionary on re-query.
-				if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var themeValue, out var providingDictionary))
-				{
-					themeRef = new ThemeResourceReference(
-						specializedKey, providingDictionary, themeValue, isResolved: true, context,
-						updateReason, effectivePrecedence);
-				}
-				else
-				{
-					// Couldn't resolve yet (deferred until loading). Create a ThemeResourceReference
-					// without a pinned dictionary -- it will be resolved via tree-walk at load time.
-					themeRef = new ThemeResourceReference(
-						specializedKey, null, null, isResolved: false, context,
-						updateReason, effectivePrecedence);
-				}
+				var themeRef = CreateThemeResourceReference(specializedKey, updateReason, context, effectivePrecedence);
 
 				if (owner is DependencyObject themeOwnerProvider)
 				{
@@ -417,6 +388,38 @@ namespace Uno.UI
 			// Register in the ResourceBinding path to ensure deferred resolution on loading
 			// still works (and HotReload re-resolution for parse-time-resolved values).
 			(owner as DependencyObject)?.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+		}
+
+		/// <summary>
+		/// Creates the reference through which a target tracks a {ThemeResource}, with its initial value and
+		/// pinned dictionary when they are statically available.
+		/// </summary>
+		internal static ThemeResourceReference CreateThemeResourceReference(in SpecializedResourceDictionary.ResourceKey specializedKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences precedence)
+		{
+			// If the invocation comes from XAML and from theme resources, resolution
+			// must happen lazily, done through walking the visual tree.
+			var immediateResolution = (updateReason & ResourceUpdateReason.XamlParser) != 0;
+
+			// Resolve the initial value from statically-available top-level resources, capturing the
+			// providing dictionary. Mirrors WinUI's CThemeResource::SetInitialValueAndTargetDictionary
+			// (ThemeResource.cpp:39-51): the providing dictionary is pinned into the
+			// ThemeResourceReference so RefreshValue can re-resolve from it after the element is
+			// reparented (e.g. popup/flyout/tooltip content moved under PopupRoot), where the load-time
+			// visual-tree walk can no longer reach the opener's local ThemeDictionaries. TryGetValue
+			// returns the dictionary that OWNS the ThemeDictionaries (not the Light/Dark
+			// sub-dictionary), so a later theme change re-selects the correct sub-dictionary on re-query.
+			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var themeValue, out var providingDictionary))
+			{
+				return new ThemeResourceReference(
+					specializedKey, providingDictionary, themeValue, isResolved: true, context,
+					updateReason, precedence);
+			}
+
+			// Couldn't resolve yet (deferred until loading). Create a ThemeResourceReference
+			// without a pinned dictionary -- it will be resolved via tree-walk at load time.
+			return new ThemeResourceReference(
+				specializedKey, null, null, isResolved: false, context,
+				updateReason, precedence);
 		}
 
 		/// <summary>
