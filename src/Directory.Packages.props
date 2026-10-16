@@ -50,7 +50,7 @@
 		<PackageVersion Include="IdentityModel.OidcClient" Version="6.0.0" />
 		<PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
 		<PackageVersion Include="LibVLCSharp" Version="3.9.7.1" />
-		<PackageVersion Include="MessagePack" Version="3.1.9" />
+		<PackageVersion Include="MessagePack" Version="3.1.12" />
 		<PackageVersion Include="Microsoft.AppCenter" Version="5.0.3" />
 		<PackageVersion Include="Microsoft.Bcl.TimeProvider" Version="9.0.9" />
 		<PackageVersion Include="Microsoft.Build" Version="18.7.1" />
