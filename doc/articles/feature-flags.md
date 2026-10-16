@@ -33,9 +33,17 @@ Set `Uno.UI.FeatureConfiguration.Rendering.SkipVisualTreePainting` to `true` to 
 
 ### Memory kept for undisplayed images
 
-A decoded image that nothing displays anymore (its `Image` was unloaded or given another source) keeps its pixels for 1 second, as on WinUI, so that it shows them at once if it comes back. `Uno.UI.FeatureConfiguration.Image.MaxUndisplayedImageBytes` bounds the memory these images hold: past it, the oldest are released first at the end of the next layout pass, and with `0` every one of them is. An image counts 4 bytes per pixel of its decoded frames and of the texture drawn from it; images shared through the bitmap cache (`EnableBitmapImageCache`) are not counted. Defaults: 128 MB on desktop, 64 MB on Android, iOS and tvOS, 32 MB on WebAssembly.
+A decoded image that nothing displays anymore (its `Image` was unloaded or given another source) keeps its pixels for 1 second, as on WinUI, so that it shows them at once if it comes back. `Uno.UI.FeatureConfiguration.Image.MaxUndisplayedImageBytes` bounds the memory these images hold: past it, the oldest are released first at the end of the next layout pass, and with `0` every one of them is. An image counts 4 bytes per pixel of its decoded frames and of the texture drawn from it, and an image shared through the bitmap cache counts once. Defaults: 128 MB on desktop, 64 MB on Android, iOS and tvOS, 32 MB on WebAssembly.
 
 Uno decodes an image at its full size unless `DecodePixelWidth` or `DecodePixelHeight` is set, where WinUI decodes it at its rendered size by default, so the same images can hold far more memory than on WinUI. Set the limit to the app's memory budget: a higher one keeps more recently shown images ready to show again, a lower one (down to `0`) frees them sooner. A decode size reduces what each image holds in the first place.
+
+### Bitmap cache
+
+With `Uno.UI.FeatureConfiguration.Image.EnableBitmapImageCache` set (the default), the `BitmapImage`s that load the same `UriSource` with the same decode size share one decode, as on WinUI, and one download while it is in flight; other decode sizes of a downloaded image reuse its kept bytes. A shared decode is released like any other once nothing displays it (see above), and the next `Image` that shows it decodes it again.
+
+So that such an image is not downloaded again, the cache keeps the encoded bytes of images downloaded over `http` or `https`, up to `Uno.UI.FeatureConfiguration.Image.MaxBitmapImageCacheBytes` bytes; past it, the least recently used are dropped first, and bytes unused for 5 minutes are dropped when the cache is next used. Lowering the setting drops what no longer fits, and turning `EnableBitmapImageCache` off drops them all. Defaults: 64 MB on desktop, 32 MB on Android, iOS, tvOS and WebAssembly. Only a successful response is kept, and not one with `Cache-Control: no-store`, `no-cache` or `max-age=0`, or with `Pragma: no-cache` and no `Cache-Control`, or one that was redirected (except on WebAssembly, where the browser does not expose the redirect); other freshness rules are not checked. App assets (`ms-appx:///`), app data and local files are read again instead. A `BitmapImage` with `BitmapCreateOptions.IgnoreImageCache` uses neither the shared decodes nor the encoded bytes.
+
+`MaxBitmapImageCacheCount`, which bounded the number of decoded images the cache kept, is obsolete and has no effect.
 
 ## ComboBox
 
