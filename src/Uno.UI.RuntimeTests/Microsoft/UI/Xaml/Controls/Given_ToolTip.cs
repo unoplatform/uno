@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI.DevTools.Input;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -1105,7 +1106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			root.Content = owner;
 			await TestServices.WindowHelper.WaitForLoaded(owner);
 
-			mouse.MoveTo(owner.GetAbsoluteBoundsRect().GetCenter());
+			mouse.MoveTo(owner.GetAbsoluteBounds().GetCenter());
 			await UITestHelper.WaitFor(() => toolTip.IsOpen, timeoutMS: 5000, message: "The automatic tooltip did not open on hover.");
 
 			// The pointer stays over the owner, so nothing the service listens to closes the tooltip.
@@ -1123,7 +1124,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			root.Content = owner;
 			await TestServices.WindowHelper.WaitForLoaded(owner);
 
-			var bounds = owner.GetAbsoluteBoundsRect();
+			var bounds = owner.GetAbsoluteBounds();
 			mouse.MoveTo(bounds.GetCenter());
 			await Task.Delay(100); // well inside the show delay
 			await TestServices.WindowHelper.WaitForIdle();
