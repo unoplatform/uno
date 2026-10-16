@@ -27,8 +27,9 @@ internal sealed partial class TextBoxCore
 	// True while an iOS-convention touch caret-drag is in progress (started by a long-press): the caret
 	// follows the finger until release. See BeginTouchCaretDrag / OnContextRequestedImpl.
 	private bool _touchCaretDrag;
-	// True once the current touch press was handled as a hold when the hold started (OnHolding): the delayed
-	// ContextRequested the ContextMenuProcessor raises for the same hold, and the release, are then not a new gesture.
+	// True once the current touch press was handled as a hold when the hold started (OnHolding), including a hold that
+	// couldn't take focus and so did nothing: the delayed ContextRequested the ContextMenuProcessor raises for the same
+	// hold, and the release, are then not a new gesture.
 	// Reset by the next press and by the release of the press; after a capture loss it lasts until the next press.
 	private bool _touchHoldHandled;
 
@@ -357,7 +358,9 @@ internal sealed partial class TextBoxCore
 		var textBoxPoint = e.GetPosition(Owner);
 
 		// Touch defers focus to the release (ShouldFocusOnPointerPressed), but the hold acts now: unfocused, the selection
-		// or caret drag isn't rendered. As in WinUI's TextSelectionManager::OnHolding, a hold that can't take it doesn't act.
+		// or caret drag isn't rendered. As in WinUI's TextSelectionManager::OnHolding (selectable text), a hold that can't
+		// take focus doesn't act. It is still handled: these conventions replace the context flyout, so the delayed
+		// ContextRequested of the hold must neither act unfocused nor open the flyout.
 		_touchHoldHandled = true;
 		if (Owner.FocusState == FocusState.Unfocused && !Owner.Focus(FocusState.Pointer))
 		{
