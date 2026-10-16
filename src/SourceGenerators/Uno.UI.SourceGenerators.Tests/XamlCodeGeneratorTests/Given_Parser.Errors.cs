@@ -666,6 +666,35 @@ public partial class Given_Parser
 	}
 
 	[TestMethod]
+	public async Task When_Attached_Property_Owner_Type_Cannot_Be_Resolved()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+				      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				      xmlns:removed="using:Removed.Namespace">
+				  <Grid removed:MissingOwner.MissingProperty="Value" />
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+			.AddSource(_emptyCodeBehind)
+			.AddGeneratedSources();
+		test.TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck;
+
+		test.ExpectedDiagnostics.Add(
+			DiagnosticResult.CompilerError("UXAML0001")
+				.WithSpan("//Project/0/MainPage.xaml", 5, 9, 5, 9)
+				.WithArguments("The type '{using:Removed.Namespace}MissingOwner' could not be found"));
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_WMC0913_xLoad_ImplicitResDict_Root()
 	{
 		var xamlFiles = new[]

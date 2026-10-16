@@ -3679,6 +3679,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								IEventSymbol? eventSymbol = null;
 								var declaringTypeSymbol = FindType(member.Member.DeclaringType);
+								if (declaringTypeSymbol is null)
+								{
+									throw new XamlGenerationException($"The type '{member.Member.DeclaringType}' could not be found", GetMemberLocation(member));
+								}
+
 								if (
 									!IsType(declaringTypeSymbol, objectDefinitionType)
 									|| IsAttachedProperty(member)
@@ -3807,6 +3812,33 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+
+		private IXamlLocation GetMemberLocation(XamlMemberDefinition member)
+		{
+			var lines = SourceText.From(_fileDefinition.Content).Lines;
+			if (member.LineNumber < 1 || member.LineNumber > lines.Count)
+			{
+				return member;
+			}
+
+			var line = lines[member.LineNumber - 1].ToString();
+			var qualifiedMemberName = $"{member.Member.DeclaringType?.Name}.{member.Member.Name}";
+			var memberStart = line.IndexOf(qualifiedMemberName, Math.Max(0, member.LinePosition - 1), StringComparison.Ordinal);
+			if (memberStart < 0)
+			{
+				return member;
+			}
+
+			var attributeStart = memberStart;
+			while (attributeStart > 0 && !char.IsWhiteSpace(line[attributeStart - 1]) && line[attributeStart - 1] != '<')
+			{
+				attributeStart--;
+			}
+
+			return new XamlLocation(member.FilePath, member.LineNumber, attributeStart + 1);
+		}
+
+		private readonly record struct XamlLocation(string FilePath, int LineNumber, int LinePosition) : IXamlLocation;
 
 		private static bool IsNotFrameworkElementButNeedsSourceLocation(XamlObjectDefinition objectDefinition)
 			=> objectDefinition.Type.Name is "VisualState" or "AdaptiveTrigger" or "StateTrigger";
