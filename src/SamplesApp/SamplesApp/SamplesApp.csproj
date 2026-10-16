@@ -291,7 +291,7 @@
 		<WasmShellEnableDotnetJsFingerprinting>false</WasmShellEnableDotnetJsFingerprinting>
 		<!--
 		This wwwroot is mounted at two roots: the runtime tests serve it at localhost:8000/ and PR
-		staging from /pr-<N>/wasm-skia-net9/. Uno.Sdk defaults this to "/" for deep-link routing, which
+		staging from /pr-<N>/wasm-skia/. Uno.Sdk defaults this to "/" for deep-link routing, which
 		bakes absolute /package_<hash>/ paths into index.html and uno-config.js and 404s under any
 		sub-folder. SamplesApp routes by query string, so "./" (the bootstrapper default, and what the
 		pre-unification head used) is the correct value.
