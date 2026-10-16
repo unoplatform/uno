@@ -8,8 +8,8 @@
     <OutputDirectory>/<Lane>/ for the shared 'runtime-tests-metrics' artifact.
 
     Report (runs once, after the lanes): writes one markdown report to ReportFile and, on a pull request, posts it
-    as a new comment, headed with the commit and build it measured, so the reports of successive commits stay side
-    by side and can be compared.
+    as a new comment for each build, headed with the commit and build it measured, so the reports of successive
+    commits stay side by side and can be compared. A rerun of the same build updates that build's comment.
 
     The report compares this build with the latest published versions: the latest dev and the latest stable
     Uno.WinUI on nuget.org. Each version is mapped to the CI build that produced it (its build number is the
@@ -52,6 +52,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $Marker = '<!-- runtime-tests-metrics -->'
+# Tells this build's comment apart: retried lanes re-run the report stage, and that rerun updates the comment.
+$BuildMarker = if ($BuildUrl -match 'buildId=(\d+)') { "<!-- runtime-tests-metrics build=$($Matches[1]) -->" } else { $null }
 $Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 
 function Format-Number([double]$value) {
@@ -285,6 +287,7 @@ function New-Report($lanes, $baselines) {
     $laneNames = @($lanes.Keys | Sort-Object { Get-LaneOrder $_ }, { $_ })
     $sb = [System.Text.StringBuilder]::new()
     [void]$sb.AppendLine($Marker)
+    if ($BuildMarker) { [void]$sb.AppendLine($BuildMarker) }
     # Outside pull requests the pipeline passes the unexpanded macro; only a real hash is shown.
     $commit = if ($CommitId -match '^[0-9a-f]{7,40}$') { $CommitId.Substring(0, [math]::Min(10, $CommitId.Length)) } else { $null }
     $title = '### 📏 Rendering budgets'
@@ -433,10 +436,38 @@ function Publish-Comment([string]$body) {
     $api = "https://api.github.com/repos/$Repository/issues"
 
     # Informational only: a failed post is logged and the build goes on (the report is still in the artifact).
-    # A new comment for every build, never an edit, so the reports of successive commits, rebases and fixes stay side
-    # by side on the pull request and can be compared.
+    # One comment per build, so the reports of successive commits, rebases and fixes stay side by side and can be
+    # compared. Only a rerun of the same build (retried lanes re-run this stage) edits: it updates that build's comment.
     try {
+        $existing = $null
+        if ($BuildMarker) {
+            # Only a comment this account wrote can be edited: editing someone else's needs admin rights on the
+            # repository, so a marker comment left by another account is ignored and a new one is created.
+            $login = (Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/user').login
+            $all = @()
+            for ($page = 1; $page -le 20; $page++) {
+                $response = Invoke-RestMethod -Headers $headers -Uri "$api/$PullRequestNumber/comments?per_page=100&page=$page"
+                # Invoke-RestMethod can hand the JSON array over as a single object: enumerate it, or the filter below
+                # sees every comment at once and "finds" all of them.
+                $comments = @($response | ForEach-Object { $_ })
+                $all += $comments
+                if ($comments.Count -lt 100) { break }
+            }
+            $existing = $all | Where-Object { $_.user.login -eq $login -and $_.body -and $_.body.Contains($BuildMarker) } | Select-Object -Last 1
+        }
+
         $payload = @{ body = $body } | ConvertTo-Json
+        if ($existing) {
+            try {
+                Invoke-RestMethod -Headers $headers -Method Patch -Uri "$api/comments/$($existing.id)" -Body $payload -ContentType 'application/json' | Out-Null
+                Write-Host "Updated this build's comment $($existing.html_url)"
+                return
+            }
+            catch {
+                # Whatever refused the update (permissions, a deleted comment), a new comment beats no report at all.
+                Write-Host "Could not update $($existing.html_url) ($($_.Exception.Message)); posting a new comment instead."
+            }
+        }
         $created = Invoke-RestMethod -Headers $headers -Method Post -Uri "$api/$PullRequestNumber/comments" -Body $payload -ContentType 'application/json'
         Write-Host "Created comment $($created.html_url)"
     }

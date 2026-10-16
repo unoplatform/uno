@@ -125,8 +125,10 @@ The 6.4 path booleans per step left on 6.8 are most likely the clip-path work th
 4. The `runtime_tests_metrics` stage ("Tests - Rendering budgets") runs once the desktop runtime-test stages
    finish, whether they passed or failed. `-Mode Report` builds the report (§4.1), publishes it as the
    `runtime-tests-metrics-report` artifact and, on a pull request, posts it as a **new comment for every build**,
-   headed with the commit and build it measured. Comments are never edited, so the reports of successive commits,
-   rebases and fixes stay side by side and can be compared. It posts with `CommentsGitHubPAT`, the same pipeline secret as the
+   headed with the commit and build it measured, so the reports of successive commits, rebases and fixes stay side
+   by side and can be compared. Retried lanes re-run this stage within the same build; that rerun updates the
+   build's own comment (found through a hidden `build=<id>` marker) instead of posting a duplicate. Comments of
+   other builds are never edited. It posts with `CommentsGitHubPAT`, the same pipeline secret as the
    screenshot comparison, which should be a `unodevops` token. Fork pull requests get no secrets, so for them the
    report is only published as an artifact.
 
