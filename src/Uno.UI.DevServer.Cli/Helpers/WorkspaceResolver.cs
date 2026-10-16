@@ -168,11 +168,13 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
 		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(StringComparer.Ordinal);
 
+		// An unresolved explicit selection keeps its path: it stays selected (and watched) until it resolves.
 		if (!File.Exists(normalizedSolutionPath))
 		{
 			return new WorkspaceResolution
 			{
 				RequestedWorkingDirectory = normalizedRequestedDirectory,
+				SelectedSolutionPath = normalizedSolutionPath,
 				ResolutionKind = candidateSolutions.Count == 0
 					? WorkspaceResolutionKind.NoCandidates
 					: WorkspaceResolutionKind.NoValidWorkspace,
@@ -193,6 +195,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 			: new WorkspaceResolution
 			{
 				RequestedWorkingDirectory = normalizedRequestedDirectory,
+				SelectedSolutionPath = normalizedSolutionPath,
 				ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
 				CandidateSolutions = candidateSolutions,
 				SelectionSource = selectionSource,
