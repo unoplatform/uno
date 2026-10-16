@@ -116,7 +116,16 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// Register the per-kind window+context factory and negotiate; the app-registered backend owns the kind order.
 		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind));
 
-		var init = GraphicsRegistry.Initialize();
+		GraphicsInitialization init;
+		try
+		{
+			init = GraphicsRegistry.Initialize();
+		}
+		finally
+		{
+			Win32VulkanGraphicsContext.DiscardDevicePrewarm();
+		}
+
 		_context = init.Context;
 		GraphicsFactory = init.DrawingFactory;
 		_renderer = init.Renderer;
