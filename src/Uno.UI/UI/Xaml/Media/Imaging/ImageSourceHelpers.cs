@@ -38,14 +38,14 @@ internal static partial class ImageSourceHelpers
 	}
 
 #if __SKIA__
-	public static async Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct, bool attemptLoadingWithBrowserCanvasApi = true, int? targetWidth = null, int? targetHeight = null)
+	public static async Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct, int? targetWidth = null, int? targetHeight = null)
 	{
 		var buffer = new byte[imageStream.Length - imageStream.Position];
 		await imageStream.ReadExactlyAsync(buffer, 0, buffer.Length, ct);
 
 		bool hasTargetSize = targetWidth is not null || targetHeight is not null;
 
-		if (OperatingSystem.IsBrowser() && attemptLoadingWithBrowserCanvasApi && !hasTargetSize)
+		if (OperatingSystem.IsBrowser() && !hasTargetSize && !MayBeAnimated(buffer))
 		{
 			// The JS object holds the decoded pixels until it is released, and its finalizer only runs when the GC
 			// happens to collect: allocations outside the managed heap don't prompt one.
@@ -129,7 +129,7 @@ internal static partial class ImageSourceHelpers
 		try
 		{
 			using var stream = await AppDataUriEvaluator.ToStream(uri, ct);
-			return await ReadFromStreamAsCompositionSurface(stream, ct, !IsAnimatableImageFormat(uri), targetWidth, targetHeight);
+			return await ReadFromStreamAsCompositionSurface(stream, ct, targetWidth, targetHeight);
 		}
 		catch (Exception e)
 		{
@@ -138,14 +138,18 @@ internal static partial class ImageSourceHelpers
 	}
 
 	/// <summary>
-	/// Returns true for image formats that may contain animation and must bypass the
-	/// browser Canvas API (which only returns the first frame) in favor of SKCodec.
+	/// Returns true for encoded images that may contain animation and must bypass the
+	/// browser Canvas API (which only returns the first frame) in favor of the image codec.
+	/// Reads the content, as a stream has no name and a URL need not end in an extension.
 	/// </summary>
-	private static bool IsAnimatableImageFormat(Uri uri)
-	{
-		var path = uri.AbsolutePath;
-		return path.EndsWith(".gif", StringComparison.OrdinalIgnoreCase)
-			|| path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
-	}
+	/// <remarks>
+	/// Any GIF counts, as telling a still one apart means walking all its blocks. APNG does not:
+	/// Skia's PNG codec only decodes its default image.
+	/// </remarks>
+	internal static bool MayBeAnimated(ReadOnlySpan<byte> encoded)
+		=> encoded.StartsWith("GIF87a"u8)
+			|| encoded.StartsWith("GIF89a"u8)
+			// An animated WebP has the animation flag set in its VP8X chunk, which comes first.
+			|| (encoded.Length > 20 && encoded.StartsWith("RIFF"u8) && encoded.Slice(8, 8).SequenceEqual("WEBPVP8X"u8) && (encoded[20] & 0x02) != 0);
 #endif
 }
