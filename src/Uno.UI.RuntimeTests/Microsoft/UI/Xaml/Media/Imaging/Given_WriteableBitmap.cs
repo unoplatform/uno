@@ -188,5 +188,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 				ImageAssert.HasColorAt(snapshot, 1, 1, Color.FromArgb(0xFF, 0xFA, 0xB8, 0x63), tolerance: 5);
 			}
 		}
+
+#if __SKIA__
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		public async Task When_SetSource_Then_Stream_Is_Decoded_Once()
+		{
+			// Stored 250x400 with EXIF orientation 6: red on the left once rotated, green on the right.
+			var bytes = await ReadRotatedJpegAsync();
+			var codec = new SizeReadingCountingImageCodec(global::Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current, bytes.Length);
+			var sut = new WriteableBitmap(1, 1);
+
+			using (codec.Register())
+			{
+				sut.SetSource(new MemoryStream(bytes).AsRandomAccessStream());
+			}
+
+			Assert.AreEqual(1, codec.Decodes, "SetSource should decode the stream once, and take the size from that decode.");
+			Assert.AreEqual(400, sut.PixelWidth);
+			Assert.AreEqual(250, sut.PixelHeight);
+
+			var pixels = sut.PixelBuffer.ToArray();
+			Assert.AreEqual(400 * 250 * 4, pixels.Length);
+			AssertBgra(pixels, (125 * 400 + 5) * 4, 0x24, 0x1B, 0xED);
+			AssertBgra(pixels, (125 * 400 + 395) * 4, 0x4D, 0xB1, 0x23);
+
+			static void AssertBgra(byte[] pixels, int offset, int b, int g, int r)
+			{
+				var actual = $"{pixels[offset]:X2}{pixels[offset + 1]:X2}{pixels[offset + 2]:X2}";
+				Assert.IsTrue(
+					Math.Abs(pixels[offset] - b) <= 5 && Math.Abs(pixels[offset + 1] - g) <= 5 && Math.Abs(pixels[offset + 2] - r) <= 5,
+					$"Expected BGR {b:X2}{g:X2}{r:X2} at byte {offset}, got {actual}.");
+			}
+		}
+
+		private static async Task<byte[]> ReadRotatedJpegAsync()
+		{
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/testimage_exif_rotated_different_dimensions.jpg"));
+			return (await FileIO.ReadBufferAsync(file)).ToArray();
+		}
+#endif
 	}
 }

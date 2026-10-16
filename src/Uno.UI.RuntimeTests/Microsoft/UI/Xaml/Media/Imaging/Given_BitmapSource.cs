@@ -27,6 +27,8 @@ using Windows.Storage.Streams;
 using System.Diagnostics;
 #if __SKIA__
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
+using IImageEncoderDecoder = Uno.UI.Composition.Drawing.IImageEncoderDecoder;
+using ImageEncoderDecoder = Uno.UI.Composition.Drawing.ImageEncoderDecoder;
 #endif
 #if UNO_DRAWING_SKIA
 using SkiaSharp;
@@ -318,6 +320,189 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			}
 
 			Assert.IsTrue(success);
+		}
+#endif
+
+#if __SKIA__
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		[DataRow("Skia", "Formats/uno-overalls.jpg", 800, 600)]
+		[DataRow("Skia", "Formats/uno-overalls.png", 800, 600)]
+		[DataRow("Skia", "testimage_exif_rotated_different_dimensions.jpg", 400, 250)] // Stored 250x400, EXIF orientation 6.
+		[DataRow("Skia", "Formats/animated.gif", 480, 480)]
+		[DataRow("Skia", "Formats/uno-overalls.webp", 800, 600)]
+		[DataRow("Skia", "Formats/uno-overalls.bmp", 800, 600)]
+		public async Task When_SetSource_Then_PixelSize_Is_Read_With_TryGetSize(string codecName, string asset, int width, int height)
+		{
+			var bytes = await ReadAssetAsync(asset);
+			var codec = new SizeReadingCountingImageCodec(CreateCodec(codecName), bytes.Length);
+
+			var sut = SetSource(codec, bytes);
+
+			Assert.AreEqual(width, sut.PixelWidth);
+			Assert.AreEqual(height, sut.PixelHeight);
+			Assert.AreEqual(0, codec.Decodes, "SetSource should read the size with TryGetSize, not TryDecode.");
+		}
+
+#if UNO_DRAWING_SKIA
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		[DataRow("LargeWisteria.jpg")]
+		[DataRow("test_image_1252_836.png")]
+		[DataRow("Formats/uno-overalls.bmp")]
+		[DataRow("Formats/uno-overalls.gif")]
+		public async Task When_SetSource_Then_Skia_Reads_Only_The_Header(string asset)
+		{
+			var bytes = await ReadAssetAsync(asset);
+			var codec = new SizeReadingCountingImageCodec(CreateCodec("Skia"), bytes.Length);
+
+			var sut = SetSource(codec, bytes);
+
+			Assert.IsGreaterThan(0, sut.PixelWidth);
+			Assert.IsLessThan((long)bytes.Length / 4, codec.SizeBytesRead, $"Reading the size should read the header, not the {bytes.Length} bytes of the file.");
+		}
+#endif
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		[DataRow("Skia", 1)]
+		[DataRow("Skia", 2)]
+		[DataRow("Skia", 3)]
+		[DataRow("Skia", 4)]
+		[DataRow("Skia", 5)]
+		[DataRow("Skia", 6)]
+		[DataRow("Skia", 7)]
+		[DataRow("Skia", 8)]
+		public void When_SetSource_Exif_Oriented_Then_PixelSize_Matches_Decode(string codecName, int orientation)
+		{
+			var inner = CreateCodec(codecName);
+			var bytes = CreateOrientedJpeg(inner, orientation);
+
+			var sut = SetSource(new SizeReadingCountingImageCodec(inner, bytes.Length), bytes);
+
+			// Orientations 5 to 8 turn the 3x2 image by a quarter.
+			var (width, height) = orientation >= 5 ? (2, 3) : (3, 2);
+			Assert.AreEqual(width, sut.PixelWidth);
+			Assert.AreEqual(height, sut.PixelHeight);
+			Assert.IsTrue(inner.TryDecode(new MemoryStream(bytes), null, null, out var frames));
+			using (frames)
+			{
+				Assert.AreEqual(width, frames.Frames[0].PixelWidth, "The decode should agree with the size read.");
+				Assert.AreEqual(height, frames.Frames[0].PixelHeight, "The decode should agree with the size read.");
+			}
+		}
+
+#if UNO_DRAWING_SKIA
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		[DataRow("Skia", "VP8L", 3, 2)]
+		[DataRow("Skia", "VP8", 3, 2)]
+		[DataRow("Skia", "VP8X", 3, 2)]
+		public void When_SetSource_Webp_Then_PixelSize_Matches_Decode(string codecName, string container, int width, int height)
+		{
+			var inner = CreateCodec(codecName);
+			var lossless = container == "VP8L";
+			using var bitmap = new SKBitmap(new SKImageInfo(3, 2, SKColorType.Bgra8888, SKAlphaType.Premul));
+			bitmap.Erase(container == "VP8X" ? SKColors.Red.WithAlpha(0x80) : SKColors.Red);
+			using var pixmap = bitmap.PeekPixels();
+			using var data = pixmap.Encode(new SKWebpEncoderOptions(lossless ? SKWebpEncoderCompression.Lossless : SKWebpEncoderCompression.Lossy, 90));
+			var bytes = data.ToArray();
+			Assert.AreEqual(container, Encoding.ASCII.GetString(bytes, 12, 4).TrimEnd());
+			var codec = new SizeReadingCountingImageCodec(inner, bytes.Length);
+
+			var sut = SetSource(codec, bytes);
+
+			Assert.AreEqual(width, sut.PixelWidth);
+			Assert.AreEqual(height, sut.PixelHeight);
+			Assert.AreEqual(0, codec.Decodes);
+			var decoded = inner.TryDecode(new MemoryStream(bytes), null, null, out var frames);
+			using (frames)
+			{
+				// A width of 0 is a row for a file the codec declines to decode.
+				Assert.AreEqual(width != 0, decoded, "The size should be read for the images the codec decodes.");
+				Assert.AreEqual(width, decoded ? frames.Frames[0].PixelWidth : 0);
+				Assert.AreEqual(height, decoded ? frames.Frames[0].PixelHeight : 0);
+			}
+		}
+#endif
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		[DataRow("Skia", "InvalidImage.jpg", -1)]
+		[DataRow("Skia", "Formats/uno-overalls.png", 20)] // Cut inside the IHDR chunk.
+		public async Task When_SetSource_Undecodable_Then_PixelSize_Is_Zero(string codecName, string asset, int length)
+		{
+			var bytes = await ReadAssetAsync(asset);
+			if (length >= 0)
+			{
+				bytes = bytes[..length];
+			}
+
+			var sut = SetSource(new SizeReadingCountingImageCodec(CreateCodec(codecName), bytes.Length), bytes);
+
+			Assert.AreEqual(0, sut.PixelWidth);
+			Assert.AreEqual(0, sut.PixelHeight);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		public async Task When_SetSource_With_Codec_Without_TryGetSize_Then_PixelSize_Is_Read_From_Decode()
+		{
+			var bytes = await ReadAssetAsync("testimage_exif_rotated_different_dimensions.jpg");
+			var codec = new CountingImageCodec(ImageEncoderDecoder.Current, bytes.Length);
+
+			var sut = SetSource(codec, bytes);
+
+			Assert.AreEqual(400, sut.PixelWidth);
+			Assert.AreEqual(250, sut.PixelHeight);
+			Assert.AreEqual(1, codec.Decodes, "The default TryGetSize should read the size from a decode.");
+		}
+
+		private static BitmapImage SetSource(CountingImageCodec codec, byte[] bytes)
+		{
+			var sut = new BitmapImage();
+			using (codec.Register())
+			{
+				sut.SetSource(new MemoryStream(bytes).AsRandomAccessStream());
+			}
+
+			return sut;
+		}
+
+		private static async Task<byte[]> ReadAssetAsync(string asset)
+		{
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/" + asset));
+			return (await FileIO.ReadBufferAsync(file)).ToArray();
+		}
+
+		// A codec parameter, though only Skia's has rows here: another backend's rows can be added next to them.
+		private static IImageEncoderDecoder CreateCodec(string name) => name switch
+		{
+#if UNO_DRAWING_SKIA
+			"Skia" => global::Uno.UI.Composition.Skia.SkiaBackend.CreateImageDecoder(),
+#endif
+			_ => throw new AssertInconclusiveException($"The {name} codec isn't in this build."),
+		};
+
+		// A 3x2 JPEG with an EXIF orientation.
+		private static byte[] CreateOrientedJpeg(IImageEncoderDecoder codec, int orientation)
+		{
+			using var encoded = new MemoryStream();
+			var pixels = Enumerable.Repeat((byte)0xFF, 3 * 2 * 4).ToArray();
+			codec.Encode(encoded, pixels, 3, 2, Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied, global::Uno.UI.Composition.Drawing.BitmapEncoderFormat.Jpeg, 90);
+			var jpeg = encoded.ToArray();
+
+			// APP1 right after SOI: "Exif\0\0", a big-endian TIFF header, and an IFD with one entry, Orientation (a SHORT).
+			byte[] app1 =
+			[
+				0xFF, 0xE1, 0x00, 0x22,
+				(byte)'E', (byte)'x', (byte)'i', (byte)'f', 0x00, 0x00,
+				(byte)'M', (byte)'M', 0x00, 0x2A, 0x00, 0x00, 0x00, 0x08,
+				0x00, 0x01,
+				0x01, 0x12, 0x00, 0x03, 0x00, 0x00, 0x00, 0x01, 0x00, (byte)orientation, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00,
+			];
+			return [.. jpeg[..2], .. app1, .. jpeg[2..]];
 		}
 #endif
 
