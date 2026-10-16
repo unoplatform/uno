@@ -41,6 +41,9 @@ internal partial class PopupRoot : Canvas
 	{
 		if (XamlRoot is { } xamlRoot)
 		{
+			// Let go of an earlier subscription first, as its disposal clears _activatedWindow.
+			_subscriptions.Disposable = null;
+
 			CompositeDisposable disposables = new();
 
 			_xamlRootSize = xamlRoot.Size;
