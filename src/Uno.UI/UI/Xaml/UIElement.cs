@@ -1943,7 +1943,7 @@ namespace Microsoft.UI.Xaml
 
 				// The clip is expressed in layout coordinates, before this element's own flow direction mirroring is applied, while the visual
 				// applies it in its local (drawing) coordinates, after its transform. When the element mirrors itself (it is the boundary of a
-				// right-to-left subtree, or a TextBlock un-mirroring its text within one), mirror the clip the same way so that it keeps
+				// right-to-left subtree, or a text surface un-mirroring its text within one), mirror the clip the same way so that it keeps
 				// covering the arranged slot. Ancestor clips are converted from the parent's coordinates by the compositor and already account
 				// for the transform. The render transform adapter, created above whenever the element has a flow direction transform, holds the
 				// transform that was just applied to the visual.
