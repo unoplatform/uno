@@ -322,22 +322,17 @@ internal partial class X11XamlRootHost
 		{
 			modifiers |= VirtualKeyModifiers.Shift;
 		}
+		if ((state & XModifierMask.ControlMask) != 0)
+		{
+			modifiers |= VirtualKeyModifiers.Control;
+		}
+		// Mod1 and Mod4 are Alt and Super in the default modifier map; a remapped modifier is not followed.
 		if ((state & XModifierMask.Mod1Mask) != 0)
 		{
-			// TODO: Modifier keys can be mapped to different keys. What to do?
-			modifiers |= VirtualKeyModifiers.Shift;
-		}
-		if ((state & XModifierMask.ControlMask) != 0)
-		{
-			modifiers |= VirtualKeyModifiers.Control;
-		}
-		if ((state & XModifierMask.ControlMask) != 0)
-		{
-			modifiers |= VirtualKeyModifiers.Control;
+			modifiers |= VirtualKeyModifiers.Menu;
 		}
 		if ((state & XModifierMask.Mod4Mask) != 0)
 		{
-			// TODO: Modifier keys can be mapped to different keys. What to do?
 			modifiers |= VirtualKeyModifiers.Windows;
 		}
 
