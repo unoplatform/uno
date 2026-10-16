@@ -268,7 +268,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 		ResetComposition();
 
-		_host.RaiseTextCompositionEnded(new TextCompositionEndedEventArgs(startIndex, 0));
+		RaiseTextCompositionEnded(startIndex, 0);
 		InvalidateTextBoxRender();
 	}
 

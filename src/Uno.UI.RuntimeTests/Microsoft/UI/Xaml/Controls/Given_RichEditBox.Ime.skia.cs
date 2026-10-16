@@ -669,6 +669,39 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_Focused_RichEditBox_Made_ReadOnly_Native_Input_Is_ReadOnly()
+	{
+		var sut = new RichEditBox();
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			static string GetNativeReadOnly()
+				=> global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+					"(function(){const input=document.getElementById('uno-input');return input?String(input.readOnly):'missing';})()");
+
+			Assert.AreEqual("false", GetNativeReadOnly());
+
+			// A read-only input keeps the soft keyboard from editing text the control would only revert.
+			sut.IsReadOnly = true;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("true", GetNativeReadOnly());
+
+			sut.IsReadOnly = false;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("false", GetNativeReadOnly());
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Wasm_External_Edit_Invalidates_Stale_Composition_Callbacks()
 	{
 		var sut = new RichEditBox();

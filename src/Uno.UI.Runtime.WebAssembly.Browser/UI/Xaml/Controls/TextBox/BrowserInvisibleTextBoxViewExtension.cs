@@ -200,7 +200,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			},
 			suppressSoftwareKeyboard ? "none" : GetInputModeValue(),
 			GetEnterKeyHintValue(),
-			_view.Core?.IsReadOnly ?? false);
+			GetIsReadOnly());
 
 		if (_isNativeInputActive)
 		{
@@ -358,7 +358,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		NativeMethods.SetTextPredictionEnabled(GetTextPredictionEnabled());
 		NativeMethods.SetSpellCheckEnabled(GetSpellCheckEnabled());
 		NativeMethods.SetAcceptsReturn(GetAcceptsReturn());
-		NativeMethods.SetReadOnly(_view.Core?.IsReadOnly ?? false);
+		NativeMethods.SetReadOnly(GetIsReadOnly());
 	}
 
 	public int GetSelectionStart() => 0;
@@ -390,6 +390,13 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	private bool GetSpellCheckEnabled() => _view.Host?.IsSpellCheckEnabled ?? true;
 
 	private bool GetAcceptsReturn() => _view.Host is IImeSessionHost { AcceptsReturn: true };
+
+	private bool GetIsReadOnly() => _view.Host switch
+	{
+		TextBoxCore core => core.IsReadOnly,
+		RichEditBox richEditBox => richEditBox.IsReadOnly,
+		_ => false,
+	};
 
 	private static partial class NativeMethods
 	{
