@@ -741,6 +741,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24557")]
 		public async Task When_Closed_Then_DataContext_Kept()
 		{
+			// The expected values are native WinUI's for the same steps; the test runs there too.
 			var owner = new Button { Content = "owner" };
 			var content = new TextBlock();
 			content.SetBinding(TextBlock.TextProperty, new Binding());
@@ -792,6 +793,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24557")]
 		public async Task When_PlacementTarget_Then_DataContext_From_Owner()
 		{
+			// The expected values are native WinUI's for the same steps; the test runs there too.
 			var owner = new Button { Content = "owner", DataContext = "Owner" };
 			var target = new Button { Content = "target", DataContext = "Target" };
 			var SUT = new ToolTip { Content = "tooltip" };
