@@ -20,7 +20,7 @@ This option sets the generated theme or skin to be used in the generated app. Th
 
 - **Fluent**  
     Fluent is an open-source design system that drives Windows and WinUI's default style.  
-    Learn more about [Fluent Design System](https://www.microsoft.com/design/fluent/). This is the default for the blank preset.
+    Learn more about [Fluent Design System](https://www.microsoft.com/design/fluent/). This option adds the [Fluent theme](xref:Uno.Themes.Fluent.GetStarted), which exposes the same semantic styles, colors, and typography as the other themes on top of the built-in Fluent styles. This is the default for the blank preset.
 
     ```dotnetcli
     dotnet new unoapp -theme fluent
