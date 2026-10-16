@@ -509,6 +509,39 @@ public partial class Given_TextBox
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25173")]
+	[DataRow(true, DisplayName = "Named on its press, then a press named on its release only")]
+	[DataRow(false, DisplayName = "Named on its release only, then a press named on its press")]
+	public async Task When_Hardware_Keyboard_Enter_Release_Is_Lost(bool namedOnPress)
+	{
+		using var _ = UITestHelper.ResetWindowContent();
+
+		var SUT = await LoadFocusedTextBox("abc");
+		var keys = TrackEnterKey(SUT);
+		var (key, keyCode, nextKey, nextKeyCode) = namedOnPress ? ("Enter", 13, "Process", 229) : ("Process", 229, "Enter", 13);
+
+		// The keyup never comes, as when the page loses focus while the key is down. A press named on its keydown is
+		// raised from there, and one named on its release only by the line break, release included.
+		DispatchKeyDown(key, code: "Enter", keyCode: keyCode);
+		DispatchBeforeInput("insertLineBreak");
+		await WindowHelper.WaitForIdle();
+
+		var expected = namedOnPress ? new List<string> { "down" } : new List<string> { "down", "up" };
+		CollectionAssert.AreEqual(expected, keys);
+
+		// The next keydown of the key starts a new press, which is raised in full.
+		DispatchKeyDown(nextKey, code: "Enter", keyCode: nextKeyCode);
+		DispatchBeforeInput("insertLineBreak");
+		DispatchKeyUp("Enter", code: "Enter", keyCode: 13);
+		await WindowHelper.WaitForIdle();
+
+		expected.AddRange(new[] { "down", "up" });
+		CollectionAssert.AreEqual(expected, keys);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25173")]
 	public async Task When_Hardware_Keyboard_Enter_Pressed_On_Another_Control_Is_Released_On_The_TextBox()
 	{
 		using var _ = UITestHelper.ResetWindowContent();
