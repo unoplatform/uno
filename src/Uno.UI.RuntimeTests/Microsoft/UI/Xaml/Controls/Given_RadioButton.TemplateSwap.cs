@@ -1,6 +1,8 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -31,7 +33,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24354")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Radio_Template_Replaced_By_CheckBox_Template()
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Radio_Template_Replaced_By_CheckBox_Template(bool collapsedDuringSwap)
 		{
 			var radioField = new PickerModel(PickerKind.Radio, "Radio", "Small", "Medium", "Large");
 			var checkBoxField = new PickerModel(PickerKind.CheckBox, "CheckBox", "A", "B", "C");
@@ -47,8 +51,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual("Medium", radioField.SelectedLabels);
 
+				var outgoingRoot = (FrameworkElement)VisualTreeHelper.GetChild(page.Presenter, 0);
+				var outgoingRootRebound = false;
+				outgoingRoot.DataContextChanged += (_, e) => outgoingRootRebound |= ReferenceEquals(e.NewValue, checkBoxField);
+
+				if (collapsedDuringSwap)
+				{
+					page.Presenter.Visibility = Visibility.Collapsed;
+				}
+
 				page.Presenter.Content = checkBoxField;
 				await WindowHelper.WaitForIdle();
+				page.Presenter.Visibility = Visibility.Visible;
+				await WindowHelper.WaitForIdle();
+				Assert.IsFalse(outgoingRootRebound, "outgoing tree rebound to the new content");
 
 				(await FindCheckBox(page, "A")).IsChecked = true;
 				await WindowHelper.WaitForIdle();
