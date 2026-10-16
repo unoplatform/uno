@@ -113,7 +113,8 @@ internal partial class ContextMenuProcessor
 	{
 		bool isDraggableOrPannable = UIElement.IsDraggableOrPannable(element);
 
-		// Uno: a new hold supersedes a pending delayed one (they share the touch point and the timer).
+		// Uno: a new hold supersedes a pending delayed one (they share the touch point and the timer). With two fingers pressed
+		// less than 500 ms apart, the second press comes before the first hold starts the timer: only the second hold drops it.
 		StopContextMenuTimer();
 
 		if (isDraggableOrPannable)
@@ -169,12 +170,14 @@ internal partial class ContextMenuProcessor
 	public DispatcherTimer? GetContextMenuTimer() => _contextMenuTimer;
 
 	/// <summary>
-	/// Stops the delayed context menu of a touch hold on a draggable/pannable element, when the pointer is released or
-	/// cancelled (including by a DirectManipulation taking over), or a drag starts, before the delay elapsed.
+	/// Stops the delayed context menu of a touch hold on a draggable/pannable element, when a second pointer is pressed,
+	/// the pointer is released or cancelled (including by a DirectManipulation taking over), or a drag starts, before the
+	/// delay elapsed.
 	/// </summary>
 	/// <remarks>
-	/// WinUI stops it in PointerInputProcessor.cpp on XCP_POINTERUP, XCP_POINTERCAPTURECHANGED and XCP_POINTERSUSPENDED;
-	/// Uno has no window-level capture change, so the cancel and the drag start stand in for it.
+	/// WinUI stops it in PointerInputProcessor.cpp on XCP_POINTERDOWN, XCP_POINTERUP, a cancelled pointer,
+	/// XCP_POINTERCAPTURECHANGED and XCP_POINTERSUSPENDED; Uno has no window-level capture change, so the drag start stands
+	/// in for it.
 	/// </remarks>
 	public void StopContextMenuTimer()
 	{

@@ -446,6 +446,10 @@ internal partial class InputManager
 
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			// As in WinUI, a press while the delayed context menu of a hold is pending is a second touch, so it drops the menu.
+			// Like the release, any press does it, also one redirected to a manipulation or a second mouse button.
+			_inputManager.ContextMenuProcessor.StopContextMenuTimer();
+
 			// If 2+ mouse buttons are pressed, we only respond to the first.
 			if (args.CurrentPoint is { PointerDeviceType: PointerDeviceType.Mouse, Properties.HasMultipleButtonsPressed: true })
 			{

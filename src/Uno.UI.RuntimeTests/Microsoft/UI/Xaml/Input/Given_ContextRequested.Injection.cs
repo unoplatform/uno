@@ -433,5 +433,135 @@ public partial class Given_ContextRequested_Injection
 			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 		}
 	}
+
+	// As in WinUI (PointerInputProcessor.cpp, XCP_POINTERDOWN), a second touch pressed while the delayed context menu of a
+	// hold on a pannable element is pending drops that menu.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+	public async Task When_Touch_Hold_Then_Second_Finger_Pressed_Delayed_ContextFlyout_Does_Not_Open()
+	{
+		var flyout = new MenuFlyout();
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
+		var flyoutOpened = 0;
+		flyout.Opened += (_, _) => flyoutOpened++;
+
+		var holding = 0;
+		var target = new Border
+		{
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			Width = 100,
+			Height = 50,
+			ContextFlyout = flyout,
+		};
+		target.Holding += (_, _) => holding++;
+		var other = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.Green), Width = 100, Height = 50 };
+
+		await UITestHelper.Load(new StackPanel { Children = { new ScrollViewer { Content = target, Width = 200, Height = 100 }, other } });
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+		using var finger1 = injector.GetFinger(id: 11);
+		using var finger2 = injector.GetFinger(id: 22);
+
+		try
+		{
+			finger1.Press(target.GetAbsoluteBounds().GetCenter());
+			await TestServices.WindowHelper.WaitFor(() => holding == 1, timeoutMS: 5000, message: "The hold should be recognized");
+			Assert.AreEqual(0, flyoutOpened, "The context flyout of a hold on a pannable element is delayed");
+
+			// Kept pressed, as any release also drops the delayed menu.
+			finger2.Press(other.GetAbsoluteBounds().GetCenter());
+
+			// Longer than what remained of the 500 ms delay, shorter than the second finger's own hold: a menu still pending
+			// would open here.
+			await Task.Delay(600);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, flyoutOpened, "A second touch pressed during the delay must drop the delayed context flyout");
+		}
+		finally
+		{
+			finger2.Release();
+			finger1.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+		}
+	}
+
+	// Two fingers pressed less than 500 ms apart: the second press comes before the first hold starts the delayed context menu,
+	// so it is the second hold that must drop it (ContextMenuProcessor.ProcessContextRequestOnHoldingGesture).
+	// Each finger moves within the tap range just before its hold, as a hold takes its source from the last pointer event.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+	public async Task When_Two_Fingers_Held_Second_Hold_Drops_First_Delayed_ContextFlyout()
+	{
+		var flyout = new MenuFlyout();
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
+		var flyoutOpened = 0;
+		flyout.Opened += (_, _) => flyoutOpened++;
+
+		var clock = System.Diagnostics.Stopwatch.StartNew();
+		TimeSpan? targetHoldAt = null, otherHoldAt = null;
+		var target = new Border
+		{
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			Width = 100,
+			Height = 50,
+			ContextFlyout = flyout,
+		};
+		target.Holding += (_, e) =>
+		{
+			if (e.HoldingState == Microsoft.UI.Input.HoldingState.Started)
+			{
+				targetHoldAt ??= clock.Elapsed;
+			}
+		};
+		var other = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.Green), Width = 100, Height = 50 };
+		other.Holding += (_, e) =>
+		{
+			if (e.HoldingState == Microsoft.UI.Input.HoldingState.Started)
+			{
+				otherHoldAt ??= clock.Elapsed;
+			}
+		};
+
+		await UITestHelper.Load(new StackPanel { Children = { new ScrollViewer { Content = target, Width = 200, Height = 100 }, other } });
+
+		var processor = TestServices.WindowHelper.XamlRoot.VisualTree?.ContentRoot?.InputManager?.ContextMenuProcessor
+			?? throw new InvalidOperationException("ContextMenuProcessor is not available.");
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+		using var finger1 = injector.GetFinger(id: 11);
+		using var finger2 = injector.GetFinger(id: 22);
+
+		try
+		{
+			finger1.Press(target.GetAbsoluteBounds().GetCenter());
+			await Task.Delay(200);
+			finger2.Press(other.GetAbsoluteBounds().GetCenter());
+			finger1.MoveBy(1, 0, steps: 1);
+
+			await TestServices.WindowHelper.WaitFor(() => targetHoldAt is not null, timeoutMS: 5000, message: "The first hold should be recognized");
+			Assert.IsNotNull(processor.GetContextMenuTimer(), "The first hold, on a pannable element, should delay its context request");
+			finger2.MoveBy(1, 0, steps: 1);
+
+			await TestServices.WindowHelper.WaitFor(() => otherHoldAt is not null, timeoutMS: 5000, message: "The second hold should be recognized");
+			if (otherHoldAt - targetHoldAt >= TimeSpan.FromMilliseconds(500))
+			{
+				Assert.Inconclusive("The second hold came after the first hold's delayed request: the machine is too slow for this test.");
+			}
+
+			// Longer than the 500 ms delay of the first hold's request: a request still pending would open the flyout here.
+			await Task.Delay(700);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, flyoutOpened, "The second hold must drop the first hold's delayed context flyout");
+		}
+		finally
+		{
+			finger2.Release();
+			finger1.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+		}
+	}
 }
 #endif
