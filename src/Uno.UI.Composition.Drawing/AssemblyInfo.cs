@@ -9,10 +9,14 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.WebGpu.Init")]
 
+// The Skia backend gets IVT only to implement the host-internal IGpuDrawingFactory teardown hook.
+[assembly: InternalsVisibleTo("Uno.UI.Composition.Skia")]
+
 // The graphics negotiator (GraphicsRegistry, GraphicsInitialization, GraphicsContextFactory) is framework
 // host-plumbing, not third-party API, so it is internal + IVT'd to the Skia hosts; the third-party backend SPI
 // (IGraphicsProvider/IGraphicsContext/GraphicsContextKind/IDrawingFactory) stays public.
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.X11")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Wayland")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.MacOS")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly.Browser")]
@@ -26,3 +30,4 @@ using System.Runtime.CompilerServices;
 
 // Unit tests run without a host builder, so their assembly initializer registers the seams itself.
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Wayland.Tests")]

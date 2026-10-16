@@ -21,16 +21,10 @@
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Tmds.DBus.Protocol" />
-		<PackageReference Include="Tmds.DBus.Generator" />
-	</ItemGroup>
+	<Import Project="../Uno.UI.Runtime.Linux.Shared/Uno.UI.Runtime.Linux.Shared.props" />
 
 	<ItemGroup>
 		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.DBus.xml" Namespace="Uno.UI.Runtime.X11.DBus" GenerateDBusTypes="true" />
-		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.FileChooser.xml" Namespace="Uno.UI.Runtime.X11.DBus" GenerateDBusTypes="true" />
-		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.Request.xml" Namespace="Uno.UI.Runtime.X11.DBus" GenerateDBusTypes="true" />
-		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.Settings.xml" Namespace="Uno.UI.Runtime.X11.DBus" GenerateDBusTypes="true" />
 		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.IBus.Portal.xml" Namespace="Uno.UI.Runtime.X11.DBus.IBus" GenerateDBusTypes="true" />
 		<AdditionalFiles Include="dbus-interfaces/org.fcitx.Fcitx.InputMethod1.xml" Namespace="Uno.UI.Runtime.X11.DBus.Fcitx" GenerateDBusTypes="true" />
 		<AdditionalFiles Include="dbus-interfaces/org.fcitx.Fcitx.InputContext1.xml" Namespace="Uno.UI.Runtime.X11.DBus.Fcitx" GenerateDBusTypes="true" />

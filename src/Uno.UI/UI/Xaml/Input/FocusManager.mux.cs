@@ -21,6 +21,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Hosting;
 using DirectUI;
 using Microsoft.UI.Input;
 
@@ -1833,6 +1834,10 @@ namespace Microsoft.UI.Xaml.Input
 			}
 			_focusedElement = newFocusTarget;
 			_realFocusStateForFocusedElement = nonCoercedFocusState;
+			if (_contentRoot.XamlRoot is { } xamlRoot)
+			{
+				XamlRootMap.GetHostForRoot(xamlRoot)?.OnManagedFocusChanged(_focusedElement is not null);
+			}
 
 			//
 			// NOTE:

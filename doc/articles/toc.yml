@@ -219,6 +219,8 @@
         href: xref:Uno.Guides.AddUnoToExistingSolution
       - name: Using the Skia Desktop
         href: xref:Uno.Skia.Desktop
+      - name: Wayland
+        href: features/using-wayland.md
       - name: Linux Framebuffer
         href: features/using-linux-framebuffer.md
       - name: Headless (offscreen)

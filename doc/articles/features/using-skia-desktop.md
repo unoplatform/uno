@@ -9,6 +9,7 @@ Uno Platform supports running applications using a common Skia Desktop shell, wh
 The currently supported targets and platforms are:
 
 - Linux X11
+- [Linux Wayland](xref:Uno.Skia.Linux.Wayland)
 - [Linux Framebuffer](xref:Uno.Skia.Linux.Framebuffer)
 - Windows (Using Win32 shell)
 - [macOS (Using an AppKit shell)](xref:Uno.Skia.macOS)
@@ -112,9 +113,13 @@ Each platform exposes its own `RenderingBackend` enum with only the backends it 
 
 Alternatively, you can use `FeatureConfiguration.Rendering` flags for backwards compatibility. The builder API takes precedence when both are used.
 
+## Wayland specifics
+
+Register `.UseWayland()` before `.UseX11()` to prefer native Wayland when a compositor is reachable and retain X11 fallback otherwise. The native host uses compositor-provided integer or fractional scaling, server-side or client-side decorations, desktop portals, clipboard/drop protocols and compositor IME sessions. See [Using the Wayland host](xref:Uno.Skia.Linux.Wayland) for dependencies, protocol fallbacks and limitations.
+
 ## X11 Specifics
 
-When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI scaling cannot be determined in a reliable way. In order to specify the scaling to be used by Uno Platform, set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. The default value is `1.0`.
+When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI scaling cannot be determined in a reliable way. Register the [Wayland host](xref:Uno.Skia.Linux.Wayland) before `UseX11()` to get the scale from the compositor, or set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable to specify the scaling to be used by Uno Platform. The default value is `1.0`.
 
 The X11 support uses DBus for various interactions with the system, such as file selection. Make sure that dbus is installed.
 
@@ -180,3 +185,7 @@ public record Entity(string Name);
 The build system will automatically preserve the `Name` property of `Entity`, allowing `{Binding MyEntity.Name}` expressions to work correctly in Native AOT builds.
 
 For more information, see [the runtime documentation](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/reflection-in-aot-mode.md) and the [.NET Native AOT documentation](https://learn.microsoft.com/dotnet/core/deploying/native-aot/).
+
+## Linux text rendering
+
+On Linux, antialiased glyphs use Skia's neutral-luminance coverage table (approximately linear, the same for dark and light text) instead of the luminance-dependent gamma tables, which thin dark text at 1x compared with Qt, GTK and cairo. Set `UNO_SKIA_TEXT_GAMMA=skia` before starting the app to restore Skia's tables.

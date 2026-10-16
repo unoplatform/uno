@@ -254,7 +254,23 @@ public partial class CompositionTarget
 		}
 	}
 
-	internal void OnRenderFrameOpportunity()
+	/// <summary>
+	/// A host that declines to draw the latest frame (for example because it was recorded for an outdated
+	/// window size) still has to release the next UI frame, since the UI schedules it from the native frame
+	/// request; otherwise the UI never records the frame the host is waiting for.
+	/// </summary>
+	internal void OnNativePlatformFrameSkipped()
+	{
+		Interlocked.Exchange(ref _lastNativeFrameTimestamp, Stopwatch.GetTimestamp());
+		_stalledRenderReports = 0;
+
+		if (Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, false))
+		{
+			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
+		}
+	}
+
+	internal void OnRenderFrameOpportunity(bool forceRecord = false)
 	{
 		// If we get an opportunity to get call Render earlier than EnqueuePaintCallback, then we do that
 		// but skip the Render call in the next EnqueuePaintCallback so that overall we're still keeping
@@ -268,10 +284,12 @@ public partial class CompositionTarget
 			{
 				LogRenderState();
 				AssertRenderStateMachine();
-				if (RenderRequested && !_renderedAheadOfTime)
+				// A host-applied resize invalidates an earlier ahead-of-time picture before its native draw.
+				if (forceRecord || (RenderRequested && !_renderedAheadOfTime))
 				{
 					RenderRequested = false;
 					_renderedAheadOfTime = true;
+					_renderRequestedAfterAheadOfTimePaint = false;
 					shouldRender = true;
 				}
 				AssertRenderStateMachine();
