@@ -613,6 +613,42 @@ public class Given_ProxyLifecycleManager
 		}
 	}
 
+	[TestMethod]
+	[Description("With roots fallback, an explicit solution (--solution) starts the DevServer at once: roots could not change it, so waiting for them would hang uno_app_initialize (#25524)")]
+	public async Task WhenRootsFallbackWithExplicitSolution_DevServerStartsWithoutWaitingForRoots()
+	{
+		var root = CreateTempDirectory();
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			var (_, appSolution) = await CreateDeepAppLayoutAsync(root);
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var (subject, healthService, createdMonitor) = CreateSubject();
+			monitor = createdMonitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", await resolver.ResolveSolutionAsync(root, appSolution));
+			SetPrivateField(subject, "_forceRootsFallback", true);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			typeof(ProxyLifecycleManager)
+				.GetMethod("EnsureDevServerStartedFromSolutionDirectory", BindingFlags.Instance | BindingFlags.NonPublic)!
+				.Invoke(subject, null);
+
+			healthService.DevServerStarted.Should().BeTrue();
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
 	private static string? GetWorkspaceObservationRoot(ProxyLifecycleManager subject)
 		=> (string?)typeof(ProxyLifecycleManager)
 			.GetMethod("GetWorkspaceObservationRoot", BindingFlags.Instance | BindingFlags.NonPublic)!
