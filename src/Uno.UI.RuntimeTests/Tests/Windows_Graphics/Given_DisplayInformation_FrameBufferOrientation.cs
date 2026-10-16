@@ -1,4 +1,5 @@
-#if HAS_UNO
+// Application.Host only exists on Skia, and the test only runs on the framebuffer host.
+#if __SKIA__
 #nullable enable
 
 using System;
