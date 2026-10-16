@@ -47,12 +47,17 @@ internal partial struct ImageData
 	/// Whether the data is shared by every source that loads the same cached key, in which case no single source may
 	/// release it. Travels with the result so a cancelled or superseded open releases exactly what it owned.
 	/// </summary>
-	public bool IsShared { get; private init; }
+	public bool IsShared => Share is not null;
 
 	/// <summary>
-	/// Returns this data marked as shared (see <see cref="IsShared"/>).
+	/// The decode this data is shared through, which releases it once nothing displays it.
 	/// </summary>
-	internal ImageData AsShared() => this with { IsShared = true };
+	public SharedImageDecode? Share { get; private init; }
+
+	/// <summary>
+	/// Returns this data marked as shared through <paramref name="share"/>.
+	/// </summary>
+	internal ImageData AsShared(SharedImageDecode share) => this with { Share = share };
 
 	public ImageDataKind Kind { get; }
 
