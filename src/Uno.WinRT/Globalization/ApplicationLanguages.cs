@@ -129,7 +129,7 @@ public static partial class ApplicationLanguages
 		}
 		else
 		{
-			lt = config?.Locale?.ToLanguageTag();
+			lt = config?.Locales?.Get(0)?.ToLanguageTag();
 		}
 #endif
 
