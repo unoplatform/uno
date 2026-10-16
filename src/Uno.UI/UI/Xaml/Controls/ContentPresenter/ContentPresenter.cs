@@ -723,6 +723,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	{
 		DataTemplate resolvedTemplate = null;
 		var isTemplateResolved = false;
+		var contentTemplate = ContentTemplate;
+		var contentTemplateSelector = ContentTemplateSelector;
 
 		if (oldValue is View || newValue is View)
 		{
@@ -754,6 +756,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 		TryRegisterNativeElement(oldValue, newValue);
+
+		// The DataContext change runs bindings synchronously, which can change the template inputs or set Content
+		// again, so the template resolved above is only reused if they are unchanged.
+		isTemplateResolved &= ReferenceEquals(Content, newValue)
+			&& ReferenceEquals(ContentTemplate, contentTemplate)
+			&& ReferenceEquals(ContentTemplateSelector, contentTemplateSelector);
 
 		SetUpdateTemplate(resolvedTemplate, isTemplateResolved);
 	}
