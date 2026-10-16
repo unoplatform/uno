@@ -458,6 +458,98 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			Assert.AreEqual(1, codec.Decodes, "The default TryGetSize should read the size from a decode.");
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		public async Task When_SetSourceAsync_On_Opened_Source_Then_Completes_Once_New_Source_Opens()
+		{
+			var sut = new BitmapImage();
+			var opened = 0;
+			sut.ImageOpened += (_, _) => opened++;
+			var image = new Image { Width = 50, Height = 50, Source = sut };
+			WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+
+			await sut.SetSourceAsync(new MemoryStream(await ReadAssetAsync("Formats/uno-overalls.png")).AsRandomAccessStream()).AsTask().WaitAsync(TimeSpan.FromSeconds(10));
+			Assert.AreEqual(1, opened);
+
+			await sut.SetSourceAsync(new MemoryStream(await ReadAssetAsync("ingredient3.png")).AsRandomAccessStream()).AsTask().WaitAsync(TimeSpan.FromSeconds(10));
+			Assert.AreEqual(2, opened, "SetSourceAsync should complete once the new source opens, not with the previous one.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		public async Task When_SetSource_On_Shown_Source_Then_Image_Shows_New_Source()
+		{
+			var sut = new BitmapImage();
+			var opened = 0;
+			sut.ImageOpened += (_, _) => opened++;
+			var image = new Image { Source = sut };
+			WindowHelper.WindowContent = new Canvas { Children = { image } };
+			await WindowHelper.WaitForLoaded(image, isLoaded: e => e.IsLoaded);
+
+			sut.SetSource(new MemoryStream(await ReadAssetAsync("Formats/uno-overalls.png")).AsRandomAccessStream());
+			await WindowHelper.WaitFor(() => opened == 1, timeoutMS: 5000, message: "The first source should open for the Image showing the bitmap.");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(800, image.ActualWidth, 1);
+
+			sut.SetSource(new MemoryStream(await ReadAssetAsync("ingredient3.png")).AsRandomAccessStream());
+			await WindowHelper.WaitFor(() => opened == 2, timeoutMS: 5000, message: "The second source should replace the first in the Image.");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(147, image.ActualWidth, 1);
+			Assert.AreEqual(147, sut.PixelWidth);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		public async Task When_SetSource_On_Opened_Source_Then_Image_Shown_Later_Gets_New_Source()
+		{
+			var sut = new BitmapImage();
+			var opened = 0;
+			sut.ImageOpened += (_, _) => opened++;
+			await sut.SetSourceAsync(new MemoryStream(await ReadAssetAsync("Formats/uno-overalls.png")).AsRandomAccessStream()).AsTask().WaitAsync(TimeSpan.FromSeconds(10));
+			Assert.AreEqual(1, opened);
+
+			sut.SetSource(new MemoryStream(await ReadAssetAsync("ingredient3.png")).AsRandomAccessStream());
+			var image = new Image { Source = sut };
+			WindowHelper.WindowContent = new Canvas { Children = { image } };
+			await WindowHelper.WaitForLoaded(image, isLoaded: e => e.IsLoaded);
+
+			await WindowHelper.WaitFor(() => opened == 2, timeoutMS: 5000, message: "The Image should get the new source, not the image opened from the previous one.");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(147, image.ActualWidth, 1);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		public async Task When_SetSource_While_Previous_Source_Opens_Unseen_Then_Its_Result_Is_Dropped()
+		{
+			var large = await ReadAssetAsync("LargeWisteria.jpg"); // 2400x1400
+			var small = await ReadAssetAsync("ingredient3.png"); // 147x147
+			var sut = new BitmapImage();
+			var openedWidths = new List<int>();
+			sut.ImageOpened += (_, _) => openedWidths.Add(sut.PixelWidth);
+			sut.SetSource(new MemoryStream(large).AsRandomAccessStream());
+			var image = new Image();
+			WindowHelper.WindowContent = new Canvas { Children = { image } };
+			await WindowHelper.WaitForLoaded(image, isLoaded: e => e.IsLoaded);
+
+			// Showing the bitmap opens it; once nothing shows it, that open is still in flight when the source changes.
+			image.Source = sut;
+			image.Source = null;
+			sut.SetSource(new MemoryStream(small).AsRandomAccessStream());
+			await Task.Delay(1000);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(147, sut.PixelWidth, "The previous source's late result shouldn't set the size.");
+			CollectionAssert.DoesNotContain(openedWidths, 2400, "The previous source's open shouldn't raise ImageOpened.");
+
+			image.Source = sut;
+			await WindowHelper.WaitFor(() => openedWidths.Contains(147), timeoutMS: 5000);
+			CollectionAssert.DoesNotContain(openedWidths, 2400);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(147, image.ActualWidth, 1);
+		}
+
 		private static BitmapImage SetSource(CountingImageCodec codec, byte[] bytes)
 		{
 			var sut = new BitmapImage();

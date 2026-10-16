@@ -222,6 +222,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			}
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		public async Task When_SetSourceAsync_Then_Source_Is_Opened_Once()
+		{
+			var bytes = await ReadRotatedJpegAsync();
+			var codec = new SizeReadingCountingImageCodec(global::Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current, bytes.Length)
+			{
+				ImageSize = (400, 250),
+			};
+			var sut = new WriteableBitmap(1, 1);
+
+			using (codec.Register())
+			{
+				await sut.SetSourceAsync(new MemoryStream(bytes).AsRandomAccessStream()).AsTask().WaitAsync(TimeSpan.FromSeconds(10));
+			}
+
+			Assert.AreEqual(1, codec.Decodes);
+			Assert.AreEqual(1, codec.CreatedImages, "SetSourceAsync should open the source once, making one image from the pixel buffer.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+		public async Task When_SetSourceAsync_Opens_And_Fails_For_A_Subscriber_Then_It_Completes()
+		{
+			// A 0x0 bitmap fails to open, synchronously, and an undecodable stream leaves it 0x0.
+			var sut = new WriteableBitmap(0, 0);
+			var image = new Image { Width = 10, Height = 10, Source = sut };
+			var failed = false;
+			image.ImageFailed += (_, _) => failed = true;
+			WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(failed, "Precondition: the 0x0 bitmap fails to open.");
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/InvalidImage.jpg"));
+			var bytes = (await FileIO.ReadBufferAsync(file)).ToArray();
+
+			await sut.SetSourceAsync(new MemoryStream(bytes).AsRandomAccessStream()).AsTask().WaitAsync(TimeSpan.FromSeconds(10));
+		}
+
 		private static async Task<byte[]> ReadRotatedJpegAsync()
 		{
 			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/testimage_exif_rotated_different_dimensions.jpg"));

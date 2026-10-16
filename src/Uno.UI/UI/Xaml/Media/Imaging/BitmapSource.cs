@@ -98,6 +98,12 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			Stream = clonedStreamSource.AsStream();
 #endif
 			OnSetSource();
+
+#if __CROSSRUNTIME__
+			// The previous source's image and any open of it in flight go, and whatever shows this source gets the new one
+			// (MUX Reference: CImageSource::SetSource — imagesource.cpp).
+			InvalidateSource();
+#endif
 		}
 
 		/// <summary>
@@ -125,9 +131,16 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #if __CROSSRUNTIME__
 			var tcs = new TaskCompletionSource<object>();
 			using var r = ct.Register(() => tcs.TrySetCanceled());
-			using var s = Subscribe(OnChanged);
 
-			InvalidateSource();
+			// SetSourceCore dropped the previous source's data and opened the new source for any existing subscriber:
+			// subscribing waits for that open, or opens the source when nothing else subscribes.
+			if (_imageData.Kind == ImageDataKind.Error)
+			{
+				// That open failed synchronously: no other result follows.
+				return;
+			}
+
+			using var s = Subscribe(OnChanged);
 
 			await tcs.Task;
 
