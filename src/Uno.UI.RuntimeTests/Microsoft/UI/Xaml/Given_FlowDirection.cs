@@ -705,6 +705,7 @@ public class Given_FlowDirection
 		// A right-to-left element at the boundary of a left-to-right layout is the element being mirrored, so its layout clip (the slot on
 		// the left of its parent) must be mirrored along with its content: the visible part is what the element lays out on its left, which
 		// is its last column.
+		using var _ = UITestHelper.ResetWindowContent();
 		var content = new Grid
 		{
 			ColumnDefinitions = { new ColumnDefinition(), new ColumnDefinition() },
