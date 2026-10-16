@@ -79,6 +79,16 @@ onmessage = async (e) => {
 			return worker;
 		}
 
+		// Copies a decode's pixels into memory the app allocated. The destination is a .NET span: it is only valid during
+		// this call, so the copy must stay synchronous.
+		public static copyPixels(source: Uint8Array, destination: any): void {
+			if (source.length !== destination.length) {
+				throw new Error(`Expected ${destination.length} bytes of pixels, got ${source.length}.`);
+			}
+
+			destination.set(source);
+		}
+
 		public static loadFromArray(array: Uint8Array): Promise<object> {
 			const seqNo = ++ImageLoader.sequenceNumber;
 			return new Promise<object>((resolve) => {
