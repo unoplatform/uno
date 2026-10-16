@@ -81,6 +81,15 @@ namespace Microsoft.Graphics.DirectX
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		YccStudioG24TopLeftP2020 = 24,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		RgbFullG10NoneP2020 = 25,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		RgbFullG22ExtNoneP709 = 26,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		RgbFullG22NoneP3 = 27,
+#endif
 	}
 #endif
 }

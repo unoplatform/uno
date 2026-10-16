@@ -106,9 +106,9 @@
 		<PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
 		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="11.0.0-rc.1.26425.128" />
 		<PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
-		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
+		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
 		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.6.0" />
-		<PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
+		<PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
 		<PackageVersion Include="ModelContextProtocol" Version="1.1.0" />
 		<PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.1.0" />
 		<PackageVersion Include="Mono.Cecil" Version="0.11.6" />

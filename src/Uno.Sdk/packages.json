@@ -127,14 +127,14 @@
 	},
 	{
 		"group": "WinAppSdk",
-		"version": "2.4.0",
+		"version": "2.5.1",
 		"packages": [
 			"Microsoft.WindowsAppSDK"
 		]
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.28000.2526",
+		"version": "10.0.28000.2705",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
