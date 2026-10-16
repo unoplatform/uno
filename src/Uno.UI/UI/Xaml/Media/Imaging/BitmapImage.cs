@@ -317,7 +317,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					{
 						share = SharedImageDecode.GetOrStart(
 							new BitmapImageCacheKey(uri, decodeWidth, decodeHeight),
-							() => ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, CancellationToken.None, decodeWidth, decodeHeight));
+							() => ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, CancellationToken.None, decodeWidth, decodeHeight, useEncodedCache: true));
 
 						share.BeginOpen();
 						imageDataTask = share.Load;
