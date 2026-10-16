@@ -853,7 +853,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 					SUT.IsOpen = false;
 					await TestServices.WindowHelper.WaitForIdle();
-					Assert.IsNull(SUT.Parent);
+
+					// WinUI's popup lets go of the tooltip once the Closed transition has played (ToolTip::Close).
+					await TestServices.WindowHelper.WaitFor(() => SUT.Parent is null, timeoutMS: 3000, message: "The popup kept the closed tooltip.");
 					Assert.IsNull(VisualTreeHelper.GetParent(SUT));
 				}
 			}
