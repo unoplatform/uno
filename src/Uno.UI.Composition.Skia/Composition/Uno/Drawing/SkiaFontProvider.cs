@@ -131,6 +131,14 @@ internal sealed class SkiaFontProvider : IFontProvider
 	private static bool FamilyExists(string familyName)
 		=> _familyExists.GetOrAdd(familyName, static name =>
 		{
+			// CoreText's FromFamilyName maps these CSS generic names to Helvetica, Times and Courier, but its family
+			// lookup doesn't (map_css_names in SkFontMgr_mac_ct.cpp), so they count as present there.
+			if ((OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsMacCatalyst())
+				&& name is "sans-serif" or "serif" or "monospace")
+			{
+				return true;
+			}
+
 			using var styles = SKFontManager.Default.GetFontStyles(name);
 			return styles is { Count: > 0 };
 		});
