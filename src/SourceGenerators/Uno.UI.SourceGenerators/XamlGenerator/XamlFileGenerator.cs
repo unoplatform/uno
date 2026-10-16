@@ -3566,7 +3566,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								writer.AppendLineInvariantIndented("__that.{0} = {1};", value, writer.AppliedParameterName);
 
-								if (IsXNameMember(member, objectDefinition.Type) && IsXNameProvider(objectDefinition.Type))
+								if (IsXNameMember(member, objectDefinition.Type) && ShouldSetXName(objectDefinition.Type))
 								{
 									BuildSetXName(writer, value);
 								}
@@ -3578,7 +3578,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								writer.AppendLineInvariantIndented("// x:Name {0}", member.Value, member.Value);
 
-								if (IsXNameProvider(objectDefinition.Type))
+								if (ShouldSetXName(objectDefinition.Type))
 								{
 									BuildSetXName(writer, value);
 								}
@@ -6315,7 +6315,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// but is considered of an unknown type. This can happen when providing the
 						// name of a control using x:Name instead of Name.
 						var hasNameProperty = HasProperty(objectDefinition.Type, "Name");
-						if (hasNameProperty && !IsXNameProvider(objectDefinition.Type))
+						if (hasNameProperty && !ShouldSetXName(objectDefinition.Type))
 						{
 							writer.AppendLineInvariantIndented("{0} = \"{1}\"{2}", fullValueSetter, member.Value, closingPunctuation);
 						}
@@ -6324,7 +6324,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		// WinUI sets x:Name on types like VisualState whose Name is get-only.
+		// x:Name on an object without a settable Name property (e.g. VisualState, MenuFlyout, brushes).
 		private static void BuildSetXName(XamlLazyApplyBlockIIndentedStringBuilder writer, string? name)
 			=> writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXName({writer.AppliedParameterName}, \"{name}\");");
 

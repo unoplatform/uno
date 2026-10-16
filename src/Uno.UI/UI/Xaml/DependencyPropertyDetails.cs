@@ -196,7 +196,11 @@ namespace Microsoft.UI.Xaml
 			switch (precedence)
 			{
 				case DependencyPropertyValuePrecedences.Coercion:
-					EnsureModifiedValue().CoercedValue = value;
+					// Clearing a coercion that was never applied must not allocate a ModifiedValue just to store Unset.
+					if (value != DependencyProperty.UnsetValue || _value is ModifiedValue)
+					{
+						EnsureModifiedValue().CoercedValue = value;
+					}
 					break;
 
 				case DependencyPropertyValuePrecedences.Animations:

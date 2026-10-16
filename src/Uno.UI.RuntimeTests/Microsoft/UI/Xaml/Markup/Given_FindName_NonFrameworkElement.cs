@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup;
@@ -148,6 +150,25 @@ public class Given_FindName_NonFrameworkElement
 	}
 
 	[TestMethod]
+	public void When_XName_On_NonFrameworkElement_Then_Name_Property_Is_Set()
+	{
+		var grid = (Grid)XamlReader.Load($"<Grid {Ns}><Grid.Resources><Storyboard x:Key='k' x:Name='SB'/></Grid.Resources></Grid>");
+
+		var storyboard = (Storyboard)grid.Resources["k"];
+
+		Assert.AreEqual("SB", storyboard.GetValue(FrameworkElement.NameProperty));
+	}
+
+	[TestMethod]
+	public void When_Compiled_XName_On_NonFrameworkElement_Then_Name_Property_Is_Set()
+	{
+		var page = new FindName_NonFrameworkElement_Page();
+
+		Assert.AreEqual("CompiledTransform", page.CompiledTransformElement.GetValue(FrameworkElement.NameProperty));
+		Assert.AreEqual("CompiledMenu", page.CompiledMenuElement.GetValue(FrameworkElement.NameProperty));
+	}
+
+	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21129")]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // NameScope is Uno-internal.
 	public void When_Compiled_Plain_Name_Then_Registered_In_NameScope()
@@ -168,5 +189,16 @@ public class Given_FindName_NonFrameworkElement
 
 		Assert.IsInstanceOfType(NameScope.GetNameScope(grid)?.FindName("PlainNamedBorder"), typeof(Border));
 #endif
+	}
+
+	[TestMethod]
+	public void When_NameProperty_Set_On_DependencyObject_Then_No_AutomationId_Side_Effect()
+	{
+		var brush = new SolidColorBrush();
+
+		brush.SetValue(FrameworkElement.NameProperty, "Named");
+
+		Assert.AreEqual("Named", brush.GetValue(FrameworkElement.NameProperty));
+		Assert.AreEqual("", AutomationProperties.GetAutomationId(brush));
 	}
 }

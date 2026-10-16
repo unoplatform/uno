@@ -42,9 +42,13 @@ namespace Microsoft.UI.Xaml
 
 		public VisualState CurrentState => _current.state;
 
-		public string Name { get; internal set; }
+		public string Name
+		{
+			get => (string)GetValue(NameProperty);
+			internal set => SetValue(NameProperty, value);
+		}
 
-		void IXNameProvider.SetXName(string name) => Name = name;
+		void IXNameProvider.SetXName(string name) => SetValue(NameProperty, name);
 
 		#region States Dependency Property
 
@@ -649,6 +653,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public override string ToString()
-			=> Name ?? $"<unnamed group {GetHashCode()}>";
+			=> string.IsNullOrEmpty(Name) ? $"<unnamed group {GetHashCode()}>" : Name;
 	}
 }

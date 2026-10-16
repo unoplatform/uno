@@ -1350,6 +1350,18 @@ To port a custom source, move the work as follows:
   regular controls. Use `ListView` and `GridView` from the default namespace. Types that do exist in that
   namespace, such as `legacy:ProgressRing`, are unaffected.
 
+- **`x:Name` on a custom `DependencyObject` no longer sets its own `Name` property.** As on WinUI,
+  `x:Name` on any non-`FrameworkElement` `DependencyObject` is stored in the framework's name property
+  (`FrameworkElement.NameProperty`, read back with `GetValue(FrameworkElement.NameProperty)`), even when
+  the type declares its own CLR `Name` property or a `"Name"` dependency property. Uno used to write
+  `x:Name` into that property, so code that read it now gets its default value. Use a plain `Name="..."`
+  attribute to set the type's own property, or read `GetValue(FrameworkElement.NameProperty)`.
+
+- **`VisualState.Name` and `VisualStateGroup.Name` default to `""`, not `null`.** This matches WinUI.
+  Code that checks an unnamed state or group with `Name == null` or `Name ?? ...` should use
+  `string.IsNullOrEmpty(Name)`. As on WinUI, `VisualStateManager.GoToState(control, "", ...)` returns
+  `false` and never activates an unnamed state.
+
 - **A relative URI on a `Uri`-typed property now compiles to `ms-resource:///Files/…`**, the MRT
   local-resource form WinUI produces. Previously Uno emitted the relative string verbatim. This
   affects custom `Uri` properties, `HyperlinkButton.NavigateUri`, `Hyperlink.NavigateUri`,
