@@ -540,6 +540,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			AssertDecoded((await DecodeInBrowser(images[0].Png))[0], images[0].Width, images[0].Height, images[0].PremultipliedFirstPixel);
 		}
 
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25541")]
+		public async Task When_Browser_Decodes_Then_Image_Holds_Bgra_Premultiplied()
+		{
+			// Red, green, blue and a half-transparent orange, with the BGRA premultiplied values the image must hold.
+			var pixels = new (SKColor Color, (int B, int G, int R, int A) Expected)[]
+			{
+				(new SKColor(255, 0, 0), (0, 0, 255, 255)),
+				(new SKColor(0, 255, 0), (0, 255, 0, 255)),
+				(new SKColor(0, 0, 255), (255, 0, 0, 255)),
+				(new SKColor(200, 100, 50, 128), (25, 50, 100, 128)),
+			};
+			byte[] png;
+			using (var bitmap = new SKBitmap(pixels.Length, 1, SKColorType.Rgba8888, SKAlphaType.Unpremul))
+			{
+				for (var x = 0; x < pixels.Length; x++)
+				{
+					bitmap.SetPixel(x, 0, pixels[x].Color);
+				}
+
+				using var data = bitmap.Encode(SKEncodedImageFormat.Png, 100);
+				png = data.ToArray();
+			}
+
+			// A failed browser decode falls back to SKCodec, which gives the same pixels: make sure the browser takes this one.
+			AssertDecoded((await DecodeInBrowser(png))[0], pixels.Length, 1, pixels[0].Expected);
+
+			var decoded = await global::Uno.Helpers.ImageSourceHelpers.ReadFromStreamAsCompositionSurface(new MemoryStream(png), CancellationToken.None);
+			Assert.AreEqual(global::Uno.UI.Xaml.Media.ImageDataKind.CompositionSurface, decoded.Kind, decoded.ToString());
+			using var surface = (global::Microsoft.UI.Composition.CompositionImageSurface)decoded.CompositionSurface;
+			var image = surface.Image;
+			Assert.IsNotNull(image);
+			Assert.AreEqual(pixels.Length, image.PixelWidth);
+			Assert.AreEqual(1, image.PixelHeight);
+
+			var bytes = new byte[pixels.Length * 4];
+			image.CopyPixels(bytes);
+			for (var x = 0; x < pixels.Length; x++)
+			{
+				var (b, g, r, a) = pixels[x].Expected;
+				var actual = (B: bytes[x * 4], G: bytes[x * 4 + 1], R: bytes[x * 4 + 2], A: bytes[x * 4 + 3]);
+				Assert.IsTrue(
+					Math.Abs(actual.B - b) <= 2 && Math.Abs(actual.G - g) <= 2 && Math.Abs(actual.R - r) <= 2 && Math.Abs(actual.A - a) <= 2,
+					$"Pixel {x} is BGRA {actual.B},{actual.G},{actual.R},{actual.A}, expected {b},{g},{r},{a}.");
+			}
+		}
+
 		private static byte[] CreatePng(int width, int height, SKColor color)
 		{
 			using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
