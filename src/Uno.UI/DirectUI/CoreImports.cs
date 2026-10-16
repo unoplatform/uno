@@ -1,4 +1,8 @@
-﻿#nullable enable
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference CoreImports.h, CoreImports.cpp, commit 2b8c7757e
+
+#nullable enable
 
 using System;
 using System.Runtime.CompilerServices;
@@ -10,7 +14,6 @@ using Windows.System;
 
 namespace DirectUI;
 
-// MUX Reference CoreImports.h, commit 2b8c7757e
 internal enum VisualRelativeKind
 {
 	Child = 0,
@@ -20,7 +23,6 @@ internal enum VisualRelativeKind
 
 internal static class CoreImports
 {
-	// MUX Reference CoreImports.cpp, commit 2b8c7757e — DependencyObject_GetVisualRelative.
 	internal static DependencyObject? DependencyObject_GetVisualRelative(UIElement element, VisualRelativeKind relativeLinkKind)
 	{
 		ArgumentNullException.ThrowIfNull(element);
