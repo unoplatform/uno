@@ -19,11 +19,18 @@ internal static class InjectedPointerHoldExtensions
 	public static async Task Hold(this IInjectedPointer pointer, Point location, bool advanceTimestamps = true)
 	{
 		pointer.Press(location);
-		await Task.Delay(TimeSpan.FromSeconds(1));
 #if HAS_UNO
+		await Task.Delay(TimeSpan.FromSeconds(1));
 		if (advanceTimestamps)
 		{
 			pointer.MoveTo(location, steps: 0, stepOffsetInMilliseconds: 1000);
+		}
+#else
+		// Windows only recognizes an injected hold when the contact keeps reporting frames.
+		for (var i = 0; i < 10; i++)
+		{
+			await Task.Delay(100);
+			pointer.MoveTo(location, steps: 0, stepOffsetInMilliseconds: 0);
 		}
 #endif
 		pointer.Release();
