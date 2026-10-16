@@ -1946,8 +1946,8 @@ namespace Microsoft.UI.Xaml
 				// right-to-left subtree, or a text surface un-mirroring its text within one), mirror the clip the same way so that it keeps
 				// covering the arranged slot. Ancestor clips are converted from the parent's coordinates by the compositor and already account
 				// for the transform. The render transform adapter, created above whenever the element has a flow direction transform, holds the
-				// transform that was just applied to the visual.
-				if (!isAncestorClip && _renderTransform is { FlowDirectionTransform: { IsIdentity: false } flowDirectionTransform })
+				// transform that was just applied to the visual. An empty clip stays empty: transforming it would give NaN.
+				if (!isAncestorClip && !layoutClip.IsEmpty && _renderTransform is { FlowDirectionTransform: { IsIdentity: false } flowDirectionTransform })
 				{
 					layoutClip = flowDirectionTransform.Transform(layoutClip);
 				}
