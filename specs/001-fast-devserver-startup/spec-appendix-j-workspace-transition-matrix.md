@@ -29,7 +29,7 @@ The following rules define the required behavior for dynamic workspace changes:
 6. If the recomputed result is `Ambiguous`, the bridge must **not** arbitrarily choose a workspace. It must surface diagnostics and must not switch silently.
 7. If a repo mutation does not change the effective workspace identity, the session must remain stable even if many unrelated files changed.
 8. Health must update immediately after each recomputation; no transition may wait for an upstream timeout before surfacing the new state.
-9. An explicit `uno_app_select_solution` request may override auto-discovery for the current session and is allowed to trigger `Start` or `Restart` when the selected solution resolves to a valid Uno workspace.
+9. An explicit `uno_app_select_solution` request (or `--solution` at startup) overrides auto-discovery for the current session and is allowed to trigger `Start` or `Restart` when the selected solution resolves to a valid Uno workspace. Later file changes re-resolve that solution rather than re-running discovery: an SDK change restarts it, and a solution that stops resolving degrades the session while staying selected until it resolves again.
 
 ---
 
@@ -47,21 +47,26 @@ The following rules define the required behavior for dynamic workspace changes:
 | Single valid Uno workspace | Repo mutation introduces a second equally valid Uno workspace | `Ambiguous` | Do not switch silently; move to diagnostic state | Lifecycle/proxy unit + health/report unit | Covered |
 | `Ambiguous` | Repo mutation leaves one clear valid Uno workspace | Single valid Uno workspace | Start or resume on the single clear workspace | Lifecycle/proxy unit + integration | Covered |
 | Single valid Uno workspace | MCP roots confirm the same workspace | Same workspace | No restart | Lifecycle/proxy unit | Covered |
-| Single valid Uno workspace A | MCP roots point to different valid workspace B | Single valid Uno workspace B or diagnostic state, according to session policy | Stop A then start B once dynamic switching is implemented; until then, stay diagnostic and never switch silently | Lifecycle/proxy unit | Covered |
+| Single valid Uno workspace A, DevServer running | MCP roots point to a different workspace B (valid or not) | Workspace A | Ignore the roots: keep A running, not degraded; log it | Decisions unit + lifecycle/proxy unit | Covered |
+| Single valid Uno workspace A, no DevServer yet (deferred roots startup) | MCP roots point to a different valid workspace B | Workspace B | Start DevServer on B | Decisions unit + lifecycle/proxy unit | Covered |
 | Deferred or ambiguous session | Explicit `uno_app_select_solution` for current valid Uno workspace | Single valid Uno workspace | Start DevServer on selected workspace without restarting the MCP session | Lifecycle/proxy unit + MCP integration | Covered |
 | Running workspace A | Explicit `uno_app_select_solution` for valid Uno workspace B | Single valid Uno workspace B | Stop A then start B; refresh health and cache identity | Lifecycle/proxy unit + MCP integration | Covered |
+| Explicitly selected solution S | File change (`dotnet restore`, another solution added) | Same S | Re-resolve S, no rediscovery: refresh, or restart S when its SDK changed | Lifecycle/proxy unit | Covered |
+| Explicitly selected solution S | S deleted, or its global.json loses the Uno SDK | S unresolved, still selected | Stop and degrade; watch its global.json folder; start S again once it resolves | Lifecycle/proxy unit | Covered |
 | `NoCandidates` (force-roots-fallback) | `uno_app_initialize` called with empty or non-Uno directory | Workspace accepted, monitoring started | Accept directory as workspace root; start file watcher; health shows `effectiveWorkspaceDirectory` but no solution; watcher will auto-start DevServer when Uno solution appears | Lifecycle/proxy unit | Covered |
 
 ---
 
 ## 3. Session Policy
 
-To avoid silent misrouting, the bridge must distinguish four actions after recomputation:
+To avoid silent misrouting, the bridge must distinguish these actions after recomputation:
 
 - **Refresh**: same effective workspace, keep current DevServer
-- **Start**: no current workspace, new valid Uno workspace found
+- **Start**: no DevServer runs yet, and a valid Uno workspace is known (newly found, selected, or named by MCP roots before startup)
 - **Stop**: current workspace lost, no valid replacement
-- **Restart**: valid workspace changed from A to B
+- **Restart**: valid workspace changed from A to B, by an explicit selection while a DevServer runs or by a file-system change (a workspace identity covers its directory, solution, global.json and Uno SDK package and version, so an SDK change restarts the same solution)
+- **Ignore**: MCP roots that would override an explicit selection, or replace or degrade a running workspace; the current workspace is kept and the event is logged
+- **Diagnose**: the new state is ambiguous or does not resolve to an Uno workspace (for instance MCP roots before startup that resolve to nothing); no DevServer is started and health reports why
 
 If the bridge cannot safely decide between these actions because the new state is ambiguous, it must choose the diagnostic path rather than an arbitrary switch.
 
