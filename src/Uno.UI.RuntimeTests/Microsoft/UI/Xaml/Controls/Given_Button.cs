@@ -579,5 +579,174 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitFor(() => asyncTaskCompleted, timeoutMS: 2000);
 		}
+
+#if HAS_UNO
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+		public async Task When_ContextFlyout_Touch_LongPress_Opens_Flyout_Without_Click()
+		{
+			var flyout = new MenuFlyout();
+			flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
+			var flyoutOpened = 0;
+			flyout.Opened += (_, _) => flyoutOpened++;
+
+			var clicks = 0;
+			var holding = 0;
+			var button = new Button { Content = "Long press me", Width = 200, Height = 50, ContextFlyout = flyout };
+			button.Click += (_, _) => clicks++;
+			button.Holding += (_, _) => holding++;
+
+			var buttonRect = await UITestHelper.Load(button);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var finger = injector.GetFinger();
+
+			try
+			{
+				finger.Press(buttonRect.GetCenter());
+				await WindowHelper.WaitFor(() => flyoutOpened == 1, timeoutMS: 5000, message: "The context flyout should open from the hold, before the release");
+
+				Assert.AreEqual(1, holding, "The hold should be recognized before the release");
+
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(150);
+
+				Assert.AreEqual(1, flyoutOpened);
+				Assert.AreEqual(0, clicks, "Releasing a hold that opened the context flyout must not click the button");
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
+			}
+		}
+
+		// On a draggable/pannable element the context menu of a touch hold is delayed (ContextMenuProcessor, 500 ms after
+		// the Holding gesture) to leave room for a drag/pan. Mirrors WinUI PointerInputProcessor: the pointer up stops that
+		// delayed menu, so the release is a plain click and the menu must not pop up afterwards.
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+		public async Task When_ContextFlyout_In_ScrollViewer_Touch_Released_Before_Delayed_Flyout()
+		{
+			var flyout = new MenuFlyout();
+			flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
+			var flyoutOpened = 0;
+			flyout.Opened += (_, _) => flyoutOpened++;
+
+			var clicks = 0;
+			var holding = 0;
+			var button = new Button { Content = "Long press me", Width = 200, Height = 50, ContextFlyout = flyout };
+			button.Click += (_, _) => clicks++;
+			button.Holding += (_, _) => holding++;
+
+			var scrollViewer = new ScrollViewer { Content = button, Width = 300, Height = 200 };
+			await UITestHelper.Load(scrollViewer);
+			var buttonRect = button.GetAbsoluteBounds();
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var finger = injector.GetFinger();
+
+			try
+			{
+				finger.Press(buttonRect.GetCenter());
+				// Release once the hold is recognized, within the 500 ms the menu of a hold on a pannable element is delayed by.
+				await WindowHelper.WaitFor(() => holding == 1, timeoutMS: 5000, message: "The hold should be recognized before the release");
+
+				Assert.AreEqual(0, flyoutOpened, "The context flyout of a hold on a pannable element is delayed");
+
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				// Longer than the remaining delay: a menu still pending would open here.
+				await Task.Delay(800);
+
+				Assert.AreEqual(0, flyoutOpened, "The context flyout must not open once the pointer has been released");
+				Assert.AreEqual(1, clicks, "A hold released before the delayed context flyout is a click (no flyout opened)");
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
+			}
+		}
+
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+		public async Task When_ContextFlyout_In_ScrollViewer_Touch_Held_Until_Delayed_Flyout_Opens()
+		{
+			var flyout = new MenuFlyout();
+			flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
+			var flyoutOpened = 0;
+			flyout.Opened += (_, _) => flyoutOpened++;
+
+			var clicks = 0;
+			var button = new Button { Content = "Long press me", Width = 200, Height = 50, ContextFlyout = flyout };
+			button.Click += (_, _) => clicks++;
+
+			var scrollViewer = new ScrollViewer { Content = button, Width = 300, Height = 200 };
+			await UITestHelper.Load(scrollViewer);
+			var buttonRect = button.GetAbsoluteBounds();
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var finger = injector.GetFinger();
+
+			try
+			{
+				finger.Press(buttonRect.GetCenter());
+				await WindowHelper.WaitFor(() => flyoutOpened == 1, timeoutMS: 5000, message: "The delayed context flyout should open while still holding");
+
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(150);
+
+				Assert.AreEqual(1, flyoutOpened);
+				Assert.AreEqual(0, clicks, "Releasing a hold that opened the context flyout must not click the button");
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
+			}
+		}
+
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+		public async Task When_ContextFlyout_RightClick_Opens_Flyout_Without_Click()
+		{
+			var flyout = new MenuFlyout();
+			flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
+			var flyoutOpened = 0;
+			flyout.Opened += (_, _) => flyoutOpened++;
+
+			var clicks = 0;
+			var button = new Button { Content = "Right click me", Width = 200, Height = 50, ContextFlyout = flyout };
+			button.Click += (_, _) => clicks++;
+
+			var buttonRect = await UITestHelper.Load(button);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				mouse.PressRight(buttonRect.GetCenter());
+				mouse.ReleaseRight();
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(150);
+
+				Assert.AreEqual(1, flyoutOpened, "The context flyout should open from the right click");
+				Assert.AreEqual(0, clicks, "A right click that opened the context flyout must not click the button");
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
+			}
+		}
+#endif
 	}
 }
