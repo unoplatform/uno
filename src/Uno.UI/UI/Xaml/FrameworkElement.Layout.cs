@@ -1044,6 +1044,10 @@ namespace Microsoft.UI.Xaml
 			ReconfigureViewportPropagation();
 
 			m_firedLoadingEvent = false;
+
+			// Pairs with m_firedLoadingEvent: the Loading pass this Enter re-arms can reuse the styles
+			// applied just above, rather than resolving the implicit style a second time.
+			_stylesAppliedOnEnter = @params.IsLive;
 		}
 
 		// UNO TODO: Not yet ported
@@ -1066,6 +1070,9 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.LeaveImpl(@params);
+
+			// A Leave before the Loading pass voids the Enter's styles.
+			_stylesAppliedOnEnter = false;
 
 			ReconfigureViewportPropagation(isLeavingTree: true);
 		}
