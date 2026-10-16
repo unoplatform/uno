@@ -165,7 +165,7 @@ public class Given_Rectangle
 		Assert.AreEqual(greenBounds.Top - redBounds.Top, redBounds.Bottom - greenBounds.Bottom);
 	}
 
-#if HAS_UNO // Ellipse and Rectangle are sealed in WinUI, they can only be subclassed in Uno.
+#if HAS_UNO // Ellipse and Rectangle are not subclassable in WinUI, they can only be subclassed in Uno.
 	private sealed partial class MyRectangle : Rectangle { }
 
 	[TestMethod]

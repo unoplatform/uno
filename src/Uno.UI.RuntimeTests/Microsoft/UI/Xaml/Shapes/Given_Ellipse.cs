@@ -109,7 +109,7 @@ public class Given_Ellipse
 		Assert.IsTrue(partial <= 1, $"{partial} partially covered pixels across the edge at 4x; the ring must be one device pixel wide");
 	}
 
-#if HAS_UNO // Ellipse and Rectangle are sealed in WinUI, they can only be subclassed in Uno.
+#if HAS_UNO // Ellipse and Rectangle are not subclassable in WinUI, they can only be subclassed in Uno.
 	private sealed partial class MyEllipse : Ellipse { }
 
 	[TestMethod]
