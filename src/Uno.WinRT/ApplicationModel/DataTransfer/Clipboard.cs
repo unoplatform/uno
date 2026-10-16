@@ -15,6 +15,16 @@ namespace Windows.ApplicationModel.DataTransfer
 			// Do nothing, data available automatically even after application closes.
 		}
 #endif
+		public static bool SetContentWithOptions(DataPackage content, ClipboardContentOptions options)
+		{
+			if (content is null)
+			{
+				throw new ArgumentNullException(nameof(content));
+			}
+
+			SetContent(content);
+			return true;
+		}
 
 		public static event EventHandler<object> ContentChanged
 		{
