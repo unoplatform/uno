@@ -590,8 +590,9 @@ public partial class Given_RichEditBox
 			sut.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
+			// As in Chromium, each compositionupdate is followed by the input event that puts the preedit in the value.
 			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.value='AniB';input.setSelectionRange(2,2);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'ni'}));return 'ok';})()");
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'ni'}));input.value='AniB';input.setSelectionRange(2,2);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'ni'}));return 'ok';})()");
 			await WindowHelper.WaitForIdle();
 			GetTextWithoutFinalEop(sut.Document, out var text);
 			Assert.AreEqual("AniB", text);
@@ -610,10 +611,88 @@ public partial class Given_RichEditBox
 			sut.Document.Selection.SetRange(1, 1);
 			await WindowHelper.WaitForIdle();
 			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.value='AhaoB';input.setSelectionRange(3,3);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'hao'}));input.value='A好B';input.setSelectionRange(2,2);input.dispatchEvent(new CompositionEvent('compositionend',{data:'好'}));return 'ok';})()");
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'hao'}));input.value='AhaoB';input.setSelectionRange(3,3);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'hao'}));input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'好'}));input.value='A好B';input.setSelectionRange(2,2);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'好'}));input.dispatchEvent(new CompositionEvent('compositionend',{data:'好'}));return 'ok';})()");
 			await WindowHelper.WaitForIdle();
 			GetTextWithoutFinalEop(sut.Document, out text);
 			Assert.AreEqual("A好B", text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_Composition_Reopened_On_Existing_Text_Changed_Sees_The_Preedit()
+	{
+		var sut = new RichEditBox();
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Document.SetText(TextSetOptions.None, "abc@");
+			sut.Document.Selection.SetRange(4, 4);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var changes = new List<string>();
+			sut.TextChanging += (_, _) => changes.Add("changing");
+			sut.TextCompositionChanged += (_, e) =>
+			{
+				GetTextWithoutFinalEop(sut.Document, out var current);
+				changes.Add($"{e.StartIndex}+{e.Length} {current}");
+			};
+
+			// Gboard re-opens the composition on the whole token when a letter follows it: the preedit
+			// starts before the caret, and the input event after compositionupdate puts it in the value.
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'abc@d'}));input.value='abc@d';input.setSelectionRange(5,5);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'abc@d'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			CollectionAssert.AreEqual(new[] { "changing", "0+5 abc@d" }, changes);
+			Assert.IsTrue(sut.IsComposing);
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionend',{data:'abc@d'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			GetTextWithoutFinalEop(sut.Document, out var text);
+			Assert.AreEqual("abc@d", text);
+			Assert.IsFalse(sut.IsComposing);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_Focused_RichEditBox_Made_ReadOnly_Native_Input_Is_ReadOnly()
+	{
+		var sut = new RichEditBox();
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			static string GetNativeReadOnly()
+				=> global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+					"(function(){const input=document.getElementById('uno-input');return input?String(input.readOnly):'missing';})()");
+
+			Assert.AreEqual("false", GetNativeReadOnly());
+
+			// A read-only input keeps the soft keyboard from editing text the control would only revert.
+			sut.IsReadOnly = true;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("true", GetNativeReadOnly());
+
+			sut.IsReadOnly = false;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("false", GetNativeReadOnly());
 		}
 		finally
 		{

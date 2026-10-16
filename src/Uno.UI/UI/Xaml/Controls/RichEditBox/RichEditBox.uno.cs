@@ -171,6 +171,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// (guarded so composition-internal edits don't self-cancel).
 				CancelCompositionOnExternalChange();
 				OnContentChanged(isContentChanging);
+				RaisePendingCompositionChange();
 				notificationCompleted = true;
 			}
 			finally
