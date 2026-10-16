@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -160,12 +161,15 @@ public class Given_Image_Release
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
-	public async Task When_Moved_Before_Next_Layout_Pass_Then_Decoded_Image_Kept()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Moved_Before_Next_Layout_Pass_Then_Decoded_Image_Kept(bool useCache)
 	{
 		// Moving an Image to another parent unloads it at once and loads it again in the next layout pass: even with a limit
 		// of 0, which releases what nothing displays at the end of that pass, it must keep its pixels rather than release
-		// them and decode them again.
-		using var _ = DisableBitmapImageCache();
+		// them and decode them again, whether its source owns its decode or shares it through the cache.
+		using var _ = SetBitmapImageCache(useCache);
 		using var delay = ReleaseAfterLayoutPass();
 		using var decoder = TrackingDecoder.Install();
 
@@ -175,7 +179,9 @@ public class Given_Image_Release
 			var second = new StackPanel();
 			await UITestHelper.Load(new StackPanel { Children = { first, second } }, x => x.IsLoaded);
 
-			var bitmap = new BitmapImage(new Uri(AssetUri));
+			// With the cache on, a decode size of its own gives the image its own cache key.
+			var (width, height) = useCache ? (89, 35) : (500, 200);
+			var bitmap = useCache ? NewBitmap(AssetUri, width, height) : new BitmapImage(new Uri(AssetUri));
 			var image = new Image { Width = 100, Height = 40, Source = bitmap };
 			var bitmapOpened = 0;
 			var imageOpened = 0;
@@ -185,7 +191,7 @@ public class Given_Image_Release
 			await AddAndWaitForOpened(first, image);
 			await WindowHelper.WaitForIdle();
 			var surface = GetSurface(bitmap);
-			var decodes = decoder.Count(500, 200);
+			var decodes = decoder.Count(width, height);
 
 			first.Children.Remove(image);
 			second.Children.Add(image);
@@ -194,7 +200,7 @@ public class Given_Image_Release
 			Assert.IsTrue(image.IsLoaded);
 			Assert.IsNotNull(surface.Image, "An Image that re-enters the tree within the pass keeps its decoded pixels");
 			Assert.AreSame(surface, GetSurface(bitmap), "The source must deliver the data it kept");
-			Assert.AreEqual(decodes, decoder.Count(500, 200), "Nothing must be decoded again");
+			Assert.AreEqual(decodes, decoder.Count(width, height), "Nothing must be decoded again");
 			Assert.AreEqual(1, bitmapOpened);
 			Assert.AreEqual(1, imageOpened);
 
@@ -212,10 +218,11 @@ public class Given_Image_Release
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
 	public async Task When_Cached_Image_Unloaded_Then_Shown_Again_Without_Reopen()
 	{
-		// A result shared through the bitmap cache is the cache's, so its source keeps it: an Image that leaves the tree
-		// and comes back is shown again at once, without opening its source again.
+		// A source keeps the decode it shares through the bitmap cache while nothing displays it, and the decode waits like
+		// one the source owns: an Image that comes back within the delay is shown again at once, without a new open.
 		using var _ = EnableBitmapImageCache();
-		using var delay = ReleaseAfterLayoutPass();
+		using var limit = SetMaxUndisplayedImageBytes(long.MaxValue);
+		using var delay = SetReleaseDelay(TimeSpan.FromSeconds(10));
 		using var decoder = TrackingDecoder.Install();
 
 		try
@@ -234,7 +241,7 @@ public class Given_Image_Release
 			WindowHelper.WindowContent = null;
 			await WindowHelper.WaitForIdle();
 			Assert.IsTrue(bitmap.IsOpened, "A source keeps the data it shares through the cache");
-			Assert.IsNotNull(surface.Image, "A shared surface is the cache's to release");
+			Assert.IsNotNull(surface.Image, "A shared decode keeps its pixels within the release delay");
 
 			await UITestHelper.Load(image);
 			Assert.AreSame(surface, GetSurface(bitmap));
@@ -504,10 +511,10 @@ public class Given_Image_Release
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
 	public async Task When_Cache_Disabled_Then_Cached_Surface_Not_Released()
 	{
 		var cacheWasEnabled = FeatureConfiguration.Image.EnableBitmapImageCache;
-		var uri = new Uri(TallAssetUri);
 		using var delay = ReleaseAfterLayoutPass();
 		using var decoder = TrackingDecoder.Install();
 
@@ -516,52 +523,486 @@ public class Given_Image_Release
 			var panel = new StackPanel();
 			await UITestHelper.Load(panel, x => x.IsLoaded);
 
-			// A cache-on requester fills the cache and a second one shares the entry: unloading both must not release
-			// the shared surface, which is the cache's (an entry is only evicted when its load fails).
+			// A cache-on requester fills the cache and a second one shares the entry: unloading the second must not release
+			// the shared surface, which the first still displays.
 			FeatureConfiguration.Image.EnableBitmapImageCache = true;
-			var firstBitmap = new BitmapImage(uri);
+			// A decode size of its own gives this test its own cache key: an ImageBrush another test left keeps its decode.
+			var firstBitmap = NewBitmap(TallAssetUri, 51, 77);
 			var first = new Image { Width = 100, Height = 40, Source = firstBitmap };
 			await AddAndWaitForOpened(panel, first);
 			var cachedSurface = GetSurface(firstBitmap);
 
-			var decodes = decoder.Count(100, 150);
-			var sharingBitmap = new BitmapImage(uri);
+			var decodes = decoder.Count(51, 77);
+			var sharingBitmap = NewBitmap(TallAssetUri, 51, 77);
 			var sharing = new Image { Width = 100, Height = 40, Source = sharingBitmap };
 			await AddAndWaitForOpened(panel, sharing);
-			Assert.AreEqual(decodes, decoder.Count(100, 150), "A cache-on requester is served from the cache");
+			Assert.AreEqual(decodes, decoder.Count(51, 77), "A cache-on requester is served from the cache");
 			Assert.AreSame(cachedSurface, GetSurface(sharingBitmap));
 
 			panel.Children.Remove(sharing);
-			panel.Children.Remove(first);
 			await WindowHelper.WaitForIdle();
-			Assert.IsNotNull(cachedSurface.Image, "A shared surface is the cache's to release, not a requester's");
+			Assert.IsNotNull(cachedSurface.Image, "A shared surface another Image displays must not be released");
 
 			// With the cache off a source decodes for itself even when an entry exists, and releases only its own surface.
 			FeatureConfiguration.Image.EnableBitmapImageCache = false;
-			var ownBitmap = new BitmapImage(uri);
+			var ownBitmap = NewBitmap(TallAssetUri, 51, 77);
 			var own = new Image { Width = 100, Height = 40, Source = ownBitmap };
 			await AddAndWaitForOpened(panel, own);
 			var ownSurface = GetSurface(ownBitmap);
 			Assert.AreNotSame(cachedSurface, ownSurface, "A cache-off source must not be served from the cache");
-			Assert.AreEqual(decodes + 1, decoder.Count(100, 150), "A cache-off source decodes for itself");
+			Assert.AreEqual(decodes + 1, decoder.Count(51, 77), "A cache-off source decodes for itself");
 
 			panel.Children.Remove(own);
 			await WindowHelper.WaitForIdle();
 			Assert.IsNull(ownSurface.Image, "A cache-off source owns its surface and releases it when unloaded");
-			Assert.IsNotNull(cachedSurface.Image, "Releasing an owned surface must leave the cached one alone");
+			Assert.IsNotNull(cachedSurface.Image, "Releasing an owned surface must leave the shared one alone");
 
-			// The cached surface is intact: a later cache-on requester opens without decoding again.
+			// The shared surface is intact: a later cache-on requester opens without decoding again.
 			FeatureConfiguration.Image.EnableBitmapImageCache = true;
-			var cached = new BitmapImage(uri);
-			await AddAndWaitForOpened(panel, new Image { Width = 100, Height = 40, Source = cached });
-			Assert.AreEqual(decodes + 1, decoder.Count(100, 150), "The cached surface must still serve a later requester");
+			var cached = NewBitmap(TallAssetUri, 51, 77);
+			var later = new Image { Width = 100, Height = 40, Source = cached };
+			await AddAndWaitForOpened(panel, later);
+			Assert.AreEqual(decodes + 1, decoder.Count(51, 77), "The cached surface must still serve a later requester");
 			Assert.AreSame(cachedSurface, GetSurface(cached));
-			Assert.AreEqual(150, cached.PixelHeight);
+			Assert.AreEqual(77, cached.PixelHeight);
+
+			panel.Children.Remove(later);
+			panel.Children.Remove(first);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(cachedSurface.Image, "A shared surface nothing displays is released like an owned one");
 		}
 		finally
 		{
 			WindowHelper.WindowContent = null;
 			FeatureConfiguration.Image.EnableBitmapImageCache = cacheWasEnabled;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Shared_Decode_Undisplayed_Then_Released()
+	{
+		// Two sources share one decode: it is kept while either displays it and released once neither does, and both then
+		// open again from a single new decode, without raising ImageOpened again.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var decoder = TrackingDecoder.Install();
+
+		try
+		{
+			var panel = new StackPanel();
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+
+			// A decode size of its own gives this test its own cache key.
+			var firstBitmap = NewBitmap(TallAssetUri, 43, 61);
+			var secondBitmap = NewBitmap(TallAssetUri, 43, 61);
+			var first = new Image { Width = 100, Height = 40, Source = firstBitmap };
+			var second = new Image { Width = 100, Height = 40, Source = secondBitmap };
+			var opened = 0;
+			firstBitmap.ImageOpened += (_, _) => opened++;
+			secondBitmap.ImageOpened += (_, _) => opened++;
+
+			await AddAndWaitForOpened(panel, first);
+			await AddAndWaitForOpened(panel, second);
+			var surface = GetSurface(firstBitmap);
+			Assert.AreSame(surface, GetSurface(secondBitmap), "Pre-condition: both sources share one decode");
+			Assert.AreEqual(1, decoder.Count(43, 61));
+
+			panel.Children.Remove(first);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNotNull(surface.Image, "A shared decode another Image displays must be kept");
+
+			panel.Children.Remove(second);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(surface.Image, "A shared decode nothing displays must be released like an owned one");
+			Assert.IsFalse(firstBitmap.IsOpened, "A source must not keep a shared decode that was released");
+			Assert.IsFalse(secondBitmap.IsOpened, "A source must not keep a shared decode that was released");
+
+			panel.Children.Add(first);
+			await WindowHelper.WaitFor(() => firstBitmap.IsOpened, 10000, "A source whose shared decode was released opens again");
+			panel.Children.Add(second);
+			await WindowHelper.WaitFor(() => secondBitmap.IsOpened, 10000, "A source whose shared decode was released opens again");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, decoder.Count(43, 61), "Both sources share the new decode");
+			Assert.AreSame(GetSurface(firstBitmap), GetSurface(secondBitmap));
+			Assert.IsNotNull(GetSurface(firstBitmap).Image);
+			Assert.AreEqual(2, opened, "Decoding the same sources again raises no ImageOpened");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Shared_Decode_Undisplayed_Then_Counted_With_Owned_Ones()
+	{
+		// A shared decode nothing displays waits in the same list as the decodes sources own: let go first, it is the one
+		// released once the waiting images exceed the limit.
+		using var _ = EnableBitmapImageCache();
+		using var limit = SetMaxUndisplayedImageBytes(long.MaxValue);
+		using var delay = SetReleaseDelay(TimeSpan.FromSeconds(10));
+
+		try
+		{
+			var panel = new StackPanel();
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+
+			var sharedBitmap = NewBitmap(TallAssetUri, 47, 67);
+			var ownedBitmaps = new[]
+			{
+				new BitmapImage { CreateOptions = BitmapCreateOptions.IgnoreImageCache, UriSource = new Uri(AssetUri) },
+				new BitmapImage { CreateOptions = BitmapCreateOptions.IgnoreImageCache, UriSource = new Uri(AssetUri) },
+			};
+			var bitmaps = new[] { sharedBitmap, ownedBitmaps[0], ownedBitmaps[1] };
+			var images = bitmaps.Select(b => new Image { Width = 100, Height = 40, Source = b }).ToArray();
+			foreach (var image in images)
+			{
+				await AddAndWaitForOpened(panel, image);
+			}
+
+			var surfaces = bitmaps.Select(GetSurface).ToArray();
+
+			// Measured in the same turn as the removals, so no texture is drawn in between and the sizes are those that wait.
+			FeatureConfiguration.Image.MaxUndisplayedImageBytes = surfaces.Sum(s => s.DecodedByteCount) - 1;
+			foreach (var image in images)
+			{
+				panel.Children.Remove(image);
+			}
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(surfaces[0].Image, "The shared decode waits the longest, so it is released first");
+			Assert.IsNotNull(surfaces[1].Image, "Images within the limit keep their pixels");
+			Assert.IsNotNull(surfaces[2].Image, "Images within the limit keep their pixels");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Shared_Load_Requesters_All_Cancelled_Then_Result_Released()
+	{
+		// The shared download keeps running when its only requester is cancelled, in case another one comes; the decode it
+		// produces then waits like any image nothing displays, and is released.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var decoder = TrackingDecoder.Install();
+
+		try
+		{
+			using var server = await GatedImageServer.StartAsync();
+			var bitmap = new BitmapImage(server.Uri);
+			var result = TrackOpen(bitmap);
+			await UITestHelper.Load(new Image { Width = 100, Height = 40, Source = bitmap });
+			await WindowHelper.WaitFor(() => server.RequestCount >= 1, 5000, "the download never started");
+
+			bitmap.UriSource = null;
+			server.ReleaseResponses();
+
+			await WindowHelper.WaitFor(() => decoder.Count(100, 100) == 1, 5000, "Pre-condition: the shared load must still decode");
+			var abandoned = decoder.Decoded(100, 100).Single();
+			await TestHelper.RetryAssert(() => Assert.IsTrue(abandoned.IsReleased, "The decode nothing uses must be released"));
+			Assert.IsFalse(result.IsCompleted, "The cancelled BitmapImage should raise neither ImageOpened nor ImageFailed");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Source_Collected_While_Subscribed_Then_Shared_Decode_Not_Kept()
+	{
+		// An ImageBrush keeps its subscription for its lifetime, so a source can be collected while it still counts as
+		// showing its shared decode: the cache must not keep that decode for good, as WinUI's store does not own its
+		// ImageCache.
+		using var _ = EnableBitmapImageCache();
+		var uri = new Uri(TallAssetUri);
+
+		var collected = await OpenThroughUnusedBrush(uri, 53, 71);
+		Assert.IsTrue(await IsCached(uri, 53, 71), "Pre-condition: the brush shares the decode");
+
+		Assert.IsTrue(await TestHelper.TryWaitUntilCollected(collected), "Pre-condition: the brush's source is collected");
+		Assert.IsFalse(await IsCached(uri, 53, 71), "The cache must not keep the decode of a collected source");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Source_Collected_While_Sharing_With_Live_One_Then_Decode_Still_Released()
+	{
+		// A source collected while still subscribed never ends its use of a decode it shared with a live source: that use
+		// must not keep the decode once the live source lets it go, nor hide the live source's use before then.
+		using var cache = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var decoder = TrackingDecoder.Install();
+		var uri = new Uri(TallAssetUri);
+
+		try
+		{
+			var collected = await OpenThroughUnusedBrush(uri, 57, 73);
+			var panel = new StackPanel();
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+			await AddAndWaitForOpened(panel, new Image { Width = 100, Height = 40, Source = NewBitmap(TallAssetUri, 57, 73) });
+			Assert.AreEqual(1, decoder.Count(57, 73), "Pre-condition: both sources share one decode");
+
+			Assert.IsTrue(await TestHelper.TryWaitUntilCollected(collected), "Pre-condition: the brush's source is collected");
+
+			// A third source's open ends with the collected source's use still in front of the live one.
+			await AddAndWaitForOpened(panel, new Image { Width = 100, Height = 40, Source = NewBitmap(TallAssetUri, 57, 73) });
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(decoder.Decoded(57, 73).Single().IsReleased, "The decode must be kept while a live source shows it");
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+			await TestHelper.RetryAssert(() => Assert.IsTrue(decoder.Decoded(57, 73).Single().IsReleased, "The decode must be released once the live source lets it go"));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Shared_Decode_Released_Then_Decoded_Again_Without_Download()
+	{
+		// The cache keeps the encoded bytes of a downloaded image, so decoding it again after its release downloads nothing.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
+		using var decoder = TrackingDecoder.Install();
+
+		try
+		{
+			using var served = await ServedImage.StartAsync();
+			var bitmap = new BitmapImage(served.Uri);
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			await LoadAndWaitForOpened(image);
+			var surface = GetSurface(bitmap);
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(surface.Image, "Pre-condition: the shared decode is released once nothing displays it");
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The bitmap must be decoded again once an Image shows it");
+			Assert.AreEqual(2, decoder.Count(100, 100), "Pre-condition: the bitmap is decoded again");
+			Assert.AreEqual(1, served.RequestCount, "Decoding again must use the encoded bytes the cache kept");
+
+			// A source that ignores the cache downloads for itself.
+			var ignoring = new BitmapImage { CreateOptions = BitmapCreateOptions.IgnoreImageCache, UriSource = served.Uri };
+			await LoadAndWaitForOpened(new Image { Width = 100, Height = 40, Source = ignoring });
+			Assert.AreEqual(2, served.RequestCount, "IgnoreImageCache must not use the encoded bytes the cache kept");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	[DataRow("Cache-Control: no-store", "200 OK", 2)]
+	[DataRow("Cache-Control: no-cache", "200 OK", 2)]
+	[DataRow("Cache-Control: max-age=0", "200 OK", 2)]
+	[DataRow("Pragma: no-cache", "200 OK", 2)]
+	// Uno opens an image body whatever the status (WinUI's download likely fails the bind): the row checks only that it is not kept.
+	[DataRow("", "404 Not Found", 2)]
+	[DataRow("", "200 OK", 1)]
+	public async Task When_Response_Not_Reusable_Then_Downloaded_Again(string header, string status, int expectedRequests)
+	{
+		// The cache keeps only the bytes of a successful response that may be reused without asking the server again, so
+		// decoding another one again after its release downloads it again. Otherwise the kept bytes are used.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
+		using var served = await ServedImage.StartAsync(header, status);
+
+		try
+		{
+			var bitmap = new BitmapImage(served.Uri);
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			await LoadAndWaitForOpened(image);
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(bitmap.IsOpened, "Pre-condition: the shared decode is released once nothing displays it");
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The bitmap must be decoded again once an Image shows it");
+			Assert.AreEqual(expectedRequests, served.RequestCount, $"Requests for a '{status}' response with '{header}'");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Response_Redirected_Then_Downloaded_Again()
+	{
+		// Reuse is judged from the final response, while the bytes would be kept under the requested uri: the bytes of a
+		// redirected response are not kept.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
+		using var server = await GatedImageServer.StartAsync();
+		server.RedirectRequests = true;
+		server.ReleaseResponses();
+
+		try
+		{
+			var bitmap = new BitmapImage(server.Uri);
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			await LoadAndWaitForOpened(image);
+			Assert.AreEqual(2, server.RequestCount, "Pre-condition: the image is redirected");
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(bitmap.IsOpened, "Pre-condition: the shared decode is released once nothing displays it");
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The bitmap must be decoded again once an Image shows it");
+			Assert.AreEqual(4, server.RequestCount, "A redirected response must be downloaded again");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Encoded_Cache_Lowered_Or_Disabled_Then_Kept_Bytes_Dropped(bool disable)
+	{
+		// Lowering the bound, or turning the cache off, drops the bytes kept so far, so the next decode downloads again.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
+		using var served = await ServedImage.StartAsync();
+
+		try
+		{
+			var bitmap = new BitmapImage(served.Uri);
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			await LoadAndWaitForOpened(image);
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(bitmap.IsOpened, "Pre-condition: the shared decode is released once nothing displays it");
+
+			if (disable)
+			{
+				FeatureConfiguration.Image.EnableBitmapImageCache = false;
+				FeatureConfiguration.Image.EnableBitmapImageCache = true;
+			}
+			else
+			{
+				FeatureConfiguration.Image.MaxBitmapImageCacheBytes = 0;
+				FeatureConfiguration.Image.MaxBitmapImageCacheBytes = long.MaxValue;
+			}
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The bitmap must be decoded again once an Image shows it");
+			Assert.AreEqual(2, served.RequestCount, "The bytes kept before must have been dropped");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Encoded_Bytes_Unused_Past_Expiry_Then_Downloaded_Again()
+	{
+		// Bytes nothing used for a while are dropped, as the bitmap cache this replaces dropped entries unused for 5 minutes.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
+		using var expiry = SetEncodedIdleExpiry(TimeSpan.FromMilliseconds(200));
+		using var served = await ServedImage.StartAsync();
+
+		try
+		{
+			var bitmap = new BitmapImage(served.Uri);
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			await LoadAndWaitForOpened(image);
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(bitmap.IsOpened, "Pre-condition: the shared decode is released once nothing displays it");
+			await Task.Delay(500);
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The bitmap must be decoded again once an Image shows it");
+			Assert.AreEqual(2, served.RequestCount, "Bytes unused past the expiry must have been dropped");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Encoded_Cache_Full_Then_Least_Recently_Used_Dropped()
+	{
+		// The cache has room for the encoded bytes of one of the two images: the one loaded first is dropped, so decoding it
+		// again downloads it again, while the other is decoded again from its bytes.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var first = await ServedImage.StartAsync();
+		using var second = await ServedImage.StartAsync();
+		using var bytes = SetMaxBitmapImageCacheBytes(first.Length * 3 / 2);
+
+		try
+		{
+			var panel = new StackPanel();
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+			var firstBitmap = new BitmapImage(first.Uri);
+			var secondBitmap = new BitmapImage(second.Uri);
+			var firstImage = new Image { Width = 100, Height = 40, Source = firstBitmap };
+			var secondImage = new Image { Width = 100, Height = 40, Source = secondBitmap };
+			await AddAndWaitForOpened(panel, firstImage);
+			await AddAndWaitForOpened(panel, secondImage);
+
+			panel.Children.Clear();
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(firstBitmap.IsOpened, "Pre-condition: the shared decodes are released once nothing displays them");
+			Assert.IsFalse(secondBitmap.IsOpened, "Pre-condition: the shared decodes are released once nothing displays them");
+
+			// The second first, so its bytes are looked up before the download of the first adds them again.
+			panel.Children.Add(secondImage);
+			await WindowHelper.WaitFor(() => secondBitmap.IsOpened, 10000, "The second bitmap must be decoded again");
+			panel.Children.Add(firstImage);
+			await WindowHelper.WaitFor(() => firstBitmap.IsOpened, 10000, "The first bitmap must be decoded again");
+
+			Assert.AreEqual(2, first.RequestCount, "The least recently used bytes must be dropped once the cache is full");
+			Assert.AreEqual(1, second.RequestCount, "The bytes within the bound must be kept");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
 		}
 	}
 
@@ -1023,7 +1464,7 @@ public class Given_Image_Release
 	public async Task When_Source_Fails_Then_Previous_Image_Not_Shown()
 	{
 		// WinUI drops the surfaces of a source that failed to open, so the Image shows nothing rather than its previous
-		// image, whether that image was shared through the cache (and stays alive) or owned (and released).
+		// image, which is then released, whether it was owned or shared through the cache.
 		await AssertFailureClearsImage(cacheEnabled: true);
 		await AssertFailureClearsImage(cacheEnabled: false);
 
@@ -1050,10 +1491,7 @@ public class Given_Image_Release
 				await WindowHelper.WaitForIdle();
 
 				Assert.AreEqual(0, image.ActualWidth, $"The Image must not show its previous image once its source failed (cache {(cacheEnabled ? "on" : "off")})");
-				if (!cacheEnabled)
-				{
-					Assert.IsNull(surface.Image, "The source releases the image it owned");
-				}
+				Assert.IsNull(surface.Image, $"The previous image is released once nothing shows it (cache {(cacheEnabled ? "on" : "off")})");
 			}
 			finally
 			{
@@ -1222,6 +1660,126 @@ public class Given_Image_Release
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_PixelWidth_Handler_Supersedes_Shared_Open_Then_Decode_Released()
+	{
+		// Taking the pixel size of a shared result runs property-changed handlers; one that sets a new UriSource supersedes
+		// the open, which must then stop being a user of the shared decode, so that nothing keeps it.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var decoder = TrackingDecoder.Install();
+
+		try
+		{
+			// A decode size of its own gives each source its own cache key; both decode to that size.
+			var bitmap = NewBitmap(AssetUri, 59, 23);
+			var armed = true;
+			bitmap.RegisterPropertyChangedCallback(BitmapSource.PixelWidthProperty, (_, _) =>
+			{
+				if (armed && bitmap.PixelWidth == 59)
+				{
+					armed = false;
+					bitmap.UriSource = new Uri(SquareAssetUri);
+				}
+			});
+
+			await UITestHelper.Load(new Image { Width = 100, Height = 40, Source = bitmap });
+			await WindowHelper.WaitFor(() => !armed && bitmap.IsOpened, 10000, "Pre-condition: the replacement is decoded");
+			await WindowHelper.WaitForIdle();
+
+			var superseded = decoder.Decoded(59, 23).First();
+			await TestHelper.RetryAssert(() => Assert.IsTrue(superseded.IsReleased, "The shared decode the superseded open got must be released"));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_ImageOpened_Handler_Throws_Then_Shared_Decode_Released()
+	{
+		// A handler that throws turns the open into a failure, which hands nothing over to the source: the open must still
+		// stop being a user of the shared decode, so that nothing keeps it.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var decoder = TrackingDecoder.Install();
+
+		try
+		{
+			var bitmap = NewBitmap(AssetUri, 67, 27);
+			bitmap.ImageOpened += (_, _) => throw new InvalidOperationException("Thrown by the test");
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			var failed = new TaskCompletionSource();
+			image.ImageFailed += (_, _) => failed.TrySetResult();
+			await UITestHelper.Load(image);
+			await failed.Task.WaitAsync(TimeSpan.FromSeconds(10));
+			await WindowHelper.WaitForIdle();
+
+			var decoded = decoder.Decoded(67, 27).Single();
+			await TestHelper.RetryAssert(() => Assert.IsTrue(decoded.IsReleased, "The shared decode nothing got must be released"));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Source_Changed_During_Notification_Then_Skipped_Subscriber_Keeps_Shared_Decode()
+	{
+		// A subscriber notified before an Image changes the source again when it gets the second image, to one still
+		// downloading: the notification stops before the Image, which still shows the first image, so its shared decode
+		// must stay until the third arrives. A brush made before the Image is notified before it.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+
+		try
+		{
+			using var server = await GatedImageServer.StartAsync();
+			var bitmap = NewBitmap(AssetUri, 61, 25);
+			var armed = false;
+			var changer = new ImageBrush { ImageSource = bitmap };
+			changer.ImageOpened += (_, _) =>
+			{
+				if (armed)
+				{
+					armed = false;
+					bitmap.UriSource = server.Uri;
+				}
+			};
+
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			await LoadAndWaitForOpened(image);
+			await WindowHelper.WaitForIdle();
+			var first = GetSurface(bitmap);
+
+			armed = true;
+			bitmap.UriSource = new Uri(SquareAssetUri);
+			await WindowHelper.WaitFor(() => !armed, 10000, "Pre-condition: the subscriber gets the second image and changes the source");
+			await WindowHelper.WaitFor(() => server.RequestCount >= 1, 5000, "Pre-condition: the third image is downloading");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(first.Image, "The Image the notification skipped still shows the first image, whose shared decode must stay");
+
+			var opened = TrackOpened(image);
+			server.ReleaseResponses();
+			await opened.WaitAsync(TimeSpan.FromSeconds(10));
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(first.Image, "Once every subscriber has the third image, the first shared decode is released");
+			GC.KeepAlive(changer);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
 	public async Task When_PixelWidth_Handler_Switches_To_Cached_Source_Then_Size_Is_The_Replacement()
@@ -1258,6 +1816,49 @@ public class Given_Image_Release
 		Assert.IsTrue(switched, "Pre-condition: the handler switched the source");
 		Assert.AreEqual(100, bitmap.PixelWidth, "The size is the replacement's");
 		Assert.AreEqual(100, bitmap.PixelHeight, "The superseded open must not overwrite the replacement's height");
+		GC.KeepAlive(brush);
+		GC.KeepAlive(warmBrush);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_PixelWidth_Handler_Switches_To_Cached_Source_Then_Superseded_Shared_Decode_Released()
+	{
+		// As above: the open the handler supersedes stops as soon as its width is set, and must still give up its use of
+		// the shared decode it got, so that nothing keeps it. Decode sizes of their own give this test its own cache keys.
+		using var cache = EnableBitmapImageCache();
+		using var limit = ReleaseAfterLayoutPass();
+		using var decoder = TrackingDecoder.Install();
+		using var server = await GatedImageServer.StartAsync();
+		server.ReleaseResponses();
+
+		var warm = NewBitmap(server.Uri.OriginalString, 63, 21);
+		var warmed = TrackOpen(warm);
+		var warmBrush = new ImageBrush { ImageSource = warm };
+		Assert.IsTrue(await warmed.WaitAsync(TimeSpan.FromSeconds(10)), "Pre-condition: the cache entry completes");
+		var decodedBefore = decoder.All.Length;
+
+		var bitmap = new BitmapImage { DecodePixelWidth = 63, DecodePixelHeight = 21 };
+		var switched = false;
+		bitmap.RegisterPropertyChangedCallback(BitmapSource.PixelWidthProperty, (_, _) =>
+		{
+			if (!switched && bitmap.PixelWidth == 63)
+			{
+				switched = true;
+				bitmap.UriSource = server.Uri;
+			}
+		});
+
+		var opened = TrackOpen(bitmap);
+		var brush = new ImageBrush { ImageSource = bitmap };
+		bitmap.UriSource = new Uri(AssetUri);
+		Assert.IsTrue(await opened.WaitAsync(TimeSpan.FromSeconds(10)), "Pre-condition: the replacement opens");
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(switched, "Pre-condition: the handler switched the source");
+		var superseded = decoder.All[decodedBefore];
+		await TestHelper.RetryAssert(() => Assert.IsTrue(superseded.IsReleased, "The shared decode of the superseded open must be released"));
 		GC.KeepAlive(brush);
 		GC.KeepAlive(warmBrush);
 	}
@@ -1309,17 +1910,22 @@ public class Given_Image_Release
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
-	public async Task When_Rendered_Brush_Changes_UriSource_Then_It_Keeps_Drawing_Until_Replaced()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Rendered_Brush_Changes_UriSource_Then_It_Keeps_Drawing_Until_Replaced(bool useCache)
 	{
 		// A drawn ImageBrush whose ImageOpened sets a UriSource that is still downloading keeps drawing the image it has,
-		// as an Image does, so that image must stay until the download arrives.
-		using var _ = DisableBitmapImageCache();
+		// as an Image does, so that image must stay until the download arrives, whether it is owned or shared.
+		using var _ = SetBitmapImageCache(useCache);
 		using var delay = ReleaseAfterLayoutPass();
 
 		try
 		{
 			using var server = await GatedImageServer.StartAsync();
-			var bitmap = new BitmapImage(new Uri(AssetUri));
+
+			// With the cache on, a decode size of its own gives each image its own cache key.
+			var bitmap = useCache ? NewBitmap(AssetUri, 71, 31) : new BitmapImage(new Uri(AssetUri));
 			var brush = new ImageBrush { ImageSource = bitmap };
 			var opened = 0;
 			var armed = false;
@@ -1365,17 +1971,22 @@ public class Given_Image_Release
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
-	public async Task When_Rendered_Brush_ImageSource_Replaced_Then_Previous_Image_Not_Drawn()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Rendered_Brush_ImageSource_Replaced_Then_Previous_Image_Not_Drawn(bool useCache)
 	{
 		// A drawn ImageBrush given another bitmap, still downloading, draws nothing until it arrives, as on WinUI, where a
-		// brush draws its source's surface. It must not keep drawing the first image, released once nothing subscribes to it.
-		using var _ = DisableBitmapImageCache();
+		// brush draws its source's surface. It must not keep drawing the first image, released once nothing subscribes to it,
+		// whether owned or shared.
+		using var _ = SetBitmapImageCache(useCache);
 		using var limit = ReleaseAfterLayoutPass();
 
 		try
 		{
 			using var server = await GatedImageServer.StartAsync();
-			var brush = new ImageBrush { ImageSource = new BitmapImage(new Uri(AssetUri)) };
+			// With the cache on, a decode width of its own gives the image its own cache key.
+			var brush = new ImageBrush { ImageSource = new BitmapImage { DecodePixelWidth = useCache ? 233 : 0, UriSource = new Uri(AssetUri) } };
 			var opened = 0;
 			brush.ImageOpened += (_, _) => opened++;
 
@@ -1426,7 +2037,9 @@ public class Given_Image_Release
 			await UITestHelper.Load(panel, x => x.IsLoaded);
 
 			// Completes the cache entry for the server's image.
-			await AddAndWaitForOpened(panel, new Image { Width = 100, Height = 40, Source = new BitmapImage(server.Uri) });
+			var filler = new BitmapImage(server.Uri);
+			await AddAndWaitForOpened(panel, new Image { Width = 100, Height = 40, Source = filler });
+			var shared = GetSurface(filler);
 
 			var cached = new BitmapImage(server.Uri);
 			var uncached = new BitmapImage { CreateOptions = BitmapCreateOptions.IgnoreImageCache, UriSource = new Uri(AssetUri) };
@@ -1454,6 +2067,11 @@ public class Given_Image_Release
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsNull(surface.Image, "Unloaded, the Image lets go of the source it switched to, so its pixels are released");
+
+			// The cached source the handler switched away from keeps no use of the shared decode either.
+			panel.Children.Clear();
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(shared.Image, "Once nothing draws the shared decode, it is released");
 		}
 		finally
 		{
@@ -1516,6 +2134,7 @@ public class Given_Image_Release
 	{
 		// The same for a brush: the source its ImageOpened handler switched it to, while it subscribed, is the one it draws.
 		using var cache = EnableBitmapImageCache();
+		using var limit = ReleaseAfterLayoutPass();
 
 		try
 		{
@@ -1525,7 +2144,10 @@ public class Given_Image_Release
 			await UITestHelper.Load(panel, x => x.IsLoaded);
 
 			// Completes the cache entry for the server's image.
-			await AddAndWaitForOpened(panel, new Image { Width = 100, Height = 40, Source = new BitmapImage(server.Uri) });
+			var filler = new BitmapImage(server.Uri);
+			var fillerImage = new Image { Width = 100, Height = 40, Source = filler };
+			await AddAndWaitForOpened(panel, fillerImage);
+			var shared = GetSurface(filler);
 
 			var cached = new BitmapImage(server.Uri);
 			var other = new BitmapImage(new Uri(TallAssetUri));
@@ -1552,6 +2174,11 @@ public class Given_Image_Release
 
 			var compositionBrush = (CompositionSurfaceBrush)brush.GetOrCreateCompositionBrush(border.Visual.Compositor);
 			Assert.AreSame(GetSurface(other), compositionBrush.Surface, "The brush draws the source it was switched to");
+
+			// The cached source the handler switched away from keeps no use of the shared decode.
+			panel.Children.Remove(fillerImage);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(shared.Image, "Once nothing draws the shared decode, it is released");
 		}
 		finally
 		{
@@ -1603,6 +2230,122 @@ public class Given_Image_Release
 			var opened = TrackOpened(other);
 			server.ReleaseResponses();
 			await opened.WaitAsync(TimeSpan.FromSeconds(10));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_UriSource_Changed_Then_Previous_Shared_Decode_Released()
+	{
+		// An Image keeps drawing the previous shared image until it draws the new one, and then nothing keeps the previous
+		// one, although nothing else changes after that.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+
+		try
+		{
+			var bitmap = NewBitmap(AssetUri, 83, 33);
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			await LoadAndWaitForOpened(image);
+			var first = GetSurface(bitmap);
+
+			var opened = TrackOpened(image);
+			bitmap.UriSource = new Uri(SquareAssetUri);
+			Assert.IsNotNull(first.Image, "The Image keeps drawing the first image until it draws the new one");
+
+			await opened.WaitAsync(TimeSpan.FromSeconds(10));
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(first.Image, "Once the Image draws the new image, nothing draws the first, which is released");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Shared_Decode_Given_But_Not_Drawn_Then_Kept()
+	{
+		// A collapsed Image is given what its source opens but draws it only once it is measured. When the source moves on
+		// to an image still downloading, the shared decode the Image was given is held by nothing else, and must stay for
+		// when the Image draws it.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+
+		try
+		{
+			using var server = await GatedImageServer.StartAsync();
+			var panel = new StackPanel();
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+
+			var bitmap = NewBitmap(AssetUri, 79, 32);
+			var image = new Image { Width = 100, Height = 40, Source = bitmap, Visibility = Visibility.Collapsed };
+			panel.Children.Add(image);
+			await WindowHelper.WaitFor(() => image.IsLoaded && bitmap.IsOpened, 10000, "Pre-condition: the first image is opened");
+
+			bitmap.UriSource = new Uri(SquareAssetUri);
+			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "Pre-condition: the second image is opened and given to the Image");
+			var given = GetSurface(bitmap);
+
+			bitmap.UriSource = server.Uri;
+			await WindowHelper.WaitFor(() => server.RequestCount >= 1, 5000, "Pre-condition: the third image is downloading");
+
+			await WindowHelper.WaitForIdle();
+			Assert.IsNotNull(given.Image, "The Image was given the second image and will draw it, so it must stay");
+
+			server.ReleaseResponses();
+			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "Pre-condition: the third image is opened");
+			await WindowHelper.WaitFor(() => given.Image is null, 5000, "Once the Image was given the third image instead, nothing keeps the second");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Image_Returns_While_Replacement_Downloads_Then_Shared_Pixels_Kept()
+	{
+		// An Image that leaves while the replacement downloads lets go of the shared decode it still draws, which then
+		// waits; coming back before the wait ends, still drawing it, it uses it again, so it stays until the replacement
+		// arrives, and goes like any other once nothing draws it.
+		var releaseDelay = TimeSpan.FromMilliseconds(300);
+		using var _ = EnableBitmapImageCache();
+		using var limit = SetMaxUndisplayedImageBytes(long.MaxValue);
+		using var delay = SetReleaseDelay(releaseDelay);
+
+		try
+		{
+			using var server = await GatedImageServer.StartAsync();
+			var panel = new StackPanel();
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+
+			var bitmap = NewBitmap(AssetUri, 73, 29);
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			await AddAndWaitForOpened(panel, image);
+			await WindowHelper.WaitForIdle();
+			var previous = GetSurface(bitmap);
+
+			bitmap.UriSource = server.Uri;
+			await WindowHelper.WaitFor(() => server.RequestCount >= 1, 5000, "Pre-condition: the replacement is downloading");
+			panel.Children.Remove(image);
+			panel.Children.Add(image);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(releaseDelay * 3);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNotNull(previous.Image, "The Image that came back still draws the shared decode, which must stay");
+
+			server.ReleaseResponses();
+			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "Pre-condition: the replacement is opened");
+			await WindowHelper.WaitFor(() => previous.Image is null, 5000, "Once nothing draws the shared decode, it is released");
 		}
 		finally
 		{
@@ -1840,12 +2583,15 @@ public class Given_Image_Release
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
-	public async Task When_Unloaded_Between_Delivery_And_Measure_Then_Drawn_Pixels_Wait_For_It()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Unloaded_Between_Delivery_And_Measure_Then_Drawn_Pixels_Wait_For_It(bool useCache)
 	{
 		// As above, but the first Image leaves for a while: it never drew the second image, so the first one, which it still
 		// draws off the tree, waits like any undisplayed image once the other Image draws the second, and the Image back in
-		// the tree before the third arrives draws it again.
-		using var _ = DisableBitmapImageCache();
+		// the tree before the third arrives draws it again, whether the first image is owned or shared.
+		using var _ = SetBitmapImageCache(useCache);
 		using var limit = SetMaxUndisplayedImageBytes(long.MaxValue);
 		using var delay = SetReleaseDelay(TimeSpan.FromSeconds(10));
 
@@ -1856,7 +2602,8 @@ public class Given_Image_Release
 			var panel = new StackPanel { Orientation = Orientation.Horizontal, Height = 40 };
 			await UITestHelper.Load(new StackPanel { Children = { hook, panel } }, x => x.IsLoaded);
 
-			var bitmap = new BitmapImage(new Uri(AssetUri));
+			// With the cache on, a decode width of its own gives each image its own cache key.
+			var bitmap = new BitmapImage { DecodePixelWidth = useCache ? 237 : 0, UriSource = new Uri(AssetUri) };
 			var image = new Image { Source = bitmap };
 			var other = new Image { Source = bitmap };
 			await AddAndWaitForOpened(panel, image);
@@ -1900,7 +2647,19 @@ public class Given_Image_Release
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(40, image.ActualWidth, 1, "The Image draws the third image");
-			Assert.IsNull(previous.Image, "Once the Image draws the third image, the first is released after the pass");
+			if (useCache)
+			{
+				// A shared decode nothing draws waits like any undisplayed one, here until the limit is lowered.
+				Assert.IsNotNull(previous.Image, "Pre-condition: the shared first image waits within the delay");
+				FeatureConfiguration.Image.MaxUndisplayedImageBytes = 0;
+				panel.InvalidateMeasure();
+				await WindowHelper.WaitFor(() => previous.Image is null, 5000, "Once nothing draws the shared first image, it is released");
+			}
+			else
+			{
+				Assert.IsNull(previous.Image, "Once the Image draws the third image, the first is released after the pass");
+			}
+
 			GC.KeepAlive(brush);
 		}
 		finally
@@ -2096,6 +2855,20 @@ public class Given_Image_Release
 		return Disposable.Create(() => FeatureConfiguration.Image.MaxUndisplayedImageBytes = previous);
 	}
 
+	private static IDisposable SetMaxBitmapImageCacheBytes(long bytes)
+	{
+		var previous = FeatureConfiguration.Image.MaxBitmapImageCacheBytes;
+		FeatureConfiguration.Image.MaxBitmapImageCacheBytes = bytes;
+		return Disposable.Create(() => FeatureConfiguration.Image.MaxBitmapImageCacheBytes = previous);
+	}
+
+	private static IDisposable SetEncodedIdleExpiry(TimeSpan expiry)
+	{
+		var previous = Uno.Helpers.EncodedImageCache.IdleExpiry;
+		Uno.Helpers.EncodedImageCache.IdleExpiry = expiry;
+		return Disposable.Create(() => Uno.Helpers.EncodedImageCache.IdleExpiry = previous);
+	}
+
 	private static IDisposable SetReleaseDelay(TimeSpan delay)
 	{
 		var previous = PendingImageReleases.ReleaseDelay;
@@ -2113,6 +2886,26 @@ public class Given_Image_Release
 		FeatureConfiguration.Image.EnableBitmapImageCache = enabled;
 		return Disposable.Create(() => FeatureConfiguration.Image.EnableBitmapImageCache = wasEnabled);
 	}
+
+	// Not inlined, and returning a bool, so the caller keeps no reference to the cached load.
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static async Task<bool> IsCached(Uri uri, int decodePixelWidth, int decodePixelHeight)
+		=> await BitmapImage.GetCachedImageDataTaskForTesting(uri, decodePixelWidth, decodePixelHeight) is not null;
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static async Task<WeakReference> OpenThroughUnusedBrush(Uri uri, int decodePixelWidth, int decodePixelHeight)
+	{
+		// The brush opens its source as soon as it has one, in the tree or not.
+		var bitmap = NewBitmap(uri.OriginalString, decodePixelWidth, decodePixelHeight);
+		var opened = TrackOpen(bitmap);
+		var brush = new ImageBrush { ImageSource = bitmap };
+		Assert.IsTrue(await opened.WaitAsync(TimeSpan.FromSeconds(10)), "Pre-condition: the brush opens its source");
+		GC.KeepAlive(brush);
+		return new WeakReference(bitmap);
+	}
+
+	private static BitmapImage NewBitmap(string uri, int decodePixelWidth, int decodePixelHeight)
+		=> new() { DecodePixelWidth = decodePixelWidth, DecodePixelHeight = decodePixelHeight, UriSource = new Uri(uri) };
 
 	// The surface the source delivers to its subscribers; call only while something displays the source, as the probe's
 	// own subscription would otherwise open it.
@@ -2303,6 +3096,86 @@ public class Given_Image_Release
 			_inner.Dispose();
 			_isReleased = true;
 		}
+	}
+
+	/// <summary>
+	/// An image served over http with an optional response header, and the number of times it was requested: by a loopback
+	/// server on desktop, and on WebAssembly, where a test cannot listen, by a stand-in for fetch that answers its own URL
+	/// (the browser HttpClient calls globalThis.fetch).
+	/// </summary>
+	private sealed class ServedImage : IDisposable
+	{
+		private readonly Func<int> _requestCount;
+		private readonly Action _stop;
+
+		private ServedImage(Uri uri, int length, Func<int> requestCount, Action stop)
+		{
+			Uri = uri;
+			Length = length;
+			_requestCount = requestCount;
+			_stop = stop;
+		}
+
+		public static async Task<ServedImage> StartAsync(string header = null, string status = "200 OK")
+		{
+			var body = await ReadAssetAsync(SquareAssetUri);
+
+			if (OperatingSystem.IsBrowser())
+			{
+				var (name, value) = header is { Length: > 0 } ? (header[..header.IndexOf(':')], header[(header.IndexOf(':') + 1)..].Trim()) : ("", "");
+				var url = InvokeJs($$"""
+					const served = globalThis.__unoServedImages ??= new Map();
+					if (!globalThis.__unoServedImagesFetch) {
+						const inner = globalThis.__unoServedImagesFetch = globalThis.fetch;
+						globalThis.fetch = (input, init) => {
+							const image = served.get(typeof input === 'string' ? input : input.url);
+							if (!image) {
+								return inner(input, init);
+							}
+							image.requests++;
+							return Promise.resolve(new Response(image.body, { status: image.status, headers: image.headers }));
+						};
+					}
+					const url = new URL('/__served-images/{{Guid.NewGuid():N}}/square100.png', document.baseURI).href;
+					const headers = { 'Content-Type': 'image/png' };
+					if ('{{name}}') {
+						headers['{{name}}'] = '{{value}}';
+					}
+					served.set(url, { body: Uint8Array.from(atob('{{Convert.ToBase64String(body)}}'), c => c.charCodeAt(0)), headers, status: {{status[..3]}}, requests: 0 });
+					return url;
+					""");
+
+				return new ServedImage(
+					new Uri(url),
+					body.Length,
+					() => int.Parse(InvokeJs($"return String(globalThis.__unoServedImages.get('{url}').requests);"), CultureInfo.InvariantCulture),
+					() => InvokeJs($$"""
+						globalThis.__unoServedImages.delete('{{url}}');
+						if (globalThis.__unoServedImages.size === 0) {
+							globalThis.fetch = globalThis.__unoServedImagesFetch;
+							delete globalThis.__unoServedImagesFetch;
+						}
+						return '';
+						"""));
+			}
+
+			var server = await GatedImageServer.StartAsync();
+			server.ExtraHeader = header;
+			server.Status = status;
+			server.ReleaseResponses();
+			return new ServedImage(server.Uri, body.Length, () => server.RequestCount, server.Dispose);
+		}
+
+		public Uri Uri { get; }
+
+		public int Length { get; }
+
+		public int RequestCount => _requestCount();
+
+		public void Dispose() => _stop();
+
+		private static string InvokeJs(string body)
+			=> Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs($"(function(){{ {body} }})()");
 	}
 }
 #endif

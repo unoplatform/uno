@@ -546,17 +546,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow(false, DisplayName = "Same Image")]
-		[DataRow(true, DisplayName = "Another Image")]
+		[DataRow(false, false, DisplayName = "Same Image")]
+		[DataRow(true, false, DisplayName = "Another Image")]
+		[DataRow(false, true, DisplayName = "Same Image, cached")]
+		[DataRow(true, true, DisplayName = "Another Image, cached")]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.NativeWinUI)] // Loopback image server
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
-		public async Task When_Source_Shown_Again_While_It_Opens_Again_Then_AutoSized_Image_Keeps_Its_Size(bool anotherImage)
+		public async Task When_Source_Shown_Again_While_It_Opens_Again_Then_AutoSized_Image_Keeps_Its_Size(bool anotherImage, bool cached)
 		{
 			// A source nothing displayed for more than the release delay (1 s, as on WinUI) may have released its pixels: with the
-			// bitmap cache off, its URI downloads again once it is shown again. An auto-sized Image showing it then, the one that
-			// showed it before or another one (a recycled item), must have the image's size meanwhile, not lay out at 0×0.
+			// bitmap cache off, or a response the cache can't keep, its URI downloads again once it is shown again. An auto-sized
+			// Image showing it then, the one that showed it before or another one (a recycled item), must have the image's size
+			// meanwhile, not lay out at 0×0.
 			using var server = await GatedImageServer.StartAsync();
 			server.ReleaseResponses();
+			server.ExtraHeader = cached ? "Cache-Control: no-store" : null;
 #if HAS_UNO
 			var cacheWasEnabled = FeatureConfiguration.Image.EnableBitmapImageCache;
 			var maxUndisplayedImageBytes = FeatureConfiguration.Image.MaxUndisplayedImageBytes;
@@ -565,7 +569,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			try
 			{
 #if HAS_UNO
-				FeatureConfiguration.Image.EnableBitmapImageCache = false;
+				FeatureConfiguration.Image.EnableBitmapImageCache = cached;
 				FeatureConfiguration.Image.MaxUndisplayedImageBytes = 0; // Released once the pass after it left ends.
 #endif
 				var bitmap = new BitmapImage(server.Uri);
