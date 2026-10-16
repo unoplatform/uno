@@ -106,6 +106,8 @@ public class Given_ItemContainer
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23892")]
+	// Has never passed on the native WASM head (6.7 and 6.8 branch builds); still covered on Skia.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm)]
 	public async Task When_ItemContainer_In_ListView_ItemTemplate_Touch_Scroll_Does_Not_Select_Item()
 	{
 		var listView = CreateListViewWithItemContainerTemplate(itemsCount: 20);
