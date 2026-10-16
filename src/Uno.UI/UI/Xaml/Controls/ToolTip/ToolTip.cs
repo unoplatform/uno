@@ -188,15 +188,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// DataContext, and the one the owner provides through ToolTipService.ToolTip must win.
 				var ownerDataContext = DataContext;
 
-				if (!ReferenceEquals(Popup.Child, this))
-				{
-					Popup.Child = this;
-				}
-
-				// Layout invalidations raised by the tooltip content (an image whose bitmap arrives after the
-				// tooltip opened, for instance) reach the layout root through the parent chain, so the popup
-				// panel has to stay the parent while the tooltip is showing.
-				this.SetParent(Popup.PopupPanel);
+				// Popup.Child adds the tooltip to the popup panel, which stays its parent while it is showing: layout
+				// invalidations raised by the tooltip content (an image whose bitmap arrives after the tooltip opened,
+				// for instance) reach the layout root through the parent chain.
+				Popup.Child = this;
 				this.SetValue(DataContextProperty, ownerDataContext, DependencyPropertyValuePrecedences.Inheritance);
 			}
 			else if (!ReferenceEquals(Parent, _popup))
@@ -215,9 +210,9 @@ namespace Microsoft.UI.Xaml.Controls
 				// again when it changes: keep it, so the closed tooltip's bindings stay resolved.
 				var dataContext = DataContext;
 
-				// As in WinUI's ToolTip::Close, the popup lets go of the tooltip, so Parent is null while closed.
+				// As in WinUI's ToolTip::Close, the popup lets go of the tooltip, which takes it out of the
+				// popup panel: Parent is null while closed.
 				_popup.Child = null;
-				this.SetParent(null);
 				this.SetValue(DataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
 			}
 		}
