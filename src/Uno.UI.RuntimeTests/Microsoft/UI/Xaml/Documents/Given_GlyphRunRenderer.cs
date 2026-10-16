@@ -210,6 +210,29 @@ public class Given_GlyphRunRenderer
 			GlyphRunRenderer.ImageTextureCache.Get(session, clone.TextureKey, cloneImage));
 	}
 
+	// New data disposes the original's decoded image, while the cache still hands its texture to the clone.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25547")]
+	public void When_Inline_Image_Data_Changes_Then_A_Clone_Still_Draws_Its_Texture()
+	{
+		var encoded = Uno.UI.RuntimeTests.Helpers.TestPngEncoder.CreateSolidPng(4, 4, Microsoft.UI.Colors.Red);
+		Assert.IsTrue(Microsoft.UI.Text.InlineImageState.TryCreate(encoded, 4, 4, 4, Microsoft.UI.Text.VerticalCharacterAlignment.Baseline, null, Microsoft.UI.Text.InlineImageEncoding.Unknown, out var original));
+		var clone = original.Clone();
+
+		using var factory = new SkiaDrawingFactory();
+		using var surface = SKSurface.Create(new SKImageInfo(4, 4, SKColorType.Bgra8888, SKAlphaType.Premul));
+		surface.Canvas.Clear(SKColors.Transparent);
+		var session = new SkiaDrawingSession(surface.Canvas, factory);
+		GlyphRunRenderer.ImageTextureCache.Get(session, original.TextureKey, original.GetDecodedImage()!);
+
+		original.Data = Uno.UI.RuntimeTests.Helpers.TestPngEncoder.CreateSolidPng(4, 4, Microsoft.UI.Colors.Blue);
+
+		session.DrawImage(GlyphRunRenderer.ImageTextureCache.Get(session, clone.TextureKey, clone.GetDecodedImage()!), 0, 0, opacity: 1f);
+		using var pixmap = surface.PeekPixels();
+		Assert.AreEqual(SKColors.Red, pixmap.GetPixelColor(2, 2));
+	}
+
 	private static async Task<byte[]> LoadFontData()
 	{
 		var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf"));
