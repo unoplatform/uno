@@ -13,18 +13,24 @@ namespace Uno.UI.RuntimeTests.Helpers;
 
 /// <summary>
 /// Forwards to another codec and counts the decodes of one encoded image, told apart by its length so that another
-/// test's image load doesn't add to the count. It doesn't implement <see cref="IImageEncoderDecoder.TryGetSize"/>, so
-/// sizes are read through the interface's default, like a codec written before that member existed.
+/// test's image load doesn't add to the count, and the images created from pixels of <see cref="ImageSize"/>. It doesn't
+/// implement <see cref="IImageEncoderDecoder.TryGetSize"/>, so sizes are read through the interface's default, like a
+/// codec written before that member existed.
 /// </summary>
 internal class CountingImageCodec(IImageEncoderDecoder inner, long imageLength) : IImageEncoderDecoder
 {
 	private int _decodes;
+	private int _createdImages;
 
 	protected IImageEncoderDecoder Inner => inner;
 
 	protected bool IsImage(Stream stream) => stream.CanSeek && stream.Length == imageLength;
 
 	public int Decodes => Volatile.Read(ref _decodes);
+
+	public (int Width, int Height) ImageSize { get; init; }
+
+	public int CreatedImages => Volatile.Read(ref _createdImages);
 
 	public bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageFrames? frames)
 	{
@@ -37,7 +43,14 @@ internal class CountingImageCodec(IImageEncoderDecoder inner, long imageLength) 
 	}
 
 	public IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
-		=> inner.CreateImage(pixelWidth, pixelHeight, bgraPremul);
+	{
+		if ((pixelWidth, pixelHeight) == ImageSize)
+		{
+			Interlocked.Increment(ref _createdImages);
+		}
+
+		return inner.CreateImage(pixelWidth, pixelHeight, bgraPremul);
+	}
 
 	public ImageFrames CreateFrames(IImage image) => inner.CreateFrames(image);
 
