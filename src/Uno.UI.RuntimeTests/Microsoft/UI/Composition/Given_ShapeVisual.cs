@@ -119,4 +119,68 @@ public class Given_ShapeVisual
 			}
 		}
 	}
+
+	// The ViewBox scales and positions the shapes only. Shapes that repaint every frame paint straight into the session the
+	// children then draw in, so the ViewBox must not stay on it.
+	[TestMethod]
+	// NativeWinUI: the surface brush's source isn't in the visual tree, and repainting every frame is an Uno render path.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_ShapeVisual_ViewBox_Then_Children_Not_Scaled(bool repaintsEveryFrame)
+	{
+		using var _ = UITestHelper.ResetWindowContent();
+		var actual = CreateViewBoxShapes(repaintsEveryFrame, greenAsChild: true);
+		var expected = CreateViewBoxShapes(repaintsEveryFrame, greenAsChild: false);
+		await UITestHelper.Load(new StackPanel { Children = { actual, expected } });
+
+		var expectedScreenshot = await UITestHelper.ScreenShot(expected);
+		var bounds = new System.Drawing.Rectangle(0, 0, expectedScreenshot.Width, expectedScreenshot.Height);
+		ImageAssert.HasColorInRectangle(expectedScreenshot, bounds, Microsoft.UI.Colors.Red, tolerance: 10);
+		ImageAssert.HasColorInRectangle(expectedScreenshot, bounds, Microsoft.UI.Colors.Green, tolerance: 10);
+		await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(actual), expectedScreenshot);
+	}
+
+	// A red square the ViewBox scales 2x, then a green square drawn after it: as the ShapeVisual's child, or as its sibling,
+	// which nothing the ShapeVisual paints can reach.
+	private static Border CreateViewBoxShapes(bool repaintsEveryFrame, bool greenAsChild)
+	{
+		var host = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.White) };
+		var compositor = ElementCompositionPreview.GetElementVisual(host).Compositor;
+		CompositionBrush fill = compositor.CreateColorBrush(Microsoft.UI.Colors.Red);
+		if (repaintsEveryFrame)
+		{
+			var source = compositor.CreateSpriteVisual();
+			source.Size = new Vector2(10, 10);
+			source.Brush = fill;
+
+			var surface = compositor.CreateVisualSurface();
+			surface.SourceVisual = source;
+			surface.SourceSize = new Vector2(10, 10);
+			fill = compositor.CreateSurfaceBrush(surface);
+		}
+
+		var square = compositor.CreateSpriteShape();
+		square.Geometry = compositor.CreateRectangleGeometry();
+		((CompositionRectangleGeometry)square.Geometry).Size = new Vector2(10, 10);
+		square.FillBrush = fill;
+
+		var shapeVisual = compositor.CreateShapeVisual();
+		shapeVisual.Size = new Vector2(100, 100);
+		shapeVisual.ViewBox = compositor.CreateViewBox();
+		shapeVisual.ViewBox.Size = new Vector2(50, 50);
+		shapeVisual.Shapes.Add(square);
+
+		var green = compositor.CreateSpriteVisual();
+		green.Size = new Vector2(20, 20);
+		green.Offset = new Vector3(60, 60, 0);
+		green.Brush = compositor.CreateColorBrush(Microsoft.UI.Colors.Green);
+
+		var root = compositor.CreateContainerVisual();
+		root.Children.InsertAtTop(shapeVisual);
+		(greenAsChild ? shapeVisual : root).Children.InsertAtTop(green);
+
+		ElementCompositionPreview.SetElementChildVisual(host, root);
+		return host;
+	}
 }

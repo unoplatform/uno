@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
@@ -55,7 +54,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
-	private (Matrix4x4 matrix, bool isLocalMatrixIdentity) _totalMatrix = (Matrix4x4.Identity, true);
+	private (Matrix4x4 matrix, Matrix4x4 localMatrix) _totalMatrix = (Matrix4x4.Identity, Matrix4x4.Identity);
 	// Opaque per-visual retained state owned by the rendering backend (Skia: an SKPicture). _content is
 	// this visual's own painted content; _childrenContent is a collapsed subtree cache.
 	private IRenderRecord? _content;
@@ -270,63 +269,79 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				_flags &= ~VisualFlags.MatrixDirty;
 
-				var isLocalMatrixIdentity = true;
+				var localMatrix = Matrix4x4.Identity;
 
 				// Start out with the final matrix of the parent
 				var matrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
 
 				// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-				var totalOffset = GetTotalOffset();
-				var offsetMatrix = new Matrix4x4(
-					1, 0, 0, 0,
-					0, 1, 0, 0,
-					0, 0, 1, 0,
-					totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y, 0, 1);
+				var offsetMatrix = GetOffsetMatrix();
 				if (!offsetMatrix.IsIdentity)
 				{
-					isLocalMatrixIdentity = false;
+					localMatrix = offsetMatrix;
 					matrix = offsetMatrix * matrix;
 				}
 
 				// Apply the rending transformation matrix (i.e. change coordinates system to the "rendering" one)
 				if (GetTransform() is { IsIdentity: false } transform)
 				{
-					isLocalMatrixIdentity = false;
+					localMatrix = transform * localMatrix;
 					matrix = transform * matrix;
 				}
 
-				_totalMatrix = (matrix, isLocalMatrixIdentity);
+				_totalMatrix = (matrix, localMatrix);
 			}
 
 			return _totalMatrix.matrix;
-
-			Matrix4x4 GetTransform()
-			{
-				var transform = TransformMatrix;
-
-				var scale = Scale;
-				if (scale != Vector3.One)
-				{
-					transform *= Matrix4x4.CreateScale(scale, CenterPoint);
-				}
-
-				var orientation = Orientation;
-				if (orientation != Quaternion.Identity)
-				{
-					transform *= Matrix4x4.CreateFromQuaternion(orientation);
-				}
-
-				var rotation = RotationAngle;
-				if (rotation is not 0)
-				{
-					transform *= Matrix4x4.CreateTranslation(-CenterPoint);
-					transform *= Matrix4x4.CreateFromAxisAngle(RotationAxis, rotation);
-					transform *= Matrix4x4.CreateTranslation(CenterPoint);
-				}
-
-				return transform;
-			}
 		}
+	}
+
+	// TotalMatrix without the parent's: this visual's own transform and position within its parent.
+	private protected Matrix4x4 LocalMatrix
+	{
+		get
+		{
+			// Reading TotalMatrix recomputes both when dirty.
+			_ = TotalMatrix;
+			return _totalMatrix.localMatrix;
+		}
+	}
+
+	private Matrix4x4 GetOffsetMatrix()
+	{
+		var totalOffset = GetTotalOffset();
+		return new Matrix4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y, 0, 1);
+	}
+
+	private Matrix4x4 GetTransform()
+	{
+		var transform = TransformMatrix;
+
+		var scale = Scale;
+		if (scale != Vector3.One)
+		{
+			transform *= Matrix4x4.CreateScale(scale, CenterPoint);
+		}
+
+		var orientation = Orientation;
+		if (orientation != Quaternion.Identity)
+		{
+			transform *= Matrix4x4.CreateFromQuaternion(orientation);
+		}
+
+		var rotation = RotationAngle;
+		if (rotation is not 0)
+		{
+			transform *= Matrix4x4.CreateTranslation(-CenterPoint);
+			transform *= Matrix4x4.CreateFromAxisAngle(RotationAxis, rotation);
+			transform *= Matrix4x4.CreateTranslation(CenterPoint);
+		}
+
+		return transform;
 	}
 
 #if DEBUG
@@ -455,40 +470,45 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		// Since we're acting as if this visual is a root visual, we undo the parent's TotalMatrix
-		// so that when concatenated with this visual's TotalMatrix, the result is only the transforms
-		// from this visual.
-		// It's important to set the default to the session's current transform, not identity, in case there's
-		// an initial global transformation set (e.g. if the renderer sets scaling for dpi or we're rendering from a VisualSurface)
-		var initialTransform = drawingSession.TotalMatrix;
-		if (Parent?.TotalMatrix is { } parentTotalMatrix)
-		{
-			Matrix4x4.Invert(parentTotalMatrix, out var invertedParentTotalMatrix);
-			initialTransform = invertedParentTotalMatrix * initialTransform;
-		}
-
-		if (offsetOverride is { } offset)
-		{
-			var totalOffset = GetTotalOffset();
-			var translation = Matrix4x4.Identity with { M41 = -(offset.X + totalOffset.X + AnchorPoint.X), M42 = -(offset.Y + totalOffset.Y + AnchorPoint.Y) };
-			initialTransform = translation * initialTransform;
-		}
-
-		_factory.CreateInstance(this,
-						  drawingSession,
-						  ref initialTransform.IsIdentity ? ref Unsafe.NullRef<Matrix4x4>() : ref initialTransform,
-						  opacity: 1.0f,
-						  damage,
-						  out var session);
+		// The walk concatenates each visual's own transform, so it starts from wherever the canvas already is (e.g. scaled
+		// for dpi, or a VisualSurface's transform): there is nothing of the parent's to take back out.
+		_factory.CreateInstance(this, drawingSession, opacity: 1.0f, damage, out var session);
 
 		using (session)
 		{
-			// we set the matrix here similarly to CreateLocalMatrix in case the SetMatrix call there is
-			// omitted.
-			drawingSession.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
+			if (offsetOverride is { } offset)
+			{
+				drawingSession.Concat(GetOffsetOverrideTranslation(offset));
+			}
+
 			// Live (non-recorded) walk: leaf culling is armed and narrows at each rect-shaped clip below.
 			Render(session, applyChildOptimization: true, cullRect: InfiniteClipRect, inheritedClipBounds: InfiniteClipRect);
 		}
+	}
+
+	private Matrix4x4 GetOffsetOverrideTranslation(Vector2 offset)
+	{
+		var totalOffset = GetTotalOffset();
+		var translation = Matrix4x4.Identity with { M41 = -(offset.X + totalOffset.X + AnchorPoint.X), M42 = -(offset.Y + totalOffset.Y + AnchorPoint.Y) };
+		if (Parent is not { } parent)
+		{
+			return translation;
+		}
+
+		// The translation acts in the parent's space, so it is conjugated by the parent's transform. One that flattens Z
+		// has no inverse, but with Z kept apart from X, Y and W the result doesn't depend on M33.
+		var parentMatrix = parent.TotalMatrix;
+		if (!Matrix4x4.Invert(parentMatrix, out var invertedParent))
+		{
+			parentMatrix = parentMatrix with { M13 = 0, M23 = 0, M43 = 0, M31 = 0, M32 = 0, M34 = 0, M33 = 1 };
+			if (!Matrix4x4.Invert(parentMatrix, out invertedParent))
+			{
+				// The parent collapses its plane onto a line, so what it draws has no area to misplace.
+				return translation;
+			}
+		}
+
+		return parentMatrix * translation * invertedParent;
 	}
 
 	/// <summary>
@@ -590,9 +610,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					|| _shadowFallbackOpacity != session.Opacity)
 				{
 					var recording = CreateRecording(parentSession.Session.Factory);
-					// child.Render will reapply the total transform matrix, so we need to invert ours.
-					Matrix4x4.Invert(TotalMatrix, out var rootTransform);
-					_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
+					_factory.CreateInstance(this, recording, session.Opacity, session.Damage, out var childSession);
 					using (childSession)
 					{
 						PaintStep(this, childSession, clipChanged, clipBounds);
@@ -672,7 +690,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					visual._flags &= ~VisualFlags.PaintDirty;
 
 					var recording = CreateRecording(session.Session.Factory);
-					_factory.CreateInstance(visual, recording, ref session.RootTransform, session.Opacity, session.Damage, out var recorderSession);
+					_factory.CreateInstance(visual, recording, session.Opacity, session.Damage, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
 
@@ -740,9 +758,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			else
 			{
 				var recording = CreateRecording(session.Session.Factory);
-				// child.Render will reapply the total transform matrix, so we need to invert ours.
-				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
-				_factory.CreateInstance(visual, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
+				_factory.CreateInstance(visual, recording, session.Opacity, session.Damage, out var childSession);
 				using (childSession)
 				{
 					foreach (var child in visual.GetChildrenInRenderOrder())
@@ -1309,8 +1325,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	private void CreateLocalSession(in PaintingSession parentSession, out PaintingSession session)
 	{
-		ref var rootTransform = ref parentSession.RootTransform;
-
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
 
 		// MUX Reference hwwalk.cpp, ShouldOverrideRenderOpacity.
@@ -1319,43 +1333,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			opacity = 1.0f;
 		}
 
-		_factory.CreateInstance(this, parentSession.Session, ref rootTransform, opacity, parentSession.Damage, out session);
+		_factory.CreateInstance(this, parentSession.Session, opacity, parentSession.Damage, out session);
 
-		if ((_flags & VisualFlags.MatrixDirty) != 0 || !_totalMatrix.isLocalMatrixIdentity)
+		// Concatenated onto what the walk has accumulated, so a subtree draws relative to wherever it is drawn, even under
+		// a matrix that flattens Z and has no inverse. The session's save undoes it on dispose.
+		if (LocalMatrix is { IsIdentity: false } localMatrix)
 		{
-			Matrix4x4 totalMatrix;
-
-			if (Unsafe.IsNullRef(ref rootTransform))
-			{
-				totalMatrix = TotalMatrix;
-			}
-			else
-			{
-				totalMatrix = TotalMatrix * rootTransform;
-			}
-
-			if (!_totalMatrix.isLocalMatrixIdentity)
-			{
-				session.Session.SetMatrix(totalMatrix);
-			}
+			session.Session.Concat(localMatrix);
 		}
-#if DEBUG
-		else
-		{
-			var actual = parentSession.Session.TotalMatrix;
-			var expected = Unsafe.IsNullRef(ref rootTransform) ? TotalMatrix : TotalMatrix * rootTransform;
-			var diff = actual - expected;
-			// Due to the limited precision of doubles, instead of comparing the two matrices directly we compare the Frobenius norm of their difference to zero
-			var frobeniusSquared =
-				diff.M11 * diff.M11 + diff.M12 * diff.M12 + diff.M13 * diff.M13 + diff.M14 * diff.M14 +
-				diff.M21 * diff.M21 + diff.M22 * diff.M22 + diff.M23 * diff.M23 + diff.M24 * diff.M24 +
-				diff.M31 * diff.M31 + diff.M32 * diff.M32 + diff.M33 * diff.M33 + diff.M34 * diff.M34 +
-				diff.M41 * diff.M41 + diff.M42 * diff.M42 + diff.M43 * diff.M43 + diff.M44 * diff.M44;
-			Debug.Assert(Unsafe.IsNullRef(ref rootTransform)
-				? actual == TotalMatrix
-				: CompositionMathHelpers.IsCloseRealZero(frobeniusSquared, 1e-5f));
-		}
-#endif
 	}
 
 	internal void PrintSubtree(StringBuilder sb, int indent = 0)
