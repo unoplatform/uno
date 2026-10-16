@@ -95,6 +95,14 @@ internal sealed partial class TextBoxCore
 
 	internal void OnRightTapped(RightTappedRoutedEventArgs e)
 	{
+		if (e.PointerDeviceType == PointerDeviceType.Touch && TouchSelectionConvention != TouchTextSelectionConvention.Desktop)
+		{
+			// A touch right-tap is the release of a hold, which these conventions handled when it started (OnHolding):
+			// moving the caret to the press point here would undo an iOS caret drag. WinUI's CTextBoxBase::OnRightTapped
+			// doesn't move the caret on a touch right-tap either.
+			return;
+		}
+
 		var displayBlock = TextBoxView.DisplayBlock;
 		var position = e.GetPosition(displayBlock);
 

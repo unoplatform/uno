@@ -7177,6 +7177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// The hold acts when it starts (OnHolding), but a hold lasting past the delay still gets the ContextMenuProcessor's
 		// delayed ContextRequested (the text viewport is pannable): it belongs to the hold already handled, so it must not
 		// restart the caret drag at the point where the hold started, open the context flyout nor make a selection.
+		// The release of the hold is then a touch right-tap at the press point, which must not move the caret back either.
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaIOS)] // iOS convention: run on Desktop (dev) + real iOS only
@@ -7195,6 +7196,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 			var contextRequested = 0;
 			SUT.AddHandler(UIElement.ContextRequestedEvent, new TypedEventHandler<UIElement, ContextRequestedEventArgs>((_, _) => contextRequested++), handledEventsToo: true);
+			var rightTapped = 0;
+			SUT.AddHandler(UIElement.RightTappedEvent, new RightTappedEventHandler((_, _) => rightTapped++), handledEventsToo: true);
 
 			await UITestHelper.Load(SUT);
 
@@ -7208,7 +7211,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, contextRequested, "the caret drag starts with the hold, before the delayed ContextRequested");
 
 			// Within the tap range, so the viewport's ScrollViewer doesn't take the gesture over (which stops the delayed request).
-			finger.MoveBy(Microsoft.UI.Input.GestureRecognizer.TapMaxXDelta - 1, 0, stepOffsetInMilliseconds: 20);
+			// Injected timestamps only advance by the given offsets: carry the press past the hold delay, so that the release
+			// is recognized as a right-tap.
+			finger.MoveBy(Microsoft.UI.Input.GestureRecognizer.TapMaxXDelta - 1, 0, stepOffsetInMilliseconds: 100);
 			await WindowHelper.WaitForIdle();
 			var caretAfterDrag = SUT.SelectionStart;
 			Assert.IsTrue(caretAfterDrag > caretAtHold, $"caret should advance with the drag (was {caretAtHold}, now {caretAfterDrag})");
@@ -7222,7 +7227,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(caretAfterDrag, SUT.SelectionStart);
+			Assert.AreEqual(1, rightTapped, "premise: the release of the hold is a touch right-tap");
+			Assert.AreEqual(caretAfterDrag, SUT.SelectionStart, "the right-tap of the release must not move the caret back to the press point");
 			Assert.IsFalse(SUT.ContextFlyout?.IsOpen ?? false);
 		}
 
