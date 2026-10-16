@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Uno.UI.Samples.Tests;
@@ -34,4 +35,9 @@ internal record TestCaseResult
 	public string? Message { get; init; }
 
 	public string? ConsoleOutput { get; init; }
+
+	/// <summary>
+	/// Measurements the test recorded through <see cref="Uno.UI.RuntimeTests.Helpers.RuntimeTestMetrics"/>.
+	/// </summary>
+	public IReadOnlyList<Uno.UI.RuntimeTests.Helpers.RuntimeTestMetric>? Metrics { get; init; }
 }
