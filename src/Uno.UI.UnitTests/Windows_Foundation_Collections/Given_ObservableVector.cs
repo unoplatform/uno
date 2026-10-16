@@ -41,6 +41,43 @@ namespace Uno.UI.Tests.Windows_Foundation_Collections
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25215")]
+		public void When_Item_Added_Through_IList()
+		{
+			var vector = new ObservableVector<int>();
+			var eventCount = 0;
+			IVectorChangedEventArgs lastEvent = null;
+			vector.VectorChanged += (sender, args) =>
+			{
+				eventCount++;
+				lastEvent = args;
+			};
+
+			var index = ((IList)vector).Add(42);
+
+			Assert.AreEqual(0, index);
+			Assert.AreEqual(1, vector.Count);
+			Assert.AreEqual(42, vector[0]);
+			Assert.AreEqual(1, eventCount);
+			Assert.IsNotNull(lastEvent);
+			Assert.AreEqual(CollectionChange.ItemInserted, lastEvent.CollectionChange);
+			Assert.AreEqual(0u, lastEvent.Index);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25215")]
+		public void When_Incompatible_Item_Added_Through_IList()
+		{
+			var vector = new ObservableVector<int>();
+			var eventCount = 0;
+			vector.VectorChanged += (sender, args) => eventCount++;
+
+			Assert.ThrowsExactly<ArgumentException>(() => ((IList)vector).Add("42"));
+			Assert.AreEqual(0, vector.Count);
+			Assert.AreEqual(0, eventCount);
+		}
+
+		[TestMethod]
 		public void When_Item_Removed_VectorChanged()
 		{
 			var vector = new ObservableVector<string>() { "one", "two", "three" };
