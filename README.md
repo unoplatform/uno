@@ -1,167 +1,154 @@
-﻿<h1 align=center>
- <img alt="Uno Platform Banner" align=center width="95%" src="https://github.com/user-attachments/assets/ac1b6c72-a6ed-4c3f-9e0d-a8eca96bdc4e" />
-</h1>
+<p align="center">
+  <a href="https://platform.uno">
+    <img alt="Uno Platform - Build cross-platform .NET applications" width="95%" src="https://github.com/user-attachments/assets/ac1b6c72-a6ed-4c3f-9e0d-a8eca96bdc4e" />
+  </a>
+</p>
 
-<div align=center>
+<h3 align="center">One C# and XAML codebase. Every screen your users have.</h3>
 
-[![NuGet](https://img.shields.io/nuget/v/uno.sdk.svg?style=flat&color=159bff&label=NuGet)](https://www.nuget.org/packages/uno.sdk/)
-[![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=master)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/uno.winui.svg?style=flat&color=7a67f8&label=NuGet%20Downloads)](https://www.nuget.org/packages/uno.winui)
-[![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?style=flat&color=7a67f8&label=GitHub%20Stars)](https://github.com/unoplatform/uno/stargazers/)
-[![All Contributors](https://img.shields.io/github/contributors/unoplatform/uno.svg?style=flat&color=7a67f8&label=Contributors)](https://GitHub.com/unoplatform/uno/graphs/contributors)
-[![Open Uno in Gitpod](https://img.shields.io/badge/gitpod-setup%20automated-159bff?logo=gitpod&style=flat&label=Gitpod)](https://gitpod.io/#https://github.com/unoplatform/uno)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
+<p align="center">
+  Uno Platform is the open-source .NET platform for building apps that run on <b>Windows, macOS, Linux, the web, Android, iOS and Apple TV</b>, using the WinUI API and the C# and XAML skills you already have.
+</p>
 
-Uno Platform is an open-source developer platform for building single-codebase .NET applications that run natively on Web, Desktop, Mobile, and Embedded systems. It uses the WinUI 3 API surface, allowing you to reuse your existing C# and XAML skills to reach all platforms.
+<p align="center">
+  <a href="https://www.nuget.org/packages/Uno.Sdk/"><img alt="Uno.Sdk on NuGet" src="https://img.shields.io/nuget/v/uno.sdk.svg?style=flat&color=159bff&label=Uno.Sdk" /></a>
+  <a href="https://www.nuget.org/packages/Uno.WinUI/"><img alt="NuGet downloads" src="https://img.shields.io/nuget/dt/uno.winui.svg?style=flat&color=7a67f8&label=downloads" /></a>
+  <a href="https://github.com/unoplatform/uno"><img alt="GitHub stars" src="https://img.shields.io/github/stars/unoplatform/uno?style=flat&color=7a67f8&label=stars" /></a>
+  <a href="https://github.com/unoplatform/uno/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/unoplatform/uno.svg?style=flat&color=7a67f8&label=contributors" /></a>
+  <a href="https://platform.uno/discord"><img alt="Discord" src="https://img.shields.io/discord/1182775715242967050?label=discord&color=f85977&logo=discord&logoColor=white" /></a>
+  <a href="License.md"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-67e5ad.svg?style=flat" /></a>
+</p>
 
-> Uno Platform is trusted by over 300 contributors and used by enterprise clients such as Toyota, Microsoft, and Kahua for mission-critical applications. With ~10,000 GitHub stars and 130+ million NuGet downloads, it is a proven foundation for professional-grade development.
-
-</div>
-
----
-
-## Uno Platform and Uno Platform Studio for The Most Productive C# / XAML Dev Loop
-
-### Uno Platform (Core Framework)
-
-The free and open-source (Apache 2.0) foundation for building cross-platform .NET applications. It includes the UI framework, platform heads, and a rich set of developer experience enhancements.
-
-#### 🌐 Cross-Platform Support
-
-Develop fully native applications for a wide range of platforms from a single codebase.
-
-* **Mobile (iOS & Android)**: Build native, pixel-perfect UIs with C# and XAML.
-* **Web (WebAssembly)**: Reuse existing C# and XAML skills to build fast web applications.
-* **Desktop (Windows, macOS & Linux)**: Uno Platform uses **Skia** for rendering across all desktop platforms, ensuring high-performance, hardware-accelerated graphics and animations. On Windows, Skia runs within a Win32 shell, on macOS within an AppKit shell (Metal when available), and on Linux within an X11 shell or directly to the Framebuffer for embedded scenarios.
-
-#### 🛠️ Toolkit & Extensions
-
-* **UI Controls**: Access [hundreds of UI components from WinUI](https://aka.platform.uno/using-uno-ui), [Windows Community Toolkit](https://aka.platform.uno/install-uno-community-toolkit), [Uno Toolkit](https://aka.platform.uno/uno-toolkit), [third-party vendors](https://aka.platform.uno/supported-libraries), and even .NET [MAUI controls](https://aka.platform.uno/maui-embedding).
-* **Theming**: Easily theme your app with [Material, Fluent, or Cupertino styles](https://aka.platform.uno/uno-themes) using minimal code.
-* **State Management**: Choose between the familiar MVVM pattern or the modern [MVUX](https://aka.platform.uno/mvux) approach for declarative and scalable state management.
-* **Extensions**: Utilize [ready-to-use libraries](https://aka.platform.uno/uno-extensions) for common functionalities like navigation, logging, and dependency injection.
-* **Non-UI Cross-Platform APIs**: Access a [comprehensive set of APIs](https://aka.platform.uno/using-uno-ui) to interact with native device features such as sensors and secure storage.
-
-### Uno Platform Studio
-
-The AI-native productivity suite for building enterprise-grade, cross-platform .NET applications. It spans prompt-to-app generation in the browser, an AI development agent, design handoff, and the industry-first runtime visual designer for .NET — integrating with Visual Studio, VS Code, and JetBrains Rider to deliver an unparalleled development loop.
-
-* **[Uno Platform Studio App](https://aka.platform.uno/studio)**: Go from a prompt (or a curated Gallery sample) to a working, cross-platform Uno Platform app in minutes. Watch it build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building.
-* **[Uno Platform Studio Agent](https://aka.platform.uno/studio-agent)**: The orchestration layer that makes AI Uno-aware — it sees your running app, knows your design system, validates changes across every target, and grounds its answers in official Uno Platform docs, all in a human-in-the-loop workflow. It ships 70+ Uno Platform-specific skills through the `uno-platform-studio` plugin for Claude Code, GitHub Copilot, and OpenAI Codex.
-* **[Hot Design](https://aka.platform.uno/hot-design)**: The industry-first, patented runtime visual designer that transforms your live app into a design surface with a single click.
-* **[Hot Reload](https://aka.platform.uno/hot-reload)**: Instantly modify XAML and C# on a running app, allowing for rapid iteration without losing the app's state.
-* **[Design-to-Code](https://aka.platform.uno/Design-to-Code)**: Export Figma designs to clean, responsive XAML or C# markup in seconds.
-* **[Uno Platform MCPs](https://aka.platform.uno/mcp)**: The **Uno MCP** gives AI agents structured, semantic access to Uno Platform's full knowledge base (docs, APIs, and best practices), while the **App MCP** lets agents interact directly with your live, running app.
-<img alt="Uno Platform Studio - Hot Design" align=center width="95%" src="https://github.com/user-attachments/assets/0962dbac-2130-4d2d-b187-71974160ddbe" />
+<p align="center">
+  <a href="https://aka.platform.uno/get-started"><b>Get started</b></a> ·
+  <a href="https://aka.platform.uno/uno-docs-intro">Documentation</a> ·
+  <a href="https://gallery.platform.uno/">Gallery</a> ·
+  <a href="https://github.com/unoplatform/uno.samples">Samples</a> ·
+  <a href="https://platform.uno/blog/">Blog</a> ·
+  <a href="https://platform.uno/discord">Discord</a>
+</p>
 
 ---
 
-## 🚀 Quick Start
+## 💜 Why Uno Platform
 
-Get your development environment ready and create your first app in minutes.
+- **Write it once, for real.** One single-project app, one set of XAML pages, one set of view models. Uno Platform takes care of each platform's window, input, accessibility and packaging.
+- **The WinUI API, everywhere.** You use the same `Microsoft.UI.Xaml` controls, styles, data binding and Composition API as on Windows. Controls are increasingly ported from WinUI's own C++ sources, and the default styles come from WinUI's own `generic.xaml`.
+- **Consistent by design.** Uno Platform draws the UI itself, so your app looks and behaves consistently on a phone, in a browser and on the desktop. You can still embed native views where you need them, such as a map or a platform SDK control.
+- **A fast inner loop.** Hot Reload updates XAML and C# in your running app, and AI agents can read the docs and drive your live app through the Uno Platform MCPs.
+- **Free and open source.** Uno Platform is licensed under Apache 2.0, and developed in the open, right here.
 
-1. **Check Your Environment**: Use our Uno.Check command-line tool to automatically check, install, and configure all required workloads and dependencies.
+## 🚀 Quick start
 
-2. **Create Your App**: Use the Template Wizard in your IDE or the command line to quickly create and configure new Uno Platform projects with the appropriate settings for your target platforms.
+You need the [.NET SDK](https://dotnet.microsoft.com/download). Then let [Uno.Check](https://aka.platform.uno/uno-check) install the workloads for the platforms you target, and create an app:
 
-    ![Uno Platform New Project Wizard](https://github.com/user-attachments/assets/fc67df45-30e2-43d7-8323-890686f1e9bf)
+```bash
+dotnet tool update -g uno.check
+uno-check
 
-3. **Build and Run**
+dotnet new install Uno.Templates
+dotnet new unoapp -o MyApp
 
-➡️ For detailed guides, visit the **[Official Uno Platform Documentation](https://aka.platform.uno/get-started)** on how to get started with Uno Platform.
+cd MyApp/MyApp
+dotnet run -f net10.0-desktop
+```
 
----
+Prefer an IDE? Uno Platform has extensions for **Visual Studio**, **Visual Studio Code** and **JetBrains Rider**, and a [live project wizard](https://aka.platform.uno/app-wizard) to choose your platforms and features. The [getting started guide](https://aka.platform.uno/get-started) walks you through each setup.
 
-## 🛠️ How It Works
+## 🖥️ Where your app runs
 
-Uno Platform unifies cross-platform development by abstracting platform-specific implementations behind the WinUI 3 API surface.
+| Platform | Target framework | Notes |
+|---|---|---|
+| **Windows** | `net10.0-desktop` | Rendered by Uno Platform in a Win32 window |
+| | `net10.0-windows10.0.19041` | Runs on WinUI itself, through the Windows App SDK |
+| **macOS** | `net10.0-desktop` | Metal-accelerated |
+| **Linux** | `net10.0-desktop` | X11, or the framebuffer for embedded devices |
+| **Web** | `net10.0-browserwasm` | WebAssembly, in desktop and mobile browsers |
+| **Android** | `net10.0-android` | Android 7.0 (API 24) and later |
+| **iOS and iPadOS** | `net10.0-ios` | iOS 15 and later |
+| **Apple TV** | `net10.0-tvos` | tvOS 15 and later |
 
-1. **Develop**: You write your application in a single project using C# and XAML (or C# Markup) within your preferred environment (Visual Studio, JetBrains Rider, Visual Studio Code) on Windows, macOS, or Linux.
-2. **Render**: Uno Platform renders your UI using one of two methods:
-    * **Unified Skia Rendering**: A Skia-based engine draws your UI on a canvas, ensuring consistent performance, smooth animations, and pixel-perfect visuals across all targets.
-    * **Native Rendering**: The XAML UI is translated into native platform controls (e.g., UIKit on iOS), providing a platform-native look and feel when desired.
-3. **Deploy**: The build process generates a native application package for each target platform from the single codebase.
+Apps target .NET 10, the current long-term support release. The [supported platforms page](https://platform.uno/docs/articles/getting-started/requirements.html) has the full details.
 
-# Uno Platform Features
+## 🛠️ How it works
 
-* Supported platforms:
-  * Windows 10 and Windows 11
-  * Windows 7 (via Skia Desktop)
-  * macOS (via Skia Desktop)
-  * iOS and Android (via [.NET](https://dotnet.microsoft.com/))
-  * WebAssembly through the [.NET Runtime WebAssembly SDK](https://github.com/dotnet/runtime/tree/main/src/mono/wasm)
-  * Linux (via Skia Desktop with X11 and FrameBuffer)
-* Dev loop:
-  * Develop on your favorite IDE (Visual Studio, Rider, or VS Code) on your favorite OS (Windows, macOS, or Linux)
-  * XAML and/or C# Hot Reload for WebAssembly, macOS, Linux, Windows, iOS, and Android
-  * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS, and Android.
-* Cross-Platform Controls:
-  * [Control Templating](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/control-templates)
-  * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114)
-  * [Styling](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-styles)
-  * [Rich Animations](https://learn.microsoft.com/windows/uwp/design/motion/xaml-animation)
-  * [Composition API](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/composition)
-* WinUI Code Support:
-  * [Windows Community Toolkit](https://github.com/CommunityToolkit/Windows)
-  * [Windows Community Toolkit (Uno Fork)](https://github.com/unoplatform/uno.WindowsCommunityToolkit)
-  * [Community Toolkit MVVM](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/)
-  * [Microsoft XAML Behaviors](https://github.com/unoplatform/uno.XamlBehaviors)
-  * [Prism](https://github.com/prismlibrary/prism)
-  * [SkiaSharp](https://github.com/mono/SkiaSharp)
-  * [SkiaSharp.Extended](https://github.com/mono/SkiaSharp.Extended)
-  * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
-  * [WindowsStateTriggers](https://github.com/unoplatform/uno.WindowsStateTriggers)
-  * [Rx.NET](https://github.com/reactiveui/Reactive.Wasm)
-  * [ColorCode-Universal](https://github.com/unoplatform/uno.ColorCode-Universal)
-  * [LibVLCSharp](https://github.com/videolan/libvlcsharp)
-  * [MapsUI](https://github.com/Mapsui/Mapsui)
-  * [LiveCharts](https://github.com/beto-rodriguez/LiveCharts2)
-  * Any WinUI project
-* Responsive Design:
-  * [Visual State Manager](https://learn.microsoft.com/uwp/api/Microsoft.UI.Xaml.VisualStateManager)
-  * [State Triggers](https://blogs.msdn.microsoft.com/mvpawardprogram/2017/02/07/state-triggers-uwp-apps/)
-* [Adaptive Triggers](https://learn.microsoft.com/uwp/api/Microsoft.UI.Xaml.AdaptiveTrigger)
-* Platform Specific:
-  * Native controls and properties via [conditional XAML](doc/articles/platform-specific-xaml.md)
-  * Any of the existing Xamarin iOS/Android libraries available
+```mermaid
+flowchart LR
+    A["Your app<br/>C# · XAML · WinUI API"] --> B["Uno Platform<br/>controls, layout, text,<br/>input, accessibility"]
+    B --> C["Rendering backend<br/>Skia (default) · WebGPU (preview)"]
+    C --> D["Windows · macOS · Linux<br/>Web · Android · iOS · Apple TV"]
+    A -. "Windows App SDK head" .-> E["WinUI on Windows"]
+```
 
----
+Uno Platform implements the WinUI API on top of a single rendering pipeline. Each platform gets a thin host for its window, input and system services, and the UI itself is drawn through a pluggable rendering backend. Skia is the default, and WebGPU is available as an opt-in preview. On Windows, you can also build the same app against WinUI itself.
 
-## 📚 Learning & Community Resources
+## ✨ New in Uno Platform 7.0
 
-[![X/Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat&color=f85977&logo=x)](https://x.com/unoplatform)
-[![Uno Platform Discord](https://img.shields.io/discord/1182775715242967050?label=Discord&color=f85977)](https://platform.uno/discord)
-![YouTube Followers](https://img.shields.io/youtube/channel/subscribers/UC8GkqD6hsSkwYof6n2Wk1hg?label=Follow%20%40UnoPlatform&style=flat&color=f85977&logo=Youtube)
+<!-- TODO: link the Uno Platform 7.0 release blog post here once it is published. -->
 
-* **[Official Documentation](https://aka.platform.uno/uno-docs-intro)**: The complete guide to Uno Platform.
-* **[Uno Platform Studio](https://aka.platform.uno/studio)**: Details for the AI-native suite of productivity tools, which includes:
-  * **[Uno Platform Studio App](https://aka.platform.uno/studio)**
-  * **[Uno Platform Studio Agent](https://aka.platform.uno/studio-agent)**
-  * **[Hot Design](https://aka.platform.uno/hot-design)**
-  * **[Hot Reload](https://aka.platform.uno/hot-reload)**
-  * **[Design-to-Code](https://aka.platform.uno/Design-to-Code)**
-  * **[Uno Platform MCPs](https://aka.platform.uno/mcp)** (Uno MCP &amp; App MCP)
-* **[Uno Playground](https://playground.platform.uno/)**: Experiment with code snippets and see live previews.
-* **[Uno Gallery](https://gallery.platform.uno/)**: Explore various UI themes and components in action.
-* **[Workshops & Code Samples](https://aka.platform.uno/samples-tutorials)**: Access practical tutorials and sample projects to accelerate learning.
-* **[Case Studies](https://platform.uno/case-studies/)**: Learn from real-world applications built using the Uno Platform.
-* **[Uno Platform Blog](https://platform.uno/blog/)**: The latest news, technical deep-dives, and release announcements.
-* **[Discord Server](https://aka.platform.uno/discord)**: Join our active community for real-time discussions and support.
-* **[Uno Tech Bites](https://www.youtube.com/playlist?list=PLl_OlDcUya9rP_fDcFrHWV3DuP7KhQKRA)**: Bite-sized learning videos with the team.
-* **[Why Use Uno Platform for Your Project?](https://aka.platform.uno/why-uno-platform)**: Discover the key benefits and reasons to choose Uno Platform.
-* **[General FAQ](https://aka.platform.uno/uno-faq)**: Find answers to common questions about Uno Platform.
+- 🎨 **One drawn UI everywhere.** The native mobile and browser-DOM renderers are gone: every Uno Platform target now draws the UI through the same pipeline, so a fix lands on every platform at once. [Native views](https://platform.uno/docs/articles/features/using-skia-hosting-native-controls.html) can still be embedded on Android, iOS, WebAssembly, Windows and Linux.
+- 🧱 **Pluggable rendering.** Skia stays the default, and a new WebGPU backend is available as an opt-in preview.
+- 📺 **Apple TV.** tvOS is now a fully implemented, supported target. Add `net10.0-tvos` to your target frameworks.
+- ✍️ **Rich text.** `RichTextBlock` is rebuilt on a port of WinUI's core text stack, and [`RichEditBox`](doc/articles/controls/RichEditBox.md) now works on every Uno Platform-rendered target.
+- 🧩 **More of WinUI, ported.** `ItemsRepeater` and `ItemsView` are re-synced with WinUI's sources, `LinedFlowLayout` is new, and [Lottie](doc/articles/features/Lottie.md) is built in through a port of `AnimatedVisualPlayer`.
+- 🧈 **Smoother scrolling.** Scrolling and flings now advance on the compositor's frame clock, so on a 120 Hz screen content can move every frame.
+- 📦 **Leaner and simpler.** A much smaller `Uno.WinUI` package, fewer packages to restore, and `Uno.Sdk` single-project apps as the one project format.
 
-## Contributing
+Upgrading from 6.x? The [migration guide](doc/articles/migrating-to-uno-7.md) walks through every breaking change.
 
-This is an active open-source project, and we welcome contributions from the community.
-To learn how you can get involved, please refer to our **[Contribution Guide (`CONTRIBUTING.md`)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)** for details on how to get started.
+<!-- TODO: switch the relative doc links above to platform.uno/docs once the 7.0 documentation is published. -->
 
-## Contributors
+## 🧰 Tools for a productive dev loop
 
-Thanks go to these wonderful people (List made with [contrib.rocks](https://contrib.rocks)):
+- **[Hot Reload](https://aka.platform.uno/hot-reload)**: change XAML and C# while your app runs, without losing its state.
+- **[Uno Platform MCPs](https://aka.platform.uno/mcp)**: give AI agents up-to-date Uno Platform documentation, and let them see and interact with your running app. There are step-by-step guides for [Claude Code](https://platform.uno/docs/articles/get-started-ai-claude.html), [GitHub Copilot CLI](https://platform.uno/docs/articles/get-started-ai-gh-copilot-cli.html), [Codex](https://platform.uno/docs/articles/get-started-ai-codex.html) and [Cursor](https://platform.uno/docs/articles/get-started-ai-cursor.html).
+- **[Uno Platform Studio](https://aka.platform.uno/studio)**: a separate productivity suite from the Uno Platform team. It includes [Hot Design®](https://aka.platform.uno/hot-design), which turns your running app into a visual designer, the [Studio Agent](https://aka.platform.uno/studio-agent), and the [Figma plugin](https://aka.platform.uno/Design-to-Code) for design-to-code. Hot Reload and the MCPs are included in the free Community plan; see [the plans](https://platform.uno/select-subscription/) for the rest.
 
-[![Uno Platform Contributors](https://contrib.rocks/image?repo=unoplatform/uno&max=500&columns=15)](https://github.com/unoplatform/uno/graphs/contributors)
+<p align="center">
+  <img alt="Hot Design, the Uno Platform Studio visual designer, editing a running app" width="90%" src="https://github.com/user-attachments/assets/0962dbac-2130-4d2d-b187-71974160ddbe" />
+</p>
 
-## License
+## 🌱 Ecosystem
 
-This repository is licensed under the **[Apache 2.0 License](https://github.com/unoplatform/uno/blob/master/LICENSE)**.
+| Project | What it gives you |
+|---|---|
+| [Uno.Extensions](https://github.com/unoplatform/uno.extensions) | Hosting, navigation, configuration, HTTP, authentication, localization and logging |
+| [Uno.Toolkit](https://github.com/unoplatform/uno.toolkit.ui) | Extra controls and helpers, such as `AutoLayout`, `TabBar` and `DrawerFlyout` |
+| [Uno.Themes](https://github.com/unoplatform/uno.themes) | Material, Cupertino and Simple themes, on top of the built-in Fluent styles |
+| [Uno.Samples](https://github.com/unoplatform/uno.samples) | Sample apps and tutorials for specific features |
+| [Uno Gallery](https://gallery.platform.uno/) | Every control and theme, live in your browser ([source](https://github.com/unoplatform/uno.gallery)) |
+| [Uno Chefs](https://github.com/unoplatform/uno.chefs) | A complete reference app, built with the recommended practices |
+
+Uno Platform apps also work with the [Windows Community Toolkit](https://aka.platform.uno/install-uno-community-toolkit), CommunityToolkit.Mvvm, SkiaSharp and [many other libraries](https://aka.platform.uno/supported-libraries).
+
+## 🤝 Contributing
+
+Uno Platform is built in the open, and contributions of every size are welcome: bug reports, docs fixes, samples, new controls.
+
+There has never been a better time to start. With one rendering pipeline, a control has one implementation, so a fix lands on every platform at once. A single `Uno.Sdk` SamplesApp targets every platform, and doubles as the runtime-test runner. Many controls are ported from WinUI's C++ sources into C# files that mirror the original headers (`.h.mux.cs`, `.mux.cs`), so if you know where something lives in WinUI, you can usually find it here.
+
+1. Read the [contribution guide](CONTRIBUTING.md) and [Contributing to Uno Platform](https://platform.uno/docs/articles/uno-development/contributing-intro.html).
+2. Build the repository with [Building Uno.UI](https://platform.uno/docs/articles/uno-development/building-uno-ui.html), and try your change in the [SamplesApp](https://platform.uno/docs/articles/uno-development/working-with-the-samples-apps.html).
+3. Pick a [good first issue](https://github.com/unoplatform/uno/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22), or tell us what you'd like to work on.
+
+Working with an AI coding agent? The repository's [AGENTS.md](AGENTS.md) and [`.claude`](.claude) folder describe the build rules, platform targeting, runtime tests and samples, so your agent follows the same conventions we do.
+
+[![Build status](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=master%20build)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
+
+## 💬 Community and support
+
+- Chat with the team and the community on [Discord](https://platform.uno/discord).
+- Ask questions and share ideas in [GitHub Discussions](https://github.com/unoplatform/uno/discussions).
+- Report bugs and request features in [GitHub Issues](https://github.com/unoplatform/uno/issues/new/choose).
+- Follow the [blog](https://platform.uno/blog/), [X](https://x.com/unoplatform) and [YouTube](https://www.youtube.com/@unoplatform) for news and deep dives.
+- Need help shipping? See [professional support](https://platform.uno/support/) and [case studies](https://platform.uno/case-studies/).
+
+## 💐 Thanks to our contributors
+
+[![Uno Platform contributors](https://contrib.rocks/image?repo=unoplatform/uno&max=500&columns=15)](https://github.com/unoplatform/uno/graphs/contributors)
+
+Made with [contrib.rocks](https://contrib.rocks).
+
+## 📄 License
+
+Uno Platform is licensed under the [Apache 2.0 License](License.md). Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before participating, and report security issues as described in [SECURITY.md](SECURITY.md).
