@@ -247,7 +247,10 @@ partial class Given_UIElement
 		Assert.AreEqual((Color)SolidColorBrush.ColorProperty.GetMetadata(typeof(SolidColorBrush)).DefaultValue, brush.Color, "1. with no DataContext the bound property falls back to its default");
 
 		// The collected parent still counts: the brush has had two parents, so inheritance is off for good, exactly as
-		// when the first parent is still alive (MultiParentNonFE_*). The outcome must not depend on collection timing.
+		// when the first parent is still alive (MultiParentNonFE_*). The outcome must not depend on GC timing.
+		// Known WinUI divergence: a destroyed WinUI parent removes itself from its values (ReleaseImpl ->
+		// ResetReferencesFromChildren -> RemoveParent), so the next consumer is a single parent again. Uno has no such
+		// hook, so a collected parent keeps counting; only an explicit removal or the ALC sweep frees the slot.
 		secondOwner.DataContext = new { Color = Colors.Green };
 		Assert.AreNotEqual(Colors.Green, brush.Color, "2. once it has been attached to multiple \"parent\", dc should no longer propagate");
 
