@@ -153,6 +153,17 @@ namespace Windows.UI.Input
 				var isTapGesture = IsTapGesture(LeftButton, this);
 				if (isTapGesture)
 				{
+					// Returning before the single tap is recorded also prevents the hold from starting a double-tap.
+					if (_recognizer.SuppressesTapOnHold && PointerType is PointerDeviceType.Touch or PointerDeviceType.Pen && IsHeld())
+					{
+						if (_recognizer._log.IsEnabled(LogLevel.Debug))
+						{
+							_recognizer._log.Debug($"{_recognizer.Owner}: {PointerType} hold of {Up!.Timestamp - Down.Timestamp} µs (holding: {_holdingState}) is not a tap.");
+						}
+
+						return false;
+					}
+
 					// Note: Up cannot be 'null' here!
 					_recognizer._lastSingleTap = (PointerIdentifier, Up!.Timestamp, Up.Position);
 
@@ -219,9 +230,18 @@ namespace Windows.UI.Input
 					StopHoldingTimer();
 
 					_holdingState = HoldingState.Started;
+					if (_recognizer.SuppressesTapOnHold)
+					{
+						_lastHeldPress = (Down.Pointer, Down.Timestamp);
+					}
+
 					_recognizer.Holding?.Invoke(_recognizer, new HoldingEventArgs(Down.PointerId, PointerType, Down.Position, HoldingState.Started));
 				}
 			}
+
+			// The holding timer can elapse before the pointer timestamps do (e.g. a busy UI thread): Holding then makes it a hold too.
+			private bool IsHeld()
+				=> _holdingState is not null || (Up is { } up && IsLongPress(Down, up));
 
 			private void TryEndHolding(HoldingState state)
 			{
@@ -331,7 +351,7 @@ namespace Windows.UI.Input
 				{
 					case PointerDeviceType.Touch:
 						var isLeftTap = IsTapGesture(LeftButton, points);
-						if (isLeftTap && IsLongPress(points.Down, points.Up!))
+						if (isLeftTap && points.IsHeld())
 						{
 							isLongPress = true;
 							return true;
@@ -347,7 +367,7 @@ namespace Windows.UI.Input
 						}
 
 						// Some pens does not have a barrel button, so we also allow long press (and anyway it's the UWP behavior)
-						if (IsTapGesture(LeftButton, points) && IsLongPress(points.Down, points.Up!))
+						if (IsTapGesture(LeftButton, points) && points.IsHeld())
 						{
 							isLongPress = true;
 							return true;
@@ -372,7 +392,7 @@ namespace Windows.UI.Input
 			}
 
 			private static bool IsLongPress(global::Microsoft.UI.Input.PointerPoint down, global::Microsoft.UI.Input.PointerPoint current)
-				=> current.Timestamp - down.Timestamp > HoldMinDelayMicroseconds;
+				=> GestureRecognizer.IsLongPress(down.Timestamp, current.Timestamp);
 			#endregion
 		}
 	}
