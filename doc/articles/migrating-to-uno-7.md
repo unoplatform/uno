@@ -639,6 +639,26 @@ own target framework, the library's calls included.
   sits in the WinUI `Microsoft.Web.WebView2.Core` namespace. Code that refers to it by name, such
   as `typeof(INativeWebViewProvider)` in an `ApiExtensibility` registration, needs
   `using Uno.Web.WebView2.Core;`.
+- **`ListViewBase.ItemClickCommand` and `ListViewBase.Command`.** Neither exists in WinUI: the
+  first was a plain property (not a dependency property, so it could not be set from a `Style`)
+  that ran just before `ItemClick`, and the second was a hidden alias of it. A `ListView` or
+  `GridView` subclass may now declare its own `ItemClickCommand` without a `new` modifier.
+  Code that sets either property, and XAML that sets it to a literal value, no longer compiles.
+  XAML that sets it with `{Binding}` **still compiles but no longer does anything**, so search your
+  XAML for `ItemClickCommand=` and `Command=` on lists.
+  Handle `ItemClick` instead, or attach the command with the
+  [Uno Toolkit](xref:Toolkit.GettingStarted) `CommandExtensions.Command`, which passes the
+  clicked item as the parameter unless `CommandExtensions.CommandParameter` is set:
+
+  ```diff
+  - <ListView IsItemClickEnabled="True" ItemClickCommand="{Binding OpenItem}" />
+  + <ListView IsItemClickEnabled="True" utu:CommandExtensions.Command="{Binding OpenItem}" />
+  ```
+
+  With [XAML Behaviors](https://github.com/microsoft/XamlBehaviors), use an
+  `EventTriggerBehavior` on `ItemClick` with an `InvokeCommandAction`. Without a
+  `CommandParameter`, the action passes the `ItemClickEventArgs` to the command, so read
+  `ClickedItem` from it or convert it with an `InputConverter`.
 
 ### Activation is read from `AppInstance`
 
@@ -1350,6 +1370,13 @@ To port a custom source, move the work as follows:
   regular controls. Use `ListView` and `GridView` from the default namespace. Types that do exist in that
   namespace, such as `legacy:ProgressRing`, are unaffected.
 
+- **Binding an attached property whose owner type cannot be found is a build error.** For
+  `u:ListViewBaseCommand.Command="{Binding OpenItem}"` where `ListViewBaseCommand` does not
+  resolve, the XAML generator used to bind `Command` by name on the `ListView` itself, so the
+  markup silently hit an unrelated property of that name, or nothing at all. It now reports
+  `UXAML0001`, as it already did for a literal value. Reference the assembly that declares the
+  owner type, fix the `using:` namespace, or remove the attribute.
+
 - **A relative URI on a `Uri`-typed property now compiles to `ms-resource:///Files/…`**, the MRT
   local-resource form WinUI produces. Previously Uno emitted the relative string verbatim. This
   affects custom `Uri` properties, `HyperlinkButton.NavigateUri`, `Hyperlink.NavigateUri`,
@@ -1702,6 +1729,8 @@ recommended and templated form. Windows App SDK heads are likewise unaffected.
    bring pre-7.0 application settings into the `UnoApplicationData` container, and update any
    native/interop code that read them from `NSUserDefaults.StandardUserDefaults`.
 26. Retarget any `net9.0-*` head or library to `net10.0-*`: 7.0 ships no `net9.0` assets.
+27. Replace `ItemClickCommand` / `Command` on `ListView` and `GridView` with an `ItemClick` handler or
+   the Uno Toolkit `CommandExtensions.Command` attached property.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
 for the full Android/iOS/WebAssembly Skia bootstrapping steps.

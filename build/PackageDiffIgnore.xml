@@ -2887,6 +2887,9 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <!-- ListViewBase.ItemClickCommand and its deprecated Command alias removed (accessors paired in &lt;Methods&gt;). -->
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase::ItemClickCommand()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase::Command()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
 		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI (accessors paired in <Methods> below). -->
 		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement::Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
@@ -3705,6 +3708,11 @@
 		  <!-- Application.RequiresPointerMode made internal. -->
 		  <Member fullName="Microsoft.UI.Xaml.ApplicationRequiresPointerMode Microsoft.UI.Xaml.Application.get_RequiresPointerMode()" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.set_RequiresPointerMode(Microsoft.UI.Xaml.ApplicationRequiresPointerMode value)" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
+		  <!-- ListViewBase.ItemClickCommand and its deprecated Command alias removed (paired with the <Properties> entries above). -->
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase.get_ItemClickCommand()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.set_ItemClickCommand(System.Windows.Input.ICommand value)" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase.get_Command()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.set_Command(System.Windows.Input.ICommand value)" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
 		  <!-- Application.Suspending/Resuming/EnteredBackground/LeavingBackground moved to CoreApplication, which carries the same events in the public WinAppSDK surface (events listed in <Events>). -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
@@ -4617,6 +4625,9 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <!-- ListViewBase.ItemClickCommand and its deprecated Command alias removed (accessors paired in &lt;Methods&gt;). -->
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase::ItemClickCommand()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase::Command()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- ItemsRepeater WinUI port: FlowLayout now exposes exactly the FlowLayout.idl DP set (LineAlignment/LineSpacing/MinItemSpacing/Orientation); the Uno-only MinColumnSpacing/MinRowSpacing pair had no WinUI counterpart. Accessors paired in <Methods> below. -->
 		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout::MinColumnSpacing()" reason="Removed Uno-only FlowLayout.MinColumnSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
@@ -5590,6 +5601,11 @@
 		  <!-- Application.RequiresPointerMode made internal. -->
 		  <Member fullName="Microsoft.UI.Xaml.ApplicationRequiresPointerMode Microsoft.UI.Xaml.Application.get_RequiresPointerMode()" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.set_RequiresPointerMode(Microsoft.UI.Xaml.ApplicationRequiresPointerMode value)" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
+		  <!-- ListViewBase.ItemClickCommand and its deprecated Command alias removed (paired with the <Properties> entries above). -->
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase.get_ItemClickCommand()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.set_ItemClickCommand(System.Windows.Input.ICommand value)" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase.get_Command()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.set_Command(System.Windows.Input.ICommand value)" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
 		  <!-- Application.Suspending/Resuming/EnteredBackground/LeavingBackground moved to CoreApplication, which carries the same events in the public WinAppSDK surface (events listed in <Events>). -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
