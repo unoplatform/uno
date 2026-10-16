@@ -171,7 +171,12 @@ internal static class FontDetailsCache
 			return fetched;
 		}
 
-		return manager.MatchFamily(name, weight, stretch, style, fontSize);
+		// The default family may be one the platform doesn't have (Segoe UI outside Windows): the provider's default font
+		// then stands in for it, rather than the default text font being reported as failing to load.
+		return manager.MatchFamily(name, weight, stretch, style, fontSize)
+			?? (string.Equals(name, FeatureConfiguration.Font.DefaultTextFontFamily, StringComparison.OrdinalIgnoreCase)
+				? manager.GetDefaultFont(weight, stretch, style, fontSize)
+				: null);
 	}
 
 	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
