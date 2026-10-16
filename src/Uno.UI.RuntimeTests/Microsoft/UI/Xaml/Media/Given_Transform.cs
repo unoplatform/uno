@@ -93,7 +93,8 @@ public class Given_Transform
 
 		var root = new Grid { Width = 200, Height = 200 };
 		TestServices.WindowHelper.WindowContent = root;
-		await TestServices.WindowHelper.WaitForIdle();
+		// The popups take the root's XamlRoot, so the root must be in the live tree first.
+		await TestServices.WindowHelper.WaitForLoaded(root);
 
 		try
 		{
@@ -128,7 +129,7 @@ public class Given_Transform
 		}
 		finally
 		{
-			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			UITestHelper.CloseAllPopups();
 			TestServices.WindowHelper.WindowContent = null;
 		}
 
