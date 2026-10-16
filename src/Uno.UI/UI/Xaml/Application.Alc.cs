@@ -491,9 +491,11 @@ partial class Application
 		});
 
 		// Shared resources (theme brushes etc.) first consumed by a secondary-ALC element record
-		// it as their InheritanceContext parent (DependencyObject._associatedParent); nothing
-		// clears that association on unload, so host-lifetime resources pin the collectible ALC.
-		// Sweep every dictionary reachable from the host application and the master theme set.
+		// it as their InheritanceContext parent (DependencyObject._associatedParentRef, a weak
+		// reference) and cache its inherited DataContext. Nothing resets either on unload, so
+		// sweep the stale association and DataContext from every dictionary reachable from the
+		// host application and the master theme set; a live host element re-associates on its
+		// next value assignment.
 		RunCleanupStep(nameof(ClearCollectibleResourceAssociations), ClearCollectibleResourceAssociations);
 
 		// Secondary-ALC code can subscribe to events on HOST visual-tree elements (e.g. a

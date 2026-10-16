@@ -55,19 +55,16 @@ namespace Microsoft.UI.Xaml.Media
 				new FrameworkPropertyMetadata(default(Transform), propertyChangedCallback: (s, args) => ((Geometry)s).OnTransformChanged(args))
 			);
 
+		private IDisposable _transformChangedRegistration;
+
 		private void OnTransformChanged(DependencyPropertyChangedEventArgs args)
 		{
 			RaiseGeometryChanged();
 
-			if (args.OldValue is Transform oldValue)
-			{
-				oldValue.Changed -= OnTransformSubChanged;
-			}
-
-			if (args.NewValue is Transform newValue)
-			{
-				newValue.Changed += OnTransformSubChanged;
-			}
+			// Weak registration: a transform shared across geometries must not root the discarded ones, and through
+			// their GeometryChanged handlers the paths and clipped elements using them.
+			_transformChangedRegistration?.Dispose();
+			_transformChangedRegistration = (args.NewValue as Transform)?.RegisterChanged(OnTransformSubChanged);
 		}
 
 		private void OnTransformSubChanged(object sender, EventArgs e)

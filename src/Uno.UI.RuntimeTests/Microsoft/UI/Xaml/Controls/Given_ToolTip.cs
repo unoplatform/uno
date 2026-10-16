@@ -517,6 +517,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitForIdle();
 			Assert.IsFalse(tooltip.IsOpen);
 		}
+
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_Automatic_ToolTip_Closed_Then_Owner_Collected()
+		{
+			// Once the automatic tooltip has closed, ToolTipService must not keep it (and through it, its owner) alive.
+			var root = new ContentControl();
+			TestServices.WindowHelper.WindowContent = root;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				var ownerRef = await HoverToolTipOwnerThenLeave(root, mouse);
+
+				root.Content = null;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(await TestHelper.TryWaitUntilCollected(ownerRef), "The owner of the closed tooltip was not collected.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			}
+		}
+
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+		private static async Task<WeakReference> HoverToolTipOwnerThenLeave(ContentControl root, Mouse mouse)
+		{
+			var owner = new Button { Content = "Hover me", Width = 100, Height = 50 };
+			var toolTip = new ToolTip { Content = "ToolTip content" };
+			ToolTipService.SetToolTip(owner, toolTip);
+			root.Content = owner;
+			await TestServices.WindowHelper.WaitForLoaded(owner);
+
+			var bounds = owner.GetAbsoluteBoundsRect();
+			mouse.MoveTo(bounds.GetCenter());
+			await UITestHelper.WaitFor(() => toolTip.IsOpen, timeoutMS: 5000, message: "The automatic tooltip did not open on hover.");
+
+			mouse.MoveTo(new Windows.Foundation.Point(bounds.Right + 50, bounds.Bottom + 50));
+			await UITestHelper.WaitFor(() => !toolTip.IsOpen, timeoutMS: 5000, message: "The automatic tooltip did not close when the pointer left.");
+
+			return new WeakReference(owner);
+		}
 #endif
 
 		// ---------------------------------------------------------------------------
