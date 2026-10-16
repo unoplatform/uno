@@ -489,18 +489,20 @@ public partial class Given_ContextRequested_Injection
 
 	// Two fingers pressed less than 500 ms apart: the second press comes before the first hold starts the delayed context menu,
 	// so it is the second hold that must drop it (ContextMenuProcessor.ProcessContextRequestOnHoldingGesture).
-	// Each finger moves within the tap range just before its hold, as a hold takes its source from the last pointer event.
+	// Each hold comes from its finger's 800 ms hold timer and takes its source from the last pointer event, so each finger
+	// moves within the tap range before its hold. An attempt where the first hold's request is no longer pending at the second
+	// hold, or where a hold got the other finger as source, says nothing about the regression: it is retried, a few times.
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
 	public async Task When_Two_Fingers_Held_Second_Hold_Drops_First_Delayed_ContextFlyout()
 	{
+		const int maxAttempts = 3;
+
 		var flyout = new MenuFlyout();
 		flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
 		var flyoutOpened = 0;
 		flyout.Opened += (_, _) => flyoutOpened++;
 
-		var clock = System.Diagnostics.Stopwatch.StartNew();
-		TimeSpan? targetHoldAt = null, otherHoldAt = null;
 		var target = new Border
 		{
 			Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
@@ -508,59 +510,79 @@ public partial class Given_ContextRequested_Injection
 			Height = 50,
 			ContextFlyout = flyout,
 		};
-		target.Holding += (_, e) =>
-		{
-			if (e.HoldingState == Microsoft.UI.Input.HoldingState.Started)
-			{
-				targetHoldAt ??= clock.Elapsed;
-			}
-		};
 		var other = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.Green), Width = 100, Height = 50 };
-		other.Holding += (_, e) =>
-		{
-			if (e.HoldingState == Microsoft.UI.Input.HoldingState.Started)
-			{
-				otherHoldAt ??= clock.Elapsed;
-			}
-		};
 
 		await UITestHelper.Load(new StackPanel { Children = { new ScrollViewer { Content = target, Width = 200, Height = 100 }, other } });
 
 		var processor = TestServices.WindowHelper.XamlRoot.VisualTree?.ContentRoot?.InputManager?.ContextMenuProcessor
 			?? throw new InvalidOperationException("ContextMenuProcessor is not available.");
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
-		using var finger1 = injector.GetFinger(id: 11);
-		using var finger2 = injector.GetFinger(id: 22);
 
-		try
+		object firstHoldSource = null, secondHoldSource = null;
+		var firstRequestPendingAtSecondHold = false;
+		target.Holding += (_, e) =>
 		{
-			finger1.Press(target.GetAbsoluteBounds().GetCenter());
-			await Task.Delay(200);
-			finger2.Press(other.GetAbsoluteBounds().GetCenter());
-			finger1.MoveBy(1, 0, steps: 1);
-
-			await TestServices.WindowHelper.WaitFor(() => targetHoldAt is not null, timeoutMS: 5000, message: "The first hold should be recognized");
-			Assert.IsNotNull(processor.GetContextMenuTimer(), "The first hold, on a pannable element, should delay its context request");
-			finger2.MoveBy(1, 0, steps: 1);
-
-			await TestServices.WindowHelper.WaitFor(() => otherHoldAt is not null, timeoutMS: 5000, message: "The second hold should be recognized");
-			if (otherHoldAt - targetHoldAt >= TimeSpan.FromMilliseconds(500))
+			if (e.HoldingState == Microsoft.UI.Input.HoldingState.Started)
 			{
-				Assert.Inconclusive("The second hold came after the first hold's delayed request: the machine is too slow for this test.");
+				firstHoldSource ??= e.OriginalSource;
+			}
+		};
+		other.Holding += (_, e) =>
+		{
+			if (e.HoldingState == Microsoft.UI.Input.HoldingState.Started && secondHoldSource is null)
+			{
+				secondHoldSource = e.OriginalSource;
+				// Raised before the ContextMenuProcessor handles this hold.
+				firstRequestPendingAtSecondHold = processor.GetContextMenuTimer() is { IsEnabled: true } timer && timer.TargetObject == target;
+			}
+		};
+
+		for (var attempt = 1; ; attempt++)
+		{
+			flyoutOpened = 0;
+			firstHoldSource = secondHoldSource = null;
+			firstRequestPendingAtSecondHold = false;
+
+			using var finger1 = injector.GetFinger(id: 11);
+			using var finger2 = injector.GetFinger(id: 22);
+			try
+			{
+				finger1.Press(target.GetAbsoluteBounds().GetCenter());
+				await Task.Delay(250);
+				finger2.Press(other.GetAbsoluteBounds().GetCenter());
+				finger1.MoveBy(1, 0, steps: 1);
+
+				await TestServices.WindowHelper.WaitFor(() => firstHoldSource is not null, timeoutMS: 5000, message: "The first hold should be recognized");
+				finger2.MoveBy(1, 0, steps: 1);
+				await TestServices.WindowHelper.WaitFor(() => secondHoldSource is not null, timeoutMS: 5000, message: "The second hold should be recognized");
+
+				if (firstHoldSource == target && secondHoldSource == other && firstRequestPendingAtSecondHold)
+				{
+					// Longer than the 500 ms delay of the first hold's request: a request still pending would open the flyout here.
+					await Task.Delay(700);
+					await TestServices.WindowHelper.WaitForIdle();
+
+					Assert.AreEqual(0, flyoutOpened, "The second hold must drop the first hold's delayed context flyout");
+					return;
+				}
+			}
+			finally
+			{
+				finger2.Release();
+				finger1.Release();
+				await TestServices.WindowHelper.WaitForIdle();
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+				await TestServices.WindowHelper.WaitForIdle();
 			}
 
-			// Longer than the 500 ms delay of the first hold's request: a request still pending would open the flyout here.
-			await Task.Delay(700);
-			await TestServices.WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(0, flyoutOpened, "The second hold must drop the first hold's delayed context flyout");
-		}
-		finally
-		{
-			finger2.Release();
-			finger1.Release();
-			await TestServices.WindowHelper.WaitForIdle();
-			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			if (attempt == maxAttempts)
+			{
+				string Describe(object source) => source == target ? "first finger's element" : source == other ? "second finger's element" : source?.ToString() ?? "none";
+				Assert.Fail(
+					$"In {maxAttempts} attempts, the second hold never came while the first hold's request was pending. Last attempt: "
+					+ $"first hold source: {Describe(firstHoldSource)}, second hold source: {Describe(secondHoldSource)}, "
+					+ $"first request pending at the second hold: {firstRequestPendingAtSecondHold}.");
+			}
 		}
 	}
 }
