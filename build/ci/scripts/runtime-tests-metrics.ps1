@@ -7,9 +7,9 @@
     metrics as test-case properties (metric:<name>, budget:<name>, unit:<name>), and saves them as JSON under
     <OutputDirectory>/<Lane>/ for the shared 'runtime-tests-metrics' artifact.
 
-    Report (runs once, after the lanes): writes one markdown report to ReportFile and, on a pull request, creates
-    or updates a single comment carrying it (found again through a hidden marker and its author), so pushes and
-    stage retries update the comment instead of adding new ones.
+    Report (runs once, after the lanes): writes one markdown report to ReportFile and, on a pull request, posts it
+    as a new comment, headed with the commit and build it measured, so the reports of successive commits stay side
+    by side and can be compared.
 
     The report compares this build with the latest published versions: the latest dev and the latest stable
     Uno.WinUI on nuget.org. Each version is mapped to the CI build that produced it (its build number is the
@@ -135,7 +135,7 @@ function Get-PublishedBaselines {
     elseif ($BuildNumber -match '^(\d+)\.(\d+)') {
         $line = "$($Matches[1]).$($Matches[2])"
         $devs = @($versions | Where-Object { $_ -match "^$([regex]::Escape($line))\.0-dev\.\d+$" } |
-                Sort-Object { [int]($_ -replace '^.*-dev\.', '') } -Descending | Select-Object -First 20)
+                Sort-Object { [int]($_ -replace '^.*-dev\.', '') } -Descending | Select-Object -First 200)
         if ($devs.Count -gt 0) {
             # 7.0.0-dev.1656 on nuget.org is CI build number 7.0-dev.1656.
             $candidates = @($devs | ForEach-Object { [ordered]@{ version = $_; buildNumber = ($_ -replace '^(\d+\.\d+)\.0-dev\.', '$1-dev.') } })
@@ -285,7 +285,15 @@ function New-Report($lanes, $baselines) {
     $laneNames = @($lanes.Keys | Sort-Object { Get-LaneOrder $_ }, { $_ })
     $sb = [System.Text.StringBuilder]::new()
     [void]$sb.AppendLine($Marker)
-    [void]$sb.AppendLine('### 📏 Rendering budgets')
+    # Outside pull requests the pipeline passes the unexpanded macro; only a real hash is shown.
+    $commit = if ($CommitId -match '^[0-9a-f]{7,40}$') { $CommitId.Substring(0, [math]::Min(10, $CommitId.Length)) } else { $null }
+    $title = '### 📏 Rendering budgets'
+    if ($commit) { $title += ' for `' + $commit + '`' }
+    [void]$sb.AppendLine($title)
+    $context = @()
+    if ($BuildUrl) { $context += "[Build]($($BuildUrl -replace ' ', '%20'))" } # The project name has a space.
+    $context += "$([DateTime]::UtcNow.ToString('yyyy-MM-dd HH:mm', $Invariant)) UTC"
+    [void]$sb.AppendLine("<sub>$($context -join ' · ')</sub>")
     [void]$sb.AppendLine()
 
     if ($laneNames.Count -eq 0) {
@@ -405,13 +413,7 @@ function New-Report($lanes, $baselines) {
     }
 
     [void]$sb.AppendLine()
-    [void]$sb.AppendLine('<sub>Counts, not timings: frames, damaged area, path operations, measures and objects left alive, recorded by the `Given_RenderingBudget` runtime tests.')
-    $footer = @()
-    if ($BuildUrl) { $footer += "[Build]($($BuildUrl -replace ' ', '%20'))" } # The project name has a space.
-    # Outside pull requests the pipeline passes the unexpanded macro; only a real hash is shown.
-    if ($CommitId -match '^[0-9a-f]{7,40}$') { $footer += "commit $($CommitId.Substring(0, [math]::Min(10, $CommitId.Length)))" }
-    $footer += "updated $([DateTime]::UtcNow.ToString('yyyy-MM-dd HH:mm', $Invariant)) UTC"
-    [void]$sb.AppendLine(($footer -join ' · ') + '</sub>')
+    [void]$sb.AppendLine('<sub>Counts, not timings: frames, damaged area, path operations, measures and objects left alive, recorded by the `Given_RenderingBudget` runtime tests.</sub>')
     return $sb.ToString()
 }
 
@@ -431,35 +433,10 @@ function Publish-Comment([string]$body) {
     $api = "https://api.github.com/repos/$Repository/issues"
 
     # Informational only: a failed post is logged and the build goes on (the report is still in the artifact).
+    # A new comment for every build, never an edit, so the reports of successive commits, rebases and fixes stay side
+    # by side on the pull request and can be compared.
     try {
-        # Only a comment this account wrote can be edited: editing someone else's needs admin rights on the
-        # repository, so a marker comment left by another account is ignored and a new one is created.
-        $login = (Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/user').login
-
-        $all = @()
-        for ($page = 1; $page -le 20; $page++) {
-            $response = Invoke-RestMethod -Headers $headers -Uri "$api/$PullRequestNumber/comments?per_page=100&page=$page"
-            # Invoke-RestMethod can hand the JSON array over as a single object: enumerate it, or the filter below sees
-            # every comment at once and "finds" all of them.
-            $comments = @($response | ForEach-Object { $_ })
-            $all += $comments
-            if ($comments.Count -lt 100) { break }
-        }
-        # The newest marker comment of this account: older ones may have been hidden as outdated.
-        $existing = $all | Where-Object { $_.user.login -eq $login -and $_.body -and $_.body.StartsWith($Marker) } | Select-Object -Last 1
-
         $payload = @{ body = $body } | ConvertTo-Json
-        if ($existing) {
-            try {
-                Invoke-RestMethod -Headers $headers -Method Patch -Uri "$api/comments/$($existing.id)" -Body $payload -ContentType 'application/json' | Out-Null
-                Write-Host "Updated comment $($existing.html_url)"
-                return
-            }
-            catch {
-                # Whatever refused the update (permissions, a deleted comment), a new comment beats no report at all.
-                Write-Host "Could not update $($existing.html_url) ($($_.Exception.Message)); posting a new comment instead."
-            }
-        }
         $created = Invoke-RestMethod -Headers $headers -Method Post -Uri "$api/$PullRequestNumber/comments" -Body $payload -ContentType 'application/json'
         Write-Host "Created comment $($created.html_url)"
     }
