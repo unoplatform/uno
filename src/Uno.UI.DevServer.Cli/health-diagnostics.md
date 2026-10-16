@@ -1,6 +1,6 @@
 # Health & Diagnostics
 
-`HealthService` exposes an always-available `uno_health` MCP tool and a `uno://health` resource so AI agents can inspect DevServer state even before the upstream Host is ready. The CLI also exposes `uno.devserver health`, with `--json` returning the same `HealthReport` payload. The bridge also exposes `uno_app_select_solution` so an agent can explicitly choose a Uno solution when auto-discovery is ambiguous or deferred.
+`HealthService` exposes an always-available `uno_health` MCP tool and a `uno://health` resource so AI agents can inspect DevServer state even before the upstream Host is ready. The CLI also exposes `uno.devserver health`, with `--json` returning the same `HealthReport` payload. The bridge also exposes `uno_app_select_solution` (see [Solution selection](#solution-selection)).
 
 ## Active Server Ownership
 
@@ -79,6 +79,10 @@ Three codes exist in the `IssueCode` enum but are **not currently mapped** in CL
 - `DotNetVersionUnsupported`
 - `AddInLoadFailed`
 - `AddInBinaryNotFound`
+
+## Solution selection
+
+`uno_app_select_solution` accepts the absolute local path of any `.sln`/`.slnx` whose nearest `global.json` declares the Uno SDK, inside or outside the workspace: `candidateSolutions` are suggestions, not a filter. An explicit selection (that tool, or `--solution` at startup) stays in place across file changes and MCP roots until another one is made; while it does not resolve, the session is degraded and still reports it as `SelectedSolutionPath`.
 
 ## Notable HealthReport Fields
 
