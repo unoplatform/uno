@@ -15,6 +15,18 @@ namespace Windows.ApplicationModel.DataTransfer
 			// Do nothing, data available automatically even after application closes.
 		}
 #endif
+		// History/roaming options are not supported. The return value is best-effort,
+		// as SetContent has no failure channel on all platforms.
+		public static bool SetContentWithOptions(DataPackage content, ClipboardContentOptions options)
+		{
+			if (content is null)
+			{
+				throw new ArgumentNullException(nameof(content));
+			}
+
+			SetContent(content);
+			return true;
+		}
 
 		public static event EventHandler<object> ContentChanged
 		{
