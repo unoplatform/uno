@@ -20,21 +20,16 @@ public partial class Projection : DependencyObject, IMultiParentShareableDepende
 	{
 	}
 
-	/// <summary>
-	/// Event raised when any property affecting the projection changes.
-	/// </summary>
-	internal event EventHandler Changed;
-
-	private WeakEventHelper.WeakEventCollection _weakChangedHandlers;
+	private WeakEventHelper.WeakEventCollection _changedHandlers;
 
 	/// <summary>
-	/// Registers a <see cref="Changed"/> handler without keeping its target alive, for subscribers that are
-	/// shorter-lived than the projection (e.g. elements styled with a projection shared through a Style setter).
+	/// Registers a handler notified when any property affecting the projection changes, without keeping the
+	/// handler's target alive: a projection shared through a Style setter outlives the elements it is applied to.
 	/// </summary>
 	/// <returns>A disposable that keeps the registration alive; dispose it to unregister.</returns>
 	internal IDisposable RegisterChanged(EventHandler handler)
 		=> WeakEventHelper.RegisterEvent(
-			_weakChangedHandlers ??= new(),
+			_changedHandlers ??= new(),
 			handler,
 			(h, s, e) => (h as EventHandler)?.Invoke(s, (EventArgs)e));
 
@@ -55,12 +50,11 @@ public partial class Projection : DependencyObject, IMultiParentShareableDepende
 	internal virtual Matrix4x4 GetProjectionMatrix(Size elementSize) => Matrix4x4.Identity;
 
 	/// <summary>
-	/// Raises the Changed event.
+	/// Notifies the handlers registered through <see cref="RegisterChanged"/>.
 	/// </summary>
 	private protected void OnPropertyChanged()
 	{
-		Changed?.Invoke(this, EventArgs.Empty);
-		_weakChangedHandlers?.Invoke(this, EventArgs.Empty);
+		_changedHandlers?.Invoke(this, EventArgs.Empty);
 	}
 }
 #endif
