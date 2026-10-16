@@ -17,6 +17,10 @@ namespace Uno.UI.Runtime.Hosting;
 internal class FramePacer : IDisposable
 {
 	private readonly Timer _timer;
+	// Hosts request frames from their event threads while the window closes on another (e.g. an X11 Expose racing
+	// the close), so requests and disposal are serialized and a request after disposal is a no-op.
+	private readonly Lock _gate = new();
+	private bool _disposed;
 	private long _nextTargetTick;
 	private long _targetIntervalTicks;
 
@@ -29,7 +33,13 @@ internal class FramePacer : IDisposable
 	{
 		_targetIntervalTicks = FpsToTicks(fps);
 		_timer = new Timer { AutoReset = false, Interval = TargetIntervalMs };
-		_timer.Elapsed += (_, _) => onTimerElapsed();
+		_timer.Elapsed += (_, _) =>
+		{
+			if (!Volatile.Read(ref _disposed))
+			{
+				onTimerElapsed();
+			}
+		};
 	}
 
 	/// <summary>
@@ -52,8 +62,16 @@ internal class FramePacer : IDisposable
 	{
 		var now = Stopwatch.GetTimestamp();
 		var remainingMs = (Interlocked.Read(ref _nextTargetTick) - now) / (double)Stopwatch.Frequency * 1000;
-		_timer.Interval = Math.Clamp(remainingMs, 1, TargetIntervalMs);
-		_timer.Enabled = true;
+		lock (_gate)
+		{
+			if (_disposed)
+			{
+				return;
+			}
+
+			_timer.Interval = Math.Clamp(remainingMs, 1, TargetIntervalMs);
+			_timer.Enabled = true;
+		}
 	}
 
 	/// <summary>
@@ -79,5 +97,12 @@ internal class FramePacer : IDisposable
 		return (long)(Stopwatch.Frequency / fps);
 	}
 
-	public void Dispose() => _timer.Dispose();
+	public void Dispose()
+	{
+		lock (_gate)
+		{
+			Volatile.Write(ref _disposed, true);
+			_timer.Dispose();
+		}
+	}
 }
