@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct RawElementProviderRuntimeId
+	public partial struct RawElementProviderRuntimeId : global::System.IEquatable<global::Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId>
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.RawElementProviderRuntimeId()
 #if __SKIA__
@@ -17,6 +17,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.RawElementProviderRuntimeId(uint, uint)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.operator ==(Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId, Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.operator !=(Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId, Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Equals(Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Equals(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.GetHashCode()
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Part1
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Part2
 	}

@@ -1,36 +1,45 @@
-using System;
+﻿using System;
+using System.Numerics;
+using System.Threading;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
 
 #if CROSSRUNTIME
 using Uno.Foundation.Extensibility;
-using Uno.UI.Graphics;
+using Uno.Foundation.Logging;
+using Uno.Graphics;
+using Uno.UI.Composition.Drawing;
 #endif
 
 namespace Uno.WinUI.Graphics2DSK;
 
 /// <summary>
-/// A <see cref="FrameworkElement"/> that exposes the ability to draw directly on the window using SkiaSharp.
+/// A <see cref="FrameworkElement"/> that exposes the ability to draw directly using SkiaSharp.
 /// </summary>
-/// <remarks>This is only available on skia-based targets.</remarks>
-public abstract partial class SKCanvasElement : FrameworkElement
+/// <remarks>
+/// On a SkiaSharp backend the drawing goes zero-copy straight into the window's frame <see cref="SKCanvas"/>.
+/// On any other backend (e.g. WebGPU) it falls back to a self-contained Skia-on-GL island (read back and
+/// composited, at the cost of a copy). Skia-based targets only.
+/// </remarks>
+public abstract partial class SKCanvasElement : Grid
 {
 #if CROSSRUNTIME
-	private SKCanvasVisualBase? _skCanvasVisual;
+	private SKCanvasVisual? _canvasVisual;
+	// Provided by the optional Graphics3DGL add-in through ApiExtensibility, so this assembly never references it:
+	// AOT and eager linkers fail on a reference the package doesn't carry.
+	private IGLIsland? _island;
+	private bool _islandRequested;
+	// The last resort when the backend exposes no SKCanvas and the GL island is unavailable or failed: draw into a
+	// raster SKSurface and hand its pixels to the active backend as a texture. Slower than either, never blank.
+	private bool _software;
+	private SKSurface? _softSurface;
+	private int _softW, _softH;
 
 	private protected override ContainerVisual CreateElementVisual()
-	{
-		if (ApiExtensibility.CreateInstance<SKCanvasVisualBaseFactory>(this, out var factory))
-		{
-			return _skCanvasVisual = factory.CreateInstance((o, size) => RenderOverride((SKCanvas)o, size), ElementVisualCompositor);
-		}
-		else
-		{
-			throw new InvalidOperationException($"Failed to create an instance of {nameof(SKCanvasVisualBase)}");
-		}
-	}
+		=> _canvasVisual = new SKCanvasVisual(this, ElementVisualCompositor);
 
 	internal override bool IsViewHit() => true;
 #endif
@@ -44,7 +53,102 @@ public abstract partial class SKCanvasElement : FrameworkElement
 	}
 
 #if CROSSRUNTIME
-	public static bool IsSupportedOnCurrentPlatform() => ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>();
+	public static bool IsSupportedOnCurrentPlatform() => true;
+
+	// Called from the paint when the active backend exposes no SKCanvas: bring up the GL island once, off the paint,
+	// so it composites on the next frame. Only touched when the optional Graphics3DGL add-in is present.
+	internal void EnsureIslandFallback()
+	{
+		if (_islandRequested)
+		{
+			return;
+		}
+		_islandRequested = true;
+
+		if (!ApiExtensibility.IsRegistered<IGLIsland>())
+		{
+			// Graphics3DGL isn't referenced — no GL island. Draw through the software surface instead.
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info($"{nameof(SKCanvasElement)}: the active backend exposes no SKCanvas and Uno.WinUI.Graphics3DGL is not referenced; drawing through a software surface.");
+			}
+
+			_software = true;
+			return;
+		}
+
+		DispatcherQueue.TryEnqueue(CreateIsland);
+	}
+
+	/// <summary>The GL island could not get a usable context: drop it and draw through the software surface.</summary>
+	internal void OnIslandUnavailable()
+	{
+		if (this.Log().IsEnabled(LogLevel.Information))
+		{
+			this.Log().Info($"{nameof(SKCanvasElement)}: the GL island is unavailable; drawing through a software surface.");
+		}
+
+		_software = true;
+		// Reached from the island's own Loaded handler, so detach it once that has run.
+		DispatcherQueue.TryEnqueue(() =>
+		{
+			if (_island is not null)
+			{
+				Children.Remove(_island.Element);
+				_island = null;
+			}
+			_canvasVisual?.Invalidate();
+		});
+	}
+
+	internal bool UseSoftwareSurface => _software;
+
+	// Renders through a raster SKSurface at device resolution and draws the pixels as a texture of the active
+	// backend. The surface persists across frames and is recreated only when the device size changes.
+	internal void PaintSoftware(IDrawingSession session, Vector2 size)
+	{
+		var m = session.TotalMatrix;
+		var sx = MathF.Max(1e-3f, new Vector2(m.M11, m.M12).Length());
+		var sy = MathF.Max(1e-3f, new Vector2(m.M21, m.M22).Length());
+		var w = Math.Max(1, (int)MathF.Ceiling(size.X * sx));
+		var h = Math.Max(1, (int)MathF.Ceiling(size.Y * sy));
+		if (_softSurface is null || _softW != w || _softH != h)
+		{
+			_softSurface?.Dispose();
+			_softSurface = SKSurface.Create(new SKImageInfo(w, h, SKColorType.Bgra8888, SKAlphaType.Premul));
+			_softW = w;
+			_softH = h;
+		}
+
+		var canvas = _softSurface.Canvas;
+		canvas.Clear(SKColors.Transparent);
+		canvas.Save();
+		canvas.Scale(sx, sy);
+		canvas.ClipRect(new SKRect(0, 0, size.X, size.Y));
+		RenderOverride(canvas, new Size(size.X, size.Y));
+		canvas.Restore();
+		canvas.Flush();
+
+		using var pixmap = _softSurface.PeekPixels();
+		// The recording takes its own reference to the texture on DrawImage; this one is the creator's.
+		using var texture = session.Factory.CreateTexture(w, h, pixmap.GetPixelSpan());
+		session.Save();
+		session.Scale(1f / sx, 1f / sy);
+		session.DrawImage(texture, 0f, 0f);
+		session.Restore();
+	}
+
+	private void CreateIsland()
+	{
+		if (_island is null && ApiExtensibility.CreateInstance<IGLIsland>(new SkiaGLIslandRenderer(this), out var island))
+		{
+			_island = island;
+			Children.Add(island.Element);
+			// The fallback was reached from a paint that already returned; re-invalidate so the visual repaints now
+			// that the island is a child (otherwise the island — and thus the drawing — never composites).
+			_canvasVisual?.Invalidate();
+		}
+	}
 #else
 	public static bool IsSupportedOnCurrentPlatform() => false;
 #endif
@@ -53,7 +157,45 @@ public abstract partial class SKCanvasElement : FrameworkElement
 	/// Invalidates the element and triggers a redraw.
 	/// </summary>
 #if CROSSRUNTIME
-	public void Invalidate() => _skCanvasVisual?.Invalidate();
+	/// <remarks>
+	/// Safe to call from any thread. Drawing is commonly driven by work that finishes off the UI
+	/// thread - a decode, a download, a background render - and invalidating there directly would
+	/// race the frame: it marks the visual dirty and drops the cached recording of every ancestor,
+	/// which the UI thread may be rebuilding and the render thread may be replaying. Off the UI
+	/// thread the invalidation is posted; on it, it is applied inline so that calling
+	/// <see cref="Invalidate"/> from inside <see cref="RenderOverride"/> still schedules the next
+	/// frame without a dispatcher hop.
+	/// </remarks>
+	public void Invalidate()
+	{
+		if (DispatcherQueue is not { } dispatcher || dispatcher.HasThreadAccess)
+		{
+			InvalidateCore();
+			return;
+		}
+
+		// Coalesce: invalidation is idempotent, and a background loop that invalidates per unit of
+		// work would otherwise post a callback per call and starve the UI thread of the frame it is
+		// asking for. One pending post is enough to get the next frame.
+		if (Interlocked.Exchange(ref _invalidatePending, 1) == 0)
+		{
+			dispatcher.TryEnqueue(() =>
+			{
+				Volatile.Write(ref _invalidatePending, 0);
+				InvalidateCore();
+			});
+		}
+	}
+
+	private int _invalidatePending;
+
+	private void InvalidateCore()
+	{
+		_canvasVisual?.Invalidate();
+		_island?.Invalidate();
+	}
+
+	internal void InvokeRenderOverride(SKCanvas canvas, Size area) => RenderOverride(canvas, area);
 #else
 #pragma warning disable CS0109 // Member does not hide an inherited member; new keyword is not required
 	public new void Invalidate() { }

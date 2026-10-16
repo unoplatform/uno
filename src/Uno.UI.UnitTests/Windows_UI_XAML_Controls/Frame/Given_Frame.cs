@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.FrameTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Frame
 	{
 		[TestInitialize]

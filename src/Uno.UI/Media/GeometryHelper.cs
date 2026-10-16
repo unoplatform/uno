@@ -31,13 +31,12 @@ namespace Uno.Media
 		private static StreamGeometry CachedBuild((Action<StreamGeometryContext> contextAction, FillRule fillRule) p)
 		{
 			var streamGeometry = new StreamGeometry();
+			streamGeometry.FillRule = p.fillRule;
 
 			using (StreamGeometryContext context = streamGeometry.Open())
 			{
 				p.contextAction(context);
 			}
-
-			streamGeometry.FillRule = p.fillRule;
 
 			return streamGeometry;
 		}

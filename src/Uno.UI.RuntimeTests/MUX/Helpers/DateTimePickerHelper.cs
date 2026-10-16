@@ -8,6 +8,7 @@ using static Private.Infrastructure.TestServices;
 using System.Globalization;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using System;
@@ -21,6 +22,49 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers;
 
 internal static class DateTimePickerHelper
 {
+	// Performs the following steps:
+	//  1. Trys to open the Date/TimePicker using the specified key sequence
+	//  2. Verifies that the Date/TimePickerFlyout opened by checking that there is exactly 1 open popup
+	//     (we do not have a way to get a reference to the Date/TimePickerFlyout itself)
+	//  3. Changes the date/time by panning one of the LoopingSelectors.
+	//  4. Closes the Date/TimePickerFlyout using the specified key sequence.
+	//  5. Verifies that the Date/TimeChanged event fires
+	//  6. Verifies that the Date/TimePickerFlyout is closed by checking that there are no open popups.
+	// Assumes that the DatePicker/TimePicker is already focused when this method is called.
+	internal static async Task OpenAndCloseDateTimePickerUsingKeyboard(
+		string keySequenceToOpenDateTimePicker,
+		string keySequenceToCloseDateTimePicker,
+		Event dateTimeChangedEvent)
+	{
+		await TestServices.KeyboardHelper.PressKeySequence(keySequenceToOpenDateTimePicker);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			//There should be exactly one open popup:
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.WindowContent.XamlRoot);
+			VERIFY_IS_TRUE(popups.Count == 1);
+		});
+
+		dateTimeChangedEvent.Reset();
+		await LoopingSelectorHelper.PanSingleDateTimeLoopingSelector();
+
+		await TestServices.KeyboardHelper.PressKeySequence(keySequenceToCloseDateTimePicker);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Waiting for DateChanged/TimeChanged event to fire.");
+		await dateTimeChangedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			//There should be no open popups:
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.WindowContent.XamlRoot);
+			VERIFY_IS_TRUE(popups.Count == 0);
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
 #if HAS_UNO
 	internal static async Task ValidateDateTimePickerFlyoutPositioningAndSizing<T>()
 		where T : FrameworkElement, IDateTimePickerTestHooks, new()
@@ -95,9 +139,54 @@ internal static class DateTimePickerHelper
 		return flyoutPresenter;
 	}
 
+	internal static async Task<DatePickerFlyoutPresenter> GetOpenDatePickerFlyoutPresenter()
+	{
+		return await GetOpenFlyoutPresenter<DatePickerFlyoutPresenter>();
+	}
+
 	internal static async Task<TimePickerFlyoutPresenter> GetOpenTimePickerFlyoutPresenter()
 	{
 		return await GetOpenFlyoutPresenter<TimePickerFlyoutPresenter>();
+	}
+
+	internal static async Task<(LoopingSelector dayLoopingSelector, LoopingSelector monthLoopingSelector, LoopingSelector yearLoopingSelector)> GetDayMonthYearLoopingSelectorsFromOpenFlyout()
+	{
+		LoopingSelector dayLoopingResult = null;
+		LoopingSelector monthLoopingResult = null;
+		LoopingSelector yearLoopingResult = null;
+		await RunOnUIThread(async () =>
+		{
+			var datePickerFlyoutPresenter = await GetOpenDatePickerFlyoutPresenter();
+			THROW_IF_NULL(datePickerFlyoutPresenter);
+
+			dayLoopingResult = TreeHelper.GetVisualChildByName(datePickerFlyoutPresenter, "DayLoopingSelector") as LoopingSelector;
+			monthLoopingResult = TreeHelper.GetVisualChildByName(datePickerFlyoutPresenter, "MonthLoopingSelector") as LoopingSelector;
+			yearLoopingResult = TreeHelper.GetVisualChildByName(datePickerFlyoutPresenter, "YearLoopingSelector") as LoopingSelector;
+			THROW_IF_NULL(dayLoopingResult);
+			THROW_IF_NULL(monthLoopingResult);
+			THROW_IF_NULL(yearLoopingResult);
+		});
+
+		return (dayLoopingResult, monthLoopingResult, yearLoopingResult);
+	}
+
+	internal static async Task SelectDateInOpenDatePickerFlyout(Windows.Globalization.Calendar dateToSelect, int minYear, LoopingSelectorHelper.SelectionMode selectionMode)
+	{
+		(var dayLoopingSelector, var monthLoopingSelector, var yearLoopingSelector) = await GetDayMonthYearLoopingSelectorsFromOpenFlyout();
+
+		int dayToSelectIndex = dateToSelect.Day - 1; // index is zero based.
+		int monthToSelectIndex = dateToSelect.Month - 1; // index is zero based
+		int yearToSelectIndex = dateToSelect.Year - minYear; // index is based on value of min year
+
+		await LoopingSelectorHelper.SelectItemByIndex(dayLoopingSelector, dayToSelectIndex, selectionMode);
+		await TestServices.WindowHelper.WaitForIdle();
+		await LoopingSelectorHelper.SelectItemByIndex(monthLoopingSelector, monthToSelectIndex, selectionMode);
+		await TestServices.WindowHelper.WaitForIdle();
+		await LoopingSelectorHelper.SelectItemByIndex(yearLoopingSelector, yearToSelectIndex, selectionMode);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await ControlHelper.ClickFlyoutCloseButton(dayLoopingSelector, true /* isAccept */);
+		await TestServices.WindowHelper.WaitForIdle();
 	}
 
 	internal static async Task<(LoopingSelector hourLoopingSelector, LoopingSelector minuteLoopingSelector, LoopingSelector periodLoopingSelector)> GetHourMinutePeriodLoopingSelectorsFromOpenFlyout()

@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Text
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_TextHighlightMerge
 	{
 		// Defines for easier readability of the code

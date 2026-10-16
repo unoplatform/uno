@@ -77,6 +77,9 @@ The Pro license App MCP app tools are:
 - `uno_app_element_peer_action`, used to invoke a specific element automation peer action
 - `uno_app_get_element_datacontext`, used to get a textual representation of the DataContext on a FrameworkElement
 
+> [!TIP]
+> Scripts, CI jobs, and agent hooks can call these tools without an MCP client: `uno-devserver app <verb>` runs one tool and exits with a code to test. See [Driving the app from a shell](xref:Uno.Features.DevServerAppCommands).
+
 ## Registering and diagnosing Uno MCPs
 
 The `uno-devserver` CLI (see the full [Dev Server reference](xref:Uno.DevServer)) is the recommended way to register Uno MCPs. The `uno-devserver mcp install` command automatically picks the best registration strategy for each agent:
@@ -236,6 +239,7 @@ You can find additional information about [troubleshooting AI Agents](xref:Uno.U
 
 - [Dev Server](xref:Uno.DevServer) — the Dev Server CLI reference covering `disco`, `mcp`, and runtime flags.
 - [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) — inspect your local environment and Uno tool resolution.
+- [Driving the app from a shell (`app`)](xref:Uno.Features.DevServerAppCommands) — call the App MCP tools from scripts, CI, and agent hooks.
 - [Supported agents and features](xref:Uno.GetStarted#supported-agents-features) — per-agent capability summary.
 - Per-agent setup guides: [Claude Code](xref:Uno.GetStarted.AI.Claude), [Codex CLI](xref:Uno.GetStarted.AI.Codex), [Cursor](xref:Uno.GetStarted.AI.Cursor), [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI), [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity).
 - [Troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents).

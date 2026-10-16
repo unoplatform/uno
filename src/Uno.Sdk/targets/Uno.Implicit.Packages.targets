@@ -33,12 +33,10 @@
 		<ImplicitPackagesResolver_v0
 				IntermediateOutput="$(_UnoCacheFolder)"
 				SdkDebugging="$(UnoSdkDebugging)"
-				SingleProject="$(_IsUnoSingleProjectAndLegacy)"
 				Optimize="$(Optimize)"
 				OutputType="$(_ImplicitRestoreOutputType)"
 				UnoFeatures="$(UnoFeatures)"
 				TargetFramework="$(TargetFramework)"
-				ProjectName="$(MSBuildProjectName)"
 				ImplicitPackageReferences="@(_UnoProjectSystemPackageReference)"
 				PackageReferences="@(PackageReference)"
 				PackageVersions="@(PackageVersion)"
@@ -48,10 +46,10 @@
 				UnoThemesVersion="$(UnoThemesVersion)"
 				UnoCSharpMarkupVersion="$(UnoCSharpMarkupVersion)"
 				SkiaSharpVersion="$(SkiaSharpVersion)"
+				HarfBuzzSharpVersion="$(HarfBuzzSharpVersion)"
 				SvgSkiaVersion="$(SvgSkiaVersion)"
 				UnoLoggingVersion="$(UnoLoggingVersion)"
 				UnoWasmBootstrapVersion="$(UnoWasmBootstrapVersion)"
-				UnoUniversalImageLoaderVersion="$(UnoUniversalImageLoaderVersion)"
 				AndroidMaterialVersion="$(AndroidMaterialVersion)"
 				AndroidXSplashScreenVersion="$(AndroidXSplashScreenVersion)"
 				AndroidXAppCompatVersion="$(AndroidXAppCompatVersion)"
@@ -81,6 +79,7 @@
 				AndroidXWearTilesVersion="$(AndroidXWearTilesVersion)"
 				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)"
 				MicrosoftWebView2Version="$(MicrosoftWebView2Version)"
+				VlcNativeWindowsAssetsVersion="$(VlcNativeWindowsAssetsVersion)"
 				Condition=" '$(TargetFramework)' != '' ">
 			<Output ItemName="_UnoImplicitPackageReference"
 					TaskParameter="ImplicitPackages" />

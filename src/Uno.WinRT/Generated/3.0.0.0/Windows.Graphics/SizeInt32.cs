@@ -6,11 +6,16 @@ namespace Windows.Graphics
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct SizeInt32
+	public partial struct SizeInt32 : global::System.IEquatable<global::Windows.Graphics.SizeInt32>
 	{
 		// Forced skipping of method Windows.Graphics.SizeInt32.SizeInt32()
 		// Skipping already declared method Windows.Graphics.SizeInt32.SizeInt32(int, int)
 		// Forced skipping of method Windows.Graphics.SizeInt32.SizeInt32(int, int)
+		// Skipping already declared method Windows.Graphics.SizeInt32.operator ==(Windows.Graphics.SizeInt32, Windows.Graphics.SizeInt32)
+		// Skipping already declared method Windows.Graphics.SizeInt32.operator !=(Windows.Graphics.SizeInt32, Windows.Graphics.SizeInt32)
+		// Skipping already declared method Windows.Graphics.SizeInt32.Equals(Windows.Graphics.SizeInt32)
+		// Skipping already declared method Windows.Graphics.SizeInt32.Equals(object)
+		// Skipping already declared method Windows.Graphics.SizeInt32.GetHashCode()
 		// Skipping already declared field Windows.Graphics.SizeInt32.Width
 		// Skipping already declared field Windows.Graphics.SizeInt32.Height
 	}

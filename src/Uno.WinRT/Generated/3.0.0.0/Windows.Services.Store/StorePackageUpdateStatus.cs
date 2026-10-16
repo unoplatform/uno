@@ -6,7 +6,7 @@ namespace Windows.Services.Store
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct StorePackageUpdateStatus
+	public partial struct StorePackageUpdateStatus : global::System.IEquatable<global::Windows.Services.Store.StorePackageUpdateStatus>
 	{
 		// Forced skipping of method Windows.Services.Store.StorePackageUpdateStatus.StorePackageUpdateStatus()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,52 @@ namespace Windows.Services.Store
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StorePackageUpdateStatus.StorePackageUpdateStatus(string, ulong, ulong, double, double, Windows.Services.Store.StorePackageUpdateState)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(StorePackageUpdateStatus x, StorePackageUpdateStatus y)
+			=> x.PackageFamilyName == y.PackageFamilyName
+			&& x.PackageDownloadSizeInBytes == y.PackageDownloadSizeInBytes
+			&& x.PackageBytesDownloaded == y.PackageBytesDownloaded
+			&& x.PackageDownloadProgress == y.PackageDownloadProgress
+			&& x.TotalDownloadProgress == y.TotalDownloadProgress
+			&& x.PackageUpdateState == y.PackageUpdateState;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(StorePackageUpdateStatus x, StorePackageUpdateStatus y)
+			=> !(x.PackageFamilyName == y.PackageFamilyName
+				&& x.PackageDownloadSizeInBytes == y.PackageDownloadSizeInBytes
+				&& x.PackageBytesDownloaded == y.PackageBytesDownloaded
+				&& x.PackageDownloadProgress == y.PackageDownloadProgress
+				&& x.TotalDownloadProgress == y.TotalDownloadProgress
+				&& x.PackageUpdateState == y.PackageUpdateState);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(StorePackageUpdateStatus other)
+			=> PackageFamilyName == other.PackageFamilyName
+			&& PackageDownloadSizeInBytes == other.PackageDownloadSizeInBytes
+			&& PackageBytesDownloaded == other.PackageBytesDownloaded
+			&& PackageDownloadProgress == other.PackageDownloadProgress
+			&& TotalDownloadProgress == other.TotalDownloadProgress
+			&& PackageUpdateState == other.PackageUpdateState;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is StorePackageUpdateStatus that
+			&& PackageFamilyName == that.PackageFamilyName
+			&& PackageDownloadSizeInBytes == that.PackageDownloadSizeInBytes
+			&& PackageBytesDownloaded == that.PackageBytesDownloaded
+			&& PackageDownloadProgress == that.PackageDownloadProgress
+			&& TotalDownloadProgress == that.TotalDownloadProgress
+			&& PackageUpdateState == that.PackageUpdateState;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> PackageFamilyName.GetHashCode()
+			^ PackageDownloadSizeInBytes.GetHashCode()
+			^ PackageBytesDownloaded.GetHashCode()
+			^ PackageDownloadProgress.GetHashCode()
+			^ TotalDownloadProgress.GetHashCode()
+			^ PackageUpdateState.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public string PackageFamilyName;
 #endif

@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class ColorPickerSliderAutomationPeer : SliderAutomationPeer, IValueProvider
 	{
-		internal ColorPickerSliderAutomationPeer(ColorPickerSlider owner) : base(owner)
+		public ColorPickerSliderAutomationPeer(ColorPickerSlider owner) : base(owner)
 		{
 		}
 

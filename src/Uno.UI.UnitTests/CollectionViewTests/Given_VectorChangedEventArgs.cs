@@ -9,7 +9,7 @@ using Windows.Foundation.Collections;
 
 namespace Uno.UI.Tests.CollectionViewTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_VectorChangedEventArgs
 	{
 		[TestMethod]

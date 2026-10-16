@@ -9,7 +9,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Internal;
 /// to the <c>ms-appx</c> form asset resolution understands. The mapping is total: anything it does
 /// not recognise has to come back unchanged rather than throw or map to something else.
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_XamlFilePathHelper
 {
 	[TestMethod]

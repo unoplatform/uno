@@ -6,11 +6,16 @@ namespace Windows.UI.Text
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct FontWeight
+	public partial struct FontWeight : global::System.IEquatable<global::Windows.UI.Text.FontWeight>
 	{
 		// Forced skipping of method Windows.UI.Text.FontWeight.FontWeight()
 		// Skipping already declared method Windows.UI.Text.FontWeight.FontWeight(ushort)
 		// Forced skipping of method Windows.UI.Text.FontWeight.FontWeight(ushort)
+		// Skipping already declared method Windows.UI.Text.FontWeight.operator ==(Windows.UI.Text.FontWeight, Windows.UI.Text.FontWeight)
+		// Skipping already declared method Windows.UI.Text.FontWeight.operator !=(Windows.UI.Text.FontWeight, Windows.UI.Text.FontWeight)
+		// Skipping already declared method Windows.UI.Text.FontWeight.Equals(Windows.UI.Text.FontWeight)
+		// Skipping already declared method Windows.UI.Text.FontWeight.Equals(object)
+		// Skipping already declared method Windows.UI.Text.FontWeight.GetHashCode()
 		// Skipping already declared field Windows.UI.Text.FontWeight.Weight
 	}
 }

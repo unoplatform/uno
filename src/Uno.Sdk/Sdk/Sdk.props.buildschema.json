@@ -115,10 +115,6 @@
 			"description": "Disables the build check in Visual Studio that ensures the Browser target is first.",
 			"type": "bool"
 		},
-		"UnoDisableVSWarnDesktopIsFirst": {
-			"description": "Disables the build check in Visual Studio that ensures the Desktop target is first.",
-			"type": "bool"
-		},
 		"UnoDisableVSWarnWindowsIsFirst": {
 			"description": "Disables the build check in Visual Studio that ensures the Windows target is first.",
 			"type": "bool"
@@ -134,11 +130,6 @@
 		"DisableWinUI8857_Workaround": {
 			"description": "Disables the WinUI workaround for issue 8857.",
 			"helpUrl": "https://github.com/microsoft/microsoft-ui-xaml/issues/8857",
-			"type": "bool"
-		},
-		"DisableUno9430_Workaround": {
-			"description": "Disables modification of MtouchExtraArgs for Uno Issue 9430.",
-			"helpUrl": "https://github.com/unoplatform/uno/issues/9430",
 			"type": "bool"
 		},
 		"DisableXamarinDebug_Workaround": {
@@ -170,6 +161,10 @@
 			"description": "Provides an explicit override for the version of SkiaSharp to use.",
 			"type": "nuget-version"
 		},
+		"HarfBuzzSharpVersion": {
+			"description": "Provides an explicit override for the version of the HarfBuzzSharp native assets to use.",
+			"type": "nuget-version"
+		},
 		"SvgSkiaVersion": {
 			"description": "Provides an explicit override for the version of Svg.Skia to use.",
 			"type": "nuget-version"
@@ -180,10 +175,6 @@
 		},
 		"UnoWasmBootstrapVersion": {
 			"description": "Provides an explicit override for the version of the Uno.Wasm.Bootstrap packages to use.",
-			"type": "nuget-version"
-		},
-		"UnoUniversalImageLoaderVersion": {
-			"description": "Provides an explicit override for the version of the Uno.UniversalImageLoader packages to use.",
 			"type": "nuget-version"
 		},
 		"AndroidMaterialVersion": {
@@ -230,6 +221,10 @@
 			"description": "Provides an explicit override for the version of Uno.HotDesign to use.",
 			"type": "nuget-version"
 		},
+		"UnoAppMcpVersion": {
+			"description": "Provides an explicit override for the version of Uno.UI.App.Mcp to use.",
+			"type": "nuget-version"
+		},
 		"MicrosoftLoggingVersion": {
 			"description": "Provides an explicit override for the version of Microsoft.Extensions.Logging.Console to use.",
 			"type": "nuget-version"
@@ -248,6 +243,10 @@
 		},
 		"UnoDisableWinAppRunSupport": {
 			"description": "When set to true, the Uno.Sdk will not implicitly reference Microsoft.Windows.SDK.BuildTools.WinApp for WinAppSDK executables. Set EnableWinAppRunSupport=false instead to keep the reference but disable the `dotnet run` interception.",
+			"type": "bool"
+		},
+		"UnoDisableHotTesting": {
+			"description": "When set to true, the Uno.Sdk will not implicitly reference Uno.HotTesting.Reactive in non-optimized builds of projects using the MVUX feature.",
 			"type": "bool"
 		},
 		"UnoCoreLoggingSingletonVersion": {
@@ -298,6 +297,14 @@
 			"description": "Provides an explicit override for the version of Microsoft.Identity.Client to use.",
 			"type": "nuget-version"
 		},
+		"MicrosoftWebView2Version": {
+			"description": "Provides an explicit override for the version of Microsoft.Web.WebView2 to use.",
+			"type": "nuget-version"
+		},
+		"VlcNativeWindowsAssetsVersion": {
+			"description": "Provides an explicit override for the version of VideoLAN.LibVLC.Windows, used by the MediaPlayerElement feature on desktop, to use.",
+			"type": "nuget-version"
+		},
 		"UnoSplashScreenFile": {
 			"description": "The path to the splash screen image file.",
 			"type": "file"
@@ -306,9 +313,25 @@
 			"description": "The base size of the splash screen image. e.g.: '300,300'.",
 			"type": "string"
 		},
-		"UnoSplashScreenColor": {
-			"description": "The background color of the splash screen.",
+		"UnoSplashScreenBackgroundColor": {
+			"description": "The background color of the splash screen, used for all themes unless overridden. Replaces UnoSplashScreenColor, which was removed in Uno Platform 7.0. Defaults to '#FFFFFF', except on WebAssembly where no color is set so the splash screen follows the browser theme.",
 			"type": "color"
+		},
+		"UnoSplashScreenDarkBackgroundColor": {
+			"description": "The background color of the splash screen when the dark theme is active. Defaults to UnoSplashScreenBackgroundColor.",
+			"type": "color"
+		},
+		"UnoSplashScreenAccentColor": {
+			"description": "The accent color of the splash screen, used for the progress bar of the WebAssembly loader in all themes unless overridden. Other targets ignore it. Defaults to the WinUI accent color.",
+			"type": "color"
+		},
+		"UnoSplashScreenDarkAccentColor": {
+			"description": "The accent color of the splash screen when the dark theme is active, used for the progress bar of the WebAssembly loader. Other targets ignore it. Defaults to UnoSplashScreenAccentColor when set, otherwise to the WinUI dark theme accent color.",
+			"type": "color"
+		},
+		"UnoSplashScreenDarkFile": {
+			"description": "The path to the splash screen image file used when the dark theme is active.",
+			"type": "file"
 		},
 		"UnoSplashScreenScale": {
 			"description": "Used to scale the image that will be used as the SplashScreen.",
@@ -539,10 +562,6 @@
 					"description": "Adds support for Serialization using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-serialization"
 				},
-				"SkiaRenderer": {
-					"description": "No-op, kept for backwards compatibility. Skia is always used as the UI renderer on Uno Platform targets. The WinAppSDK target always renders natively with WinUI.",
-					"helpUrl": "https://aka.platform.uno/skia-rendering"
-				},
 				"Storage": {
 					"description": "Adds support for Storage using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-storage"
@@ -579,9 +598,9 @@
 					"description": "Adds support for SkiaSharp.",
 					"helpUrl": "https://aka.platform.uno/feature-skia"
 				},
-				"Lottie": {
-					"description": "Adds support for Lottie animations.",
-					"helpUrl": "https://aka.platform.uno/feature-lottie"
+				"WebGpu": {
+					"description": "Adds the WebGPU rendering backend, used alongside the default Skia backend.",
+					"helpUrl": "https://aka.platform.uno/feature-webgpu"
 				},
 				"Svg": {
 					"description": "Adds support for SVG images.",

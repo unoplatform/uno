@@ -8,12 +8,8 @@ namespace Windows.ApplicationModel.Activation;
 /// <summary>
 /// Provides event information when an app is launched.
 /// </summary>
-public sealed partial class LaunchActivatedEventArgs : IActivatedEventArgs
+public sealed partial class LaunchActivatedEventArgs : ILaunchActivatedEventArgs
 {
-	internal LaunchActivatedEventArgs()
-	{
-	}
-
 	internal LaunchActivatedEventArgs(ActivationKind kind, string arguments)
 	{
 		Arguments = arguments;
@@ -36,7 +32,7 @@ public sealed partial class LaunchActivatedEventArgs : IActivatedEventArgs
 	/// <remarks>
 	/// SplashScreen is not directly supported, exists for interoperability with UWP APIs.
 	/// </remarks>
-	[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public SplashScreen SplashScreen { get; } = new SplashScreen();
 
 	/// <summary>
@@ -45,7 +41,7 @@ public sealed partial class LaunchActivatedEventArgs : IActivatedEventArgs
 	/// <remarks>
 	/// The ID defaults to 0 on non-UWP targets.
 	/// </remarks>
-	[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public int CurrentlyShownApplicationViewId { get; }
 
 	/// <summary>
@@ -56,7 +52,7 @@ public sealed partial class LaunchActivatedEventArgs : IActivatedEventArgs
 	/// <summary>
 	/// Gets the ID of the tile that was invoked to launch the app.
 	/// </summary>
-	[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public string TileId { get; } = "App";
 
 	/// <summary>

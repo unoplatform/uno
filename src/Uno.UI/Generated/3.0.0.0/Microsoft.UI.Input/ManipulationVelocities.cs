@@ -6,7 +6,7 @@ namespace Microsoft.UI.Input
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct ManipulationVelocities
+	public partial struct ManipulationVelocities : global::System.IEquatable<global::Microsoft.UI.Input.ManipulationVelocities>
 	{
 		// Forced skipping of method Microsoft.UI.Input.ManipulationVelocities.ManipulationVelocities()
 #if __SKIA__
@@ -17,6 +17,11 @@ namespace Microsoft.UI.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.ManipulationVelocities.ManipulationVelocities(Windows.Foundation.Point, float, float)
+		// Skipping already declared method Microsoft.UI.Input.ManipulationVelocities.operator ==(Microsoft.UI.Input.ManipulationVelocities, Microsoft.UI.Input.ManipulationVelocities)
+		// Skipping already declared method Microsoft.UI.Input.ManipulationVelocities.operator !=(Microsoft.UI.Input.ManipulationVelocities, Microsoft.UI.Input.ManipulationVelocities)
+		// Skipping already declared method Microsoft.UI.Input.ManipulationVelocities.Equals(Microsoft.UI.Input.ManipulationVelocities)
+		// Skipping already declared method Microsoft.UI.Input.ManipulationVelocities.Equals(object)
+		// Skipping already declared method Microsoft.UI.Input.ManipulationVelocities.GetHashCode()
 		// Skipping already declared field Microsoft.UI.Input.ManipulationVelocities.Linear
 		// Skipping already declared field Microsoft.UI.Input.ManipulationVelocities.Angular
 		// Skipping already declared field Microsoft.UI.Input.ManipulationVelocities.Expansion

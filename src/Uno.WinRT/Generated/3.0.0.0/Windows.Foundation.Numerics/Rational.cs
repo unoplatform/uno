@@ -6,7 +6,7 @@ namespace Windows.Foundation.Numerics
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct Rational
+	public partial struct Rational : global::System.IEquatable<global::Windows.Foundation.Numerics.Rational>
 	{
 		// Forced skipping of method Windows.Foundation.Numerics.Rational.Rational()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,32 @@ namespace Windows.Foundation.Numerics
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Numerics.Rational.Rational(uint, uint)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(Rational x, Rational y)
+			=> x.Numerator == y.Numerator
+			&& x.Denominator == y.Denominator;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(Rational x, Rational y)
+			=> !(x.Numerator == y.Numerator
+				&& x.Denominator == y.Denominator);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(Rational other)
+			=> Numerator == other.Numerator
+			&& Denominator == other.Denominator;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is Rational that
+			&& Numerator == that.Numerator
+			&& Denominator == that.Denominator;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> Numerator.GetHashCode()
+			^ Denominator.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Numerator;
 #endif
