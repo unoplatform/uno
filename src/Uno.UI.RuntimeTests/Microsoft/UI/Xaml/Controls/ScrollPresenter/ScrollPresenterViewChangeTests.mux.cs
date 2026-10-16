@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
+using Uno.Disposables;
 using Windows.Foundation;
 
 //using WEX.TestExecution;
@@ -41,10 +42,23 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	private uint viewChangedCount = 0u;
 
+	// UNO: Upstream counts on a frame every ~16ms. On a software-rendered lane (WebGPU on SwiftShader) a frame can take
+	// hundreds of ms, and a stock 50-1000ms animation then lands in one or two of them: too few to see it move, or to
+	// interrupt it before it completes. Slower animations keep these tests about the view change, not the frame rate.
+	private static IDisposable UseSlowerOffsetsChangeAnimations()
+	{
+		ScrollPresenterTestHooks.GetOffsetsChangeVelocityParameters(out var msPerUnit, out var minMs, out var maxMs);
+		ScrollPresenterTestHooks.SetOffsetsChangeVelocityParameters(msPerUnit, minMilliseconds: 1000, maxMilliseconds: 5000);
+
+		return Disposable.Create(() => ScrollPresenterTestHooks.SetOffsetsChangeVelocityParameters(msPerUnit, minMs, maxMs));
+	}
+
 	[TestMethod]
 	[TestProperty("Description", "Changes ScrollPresenter offsets using ScrollTo, ScrollBy, AddScrollVelocity and AnimationMode/SnapPointsMode enum values.")]
 	public async Task BasicOffsetChanges()
 	{
+		using var slowerAnimations = UseSlowerOffsetsChangeAnimations();
+
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
 		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
@@ -304,6 +318,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestProperty("Description", "Cancels an animated offsets change.")]
 	public async Task BasicOffsetsChangeCancelation()
 	{
+		using var slowerAnimations = UseSlowerOffsetsChangeAnimations();
+
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
 		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
@@ -700,6 +716,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestProperty("Description", "Interrupts an animated offsets change with another one.")]
 	public async Task InterruptOffsetsChangeWithOffsetsChange()
 	{
+		using var slowerAnimations = UseSlowerOffsetsChangeAnimations();
+
 		await InterruptViewChange(ViewChangeInterruptionKind.OffsetsChangeByOffsetsChange);
 	}
 
