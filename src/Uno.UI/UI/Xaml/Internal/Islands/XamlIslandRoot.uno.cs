@@ -14,6 +14,15 @@ partial class XamlIslandRoot : IRootElement
 {
 	private readonly UnoRootElementLogic _rootElementLogic;
 
+	UnoRootElementLogic IRootElement.RootElementLogic => _rootElementLogic;
+
 	void IRootElement.SetBackgroundColor(Color backgroundColor) =>
 		SetValue(Panel.BackgroundProperty, new SolidColorBrush(backgroundColor));
+
+	protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs args)
+	{
+		base.OnBringIntoViewRequested(args);
+
+		_rootElementLogic.OnBringIntoViewRequested(args);
+	}
 }

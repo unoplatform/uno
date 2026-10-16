@@ -9,6 +9,11 @@ namespace Windows.UI.StartScreen
 	public partial class JumpList
 	{
 #if false || false || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal JumpList()
+		{
+		}
+#endif
+#if false || false || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.UI.StartScreen.JumpListItem> Items
 		{

@@ -22,7 +22,7 @@ using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Binder_GeneratedAttached
 	{
 		[TestMethod]

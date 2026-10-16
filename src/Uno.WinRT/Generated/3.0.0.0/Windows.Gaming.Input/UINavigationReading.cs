@@ -6,7 +6,7 @@ namespace Windows.Gaming.Input
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct UINavigationReading
+	public partial struct UINavigationReading : global::System.IEquatable<global::Windows.Gaming.Input.UINavigationReading>
 	{
 		// Forced skipping of method Windows.Gaming.Input.UINavigationReading.UINavigationReading()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,37 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.UINavigationReading.UINavigationReading(ulong, Windows.Gaming.Input.RequiredUINavigationButtons, Windows.Gaming.Input.OptionalUINavigationButtons)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(UINavigationReading x, UINavigationReading y)
+			=> x.Timestamp == y.Timestamp
+			&& x.RequiredButtons == y.RequiredButtons
+			&& x.OptionalButtons == y.OptionalButtons;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(UINavigationReading x, UINavigationReading y)
+			=> !(x.Timestamp == y.Timestamp
+				&& x.RequiredButtons == y.RequiredButtons
+				&& x.OptionalButtons == y.OptionalButtons);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(UINavigationReading other)
+			=> Timestamp == other.Timestamp
+			&& RequiredButtons == other.RequiredButtons
+			&& OptionalButtons == other.OptionalButtons;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is UINavigationReading that
+			&& Timestamp == that.Timestamp
+			&& RequiredButtons == that.RequiredButtons
+			&& OptionalButtons == that.OptionalButtons;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> Timestamp.GetHashCode()
+			^ RequiredButtons.GetHashCode()
+			^ OptionalButtons.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Timestamp;
 #endif

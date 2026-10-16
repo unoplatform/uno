@@ -10,7 +10,7 @@ using Uno.UI.Tests.Windows_UI_XAML_Controls.RadioButtonsTests.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.RadioButtonsTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_RadioButtons
 	{
 		[TestMethod]

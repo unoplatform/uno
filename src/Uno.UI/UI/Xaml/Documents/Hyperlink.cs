@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using DirectUI;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -79,6 +80,10 @@ namespace Microsoft.UI.Xaml.Documents
 			event RoutedEventHandler LostFocus;
 
 		internal void OnLostFocus(RoutedEventArgs args) => LostFocus?.Invoke(this, args);
+
+		// Hyperlink.cpp CHyperlink::UnderlineVisibleResourceDirective: a missing resource means the underline is visible.
+		internal static bool UnderlineVisibleResourceDirective()
+			=> ResourceResolver.ResolveTopLevelResource(new SpecializedResourceDictionary.ResourceKey("HyperlinkUnderlineVisible"), true) is not false;
 
 		public Hyperlink()
 		{
@@ -293,7 +298,7 @@ namespace Microsoft.UI.Xaml.Documents
 		public FocusState FocusState
 		{
 			get => GetFocusStateValue();
-			set => SetFocusStateValue(value);
+			internal set => SetFocusStateValue(value);
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = default(FocusState))]
@@ -310,7 +315,7 @@ namespace Microsoft.UI.Xaml.Documents
 				nameof(IsTabStop),
 				typeof(bool),
 				typeof(Hyperlink),
-				new FrameworkPropertyMetadata(defaultValue: (bool)true)
+				new FrameworkPropertyMetadata(defaultValue: BoolBoxes.True)
 			);
 
 		public int TabIndex

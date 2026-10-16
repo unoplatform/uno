@@ -67,6 +67,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			return dataPackage.GetView();
 		}
 
+		internal static bool IsTextAvailable() => true;
+
 		private static async Task<string> GetClipboardText(CancellationToken ct)
 		{
 			return await NativeMethods.GetTextAsync();

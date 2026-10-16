@@ -6,11 +6,16 @@ namespace Microsoft.UI
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct IconId
+	public partial struct IconId : global::System.IEquatable<global::Microsoft.UI.IconId>
 	{
 		// Forced skipping of method Microsoft.UI.IconId.IconId()
 		// Skipping already declared method Microsoft.UI.IconId.IconId(ulong)
 		// Forced skipping of method Microsoft.UI.IconId.IconId(ulong)
+		// Skipping already declared method Microsoft.UI.IconId.operator ==(Microsoft.UI.IconId, Microsoft.UI.IconId)
+		// Skipping already declared method Microsoft.UI.IconId.operator !=(Microsoft.UI.IconId, Microsoft.UI.IconId)
+		// Skipping already declared method Microsoft.UI.IconId.Equals(Microsoft.UI.IconId)
+		// Skipping already declared method Microsoft.UI.IconId.Equals(object)
+		// Skipping already declared method Microsoft.UI.IconId.GetHashCode()
 		// Skipping already declared field Microsoft.UI.IconId.Value
 	}
 }

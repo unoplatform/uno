@@ -89,7 +89,7 @@ namespace TestRepro
 						__that._component_0 = __p1;
 						__nameScope.RegisterName("tb", __p1);
 						__that.tb = __p1;
-						__p1.SetBinding(
+						global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 							global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 							new Microsoft.UI.Xaml.Data.Binding()
 							{
@@ -125,7 +125,7 @@ namespace TestRepro
 					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
 					set => _component_0_Holder.Instance = value;
 				}
-				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "tb");
 				private global::Microsoft.UI.Xaml.Controls.TextBlock tb
 				{
 					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_tbSubject.ElementInstance;
@@ -267,7 +267,7 @@ namespace MyProject.__Resources
 					__that._component_0 = __p1;
 					__nameScope.RegisterName("tb", __p1);
 					__that.tb = __p1;
-					__p1.SetBinding(
+					global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 						new Microsoft.UI.Xaml.Data.Binding()
 						{
@@ -303,7 +303,7 @@ namespace MyProject.__Resources
 				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
 				set => _component_0_Holder.Instance = value;
 			}
-			private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+			private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "tb");
 			private global::Microsoft.UI.Xaml.Controls.TextBlock tb
 			{
 				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_tbSubject.ElementInstance;

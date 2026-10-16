@@ -450,8 +450,7 @@ internal sealed class AnimatedAcceptVisualSource_AnimatedVisual : IAnimatedVisua
 	private CompositionSpriteShape SpriteShape_14() => MakeStrokedSpriteShape(PathGeometry_12());
 
 	// All ContainerVisuals at the outer level use Offset:<24,24>, Scale:<1.05, 1.05>.
-	// Note: WinUI uses a row-major Matrix4x4 here that is well-formed for the outer transform
-	// (no zero diagonals on M22/M33). We replicate it exactly for fidelity.
+	// Copied verbatim from WinUI: the Lottie Scale(1.05,1.05,0) flattens Z, so M33 is 0.
 	private static readonly Matrix4x4 s_outerScaleMatrix = new Matrix4x4(
 		1.04999995F, 0.0F, 0.0F, 0.0F,
 		0.0F, 1.04999995F, 0.0F, 0.0F,

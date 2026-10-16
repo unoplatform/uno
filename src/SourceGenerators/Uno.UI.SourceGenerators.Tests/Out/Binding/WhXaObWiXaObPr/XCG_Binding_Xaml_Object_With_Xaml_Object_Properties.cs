@@ -54,7 +54,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							{
 								IsParsing = true,
 								Name = "topLevel",
-								Tag = @"42",
+								Tag = "42",
 								// Source Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 11:10)
 							}
 							.Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874a_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
@@ -64,12 +64,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							__nameScope.RegisterName("topLevel", __p1);
 							__that.topLevel = __p1;
 							// FieldModifier public
-							__p1.SetBinding(
+							global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 								global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
-									Path = @"Tag",
-									ElementName = _topLevelSubject,
+									Path = "Tag",
+									ElementName = "topLevel",
+									ElementNameSubject = _topLevelSubject,
 									Converter = new global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Xaml_Object_Properties_Return_Value_Converter(),
 									ConverterParameter = "topLevel",
 									ConverterLanguage = "topLevel",
@@ -88,6 +89,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						)
 						,
 					}
+					,
 				}
 				.Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874a_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
@@ -125,7 +127,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			this.Bindings.UpdateResources();
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "topLevel");
 		public global::Microsoft.UI.Xaml.Controls.TextBlock topLevel
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_topLevelSubject.ElementInstance;
@@ -153,12 +155,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class Binding_Xaml_Object_With_Xaml_Object_Properties_Bindings : IBinding_Xaml_Object_With_Xaml_Object_Properties_Bindings
 		{
-			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			private global::System.WeakReference _ownerReference;
-			private global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Xaml_Object_Properties Owner { get => (global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Xaml_Object_Properties)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
-			#else
 			private global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Xaml_Object_Properties Owner { get; set; }
-			#endif
 			public Binding_Xaml_Object_With_Xaml_Object_Properties_Bindings(global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Xaml_Object_Properties owner)
 			{
 				Owner = owner;

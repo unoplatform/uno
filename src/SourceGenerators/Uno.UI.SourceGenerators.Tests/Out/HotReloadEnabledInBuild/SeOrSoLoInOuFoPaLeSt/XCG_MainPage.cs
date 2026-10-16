@@ -61,6 +61,7 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 						.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ0_Sty)
 					)
@@ -89,6 +90,7 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 						.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ1_Sty)
 					)
@@ -208,12 +210,7 @@ namespace TestRepro
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
-			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			private global::System.WeakReference _ownerReference;
-			private global::TestRepro.MainPage Owner { get => (global::TestRepro.MainPage)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
-			#else
 			private global::TestRepro.MainPage Owner { get; set; }
-			#endif
 			public MainPage_Bindings(global::TestRepro.MainPage owner)
 			{
 				Owner = owner;

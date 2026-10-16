@@ -5,6 +5,10 @@ namespace Windows.UI.Core
 	/// </summary>
 	public sealed partial class VisibilityChangedEventArgs : ICoreWindowEventArgs
 	{
+		internal VisibilityChangedEventArgs()
+		{
+		}
+
 		/// <summary>
 		/// Gets or sets a value indicating whether the VisibilityChanged event was handled.
 		/// </summary>

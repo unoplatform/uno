@@ -5,6 +5,10 @@
 /// </summary>
 public partial class ValuePatternIdentifiers
 {
+	internal ValuePatternIdentifiers()
+	{
+	}
+
 	/// <summary>
 	/// Identifies the IsReadOnly property.
 	/// </summary>

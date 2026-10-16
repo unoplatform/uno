@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Specialized;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -26,7 +27,13 @@ namespace Microsoft.UI.Xaml.Controls
 			public const string SelectedPressed = "SelectedPressed";
 		}
 
+		internal const string c_PivotItemsPresenterName = "PivotItemPresenter";
+		internal const string c_HeadersControlName = "Header";
+		internal const string c_LayoutElementName = "PivotLayoutElement";
+
 		private ContentControl _titleContentControl;
+		private PivotPanel _panel;
+		private double _pivotSectionWidth = double.NaN;
 		private PivotHeaderPanel _staticHeader;
 		private PivotHeaderPanel _header;
 		private RectangleGeometry _headerClipperGeometry;
@@ -58,6 +65,11 @@ namespace Microsoft.UI.Xaml.Controls
 			_headerClipper = this.GetTemplateChild("HeaderClipper") as ContentControl;
 			_pivotItemTemplate = new DataTemplate(null, (_, _) => new PivotItem());
 
+			_panel?.SetParentPivot(null);
+			_panel = this.GetTemplateChild("Panel") as PivotPanel;
+			_panel?.SetParentPivot(this);
+			_pivotSectionWidth = double.NaN;
+
 			_isUWPTemplate = _staticHeader != null;
 
 			if (!_isUWPTemplate)
@@ -77,6 +89,45 @@ namespace Microsoft.UI.Xaml.Controls
 
 			SynchronizeItems();
 		}
+
+		// MUX Reference Pivot_Partial.cpp, commit 4a1c6184c
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			if (double.IsPositiveInfinity(availableSize.Width))
+			{
+				availableSize.Width = GetScreenWidth();
+			}
+
+			// Uno: Stands in for PivotStateMachine::MeasureEvent, which hands the section width to the PivotPanel.
+			if (_panel is not null && !(Math.Abs(availableSize.Width - _pivotSectionWidth) < 0.1))
+			{
+				_pivotSectionWidth = availableSize.Width;
+				_panel.SetSectionWidth(_pivotSectionWidth);
+			}
+
+			return base.MeasureOverride(availableSize);
+		}
+
+		// MUX Reference Pivot_Partial.cpp, commit 4a1c6184c
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			if (double.IsPositiveInfinity(finalSize.Width))
+			{
+				finalSize.Width = GetScreenWidth();
+			}
+
+			return base.ArrangeOverride(finalSize);
+		}
+
+		private double GetScreenWidth() => XamlRoot?.Size.Width ?? 0.0;
+
+		// MUX Reference PivotCommon.h, commit 4a1c6184c
+		// This number MUST be even.
+		internal static uint GetPivotPanelMultiplier() => 1000u;
+
+		// TODO Uno: WinUI returns GetPivotPanelMultiplier() (carousel) or the item count, so the ScrollViewer can pan
+		// between sections. Uno's Pivot toggles item visibility instead of panning, so the panel spans a single section.
+		internal uint GetPivotPanelMultiplierImpl() => 1u;
 
 		private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{

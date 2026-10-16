@@ -4,7 +4,7 @@ using Windows.System.Profile.Internal;
 
 namespace Uno.UI.Tests.Windows_System.Profile.Internal
 {
-	[TestClass]
+	[UITestClass]
 	public class VersionHelpersTests
 	{
 		[TestMethod]

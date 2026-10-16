@@ -16,7 +16,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
+		<UnoRuntimeVariant>Reference</UnoRuntimeVariant>
 		
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>uno.winrt</CommonOverridePackageId>
@@ -34,8 +34,5 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\UI\Input\WinRT\*.cs" />
-		<Compile Include="..\Uno.UI\UI\Colors.cs" />
-		<Compile Include="..\Uno.UI\UI\ColorHelper.cs" />
-		<Compile Include="..\Uno.UI\UI\Text\FontWeights.cs" />
 	</ItemGroup>
 </Project>

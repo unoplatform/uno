@@ -16,6 +16,10 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class ToolTipService
 {
+	internal ToolTipService()
+	{
+	}
+
 	private static ToolTip m_CurrentToolTip;
 	private static uint m_LastEnteredFrameId;
 	private static DispatcherTimer m_OpenTimer;

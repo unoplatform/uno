@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.UI.Xaml.Controls;
-using HarfBuzzSharp;
-using SkiaSharp;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Documents
 {
-	public abstract partial class Inline : TextElement
+	public partial class Inline : TextElement
 	{
+		protected Inline()
+		{
+		}
+
 		internal void InvalidateInlines(bool updateText) => InvalidateInlines(updateText, inherited: false);
 
 		internal void InvalidateInlines(bool updateText, bool inherited)
@@ -96,9 +98,9 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal float LineHeight => FontInfo.LineHeight;
 
-		internal float AboveBaselineHeight => -FontInfo.SKFontMetrics.Ascent;
+		internal float AboveBaselineHeight => -FontInfo.FontHandle.Ascent;
 
-		internal float BelowBaselineHeight => FontInfo.SKFontMetrics.Descent;
+		internal float BelowBaselineHeight => FontInfo.FontHandle.Descent;
 
 		protected override void OnFontFamilyChanged()
 		{

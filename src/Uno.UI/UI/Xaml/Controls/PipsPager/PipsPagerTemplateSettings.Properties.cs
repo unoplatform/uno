@@ -13,13 +13,17 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public sealed partial class PipsPagerTemplateSettings : DependencyObject
 {
+	internal PipsPagerTemplateSettings()
+	{
+	}
+
 	/// <summary>
 	/// Gets or sets the list of integers to represent the pips in the PipsPager.
 	/// </summary>
 	public IList<int> PipsPagerItems
 	{
 		get => (IList<int>)GetValue(PipsPagerItemsProperty);
-		set => SetValue(PipsPagerItemsProperty, value);
+		internal set => SetValue(PipsPagerItemsProperty, value);
 	}
 
 	internal static DependencyProperty PipsPagerItemsProperty { get; } =

@@ -314,8 +314,8 @@
 
         <FlowLayout
             x:Key="flowLayout"
-            MinColumnSpacing="10"
-            MinRowSpacing="10"
+            LineSpacing="10"
+            MinItemSpacing="10"
             Orientation="Vertical" />
 
         <UniformGridLayout

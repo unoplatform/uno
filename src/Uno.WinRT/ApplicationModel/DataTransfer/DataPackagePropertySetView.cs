@@ -108,18 +108,15 @@ namespace Windows.ApplicationModel.DataTransfer
 		public object this[string key]
 		{
 			get => _propertySet[key];
-			set => throw new InvalidOperationException("Cannot modify data");
 		}
 
 		public IEnumerable<string> Keys
 		{
 			get => _propertySet.Keys;
-			set => throw new InvalidOperationException("Cannot modify keys");
 		}
 		public IEnumerable<object> Values
 		{
 			get => _propertySet.Values;
-			set => throw new InvalidOperationException("Cannot modify values");
 		}
 		public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => _propertySet.GetEnumerator();
 
@@ -128,7 +125,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		public int Count
 		{
 			get => _propertySet.Count;
-			set => throw new InvalidOperationException("Cannot set count");
 		}
 	}
 }

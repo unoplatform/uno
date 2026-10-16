@@ -10,57 +10,9 @@ For contributors, see in-depth documentation on [the internals of ListView](../u
 
 ## Style reuse
 
-This is a stripped-down view of the default style for ListView in Uno:
+`ListView` uses WinUI's default style unchanged, so custom `ListView` styles and templates written for WinUI work as-is.
 
-```xml
-<!-- Default style for Windows.UI.Xaml.Controls.ListView -->
-<not_win:Style TargetType="ListView">
-  <Setter Property="ItemsPanel">
-    <Setter.Value>
-      <ItemsPanelTemplate>
-        <ItemsStackPanel Orientation="Vertical" />
-      </ItemsPanelTemplate>
-    </Setter.Value>
-  </Setter>
-  <Setter Property="Template">
-    <Setter.Value>
-      <ControlTemplate TargetType="ListView">
-        <Border>
-          <ScrollViewer
-              x:Name="ScrollViewer"
-              not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}">
-            <ItemsPresenter/>
-          </ScrollViewer>
-        </Border>
-      </ControlTemplate>
-    </Setter.Value>
-  </Setter>
-</not_win:Style>
-```
-
-As on Windows, the `ItemsPanelTemplate` can be set; `ItemsStackPanel` and `ItemsWrapGrid` are the supported panels, and each of these supports most of the same properties as on Windows.
-
-In fact there is only one difference from the Windows style, which is a custom Style on the `ScrollViewer` element. Below is the custom `ScrollViewer` style in its entirety:
-
-```xml
-<!-- This is an Uno-only Style which removes the ScrollContentPresenter, in order for ListViewBase to use the default Windows style (nearly)
-     while delegating to a native implementation for performance. -->
-<not_win:Style TargetType="ScrollViewer" x:Key="ListViewBaseScrollViewerStyle">
-  <Setter Property="Template">
-    <Setter.Value>
-      <ControlTemplate TargetType="ScrollViewer">
-        <ListViewBaseScrollContentPresenter
-            x:Name="ScrollContentPresenter"
-            Content="{TemplateBinding Content}"
-            ContentTemplate="{TemplateBinding ContentTemplate}"
-            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
-      </ControlTemplate>
-    </Setter.Value>
-  </Setter>
-</not_win:Style>
-```
-
-This style replaces the internal `ScrollPresenter` with a `ListViewBaseScrollContentPresenter`, for reasons explained below. Custom ListView/GridView styles should modify the ScrollViewer template part's style to the one shown above.
+`GridView` uses WinUI's default style too, except that its `ItemsPanel` is a `WrapPanel`: `ItemsWrapGrid` is not implemented yet. `ItemsStackPanel` is supported as on Windows.
 
 ## Performance tips
 

@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Tests.PivotTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Popup
 	{
 		[TestMethod]

@@ -75,6 +75,16 @@ internal class CliManager
 					mcpWorkspaceResolution);
 			}
 
+			// Like Program.IsAppCommand: the global options (--log-level, --file-log) may come before the verb.
+			if (AppCommandHandler.AppVerbIndex(originalArgs) is var appIndex and >= 0)
+			{
+				var appWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+				var appWorkingDirectory = appWorkspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+				return await new AppCommandHandler(_logger).RunAsync(
+					originalArgs[(appIndex + 1)..],
+					noStart => EnsureHostAsync(appWorkingDirectory, appWorkspaceResolution.SelectedSolutionPath, noStart));
+			}
+
 			var isDisco = originalArgs is { Length: > 0 } &&
 				string.Equals(originalArgs[0], "disco", StringComparison.OrdinalIgnoreCase);
 			var discoJson = isDisco &&
@@ -950,6 +960,56 @@ internal class CliManager
 		}
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput, enableMajorRollForward: enableMajorRollForward);
+	}
+
+	/// <summary>
+	/// Returns the HTTP port of a ready DevServer for the solution, starting one the same way
+	/// <c>start</c> does when none is registered, unless <paramref name="noStart"/>. Null when no solution was
+	/// resolved, no host may be started, or the start failed.
+	/// </summary>
+	private async Task<int?> EnsureHostAsync(string workingDirectory, string? solutionPath, bool noStart)
+	{
+		if (string.IsNullOrWhiteSpace(solutionPath))
+		{
+			_logger.LogError("No solution resolved under {Directory}; pass --solution-dir <path>.", workingDirectory);
+			return null;
+		}
+
+		var lookup = new AmbientRegistryLookup();
+		if (lookup.FindBySolution(solutionPath) is { } existing)
+		{
+			_logger.LogDebug("Using DevServer on port {Port} (PID {Pid}) for {Solution}", existing.Port, existing.ProcessId, solutionPath);
+			return existing.Port;
+		}
+
+		if (noStart)
+		{
+			_logger.LogError("No DevServer is running for {Solution} (--no-start); run `uno-devserver start` first.", solutionPath);
+			return null;
+		}
+
+		var hostLaunchPlan = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
+		if (hostLaunchPlan is null)
+		{
+			return null; // errors already logged
+		}
+
+		var exitCode = await CreateStartCommandHandler().RunAsync(
+			hostLaunchPlan.HostPath, ["start"], workingDirectory, ResolveAddInsForCommand(workingDirectory),
+			solutionPath, enableMajorRollForward: hostLaunchPlan.RequiresMajorRollForward);
+
+		if (exitCode != 0)
+		{
+			return null;
+		}
+
+		if (lookup.FindBySolution(solutionPath) is { } started)
+		{
+			return started.Port;
+		}
+
+		_logger.LogError("The DevServer started but did not register for {Solution}; run `uno-devserver health`.", solutionPath);
+		return null;
 	}
 
 	private StartCommandHandler CreateStartCommandHandler()

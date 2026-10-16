@@ -260,93 +260,66 @@ Second, you can use it in XAML in this way:
 
 ## Font fallback for unsupported codepoints
 
-When the Skia rendering pipeline is asked to render a codepoint that the active font family cannot draw (for example, a CJK ideograph in a Latin-only font, or an emoji in `Segoe UI`), Uno Platform consults a *fallback service* to find a font that does cover that codepoint.
+When the Skia rendering pipeline is asked to render a codepoint that the active font family cannot draw (for example, a CJK ideograph in a Latin-only font, or an emoji in `Segoe UI`), Uno Platform falls back to a font that does cover that codepoint. This is part of the font provider, exposed by `IFontProvider.MatchCharacterAsync`.
 
-### The fallback service interface
+### Built-in fallback
 
-Fallback resolution is expressed by a single interface that the rendering pipeline consults whenever it encounters an unsupported codepoint:
+The default font provider handles fallback automatically, per platform, with no configuration required:
 
-```csharp
-namespace Microsoft.UI.Xaml.Documents.TextFormatting;
+- **Desktop** (Windows, macOS, Linux) resolves the codepoint against the operating system's installed fonts.
+- **WebAssembly** downloads the matching [Noto](https://fonts.google.com/noto) font on demand — the browser has no broadly-covering installed fonts, so the font bytes are fetched the first time a codepoint needs them and cached afterwards.
+- **Android** resolves against the bundled system fonts under `/system/fonts`.
 
-public interface IFontFallbackService
-{
-    Task<string?> GetFontFamilyForCodepoint(int codepoint);
-
-    Task<Stream?> GetFontStreamForFontFamily(
-        string fontFamily,
-        Windows.UI.Text.FontWeight weight,
-        Windows.UI.Text.FontStretch stretch,
-        Windows.UI.Text.FontStyle style);
-}
-```
-
-The two methods cooperate as a name-then-bytes lookup: the pipeline first asks which family covers a codepoint, then asks for the bytes of that family.
-
-Both methods return `Task<…>`, so an implementation can do real I/O - download metadata, probe a CDN, fetch a font - before answering. The rendering pipeline calls into these methods from the UI thread but awaits the resulting `Task`, so the synchronous part of each method should return quickly and any work that may block belongs inside the returned task.
-
-#### `GetFontFamilyForCodepoint(int codepoint)`
-
-Return an identifier the implementation can later resolve back to font bytes. The string is opaque to the rendering pipeline - it is only used as the key passed to `GetFontStreamForFontFamily`, so the implementation may use any naming scheme it likes (real family names, file paths, internal tokens, etc.) provided the two methods agree.
-
-- Return `null` when no font in the implementation's catalogue covers the codepoint.
-
-#### `GetFontStreamForFontFamily(string fontFamily, FontWeight weight, FontStretch stretch, FontStyle style)`
-
-Return a `Stream` over the font bytes for `fontFamily`, or `null` if unavailable.
-
-- `weight`, `stretch`, and `style` describe the requested visual style. An implementation may serve a single regular file regardless for simplicity, or pick a separate file per style for higher quality.
-
-### `CoverageTableFontFallbackService` (optional helper)
-
-Implementations of `IFontFallbackService` are free to resolve fallback any way they like. As a convenience, Uno Platform ships `CoverageTableFontFallbackService` - a ready-made implementation that handles the common case where loading every possible fallback font upfront is impractical (especially on WebAssembly, where shipping the full set of CJK, Indic, emoji, and symbol fonts would dwarf the application itself).
-
-It is built around a *coverage table*: a precomputed mapping from Unicode codepoint ranges to the font families that cover them. When asked about a codepoint, the service looks it up in the table and lazily fetches only the family that is actually needed. You are not required to use it - if its model doesn't fit your scenario, implement `IFontFallbackService` directly.
-
-Using the helper is a matter of providing the table and a callback that produces the bytes for a given family on demand:
-
-```csharp
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Documents.TextFormatting;
-
-var table = new[]
-{
-    new FontFallbackCoverageRange(0x0600, 0x0700, ["My Arabic Font"]),
-    new FontFallbackCoverageRange(0x4E00, 0xA000, ["My CJK Font"]),
-    // ...
-};
-
-var service = new CoverageTableFontFallbackService(
-    table,
-    fontStreamProvider: async (family, weight, stretch, style, ct) =>
-    {
-        // Serve from the application package, a private CDN, IndexedDB, etc.
-        var file = await StorageFile.GetFileFromApplicationUriAsync(
-            new Uri($"ms-appx:///Assets/Fonts/{family}.ttf"));
-        return await file.OpenStreamForReadAsync();
-    });
-```
-
-The helper handles the machinery: it picks the minimal set of families needed to cover a batch of missing codepoints (set-cover), invokes the stream provider once per family, caches the bytes, and serves fresh streams to the rendering pipeline on demand. Returning `null` from the stream provider records the family as unsupported.
+The method is asynchronous because acquiring a fallback font can require I/O (the WebAssembly Noto fetch). An already-available font resolves synchronously; only an on-demand fetch defers, and the text is re-rendered once it arrives.
 
 ### Customizing fallback
 
-Assign your own `IFontFallbackService` instance to `FeatureConfiguration.Font.FallbackService` during application startup, *before any text is rendered*. The value is read once when the font cache is initialized; later changes have no effect.
+Fallback is not a separate extension point — it is part of the font provider. To customize it, supply your own `IFontProvider` through the host builder and implement `MatchCharacterAsync`:
 
 ```csharp
-// App.xaml.cs - in your application constructor or OnLaunched, before the visual tree is built.
-Uno.UI.FeatureConfiguration.Font.FallbackService = new MyFallback();
+using System.Threading.Tasks;
+using Windows.UI.Text;
+using Uno.UI.Composition.Drawing;
+
+public sealed class MyFontProvider : IFontProvider
+{
+    private readonly IFontProvider _inner; // the built-in provider, to delegate the non-fallback methods to
+
+    public MyFontProvider(IFontProvider inner) => _inner = inner;
+
+    public IFont? CreateFont(byte[] data, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+        => _inner.CreateFont(data, familyNameHint, weight, stretch, style, fontSize);
+
+    public IFont? MatchFamily(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+        => _inner.MatchFamily(familyName, weight, stretch, style, fontSize);
+
+    public IFont GetDefaultFont(FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+        => _inner.GetDefaultFont(weight, stretch, style, fontSize);
+
+    public async ValueTask<IFont?> MatchCharacterAsync(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+    {
+        // Try your own source first, then fall back to the default behaviour.
+        byte[]? bytes = await LoadMyFallbackFontBytesAsync(codepoint /*, style … */);
+        if (bytes is not null)
+        {
+            return CreateFont(bytes, null, weight, stretch, style, fontSize);
+        }
+
+        // Reuse the built-in per-platform fallback (browser Noto / Android system fonts) if you want to keep it.
+        return await FontFallback.MatchCharacterAsync(this, codepoint, weight, stretch, style, fontSize);
+    }
+}
 ```
 
-The instance can be anything that implements the interface - a fully custom class, or a `CoverageTableFontFallbackService` configured with your own table and stream provider if that helper fits your scenario. A common reason to override on WebAssembly is to serve fallback fonts from the application package or a CORS-friendly mirror instead of the default location.
-
-### Opting out of fallback entirely
-
-To opt out of font fall back entirely, assign the empty service:
+Register it on the host builder before `Build()`:
 
 ```csharp
-Uno.UI.FeatureConfiguration.Font.FallbackService = EmptyFontFallbackService.Instance;
+var host = UnoPlatformHostBuilder.Create()
+    .App(() => new App())
+    .FontProvider(new MyFontProvider(/* inner */))
+    .UseX11()
+    .UseWin32()
+    .Build();
 ```
 
-This is distinct from leaving the property at its `null` default, which means "use the platform-registered default service."
+To disable fallback entirely, return `null` from `MatchCharacterAsync` (and don't call `FontFallback`).
