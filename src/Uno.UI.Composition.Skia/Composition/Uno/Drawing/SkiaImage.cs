@@ -24,7 +24,11 @@ internal sealed class SkiaImage : DrawingResource, IImage
 		var info = new SKImageInfo(PixelWidth, PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
 		fixed (byte* dst = destination)
 		{
-			Image.ReadPixels(info, (nint)dst, info.RowBytes, 0, 0);
+			// A failed read leaves the destination untouched, which the caller would show as a transparent image.
+			if (!Image.ReadPixels(info, (nint)dst, info.RowBytes, 0, 0))
+			{
+				throw new InvalidOperationException("Failed to read the image's pixels.");
+			}
 		}
 	}
 }
