@@ -17,9 +17,6 @@ namespace Windows.Storage
 	{
 		private static TaskCompletionSource<bool> _storageInitialized = new TaskCompletionSource<bool>();
 
-		internal async Task MakePersistentAsync()
-			=> await MakePersistentAsync(this);
-
 		private static async Task TryInitializeStorage()
 		{
 			if (typeof(StorageFolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
