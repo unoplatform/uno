@@ -606,6 +606,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_SetSourceAsync_Not_Svg()
+		{
+			// WinUI completes the operation with E_INVALIDARG and reports the status through OpenFailed.
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/test_image_100_150.png"));
+			var svgImageSource = new SvgImageSource();
+			SvgImageSourceLoadStatus? failedStatus = null;
+			svgImageSource.OpenFailed += (_, e) => failedStatus = e.Status;
+
+			using (var stream = await file.OpenReadAsync())
+			{
+				await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await svgImageSource.SetSourceAsync(stream));
+			}
+
+			await WindowHelper.WaitFor(() => failedStatus is not null, message: "SvgImageSource.OpenFailed was not raised.");
+			Assert.AreEqual(SvgImageSourceLoadStatus.InvalidFormat, failedStatus);
+		}
+
 		private static async Task<StorageFile> CreateSvgFileAsync(string fill)
 		{
 			// A file of its own for each call: the source may keep the stream it was given open.

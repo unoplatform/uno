@@ -107,7 +107,16 @@ public partial class SvgImageSource : ImageSource
 
 			void OnChanged(ImageData data)
 			{
-				tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
+				if (_lastStatus == SvgImageSourceLoadStatus.InvalidFormat)
+				{
+					// Like WinUI, which completes the operation with E_INVALIDARG: OpenFailed reports the status, and
+					// awaiting the operation throws.
+					tcs.TrySetException(new ArgumentException("The stream does not contain a valid SVG document.", nameof(streamSource)));
+				}
+				else
+				{
+					tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
+				}
 			}
 #else
 			Stream = streamSource.CloneStream().AsStream();
