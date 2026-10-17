@@ -94,34 +94,30 @@ public partial class SvgImageSource : ImageSource
 #if __CROSSRUNTIME__
 			_stream = streamSource.CloneStream();
 
-			var tcs = new TaskCompletionSource<SvgImageSourceLoadStatus>();
-
-			using var x = Subscribe(OnChanged);
-
-
+			// The operation completes from its own load, not from what the source publishes: by then a handler may
+			// already have given the source another stream.
+			var load = EnsureLoad(out var loadToken);
 			InvalidateSource();
+			var data = await load;
 
-			return await tcs.Task;
+			// WinUI completes the operation after raising ImageOpened on the elements showing the source, so let the open
+			// that publishes this load run first.
+			await Task.Yield();
 
-			// The outcome comes from the delivered data, not from the source: a handler run for an earlier subscriber may
-			// already have changed the source.
-			void OnChanged(ImageData data)
+			if (data.Error is ArgumentException invalidFormat)
 			{
-				if (data.HasData)
-				{
-					tcs.TrySetResult(SvgImageSourceLoadStatus.Success);
-				}
-				else if (data.Error is ArgumentException invalidFormat)
-				{
-					// Like WinUI, which completes the operation with E_INVALIDARG: OpenFailed reports InvalidFormat, and
-					// awaiting the operation throws.
-					tcs.TrySetException(new ArgumentException(invalidFormat.Message, nameof(streamSource)));
-				}
-				else
-				{
-					tcs.TrySetResult(SvgImageSourceLoadStatus.Other);
-				}
+				// Like WinUI, which completes the operation with E_INVALIDARG: OpenFailed reports InvalidFormat, and
+				// awaiting the operation throws, even when an OpenFailed handler has set another stream since.
+				throw new ArgumentException(invalidFormat.Message, nameof(streamSource));
 			}
+
+			if (loadToken.IsCancellationRequested)
+			{
+				// Another source replaced this one before the operation completed, which cancels it, as on WinUI.
+				throw new TaskCanceledException();
+			}
+
+			return data.HasData ? SvgImageSourceLoadStatus.Success : SvgImageSourceLoadStatus.Other;
 #else
 			Stream = streamSource.CloneStream().AsStream();
 			StreamLoaded?.Invoke(this, EventArgs.Empty);

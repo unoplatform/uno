@@ -686,6 +686,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, opened);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_SVGImageSource_SetSourceAsync_From_Opened(bool assignSourceFirst)
+		{
+			// The Opened handler gives the source another stream while the first operation is still running. Memory
+			// streams, so that each load can complete without waiting.
+			var svgImageSource = new SvgImageSource();
+			var image = new Image() { Width = 100, Height = 100 };
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+
+			if (assignSourceFirst)
+			{
+				image.Source = svgImageSource;
+			}
+
+			Task<SvgImageSourceLoadStatus> reload = null;
+			svgImageSource.Opened += (_, _) => reload ??= svgImageSource.SetSourceAsync(CreateSvgStream("blue")).AsTask();
+
+			// As on WinUI, the reload cancels the first operation.
+			await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await svgImageSource.SetSourceAsync(CreateSvgStream("red")));
+			Assert.IsNotNull(reload);
+			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await reload);
+
+			image.Source = svgImageSource;
+			await AssertCenterColor(border, Colors.Blue);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_SetSourceAsync_From_OpenFailed()
+		{
+			// The OpenFailed handler of a stream that isn't SVG gives the source a valid one: each operation reports its
+			// own outcome, as on WinUI.
+			var png = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/test_image_100_150.png"));
+			var svgImageSource = new SvgImageSource();
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+
+			using var svgStream = await (await CreateSvgFileAsync("red")).OpenReadAsync();
+			Task<SvgImageSourceLoadStatus> retry = null;
+			svgImageSource.OpenFailed += (_, _) => retry ??= svgImageSource.SetSourceAsync(svgStream).AsTask();
+
+			using (var pngStream = await png.OpenReadAsync())
+			{
+				await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await svgImageSource.SetSourceAsync(pngStream));
+			}
+
+			Assert.IsNotNull(retry);
+			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await retry);
+			await AssertCenterColor(border, Colors.Red);
+		}
+
+		private static Windows.Storage.Streams.IRandomAccessStream CreateSvgStream(string fill)
+			=> System.IO.WindowsRuntimeStreamExtensions.AsRandomAccessStream(new System.IO.MemoryStream(Encoding.UTF8.GetBytes($"<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='{fill}'/></svg>")));
+
 		private static async Task<StorageFile> CreateSvgFileAsync(string fill)
 		{
 			// A file of its own for each call: the source may keep the stream it was given open.

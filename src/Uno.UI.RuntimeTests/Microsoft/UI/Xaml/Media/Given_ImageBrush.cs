@@ -228,10 +228,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			using (var redStream = await (await CreateSvgFileAsync("red")).OpenReadAsync())
 			{
-				var load = svgImageSource.SetSourceAsync(redStream).AsTask();
-				await WindowHelper.WaitFor(() => load.IsCompleted && reload is not null, message: "The first load did not complete.");
+				// As on WinUI, the reload cancels the first operation, which completes only after ImageOpened.
+				await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await svgImageSource.SetSourceAsync(redStream));
 			}
 
+			Assert.IsNotNull(reload);
 			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await reload);
 			await WindowHelper.WaitForIdle();
 			var screenshot = await UITestHelper.ScreenShot(border2);
