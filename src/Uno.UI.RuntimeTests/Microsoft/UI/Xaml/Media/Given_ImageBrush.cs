@@ -187,8 +187,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			foreach (var (fill, color) in new[] { ("red", Microsoft.UI.Colors.Red), ("blue", Microsoft.UI.Colors.Blue) })
 			{
-				var file = await ApplicationData.Current.LocalFolder.CreateFileAsync($"svg-brush-{fill}.svg", CreationCollisionOption.GenerateUniqueName);
-				await FileIO.WriteTextAsync(file, $"<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='{fill}'/></svg>");
+				var file = await CreateSvgFileAsync(fill);
 				using (var stream = await file.OpenReadAsync())
 				{
 					Assert.AreEqual(SvgImageSourceLoadStatus.Success, await svgImageSource.SetSourceAsync(stream));
@@ -200,6 +199,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			}
 
 			Assert.AreEqual(1, opened);
+		}
+
+		[TestMethod]
+		public async Task When_SvgImageSource_Reloaded_From_ImageOpened_Then_Each_Raises_Once()
+		{
+			// The first brush's handler reloads the shared source while its first load is still being delivered: the
+			// elements after it still raise ImageOpened for that load, and only for it.
+			var svgImageSource = new SvgImageSource();
+			var brush1 = new ImageBrush { ImageSource = svgImageSource };
+			var brush2 = new ImageBrush { ImageSource = svgImageSource };
+			var image = new Image { Source = svgImageSource, Width = 100, Height = 100 };
+			var border2 = new Border { Width = 100, Height = 100, Background = brush2 };
+			var opened1 = 0;
+			var opened2 = 0;
+			var openedImage = 0;
+
+			using var blueStream = await (await CreateSvgFileAsync("blue")).OpenReadAsync();
+			Task<SvgImageSourceLoadStatus> reload = null;
+			brush1.ImageOpened += (_, _) =>
+			{
+				opened1++;
+				reload ??= svgImageSource.SetSourceAsync(blueStream).AsTask();
+			};
+			brush2.ImageOpened += (_, _) => opened2++;
+			image.ImageOpened += (_, _) => openedImage++;
+			await UITestHelper.Load(new StackPanel { Children = { new Border { Width = 100, Height = 100, Background = brush1 }, border2, image } });
+
+			using (var redStream = await (await CreateSvgFileAsync("red")).OpenReadAsync())
+			{
+				var load = svgImageSource.SetSourceAsync(redStream).AsTask();
+				await WindowHelper.WaitFor(() => load.IsCompleted && reload is not null, message: "The first load did not complete.");
+			}
+
+			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await reload);
+			await WindowHelper.WaitForIdle();
+			var screenshot = await UITestHelper.ScreenShot(border2);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Microsoft.UI.Colors.Blue, tolerance: 10);
+
+			Assert.AreEqual(1, opened1);
+			Assert.AreEqual(1, opened2);
+			Assert.AreEqual(1, openedImage);
+		}
+
+		private static async Task<StorageFile> CreateSvgFileAsync(string fill)
+		{
+			var file = await ApplicationData.Current.LocalFolder.CreateFileAsync($"svg-brush-{fill}.svg", CreationCollisionOption.GenerateUniqueName);
+			await FileIO.WriteTextAsync(file, $"<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='{fill}'/></svg>");
+			return file;
 		}
 	}
 }

@@ -24,10 +24,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging;
 /// </summary>
 public partial class SvgImageSource : ImageSource
 {
-	private SvgImageSourceLoadStatus? _lastStatus;
-	// Bumped on each change of the source (UnloadImageSourceData); the load that raised Opened is recorded.
-	private int _loadGeneration;
-	private int? _openedGeneration;
+	private bool _openedRaised;
 
 #if __CROSSRUNTIME__
 	private IRandomAccessStream? _stream;
@@ -94,8 +91,6 @@ public partial class SvgImageSource : ImageSource
 				throw new ArgumentException(nameof(streamSource));
 			}
 
-			_lastStatus = null;
-
 #if __CROSSRUNTIME__
 			_stream = streamSource.CloneStream();
 
@@ -108,17 +103,23 @@ public partial class SvgImageSource : ImageSource
 
 			return await tcs.Task;
 
+			// The outcome comes from the delivered data, not from the source: a handler run for an earlier subscriber may
+			// already have changed the source.
 			void OnChanged(ImageData data)
 			{
-				if (_lastStatus == SvgImageSourceLoadStatus.InvalidFormat)
+				if (data.HasData)
 				{
-					// Like WinUI, which completes the operation with E_INVALIDARG: OpenFailed reports the status, and
+					tcs.TrySetResult(SvgImageSourceLoadStatus.Success);
+				}
+				else if (data.Error is ArgumentException invalidFormat)
+				{
+					// Like WinUI, which completes the operation with E_INVALIDARG: OpenFailed reports InvalidFormat, and
 					// awaiting the operation throws.
-					tcs.TrySetException(new ArgumentException("The stream does not contain a valid SVG document.", nameof(streamSource)));
+					tcs.TrySetException(new ArgumentException(invalidFormat.Message, nameof(streamSource)));
 				}
 				else
 				{
-					tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
+					tcs.TrySetResult(SvgImageSourceLoadStatus.Other);
 				}
 			}
 #else
@@ -139,27 +140,24 @@ public partial class SvgImageSource : ImageSource
 	partial void InitPartial();
 
 	internal void RaiseImageFailed(SvgImageSourceLoadStatus loadStatus)
-	{
-		_lastStatus = loadStatus;
-		OpenFailed?.Invoke(this, new SvgImageSourceFailedEventArgs(loadStatus));
-	}
+		=> OpenFailed?.Invoke(this, new SvgImageSourceFailedEventArgs(loadStatus));
 
-	internal void RaiseImageOpened()
+	/// <summary>
+	/// Raises Opened for the first successful load of the source only, like WinUI: CSvgImageSource fires it while
+	/// m_frameIndex is 0, and nothing resets that index for an SVG.
+	/// </summary>
+	/// <returns>Whether this load raised Opened.</returns>
+	internal bool RaiseImageOpened()
 	{
-		_lastStatus = SvgImageSourceLoadStatus.Success;
-
-		// Like WinUI, only the first successful load of a source raises Opened: CSvgImageSource fires it while
-		// m_frameIndex is 0, and nothing resets that index for an SVG.
-		if (_openedGeneration is null)
+		if (_openedRaised)
 		{
-			_openedGeneration = _loadGeneration;
-			Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
+			return false;
 		}
-	}
 
-	// WinUI raises ImageOpened on the images and brushes showing the source together with Opened, so they raise it
-	// only for the load that raised Opened.
-	internal bool IsOpenedLoad => _openedGeneration == _loadGeneration;
+		_openedRaised = true;
+		Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
+		return true;
+	}
 
 	internal bool UseRasterized => !double.IsNaN(RasterizePixelWidth) && !double.IsNaN(RasterizePixelHeight);
 
@@ -189,29 +187,13 @@ public partial class SvgImageSource : ImageSource
 
 	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 	{
-		if (TryOpenSvgImageData(out var imageTask))
-		{
-			asyncImage = imageTask.ContinueWith(task =>
-			{
-				var imageData = task.Result;
+		TryOpenSvgImageData(out var imageTask);
 
-				// The registered ISvgRenderer retains the parsed vector; the live composition surface replays it each
-				// frame at the display size — resolution-independent (crisp at any scale), no intermediate
-				// rasterization. Consumed like any other image surface (e.g. by Image's surface brush).
-				if (_svgSurface is { } surface)
-				{
-					return ImageData.FromCompositionSurface(surface);
-				}
-
-				return imageData.Kind == ImageDataKind.Error ? imageData : ImageData.Empty;
-			}, ct);
-			return true;
-		}
-		else
-		{
-			asyncImage = Task.FromResult(ImageData.Empty);
-			return false;
-		}
+		// A source that opens nothing doesn't raise ImageOpened on the elements showing it.
+		asyncImage = imageTask.ContinueWith(
+			task => task.Result.Kind == ImageDataKind.Empty ? ImageData.Empty with { SuppressImageOpened = true } : task.Result,
+			ct);
+		return true;
 	}
 
 	private async Task<ImageData> GetSvgImageDataAsync(CancellationToken ct)

@@ -66,16 +66,21 @@ partial class SvgImageSource
 		if (renderer.Parse(imageData.ByteArray, Uno.UI.Composition.Drawing.GeometryFactory.Current) is { } document)
 		{
 			_svgDocument = document;
-			_svgSurface = new(document);
-			RaiseImageOpened();
+			var surface = _svgSurface = new(document);
+			var raisedOpened = RaiseImageOpened();
 			SourceLoaded?.Invoke(this, EventArgs.Empty);
-			return imageData;
+
+			// The registered ISvgRenderer retains the parsed vector; the live composition surface replays it each frame at
+			// the display size, crisp at any scale. The data is built here, from this load, so that its delivery doesn't
+			// depend on the source's state at that time.
+			return ImageData.FromCompositionSurface(surface) with { SuppressImageOpened = !raisedOpened };
 		}
 
 		RaiseImageFailed(SvgImageSourceLoadStatus.InvalidFormat);
 
-		// Reported as an error (not just "no data") so consumers raise their own failure, e.g. Image.ImageFailed.
-		return ImageData.FromError(new InvalidOperationException("Failed to load Svg source"));
+		// Reported as an error (not just "no data") so consumers raise their own failure, e.g. Image.ImageFailed. An
+		// ArgumentException, as WinUI's E_INVALIDARG, which SetSourceAsync rethrows.
+		return ImageData.FromError(new ArgumentException("The content is not a valid SVG document."));
 	}
 
 	internal bool IsParsed => _svgDocument is not null;
@@ -92,7 +97,6 @@ partial class SvgImageSource
 
 	private protected override void UnloadImageSourceData()
 	{
-		_loadGeneration++;
 		_loadCts?.Cancel();
 		_loadCts?.Dispose();
 		_loadCts = null;

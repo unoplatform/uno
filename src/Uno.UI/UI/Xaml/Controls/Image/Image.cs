@@ -53,9 +53,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_pendingImageData = img;
 
-				// Decided when the data arrives: by the time it is processed (on measure), a newer load of an SVG source may
-				// already be current, and its data replaces this one.
-				if (img.HasData && (source is not SvgImageSource svgImageSource || svgImageSource.IsOpenedLoad))
+				// Decided when the data arrives: by the time it is processed (on measure), newer data may have replaced it.
+				if (img.HasData && !img.SuppressImageOpened)
 				{
 					_imageOpenedPending = true;
 				}
