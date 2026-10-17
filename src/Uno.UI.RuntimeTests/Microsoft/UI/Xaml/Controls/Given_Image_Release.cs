@@ -70,6 +70,51 @@ public class Given_Image_Release
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
+	public async Task When_Failed_Image_Reloaded_Then_Source_Not_Retried()
+	{
+		// A source that failed stays failed until it changes, as on WinUI: its only Image, unloaded and loaded again, is not
+		// given a retry, so nothing is requested or raised again.
+		using var _ = DisableBitmapImageCache();
+
+		try
+		{
+			using var server = await GatedImageServer.StartAsync();
+			server.FailNextRequest = true;
+			var panel = new StackPanel();
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+
+			var bitmap = new BitmapImage(server.Uri);
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			var bitmapFailed = 0;
+			var imageFailed = 0;
+			bitmap.ImageFailed += (_, _) => bitmapFailed++;
+			image.ImageFailed += (_, _) => imageFailed++;
+
+			panel.Children.Add(image);
+			await WindowHelper.WaitFor(() => imageFailed == 1, 10000, "Pre-condition: the source fails");
+			await WindowHelper.WaitForIdle();
+
+			panel.Children.Remove(image);
+			await WindowHelper.WaitForIdle();
+			server.FailNextRequest = true;
+			panel.Children.Add(image);
+			await UITestHelper.WaitForLoaded(image, x => x.IsLoaded);
+			await Task.Delay(1000);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, server.RequestCount, "The failed source must not be requested again");
+			Assert.AreEqual(1, bitmapFailed, "BitmapImage.ImageFailed must not be raised again");
+			Assert.AreEqual(1, imageFailed, "Image.ImageFailed must not be raised again");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
 	public async Task When_Decoded_Again_After_Release_Then_ImageOpened_Raised_Once()
 	{

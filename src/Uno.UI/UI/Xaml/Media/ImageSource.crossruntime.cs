@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				subscription.Deliver(_imageData);
 			}
-			else if (_subscriptions.Count == 1 && !_isOpening)
+			else if (_subscriptions.Count == 1 && !_isOpening && !IsFailed)
 			{
 				Open();
 			}
@@ -415,8 +415,8 @@ namespace Microsoft.UI.Xaml.Media
 		private ImageData KeepReplaced(ICompositionSurface surface)
 		{
 			// A source that failed or was cleared gives nothing more: the subscriber must show nothing, not keep the old image.
-			// Without subscribers, Subscribe opens the source.
-			if (surface is null || !(_isOpening || _imageData.HasData || _subscriptions.Count == 0))
+			// Without subscribers, Subscribe opens the source, unless it failed.
+			if (surface is null || !(_isOpening || _imageData.HasData || (_subscriptions.Count == 0 && !IsFailed)))
 			{
 				return default;
 			}
@@ -434,6 +434,10 @@ namespace Microsoft.UI.Xaml.Media
 
 			return ReferenceEquals(surface, _imageData.CompositionSurface) ? _imageData : default;
 		}
+
+		// A failure stays until the source changes, as on WinUI, where a source that needs no reload is not reloaded for an
+		// element that attaches to it (MUX Reference: CImageSource::ReloadImage, imagesource.cpp): it is not retried.
+		private bool IsFailed => _imageData.Kind == ImageDataKind.Error;
 
 		private static bool IsReleasable(ImageData data) => !data.IsShared && data.CompositionSurface is CompositionImageSurface;
 
