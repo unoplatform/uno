@@ -25,7 +25,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging;
 public partial class SvgImageSource : ImageSource
 {
 	private SvgImageSourceLoadStatus? _lastStatus;
-	private bool _openedRaised;
+	// Bumped on each change of the source (UnloadImageSourceData); the load that raised Opened is recorded.
+	private int _loadGeneration;
+	private int? _openedGeneration;
 
 #if __CROSSRUNTIME__
 	private IRandomAccessStream? _stream;
@@ -148,12 +150,16 @@ public partial class SvgImageSource : ImageSource
 
 		// Like WinUI, only the first successful load of a source raises Opened: CSvgImageSource fires it while
 		// m_frameIndex is 0, and nothing resets that index for an SVG.
-		if (!_openedRaised)
+		if (_openedGeneration is null)
 		{
-			_openedRaised = true;
+			_openedGeneration = _loadGeneration;
 			Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
 		}
 	}
+
+	// WinUI raises ImageOpened on the images and brushes showing the source together with Opened, so they raise it
+	// only for the load that raised Opened.
+	internal bool IsOpenedLoad => _openedGeneration == _loadGeneration;
 
 	internal bool UseRasterized => !double.IsNaN(RasterizePixelWidth) && !double.IsNaN(RasterizePixelHeight);
 

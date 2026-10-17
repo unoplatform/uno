@@ -120,7 +120,11 @@ namespace Microsoft.UI.Xaml.Controls
 				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
 				_surfaceBrush.MonochromeColor = MonochromeColor;
 				_imageSprite.Brush = _surfaceBrush;
-				ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+
+				if (Source is not SvgImageSource svgImageSource || svgImageSource.IsOpenedLoad)
+				{
+					ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+				}
 			}
 			else if (processedData is { Kind: ImageDataKind.Empty })
 			{

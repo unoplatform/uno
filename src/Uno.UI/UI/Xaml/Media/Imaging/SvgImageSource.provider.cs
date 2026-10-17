@@ -92,6 +92,7 @@ partial class SvgImageSource
 
 	private protected override void UnloadImageSourceData()
 	{
+		_loadGeneration++;
 		_loadCts?.Cancel();
 		_loadCts?.Dispose();
 		_loadCts = null;

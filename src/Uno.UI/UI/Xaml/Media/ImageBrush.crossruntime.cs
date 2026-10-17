@@ -1,4 +1,5 @@
 ﻿using Uno.Disposables;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Media
@@ -25,7 +26,7 @@ namespace Microsoft.UI.Xaml.Media
 				//		 so the ImageFailed won't be raised if the url is invalid ...
 				OnImageFailed();
 			}
-			else
+			else if (ImageSource is not SvgImageSource svgImageSource || svgImageSource.IsOpenedLoad)
 			{
 				OnImageOpened();
 			}

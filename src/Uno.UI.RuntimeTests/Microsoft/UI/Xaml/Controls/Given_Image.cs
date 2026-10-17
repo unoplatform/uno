@@ -630,6 +630,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(SvgImageSourceLoadStatus.InvalidFormat, failedStatus);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Reloaded_Then_ImageOpened_Once()
+		{
+			// WinUI raises ImageOpened on the images showing an SVG source together with the source's Opened, so only
+			// for its first load.
+			var svgImageSource = new SvgImageSource();
+			var image1 = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var image2 = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var opened1 = 0;
+			var opened2 = 0;
+			image1.ImageOpened += (_, _) => opened1++;
+			image2.ImageOpened += (_, _) => opened2++;
+			await UITestHelper.Load(new StackPanel() { Children = { image1, image2 } });
+
+			foreach (var (fill, color) in new[] { ("red", Colors.Red), ("blue", Colors.Blue) })
+			{
+				var file = await CreateSvgFileAsync(fill);
+				using (var stream = await file.OpenReadAsync())
+				{
+					Assert.AreEqual(SvgImageSourceLoadStatus.Success, await svgImageSource.SetSourceAsync(stream));
+				}
+
+				await AssertCenterColor(image1, color);
+				await AssertCenterColor(image2, color);
+			}
+
+			Assert.AreEqual(1, opened1);
+			Assert.AreEqual(1, opened2);
+		}
+
 		private static async Task<StorageFile> CreateSvgFileAsync(string fill)
 		{
 			// A file of its own for each call: the source may keep the stream it was given open.
