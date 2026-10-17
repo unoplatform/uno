@@ -770,6 +770,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await AssertCenterColor(border, Colors.Blue);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // No sockets in the browser
+		public async Task When_SVGImageSource_SetSourceAsync_Replaced_Before_Published()
+		{
+			// The Opened handler queues a new UriSource that runs after the load completed and before it is published, and
+			// whose load never completes: the operation still completes, with Success as on WinUI, rather than waiting.
+			using var server = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+			server.Start();
+			var stalled = new Uri($"http://127.0.0.1:{((System.Net.IPEndPoint)server.LocalEndpoint).Port}/stalled.svg");
+			var svgImageSource = new SvgImageSource();
+			var dispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+			svgImageSource.Opened += (_, _) => dispatcher.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High, () => svgImageSource.UriSource = stalled);
+
+			var operation = svgImageSource.SetSourceAsync(CreateSvgStream("red")).AsTask();
+
+			Assert.AreSame(operation, await Task.WhenAny(operation, Task.Delay(5000)), "The operation did not complete.");
+			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await operation);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_UriSource_Set_While_SetSourceAsync_Pending()
+		{
+			// A UriSource set while the operation's load is still reading replaces the stream. As on WinUI, the operation
+			// still succeeds (only another SetSourceAsync cancels it) and the URI's content is drawn.
+			var blue = await CreateSvgFileAsync("blue");
+			var svgImageSource = new SvgImageSource();
+			var opened = false;
+			svgImageSource.Opened += (_, _) => opened = true;
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+
+			using var red = await (await CreateSvgFileAsync("red")).OpenReadAsync();
+			var operation = svgImageSource.SetSourceAsync(red).AsTask();
+			svgImageSource.UriSource = new Uri($"ms-appdata:///local/{blue.Name}");
+
+			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await operation);
+			await WindowHelper.WaitFor(() => opened, timeoutMS: 5000, message: "The URI's content was not opened.");
+			await AssertCenterColor(border, Colors.Blue);
+		}
+
 		private static Windows.Storage.Streams.IRandomAccessStream CreateSvgStream(string fill)
 			=> System.IO.WindowsRuntimeStreamExtensions.AsRandomAccessStream(new System.IO.MemoryStream(Encoding.UTF8.GetBytes($"<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='{fill}'/></svg>")));
 
