@@ -587,12 +587,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_SVGImageSource_SetSourceAsync_Twice()
 		{
 			var svgImageSource = new SvgImageSource();
+			var openedCount = 0;
+			svgImageSource.Opened += (_, _) => openedCount++;
 			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
 			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
 			await UITestHelper.Load(border);
 
 			await SetSourceAndAssert("red", Colors.Red);
 			await SetSourceAndAssert("blue", Colors.Blue);
+
+			// As on WinUI, only the first load of a source raises Opened.
+			Assert.AreEqual(1, openedCount);
 
 			async Task SetSourceAndAssert(string fill, Color expectedColor)
 			{
