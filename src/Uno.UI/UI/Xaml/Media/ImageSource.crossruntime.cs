@@ -471,7 +471,10 @@ namespace Microsoft.UI.Xaml.Media
 			var cts = new CancellationTokenSource();
 			var ct = cts.Token;
 			_opening.Disposable = Disposable.Create(cts.Cancel);
-			_isOpening = false;
+
+			// In progress until Complete, also while the loaders run app code (a result already at hand is published before
+			// TryOpenSourceAsync returns): a subscriber that leaves or arrives meanwhile sees an open in flight.
+			_isOpening = true;
 			try
 			{
 				if (TryOpenSourceSync(null, null, out var img))
@@ -554,10 +557,14 @@ namespace Microsoft.UI.Xaml.Media
 
 			ReleaseUnheld(afterPass: true);
 
-			// A decode that completed while nothing subscribes waits in place of the open.
+			// A decode that completed while nothing subscribes waits in place of the open, or like any undisplayed image.
 			if (_pendingRelease is { } pending)
 			{
 				PendingImageReleases.Resize(pending, GetByteCount(_imageData));
+			}
+			else if (_subscriptions.Count == 0)
+			{
+				ScheduleReleaseUnused();
 			}
 		}
 
