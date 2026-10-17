@@ -94,16 +94,33 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 #if __CROSSRUNTIME__
 			_stream = clonedStreamSource;
-			UpdatePixelWidthAndHeightPartial(_stream.CloneStream().AsStream());
 #else
 			Stream = clonedStreamSource.AsStream();
-			UpdatePixelWidthAndHeightPartial(clonedStreamSource.AsStream());
 #endif
 			OnSetSource();
+
+#if __CROSSRUNTIME__
+			// The previous source's image and any open of it in flight go, and whatever shows this source gets the new one
+			// (MUX Reference: CImageSource::SetSource — imagesource.cpp).
+			InvalidateSource();
+#endif
 		}
 
-		partial void UpdatePixelWidthAndHeightPartial(Stream stream);
-		private protected virtual void OnSetSource() { }
+		/// <summary>
+		/// Reads the new source's pixel size from its header; its pixels are decoded when it opens. An override that
+		/// decodes the pixels here instead sets the size from them.
+		/// </summary>
+		private protected virtual void OnSetSource()
+		{
+#if __CROSSRUNTIME__
+			using var clone = _stream.CloneStream();
+			if (ImageEncoderDecoder.Current.TryGetSize(clone.AsStream(), out var pixelWidth, out var pixelHeight))
+			{
+				PixelWidth = pixelWidth;
+				PixelHeight = pixelHeight;
+			}
+#endif
+		}
 
 		private
 #if __CROSSRUNTIME__
@@ -114,9 +131,16 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #if __CROSSRUNTIME__
 			var tcs = new TaskCompletionSource<object>();
 			using var r = ct.Register(() => tcs.TrySetCanceled());
-			using var s = Subscribe(OnChanged);
 
-			InvalidateSource();
+			// SetSourceCore dropped the previous source's data and opened the new source for any existing subscriber:
+			// subscribing waits for that open, or opens the source when nothing else subscribes.
+			if (_imageData.Kind == ImageDataKind.Error)
+			{
+				// That open failed synchronously: no other result follows.
+				return;
+			}
+
+			using var s = Subscribe(OnChanged);
 
 			await tcs.Task;
 
@@ -154,19 +178,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #endif
 
 			return $"{GetType().Name}/-empty-";
-		}
-
-		partial void UpdatePixelWidthAndHeightPartial(Stream stream)
-		{
-			// Read the source dimensions through the neutral backend decoder (no Skia codec here).
-			if (ImageEncoderDecoder.Current.TryDecode(stream, null, null, out var frames))
-			{
-				using (frames)
-				{
-					PixelWidth = frames.Frames[0].PixelWidth;
-					PixelHeight = frames.Frames[0].PixelHeight;
-				}
-			}
 		}
 	}
 }
