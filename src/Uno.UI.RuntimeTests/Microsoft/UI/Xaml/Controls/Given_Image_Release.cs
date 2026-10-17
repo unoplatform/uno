@@ -720,7 +720,7 @@ public class Given_Image_Release
 
 			Assert.IsTrue(await TestHelper.TryWaitUntilCollected(collected), "Pre-condition: the brush's source is collected");
 
-			// A third source's open ends with the collected source's use still in front of the live one.
+			// Whenever the collected source's use ends, the live one still keeps the decode.
 			await AddAndWaitForOpened(panel, new Image { Width = 100, Height = 40, Source = NewBitmap(TallAssetUri, 57, 73) });
 			await WindowHelper.WaitForIdle();
 			Assert.IsFalse(decoder.Decoded(57, 73).Single().IsReleased, "The decode must be kept while a live source shows it");
@@ -728,6 +728,42 @@ public class Given_Image_Release
 			WindowHelper.WindowContent = null;
 			await WindowHelper.WaitForIdle();
 			await TestHelper.RetryAssert(() => Assert.IsTrue(decoder.Decoded(57, 73).Single().IsReleased, "The decode must be released once the live source lets it go"));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Last_Sharing_Source_Collected_While_Other_Idles_Then_Decode_Released()
+	{
+		// A source kept alive after its Image left still has the shared decode, but nothing displays it. Once the brush's
+		// source that still used it is collected, nothing else changes the decode's uses, and it must still be released after
+		// the delay.
+		var releaseDelay = TimeSpan.FromMilliseconds(300);
+		using var cache = EnableBitmapImageCache();
+		using var limit = SetMaxUndisplayedImageBytes(long.MaxValue);
+		using var delay = SetReleaseDelay(releaseDelay);
+		using var decoder = TrackingDecoder.Install();
+
+		try
+		{
+			var collected = await OpenThroughUnusedBrush(new Uri(TallAssetUri), 61, 67);
+			var idle = NewBitmap(TallAssetUri, 61, 67);
+			await LoadAndWaitForOpened(new Image { Width = 100, Height = 40, Source = idle });
+			Assert.AreEqual(1, decoder.Count(61, 67), "Pre-condition: both sources share one decode");
+
+			WindowHelper.WindowContent = null;
+			await Task.Delay(releaseDelay * 2);
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(decoder.Decoded(61, 67).Single().IsReleased, "Pre-condition: the brush's source still uses the decode");
+
+			Assert.IsTrue(await TestHelper.TryWaitUntilCollected(collected), "Pre-condition: the brush's source is collected");
+			await WindowHelper.WaitFor(() => decoder.Decoded(61, 67).Single().IsReleased, 10000, "The decode nothing displays must be released once its last user is collected");
+			GC.KeepAlive(idle);
 		}
 		finally
 		{

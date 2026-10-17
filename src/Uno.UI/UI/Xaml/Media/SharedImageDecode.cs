@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -16,7 +17,8 @@ namespace Microsoft.UI.Xaml.Media;
 /// One load and decode shared by every source that opens the same key through the bitmap cache, as WinUI's ImageCache is
 /// shared by the BitmapImages that use it (MUX Reference: ImageProvider::EnsureCacheEntry — ImageProvider.cpp). It is
 /// released like a decode a source owns once nothing displays it (see <see cref="PendingImageReleases"/>), and leaves the
-/// cache then, so the next open decodes it again. UI thread only, except <see cref="Load"/>.
+/// cache then, so the next open decodes it again. UI thread only, except <see cref="Load"/> and the finalizer of
+/// <see cref="User"/>.
 /// </summary>
 internal sealed class SharedImageDecode
 {
@@ -28,18 +30,24 @@ internal sealed class SharedImageDecode
 	// The decode each shared surface comes from, so a subscriber that comes back still drawing one can use it again.
 	private static readonly ConditionalWeakTable<ICompositionSurface, SharedImageDecode> _bySurface = new();
 
+	// The uses of collected sources, to end on the UI thread (see User), and whether ending them is posted.
+	private static readonly ConcurrentQueue<SourceUse> _collectedUses = new();
+	private static int _collectedUsesPosted;
+
 	private readonly object _key;
 
 	// The opens waiting for the result. Each hands its use over to its source with the result.
 	private int _opens;
 
-	// The uses of the sources whose subscribers show it, each holding its source weakly: a source collected while still
-	// subscribed (an ImageBrush keeps its subscription for its lifetime) never ends its use, so a dead one is dropped once it
-	// is found. A source that keeps the result while nothing subscribes to it is not one: it opens its source again if the
-	// result was released. In the order they began, so a scan stops at the first live one and drops the dead ones before it.
+	// The uses of the sources whose subscribers show it, each ended by its source once they let it go, or by its User once
+	// the source is collected (an ImageBrush keeps its subscription for its lifetime). A source that keeps the result while
+	// nothing subscribes to it is not one: it opens its source again if the result was released.
 	private readonly LinkedList<SourceUse> _sources = new();
 
 	private PendingImageReleases.Entry? _pendingRelease;
+
+	// What the uses refer to it by, so that the uses a collected source leaves don't keep it alive.
+	private WeakReference<SharedImageDecode>? _weakSelf;
 
 	private SharedImageDecode(object key, Func<Task<ImageData>> load)
 	{
@@ -154,28 +162,58 @@ internal sealed class SharedImageDecode
 	}
 
 	/// <summary>
-	/// A source's use of the result, which keeps it from being released until <see cref="RemoveSource"/> ends it, or until
-	/// the source is collected.
+	/// A source's use of the result, which keeps it from being released until <see cref="RemoveSource"/> ends it.
 	/// </summary>
-	internal sealed class SourceUse(WeakReference<ImageSource> source)
+	internal sealed class SourceUse(WeakReference<SharedImageDecode> decode)
 	{
-		private readonly WeakReference<ImageSource> _source = source;
+		internal readonly WeakReference<SharedImageDecode> Decode = decode;
 
 		internal LinkedListNode<SourceUse>? Node;
-
-		internal bool IsAlive => _source.TryGetTarget(out _);
 	}
 
-	internal SourceUse AddSource(WeakReference<ImageSource> source)
+	/// <summary>
+	/// What a source is known by in the decodes it uses. Only the source holds it, so it is collected with the source, which
+	/// can no longer end its uses: it then has them ended on the UI thread, as the source would have.
+	/// </summary>
+	internal sealed class User
 	{
-		var use = new SourceUse(source);
+		internal readonly List<SourceUse> Uses = new(1);
+
+		~User()
+		{
+			// On the finalizer thread, it only queues them, posting once for any number of collected users.
+			foreach (var use in Uses)
+			{
+				_collectedUses.Enqueue(use);
+			}
+
+			if (Uses.Count > 0 && Interlocked.Exchange(ref _collectedUsesPosted, 1) == 0)
+			{
+				try
+				{
+					NativeDispatcher.Main.Enqueue(EndCollectedUses);
+				}
+				catch (Exception)
+				{
+					// No UI thread to post to, e.g. while the app shuts down: they wait for the next post.
+					Volatile.Write(ref _collectedUsesPosted, 0);
+				}
+			}
+		}
+	}
+
+	internal SourceUse AddSource(User user)
+	{
+		var use = new SourceUse(_weakSelf ??= new(this));
 		use.Node = _sources.AddLast(use);
+		user.Uses.Add(use);
 		CancelPendingRelease();
 		return use;
 	}
 
-	internal void RemoveSource(SourceUse use)
+	internal void RemoveSource(SourceUse use, User? user)
 	{
+		user?.Uses.Remove(use);
 		if (use.Node is { List: not null } node)
 		{
 			_sources.Remove(node);
@@ -184,20 +222,17 @@ internal sealed class SharedImageDecode
 		ScheduleReleaseIfUnused();
 	}
 
-	// Drops the dead uses in front, each once, and stops at the first live one.
-	private bool HasLiveSource()
+	private static void EndCollectedUses()
 	{
-		while (_sources.First is { } first)
+		Volatile.Write(ref _collectedUsesPosted, 0);
+		while (_collectedUses.TryDequeue(out var use))
 		{
-			if (first.Value.IsAlive)
+			// Unless nothing reaches the decode either: it is then collected, with its frames.
+			if (use.Decode.TryGetTarget(out var decode))
 			{
-				return true;
+				decode.RemoveSource(use, null);
 			}
-
-			_sources.RemoveFirst();
 		}
-
-		return false;
 	}
 
 	private void CancelPendingRelease()
@@ -224,7 +259,7 @@ internal sealed class SharedImageDecode
 
 	private void ScheduleReleaseIfUnused()
 	{
-		if (_opens == 0 && _pendingRelease is null && !IsReleased && Load.IsCompleted && !IsFailed && !HasLiveSource())
+		if (_opens == 0 && _pendingRelease is null && !IsReleased && Load.IsCompleted && !IsFailed && _sources.Count == 0)
 		{
 			_pendingRelease = PendingImageReleases.Add(Surface.DecodedByteCount, Release);
 		}
