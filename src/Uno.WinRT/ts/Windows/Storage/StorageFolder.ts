@@ -61,7 +61,12 @@ namespace Windows.Storage {
 				return;
 			}
 
-			FS.mkdir(path);
+			// ApplicationData creates its folders before asking for them to be persisted.
+			if (!FS.analyzePath(path).exists) {
+				FS.mkdir(path);
+			} else if (FS.readdir(path).length > 2) {
+				console.warn(`${path} is not empty: what was written there before its persistence was set up is hidden from now on.`);
+			}
 
 			FS.mount(IDBFS, {}, path);
 		}

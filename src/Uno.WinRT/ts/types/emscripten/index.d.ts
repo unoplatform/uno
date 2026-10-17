@@ -109,6 +109,10 @@ declare namespace FS {
 		node: FSNode;
 	}
 
+	interface Analyze {
+		exists: boolean;
+	}
+
 	interface FSStream { }
 	interface FSNode { }
 	interface ErrnoError { }
@@ -122,6 +126,7 @@ declare namespace FS {
 	// paths
 	//
 	function lookupPath(path: string, opts: any): Lookup;
+	function analyzePath(path: string, dontResolveLastLink?: boolean): Analyze;
 	function getPath(node: FSNode): string;
 
 	//
