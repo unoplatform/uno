@@ -63,8 +63,8 @@ namespace Microsoft.UI.Xaml.Media
 		// Changes whenever _imageData is replaced.
 		private int _dataVersion;
 
-		// What the shared decodes this source uses refer to it by, so they don't keep it alive.
-		private WeakReference<ImageSource> _weakSelf;
+		// What the shared decodes this source uses know it by.
+		private SharedImageDecode.User _shareUser;
 
 		// The wait of what this source decoded while nothing subscribes to it.
 		private PendingImageReleases.Entry _pendingRelease;
@@ -288,12 +288,12 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				if (change > 0 && held.Count == 1 && !share.IsReleased)
 				{
-					held.Use = share.AddSource(_weakSelf ??= new(this));
+					held.Use = share.AddSource(_shareUser ??= new());
 				}
 				else if (held.Count == 0 && held.Use is { } use)
 				{
 					held.Use = null;
-					share.RemoveSource(use);
+					share.RemoveSource(use, _shareUser);
 				}
 			}
 
