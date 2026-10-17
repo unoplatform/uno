@@ -65,14 +65,15 @@ internal static class EncodedImageCache
 
 	internal static void Add(Uri uri, byte[] bytes)
 	{
-		// A download in flight when the cache was turned off does not refill it.
-		if (!FeatureConfiguration.Image.EnableBitmapImageCache)
-		{
-			return;
-		}
-
 		lock (_gate)
 		{
+			// A download in flight when the cache was turned off does not refill it: checked under the lock, so it either
+			// precedes the Clear that turning it off runs or sees it off.
+			if (!FeatureConfiguration.Image.EnableBitmapImageCache)
+			{
+				return;
+			}
+
 			if (_entries.Remove(uri, out var previous))
 			{
 				RemoveNode(previous);
