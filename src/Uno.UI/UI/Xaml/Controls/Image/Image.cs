@@ -19,6 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
 		private ImageData? _pendingImageData;
+		private bool _imageOpenedPending;
 
 		public Image()
 		{
@@ -35,6 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_imageSprite.Brush = null;
 			_currentSurface = null;
 			_pendingImageData = null;
+			_imageOpenedPending = false;
 			InvalidateMeasure();
 
 			// SVG flows through the same neutral path as any source: its ISvgRenderer produces a live composition
@@ -50,6 +52,13 @@ namespace Microsoft.UI.Xaml.Controls
 			_sourceDisposable.Disposable = source.Subscribe(img =>
 			{
 				_pendingImageData = img;
+
+				// Decided when the data arrives: by the time it is processed (on measure), a newer load of an SVG source may
+				// already be current, and its data replaces this one.
+				if (img.HasData && (source is not SvgImageSource svgImageSource || svgImageSource.IsOpenedLoad))
+				{
+					_imageOpenedPending = true;
+				}
 
 				InvalidateMeasure();
 			});
@@ -121,8 +130,9 @@ namespace Microsoft.UI.Xaml.Controls
 				_surfaceBrush.MonochromeColor = MonochromeColor;
 				_imageSprite.Brush = _surfaceBrush;
 
-				if (Source is not SvgImageSource svgImageSource || svgImageSource.IsOpenedLoad)
+				if (_imageOpenedPending)
 				{
+					_imageOpenedPending = false;
 					ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 				}
 			}

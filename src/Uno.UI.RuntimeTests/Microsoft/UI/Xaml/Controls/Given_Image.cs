@@ -661,6 +661,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, opened2);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Reloaded_Before_Measure_Then_ImageOpened_Once()
+		{
+			// A collapsed image isn't measured, so it still holds the first load's data when the second load arrives.
+			var svgImageSource = new SvgImageSource();
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100, Visibility = Visibility.Collapsed };
+			var opened = 0;
+			image.ImageOpened += (_, _) => opened++;
+			var border = new Border() { Width = 100, Height = 100, Child = image };
+			await UITestHelper.Load(border);
+
+			foreach (var fill in new[] { "red", "blue" })
+			{
+				var file = await CreateSvgFileAsync(fill);
+				using var stream = await file.OpenReadAsync();
+				Assert.AreEqual(SvgImageSourceLoadStatus.Success, await svgImageSource.SetSourceAsync(stream));
+			}
+
+			image.Visibility = Visibility.Visible;
+			await WindowHelper.WaitFor(() => image.ActualWidth > 0, message: "The image was not laid out.");
+			await AssertCenterColor(border, Colors.Blue);
+			Assert.AreEqual(1, opened);
+		}
+
 		private static async Task<StorageFile> CreateSvgFileAsync(string fill)
 		{
 			// A file of its own for each call: the source may keep the stream it was given open.
