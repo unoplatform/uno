@@ -142,21 +142,15 @@ public partial class SvgImageSource : ImageSource
 	internal void RaiseImageFailed(SvgImageSourceLoadStatus loadStatus)
 		=> OpenFailed?.Invoke(this, new SvgImageSourceFailedEventArgs(loadStatus));
 
-	/// <summary>
-	/// Raises Opened for the first successful load of the source only, like WinUI: CSvgImageSource fires it while
-	/// m_frameIndex is 0, and nothing resets that index for an SVG.
-	/// </summary>
-	/// <returns>Whether this load raised Opened.</returns>
-	internal bool RaiseImageOpened()
+	internal void RaiseImageOpened()
 	{
-		if (_openedRaised)
+		// Like WinUI, only the first successful load of a source raises Opened: CSvgImageSource fires it while
+		// m_frameIndex is 0, and nothing resets that index for an SVG.
+		if (!_openedRaised)
 		{
-			return false;
+			_openedRaised = true;
+			Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
 		}
-
-		_openedRaised = true;
-		Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
-		return true;
 	}
 
 	internal bool UseRasterized => !double.IsNaN(RasterizePixelWidth) && !double.IsNaN(RasterizePixelHeight);
@@ -186,15 +180,7 @@ public partial class SvgImageSource : ImageSource
 	private CompositionSvgSurface? _svgSurface;
 
 	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
-	{
-		TryOpenSvgImageData(out var imageTask);
-
-		// A source that opens nothing doesn't raise ImageOpened on the elements showing it.
-		asyncImage = imageTask.ContinueWith(
-			task => task.Result.Kind == ImageDataKind.Empty ? ImageData.Empty with { SuppressImageOpened = true } : task.Result,
-			ct);
-		return true;
-	}
+		=> TryOpenSvgImageData(out asyncImage);
 
 	private async Task<ImageData> GetSvgImageDataAsync(CancellationToken ct)
 	{

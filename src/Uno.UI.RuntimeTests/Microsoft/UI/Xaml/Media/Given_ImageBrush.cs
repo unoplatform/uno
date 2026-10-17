@@ -242,6 +242,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			Assert.AreEqual(1, openedImage);
 		}
 
+		[TestMethod]
+		public async Task When_SvgImageSource_Reloaded_From_Opened_Then_Each_Raises_Once()
+		{
+			// The source's own Opened handler reloads it before its first load is delivered, so only the second load
+			// reaches the brush and the image: they still raise ImageOpened, once.
+			var red = await CreateSvgFileAsync("red");
+			var blue = await CreateSvgFileAsync("blue");
+			var svgImageSource = new SvgImageSource();
+			var reloaded = false;
+			svgImageSource.Opened += (_, _) =>
+			{
+				if (!reloaded)
+				{
+					reloaded = true;
+					svgImageSource.UriSource = new Uri($"ms-appdata:///local/{blue.Name}");
+				}
+			};
+
+			var brush = new ImageBrush { ImageSource = svgImageSource };
+			var image = new Image { Source = svgImageSource, Width = 100, Height = 100 };
+			var border = new Border { Width = 100, Height = 100, Background = brush };
+			var openedBrush = 0;
+			var openedImage = 0;
+			brush.ImageOpened += (_, _) => openedBrush++;
+			image.ImageOpened += (_, _) => openedImage++;
+			await UITestHelper.Load(new StackPanel { Children = { border, image } });
+
+			svgImageSource.UriSource = new Uri($"ms-appdata:///local/{red.Name}");
+
+			await WindowHelper.WaitFor(() => openedBrush > 0 && openedImage > 0, timeoutMS: 5000, message: $"ImageOpened was not raised (brush {openedBrush}, image {openedImage}).");
+			await WindowHelper.WaitForIdle();
+			var screenshot = await UITestHelper.ScreenShot(border);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Microsoft.UI.Colors.Blue, tolerance: 10);
+
+			Assert.IsTrue(reloaded);
+			Assert.AreEqual(1, openedBrush);
+			Assert.AreEqual(1, openedImage);
+		}
+
 		private static async Task<StorageFile> CreateSvgFileAsync(string fill)
 		{
 			var file = await ApplicationData.Current.LocalFolder.CreateFileAsync($"svg-brush-{fill}.svg", CreationCollisionOption.GenerateUniqueName);

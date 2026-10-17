@@ -47,12 +47,6 @@ internal partial struct ImageData
 
 	public Exception? Error { get; } = null;
 
-	/// <summary>
-	/// Whether the elements showing this data skip ImageOpened for it. An SvgImageSource sets it on the data of every load
-	/// but the one that raised its Opened, as WinUI raises both together, once.
-	/// </summary>
-	public bool SuppressImageOpened { get; init; }
-
 	public byte[]? ByteArray { get; } = null;
 
 #if __SKIA__

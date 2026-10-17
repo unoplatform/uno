@@ -19,7 +19,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
 		private ImageData? _pendingImageData;
-		private bool _imageOpenedPending;
+
+		// The SVG source ImageOpened was raised for: WinUI raises it together with the source's Opened, so an SVG source
+		// raises it on an image once.
+		private SvgImageSource _svgImageOpenedFor;
 
 		public Image()
 		{
@@ -36,8 +39,12 @@ namespace Microsoft.UI.Xaml.Controls
 			_imageSprite.Brush = null;
 			_currentSurface = null;
 			_pendingImageData = null;
-			_imageOpenedPending = false;
 			InvalidateMeasure();
+
+			if (!ReferenceEquals(newValue, _svgImageOpenedFor))
+			{
+				_svgImageOpenedFor = null;
+			}
 
 			// SVG flows through the same neutral path as any source: its ISvgRenderer produces a live composition
 			// surface (drawn as vector each frame, crisp at any size) that the sprite renders like any bitmap.
@@ -51,13 +58,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_sourceDisposable.Disposable = source.Subscribe(img =>
 			{
-				_pendingImageData = img;
-
-				// Decided when the data arrives: by the time it is processed (on measure), newer data may have replaced it.
-				if (img.HasData && !img.SuppressImageOpened)
+				// A delivery already under way when the image changed source is for the previous source.
+				if (!ReferenceEquals(Source, source))
 				{
-					_imageOpenedPending = true;
+					return;
 				}
+
+				_pendingImageData = img;
 
 				InvalidateMeasure();
 			});
@@ -129,9 +136,9 @@ namespace Microsoft.UI.Xaml.Controls
 				_surfaceBrush.MonochromeColor = MonochromeColor;
 				_imageSprite.Brush = _surfaceBrush;
 
-				if (_imageOpenedPending)
+				if (Source is not SvgImageSource svgImageSource || !ReferenceEquals(_svgImageOpenedFor, svgImageSource))
 				{
-					_imageOpenedPending = false;
+					_svgImageOpenedFor = Source as SvgImageSource;
 					ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 				}
 			}

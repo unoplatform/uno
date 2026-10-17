@@ -67,13 +67,13 @@ partial class SvgImageSource
 		{
 			_svgDocument = document;
 			var surface = _svgSurface = new(document);
-			var raisedOpened = RaiseImageOpened();
+			RaiseImageOpened();
 			SourceLoaded?.Invoke(this, EventArgs.Empty);
 
 			// The registered ISvgRenderer retains the parsed vector; the live composition surface replays it each frame at
-			// the display size, crisp at any scale. The data is built here, from this load, so that its delivery doesn't
-			// depend on the source's state at that time.
-			return ImageData.FromCompositionSurface(surface) with { SuppressImageOpened = !raisedOpened };
+			// the display size, crisp at any scale. The data is built here, from this load: an Opened handler may already
+			// have changed the source.
+			return ImageData.FromCompositionSurface(surface);
 		}
 
 		RaiseImageFailed(SvgImageSourceLoadStatus.InvalidFormat);
