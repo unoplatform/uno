@@ -55,14 +55,18 @@ public class Given_ApplicationData
 #if HAS_UNO
 		var path = GetFolder(folderName).Path;
 		var mountType = WasmSemanticDomHelper.InvokeBrowserJs(
-			$"typeof IDBFS === 'undefined' ? 'disabled' : (FS.lookupPath('{path}').node.mount.type === IDBFS ? 'IDBFS' : 'other')");
+			"typeof IDBFS === 'undefined' ? 'no IDBFS'"
+			+ " : !Windows.Storage.StorageFolder.isIndexDBAvailable() ? 'no IndexedDB'"
+			+ $" : FS.lookupPath('{path}').node.mount.type === IDBFS ? 'IDBFS' : 'other'");
 
-		// Without IDBFS nothing is persisted. With it, the persistence setup mounts the folder at startup,
-		// after ApplicationData created it.
-		if (mountType != "disabled")
+		if (mountType is "no IDBFS" or "no IndexedDB")
 		{
-			Assert.AreEqual("IDBFS", mountType, $"{folderName} '{path}' is not mounted on IDBFS.");
+			// The persistence setup skips the mount in both cases, as it checks the same.
+			Assert.Inconclusive($"{mountType}: nothing is persisted.");
 		}
+
+		// The persistence setup mounts the folder at startup, after ApplicationData created it.
+		Assert.AreEqual("IDBFS", mountType, $"{folderName} '{path}' is not mounted on IDBFS.");
 #endif
 	}
 
