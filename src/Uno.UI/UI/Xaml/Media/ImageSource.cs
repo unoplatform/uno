@@ -193,6 +193,10 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			UnloadImageData();
 			DisposePartial();
+
+			// What still displays the source keeps its pixels until the source is opened again for it. UnloadImageData's
+			// other callers change the source and open the new one themselves (InvalidateSource), once it is set.
+			ReopenForSubscribers();
 		}
 
 		private Uri? _absoluteUri;
@@ -218,7 +222,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			UnloadImageDataPlatform();
 			UnloadImageSourceData();
-			_imageData = ImageData.Empty;
+			ReleaseImageData();
 		}
 
 		partial void UnloadImageDataPlatform();
