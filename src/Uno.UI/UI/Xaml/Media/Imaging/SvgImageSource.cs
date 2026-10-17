@@ -97,27 +97,55 @@ public partial class SvgImageSource : ImageSource
 			// The operation completes from its own load, not from what the source publishes: by then a handler may
 			// already have given the source another stream.
 			var load = EnsureLoad(out var loadToken);
+			var completion = new TaskCompletionSource<SvgImageSourceLoadStatus>();
+
+			// As on WinUI, a load that failed or was replaced completes the operation at once, and a successful one
+			// completes it as it is published, after the brushes showing the source raised ImageOpened (whose handler
+			// may replace it) and before the images do, on their next measure.
+			_ = load.ContinueWith(
+				_ =>
+				{
+					if (loadToken.IsCancellationRequested || !load.IsCompletedSuccessfully || load.Result.Kind == ImageDataKind.Error)
+					{
+						Complete();
+					}
+				},
+				CancellationToken.None,
+				TaskContinuationOptions.ExecuteSynchronously,
+				TaskScheduler.Default);
+			using var publication = Subscribe(_ =>
+			{
+				if (load.IsCompleted)
+				{
+					Complete();
+				}
+			});
 			InvalidateSource();
-			var data = await load;
 
-			// WinUI completes the operation after raising ImageOpened on the elements showing the source, so let the open
-			// that publishes this load run first.
-			await Task.Yield();
+			return await completion.Task;
 
-			if (data.Error is ArgumentException invalidFormat)
+			void Complete()
 			{
-				// Like WinUI, which completes the operation with E_INVALIDARG: OpenFailed reports InvalidFormat, and
-				// awaiting the operation throws, even when an OpenFailed handler has set another stream since.
-				throw new ArgumentException(invalidFormat.Message, nameof(streamSource));
+				if (!load.IsCompletedSuccessfully)
+				{
+					completion.TrySetException(load.Exception?.InnerException ?? new TaskCanceledException());
+				}
+				else if (load.Result.Error is ArgumentException invalidFormat)
+				{
+					// Like WinUI, which completes the operation with E_INVALIDARG: OpenFailed reports InvalidFormat, and
+					// awaiting the operation throws, even when an OpenFailed handler has set another stream since.
+					completion.TrySetException(new ArgumentException(invalidFormat.Message, nameof(streamSource)));
+				}
+				else if (loadToken.IsCancellationRequested)
+				{
+					// Another stream replaced this one before the operation completed, which cancels it, as on WinUI.
+					completion.TrySetCanceled();
+				}
+				else
+				{
+					completion.TrySetResult(load.Result.HasData ? SvgImageSourceLoadStatus.Success : SvgImageSourceLoadStatus.Other);
+				}
 			}
-
-			if (loadToken.IsCancellationRequested)
-			{
-				// Another source replaced this one before the operation completed, which cancels it, as on WinUI.
-				throw new TaskCanceledException();
-			}
-
-			return data.HasData ? SvgImageSourceLoadStatus.Success : SvgImageSourceLoadStatus.Other;
 #else
 			Stream = streamSource.CloneStream().AsStream();
 			StreamLoaded?.Invoke(this, EventArgs.Empty);
