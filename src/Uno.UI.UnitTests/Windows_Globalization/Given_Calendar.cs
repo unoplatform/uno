@@ -3,6 +3,7 @@
 using System.Globalization;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.System.UserProfile;
@@ -15,9 +16,6 @@ public class Given_Calendar
 {
 	private const string TwelveHour = ClockIdentifiers.TwelveHourValue;
 	private const string TwentyFourHour = ClockIdentifiers.TwentyFourHourValue;
-
-	// A device without a 12/24-hour setting, so the language's own clock applies.
-	private static readonly (string, string?, bool?) DeviceWithoutClockSetting = ("zxx", null, null);
 
 	// Expectations are ICU's culture data.
 	[TestMethod]
@@ -33,13 +31,13 @@ public class Given_Calendar
 	[DataRow("ar-SA", TwelveHour)]
 	public void When_Default_Clock_For_Culture(string cultureName, string expectedClock)
 	{
-		AssumeStockTimeFormat(cultureName);
+		DefaultClockHelper.AssumeStockTimeFormat(cultureName);
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
 
 		var originalCulture = CultureInfo.CurrentCulture;
 		var originalOverride = ApplicationLanguages.PrimaryLanguageOverride;
 		try
 		{
-			DeviceClock.TestDevice = DeviceWithoutClockSetting;
 			// The clock follows the calendar's language, not CurrentCulture (the regional format).
 			CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(expectedClock == TwelveHour ? "en-GB" : "en-US");
 
@@ -52,7 +50,6 @@ public class Given_Calendar
 		}
 		finally
 		{
-			DeviceClock.TestDevice = null;
 			ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
 			CultureInfo.CurrentCulture = originalCulture;
 		}
@@ -77,16 +74,8 @@ public class Given_Calendar
 		culture.DateTimeFormat.ShortTimePattern = shortTimePattern;
 		culture.DateTimeFormat.PMDesignator = pmDesignator;
 
-		try
-		{
-			DeviceClock.TestDevice = DeviceWithoutClockSetting;
-
-			Assert.AreEqual(expectedClock, Calendar.GetDefaultClock(culture));
-		}
-		finally
-		{
-			DeviceClock.TestDevice = null;
-		}
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+		Assert.AreEqual(expectedClock, Calendar.GetDefaultClock(culture));
 	}
 
 	// The first rows are the 24h rows of the WinUI probe on Windows: an en-US regional format customized to 24-hour.
@@ -107,7 +96,7 @@ public class Given_Calendar
 	[DataRow("sr-Latn-RS", false, "sr-Cyrl-RS", TwentyFourHour)]
 	public void When_Device_Sets_Clock_Then_Only_Its_Locale_Follows(string deviceLocale, bool? device24Hour, string language, string expectedClock)
 	{
-		AssumeStockTimeFormat(language);
+		DefaultClockHelper.AssumeStockTimeFormat(language);
 
 		var originalOverride = ApplicationLanguages.PrimaryLanguageOverride;
 		try
@@ -155,7 +144,7 @@ public class Given_Calendar
 	[DataRow("en-US", TwelveHour)]
 	public void When_Device_Locale_Differs_From_Preferred_Language_Then_Both_Follow(string language, string expectedClock)
 	{
-		AssumeStockTimeFormat(language);
+		DefaultClockHelper.AssumeStockTimeFormat(language);
 
 		var originalOverride = ApplicationLanguages.PrimaryLanguageOverride;
 		try
@@ -208,17 +197,4 @@ public class Given_Calendar
 	[DataRow(null, null)]
 	public void When_Apple_Hour_Format_Then_Clock_Follows(string? format, bool? expected)
 		=> Assert.AreEqual(expected, DeviceClock.IsTwentyFourHourPattern(format));
-
-	// A customized Windows time format reaches the culture named like the regional format, through .NET's user
-	// overrides.
-	private static void AssumeStockTimeFormat(string cultureName)
-	{
-		var user = CultureInfo.InstalledUICulture;
-		var stock = CultureInfo.GetCultureInfo(cultureName).DateTimeFormat;
-		if (string.Equals(user.Name, cultureName, System.StringComparison.OrdinalIgnoreCase)
-			&& (user.DateTimeFormat.ShortTimePattern != stock.ShortTimePattern || user.DateTimeFormat.LongTimePattern != stock.LongTimePattern))
-		{
-			Assert.Inconclusive($"The regional format customizes the {cultureName} time format.");
-		}
-	}
 }
