@@ -77,6 +77,65 @@ public class Given_DateTimeFormatter
 		Assert.AreEqual(expected, NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, hour, 5, 7)))));
 	}
 
+	// WinRT's text for each date production with each of its parts' formats, from a packaged WinRT probe. Some
+	// formats don't count in some productions ("year month.numeric" is "January 2024").
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("en-US", "year month day dayofweek", "Friday, January 5, 2024")]
+	[DataRow("de-DE", "year.full month.full day dayofweek.full", "Freitag, 5. Januar 2024")]
+	[DataRow("fr-FR", "year.abbreviated month.abbreviated day dayofweek.abbreviated", "ven. 5 janv. 24")]
+	[DataRow("hu-HU", "year month.numeric day dayofweek", "2024. január 5., péntek")]
+	[DataRow("en-US", "year month day", "January 5, 2024")]
+	[DataRow("de-DE", "year.full month.full day", "5. Januar 2024")]
+	[DataRow("fr-FR", "year.abbreviated month.abbreviated day", "5 janv. 24")]
+	[DataRow("hu-HU", "year month.numeric day", "2024. 01. 05.")]
+	[DataRow("en-US", "month day dayofweek", "Friday, January 5")]
+	[DataRow("de-DE", "month.full day dayofweek.full", "Freitag, 5. Januar")]
+	[DataRow("fr-FR", "month.abbreviated day dayofweek.abbreviated", "ven. 5 janv.")]
+	[DataRow("hu-HU", "month.numeric day dayofweek", "január 5., péntek")]
+	[DataRow("en-US", "month day", "January 5")]
+	[DataRow("de-DE", "month.full day", "5. Januar")]
+	[DataRow("fr-FR", "month.abbreviated day", "5 janv.")]
+	[DataRow("hu-HU", "month.numeric day", "1. 5.")]
+	[DataRow("en-US", "day dayofweek", "Fri 5")]
+	[DataRow("fr-FR", "day dayofweek.full", "ven. 5")]
+	[DataRow("fr-FR", "day dayofweek.abbreviated", "ven. 5")]
+	[DataRow("en-US", "dayofweek", "Friday")]
+	[DataRow("de-DE", "dayofweek.full", "Freitag")]
+	[DataRow("fr-FR", "dayofweek.abbreviated", "ven.")]
+	[DataRow("en-US", "year month", "January 2024")]
+	[DataRow("de-DE", "year.full month.full", "Januar 2024")]
+	[DataRow("fr-FR", "year.abbreviated month.abbreviated", "janv. 24")]
+	[DataRow("hu-HU", "year month.numeric", "2024. január")]
+	[DataRow("en-US", "year", "2024")]
+	[DataRow("de-DE", "year.full", "2024")]
+	[DataRow("fr-FR", "year.abbreviated", "24")]
+	[DataRow("en-US", "month", "January")]
+	[DataRow("de-DE", "month.full", "Januar")]
+	[DataRow("fr-FR", "month.abbreviated", "janv.")]
+	[DataRow("hu-HU", "month.numeric", "1")]
+	[DataRow("en-US", "day", "5")]
+	[DataRow("en-US", "year month.numeric", "January 2024")]
+	[DataRow("en-US", "month.numeric day dayofweek", "Friday, January 5")]
+	[DataRow("en-US", "day dayofweek.full", "Fri 5")]
+	[DataRow("de-DE", "year.abbreviated month.full day", "5. Januar 24")]
+	[DataRow("fr-FR", "year.abbreviated month.full day", "5 janvier 24")]
+	[DataRow("hu-HU", "year.abbreviated month.full day", "24. január 5.")]
+	[DataRow("hu-HU", "year.abbreviated month.abbreviated day", "24. jan. 5.")]
+	[DataRow("ja-JP", "year.abbreviated month.full day", "24年1月5日")]
+	[DataRow("ja-JP", "year.abbreviated month.abbreviated day", "24年1月5日")]
+	public void When_Parts_Have_Formats_Then_Text_Follows_WinRT(string language, string template, string expected)
+	{
+		if (language is not "en-US" && new CultureInfo(language).DateTimeFormat.GetMonthName(1) == CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1))
+		{
+			Assert.Inconclusive($"The ICU data loaded here has no {language} names (the WebAssembly shard for the browser language).");
+		}
+
+		var formatter = new DateTimeFormatter(template, new[] { language });
+
+		Assert.AreEqual(expected, NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 5, 13, 5, 7)))));
+	}
+
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
 	[DataRow("ja-JP", "year", "2024年")]
