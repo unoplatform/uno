@@ -797,7 +797,7 @@ The cross-platform `WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrim
 flag is also removed. Unlike the flags above it defaulted to `true`, so this changes behavior for
 apps that never touched it: setting `Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride`
 no longer swaps `CultureInfo.CurrentCulture`/`CurrentUICulture` from inside the setter. The override
-is persisted and applied to `CurrentUICulture` on the next app start, matching WinUI. Resource lookup
+is persisted, as on WinUI, and Uno applies it to `CurrentUICulture` on the next app start. Resource lookup
 (`x:Uid`, `ResourceLoader`) still follows the new value immediately, so localized strings keep
 updating once the affected pages reload.
 
@@ -929,12 +929,20 @@ Formatting now follows the user's regional settings rather than the language lis
   startup Uno used to set `CurrentCulture` and `DefaultThreadCurrentCulture` to the first app
   language (`PrimaryLanguageOverride`, or the display language list on Windows), so dates and
   numbers ignored the Windows Regional format and its customizations. As in WinUI, the language
-  list now sets `CurrentUICulture` only, and `CurrentCulture` keeps what .NET read from the OS:
-  the Regional format on Windows, the Region setting on iOS and macOS, the `LC_ALL`,
+  list no longer sets `CurrentCulture`; Uno sets only `CurrentUICulture` from it (WinUI leaves that
+  to .NET, which reads the Windows display languages). `CurrentCulture` keeps what .NET read from
+  the OS: the Regional format on Windows, the Region setting on iOS and macOS, the `LC_ALL`,
   `LC_MESSAGES` or `LANG` locale on Linux, the browser language on WebAssembly. Android keeps the
-  first system locale, which carries its regional preferences. Apps that want formatting to follow
-  the app language, for example after setting `PrimaryLanguageOverride`, should set
-  `CultureInfo.CurrentCulture` themselves after the `Application` constructor runs.
+  first system locale, which carries its regional preferences, unless the app set its own culture
+  first. Apps that want .NET formatting to follow the app language, for example after setting
+  `PrimaryLanguageOverride`, should set `CultureInfo.CurrentCulture` (and
+  `DefaultThreadCurrentCulture`) themselves after the `Application` constructor runs.
+- **`Windows.Globalization` no longer reads `CurrentCulture` either.** `Calendar` (its names,
+  default clock and calendar system, which `DateTimeFormatter` and `TimePicker` use for their
+  defaults) and `CurrencyFormatter` follow the app languages, as in WinRT. An app that set
+  `CurrentCulture` to get, for example, 24-hour `TimePicker`s now gets the clock of its language:
+  set `PrimaryLanguageOverride`, pass languages to the constructors, or set
+  `TimePicker.ClockIdentifier` instead.
 
 ### `SystemBackdrop` no longer rewrites your content's backgrounds
 
