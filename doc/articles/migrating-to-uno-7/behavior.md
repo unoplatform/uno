@@ -268,7 +268,9 @@ Formatting now follows the user's regional settings rather than the language lis
   defaults) and `CurrencyFormatter` follow the app languages, as in WinRT. An app that set
   `CurrentCulture` to get, for example, 24-hour `TimePicker`s now gets the clock of its language:
   set `PrimaryLanguageOverride`, pass languages to the constructors, or set
-  `TimePicker.ClockIdentifier` instead.
+  `TimePicker.ClockIdentifier` instead. As in WinUI, when that language is the device's own locale
+  (the Windows regional format), the default clock also follows the user's time setting: a
+  customized time format on Windows, the 24-hour time switch on Android, iOS and macOS.
 - **`DateTimeFormatter` checks its arguments as WinRT does.** An unknown or miscased calendar or
   clock identifier, or an empty language list, now throws `ArgumentException` rather than falling
   back to the language's calendar or keeping the string. `Calendar` already threw for unknown
