@@ -99,6 +99,75 @@ namespace Windows.Globalization
 			return null;
 		}
 
+		// The calendar's language culture, formatting with the calendar system in use. As in WinRT, a language
+		// that has no names for that calendar defers to one that has (Hebrew months in Hebrew for en-US).
+		private static CultureInfo ResolveFormatCulture(CultureInfo languageCulture, _Calendar calendar)
+		{
+			if (languageCulture.Calendar.GetType() == calendar.GetType())
+			{
+				return languageCulture;
+			}
+
+			var culture = languageCulture;
+			var optionalCalendar = FindOptionalCalendar(culture, calendar.GetType());
+			if (optionalCalendar is null && GetCalendarCultureName(calendar) is { } name)
+			{
+				try
+				{
+					culture = new CultureInfo(name);
+					optionalCalendar = FindOptionalCalendar(culture, calendar.GetType());
+				}
+				catch (CultureNotFoundException)
+				{
+				}
+			}
+
+			if (optionalCalendar is null)
+			{
+				// No culture formats with this calendar (Julian, lunisolar): use the language's Gregorian names,
+				// as WinRT does for Julian, rather than its default calendar, which may not cover the date.
+				culture = languageCulture;
+				optionalCalendar = languageCulture.Calendar is global::System.Globalization.GregorianCalendar
+					? null
+					: FindOptionalCalendar(languageCulture, typeof(global::System.Globalization.GregorianCalendar));
+
+				if (optionalCalendar is null)
+				{
+					return languageCulture;
+				}
+			}
+
+			culture = (CultureInfo)culture.Clone();
+			culture.DateTimeFormat.Calendar = optionalCalendar;
+			return culture;
+		}
+
+		private static _Calendar? FindOptionalCalendar(CultureInfo culture, Type calendarType)
+		{
+			foreach (var optionalCalendar in culture.OptionalCalendars)
+			{
+				if (optionalCalendar.GetType() == calendarType)
+				{
+					return optionalCalendar;
+				}
+			}
+
+			return null;
+		}
+
+		private static string? GetCalendarCultureName(_Calendar calendar)
+			=> calendar switch
+			{
+				global::System.Globalization.HebrewCalendar => "he-IL",
+				global::System.Globalization.JapaneseCalendar => "ja-JP",
+				global::System.Globalization.UmAlQuraCalendar or global::System.Globalization.HijriCalendar => "ar-SA",
+				global::System.Globalization.ThaiBuddhistCalendar => "th-TH",
+				global::System.Globalization.PersianCalendar => "fa-IR",
+				global::System.Globalization.TaiwanCalendar => "zh-TW",
+				global::System.Globalization.KoreanCalendar => "ko-KR",
+				_ => null,
+			};
+
 		private static string GetClock(string clock)
 		{
 			switch (clock)
@@ -114,6 +183,7 @@ namespace Windows.Globalization
 
 		private IReadOnlyList<string> _languages;
 		private CultureInfo _resolvedCulture;
+		private CultureInfo _formatCulture;
 		private _Calendar _calendar;
 		private TimeZoneInfo _timeZone;
 		private string _clock;
@@ -133,6 +203,7 @@ namespace Windows.Globalization
 			_languages = ApplicationLanguages.Languages;
 			_resolvedCulture = ApplicationLanguages.ResolveCulture(_languages);
 			_calendar = _resolvedCulture.Calendar;
+			_formatCulture = _resolvedCulture;
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetDefaultClock(_resolvedCulture);
 			_time = DateTimeOffset.Now;
@@ -143,6 +214,7 @@ namespace Windows.Globalization
 			_languages = languages.ToList();
 			_resolvedCulture = ApplicationLanguages.ResolveCulture(_languages);
 			_calendar = _resolvedCulture.Calendar;
+			_formatCulture = _resolvedCulture;
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetDefaultClock(_resolvedCulture);
 			_time = DateTimeOffset.Now;
@@ -153,6 +225,7 @@ namespace Windows.Globalization
 			_languages = languages.ToList();
 			_resolvedCulture = ApplicationLanguages.ResolveCulture(_languages);
 			_calendar = GetCalendar(calendar);
+			_formatCulture = ResolveFormatCulture(_resolvedCulture, _calendar);
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetClock(clock);
 			_time = DateTimeOffset.Now;
@@ -172,10 +245,11 @@ namespace Windows.Globalization
 			//_time = new DateTimeOffset(DateTime.UtcNow, _timeZone.BaseUtcOffset);
 		}
 
-		private Calendar(IReadOnlyList<string> languages, CultureInfo resolvedCulture, _Calendar calendar, TimeZoneInfo timeZone, string clock, DateTimeOffset time)
+		private Calendar(IReadOnlyList<string> languages, CultureInfo resolvedCulture, CultureInfo formatCulture, _Calendar calendar, TimeZoneInfo timeZone, string clock, DateTimeOffset time)
 		{
 			_languages = languages;
 			_resolvedCulture = resolvedCulture;
+			_formatCulture = formatCulture;
 			_calendar = calendar;
 			_timeZone = timeZone;
 			_clock = clock;
@@ -186,6 +260,7 @@ namespace Windows.Globalization
 		{
 			other._languages = _languages;
 			other._resolvedCulture = _resolvedCulture;
+			other._formatCulture = _formatCulture;
 			other._calendar = _calendar;
 			other._timeZone = _timeZone;
 			other._clock = _clock;
@@ -193,7 +268,7 @@ namespace Windows.Globalization
 		}
 
 		public Calendar Clone()
-			=> new Calendar(_languages, _resolvedCulture, _calendar, _timeZone, _clock, _time);
+			=> new Calendar(_languages, _resolvedCulture, _formatCulture, _calendar, _timeZone, _clock, _time);
 
 		#region Read / Write settings (_languages, _calendar, _clock, _timeZone)
 		public string NumeralSystem
@@ -212,7 +287,10 @@ namespace Windows.Globalization
 			=> GetCalendarSystem(_calendar);
 
 		public void ChangeCalendarSystem(string value)
-			=> _calendar = GetCalendar(value);
+		{
+			_calendar = GetCalendar(value);
+			_formatCulture = ResolveFormatCulture(_resolvedCulture, _calendar);
+		}
 
 		public string GetClock()
 			=> _clock;
@@ -486,94 +564,98 @@ namespace Windows.Globalization
 			=> throw new global::System.NotImplementedException("The member string Calendar.EraAsString(int idealLength) is not implemented in Uno.");
 
 		public string YearAsString()
-			=> _time.Year.ToString(_resolvedCulture);
+			=> _time.Year.ToString(_formatCulture);
 
 		public string YearAsTruncatedString(int remainingDigits)
-			=> _time.ToString("yy", _resolvedCulture);
+			=> _time.ToString("yy", _formatCulture);
 
 		public string YearAsPaddedString(int minDigits)
-			=> _time.Year.ToString(new string('0', minDigits), _resolvedCulture);
+			=> _time.Year.ToString(new string('0', minDigits), _formatCulture);
 
 		internal string MonthAsFullString()
 			=> MonthAsString();
 
 		public string MonthAsString()
-			=> _time.ToString("MMM", _resolvedCulture);
+			=> _time.ToString("MMM", _formatCulture);
 
 		public string MonthAsString(int idealLength)
-			=> _time.ToString("MMM", _resolvedCulture);
+			=> _time.ToString("MMM", _formatCulture);
 
 		public string MonthAsSoloString()
-			=> _time.ToString("MMM", _resolvedCulture);
+			=> _time.ToString("MMM", _formatCulture);
 		public string MonthAsSoloString(int idealLength)
-			=> _time.ToString("MMM", _resolvedCulture);
+			=> _time.ToString("MMM", _formatCulture);
 
 		public string MonthAsNumericString()
-			=> _time.Month.ToString(_resolvedCulture);
+			=> _time.Month.ToString(_formatCulture);
 
 		public string MonthAsPaddedNumericString(int minDigits)
-			=> _time.Month.ToString(new string('0', minDigits), _resolvedCulture);
+			=> _time.Month.ToString(new string('0', minDigits), _formatCulture);
 
 		public string DayAsString()
-			=> Day.ToString(_resolvedCulture);
+			=> Day.ToString(_formatCulture);
 
 		public string DayAsPaddedString(int minDigits)
-			=> Day.ToString(new string('0', minDigits), _resolvedCulture);
+			=> Day.ToString(new string('0', minDigits), _formatCulture);
 
 		public string DayOfWeekAsString()
-			=> _resolvedCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
+			=> _formatCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
 
 		internal string DayOfWeekAsFullString()
 			=> DayOfWeekAsString();
 
 		public string DayOfWeekAsString(int idealLength)
-			=> _resolvedCulture.DateTimeFormat.GetAbbreviatedDayName(_calendar.GetDayOfWeek(DateTime));
+			=> _formatCulture.DateTimeFormat.GetAbbreviatedDayName(_calendar.GetDayOfWeek(DateTime));
 
 		public string DayOfWeekAsSoloString()
-			=> _resolvedCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
+			=> _formatCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
 
 		public string DayOfWeekAsSoloString(int idealLength)
-			=> _resolvedCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
+			=> _formatCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
 
+		// Unlike the other names, WinRT keeps the language's designators when another language names the calendar.
 		public string PeriodAsString()
-			=> _time.ToString("tt", _resolvedCulture);
+			=> GetPeriodDesignator();
 
 		public string PeriodAsString(int idealLength)
-			=> _time.ToString("tt", _resolvedCulture);
+			=> GetPeriodDesignator();
+
+		private string GetPeriodDesignator()
+			=> DateTime.Hour < 12 ? _resolvedCulture.DateTimeFormat.AMDesignator : _resolvedCulture.DateTimeFormat.PMDesignator;
 
 		public string HourAsString() =>
 			_time
-				.ToString(_clock == ClockIdentifiers.TwentyFourHour ? "HH" : "hh", _resolvedCulture)
+				.ToString(_clock == ClockIdentifiers.TwentyFourHour ? "HH" : "hh", _formatCulture)
 				.TrimStart('0');
 
 		public string HourAsPaddedString(int minDigits) =>
 			_clock == ClockIdentifiers.TwentyFourHour
-				? _time.ToString(minDigits < 2 ? "H" : "HH", _resolvedCulture)
-				: _time.ToString(minDigits < 2 ? "h" : "hh", _resolvedCulture);
+				? _time.ToString(minDigits < 2 ? "H" : "HH", _formatCulture)
+				: _time.ToString(minDigits < 2 ? "h" : "hh", _formatCulture);
 
 		public string MinuteAsString()
-			=> _time.Minute.ToString(_resolvedCulture);
+			=> _time.Minute.ToString(_formatCulture);
 
 		public string MinuteAsPaddedString(int minDigits)
-			=> _time.Minute.ToString(new string('0', minDigits), _resolvedCulture);
+			=> _time.Minute.ToString(new string('0', minDigits), _formatCulture);
 
 		public string SecondAsString()
-			=> _time.Second.ToString(_resolvedCulture);
+			=> _time.Second.ToString(_formatCulture);
 
 		public string SecondAsPaddedString(int minDigits)
-			=> _time.Second.ToString(new string('0', minDigits), _resolvedCulture);
+			=> _time.Second.ToString(new string('0', minDigits), _formatCulture);
 
 		public string NanosecondAsString()
-			=> (_time.Millisecond * 1000).ToString(_resolvedCulture);
+			=> (_time.Millisecond * 1000).ToString(_formatCulture);
 
 		public string NanosecondAsPaddedString(int minDigits)
-			=> (_time.Millisecond * 1000).ToString(new string('0', minDigits), _resolvedCulture);
+			=> (_time.Millisecond * 1000).ToString(new string('0', minDigits), _formatCulture);
 
 		public string TimeZoneAsString()
-			=> _time.ToString("z", _resolvedCulture);
+			=> _time.ToString("z", _formatCulture);
 
 		public string TimeZoneAsString(int idealLength)
-			=> _time.ToString("zz", _resolvedCulture);
+			=> _time.ToString("zz", _formatCulture);
 
 		public static implicit operator DateTimeOffset(Calendar c)
 		{

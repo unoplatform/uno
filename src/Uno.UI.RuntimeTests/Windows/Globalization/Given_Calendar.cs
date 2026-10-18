@@ -76,6 +76,73 @@ public class Given_Calendar
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	public void When_Calendar_Differs_From_Language_Default_Then_Names_Follow_Calendar()
+	{
+		var arabicGregorian = (CultureInfo)new CultureInfo("ar-SA").Clone();
+		arabicGregorian.DateTimeFormat.Calendar = new global::System.Globalization.GregorianCalendar();
+		if (arabicGregorian.DateTimeFormat.GetMonthName(1) == CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1)
+			|| new CultureInfo("he-IL").DateTimeFormat.GetMonthName(1) == CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1))
+		{
+			Assert.Inconclusive("The ICU data loaded here has no Arabic or Hebrew names (the WebAssembly shard for the browser language).");
+		}
+
+		var date = new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0));
+
+		// ar-SA defaults to the Um al-Qura calendar, in which this date falls in Rajab.
+		var gregorian = new Calendar(new[] { "ar-SA" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
+		gregorian.SetDateTime(date);
+		Assert.AreEqual("يناير", gregorian.MonthAsString());
+		Assert.AreEqual("يناير", gregorian.Clone().MonthAsString());
+
+		var other = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour);
+		gregorian.CopyTo(other);
+		Assert.AreEqual("يناير", other.MonthAsString());
+
+		// Um al-Qura ends in 2077.
+		gregorian.SetDateTime(new DateTimeOffset(new DateTime(2100, 3, 1, 12, 0, 0)));
+		Assert.AreEqual("مارس", gregorian.MonthAsString());
+
+		var changed = new Calendar(new[] { "ar-SA" });
+		changed.ChangeCalendarSystem(CalendarIdentifiers.Gregorian);
+		changed.SetDateTime(date);
+		Assert.AreEqual("يناير", changed.MonthAsString());
+
+		// en-US has no names for the Hebrew calendar, so, as in WinRT, they come from Hebrew, but the
+		// period stays English.
+		var hebrew = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Hebrew, ClockIdentifiers.TwelveHour);
+		hebrew.SetDateTime(date);
+		Assert.AreEqual(5, hebrew.Month);
+		Assert.AreEqual("שבט", hebrew.MonthAsString());
+		Assert.AreEqual("PM", hebrew.PeriodAsString());
+		// WinRT separates the words with a no-break space.
+		Assert.AreEqual("יום שני", hebrew.DayOfWeekAsString().Replace('\u00A0', ' '));
+
+		// No culture formats with the Julian calendar, whose months are the Gregorian ones. January 20 is in
+		// January in both calendars.
+		var julian = new Calendar(new[] { "ar-SA" }, CalendarIdentifiers.Julian, ClockIdentifiers.TwentyFourHour);
+		julian.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 20, 12, 0, 0)));
+		Assert.AreEqual("يناير", julian.MonthAsString());
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinRT throws after SetToMin, see When_Julian_Calendar.
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("ar-SA", "JulianCalendar")]
+	[DataRow("fa-IR", "JulianCalendar")]
+	[DataRow("fa-IR", "")]
+	public void When_Calendar_At_Min_Then_MonthAsString_Does_Not_Throw(string language, string calendarIdentifier)
+	{
+		// The year view of CalendarView does this. Um al-Qura starts in 1900 and Persian in 622.
+		var calendar = calendarIdentifier.Length > 0
+			? new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour)
+			: new Calendar(new[] { language });
+		calendar.SetToMin();
+
+		Assert.IsFalse(string.IsNullOrEmpty(calendar.MonthAsString()));
+	}
+
+	[TestMethod]
 	public void When_Julian_Calendar_Day_Name()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Julian, ClockIdentifiers.TwelveHour);
