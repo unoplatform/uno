@@ -563,34 +563,46 @@ namespace Windows.Globalization
 		public string EraAsString(int idealLength)
 			=> throw new global::System.NotImplementedException("The member string Calendar.EraAsString(int idealLength) is not implemented in Uno.");
 
+		// Date parts come from the calendar in use and are named through _formatCulture. Time parts read the language,
+		// whose AM/PM designators WinRT keeps when another language names the calendar.
 		public string YearAsString()
-			=> _time.Year.ToString(_formatCulture);
+			=> Year.ToString(_formatCulture);
 
 		public string YearAsTruncatedString(int remainingDigits)
-			=> _time.ToString("yy", _formatCulture);
+		{
+			// The last digits, zero-padded: 2567 gives "67", year 6 gives "06".
+			var year = Year.ToString(new string('0', remainingDigits), _formatCulture);
+			return year.Length > remainingDigits ? year.Substring(year.Length - remainingDigits) : year;
+		}
 
 		public string YearAsPaddedString(int minDigits)
-			=> _time.Year.ToString(new string('0', minDigits), _formatCulture);
+			=> Year.ToString(new string('0', minDigits), _formatCulture);
 
 		internal string MonthAsFullString()
 			=> MonthAsString();
 
 		public string MonthAsString()
-			=> _time.ToString("MMM", _formatCulture);
+			=> GetMonthName();
 
 		public string MonthAsString(int idealLength)
-			=> _time.ToString("MMM", _formatCulture);
+			=> GetMonthName();
 
 		public string MonthAsSoloString()
-			=> _time.ToString("MMM", _formatCulture);
+			=> GetMonthName();
 		public string MonthAsSoloString(int idealLength)
-			=> _time.ToString("MMM", _formatCulture);
+			=> GetMonthName();
+
+		private string GetMonthName()
+			=> _calendar is global::System.Globalization.JulianCalendar
+				// Julian months are the Gregorian ones, by number.
+				? _formatCulture.DateTimeFormat.GetAbbreviatedMonthName(Month)
+				: _time.ToString("MMM", _formatCulture);
 
 		public string MonthAsNumericString()
-			=> _time.Month.ToString(_formatCulture);
+			=> Month.ToString(_formatCulture);
 
 		public string MonthAsPaddedNumericString(int minDigits)
-			=> _time.Month.ToString(new string('0', minDigits), _formatCulture);
+			=> Month.ToString(new string('0', minDigits), _formatCulture);
 
 		public string DayAsString()
 			=> Day.ToString(_formatCulture);
@@ -613,49 +625,47 @@ namespace Windows.Globalization
 		public string DayOfWeekAsSoloString(int idealLength)
 			=> _formatCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
 
-		// Unlike the other names, WinRT keeps the language's designators when another language names the calendar.
 		public string PeriodAsString()
 			=> GetPeriodDesignator();
 
 		public string PeriodAsString(int idealLength)
 			=> GetPeriodDesignator();
 
+		// Empty with a 24-hour clock, as in WinRT.
 		private string GetPeriodDesignator()
-			=> DateTime.Hour < 12 ? _resolvedCulture.DateTimeFormat.AMDesignator : _resolvedCulture.DateTimeFormat.PMDesignator;
+			=> _clock == ClockIdentifiers.TwentyFourHour
+				? string.Empty
+				: DateTime.Hour < 12 ? _resolvedCulture.DateTimeFormat.AMDesignator : _resolvedCulture.DateTimeFormat.PMDesignator;
 
-		public string HourAsString() =>
-			_time
-				.ToString(_clock == ClockIdentifiers.TwentyFourHour ? "HH" : "hh", _formatCulture)
-				.TrimStart('0');
+		public string HourAsString()
+			=> Hour.ToString(_resolvedCulture);
 
-		public string HourAsPaddedString(int minDigits) =>
-			_clock == ClockIdentifiers.TwentyFourHour
-				? _time.ToString(minDigits < 2 ? "H" : "HH", _formatCulture)
-				: _time.ToString(minDigits < 2 ? "h" : "hh", _formatCulture);
+		public string HourAsPaddedString(int minDigits)
+			=> Hour.ToString(new string('0', minDigits), _resolvedCulture);
 
 		public string MinuteAsString()
-			=> _time.Minute.ToString(_formatCulture);
+			=> _time.Minute.ToString(_resolvedCulture);
 
 		public string MinuteAsPaddedString(int minDigits)
-			=> _time.Minute.ToString(new string('0', minDigits), _formatCulture);
+			=> _time.Minute.ToString(new string('0', minDigits), _resolvedCulture);
 
 		public string SecondAsString()
-			=> _time.Second.ToString(_formatCulture);
+			=> _time.Second.ToString(_resolvedCulture);
 
 		public string SecondAsPaddedString(int minDigits)
-			=> _time.Second.ToString(new string('0', minDigits), _formatCulture);
+			=> _time.Second.ToString(new string('0', minDigits), _resolvedCulture);
 
 		public string NanosecondAsString()
-			=> (_time.Millisecond * 1000).ToString(_formatCulture);
+			=> (_time.Millisecond * 1000).ToString(_resolvedCulture);
 
 		public string NanosecondAsPaddedString(int minDigits)
-			=> (_time.Millisecond * 1000).ToString(new string('0', minDigits), _formatCulture);
+			=> (_time.Millisecond * 1000).ToString(new string('0', minDigits), _resolvedCulture);
 
 		public string TimeZoneAsString()
-			=> _time.ToString("z", _formatCulture);
+			=> _time.ToString("z", _resolvedCulture);
 
 		public string TimeZoneAsString(int idealLength)
-			=> _time.ToString("zz", _formatCulture);
+			=> _time.ToString("zz", _resolvedCulture);
 
 		public static implicit operator DateTimeOffset(Calendar c)
 		{
