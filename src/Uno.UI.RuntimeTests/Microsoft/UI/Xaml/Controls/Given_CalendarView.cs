@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -341,6 +342,22 @@ public class Given_CalendarView
 			messageBuilder: actual => $"The header should name January, was '{actual}'",
 			comparer: (actual, month) => actual is not null && actual.Contains(month, StringComparison.Ordinal),
 			timeoutMS: 3000);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public async Task When_Date_Selected_Then_Value_Is_The_Long_Date()
+	{
+		var calendarView = new CalendarView() { Language = "en-US" };
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 15)));
+		calendarView.SelectedDates.Add(new DateTimeOffset(new DateTime(2024, 1, 15)));
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+
+		// The selected date from "day month.full year", as in WinRT.
+		var peer = FrameworkElementAutomationPeer.CreatePeerForElement(calendarView);
+		var value = (Microsoft.UI.Xaml.Automation.Provider.IValueProvider)peer.GetPattern(PatternInterface.Value);
+		Assert.AreEqual("January 15, 2024", value.Value);
 	}
 
 	[TestMethod]

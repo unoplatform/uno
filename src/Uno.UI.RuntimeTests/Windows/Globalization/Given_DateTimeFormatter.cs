@@ -59,6 +59,8 @@ public class Given_DateTimeFormatter
 	[DataRow("dayofweek month day", "en-US", 13, "Monday, January 15")]
 	[DataRow("dayofweek month day", "de-DE", 13, "Montag, 15. Januar")]
 	[DataRow("year", "en-US", 13, "2024")]
+	[DataRow("day month year", "en-US", 13, "January 15, 2024")]
+	[DataRow("day month.full year", "de-DE", 13, "15. Januar 2024")]
 	public void When_Template_Names_Some_Parts_Then_Format_Has_Only_Those(string template, string language, int hour, string expected)
 	{
 		var formatter = new DateTimeFormatter(template, new[] { language });

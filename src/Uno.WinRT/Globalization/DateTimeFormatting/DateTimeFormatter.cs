@@ -538,7 +538,9 @@ public sealed partial class DateTimeFormatter
 			{
 				(false, false, false, false) => string.Empty,
 				(true, true, true, true) => ConstructPattern(dateFormat.LongDatePattern),
-				(true, true, true, false) => ConstructPattern(dateFormat.ShortDatePattern),
+
+				// The grammar calls it a short date, but WinRT gives the long date without the day of week.
+				(true, true, true, false) => RemoveFields(ConstructPattern(dateFormat.LongDatePattern), DayOfWeekFieldRegex()),
 				(true, true, false, false) => ConstructPattern(dateFormat.YearMonthPattern),
 				(false, true, true, true) => RemoveFields(ConstructPattern(dateFormat.LongDatePattern), YearOrEraFieldRegex()),
 				(false, true, true, false) => ConstructPattern(dateFormat.MonthDayPattern),
@@ -875,6 +877,7 @@ public sealed partial class DateTimeFormatter
 
 	// Removes the matching fields with the text that only separated or qualified them: the separator before
 	// the last field and anything after it (", 2024", " 2024 г."), or the text up to the next field ("2024年").
+	// Text glued to the field before the last one stays ("15日" in "15日月曜日", "15." in "15., hétfő").
 	private static string RemoveFields(string pattern, Regex fields)
 	{
 		while (fields.Match(pattern) is { Success: true } field)
@@ -884,6 +887,11 @@ public sealed partial class DateTimeFormatter
 			if (end < 0)
 			{
 				start = pattern.LastIndexOf('}', field.Index) + 1;
+				while (start < field.Index && !IsSeparator(pattern[start]))
+				{
+					start++;
+				}
+
 				end = pattern.Length;
 			}
 
@@ -891,6 +899,8 @@ public sealed partial class DateTimeFormatter
 		}
 
 		return pattern;
+
+		static bool IsSeparator(char c) => char.IsWhiteSpace(c) || c is ',' or '\u060C' or '/' or '-';
 	}
 
 	[GeneratedRegex(@"('[^']+')")]
@@ -907,6 +917,9 @@ public sealed partial class DateTimeFormatter
 
 	[GeneratedRegex(@"\{era[^}]*\}")]
 	private static partial Regex EraFieldRegex();
+
+	[GeneratedRegex(@"\{dayofweek[^}]*\}")]
+	private static partial Regex DayOfWeekFieldRegex();
 
 	[GeneratedRegex(@"\{period[^}]*\}")]
 	private static partial Regex PeriodFieldRegex();
