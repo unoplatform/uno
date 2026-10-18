@@ -95,6 +95,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+		[DataRow(2024, 1, "يناير")]
+		[DataRow(2100, 3, "مارس")]
+		public async Task When_Arabic_Language_Then_Month_Is_Gregorian(int year, int month, string expectedMonth)
+		{
+			var arabicGregorian = (CultureInfo)new CultureInfo("ar-SA").Clone();
+			arabicGregorian.DateTimeFormat.Calendar = new GregorianCalendar();
+			if (arabicGregorian.DateTimeFormat.GetMonthName(1) == CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1))
+			{
+				Assert.Inconclusive("The ICU data loaded here has no Arabic names (the WebAssembly shard for the browser language).");
+			}
+
+			using var lang = SetAmbiantLanguage("ar-SA");
+
+			// ar-SA defaults to the Um al-Qura calendar, in which January 2024 is Rajab (رجب), and which ends in 2077.
+			// DatePicker's calendar is Gregorian.
+			var datePicker = new DatePicker { SelectedDate = new DateTimeOffset(new DateTime(year, month, 15)) };
+			TestServices.WindowHelper.WindowContent = datePicker;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var monthTextBlock = (TextBlock)VisualTreeUtils.FindVisualChildByName(datePicker, "MonthTextBlock");
+			Assert.AreEqual(expectedMonth, monthTextBlock.Text);
+		}
+
+		[TestMethod]
 		public async Task When_CanadaEnglish_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();

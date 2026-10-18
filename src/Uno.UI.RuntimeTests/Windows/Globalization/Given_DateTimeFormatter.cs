@@ -110,6 +110,84 @@ public class Given_DateTimeFormatter
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Calendar_Is_Given_Then_Dates_Follow_It()
+	{
+		var noon = new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0));
+
+		// en-US has no names for the Thai calendar, whose months are the Gregorian ones, so as in WinRT they stay English.
+		var thai = new DateTimeFormatter("month year", new[] { "en-US" }, "ZZ", CalendarIdentifiers.Thai, ClockIdentifiers.TwelveHour);
+		Assert.AreEqual(CalendarIdentifiers.Thai, thai.Calendar);
+		Assert.AreEqual("January 2567", NormalizeText(thai.Format(noon)));
+		Assert.AreEqual("01/15/2567", NormalizeText(new DateTimeFormatter("{month.integer(2)}/{day.integer(2)}/{year.full}", new[] { "en-US" }, "ZZ", CalendarIdentifiers.Thai, ClockIdentifiers.TwelveHour).Format(noon)));
+
+		// March 1, 2100 is February 16 in the Julian calendar.
+		var julian = new DateTimeFormatter("month year", new[] { "en-US" }, "ZZ", CalendarIdentifiers.Julian, ClockIdentifiers.TwelveHour);
+		Assert.AreEqual("February 2100", NormalizeText(julian.Format(new DateTimeOffset(new DateTime(2100, 3, 1, 12, 0, 0)))));
+
+		// The time parts and their AM/PM designators stay in the language.
+		var time = new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 0));
+		Assert.AreEqual("1:05 PM", NormalizeText(new DateTimeFormatter("shorttime", new[] { "en-US" }, "ZZ", CalendarIdentifiers.Hebrew, ClockIdentifiers.TwelveHour).Format(time)));
+		Assert.AreEqual("1:05 PM", NormalizeText(new DateTimeFormatter("{hour.integer}:{minute.integer(2)} {period.abbreviated}", new[] { "en-US" }, "ZZ", CalendarIdentifiers.Hebrew, ClockIdentifiers.TwelveHour).Format(time)));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Calendar_Differs_From_Language_Default_Then_Names_Follow_It()
+	{
+		var arabicGregorian = (CultureInfo)new CultureInfo("ar-SA").Clone();
+		arabicGregorian.DateTimeFormat.Calendar = new GregorianCalendar();
+		if (arabicGregorian.DateTimeFormat.GetMonthName(1) == CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1)
+			|| new CultureInfo("he-IL").DateTimeFormat.GetMonthName(1) == CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1))
+		{
+			Assert.Inconclusive("The ICU data loaded here has no Arabic or Hebrew names (the WebAssembly shard for the browser language).");
+		}
+
+		var january = new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0));
+		var march2100 = new DateTimeOffset(new DateTime(2100, 3, 1, 12, 0, 0));
+
+		// ar-SA defaults to the Um al-Qura calendar, in which January 15, 2024 falls in Rajab, and which ends in 2077.
+		var arabic = new DateTimeFormatter("month year", new[] { "ar-SA" }, "ZZ", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
+		StringAssert.Contains(NormalizeText(arabic.Format(january)), "يناير");
+		StringAssert.Contains(NormalizeText(arabic.Format(march2100)), "مارس");
+
+		// DatePicker's month column.
+		var month = new DateTimeFormatter("{month.full}", new[] { "ar-SA" }, "ZZ", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
+		Assert.AreEqual("مارس", NormalizeText(month.Format(march2100)));
+
+		var components = new DateTimeFormatter(
+			YearFormat.Default,
+			MonthFormat.Full,
+			DayFormat.None,
+			DayOfWeekFormat.None,
+			HourFormat.None,
+			MinuteFormat.None,
+			SecondFormat.None,
+			new[] { "ar-SA" },
+			"ZZ",
+			CalendarIdentifiers.Gregorian,
+			ClockIdentifiers.TwentyFourHour);
+		StringAssert.Contains(NormalizeText(components.Format(march2100)), "مارس");
+
+		// en-US has no names for the Hebrew calendar, so, as in WinRT, they come from Hebrew, with the two Adars of a
+		// leap year. WinRT writes them without the geresh (אדר א) that .NET adds (אדר א׳).
+		var hebrew = new DateTimeFormatter("month.full", new[] { "en-US" }, "ZZ", CalendarIdentifiers.Hebrew, ClockIdentifiers.TwelveHour);
+		Assert.AreEqual("שבט", NormalizeText(hebrew.Format(january)));
+		StringAssert.StartsWith(NormalizeText(hebrew.Format(new DateTimeOffset(new DateTime(2024, 2, 15, 12, 0, 0)))), "אדר א");
+		StringAssert.StartsWith(NormalizeText(hebrew.Format(new DateTimeOffset(new DateTime(2024, 3, 15, 12, 0, 0)))), "אדר ב");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinRT uses Hebrew numerals (ה׳/ה׳/ה׳תשפ״ד).
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Calendar_Is_Hebrew_Then_Numbers_Follow_It()
+	{
+		var formatter = new DateTimeFormatter("{month.integer(2)}/{day.integer(2)}/{year.full}", new[] { "en-US" }, "ZZ", CalendarIdentifiers.Hebrew, ClockIdentifiers.TwelveHour);
+
+		Assert.AreEqual("05/05/5784", formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0))));
+	}
+
+	[TestMethod]
 	public void When_CreatingWithFormatTemplate_ShouldInitializeCorrectly()
 	{
 		var formatter = new DateTimeFormatter("longdate");

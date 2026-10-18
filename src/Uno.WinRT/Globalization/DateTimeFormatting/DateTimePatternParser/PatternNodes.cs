@@ -3,8 +3,32 @@
 using System;
 using System.Globalization;
 using System.Text;
+using _Calendar = global::System.Globalization.Calendar;
 
 namespace Windows.Globalization.DateTimeFormatting;
+
+// What a formatter's pattern reads, built once per formatter.
+internal sealed class PatternFormatContext
+{
+	public PatternFormatContext(_Calendar calendar, CultureInfo dateCulture, CultureInfo timeCulture, bool isTwentyFourHours)
+	{
+		Calendar = calendar;
+		DateCulture = dateCulture;
+		TimeCulture = timeCulture;
+		IsTwentyFourHours = isTwentyFourHours;
+	}
+
+	// Numbers the date parts.
+	public _Calendar Calendar { get; }
+
+	// Names the date parts in the calendar in use (Calendar.ResolveFormatCulture).
+	public CultureInfo DateCulture { get; }
+
+	// The requested language, which formats the time parts and names the period.
+	public CultureInfo TimeCulture { get; }
+
+	public bool IsTwentyFourHours { get; }
+}
 
 // <pattern> ::= [<literal-text>] <datetime-pattern> [<literal-text>] |
 //               [<literal-text>] <datetime-pattern> <pattern>
@@ -38,19 +62,19 @@ internal sealed class PatternRootNode
 	public PatternLiteralTextNode? OptionalSuffixLiteralText { get; }
 	public PatternRootNode? OptionalSuffixPattern { get; }
 
-	internal string Format(DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal string Format(DateTime dateTime, PatternFormatContext context)
 	{
 		var builder = new StringBuilder();
-		Format(builder, dateTime, culture, isTwentyFourHours);
+		Format(builder, dateTime, context);
 		return builder.ToString();
 	}
 
-	internal void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
-		OptionalPrefixLiteralText?.Format(builder, dateTime, culture, isTwentyFourHours);
-		DateTimeNode.Format(builder, dateTime, culture, isTwentyFourHours);
-		OptionalSuffixLiteralText?.Format(builder, dateTime, culture, isTwentyFourHours);
-		OptionalSuffixPattern?.Format(builder, dateTime, culture, isTwentyFourHours);
+		OptionalPrefixLiteralText?.Format(builder, dateTime, context);
+		DateTimeNode.Format(builder, dateTime, context);
+		OptionalSuffixLiteralText?.Format(builder, dateTime, context);
+		OptionalSuffixPattern?.Format(builder, dateTime, context);
 	}
 }
 
@@ -65,7 +89,7 @@ internal sealed class PatternLiteralTextNode
 
 	public string Text { get; }
 
-	internal void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 		=> builder.Append(Text);
 }
 
@@ -73,7 +97,7 @@ internal sealed class PatternLiteralTextNode
 //                        <period> | <hour> | <minute> | <second> | <timezone>
 internal abstract class PatternDateTimeNode
 {
-	internal abstract void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours);
+	internal abstract void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context);
 }
 
 // <era> ::= "{era.abbreviated" [<ideal-length>] "}"
@@ -87,11 +111,22 @@ internal sealed class PatternEraNode : PatternDateTimeNode
 	// Era is always "era.abbreviated", so no need to distinguish.
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
-		// C# can't represent negative dates (i.e, before christ).
-		// So, looks like Era will always be "AD" (Anno Domini).
-		builder.Append(IdealLength.HasValue && IdealLength.Value < 4 ? "AD" : "A.D.");
+		var format = context.DateCulture.DateTimeFormat;
+		if (format.Calendar is GregorianCalendar)
+		{
+			// C# can't represent negative dates (i.e, before christ).
+			// So, looks like Era will always be "AD" (Anno Domini).
+			builder.Append(IdealLength is < 4 ? "AD" : "A.D.");
+			return;
+		}
+
+		// Other calendars name their eras (令和, พ.ศ.). As in WinRT, an ideal length shorter than the name takes
+		// the abbreviated one (令).
+		var era = format.Calendar.GetEra(dateTime);
+		var name = format.GetEraName(era);
+		builder.Append(IdealLength < name.Length ? format.GetAbbreviatedEraName(era) : name);
 	}
 }
 
@@ -114,31 +149,18 @@ internal sealed class PatternYearNode : PatternDateTimeNode
 	public YearKind Kind { get; }
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
+		var year = context.Calendar.GetYear(dateTime);
 		if (Kind == YearKind.Full)
 		{
-			if (IdealLength.HasValue)
-			{
-				builder.Append(dateTime.Year.ToString(new string('0', IdealLength.Value), culture));
-			}
-			else
-			{
-				builder.Append(dateTime.Year);
-			}
+			builder.Append(IdealLength is { } idealLength
+				? year.ToString(new string('0', idealLength), context.DateCulture)
+				: year.ToString(context.DateCulture));
 		}
 		else if (Kind == YearKind.Abbreviated)
 		{
-			if (IdealLength.HasValue)
-			{
-				// TODO: This might not always be the right approach for all calendars.
-				// This implementation assumes gregorian calendar. The "correct" approach isn't yet known.
-				builder.Append((dateTime.Year % (10 * IdealLength.Value)).ToString(new string('0', IdealLength.Value), culture));
-			}
-			else
-			{
-				builder.Append((dateTime.Year % 100).ToString("00", culture));
-			}
+			builder.Append(Calendar.GetTruncatedYear(year, IdealLength ?? 2, context.DateCulture));
 		}
 	}
 }
@@ -170,42 +192,22 @@ internal sealed class PatternMonthNode : PatternDateTimeNode
 	// Always null for full and solo.full
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
-		if (Kind == MonthKind.Full)
+		if (Kind is MonthKind.Full or MonthKind.SoloFull)
 		{
-			builder.Append(dateTime.ToString("MMMM", culture));
+			builder.Append(Calendar.GetMonthName(dateTime, context.Calendar, context.DateCulture, abbreviated: false));
 		}
-		else if (Kind == MonthKind.SoloFull)
+		else if (Kind is MonthKind.Abbreviated or MonthKind.SoloAbbreviated)
 		{
-			builder.Append(dateTime.ToString("MMMM", culture));
-		}
-		else if (Kind == MonthKind.Abbreviated)
-		{
-			builder.Append(dateTime.ToString("MMM", culture));
-		}
-		else if (Kind == MonthKind.SoloAbbreviated)
-		{
-			builder.Append(dateTime.ToString("MMM", culture));
+			builder.Append(Calendar.GetMonthName(dateTime, context.Calendar, context.DateCulture, abbreviated: true));
 		}
 		else if (Kind == MonthKind.Integer)
 		{
-			if (IdealLength.HasValue)
-			{
-				var idealLength = IdealLength.Value;
-				if (idealLength >= 2)
-				{
-					builder.Append(dateTime.ToString("MM", culture));
-				}
-				else
-				{
-					builder.Append(dateTime.Month);
-				}
-			}
-			else
-			{
-				builder.Append(dateTime.Month);
-			}
+			var month = context.Calendar.GetMonth(dateTime);
+			builder.Append(IdealLength is { } idealLength
+				? month.ToString(new string('0', idealLength), context.DateCulture)
+				: month.ToString(context.DateCulture));
 		}
 	}
 }
@@ -235,24 +237,12 @@ internal sealed class PatternDayOfWeekNode : PatternDateTimeNode
 	// Always null for full and solo.full
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
-		if (Kind == DayOfWeekKind.Full)
-		{
-			builder.Append(dateTime.ToString("dddd", culture));
-		}
-		else if (Kind == DayOfWeekKind.SoloFull)
-		{
-			builder.Append(dateTime.ToString("dddd", culture));
-		}
-		else if (Kind == DayOfWeekKind.Abbreviated)
-		{
-			builder.Append(dateTime.ToString("ddd", culture));
-		}
-		else if (Kind == DayOfWeekKind.SoloAbbreviated)
-		{
-			builder.Append(dateTime.ToString("ddd", culture));
-		}
+		var format = context.DateCulture.DateTimeFormat;
+		builder.Append(Kind is DayOfWeekKind.Full or DayOfWeekKind.SoloFull
+			? format.GetDayName(dateTime.DayOfWeek)
+			: format.GetAbbreviatedDayName(dateTime.DayOfWeek));
 	}
 }
 
@@ -266,16 +256,12 @@ internal sealed class PatternDayNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
-		if (IdealLength.HasValue)
-		{
-			builder.Append(dateTime.Day.ToString(new string('0', IdealLength.Value), culture));
-		}
-		else
-		{
-			builder.Append(dateTime.Day);
-		}
+		var day = context.Calendar.GetDayOfMonth(dateTime);
+		builder.Append(IdealLength is { } idealLength
+			? day.ToString(new string('0', idealLength), context.DateCulture)
+			: day.ToString(context.DateCulture));
 	}
 }
 
@@ -289,16 +275,17 @@ internal sealed class PatternPeriodNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
-		if (isTwentyFourHours)
+		if (context.IsTwentyFourHours)
 		{
 			return;
 		}
 
 		// The ideal length is a hint, so designators like "p.m." or "μ.μ." stay whole. Only the narrow
 		// form, which .NET doesn't provide, is approximated by the first character.
-		string period = dateTime.ToString("tt", culture);
+		var format = context.TimeCulture.DateTimeFormat;
+		string period = dateTime.Hour < 12 ? format.AMDesignator : format.PMDesignator;
 		if (IdealLength == 1 && period.Length > 1)
 		{
 			builder.Append(period[0]);
@@ -320,10 +307,10 @@ internal sealed class PatternHourNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
 		int hour = dateTime.Hour;
-		if (!isTwentyFourHours)
+		if (!context.IsTwentyFourHours)
 		{
 			// Midnight and noon are 12 on a 12-hour clock.
 			hour = hour % 12 == 0 ? 12 : hour % 12;
@@ -331,7 +318,7 @@ internal sealed class PatternHourNode : PatternDateTimeNode
 
 		if (IdealLength.HasValue)
 		{
-			builder.Append(hour.ToString(new string('0', IdealLength.Value), culture));
+			builder.Append(hour.ToString(new string('0', IdealLength.Value), context.TimeCulture));
 		}
 		else
 		{
@@ -350,11 +337,11 @@ internal sealed class PatternMinuteNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
 		if (IdealLength.HasValue)
 		{
-			builder.Append(dateTime.Minute.ToString(new string('0', IdealLength.Value), culture));
+			builder.Append(dateTime.Minute.ToString(new string('0', IdealLength.Value), context.TimeCulture));
 		}
 		else
 		{
@@ -373,11 +360,11 @@ internal sealed class PatternSecondNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
 		if (IdealLength.HasValue)
 		{
-			builder.Append(dateTime.Second.ToString(new string('0', IdealLength.Value), culture));
+			builder.Append(dateTime.Second.ToString(new string('0', IdealLength.Value), context.TimeCulture));
 		}
 		else
 		{
@@ -407,7 +394,7 @@ internal sealed class PatternTimeZoneNode : PatternDateTimeNode
 	// Always null for full
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
 		// Important: dateTime parameter shouldn't be used here.
 		// WinUI uses the local time zone info.
