@@ -86,6 +86,9 @@ public class Given_Calendar
 	[DataRow("en_US@rg=gbzzzz", true, "en-US", TwentyFourHour)]
 	[DataRow("en_US@hours=h23", true, "en-US", TwentyFourHour)]
 	[DataRow("zh-Hans_CN", false, "zh-CN", TwelveHour)]
+	[DataRow("zh-Hant_TW", true, "zh-TW", TwentyFourHour)]
+	[DataRow("sr-Latn-RS", false, "sr-Latn-RS", TwelveHour)]
+	[DataRow("sr-Latn-RS", false, "sr-Cyrl-RS", TwentyFourHour)]
 	public void When_Device_Sets_Clock_Then_Only_Its_Locale_Follows(string deviceLocale, bool? device24Hour, string language, string expectedClock)
 	{
 		var originalOverride = ApplicationLanguages.PrimaryLanguageOverride;

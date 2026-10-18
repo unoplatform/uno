@@ -20,8 +20,7 @@ internal static partial class DeviceClock
 		string? languageTag = null;
 		ReadLocaleTags(ref localeTag, ref languageTag);
 
-		var key = GetLocaleKey(culture.Name);
-		if (!IsLocale(key, localeTag) && !IsLocale(key, languageTag))
+		if (!IsLocale(culture.Name, localeTag) && !IsLocale(culture.Name, languageTag))
 		{
 			return null;
 		}
@@ -62,26 +61,45 @@ internal static partial class DeviceClock
 		return null;
 	}
 
-	private static bool IsLocale(string key, string? tag)
-		=> tag is not null && string.Equals(key, GetLocaleKey(tag), StringComparison.OrdinalIgnoreCase);
+	// Whether a culture is this device locale: the same language, region and variants, without conflicting scripts
+	// (.NET names Apple's zh-Hans_CN zh-CN). Extensions (Android 14 regional preferences, "@rg=") don't count.
+	private static bool IsLocale(string cultureName, string? tag)
+	{
+		if (tag is null)
+		{
+			return false;
+		}
 
-	// A BCP-47 tag or an Apple locale identifier without its script (.NET names Apple's zh-Hans_CN zh-CN) and
-	// extensions (Android 14 regional preferences, "@rg=").
-	private static string GetLocaleKey(string tag)
+		var culture = Parse(cultureName);
+		var device = Parse(tag);
+
+		return string.Equals(culture.Language, device.Language, StringComparison.OrdinalIgnoreCase)
+			&& string.Equals(culture.Region, device.Region, StringComparison.OrdinalIgnoreCase)
+			&& (culture.Script.Length == 0 || device.Script.Length == 0 || string.Equals(culture.Script, device.Script, StringComparison.OrdinalIgnoreCase));
+	}
+
+	// A BCP-47 tag or an Apple locale identifier, as its language, its script, and its region with any variants, up to
+	// its extensions.
+	private static (string Language, string Script, string Region) Parse(string tag)
 	{
 		var at = tag.IndexOf('@');
 		var subtags = (at >= 0 ? tag.Substring(0, at) : tag).Split('-', '_');
 
-		var key = subtags[0];
+		var script = "";
+		var region = "";
 		for (var i = 1; i < subtags.Length && subtags[i].Length > 1; i++)
 		{
-			if (i > 1 || subtags[i].Length != 4)
+			if (i == 1 && subtags[i].Length == 4 && char.IsLetter(subtags[i][0]))
 			{
-				key += "-" + subtags[i];
+				script = subtags[i];
+			}
+			else
+			{
+				region += "-" + subtags[i];
 			}
 		}
 
-		return key;
+		return (subtags[0], script, region);
 	}
 
 	private static string? ToClock(bool? is24Hour)
