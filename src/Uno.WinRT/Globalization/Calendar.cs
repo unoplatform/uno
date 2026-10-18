@@ -568,7 +568,8 @@ namespace Windows.Globalization
 
 		public string YearAsTruncatedString(int remainingDigits)
 		{
-			// The last digits, zero-padded: 2567 gives "67", year 6 gives "06".
+			// The last digits, zero-padded to the length as WinRT does: 2567 gives "67" and year 6 "06" for 2,
+			// 2024 gives "002024" for 6.
 			var year = Year.ToString(new string('0', remainingDigits), _formatCulture);
 			return year.Length > remainingDigits ? year.Substring(year.Length - remainingDigits) : year;
 		}
