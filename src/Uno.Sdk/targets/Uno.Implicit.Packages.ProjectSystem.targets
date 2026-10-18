@@ -139,6 +139,13 @@
 		<_UnoProjectSystemPackageReference Remove="Uno.Settings.DevServer" />
 	</ItemGroup>
 
+	<!--
+		Added after the project body so that a PackageReference the project declares replaces the implicit one
+		instead of duplicating it. A <PackageReference Remove="..." /> in the project therefore has nothing to
+		remove yet, and one placed later is undone by UnoImplicitPackages, which adds them again from
+		_UnoProjectSystemPackageReference. The documented opt-outs are the DisableImplicitUno* properties and
+		UnoFeatures.
+	-->
 	<ItemGroup>
 		<PackageReference Include="@(_UnoProjectSystemPackageReference)" Exclude="@(PackageReference)" />
 	</ItemGroup>
