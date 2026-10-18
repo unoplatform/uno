@@ -29,10 +29,9 @@ public class Given_DateTimeFormatter
 			var time = NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 0))));
 
 			// The pattern and the clock both come from the language, so the hour and the period agree.
-			// EndsWith: Uno's "shorttime" also renders the long date.
 			Assert.AreEqual(expectedClock, formatter.Clock);
 			Assert.AreEqual(expectedClock, new global::Windows.Globalization.Calendar().GetClock());
-			Assert.IsTrue(time.EndsWith(expectedTime, StringComparison.Ordinal), time);
+			Assert.AreEqual(expectedTime, time);
 		}
 		finally
 		{
@@ -44,6 +43,71 @@ public class Given_DateTimeFormatter
 	// WinRT marks the text direction (U+200E), and ICU may separate the period with a no-break space.
 	private static string NormalizeText(string text)
 		=> text.Replace("\u200E", "").Replace("\u200F", "").Replace('\u202F', ' ').Replace('\u00A0', ' ');
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("shorttime", "en-US", 13, "1:05 PM")]
+	[DataRow("shorttime", "en-US", 0, "12:05 AM")]
+	[DataRow("longtime", "en-US", 13, "1:05:07 PM")]
+	[DataRow("hour minute", "en-US", 13, "1:05 PM")]
+	[DataRow("hour", "en-US", 13, "1 PM")]
+	[DataRow("shorttime", "de-DE", 13, "13:05")]
+	[DataRow("hour", "de-DE", 13, "13:00")]
+	[DataRow("month", "en-US", 13, "January")]
+	[DataRow("month.abbreviated", "en-US", 13, "Jan")]
+	[DataRow("dayofweek", "en-US", 13, "Monday")]
+	[DataRow("dayofweek month day", "en-US", 13, "Monday, January 15")]
+	[DataRow("dayofweek month day", "de-DE", 13, "Montag, 15. Januar")]
+	[DataRow("year", "en-US", 13, "2024")]
+	public void When_Template_Names_Some_Parts_Then_Format_Has_Only_Those(string template, string language, int hour, string expected)
+	{
+		var formatter = new DateTimeFormatter(template, new[] { language });
+
+		Assert.AreEqual(expected, NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, hour, 5, 7)))));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Created_From_Components_Then_Formats_With_Language_Clock()
+	{
+		var date = new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 7));
+		var defaultClock = new global::Windows.Globalization.Calendar().GetClock();
+
+		var dateFormatter = new DateTimeFormatter(YearFormat.Default, MonthFormat.Default, DayFormat.Default, DayOfWeekFormat.None);
+		Assert.AreEqual("year month day", dateFormatter.Template);
+		Assert.AreEqual(defaultClock, dateFormatter.Clock);
+		StringAssert.Contains(dateFormatter.Format(date), "2024");
+
+		var timeFormatter = new DateTimeFormatter(HourFormat.Default, MinuteFormat.Default, SecondFormat.None);
+		Assert.AreEqual("hour minute", timeFormatter.Template);
+		Assert.AreEqual(defaultClock, timeFormatter.Clock);
+		Assert.AreEqual(new DateTimeFormatter("shorttime").Format(date), timeFormatter.Format(date));
+
+		var english = new DateTimeFormatter(
+			YearFormat.None,
+			MonthFormat.None,
+			DayFormat.None,
+			DayOfWeekFormat.None,
+			HourFormat.Default,
+			MinuteFormat.Default,
+			SecondFormat.None,
+			new[] { "en-US" });
+		Assert.AreEqual(ClockIdentifiers.TwelveHour, english.Clock);
+		Assert.AreEqual("1:05 PM", NormalizeText(english.Format(date)));
+
+		var numeric = new DateTimeFormatter(YearFormat.None, MonthFormat.Numeric, DayFormat.Default, DayOfWeekFormat.None);
+		Assert.AreEqual("month.numeric day", numeric.Template);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Components_Are_Not_A_Template_Then_Throws()
+	{
+		// As in WinRT, the components make a template, which has no year and day without a month.
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter(YearFormat.Default, MonthFormat.None, DayFormat.Default, DayOfWeekFormat.None));
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter(YearFormat.None, MonthFormat.None, DayFormat.None, DayOfWeekFormat.None));
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter(HourFormat.Default, MinuteFormat.None, SecondFormat.Default));
+	}
 
 	[TestMethod]
 	public void When_CreatingWithFormatTemplate_ShouldInitializeCorrectly()

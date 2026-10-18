@@ -107,6 +107,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+		[DataRow(13, "1:05 PM")]
+		[DataRow(0, "12:05 AM")]
+		public async Task When_Time_Selected_Then_Automation_Name_Has_Only_The_Time(int hour, string expectedTime)
+		{
+			var originalOverride = global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride;
+			try
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "en-US";
+
+				var timePicker = new TimePicker
+				{
+					Header = "Alarm",
+					ClockIdentifier = Windows.Globalization.ClockIdentifiers.TwelveHour,
+					SelectedTime = new TimeSpan(hour, 5, 0),
+				};
+				await UITestHelper.Load(timePicker);
+
+				// "<header> <short time> time picker", without the sentinel date the time is formatted on.
+				var flyoutButton = (ButtonBase)VisualTreeUtils.FindVisualChildByName(timePicker, "FlyoutButton");
+				var name = AutomationProperties.GetName(flyoutButton).Replace('\u202F', ' ').Replace('\u00A0', ' ');
+				StringAssert.StartsWith(name, $"Alarm {expectedTime}");
+			}
+			finally
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18834")]
 		[DataRow("en-CA", "12HourClock", "5")]
 		[DataRow("ko-KR", "12HourClock", "5")]
