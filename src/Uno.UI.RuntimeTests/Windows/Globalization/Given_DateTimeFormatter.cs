@@ -173,7 +173,7 @@ public class Given_DateTimeFormatter
 		var dateFormatter = new DateTimeFormatter(YearFormat.Default, MonthFormat.Default, DayFormat.Default, DayOfWeekFormat.None);
 		Assert.AreEqual("year month day", dateFormatter.Template);
 		Assert.AreEqual(defaultClock, dateFormatter.Clock);
-		StringAssert.Contains(dateFormatter.Format(date), "2024");
+		Assert.AreEqual(new DateTimeFormatter("year month day").Format(date), dateFormatter.Format(date));
 
 		var timeFormatter = new DateTimeFormatter(HourFormat.Default, MinuteFormat.Default, SecondFormat.None);
 		Assert.AreEqual("hour minute", timeFormatter.Template);
