@@ -79,6 +79,33 @@ public class Given_DateTimeFormatter
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("ja-JP", "year", "2024年")]
+	[DataRow("ja-JP", "day", "15日")]
+	[DataRow("ko-KR", "year", "2024년")]
+	[DataRow("ko-KR", "day", "15일")]
+	[DataRow("de-DE", "day", "15")]
+	[DataRow("hu-HU", "year", "2024")]
+	[DataRow("ru-RU", "year", "2024 г.")]
+	[DataRow("ru-RU", "year.abbreviated", "24 г.")]
+	[DataRow("uk-UA", "year", "2024 р.")]
+	[DataRow("lt-LT", "year", "2024 m.")]
+	[DataRow("lt-LT", "day", "15")]
+	[DataRow("zh-CN", "year", "2024年")]
+	[DataRow("zh-CN", "day", "15日")]
+	public void When_Template_Is_One_Part_Then_Format_Keeps_Language_Letters(string language, string template, string expected)
+	{
+		if (new CultureInfo(language).DateTimeFormat.GetMonthName(1) == CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1))
+		{
+			Assert.Inconclusive($"The ICU data loaded here has no {language} names (the WebAssembly shard for the browser language).");
+		}
+
+		var formatter = new DateTimeFormatter(template, new[] { language });
+
+		Assert.AreEqual(expected, NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 7)))));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
 	public void When_Created_From_Components_Then_Formats_With_Language_Clock()
 	{
 		var date = new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 7));
