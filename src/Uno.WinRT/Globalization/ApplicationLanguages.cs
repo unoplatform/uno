@@ -208,7 +208,7 @@ public static partial class ApplicationLanguages
 
 	private static Regex? _cultureFormatRegex;
 
-	private static CultureInfo CreateCulture(string cultureId)
+	internal static CultureInfo CreateCulture(string cultureId)
 	{
 		try
 		{
