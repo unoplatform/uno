@@ -29,6 +29,11 @@ internal static partial class DeviceClock
 		return ToClock(Read24Hour());
 	}
 
+	// The device setting or, without one (Windows, Linux, WebAssembly), the clock of the runtime's culture, which on
+	// Windows carries the customizations of the regional format.
+	internal static string GetUserClock()
+		=> ToClock(Read24Hour()) ?? Calendar.GetDefaultClock(CultureInfo.InstalledUICulture);
+
 	// Whether an ICU date format (Apple's) uses a 24-hour clock, or null without an hour.
 	internal static bool? IsTwentyFourHourPattern(string? pattern)
 	{
