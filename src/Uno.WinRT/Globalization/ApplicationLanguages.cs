@@ -104,25 +104,30 @@ public static partial class ApplicationLanguages
 		CultureInfo.CurrentUICulture = uiCulture;
 		CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
 
-		if (GetFormatCulture(uiCulture) is { } culture)
+		if (GetFormatCulture(uiCulture, CultureInfo.CurrentCulture, CultureInfo.InstalledUICulture) is { } culture)
 		{
 			CultureInfo.CurrentCulture = culture;
 			CultureInfo.DefaultThreadCurrentCulture = culture;
 		}
 	}
 
-	// Null when the culture the runtime picked already reflects the user's format preferences.
-	private static CultureInfo? GetFormatCulture(CultureInfo uiCulture)
+	// Null when CurrentCulture stays: the app set it, or the runtime's pick reflects the user's format preferences.
+	internal static CultureInfo? GetFormatCulture(CultureInfo uiCulture, CultureInfo current, CultureInfo runtimeDefault)
 	{
+		// Until the app sets one, CurrentCulture is the runtime's read-only user default itself (InstalledUICulture),
+		// so any other instance is the app's, even with the same name.
+		if (!ReferenceEquals(current, runtimeDefault))
+		{
+			return null;
+		}
+
 #if __ANDROID__
 		// The runtime drops the locale's -u- extensions, which carry the Android 14 regional preferences
-		// (first day of week...), so format with the system locale itself, unless the app picked a culture.
-		return ManifestLanguages.Count > 0 && CultureInfo.CurrentCulture.Name == CultureInfo.InstalledUICulture.Name
-			? CreateCulture(ManifestLanguages[0])
-			: null;
+		// (first day of week...), so format with the system locale itself.
+		return ManifestLanguages.Count > 0 ? CreateCulture(ManifestLanguages[0]) : null;
 #else
 		// No user locale (e.g. LANG unset or C on Linux): format in the app language rather than invariant.
-		return CultureInfo.CurrentCulture.Name.Length == 0 && !InvariantCulture ? uiCulture : null;
+		return current.Name.Length == 0 && !InvariantCulture ? uiCulture : null;
 #endif
 	}
 

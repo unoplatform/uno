@@ -170,6 +170,21 @@ public class Given_ApplicationLanguages
 			Assert.Inconclusive("Invariant globalization mode has no culture to fall back to.");
 		}
 
+		// What the runtime holds when it found no user locale: with LANG unset or C on Linux, a read-only
+		// invariant culture of its own.
+		var runtimeCulture = CultureInfo.ReadOnly(new CultureInfo(""));
+		var uiCulture = new CultureInfo("fr-CA");
+
+		ApplicationLanguages.GetFormatCulture(uiCulture, runtimeCulture, runtimeCulture).Should().BeSameAs(uiCulture);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public void When_App_Customized_The_Runtime_Culture_Then_Culture_Kept(bool runtimeFoundNoLocale)
+	{
 		var culture = CultureInfo.CurrentCulture;
 		var uiCulture = CultureInfo.CurrentUICulture;
 		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
@@ -177,13 +192,55 @@ public class Given_ApplicationLanguages
 
 		try
 		{
-			// What the runtime starts with when the OS reports no user locale (e.g. LANG unset or C on Linux).
+			var runtimeCulture = runtimeFoundNoLocale ? CultureInfo.ReadOnly(new CultureInfo("")) : CultureInfo.InstalledUICulture;
+
+			// Same name as the runtime's culture, customized by the app before the Application constructor.
+			var appCulture = (CultureInfo)runtimeCulture.Clone();
+			appCulture.DateTimeFormat.ShortDatePattern = "yyyy'|'MM'|'dd";
+
+			ApplicationLanguages.GetFormatCulture(new CultureInfo("fr-CA"), appCulture, runtimeCulture).Should().BeNull();
+
+			if (!runtimeFoundNoLocale)
+			{
+				CultureInfo.CurrentCulture = appCulture;
+
+				ApplicationLanguages.ApplyCulture();
+
+				CultureInfo.CurrentCulture.Should().BeSameAs(appCulture);
+			}
+		}
+		finally
+		{
+			CultureInfo.CurrentCulture = culture;
+			CultureInfo.CurrentUICulture = uiCulture;
+			CultureInfo.DefaultThreadCurrentCulture = threadCulture;
+			CultureInfo.DefaultThreadCurrentUICulture = threadUICulture;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	public void When_App_Set_Invariant_Culture_Then_Culture_Kept()
+	{
+		if (ReferenceEquals(CultureInfo.InstalledUICulture, CultureInfo.InvariantCulture))
+		{
+			// Invariant mode, or a locale the runtime couldn't read or create.
+			Assert.Inconclusive("The runtime's own culture is the invariant singleton, so an app setting it can't be told apart.");
+		}
+
+		var culture = CultureInfo.CurrentCulture;
+		var uiCulture = CultureInfo.CurrentUICulture;
+		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
+		var threadUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+		try
+		{
 			CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
 			ApplicationLanguages.ApplyCulture();
 
-			CultureInfo.CurrentCulture.Name.Should().NotBeEmpty();
-			CultureInfo.CurrentCulture.Name.Should().Be(CultureInfo.CurrentUICulture.Name);
+			CultureInfo.CurrentCulture.Should().BeSameAs(CultureInfo.InvariantCulture);
 		}
 		finally
 		{
