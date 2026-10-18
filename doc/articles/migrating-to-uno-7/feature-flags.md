@@ -55,7 +55,7 @@ The cross-platform `WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrim
 flag is also removed. Unlike the native-only flags it defaulted to `true`, so this changes behavior for
 apps that never touched it: setting `Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride`
 no longer swaps `CultureInfo.CurrentCulture`/`CurrentUICulture` from inside the setter. The override
-is persisted and applied to `CurrentUICulture` on the next app start, matching WinUI. Resource lookup
+is persisted, as on WinUI, and Uno applies it to `CurrentUICulture` on the next app start. Resource lookup
 (`x:Uid`, `ResourceLoader`) still follows the new value immediately, so localized strings keep
 updating once the affected pages reload.
 
