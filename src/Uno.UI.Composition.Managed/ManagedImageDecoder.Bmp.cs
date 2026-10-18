@@ -7,29 +7,36 @@ namespace Uno.UI.Composition.Drawing;
 
 internal static partial class ManagedImageDecoder
 {
-	private static bool TryDecodeBmp(byte[] d, [NotNullWhen(true)] out DecodedImage? decoded)
+	/// <summary>What a BMP's file and DIB headers declare.</summary>
+	private struct BmpHeader
 	{
-		decoded = null;
+		public int Width, Height, Bpp, DibSize, PixelOffset, Stride;
+		public bool TopDown, CoreHeader;
+		public uint AlphaMask;
+	}
+
+	/// <summary>Reads a BMP's headers and applies every refusal <see cref="TryDecodeBmp"/> makes: all of them are here.</summary>
+	private static bool TryReadBmpHeader(ImageBytes d, out BmpHeader header)
+	{
+		header = default;
 
 		if (d.Length < 26)
 		{
 			return false;
 		}
 
-		var pixelOffset = (int)ReadU32LE(d, 10);
-		var dibSize = (int)ReadU32LE(d, 14);
+		header.PixelOffset = (int)ReadU32LE(d, 10);
+		var dibSize = header.DibSize = (int)ReadU32LE(d, 14);
 
 		// BITMAPCOREHEADER (OS/2 v1) stores 16-bit dimensions, has no compression field, and uses 3-byte
 		// palette entries; reading it with the BITMAPINFOHEADER layout yields garbage.
-		var coreHeader = dibSize == 12;
+		var coreHeader = header.CoreHeader = dibSize == 12;
 
 		int width, height, bpp, compression;
-		bool topDown;
 		if (coreHeader)
 		{
 			width = ReadU16LE(d, 18);
 			height = ReadU16LE(d, 20);
-			topDown = false;
 			bpp = ReadU16LE(d, 24);
 			compression = 0;
 		}
@@ -42,7 +49,7 @@ internal static partial class ManagedImageDecoder
 
 			width = (int)ReadU32LE(d, 18);
 			var rawHeight = (int)ReadU32LE(d, 22);
-			topDown = rawHeight < 0;
+			header.TopDown = rawHeight < 0;
 			height = rawHeight == int.MinValue ? 0 : Math.Abs(rawHeight);
 			bpp = ReadU16LE(d, 28);
 			compression = (int)ReadU32LE(d, 30);
@@ -71,17 +78,44 @@ internal static partial class ManagedImageDecoder
 			return false; // only uncompressed 8/24/32-bit BMPs (BGRA bit-fields included), within the pixel cap
 		}
 
+		var stride = (width * (bpp / 8) + 3) & ~3; // rows padded to 4 bytes
+		if (header.PixelOffset < 0 || (long)header.PixelOffset + (long)stride * height > d.Length)
+		{
+			return false;
+		}
+
+		header.Width = width;
+		header.Height = height;
+		header.Bpp = bpp;
+		header.Stride = stride;
+		header.AlphaMask = alphaMask;
+		return true;
+	}
+
+	private static bool TryDecodeBmp(byte[] d, ImageBytes bytes, [NotNullWhen(true)] out DecodedImage? decoded)
+	{
+		decoded = null;
+		if (!TryReadBmpHeader(bytes, out var header))
+		{
+			return false;
+		}
+
+		int width = header.Width, height = header.Height, bpp = header.Bpp, pixelOffset = header.PixelOffset, stride = header.Stride;
+		var coreHeader = header.CoreHeader;
+		var topDown = header.TopDown;
+		var alphaMask = header.AlphaMask;
+
 		byte[]? palette = null; // BGR triples, always 256 entries so an out-of-range index can't read past the end
 		if (bpp == 8)
 		{
 			var entrySize = coreHeader ? 3 : 4;
-			var colorsUsed = coreHeader || d.Length < 50 ? 256 : (int)ReadU32LE(d, 46);
+			var colorsUsed = coreHeader || d.Length < 50 ? 256 : (int)ReadU32LE(bytes, 46);
 			if (colorsUsed is <= 0 or > 256)
 			{
 				colorsUsed = 256;
 			}
 
-			var paletteOffset = 14 + dibSize;
+			var paletteOffset = 14 + header.DibSize;
 			palette = new byte[256 * 3];
 			for (var i = 0; i < colorsUsed; i++)
 			{
@@ -98,11 +132,6 @@ internal static partial class ManagedImageDecoder
 		}
 
 		var bytesPerPixel = bpp / 8;
-		var stride = (width * bytesPerPixel + 3) & ~3; // rows padded to 4 bytes
-		if (pixelOffset < 0 || (long)pixelOffset + (long)stride * height > d.Length)
-		{
-			return false;
-		}
 
 		// An explicit alpha mask says the fourth byte IS alpha (that is what our own encoder writes), so it wins.
 		// Only 32-bit BI_RGB leaves the byte undefined — most writers (MS Paint, a BitBlt capture) leave it at 0 —
@@ -163,7 +192,4 @@ internal static partial class ManagedImageDecoder
 
 		return true;
 	}
-
-	private static uint ReadU32LE(byte[] d, int o) => (uint)(d[o] | (d[o + 1] << 8) | (d[o + 2] << 16) | (d[o + 3] << 24));
-	private static int ReadU16LE(byte[] d, int o) => d[o] | (d[o + 1] << 8);
 }
