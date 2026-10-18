@@ -126,6 +126,25 @@ public class Given_Calendar
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("en-US", "ThaiCalendar", "Jan", "Monday", "2567")]
+	[DataRow("en-US", "KoreanCalendar", "Jan", "Monday", "4357")]
+	[DataRow("en-US", "TaiwanCalendar", "Jan", "Monday", "113")]
+	[DataRow("de-DE", "ThaiCalendar", "Jan", "Montag", "2567")]
+	[DataRow("de-DE", "KoreanCalendar", "Jan", "Montag", "4357")]
+	[DataRow("de-DE", "TaiwanCalendar", "Jan", "Montag", "113")]
+	public void When_Calendar_Has_Gregorian_Months_Then_Names_Follow_Language(string language, string calendarIdentifier, string expectedMonthPrefix, string expectedDayOfWeek, string expectedYear)
+	{
+		// As in WinRT, a language without names for these calendars keeps its own ("January 2567" for en-US).
+		var calendar = new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour);
+		calendar.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0)));
+
+		StringAssert.StartsWith(calendar.MonthAsString(), expectedMonthPrefix);
+		Assert.AreEqual(expectedDayOfWeek, calendar.DayOfWeekAsString());
+		Assert.AreEqual(expectedYear, calendar.YearAsString());
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinRT throws after SetToMin, see When_Julian_Calendar.
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
 	[DataRow("ar-SA", "JulianCalendar")]
