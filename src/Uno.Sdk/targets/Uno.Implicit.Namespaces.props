@@ -1,5 +1,10 @@
 <Project>
-	<ItemGroup Condition=" '$(ImplicitUsings)' == 'true' OR '$(ImplicitUsings)' == 'enable' ">
+	<!--
+		Imported before the project body, as the .NET SDK does with its own implicit usings, so that a
+		<Using Remove="..." /> in the project applies to these. Item conditions are evaluated after every
+		property, so the values set in the project body and in the Uno.Sdk targets are the ones seen here.
+	-->
+	<ItemGroup Condition=" '$(DisableImplicitUnoNamespaces)' != 'true' AND ('$(ImplicitUsings)' == 'true' OR '$(ImplicitUsings)' == 'enable') ">
 		<Using Include="System.Windows.Input" Sdk="Uno" />
 		<Using Include="Windows.Networking.Connectivity" Sdk="Uno" />
 		<Using Include="Windows.Storage" Sdk="Uno" />
