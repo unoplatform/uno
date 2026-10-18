@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Foundation;
 using Windows.Globalization;
@@ -58,6 +59,10 @@ public class TimePickerIntegrationTests
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task VerifyDefaultProperties()
 	{
+		// Uno: the default clock is the app language's, which the user's time setting can change.
+		DefaultClockHelper.AssumeStockTimeFormat(ApplicationLanguages.Languages[0]);
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
 		TimePicker timePicker = null;
 
 		await TestServices.RunOnUIThread(() =>

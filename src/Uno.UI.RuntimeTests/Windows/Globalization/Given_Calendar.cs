@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Globalization;
 using CultureInfo = System.Globalization.CultureInfo;
 
@@ -59,6 +60,9 @@ public class Given_Calendar
 	[DataRow("th-TH", "en-US", "24HourClock", "ThaiCalendar")]
 	public void When_Languages_Differ_From_CurrentCulture_Then_Clock_And_System_Follow_Languages(string language, string currentCulture, string expectedClock, string expectedSystem)
 	{
+		DefaultClockHelper.AssumeStockTimeFormat(language);
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
 		var culture = CultureInfo.CurrentCulture;
 		try
 		{

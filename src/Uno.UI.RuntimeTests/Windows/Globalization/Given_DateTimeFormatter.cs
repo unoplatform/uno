@@ -6,6 +6,7 @@ using Windows.Globalization;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Globalization;
 
@@ -18,6 +19,9 @@ public class Given_DateTimeFormatter
 	[DataRow("en-US", "en-GB", "12HourClock", "1:05 PM")]
 	public void When_Language_Differs_From_CurrentCulture_Then_Time_Follows_Language(string language, string currentCulture, string expectedClock, string expectedTime)
 	{
+		DefaultClockHelper.AssumeStockTimeFormat(language);
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
 		var culture = CultureInfo.CurrentCulture;
 		var primaryLanguageOverride = ApplicationLanguages.PrimaryLanguageOverride;
 		try
