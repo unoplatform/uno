@@ -544,6 +544,9 @@ public sealed partial class DateTimeFormatter
 				(false, true, true, true) => RemoveFields(ConstructPattern(dateFormat.LongDatePattern), YearOrEraFieldRegex()),
 				(false, true, true, false) => GetMonthDayPattern(),
 
+				// The abbreviated day of week before the day, as WinRT writes it for most languages ("Mon 15").
+				(false, false, true, true) => "{dayofweek.abbreviated} " + GetSinglePartPattern(dateFormat.MonthDayPattern, DayFieldRegex(), "{day.integer}", keepSpacedSuffix: false),
+
 				// The patterns WinRT gives for a single part. The year and the day keep the letters the language writes
 				// after them, from its year and month, and month and day patterns.
 				(true, false, false, false) => GetSinglePartPattern(dateFormat.YearMonthPattern, FullYearFieldRegex(), "{year.full}", keepSpacedSuffix: true),
