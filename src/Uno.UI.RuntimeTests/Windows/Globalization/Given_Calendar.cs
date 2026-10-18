@@ -198,6 +198,30 @@ public class Given_Calendar
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 1, "4")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 2, "24")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 3, "024")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 4, "2024")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 5, "02024")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 6, "002024")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 10, "0000002024")]
+	[DataRow("en-US", "GregorianCalendar", 5, 2, "05")]
+	[DataRow("en-US", "GregorianCalendar", 5, 4, "0005")]
+	[DataRow("en-US", "GregorianCalendar", 5, 6, "000005")]
+	[DataRow("ja-JP", "JapaneseCalendar", 2024, 4, "0006")]
+	[DataRow("ja-JP", "JapaneseCalendar", 2024, 6, "000006")]
+	[DataRow("th-TH", "ThaiCalendar", 2024, 6, "002567")]
+	public void When_Year_Is_Truncated_Then_Last_Digits_Are_Padded_To_Length(string language, string calendarIdentifier, int year, int remainingDigits, string expected)
+	{
+		// WinRT pads to the length even when it is longer than the year, which its docs don't say.
+		var calendar = new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour);
+		calendar.SetDateTime(new DateTimeOffset(new DateTime(year, 1, 15, 12, 0, 0)));
+
+		Assert.AreEqual(expected, calendar.YearAsTruncatedString(remainingDigits));
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinRT uses the language's own digits (ה׳תשפ״ד, ١٤٤٥).
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
 	[DataRow("en-US", "HebrewCalendar", "5784", "5", "5")]
