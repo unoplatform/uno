@@ -78,6 +78,60 @@ public class Given_DateTimeFormatter
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("en-US", "HebrewCalendar", "{month.integer(2)}/{day.integer(2)}/{year.full}", 2024, 1, 15, "05/05/5784")]
+	[DataRow("en-US", "HebrewCalendar", "{month.full}", 2024, 1, 15, "שבט")]
+	[DataRow("en-US", "HebrewCalendar", "{month.full}", 2024, 2, 15, "אדר א׳")]
+	[DataRow("en-US", "HebrewCalendar", "{month.full}", 2024, 3, 15, "אדר ב׳")]
+	[DataRow("en-US", "HebrewCalendar", "{hour.integer}:{minute.integer(2)} {period.abbreviated}", 2024, 1, 15, "1:05 PM")]
+	[DataRow("en-US", "ThaiCalendar", "month year", 2024, 1, 15, "January 2567")]
+	[DataRow("en-US", "ThaiCalendar", "{year.abbreviated(2)}", 2100, 3, 1, "43")]
+	[DataRow("en-US", "JulianCalendar", "{month.integer(2)}/{day.integer(2)}/{year.full}", 2024, 1, 15, "01/02/2024")]
+	[DataRow("en-US", "JulianCalendar", "month year", 2100, 3, 1, "February 2100")]
+	[DataRow("en-US", "JapaneseCalendar", "{era.abbreviated} {year.full}", 2024, 1, 15, "令和 6")]
+	[DataRow("ar-SA", "GregorianCalendar", "month year", 2024, 1, 15, "يناير 2024")]
+	[DataRow("ar-SA", "GregorianCalendar", "month year", 2100, 3, 1, "مارس 2100")]
+	public void When_Calendar_Is_Given_Then_Dates_Follow_It(string language, string calendar, string template, int year, int month, int day, string expected)
+	{
+		var formatter = new DateTimeFormatter(template, [language], "ZZ", calendar, ClockIdentifiers.TwelveHour);
+
+		Assert.AreEqual(calendar, formatter.Calendar);
+		Assert.AreEqual(expected, formatter.Format(new DateTimeOffset(new DateTime(year, month, day, 13, 5, 7))).Replace('\u202F', ' '));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Calendar_Has_No_DotNet_Calendar_Then_Formatter_Is_Created()
+	{
+		// .NET has no Korean lunar calendar, so the language's calendar formats, which WinRT may not do.
+		// This only checks that the identifier is still accepted, as it was before calendars were used.
+		var formatter = new DateTimeFormatter("month year", ["en-US"], "ZZ", CalendarIdentifiers.KoreanLunar, ClockIdentifiers.TwelveHour);
+
+		Assert.AreEqual(CalendarIdentifiers.KoreanLunar, formatter.Calendar);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Created_From_Components_With_Calendar_Then_Dates_Follow_It()
+	{
+		var formatter = new DateTimeFormatter(
+			YearFormat.Default,
+			MonthFormat.Full,
+			DayFormat.None,
+			DayOfWeekFormat.None,
+			HourFormat.None,
+			MinuteFormat.None,
+			SecondFormat.None,
+			["en-US"],
+			"ZZ",
+			CalendarIdentifiers.Thai,
+			ClockIdentifiers.TwelveHour);
+
+		Assert.AreEqual(CalendarIdentifiers.Thai, formatter.Calendar);
+		Assert.AreEqual("January 2567", formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0))));
+	}
+
 	private static string FormatPeriod(string pattern, string cultureName)
 		=> new DateTimeFormatter(pattern, [cultureName], "ZZ", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour)
 			.Format(new DateTimeOffset(2024, 1, 15, 17, 15, 0, TimeSpan.Zero));

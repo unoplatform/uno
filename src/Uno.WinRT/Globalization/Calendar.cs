@@ -11,7 +11,11 @@ namespace Windows.Globalization
 	public partial class Calendar
 	{
 		#region Static id parsing helpers
-		private static _Calendar GetCalendar(string calendar)
+		internal static _Calendar GetCalendar(string calendar)
+			=> FindCalendar(calendar) ?? throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}.");
+
+		// Null for the identifiers .NET has no calendar for (the lunar ones but Chinese).
+		internal static _Calendar? FindCalendar(string calendar)
 		{
 			return calendar switch
 			{
@@ -32,11 +36,11 @@ namespace Windows.Globalization
 				// case CalendarIdentifiers.TaiwanLunarValue: return new global::System.Globalization.TaiwanLunarCalendar();
 				// case CalendarIdentifiers.KoreanLunarValue: return new global::System.Globalization.KoreanLunarCalendar();
 				// case CalendarIdentifiers.JapaneseLunarValue: return new global::System.Globalization.JapaneseLunarCalendar();
-				_ => throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}."),
+				_ => null,
 			};
 		}
 
-		private static string GetCalendarSystem(_Calendar calendar)
+		internal static string GetCalendarSystem(_Calendar calendar)
 		{
 			return calendar switch
 			{
@@ -101,7 +105,8 @@ namespace Windows.Globalization
 
 		// The calendar's language culture, formatting with the calendar system in use. As in WinRT, a language
 		// that has no names for that calendar defers to one that has (Hebrew months in Hebrew for en-US).
-		private static CultureInfo ResolveFormatCulture(CultureInfo languageCulture, _Calendar calendar)
+		// DateTimeFormatter names its dates through it too.
+		internal static CultureInfo ResolveFormatCulture(CultureInfo languageCulture, _Calendar calendar)
 		{
 			if (languageCulture.Calendar.GetType() == calendar.GetType())
 			{
@@ -567,11 +572,14 @@ namespace Windows.Globalization
 			=> Year.ToString(_formatCulture);
 
 		public string YearAsTruncatedString(int remainingDigits)
+			=> GetTruncatedYear(Year, remainingDigits, _formatCulture);
+
+		// The last digits, zero-padded to the length as WinRT does: 2567 gives "67" and year 6 "06" for 2,
+		// 2024 gives "002024" for 6.
+		internal static string GetTruncatedYear(int year, int digits, CultureInfo culture)
 		{
-			// The last digits, zero-padded to the length as WinRT does: 2567 gives "67" and year 6 "06" for 2,
-			// 2024 gives "002024" for 6.
-			var year = Year.ToString(new string('0', remainingDigits), _formatCulture);
-			return year.Length > remainingDigits ? year.Substring(year.Length - remainingDigits) : year;
+			var text = year.ToString(new string('0', digits), culture);
+			return text.Length > digits ? text.Substring(text.Length - digits) : text;
 		}
 
 		public string YearAsPaddedString(int minDigits)
@@ -592,10 +600,23 @@ namespace Windows.Globalization
 			=> GetMonthName();
 
 		private string GetMonthName()
-			=> _calendar is global::System.Globalization.JulianCalendar
+			=> GetMonthName(DateTime, _calendar, _formatCulture, abbreviated: true);
+
+		// The month of the date in the calendar in use, named through ResolveFormatCulture's culture. Formatting
+		// the date, rather than naming its month number, keeps the Hebrew leap months (Adar I, Adar II).
+		internal static string GetMonthName(DateTime date, _Calendar calendar, CultureInfo formatCulture, bool abbreviated)
+		{
+			if (calendar is global::System.Globalization.JulianCalendar)
+			{
 				// Julian months are the Gregorian ones, by number.
-				? _formatCulture.DateTimeFormat.GetAbbreviatedMonthName(Month)
-				: _time.ToString("MMM", _formatCulture);
+				var month = calendar.GetMonth(date);
+				return abbreviated
+					? formatCulture.DateTimeFormat.GetAbbreviatedMonthName(month)
+					: formatCulture.DateTimeFormat.GetMonthName(month);
+			}
+
+			return date.ToString(abbreviated ? "MMM" : "MMMM", formatCulture);
+		}
 
 		public string MonthAsNumericString()
 			=> Month.ToString(_formatCulture);
