@@ -178,6 +178,35 @@ public class Given_DateTimeFormatter
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Languages_Change_Then_Default_Formatters_Follow()
+	{
+		var primaryLanguageOverride = ApplicationLanguages.PrimaryLanguageOverride;
+		try
+		{
+			var date = new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 7));
+
+			ApplicationLanguages.PrimaryLanguageOverride = "en-US";
+			Assert.AreEqual("1:05 PM", NormalizeText(DateTimeFormatter.ShortTime.Format(date)));
+
+			ApplicationLanguages.PrimaryLanguageOverride = "de-DE";
+			Assert.AreEqual(ClockIdentifiers.TwentyFourHour, DateTimeFormatter.ShortTime.Clock);
+			CollectionAssert.AreEqual(ApplicationLanguages.Languages.ToList(), DateTimeFormatter.ShortTime.Languages.ToList());
+			Assert.AreEqual("13:05", NormalizeText(DateTimeFormatter.ShortTime.Format(date)));
+			Assert.AreEqual("13:05:07", NormalizeText(DateTimeFormatter.LongTime.Format(date)));
+			Assert.AreEqual("15.01.2024", NormalizeText(DateTimeFormatter.ShortDate.Format(date)));
+			Assert.AreEqual("Montag, 15. Januar 2024", NormalizeText(DateTimeFormatter.LongDate.Format(date)));
+
+			// As in WinRT, each read gives a new formatter.
+			Assert.AreNotSame(DateTimeFormatter.ShortTime, DateTimeFormatter.ShortTime);
+		}
+		finally
+		{
+			ApplicationLanguages.PrimaryLanguageOverride = primaryLanguageOverride;
+		}
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinRT uses Hebrew numerals (ה׳/ה׳/ה׳תשפ״ד).
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
 	public void When_Calendar_Is_Hebrew_Then_Numbers_Follow_It()

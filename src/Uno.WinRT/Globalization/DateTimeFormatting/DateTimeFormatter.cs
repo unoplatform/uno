@@ -16,6 +16,11 @@ namespace Windows.Globalization.DateTimeFormatting;
 /// </summary>
 public sealed partial class DateTimeFormatter
 {
+	private static DateTimeFormatter? s_longDate;
+	private static DateTimeFormatter? s_longTime;
+	private static DateTimeFormatter? s_shortDate;
+	private static DateTimeFormatter? s_shortTime;
+
 	private readonly PatternFormatContext _context;
 
 	private readonly PatternRootNode _patternRootNode;
@@ -281,12 +286,12 @@ public sealed partial class DateTimeFormatter
 	/// <summary>
 	/// Gets the DateTimeFormatter object that formats dates according to the user's choice of long date pattern.
 	/// </summary>
-	public static DateTimeFormatter LongDate { get; } = new DateTimeFormatter("longdate");
+	public static DateTimeFormatter LongDate => GetDefault(ref s_longDate, "longdate");
 
 	/// <summary>
 	/// Gets the DateTimeFormatter object that formats times according to the user's choice of long time pattern.
 	/// </summary>
-	public static DateTimeFormatter LongTime { get; } = new DateTimeFormatter("longtime");
+	public static DateTimeFormatter LongTime => GetDefault(ref s_longTime, "longtime");
 
 	/// <summary>
 	/// Gets or sets the numbering system that is used to format dates and times.
@@ -311,12 +316,12 @@ public sealed partial class DateTimeFormatter
 	/// <summary>
 	/// Gets the DateTimeFormatter object that formats dates according to the user's choice of short date pattern.
 	/// </summary>
-	public static DateTimeFormatter ShortDate { get; } = new DateTimeFormatter("shortdate");
+	public static DateTimeFormatter ShortDate => GetDefault(ref s_shortDate, "shortdate");
 
 	/// <summary>
 	/// Gets the DateTimeFormatter object that formats times according to the user's choice of short time pattern.
 	/// </summary>
-	public static DateTimeFormatter ShortTime { get; } = new DateTimeFormatter("shorttime");
+	public static DateTimeFormatter ShortTime => GetDefault(ref s_shortTime, "shorttime");
 
 	/// <summary>
 	/// Gets a string representation of this format template.
@@ -343,6 +348,44 @@ public sealed partial class DateTimeFormatter
 
 	private static IReadOnlyList<string>? ToLanguageList(IEnumerable<string>? languages)
 		=> languages?.Distinct().ToArray();
+
+	// As in WinRT, each read gives a new formatter for the current application languages. The one built for them
+	// is kept until they change, so a read otherwise costs a reference comparison and a copy.
+	private static DateTimeFormatter GetDefault(ref DateTimeFormatter? cache, string template)
+	{
+		var formatter = cache;
+		if (formatter is null || !ReferenceEquals(formatter.Languages, ApplicationLanguages.Languages))
+		{
+			cache = formatter = new DateTimeFormatter(template);
+		}
+
+		return new DateTimeFormatter(formatter);
+	}
+
+	// Shares the other formatter's cultures and parsed pattern, which nothing changes after construction.
+	private DateTimeFormatter(DateTimeFormatter other)
+	{
+		_context = other._context;
+		_patternRootNode = other._patternRootNode;
+		Calendar = other.Calendar;
+		Clock = other.Clock;
+		GeographicRegion = other.GeographicRegion;
+		IncludeYear = other.IncludeYear;
+		IncludeMonth = other.IncludeMonth;
+		IncludeDay = other.IncludeDay;
+		IncludeDayOfWeek = other.IncludeDayOfWeek;
+		IncludeHour = other.IncludeHour;
+		IncludeMinute = other.IncludeMinute;
+		IncludeSecond = other.IncludeSecond;
+		IncludeTimeZone = other.IncludeTimeZone;
+		IsShortDate = other.IsShortDate;
+		IsLongDate = other.IsLongDate;
+		IsShortTime = other.IsShortTime;
+		IsLongTime = other.IsLongTime;
+		Languages = other.Languages;
+		Patterns = other.Patterns;
+		Template = other.Template;
+	}
 
 	private static string ToTemplateString(YearFormat yearFormat)
 		=> yearFormat switch
