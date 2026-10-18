@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using Windows.Globalization;
 using Windows.Storage;
 
@@ -89,7 +90,9 @@ public class Given_ApplicationLanguages
 			}
 
 			// Stands for the culture the runtime read from the regional settings, which differs from the language.
-			var formatCulture = new CultureInfo(language.StartsWith("es", StringComparison.OrdinalIgnoreCase) ? "it-IT" : "es-MX");
+			var formatCulture = new[] { "es-MX", "it-IT", "pt-BR" }
+				.Select(name => new CultureInfo(name))
+				.First(c => !language.StartsWith(c.TwoLetterISOLanguageName, StringComparison.OrdinalIgnoreCase) && c.Name != CultureInfo.InstalledUICulture.Name);
 			CultureInfo.CurrentCulture = formatCulture;
 			CultureInfo.DefaultThreadCurrentCulture = formatCulture;
 
@@ -98,23 +101,58 @@ public class Given_ApplicationLanguages
 			var expectedUICulture = new CultureInfo(language).Name;
 			CultureInfo.CurrentUICulture.Name.Should().Be(expectedUICulture);
 			(CultureInfo.DefaultThreadCurrentUICulture?.Name).Should().Be(expectedUICulture);
+			CultureInfo.CurrentCulture.Should().BeSameAs(formatCulture);
+			CultureInfo.DefaultThreadCurrentCulture.Should().BeSameAs(formatCulture);
+		}
+		finally
+		{
+			ApplicationLanguages.PrimaryLanguageOverride = string.Empty;
+			CultureInfo.CurrentCulture = culture;
+			CultureInfo.CurrentUICulture = uiCulture;
+			CultureInfo.DefaultThreadCurrentCulture = threadCulture;
+			CultureInfo.DefaultThreadCurrentUICulture = threadUICulture;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	public void When_ApplyCulture_With_Runtime_Culture_Then_Culture_Follows_System_Locale_On_Android_Only()
+	{
+		var culture = CultureInfo.CurrentCulture;
+		var uiCulture = CultureInfo.CurrentUICulture;
+		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
+		var threadUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+		try
+		{
+			if (!OperatingSystem.IsAndroid() && CultureInfo.InstalledUICulture.Name.Length == 0)
+			{
+				Assert.Inconclusive("The runtime found no user locale; When_ApplyCulture_Without_User_Locale_Then_Culture_Follows_Language covers it.");
+			}
+
+			// The culture the runtime picked at startup, before the app set one of its own.
+			var runtimeCulture = CultureInfo.InstalledUICulture;
+			CultureInfo.CurrentCulture = runtimeCulture;
+			CultureInfo.DefaultThreadCurrentCulture = null;
+
+			ApplicationLanguages.ApplyCulture();
 
 			if (OperatingSystem.IsAndroid())
 			{
-				// Android formats with the system locale, whose extensions carry the regional preferences.
+				// The system locale keeps the -u- extensions (regional preferences) that the runtime's culture drops.
 				var systemCulture = new CultureInfo(ApplicationLanguages.ManifestLanguages[0]).Name;
 				CultureInfo.CurrentCulture.Name.Should().Be(systemCulture);
 				(CultureInfo.DefaultThreadCurrentCulture?.Name).Should().Be(systemCulture);
 			}
 			else
 			{
-				CultureInfo.CurrentCulture.Should().BeSameAs(formatCulture);
-				CultureInfo.DefaultThreadCurrentCulture.Should().BeSameAs(formatCulture);
+				CultureInfo.CurrentCulture.Should().BeSameAs(runtimeCulture);
+				CultureInfo.DefaultThreadCurrentCulture.Should().BeNull();
 			}
 		}
 		finally
 		{
-			ApplicationLanguages.PrimaryLanguageOverride = string.Empty;
 			CultureInfo.CurrentCulture = culture;
 			CultureInfo.CurrentUICulture = uiCulture;
 			CultureInfo.DefaultThreadCurrentCulture = threadCulture;
