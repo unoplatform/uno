@@ -544,10 +544,11 @@ public sealed partial class DateTimeFormatter
 				(false, true, true, true) => RemoveFields(ConstructPattern(dateFormat.LongDatePattern), YearOrEraFieldRegex()),
 				(false, true, true, false) => GetMonthDayPattern(),
 
-				// The patterns WinRT gives for a single part.
-				(true, false, false, false) => "{year.full}",
+				// The patterns WinRT gives for a single part. The year and the day keep the letters the language writes
+				// after them, from its year and month, and month and day patterns.
+				(true, false, false, false) => GetSinglePartPattern(dateFormat.YearMonthPattern, FullYearFieldRegex(), "{year.full}", keepSpacedSuffix: true),
 				(false, true, false, false) => IncludeMonth == MonthFormat.Numeric ? "{month.integer}" : "{month.solo.full}",
-				(false, false, true, false) => "{day.integer}",
+				(false, false, true, false) => GetSinglePartPattern(dateFormat.MonthDayPattern, DayFieldRegex(), "{day.integer}", keepSpacedSuffix: false),
 				(false, false, false, true) => "{dayofweek.solo.full}",
 
 				_ => throw new ArgumentException($"The template '{Template}' has no date pattern."),
@@ -622,6 +623,46 @@ public sealed partial class DateTimeFormatter
 			return IncludeYear == YearFormat.Abbreviated
 				? FullYearFieldRegex().Replace(ConstructPattern(dateFormat.ShortDatePattern), "{year.abbreviated(2)}")
 				: longDate;
+		}
+
+		// The part as WinRT writes it alone: with the letters the language puts after the year ("2024年", "2024 г."),
+		// but only those glued to the day ("15日", and "15" for lt-LT's "15 d.").
+		string GetSinglePartPattern(string pattern, Regex part, string fallback, bool keepSpacedSuffix)
+		{
+			pattern = ConstructPattern(pattern);
+			if (part.Match(pattern) is not { Success: true } field)
+			{
+				return fallback;
+			}
+
+			var start = field.Index + field.Length;
+			var end = pattern.IndexOf('{', start);
+			var suffix = pattern.AsSpan(start, (end < 0 ? pattern.Length : end) - start);
+			if (!keepSpacedSuffix)
+			{
+				var glued = 0;
+				while (glued < suffix.Length && !IsSeparator(suffix[glued]))
+				{
+					glued++;
+				}
+
+				suffix = suffix[..glued];
+			}
+
+			while (suffix.Length > 0 && IsSeparator(suffix[^1]))
+			{
+				suffix = suffix[..^1];
+			}
+
+			foreach (var c in suffix)
+			{
+				if (char.IsLetter(c))
+				{
+					return string.Concat(field.Value, suffix);
+				}
+			}
+
+			return field.Value;
 		}
 
 		// A numeric month takes the short date without its year and its padding ("1/15", "15.1."), unless the month
@@ -937,9 +978,9 @@ public sealed partial class DateTimeFormatter
 		}
 
 		return pattern;
-
-		static bool IsSeparator(char c) => char.IsWhiteSpace(c) || c is ',' or '\u060C' or '/' or '-';
 	}
+
+	private static bool IsSeparator(char c) => char.IsWhiteSpace(c) || c is ',' or '\u060C' or '/' or '-';
 
 	[GeneratedRegex(@"('[^']+')")]
 	private static partial Regex StringLiteralRegex();
@@ -958,6 +999,9 @@ public sealed partial class DateTimeFormatter
 
 	[GeneratedRegex(@"\{dayofweek[^}]*\}")]
 	private static partial Regex DayOfWeekFieldRegex();
+
+	[GeneratedRegex(@"\{day\.integer[^}]*\}")]
+	private static partial Regex DayFieldRegex();
 
 	[GeneratedRegex(@"\{year\.full[^}]*\}")]
 	private static partial Regex FullYearFieldRegex();

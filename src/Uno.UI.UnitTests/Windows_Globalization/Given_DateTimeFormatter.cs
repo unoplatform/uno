@@ -172,14 +172,32 @@ public class Given_DateTimeFormatter
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("ja-JP", "year", "{year.full}年")]
+	[DataRow("ja-JP", "year.abbreviated", "{year.abbreviated}年")]
+	[DataRow("ja-JP", "day", "{day.integer}日")]
+	[DataRow("ko-KR", "year", "{year.full}년")]
+	[DataRow("ko-KR", "day", "{day.integer}일")]
+	[DataRow("de-DE", "day", "{day.integer}")]
+	[DataRow("hu-HU", "year", "{year.full}")]
+	[DataRow("hu-HU", "day", "{day.integer}")]
+	[DataRow("ru-RU", "year", "{year.full} г.")]
+	[DataRow("ru-RU", "year.abbreviated", "{year.abbreviated} г.")]
+	[DataRow("bg-BG", "year", "{year.full} г.")]
+	[DataRow("uk-UA", "year", "{year.full} р.")]
+	[DataRow("lt-LT", "year", "{year.full} m.")]
+	[DataRow("ru-RU", "day", "{day.integer}")]
+	[DataRow("lt-LT", "day", "{day.integer}")]
+	[DataRow("zh-CN", "year", "{year.full}年")]
+	[DataRow("zh-CN", "day", "{day.integer}日")]
+	[DataRow("ar-SA", "year", "{year.full}")]
 	[DataRow("ja-JP", "month.numeric day", "{month.integer}月{day.integer}日")]
 	[DataRow("de-DE", "month.numeric day", "{day.integer}.{month.integer}.")]
 	[DataRow("fr-FR", "month.numeric day", "{day.integer}/{month.integer}")]
 	[DataRow("hu-HU", "month.numeric day", "{month.integer}. {day.integer}.")]
 	[DataRow("ja-JP", "year month.numeric day", "{year.full}年{month.integer}月{day.integer}日")]
 	[DataRow("de-DE", "year.abbreviated month day", "{day.integer(2)}.{month.integer(2)}.{year.abbreviated(2)}")]
-	public void When_Template_Part_Has_Format_Then_Pattern_Follows_Language(string language, string template, string expectedPattern)
-		=> Assert.AreEqual(expectedPattern, new DateTimeFormatter(template, [language]).Patterns[0]);
+	public void When_Template_Is_Given_Then_Pattern_Follows_Language(string language, string template, string expectedPattern)
+		=> Assert.AreEqual(expectedPattern, new DateTimeFormatter(template, [language]).Patterns[0].Replace('\u202F', ' '));
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19349")]
