@@ -10,12 +10,12 @@ internal static partial class ManagedImageDecoder
 	// JPEG decode: baseline (SOF0/1) and progressive (SOF2), Huffman only. Coefficients for every block are
 	// accumulated across scans into a per-component buffer (indexed by zig-zag position), then dequantized,
 	// de-zig-zagged, IDCT'd and colour-converted once all scans are read. Arithmetic/lossless coding is not handled.
-	private static bool TryDecodeJpeg(byte[] d, [NotNullWhen(true)] out DecodedImage? decoded)
+	private static bool TryDecodeJpeg(byte[] d, ImageBytes bytes, [NotNullWhen(true)] out DecodedImage? decoded)
 	{
 		decoded = null;
 		try
 		{
-			return new Jpeg(d).TryDecode(out decoded);
+			return new Jpeg(bytes, d).TryDecode(out decoded);
 		}
 		catch
 		{
@@ -26,7 +26,9 @@ internal static partial class ManagedImageDecoder
 
 	private sealed class Jpeg
 	{
-		private readonly byte[] _d;
+		// The markers are read through _h; the scans, which only a decode reads, through _d.
+		private readonly ImageBytes _h;
+		private readonly byte[]? _d;
 		private readonly int[][] _quant = new int[4][];
 		private readonly JpegHuffman?[] _huffDc = new JpegHuffman?[4];
 		private readonly JpegHuffman?[] _huffAc = new JpegHuffman?[4];
@@ -45,58 +47,17 @@ internal static partial class ManagedImageDecoder
 		private int _successiveAcState;
 		private int _successiveAcNextValue;
 
-		public Jpeg(byte[] d) => _d = d;
+		/// <param name="data">The file, to decode it; null to read its size only, which stops before the first scan.</param>
+		public Jpeg(ImageBytes header, byte[]? data)
+		{
+			_h = header;
+			_d = data;
+		}
 
 		public bool TryDecode([NotNullWhen(true)] out DecodedImage? decoded)
 		{
 			decoded = null;
-			var p = 2; // past SOI
-			while (p + 1 < _d.Length)
-			{
-				if (_d[p] != 0xFF)
-				{
-					p++;
-					continue;
-				}
-
-				var marker = _d[p + 1];
-				p += 2;
-				if (marker == 0xD9) // EOI
-				{
-					break;
-				}
-
-				if (marker is 0x01 || (marker >= 0xD0 && marker <= 0xD7))
-				{
-					continue; // standalone
-				}
-
-				var segLen = (_d[p] << 8) | _d[p + 1];
-				var segStart = p + 2;
-				var segEnd = p + segLen;
-
-				switch (marker)
-				{
-					case 0xDB: ParseQuant(segStart, segEnd); break;
-					case 0xC4: ParseHuffman(segStart, segEnd); break;
-					case 0xDD: _restartInterval = (_d[segStart] << 8) | _d[segStart + 1]; break;
-					case 0xE1: _orientation = TryReadExifOrientation(_d, segStart, segEnd) ?? _orientation; break;
-					case 0xEE: _adobeTransform = TryReadAdobeTransform(_d, segStart, segEnd) ?? _adobeTransform; break;
-					case 0xC0 or 0xC1 or 0xC2: // baseline / extended / progressive
-						_progressive = marker == 0xC2;
-						ParseFrame(segStart);
-						break;
-					case 0xC3 or 0xC5 or 0xC6 or 0xC7 or 0xC9 or 0xCA or 0xCB or 0xCD or 0xCE or 0xCF:
-						return false; // arithmetic / lossless / hierarchical
-					case 0xDA: // SOS
-						p = DecodeScan(segStart, segEnd);
-						continue;
-				}
-
-				p = segEnd;
-			}
-
-			if (_components is null || _width <= 0 || _height <= 0)
+			if (!ReadMarkers())
 			{
 				return false;
 			}
@@ -110,16 +71,105 @@ internal static partial class ManagedImageDecoder
 			return true;
 		}
 
+		/// <summary>
+		/// Reads the markers, decoding the scans when there is data to decode and stopping at the first one otherwise, and
+		/// applies every refusal the decode makes that the frame header decides.
+		/// </summary>
+		private bool ReadMarkers()
+		{
+			var p = 2; // past SOI
+			while (p + 1 < _h.Length)
+			{
+				if (_h[p] != 0xFF)
+				{
+					p++;
+					continue;
+				}
+
+				var marker = _h[p + 1];
+				p += 2;
+				if (marker == 0xD9) // EOI
+				{
+					break;
+				}
+
+				if (marker is 0x01 || (marker >= 0xD0 && marker <= 0xD7))
+				{
+					continue; // standalone
+				}
+
+				var segLen = (_h[p] << 8) | _h[p + 1];
+				var segStart = p + 2;
+				var segEnd = p + segLen;
+
+				switch (marker)
+				{
+					case 0xDB: ParseQuant(segStart, segEnd); break;
+					case 0xC4: ParseHuffman(segStart, segEnd); break;
+					case 0xDD: _restartInterval = (_h[segStart] << 8) | _h[segStart + 1]; break;
+					case 0xE1: _orientation = TryReadExifOrientation(_h, segStart, segEnd) ?? _orientation; break;
+					case 0xEE: _adobeTransform = TryReadAdobeTransform(_h, segStart, segEnd) ?? _adobeTransform; break;
+					case 0xC0 or 0xC1 or 0xC2: // baseline / extended / progressive
+						_progressive = marker == 0xC2;
+						ParseFrame(segStart);
+						break;
+					case 0xC3 or 0xC5 or 0xC6 or 0xC7 or 0xC9 or 0xCA or 0xCB or 0xCD or 0xCE or 0xCF:
+						return false; // arithmetic / lossless / hierarchical
+					case 0xDA: // SOS
+						if (_d is null)
+						{
+							return IsFrameSupported() && TryReadScanHeader(segStart, out _, out _, out _, out _, out _);
+						}
+
+						p = DecodeScan(segStart, segEnd);
+						continue;
+				}
+
+				p = segEnd;
+			}
+
+			return IsFrameSupported();
+		}
+
+		// The frame header's own refusals: the decode reads every component's quantization table slot, and samples the
+		// first component of a grey image or the first three or four of a colour one.
+		private bool IsFrameSupported()
+		{
+			if (_components is not { Length: > 0 } components || _width <= 0 || _height <= 0)
+			{
+				return false;
+			}
+
+			foreach (var c in components)
+			{
+				if (c.QuantId > 3)
+				{
+					return false;
+				}
+			}
+
+			var sampled = components.Length < 3 ? 1 : Math.Min(4, components.Length);
+			for (var i = 0; i < sampled; i++)
+			{
+				if (components[i].H == 0 || components[i].V == 0)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		private void ParseQuant(int q, int end)
 		{
 			while (q < end)
 			{
-				var pqTq = _d[q++];
+				var pqTq = _h[q++];
 				var precision16 = (pqTq >> 4) != 0;
 				var table = new int[64];
 				for (var i = 0; i < 64; i++)
 				{
-					table[i] = precision16 ? (_d[q] << 8) | _d[q + 1] : _d[q];
+					table[i] = precision16 ? (_h[q] << 8) | _h[q + 1] : _h[q];
 					q += precision16 ? 2 : 1;
 				}
 
@@ -131,18 +181,20 @@ internal static partial class ManagedImageDecoder
 		{
 			while (q < end)
 			{
-				var tcTh = _d[q++];
+				var tcTh = _h[q++];
 				var counts = new byte[16];
 				var total = 0;
 				for (var i = 0; i < 16; i++)
 				{
-					counts[i] = _d[q++];
+					counts[i] = _h[q++];
 					total += counts[i];
 				}
 
 				var symbols = new byte[total];
-				Array.Copy(_d, q, symbols, 0, total);
-				q += total;
+				for (var i = 0; i < total; i++)
+				{
+					symbols[i] = _h[q++];
+				}
 
 				var table = new JpegHuffman(counts, symbols);
 				if ((tcTh >> 4) == 0)
@@ -159,20 +211,20 @@ internal static partial class ManagedImageDecoder
 		private void ParseFrame(int q)
 		{
 			q++; // precision
-			_height = (_d[q] << 8) | _d[q + 1];
-			_width = (_d[q + 2] << 8) | _d[q + 3];
+			_height = (_h[q] << 8) | _h[q + 1];
+			_width = (_h[q + 2] << 8) | _h[q + 3];
 			if (ExceedsPixelCap(_width, _height))
 			{
 				// Bail before the dimension-driven allocations; TryDecode reports the failure as "not decoded".
 				throw new NotSupportedException("JPEG dimensions exceed the decode pixel cap.");
 			}
-			var count = _d[q + 4];
+			var count = _h[q + 4];
 			q += 5;
 
 			_components = new JpegComponent[count];
 			for (var i = 0; i < count; i++)
 			{
-				var c = new JpegComponent { Id = _d[q], H = _d[q + 1] >> 4, V = _d[q + 1] & 0x0F, QuantId = _d[q + 2] };
+				var c = new JpegComponent { Id = _h[q], H = _h[q + 1] >> 4, V = _h[q + 1] & 0x0F, QuantId = _h[q + 2] };
 				_components[i] = c;
 				_hMax = Math.Max(_hMax, c.H);
 				_vMax = Math.Max(_vMax, c.V);
@@ -201,18 +253,28 @@ internal static partial class ManagedImageDecoder
 				c.BlocksPerColumn = (int)Math.Ceiling((double)_height * c.V / _vMax / 8);
 				c.BlocksPerLineForMcu = _mcusPerLine * c.H;
 				c.BlocksPerColumnForMcu = _mcusPerColumn * c.V;
-				c.Coeffs = new int[c.BlocksPerLineForMcu * c.BlocksPerColumnForMcu * 64];
+				if (_d is not null)
+				{
+					c.Coeffs = new int[c.BlocksPerLineForMcu * c.BlocksPerColumnForMcu * 64];
+				}
 			}
 		}
 
-		private int DecodeScan(int q, int segEnd)
+		/// <summary>
+		/// Reads a scan header: the components the scan codes, with their DC and AC table slots, and the spectral selection
+		/// and successive approximation that pick the block decoder. It refuses what fails the scan's first blocks whatever
+		/// the data: a selector naming no component, and a table they read that isn't defined. Those are both of a baseline
+		/// scan's tables and a progressive DC scan's DC table; a progressive AC scan can skip blocks, and their table, on an
+		/// end-of-band run.
+		/// </summary>
+		private bool TryReadScanHeader(int q, out JpegComponent[] scanComponents, out int ss, out int se, out int ah, out int al)
 		{
-			var scanCount = _d[q++];
-			var scanComponents = new JpegComponent[scanCount];
+			var scanCount = _h[q++];
+			scanComponents = new JpegComponent[scanCount];
 			for (var i = 0; i < scanCount; i++)
 			{
-				var selector = _d[q];
-				var tables = _d[q + 1];
+				var selector = _h[q];
+				var tables = _h[q + 1];
 				q += 2;
 				foreach (var c in _components!)
 				{
@@ -225,12 +287,44 @@ internal static partial class ManagedImageDecoder
 				}
 			}
 
-			var ss = _d[q];
-			var se = _d[q + 1];
-			var ah = _d[q + 2] >> 4;
-			var al = _d[q + 2] & 0x0F;
+			ss = _h[q];
+			se = _h[q + 1];
+			ah = _h[q + 2] >> 4;
+			al = _h[q + 2] & 0x0F;
 
-			_reader = new JpegBitReader(_d, segEnd);
+			var readsDc = !_progressive || (ss == 0 && ah == 0);
+			var readsAc = !_progressive;
+			foreach (var c in scanComponents)
+			{
+				if (c is null)
+				{
+					return false;
+				}
+
+				if (c.H == 0 || c.V == 0)
+				{
+					continue; // no block of it is decoded
+				}
+
+				if ((readsDc && (c.DcTable > 3 || _huffDc[c.DcTable] is null))
+					|| (readsAc && (c.AcTable > 3 || _huffAc[c.AcTable] is null)))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private int DecodeScan(int q, int segEnd)
+		{
+			if (!TryReadScanHeader(q, out var scanComponents, out var ss, out var se, out var ah, out var al))
+			{
+				throw new NotSupportedException("The JPEG scan names a component or a table that isn't defined.");
+			}
+
+			var d = _d!;
+			_reader = new JpegBitReader(d, segEnd);
 			_eobrun = 0;
 			_successiveAcState = 0;
 			foreach (var c in scanComponents)
@@ -487,12 +581,13 @@ internal static partial class ManagedImageDecoder
 
 		private int FindNextMarker(int from)
 		{
+			var d = _d!;
 			var p = from;
-			while (p + 1 < _d.Length)
+			while (p + 1 < d.Length)
 			{
-				if (_d[p] == 0xFF)
+				if (d[p] == 0xFF)
 				{
-					var next = _d[p + 1];
+					var next = d[p + 1];
 					if (next != 0x00 && !(next >= 0xD0 && next <= 0xD7))
 					{
 						return p;
@@ -502,7 +597,7 @@ internal static partial class ManagedImageDecoder
 				p++;
 			}
 
-			return _d.Length;
+			return d.Length;
 		}
 
 		private DecodedImage Reconstruct()
@@ -611,7 +706,7 @@ internal static partial class ManagedImageDecoder
 	}
 
 	// APP14 "Adobe" marker: the transform byte is the last of the 12-byte payload (0 = none/CMYK, 1 = YCbCr, 2 = YCCK).
-	private static int? TryReadAdobeTransform(byte[] d, int start, int end)
+	private static int? TryReadAdobeTransform(ImageBytes d, int start, int end)
 	{
 		if (end - start < 12 || d[start] != 'A' || d[start + 1] != 'd' || d[start + 2] != 'o' || d[start + 3] != 'b' || d[start + 4] != 'e')
 		{
@@ -621,7 +716,7 @@ internal static partial class ManagedImageDecoder
 		return d[start + 11];
 	}
 
-	private static int? TryReadExifOrientation(byte[] d, int start, int end)
+	private static int? TryReadExifOrientation(ImageBytes d, int start, int end)
 	{
 		if (end - start < 14 || d[start] != 'E' || d[start + 1] != 'x' || d[start + 2] != 'i' || d[start + 3] != 'f' || d[start + 4] != 0)
 		{
@@ -693,9 +788,9 @@ internal static partial class ManagedImageDecoder
 		return new DecodedImage(nw, nh, new[] { dst }, source.DurationsMs);
 	}
 
-	private static int ReadExif16(byte[] d, int o, bool little) => little ? d[o] | (d[o + 1] << 8) : (d[o] << 8) | d[o + 1];
+	private static int ReadExif16(ImageBytes d, int o, bool little) => little ? d[o] | (d[o + 1] << 8) : (d[o] << 8) | d[o + 1];
 
-	private static uint ReadExif32(byte[] d, int o, bool little) => little
+	private static uint ReadExif32(ImageBytes d, int o, bool little) => little
 		? (uint)(d[o] | (d[o + 1] << 8) | (d[o + 2] << 16) | (d[o + 3] << 24))
 		: (uint)((d[o] << 24) | (d[o + 1] << 16) | (d[o + 2] << 8) | d[o + 3]);
 
