@@ -36,6 +36,13 @@ public class Given_DateTimeFormatter
 	[DataRow("year.abbreviated", "{year.abbreviated}")]
 	[DataRow("dayofweek month day", "{dayofweek.full}, {month.full} {day.integer}")]
 	[DataRow("shortdate shorttime", "{month.integer}/{day.integer}/{year.full} {hour.integer(1)}:{minute.integer(2)} {period.abbreviated(2)}")]
+	[DataRow("month.abbreviated day", "{month.abbreviated} {day.integer}")]
+	[DataRow("month.numeric day", "{month.integer}/{day.integer}")]
+	[DataRow("year.abbreviated month.abbreviated", "{month.abbreviated} {year.abbreviated}")]
+	[DataRow("dayofweek.abbreviated month.abbreviated day", "{dayofweek.abbreviated}, {month.abbreviated} {day.integer}")]
+	[DataRow("year month.abbreviated day dayofweek.abbreviated", "{dayofweek.abbreviated}, {month.abbreviated} {day.integer}, {year.full}")]
+	[DataRow("year month.numeric day", "{month.integer}/{day.integer}/{year.full}")]
+	[DataRow("year.abbreviated month day", "{month.integer}/{day.integer}/{year.abbreviated(2)}")]
 	public void When_Template_Names_Some_Parts_Then_Pattern_Has_Only_Those(string template, string expectedPattern)
 		=> Assert.AreEqual(expectedPattern, new DateTimeFormatter(template, ["en-US"]).Patterns[0].Replace('\u202F', ' '));
 
@@ -162,6 +169,17 @@ public class Given_DateTimeFormatter
 			ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
 		}
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("ja-JP", "month.numeric day", "{month.integer}月{day.integer}日")]
+	[DataRow("de-DE", "month.numeric day", "{day.integer}.{month.integer}.")]
+	[DataRow("fr-FR", "month.numeric day", "{day.integer}/{month.integer}")]
+	[DataRow("hu-HU", "month.numeric day", "{month.integer}. {day.integer}.")]
+	[DataRow("ja-JP", "year month.numeric day", "{year.full}年{month.integer}月{day.integer}日")]
+	[DataRow("de-DE", "year.abbreviated month day", "{day.integer(2)}.{month.integer(2)}.{year.abbreviated(2)}")]
+	public void When_Template_Part_Has_Format_Then_Pattern_Follows_Language(string language, string template, string expectedPattern)
+		=> Assert.AreEqual(expectedPattern, new DateTimeFormatter(template, [language]).Patterns[0]);
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19349")]

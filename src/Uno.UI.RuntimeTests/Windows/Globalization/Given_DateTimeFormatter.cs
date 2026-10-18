@@ -61,6 +61,15 @@ public class Given_DateTimeFormatter
 	[DataRow("year", "en-US", 13, "2024")]
 	[DataRow("day month year", "en-US", 13, "January 15, 2024")]
 	[DataRow("day month.full year", "de-DE", 13, "15. Januar 2024")]
+	[DataRow("month.abbreviated day", "en-US", 13, "Jan 15")]
+	[DataRow("month.numeric day", "en-US", 13, "1/15")]
+	[DataRow("month.numeric day", "de-DE", 13, "15.1.")]
+	[DataRow("month.numeric day", "fr-FR", 13, "15/1")]
+	[DataRow("year.abbreviated month.abbreviated", "en-US", 13, "Jan 24")]
+	[DataRow("dayofweek.abbreviated month.abbreviated day", "en-US", 13, "Mon, Jan 15")]
+	[DataRow("year month.abbreviated day dayofweek.abbreviated", "en-US", 13, "Mon, Jan 15, 2024")]
+	[DataRow("year month.numeric day", "en-US", 13, "1/15/2024")]
+	[DataRow("year.abbreviated month day", "en-US", 13, "1/15/24")]
 	public void When_Template_Names_Some_Parts_Then_Format_Has_Only_Those(string template, string language, int hour, string expected)
 	{
 		var formatter = new DateTimeFormatter(template, new[] { language });
