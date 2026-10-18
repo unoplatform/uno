@@ -85,6 +85,9 @@ internal static partial class ManagedImageDecoder
 		/// </summary>
 		private bool ReadMarkers()
 		{
+			// As in libjpeg (so Skia) and WIC, the frame and its metadata come from the markers before the first scan: after
+			// it, only tables, restart intervals and further scans count.
+			var scanned = false;
 			var p = 2; // past SOI
 			while (p + 1 < _h.Length)
 			{
@@ -115,13 +118,13 @@ internal static partial class ManagedImageDecoder
 					case 0xDB: ParseQuant(segStart, segEnd); break;
 					case 0xC4: ParseHuffman(segStart, segEnd); break;
 					case 0xDD: _restartInterval = (_h[segStart] << 8) | _h[segStart + 1]; break;
-					case 0xE1: _orientation = TryReadExifOrientation(_h, segStart, segEnd) ?? _orientation; break;
-					case 0xEE: _adobeTransform = TryReadAdobeTransform(_h, segStart, segEnd) ?? _adobeTransform; break;
-					case 0xC0 or 0xC1 or 0xC2: // baseline / extended / progressive
+					case 0xE1 when !scanned: _orientation = TryReadExifOrientation(_h, segStart, segEnd) ?? _orientation; break;
+					case 0xEE when !scanned: _adobeTransform = TryReadAdobeTransform(_h, segStart, segEnd) ?? _adobeTransform; break;
+					case 0xC0 or 0xC1 or 0xC2 when !scanned: // baseline / extended / progressive
 						_progressive = marker == 0xC2;
 						ParseFrame(segStart);
 						break;
-					case 0xC3 or 0xC5 or 0xC6 or 0xC7 or 0xC9 or 0xCA or 0xCB or 0xCD or 0xCE or 0xCF:
+					case 0xC3 or 0xC5 or 0xC6 or 0xC7 or 0xC9 or 0xCA or 0xCB or 0xCD or 0xCE or 0xCF when !scanned:
 						return false; // arithmetic / lossless / hierarchical
 					case 0xDA: // SOS
 						if (_d is null)
@@ -130,6 +133,7 @@ internal static partial class ManagedImageDecoder
 						}
 
 						p = DecodeScan(segStart, segEnd);
+						scanned = true;
 						continue;
 				}
 
