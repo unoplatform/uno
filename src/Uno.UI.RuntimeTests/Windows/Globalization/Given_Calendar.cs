@@ -143,6 +143,74 @@ public class Given_Calendar
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("th-TH", "", 2024, 1, 15, "2567", "67", "002567", "1", "01", "15", "")]
+	[DataRow("ja-JP", "JapaneseCalendar", 2024, 1, 15, "6", "06", "000006", "1", "01", "15", "")]
+	[DataRow("en-US", "JulianCalendar", 2024, 1, 5, "2023", "23", "002023", "12", "12", "23", "Dec")]
+	public void When_Calendar_Is_Not_Gregorian_Then_Date_Strings_Follow_It(
+		string language,
+		string calendarIdentifier,
+		int year,
+		int month,
+		int day,
+		string expectedYear,
+		string expectedTruncatedYear,
+		string expectedPaddedYear,
+		string expectedMonth,
+		string expectedPaddedMonth,
+		string expectedDay,
+		string expectedMonthNamePrefix)
+	{
+		var calendar = calendarIdentifier.Length > 0
+			? new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour)
+			: new Calendar(new[] { language });
+		calendar.SetDateTime(new DateTimeOffset(new DateTime(year, month, day, 12, 0, 0)));
+
+		Assert.AreEqual(expectedYear, calendar.YearAsString());
+		Assert.AreEqual(expectedTruncatedYear, calendar.YearAsTruncatedString(2));
+		Assert.AreEqual(expectedPaddedYear, calendar.YearAsPaddedString(6));
+		Assert.AreEqual(expectedMonth, calendar.MonthAsNumericString());
+		Assert.AreEqual(expectedPaddedMonth, calendar.MonthAsPaddedNumericString(2));
+		Assert.AreEqual(expectedDay, calendar.DayAsString());
+
+		// Uno abbreviates the names WinRT gives in full (Dec, December). The other rows skip the name, which
+		// the WebAssembly ICU shard for an English browser lacks.
+		StringAssert.StartsWith(calendar.MonthAsString(), expectedMonthNamePrefix);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinRT uses the language's own digits (ה׳תשפ״ד, ١٤٤٥).
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("en-US", "HebrewCalendar", "5784", "5", "5")]
+	[DataRow("ar-SA", "", "1445", "7", "3")]
+	public void When_Calendar_Is_Not_Gregorian_Then_Numbers_Follow_It(string language, string calendarIdentifier, string expectedYear, string expectedMonth, string expectedDay)
+	{
+		var calendar = calendarIdentifier.Length > 0
+			? new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour)
+			: new Calendar(new[] { language });
+		calendar.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0)));
+
+		Assert.AreEqual(expectedYear, calendar.YearAsString());
+		Assert.AreEqual(expectedMonth, calendar.MonthAsNumericString());
+		Assert.AreEqual(expectedDay, calendar.DayAsString());
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("24HourClock", "0", "00", "")]
+	[DataRow("12HourClock", "12", "12", "AM")]
+	public void When_Midnight_Then_Time_Strings_Follow_Clock(string clock, string expectedHour, string expectedPaddedHour, string expectedPeriod)
+	{
+		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, clock);
+		calendar.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 15, 0, 5, 0)));
+
+		Assert.AreEqual(expectedHour, calendar.HourAsString());
+		Assert.AreEqual(expectedPaddedHour, calendar.HourAsPaddedString(2));
+		Assert.AreEqual("05", calendar.MinuteAsPaddedString(2));
+		Assert.AreEqual(expectedPeriod, calendar.PeriodAsString());
+	}
+
+	[TestMethod]
 	public void When_Julian_Calendar_Day_Name()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Julian, ClockIdentifiers.TwelveHour);
