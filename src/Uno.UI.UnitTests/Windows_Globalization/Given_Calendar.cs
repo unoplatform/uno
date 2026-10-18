@@ -1,9 +1,11 @@
 #nullable enable
 
 using System.Globalization;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
+using Windows.System.UserProfile;
 using Calendar = Windows.Globalization.Calendar;
 
 namespace Uno.UI.Tests.Windows_Globalization;
@@ -146,6 +148,25 @@ public class Given_Calendar
 		{
 			DeviceClock.TestDevice = null;
 			ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+	[DataRow("en-GB", true, TwentyFourHour)]
+	[DataRow("en-GB", false, TwelveHour)]
+	[DataRow("en-US", true, TwentyFourHour)]
+	public void When_Device_Sets_Clock_Then_GlobalizationPreferences_Clocks_Follows(string deviceLocale, bool device24Hour, string expectedClock)
+	{
+		try
+		{
+			DeviceClock.TestDevice = (deviceLocale, null, device24Hour);
+
+			CollectionAssert.AreEqual(new[] { expectedClock }, GlobalizationPreferences.Clocks.ToArray());
+		}
+		finally
+		{
+			DeviceClock.TestDevice = null;
 		}
 	}
 
