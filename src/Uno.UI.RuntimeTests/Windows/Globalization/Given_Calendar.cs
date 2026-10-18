@@ -53,6 +53,29 @@ public class Given_Calendar
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("de-DE", "en-US", "24HourClock", "GregorianCalendar")]
+	[DataRow("en-US", "de-DE", "12HourClock", "GregorianCalendar")]
+	[DataRow("th-TH", "en-US", "24HourClock", "ThaiCalendar")]
+	public void When_Languages_Differ_From_CurrentCulture_Then_Clock_And_System_Follow_Languages(string language, string currentCulture, string expectedClock, string expectedSystem)
+	{
+		var culture = CultureInfo.CurrentCulture;
+		try
+		{
+			CultureInfo.CurrentCulture = new CultureInfo(currentCulture);
+
+			var calendar = new Calendar(new[] { language });
+
+			Assert.AreEqual(expectedSystem, calendar.GetCalendarSystem());
+			Assert.AreEqual(expectedClock, calendar.GetClock());
+		}
+		finally
+		{
+			CultureInfo.CurrentCulture = culture;
+		}
+	}
+
+	[TestMethod]
 	public void When_Julian_Calendar_Day_Name()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Julian, ClockIdentifiers.TwelveHour);

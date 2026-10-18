@@ -27,7 +27,27 @@ public class Given_Calendar
 	[DataRow("zh-TW", TwelveHour)]
 	[DataRow("ar-SA", TwelveHour)]
 	public void When_Default_Clock_For_Culture(string cultureName, string expectedClock)
-		=> AssertDefaultClock(CultureInfo.GetCultureInfo(cultureName), expectedClock);
+	{
+		var originalCulture = CultureInfo.CurrentCulture;
+		var originalOverride = ApplicationLanguages.PrimaryLanguageOverride;
+		try
+		{
+			// The clock follows the calendar's language, not CurrentCulture (the regional format).
+			CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(expectedClock == TwelveHour ? "en-GB" : "en-US");
+
+			Assert.AreEqual(expectedClock, new Calendar([cultureName]).GetClock());
+			Assert.AreEqual(expectedClock, new DateTimeFormatter("shorttime", [cultureName]).Clock);
+
+			ApplicationLanguages.PrimaryLanguageOverride = cultureName;
+			Assert.AreEqual(expectedClock, new Calendar().GetClock());
+			Assert.AreEqual(expectedClock, new DateTimeFormatter("shorttime").Clock);
+		}
+		finally
+		{
+			ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+			CultureInfo.CurrentCulture = originalCulture;
+		}
+	}
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18834")]
@@ -48,22 +68,6 @@ public class Given_Calendar
 		culture.DateTimeFormat.ShortTimePattern = shortTimePattern;
 		culture.DateTimeFormat.PMDesignator = pmDesignator;
 
-		AssertDefaultClock(culture, expectedClock);
-	}
-
-	private static void AssertDefaultClock(CultureInfo culture, string expectedClock)
-	{
-		var originalCulture = CultureInfo.CurrentCulture;
-		try
-		{
-			CultureInfo.CurrentCulture = culture;
-
-			Assert.AreEqual(expectedClock, new Calendar().GetClock());
-			Assert.AreEqual(expectedClock, new DateTimeFormatter("shorttime").Clock);
-		}
-		finally
-		{
-			CultureInfo.CurrentCulture = originalCulture;
-		}
+		Assert.AreEqual(expectedClock, Calendar.GetDefaultClock(culture));
 	}
 }

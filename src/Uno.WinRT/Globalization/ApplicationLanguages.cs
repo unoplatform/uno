@@ -223,6 +223,24 @@ public static partial class ApplicationLanguages
 #endif
 	}
 
+	// The culture of the first language a WinRT globalization object was given, which drives its formatting
+	// (CurrentCulture follows the user's regional format instead). Falls back to CurrentCulture.
+	internal static CultureInfo ResolveCulture(IReadOnlyList<string> languages)
+	{
+		if (languages.Count > 0)
+		{
+			try
+			{
+				return CreateCulture(languages[0]);
+			}
+			catch (CultureNotFoundException)
+			{
+			}
+		}
+
+		return CultureInfo.CurrentCulture;
+	}
+
 	private static Regex? _cultureFormatRegex;
 
 	internal static CultureInfo CreateCulture(string cultureId)

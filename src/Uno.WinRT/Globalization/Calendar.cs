@@ -62,9 +62,9 @@ namespace Windows.Globalization
 
 		// Like Windows, decide from the culture's time format ('h' is a 12-hour clock, 'H' a 24-hour one),
 		// not from its formatted output, whose AM/PM designator varies by culture ("p.m.", "오후", ...).
-		private static string GetDefaultClock()
+		internal static string GetDefaultClock(CultureInfo culture)
 		{
-			var format = CultureInfo.CurrentCulture.DateTimeFormat;
+			var format = culture.DateTimeFormat;
 			var hourSpecifier = FindHourSpecifier(format.LongTimePattern) ?? FindHourSpecifier(format.ShortTimePattern);
 
 			return hourSpecifier == 'h' ? ClockIdentifiers.TwelveHour : ClockIdentifiers.TwentyFourHour;
@@ -99,23 +99,6 @@ namespace Windows.Globalization
 			return null;
 		}
 
-		// As on WinUI, names follow the calendar's languages; CurrentCulture follows the user's regional format.
-		private static CultureInfo ResolveCulture(IReadOnlyList<string> languages)
-		{
-			if (languages.Count > 0)
-			{
-				try
-				{
-					return ApplicationLanguages.CreateCulture(languages[0]);
-				}
-				catch (CultureNotFoundException)
-				{
-				}
-			}
-
-			return CultureInfo.CurrentCulture;
-		}
-
 		private static string GetClock(string clock)
 		{
 			switch (clock)
@@ -143,30 +126,32 @@ namespace Windows.Globalization
 
 		private DateTime DateTime => ((DateTimeOffset)_time).DateTime;
 
+		// As in WinRT, names, the default calendar system and the default clock follow the calendar's languages;
+		// CurrentCulture follows the user's regional format.
 		public Calendar()
 		{
 			_languages = ApplicationLanguages.Languages;
-			_resolvedCulture = ResolveCulture(_languages);
-			_calendar = CultureInfo.CurrentCulture.Calendar;
+			_resolvedCulture = ApplicationLanguages.ResolveCulture(_languages);
+			_calendar = _resolvedCulture.Calendar;
 			_timeZone = TimeZoneInfo.Local;
-			_clock = GetDefaultClock();
+			_clock = GetDefaultClock(_resolvedCulture);
 			_time = DateTimeOffset.Now;
 		}
 
 		public Calendar(IEnumerable<string> languages)
 		{
 			_languages = languages.ToList();
-			_calendar = CultureInfo.CurrentCulture.Calendar;
-			_resolvedCulture = ResolveCulture(_languages);
+			_resolvedCulture = ApplicationLanguages.ResolveCulture(_languages);
+			_calendar = _resolvedCulture.Calendar;
 			_timeZone = TimeZoneInfo.Local;
-			_clock = GetDefaultClock();
+			_clock = GetDefaultClock(_resolvedCulture);
 			_time = DateTimeOffset.Now;
 		}
 
 		public Calendar(IEnumerable<string> languages, string calendar, string clock)
 		{
 			_languages = languages.ToList();
-			_resolvedCulture = ResolveCulture(_languages);
+			_resolvedCulture = ApplicationLanguages.ResolveCulture(_languages);
 			_calendar = GetCalendar(calendar);
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetClock(clock);
