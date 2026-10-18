@@ -99,6 +99,23 @@ namespace Windows.Globalization
 			return null;
 		}
 
+		// As on WinUI, names follow the calendar's languages; CurrentCulture follows the user's regional format.
+		private static CultureInfo ResolveCulture(IReadOnlyList<string> languages)
+		{
+			if (languages.Count > 0)
+			{
+				try
+				{
+					return ApplicationLanguages.CreateCulture(languages[0]);
+				}
+				catch (CultureNotFoundException)
+				{
+				}
+			}
+
+			return CultureInfo.CurrentCulture;
+		}
+
 		private static string GetClock(string clock)
 		{
 			switch (clock)
@@ -113,7 +130,7 @@ namespace Windows.Globalization
 		#endregion
 
 		private IReadOnlyList<string> _languages;
-		private readonly CultureInfo _resolvedCulture;
+		private CultureInfo _resolvedCulture;
 		private _Calendar _calendar;
 		private TimeZoneInfo _timeZone;
 		private string _clock;
@@ -129,7 +146,7 @@ namespace Windows.Globalization
 		public Calendar()
 		{
 			_languages = ApplicationLanguages.Languages;
-			_resolvedCulture = CultureInfo.CurrentCulture;
+			_resolvedCulture = ResolveCulture(_languages);
 			_calendar = CultureInfo.CurrentCulture.Calendar;
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetDefaultClock();
@@ -140,7 +157,7 @@ namespace Windows.Globalization
 		{
 			_languages = languages.ToList();
 			_calendar = CultureInfo.CurrentCulture.Calendar;
-			_resolvedCulture = CultureInfo.CurrentCulture;
+			_resolvedCulture = ResolveCulture(_languages);
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetDefaultClock();
 			_time = DateTimeOffset.Now;
@@ -149,7 +166,7 @@ namespace Windows.Globalization
 		public Calendar(IEnumerable<string> languages, string calendar, string clock)
 		{
 			_languages = languages.ToList();
-			_resolvedCulture = CultureInfo.CurrentCulture;
+			_resolvedCulture = ResolveCulture(_languages);
 			_calendar = GetCalendar(calendar);
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetClock(clock);
@@ -170,10 +187,10 @@ namespace Windows.Globalization
 			//_time = new DateTimeOffset(DateTime.UtcNow, _timeZone.BaseUtcOffset);
 		}
 
-		private Calendar(IReadOnlyList<string> languages, _Calendar calendar, TimeZoneInfo timeZone, string clock, DateTimeOffset time)
+		private Calendar(IReadOnlyList<string> languages, CultureInfo resolvedCulture, _Calendar calendar, TimeZoneInfo timeZone, string clock, DateTimeOffset time)
 		{
 			_languages = languages;
-			_resolvedCulture = CultureInfo.CurrentCulture;
+			_resolvedCulture = resolvedCulture;
 			_calendar = calendar;
 			_timeZone = timeZone;
 			_clock = clock;
@@ -183,6 +200,7 @@ namespace Windows.Globalization
 		public void CopyTo(Calendar other)
 		{
 			other._languages = _languages;
+			other._resolvedCulture = _resolvedCulture;
 			other._calendar = _calendar;
 			other._timeZone = _timeZone;
 			other._clock = _clock;
@@ -190,7 +208,7 @@ namespace Windows.Globalization
 		}
 
 		public Calendar Clone()
-			=> new Calendar(_languages, _calendar, _timeZone, _clock, _time);
+			=> new Calendar(_languages, _resolvedCulture, _calendar, _timeZone, _clock, _time);
 
 		#region Read / Write settings (_languages, _calendar, _clock, _timeZone)
 		public string NumeralSystem

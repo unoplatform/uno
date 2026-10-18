@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.Globalization;
+using CultureInfo = System.Globalization.CultureInfo;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Globalization;
 
@@ -24,6 +25,31 @@ public class Given_Calendar
 
 		calendar.Day = 1;
 		Assert.AreEqual(1, calendar.Day);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	public void When_Languages_Differ_From_CurrentCulture_Then_Names_Follow_Languages()
+	{
+		var culture = CultureInfo.CurrentCulture;
+		try
+		{
+			CultureInfo.CurrentCulture = new CultureInfo("en-US");
+
+			var calendar = new Calendar(new[] { "fr-FR" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
+			calendar.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0)));
+
+			Assert.AreEqual("lundi", calendar.DayOfWeekAsString());
+			Assert.AreEqual("lundi", calendar.Clone().DayOfWeekAsString());
+
+			var other = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour);
+			calendar.CopyTo(other);
+			Assert.AreEqual("lundi", other.DayOfWeekAsString());
+		}
+		finally
+		{
+			CultureInfo.CurrentCulture = culture;
+		}
 	}
 
 	[TestMethod]
