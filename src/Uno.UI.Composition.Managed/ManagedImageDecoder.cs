@@ -52,37 +52,69 @@ internal static partial class ManagedImageDecoder
 	internal static bool ExceedsPixelCap(int width, int height, int bytesPerPixel = 4)
 		=> width <= 0 || height <= 0 || ExceedsByteCap((long)width * height * bytesPerPixel);
 
+	// Each format's header rules live in one reader that both the decode and reading an image's size run. (The decode
+	// applies a JPEG frame header's rules after its scans, and a GIF frame's after decoding the frames before it.)
 	private static bool TryDecodeCore(byte[] d, [NotNullWhen(true)] out DecodedImage? decoded)
 	{
 		decoded = null;
+		var bytes = new ImageBytes(d);
+		return DetectFormat(bytes) switch
+		{
+			ImageFormat.Png => TryDecodePng(d, bytes, out decoded),
+			ImageFormat.Gif => TryDecodeGif(d, bytes, out decoded),
+			ImageFormat.Bmp => TryDecodeBmp(d, bytes, out decoded),
+			ImageFormat.Jpeg => TryDecodeJpeg(d, bytes, out decoded),
+			ImageFormat.Webp => TryDecodeWebp(d, bytes, out decoded),
+			_ => false,
+		};
+	}
+
+	private enum ImageFormat
+	{
+		Unknown,
+		Png,
+		Gif,
+		Bmp,
+		Jpeg,
+		Webp,
+	}
+
+	private static ImageFormat DetectFormat(ImageBytes d)
+	{
 		if (d.Length >= 8 && d[0] == 0x89 && d[1] == 0x50 && d[2] == 0x4E && d[3] == 0x47)
 		{
-			return TryDecodePng(d, out decoded);
+			return ImageFormat.Png;
 		}
 
 		if (d.Length >= 6 && d[0] == (byte)'G' && d[1] == (byte)'I' && d[2] == (byte)'F')
 		{
-			return TryDecodeGif(d, out decoded);
+			return ImageFormat.Gif;
 		}
 
 		if (d.Length >= 2 && d[0] == (byte)'B' && d[1] == (byte)'M')
 		{
-			return TryDecodeBmp(d, out decoded);
+			return ImageFormat.Bmp;
 		}
 
 		if (d.Length >= 3 && d[0] == 0xFF && d[1] == 0xD8 && d[2] == 0xFF)
 		{
-			return TryDecodeJpeg(d, out decoded);
+			return ImageFormat.Jpeg;
 		}
 
 		if (d.Length >= 12 && d[0] == (byte)'R' && d[1] == (byte)'I' && d[2] == (byte)'F' && d[3] == (byte)'F'
 			&& d[8] == (byte)'W' && d[9] == (byte)'E' && d[10] == (byte)'B' && d[11] == (byte)'P')
 		{
-			return TryDecodeWebp(d, out decoded);
+			return ImageFormat.Webp;
 		}
 
-		return false;
+		return ImageFormat.Unknown;
 	}
+
+	private static uint ReadU32(ImageBytes d, int o) => ((uint)d[o] << 24) | ((uint)d[o + 1] << 16) | ((uint)d[o + 2] << 8) | d[o + 3];
+
+	private static uint ReadU32LE(ImageBytes d, int o) => (uint)(d[o] | (d[o + 1] << 8) | (d[o + 2] << 16) | (d[o + 3] << 24));
+
+	private static int ReadU16LE(ImageBytes d, int o) => d[o] | (d[o + 1] << 8);
 
 	/// <summary>Bilinear resample of every frame to the requested target size (a memory optimization, honored like the Skia path).</summary>
 	private static DecodedImage ScaleToTargetIfNeeded(DecodedImage source, int? targetWidth, int? targetHeight)

@@ -8,23 +8,35 @@ namespace Uno.UI.Composition.Drawing;
 
 internal static partial class ManagedImageDecoder
 {
-	private static bool TryDecodeGif(byte[] d, [NotNullWhen(true)] out DecodedImage? decoded)
-	{
-		decoded = null;
+	/// <summary>A GIF frame: its image descriptor, the colour table it uses, and the graphic control extension before it.</summary>
+	private readonly record struct GifFrame(
+		int Left, int Top, int Width, int Height, bool Interlaced, int TableOffset, int TableLength, int DataOffset,
+		int TransparentIndex, int DelayMs, int DisposalMethod);
 
+	/// <summary>
+	/// Walks a GIF's blocks, reading the descriptors, extensions and sub-block lengths but not the image data, and applies
+	/// every refusal <see cref="TryDecodeGif"/> makes before decompressing a frame. <paramref name="onFrame"/> receives
+	/// each frame the decoder keeps, with the logical screen size.
+	/// </summary>
+	private static bool TryReadGif(ImageBytes d, Action<int, int, GifFrame>? onFrame, out int screenWidth, out int screenHeight)
+	{
 		var p = 6; // skip "GIF87a"/"GIF89a"
-		var screenWidth = ReadU16LE(d, p);
-		var screenHeight = ReadU16LE(d, p + 2);
+		screenWidth = ReadU16LE(d, p);
+		screenHeight = ReadU16LE(d, p + 2);
 		var packed = d[p + 4];
 		p += 7; // logical screen descriptor
 
-		byte[]? globalTable = null;
+		int globalTableOffset = -1, globalTableLength = 0;
 		if ((packed & 0x80) != 0)
 		{
-			var size = 2 << (packed & 0x07);
-			globalTable = new byte[size * 3];
-			Array.Copy(d, p, globalTable, 0, globalTable.Length);
-			p += globalTable.Length;
+			globalTableLength = (2 << (packed & 0x07)) * 3;
+			if (p + globalTableLength > d.Length)
+			{
+				return false;
+			}
+
+			globalTableOffset = p;
+			p += globalTableLength;
 		}
 
 		if (ExceedsPixelCap(screenWidth, screenHeight))
@@ -32,16 +44,10 @@ internal static partial class ManagedImageDecoder
 			return false;
 		}
 
-		var frames = new List<byte[]>();
-		var durations = new List<int>();
-
 		// Every frame is kept as a full canvas copy, so an unbounded frame count is an unbounded allocation.
 		var canvasBytes = (long)screenWidth * screenHeight * 4;
 		var maxFrames = (int)Math.Max(1, MaxDecodedBytes / Math.Max(1, canvasBytes));
-
-		// Persistent canvas that each frame composites onto (per GIF disposal semantics).
-		var canvas = new byte[screenWidth * screenHeight * 4];
-		byte[]? previousCanvas = null;
+		var frameCount = 0;
 
 		var transparentIndex = -1;
 		var delayMs = 100;
@@ -78,7 +84,7 @@ internal static partial class ManagedImageDecoder
 				break;
 			}
 
-			if (frames.Count >= maxFrames)
+			if (frameCount >= maxFrames)
 			{
 				break;
 			}
@@ -96,34 +102,51 @@ internal static partial class ManagedImageDecoder
 				return false;
 			}
 
-			var localTable = globalTable;
+			int tableOffset = globalTableOffset, tableLength = globalTableLength;
 			if ((imgPacked & 0x80) != 0)
 			{
-				var size = 2 << (imgPacked & 0x07);
-				localTable = new byte[size * 3];
-				Array.Copy(d, p, localTable, 0, localTable.Length);
-				p += localTable.Length;
+				tableLength = (2 << (imgPacked & 0x07)) * 3;
+				if (p + tableLength > d.Length)
+				{
+					return false;
+				}
+
+				tableOffset = p;
+				p += tableLength;
 			}
 
-			var interlaced = (imgPacked & 0x40) != 0;
-			var indices = DecodeLzw(d, ref p, frameWidth * frameHeight);
-			if (localTable is null)
+			// The LZW minimum code size, whose clear code DecodeLzw's 4096-entry tables must hold, then the data sub-blocks.
+			var dataOffset = p;
+			if ((1 << d[p++]) > 4096)
 			{
 				return false;
 			}
 
-			// Snapshot for "restore to previous" disposal.
-			if (disposalMethod == 3)
+			while (p < d.Length)
 			{
-				previousCanvas = (byte[])canvas.Clone();
+				var length = d[p++];
+				if (length == 0)
+				{
+					break;
+				}
+
+				if (p + length > d.Length)
+				{
+					return false;
+				}
+
+				p += length;
 			}
 
-			CompositeGifFrame(canvas, screenWidth, screenHeight, indices, interlaced, left, top, frameWidth, frameHeight, localTable, transparentIndex);
+			if (tableOffset < 0)
+			{
+				return false; // no colour table
+			}
 
-			frames.Add((byte[])canvas.Clone());
-			durations.Add(delayMs);
-
-			ApplyDisposal(canvas, screenWidth, screenHeight, disposalMethod, left, top, frameWidth, frameHeight, previousCanvas);
+			onFrame?.Invoke(screenWidth, screenHeight, new GifFrame(
+				left, top, frameWidth, frameHeight, (imgPacked & 0x40) != 0, tableOffset, tableLength, dataOffset,
+				transparentIndex, delayMs, disposalMethod));
+			frameCount++;
 
 			// Reset per-frame graphic control state: each frame carries its own graphic control extension, so a
 			// delay must not leak from the previous frame.
@@ -132,13 +155,55 @@ internal static partial class ManagedImageDecoder
 			delayMs = 100;
 		}
 
-		if (frames.Count == 0)
+		return frameCount > 0;
+	}
+
+	private static bool TryDecodeGif(byte[] d, ImageBytes bytes, [NotNullWhen(true)] out DecodedImage? decoded)
+	{
+		decoded = null;
+
+		var frames = new List<byte[]>();
+		var durations = new List<int>();
+
+		// Persistent canvas that each frame composites onto (per GIF disposal semantics).
+		byte[]? canvas = null;
+		byte[]? previousCanvas = null;
+		byte[]? table = null;
+		var tableOffset = -1;
+
+		if (!TryReadGif(bytes, AddFrame, out var screenWidth, out var screenHeight))
 		{
 			return false;
 		}
 
 		decoded = new DecodedImage(screenWidth, screenHeight, frames.ToArray(), durations.ToArray());
 		return true;
+
+		void AddFrame(int width, int height, GifFrame frame)
+		{
+			canvas ??= new byte[width * height * 4];
+			if (frame.TableOffset != tableOffset)
+			{
+				table = d.AsSpan(frame.TableOffset, frame.TableLength).ToArray();
+				tableOffset = frame.TableOffset;
+			}
+
+			var p = frame.DataOffset;
+			var indices = DecodeLzw(d, ref p, frame.Width * frame.Height);
+
+			// Snapshot for "restore to previous" disposal.
+			if (frame.DisposalMethod == 3)
+			{
+				previousCanvas = (byte[])canvas.Clone();
+			}
+
+			CompositeGifFrame(canvas, width, height, indices, frame.Interlaced, frame.Left, frame.Top, frame.Width, frame.Height, table!, frame.TransparentIndex);
+
+			frames.Add((byte[])canvas.Clone());
+			durations.Add(frame.DelayMs);
+
+			ApplyDisposal(canvas, width, height, frame.DisposalMethod, frame.Left, frame.Top, frame.Width, frame.Height, previousCanvas);
+		}
 	}
 
 	private static void CompositeGifFrame(byte[] canvas, int canvasWidth, int canvasHeight, byte[] indices, bool interlaced, int left, int top, int frameWidth, int frameHeight, byte[] table, int transparentIndex)
@@ -350,7 +415,7 @@ internal static partial class ManagedImageDecoder
 		return output;
 	}
 
-	private static int SkipToNextBlock(byte[] d, int p)
+	private static int SkipToNextBlock(ImageBytes d, int p)
 	{
 		while (p < d.Length && d[p] != 0)
 		{
