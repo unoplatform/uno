@@ -3,6 +3,7 @@
 using System;
 using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 
@@ -73,14 +74,24 @@ public class Given_DateTimeFormatter
 	[DataRow("timezone.abbreviated", "{timezone.abbreviated}")]
 	[DataRow("timezone.full", "{timezone.full}")]
 	public void When_Template_Names_Some_Parts_Then_Pattern_Has_Only_Those(string template, string expectedPattern)
-		=> Assert.AreEqual(expectedPattern, new DateTimeFormatter(template, ["en-US"]).Patterns[0].Replace('\u202F', ' '));
+	{
+		DefaultClockHelper.AssumeStockTimeFormat("en-US");
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
+		Assert.AreEqual(expectedPattern, new DateTimeFormatter(template, ["en-US"]).Patterns[0].Replace('\u202F', ' '));
+	}
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
 	[DataRow("de-DE", "{hour.integer(2)}:00")]
 	[DataRow("ko-KR", "{period.abbreviated(2)} {hour.integer(1)}")]
 	public void When_Template_Is_Hour_Then_Pattern_Follows_Short_Time(string language, string expectedPattern)
-		=> Assert.AreEqual(expectedPattern, new DateTimeFormatter("hour", [language]).Patterns[0].Replace('\u202F', ' '));
+	{
+		DefaultClockHelper.AssumeStockTimeFormat(language);
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
+		Assert.AreEqual(expectedPattern, new DateTimeFormatter("hour", [language]).Patterns[0].Replace('\u202F', ' '));
+	}
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
@@ -89,6 +100,9 @@ public class Given_DateTimeFormatter
 	[DataRow("en-GB", ClockIdentifiers.TwentyFourHourValue)]
 	public void When_Created_From_Components_Then_Clock_Follows_Languages(string language, string expectedClock)
 	{
+		DefaultClockHelper.AssumeStockTimeFormat(language);
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
 		var originalOverride = ApplicationLanguages.PrimaryLanguageOverride;
 		try
 		{
@@ -181,6 +195,10 @@ public class Given_DateTimeFormatter
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
 	public void When_Languages_Change_Then_Default_Formatters_Follow()
 	{
+		DefaultClockHelper.AssumeStockTimeFormat("en-US");
+		DefaultClockHelper.AssumeStockTimeFormat("de-DE");
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
 		var originalOverride = ApplicationLanguages.PrimaryLanguageOverride;
 		try
 		{
