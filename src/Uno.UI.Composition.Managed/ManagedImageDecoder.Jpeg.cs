@@ -71,6 +71,14 @@ internal static partial class ManagedImageDecoder
 			return true;
 		}
 
+		/// <summary>The size <see cref="TryDecode"/> produces (EXIF orientation applied), from the markers before the first scan.</summary>
+		public bool TryReadSize(out int width, out int height)
+		{
+			var read = ReadMarkers();
+			(width, height) = !read ? (0, 0) : _orientation >= 5 ? (_height, _width) : (_width, _height);
+			return read;
+		}
+
 		/// <summary>
 		/// Reads the markers, decoding the scans when there is data to decode and stopping at the first one otherwise, and
 		/// applies every refusal the decode makes that the frame header decides.

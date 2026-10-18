@@ -82,6 +82,32 @@ internal static partial class ManagedImageDecoder
 	private static bool IsChunk(ImageBytes d, int p, string id)
 		=> d[p] == id[0] && d[p + 1] == id[1] && d[p + 2] == id[2] && d[p + 3] == id[3];
 
+	/// <summary>The size <see cref="TryDecodeWebp"/> produces: its bitstream's, read from the bitstream header.</summary>
+	private static bool TryReadWebpSize(ImageBytes d, out int width, out int height)
+	{
+		width = 0;
+		height = 0;
+		if (!TryFindWebpBitstream(d, out var lossless, out var chunk, out var size))
+		{
+			return false;
+		}
+
+		if (lossless)
+		{
+			return TryReadVp8lHeader(d, chunk, out width, out height);
+		}
+
+		var vp8 = new Vp8FullDecoder(d, chunk, size);
+		if (!vp8.ParseFrameHeader())
+		{
+			return false;
+		}
+
+		width = vp8.Width;
+		height = vp8.Height;
+		return true;
+	}
+
 	/// <summary>
 	/// Reads a VP8L bitstream's 40-bit header: the 0x2F signature, the 14-bit width - 1 and height - 1, alpha_is_used and
 	/// the 3-bit version. Bytes past the end read as zero, as the bit reader's do.
