@@ -540,7 +540,9 @@ public sealed partial class DateTimeFormatter
 				(true, true, true, true) => ConstructPattern(dateFormat.LongDatePattern),
 
 				(true, true, true, false) => GetYearMonthDayPattern(),
-				(true, true, false, false) => ConstructPattern(dateFormat.YearMonthPattern),
+
+				// WinRT takes the standalone month here ("{month.solo.full} {year.full}").
+				(true, true, false, false) => ConstructPattern(dateFormat.YearMonthPattern).Replace("{month.full}", "{month.solo.full}"),
 				(false, true, true, true) => RemoveFields(ConstructPattern(dateFormat.LongDatePattern), YearOrEraFieldRegex()),
 				(false, true, true, false) => GetMonthDayPattern(),
 
