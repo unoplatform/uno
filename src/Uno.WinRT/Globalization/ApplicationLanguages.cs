@@ -40,7 +40,7 @@ public static partial class ApplicationLanguages
 				typeof(ApplicationLanguages).Log().LogDebug($"PLO: {_primaryLanguageOverride} -> {value}");
 				_primaryLanguageOverride = value;
 
-				// Only the language list follows immediately; the culture is applied on the next app start, as on WinUI.
+				// Only the language list follows immediately; the UI culture follows on the next app start.
 				ApplyLanguages();
 
 #if !IS_UNIT_TESTS
@@ -69,6 +69,7 @@ public static partial class ApplicationLanguages
 
 	internal static void ApplyCulture()
 	{
+		string language;
 		var primaryLanguageOverride = PrimaryLanguageOverride;
 		if (!string.IsNullOrEmpty(primaryLanguageOverride))
 		{
@@ -77,17 +78,15 @@ public static partial class ApplicationLanguages
 				typeof(ApplicationLanguages).Log().Debug($"Using {primaryLanguageOverride} (from PrimaryLanguageOverride) as primary language");
 			}
 
-			setCulture(primaryLanguageOverride);
+			language = primaryLanguageOverride;
 		}
 		else if (Languages.Count > 0)
 		{
-			var language = Languages[0];
+			language = Languages[0];
 			if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
 			{
 				typeof(ApplicationLanguages).Log().Debug($"Using {language} (from Languages) as primary language");
 			}
-
-			setCulture(language);
 		}
 		else
 		{
@@ -95,16 +94,34 @@ public static partial class ApplicationLanguages
 			{
 				typeof(ApplicationLanguages).Log().Warn($"Unable to determine the default culture, using invariant culture");
 			}
+
+			return;
 		}
 
-		static void setCulture(string cultureId)
+		// As in WinUI, the language list drives the UI culture (resource lookup) only. Formatting follows
+		// the user's regional settings, which the runtime has already read into CurrentCulture.
+		var uiCulture = CreateCulture(language);
+		CultureInfo.CurrentUICulture = uiCulture;
+		CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
+
+		if (GetFormatCulture(uiCulture) is { } culture)
 		{
-			var culture = CreateCulture(cultureId);
 			CultureInfo.CurrentCulture = culture;
 			CultureInfo.DefaultThreadCurrentCulture = culture;
-			CultureInfo.CurrentUICulture = culture;
-			CultureInfo.DefaultThreadCurrentUICulture = culture;
 		}
+	}
+
+	// Null when the culture the runtime picked already reflects the user's format preferences.
+	private static CultureInfo? GetFormatCulture(CultureInfo uiCulture)
+	{
+#if __ANDROID__
+		// The runtime drops the locale's -u- extensions, which carry the Android 14 regional preferences
+		// (first day of week...), so format with the system locale itself.
+		return ManifestLanguages.Count > 0 ? CreateCulture(ManifestLanguages[0]) : null;
+#else
+		// No user locale (e.g. LANG unset or C on Linux): format in the app language rather than invariant.
+		return CultureInfo.CurrentCulture.Name.Length == 0 && !InvariantCulture ? uiCulture : null;
+#endif
 	}
 
 #if !__IOS__ && !__TVOS__
