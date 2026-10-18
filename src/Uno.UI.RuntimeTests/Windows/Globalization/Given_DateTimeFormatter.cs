@@ -139,6 +139,33 @@ public class Given_DateTimeFormatter
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Template_Is_Day_And_Day_Of_Week_Or_Time_Zone_Then_Accepted()
+	{
+		var date = new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 7));
+
+		foreach (var template in new[] { "day dayofweek", "dayofweek day", "day dayofweek.abbreviated" })
+		{
+			var formatter = new DateTimeFormatter(template, new[] { "en-US" });
+			Assert.AreEqual(template.Replace("dayofweek day", "day dayofweek"), formatter.Template);
+			Assert.AreEqual("Mon 15", NormalizeText(formatter.Format(date)), template);
+		}
+
+		var components = new DateTimeFormatter(YearFormat.None, MonthFormat.None, DayFormat.Default, DayOfWeekFormat.Default);
+		Assert.AreEqual("day dayofweek", components.Template);
+
+		var timeZone = new DateTimeFormatter("timezone", new[] { "en-US" });
+		Assert.AreEqual("timezone", timeZone.Template);
+		StringAssert.StartsWith(NormalizeText(timeZone.Patterns[0]), "{timezone");
+
+		// As in WinRT, a time zone can't go with a date.
+		foreach (var template in new[] { "shortdate timezone", "longdate timezone", "month day timezone", "day dayofweek timezone", "timezone dayofweek" })
+		{
+			Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter(template, new[] { "en-US" }), template);
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
 	public void When_Components_Are_Not_A_Template_Then_Throws()
 	{
 		// As in WinRT, the components make a template, which has no year and day without a month.
