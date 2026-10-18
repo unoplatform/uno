@@ -178,6 +178,30 @@ public class Given_DateTimeFormatter
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19349")]
+	[DataRow("cs-CZ", "12HourClock", "shorttime", "1:05 dop.", "1:05 odp.")]
+	[DataRow("cs-CZ", "12HourClock", "longtime", "1:05:07 dop.", "1:05:07 odp.")]
+	[DataRow("cs-CZ", "12HourClock", "hour", "1 dop.", "1 odp.")]
+	[DataRow("ja-JP", "12HourClock", "shorttime", "午前 1:05", "午後 1:05")]
+	[DataRow("en-US", "24HourClock", "shorttime", "1:05", "13:05")]
+	[DataRow("en-US", "24HourClock", "hour", "1:00", "13:00")]
+	[DataRow("en-US", "24HourClock", "shortdate shorttime", "1/15/2024 1:05", "1/15/2024 13:05")]
+	[DataRow("ko-KR", "24HourClock", "shorttime", "1:05", "13:05")]
+	public void When_Clock_Differs_From_Language_Then_Time_Follows_Clock(string language, string clock, string template, string expectedEarly, string expectedLate)
+	{
+		if (language is not "en-US" && new CultureInfo(language).DateTimeFormat.PMDesignator == CultureInfo.InvariantCulture.DateTimeFormat.PMDesignator)
+		{
+			Assert.Inconclusive($"The ICU data loaded here has no {language} names (the WebAssembly shard for the browser language).");
+		}
+
+		// The language's own time pattern has the other clock (H:mm for cs-CZ, h:mm tt for en-US).
+		var formatter = new DateTimeFormatter(template, new[] { language }, "US", CalendarIdentifiers.Gregorian, clock);
+
+		Assert.AreEqual(expectedEarly, NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 1, 5, 7)))));
+		Assert.AreEqual(expectedLate, NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 7)))));
+	}
+
+	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
 	public void When_Languages_Change_Then_Default_Formatters_Follow()
 	{

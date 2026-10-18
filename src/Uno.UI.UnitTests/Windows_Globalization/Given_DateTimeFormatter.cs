@@ -154,6 +154,43 @@ public class Given_DateTimeFormatter
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19349")]
+	[DataRow("de-DE", ClockIdentifiers.TwelveHourValue, "shorttime", "{hour.integer}:{minute.integer(2)} {period.abbreviated}")]
+	[DataRow("de-DE", ClockIdentifiers.TwelveHourValue, "longtime", "{hour.integer}:{minute.integer(2)}:{second.integer(2)} {period.abbreviated}")]
+	[DataRow("de-DE", ClockIdentifiers.TwelveHourValue, "hour", "{hour.integer} {period.abbreviated}")]
+	[DataRow("ja-JP", ClockIdentifiers.TwelveHourValue, "shorttime", "{period.abbreviated} {hour.integer}:{minute.integer(2)}")]
+	[DataRow("en-US", ClockIdentifiers.TwentyFourHourValue, "shorttime", "{hour.integer(1)}:{minute.integer(2)}")]
+	[DataRow("en-US", ClockIdentifiers.TwentyFourHourValue, "hour", "{hour.integer(1)}:00")]
+	[DataRow("en-US", ClockIdentifiers.TwentyFourHourValue, "shortdate shorttime", "{month.integer}/{day.integer}/{year.full} {hour.integer(1)}:{minute.integer(2)}")]
+	[DataRow("ko-KR", ClockIdentifiers.TwentyFourHourValue, "shorttime", "{hour.integer(1)}:{minute.integer(2)}")]
+	[DataRow("en-US", ClockIdentifiers.TwelveHourValue, "{hour.integer}:{minute.integer(2)}", "{hour.integer}:{minute.integer(2)}")]
+	public void When_Clock_Differs_From_Language_Then_Pattern_Follows_Clock(string language, string clock, string template, string expectedPattern)
+		=> Assert.AreEqual(expectedPattern, new DateTimeFormatter(template, [language], "US", CalendarIdentifiers.Gregorian, clock).Patterns[0].Replace('\u202F', ' '));
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19349")]
+	[DataRow("cs-CZ", ClockIdentifiers.TwelveHourValue, "1:05 dop.", "1:05 odp.")]
+	[DataRow("en-US", ClockIdentifiers.TwentyFourHourValue, "1:05", "13:05")]
+	public void When_Clock_Differs_From_Language_Then_Format_Tells_Hours_Apart(string language, string clock, string expectedEarly, string expectedLate)
+	{
+		var formatter = new DateTimeFormatter("shorttime", [language], "US", CalendarIdentifiers.Gregorian, clock);
+
+		Assert.AreEqual(expectedEarly, formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 1, 5, 0))).Replace('\u202F', ' '));
+		Assert.AreEqual(expectedLate, formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 0))).Replace('\u202F', ' '));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19349")]
+	public void When_Period_Is_Glued_To_Hour_Then_24_Hour_Pattern_Drops_It()
+	{
+		// zh-TW's short time is "tth:mm". WinRT pads its 24-hour hour, which .NET's data doesn't.
+		var pattern = new DateTimeFormatter("shorttime", ["zh-TW"], "US", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour).Patterns[0];
+
+		StringAssert.StartsWith(pattern, "{hour.integer");
+		Assert.IsFalse(pattern.Contains("{period", StringComparison.Ordinal), pattern);
+	}
+
 	private static string FormatPeriod(string pattern, string cultureName)
 		=> new DateTimeFormatter(pattern, [cultureName], "ZZ", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour)
 			.Format(new DateTimeOffset(2024, 1, 15, 17, 15, 0, TimeSpan.Zero));
