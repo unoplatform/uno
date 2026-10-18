@@ -181,6 +181,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("en-GB", "24HourClock", "17")]
 		public void When_Default_ClockIdentifier_Follows_Language(string cultureName, string expectedClock, string expectedHour)
 		{
+			DefaultClockHelper.AssumeStockTimeFormat(cultureName);
+			using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
 			var originalCulture = CultureInfo.CurrentCulture;
 			var originalOverride = global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride;
 			try
@@ -218,6 +221,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("de-DE", "24HourClock", "13")]
 		public void When_Device_Uses_24_Hour_Clock_Then_Default_ClockIdentifier_Follows_It_In_Its_Locale_Only(string language, string expectedClock, string expectedHour)
 		{
+			DefaultClockHelper.AssumeStockTimeFormat(language);
+
 			var originalOverride = global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride;
 			try
 			{
@@ -449,7 +454,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			TimePicker timePicker = new()
 			{
-				Time = new TimeSpan(12, 30, 0)
+				Time = new TimeSpan(12, 30, 0),
+				// The flyout helper expects a period column, which the default clock may not have.
+				ClockIdentifier = Windows.Globalization.ClockIdentifiers.TwelveHour,
 			};
 #if HAS_UNO
 			timePicker.UseNativeStyle = false;
