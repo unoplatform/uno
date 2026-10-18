@@ -564,25 +564,25 @@ public sealed partial class DateTimeFormatter
 			datePattern = RemoveFields(datePattern, EraFieldRegex());
 		}
 
-		// The time parts follow the language.
+		// The time parts follow the language, with its patterns adapted to the clock in use.
 		var timeFormat = _context.TimeCulture.DateTimeFormat;
 		string timePattern;
 		if (IsLongTime)
 		{
-			timePattern = ConstructPattern(timeFormat.LongTimePattern);
+			timePattern = AdaptToClock(ConstructPattern(timeFormat.LongTimePattern));
 		}
 		else if (IsShortTime)
 		{
-			timePattern = ConstructPattern(timeFormat.ShortTimePattern);
+			timePattern = AdaptToClock(ConstructPattern(timeFormat.ShortTimePattern));
 		}
 		else
 		{
 			timePattern = (IncludeHour != HourFormat.None, IncludeMinute != MinuteFormat.None, IncludeSecond != SecondFormat.None) switch
 			{
 				(false, false, false) => string.Empty,
-				(true, true, true) => ConstructPattern(timeFormat.LongTimePattern),
-				(true, true, false) => ConstructPattern(timeFormat.ShortTimePattern),
-				(true, false, false) => GetHourPattern(ConstructPattern(timeFormat.ShortTimePattern)),
+				(true, true, true) => AdaptToClock(ConstructPattern(timeFormat.LongTimePattern)),
+				(true, true, false) => AdaptToClock(ConstructPattern(timeFormat.ShortTimePattern)),
+				(true, false, false) => GetHourPattern(AdaptToClock(ConstructPattern(timeFormat.ShortTimePattern))),
 				_ => throw new ArgumentException($"The template '{Template}' has no time pattern."),
 			};
 
@@ -831,6 +831,28 @@ public sealed partial class DateTimeFormatter
 		}
 	}
 
+	// As in WinRT, the language's time pattern follows the clock in use. A 12-hour clock adds the period after the time
+	// ("1:05 PM"), or before it in Chinese, Japanese and Korean ("午後 1:05"), with an unpadded hour. A 24-hour clock
+	// drops the period and its separator.
+	private string AdaptToClock(string timePattern)
+	{
+		var hasPeriod = timePattern.Contains("{period", StringComparison.Ordinal);
+		if (_context.IsTwentyFourHours)
+		{
+			return hasPeriod ? RemoveFields(timePattern, PeriodFieldRegex()) : timePattern;
+		}
+
+		if (hasPeriod)
+		{
+			return timePattern;
+		}
+
+		timePattern = HourFieldRegex().Replace(timePattern, "{hour.integer}");
+		return _context.TimeCulture.TwoLetterISOLanguageName is "ja" or "zh" or "ko"
+			? "{period.abbreviated} " + timePattern
+			: timePattern + " {period.abbreviated}";
+	}
+
 	// As in WinRT, the short time without its minutes on a 12-hour pattern ("1 PM"), or with them at
 	// "00" on a 24-hour one ("13:00").
 	private static string GetHourPattern(string shortTimePattern)
@@ -885,4 +907,10 @@ public sealed partial class DateTimeFormatter
 
 	[GeneratedRegex(@"\{era[^}]*\}")]
 	private static partial Regex EraFieldRegex();
+
+	[GeneratedRegex(@"\{period[^}]*\}")]
+	private static partial Regex PeriodFieldRegex();
+
+	[GeneratedRegex(@"\{hour[^}]*\}")]
+	private static partial Regex HourFieldRegex();
 }
