@@ -64,9 +64,12 @@ namespace Windows.Globalization
 			};
 		}
 
+		internal static string GetDefaultClock(CultureInfo culture)
+			=> DeviceClock.GetClock(culture) ?? GetCultureClock(culture);
+
 		// Like Windows, decide from the culture's time format ('h' is a 12-hour clock, 'H' a 24-hour one),
 		// not from its formatted output, whose AM/PM designator varies by culture ("p.m.", "오후", ...).
-		internal static string GetDefaultClock(CultureInfo culture)
+		private static string GetCultureClock(CultureInfo culture)
 		{
 			var format = culture.DateTimeFormat;
 			var hourSpecifier = FindHourSpecifier(format.LongTimePattern) ?? FindHourSpecifier(format.ShortTimePattern);
