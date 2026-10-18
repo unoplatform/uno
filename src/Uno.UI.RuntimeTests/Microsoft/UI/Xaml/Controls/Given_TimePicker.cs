@@ -138,6 +138,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19349")]
+		[DataRow("cs-CZ", "12HourClock", "1", "FirstPickerHost", "SecondPickerHost", "ThirdPickerHost")]
+		[DataRow("cs-CZ", "24HourClock", "13", "SecondPickerHost", "ThirdPickerHost", null)]
+		[DataRow("de-DE", "12HourClock", "1", "FirstPickerHost", "SecondPickerHost", "ThirdPickerHost")]
+		[DataRow("de-DE", "24HourClock", "13", "SecondPickerHost", "ThirdPickerHost", null)]
+		[DataRow("en-US", "12HourClock", "1", "FirstPickerHost", "SecondPickerHost", "ThirdPickerHost")]
+		[DataRow("en-US", "24HourClock", "13", "SecondPickerHost", "ThirdPickerHost", null)]
+		[DataRow("ja-JP", "12HourClock", "1", "SecondPickerHost", "ThirdPickerHost", "FirstPickerHost")]
+		public async Task When_Clock_Is_Set_Then_Columns_Follow_Its_Pattern(string language, string clock, string expectedHour, string expectedHourHost, string expectedMinuteHost, string expectedPeriodHost)
+		{
+			var originalOverride = global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride;
+			try
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = language;
+
+				var timePicker = new TimePicker { ClockIdentifier = clock, SelectedTime = new TimeSpan(13, 5, 0) };
+				await UITestHelper.Load(timePicker);
+
+				// As in WinUI, the columns follow the "hour minute" pattern for the clock, which puts the period after the
+				// time, or before it in Japanese. Without a period, WinUI's ordering leaves the first column empty.
+				var hour = (TextBlock)VisualTreeUtils.FindVisualChildByName(timePicker, "HourTextBlock");
+				var minute = (TextBlock)VisualTreeUtils.FindVisualChildByName(timePicker, "MinuteTextBlock");
+				var period = VisualTreeUtils.FindVisualChildByName(timePicker, "PeriodTextBlock") as TextBlock;
+				Assert.AreEqual(expectedHour, hour.Text);
+				Assert.AreEqual("05", minute.Text);
+				Assert.AreEqual(expectedHourHost, (hour.Parent as FrameworkElement)?.Name);
+				Assert.AreEqual(expectedMinuteHost, (minute.Parent as FrameworkElement)?.Name);
+				Assert.AreEqual(expectedPeriodHost, (period?.Parent as FrameworkElement)?.Name);
+			}
+			finally
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18834")]
 		[DataRow("en-CA", "12HourClock", "5")]
 		[DataRow("ko-KR", "12HourClock", "5")]
