@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Globalization;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -116,6 +117,31 @@ public class Given_Calendar
 			DeviceClock.TestDevice = null;
 			ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
 		}
+	}
+
+	// The pattern follows the device clock too, so 01:05 and 13:05 stay apart.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+	[DataRow("de-DE", false, "1:05 AM", "1:05 PM")]
+	[DataRow("en-US", true, "1:05", "13:05")]
+	public void When_Device_Sets_Clock_Then_Time_Follows_It(string language, bool device24Hour, string expectedEarly, string expectedLate)
+	{
+		DefaultClockHelper.AssumeStockTimeFormat(language);
+		try
+		{
+			DeviceClock.TestDevice = (language, null, device24Hour);
+
+			var formatter = new DateTimeFormatter("shorttime", [language]);
+
+			Assert.AreEqual(expectedEarly, Normalize(formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 1, 5, 0)))));
+			Assert.AreEqual(expectedLate, Normalize(formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 0)))));
+		}
+		finally
+		{
+			DeviceClock.TestDevice = null;
+		}
+
+		static string Normalize(string text) => text.Replace('\u202F', ' ').Replace('\u00A0', ' ');
 	}
 
 	[TestMethod]
