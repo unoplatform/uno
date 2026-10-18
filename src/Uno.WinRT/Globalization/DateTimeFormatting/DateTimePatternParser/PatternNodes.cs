@@ -113,20 +113,19 @@ internal sealed class PatternEraNode : PatternDateTimeNode
 
 	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
+		// The era of the calendar in use, named by the culture that names its dates. As in WinRT, nothing when that
+		// culture has no names for the calendar (Julian, or Korean for en-US), and an ideal length shorter than the
+		// name takes the abbreviated one (令 for 令和). .NET's abbreviated Gregorian eras are ICU's narrow ones ("A"),
+		// which WinRT never shows.
 		var format = context.DateCulture.DateTimeFormat;
-		if (format.Calendar is GregorianCalendar)
+		if (format.Calendar.GetType() != context.Calendar.GetType())
 		{
-			// C# can't represent negative dates (i.e, before christ).
-			// So, looks like Era will always be "AD" (Anno Domini).
-			builder.Append(IdealLength is < 4 ? "AD" : "A.D.");
 			return;
 		}
 
-		// Other calendars name their eras (令和, พ.ศ.). As in WinRT, an ideal length shorter than the name takes
-		// the abbreviated one (令).
-		var era = format.Calendar.GetEra(dateTime);
+		var era = context.Calendar.GetEra(dateTime);
 		var name = format.GetEraName(era);
-		builder.Append(IdealLength < name.Length ? format.GetAbbreviatedEraName(era) : name);
+		builder.Append(IdealLength < name.Length && context.Calendar is not GregorianCalendar ? format.GetAbbreviatedEraName(era) : name);
 	}
 }
 
