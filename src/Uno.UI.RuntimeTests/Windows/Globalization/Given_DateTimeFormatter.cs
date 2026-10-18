@@ -231,6 +231,29 @@ public class Given_DateTimeFormatter
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("de-DE", "GregorianCalendar", "{era.abbreviated}", "n. Chr.")]
+	[DataRow("en-US", "GregorianCalendar", "{era.abbreviated(1)}", "AD")]
+	[DataRow("ja-JP", "GregorianCalendar", "{era.abbreviated(1)}", "西暦")]
+	[DataRow("ja-JP", "JapaneseCalendar", "{era.abbreviated}", "令和")]
+	[DataRow("ja-JP", "JapaneseCalendar", "{era.abbreviated(1)}", "令")]
+	[DataRow("en-US", "KoreanCalendar", "{era.abbreviated}", "")]
+	[DataRow("en-US", "TaiwanCalendar", "{era.abbreviated}", "")]
+	[DataRow("en-US", "JulianCalendar", "{era.abbreviated}", "")]
+	public void When_Calendar_Is_Given_Then_Era_Follows_It(string language, string calendar, string pattern, string expected)
+	{
+		if (language is "ja-JP" && new CultureInfo(language).DateTimeFormat.PMDesignator == CultureInfo.InvariantCulture.DateTimeFormat.PMDesignator)
+		{
+			Assert.Inconclusive("The ICU data loaded here has no Japanese names (the WebAssembly shard for the browser language).");
+		}
+
+		// The era of the calendar in use, and none when the language has no names for it (en-US with Korean).
+		var formatter = new DateTimeFormatter(pattern, new[] { language }, "ZZ", calendar, ClockIdentifiers.TwentyFourHour);
+
+		Assert.AreEqual(expected, NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0)))));
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinRT uses Hebrew numerals (ה׳/ה׳/ה׳תשפ״ד).
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
 	public void When_Calendar_Is_Hebrew_Then_Numbers_Follow_It()
