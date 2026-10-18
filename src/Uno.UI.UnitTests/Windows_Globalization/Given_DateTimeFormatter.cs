@@ -132,6 +132,28 @@ public class Given_DateTimeFormatter
 		Assert.AreEqual("January 2567", formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0))));
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Languages_Change_Then_Default_Formatters_Follow()
+	{
+		var originalOverride = ApplicationLanguages.PrimaryLanguageOverride;
+		try
+		{
+			ApplicationLanguages.PrimaryLanguageOverride = "en-US";
+			Assert.AreEqual(ClockIdentifiers.TwelveHour, DateTimeFormatter.ShortTime.Clock);
+
+			ApplicationLanguages.PrimaryLanguageOverride = "de-DE";
+			Assert.AreEqual(ClockIdentifiers.TwentyFourHour, DateTimeFormatter.ShortTime.Clock);
+			Assert.AreEqual(ClockIdentifiers.TwentyFourHour, DateTimeFormatter.LongTime.Clock);
+			Assert.AreEqual("{day.integer(2)}.{month.integer(2)}.{year.full}", DateTimeFormatter.ShortDate.Patterns[0]);
+			Assert.AreEqual("de-DE", DateTimeFormatter.LongDate.Languages[0]);
+		}
+		finally
+		{
+			ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+		}
+	}
+
 	private static string FormatPeriod(string pattern, string cultureName)
 		=> new DateTimeFormatter(pattern, [cultureName], "ZZ", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour)
 			.Format(new DateTimeOffset(2024, 1, 15, 17, 15, 0, TimeSpan.Zero));
