@@ -12,7 +12,8 @@
 		<Using Include="Microsoft.UI.Xaml.Controls" Sdk="Uno" />
 		<Using Include="Microsoft.UI.Xaml.Media" Sdk="Uno" />
 		<Using Include="Microsoft.UI.Xaml.Navigation" Sdk="Uno" />
-		<Using Include="Uno.UI" Sdk="Uno" />
+		<!-- Uno.WinUI provides it, and a WinAppSDK-only library does not reference Uno.WinUI on Windows. -->
+		<Using Include="Uno.UI" Sdk="Uno" Condition=" '$(_UnoIsWinAppSdkOnlyLibrary)' != 'true' " />
 		<Using Include="Windows.ApplicationModel" Sdk="Uno" />
 	</ItemGroup>
 </Project>
