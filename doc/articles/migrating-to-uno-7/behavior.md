@@ -247,6 +247,23 @@ drawable directly (`Resource.Drawable.foo`).
 
 See also: [Relative URIs in XAML](xref:Uno.Development.MigratingToUno7.Xaml#relative-uris).
 
+## Formatting follows the regional format
+
+Formatting now follows the user's regional settings rather than the language list:
+
+- **`CultureInfo.CurrentCulture` is no longer set from `ApplicationLanguages.Languages`.** At
+  startup Uno used to set `CurrentCulture` and `DefaultThreadCurrentCulture` to the first app
+  language (`PrimaryLanguageOverride`, or the display language list on Windows), so dates and
+  numbers ignored the Windows Regional format and its customizations. As in WinUI, the language
+  list now sets `CurrentUICulture` only, and `CurrentCulture` keeps what .NET read from the OS:
+  the Regional format on Windows, the Region setting on iOS and macOS, the `LC_ALL`,
+  `LC_MESSAGES` or `LANG` locale on Linux, the browser language on WebAssembly. Android keeps the
+  first system locale, which carries its regional preferences. Apps that want formatting to follow
+  the app language, for example after setting `PrimaryLanguageOverride`, should set
+  `CultureInfo.CurrentCulture` themselves after the `Application` constructor runs.
+
+See also: [`ApplicationLanguages.UseLegacyPrimaryLanguageOverride`](xref:Uno.Development.MigratingToUno7.FeatureFlags#applicationlanguagesuselegacyprimarylanguageoverride).
+
 ## Related pages
 
 - [Removed feature flags](xref:Uno.Development.MigratingToUno7.FeatureFlags) if your app set a flag that kept the old behavior.
