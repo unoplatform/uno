@@ -125,7 +125,9 @@
 		(unconditionally-injected) Uno.* implicit packages on the Windows TFM. UnoFeatures-driven
 		packages (Toolkit, Material, Cupertino, Extensions, Graphics2DSK, etc.) are intentionally
 		left in place — opting into an UnoFeature is treated as an explicit intent to include that
-		package even when this property is set.
+		package even when this property is set. The legacy SkiaRenderer token is the exception: it chose
+		a renderer, which does not apply to WinAppSDK, so the Skia packages it implies are stripped too
+		and only an explicit Skia keeps them.
 
 		The strip is gated to library projects (i.e. non-executable output): application heads need
 		the implicit Uno packages on Windows to build and run, so setting the property on a head
@@ -137,6 +139,7 @@
 		<_UnoProjectSystemPackageReference Remove="Uno.Resizetizer" />
 		<_UnoProjectSystemPackageReference Remove="Uno.Sdk.Extras" />
 		<_UnoProjectSystemPackageReference Remove="Uno.Settings.DevServer" />
+		<_UnoProjectSystemPackageReference Remove="Uno.WinUI.Graphics2DSK;SkiaSharp.Views.WinUI;Uno.Toolkit.Skia.WinUI" Condition=" '$(_UnoSkiaFromSkiaRendererOnly)' == 'true' " />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -15,6 +15,9 @@
 		     tested directly: IsWinAppSdk is not set yet when the project body sets TargetFramework. -->
 		<UnoFeatures>$(UnoFeatures.Replace(';nativerenderer;', ';'))</UnoFeatures>
 		<UnoFeatures>$(UnoFeatures.Replace(';lottie;', ';'))</UnoFeatures>
+		<!-- Set when only the legacy token asks for Skia: a WinAppSDK-only library does not take that as a request for
+		     the Skia packages on Windows (see Uno.Implicit.Packages.ProjectSystem.targets). -->
+		<_UnoSkiaFromSkiaRendererOnly Condition="$(UnoFeatures.Contains(';skiarenderer;')) And !$(UnoFeatures.Contains(';skia;'))">true</_UnoSkiaFromSkiaRendererOnly>
 		<UnoFeatures>$(UnoFeatures.Replace(';skiarenderer;', ';skia;'))</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And !$(TargetFramework.Contains('windows10'))">$(UnoFeatures)skia;</UnoFeatures>
 	</PropertyGroup>
