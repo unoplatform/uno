@@ -185,6 +185,26 @@ public class Given_ManagedImageDecoder
 		}
 	}
 
+#if UNO_DRAWING_SKIA
+	// A frame header or EXIF block after the first scan is ignored, by the decode as by libjpeg (so Skia) and WIC.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+	[DataRow("jpeg-after-scan-exif-6")]
+	[DataRow("jpeg-after-scan-frame")]
+	public void When_Jpeg_Frame_Metadata_Follows_The_First_Scan_Then_It_Is_Ignored(string name)
+	{
+		var bytes = Generate(name);
+
+		Assert.AreEqual((true, 5, 3), Decode(bytes));
+		AssertAgrees(bytes);
+		Assert.IsTrue(global::Uno.UI.Composition.Skia.SkiaBackend.CreateImageDecoder().TryDecode(new MemoryStream(bytes), null, null, out var frames));
+		using (frames)
+		{
+			Assert.AreEqual((5, 3), (frames.Frames[0].PixelWidth, frames.Frames[0].PixelHeight), "Skia should give the same size.");
+		}
+	}
+#endif
+
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
 	public void When_Exif_Offsets_Are_Hostile_Then_Size_Read_Returns()
@@ -295,6 +315,8 @@ public class Given_ManagedImageDecoder
 		"jpeg-scan-component-missing" => PatchJpeg(Jpeg(5, 3), 0xDA, (j, sos) => j[sos + 5] = 0x7F),
 		"jpeg-scan-table-4" => PatchJpeg(Jpeg(5, 3), 0xDA, (j, sos) => j[sos + 6] = 0x44),
 		"jpeg-no-huffman-tables" => WithoutMarkers(Jpeg(5, 3), 0xC4),
+		"jpeg-after-scan-exif-6" => BeforeEndOfImage(Jpeg(5, 3), Exif(6)),
+		"jpeg-after-scan-frame" => BeforeEndOfImage(Jpeg(5, 3), FrameHeader(Jpeg(5, 3), width: 16, height: 16)),
 
 #if UNO_DRAWING_SKIA
 		"webp-vp8" => Webp(lossless: false),
@@ -522,6 +544,17 @@ public class Given_ManagedImageDecoder
 		}
 
 		throw new InvalidOperationException($"No 0x{marker:X2} marker.");
+	}
+
+	private static byte[] BeforeEndOfImage(byte[] jpeg, byte[] segment) => [.. jpeg[..^2], .. segment, .. jpeg[^2..]];
+
+	// The file's SOF segment, declaring another size.
+	private static byte[] FrameHeader(byte[] jpeg, int width, int height)
+	{
+		var sof = FindMarker(jpeg, 0xC0);
+		var segment = jpeg[sof..(sof + 2 + ((jpeg[sof + 2] << 8) | jpeg[sof + 3]))];
+		SetU16BE(segment, 5, height, width);
+		return segment;
 	}
 
 	// Turns each of the marker's segments into an APP15 segment, which the decoder skips.
