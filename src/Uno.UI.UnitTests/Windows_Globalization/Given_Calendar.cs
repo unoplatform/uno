@@ -70,4 +70,98 @@ public class Given_Calendar
 
 		Assert.AreEqual(expectedClock, Calendar.GetDefaultClock(culture));
 	}
+
+	// The first rows are the 24h rows of the WinUI probe on Windows: an en-US regional format customized to 24-hour.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+	[DataRow("en-US", true, "en-US", TwentyFourHour)]
+	[DataRow("en-US", true, "en-CA", TwelveHour)]
+	[DataRow("en-US", true, "de-DE", TwentyFourHour)]
+	[DataRow("en-US", false, "en-GB", TwentyFourHour)]
+	[DataRow("de-DE", false, "de-DE", TwelveHour)]
+	[DataRow("en-GB", null, "en-GB", TwentyFourHour)]
+	[DataRow("en-US-u-fw-mon", true, "en-US", TwentyFourHour)]
+	[DataRow("en_US@rg=gbzzzz", true, "en-US", TwentyFourHour)]
+	[DataRow("en_US@hours=h23", true, "en-US", TwentyFourHour)]
+	[DataRow("zh-Hans_CN", false, "zh-CN", TwelveHour)]
+	public void When_Device_Sets_Clock_Then_Only_Its_Locale_Follows(string deviceLocale, bool? device24Hour, string language, string expectedClock)
+	{
+		var originalOverride = ApplicationLanguages.PrimaryLanguageOverride;
+		try
+		{
+			DeviceClock.TestDevice = (deviceLocale, null, device24Hour);
+
+			Assert.AreEqual(expectedClock, new Calendar([language]).GetClock());
+			Assert.AreEqual(expectedClock, new DateTimeFormatter("shorttime", [language]).Clock);
+
+			ApplicationLanguages.PrimaryLanguageOverride = language;
+			Assert.AreEqual(expectedClock, new Calendar().GetClock());
+			// What TimePicker and TimePickerFlyout take their default ClockIdentifier from.
+			Assert.AreEqual(expectedClock, new DateTimeFormatter("{hour.integer(1)}").Clock);
+		}
+		finally
+		{
+			DeviceClock.TestDevice = null;
+			ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+	public void When_Device_Sets_Clock_Then_Explicit_Clock_Wins()
+	{
+		try
+		{
+			DeviceClock.TestDevice = ("en-US", null, true);
+
+			Assert.AreEqual(TwelveHour, new Calendar(["en-US"], CalendarIdentifiers.Gregorian, TwelveHour).GetClock());
+			Assert.AreEqual(TwelveHour, new DateTimeFormatter("shorttime", ["en-US"], "US", CalendarIdentifiers.Gregorian, TwelveHour).Clock);
+		}
+		finally
+		{
+			DeviceClock.TestDevice = null;
+		}
+	}
+
+	// On iOS the current locale takes the language of the app's own localization: an app without Korean resources
+	// on a Korean device gets en_KR, while its language is the first preferred one, ko-KR.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+	[DataRow("ko-KR", TwentyFourHour)]
+	[DataRow("en-KR", TwentyFourHour)]
+	[DataRow("en-US", TwelveHour)]
+	public void When_Device_Locale_Differs_From_Preferred_Language_Then_Both_Follow(string language, string expectedClock)
+	{
+		var originalOverride = ApplicationLanguages.PrimaryLanguageOverride;
+		try
+		{
+			DeviceClock.TestDevice = ("en_KR", "ko-KR", true);
+
+			Assert.AreEqual(expectedClock, new Calendar([language]).GetClock());
+
+			ApplicationLanguages.PrimaryLanguageOverride = language;
+			Assert.AreEqual(expectedClock, new Calendar().GetClock());
+		}
+		finally
+		{
+			DeviceClock.TestDevice = null;
+			ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+	[DataRow("HH", true)]
+	[DataRow("H", true)]
+	[DataRow("k", true)]
+	[DataRow("h a", false)]
+	[DataRow("a h", false)]
+	[DataRow("K a", false)]
+	[DataRow("HH 'h'", true)]
+	[DataRow("'H' h a", false)]
+	[DataRow("'o''clock H' h a", false)]
+	[DataRow("mm", null)]
+	[DataRow(null, null)]
+	public void When_Apple_Hour_Format_Then_Clock_Follows(string? format, bool? expected)
+		=> Assert.AreEqual(expected, DeviceClock.IsTwentyFourHourPattern(format));
 }
