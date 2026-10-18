@@ -98,6 +98,9 @@ public class Given_DateTimeFormatter
 	[DataRow("en-US", "GregorianCalendar", "{era.abbreviated(1)}", 2024, 1, 15, "AD")]
 	[DataRow("ja-JP", "GregorianCalendar", "{era.abbreviated(1)}", 2024, 1, 15, "西暦")]
 	[DataRow("ja-JP", "JapaneseCalendar", "{era.abbreviated(1)}", 2024, 1, 15, "令")]
+	[DataRow("en-US", "JapaneseCalendar", "{year.abbreviated}", 2024, 1, 15, "6")]
+	[DataRow("en-US", "JapaneseCalendar", "{year.abbreviated(3)}", 2024, 1, 15, "006")]
+	[DataRow("en-US", "GregorianCalendar", "{year.abbreviated}", 2005, 1, 15, "05")]
 	public void When_Calendar_Is_Given_Then_Dates_Follow_It(string language, string calendar, string template, int year, int month, int day, string expected)
 	{
 		var formatter = new DateTimeFormatter(template, [language], "ZZ", calendar, ClockIdentifiers.TwelveHour);

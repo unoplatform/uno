@@ -240,7 +240,10 @@ public class Given_DateTimeFormatter
 	[DataRow("en-US", "KoreanCalendar", "{era.abbreviated}", "")]
 	[DataRow("en-US", "TaiwanCalendar", "{era.abbreviated}", "")]
 	[DataRow("en-US", "JulianCalendar", "{era.abbreviated}", "")]
-	public void When_Calendar_Is_Given_Then_Era_Follows_It(string language, string calendar, string pattern, string expected)
+	[DataRow("en-US", "JapaneseCalendar", "{year.abbreviated}", "6")]
+	[DataRow("en-US", "JapaneseCalendar", "{year.abbreviated(3)}", "006")]
+	[DataRow("en-US", "TaiwanCalendar", "{year.abbreviated}", "13")]
+	public void When_Calendar_Is_Given_Then_Era_And_Year_Follow_It(string language, string calendar, string pattern, string expected)
 	{
 		if (language is "ja-JP" && new CultureInfo(language).DateTimeFormat.PMDesignator == CultureInfo.InvariantCulture.DateTimeFormat.PMDesignator)
 		{

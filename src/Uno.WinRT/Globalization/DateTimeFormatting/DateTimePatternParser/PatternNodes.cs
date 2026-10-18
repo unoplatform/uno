@@ -159,7 +159,16 @@ internal sealed class PatternYearNode : PatternDateTimeNode
 		}
 		else if (Kind == YearKind.Abbreviated)
 		{
-			builder.Append(Calendar.GetTruncatedYear(year, IdealLength ?? 2, context.DateCulture));
+			if (IdealLength is { } idealLength)
+			{
+				builder.Append(Calendar.GetTruncatedYear(year, idealLength, context.DateCulture));
+			}
+			else
+			{
+				// As in WinRT, the last two digits, unpadded: "24", and "6" for Reiwa 6.
+				var digits = year.ToString(context.DateCulture);
+				builder.Append(digits, Math.Max(0, digits.Length - 2), Math.Min(2, digits.Length));
+			}
 		}
 	}
 }
