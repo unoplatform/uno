@@ -323,9 +323,10 @@ internal sealed class PatternHourNode : PatternDateTimeNode
 	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
 	{
 		int hour = dateTime.Hour;
-		if (!isTwentyFourHours && hour > 12)
+		if (!isTwentyFourHours)
 		{
-			hour = hour - 12;
+			// Midnight and noon are 12 on a 12-hour clock.
+			hour = hour % 12 == 0 ? 12 : hour % 12;
 		}
 
 		if (IdealLength.HasValue)

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
@@ -103,6 +104,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// In 12-hour clock, the first hour should represent 12 (not 0), regardless of formatting or digit shapes
 			Assert.IsTrue(int.TryParse(firstItem.PrimaryText, out var firstHourValue), "First hour text should be a valid integer");
 			Assert.AreEqual(12, firstHourValue, "First hour in 12-hour clock should represent 12");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+		[DataRow(13, "1:05 PM")]
+		[DataRow(0, "12:05 AM")]
+		public async Task When_Time_Selected_Then_Automation_Name_Has_Only_The_Time(int hour, string expectedTime)
+		{
+			var originalOverride = global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride;
+			try
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "en-US";
+
+				var timePicker = new TimePicker
+				{
+					Header = "Alarm",
+					ClockIdentifier = Windows.Globalization.ClockIdentifiers.TwelveHour,
+					SelectedTime = new TimeSpan(hour, 5, 0),
+				};
+				await UITestHelper.Load(timePicker);
+
+				// "<header> <short time> time picker", without the sentinel date the time is formatted on.
+				var flyoutButton = (ButtonBase)VisualTreeUtils.FindVisualChildByName(timePicker, "FlyoutButton");
+				var name = AutomationProperties.GetName(flyoutButton).Replace('\u202F', ' ').Replace('\u00A0', ' ');
+				StringAssert.StartsWith(name, $"Alarm {expectedTime}");
+			}
+			finally
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+				TestServices.WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]

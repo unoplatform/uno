@@ -224,9 +224,10 @@ internal sealed class TemplateParser
 
 	private bool TryParseRelativeDate([NotNullWhen(true)] out TemplateRelativeDateNode? relativeDate)
 	{
-		if (TryParseDayOfWeek(out var dayOfWeek))
+		// Longest first, or "dayofweek month day" would stop after "dayofweek".
+		if (TryParseRelativeLongDate(out var relativeLongDate))
 		{
-			relativeDate = dayOfWeek;
+			relativeDate = relativeLongDate;
 			return true;
 		}
 		else if (TryParseMonthDay(out var monthDay))
@@ -234,9 +235,9 @@ internal sealed class TemplateParser
 			relativeDate = monthDay;
 			return true;
 		}
-		else if (TryParseRelativeLongDate(out var relativeLongDate))
+		else if (TryParseDayOfWeek(out var dayOfWeek))
 		{
-			relativeDate = relativeLongDate;
+			relativeDate = dayOfWeek;
 			return true;
 		}
 

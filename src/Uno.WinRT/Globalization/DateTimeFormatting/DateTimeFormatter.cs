@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Uno;
-using Uno.Extensions;
+using WinCalendar = Windows.Globalization.Calendar;
 
 namespace Windows.Globalization.DateTimeFormatting;
 
@@ -24,8 +24,8 @@ public sealed partial class DateTimeFormatter
 	/// Creates a DateTimeFormatter object that is initialized by a format template string.
 	/// </summary>
 	/// <param name="formatTemplate">
-	/// A format template string that specifies the requested components. 
-	/// The order of the components is irrelevant. 
+	/// A format template string that specifies the requested components.
+	/// The order of the components is irrelevant.
 	/// This can also be a format pattern.
 	/// </param>
 	public DateTimeFormatter(string formatTemplate)
@@ -37,8 +37,8 @@ public sealed partial class DateTimeFormatter
 	/// Creates a DateTimeFormatter object that is initialized by a format template string.
 	/// </summary>
 	/// <param name="formatTemplate">
-	/// A format template string that specifies the requested components. 
-	/// The order of the components is irrelevant. 
+	/// A format template string that specifies the requested components.
+	/// The order of the components is irrelevant.
 	/// This can also be a format pattern.
 	/// </param>
 	/// <param name="languages">
@@ -48,15 +48,27 @@ public sealed partial class DateTimeFormatter
 	public DateTimeFormatter(
 		string formatTemplate,
 		IEnumerable<string>? languages)
+		: this(formatTemplate, languageList: ToLanguageList(languages), region: null, calendarIdentifier: null, clockIdentifier: null)
+	{
+	}
+
+	// Every public constructor ends here. A null calendar or clock is the languages' default, as in WinRT.
+	private DateTimeFormatter(
+		string formatTemplate,
+		IReadOnlyList<string>? languageList,
+		string? region,
+		string? calendarIdentifier,
+		string? clockIdentifier)
 	{
 		ArgumentNullException.ThrowIfNull(formatTemplate);
 
-		if (languages != null)
-		{
-			Languages = languages.Distinct().ToArray();
-		}
+		Languages = languageList ?? ApplicationLanguages.Languages;
+		_firstCulture = ApplicationLanguages.ResolveCulture(Languages);
+		Calendar = calendarIdentifier ?? new WinCalendar(Languages).GetCalendarSystem();
+		Clock = clockIdentifier ?? WinCalendar.GetDefaultClock(_firstCulture);
 
-		_firstCulture = new CultureInfo(Languages[0]);
+		// TODO:MZ:
+		GeographicRegion = region ?? "ZZ";
 
 		// The input can be either a template or a pattern. We try parsing it as a template
 		// first (without throwing), and fall back to treating it as a pattern otherwise.
@@ -85,7 +97,19 @@ public sealed partial class DateTimeFormatter
 			// That's how WinUI works.
 			// Basically, the order of tokens in the template string does NOT matter.
 			// So, this kinda normalizes the order the right way.
-			Template = BuildTemplate();
+			Template = BuildTemplate(
+				IncludeYear,
+				IncludeMonth,
+				IncludeDay,
+				IncludeDayOfWeek,
+				IncludeHour,
+				IncludeMinute,
+				IncludeSecond,
+				IncludeTimeZone,
+				IsLongDate,
+				IsShortDate,
+				IsLongTime,
+				IsShortTime);
 
 			string patternBuiltFromTemplate = BuildPattern();
 			Patterns = [patternBuiltFromTemplate];
@@ -99,13 +123,6 @@ public sealed partial class DateTimeFormatter
 			Template = formatTemplate;
 			Patterns = [formatTemplate];
 		}
-
-		var calendar = new Calendar(Languages);
-		Calendar = calendar.GetCalendarSystem();
-		Clock = calendar.GetClock();
-
-		// TODO:MZ:
-		GeographicRegion = "ZZ";
 	}
 
 	public DateTimeFormatter(
@@ -114,53 +131,36 @@ public sealed partial class DateTimeFormatter
 		string geographicRegion,
 		string calendar,
 		string clock)
-		: this(formatTemplate, languages)
+		: this(formatTemplate, languageList: ToLanguageList(languages), region: geographicRegion, calendarIdentifier: calendar, clockIdentifier: clock)
 	{
-		GeographicRegion = geographicRegion;
-		Calendar = calendar;
-		Clock = clock;
 	}
 
+	// As in WinRT, the components make a template, so a combination the template grammar lacks throws.
 	public DateTimeFormatter(
 		YearFormat yearFormat,
 		MonthFormat monthFormat,
 		DayFormat dayFormat,
 		DayOfWeekFormat dayOfWeekFormat)
+		: this(
+			BuildTemplate(yearFormat, monthFormat, dayFormat, dayOfWeekFormat, HourFormat.None, MinuteFormat.None, SecondFormat.None),
+			languageList: null,
+			region: null,
+			calendarIdentifier: null,
+			clockIdentifier: null)
 	{
-		IncludeYear = yearFormat;
-		IncludeMonth = monthFormat;
-		IncludeDay = dayFormat;
-		IncludeDayOfWeek = dayOfWeekFormat;
-		Template = BuildTemplate();
-		string patternBuiltFromTemplate = BuildPattern();
-		Patterns = [patternBuiltFromTemplate];
-		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
-		_firstCulture = new CultureInfo(Languages[0]);
-
-		// TODO:MZ:
-		Calendar = CalendarIdentifiers.Gregorian;
-		Clock = ClockIdentifiers.TwentyFourHour;
-		GeographicRegion = "ZZ";
 	}
 
 	public DateTimeFormatter(
 		HourFormat hourFormat,
 		MinuteFormat minuteFormat,
 		SecondFormat secondFormat)
+		: this(
+			BuildTemplate(YearFormat.None, MonthFormat.None, DayFormat.None, DayOfWeekFormat.None, hourFormat, minuteFormat, secondFormat),
+			languageList: null,
+			region: null,
+			calendarIdentifier: null,
+			clockIdentifier: null)
 	{
-		IncludeHour = hourFormat;
-		IncludeMinute = minuteFormat;
-		IncludeSecond = secondFormat;
-		Template = BuildTemplate();
-		string patternBuiltFromTemplate = BuildPattern();
-		Patterns = [patternBuiltFromTemplate];
-		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
-		_firstCulture = new CultureInfo(Languages[0]);
-
-		// TODO:MZ:
-		Calendar = CalendarIdentifiers.Gregorian;
-		Clock = ClockIdentifiers.TwentyFourHour;
-		GeographicRegion = "ZZ";
 	}
 
 	public DateTimeFormatter(
@@ -172,25 +172,13 @@ public sealed partial class DateTimeFormatter
 		MinuteFormat minuteFormat,
 		SecondFormat secondFormat,
 		IEnumerable<string> languages)
+		: this(
+			BuildTemplate(yearFormat, monthFormat, dayFormat, dayOfWeekFormat, hourFormat, minuteFormat, secondFormat),
+			languageList: ToLanguageList(languages),
+			region: null,
+			calendarIdentifier: null,
+			clockIdentifier: null)
 	{
-		IncludeYear = yearFormat;
-		IncludeMonth = monthFormat;
-		IncludeDay = dayFormat;
-		IncludeDayOfWeek = dayOfWeekFormat;
-		IncludeHour = hourFormat;
-		IncludeMinute = minuteFormat;
-		IncludeSecond = secondFormat;
-		Languages = languages.ToArray();
-		Template = BuildTemplate();
-		string patternBuiltFromTemplate = BuildPattern();
-		Patterns = [patternBuiltFromTemplate];
-		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
-		_firstCulture = new CultureInfo(Languages[0]);
-
-		// TODO:MZ:
-		Calendar = CalendarIdentifiers.Gregorian;
-		Clock = ClockIdentifiers.TwentyFourHour;
-		GeographicRegion = "ZZ";
 	}
 
 	public DateTimeFormatter(
@@ -205,23 +193,13 @@ public sealed partial class DateTimeFormatter
 		string geographicRegion,
 		string calendar,
 		string clock)
+		: this(
+			BuildTemplate(yearFormat, monthFormat, dayFormat, dayOfWeekFormat, hourFormat, minuteFormat, secondFormat),
+			languageList: ToLanguageList(languages),
+			region: geographicRegion,
+			calendarIdentifier: calendar,
+			clockIdentifier: clock)
 	{
-		IncludeYear = yearFormat;
-		IncludeMonth = monthFormat;
-		IncludeDay = dayFormat;
-		IncludeDayOfWeek = dayOfWeekFormat;
-		IncludeHour = hourFormat;
-		IncludeMinute = minuteFormat;
-		IncludeSecond = secondFormat;
-		Languages = languages.ToArray();
-		GeographicRegion = geographicRegion;
-		Calendar = calendar;
-		Clock = clock;
-		Template = BuildTemplate();
-		string patternBuiltFromTemplate = BuildPattern();
-		Patterns = [patternBuiltFromTemplate];
-		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
-		_firstCulture = new CultureInfo(Languages[0]);
 	}
 
 	/// <summary>
@@ -287,7 +265,7 @@ public sealed partial class DateTimeFormatter
 	/// <summary>
 	/// Gets the priority list of language identifiers that is used when formatting dates and times.
 	/// </summary>
-	public IReadOnlyList<string> Languages { get; } = ApplicationLanguages.Languages;
+	public IReadOnlyList<string> Languages { get; }
 
 	/// <summary>
 	/// Gets the DateTimeFormatter object that formats dates according to the user's choice of long date pattern.
@@ -352,6 +330,9 @@ public sealed partial class DateTimeFormatter
 		throw new NotSupportedException();
 	}
 
+	private static IReadOnlyList<string>? ToLanguageList(IEnumerable<string>? languages)
+		=> languages?.Distinct().ToArray();
+
 	private static string ToTemplateString(YearFormat yearFormat)
 		=> yearFormat switch
 		{
@@ -369,7 +350,7 @@ public sealed partial class DateTimeFormatter
 			MonthFormat.Default => "month",
 			MonthFormat.Abbreviated => "month.abbreviated",
 			MonthFormat.Full => "month.full",
-			MonthFormat.Numeric => "month.integer",
+			MonthFormat.Numeric => "month.numeric",
 			_ => throw new ArgumentOutOfRangeException(nameof(monthFormat)),
 		};
 
@@ -425,31 +406,43 @@ public sealed partial class DateTimeFormatter
 			_ => throw new ArgumentOutOfRangeException(nameof(timeZoneFormat)),
 		};
 
-	private string BuildTemplate()
+	private static string BuildTemplate(
+		YearFormat year,
+		MonthFormat month,
+		DayFormat day,
+		DayOfWeekFormat dayOfWeek,
+		HourFormat hour,
+		MinuteFormat minute,
+		SecondFormat second,
+		TimeZoneFormat timeZone = TimeZoneFormat.None,
+		bool isLongDate = false,
+		bool isShortDate = false,
+		bool isLongTime = false,
+		bool isShortTime = false)
 	{
 		var templateBuilder = new StringBuilder();
-		if (IsLongDate)
+		if (isLongDate)
 			Append("longdate");
-		else if (IsShortDate)
+		else if (isShortDate)
 			Append("shortdate");
 		else
 		{
-			Append(ToTemplateString(IncludeYear));
-			Append(ToTemplateString(IncludeMonth));
-			Append(ToTemplateString(IncludeDay));
-			Append(ToTemplateString(IncludeDayOfWeek));
+			Append(ToTemplateString(year));
+			Append(ToTemplateString(month));
+			Append(ToTemplateString(day));
+			Append(ToTemplateString(dayOfWeek));
 		}
 
-		if (IsLongTime)
+		if (isLongTime)
 			Append("longtime");
-		else if (IsShortTime)
+		else if (isShortTime)
 			Append("shorttime");
 		else
 		{
-			Append(ToTemplateString(IncludeHour));
-			Append(ToTemplateString(IncludeMinute));
-			Append(ToTemplateString(IncludeSecond));
-			Append(ToTemplateString(IncludeTimeZone));
+			Append(ToTemplateString(hour));
+			Append(ToTemplateString(minute));
+			Append(ToTemplateString(second));
+			Append(ToTemplateString(timeZone));
 		}
 
 		return templateBuilder.ToString();
@@ -472,127 +465,73 @@ public sealed partial class DateTimeFormatter
 
 	private string BuildPattern()
 	{
+		var format = _firstCulture.DateTimeFormat;
+
+		// One case per date production of the template grammar, each with only the parts it names.
 		string datePattern;
 		if (IsLongDate)
 		{
-			datePattern = _firstCulture.DateTimeFormat.LongDatePattern;
+			datePattern = ConstructPattern(format.LongDatePattern);
 		}
 		else if (IsShortDate)
 		{
-			datePattern = _firstCulture.DateTimeFormat.ShortDatePattern;
+			datePattern = ConstructPattern(format.ShortDatePattern);
 		}
 		else
 		{
-			// NOTE: The original order that was specified in the template string does NOT matter.
-			// That's why all we need to care about is the values of the mentioned properties.
-			// However, we should actually be checking the actual enum value and not just being "None" or not.
-			// But the actual correct implementation that will 100% match WinUI isn't yet clear.
-			// This is a best effort approach.
-			bool hasYear = IncludeYear != YearFormat.None;
-			bool hasMonth = IncludeMonth != MonthFormat.None;
-			bool hasDay = IncludeDay != DayFormat.None;
-			bool hasDayOfWeek = IncludeDayOfWeek != DayOfWeekFormat.None;
+			datePattern = (IncludeYear != YearFormat.None, IncludeMonth != MonthFormat.None, IncludeDay != DayFormat.None, IncludeDayOfWeek != DayOfWeekFormat.None) switch
+			{
+				(false, false, false, false) => string.Empty,
+				(true, true, true, true) => ConstructPattern(format.LongDatePattern),
+				(true, true, true, false) => ConstructPattern(format.ShortDatePattern),
+				(true, true, false, false) => ConstructPattern(format.YearMonthPattern),
+				(false, true, true, true) => RemoveFields(ConstructPattern(format.LongDatePattern), YearOrEraFieldRegex()),
+				(false, true, true, false) => ConstructPattern(format.MonthDayPattern),
 
-			if (hasYear && hasMonth && hasDay && hasDayOfWeek)
-			{
-				datePattern = _firstCulture.DateTimeFormat.LongDatePattern;
-			}
-			else if (hasYear && hasMonth && hasDay)
-			{
-				datePattern = _firstCulture.DateTimeFormat.ShortDatePattern;
-			}
-			else if (hasYear && hasMonth && !hasDayOfWeek)
-			{
-				datePattern = _firstCulture.DateTimeFormat.YearMonthPattern;
-			}
-			else if (hasYear && !hasMonth && !hasDay && !hasDayOfWeek)
-			{
-				datePattern = "yyyy";
-			}
-			else if (hasMonth && hasDay && !hasYear && !hasDayOfWeek)
-			{
-				datePattern = _firstCulture.DateTimeFormat.MonthDayPattern;
-			}
-			else if (hasDay && !hasMonth && !hasYear && !hasDayOfWeek)
-			{
-				datePattern = "d";
-			}
-			else
-			{
-				// Fallback case.
-				// Add more cases as they arise.
-				datePattern = _firstCulture.DateTimeFormat.LongDatePattern;
-			}
+				// The patterns WinRT gives for a single part.
+				(true, false, false, false) => IncludeYear == YearFormat.Abbreviated ? "{year.abbreviated}" : "{year.full}",
+				(false, true, false, false) => IncludeMonth switch
+				{
+					MonthFormat.Abbreviated => "{month.solo.abbreviated}",
+					MonthFormat.Numeric => "{month.integer}",
+					_ => "{month.solo.full}",
+				},
+				(false, false, true, false) => "{day.integer}",
+				(false, false, false, true) => IncludeDayOfWeek == DayOfWeekFormat.Abbreviated ? "{dayofweek.solo.abbreviated}" : "{dayofweek.solo.full}",
+
+				_ => throw new ArgumentException($"The template '{Template}' has no date pattern."),
+			};
 		}
 
 		string timePattern;
 		if (IsLongTime)
 		{
-			timePattern = _firstCulture.DateTimeFormat.LongTimePattern;
+			timePattern = ConstructPattern(format.LongTimePattern);
 		}
 		else if (IsShortTime)
 		{
-			timePattern = _firstCulture.DateTimeFormat.ShortTimePattern;
+			timePattern = ConstructPattern(format.ShortTimePattern);
 		}
 		else
 		{
-			// NOTE: The original order that was specified in the template string does NOT matter.
-			// That's why all we need to care about is the values of the mentioned properties.
-			bool hasHour = IncludeHour != HourFormat.None;
-			bool hasMinute = IncludeMinute != MinuteFormat.None;
-			bool hasSecond = IncludeSecond != SecondFormat.None;
-			bool hasTimeZone = IncludeTimeZone != TimeZoneFormat.None;
+			timePattern = (IncludeHour != HourFormat.None, IncludeMinute != MinuteFormat.None, IncludeSecond != SecondFormat.None) switch
+			{
+				(false, false, false) => string.Empty,
+				(true, true, true) => ConstructPattern(format.LongTimePattern),
+				(true, true, false) => ConstructPattern(format.ShortTimePattern),
+				(true, false, false) => GetHourPattern(ConstructPattern(format.ShortTimePattern)),
+				_ => throw new ArgumentException($"The template '{Template}' has no time pattern."),
+			};
 
-			if (hasHour && hasMinute && hasSecond)
+			if (IncludeTimeZone != TimeZoneFormat.None)
 			{
-				timePattern = _firstCulture.DateTimeFormat.LongTimePattern;
-			}
-			else if (hasHour && hasMinute)
-			{
-				timePattern = _firstCulture.DateTimeFormat.ShortTimePattern;
-			}
-			else if (hasHour)
-			{
-				timePattern = "h";
-			}
-			else if (!hasHour && !hasMinute && !hasSecond)
-			{
-				timePattern = string.Empty;
-			}
-			else
-			{
-				// Shouldn't really be reachable. But a fallback in place just in case.
-				timePattern = _firstCulture.DateTimeFormat.LongTimePattern;
-			}
-
-			if (hasTimeZone)
-			{
-				if (timePattern.Length == 0)
-				{
-					timePattern = "zzz";
-				}
-				else
-				{
-					timePattern = $"{timePattern} zzz";
-				}
+				timePattern = timePattern.Length == 0 ? "{timezone.full}" : $"{timePattern} {{timezone.full}}";
 			}
 		}
 
-		string finalSystemFormat;
-		if (datePattern.Length > 0 && timePattern.Length > 0)
-		{
-			finalSystemFormat = $"{datePattern} {timePattern}";
-		}
-		else if (datePattern.Length > 0)
-		{
-			finalSystemFormat = datePattern;
-		}
-		else
-		{
-			finalSystemFormat = timePattern;
-		}
-
-		return ConstructPattern(finalSystemFormat);
+		return datePattern.Length > 0 && timePattern.Length > 0
+			? $"{datePattern} {timePattern}"
+			: datePattern + timePattern;
 
 		void AddToBuilder(StringBuilder builder, char lastChar, int count)
 		{
@@ -829,9 +768,55 @@ public sealed partial class DateTimeFormatter
 		}
 	}
 
+	// As in WinRT, the short time without its minutes on a 12-hour pattern ("1 PM"), or with them at
+	// "00" on a 24-hour one ("13:00").
+	private static string GetHourPattern(string shortTimePattern)
+	{
+		var minute = MinuteFieldRegex().Match(shortTimePattern);
+		if (!minute.Success)
+		{
+			return shortTimePattern;
+		}
+
+		if (!shortTimePattern.Contains("{period", StringComparison.Ordinal))
+		{
+			return shortTimePattern.Remove(minute.Index, minute.Length).Insert(minute.Index, "00");
+		}
+
+		// Drop the minutes and the separator before them.
+		var start = shortTimePattern.LastIndexOf('}', minute.Index) + 1;
+		return shortTimePattern.Remove(start, minute.Index + minute.Length - start);
+	}
+
+	// Removes the matching fields with the text that only separated or qualified them: the separator before
+	// the last field and anything after it (", 2024", " 2024 г."), or the text up to the next field ("2024年").
+	private static string RemoveFields(string pattern, Regex fields)
+	{
+		while (fields.Match(pattern) is { Success: true } field)
+		{
+			var start = field.Index;
+			var end = pattern.IndexOf('{', field.Index + field.Length);
+			if (end < 0)
+			{
+				start = pattern.LastIndexOf('}', field.Index) + 1;
+				end = pattern.Length;
+			}
+
+			pattern = pattern.Remove(start, end - start);
+		}
+
+		return pattern;
+	}
+
 	[GeneratedRegex(@"('[^']+')")]
 	private static partial Regex StringLiteralRegex();
 
 	[GeneratedRegex(@"(.)(\1+)?")]
 	private static partial Regex RepeatedCharactersRegex();
+
+	[GeneratedRegex(@"\{minute[^}]*\}")]
+	private static partial Regex MinuteFieldRegex();
+
+	[GeneratedRegex(@"\{(?:year|era)[^}]*\}")]
+	private static partial Regex YearOrEraFieldRegex();
 }
