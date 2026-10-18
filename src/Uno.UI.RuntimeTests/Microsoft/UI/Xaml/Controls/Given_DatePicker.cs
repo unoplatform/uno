@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AwesomeAssertions.Execution;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
@@ -120,6 +121,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+		public async Task When_Date_Selected_Then_Automation_Name_Has_The_Long_Date()
+		{
+			using var lang = SetAmbiantLanguage("en-US");
+
+			var datePicker = new DatePicker { Header = "Birthday", SelectedDate = new DateTimeOffset(new DateTime(2024, 1, 15)) };
+			TestServices.WindowHelper.WindowContent = datePicker;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// "<header> <date> date picker", the date from "day month.full year", as in WinRT.
+			var flyoutButton = (ButtonBase)VisualTreeUtils.FindVisualChildByName(datePicker, "FlyoutButton");
+			StringAssert.StartsWith(AutomationProperties.GetName(flyoutButton), "Birthday January 15, 2024");
+		}
+
+		[TestMethod]
 		public async Task When_CanadaEnglish_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -131,10 +147,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			// en-CA uses yyyy/mm/dd
-			CheckDateTimeTextBlockPartPosition(datePicker, "YearTextBlock", expectedColumn: 0);
-			CheckDateTimeTextBlockPartPosition(datePicker, "MonthTextBlock", expectedColumn: 2);
-			CheckDateTimeTextBlockPartPosition(datePicker, "DayTextBlock", expectedColumn: 4);
+			// As in WinUI, the columns follow "day month.full year", which is en-CA's long date (January 15, 2024).
+			CheckDateTimeTextBlockPartPosition(datePicker, "YearTextBlock", expectedColumn: 4);
+			CheckDateTimeTextBlockPartPosition(datePicker, "MonthTextBlock", expectedColumn: 0);
+			CheckDateTimeTextBlockPartPosition(datePicker, "DayTextBlock", expectedColumn: 2);
 		}
 
 		[TestMethod]
@@ -155,10 +171,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			// fr-CA uses yyyy/mm/dd
-			CheckDateTimeTextBlockPartPosition(datePicker, "YearTextBlock", expectedColumn: 0);
+			// As in WinUI, the columns follow "day month.full year", which is fr-CA's long date (15 janvier 2024).
+			CheckDateTimeTextBlockPartPosition(datePicker, "YearTextBlock", expectedColumn: 4);
 			CheckDateTimeTextBlockPartPosition(datePicker, "MonthTextBlock", expectedColumn: 2);
-			CheckDateTimeTextBlockPartPosition(datePicker, "DayTextBlock", expectedColumn: 4);
+			CheckDateTimeTextBlockPartPosition(datePicker, "DayTextBlock", expectedColumn: 0);
 		}
 
 		[TestMethod]
