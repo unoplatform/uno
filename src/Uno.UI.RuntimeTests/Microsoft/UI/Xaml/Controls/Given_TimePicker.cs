@@ -209,6 +209,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
+		// The 24h rows of the WinUI probe on Windows: the device (regional format) is en-US with a 24-hour time.
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+		[DataRow("en-CA", "12HourClock", "1")]
+		[DataRow("en-US", "24HourClock", "13")]
+		[DataRow("de-DE", "24HourClock", "13")]
+		public void When_Device_Uses_24_Hour_Clock_Then_Default_ClockIdentifier_Follows_It_In_Its_Locale_Only(string language, string expectedClock, string expectedHour)
+		{
+			var originalOverride = global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride;
+			try
+			{
+				global::Windows.Globalization.DeviceClock.TestDevice = ("en-US", null, true);
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = language;
+
+				var timePicker = new TimePicker { SelectedTime = new TimeSpan(13, 5, 0) };
+				Assert.AreEqual(expectedClock, timePicker.ClockIdentifier);
+
+				TestServices.WindowHelper.WindowContent = timePicker;
+				timePicker.UpdateLayout();
+
+				var hourTextBlock = (TextBlock)VisualTreeUtils.FindVisualChildByName(timePicker, "HourTextBlock");
+				Assert.AreEqual(expectedHour, hourTextBlock.Text);
+			}
+			finally
+			{
+				global::Windows.Globalization.DeviceClock.TestDevice = null;
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+#endif
+
 		[TestMethod]
 		public async Task When_MinuteIncrement_Not_In_Range_Should_Throw_And_Keep_OldValue()
 		{
