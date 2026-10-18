@@ -98,8 +98,8 @@ public static partial class ApplicationLanguages
 			return;
 		}
 
-		// As in WinUI, the language list drives the UI culture (resource lookup) only. Formatting follows
-		// the user's regional settings, which the runtime has already read into CurrentCulture.
+		// As in WinUI, the language list doesn't reach CurrentCulture: formatting follows the user's regional
+		// settings, which the runtime has already read into it. Uno applies the list to the UI culture.
 		var uiCulture = CreateCulture(language);
 		CultureInfo.CurrentUICulture = uiCulture;
 		CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
@@ -116,8 +116,10 @@ public static partial class ApplicationLanguages
 	{
 #if __ANDROID__
 		// The runtime drops the locale's -u- extensions, which carry the Android 14 regional preferences
-		// (first day of week...), so format with the system locale itself.
-		return ManifestLanguages.Count > 0 ? CreateCulture(ManifestLanguages[0]) : null;
+		// (first day of week...), so format with the system locale itself, unless the app picked a culture.
+		return ManifestLanguages.Count > 0 && CultureInfo.CurrentCulture.Name == CultureInfo.InstalledUICulture.Name
+			? CreateCulture(ManifestLanguages[0])
+			: null;
 #else
 		// No user locale (e.g. LANG unset or C on Linux): format in the app language rather than invariant.
 		return CultureInfo.CurrentCulture.Name.Length == 0 && !InvariantCulture ? uiCulture : null;
