@@ -539,25 +539,35 @@ public sealed partial class DateTimeFormatter
 				(false, false, false, false) => string.Empty,
 				(true, true, true, true) => ConstructPattern(dateFormat.LongDatePattern),
 
-				// The grammar calls it a short date, but WinRT gives the long date without the day of week.
-				(true, true, true, false) => RemoveFields(ConstructPattern(dateFormat.LongDatePattern), DayOfWeekFieldRegex()),
+				(true, true, true, false) => GetYearMonthDayPattern(),
 				(true, true, false, false) => ConstructPattern(dateFormat.YearMonthPattern),
 				(false, true, true, true) => RemoveFields(ConstructPattern(dateFormat.LongDatePattern), YearOrEraFieldRegex()),
-				(false, true, true, false) => ConstructPattern(dateFormat.MonthDayPattern),
+				(false, true, true, false) => GetMonthDayPattern(),
 
 				// The patterns WinRT gives for a single part.
-				(true, false, false, false) => IncludeYear == YearFormat.Abbreviated ? "{year.abbreviated}" : "{year.full}",
-				(false, true, false, false) => IncludeMonth switch
-				{
-					MonthFormat.Abbreviated => "{month.solo.abbreviated}",
-					MonthFormat.Numeric => "{month.integer}",
-					_ => "{month.solo.full}",
-				},
+				(true, false, false, false) => "{year.full}",
+				(false, true, false, false) => IncludeMonth == MonthFormat.Numeric ? "{month.integer}" : "{month.solo.full}",
 				(false, false, true, false) => "{day.integer}",
-				(false, false, false, true) => IncludeDayOfWeek == DayOfWeekFormat.Abbreviated ? "{dayofweek.solo.abbreviated}" : "{dayofweek.solo.full}",
+				(false, false, false, true) => "{dayofweek.solo.full}",
 
 				_ => throw new ArgumentException($"The template '{Template}' has no date pattern."),
 			};
+
+			// As in WinRT, a part's format applies in any combination ("Jan 15", "Mon, Jan 15, 2024").
+			if (IncludeMonth == MonthFormat.Abbreviated)
+			{
+				datePattern = datePattern.Replace("{month.full}", "{month.abbreviated}").Replace("{month.solo.full}", "{month.solo.abbreviated}");
+			}
+
+			if (IncludeDayOfWeek == DayOfWeekFormat.Abbreviated)
+			{
+				datePattern = datePattern.Replace("{dayofweek.full}", "{dayofweek.abbreviated}").Replace("{dayofweek.solo.full}", "{dayofweek.solo.abbreviated}");
+			}
+
+			if (IncludeYear == YearFormat.Abbreviated)
+			{
+				datePattern = FullYearFieldRegex().Replace(datePattern, "{year.abbreviated}");
+			}
 		}
 
 		if (dateFormat.Calendar is GregorianCalendar)
@@ -597,6 +607,34 @@ public sealed partial class DateTimeFormatter
 		return datePattern.Length > 0 && timePattern.Length > 0
 			? $"{datePattern} {timePattern}"
 			: datePattern + timePattern;
+
+		// As in WinRT, the long date without the day of week, though the grammar calls the combination a short
+		// date. A numeric month takes the short date, unless the long date's month is numeric too (ja-JP), and
+		// so does an abbreviated year, with two digits ("1/15/24").
+		string GetYearMonthDayPattern()
+		{
+			var longDate = RemoveFields(ConstructPattern(dateFormat.LongDatePattern), DayOfWeekFieldRegex());
+			if (IncludeMonth == MonthFormat.Numeric && !longDate.Contains("{month.integer", StringComparison.Ordinal))
+			{
+				return ConstructPattern(dateFormat.ShortDatePattern);
+			}
+
+			return IncludeYear == YearFormat.Abbreviated
+				? FullYearFieldRegex().Replace(ConstructPattern(dateFormat.ShortDatePattern), "{year.abbreviated(2)}")
+				: longDate;
+		}
+
+		// A numeric month takes the short date without its year and its padding ("1/15", "15.1."), unless the month
+		// and day pattern's month is numeric already (ja-JP).
+		string GetMonthDayPattern()
+		{
+			var monthDay = ConstructPattern(dateFormat.MonthDayPattern);
+			return IncludeMonth == MonthFormat.Numeric && !monthDay.Contains("{month.integer", StringComparison.Ordinal)
+				? RemoveFields(ConstructPattern(dateFormat.ShortDatePattern), YearOrEraFieldRegex())
+					.Replace("{day.integer(2)}", "{day.integer}")
+					.Replace("{month.integer(2)}", "{month.integer}")
+				: monthDay;
+		}
 
 		void AddToBuilder(StringBuilder builder, char lastChar, int count)
 		{
@@ -920,6 +958,9 @@ public sealed partial class DateTimeFormatter
 
 	[GeneratedRegex(@"\{dayofweek[^}]*\}")]
 	private static partial Regex DayOfWeekFieldRegex();
+
+	[GeneratedRegex(@"\{year\.full[^}]*\}")]
+	private static partial Regex FullYearFieldRegex();
 
 	[GeneratedRegex(@"\{period[^}]*\}")]
 	private static partial Regex PeriodFieldRegex();
