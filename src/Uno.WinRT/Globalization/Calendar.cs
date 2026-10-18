@@ -124,8 +124,9 @@ namespace Windows.Globalization
 
 			if (optionalCalendar is null)
 			{
-				// No culture formats with this calendar (Julian, lunisolar): use the language's Gregorian names,
-				// as WinRT does for Julian, rather than its default calendar, which may not cover the date.
+				// Calendars on the Gregorian months (Julian, Thai, Korean, Taiwan) and those no culture formats with
+				// (lunisolar) use the language's Gregorian names, as WinRT does ("January 2567" for en-US), rather
+				// than its default calendar, which may not cover the date.
 				culture = languageCulture;
 				optionalCalendar = languageCulture.Calendar is global::System.Globalization.GregorianCalendar
 					? null
@@ -161,10 +162,7 @@ namespace Windows.Globalization
 				global::System.Globalization.HebrewCalendar => "he-IL",
 				global::System.Globalization.JapaneseCalendar => "ja-JP",
 				global::System.Globalization.UmAlQuraCalendar or global::System.Globalization.HijriCalendar => "ar-SA",
-				global::System.Globalization.ThaiBuddhistCalendar => "th-TH",
 				global::System.Globalization.PersianCalendar => "fa-IR",
-				global::System.Globalization.TaiwanCalendar => "zh-TW",
-				global::System.Globalization.KoreanCalendar => "ko-KR",
 				_ => null,
 			};
 
