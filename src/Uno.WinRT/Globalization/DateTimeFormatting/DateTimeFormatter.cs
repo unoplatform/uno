@@ -613,18 +613,19 @@ public sealed partial class DateTimeFormatter
 			: datePattern + timePattern;
 
 		// As in WinRT, the long date without the day of week, though the grammar calls the combination a short
-		// date. A numeric month takes the short date, unless the long date's month is numeric too (ja-JP), and
-		// so does an abbreviated year, with two digits ("1/15/24").
+		// date. A numeric month takes the short date, unless the long date's month is numeric too (ja-JP). An
+		// abbreviated year takes the short date with two digits ("1/15/24"), unless the month is named, full or
+		// abbreviated ("15. Januar 24").
 		string GetYearMonthDayPattern()
 		{
-			var longDate = RemoveFields(ConstructPattern(dateFormat.LongDatePattern), DayOfWeekFieldRegex());
-			if (IncludeMonth == MonthFormat.Numeric && !longDate.Contains("{month.integer", StringComparison.Ordinal))
+			if (IncludeYear == YearFormat.Abbreviated && IncludeMonth is MonthFormat.Default or MonthFormat.Numeric)
 			{
-				return ConstructPattern(dateFormat.ShortDatePattern);
+				return FullYearFieldRegex().Replace(ConstructPattern(dateFormat.ShortDatePattern), "{year.abbreviated(2)}");
 			}
 
-			return IncludeYear == YearFormat.Abbreviated
-				? FullYearFieldRegex().Replace(ConstructPattern(dateFormat.ShortDatePattern), "{year.abbreviated(2)}")
+			var longDate = RemoveFields(ConstructPattern(dateFormat.LongDatePattern), DayOfWeekFieldRegex());
+			return IncludeMonth == MonthFormat.Numeric && !longDate.Contains("{month.integer", StringComparison.Ordinal)
+				? ConstructPattern(dateFormat.ShortDatePattern)
 				: longDate;
 		}
 
