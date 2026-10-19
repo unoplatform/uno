@@ -5491,6 +5491,277 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Task When_Touch_Tap_Collapses_Selection_iOS()
 			=> AssertTouchTapCollapsesSelection(TextBoxCore.TouchTextSelectionConvention.iOS);
 
+		// The loupe follows a press-and-hold caret drag for its whole length: begun on the hold, moved with the finger,
+		// and ended only on release.
+		[TestMethod]
+		public Task When_Touch_LongPress_Drag_Keeps_Loupe_iOS()
+			=> AssertLoupeFollowsCaretDrag(inScrollViewer: false);
+
+		private static async Task AssertLoupeFollowsCaretDrag(bool inScrollViewer)
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+
+			if (inScrollViewer)
+			{
+				await UITestHelper.Load(new ScrollViewer
+				{
+					Height = 200,
+					Content = new StackPanel { Children = { SUT, new Border { Height = 1000 } } }
+				});
+			}
+			else
+			{
+				await UITestHelper.Load(SUT);
+			}
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var start = GetCaretPoint(SUT, 2);
+			finger.Press(start);
+			RaiseTouchHold(SUT, start);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, loupe.Begins, "the hold should show the loupe");
+
+			finger.MoveBy(120, 0, steps: 6, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, loupe.Ends, $"moving the finger must not end the loupe (log: {loupe.Log})");
+			Assert.IsTrue(loupe.Moves > 0, $"the loupe should follow the finger (log: {loupe.Log})");
+			Assert.IsTrue(SUT.SelectionStart > 2, "the caret should follow the finger");
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, loupe.Ends, "releasing should end the loupe");
+		}
+
+		// Where the platform has no text magnifier (the browser, iOS before 17), Uno draws one while the caret is dragged.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drags_Caret_Shows_Managed_Loupe_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+
+			Assert.IsFalse(SUT.IsManagedLoupeShowing, "no loupe before the drag");
+
+			finger.Press(startPoint);
+			RaiseTouchHold(SUT, startPoint);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsManagedLoupeShowing, "the hold starts the caret drag, which shows the loupe");
+
+			var loupe = FindManagedLoupe();
+			var firstLeft = loupe.GetAbsoluteBoundsRect().Left;
+
+			// It is not an empty box: the magnified text and the caret are painted. (The text surface is transparent,
+			// so any painted pixel differs from the corner's.)
+			var canvas = (Canvas)((Border)loupe).Child;
+			var shot = await UITestHelper.ScreenShot(canvas);
+			var empty = shot[1, 1];
+			var inkedPixels = 0;
+			for (var x = 4; x < shot.Width - 4; x++)
+			{
+				for (var y = 4; y < shot.Height - 4; y++)
+				{
+					if (shot[x, y] != empty)
+					{
+						inkedPixels++;
+					}
+				}
+			}
+			Assert.IsTrue(inkedPixels > 20, $"the loupe should show the magnified text (only {inkedPixels} painted pixels)");
+
+			// The text under the caret is what the loupe centers on.
+			var textBlock = canvas.Children.OfType<TextBlock>().Single();
+			var caretRect = SUT.TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(SUT.SelectionStart);
+			var caretMiddle = new Point(caretRect.X, caretRect.Y + (caretRect.Height / 2));
+			var inLoupe = textBlock.TransformToVisual(canvas).TransformPoint(caretMiddle);
+			Assert.AreEqual(canvas.Width / 2, inLoupe.X, 1.5, "the caret's text is horizontally centered in the loupe");
+			Assert.AreEqual(canvas.Height / 2, inLoupe.Y, 1.5, "the caret's text is vertically centered in the loupe");
+
+			Assert.IsTrue(loupe.GetAbsoluteBoundsRect().Bottom <= bounds.Top + 1, "the loupe sits above the text, out of the finger's way");
+
+			finger.MoveBy(150, 0, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsManagedLoupeShowing, "moving the finger keeps the loupe");
+			Assert.IsTrue(FindManagedLoupe().GetAbsoluteBoundsRect().Left > firstLeft, "the loupe follows the caret");
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(SUT.IsManagedLoupeShowing, "releasing hides the loupe");
+		}
+
+		// The platform loupe, when there is one, is the one shown.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drags_Caret_Native_Loupe_Wins_Over_Managed_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+
+			finger.Press(startPoint);
+			RaiseTouchHold(SUT, startPoint);
+			finger.MoveBy(100, 0, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, loupe.Begins, "the platform loupe is used");
+			Assert.IsFalse(SUT.IsManagedLoupeShowing, "the Uno-drawn loupe must not show over the platform one");
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
+		// A platform loupe that can't show (iOS before 17) falls back to the Uno-drawn one.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drags_Caret_Native_Loupe_Unavailable_Falls_Back_iOS()
+		{
+			TextBoxCore.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
+			using var _ = new DisposableAction(() =>
+			{
+				TextBoxCore.LoupeOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+
+			finger.Press(startPoint);
+			RaiseTouchHold(SUT, startPoint);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsManagedLoupeShowing);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(SUT.IsManagedLoupeShowing);
+		}
+
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drags_Caret_Managed_Loupe_Disabled_iOS()
+		{
+			var wasEnabled = global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe;
+			global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = false;
+			using var _ = new DisposableAction(() => global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = wasEnabled);
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+
+			finger.Press(startPoint);
+			RaiseTouchHold(SUT, startPoint);
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(SUT.IsManagedLoupeShowing);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
+		private static FrameworkElement FindManagedLoupe()
+		{
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+				.Select(p => p.Child)
+				.OfType<Border>()
+				.FirstOrDefault(b => b.Child is Canvas && b.Width == 120);
+			return popup ?? throw new InvalidOperationException("The managed text loupe popup is not open");
+		}
+
+		private sealed class RecordingLoupe : Uno.UI.Xaml.Controls.Extensions.INativeTextLoupeExtension
+		{
+			public bool CanShow { get; init; } = true;
+			public int Begins { get; private set; }
+			public int Moves { get; private set; }
+			public int Ends { get; private set; }
+			public string Log { get; private set; } = "";
+
+			public bool BeginLoupe(XamlRoot xamlRoot, Point point, Rect caretRect)
+			{
+				Begins++;
+				Log += "B";
+				return CanShow;
+			}
+
+			public void MoveLoupe(Point point, Rect caretRect)
+			{
+				Moves++;
+				Log += "M";
+			}
+
+			public void EndLoupe()
+			{
+				Ends++;
+				Log += $"E({Environment.StackTrace.Split('\n').Skip(2).Take(4).Select(l => l.Trim()).Aggregate((a, b) => a + " < " + b)})";
+			}
+		}
+
+		// Screen point (XamlRoot coordinates) of the caret position before the character at index.
+		private static Point GetCaretPoint(TextBox textBox, int index)
+		{
+			var displayBlock = textBox.TextBoxView.DisplayBlock;
+			var rect = displayBlock.ParsedText.GetRectForIndex(index);
+			return displayBlock.TransformToVisual(null).TransformPoint(new Point(rect.Left + 1, rect.Top + (rect.Height / 2)));
+		}
+
+		// Simulates the 800ms hold as a touch ContextRequested (the iOS long-press entry), as
+		// When_Touch_LongPress_Drags_Caret_iOS does, without waiting on the holding timer.
+		private static void RaiseTouchHold(TextBox textBox, Point point)
+		{
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(point);
+			textBox.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+		}
+
 		// Native iOS/Android: a single tap places a caret (it does NOT select a word like the Windows convention).
 		private static async Task AssertTouchSingleTapPlacesCaret(TextBoxCore.TouchTextSelectionConvention convention, TextBoxCore.CaretDisplayMode expectedCaret)
 		{

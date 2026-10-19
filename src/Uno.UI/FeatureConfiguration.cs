@@ -320,6 +320,20 @@ namespace Uno.UI
 			/// on iOS versions prior to 26.
 			/// </remarks>
 			public static bool DisableNumberPadPopover { get; set; }
+
+			/// <summary>
+			/// When set to <see langword="true"/> (the default), dragging the caret or a selection handle by touch on
+			/// iOS shows the system text magnifier (<c>UITextLoupeSession</c>, iOS 17+).
+			/// </summary>
+			/// <remarks>This is currently an iOS Skia-only feature and has no effect on other platforms.</remarks>
+			public static bool UseNativeTextLoupe { get; set; } = true;
+
+			/// <summary>
+			/// When set to <see langword="true"/> (the default), dragging the caret or a selection handle by touch under the
+			/// iOS text-selection convention shows an Uno-drawn magnifier on hosts with no system one: the browser (Safari on
+			/// iPad) and iOS before 17. It is never shown when the system text magnifier is.
+			/// </summary>
+			public static bool UseManagedTextLoupe { get; set; } = true;
 		}
 
 		public static class ScrollViewer

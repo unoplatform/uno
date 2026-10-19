@@ -358,6 +358,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		// Unload can happen mid-drag without an intervening blur (e.g. ListView/ItemsRepeater
 		// recycling), which would otherwise strand IsCaretDragActive permanently true.
 		CancelCaretDrag();
+		EndCaretLoupe();
 		_forceFocusedVisualState = false;
 		_timer.Stop();
 		_gripperPresenter?.Hide();
@@ -568,6 +569,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		{
 			EndImeSession();
 			TrySetCurrentlyTyping(false);
+			EndCaretLoupe();
 			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 			if (SelectionFlyout?.IsOpen == true)
 			{
@@ -637,7 +639,12 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 		// Even when using Skia TextBox, we may need to call Select,
 		// which will update the native input in case of Wasm Skia for example.
-		TextBoxView?.Select(start, length);
+		// Not while the platform loupe shows (a caret or handle drag): on iOS, moving the first responder's selection
+		// makes UIKit dismiss the loupe. EndCaretLoupe syncs the final selection once the drag is over.
+		if (!_isLoupeActive)
+		{
+			TextBoxView?.Select(start, length);
+		}
 
 		if (length == 0 && CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
@@ -1693,7 +1700,13 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	void ITextSelectionGripperHost.MoveGripperCaret(int index) => Select(index, 0);
 
-	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper) => UpdateScrolling(isEndGripper);
+	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper)
+	{
+		UpdateScrolling(isEndGripper);
+
+		// Called on every handle move, so it doubles as the drag tick for the iOS magnifier.
+		UpdateCaretLoupe(isEndGripper ? SelectionStart + SelectionLength : SelectionStart);
+	}
 
 	void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
 
@@ -1703,6 +1716,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
 	{
+		EndCaretLoupe();
+
 		// Ported from TextBoxBase.cpp OnGripperHeld: a held gripper opens the context flyout.
 		var contextArgs = new ContextRequestedEventArgs();
 		contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
@@ -1710,12 +1725,17 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	}
 
 	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection)
-		=> QueueUpdateSelectionFlyoutVisibility(
+	{
+		// The handle interaction is over (released), so the magnifier goes away.
+		EndCaretLoupe();
+
+		QueueUpdateSelectionFlyoutVisibility(
 			args.Pointer.PointerDeviceType,
 			args.GetCurrentPoint(Owner).Position,
 			// The single insertion handle only exists under the mobile (iOS/Android) conventions; tapping it
 			// re-opens the flyout even over a collapsed caret. Desktop never gets the empty-selection flyout.
 			allowEmptySelection: allowEmptySelection && TouchSelectionConvention != TouchTextSelectionConvention.Desktop);
+	}
 
 	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
 	{
