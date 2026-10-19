@@ -566,6 +566,77 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_Containers_Recycled_Then_ContainerContentChanging_Has_Template_Root()
+		{
+			var source = Enumerable.Range(0, 100).Select(i => $"Item {i}").ToArray();
+			var SUT = new ListView { ItemTemplate = TextBlockItemTemplate, ItemsSource = source, Height = 200 };
+
+			var problems = new List<string>();
+			var maxIndex = -1;
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (e.InRecycleQueue)
+				{
+					return;
+				}
+
+				maxIndex = Math.Max(maxIndex, e.ItemIndex);
+				if (e.ItemContainer.ContentTemplateRoot is not TextBlock)
+				{
+					problems.Add($"#{e.ItemIndex}: root={e.ItemContainer.ContentTemplateRoot?.GetType().Name ?? "null"}");
+				}
+				if (SUT.IndexFromContainer(e.ItemContainer) != e.ItemIndex)
+				{
+					problems.Add($"#{e.ItemIndex}: IndexFromContainer={SUT.IndexFromContainer(e.ItemContainer)}");
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.ScrollIntoView(source[^1]);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(source.Length - 1, maxIndex, "Last item realized");
+			Assert.AreEqual(0, problems.Count, string.Join("; ", problems));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(ListView))]
+		[DataRow(typeof(GridView))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_ContainerContentChanging_Fills_Template_Root_Then_Content_Is_Laid_Out(Type listType)
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = (DataTemplate)XamlReader.Load(
+				"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><ContentControl /></DataTemplate>");
+
+			// The documented pattern: fill the materialized item template from the handler.
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue && e.ItemContainer.ContentTemplateRoot is ContentControl shell)
+				{
+					shell.Content = new TextBlock { Text = (string)e.Item };
+				}
+			};
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+
+			SelectorItem container = null;
+			await WindowHelper.WaitFor(() => (container = SUT.ContainerFromIndex(0) as SelectorItem) != null);
+			await WindowHelper.WaitForIdle();
+
+			var text = ((container.ContentTemplateRoot as ContentControl)?.Content) as TextBlock;
+			Assert.IsNotNull(text, "Item content set by the handler");
+			Assert.AreEqual("Item 1", text?.Text);
+			Assert.IsTrue(text?.ActualWidth > 0, "Item content is laid out");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_IsItsOwnItemContainer_FromSource_With_DataTemplate()
 		{
