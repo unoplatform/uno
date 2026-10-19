@@ -20,4 +20,12 @@
 	<DataTemplate x:Key="ErrorBorderTemplate">
 		<Border />
 	</DataTemplate>
+
+	<DataTemplate x:Key="CustomCompactErrorIconTemplate">
+		<SymbolIcon Symbol="Important">
+			<ToolTipService.ToolTip>
+				<ToolTip />
+			</ToolTipService.ToolTip>
+		</SymbolIcon>
+	</DataTemplate>
 </ResourceDictionary>

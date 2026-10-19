@@ -94,6 +94,30 @@ public class Given_ValidationErrorPresenter
 	}
 
 	[TestMethod]
+	public async Task When_Compact_Icon_Overridden_In_Application_Resources_Then_Override_Is_Presented()
+	{
+		const string Key = "DefaultCompactErrorIconTemplate";
+		var resources = Application.Current.Resources;
+		resources[Key] = _resources["CustomCompactErrorIconTemplate"];
+
+		try
+		{
+			var (sut, source) = await Bind(kind: InputValidationKind.Compact);
+
+			source.SetErrors("required");
+			await WindowHelper.WaitForIdle();
+
+			var icon = GetErrorPresenter(sut).Content as SymbolIcon;
+			Assert.IsNotNull(icon, "the application-level template replaces the default icon");
+			Assert.IsInstanceOfType<TextBlock>((ToolTipService.GetToolTip(icon) as ToolTip)?.Content);
+		}
+		finally
+		{
+			resources.Remove(Key);
+		}
+	}
+
+	[TestMethod]
 	public async Task When_No_ErrorTemplate_Then_Presenter_Realized_Without_Content()
 	{
 		var (sut, source) = await Bind(hasErrorTemplate: false);
