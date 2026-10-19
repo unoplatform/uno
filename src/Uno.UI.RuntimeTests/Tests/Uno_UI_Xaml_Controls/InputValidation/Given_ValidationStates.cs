@@ -106,6 +106,18 @@ public class Given_ValidationStates
 	}
 
 	[TestMethod]
+	public async Task When_Errors_Arrive_From_A_Background_Thread_Then_Errors_State()
+	{
+		var (sut, source) = await Bind();
+
+		// Without the dispatcher hop, the property system would throw on this thread and fault the task.
+		await Task.Run(() => source.SetErrors("required"));
+		await UITestHelper.WaitFor(() => Validation.GetHasErrors(sut), timeoutMS: 5000, message: "errors raised off the UI thread should reach the control");
+
+		Assert.AreEqual("CompactErrors", StateOf(sut, ErrorStates));
+	}
+
+	[TestMethod]
 	public async Task When_Errors_Arrive_And_Kind_Is_Inline_Then_Inline_Errors()
 	{
 		var (sut, source) = await Bind(kind: InputValidationKind.Inline);
