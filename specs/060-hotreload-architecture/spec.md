@@ -11,6 +11,9 @@ does nothing". Other consumers of `Uno.HotReload` exist outside this repository.
 
 ## TL;DR
 
+- **Hot Reload does nothing? Set `UnoHotReloadDiagnosticsLogPath` in the app's csproj first**: the dev-server then
+  dumps Roslyn's Edit-and-Continue logs and MSBuild binlogs there. Steps in
+  [First steps when Hot Reload does nothing](#first-steps-when-hot-reload-does-nothing).
 - Specs 047 to 055 are merged. The last piece, [uno#24617](https://github.com/unoplatform/uno/pull/24617) (spec 055 R1, "requested" is not "applied"), merged 2026-09-28. Spec 051 (baseline identity handshake) is a draft, not implemented.
 - Two root-cause issues stay open, each with the proof of why the naive fix fails: [#24204](https://github.com/unoplatform/uno/issues/24204) (cache-friendly incremental generators) and [#24207](https://github.com/unoplatform/uno/issues/24207) (share workspaces by solution + baseline + TFM).
 - Active workaround: the server withdraws the `AddFieldRva` EnC capability ([code](../../src/Uno.HotReload/Microsoft/WatchHotReloadService.cs#L146-L167)) to dodge a CoreCLR defect. The upstream fix [dotnet/runtime#131753](https://github.com/dotnet/runtime/pull/131753) is merged but, as of 2026-08, not shipped in .NET 10.
@@ -52,6 +55,10 @@ flowchart LR
   (mode C), status for the IDE indicator (`DevelopmentEnvironmentStatusIdeMessage`), HR events reported by the IDE.
 - The **App channel** carries frames: `ConfigureServer`, `AssemblyDeltaReload`, `UpdateFileRequest`/`Response`,
   `HotReloadStatusMessage`, `HotReloadClientOperationEvent`, keep-alives.
+- A **processor** is code loaded next to the app (client processors, found by reflection at startup) or into the
+  dev-server (server processors, loaded from a folder the app names in `ProcessorsDiscovery`). It is the extensibility
+  point: Hot Reload is one, so a feature ships without rebuilding the dev-server and without a
+  deep dependency in the app.
 - The host dies with its parent (`--ppid`). The app finds it through `UNO_DEV_SERVER_HOST` / `UNO_DEV_SERVER_PORT`
   when both are set, otherwise through the embedded `ServerEndpointAttribute` and the platform's host candidates.
 
@@ -164,6 +171,15 @@ Code: [`CreateFileUpdater`](../../src/Uno.UI.RemoteControl.Server.Processors/Hot
 `ForceHotReloadIdeMessage` handled in [EntryPoint.cs](../../src/Uno.UI.RemoteControl.VS/EntryPoint.cs).
 A developer's own edit never goes through the dev-server in this mode: VS applies it itself.
 
+- **The source of truth is VS's editor, not the disk.** VS emits from its in-memory buffers, so an edit does not need
+  to be saved to be applied, and the dev-server cannot know what was sent.
+- **An `UpdateFileRequest` is correlated by time, not by identity.** The server opens an operation before handing the
+  files to VS, and every HR event VS reports until success or failure is attributed to it. If the developer edits in
+  VS at the same moment, both land in the same operation. The client's `UpdateFile` API waits for that operation with
+  a timeout and fails when it does not complete in time. Its users are design tools and the HR tests.
+- **Why not mode B everywhere.** It would be one code path to maintain, but VS applies deltas through its own
+  debugger, from buffers the dev-server cannot see: the only option is to integrate with it.
+
 ### Mode B: the dev-server emits
 
 App started without a debugger outside VS (VS Code, Rider, CLI, an agent), or `UnoHotReloadMode=MetadataUpdates`.
@@ -260,6 +276,12 @@ Code: [`FileSystemObserver`](../../src/Uno.HotReload/FileSystemObserver.cs),
 
 - The operation starts at the **first** file event, before the 250 ms batch closes, so the app sees "processing"
   immediately.
+- **Additive, hence the lock.** Each delta is computed against the solution of the previous pass, which is the code
+  the app now runs. A pass is never aborted: if file D changes while A, B and C are being emitted, the pass for A, B, C
+  completes (solution 2, even in error) before D is processed against it (solution 3). Computing D against solution 1
+  would silently drop A, B and C. An agent writing files continuously therefore gets one pending operation at a time.
+- **What counts as a change.** A file outside the projects (`a.txt`) is ignored. A new `.cs` file is checked against
+  a temporary workspace (`TemporarySolutionAddDetector`), because the csproj may exclude it by glob.
 - The solution is committed on **every** pass, even when nothing is emitted: an updater may have re-bound references
   (a package added) that the next pass needs.
 - The emit runs only when the solution actually changed; "no change" and an updater error short-circuit to the
@@ -268,11 +290,18 @@ Code: [`FileSystemObserver`](../../src/Uno.HotReload/FileSystemObserver.cs),
   the solution may have unrelated errors.
 - Source generator errors do not block the emit (Roslyn 5.x would refuse any update while one is present) but are
   not hidden either: they are logged when found and carried in the operation's diagnostics, whatever the outcome.
+  An agent that wrote an invalid XAML file still gets an updated app and the exact error to fix.
+- **Generators report, they do not throw.** A diagnostic carries the file and position, and several can be reported
+  at once, so an agent fixes them all in one pass; an exception gives one message and stops the generator. Never
+  drop a diagnostic on the way to the outcome.
+- **Every outcome reaches the handler**, `NoChanges` included: an agent that edited a file and gets `NoChanges` learns
+  that the file is not part of the project.
 
 ### Mode C: the dev-server emits, the debugger applies (VS Code, Uno's Mono debugger)
 
-App started from VS Code under Uno's Mono debugger (WebAssembly, Android, iOS): the debugger owns the runtime, so the
-app cannot apply a delta itself. The client sets `EnableHotReloadThruDebugger` in `ConfigureServer`.
+App started from VS Code under Uno's Mono debugger (WebAssembly, Android, iOS): once a debugger is attached, the
+runtime refuses the app's own `ApplyUpdate` calls, so the delta has to go through the debugger. (The same rule makes
+the secondary app of the runtime tests impossible to debug.) The client sets `EnableHotReloadThruDebugger` in `ConfigureServer`.
 
 ```mermaid
 flowchart LR
@@ -348,6 +377,9 @@ stateDiagram-v2
   To free memory the server disposes the workspace and keeps the socket: closing it makes the client retry in a loop.
 - Update requests that arrive while the workspace is `Initializing` are queued (30 s TTL); after `Failed` they fail
   at once with a typed `NotAvailable` (spec 050).
+- **The HR indicator is rebuilt from events.** Nothing sends "the state": the app aggregates status messages,
+  operation events and keep-alives into an effective state, and missing keep-alives are how it shows a dropped
+  connection. This aggregation is complex and is where indicator bugs live.
 
 ## Update strategies and their limits
 
@@ -450,15 +482,21 @@ flowchart TB
   parameterless constructor, dependency-property values copied (Uno targets), swapped in place. Any other element whose type has a
   handler is **updated in place** through that handler's `ElementUpdate`. An element whose own type is in the update
   list but not recreated (a nested type changed, such as a `DataTemplate` inside a dictionary) is not replaced.
+- **The UI thread is registered at startup.** `Window.UseStudio()` registers the window, hence the dispatcher the UI
+  update runs on; without it `UpdateApplication` reports an error and nothing is refreshed.
 - **State is the handlers' job.** Two walks: the first captures state per element before the swap, the second
-  restores it after a layout turn. What survives a reload (scroll offset, selection, navigation stack) is whatever a
+  restores it after a layout turn. Example: the `ScrollViewer` handler records the vertical offset of each named
+  `ScrollViewer` of the page being replaced, and the second walk restores it on the `ScrollViewer` of the same name in
+  the new page. What survives a reload (scroll offset, selection, navigation stack) is whatever a
   handler captured.
 - **Handlers.** Declared with `[assembly: ElementMetadataUpdateHandler(typeof(TElement), typeof(THandler))]`, matched
   by name so a library can define its own copy of the attribute. Each `ElementUpdateAgent` only loads handlers from
   assemblies of its own ALC (spec 039), so an inner app and its host do not run each other's handlers. A handler
   registered for `FrameworkElement` runs for every element. The one-argument form registers for `object`: its
   Before/After/ReloadCompleted callbacks run, but the tree walk never calls it for an element.
-- **Pauses.** `UIUpdate.Pause(phases)` returns a handle; while any handle holds a phase, its types queue up in
+- **Pauses.** Why they exist: while a design tool edits a text live, the change is already applied locally in the
+  visual tree, and replacing the page would lose focus and selection. The delta is applied to the runtime
+  anyway (there is no choice), but the UI phases wait until the edit ends. `UIUpdate.Pause(phases)` returns a handle; while any handle holds a phase, its types queue up in
   `PendingUIUpdates`, and releasing the last handle replays both phases with the queued types (spec 041). A caller of
   `UpdateFile` can pause the visual tree for its own request only (`PauseUIPhases`); there is no session-wide pause.
 - **Failure isolation.** Each element is updated in its own `try`: one failing element is reported
@@ -487,9 +525,8 @@ From `CheckMetadataUpdatesSupport` on `master`. "VS" means the app was built ins
 
 - With a debugger attached outside those cases, a delta that still arrives is refused with *"Hot Reload is not
   supported when the debugger is attached"*.
-- **Rider with debugger** would need Rider's own Hot Reload, which uses another channel and does not work with Uno.
-  Rider also says Hot Reload is unavailable when it runs without debugger, while Uno's own path works
-  (blocked on JetBrains [RIDER-124189](https://youtrack.jetbrains.com/issue/RIDER-124189)).
+- **Rider with debugger** is not supported yet: Rider's own Hot Reload does not invoke the `MetadataUpdateHandler`s, so
+  Uno is never told the app changed and cannot refresh the UI (JetBrains [RIDER-124189](https://youtrack.jetbrains.com/issue/RIDER-124189)).
 - The app logs its decision at Debug level: `Metadata updates supported: … (dev server: …, VS: …)`. That line is the
   first thing to read when "Hot Reload does nothing".
 
@@ -502,6 +539,37 @@ From `CheckMetadataUpdatesSupport` on `master`. "VS" means the app was built ins
 | Android, iOS | Mono | Needs a debugger under VS (table above). The app must reach the dev-server from the device or emulator (host candidates: [#24805](https://github.com/unoplatform/uno/issues/24805)) |
 
 ## Known failures and how to diagnose them
+
+### First steps when Hot Reload does nothing
+
+> [!IMPORTANT]
+> **Turn on the diagnostics dump before anything else.** In the app's csproj (Debug):
+>
+> ```xml
+> <PropertyGroup>
+>   <UnoHotReloadDiagnosticsLogPath>C:\temp\hr-logs</UnoHotReloadDiagnosticsLogPath>
+> </PropertyGroup>
+> ```
+>
+> Rebuild (the property is embedded at build time and sent in `ConfigureServer`) and restart the app. The dev-server
+> then writes into that folder Roslyn's Edit-and-Continue logs (`Microsoft_CodeAnalysis_EditAndContinue_LogDir`) and
+> the MSBuild binlogs of its workspace (`MSBUILDDEBUGENGINE`, `MSBUILDDEBUGPATH`). Modes B and C only: in mode A the
+> deltas come from Visual Studio, which has its own logs. Code:
+> [`HotReloadEnvironment.EnableLogging`](../../src/Uno.HotReload/HotReloadEnvironment.cs).
+
+1. **Which mode?** Read the app's Debug log line `Metadata updates supported: … (dev server: …, VS: …)`
+   ([table](#with-and-without-a-debugger)). "none" explains everything else.
+2. **Did the workspace load?** The dev-server log says `Failed to initialize compilation workspace, hot-reload is
+   disabled` when it did not; the binlogs from the dump say why (gates 047, 049, 053).
+3. **Was a delta emitted?** The dev-server log `Found N metadata updates` for the edit. Zero with no rude edit is a
+   change the workspace did not see (gate 055, the change detector) or a no-op.
+4. **Was it applied?** The app log `[HotReload] UpdateApplicationCore called with N type(s)` means the runtime took
+   the delta. Deltas sent but no such line: the delta did not match the module the app loaded (MVID, gate 051), most
+   often a workspace built differently from the app (gate 047).
+5. **Did the UI follow?** A paused phase (`VisualTree update DEFERRED — … Paused by: …`), a missing visual root, or an
+   element without a parameterless constructor ([UI update pipeline](#the-ui-update-pipeline)).
+6. **Do not trust the indicator**: the reported status is not proof (see Known traps). Diagnose on a `blank` app, whose
+   early client logs are not lost.
 
 ### The nine gates: "accepted, never applied, silently"
 
@@ -538,11 +606,11 @@ when the defect needs a real delta in a real app.
 
 | Suite | Where | How it works | Use it when |
 |---|---|---|---|
-| **MetadataUpdateTests** (generator + EnC scenarios) | [`src/SourceGenerators/Uno.UI.SourceGenerators.Tests/MetadataUpdateTests`](../../src/SourceGenerators/Uno.UI.SourceGenerators.Tests/MetadataUpdateTests) | About 120 scenarios. A scenario is a folder of numbered steps (`0/`, `1/`, `2/`, …), each holding the XAML and C# files of each project (`p1/`, `p2/`) at that step. `HotReloadWorkspace` compiles step 0 with the XAML generator as the baseline, then applies each later step and emits the EnC update. `Scenario.json` gives, for each configuration (`IsDebug`, `IsMono`, `UseXamlReaderReload`), the expected number of metadata updates and the expected diagnostics for each step after the baseline | A change to the XAML generator or to generated code could turn an edit into a rude edit or into no delta (`x:Name`, `x:Bind`, `x:Load`, resources, markup extensions, two-project cases). Adding a case is a new folder and a `Scenario.json`, no code. No app runs |
-| **Uno.HotReload.Tests** (engine) | [`src/Uno.HotReload.Tests`](../../src/Uno.HotReload.Tests) | `HotReloadManagerHarness`: in-memory workspace, real tracker, stubbed detector, updater and emitter, so a test decides what each pass produces. `EnCHarness`: a baseline genuinely compiled to disk and the real Roslyn EnC pipeline, with the .NET 10 CoreCLR capability set | Pipeline logic: gates, outcomes, `SolutionUpdater`, file updaters, the `WatchHotReloadService` shim (rude-edit recovery, #24085), TFM filtering, reference pinning, embedded Roslyn |
+| **MetadataUpdateTests** (generator + EnC scenarios) | [`src/SourceGenerators/Uno.UI.SourceGenerators.Tests/MetadataUpdateTests`](../../src/SourceGenerators/Uno.UI.SourceGenerators.Tests/MetadataUpdateTests) | About 120 scenarios. A scenario is a folder of numbered steps (`0/`, `1/`, `2/`, …), each holding the XAML and C# files of each project (`p1/`, `p2/`) at that step. `HotReloadWorkspace` compiles step 0 with the XAML generator as the baseline, then applies each later step and emits the EnC update. `Scenario.json` gives, for each configuration (`IsDebug`, `IsMono`, `UseXamlReaderReload`), the expected number of metadata updates and the expected diagnostics for each step after the baseline | A change to the XAML generator or to generated code could turn an edit into a rude edit or into no delta (`x:Name`, `x:Bind`, `x:Load`, resources, markup extensions, two-project cases). Adding a case is a new folder and a `Scenario.json`, no code. No app runs. The most powerful one to debug a generator that breaks Hot Reload: it replays the edit exactly, without a keyboard. It is how the delegates were removed from generated code and how the XAML generators moved to diagnostics |
+| **Uno.HotReload.Tests** (engine) | [`src/Uno.HotReload.Tests`](../../src/Uno.HotReload.Tests) | `HotReloadManagerHarness`: in-memory workspace, real tracker, stubbed detector, updater and emitter, so a test decides what each pass produces. `EnCHarness`: a baseline genuinely compiled to disk and the real Roslyn EnC pipeline, with the .NET 10 CoreCLR capability set | Pipeline logic: gates, outcomes, `SolutionUpdater`, file updaters, the `WatchHotReloadService` shim (rude-edit recovery, #24085), TFM filtering, reference pinning, embedded Roslyn. The most recent suite: it covers the pipeline logic, which `MetadataUpdateTests` cannot |
 | **Dev-server tests** | [`src/Uno.UI.RemoteControl.DevServer.Tests`](../../src/Uno.UI.RemoteControl.DevServer.Tests) (fixture add-ins, `Uno.UI.RemoteControl.TestProcessor`), `Uno.UI.DevServer.Cli.Tests`, `Uno.UI.DevServer.Cli.E2E.Tests` | The host and its processors without an app: connection scope, processor discovery and add-in loading, workspace registry and cap, keep-alive, message serialization; CLI and MCP | Host start, protocol, add-ins, memory and connection lifetime |
 | **Client tests, in process** | [`src/Uno.UI.RuntimeTests/HotReload`](../../src/Uno.UI.RuntimeTests/HotReload) (`Given_ClientHotReloadProcessor`, `Given_HotReload_UpdateResourceDictionaries`, `Given_HotReloadClientOperation_Alc`), [`src/Uno.UI.UnitTests/HotReload`](../../src/Uno.UI.UnitTests/HotReload) | Drive single steps of the client inside the SamplesApp or a unit test: no dev-server, no delta | One piece of the UI update pipeline: resource refresh counts, static and theme resources, operation tracking across ALCs |
-| **Given_HotReloadWorkspace + HRApp** (end to end) | [`Given_HotReloadWorkspace.cs`](../../src/Uno.UI.RuntimeTests/HotReload/Given_HotReloadWorkspace.cs), [`HotReload/Frame/HRApp`](../../src/Uno.UI.RuntimeTests/HotReload/Frame/HRApp), `HRUnoLib` | A SamplesApp runtime test launches a separate Skia app, HRApp, next to a real dev-server. HRApp runs its own runtime tests: each edits HRApp's own source files, waits for Hot Reload, then checks the controls. The results come back as an NUnit XML file and show as one test in the SamplesApp. `HRUnoLib` is a referenced library, for edits and file adds outside the head | Behaviour of controls under HR (`Given_Frame`, `Given_DataTemplate`, `Given_TextBox`, `Given_ScrollViewer`, `Given_Popup`, `Given_UserControl`, `Given_TypeReplacement`, `Given_AppDictionary`, `Given_FileAddUpdateRemove`, `Given_HotReloadResilience`), element handlers and their state capture, anything that needs a real delta. Never attach a debugger to HRApp: CoreCLR then disables Hot Reload and every test fails |
+| **Given_HotReloadWorkspace + HRApp** (end to end) | [`Given_HotReloadWorkspace.cs`](../../src/Uno.UI.RuntimeTests/HotReload/Given_HotReloadWorkspace.cs), [`HotReload/Frame/HRApp`](../../src/Uno.UI.RuntimeTests/HotReload/Frame/HRApp), `HRUnoLib` | A SamplesApp runtime test launches a separate Skia app, HRApp, next to a real dev-server. HRApp runs its own runtime tests: each edits HRApp's own source files, waits for Hot Reload, then checks the controls. The results come back as an NUnit XML file and show as one test in the SamplesApp. `HRUnoLib` is a referenced library, for edits and file adds outside the head | Behaviour of controls under HR (`Given_Frame`, `Given_DataTemplate`, `Given_TextBox`, `Given_ScrollViewer`, `Given_Popup`, `Given_UserControl`, `Given_TypeReplacement`, `Given_AppDictionary`, `Given_FileAddUpdateRemove`, `Given_HotReloadResilience`), element handlers and their state capture (the `ScrollViewer` offset restore is tested here), anything that needs a real delta. Never attach a debugger to HRApp: CoreCLR then disables Hot Reload and every test fails |
 
 Outside `uno`:
 - **Libraries** (`uno.extensions`, `uno.toolkit.ui`, themes) test their own controls under HR with the runtime tests
@@ -588,10 +656,10 @@ Outside `uno`:
 | Apply-failure cascade | Rejected emits fixed by [#24085](https://github.com/unoplatform/uno/pull/24085) (merged 10-15, `master`). Still open: an emit the app fails to apply moves the baseline. Follow-ups: move to Roslyn's `HotReloadService` ([#25506](https://github.com/unoplatform/uno/issues/25506)), deleting a type's `.cs` file on Roslyn 5.x, ENC0033 ([#25500](https://github.com/unoplatform/uno/issues/25500)), no test of `ProjectsToRestart` on 5.x | Tie the commit to the app's acknowledgment; check the release branches before saying it shipped |
 | [#23716](https://github.com/unoplatform/uno/issues/23716), [#23994](https://github.com/unoplatform/uno/issues/23994) multi-TFM workspace on CI | Open. Workspace init emitted every TFM flavor and failed on the ones not built (or not restorable on a Linux agent: `NETSDK1147`, `ENC1001`). Spec 047 ([#23692](https://github.com/unoplatform/uno/pull/23692)) and its follow-up address the cause; both issues wait for re-verification on the Toolkit canary and the Extensions HR legs | Re-run those legs on a current dev-server, close or reopen with logs |
 | [uno.extensions#2903](https://github.com/unoplatform/uno.extensions/issues/2903) `LoginModel#1` cast | Open: recreated type vs generated code holding the original type | Decide which side keeps the old type (MVUX generated VM or navigation) |
-| Rider's native Hot Reload | Rider's own HR uses another channel and does not work with Uno; blocked on JetBrains ([RIDER-124189](https://youtrack.jetbrains.com/issue/RIDER-124189)) | Track upstream |
+| Rider's native Hot Reload | Not supported yet: Rider's own HR does not invoke the `MetadataUpdateHandler`s; blocked on JetBrains ([RIDER-124189](https://youtrack.jetbrains.com/issue/RIDER-124189)) | Track upstream |
 | Spec 051 | Draft, 5 open review questions | Decide refuse vs degrade on MVID mismatch first |
 | Spec 046 (failed type identities) | Spec merged, event still carries counts only | Needed only if a server must track per-view failures |
-| [uno#25263](https://github.com/unoplatform/uno/issues/25263) App MCP bridge cannot keep the 7.0 host alive | Open, urgent per its report: blocks HR, Hot Design and App MCP for 7.0 apps started through `dnx uno.devserver --mcp-app`; 6.7 works. The same host command run by hand stays up, so the defect is in how the bridge manages it. The visual-tree timeout seen on earlier runs has its own cause (#24974 made `VisualTreeHelper.GetChildren` internal; the App MCP client still calls it) | Fix the bridge's host management; give the App MCP client a public API or an `InternalsVisibleTo` |
+| [uno#25263](https://github.com/unoplatform/uno/issues/25263) App MCP bridge cannot keep the 7.0 host alive | Open, urgent per its report: blocks HR and App MCP for 7.0 apps started through `dnx uno.devserver --mcp-app`; 6.7 works. The same host command run by hand stays up, so the defect is in how the bridge manages it. The visual-tree timeout seen on earlier runs has its own cause (#24974 made `VisualTreeHelper.GetChildren` internal; the App MCP client still calls it) | Fix the bridge's host management; give the App MCP client a public API or an `InternalsVisibleTo` |
 | [uno#24805](https://github.com/unoplatform/uno/issues/24805) host candidates ignore the platform on Skia | Open. `GetDevServerHostCandidates()` branches on `#if __ANDROID__`/`__IOS__`, never compiled for Skia heads: the Android emulator never tries `10.0.2.2`. Workaround: `adb reverse tcp:<port> tcp:<port>` (slower first connection, not a failure) | Decide the platform at runtime, as `CheckMetadataUpdatesSupport` already does |
 | [uno#24372](https://github.com/unoplatform/uno/issues/24372) `UseStudio()` blocks the window without a dev-server | Open, reproduced on stable (6.8 dev, desktop; also reported on macOS WASM, downgrade to 6.6.42). No window, no error: blocks every headless and CI run of a fresh template | Degrade Studio features instead of blocking, or fail loudly naming `UseStudio()` |
 
@@ -599,7 +667,7 @@ Outside `uno`:
 
 - **Host GC profile** ([#24209](https://github.com/unoplatform/uno/pull/24209)): the host inherited Server GC from `Microsoft.NET.Sdk.Web`, wrong for a background daemon on a dev machine. Now Workstation concurrent GC ([csproj](../../src/Uno.UI.RemoteControl.Host/Uno.UI.RemoteControl.Host.csproj)) plus `ConserveMemory=5`, `HeapHardLimitPercent=66`, `HighMemoryPercent=70` ([runtimeconfig.template.json](../../src/Uno.UI.RemoteControl.Host/runtimeconfig.template.json)). Measured 670 / 534 MB before, 317 / 317 MB flat after. An absolute `GCHeapHardLimit` was rejected (depends on the client machine). Root of the growth ([#24151](https://github.com/unoplatform/uno/issues/24151)): the EnC session keeps one baseline per committed generation, ~0.3 MB each, unbounded.
 - **Dead sockets**: [#24213](https://github.com/unoplatform/uno/pull/24213) closes a `/rc` connection silent for 2.1x the 30 s keep-alive (`uno-devserver:keep-alive-timeout-ms` overrides it).
-- **Bisecting a DevServer blocker on a release** (2026-07-02/03): separate the real symptom from noise (dev-server log `Failed to initialize compilation workspace, hot-reload is disabled`, not assembly errors); cross-test VS / VS Code, debugger or not, blank app vs Hot Design project; bisect by Uno.Sdk version (`6.7.0-dev.534` broken, `6.6.14` fine: regression on the 6.7 branch, so the 6.6 release was not held). For a host that does not start, reproduce on a clean machine with only the affected .NET (a .NET 9-only VM for [#23638](https://github.com/unoplatform/uno/pull/23638)); backport with verbatim cherry-picks to keep provenance.
+- **Bisecting a DevServer blocker on a release** (2026-07-02/03): separate the real symptom from noise (dev-server log `Failed to initialize compilation workspace, hot-reload is disabled`, not assembly errors); cross-test VS / VS Code, debugger or not, blank app vs a project with design tooling; bisect by Uno.Sdk version (`6.7.0-dev.534` broken, `6.6.14` fine: regression on the 6.7 branch, so the 6.6 release was not held). For a host that does not start, reproduce on a clean machine with only the affected .NET (a .NET 9-only VM for [#23638](https://github.com/unoplatform/uno/pull/23638)); backport with verbatim cherry-picks to keep provenance.
 - **App started outside the IDE**: an app launched by another application has no dev-server running, so Hot Reload
   cannot work. Start one by hand with `uno-devserver start` ([doc](../../doc/articles/dev-server.md)); the app must be
   a Debug build carrying the connection info.
