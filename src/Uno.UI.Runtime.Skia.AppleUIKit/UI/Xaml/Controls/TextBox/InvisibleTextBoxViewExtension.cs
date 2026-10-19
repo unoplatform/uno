@@ -166,7 +166,19 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			_textBoxView.AutocapitalizationType = UITextAutocapitalizationType.Sentences;
 		}
 
+<<<<<<< HEAD:src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Controls/TextBox/InvisibleTextBoxViewExtension.cs
 		_textBoxView.SecureTextEntry = textBox is PasswordBox;
+=======
+		_textBoxView.SecureTextEntry = host is TextBoxCore { IsPassword: true };
+
+		// Lets iOS offer AutoFill (saved passwords, contact details) for the field. Only assigned when there is a
+		// type: the proxy is created per entry, so its native default (none) stands otherwise.
+		if (InputScopeHelper.ConvertInputScopeToTextContentType(host.InputScope, host is TextBoxCore { IsPassword: true }) is { } contentType)
+		{
+			_textBoxView.TextContentType = contentType;
+		}
+
+>>>>>>> 9c46cf5 (feat(ios): Map InputScope to UITextContentType):src/Uno.UI.Runtime.AppleUIKit/UI/Xaml/Controls/TextBox/InvisibleTextBoxViewExtension.cs
 		SetSoftKeyboardTheme();
 
 		// KeyboardType may have changed — re-evaluate the native view
