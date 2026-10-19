@@ -548,7 +548,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		ClearRectPipe = Pipeline(Module(ClearRectWgsl), IntPtr.Zero, &replace, ColorFormat);
 		ClearRectBgl = wgpuRenderPipelineGetBindGroupLayout(ClearRectPipe, 0);
 
-		var sd = new WGPUSamplerDescriptor { AddressModeU = WGPUAddressMode.ClampToEdge, AddressModeV = WGPUAddressMode.ClampToEdge, MagFilter = WGPUFilterMode.Linear, MinFilter = WGPUFilterMode.Linear, MipmapFilter = WGPUMipmapFilterMode.Linear, MaxAnisotropy = 1 };
+		// The LOD clamps are WebGPU's defaults, spelled out: a zeroed descriptor clamps to level 0 and ignores the mips.
+		var sd = new WGPUSamplerDescriptor { AddressModeU = WGPUAddressMode.ClampToEdge, AddressModeV = WGPUAddressMode.ClampToEdge, MagFilter = WGPUFilterMode.Linear, MinFilter = WGPUFilterMode.Linear, MipmapFilter = WGPUMipmapFilterMode.Linear, LodMinClamp = 0f, LodMaxClamp = 32f, MaxAnisotropy = 1 };
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);
 		// Address-mode variants for tiled image draws. EdgeExtend.None shares the clamp sampler: a non-filling
 		// draw is bounded by its quad instead, so nothing ever samples past the texture.
