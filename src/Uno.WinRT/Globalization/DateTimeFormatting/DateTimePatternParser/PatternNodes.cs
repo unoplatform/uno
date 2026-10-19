@@ -62,14 +62,14 @@ internal sealed class PatternRootNode
 	public PatternLiteralTextNode? OptionalSuffixLiteralText { get; }
 	public PatternRootNode? OptionalSuffixPattern { get; }
 
-	internal string Format(DateTime dateTime, PatternFormatContext context)
+	internal string Format(DateTimeOffset dateTime, PatternFormatContext context)
 	{
 		var builder = new StringBuilder();
 		Format(builder, dateTime, context);
 		return builder.ToString();
 	}
 
-	internal void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
 		OptionalPrefixLiteralText?.Format(builder, dateTime, context);
 		DateTimeNode.Format(builder, dateTime, context);
@@ -89,7 +89,7 @@ internal sealed class PatternLiteralTextNode
 
 	public string Text { get; }
 
-	internal void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 		=> builder.Append(Text);
 }
 
@@ -97,7 +97,7 @@ internal sealed class PatternLiteralTextNode
 //                        <period> | <hour> | <minute> | <second> | <timezone>
 internal abstract class PatternDateTimeNode
 {
-	internal abstract void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context);
+	internal abstract void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context);
 }
 
 // <era> ::= "{era.abbreviated" [<ideal-length>] "}"
@@ -111,7 +111,7 @@ internal sealed class PatternEraNode : PatternDateTimeNode
 	// Era is always "era.abbreviated", so no need to distinguish.
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
 		// The era of the calendar in use, named by the culture that names its dates. As in WinRT, nothing when that
 		// culture has no names for the calendar (Julian, or Korean for en-US), and an ideal length shorter than the
@@ -123,7 +123,7 @@ internal sealed class PatternEraNode : PatternDateTimeNode
 			return;
 		}
 
-		var era = context.Calendar.GetEra(dateTime);
+		var era = context.Calendar.GetEra(dateTime.DateTime);
 		var name = format.GetEraName(era);
 		builder.Append(IdealLength < name.Length && context.Calendar is not GregorianCalendar ? format.GetAbbreviatedEraName(era) : name);
 	}
@@ -148,9 +148,9 @@ internal sealed class PatternYearNode : PatternDateTimeNode
 	public YearKind Kind { get; }
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
-		var year = context.Calendar.GetYear(dateTime);
+		var year = context.Calendar.GetYear(dateTime.DateTime);
 		if (Kind == YearKind.Full)
 		{
 			builder.Append(IdealLength is { } idealLength
@@ -200,19 +200,19 @@ internal sealed class PatternMonthNode : PatternDateTimeNode
 	// Always null for full and solo.full
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
 		if (Kind is MonthKind.Full or MonthKind.SoloFull)
 		{
-			builder.Append(Calendar.GetMonthName(dateTime, context.Calendar, context.DateCulture, abbreviated: false));
+			builder.Append(Calendar.GetMonthName(dateTime.DateTime, context.Calendar, context.DateCulture, abbreviated: false));
 		}
 		else if (Kind is MonthKind.Abbreviated or MonthKind.SoloAbbreviated)
 		{
-			builder.Append(Calendar.GetMonthName(dateTime, context.Calendar, context.DateCulture, abbreviated: true));
+			builder.Append(Calendar.GetMonthName(dateTime.DateTime, context.Calendar, context.DateCulture, abbreviated: true));
 		}
 		else if (Kind == MonthKind.Integer)
 		{
-			var month = context.Calendar.GetMonth(dateTime);
+			var month = context.Calendar.GetMonth(dateTime.DateTime);
 			builder.Append(IdealLength is { } idealLength
 				? month.ToString(new string('0', idealLength), context.DateCulture)
 				: month.ToString(context.DateCulture));
@@ -245,7 +245,7 @@ internal sealed class PatternDayOfWeekNode : PatternDateTimeNode
 	// Always null for full and solo.full
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
 		var format = context.DateCulture.DateTimeFormat;
 		builder.Append(Kind is DayOfWeekKind.Full or DayOfWeekKind.SoloFull
@@ -264,9 +264,9 @@ internal sealed class PatternDayNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
-		var day = context.Calendar.GetDayOfMonth(dateTime);
+		var day = context.Calendar.GetDayOfMonth(dateTime.DateTime);
 		builder.Append(IdealLength is { } idealLength
 			? day.ToString(new string('0', idealLength), context.DateCulture)
 			: day.ToString(context.DateCulture));
@@ -283,7 +283,7 @@ internal sealed class PatternPeriodNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
 		if (context.IsTwentyFourHours)
 		{
@@ -315,7 +315,7 @@ internal sealed class PatternHourNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
 		int hour = dateTime.Hour;
 		if (!context.IsTwentyFourHours)
@@ -345,7 +345,7 @@ internal sealed class PatternMinuteNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
 		if (IdealLength.HasValue)
 		{
@@ -368,7 +368,7 @@ internal sealed class PatternSecondNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
 		if (IdealLength.HasValue)
 		{
@@ -402,12 +402,11 @@ internal sealed class PatternTimeZoneNode : PatternDateTimeNode
 	// Always null for full
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
-		// WinRT names the local time zone, not the value's offset, which marshalling to WinRT drops: its standard or
-		// daylight name at that time ("Eastern Daylight Time" in July). .NET has only those names, so the abbreviated
-		// one is the GMT offset WinRT writes when the language has no short name for the zone ("GMT-4", "GMT+5:30"),
-		// whatever the ideal length.
+		// The local time zone at that instant, as the value comes in local time: its standard or daylight name
+		// ("Eastern Daylight Time" in July). .NET has only those names, so the abbreviated one is the GMT offset WinRT
+		// writes when the language has no short name for the zone ("GMT-4", "GMT+5:30"), whatever the ideal length.
 		var zone = TimeZoneInfo.Local;
 		if (Kind == TimeZoneKind.Full)
 		{
