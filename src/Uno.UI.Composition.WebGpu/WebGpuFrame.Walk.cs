@@ -160,7 +160,7 @@ internal sealed unsafe partial class WebGpuFrame
 							AppendAaRect(_rrect, rc0.Color, a0, a1, a2, a3);
 							var aop = DrawOp.Shared(DrawKind.RoundedRect, ast, 6, null, cd, MakeClipBg(cd));
 							aop.Bounds = AaRect(a0, a1, a2, a3);
-							if (rc0.Color.A == 255 && ClipIsPlain(cd)) { aop.Cover = aop.Bounds; }
+							if (rc0.Color.A == 255 && ClipIsPlain(cd)) { aop.Cover = aop.Bounds; aop.Fill = rc0.Color; }
 							ops.Add(aop);
 							break;
 						}
@@ -170,7 +170,7 @@ internal sealed unsafe partial class WebGpuFrame
 						{
 							var (s0, s1, s2, s3) = identity ? (rc0.P0, rc0.P1, rc0.P2, rc0.P3) : (Map(rc0.P0, m), Map(rc0.P1, m), Map(rc0.P2, m), Map(rc0.P3, m));
 							sop.Bounds = AaRect(s0, s1, s2, s3);
-							if (rc0.Color.A == 255 && ClipIsPlain(cd)) { sop.Cover = sop.Bounds; }
+							if (rc0.Color.A == 255 && ClipIsPlain(cd)) { sop.Cover = sop.Bounds; sop.Fill = rc0.Color; }
 						}
 						ops.Add(sop);
 						ci = j - 1;
@@ -186,6 +186,7 @@ internal sealed unsafe partial class WebGpuFrame
 						var rop = DrawOp.Shared(DrawKind.RoundedRect, st, rn, null, cd, MakeClipBg(cd));
 						rop.Bounds = AaRect(r0, r1, r2, r3);
 						rop.Cover = OpaqueRrect(rri) ? Meet(RrectCover(rri, rop.Bounds), ClipInner(cd)) : default;
+						if (rop.Cover != default) { rop.Fill = rri.Color; }
 						ops.Add(rop);
 						break;
 					}

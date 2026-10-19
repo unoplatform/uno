@@ -1240,6 +1240,37 @@ internal sealed unsafe partial class WebGpuFrame
 		public Buffer* SolidBuf, RrectBuf, GradBuf, QuadBuf;
 		public nuint SolidBufBytes, RrectBufBytes, GradBufBytes, QuadBufBytes;
 		public BindGroup* PassBg;
+		/// <summary>The colour of an opaque whole-target fill taken off the front of the ops, for the pass to clear to.</summary>
+		public WColor? FoldedClear;
+	}
+
+	// A pass that clears anyway gets an opaque fill of its whole target for free from the load op; drawn, that fill
+	// would shade every pixel of the target a second time.
+	private static void FoldClear(PassBuild b, WebGpuRenderSurface target)
+	{
+		// A pass left with no draw at all loses the device on llvmpipe, so the last op stays a draw.
+		if (b.Ops.Count < 2 || b.Bound != _unbounded || b.BasisOx != 0f || b.BasisOy != 0f)
+		{
+			return;
+		}
+		var op = b.Ops[0];
+		if (op.Fill.A != 255 || op.Cover == default || op.CullScissor.Z > op.CullScissor.X)
+		{
+			return;
+		}
+		var r = PixelsFilled(op.Cover);
+		if (!op.Clip.ScissorInert) { r = Meet(r, PixelsFilled(op.Clip.Aabb)); }
+		if (r.X > 0f || r.Y > 0f || r.Z < target.Width - 1 || r.W < target.Height - 1)
+		{
+			return;
+		}
+		b.FoldedClear = op.Fill;
+		b.Ops.RemoveAt(0);
+		// Fills of that same colour drawn straight onto the clear change no pixel, their antialiased edges included.
+		while (b.Ops.Count > 1 && b.Ops[0].Fill == op.Fill && b.Ops[0].Cover != default)
+		{
+			b.Ops.RemoveAt(0);
+		}
 	}
 
 	private static readonly Vector4 _unbounded = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
@@ -1254,9 +1285,9 @@ internal sealed unsafe partial class WebGpuFrame
 		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f, List<WebGpuCommand> overlay = null, bool depth = false,
 		Vector4? bound = null)
 	{
-		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, bound ?? _unbounded, overlay);
+		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, bound ?? _unbounded, overlay, foldClear: !load);
 		_singleBuild[0] = build;
-		EncodePass(target, clear, load, _singleBuild, depth);
+		EncodePass(target, build.FoldedClear ?? clear, load, _singleBuild, depth);
 	}
 
 	private readonly PassBuild[] _singleBuild = new PassBuild[1];
@@ -1264,7 +1295,7 @@ internal sealed unsafe partial class WebGpuFrame
 	/// <summary>Timestamp the current build started, for the op-build half of the stats line.</summary>
 
 	// Builds the ops for one command list under a basis: the whole draw-side work of a pass, none of the encoding.
-	internal PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null, float basisScale = 1f)
+	internal PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null, float basisScale = 1f, bool foldClear = false)
 	{
 		long passStart = _emitStats && _passDepth == 0 ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
@@ -1294,6 +1325,7 @@ internal sealed unsafe partial class WebGpuFrame
 		_passDepth--;
 		if (_emitStats && _passDepth == 0) { WalkTicks += System.Diagnostics.Stopwatch.GetTimestamp() - walkStart; }
 		if (!_noOcclusionCull) { CullOccluded(b.Ops, bound); }
+		if (foldClear) { FoldClear(b, target); }
 		BuildPrepass(b);
 		long uploadStart = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 

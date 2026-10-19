@@ -182,7 +182,7 @@ internal sealed unsafe partial class WebGpuFrame
 				if (j == ci + 1)
 				{
 					rop.Bounds = AaRect(rc0.P0, rc0.P1, rc0.P2, rc0.P3);
-					if (rc0.Color.A == 255 && ClipIsPlain(rc0.Clip)) { rop.Cover = rop.Bounds; }
+					if (rc0.Color.A == 255 && ClipIsPlain(rc0.Clip)) { rop.Cover = rop.Bounds; rop.Fill = rc0.Color; }
 				}
 				ops.Add(rop);
 				ci = j - 1;
@@ -274,6 +274,7 @@ internal sealed unsafe partial class WebGpuFrame
 					var rrop = DrawOp.Own(DrawKind.RoundedRect, buf, rn, null, rrc.Clip, MakeClipBg(rrc.Clip, owned));
 					rrop.Bounds = AaRect(rrc.P0, rrc.P1, rrc.P2, rrc.P3);
 					rrop.Cover = OpaqueRrect(rrc) ? Meet(RrectCover(rrc, rrop.Bounds), ClipInner(rrc.Clip)) : default;
+					if (rrop.Cover != default) { rrop.Fill = rrc.Color; }
 					ops.Add(rrop);
 					break;
 				}
