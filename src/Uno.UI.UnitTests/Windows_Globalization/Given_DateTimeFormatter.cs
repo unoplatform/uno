@@ -233,6 +233,17 @@ public class Given_DateTimeFormatter
 	public void When_Template_Is_Given_Then_Pattern_Follows_Language(string language, string template, string expectedPattern)
 		=> Assert.AreEqual(expectedPattern, new DateTimeFormatter(template, [language]).Patterns[0].Replace('\u202F', ' '));
 
+	// WinRT's text: {month.full} and {month.abbreviated} take the date form, the solo ones the standalone form.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("ru-RU", "year month day", 1, "15 января 2024 г.")]
+	[DataRow("ru-RU", "{month.full}", 5, "мая")]
+	[DataRow("pl-PL", "month day", 5, "15 maja")]
+	[DataRow("pl-PL", "year month", 1, "styczeń 2024")]
+	[DataRow("pl-PL", "{day.integer} {month.solo.full}", 1, "15 styczeń")]
+	public void When_Month_Is_In_A_Date_Then_It_Takes_The_Date_Form(string language, string template, int month, string expected)
+		=> Assert.AreEqual(expected, new DateTimeFormatter(template, [language]).Format(new DateTimeOffset(new DateTime(2024, month, 15, 13, 5, 7))).Replace('\u202F', ' '));
+
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19349")]
 	[DataRow("de-DE", ClockIdentifiers.TwelveHourValue, "shorttime", "{hour.integer}:{minute.integer(2)} {period.abbreviated}")]
