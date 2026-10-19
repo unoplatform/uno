@@ -242,7 +242,8 @@ Existing visual state groups on the Fluent TextBox: exactly two — `CommonState
 A port of `CControl::EnsureErrors` / `CControl::DeferErrors` (`Control.cpp:1712`). On the first error the
 template's `ErrorPresenter` (`ContentPresenter`, normally `x:Load="False"`) is realized and given the loaded
 `ErrorTemplate`, whose `DataContext` is the control. `Compact` (and `Auto`) wraps it in the tooltip of
-`DefaultCompactErrorIconTemplate`, now in `Style/Generic/SystemResources.xaml` as in WinUI's `generic.xaml`.
+`DefaultCompactErrorIconTemplate`, which `Style/Generic/Generic.xaml` defines as WinUI's `generic.xaml` does. It is
+resolved at the application level, so an app overrides it from `Application.Resources`.
 
 Triggers, as in WinUI: the first error (WinUI's `RaiseValidationErrorEvent` check, here the `Validation.HasErrors`
 changed handler), `Validation.Mode` changed, and `Validation.ErrorTemplate` changed. Changing `Validation.Kind`

@@ -177,6 +177,22 @@ When the control first gets errors, the framework looks for a `ContentPresenter`
 - `Compact` (and `Auto`, the default) places an error icon in the presenter, with the `ErrorTemplate` content in the icon's tooltip.
 - `Inline` places the `ErrorTemplate` content in the presenter directly.
 
+The compact icon is created from the `DataTemplate` with the key `DefaultCompactErrorIconTemplate`. To change the icon, define a template with that key in your `Application.Resources`, or in a dictionary merged into it. Overrides in a page or control's resources are ignored, because the key is only resolved at the application level. Give the template's root element a `ToolTip` through `ToolTipService.ToolTip`, so the framework can place the `ErrorTemplate` content in it. Without a `ToolTip`, the icon is displayed but the errors are not:
+
+```xml
+<Application.Resources>
+    <DataTemplate x:Key="DefaultCompactErrorIconTemplate">
+        <FontIcon Glyph="&#xE7BA;"
+                  FontSize="16"
+                  Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}">
+            <ToolTipService.ToolTip>
+                <ToolTip Placement="Bottom" />
+            </ToolTipService.ToolTip>
+        </FontIcon>
+    </DataTemplate>
+</Application.Resources>
+```
+
 Set `Validation.Kind` before errors appear. Changing it later updates the visual states, but the presenter keeps its current content until the control next goes from no errors to having errors.
 
 ### Example
