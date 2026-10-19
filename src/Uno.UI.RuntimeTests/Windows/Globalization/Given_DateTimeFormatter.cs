@@ -196,6 +196,35 @@ public class Given_DateTimeFormatter
 		Assert.AreEqual("month.numeric day", numeric.Template);
 	}
 
+	// WinRT names the local time zone at the given time: in full, its standard or daylight name; abbreviated, the
+	// GMT offset in a language without a short name for the zone (hu-HU "GMT-5" and "GMT-4" in New York, where
+	// en-US writes "EST"), whatever the ideal length. The full names are the OS's, so these rows are in English.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("hu-HU", "timezone", "{timezone.abbreviated}")]
+	[DataRow("hu-HU", "timezone.abbreviated", "{timezone.abbreviated}")]
+	[DataRow("hu-HU", "{timezone.abbreviated(2)}", "{timezone.abbreviated(2)}")]
+	[DataRow("en-US", "timezone.full", "{timezone.full}")]
+	[DataRow("en-US", "{timezone.full}", "{timezone.full}")]
+	public void When_Template_Is_Time_Zone_Then_Local_Zone_Is_Named(string language, string template, string expectedPattern)
+	{
+		var formatter = new DateTimeFormatter(template, new[] { language });
+		Assert.AreEqual(expectedPattern, NormalizeText(formatter.Patterns[0]));
+
+		var zone = TimeZoneInfo.Local;
+		foreach (var date in new[] { new DateTime(2024, 1, 15, 13, 5, 7), new DateTime(2024, 7, 15, 13, 5, 7) })
+		{
+			var offset = zone.GetUtcOffset(date);
+			var expected = expectedPattern.StartsWith("{timezone.full", StringComparison.Ordinal)
+				? (zone.IsDaylightSavingTime(date) ? zone.DaylightName : zone.StandardName)
+				: offset == TimeSpan.Zero
+					? "GMT"
+					: $"GMT{(offset < TimeSpan.Zero ? "-" : "+")}{offset.Duration().Hours}{(offset.Minutes == 0 ? "" : $":{offset.Duration().Minutes:00}")}";
+
+			Assert.AreEqual(expected, NormalizeText(formatter.Format(new DateTimeOffset(date))), $"{template} in {date:MMMM}");
+		}
+	}
+
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
 	public void When_Template_Is_Day_And_Day_Of_Week_Or_Time_Zone_Then_Accepted()
