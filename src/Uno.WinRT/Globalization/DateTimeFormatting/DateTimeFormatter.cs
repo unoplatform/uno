@@ -606,7 +606,9 @@ public sealed partial class DateTimeFormatter
 
 			if (IncludeTimeZone != TimeZoneFormat.None)
 			{
-				timePattern = timePattern.Length == 0 ? "{timezone.full}" : $"{timePattern} {{timezone.full}}";
+				// As in WinRT, a time zone is abbreviated unless the template asks for its full name.
+				var timeZone = IncludeTimeZone == TimeZoneFormat.Full ? "{timezone.full}" : "{timezone.abbreviated}";
+				timePattern = timePattern.Length == 0 ? timeZone : $"{timePattern} {timeZone}";
 			}
 		}
 

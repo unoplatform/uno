@@ -404,21 +404,29 @@ internal sealed class PatternTimeZoneNode : PatternDateTimeNode
 
 	internal override void Format(StringBuilder builder, DateTime dateTime, PatternFormatContext context)
 	{
-		// Important: dateTime parameter shouldn't be used here.
-		// WinUI uses the local time zone info.
-		// The offset part of DateTimeOffset will actually be lost when marshalling to WinUI.
-		// The marshalling of DateTimeOffset to C++ is just a simple "UniversalTime" that doesn't have
-		// information about time zones. It's simply UtcTicks - ManagedUtcTicksAtNativeZero (which is 504911232000000000)
+		// WinRT names the local time zone, not the value's offset, which marshalling to WinRT drops: its standard or
+		// daylight name at that time ("Eastern Daylight Time" in July). .NET has only those names, so the abbreviated
+		// one is the GMT offset WinRT writes when the language has no short name for the zone ("GMT-4", "GMT+5:30"),
+		// whatever the ideal length.
+		var zone = TimeZoneInfo.Local;
 		if (Kind == TimeZoneKind.Full)
 		{
-			builder.Append(TimeZoneInfo.Local.StandardName);
+			builder.Append(zone.IsDaylightSavingTime(dateTime) ? zone.DaylightName : zone.StandardName);
+			return;
 		}
-		else if (Kind == TimeZoneKind.Abbreviated)
+
+		builder.Append("GMT");
+		var offset = zone.GetUtcOffset(dateTime);
+		if (offset != TimeSpan.Zero)
 		{
-			// Note: Couldn't notice any behavior difference on WinUI using different values of ideal length.
-			// So it's unused for now until it's known how the value should be used and how it affects WinUI behavior.
-			builder.Append("GMT+");
-			builder.Append(TimeZoneInfo.Local.BaseUtcOffset.TotalHours);
+			builder.Append(offset < TimeSpan.Zero ? '-' : '+');
+			offset = offset.Duration();
+			builder.Append(offset.Hours.ToString(CultureInfo.InvariantCulture));
+			if (offset.Minutes != 0)
+			{
+				builder.Append(':');
+				builder.Append(offset.Minutes.ToString("00", CultureInfo.InvariantCulture));
+			}
 		}
 	}
 }

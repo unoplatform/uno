@@ -69,7 +69,9 @@ public class Given_DateTimeFormatter
 	[DataRow("month.abbreviated", "{month.solo.abbreviated}")]
 	[DataRow("day", "{day.integer}")]
 	[DataRow("year.abbreviated month.numeric day", "{month.integer}/{day.integer}/{year.abbreviated(2)}")]
-	[DataRow("timezone", "{timezone.full}")]
+	[DataRow("timezone", "{timezone.abbreviated}")]
+	[DataRow("timezone.abbreviated", "{timezone.abbreviated}")]
+	[DataRow("timezone.full", "{timezone.full}")]
 	public void When_Template_Names_Some_Parts_Then_Pattern_Has_Only_Those(string template, string expectedPattern)
 		=> Assert.AreEqual(expectedPattern, new DateTimeFormatter(template, ["en-US"]).Patterns[0].Replace('\u202F', ' '));
 
