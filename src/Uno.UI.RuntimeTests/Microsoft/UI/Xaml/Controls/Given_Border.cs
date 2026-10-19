@@ -169,6 +169,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Opaque_Background_Covers_Target_Same_Colour_Draws_Above_Other_Content()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			// A whole-target opaque background, a same-colour fill right on top of it, then blue content with a
+			// red fill over its middle: only the fills directly on the background may be skipped.
+			var SUT = new Grid
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Red),
+				Children =
+				{
+					new Border { Background = new SolidColorBrush(Colors.Red) },
+					new Border { Width = 60, Height = 60, Background = new SolidColorBrush(Colors.Blue) },
+					new Border { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red) },
+				},
+			};
+
+			await UITestHelper.Load(SUT);
+			var screenshot = await UITestHelper.ScreenShot(SUT, scaling: UITestHelper.ScreenShotScalingMode.UseLogicalPixels);
+			ImageAssert.HasColorAt(screenshot, 5, 5, Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 94, 94, Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 25, 25, Colors.Blue, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 50, 50, Colors.Red, tolerance: 5);
+		}
+
+		[TestMethod]
+		public async Task When_Opaque_Background_Is_Clipped_Short_Of_Target()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new Grid
+			{
+				Width = 100,
+				Height = 100,
+				Children =
+				{
+					new Border
+					{
+						Background = new SolidColorBrush(Colors.Red),
+						Clip = new RectangleGeometry { Rect = new Rect(0, 0, 50, 50) },
+					},
+					new Rectangle { Width = 20, Height = 20, Fill = new SolidColorBrush(Colors.Blue) },
+				},
+			};
+
+			await UITestHelper.Load(SUT);
+			var screenshot = await UITestHelper.ScreenShot(SUT, scaling: UITestHelper.ScreenShotScalingMode.UseLogicalPixels);
+			ImageAssert.HasColorAt(screenshot, 10, 10, Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 50, 50, Colors.Blue, tolerance: 5);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 80, 80, Colors.Red, tolerance: 50);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 80, 10, Colors.Red, tolerance: 50);
+		}
+
+		[TestMethod]
 		public async Task When_Clip_And_CornerRadius()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
