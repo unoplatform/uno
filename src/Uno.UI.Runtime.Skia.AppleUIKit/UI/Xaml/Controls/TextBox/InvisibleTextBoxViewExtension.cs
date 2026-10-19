@@ -14,9 +14,10 @@ using Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit;
 
-internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
+internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INativeTextLoupeExtension
 {
 	private readonly TextBoxView _owner;
+	private readonly InvisibleTextBoxLoupe _loupe = new();
 	private UIView? _latestNativeView;
 	private IInvisibleTextBoxView? _textBoxView;
 
@@ -66,6 +67,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void EndEntry()
 	{
+		_loupe.End();
+
 		if (_textBoxView is not null)
 		{
 			RemoveViewFromTextInputLayer();
@@ -401,6 +404,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		element is AutoSuggestBox ||
 		element is NumberBox;
 	}
+
+	public bool BeginLoupe(XamlRoot xamlRoot, Windows.Foundation.Point point, Windows.Foundation.Rect caretRect)
+		=> GetOverlayLayer(xamlRoot) is { } layer && _loupe.Begin(layer, point, caretRect);
+
+	public void MoveLoupe(Windows.Foundation.Point point, Windows.Foundation.Rect caretRect) => _loupe.Move(point, caretRect);
+
+	public void EndLoupe() => _loupe.End();
 
 	internal static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>
 		(XamlRootMap.GetHostForRoot(xamlRoot) as IAppleUIKitXamlRootHost)?.TextInputLayer;

@@ -345,6 +345,15 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	partial void OnUnloadedPartial()
 	{
+<<<<<<< HEAD:src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.skia.cs
+=======
+		EndImeSession();
+		DetachImeGeometryTracking();
+		// Unload can happen mid-drag without an intervening blur (e.g. ListView/ItemsRepeater
+		// recycling), which would otherwise strand IsCaretDragActive permanently true.
+		CancelCaretDrag();
+		EndCaretLoupe();
+>>>>>>> 56a23aa (feat(textbox): Add a text loupe for touch drags):src/Uno.UI/UI/Xaml/Controls/TextBoxCore/TextBoxCore.Input.cs
 		_forceFocusedVisualState = false;
 		_timer.Stop();
 		_gripperPresenter?.Hide();
@@ -455,6 +464,7 @@ public partial class TextBox : ITextSelectionGripperHost
 				// Check if focus is moving to a text control flyout before deciding to unfocus.
 				_forceFocusedVisualState = ShouldForceFocusedVisualState();
 
+<<<<<<< HEAD:src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.skia.cs
 				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 5009-5016)
 				// Hide touch caret thumbs when context flyout is opening.
 				if (_forceFocusedVisualState && ShouldHideGrippersOnFlyoutOpening()
@@ -463,6 +473,17 @@ public partial class TextBox : ITextSelectionGripperHost
 				{
 					CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				}
+=======
+		if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
+		{
+			EndImeSession();
+			TrySetCurrentlyTyping(false);
+			EndCaretLoupe();
+			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+			if (SelectionFlyout?.IsOpen == true)
+			{
+				SelectionFlyout.Hide();
+>>>>>>> 56a23aa (feat(textbox): Add a text loupe for touch drags):src/Uno.UI/UI/Xaml/Controls/TextBoxCore/TextBoxCore.Input.cs
 			}
 
 			if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
@@ -539,7 +560,12 @@ public partial class TextBox : ITextSelectionGripperHost
 
 		// Even when using Skia TextBox, we may need to call Select,
 		// which will update the native input in case of Wasm Skia for example.
-		TextBoxView?.Select(start, length);
+		// Not while the platform loupe shows (a caret or handle drag): on iOS, moving the first responder's selection
+		// makes UIKit dismiss the loupe. EndCaretLoupe syncs the final selection once the drag is over.
+		if (!_isLoupeActive)
+		{
+			TextBoxView?.Select(start, length);
+		}
 
 		if (_isSkiaTextBox)
 		{
@@ -1962,7 +1988,13 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	void ITextSelectionGripperHost.MoveGripperCaret(int index) => Select(index, 0);
 
-	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper) => UpdateScrolling(isEndGripper);
+	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper)
+	{
+		UpdateScrolling(isEndGripper);
+
+		// Called on every handle move, so it doubles as the drag tick for the iOS magnifier.
+		UpdateCaretLoupe(isEndGripper ? SelectionStart + SelectionLength : SelectionStart);
+	}
 
 	void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
 
@@ -1972,6 +2004,8 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
 	{
+		EndCaretLoupe();
+
 		// Ported from TextBoxBase.cpp OnGripperHeld: a held gripper opens the context flyout.
 		var contextArgs = new ContextRequestedEventArgs();
 		contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
@@ -1979,12 +2013,17 @@ public partial class TextBox : ITextSelectionGripperHost
 	}
 
 	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection)
-		=> QueueUpdateSelectionFlyoutVisibility(
+	{
+		// The handle interaction is over (released), so the magnifier goes away.
+		EndCaretLoupe();
+
+		QueueUpdateSelectionFlyoutVisibility(
 			args.Pointer.PointerDeviceType,
 			args.GetCurrentPoint(this).Position,
 			// The single insertion handle only exists under the mobile (iOS/Android) conventions; tapping it
 			// re-opens the flyout even over a collapsed caret. Desktop never gets the empty-selection flyout.
 			allowEmptySelection: allowEmptySelection && TouchSelectionConvention != TouchTextSelectionConvention.Desktop);
+	}
 
 	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
 	{

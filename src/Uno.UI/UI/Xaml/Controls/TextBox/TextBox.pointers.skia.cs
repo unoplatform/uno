@@ -47,6 +47,7 @@ public partial class TextBox
 				var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point.Position, true, true));
 				Select(index, 0);
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+				UpdateCaretLoupe(index);
 			}
 			// Otherwise do nothing: moving while pressing the caret thumb or stem moves it (handled by the
 			// gripper presenter); any other plain touch move does nothing.
@@ -221,6 +222,7 @@ public partial class TextBox
 			// End the iOS caret-drag; OnPointerMoved has already positioned the caret at the finger.
 			// The framework releases the touch capture on pointer-up, so no explicit release is needed here.
 			_touchCaretDrag = false;
+			EndCaretLoupe();
 			return;
 		}
 
@@ -394,7 +396,7 @@ public partial class TextBox
 	}
 
 	// iOS long-press: place the caret at the press point and capture the pointer so the caret follows
-	// the finger (see OnPointerMoved). Approximates the native magnifier without the zoomed loupe.
+	// the finger (see OnPointerMoved), with the platform magnifier where there is one (TextBoxCore.Loupe.cs).
 	private void BeginTouchCaretDrag(Point displayBlockPoint)
 	{
 		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(displayBlockPoint, true, true));
@@ -404,6 +406,11 @@ public partial class TextBox
 		// the finger, so leaving the flag set would make OnPointerReleasedPartial skip normal touch-release handling.
 		_touchCaretDrag = PointerRoutedEventArgs.LastPointerEvent?.Pointer is { } pointer
 			&& (CapturePointer(pointer) || HasPointerCapture);
+
+		if (_touchCaretDrag)
+		{
+			UpdateCaretLoupe(index);
+		}
 	}
 
 	partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e)
@@ -411,6 +418,7 @@ public partial class TextBox
 		_isPressed = false;
 		_mouseMultiTapChunk = null;
 		_touchCaretDrag = false;
+		EndCaretLoupe();
 	}
 
 	protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs args)
