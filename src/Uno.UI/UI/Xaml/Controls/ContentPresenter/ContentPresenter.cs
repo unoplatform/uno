@@ -741,6 +741,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		TryRegisterNativeElement(oldValue, newValue);
 
 		SetUpdateTemplate();
+
+		// The root can be materialized before this Content matches the templated parent's (it is for
+		// ListViewItem/GridViewItem), so the report made when the root changed may have been skipped.
+		// MUX: CContentPresenter::SetValue (ContentPresenter_Content).
+		ReportContentTemplateRootToTemplatedParent();
 	}
 
 	private void TrySetDataContextFromContent(object value)

@@ -440,10 +440,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
 
 			Assert.AreEqual("Item 1", si.Content);
-#if WINAPPSDK // On iOS and Android (others not tested), ContentTemplateRoot is null, and TemplatedRoot is a ContentPresenter containing an ImplicitTextBlock
 			Assert.IsInstanceOfType(si.ContentTemplateRoot, typeof(TextBlock));
 			Assert.AreEqual("Item 1", (si.ContentTemplateRoot as TextBlock).Text);
-#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(ListView))]
+		[DataRow(typeof(GridView))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_ItemTemplate_Then_Container_ContentTemplateRoot_Is_Template_Root(Type listType)
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = TextBlockItemTemplate;
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+
+			SelectorItem container = null;
+			await WindowHelper.WaitFor(() => (container = SUT.ContainerFromIndex(0) as SelectorItem) != null);
+
+			var root = container.ContentTemplateRoot as TextBlock;
+			Assert.IsNotNull(root, "ContentTemplateRoot");
+			Assert.AreEqual("Item 1", root?.Text);
 		}
 
 		[TestMethod]
