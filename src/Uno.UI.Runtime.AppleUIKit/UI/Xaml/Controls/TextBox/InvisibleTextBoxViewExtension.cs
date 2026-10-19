@@ -219,6 +219,14 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 
 		_textBoxView.SecureTextEntry = host is TextBoxCore { IsPassword: true };
+
+		// Lets iOS offer AutoFill (saved passwords, contact details) for the field. Only assigned when there is a
+		// type: the proxy is created per entry, so its native default (none) stands otherwise.
+		if (InputScopeHelper.ConvertInputScopeToTextContentType(host.InputScope, host is TextBoxCore { IsPassword: true }) is { } contentType)
+		{
+			_textBoxView.TextContentType = contentType;
+		}
+
 		SetSoftKeyboardTheme();
 
 		// KeyboardType may have changed — re-evaluate the native view
