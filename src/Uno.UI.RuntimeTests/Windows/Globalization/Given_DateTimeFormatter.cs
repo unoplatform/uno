@@ -40,6 +40,30 @@ public class Given_DateTimeFormatter
 		}
 	}
 
+	// The GMT form WinRT gives an offset in a language without a short name for the zone: "GMT" alone at zero,
+	// otherwise the sign, the hours and any minutes.
+	private static string GetGmtOffset(TimeSpan offset)
+	{
+		if (offset == TimeSpan.Zero)
+		{
+			return "GMT";
+		}
+
+		var duration = offset.Duration();
+		var hours = (offset < TimeSpan.Zero ? "GMT-" : "GMT+") + duration.Hours.ToString(CultureInfo.InvariantCulture);
+		return duration.Minutes == 0 ? hours : hours + ":" + duration.Minutes.ToString("00", CultureInfo.InvariantCulture);
+	}
+
+	[TestMethod]
+	[DataRow(0, "GMT")]
+	[DataRow(-300, "GMT-5")]
+	[DataRow(-210, "GMT-3:30")]
+	[DataRow(330, "GMT+5:30")]
+	[DataRow(345, "GMT+5:45")]
+	[DataRow(840, "GMT+14")]
+	public void When_Offset_Has_Minutes_Or_Is_Zero_Then_Gmt_Form_Has_Them(int minutes, string expected)
+		=> Assert.AreEqual(expected, GetGmtOffset(TimeSpan.FromMinutes(minutes)));
+
 	// WinRT marks the text direction (U+200E), and ICU may separate the period with a no-break space.
 	private static string NormalizeText(string text)
 		=> text.Replace("\u200E", "").Replace("\u200F", "").Replace('\u202F', ' ').Replace('\u00A0', ' ');
@@ -232,7 +256,7 @@ public class Given_DateTimeFormatter
 		instant = instant.AddMinutes(90);
 		var standardOffset = zone.GetUtcOffset(instant.AddDays(-1));
 		var offset = zone.GetUtcOffset(instant);
-		var expectedOffset = $"GMT{(offset < TimeSpan.Zero ? "-" : "+")}{offset.Duration().Hours}{(offset.Minutes == 0 ? "" : $":{offset.Duration().Minutes:00}")}";
+		var expectedOffset = GetGmtOffset(offset);
 		var expectedTime = TimeZoneInfo.ConvertTime(instant, zone).ToString("HH:mm", CultureInfo.InvariantCulture);
 		var time = new DateTimeFormatter("{hour.integer(2)}:{minute.integer(2)}", new[] { "hu-HU" }, "ZZ", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
 		var abbreviated = new DateTimeFormatter("{timezone.abbreviated}", new[] { "hu-HU" });
@@ -317,9 +341,7 @@ public class Given_DateTimeFormatter
 			var offset = zone.GetUtcOffset(date);
 			var expected = expectedPattern.StartsWith("{timezone.full", StringComparison.Ordinal)
 				? (zone.IsDaylightSavingTime(date) ? zone.DaylightName : zone.StandardName)
-				: offset == TimeSpan.Zero
-					? "GMT"
-					: $"GMT{(offset < TimeSpan.Zero ? "-" : "+")}{offset.Duration().Hours}{(offset.Minutes == 0 ? "" : $":{offset.Duration().Minutes:00}")}";
+				: GetGmtOffset(offset);
 
 			Assert.AreEqual(expected, NormalizeText(formatter.Format(new DateTimeOffset(date))), $"{template} in {date:MMMM}");
 		}
