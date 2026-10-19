@@ -28,6 +28,27 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 
 	internal TextBoxView Owner => _owner;
 
+<<<<<<< HEAD:src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Controls/TextBox/InvisibleTextBoxViewExtension.cs
+=======
+	/// <summary>The invisible native text view (the first responder while the TextBox has focus), if created.</summary>
+	internal UIView? NativeView => _textBoxView as UIView;
+
+	private IImeSessionHost? ImeHost => _owner.Host as IImeSessionHost;
+
+	internal AppleUIKitImeTextBoxExtension? GetImeExtension(IInvisibleTextBoxView source)
+	{
+		if (ReferenceEquals(_textBoxView, source)
+			&& ImeHost is { XamlRoot: { } xamlRoot } host
+			&& ReferenceEquals(host.TextBoxView, _owner)
+			&& ReferenceEquals(_textBoxViewRoot, xamlRoot))
+		{
+			return ImeSessionCoordinator.GetExtension(host) as AppleUIKitImeTextBoxExtension;
+		}
+
+		return null;
+	}
+
+>>>>>>> 73c77a0 (feat(textbox): Add iOS touch flyout commands):src/Uno.UI.Runtime.AppleUIKit/UI/Xaml/Controls/TextBox/InvisibleTextBoxViewExtension.cs
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
 
 	public void StartEntry()
