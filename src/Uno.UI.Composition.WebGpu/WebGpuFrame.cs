@@ -102,6 +102,12 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 		finally
 		{
+			if (_scratchBuf is not null)
+			{
+				_d.ReturnVerts(_scratchBuf);
+				_scratchBuf = null;
+			}
+
 			// Same cadence as the stats line, so UNO_WEBGPU_STATS_EVERY=1 gives a per-FRAME phase breakdown rather
 			// than a 60-frame average - the only way to see a distribution instead of a mean.
 			if (_emitStats && (_frameStatsCounter++ % _emitStatsEvery) == 0)
@@ -569,27 +575,23 @@ internal sealed unsafe partial class WebGpuFrame
 		return new Vector4(min.X, min.Y, max.X, max.Y);
 	}
 
-	// Reused so the per-frame op build does not allocate a list and an array per primitive.
-	private readonly VertBuf _scratch = new();
+	// Reused so the per-frame op build does not allocate a list and an array per primitive. Rented from the device on
+	// first use and handed back when the frame ends, so its array is not reallocated every frame.
+	private VertBuf _scratchBuf;
+	private VertBuf Scratch => _scratchBuf ??= _d.RentVerts();
 	private readonly float[] _clipU = new float[ClipUFloats];   // the uniform: header + the first ClipUniformEntries entries
 	private float[] _clipMore = new float[4 * ClipEntryFloats];  // the entries past those, for the overflow buffer; grows
 
-	private readonly Stack<List<DrawOp>> _opsPool = new();
-	private List<DrawOp> RentOps() => _opsPool.Count > 0 ? _opsPool.Pop() : new(256);
-	private void ReturnOps(List<DrawOp> ops)
-	{
-		ops.Clear();   // drops the captured ClipData refs; keeps the backing array for reuse
-		_opsPool.Push(ops);
-	}
+	private List<DrawOp> RentOps() => _d.RentOps();
+	private void ReturnOps(List<DrawOp> ops) => _d.ReturnOps(ops);
 
 	// The pass's shared vertex buffers, one per layout: every per-frame draw appends its verts here in op order, so
 	// adjacent ops sharing a clip occupy a contiguous range and encode as ONE draw, and the whole pass uploads each
 	// buffer once. Fields rather than locals because the builders append to them; saved/restored around a nested build.
 	private VertBuf _solid, _rrect, _gradVerts, _quadVerts;
 	private List<BackdropCmd> _backdrops;
-	private readonly Stack<VertBuf> _vertsPool = new();
-	private VertBuf RentVerts() { var l = _vertsPool.Count > 0 ? _vertsPool.Pop() : new VertBuf(); l.Clear(); return l; }
-	private void ReturnVerts(VertBuf s) { s.Clear(); _vertsPool.Push(s); }
+	private VertBuf RentVerts() => _d.RentVerts();
+	private void ReturnVerts(VertBuf s) => _d.ReturnVerts(s);
 	private VertBuf RentRrect() => RentVerts();
 	private void ReturnRrect(VertBuf s) => ReturnVerts(s);
 

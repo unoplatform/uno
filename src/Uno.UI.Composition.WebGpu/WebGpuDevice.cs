@@ -152,6 +152,52 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	internal readonly List<WebGpuEffects.ShapeKey> ShapeShadowQueue = new();
 	internal readonly List<WebGpuEffects.ShapeKey> ShapeShadowStale = new();
 
+	// A frame's op lists and vertex buffers outlive it here: allocated per frame they were ~150 KB of arrays, each
+	// past Mono's 8 KB large-object threshold on wasm, so the large-object space filled every couple of seconds.
+	private readonly Stack<List<DrawOp>> _opsPool = new();
+	private readonly Stack<VertBuf> _vertsPool = new();
+
+	internal List<DrawOp> RentOps()
+	{
+		lock (_opsPool)
+		{
+			return _opsPool.Count > 0 ? _opsPool.Pop() : new(256);
+		}
+	}
+
+	internal void ReturnOps(List<DrawOp> ops)
+	{
+		ops.Clear();   // drops the captured ClipData refs; keeps the backing array for reuse
+		lock (_opsPool)
+		{
+			_opsPool.Push(ops);
+		}
+	}
+
+	internal VertBuf RentVerts()
+	{
+		VertBuf verts = null;
+		lock (_vertsPool)
+		{
+			if (_vertsPool.Count > 0)
+			{
+				verts = _vertsPool.Pop();
+			}
+		}
+		verts ??= new VertBuf();
+		verts.Clear();
+		return verts;
+	}
+
+	internal void ReturnVerts(VertBuf verts)
+	{
+		verts.Clear();
+		lock (_vertsPool)
+		{
+			_vertsPool.Push(verts);
+		}
+	}
+
 	// Sends a rounded-rect layer shadow back through the sheet: replayed and blurred per card per frame.
 	internal static readonly bool NoShapeShadow = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_SHAPE_SHADOW") == "1";
 
