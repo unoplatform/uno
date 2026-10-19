@@ -144,6 +144,37 @@ public class Given_Calendar
 		static string Normalize(string text) => text.Replace('\u202F', ' ').Replace('\u00A0', ' ');
 	}
 
+	// The static formatters are cached by language, which stay the same when the device setting changes.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+	public void When_Device_Clock_Changes_Then_Default_Formatters_Follow()
+	{
+		DefaultClockHelper.AssumeStockTimeFormat("en-US");
+
+		var originalOverride = ApplicationLanguages.PrimaryLanguageOverride;
+		try
+		{
+			ApplicationLanguages.PrimaryLanguageOverride = "en-US";
+			DeviceClock.TestDevice = ("en-US", null, false);
+			Assert.AreEqual(TwelveHour, DateTimeFormatter.ShortTime.Clock);
+			Assert.AreEqual(TwelveHour, DateTimeFormatter.LongTime.Clock);
+			Assert.AreEqual(TwelveHour, DateTimeFormatter.ShortDate.Clock);
+			Assert.AreEqual(TwelveHour, DateTimeFormatter.LongDate.Clock);
+
+			DeviceClock.TestDevice = ("en-US", null, true);
+			Assert.AreEqual(TwentyFourHour, DateTimeFormatter.ShortTime.Clock);
+			Assert.AreEqual("13:05", DateTimeFormatter.ShortTime.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 0))));
+			Assert.AreEqual(TwentyFourHour, DateTimeFormatter.LongTime.Clock);
+			Assert.AreEqual(TwentyFourHour, DateTimeFormatter.ShortDate.Clock);
+			Assert.AreEqual(TwentyFourHour, DateTimeFormatter.LongDate.Clock);
+		}
+		finally
+		{
+			DeviceClock.TestDevice = null;
+			ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+		}
+	}
+
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
 	public void When_Device_Sets_Clock_Then_Explicit_Clock_Wins()
