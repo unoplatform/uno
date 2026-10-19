@@ -11,11 +11,15 @@
 		     still renders by default; the head opts into WebGPU on the host builder. WinAppSDK renders with
 		     WinUI, so nothing is implied there: a Windows head that uses SKCanvasElement lists 'skia'. The
 		     legacy 'nativerenderer' token is ignored, and 'skiarenderer' is mapped to 'skia' for backwards
-		     compatibility. 'lottie' is ignored too: Lottie is built into Uno.WinUI. -->
+		     compatibility. 'lottie' is ignored too: Lottie is built into Uno.WinUI. The target framework is
+		     tested directly: IsWinAppSdk is not set yet when the project body sets TargetFramework. -->
 		<UnoFeatures>$(UnoFeatures.Replace(';nativerenderer;', ';'))</UnoFeatures>
 		<UnoFeatures>$(UnoFeatures.Replace(';lottie;', ';'))</UnoFeatures>
+		<!-- Set when only the legacy token asks for Skia: a WinAppSDK-only library does not take that as a request for
+		     the Skia packages on Windows (see Uno.Implicit.Packages.ProjectSystem.targets). -->
+		<_UnoSkiaFromSkiaRendererOnly Condition="$(UnoFeatures.Contains(';skiarenderer;')) And !$(UnoFeatures.Contains(';skia;'))">true</_UnoSkiaFromSkiaRendererOnly>
 		<UnoFeatures>$(UnoFeatures.Replace(';skiarenderer;', ';skia;'))</UnoFeatures>
-		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And '$(IsWinAppSdk)' != 'true'">$(UnoFeatures)skia;</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And !$(TargetFramework.Contains('windows10'))">$(UnoFeatures)skia;</UnoFeatures>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
