@@ -332,7 +332,8 @@ public sealed partial class DateTimeFormatter
 	{
 		try
 		{
-			return _patternRootNode.Format(value.DateTime, _context);
+			// As in WinRT, which gets only the instant, in local time.
+			return _patternRootNode.Format(TimeZoneInfo.ConvertTime(value, TimeZoneInfo.Local), _context);
 		}
 		catch (Exception e)
 		{

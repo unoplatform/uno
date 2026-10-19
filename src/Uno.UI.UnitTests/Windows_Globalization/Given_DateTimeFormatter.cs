@@ -272,5 +272,5 @@ public class Given_DateTimeFormatter
 
 	private static string FormatPeriod(string pattern, string cultureName)
 		=> new DateTimeFormatter(pattern, [cultureName], "ZZ", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour)
-			.Format(new DateTimeOffset(2024, 1, 15, 17, 15, 0, TimeSpan.Zero));
+			.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 17, 15, 0)));
 }

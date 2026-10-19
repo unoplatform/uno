@@ -196,6 +196,56 @@ public class Given_DateTimeFormatter
 		Assert.AreEqual("month.numeric day", numeric.Template);
 	}
 
+	// WinRT gets only the instant, and formats it in local time whatever the value's offset.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Offset_Is_Not_Local_Then_Format_Is_In_Local_Time()
+	{
+		var instant = new DateTimeOffset(2024, 1, 15, 3, 0, 0, TimeSpan.Zero);
+		var local = TimeZoneInfo.ConvertTime(instant, TimeZoneInfo.Local);
+		var formatter = new DateTimeFormatter("{year.full}-{month.integer(2)}-{day.integer(2)} {hour.integer(2)}:{minute.integer(2)}", new[] { "en-US" }, "US", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
+
+		foreach (var offset in new[] { TimeSpan.Zero, TimeSpan.FromHours(9), TimeSpan.FromHours(-11), local.Offset })
+		{
+			Assert.AreEqual(local.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture), formatter.Format(instant.ToOffset(offset)), offset.ToString());
+		}
+	}
+
+	// Just after the local clocks move forward, the same instant written with the standard offset reads as an hour
+	// that doesn't exist locally. The zone and the time still follow the instant.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Daylight_Time_Starts_Then_Zone_Follows_The_Instant()
+	{
+		var zone = TimeZoneInfo.Local;
+		var instant = new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
+		while (instant.Year == 2024 && (zone.IsDaylightSavingTime(instant) || !zone.IsDaylightSavingTime(instant.AddHours(1))))
+		{
+			instant = instant.AddHours(1);
+		}
+
+		if (instant.Year != 2024)
+		{
+			Assert.Inconclusive("The local time zone has no daylight saving time.");
+		}
+
+		instant = instant.AddMinutes(90);
+		var standardOffset = zone.GetUtcOffset(instant.AddDays(-1));
+		var offset = zone.GetUtcOffset(instant);
+		var expectedOffset = $"GMT{(offset < TimeSpan.Zero ? "-" : "+")}{offset.Duration().Hours}{(offset.Minutes == 0 ? "" : $":{offset.Duration().Minutes:00}")}";
+		var expectedTime = TimeZoneInfo.ConvertTime(instant, zone).ToString("HH:mm", CultureInfo.InvariantCulture);
+		var time = new DateTimeFormatter("{hour.integer(2)}:{minute.integer(2)}", new[] { "hu-HU" }, "ZZ", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
+		var abbreviated = new DateTimeFormatter("{timezone.abbreviated}", new[] { "hu-HU" });
+		var full = new DateTimeFormatter("{timezone.full}", new[] { "en-US" });
+
+		foreach (var value in new[] { instant.ToOffset(TimeSpan.Zero), instant.ToOffset(TimeSpan.FromHours(9)), instant.ToOffset(standardOffset), instant.ToOffset(offset) })
+		{
+			Assert.AreEqual(expectedTime, NormalizeText(time.Format(value)), value.ToString("O", CultureInfo.InvariantCulture));
+			Assert.AreEqual(expectedOffset, NormalizeText(abbreviated.Format(value)), value.ToString("O", CultureInfo.InvariantCulture));
+			Assert.AreEqual(zone.DaylightName, NormalizeText(full.Format(value)), value.ToString("O", CultureInfo.InvariantCulture));
+		}
+	}
+
 	// WinRT names the local time zone at the given time: in full, its standard or daylight name; abbreviated, the
 	// GMT offset in a language without a short name for the zone (hu-HU "GMT-5" and "GMT-4" in New York, where
 	// en-US writes "EST"), whatever the ideal length. The full names are the OS's, so these rows are in English.
@@ -511,7 +561,7 @@ public class Given_DateTimeFormatter
 			var expected = kvp.Value;
 
 			var formatter = new DateTimeFormatter(template);
-			var formattedDate = formatter.Format(new(2024, 6, 27, 14, 30, 0, TimeSpan.Zero));
+			var formattedDate = formatter.Format(new DateTimeOffset(new DateTime(2024, 6, 27, 14, 30, 0)));
 
 			Assert.AreEqual(expected, formattedDate, $"Mismatch for template: {template}");
 		}
@@ -600,7 +650,7 @@ public class Given_DateTimeFormatter
 		Assert.AreEqual("{hour.integer(1)}", formatter.Template);
 		CollectionAssert.Contains(formatter.Patterns.ToList(), "{hour.integer(1)}");
 
-		var formatted = formatter.Format(new DateTimeOffset(2024, 6, 17, 14, 30, 0, TimeSpan.Zero));
+		var formatted = formatter.Format(new DateTimeOffset(new DateTime(2024, 6, 17, 14, 30, 0)));
 		Assert.AreEqual("14", formatted);
 	}
 
