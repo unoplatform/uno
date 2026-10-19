@@ -246,6 +246,56 @@ public class Given_DateTimeFormatter
 		}
 	}
 
+	// WinRT's month in a date takes the date form ("15 января", Polish "15 maja"), and its standalone form keeps the
+	// name on its own ("styczeń 2024"), with a day or without.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("ru-RU", "year month day", 1, "15 января 2024 г.")]
+	[DataRow("ru-RU", "month day", 5, "15 мая")]
+	[DataRow("ru-RU", "{month.full}", 1, "января")]
+	[DataRow("ru-RU", "{month.full} {year.full}", 5, "мая 2024")]
+	[DataRow("ru-RU", "{month.abbreviated}", 5, "мая")]
+	[DataRow("pl-PL", "year month day dayofweek", 1, "poniedziałek, 15 stycznia 2024")]
+	[DataRow("pl-PL", "month day", 5, "15 maja")]
+	[DataRow("pl-PL", "year month", 1, "styczeń 2024")]
+	[DataRow("pl-PL", "month", 5, "maj")]
+	[DataRow("pl-PL", "{day.integer} {month.solo.full}", 1, "15 styczeń")]
+	[DataRow("cs-CZ", "year month day", 5, "15. května 2024")]
+	[DataRow("cs-CZ", "year month", 5, "květen 2024")]
+	[DataRow("uk-UA", "year month day", 1, "15 січня 2024 р.")]
+	[DataRow("uk-UA", "year month", 1, "січень 2024 р.")]
+	[DataRow("el-GR", "month day", 1, "15 Ιανουαρίου")]
+	[DataRow("el-GR", "year month", 5, "Μάιος 2024")]
+	public void When_Month_Is_In_A_Date_Then_It_Takes_The_Date_Form(string language, string template, int month, string expected)
+	{
+		if (new CultureInfo(language).DateTimeFormat.GetMonthName(1) == CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1))
+		{
+			Assert.Inconclusive($"The ICU data loaded here has no {language} names (the WebAssembly shard for the browser language).");
+		}
+
+		var formatter = new DateTimeFormatter(template, new[] { language });
+
+		Assert.AreEqual(expected, NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, month, 15, 13, 5, 7)))));
+	}
+
+	// Hebrew leap years have two Adars, in a date or not.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("{day.integer} {month.full}")]
+	[DataRow("{month.solo.full}")]
+	public void When_Hebrew_Month_Is_In_A_Date_Then_Leap_Months_Stay_Apart(string pattern)
+	{
+		if (new CultureInfo("he-IL").DateTimeFormat.GetMonthName(1) == CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1))
+		{
+			Assert.Inconclusive("The ICU data loaded here has no Hebrew names (the WebAssembly shard for the browser language).");
+		}
+
+		var formatter = new DateTimeFormatter(pattern, new[] { "en-US" }, "ZZ", CalendarIdentifiers.Hebrew, ClockIdentifiers.TwentyFourHour);
+
+		StringAssert.Contains(NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, 2, 15, 13, 5, 7)))), "אדר א");
+		StringAssert.Contains(NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, 3, 15, 13, 5, 7)))), "אדר ב");
+	}
+
 	// WinRT names the local time zone at the given time: in full, its standard or daylight name; abbreviated, the
 	// GMT offset in a language without a short name for the zone (hu-HU "GMT-5" and "GMT-4" in New York, where
 	// en-US writes "EST"), whatever the ideal length. The full names are the OS's, so these rows are in English.

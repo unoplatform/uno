@@ -604,15 +604,31 @@ namespace Windows.Globalization
 
 		// The month of the date in the calendar in use, named through ResolveFormatCulture's culture. Formatting
 		// the date, rather than naming its month number, keeps the Hebrew leap months (Adar I, Adar II).
-		internal static string GetMonthName(DateTime date, _Calendar calendar, CultureInfo formatCulture, bool abbreviated)
+		// A date's month: in a date, the form the language gives it there ("15 января" for ru-RU), which is what
+		// DateTimeFormatter's {month.full} and {month.abbreviated} give, otherwise on its own ("январь").
+		internal static string GetMonthName(DateTime date, _Calendar calendar, CultureInfo formatCulture, bool abbreviated, bool inDate = false)
 		{
+			var format = formatCulture.DateTimeFormat;
 			if (calendar is global::System.Globalization.JulianCalendar)
 			{
 				// Julian months are the Gregorian ones, by number.
-				var month = calendar.GetMonth(date);
-				return abbreviated
-					? formatCulture.DateTimeFormat.GetAbbreviatedMonthName(month)
-					: formatCulture.DateTimeFormat.GetMonthName(month);
+				var names = (abbreviated, inDate) switch
+				{
+					(false, false) => format.MonthNames,
+					(true, false) => format.AbbreviatedMonthNames,
+					(false, true) => format.MonthGenitiveNames,
+					(true, true) => format.AbbreviatedMonthGenitiveNames,
+				};
+
+				return names[calendar.GetMonth(date) - 1];
+			}
+
+			if (inDate)
+			{
+				// .NET takes the in-date form when the format has a day, and the culture's calendar keeps its own
+				// months (Hebrew leap years).
+				var text = date.ToString(abbreviated ? "d'\u0001'MMM" : "d'\u0001'MMMM", formatCulture);
+				return text.Substring(text.IndexOf('\u0001') + 1);
 			}
 
 			return date.ToString(abbreviated ? "MMM" : "MMMM", formatCulture);

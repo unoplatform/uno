@@ -204,11 +204,11 @@ internal sealed class PatternMonthNode : PatternDateTimeNode
 	{
 		if (Kind is MonthKind.Full or MonthKind.SoloFull)
 		{
-			builder.Append(Calendar.GetMonthName(dateTime.DateTime, context.Calendar, context.DateCulture, abbreviated: false));
+			builder.Append(Calendar.GetMonthName(dateTime.DateTime, context.Calendar, context.DateCulture, abbreviated: false, inDate: Kind == MonthKind.Full));
 		}
 		else if (Kind is MonthKind.Abbreviated or MonthKind.SoloAbbreviated)
 		{
-			builder.Append(Calendar.GetMonthName(dateTime.DateTime, context.Calendar, context.DateCulture, abbreviated: true));
+			builder.Append(Calendar.GetMonthName(dateTime.DateTime, context.Calendar, context.DateCulture, abbreviated: true, inDate: Kind == MonthKind.Abbreviated));
 		}
 		else if (Kind == MonthKind.Integer)
 		{
