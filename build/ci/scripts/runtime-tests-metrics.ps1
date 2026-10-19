@@ -255,18 +255,21 @@ function Test-OverBudget($metric) {
     return $null -ne $metric -and $null -ne $metric.budget -and $metric.value -gt $metric.budget
 }
 
-# Every budgeted metric is a count where lower is better: ▲ / ▼ flag a clear move away from the latest dev on the same
-# lane, past run-to-run noise (the damaged area alone varies by about 13% between runs of the same build). Frame rates
-# follow the agent's display rate, so for them only crossing the budget counts.
+# Every metric is a count where lower is better: ▲ / ▼ flag a clear move away from the latest dev on the same lane, past
+# run-to-run noise (the damaged area alone varies by about 13% between runs of the same build). Metrics without a
+# budget yet (allocations) are compared too. Frame rates follow the agent's display rate, so for them only crossing the
+# budget counts, and one without a budget is for information only.
 function Get-Change($row, $current, $devMetric) {
-    if ($null -eq $current -or $null -eq $devMetric -or $null -eq $row.budget) { return $null }
+    if ($null -eq $current -or $null -eq $devMetric) { return $null }
     if ($row.name.EndsWith('frames-per-second')) {
         $overNow = Test-OverBudget $current
         if ($overNow -eq (Test-OverBudget $devMetric)) { return $null }
         return $(if ($overNow) { '▲' } else { '▼' })
     }
     $difference = $current.value - $devMetric.value
-    if ([math]::Abs($difference) -le [math]::Max(0.05, 0.2 * [math]::Abs($devMetric.value))) { return $null }
+    # Allocations are in KB: below 1 KB, a move is the test's own awaits and timers, not the code under test.
+    $floor = if ($current.unit -and $current.unit.Trim() -eq 'KB') { 1 } else { 0.05 }
+    if ([math]::Abs($difference) -le [math]::Max($floor, 0.2 * [math]::Abs($devMetric.value))) { return $null }
     return $(if ($difference -gt 0) { '▲' } else { '▼' })
 }
 
