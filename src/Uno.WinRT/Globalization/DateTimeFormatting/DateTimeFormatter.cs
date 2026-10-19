@@ -351,11 +351,14 @@ public sealed partial class DateTimeFormatter
 		=> languages?.Distinct().ToArray();
 
 	// As in WinRT, each read gives a new formatter for the current application languages. The one built for them
-	// is kept until they change, so a read otherwise costs a reference comparison and a copy.
+	// is kept until they or their default clock (the device's 12/24-hour setting) change, so a read otherwise costs
+	// a clock lookup and a copy.
 	private static DateTimeFormatter GetDefault(ref DateTimeFormatter? cache, string template)
 	{
 		var formatter = cache;
-		if (formatter is null || !ReferenceEquals(formatter.Languages, ApplicationLanguages.Languages))
+		if (formatter is null
+			|| !ReferenceEquals(formatter.Languages, ApplicationLanguages.Languages)
+			|| formatter.Clock != WinCalendar.GetDefaultClock(formatter._context.TimeCulture))
 		{
 			cache = formatter = new DateTimeFormatter(template);
 		}
