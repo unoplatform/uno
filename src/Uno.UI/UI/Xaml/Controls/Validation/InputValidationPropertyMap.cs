@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -62,9 +63,23 @@ public sealed class InputValidationPropertyMap
 	public bool Remove(Type type) => _entries.Remove(type);
 
 	private static DependencyProperty? Resolve(Type type)
-		=> type.GetCustomAttribute<InputValidationPropertyAttribute>(inherit: true) is { Name.Length: > 0 } attribute
-			? DependencyProperty.GetProperty(type, attribute.Name)
-			: null;
+	{
+		if (type.GetCustomAttribute<InputValidationPropertyAttribute>(inherit: true) is not { Name.Length: > 0 } attribute)
+		{
+			return null;
+		}
+
+		var property = DependencyProperty.GetProperty(type, attribute.Name);
+
+		// The answer is memoized, so this logs once per type rather than on every bind.
+		if (property is null && typeof(InputValidationPropertyMap).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(InputValidationPropertyMap).Log().Warn(
+				$"{type} declares [InputValidationProperty(\"{attribute.Name}\")], but has no dependency property of that name: its input will not be validated.");
+		}
+
+		return property;
+	}
 
 	/// <summary>
 	/// Boxes the nullable property, which <see cref="ConditionalWeakTable{TKey, TValue}"/> cannot store on
