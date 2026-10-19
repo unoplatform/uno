@@ -170,14 +170,14 @@ internal sealed unsafe partial class WebGpuFrame
 				// The replay transform is not known here, so these edges can end up rotated or off the pixel grid when
 				// the recording is placed: they take the SDF pipeline's analytic coverage, as an image quad's already do.
 				// It still coalesces - the rounded-rect vertex carries its own shape, so a run is one draw either way.
-				_scratch.Clear();
+				Scratch.Clear();
 				int j = ci;
 				while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 				{
-					AppendAaRect(_scratch, rcj.Color, rcj.P0, rcj.P1, rcj.P2, rcj.P3);
+					AppendAaRect(Scratch, rcj.Color, rcj.P0, rcj.P1, rcj.P2, rcj.P3);
 					j++;
 				}
-				var rop = DrawOp.Own(DrawKind.RoundedRect, Vbuf(_scratch, VertexStride.RoundedRect, owned), (uint)((j - ci) * 6), null, rc0.Clip, MakeClipBg(rc0.Clip, owned));
+				var rop = DrawOp.Own(DrawKind.RoundedRect, Vbuf(Scratch, VertexStride.RoundedRect, owned), (uint)((j - ci) * 6), null, rc0.Clip, MakeClipBg(rc0.Clip, owned));
 				// Only a run of one: a longer run's rects need not tile the box they share, so its box is not painted.
 				if (j == ci + 1)
 				{
@@ -210,8 +210,8 @@ internal sealed unsafe partial class WebGpuFrame
 		var off = pc.Offset; var tris = shape.Tris; var cov = shape.Cov;
 		var clipBg = MakeClipBg(pc.Clip, owned);
 		var count = (uint)(tris.Length / 2);
-		var dst = owned is null ? _solid : _scratch;
-		if (owned is not null) { _scratch.Clear(); }
+		var dst = owned is null ? _solid : Scratch;
+		if (owned is not null) { Scratch.Clear(); }
 		uint start = (uint)(dst.Count / VertexStride.Solid);
 		var v = Grow(dst, tris.Length / 2 * VertexStride.Solid);
 		for (int i = 0, o = 0; i < tris.Length; i += 2, o += VertexStride.Solid)
@@ -221,7 +221,7 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 		ops.Add(owned is null
 			? DrawOp.Shared(DrawKind.Solid, start, count, null, pc.Clip, clipBg)
-			: DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, VertexStride.Solid, owned), count, null, pc.Clip, clipBg));
+			: DrawOp.Own(DrawKind.Solid, Vbuf(Scratch, VertexStride.Solid, owned), count, null, pc.Clip, clipBg));
 	}
 
 	// A fill without tiling triangles (self-overlap, too thin for the ring, or simply refused) draws through an exact
