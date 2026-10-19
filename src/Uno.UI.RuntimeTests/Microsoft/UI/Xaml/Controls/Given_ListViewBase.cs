@@ -468,6 +468,104 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[DataRow(typeof(ListView))]
+		[DataRow(typeof(GridView))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_ContainerContentChanging_Then_ContentTemplateRoot_Is_Materialized(Type listType)
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = TextBlockItemTemplate;
+
+			// WinUI raises ContainerContentChanging once the container has applied its template,
+			// so a handler can fill the item from ContentTemplateRoot (the documented pattern).
+			var rootsSeen = new List<string>();
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue)
+				{
+					var container = e.ItemContainer;
+					var children = VisualTreeHelper.GetChildrenCount(container);
+					var reapplied = container.ApplyTemplate();
+					rootsSeen.Add($"{container.ContentTemplateRoot?.GetType().Name ?? "null"} children={children} reapplied={reapplied}");
+				}
+			};
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+
+			Assert.IsTrue(rootsSeen.Count >= source.Length, $"ContainerContentChanging raised {rootsSeen.Count} time(s)");
+			var expected = $"{nameof(TextBlock)} children=1 reapplied=False";
+			Assert.IsTrue(rootsSeen.All(r => r == expected), "When raised: " + string.Join(", ", rootsSeen));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_Container_Has_No_Template_Then_ContainerContentChanging_Is_Raised()
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var containerStyle = new Style(typeof(ListViewItem));
+			containerStyle.Setters.Add(new Setter(Control.TemplateProperty, null));
+			var SUT = new ListView { ItemContainerStyle = containerStyle, ItemsSource = source };
+
+			var raisedFor = new List<int>();
+			SUT.ContainerContentChanging += (s, e) => raisedFor.Add(e.ItemIndex);
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded);
+			await WindowHelper.WaitFor(() => raisedFor.Count >= source.Length);
+
+			CollectionAssert.AreEquivalent(new[] { 0, 1 }, raisedFor);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(ListView), typeof(ListViewItem))]
+		[DataRow(typeof(GridView), typeof(GridViewItem))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_Container_Collapsed_Then_ContainerContentChanging_Is_Raised(Type listType, Type containerType)
+		{
+			var source = new[] { "Item 1", "Item 2", "Item 3" };
+			var collapsedStyle = new Style(containerType);
+			collapsedStyle.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Collapsed));
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = TextBlockItemTemplate;
+			SUT.ItemContainerStyleSelector = new CollapseItemStyleSelector { Item = source[1], CollapsedStyle = collapsedStyle };
+
+			// A collapsed container is never measured, so it never gets its template; WinUI still raises
+			// ContainerContentChanging for it, with a null ContentTemplateRoot.
+			var raised = new Dictionary<int, string>();
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue)
+				{
+					raised[e.ItemIndex] = e.ItemContainer.ContentTemplateRoot?.GetType().Name ?? "null";
+				}
+			};
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var seen = string.Join(", ", raised.OrderBy(p => p.Key).Select(p => $"#{p.Key}: {p.Value}"));
+			CollectionAssert.AreEquivalent(new[] { 0, 1, 2 }, raised.Keys.ToArray(), "ContainerContentChanging raised for " + seen);
+			Assert.AreEqual(Visibility.Collapsed, ((UIElement)SUT.ContainerFromIndex(1)).Visibility);
+			Assert.AreEqual(nameof(TextBlock), raised[0], seen);
+			Assert.AreEqual(nameof(TextBlock), raised[2], seen);
+		}
+
+		private class CollapseItemStyleSelector : StyleSelector
+		{
+			public object Item { get; set; }
+
+			public Style CollapsedStyle { get; set; }
+
+			protected override Style SelectStyleCore(object item, DependencyObject container)
+				=> Equals(item, Item) ? CollapsedStyle : null;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_IsItsOwnItemContainer_FromSource_With_DataTemplate()
 		{
