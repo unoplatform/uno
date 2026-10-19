@@ -5703,6 +5703,134 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Text", SUT.SelectedText, "holding a selection must keep it");
 		}
 
+		// UIKit's insertion-caret edit menu leads with "Select" (the word at the caret); the iOS touch flyout does too.
+		[TestMethod]
+		public async Task When_Touch_Caret_Flyout_Select_Selects_Word_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			var flyout = await OpenCaretFlyout(SUT, caretIndex: 4); // right after "Some"
+
+			var select = flyout.PrimaryCommands.OfType<AppBarButton>().FirstOrDefault(b => b.Label == "Select");
+			Assert.IsNotNull(select, "the iOS caret flyout should offer Select");
+			InvokeButton(select);
+
+			await WindowHelper.WaitFor(() => SUT.SelectedText == "Some", message: "Select should select the word before the caret");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "the selected word gets both handles");
+			await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "the menu should come back for the selected word");
+		}
+
+		// Native iOS: Select All from the caret's edit menu selects everything with both handles, and the menu comes
+		// back at once with the selection's commands (Cut, Copy…).
+		[TestMethod]
+		public async Task When_Touch_Caret_Flyout_SelectAll_Shows_Handles_And_Menu_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			var flyout = await OpenCaretFlyout(SUT, caretIndex: 4);
+
+			var selectAll = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).OfType<AppBarButton>()
+				.FirstOrDefault(b => b.Label == "Select All");
+			Assert.IsNotNull(selectAll, "the caret flyout should offer Select All");
+			InvokeButton(selectAll);
+
+			await WindowHelper.WaitFor(() => SUT.SelectedText == "Some Text", message: "Select All should select everything");
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				message: $"the selection should show both handles (caret mode {SUT.CaretMode})");
+			await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "the menu should come back for the selection");
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(
+				flyout.PrimaryCommands.OfType<AppBarButton>().Any(b => b.Label == "Copy"),
+				"the menu should now offer the selection's commands (Copy)");
+		}
+
+		[TestMethod]
+		public async Task When_Touch_Caret_Flyout_No_Select_Android()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			SUT.TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android;
+
+			// Android: a tap places the caret with its insertion handle, and tapping the handle opens the flyout.
+			TapAsSeparateGesture(GetCaretPoint(SUT, 4));
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting is not null,
+				message: "the Android tap should show the insertion handle");
+			await Task.Delay(600); // past the multi-tap window
+			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			TapAsSeparateGesture(new Point(handle.GetCenter().X, handle.Bottom - 2));
+
+			var flyout = (TextCommandBarFlyout)SUT.SelectionFlyout;
+			await WindowHelper.WaitFor(() => flyout.IsOpen, message: "tapping the handle should open the flyout");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(
+				flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).OfType<AppBarButton>().Any(b => b.Label == "Select"),
+				"Select is an iOS-only command");
+		}
+
+		// A platform's ITextCommandBarFlyoutCommandsExtension commands land in the touch flyout's overflow and run on tap.
+		[TestMethod]
+		public async Task When_Touch_Flyout_Shows_Platform_Commands_iOS()
+		{
+			var invoked = false;
+			TextCommandBarFlyout.PlatformCommandsOverrideForTesting = new TestFlyoutCommands(() => invoked = true);
+			using var _ = new DisposableAction(() =>
+			{
+				TextCommandBarFlyout.PlatformCommandsOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			var flyout = await OpenCaretFlyout(SUT, caretIndex: 4);
+
+			var command = flyout.SecondaryCommands.OfType<AppBarButton>().FirstOrDefault(b => b.Label == "Test Command");
+			Assert.IsNotNull(command, "the platform command should be in the overflow");
+			InvokeButton(command);
+
+			await WindowHelper.WaitFor(() => invoked, message: "tapping the platform command should run it");
+			await WindowHelper.WaitFor(() => !flyout.IsOpen, message: "running a platform command closes the flyout");
+		}
+
+		private sealed class TestFlyoutCommands(Action execute) : Uno.UI.Xaml.Controls.Extensions.ITextCommandBarFlyoutCommandsExtension
+		{
+			public IEnumerable<Uno.UI.Xaml.Controls.Extensions.TextFlyoutPlatformCommand> GetCommands(TextBox target)
+				=> new[] { new Uno.UI.Xaml.Controls.Extensions.TextFlyoutPlatformCommand("Test", "Test Command", execute) };
+		}
+
+		// Places the caret at caretIndex by tapping, then taps it again to open the iOS caret flyout.
+		private static async Task<TextCommandBarFlyout> OpenCaretFlyout(TextBox textBox, int caretIndex)
+		{
+			var point = GetCaretPoint(textBox, caretIndex);
+			TapAsSeparateGesture(point);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(caretIndex, textBox.SelectionStart, "the first tap should place the caret");
+
+			await Task.Delay(600); // past the multi-tap window
+			TapAsSeparateGesture(point);
+			var flyout = (TextCommandBarFlyout)textBox.SelectionFlyout;
+			await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "tapping the caret should open the flyout");
+			await WindowHelper.WaitForIdle();
+			return flyout;
+		}
+
+		private static void InvokeButton(AppBarButton button)
+		{
+			if (FrameworkElementAutomationPeer.CreatePeerForElement(button) is not ButtonAutomationPeer peer)
+			{
+				Assert.Fail($"{button.Label} should expose a ButtonAutomationPeer");
+				return;
+			}
+			peer.Invoke();
+		}
+
 		// After a double-tap selects the word, the menu must wait out the multi-tap window: shown at once, it would
 		// light-dismiss on the third tap, which then never reaches the TextBox and the triple-tap is lost.
 		[TestMethod]

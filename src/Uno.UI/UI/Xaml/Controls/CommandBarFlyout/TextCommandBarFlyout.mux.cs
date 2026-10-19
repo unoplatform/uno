@@ -358,6 +358,9 @@ partial class TextCommandBarFlyout
 		// empty clipboard — and a transient flyout with no primary command self-hides (see the Opened handler). Put
 		// it in the primary bar there so tapping the insertion handle always opens a usable flyout.
 
+		// Uno specific: on the iOS touch insertion-caret flyout, "Select" (the word at the caret) leads, as in UIKit.
+		addButtonToCommandsIfPresent(TextControlButtons.Select, PrimaryCommands);
+
 		var commandListForSelectAll = InputDevicePrefersPrimaryCommands && Target is TextBox { SelectionLength: 0 }
 			? PrimaryCommands
 			: SecondaryCommands;
@@ -383,6 +386,9 @@ partial class TextCommandBarFlyout
 		// an empty menu on the label-carrying touch/pen selection flyout (most visibly the touch insertion-caret flyout,
 		// where Select All is promoted to the primary bar and nothing is secondary). For that touch/pen UX, gate the
 		// overflow button on the actual secondary-command count; keep WinUI's default (Auto) for mouse/keyboard.
+		// Uno specific: commands contributed by the platform (e.g. iOS Look Up, Search Web, Share), in the overflow.
+		AddPlatformCommands();
+
 		if (m_commandBar is { } commandBar)
 		{
 			commandBar.OverflowButtonVisibility = InputDevicePrefersPrimaryCommands && SecondaryCommands.Count == 0
@@ -401,7 +407,7 @@ partial class TextCommandBarFlyout
 			| TextControlButtons.Bold | TextControlButtons.Italic | TextControlButtons.Underline;
 		if (target is TextBox { SelectionLength: 0 })
 		{
-			primaryBarButtons |= TextControlButtons.SelectAll;
+			primaryBarButtons |= TextControlButtons.SelectAll | TextControlButtons.Select;
 		}
 
 		return (GetButtonsToAdd(target, prefersPrimaryCommands: true) & primaryBarButtons) != TextControlButtons.None;
@@ -481,6 +487,11 @@ partial class TextCommandBarFlyout
 		if (textBox.Text.Length > 0 || prefersPrimaryCommands)
 		{
 			buttonsToAdd |= TextControlButtons.SelectAll;
+		}
+
+		if (ShouldOfferSelectCommand(textBox, prefersPrimaryCommands))
+		{
+			buttonsToAdd |= TextControlButtons.Select;
 		}
 
 		return buttonsToAdd;
@@ -884,7 +895,16 @@ partial class TextCommandBarFlyout
 			passwordBoxTarget.SelectAll();
 		}
 
-		if (IsButtonInPrimaryCommands(TextControlButtons.SelectAll))
+		var selectAllInPrimaryCommands = IsButtonInPrimaryCommands(TextControlButtons.SelectAll);
+
+		// Uno specific: on a touch flyout under the mobile conventions, give the selection its handles and keep the
+		// menu up for it, as native iOS/Android do (see TextBoxCore.OnTouchSelectAllFromFlyout).
+		if (m_openedByTouch && target is TextBox touchTarget)
+		{
+			touchTarget.Core.OnTouchSelectAllFromFlyout();
+		}
+
+		if (selectAllInPrimaryCommands)
 		{
 			UpdateButtons();
 		}
@@ -914,7 +934,7 @@ partial class TextCommandBarFlyout
 			// the "..." overflow is opened over a full selection, then promoted on caret-collapse) falls back to the
 			// default AppBarButton template and its text label stays collapsed.
 			if (result is AppBarButton cachedButton &&
-				textControlButton is TextControlButtons.Cut or TextControlButtons.Copy or TextControlButtons.Paste or TextControlButtons.SelectAll)
+				textControlButton is TextControlButtons.Cut or TextControlButtons.Copy or TextControlButtons.Paste or TextControlButtons.SelectAll or TextControlButtons.Select)
 			{
 				ApplyCommandBarFlyoutButtonStyle(cachedButton);
 			}
@@ -1019,6 +1039,21 @@ partial class TextCommandBarFlyout
 						InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Redo), executeFunc);
 
 						m_buttons[TextControlButtons.Redo] = button;
+						return button;
+					}
+				case TextControlButtons.Select:
+					{
+						AppBarButton button = new();
+						InitializeButtonWithProperties(
+							button,
+							SR_TextCommandLabelSelect,
+							Symbol.Highlight,
+							null,
+							null,
+							() => ExecuteSelectCommand());
+
+						ApplyCommandBarFlyoutButtonStyle(button);
+						m_buttons[TextControlButtons.Select] = button;
 						return button;
 					}
 				case TextControlButtons.SelectAll:

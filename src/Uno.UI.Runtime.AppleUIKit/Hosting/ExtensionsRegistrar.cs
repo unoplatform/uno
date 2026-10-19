@@ -39,6 +39,7 @@ internal class ExtensionsRegistrar
 		ApiExtensibility.Register<IImeSessionHost>(typeof(IHostScopedImeTextBoxExtension), _ => new AppleUIKitImeTextBoxExtension());
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new MediaPlayerPresenterExtension(o));
 		ApiExtensibility.Register<InputPane>(typeof(IInputPaneExtension), o => new InputPaneExtension());
+		ApiExtensibility.Register(typeof(ITextCommandBarFlyoutCommandsExtension), _ => AppleUIKitTextFlyoutCommands.Instance);
 #if !__TVOS__
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new UIKitNativeWebViewProvider(o));
 #endif

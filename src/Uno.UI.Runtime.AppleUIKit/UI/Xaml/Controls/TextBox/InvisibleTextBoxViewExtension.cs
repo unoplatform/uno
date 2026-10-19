@@ -30,6 +30,9 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 
 	internal TextBoxView Owner => _owner;
 
+	/// <summary>The invisible native text view (the first responder while the TextBox has focus), if created.</summary>
+	internal UIView? NativeView => _textBoxView as UIView;
+
 	private IImeSessionHost? ImeHost => _owner.Host as IImeSessionHost;
 
 	internal AppleUIKitImeTextBoxExtension? GetImeExtension(IInvisibleTextBoxView source)
