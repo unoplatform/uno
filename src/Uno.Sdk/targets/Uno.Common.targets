@@ -1,7 +1,7 @@
 <Project>
 
 	<PropertyGroup>
-		<!-- Where the sdk's own task assembly sits, so package targets can use its tasks without guessing. -->
+		<!-- Where the sdk's own task assembly sits, for the targets that register its tasks. -->
 		<UnoSdkTasksAssembly Condition="'$(UnoSdkTasksAssembly)' == ''">$(MSBuildThisFileDirectory)netstandard2.0\Uno.Sdk_v0.dll</UnoSdkTasksAssembly>
 	</PropertyGroup>
 
