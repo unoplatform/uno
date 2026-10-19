@@ -20,8 +20,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 
 /// <summary>
 /// Rendering budget tests: each scenario counts the work the renderer does (frames, damaged area, path booleans,
-/// measures, objects left alive) and reports it through <see cref="RuntimeTestMetrics"/>, which CI turns into a pull
-/// request comment. Counts, not timings: timings vary several-fold between CI runs, counts do not.
+/// measures, memory allocated, objects left alive) and reports it through <see cref="RuntimeTestMetrics"/>, which CI
+/// turns into a pull request comment. Counts, not timings: timings vary several-fold between CI runs, counts do not.
 /// </summary>
 /// <remarks>
 /// The budgets are report-only for now. A test fails only when its scenario did not run (nothing scrolled, nothing
@@ -73,9 +73,11 @@ public class Given_RenderingBudget
 
 		using var probe = new FrameProbe(page);
 		await Task.Delay(TimeSpan.FromSeconds(1));
+		var allocated = probe.AllocatedBytes;
 
 		RuntimeTestMetrics.Record("idle.frames-per-second", probe.Frames, IdleFramesPerSecondBudget, description: "Frames rendered in 1 s on a page where nothing changes (text, button, check box). Expected: 0.");
 		RuntimeTestMetrics.Record("idle.full-window-frames", probe.FullWindowFrames, 0, description: "Frames that repainted the whole window on that page. Expected: 0.");
+		RecordAllocated("idle.allocated-per-second", allocated, 1, "Managed memory the UI thread allocated in that second. Expected: close to 0.");
 	}
 
 	[TestMethod]
@@ -103,6 +105,7 @@ public class Given_RenderingBudget
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
+		var allocated = probe.AllocatedBytes;
 		Assert.IsTrue(scroller.VerticalOffset > 0, "The list did not scroll.");
 
 		var viewportArea = list.ActualWidth * list.ActualHeight;
@@ -111,6 +114,7 @@ public class Given_RenderingBudget
 		RuntimeTestMetrics.Record("scroll.full-window-frames", probe.FullWindowFrames, 0, description: "Scroll frames that repainted the whole window. Expected: 0.");
 		RecordPathOps("scroll.path-ops-per-step", probe, ScrollSteps, ScrollPathOpsPerStepBudget, "Path booleans (SKPath.Op, costly geometry operations) per scroll step. Expected: close to 0.");
 		RuntimeTestMetrics.Record("scroll.measures-per-step", (double)probe.Measures / ScrollSteps, ScrollMeasuresPerStepBudget, description: "Layout measure calls per scroll step (realizing and recycling items).");
+		RecordAllocated("scroll.allocated-per-step", allocated, ScrollSteps, "Managed memory the UI thread allocated per scroll step. Less means fewer garbage collections while scrolling.");
 	}
 
 	[TestMethod]
@@ -133,6 +137,7 @@ public class Given_RenderingBudget
 
 		using var probe = new FrameProbe(page);
 		await Task.Delay(TimeSpan.FromSeconds(1));
+		var allocated = probe.AllocatedBytes;
 
 		Assert.IsTrue(probe.Frames > 0, "The ProgressRing did not render any frame.");
 
@@ -141,6 +146,7 @@ public class Given_RenderingBudget
 		RuntimeTestMetrics.Record("progressring.damage-per-ring-area", probe.MeanDamagedArea / ringArea, RingDamagePerRingAreaBudget, "x", description: "Area repainted per frame, divided by the ring's area. About 1.2x is the ring plus its antialiased edge.");
 		RuntimeTestMetrics.Record("progressring.full-window-frames", probe.FullWindowFrames, 0, description: "Ring frames that repainted the whole window. Expected: 0.");
 		RecordPathOps("progressring.path-ops-per-frame", probe, probe.Frames, RingPathOpsPerFrameBudget, "Path booleans (SKPath.Op) per ring frame. Expected: 0.");
+		RecordAllocated("progressring.allocated-per-frame", allocated, probe.Frames, "Managed memory the UI thread allocated per ring frame.");
 	}
 
 	[TestMethod]
@@ -259,6 +265,13 @@ public class Given_RenderingBudget
 	}
 
 	/// <summary>
+	/// Records allocations in KB per <paramref name="divisor"/>. No budget yet: the report flags a move of more than 20%
+	/// (and 1 KB) against the latest dev, which is what catches an allocation sneaking into a hot path.
+	/// </summary>
+	private static void RecordAllocated(string name, long bytes, int divisor, string description)
+		=> RuntimeTestMetrics.Record(name, bytes / 1024.0 / Math.Max(1, divisor), unit: " KB", description: description);
+
+	/// <summary>
 	/// Collects, then records how many of <paramref name="objects"/> are still alive, and which: a leak report that
 	/// names the type saves a debugging session.
 	/// </summary>
@@ -297,6 +310,8 @@ public class Given_RenderingBudget
 	{
 		private readonly CompositionTarget _target;
 		private readonly int _measuresAtStart = UIElement.LayoutMeasureCoreCount;
+		private readonly int _threadId = Environment.CurrentManagedThreadId;
+		private readonly long _allocatedAtStart = GC.GetAllocatedBytesForCurrentThread();
 #if UNO_DRAWING_SKIA
 		private readonly int _pathOpsAtStart = SkiaPathOpCounter.Count;
 #endif
@@ -317,6 +332,14 @@ public class Given_RenderingBudget
 		public double MeanDamagedArea => Frames == 0 ? 0 : _damagedArea / Frames;
 
 		public int Measures => UIElement.LayoutMeasureCoreCount - _measuresAtStart;
+
+		/// <summary>
+		/// Bytes the UI thread allocated since the probe was created: layout, bindings and frame recording, plus the
+		/// test's own awaits, which are the same for every build. Drawing on a separate render thread is not counted.
+		/// </summary>
+		public long AllocatedBytes => Environment.CurrentManagedThreadId == _threadId
+			? GC.GetAllocatedBytesForCurrentThread() - _allocatedAtStart
+			: throw new InvalidOperationException("Allocations are counted per thread: read them on the thread that created the probe.");
 
 #if UNO_DRAWING_SKIA
 		public int PathOps => SkiaPathOpCounter.Count - _pathOpsAtStart;

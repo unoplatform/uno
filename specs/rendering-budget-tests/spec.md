@@ -32,6 +32,7 @@ to 3× between runs, while the counts were identical run after run.
 | Path booleans | `SkiaPathOpCounter.Count` (new, internal) | Counts `SKPath.Op` calls. Only exists in builds with the Skia drawing backend (`UNO_DRAWING_SKIA`). |
 | Measures | `UIElement.LayoutMeasureCoreCount` (existing, internal) | Deterministic for a given tree and input. |
 | Objects left alive | `WeakReference` after a GC loop | Same loop as the binding leak tests. Each object still alive is reported by type. |
+| Memory allocated | `GC.GetAllocatedBytesForCurrentThread()` on the UI thread, in KB | The same code path allocates the same bytes for the same input. Covers layout, bindings and frame recording; drawing on a separate render thread is not counted. |
 
 The two new seams cost nothing per frame: one keeps a reference to an array the frame already allocates, the
 other is an `Interlocked.Increment` next to an `SKPath.Op`.
@@ -46,19 +47,23 @@ rendering/damage lead, then scrolling, images, text and animations.
 |---|---|---|---|
 | `When_Idle_Then_No_Frames` | `idle.frames-per-second` | ≤ 2 | Redraw loops on a static page |
 | | `idle.full-window-frames` | 0 | |
+| | `idle.allocated-per-second` | – | Work running on a page that should be still |
 | `When_Scrolling_List_Then_One_Frame_Per_Step` (`ListView`, rounded item borders, 30 steps of 37 px) | `scroll.frames-per-step` | ≤ 1.5 | Extra frames per scroll step |
 | | `scroll.damage-per-viewport` | ≤ 1.25× | Scrolling repainting more than the list |
 | | `scroll.full-window-frames` | 0 | |
 | | `scroll.path-ops-per-step` | ≤ 1 | Per-frame path booleans (#23984) |
 | | `scroll.measures-per-step` | ≤ 40 | Layout work per step |
+| | `scroll.allocated-per-step` | – | Allocations in the scroll path (garbage-collection pauses) |
 | `When_ProgressRing_Active_Then_Damage_Stays_Within_Ring` | `progressring.damage-per-ring-area` | ≤ 2× | Small animations repainting the window (#24792) |
 | | `progressring.full-window-frames` | 0 | |
 | | `progressring.path-ops-per-frame` | ≤ 1 | |
+| | `progressring.allocated-per-frame` | – | Allocations in the per-frame animation path |
 | `When_Animated_Subtree_Removed_Then_Rendering_Stops` | `removed-animation.frames-per-second` | ≤ 2 | Detached animations driving frames (#25054) |
 | | `removed-animation.objects-alive` | 0 | The detached subtree leaking |
 | `When_Page_Removed_Then_Released` (image, list, ring, text box, toggle switch; measured on the second page) | `page-removal.objects-alive` | 0 | Controls retained after their page is gone |
 
-Budgets leave room above today's values. The goal is to catch the step changes regressions cause (a whole
+The allocation metrics have no budget yet: the report flags a move of more than 20% (and 1 KB) against the latest
+dev, and a budget comes once their normal range is known. Budgets leave room above today's values. The goal is to catch the step changes regressions cause (a whole
 window instead of a ring, hundreds of path operations instead of none), not to pin exact numbers.
 
 ### Values on master (Skia desktop, Windows)
