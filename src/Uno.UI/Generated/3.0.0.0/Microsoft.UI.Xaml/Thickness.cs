@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct Thickness
@@ -26,5 +26,10 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Thickness.Bottom.get
 		// Forced skipping of method Microsoft.UI.Xaml.Thickness.Bottom.set
 		// Skipping already declared method Microsoft.UI.Xaml.Thickness.ToString()
+		// Skipping already declared method Microsoft.UI.Xaml.Thickness.Equals(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Thickness.Equals(Microsoft.UI.Xaml.Thickness)
+		// Skipping already declared method Microsoft.UI.Xaml.Thickness.GetHashCode()
+		// Skipping already declared method Microsoft.UI.Xaml.Thickness.operator ==(Microsoft.UI.Xaml.Thickness, Microsoft.UI.Xaml.Thickness)
+		// Skipping already declared method Microsoft.UI.Xaml.Thickness.operator !=(Microsoft.UI.Xaml.Thickness, Microsoft.UI.Xaml.Thickness)
 	}
 }

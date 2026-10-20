@@ -1,9 +1,7 @@
-﻿using CommonServiceLocator;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +16,7 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyObjectCollection
 	{
 		//[TestCleanup]
@@ -34,118 +32,6 @@ namespace Uno.UI.Tests.BinderTests
 		//}
 
 		[TestMethod]
-		public void When_Add_After_DataContext()
-		{
-			var SUT = new DependencyObjectCollection();
-			SUT.DataContext = 42;
-
-			var o1 = new MyDependencyObject();
-			o1.SetBinding(MyDependencyObject.MyPropertyProperty, new Binding());
-
-			Assert.AreEqual(0, o1.MyProperty);
-
-			SUT.Add(o1);
-
-			Assert.AreEqual(42, o1.MyProperty);
-		}
-
-		[TestMethod]
-		public void When_Add_Before_DataContext()
-		{
-			var SUT = new DependencyObjectCollection();
-
-			var o1 = new MyDependencyObject();
-			o1.SetBinding(MyDependencyObject.MyPropertyProperty, new Binding());
-
-			Assert.AreEqual(0, o1.MyProperty);
-
-			SUT.Add(o1);
-
-			Assert.AreEqual(0, o1.MyProperty);
-
-			SUT.DataContext = 42;
-
-			Assert.AreEqual(42, o1.MyProperty);
-		}
-
-		[TestMethod]
-		public void When_DataContext_Changed_Multiple()
-		{
-			var SUT = new DependencyObjectCollection();
-			SUT.DataContext = 41;
-
-			var o1 = new MyDependencyObject();
-			o1.SetBinding(MyDependencyObject.MyPropertyProperty, new Binding());
-
-			var o2 = new MyDependencyObject();
-			o2.SetBinding(MyDependencyObject.MyPropertyProperty, new Binding());
-
-			Assert.AreEqual(0, o1.MyProperty);
-			Assert.AreEqual(0, o1.MyProperty);
-
-			SUT.Add(o1);
-			SUT.Add(o2);
-
-			Assert.AreEqual(41, o1.MyProperty);
-			Assert.AreEqual(41, o2.MyProperty);
-
-			SUT.DataContext = 42;
-
-			Assert.AreEqual(42, o1.MyProperty);
-			Assert.AreEqual(42, o2.MyProperty);
-
-			SUT.Clear();
-
-			Assert.AreEqual(0, o1.MyProperty);
-			Assert.AreEqual(0, o2.MyProperty);
-		}
-
-		[TestMethod]
-		public void When_Changed_By_Indexer()
-		{
-			var SUT = new DependencyObjectCollection();
-			SUT.DataContext = 42;
-
-			var o1 = new MyDependencyObject();
-			o1.SetBinding(MyDependencyObject.MyPropertyProperty, new Binding());
-
-			var o2 = new MyDependencyObject();
-			o2.SetBinding(MyDependencyObject.MyPropertyProperty, new Binding());
-
-			Assert.AreEqual(0, o1.MyProperty);
-			Assert.AreEqual(0, o1.MyProperty);
-
-			SUT.Add(o1);
-			Assert.AreEqual(42, o1.MyProperty);
-			Assert.AreEqual(0, o2.MyProperty);
-
-			SUT[0] = o2;
-
-			Assert.AreEqual(0, o1.MyProperty);
-			Assert.AreEqual(42, o2.MyProperty);
-		}
-
-		[TestMethod]
-		public void When_Removed()
-		{
-			var SUT = new DependencyObjectCollection();
-			SUT.DataContext = 42;
-
-			var o1 = new MyDependencyObject();
-			o1.SetBinding(MyDependencyObject.MyPropertyProperty, new Binding());
-
-			Assert.AreEqual(0, o1.MyProperty);
-
-			SUT.Add(o1);
-
-			Assert.AreEqual(42, o1.MyProperty);
-
-			SUT.Remove(o1);
-
-			Assert.AreEqual(0, o1.MyProperty);
-		}
-
-		[TestMethod]
 		public void When_Add_CollectionChanged()
 		{
 			var SUT = new MyDependencyObjectCollection
@@ -156,6 +42,61 @@ namespace Uno.UI.Tests.BinderTests
 			};
 
 			Assert.AreEqual(3, SUT.CollectionChangedCount);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		[DataRow(1, 1)]
+		[DataRow(2, 1)]
+		[DataRow(1, 2)]
+		[DataRow(0, 1)]
+		[DataRow(1, 0)]
+		public void When_ReplaceRange_Mutates_Then_Indexed_Walk_Is_Invalidated(int count, int replacementCount)
+		{
+			var collection = new DependencyObjectCollection<MyDependencyObject>
+			{
+				new MyDependencyObject(),
+				new MyDependencyObject(),
+			};
+			var replacement = Enumerable.Range(0, replacementCount).Select(_ => new MyDependencyObject()).ToArray();
+			var version = collection.ItemsVersion;
+			var notified = false;
+			collection.VectorChanged += (_, _) =>
+			{
+				Assert.IsGreaterThan(version, collection.ItemsVersion);
+				notified = true;
+			};
+
+			Assert.ThrowsExactly<InvalidOperationException>(() =>
+			{
+				var items = new DependencyObjectItems(collection);
+				Assert.IsTrue(items.MoveNext());
+				collection.ReplaceRange(0, count, replacement);
+				items.MoveNext();
+			});
+			Assert.IsTrue(notified);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		public void When_ReplaceRange_Does_Not_Mutate_Then_Indexed_Walk_Remains_Valid()
+		{
+			var item = new MyDependencyObject();
+			var collection = new DependencyObjectCollection<MyDependencyObject>
+			{
+				item,
+				new MyDependencyObject(),
+			};
+			var version = collection.ItemsVersion;
+			var items = new DependencyObjectItems(collection);
+			Assert.IsTrue(items.MoveNext());
+
+			collection.ReplaceRange(0, 0, Array.Empty<MyDependencyObject>());
+			collection.ReplaceRange(0, 1, new[] { item });
+
+			Assert.AreEqual(version, collection.ItemsVersion);
+			Assert.IsTrue(items.MoveNext());
+			Assert.IsFalse(items.MoveNext());
 		}
 
 		public partial class MyDependencyObject : DependencyObject

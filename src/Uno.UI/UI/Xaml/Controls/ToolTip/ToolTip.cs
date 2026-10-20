@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -80,11 +81,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			SizeChanged += OnToolTipSizeChanged;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			Loaded
-#else
-			Loading
-#endif
 				+= (sender, e) => PerformPlacementInternal();
 		}
 
@@ -104,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(
 				"IsOpen", typeof(bool),
 				typeof(ToolTip),
-				new FrameworkPropertyMetadata(default(bool), OnOpenChanged));
+				new FrameworkPropertyMetadata(BoolBoxes.False, OnOpenChanged));
 
 		public bool IsOpen
 		{
@@ -149,9 +146,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ForwardOwnerThemePropertyToToolTip();
 				AttachToPopup();
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				SubscribeOwnerThemeChanged();
-#endif
 
 				Opened?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Opened", useTransitions: true);
@@ -165,9 +160,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				UnsubscribeOwnerThemeChanged();
-#endif
 				Closed?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Closed", useTransitions: true);
 			}
@@ -196,7 +189,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void SetAnchor(UIElement element) => _owner = element;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		private void SubscribeOwnerThemeChanged()
 		{
 			var ownerFe = GetOwnerFrameworkElement();
@@ -221,7 +213,6 @@ namespace Microsoft.UI.Xaml.Controls
 			// Re-forward the theme to keep the ToolTip in sync.
 			ForwardOwnerThemePropertyToToolTip();
 		}
-#endif
 
 		// MUX Reference: ToolTip_Partial.cpp ForwardOwnerThemePropertyToToolTip (lines 2510-2575)
 		// Walks up from the owner/placement target to find the nearest non-Default

@@ -36,8 +36,8 @@
 
 		<ItemGroup Condition="'$(PkgUno_WinUI)'!=''">
 			<!-- This must be aligned with $winuisourcepath$ in the nuspec -->
-			<ReferencePath Include="$(PkgUno_WinUI)/lib/net9.0-windows10.0.19041.0/*.dll" />
-			<ReferenceCopyLocalPaths Include="$(PkgUno_WinUI)/lib/net9.0-windows10.0.19041.0/*.dll" />
+			<ReferencePath Include="$(PkgUno_WinUI)/lib/net10.0-windows10.0.19041.0/*.dll" />
+			<ReferenceCopyLocalPaths Include="$(PkgUno_WinUI)/lib/net10.0-windows10.0.19041.0/*.dll" />
 		</ItemGroup>
 
 		<ItemGroup Condition="'$(PkgUno_UI)'!=''">
@@ -47,30 +47,30 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="_UnoIncludeUIToolkit"
+	<Target Name="_UnoIncludeUIExtras"
 			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)"
 			Condition="$(ShouldComputeInputPris)">
 		
 		<!-- 
-		Since we're not using the standard packaging mechanism, the Uno.UI.Toolkit resources
+		Since we're not using the standard packaging mechanism, the Uno.UI.Extras resources
 		need to be included explicitly.
 		-->
 		
 		<ItemGroup>
-			<PriOutputs Include="$(PkgUno_WinUI)/lib/net9.0-windows10.0.19041.0/Uno.UI.Toolkit.pri"
-						TargetPath="Uno.UI.Toolkit.pri"
+			<PriOutputs Include="$(PkgUno_WinUI)/lib/net10.0-windows10.0.19041.0/Uno.UI.Extras.pri"
+						TargetPath="Uno.UI.Extras.pri"
 						CopyLocal="True"
 						CopyToOutputDirectory="PreserveNewest"
 						OutputGroup="CopyLocalFilesOutputGroup" />
 
-			<_UnoUIToolkitAssets Include="$(PkgUno_WinUI)/lib/net9.0-windows10.0.19041.0/Uno.UI.Toolkit/**"/>
+			<_UnoUIExtrasAssets Include="$(PkgUno_WinUI)/lib/net10.0-windows10.0.19041.0/Uno.UI.Extras/**"/>
 
 			<None
-				Include="@(_UnoUIToolkitAssets)"
-				TargetPath="Uno.UI.Toolkit/%(RecursiveDir)%(Filename)%(Extension)"
+				Include="@(_UnoUIExtrasAssets)"
+				TargetPath="Uno.UI.Extras/%(RecursiveDir)%(Filename)%(Extension)"
 				CopyToOutputDirectory="PreserveNewest" />
 
-			<_UnoUIToolkitAssets Remove="@(_UnoUIToolkitAssets)" />
+			<_UnoUIExtrasAssets Remove="@(_UnoUIExtrasAssets)" />
 		</ItemGroup>
 
 	</Target>

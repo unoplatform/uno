@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Grid : global::Microsoft.UI.Xaml.Controls.Panel
@@ -30,14 +30,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property RowSpacing
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Grid.Grid()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.Grid()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.GetRow(Microsoft.UI.Xaml.FrameworkElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.SetRow(Microsoft.UI.Xaml.FrameworkElement, int)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.GetColumn(Microsoft.UI.Xaml.FrameworkElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.SetColumn(Microsoft.UI.Xaml.FrameworkElement, int)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.GetRowSpan(Microsoft.UI.Xaml.FrameworkElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.SetRowSpan(Microsoft.UI.Xaml.FrameworkElement, int)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.GetColumnSpan(Microsoft.UI.Xaml.FrameworkElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.SetColumnSpan(Microsoft.UI.Xaml.FrameworkElement, int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Grid.GetRow(Microsoft.UI.Xaml.FrameworkElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Grid.SetRow(Microsoft.UI.Xaml.FrameworkElement, int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Grid.GetColumn(Microsoft.UI.Xaml.FrameworkElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Grid.SetColumn(Microsoft.UI.Xaml.FrameworkElement, int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Grid.GetRowSpan(Microsoft.UI.Xaml.FrameworkElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Grid.SetRowSpan(Microsoft.UI.Xaml.FrameworkElement, int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Grid.GetColumnSpan(Microsoft.UI.Xaml.FrameworkElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Grid.SetColumnSpan(Microsoft.UI.Xaml.FrameworkElement, int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.BackgroundSizingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.BorderBrushProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.BorderThicknessProperty.get

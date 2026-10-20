@@ -1,5 +1,9 @@
-﻿using System;
+using System;
 using Windows.Foundation;
+using System.Numerics;
+using Uno.UI.Composition.Drawing;
+using Microsoft.UI.Composition;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -18,14 +22,14 @@ namespace Microsoft.UI.Xaml.Media
 				nameof(RadiusX), typeof(double),
 				typeof(EllipseGeometry),
 				new FrameworkPropertyMetadata(
-					default(double),
+					DoubleBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
 		public static DependencyProperty RadiusYProperty { get; } =
 			DependencyProperty.Register(
 				nameof(RadiusY), typeof(double),
 				typeof(EllipseGeometry),
 				new FrameworkPropertyMetadata(
-					default(double),
+					DoubleBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public Point Center
@@ -36,12 +40,12 @@ namespace Microsoft.UI.Xaml.Media
 		public double RadiusX
 		{
 			get => (double)GetValue(RadiusXProperty);
-			set => SetValue(RadiusXProperty, value);
+			set => SetValue(RadiusXProperty, Boxer.Box(value));
 		}
 		public double RadiusY
 		{
 			get => (double)GetValue(RadiusYProperty);
-			set => SetValue(RadiusYProperty, value);
+			set => SetValue(RadiusYProperty, Boxer.Box(value));
 		}
 
 		public EllipseGeometry()
@@ -50,5 +54,8 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		partial void InitPartials();
+
+		// WinUI's EllipseGeometry figure starts at 3 o'clock (CEllipseGeometry::VisitSinkInternal), which is where dashes begin.
+		internal override IGeometry GetGeometry() => CompositionGeometry.BuildEllipseGeometry(Center.ToVector2(), new Vector2((float)RadiusX, (float)RadiusY), CompositionGeometry.EllipseFigureStart.Right);
 	}
 }

@@ -4,6 +4,7 @@
 
 using System;
 using Uno.Disposables;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -18,9 +19,6 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 {
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-	private bool _subscribedToXamlRoot;
-#endif
 
 	private const string c_pane1ScrollViewerName = "PART_Pane1ScrollViewer";
 	private const string c_pane2ScrollViewerName = "PART_Pane2ScrollViewer";
@@ -50,20 +48,6 @@ public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 		};
 	}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-	private protected override void OnLoaded()
-	{
-		if (!_subscribedToXamlRoot)
-		{
-			var xamlRoot = XamlRoot;
-			xamlRoot!.Changed += OnXamlRootChanged;
-			m_xamlRootChangedRevoker.Disposable = Disposable.Create(() => xamlRoot!.Changed -= OnXamlRootChanged);
-			_subscribedToXamlRoot = true;
-		}
-
-		base.OnLoaded();
-	}
-#endif
 
 	protected override void OnApplyTemplate()
 	{
@@ -71,17 +55,8 @@ public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 
 		var xamlRoot = XamlRoot;
 		// Uno-specific workaround: On some platforms (mainly mobile), we can get here with incorrectly null xamlRoot.
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		_subscribedToXamlRoot = xamlRoot is not null;
-		if (_subscribedToXamlRoot)
-		{
-			xamlRoot!.Changed += OnXamlRootChanged;
-			m_xamlRootChangedRevoker.Disposable = Disposable.Create(() => xamlRoot!.Changed -= OnXamlRootChanged);
-		}
-#else
 		xamlRoot!.Changed += OnXamlRootChanged;
 		m_xamlRootChangedRevoker.Disposable = Disposable.Create(() => xamlRoot!.Changed -= OnXamlRootChanged);
-#endif
 
 		SetScrollViewerProperties(c_pane1ScrollViewerName, m_pane1LoadedRevoker);
 		SetScrollViewerProperties(c_pane2ScrollViewerName, m_pane2LoadedRevoker);
@@ -332,7 +307,7 @@ public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 			var clampedValue = Math.Max(0.0, value);
 			if (clampedValue != value)
 			{
-				SetValue(property, clampedValue);
+				SetValue(property, Boxer.Box(clampedValue));
 				return;
 			}
 		}

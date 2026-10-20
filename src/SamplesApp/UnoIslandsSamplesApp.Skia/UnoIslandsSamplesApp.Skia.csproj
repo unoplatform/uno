@@ -6,9 +6,9 @@
 	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
-		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;UNO_REFERENCE_API;UNO_ISLANDS</DefineConstants>
+		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;__UNO__;UNO_REFERENCE_API;UNO_ISLANDS</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
-		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -19,46 +19,40 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Generic.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime\Uno.UI.Runtime.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.XamlHost\Uno.UI.XamlHost.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.XamlHost\Uno.UI.XamlHost.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
+		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
-	</ItemGroup>
-
-	<!-- Only include these on .NET 9 -->
-	<ItemGroup Condition=" !$([MSBuild]::IsTargetFrameworkCompatible('net10.0', $(TargetFramework))) ">
-		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" />
-		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
-		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+		<PackageReference Include="Uno.BenchmarkDotNet" />
+		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" />
 
 		<PackageReference Include="Uno.Fonts.Fluent" />
-		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Graph" Version="5.56.0" />
-		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.2" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
+		<PackageReference Include="IdentityModel.OidcClient" />
+		<PackageReference Include="Microsoft.Graph" />
+		<PackageReference Include="Microsoft.Kiota.Abstractions" />
+		<PackageReference Include="Microsoft.Identity.Client" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<!-- TODO: Use version 8 when compiling against .NET 8? -->
-		<PackageReference Include="System.Management" Version="8.0.0" />
-		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
+		<PackageReference Include="System.Management" />
+		<PackageReference Include="BenchmarkDotNet" />
 		<PackageReference Include="System.CommandLine" />
 	</ItemGroup>
 

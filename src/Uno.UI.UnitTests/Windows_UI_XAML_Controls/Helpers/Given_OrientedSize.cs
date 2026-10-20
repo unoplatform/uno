@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.Helpers;
 
-[TestClass]
+[UITestClass]
 public class Given_OrientedSize
 {
 	[TestMethod]

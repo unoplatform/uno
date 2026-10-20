@@ -1,5 +1,4 @@
-﻿#if !__ANDROID__ && !__IOS__
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ScrollViewerIRefreshInfoProviderAdapter.cpp, commit de78834
 
@@ -442,4 +441,3 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 	}
 #endif
 }
-#endif

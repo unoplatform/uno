@@ -27,7 +27,7 @@ steps:
           $env:DOTNET_ROOT = $dotnetRoot
         }
 
-        $args = @('workload', 'install', 'wasm-tools-net9')
+        $args = @('workload', 'install', 'wasm-tools-net10')
         if ($IsWindows) {
           & $dotnetExe @args
         }

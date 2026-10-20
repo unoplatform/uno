@@ -10,7 +10,23 @@ namespace Microsoft.UI.Composition
 {
 	public partial class KeyFrameAnimation : CompositionAnimation
 	{
-		private protected IKeyFrameEvaluator? _keyframeEvaluator;
+		private IKeyFrameEvaluator? _keyframeEvaluatorField;
+		private float _playbackRate = 1.0f;
+
+		// Concrete keyframe animations assign this when they Start(); routing through the property lets
+		// a PlaybackRate set before Start() take effect the moment the evaluator is created.
+		private protected IKeyFrameEvaluator? _keyframeEvaluator
+		{
+			get => _keyframeEvaluatorField;
+			set
+			{
+				_keyframeEvaluatorField = value;
+				if (value is not null)
+				{
+					value.PlaybackRate = _playbackRate;
+				}
+			}
+		}
 
 		internal KeyFrameAnimation() => throw new NotSupportedException();
 
@@ -41,15 +57,28 @@ namespace Microsoft.UI.Composition
 
 		internal event EventHandler? Stopped;
 
+		private bool _stopOnceValueApplied;
+
 		internal override object Evaluate()
 		{
 			var (value, shouldStop) = _keyframeEvaluator!.Evaluate();
 			if (shouldStop)
 			{
-				Stop();
+				// Stopped handlers read the animated property (ScrollContentPresenter's final offset), so stop only once the
+				// caller has applied this final value; otherwise an animation that ends before its first frame reports its start.
+				_stopOnceValueApplied = true;
 			}
 
 			return value;
+		}
+
+		internal override void OnEvaluatedValueApplied()
+		{
+			if (_stopOnceValueApplied)
+			{
+				_stopOnceValueApplied = false;
+				Stop();
+			}
 		}
 
 		internal object Evaluate(float progress)
@@ -64,8 +93,11 @@ namespace Microsoft.UI.Composition
 		}
 
 		internal void Pause()
+			=> _keyframeEvaluator!.Pause();
+
+		internal void Seek(float progress)
 		{
-			_keyframeEvaluator!.Pause();
+			_keyframeEvaluator!.Seek(progress);
 		}
 
 		// These match WinUI's non-virtual KeyFrameAnimation API surface; per-type behaviour is provided
@@ -91,9 +123,22 @@ namespace Microsoft.UI.Composition
 		}
 
 		internal void Resume()
+			=> _keyframeEvaluator!.Resume();
+
+		internal bool IsPaused => _keyframeEvaluator?.IsPaused == true;
+
+		// Driven by AnimationController.PlaybackRate. Stored so a rate set before Start() (before the
+		// evaluator exists) is applied on creation via the _keyframeEvaluator setter.
+		internal void SetPlaybackRate(float value)
 		{
-			_keyframeEvaluator!.Resume();
+			_playbackRate = value;
+			if (_keyframeEvaluator is { } evaluator)
+			{
+				evaluator.PlaybackRate = value;
+			}
 		}
+
+		internal void SeekTo(float progress) => _keyframeEvaluator?.SeekTo(progress);
 
 		internal float Progress => _keyframeEvaluator!.Progress;
 

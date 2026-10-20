@@ -1,8 +1,4 @@
-﻿#if IS_UNIT_TESTS
-#pragma warning disable CS0067
-#endif
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,40 +10,27 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Automation.Peers;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#else
 using Color = System.Drawing.Color;
-#endif
 
-#if __WASM__
-using BaseClass = Microsoft.UI.Xaml.UIElement;
-#else
 using BaseClass = Microsoft.UI.Xaml.DependencyObject;
-#endif
+using Microsoft.UI.Xaml.Documents.TextFormatting;
 
 namespace Microsoft.UI.Xaml.Documents
 {
-	public abstract partial class TextElement : BaseClass, IThemeChangeAware
+	public abstract partial class TextElement : BaseClass, IThemeChangeAware, IXNameProvider
 	{
 		public TextElement()
 		{
 			SetDefaultForeground(ForegroundProperty);
-#if !__WASM__
 			InitializeBinder();
-#endif
 		}
 
 		#region FontFamily Dependency Property
@@ -135,7 +118,7 @@ namespace Microsoft.UI.Xaml.Documents
 		public double FontSize
 		{
 			get { return (double)this.GetValue(FontSizeProperty); }
-			set { this.SetValue(FontSizeProperty, value); }
+			set { this.SetValue(FontSizeProperty, Boxer.Box(value)); }
 		}
 
 		public static DependencyProperty FontSizeProperty { get; } =
@@ -173,7 +156,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(bool),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: true,
+					defaultValue: BoolBoxes.True,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnIsTextScaleFactorEnabledChanged()
 				)
@@ -253,7 +236,7 @@ namespace Microsoft.UI.Xaml.Documents
 		public int CharacterSpacing
 		{
 			get => (int)GetValue(CharacterSpacingProperty);
-			set => SetValue(CharacterSpacingProperty, value);
+			set => SetValue(CharacterSpacingProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty CharacterSpacingProperty { get; } =
@@ -262,7 +245,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(int),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: IntBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnCharacterSpacingChanged()
 				)
@@ -350,7 +333,7 @@ namespace Microsoft.UI.Xaml.Documents
 		public string Name
 		{
 			get => _name;
-			set
+			internal set
 			{
 				if (_name != value)
 				{
@@ -360,22 +343,55 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
+		void IXNameProvider.SetXName(string name) => Name = name;
+
 		// WASM specific as on WASM BaseClass is UIElement
 
-#if !__WASM__
-		//UNO TODO: Implement GetOrCreateAutomationPeer on TextElement
+		private Automation.Peers.AutomationPeer _textElementAutomationPeer;
+
+		// MUX Reference TextElement::GetOrCreateAutomationPeer — most text elements have no peer; the ones
+		// that do (Hyperlink) override OnCreateAutomationPeerCore. Like m_tpAP, a created peer is kept for the
+		// element's lifetime.
 		internal Automation.Peers.AutomationPeer GetOrCreateAutomationPeer()
-		{
-			return null;
-		}
+			=> _textElementAutomationPeer ??= OnCreateAutomationPeerCore();
+
+		private protected virtual Automation.Peers.AutomationPeer OnCreateAutomationPeerCore() => null;
 
 		internal DependencyObject GetAccessKeyScopeOwner()
 		{
 			return (DependencyObject)GetValue(AccessKeyScopeOwnerProperty);
 		}
-#endif
 
 		partial void OnNameChangedPartial(string newValue);
+
+		// CTextElement::MarkDirty — propagate the change up if we have a text element collection as
+		// parent. WinUI reaches the collection directly; Uno parents elements to the owning element,
+		// so we hop through it to the collection that actually holds this element.
+		internal void MarkDirty()
+		{
+			switch (this.GetParent())
+			{
+				case TextBlock textBlock:
+					textBlock.Inlines?.MarkDirty();
+					break;
+				case Span span:
+					span.Inlines?.MarkDirty();
+					break;
+				case Paragraph paragraph:
+					paragraph.Inlines?.MarkDirty();
+					break;
+				case RichTextBlock richTextBlock:
+					richTextBlock.Blocks?.MarkDirty();
+					break;
+			}
+		}
+
+		// WinUI text elements register their own UIElement_KeyDown/KeyUp listeners (CHyperlink's
+		// constructor, Hyperlink.cpp). Uno raises routed events on UIElements only, so InputManager
+		// hands the keys to the focused text element through these instead.
+		internal virtual void OnKeyDown(global::Windows.System.VirtualKey key) { }
+
+		internal virtual void OnKeyUp(global::Windows.System.VirtualKey key) { }
 
 		/// <summary>
 		/// Retrieves the parent RichTextBox/CRichTextBlock/TextBlock.
@@ -402,18 +418,22 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			if (this is Hyperlink hl)
 			{
-				// Hyperlink doesn't appear to inherit foreground from the parent.
-				// So, we set this with ImplicitStyle precedence which is a higher precedence than Inheritance.
+				// Hyperlink doesn't appear to inherit foreground from the parent, so it resolves its own
+				// state brush and applies it at Animations precedence, above Inheritance.
 				hl.SetCurrentForeground();
 			}
 
-			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
+			((DependencyObject)this).SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 
-		internal protected virtual List<AutomationPeer> AppendAutomationPeerChildren(int startPos, int endPos)
+		// MUX Reference TextElement::AppendAutomationPeerChildren — base is a no-op; subclasses
+		// (Block/Paragraph, Span/Hyperlink) override to recurse into their inline content. The
+		// collection-append shape matches WinUI (the peer's GetChildrenCore owns the collection).
+		internal virtual void AppendAutomationPeerChildren(IList<AutomationPeer> automationPeerChildren, int startPos, int endPos)
 		{
-			//return S_OK;
-			return null;
 		}
+
+		partial void OnForegroundChangedPartial()
+			=> (this.GetParent() as IBlock)?.Invalidate(false);
 	}
 }

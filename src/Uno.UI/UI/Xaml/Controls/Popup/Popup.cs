@@ -12,6 +12,7 @@ using Uno.UI;
 using Uno;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -26,6 +27,8 @@ public partial class Popup
 	private PopupPlacementMode _actualPlacement;
 
 	internal bool IsSubMenu { get; set; }
+
+	internal bool IsContentDialog { get; set; }
 
 	internal bool IsForFlyout => AssociatedFlyout != null;
 
@@ -112,7 +115,7 @@ public partial class Popup
 	{
 		if (property == IsLightDismissEnabledProperty)
 		{
-			defaultValue = Uno.UI.Helpers.Boxes.Box(FeatureConfiguration.Popup.EnableLightDismissByDefault);
+			defaultValue = Uno.UI.Helpers.Boxes.BoolBoxes.False;
 			return true;
 		}
 		return base.GetDefaultValue2(property, out defaultValue);
@@ -156,7 +159,6 @@ public partial class Popup
 	partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset) =>
 		PopupPanel?.InvalidateMeasure();
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (lines 3666-3687).
 	// Popup's Child is reparented to PopupRoot's visual tree, so the normal PropagateThemeToChildren walk
 	// won't reach it; we explicitly propagate a runtime theme change to the logical child here. Element-level
@@ -176,7 +178,6 @@ public partial class Popup
 		// Uno's light-dismiss overlay is the PopupPanel background, which re-resolves through this popup's
 		// own LightDismissOverlayBackground theme reference instead.
 	}
-#endif
 
 	internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 	{
@@ -260,7 +261,7 @@ public partial class Popup
 	public PopupPlacementMode ActualPlacement
 	{
 		get => _actualPlacement;
-		set
+		internal set
 		{
 			if (_actualPlacement != value)
 			{
@@ -277,7 +278,7 @@ public partial class Popup
 	public double HorizontalOffset
 	{
 		get => (double)GetValue(HorizontalOffsetProperty);
-		set => SetValue(HorizontalOffsetProperty, value);
+		set => SetValue(HorizontalOffsetProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -289,7 +290,7 @@ public partial class Popup
 			typeof(double),
 			typeof(Popup),
 			new FrameworkPropertyMetadata(
-				0.0,
+				DoubleBoxes.Zero,
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((Popup)s)?.OnHorizontalOffsetChanged((double)e.OldValue, (double)e.NewValue)
 			)
@@ -310,7 +311,7 @@ public partial class Popup
 	public double VerticalOffset
 	{
 		get => (double)GetValue(VerticalOffsetProperty);
-		set => SetValue(VerticalOffsetProperty, value);
+		set => SetValue(VerticalOffsetProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -322,7 +323,7 @@ public partial class Popup
 			typeof(double),
 			typeof(Popup),
 			new FrameworkPropertyMetadata(
-				0.0,
+				DoubleBoxes.Zero,
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((Popup)s)?.OnVerticalOffsetChanged((double)e.OldValue, (double)e.NewValue)
 			)

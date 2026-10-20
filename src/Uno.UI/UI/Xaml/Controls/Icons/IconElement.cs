@@ -29,9 +29,6 @@ public partial class IconElement : FrameworkElement
 	/// Gets or sets a brush that describes the foreground color.
 	/// </summary>
 	public
-#if __ANDROID__
-	new
-#endif
 	Brush Foreground
 	{
 		get => (Brush)GetValue(ForegroundProperty);
@@ -56,14 +53,6 @@ public partial class IconElement : FrameworkElement
 				propertyChangedCallback: (s, e) => ((IconElement)s).OnForegroundChanged(e)
 			)
 		);
-
-
-	public static implicit operator IconElement(string symbol) =>
-		new SymbolIcon()
-		{
-			Symbol = Enum.Parse<Symbol>(symbol, true)
-		};
-
 
 	protected override Size MeasureOverride(Size availableSize)
 	{

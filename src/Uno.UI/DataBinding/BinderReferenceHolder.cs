@@ -10,17 +10,8 @@ using System.Diagnostics;
 using System.ComponentModel;
 using Microsoft.UI.Xaml;
 
-#if __APPLE_UIKIT__
-using UIKit;
-using _NativeReference = global::Foundation.NSObject;
-using _NativeView = UIKit.UIView;
-#elif __ANDROID__
-using _NativeReference = Android.Views.View;
-using _NativeView = Android.Views.View;
-#else
 using _NativeReference = Microsoft.UI.Xaml.UIElement;
 using _NativeView = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Uno.UI.DataBinding
 {
@@ -331,21 +322,6 @@ namespace Uno.UI.DataBinding
 		{
 			try
 			{
-#if __APPLE_UIKIT__
-				var uiView = target as UIView;
-
-				if (uiView != null && ObjCRuntime.Runtime.TryGetNSObject(uiView.Handle) != null)
-				{
-					return uiView.Superview == null && uiView.Window == null;
-				}
-#elif __ANDROID__
-				var uiView = target as Android.Views.View;
-
-				if (uiView != null)
-				{
-					return uiView.Parent == null && !uiView.IsLoaded();
-				}
-#endif
 			}
 			catch
 			{

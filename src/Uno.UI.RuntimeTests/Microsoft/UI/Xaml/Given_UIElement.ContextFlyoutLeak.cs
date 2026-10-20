@@ -1,0 +1,381 @@
+using System;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
+
+public partial class Given_UIElement
+{
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_SharedContextFlyout_DoesNotLeak_ViewModel()
+	{
+		// Simulate the shared TextCommandBarFlyout pattern: a single flyout instance
+		// used as ContextFlyout. When the control is removed from the tree, its
+		// DataContext (ViewModel) should be collectable even though the flyout is still alive.
+
+		var sharedFlyout = new MenuFlyout();
+		sharedFlyout.Items.Add(new MenuFlyoutItem { Text = "Cut" });
+		sharedFlyout.Items.Add(new MenuFlyoutItem { Text = "Copy" });
+
+		var viewModel = new object();
+		var weakViewModel = new WeakReference(viewModel);
+
+		var textBox = new TextBox
+		{
+			Text = "Hello",
+			DataContext = viewModel,
+			ContextFlyout = sharedFlyout,
+		};
+
+		var root = new Grid();
+		root.Children.Add(textBox);
+
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		// Open and close the flyout to simulate user interaction
+		sharedFlyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sharedFlyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Remove the textbox from the tree and release all local references
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		textBox = null;
+		viewModel = null;
+
+		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
+
+		Assert.IsTrue(collected, "ViewModel should be collected after the control using the shared ContextFlyout is removed from the tree.");
+		GC.KeepAlive(sharedFlyout);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_SharedSelectionFlyout_DoesNotLeak_ViewModel()
+	{
+		// Same as the ContextFlyout test but for SelectionFlyout on TextBox.
+		// SelectionFlyout (TextCommandBarFlyout) is also shared across controls.
+
+		var sharedFlyout = new MenuFlyout();
+		sharedFlyout.Items.Add(new MenuFlyoutItem { Text = "Cut" });
+		sharedFlyout.Items.Add(new MenuFlyoutItem { Text = "Copy" });
+
+		var viewModel = new object();
+		var weakViewModel = new WeakReference(viewModel);
+
+		var textBox = new TextBox
+		{
+			Text = "Hello",
+			DataContext = viewModel,
+			SelectionFlyout = sharedFlyout,
+		};
+
+		var root = new Grid();
+		root.Children.Add(textBox);
+
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		// Open and close the flyout to simulate user interaction
+		sharedFlyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sharedFlyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Remove the textbox from the tree and release all local references
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		textBox = null;
+		viewModel = null;
+
+		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
+
+		Assert.IsTrue(collected, "ViewModel should be collected after the control using the shared SelectionFlyout is removed from the tree.");
+		GC.KeepAlive(sharedFlyout);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_DefaultContextFlyout_DoesNotLeak_ViewModel()
+	{
+		// Verify that the default TextCommandBarFlyout created automatically by TextBox
+		// does not prevent the ViewModel from being collected after the TextBox is removed.
+
+		var viewModel = new object();
+		var weakViewModel = new WeakReference(viewModel);
+
+		var textBox = new TextBox
+		{
+			Text = "Hello",
+			DataContext = viewModel,
+		};
+
+		var root = new Grid();
+		root.Children.Add(textBox);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		// Get the default TextCommandBarFlyout and open/close it
+		var flyout = textBox.ContextFlyout;
+		Assert.IsNotNull(flyout, "TextBox should have a default ContextFlyout");
+		flyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Remove from tree and release references
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		textBox = null;
+		viewModel = null;
+
+		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
+		Assert.IsTrue(collected, "ViewModel should be collected after removing TextBox with default ContextFlyout from the tree.");
+		GC.KeepAlive(flyout);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_DefaultSelectionFlyout_DoesNotLeak_ViewModel()
+	{
+		// Verify that the default SelectionFlyout created automatically by TextBox
+		// does not prevent the ViewModel from being collected after the TextBox is removed.
+
+		var viewModel = new object();
+		var weakViewModel = new WeakReference(viewModel);
+
+		var textBox = new TextBox
+		{
+			Text = "Hello",
+			DataContext = viewModel,
+		};
+
+		var root = new Grid();
+		root.Children.Add(textBox);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		// Get the default SelectionFlyout and open/close it
+		var flyout = textBox.SelectionFlyout;
+		Assert.IsNotNull(flyout, "TextBox should have a default SelectionFlyout");
+		flyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Remove from tree and release references
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		textBox = null;
+		viewModel = null;
+
+		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
+		Assert.IsTrue(collected, "ViewModel should be collected after removing TextBox with default SelectionFlyout from the tree.");
+		GC.KeepAlive(flyout);
+	}
+
+#if HAS_UNO
+	// WinUI parity: a FlyoutBase (incl. MenuFlyout) has no DataContext of its own. The owning element's DataContext
+	// is forwarded to the presenter and content/items only when the flyout is shown — never inherited onto the flyout
+	// before show. These tests therefore validate the show-time forwarding, not a DataContext on the flyout.
+
+	// flyout.GetPresenter() is Uno-specific helper to access the presenter while the flyout is open.
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_ContextFlyout_PresenterGetsDataContext_WhileOpen()
+	{
+		// Verify that the flyout presenter still receives DataContext
+		// from the placement target while the flyout is open.
+
+		var flyout = new MenuFlyout();
+		var menuItem = new MenuFlyoutItem { Text = "Test" };
+		flyout.Items.Add(menuItem);
+
+		var viewModel = "TestDataContext";
+		var textBox = new TextBox
+		{
+			Text = "Hello",
+			DataContext = viewModel,
+			ContextFlyout = flyout,
+		};
+
+		var root = new Grid();
+		root.Children.Add(textBox);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		flyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Verify the presenter has the DataContext from the placement target
+		var presenter = flyout.GetPresenter() as FrameworkElement;
+		Assert.IsNotNull(presenter, "Presenter should exist while flyout is open.");
+		Assert.AreEqual(viewModel, presenter.DataContext, "Presenter should have DataContext from placement target while flyout is open.");
+
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_ContextFlyout_ContentBinding_ResolvesAgainstOwner_WhenShown()
+	{
+		// WinUI parity: flyout content {Binding}s resolve against the owning element's DataContext once the flyout
+		// is shown (the placement target's DataContext is forwarded to the presenter, and content inherits it).
+
+		var viewModel = new { Caption = "Cut" };
+
+		var tb = new TextBlock();
+		tb.SetBinding(TextBlock.TextProperty, new Binding { Path = new("Caption") });
+
+		var flyout = new Flyout { Content = tb };
+		var owner = new Button
+		{
+			Content = "Owner",
+			DataContext = viewModel,
+			ContextFlyout = flyout,
+		};
+
+		var root = new Grid();
+		root.Children.Add(owner);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		flyout.ShowAt(owner);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("Cut", tb.Text, "Flyout content binding should resolve against the owner's DataContext when shown.");
+
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_SharedMenuFlyout_Closed_ItemsReleaseOwnerDataContext()
+	{
+		// Deterministic guard for the shared-flyout leak (When_SharedContextFlyout_DoesNotLeak_ViewModel): a shared
+		// MenuFlyout keeps its items alive, so once it closes the items must not still carry the owner's DataContext.
+		var viewModel = new object();
+		var flyout = new MenuFlyout();
+		var item = new MenuFlyoutItem { Text = "Cut" };
+		flyout.Items.Add(item);
+
+		var textBox = new TextBox { Text = "Hello", DataContext = viewModel, ContextFlyout = flyout };
+		var root = new Grid();
+		root.Children.Add(textBox);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		flyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual(viewModel, item.DataContext, "Item should inherit the owner's DataContext while the flyout is open.");
+
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreNotEqual(viewModel, item.DataContext, "Item must not retain the owner's DataContext after the flyout is closed.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_SharedMenuFlyout_Closed_ItemsCollectionReleasesDataContext()
+	{
+		// Root-cause guard for the shared-flyout ViewModel leak: the MenuFlyout's Items collection (a non-FE
+		// DependencyObjectCollection permanently held by the flyout) is set as the presenter's ItemsSource on show.
+		// Its parent is the flyout, not the presenter, so the presenter's DataContext clear skips it — it must not be
+		// given (and left holding) the owner's DataContext in its inheritance-context cache.
+		var viewModel = new object();
+		var flyout = new MenuFlyout();
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Cut" });
+		var itemsCollectionStore = ((DependencyObject)flyout.Items);
+
+		var textBox = new TextBox { Text = "Hello", DataContext = viewModel, ContextFlyout = flyout };
+		var root = new Grid();
+		root.Children.Add(textBox);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		flyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreNotEqual(viewModel, itemsCollectionStore.GetInheritedDataContextValue(),
+			"The MenuFlyout Items collection must not retain the owner's DataContext after the flyout closes.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_SharedFlyout_Detached_ReleasesOwnerDataContext()
+	{
+		// Root-cause guard for the shared-flyout ViewModel leak (When_SharedContextFlyout_DoesNotLeak_ViewModel),
+		// GC-independent so it is reliable on the headless runner unlike the WeakReference tests above. A FlyoutBase
+		// is a non-FrameworkElement: it has no DataContextProperty for the inheritance system to reset on detach.
+		// When the owner enters the tree, UIElement.EnterImpl parents the ContextFlyout to it and the owner's
+		// DataContext is cached in the flyout's inheritance-context; once the owner leaves the tree that cache must
+		// be cleared, or a shared flyout kept alive (e.g. TextCommandBarFlyout) pins the last owner's ViewModel.
+		var viewModel = new object();
+		var flyout = new MenuFlyout();
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Cut" });
+		var flyoutStore = ((DependencyObject)flyout);
+
+		var textBox = new TextBox { Text = "Hello", DataContext = viewModel, ContextFlyout = flyout };
+		var root = new Grid();
+		root.Children.Add(textBox);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		flyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreNotEqual(viewModel, flyoutStore.GetInheritedDataContextValue(),
+			"The shared flyout must not retain the owner's DataContext after the owner leaves the tree.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Resource_PulledIntoSubtree_DoesNotCacheDataContext()
+	{
+		// Root-cause guard for the deeper shared-flyout leak (GC-independent, reliable on the headless runner): a
+		// non-FE resource (e.g. a templated brush from a merged/theme dictionary) pulled into a subtree that has a
+		// DataContext must NOT cache it (WinUI: resources have no DataContext). Otherwise the resource, kept alive by
+		// its dictionary, pins the owner's ViewModel - the path by which the flyout presenter's templated brushes leaked it.
+		var viewModel = new object();
+		var brush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
+		_ = new ResourceDictionary { ["LeakGuardBrush"] = brush };
+		var brushStore = ((DependencyObject)brush);
+		Assert.IsTrue(brushStore.IsResourceDictionaryItem, "Precondition: the brush must be flagged as a ResourceDictionary item.");
+
+		var border = new Border { DataContext = viewModel, Background = brush };
+		var root = new Grid();
+		root.Children.Add(border);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		Assert.AreNotEqual(viewModel, brushStore.GetInheritedDataContextValue(),
+			"A ResourceDictionary item must not cache the DataContext of a subtree it is pulled into.");
+
+		GC.KeepAlive(brush);
+	}
+#endif
+}

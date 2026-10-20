@@ -1,0 +1,58 @@
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using System;
+using System.Collections.Generic;
+using Windows.Foundation;
+using System.Runtime.CompilerServices;
+using System.Text;
+using Uno;
+using Uno.UI.Xaml;
+
+namespace Microsoft.UI.Xaml
+{
+
+	public partial class FrameworkElement : UIElement, IFrameworkElement
+	{
+		public T FindFirstParent<T>() where T : class => FindFirstParent<T>(includeCurrent: false);
+
+		public T FindFirstParent<T>(bool includeCurrent) where T : class
+		{
+			var view = includeCurrent ? (DependencyObject)this : this.Parent;
+			while (view != null)
+			{
+				var typed = view as T;
+				if (typed != null)
+				{
+					return typed;
+				}
+				view = view.GetParent() as DependencyObject;
+			}
+			return null;
+		}
+
+		public object FindName(string name)
+			=> IFrameworkElementHelper.FindName(this, this, name);
+
+
+		public void Dispose()
+		{
+		}
+
+		[NotImplemented]
+		public int? RenderPhase
+		{
+			get
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "RenderPhase");
+				return null;
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "RenderPhase");
+			}
+		}
+
+		public void ApplyBindingPhase(int phase) { }
+	}
+}

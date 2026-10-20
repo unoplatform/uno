@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ResourceDictionary_NotFoundCache
 	{
 		[TestMethod]

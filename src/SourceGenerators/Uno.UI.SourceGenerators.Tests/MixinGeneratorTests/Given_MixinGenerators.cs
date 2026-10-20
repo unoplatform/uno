@@ -39,7 +39,17 @@ public class Given_MixinGenerators
 
 		output.Should().Contain("namespace Microsoft.UI.Xaml.Controls");
 		output.Should().Contain("namespace Microsoft.UI.Xaml.Controls.Primitives");
-		output.Should().Contain("namespace Uno.UI.Controls.Legacy");
+	}
+
+	[TestMethod]
+	public void DependencyPropertyMixin_HasNoPlatformConditionals()
+	{
+		var output = DependencyPropertyMixinGenerator.Generate();
+
+		// The mixins are only generated into Uno.UI, which targets Skia alone — a platform
+		// conditional here can never be true. The UNO_MIXIN_GENERATION guard is the only one allowed.
+		output.Should().Contain("#if ", Exactly.Once());
+		output.Should().NotContain("#elif");
 	}
 
 	[TestMethod]
@@ -74,45 +84,4 @@ public class Given_MixinGenerators
 		output.Should().Contain("FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext");
 	}
 
-	[TestMethod]
-	public void AndroidMixin_ContainsExpectedContent()
-	{
-		var output = FrameworkElementAndroidMixinGenerator.GenerateFrameworkElementMixins();
-
-		output.Should().Contain("#if UNO_MIXIN_GENERATION && __ANDROID__");
-		output.Should().Contain("partial class FrameworkElement");
-		output.Should().Contain("IFrameworkElement");
-	}
-
-	[TestMethod]
-	public void UIKitMixin_ContainsExpectedContent()
-	{
-		var output = FrameworkElementUIKitMixinGenerator.GenerateFrameworkElementMixins();
-
-		output.Should().Contain("#if UNO_MIXIN_GENERATION && __APPLE_UIKIT__");
-		output.Should().Contain("partial class FrameworkElement");
-		output.Should().Contain("IFrameworkElement");
-	}
-
-	[TestMethod]
-	public void BaseActivityCallbacks_ContainsExpectedContent()
-	{
-		var output = BaseActivityCallbacksGenerator.Generate();
-
-		output.Should().Contain("#if UNO_MIXIN_GENERATION && __ANDROID__");
-		output.Should().Contain("partial class BaseActivity");
-		output.Should().Contain("IBaseActivityEvents");
-		output.Should().Contain("EventHandler");
-	}
-
-	[TestMethod]
-	public void BaseActivityCallbacks_GeneratesOverrideMethods()
-	{
-		var output = BaseActivityCallbacksGenerator.Generate();
-
-		output.Should().Contain("override void OnCreate");
-		output.Should().Contain("override void OnResume");
-		output.Should().Contain("override void OnPause");
-		output.Should().Contain("override void OnDestroy");
-	}
 }

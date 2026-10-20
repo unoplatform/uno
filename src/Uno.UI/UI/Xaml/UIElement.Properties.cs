@@ -1,8 +1,4 @@
-﻿#if IS_UNIT_TESTS || __WASM__
-#pragma warning disable CS0067
-#endif
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -16,11 +12,9 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.Helpers;
-
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml
 {
@@ -39,7 +33,7 @@ namespace Microsoft.UI.Xaml
 			nameof(IsHitTestVisible),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(defaultValue: true, propertyChangedCallback: (s, e) => ((UIElement)s).OnIsHitTestVisibleChanged((bool)e.OldValue, (bool)e.NewValue))
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.True, propertyChangedCallback: (s, e) => ((UIElement)s).OnIsHitTestVisibleChanged((bool)e.OldValue, (bool)e.NewValue))
 			{
 				PropMethodCall = HitTestVisible,
 			}
@@ -51,7 +45,7 @@ namespace Microsoft.UI.Xaml
 			var element = (UIElement)instance;
 			if (isGet)
 			{
-				return Boxes.Box(element._isHitTestVisible);
+				return Boxer.Box(element._isHitTestVisible);
 			}
 
 			var newValue = (bool)valueToSet!;
@@ -59,11 +53,11 @@ namespace Microsoft.UI.Xaml
 			{
 				element._isHitTestVisible = newValue;
 				// The value has changed.
-				return true;
+				return BoolBoxes.True;
 			}
 
 			// The value didn't change.
-			return false;
+			return BoolBoxes.False;
 		}
 #nullable restore
 
@@ -84,13 +78,19 @@ namespace Microsoft.UI.Xaml
 		public static DependencyProperty VisibilityProperty { get; } = CreateVisibilityProperty();
 
 		public
-#if __ANDROID__
-		new
-#endif
 		Visibility Visibility
 		{
 			get => GetVisibilityValue();
 			set => SetVisibilityValue(value);
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = null)]
+		public static DependencyProperty TransitionsProperty { get; } = CreateTransitionsProperty();
+
+		public TransitionCollection Transitions
+		{
+			get => GetTransitionsValue();
+			set => SetTransitionsValue(value);
 		}
 
 		/// <summary>
@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// ValueDoesNotInheritDataContext prevents standard parent-chain DataContext propagation.
-		// Instead, the mentor mechanism in DependencyObjectStore.Binder propagates DataContext
+		// Instead, the mentor mechanism in DependencyObject.Binder propagates DataContext
 		// via a weak reference, matching WinUI's SetParentForInheritanceContextOnly / GetMentor pattern.
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext)]
 		public static DependencyProperty ContextFlyoutProperty { get; } = CreateContextFlyoutProperty();

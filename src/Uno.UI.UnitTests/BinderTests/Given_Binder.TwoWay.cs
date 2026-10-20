@@ -13,7 +13,7 @@ using System.Globalization;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Binder_TwoWay
 	{
 		[TestMethod]

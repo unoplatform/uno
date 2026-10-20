@@ -1,0 +1,417 @@
+﻿#nullable disable // Not supported by WinUI yet
+
+using Android.Content;
+using Android.OS;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Windows.UI.Core;
+using Uno.Foundation.Logging;
+using Uno.UI;
+
+namespace Windows.ApplicationModel.DataTransfer
+{
+	public static partial class Clipboard
+	{
+		private const string ClipboardDataLabel = nameof(Clipboard);
+		private static long? _clearedClipTimestamp;
+		private static bool _clearPending;
+		private static bool _clipboardKnownCleared;
+		private static DataPackageView _locallySetContent;
+		private static long? _locallySetClipTimestamp;
+		private static bool _setPending;
+
+		public static void SetContent(DataPackage/* ? */ content)
+		{
+			if (content is null)
+			{
+				throw new ArgumentNullException(nameof(content));
+			}
+
+			// Notes:
+			// 1. We don't want to change the SetContent signature to async so
+			//    async code is run on the CoreDispatcher.
+			// 2. All async code is run in the same task to avoid potential threading concerns.
+			//    Otherwise, it would be possible to set the OS clipboard data (code at the end)
+			//    before one or more of the data formats is ready.
+			if (Looper.MyLooper() == Looper.MainLooper)
+			{
+				_ = SetContentSafelyAsync(content);
+			}
+			else
+			{
+				_ = CoreDispatcher.Main.RunAsync(
+					CoreDispatcherPriority.High,
+					() => _ = SetContentSafelyAsync(content));
+			}
+		}
+
+		private static async Task SetContentSafelyAsync(DataPackage content)
+		{
+			try
+			{
+				await SetContentAsync(content);
+			}
+			catch (Exception error)
+			{
+				if (typeof(Clipboard).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(Clipboard).Log().Error("Unable to set Android clipboard content.", error);
+				}
+			}
+		}
+
+		internal static async Task SetContentAsync(DataPackage content)
+		{
+			var data = content?.GetView();
+
+			var items = new List<ClipData.Item>();
+			var mimeTypes = new List<string>();
+
+			if (data?.Contains(StandardDataFormats.Text) ?? false)
+			{
+				var text = data.FindRawData(StandardDataFormats.Text) is string immediateText
+					? immediateText
+					: await data.GetTextAsync();
+
+				items.Add(new ClipData.Item(text));
+				mimeTypes.Add("text/plain");
+			}
+
+			if (data != null)
+			{
+				var uri = DataPackage.CombineUri(
+					data.Contains(StandardDataFormats.WebLink) ? (await data.GetWebLinkAsync()).ToString() : null,
+					data.Contains(StandardDataFormats.ApplicationLink) ? (await data.GetApplicationLinkAsync()).ToString() : null,
+					data.Contains(StandardDataFormats.Uri) ? (await data.GetUriAsync()).ToString() : null);
+
+				if (string.IsNullOrEmpty(uri) == false)
+				{
+					var androidUri = Android.Net.Uri.Parse(uri);
+
+					items.Add(new ClipData.Item(androidUri));
+					mimeTypes.Add("text/uri-list");
+				}
+			}
+
+			if (data?.Contains(StandardDataFormats.Html) ?? false)
+			{
+				var html = await data.GetHtmlFormatAsync();
+
+				// Matches all tags
+				Regex regex = TagMatch();
+				// Replace tags by spaces and trim
+				var plainText = regex.Replace(html, " ").Trim();
+
+				items.Add(new ClipData.Item(plainText, html));
+				mimeTypes.Add("text/html");
+			}
+
+			// Set all the data formats to the Android clipboard
+			if (items.Count > 0)
+			{
+				ClipData clipData = new ClipData(
+					new ClipDescription(ClipboardDataLabel, mimeTypes.ToArray()),
+					items[0]);
+
+				for (int itemIndex = 1; itemIndex < items.Count; itemIndex++)
+				{
+					clipData.AddItem(items[itemIndex]);
+				}
+
+				var manager = ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) as ClipboardManager;
+				if (manager is null)
+				{
+					return;
+				}
+
+				manager.PrimaryClip = clipData;
+				_setPending = true;
+				_clearPending = false;
+				_clipboardKnownCleared = false;
+				_clearedClipTimestamp = null;
+				lock (_syncLock)
+				{
+					_locallySetContent = data;
+					_locallySetClipTimestamp = Build.VERSION.SdkInt >= BuildVersionCodes.O
+						? manager.PrimaryClipDescription?.Timestamp
+						: null;
+				}
+				OnContentChanged();
+			}
+			else
+			{
+				// Clear clipboard
+				Clear();
+			}
+		}
+
+		public static DataPackageView GetContent()
+		{
+			var dataPackage = new DataPackage();
+
+			var manager = ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) as ClipboardManager;
+			if (manager is null)
+			{
+				return dataPackage.GetView();
+			}
+
+			var clipData = manager.PrimaryClip;
+			if (clipData is null &&
+				TryGetLocallySetContent(manager.PrimaryClipDescription, out var locallySetContent))
+			{
+				return locallySetContent;
+			}
+
+			Uri/* ? */ clipApplicationLink = null;
+			string/* ? */ clipHtml = null;
+			string/* ? */ clipText = null;
+			Uri/* ? */ clipUri = null;
+			Uri/* ? */ clipWebLink = null;
+
+			// Extract all the standard data format information from the clipboard.
+			// Each format can only be used once; therefore, the last occurrence of the format will be the one used.
+			if (clipData != null)
+			{
+				for (int itemIndex = 0; itemIndex < clipData.ItemCount; itemIndex++)
+				{
+					var item = clipData.GetItemAt(itemIndex);
+
+					if (item != null)
+					{
+						var itemText = item.Text;
+						if (!string.IsNullOrEmpty(itemText))
+						{
+							clipText = itemText;
+						}
+
+						var itemUriStr = item.Uri?.ToString();
+						if (itemUriStr != null)
+						{
+							DataPackage.SeparateUri(
+								itemUriStr,
+								out string webLink,
+								out string applicationLink);
+
+							clipWebLink = webLink != null ? new Uri(webLink) : null;
+							clipApplicationLink = applicationLink != null ? new Uri(applicationLink) : null;
+							clipUri = new Uri(itemUriStr); // Deprecated but still added for compatibility
+						}
+
+						var itemHtml = item.HtmlText;
+						if (itemHtml != null)
+						{
+							clipHtml = itemHtml;
+						}
+					}
+				}
+			}
+
+			// Add standard data formats to the data package.
+			// This can be done synchronously on Android since the data is already available from above.
+			if (clipApplicationLink != null)
+			{
+				dataPackage.SetApplicationLink(clipApplicationLink);
+			}
+
+			if (clipHtml != null)
+			{
+				dataPackage.SetHtmlFormat(clipHtml);
+			}
+
+			if (clipText != null)
+			{
+				dataPackage.SetText(clipText);
+			}
+
+			if (clipUri != null)
+			{
+				dataPackage.SetUri(clipUri);
+			}
+
+			if (clipWebLink != null)
+			{
+				dataPackage.SetWebLink(clipWebLink);
+			}
+
+			return dataPackage.GetView();
+		}
+
+		private static bool TryGetLocallySetContent(
+			ClipDescription description,
+			out DataPackageView content)
+		{
+			lock (_syncLock)
+			{
+				var timestampMatches =
+					Build.VERSION.SdkInt >= BuildVersionCodes.O &&
+					_locallySetClipTimestamp == description?.Timestamp;
+				if (_locallySetContent is not null &&
+					!_clipboardKnownCleared &&
+					timestampMatches)
+				{
+					content = _locallySetContent;
+					return true;
+				}
+			}
+
+			content = null;
+			return false;
+		}
+
+		internal static bool IsTextAvailable()
+		{
+			var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
+			var description = manager?.PrimaryClipDescription;
+			// Android's clipboard overlay can temporarily hide metadata even for our own
+			// clipboard write. Use the same validated local content as GetContent in that case.
+			if (TryGetLocallySetContent(description, out var locallySetContent))
+			{
+				return locallySetContent.Contains(StandardDataFormats.Text);
+			}
+
+			if (manager?.HasPrimaryClip != true ||
+				description?.HasMimeType("text/*") != true ||
+				_clipboardKnownCleared ||
+				(Build.VERSION.SdkInt >= BuildVersionCodes.O &&
+					_clearedClipTimestamp == description.Timestamp))
+			{
+				return false;
+			}
+
+			if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
+			{
+				return true;
+			}
+
+			var clip = manager.PrimaryClip;
+			if (clip is not { ItemCount: > 0 })
+			{
+				return false;
+			}
+
+			for (var index = 0; index < clip.ItemCount; index++)
+			{
+				if (!string.IsNullOrEmpty(clip.GetItemAt(index)?.Text))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public static void Clear()
+		{
+			if (ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+			{
+				_clearPending = true;
+				_setPending = false;
+				_clipboardKnownCleared = true;
+				lock (_syncLock)
+				{
+					_locallySetContent = null;
+					_locallySetClipTimestamp = null;
+				}
+				if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
+				{
+					manager.ClearPrimaryClip();
+				}
+				else
+				{
+					manager.PrimaryClip = ClipData.NewPlainText("", "");
+				}
+				_clearedClipTimestamp = Build.VERSION.SdkInt >= BuildVersionCodes.O
+					? manager.PrimaryClipDescription?.Timestamp
+					: null;
+				// Android can suppress its callback while the clipboard overlay owns focus.
+				OnContentChanged();
+			}
+		}
+
+		private static void StartContentChanged()
+		{
+			if (ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+			{
+				manager.PrimaryClipChanged += Manager_PrimaryClipChanged;
+			}
+		}
+
+		private static void StopContentChanged()
+		{
+			if (ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+			{
+				manager.PrimaryClipChanged -= Manager_PrimaryClipChanged;
+			}
+		}
+
+		private static void Manager_PrimaryClipChanged(object sender, EventArgs e)
+		{
+			var manager = sender as ClipboardManager
+				?? ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
+			var isLocalEcho = false;
+			if (manager is not null)
+			{
+				var timestamp = Build.VERSION.SdkInt >= BuildVersionCodes.O
+					? manager.PrimaryClipDescription?.Timestamp
+					: null;
+				isLocalEcho = IsEchoOfLocalChange(manager, timestamp);
+				_setPending = false;
+				if (_clearPending)
+				{
+					_clearedClipTimestamp = timestamp;
+					_clearPending = false;
+				}
+				else
+				{
+					_clipboardKnownCleared = false;
+					if (_clearedClipTimestamp != timestamp)
+					{
+						_clearedClipTimestamp = null;
+					}
+				}
+
+				lock (_syncLock)
+				{
+					if (_locallySetClipTimestamp != timestamp)
+					{
+						_locallySetContent = null;
+						_locallySetClipTimestamp = null;
+					}
+				}
+			}
+
+			// SetContent and Clear already raised it: like WinUI, one ContentChanged per change.
+			if (!isLocalEcho)
+			{
+				OnContentChanged();
+			}
+		}
+
+		// SetContent and Clear raise ContentChanged themselves because Android can withhold this callback.
+		private static bool IsEchoOfLocalChange(ClipboardManager manager, long? timestamp)
+		{
+			if (Build.VERSION.SdkInt < BuildVersionCodes.O)
+			{
+				// No clip timestamps, but callbacks are only withheld from Android 10, so the next one is our write's.
+				return _setPending || _clearPending;
+			}
+
+			if (_clipboardKnownCleared)
+			{
+				return !manager.HasPrimaryClip || timestamp == _clearedClipTimestamp;
+			}
+
+			lock (_syncLock)
+			{
+				return _locallySetContent is not null &&
+					_locallySetClipTimestamp is { } setTimestamp &&
+					setTimestamp == timestamp;
+			}
+		}
+
+		[GeneratedRegex("(<.*?>\\s*)+", RegexOptions.Singleline)]
+		private static partial Regex TagMatch();
+	}
+}

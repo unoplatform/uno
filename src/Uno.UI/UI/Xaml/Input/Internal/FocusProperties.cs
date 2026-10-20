@@ -19,11 +19,9 @@ namespace Uno.UI.Xaml.Input
 	{
 		internal static IReadOnlyList<DependencyObject> GetFocusChildren(DependencyObject? dependencyObject)
 		{
-			if (dependencyObject is RichTextBlock)
+			if (dependencyObject is RichTextBlock richTextBlock)
 			{
-				//focusChildren = GetFocusChildren<CDOCollection>(static_cast<CRichTextBlock*>(object));
-				//Uno TODO: RichTextBlock not implemented yet
-				return Array.Empty<DependencyObject>();
+				return richTextBlock.GetFocusableChildren();
 			}
 			else if (dependencyObject is RichTextBlockOverflow)
 			{
@@ -39,15 +37,6 @@ namespace Uno.UI.Xaml.Input
 				var children = VisualTreeHelper.GetChildren(textBlock);
 				return children as IReadOnlyList<DependencyObject> ?? children.ToList();
 			}
-#if __ANDROID__ || __APPLE_UIKIT__ // TODO Uno specific: NativeScrollContentPresenter does not return its children
-			else if (dependencyObject is NativeScrollContentPresenter scrollContentPresenter)
-			{
-				if (scrollContentPresenter.Content is DependencyObject child)
-				{
-					return new[] { child };
-				}
-			}
-#endif
 			else if (dependencyObject is UIElement uiElement)
 			{
 				// Uno Doc: the IReadOnlyList check makes it so that on __CROSSRUNTIME__, we don't create a new list

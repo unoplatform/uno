@@ -77,7 +77,9 @@ partial class ScrollBar
 	// for the extent exposed through IScrollInfo
 	private bool m_isUsingActualSizeAsExtent;
 
-	private static bool IsConscious() => Uno.UI.Helpers.WinUI.SharedHelpers.ShouldUseDynamicScrollbars();
+	// Uno specific: a bar which opted into touch thumb dragging is deliberately not conscious, so that it
+	// keeps the interactive (mouse) indicator a finger can grab. See ScrollBar.IsTouchThumbDragEnabled.
+	private bool IsConscious() => Uno.UI.Helpers.WinUI.SharedHelpers.ShouldUseDynamicScrollbars() && !IsTouchThumbDragEnabled;
 
 	// Enters the mode where the child's actual size is used for
 	// the extent exposed through IScrollInfo.

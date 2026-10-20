@@ -144,8 +144,6 @@
             href: xref:Uno.Development.CommunityToolkit.v7
       - name: How to manually add a splash screen
         href: xref:Uno.Development.SplashScreen
-      - name: How to use native Frame navigation
-        href: xref:Uno.Tutorials.UseNativeFrameNav
       - name: How to consume a web API
         href: xref:Uno.Development.ConsumeWebApi
       - name: How to localize text resources
@@ -192,12 +190,8 @@
           href: concepts/overview/philosophy-of-uno.md
         - name: How Uno Works
           href: how-uno-works.md
-        - name: UI Renderers
-          items: 
-          - name: Skia Renderer
-            href: xref:uno.features.renderer.skia
-          - name: Native Renderer
-            href: xref:uno.features.renderer.native
+        - name: Skia Renderer
+          href: xref:uno.features.renderer.skia
         - name: Best Practices
           href: best-practices-uno.md
 
@@ -272,6 +266,8 @@
         href: migrating-from-previous-releases.md
       - name: Upgrading to Single Project
         href: xref:Uno.Development.MigratingToSingleProject
+      - name: Upgrading to Uno 7.0
+        href: xref:Uno.Development.MigratingToUno7
       - name: Upgrading to Uno 6.0
         href: xref:Uno.Development.MigratingToUno6
       - name: Upgrading to Uno 5.0
@@ -382,12 +378,8 @@
             href: uno-development/uno-internals-overview.md
           - name: Android
             href: uno-development/uno-internals-android.md
-          - name: Layouting in Android
-            href: uno-development/Uno-UI-Layouting-Android.md
           - name: iOS
             href: uno-development/uno-internals-ios.md
-          - name: Layouting in iOS
-            href: uno-development/Uno-UI-Layouting-iOS.md
           - name: WASM
             href: uno-development/uno-internals-wasm.md
           - name: macOS
@@ -402,6 +394,8 @@
             href: uno-development/themeresource-internals.md
           - name: InteractionTracker internals
             href: uno-development/interaction-tracker-internals.md
+          - name: TextBox caret and selection
+            href: uno-development/textbox-caret-selection-internals.md
       - name: Building Uno.UI
         href: uno-development/building-uno-ui.md
       - name: Debugging Uno.UI
@@ -414,6 +408,8 @@
         href: uno-development/debugging-inspect-visual-tree.md
       - name: Guidelines for code style
         href: contributing/guidelines/code-style.md
+      - name: Preprocessor symbols
+        href: uno-development/preprocessor-symbols.md
       - name: Using the SamplesApp
         href: uno-development/working-with-the-samples-apps.md
       - name: Guidelines for creating tests
@@ -454,8 +450,6 @@
             href: uno-development/api-extensions.md
           - name: The WeakEventHelper class
             href: uno-development/Internal-WeakEventHelper.md
-          - name: Debugging Uno.UI Java code with Android studio
-            href: uno-development/Uno-UI-Debugging-Android-Studio.md
           - name: Troubleshooting Memory Issues
             href: uno-development/troubleshooting-memory-issues.md
           - name: Troubleshooting Source Generation
@@ -567,8 +561,6 @@
               href: controls/MenuFlyout.md
             - name: NavigationView
               href: controls/NavigationView.md
-            - name: Native control styles
-              href: native-styles.md
             - name: Other features
               href: xref:Uno.Development.AdditionalFeatures
             - name: Pivot
@@ -579,6 +571,8 @@
               href: features/progressring.md
             - name: RefreshContainer (Pull to Refresh)
               href: controls/RefreshContainer.md
+            - name: RichEditBox
+              href: controls/RichEditBox.md
             - name: ScrollViewer
               href: controls/ScrollViewer.md
             - name: SKCanvasElement
@@ -617,10 +611,12 @@
           href: features/working-with-animations.md
         - name: Assets and image display
           href: features/working-with-assets.md
-        - name: Build telemetry
+        - name: Tools telemetry
           href: uno-toolchain-telemetry.md
         - name: Composition API
           href: composition.md
+        - name: Customizing the Application class on Android
+          href: xref:Uno.Features.CustomizingAndroidApplication
         - name: Customizing the UIApplicationDelegate on iOS
           href: xref:Uno.Features.CustomizingUIApplicationDelegate
         - name: Dialogs
@@ -629,12 +625,12 @@
           href: features/fluent-styles.md
         - name: Focus management
           href: features/focus-management.md
+        - name: Foldable devices and TwoPaneView
+          href: xref:Uno.Features.Foldable
         - name: Fonts
           href: features/custom-fonts.md
         - name: Markup Extensions
           href: features/windows-ui-markup-extensions.md
-        - name: Native frame navigation
-          href: features/native-frame-nav.md
         - name: Orientation
           href: features/orientation.md
         - name: Routed Events
@@ -677,6 +673,8 @@
         href: features/android-auto.md
       - name: Android TV
         href: features/android-tv.md
+      - name: Apple TV
+        href: features/apple-tv.md
       - name: Wear OS (Android Watch)
         href: features/android-wear.md
       - name: App Actions
@@ -794,6 +792,8 @@
         href: xref:Uno.DevServer
       - name: Diagnostics (disco)
         href: xref:Uno.Features.DevServerDisco
+      - name: Driving the app from a shell (app)
+        href: xref:Uno.Features.DevServerAppCommands
     - name: Xaml Merging
       href: external/uno.xamlmerge.task/doc/toc.yml
     - name: Uno Resizetizer

@@ -79,7 +79,7 @@ partial class StackPanel
 	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
-	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+	private static Thickness GetBorderThicknessDefaultValue() => default(Thickness);
 
 	/// <summary>
 	/// Gets or sets the radius for the corners of the panel's border.
@@ -96,7 +96,7 @@ partial class StackPanel
 	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusPropertyChanged))]
 	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
-	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+	private static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
 	/// <summary>
 	/// Gets or sets the dimension by which child elements are stacked.

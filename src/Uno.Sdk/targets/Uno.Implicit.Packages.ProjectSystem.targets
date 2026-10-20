@@ -11,19 +11,23 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Settings.DevServer" ProjectSystem="true" PrivateAssets="all" />
 	</ItemGroup>
 
+	<!--
+		The three development-time packages below (Hot Design, App MCP, DevServer) are absent from the
+		Release graph, not merely asset-excluded. IncludeAssets="None" still resolves, downloads and audits
+		the whole closure, and does not stop the package's analyzers from loading
+		(https://github.com/dotnet/sdk/issues/1212) - so re-adding an "excluded" Release entry for any of
+		them puts it back in every shipped app's dependency closure.
+	-->
 	<ItemGroup Condition=" ('$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe') AND '$(UnoDisableHotDesign)' != 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
-		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" ('$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe') AND '$(UnoDisableMCPSupport)' != 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.UI.App.Mcp" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
-		<_UnoProjectSystemPackageReference Include="Uno.UI.App.Mcp" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
 	<Choose>
@@ -40,10 +44,6 @@
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
-
-	<ItemGroup Condition="$(UnoFeatures.Contains(';maps;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Maps" ProjectSystem="true" />
-	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';foldable;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Foldable" ProjectSystem="true" />
@@ -98,7 +98,9 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Fonts.OpenSans" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';skiarenderer;')) OR $(IsDesktop) == 'true'">
+	<!-- SKCanvasElement authoring API. It draws through SkiaSharp, so it follows the Skia renderer: a head that
+	     renders with something else opts in by naming 'skia'. -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
@@ -109,16 +111,12 @@
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.iOS.targets"
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'" />
-	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.MacCatalyst.targets"
-		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'" />
-	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.MacOS.targets"
-		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.tvOS.targets"
+		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Wasm.targets"
 		Condition=" '$(IsBrowserWasm)' == 'true' " />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.WinAppSdk.targets"
 		Condition="$(TargetFramework.Contains('windows10'))" />
-	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Legacy.targets"
-		Condition="($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' AND $(TargetFramework) != '') OR ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' AND !$(TargetFramework.Contains('windows10')))" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets"
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == ''" />
 

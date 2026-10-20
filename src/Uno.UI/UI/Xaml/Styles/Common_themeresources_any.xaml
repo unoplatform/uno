@@ -1,6 +1,6 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
 <!-- MUX Reference controls\dev\CommonStyles\Common_themeresources_any.xaml, tag winui3/release/1.5.2, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b -->
-<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:not_win="http://uno.ui/not_win">
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary x:Key="Default">
       <Color x:Key="TextFillColorPrimary">#FFFFFF</Color>
@@ -64,7 +64,6 @@
       <Color x:Key="LayerOnMicaBaseAltFillColorSecondary">#0FFFFFFF</Color>
       <Color x:Key="LayerOnMicaBaseAltFillColorTertiary">#2C2C2C</Color>
       <Color x:Key="LayerOnMicaBaseAltFillColorTransparent">#00FFFFFF</Color>
-      <Color x:Key="SolidBackgroundFillColorBase">#202020</Color>
       <Color x:Key="SolidBackgroundFillColorSecondary">#1C1C1C</Color>
       <Color x:Key="SolidBackgroundFillColorTertiary">#282828</Color>
       <Color x:Key="SolidBackgroundFillColorQuarternary">#2C2C2C</Color>
@@ -176,22 +175,19 @@
       <SolidColorBrush x:Key="SystemColorHighlightTextColorBrush" Color="#FF00FF" />
       <SolidColorBrush x:Key="SystemColorHotlightColorBrush" Color="#FF00FF" />
       <SolidColorBrush x:Key="SystemColorGrayTextColorBrush" Color="#FF00FF" />
-            <!-- Uno specific: Elevation border might use faux border on some targets, see #6457 -->
-      <LinearGradientBrush x:Key="ControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3" not_win:FallbackColor="{StaticResource ControlStrokeColorDefault}">
+      <LinearGradientBrush x:Key="ControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3">
         <LinearGradientBrush.GradientStops>
           <GradientStop Offset="0.33" Color="{StaticResource ControlStrokeColorSecondary}" />
           <GradientStop Offset="1.0" Color="{StaticResource ControlStrokeColorDefault}" />
         </LinearGradientBrush.GradientStops>
       </LinearGradientBrush>
-            <!-- Uno specific: Elevation border might use faux border on some targets, see #6457 -->
-      <LinearGradientBrush x:Key="CircleElevationBorderBrush" MappingMode="RelativeToBoundingBox" StartPoint="0,0" EndPoint="0,1" not_win:FallbackColor="{StaticResource ControlStrokeColorDefault}">
+      <LinearGradientBrush x:Key="CircleElevationBorderBrush" MappingMode="RelativeToBoundingBox" StartPoint="0,0" EndPoint="0,1">
         <LinearGradientBrush.GradientStops>
           <GradientStop Offset="0.70" Color="{StaticResource ControlStrokeColorSecondary}" />
           <GradientStop Offset="0.50" Color="{StaticResource ControlStrokeColorDefault}" />
         </LinearGradientBrush.GradientStops>
       </LinearGradientBrush>
-            <!-- Uno specific: Elevation border might use faux border on some targets, see #6457 -->
-      <LinearGradientBrush x:Key="AccentControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3" not_win:FallbackColor="{StaticResource ControlStrokeColorOnAccentDefault}">
+      <LinearGradientBrush x:Key="AccentControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
         </LinearGradientBrush.RelativeTransform>
@@ -263,7 +259,6 @@
       <Color x:Key="LayerOnMicaBaseAltFillColorSecondary">#0A000000</Color>
       <Color x:Key="LayerOnMicaBaseAltFillColorTertiary">#F9F9F9</Color>
       <Color x:Key="LayerOnMicaBaseAltFillColorTransparent">#00000000</Color>
-      <Color x:Key="SolidBackgroundFillColorBase">#F3F3F3</Color>
       <Color x:Key="SolidBackgroundFillColorSecondary">#EEEEEE</Color>
       <Color x:Key="SolidBackgroundFillColorTertiary">#F9F9F9</Color>
       <Color x:Key="SolidBackgroundFillColorQuarternary">#FFFFFF</Color>
@@ -367,8 +362,7 @@
       <SolidColorBrush x:Key="SystemFillColorNeutralBackgroundBrush" Color="{StaticResource SystemFillColorNeutralBackground}" />
       <SolidColorBrush x:Key="SystemFillColorSolidAttentionBackgroundBrush" Color="{StaticResource SystemFillColorSolidAttentionBackground}" />
       <SolidColorBrush x:Key="SystemFillColorSolidNeutralBackgroundBrush" Color="{StaticResource SystemFillColorSolidNeutralBackground}" />
-            <!-- Uno specific: Elevation border might use faux border on some targets, see #6457 -->
-      <LinearGradientBrush x:Key="ControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3" not_win:FallbackColor="{StaticResource ControlStrokeColorDefault}">
+      <LinearGradientBrush x:Key="ControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
         </LinearGradientBrush.RelativeTransform>
@@ -377,15 +371,13 @@
           <GradientStop Offset="1.0" Color="{StaticResource ControlStrokeColorDefault}" />
         </LinearGradientBrush.GradientStops>
       </LinearGradientBrush>
-            <!-- Uno specific: Elevation border might use faux border on some targets, see #6457 -->
-      <LinearGradientBrush x:Key="CircleElevationBorderBrush" MappingMode="RelativeToBoundingBox" StartPoint="0,0" EndPoint="0,1" not_win:FallbackColor="{StaticResource ControlStrokeColorDefault}">
+      <LinearGradientBrush x:Key="CircleElevationBorderBrush" MappingMode="RelativeToBoundingBox" StartPoint="0,0" EndPoint="0,1">
         <LinearGradientBrush.GradientStops>
           <GradientStop Offset="0.50" Color="{StaticResource ControlStrokeColorDefault}" />
           <GradientStop Offset="0.70" Color="{StaticResource ControlStrokeColorSecondary}" />
         </LinearGradientBrush.GradientStops>
       </LinearGradientBrush>
-            <!-- Uno specific: Elevation border might use faux border on some targets, see #6457 -->
-      <LinearGradientBrush x:Key="AccentControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3" not_win:FallbackColor="{StaticResource ControlStrokeColorOnAccentDefault}">
+      <LinearGradientBrush x:Key="AccentControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
         </LinearGradientBrush.RelativeTransform>

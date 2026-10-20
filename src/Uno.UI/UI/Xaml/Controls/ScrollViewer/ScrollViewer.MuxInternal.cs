@@ -27,7 +27,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
 		internal bool ArePointerWheelEventsIgnored { get; set; }
-		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
+		// Uno drives touch scrolling, its inertia and snapping from the presenter rather than through DirectManipulation.
+		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan || (_presenter as ScrollContentPresenter)?.IsInMotion == true;
 
 		/// <summary>
 		/// Gets or set whether the <see cref="ScrollViewer"/> will allow scrolling outside of the ScrollViewer's Child bound.
@@ -41,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_forceChangeToCurrentView = value;
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 				if (_presenter != null)
 				{
 					_presenter.ForceChangeToCurrentView = value;
@@ -58,11 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 			bool skipAnimationWhileRunning,
 			bool animate)
 		{
-#if __WASM__
-			return ChangeView(bounds.X, bounds.Y, null, true);
-#else
 			return ChangeView(bounds.X, bounds.Y, null, !animate);
-#endif
 		}
 
 		internal void SetDirectManipulationStateChangeHandler(IDirectManipulationStateChangeHandler? handler)
@@ -184,13 +181,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static bool ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer(UIElement pScrollContentControl)
 		{
-#if __WASM__
-			if ((pScrollContentControl as ScrollViewer)?.DisableSetFocusOnPopupByPointer ?? false)
-			{
-				return false;
-			}
-#endif
-
 			PopupRoot? pPopupRoot = null;
 			Popup? pPopup = null;
 

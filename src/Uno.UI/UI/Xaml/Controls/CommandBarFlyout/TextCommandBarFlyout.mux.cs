@@ -204,7 +204,7 @@ partial class TextCommandBarFlyout
 
 		FlyoutBase proofingFlyout = null;
 
-		if (Target is TextBox textBoxTarget and not PasswordBox) // Uno specific: PasswordBox derives from TextBox in Uno.
+		if (Target is TextBox textBoxTarget)
 		{
 			proofingFlyout = textBoxTarget.ProofingMenuFlyout;
 		}
@@ -358,7 +358,7 @@ partial class TextCommandBarFlyout
 		// empty clipboard — and a transient flyout with no primary command self-hides (see the Opened handler). Put
 		// it in the primary bar there so tapping the insertion handle always opens a usable flyout.
 
-		var commandListForSelectAll = InputDevicePrefersPrimaryCommands && Target is TextBox { SelectionLength: 0 } and not PasswordBox
+		var commandListForSelectAll = InputDevicePrefersPrimaryCommands && Target is TextBox { SelectionLength: 0 }
 			? PrimaryCommands
 			: SecondaryCommands;
 		if ((buttonsToAdd & TextControlButtons.SelectAll) != TextControlButtons.None &&
@@ -399,7 +399,7 @@ partial class TextCommandBarFlyout
 	{
 		var primaryBarButtons = TextControlButtons.Cut | TextControlButtons.Copy | TextControlButtons.Paste
 			| TextControlButtons.Bold | TextControlButtons.Italic | TextControlButtons.Underline;
-		if (target is TextBox { SelectionLength: 0 } and not PasswordBox)
+		if (target is TextBox { SelectionLength: 0 })
 		{
 			primaryBarButtons |= TextControlButtons.SelectAll;
 		}
@@ -413,7 +413,7 @@ partial class TextCommandBarFlyout
 	{
 		TextControlButtons buttonsToAdd = TextControlButtons.None;
 
-		if (target is TextBox textBoxTarget and not PasswordBox) // PasswordBox derives from TextBox in Uno Platform
+		if (target is TextBox textBoxTarget)
 		{
 			buttonsToAdd = GetTextBoxButtonsToAdd(textBoxTarget, prefersPrimaryCommands);
 		}
@@ -626,7 +626,7 @@ partial class TextCommandBarFlyout
 
 		try
 		{
-			if (target is TextBox textBoxTarget and not PasswordBox) // Uno specific: PasswordBox derives from TextBox
+			if (target is TextBox textBoxTarget)
 			{
 				textBoxTarget.CutSelectionToClipboard();
 			}
@@ -660,7 +660,7 @@ partial class TextCommandBarFlyout
 				richTextBlockTarget.CopySelectionToClipboard();
 			};
 
-			if (target is TextBox textBoxTarget and not PasswordBox) // Uno specific: PasswordBox derives from TextBox)
+			if (target is TextBox textBoxTarget)
 			{
 				textBoxTarget.CopySelectionToClipboard();
 			}
@@ -704,7 +704,7 @@ partial class TextCommandBarFlyout
 
 		try
 		{
-			if (target is TextBox textBoxTarget and not PasswordBox) // Uno specific: PasswordBox derives from TextBox.
+			if (target is TextBox textBoxTarget)
 			{
 				textBoxTarget.PasteFromClipboard();
 			}
@@ -813,7 +813,7 @@ partial class TextCommandBarFlyout
 	{
 		var target = Target;
 
-		if (target is TextBox textBoxTarget and not PasswordBox) // Uno specific: PasswordBox derives from TextBox
+		if (target is TextBox textBoxTarget)
 		{
 			textBoxTarget.Undo();
 		}
@@ -832,7 +832,7 @@ partial class TextCommandBarFlyout
 	{
 		var target = Target;
 
-		if (target is TextBox textBoxTarget and not PasswordBox) // Uno specific: PasswordBox derives from TextBox
+		if (target is TextBox textBoxTarget)
 		{
 			textBoxTarget.Redo();
 		}
@@ -851,7 +851,7 @@ partial class TextCommandBarFlyout
 	{
 		var target = Target;
 
-		if (target is TextBox textBoxTarget and not PasswordBox) // Uno specific: PasswordBox derives from TextBox
+		if (target is TextBox textBoxTarget)
 		{
 			textBoxTarget.SelectAll();
 		}

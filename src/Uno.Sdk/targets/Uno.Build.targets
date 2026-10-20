@@ -1,4 +1,16 @@
 <Project>
+	<!--
+		`SingleProject` was the 5.1-and-earlier spelling of `UnoSingleProject`. It no longer selects
+		the single-project layout, so leaving it in place would silently build the project as a
+		non-single-project one rather than failing.
+	-->
+	<Target Name="UnoValidateLegacySingleProjectProperty" BeforeTargets="BeforeBuild">
+		<Error Code="UNOB0022"
+			HelpLink="https://aka.platform.uno/UNOB0022"
+			Text="The '%24(SingleProject)' property is no longer supported. Rename it to '%24(UnoSingleProject)' in your project file. See https://aka.platform.uno/UNOB0022"
+			Condition=" '$(SingleProject)' == 'true' AND '$(UnoSingleProject)' != 'true' " />
+	</Target>
+
 	<!-- Uno Developers should comment this target out if they need to override UnoVersion for dev testing -->
 	<Target Name="UnoSdkVersionCheck"
 			AfterTargets="ResolveReferences"
@@ -26,7 +38,7 @@
 	-->
 	<Target Name="RemoveUnoSingleProjectPlatformFiles"
 		BeforeTargets="PrepareForBuild"
-		Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' ">
+		Condition=" $(_IsUnoSingleProject) == 'true' ">
 		<ItemGroup>
 			<None Remove="@(_IgnorePlatformFiles)" />
 			<Page Remove="@(_IgnorePlatformFiles)" />
@@ -64,7 +76,7 @@
 		<!-- 
 			This target suppresses unavailable targets for the current system.
 
-			As of 2024-03-21, iOS/Catalyst are not supported on Linux, and Windows is not supported on non-Windows systems.      
+			As of 2024-03-21, iOS/tvOS are not supported on Linux, and Windows is not supported on non-Windows systems.
 		-->
 
 		<ItemGroup>
@@ -82,7 +94,6 @@
 				Condition="
 				'%(_TargetFrameworksAsGroup.PlatformIdentifier)' == 'ios'
 				OR '%(_TargetFrameworksAsGroup.PlatformIdentifier)' == 'tvos'
-				OR '%(_TargetFrameworksAsGroup.PlatformIdentifier)' == 'maccatalyst'
 				" />
 		</ItemGroup>
 
@@ -139,7 +150,6 @@
 					AND (
 						$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'ios'
 						OR $([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'tvos'
-						OR $([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'maccatalyst'
 					)" />
 
 	</Target>

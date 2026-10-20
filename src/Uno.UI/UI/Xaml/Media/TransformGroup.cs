@@ -9,12 +9,6 @@ using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _View = UIKit.UIView;
-#endif
-
 namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Children))]
@@ -99,17 +93,11 @@ namespace Microsoft.UI.Xaml.Media
 
 		private void OnChildAdded(Transform transform)
 		{
-#if __ANDROID__ || __APPLE_UIKIT__
-			transform.View = View; // Animation support
-#endif
 			transform.Changed += OnChildTransformChanged;
 		}
 
 		private void OnChildRemoved(Transform transform)
 		{
-#if __ANDROID__ || __APPLE_UIKIT__
-			transform.View = null; // Animation support
-#endif
 			transform.Changed -= OnChildTransformChanged;
 		}
 
@@ -139,30 +127,6 @@ namespace Microsoft.UI.Xaml.Media
 		 * All those can be safely removed once animation will not assume that a given Transform
 		 * can be used only for a single element at a time!
 		 */
-#if __APPLE_UIKIT__
-		internal override bool IsAnimating => Children.Any(child => child.IsAnimating);
-#elif __ANDROID__
-		internal override bool IsAnimating
-		{
-			get => Children.Any(child => child.IsAnimating);
-			set => this.Log().Error("Nothing is animatable on a TransformGroup.");
-		}
-#endif
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		internal override _View View
-		{
-			get => base.View;
-			set
-			{
-				base.View = value;
-				foreach (var child in Children)
-				{
-					child.View = value;
-				}
-			}
-		}
-#endif
 		#endregion
 	}
 }

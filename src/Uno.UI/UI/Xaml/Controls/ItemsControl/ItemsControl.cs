@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -7,6 +7,7 @@ using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -14,19 +15,13 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers.Boxes;
 using System.Diagnostics.CodeAnalysis;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-using _ViewGroup = Android.Views.ViewGroup;
-#elif __APPLE_UIKIT__
-using UIKit;
-using _View = UIKit.UIView;
-using _ViewGroup = UIKit.UIView;
-#else
 using _View = Microsoft.UI.Xaml.UIElement;
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;
-#endif
+using System.Text;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -56,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// FrameworkTemplate pooling to function properly when an ItemTemplateSelector has been
 		/// specified.
 		/// </summary>
-		private readonly static DataTemplate InnerContentPresenterTemplate = new DataTemplate(() => new ContentPresenter());
+		private readonly static DataTemplate InnerContentPresenterTemplate = new DataTemplate(null, (_, _) => new ContentPresenter());
 
 		public static ItemsControl GetItemsOwner(DependencyObject element)
 		{
@@ -105,7 +100,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return _internalItemsPanelRoot; }
 			set
 			{
-				if (_internalItemsPanelRoot is IDependencyObjectStoreProvider provider)
+				if (_internalItemsPanelRoot is DependencyObject provider)
 				{
 					provider.SetParent(null);
 				}
@@ -118,9 +113,9 @@ namespace Microsoft.UI.Xaml.Controls
 		public Panel ItemsPanelRoot
 		{
 			get { return _itemsPanelRoot; }
-			set
+			internal set
 			{
-				if (_itemsPanelRoot is IDependencyObjectStoreProvider provider)
+				if (_itemsPanelRoot is DependencyObject provider)
 				{
 					provider.SetParent(null);
 				}
@@ -367,7 +362,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsGroupingProperty { get; } =
-			DependencyProperty.Register("IsGrouping", typeof(bool), typeof(ItemsControl), new FrameworkPropertyMetadata(false));
+			DependencyProperty.Register("IsGrouping", typeof(bool), typeof(ItemsControl), new FrameworkPropertyMetadata(BoolBoxes.False));
 		#endregion
 
 		#region Internal Attached Properties
@@ -377,7 +372,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IndexForItemContainer",
 				typeof(int),
 				typeof(ItemsControl),
-				new FrameworkPropertyMetadata(-1)
+				new FrameworkPropertyMetadata(IntBoxes.NegativeOne)
 			);
 
 		internal static DependencyProperty ItemsControlForItemContainerProperty { get; } =
@@ -393,7 +388,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ItemHasManualBindingExpression",
 				typeof(bool),
 				typeof(ItemsControl),
-				new FrameworkPropertyMetadata(false)
+				new FrameworkPropertyMetadata(BoolBoxes.False)
 			);
 
 		#endregion
@@ -924,6 +919,7 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceSingleCollectionChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}");
 			}
 			UpdateItems(args);
+			(CachedAutomationPeer as ItemsControlAutomationPeer)?.OnItemsChanged(args);
 		}
 
 		/// <summary>
@@ -936,6 +932,7 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceGroupsChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}, NoOfGroups={NumberOfGroups}");
 			}
 			UpdateItems(args);
+			(CachedAutomationPeer as ItemsControlAutomationPeer)?.OnItemsChanged(args);
 		}
 
 		internal virtual void OnGroupPropertyChanged(ICollectionViewGroup group, int groupIndex)
@@ -1029,11 +1026,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (ItemsPanelRoot == null
 				|| !ShouldItemsControlManageChildren
-#if __ANDROID__
-				// workaround for INCC callback on disposed object
-				// see: Given_xBind.When_XBind_TargetDisposed_Test()
-				|| (Handle == nint.Zero || ItemsPanelRoot.Handle == nint.Zero)
-#endif
 				)
 			{
 				return;
@@ -1062,7 +1054,7 @@ namespace Microsoft.UI.Xaml.Controls
 				for (var i = startingIndex; i < count; i++)
 				{
 					var container = children[i];
-					container.SetValue(IndexForItemContainerProperty, i);
+					container.SetValue(IndexForItemContainerProperty, Boxer.Box(i));
 				}
 			}
 
@@ -1282,7 +1274,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					container.SetBinding(contentProperty, new Binding
+					container.SetBindingInternal(contentProperty, new Binding
 					{
 						Path = displayMemberPath,
 						Source = item
@@ -1367,19 +1359,29 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void PrepareContainerForIndex(DependencyObject container, int index)
 		{
 			_containerBeingPrepared = container;
+			try
+			{
+				// This must be set before calling PrepareContainerForItemOverride
+				container.SetValue(IndexForItemContainerProperty, Boxer.Box(index));
 
-			// This must be set before calling PrepareContainerForItemOverride
-			container.SetValue(IndexForItemContainerProperty, index);
-
-			var item = ItemFromIndex(index);
-			PrepareContainerForItemOverride(container, item);
-			ContainerPreparedForItem(item, container as SelectorItem, index);
-
-			_containerBeingPrepared = null;
+				var item = ItemFromIndex(index);
+				PrepareContainerForItemOverride(container, item);
+				ContainerPreparedForItem(item, container as SelectorItem, index);
+			}
+			finally
+			{
+				_containerBeingPrepared = null;
+			}
 		}
 
 		internal virtual void ContainerPreparedForItem(object item, SelectorItem itemContainer, int itemIndex)
 		{
+#if __SKIA__
+			if (AutomationPeer.AutomationPeerListener is not null)
+			{
+				CachedAutomationPeer?.InvalidatePeer();
+			}
+#endif
 		}
 
 		/// <summary>
@@ -1466,7 +1468,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var index = IndexFromItem(item);
-			var containerFromIndex = index == -1 ? null : MaterializedContainers.FirstOrDefault(materializedContainer => Equals(IndexFromContainer(materializedContainer), index));
+			var containerFromIndex = index == -1 ? null : MaterializedContainers.FirstOrDefault(materializedContainer => IndexFromContainer(materializedContainer) == index);
 			EnsureContainerItemsControlProperty(containerFromIndex);
 			return containerFromIndex;
 		}
@@ -1531,7 +1533,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal virtual DependencyObject ContainerFromIndexInner(int index)
 		{
-			return MaterializedContainers.FirstOrDefault(materializedContainer => Equals(materializedContainer.GetValue(IndexForItemContainerProperty), index));
+			return MaterializedContainers.FirstOrDefault(materializedContainer => materializedContainer.GetValue(IndexForItemContainerProperty) is int containerIndex && containerIndex == index);
 		}
 
 		/// <summary>
@@ -1580,9 +1582,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IEnumerable<DependencyObject> MaterializedContainers =>
 			GetItemsPanelChildren()
-#if !IS_UNIT_TESTS // TODO
 				.Prepend(_containerBeingPrepared) // we put it first, because it's the most likely to be requested
-#endif
 				.Trim()
 				.Distinct();
 
@@ -1755,5 +1755,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// TODO Uno: Implement from WinUI
 		private protected bool IsItemsHostInvalid => false;
+
+		partial void RequestLayoutPartial()
+		{
+			InvalidateMeasure();
+		}
 	}
 }

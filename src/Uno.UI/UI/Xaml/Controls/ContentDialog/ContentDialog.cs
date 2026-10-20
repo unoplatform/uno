@@ -53,10 +53,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_popup = new Popup()
 			{
+				IsContentDialog = true,
 				LightDismissOverlayMode = LightDismissOverlayMode.On,
 			};
 
-			ResourceResolver.ApplyResource(_popup, Popup.LightDismissOverlayBackgroundProperty, "ContentDialogLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
+			ResourceResolver.ApplyResource(_popup, Popup.LightDismissOverlayBackgroundProperty, "SystemControlPageBackgroundMediumAltMediumBrush", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 			_popup.PopupPanel = new ContentDialogPopupPanel(this);
 
@@ -318,9 +319,7 @@ namespace Microsoft.UI.Xaml.Controls
 					_tcs.TrySetCanceled();
 					Hide();
 				}
-#if !__WASM__ // WASM lacks threading support
 					, useSynchronizationContext: true
-#endif
 					))
 				{
 					return await _tcs.Task;

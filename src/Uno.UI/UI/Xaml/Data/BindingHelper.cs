@@ -28,6 +28,11 @@ namespace Uno.UI.Xaml
 			return binding;
 		}
 
+		// WinUI has no string-keyed SetBinding; the XAML generator emits it for x:Bind to plain properties.
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetBinding(DependencyObject target, string propertyName, BindingBase binding)
+			=> target.SetBindingInternal(propertyName, binding);
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static AttachedDependencyObject GetDependencyObjectForXBind(this object instance)
 			=> DependencyObjectExtensions.GetAttachedDependencyObject(instance);
@@ -38,25 +43,25 @@ namespace Uno.UI.Xaml
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void ApplyXBind(this DependencyObject instance)
-			=> (instance as IDependencyObjectStoreProvider)?.Store.ApplyCompiledBindings();
+			=> (instance as DependencyObject)?.ApplyCompiledBindings();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void SuspendXBind(this DependencyObject instance)
 		{
-			// DependencyObjectStore, DependencyPropertyDetailsCollection, and BindingExpression
+			// DependencyObject, DependencyPropertyDetailsCollection, and BindingExpression
 			// all keeps track of the binding suspension state. Since we only care about x:Bind here,
 			// it would be easier to skip straight to the BindingExpression, ignoring the first two.
-			(instance as IDependencyObjectStoreProvider)?.Store.SuspendCompiledBindings();
+			(instance as DependencyObject)?.SuspendCompiledBindings();
 		}
 
 
 		public static void UpdateResourceBindings(this DependencyObject instance) => UpdateResourceBindings(instance, resourceContextProvider: null);
 		public static void UpdateResourceBindings(this DependencyObject instance, FrameworkElement? resourceContextProvider)
 		{
-			if (instance is IDependencyObjectStoreProvider provider)
+			if (instance is DependencyObject provider)
 			{
-				provider.Store.ApplyElementNameBindings();
-				provider.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading, resourceContextProvider);
+				provider.ApplyElementNameBindings();
+				provider.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading, resourceContextProvider);
 			}
 		}
 	}

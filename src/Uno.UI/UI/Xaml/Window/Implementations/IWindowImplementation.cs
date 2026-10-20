@@ -24,13 +24,13 @@ internal interface IWindowImplementation
 
 	object? NativeWindow { get; }
 
-	event WindowActivatedEventHandler? Activated;
+	event TypedEventHandler<object, Microsoft.UI.Xaml.WindowActivatedEventArgs>? Activated;
 
 	event TypedEventHandler<object, WindowEventArgs>? Closed;
 
-	event WindowSizeChangedEventHandler? SizeChanged;
+	event TypedEventHandler<object, Microsoft.UI.Xaml.WindowSizeChangedEventArgs>? SizeChanged;
 
-	event WindowVisibilityChangedEventHandler? VisibilityChanged;
+	event TypedEventHandler<object, Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs>? VisibilityChanged;
 
 	void RaiseActivated(Microsoft.UI.Xaml.WindowActivatedEventArgs args);
 
@@ -38,7 +38,7 @@ internal interface IWindowImplementation
 
 	void RaiseSizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventArgs args);
 
-	void RaiseVisibilityChanged(VisibilityChangedEventArgs args);
+	void RaiseVisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs args);
 
 	void Initialize();
 

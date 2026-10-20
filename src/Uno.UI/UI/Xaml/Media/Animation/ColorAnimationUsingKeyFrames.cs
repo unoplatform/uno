@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Diagnostics;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -31,7 +32,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			"EnableDependentAnimation",
 			typeof(bool),
 			typeof(ColorAnimationUsingKeyFrames),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 		public bool EnableDependentAnimation
 		{
 			get => (bool)GetValue(EnableDependentAnimationProperty);
@@ -46,7 +47,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public ColorKeyFrameCollection KeyFrames
 		{
 			get => (ColorKeyFrameCollection)GetValue(KeyFramesProperty);
-			set => SetValue(KeyFramesProperty, value);
+			internal set => SetValue(KeyFramesProperty, value);
 		}
 		private static void OnKeyFramesChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 		{
@@ -98,13 +99,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				_wasBeginScheduled = true;
 
-#if !IS_UNIT_TESTS
-#if __ANDROID__
-				_ = Dispatcher.RunAnimation(() =>
-#else
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-#endif
-#endif
 				{
 					_wasBeginScheduled = false;
 
@@ -123,9 +118,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					//Start the animation
 					Play();
 				}
-#if !IS_UNIT_TESTS
 				);
-#endif
 			}
 		}
 
@@ -303,13 +296,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				var i = index;
 
-#if __ANDROID__
-				if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Kitkat)
-				{
-					animator.AnimationPause += (a, _) => OnFrame((IValueAnimator)a);
-				}
-#endif
-
 				animator.AnimationEnd += (a, _) =>
 				{
 					OnFrame((IValueAnimator)a);
@@ -432,10 +418,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		partial void UseHardware();
 		partial void HoldValue();
 
-#if IS_UNIT_TESTS
-		private bool ReportEachFrame() => true;
-#endif
 
 		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
+
+		private bool ReportEachFrame() => true;
+
+		partial void OnFrame(IValueAnimator currentAnimator)
+		{
+			SetValue(currentAnimator.AnimatedValue);
+		}
 	}
 }

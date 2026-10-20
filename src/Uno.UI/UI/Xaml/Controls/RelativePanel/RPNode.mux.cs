@@ -2,13 +2,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-#if __ANDROID__
-using View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Uno.UI.Xaml.Controls;
 

@@ -8,8 +8,12 @@ namespace Microsoft.UI.Composition.Interactions;
 
 internal sealed class InteractionTrackerInteractingState : InteractionTrackerState
 {
-	public InteractionTrackerInteractingState(InteractionTracker interactionTracker) : base(interactionTracker)
+	// Entered on the press rather than once the manipulation started, so the start that follows is expected.
+	private bool _isAwaitingManipulationStart;
+
+	public InteractionTrackerInteractingState(InteractionTracker interactionTracker, bool isInterruptingInertia = false) : base(interactionTracker)
 	{
+		_isAwaitingManipulationStart = isInterruptingInertia;
 	}
 
 	protected override void EnterState(IInteractionTrackerOwner? owner)
@@ -19,6 +23,12 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 
 	internal override void StartUserManipulation()
 	{
+		if (_isAwaitingManipulationStart)
+		{
+			_isAwaitingManipulationStart = false;
+			return;
+		}
+
 		// This probably shouldn't happen.
 		// We ignore.
 		if (this.Log().IsEnabled(LogLevel.Error))
@@ -39,10 +49,10 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 
 	internal override void ReceiveInertiaStarting(Point linearVelocity)
 	{
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, new Vector3((float)linearVelocity.X, (float)linearVelocity.Y, 0), requestId: 0, isFromPointerWheel: false));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, new Vector3((float)linearVelocity.X, (float)linearVelocity.Y, 0), requestId: 0));
 	}
 
-	internal override void ReceivePointerWheel(int delta, bool isHorizontal)
+	internal override void ReceivePointerWheel(double delta, bool isHorizontal)
 	{
 	}
 
@@ -52,6 +62,21 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 	}
 
 	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId)
+	{
+		_interactionTracker.Owner?.RequestIgnored(_interactionTracker, new InteractionTrackerRequestIgnoredArgs(requestId));
+	}
+
+	internal override void TryUpdateScale(float value, Vector3 centerPoint, int requestId)
+	{
+		_interactionTracker.Owner?.RequestIgnored(_interactionTracker, new InteractionTrackerRequestIgnoredArgs(requestId));
+	}
+
+	internal override void TryUpdatePositionWithAnimation(CompositionAnimation animation, int requestId)
+	{
+		_interactionTracker.Owner?.RequestIgnored(_interactionTracker, new InteractionTrackerRequestIgnoredArgs(requestId));
+	}
+
+	internal override void TryUpdateScaleWithAnimation(CompositionAnimation animation, Vector3 centerPoint, int requestId)
 	{
 		_interactionTracker.Owner?.RequestIgnored(_interactionTracker, new InteractionTrackerRequestIgnoredArgs(requestId));
 	}

@@ -2,6 +2,7 @@
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Rendering;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers.Boxes;
 
 #nullable enable
 
@@ -15,7 +16,7 @@ namespace Microsoft.UI.Xaml
 		public FocusState FocusState
 		{
 			get => GetFocusStateValue();
-			set => SetFocusStateValue(value);
+			internal set => SetFocusStateValue(value);
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = default(FocusState))]
@@ -33,7 +34,7 @@ namespace Microsoft.UI.Xaml
 				typeof(bool),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(
-					(bool)false, // This is true for Control descendants (handled by overriding the default in the Control constructor
+					BoolBoxes.False, // This is true for Control descendants (handled by overriding the default in the Control constructor
 					(s, e) => ((UIElement)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
 			);
@@ -194,9 +195,6 @@ namespace Microsoft.UI.Xaml
 		internal bool IsEnabledInternal() => IsEnabled();
 
 		internal
-#if __ANDROID__
-			new
-#endif
 			bool IsFocused => FocusState != FocusState.Unfocused;
 
 		internal bool IsKeyboardFocused => FocusState == FocusState.Keyboard;

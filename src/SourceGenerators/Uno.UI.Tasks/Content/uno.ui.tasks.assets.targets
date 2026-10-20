@@ -84,7 +84,6 @@
 					'$(TargetPlatformIdentifier)'=='android'
 					or '$(TargetPlatformIdentifier)'=='ios'
 					or '$(TargetPlatformIdentifier)'=='macos'
-					or '$(TargetPlatformIdentifier)'=='maccatalyst'
 					or '$(TargetPlatformIdentifier)'=='tvos'
 					or '$(TargetPlatformIdentifier)'=='desktop'
 					or '$(TargetPlatformIdentifier)'=='browserwasm'

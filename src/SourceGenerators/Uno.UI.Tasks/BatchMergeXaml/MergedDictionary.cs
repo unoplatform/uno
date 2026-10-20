@@ -57,6 +57,8 @@ namespace Uno.UI.Tasks.BatchMerge
 
 		public void FinalizeXaml()
 		{
+			UpdateIgnorableNamespaces();
+
 			if (mergedThemeDictionaryByKeyDictionary.Keys.Count > 0)
 			{
 				XmlElement themeDictionariesElement = owningDocument.CreateElement("ResourceDictionary.ThemeDictionaries", "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
@@ -109,9 +111,49 @@ namespace Uno.UI.Tasks.BatchMerge
 			namespaceList = new List<string>();
 			this.parentDictionary = parentDictionary;
 
-			AddNamespace("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
-			xmlElement.SetAttribute("Ignorable", "http://schemas.openxmlformats.org/markup-compatibility/2006", "ios android wasm skia");
+			AddNamespace("mc", McNamespace);
+
+			// Set now so the attribute keeps its position; the value is only known once every page is merged.
+			xmlElement.SetAttribute("Ignorable", McNamespace, string.Empty);
 		}
+
+		/// <summary>
+		/// Declares Uno's conditional namespaces ignorable, since the WinAppSDK XAML compiler cannot resolve them.
+		/// </summary>
+		private void UpdateIgnorableNamespaces()
+		{
+			var root = this;
+			while (root.parentDictionary != null)
+			{
+				root = root.parentDictionary;
+			}
+
+			var prefixes = new List<string>();
+
+			foreach (XmlAttribute attribute in root.xmlElement.Attributes)
+			{
+				if (attribute.Prefix == "xmlns" && IsConditionalNamespace(attribute.Value))
+				{
+					prefixes.Add(attribute.LocalName);
+				}
+			}
+
+			prefixes.Sort(StringComparer.Ordinal);
+
+			if (prefixes.Count > 0)
+			{
+				xmlElement.SetAttribute("Ignorable", McNamespace, string.Join(" ", prefixes));
+			}
+			else
+			{
+				xmlElement.RemoveAttribute("Ignorable", McNamespace);
+			}
+		}
+
+		private static bool IsConditionalNamespace(string namespaceUri)
+			=> namespaceUri.StartsWith("http://uno.ui/", StringComparison.Ordinal)
+				|| namespaceUri.StartsWith("http://platform.uno/", StringComparison.Ordinal)
+				|| namespaceUri.StartsWith("http://nventive.com/", StringComparison.Ordinal);
 
 		private void AddNamespace(string xmlnsString, string namespaceString)
 		{
@@ -356,6 +398,8 @@ namespace Uno.UI.Tasks.BatchMerge
 				parentDictionary.RemoveAncestorNodesWithKey(key);
 			}
 		}
+
+		private const string McNamespace = "http://schemas.openxmlformats.org/markup-compatibility/2006";
 
 		private XmlElement xmlElement;
 		private XmlDocument owningDocument;

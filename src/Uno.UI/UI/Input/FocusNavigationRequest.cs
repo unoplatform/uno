@@ -16,7 +16,7 @@ public partial class FocusNavigationRequest
 	/// <summary>
 	/// Gets the unique ID generated when a focus movement event is initiated.
 	/// </summary>
-	public Guid CorrelationId { get; init; }
+	public Guid CorrelationId { get; internal init; }
 
 	/// <summary>
 	/// Gets the reason for a focus navigation event.
@@ -26,7 +26,7 @@ public partial class FocusNavigationRequest
 	/// <summary>
 	/// Gets the bounding rectangle used to identify the focus candidates most likely to receive navigation focus.
 	/// </summary>
-	public Rect? HintRect { get; init; }
+	public Rect? HintRect { get; internal init; }
 
 	/// <summary>
 	/// Creates an instance of FocusNavigationRequest using the specified FocusNavigationReason.

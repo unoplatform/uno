@@ -77,20 +77,30 @@ namespace Uno.WinAppSDKSyncGenerator
 
 			var writtenMethods = new List<IMethodSymbol>();
 
+			if (type.TypeKind == TypeKind.Class)
+			{
+				EnsureMatchingStaticness(type, allSymbols);
+			}
+
 			var winAppSDKAttributes = type.GetAttributes().Where(a => !IsIgnoredAttribute(a)).ToList();
 
 			// Determine which platforms are missing each attribute so we can
 			// wrap with #if guards and avoid duplicate attribute errors (CS0579)
 			// when a hand-written partial already provides the attribute on some platforms.
-			var platformMissingSets = new (string define, INamedTypeSymbol symbol)[]
-			{
-				(AndroidDefine, allSymbols.AndroidSymbol),
-				(iOSDefine, allSymbols.IOSSymbol),
-				(tvOSDefine, allSymbols.TvOSSymbol),
-				(WasmDefine, allSymbols.WasmSymbol),
-				(SkiaDefine, allSymbols.SkiaSymbol),
-				(NetStdReferenceDefine, allSymbols.NetStdReferenceSymbol),
-			};
+			var platformMissingSets = CurrentTypeEmitsNonSkiaDefines
+				? new (string define, INamedTypeSymbol symbol)[]
+				{
+					(AndroidDefine, allSymbols.AndroidSymbol),
+					(iOSDefine, allSymbols.IOSSymbol),
+					(tvOSDefine, allSymbols.TvOSSymbol),
+					(WasmDefine, allSymbols.WasmSymbol),
+					(SkiaDefine, allSymbols.SkiaSymbol),
+					(NetStdReferenceDefine, allSymbols.NetStdReferenceSymbol),
+				}
+				: new (string define, INamedTypeSymbol symbol)[]
+				{
+					(SkiaDefine, allSymbols.SkiaSymbol),
+				};
 
 			var perPlatformMissing = platformMissingSets
 				.Select(p => (p.define, missing: GetMissingAttributes(winAppSDKAttributes, p.symbol).ToHashSet(AttributeDataClassComparer.Instance)))
@@ -198,8 +208,6 @@ namespace Uno.WinAppSDKSyncGenerator
 							// The type in reference compilation (UWP/WinUI) doesn't have an accessible constructor.
 							// So, generated code will generate an internal constructor if there is no constructor defined by individual platforms.
 							// TODO: Consider producing an error if the individual platforms has a publicly accessible constructor.
-							// TODO: GetAllGetNonGeneratedMembers will get members from base types.
-							// This generally doesn't look right, and more specifically for this code path, it's definitely not correct.
 							var nonGeneratedConstructors = GetAllGetNonGeneratedMembers(
 								allSymbols,
 								WellKnownMemberNames.InstanceConstructorName,
@@ -221,6 +229,7 @@ namespace Uno.WinAppSDKSyncGenerator
 						BuildProperties(type, b, allSymbols);
 						BuildMethods(type, b, allSymbols, writtenMethods);
 						BuildEvents(type, b, allSymbols);
+						BuildStructEquality(type, b, allSymbols);
 					}
 
 					BuildFields(type, b, allSymbols);
@@ -228,6 +237,7 @@ namespace Uno.WinAppSDKSyncGenerator
 					if (type.TypeKind != TypeKind.Enum)
 					{
 						BuildInterfaceImplementations(type, b, allSymbols, writtenMethods);
+						BuildOverrideTypeMismatchErrors(b, allSymbols);
 					}
 				}
 
@@ -246,6 +256,22 @@ namespace Uno.WinAppSDKSyncGenerator
 						}
 						MissingEnumMembers = null;
 					}
+				}
+			}
+		}
+
+		private static void EnsureMatchingStaticness(INamedTypeSymbol type, PlatformSymbols<INamedTypeSymbol> allSymbols)
+		{
+			var unoSymbols = new[] { allSymbols.AndroidSymbol, allSymbols.IOSSymbol, allSymbols.TvOSSymbol, allSymbols.NetStdReferenceSymbol, allSymbols.WasmSymbol, allSymbols.SkiaSymbol };
+
+			foreach (var unoSymbol in unoSymbols)
+			{
+				// Generated/ is deleted before loading, so only hand-written declarations are visible here.
+				if (unoSymbol is { DeclaringSyntaxReferences.Length: > 0 } && unoSymbol.IsStatic != type.IsStatic)
+				{
+					var declarations = string.Join(", ", unoSymbol.DeclaringSyntaxReferences.Select(r => r.SyntaxTree.FilePath));
+					throw new InvalidOperationException(
+						$"'{type.ToDisplayString()}' must {(type.IsStatic ? "" : "not ")}be static to match WinAppSDK ({declarations}).");
 				}
 			}
 		}

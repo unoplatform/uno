@@ -129,7 +129,10 @@ namespace Uno.UI.Samples.Behaviors
 			{
 				if (splitView.IsPaneOpen && GetCloseOnClick(element))
 				{
-					splitView.IsPaneOpen = false;
+					if (splitView.DisplayMode is SplitViewDisplayMode.Overlay or SplitViewDisplayMode.CompactOverlay)
+					{
+						splitView.IsPaneOpen = false;
+					}
 				}
 				else if (!splitView.IsPaneOpen && GetOpenOnClick(element))
 				{
@@ -140,26 +143,6 @@ namespace Uno.UI.Samples.Behaviors
 			}
 			#endregion
 
-			#region BindableDrawerLayout
-#if __ANDROID__
-			//This handles if projects still use BindableDrawerLayout for android.
-			var bindableDrawer = element.FindFirstParent<BindableDrawerLayout>();
-
-			if (bindableDrawer != null)
-			{
-				if (bindableDrawer.IsLeftPaneOpen && GetCloseOnClick(element))
-				{
-					bindableDrawer.IsLeftPaneOpen = false;
-				}
-				else if (!bindableDrawer.IsLeftPaneOpen && GetOpenOnClick(element))
-				{
-					bindableDrawer.IsLeftPaneOpen = true;
-				}
-
-				return;
-			}
-#endif
-			#endregion
 		}
 	}
 }

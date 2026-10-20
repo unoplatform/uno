@@ -13,13 +13,13 @@ namespace Uno.UI.Extensions
 	{
 		// Matches WinUI's CDependencyObject::GetVisualTree / CDependencyObject::SetVisualTree.
 		// In WinUI, every CDependencyObject has an m_pVisualTree field.
-		// In Uno, this is stored on DependencyObjectStore so all DependencyObject types get it.
+		// In Uno, this is stored on DependencyObject so all DependencyObject types get it.
 
 		internal static VisualTree? GetVisualTree(this DependencyObject dependencyObject)
 		{
-			if (dependencyObject is IDependencyObjectStoreProvider provider)
+			if (dependencyObject is DependencyObject provider)
 			{
-				return provider.Store.VisualTreeCache;
+				return provider.VisualTreeCache;
 			}
 
 			return null;
@@ -27,9 +27,9 @@ namespace Uno.UI.Extensions
 
 		internal static void SetVisualTree(this DependencyObject dependencyObject, VisualTree visualTree)
 		{
-			if (dependencyObject is IDependencyObjectStoreProvider provider)
+			if (dependencyObject is DependencyObject provider)
 			{
-				provider.Store.VisualTreeCache = visualTree;
+				provider.VisualTreeCache = visualTree;
 			}
 		}
 	}

@@ -3,13 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-#if __ANDROID__
-using Android.Views;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-#else
-using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -54,24 +47,4 @@ partial class StackPanel
 	}
 
 	internal override Orientation? PhysicalOrientation => Orientation;
-
-	protected override bool? IsWidthConstrainedInner(View requester)
-	{
-		if (requester != null && Orientation == Orientation.Horizontal)
-		{
-			return false;
-		}
-
-		return this.IsWidthConstrainedSimple();
-	}
-
-	protected override bool? IsHeightConstrainedInner(View requester)
-	{
-		if (requester != null && Orientation == Orientation.Vertical)
-		{
-			return false;
-		}
-
-		return this.IsHeightConstrainedSimple();
-	}
 }

@@ -31,7 +31,7 @@ if (OperatingSystem.IsBrowser())
 }
 ```
 
-When building an application that uses the Skia renderer, it is generally best to use such conditionals in order to build for only one target framework in class libraries (e.g., when only targeting `net10.0`, without a platform specifier like `net10.0-ios`).
+In a class library, a single `net10.0` target framework combined with these runtime checks keeps build times down and produces one asset every Uno Platform head can consume. Add `net10.0-ios` or `net10.0-android` target frameworks when the library needs types from a platform SDK, which a `net10.0` assembly cannot reference.
 
 > [!NOTE]
 > [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) and [BrowserHtmlElement](xref:Uno.Interop.WasmJavaScript1) are available on all platforms targeting .NET 7 and later, and code using those APIs to be conditionally excluded at compile time, and should only use `OperatingSystem` conditions.
@@ -50,19 +50,34 @@ Console.WriteLine("Windows - Built with Microsoft's own tooling");
 
 If the supplied condition is not met, e.g. if `__UNO__` is not defined, then the enclosed code will be ignored by the compiler.
 
-The following conditional symbols are predefined for each Uno platform:
+The following conditional symbols are predefined for each Uno platform. Application heads and class libraries get the same set, whether or not they use the Uno.Sdk:
 
 | Platform        | Symbol             | Remarks |
 | --------------- | ------------------ | ------- |
-| Android         | `__ANDROID__`      | |
-| iOS             | `__IOS__`          | |
-| tvOS            | `__TVOS__`         | |
-| Catalyst        | `__MACCATALYST__`  | |
-| iOS or tvOS or Catalyst | `__APPLE_UIKIT__` | |
-| WebAssembly     | `__WASM__`         | Only available in the `net10.0-browserwasm` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
-| Desktop         | `__DESKTOP__`      | Only available in the `net10.0-desktop` target framework. |
-| Skia            | `__UNO_SKIA__`     | Only available with `SkiaRenderer` feature. |
-| _Non-Windows_   | `__UNO__`          | To learn about symbols available when `__UNO__` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
+| Android         | `__ANDROID__`      | `net10.0-android` |
+| iOS             | `__IOS__`          | `net10.0-ios` |
+| tvOS            | `__TVOS__`         | `net10.0-tvos` |
+| iOS or tvOS     | `__APPLE_UIKIT__`  | `net10.0-ios` and `net10.0-tvos` |
+| WebAssembly     | `__WASM__`         | `net10.0-browserwasm`. The .NET SDK also defines `BROWSERWASM` for this target framework |
+| Desktop         | `__DESKTOP__`      | `net10.0-desktop`. The .NET SDK also defines `DESKTOP` for this target framework |
+| _Non-Windows_   | `__UNO__`          | Every target framework except the WinAppSDK one. This is the C# equivalent of the `not_winappsdk:` XAML prefix and of `*.crossruntime.cs`. To learn about symbols available when `__UNO__` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
+| _Non-Windows_   | `HAS_UNO`          | Identical to `__UNO__` |
+
+Symbols such as `__SKIA__`, `__CROSSRUNTIME__` or `WINAPPSDK` appear in the Uno Platform source code but are never defined in your projects. See [Preprocessor symbols in the Uno Platform repository](xref:Uno.Contributing.PreprocessorSymbols) for what they mean and what to use instead.
+
+### Legacy symbols
+
+These symbols are defined wherever `__UNO__` is, so existing code keeps compiling. Use `__UNO__` in new code.
+
+| Symbol              | Remarks |
+| ------------------- | ------- |
+| `UNO_REFERENCE_API` | Despite the name, it has nothing to do with reference assemblies |
+| `HAS_UNO_WINUI`     | Dates from when Uno Platform shipped both a UWP and a WinUI flavor |
+| `HAS_UNO_SKIA`, `__UNO_SKIA__` | **Deprecated**, planned for removal in Uno Platform 8.0. They do not name a drawing backend: `Uno.UI` is compiled once and resolves its backend at run time |
+
+**Each platform symbol is only defined in the target framework that provides it.** In an application head, which targets `net10.0-ios`, `net10.0-android`, `net10.0-browserwasm`, and `net10.0-desktop` directly, `#if` blocks behave as described above.
+
+In a class library, `#if` blocks behave the same way. The asset built for `net10.0-ios` or `net10.0-android` is the one an iOS or Android head consumes, so its conditional code is the code that runs — see [Implications for iOS/Android class libraries](xref:uno.features.renderer.skia#implications-for-iosandroid-class-libraries). A library that targets only `net10.0` has none of the platform symbols defined; use `OperatingSystem.IsXXX` runtime checks there.
 
 > [!TIP]
 > Conditionals can be combined with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. It is also possible to define custom conditional compilation symbols per project in the 'Build' tab in the project's properties.
@@ -71,12 +86,15 @@ The following conditional symbols are predefined for each Uno platform:
 
 On `net10.0-windows10.0.xxxxx` target framework, an Uno Platform application isn't using Uno.UI at all. It's compiled using Microsoft's own tooling. For that reason, the `__UNO__` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
 
-Apps generated with the default `unoapp` solution template use **Windows App SDK** when targeting Windows. While this is the recommended path for new Windows apps, some solutions instead use **UWP** to target Windows. Both app models define a different conditional symbol:
+Apps targeting Windows use **Windows App SDK**. The following symbols are available there:
 
 | App model   | Symbol        | Remarks       |
 | ----------- | ------------- | ------------- |
+| Windows App SDK | `WINDOWS` | Defined by the .NET SDK for `net10.0-windows10.0.xxxxx` |
 | Windows App SDK | `WINDOWS10_0_18362_0_OR_GREATER`  | Depending on the `TargetFramework` value, the _18362_ part may need adjustment |
-| Universal Windows Platform         | `NETFX_CORE`  | No longer defined in new apps by default |
+| Windows App SDK, packaged | `WINAPPSDK_PACKAGED` | Defined by the Uno.Sdk when the app is packaged as MSIX (`WindowsPackageType` is `MSIX`, the default when a `Package.appxmanifest` is present) |
+
+UWP heads, and the `NETFX_CORE` symbol they defined, are not supported as of Uno Platform 7.0.
 
 ## Type aliases
 
@@ -88,7 +106,7 @@ using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 ...
@@ -105,20 +123,24 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 * `*.wasm.cs` is built only for `net10.0-browserwasm`
 * `*.browserwasm.cs` is built only for `net10.0-browserwasm`
 * `*.desktop.cs` is built only for `net10.0-desktop`
-* `*.iOS.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst`
+* `*.iOS.cs` is built only for `net10.0-ios`
 * `*.tvOS.cs` is built only for `net10.0-tvos`
-* `*.UIKit.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst` and `net10.0-tvos`
-* `*.Apple.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst` and `net10.0-tvos`
+* `*.UIKit.cs` is built only for `net10.0-ios` and `net10.0-tvos`
 * `*.Android.cs` is built only for `net10.0-android`
 * `*.WinAppSDK.cs` is built only for `net10.0-windows10` (eg. `net10.0-windows10.0.22621`)
+* `*.crossruntime.cs` and `*.skia.cs` are built for every target framework except `net10.0-windows10`
 
-In addition, for class libraries:
-
-* `*.reference.cs` is built only for reference implementation
-* `*.crossruntime.cs` is built for WebAssembly, Desktop, and reference implementation
+`*.crossruntime.cs` and `*.skia.cs` are equivalent, and hold code for the target frameworks Uno Platform renders itself as opposed to the WinAppSDK one. Neither names a drawing backend: `Uno.UI` is compiled once and resolves its backend at run time.
 
 > [!NOTE]
-> For backwards compatibility, using `.skia.cs` is currently equivalent to `.desktop.cs`. This might change in the future, so we recommend using the suffixes above instead.
+> Before Uno Platform 7.0, `*.skia.cs` and `*.crossruntime.cs` were built only for `net10.0-desktop`, which made `*.skia.cs` an alias of `*.desktop.cs`. A file that is genuinely desktop-only should be renamed to `*.desktop.cs`.
+
+<!-- Separates two adjacent alerts, which markdownlint would otherwise read as one blockquote (MD028). -->
+
+> [!NOTE]
+> `*.reference.cs`, `*.iOSmacOS.cs` and `*.Apple.cs` are no longer recognized. `*.reference.cs` and
+> `*.iOSmacOS.cs` named build flavors that no longer exist and can be removed; rename `*.Apple.cs` to
+> `*.UIKit.cs`, which always had the identical rule.
 
 Using file name conventions allows for reducing the use of `#if` compiler directives.
 
@@ -166,3 +188,6 @@ public partial class NativeWrapperControl : Control {
 ```
 
 You can use [partial methods](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods#partial-methods) when only one platform needs specialized logic.
+
+> [!TIP]
+> To place the native view this pattern creates into the visual tree, see [Embedding native controls](xref:Uno.Skia.Embedding.Native).

@@ -1,0 +1,25 @@
+<Project>
+	<!--
+		Include all required PackageReference to be available before any target is executed
+		in order for VS and C# Dev Kit to show nuget references in their respective solution explorers.
+		The version is not required, and VS/Code waits for some design-time targets to be executed to evaluate it.
+	-->
+	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
+
+	<!--
+		Uno.Extensions.Logging.OSLog and Microsoft.Maui.Controls (see the iOS counterpart)
+		ship no tvOS asset, so they are intentionally not injected here.
+	-->
+
+	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.AppleUIKit" ProjectSystem="true" />
+		<!-- Native libraries are referenced explicitly rather than left to the managed SkiaSharp / HarfBuzzSharp
+		     packages' own dependencies. HarfBuzz shapes text for the font providers in Uno.WinUI; Skia is the skia feature's. -->
+		<_UnoProjectSystemPackageReference Include="HarfBuzzSharp.NativeAssets.tvOS" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.tvOS" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.AppleUIKit" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
+	</ItemGroup>
+</Project>

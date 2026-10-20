@@ -1,5 +1,4 @@
-﻿#if !__ANDROID__
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Buffers;
 using System.Linq;
@@ -83,4 +82,3 @@ public partial class RenderTargetBitmap
 		protected override void Dispose(bool disposing) { }
 	}
 }
-#endif

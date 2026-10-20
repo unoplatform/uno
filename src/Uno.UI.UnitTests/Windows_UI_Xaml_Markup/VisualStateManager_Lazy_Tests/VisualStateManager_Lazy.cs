@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests.Controls;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -13,7 +14,7 @@ using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 {
-	[TestClass]
+	[UITestClass]
 	public class VisualStateManager_Lazy
 	{
 		[TestInitialize]

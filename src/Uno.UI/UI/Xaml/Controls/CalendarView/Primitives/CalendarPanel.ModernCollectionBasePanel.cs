@@ -448,11 +448,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_effectiveViewport.Y += newOffset - currentOffset;			
 #endif
 
-				sv.ChangeView(
+				// The offset comes from this panel's estimated bounds, ahead of the extent the ScrollViewer was arranged with.
+				sv.ChangeViewForLayoutAdjustment(
 					horizontalOffset: null,
 					verticalOffset: newOffset,
-					zoomFactor: null,
-					forceSynchronous);
+					disableAnimation: forceSynchronous);
 
 				// Makes sure the container of the requested date is materialized before the end of this method
 				base_MeasureOverride(_lastLayoutedViewport.Size);
@@ -472,8 +472,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			int focusedIndex,
 			ElementType elementType,
 			KeyNavigationAction action,
-			object o,
-			int i,
+			bool allowWrap,
+			int itemIndexHintForHeaderNavigation,
 			out uint newFocusedIndexUint,
 			out ElementType newFocusedType,
 			out bool actionValidForSourceIndex)
@@ -554,11 +554,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ForceConfigViewport(viewport.Size);
 
 			_layoutStrategy.BeginMeasure();
-#if __ANDROID__
-			using var a = PreventRequestLayout();
-#else
 			ShouldInterceptInvalidate = true;
-#endif
 			int index = -1, startIndex = 0, firstVisibleIndex = -1, lastVisibleIndex = -1;
 			var bottom = 0.0;
 			try
@@ -683,9 +679,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				// We force the parent ScrollViewer to use the same viewport as us, no matter its own stretching.
 				ViewportHeight = viewport.Height;
 
-#if !__ANDROID__
 				ShouldInterceptInvalidate = false;
-#endif
 				_layoutStrategy.EndMeasure();
 			}
 

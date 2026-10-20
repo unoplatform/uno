@@ -3,20 +3,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Data
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct LoadMoreItemsResult
+	public partial struct LoadMoreItemsResult : global::System.IEquatable<global::Microsoft.UI.Xaml.Data.LoadMoreItemsResult>
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.LoadMoreItemsResult()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public LoadMoreItemsResult(uint _Count)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Data.LoadMoreItemsResult", "LoadMoreItemsResult(uint _Count)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.LoadMoreItemsResult(uint)
+		// Skipping already declared method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.operator ==(Microsoft.UI.Xaml.Data.LoadMoreItemsResult, Microsoft.UI.Xaml.Data.LoadMoreItemsResult)
+		// Skipping already declared method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.operator !=(Microsoft.UI.Xaml.Data.LoadMoreItemsResult, Microsoft.UI.Xaml.Data.LoadMoreItemsResult)
+		// Skipping already declared method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.Equals(Microsoft.UI.Xaml.Data.LoadMoreItemsResult)
+		// Skipping already declared method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.Equals(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.GetHashCode()
 		// Skipping already declared field Microsoft.UI.Xaml.Data.LoadMoreItemsResult.Count
 	}
 }

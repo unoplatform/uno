@@ -628,7 +628,7 @@ partial class TimePicker
 			m_epHourSelectionChangedHandler.Disposable = Disposable.Create(() => m_tpHourPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
 			strAutomationName = AutomationProperties.GetName(m_tpHourPicker);
-			if (strAutomationName == null)
+			if (string.IsNullOrEmpty(strAutomationName))
 			{
 				strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_TIMEPICKER_HOUR);
 				strComboAutomationName = strAutomationName + strParentAutomationName;
@@ -641,7 +641,7 @@ partial class TimePicker
 			m_epMinuteSelectionChangedHandler.Disposable = Disposable.Create(() => m_tpMinutePicker.SelectionChanged -= OnSelectorSelectionChanged);
 
 			strAutomationName = AutomationProperties.GetName(m_tpMinutePicker);
-			if (strAutomationName == null)
+			if (string.IsNullOrEmpty(strAutomationName))
 			{
 				strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_TIMEPICKER_MINUTE);
 				strComboAutomationName = strAutomationName + strParentAutomationName;
@@ -654,7 +654,7 @@ partial class TimePicker
 			m_epPeriodSelectionChangedHandler.Disposable = Disposable.Create(() => m_tpPeriodPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
 			strAutomationName = AutomationProperties.GetName(m_tpPeriodPicker);
-			if (strAutomationName == null)
+			if (string.IsNullOrEmpty(strAutomationName))
 			{
 				strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_TIMEPICKER_PERIOD);
 				strComboAutomationName = strAutomationName + strParentAutomationName;
@@ -1160,13 +1160,8 @@ partial class TimePicker
 		bool secondHostPopulated = false;
 		bool thirdHostPopulated = false;
 		bool isRTL = false;
-		GridLength starGridLength = default;
-		GridLength zeroGridLength = default;
-
-		zeroGridLength.GridUnitType = GridUnitType.Pixel;
-		zeroGridLength.Value = 0.0;
-		starGridLength.GridUnitType = GridUnitType.Star;
-		starGridLength.Value = 1.0;
+		GridLength starGridLength = new(1.0, GridUnitType.Star);
+		GridLength zeroGridLength = new(0.0, GridUnitType.Pixel);
 
 		GetOrder(ref hourOrder, ref minuteOrder, ref periodOrder, ref isRTL);
 

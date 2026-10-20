@@ -237,6 +237,13 @@ internal static class SubPropertyHelpers
 	{
 		if (subPropertyName.Length == 0)
 		{
+			// A scalar assigned to a whole vector broadcasts to every component (WinUI semantics).
+			// LottieGen animates e.g. a shape's Scale with a single scalar keyframe for uniform show/hide.
+			if (propertyValue is float scalar)
+			{
+				return new Vector2(scalar);
+			}
+
 			return ValidateValue<Vector2>(propertyValue);
 		}
 
@@ -260,6 +267,11 @@ internal static class SubPropertyHelpers
 	{
 		if (subPropertyName.Length == 0)
 		{
+			if (propertyValue is float scalar)
+			{
+				return new Vector3(scalar);
+			}
+
 			return ValidateValue<Vector3>(propertyValue);
 		}
 
@@ -293,6 +305,11 @@ internal static class SubPropertyHelpers
 	{
 		if (subPropertyName.Length == 0)
 		{
+			if (propertyValue is float scalar)
+			{
+				return new Vector4(scalar);
+			}
+
 			return ValidateValue<Vector4>(propertyValue);
 		}
 
@@ -578,39 +595,39 @@ internal static class SubPropertyHelpers
 			var propertyNameString = propertyName.ToString();
 			if (properties.TryGetBoolean(propertyNameString, out _) == CompositionGetValueStatus.Succeeded)
 			{
-				properties.InsertBoolean(propertyNameString, ValidateValue<bool>(propertyValue));
+				properties.SetValueFromAnimation(propertyNameString, ValidateValue<bool>(propertyValue));
 			}
 			else if (properties.TryGetColor(propertyNameString, out var color) == CompositionGetValueStatus.Succeeded)
 			{
-				properties.InsertColor(propertyNameString, UpdateColor(subPropertyName, color, propertyValue));
+				properties.SetValueFromAnimation(propertyNameString, UpdateColor(subPropertyName, color, propertyValue));
 			}
 			else if (properties.TryGetMatrix3x2(propertyNameString, out var matrix3x2) == CompositionGetValueStatus.Succeeded)
 			{
-				properties.InsertMatrix3x2(propertyNameString, UpdateMatrix3x2(subPropertyName, matrix3x2, propertyValue));
+				properties.SetValueFromAnimation(propertyNameString, UpdateMatrix3x2(subPropertyName, matrix3x2, propertyValue));
 			}
 			else if (properties.TryGetMatrix4x4(propertyNameString, out var matrix4x4) == CompositionGetValueStatus.Succeeded)
 			{
-				properties.InsertMatrix4x4(propertyNameString, UpdateMatrix4x4(subPropertyName, matrix4x4, propertyValue));
+				properties.SetValueFromAnimation(propertyNameString, UpdateMatrix4x4(subPropertyName, matrix4x4, propertyValue));
 			}
 			else if (properties.TryGetQuaternion(propertyNameString, out var quaternion) == CompositionGetValueStatus.Succeeded)
 			{
-				properties.InsertQuaternion(propertyNameString, UpdateQuaternion(subPropertyName, quaternion, propertyValue));
+				properties.SetValueFromAnimation(propertyNameString, UpdateQuaternion(subPropertyName, quaternion, propertyValue));
 			}
 			else if (properties.TryGetScalar(propertyNameString, out _) == CompositionGetValueStatus.Succeeded)
 			{
-				properties.InsertScalar(propertyNameString, ValidateValue<float>(propertyValue));
+				properties.SetValueFromAnimation(propertyNameString, ValidateValue<float>(propertyValue));
 			}
 			else if (properties.TryGetVector2(propertyNameString, out var vector2) == CompositionGetValueStatus.Succeeded)
 			{
-				properties.InsertVector2(propertyNameString, UpdateVector2(subPropertyName, vector2, propertyValue));
+				properties.SetValueFromAnimation(propertyNameString, UpdateVector2(subPropertyName, vector2, propertyValue));
 			}
 			else if (properties.TryGetVector3(propertyNameString, out var vector3) == CompositionGetValueStatus.Succeeded)
 			{
-				properties.InsertVector3(propertyNameString, UpdateVector3(subPropertyName, vector3, propertyValue));
+				properties.SetValueFromAnimation(propertyNameString, UpdateVector3(subPropertyName, vector3, propertyValue));
 			}
 			else if (properties.TryGetVector4(propertyNameString, out var vector4) == CompositionGetValueStatus.Succeeded)
 			{
-				properties.InsertVector4(propertyNameString, UpdateVector4(subPropertyName, vector4, propertyValue));
+				properties.SetValueFromAnimation(propertyNameString, UpdateVector4(subPropertyName, vector4, propertyValue));
 			}
 			else
 			{

@@ -4,17 +4,22 @@ uid: Uno.Controls.AppBarButton
 
 # AppBarButton
 
-The `AppBarButton` in **Uno** is designed to be used the same way you would use the `AppBarButton` on **WinUI**. In most cases, you should refer to the [official `AppBarButton` documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.appbarbutton).
+The `AppBarButton` in **Uno** is designed to be used the same way you would use the `AppBarButton` on **WinUI**. In most cases, you should refer to the [official `AppBarButton` documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.appbarbutton).
 
-When `AppBarButton` is used within a native `CommandBar`, its control template is completely ignored and can't be customized.
+## Legacy native CommandBar behavior (Uno Platform 6 and earlier)
 
-## Events
+> [!NOTE]
+> The tables, screenshots, and restrictions in this section describe the legacy native iOS `UINavigationBar` and Android `Toolbar` hosts used by `CommandBar`. Uno Platform 7.0 removed those native backends. These restrictions do not describe the WinUI or Skia-rendered `AppBarButton`; use the official control documentation for those renderers. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
+
+When `AppBarButton` was hosted within a legacy native `CommandBar`, its control template was ignored and could not be customized.
+
+### Events
 
 | Event   | Windows | iOS | Android | Comments |
 |---------|:-------:|:---:|:-------:|----------|
-| Clicked | x       | x   | x       |          |
+| Click   | x       | x   | x       |          |
 
-## Properties
+### Properties
 
 | Property        | Windows | iOS | Android | Comments                                   |
 |-----------------|:-------:|:---:|:-------:|--------------------------------------------|
@@ -29,7 +34,7 @@ When `AppBarButton` is used within a native `CommandBar`, its control template i
 
 *If it's not listed, assume it's not supported.*
 
-### Foreground
+#### Foreground
 
 Gets or sets a brush that describes the foreground color.
 
@@ -37,14 +42,14 @@ Gets or sets a brush that describes the foreground color.
 
 ![CommandBar AppBarButton Example - iOS - Foreground](assets/commandbar/ios/appbarbutton-foreground.png)
 
-#### Remarks
+##### Remarks
 
 - This changes the color of the `Content` (text) or `Icon`.
 - Only supports `SolidColorBrush`.
 - On **Android**, this only affects the color of `Icon`, not `Content` (text).
 - On **iOS**, the default value is blue.
 
-### Content
+#### Content
 
 Gets or sets the content of a `ContentControl`.
 
@@ -52,7 +57,7 @@ Gets or sets the content of a `ContentControl`.
 
 ![CommandBar AppBarButton Example - iOS - Content](assets/commandbar/ios/appbarbutton-content.png)
 
-#### Remarks
+##### Remarks
 
 - When given a `string`, its text will be displayed instead of the icon.
 - When given a `FrameworkElement`:
@@ -60,7 +65,7 @@ Gets or sets the content of a `ContentControl`.
   - the native pressed state and tooltip (Android only) won't work
 - Make sure to set `Icon` to null, as it takes priority over `Content`.
 
-### Icon
+#### Icon
 
 Gets or sets the graphic content of the app bar button.
 
@@ -68,11 +73,11 @@ Gets or sets the graphic content of the app bar button.
 
 ![CommandBar AppBarButton Example - iOS - Icon](assets/commandbar/ios/appbarbutton-icon.png)
 
-#### Remarks
+##### Remarks
 
 - Only supports `BitmapIcon` (with PNG).
 
-#### Recommended icon sizes (by scale)
+##### Recommended icon sizes (by scale)
 
 | Platform | 100%  | 150%  | 200%  | 300%  | 400%    |
 |----------|:-----:|:-----:|:-----:|:-----:|:-------:|
@@ -80,7 +85,7 @@ Gets or sets the graphic content of the app bar button.
 | Android  | 24x24 | 36x36 | 48x48 | 72x72 | 96x96   |
 | Windows  | 32x32 | 48x48 | 64x64 | 96x96 | 128x128 |
 
-### Label
+#### Label
 
 Gets or sets the text description displayed on the app bar button.
 
@@ -88,7 +93,7 @@ Gets or sets the text description displayed on the app bar button.
 
 ![CommandBar AppBarButton Example - iOS - Label](assets/commandbar/android/secondarycommands-popup.png)
 
-#### Remarks
+##### Remarks
 
 Unlike on **WinUI**, the `Label` will not be displayed below the `Icon`.
 
@@ -96,7 +101,7 @@ It is only displayed on **Android** when the `AppBarButton` is displayed from th
 
 It is highly recommended to set and localize `Label` on all `AppBarButton`s, if only for accessibility.
 
-### IsEnabled
+#### IsEnabled
 
 Gets or sets a value indicating whether the user can interact with the control.
 
@@ -104,7 +109,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 
 ![CommandBar AppBarButton Example - iOS - Disabled](assets/commandbar/ios/appbarbutton-disabled.png)
 
-#### Remarks
+##### Remarks
 
 - When set to **false**, buttons are disabled and grayed out (semi-transparent).
 - You can't customize the disabled visual state of buttons.

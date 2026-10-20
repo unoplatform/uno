@@ -13,27 +13,6 @@ namespace Uno.UI.RuntimeTests.IntegrationTests;
 [PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public class FrameIntegrationTests : BaseDxamlTestClass
 {
-#if HAS_UNO
-	private bool _originalFrameMode;
-#endif
-
-	[TestInitialize]
-	public void Init()
-	{
-#if HAS_UNO
-		_originalFrameMode = FeatureConfiguration.Frame.UseWinUIBehavior;
-		FeatureConfiguration.Frame.UseWinUIBehavior = true;
-#endif
-	}
-
-	[TestCleanup]
-	public void Cleanup()
-	{
-#if HAS_UNO
-		FeatureConfiguration.Frame.UseWinUIBehavior = _originalFrameMode;
-#endif
-	}
-
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task CanInstantiate()

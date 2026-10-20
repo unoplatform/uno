@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers.Boxes;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -113,7 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(AutoPlay),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(true, OnAutoPlayChanged));
+				new FrameworkPropertyMetadata(BoolBoxes.True, OnAutoPlayChanged));
 
 		private static void OnAutoPlayChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -141,62 +142,53 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFullWindow),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure, OnIsFullWindowChanged));
+				new FrameworkPropertyMetadata(BoolBoxes.False, FrameworkPropertyMetadataOptions.AffectsMeasure, OnIsFullWindowChanged));
 
 
 		private static void OnIsFullWindowChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
 			sender.Maybe<MediaPlayerElement>(mpe =>
 			{
+				if (mpe._mediaPlayerPresenter is not null)
+				{
+					mpe._mediaPlayerPresenter.IsFullWindow = (bool)args.NewValue;
+				}
+
 				mpe.ToggleFullScreen((bool)args.NewValue);
 			});
 		}
 
 		private void ToggleFullScreen(bool showFullscreen)
 		{
-			try
+			if (XamlRoot?.HostWindow is null || _mediaPlayerPresenter is null)
 			{
-				if (XamlRoot?.HostWindow is null)
+				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().LogWarning(
-							$"Cannot toggle Full Screen as the media player was not yet " +
-							$"loaded in the visual tree.");
-					}
-
-					return;
+					this.Log().LogWarning(
+						$"Cannot toggle Full Screen as the media player was not yet " +
+						$"loaded in the visual tree.");
 				}
 
+				return;
+			}
+
+			try
+			{
 				_mediaPlayerPresenter.IsTogglingFullscreen = true;
 
 				if (showFullscreen)
 				{
 					ApplicationView.GetForWindowId(XamlRoot.HostWindow.AppWindow.Id).TryEnterFullScreenMode();
 
-#if __ANDROID__
-					this.RemoveView(_layoutRoot);
-#elif __APPLE_UIKIT__
-					_layoutRoot.RemoveFromSuperview();
-#else
 					_mediaPlayerPresenter?.RequestFullScreen();
-#endif
-#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(_layoutRoot);
-#endif
 				}
 				else
 				{
 					ApplicationView.GetForWindowId(XamlRoot.HostWindow.AppWindow.Id).ExitFullScreenMode();
-#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(null);
-#endif
 
-#if __ANDROID__
-					this.AddView(_layoutRoot);
-#elif __APPLE_UIKIT__
-					this.Add(_layoutRoot);
-#elif __SKIA__ || __WASM__
+#if __SKIA__
 					this.AddChild(_layoutRoot);
 					_mediaPlayerPresenter?.ExitFullScreen();
 #else
@@ -219,7 +211,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
 			get { return (global::Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
-			set { SetValue(MediaPlayerProperty, value); }
+			internal set { SetValue(MediaPlayerProperty, value); }
 		}
 
 		public static DependencyProperty MediaPlayerProperty { get; } =
@@ -296,7 +288,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(AreTransportControlsEnabled),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+				new FrameworkPropertyMetadata(BoolBoxes.False, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -387,6 +379,12 @@ namespace Microsoft.UI.Xaml.Controls
 			_posterImage = this.GetTemplateChild(PosterImageName) as Image;
 			_mediaPlayerPresenter = this.GetTemplateChild(MediaPlayerPresenterName) as MediaPlayerPresenter;
 			_mediaPlayerPresenter?.SetOwner(this);
+			if (_mediaPlayerPresenter is not null)
+			{
+				// Hidden until the player reports a source; a re-applied template must not hide one already playing.
+				_mediaPlayerPresenter.Visibility = MediaPlayer?.Source is null ? Visibility.Collapsed : Visibility.Visible;
+				_mediaPlayerPresenter.IsFullWindow = IsFullWindow;
+			}
 
 			_transportControlsPresenter = this.GetTemplateChild(TransportControlsPresenterName) as ContentPresenter;
 			_transportControlsPresenter.Content = TransportControls;
@@ -406,6 +404,12 @@ namespace Microsoft.UI.Xaml.Controls
 				TransportControls?.SetMediaPlayer(MediaPlayer);
 				_isTransportControlsBound = true;
 			}
+
+			// MediaPlayerElement::UpdateIsFullWindow: honor a request made before the template was applied.
+			if (IsFullWindow)
+			{
+				ToggleFullScreen(true);
+			}
 		}
 
 		public void SetMediaPlayer(global::Windows.Media.Playback.MediaPlayer mediaPlayer)
@@ -415,19 +419,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void ToggleCompactOverlay(bool showCompactOverlay)
 		{
-#if __WASM__
-			if (_mediaPlayerPresenter != null)
-			{
-				if (showCompactOverlay)
-				{
-					_mediaPlayerPresenter.RequestCompactOverlay();
-				}
-				else
-				{
-					_mediaPlayerPresenter.ExitCompactOverlay();
-				}
-			}
-#endif
 		}
 
 	}

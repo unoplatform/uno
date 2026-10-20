@@ -1,0 +1,94 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Media.FontTests.VariableFontCollection"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Media.FontTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer Padding="20">
+        <StackPanel
+            MaxWidth="600"
+            HorizontalAlignment="Left"
+            Spacing="14">
+
+            <TextBlock
+                FontSize="20"
+                FontWeight="SemiBold"
+                Text="Font collection (.ttc) — family-name hint" />
+            <TextBlock
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="One file, SampleVariableCollection.ttc, packs two families (Inter + Bitter). The '#family' part of the FontFamily uri selects which face is loaded; each face is also a variable font (wght axis 100–900)."
+                TextWrapping="Wrap" />
+
+            <!--  #Inter selects the sans-serif face  -->
+            <TextBlock FontWeight="SemiBold" Text="...ttc#Inter" />
+            <TextBlock
+                FontFamily="ms-appx:///Assets/Fonts/VariableCollection/SampleVariableCollection.ttc#Inter"
+                FontSize="28"
+                FontWeight="300">
+                Inter — light 300
+            </TextBlock>
+            <TextBlock
+                FontFamily="ms-appx:///Assets/Fonts/VariableCollection/SampleVariableCollection.ttc#Inter"
+                FontSize="28"
+                FontWeight="400">
+                Inter — regular 400
+            </TextBlock>
+            <TextBlock
+                FontFamily="ms-appx:///Assets/Fonts/VariableCollection/SampleVariableCollection.ttc#Inter"
+                FontSize="28"
+                FontWeight="700">
+                Inter — bold 700
+            </TextBlock>
+
+            <!--  #Bitter selects the serif face from the same file  -->
+            <TextBlock FontWeight="SemiBold" Text="...ttc#Bitter" />
+            <TextBlock
+                FontFamily="ms-appx:///Assets/Fonts/VariableCollection/SampleVariableCollection.ttc#Bitter"
+                FontSize="28"
+                FontWeight="300">
+                Bitter — light 300
+            </TextBlock>
+            <TextBlock
+                FontFamily="ms-appx:///Assets/Fonts/VariableCollection/SampleVariableCollection.ttc#Bitter"
+                FontSize="28"
+                FontWeight="400">
+                Bitter — regular 400
+            </TextBlock>
+            <TextBlock
+                FontFamily="ms-appx:///Assets/Fonts/VariableCollection/SampleVariableCollection.ttc#Bitter"
+                FontSize="28"
+                FontWeight="700">
+                Bitter — bold 700
+            </TextBlock>
+
+            <!--  No hint falls back to the first face (index 0 = Inter)  -->
+            <TextBlock FontWeight="SemiBold" Text="...ttc (no hint → first face)" />
+            <TextBlock FontFamily="ms-appx:///Assets/Fonts/VariableCollection/SampleVariableCollection.ttc" FontSize="28">No hint loads face 0 (Inter)</TextBlock>
+
+            <Border
+                Margin="0,10,0,0"
+                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                BorderThickness="0,1,0,0" />
+
+            <TextBlock FontWeight="SemiBold" Text="Interactive — sweep the wght axis on the #Inter face" />
+            <Slider
+                x:Name="WeightSlider"
+                Maximum="900"
+                Minimum="100"
+                StepFrequency="1"
+                ValueChanged="OnWeightSliderValueChanged"
+                Value="400" />
+            <TextBlock x:Name="WeightLabel" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <TextBlock
+                x:Name="LiveText"
+                FontFamily="ms-appx:///Assets/Fonts/VariableCollection/SampleVariableCollection.ttc#Inter"
+                FontSize="44">
+                The quick brown fox
+            </TextBlock>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

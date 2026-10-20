@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SplitView : global::Microsoft.UI.Xaml.Controls.Control
@@ -12,14 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ContentProperty
 		// Skipping already declared property DisplayModeProperty
 		// Skipping already declared property IsPaneOpenProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LightDismissOverlayMode), typeof(global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.SplitView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode)));
-#endif
+		// Skipping already declared property LightDismissOverlayModeProperty
 		// Skipping already declared property OpenPaneLengthProperty
 		// Skipping already declared property PaneBackgroundProperty
 		// Skipping already declared property PanePlacementProperty
@@ -29,20 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Content
 		// Skipping already declared property DisplayMode
 		// Skipping already declared property IsPaneOpen
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
-			}
-			set
-			{
-				this.SetValue(LightDismissOverlayModeProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property LightDismissOverlayMode
 		// Skipping already declared property OpenPaneLength
 		// Skipping already declared property Pane
 		// Skipping already declared property PaneBackground

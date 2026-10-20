@@ -52,7 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 			SynchronizeMenuBar();
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// In WinUI, CDependencyObject::EnterImpl has EnterSparseProperties which propagates
 		// Enter to all DP values including the Items collection. In Uno, we need to do this explicitly.
 		// MenuBarItem.Items is an ObservableVector (not a DependencyObject), so the generic
@@ -90,7 +89,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
-#endif
 
 		// IUIElement / IUIElementOverridesHelper
 		protected override AutomationPeer OnCreateAutomationPeer()
@@ -111,23 +109,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void SynchronizeMenuBar()
 			=> m_menuBar = SharedHelpers.GetAncestorOfType<MenuBar>(VisualTreeHelper.GetParent(this));
-
-		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnDataContextChanged(e);
-
-			SetFlyoutDataContext();
-		}
-
-		private void SetFlyoutDataContext()
-		{
-			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
-			m_flyout?.SetValue(
-				MenuFlyout.DataContextProperty,
-				this.DataContext,
-				precedence: DependencyPropertyValuePrecedences.Inheritance
-			);
-		}
 
 		private void PopulateContent()
 		{
@@ -153,8 +134,6 @@ namespace Microsoft.UI.Xaml.Controls
 				m_button.IsAccessKeyScope = true;
 				m_button.ContextFlyout = flyout;
 			}
-
-			SetFlyoutDataContext();
 		}
 
 		private void AttachEventHandlers()

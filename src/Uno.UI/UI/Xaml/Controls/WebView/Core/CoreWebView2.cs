@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -10,8 +10,13 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
+using Uno.Web.WebView2.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Uno.Foundation.Extensibility;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -434,6 +439,21 @@ public partial class CoreWebView2
 			_webResourceRequestedSupport.WebResourceRequested -= OnNativeWebResourceRequested;
 			_webResourceRequestedSupport = null;
 		}
+	}
+
+	internal INativeWebView? GetNativeWebViewFromTemplate()
+	{
+		if (VisualTreeHelper.GetChild((DependencyObject)_owner, 0) is not ContentPresenter { Name: "WebViewTemplateRoot" } contentPresenter)
+		{
+			return null;
+		}
+
+		if (ApiExtensibility.CreateInstance<INativeWebViewProvider>(this, out var nativeWebViewProvider))
+		{
+			return nativeWebViewProvider.CreateNativeWebView(contentPresenter);
+		}
+
+		return null;
 	}
 }
 

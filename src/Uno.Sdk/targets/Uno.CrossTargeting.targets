@@ -1,43 +1,40 @@
 ﻿<Project>
 
 	<PropertyGroup Condition="'$(IsCrossruntime)' == ''">
-		<IsCrossruntime>false</IsCrossruntime>
-		<IsCrossruntime Condition="'$(UnoRuntimeIdentifier)'=='Skia' or '$(UnoRuntimeIdentifier)'=='WebAssembly' or '$(UnoRuntimeIdentifier)'=='Reference'">true</IsCrossruntime>
+		<!--
+		Every target framework Uno Platform provides is rendered by Uno itself; only the WinAppSDK one is
+		rendered by WinUI. Note this does not name a drawing backend: Uno.UI compiles once and selects its
+		backend at runtime.
+		-->
+		<IsCrossruntime>true</IsCrossruntime>
+		<IsCrossruntime Condition="$(IsWinAppSdk)">false</IsCrossruntime>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="**\*.crossruntime.cs" Exclude="bin\**\*.crossruntime.cs;obj\**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 		<Compile Remove="**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 
-		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
-		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
+		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="!$(IsBrowserWasm)" />
+		<Compile Remove="**\*.wasm.cs" Condition="!$(IsBrowserWasm)" />
 
-		<None Include="**\*.browserwasm.cs" Exclude="bin\**\*.browserwasm.cs;obj\**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
-		<Compile Remove="**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
+		<None Include="**\*.browserwasm.cs" Exclude="bin\**\*.browserwasm.cs;obj\**\*.browserwasm.cs" Condition="!$(IsBrowserWasm)" />
+		<Compile Remove="**\*.browserwasm.cs" Condition="!$(IsBrowserWasm)" />
 
-		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
-		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
+		<!-- .skia.cs is the historical spelling of .crossruntime.cs and carries the same meaning. -->
+		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="!$(IsCrossruntime)" />
+		<Compile Remove="**\*.skia.cs" Condition="!$(IsCrossruntime)" />
 
 		<None Include="**\*.desktop.cs" Exclude="bin\**\*.desktop.cs;obj\**\*.desktop.cs" Condition="!$(IsDesktop)" />
 		<Compile Remove="**\*.desktop.cs" Condition="!$(IsDesktop)" />
 
-		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
-		<Compile Remove="**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
+		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOS)" />
+		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOS)" />
 
-		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
-		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
-
-		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
-		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
-		
 		<None Include="**\*.tvOS.cs" Exclude="bin\**\*.tvOS.cs;obj\**\*.tvOS.cs" Condition="!$(IsTvOS)" />
 		<Compile Remove="**\*.tvOS.cs" Condition="!$(IsTvOS)" />
 
 		<None Include="**\*.UIKit.cs" Exclude="bin\**\*.UIKit.cs;obj\**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 		<Compile Remove="**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
-		
-		<None Include="**\*.Apple.cs" Exclude="bin\**\*.apple.cs;obj\**\*.Apple.cs" Condition="!$(IsAppleUIKit)" />
-		<Compile Remove="**\*.Apple.cs" Condition="!$(IsAppleUIKit)" />
 
 		<None Include="**\*.Android.cs" Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs" Condition="!$(IsAndroid)" />
 		<Compile Remove="**\*.Android.cs" Condition="!$(IsAndroid)" />
@@ -45,5 +42,35 @@
 		<None Include="**\*.WinAppSDK.cs" Exclude="bin\**\*.WinAppSDK.cs;obj\**\*.WinAppSDK.cs" Condition="!$(IsWinAppSDK)" />
 		<Compile Remove="**\*.WinAppSDK.cs" Condition="!$(IsWinAppSDK)" />
 	</ItemGroup>
+
+	<!-- These suffixes lost their rules in 7.0, so the files now compile for every target framework. -->
+	<Target Name="_UnoWarnRetiredFileSuffixes"
+			BeforeTargets="CoreCompile"
+			Condition="'$(DesignTimeBuild)' != 'true'">
+		<ItemGroup>
+			<_UnoRetiredSuffixFile Include="@(Compile)"
+								   Condition="$([System.String]::new('%(Compile.Identity)').ToLowerInvariant().EndsWith('.apple.cs'))"
+								   UnoSuffix=".Apple.cs"
+								   UnoAdvice="Rename it to *.UIKit.cs, which has the same rule." />
+			<_UnoRetiredSuffixFile Include="@(Compile)"
+								   Condition="$([System.String]::new('%(Compile.Identity)').ToLowerInvariant().EndsWith('.iosmacos.cs'))"
+								   UnoSuffix=".iOSmacOS.cs"
+								   UnoAdvice="Rename it to *.iOS.cs." />
+			<_UnoRetiredSuffixFile Include="@(Compile)"
+								   Condition="$([System.String]::new('%(Compile.Identity)').ToLowerInvariant().EndsWith('.reference.cs'))"
+								   UnoSuffix=".reference.cs"
+								   UnoAdvice="It used to compile for no target framework: delete it, or fold it into a *.crossruntime.cs file." />
+		</ItemGroup>
+
+		<Warning Code="UNOB0027"
+				 File="%(_UnoRetiredSuffixFile.Identity)"
+				 HelpLink="https://aka.platform.uno/UNOB0027"
+				 Text="The '%(_UnoRetiredSuffixFile.UnoSuffix)' file suffix is no longer recognized by Uno Platform 7.0, so this file now compiles for every target framework. %(_UnoRetiredSuffixFile.UnoAdvice) (See https://aka.platform.uno/UNOB0027)"
+				 Condition="'@(_UnoRetiredSuffixFile)' != ''" />
+
+		<ItemGroup>
+			<_UnoRetiredSuffixFile Remove="@(_UnoRetiredSuffixFile)" />
+		</ItemGroup>
+	</Target>
 
 </Project>

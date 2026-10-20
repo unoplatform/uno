@@ -4,6 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -21,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"AreCheckStatesEnabled",
 				typeof(bool),
 				typeof(RadioMenuFlyoutItem),
-				new FrameworkPropertyMetadata(false, OnAreCheckStatesEnabledPropertyChanged));
+				new FrameworkPropertyMetadata(BoolBoxes.False, OnAreCheckStatesEnabledPropertyChanged));
 
 		public string GroupName
 		{
@@ -32,13 +33,13 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty GroupNameProperty { get; } =
 			DependencyProperty.Register(nameof(GroupName), typeof(string), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(string.Empty, (s, e) => (s as RadioMenuFlyoutItem)?.OnPropertyChanged(e)));
 
-		public new bool IsChecked
+		public bool IsChecked
 		{
 			get { return (bool)GetValue(IsCheckedProperty); }
 			set { SetValue(IsCheckedProperty, value); }
 		}
 
-		public static new DependencyProperty IsCheckedProperty { get; } =
-			DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(false, (s, e) => (s as RadioMenuFlyoutItem)?.OnPropertyChanged(e)));
+		public static DependencyProperty IsCheckedProperty { get; } =
+			DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(BoolBoxes.False, (s, e) => (s as RadioMenuFlyoutItem)?.OnPropertyChanged(e)));
 	}
 }

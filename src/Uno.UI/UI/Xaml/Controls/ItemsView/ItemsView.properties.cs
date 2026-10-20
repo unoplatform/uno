@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference ItemsView.properties.cpp, tag winui3/release/1.5.0
+// MUX Reference ItemsView.properties.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -14,13 +15,13 @@ partial class ItemsView
 		nameof(CurrentItemIndex),
 		typeof(int),
 		typeof(ItemsView),
-		new FrameworkPropertyMetadata(defaultValue: -1, propertyChangedCallback: OnCurrentItemIndexPropertyChanged));
+		new FrameworkPropertyMetadata(defaultValue: IntBoxes.NegativeOne, propertyChangedCallback: OnCurrentItemIndexPropertyChanged));
 
 	public static DependencyProperty IsItemInvokedEnabledProperty { get; } = DependencyProperty.Register(
 		nameof(IsItemInvokedEnabled),
 		typeof(bool),
 		typeof(ItemsView),
-		new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: OnIsItemInvokedEnabledPropertyChanged));
+		new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False, propertyChangedCallback: OnIsItemInvokedEnabledPropertyChanged));
 
 	public static DependencyProperty ItemsSourceProperty { get; } = DependencyProperty.Register(
 		nameof(ItemsSource),
@@ -153,7 +154,7 @@ partial class ItemsView
 	public int CurrentItemIndex
 	{
 		get => (int)GetValue(CurrentItemIndexProperty);
-		private set => SetValue(CurrentItemIndexProperty, value);
+		private set => SetValue(CurrentItemIndexProperty, Boxer.Box(value));
 	}
 
 	public bool IsItemInvokedEnabled
@@ -181,9 +182,6 @@ partial class ItemsView
 	}
 
 	public
-#if __ANDROID__
-		new
-#endif
 		Layout Layout
 	{
 		get => (Layout)GetValue(LayoutProperty);

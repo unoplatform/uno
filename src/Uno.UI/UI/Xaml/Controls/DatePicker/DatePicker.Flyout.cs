@@ -2,6 +2,7 @@
 using Uno;
 using Uno.Foundation.Extensibility;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -14,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 			"UseNativeStyle",
 			typeof(bool),
 			typeof(DatePicker),
-			new FrameworkPropertyMetadata(DEFAULT_NATIVE_STYLE));
+			new FrameworkPropertyMetadata(Boxer.Box(DEFAULT_NATIVE_STYLE)));
 
 		/// <summary>
 		/// [UnoOnly] If we should use the native picker for the platform.
@@ -32,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 			"UseNativeMinMaxDates",
 			typeof(bool),
 			typeof(DatePicker),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		/// <summary>
 		/// [UnoOnly] When using native pickers (through the UseNativeStyle property),
@@ -75,20 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void InitPartial()
 		{
-#if __IOS__ || __ANDROID__
-			DatePickerFlyout CreateFlyout()
-			{
-				var f = UseNativeStyle
-					? new NativeDatePickerFlyout()
-					: CreateManagedDatePickerFlyout();
-
-				f.DatePicked += OnPicked;
-
-				return f;
-			}
-
-			_lazyFlyout = new Lazy<DatePickerFlyout>(CreateFlyout);
-#elif __SKIA__
+#if __SKIA__
 			_lazyFlyout = new Lazy<DatePickerFlyout>(() =>
 			{
 				// UseNativeStyle has to be inside the lambda because InitPartial is called in the constructor, at which point the user didn't yet had the chance to set UseNativeStyle.

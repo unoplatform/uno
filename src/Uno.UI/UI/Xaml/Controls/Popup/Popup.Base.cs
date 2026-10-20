@@ -2,17 +2,13 @@
 using DirectUI;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
-
-#if __APPLE_UIKIT__
-using CoreGraphics;
-using UIKit;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -168,11 +164,12 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 			newChildFe.SetLogicalParent(this);
 		}
 
-		if (oldChild is IDependencyObjectStoreProvider provider &&
-			provider.Store.ReadLocalValue(provider.Store.DataContextProperty) != DependencyProperty.UnsetValue)
+		if (oldChild is DependencyObject provider &&
+			provider.DataContextPropertyInternal is { } providerDataContextProperty &&
+			provider.ReadLocalValue(providerDataContextProperty) != DependencyProperty.UnsetValue)
 		{
-			provider.Store.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
-			provider.Store.ClearValue(AllowFocusWhenDisabledProperty, DependencyPropertyValuePrecedences.Local);
+			provider.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
+			provider.ClearValue(AllowFocusWhenDisabledProperty, DependencyPropertyValuePrecedences.Local);
 		}
 
 		UpdateDataContext(null);
@@ -190,16 +187,20 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 	{
 		if (PropagatesDataContextToChild)
 		{
-			((IDependencyObjectStoreProvider)PopupPanel).Store.SetValue(((IDependencyObjectStoreProvider)PopupPanel).Store.DataContextProperty, DataContext, DependencyPropertyValuePrecedences.Local);
+			var popupPanelStore = ((DependencyObject)PopupPanel);
+			if (popupPanelStore.DataContextPropertyInternal is { } dataContextProperty)
+			{
+				popupPanelStore.SetValue(dataContextProperty, DataContext, DependencyPropertyValuePrecedences.Local);
+			}
 		}
 	}
 
 	private void PropagateFocusProperties()
 	{
-		if (Child is IDependencyObjectStoreProvider provider)
+		if (Child is DependencyObject provider)
 		{
-			provider.Store.SetValue(AllowFocusOnInteractionProperty, AllowFocusOnInteraction, DependencyPropertyValuePrecedences.Local);
-			provider.Store.SetValue(AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled, DependencyPropertyValuePrecedences.Local);
+			provider.SetValue(AllowFocusOnInteractionProperty, Boxer.Box(AllowFocusOnInteraction), DependencyPropertyValuePrecedences.Local);
+			provider.SetValue(AllowFocusWhenDisabledProperty, Boxer.Box(AllowFocusWhenDisabled), DependencyPropertyValuePrecedences.Local);
 		}
 	}
 

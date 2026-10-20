@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 {
-	[TestClass]
+	[UITestClass]
 #if !IS_UNIT_TESTS && !WINAPPSDK
 	[RuntimeTests.RunsOnUIThread]
 #endif

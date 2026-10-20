@@ -1,30 +1,21 @@
-﻿using System;
+using System;
 using Uno.UI;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Markup;
 using System.ComponentModel;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Uno;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using System.Diagnostics.CodeAnalysis;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using ViewGroup = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-using UIKit;
-#elif UNO_REFERENCE_API || IS_UNIT_TESTS
+#if UNO_REFERENCE_API
 using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
@@ -36,7 +27,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private View _templatedRoot;
 		private bool _suppressIsEnabled;
 
-#if !__NETSTD_REFERENCE__
 		private void InitializeControl()
 		{
 			SubscribeToOverridenRoutedEvents();
@@ -45,7 +35,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(Control);
 		}
-#endif
 
 		// TODO: Should use DefaultStyleKeyProperty DP
 		protected object DefaultStyleKey { get; set; }
@@ -53,18 +42,34 @@ namespace Microsoft.UI.Xaml.Controls
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal void SetDefaultStyleKeyInternal(object defaultStyleKey) => DefaultStyleKey = defaultStyleKey;
 
-		protected override bool IsSimpleLayout => true;
-
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 
 		private protected override Type GetDefaultStyleKey() => DefaultStyleKey as Type;
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		#region Background DependencyProperty
+
+		public Brush Background
 		{
-			// this is defined in the FrameworkElement mixin, and must not be used in Control.
-			// When setting the background color in a Control, the property is simply used as a placeholder
-			// for children controls, applied by inheritance.
+			get => (Brush)GetValue(BackgroundProperty);
+			set => SetValue(BackgroundProperty, value);
 		}
+
+		public static DependencyProperty BackgroundProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Background),
+				typeof(Brush),
+				typeof(Control),
+				new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, e) => ((Control)s)?.OnBackgroundChanged(e)));
+
+		// Uno-only plumbing (WinUI has no OnBackgroundChanged); kept as narrow as possible while
+		// still allowing same-assembly painters (Page, CalendarViewBaseItem) to react.
+		private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			// A Control doesn't paint its own Background; the value is used as a placeholder
+			// applied by the template's root painter (a Border/Panel/ContentPresenter).
+		}
+
+		#endregion
 
 		internal virtual void UpdateVisualState(bool useTransitions = true)
 		{
@@ -78,11 +83,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		partial void UnregisterSubView();
-
-		partial void RegisterSubView(View child);
-#endif
 
 		/// <summary>
 		/// Gets or sets the path to the resource file that contains the default style for the control.
@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
 		{
-#if UNO_HAS_MANAGED_POINTERS || __WASM__
+#if UNO_HAS_MANAGED_POINTERS
 			UpdateHitTest();
 #endif
 
@@ -132,23 +132,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnIsEnabledChanged(_isEnabledChangedEventArgs);
 
-#if __ANDROID__
-			var newValue = (bool)args.NewValue;
-			base.SetNativeIsEnabled(newValue);
-			this.Enabled = newValue;
-#elif __APPLE_UIKIT__
-			UserInteractionEnabled = (bool)args.NewValue;
-#endif
-
 			IsEnabledChanged?.Invoke(this, args);
 
 			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
-#if __WASM__
-			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-			{
-				UpdateDOMProperties();
-			}
-#endif
 
 #if __SKIA__
 			// Notify UIA clients that IsEnabled (and potentially IsKeyboardFocusable) may have changed.
@@ -176,7 +162,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_suppressIsEnabled)
 			{
-				return false;
+				return BoolBoxes.False;
 			}
 
 			// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
@@ -184,16 +170,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var parentValue = precedence == DependencyPropertyValuePrecedences.Inheritance ?
 				baseValue :
-				((IDependencyObjectStoreProvider)this).Store.ReadInheritedValueOrDefaultValue(IsEnabledProperty);
+				((DependencyObject)this).ReadInheritedValueOrDefaultValue(IsEnabledProperty);
 
 			// If the parent is disabled, this control must be disabled as well
 			if (parentValue is false)
 			{
-				return false;
+				return BoolBoxes.False;
 			}
 
 			// otherwise use the more local value
-			var store = ((IDependencyObjectStoreProvider)this).Store;
+			var store = ((DependencyObject)this);
 
 			var (localValue, localPrecedence) = (store.GetAnimatedValue(IsEnabledProperty), DependencyPropertyValuePrecedences.Animations);
 			if (localValue == DependencyProperty.UnsetValue)
@@ -232,7 +218,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected virtual void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			if (e.OldValue != e.NewValue)
 			{
 				// Reset the template bindings for this control
@@ -255,10 +240,6 @@ namespace Microsoft.UI.Xaml.Controls
 					//IFC(GetContext()->RemoveNameScope(this, Jupiter::NameScoping::NameScopeType::TemplateNameScope));
 				}
 			}
-#else
-			_updateTemplate = true;
-			SetUpdateControlTemplate();
-#endif
 		}
 
 		#endregion
@@ -278,63 +259,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 				CleanupView(_templatedRoot);
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				UnregisterSubView();
-#endif
 
 				_templatedRoot = value;
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				if (value != null)
-				{
-					RegisterSubView(value);
-
-					if (_templatedRoot != null)
-					{
-						RegisterContentTemplateRoot();
-
-						if (
-							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
-						{
-							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
-
-							// Note: we however still allow if already 'IsLoading':
-							//
-							// If this child is added to its parent while this parent is 'IsLoading' itself (eg. loading its template),
-							// the parent will invoke the Loading on this child element (and the PostLoading which will "dequeue" the _applyTemplateShouldBeInvoked),
-							// which will set the 'IsLoading' flag.
-							//
-							// The parent will then apply its own style, which might set/change the template of this element (if data-bound or set using VisualState),
-							// which would end here and set this _applyTemplateShouldBeInvoked flag (if IsLoaded were not allowed!).
-							//
-							// The parent will then invoke the Loading on all its children, but as this child has already been flagged as 'IsLoading',
-							// it will be ignored and the 'PostLoading' won't be invokes a second time, driving the control to never "dequeue" the _applyTemplateShouldBeInvoked.
-							_applyTemplateShouldBeInvoked = true;
-						}
-						else
-						{
-							_applyTemplateShouldBeInvoked = false;
-							OnApplyTemplate();
-						}
-					}
-				}
-#endif
 			}
 		}
 
-#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
-		private protected override void OnPostLoading()
-		{
-			base.OnPostLoading();
 
-			TryCallOnApplyTemplate();
-
-			// Update bindings to ensure resources defined
-			// in visual parents get applied.
-			this.UpdateResourceBindings();
-		}
-#endif
-
-#if !__NETSTD_REFERENCE__
 		private void SubscribeToPostKeyDown()
 		{
 			if (GetIsEventOverrideImplemented(OnPostKeyDown))
@@ -483,13 +413,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			bool HasFlag(RoutedEventFlag implementedEvents, RoutedEventFlag flag) => (implementedEvents & flag) != 0;
 		}
-#endif
 
 		private protected override void OnLoaded()
 		{
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-			SetUpdateControlTemplate();
-#endif
 
 			base.OnLoaded();
 		}
@@ -514,7 +440,6 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		/// <summary>
 		/// Loads the relevant control template so that its parts can be referenced.
 		/// </summary>
@@ -524,7 +449,6 @@ namespace Microsoft.UI.Xaml.Controls
 			InvokeApplyTemplate(out var addedVisuals);
 			return addedVisuals;
 		}
-#endif
 
 		private protected override FrameworkTemplate GetTemplate() => Template;
 
@@ -542,7 +466,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="childName">The name of the template part.</param>
 		/// <returns>The first template part of the specified name; otherwise, null.</returns>
-		public DependencyObject GetTemplateChild(string childName)
+		protected internal DependencyObject GetTemplateChild(string childName)
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as DependencyObject
 				?? FindName(childName) as DependencyObject;
@@ -554,7 +478,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <typeparam name="T">The type of the template part.</typeparam>
 		/// <param name="childName">The name of the template part.</param>
 		/// <returns>The first template part of the specified name; otherwise, null.</returns>
-		internal T GetTemplateChild<T>(string childName) where T : class, DependencyObject
+		internal T GetTemplateChild<T>(string childName) where T : DependencyObject
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as T ?? FindName(childName) as T;
 		}
@@ -563,7 +487,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return root != null
 				&& name != null
-				&& NameScope.GetNameScope(root) is INameScope nameScope
+				&& NameScope.GetNameScope((DependencyObject)root) is INameScope nameScope
 				&& nameScope.FindName(name) is DependencyObject element
 				// Doesn't currently support ElementStub (fallbacks to other FindName implementation)
 				&& !(element is ElementStub)
@@ -573,9 +497,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void CleanupView(View view)
 		{
-			if (view is IDependencyObjectStoreProvider provider)
+			if (view is DependencyObject provider)
 			{
-				provider.Store.Parent = null;
+				provider.Parent = null;
 			}
 		}
 
@@ -597,26 +521,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnVisibilityChanged(oldValue, newValue);
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-			if (oldValue == Visibility.Collapsed && newValue == Visibility.Visible)
-			{
-				SetUpdateControlTemplate();
-			}
-#endif
 
 			OnIsFocusableChanged();
 		}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		partial void RegisterContentTemplateRoot();
-#endif
 
 		#region Foreground Dependency Property
 
 		public
-#if __ANDROID__
-		new
-#endif
 		Brush Foreground
 		{
 			get { return (Brush)this.GetValue(ForegroundProperty); }
@@ -664,7 +576,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double FontSize
 		{
 			get { return (double)this.GetValue(FontSizeProperty); }
-			set { this.SetValue(FontSizeProperty, value); }
+			set { this.SetValue(FontSizeProperty, Boxer.Box(value)); }
 		}
 
 		public static DependencyProperty FontSizeProperty { get; } =
@@ -695,8 +607,8 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					true,
-#if __SKIA__ || __WASM__
+					BoolBoxes.True,
+#if __SKIA__
 					// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
 					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
 #else
@@ -776,7 +688,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -799,7 +711,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -809,21 +721,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region BorderBrush Dependency Property
 
-#if __ANDROID__
-		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
-		private Brush _borderBrushStrongReference;
-#endif
-
 		public Brush BorderBrush
 		{
 			get { return (Brush)this.GetValue(BorderBrushProperty); }
 			set
 			{
 				this.SetValue(BorderBrushProperty, value);
-
-#if __ANDROID__
-				_borderBrushStrongReference = value;
-#endif
 			}
 		}
 
@@ -1049,9 +952,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnPointerMoved(PointerRoutedEventArgs e) { }
 		protected virtual void OnPointerCanceled(PointerRoutedEventArgs e) { }
 		protected virtual void OnPointerCaptureLost(PointerRoutedEventArgs e) { }
-#if !__WASM__
 		[global::Uno.NotImplemented]
-#endif
 		protected virtual void OnPointerWheelChanged(PointerRoutedEventArgs e) { }
 		protected virtual void OnManipulationStarting(ManipulationStartingRoutedEventArgs e) { }
 		protected virtual void OnManipulationStarted(ManipulationStartedRoutedEventArgs e) { }
@@ -1110,7 +1011,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnDragOver(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragLeave(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDrop(global::Microsoft.UI.Xaml.DragEventArgs e) { }
-#if __WASM__ || __SKIA__
+#if __SKIA__
 		protected virtual void OnPreviewKeyDown(KeyRoutedEventArgs e) { }
 		protected virtual void OnPreviewKeyUp(KeyRoutedEventArgs e) { }
 #endif
@@ -1183,7 +1084,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static readonly DragEventHandler OnDropHandler =
 			(object sender, global::Microsoft.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
-#if __WASM__ || __SKIA__
+#if __SKIA__
 		private static readonly KeyEventHandler OnPreviewKeyDownHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnPreviewKeyDown(args);
 
@@ -1326,7 +1227,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				result |= RoutedEventFlag.Drop;
 			}
-#if __WASM__ || __SKIA__
+#if __SKIA__
 			if (GetIsEventOverrideImplemented(OnPreviewKeyDown))
 			{
 				result |= RoutedEventFlag.PreviewKeyDown;
@@ -1374,9 +1275,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if DEBUG
-#if !__APPLE_UIKIT__
 		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
-#endif
 
 		public string[] VisualStateGroupNames => VisualStateGroups.Select(vsg => vsg.Name).ToArray();
 
@@ -1408,5 +1307,21 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal override bool CanHaveChildren() => true;
+
+		internal static Action<Control, bool> OnIsFocusableChangedCallback { get; set; }
+
+		protected Control()
+		{
+			InitializeControl();
+		}
+
+		partial void OnIsFocusableChanged()
+		{
+			if (OnIsFocusableChangedCallback is { } callback)
+			{
+				var isFocusable = IsFocusable && !IsDelegatingFocusToTemplateChild();
+				callback.Invoke(this, isFocusable);
+			}
+		}
 	}
 }

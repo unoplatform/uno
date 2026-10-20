@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using Windows.Foundation;
 
 #if IS_UNO_COMPOSITION

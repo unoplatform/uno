@@ -26,16 +26,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on 7.0.0 which has a vulnerability -->
-		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
-
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.43" />
-		<PackageReference Include="PolySharp" Version="1.14.1">
+		<PackageReference Include="Microsoft.Build.Tasks.Core" />
+		<PackageReference Include="PolySharp">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+		<!-- Reads compiled metadata for the WebGPU reachability check (DetectWebGpuUsage_v0). -->
+		<PackageReference Include="System.Reflection.Metadata" />
+		<PackageReference Include="System.Net.Http.Json" />
+		<PackageReference Include="System.Text.Json" />
 	</ItemGroup>
 
 	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">

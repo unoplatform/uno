@@ -136,7 +136,6 @@ internal class PackageManifest
 		public const string VlcNativeWindowsAssets = nameof(VlcNativeWindowsAssets);
 		public const string MicrosoftWebView2 = nameof(MicrosoftWebView2);
 		public const string CoreLogging = nameof(CoreLogging);
-		public const string UniversalImageLoading = nameof(UniversalImageLoading);
 		public const string Dsp = nameof(Dsp);
 		public const string Resizetizer = nameof(Resizetizer);
 		public const string SdkExtras = nameof(SdkExtras);
@@ -144,18 +143,17 @@ internal class PackageManifest
 		public const string HotDesign = nameof(HotDesign);
 		public const string AppMcp = nameof(AppMcp);
 		public const string SkiaSharp = nameof(SkiaSharp);
+		public const string HarfBuzzSharp = nameof(HarfBuzzSharp);
 		public const string SvgSkia = nameof(SvgSkia);
 		public const string WinAppSdk = nameof(WinAppSdk);
 		public const string WinAppSdkBuildTools = nameof(WinAppSdkBuildTools);
 		public const string WinAppSdkBuildToolsWinApp = nameof(WinAppSdkBuildToolsWinApp);
 		public const string MicrosoftLoggingConsole = nameof(MicrosoftLoggingConsole);
-		public const string WindowsCompatibility = nameof(WindowsCompatibility);
 		public const string MsalClient = nameof(MsalClient);
 		public const string Mvvm = nameof(Mvvm);
 		public const string Prism = nameof(Prism);
 		public const string UnoFonts = nameof(UnoFonts);
 		public const string AndroidMaterial = nameof(AndroidMaterial);
-		public const string AndroidXLegacySupportV4 = nameof(AndroidXLegacySupportV4);
 		public const string AndroidXSplashScreen = nameof(AndroidXSplashScreen);
 		public const string AndroidXAppCompat = nameof(AndroidXAppCompat);
 		public const string AndroidXRecyclerView = nameof(AndroidXRecyclerView);
@@ -169,5 +167,16 @@ internal class PackageManifest
 		public const string AndroidXWear = nameof(AndroidXWear);
 		public const string AndroidXWearTiles = nameof(AndroidXWearTiles);
 		public const string Maui = nameof(Maui);
+
+		// Microsoft.Maui.Controls.Compatibility is kept in its own group because it is no
+		// longer built or shipped as of .NET 11 Preview 6, while Microsoft.Maui.Controls and
+		// Microsoft.Maui.Graphics continue to ship. Sharing the Maui group would apply that
+		// group's net11 override to a package that has no net11 version, which fails the
+		// packages.json validation. Splitting it lets the net11 override cover only the
+		// packages that still exist, while net10 and earlier keep a deterministic pin.
+		// MauiVersion updates both groups, so the public override still moves all of the
+		// MAUI packages together.
+		// https://github.com/dotnet/core/blob/main/release-notes/11.0/preview/preview6/dotnetmaui.md
+		public const string MauiCompatibility = nameof(MauiCompatibility);
 	}
 }

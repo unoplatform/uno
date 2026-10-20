@@ -9,6 +9,11 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
+using Microsoft.UI.Composition;
+using System.Numerics;
+using Windows.Graphics;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -112,7 +117,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeThickness
 		{
 			get => (double)this.GetValue(StrokeThicknessProperty);
-			set => this.SetValue(StrokeThicknessProperty, value);
+			set => this.SetValue(StrokeThicknessProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeThicknessProperty { get; } = DependencyProperty.Register(
@@ -120,7 +125,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: 1.0d,
+				defaultValue: DoubleBoxes.One,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeThicknessChanged()
 			) // Perf: WinUI uses AffectsMeasure, we optimize this and only invalidate measure if Stroke is not null
 		);
@@ -229,7 +234,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeMiterLimit
 		{
 			get => (double)this.GetValue(StrokeMiterLimitProperty);
-			set => this.SetValue(StrokeMiterLimitProperty, value);
+			set => this.SetValue(StrokeMiterLimitProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeMiterLimitProperty { get; } = DependencyProperty.Register(
@@ -265,7 +270,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeDashOffset
 		{
 			get => (double)this.GetValue(StrokeDashOffsetProperty);
-			set => this.SetValue(StrokeDashOffsetProperty, value);
+			set => this.SetValue(StrokeDashOffsetProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeDashOffsetProperty { get; } = DependencyProperty.Register(
@@ -273,7 +278,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsArrange
 			)
 		);
@@ -282,15 +287,142 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
 		internal override bool IsViewHit()
 			=> Fill != null
-#if __SKIA__ || __WASM__ // we only add this condition for Skia and Wasm because these are the only platforms with proper hit-testing support for shapes. If we add it for other platforms, we get a different but still inaccurate behaviour, so we prefer to keep the behaviour as is.
+#if __SKIA__ // we only add this condition for Skia and Wasm because these are the only platforms with proper hit-testing support for shapes. If we add it for other platforms, we get a different but still inaccurate behaviour, so we prefer to keep the behaviour as is.
 				// TODO: Verify if this should also consider StrokeThickness (likely it should)
 				|| Stroke != null
 #endif
 				;
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+#nullable enable
+		private readonly CompositionSpriteShape _shape;
+		private readonly CompositionPathGeometry _geometry;
+
+		private protected CompositionSpriteShape SpriteShape => _shape;
+
+		protected Shape()
 		{
-			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
+			var visual = Visual;
+			var compositor = visual.Compositor;
+
+			_geometry = compositor.CreatePathGeometry();
+			_shape = compositor.CreateSpriteShape(_geometry);
+#if DEBUG
+			_shape.Comment = "#path";
+#endif
+
+			((ShapeVisual)visual).Shapes.Add(_shape);
 		}
+
+		private Rect GetPathBoundingBox(IGeometry path)
+			=> path.Bounds;
+
+		private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
+
+		private protected virtual void Render(IGeometry? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
+		{
+			if (path is not IGeometrySource2D source)
+			{
+				_geometry.Path = null;
+				return;
+			}
+
+			_geometry.Path = new CompositionPath(source);
+			// Stretch goes through the geometry-only transform channel so it doesn't scale the
+			// stroke (matching WinUI Path/Rectangle, where StrokeThickness stays constant
+			// regardless of Stretch). The public CompositionShape.Scale stays at identity here
+			// — it's reserved for true Composition-API transforms (used by AnimatedVisualSource
+			// generated code), which DO scale strokes via the canvas.
+			_shape.SetGeometryTransform(scaleX != null && scaleY != null
+				? Matrix3x2.CreateScale((float)scaleX.Value, (float)scaleY.Value)
+				: Matrix3x2.Identity);
+			_shape.Offset = LayoutRound(new Vector2((float)(renderOriginX ?? 0), (float)(renderOriginY ?? 0)));
+
+			UpdateRender();
+		}
+
+		private void UpdateRender()
+		{
+			OnFillBrushChanged();
+			OnStrokeBrushChanged();
+			UpdateStrokeThickness();
+			UpdateStrokeDashArray();
+			UpdateStrokeCaps();
+			UpdateStrokeLineJoin();
+			UpdateStrokeMiterLimit();
+			UpdateStrokeDashOffset();
+		}
+
+		private void OnFillBrushChanged()
+		{
+			_shape.FillBrush = Fill?.GetOrCreateCompositionBrush(Visual.Compositor);
+		}
+
+		private void UpdateStrokeThickness()
+		{
+			_shape.StrokeThickness = (float)ActualStrokeThickness;
+		}
+
+		private void UpdateStrokeDashArray()
+		{
+			var strokeDashArray = StrokeDashArray;
+			if (strokeDashArray is null)
+			{
+				_shape.ClearStrokeDashArray();
+				return;
+			}
+
+			// XAML dashes are multiples of StrokeThickness; Composition takes absolute lengths. WinUI scales by the
+			// declared thickness, not the layout-rounded one the stroke is drawn with.
+			var thickness = StrokeThickness;
+			var compositionStrokeDashArray = new CompositionStrokeDashArray(_shape.Compositor);
+			for (int i = 0; i < strokeDashArray.Count; i++)
+			{
+				compositionStrokeDashArray.Add((float)(strokeDashArray[i] * thickness));
+			}
+
+			_shape.StrokeDashArray = compositionStrokeDashArray;
+		}
+
+		private void OnStrokeBrushChanged()
+		{
+			_shape.StrokeBrush = Stroke?.GetOrCreateCompositionBrush(Visual.Compositor);
+		}
+
+		private void UpdateStrokeCaps()
+		{
+			_shape.StrokeStartCap = (CompositionStrokeCap)StrokeStartLineCap;
+			_shape.StrokeEndCap = (CompositionStrokeCap)StrokeEndLineCap;
+			_shape.StrokeDashCap = (CompositionStrokeCap)StrokeDashCap;
+		}
+
+		private void UpdateStrokeLineJoin()
+		{
+			_shape.StrokeLineJoin = (CompositionStrokeLineJoin)StrokeLineJoin;
+		}
+
+		private void UpdateStrokeMiterLimit()
+		{
+			_shape.StrokeMiterLimit = (float)StrokeMiterLimit;
+		}
+
+		private void UpdateStrokeDashOffset()
+		{
+			_shape.StrokeDashOffset = (float)(StrokeDashOffset * StrokeThickness);
+		}
+
+		/// <summary>
+		/// Returns a mask that represents the alpha channel of the shape as a CompositionBrush.
+		/// This brush can be used with CompositionMaskBrush or DropShadow.Mask to create shaped effects.
+		/// </summary>
+		/// <returns>A CompositionBrush representing the shape as an alpha mask.</returns>
+		public CompositionBrush GetAlphaMask()
+		{
+			var compositor = Compositor.GetSharedCompositor();
+			var surface = new AlphaMaskSurface(compositor, Visual);
+			var brush = compositor.CreateSurfaceBrush(surface);
+			brush.Stretch = CompositionStretch.None;
+			return brush;
+		}
+#nullable disable
 	}
 }

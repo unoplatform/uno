@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 using Windows.Devices.Input;
 using Uno.UI.Extensions;
 using System.Runtime.CompilerServices;
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using System.Reflection;
 using Uno.Extensions;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
@@ -57,7 +57,7 @@ partial class InputManager
 		internal void RegisterDirectManipulationHandler(PointerIdentifier pointer, IDirectManipulationHandler handler)
 			=> RegisterDirectManipulationHandlerCore(pointer, handler);
 
-		internal void RedirectPointer(Windows.UI.Input.PointerPoint pointer, InteractionTracker tracker)
+		internal void RedirectPointer(Microsoft.UI.Input.PointerPoint pointer, InteractionTracker tracker)
 			=> RegisterDirectManipulationHandlerCore(pointer.Pointer, new InteractionTrackerToDirectManipulationHandler(tracker));
 
 		private void RegisterDirectManipulationHandlerCore(PointerIdentifier pointer, IDirectManipulationHandler handler)
@@ -96,9 +96,9 @@ partial class InputManager
 
 		private void RegisterGestureRecognizerCore(PointerIdentifier pointer, IGestureRecognizer recognizer)
 		{
-			if (!_gestureRecognizers.TryGetValue(pointer.Type, out var recognizers))
+			if (!_gestureRecognizers.TryGetValue((PointerDeviceType)pointer.Type, out var recognizers))
 			{
-				recognizers = _gestureRecognizers[pointer.Type] = new();
+				recognizers = _gestureRecognizers[(PointerDeviceType)pointer.Type] = new();
 			}
 
 			recognizers.Enqueue(recognizer);
@@ -263,7 +263,7 @@ partial class InputManager
 			_directManipulations.Scavenge();
 
 			// Search for the first direct-manipulation that is able to handle this new pointer
-			foreach (var manipulation in _directManipulations.OfType(args.CurrentPoint.PointerDeviceType))
+			foreach (var manipulation in _directManipulations.OfType((global::Windows.Devices.Input.PointerDeviceType)args.CurrentPoint.PointerDeviceType))
 			{
 				if (manipulation.TryProcessEnter(args))
 				{
@@ -287,7 +287,7 @@ partial class InputManager
 			_directManipulations.Scavenge();
 
 			// Search for the first direct-manipulation that is able to handle this new pointer
-			foreach (var manipulation in _directManipulations.OfType(args.CurrentPoint.PointerDeviceType))
+			foreach (var manipulation in _directManipulations.OfType((global::Windows.Devices.Input.PointerDeviceType)args.CurrentPoint.PointerDeviceType))
 			{
 				if (manipulation.TryProcessDown(args))
 				{
@@ -342,7 +342,7 @@ partial class InputManager
 			if (_directManipulations.Get(args.CurrentPoint.Pointer)?.TryProcessUp(args) is true)
 			{
 				// The AfterReleaseForManipulations will **not** be invoked, so make sure to clean-up the recognizers here.
-				_gestureRecognizers.Remove(args.CurrentPoint.Pointer.Type); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
+				_gestureRecognizers.Remove((PointerDeviceType)args.CurrentPoint.Pointer.Type); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
 
 				return true;
 			}
@@ -370,7 +370,7 @@ partial class InputManager
 			if (_directManipulations.Get(args.CurrentPoint.Pointer)?.TryProcessCancel(args) is true)
 			{
 				// The AfterCancelForManipulations will **not** be invoked, so make sure to clean-up the recognizers here.
-				_gestureRecognizers.Remove(args.CurrentPoint.Pointer.Type); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
+				_gestureRecognizers.Remove((PointerDeviceType)args.CurrentPoint.Pointer.Type); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
 
 				return true;
 			}
@@ -407,7 +407,13 @@ partial class InputManager
 
 			/// <inheritdoc />
 			public ManipulationModes OnStarting(GestureRecognizer recognizer, ManipulationStartingEventArgs args)
-				=> ManipulationModes.All;
+			{
+				// On the press itself: the manipulation only starts once the finger has travelled the start
+				// threshold, which one held still never does, so waiting for it would keep coasting under the finger.
+				Tracker.InterruptInertia();
+
+				return ManipulationModes.All;
+			}
 
 			/// <inheritdoc />
 			public void OnStarted(GestureRecognizer recognizer, ManipulationStartedEventArgs args, bool isResuming)
@@ -429,6 +435,9 @@ partial class InputManager
 				}
 
 				Tracker.ReceiveInertiaStarting(new Point(args.Velocities.Linear.X * 1000, args.Velocities.Linear.Y * 1000));
+
+				// The tracker runs its own inertia, so the recognizer's would only raise updates nobody applies.
+				recognizer.CompleteGesture();
 				return true;
 			}
 

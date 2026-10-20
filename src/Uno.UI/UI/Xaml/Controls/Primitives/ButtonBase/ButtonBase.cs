@@ -10,28 +10,20 @@ using Windows.UI.Input;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.System;
-#if __APPLE_UIKIT__
-using View = UIKit.UIView;
-#elif __ANDROID__
-using View = Android.Views.View;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase : ContentControl
 	{
 		public
-#if __ANDROID__
-			new
-#endif
 			event RoutedEventHandler Click;
 
-		public ButtonBase()
+		protected ButtonBase()
 		{
 			Initialize();
 
@@ -47,8 +39,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			base.OnLoaded();
 			OnLoadedPartial();
-
-			RegisterEvents();
 		}
 
 		partial void OnLoadedPartial();
@@ -64,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public new bool IsPointerOver
 		{
 			get => base.IsPointerOver;
-			set => base.IsPointerOver = value;
+			internal set => base.IsPointerOver = value;
 		}
 
 		private void InitializeProperties()
@@ -128,37 +118,25 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			name: nameof(IsPointerOver),
 			propertyType: typeof(bool),
 			ownerType: typeof(ButtonBase),
-			typeMetadata: new FrameworkPropertyMetadata(default(bool)));
+			typeMetadata: new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public static DependencyProperty IsPressedProperty { get; } =
 		DependencyProperty.Register(
 			name: nameof(IsPressed),
 			propertyType: typeof(bool),
 			ownerType: typeof(ButtonBase),
-			typeMetadata: new FrameworkPropertyMetadata(default(bool)));
-
-		partial void RegisterEvents();
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		private void OnCanExecuteChanged()
-		{
-			this.CoerceValue(IsEnabledProperty);
-		}
-#endif
+			typeMetadata: new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		private protected override object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
 		{
 			if (Command != null
 				&& !Command.CanExecute(CommandParameter))
 			{
-				return false;
+				return BoolBoxes.False;
 			}
 
 			return base.CoerceIsEnabled(baseValue, precedence);
 		}
-
-		private protected override void OnContentTemplateRootSet() => RegisterEvents();
-
 
 		// Might be changed if the method does not conflict in UnoViewGroup.
 		internal override bool IsViewHit()

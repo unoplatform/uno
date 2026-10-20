@@ -3,36 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.Interactions
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class InteractionTrackerCustomAnimationStateEnteredArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal InteractionTrackerCustomAnimationStateEnteredArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsFromBinding
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs", "IsFromBinding");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int RequestId
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs", "RequestId");
-			}
-		}
-#endif
+		// Skipping already declared property IsFromBinding
+		// Skipping already declared property RequestId
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.IsFromBinding.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.RequestId.get
 	}

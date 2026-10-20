@@ -3,36 +3,82 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct CoreWebView2PhysicalKeyStatus
+	public partial struct CoreWebView2PhysicalKeyStatus : global::System.IEquatable<global::Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus>
 	{
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus.CoreWebView2PhysicalKeyStatus()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public CoreWebView2PhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, int _IsExtendedKey, int _IsMenuKeyDown, int _WasKeyDown, int _IsKeyReleased)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus", "CoreWebView2PhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, int _IsExtendedKey, int _IsMenuKeyDown, int _WasKeyDown, int _IsKeyReleased)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus.CoreWebView2PhysicalKeyStatus(uint, uint, int, int, int, int)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
+		public static bool operator ==(CoreWebView2PhysicalKeyStatus x, CoreWebView2PhysicalKeyStatus y)
+			=> x.RepeatCount == y.RepeatCount
+			&& x.ScanCode == y.ScanCode
+			&& x.IsExtendedKey == y.IsExtendedKey
+			&& x.IsMenuKeyDown == y.IsMenuKeyDown
+			&& x.WasKeyDown == y.WasKeyDown
+			&& x.IsKeyReleased == y.IsKeyReleased;
+#endif
+#if __SKIA__
+		public static bool operator !=(CoreWebView2PhysicalKeyStatus x, CoreWebView2PhysicalKeyStatus y)
+			=> !(x.RepeatCount == y.RepeatCount
+				&& x.ScanCode == y.ScanCode
+				&& x.IsExtendedKey == y.IsExtendedKey
+				&& x.IsMenuKeyDown == y.IsMenuKeyDown
+				&& x.WasKeyDown == y.WasKeyDown
+				&& x.IsKeyReleased == y.IsKeyReleased);
+#endif
+#if __SKIA__
+		public bool Equals(CoreWebView2PhysicalKeyStatus other)
+			=> RepeatCount == other.RepeatCount
+			&& ScanCode == other.ScanCode
+			&& IsExtendedKey == other.IsExtendedKey
+			&& IsMenuKeyDown == other.IsMenuKeyDown
+			&& WasKeyDown == other.WasKeyDown
+			&& IsKeyReleased == other.IsKeyReleased;
+#endif
+#if __SKIA__
+		public override bool Equals(object obj)
+			=> obj is CoreWebView2PhysicalKeyStatus that
+			&& RepeatCount == that.RepeatCount
+			&& ScanCode == that.ScanCode
+			&& IsExtendedKey == that.IsExtendedKey
+			&& IsMenuKeyDown == that.IsMenuKeyDown
+			&& WasKeyDown == that.WasKeyDown
+			&& IsKeyReleased == that.IsKeyReleased;
+#endif
+#if __SKIA__
+		public override int GetHashCode()
+			=> RepeatCount.GetHashCode()
+			^ ScanCode.GetHashCode()
+			^ IsExtendedKey.GetHashCode()
+			^ IsMenuKeyDown.GetHashCode()
+			^ WasKeyDown.GetHashCode()
+			^ IsKeyReleased.GetHashCode();
+#endif
+#if __SKIA__
 		public uint RepeatCount;
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public uint ScanCode;
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public int IsExtendedKey;
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public int IsMenuKeyDown;
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public int WasKeyDown;
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public int IsKeyReleased;
 #endif
 	}

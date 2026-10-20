@@ -33,7 +33,8 @@ namespace UITests.Toolkit
 		private void CloseModalClick(object sender, RoutedEventArgs e)
 		{
 #if __APPLE_UIKIT__
-			UIApplication.SharedApplication.KeyWindow.RootViewController.DismissModalViewController(animated: false);
+			// DismissModalViewController is a deprecated binding that the tvOS SDK does not carry.
+			UIApplication.SharedApplication.KeyWindow.RootViewController.DismissViewController(false, null);
 #endif
 		}
 	}

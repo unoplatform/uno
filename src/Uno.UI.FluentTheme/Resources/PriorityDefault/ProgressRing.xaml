@@ -1,0 +1,38 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+  <Style TargetType="controls:ProgressRing">
+    <Setter Property="Foreground" Value="{ThemeResource ProgressRingForegroundThemeBrush}" />
+    <Setter Property="Background" Value="{ThemeResource ProgressRingBackgroundThemeBrush}" />
+    <Setter Property="IsHitTestVisible" Value="False" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="MinHeight" Value="16" />
+    <Setter Property="MinWidth" Value="16" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Width" Value="32" />
+    <Setter Property="Height" Value="32" />
+    <Setter Property="Maximum" Value="100" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="controls:ProgressRing">
+          <Grid x:Name="LayoutRoot" Background="Transparent">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Inactive">
+                  <VisualState.Setters>
+                    <Setter Target="LayoutRoot.Opacity" Value="0" />
+                    <Setter Target="LottiePlayer.(AutomationProperties.AccessibilityView)" Value="Raw" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="DeterminateActive" />
+                <VisualState x:Name="Active" />
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <!-- AnimatedVisualPlayer for Lottie -->
+            <controls:AnimatedVisualPlayer x:Name="LottiePlayer" AutoPlay="false" Stretch="fill" Opacity="1" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

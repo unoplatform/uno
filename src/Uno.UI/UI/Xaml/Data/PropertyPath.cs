@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.UI.Xaml
 {
-	public partial class PropertyPath
+	public sealed partial class PropertyPath
 	{
 		/// <summary>
 		/// Initializes a new instance of the PropertyPath class based on a path string.
@@ -14,20 +14,6 @@
 		public static implicit operator PropertyPath(string path)
 		{
 			return new PropertyPath(path);
-		}
-
-		public static implicit operator string(PropertyPath path)
-		{
-			if (path != null)
-			{
-				return path.Path;
-			}
-			else
-			{
-				// An null path is an empty string, particularly when initializing a simple binding.
-				// This is similar to the cleanup made in the CleanupPath method.
-				return "";
-			}
 		}
 
 		static string CleanupPath(string path)

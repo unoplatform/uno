@@ -24,7 +24,7 @@ using System.Numerics;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_XamlReader : Context
 	{
 		[TestInitialize]
@@ -147,7 +147,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var photoTemplateImage = photoTemplateContent.FindName("PhotoTemplateImage") as Image;
 			Assert.IsNotNull(photoTemplateImage);
 
-			var uriSourceExpression = photoTemplateImage.Source.GetBindingExpression(Microsoft.UI.Xaml.Media.Imaging.BitmapImage.UriSourceProperty);
+			var uriSourceExpression = photoTemplateImage.Source.GetBindingExpressionInternal(Microsoft.UI.Xaml.Media.Imaging.BitmapImage.UriSourceProperty);
 			Assert.IsNotNull(uriSourceExpression);
 			Assert.AreEqual("Thumbnail", uriSourceExpression.ParentBinding.Path.Path);
 		}
@@ -179,6 +179,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.IsNotNull(grid);
 
 			Assert.AreEqual(42, Grid.GetRow(grid));
+		}
+
+		[TestMethod]
+		public void When_AutomationProperties_Are_Set()
+		{
+			var panel = (StackPanel)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<TextBlock AutomationProperties.AutomationId="LiteralId" AutomationProperties.Name="Literal name" />
+					<TextBlock AutomationProperties.AutomationId="{Binding Id}" />
+				</StackPanel>
+				""");
+
+			var literal = (TextBlock)panel.Children[0];
+			Assert.AreEqual("LiteralId", Microsoft.UI.Xaml.Automation.AutomationProperties.GetAutomationId(literal));
+			Assert.AreEqual("Literal name", Microsoft.UI.Xaml.Automation.AutomationProperties.GetName(literal));
+
+			var bound = (TextBlock)panel.Children[1];
+			var expression = bound.GetBindingExpression(Microsoft.UI.Xaml.Automation.AutomationProperties.AutomationIdProperty);
+			Assert.IsNotNull(expression);
+			Assert.AreEqual("Id", expression.ParentBinding.Path.Path);
 		}
 
 		[TestMethod]
@@ -375,8 +396,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var expression = textBlock.GetBindingExpression(TextBlock.WidthProperty);
 			Assert.IsNotNull(expression);
 			Assert.AreEqual("Width", expression.ParentBinding.Path.Path);
-			Assert.IsInstanceOfType(expression.ParentBinding.ElementName, typeof(ElementNameSubject));
-			Assert.AreEqual(stackPanel, ((ElementNameSubject)expression.ParentBinding.ElementName).ElementInstance);
+			Assert.AreEqual("rootPanel", expression.ParentBinding.ElementName);
+			Assert.IsNotNull(expression.ParentBinding.ElementNameSubject);
+			Assert.AreEqual(stackPanel, expression.ParentBinding.ElementNameSubject.ElementInstance);
 			Assert.AreEqual(42.0, textBlock.Width);
 		}
 
@@ -620,24 +642,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var groups = VisualStateManager.GetVisualStateGroups(root);
 
 			var visualStateGroup = groups.FirstOrDefault();
-			object visualStateGroupDataContext;
-			visualStateGroup.DataContextChanged += (s2, e2) => visualStateGroupDataContext = e2.NewValue;
-
 			var visualState = visualStateGroup.States.FirstOrDefault();
-			object visualStateDataContext;
-			visualStateGroup.DataContextChanged += (s2, e2) => visualStateDataContext = e2.NewValue;
-
 			var trigger = visualState.StateTriggers.FirstOrDefault() as StateTrigger;
-			object triggerDataContext;
-			trigger.DataContextChanged += (s2, e2) => triggerDataContext = e2.NewValue;
 
+			// DataContext is public on FrameworkElement only (WinUI parity); the StateTrigger keeps the internal
+			// inheritance mechanism so its {Binding} still resolves (asserted via trigger.IsActive below).
 			Assert.IsFalse(trigger.IsActive);
 			Assert.AreEqual(1, myPanel.Opacity);
 
 			r.DataContext = new { a = true };
 
 			Assert.IsTrue(trigger.IsActive);
-			Assert.IsNotNull(trigger.DataContext);
 			Assert.AreEqual(.5, myPanel.Opacity);
 		}
 
@@ -1004,7 +1019,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Color_Thickness_GridLength_As_String()
 		{
 			var s = GetContent(nameof(When_Color_Thickness_GridLength_As_String));
-			var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as ContentControl;
+			var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 
 			Assert.AreEqual(Microsoft.UI.Colors.Red, r.Resources["Color01"]);
 			Assert.AreEqual(Microsoft.UI.Colors.Blue, (r.Resources["scb01"] as SolidColorBrush).Color);
@@ -1104,6 +1119,29 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			{
 				Assert.AreEqual(42, owner.Test.Value);
 			}
+		}
+
+		[TestMethod]
+		public void When_Xmlns_ClrNamespace()
+		{
+			var xaml = "<NonDefaultXamlNamespace Test=\"42\" xmlns=\"clr-namespace:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests;assembly=Uno.UI.Tests\" />";
+			Assert.ThrowsExactly<XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_Xmlns_ClrNamespace_Prefixed()
+		{
+			var xaml = "<Border xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xmlns:local=\"clr-namespace:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			Assert.ThrowsExactly<XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_Xmlns_ClrNamespace_Ignorable()
+		{
+			var xaml = "<Border xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" " +
+				"xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\" " +
+				"xmlns:d=\"clr-namespace:Uno.UI.Tests.DesignTime\" mc:Ignorable=\"d\" />";
+			Assert.IsInstanceOfType<Border>(Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]

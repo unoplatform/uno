@@ -13,8 +13,6 @@ namespace Microsoft.UI.Xaml;
 #endif
 public partial struct Thickness : IEquatable<Thickness>
 {
-	public static readonly Thickness Empty;
-
 	public Thickness(double uniformLength)
 		: this()
 	{
@@ -46,19 +44,19 @@ public partial struct Thickness : IEquatable<Thickness>
 	}
 #endif
 
-	public double Left;
-	public double Top;
-	public double Right;
-	public double Bottom;
+	public double Left { get; set; }
+	public double Top { get; set; }
+	public double Right { get; set; }
+	public double Bottom { get; set; }
 
 	internal Thickness GetInverse() => new Thickness(-Left, -Top, -Right, -Bottom);
 
-	public bool Equals(Thickness other)
+	public bool Equals(Thickness thickness)
 	{
-		return Math.Abs(Left - other.Left) < double.Epsilon
-			&& Math.Abs(Top - other.Top) < double.Epsilon
-			&& Math.Abs(Right - other.Right) < double.Epsilon
-			&& Math.Abs(Bottom - other.Bottom) < double.Epsilon;
+		return Math.Abs(Left - thickness.Left) < double.Epsilon
+			&& Math.Abs(Top - thickness.Top) < double.Epsilon
+			&& Math.Abs(Right - thickness.Right) < double.Epsilon
+			&& Math.Abs(Bottom - thickness.Bottom) < double.Epsilon;
 	}
 
 	public override bool Equals(object obj)
@@ -76,10 +74,14 @@ public partial struct Thickness : IEquatable<Thickness>
 		// Analysis restore NonReadonlyReferencedInGetHashCode
 	}
 
+	// Compile-linked into Uno.UI.Composition, which cannot see Uno.UI.Helpers.Boxes - and this is a
+	// diagnostic-only path where the boxing does not matter.
+#pragma warning disable UnoInternal0002
 	public override string ToString()
 	{
 		return string.Format(CultureInfo.InvariantCulture, "[Thickness: {0}-{1}-{2}-{3}]", Left, Top, Right, Bottom);
 	}
+#pragma warning restore UnoInternal0002
 
 	public static bool operator ==(Thickness t1, Thickness t2)
 	{

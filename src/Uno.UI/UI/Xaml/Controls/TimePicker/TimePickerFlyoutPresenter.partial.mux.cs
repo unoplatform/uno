@@ -831,8 +831,8 @@ partial class TimePickerFlyoutPresenter
 		bool firstHostPopulated = false;
 		bool secondHostPopulated = false;
 		bool thirdHostPopulated = false;
-		GridLength starGridLength = default;
-		GridLength zeroGridLength = default;
+		GridLength starGridLength = new(1.0, GridUnitType.Star);
+		GridLength zeroGridLength = new(0.0, GridUnitType.Pixel);
 		Control? firstPickerAsControl = null;
 		Control? secondPickerAsControl = null;
 		Control? thirdPickerAsControl = null;
@@ -840,11 +840,6 @@ partial class TimePickerFlyoutPresenter
 		_tpFirstPickerAsControl = null;
 		_tpSecondPickerAsControl = null;
 		_tpThirdPickerAsControl = null;
-
-		zeroGridLength.GridUnitType = GridUnitType.Pixel;
-		zeroGridLength.Value = 0.0;
-		starGridLength.GridUnitType = GridUnitType.Star;
-		starGridLength.Value = 1.0;
 
 		GetOrder(out var hourOrder, out var minuteOrder, out var periodOrder, out var isRTL);
 

@@ -14,23 +14,23 @@ using Uno.UI.Xaml;
 namespace Microsoft.UI.Xaml
 {
 	[ContentProperty(Name = nameof(Storyboard))]
-	public sealed partial class VisualState : DependencyObject
+	public sealed partial class VisualState : DependencyObject, IXNameProvider
 	{
 		/// <summary>
 		/// Lazy builder provided by the source generator. Invoking this will
 		/// optionally fill <see cref="Storyboard"/> and <see cref="Setters"/>.
 		/// </summary>
 		internal Action LazyBuilder { get; set; }
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		internal bool? FromLegacyTemplate { get; set; }
-#endif
+
 		public VisualState()
 		{
 			InitializeBinder();
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		public string Name { get; set; }
+		public string Name { get; internal set; }
+
+		void IXNameProvider.SetXName(string name) => Name = name;
 
 		#region StoryBoard DependencyProperty
 
@@ -59,12 +59,12 @@ namespace Microsoft.UI.Xaml
 
 		private static void OnStoryboardChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if (args.OldValue is IDependencyObjectStoreProvider oldStoryboard)
+			if (args.OldValue is DependencyObject oldStoryboard)
 			{
 				oldStoryboard.SetParent(null);
 			}
 
-			if (args.NewValue is IDependencyObjectStoreProvider newStoryboard)
+			if (args.NewValue is DependencyObject newStoryboard)
 			{
 				newStoryboard.SetParent(dependencyObject);
 			}
@@ -121,6 +121,20 @@ namespace Microsoft.UI.Xaml
 			internal set => SetValue(StateTriggersProperty, value);
 		}
 
+		/// <summary>
+		/// The trigger collection if one has already been created, without materialising an empty one.
+		/// </summary>
+		/// <remarks>
+		/// Reading <see cref="StateTriggers"/> lazily creates the collection, subscribes to it and writes it
+		/// back through <c>SetValue</c>. That is pure overhead for the common case of a state with no
+		/// triggers at all, and it is paid for every state of every templated control as it is loaded.
+		/// Callers that only read should use this instead.
+		/// </remarks>
+#nullable enable
+		internal IList<StateTriggerBase>? StateTriggersOrDefault
+			=> GetValue(StateTriggersProperty) as IList<StateTriggerBase>;
+#nullable restore
+
 		internal static DependencyProperty StateTriggersProperty { get; } =
 			DependencyProperty.Register(
 				name: "StateTriggers",
@@ -164,19 +178,7 @@ namespace Microsoft.UI.Xaml
 			{
 				var builder = LazyBuilder;
 				LazyBuilder = null;
-				try
-				{
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-					TemplatedParentScope.PushScope(this.GetTemplatedParent(), FromLegacyTemplate == true);
-#endif
-					builder.Invoke();
-				}
-				finally
-				{
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-					TemplatedParentScope.PopScope();
-#endif
-				}
+				builder.Invoke();
 
 				// Resolve all theme resources from storyboard children
 				// and setters values. This step is needed to ensure that

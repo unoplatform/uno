@@ -23,8 +23,12 @@ internal static partial class ScrollViewerMetadataUpdateHandler
 				_log.Debug($"Saving state of {element.GetDebugDepth()}-{element.GetDebugName()} (v: {sv.VerticalOffset} | h: {sv.HorizontalOffset})");
 			}
 
+			// Compile-linked into Uno.UI.Extras.Windows, which does not reference Uno.UI and so cannot
+			// see Boxes - and this runs once per Hot Reload, not on a hot path.
+#pragma warning disable UnoInternal0002
 			stateDictionary["VOffset"] = sv.VerticalOffset;
 			stateDictionary["HOffset"] = sv.HorizontalOffset;
+#pragma warning restore UnoInternal0002
 		}
 	}
 
@@ -39,7 +43,28 @@ internal static partial class ScrollViewerMetadataUpdateHandler
 				_log.Debug($"Restoring state of {element.GetDebugDepth()}-{element.GetDebugName()} (v: {vOffset} | h: {hOffset})");
 			}
 
-			sv.ChangeView((double?)hOffset, (double?)vOffset, sv.ZoomFactor, true);
+			// ChangeView clamps to the current range, which a freshly reloaded ScrollViewer has not measured yet, and
+			// virtualized content may need a few passes to grow back: wait for the saved offsets to fit, within reason.
+			bool Fits() => !(vOffset is double v && v > sv.ScrollableHeight) && !(hOffset is double h && h > sv.ScrollableWidth);
+
+			if (Fits())
+			{
+				sv.ChangeView((double?)hOffset, (double?)vOffset, sv.ZoomFactor, true);
+			}
+			else
+			{
+				var remainingPasses = 10;
+				void OnLayoutUpdated(object sender, object e)
+				{
+					if (Fits() || --remainingPasses == 0)
+					{
+						sv.LayoutUpdated -= OnLayoutUpdated;
+						sv.ChangeView((double?)hOffset, (double?)vOffset, sv.ZoomFactor, true);
+					}
+				}
+
+				sv.LayoutUpdated += OnLayoutUpdated;
+			}
 		}
 
 		return Task.CompletedTask;

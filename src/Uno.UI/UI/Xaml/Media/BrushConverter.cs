@@ -7,6 +7,7 @@ using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Media
 {
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public partial class BrushConverter : TypeConverter
 	{
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)

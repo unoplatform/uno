@@ -147,9 +147,13 @@ internal sealed class TextControlFlyout
 			// a proofing flyout does not tear down the selection highlight.
 			if (!_isProofingFlyout)
 			{
-				if (activeOwner is TextBox textBox)
+				if (activeOwner is ITextBoxHost { Core: { } core })
 				{
-					textBox.ForceFocusLoss();
+					core.ForceFocusLoss();
+				}
+				else if (activeOwner is RichEditBox richEditBox)
+				{
+					richEditBox.ForceFocusLoss();
 				}
 				else if (activeOwner is TextBlock textBlock)
 				{
@@ -313,6 +317,10 @@ internal static class TextControlFlyoutHelper
 		{
 			textBox.DismissAllFlyouts();
 		}
+		else if (owner is Controls.RichEditBox richEditBox)
+		{
+			richEditBox.DismissAllFlyouts();
+		}
 		else
 		{
 			// Close both ContextFlyout and SelectionFlyout on the owner.
@@ -361,6 +369,13 @@ internal static class TextControlFlyoutHelper
 			// WinUI: CTextBoxBase covers TextBox, PasswordBox, RichEditBox
 			// In Uno, PasswordBox extends TextBox so this covers both.
 			if (textBox.FireContextMenuOpeningEventSynchronously(point))
+			{
+				return;
+			}
+		}
+		else if (owner is Controls.RichEditBox richEditBox)
+		{
+			if (richEditBox.FireContextMenuOpeningEventSynchronously(point))
 			{
 				return;
 			}

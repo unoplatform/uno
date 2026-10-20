@@ -6,7 +6,7 @@ using Uno.UI.Helpers;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Automation;
 
-[TestClass]
+[UITestClass]
 public class Given_AutomationPeerProviderTargets
 {
 	[TestInitialize]
@@ -64,8 +64,8 @@ public class Given_AutomationPeerProviderTargets
 	{
 		var listView = new ListView
 		{
-			Template = new ControlTemplate(() => new ItemsPresenter()),
-			ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+			Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
+			ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
 			ItemContainerStyle = BuildBasicContainerStyle(),
 			ItemsSource = items,
 		};

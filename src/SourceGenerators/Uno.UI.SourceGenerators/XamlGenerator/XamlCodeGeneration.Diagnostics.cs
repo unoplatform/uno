@@ -68,5 +68,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 																							 isEnabledByDefault: true,
 																							 description: "A type name used without an explicit xmlns prefix was found in multiple global namespaces. Use an explicit xmlns prefix to disambiguate."
 																							);
+
+		public static readonly DiagnosticDescriptor UnsupportedClrNamespaceRule = new DiagnosticDescriptor(
+#pragma warning disable RS2008 // Enable analyzer release tracking
+			"UXAML0006",
+#pragma warning restore RS2008 // Enable analyzer release tracking
+			"Unsupported XAML Namespace",
+			"{0}",
+			XamlCategory,
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true,
+			description: "The WPF-style 'clr-namespace:' xmlns form is not supported. Use the WinUI 'using:' form instead."
+		);
+
+		public static readonly DiagnosticDescriptor RemovedConditionalXamlPrefixRule = new DiagnosticDescriptor(
+#pragma warning disable RS2008 // Enable analyzer release tracking
+			"UXAML0007",
+#pragma warning restore RS2008 // Enable analyzer release tracking
+			"Removed Conditional XAML Prefix",
+			"{0}",
+			XamlCategory,
+			DiagnosticSeverity.Warning,
+			isEnabledByDefault: true,
+			description: "The conditional XAML prefix was removed in Uno Platform 7.0 and no longer selects a platform. Use the target-framework prefix that replaces it."
+		);
 	}
 }

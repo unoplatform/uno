@@ -27,7 +27,6 @@ partial class Window
 		remove => _windowImplementation.Closed -= value;
 	}
 
-#if !__APPLE_UIKIT__ // This can be added when iOS uses SceneDelegate #8341.
 	/// <summary>
 	/// Gets or sets a string used for the window title.
 	/// </summary>
@@ -36,5 +35,4 @@ partial class Window
 		get => _windowImplementation.Title;
 		set => _windowImplementation.Title = value;
 	}
-#endif
 }

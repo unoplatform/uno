@@ -13,7 +13,7 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 	{
 	}
 
-	internal void Enter(DependencyObject pNamescopeOwner, EnterParams enterParams)
+	internal new void Enter(DependencyObject pNamescopeOwner, EnterParams enterParams)
 	{
 		//base.Enter(pNamescopeOwner, enterParams);
 
@@ -46,7 +46,7 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 		}
 	}
 
-	internal void Leave(DependencyObject pNamescopeOwner, LeaveParams leaveParams)
+	internal new void Leave(DependencyObject pNamescopeOwner, LeaveParams leaveParams)
 	{
 		//base.Leave(pNamescopeOwner, leaveParams);
 

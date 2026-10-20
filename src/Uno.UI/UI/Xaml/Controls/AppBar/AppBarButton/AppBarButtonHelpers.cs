@@ -182,8 +182,8 @@ internal static class AppBarButtonHelpers<TButton>
 		}
 	}
 
-	internal static void UpdateTemplateSettings<TTemplateSettings>(TButton button, double maxKeyboardAcceleratorTextWidth)
-		where TTemplateSettings : IAppBarButtonTemplateSettings, new()
+	internal static void UpdateTemplateSettings<TTemplateSettings>(TButton button, double maxKeyboardAcceleratorTextWidth, Func<TTemplateSettings> createTemplateSettings)
+		where TTemplateSettings : IAppBarButtonTemplateSettings
 	{
 		if (button.m_maxKeyboardAcceleratorTextWidth != maxKeyboardAcceleratorTextWidth)
 		{
@@ -193,7 +193,7 @@ internal static class AppBarButtonHelpers<TButton>
 
 			if (templateSettings is null)
 			{
-				var templateSettingsImplementation = new TTemplateSettings();
+				var templateSettingsImplementation = createTemplateSettings();
 				button.TemplateSettings = templateSettingsImplementation;
 				templateSettings = templateSettingsImplementation;
 			}

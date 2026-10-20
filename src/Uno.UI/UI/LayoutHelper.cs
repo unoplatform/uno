@@ -4,10 +4,6 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using static System.Double;
 
-#if __APPLE_UIKIT__
-using ObjCRuntime;
-#endif
-
 namespace Uno.UI
 {
 	internal static partial class LayoutHelper
@@ -223,7 +219,7 @@ namespace Uno.UI
 
 		internal static Size Subtract(this Size left, Thickness right)
 		{
-			if (right == Thickness.Empty)
+			if (right == default(Thickness))
 			{
 				return left;
 			}
@@ -261,6 +257,15 @@ namespace Uno.UI
 
 		internal static Rect DeflateBy(this Rect left, Thickness right) => left.InflateBy(right.GetInverse());
 
+		/// <summary>
+		/// Determines whether <paramref name="right"/> is entirely contained within <paramref name="left"/>.
+		/// </summary>
+		internal static bool Contains(this Rect left, Rect right)
+			=> right.Left >= left.Left
+				&& right.Top >= left.Top
+				&& right.Right <= left.Right
+				&& right.Bottom <= left.Bottom;
+
 		internal static double NumberOrDefault(this double value, double defaultValue)
 		{
 			return IsNaN(value)
@@ -278,15 +283,9 @@ namespace Uno.UI
 
 		internal static double FiniteOrDefault(this double value, double defaultValue)
 		{
-#if XAMARIN
-			return IsFinite(value)
-				? value
-				: defaultValue;
-#else
 			return IsInfinity(value) || IsNaN(value)
 				? defaultValue
 				: value;
-#endif
 		}
 
 		internal static Point FiniteOrDefault(this Point value, Point defaultValue)

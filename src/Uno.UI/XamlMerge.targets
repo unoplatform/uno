@@ -1,11 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
-  <PropertyGroup>
-	  <_Uno_XamlMerge_Task_Version>1.27.0-dev.44</_Uno_XamlMerge_Task_Version>
-  </PropertyGroup>
-
   <ItemGroup>
-	  <PackageReference Include="Uno.XamlMerge.Task" Version="$(_Uno_XamlMerge_Task_Version)" />
+	  <PackageReference Include="Uno.XamlMerge.Task" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -14,21 +10,29 @@
 
   <ItemGroup>
 	  <!--
-		Exclude SystemResources.xaml from the merged dictionary to avoid
-		direct non-overridable resources in other files. See When_Theme_Changed_Animated_Value
-		test for more details.
+		Keep the imported WinUI Generic.xaml as the base dictionary so the merged
+		Uno and MUX control dictionaries can override its resources. Generic.xaml is a
+		verbatim WinUI copy, so Uno's own additions live in UnoGenericOverlay.xaml,
+		which is merged like any other dictionary. SystemResources.xaml
+		provides Uno system values that WinUI resolves natively, and stays out of the merge
+		so its resources remain overridable (see the When_Theme_Changed_Animated_Value test).
+
+		The override only works while Generic.xaml is registered into MasterDictionary before
+		mergedstyles.xaml, since the last merged dictionary wins. That ordering comes from the
+		generator and is guarded by
+		Given_GenericResources.When_GridView_Default_Style_Uses_WrapPanel.
 	  -->
+	  <_NonMergedXamlResources Include="$(MSBuildProjectDirectory)\UI\Xaml\Style\Generic\Generic.xaml" />
 	  <_NonMergedXamlResources Include="$(MSBuildProjectDirectory)\UI\Xaml\Style\Generic\SystemResources.xaml" />
-	  <_NonMergedXamlResources Include="$(MSBuildProjectDirectory)\UI\Xaml\Style\Generic\Generic.Native.xaml" />
   </ItemGroup>
 
-  <Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets"
-				  Condition="'$(TargetFramework)' == '' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')" />
+  <Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(UnoXamlMergeTaskVersion)\build\Uno.XamlMerge.Task.targets"
+				  Condition="'$(TargetFramework)' == '' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(UnoXamlMergeTaskVersion)')" />
 
   <Target Name="_GenerateMergedXaml"
 				  DependsOnTargets="GenerateMergedXaml"
 				  BeforeTargets="DispatchToInnerBuilds"
-				  Condition="'$(TargetFramework)' == '' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')">
+				  Condition="'$(TargetFramework)' == '' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(UnoXamlMergeTaskVersion)')">
   </Target>
 
 </Project>

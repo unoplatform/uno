@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.UI.Xaml;
 using Uno.UI.Controls.Legacy.Primitives;
+using Uno.UI.Helpers.Boxes;
 
 using Microsoft.UI.Xaml.Controls;
 
@@ -11,24 +12,20 @@ public partial class ProgressRing : Control
 	public ProgressRing()
 	{
 		DefaultStyleKey = typeof(ProgressRing);
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		// Apply the native style by default
-		Style = (Style)Application.Current.Resources["NativeWuxProgressRingStyle"];
-#endif
 	}
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the <see cref="ProgressRing"/> is showing progress.
 	/// </summary>
-	public bool IsActive
+	// Hides the internal DependencyObject.IsActive (live-tree state).
+	public new bool IsActive
 	{
 		get => (bool)GetValue(IsActiveProperty);
 		set => SetValue(IsActiveProperty, value);
 	}
 
 	public static DependencyProperty IsActiveProperty { get; } =
-		DependencyProperty.Register(nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: OnIsActiveChanged));
+		DependencyProperty.Register(nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False, propertyChangedCallback: OnIsActiveChanged));
 
 	private static void OnIsActiveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 	{

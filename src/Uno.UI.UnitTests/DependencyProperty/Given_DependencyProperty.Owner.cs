@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests
 {
-	[TestClass]
+	[UITestClass]
 	public class DependencyProperty_Owner
 	{
 		private readonly (string owner, string propertyName)[] _ignoreList = new (string, string)[]
@@ -38,7 +38,7 @@ namespace Uno.UI.Tests
 
 			var asm = typeof(FrameworkElement).Assembly;
 
-			foreach (var dependencyObject in asm.DefinedTypes.Where(t => t.ImplementedInterfaces.Contains(typeof(DependencyObject))))
+			foreach (var dependencyObject in asm.DefinedTypes.Where(t => typeof(DependencyObject).IsAssignableFrom(t)))
 			{
 				var dependencyProperties = dependencyObject.DeclaredProperties
 					.Where(p => p.PropertyType == typeof(DependencyProperty) &&

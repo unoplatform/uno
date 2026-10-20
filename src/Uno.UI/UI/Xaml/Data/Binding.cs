@@ -5,13 +5,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 
-#if __ANDROID__
-using _NativeObject = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _NativeObject = Foundation.NSObject;
-#else
 using _NativeObject = System.Object;
-#endif
 
 namespace Microsoft.UI.Xaml.Data
 {
@@ -23,17 +17,6 @@ namespace Microsoft.UI.Xaml.Data
 		/// </summary>
 		private WeakReference _weakSource;
 
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-		/// <summary>
-		/// On platforms which perform implicit and opaque pinning of native references, it
-		/// is required to keep weak references to direct and indirect references to UIElement instances.
-		/// Keeping weak references is costly,  so it's enabled only on select platforms.
-		/// Note that this is needed only for x:Bind related operations, where the lifespan of
-		/// the binding is explicitly tied to the object containing the weak references. This means
-		/// that there's weak references will be kept alive properly.
-		/// </summary>
-		private ManagedWeakReference _compiledSource;
-#endif
 
 		/// <summary>
 		/// A hard storage for other types of <see cref="Source"/> content.
@@ -69,11 +52,6 @@ namespace Microsoft.UI.Xaml.Data
 			ConverterParameter = converterParameter;
 		}
 
-		public static implicit operator Binding(string path)
-		{
-			return new Binding(path);
-		}
-
 		/// <summary>
 		/// Gets or sets the path to the binding source property.
 		/// </summary>
@@ -101,8 +79,19 @@ namespace Microsoft.UI.Xaml.Data
 		/// <summary>
 		/// Gets or sets the name of the element to use as the binding source for the Binding.
 		/// </summary>
-		/// <value>The name of the element, or an ElementNameSubject instance that can be used to monitor the element name instance changes.</value>
-		public object ElementName { get; set; }
+		/// <value>The name of the element.</value>
+		public string ElementName { get; set; }
+
+		/// <summary>
+		/// Routes the availability of the element instance for a late-bound ElementName binding.
+		/// </summary>
+		/// <remarks>
+		/// Uno-only seam set by the XAML code generator and runtime reader. It must be public
+		/// because the compiled-XAML output lives in the consuming assembly, which has no access
+		/// to Uno.UI internals (same rationale as <see cref="CompiledSource"/>).
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public ElementNameSubject ElementNameSubject { get; set; }
 
 		/// <summary>
 		/// Gets or sets the value to use when the binding is unable to return a value.
@@ -153,14 +142,6 @@ namespace Microsoft.UI.Xaml.Data
 					// collected properly.
 					// In the other case, we keep a hard reference to the source.
 
-#if __ANDROID__ || __APPLE_UIKIT__
-					if (value is _NativeObject no)
-					{
-						_weakSource = new WeakReference(no);
-						_source = null;
-					}
-					else
-#endif
 					{
 						_weakSource = null;
 						_source = value;
@@ -196,11 +177,7 @@ namespace Microsoft.UI.Xaml.Data
 		/// <value>The source.</value>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public object CompiledSource
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-		{ get => _compiledSource?.Target; set => _compiledSource = WeakReferencePool.RentWeakReference(this, value); }
-#else
 		{ get; set; }
-#endif
 
 		/// <summary>
 		/// Provides the method used in the context of x:Bind expressions to

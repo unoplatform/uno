@@ -3,24 +3,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class FlyoutBase : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property AllowFocusOnInteractionProperty
 		// Skipping already declared property AllowFocusWhenDisabledProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty AreOpenCloseAnimationsEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(AreOpenCloseAnimationsEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 		// Skipping already declared property AttachedFlyoutProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ElementSoundMode), typeof(global::Microsoft.UI.Xaml.ElementSoundMode),
@@ -32,25 +32,25 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property LightDismissOverlayModeProperty
 		// Skipping already declared property OverlayInputPassThroughElementProperty
 		// Skipping already declared property PlacementProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ShouldConstrainToRootBoundsProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ShouldConstrainToRootBounds), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 		// Skipping already declared property ShowModeProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty SystemBackdropProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(SystemBackdrop), typeof(global::Microsoft.UI.Xaml.Media.SystemBackdrop),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.SystemBackdrop)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TargetProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Target), typeof(global::Microsoft.UI.Xaml.FrameworkElement),
@@ -59,8 +59,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 		// Skipping already declared property AllowFocusOnInteraction
 		// Skipping already declared property AllowFocusWhenDisabled
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool AreOpenCloseAnimationsEnabled
 		{
 			get
@@ -69,12 +69,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(AreOpenCloseAnimationsEnabledProperty, value);
+				this.SetValue(AreOpenCloseAnimationsEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.ElementSoundMode ElementSoundMode
 		{
 			get
@@ -88,8 +88,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 #endif
 		// Skipping already declared property InputDevicePrefersPrimaryCommands
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsConstrainedToRootBounds
 		{
 			get
@@ -102,8 +102,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property LightDismissOverlayMode
 		// Skipping already declared property OverlayInputPassThroughElement
 		// Skipping already declared property Placement
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool ShouldConstrainToRootBounds
 		{
 			get
@@ -112,13 +112,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(ShouldConstrainToRootBoundsProperty, value);
+				this.SetValue(ShouldConstrainToRootBoundsProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
 		// Skipping already declared property ShowMode
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
 		{
 			get

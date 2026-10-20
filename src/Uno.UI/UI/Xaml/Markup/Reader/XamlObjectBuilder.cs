@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -23,13 +23,7 @@ using Uno.UI.Xaml.Markup;
 using Color = Windows.UI.Color;
 using System.Text;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _View = UIKit.UIView;
-#else
 using _View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Markup.Reader
 {
@@ -131,15 +125,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		}
 
 
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		// Regardless the setup, XamlReader still uses the new templated-parent impl, including the new framework-template.ctor.
-		// But because they are not referenced anywhere, they could be trimmed and leads to:
-		// > MissingMethodException: MissingConstructor_Name, Microsoft.UI.Xaml.DataTemplate
-		// note: This is only needed while we are still supporting legacy codegen. It can be safely deleted once we moved to the new setup.
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ControlTemplate))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DataTemplate))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ItemsPanelTemplate))]
-#endif
 		private object? LoadObject(
 			XamlObjectDefinition? control,
 			object? rootInstance,
@@ -167,11 +152,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					{
 						fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
 					}
-					if (settings?.TemplatedParent is { } tp)
-					{
-						fe.SetTemplatedParent(tp);
-						settings.TemplateMemberCreatedCallback?.Invoke(fe);
-					}
+					settings?.OnMemberCreated(fe);
 				}
 			}
 
@@ -232,7 +213,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 			if (type.Is<FrameworkTemplate>())
 			{
-				NewFrameworkTemplateBuilder builder = (o, s) =>
+				FrameworkTemplateBuilder builder = (o, s) =>
 				{
 					var contentOwner = unknownContent;
 
@@ -243,7 +224,15 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// reported even if we're not materializing the content explicitly.
 				ValidateContent(unknownContent?.Objects.FirstOrDefault());
 
-				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder)!;
+				// Constructed directly rather than reflectively: the builder ctors are internal, and a static
+				// reference also keeps them from being trimmed.
+				object created = type switch
+				{
+					_ when type == typeof(DataTemplate) => Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(null, builder),
+					_ when type == typeof(ControlTemplate) => Uno.UI.Helpers.MarkupHelper.CreateControlTemplate(null, builder),
+					_ when type == typeof(ItemsPanelTemplate) => Uno.UI.Helpers.MarkupHelper.CreateItemsPanelTemplate(null, builder),
+					_ => Activator.CreateInstance(type, /* owner: */null, /* factory: */builder)!,
+				};
 				TrySetContextualProperties(created, control);
 
 				foreach (var member in control.Members.Where(m => m != unknownContent && m != initializationMember))
@@ -377,6 +366,24 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				return instance;
 			}
+		}
+
+		/// <summary>
+		/// WinUI also accepts an attached property in a setter target without parentheses
+		/// (e.g. <c>ContentRoot.Grid.Column</c>), which the property path syntax would read as a sub-property.
+		/// </summary>
+		private string ParenthesizeBareAttachedProperty(string propertyName)
+		{
+			if (propertyName.Contains('('))
+			{
+				return propertyName;
+			}
+
+			var parts = propertyName.Split('.');
+
+			return parts.Length == 2 && TypeResolver.FindType(parts[0]) is { } ownerType && TypeResolver.IsAttachedProperty(ownerType, parts[1])
+				? "(" + propertyName + ")"
+				: propertyName;
 		}
 
 		private string RewriteAttachedPropertyPath(string? value)
@@ -673,7 +680,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// This builds property setters for specified member setter.
 				var separatorIndex = targetPath.IndexOf('.');
 				var elementName = targetPath.Substring(0, separatorIndex);
-				var propertyName = targetPath.Substring(separatorIndex + 1);
+				var propertyName = ParenthesizeBareAttachedProperty(targetPath.Substring(separatorIndex + 1));
 
 				if (instance is Setter setter)
 				{
@@ -739,7 +746,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			// note: In order for static resolution to work, the referenced resources must be already parsed & added, which means:
 			// - MergedDictionaries should be processed before this method call.
 			// - Member resources should be all processed prior the resolution can began.
-			var delayedResolutionList = new List<IDependencyObjectStoreProvider>();
+			var delayedResolutionList = new List<DependencyObject>();
 
 			foreach (var child in unknownContent.Objects)
 			{
@@ -754,16 +761,17 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					rd.Add(key, childInstance);
 				}
 
-				if (HasAnyResourceMarkup(child) && childInstance is IDependencyObjectStoreProvider provider)
+				if (HasAnyResourceMarkup(child) && childInstance is DependencyObject provider)
 				{
 					delayedResolutionList.Add(provider);
 				}
 			}
 
-			// Delay resolve static resources
+			// Delay resolve static resources. Theme resources are resolved here too, so a reference to a sibling
+			// pins this dictionary as its target, like WinUI's ResourceResolver::GetDictionaryForThemeReference.
 			foreach (var provider in delayedResolutionList)
 			{
-				provider.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, containingDictionary: rd);
+				provider.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading | ResourceUpdateReason.ThemeResource, containingDictionary: rd);
 			}
 		}
 
@@ -1136,13 +1144,13 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		{
 			var binding = BuildBindingExpression(instance, rootInstance, member);
 
-			if (instance is IDependencyObjectStoreProvider provider)
+			if (instance is DependencyObject provider)
 			{
 				var dependencyProperty = TypeResolver.FindDependencyProperty(member);
 
 				if (dependencyProperty != null)
 				{
-					provider.Store.SetBinding(dependencyProperty, binding);
+					provider.SetBindingInternal(dependencyProperty, binding);
 				}
 				else if (TypeResolver.GetPropertyByName(member.Owner.Type, member.Member.Name) is PropertyInfo propertyInfo)
 				{
@@ -1208,10 +1216,14 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 					case nameof(Binding.ElementName):
 						var subject = new ElementNameSubject();
-						binding.ElementName = subject;
+						binding.ElementNameSubject = subject;
 
 						if (bindingProperty.Value?.ToString() is { } value)
 						{
+							// Keep the public string in sync so binding.ElementName roundtrips (WinUI parity);
+							// resolution still goes through the subject.
+							binding.ElementName = value;
+							subject.Name = value;
 							AddElementName(value, subject);
 						}
 						break;

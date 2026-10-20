@@ -10,7 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Button : ButtonBase
 	{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: CButton::EnterImpl in Button.cpp
 		internal override void EnterImpl(EnterParams @params, int depth)
 		{
@@ -34,7 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 				flyout.Leave(null, @params);
 			}
 		}
-#endif
 		// TODO Uno: Uncomment this code and all commented out code related to this field once we know where
 		// to call SuppressFlyoutOpening method.
 		// private bool _suppressFlyoutOpening;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +23,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-#elif XAMARIN || UNO_REFERENCE_API
+#elif __ANDROID__ || __APPLE_UIKIT__ || UNO_REFERENCE_API
 using Microsoft.UI.Xaml.Controls;
 using System.Globalization;
 #endif
@@ -36,133 +38,20 @@ namespace Uno.UI.Samples.Controls
 		public SampleChooserControl()
 		{
 			this.InitializeComponent();
+
+			InitializePerfHooks();
+			InitializeShortcuts();
+			InitializeShell();
+
+			DataContextChanged += OnDataContextChanged;
 		}
 
-		private SampleChooserViewModel ViewModel => (SampleChooserViewModel)DataContext;
+		/// <summary>
+		/// Typed source for x:Bind. Null until MainPage sets the DataContext, so bound functions must be null-safe.
+		/// </summary>
+		internal SampleChooserViewModel? ViewModel => DataContext as SampleChooserViewModel;
 
-		private async void FocusSearchAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-		{
-			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
-			{
-				return;
-			}
-
-			// Ensure the pane is open before focusing the search box
-			if (!SplitView.IsPaneOpen)
-			{
-				SplitView.IsPaneOpen = true;
-				await Task.Yield();
-			}
-
-			SearchBox.Focus(FocusState.Keyboard);
-			args.Handled = true;
-		}
-
-		private void ReloadSampleAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-		{
-			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
-			{
-				return;
-			}
-
-			if (ViewModel.ReloadCurrentTestCommand.CanExecute(null))
-			{
-				ViewModel.ReloadCurrentTestCommand.Execute(null);
-			}
-			args.Handled = true;
-		}
-
-		private void PreviousSampleAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-		{
-			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
-			{
-				return;
-			}
-
-			if (ViewModel.LoadPreviousTestCommand.CanExecute(null))
-			{
-				ViewModel.LoadPreviousTestCommand.Execute(null);
-			}
-			args.Handled = true;
-		}
-
-		private void NextSampleAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-		{
-			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
-			{
-				return;
-			}
-
-			if (ViewModel.LoadNextTestCommand.CanExecute(null))
-			{
-				ViewModel.LoadNextTestCommand.Execute(null);
-			}
-			args.Handled = true;
-		}
-
-		private void FavoritesViewAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-		{
-			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
-			{
-				return;
-			}
-
-			ViewModel.ShowNewSectionCommand.Execute("Favorites");
-			args.Handled = true;
-		}
-
-		private void HistoryViewAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-		{
-			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
-			{
-				return;
-			}
-
-			ViewModel.ShowNewSectionCommand.Execute("Recents");
-			args.Handled = true;
-		}
-
-		private void PlaygroundAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-		{
-			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
-			{
-				return;
-			}
-
-			if (ViewModel.OpenPlaygroundCommand.CanExecute(null))
-			{
-				ViewModel.OpenPlaygroundCommand.Execute(null);
-			}
-			args.Handled = true;
-		}
-
-		private void RuntimeTestsAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-		{
-			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
-			{
-				return;
-			}
-
-			if (ViewModel.OpenRuntimeTestsCommand.CanExecute(null))
-			{
-				ViewModel.OpenRuntimeTestsCommand.Execute(null);
-			}
-			args.Handled = true;
-		}
-
-		private void HelpAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-		{
-			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
-			{
-				return;
-			}
-
-			if (ViewModel.OpenHelpCommand.CanExecute(null))
-			{
-				ViewModel.OpenHelpCommand.Execute(null);
-			}
-			args.Handled = true;
-		}
+		private void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args) => Bindings.Update();
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -191,41 +80,86 @@ namespace Uno.UI.Samples.Controls
 			return base.ArrangeOverride(availableSize);
 		}
 
-		private void OnSearchEnterKey_KeyDown(object sender, KeyRoutedEventArgs e)
-		{
-			if (e.Key == Windows.System.VirtualKey.Enter)
-			{
-				((SampleChooserViewModel)DataContext).TryOpenSingleSearchResult();
-			}
-		}
-
 		private void SearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
 		{
 			if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
 			{
-				((SampleChooserViewModel)DataContext).SearchTerm = sender.Text;
+				if (ViewModel is { } vm)
+				{
+					vm.SearchTerm = sender.Text;
+				}
 			}
 		}
 
+		// Suggestions open on submit (click or Enter), not on SuggestionChosen, which also fires while arrowing through them.
 		private void SearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
 		{
-			if (args is not null)
+			if (ViewModel is not { } vm)
 			{
-				((SampleChooserViewModel)DataContext).TryOpenSingleSearchResult();
+				return;
+			}
+
+			switch (args.ChosenSuggestion)
+			{
+				case SampleChooserContent sample:
+					_ = vm.OpenSample(CancellationToken.None, sample);
+					CloseOverlayBrowser(vm);
+					break;
+
+				case Uno.UI.Samples.Helper.SearchSeeAllItem:
+					ShowAllSearchResults(sender, vm);
+					break;
+
+				case null when !string.IsNullOrWhiteSpace(sender.Text):
+					vm.SearchTerm = sender.Text;
+					if (IsControlDown || !vm.TryOpenTopSearchResult())
+					{
+						ShowAllSearchResults(sender, vm);
+					}
+					else
+					{
+						CloseOverlayBrowser(vm);
+					}
+					break;
 			}
 		}
 
-		private void SearchBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+		// Focus moves on to the results: WinUI would otherwise reopen the suggestions over them when they refresh.
+		private void ShowAllSearchResults(AutoSuggestBox box, SampleChooserViewModel vm)
 		{
-			if (args.SelectedItem is SampleChooserContent control)
+			// Only a keyboard submit (Enter, Ctrl+Enter) should show the focus rectangle on the results.
+			var focusState = IsEnterDown ? FocusState.Keyboard : FocusState.Programmatic;
+			vm.ShowSearchResults();
+			DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
 			{
-				_ = ((SampleChooserViewModel)DataContext).OpenSample(CancellationToken.None, control);
-			}
+				box.IsSuggestionListOpen = false;
+				ShellSearchResultsList.Focus(focusState);
+			});
 		}
 
 		private void InfoFlyout_Opening(object sender, object e)
 		{
+			SampleInfoFlyoutContent.CloseRequested -= InfoFlyoutContent_CloseRequested;
+			SampleInfoFlyoutContent.CloseRequested += InfoFlyoutContent_CloseRequested;
 			SampleInfoFlyoutContent.DataContext = ViewModel?.CurrentSelectedSample;
+			if (XamlRoot is { } root)
+			{
+				SampleInfoFlyoutContent.FitToWindow(root.Size);
+				root.Changed -= InfoFlyoutRoot_Changed;
+				root.Changed += InfoFlyoutRoot_Changed;
+			}
 		}
+
+		private void InfoFlyout_Closed(object sender, object e)
+		{
+			if (XamlRoot is { } root)
+			{
+				root.Changed -= InfoFlyoutRoot_Changed;
+			}
+		}
+
+		private void InfoFlyoutRoot_Changed(XamlRoot sender, XamlRootChangedEventArgs args) => SampleInfoFlyoutContent.FitToWindow(sender.Size);
+
+		private void InfoFlyoutContent_CloseRequested(object? sender, EventArgs e) => ShellInfoFlyout.Hide();
 	}
 }

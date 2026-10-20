@@ -10,6 +10,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
@@ -23,13 +24,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Dispatching;
 using Windows.System;
-#if __APPLE_UIKIT__
-using View = UIKit.UIView;
-#elif __ANDROID__
-using View = Android.Views.View;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -50,12 +45,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private bool _isLightDismissEnabled = true;
 		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: FlyoutBase_partial.h:359 — m_isFlyoutPresenterRequestedThemeOverridden.
 		// Element-level theme forwarding is a Skia/WASM-only feature (native flyouts follow the
 		// application/OS theme), so this flag is gated alongside ForwardThemeToPresenter.
 		private bool m_isFlyoutPresenterRequestedThemeOverridden;
-#endif
 
 		private bool m_hasPlacementOverride;
 		private FlyoutPlacementMode m_placementOverride;
@@ -88,7 +81,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Propagates Enter to the flyout's content for keyboard accelerator registration.
 		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
 		/// </summary>
-		internal virtual void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
+		internal new virtual void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
 		{
 		}
 
@@ -96,7 +89,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Propagates Leave to the flyout's content for keyboard accelerator unregistration.
 		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
 		/// </summary>
-		internal virtual void Leave(DependencyObject pNamescopeOwner, LeaveParams @params)
+		internal new virtual void Leave(DependencyObject pNamescopeOwner, LeaveParams @params)
 		{
 		}
 
@@ -133,9 +126,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				InitializePopupPanel();
 
-				SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
-				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
-				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
+				// The popup deliberately carries no DataContext (WinUI parity): a flyout has none, and forwarding the
+				// owner's DataContext onto the kept-alive popup leaks it. The placement target's DataContext is set on
+				// the presenter at show-time (ForwardTargetPropertiesToPresenter) and cleared on close instead.
+				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, Boxer.Box(AllowFocusOnInteraction));
+				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, Boxer.Box(AllowFocusWhenDisabled));
 			}
 		}
 
@@ -170,12 +165,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			OnOpened();
 		}
-
-		/// <summary>
-		/// Controls the appeareance of <see cref="MenuFlyout"/>, when true the native popups and appearance
-		/// is used, otherwise the UWP appeareance is used. The default value is provided by <see cref="FeatureConfiguration.Style.UseUWPDefaultStyles"/>.
-		/// </summary>
-		public bool UseNativePopup { get; set; } = !FeatureConfiguration.Style.UseUWPDefaultStyles;
 
 		protected virtual void InitializePopupPanel()
 		{
@@ -220,7 +209,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(IsOpen), typeof(bool),
 				typeof(FlyoutBase),
-				new FrameworkPropertyMetadata(default(bool)));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		#region Placement
 
@@ -311,7 +300,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public static DependencyProperty AllowFocusWhenDisabledProperty { get; } = CreateAllowFocusWhenDisabledProperty();
 
 		private void OnAllowFocusWhenDisabledChanged(bool oldValue, bool newValue) =>
-			SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
+			SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, Boxer.Box(AllowFocusWhenDisabled));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the element automatically gets focus when the user interacts with it.
@@ -375,10 +364,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(InputDevicePrefersPrimaryCommands),
 				typeof(bool),
 				typeof(FlyoutBase),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		private void OnAllowFocusOnInteractionChanged(bool oldValue, bool newValue) =>
-			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
+			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, Boxer.Box(AllowFocusOnInteraction));
 
 		// In WinUI, Target is declared as a back-reference (weak reference) in
 		// IsDependencyPropertyBackReference(). Using ManagedWeakReference (via WeakReferencePool)
@@ -392,27 +381,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			private set
 			{
 				// MUX Reference: FlyoutBase_Partial.cpp SetPlacementTarget (lines 2973-3008)
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// Detach ActualThemeChanged from old target on reassignment
 				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement oldTarget)
 				{
 					oldTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
 				}
-#endif
 
 				WeakReferencePool.ReturnWeakReference(this, _targetWeakRef);
 				_targetWeakRef = value is not null ? WeakReferencePool.RentWeakReference(this, value) : null;
 			}
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// Hook up an event handler that will forward any theme changes to the flyout.
 		// MUX Reference: FlyoutBase_Partial.cpp SetPlacementTarget (lines 3000-3005)
 		private void OnPlacementTargetActualThemeChanged(FrameworkElement sender, object args)
 		{
 			ForwardThemeToPresenter();
 		}
-#endif
 
 		/// <summary>
 		/// Defines an optional position of the popup in the <see cref="Target"/> element.
@@ -440,13 +425,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (!cancel)
 			{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// Detach ActualThemeChanged on close to avoid holding the flyout alive
 				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement closingTarget)
 				{
 					closingTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
 				}
-#endif
 
 				m_openingCanceled = true;
 
@@ -548,15 +531,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			Target = placementTarget;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// Attach ActualThemeChanged while open so flyout tracks target's theme
 			if (placementTarget is not null)
 			{
 				placementTarget.ActualThemeChanged += OnPlacementTargetActualThemeChanged;
 			}
-#endif
 
 			ForwardTargetPropertiesToPresenter();
+			ForwardPopupFlowDirection();
 
 			// Capture the input device that triggered this flyout (mirrors WinUI ValidateAndSetParameters)
 			var contentRoot = VisualTree.GetContentRootForElement(placementTarget);
@@ -581,12 +563,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						// Uno TODO: Calling TransformToVisual(null) on an element within the main visual tree will include the status bar height, which we don't
 						// want because the status bar is otherwise excluded from layout calculations. We get the transform relative to the managed root view instead.
 						UIElement reference =
-#if __ANDROID__
-							// TODO: Adjust for multiwindow #13827
-							Window.CurrentSafe?.Content;
-#else
 							null;
-#endif
 
 						var transformToRoot = placementTarget.TransformToVisual(reference);
 						positionValue = transformToRoot.TransformPoint(positionValue);
@@ -745,17 +722,37 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					presenter.ClearValue(FrameworkElement.DataContextProperty);
 				}
 			}
+
 		}
 
 		/// <summary>
-		/// Forwards DataContext and theme from the placement target to the presenter.
+		/// Forwards the placement target's flow direction to the popup so that the flyout content is laid out (and mirrored) like the target.
+		/// Ported from WinUI: FlyoutBase_partial.cpp ForwardPopupFlowDirection.
+		/// </summary>
+		private void ForwardPopupFlowDirection()
+		{
+			if (_popup is not null)
+			{
+				// The popup is reused across openings, so a missing target resets the direction rather than keeping the previous target's.
+				_popup.FlowDirection = Target?.FlowDirection ?? FlowDirection.LeftToRight;
+			}
+		}
+
+		/// <summary>
+		/// Forwards DataContext, flow direction and theme from the placement target to the presenter.
 		/// Ported from WinUI: FlyoutBase_partial.cpp ForwardTargetPropertiesToPresenter.
 		/// </summary>
 		private void ForwardTargetPropertiesToPresenter()
 		{
-			if (_popup?.Child is FrameworkElement presenter && Target is { } target)
+			if (_popup?.Child is FrameworkElement presenter)
 			{
-				presenter.DataContext = target.DataContext;
+				if (Target is { } target)
+				{
+					presenter.DataContext = target.DataContext;
+				}
+
+				// The presenter is reused across openings, so a missing target resets the direction rather than keeping the previous target's.
+				presenter.FlowDirection = Target?.FlowDirection ?? FlowDirection.LeftToRight;
 			}
 
 			ForwardThemeToPresenter();
@@ -767,7 +764,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// OS + application theme, so on native this is a no-op and the flyout follows the app/OS theme.
 		private void ForwardThemeToPresenter()
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			if (_popup?.Child is not Control presenter)
 			{
 				return;
@@ -822,11 +818,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				// popup itself rather than the presenter set as the popup's child.
 				_popup.RequestedTheme = requestedTheme;
 			}
-#else
-			// Native: OS + application theme only. We intentionally do not forward any element-level theme;
-			// the presenter keeps its inherited theme, so the flyout content follows the application/OS theme
-			// via the normal {ThemeResource} resolution and the Popup.UpdateThemeBindings propagation path.
-#endif
 		}
 
 		private protected virtual void OnOpened() { }
@@ -889,14 +880,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		protected internal virtual void Close()
-		{
-			Hide(canCancel: true);
-		}
-
-		protected internal virtual void Open()
+		internal virtual void Open()
 		{
 			EnsurePopupCreated();
+
+			// Forward the target's DataContext (and theme) to the presenter, as ShowAtCore does — the popup no
+			// longer carries the DataContext.
+			ForwardTargetPropertiesToPresenter();
 
 			SetPopupPosition(Target, PopupPositionInTarget);
 			ApplyTargetPosition();
@@ -932,9 +922,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e) =>
-			SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
-
 		private void SynchronizePropertyToPopup(DependencyProperty property, object value)
 		{
 			// This is present to force properties to be propagated to the popup of the flyout
@@ -967,12 +954,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			var flyout = GetAttachedFlyout(flyoutOwner);
 
-			flyout?.SetValue(
-				FlyoutBase.DataContextProperty,
-				flyoutOwner.DataContext,
-				precedence: DependencyPropertyValuePrecedences.Inheritance
-			);
-
+			// FlyoutBase has no DataContext of its own (it is a DependencyObject, not a FrameworkElement — WinUI parity).
+			// ShowAt → ShowAtCore → ForwardTargetPropertiesToPresenter forwards the owner's DataContext to the presenter;
+			// content and items then resolve their {Binding}s through normal visual-tree inheritance from the presenter.
 			flyout?.ShowAt(flyoutOwner);
 		}
 

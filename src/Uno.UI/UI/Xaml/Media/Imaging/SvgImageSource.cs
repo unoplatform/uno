@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.IO;
 using System.Threading;
@@ -8,6 +8,12 @@ using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Uno;
 using Uno.UI.Xaml.Media;
+using System.Net.Http;
+using Uno.Helpers;
+using Uno.Foundation.Logging;
+using Windows.Application­Model;
+using Microsoft.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Media.Imaging;
 
@@ -44,9 +50,6 @@ public partial class SvgImageSource : ImageSource
 
 	private void Initialize()
 	{
-#if __APPLE_UIKIT__ || __SKIA__ || __ANDROID__
-		InitSvgProvider();
-#endif
 		InitPartial();
 	}
 
@@ -106,8 +109,6 @@ public partial class SvgImageSource : ImageSource
 			{
 				tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
 			}
-#elif IS_UNIT_TESTS
-			return Task.FromResult(SvgImageSourceLoadStatus.Other);
 #else
 			Stream = streamSource.CloneStream().AsStream();
 			StreamLoaded?.Invoke(this, EventArgs.Empty);
@@ -119,7 +120,7 @@ public partial class SvgImageSource : ImageSource
 		return AsyncOperation.FromTask(SetSourceAsync);
 	}
 
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+#if !__CROSSRUNTIME__
 	internal event EventHandler? StreamLoaded;
 #endif
 
@@ -155,4 +156,62 @@ public partial class SvgImageSource : ImageSource
 		return $"{GetType().Name}/-empty-";
 	}
 #endif
+
+	// The retained parsed SVG (from the registered ISvgRenderer); set when the markup parses.
+	private ISvgDocument? _svgDocument;
+
+	// One surface per parsed document, shared by every consumer of this source: the surface owns the document and
+	// disposes it, so a re-open or an unload releases exactly one owner (see Unload).
+	private CompositionSvgSurface? _svgSurface;
+
+	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
+	{
+		if (TryOpenSvgImageData(out var imageTask))
+		{
+			asyncImage = imageTask.ContinueWith(task =>
+			{
+				var imageData = task.Result;
+
+				// The registered ISvgRenderer retains the parsed vector; the live composition surface replays it each
+				// frame at the display size — resolution-independent (crisp at any scale), no intermediate
+				// rasterization. Consumed like any other image surface (e.g. by Image's surface brush).
+				if (_svgSurface is { } surface)
+				{
+					return ImageData.FromCompositionSurface(surface);
+				}
+
+				return imageData.Kind == ImageDataKind.Error ? imageData : ImageData.Empty;
+			}, ct);
+			return true;
+		}
+		else
+		{
+			asyncImage = Task.FromResult(ImageData.Empty);
+			return false;
+		}
+	}
+
+	private async Task<ImageData> GetSvgImageDataAsync(CancellationToken ct)
+	{
+		try
+		{
+			ImageData imageData = ImageData.Empty;
+
+			if (AbsoluteUri is { } uri)
+			{
+				imageData = await ImageSourceHelpers.GetImageDataFromUriAsBytes(uri, ct);
+			}
+
+			if (!imageData.HasData && _stream is not null)
+			{
+				imageData = await ImageSourceHelpers.ReadFromStreamAsBytesAsync(_stream.AsStream(), ct);
+			}
+
+			return imageData;
+		}
+		catch (Exception e)
+		{
+			return ImageData.FromError(e);
+		}
+	}
 }

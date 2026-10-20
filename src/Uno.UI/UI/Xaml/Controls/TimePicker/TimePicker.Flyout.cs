@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
 using Uno.Foundation.Extensibility;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -15,7 +16,7 @@ partial class TimePicker
 		"UseNativeStyle",
 		typeof(bool),
 		typeof(TimePicker),
-		new FrameworkPropertyMetadata(DEFAULT_NATIVE_STYLE));
+		new FrameworkPropertyMetadata(Boxer.Box(DEFAULT_NATIVE_STYLE)));
 
 	/// <summary>
 	/// [UnoOnly] If we should use the native picker for the platform.
@@ -33,7 +34,7 @@ partial class TimePicker
 		"UseNativeMinMaxDates",
 		typeof(bool),
 		typeof(TimePicker),
-		new FrameworkPropertyMetadata(false));
+		new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	/// <summary>
 	/// [UnoOnly] When using native pickers (through the UseNativeStyle property),
@@ -74,9 +75,7 @@ partial class TimePicker
 		var useNativeStyle = timePicker.UseNativeStyle;
 
 		TimePickerFlyout flyout;
-#if __ANDROID__ || __IOS__
-		flyout = useNativeStyle ? new NativeTimePickerFlyout() : new TimePickerFlyout();
-#elif __SKIA__
+#if __SKIA__
 		if (useNativeStyle && ApiExtensibility.CreateInstance<ISkiaNativeTimePickerProviderExtension>(null, out var instance))
 		{
 			flyout = instance.CreateNativeTimePickerFlyout();
@@ -91,9 +90,6 @@ partial class TimePicker
 
 		if (useNativeStyle)
 		{
-#if __IOS__
-			flyout.Placement = timePicker.FlyoutPlacement;
-#endif
 			if (timePicker.FlyoutPresenterStyle is not null)
 			{
 				flyout.TimePickerFlyoutPresenterStyle = timePicker.FlyoutPresenterStyle;

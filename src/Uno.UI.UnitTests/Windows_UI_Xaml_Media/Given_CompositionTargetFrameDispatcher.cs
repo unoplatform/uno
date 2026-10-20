@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Media;
 
-[TestClass]
+[UITestClass]
 public class Given_CompositionTargetFrameDispatcher
 {
 	[TestMethod]

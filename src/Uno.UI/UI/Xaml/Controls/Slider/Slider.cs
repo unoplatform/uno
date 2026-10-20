@@ -1,9 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Controls.Primitives;
-
-#if __APPLE_UIKIT__
-using Foundation;
-using UIKit;
-#endif
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -37,6 +33,6 @@ public partial class Slider : RangeBase
 			nameof(IsTrackerEnabled),
 			typeof(bool),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(BoolBoxes.True));
 }
 

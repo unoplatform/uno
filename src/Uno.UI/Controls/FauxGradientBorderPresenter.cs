@@ -22,19 +22,9 @@ namespace Uno.UI.Controls;
 /// </remarks>
 public partial class FauxGradientBorderPresenter : ContentPresenter
 {
-#if __WASM__ || __APPLE_UIKIT__
-	private readonly Border _displayBorder;
-#endif
-
 	public FauxGradientBorderPresenter()
 	{
-#if __WASM__ || __APPLE_UIKIT__
-		HorizontalContentAlignment = HorizontalAlignment.Stretch;
-		VerticalContentAlignment = VerticalAlignment.Stretch;
-		Content = _displayBorder = new Border();
-#else
 		Visibility = Visibility.Collapsed;
-#endif
 	}
 
 	/// <summary>
@@ -69,7 +59,7 @@ public partial class FauxGradientBorderPresenter : ContentPresenter
 	[GeneratedDependencyProperty]
 	public static DependencyProperty RequestedBorderThicknessProperty { get; } = CreateRequestedBorderThicknessProperty();
 
-	private static Thickness GetRequestedBorderThicknessDefaultValue() => Thickness.Empty;
+	private static Thickness GetRequestedBorderThicknessDefaultValue() => default(Thickness);
 
 	private void OnRequestedBorderThicknessChanged() => OnBorderChanged();
 
@@ -88,48 +78,11 @@ public partial class FauxGradientBorderPresenter : ContentPresenter
 	[GeneratedDependencyProperty]
 	public static DependencyProperty RequestedCornerRadiusProperty { get; } = CreateRequestedCornerRadiusProperty();
 
-	private static CornerRadius GetRequestedCornerRadiusDefaultValue() => CornerRadius.None;
+	private static CornerRadius GetRequestedCornerRadiusDefaultValue() => default(CornerRadius);
 
 	private void OnRequestedCornerRadiusChanged() => OnBorderChanged();
 
 	private void OnBorderChanged()
 	{
-#if __WASM__ || __APPLE_UIKIT__
-		var requestedThickness = RequestedBorderThickness;
-		var requestedBorderBrush = RequestedBorderBrush;
-		var requestedCornerRadius = RequestedCornerRadius;
-
-		if (requestedBorderBrush is not LinearGradientBrush gradientBrush ||
-			gradientBrush.CanApplyToBorder(requestedCornerRadius) ||
-			!gradientBrush.SupportsFauxGradientBorder)
-		{
-			_displayBorder.Visibility = Visibility.Collapsed;
-			return;
-		}
-
-		requestedThickness.Left = 0;
-		requestedThickness.Right = 0;
-		var minorStopAlignment = gradientBrush.GetMinorStopAlignment();
-		if (minorStopAlignment == VerticalAlignment.Top)
-		{
-			requestedThickness.Bottom = 0;
-		}
-		else
-		{
-			requestedThickness.Top = 0;
-		}
-
-		if (requestedThickness == Thickness.Empty)
-		{
-			_displayBorder.Visibility = Visibility.Collapsed;
-			return;
-		}
-
-		_displayBorder.Visibility = Visibility.Visible;
-
-		_displayBorder.CornerRadius = requestedCornerRadius;
-		_displayBorder.BorderThickness = requestedThickness;
-		_displayBorder.BorderBrush = gradientBrush.FauxOverlayBrush;
-#endif
 	}
 }

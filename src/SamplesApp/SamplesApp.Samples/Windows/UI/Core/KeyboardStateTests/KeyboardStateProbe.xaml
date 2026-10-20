@@ -1,0 +1,18 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Core.KeyboardStateTests.KeyboardStateProbe"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel Padding="16" Spacing="12">
+        <TextBlock
+            Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+            Text="Live CoreWindow.GetKeyState values. Hold a modifier, then release it somewhere the page cannot see (open dev tools, switch tab) and press any other key."
+            TextWrapping="Wrap" />
+        <TextBlock
+            x:Name="StateText"
+            FontFamily="Consolas"
+            FontSize="18"
+            Foreground="{ThemeResource ApplicationForegroundThemeBrush}" />
+    </StackPanel>
+</Page>

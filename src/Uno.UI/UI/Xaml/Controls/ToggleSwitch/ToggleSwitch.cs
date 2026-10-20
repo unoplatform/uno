@@ -1,11 +1,8 @@
 ﻿using System;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
-
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -52,13 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-#if __ANDROID__
-				return this.FindFirstChild<Uno.UI.Controls.BindableSwitchCompat>() != null;
-#elif __APPLE_UIKIT__
-				return this.FindFirstChild<Uno.UI.Views.Controls.BindableUISwitch>() != null;
-#else
 				return false;
-#endif
 			}
 		}
 #endif
@@ -116,7 +107,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsOn dependency property.
 		/// </summary>
 		public static DependencyProperty IsOnProperty { get; } =
-			DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(ToggleSwitch), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+			DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(ToggleSwitch), new FrameworkPropertyMetadata(BoolBoxes.False, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -201,7 +192,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public ToggleSwitchTemplateSettings TemplateSettings { get; private set; }
 
-		public void OnTemplateRecycled()
+		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
 		{
 			try
 			{
