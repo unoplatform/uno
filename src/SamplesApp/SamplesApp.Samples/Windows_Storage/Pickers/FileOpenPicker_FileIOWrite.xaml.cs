@@ -27,6 +27,9 @@ namespace UITests.Shared.Windows_Storage.Pickers;
 public sealed partial class FileOpenPicker_FileIOWrite : Page
 {
 	private const string UpdatedContents = "Uno Platform FileOpenPicker manual test.";
+#if __WASM__
+	private WasmPickerConfiguration? _previousWasmConfiguration;
+#endif
 
 	public FileOpenPicker_FileIOWrite()
 	{
@@ -38,6 +41,7 @@ public sealed partial class FileOpenPicker_FileIOWrite : Page
 	private void FileOpenPicker_FileIOWrite_Loaded(object sender, RoutedEventArgs e)
 	{
 #if __WASM__
+		_previousWasmConfiguration ??= WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
 		WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApi;
 #endif
 	}
@@ -45,7 +49,11 @@ public sealed partial class FileOpenPicker_FileIOWrite : Page
 	private void FileOpenPicker_FileIOWrite_Unloaded(object sender, RoutedEventArgs e)
 	{
 #if __WASM__
-		WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApiWithFallback;
+		if (_previousWasmConfiguration is { } previousConfiguration)
+		{
+			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = previousConfiguration;
+			_previousWasmConfiguration = null;
+		}
 #endif
 	}
 
