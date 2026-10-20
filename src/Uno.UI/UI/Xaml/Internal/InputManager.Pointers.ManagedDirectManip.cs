@@ -518,7 +518,11 @@ partial class InputManager
 			}
 
 			public void Remove(PointerDeviceType pointer)
-				=> _hasValues[(int)pointer] = false;
+			{
+				var index = (int)pointer;
+				_hasValues[index] = false;
+				_values[index] = default!;
+			}
 
 			/// <inheritdoc />
 			public IEnumerator<KeyValuePair<PointerDeviceType, TValue>> GetEnumerator()
