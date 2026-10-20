@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -375,6 +376,43 @@ public class Given_Image_Release
 			await LoadAndWaitForOpened(image);
 			Assert.IsTrue(bitmap.IsOpened, "The Image decodes its source once it is loaded");
 			Assert.AreEqual(1, decoder.Count(100, 100), "The Image decodes its source once it is loaded");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	public enum SharedSource
+	{
+		Bitmap,
+		Svg,
+		CachedUri,
+	}
+
+	[TestMethod]
+	[DataRow(SharedSource.Bitmap, DisplayName = "Bitmap")]
+	[DataRow(SharedSource.Svg, DisplayName = "Svg")]
+	[DataRow(SharedSource.CachedUri, DisplayName = "CachedUri")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25596")]
+	public async Task When_Shared_Source_Outlives_Unloaded_Images_Then_Images_Collected(SharedSource kind)
+	{
+		// An icon kept in a static field or an app resource outlives the Images that show it: it must not keep them alive,
+		// with everything they reference, once they left the tree. Two share it, as icons are: a source with a single owner
+		// keeps that owner as its inheritance context parent (DependencyObject._associatedParent).
+		using var cache = kind == SharedSource.CachedUri ? EnableBitmapImageCache() : null;
+		var source = await CreateSharedSourceAsync(kind);
+
+		try
+		{
+			var images = await ShowThenUnloadAsync(source);
+
+			foreach (var image in images)
+			{
+				Assert.IsTrue(await TestHelper.TryWaitUntilCollected(image), "An unloaded Image must not be kept alive by the source it showed");
+			}
+
+			GC.KeepAlive(source);
 		}
 		finally
 		{
@@ -2106,6 +2144,54 @@ public class Given_Image_Release
 		using var memory = new MemoryStream();
 		await stream.CopyToAsync(memory);
 		return memory.ToArray();
+	}
+
+	private static async Task<ImageSource> CreateBitmapSourceAsync()
+	{
+		var bitmap = new BitmapImage();
+		await bitmap.SetSourceAsync(new MemoryStream(await ReadAssetAsync(SquareAssetUri)));
+		return bitmap;
+	}
+
+	private static async Task<ImageSource> CreateSvgSourceAsync()
+	{
+		const string markup = "<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='red'/></svg>";
+		var svg = new SvgImageSource();
+		var status = await svg.SetSourceAsync(new MemoryStream(Encoding.UTF8.GetBytes(markup)).AsRandomAccessStream());
+		Assert.AreEqual(SvgImageSourceLoadStatus.Success, status, "Pre-condition: the SVG opens");
+		return svg;
+	}
+
+	private static async Task<ImageSource> CreateSharedSourceAsync(SharedSource kind) => kind switch
+	{
+		SharedSource.Svg => await CreateSvgSourceAsync(),
+		SharedSource.CachedUri => new BitmapImage(new Uri(SquareAssetUri)),
+		_ => await CreateBitmapSourceAsync(),
+	};
+
+	// Not inlined, so that no local of the caller keeps the Images alive.
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static async Task<WeakReference[]> ShowThenUnloadAsync(ImageSource source)
+	{
+		var panel = new StackPanel();
+		await UITestHelper.Load(panel, x => x.IsLoaded);
+
+		var images = new[]
+		{
+			new Image { Width = 100, Height = 100, Source = source },
+			new Image { Width = 100, Height = 100, Source = source },
+		};
+
+		foreach (var image in images)
+		{
+			await AddAndWaitForOpened(panel, image);
+		}
+
+		WindowHelper.WindowContent = null;
+		await WindowHelper.WaitForIdle();
+		Assert.IsFalse(images.Any(image => image.IsLoaded), "Pre-condition: the Images left the tree");
+
+		return images.Select(image => new WeakReference(image)).ToArray();
 	}
 
 	private static Task TrackOpened(Image image)
