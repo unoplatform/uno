@@ -10,13 +10,11 @@ using System.Numerics;
 using Microsoft.UI.Composition;
 using Uno.Extensions;
 
+
 namespace Uno.UI.Xaml.Controls;
 
 internal partial class SystemFocusVisual : Control
 {
-#if __SKIA__
-	private static readonly SkiaSharp.SKPath _spareRenderPath = new SkiaSharp.SKPath();
-#endif
 	private SerialDisposable _focusedElementSubscriptions = new SerialDisposable();
 
 	public SystemFocusVisual()
@@ -65,9 +63,6 @@ internal partial class SystemFocusVisual : Control
 			}
 #else
 			element.SizeChanged += focusVisual.FocusedElementSizeChanged;
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-			element.LayoutUpdated += focusVisual.FocusedElementLayoutUpdated;
-#endif
 			element.EffectiveViewportChanged += focusVisual.FocusedElementEffectiveViewportChanged;
 			element.Unloaded += focusVisual.FocusedElementUnloaded;
 
@@ -82,9 +77,6 @@ internal partial class SystemFocusVisual : Control
 			focusVisual._focusedElementSubscriptions.Disposable = Disposable.Create(() =>
 			{
 				element.SizeChanged -= focusVisual.FocusedElementSizeChanged;
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				element.LayoutUpdated -= focusVisual.FocusedElementLayoutUpdated;
-#endif
 				element.EffectiveViewportChanged -= focusVisual.FocusedElementEffectiveViewportChanged;
 				element.UnregisterPropertyChangedCallback(VisibilityProperty, visibilityToken);
 
@@ -120,9 +112,7 @@ internal partial class SystemFocusVisual : Control
 
 		var transform = GetTransform(FocusedElement, XamlRoot.VisualTree.RootElement);
 
-		_spareRenderPath.Rewind();
-		FocusedElement.Visual.GetTotalClipPath(_spareRenderPath, true);
-		var totalClipRect = _spareRenderPath.Bounds.ToRect().IntersectWith(xamlRootBounds) ?? new Rect(0, 0, 0, 0);
+		var totalClipRect = FocusedElement.Visual.GetTotalClipRectInRootCoordinates().IntersectWith(xamlRootBounds) ?? new Rect(0, 0, 0, 0);
 		var inverseMatrix = transform.Inverse();
 		var topLeft = inverseMatrix.Transform(new Point(totalClipRect.Left, totalClipRect.Top));
 		var topRight = inverseMatrix.Transform(new Point(totalClipRect.Right, totalClipRect.Top));
@@ -177,9 +167,6 @@ internal partial class SystemFocusVisual : Control
 
 	private void FocusedElementVisibilityChanged(DependencyObject sender, DependencyProperty dp) => SetLayoutProperties();
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-	private void FocusedElementLayoutUpdated(object? sender, object e) => SetLayoutProperties();
-#endif
 
 	private void FocusedElementSizeChanged(object sender, SizeChangedEventArgs args) => SetLayoutProperties();
 

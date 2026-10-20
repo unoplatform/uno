@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if !IS_UNIT_TESTS
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +8,7 @@ using System.Text;
 
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-#if __ANDROID__ || __APPLE_UIKIT__
-using _VirtualizingPanelLayout = Microsoft.UI.Xaml.Controls.ManagedVirtualizingPanelLayout;
-#else
 using _VirtualizingPanelLayout = Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -282,23 +277,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Hide cached views that are no longer displaying materialized items. Doing this in a single batch, rather than repeatedly toggling
-		/// the visibility as items are recycled and then reused, significantly improves scrolling performance in WebAssembly.
-		/// </summary>
-		public void UpdateVisibilities()
-		{
-			foreach (var cache in _itemContainerCache)
-			{
-				foreach (var view in cache.Value)
-				{
-					// This is a crude means of 'hiding' the view. We prefer not to unload it because recycling is cheaper if it stays in
-					// the visual tree, but we should probably go to greater effort to conceal it from, eg, traversals of the visual tree.
-					view.Visibility = Visibility.Collapsed;
-				}
-			}
-		}
-
-		/// <summary>
 		/// Update cache indices for pending collection updates.
 		/// </summary>
 		public void UpdateForCollectionChanges(Queue<CollectionChangedOperation> collectionChanges)
@@ -368,4 +346,3 @@ namespace Microsoft.UI.Xaml.Controls
 	}
 }
 
-#endif

@@ -1,0 +1,102 @@
+#nullable enable
+
+using System;
+using System.IO;
+using System.Runtime.Loader;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime;
+using Uno.UI.Runtime.Win32;
+using Uno.UI.Runtime.X11;
+
+namespace SamplesApp;
+
+internal static class Program
+{
+	private static App? _app;
+
+	[STAThread]
+	public static void Main(string[] args)
+	{
+		// args are not forwarded to the host: SamplesApp reads the command line through
+		// Environment.GetCommandLineArgs() (see App.xaml.cs), which the runtime-test harness relies on.
+
+		// Ensures that we're loading the Skia assemblies properly as the output is
+		// adjusted to avoid getting reference assemblies in the output folder.
+		AssemblyLoadContext.Default.Resolving += Default_Resolving;
+
+		Run();
+	}
+
+	private static void Run()
+	{
+		App.ConfigureLogging(); // Enable tracing of the host
+
+		UnoPlatformHost? host = default;
+		var builder = UnoPlatformHostBuilder.Create()
+			.App(() => _app = new App())
+			.AfterInit(() =>
+			{
+				if (host is X11ApplicationHost)
+				{
+					global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Uno.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.X11.X11NativeWebViewProvider(o));
+				}
+			})
+			.UseX11(hostBuilder =>
+			{
+				hostBuilder.PreloadMediaPlayer(true);
+				// Dev/test affordance: force the X11 render backend via env (e.g. UNO_X11_RENDERER=Vulkan|OpenGL|OpenGLES|Software).
+				if (Environment.GetEnvironmentVariable("UNO_X11_RENDERER") is { } rb
+					&& Enum.TryParse<global::Uno.UI.Hosting.X11RenderingBackend>(rb, ignoreCase: true, out var backend))
+				{
+					hostBuilder.ForceRenderingBackend(backend);
+				}
+			})
+			.UseWin32(hostBuilder =>
+			{
+				hostBuilder.PreloadMediaPlayer(true);
+				// Dev/test affordance: force the Win32 render backend via env (e.g. UNO_WIN32_RENDERER=Vulkan|OpenGL|Software).
+				if (Environment.GetEnvironmentVariable("UNO_WIN32_RENDERER") is { } rb
+					&& Enum.TryParse<global::Uno.UI.Hosting.Win32RenderingBackend>(rb, ignoreCase: true, out var backend))
+				{
+					hostBuilder.ForceRenderingBackend(backend);
+				}
+			})
+			.UseLinuxFrameBuffer(hostBuilder => hostBuilder.XkbKeymap(new(layout: "us,ara", options: "grp:alt_shift_toggle")))
+			.UseMacOS();
+
+		// Register the drawing backend + content seams (Skia by default; WebGPU + managed seams for a
+		// SkiaSharp-free build). Shared with every SamplesApp head.
+		DrawingBackendConfiguration.Configure(builder);
+
+		host = builder
+			.Build();
+
+		host.Run();
+	}
+
+	private static System.Reflection.Assembly? Default_Resolving(AssemblyLoadContext alc, System.Reflection.AssemblyName assemblyName)
+	{
+		try
+		{
+			if (Uri.TryCreate(typeof(Program).Assembly.Location, UriKind.Absolute, out var asm))
+			{
+				var appPath = Path.GetDirectoryName(asm.LocalPath)!;
+
+				var asmPath = Path.Combine(appPath, assemblyName.Name! + ".dll");
+
+				if (File.Exists(asmPath))
+				{
+					return alc.LoadFromAssemblyPath(asmPath);
+				}
+			}
+
+			return null;
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine(e);
+			Console.WriteLine($"Error processing {assemblyName.Name}. SamplesApp head assembly location: {typeof(Program).Assembly.Location}");
+			throw;
+		}
+	}
+}

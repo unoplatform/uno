@@ -141,6 +141,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return type.GetPropertyWithName(propertyName) is not null;
 		}
 
+		// Implementers have a get-only Name, which x:Name sets through MarkupHelper.SetXName.
+		private bool IsXNameProvider(XamlType xamlType)
+			=> Generation.XNameProviderSymbol.Value is { } provider && IsImplementingInterface(FindType(xamlType), provider);
+
+		// Intentional WinUI divergence: WinUI's XAML compiler rejects a plain Name where Name is get-only (WMC0050),
+		// but its runtime parser accepts it like x:Name, and so does Uno.
+		private bool IsXNameMember(XamlMemberDefinition member, XamlType objectType)
+			=> member.Member.Name == "Name"
+				&& (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
+					|| (IsXNameProvider(objectType) && !IsAttachedProperty(member)));
+
 		private bool IsRun(INamedTypeSymbol? symbol)
 		{
 			return IsType(symbol, Generation.RunSymbol.Value);
@@ -185,32 +196,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, Generation.FrameworkElementSymbol.Value);
 		}
 
-		private bool IsAndroidView(XamlType xamlType)
-		{
-			return IsType(xamlType, Generation.AndroidViewSymbol.Value);
-		}
-
-		private bool IsIOSUIView(XamlType xamlType)
-		{
-			return IsType(xamlType, Generation.IOSViewSymbol.Value);
-		}
-
 		private bool IsDependencyObject(XamlObjectDefinition component)
-			=> GetType(component.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value));
+			=> IsType(GetType(component.Type), Generation.DependencyObjectSymbol.Value);
 
 		private bool IsUIElement(INamedTypeSymbol? symbol)
 			=> IsType(symbol, Generation.UIElementSymbol.Value);
-
-		/// <summary>
-		/// Is the type derived from the native view type on a Xamarin platform?
-		/// </summary>
-		private bool IsNativeView(XamlType xamlType) => IsAndroidView(xamlType) || IsIOSUIView(xamlType);
-
-		/// <summary>
-		/// Is the type one of the base view types in WinUI? (UIElement is most commonly used to mean 'any WinUI view type,' but
-		/// FrameworkElement is valid too)
-		/// </summary>
-		private bool IsManagedViewBaseType(INamedTypeSymbol? targetType) => SymbolEqualityComparer.Default.Equals(targetType, Generation.UIElementSymbol.Value) || SymbolEqualityComparer.Default.Equals(targetType, Generation.FrameworkElementSymbol.Value);
 
 		private static bool IsDependencyProperty(INamedTypeSymbol? propertyOwner, string name)
 		{
@@ -308,14 +298,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return true;
 		}
 
-		private static bool IsRelevantProperty(XamlMember? member, XamlObjectDefinition objectDefinition)
+		private static bool IsRelevantProperty(XamlMember? member)
 		{
 			if (member?.Name == "Phase") // Phase is not relevant as it's not an actual property
-			{
-				return false;
-			}
-
-			if (member?.Name == "IsNativeStyle" && objectDefinition.Type.Name == "Style")
 			{
 				return false;
 			}
@@ -742,13 +727,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return namedTypeSymbol2;
 				}
-				else if (nsName.Equals("Uno.UI.Controls.Legacy") &&
-					_metadataHelper.FindTypeByFullName(XamlConstants.Namespaces.Controls + "." + fields[1]) is INamedTypeSymbol namedTypeSymbol3)
-				{
-					// Workaround. There are usages of `legacy:ListView` and `legacy:GridView` in XAML where the referenced control is only in Android and iOS.
-					// We fallback to the corresponding non-legacy for this case
-					return namedTypeSymbol3;
-				}
 
 				return SearchWithFuzzyMatching(fields[1]);
 			}
@@ -803,15 +781,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Trim prefixes from namespace declaration
 		/// </summary>
 		private static string GetTrimmedNamespace(string nsNamespace)
-		{
-			var nsName = nsNamespace.TrimStart("using:");
-			if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
-			{
-				nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
-			}
-
-			return nsName;
-		}
+			=> nsNamespace.TrimStart("using:");
 
 		private IEnumerable<string> FindLocalizableProperties(INamedTypeSymbol? type)
 		{

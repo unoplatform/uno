@@ -1,0 +1,289 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+#nullable enable
+
+namespace Microsoft.UI.Xaml.Documents.TextFormatting
+{
+	/// <summary>
+	/// Represents the set of segment spans that make up a rendered text line.
+	/// </summary>
+	internal class RenderLine
+	{
+		private readonly List<RenderSegmentSpan> _segmentSpans;
+		private List<RenderSegmentSpan>? _renderOrderedSegmentSpans;
+
+		/// <summary>
+		/// Gets the segment spans in the order they appear within the text string.
+		/// </summary>
+		public IReadOnlyList<RenderSegmentSpan> SegmentSpans => _segmentSpans;
+
+		/// <summary>
+		/// Gets the segment spans in the order they should be rendered (from left to right).
+		/// </summary>
+		public IReadOnlyList<RenderSegmentSpan> RenderOrderedSegmentSpans => _renderOrderedSegmentSpans ??= GetRenderOrderedSegmentSpans();
+
+		public float Width { get; }
+
+		public float WidthWithoutTrailingSpaces { get; }
+
+		public float Height { get; }
+
+		public float BaselineOffsetY { get; }
+
+		public bool Wraps { get; }
+
+		/// <summary>
+		/// Set when text trimming collapsed this line. The shaped ellipsis is painted after the line's
+		/// spans; it is decoration, so it takes no part in the character index space.
+		/// </summary>
+		public CollapsedLineSymbol? CollapsingSymbol { get; set; }
+
+		/// <summary>
+		/// Set when the collapsing symbol ends a right-to-left paragraph, whose logical end is its left edge.
+		/// </summary>
+		public bool CollapsingSymbolLeads { get; }
+
+		/// <summary>
+		/// Produces a copy of this line trimmed to <paramref name="spans"/> (in logical order) with a collapsing
+		/// symbol at its logical end. Collapsing only drops glyphs from the tail, so the line's stacking metrics are unchanged.
+		/// </summary>
+		internal RenderLine CollapseTo(List<RenderSegmentSpan> spans, CollapsedLineSymbol symbol, bool symbolLeads)
+			=> new(this, spans, symbol, symbolLeads);
+
+		private RenderLine(RenderLine source, List<RenderSegmentSpan> spans, CollapsedLineSymbol symbol, bool symbolLeads)
+		{
+			_segmentSpans = new(spans);
+
+			var width = symbol.Width;
+			foreach (var span in _segmentSpans)
+			{
+				width += span.Width;
+			}
+
+			Width = width;
+			WidthWithoutTrailingSpaces = width;
+			Height = source.Height;
+			BaselineOffsetY = source.BaselineOffsetY;
+			Wraps = false;
+			CollapsingSymbol = symbol;
+			CollapsingSymbolLeads = symbolLeads;
+		}
+
+		public RenderLine(List<RenderSegmentSpan> spans, LineStackingStrategy lineStackingStrategy, float lineHeight, bool firstLine, bool wraps, TextLineBounds textLineBounds)
+		{
+			_segmentSpans = new(spans);
+
+			Width = 0;
+
+			int lastIndex = _segmentSpans.Count - 1;
+
+			for (int i = 0; i < lastIndex; i++)
+			{
+				Width += _segmentSpans[i].Width;
+			}
+
+			WidthWithoutTrailingSpaces = Width;
+
+			WidthWithoutTrailingSpaces += _segmentSpans[lastIndex].WidthWithoutTrailingSpaces;
+			Width += _segmentSpans[lastIndex].Width;
+
+			var maxStackHeight = float.MinValue;
+			var maxAboveBaselineHeight = float.MinValue;
+			var maxBelowBaselineHeight = float.MinValue;
+
+			for (var i = 0; i < _segmentSpans.Count; i++)
+			{
+				var segment = _segmentSpans[i].Segment;
+
+				float baseline, lineSpacing;
+				if (segment.IsInlineObject)
+				{
+					// An embedded object stacks by its own metrics rather than a font's: its ascent is the
+					// child's baseline and its descent the remainder of its height, so the child's baseline
+					// lands on the line's baseline.
+					var objectMetrics = segment.ObjectMetrics;
+					baseline = objectMetrics.Baseline;
+					lineSpacing = objectMetrics.Height;
+				}
+				else
+				{
+					// Constrain the inline's font metrics by the owner's TextLineBounds before stacking.
+					(baseline, lineSpacing) = segment.Inline.FontInfo.GetTextLineBoundsMetrics(textLineBounds);
+				}
+
+				maxStackHeight = Math.Max(maxStackHeight, lineSpacing);
+				maxAboveBaselineHeight = Math.Max(maxAboveBaselineHeight, baseline);
+				maxBelowBaselineHeight = Math.Max(maxBelowBaselineHeight, lineSpacing - baseline);
+			}
+
+			switch (lineStackingStrategy)
+			{
+				case LineStackingStrategy.MaxHeight:
+					{
+						// The natural line is MAX(tallest run, ascent + descent): a baseline-aligned run
+						// such as an embedded object can have an ascent taller than any single run's
+						// height (LsTextLine.cpp:1315-1324).
+						var naturalHeight = Math.Max(maxStackHeight, maxAboveBaselineHeight + maxBelowBaselineHeight);
+
+						// MaxHeight grows the line but leaves the baseline where the font puts it, so the
+						// extra leading falls below it — ApplyLineStackingStrategy's default arm uses
+						// lineOffset = 0. Sliding the baseline down instead is BlockLineHeight's rule.
+						Height = Math.Max(lineHeight, naturalHeight);
+						BaselineOffsetY = maxAboveBaselineHeight - Height;
+					}
+
+					break;
+
+				case LineStackingStrategy.BlockLineHeight:
+					Height = lineHeight;
+					BaselineOffsetY = GetBaselineOffsetY(lineHeight, maxStackHeight, maxBelowBaselineHeight);
+					break;
+
+				default: // LineStackingStrategy.BaselineToBaseline:
+					if (firstLine)
+					{
+						Height = maxAboveBaselineHeight;
+						BaselineOffsetY = 0;
+					}
+					else
+					{
+						Height = lineHeight;
+						BaselineOffsetY = GetBaselineOffsetY(lineHeight, maxStackHeight, maxBelowBaselineHeight);
+					}
+
+					break;
+			}
+
+			Wraps = wraps;
+		}
+
+		internal (float LineOffset, float JustifySpaceOffset) GetOffsets(float availableWidth, TextAlignment alignment)
+		{
+			switch (alignment)
+			{
+				case TextAlignment.Left:
+					return (GetLeftCharacterSpacingOffset(), 0);
+
+				case TextAlignment.Right:
+					return (GetRightCharacterSpacingOffset() + availableWidth - Width, 0);
+
+				case TextAlignment.Center:
+					float charSpacingOffset = (GetLeftCharacterSpacingOffset() + GetRightCharacterSpacingOffset());
+					return ((charSpacingOffset + availableWidth - WidthWithoutTrailingSpaces) / 2, 0);
+
+				case TextAlignment.Justify:
+					float justifySpaceOffset = 0;
+
+					if (Wraps && availableWidth > WidthWithoutTrailingSpaces)
+					{
+						justifySpaceOffset = (availableWidth - WidthWithoutTrailingSpaces) / CountJustifySpaces();
+					}
+
+					return (GetLeftCharacterSpacingOffset(), justifySpaceOffset);
+
+				// DetectFromContent is resolved to a concrete edge before it reaches here, the way
+				// ParagraphNode::CalculateLineOffset does it; the leading edge is the fallback.
+				default:
+					return (GetLeftCharacterSpacingOffset(), 0);
+			}
+
+			int CountJustifySpaces()
+			{
+				int justifySpaceCount = 0;
+
+				for (int i = 0; i < _segmentSpans.Count - 1; i++)
+				{
+					justifySpaceCount += _segmentSpans[i].TrailingSpaces;
+				}
+
+				return justifySpaceCount;
+			}
+
+			// These methods compensate for trailing or leading character spacing on lines so the text aligns with the edge of the layout:
+
+			float GetLeftCharacterSpacingOffset()
+			{
+				for (int i = 0; i < _segmentSpans.Count; i++)
+				{
+					var span = _segmentSpans[i];
+
+					if (span.Width > 0)
+					{
+						return span.Segment.Direction == FlowDirection.RightToLeft ? -span.CharacterSpacing : 0;
+					}
+				}
+
+				return 0;
+			}
+
+			float GetRightCharacterSpacingOffset()
+			{
+				for (int i = _segmentSpans.Count - 1; i >= 0; i--)
+				{
+					var span = _segmentSpans[i];
+
+					if (span.Width > 0)
+					{
+						return span.Segment.Direction == FlowDirection.LeftToRight ? span.CharacterSpacing : 0;
+					}
+				}
+
+				return 0;
+			}
+		}
+
+		private List<RenderSegmentSpan> GetRenderOrderedSegmentSpans()
+		{
+			List<RenderSegmentSpan>? orderedSpans = null;
+			int i = 0;
+
+			while (i < _segmentSpans.Count - 1)
+			{
+				var span = _segmentSpans[i];
+
+				if (span.Segment.Direction == FlowDirection.RightToLeft)
+				{
+					int rtlEndIndex = i + 1; // Exclusive end index of the RTL span run
+
+					// Check if next span is also RTL before allocating/copying an ordered list,
+					// since reversing the order of a single RTL span run is a no-op.
+
+					if (_segmentSpans[rtlEndIndex].Segment.Direction == FlowDirection.RightToLeft)
+					{
+						orderedSpans ??= new(_segmentSpans);
+
+						while (++rtlEndIndex < _segmentSpans.Count && _segmentSpans[rtlEndIndex].Segment.Direction == FlowDirection.RightToLeft) { }
+
+						orderedSpans.Reverse(i, rtlEndIndex - i);
+					}
+
+					i = rtlEndIndex + 1; // Can skip next element since we know it is LTR
+				}
+				else
+				{
+					i++;
+				}
+			}
+
+			return orderedSpans ?? _segmentSpans;
+		}
+
+		/// <summary>
+		/// Gets the offset of the baseline for this render line based on a custom line height. Scales the default baseline offset
+		/// by the ratio of the default line height to the custom line height.
+		/// </summary>
+		private float GetBaselineOffsetY(float lineHeight, float maxStackHeight, float maxBelowBaselineHeight)
+		{
+			if (maxStackHeight == 0)
+			{
+				return 0;
+			}
+
+			var defaultBaselineOffsetY = -maxBelowBaselineHeight;
+			return defaultBaselineOffsetY * lineHeight / maxStackHeight;
+		}
+	}
+}

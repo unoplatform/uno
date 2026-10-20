@@ -1,7 +1,4 @@
-﻿#if __IOS__ || __ANDROID__
-#define SUPPORTS_NATIVE_DATEPICKER
-#endif
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -11,6 +8,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Uno.Disposables;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Globalization;
@@ -234,7 +232,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						CoreWindowActivationState state =
 							CoreWindowActivationState.CodeActivated;
-						state = (args.WindowActivationState);
+						state = (CoreWindowActivationState)args.WindowActivationState;
 
 						if (state == CoreWindowActivationState.CodeActivated
 							|| state == CoreWindowActivationState.PointerActivated)
@@ -463,7 +461,7 @@ namespace Microsoft.UI.Xaml.Controls
 						Disposable.Create(() => m_tpDayPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
 					strAutomationName = AutomationProperties.GetName(m_tpDayPicker);
-					if (strAutomationName == null)
+					if (string.IsNullOrEmpty(strAutomationName))
 					{
 						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_DAY");
 						strComboAutomationName = strAutomationName + strParentAutomationName;
@@ -477,7 +475,7 @@ namespace Microsoft.UI.Xaml.Controls
 						Disposable.Create(() => m_tpMonthPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
 					strAutomationName = AutomationProperties.GetName(m_tpMonthPicker as ComboBox);
-					if (strAutomationName == null)
+					if (string.IsNullOrEmpty(strAutomationName))
 					{
 						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_MONTH");
 						strComboAutomationName = strAutomationName + strParentAutomationName;
@@ -491,7 +489,7 @@ namespace Microsoft.UI.Xaml.Controls
 						Disposable.Create(() => m_tpYearPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
 					strAutomationName = AutomationProperties.GetName(m_tpYearPicker as ComboBox);
-					if (strAutomationName == null)
+					if (string.IsNullOrEmpty(strAutomationName))
 					{
 						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_YEAR");
 						strComboAutomationName = strAutomationName + strParentAutomationName;
@@ -864,13 +862,11 @@ namespace Microsoft.UI.Xaml.Controls
 			_flyout.MaxYear = MaxYear;
 			_flyout.Date = SelectedDate ?? Date;
 
-#if SUPPORTS_NATIVE_DATEPICKER
 			// UnoOnly
-			if (_flyout is NativeDatePickerFlyout nativeFlyout)
+			if (_flyout is INativeDatePickerFlyout nativeFlyout)
 			{
 				nativeFlyout.UseNativeMinMaxDates = UseNativeMinMaxDates;
 			}
-#endif
 
 			ShowPickerFlyout();
 		}
@@ -2078,7 +2074,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (m_tpFirstSpacerColumn != null && spColumns != null)
 				{
 					columnIndex = spColumns.IndexOf(m_tpFirstSpacerColumn);
-					Grid.SetColumn(m_tpFirstPickerSpacing, columnIndex);
+					m_tpFirstPickerSpacing.SetValue(Grid.ColumnProperty, Boxer.Box(columnIndex));
 				}
 			}
 			if (m_tpSecondPickerSpacing != null)
@@ -2090,7 +2086,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (m_tpSecondSpacerColumn != null && spColumns != null)
 				{
 					columnIndex = spColumns.IndexOf(m_tpSecondSpacerColumn);
-					Grid.SetColumn(m_tpSecondPickerSpacing, columnIndex);
+					m_tpSecondPickerSpacing.SetValue(Grid.ColumnProperty, Boxer.Box(columnIndex));
 				}
 			}
 		}
@@ -2280,4 +2276,3 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 	}
 }
-

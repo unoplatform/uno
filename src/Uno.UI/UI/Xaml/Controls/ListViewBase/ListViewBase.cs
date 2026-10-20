@@ -1,15 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
-using System.Windows.Input;
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _View = UIKit.UIView;
-#else
 using View = Microsoft.UI.Xaml.FrameworkElement;
-#endif
 using Uno;
 using Uno.Extensions;
 using Microsoft.UI.Xaml.Data;
@@ -27,6 +19,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Windows.Foundation;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
@@ -106,9 +99,6 @@ namespace Microsoft.UI.Xaml.Controls
 					OnItemClicked(focusedContainer, args.KeyboardModifiers);
 				}
 
-#if __WASM__
-				((IHtmlHandleableRoutedEventArgs)args).HandledResult &= ~HtmlEventDispatchResult.PreventDefault;
-#endif
 				return true;
 			}
 			else
@@ -498,37 +488,6 @@ namespace Microsoft.UI.Xaml.Controls
 			SelectionChanged += OnSelectionChanged;
 		}
 
-
-		private ICommand _itemClickCommand;
-		//TODO: Remove this as it doesn't exist on Windows
-		public ICommand ItemClickCommand
-		{
-			get { return _itemClickCommand; }
-			set
-			{
-				_itemClickCommand = value;
-				OnItemClickCommandChangedPartial(value);
-			}
-		}
-
-		partial void OnItemClickCommandChangedPartial(ICommand value);
-
-		//Note: by a hackishly convenient coincidence, the binding u:ListViewBaseCommand.Command="{Binding [DoSomething]}" will bind to this property on Uno,
-		// because the xaml source generation fails to find ListViewBaseCommand and ignores that part entirely. So...when this property is removed, port ListViewBaseCommand
-		// to Xamarin, and all will be well.
-		/// <summary>
-		/// Deprecated, use ItemClickCommand instead.
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public ICommand Command
-		{
-			get { return ItemClickCommand; }
-			set
-			{
-				ItemClickCommand = value;
-			}
-		}
-
 		public IList<object> SelectedItems { get; }
 
 		internal (int index, SelectorItem container, object item) FocusedIndexContainerItem { get; set; } = (-1, null, null);
@@ -572,6 +531,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void ApplyMultiSelectStateToCachedItems();
 
+		// MUX Reference ListViewBase_Partial_Interaction.cpp, commit 58b6a55
+		// The primary scenario is touch narrator mocking a tap, so this takes the non-keyboard interaction path.
+		internal void AutomationItemClick(SelectorItem item) => OnItemClicked(item, VirtualKeyModifiers.None);
+
 		internal override void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
 			// Note: don't call base.OnItemClicked(), because we override the default single-selection-only handling
@@ -587,7 +550,6 @@ namespace Microsoft.UI.Xaml.Controls
 				// This is required for the NavigationView which references a non-public issue (#17546992 in NavigationViewList)
 				IsItemItsOwnContainerOverride(clickedItem);
 
-				ItemClickCommand.ExecuteIfPossible(clickedItem);
 				ItemClick?.Invoke(this, new ItemClickEventArgs { ClickedItem = clickedItem });
 			}
 
@@ -919,7 +881,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (currentIndex < firstRemainingIndex)
 				{
-					_containersForIndexRepair.Add(container, -1);
+					_containersForIndexRepair.Add(container, IntBoxes.NegativeOne);
 				}
 				else
 				{
@@ -1171,16 +1133,6 @@ namespace Microsoft.UI.Xaml.Controls
 				var container = ContainerFromIndex(flatIndex);
 				if (container != null)
 				{
-#if __APPLE_UIKIT__ || __ANDROID__ // TODO: The managed ListView should similarly go through the recycling to use the proper container matching the new template
-					var item = GetDisplayItemFromIndexPath(unoIndexPath);
-					if (HasTemplateChanged(((FrameworkElement)container).DataContext, item))
-					{
-						// If items are using different templates, we should go through the native replace operation, to use a container
-						// with the right template.
-						NativeReplaceItems(i, 1, section);
-					}
-					else
-#endif
 					{
 						PrepareContainerForIndex(container, flatIndex);
 					}
@@ -1193,21 +1145,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
-
-#if __APPLE_UIKIT__ || __ANDROID__
-		/// <summary>
-		/// Does <paramref name="newItem"/> resolve to a different template than <paramref name="oldItem"/>?
-		/// </summary>
-		private bool HasTemplateChanged(object oldItem, object newItem)
-		{
-			if (ItemTemplateSelector == null)
-			{
-				return false;
-			}
-
-			return ResolveItemTemplate(oldItem) != ResolveItemTemplate(newItem);
-		}
-#endif
 
 		partial void NativeReplaceItems(int firstItem, int count, int section);
 

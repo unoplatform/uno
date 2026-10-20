@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if !__APPLE_UIKIT__ && !__SKIA__ && !__WASM__ && !__ANDROID__ && !NETFRAMEWORK
+#if !__SKIA__
 using System.Numerics;
 using System;
 

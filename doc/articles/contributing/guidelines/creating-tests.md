@@ -62,7 +62,7 @@ These tests are ideal for testing platform-agnostic parts of the code, such as t
 
 ### Platform runtime tests (`Uno.UI.RuntimeTests`)
 
-Again these are 'classic' unit tests, but they are run 'in-process' on the actual target platform, using the 'real' Uno.UI assemblies. They can be run locally through the [Unit Tests Runner](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.Shared/Samples/UnitTests/UnitTestsPage.xaml) sample in the SamplesApp.
+Again these are 'classic' unit tests, but they are run 'in-process' on the actual target platform, using the 'real' Uno.UI assemblies. They can be run locally from the **Runtime tests** page of the SamplesApp (see [Running tests locally](xref:Uno.Contributing.CreateRuntimeTests#running-tests-locally)).
 
 These tests are useful for testing behavior which can run synchronously, or on the UI Thread and where correctness can be asserted programmatically. Relative to the unit tests, they have the advantage that platform-dependent behavior can be tested, and also that the same test can easily be run on WinUI by compiling and running the Windows head of the SamplesApp, giving confidence that the test is verifying the correct behavior.
 

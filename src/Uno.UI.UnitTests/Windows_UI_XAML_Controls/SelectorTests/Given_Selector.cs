@@ -10,7 +10,7 @@ using Uno.UI.Helpers;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Selector
 	{
 		[TestMethod]
@@ -192,10 +192,10 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.AreEqual(-1, SUT.SelectedIndex);
 
 			var source = new[] {
-				new SelectorItem(){ Content = "item 1" },
-				new SelectorItem(){ Content = "item 2" },
-				new SelectorItem(){ Content = "item 3" },
-				new SelectorItem(){ Content = "item 4" },
+				new PlainSelectorItem(){ Content = "item 1" },
+				new PlainSelectorItem(){ Content = "item 2" },
+				new PlainSelectorItem(){ Content = "item 3" },
+				new PlainSelectorItem(){ Content = "item 4" },
 			};
 
 			SUT.ItemsSource = source;
@@ -223,7 +223,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			var SUT = new Selector()
 			{
 				ItemsPanel = XamlHelper.LoadXaml<ItemsPanelTemplate>("<ItemsPanelTemplate><StackPanel /></ItemsPanelTemplate>"),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 			};
 			SUT.ForceLoaded();
 
@@ -237,10 +237,10 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.AreEqual(-1, SUT.SelectedIndex);
 
 			var source = new[] {
-				new SelectorItem(){ Content = "item 1" },
-				new SelectorItem(){ Content = "item 2" },
-				new SelectorItem(){ Content = "item 3" },
-				new SelectorItem(){ Content = "item 4" },
+				new PlainSelectorItem(){ Content = "item 1" },
+				new PlainSelectorItem(){ Content = "item 2" },
+				new PlainSelectorItem(){ Content = "item 3" },
+				new PlainSelectorItem(){ Content = "item 4" },
 			};
 
 			SUT.ItemsSource = source;
@@ -286,5 +286,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.IsFalse(source[2].IsSelected);
 		}
 
+		private sealed class PlainSelectorItem : SelectorItem
+		{
+		}
 	}
 }

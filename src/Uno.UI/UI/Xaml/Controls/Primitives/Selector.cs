@@ -11,6 +11,7 @@ using Uno.Extensions.Specialized;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
@@ -189,12 +190,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
 
-#if !IS_UNIT_TESTS
 			if (SelectedIndex != -1 && IsInLiveTree)
 			{
 				ScrollSelectionIntoView();
 			}
-#endif
 
 			_isUpdatingSelection = false;
 
@@ -214,25 +213,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (this is ListViewBase lvb)
 			{
-#if __APPLE_UIKIT__
-				// workaround to prevent scrolling when it is not ready
-				// without this, the ios TabView could render blank if the selection happens too early.
-				if (ContainerFromIndex(SelectedIndex) is not FrameworkElement { IsLoaded: true }) return;
-#endif
-
-#if __APPLE_UIKIT__ || __ANDROID__
-				lvb.InstantScrollToIndex(SelectedIndex);
-#else
 				lvb.ScrollIntoView(SelectedItem);
-#endif
 			}
 			else if (this is ComboBox cb)
 			{
-#if __APPLE_UIKIT__ || __ANDROID__
-				// TODO
-#else
 				cb.ScrollIntoView(SelectedItem);
-#endif
 			}
 		}
 
@@ -294,7 +279,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public int SelectedIndex
 		{
 			get => (int)this.GetValue(SelectedIndexProperty);
-			set => this.SetValue(SelectedIndexProperty, value);
+			set => this.SetValue(SelectedIndexProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty SelectedIndexProperty { get; } =
@@ -302,7 +287,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(SelectedIndex),
 				typeof(int),
 				typeof(Selector),
-				new FrameworkPropertyMetadata(-1, coerceValueCallback: CoerceSelectedIndex));
+				new FrameworkPropertyMetadata(IntBoxes.NegativeOne, coerceValueCallback: CoerceSelectedIndex));
 
 		private int _uncoercedSelectedIndex = -1;
 
@@ -310,14 +295,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			if (baseValue is not int desiredIndex)
 			{
-				return -1;
+				return IntBoxes.NegativeOne;
 			}
 
 			var owner = (Selector)dependencyObject;
 			if (desiredIndex == -1)
 			{
 				owner._uncoercedSelectedIndex = -1;
-				return -1;
+				return IntBoxes.NegativeOne;
 			}
 
 			var itemCount = owner.NumberOfItems;
@@ -336,17 +321,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					else
 					{
 						// Ignore change.
-						return -1;
+						return IntBoxes.NegativeOne;
 					}
 				}
 				owner._uncoercedSelectedIndex = -1;
-				return desiredIndex;
+				return Boxer.Box(desiredIndex);
 			}
 			else
 			{
 				// No items exist, store uncoerced and set to -1;
 				owner._uncoercedSelectedIndex = desiredIndex;
-				return -1;
+				return IntBoxes.NegativeOne;
 			}
 		}
 
@@ -818,7 +803,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(IsSelectionActive),
 				typeof(bool),
 				typeof(Selector),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		// This method returns a value indicating whether the object is selectable.
 		private protected bool IsSelectableHelper(object obj)
@@ -1006,10 +991,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Is the managed implementation for virtualized lists (ItemsStackPanel, ItemsWrapGrid, CarouselPanel etc) used on this platform?
 		/// </summary>
 		internal const bool UsesManagedLayouting =
-#if __APPLE_UIKIT__ || __ANDROID__
-			false;
-#else
 			true;
-#endif
 	}
 }

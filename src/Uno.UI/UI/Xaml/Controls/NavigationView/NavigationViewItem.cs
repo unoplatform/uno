@@ -2,13 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference NavigationViewItem.cpp, commit bac7a9c33
 
-#if __ANDROID__
-// For performance considerations, we prefer to delay pressed and over state in order to avoid
-// visual state updates when starting scroll start or while scrolling, especially with touch.
-// This has a great impact on Android where ScrollViewer does not capture pointer while scrolling.
-#define UNO_USE_DEFERRED_VISUAL_STATES
-#endif
-
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Input;
@@ -18,6 +11,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -88,15 +82,6 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	protected override void OnApplyTemplate()
 	{
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
-		// so the parent NavigationView may not be set yet; postpone and reapply once it is.
-		if (GetNavigationView() is null)
-		{
-			// Postpone template application for later
-			return;
-		}
-#endif
 
 		// Stop UpdateVisualState before template is applied. Otherwise the visuals may be unexpected
 		m_appliedTemplate = false;
@@ -167,9 +152,6 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		var visual = ElementCompositionPreview.GetElementVisual(this);
 		NavigationView.CreateAndAttachHeaderAnimation(visual);
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		_fullyInitialized = true;
-#endif
 	}
 
 	private void LoadElementsForDisplayingChildren()
@@ -284,7 +266,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		var splitView = GetSplitView();
 		if (splitView != null)
 		{
-			SetValue(CompactPaneLengthProperty, splitView.CompactPaneLength); //PropertyValue.CreateDouble(splitView.CompactPaneLength));
+			SetValue(CompactPaneLengthProperty, Boxer.Box(splitView.CompactPaneLength)); //PropertyValue.CreateDouble(splitView.CompactPaneLength));
 
 			// Only update when on left
 			var presenter = GetPresenter();

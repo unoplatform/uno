@@ -60,6 +60,14 @@ namespace Microsoft.UI.Composition
 		public ScalarKeyFrameAnimation CreateScalarKeyFrameAnimation()
 			=> new ScalarKeyFrameAnimation(this);
 
+		public ColorKeyFrameAnimation CreateColorKeyFrameAnimation()
+			=> new ColorKeyFrameAnimation(this);
+
+#if __SKIA__
+		public PathKeyFrameAnimation CreatePathKeyFrameAnimation()
+			=> new PathKeyFrameAnimation(this);
+#endif
+
 		public CompositionScopedBatch CreateScopedBatch(CompositionBatchTypes batchType)
 			=> new CompositionScopedBatch(this, batchType);
 
@@ -210,10 +218,40 @@ namespace Microsoft.UI.Composition
 		public Vector4KeyFrameAnimation CreateVector4KeyFrameAnimation()
 			=> new Vector4KeyFrameAnimation(this);
 
-		// Uno currently does not buffer composition commits, so RequestCommitAsync completes immediately.
-		// This still satisfies callers that schedule cleanup work after a commit fence (e.g. AnimatedVisualPlayer).
+		/// <summary>
+		/// Creates an instance of AnimationController.
+		/// </summary>
+		/// <returns>The created AnimationController object.</returns>
+		public AnimationController CreateAnimationController()
+			=> new AnimationController(this);
+
+		/// <summary>
+		/// Attempts to initiate a commit cycle asynchronously.
+		/// </summary>
+		/// <returns>An asynchronous action.</returns>
 		public IAsyncAction RequestCommitAsync()
-			=> Task.CompletedTask.AsAsyncAction();
+			=> RequestCommitAsyncCore().AsAsyncAction();
+
+		private Task RequestCommitAsyncCore()
+		{
+			var tcs = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+			var batch = CreateScopedBatch(CompositionBatchTypes.None);
+			TypedEventHandler<object, CompositionBatchCompletedEventArgs>? handler = null;
+			handler = (_, _) =>
+			{
+				if (handler is not null)
+				{
+					batch.Completed -= handler;
+				}
+
+				tcs.TrySetResult(null);
+			};
+
+			batch.Completed += handler;
+			batch.End();
+
+			return tcs.Task;
+		}
 
 		// Tracks the active CompositionScopedBatch stack. CompositionScopedBatch hooks animations
 		// started while a batch is active so its Completed event fires when those animations
@@ -248,7 +286,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
+		/// <param name="translationOnly">The change only translates the visual, so the content it recorded in its own
+		/// space stays valid.</param>
+		internal void InvalidateRender(Visual visual, bool translationOnly = false) => InvalidateRenderPartial(visual, translationOnly);
 		public CompositionBackdropBrush CreateBackdropBrush()
 			=> new CompositionBackdropBrush(this);
 
@@ -270,6 +310,6 @@ namespace Microsoft.UI.Composition
 		public StepEasingFunction CreateStepEasingFunction(int stepCount)
 			=> new(this, stepCount);
 
-		partial void InvalidateRenderPartial(Visual visual);
+		partial void InvalidateRenderPartial(Visual visual, bool translationOnly);
 	}
 }

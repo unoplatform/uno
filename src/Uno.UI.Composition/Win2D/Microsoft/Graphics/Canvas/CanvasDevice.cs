@@ -2,6 +2,9 @@
 
 namespace Microsoft.Graphics.Canvas;
 
+/// <summary>
+/// Represents the device that graphics resources such as geometries are created on.
+/// </summary>
 internal class CanvasDevice : ICanvasResourceCreator, IDisposable
 {
 	private static Lazy<CanvasDevice> _sharedDeviceLazy = new(() => new());

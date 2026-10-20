@@ -3,6 +3,7 @@
 using System;
 using System.Numerics;
 using System.Threading;
+using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 using Windows.Foundation;
 
@@ -14,6 +15,7 @@ public partial class InteractionTracker : CompositionObject
 {
 	private InteractionTrackerState _state;
 	private Vector3 _position;
+	private float _scale = 1.0f;
 
 	private int _currentRequestId;
 
@@ -30,7 +32,7 @@ public partial class InteractionTracker : CompositionObject
 
 	public float MaxScale { get; set; } = 1.0f;
 
-	public float Scale { get; } = 1.0f;
+	public float Scale => _scale;
 
 	public Vector3 MinPosition { get; set; }
 
@@ -56,6 +58,24 @@ public partial class InteractionTracker : CompositionObject
 	{
 		_state.Dispose();
 		_state = newState;
+		newState.OnActivated();
+	}
+
+	/// <summary>The frames that advance this tracker's motion: its source's window, else every window's.</summary>
+	internal IFrameTickSource? FrameTarget
+	{
+		get
+		{
+			foreach (var source in InteractionSources)
+			{
+				if (source is VisualInteractionSource { Source.CompositionTarget: { } target })
+				{
+					return target;
+				}
+			}
+
+			return Compositor.FrameTicks is { HasHosts: true } frameTicks ? frameTicks : null;
+		}
 	}
 
 	internal void SetPosition(Vector3 newPosition, int requestId)
@@ -63,12 +83,51 @@ public partial class InteractionTracker : CompositionObject
 		if (_position != newPosition)
 		{
 			_position = newPosition;
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, Scale, requestId));
-				OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
-			});
+
+			// Synchronous, so what this writes (e.g. a Translation expression) is in the frame recorded by the same tick.
+			OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
+
+			var scale = _scale;
+			NativeDispatcher.Main.Enqueue(() => Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, scale, requestId)));
 		}
+	}
+
+	/// <summary>A pointer pressed on coasting content: it stops under the finger, as the manipulation now owns it.</summary>
+	internal void InterruptInertia()
+		=> _state.InterruptInertia();
+
+	internal void SetScale(float newScale, Vector3 centerPoint, int requestId)
+	{
+		var oldScale = _scale;
+		var scaleChanged = !oldScale.Equals(newScale);
+		var scaleRatio = oldScale == 0.0f ? 1.0f : newScale / oldScale;
+		var newPosition = scaleRatio * (_position + centerPoint) - centerPoint;
+
+		if (scaleChanged)
+		{
+			_scale = newScale;
+
+			// Scale-dependent expression animations update the position boundaries synchronously.
+			OnPropertyChanged(nameof(Scale), isSubPropertyChange: false);
+		}
+
+		newPosition = Vector3.Clamp(newPosition, MinPosition, MaxPosition);
+		var positionChanged = _position != newPosition;
+
+		if (!scaleChanged && !positionChanged)
+		{
+			return;
+		}
+
+		_position = newPosition;
+
+		if (positionChanged)
+		{
+			OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
+		}
+
+		NativeDispatcher.Main.Enqueue(() =>
+			Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, newScale, requestId)));
 	}
 
 	public int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
@@ -98,13 +157,14 @@ public partial class InteractionTracker : CompositionObject
 		_state.ReceiveInertiaStarting(-linearVelocity);
 	}
 
-	internal void ReceivePointerWheel(int mouseWheelTicks, bool isHorizontal)
+	// Measured on WinUI 3 at 150% scale. WinUI asks ninput for it (lines to scroll × 16px through the DPI), so it may
+	// follow the scale and the Windows setting; that is not confirmed yet.
+	internal const double PixelsPerWheelDetent = 32;
+
+	/// <param name="mouseWheelTicks">Detents scrolled, fractional for touchpads that report deltas finer than one detent.</param>
+	internal void ReceivePointerWheel(double mouseWheelTicks, bool isHorizontal)
 	{
-		// On WinUI, this depends on mouse setting "how many lines to scroll each time"
-		// The default Windows setting is 3 lines, and each line is 16px.
-		// Note: the value for each line may vary depending on scaling.
-		// For now, we just use 16*3=48.
-		var delta = mouseWheelTicks * 48;
+		var delta = mouseWheelTicks * PixelsPerWheelDetent;
 		_state.ReceivePointerWheel(-delta, isHorizontal);
 	}
 
@@ -123,6 +183,36 @@ public partial class InteractionTracker : CompositionObject
 
 	public int TryUpdatePositionBy(Vector3 amount, InteractionTrackerClampingOption option)
 		=> TryUpdatePosition(Position + amount, option);
+
+	public int TryUpdatePositionWithAnimation(CompositionAnimation animation)
+	{
+		var id = Interlocked.Increment(ref _currentRequestId);
+		_state.TryUpdatePositionWithAnimation(animation, id);
+		return id;
+	}
+
+	public int TryUpdateScaleWithAnimation(CompositionAnimation animation, Vector3 centerPoint)
+	{
+		var id = Interlocked.Increment(ref _currentRequestId);
+		_state.TryUpdateScaleWithAnimation(animation, centerPoint, id);
+		return id;
+	}
+
+	/// <summary>
+	/// Tries to update the scale to the specified value.
+	/// </summary>
+	/// <param name="value">The new value for scale.</param>
+	/// <param name="centerPoint">The new center point.</param>
+	/// <returns>
+	/// The request identifier. Request identifiers start at 1 and increase with each try call
+	/// during the lifetime of the application.
+	/// </returns>
+	public int TryUpdateScale(float value, Vector3 centerPoint)
+	{
+		var id = Interlocked.Increment(ref _currentRequestId);
+		_state.TryUpdateScale(value, centerPoint, id);
+		return id;
+	}
 
 	private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 	{
@@ -160,7 +250,7 @@ public partial class InteractionTracker : CompositionObject
 		}
 		else if (propertyName.Equals(nameof(MaxPosition), StringComparison.OrdinalIgnoreCase))
 		{
-			return GetVector3(subPropertyName, MinPosition);
+			return GetVector3(subPropertyName, MaxPosition);
 		}
 		else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
 		{

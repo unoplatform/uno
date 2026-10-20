@@ -1,4 +1,4 @@
-﻿#if XAMARIN || __WASM__
+﻿#if HAS_UNO
 using Microsoft.UI.Xaml;
 using _WebView = Microsoft.UI.Xaml.Controls.WebView;
 

@@ -5,10 +5,10 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using SkiaSharp;
 using Windows.Foundation;
 using Uno.Extensions;
-using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
+
 
 namespace Microsoft.UI.Composition;
 
@@ -36,6 +36,8 @@ public partial class ContainerVisual : Visual
 			}
 
 			InvalidateParentChildrenPicture(true);
+			// A child added/removed changes this container's own silhouette too.
+			InvalidateParentShadowCaches(includeSelf: true);
 
 			// We need to force a redraw because at this point it's not necessarily true that
 			// a visual in the composition tree was changed, only that it was added/removed,
@@ -47,17 +49,17 @@ public partial class ContainerVisual : Visual
 			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
 				&& e.OldItems is not null)
 			{
-				var target = CompositionTarget;
 				foreach (var i in e.OldItems)
 				{
 					if (i is CompositionObject compositionObject)
 					{
 						compositionObject.StopAllAnimations();
 					}
-
-					if (target is not null && i is Visual removedVisual)
+					// A removed visual won't be visited next frame; damage its (and its descendants') old area so
+					// the partial-repaint path clears where it used to be.
+					if (CompositionTarget is { } removalTarget && i is Visual removedVisual)
 					{
-						removedVisual.DamageLastRenderedRegion(target);
+						removedVisual.ContributeRemovalDamage(removalTarget);
 					}
 				}
 			}
@@ -116,121 +118,134 @@ public partial class ContainerVisual : Visual
 	/// <remarks>This does NOT take the clipping into account.</remarks>
 	internal virtual bool HitTest(Point relativeLocation) => new Rect(0, 0, Size.X, Size.Y).Contains(relativeLocation);
 
-	/// <returns>true if a ViewBox exists</returns>
-	internal bool GetArrangeClipPathInElementCoordinateSpace(SKPath dst) // TODO: Do not use SKPath here, bad for perf and prevents usage for IDirectManipulationHandler.IsInBoundsForResume
+	internal Rect? GetArrangeClipPathInElementCoordinateSpace() => GetArrangeClip(out _, out _);
+
+	/// <summary>
+	/// The arrange clip in this visual's coordinates. When an ancestor clip is mapped here by something that is
+	/// not axis aligned, the returned rect is only the BOUNDING BOX of the real clip: <paramref name="mapping"/>
+	/// is then the transform and <paramref name="source"/> the rect it applies to, so a caller that can express a
+	/// shape maps those itself rather than using the box.
+	/// </summary>
+	private Rect? GetArrangeClip(out Rect source, out Matrix3x2? mapping)
 	{
-		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
-		{
-			return false;
-		}
-
-		var clipRect = rect.ToSKRect();
-		dst.AddRect(clipRect);
-		if (isAncestorClip)
-		{
-			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
-			var childToParentTransform = (Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted;
-			if (!childToParentTransform.IsIdentity)
-			{
-				dst.Transform(childToParentTransform.ToSKMatrix());
-			}
-		}
-
-		return true;
-	}
-
-	internal Rect? GetArrangeClipPathInElementCoordinateSpace()
-	{
+		source = default;
+		mapping = null;
 		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
 		{
 			return default;
 		}
 
+		source = rect;
 		if (isAncestorClip)
 		{
-			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
-			var childToParentTransform = (Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted;
-			if (!childToParentTransform.IsIdentity)
+			if (GetChildToParentTransform() is not { } matrix)
 			{
-				rect = rect.Transform(childToParentTransform.ToMatrix3x2());
+				// Not mapped at all rather than mapped wrongly: the clip then narrows nothing.
+				return default;
+			}
+
+			if (!matrix.IsIdentity)
+			{
+				if (matrix.M12 != 0 || matrix.M21 != 0)
+				{
+					mapping = matrix;
+				}
+
+				rect = rect.Transform(matrix);
 			}
 		}
 
 		return rect;
 	}
 
-	private static SKPath _sparePrePaintingClippingPath = new SKPath();
-
-	internal override bool GetPrePaintingClipping(SKPath dst) // TODO: Do not use SKPath here, bad for perf and prevents usage for IDirectManipulationHandler.IsInBoundsForResume
+	private Matrix3x2? GetChildToParentTransform()
 	{
-		var prePaintingClipPath = _sparePrePaintingClippingPath;
-
-		prePaintingClipPath.Rewind();
-
-		if (base.GetPrePaintingClipping(dst))
+		if (Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted))
 		{
-			// TODO: SKPath-less
-			//if (GetArrangeClipPathInElementCoordinateSpace() is {} clipping)
-			//{
-			//	dst.AddRect(clipping.ToSKRect());
-			//}
-
-			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
-			{
-				dst.Op(prePaintingClipPath, SKPathOp.Intersect, dst);
-			}
-
-			return true;
+			return ((Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted).ToMatrix3x2();
 		}
-		else
+
+		// A TotalMatrix that flattens Z has no inverse, but the clip only needs to undo this visual's own transform on its
+		// plane: the 2D part, unless that is projective or collapses the visual onto a line.
+		var localMatrix = LocalMatrix;
+		return localMatrix.IsPlanarAffine() && Matrix3x2.Invert(localMatrix.ToMatrix3x2(), out var inverted2D) ? inverted2D : null;
+	}
+
+	/// <summary>The arrange clip as a shape, which a rotated ancestor clip needs: its bounding box would let
+	/// roughly the corners through.</summary>
+	private IGeometry CreateArrangeClipGeometry(Rect rect, Rect source, Matrix3x2? mapping)
+	{
+		if (mapping is not { } matrix)
 		{
-			// TODO: SKPath-less
-			//if (GetArrangeClipPathInElementCoordinateSpace() is {} clipping)
-			//{
-			//	dst.Reset();
-			//	dst.AddRect(clipping.ToSKRect());
+			return GeometryFactory.Current.CreateRectangleGeometry(rect);
+		}
 
-			//	return true;
-			//}
+		// From the SOURCE rect, mapped once. Re-deriving it from the bounding box would inflate it again by the
+		// same factor the box already cost.
+		var localGeometry = GeometryFactory.Current.CreateRectangleGeometry(source);
+		var transformed = localGeometry.Transform(matrix);
+		localGeometry.Release();
+		return transformed;
+	}
 
-			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
+	internal override void ApplyPrePaintingClipping(IDrawingSession session)
+	{
+		base.ApplyPrePaintingClipping(session);
+		if (GetArrangeClip(out var source, out var mapping) is { } rect)
+		{
+			if (mapping is null)
 			{
-				dst.Reset();
-				dst.AddPath(prePaintingClipPath);
-
-				return true;
+				session.ClipRect(rect);
 			}
 			else
 			{
-				return false;
+				var clip = CreateArrangeClipGeometry(rect, source, mapping);
+				session.ClipPath(clip);
+				clip.Release();
 			}
 		}
 	}
 
-	internal override bool SetMatrixDirty()
+	private protected override Rect? GetLocalCullClipBounds()
 	{
-		if (base.SetMatrixDirty())
+		var baseBounds = base.GetLocalCullClipBounds();
+		if (GetArrangeClipPathInElementCoordinateSpace() is not { } arrangeRect)
+		{
+			return baseBounds;
+		}
+
+		return baseBounds is { } b ? Intersect(b, arrangeRect) : arrangeRect;
+	}
+
+	internal override IGeometry? GetPrePaintingClipping()
+	{
+		var baseClip = base.GetPrePaintingClipping();
+		if (GetArrangeClip(out var arrangeSource, out var arrangeMapping) is not { } rect)
+		{
+			return baseClip;
+		}
+
+		var arrangeClip = CreateArrangeClipGeometry(rect, arrangeSource, arrangeMapping);
+		return baseClip is null
+			? arrangeClip
+			: IntersectOwned(baseClip, arrangeClip);
+	}
+
+	internal override bool SetMatrixDirtyFromAncestor()
+	{
+		if (base.SetMatrixDirtyFromAncestor())
 		{
 			// We use InnerList to avoid boxing the enumerator.
 			// Currently, VisualCollection.GetEnumerator returns IEnumerator<Visual> instead of a concrete struct type to match WinUI API surface.
 			foreach (var child in Children.InnerList)
 			{
-				child.SetMatrixDirty();
+				child.SetMatrixDirtyFromAncestor();
 			}
 
 			return true;
 		}
 
 		return false;
-	}
-
-	internal override void DamageLastRenderedRegion(ICompositionTarget target)
-	{
-		base.DamageLastRenderedRegion(target);
-		foreach (var child in Children.InnerList)
-		{
-			child.DamageLastRenderedRegion(target);
-		}
 	}
 
 	internal override int GetSubTreeVisualCount()

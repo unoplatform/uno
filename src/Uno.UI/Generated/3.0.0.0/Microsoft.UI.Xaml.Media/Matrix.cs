@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct Matrix
+	public partial struct Matrix : global::System.IFormattable
 	{
 		// Skipping already declared property M11
 		// Skipping already declared property M12
@@ -37,5 +37,11 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.ToString(System.IFormatProvider)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.System.IFormattable.ToString(string, System.IFormatProvider)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.Transform(Windows.Foundation.Point)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.GetHashCode()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.Equals(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.Equals(Microsoft.UI.Xaml.Media.Matrix)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.operator ==(Microsoft.UI.Xaml.Media.Matrix, Microsoft.UI.Xaml.Media.Matrix)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.operator !=(Microsoft.UI.Xaml.Media.Matrix, Microsoft.UI.Xaml.Media.Matrix)
+		// Processing: System.IFormattable
 	}
 }

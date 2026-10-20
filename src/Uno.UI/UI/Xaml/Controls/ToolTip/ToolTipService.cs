@@ -9,10 +9,6 @@ using Windows.System;
 using Windows.UI;
 
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
@@ -20,6 +16,10 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class ToolTipService
 {
+	internal ToolTipService()
+	{
+	}
+
 	private static ToolTip m_CurrentToolTip;
 	private static uint m_LastEnteredFrameId;
 	private static DispatcherTimer m_OpenTimer;

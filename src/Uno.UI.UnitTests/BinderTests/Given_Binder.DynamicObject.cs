@@ -13,7 +13,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Binder_DynamicObject
 	{
 		[TestMethod]
@@ -132,7 +132,7 @@ namespace Uno.UI.Tests.BinderTests
 			}
 		}
 
-		public partial class MyControl : DependencyObject
+		public partial class MyControl : FrameworkElement
 		{
 			public MyControl(MyControl parent = null)
 			{

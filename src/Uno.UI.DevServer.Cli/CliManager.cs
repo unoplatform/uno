@@ -75,6 +75,16 @@ internal class CliManager
 					mcpWorkspaceResolution);
 			}
 
+			// Like Program.IsAppCommand: the global options (--log-level, --file-log) may come before the verb.
+			if (AppCommandHandler.AppVerbIndex(originalArgs) is var appIndex and >= 0)
+			{
+				var appWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+				var appWorkingDirectory = appWorkspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+				return await new AppCommandHandler(_logger).RunAsync(
+					originalArgs[(appIndex + 1)..],
+					noStart => EnsureHostAsync(appWorkingDirectory, appWorkspaceResolution.SelectedSolutionPath, noStart));
+			}
+
 			var isDisco = originalArgs is { Length: > 0 } &&
 				string.Equals(originalArgs[0], "disco", StringComparison.OrdinalIgnoreCase);
 			var discoJson = isDisco &&
@@ -377,17 +387,18 @@ internal class CliManager
 
 		if (exitCode is not null)
 		{
-			// Display output for debugging purposes
-			if (!string.IsNullOrWhiteSpace(stdOut))
-			{
-				_logger.LogDebug("Settings application stdout:\n{Stdout}", stdOut);
-			}
-			if (!string.IsNullOrWhiteSpace(stdErr))
-			{
-				_logger.LogError("Settings application stderr:\n{Stderr}", stdErr);
-			}
+			// The settings app writes its exit reason to its output; surface it so the cause is
+			// visible instead of a bare exit code.
+			var reason = FormatSettingsExitReason(stdOut, stdErr);
 
-			_logger.LogError("Settings application exited with code {ExitCode}", exitCode);
+			if (!string.IsNullOrWhiteSpace(reason))
+			{
+				_logger.LogError("Settings application exited with code {ExitCode}: {Reason}", exitCode, reason);
+			}
+			else
+			{
+				_logger.LogError("Settings application exited with code {ExitCode} (no diagnostic output captured).", exitCode);
+			}
 
 			return 1;
 		}
@@ -396,6 +407,28 @@ internal class CliManager
 			_logger.LogInformation("Settings application started successfully");
 			return 0;
 		}
+	}
+
+	/// <summary>
+	/// Labels stdout/stderr (stdout first — the app writes its exit reason there) and collapses
+	/// internal whitespace so the reason stays a single log line.
+	/// </summary>
+	internal static string FormatSettingsExitReason(string? stdOut, string? stdErr)
+	{
+		var parts = new List<string>();
+		if (!string.IsNullOrWhiteSpace(stdOut))
+		{
+			parts.Add($"stdout: {CollapseWhitespace(stdOut)}");
+		}
+		if (!string.IsNullOrWhiteSpace(stdErr))
+		{
+			parts.Add($"stderr: {CollapseWhitespace(stdErr)}");
+		}
+
+		return string.Join("; ", parts);
+
+		static string CollapseWhitespace(string value)
+			=> string.Join(" ", value.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
 	}
 
 	private async Task<int> RunMcpProxyAsync(string[] args, string requestedWorkingDirectory, WorkspaceResolution workspaceResolution)
@@ -927,6 +960,56 @@ internal class CliManager
 		}
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput, enableMajorRollForward: enableMajorRollForward);
+	}
+
+	/// <summary>
+	/// Returns the HTTP port of a ready DevServer for the solution, starting one the same way
+	/// <c>start</c> does when none is registered, unless <paramref name="noStart"/>. Null when no solution was
+	/// resolved, no host may be started, or the start failed.
+	/// </summary>
+	private async Task<int?> EnsureHostAsync(string workingDirectory, string? solutionPath, bool noStart)
+	{
+		if (string.IsNullOrWhiteSpace(solutionPath))
+		{
+			_logger.LogError("No solution resolved under {Directory}; pass --solution-dir <path>.", workingDirectory);
+			return null;
+		}
+
+		var lookup = new AmbientRegistryLookup();
+		if (lookup.FindBySolution(solutionPath) is { } existing)
+		{
+			_logger.LogDebug("Using DevServer on port {Port} (PID {Pid}) for {Solution}", existing.Port, existing.ProcessId, solutionPath);
+			return existing.Port;
+		}
+
+		if (noStart)
+		{
+			_logger.LogError("No DevServer is running for {Solution} (--no-start); run `uno-devserver start` first.", solutionPath);
+			return null;
+		}
+
+		var hostLaunchPlan = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
+		if (hostLaunchPlan is null)
+		{
+			return null; // errors already logged
+		}
+
+		var exitCode = await CreateStartCommandHandler().RunAsync(
+			hostLaunchPlan.HostPath, ["start"], workingDirectory, ResolveAddInsForCommand(workingDirectory),
+			solutionPath, enableMajorRollForward: hostLaunchPlan.RequiresMajorRollForward);
+
+		if (exitCode != 0)
+		{
+			return null;
+		}
+
+		if (lookup.FindBySolution(solutionPath) is { } started)
+		{
+			return started.Port;
+		}
+
+		_logger.LogError("The DevServer started but did not register for {Solution}; run `uno-devserver health`.", solutionPath);
+		return null;
 	}
 
 	private StartCommandHandler CreateStartCommandHandler()

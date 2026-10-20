@@ -5,12 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Playground"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:monaco="using:Monaco"
-    xmlns:not_wasm="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:wasm="http://uno.ui/wasm"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    mc:Ignorable="d wasm">
+    mc:Ignorable="d">
 
     <Grid Padding="8" RowSpacing="8">
         <Grid.RowDefinitions>
@@ -29,13 +26,10 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <wasm:Grid x:Name="MonacoContainer" />
-            <not_wasm:Grid>
-                <TextBox
-                    x:Name="xamlText"
-                    AcceptsReturn="True"
-                    FontFamily="ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf" />
-            </not_wasm:Grid>
+            <TextBox
+                x:Name="xamlText"
+                AcceptsReturn="True"
+                FontFamily="ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf" />
 
             <ContentControl x:Name="renderSurface" Grid.Column="1" />
         </Grid>

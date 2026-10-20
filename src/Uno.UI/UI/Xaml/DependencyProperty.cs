@@ -19,15 +19,10 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Media;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _View = UIKit.UIView;
-#else
 using _View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
@@ -316,7 +311,7 @@ namespace Microsoft.UI.Xaml
 
 			var defaultValueForType = GetDefaultValue(null, forType);
 
-			if (!DependencyObjectStore.AreDifferent(_ownerTypeMetadata.DefaultValue, defaultValueForType))
+			if (!DependencyObject.AreDifferent(_ownerTypeMetadata.DefaultValue, defaultValueForType))
 			{
 				return _ownerTypeMetadata;
 			}
@@ -346,6 +341,11 @@ namespace Microsoft.UI.Xaml
 		{
 			get { return _name; }
 		}
+
+		// Matching by owner and name keeps the trimmer from rooting RichTextBlock: reading one of its statics
+		// keeps its static constructor, and Register's ownerType annotation then keeps the whole control.
+		internal bool IsRichTextBlockProperty(string name)
+			=> _ownerType == typeof(RichTextBlock) && _name == name;
 
 		/// <summary>
 		/// Determines if the property is an attached property
@@ -515,7 +515,7 @@ namespace Microsoft.UI.Xaml
 			if (this == TextElement.ForegroundProperty ||
 				this == TextBlock.ForegroundProperty ||
 				this == Control.ForegroundProperty ||
-				this == RichTextBlock.ForegroundProperty ||
+				IsRichTextBlockProperty(nameof(RichTextBlock.Foreground)) ||
 				this == ContentPresenter.ForegroundProperty ||
 				this == IconElement.ForegroundProperty)
 			{
@@ -557,14 +557,14 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType.IsAssignableTo(typeof(UserControl)))
 				{
-					return Boxes.BooleanBoxes.BoxedFalse;
+					return BoolBoxes.False;
 				}
 				else if (forType.IsAssignableTo(typeof(Control)))
 				{
-					return Boxes.BooleanBoxes.BoxedTrue;
+					return BoolBoxes.True;
 				}
 
-				return Boxes.BooleanBoxes.BoxedFalse;
+				return BoolBoxes.False;
 			}
 
 #if __SKIA__
@@ -577,7 +577,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			if (this == TextBlock.SelectionFlyoutProperty ||
-				this == RichTextBlock.SelectionFlyoutProperty)
+				IsRichTextBlockProperty(nameof(RichTextBlock.SelectionFlyout)))
 			{
 				return GetDefaultTextControlSelectionFlyout();
 			}
@@ -587,7 +587,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
 				{
-					return Boxes.StretchBoxes.Fill;
+					return StretchBoxes.Fill;
 				}
 			}
 
@@ -613,18 +613,6 @@ namespace Microsoft.UI.Xaml
 				if (referenceObject is FadeInThemeAnimation or FadeOutThemeAnimation)
 				{
 					return "Opacity";
-				}
-			}
-
-			if (this == DoubleAnimation.ToProperty)
-			{
-				if (referenceObject is FadeInThemeAnimation)
-				{
-					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.One;
-				}
-				else if (referenceObject is FadeOutThemeAnimation)
-				{
-					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.Zero;
 				}
 			}
 

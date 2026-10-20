@@ -12,6 +12,7 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using _DragEventArgs = global::Microsoft.UI.Xaml.DragEventArgs;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -39,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(CanReorderItems),
 			typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public bool CanReorderItems
 		{
@@ -53,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(CanDragItems),
 			typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(default(bool), OnCanDragItemsChanged));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnCanDragItemsChanged));
 
 		public bool CanDragItems
 		{
@@ -337,14 +338,12 @@ namespace Microsoft.UI.Xaml.Controls
 					else
 					{
 						newIndex = that.GetIndexFromIndexPath(updatedIndex.Value);
-#if !__APPLE_UIKIT__ // This correction doesn't apply on iOS
 						if (indexOfDraggedItem < newIndex)
 						{
 							// If we've moved items down, we have to take in consideration that the updatedIndex
 							// is already assuming that the item has been removed, so it's offsetted by 1.
 							newIndex--;
 						}
-#endif
 					}
 
 					// When moving more than one item (multi-select), we keep their actual order in the list, no matter which one was dragged.

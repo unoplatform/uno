@@ -3,20 +3,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Documents
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct TextRange
+	public partial struct TextRange : global::System.IEquatable<global::Microsoft.UI.Xaml.Documents.TextRange>
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.TextRange()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public TextRange(int _StartIndex, int _Length)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextRange", "TextRange(int _StartIndex, int _Length)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.TextRange(int, int)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextRange.operator ==(Microsoft.UI.Xaml.Documents.TextRange, Microsoft.UI.Xaml.Documents.TextRange)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextRange.operator !=(Microsoft.UI.Xaml.Documents.TextRange, Microsoft.UI.Xaml.Documents.TextRange)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextRange.Equals(Microsoft.UI.Xaml.Documents.TextRange)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextRange.Equals(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.TextRange.GetHashCode()
 		// Skipping already declared field Microsoft.UI.Xaml.Documents.TextRange.StartIndex
 		// Skipping already declared field Microsoft.UI.Xaml.Documents.TextRange.Length
 	}

@@ -171,6 +171,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private void GenerateProviderTable(IndentedStringBuilder writer)
 			{
 				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
+				writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
 				using (writer.BlockInvariant("public class BindableMetadataProvider : global::Uno.UI.DataBinding.IBindableMetadataProvider"))
 				{
 					GenerateTypeTable(writer);
@@ -492,6 +493,20 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					&& type.InstanceConstructors.Any(m => m.Parameters.Length == 0 && m.IsLocallyPublic(_currentModule!));
 			}
 
+			// DependencyObject is a base class, so detection must walk the base-type chain.
+			private bool IsDependencyObject(ITypeSymbol? type)
+			{
+				for (var current = type; current is not null; current = current.BaseType)
+				{
+					if (SymbolEqualityComparer.Default.Equals(current, _dependencyObjectSymbol))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+
 			private INamedTypeSymbol? GetBaseType(INamedTypeSymbol type)
 			{
 				if (type.BaseType != null)
@@ -582,7 +597,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				{
 					writer.AppendLineIndented(@"var bindableType = GetBindableTypeByFullName(type.FullName);");
 
-					writer.AppendLineIndented(@"#if DEBUG");
+					writer.AppendLineIndented(@"#if DEBUG && !UNO_DISABLE_KNOWN_MISSING_TYPES");
 					using (writer.BlockInvariant(@"if(bindableType == null)"))
 					{
 						using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
@@ -590,7 +605,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType && !type.IsAbstract)"))
 							{
 								writer.AppendLineIndented(@"_knownMissingTypes.Add(type);");
-								writer.AppendLineIndented(@"global::System.Diagnostics.Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
+								writer.AppendLineIndented(@"global::System.Diagnostics.Debug.WriteLine($""The Bindable attribute is missing and the type [{type.FullName}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
 							}
 						}
 					}
@@ -621,7 +636,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				{
 					using (writer.BlockInvariant($"static void RegisterBuilder{type.Value.Index:000}()"))
 					{
-						if (_xamlResourcesTrimming && type.Key.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
+						if (_xamlResourcesTrimming && IsDependencyObject(type.Key))
 						{
 							var linkerHintsClassName = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
 							var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(type.Key.GetFullMetadataName());
@@ -664,7 +679,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 									writer.AppendLineIndented($"element = ref _bindableTypes[{typeIndex}];");
 									using (writer.BlockInvariant("if(element == null)"))
 									{
-										if (_xamlResourcesTrimming && type.Key.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
+										if (_xamlResourcesTrimming && IsDependencyObject(type.Key))
 										{
 											var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(type.Key.GetFullMetadataName());
 

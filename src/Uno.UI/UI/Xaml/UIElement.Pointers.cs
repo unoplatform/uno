@@ -23,6 +23,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
@@ -70,9 +71,6 @@ namespace Microsoft.UI.Xaml
 			var uiElement = typeof(UIElement);
 			VisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 			Microsoft.UI.Xaml.Controls.Control.IsEnabledProperty.GetMetadata(typeof(Microsoft.UI.Xaml.Controls.Control)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-#if UNO_HAS_MANAGED_POINTERS
-			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-#endif
 		}
 
 		#region ManipulationMode (DP)
@@ -108,7 +106,7 @@ namespace Microsoft.UI.Xaml
 			nameof(CanDrag),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(default(bool), OnCanDragChanged));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnCanDragChanged));
 
 		private static void OnCanDragChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
 		{
@@ -133,7 +131,7 @@ namespace Microsoft.UI.Xaml
 			nameof(AllowDrop),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public bool AllowDrop
 		{
@@ -178,16 +176,6 @@ namespace Microsoft.UI.Xaml
 		#endregion
 
 		private /* readonly but partial */ GestureRecognizer _gestures;
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		/// <summary>
-		/// Validates that this element is able to manage pointer events.
-		/// If this element is only the shadow of a ghost native view that was instantiated for marshalling purposes by Xamarin,
-		/// the _gestures instance will be invalid and trying to interpret a native pointer event might crash the app.
-		/// This flag should be checked when receiving a pointer related event from the native view to prevent this case.
-		/// </summary>
-		private bool ArePointersEnabled { get; set; }
-#endif
 
 		// ctor
 		private void InitializePointers()
@@ -384,12 +372,10 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-#if !HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
 			foreach (var pointer in args.Pointers)
 			{
 				that.ReleasePointerCapture(pointer, muteEvent: true, PointerCaptureKind.Implicit);
 			}
-#endif
 
 			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, that, args));
 
@@ -648,8 +634,6 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		// Not implemented for native pointers (i.e. !UNO_HAS_MANAGED_POINTERS)
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public bool CancelDirectManipulations()
 		{
 #if UNO_HAS_MANAGED_POINTERS
@@ -729,14 +713,6 @@ namespace Microsoft.UI.Xaml
 
 		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
 		{
-			if (routedEvent != HoldingEvent && FeatureConfiguration.UIElement.DisablePointersSpecificEventPrevention)
-			{
-				// If the feature flag is set, call CompleteGesture.
-				// This is known to not be correct, but it's there just in case the prevention logic caused regressions.
-				CompleteGesture();
-				return;
-			}
-
 			// When we bubble a gesture event from a child, we make sure to abort any pending gesture/manipulation on the current element
 			if (IsGestureRecognizerCreated)
 			{
@@ -791,6 +767,25 @@ namespace Microsoft.UI.Xaml
 			foreach (var element in this.EnumerateAncestors())
 			{
 				(element as UIElement)?.CompleteGesture();
+			}
+		}
+
+		/// <summary>
+		/// Indicates that the last pointer down processed by this element's gesture recognizer is what aborted a
+		/// coasting manipulation of this element (cf. GestureRecognizer.LastDownStoppedInertia).
+		/// </summary>
+		internal bool LastPointerDownStoppedInertia
+			=> IsGestureRecognizerCreated && GestureRecognizer.LastDownStoppedInertia;
+
+		/// <summary>
+		/// Prevents this element from recognizing the given gestures for the given pointer.
+		/// Does nothing if this element has no gesture recognizer, or none for that pointer.
+		/// </summary>
+		internal void PreventGestures(global::Windows.Devices.Input.PointerIdentifier pointer, GestureSettings gestures)
+		{
+			if (IsGestureRecognizerCreated)
+			{
+				GestureRecognizer.PreventEvents(pointer, gestures);
 			}
 		}
 
@@ -913,7 +908,7 @@ namespace Microsoft.UI.Xaml
 		private async Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs ptArgs, CancellationToken ct)
 		{
 			ptArgs ??= PointerRoutedEventArgs.LastPointerEvent;
-			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != pointer.PointerDeviceType)
+			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != (global::Microsoft.UI.Input.PointerDeviceType)pointer.PointerDeviceType)
 			{
 				// Fairly impossible case ...
 				return DataPackageOperation.None;
@@ -1060,11 +1055,7 @@ namespace Microsoft.UI.Xaml
 					OnPointerDown(ptArgs, BubblingContext.OnManagedBubbling);
 					break;
 				case RoutedEventFlag.PointerMoved:
-#if __APPLE_UIKIT__ || __ANDROID__
-					OnNativePointerMoveWithOverCheck(ptArgs, ptArgs.IsPointCoordinatesOver(this), BubblingContext.OnManagedBubbling);
-#else
 					OnPointerMove(ptArgs, BubblingContext.OnManagedBubbling);
-#endif
 					break;
 				case RoutedEventFlag.PointerReleased:
 					OnPointerUp(ptArgs, BubblingContext.OnManagedBubbling);
@@ -1080,11 +1071,6 @@ namespace Microsoft.UI.Xaml
 					// Debug.Assert(IsOver(ptArgs.Pointer)); // Fails when fast scrolling samples categories list on Skia
 					OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
 #else
-#if __APPLE_UIKIT__
-					// On iOS all pointers are handled just like if they were touches by the platform and there isn't any notion of "over".
-					// So we can consider pointer over as soon as is touching the screen while being within element bounds.
-					var isOver = ptArgs.Pointer.IsInContact && ptArgs.IsPointCoordinatesOver(this);
-#else // __WASM__ || __ANDROID__
 					// On WASM the pointer 'exit' is raise by the platform for all pointer types,
 					// while on Android they are raised only for mouses and pens (i.e. not for touch).
 					// (For touch on Android we are "re-dispatching exit" in managed code only (i.e. we will pass here)
@@ -1100,7 +1086,6 @@ namespace Microsoft.UI.Xaml
 						(global::Microsoft.UI.Input.PointerDeviceType.Touch, false) => false,
 						_ => ptArgs.IsPointCoordinatesOver(this),
 					};
-#endif
 
 					if (isOver)
 					{
@@ -1183,12 +1168,10 @@ namespace Microsoft.UI.Xaml
 
 				recognizer.ProcessDownEvent(point);
 
-#if !HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
 				if (recognizer.PendingManipulation?.IsActive(point.Pointer) ?? false)
 				{
 					Capture(args.Pointer, PointerCaptureKind.Implicit, default, args);
 				}
-#endif
 			}
 
 			// A non-System ManipulationMode means this element claims the gesture; cancel any ancestor DMs
@@ -1471,7 +1454,7 @@ namespace Microsoft.UI.Xaml
 		#endregion
 
 		#region Pointer pressed state (Updated by the partial API OnNative***, should not be updated externaly)
-		private readonly HashSet<uint> _pressedPointers = new();
+		private HashSet<uint> _pressedPointers;
 
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState).
@@ -1484,7 +1467,7 @@ namespace Microsoft.UI.Xaml
 		/// So it means that this flag will be maintained only if you subscribe at least to one pointer event
 		/// (or override one of the OnPointer*** methods).
 		/// </remarks>
-		internal bool IsPointerPressed => _pressedPointers.Count != 0;
+		internal bool IsPointerPressed => _pressedPointers is { Count: > 0 };
 
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
@@ -1503,9 +1486,9 @@ namespace Microsoft.UI.Xaml
 		/// you will get only one 'PointerPressed' and one 'PointerReleased'.
 		/// Same thing if you release left first (press left => press right => release left => release right), and for the pen's barrel button.
 		/// </remarks>
-		internal bool IsPressed(Pointer pointer) => _pressedPointers.Contains(pointer.PointerId);
+		internal bool IsPressed(Pointer pointer) => _pressedPointers?.Contains(pointer.PointerId) ?? false;
 
-		internal bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
+		internal bool IsPressed(uint pointerId) => _pressedPointers?.Contains(pointerId) ?? false;
 
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, BubblingContext ctx)
 		{
@@ -1528,7 +1511,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (hasNotChanged is false)
 				{
-					_pressedPointers.Add(args.Pointer.PointerId);
+					(_pressedPointers ??= new()).Add(args.Pointer.PointerId);
 				}
 
 				return RaisePointerEvent(PointerPressedEvent, args, ctx);
@@ -1537,14 +1520,14 @@ namespace Microsoft.UI.Xaml
 			{
 				if (hasNotChanged is false)
 				{
-					_pressedPointers.Remove(args.Pointer.PointerId);
+					_pressedPointers?.Remove(args.Pointer.PointerId);
 				}
 
 				return RaisePointerEvent(PointerReleasedEvent, args, ctx);
 			}
 		}
 
-		private void ClearPressed() => _pressedPointers.Clear();
+		private void ClearPressed() => _pressedPointers?.Clear();
 		#endregion
 
 		#region Pointer capture state (Updated by the partial API OnNative***, should not be updated externaly)
@@ -1579,11 +1562,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Indicates if this UIElement has any active ** EXPLICIT ** pointer capture.
 		/// </summary>
-#if __ANDROID__
-		internal new bool HasPointerCapture => (PointerCapturesBackingField?.Count ?? 0) != 0;
-#else
 		internal bool HasPointerCapture => (PointerCapturesBackingField?.Count ?? 0) != 0;
-#endif
 
 		internal bool IsCaptured(Pointer pointer)
 			=> HasPointerCapture

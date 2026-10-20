@@ -33,7 +33,7 @@ var host = UnoPlatformHostBuilder.Create()
 host.Run();
 ```
 
-This builder allows us to configure the SkiaHost and setup which platforms will be supported at runtime. The builder evaluates the platform's availability one by one, in the order of definition.
+This builder allows us to configure the host and set up which platforms will be supported at runtime. The builder evaluates the platform's availability one by one, in the order of definition.
 
 ### Additional setup
 
@@ -56,7 +56,7 @@ builder.SetMinimumLevel(LogLevel.Debug);
 Then change the logging level of the Skia Host to `Information` or `Debug`:
 
 ```csharp
-builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Information);
+builder.AddFilter("Uno.UI.Runtime.", LogLevel.Information);
 ```
 
 You may also need to initialize the logging system earlier than what is found in Uno.UI's default templates by calling this in `Main`:
@@ -80,7 +80,7 @@ By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **Sk
 
 ### SkiaSharp 4
 
-SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. SkiaSharp 4 support is opt-in: set `SkiaSharpVersion` to a `4.x` version as shown above. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project moving from `3.x` may need small code changes before it builds.
+SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. **Since Uno Platform 7.0, SkiaSharp 4 is the default** — the Uno.Sdk resolves the SkiaSharp package group at a `4.x` version, and you only need to set `SkiaSharpVersion` to move off it. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project carrying its own SkiaSharp code from `3.x` may need small changes before it builds.
 
 ### Pinning packages individually
 
@@ -91,24 +91,24 @@ If you need to control individual packages instead of using the `SkiaSharpVersio
    <PackageReference Update="SkiaSharp" Version="4.148.0" />
    <PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="4.148.0" />
    <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="4.148.0" />
-   <PackageReference Update="HarfBuzzSharp" Version="8.3.1.1" />
+   <PackageReference Update="HarfBuzzSharp" Version="14.2.0" />
 </ItemGroup>
 ```
 
 ## Rendering Backend Selection
 
-By default, Uno Platform uses OpenGL for hardware-accelerated rendering on desktop, with an automatic fallback to software rendering. You can override this per platform using the host builder:
+By default, Uno Platform tries the GPU backends in a fixed order (Vulkan, then OpenGL, then software) and uses the first available one. You can force a single backend, or disable specific ones, per platform using the host builder:
 
 ```csharp
 var host = UnoPlatformHostBuilder.Create()
     .App(() => new App())
-    .UseX11(b => b.RenderingBackend(X11RenderingBackend.Vulkan))
-    .UseWin32(b => b.RenderingBackend(Win32RenderingBackend.Vulkan))
+    .UseX11(b => b.ForceRenderingBackend(X11RenderingBackend.Vulkan))   // only Vulkan
+    .UseWin32(b => b.DisableRenderingBackends(Win32RenderingBackend.Vulkan)) // everything except Vulkan
     .UseMacOS()
     .Build();
 ```
 
-Each platform exposes its own `RenderingBackend` enum with only the backends it supports. For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
+Each platform exposes its own `RenderingBackend` enum with only the backends it supports. `ForceRenderingBackend` restricts negotiation to that one backend; `DisableRenderingBackends` removes the listed backends and leaves the rest. For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
 Alternatively, you can use `FeatureConfiguration.Rendering` flags for backwards compatibility. The builder API takes precedence when both are used.
 

@@ -24,7 +24,7 @@ internal static class CppWinRTHelpers
 
 		if (derivedControl is Control control)
 		{
-			Uri uri = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.GetWinUIThemeResourceUrl(2));
+			Uri uri = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);
 			control.DefaultStyleResourceUri = uri;
 		}
 	}

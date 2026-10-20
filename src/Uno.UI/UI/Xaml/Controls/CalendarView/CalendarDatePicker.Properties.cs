@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Helpers.Boxes;
 
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Calendar = Windows.Globalization.Calendar;
@@ -56,11 +57,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty DescriptionProperty { get; } = DependencyProperty.Register(
 			"Description", typeof(object), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as CalendarDatePicker)?.UpdateDescriptionVisibility(false)));
 
-#if __APPLE_UIKIT__
-		public new // .Description already exists on NSObject (both macOS & iOS)
-#else
 		public
-#endif
 			object Description
 		{
 			get => GetValue(DescriptionProperty);
@@ -104,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsCalendarOpenProperty { get; } = DependencyProperty.Register(
-			"IsCalendarOpen", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(bool)));
+			"IsCalendarOpen", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public bool IsCalendarOpen
 		{
@@ -113,7 +110,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsGroupLabelVisibleProperty { get; } = DependencyProperty.Register(
-			"IsGroupLabelVisible", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(bool)));
+			"IsGroupLabelVisible", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public bool IsGroupLabelVisible
 		{
@@ -122,7 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsOutOfScopeEnabledProperty { get; } = DependencyProperty.Register(
-			"IsOutOfScopeEnabled", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(defaultValue: true));
+			"IsOutOfScopeEnabled", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(defaultValue: BoolBoxes.True));
 
 		public bool IsOutOfScopeEnabled
 		{
@@ -131,7 +128,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsTodayHighlightedProperty { get; } = DependencyProperty.Register(
-			"IsTodayHighlighted", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(defaultValue: true));
+			"IsTodayHighlighted", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(defaultValue: BoolBoxes.True));
 
 		public bool IsTodayHighlighted
 		{

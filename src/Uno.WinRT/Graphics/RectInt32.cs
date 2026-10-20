@@ -1,0 +1,52 @@
+using System;
+
+namespace Windows.Graphics;
+
+/// <summary>
+/// Defines the size and location of a rectangular surface.
+/// </summary>
+public partial struct RectInt32 : IEquatable<RectInt32>
+{
+	// Parameter names mirror the WinAppSDK/CsWinRT metadata (enforced by the sync generator); keep as-is.
+	public RectInt32(int _X, int _Y, int _Width, int _Height)
+	{
+		X = _X;
+		Y = _Y;
+		Width = _Width;
+		Height = _Height;
+	}
+
+	/// <summary>
+	/// The X coordinate of the top-left corner of the rectangle.
+	/// </summary>
+	public int X;
+
+	/// <summary>
+	/// The Y coordinate of the top-left corner of the rectangle.
+	/// </summary>
+	public int Y;
+
+	/// <summary>
+	/// The width of a rectangle.
+	/// </summary>
+	public int Width;
+
+	/// <summary>
+	/// The height of a rectangle.
+	/// </summary>
+	public int Height;
+
+	public bool Equals(RectInt32 other) => X == other.X && Y == other.Y && Width == other.Width && Height == other.Height;
+
+	public override bool Equals(object obj) => obj is RectInt32 other && Equals(other);
+
+	public override int GetHashCode() => HashCode.Combine(X, Y, Width, Height);
+
+	public static bool operator ==(RectInt32 left, RectInt32 right) => left.Equals(right);
+
+	public static bool operator !=(RectInt32 left, RectInt32 right) => !(left == right);
+
+	internal bool Contains(int x, int y) => x >= X && x < X + Width && y >= Y && y < Y + Height;
+
+	internal bool Contains(PointInt32 point) => Contains(point.X, point.Y);
+}

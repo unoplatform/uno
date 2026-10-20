@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
@@ -8,6 +10,16 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
 public class SolutionHelper : IDisposable
 {
+	// When `null`, build the default `$(TargetFrameworks)` from `dotnet new unoapp`.
+	// This is the expected behavior when the .NET SDK used to build is stable and
+	// uno.templates targets that same .NET SDK.
+	//
+	// When not `null`, updates `global.json` so that `sdk.prerelease`=true and
+	// alters the generated `.csproj` so that `$(TargetFrameworks)` uses
+	// `OverridePrereleaseTargetFrameworkVersion`, replacing whatever `dotnet new unoapp` generated.
+	// This is needed when using a preview .NET SDK.
+	internal static readonly string? OverridePrereleaseTargetFrameworkVersion = "net11.0";
+
 	private readonly TestContext _testContext;
 	private readonly string _solutionFileName;
 	private readonly string _tempFolder;
@@ -44,7 +56,7 @@ public class SolutionHelper : IDisposable
 
 		var startInfo = new ProcessStartInfo
 		{
-			FileName = "dotnet",
+			FileName = GetDotnetPath(),
 			Arguments = arguments,
 			RedirectStandardOutput = true,
 			RedirectStandardError = true,
@@ -57,6 +69,22 @@ public class SolutionHelper : IDisposable
 		if (exitCode != 0)
 		{
 			throw new InvalidOperationException($"dotnet new unoapp failed with exit code {exitCode} / {output}.\n>dotnet {arguments}");
+		}
+
+		if (OverridePrereleaseTargetFrameworkVersion != null)
+		{
+			var globalJsonPath = Path.Combine(_tempFolder, "global.json");
+			var globalJsonContents = File.ReadAllText(Path.Combine(_tempFolder, "global.json"));
+			globalJsonContents = globalJsonContents.Replace("allowPrerelease\": false", "allowPrerelease\": true");
+			File.WriteAllText(globalJsonPath, globalJsonContents);
+
+			var projectCsprojPath = Path.Combine(_tempFolder, _solutionFileName, $"{_solutionFileName}.csproj");
+			var projectCsprojContents = File.ReadAllText(projectCsprojPath);
+#pragma warning disable SYSLIB1045
+			// error SYSLIB1045: Use 'GeneratedRegexAttribute' to generate the regular expression implementation at compile-time
+			projectCsprojContents = Regex.Replace(projectCsprojContents, @"net[^.]+\.0", OverridePrereleaseTargetFrameworkVersion!);
+#pragma warning restore SYSLIB1045
+			File.WriteAllText(projectCsprojPath, projectCsprojContents);
 		}
 
 		return _solutionFileName;
@@ -73,7 +101,7 @@ public class SolutionHelper : IDisposable
 				// First, check if the unoapp template is already available
 				var checkInfo = new ProcessStartInfo
 				{
-					FileName = "dotnet",
+					FileName = GetDotnetPath(),
 					Arguments = "new list unoapp",
 					RedirectStandardOutput = true,
 					RedirectStandardError = true,
@@ -90,7 +118,7 @@ public class SolutionHelper : IDisposable
 					// Try to install the Uno templates
 					var installInfo = new ProcessStartInfo
 					{
-						FileName = "dotnet",
+						FileName = GetDotnetPath(),
 						Arguments = "new install Uno.Templates@*-*",
 						RedirectStandardOutput = true,
 						RedirectStandardError = true,
@@ -110,7 +138,7 @@ public class SolutionHelper : IDisposable
 					// Verify the template is now available
 					var verifyInfo = new ProcessStartInfo
 					{
-						FileName = "dotnet",
+						FileName = GetDotnetPath(),
 						Arguments = "new list unoapp",
 						RedirectStandardOutput = true,
 						RedirectStandardError = true,
@@ -139,11 +167,27 @@ public class SolutionHelper : IDisposable
 		}
 	}
 
+	private static string? _dotnetPath;
+
+	private static string GetDotnetPath()
+	{
+		if (_dotnetPath != null)
+		{
+			return _dotnetPath;
+		}
+		var dotnetInstallDir = Environment.GetEnvironmentVariable("DOTNET_INSTALL_DIR");
+		if (string.IsNullOrEmpty(dotnetInstallDir))
+		{
+			return _dotnetPath = "dotnet";
+		}
+		return _dotnetPath = Path.Combine(dotnetInstallDir, "dotnet");
+	}
+
 	public async Task ShowDotnetVersionAsync()
 	{
 		var startInfo = new ProcessStartInfo
 		{
-			FileName = "dotnet",
+			FileName = GetDotnetPath(),
 			Arguments = "--info",
 			RedirectStandardOutput = true,
 			RedirectStandardError = true,

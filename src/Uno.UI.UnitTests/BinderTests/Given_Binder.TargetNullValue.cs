@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Binder_TestNullValue
 	{
 		[TestMethod]
@@ -136,7 +136,7 @@ namespace Uno.UI.Tests.BinderTests
 			public string NotNullValue => "hello";
 		}
 
-		public partial class MyControl : DependencyObject
+		public partial class MyControl : FrameworkElement
 		{
 			public MyControl(MyControl parent = null)
 			{

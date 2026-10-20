@@ -3,26 +3,26 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ItemsStackPanel : global::Microsoft.UI.Xaml.Controls.Panel
 	{
 		// Skipping already declared property AreStickyGroupHeadersEnabledProperty
-#if false || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CacheLengthProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CacheLength), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.ItemsStackPanel),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 		// Skipping already declared property GroupHeaderPlacementProperty
 		// Skipping already declared property GroupPaddingProperty
 		// Skipping already declared property OrientationProperty
 		// Skipping already declared property AreStickyGroupHeadersEnabled
-#if false || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public double CacheLength
 		{
 			get
@@ -31,12 +31,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(CacheLengthProperty, value);
+				this.SetValue(CacheLengthProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
-#if false || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public int FirstCacheIndex
 		{
 			get
@@ -48,8 +48,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property FirstVisibleIndex
 		// Skipping already declared property GroupHeaderPlacement
 		// Skipping already declared property GroupPadding
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Controls.ItemsUpdatingScrollMode ItemsUpdatingScrollMode
 		{
 			get
@@ -62,8 +62,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if false || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public int LastCacheIndex
 		{
 			get
@@ -74,8 +74,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property LastVisibleIndex
 		// Skipping already declared property Orientation
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Controls.PanelScrollingDirection ScrollingDirection
 		{
 			get

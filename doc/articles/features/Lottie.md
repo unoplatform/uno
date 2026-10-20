@@ -31,30 +31,34 @@ Add the following namespaces:
 </winui:AnimatedVisualPlayer>
 ```
 
-### References in a Single Project
+### References
 
-In Uno Platform Single Project, you'll need to add the `Lottie` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
+`AnimatedVisualPlayer`, `LottieVisualSource` and `ThemableLottieVisualSource` are part of Uno Platform, so no package is needed on Uno Platform targets. The Skottie renderer comes with the Skia renderer, which is present by default. See [Lottie renderers](#lottie-renderers) below.
 
-```xml
-<UnoFeatures>
-    ...
-    Lottie;
-    ...
-</UnoFeatures>
+On Windows (WinAppSDK), reference the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
+
+### Lottie renderers
+
+On Uno Platform targets, Lottie animations are rendered by one of two renderers:
+
+| Renderer | Used when | Coverage |
+|----------|-----------|----------|
+| Skottie (part of the Skia renderer) | The Skia renderer is present (the `Skia` feature, which is on by default), even when WebGPU draws the UI | Most Lottie features, as supported by [Skottie](https://skia.org/docs/user/modules/skottie/) |
+| Managed engine (built into `Uno.WinUI`) | The Skia renderer is not present, for example in a WebGPU-only app | A subset of Lottie: unsupported features are skipped. |
+
+The host builder picks the renderer automatically. An app can also register one explicitly, which takes precedence over both. Each renderer is created by its assembly's factory:
+
+```csharp
+var host = UnoPlatformHostBuilder.Create()
+    .App(() => new App())
+    // Skottie (available whenever the Skia renderer is):
+    .LottieRenderer(Uno.UI.Composition.Skia.SkiaBackend.CreateLottieRenderer())
+    // or the managed engine:
+    // .LottieRenderer(Uno.UI.Composition.Managed.ManagedBackend.CreateLottieRenderer())
+    .Build();
 ```
 
-### References in a Legacy Project
-
-On all Uno Platform targets, you'll need the following packages:
-
-* `Uno.WinUI.Lottie` (for the `LottieVisualSource`)
-
-Additionally, on Skia Desktop targets, you'll need the following packages:
-
-* `SkiaSharp.Views.Uno.WinUI` version 3.119.0 or later
-* `SkiaSharp.Skottie` version 3.119.0 or later
-
-On Windows/WinAppSDK, use the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
+Explicit registration is required on a trimmed or AOT-compiled head (iOS, tvOS), where the host builder can't find the Skottie renderer automatically.
 
 For more information, see [AnimatedVisualPlayer Class](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer).
 
@@ -133,6 +137,27 @@ Here's how to use this feature:
     }
   }
   ```
+
+## Writing a custom animated visual source
+
+`LottieVisualSource` is one implementation of `IAnimatedVisualSource`; you can write your own to
+feed `AnimatedVisualPlayer` from another format or from generated code.
+
+Since Uno Platform 7.0 that interface matches WinUI exactly — a single method:
+
+```csharp
+IAnimatedVisual TryCreateAnimatedVisual(Compositor compositor, out object diagnostics);
+```
+
+Return an `IAnimatedVisual` carrying the composition `RootVisual`, its natural `Size` and its
+`Duration`; `AnimatedVisualPlayer` drives playback, progress and measurement from there. Because
+this is the WinUI contract, C# emitted by [LottieGen](https://aka.ms/lottiegen) with
+`-Language CSharp -Public -WinUIVersion 3.0` compiles and runs unchanged.
+
+Before 7.0, Uno's `IAnimatedVisualSource` was a nine-method Uno-only contract in which the source
+drove playback itself. See the
+[Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for the old-to-new
+mapping.
 
 ## Limitations
 

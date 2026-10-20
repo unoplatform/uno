@@ -24,7 +24,7 @@ public abstract partial class GLCanvasElement
 				_textureColorBuffer = gl.GenTexture();
 				gl.BindTexture(GLEnum.Texture2D, _textureColorBuffer);
 				{
-					gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgb, (uint)renderSize.Width, (uint)renderSize.Height, 0, GLEnum.Rgb,
+					gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgba8, (uint)renderSize.Width, (uint)renderSize.Height, 0, GLEnum.Rgba,
 						GLEnum.UnsignedByte, (void*)0);
 					// Use the scalar glTexParameteri (TexParameter with an int) rather than the
 					// integer-texture glTexParameterIuiv (TexParameterI). Min/mag filters are plain

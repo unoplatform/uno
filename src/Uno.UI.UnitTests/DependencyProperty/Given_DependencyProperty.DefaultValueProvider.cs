@@ -11,7 +11,7 @@ using Windows.ApplicationModel.VoiceCommands;
 
 namespace Uno.UI.Tests.DependencyPropertyTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty
 	{
 		[TestMethod]
@@ -56,7 +56,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 			var expected = 42;
 			var defaultValueTest = new DefaultValueTest();
 			Assert.AreEqual(expected, defaultValueTest.GetValue(DefaultValueTest.TestValueProperty));
-			Assert.AreEqual(expected, (defaultValueTest as IDependencyObjectStoreProvider).Store.GetDefaultValue(DefaultValueTest.TestValueProperty));
+			Assert.AreEqual(expected, (defaultValueTest as DependencyObject).GetDefaultValue(DefaultValueTest.TestValueProperty));
 			Assert.AreEqual(expected, defaultValueTest.TestValue);
 		}
 

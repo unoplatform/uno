@@ -7,19 +7,25 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionEllipseGeometry : CompositionGeometry
 	{
-		private SkiaGeometrySource2D? _geometrySource2D;
+		private global::Uno.UI.Composition.Drawing.IGeometry? _geometry;
+		private global::Uno.UI.Composition.Drawing.IGeometry? _dashGeometry;
 
-		internal override IGeometrySource2D? BuildGeometry() => _geometrySource2D;
+		internal override IGeometrySource2D? BuildGeometry() => _geometry as IGeometrySource2D;
 
-		private SkiaGeometrySource2D? InternalBuildGeometry()
-			=> new SkiaGeometrySource2D(BuildEllipseGeometry(Center, Radius));
+		internal override global::Uno.UI.Composition.Drawing.IGeometry? BuildDashGeometry()
+			=> _dashGeometry ??= BuildEllipseGeometry(Center, Radius, EllipseFigureStart.Left);
+
+		private global::Uno.UI.Composition.Drawing.IGeometry InternalBuildGeometry()
+			=> BuildEllipseGeometry(Center, Radius);
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			if (propertyName is nameof(Center) or nameof(Radius))
 			{
-				_geometrySource2D?.Dispose();
-				_geometrySource2D = InternalBuildGeometry();
+				_geometry?.Dispose();
+				_geometry = InternalBuildGeometry();
+				_dashGeometry?.Dispose();
+				_dashGeometry = null;
 			}
 
 			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
@@ -27,7 +33,8 @@ namespace Microsoft.UI.Composition
 
 		private protected override void DisposeInternal()
 		{
-			_geometrySource2D?.Dispose();
+			_geometry?.Dispose();
+			_dashGeometry?.Dispose();
 			base.DisposeInternal();
 		}
 	}

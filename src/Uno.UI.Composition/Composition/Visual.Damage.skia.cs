@@ -2,30 +2,49 @@
 
 using System;
 using System.Numerics;
-using SkiaSharp;
-using Uno.Disposables;
+using Windows.Foundation;
+using Uno.Extensions;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition;
 
 public partial class Visual
 {
-	private SKRect _lastRenderBounds;
+	private Rect _lastRenderBounds;
 	private Matrix4x4 _lastRenderMatrix;
 	private bool _hasLastRenderBounds;
-	private SKRect _lastClipBounds;
 
-	private bool _subtreeChangedThisFrame;
+	// Set during the render walk when this visual's subtree changed this frame; used only to re-damage a
+	// drop-shadow's silhouette (which depends on descendants) when a descendant moved/changed.
+	internal bool _subtreeChangedThisFrame;
 
-	// The local-space geometry this visual paints, returned by Paint when the picture is (re)recorded and
-	// reused for the per-frame damage region instead of being rebuilt every frame. A moved-but-unchanged
-	// visual keeps it (its picture isn't re-recorded, so neither is this). Null means the visual paints
-	// nothing analytically describable, and damage falls back to its bounds.
-	private SKPath? _ownContentPath;
+	// Bounds of the clip this visual's content was last painted under (see ContributeDamageOnPaint).
+	private Rect _lastClipBounds;
 
 	internal virtual float DamageRegionSamplingMargin => 0;
 
-	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage, SKPath clip, bool clipChanged)
+	/// <summary>
+	/// A visual removed from the tree won't be visited next frame, so nothing would damage the area it occupied.
+	/// Damage this visual's (and every descendant's) last-rendered bounds into <paramref name="target"/> so the
+	/// partial-repaint path clears their old pixels.
+	/// </summary>
+	internal void ContributeRemovalDamage(Uno.UI.Composition.ICompositionTarget target)
+	{
+		if (_hasLastRenderBounds)
+		{
+			target.AddDamage(_lastRenderBounds);
+			_hasLastRenderBounds = false;
+		}
+
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.ContributeRemovalDamage(target);
+		}
+	}
+
+
+	internal void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage, bool clipChanged, Rect clipRect)
 	{
 		if (damage is null)
 		{
@@ -37,38 +56,33 @@ public partial class Visual
 
 		var shadowSilhouetteChanged = ShadowState is not null && _subtreeChangedThisFrame;
 
-		// The accumulated clip can grow or shrink while this visual's own content and transform stay
-		// identical (e.g. an ancestor re-clipping to a new size), revealing or hiding part of it, and nothing
-		// else would report that as damage. Two independent signals, because neither covers the other:
-		// clipChanged is raised where a Clip/LayoutClip is mutated, so it catches a shape change inside
-		// unchanged bounds; the bounds fingerprint catches clips this visual never sees mutate, such as the
-		// frame's root clip. Bounds are compared rather than the path, to stay cheap on this per-visual,
-		// per-frame path.
-		var clipBounds = clip.Bounds;
-		clipChanged |= clipBounds != _lastClipBounds;
-		_lastClipBounds = clipBounds;
+		// The clip in effect for this visual's own content, in root coordinates, threaded down the walk by the
+		// caller. It used to be recomputed here by walking every ancestor, which is O(depth) per visual per frame
+		// — on a deep tree during a scroll that was tens of thousands of transforms a frame for a value the
+		// parent already knew.
+
+		// The accumulated clip can grow or shrink while this visual's own content and transform stay identical
+		// (an ancestor re-clipping to a new size), revealing or hiding part of it, and nothing else would report
+		// that as damage. Two independent signals, because neither covers the other: clipChanged is raised where a
+		// Clip/LayoutClip is mutated, so it catches a shape change inside unchanged bounds, while the bounds
+		// fingerprint catches clips this visual never sees mutate, such as the frame's root clip.
+		clipChanged |= !RectEquals(clipRect, _lastClipBounds);
+		_lastClipBounds = clipRect;
 
 		if (!contentChanged && !moved && !clipChanged && !shadowSilhouetteChanged)
 		{
 			return;
 		}
 
-		if (TryGetPaintDamageRegion(clip, out var bounds, out var regionPath))
+		if (TryGetPaintDamageRegion(clipRect, out var bounds))
 		{
-			if (regionPath is not null)
-			{
-				damage.Union(regionPath);
-				_pathPool.Free(regionPath);
-			}
-			else
-			{
-				damage.UnionRect(bounds);
-			}
+			damage.UnionRect(bounds);
 
-			if (_hasLastRenderBounds && (matrix != _lastRenderMatrix || bounds != _lastRenderBounds))
+			if (_hasLastRenderBounds && (matrix != _lastRenderMatrix || !RectEquals(bounds, _lastRenderBounds)))
 			{
 				damage.UnionRect(_lastRenderBounds);
 			}
+
 			_lastRenderBounds = bounds;
 			_lastRenderMatrix = matrix;
 			_hasLastRenderBounds = true;
@@ -80,155 +94,115 @@ public partial class Visual
 		}
 	}
 
-	private bool TryGetPaintDamageRegion(SKPath clip, out SKRect bounds, out SKPath? regionPath)
+	/// <summary>
+	/// Narrows the clip bounds inherited from the parent by this visual's own rect-shaped clip, in root
+	/// coordinates. Threading this down the render walk keeps it O(1) per visual; recomputing it bottom-up
+	/// costs O(depth) per visual per frame for a value the parent already holds.
+	/// </summary>
+	private Rect NarrowClipBounds(Rect inherited)
+	{
+		if (GetLocalCullClipBounds() is not { } localClip)
+		{
+			return inherited;
+		}
+
+		// A clip whose projection is unbounded cannot narrow anything; skipping it only widens the result.
+		if (!localClip.TryTransformBounds(TotalMatrix, out var clipInRoot))
+		{
+			return inherited;
+		}
+
+		var narrowed = Intersect(inherited, clipInRoot);
+		return IsRectEmpty(narrowed) ? default : narrowed;
+	}
+
+	private bool TryGetPaintDamageRegion(Rect clipRect, out Rect bounds)
 	{
 		bounds = default;
-		regionPath = null;
 
-		var clipPath = _pathPool.Allocate();
-		var contentPath = _pathPool.Allocate();
-		var keepClipPath = false;
-		var keepContentPath = false;
-		try
+		if (IsRectEmpty(clipRect))
 		{
-			clipPath.Rewind();
-			clipPath.AddPath(clip);
-			if (clipPath.IsEmpty)
+			return false;
+		}
+
+		// Rect-only, deliberately: DamageRegion accumulates rects (a geometry contribution is reduced to its
+		// bounds anyway), so a geometry-shaped region here would pay polygon booleans — pathological on the
+		// managed geometry engine when every visual moves (scrolling) — for no tighter final damage.
+
+		// The clip is outset too: intersecting against a tight clip would otherwise claw the outset back off
+		// whichever edge the content reaches, and the unbounded fallback below returns this rect as-is.
+		clipRect = OutsetForAntialiasing(clipRect);
+
+		if (TryGetLocalContentBounds(out var local))
+		{
+			if (IsRectEmpty(local))
 			{
 				return false;
 			}
 
-			var clipIsRect = clipPath.IsRect;
-			var clipRect = clipPath.Bounds;
-
-			if (ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
+			var samplingMargin = DamageRegionSamplingMargin;
+			if (samplingMargin > 0)
 			{
-				contentPath.Rewind();
-				contentPath.AddPath(ownContent);
-				contentPath.Transform(TotalMatrix.ToSKMatrix());
-				OutsetForAntialiasing(contentPath);
-				contentPath.Op(clipPath, SKPathOp.Intersect, contentPath);
-				if (contentPath.IsEmpty)
-				{
-					return false;
-				}
-				bounds = contentPath.Bounds;
-				regionPath = contentPath;
-				keepContentPath = true;
-				return true;
+				local = Inflate(local, samplingMargin, samplingMargin);
 			}
 
-			if (TryGetLocalContentBounds(out var local))
-			{
-				if (local.IsEmpty)
-				{
-					return false;
-				}
-
-				var samplingMargin = DamageRegionSamplingMargin;
-				if (samplingMargin > 0)
-				{
-					local.Inflate(samplingMargin, samplingMargin);
-				}
-
-				var root = TotalMatrix.ToSKMatrix().MapRect(local);
-				root.Inflate(2, 2);
-				root = new SKRect(
-					(float)Math.Floor(root.Left),
-					(float)Math.Floor(root.Top),
-					(float)Math.Ceiling(root.Right),
-					(float)Math.Ceiling(root.Bottom));
-
-				if (clipIsRect)
-				{
-					var clipped = SKRect.Intersect(root, clipRect);
-					if (clipped.IsEmpty)
-					{
-						return false;
-					}
-					bounds = clipped;
-					return true;
-				}
-
-				var rectPath = _pathPool.Allocate();
-				using var rectPathDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rectPath);
-				rectPath.Rewind();
-				rectPath.AddRect(root);
-				clipPath.Op(rectPath, SKPathOp.Intersect, clipPath);
-
-				if (clipPath.IsEmpty)
-				{
-					return false;
-				}
-				bounds = clipPath.Bounds;
-				regionPath = clipPath;
-				keepClipPath = true;
-				return true;
-			}
-
-			if (clipIsRect)
+			if (!local.TryTransformBounds(TotalMatrix, out var localInRoot))
 			{
 				bounds = clipRect;
 				return true;
 			}
-			bounds = clipPath.Bounds;
-			regionPath = clipPath;
-			keepClipPath = true;
+
+			var clipped = Intersect(OutsetForAntialiasing(localInRoot), clipRect);
+			if (IsRectEmpty(clipped))
+			{
+				return false;
+			}
+
+			bounds = clipped;
 			return true;
 		}
-		finally
-		{
-			if (!keepClipPath)
-			{
-				_pathPool.Free(clipPath);
-			}
-			if (!keepContentPath)
-			{
-				_pathPool.Free(contentPath);
-			}
-		}
+
+		bounds = clipRect;
+		return true;
 	}
 
-	private static readonly SKPaint _outsetPaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 4f, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
-
-	private static void OutsetForAntialiasing(SKPath path)
+	/// <summary>
+	/// Widens a damage contribution to cover the antialiased fringe. Rendering writes device pixels whose
+	/// centers lie outside the geometry, while the non-AA damage clip only replays pixels whose centers lie
+	/// inside; without the slack that fringe is written once and never replayed, and accumulates as a stale
+	/// edge. Two root pixels plus an outward snap is at least the one device pixel the fringe can reach at any
+	/// rasterization scale a display reports, so the present path can clip to the region as it stands.
+	/// </summary>
+	private static Rect OutsetForAntialiasing(Rect rect)
 	{
-		var band = _pathPool.Allocate();
-		using var bandDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), band);
-		var result = _pathPool.Allocate();
-		using var resultDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), result);
-
-		band.Rewind();
-		result.Rewind();
-		_outsetPaint.GetFillPath(path, band);
-		path.Op(band, SKPathOp.Union, result);
-		path.Rewind();
-		path.AddPath(result);
+		rect = Inflate(rect, 2, 2);
+		return new Rect(
+			Math.Floor(rect.X),
+			Math.Floor(rect.Y),
+			Math.Ceiling(rect.Right) - Math.Floor(rect.X),
+			Math.Ceiling(rect.Bottom) - Math.Floor(rect.Y));
 	}
 
-	internal virtual bool TryGetLocalContentBounds(out SKRect localBounds)
+	internal virtual bool TryGetLocalContentBounds(out Rect localBounds)
 	{
 		localBounds = default;
 
 		// What this visual paints itself, in local coordinates: nothing for non-painting visuals (containers),
-		// its Size when it paints within Size (the same bound WalkShadowSilhouette uses for an own contribution),
-		// otherwise it can't be bounded here and we fall back to the clip.
-		SKRect ownContent;
+		// its Size when it paints within Size, otherwise it can't be bounded here and we fall back to the clip.
+		Rect ownContent;
 		if (!CanPaint())
 		{
-			ownContent = SKRect.Empty;
+			ownContent = default;
 		}
 		else if (PaintsWithinOwnSize)
 		{
-			ownContent = new SKRect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y));
+			ownContent = new Rect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y));
 		}
 		else
 		{
 			return false;
 		}
 
-		// A drop shadow's silhouette is this own content unioned with every descendant, then offset and
-		// blurred; without a shadow the content is just what this visual paints.
 		if (ShadowState is not null)
 		{
 			return TryGetShadowSilhouetteBounds(ownContent, out localBounds);
@@ -238,33 +212,69 @@ public partial class Visual
 		return true;
 	}
 
-	private protected bool TryGetShadowSilhouetteBounds(SKRect ownLocalBounds, out SKRect localBounds)
+	private protected bool TryGetShadowSilhouetteBounds(Rect ownLocalBounds, out Rect localBounds)
 	{
 		localBounds = default;
 
-		var casterMatrix = TotalMatrix.ToSKMatrix();
-		var silhouetteInRoot = casterMatrix.MapRect(ownLocalBounds);
+		// The silhouette is mapped back through a 2D inverse below, which a projective caster has none of.
+		if (!TotalMatrix.IsPlanarAffine())
+		{
+			return false;
+		}
+
+		var casterMatrix = TotalMatrix.ToMatrix3x2();
+		var silhouetteInRoot = ownLocalBounds.Transform(casterMatrix);
 		if (!TryAccumulateDescendantContentBoundsInRoot(ref silhouetteInRoot))
 		{
 			return false;
 		}
 
-		if (silhouetteInRoot.IsEmpty)
+		if (IsRectEmpty(silhouetteInRoot))
 		{
-			// Neither the caster nor its descendants paint anything, so there's no silhouette to cast a
-			// shadow (and ExpandForShadow would otherwise inflate an empty rect into a spurious region).
-			localBounds = SKRect.Empty;
+			localBounds = default;
 			return true;
 		}
 
-		var silhouetteLocal = casterMatrix.TryInvert(out var inverse)
-			? inverse.MapRect(silhouetteInRoot)
-			: ownLocalBounds;
+		Rect silhouetteLocal;
+		if (Matrix3x2.Invert(casterMatrix, out var inverse))
+		{
+			silhouetteLocal = silhouetteInRoot.Transform(inverse);
+		}
+		else
+		{
+			silhouetteLocal = ownLocalBounds;
+		}
+
 		localBounds = ExpandForShadow(silhouetteLocal);
 		return true;
 	}
 
-	private bool TryAccumulateDescendantContentBoundsInRoot(ref SKRect acc)
+	/// <summary>
+	/// The bounds of everything this visual and its subtree paint, in root coordinates. False when some
+	/// part of it can't be bounded analytically, in which case the caller has to fall back to its clip.
+	/// </summary>
+	internal bool TryGetSubtreeContentBoundsInRoot(out Rect boundsInRoot)
+	{
+		boundsInRoot = default;
+
+		if (!TryGetLocalContentBounds(out var own))
+		{
+			return false;
+		}
+
+		if (!IsRectEmpty(own))
+		{
+			if (!own.TryTransformBounds(TotalMatrix, out boundsInRoot))
+			{
+				return false;
+			}
+		}
+
+		// A shadow's silhouette already covers the descendants, see TryGetShadowSilhouetteBounds.
+		return ShadowState is not null || TryAccumulateDescendantContentBoundsInRoot(ref boundsInRoot);
+	}
+
+	private bool TryAccumulateDescendantContentBoundsInRoot(ref Rect acc)
 	{
 		foreach (var child in GetChildrenInRenderOrder())
 		{
@@ -278,10 +288,14 @@ public partial class Visual
 				return false;
 			}
 
-			if (!childLocal.IsEmpty)
+			if (!IsRectEmpty(childLocal))
 			{
-				var rect = child.TotalMatrix.ToSKMatrix().MapRect(childLocal);
-				acc = acc.IsEmpty ? rect : SKRect.Union(acc, rect);
+				if (!childLocal.TryTransformBounds(child.TotalMatrix, out var rect))
+				{
+					return false;
+				}
+
+				acc = IsRectEmpty(acc) ? rect : Union(acc, rect);
 			}
 
 			if (child.ShadowState is null && !child.TryAccumulateDescendantContentBoundsInRoot(ref acc))
@@ -293,16 +307,56 @@ public partial class Visual
 		return true;
 	}
 
-	private SKRect ExpandForShadow(SKRect content)
+	private Rect ExpandForShadow(Rect content)
 	{
 		if (ShadowState is not { } shadow)
 		{
 			return content;
 		}
 
-		var shadowRect = content;
-		shadowRect.Offset(shadow.Dx, shadow.Dy);
-		shadowRect.Inflate(shadow.SigmaX * 3, shadow.SigmaY * 3);
-		return SKRect.Union(content, shadowRect);
+		var shadowRect = OffsetRect(content, shadow.Dx, shadow.Dy);
+		shadowRect = Inflate(shadowRect, shadow.SigmaX * 3, shadow.SigmaY * 3);
+		return Union(content, shadowRect);
+	}
+
+	// --- Rect helpers (Windows.Foundation.Rect, kept in LTRB-safe form) ---
+
+	private protected static bool IsRectEmpty(Rect r) => r.Width <= 0 || r.Height <= 0;
+
+	private static bool RectEquals(Rect a, Rect b)
+		=> a.X == b.X && a.Y == b.Y && a.Width == b.Width && a.Height == b.Height;
+
+	private static Rect Inflate(Rect r, double dx, double dy)
+		=> new(r.X - dx, r.Y - dy, Math.Max(0, r.Width + 2 * dx), Math.Max(0, r.Height + 2 * dy));
+
+	private static Rect OffsetRect(Rect r, double dx, double dy)
+		=> new(r.X + dx, r.Y + dy, r.Width, r.Height);
+
+	private static Rect Union(Rect a, Rect b)
+	{
+		if (IsRectEmpty(a))
+		{
+			return b;
+		}
+
+		if (IsRectEmpty(b))
+		{
+			return a;
+		}
+
+		var left = Math.Min(a.Left, b.Left);
+		var top = Math.Min(a.Top, b.Top);
+		var right = Math.Max(a.Right, b.Right);
+		var bottom = Math.Max(a.Bottom, b.Bottom);
+		return new Rect(left, top, right - left, bottom - top);
+	}
+
+	private protected static Rect Intersect(Rect a, Rect b)
+	{
+		var left = Math.Max(a.Left, b.Left);
+		var top = Math.Max(a.Top, b.Top);
+		var right = Math.Min(a.Right, b.Right);
+		var bottom = Math.Min(a.Bottom, b.Bottom);
+		return right <= left || bottom <= top ? default : new Rect(left, top, right - left, bottom - top);
 	}
 }

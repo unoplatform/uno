@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -20,7 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.BinderTests_StandardProperty
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty_StandardProperty
 	{
 		[TestMethod]
@@ -28,7 +27,7 @@ namespace Uno.UI.Tests.BinderTests_StandardProperty
 		{
 			var SUT = new MyObject();
 
-			SUT.SetBinding("Name", new Binding());
+			SUT.SetBindingInternal("Name", new Binding());
 
 			SUT.DataContext = "Test";
 
@@ -36,14 +35,8 @@ namespace Uno.UI.Tests.BinderTests_StandardProperty
 		}
 	}
 
-	public partial class MyObject : DependencyObject
+	public partial class MyObject : FrameworkElement
 	{
-		public string Name
-		{
-			get => _name;
-			set => _name = value;
-		}
-
 		#region InnerObject DependencyProperty
 
 		public MyObject InnerObject
@@ -64,7 +57,6 @@ namespace Uno.UI.Tests.BinderTests_StandardProperty
 					propertyChangedCallback: (s, e) => ((MyObject)s)?.OnInnerObjectChanged(e)
 				)
 			);
-		private string _name;
 
 		private void OnInnerObjectChanged(DependencyPropertyChangedEventArgs e)
 		{

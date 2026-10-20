@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #nullable enable
@@ -19,6 +19,10 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class AutomationPeer : DependencyObject
 {
+	protected internal AutomationPeer()
+	{
+	}
+
 	private AutomationPeer? _parent;
 
 	/// <summary>
@@ -338,21 +342,34 @@ public partial class AutomationPeer : DependencyObject
 	// TODO (DOTI) Not in WinUI?
 	internal bool InvokeAutomationPeer()
 	{
-		// TODO: Add support for ComboBox, Slider, CheckBox, ToggleButton, RadioButton, ToggleSwitch, Selector, etc.
-		if (this is IInvokeProvider invokeProvider)
+		// Native (non-UIA) accessibility activation paths call this helper (Android ViewClicked,
+		// iOS AccessibilityActivate, Skia-Android virtual nodes). WinUI pattern providers throw
+		// ElementNotEnabledException when the element is disabled (see ButtonAutomationPeer.Invoke,
+		// ToggleButtonAutomationPeer.Toggle, RadioButtonAutomationPeer.Select, ...). On these
+		// activation paths a disabled element should simply not activate, so swallow that exception
+		// and report "not invoked". The Win32 UIA COM wrappers call the providers directly (not via
+		// this helper), so they still surface UIA_E_ELEMENTNOTENABLED to the UIA client.
+		try
 		{
-			invokeProvider.Invoke();
-			return true;
+			if ((GetPattern(PatternInterface.Invoke) as IInvokeProvider ?? this as IInvokeProvider) is { } invokeProvider)
+			{
+				invokeProvider.Invoke();
+				return true;
+			}
+			else if ((GetPattern(PatternInterface.Toggle) as IToggleProvider ?? this as IToggleProvider) is { } toggleProvider)
+			{
+				toggleProvider.Toggle();
+				return true;
+			}
+			else if ((GetPattern(PatternInterface.SelectionItem) as ISelectionItemProvider ?? this as ISelectionItemProvider) is { } selectionItemProvider)
+			{
+				selectionItemProvider.Select();
+				return true;
+			}
 		}
-		else if (this is IToggleProvider toggleProvider)
+		catch (ElementNotEnabledException)
 		{
-			toggleProvider.Toggle();
-			return true;
-		}
-		else if (this is ISelectionItemProvider selectionItemProvider)
-		{
-			selectionItemProvider.Select();
-			return true;
+			// Disabled element — treat as not invoked rather than surfacing the exception.
 		}
 
 		return false;
@@ -494,11 +511,11 @@ public partial class AutomationPeer : DependencyObject
 	#region Error Handling
 
 	/// <summary>
-	/// Throws an ElementNotAvailableException for UIA.
+	/// Throws the internal unavailable-peer exception using UIA_E_ELEMENTNOTAVAILABLE.
 	/// </summary>
 	public void ThrowElementNotAvailableError()
 	{
-		throw new InvalidOperationException("UIA element is not available");
+		throw new AutomationPeerUnavailableException();
 	}
 
 	#endregion
@@ -570,16 +587,48 @@ public partial class AutomationPeer : DependencyObject
 	/// <param name="notificationProcessing">The notification processing hint.</param>
 	/// <param name="displayString">The notification string.</param>
 	/// <param name="activityId">The activity ID.</param>
+#if __SKIA__
 	public void RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
-		// #if __SKIA__
-		// 		// TODO (DOTI): Validate the use of: UIAXcp::AENotification, In docs there is no notifi. only in the source code
-		// 		if (ListenerExists(AutomationEvents.Notification))
-		// 		{
-		// 			AutomationPeerListener?.NotifyNotificationEvent(this, notificationKind, notificationProcessing, displayString, activityId);
-		// 		}
-		// #else
+		// RaiseNotificationEvent is stable public API (since UWP 16299) and maps to the UIA
+		// Notification event. Unlike RaiseAutomationEvent, Uno's public contract has no
+		// AutomationEvents.Notification value (it is [VelocityFeature]-gated in WinUI), so we
+		// route straight to the listener rather than through ListenerExistsHelper(eventId). The
+		// per-backend NotifyNotificationEvent handlers gate delivery on IsAccessibilityEnabled.
+		AutomationPeerListener?.NotifyNotificationEvent(this, notificationKind, notificationProcessing, displayString, activityId);
+	}
+#else
+	public void RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
+	{
 		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)", LogLevel.Warning);
+	}
+#endif
+
+	private static IAutomationPeerListener? _automationPeerListener;
+
+	internal static IAutomationPeerListener? AutomationPeerListener
+	{
+		get => TestAutomationPeerListener ?? _automationPeerListener;
+		set
+		{
+			if (_automationPeerListener is not null)
+			{
+				throw new InvalidOperationException("AutomationPeerListener should only be set once.");
+			}
+
+			_automationPeerListener = value;
+		}
+	}
+
+	internal static IAutomationPeerListener? TestAutomationPeerListener { get; set; }
+
+	public void RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)
+	{
+		var listener = AutomationPeerListener;
+		if (listener is not null && listener.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+		{
+			listener.NotifyPropertyChangedEvent(this, automationProperty, oldValue, newValue);
+		}
 	}
 
 #if !__SKIA__

@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
@@ -20,7 +21,7 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 		_image = new Image();
 		AddIconChild(_image);
 
-		_image.SetBinding(
+		_image.SetBindingInternal(
 			dependencyProperty: Image.SourceProperty,
 			binding: new Binding { Source = this, Path = nameof(UriSource) }
 		);
@@ -44,7 +45,7 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 		DependencyProperty.Register(
 			nameof(ShowAsMonochrome), typeof(bool),
 			typeof(BitmapIcon),
-			new FrameworkPropertyMetadata(true, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
+			new FrameworkPropertyMetadata(BoolBoxes.True, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
 
 	/// <summary>
 	/// Gets or sets the Uniform Resource Identifier (URI) of the graphics source file that generated this BitmapImage.
@@ -79,12 +80,10 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 
 	private void UpdateImageMonochromeColor()
 	{
-#if !IS_UNIT_TESTS
 		if (_image is not null)
 		{
 			_image.MonochromeColor = ShowAsMonochrome ? (Foreground as SolidColorBrush)?.Color : null;
 		}
-#endif
 	}
 
 	// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties

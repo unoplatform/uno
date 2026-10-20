@@ -33,6 +33,7 @@ public partial class CompositionTarget : ICompositionTarget
 		};
 
 		_targets.Add(this, null);
+		CompositorFrameTicks.AddHost(this);
 		var xamlRoot = ContentRoot.GetOrCreateXamlRoot();
 		xamlRoot.Changed += (_, _) => UpdateXamlRootBounds();
 		void UpdateXamlRootBounds()
@@ -75,7 +76,7 @@ public partial class CompositionTarget : ICompositionTarget
 
 	public static Compositor GetCompositorForCurrentThread() => Compositor.GetSharedCompositor();
 
-	void ICompositionTarget.TryRedirectForManipulation(PointerPoint pointerPoint, InteractionTracker tracker)
+	void ICompositionTarget.TryRedirectForManipulation(global::Microsoft.UI.Input.PointerPoint pointerPoint, InteractionTracker tracker)
 	{
 #if UNO_HAS_MANAGED_POINTERS // TODO: Support more platforms
 		ContentRoot.InputManager.Pointers.RedirectPointer(pointerPoint, tracker);

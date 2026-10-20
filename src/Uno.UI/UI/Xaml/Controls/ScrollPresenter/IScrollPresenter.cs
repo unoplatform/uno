@@ -98,6 +98,10 @@ internal interface IScrollPresenter
 
 	event TypedEventHandler<ScrollPresenter, ScrollingZoomCompletedEventArgs> ZoomCompleted;
 
+	event TypedEventHandler<ScrollPresenter, ScrollingScrollStartingEventArgs> ScrollStarting;
+
+	event TypedEventHandler<ScrollPresenter, ScrollingZoomStartingEventArgs> ZoomStarting;
+
 	int ScrollTo(double horizontalOffset, double verticalOffset);
 
 	int ScrollTo(double horizontalOffset, double verticalOffset, ScrollingScrollOptions options);

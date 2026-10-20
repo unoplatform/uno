@@ -28,10 +28,6 @@ partial class MenuFlyoutItem
 		//base.Initialize();
 		Loaded += (s, e) => ClearStateFlags();
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		Loaded += (s, e) => EnterImpl(true);
-		Unloaded += (s, e) => LeaveImpl(true);
-#endif
 	}
 
 	// Apply a template to the
@@ -383,14 +379,9 @@ partial class MenuFlyoutItem
 	}
 
 	// MUX Reference: MenuFlyoutItem::EnterImpl in MenuFlyoutItem_Partial.cpp
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	private protected override void EnterImpl(bool live)
 	{
 		base.EnterImpl(live);
-#else
-	private void EnterImpl(bool live)
-	{
-#endif
 
 		if (live)
 		{
@@ -415,14 +406,9 @@ partial class MenuFlyoutItem
 	}
 
 	// MUX Reference: MenuFlyoutItem::LeaveImpl in MenuFlyoutItem_Partial.cpp
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	private protected override void LeaveImpl(bool live)
 	{
 		base.LeaveImpl(live);
-#else
-	private void LeaveImpl(bool live)
-	{
-#endif
 
 		if (live && m_epCanExecuteChangedHandler.Disposable is not null)
 		{

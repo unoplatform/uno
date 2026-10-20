@@ -1,0 +1,617 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Default">
+      <StaticResource x:Key="CheckBoxForegroundUnchecked" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundUncheckedPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundUncheckedPressed" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundUncheckedDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxForegroundChecked" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundCheckedPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundCheckedPressed" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundCheckedDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminate" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminatePointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminatePressed" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminateDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUnchecked" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUncheckedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUncheckedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUncheckedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundChecked" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundCheckedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundCheckedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundCheckedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminate" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminatePointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminatePressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminateDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUnchecked" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUncheckedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUncheckedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUncheckedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushChecked" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushCheckedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushCheckedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushCheckedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminate" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminatePointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminatePressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminateDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUnchecked" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedPointerOver" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedPressed" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedDisabled" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeChecked" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeCheckedDisabled" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminate" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePressed" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminateDisabled" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUnchecked" ResourceKey="ControlAltFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUncheckedPointerOver" ResourceKey="ControlAltFillColorTertiaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUncheckedPressed" ResourceKey="ControlAltFillColorQuarternaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUncheckedDisabled" ResourceKey="ControlAltFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillChecked" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillCheckedPressed" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillCheckedDisabled" ResourceKey="AccentFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminate" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminatePointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminatePressed" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminateDisabled" ResourceKey="AccentFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUnchecked" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUncheckedPointerOver" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUncheckedPressed" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUncheckedDisabled" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundChecked" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedPressed" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedDisabled" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminate" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminatePressed" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminateDisabled" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+      <SolidColorBrush x:Key="CheckBoxBackgroundThemeBrush" Color="#CCFFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxBorderThemeBrush" Color="#CCFFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxContentDisabledForegroundThemeBrush" Color="#66FFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxContentForegroundThemeBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxDisabledBackgroundThemeBrush" Color="#66FFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxDisabledBorderThemeBrush" Color="#66FFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxDisabledForegroundThemeBrush" Color="#66000000" />
+      <SolidColorBrush x:Key="CheckBoxForegroundThemeBrush" Color="#FF000000" />
+      <SolidColorBrush x:Key="CheckBoxPointerOverBackgroundThemeBrush" Color="#DEFFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxPointerOverBorderThemeBrush" Color="#DEFFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxPointerOverForegroundThemeBrush" Color="#FF000000" />
+      <SolidColorBrush x:Key="CheckBoxPressedBackgroundThemeBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxPressedBorderThemeBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxPressedForegroundThemeBrush" Color="#FF000000" />
+    </ResourceDictionary>
+    <ResourceDictionary x:Key="HighContrast">
+      <StaticResource x:Key="CheckBoxForegroundUnchecked" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="CheckBoxForegroundUncheckedPointerOver" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="CheckBoxForegroundUncheckedPressed" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="CheckBoxForegroundUncheckedDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="CheckBoxForegroundChecked" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="CheckBoxForegroundCheckedPointerOver" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="CheckBoxForegroundCheckedPressed" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="CheckBoxForegroundCheckedDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminate" ResourceKey="SystemColorWindowTextColorBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminatePointerOver" ResourceKey="SystemColorWindowTextColorBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminatePressed" ResourceKey="SystemColorWindowTextColorBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminateDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUnchecked" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUncheckedPointerOver" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUncheckedPressed" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUncheckedDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundChecked" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundCheckedPointerOver" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundCheckedPressed" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundCheckedDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminate" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminatePointerOver" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminatePressed" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminateDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUnchecked" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUncheckedPointerOver" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUncheckedPressed" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUncheckedDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushChecked" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushCheckedPointerOver" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushCheckedPressed" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushCheckedDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminate" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminatePointerOver" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminatePressed" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminateDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUnchecked" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedPressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeChecked" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeCheckedDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminate" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminateDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUnchecked" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUncheckedPointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUncheckedPressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUncheckedDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillChecked" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillCheckedPressed" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillCheckedDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminate" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminatePointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminatePressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminateDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUnchecked" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUncheckedPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUncheckedPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUncheckedDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundChecked" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedPressed" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminate" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminatePressed" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminateDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <SolidColorBrush x:Key="CheckBoxBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+      <SolidColorBrush x:Key="CheckBoxBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="CheckBoxContentDisabledForegroundThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+      <SolidColorBrush x:Key="CheckBoxContentForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="CheckBoxDisabledBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+      <SolidColorBrush x:Key="CheckBoxDisabledBorderThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+      <SolidColorBrush x:Key="CheckBoxDisabledForegroundThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+      <SolidColorBrush x:Key="CheckBoxForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="CheckBoxPointerOverBackgroundThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+      <SolidColorBrush x:Key="CheckBoxPointerOverBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="CheckBoxPointerOverForegroundThemeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+      <SolidColorBrush x:Key="CheckBoxPressedBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="CheckBoxPressedBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="CheckBoxPressedForegroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+    </ResourceDictionary>
+    <ResourceDictionary x:Key="Light">
+      <StaticResource x:Key="CheckBoxForegroundUnchecked" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundUncheckedPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundUncheckedPressed" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundUncheckedDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxForegroundChecked" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundCheckedPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundCheckedPressed" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundCheckedDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminate" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminatePointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminatePressed" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxForegroundIndeterminateDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUnchecked" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUncheckedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUncheckedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundUncheckedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundChecked" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundCheckedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundCheckedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundCheckedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminate" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminatePointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminatePressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBackgroundIndeterminateDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUnchecked" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUncheckedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUncheckedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushUncheckedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushChecked" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushCheckedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushCheckedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushCheckedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminate" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminatePointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminatePressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxBorderBrushIndeterminateDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUnchecked" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedPointerOver" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedPressed" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedDisabled" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeChecked" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeCheckedDisabled" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminate" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePressed" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundStrokeIndeterminateDisabled" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUnchecked" ResourceKey="ControlAltFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUncheckedPointerOver" ResourceKey="ControlAltFillColorTertiaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUncheckedPressed" ResourceKey="ControlAltFillColorQuarternaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillUncheckedDisabled" ResourceKey="ControlAltFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillChecked" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillCheckedPressed" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillCheckedDisabled" ResourceKey="AccentFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminate" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminatePointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminatePressed" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckBackgroundFillIndeterminateDisabled" ResourceKey="AccentFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUnchecked" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUncheckedPointerOver" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUncheckedPressed" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundUncheckedDisabled" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundChecked" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedPressed" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedDisabled" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminate" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminatePressed" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminateDisabled" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+      <SolidColorBrush x:Key="CheckBoxBackgroundThemeBrush" Color="#CCFFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxBorderThemeBrush" Color="#45000000" />
+      <SolidColorBrush x:Key="CheckBoxContentDisabledForegroundThemeBrush" Color="#66000000" />
+      <SolidColorBrush x:Key="CheckBoxContentForegroundThemeBrush" Color="#FF000000" />
+      <SolidColorBrush x:Key="CheckBoxDisabledBackgroundThemeBrush" Color="#66CACACA" />
+      <SolidColorBrush x:Key="CheckBoxDisabledBorderThemeBrush" Color="#26000000" />
+      <SolidColorBrush x:Key="CheckBoxDisabledForegroundThemeBrush" Color="#66000000" />
+      <SolidColorBrush x:Key="CheckBoxForegroundThemeBrush" Color="#FF000000" />
+      <SolidColorBrush x:Key="CheckBoxPointerOverBackgroundThemeBrush" Color="#DEFFFFFF" />
+      <SolidColorBrush x:Key="CheckBoxPointerOverForegroundThemeBrush" Color="#FF000000" />
+      <SolidColorBrush x:Key="CheckBoxPointerOverBorderThemeBrush" Color="#70000000" />
+      <SolidColorBrush x:Key="CheckBoxPressedBackgroundThemeBrush" Color="#FF000000" />
+      <SolidColorBrush x:Key="CheckBoxPressedBorderThemeBrush" Color="#FF000000" />
+      <SolidColorBrush x:Key="CheckBoxPressedForegroundThemeBrush" Color="#FFFFFFFF" />
+    </ResourceDictionary>
+  </ResourceDictionary.ThemeDictionaries>
+  <x:Double x:Key="CheckBoxBorderThickness">1</x:Double>
+  <x:Double x:Key="CheckBoxSize">20</x:Double>
+  <x:Double x:Key="CheckBoxGlyphSize">12</x:Double>
+  <x:Double x:Key="CheckBoxHeight">32</x:Double>
+  <x:Double x:Key="CheckBoxMinWidth">120</x:Double>
+  <Thickness x:Key="CheckBoxPadding">8,5,0,0</Thickness>
+  <Thickness x:Key="CheckBoxFocusVisualMargin">-7,-3,-7,-3</Thickness>
+  <x:String x:Key="CheckBoxCheckedGlyph">&#xE73E;</x:String>
+  <x:String x:Key="CheckBoxIndeterminateGlyph">&#xE9AE;</x:String>
+  <Style TargetType="CheckBox" BasedOn="{StaticResource DefaultCheckBoxStyle}" />
+  <Style x:Key="DefaultCheckBoxStyle" TargetType="CheckBox">
+    <Setter Property="Background" Value="{ThemeResource CheckBoxBackgroundUnchecked}" />
+    <Setter Property="Foreground" Value="{ThemeResource CheckBoxForegroundUnchecked}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource CheckBoxBorderBrushUnchecked}" />
+    <Setter Property="Padding" Value="{StaticResource CheckBoxPadding}" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Top" />
+    <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+    <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+    <Setter Property="MinWidth" Value="{StaticResource CheckBoxMinWidth}" />
+    <Setter Property="MinHeight" Value="{StaticResource CheckBoxHeight}" />
+    <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+    <Setter Property="FocusVisualMargin" Value="{StaticResource CheckBoxFocusVisualMargin}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="CheckBox">
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CombinedStates">
+                <VisualState x:Name="UncheckedNormal" />
+                <VisualState x:Name="UncheckedPointerOver">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxForegroundUncheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBackgroundUncheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushUncheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeUncheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillUncheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundUncheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="PointerOverOff" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="UncheckedPressed">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxForegroundUncheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBackgroundUncheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushUncheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeUncheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillUncheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundUncheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="PressedOff" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="UncheckedDisabled">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxForegroundUncheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBackgroundUncheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushUncheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeUncheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillUncheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundUncheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <!-- DisabledVisual Should be handled by the control, not the animated icon. -->
+                    <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="NormalOff" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CheckedNormal">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxForegroundChecked}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBackgroundChecked}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushChecked}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeChecked}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillChecked}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundChecked}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="NormalOn" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CheckedPointerOver">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxForegroundCheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBackgroundCheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushCheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeCheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillCheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundCheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="PointerOverOn" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CheckedPressed">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxForegroundCheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBackgroundCheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushCheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeCheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillCheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundCheckedPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="PressedOn" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CheckedDisabled">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxForegroundCheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBackgroundCheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushCheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeCheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillCheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundCheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <!-- DisabledVisual Should be handled by the control, not the animated icon. -->
+                    <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="NormalOn" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="IndeterminateNormal">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxForegroundIndeterminate}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBackgroundIndeterminate}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushIndeterminate}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeIndeterminate}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillIndeterminate}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DownLevelCheckGlyph" Storyboard.TargetProperty="Glyph">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource CheckBoxIndeterminateGlyph}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundIndeterminate}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="NormalIndeterminate" />
+                    <Setter Target="CheckGlyph.Margin" Value="0" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="IndeterminatePointerOver">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxForegroundIndeterminatePointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBackgroundIndeterminatePointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushIndeterminatePointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeIndeterminatePointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillIndeterminatePointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DownLevelCheckGlyph" Storyboard.TargetProperty="Glyph">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource CheckBoxIndeterminateGlyph}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundIndeterminatePointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="PointerOverIndeterminate" />
+                    <Setter Target="CheckGlyph.Margin" Value="0" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="IndeterminatePressed">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxForegroundIndeterminatePressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBackgroundIndeterminatePressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushIndeterminatePressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeIndeterminatePressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillIndeterminatePressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DownLevelCheckGlyph" Storyboard.TargetProperty="Glyph">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource CheckBoxIndeterminateGlyph}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundIndeterminatePressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="PressedIndeterminate" />
+                    <Setter Target="CheckGlyph.Margin" Value="0" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="IndeterminateDisabled">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxForegroundIndeterminateDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBackgroundIndeterminateDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushIndeterminateDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeIndeterminateDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillIndeterminateDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DownLevelCheckGlyph" Storyboard.TargetProperty="Glyph">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource CheckBoxIndeterminateGlyph}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundIndeterminateDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <!-- DisabledVisual Should be handled by the control, not the animated icon. -->
+                    <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="NormalIndeterminate" />
+                    <Setter Target="CheckGlyph.Margin" Value="0" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" VerticalAlignment="Center" Height="{StaticResource CheckBoxSize}" Width="{StaticResource CheckBoxSize}">
+              <Rectangle x:Name="NormalRectangle" Fill="{ThemeResource CheckBoxCheckBackgroundFillUnchecked}" Stroke="{ThemeResource CheckBoxCheckBackgroundStrokeUnchecked}" StrokeThickness="{StaticResource CheckBoxBorderThickness}" UseLayoutRounding="False" Height="{StaticResource CheckBoxSize}" Width="{StaticResource CheckBoxSize}" RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
+              <controls:AnimatedIcon x:Name="CheckGlyph" Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}" controls:AnimatedIcon.State="NormalOff" Margin="0,1,0,-1">
+                <animatedvisuals:AnimatedAcceptVisualSource />
+                <controls:AnimatedIcon.FallbackIconSource>
+                  <controls:FontIconSource x:Name="DownLevelCheckGlyph" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{StaticResource CheckBoxCheckedGlyph}" FontSize="{StaticResource CheckBoxGlyphSize}" />
+                </controls:AnimatedIcon.FallbackIconSource>
+              </controls:AnimatedIcon>
+            </Grid>
+            <ContentPresenter x:Name="ContentPresenter" Grid.Column="1" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" TextWrapping="Wrap" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

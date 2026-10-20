@@ -15,10 +15,12 @@ For other types of automated tests used internally by Uno.UI, [see here](../cont
 Since the Uno.UI.RuntimeTests tests run in the platform environment using the real Uno.UI binaries, they must be run from within SamplesApp.
 
 1. Build and launch the SamplesApp, following [the instructions here](working-with-the-samples-apps.md). Note: if you're testing a mobile platform, it's recommended to run on a tablet in landscape mode. On a phone-sized layout, a few tests will fail because they don't have enough space to measure properly.
-2. From the sample menu, navigate to 'Unit Tests' > 'Unit Tests Runner' or click on the top-left-most button.
-3. (Optional) Add a filter string in the text input control at the top of the page (for example the name or part of the name of your test method); only tests matching the filter will be run. Otherwise, all tests will run.
-    > On mobile devices with limit screen width, you can drag the grid-slitter (the horizontal and vertical blue bars) to make more space for the filter textbox or test area.
-4. Press the 'Run' button. Tests will run in sequence, and the results will be shown.
+2. Open **Runtime tests** from the rail on the left, or press Ctrl+T. On a phone-width window, open the menu button in the header and pick **Runtime tests** at the bottom of the pane.
+3. (Optional) Type a filter in the **Filter** box at the top of the page (for example the name or part of the name of your test method, with several filters separated by `;`); only tests matching the filter will be run. Otherwise, all tests will run.
+    > On narrow screens, drag the splitters (next to the test area and above the results) to make more space where you need it.
+4. Press the **Run** button. Tests will run in sequence, and the results will be shown.
+
+To run the tests without the UI, for example from a script, use the `--runtime-tests` [launch argument](working-with-the-samples-apps.md#launch-arguments).
 
 ## Authoring tests
 
@@ -68,15 +70,15 @@ public void When_Test_Not_Supported_On_Mobile()
 
 The `RuntimeTestPlatforms` enum includes the following platforms:
 
-- **Native platforms**: `NativeWinUI`, `NativeWasm`, `NativeAndroid`, `NativeIOS`, `NativeMacCatalyst`, `NativeTvOS`
-- **Skia platforms**: `SkiaWin32`, `SkiaX11`, `SkiaMacOS`, `SkiaIslands`, `SkiaWasm`, `SkiaAndroid`, `SkiaIOS`, `SkiaMacCatalyst`, `SkiaTvOS`, `SkiaFrameBuffer`
+- **Native platforms**: `NativeWinUI`, `NativeWasm`, `NativeAndroid`, `NativeIOS`, `NativeTvOS`
+- **Skia platforms**: `SkiaWin32`, `SkiaX11`, `SkiaMacOS`, `SkiaIslands`, `SkiaWasm`, `SkiaAndroid`, `SkiaIOS`, `SkiaTvOS`, `SkiaFrameBuffer`
 - **Combined platforms**:
-  - `NativeUIKit` (NativeIOS | NativeTvOS | NativeMacCatalyst)
-  - `SkiaUIKit` (SkiaIOS | SkiaTvOS | SkiaMacCatalyst)
+  - `NativeUIKit` (NativeIOS | NativeTvOS)
+  - `SkiaUIKit` (SkiaIOS | SkiaTvOS)
   - `SkiaMobile` (SkiaAndroid | SkiaUIKit)
   - `SkiaDesktop` (SkiaWin32 | SkiaX11 | SkiaMacOS | SkiaIslands | SkiaFrameBuffer)
   - `Skia` (SkiaDesktop | SkiaWasm | SkiaMobile)
-  - `Native` (NativeWasm | NativeAndroid | NativeIOS | NativeMacCatalyst | NativeTvOS | NativeWinUI)
+  - `Native` (NativeWasm | NativeAndroid | NativeIOS | NativeTvOS | NativeWinUI)
   - `Wasm` (NativeWasm | SkiaWasm)
   - `Android` (NativeAndroid | SkiaAndroid)
   - `IOS` (NativeIOS | SkiaIOS)
@@ -95,11 +97,6 @@ The `Private.Infrastructure.TestServices.WindowHelper` class exposes several sta
 - `Task WindowHelper.WaitForLoaded(FrameworkElement element)`: returns a task that will complete once `element` is fully loaded into the visual tree. You'd typically await it after assigning `WindowContent = element`, to ensure that `element` has been loaded, measured, and arranged, before further manipulations or assertions.
 - `Task WindowHelper.WaitForIdle()`: returns a task that will complete when the idle dispatcher is raised, roughly indicating that the UI thread 'isn't doing anything'. Await this to wait for the UI thread to 'settle' without a specific condition.
 - `Task WindowHelper.WaitFor(Func<bool> condition)`: returns a task that will complete once `condition` is met, or throw an exception if it times out. Await this to wait for the UI to reach a specific expected state.
-
-#### StyleHelper
-
-- `IDisposable UseNativeStyle<T>() where T : Control`: This allows you to override the style settings to use a native default style for the duration of a test. Eg, `using (UseNativeStyle<Slider>()) { }` will cause all `Slider` elements to use the native style by default.
-- `IDisposable UseNativeFrameNavigation()`: This is a helper which sets native styles as default for the control types implicated in frame navigation (`Frame`, `CommandBar` and `AppBarButton`). This is useful for testing native frame navigation.
 
 #### Useful methods coming from `Uno.UI` itself
 

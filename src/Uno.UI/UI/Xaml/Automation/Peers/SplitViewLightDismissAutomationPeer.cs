@@ -43,7 +43,7 @@ internal partial class SplitViewLightDismissAutomationPeer : FrameworkElementAut
 	{
 		if (Owner is FrameworkElement fe)
 		{
-			var splitView = fe.TemplatedParent as SplitView;
+			var splitView = fe.GetTemplatedParent() as SplitView;
 			if (splitView is not null && splitView.IsPaneOpen)
 			{
 				splitView.IsPaneOpen = false;
@@ -55,7 +55,7 @@ internal partial class SplitViewLightDismissAutomationPeer : FrameworkElementAut
 	{
 		if (Owner is FrameworkElement fe)
 		{
-			var splitView = fe.TemplatedParent as SplitView;
+			var splitView = fe.GetTemplatedParent() as SplitView;
 			if (splitView is not null)
 			{
 				// Light dismiss is available in Overlay and CompactOverlay modes

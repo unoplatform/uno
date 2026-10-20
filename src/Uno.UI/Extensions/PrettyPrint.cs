@@ -15,7 +15,7 @@ using Colors = Microsoft.UI.Colors;
 namespace Uno.UI.Extensions;
 
 
-#if WINAPPSDK || WINDOWS_UWP
+#if !HAS_UNO
 internal static class PrettyPrint
 #else
 public static class PrettyPrint
@@ -60,12 +60,6 @@ public static class PrettyPrint
 	{
 		return $"[{x.Width:0.#}x{x.Height:0.#}@{x.Left:0.#},{x.Top:0.#}]";
 	}
-#if __ANDROID__
-	public static string FormatViewRect(Android.Views.View x)
-	{
-		return $"[{x.Width:0.#}x{x.Height:0.#}@{x.Left:0.#},{x.Top:0.#}]";
-	}
-#endif
 	public static string FormatSize(Size size) => FormatSize(size.Width, size.Height);
 	public static string FormatSize(double width, double height) => $"{width:0.#}x{height:0.#}";
 	public static string FormatBrush(Brush b)

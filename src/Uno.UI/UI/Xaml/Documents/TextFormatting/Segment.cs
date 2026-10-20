@@ -1,0 +1,192 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.UI.Xaml.Documents.RichTextServices;
+
+#nullable enable
+
+namespace Microsoft.UI.Xaml.Documents.TextFormatting
+{
+	/// <summary>
+	/// Represents a stand-alone line break, an embedded inline object, or a segment of a Run that can end in a word-break opportunity and/or a line break. All
+	/// glyphs in a segment go in the same direction (LTR or RTL).
+	/// </summary>
+	[DebuggerDisplay("{DebugText}")]
+	internal sealed class Segment
+	{
+		// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
+		private const float TabStopWidth = 48;
+
+		private readonly List<GlyphInfo>? _glyphs;
+		private readonly FontDetails? _fallbackFont;
+		// we cache the text as soon as we create the Segment in case a Run's text Updates
+		// before this (now outdated) Segment is discarded.
+		private readonly string _text;
+
+		/// <summary>
+		/// Gets either the LineBreak element or Run element that this segment was created from.
+		/// </summary>
+		public Inline Inline { get; }
+
+		/// <summary>
+		/// The flow direction of the text.
+		/// </summary>
+		public FlowDirection Direction { get; }
+
+		/// <summary>
+		/// Gets the starting index of the character in the Run element text this segment represents. Returns 0 for segments that represent a LineBreak element.
+		/// </summary>
+		public int Start { get; }
+
+		/// <summary>
+		/// Gets the number of characters in the Run element text this segment represents. Returns 0 for segments that represent a LineBreak element.
+		/// </summary>
+		public int Length { get; }
+
+		/// <summary>
+		/// Gets the number of leading space characters in the Run element text this segment represents. Returns 0 for segments that represent a LineBreak
+		/// element.
+		/// </summary>
+		public int LeadingSpaces { get; }
+
+		/// <summary>
+		/// Gets the number of trailing space characters in the Run element text this segment represents, before any line break characters. Returns 0 for
+		/// segments that represent a LineBreak element.
+		/// </summary>
+		public int TrailingSpaces { get; }
+
+		/// <summary>
+		/// Gets a value indicating whether a line break should be performed after this segment. Returns true if this segment represents a LineBreak element or
+		/// part of a Run that ends in a line break character.
+		/// </summary>
+		public bool LineBreakAfter { get; }
+
+		/// <summary>
+		/// Gets the number of characters that represent the line break at the end of the Run element text this segment represents. Value can be 1 or 2 if there
+		/// is a line break at the end of the segment text (i.e. 1 for just "\n" or 2 for "\r\n"), otherwise the value is 0. Returns 0 for segments that
+		/// represent a LineBreak element.
+		/// </summary>
+		public int LineBreakLength { get; }
+
+		public bool IsTab => Inline is Run && Text.Length == 1 && Text[0] == '\t';
+
+		/// <summary>
+		/// Gets the embedded object run for segments created from an <see cref="InlineUIContainer"/>, otherwise null.
+		/// </summary>
+		public ObjectRun? ObjectRun { get; }
+
+		/// <summary>
+		/// Gets the measured size and baseline of the embedded object. Only meaningful when <see cref="IsInlineObject"/> is true.
+		/// </summary>
+		public ObjectRunMetrics ObjectMetrics { get; }
+
+		/// <summary>
+		/// Gets a value indicating whether this segment represents an <see cref="InlineUIContainer"/> rather than text.
+		/// </summary>
+		public bool IsInlineObject => ObjectRun is not null;
+
+		/// <summary>
+		/// Gets the section of text of the Run element this segment represents. Throws if this segment represents a LineBreak element.
+		/// </summary>
+		public ReadOnlySpan<char> Text => Inline is Run run ? _text.AsSpan().Slice(Start, Length) : throw new InvalidOperationException("Text can only be retrieved for segments representing part of a Run.");
+
+		/// <summary>
+		/// Gets the glyphs for the Run element text this segment represents. RTL segments return the glyphs in the order the clusters appear in the text
+		/// string, from right to left. Throws if this segment represents a LineBreak element.
+		/// </summary>
+		public IReadOnlyList<GlyphInfo> Glyphs => _glyphs ?? throw new InvalidOperationException("Glyphs can only be retrieved for segments representing part of a Run.");
+
+		/// <summary>
+		/// Gets the number of UTF-16 code units of the Run element text this segment represents, excluding the line break. Returns 0 for segments that
+		/// represent a LineBreak element or an inline object.
+		/// </summary>
+		public int ContentLength => Inline is Run ? Length - LineBreakLength : 0;
+
+		private int ContentGlyphCount => _glyphs is null ? 0 : (LineBreakAfter ? _glyphs.Count - 1 : _glyphs.Count);
+
+		/// <summary>
+		/// Gets the offset, in UTF-16 code units from the segment start, of the cluster the glyph at <paramref name="glyphIndex"/> belongs to. A glyph index
+		/// past the last content glyph maps to <see cref="ContentLength"/>.
+		/// </summary>
+		public int GetCharacterOffset(int glyphIndex) => glyphIndex < ContentGlyphCount ? _glyphs![glyphIndex].Cluster - Start : ContentLength;
+
+		/// <summary>
+		/// Gets the index of the first glyph whose cluster starts at or after <paramref name="characterOffset"/>, so an offset inside a cluster maps to the
+		/// following cluster.
+		/// </summary>
+		public int GetGlyphIndex(int characterOffset)
+		{
+			var glyphIndex = 0;
+			while (glyphIndex < ContentGlyphCount && GetCharacterOffset(glyphIndex) < characterOffset)
+			{
+				glyphIndex++;
+			}
+
+			return glyphIndex;
+		}
+
+		/// <summary>
+		/// Gets the [Start, End) offsets of the cluster containing <paramref name="characterOffset"/>, which must be less than <see cref="ContentLength"/>.
+		/// </summary>
+		public (int Start, int End) GetClusterRange(int characterOffset)
+		{
+			var nextGlyph = GetGlyphIndex(characterOffset + 1);
+			return (nextGlyph > 0 ? GetCharacterOffset(nextGlyph - 1) : 0, GetCharacterOffset(nextGlyph));
+		}
+
+		private string DebugText => Inline switch
+		{
+			Run => Text.ToString(),
+			InlineUIContainer => "{InlineUIContainer}",
+			_ => "{LineBreak}",
+		};
+
+		public Segment(Run run, FlowDirection direction, int start, int length, int leadingSpaceCount, int trailingSpaceCount, int lineBreakLength, List<GlyphInfo> glyphs, FontDetails? fallbackFont)
+		{
+			Inline = run;
+			Direction = direction;
+			Start = start;
+			Length = length;
+			LeadingSpaces = leadingSpaceCount;
+			TrailingSpaces = trailingSpaceCount;
+			LineBreakLength = lineBreakLength;
+			LineBreakAfter = lineBreakLength > 0;
+			_glyphs = glyphs;
+			_fallbackFont = fallbackFont;
+			_text = run.Text;
+		}
+
+		public Segment(LineBreak lineBreak, int lineBreakLength = 0)
+		{
+			Inline = lineBreak;
+			LineBreakAfter = true;
+			LineBreakLength = lineBreakLength;
+			_text = String.Empty;
+		}
+
+		/// <summary>
+		/// Creates a segment for an embedded inline object, which contributes no glyphs but occupies
+		/// <paramref name="metrics"/>.Width in the line.
+		/// </summary>
+		public Segment(InlineUIContainer container, FlowDirection direction, ObjectRun objectRun, ObjectRunMetrics metrics)
+		{
+			Inline = container;
+			Direction = direction;
+			ObjectRun = objectRun;
+			ObjectMetrics = metrics;
+			_text = String.Empty;
+		}
+
+		public FontDetails? FallbackFont => _fallbackFont;
+
+		/// <remarks>
+		/// This is the only form of impurity in this class. Unfortunately, we can't
+		/// calculate the width of the tab ahead of time.
+		/// </remarks>
+		public void AdjustTabWidth(float xOffset)
+		{
+			Debug.Assert(IsTab);
+			_glyphs![0] = _glyphs[0] with { AdvanceX = TabStopWidth - xOffset % TabStopWidth };
+		}
+	}
+}

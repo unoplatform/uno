@@ -25,9 +25,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.UIElement;
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
-using PointerUpdateKind = Windows.UI.Input.PointerUpdateKind;
+using PointerUpdateKind = Microsoft.UI.Input.PointerUpdateKind;
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Composition;
 
@@ -35,13 +35,6 @@ namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager
 {
-	partial void ConstructPointerManager_Managed()
-	{
-		// Injector supports only pointers for now, so configure only in by managed pointer
-		// (should be moved to the InputManager ctor once the injector supports other input types)
-		InputInjector.SetTargetForCurrentThread(this);
-	}
-
 	partial void InitializePointers_Managed(object host)
 		=> Pointers.Init(host);
 
@@ -346,7 +339,8 @@ internal partial class InputManager
 				{
 					foreach (var tracker in vis.Trackers)
 					{
-						tracker.ReceivePointerWheel(args.CurrentPoint.Properties.MouseWheelDelta / global::Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, args.CurrentPoint.Properties.IsHorizontalMouseWheel);
+						// Not an integer division: touchpads report deltas finer than one detent.
+						tracker.ReceivePointerWheel((double)args.CurrentPoint.Properties.MouseWheelDelta / global::Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, args.CurrentPoint.Properties.IsHorizontalMouseWheel);
 					}
 
 					return;
@@ -499,7 +493,7 @@ internal partial class InputManager
 			}
 
 			var overStaleBranch = default(VisualTreeHelper.Branch?);
-			var isOutOfWindow = args.CurrentPoint.Pointer.Type is PointerDeviceType.Touch
+			var isOutOfWindow = (PointerDeviceType)args.CurrentPoint.Pointer.Type is PointerDeviceType.Touch
 				? !HitTest(args, out var originalSource) // No need to find the stale branch for touch as we will flush the over state on the whole tree
 				: !HitTest(args, _isOver, out originalSource, out overStaleBranch);
 			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;

@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	[DebuggerDisplay("{DebugDisplay,nq}")]
 	[ContentProperty(Name = nameof(Height))]
-	public partial class RowDefinition : DefinitionBase, DependencyObject
+	public partial class RowDefinition : DependencyObject, DefinitionBase
 	{
 		public RowDefinition()
 		{
@@ -18,8 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		// This method is called from the generated IDependencyObjectInternal.OnPropertyChanged2 method
-		internal void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			InvalidateDefinition();
 		}
@@ -38,11 +37,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
-
-		public static implicit operator RowDefinition(string value)
-		{
-			return new RowDefinition { Height = GridLength.ParseGridLength(value).First() };
-		}
 
 		[GeneratedDependencyProperty(DefaultValue = 0d, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty MinHeightProperty { get; } = CreateMinHeightProperty();

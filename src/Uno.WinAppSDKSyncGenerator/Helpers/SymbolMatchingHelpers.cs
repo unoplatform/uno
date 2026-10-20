@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
@@ -9,11 +9,6 @@ internal static class SymbolMatchingHelpers
 {
 	public static bool AreMatching(ISymbol uapSymbol, ISymbol unoSymbol)
 	{
-		if (ShouldSkipSymbol(uapSymbol))
-		{
-			return true;
-		}
-
 		if (uapSymbol is IEventSymbol uapEvent)
 		{
 			var result = unoSymbol is IEventSymbol unoEvent && AreEventsMatching(uapEvent, unoEvent);
@@ -61,50 +56,6 @@ internal static class SymbolMatchingHelpers
 		}
 	}
 
-	private static bool ShouldSkipSymbol(ISymbol uapSymbol)
-	{
-		if (uapSymbol.Name == "TimeSpan" && uapSymbol.ContainingSymbol.Name == "Duration")
-		{
-			// field vs property difference between Uno and WinUI.
-			return true;
-		}
-
-		if (uapSymbol.Name is "Left" or "Top" or "Right" or "Bottom" && uapSymbol.ContainingSymbol.Name == "Thickness")
-		{
-			// field vs property difference between Uno and WinUI.
-			return true;
-		}
-
-		if (uapSymbol.Name is "Value" or "GridUnitType" && uapSymbol.ContainingSymbol.Name == "GridLength")
-		{
-			// field vs property difference between Uno and WinUI.
-			return true;
-		}
-
-		if (uapSymbol.Name is "TopLeft" or "TopRight" or "BottomRight" or "BottomLeft" && uapSymbol.ContainingSymbol.Name == "CornerRadius")
-		{
-			// field vs property difference between Uno and WinUI.
-			return true;
-		}
-
-		if (uapSymbol.ContainingSymbol?.Name is
-			"ColorKeyFrameCollection" or
-			"Matrix" or
-			"KeyTime" or
-			"PointCollection" or
-			"RepeatBehavior" or
-			"Matrix3D" or
-			"InlineCollection" or
-			"GridLength" or
-			"GeneratorPosition" or
-			"ToggleSwitch")
-		{
-			return true;
-		}
-
-		return false;
-	}
-
 	private static bool AreMatchingCommon(ISymbol uapSymbol, ISymbol unoSymbol)
 	{
 		if (unoSymbol.Kind == SymbolKind.ErrorType)
@@ -141,19 +92,21 @@ internal static class SymbolMatchingHelpers
 			// The divergence here shouldn't be problematic/noticeable.
 			return true;
 		}
-		// Skipping accessibility check for now. It causes two issues:
-		// 1. For some reason, Roslyn is returning private accessibility for some public properties (Specifically, for some interface implementations).
-		// 2. For types declared without explicit accessibility, it's going to be considered internal (however, the generated file later will have the correct accessibility)
-		var result = /*uapSymbol.DeclaredAccessibility == unoSymbol.DeclaredAccessibility &&*/
+		// Type accessibility is left to the compiler: it rejects a hand-written partial that conflicts with the generated one.
+		var result = (uapSymbol is INamedTypeSymbol || uapSymbol.DeclaredAccessibility == GetExternalAccessibility(unoSymbol)) &&
 			uapSymbol.IsAbstract == unoSymbol.IsAbstract &&
 			uapSymbol.IsOverride == unoSymbol.IsOverride &&
 			StripGlobal(uapSymbol.Name) == StripGlobal(unoSymbol.Name) &&
-			// Temporary skip named type: Until we match seal-ness and static-ness with UWP.
+			// Temporary skip named type: Until we match seal-ness with WinUI.
 			(uapSymbol.IsSealed == unoSymbol.IsSealed || uapSymbol.Kind == SymbolKind.NamedType) &&
 			(uapSymbol.IsStatic == unoSymbol.IsStatic) &&
 			uapSymbol.IsVirtual == unoSymbol.IsVirtual;
 		return result;
 	}
+
+	// Uno uses "protected internal" so framework code can reach protected members; outside the assembly it is "protected".
+	private static Accessibility GetExternalAccessibility(ISymbol symbol)
+		=> symbol.DeclaredAccessibility is Accessibility.ProtectedOrInternal ? Accessibility.Protected : symbol.DeclaredAccessibility;
 
 	private static string StripGlobal(string s)
 	{
@@ -167,12 +120,6 @@ internal static class SymbolMatchingHelpers
 
 	private static bool AreEventsMatching(IEventSymbol uapEvent, IEventSymbol unoEvent)
 	{
-		if (uapEvent.ContainingType.Name == "Window")
-		{
-			// TODO: Match API with WinUI.
-			return true;
-		}
-
 		var result = AreMatchingCommon(uapEvent, unoEvent) && AreMatching(uapEvent.Type, unoEvent.Type);
 		return result;
 	}
@@ -187,31 +134,15 @@ internal static class SymbolMatchingHelpers
 
 	private static bool ArePropertiesMatching(IPropertySymbol uapProperty, IPropertySymbol unoProperty)
 	{
-		if (uapProperty.Name == "WindowActivationState" && uapProperty.ContainingType.Name == "WindowActivatedEventArgs")
-		{
-			// TODO: Match API with WinUI.
-			return true;
-		}
-
-		if (uapProperty.Name == "Name" && uapProperty.ContainingType.Name == "FrameworkElement")
-		{
-			// TODO: Name shouldn't be virtual.
-			return true;
-		}
-
 		if (!AreMatchingCommon(uapProperty, unoProperty))
 		{
 			return false;
 		}
-		// TODO:
-		//if (uapProperty.IsReadOnly != unoProperty.IsReadOnly)
-		//{
-		//	return false;
-		//}
-		//if (uapProperty.IsWriteOnly != unoProperty.IsWriteOnly)
-		//{
-		//	return false;
-		//}
+		if (IsPubliclyAccessible(uapProperty.GetMethod) != IsPubliclyAccessible(unoProperty.GetMethod) ||
+			IsPubliclyAccessible(uapProperty.SetMethod) != IsPubliclyAccessible(unoProperty.SetMethod))
+		{
+			return false;
+		}
 		if (uapProperty.IsIndexer != unoProperty.IsIndexer)
 		{
 			return false;
@@ -221,21 +152,16 @@ internal static class SymbolMatchingHelpers
 			return false;
 		}
 
-		// Property type of ContentTemplateRoot is diverging from UWP.
-		// In Uno we use the native view for each platform Android.Views.View, UIKit.UIView, AppKit.NSView
-		if (!AreMatching(uapProperty.Type, unoProperty.Type) && uapProperty.Name != "ContentTemplateRoot" &&
-			// object vs UIElement
-			uapProperty.Name != "Content" &&
-			// IEasingFunction vs EasingFunctionBase
-			uapProperty.Name != "EasingFunction" &&
-			// string vs object
-			uapProperty.Name != "ElementName")
+		if (!AreMatching(uapProperty.Type, unoProperty.Type))
 		{
 			return false;
 		}
 
 		return true;
 	}
+
+	private static bool IsPubliclyAccessible(IMethodSymbol accessor)
+		=> accessor?.DeclaredAccessibility is Accessibility.Public or Accessibility.Protected or Accessibility.ProtectedOrInternal;
 
 	private static bool AreMethodsMatching(IMethodSymbol uapMethod, IMethodSymbol unoMethod)
 	{
@@ -249,11 +175,6 @@ internal static class SymbolMatchingHelpers
 		}
 
 		if (uapMethod.Name == "ToString" && uapMethod.Parameters.IsEmpty)
-		{
-			return true;
-		}
-
-		if (uapMethod.Name is "LoadContent" or "Measure" or "Arrange")
 		{
 			return true;
 		}
@@ -321,61 +242,8 @@ internal static class SymbolMatchingHelpers
 
 	private static bool AreParametersMatching(IParameterSymbol uapParameters, IParameterSymbol unoParameters) =>
 		uapParameters.IsOptional == unoParameters.IsOptional &&
-		(uapParameters.Name == unoParameters.Name || IgnoreParameterName(uapParameters)) &&
+		uapParameters.Name == unoParameters.Name &&
 		uapParameters.IsParams == unoParameters.IsParams &&
-		(uapParameters.RefKind == unoParameters.RefKind || IgnoreRefKind(uapParameters)) &&
+		uapParameters.RefKind == unoParameters.RefKind &&
 		AreMatching(uapParameters.Type, unoParameters.Type);
-
-	private static bool IgnoreRefKind(IParameterSymbol uapParameter)
-	{
-		if (uapParameter.ContainingSymbol.Name == "Equals" && uapParameter.ContainingType.Name == "GuidHelper")
-		{
-			// GuidHelpers.Equals uses "in" RefKind in WinUI, while it uses "ref" RefKind in UWP.
-			// In Uno, we use "ref" in both flavors.
-			return true;
-		}
-
-		return false;
-	}
-
-	private static bool IgnoreParameterName(IParameterSymbol uapParameter)
-	{
-		var name = uapParameter.Name;
-		if (name.StartsWith('_'))
-		{
-			// The '_' check is to ignore parameter name differences for badly named WinUI parameters.
-			// For example, FontWeight constructor parameter in WinUI is called "_Weight", while we name it "weight"
-			// Our naming makes more sense, and we want to avoid this breaking change for now.
-			// We can revisit in the future if we want to match WinUI naming.
-			return true;
-		}
-		else if (name == "windowsruntimeStream")
-		{
-			// In Uno, we name it windowsRuntimeStream.
-			// Skip for now to avoid breaking changes.
-			return true;
-		}
-		else if (uapParameter.ContainingSymbol.Name == "Equals")
-		{
-			// Some object.Equals overrides in WinUI use parameter name as "o" while uno uses "obj".
-			// There is also CornerRadius.Equals where we name the parameter as "other" while WinUI name it "cornerRadius"
-			// Also, Duration.Equals(Duration,Duration) in Uno names the parameters as "first"/"second" while WinUI name it as "t1"/"t2"
-			// Skip for now to avoid breaking changes.
-			return true;
-		}
-		else if (uapParameter.ContainingSymbol.Name == "Compare" && uapParameter.ContainingType.Name == "Duration")
-		{
-			// Duration.Compare(Duration,Duration) in Uno names the parameters as "first"/"second" while WinUI name it as "t1"/"t2"
-			// Skip for now to avoid breaking changes.
-			return true;
-		}
-		else if (name == "location" && uapParameter.ContainingType.Name == "Rect")
-		{
-			// Rect(Point,Size) constructor names the Point parameter as location in WinUI while we name it point in Uno.
-			// Skip for now to avoid breaking changes.
-			return true;
-		}
-
-		return false;
-	}
 }

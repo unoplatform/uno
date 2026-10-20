@@ -1,5 +1,4 @@
-﻿#if !__NETSTD_REFERENCE__
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Controls;
@@ -20,6 +19,11 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal bool ShouldInterceptInvalidate { get; set; }
 
+		// Exact MeasureCore/ArrangeCore execution counts for the UNO_LOG_FRAME_PHASES itemization; read and
+		// reset by CompositionTarget's per-window print (UI-thread only, so plain increments).
+		internal static int LayoutMeasureCoreCount;
+		internal static int LayoutArrangeCoreCount;
+
 		// In WinUI, this is in LayoutManager. For Uno, we make it static in FE for now.
 		private protected static bool IsInNonClippingTree { get; set; }
 
@@ -37,7 +41,7 @@ namespace Microsoft.UI.Xaml
 
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 
-			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && !IsMeasureDirtyPathDisabled)
+			if (!IsMeasureDirtyPathDisabled)
 			{
 				InvalidateParentMeasureDirtyPath();
 			}
@@ -104,7 +108,7 @@ namespace Microsoft.UI.Xaml
 
 			SetLayoutFlags(LayoutFlag.ArrangeDirty);
 
-			if (FeatureConfiguration.UIElement.UseInvalidateArrangePath && !IsArrangeDirtyPathDisabled)
+			if (!IsArrangeDirtyPathDisabled)
 			{
 				InvalidateParentArrangeDirtyPath();
 			}
@@ -218,7 +222,6 @@ namespace Microsoft.UI.Xaml
 				isFirstMeasure
 				|| (availableSize != m_previousAvailableSize)
 				|| IsMeasureDirty
-				|| !FeatureConfiguration.UIElement.UseInvalidateMeasurePath // dirty_path disabled globally
 				|| IsMeasureDirtyPathDisabled;
 
 			var isMeasureDirtyPath = IsMeasureDirtyPath;
@@ -267,6 +270,7 @@ namespace Microsoft.UI.Xaml
 							return;
 						}
 
+						LayoutMeasureCoreCount++;
 						SetLayoutFlags(LayoutFlag.MeasuringSelf);
 						MeasureCoreClearingMeasuringSelf(availableSize);
 						InvalidateArrange();
@@ -442,7 +446,12 @@ namespace Microsoft.UI.Xaml
 					// We must reset the flag **BEFORE** doing the actual arrange, so the elements are able to re-invalidate themselves
 					ClearLayoutFlags(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
 
+					LayoutArrangeCoreCount++;
 					ArrangeCore(finalRect);
+
+					// WinUI calls InvalidateViewport() here (CUIElement::ArrangeInternal) and walks it after layout.
+					// Uno propagates eagerly, so it must run after ArrangeCore has set the new layout slot.
+					OnViewportUpdated();
 
 					SetLayoutFlags(LayoutFlag.FirstArrangeDone);
 
@@ -489,4 +498,3 @@ namespace Microsoft.UI.Xaml
 		}
 	}
 }
-#endif

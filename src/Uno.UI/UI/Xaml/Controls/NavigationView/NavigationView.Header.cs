@@ -213,18 +213,4 @@ public partial class NavigationView
 	private bool m_isLeftPaneTitleEmpty;
 
 	private double m_openPaneLength = 320.0;
-
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-	#region Uno specific
-
-	// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
-	// so items are prepared early via the repeater UnoBeforeElementPrepared event tracked by these revokers.
-	private readonly SerialDisposable m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker = new();
-	private readonly SerialDisposable m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker = new();
-	private readonly SerialDisposable m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker = new();
-	private readonly SerialDisposable m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker = new();
-	private readonly SerialDisposable m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker = new();
-
-	#endregion
-#endif
 }

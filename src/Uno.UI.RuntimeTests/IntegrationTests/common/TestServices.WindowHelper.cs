@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Diagnostics;
+using Uno.Foundation.Logging;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -22,8 +23,6 @@ using Uno.UI.Xaml.Input;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
-using UIKit;
 #else
 using Uno.UI;
 #endif
@@ -50,9 +49,9 @@ namespace Private.Infrastructure
 
 #if !HAS_UNO
 					// Inject the current test window in the input injection services to avoid a
-					// dependency on TestServices in the Uno.UI.Toolkit project
-					Uno.UI.Toolkit.DevTools.Input.Finger.TestServices_WindowHelper_CurrentTestWindow = value;
-					Uno.UI.Toolkit.DevTools.Input.Mouse.TestServices_WindowHelper_CurrentTestWindow = value;
+					// dependency on TestServices in the Uno.UI.Extras project
+					Uno.UI.DevTools.Input.Finger.TestServices_WindowHelper_CurrentTestWindow = value;
+					Uno.UI.DevTools.Input.Mouse.TestServices_WindowHelper_CurrentTestWindow = value;
 #endif
 				}
 			}
@@ -153,10 +152,38 @@ namespace Private.Infrastructure
 				return spRootFrameAsCC.Content as Page;
 			}
 
+			/// <summary>
+			/// Longest a pair of idle round-trips may take before it is worth reporting. Reaching the
+			/// idle queue should cost microseconds; anything near a second means the dispatcher is not
+			/// servicing Idle work, which is invisible today because WaitFor only re-checks its
+			/// deadline between awaits and so never times out on it.
+			/// </summary>
+			private const int SlowIdleMs = 500;
+
+			private static long _lastSlowIdleLogTimestamp;
+
 			internal static async Task WaitForIdle()
 			{
+				var start = Stopwatch.GetTimestamp();
+
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+
+				var elapsedMs = (long)Stopwatch.GetElapsedTime(start).TotalMilliseconds;
+				if (elapsedMs < SlowIdleMs)
+				{
+					return;
+				}
+
+				// Throttled: a stalled run would otherwise emit this on every wait.
+				var last = _lastSlowIdleLogTimestamp;
+				if (last != 0 && Stopwatch.GetElapsedTime(last).TotalMilliseconds < 5000)
+				{
+					return;
+				}
+
+				_lastSlowIdleLogTimestamp = Stopwatch.GetTimestamp();
+				typeof(WindowHelper).Log().Warn($"WaitForIdle took {elapsedMs}ms — the Idle queue is not being serviced promptly.");
 			}
 
 			/// <summary>
@@ -198,9 +225,6 @@ namespace Private.Infrastructure
 						message: $"Timeout waiting on {element} to be loaded",
 						timeoutMS: timeoutMS);
 				}
-#if __WASM__   // Adjust for re-layout failures in When_Inline_Items_SelectedIndex, When_Observable_ItemsSource_And_Added, When_Presenter_Doesnt_Take_Up_All_Space
-				await Do();
-#else
 				var dispatcher = UnitTestDispatcherCompat.From(element);
 
 				if (dispatcher.HasThreadAccess)
@@ -226,7 +250,6 @@ namespace Private.Infrastructure
 
 					await cts.Task;
 				}
-#endif
 			}
 
 			internal static async Task WaitForRelayouted(FrameworkElement frameworkElement)
@@ -319,8 +342,10 @@ namespace Private.Infrastructure
 				}
 
 				var stopwatch = Stopwatch.StartNew();
+				var iterations = 0;
 				while (stopwatch.ElapsedMilliseconds < timeoutMS)
 				{
+					iterations++;
 					await WaitForIdle();
 					if (condition())
 					{
@@ -329,6 +354,12 @@ namespace Private.Infrastructure
 				}
 
 				message ??= $"{callerMemberName}():{lineNumber}";
+
+				// The runner retries a failed test twice without logging it, so a WaitFor that times out
+				// three times shows up only as a test that took ~3x its timeout and "passed". Name it.
+				typeof(WindowHelper).Log().Warn(
+					$"WaitFor timed out after {stopwatch.ElapsedMilliseconds}ms and {iterations} idle " +
+					$"round-trip(s) at {callerMemberName}():{lineNumber} — {message}");
 
 				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
 			}

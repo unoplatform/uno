@@ -24,11 +24,6 @@ namespace Uno
 			Disabled = 0,
 
 			/// <summary>
-			/// [ANDROID ONLY] Use a dedicated background thread to render the views.
-			/// </summary>
-			UseCompositorThread = 0x1,
-
-			/// <summary>
 			/// [SKIA ONLY] Use antialiasing for drawing brushes.
 			/// </summary>
 			UseBrushAntialiasing = 0x2,
@@ -36,19 +31,7 @@ namespace Uno
 			/// <summary>
 			/// Enables all composition capabilities for the current platform.
 			/// </summary>
-			Enabled = UseCompositorThread | UseBrushAntialiasing,
-		}
-
-		internal static bool UseCompositorThread
-		{
-			get
-			{
-				var value = Configuration.HasFlag(Options.UseCompositorThread);
-#if __ANDROID__
-				value &= ((int)Android.OS.Build.VERSION.SdkInt) >= 29; // Android 10, for RenderNode which is required for all composition operations!
-#endif
-				return value;
-			}
+			Enabled = UseBrushAntialiasing,
 		}
 
 		internal static bool UseBrushAntialiasing => (Configuration & Options.UseBrushAntialiasing) != 0;

@@ -35,6 +35,11 @@ public sealed class SolutionUpdater : ISolutionUpdater
 		// unrealized text means the document was never read into this snapshot, so the batch
 		// cannot be a re-observation of it. Skipped entries are surfaced through
 		// SolutionUpdateResult.UpToDateChanges.
+		// Whether the pass actually mutated the document set. A requested add/remove does not always
+		// mutate: an add is skipped when the document is already in the project (a re-observed creation)
+		// or when it targets no project in this solution, and an empty remove list removes nothing.
+		var appliedAddOrRemove = false;
+
 		var upToDateDocuments = ImmutableArray.CreateBuilder<Document>();
 		foreach (var document in changeSet.EditedDocuments)
 		{
@@ -84,6 +89,7 @@ public sealed class SolutionUpdater : ISolutionUpdater
 					continue;
 				}
 				solution = solution.AddDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
+				appliedAddOrRemove = true;
 			}
 			if (!found)
 			{
@@ -107,6 +113,7 @@ public sealed class SolutionUpdater : ISolutionUpdater
 					continue;
 				}
 				solution = solution.AddAdditionalDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
+				appliedAddOrRemove = true;
 			}
 			if (!found)
 			{
@@ -114,14 +121,25 @@ public sealed class SolutionUpdater : ISolutionUpdater
 			}
 		}
 
-		solution = solution
-			.RemoveDocuments([.. changeSet.RemovedDocuments.Select(r => r.Id)])
-			.RemoveAdditionalDocuments([.. changeSet.RemovedAdditionalDocuments.Select(r => r.Id)]);
+		if (!changeSet.RemovedDocuments.IsEmpty || !changeSet.RemovedAdditionalDocuments.IsEmpty)
+		{
+			solution = solution
+				.RemoveDocuments([.. changeSet.RemovedDocuments.Select(r => r.Id)])
+				.RemoveAdditionalDocuments([.. changeSet.RemovedAdditionalDocuments.Select(r => r.Id)]);
+			appliedAddOrRemove = true;
+		}
 
 		// If a document has been added, we make sure to refresh the configuration of the analyzers.
 		// This is especially required for new XAML files to have the 'build_metadata.AdditionalFiles.SourceItemGroup = Page' updated
 		// from the file ./obj/Debug/{tfm}/{projectName}.GeneratedMSBuildEditorConfig.editorconfig
-		if (changeSet.HasAddOrRemove)
+		// Gated on an *applied* mutation, and de-duplicated by content for the same reason the document
+		// texts above are (spec 055 R1): rewriting byte-identical config text still forks the snapshot,
+		// which defeats the caller's reference-equality NoChanges short-circuit and buys an
+		// EmitSolutionUpdateAsync roundtrip with nothing to emit. Such an empty intermediate update is
+		// not merely wasted work — it corrupts the EnC session's deleted-member bookkeeping and makes a
+		// LATER edit fail (dotnet/roslyn#79898), which is how a re-observed add turns into a dead
+		// hot-reload session.
+		if (appliedAddOrRemove)
 		{
 			var analyzersConfigs = solution
 				.Projects
@@ -129,7 +147,13 @@ public sealed class SolutionUpdater : ISolutionUpdater
 				.Where(config => config.FilePath is not null);
 			foreach (var analyzerConfig in analyzersConfigs)
 			{
-				solution = solution.WithAnalyzerConfigDocumentText(analyzerConfig.Id, await GetSourceTextAsync(analyzerConfig.FilePath!, ct).ConfigureAwait(false));
+				var text = await GetSourceTextAsync(analyzerConfig.FilePath!, ct).ConfigureAwait(false);
+				if (analyzerConfig.TryGetText(out var current) && current.ContentEquals(text))
+				{
+					continue;
+				}
+
+				solution = solution.WithAnalyzerConfigDocumentText(analyzerConfig.Id, text);
 			}
 		}
 

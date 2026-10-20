@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct RepeatBehavior
+	public partial struct RepeatBehavior : global::System.IFormattable
 	{
 		// Skipping already declared property Forever
 		// Skipping already declared property HasCount
@@ -31,5 +31,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.ToString()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.ToString(System.IFormatProvider)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.System.IFormattable.ToString(string, System.IFormatProvider)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.GetHashCode()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.operator ==(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.operator !=(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
+		// Processing: System.IFormattable
 	}
 }

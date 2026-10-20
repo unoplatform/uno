@@ -6,6 +6,16 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.Development.UpgradeUnoNuget).
 
+## Uno Platform 7.0
+
+Uno Platform 7.0 is the Skia-unification major release: Skia is the rendering engine on every
+target, the native Android, iOS/UIKit and WebAssembly DOM renderers are retired, and the public
+API surface is realigned with WinUI. It carries the breaking changes deferred since 2022, so
+plan for a recompile of every Uno-dependent library rather than a drop-in package bump.
+
+**[Read the full "Migrating to Uno Platform 7.0" guide](xref:Uno.Development.MigratingToUno7)**
+for the removed APIs, type-hierarchy changes, behavioral changes and the migration checklist.
+
 ## Uno Platform 6.6
 
 Uno Platform 6.6 contains a breaking change related to the removal of legacy Windows Phone namespaces, along with a few platform behavior changes to be aware of when upgrading.
@@ -217,7 +227,7 @@ Update your [Uno Platform extension](https://aka.platform.uno/vs-extension-marke
 
 ### Single Project updates
 
-Similar to version 5.2, using the new project template is entirely optional and previous project structures are fully supported.
+Similar to version 5.2, using the new project template was optional in this release and previous project structures were fully supported. As of Uno Platform 7.0 the `Uno.Sdk` is required — see [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 
 If you want to migrate to the new Single Project, you can follow the [Migrating to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
 
@@ -247,7 +257,7 @@ If your project was created using an Uno Platform 5.2 or earlier template, you c
 
 Uno Platform 5.2 contains a new project template that supports all target frameworks into a single project, based on the Uno.Sdk that was introduced in Uno Platform 5.1.
 
-Using this new project template is entirely optional and previous project structures are fully supported.
+Using this new project template was optional in this release and previous project structures were fully supported. As of Uno Platform 7.0 the `Uno.Sdk` is required — see [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 
 If you want to migrate to the new Single Project, you can follow the [Migrating to 5.2 Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
 
@@ -255,7 +265,7 @@ If you want to migrate to the new Single Project, you can follow the [Migrating 
 
 Uno Platform 5.1 does not contain breaking changes that require attention when upgrading.
 
-This version however introduces the MSBuild Uno.SDK, which provides support for smaller project files and better Visual Studio integration. Using the Uno.Sdk is entirely optional and previous project templates are fully supported. If you want to migrate to Uno.Sdk based projects, you can follow the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
+This version however introduces the MSBuild `Uno.Sdk`, which provides support for smaller project files and better Visual Studio integration. Using the Uno.Sdk was optional in this release and previous project templates were fully supported; as of Uno Platform 7.0 it is required — see [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7). If you want to migrate to Uno.Sdk based projects, you can follow the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
 
 ## Uno Platform 5.0
 

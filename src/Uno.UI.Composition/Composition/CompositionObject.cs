@@ -19,11 +19,13 @@ namespace Microsoft.UI.Composition
 	{
 		private CompositionPropertySet? _properties;
 		private Dictionary<string, CompositionAnimation>? _animations;
+		private bool _isFinalizable = true;
 
 		internal CompositionObject()
 		{
 			ApiInformation.TryRaiseNotImplemented(GetType().FullName!, "The compositor constructor is not available, as the type is not implemented");
 			Compositor = new Compositor();
+			SetFinalizable(false);
 		}
 
 		~CompositionObject()
@@ -34,6 +36,7 @@ namespace Microsoft.UI.Composition
 		internal CompositionObject(Compositor compositor)
 		{
 			Compositor = compositor;
+			SetFinalizable(false);
 		}
 
 		public CompositionPropertySet Properties => _properties ??= GetProperties();
@@ -66,12 +69,10 @@ namespace Microsoft.UI.Composition
 
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
-#if __APPLE_UIKIT__
-			if (StartAnimationCore(propertyName, animation))
-			{
-				return;
-			}
-#endif
+			// Snapshot the animation for this target (WinUI semantics). ExpressionAnimation clones so a
+			// reusable instance reconfigured per target (LottieGen's _reusableExpressionAnimation) stays
+			// bound to the reference parameters it had when started here; other animations share.
+			animation = animation.CloneAnimation();
 
 			ReadOnlySpan<char> firstPropertyName;
 			ReadOnlySpan<char> subPropertyName;
@@ -94,6 +95,7 @@ namespace Microsoft.UI.Composition
 
 			_animations ??= new();
 			_animations[propertyName] = animation;
+			SetFinalizable(true);
 			animation.AnimationFrame += ReEvaluateAnimation;
 			var animationValue = animation.Start(firstPropertyName, subPropertyName, this);
 
@@ -172,6 +174,7 @@ namespace Microsoft.UI.Composition
 					}
 
 					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate());
+					animation.OnEvaluatedValueApplied();
 				}
 			}
 			finally
@@ -241,6 +244,11 @@ namespace Microsoft.UI.Composition
 				animation.AnimationFrame -= ReEvaluateAnimation;
 				animation.Stop();
 				_animations.Remove(propertyName);
+
+				if (_animations.Count == 0)
+				{
+					SetFinalizable(false);
+				}
 			}
 		}
 
@@ -256,6 +264,8 @@ namespace Microsoft.UI.Composition
 
 				_animations.Clear();
 			}
+
+			SetFinalizable(false);
 		}
 
 		public AnimationController? TryGetAnimationController(string propertyName)
@@ -272,23 +282,44 @@ namespace Microsoft.UI.Composition
 		// AnimationController only supports KeyFrameAnimations
 		internal void PauseAnimation(KeyFrameAnimation animation)
 		{
+			if (animation.IsPaused)
+			{
+				return;
+			}
+
 			animation.AnimationFrame -= ReEvaluateAnimation;
 			animation.Pause();
+#if __SKIA__
+			Compositor.UnregisterAnimation(animation, this);
+#endif
 		}
 
 		internal void ResumeAnimation(KeyFrameAnimation animation)
 		{
+			if (!animation.IsPaused)
+			{
+				return;
+			}
+
 			animation.Resume();
-			// Subscribe exactly once: StartAnimation already subscribes ReEvaluateAnimation, so a
-			// Resume() on a running (never-paused) animation would otherwise double-subscribe and
-			// re-evaluate the property twice per frame. Removing first is a no-op when not subscribed.
-			animation.AnimationFrame -= ReEvaluateAnimation;
 			animation.AnimationFrame += ReEvaluateAnimation;
+#if __SKIA__
+			Compositor.RegisterAnimation(animation, this);
+#endif
 		}
 
 		internal void SeekAnimation(KeyFrameAnimation animation, float progress)
 		{
-			PauseAnimation(animation);
+			animation.Seek(progress);
+			ReEvaluateAnimation(animation, progress);
+		}
+
+		// Re-positions a running animation without pausing it, so clock-driven playback (e.g. reverse
+		// PlaybackRate) continues from the new position. Used for AnimationController.Progress on a
+		// controller that has NOT been explicitly paused.
+		internal void SeekAnimationProgress(KeyFrameAnimation animation, float progress)
+		{
+			animation.SeekTo(progress);
 			ReEvaluateAnimation(animation, progress);
 		}
 
@@ -306,6 +337,12 @@ namespace Microsoft.UI.Composition
 
 		private protected virtual void DisposeInternal()
 		{
+			if (_animations is not { Count: > 0 })
+			{
+				// Nothing to stop, so don't hand the UI thread a no-op that keeps this object alive until it runs.
+				return;
+			}
+
 			if (Dispatching.DispatcherQueue.Main.HasThreadAccess)
 			{
 				StopAllAnimations();
@@ -317,10 +354,32 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-#if __APPLE_UIKIT__
-		internal virtual bool StartAnimationCore(string propertyName, CompositionAnimation animation)
-			=> false;
-#endif
+		/// <summary>
+		/// Whether a subclass declares its own finalizer, which must not be suppressed along with the animation one.
+		/// </summary>
+		private protected virtual bool HasOwnFinalizer => false;
+
+		// The finalizer only has work to do while animations are attached. Suppressing it otherwise keeps
+		// dead visuals from being promoted and retained until the UI thread drains a no-op callback.
+		// Only toggle on a state change: re-registering an already registered object queues its finalizer twice.
+		private void SetFinalizable(bool value)
+		{
+			if (_isFinalizable == value || HasOwnFinalizer)
+			{
+				return;
+			}
+
+			_isFinalizable = value;
+
+			if (value)
+			{
+				GC.ReRegisterForFinalize(this);
+			}
+			else
+			{
+				GC.SuppressFinalize(this);
+			}
+		}
 
 		private protected bool SetProperty(ref bool field, bool value, [CallerMemberName] string? propertyName = null)
 		{

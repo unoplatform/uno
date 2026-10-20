@@ -2,7 +2,8 @@
 {
 	public partial class StateTrigger : StateTriggerBase
 	{
-		public bool IsActive
+		// Hides the internal DependencyObject.IsActive (live-tree state).
+		public new bool IsActive
 		{
 			get => (bool)GetValue(IsActiveProperty);
 			set => SetValue(IsActiveProperty, value);
@@ -13,7 +14,7 @@
 				"IsActive", typeof(bool),
 				typeof(StateTrigger),
 				new FrameworkPropertyMetadata(
-					defaultValue: default(bool),
+					defaultValue: global::Uno.UI.Helpers.Boxes.BoolBoxes.False,
 					propertyChangedCallback: (s, e) => (s as StateTrigger)?.OnIsActiveChanged(e)));
 
 		private void OnIsActiveChanged(DependencyPropertyChangedEventArgs e)

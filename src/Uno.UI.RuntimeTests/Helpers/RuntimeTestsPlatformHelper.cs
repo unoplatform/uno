@@ -52,11 +52,6 @@ internal static class RuntimeTestsPlatformHelper
 		return singlePlatform switch
 		{
 			RuntimeTestPlatforms.NativeWinUI => IsWinUI(),
-			RuntimeTestPlatforms.NativeWasm => IsNativeWasm(),
-			RuntimeTestPlatforms.NativeAndroid => IsNativeAndroid(),
-			RuntimeTestPlatforms.NativeIOS => IsNativeIOS(),
-			RuntimeTestPlatforms.NativeMacCatalyst => IsNativeMacCatalyst(),
-			RuntimeTestPlatforms.NativeTvOS => IsNativetvOS(),
 			RuntimeTestPlatforms.SkiaWin32 => IsSkia() && IsSkiaWin32(),
 			RuntimeTestPlatforms.SkiaX11 => IsSkia() && IsSkiaX11(),
 			RuntimeTestPlatforms.SkiaMacOS => IsSkia() && IsSkiaMacOS(),
@@ -65,7 +60,6 @@ internal static class RuntimeTestsPlatformHelper
 			RuntimeTestPlatforms.SkiaAndroid => IsSkia() && OperatingSystem.IsAndroid(),
 			RuntimeTestPlatforms.SkiaIOS => IsSkia() && OperatingSystem.IsIOS(),
 			RuntimeTestPlatforms.SkiaTvOS => IsSkia() && OperatingSystem.IsTvOS(),
-			RuntimeTestPlatforms.SkiaMacCatalyst => IsSkia() && OperatingSystem.IsMacCatalyst(),
 			RuntimeTestPlatforms.SkiaFrameBuffer => IsSkia() && IsSkiaFrameBuffer(),
 			_ => throw new ArgumentException(nameof(singlePlatform)),
 		};
@@ -93,19 +87,19 @@ internal static class RuntimeTestsPlatformHelper
 #endif
 
 	private static bool IsSkiaWin32()
-		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Win32");
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.Win32");
 
 	private static bool IsSkiaX11()
-		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.X11");
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.X11");
 
 	private static bool IsSkiaFrameBuffer()
-		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Linux.FrameBuffer");
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.Linux.FrameBuffer");
 
 	private static bool IsSkiaMacOS()
-		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.MacOS");
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.MacOS");
 
 	private static bool IsSkiaBrowser()
-		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.WebAssembly.Browser");
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.WebAssembly.Browser");
 
 	private static bool IsSkiaIslands()
 #if __SKIA__
@@ -113,49 +107,4 @@ internal static class RuntimeTestsPlatformHelper
 #else
 		=> false;
 #endif
-
-	private static bool IsNativeWasm()
-	{
-#if __WASM__
-		return true;
-#else
-		return false;
-#endif
-	}
-
-	private static bool IsNativeAndroid()
-	{
-#if __ANDROID__
-		return true;
-#else
-		return false;
-#endif
-	}
-
-	private static bool IsNativeIOS()
-	{
-#if __IOS__
-		return true;
-#else
-		return false;
-#endif
-	}
-
-	private static bool IsNativetvOS()
-	{
-#if __TVOS__
-		return true;
-#else
-		return false;
-#endif
-	}
-
-	private static bool IsNativeMacCatalyst()
-	{
-#if __MACCATALYST__
-		return true;
-#else
-		return false;
-#endif
-	}
 }

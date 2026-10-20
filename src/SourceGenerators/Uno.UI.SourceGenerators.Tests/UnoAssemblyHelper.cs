@@ -16,17 +16,16 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI",
 				"Uno.UI.dll",
 				[
-					"Uno.UI.Skia",
-					"Uno.UI.Reference",
+					"Uno.UI",
 				],
 				[TFMPrevious, TFMCurrent]
 			)),
 			.. LoadAssemblies(GetBinDirectory(
-				"Uno.UWP",
-				"Uno.dll",
+				"Uno.WinRT",
+				"Uno.WinRT.dll",
 				[
-					"Uno.Skia",
-					"Uno.Reference",
+					"Uno.WinRT.Generic",
+					"Uno.WinRT.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
 			)),
@@ -34,7 +33,7 @@ internal static partial class UnoAssemblyHelper
 				"Uno.Foundation",
 				"Uno.Foundation.dll",
 				[
-					"Uno.Foundation.Skia",
+					"Uno.Foundation.Generic",
 					"Uno.Foundation.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
@@ -43,8 +42,7 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI.Composition",
 				"Uno.UI.Composition.dll",
 				[
-					"Uno.UI.Composition.Skia",
-					"Uno.UI.Composition.Reference",
+					"Uno.UI.Composition",
 				],
 				[TFMPrevious, TFMCurrent]
 			)),
@@ -52,12 +50,28 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI.Dispatching",
 				"Uno.UI.Dispatching.dll",
 				[
-					"Uno.UI.Dispatching.Skia",
+					"Uno.UI.Dispatching.Generic",
 					"Uno.UI.Dispatching.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
 			)),
 		];
+
+	/// <summary>
+	/// Replacement for the Uno.UI.Toolkit assembly shipped by pre-7.0 Uno.WinUI packages, whose
+	/// types now live in the Uno.UI.* namespaces. Loaded only where that package assembly was
+	/// referenced, so tests that never saw the Toolkit keep their existing reference set.
+	/// </summary>
+	public static PortableExecutableReference[] LoadExtrasAssemblies() =>
+		LoadAssemblies(GetBinDirectory(
+			"Uno.UI.Extras",
+			"Uno.UI.Extras.dll",
+			[
+				"Uno.UI.Extras.Generic",
+				"Uno.UI.Extras.Reference",
+			],
+			[TFMPrevious, TFMCurrent]
+		));
 
 	public static PortableExecutableReference[] LoadAndroidAssemblies() =>
 		LoadAssemblies(GetBinDirectory(
@@ -121,6 +135,6 @@ partial class UnoAssemblyHelper
 #else
 		"Release";
 #endif
-	private const string TFMPrevious = "net9.0";
-	private const string TFMCurrent = "net10.0";
+	private const string TFMPrevious = "net10.0";
+	private const string TFMCurrent = "net11.0";
 }

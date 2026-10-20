@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using SkiaSharp;
+using System.Threading;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
 using Uno.UI.Dispatching;
@@ -24,11 +24,6 @@ public partial class Compositor
 	private int _frameNumber;
 #endif
 
-	static partial void Initialize()
-	{
-		UnoSkiaApi.Initialize();
-	}
-
 	/// <summary>
 	/// Whether the scene is rasterized on the CPU rather than by a GPU-backed surface.
 	/// Set by the active render backend once its renderer is selected; null until then.
@@ -39,7 +34,30 @@ public partial class Compositor
 
 	internal static bool SkipVisualTreePainting { get; set; }
 
-	internal bool IsAnimating => _runningAnimations.Count > 0;
+	// Frame drivers are motion too, so "wait until animations settle" must cover them. Most live on the
+	// CompositionTarget, which this assembly cannot name, so they are counted.
+	private int _frameDriverCount;
+
+	private CompositorFrameTickSource? _frameTicks;
+
+	/// <summary>The frames that tick drivers with no visual of their own, such as a free-standing InteractionTracker.</summary>
+	internal CompositorFrameTickSource FrameTicks => _frameTicks ??= new(this);
+
+	internal void AddFrameDriver() => Interlocked.Increment(ref _frameDriverCount);
+
+	internal void RemoveFrameDriver()
+	{
+		var count = Interlocked.Decrement(ref _frameDriverCount);
+		Debug.Assert(count >= 0, "A frame driver was removed more times than it was added.");
+	}
+
+	internal bool IsAnimating => _runningAnimations.Count > 0 || Volatile.Read(ref _frameDriverCount) > 0;
+
+	/// <summary>The timestamp of the frame being recorded, or null outside of a record.</summary>
+	internal long? FrameTimestampInTicks { get; set; }
+
+	/// <summary>The time animations evaluate against: the frame's while recording, the real clock otherwise.</summary>
+	internal long AnimationTimestampInTicks => FrameTimestampInTicks ?? TimestampInTicks;
 
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{
@@ -127,6 +145,26 @@ public partial class Compositor
 		}
 	}
 
+	/// <summary>
+	/// Stops the animations of a target whose host is gone. They only evaluate on that target's record, which
+	/// never comes again, so they would never complete and <see cref="IsAnimating"/> would report them forever.
+	/// </summary>
+	internal void StopAnimations(ICompositionTarget target)
+	{
+		if (!_runningTargets.ContainsKey(target))
+		{
+			return;
+		}
+
+		foreach (var (animation, animationTarget) in _runningAnimations.ToArray())
+		{
+			if (animationTarget == target)
+			{
+				animation.Stop();
+			}
+		}
+	}
+
 	internal void DeactivateBackgroundTransition(BorderVisual visual)
 	{
 		for (var current = _backgroundTransitions.First; current != null; current = current.Next)
@@ -196,15 +234,30 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, SKPath? damage = null)
+	// UNO_LOG_FRAME_PHASES=1 splits the record phase into animation-tick vs visual-walk time (benchmarking);
+	// pairs with the frame-level [frame-phases] line in CompositionTarget.
+	private static readonly bool _logRecordPhases =
+		Environment.GetEnvironmentVariable("UNO_LOG_FRAME_PHASES") is "1" or "true";
+	private static long _recAnimationTicks, _recWalkTicks;
+	private static int _recPhaseFrames;
+
+	internal void RenderRootVisual(Uno.UI.Composition.Drawing.IDrawingSession drawingSession, ContainerVisual rootVisual, DamageRegion? damage = null)
 	{
 		if (rootVisual is null)
 		{
 			throw new ArgumentNullException(nameof(rootVisual));
 		}
 
-		foreach (var animation in _runningAnimations.Keys.ToArray())
+		var target = rootVisual.CompositionTarget;
+		var recPhaseT0 = _logRecordPhases ? Stopwatch.GetTimestamp() : 0;
+		foreach (var (animation, animationTarget) in _runningAnimations.ToArray())
 		{
+			// The frame timestamp is this target's: another window's animations evaluate on their own record.
+			if (animationTarget != target)
+			{
+				continue;
+			}
+
 			try
 			{
 				animation.RaiseAnimationFrame();
@@ -224,11 +277,24 @@ public partial class Compositor
 #if PRINT_FRAME_TIMES
 		var start = Stopwatch.GetTimestamp();
 #endif
+		var recPhaseT1 = _logRecordPhases ? Stopwatch.GetTimestamp() : 0;
 		// Skip only the paint walk: animations above still tick and transitions/frame
 		// re-requests below still run, so the scene stays live without producing pixels.
 		if (!SkipVisualTreePainting)
 		{
-			rootVisual.RenderRootVisual(canvas, null, damage);
+			rootVisual.RenderRootVisual(drawingSession, null, damage);
+		}
+		if (_logRecordPhases)
+		{
+			var recPhaseT2 = Stopwatch.GetTimestamp();
+			_recAnimationTicks += recPhaseT1 - recPhaseT0;
+			_recWalkTicks += recPhaseT2 - recPhaseT1;
+			if (++_recPhaseFrames >= 60)
+			{
+				Console.WriteLine($"[record-phases] animations={_recAnimationTicks * 1000.0 / Stopwatch.Frequency / _recPhaseFrames:F1}ms walk={_recWalkTicks * 1000.0 / Stopwatch.Frequency / _recPhaseFrames:F1}ms (avg/frame, {_runningAnimations.Count} running animations)");
+				_recAnimationTicks = _recWalkTicks = 0;
+				_recPhaseFrames = 0;
+			}
 		}
 #if PRINT_FRAME_TIMES
 		var span = Stopwatch.GetElapsedTime(start);
@@ -249,16 +315,25 @@ public partial class Compositor
 			}
 		}
 
-		if (_runningAnimations.Count > 0 || transitionsCount > 0)
+		if ((target is not null && _runningTargets.ContainsKey(target)) || transitionsCount > 0)
 		{
-			rootVisual.CompositionTarget?.RequestNewFrame();
+			target?.RequestNewFrame();
 		}
 	}
 
-	partial void InvalidateRenderPartial(Visual visual)
+	partial void InvalidateRenderPartial(Visual visual, bool translationOnly)
 	{
 		visual.SetMatrixDirty(); // TODO: only invalidate matrix when specific properties are changed
-		visual.InvalidatePaint(); // TODO: only repaint when "dependent" properties are changed
+
+		// A translation keeps the recording valid: it is made in the visual's own space and replayed under the new
+		// matrix, and the paint walk damages both placements of a moved visual. SetMatrixDirty above already dropped
+		// the ancestor caches holding the old placement. Scale and rotation do not qualify: brushes and geometry are
+		// rasterized at the scale they are drawn under.
+		if (!translationOnly)
+		{
+			visual.InvalidatePaint(); // TODO: only repaint when "dependent" properties are changed
+		}
+
 		visual.CompositionTarget?.RequestNewFrame();
 	}
 }

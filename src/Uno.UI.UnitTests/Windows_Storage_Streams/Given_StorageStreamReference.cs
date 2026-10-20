@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Windows_Storage_Streams
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_StorageStreamReference
 	{
 		[TestMethod]

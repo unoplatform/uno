@@ -1,6 +1,11 @@
-﻿using System.Numerics;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ScrollPresenterPrimitives.idl, commit b8cfb8490
+
+using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -63,7 +68,7 @@ public partial class ScrollPresenter :
 	 FrameworkElement,
 	 IScrollAnchorProvider
 {
-	public new Brush Background
+	public Brush Background
 	{
 		get => (Brush)GetValue(BackgroundProperty);
 		set => SetValue(BackgroundProperty, value);
@@ -120,13 +125,13 @@ public partial class ScrollPresenter :
 	public ScrollingScrollMode ComputedHorizontalScrollMode
 	{
 		get => (ScrollingScrollMode)GetValue(ComputedHorizontalScrollModeProperty);
-		set => SetValue(ComputedHorizontalScrollModeProperty, value);
+		internal set => SetValue(ComputedHorizontalScrollModeProperty, value);
 	}
 
 	public ScrollingScrollMode ComputedVerticalScrollMode
 	{
 		get => (ScrollingScrollMode)GetValue(ComputedVerticalScrollModeProperty);
-		set => SetValue(ComputedVerticalScrollModeProperty, value);
+		internal set => SetValue(ComputedVerticalScrollModeProperty, value);
 	}
 
 	public ScrollingChainMode ZoomChainMode
@@ -144,13 +149,13 @@ public partial class ScrollPresenter :
 	public double MinZoomFactor
 	{
 		get => (double)GetValue(MinZoomFactorProperty);
-		set => SetValue(MinZoomFactorProperty, value);
+		set => SetValue(MinZoomFactorProperty, Boxer.Box(value));
 	}
 
 	public double MaxZoomFactor
 	{
 		get => (double)GetValue(MaxZoomFactorProperty);
-		set => SetValue(MaxZoomFactorProperty, value);
+		set => SetValue(MaxZoomFactorProperty, Boxer.Box(value));
 	}
 
 
@@ -164,13 +169,13 @@ public partial class ScrollPresenter :
 	public double HorizontalAnchorRatio
 	{
 		get => (double)GetValue(HorizontalAnchorRatioProperty);
-		set => SetValue(HorizontalAnchorRatioProperty, value);
+		set => SetValue(HorizontalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	public double VerticalAnchorRatio
 	{
 		get => (double)GetValue(VerticalAnchorRatioProperty);
-		set => SetValue(VerticalAnchorRatioProperty, value);
+		set => SetValue(VerticalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	//     Windows.Foundation.Collections.IVector<ScrollSnapPointBase> HorizontalSnapPoints { get; }
@@ -186,8 +191,10 @@ public partial class ScrollPresenter :
 	public event TypedEventHandler<ScrollPresenter, ScrollingZoomCompletedEventArgs> ZoomCompleted;
 	public event TypedEventHandler<ScrollPresenter, ScrollingBringingIntoViewEventArgs> BringingIntoView;
 	public event TypedEventHandler<ScrollPresenter, ScrollingAnchorRequestedEventArgs> AnchorRequested;
+	public event TypedEventHandler<ScrollPresenter, ScrollingScrollStartingEventArgs> ScrollStarting;
+	public event TypedEventHandler<ScrollPresenter, ScrollingZoomStartingEventArgs> ZoomStarting;
 
-	public new static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
+	public static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
 		nameof(Background),
 		typeof(Brush),
 		typeof(ScrollPresenter),
@@ -287,13 +294,13 @@ public partial class ScrollPresenter :
 		nameof(HorizontalAnchorRatio),
 		typeof(double),
 		typeof(ScrollPresenter),
-		new FrameworkPropertyMetadata(defaultValue: s_defaultAnchorRatio, propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnHorizontalAnchorRatioPropertyChanged(s, e)));
+		new FrameworkPropertyMetadata(defaultValue: Boxer.Box(s_defaultAnchorRatio), propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnHorizontalAnchorRatioPropertyChanged(s, e)));
 
 	public static DependencyProperty VerticalAnchorRatioProperty { get; } = DependencyProperty.Register(
 		nameof(VerticalAnchorRatio),
 		typeof(double),
 		typeof(ScrollPresenter),
-		new FrameworkPropertyMetadata(defaultValue: s_defaultAnchorRatio, propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnVerticalAnchorRatioPropertyChanged(s, e)));
+		new FrameworkPropertyMetadata(defaultValue: Boxer.Box(s_defaultAnchorRatio), propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnVerticalAnchorRatioPropertyChanged(s, e)));
 
 	void OnBackgroundPropertyChanged(
 		DependencyObject sender,

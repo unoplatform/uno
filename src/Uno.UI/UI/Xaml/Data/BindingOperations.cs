@@ -11,6 +11,10 @@ namespace Microsoft.UI.Xaml.Data
 	/// </summary>
 	public sealed partial class BindingOperations
 	{
+		internal BindingOperations()
+		{
+		}
+
 		/// <summary>
 		/// Associates a <see cref="Binding"/> with a target property on a target object. 
 		/// This method is the code equivalent to using a {Binding} markup extension in XAML markup. 
@@ -20,7 +24,7 @@ namespace Microsoft.UI.Xaml.Data
 		/// <param name="binding">The binding to assign to the target property. This <see cref="Binding"/> should be initialized: important <see cref="Binding"/> properties such as <see cref="PropertyPath"/> Path should already be set before passing it as the parameter.</param>
 		public static void SetBinding(DependencyObject target, DependencyProperty dp, BindingBase binding)
 		{
-			(target as IDependencyObjectStoreProvider)?.Store.SetBinding(dp, binding);
+			target?.SetBindingInternal(dp, binding);
 		}
 	}
 }

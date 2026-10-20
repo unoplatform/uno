@@ -1,5 +1,4 @@
-﻿#if !NETFX_CORE
-using System;
+﻿using System;
 
 using Uno.Extensions;
 using System.Globalization;
@@ -17,17 +16,8 @@ using Microsoft.UI.Text;
 using FontWeight = Windows.UI.Text.FontWeight;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using Uno.UI.Helpers.Boxes;
 
-
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#endif
 
 namespace Uno.UI.DataBinding
 {
@@ -133,7 +123,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (thickness.IsUniform())
 				{
-					output = thickness.Left;
+					output = Boxer.Box(thickness.Left);
 					return true;
 				}
 
@@ -371,9 +361,10 @@ namespace Uno.UI.DataBinding
 		private static bool FastStringToIconElement(Type outputType, string input, ref object output)
 		{
 			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_IconElement_Available
-				&& outputType == typeof(Microsoft.UI.Xaml.Controls.IconElement))
+				&& outputType == typeof(Microsoft.UI.Xaml.Controls.IconElement)
+				&& Enum.TryParse<Microsoft.UI.Xaml.Controls.Symbol>(input, ignoreCase: true, out var symbol))
 			{
-				output = (Microsoft.UI.Xaml.Controls.IconElement)input;
+				output = new Microsoft.UI.Xaml.Controls.SymbolIcon { Symbol = symbol };
 				return true;
 			}
 
@@ -530,16 +521,6 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToPath(Type outputType, string input, ref object output)
 		{
-#if __WASM__
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Media_Geometry_Available
-				&& outputType == typeof(Geometry))
-			{
-				output = (Geometry)input;
-
-				return true;
-			}
-#endif
-
 			return false;
 		}
 
@@ -747,7 +728,7 @@ namespace Uno.UI.DataBinding
 					var c = input[0];
 					if (c >= '0' && c <= '9')
 					{
-						output = (double)(c - '0');
+						output = Boxer.Box((double)(c - '0'));
 						return true;
 					}
 				}
@@ -756,7 +737,7 @@ namespace Uno.UI.DataBinding
 
 				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
-					output = 0d;
+					output = DoubleBoxes.Zero;
 					return true;
 				}
 
@@ -782,7 +763,7 @@ namespace Uno.UI.DataBinding
 
 				if (double.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var d))
 				{
-					output = d;
+					output = Boxer.Box(d);
 					return true;
 				}
 			}
@@ -863,7 +844,7 @@ namespace Uno.UI.DataBinding
 					var c = input[0];
 					if (c >= '0' && c <= '9')
 					{
-						output = (int)(c - '0');
+						output = Boxer.Box((int)(c - '0'));
 						return true;
 					}
 				}
@@ -872,13 +853,13 @@ namespace Uno.UI.DataBinding
 
 				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
-					output = 0;
+					output = IntBoxes.Zero;
 					return true;
 				}
 
 				if (int.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var i))
 				{
-					output = i;
+					output = Boxer.Box(i);
 					return true;
 				}
 			}
@@ -1025,7 +1006,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(bool) && bool.TryParse(input, out var result))
 			{
-				output = result;
+				output = Boxer.Box(result);
 				return true;
 			}
 
@@ -1152,4 +1133,3 @@ namespace Uno.UI.DataBinding
 		}
 	}
 }
-#endif

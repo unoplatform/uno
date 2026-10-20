@@ -3,37 +3,38 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FrameworkElement
+	public partial class FrameworkElement : global::Microsoft.UI.Xaml.UIElement
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualHeightProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualHeight), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualThemeProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualTheme), typeof(global::Microsoft.UI.Xaml.ElementTheme),
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.ElementTheme)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualWidthProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualWidth), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 		// Skipping already declared property AllowFocusOnInteractionProperty
 		// Skipping already declared property AllowFocusWhenDisabledProperty
+		// Skipping already declared property DataContextProperty
 		// Skipping already declared property FlowDirectionProperty
 		// Skipping already declared property FocusVisualMarginProperty
 		// Skipping already declared property FocusVisualPrimaryBrushProperty
@@ -42,8 +43,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property FocusVisualSecondaryThicknessProperty
 		// Skipping already declared property HeightProperty
 		// Skipping already declared property HorizontalAlignmentProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty LanguageProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Language), typeof(string),
@@ -55,14 +56,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property MaxWidthProperty
 		// Skipping already declared property MinHeightProperty
 		// Skipping already declared property MinWidthProperty
-#if false || false || false || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty NameProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Name), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
+		// Skipping already declared property NameProperty
 		// Skipping already declared property RequestedThemeProperty
 		// Skipping already declared property StyleProperty
 		// Skipping already declared property TagProperty
@@ -74,6 +68,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property AllowFocusOnInteraction
 		// Skipping already declared property AllowFocusWhenDisabled
 		// Skipping already declared property BaseUri
+		// Skipping already declared property DataContext
 		// Skipping already declared property FlowDirection
 		// Skipping already declared property FocusVisualMargin
 		// Skipping already declared property FocusVisualPrimaryBrush
@@ -83,8 +78,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Height
 		// Skipping already declared property HorizontalAlignment
 		// Skipping already declared property IsLoaded
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public string Language
 		{
 			get
@@ -113,8 +108,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Width
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static void DeferTree(global::Microsoft.UI.Xaml.DependencyObject element)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "DeferTree(DependencyObject element)");
@@ -147,8 +142,8 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignmentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WidthProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FindName(string)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.SetBinding(Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.GetBindingExpression(Microsoft.UI.Xaml.DependencyProperty)
+		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.SetBinding(Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)
+		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.GetBindingExpression(Microsoft.UI.Xaml.DependencyProperty)
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContextChanged.add
@@ -226,6 +221,7 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.set
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged
+		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.DataContextChanged
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.EffectiveViewportChanged
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Loaded

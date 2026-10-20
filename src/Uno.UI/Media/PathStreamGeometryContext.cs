@@ -7,18 +7,10 @@ using System.Linq;
 using static System.Math;
 using Uno.Extensions;
 
-#if __APPLE_UIKIT__
-using UIKit;
-using Path = UIKit.UIBezierPath;
-using ObjCRuntime;
-#elif __ANDROID__
-using Android.Graphics.Drawables.Shapes;
-using Path = Android.Graphics.Path;
-using Uno.UI;
-#elif __SKIA__
-using Path = SkiaSharp.SKPath;
+#if __SKIA__
+using Uno.UI.Composition.Drawing;
 #else
-using Path = System.Object;
+using PathBuilder = System.Object;
 #endif
 
 namespace Uno.Media
@@ -27,7 +19,11 @@ namespace Uno.Media
 	{
 		private readonly List<Point> _points = new List<Point>();
 		private readonly StreamGeometry _owner;
-		private Path bezierPath = new Path();
+#if __SKIA__
+		private readonly IPathBuilder bezierPath = GeometryFactory.Current.CreatePathBuilder();
+#else
+		private PathBuilder bezierPath = new PathBuilder();
+#endif
 
 		internal PathStreamGeometryContext(StreamGeometry owner)
 		{
@@ -36,12 +32,8 @@ namespace Uno.Media
 
 		public override void BeginFigure(Point startPoint, bool isFilled)
 		{
-#if __APPLE_UIKIT__
-			bezierPath.MoveTo(startPoint);
-#elif __ANDROID__
-			bezierPath.MoveTo((float)startPoint.X, (float)startPoint.Y);
-#elif __SKIA__
-			bezierPath.MoveTo(new SkiaSharp.SKPoint((float)startPoint.X, (float)startPoint.Y));
+#if __SKIA__
+			bezierPath.MoveTo(new Vector2((float)startPoint.X, (float)startPoint.Y));
 #endif
 
 			_points.Add(startPoint);
@@ -49,12 +41,8 @@ namespace Uno.Media
 
 		public override void LineTo(Point point, bool isStroked, bool isSmoothJoin)
 		{
-#if __APPLE_UIKIT__
-			bezierPath.AddLineTo(point);
-#elif __ANDROID__
-			bezierPath.LineTo((float)point.X, (float)point.Y);
-#elif __SKIA__
-			bezierPath.LineTo((float)point.X, (float)point.Y);
+#if __SKIA__
+			bezierPath.LineTo(new Vector2((float)point.X, (float)point.Y));
 #endif
 
 			_points.Add(point);
@@ -62,24 +50,19 @@ namespace Uno.Media
 
 		public override void BezierTo(Point point1, Point point2, Point point3, bool isStroked, bool isSmoothJoin)
 		{
-#if __APPLE_UIKIT__
-			bezierPath.AddCurveToPoint(point3, point1, point2);
-#elif __ANDROID__
-			bezierPath.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
-#elif __SKIA__
-			bezierPath.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
+#if __SKIA__
+			bezierPath.CubicTo(
+				new Vector2((float)point1.X, (float)point1.Y),
+				new Vector2((float)point2.X, (float)point2.Y),
+				new Vector2((float)point3.X, (float)point3.Y));
 #endif
 			_points.Add(point3);
 		}
 
 		public override void QuadraticBezierTo(Point point1, Point point2, bool isStroked, bool isSmoothJoin)
 		{
-#if __APPLE_UIKIT__
-			bezierPath.AddQuadCurveToPoint(point2, point1);
-#elif __ANDROID__
-			bezierPath.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
-#elif __SKIA__
-			bezierPath.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
+#if __SKIA__
+			bezierPath.QuadraticTo(new Vector2((float)point1.X, (float)point1.Y), new Vector2((float)point2.X, (float)point2.Y));
 #endif
 
 			_points.Add(point2);
@@ -89,13 +72,11 @@ namespace Uno.Media
 		{
 #if __SKIA__
 			bezierPath.ArcTo(
-				(float)size.Width, (float)size.Height,
+				new Vector2((float)size.Width, (float)size.Height),
 				(float)rotationAngle,
-				isLargeArc ? SkiaSharp.SKPathArcSize.Large : SkiaSharp.SKPathArcSize.Small,
-				sweepDirection == SweepDirection.Clockwise
-					? SkiaSharp.SKPathDirection.Clockwise
-					: SkiaSharp.SKPathDirection.CounterClockwise,
-				(float)point.X, (float)point.Y);
+				isLargeArc,
+				sweepDirection == SweepDirection.Clockwise,
+				new Vector2((float)point.X, (float)point.Y));
 
 			_points.Add(point);
 #else
@@ -112,38 +93,6 @@ namespace Uno.Media
 			var startAngle = Atan2(startPoint.Y - center.Y, startPoint.X - center.X);
 			var endAngle = Atan2(endPoint.Y - center.Y, endPoint.X - center.X);
 			var circle = new Rect(center.X - radius, center.Y - radius, radius * 2, radius * 2);
-
-#if __APPLE_UIKIT__
-			bezierPath.AddArc(
-				center,
-				(nfloat)radius,
-				(nfloat)startAngle,
-				(nfloat)endAngle,
-				sweepDirection == SweepDirection.Clockwise
-			);
-#elif __ANDROID__
-			var sweepAngle = endAngle - startAngle;
-
-			// Convert to degrees
-			startAngle = startAngle * (180 / PI);
-			sweepAngle = sweepAngle * (180 / PI);
-
-			// Invert y-axis
-			startAngle = (startAngle + 360) % 360;
-			sweepAngle = (sweepAngle + 360) % 360;
-
-			// Apply direction
-			if (sweepDirection == SweepDirection.Counterclockwise)
-			{
-				sweepAngle -= 360;
-			}
-
-			bezierPath.ArcTo(
-				circle.ToRectF(),
-				(float)startAngle,
-				(float)sweepAngle
-			);
-#endif
 
 			_points.Add(point);
 #endif
@@ -221,30 +170,25 @@ namespace Uno.Media
 
 		public override void SetClosedState(bool closed)
 		{
-			if (bezierPath != null)
+			if (closed)
 			{
-				if (closed)
-				{
-#if __APPLE_UIKIT__
-					bezierPath.ClosePath();
-#elif __ANDROID__
-					bezierPath.Close();
-#elif __SKIA__
-					bezierPath.Close();
-#elif __WASM__
-					// TODO: In most cases, the path is handled by the browser.
-					// But it might still be possible to hit this code path on Wasm?
-					// This needs to be revisited.
+#if __SKIA__
+				bezierPath.Close();
 #else
-					throw new NotSupportedException("SetClosedState is not supported on this platform.");
+				throw new NotSupportedException("SetClosedState is not supported on this platform.");
 #endif
-				}
 			}
 		}
 
 		public override void Dispose()
 		{
+#if __SKIA__
+			// Handing over the builder, not a built geometry: the owner bakes the winding rule on first read,
+			// once callers that learn it from the markup have had a chance to set it.
 			_owner.Close(bezierPath);
+#else
+			_owner.Close(bezierPath);
+#endif
 		}
 	}
 }

@@ -13,14 +13,10 @@ using System.Buffers;
 using Uno.UI.DataBinding;
 using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml
 {
 	[ContentProperty(Name = "States")]
-	public sealed partial class VisualStateGroup : DependencyObject
+	public sealed partial class VisualStateGroup : DependencyObject, IXNameProvider
 	{
 		/// <summary>
 		/// The xaml scope in force at the time the VisualStateGroup was created.
@@ -46,7 +42,9 @@ namespace Microsoft.UI.Xaml
 
 		public VisualState CurrentState => _current.state;
 
-		public string Name { get; set; }
+		public string Name { get; internal set; }
+
+		void IXNameProvider.SetXName(string name) => Name = name;
 
 		#region States Dependency Property
 
@@ -147,22 +145,18 @@ namespace Microsoft.UI.Xaml
 			if (this.GetParent() is IFrameworkElement fe)
 			{
 				OnOwnerElementChanged();
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// On Skia, we match WinUI and initialize the visual triggers of a Control in
 				// EmterImpl and/or InvokeApplyTemplate. Somehow the state triggers are also
 				// applied when the VisualStates are being set on a non-Control. We fallback
 				// to listening to Loaded to evaluate the triggers in that case.
 				if (fe is not Control)
-#endif
 				{
 					fe.Loaded += OnOwnerElementLoaded;
 				}
 				fe.Unloaded += OnOwnerElementUnloaded;
 				_parentLoadedDisposable.Disposable = Disposable.Create(() =>
 				{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 					if (fe is not Control)
-#endif
 					{
 						fe.Loaded -= OnOwnerElementLoaded;
 					}
@@ -189,9 +183,14 @@ namespace Microsoft.UI.Xaml
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
 				var state = States[stateIndex];
-				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
+				if (state.StateTriggersOrDefault is not { } triggers)
 				{
-					var trigger = state.StateTriggers[triggerIndex];
+					continue;
+				}
+
+				for (var triggerIndex = 0; triggerIndex < triggers.Count; triggerIndex++)
+				{
+					var trigger = triggers[triggerIndex];
 
 					action(trigger);
 				}
@@ -257,8 +256,8 @@ namespace Microsoft.UI.Xaml
 				// storyboard at Enter). Skipped during a theme walk — the core slot already carries the new
 				// theme while the owner's per-object theme is still stale, so a re-entrant GoToState (a
 				// StateTrigger flipping mid-walk) keeps the walk theme.
-				var ownerIsProcessingThemeWalk = (element as DependencyObject) is IDependencyObjectStoreProvider provider
-					&& provider.Store.IsProcessingThemeWalk;
+				var ownerIsProcessingThemeWalk = (element as DependencyObject) is DependencyObject provider
+					&& provider.IsProcessingThemeWalk;
 				using var themeScope = ownerIsProcessingThemeWalk
 					? default
 					: Uno.UI.Xaml.Core.CoreServices.Instance
@@ -294,12 +293,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_current = targetValues;
-
-			// For backward compatibility, we may apply the setters before the end of the transition.
-			if (FeatureConfiguration.VisualState.ApplySettersBeforeTransition)
-			{
-				ApplyTargetStateSetters();
-			}
 
 			// Finally effectively apply the target state!
 			if (useTransitions && target.transition is { } transitionAnimation)
@@ -349,11 +342,8 @@ namespace Microsoft.UI.Xaml
 
 			void ApplyTargetState()
 			{
-				// Apply target state setters (the right time to do it!) 
-				if (!FeatureConfiguration.VisualState.ApplySettersBeforeTransition)
-				{
-					ApplyTargetStateSetters();
-				}
+				// Apply target state setters (the right time to do it!)
+				ApplyTargetStateSetters();
 
 				// Starts target state animation
 				if (target.animation is { } stateAnimation)
@@ -539,7 +529,7 @@ namespace Microsoft.UI.Xaml
 			var newState = GetActiveTrigger();
 			var oldState = CurrentState;
 
-			var currentStateHasTriggers = oldState is { StateTriggers: { Count: > 0 } };
+			var currentStateHasTriggers = oldState?.StateTriggersOrDefault is { Count: > 0 };
 			if (newState is null && !currentStateHasTriggers)
 			{
 				// We didn't activate any trigger state, we should keep the current non-trigger state.
@@ -581,7 +571,7 @@ namespace Microsoft.UI.Xaml
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
 				var state = States[stateIndex];
-				if (state.StateTriggers.Count > 0)
+				if (state.StateTriggersOrDefault is { Count: > 0 })
 				{
 					return true;
 				}
@@ -613,9 +603,14 @@ namespace Microsoft.UI.Xaml
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
 				var state = States[stateIndex];
-				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
+				if (state.StateTriggersOrDefault is not { } triggers)
 				{
-					var trigger = state.StateTriggers[triggerIndex];
+					continue;
+				}
+
+				for (var triggerIndex = 0; triggerIndex < triggers.Count; triggerIndex++)
+				{
+					var trigger = triggers[triggerIndex];
 
 					// the first active CustomTrigger is an automatic winner.
 					if (trigger.CurrentPrecedence == StateTriggerPrecedence.CustomTrigger)

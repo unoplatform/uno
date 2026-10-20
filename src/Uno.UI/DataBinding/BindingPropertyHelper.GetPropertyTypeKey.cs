@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if !NETFX_CORE
 using System;
 using System.Collections;
 
@@ -64,4 +63,3 @@ namespace Uno.UI.DataBinding
 		}
 	}
 }
-#endif

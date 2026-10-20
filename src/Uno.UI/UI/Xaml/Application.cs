@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
@@ -13,6 +13,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI;
+using Uno.UI.WinRT.Extensions.Interop;
 using Uno.UI.WinRT.Extensions.UI.Popups;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
@@ -25,34 +26,34 @@ using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Popups.Internal;
 using Windows.UI.ViewManagement;
+using WinRT.Interop.Internal;
 using DirectUI;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-using DependencyObject = System.Object;
-using Microsoft.UI.Xaml.Controls;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using ViewGroup = UIKit.UIView;
-using UIKit;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using Microsoft.Windows.AppLifecycle;
 using Uno.Foundation;
-#endif
+using Windows.UI.Core;
+using System.Threading;
+using System.Globalization;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Dispatching;
+using System.Threading.Tasks;
+using Microsoft.UI.Text;
+using Windows.UI.Text;
+using System.Collections.Generic;
+using Microsoft.UI.Composition;
+using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 
 namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Encapsulates the app and its available services.
 	/// </summary>
-	public partial class Application
+	public partial class Application : IApplicationEvents
 	{
 		private static readonly ConditionalWeakTable<AssemblyLoadContext, Application> _applicationsByAlc = new();
 		private static readonly object _applicationsByAlcSync = new();
@@ -77,9 +78,6 @@ namespace Microsoft.UI.Xaml
 
 		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark; // Default theme in WinUI is Dark.
-#endif
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
 		private ResourceDictionary _resources = new ResourceDictionary();
@@ -118,7 +116,7 @@ namespace Microsoft.UI.Xaml
 			{
 				CoreApplication.StaticInitialize();
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 				Package.SetEntryAssembly(this.GetType().Assembly);
 #endif
 				Current = this;
@@ -137,14 +135,18 @@ namespace Microsoft.UI.Xaml
 
 		internal bool InitializationComplete => _initializationComplete;
 
+		// Per-instance, because several Application instances can coexist (one per ALC) and each
+		// still needs its own OnLaunched.
+		internal bool WasLaunched { get; private set; }
+
 		partial void InitializePartial();
 
 		private static void RegisterExtensions()
 		{
 			ApiExtensibility.Register<MessageDialog>(typeof(IMessageDialogExtension), dialog => new MessageDialogExtension(dialog));
-#if __SKIA__
-			ApiExtensibility.Register(typeof(Uno.UI.Graphics.SKCanvasVisualBaseFactory), _ => new Uno.UI.Graphics.SKCanvasVisualFactory());
-#endif
+			ApiExtensibility.Register(typeof(IWindowInteropExtension), _ => WindowInteropExtension.Instance);
+			// The Skia SKCanvasElement visual factory is registered by the Skia backend (SkiaBackend.Register),
+			// since SKCanvasVisual lives in the backend assembly beside SkiaDrawingSession.
 		}
 
 		static partial void InitializePartialStatic();
@@ -157,8 +159,8 @@ namespace Microsoft.UI.Xaml
 				unchecked((int)0xdee07725), 0x1cbf, 0x4bf6, new byte[] { 0xac, 0x8a, 0x96, 0x3, 0x60, 0xcb, 0x35, 0x12 }
 			);
 
-			public const int LauchedStart = 1;
-			public const int LauchedStop = 2;
+			public const int LaunchedStart = 1;
+			public const int LaunchedStop = 2;
 		}
 
 		public static Application Current
@@ -169,7 +171,9 @@ namespace Microsoft.UI.Xaml
 
 		public DebugSettings DebugSettings { get; } = new DebugSettings();
 
-		public ApplicationRequiresPointerMode RequiresPointerMode { get; set; } = ApplicationRequiresPointerMode.Auto;
+		// Not part of the public WinAppSDK Application surface; kept internal for the ported
+		// SharedHelpers.IsMouseModeEnabled, which is its only reader.
+		internal ApplicationRequiresPointerMode RequiresPointerMode { get; set; } = ApplicationRequiresPointerMode.Auto;
 
 		/// <summary>
 		/// Specifies the visual feedback used to indicate the UI element
@@ -195,7 +199,6 @@ namespace Microsoft.UI.Xaml
 
 		public ApplicationTheme RequestedTheme
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// MUX Reference: FrameworkApplication::get_RequestedThemeImpl — FrameworkApplication_Partial.cpp:1048-1061:
 			//   "RequestedTheme getter. Bypasses the core application object and get's it directly from
 			//    the framework theming object."
@@ -207,9 +210,6 @@ namespace Microsoft.UI.Xaml
 				: WinUICoreServices.Instance.Theming.GetBaseTheme() == Theme.Light
 					? ApplicationTheme.Light
 					: ApplicationTheme.Dark;
-#else
-			get => InternalRequestedTheme;
-#endif
 			set
 			{
 				// MUX Reference: FrameworkApplication::put_RequestedThemeImpl — FrameworkApplication_Partial.cpp:987-994:
@@ -227,19 +227,11 @@ namespace Microsoft.UI.Xaml
 
 		internal void InitializeSystemTheme()
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// The explicit theming init point. FrameworkTheming's constructor already read the OS theme
 			// (FrameworkTheming.cpp:13-29); run the initial OnThemeChanged so the high-contrast state and
 			// accent color are read too, exactly like WinUI's startup OnThemeChanged. If app code set
 			// RequestedTheme before this point, SetRequestedTheme already ran it and this is a no-op.
 			WinUICoreServices.Instance.Theming.OnThemeChanged();
-#else
-			if (!IsThemeSetExplicitly)
-			{
-				// just cache the theme, but do not notify about a change unnecessarily
-				InternalRequestedTheme = GetSystemTheme();
-			}
-#endif
 
 			// Force-sync ResourceDictionary's static Themes.Active with the application's
 			// resolved theme before any resource lookup can happen at startup. On enhanced
@@ -253,22 +245,6 @@ namespace Microsoft.UI.Xaml
 			UpdateRequestedThemesForResources();
 		}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		private ApplicationTheme InternalRequestedTheme
-		{
-			get => _requestedTheme;
-			set
-			{
-				_requestedTheme = value;
-
-				// Sync with core application's theme
-				CoreApplication.RequestedTheme = value == ApplicationTheme.Dark ? SystemTheme.Dark : SystemTheme.Light;
-
-				UpdateRootElementBackground();
-				UpdateRequestedThemesForResources();
-			}
-		}
-#endif
 
 		internal static void UpdateRequestedThemesForResources()
 		{
@@ -287,11 +263,9 @@ namespace Microsoft.UI.Xaml
 				_ => throw new InvalidOperationException($"Theme {Application.Current.RequestedTheme} is not valid"),
 			};
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// Sync with core application's theme (kept from the InternalRequestedTheme setter, which
 			// the FrameworkTheming-driven flow no longer goes through).
 			CoreApplication.RequestedTheme = Current.RequestedTheme == ApplicationTheme.Dark ? SystemTheme.Dark : SystemTheme.Light;
-#endif
 		}
 
 		internal SpecializedResourceDictionary.ResourceKey RequestedThemeForResources
@@ -311,7 +285,6 @@ namespace Microsoft.UI.Xaml
 			_ => throw new InvalidOperationException("Application's RequestedTheme is invalid."),
 		};
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX: an explicit app theme IS FrameworkTheming's requested-theme override
 		// (m_requestedTheme != None) — while set, OnThemeChanged keeps following GetTheme(), where the
 		// override takes precedence over the system theme, so OS changes don't flip the app.
@@ -319,9 +292,6 @@ namespace Microsoft.UI.Xaml
 		internal bool IsThemeSetExplicitly => _isSecondaryAlcApplication
 			? _alcRequestedTheme.HasValue
 			: WinUICoreServices.Instance.Theming.HasRequestedTheme();
-#else
-		internal bool IsThemeSetExplicitly { get; private set; }
-#endif
 
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
@@ -334,7 +304,6 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			var previousTheme = RequestedTheme;
 
 			if (explicitTheme is { } theme)
@@ -357,30 +326,8 @@ namespace Microsoft.UI.Xaml
 			{
 				RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
 			}
-#else
-			// this flag makes sure the app will not respond to OS events
-			IsThemeSetExplicitly = explicitTheme.HasValue;
-			var theme = explicitTheme ?? GetSystemTheme();
-			SetRequestedTheme(theme);
-#endif
 		}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		internal void SyncRequestedThemeFromXamlRoot(XamlRoot xamlRoot)
-		{
-			if (xamlRoot is null)
-			{
-				throw new ArgumentNullException(nameof(xamlRoot));
-			}
-
-			if (xamlRoot.Content is FrameworkElement fe)
-			{
-				var theme = fe.RequestedTheme;
-				SetExplicitRequestedTheme(
-					Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(theme));
-			}
-		}
-#endif
 
 		public ResourceDictionary Resources
 		{
@@ -392,37 +339,13 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-#pragma warning disable CS0067 // The event is never used
-		/// <summary>
-		/// Occurs when the application transitions from Suspended state to Running state.
-		/// </summary>
-		public event EventHandler<object> Resuming;
-#pragma warning restore CS0067 // The event is never used
-
-#pragma warning disable CS0067 // The event is never used
-		/// <summary>
-		/// Occurs when the application transitions to Suspended state from some other state.
-		/// </summary>
-		public event SuspendingEventHandler Suspending;
-#pragma warning restore CS0067 // The event is never used
-
-		/// <summary>
-		/// Occurs when the app moves from the foreground to the background.
-		/// </summary>
-		public event EnteredBackgroundEventHandler EnteredBackground;
-
-		/// <summary>
-		/// Occurs when the app moves from the background to the foreground.
-		/// </summary>
-		public event LeavingBackgroundEventHandler LeavingBackground;
-
 		/// <summary>
 		/// Occurs when an exception can be handled by app code, as forwarded from a native-level Windows Runtime error.
 		/// Apps can mark the occurrence as handled in event data.
 		/// </summary>
 		public event UnhandledExceptionEventHandler UnhandledException;
 
-#if !__ANDROID__ && !__SKIA__
+#if !__SKIA__
 		[NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Exit()
 		{
@@ -471,9 +394,47 @@ namespace Microsoft.UI.Xaml
 
 		private static partial Application StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback);
 
-		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
+		protected virtual void OnLaunched(LaunchActivatedEventArgs args) { }
 
-		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+		/// <summary>
+		/// Drives the launch pipeline. Platform hosts report their activation to
+		/// <see cref="Microsoft.Windows.AppLifecycle.AppInstance"/> before this runs.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="OnLaunched"/> always receives plain <see cref="ActivationKind.Launch"/> arguments,
+		/// matching WinUI, which synthesizes them regardless of how the process was activated. The real
+		/// payload is read from <see cref="Microsoft.Windows.AppLifecycle.AppInstance.GetActivatedEventArgs"/>.
+		/// </remarks>
+		internal void InvokeOnLaunched()
+		{
+			var appInstance = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent();
+
+			// OnLaunched should execute only for full apps, not for individual islands.
+			if (CoreApplication.IsFullFledgedApp && !WasLaunched)
+			{
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetLaunchArguments(appInstance)));
+			}
+
+			WasLaunched = true;
+			appInstance.NotifyLaunched();
+		}
+
+		/// <summary>
+		/// The arguments <see cref="OnLaunched"/> reports: those the OS delivered with a Launch
+		/// activation when there are any, otherwise the command line.
+		/// </summary>
+		/// <remarks>
+		/// A jump-list or home-screen shortcut arrives as a Launch activation carrying the item's
+		/// arguments, on every platform that has one. Reading them from the activation keeps
+		/// <see cref="OnLaunched"/> consistent without each host having to plumb them separately.
+		/// </remarks>
+		private string GetLaunchArguments(Microsoft.Windows.AppLifecycle.AppInstance appInstance)
+			=> !_isSecondaryAlcApplication
+				&& appInstance.ReportedActivation is { Kind: ExtendedActivationKind.Launch } activation
+				&& activation.Data is global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs launchArgs
+				&& !string.IsNullOrEmpty(launchArgs.Arguments)
+					? launchArgs.Arguments
+					: GetCommandLineArgsWithoutExecutable();
 
 		internal void InitializationCompleted()
 		{
@@ -486,6 +447,9 @@ namespace Microsoft.UI.Xaml
 			}
 
 			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
+#if __SKIA__
+			SystemThemeHelper.HighContrastChanged += OnHighContrastChanged;
+#endif
 
 			InitializeTextScaling();
 
@@ -501,11 +465,6 @@ namespace Microsoft.UI.Xaml
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		private ApplicationTheme GetSystemTheme() =>
-			SystemThemeHelper.SystemTheme == SystemTheme.Light ?
-				ApplicationTheme.Light : ApplicationTheme.Dark;
-#endif
 
 		private void InitializeTextScaling()
 		{
@@ -520,26 +479,26 @@ namespace Microsoft.UI.Xaml
 
 		private void OnSystemThemeChanged(object sender, EventArgs e)
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// The OS broadcast routes to FrameworkTheming::OnThemeChanged, which re-reads the system
 			// theme/high contrast/accent from the interop and only notifies the core (NotifyThemeChange,
 			// walking all roots) when the effective theme actually changed. When the app theme is
 			// explicit (m_requestedTheme != None), GetTheme() is unchanged by an OS flip and the change
 			// is suppressed — the FrameworkTheming-native form of the old IsThemeSetExplicitly guard.
 			WinUICoreServices.Instance.Theming.OnThemeChanged();
-#else
-			// if user overrides theme, don't apply system theme
-			if (!IsThemeSetExplicitly)
-			{
-				var theme = GetSystemTheme();
-				SetRequestedTheme(theme);
-			}
-#endif
 
 			UISettings.OnColorValuesChanged();
 		}
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
+		private void OnHighContrastChanged(object sender, EventArgs e)
+		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			WinUICoreServices.Instance.Theming.OnThemeChanged(forceUpdate: true);
+#else
+			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+#endif
+		}
+
 		private IDisposable WritePhaseEventTrace(int startEventId, int stopEventId)
 		{
 			if (_trace.IsEnabled)
@@ -563,7 +522,6 @@ namespace Microsoft.UI.Xaml
 			{
 				_isInBackground = true;
 				var enteredEventArgs = new EnteredBackgroundEventArgs(onComplete);
-				EnteredBackground?.Invoke(this, enteredEventArgs);
 				CoreApplication.RaiseEnteredBackground(enteredEventArgs);
 				var completedSynchronously = enteredEventArgs.DeferralManager.EventRaiseCompleted();
 
@@ -587,7 +545,6 @@ namespace Microsoft.UI.Xaml
 			{
 				_isInBackground = false;
 				var leavingEventArgs = new LeavingBackgroundEventArgs(onComplete);
-				LeavingBackground?.Invoke(this, leavingEventArgs);
 				CoreApplication.RaiseLeavingBackground(leavingEventArgs);
 				var completedSynchronously = leavingEventArgs.DeferralManager.EventRaiseCompleted();
 
@@ -612,7 +569,6 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			Resuming?.Invoke(null, null);
 			CoreApplication.RaiseResuming();
 			IsSuspended = false;
 		}
@@ -627,11 +583,9 @@ namespace Microsoft.UI.Xaml
 			var suspendingOperation = new SuspendingOperation(GetSuspendingOffset(), () => IsSuspended = true);
 			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
-			Suspending?.Invoke(this, suspendingEventArgs);
 			CoreApplication.RaiseSuspending(suspendingEventArgs);
 			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
 
-#if !__APPLE_UIKIT__ && !__ANDROID__
 			// Asynchronous suspension is not supported on all targets, warn the user
 			if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -639,32 +593,17 @@ namespace Microsoft.UI.Xaml
 					"This platform does not support asynchronous Suspending deferral. " +
 					"Code executed after the of the method called by Suspending may not get executed.");
 			}
-#endif
 		}
 
-#if !__APPLE_UIKIT__ && !__ANDROID__
 		/// <summary>
 		/// On platforms which don't support asynchronous suspension we indicate that with immediate
 		/// deadline and warning in logs.
 		/// </summary>
 		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now;
-#endif
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		private void SetRequestedTheme(ApplicationTheme requestedTheme)
-		{
-			if (requestedTheme != InternalRequestedTheme)
-			{
-				InternalRequestedTheme = requestedTheme;
-
-				OnRequestedThemeChanged();
-			}
-		}
-#endif
 
 		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload | ResourceUpdateReason.ThemeResource);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: FrameworkTheming::IsBaseThemeChanging (FrameworkTheming.h) — true while a base
 		// (app/system) theme switch is being applied, i.e. while FrameworkTheming::OnThemeChanged runs
 		// the notify callback with m_isAppThemeChanging/m_isSystemThemeChanging set.
@@ -672,60 +611,19 @@ namespace Microsoft.UI.Xaml
 		// yet been theme-walked (m_theme == None) still raises ActualThemeChanged on the switch
 		// (framework.cpp:3378-3384). Hot reload goes through OnResourcesChanged and never sets it.
 		internal static bool IsBaseThemeChanging => WinUICoreServices.Instance.Theming.IsBaseThemeChanging();
-#else
-		// See the enhanced-lifecycle branch above; on native targets the Application-driven walk
-		// (OnRequestedThemeChanged) sets the flag itself.
-		internal static bool IsBaseThemeChanging { get; private set; }
-#endif
 
 		internal void OnRequestedThemeChanged()
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
 
 			// Force a full re-notification of the current theme (ApplicationHelper.ReapplyApplicationTheme
 			// contract): FrameworkTheming::OnThemeChanged(forceUpdate: true) invokes the notify callback —
 			// CCoreServices::NotifyThemeChange — even when nothing changed on any axis.
 			WinUICoreServices.Instance.Theming.OnThemeChanged(forceUpdate: true);
-#else
-			RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
-
-			var wasBaseThemeChanging = IsBaseThemeChanging;
-			IsBaseThemeChanging = true;
-			try
-			{
-				OnResourcesChanged(ResourceUpdateReason.ThemeResource);
-			}
-			finally
-			{
-				IsBaseThemeChanging = wasBaseThemeChanging;
-			}
-#endif
 		}
 
 		internal event EventHandler RequestedThemeChanged;
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		// On enhanced-lifecycle targets the root background update lives in
-		// CCoreServices.NotifyThemeChange (the m_pMainVisualTree->GetRootVisual()->SetBackgroundColor
-		// port, xcpcore.cpp:8045-8048).
-		private void UpdateRootElementBackground()
-		{
-			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
-			{
-				if (contentRoot.VisualTree.RootElement is IRootElement rootElement)
-				{
-					if (contentRoot.GetOwnerWindow() is { HasSupportedSystemBackdrop: true })
-					{
-						rootElement.SetBackgroundColor(Microsoft.UI.Colors.Transparent);
-						continue;
-					}
-
-					rootElement.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
-				}
-			}
-		}
-#endif
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
@@ -751,7 +649,6 @@ namespace Microsoft.UI.Xaml
 						// On enhanced lifecycle OnResourcesChanged only serves hot reload — app/system theme
 						// changes flow through FrameworkTheming.OnThemeChanged → CCoreServices.NotifyThemeChange
 						// (the single WinUI walk entry) instead.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 						if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 						{
 							// Walk each content root with the theme of the application that OWNS it (see
@@ -764,7 +661,6 @@ namespace Microsoft.UI.Xaml
 							var rootFe = root as FrameworkElement ?? contentRoot.XamlRoot.Content as FrameworkElement;
 							rootFe?.NotifyThemeChanged(theme, forceRefresh);
 						}
-#endif
 
 						PropagateResourcesChanged(root, updateReason);
 					}
@@ -797,7 +693,6 @@ namespace Microsoft.UI.Xaml
 			// Update ThemeResource references that have changed
 			if (instance is FrameworkElement fe)
 			{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// If element has explicit RequestedTheme and this is a theme change,
 				// skip it - its subtree is managed by its own theme context and
 				// will be updated via NotifyThemeChanged, not by propagation.
@@ -806,7 +701,6 @@ namespace Microsoft.UI.Xaml
 				{
 					return;
 				}
-#endif
 
 				fe.UpdateThemeBindings(updateReason);
 			}
@@ -821,17 +715,6 @@ namespace Microsoft.UI.Xaml
 			}
 			else if (instance is ViewGroup g)
 			{
-#if __ANDROID__
-				// We need to propagate for list view items that were materialized but not visible.
-				// Without this, theme changes will not propagate properly to all list view items.
-				if (instance is NativeListViewBase nativeListViewBase)
-				{
-					foreach (var selectorItem in nativeListViewBase.CachedItemViews)
-					{
-						PropagateResourcesChanged(selectorItem, updateReason);
-					}
-				}
-#endif
 				foreach (object o in g.GetChildren())
 				{
 					PropagateResourcesChanged(o, updateReason);
@@ -842,7 +725,12 @@ namespace Microsoft.UI.Xaml
 #if __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
-			if (!string.IsNullOrEmpty(_argumentsOverride))
+			// Non-null, not non-empty: a host that reports empty arguments is stating the app was
+			// launched with none, which must win over re-reading the command line or the page query.
+			// Not consumed, because every Application in the process - including one in a secondary
+			// AssemblyLoadContext - must see the same arguments the host reported, rather than falling
+			// back to re-reading the raw page query with Uno's activation key still in it.
+			if (_argumentsOverride is not null)
 			{
 				return _argumentsOverride;
 			}
@@ -881,6 +769,209 @@ namespace Microsoft.UI.Xaml
 				return rawCmd.TrimStart();
 			}
 		}
+
+#nullable enable
+		private static bool _startInvoked;
+
+		private static string? _argumentsOverride;
+
+		/// <summary>
+		/// Supplies the launch arguments for a host that has to derive them itself. WebAssembly is the
+		/// only such host: it reports the page query with Uno's protocol-activation key removed.
+		/// </summary>
+		internal static void SetArguments(string arguments)
+			=> _argumentsOverride = arguments;
+
+		partial void InitializePartial()
+		{
+			SetCurrentApplication(this);
+			SetCurrentLanguage();
+
+			if (!_startInvoked)
+			{
+				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
+			}
+
+			// WinUI sets DispatcherShutdownMode to OnLastWindowClose when Start is called (see
+			// FrameworkApplication::StartDesktop, which sets it *before* invoking the init callback).
+			// We mirror that here, in the base ctor that runs during `new App()`, so the default is
+			// established before the derived App constructor body runs and can override it.
+			// For XAML Islands (no Start call), the field default of OnExplicitShutdown remains.
+			_dispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
+		}
+
+		internal IApplicationHost? Host { get; set; }
+
+		private void SetCurrentLanguage()
+		{
+			if (CultureInfo.CurrentUICulture.IetfLanguageTag == "" &&
+				CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "iv")
+			{
+				if (!ApplicationLanguages.InvariantCulture)
+				{
+
+					try
+					{
+						// Fallback to English
+						var cultureInfo = CultureInfo.CreateSpecificCulture("en");
+						CultureInfo.CurrentUICulture = cultureInfo;
+						CultureInfo.CurrentCulture = cultureInfo;
+						Thread.CurrentThread.CurrentCulture = cultureInfo;
+						Thread.CurrentThread.CurrentUICulture = cultureInfo;
+					}
+					catch (Exception ex)
+					{
+						this.Log().Error($"Failed to set default culture", ex);
+					}
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug("InvariantCulture mode is enabled");
+					}
+				}
+			}
+		}
+
+		private static partial Application? StartPartial(Func<ApplicationInitializationCallbackParams, Application?> callback)
+		{
+			_startInvoked = true;
+
+			// The framework is backend-agnostic and packaged once: it does NOT install a drawing backend. The app
+			// entry registers one before Application.Start reaches the first layout/font resolution through
+			// DrawingFactory.Current — Uno.UI.Composition.Skia.SkiaBackend.Register() for a Skia build, or
+			// Uno.UI.Composition.Drawing.ManagedBackend.Register() for a SkiaSharp-free build. Missing registration
+			// surfaces as a clear DrawingFactory.Current "no backend registered" exception.
+
+			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
+
+			var currentApp = callback(new ApplicationInitializationCallbackParams()) ?? _current;
+
+			if (currentApp is null)
+			{
+				throw new InvalidOperationException("Application.Start callback must return a non-null Application instance. Ensure your callback returns a valid Application.");
+			}
+
+			if (OperatingSystem.IsBrowser())
+			{
+				if (AssemblyLoadContext.GetLoadContext(currentApp.GetType().Assembly) == AssemblyLoadContext.Default)
+				{
+					// Ensure the assembly containing Application is not unloaded while running in WASM
+					_ = ApplicationData.Current.EnablePersistenceAsync();
+				}
+				else
+				{
+					// Secondary ALC uses the primary ALC's ApplicationData, so no need to initialize it again
+
+					if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(Application).Log().Debug("Skipping secondary ALC persistence initialization");
+					}
+				}
+
+				// Force a schedule to let the dotnet exports be initialized properly
+				DispatcherQueue.Main.TryEnqueue(currentApp.PrepareOnLaunched);
+			}
+			else
+			{
+				// Other platforms can be synchronous, except iOS that requires
+				// the creation of the window to be synchronous to avoid a black screen.
+				currentApp.PrepareOnLaunched();
+			}
+
+			return currentApp;
+		}
+
+		internal Task FontPreloadTask { get; private set; }
+
+		private void PrepareOnLaunched()
+		{
+			using var _ = WritePhaseEventTrace(TraceProvider.LaunchedStart, TraceProvider.LaunchedStop);
+			InitializeSystemTheme();
+
+			InitializationCompleted();
+			FontPreloadTask = PreloadFonts();
+
+			// Any activation the process started with has already been pushed to AppInstance by the
+			// platform host, which runs before the app exists.
+			InvokeOnLaunched();
+		}
+
+		private static async Task PreloadFonts()
+		{
+			try
+			{
+				var symbolsFontTask = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+
+				var textFontManifestSuccess = false;
+				if (Uri.TryCreate(FeatureConfiguration.Font.DefaultTextFontFamily, UriKind.RelativeOrAbsolute, out var uri))
+				{
+					try
+					{
+						textFontManifestSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(uri);
+						if (!textFontManifestSuccess)
+						{
+							typeof(Application).LogDebug()?.Debug($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a font manifest");
+						}
+					}
+					catch (Exception e)
+					{
+						typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a font manifest", e);
+					}
+				}
+				if (!textFontManifestSuccess)
+				{
+					try
+					{
+						textFontManifestSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.DefaultTextFontFamily), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+						if (!textFontManifestSuccess)
+						{
+							typeof(Application).LogDebug()?.Debug($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a non-manifest font");
+						}
+					}
+					catch (Exception e)
+					{
+						typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a non-manifest font", e);
+					}
+				}
+
+				try
+				{
+					var symbolsFontSuccess = await symbolsFontTask;
+					if (symbolsFontSuccess)
+					{
+						typeof(Application).LogInfo()?.Info($"Loaded ${nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}] successfully");
+					}
+					else
+					{
+						typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}]");
+					}
+				}
+				catch (Exception e)
+				{
+					typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}]", e);
+				}
+			}
+			catch (Exception e)
+			{
+				typeof(Application).LogError()?.Error($"Unexpected error during font preloading", e);
+			}
+		}
+		partial void InitializeTextScalingPlatform()
+		{
+			global::Windows.UI.ViewManagement.UISettings.ObserveTextScaleFactorChanges();
+			global::Windows.UI.ViewManagement.UISettings.TextScaleFactorChangedInternal += (_, _) =>
+			{
+				CoreServices.Instance.UpdateFontScale(global::Windows.UI.ViewManagement.UISettings.GetTextScaleFactorValue());
+			};
+		}
+#nullable disable
 #endif
+	}
+
+
+	internal interface IApplicationEvents
+	{
 	}
 }

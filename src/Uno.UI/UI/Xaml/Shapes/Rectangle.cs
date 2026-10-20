@@ -1,10 +1,15 @@
-﻿using Windows.Foundation;
+using Windows.Foundation;
+using System;
+using Microsoft.UI.Composition;
+using System.Numerics;
+using Uno.UI.Composition.Drawing;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Rectangle : Shape
 	{
-#if __APPLE_UIKIT__ || __SKIA__ || __ANDROID__ || __WASM__
+#if __SKIA__
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
 			=> MeasureRelativeShape(availableSize);
@@ -16,7 +21,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -24,7 +29,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double RadiusY
 		{
 			get => (double)this.GetValue(RadiusYProperty);
-			set => this.SetValue(RadiusYProperty, value);
+			set => this.SetValue(RadiusYProperty, Boxer.Box(value));
 		}
 		#endregion
 
@@ -34,7 +39,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -42,13 +47,42 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double RadiusX
 		{
 			get => (double)this.GetValue(RadiusXProperty);
-			set => this.SetValue(RadiusXProperty, value);
+			set => this.SetValue(RadiusXProperty, Boxer.Box(value));
 		}
+
+#nullable enable
+		public Rectangle()
+		{
+		}
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var (_, renderingArea) = ArrangeRelativeShape(finalSize);
+			var path = renderingArea.Width > 0 && renderingArea.Height > 0
+				? GetGeometry(renderingArea)
+				: null;
+
+			Render(path);
+
+			return finalSize;
+		}
+
+		private IGeometry GetGeometry(Rect finalRect)
+		{
+			var radiusX = RadiusX;
+			var radiusY = RadiusY;
+
+			var offset = new Vector2((float)finalRect.Left, (float)finalRect.Top);
+			var size = new Vector2((float)finalRect.Width, (float)finalRect.Height);
+
+			return radiusX is 0 || radiusY is 0
+				? CompositionGeometry.BuildRectangleGeometry(offset, size)
+				// WinUI starts a rounded rectangle's figure where the top-left arc begins, which is where dashes start.
+				: CompositionGeometry.BuildRoundedRectangleGeometry(offset, size, new Vector2((float)radiusX, (float)radiusY), startAtTopLeftArc: true);
+		}
+#nullable disable
 		#endregion
 
-#if __NETSTD_REFERENCE__
-		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
-		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
-#endif
 	}
 }

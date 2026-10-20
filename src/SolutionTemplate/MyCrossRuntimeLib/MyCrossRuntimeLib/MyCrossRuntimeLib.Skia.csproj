@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <RootNamespace>MyCrossRuntimeLib</RootNamespace>
     <AssemblyName>MyCrossRuntimeLib</AssemblyName>
-    <UnoRuntimeIdentifier>skia</UnoRuntimeIdentifier>
+    <UnoRuntimeVariant>Generic</UnoRuntimeVariant>
     <DefineConstants>$(DefineConstants);WINUI;__SKIA__</DefineConstants>
   </PropertyGroup>
   <ItemGroup>

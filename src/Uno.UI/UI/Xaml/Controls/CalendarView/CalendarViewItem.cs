@@ -81,16 +81,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		internal override DateTime DateBase { get; set; }
 
-#if DEBUG && false
-		public override DateTime Date
-		{
-			set
-			{
-				SetDateForDebug(value);
-				CalendarViewItemGenerated.Date = value;
-			}
-		}
-#endif
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{

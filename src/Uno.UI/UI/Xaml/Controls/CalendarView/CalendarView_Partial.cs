@@ -219,10 +219,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			PrepareState();
 			DefaultStyleKey = typeof(CalendarView);
-
-#if __WASM__
-			IsMeasureDirtyPathDisabled = true;
-#endif
 		}
 
 		~CalendarView()
@@ -788,7 +784,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (spPreviousButton is { })
 			{
 				strAutomationName = AutomationProperties.GetName((Button)spPreviousButton);
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					// USe the same resource string as for FlipView's Previous Button.
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS);
@@ -799,7 +795,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (spNextButton is { })
 			{
 				strAutomationName = AutomationProperties.GetName((Button)spNextButton);
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					// USe the same resource string as for FlipView's Next Button.
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_NEXT);
@@ -1545,16 +1541,6 @@ namespace Microsoft.UI.Xaml.Controls
 							int distance = forward ? numberOfItemsPerPage : -numberOfItemsPerPage;
 							targetDate = dateOfFirstVisibleItem;
 							spHost.AddUnits(targetDate, distance);
-#if DEBUG && false
-							if (SUCCEEDED(hr))
-							{
-								// targetDate should be still in valid range.
-								var temp = targetDate;
-								CoerceDate(temp);
-								global::System.Diagnostics.Debug.Assert(temp.UniversalTime == targetDate.UniversalTime);
-							}
-
-#endif
 						}
 
 					}
@@ -1858,12 +1844,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (isScopeChanged)
 				{
-#if __ANDROID__
-					// .InvalidateMeasure() bug https://github.com/unoplatform/uno/issues/6236
-					DispatcherQueue.TryEnqueue(() => UpdateHeaderText(false /*withAnimation*/));
-#else
 					UpdateHeaderText(false /*withAnimation*/);
-#endif
 				}
 
 				// everytime visible indices changed, we need to update

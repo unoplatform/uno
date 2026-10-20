@@ -22,6 +22,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Markup;
 using Private.Infrastructure;
 using SamplesApp.UITests;
+using Uno.Disposables;
 
 #if !HAS_UNO
 using System.Runtime.InteropServices;
@@ -55,6 +56,12 @@ public static class UITestHelper
 
 		return element.GetAbsoluteBounds();
 	}
+
+	/// <summary>
+	/// Clears the test area when disposed, so a test does not leak its content into the next one.
+	/// </summary>
+	public static IDisposable ResetWindowContent()
+		=> Disposable.Create(() => TestServices.WindowHelper.WindowContent = null);
 
 	public static async Task WaitForLoaded<T>(T element, Func<T, bool>? isLoaded = null) where T : FrameworkElement
 	{
@@ -125,7 +132,6 @@ public static class UITestHelper
 	/// <returns></returns>
 	public static async Task<RawBitmap> ScreenShot(FrameworkElement element, bool opaque = false, ScreenShotScalingMode scaling = ScreenShotScalingMode.UsePhysicalPixelsWithImplicitScaling)
 	{
-#if HAS_RENDER_TARGET_BITMAP
 		var renderer = new RenderTargetBitmap();
 		element.UpdateLayout();
 		await TestServices.WindowHelper.WaitForIdle();
@@ -155,9 +161,6 @@ public static class UITestHelper
 		}
 
 		return bitmap;
-#else
-		throw new NotSupportedException("Cannot take screenshot on this platform.");
-#endif
 	}
 
 	public enum ScreenShotScalingMode
@@ -323,7 +326,7 @@ public class DynamicDataTemplate : IDisposable
 		_templates.Add(Id, factory);
 
 #if HAS_UNO
-		Value = new DataTemplate(factory);
+		Value = new DataTemplate(null, (_, _) => factory());
 #else
 		Value = (DataTemplate)XamlReader.Load($@"
 			<DataTemplate 
@@ -382,4 +385,7 @@ public static class FrameworkElementExtensions
 {
 	public static Rect GetAbsoluteBounds(this FrameworkElement element)
 		=> element.TransformToVisual(null).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
+
+	public static Point GetAbsoluteCenter(this FrameworkElement element)
+		=> element.TransformToVisual(null).TransformPoint(new Point(element.ActualWidth / 2, element.ActualHeight / 2));
 }

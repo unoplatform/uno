@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct GeneratorPosition
@@ -17,6 +17,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.Offset.set
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.GeneratorPosition(int, int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.GeneratorPosition(int, int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.GetHashCode()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.ToString()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.Equals(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.operator ==(Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition, Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.operator !=(Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition, Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition)
 	}
 }

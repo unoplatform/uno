@@ -3,20 +3,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct RawElementProviderRuntimeId
+	public partial struct RawElementProviderRuntimeId : global::System.IEquatable<global::Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId>
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.RawElementProviderRuntimeId()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public RawElementProviderRuntimeId(uint _Part1, uint _Part2)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId", "RawElementProviderRuntimeId(uint _Part1, uint _Part2)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.RawElementProviderRuntimeId(uint, uint)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.operator ==(Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId, Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.operator !=(Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId, Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Equals(Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Equals(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.GetHashCode()
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Part1
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Part2
 	}

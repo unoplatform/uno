@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetBorderThicknessValue(value);
 		}
 
-		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+		private static Thickness GetBorderThicknessDefaultValue() => default(Thickness);
 
 		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged))]
 		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetPaddingValue(value);
 		}
 
-		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
+		private static Thickness GetPaddingDefaultValue() => default(Thickness);
 
 		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetCornerRadiusValue(value);
 		}
 
-		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+		private static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
 		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged))]
 		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
@@ -69,9 +69,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty LayoutProperty { get; } = DependencyProperty.Register(
 			"Layout", typeof(Layout), typeof(LayoutPanel), new FrameworkPropertyMetadata(default(Layout), propertyChangedCallback: (sender, args) => ((LayoutPanel)sender).OnPropertyChanged(args)));
 
-#if __ANDROID__
-		new
-#endif
 		public Layout Layout
 		{
 			get => (Layout)GetValue(LayoutProperty);

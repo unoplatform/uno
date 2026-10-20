@@ -1,7 +1,3 @@
-﻿#if IS_UNIT_TESTS
-#pragma warning disable CS0067
-#endif
-
 #nullable enable
 
 using System;
@@ -24,26 +20,13 @@ using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation.Metadata;
 using Uno.UI.Xaml.Core;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif __APPLE_UIKIT__
-using UIKit;
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
-#else
-using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
-#endif
 
 using Microsoft.UI.Input;
 
@@ -269,21 +252,12 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region BringIntoViewOnFocusChange (Attached DP)
-#if __APPLE_UIKIT__
-		[global::Uno.NotImplemented]
-#endif
 		public static bool GetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element)
 			=> (bool)element.GetValue(BringIntoViewOnFocusChangeProperty);
 
-#if __APPLE_UIKIT__
-		[global::Uno.NotImplemented]
-#endif
 		public static void SetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
 			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
 
-#if __APPLE_UIKIT__
-		[global::Uno.NotImplemented]
-#endif
 		public bool BringIntoViewOnFocusChange
 		{
 			get => (bool)GetValue(BringIntoViewOnFocusChangeProperty);
@@ -300,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					true,
+					BoolBoxes.True,
 					propertyChangedCallback: OnBringIntoViewOnFocusChangeChanged));
 
 		private static void OnBringIntoViewOnFocusChangeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -456,7 +430,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ExtentHeight
 		{
 			get => (double)GetValue(ExtentHeightProperty);
-			private set => SetValue(ExtentHeightProperty, value);
+			private set => SetValue(ExtentHeightProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ExtentHeightProperty { get; } =
@@ -464,14 +438,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ExtentHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region ExtentWidth (DP - readonly)
 		public double ExtentWidth
 		{
 			get => (double)GetValue(ExtentWidthProperty);
-			private set => SetValue(ExtentWidthProperty, value);
+			private set => SetValue(ExtentWidthProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ExtentWidthProperty { get; } =
@@ -479,14 +453,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ExtentWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region ViewportHeight (DP - readonly)
 		public double ViewportHeight
 		{
 			get => (double)GetValue(ViewportHeightProperty);
-			private set => SetValue(ViewportHeightProperty, value);
+			private set => SetValue(ViewportHeightProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ViewportHeightProperty { get; } =
@@ -494,14 +468,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ViewportHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region ViewportWidth (DP - readonly)
 		public double ViewportWidth
 		{
 			get => (double)GetValue(ViewportWidthProperty);
-			private set => SetValue(ViewportWidthProperty, value);
+			private set => SetValue(ViewportWidthProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ViewportWidthProperty { get; } =
@@ -509,7 +483,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ViewportWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region ComputedHorizontalScrollBarVisibility (DP - readonly)
@@ -546,7 +520,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ScrollableHeight
 		{
 			get => (double)GetValue(ScrollableHeightProperty);
-			private set => SetValue(ScrollableHeightProperty, value);
+			private set => SetValue(ScrollableHeightProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ScrollableHeightProperty { get; } =
@@ -554,14 +528,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ScrollableHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region ScrollableWidth (DP - readonly)
 		public double ScrollableWidth
 		{
 			get => (double)GetValue(ScrollableWidthProperty);
-			private set => SetValue(ScrollableWidthProperty, value);
+			private set => SetValue(ScrollableWidthProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ScrollableWidthProperty { get; } =
@@ -569,14 +543,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ScrollableWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region VerticalOffset (DP - readonly)
 		public double VerticalOffset
 		{
 			get => (double)GetValue(VerticalOffsetProperty);
-			private set => SetValue(VerticalOffsetProperty, value);
+			private set => SetValue(VerticalOffsetProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty VerticalOffsetProperty { get; } =
@@ -585,7 +559,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					defaultValue: (double)0,
+					defaultValue: DoubleBoxes.Zero,
 					propertyChangedCallback: null
 				)
 			);
@@ -596,7 +570,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double HorizontalOffset
 		{
 			get => (double)GetValue(HorizontalOffsetProperty);
-			private set => SetValue(HorizontalOffsetProperty, value);
+			private set => SetValue(HorizontalOffsetProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty HorizontalOffsetProperty { get; } =
@@ -605,7 +579,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					defaultValue: (double)0,
+					defaultValue: DoubleBoxes.Zero,
 					propertyChangedCallback: null
 				)
 			);
@@ -687,15 +661,9 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void TrimOverscroll(Orientation orientation);
 
 		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void AfterArrange()
 		{
 			base.AfterArrange();
-#else
-		internal override void OnLayoutUpdated()
-		{
-			base.OnLayoutUpdated();
-#endif
 			if (m_dimensionsUpdatedInArrange)
 			{
 				m_dimensionsUpdatedInArrange = false;
@@ -712,11 +680,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return this.GetUseLayoutRounding() ? fe.LayoutRound(value) : value;
 		}
 
-#if __APPLE_UIKIT__
-		internal
-#else
 		private
-#endif
 			void UpdateDimensionProperties()
 		{
 			// The dimensions of the presenter (which are often but not always the same as the ScrollViewer) determine the viewport size
@@ -782,13 +746,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				static double GetEffectiveMargin(double leadingMargin, double trailingMargin)
 				{
-#if !__WASM__
 					return leadingMargin + trailingMargin;
-#else
-					// Issue needs to be fixed first for WASM for missing trailing Margin
-					// Details here: https://github.com/unoplatform/uno/issues/7000
-					return leadingMargin;
-#endif
 				}
 			}
 			else
@@ -878,14 +836,6 @@ namespace Microsoft.UI.Xaml.Controls
 			ComputedVerticalScrollBarVisibility = computedVisibility;
 			ComputedIsVerticalScrollEnabled = computedEnabled;
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// Support for the native scroll bars (delegated to the native _presenter).
-			_presenter.NativeVerticalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _verticalScrollbar);
-			if (invalidate && _verticalScrollbar is null)
-			{
-				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
-			}
-#endif
 		}
 
 		private void UpdateComputedHorizontalScrollability(bool invalidate)
@@ -911,14 +861,6 @@ namespace Microsoft.UI.Xaml.Controls
 			ComputedHorizontalScrollBarVisibility = computedVisibility;
 			ComputedIsHorizontalScrollEnabled = computedEnabled;
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// Support for the native scroll bars (delegated to the native _presenter).
-			_presenter.NativeHorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _horizontalScrollbar);
-			if (invalidate && _horizontalScrollbar is null)
-			{
-				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
-			}
-#endif
 		}
 
 		/// <summary>
@@ -950,31 +892,6 @@ namespace Microsoft.UI.Xaml.Controls
 				&& visibility != ScrollBarVisibility.Disabled
 				&& mode != ScrollMode.Disabled;
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-		private ScrollBarVisibility ComputeNativeScrollBarVisibility(double scrollable, ScrollBarVisibility visibility, ScrollMode mode, ScrollBar? managedScrollbar)
-			=> (scrollable, visibility, mode, managedScrollbar) switch
-			{
-				(_, _, ScrollMode.Disabled, _) => ScrollBarVisibility.Disabled,
-				(0, ScrollBarVisibility.Auto, _, null) => ScrollBarVisibility.Hidden, // If scrollable is 0, the managed scrollbar won't be realized, we prefer to hide the native one until we are sure!
-				(_, _, _, null) when Uno.UI.Xaml.Controls.ScrollViewer.GetShouldFallBackToNativeScrollBars(this) => visibility,
-				(_, ScrollBarVisibility.Disabled, _, _) => ScrollBarVisibility.Disabled,
-				_ => ScrollBarVisibility.Hidden // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
-			};
-#endif
-
-		/// <summary>
-		/// Sets the content of the ScrollViewer
-		/// </summary>
-		/// <param name="view"></param>
-		/// <remarks>Used in the context of member initialization</remarks>
-		public
-#if !UNO_REFERENCE_API && !IS_UNIT_TESTS
-			new
-#endif
-			void Add(View view)
-		{
-			Content = view;
-		}
 
 		protected override void OnApplyTemplate()
 		{
@@ -989,7 +906,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_isTemplateApplied = _presenter != null;
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 			if (_presenter != null && ForceChangeToCurrentView)
 			{
 				_presenter.ForceChangeToCurrentView = ForceChangeToCurrentView;
@@ -1000,17 +917,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_isVerticalScrollBarMaterialized = false;
 			_horizontalScrollbar = null;
 			_isHorizontalScrollBarMaterialized = false;
-
-#if __APPLE_UIKIT__ || __ANDROID__
-			if (scpTemplatePart is ScrollContentPresenter scp && scp.Native is null)
-			{
-				// For Android and iOS, ensure that the ScrollContentPresenter contains a native SCP,
-				// which will handle the actual scrolling.
-				var nativeSCP = new NativeScrollContentPresenter(this);
-				scp.Content = scp.Native = nativeSCP;
-				_presenter = nativeSCP;
-			}
-#endif
 
 			if (scpTemplatePart is ScrollContentPresenter presenter)
 			{
@@ -1231,7 +1137,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Scrollbar interactions are explicit offset requests: arm the intent so the post-layout
 			// recompute coerces toward this offset instead of snapping back to a stale programmatic one.
-			_verticalOffsetIntent = offset;
+			_verticalOffsetIntent = ValidateVerticalOffsetIntent(offset);
 
 			ChangeViewCore(
 				horizontalOffset: null,
@@ -1259,7 +1165,7 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 
 			// Arm the intent — see OnVerticalScrollBarScrolled.
-			_horizontalOffsetIntent = offset;
+			_horizontalOffsetIntent = ValidateHorizontalOffsetIntent(offset);
 
 			ChangeViewCore(
 				horizontalOffset: offset,
@@ -1292,9 +1198,6 @@ namespace Microsoft.UI.Xaml.Controls
 					_snapPointsTimer?.Stop();
 				}
 				if (!isIntermediate
-#if __APPLE_UIKIT__ || __ANDROID__
-					&& (_presenter as ListViewBaseScrollContentPresenter)?.NativePanel?.UseNativeSnapping != true
-#endif
 					)
 				{
 					if (HorizontalSnapPointsType != SnapPointsType.None
@@ -1319,15 +1222,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-#if __WASM__
-			// On WASM, a large wheel scroll can be a large number of OnScroll events in sequence.
-			// In that case, the queue will be drowning with scroll events before any chance of layout
-			// updates. The ScrollContentPresenter will scroll smoothly since the native scrolling/rendering
-			// is on a separate thread, but the ScrollBars will be frozen until the end of the (long) scrolling
-			// duration.
-			_horizontalScrollbar?.Arrange(LayoutInformation.GetLayoutSlot(_horizontalScrollbar));
-			_verticalScrollbar?.Arrange(LayoutInformation.GetLayoutSlot(_verticalScrollbar));
-#endif
 		}
 
 		// Presenter to Control, i.e. OnPresenterZoomed
@@ -1541,11 +1435,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (horizontalOffset is double hh)
 				{
-					_horizontalOffsetIntent = hh;
+					_horizontalOffsetIntent = _isLayoutAdjustment ? hh : ValidateHorizontalOffsetIntent(hh, zoomFactor);
 				}
 				if (verticalOffset is double vv)
 				{
-					_verticalOffsetIntent = vv;
+					_verticalOffsetIntent = _isLayoutAdjustment ? vv : ValidateVerticalOffsetIntent(vv, zoomFactor);
 				}
 			}
 
@@ -1606,9 +1500,52 @@ namespace Microsoft.UI.Xaml.Controls
 		// requests in the same sense as ChangeView; the new value supersedes any prior intent so
 		// the recompute step does not pull the offset back to a stale intent (which the user has
 		// just explicitly overridden).
-		internal void SetVerticalOffsetIntent(double offset) => _verticalOffsetIntent = offset;
+		internal void SetVerticalOffsetIntent(double offset) => _verticalOffsetIntent = ValidateVerticalOffsetIntent(offset);
 
-		internal void SetHorizontalOffsetIntent(double offset) => _horizontalOffsetIntent = offset;
+		internal void SetHorizontalOffsetIntent(double offset) => _horizontalOffsetIntent = ValidateHorizontalOffsetIntent(offset);
+
+		// The intent is validated against the range at request time, like WinUI's m_Offset
+		// (SetVerticalOffsetPrivate, and AdjustTargetVerticalOffset which uses the target zoom).
+		// Left raw, a request past the extent keeps chasing it as the extent grows.
+		private double ValidateVerticalOffsetIntent(double offset, float? zoomFactor = null)
+			=> ValidateOffsetIntent(offset, ExtentHeight, ViewportHeight, zoomFactor);
+
+		private double ValidateHorizontalOffsetIntent(double offset, float? zoomFactor = null)
+			=> ValidateOffsetIntent(offset, ExtentWidth, ViewportWidth, zoomFactor);
+
+		private double ValidateOffsetIntent(double offset, double extent, double viewport, float? zoomFactor)
+		{
+			var zoom = ZoomFactor;
+			if (zoomFactor is float z && !float.IsNaN(z) && ZoomMode == ZoomMode.Enabled)
+			{
+				// The same bounds the presenter applies the zoom with.
+				var min = Math.Max(0.1f, MinZoomFactor);
+				zoom = Math.Clamp(z, min, Math.Max(min, MaxZoomFactor));
+			}
+
+			return Math.Max(0, Math.Min(offset, Math.Max(Math.Round(extent * zoom - viewport, 4), 0)));
+		}
+
+		private bool _isLayoutAdjustment;
+
+		/// <summary>
+		/// Scrolls to compensate a change of the content's own layout. Unlike a request, it is computed against an
+		/// extent this ScrollViewer has not been arranged with yet, so it is kept as is rather than clamped to the
+		/// current range, and the post-layout recompute seats it once the extent catches up.
+		/// </summary>
+		internal void ChangeViewForLayoutAdjustment(double? horizontalOffset, double? verticalOffset, bool disableAnimation = true)
+		{
+			var wasLayoutAdjustment = _isLayoutAdjustment;
+			_isLayoutAdjustment = true;
+			try
+			{
+				ChangeView(horizontalOffset, verticalOffset, null, disableAnimation);
+			}
+			finally
+			{
+				_isLayoutAdjustment = wasLayoutAdjustment;
+			}
+		}
 
 		// Recomputes VerticalOffset/HorizontalOffset = clamp(intent, 0, ScrollableHeight/Width) when
 		// an intent is armed. Called from UpdateDimensionProperties after the SV's extent/viewport
@@ -1621,12 +1558,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// and stop intermediate effects (e.g. ListViewBase IncrementalLoading triggered by the
 			// progressive viewport move). Once the animation completes the next layout pass runs
 			// the recompute and seats the offset at clamp(intent, SH).
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 			if ((_presenter as ScrollContentPresenter)?.IsScrollAnimationInProgress == true)
 			{
 				return false;
 			}
-#endif
 
 			var changed = false;
 
@@ -1800,15 +1735,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-#if !__ANDROID__ && !__APPLE_UIKIT__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);
 
-			// On WASM, we could choose to scroll in the managed layer and suppress the native scrolling
-			// but it can lead to some chaotic scenarios where it's really difficult to reconcile the
-			// numbers between ScrollViewer and ScrollContentPresenter, so we choose to keep the scrolling native
-#if !__WASM__
 			var key = args.Key;
 
 			// WinUI stops keyboard scrolling if TemplatedParentHandlesScrolling
@@ -1819,7 +1749,6 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// Handle Ctrl+Plus/Minus for zoom
 			if (ZoomMode == ZoomMode.Enabled)
 			{
@@ -1858,7 +1787,6 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}
-#endif
 
 			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
 			var oldVerticalOffset = Presenter.TargetVerticalOffset;
@@ -1940,9 +1868,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				return result;
 			}
-#endif
 		}
-#endif
 
 #if __CROSSRUNTIME__
 		private static bool _warnedAboutZoomedContentAlignment;
@@ -1995,5 +1921,27 @@ namespace Microsoft.UI.Xaml.Controls
 					HorizontalScrollMode == ScrollMode.Disabled)
 			);
 		}
+
+#nullable disable
+		partial void OnZoomModeChangedPartial(ZoomMode zoomMode)
+		{
+			if (_presenter is ScrollContentPresenter scp)
+			{
+				switch (zoomMode)
+				{
+					case ZoomMode.Disabled:
+						// When zoom is disabled, set min/max to 1 to prevent any zooming
+						scp.OnMinZoomFactorChanged(1f);
+						scp.OnMaxZoomFactorChanged(1f);
+						break;
+					case ZoomMode.Enabled:
+						// When zoom is enabled, use the actual min/max values
+						scp.OnMinZoomFactorChanged(MinZoomFactor);
+						scp.OnMaxZoomFactorChanged(MaxZoomFactor);
+						break;
+				}
+			}
+		}
+#nullable enable
 	}
 }

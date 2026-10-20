@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Numerics;
 using Windows.Foundation;
 
@@ -41,19 +42,14 @@ internal sealed class InteractionTrackerIdleState : InteractionTrackerState
 	{
 	}
 
-	internal override void ReceivePointerWheel(int delta, bool isHorizontal)
-	{
-		// Constant velocity for 250ms
-		var velocityValue = delta / 0.25f;
-		Vector3 velocity = isHorizontal ? new Vector3(velocityValue, 0, 0) : new Vector3(0, velocityValue, 0);
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocity, requestId: 0, isFromPointerWheel: true));
-	}
+	internal override void ReceivePointerWheel(double delta, bool isHorizontal)
+		=> ScrollByPointerWheel(_interactionTracker.Position, delta, isHorizontal);
 
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId)
 	{
 		// State changes to inertia and inertia modifiers are evaluated with requested velocity as initial velocity
 		// TODO: inertia modifiers not yet implemented.
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId, isFromPointerWheel: false));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId));
 	}
 
 	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId)
@@ -64,5 +60,11 @@ internal sealed class InteractionTrackerIdleState : InteractionTrackerState
 		}
 
 		_interactionTracker.SetPosition(value, requestId);
+	}
+
+	internal override void TryUpdateScale(float value, Vector3 centerPoint, int requestId)
+	{
+		value = Math.Clamp(value, _interactionTracker.MinScale, _interactionTracker.MaxScale);
+		_interactionTracker.SetScale(value, centerPoint, requestId);
 	}
 }

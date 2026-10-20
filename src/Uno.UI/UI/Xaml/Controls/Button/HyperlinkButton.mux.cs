@@ -142,12 +142,15 @@ namespace Microsoft.UI.Xaml.Controls
 				// generated in ContentPresenter code behind as default, only then do we proceed with the underline.
 				if (contentPresenter != null && contentPresenter.IsUsingDefaultTemplate)
 				{
-					// TODO Uno: Using ContentPresenter.ContentTemplateRoot instead of this.ContentTemplateRoot, which is null.
-					var contentTemplateRootAsIUIE = contentPresenter.ContentTemplateRoot;
+					var contentTemplateRootAsIUIE = ContentTemplateRoot;
 					var contentTemplateRootAsITextBlock = contentTemplateRootAsIUIE as TextBlock;
 					if (contentTemplateRootAsITextBlock != null)
 					{
-						contentTemplateRootAsITextBlock.TextDecorations = TextDecorations.Underline;
+						// In 21H1 and later, when the HyperlinkUnderlineVisible resource is set to False, the underline is only visible in HighContrast mode.
+						var underlineVisibleResourceDirective = Microsoft.UI.Xaml.Documents.Hyperlink.UnderlineVisibleResourceDirective();
+						var underline = underlineVisibleResourceDirective || Uno.UI.Xaml.Core.CoreServices.Instance.Theming.HasHighContrastTheme();
+
+						contentTemplateRootAsITextBlock.TextDecorations = underline ? TextDecorations.Underline : TextDecorations.None;
 					}
 				}
 			}

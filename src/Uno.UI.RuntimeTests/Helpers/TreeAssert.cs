@@ -8,14 +8,7 @@ using Uno.Extensions;
 using Uno.UI.Extensions;
 using Windows.Media.Core;
 
-#if __IOS__
-using UIKit;
-using _View = UIKit.UIView;
-#elif __ANDROID__
-using _View = Android.Views.View;
-#else
 using _View = Microsoft.UI.Xaml.DependencyObject;
-#endif
 
 namespace Uno.UI.RuntimeTests.Helpers;
 
@@ -45,34 +38,6 @@ internal static class TreeAssert
 
 				return new NodeInfo(i, depth, parts[0], parts.ElementAtOrDefault(1) ?? string.Empty);
 			})
-#if __ANDROID__ || __IOS__
-			// On droid and ios, ContentPresenter bypass can be potentially enabled (based on if a base control template is present, or not).
-			// As such, ContentPresenter may be omitted, and altering its visual descendants.
-			.Aggregate(
-				new { DroppedDepths = new Stack<int>(), Results = new List<NodeInfo>() },
-				(acc, x) => // drop ignored line, and repair depth from dropped item
-				{
-					if (x.Description.Contains("IGNORE_FOR_MOBILE_CP_BYPASS"))
-					{
-						acc.DroppedDepths.Push(x.Depth);
-						return acc;
-					}
-
-					if (acc.DroppedDepths.TryPeek(out var dropped))
-					{
-						if (dropped >= x.Depth) acc.DroppedDepths.Pop();
-						acc.Results.Add(x with { Depth = x.Depth - acc.DroppedDepths.Count(y => y < x.Depth) });
-					}
-					else
-					{
-						acc.Results.Add(x);
-					}
-
-					return acc;
-				},
-				acc => acc.Results
-			)
-#endif
 			.ToList();
 		var descendants = (flatten?.Invoke(root) ?? FlattenVT(root)).ToArray();
 

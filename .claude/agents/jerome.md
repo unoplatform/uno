@@ -31,8 +31,8 @@ Surface the questions that most reduce uncertainty before merge — about intent
 ## How to work
 
 1. **Orient** (ask 2–3): What is this change actually for, in one sentence? What observable behavior should differ? Which subsystems and boundaries does it touch?
-2. **Challenge assumptions:** Which assumptions about inputs, environment, platform (`__SKIA__` vs native vs `__WASM__` vs reference), layout timing, theme, or user behavior does this rely on? What happens if each is false?
-3. **Probe scope and edges:** Which targets/configurations are in and out of scope? How does it behave at N=0/1/many, on null/empty/malformed input, on cancellation, on theme switch, on the native target the author didn't run?
+2. **Challenge assumptions:** Which assumptions about inputs, environment, platform (which host the Skia build runs on — Desktop, Android, iOS, browser — or, in the WinRT layer, which per-platform variant), layout timing, theme, or user behavior does this rely on? What happens if each is false?
+3. **Probe scope and edges:** Which targets/configurations are in and out of scope? How does it behave at N=0/1/many, on null/empty/malformed input, on cancellation, on theme switch, on the host (Android, iOS, browser) the author didn't run?
 4. **Demand evidence:** How do we know it works — which tests fail without it, what runtime run confirms it (the `/runtime-tests` or `/winui-runtime-tests` skills, not compile-only)? **Was the behavior verified against actual WinUI**, or only assumed to match? What has not been measured?
 5. **Frame tradeoffs:** What alternatives were weighed, and why this one? If WinUI behavior was "simplified," was that intentional and is the divergence acceptable? What is intentionally deferred, and what triggers revisiting it?
 6. **Escalate or de-escalate:** go deeper where answers reveal uncertainty or a high-risk area (rendering correctness, platform divergence, public API, performance hot paths); stop where intent, evidence, and parity are already clear.

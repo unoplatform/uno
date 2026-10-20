@@ -1,0 +1,80 @@
+﻿#nullable enable
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Uno.UI.Composition.Drawing;
+
+namespace Windows.Graphics.Imaging;
+
+partial class BitmapEncoder
+{
+	public static Guid BmpEncoderId { get; }
+		= new(0x69be8bb4, 0xd66d, 0x47c8, 0x86, 0x5a, 0xed, 0x15, 0x89, 0x43, 0x37, 0x82);
+
+	public static Guid GifEncoderId { get; }
+		= new(0x114f5598, 0x0b22, 0x40a0, 0x86, 0xa1, 0xc8, 0x3e, 0xa4, 0x95, 0xad, 0xbd);
+
+	public static Guid JpegEncoderId { get; }
+		= new(0x1a34f5c1, 0x4a5a, 0x46dc, 0xb6, 0x44, 0x1f, 0x45, 0x67, 0xe7, 0xa6, 0x76);
+
+	public static Guid JpegXREncoderId { get; }
+		= new(0xac4ce3cb, 0xe1c1, 0x44cd, 0x82, 0x15, 0x5a, 0x16, 0x65, 0x50, 0x9e, 0xc2);
+
+	public static Guid PngEncoderId { get; }
+		= new(0x27949969, 0x876a, 0x41d7, 0x94, 0x47, 0x56, 0x8f, 0x6a, 0x35, 0xa4, 0xdc);
+
+	public static Guid HeifEncoderId { get; }
+		= new(0x0dbecec1, 0x9eb3, 0x4860, 0x9c, 0x6f, 0xdd, 0xbe, 0x86, 0x63, 0x45, 0x75);
+
+	public static Guid TiffEncoderId { get; }
+		= new(0x0131be10, 0x2001, 0x4c5f, 0xa9, 0xb0, 0xcc, 0x88, 0xfa, 0xb6, 0x4c, 0xe8);
+
+	// _encoderMap is defined here to  make sure they are initialized after the encoder ID Guids above.
+	// Static field initializers are executed in textual order. When dealing with partial classes, the order is undefined.
+
+	// Uniform across all platforms: the neutral output format. FlushAsync resolves the neutral codec (ResolveEncode,
+	// which lazily lights up the Skia/managed codec on a Skia head) and only falls back to the platform's native
+	// encoder on a native-only head where no codec exists.
+	private static readonly IDictionary<Guid, BitmapEncoderFormat> _encoderMap =
+		new Dictionary<Guid, BitmapEncoderFormat>()
+		{
+			{BmpEncoderId, BitmapEncoderFormat.Bmp},
+			{GifEncoderId, BitmapEncoderFormat.Gif},
+			{JpegEncoderId, BitmapEncoderFormat.Jpeg},
+			{PngEncoderId, BitmapEncoderFormat.Png},
+			{HeifEncoderId, BitmapEncoderFormat.Heif},
+		};
+
+	/// <summary>
+	/// The registered neutral image codec's encode entry point, or null when none has been registered yet. Assigned
+	/// top-down by the image-codec registration in the composition layer (which references this assembly and hands its
+	/// <c>IImageEncoderDecoder.Encode</c> down as a plain delegate) — so this assembly needs no reference to, and no
+	/// reflection into, the codec. Prefer <see cref="ResolveEncode"/> over reading this directly.
+	/// Signature: (destination, pixels, width, height, pixelFormat, alphaMode, format, quality).
+	/// Internal (not part of the WinUI <c>BitmapEncoder</c> surface): the setter is reached from the composition layer via InternalsVisibleTo.
+	/// </summary>
+	internal static Action<Stream, byte[], int, int, BitmapPixelFormat, BitmapAlphaMode, BitmapEncoderFormat, int>? Encode { get; set; }
+
+	/// <summary>
+	/// Downward trigger to the UI layer's default codec resolution, wired top-down at startup by the host builder
+	/// (<c>UnoPlatformHostBuilder</c>) — this assembly sits below it and can't reach it directly. Lets an encode that
+	/// ran without going through the host builder still light up a Skia codec on first use. Null (or a no-op) on a
+	/// SkiaSharp-free / native-only head.
+	/// </summary>
+	internal static Action? EnsureCodec { get; set; }
+
+	/// <summary>
+	/// Returns the registered codec, triggering the composition layer's lazy registration once if none is set yet.
+	/// Null only when there is genuinely no codec (a native-only head), where callers use the platform encoder instead.
+	/// </summary>
+	internal static Action<Stream, byte[], int, int, BitmapPixelFormat, BitmapAlphaMode, BitmapEncoderFormat, int>? ResolveEncode()
+	{
+		if (Encode is null)
+		{
+			EnsureCodec?.Invoke();
+		}
+
+		return Encode;
+	}
+}

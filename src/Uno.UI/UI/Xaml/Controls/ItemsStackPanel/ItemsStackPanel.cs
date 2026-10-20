@@ -1,5 +1,4 @@
-﻿#if !IS_UNIT_TESTS
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,11 +25,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
 
 		internal override Orientation? PhysicalOrientation => Orientation;
-
-#if __ANDROID__
-		public int FirstCacheIndex => _layout.XamlParent.NativePanel.ViewCache.FirstCacheIndex;
-		public int LastCacheIndex => _layout.XamlParent.NativePanel.ViewCache.LastCacheIndex;
-#endif
 
 		public ItemsStackPanel()
 		{
@@ -60,9 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_layout.BindToEquivalentProperty(this, nameof(AreStickyGroupHeadersEnabled));
 				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
-#if !__APPLE_UIKIT__
 				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
-#endif
 			}
 		}
 
@@ -111,4 +103,3 @@ namespace Microsoft.UI.Xaml.Controls
 	}
 }
 
-#endif

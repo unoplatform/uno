@@ -30,7 +30,7 @@ namespace Uno.UI.Helpers.WinUI
 {
 	internal class SharedHelpers
 	{
-#if HAS_UNO && !(IS_UNIT_TESTS || __NETSTD_REFERENCE__)
+#if HAS_UNO
 		private static bool s_isOnXboxInitialized;
 		private static bool s_isOnXbox;
 #endif
@@ -488,13 +488,15 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static bool IsOnXbox()
 		{
-#if HAS_UNO && !(IS_UNIT_TESTS || __NETSTD_REFERENCE__)
+#if HAS_UNO
 			if (!s_isOnXboxInitialized)
 			{
 				var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;
 				s_isOnXbox = (deviceFamily == "Windows.Xbox")
 					|| (deviceFamily == "Windows.XBoxSRA")
-					|| (deviceFamily == "Windows.XBoxERA");
+					|| (deviceFamily == "Windows.XBoxERA")
+					// Uno specific: agree with DirectUI.XboxUtility, which treats tvOS as a remote-first 10-foot platform.
+					|| DirectUI.XboxUtility.IsOnXbox();
 				s_isOnXboxInitialized = true;
 			}
 			return s_isOnXbox;

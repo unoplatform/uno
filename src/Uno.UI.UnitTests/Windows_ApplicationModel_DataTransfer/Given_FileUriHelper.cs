@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Windows_ApplicationModel_DataTransfer
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_FileUriHelper
 	{
 		[TestMethod]

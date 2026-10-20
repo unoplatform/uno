@@ -5,9 +5,6 @@ using System.Text;
 using Uno.UI;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
-#if __ANDROID__
-using Android.Views;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -52,18 +49,5 @@ namespace Microsoft.UI.Xaml.Controls
 				item.PivotHeaderItem.Content = args.NewValue;
 			}
 		}
-
-#if __ANDROID__
-		// This allows the PivotItem to fill the whole available space.
-		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
-		{
-			if (ChildCount != 0)
-			{
-				MeasureChild(GetChildAt(0), widthMeasureSpec, heightMeasureSpec);
-			}
-
-			SetMeasuredDimension(ViewHelper.MeasureSpecGetSize(widthMeasureSpec), ViewHelper.MeasureSpecGetSize(heightMeasureSpec));
-		}
-#endif
 	}
 }

@@ -67,13 +67,13 @@ function Resolve-CompatibleUnoSdkVersion {
     $versions = Get-ChildItem -Path $sdkRoot -Directory |
         ForEach-Object { $_.Name } |
         Where-Object {
-            Test-Path (Join-Path $devServerRoot $_ 'tools' 'rc' 'host' 'net10.0' 'Uno.UI.RemoteControl.Host.dll')
+            Test-Path (Join-Path $devServerRoot $_ 'tools' 'rc' 'host' 'net11.0' 'Uno.UI.RemoteControl.Host.dll')
         } |
         Sort-Object -Descending
 
     $resolvedVersion = $versions | Select-Object -First 1
     if ([string]::IsNullOrWhiteSpace($resolvedVersion)) {
-        throw "Unable to find a locally cached Uno.Sdk.Private version with a net10.0 DevServer host."
+        throw "Unable to find a locally cached Uno.Sdk.Private version with a net11.0 DevServer host."
     }
 
     return $resolvedVersion

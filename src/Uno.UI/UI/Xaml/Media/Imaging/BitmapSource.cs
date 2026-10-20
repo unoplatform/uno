@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +6,8 @@ using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
+using Uno.UI.Composition.Drawing;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
@@ -16,12 +18,12 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		public int PixelHeight
 		{
 			get { return (int)GetValue(PixelHeightProperty); }
-			internal set { SetValue(PixelHeightProperty, value); }
+			internal set { SetValue(PixelHeightProperty, Boxer.Box(value)); }
 		}
 
 		// Using a DependencyProperty as the backing store for PixelHeight.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PixelHeightProperty { get; } =
-			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0));
+			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 		#endregion
 
@@ -30,16 +32,16 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		public int PixelWidth
 		{
 			get { return (int)GetValue(PixelWidthProperty); }
-			internal set { SetValue(PixelWidthProperty, value); }
+			internal set { SetValue(PixelWidthProperty, Boxer.Box(value)); }
 		}
 
 		// Using a DependencyProperty as the backing store for PixelWidth.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PixelWidthProperty { get; } =
-			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0));
+			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 		#endregion
 
-#if __CROSSRUNTIME__ || IS_UNIT_TESTS
+#if __CROSSRUNTIME__
 		protected IRandomAccessStream _stream;
 #endif
 
@@ -90,7 +92,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			// The source has to be cloned before leaving the "SetSource[Async]".
 			var clonedStreamSource = streamSource.CloneStream();
 
-#if __CROSSRUNTIME__ || IS_UNIT_TESTS
+#if __CROSSRUNTIME__
 			_stream = clonedStreamSource;
 			UpdatePixelWidthAndHeightPartial(_stream.CloneStream().AsStream());
 #else
@@ -139,7 +141,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				return $"{GetType().Name}/{uri}";
 			}
 
-#if __CROSSRUNTIME__ || IS_UNIT_TESTS
+#if __CROSSRUNTIME__
 			if (_stream is { } stream)
 			{
 				return $"{GetType().Name}/{stream.GetType()}";
@@ -152,6 +154,19 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #endif
 
 			return $"{GetType().Name}/-empty-";
+		}
+
+		partial void UpdatePixelWidthAndHeightPartial(Stream stream)
+		{
+			// Read the source dimensions through the neutral backend decoder (no Skia codec here).
+			if (ImageEncoderDecoder.Current.TryDecode(stream, null, null, out var frames))
+			{
+				using (frames)
+				{
+					PixelWidth = frames.Frames[0].PixelWidth;
+					PixelHeight = frames.Frames[0].PixelHeight;
+				}
+			}
 		}
 	}
 }

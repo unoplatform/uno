@@ -16,7 +16,7 @@ namespace Uno.UI.Tests.BinderTests
 	/// </summary>
 	// RunWithProvider swaps the static BindingPropertyHelper.BindableMetadataProvider and clears the
 	// binder caches; running concurrently with any other test that touches that shared state would flake.
-	[TestClass]
+	[UITestClass]
 	[DoNotParallelize]
 	public partial class Given_Binder_MetadataProviderIdentity
 	{
@@ -102,7 +102,7 @@ namespace Uno.UI.Tests.BinderTests
 			public IBindableType GetBindableTypeByFullName(string fullName) => _result;
 		}
 
-		public partial class MetadataIdentityControl : DependencyObject
+		public partial class MetadataIdentityControl : FrameworkElement
 		{
 			public string MyProperty
 			{

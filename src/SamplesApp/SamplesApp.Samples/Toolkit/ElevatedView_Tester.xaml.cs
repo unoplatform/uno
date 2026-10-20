@@ -1,4 +1,5 @@
 ﻿using Uno.UI.Samples.Controls;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -18,11 +19,7 @@ namespace UITests.Toolkit
 			this.InitializeComponent();
 		}
 
-		public
-#if __ANDROID__
-		new
-#endif
-		int Elevation
+		public int Elevation
 		{
 			get => _elevation;
 			set
@@ -60,7 +57,7 @@ namespace UITests.Toolkit
 			ElevatedElement.CornerRadius = new CornerRadius(Radius);
 		}
 
-		//UNO TODO: After updating to WinUI 1.6+, the Windows.UI.ColorHelper.ConvertColorFromHexString can be used
+		//UNO TODO: After updating to WinUI 1.6+, the Microsoft.UI.ColorHelper.ConvertColorFromHexString can be used
 		private Color ConvertColorFromHexString(string colorString)
 		{
 			try

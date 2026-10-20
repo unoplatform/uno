@@ -1,0 +1,52 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Composition.ScrollableShapesWinUI.ScrollableShapesWinUI"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="Black"
+    RequestedTheme="Dark"
+    mc:Ignorable="d">
+
+    <Grid x:Name="host">
+        <!--  A wide wash behind the cloud, standing in for the blurred circle the reference draws.  -->
+        <Ellipse
+            x:Name="glow"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsHitTestVisible="False">
+            <Ellipse.Fill>
+                <RadialGradientBrush>
+                    <GradientStop Offset="0.0" Color="#40FFFFFF" />
+                    <GradientStop Offset="1.0" Color="#00FFFFFF" />
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <!--
+            The sprite cloud is attached to this as a child visual, so it sits above the glow and
+            below the flip that carries the gesture.
+        -->
+        <Border x:Name="cloudHost" IsHitTestVisible="False" />
+
+        <FlipView
+            x:Name="flip"
+            Background="Transparent"
+            BorderThickness="0">
+            <FlipView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Background="Transparent" />
+                </DataTemplate>
+            </FlipView.ItemTemplate>
+        </FlipView>
+
+        <StackPanel
+            x:Name="paginator"
+            Margin="0,0,0,42"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            IsHitTestVisible="False"
+            Orientation="Horizontal"
+            Spacing="6" />
+    </Grid>
+</Page>

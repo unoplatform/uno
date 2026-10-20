@@ -4,8 +4,6 @@
 // Imported in uno on 2021/03/21 from commit 307bd99682cccaa128483036b764c0b7c862d666
 // https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/SwipeControl/SwipeItem.h
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.Foundation.Collections;
 
@@ -28,12 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 		//void RemoveAtEnd();
 		//void Clear();
 
-		// TODO:
-		public SwipeItem First() { throw new NotImplementedException(); }
-
-		public uint GetMany(uint startIndex, SwipeItem[] items) { throw new NotImplementedException(); }
-
-		public void ReplaceAll(SwipeItem[] items) { throw new NotImplementedException(); }
+		// Uno: First/GetMany/ReplaceAll are TODO stubs upstream and have no C# projection (IVector<T> projects to IList<T>).
 		#endregion
 
 		#region IObservableVector
