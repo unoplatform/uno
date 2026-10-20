@@ -118,7 +118,11 @@ internal class UnoFocusInputHandler
 		{
 			return false;
 		}
-		contentRoot.InputManager.LastInputDeviceType = InputDeviceType.Keyboard;
+		// A gamepad or remote D-pad key is not keyboard input: keep GamepadOrRemote for it, as WinUI's
+		// KeyboardInputProcessor does, so focus moves report FocusInputDeviceKind.GameController.
+		contentRoot.InputManager.LastInputDeviceType = XboxUtility.IsGamepadNavigationInput(originalKey)
+			? InputDeviceType.GamepadOrRemote
+			: InputDeviceType.Keyboard;
 
 		var focusManager = VisualTree.GetFocusManagerForElement(_rootElement);
 		// Uno specific: We are handling Gamepad input along with keyboard here.
