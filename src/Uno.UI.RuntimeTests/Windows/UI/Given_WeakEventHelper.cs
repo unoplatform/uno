@@ -276,6 +276,73 @@ public partial class Given_WeakEventHelper
 		Assert.AreEqual(1, invoked);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25590")]
+	public async Task When_First_Subscriber_Not_Referenced_Then_Collected()
+	{
+		// Keeps the trim callback strongly referenced, as Gen2GcCallback does.
+		TestPlatformProvider trimProvider = new();
+		WeakEventHelper.WeakEventCollection SUT = new(trimProvider);
+
+		// The first registration on an empty collection is the one that registers the trim callback.
+		var firstRef = CreateSubscriber(SUT, trackResurrection: false);
+		var second = new Subscriber(SUT);
+
+		await AssertCollected(firstRef);
+
+		GC.KeepAlive(second);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25590")]
+	public async Task When_First_Subscriber_Not_Referenced_Then_Collected_With_Default_Trim_Provider()
+	{
+		WeakEventHelper.WeakEventCollection SUT = new();
+
+		// What only Gen2GcCallback references survives each GC through its finalizer, but short weak
+		// references to it are cleared anyway, so only a long weak reference shows the leak.
+		var firstRef = CreateSubscriber(SUT, trackResurrection: true);
+		var second = new Subscriber(SUT);
+
+		await AssertCollected(firstRef);
+
+		GC.KeepAlive(second);
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static WeakReference CreateSubscriber(WeakEventHelper.WeakEventCollection source, bool trackResurrection)
+		=> new(new Subscriber(source), trackResurrection);
+
+	private static async Task AssertCollected(WeakReference reference)
+	{
+		var sw = Stopwatch.StartNew();
+
+		while (reference.IsAlive && sw.ElapsedMilliseconds < 5000)
+		{
+			await Task.Delay(10);
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			GC.Collect();
+		}
+
+		Assert.IsFalse(reference.IsAlive, "The subscriber should have been collected.");
+	}
+
+	private class Subscriber
+	{
+		public Subscriber(WeakEventHelper.WeakEventCollection source)
+		{
+			// Like the Brush.SetupBrushChanged callers, the subscriber owns its registration and never disposes it.
+			Registration = WeakEventHelper.RegisterEvent(source, new Action(OnRaised), (s, e, a) => (s as Action).Invoke());
+		}
+
+		public IDisposable Registration { get; }
+
+		private void OnRaised()
+		{
+		}
+	}
+
 	private partial class MyCollectibleObject : Grid
 	{
 		private Action _action;
