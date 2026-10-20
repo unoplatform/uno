@@ -21,7 +21,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	//_owner is to not have duplicate event call
 	private WebErrorStatus _webErrorStatus = WebErrorStatus.Unknown;
 
-	// Track whether NavigationCompleted was already raised for this navigation
+	// Track whether NavigationCompleted was already scheduled for this navigation
 	private bool _navigationCompletedRaised;
 
 	// Track the last navigation URL for anchor detection
@@ -49,11 +49,8 @@ internal class InternalClient : Android.Webkit.WebViewClient
 			_coreWebView.Source = url;
 			_coreWebView.RaiseHistoryChanged();
 
-			if (!IsAnchorNavigation(url) && !_navigationCompletedRaised)
+			if (!IsAnchorNavigation(url))
 			{
-				var uri = new Uri(url);
-				_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
-				_navigationCompletedRaised = true;
 				_lastNavigationUrl = url;
 			}
 		}
@@ -130,12 +127,13 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	{
 		_nativeWebViewWrapper.DocumentTitle = view.Title;
 
-		// Only raise NavigationCompleted if it wasn't already raised in DoUpdateVisitedHistory
-		// This helps avoid duplicate NavigationCompleted events
+		// Raised once per navigation, after the document's DOMContentLoaded (and late document-created scripts), as on WebView2.
 		if (!_navigationCompletedRaised)
 		{
+			_navigationCompletedRaised = true;
 			var uri = !_nativeWebViewWrapper._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
-			_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
+			_nativeWebViewWrapper.CompleteNavigationAfterDocumentScripts(
+				() => _coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown));
 		}
 
 		base.OnPageFinished(view, url);

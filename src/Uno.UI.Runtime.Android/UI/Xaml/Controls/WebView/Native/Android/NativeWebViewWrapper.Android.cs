@@ -45,10 +45,10 @@ internal partial class NativeWebViewWrapper : INativeWebView
 		_webView.Settings.LoadWithOverviewMode = true;
 		_webView.Settings.UseWideViewPort = true;
 		_webView.Settings.SetSupportMultipleWindows(true);
+		InitializeScripting();
+
 		_webView.SetWebViewClient(new InternalClient(_coreWebView, this));
 		_webView.SetWebChromeClient(new InternalWebChromeClient(_coreWebView));
-
-		_webView.AddJavascriptInterface(new UnoWebViewHandler(this), "unoWebView");
 
 		//Allow ThirdPartyCookies by default only on Android 5.0 and UP
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
@@ -189,7 +189,7 @@ internal partial class NativeWebViewWrapper : INativeWebView
 	{
 		_wasLoadedFromString = true;
 		//Note : _webView.LoadData does not work properly on Android 10 even when we encode to base64.
-		ScheduleNavigationStarting(null, () => _webView.LoadDataWithBaseURL(null, html, "text/html; charset=utf-8", "utf-8", null));
+		ScheduleNavigationStarting(null, () => _webView.LoadDataWithBaseURL(null, InjectDocumentScripts(html), "text/html; charset=utf-8", "utf-8", null));
 	}
 
 	private void ScheduleNavigationStarting(string url, Action loadAction)
@@ -273,14 +273,6 @@ internal partial class NativeWebViewWrapper : INativeWebView
 	{
 		_webView.HorizontalScrollBarEnabled = scrollingEnabled;
 		_webView.VerticalScrollBarEnabled = scrollingEnabled;
-	}
-
-	internal void OnWebMessageReceived(string message)
-	{
-		if (_coreWebView.Settings.IsWebMessageEnabled)
-		{
-			_coreWebView.RaiseWebMessageReceived(message);
-		}
 	}
 
 	[System.Text.RegularExpressions.GeneratedRegex(@"^file://(?!/)")]

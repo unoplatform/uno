@@ -219,6 +219,10 @@ public class Given_ScriptBridgeWebViewCapabilities
 	[DataRow("<html><header>h</header></html>", "<html>#<header>h</header></html>")]
 	[DataRow("\uFEFF <!doctype html><p>x", "\uFEFF <!doctype html>#<p>x")]
 	[DataRow("<p>fragment</p>", "#<p>fragment</p>")]
+	[DataRow("<html><script>first()</script><head></head></html>", "<html>#<script>first()</script><head></head></html>")]
+	[DataRow("<!doctype html><SCRIPT src=\"a.js\"></SCRIPT><p>x", "<!doctype html>#<SCRIPT src=\"a.js\"></SCRIPT><p>x")]
+	[DataRow("<html><head><script>x()</script></head></html>", "<html><head>#<script>x()</script></head></html>")]
+	[DataRow("<html><scripts></scripts><head></head></html>", "<html><scripts></scripts><head>#</head></html>")]
 	[DataRow("", "#")]
 	public async Task When_BeforeParse_Scripts_Are_Inserted_Ahead_Of_Content(string html, string expected)
 	{

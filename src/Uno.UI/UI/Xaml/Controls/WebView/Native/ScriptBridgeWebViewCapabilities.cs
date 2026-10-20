@@ -229,7 +229,7 @@ internal abstract partial class ScriptBridgeWebViewCapabilities : ISupportsDocum
 	/// </summary>
 	/// <remarks>
 	/// Pass decoded text: the scripts go right after the <c>&lt;head&gt;</c> start tag (else after <c>&lt;html&gt;</c>,
-	/// else after the doctype, else at the start), which can push a late <c>&lt;meta charset&gt;</c> past the
+	/// else after the doctype, else at the start; before the first <c>&lt;script&gt;</c> if one comes earlier), which can push a late <c>&lt;meta charset&gt;</c> past the
 	/// 1024-byte prescan of a byte stream. Separate elements keep a throwing script from stopping the next one and keep
 	/// top-level declarations global, as on WebView2.
 	/// </remarks>
@@ -260,15 +260,19 @@ internal abstract partial class ScriptBridgeWebViewCapabilities : ISupportsDocum
 
 	private static int FindInsertionIndex(string html)
 	{
+		var index = 0;
 		foreach (var regex in new[] { HeadStartTag(), HtmlStartTag(), Doctype() })
 		{
 			if (regex.Match(html) is { Success: true } match)
 			{
-				return match.Index + match.Length;
+				index = match.Index + match.Length;
+				break;
 			}
 		}
 
-		return 0;
+		// A page script ahead of <head> (or of <html> when there is no head) must still run after the injected ones.
+		var firstScript = ScriptStartTag().Match(html, 0, index);
+		return firstScript.Success ? firstScript.Index : index;
 	}
 
 	private void ApplyIfDocumentStart()
@@ -313,4 +317,7 @@ internal abstract partial class ScriptBridgeWebViewCapabilities : ISupportsDocum
 
 	[GeneratedRegex(@"^\uFEFF?\s*<!doctype[^>]*>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
 	private static partial Regex Doctype();
+
+	[GeneratedRegex(@"<script(?=[\s/>])", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+	private static partial Regex ScriptStartTag();
 }
