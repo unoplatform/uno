@@ -202,6 +202,24 @@ public App()
 }
 ```
 
+## Creating a CoreWebView2Environment
+
+`CoreWebView2Environment.CreateAsync()` and `CreateWithOptionsAsync(browserExecutableFolder, userDataFolder, options)` are available on every target. The returned environment is *detached*: it records its inputs but does not start a browser. Its `UserDataFolder` returns the folder it was created with (or an empty string), and its `BrowserVersionString` returns the installed browser version where the platform can report one (Windows), or an empty string. `FailureReportFolderPath` and `GetProcessInfos()` need a running WebView and keep throwing `NotImplementedException` on a detached environment.
+
+On Windows (Skia Desktop) the installed runtime is probed first, so a missing WebView2 Runtime fails the call with `FileNotFoundException`, as it does on WinAppSDK. Other targets skip the probe.
+
+```csharp
+var options = new CoreWebView2EnvironmentOptions();
+var environment = await CoreWebView2Environment.CreateWithOptionsAsync(null, userDataFolder, options);
+
+await webView.EnsureCoreWebView2Async(environment);
+// webView.CoreWebView2.Environment now returns the same instance.
+```
+
+`CoreWebView2EnvironmentOptions` stores its values with the WebView2 defaults, but no target reads them yet: the native WebView is still created as by `EnsureCoreWebView2Async()`. On Windows, configure the environment through `FeatureConfiguration.WebView2` instead (see [above](#customizing-the-webview2-environment-windows)).
+
+`environment.CreateWebResourceResponse(content, statusCode, reasonPhrase, headers)` builds a response for `WebResourceRequested`. `headers` is a CRLF-separated list of `Name: Value` lines, as in WebView2. Assigning such a response to `args.Response` is currently honored on Windows (Skia Desktop) only.
+
 ## Querying the environment and the profile (Windows)
 
 On Windows (Skia Desktop) a subset of `CoreWebView2Environment` and `CoreWebView2Profile` is implemented. On every other target these members throw `NotImplementedException`, as they did before.
@@ -227,7 +245,7 @@ catch (FileNotFoundException)
 
 Passing a `browserExecutableFolder` is authoritative: if no browser is found there, the call fails rather than falling back to the installed one. The version string carries a channel suffix on non-stable channels (for example `120.0.2210.91 beta`), so parse only the leading token. Note that these are static members, resolved through the Skia host — call them after the application host has started.
 
-The overload taking `CoreWebView2EnvironmentOptions` is **not** implemented, because that options type is itself unimplemented and could not be honored.
+The overload taking `CoreWebView2EnvironmentOptions` behaves like the one without it: the options do not change which browser is found.
 
 ### Environment and profile of a running WebView2
 
@@ -326,7 +344,7 @@ webView.CoreWebView2.WebResourceRequested += (sender, args) =>
     args.Request.Headers.SetHeader("X-Custom-Header", "custom-value");
     
     // Optionally provide a custom response
-    // args.Response = new CoreWebView2WebResourceResponse(...);
+    // args.Response = environment.CreateWebResourceResponse(content, 200, "OK", "Content-Type: text/html");
 };
 ```
 

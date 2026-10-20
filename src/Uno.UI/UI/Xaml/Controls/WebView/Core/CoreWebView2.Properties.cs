@@ -26,18 +26,41 @@ public partial class CoreWebView2
 	/// <summary>
 	/// Gets the CoreWebView2Environment this CoreWebView2 was created from.
 	/// </summary>
+	/// <remarks>
+	/// An environment supplied to <c>WebView2.EnsureCoreWebView2Async(CoreWebView2Environment)</c> is returned on
+	/// every platform; otherwise one is only available when the native WebView reports its environment.
+	/// </remarks>
 	public CoreWebView2Environment Environment
 	{
 		get
 		{
+			if (_environment is not null)
+			{
+				return _environment;
+			}
+
 			if (_nativeWebView is not ISupportsWebViewEnvironmentInfo)
 			{
 				throw CapabilityUnavailable(CoreWebView2TypeName, nameof(Environment));
 			}
 
-			return _environment ??= new CoreWebView2Environment(this);
+			return _environment = new CoreWebView2Environment(this);
 		}
 	}
+
+#nullable enable
+	/// <summary>
+	/// Adopts an app-created environment. The first environment wins: once chosen it does not change.
+	/// </summary>
+	internal void AdoptEnvironment(CoreWebView2Environment environment)
+	{
+		if (_environment is null)
+		{
+			_environment = environment;
+			environment.Adopt(this);
+		}
+	}
+#nullable restore
 
 	/// <summary>
 	/// Gets the profile this CoreWebView2 is running under.
