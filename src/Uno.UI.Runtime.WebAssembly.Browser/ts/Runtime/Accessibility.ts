@@ -7,6 +7,8 @@ namespace Uno.UI.Runtime {
 		private static semanticsRoot: HTMLDivElement;
 		private static containerElement: HTMLElement;
 		private static debugModeEnabled: boolean = false;
+		// Native position each scroll port settled at after the last managed sync.
+		private static managedScrollPositions = new WeakMap<HTMLElement, { left: number, top: number }>();
 
 		private static focusSentinelStart: HTMLDivElement | null = null;
 		private static focusSentinelEnd: HTMLDivElement | null = null;
@@ -191,6 +193,12 @@ namespace Uno.UI.Runtime {
 
 			element.addEventListener('scroll', (e) => {
 				let element = e.target as HTMLElement;
+				// Echo of a managed sync: managed code is already at this position, and forwarding it
+				// would cancel in-flight animations or inertia.
+				const managed = this.managedScrollPositions.get(element);
+				if (managed && managed.left === element.scrollLeft && managed.top === element.scrollTop) {
+					return;
+				}
 				this.managedOnScroll(handle, element.scrollLeft, element.scrollTop);
 			});
 
@@ -948,11 +956,17 @@ namespace Uno.UI.Runtime {
 			}
 		}
 
-		public static updateNativeScrollOffsets(handle: number, horizontalOffset: number, verticalOffset: number): void {
+		public static updateNativeScrollOffsets(handle: number, horizontalOffset: number, verticalOffset: number, extentWidth: number, extentHeight: number): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
+				// The extent must be applied first, otherwise the browser clamps the offsets
+				// and echoes the clamped values back through the scroll event.
+				element.classList.add("uno-semantic-scroll-port");
+				element.style.setProperty("--uno-scroll-extent-width", `${extentWidth}px`);
+				element.style.setProperty("--uno-scroll-extent-height", `${extentHeight}px`);
 				element.scrollLeft = horizontalOffset;
 				element.scrollTop = verticalOffset;
+				Accessibility.managedScrollPositions.set(element, { left: element.scrollLeft, top: element.scrollTop });
 			}
 		}
 

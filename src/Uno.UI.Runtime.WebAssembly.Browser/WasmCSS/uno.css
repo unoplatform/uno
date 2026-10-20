@@ -79,6 +79,26 @@ input::-ms-clear {
   pointer-events: none;
 }
 
+/* Native scrollbars would shrink the client area below the managed viewport. */
+.uno-semantic-scroll-port {
+  scrollbar-width: none;
+}
+
+.uno-semantic-scroll-port::-webkit-scrollbar {
+  display: none;
+}
+
+/* Semantic children are sparse, so the managed scroll extent has to define the native scroll range. */
+.uno-semantic-scroll-port::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--uno-scroll-extent-width, 0px);
+  height: var(--uno-scroll-extent-height, 0px);
+  pointer-events: none;
+}
+
 #uno-canvas {
     position: fixed;
     width: 100%;

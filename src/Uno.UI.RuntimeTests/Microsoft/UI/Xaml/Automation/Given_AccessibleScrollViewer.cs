@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
@@ -201,6 +202,167 @@ public class Given_AccessibleScrollViewer
 		Assert.AreEqual(0, scrollViewer.VerticalOffset);
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Semantic_Children_Are_Sparse_Then_Native_Scroll_Range_Matches_Extent()
+	{
+		// Only the top of the content has a semantic node, so the DOM children alone would give
+		// the semantic scroll port a much smaller range than the managed ScrollViewer.
+		var filler = new Border { Height = 1200 };
+		var scrollViewer = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			Content = new StackPanel { Children = { new TextBlock { Text = "Top" }, filler } },
+		};
+
+		await EnsureAccessibilityEnabledAsync();
+		await UITestHelper.Load(scrollViewer);
+		var presenter = (ScrollContentPresenter)scrollViewer.Presenter!;
+		await UITestHelper.WaitFor(() => SemanticElementExists(presenter), timeoutMS: 5000,
+			message: "Timed out waiting for the semantic scroll port.");
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(scrollViewer.ScrollableHeight, GetNativeScrollRange(presenter), 1);
+
+		scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight, null, disableAnimation: true);
+		await UITestHelper.WaitForIdle();
+		await Task.Delay(100); // Let a potential browser scroll echo reach managed code.
+
+		Assert.AreEqual(scrollViewer.ScrollableHeight, scrollViewer.VerticalOffset, 1,
+			"The browser must not clamp the managed offset.");
+		Assert.AreEqual(scrollViewer.VerticalOffset, GetNativeScrollTop(presenter), 1);
+
+		filler.Height = 2000;
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(scrollViewer.ScrollableHeight, GetNativeScrollRange(presenter), 1,
+			"Extent changes without an offset change must update the native range.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_ScrollViewer_Scrolled_Then_Semantic_Children_Stay_In_Content_Coordinates()
+	{
+		var content = new StackPanel();
+		for (var i = 0; i < 20; i++)
+		{
+			var button = new Button { Content = $"Item {i}", Height = 40 };
+			AutomationProperties.SetName(button, $"Item {i}");
+			content.Children.Add(button);
+		}
+		var target = (Button)content.Children[10];
+		var scrollViewer = new ScrollViewer { Width = 200, Height = 200, Content = content };
+
+		await EnsureAccessibilityEnabledAsync();
+		await UITestHelper.Load(scrollViewer);
+		var presenter = (ScrollContentPresenter)scrollViewer.Presenter!;
+		await UITestHelper.WaitFor(() => SemanticElementExists(target), timeoutMS: 5000,
+			message: "Timed out waiting for the target's semantic node.");
+		await UITestHelper.WaitForIdle();
+
+		scrollViewer.ChangeView(null, 300, null, disableAnimation: true);
+		await UITestHelper.WaitForIdle();
+
+		// The native scroller applies the offset once; the child itself keeps its content position.
+		Assert.AreEqual(300, GetNativeScrollTop(presenter), 1);
+		Assert.AreEqual(400, GetSemanticOffsetTop(target), 1);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Browser_Scrolls_Semantic_Port_Then_ScrollViewer_Follows()
+	{
+		var scrollViewer = new ScrollViewer { Width = 200, Height = 200, Content = new Border { Height = 800 } };
+
+		await EnsureAccessibilityEnabledAsync();
+		await UITestHelper.Load(scrollViewer);
+		var presenter = (ScrollContentPresenter)scrollViewer.Presenter!;
+		await UITestHelper.WaitFor(() => SemanticElementExists(presenter), timeoutMS: 5000,
+			message: "Timed out waiting for the semantic scroll port.");
+		await UITestHelper.WaitForIdle();
+
+		SetNativeScrollTop(presenter, 80);
+		await UITestHelper.WaitFor(() => Math.Abs(scrollViewer.VerticalOffset - 80) < 1, timeoutMS: 5000,
+			message: $"ScrollViewer did not follow the browser (offset={scrollViewer.VerticalOffset}).");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Semantic_Child_Overhangs_Content_Then_Browser_Scroll_Is_Clamped_To_ScrollViewer()
+	{
+		// A Canvas child drawn below the Canvas bounds extends the native range past the managed one.
+		var outlier = new Border { Width = 20, Height = 20 };
+		AutomationProperties.SetName(outlier, "Outlier");
+		Canvas.SetTop(outlier, 1800);
+		var scrollViewer = new ScrollViewer { Width = 200, Height = 200, Content = new Canvas { Height = 800, Children = { outlier } } };
+
+		await EnsureAccessibilityEnabledAsync();
+		await UITestHelper.Load(scrollViewer);
+		var presenter = (ScrollContentPresenter)scrollViewer.Presenter!;
+		await UITestHelper.WaitFor(() => SemanticElementExists(outlier), timeoutMS: 5000,
+			message: "Timed out waiting for the outlier's semantic node.");
+		await UITestHelper.WaitForIdle();
+
+		SetNativeScrollTop(presenter, 1500);
+		await UITestHelper.WaitFor(() => Math.Abs(scrollViewer.VerticalOffset - scrollViewer.ScrollableHeight) < 1, timeoutMS: 5000,
+			message: $"ScrollViewer did not follow the browser (offset={scrollViewer.VerticalOffset}).");
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(scrollViewer.VerticalOffset, GetNativeScrollTop(presenter), 1,
+			"The browser must be brought back to the managed (clamped) offset.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_ScrollView_Scrolls_Then_Native_Scroll_Port_Matches()
+	{
+		var filler = new Border { Height = 1200 };
+		var scrollView = new ScrollView
+		{
+			Width = 200,
+			Height = 200,
+			Content = new StackPanel { Children = { new TextBlock { Text = "Top" }, filler } },
+		};
+
+		await EnsureAccessibilityEnabledAsync();
+		await UITestHelper.Load(scrollView);
+		var presenter = scrollView.ScrollPresenter;
+		await UITestHelper.WaitFor(() => SemanticElementExists(presenter), timeoutMS: 5000,
+			message: "Timed out waiting for the semantic scroll port.");
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(presenter.ScrollableHeight, GetNativeScrollRange(presenter), 1);
+
+		var target = presenter.ScrollableHeight;
+		scrollView.ScrollTo(0, target, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
+		await UITestHelper.WaitFor(() => Math.Abs(scrollView.VerticalOffset - target) < 1, timeoutMS: 5000,
+			message: $"ScrollView did not scroll (offset={scrollView.VerticalOffset}, target={target}).");
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(scrollView.VerticalOffset, GetNativeScrollTop(presenter), 1);
+
+		SetNativeScrollTop(presenter, 100);
+		await UITestHelper.WaitFor(() => Math.Abs(scrollView.VerticalOffset - 100) < 1, timeoutMS: 5000,
+			message: $"ScrollView did not follow the browser (offset={scrollView.VerticalOffset}).");
+	}
+
+	private static double GetNativeScrollRange(UIElement element)
+		=> double.Parse(InvokeBrowserJs($"(function(){{ const e = document.getElementById('{GetSemanticElementId(element)}'); return String(e.scrollHeight - e.clientHeight); }})()"), CultureInfo.InvariantCulture);
+
+	private static double GetNativeScrollTop(UIElement element)
+		=> double.Parse(InvokeBrowserJs($"String(document.getElementById('{GetSemanticElementId(element)}').scrollTop)"), CultureInfo.InvariantCulture);
+
+	private static double GetSemanticOffsetTop(UIElement element)
+		=> double.Parse(InvokeBrowserJs($"String(document.getElementById('{GetSemanticElementId(element)}').offsetTop)"), CultureInfo.InvariantCulture);
+
+	private static void SetNativeScrollTop(UIElement element, double value)
+		=> InvokeBrowserJs($"(function(){{ document.getElementById('{GetSemanticElementId(element)}').scrollTop = {value.ToString(CultureInfo.InvariantCulture)}; return ''; }})()");
 #endif
 
 	[TestMethod]
