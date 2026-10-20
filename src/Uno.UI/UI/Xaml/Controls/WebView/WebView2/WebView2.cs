@@ -74,6 +74,34 @@ public partial class WebView2 : Control, IWebView
 			await CoreWebView2.EnsureNativeWebViewAsync();
 		});
 
+	/// <summary>
+	/// Initializes the underlying <see cref="Microsoft.Web.WebView2.Core.CoreWebView2"/> with <paramref name="environment"/>.
+	/// </summary>
+	/// <remarks>
+	/// <see cref="Microsoft.Web.WebView2.Core.CoreWebView2.Environment"/> returns <paramref name="environment"/>, unless an environment was already
+	/// chosen. The native WebView is not created from it: platforms ignore its options unless they read them, and Win32
+	/// creates its own environment from <c>FeatureConfiguration.WebView2</c>.
+	/// </remarks>
+	/// <exception cref="ArgumentNullException"><paramref name="environment"/> is null.</exception>
+	public IAsyncAction EnsureCoreWebView2Async(CoreWebView2Environment environment)
+	{
+		ArgumentNullException.ThrowIfNull(environment);
+
+		CoreWebView2.AdoptEnvironment(environment);
+
+		return EnsureCoreWebView2Async();
+	}
+
+	/// <summary>
+	/// Initializes the underlying <see cref="Microsoft.Web.WebView2.Core.CoreWebView2"/> with <paramref name="environment"/>.
+	/// </summary>
+	/// <remarks>
+	/// Behaves like <see cref="EnsureCoreWebView2Async(CoreWebView2Environment)"/>; <paramref name="controllerOptions"/> is ignored.
+	/// </remarks>
+	/// <exception cref="ArgumentNullException"><paramref name="environment"/> is null.</exception>
+	public IAsyncAction EnsureCoreWebView2Async(CoreWebView2Environment environment, CoreWebView2ControllerOptions? controllerOptions)
+		=> EnsureCoreWebView2Async(environment);
+
 	public IAsyncOperation<string?> ExecuteScriptAsync(string javascriptCode) =>
 		CoreWebView2.ExecuteScriptAsync(javascriptCode);
 

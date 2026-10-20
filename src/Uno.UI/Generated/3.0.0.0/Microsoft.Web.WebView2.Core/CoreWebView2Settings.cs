@@ -22,20 +22,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool AreDefaultContextMenusEnabled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "AreDefaultContextMenusEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "AreDefaultContextMenusEnabled");
-			}
-		}
-#endif
+		// Skipping already declared property AreDefaultContextMenusEnabled
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool AreDefaultScriptDialogsEnabled
@@ -50,20 +37,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool AreDevToolsEnabled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "AreDevToolsEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "AreDevToolsEnabled");
-			}
-		}
-#endif
+		// Skipping already declared property AreDevToolsEnabled
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool AreHostObjectsAllowed
@@ -204,20 +178,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsStatusBarEnabled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "IsStatusBarEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "IsStatusBarEnabled");
-			}
-		}
-#endif
+		// Skipping already declared property IsStatusBarEnabled
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsSwipeNavigationEnabled

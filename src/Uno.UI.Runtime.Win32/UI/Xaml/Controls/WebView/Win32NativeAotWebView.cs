@@ -207,7 +207,7 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 
 	private void NativeWebView2_WebResourceRequested(WebView2.ICoreWebView2WebResourceRequestedEventArgs e)
 	{
-		WebResourceRequested?.Invoke(this, new(new AotWebResourceRequestedEventArgsWrapper(e)));
+		WebResourceRequested?.Invoke(this, new(new AotWebResourceRequestedEventArgsWrapper(e, _nativeWebView)));
 	}
 
 	public override string DocumentTitle => _documentTitle;
