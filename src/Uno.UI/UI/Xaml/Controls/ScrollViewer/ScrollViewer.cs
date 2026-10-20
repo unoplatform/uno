@@ -704,6 +704,15 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
 			}
 
+			var oldExtentWidth = ExtentWidth;
+			var oldExtentHeight = ExtentHeight;
+			var oldViewportWidth = ViewportWidth;
+			var oldViewportHeight = ViewportHeight;
+			var oldScrollableWidth = ScrollableWidth;
+			var oldScrollableHeight = ScrollableHeight;
+			var oldHorizontalOffset = HorizontalOffset;
+			var oldVerticalOffset = VerticalOffset;
+
 			ViewportHeight = vpHeight;
 			ViewportWidth = vpWidth;
 
@@ -810,6 +819,30 @@ namespace Microsoft.UI.Xaml.Controls
 			if (oldSize != newSize)
 			{
 				ExtentSizeChanged?.Invoke(this, new(this, oldSize, newSize));
+			}
+
+			// Mirrors ScrollViewer::InvalidateScrollInfo_TryUpdateValues: extent/viewport changes are
+			// raised to automation clients too, not only offset changes.
+			var changed =
+				!NumericExtensions.AreClose(oldExtentWidth, ExtentWidth) ||
+				!NumericExtensions.AreClose(oldExtentHeight, ExtentHeight) ||
+				!NumericExtensions.AreClose(oldViewportWidth, ViewportWidth) ||
+				!NumericExtensions.AreClose(oldViewportHeight, ViewportHeight) ||
+				!NumericExtensions.AreClose(oldScrollableWidth, ScrollableWidth) ||
+				!NumericExtensions.AreClose(oldScrollableHeight, ScrollableHeight);
+			if (changed &&
+				AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged) &&
+				GetOrCreateAutomationPeer() is ScrollViewerAutomationPeer peer)
+			{
+				peer.RaiseAutomationEvents(
+					oldExtentWidth,
+					oldExtentHeight,
+					oldViewportWidth,
+					oldViewportHeight,
+					MinHorizontalOffset,
+					MinVerticalOffset,
+					oldHorizontalOffset,
+					oldVerticalOffset);
 			}
 		}
 
