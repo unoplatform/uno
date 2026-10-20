@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -9,6 +10,87 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 internal static class WebResourceContextHelper
 {
+	/// <summary>
+	/// Determines the resource context of a request whose engine only reports its URL, headers and whether it loads
+	/// the main frame (Android <c>shouldInterceptRequest</c>).
+	/// </summary>
+	/// <remarks>
+	/// In order: a main-frame request is the top-level navigation, so <see cref="CoreWebView2WebResourceContext.Document"/>;
+	/// then the <c>Sec-Fetch-Dest</c> header when the engine forwards it; then an <c>Accept</c> header that only
+	/// navigations (<c>text/html</c>), stylesheets (<c>text/css</c>) or images (<c>image/</c>) send; then the URL extension.
+	/// </remarks>
+	public static CoreWebView2WebResourceContext DetermineResourceContext(string url, bool isForMainFrame, IReadOnlyDictionary<string, string>? headers)
+	{
+		if (isForMainFrame)
+		{
+			return CoreWebView2WebResourceContext.Document;
+		}
+
+		if (TryGetHeader(headers, "Sec-Fetch-Dest") is { } destination
+			&& FromFetchDestination(destination) is { } fromDestination)
+		{
+			return fromDestination;
+		}
+
+		if (TryGetHeader(headers, "Accept") is { } accept)
+		{
+			if (accept.StartsWith("text/html", StringComparison.OrdinalIgnoreCase))
+			{
+				return CoreWebView2WebResourceContext.Document;
+			}
+
+			if (accept.StartsWith("text/css", StringComparison.OrdinalIgnoreCase))
+			{
+				return CoreWebView2WebResourceContext.Stylesheet;
+			}
+
+			if (accept.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+			{
+				return CoreWebView2WebResourceContext.Image;
+			}
+		}
+
+		var fromUrl = DetermineResourceContext(url);
+
+		// Without the main-frame flag or an Accept header, an extension-less URL is more likely an API call than a page.
+		return fromUrl == CoreWebView2WebResourceContext.Document ? CoreWebView2WebResourceContext.Other : fromUrl;
+	}
+
+	private static CoreWebView2WebResourceContext? FromFetchDestination(string destination)
+		=> destination.Trim().ToLowerInvariant() switch
+		{
+			"document" or "iframe" or "frame" or "embed" or "object" => CoreWebView2WebResourceContext.Document,
+			"style" => CoreWebView2WebResourceContext.Stylesheet,
+			"script" or "worker" or "sharedworker" or "serviceworker" => CoreWebView2WebResourceContext.Script,
+			"image" => CoreWebView2WebResourceContext.Image,
+			"font" => CoreWebView2WebResourceContext.Font,
+			"audio" or "video" => CoreWebView2WebResourceContext.Media,
+			"track" => CoreWebView2WebResourceContext.TextTrack,
+			"manifest" => CoreWebView2WebResourceContext.Manifest,
+			"report" => CoreWebView2WebResourceContext.CspViolationReport,
+			// "empty" is fetch(), XMLHttpRequest, EventSource and WebSocket alike.
+			"empty" => CoreWebView2WebResourceContext.Fetch,
+			_ => null,
+		};
+
+	private static string? TryGetHeader(IReadOnlyDictionary<string, string>? headers, string name)
+	{
+		if (headers is null)
+		{
+			return null;
+		}
+
+		foreach (var header in headers)
+		{
+			if (string.Equals(header.Key, name, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(header.Value))
+			{
+				return header.Value;
+			}
+		}
+
+		return null;
+	}
+
 	/// <summary>
 	/// Determines the resource context based on URL file extension.
 	/// </summary>
