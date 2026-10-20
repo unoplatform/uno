@@ -19,7 +19,10 @@ public partial class CoreWebView2WebResourceRequestedEventArgs
 		_nativeArgs = nativeArgs;
 	}
 
-	internal object NativeArgs => _nativeArgs;
+	// Platform extensions (ToAndroid, ToIOS) cast this to their own type, so the virtual-host view is unwrapped.
+	internal object NativeArgs => _nativeArgs is CoreWebView2.PublicUriWebResourceRequestedEventArgs view ? view.Inner : _nativeArgs;
+
+	internal INativeWebResourceRequestedEventArgs NativeArgsInterface => _nativeArgs;
 
 	public CoreWebView2WebResourceRequest Request
 		=> _request ??= new CoreWebView2WebResourceRequest(_nativeArgs.Request);

@@ -40,3 +40,24 @@ At the end of the navigation, on `WebView` the either `NavigationCompleted` or `
 
 In `WebView`, most the events include `Uri`, but `WebView2` uses a unique `NavigationId` instead.
 For details on `WebView2` event behavior see: https://learn.microsoft.com/microsoft-edge/webview2/concepts/navigation-events
+
+## `chrome.webview` bridge for native views without WebView2
+
+Only Win32 hosts the real WebView2. Native views that lack `chrome.webview` (WebKit on macOS/iOS, Android `WebView`,
+WebKitGTK on X11) can build the WebView2 scripting surface from shared pieces in `Native/`:
+
+- `WebViewMessageBridge` generates the script that defines `window.chrome.webview` (`postMessage`,
+  `addEventListener`/`removeEventListener`) over a platform channel such as
+  `window.webkit.messageHandlers.unoWebView.postMessage`. Page messages arrive as `JSON.stringify(value)`, ready for
+  `RaiseWebMessageReceived`. The bridge also reports `DOMContentLoaded` with a reserved `@@uno-webview/lifecycle/`
+  message, which platforms filter with `TryParseLifecycle`.
+- `ScriptBridgeWebViewCapabilities` implements `ISupportsDocumentCreatedScripts`, `ISupportsPostWebMessage` and
+  `ISupportsDOMContentLoaded` on top of document-start scripts and script evaluation, with fallbacks for views that
+  can only rewrite the HTML (`BeforeParse`) or run scripts after load (`Late`).
+- `WebViewVirtualHostMap` and `ISupportsCustomSchemeVirtualHosts` let a view that cannot intercept `https` serve
+  virtual hosts (`SetVirtualHostNameToFolderMapping` hosts and `0.0.0.0/8`, which Blazor uses) through the
+  `uno-app` scheme. `CoreWebView2` translates URLs at its boundary, so apps only see `https://`.
+- `WebResourceResponseSnapshot` reads any `WebResourceRequested` response into status, headers and bytes.
+
+The node script `src/Uno.UI.UnitTests/Windows_UI_XAML_Controls/WebView2Tests/WebViewMessageBridge.node.js` checks the
+bridge script against a fake `window`; run it with `node` after changing the script.

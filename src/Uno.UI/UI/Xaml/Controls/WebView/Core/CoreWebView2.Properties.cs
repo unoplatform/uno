@@ -105,6 +105,7 @@ public partial class CoreWebView2
 		get => _source;
 		internal set
 		{
+			value = ToPublicUriString(value);
 			if (_source != value)
 			{
 				_source = value;
