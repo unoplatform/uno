@@ -10,7 +10,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
-[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.NativeWinUI)]
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaIOS)]
 public class Given_WebView2_DocumentScripts
 {
 	private const string HostName = "uno-wv2-scripting.example";

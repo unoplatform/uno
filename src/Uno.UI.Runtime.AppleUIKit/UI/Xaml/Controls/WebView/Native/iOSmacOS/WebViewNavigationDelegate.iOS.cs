@@ -55,7 +55,8 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 
 			// Note that the "file" scheme is not officially supported by the UWP WebView (https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.webview.unsupportedurischemeidentified?view=winrt-19041#remarks).
 			// We have to support it here for anchor navigation (as long as https://github.com/unoplatform/uno/issues/2998 is not resolved).
-			var isUnsupportedScheme = !scheme.Equals("http", StringComparison.OrdinalIgnoreCase) && !scheme.Equals("https", StringComparison.OrdinalIgnoreCase) && !scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
+			var isUnsupportedScheme = !scheme.Equals("http", StringComparison.OrdinalIgnoreCase) && !scheme.Equals("https", StringComparison.OrdinalIgnoreCase) && !scheme.Equals("file", StringComparison.OrdinalIgnoreCase)
+				&& !UnoWKWebView.IsVirtualHostScheme(scheme);
 			if (isUnsupportedScheme)
 			{
 				bool cancelled = unoWKWebView.OnUnsupportedUriSchemeIdentified(requestUrl!);

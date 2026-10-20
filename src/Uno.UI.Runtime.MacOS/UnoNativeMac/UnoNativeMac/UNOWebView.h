@@ -22,7 +22,9 @@ uno_webview_navigation_starting_fn_ptr uno_get_webview_navigation_starting_callb
 
 typedef void (*uno_webview_navigation_finishing_fn_ptr)(WKWebView* /* handle */, const char* _Nullable /* url */);
 uno_webview_navigation_finishing_fn_ptr uno_get_webview_navigation_finishing_callback(void);
-uno_webview_navigation_finishing_fn_ptr uno_get_webview_receive_web_message_callback(void);
+
+typedef void (*uno_webview_receive_web_message_fn_ptr)(WKWebView* /* handle */, const char* /* body */, const char* _Nullable /* frameUrl */, bool /* isMainFrame */);
+uno_webview_receive_web_message_fn_ptr uno_get_webview_receive_web_message_callback(void);
 
 typedef void (*uno_webview_navigation_failing_fn_ptr)(WKWebView* /* handle */, const char* _Nullable /* url */, int status);
 uno_webview_navigation_failing_fn_ptr uno_get_webview_navigation_failing_callback(void);
@@ -30,7 +32,7 @@ uno_webview_navigation_failing_fn_ptr uno_get_webview_navigation_failing_callbac
 typedef void (*uno_webview_webview_notification_fn_ptr)(WKWebView* /* handle */, NSInteger /* keyId */);
 uno_webview_webview_notification_fn_ptr uno_get_webview_notification_callback(void);
 
-void uno_set_webview_navigation_callbacks(uno_webview_navigation_starting_fn_ptr starting, uno_webview_navigation_finishing_fn_ptr finishing, uno_webview_webview_notification_fn_ptr notification, uno_webview_navigation_finishing_fn_ptr web_message, uno_webview_navigation_failing_fn_ptr failing);
+void uno_set_webview_navigation_callbacks(uno_webview_navigation_starting_fn_ptr starting, uno_webview_navigation_finishing_fn_ptr finishing, uno_webview_webview_notification_fn_ptr notification, uno_webview_receive_web_message_fn_ptr web_message, uno_webview_navigation_failing_fn_ptr failing);
 
 typedef bool (*uno_webview_unsupported_scheme_identified_fn_ptr)(WKWebView* /* handle */, const char* /* url */);
 uno_webview_unsupported_scheme_identified_fn_ptr uno_get_webview_unsupported_scheme_identified_callback(void);
@@ -41,7 +43,20 @@ typedef const char* _Nullable (*uno_webview_resource_requested_fn_ptr)(WKWebView
 uno_webview_resource_requested_fn_ptr uno_get_webview_resource_requested_callback(void);
 void uno_set_webview_resource_requested_callback(uno_webview_resource_requested_fn_ptr fn_ptr);
 
-NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel);
+// Custom scheme (virtual hosts) - tasks are identified by a native id; the callbacks run on the main thread
+typedef void (*uno_webview_scheme_task_start_fn_ptr)(WKWebView* /* handle */, NSInteger /* taskId */, const char* /* url */, const char* /* method */, const char* _Nullable /* headersJson */, const void* _Nullable /* body */, NSInteger /* bodyLength */, const char* _Nullable /* mainDocumentUrl */);
+typedef void (*uno_webview_scheme_task_stop_fn_ptr)(WKWebView* /* handle */, NSInteger /* taskId */);
+void uno_set_webview_scheme_task_callbacks(uno_webview_scheme_task_start_fn_ptr start, uno_webview_scheme_task_stop_fn_ptr stop);
+
+// Can be called from any thread; a task that was stopped meanwhile is ignored
+void uno_webview_scheme_task_complete(NSInteger taskId, int statusCode, const char* headersJson, const void* _Nullable body, NSInteger bodyLength);
+void uno_webview_scheme_task_fail(NSInteger taskId, const char* _Nullable message);
+
+// `scheme` is registered with a WKURLSchemeHandler; WebKit only accepts handlers before the WKWebView is created
+NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel, const char *scheme);
+
+// Replaces the document-start user scripts (all frames) with the JSON array of strings `scriptsJson`
+void uno_webview_set_user_scripts(WKWebView *webview, const char *scriptsJson);
 
 typedef int (*uno_webview_new_window_requested_fn_ptr)(WKWebView* /* handle */, const char* /* targetUrl */, const char* /* refererUrl */);
 uno_webview_new_window_requested_fn_ptr uno_get_webview_new_window_requested_callback(void);
@@ -92,12 +107,19 @@ typedef NS_ENUM(uint32, CoreWebView2WebErrorStatus) {
     CoreWebView2WebErrorStatusValidProxyAuthenticationRequired = 18,
 };
 
+// Serves the virtual host scheme by forwarding each task to managed code
+@interface UNOWebViewSchemeHandler : NSObject <WKURLSchemeHandler>
+
+@end
+
 @interface UNOWebView : WKWebView <UNONativeElement, WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler>
 
 @property (nonatomic, retain) NSString *okString;
 @property (nonatomic, retain) NSString *cancelString;
 
 @property (nonatomic, retain) NSURL *lastNavigationUrl;
+
+@property (nonatomic, copy, nullable) NSString *virtualHostScheme;
 
 @property (nonatomic) bool scrollingEnabled;
 

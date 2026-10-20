@@ -536,7 +536,7 @@ internal static partial class NativeUno
 		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, int> starting,
 		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, void> finishing,
 		delegate* unmanaged[Cdecl]<IntPtr, long, void> notification,
-		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, void> receiveWebMessage,
+		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, byte, void> receiveWebMessage,
 		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, CoreWebView2WebErrorStatus, void> failing
 		);
 
@@ -553,8 +553,22 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_webview_resource_requested_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, sbyte*> callback);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_scheme_task_callbacks(
+		delegate* unmanaged[Cdecl]<nint, nint, sbyte*, sbyte*, sbyte*, byte*, nint, sbyte*, void> start,
+		delegate* unmanaged[Cdecl]<nint, nint, void> stop);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial nint uno_webview_create(nint window, string ok, string cancel);
+	internal static unsafe partial void uno_webview_scheme_task_complete(nint taskId, int statusCode, string headersJson, byte* body, nint bodyLength);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_scheme_task_fail(nint taskId, string? message);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial nint uno_webview_create(nint window, string ok, string cancel, string scheme);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_set_user_scripts(nint webview, string scriptsJson);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_webview_register_message_handler(nint webview);
