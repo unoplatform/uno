@@ -107,6 +107,35 @@ webView.WebMessageReceived += (s, e) =>
 
 The `WebMessageAsJson` property contains a JSON-encoded string of the data passed to `postWebViewMessage` above.
 
+## Document scripts and two-way messaging
+
+`CoreWebView2` also exposes the WebView2 members used to bootstrap a page and talk to it in both directions, which hosts such as Blazor Hybrid rely on:
+
+- `AddScriptToExecuteOnDocumentCreatedAsync(string)` registers a script that runs in every new document, before the document's own scripts, and returns an ID that `RemoveScriptToExecuteOnDocumentCreated(string)` accepts. A script added before the native WebView is created is queued and registered ahead of the first navigation; the returned operation completes once it is registered.
+- `PostWebMessageAsString(string)` and `PostWebMessageAsJson(string)` deliver a message to the page's `window.chrome.webview.addEventListener('message', ...)` listeners.
+- The `DOMContentLoaded` event is raised when the top-level document has been parsed, before `NavigationCompleted`. Its `NavigationId` matches the one reported by `NavigationStarting` and `NavigationCompleted`.
+- `CoreWebView2WebMessageReceivedEventArgs.Source` is the URI of the document that sent a web message.
+
+```csharp
+await webView.EnsureCoreWebView2Async();
+await webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(
+    "window.chrome.webview.addEventListener('message', e => console.log(e.data));");
+
+webView.CoreWebView2.DOMContentLoaded += (s, e) => webView.CoreWebView2.PostWebMessageAsString("hello");
+webView.CoreWebView2.WebMessageReceived += (s, e) => Debug.WriteLine($"{e.Source}: {e.WebMessageAsJson}");
+```
+
+These members are currently available on the following platforms:
+
+| Member | Windows (Skia Win32) | WinAppSDK | macOS, iOS, Android, Linux, WebAssembly |
+|--------|----------------------|-----------|------------------------------------------|
+| `AddScriptToExecuteOnDocumentCreatedAsync` / `RemoveScriptToExecuteOnDocumentCreated` | Yes | Yes | Not implemented (throws `NotImplementedException`) |
+| `PostWebMessageAsString` / `PostWebMessageAsJson` | Yes | Yes | Not implemented (reported, no effect) |
+| `DOMContentLoaded` | Yes | Yes | Not implemented (never raised) |
+| `CoreWebView2WebMessageReceivedEventArgs.Source` | Yes | Yes | Not implemented (throws `NotImplementedException`) |
+
+On platforms where a member is not implemented, a script queued before the native WebView exists makes the operation fail with `NotImplementedException` once the native WebView is created.
+
 ## Navigating to web content in the application package
 
 To load local web content bundled with the application, you can use the `SetVirtualHostNameToFolderMapping` method. This allows you to set a virtual hostname that maps to a folder within the package, from which the web content will be loaded:
