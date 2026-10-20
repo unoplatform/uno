@@ -96,6 +96,8 @@ postWebViewMessage({"some": ['values',"in","json",1]});
 
 > **Note:** Make sure not to omit the `JSON.stringify` calls for Android, iOS, and macOS as seen in the snippet above, as they are crucial to transfer data correctly.
 
+On Android, pages also get `window.chrome.webview` (see [Document scripts and two-way messaging](#document-scripts-and-two-way-messaging)), so the first branch of the snippet is taken once it is defined. `unoWebView.postMessage` keeps working.
+
 To receive the message in C#, subscribe to the `WebMessageReceived` event:
 
 ```csharp
@@ -127,14 +129,28 @@ webView.CoreWebView2.WebMessageReceived += (s, e) => Debug.WriteLine($"{e.Source
 
 These members are currently available on the following platforms:
 
-| Member | Windows (Skia Win32) | WinAppSDK | macOS, iOS, Android, Linux, WebAssembly |
-|--------|----------------------|-----------|------------------------------------------|
-| `AddScriptToExecuteOnDocumentCreatedAsync` / `RemoveScriptToExecuteOnDocumentCreated` | Yes | Yes | Not implemented (throws `NotImplementedException`) |
-| `PostWebMessageAsString` / `PostWebMessageAsJson` | Yes | Yes | Not implemented (reported, no effect) |
-| `DOMContentLoaded` | Yes | Yes | Not implemented (never raised) |
-| `CoreWebView2WebMessageReceivedEventArgs.Source` | Yes | Yes | Not implemented (throws `NotImplementedException`) |
+| Member | Windows (Skia Win32) | WinAppSDK | Android | macOS, iOS, Linux, WebAssembly |
+|--------|----------------------|-----------|---------|--------------------------------|
+| `AddScriptToExecuteOnDocumentCreatedAsync` / `RemoveScriptToExecuteOnDocumentCreated` | Yes | Yes | Yes, with limitations (see below) | Not implemented (throws `NotImplementedException`) |
+| `PostWebMessageAsString` / `PostWebMessageAsJson` | Yes | Yes | Yes | Not implemented (reported, no effect) |
+| `DOMContentLoaded` | Yes | Yes | Yes, with limitations (see below) | Not implemented (never raised) |
+| `CoreWebView2WebMessageReceivedEventArgs.Source` | Yes | Yes | The WebView's current URL (see below) | Not implemented (throws `NotImplementedException`) |
 
 On platforms where a member is not implemented, a script queued before the native WebView exists makes the operation fail with `NotImplementedException` once the native WebView is created.
+
+### Android specifics
+
+The Android `WebView` has no API to run a script before a page's own scripts (AndroidX `WebViewCompat.addDocumentStartJavaScript` is not referenced by Uno Platform), so document-created scripts reach a page in one of two ways:
+
+- **Documents the app serves**: a `text/html` main-frame response provided through `WebResourceRequested` (for instance for `https://0.0.0.1/`), and content passed to `NavigateToString`, get the scripts as inline `<script>` elements ahead of the page's own scripts, as on WebView2. The document is re-encoded as UTF-8 to do so. A response with a `Content-Encoding` (such as `gzip`) is served unchanged.
+- **Every other document** (pages loaded from the network or from the app package): the scripts run when the page has finished loading, after the page's own scripts. `DOMContentLoaded` is then raised at that time, right before `NavigationCompleted`.
+
+Other limitations:
+
+- Child frames (iframes) don't get document-created scripts or `window.chrome.webview`.
+- A page with a Content-Security-Policy that blocks inline scripts gets the scripts after it has loaded instead.
+- `WebMessageReceived` is raised for messages sent by the top-level document's `window.chrome.webview.postMessage`. `Source` is the WebView's URL when the message is delivered, since Android does not report the sender's URL. Direct `unoWebView.postMessage` calls are still delivered, but Android exposes `unoWebView` to every frame and origin, so they may come from a child frame.
+- `NavigationCompleted` is raised once the page has finished loading (Android's `onPageFinished`).
 
 ## Navigating to web content in the application package
 
@@ -247,7 +263,7 @@ await webView.EnsureCoreWebView2Async(environment);
 
 `CoreWebView2EnvironmentOptions` stores its values with the WebView2 defaults, but no target reads them yet: the native WebView is still created as by `EnsureCoreWebView2Async()`. On Windows, configure the environment through `FeatureConfiguration.WebView2` instead (see [above](#customizing-the-webview2-environment-windows)).
 
-`environment.CreateWebResourceResponse(content, statusCode, reasonPhrase, headers)` builds a response for `WebResourceRequested`. `headers` is a CRLF-separated list of `Name: Value` lines, as in WebView2. Assigning such a response to `args.Response` is currently honored on Windows (Skia Desktop) only.
+`environment.CreateWebResourceResponse(content, statusCode, reasonPhrase, headers)` builds a response for `WebResourceRequested`. `headers` is a CRLF-separated list of `Name: Value` lines, as in WebView2. Assigning such a response to `args.Response` is currently honored on Windows (Skia Desktop) and Android.
 
 ## Querying the environment and the profile (Windows)
 
@@ -393,7 +409,7 @@ The `AddWebResourceRequestedFilter` method accepts three parameters:
 | Platform | Support Level | Header Read | Header Modify | Custom Response | Notes |
 | ---------- | -------------- | ------------- | --------------- | ----------------- | ------- |
 | **Windows (Win32/WinAppSDK)** | ✅ Full | ✅ | ✅ | ✅ | Full WebView2 support |
-| **Android** | ⚠️ Partial | ✅ | ⚠️ | ✅ | Header modification requires re-fetching the resource with HttpClient (only safe for GET/HEAD requests). Session cookies are automatically synchronized. POST request bodies cannot be reliably re-fetched and are not reissued by the implementation, so header changes for POST requests are unsupported. |
+| **Android** | ⚠️ Partial | ✅ | ⚠️ | ✅ | Every request can be answered, including virtual hosts such as `https://0.0.0.1/`, and deferrals are honored. Redirect (3xx) responses and request bodies are not supported. Header modification requires re-fetching the resource with HttpClient (only safe for GET/HEAD requests). Session cookies are automatically synchronized. |
 | **iOS** | ⚠️ Limited | ✅ | ⚠️ | ❌ | Navigation request headers cannot be modified. However, JavaScript-initiated requests (`fetch`/`XMLHttpRequest`) support custom header injection. Only fires for main document navigation, not sub-resources. |
 | **macOS** | ⚠️ Limited | ✅ | ⚠️ | ❌ | Header injection is supported for new requests only. Cannot modify existing request headers. |
 | **WebAssembly** | ⚠️ Limited | ✅ | ⚠️ | ❌ | Only `fetch`/`XMLHttpRequest` requests can be intercepted. Standard HTML elements (`img`, `script`, `link`, etc.) cannot have headers modified. Same-origin policy and CORS restrictions apply. May miss requests made during initial page load. |
@@ -419,6 +435,12 @@ webView.CoreWebView2.WebResourceRequested += (sender, args) =>
 ```
 
 #### Android
+
+The event is raised on the UI thread while the WebView waits, so a handler can take a deferral (`args.GetDeferral()`), `await`, and set `args.Response` afterwards. The WebView waits up to 30 seconds; after that, or when no handler sets a response, it loads the request itself.
+
+- Any response from `CoreWebView2Environment.CreateWebResourceResponse` is accepted. Its MIME type and charset come from its `Content-Type` header (or the URL's extension when there is none). Android cannot serve redirect (3xx) responses: those requests are loaded by the WebView itself.
+- `args.Request.Content` is always `null`: Android doesn't expose request bodies.
+- `ResourceContext` is `Document` for main-frame requests. For other requests it is inferred from the `Sec-Fetch-Dest` and `Accept` headers, then from the URL's extension, so filters on a resource context other than `All` are best-effort. `RequestedSourceKind` is always `Document`.
 
 When headers are modified, the resource is re-fetched using `HttpClient`. The implementation includes:
 

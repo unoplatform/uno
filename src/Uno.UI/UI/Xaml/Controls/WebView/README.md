@@ -58,6 +58,9 @@ WebKitGTK on X11) can build the WebView2 scripting surface from shared pieces in
   virtual hosts (`SetVirtualHostNameToFolderMapping` hosts and `0.0.0.0/8`, which Blazor uses) through the
   `uno-app` scheme. `CoreWebView2` translates URLs at its boundary, so apps only see `https://`.
 - `WebResourceResponseSnapshot` reads any `WebResourceRequested` response into status, headers and bytes.
+- `HtmlDocumentScriptInjector` applies `BeforeParse` injection to a response body held as bytes (charset sniffing,
+  re-encoding as UTF-8). Android uses it for the `text/html` documents it serves through `WebResourceRequested`, and
+  falls back to `Late` injection for the documents it does not serve.
 
 The node script `src/Uno.UI.UnitTests/Windows_UI_XAML_Controls/WebView2Tests/WebViewMessageBridge.node.js` checks the
 bridge script against a fake `window`; run it with `node` after changing the script.
