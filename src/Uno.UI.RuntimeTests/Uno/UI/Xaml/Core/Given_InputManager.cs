@@ -1573,6 +1573,71 @@ public class Given_InputManager
 					 "the SwipeControl's TranslateX direct-manipulation must not cancel the ScrollContentPresenter's TranslateY DM.");
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25588")]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_ManipulableElementReleasedAndRemoved_Then_Collected()
+	{
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		try
+		{
+			var sutRef = await PressAndReleaseOnManipulableElement(mouse);
+
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// PointerRoutedEventArgs.LastPointerEvent keeps its OriginalSource alive until the next pointer event.
+			mouse.MoveBy(1, 1);
+
+			await AssertCollected(sutRef);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static async Task<WeakReference> PressAndReleaseOnManipulableElement(Mouse mouse)
+	{
+		var sut = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Colors.DeepPink),
+			ManipulationMode = ManipulationModes.All,
+		};
+		var starting = false;
+		sut.ManipulationStarting += (snd, e) => starting = true;
+
+		var bounds = await UITestHelper.Load(sut);
+
+		mouse.Press(bounds.GetCenter());
+		mouse.Release();
+
+		starting.Should().BeTrue(because: "the press should have registered the element's gesture recognizer with the input manager");
+
+		return new WeakReference(sut);
+	}
+
+	private static async Task AssertCollected(WeakReference reference)
+	{
+		for (var i = 0; i < 10 && reference.IsAlive; i++)
+		{
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			GC.Collect();
+
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		reference.IsAlive.Should().BeFalse(because: "the element is no longer in the visual tree and nothing should retain it");
+	}
+
 	private static void SetCursorShape(CoreCursor cursor)
 	{
 		if (TestServices.WindowHelper
