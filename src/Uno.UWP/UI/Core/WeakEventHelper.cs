@@ -156,7 +156,8 @@ namespace Windows.UI.Core
 
 					if (_handlers.Count == 1)
 					{
-						_provider.RegisterTrimCallback(_ => Trim(), this);
+						// Static so the long-lived callback does not share this method's closure, which holds actualTarget.
+						_provider.RegisterTrimCallback(static collection => ((WeakEventCollection)collection).Trim(), this);
 					}
 
 					return Disposable.Create(RemoveRegistration);
