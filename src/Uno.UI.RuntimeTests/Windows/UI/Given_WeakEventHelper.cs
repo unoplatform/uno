@@ -309,6 +309,55 @@ public partial class Given_WeakEventHelper
 		GC.KeepAlive(second);
 	}
 
+	[TestMethod]
+	public void When_Registered_Again_Before_Trim_Then_Single_Trim_Callback()
+	{
+		SimulatedGen2GcTrimProvider trimProvider = new();
+		WeakEventHelper.WeakEventCollection SUT = new(trimProvider);
+
+		Action action = () => { };
+
+		WeakEventHelper.RegisterEvent(SUT, action, (s, e, a) => (s as Action).Invoke()).Dispose();
+
+		// The collection went empty, but its trim callback has not run since and is still active.
+		var disposable = WeakEventHelper.RegisterEvent(SUT, action, (s, e, a) => (s as Action).Invoke());
+
+		Assert.AreEqual(1, trimProvider.ActiveCallbacks);
+
+		trimProvider.Collect();
+
+		Assert.AreEqual(1, trimProvider.ActiveCallbacks);
+
+		disposable.Dispose();
+		trimProvider.Collect();
+
+		Assert.AreEqual(0, trimProvider.ActiveCallbacks);
+	}
+
+	[TestMethod]
+	public void When_Registered_After_Trim_Stopped_Then_Trim_Callback_Registered()
+	{
+		SimulatedGen2GcTrimProvider trimProvider = new();
+		WeakEventHelper.WeakEventCollection SUT = new(trimProvider);
+
+		Action action = () => { };
+
+		WeakEventHelper.RegisterEvent(SUT, action, (s, e, a) => (s as Action).Invoke()).Dispose();
+		trimProvider.Collect();
+
+		Assert.AreEqual(0, trimProvider.ActiveCallbacks);
+
+		var disposable = WeakEventHelper.RegisterEvent(SUT, action, (s, e, a) => (s as Action).Invoke());
+
+		Assert.AreEqual(1, trimProvider.ActiveCallbacks);
+
+		trimProvider.Collect();
+
+		Assert.AreEqual(1, trimProvider.ActiveCallbacks);
+
+		disposable.Dispose();
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static WeakReference CreateSubscriber(WeakEventHelper.WeakEventCollection source, bool trackResurrection)
 		=> new(new Subscriber(source), trackResurrection);
@@ -367,6 +416,23 @@ public partial class Given_WeakEventHelper
 		}
 
 		public bool? Invoke() => _callback?.Invoke(_target);
+	}
+
+	/// <summary>
+	/// Like Gen2GcCallback, keeps each callback strongly referenced and runs it on every collection
+	/// until it returns false or its target is collected.
+	/// </summary>
+	private class SimulatedGen2GcTrimProvider : WeakEventHelper.ITrimProvider
+	{
+		private readonly List<(Func<object, bool> Callback, WeakReference Target)> _callbacks = [];
+
+		public int ActiveCallbacks => _callbacks.Count;
+
+		public void RegisterTrimCallback(Func<object, bool> callback, object target)
+			=> _callbacks.Add((callback, new WeakReference(target)));
+
+		public void Collect()
+			=> _callbacks.RemoveAll(c => c.Target.Target is not { } target || !c.Callback(target));
 	}
 }
 #endif
