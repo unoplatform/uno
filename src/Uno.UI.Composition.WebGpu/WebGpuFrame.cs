@@ -102,6 +102,12 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 		finally
 		{
+			if (_scratchBuf is not null)
+			{
+				_d.ReturnVerts(_scratchBuf);
+				_scratchBuf = null;
+			}
+
 			// Same cadence as the stats line, so UNO_WEBGPU_STATS_EVERY=1 gives a per-FRAME phase breakdown rather
 			// than a 60-frame average - the only way to see a distribution instead of a mean.
 			if (_emitStats && (_frameStatsCounter++ % _emitStatsEvery) == 0)
@@ -569,27 +575,23 @@ internal sealed unsafe partial class WebGpuFrame
 		return new Vector4(min.X, min.Y, max.X, max.Y);
 	}
 
-	// Reused so the per-frame op build does not allocate a list and an array per primitive.
-	private readonly VertBuf _scratch = new();
+	// Reused so the per-frame op build does not allocate a list and an array per primitive. Rented from the device on
+	// first use and handed back when the frame ends, so its array is not reallocated every frame.
+	private VertBuf _scratchBuf;
+	private VertBuf Scratch => _scratchBuf ??= _d.RentVerts();
 	private readonly float[] _clipU = new float[ClipUFloats];   // the uniform: header + the first ClipUniformEntries entries
 	private float[] _clipMore = new float[4 * ClipEntryFloats];  // the entries past those, for the overflow buffer; grows
 
-	private readonly Stack<List<DrawOp>> _opsPool = new();
-	private List<DrawOp> RentOps() => _opsPool.Count > 0 ? _opsPool.Pop() : new(256);
-	private void ReturnOps(List<DrawOp> ops)
-	{
-		ops.Clear();   // drops the captured ClipData refs; keeps the backing array for reuse
-		_opsPool.Push(ops);
-	}
+	private List<DrawOp> RentOps() => _d.RentOps();
+	private void ReturnOps(List<DrawOp> ops) => _d.ReturnOps(ops);
 
 	// The pass's shared vertex buffers, one per layout: every per-frame draw appends its verts here in op order, so
 	// adjacent ops sharing a clip occupy a contiguous range and encode as ONE draw, and the whole pass uploads each
 	// buffer once. Fields rather than locals because the builders append to them; saved/restored around a nested build.
 	private VertBuf _solid, _rrect, _gradVerts, _quadVerts;
 	private List<BackdropCmd> _backdrops;
-	private readonly Stack<VertBuf> _vertsPool = new();
-	private VertBuf RentVerts() { var l = _vertsPool.Count > 0 ? _vertsPool.Pop() : new VertBuf(); l.Clear(); return l; }
-	private void ReturnVerts(VertBuf s) { s.Clear(); _vertsPool.Push(s); }
+	private VertBuf RentVerts() => _d.RentVerts();
+	private void ReturnVerts(VertBuf s) => _d.ReturnVerts(s);
 	private VertBuf RentRrect() => RentVerts();
 	private void ReturnRrect(VertBuf s) => ReturnVerts(s);
 
@@ -1233,6 +1235,37 @@ internal sealed unsafe partial class WebGpuFrame
 		public nint SolidBuf, RrectBuf, GradBuf, QuadBuf;
 		public nuint SolidBufBytes, RrectBufBytes, GradBufBytes, QuadBufBytes;
 		public IntPtr PassBg;
+		/// <summary>The colour of an opaque whole-target fill taken off the front of the ops, for the pass to clear to.</summary>
+		public WColor? FoldedClear;
+	}
+
+	// A pass that clears anyway gets an opaque fill of its whole target for free from the load op; drawn, that fill
+	// would shade every pixel of the target a second time.
+	private static void FoldClear(PassBuild b, WebGpuRenderSurface target)
+	{
+		// A pass left with no draw at all loses the device on llvmpipe, so the last op stays a draw.
+		if (b.Ops.Count < 2 || b.Bound != _unbounded || b.BasisOx != 0f || b.BasisOy != 0f)
+		{
+			return;
+		}
+		var op = b.Ops[0];
+		if (op.Fill.A != 255 || op.Cover == default || op.CullScissor.Z > op.CullScissor.X)
+		{
+			return;
+		}
+		var r = PixelsFilled(op.Cover);
+		if (!op.Clip.ScissorInert) { r = Meet(r, PixelsFilled(op.Clip.Aabb)); }
+		if (r.X > 0f || r.Y > 0f || r.Z < target.Width - 1 || r.W < target.Height - 1)
+		{
+			return;
+		}
+		b.FoldedClear = op.Fill;
+		b.Ops.RemoveAt(0);
+		// Fills of that same colour drawn straight onto the clear change no pixel, their antialiased edges included.
+		while (b.Ops.Count > 1 && b.Ops[0].Fill == op.Fill && b.Ops[0].Cover != default)
+		{
+			b.Ops.RemoveAt(0);
+		}
 	}
 
 	private static readonly Vector4 _unbounded = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
@@ -1247,9 +1280,9 @@ internal sealed unsafe partial class WebGpuFrame
 		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f, List<WebGpuCommand> overlay = null, bool depth = false,
 		Vector4? bound = null)
 	{
-		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, bound ?? _unbounded, overlay);
+		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, bound ?? _unbounded, overlay, foldClear: !load);
 		_singleBuild[0] = build;
-		EncodePass(target, clear, load, _singleBuild, depth);
+		EncodePass(target, build.FoldedClear ?? clear, load, _singleBuild, depth);
 	}
 
 	private readonly PassBuild[] _singleBuild = new PassBuild[1];
@@ -1257,7 +1290,7 @@ internal sealed unsafe partial class WebGpuFrame
 	/// <summary>Timestamp the current build started, for the op-build half of the stats line.</summary>
 
 	// Builds the ops for one command list under a basis: the whole draw-side work of a pass, none of the encoding.
-	internal PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null, float basisScale = 1f)
+	internal PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null, float basisScale = 1f, bool foldClear = false)
 	{
 		long passStart = _emitStats && _passDepth == 0 ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
@@ -1287,6 +1320,7 @@ internal sealed unsafe partial class WebGpuFrame
 		_passDepth--;
 		if (_emitStats && _passDepth == 0) { WalkTicks += System.Diagnostics.Stopwatch.GetTimestamp() - walkStart; }
 		if (!_noOcclusionCull) { CullOccluded(b.Ops, bound); }
+		if (foldClear) { FoldClear(b, target); }
 		BuildPrepass(b);
 		long uploadStart = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
