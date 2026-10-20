@@ -10,7 +10,9 @@ The whole UI Visual Tree is drawn on an hardware accelerated canvas, using Metal
 
 The Skia Rendering backend has a very cheap cost for creating UI elements, which makes it very efficient for large user interfaces.
 
-Starting with Uno Platform 7.0, **it is the only rendering engine**: the native renderers have been removed, and the `Skia` `UnoFeature` (which references the SkiaSharp backend) is implied on every Uno Platform target. It is not implied on Windows (WinAppSDK), which renders with WinUI. The legacy `SkiaRenderer` feature is mapped to `Skia` for backwards compatibility.
+Starting with Uno Platform 7.0, the native renderers have been removed, and **Skia is the default rendering engine**. The `Skia` `UnoFeature` (which references the SkiaSharp backend) is implied on every Uno Platform target when no renderer feature is listed. It is not implied on Windows (WinAppSDK), which renders with WinUI. The legacy `SkiaRenderer` feature is mapped to `Skia` for backwards compatibility.
+
+The opt-in WebGPU rendering backend (the `WebGpu` `UnoFeature`) counts as a renderer feature: listing `WebGpu` without `Skia` leaves SkiaSharp and its native libraries out of the app. An app that also uses SkiaSharp itself, for example to draw with [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), lists both: `<UnoFeatures>Skia;WebGpu</UnoFeatures>`.
 
 This renderer supports [integrating native views](xref:Uno.Skia.Embedding.Native).
 
