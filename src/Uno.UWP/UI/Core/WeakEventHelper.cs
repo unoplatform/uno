@@ -65,6 +65,7 @@ namespace Windows.UI.Core
 			private object _lock = new object();
 			private List<WeakHandler> _handlers = [];
 			private readonly ITrimProvider _provider;
+			private bool _trimCallbackRegistered;
 
 			// Explicit parameterless constructor to allow Activator.CreateInstance to
 			// dynamically create an instance of WeakEventCollection via reflection.
@@ -100,7 +101,10 @@ namespace Windows.UI.Core
 						}
 					}
 
-					return _handlers.Count != 0;
+					// Returning false stops the callback, so the next registration must register a new one.
+					_trimCallbackRegistered = _handlers.Count != 0;
+
+					return _trimCallbackRegistered;
 				}
 			}
 
@@ -154,8 +158,10 @@ namespace Windows.UI.Core
 					WeakHandler key = new(target, handler);
 					_handlers.Add(key);
 
-					if (_handlers.Count == 1)
+					if (!_trimCallbackRegistered)
 					{
+						_trimCallbackRegistered = true;
+
 						// Static so the long-lived callback does not share this method's closure, which holds actualTarget.
 						_provider.RegisterTrimCallback(static collection => ((WeakEventCollection)collection).Trim(), this);
 					}
