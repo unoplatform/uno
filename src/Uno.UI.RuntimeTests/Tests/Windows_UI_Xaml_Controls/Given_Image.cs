@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
@@ -806,6 +808,119 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 			=> UITestHelper.ScreenShot(SUT);
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25596")]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Source_Outlives_Images(bool isSvg)
+		{
+			// Like an icon held in a static field or in the application resources.
+			ImageSource source = isSvg
+				? new SvgImageSource(new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/couch.svg"))
+				: new BitmapImage(new Uri("ms-appx:///Assets/square100.png"));
+
+			var (first, second) = await ShowAndRemoveImages(source);
+
+			Assert.IsTrue(await TestHelper.TryWaitUntilCollected(first), "The first image should be collected once removed, even though its source is alive.");
+			Assert.IsTrue(await TestHelper.TryWaitUntilCollected(second), "The second image should be collected once removed, even though its source is alive.");
+			GC.KeepAlive(source);
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		private static async Task<(WeakReference First, WeakReference Second)> ShowAndRemoveImages(ImageSource source)
+		{
+			// Two images share the source, as they would an icon. A source used by a single image also
+			// references that image as its inheritance context, which is not covered here.
+			var first = new Image { Source = source };
+			var second = new Image { Source = source };
+			var opened = 0;
+			first.ImageOpened += (_, _) => opened++;
+			second.ImageOpened += (_, _) => opened++;
+
+			try
+			{
+				await UITestHelper.Load(new StackPanel { Children = { first, second } }, panel => panel.IsLoaded);
+				await WindowHelper.WaitFor(() => opened == 2, timeoutMS: 5000, message: "Both images should open the source.");
+
+				return (new WeakReference(first), new WeakReference(second));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25596")]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Source_Updated_After_GC(bool isSvg)
+		{
+			ImageSource source = isSvg ? new SvgImageSource() : new BitmapImage();
+			var image = new Image { Source = source };
+			var opened = 0;
+			image.ImageOpened += (_, _) => opened++;
+
+			try
+			{
+				// In a canvas, the image takes the natural size of its source.
+				await UITestHelper.Load(new Canvas { Width = 300, Height = 300, Children = { image } });
+
+				// Not awaited, as from an async void handler: nothing but the source references the pending load.
+				var loaded = false;
+				_ = LoadAsync();
+				Collect();
+				await WindowHelper.WaitFor(() => loaded, timeoutMS: 5000, message: "SetSourceAsync should complete.");
+				await WindowHelper.WaitFor(() => opened == 1 && image.ActualWidth == 100, timeoutMS: 5000, message: "The image should show the source.");
+
+				for (var i = 0; i < 3; i++)
+				{
+					Collect();
+					await WindowHelper.WaitForIdle();
+				}
+
+				await SetSourceAsync(source, 200, 300);
+				await WindowHelper.WaitFor(() => opened == 2 && image.ActualWidth == 200, timeoutMS: 5000, message: "The image should show the updated source.");
+
+				async Task LoadAsync()
+				{
+					await SetSourceAsync(source, 100, 150);
+					loaded = true;
+				}
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+
+			static void Collect()
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				GC.Collect();
+			}
+		}
+
+		private static async Task SetSourceAsync(ImageSource source, int width, int height)
+		{
+			if (source is SvgImageSource svgImageSource)
+			{
+				var svg = $"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"{width}\" height=\"{height}\"><rect width=\"{width}\" height=\"{height}\" fill=\"blue\" /></svg>";
+				await svgImageSource.SetSourceAsync(new MemoryStream(Encoding.UTF8.GetBytes(svg)).AsRandomAccessStream());
+			}
+			else
+			{
+				var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/test_image_{width}_{height}.png"));
+				using var stream = await file.OpenReadAsync();
+				await ((BitmapImage)source).SetSourceAsync(stream);
+			}
+		}
 
 #if __SKIA__
 		[TestMethod]
