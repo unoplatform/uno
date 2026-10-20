@@ -1906,6 +1906,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)] // Flaky on the GPU-less WebGPU CI agents #25600
 		public async Task When_Programmatic_StartActive_Selection_Scrolls_To_Start()
 		{
 			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(new FakeImeTextBoxExtension());
@@ -2001,6 +2002,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)] // Flaky on the GPU-less WebGPU CI agents #25600
 		public async Task When_Preconfigured_Caret_Scrolls_After_Load()
 		{
 			var SUT = new RichEditBox
