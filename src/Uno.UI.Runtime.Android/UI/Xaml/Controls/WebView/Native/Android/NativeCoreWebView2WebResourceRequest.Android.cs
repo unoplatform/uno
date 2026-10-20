@@ -51,9 +51,12 @@ internal partial class NativeCoreWebView2WebResourceRequest : INativeWebResource
 		set => _method = string.IsNullOrWhiteSpace(value) ? _method : value;
 	}
 
+	/// <summary>
+	/// Always null: Android's <c>shouldInterceptRequest</c> does not expose request bodies (POST data included).
+	/// </summary>
 	public global::Windows.Storage.Streams.IRandomAccessStream Content
 	{
-		get => throw new NotSupportedException("Content stream is not available on Android WebResourceRequest.");
+		get => null!;
 		set => throw new NotSupportedException("Setting Content is not supported on Android WebResourceRequest.");
 	}
 
