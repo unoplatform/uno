@@ -50,15 +50,57 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_svgCanvas = source.GetCanvas();
 			AddChild(_svgCanvas);
-			source.SourceLoaded += OnSvgSourceLoaded;
-			source.OpenFailed += OnSvgSourceFailed;
+			var forwarder = new SvgSourceEventForwarder(this);
+			source.SourceLoaded += forwarder.OnSourceLoaded;
+			source.OpenFailed += forwarder.OnOpenFailed;
 			_sourceDisposable.Disposable = Disposable.Create(() =>
 			{
 				RemoveChild(_svgCanvas);
-				source.SourceLoaded -= OnSvgSourceLoaded;
-				source.OpenFailed -= OnSvgSourceFailed;
+				source.SourceLoaded -= forwarder.OnSourceLoaded;
+				source.OpenFailed -= forwarder.OnOpenFailed;
 				_svgCanvas = null;
 			});
+		}
+
+		/// <summary>
+		/// Forwards the events of an SVG source without letting it keep the image alive,
+		/// as the source may outlive the image (e.g. a shared icon).
+		/// </summary>
+		private sealed class SvgSourceEventForwarder
+		{
+			private readonly WeakReference<Image> _image;
+
+			public SvgSourceEventForwarder(Image image) => _image = new WeakReference<Image>(image);
+
+			public void OnSourceLoaded(object sender, EventArgs args)
+			{
+				if (_image.TryGetTarget(out var image))
+				{
+					image.OnSvgSourceLoaded(sender, args);
+				}
+				else if (sender is SvgImageSource source)
+				{
+					Unsubscribe(source);
+				}
+			}
+
+			public void OnOpenFailed(SvgImageSource sender, SvgImageSourceFailedEventArgs args)
+			{
+				if (_image.TryGetTarget(out var image))
+				{
+					image.OnSvgSourceFailed(sender, args);
+				}
+				else
+				{
+					Unsubscribe(sender);
+				}
+			}
+
+			private void Unsubscribe(SvgImageSource source)
+			{
+				source.SourceLoaded -= OnSourceLoaded;
+				source.OpenFailed -= OnOpenFailed;
+			}
 		}
 
 		private void OnSvgSourceLoaded(object sender, EventArgs args)
