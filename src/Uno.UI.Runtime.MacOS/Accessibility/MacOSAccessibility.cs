@@ -415,6 +415,24 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		return new Vector3(x, y, 0);
 	}
 
+	/// <summary>
+	/// The element a new accessibility element belongs under: elements hidden from accessibility (<see cref="AccessibilityView.Raw"/>) are never part of the
+	/// native tree (the tree is built through them), so the nearest ancestor that is not hidden is the parent.
+	/// </summary>
+	private static UIElement ResolveAccessibilityParent(UIElement parent, ref int? index)
+	{
+		var resolved = parent;
+		while (AutomationProperties.GetAccessibilityView(resolved) == AccessibilityView.Raw
+			&& Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(resolved) is UIElement grandParent)
+		{
+			resolved = grandParent;
+			// The position among the children of a hidden container means nothing among those of the ancestor.
+			index = null;
+		}
+
+		return resolved;
+	}
+
 	protected override void OnChildAdded(UIElement parent, UIElement child, int? index)
 	{
 		if (_accessibilityTreeInitialized && !_isCreatingAOM)
@@ -423,6 +441,8 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			{
 				return;
 			}
+
+			parent = ResolveAccessibilityParent(parent, ref index);
 
 			try
 			{
