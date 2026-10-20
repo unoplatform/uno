@@ -105,6 +105,8 @@ public partial class CoreWebView2
 		{
 			_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
 		}
+
+		_virtualHostMap.SetHost(hostName, folderPath);
 	}
 
 	public void ClearVirtualHostNameToFolderMapping(string hostName)
@@ -116,6 +118,11 @@ public partial class CoreWebView2
 		else
 		{
 			_hostToFolderMap.Remove(hostName);
+		}
+
+		if (hostName is not null)
+		{
+			_virtualHostMap.RemoveHost(hostName);
 		}
 	}
 
@@ -198,6 +205,7 @@ public partial class CoreWebView2
 		DetachWebResourceRequestedSupport();
 		DetachDOMContentLoadedSupport();
 		_nativeWebView = nativeWebView;
+		AttachVirtualHostMap();
 		AttachWebResourceRequestedSupport();
 		AttachDOMContentLoadedSupport();
 
@@ -229,7 +237,7 @@ public partial class CoreWebView2
 		string? uriString = null;
 		if (navigationData is Uri uri)
 		{
-			uriString = uri.ToString();
+			uriString = ToPublicUri(uri)!.ToString();
 		}
 		else if (navigationData is string htmlContent)
 		{
@@ -248,7 +256,7 @@ public partial class CoreWebView2
 
 	internal void RaiseNewWindowRequested(string target, Uri referer, out bool handled)
 	{
-		var args = new CoreWebView2NewWindowRequestedEventArgs(target, referer);
+		var args = new CoreWebView2NewWindowRequestedEventArgs(ToPublicUriString(target)!, ToPublicUri(referer)!);
 		NewWindowRequested?.Invoke(this, args);
 
 		handled = args.Handled;
@@ -256,6 +264,8 @@ public partial class CoreWebView2
 
 	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus, bool shouldSetSource = true)
 	{
+		uri = ToPublicUri(uri);
+
 		if (shouldSetSource)
 		{
 			Source = (uri ?? BlankUri).ToString();
@@ -275,6 +285,8 @@ public partial class CoreWebView2
 	/// <param name="source">The URI of the sending document, or null when the platform cannot report it.</param>
 	internal void RaiseWebMessageReceived(string message, string? source = null)
 	{
+		source = ToPublicUriString(source);
+
 		// WebMessageReceived must be called on the UI thread.
 		if (_owner.Dispatcher.HasThreadAccess)
 		{
@@ -308,7 +320,7 @@ public partial class CoreWebView2
 
 		if (_webResourceRequestedSupport is { })
 		{
-			_webResourceRequestedSupport.AddWebResourceRequestedFilter(uri, resourceContext, requestSourceKinds);
+			_webResourceRequestedSupport.AddWebResourceRequestedFilter(ToNativeFilter(uri), resourceContext, requestSourceKinds);
 		}
 	}
 
@@ -326,7 +338,7 @@ public partial class CoreWebView2
 
 		if (_webResourceRequestedSupport is { })
 		{
-			_webResourceRequestedSupport.RemoveWebResourceRequestedFilter(uri, resourceContext, requestSourceKinds);
+			_webResourceRequestedSupport.RemoveWebResourceRequestedFilter(ToNativeFilter(uri), resourceContext, requestSourceKinds);
 		}
 	}
 
@@ -373,7 +385,7 @@ public partial class CoreWebView2
 
 		if (_processedSource is Uri uri)
 		{
-			_nativeWebView.ProcessNavigation(uri);
+			_nativeWebView.ProcessNavigation(ToNativeUri(uri));
 		}
 		else if (_processedSource is string html)
 		{
@@ -383,7 +395,7 @@ public partial class CoreWebView2
 		{
 			var httpRequestMessage = new HttpRequestMessage()
 			{
-				RequestUri = requestMessage.RequestUri
+				RequestUri = requestMessage.RequestUri is { } requestUri ? ToNativeUri(requestUri) : null
 			};
 			foreach (var header in requestMessage.Headers)
 			{
@@ -408,13 +420,13 @@ public partial class CoreWebView2
 
 		foreach (var filter in _webResourceRequestedFilters)
 		{
-			supports.AddWebResourceRequestedFilter(filter.Uri, filter.ResourceContext, filter.RequestSourceKinds);
+			supports.AddWebResourceRequestedFilter(ToNativeFilter(filter.Uri), filter.ResourceContext, filter.RequestSourceKinds);
 		}
 	}
 
 	private void OnNativeWebResourceRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
 	{
-		RaiseWebResourceRequested(e);
+		RaiseWebResourceRequested(ToPublicArgs(e));
 	}
 
 	private void UpsertFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
