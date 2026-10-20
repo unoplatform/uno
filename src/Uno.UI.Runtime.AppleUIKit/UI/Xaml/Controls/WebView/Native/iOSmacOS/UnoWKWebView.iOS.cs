@@ -57,8 +57,13 @@ public
 	/// </summary>
 	internal object? _lastNavigationData;
 
-	public UnoWKWebView() : base(CGRect.Empty, new WebKit.WKWebViewConfiguration())
+	public UnoWKWebView() : this(new VirtualHostSchemeHandler())
 	{
+	}
+
+	private UnoWKWebView(VirtualHostSchemeHandler schemeHandler) : base(CGRect.Empty, CreateConfiguration(schemeHandler))
+	{
+		schemeHandler.Owner = this;
 		_shouldQueueHistoryChange = false;
 
 		var resourceLoader = ResourceLoader.GetForCurrentView();
@@ -85,6 +90,7 @@ public
 #endif
 
 		Configuration.UserContentController.AddScriptMessageHandler(this, WebMessageHandlerName);
+		Bridge.EnsureDocumentStartScriptsInstalled();
 
 		// Set strings with fallback to default English
 		OkString = !string.IsNullOrEmpty(ok) ? ok : "OK";
@@ -145,7 +151,7 @@ public
 			return;
 		}
 
-		if (_coreWebView?.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName) == true)
+		if (!IsVirtualHostScheme(uri.Scheme) && _coreWebView?.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName) == true)
 		{
 			// Load Url with folder
 			var relativePath = uri.PathAndQuery;
@@ -235,7 +241,11 @@ public
 #if __IOS__
 		// Inject the JavaScript interceptor for fetch/XMLHttpRequest header injection
 		// This is done after navigation completes so the DOM is available
-		InjectWebResourceInterceptor();
+		// Virtual host requests reach WebResourceRequested through the scheme handler instead.
+		if (!IsVirtualHostScheme(destinationUrl?.Scheme))
+		{
+			InjectWebResourceInterceptor();
+		}
 #endif
 	}
 
@@ -973,14 +983,6 @@ public
 		else
 		{
 			return directFileParentPath;
-		}
-	}
-
-	public void DidReceiveScriptMessage(WKUserContentController userContentController, WKScriptMessage message)
-	{
-		if (message.Name == WebMessageHandlerName)
-		{
-			_coreWebView?.RaiseWebMessageReceived((message.Body as NSString)?.ToString()!);
 		}
 	}
 

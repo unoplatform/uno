@@ -55,11 +55,16 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		OkString = !string.IsNullOrEmpty(ok) ? ok : "OK";
 		CancelString = !string.IsNullOrEmpty(cancel) ? cancel : "Cancel";
 
-		NativeHandle = NativeUno.uno_webview_create(_window.Handle, OkString, CancelString);
+		NativeHandle = NativeUno.uno_webview_create(_window.Handle, OkString, CancelString, WebViewVirtualHostMap.NativeScheme);
 
 		NativeUno.uno_webview_set_inspectable(NativeHandle, global::Uno.UI.FeatureConfiguration.WebView2.EnableDevTools);
 
+		// Scheme tasks can start before the element is loaded: the first navigation is issued when the template is applied.
+		_webViews[NativeHandle] = new WeakReference<MacOSNativeWebView>(this);
+
 		_previousTitle = "";
+
+		InitializeScripting();
 	}
 
 	/// <summary>
@@ -244,7 +249,8 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 			var baseUrl = NativeUno.uno_application_is_bundled() ? "[BundlePath]" : AppDomain.CurrentDomain.BaseDirectory;
 			url = $"file://{baseUrl}{uri.PathAndQuery}";
 		}
-		else if (_owner.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
+		else if (!uri.Scheme.Equals(WebViewVirtualHostMap.NativeScheme, StringComparison.OrdinalIgnoreCase)
+			&& _owner.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
 		{
 			var relativePath = uri.PathAndQuery;
 			var sep = relativePath.StartsWith('/') ? "" : "/";
@@ -540,13 +546,14 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	internal static unsafe void DidReceiveScriptMessage(nint handle, sbyte* messageBody)
+	internal static unsafe void DidReceiveScriptMessage(nint handle, sbyte* messageBody, sbyte* frameUrl, byte isMainFrame)
 	{
 		var webview = GetWebView(handle);
 		if (webview is not null)
 		{
-			var message = messageBody == null ? "" : new string(messageBody);
-			webview._owner.RaiseWebMessageReceived(message);
+			var message = messageBody == null ? "" : Marshal.PtrToStringUTF8((IntPtr)messageBody) ?? "";
+			var source = frameUrl == null ? null : Marshal.PtrToStringUTF8((IntPtr)frameUrl);
+			webview.OnScriptMessage(message, source, isMainFrame != 0);
 		}
 		else if (typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Warning))
 		{

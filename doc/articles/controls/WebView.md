@@ -127,14 +127,16 @@ webView.CoreWebView2.WebMessageReceived += (s, e) => Debug.WriteLine($"{e.Source
 
 These members are currently available on the following platforms:
 
-| Member | Windows (Skia Win32) | WinAppSDK | macOS, iOS, Android, Linux, WebAssembly |
-|--------|----------------------|-----------|------------------------------------------|
-| `AddScriptToExecuteOnDocumentCreatedAsync` / `RemoveScriptToExecuteOnDocumentCreated` | Yes | Yes | Not implemented (throws `NotImplementedException`) |
-| `PostWebMessageAsString` / `PostWebMessageAsJson` | Yes | Yes | Not implemented (reported, no effect) |
-| `DOMContentLoaded` | Yes | Yes | Not implemented (never raised) |
-| `CoreWebView2WebMessageReceivedEventArgs.Source` | Yes | Yes | Not implemented (throws `NotImplementedException`) |
+| Member | Windows (Skia Win32) | WinAppSDK | macOS (Skia), iOS | Android, Linux, WebAssembly |
+|--------|----------------------|-----------|-------------------|-----------------------------|
+| `AddScriptToExecuteOnDocumentCreatedAsync` / `RemoveScriptToExecuteOnDocumentCreated` | Yes | Yes | Yes | Not implemented (throws `NotImplementedException`) |
+| `PostWebMessageAsString` / `PostWebMessageAsJson` | Yes | Yes | Yes | Not implemented (reported, no effect) |
+| `DOMContentLoaded` | Yes | Yes | Yes | Not implemented (never raised) |
+| `CoreWebView2WebMessageReceivedEventArgs.Source` | Yes | Yes | Yes | Not implemented (throws `NotImplementedException`) |
 
 On platforms where a member is not implemented, a script queued before the native WebView exists makes the operation fail with `NotImplementedException` once the native WebView is created.
+
+On macOS and iOS, `WKWebView` has no `chrome.webview`, so Uno Platform injects one: every document (and every frame) gets a `window.chrome.webview` with `postMessage`, `addEventListener` and `removeEventListener`, carried over `window.webkit.messageHandlers.unoWebView`. Document-created scripts are `WKUserScript`s injected at document start in all frames, as on WebView2. Like `CoreWebView2.WebMessageReceived` on WebView2, only messages from the top-level document are raised; messages posted from frames are ignored.
 
 ## Navigating to web content in the application package
 
@@ -394,8 +396,8 @@ The `AddWebResourceRequestedFilter` method accepts three parameters:
 | ---------- | -------------- | ------------- | --------------- | ----------------- | ------- |
 | **Windows (Win32/WinAppSDK)** | ✅ Full | ✅ | ✅ | ✅ | Full WebView2 support |
 | **Android** | ⚠️ Partial | ✅ | ⚠️ | ✅ | Header modification requires re-fetching the resource with HttpClient (only safe for GET/HEAD requests). Session cookies are automatically synchronized. POST request bodies cannot be reliably re-fetched and are not reissued by the implementation, so header changes for POST requests are unsupported. |
-| **iOS** | ⚠️ Limited | ✅ | ⚠️ | ❌ | Navigation request headers cannot be modified. However, JavaScript-initiated requests (`fetch`/`XMLHttpRequest`) support custom header injection. Only fires for main document navigation, not sub-resources. |
-| **macOS** | ⚠️ Limited | ✅ | ⚠️ | ❌ | Header injection is supported for new requests only. Cannot modify existing request headers. |
+| **iOS** | ⚠️ Limited | ✅ | ⚠️ | ⚠️ | Virtual hosts (see below): every request, sub-resources included, with custom responses. Other URLs: navigation request headers cannot be modified, JavaScript-initiated requests (`fetch`/`XMLHttpRequest`) support custom header injection, and only main document navigations are reported. |
+| **macOS** | ⚠️ Limited | ✅ | ⚠️ | ⚠️ | Virtual hosts (see below): every request, sub-resources included, with custom responses. Other URLs: header injection is supported for new requests only; existing request headers cannot be modified. |
 | **WebAssembly** | ⚠️ Limited | ✅ | ⚠️ | ❌ | Only `fetch`/`XMLHttpRequest` requests can be intercepted. Standard HTML elements (`img`, `script`, `link`, etc.) cannot have headers modified. Same-origin policy and CORS restrictions apply. May miss requests made during initial page load. |
 | **Linux (X11)** | ❌ None | ❌ | ❌ | ❌ | Not implemented. |
 
@@ -403,7 +405,19 @@ The `AddWebResourceRequestedFilter` method accepts three parameters:
 
 #### iOS/macOS (WKWebView)
 
-The implementation uses two mechanisms:
+`WKWebView` cannot intercept `http` or `https`, so **virtual hosts** are served through a custom URL scheme instead. A host is virtual when it was registered with `SetVirtualHostNameToFolderMapping`, or when it is an IPv4 address in `0.0.0.0/8` (Blazor Hybrid serves its app from `https://0.0.0.1/`). The WebView loads `https://0.0.0.1/index.html` as `uno-app://0.0.0.1/index.html` and translates back, so `Source`, `Navigate`, the navigation events, `NewWindowRequested`, `WebMessageReceived.Source`, `WebResourceRequested` request URIs and filters only ever show `https://`.
+
+For every virtual host request, sub-resources and `fetch` included:
+
+1. `WebResourceRequested` is raised (when a filter matches) with the request method, headers and body. `GetDeferral()` is honored: the response is read once the handler returned and the deferral is completed, so it can be created after an `await`.
+2. When the handler sets `Response` (for example with `CoreWebView2Environment.CreateWebResourceResponse`), its status, headers and body are returned to the page. `Content-Length` is always set from the body and a missing `Content-Type` is inferred from the file extension.
+3. Otherwise the file is served from the folder registered with `SetVirtualHostNameToFolderMapping` (the app bundle's resources for a relative folder), and otherwise the page gets a `404`.
+
+`ResourceContext` is inferred, since WebKit does not report it: `Document` for the top-level document and for requests that accept `text/html` first (frames), then `Stylesheet`/`Image` from the `Accept` header, then the file extension; extension-less sub-resources are `Other`.
+
+Pages on `uno-app://` are secure contexts: `window.isSecureContext`, `crypto.subtle`, `localStorage`, `sessionStorage`, IndexedDB and same-origin `fetch` work (verified on macOS 27 / WebKit). Limitations: `document.cookie` does not persist cookies for the custom scheme, `location.protocol` and `location.origin` report `uno-app:`, the reason phrase of a response is not surfaced (`NSHTTPURLResponse` has none), redirect responses are not followed, changing `Request.Uri` or headers in the handler does not change what is served, and `CoreWebView2HostResourceAccessKind` is ignored.
+
+For other URLs, the implementation uses two mechanisms:
 
 1. **Navigation interception**: Fires `WebResourceRequested` for main document navigation (read-only headers)
 2. **JavaScript injection**: Automatically injects a script that overrides `window.fetch()` and `XMLHttpRequest.prototype` to apply custom headers to AJAX requests
