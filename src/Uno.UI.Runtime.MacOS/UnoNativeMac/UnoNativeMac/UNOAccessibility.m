@@ -1198,6 +1198,12 @@ void uno_accessibility_add_element(NSWindow* window,
 		} else {
 			[parent.unoChildren addObject:element];
 		}
+	} else if (parentHandle != 0 && context.rootElement) {
+		// The parent is not part of the tree (for example the layer a popup is created in, which can appear after the
+		// tree was built). Hang the element on the root instead of replacing the root with it, which would hide the
+		// whole window content from accessibility clients for as long as the popup element stays.
+		element.unoParent = context.rootElement;
+		[context.rootElement.unoChildren addObject:element];
 	} else {
 		// This is a root-level element
 		context.rootElement = element;
@@ -1231,6 +1237,10 @@ void uno_accessibility_remove_element(NSWindow* window, intptr_t parentHandle, i
 	}
 
 	UNOAccessibilityElement *parent = findElement(context, parentHandle);
+	if (!parent && [element.unoParent isKindOfClass:[UNOAccessibilityElement class]]) {
+		// The managed parent was never part of the tree (see uno_accessibility_add_element): the element hangs on the root.
+		parent = (UNOAccessibilityElement *)element.unoParent;
+	}
 	if (parent) {
 		[parent.unoChildren removeObject:element];
 	}
