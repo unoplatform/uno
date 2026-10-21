@@ -111,6 +111,29 @@ public class Given_DevServerMonitorLifecycle
 	}
 
 	[TestMethod]
+	[Description("An explicitly selected solution that no longer exists is never replaced by a scanned one: nothing is launched until it is back or another is selected")]
+	public void WhenExplicitSelectionNoLongerExists_NoSolutionIsLaunched()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var shallowSolution = CreateFile(root, "a", "Lib", "Lib.slnx");
+			var missingSolution = Path.Combine(root, "a", "b", "c", "d", "App.slnx");
+			string[] solutionFiles = [shallowSolution];
+			var resolution = CreateResolution(root, missingSolution, solutionFiles) with { IsExplicitSolutionSelection = true };
+
+			var solution = DevServerMonitor.DetermineSolutionToLaunch(solutionFiles, resolution);
+
+			solution.Should().BeNull();
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	[Description("A resolved solution that no longer exists falls back to the deterministic default instead of launching a missing file")]
 	public void WhenSelectedSolutionNoLongerExists_UsesSortedSolutionOrder()
 	{
@@ -198,6 +221,62 @@ public class Given_DevServerMonitorLifecycle
 			await StartAndWaitForScanAsync(monitor, root, CreateResolution(root, deletedSolution, []));
 
 			warnings.Should().ContainSingle().Which.Should().Contain(deletedSolution);
+		}
+		finally
+		{
+			await monitor.StopMonitoringAsync();
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("An explicitly selected solution deleted from disk is reported missing, with a warning naming it, instead of launching a scanned one")]
+	public async Task WhenExplicitSelectionWasDeleted_SolutionIsReportedMissing()
+	{
+		var root = CreateTempDirectory();
+		var (monitor, warnings) = CreateMonitorWithoutHost();
+
+		try
+		{
+			CreateFile(root, "a", "Lib", "Lib.slnx");
+			var deletedSolution = Path.Combine(root, "a", "b", "c", "d", "App.slnx");
+			var resolution = CreateResolution(root, deletedSolution, []) with { IsExplicitSolutionSelection = true };
+
+			await StartAndWaitForScanAsync(monitor, root, resolution);
+
+			monitor.SolutionNotFound.Should().BeTrue();
+			warnings.Should().ContainSingle().Which.Should().Contain(deletedSolution).And.Contain("no DevServer is launched");
+		}
+		finally
+		{
+			await monitor.StopMonitoringAsync();
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("A missing selection is warned about once while the loop keeps rescanning, and again only after it existed in between")]
+	public async Task WhenSelectionStaysMissingAcrossCycles_WarningIsLoggedOnceUntilItReturns()
+	{
+		var root = CreateTempDirectory();
+		var (monitor, warnings) = CreateMonitorWithoutHost();
+
+		try
+		{
+			var scanned = CreateFile(root, "a", "Lib", "Lib.slnx");
+			var selectedSolution = Path.Combine(root, "a", "b", "c", "d", "App.slnx");
+			var resolution = CreateResolution(root, selectedSolution, []) with { IsExplicitSolutionSelection = true };
+			await StartAndWaitForScanAsync(monitor, root, resolution);
+			// The loop's next cycle is 10 s away: drive further cycles' warning decision directly.
+			await monitor.StopMonitoringAsync();
+
+			monitor.WarnIfSolutionWasNotChosen([scanned], solution: null);
+			monitor.WarnIfSolutionWasNotChosen([scanned], solution: null);
+			warnings.Should().ContainSingle();
+
+			monitor.WarnIfSolutionWasNotChosen([scanned], selectedSolution);
+			monitor.WarnIfSolutionWasNotChosen([scanned], solution: null);
+			warnings.Should().HaveCount(2);
 		}
 		finally
 		{
