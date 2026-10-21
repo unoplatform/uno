@@ -35,14 +35,7 @@ internal sealed class GLRetainedFramebuffer : IDisposable
 	private const uint GL_DRAW_FRAMEBUFFER = 0x8CA9;
 	private const uint GL_FRAMEBUFFER_COMPLETE = 0x8CD5;
 	private const uint GL_COLOR_BUFFER_BIT = 0x4000;
-	private const uint GL_SCISSOR_TEST = 0x0C11;
 	private const uint GL_VERSION = 0x1F02;
-
-	private delegate byte IsEnabledDel(uint capability);
-	private delegate void CapabilityDel(uint capability);
-	private IsEnabledDel? _isEnabled;
-	private CapabilityDel? _enable;
-	private CapabilityDel? _disable;
 
 	private delegate void GenDel(int n, uint[] ids);
 	private delegate void DeleteDel(int n, uint[] ids);
@@ -102,9 +95,6 @@ internal sealed class GLRetainedFramebuffer : IDisposable
 			return address == 0 ? null : Marshal.GetDelegateForFunctionPointer<T>(address);
 		}
 
-		_isEnabled = Load<IsEnabledDel>("glIsEnabled");
-		_enable = Load<CapabilityDel>("glEnable");
-		_disable = Load<CapabilityDel>("glDisable");
 		_genFramebuffers = Load<GenDel>("glGenFramebuffers");
 		_deleteFramebuffers = Load<DeleteDel>("glDeleteFramebuffers");
 		_bindFramebuffer = Load<BindDel>("glBindFramebuffer");
@@ -126,7 +116,7 @@ internal sealed class GLRetainedFramebuffer : IDisposable
 		// required to return null for one), so the version is the authority on whether blitting exists at all.
 		var version = Load<GetStringDel>("glGetString") is { } getString ? Marshal.PtrToStringAnsi(getString(GL_VERSION)) : null;
 
-		IsSupported = HasFramebufferBlit(version) && _isEnabled is not null && _enable is not null && _disable is not null
+		IsSupported = HasFramebufferBlit(version)
 			&& _genFramebuffers is not null && _deleteFramebuffers is not null && _bindFramebuffer is not null
 			&& _genTextures is not null && _deleteTextures is not null && _bindTexture is not null
 			&& _texImage2D is not null && _texParameteri is not null && _framebufferTexture2D is not null
@@ -235,10 +225,6 @@ internal sealed class GLRetainedFramebuffer : IDisposable
 	}
 
 	/// <summary>Copies the composed frame onto the default framebuffer, which the host then swaps.</summary>
-	/// <remarks>
-	/// The raw binds here bypass Skia's GL state cache; that is safe only because the Skia backend calls
-	/// GRContext.ResetContext before drawing the next frame.
-	/// </remarks>
 	public void BlitToDefault()
 	{
 		if (_framebuffer == 0)
@@ -246,23 +232,11 @@ internal sealed class GLRetainedFramebuffer : IDisposable
 			return;
 		}
 
-		var scissor = _isEnabled!(GL_SCISSOR_TEST) != 0;
-		_disable!(GL_SCISSOR_TEST);
 		_bindFramebuffer!(GL_READ_FRAMEBUFFER, _framebuffer);
 		_bindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		// Same size and both bottom-left origin, so a 1:1 copy needs no filtering.
-		try
-		{
-			_blitFramebuffer!(0, 0, _width, _height, 0, 0, _width, _height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-		}
-		finally
-		{
-			_bindFramebuffer(GL_FRAMEBUFFER, 0);
-			if (scissor)
-			{
-				_enable!(GL_SCISSOR_TEST);
-			}
-		}
+		_blitFramebuffer!(0, 0, _width, _height, 0, 0, _width, _height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		_bindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	private void Release()
