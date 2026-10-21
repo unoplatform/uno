@@ -86,10 +86,13 @@ internal sealed class AppleUIKitTextFlyoutCommands : ITextCommandBarFlyoutComman
 		}
 
 		controller.ModalPresentationStyle = UIModalPresentationStyle.Popover;
-		if (controller.PopoverPresentationController is { } popover && target.Core.TryGetSelectionBoundsInRoot(out var bounds))
+		if (controller.PopoverPresentationController is { } popover)
 		{
+			// A popover with no source makes UIKit throw on iPad, so fall back to the middle of the layer.
 			popover.SourceView = layer;
-			popover.SourceRect = new CoreGraphics.CGRect(bounds.X, bounds.Y, bounds.Width, bounds.Height);
+			popover.SourceRect = target.Core.TryGetSelectionBoundsInRoot(out var bounds)
+				? new CoreGraphics.CGRect(bounds.X, bounds.Y, bounds.Width, bounds.Height)
+				: new CoreGraphics.CGRect(layer.Bounds.Width / 2, layer.Bounds.Height / 2, 0, 0);
 		}
 
 		presenter.PresentViewController(controller, animated: true, completionHandler: null);
