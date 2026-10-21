@@ -46,5 +46,19 @@ namespace Uno.UI.Tests.Windows_Storage_Streams
 			first.Dispose();
 			Assert.AreEqual(3ul, stream.Size, "Disposing an opened stream must leave the caller's stream open.");
 		}
+
+		[TestMethod]
+		public async Task When_OpenedStreamCloned_Then_ContentTypePreserved()
+		{
+			using var stream = new MemoryStream(new byte[] { 1, 2, 3 }).AsRandomAccessStream();
+			var sut = RandomAccessStreamReference.CreateFromStream(stream);
+
+			using var opened = await sut.OpenReadAsync();
+			using var clone = opened.CloneStream();
+
+			var typed = clone as IRandomAccessStreamWithContentType;
+			Assert.IsNotNull(typed);
+			Assert.AreEqual(opened.ContentType, typed.ContentType);
+		}
 	}
 }
