@@ -160,6 +160,7 @@ namespace Microsoft.UI.Xaml
 
 			_acceptedOperation = acceptedOperation;
 			_view.Update(acceptedOperation, _viewOverride);
+			_extension?.AcceptedOperationChanged(Info, acceptedOperation);
 		}
 
 		/// <summary>
@@ -180,8 +181,10 @@ namespace Microsoft.UI.Xaml
 
 			// When the pointer goes out of the window, we hide our internal control and,
 			// if supported by the OS, we request a Drag and Drop operation with the native UI.
-			_viewHandle.Dispose();
-			TryStartNativeDrag();
+			if (TryStartNativeDrag())
+			{
+				_viewHandle.Dispose();
+			}
 		}
 
 		// The platform is asked once per drag; a drag it declines stays managed.
