@@ -394,21 +394,11 @@ public class Given_ProxyLifecycleManager
 
 		try
 		{
-			await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
-			var libraryDirectory = Directory.CreateDirectory(Path.Combine(root, "a", "Lib")).FullName;
-			await File.WriteAllTextAsync(Path.Combine(libraryDirectory, "Lib.slnx"), string.Empty);
-			var appDirectory = Directory.CreateDirectory(Path.Combine(root, "a", "b", "c", "d")).FullName;
-			var appSolution = Path.Combine(appDirectory, "App.slnx");
-			await File.WriteAllTextAsync(appSolution, string.Empty);
-			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
-
+			var (_, appSolution) = await CreateDeepAppLayoutAsync(root);
 			var created = CreateSubject();
 			var subject = created.Subject;
 			monitor = created.Monitor;
-			SetPrivateField(subject, "_currentDirectory", root);
-			SetPrivateField(subject, "_workspaceResolution", await resolver.ResolveAsync(root));
-			SetPrivateField(subject, "_devServerPort", 0);
-			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+			await StartSessionAsync(subject, root);
 
 			var result = await subject.SelectSolutionAsync(appSolution);
 
@@ -565,7 +555,7 @@ public class Given_ProxyLifecycleManager
 			subject.ConnectionState.Should().Be(ConnectionState.Degraded);
 			created.HealthService.DevServerStarted.Should().BeFalse();
 			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(appSolution);
-			GetWorkspaceObservationRoot(subject).Should().Be(root, "the workspace above the missing solution stays watched, so restoring it is seen");
+			subject.GetWorkspaceObservationRoot().Should().Be(root, "the workspace above the missing solution stays watched, so restoring it is seen");
 
 			await File.WriteAllTextAsync(appSolution, string.Empty);
 			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
@@ -638,7 +628,7 @@ public class Given_ProxyLifecycleManager
 			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
 
 			subject.ConnectionState.Should().Be(ConnectionState.Degraded);
-			GetWorkspaceObservationRoot(subject).Should().Be(root, "the global.json that lost the SDK is watched");
+			subject.GetWorkspaceObservationRoot().Should().Be(root, "the global.json that lost the SDK is watched");
 
 			await File.WriteAllTextAsync(globalJsonPath, """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
 			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
@@ -677,7 +667,7 @@ public class Given_ProxyLifecycleManager
 
 			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
 
-			GetWorkspaceObservationRoot(subject).Should().Be(externalWorkspace);
+			subject.GetWorkspaceObservationRoot().Should().Be(externalWorkspace);
 			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(externalSolution);
 			created.HealthService.CurrentSelection.CandidateSolutions.Should().Contain(Path.Combine(localWorkspace, "Local.slnx"));
 		}
@@ -750,9 +740,7 @@ public class Given_ProxyLifecycleManager
 			SetPrivateField(subject, "_devServerPort", 0);
 			SetPrivateField(subject, "_forwardedArgs", new List<string>());
 
-			typeof(ProxyLifecycleManager)
-				.GetMethod("EnsureDevServerStartedFromSolutionDirectory", BindingFlags.Instance | BindingFlags.NonPublic)!
-				.Invoke(subject, null);
+			subject.EnsureDevServerStartedFromSolutionDirectory();
 
 			healthService.DevServerStarted.Should().BeTrue();
 		}
@@ -766,11 +754,6 @@ public class Given_ProxyLifecycleManager
 			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
-
-	private static string? GetWorkspaceObservationRoot(ProxyLifecycleManager subject)
-		=> (string?)typeof(ProxyLifecycleManager)
-			.GetMethod("GetWorkspaceObservationRoot", BindingFlags.Instance | BindingFlags.NonPublic)!
-			.Invoke(subject, null);
 
 	// root/global.json (Uno), a library solution within the solution scan depth, and the app solution below it.
 	private static async Task<(string LibrarySolution, string AppSolution)> CreateDeepAppLayoutAsync(string root)
@@ -1846,10 +1829,7 @@ public class Given_ProxyLifecycleManager
 			SetPrivateField(subject, "_solutionDirectory", root);
 			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
 
-			var method = typeof(ProxyLifecycleManager).GetMethod("EnsureDevServerStartedFromSolutionDirectory", BindingFlags.Instance | BindingFlags.NonPublic);
-			method.Should().NotBeNull();
-
-			method!.Invoke(subject, []);
+			subject.EnsureDevServerStartedFromSolutionDirectory();
 
 			healthService.DevServerStarted.Should().BeFalse();
 			subject.ConnectionState.Should().Be(ConnectionState.Degraded);

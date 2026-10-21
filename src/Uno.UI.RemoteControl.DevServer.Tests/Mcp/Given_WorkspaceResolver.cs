@@ -37,6 +37,7 @@ public class Given_WorkspaceResolver
 	}
 
 	[TestMethod]
+	[Description("An explicitly chosen solution resolves wherever it is: the candidate scan only suggests (unoplatform/uno#25524)")]
 	public async Task WhenResolvingSolutionOutsideTheCandidateScan_SolutionIsResolved()
 	{
 		var root = CreateTempDirectory();
@@ -69,6 +70,7 @@ public class Given_WorkspaceResolver
 	}
 
 	[TestMethod]
+	[Description("An explicit solution that does not resolve keeps its path, so it stays selected until it does")]
 	public async Task WhenExplicitSolutionDoesNotResolve_ItStaysSelected()
 	{
 		var root = CreateTempDirectory();
