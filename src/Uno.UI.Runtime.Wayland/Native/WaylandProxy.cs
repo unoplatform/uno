@@ -49,7 +49,7 @@ internal abstract unsafe class WaylandProxy : IDisposable
 
 	internal nint MarshalRequest(uint opcode, string? resultInterface, uint resultVersion, uint since, bool destructor, RequestArguments args)
 	{
-		lock (Display.SyncRoot)
+		using (Display.Lock())
 		{
 			Display.ThrowIfUnavailable();
 			if (Version < since)
@@ -62,14 +62,14 @@ internal abstract unsafe class WaylandProxy : IDisposable
 			{
 				Release();
 			}
-			Display.WakeDispatch();
+			Display.RequestSent();
 			return result;
 		}
 	}
 
 	public void Dispose()
 	{
-		lock (Display.SyncRoot)
+		using (Display.Lock())
 		{
 			if (_handle == 0)
 			{
@@ -80,7 +80,7 @@ internal abstract unsafe class WaylandProxy : IDisposable
 				using var args = new RequestArguments(0);
 				WaylandNative.wl_proxy_marshal_array_flags(_handle, opcode, null, Version, 1, args.Pointer);
 				Release();
-				Display.WakeDispatch();
+				Display.RequestSent();
 			}
 			else
 			{

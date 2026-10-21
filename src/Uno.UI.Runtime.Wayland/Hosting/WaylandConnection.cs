@@ -9,16 +9,16 @@ using Uno.UI.Runtime.Wayland.Protocols;
 namespace Uno.UI.Runtime.Wayland;
 
 // Threading contract:
-// - Protocol events fire on the display's dispatch thread while it holds SyncRoot. Handlers only copy
+// - Protocol events fire on the display's dispatch thread under the display lock. Handlers only copy
 //   event data, acknowledge protocol state (ping, configure) and post work elsewhere; they never wait.
-// - Requests may be issued from any thread; each proxy request takes SyncRoot. Proxies whose listeners
-//   must not miss events are created and subscribed inside one SyncRoot section.
+// - Requests are sent from any thread under the display lock and flushed when it is released. Proxies whose
+//   listeners must not miss events are created and subscribed inside one locked section.
 // - UI state (XamlRoot, window wrapper, input sinks' public events) is updated on the Uno UI thread
 //   through PostToUI. Rendering state belongs to each window's render thread.
 internal sealed class WaylandConnection : IDisposable
 {
 	private readonly HashSet<WaylandWindowWrapper> _windows = new();
-	// Dispatch thread or SyncRoot.
+	// Dispatch thread or the display lock.
 	private readonly Dictionary<uint, WaylandOutput> _outputs = new();
 	private volatile WaylandOutput? _defaultOutput;
 	// UI thread: render-thread teardown of closed windows that has not finished yet.
@@ -32,7 +32,7 @@ internal sealed class WaylandConnection : IDisposable
 	internal WaylandConnection(WaylandDisplay display)
 	{
 		Display = display;
-		lock (display.SyncRoot)
+		using (display.Lock())
 		{
 			Compositor = (WlCompositor)display.Bind(WlCompositor.ProtocolName, 6);
 			WmBase = (XdgWmBase)display.Bind(XdgWmBase.ProtocolName, uint.MaxValue);
@@ -109,7 +109,7 @@ internal sealed class WaylandConnection : IDisposable
 	internal ZxdgExporterV2? Exporter { get; }
 	internal WlSeat? Seat { get; }
 
-	// Written on the dispatch thread; read under SyncRoot or on the dispatch thread.
+	// Written on the dispatch thread; read under the display lock or on the dispatch thread.
 	internal uint SeatCapabilities { get; private set; }
 
 	// Raised on the dispatch thread before the removed output's proxy is released.
@@ -129,7 +129,7 @@ internal sealed class WaylandConnection : IDisposable
 	// Any thread: the first advertised output, for windows that have not entered one yet.
 	internal WaylandOutputInfo? DefaultOutputInfo => _defaultOutput?.Info;
 
-	// Dispatch thread or SyncRoot.
+	// Dispatch thread or the display lock.
 	internal WaylandOutput? FindOutput(WlOutput? proxy)
 	{
 		foreach (var output in _outputs.Values)

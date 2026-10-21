@@ -84,7 +84,7 @@ internal sealed class WaylandClientDecorations : IDisposable
 			_subsurface.PlaceBelow(parent);
 			_viewport = connection.Viewporter?.GetViewport(_surface);
 			_scale = new WaylandRenderScale(_surface, _viewport);
-			_context = new WaylandSoftwareGraphicsContext(_surface, connection.Shm, connection.Display.Post, PrepareCommit);
+			_context = new WaylandSoftwareGraphicsContext(_surface, connection.Shm, connection.Display.Send, PrepareCommit);
 			drawingFactory = provider.CreateGraphics(_context);
 			_drawingFactory = drawingFactory as IDrawingFactory<ISoftwareRenderTarget>
 				?? throw new NotSupportedException("The graphics backend cannot present software frames.");
@@ -144,7 +144,7 @@ internal sealed class WaylandClientDecorations : IDisposable
 	{
 		if (_redraw.ParentCommitted())
 		{
-			_connection.Display.Post(Redraw);
+			_connection.Display.Send(Redraw);
 		}
 	}
 
@@ -236,7 +236,7 @@ internal sealed class WaylandClientDecorations : IDisposable
 	// The scale and viewport change in the same commit as the buffer they describe.
 	private bool PrepareCommit(int width, int height, Func<bool> submit)
 	{
-		lock (_connection.Display.SyncRoot)
+		using (_connection.Display.Lock())
 		{
 			_ = _scale.Apply(_layout.SurfaceWidth, _layout.SurfaceHeight);
 			return submit();

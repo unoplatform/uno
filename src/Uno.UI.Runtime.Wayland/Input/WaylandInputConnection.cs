@@ -6,14 +6,15 @@ using Uno.UI.Runtime.Wayland.Protocols;
 
 namespace Uno.UI.Runtime.Wayland.Input;
 
-// The protocol adapter owns proxies; all callbacks and requests run on the display thread.
+// The protocol adapter owns proxies; callbacks run on the dispatch thread, requests under the display lock.
 internal interface IWaylandInputConnection
 {
 	IDisposable GetPointer(WaylandPointerInputSource sink);
 	IDisposable GetKeyboard(WaylandKeyboardInputSource sink);
 	IDisposable GetTouch(WaylandPointerInputSource sink);
 	void SetCursor(uint enterSerial, CoreCursor? cursor);
-	void Post(Action action);
+	// Sends the requests under the display lock.
+	void Send(Action requests);
 }
 
 internal sealed class WaylandSeat : IDisposable

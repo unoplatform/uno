@@ -201,7 +201,7 @@ public static class Program
 			}
 			var resultType = newId is null ? "void" : Type(newId);
 			var requestStart = builder.Length;
-			builder.AppendLine($"\tpublic {resultType} {Name(Attr(request, "name"))}({string.Join(", ", parameters)})\n\t{{\n\t\tlock (Display.SyncRoot)\n\t\t{{");
+			builder.AppendLine($"\tpublic {resultType} {Name(Attr(request, "name"))}({string.Join(", ", parameters)})\n\t{{\n\t\tusing (Display.Lock())\n\t\t{{");
 			if (dynamic)
 			{
 				builder.AppendLine("\t\tif (version == 0 || version > (uint)ProtocolMetadata.Get(@interface)->Version)\n\t\t{\n\t\t\tthrow new ArgumentOutOfRangeException(nameof(version));\n\t\t}");
