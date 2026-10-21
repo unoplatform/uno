@@ -30,26 +30,21 @@ namespace Uno.UI.Tests.Windows_Storage_Streams
 		}
 
 		[TestMethod]
-		public async Task When_CreateFromStream_Then_OpenedStreamIsBorrowed()
+		public async Task When_CreateFromStream_Then_EachOpenIsIndependent()
 		{
 			using var stream = new MemoryStream(new byte[] { 1, 2, 3 }).AsRandomAccessStream();
+			stream.Seek(1);
 			var sut = RandomAccessStreamReference.CreateFromStream(stream);
 
-			Assert.IsFalse(sut.OwnsOpenedStream);
-			// Every open hands out the caller's stream (possibly wrapped for its content type), position included.
 			var first = await sut.OpenReadAsync();
+			Assert.AreEqual(0ul, first.Position);
 			first.Seek(2);
-			Assert.AreEqual(2ul, stream.Position);
 			var second = await sut.OpenReadAsync();
-			Assert.AreEqual(2ul, second.Position);
-		}
+			Assert.AreEqual(0ul, second.Position);
+			Assert.AreEqual(1ul, stream.Position);
 
-		[TestMethod]
-		public void When_CreateFromOpen_Then_OpenedStreamIsOwned()
-		{
-			var sut = new RandomAccessStreamReference(ct => Task.FromResult(default(IRandomAccessStreamWithContentType)));
-
-			Assert.IsTrue(sut.OwnsOpenedStream);
+			first.Dispose();
+			Assert.AreEqual(3ul, stream.Size, "Disposing an opened stream must leave the caller's stream open.");
 		}
 	}
 }

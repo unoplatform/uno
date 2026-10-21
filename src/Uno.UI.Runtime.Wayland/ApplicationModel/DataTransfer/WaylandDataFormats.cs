@@ -159,41 +159,28 @@ internal static class WaylandDataFormats
 
 	private static async Task<byte[]?> GetPngAsync(RandomAccessStreamReference reference)
 	{
-		var stream = await reference.OpenReadAsync();
-		using var ownedStream = reference.OwnsOpenedStream ? stream : null;
-		var position = stream.Position;
-		try
+		using var stream = await reference.OpenReadAsync();
+		using var buffer = new MemoryStream();
+		await stream.AsStreamForRead().CopyToAsync(buffer);
+		var bytes = buffer.ToArray();
+		if (bytes.AsSpan().StartsWith((ReadOnlySpan<byte>)[0x89, (byte)'P', (byte)'N', (byte)'G']))
 		{
-			stream.Seek(0);
-			using var buffer = new MemoryStream();
-			await stream.AsStreamForRead().CopyToAsync(buffer);
-			var bytes = buffer.ToArray();
-			if (bytes.AsSpan().StartsWith((ReadOnlySpan<byte>)[0x89, (byte)'P', (byte)'N', (byte)'G']))
-			{
-				return bytes;
-			}
-			using var input = new MemoryStream(bytes);
-			var codec = ImageEncoderDecoder.Current;
-			if (!codec.TryDecode(input, null, null, out var frames))
-			{
-				return null;
-			}
-			using (frames)
-			{
-				var image = frames.Frames[0];
-				var pixels = new byte[checked(image.PixelWidth * image.PixelHeight * 4)];
-				image.CopyPixels(pixels);
-				using var output = new MemoryStream();
-				codec.Encode(output, pixels, image.PixelWidth, image.PixelHeight, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, BitmapEncoderFormat.Png, 100);
-				return output.ToArray();
-			}
+			return bytes;
 		}
-		finally
+		using var input = new MemoryStream(bytes);
+		var codec = ImageEncoderDecoder.Current;
+		if (!codec.TryDecode(input, null, null, out var frames))
 		{
-			if (!reference.OwnsOpenedStream)
-			{
-				stream.Seek(position);
-			}
+			return null;
+		}
+		using (frames)
+		{
+			var image = frames.Frames[0];
+			var pixels = new byte[checked(image.PixelWidth * image.PixelHeight * 4)];
+			image.CopyPixels(pixels);
+			using var output = new MemoryStream();
+			codec.Encode(output, pixels, image.PixelWidth, image.PixelHeight, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, BitmapEncoderFormat.Png, 100);
+			return output.ToArray();
 		}
 	}
 
