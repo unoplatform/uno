@@ -12,17 +12,17 @@ internal sealed class WaylandProtocolInputConnection : IWaylandInputConnection
 {
 	private readonly WlSeat _seat;
 	private readonly Func<WlSurface?, bool> _ownsSurface;
-	private readonly Action<Action> _post;
+	private readonly Action<Action> _send;
 	private readonly Action<uint, CoreCursor?> _cursor;
 
-	public WaylandProtocolInputConnection(WlSeat seat, Func<WlSurface?, bool> ownsSurface, Action<Action> post, Action<uint, CoreCursor?> cursor)
+	public WaylandProtocolInputConnection(WlSeat seat, Func<WlSurface?, bool> ownsSurface, Action<Action> send, Action<uint, CoreCursor?> cursor)
 	{
 		_seat = seat;
 		_ownsSurface = ownsSurface;
-		_post = post;
+		_send = send;
 		_cursor = cursor;
 	}
-	public void Post(Action action) => _post(action);
+	public void Send(Action requests) => _send(requests);
 	public void SetCursor(uint serial, CoreCursor? cursor) => _cursor(serial, cursor);
 
 	// The live wl_pointer, for cursor surfaces and cursor-shape devices. Dispatch thread only.

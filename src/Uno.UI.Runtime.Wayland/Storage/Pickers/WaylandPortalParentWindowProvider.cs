@@ -35,13 +35,13 @@ internal sealed class WaylandPortalParentWindowProvider(WaylandConnection connec
 
 		var handle = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
 		ZxdgExportedV2 exported;
-		lock (connection.Display.SyncRoot)
+		using (connection.Display.Lock())
 		{
 			exported = exporter.ExportToplevel(wrapper.Host.Surface);
 			exported.HandleEvent += (_, e) => handle.TrySetResult(e.Handle);
 		}
 		// Destroying the exported object revokes the handle, so it lives until the portal request completes.
-		var lifetime = Disposable.Create(() => connection.Display.Post(exported.Dispose));
+		var lifetime = Disposable.Create(() => connection.Display.Send(exported.Dispose));
 
 		try
 		{

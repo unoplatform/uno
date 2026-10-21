@@ -79,7 +79,7 @@ internal sealed class WaylandXamlRootHost : IXamlRootHost, IWaylandFrameGate, IW
 
 			if (connection.Seat is { } wlSeat)
 			{
-				_input = new WaylandProtocolInputConnection(wlSeat, s => s == surface, connection.Display.Post, SetCursor);
+				_input = new WaylandProtocolInputConnection(wlSeat, s => s == surface, connection.Display.Send, SetCursor);
 				_input.PointerReleasing += (_, _) => DisposeCursor();
 				_input.InputSerial += (_, serial) => connection.InputSerial = serial;
 			}
@@ -91,7 +91,7 @@ internal sealed class WaylandXamlRootHost : IXamlRootHost, IWaylandFrameGate, IW
 				var seat = new WaylandSeat(connection.Seat!, _input, PointerSource, KeyboardSource);
 				_seat = seat;
 				// Capabilities were announced at bind time; replay them for this window's devices.
-				connection.Display.Post(() => seat.Capabilities(connection.SeatCapabilities));
+				connection.Display.Send(() => seat.Capabilities(connection.SeatCapabilities));
 			}
 
 			connection.TextInputReceived += OnTextInputReceived;
@@ -105,7 +105,7 @@ internal sealed class WaylandXamlRootHost : IXamlRootHost, IWaylandFrameGate, IW
 			{
 				try
 				{
-					lock (connection.Display.SyncRoot)
+					using (connection.Display.Lock())
 					{
 						rollbackProtocolObjects();
 					}
@@ -482,7 +482,7 @@ internal sealed class WaylandXamlRootHost : IXamlRootHost, IWaylandFrameGate, IW
 				},
 				() =>
 				{
-					lock (display.SyncRoot)
+					using (display.Lock())
 					{
 						_connection.TextInputReceived -= OnTextInputReceived;
 						WaylandCleanup.Run(
@@ -529,7 +529,7 @@ internal sealed class WaylandXamlRootHost : IXamlRootHost, IWaylandFrameGate, IW
 			finally
 			{
 				var destroyed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-				display.TryPost(() =>
+				if (!display.TrySend(() =>
 				{
 					try
 					{
@@ -540,7 +540,10 @@ internal sealed class WaylandXamlRootHost : IXamlRootHost, IWaylandFrameGate, IW
 					{
 						destroyed.TrySetException(error);
 					}
-				}, () => destroyed.TrySetException(new InvalidOperationException("Wayland dispatch stopped before window destruction.")));
+				}))
+				{
+					destroyed.TrySetException(new InvalidOperationException("Wayland dispatch stopped before window destruction."));
+				}
 				WaylandCleanup.Run(
 					() => destroyed.Task.GetAwaiter().GetResult(),
 					() =>
@@ -568,6 +571,6 @@ internal sealed class WaylandXamlRootHost : IXamlRootHost, IWaylandFrameGate, IW
 		public IDisposable GetKeyboard(WaylandKeyboardInputSource sink) => throw new NotSupportedException();
 		public IDisposable GetTouch(WaylandPointerInputSource sink) => throw new NotSupportedException();
 		public void SetCursor(uint enterSerial, CoreCursor? cursor) { }
-		public void Post(Action action) { }
+		public void Send(Action requests) { }
 	}
 }

@@ -51,7 +51,7 @@ internal sealed class WaylandCursorSurface : IWaylandCursorSurface
 	// libwayland-cursor owns the theme's wl_buffer proxies, so marshal the raw pointer without wrapping it.
 	private unsafe void AttachBorrowed(nint buffer)
 	{
-		lock (_surface.Display.SyncRoot)
+		using (_surface.Display.Lock())
 		{
 			using var args = new RequestArguments(3);
 			args.Pointer[0].Pointer = buffer;

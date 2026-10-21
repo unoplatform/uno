@@ -40,7 +40,7 @@ internal sealed class WaylandDataOffer
 
 	internal uint MarkDropped()
 	{
-		lock (_offer.Display.SyncRoot)
+		using (_offer.Display.Lock())
 		{
 			_negotiation.Dropped = true;
 			return _offer.Version < 3 ? (_negotiation.AcceptedMime ? 1u : 0u)
@@ -78,7 +78,7 @@ internal sealed class WaylandDataOffer
 		try
 		{
 			(read, write) = WaylandPipe.Create();
-			lock (_offer.Display.SyncRoot)
+			using (_offer.Display.Lock())
 			{
 				if (_destroyed || cancellationToken.IsCancellationRequested)
 				{
@@ -121,7 +121,7 @@ internal sealed class WaylandDataOffer
 	// Drag-and-drop feedback: the accepted MIME type (null rejects the drop) and the accepted actions.
 	internal void Accept(uint serial, string? mimeType, uint actions, uint preferredAction)
 	{
-		lock (_offer.Display.SyncRoot)
+		using (_offer.Display.Lock())
 		{
 			if (_destroyed)
 			{
@@ -140,7 +140,7 @@ internal sealed class WaylandDataOffer
 	// Ends a successful drop: the source may now delete moved data.
 	internal void FinishAndDestroy(uint completedAction)
 	{
-		lock (_offer.Display.SyncRoot)
+		using (_offer.Display.Lock())
 		{
 			if (!_destroyed && _offer.Version >= 3 && _negotiation.CanFinish(completedAction))
 			{
@@ -152,7 +152,7 @@ internal sealed class WaylandDataOffer
 
 	internal void Destroy()
 	{
-		lock (_offer.Display.SyncRoot)
+		using (_offer.Display.Lock())
 		{
 			if (!_destroyed)
 			{

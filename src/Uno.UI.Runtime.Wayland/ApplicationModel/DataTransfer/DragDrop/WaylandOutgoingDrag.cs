@@ -57,7 +57,7 @@ internal sealed class WaylandOutgoingDrag
 			}
 			var scale = XamlRoot.RasterizationScale;
 			var image = await WaylandDragIcon.CaptureAsync(Info);
-			_device.Display.Post(() => StartOnDispatch(view, mimeTypes, actions, image, scale));
+			_device.Display.Send(() => StartOnDispatch(view, mimeTypes, actions, image, scale));
 		}
 		catch (Exception error)
 		{
@@ -65,7 +65,7 @@ internal sealed class WaylandOutgoingDrag
 			{
 				this.Log().Error("Failed to start the native drag.", error);
 			}
-			_device.Display.Post(() =>
+			_device.Display.Send(() =>
 			{
 				if (_state.Cancelled())
 				{
@@ -184,7 +184,7 @@ internal sealed class WaylandOutgoingDrag
 	}
 
 	// UI thread: a newer drag or the closing of the originating window ends this one as cancelled.
-	internal void Cancel() => _device.Display.Post(() =>
+	internal void Cancel() => _device.Display.Send(() =>
 	{
 		_cancelled = true;
 		if (_state.Cancelled())
