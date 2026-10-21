@@ -42,11 +42,16 @@ if [ "$USE_WESTON" = "true" ]; then
 	XDG_RUNTIME_DIR="$(mktemp -d)"
 	export XDG_RUNTIME_DIR
 	WESTON_PID=
+	XVFB_PID=
 	cleanup_wayland()
 	{
 		if [ -n "$WESTON_PID" ]; then
 			kill "$WESTON_PID" 2>/dev/null || true
 			wait "$WESTON_PID" 2>/dev/null || true
+		fi
+		if [ -n "$XVFB_PID" ]; then
+			kill "$XVFB_PID" 2>/dev/null || true
+			wait "$XVFB_PID" 2>/dev/null || true
 		fi
 		rm -rf "$XDG_RUNTIME_DIR"
 	}
@@ -58,12 +63,32 @@ if [ "$USE_WESTON" = "true" ]; then
 	export WAYLAND_DISPLAY=uno-runtime-tests
 	export UNO_EXPECT_HOST=Uno.UI.Runtime.Wayland
 	WESTON_LOG="$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/weston${UNO_TEST_RESULT_LABEL}.log"
-	# A fake seat gives windows keyboard focus, which Wayland requires to set the clipboard.
-	WESTON_SEAT=()
+	# Wayland only lets a focused client set the clipboard, so the compositor needs a seat: headless Weston's
+	# --fake-seat where available, otherwise Weston's X11 backend in a private Xvfb, whose seat has a keyboard.
+	WESTON_BACKEND=(--backend=headless)
+	WESTON_X_DISPLAY=
 	if weston --help 2>&1 | grep -q -- --fake-seat; then
-		WESTON_SEAT=(--fake-seat)
+		WESTON_BACKEND+=(--fake-seat)
+	elif command -v Xvfb >/dev/null 2>&1; then
+		for n in $(seq 90 120); do
+			if [ ! -e "/tmp/.X11-unix/X$n" ] && [ ! -e "/tmp/.X$n-lock" ]; then
+				WESTON_X_DISPLAY=":$n"
+				break
+			fi
+		done
+		if [ -n "$WESTON_X_DISPLAY" ]; then
+			Xvfb "$WESTON_X_DISPLAY" -screen 0 1280x1024x24 -nolisten tcp &
+			XVFB_PID=$!
+			for i in $(seq 1 50); do
+				if [ -e "/tmp/.X11-unix/X${WESTON_X_DISPLAY#:}" ]; then
+					break
+				fi
+				sleep 0.2
+			done
+			WESTON_BACKEND=(--backend=x11 --use-pixman)
+		fi
 	fi
-	weston --backend=headless "${WESTON_SEAT[@]}" --socket="$WAYLAND_DISPLAY" --width=1280 --height=1024 --scale=1 --idle-time=0 --log="$WESTON_LOG" &
+	DISPLAY="$WESTON_X_DISPLAY" weston "${WESTON_BACKEND[@]}" --socket="$WAYLAND_DISPLAY" --width=1280 --height=1024 --scale=1 --idle-time=0 --log="$WESTON_LOG" &
 	WESTON_PID=$!
 	WESTON_READY=false
 	for i in $(seq 1 50); do
@@ -77,7 +102,7 @@ if [ "$USE_WESTON" = "true" ]; then
 		sleep 0.2
 	done
 	if [ "$WESTON_READY" != true ]; then
-		echo "Headless Weston failed to become ready" >&2
+		echo "Weston failed to become ready" >&2
 		cat "$WESTON_LOG" >&2 || true
 		exit 1
 	fi
