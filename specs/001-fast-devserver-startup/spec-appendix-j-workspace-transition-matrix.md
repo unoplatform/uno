@@ -65,7 +65,7 @@ To avoid silent misrouting, the bridge must distinguish these actions after reco
 - **Start**: no DevServer runs yet, and a valid Uno workspace is known (newly found, selected, or named by MCP roots before startup)
 - **Stop**: current workspace lost, no valid replacement
 - **Restart**: valid workspace changed from A to B, by an explicit selection while a DevServer runs or by a file-system change (a workspace identity covers its directory, solution, global.json and Uno SDK package and version, so an SDK change restarts the same solution)
-- **Ignore**: MCP roots that would override an explicit selection, or replace or degrade a running workspace; the current workspace is kept and the event is logged
+- **Ignore**: MCP roots that would override an explicit selection, or replace or degrade a workspace whose DevServer runs or failed (only `uno_app_select_solution` changes it then); the current workspace is kept and the event is logged
 - **Diagnose**: the new state is ambiguous or does not resolve to an Uno workspace (for instance MCP roots before startup that resolve to nothing); no DevServer is started and health reports why
 
 If the bridge cannot safely decide between these actions because the new state is ambiguous, it must choose the diagnostic path rather than an arbitrary switch.
