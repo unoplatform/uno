@@ -885,11 +885,7 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 			{
 				return;
 			}
-			_host.RecordConfigureFrame();
-			if (!_closed)
-			{
-				_host.Configure(layout.ContentWidth, layout.ContentHeight, configuration.PreferredScale, configuration.IntegerScale, configuration.Generation);
-			}
+			_host.Configure(layout.ContentWidth, layout.ContentHeight, configuration.PreferredScale, configuration.IntegerScale, configuration.Generation);
 		}
 		else
 		{

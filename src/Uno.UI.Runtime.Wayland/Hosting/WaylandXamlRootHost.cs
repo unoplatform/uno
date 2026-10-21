@@ -314,17 +314,6 @@ internal sealed class WaylandXamlRootHost : IXamlRootHost, IWaylandFrameGate, IW
 		}
 	}
 
-	// Record the configured layout before asking the render thread to draw it. Otherwise a rejected draw
-	// must first request a UI frame, adding a native frame (or the stall interval) to every resize.
-	internal void RecordConfigureFrame()
-	{
-		if (RootElement?.Visual.CompositionTarget is CompositionTarget compositionTarget)
-		{
-			_xamlRoot.VisualTree.RootElement.UpdateLayout();
-			compositionTarget.OnRenderFrameOpportunity(forceRecord: true);
-		}
-	}
-
 	// Called after the configure was staged on the dispatch thread.
 	internal void Configure(int logicalWidth, int logicalHeight, uint preferredScale, int integerScale, long generation)
 	{
@@ -353,14 +342,6 @@ internal sealed class WaylandXamlRootHost : IXamlRootHost, IWaylandFrameGate, IW
 		}
 		compositionTarget.OnNativePlatformFrameRequested(swapChain);
 		return true;
-	}
-
-	void IWaylandFrameProducer.SkipFrame()
-	{
-		if (RootElement?.Visual.CompositionTarget is CompositionTarget compositionTarget)
-		{
-			compositionTarget.OnNativePlatformFrameSkipped();
-		}
 	}
 
 	// Render thread, before Uno draws its latest recorded frame.
