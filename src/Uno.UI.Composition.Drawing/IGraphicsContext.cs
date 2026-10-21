@@ -32,6 +32,12 @@ internal interface ISwapChain : IGraphicsContext
 	void Present();
 
 	/// <summary>
+	/// Called before the frame is drawn with the device-pixel regions it repaints, so <see cref="Present"/> can report
+	/// partial damage to the window system: null when the whole target is repainted, empty when nothing changed.
+	/// </summary>
+	void SetPresentDamage(Windows.Foundation.Rect[]? damage) { }
+
+	/// <summary>
 	/// True when this swapchain keeps the previous frame's pixels at the same size, letting the compositor repaint
 	/// only the damaged region. A reused CPU framebuffer or a host-retained GPU surface returns true; a swapchain
 	/// whose back buffer is undefined each frame returns false (the default), forcing a full repaint.

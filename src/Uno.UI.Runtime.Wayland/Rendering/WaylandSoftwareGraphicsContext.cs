@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Runtime.Wayland.Protocols;
+using Windows.Foundation;
 
 namespace Uno.UI.Runtime.Wayland.Rendering;
 
@@ -16,6 +17,8 @@ internal sealed class WaylandSoftwareGraphicsContext : IWaylandGraphicsContext
 {
 	// Bounds memory even when a compositor retains old-size buffers across resizes.
 	private const int MaximumBuffers = 2;
+	// Past this many rects the compositor gets one full-buffer damage instead.
+	private const int MaximumDamageRects = 16;
 
 	private readonly WlSurface _surface;
 	private readonly WlShm _shm;
@@ -26,6 +29,10 @@ internal sealed class WaylandSoftwareGraphicsContext : IWaylandGraphicsContext
 	private bool _contentsPreserved;
 	private bool _frameAcquired;
 	private bool _disposed;
+	// Accumulated since the last commit, so frames that could not be committed are still reported.
+	private readonly List<(int X, int Y, int Width, int Height)> _damage = new();
+	private bool _damageWhole = true;
+	private bool _damageReported;
 
 	// Buffer release events arrive on the dispatch thread and are posted to the owner thread.
 	public WaylandSoftwareGraphicsContext(WlSurface surface, WlShm shm, Action<Action> postToOwner, WaylandCommitGate prepareCommit)
@@ -55,9 +62,28 @@ internal sealed class WaylandSoftwareGraphicsContext : IWaylandGraphicsContext
 		{
 			_target?.Free();
 			_target = new SoftwareRenderTarget(width, height);
+			_damageWhole = true;
 		}
 		_frameAcquired = true;
+		_damageReported = false;
 		return _target!;
+	}
+
+	public void SetPresentDamage(Rect[]? damage)
+	{
+		_damageReported = true;
+		if (damage is null || _damageWhole || _damage.Count + damage.Length > MaximumDamageRects)
+		{
+			_damageWhole = true;
+			_damage.Clear();
+			return;
+		}
+		foreach (var rect in damage)
+		{
+			var x = (int)Math.Floor(rect.X);
+			var y = (int)Math.Floor(rect.Y);
+			_damage.Add((x, y, (int)Math.Ceiling(rect.Right) - x, (int)Math.Ceiling(rect.Bottom) - y));
+		}
 	}
 
 	public void Present()
@@ -68,6 +94,10 @@ internal sealed class WaylandSoftwareGraphicsContext : IWaylandGraphicsContext
 			return;
 		}
 		_frameAcquired = false;
+		if (!_damageReported)
+		{
+			_damageWhole = true;
+		}
 		// A frame that cannot be committed stays in the target and is copied by a later present.
 		if (GetAvailableBuffer(target.Width, target.Height) is not { } buffer)
 		{
@@ -81,17 +111,30 @@ internal sealed class WaylandSoftwareGraphicsContext : IWaylandGraphicsContext
 		{
 			buffer.Busy = true;
 			_surface.Attach(buffer.Proxy, 0, 0);
-			if (_surface.Version >= 4)
+			if (_surface.Version < 4)
+			{
+				// Surface-local damage would need the buffer scale and viewport; damage_buffer needs neither.
+				_surface.Damage(0, 0, int.MaxValue, int.MaxValue);
+			}
+			else if (_damageWhole)
 			{
 				_surface.DamageBuffer(0, 0, target.Width, target.Height);
 			}
 			else
 			{
-				_surface.Damage(0, 0, int.MaxValue, int.MaxValue);
+				foreach (var (x, y, width, height) in _damage)
+				{
+					_surface.DamageBuffer(x, y, width, height);
+				}
 			}
 			_surface.Commit();
 			return true;
 		});
+		if (Committed)
+		{
+			_damage.Clear();
+			_damageWhole = false;
+		}
 	}
 
 	private WaylandShmBuffer? GetAvailableBuffer(int width, int height)
