@@ -49,7 +49,6 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 	// After a done for an older commit, state requests wait for the done that matches the last one.
 	private bool _deferState;
 	private bool _stateDirty;
-	private WaylandTextInputText.SurroundingText? _surroundingText;
 	private (WaylandTextInputText.SurroundingText Surrounding, string Text, (int X, int Y, int Width, int Height)? Caret, (uint Hint, uint Purpose) Content)? _lastSentState;
 
 	internal WaylandImeTextBoxExtension(IWaylandTextInput textInput, WaylandDisplay display, Action<Action> postToUI, Action? onTextInput = null)
@@ -153,7 +152,6 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 		Disable();
 		_host = null;
 		_hostSurface = null;
-		_surroundingText = null;
 	}
 
 	// Sends the surrounding text and caret rectangle of the focused TextBox after it changed.
@@ -254,7 +252,6 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 		}
 		_textInput.SetTextChangeCause(cause);
 		_textInput.SetContentType(content.Hint, content.Purpose);
-		_surroundingText = surrounding;
 		if (_supportsSurrounding)
 		{
 			_textInput.SetSurroundingText(surrounding.Text, surrounding.Cursor, surrounding.Anchor);
@@ -311,7 +308,6 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 		_enabled = false;
 		OnPreeditChanged(null, 0);
 		Disable();
-		_surroundingText = null;
 	}
 
 	// Dispatch thread. Every done is applied in order; only state requests wait for the one matching the last commit.
@@ -324,9 +320,9 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 			if (_sessionHost is { } host)
 			{
 				var session = _session;
-				var current = args.Serial == _commitSerial;
 				var revision = Interlocked.Read(ref _textRevision);
-				apply = () => Apply(session, host, current, revision, batch);
+				var serial = args.Serial;
+				apply = () => Apply(session, host, serial, revision, batch);
 			}
 		}
 		if (apply is not null)
@@ -337,7 +333,7 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 
 	// Applies a done event in the order the protocol specifies: delete surrounding text (dropping the preedit
 	// first), insert the commit string, then show the new preedit. A preedit update alone keeps the composition.
-	private void Apply(long session, IImeSessionHost host, bool current, long revision, Batch batch)
+	private void Apply(long session, IImeSessionHost host, uint serial, long revision, Batch batch)
 	{
 		if (!_enabled || session != _session || host != _host || !host.CanAcceptTextInput)
 		{
@@ -370,12 +366,17 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 			}
 			// A new preedit replaces the selection; the surrounding text excludes it and keeps the caret at its start.
 			OnPreeditChanged(batch.Preedit, batch.PreeditCursor);
-			_surroundingText = CalculateSurrounding(host);
 		}
 		finally
 		{
 			_revisionText = host.Text ?? string.Empty;
 			_applyingInputMethodChange = false;
+		}
+		// Compared here, not at dispatch: a commit sent in between makes this done stale.
+		bool current;
+		using (_display.Lock())
+		{
+			current = serial == _commitSerial;
 		}
 		_deferState = !current;
 		// A preedit-only update leaves the surrounding text unchanged; its start and end move the caret.
@@ -437,7 +438,6 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 		try
 		{
 			OnCommittedText(text);
-			_surroundingText = CalculateSurrounding(host);
 		}
 		finally
 		{
