@@ -5,7 +5,6 @@ using global::System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Headless")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Wayland")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Wayland.Tests")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.MacOS")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.AppleUIKit")]
