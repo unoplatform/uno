@@ -1,29 +1,18 @@
 <Project>
 
 	<!--
-	Decides whether an app can reach WebGPU, for the WebGpu package to drop the wgpu native payload when it cannot.
-
-	Skia renders by default wherever it is referenced (UnoPlatformHostBuilder.TryLightUpGraphicsBackend), so an app
-	that names both features reaches WebGPU only through its own code. DetectWebGpuUsage_v0 reads that out of the
-	compiled metadata, where an unused reference is never emitted. All WebGPU plumbing is ours, so binding to the
-	backend assembly is the whole question.
-
-	Every managed assembly the app ships is examined, so a registration inside a package is seen as readily as
-	one in the app's own code. Anything unreadable keeps the payload. To drop it deliberately, do not name the
-	webgpu feature.
-
-	The task and its registration live here, beside the sdk's task assembly, because packaging renames both the task
-	class and that assembly (_v0 becomes the commit) and only rewrites files of this package. The WebGpu package
-	opts in through _UnoWebGpuNativeTrim and drops the payload after this target.
+	Decides whether an app can reach WebGPU, for the WebGpu package (which opts in through _UnoWebGpuNativeTrim) to
+	drop the wgpu native payload when it cannot. The task reads the app's compiled metadata, where an unused reference
+	is never emitted. It lives in the sdk because packaging renames the task and its assembly (_v0 becomes the commit)
+	only in this package's files.
 	-->
 
-	<UsingTask TaskName="Uno.Sdk.Tasks.DetectWebGpuUsage_v0" AssemblyFile="$(UnoSdkTasksAssembly)"
-			   Condition="'$(UnoSdkTasksAssembly)' != '' And Exists('$(UnoSdkTasksAssembly)')" />
+	<UsingTask TaskName="Uno.Sdk.Tasks.DetectWebGpuUsage_v0"
+			   AssemblyFile="$(MSBuildThisFileDirectory)netstandard2.0\Uno.Sdk_v0.dll" />
 
 	<Target Name="_UnoWebGpuDetectUsage"
 			AfterTargets="CoreCompile"
-			Condition="'$(_UnoWebGpuNativeTrim)' == 'true' And '@(IntermediateAssembly)' != ''
-					   And '$(UnoSdkTasksAssembly)' != '' And Exists('$(UnoSdkTasksAssembly)')">
+			Condition="'$(_UnoWebGpuNativeTrim)' == 'true' And '@(IntermediateAssembly)' != ''">
 		<!-- Everything managed that ships with the app: its own assembly, plus every reference it carries, so a
 		     backend registered by a package counts too. -->
 		<ItemGroup>
