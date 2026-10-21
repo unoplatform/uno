@@ -331,6 +331,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
+				UpdateWindowStateFromWindow();
 				OnGeometryChanged();
 				// No present here: the DWM backing surface survives the move, and the OS
 				// invalidates any region needing repaint via WM_PAINT.
