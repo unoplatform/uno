@@ -54,7 +54,7 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `--solution-dir <path>`: Explicit solution directory Uno.DevServer should monitor. Useful when starting the DevServer manually (e.g., CI agents). Defaults to the current working directory when omitted.
 =======
 - `--solution-dir <path>`: Explicit workspace directory Uno.DevServer should monitor. Useful when starting the DevServer manually (e.g., CI agents), or for solution-less workspaces where no `.sln`/`.slnx` can be discovered. Defaults to the current working directory when omitted.
-- `--solution <path>`: In MCP mode (`--mcp-app`, `mcp serve`), the `.sln`/`.slnx` the DevServer serves, wherever it is, provided its nearest `global.json` declares the Uno SDK. It is selected explicitly, as with the `uno_app_select_solution` tool, stays selected across file changes and MCP roots, and takes precedence over `--solution-dir`. A relative path is resolved against the current working directory.
+- `--solution <path>`: In MCP mode (`--mcp-app`, `mcp serve`), the `.sln`/`.slnx` the DevServer serves, wherever it is on a local drive. It is selected explicitly, as with the `uno_app_select_solution` tool, stays selected across file changes and MCP roots, and takes precedence over `--solution-dir`. A relative path is resolved against the current working directory. An unusable value (missing, repeated, not a `.sln`/`.slnx`, not found, or on a network share) stops the command with exit code 2; a solution whose nearest `global.json` does not declare the Uno SDK stays selected, and the DevServer starts once it does (`uno_health` reports why it waits).
 
 ### Solution-less workspaces
 
