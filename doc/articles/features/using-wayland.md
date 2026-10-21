@@ -82,7 +82,7 @@ When the compositor grants server-side decorations, it draws the window frame. O
 
 ### Clipboard, drag and drop, and text input
 
-Clipboard and incoming drag and drop support text, HTML, images and local file lists through the core data-device protocol. Copy/move negotiation follows the operations supported by both applications. Wayland ties clipboard ownership to a focused input serial, so set clipboard content in response to user input in the focused window. A background client cannot take the clipboard arbitrarily.
+Clipboard and incoming drag and drop support text, HTML, images and local file lists through the core data-device protocol. Copy/move negotiation follows the operations supported by both applications. Wayland ties clipboard ownership to a focused input serial, so set clipboard content in response to user input in the focused window. A background client cannot take the clipboard arbitrarily: content set while the window has no keyboard focus is not published, and a warning is logged.
 
 Drags started in the app are handed to the compositor as soon as they start, so they can be dropped on other applications, including windows that overlap the app's own window. The dragged content is offered as local file lists (also readable as text), images, HTML and text, and the drag visual is shown as the compositor's drag icon. The operation completed by the target is reported back as the drop result. Content made only of app-private formats, or a drag without a pointer or touch grab, stays an in-app drag, as does any drag when the compositor's data device is older than version 3.
 

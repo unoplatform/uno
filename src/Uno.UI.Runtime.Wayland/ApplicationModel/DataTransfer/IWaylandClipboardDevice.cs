@@ -9,11 +9,10 @@ namespace Uno.UI.Runtime.Wayland;
 internal interface IWaylandClipboardDevice
 {
 	event EventHandler? SelectionChanged;
-	bool HasSelection { get; }
+	// Wayland only accepts a selection from the client with keyboard focus.
+	bool HasKeyboardFocus { get; }
 	void FillContent(DataPackage package);
 	void Post(Action action);
-	void RequestSelection(Action publish, Action? cancel = null);
-	void CancelPendingSelection();
 	WlDataSource CreateSource();
 	void SetSelection(WlDataSource? source);
 }

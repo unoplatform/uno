@@ -1,60 +1,32 @@
 #nullable enable
 
-using System;
-
 namespace Uno.UI.Runtime.Wayland;
 
-// Dispatch thread. Tracks keyboard focus and the latest input serial that wl_data_device.set_selection
-// requires, and holds the newest selection request until both are available. Any serial value, including
-// zero after wrapping, is valid once focus was entered.
+// Updated on the dispatch thread. Tracks keyboard focus and the latest input serial that
+// wl_data_device.set_selection requires. Any serial value, including zero after wrapping, is valid once focus
+// was entered.
 internal sealed class WaylandSelectionSerial
 {
-	private Action? _pendingSelection;
-	private Action? _cancelPendingSelection;
+	private volatile bool _hasFocus;
 
-	internal bool HasFocus { get; private set; }
+	// Read from any thread.
+	internal bool HasFocus => _hasFocus;
+
 	internal uint Serial { get; private set; }
 
 	internal void Enter(uint serial)
 	{
-		HasFocus = true;
+		_hasFocus = true;
 		Serial = serial;
-		PublishPendingSelection();
 	}
 
 	internal void Update(uint serial)
 	{
-		if (HasFocus)
+		if (_hasFocus)
 		{
 			Serial = serial;
-			PublishPendingSelection();
 		}
 	}
 
-	internal void Request(Action publish, Action? cancel = null)
-	{
-		_pendingSelection = publish;
-		_cancelPendingSelection = cancel;
-		PublishPendingSelection();
-	}
-
-	private void PublishPendingSelection()
-	{
-		if (HasFocus && _pendingSelection is { } publish)
-		{
-			_pendingSelection = null;
-			_cancelPendingSelection = null;
-			publish();
-		}
-	}
-
-	internal void CancelPendingSelection()
-	{
-		var cancel = _cancelPendingSelection;
-		_pendingSelection = null;
-		_cancelPendingSelection = null;
-		cancel?.Invoke();
-	}
-
-	internal void Leave() => HasFocus = false;
+	internal void Leave() => _hasFocus = false;
 }

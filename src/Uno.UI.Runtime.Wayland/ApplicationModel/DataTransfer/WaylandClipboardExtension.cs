@@ -2,6 +2,7 @@
 
 using System;
 using Uno.ApplicationModel.DataTransfer;
+using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Wayland.Protocols;
 using Windows.ApplicationModel.DataTransfer;
 
@@ -13,7 +14,7 @@ internal sealed class WaylandClipboardExtension : IClipboardExtension
 	private readonly IWaylandClipboardDevice? _device;
 	private readonly Action<Action> _postToUI;
 	private readonly object _gate = new();
-	// Guarded by _gate: local generations survive announcements while pending and echoed offers while owned.
+	// Guarded by _gate: local generations survive announcements while in flight and echoed offers while owned.
 	private DataPackageView? _content;
 	private int _generation;
 	private int? _pendingGeneration;
@@ -30,7 +31,7 @@ internal sealed class WaylandClipboardExtension : IClipboardExtension
 		{
 			device.SelectionChanged += (_, _) =>
 			{
-				// On refocus the existing offer precedes keyboard enter. It must not overwrite a pending copy or clear.
+				// An announcement must not overwrite a copy or clear still on its way to the dispatch thread.
 				if (_source is null)
 				{
 					lock (_gate)
@@ -70,10 +71,16 @@ internal sealed class WaylandClipboardExtension : IClipboardExtension
 
 	private void SetSelection(DataPackageView? view)
 	{
+		if (_device is { HasKeyboardFocus: false })
+		{
+			// Queuing until focus returns would overwrite whatever the user copied elsewhere in the meantime.
+			WarnUnfocused();
+			return;
+		}
 		int generation;
 		lock (_gate)
 		{
-			// Readable locally right away, as on WinUI, even while publishing waits for keyboard focus.
+			// Readable locally right away, as on WinUI.
 			_content = view ?? new DataPackage().GetView();
 			generation = ++_generation;
 			_pendingGeneration = generation;
@@ -84,20 +91,29 @@ internal sealed class WaylandClipboardExtension : IClipboardExtension
 			return;
 		}
 		var mimeTypes = view is null ? [] : WaylandDataFormats.GetMimeTypes(view);
-		// Wayland only accepts a selection from the focused client with a recent input serial.
-		device.Post(() =>
-		{
-			if (IsCurrentSelection(generation))
-			{
-				device.RequestSelection(Publish);
-			}
-		});
+		device.Post(Publish);
 		NotifyContentChanged();
 
 		void Publish()
 		{
 			if (!IsCurrentSelection(generation))
 			{
+				return;
+			}
+			if (!device.HasKeyboardFocus)
+			{
+				// Focus left before the request reached the dispatch thread: nothing was published.
+				lock (_gate)
+				{
+					if (_generation == generation)
+					{
+						_content = null;
+						_pendingGeneration = null;
+						_generation++;
+					}
+				}
+				WarnUnfocused();
+				NotifyContentChanged();
 				return;
 			}
 			var previous = _source;
@@ -145,6 +161,14 @@ internal sealed class WaylandClipboardExtension : IClipboardExtension
 				}
 			}
 			previous?.Destroy();
+		}
+	}
+
+	private void WarnUnfocused()
+	{
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("The clipboard was not set: Wayland only lets the window with keyboard focus set it.");
 		}
 	}
 
