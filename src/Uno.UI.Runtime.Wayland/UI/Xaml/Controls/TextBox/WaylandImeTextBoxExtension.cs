@@ -18,23 +18,21 @@ namespace Uno.UI.Runtime.Wayland;
 /// </summary>
 internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 {
-	private const int MaximumCommittedStates = 64;
 	private const uint ChangeCauseInputMethod = 0;
 	private const uint ChangeCauseOther = 1;
 
 	private readonly IWaylandTextInput _textInput;
 	private readonly Action<Action> _postToUI;
-
-	// Under the display lock: double-buffered state, applied at done.
-	private readonly WaylandTextInputBatch _pending = new();
-
-	// Under the display lock: the state of each commit, keyed by its serial, so a done
-	// applies to the session and surrounding text it was computed for.
 	private readonly WaylandDisplay _display;
-	private readonly WaylandTextInputStateHistory<IImeSessionHost> _committedStates = new(MaximumCommittedStates);
+
+	// Under the display lock: double-buffered state, applied at done, and the session it applies to.
+	private readonly PendingBatch _pending = new();
 	private uint _commitSerial;
 	private IImeSessionHost? _sessionHost;
 	private long _session;
+
+	// Written on the UI thread, read at done: changes of the text not made by the input method.
+	private long _textRevision;
 
 	// UI thread.
 	private WlSurface? _focusedSurface;
@@ -43,13 +41,12 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 	private int _compositionStart;
 	private int _compositionBaseLength;
 	private int _compositionLength;
-	private long _textRevision;
 	private string _revisionText = string.Empty;
 	private bool _enabled;
 	private bool _supportsSurrounding;
 	private bool _isComposing;
 	private bool _applyingInputMethodChange;
-	// State requests wait for a done that matches the last commit.
+	// After a done for an older commit, state requests wait for the done that matches the last one.
 	private bool _deferState;
 	private bool _stateDirty;
 	private WaylandTextInputText.SurroundingText? _surroundingText;
@@ -194,16 +191,9 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 
 	private void CommitState()
 	{
-		var state = _enabled && _host is { } host
-			? new WaylandTextInputStateHistory<IImeSessionHost>.State(_session, host, _supportsSurrounding ? _surroundingText : null, GetTextWithoutPreedit(host), _textRevision)
-			: (WaylandTextInputStateHistory<IImeSessionHost>.State?)null;
 		using (_display.Lock())
 		{
 			_commitSerial = unchecked(_commitSerial + 1);
-			if (state is { } committedState)
-			{
-				_committedStates.Record(_commitSerial, committedState);
-			}
 		}
 		_textInput.Commit();
 	}
@@ -214,8 +204,7 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 		{
 			_session++;
 			_sessionHost = null;
-			_committedStates.Clear();
-			_pending.Disable();
+			_pending.Reset();
 		}
 		if (_isComposing)
 		{
@@ -291,34 +280,12 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 		_enabled = true;
 		using (_display.Lock())
 		{
-			_pending.Begin(unchecked(_commitSerial + 1));
+			_pending.Reset();
 			_sessionHost = host;
 		}
 		_lastSentState = null;
 		_textInput.Enable();
 		WaylandDiagnostics.Trace("text-input: enabled");
-		SendState(host, ChangeCauseOther);
-	}
-
-	// Old batches still belong to this focus session, but their deletion offsets are stale.
-	private void ResynchronizeState(IImeSessionHost host)
-	{
-		var supportsSurrounding = CalculateSurrounding(host).IsSupported;
-		using (_display.Lock())
-		{
-			_committedStates.Clear();
-			// Reserve the disable commit before publishing the new surrounding-text boundary.
-			_commitSerial = unchecked(_commitSerial + 1);
-			_pending.Resynchronize(unchecked(_commitSerial + 1));
-		}
-		_deferState = _stateDirty = false;
-		_lastSentState = null;
-		_enabled = false;
-		_textInput.Disable();
-		_textInput.Commit();
-		_supportsSurrounding = supportsSurrounding;
-		_enabled = true;
-		_textInput.Enable();
 		SendState(host, ChangeCauseOther);
 	}
 
@@ -347,18 +314,19 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 		_surroundingText = null;
 	}
 
-	// Dispatch thread.
+	// Dispatch thread. Every done is applied in order; only state requests wait for the one matching the last commit.
 	private void OnDone(object? sender, ZwpTextInputV3.DoneEventArgs args)
 	{
 		Action? apply = null;
 		using (_display.Lock())
 		{
-			var batch = _pending.Take(args.Serial, _commitSerial);
-			if (batch.Disposition != WaylandTextInputBatchDisposition.Reject && _sessionHost is { } host)
+			var batch = _pending.Take();
+			if (_sessionHost is { } host)
 			{
-				var state = _committedStates.GetStateOrCurrent(args.Serial, _session, host);
-				apply = () => Apply(args.Serial, state.Session, state.Host, state.Surrounding, state.Text, state.Revision,
-					batch.Preedit, batch.PreeditCursor, batch.Commit, batch.DeleteBefore, batch.DeleteAfter);
+				var session = _session;
+				var current = args.Serial == _commitSerial;
+				var revision = Interlocked.Read(ref _textRevision);
+				apply = () => Apply(session, host, current, revision, batch);
 			}
 		}
 		if (apply is not null)
@@ -369,57 +337,39 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 
 	// Applies a done event in the order the protocol specifies: delete surrounding text (dropping the preedit
 	// first), insert the commit string, then show the new preedit. A preedit update alone keeps the composition.
-	private void Apply(uint serial, long session, IImeSessionHost host, WaylandTextInputText.SurroundingText? surrounding, string text, long revision, string? preedit, int preeditCursor, string? commit, uint deleteBefore, uint deleteAfter)
+	private void Apply(long session, IImeSessionHost host, bool current, long revision, Batch batch)
 	{
 		if (!_enabled || session != _session || host != _host || !host.CanAcceptTextInput)
 		{
 			return;
 		}
-		bool oldContext;
-		using (_display.Lock())
+		var surrounding = CalculateSurrounding(host);
+		var deleting = batch.DeleteBefore != 0 || batch.DeleteAfter != 0;
+		if (deleting && (revision != Interlocked.Read(ref _textRevision) || !_supportsSurrounding || !surrounding.IsSupported))
 		{
-			// A resync after done was posted also makes this batch's deletion stale.
-			oldContext = _pending.GetDisposition(serial, _commitSerial) == WaylandTextInputBatchDisposition.ApplyWithoutDeletion;
-			if (oldContext)
-			{
-				deleteBefore = deleteAfter = 0;
-			}
-			if (_committedStates.TryGetValue(serial, out var state))
-			{
-				surrounding = state.Surrounding;
-				text = state.Text;
-				revision = state.Revision;
-			}
+			// The deletion was computed for text that has changed since; the commit and preedit still apply.
+			WaylandDiagnostics.Trace("text-input: stale deletion dropped");
+			deleting = false;
 		}
-		var deleting = deleteBefore != 0 || deleteAfter != 0;
-		var reconcileDeletion = deleting && (surrounding is not { IsSupported: true } || revision != _textRevision || text != GetTextWithoutPreedit(host));
 		var wasComposing = _isComposing;
 		_applyingInputMethodChange = true;
 		try
 		{
-			if (reconcileDeletion)
-			{
-				// Only deletion needs the old surrounding-text snapshot; commit and preedit still apply.
-				WaylandDiagnostics.Trace("text-input: stale deletion, resetting");
-				deleting = false;
-				OnPreeditChanged(null, 0);
-				ResynchronizeState(host);
-			}
-			_deferState = !oldContext && !reconcileDeletion && serial != _commitSerial;
 			if (deleting && _isComposing)
 			{
 				OnPreeditChanged(null, 0);
+				surrounding = CalculateSurrounding(host);
 			}
-			if (deleting && surrounding is { IsSupported: true } snapshot)
+			if (deleting)
 			{
-				DeleteSurroundingText(host, snapshot, deleteBefore, deleteAfter);
+				DeleteSurroundingText(host, surrounding, batch.DeleteBefore, batch.DeleteAfter);
 			}
-			if (commit is not null)
+			if (batch.Commit is not null)
 			{
-				OnCommittedText(commit);
+				OnCommittedText(batch.Commit);
 			}
 			// A new preedit replaces the selection; the surrounding text excludes it and keeps the caret at its start.
-			OnPreeditChanged(preedit, preeditCursor);
+			OnPreeditChanged(batch.Preedit, batch.PreeditCursor);
 			_surroundingText = CalculateSurrounding(host);
 		}
 		finally
@@ -427,20 +377,9 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 			_revisionText = host.Text ?? string.Empty;
 			_applyingInputMethodChange = false;
 		}
-		var currentText = GetTextWithoutPreedit(host);
-		using (_display.Lock())
-		{
-			if (serial == _commitSerial)
-			{
-				_committedStates.RetainOnly(serial);
-			}
-			if (_committedStates.TryGetValue(serial, out _))
-			{
-				_committedStates.Record(serial, new(session, host, _supportsSurrounding ? _surroundingText : null, currentText, _textRevision));
-			}
-		}
+		_deferState = !current;
 		// A preedit-only update leaves the surrounding text unchanged; its start and end move the caret.
-		if (deleting || commit is not null || wasComposing != _isComposing || _stateDirty)
+		if (deleting || batch.Commit is not null || wasComposing != _isComposing || _stateDirty)
 		{
 			SendState(host, ChangeCauseInputMethod);
 		}
@@ -452,7 +391,7 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 		if (!_applyingInputMethodChange && text != _revisionText)
 		{
 			_revisionText = text;
-			_textRevision++;
+			Interlocked.Increment(ref _textRevision);
 		}
 	}
 
@@ -505,6 +444,8 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 			_revisionText = host.Text ?? string.Empty;
 			_applyingInputMethodChange = false;
 		}
+		// Typed text is not the input method's: a deletion it computed earlier no longer applies.
+		Interlocked.Increment(ref _textRevision);
 		SendState(host, ChangeCauseOther);
 		return true;
 	}
@@ -542,6 +483,31 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 			CompositionCanceled?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
 			_isComposing = false;
 			CompositionEnded?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
+	private readonly record struct Batch(string? Preedit, int PreeditCursor, string? Commit, uint DeleteBefore, uint DeleteAfter);
+
+	private sealed class PendingBatch
+	{
+		internal string? Preedit;
+		internal int PreeditCursor;
+		internal string? Commit;
+		internal uint DeleteBefore;
+		internal uint DeleteAfter;
+
+		internal Batch Take()
+		{
+			var batch = new Batch(Preedit, PreeditCursor, Commit, DeleteBefore, DeleteAfter);
+			Reset();
+			return batch;
+		}
+
+		internal void Reset()
+		{
+			Preedit = Commit = null;
+			PreeditCursor = 0;
+			DeleteBefore = DeleteAfter = 0;
 		}
 	}
 
