@@ -18,6 +18,9 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 {
 	private OverlappedPresenterState? _pendingState;
 	private nuint _lastWindowSizeChange = 0;
+	private const nuint SizeRestored = 0;
+	private const nuint SizeMinimized = 1;
+	private const nuint SizeMaximized = 2;
 
 	private bool _hasBorder;
 	private bool _hasTitleBar;
@@ -58,9 +61,14 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 	public void SetIsMaximizable(bool isMaximizable) => SetWindowStyle(WINDOW_STYLE.WS_MAXIMIZEBOX, isMaximizable);
 
+	// WM_MOVE precedes WM_SIZE in a state change and already publishes the geometry, so it reads the state from the window.
+	private void UpdateWindowStateFromWindow()
+		=> UpdateWindowState(new WPARAM(PInvoke.IsIconic(_hwnd) ? SizeMinimized : PInvoke.IsZoomed(_hwnd) ? SizeMaximized : SizeRestored));
+
 	private void UpdateWindowState(WPARAM wParam)
 	{
-		if (wParam.Value != _lastWindowSizeChange)
+		// SIZE_MAXSHOW and SIZE_MAXHIDE describe other windows.
+		if (wParam.Value <= SizeMaximized && wParam.Value != _lastWindowSizeChange)
 		{
 			// The window state changed: published with the geometry that follows, after the scale and before the size.
 			StagePresenterChange();
