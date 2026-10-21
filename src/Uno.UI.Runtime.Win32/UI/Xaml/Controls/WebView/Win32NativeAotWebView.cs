@@ -176,6 +176,8 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 			ref eventToken
 		).ThrowOnError();
 
+		SubscribeToDocumentEvents(weakRef);
+
 		UpdateDocumentTitle();
 	}
 
@@ -228,7 +230,8 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 	private void NativeWebView_WebMessageReceived(WebView2.ICoreWebView2WebMessageReceivedEventArgs e)
 	{
 		e.get_WebMessageAsJson(out var json).ThrowOnError();
-		_coreWebView.RaiseWebMessageReceived(json.ToString()!);
+		e.get_Source(out var source).ThrowOnError();
+		_coreWebView.RaiseWebMessageReceived(json.ToString()!, source.ToStringAndDispose());
 	}
 
 	private void NativeWebView_NavigationStarting(WebView2.ICoreWebView2NavigationStartingEventArgs e)

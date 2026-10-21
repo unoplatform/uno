@@ -184,11 +184,18 @@ public partial class CoreWebView2
 		return await _nativeWebView.InvokeScriptAsync(script, arguments, ct);
 	}
 
-	internal void OnOwnerApplyTemplate()
+	internal void OnOwnerApplyTemplate() => SetNativeWebView(GetNativeWebViewFromTemplate());
+
+	internal void SetNativeWebView(INativeWebView? nativeWebView)
 	{
 		DetachWebResourceRequestedSupport();
-		_nativeWebView = GetNativeWebViewFromTemplate();
+		DetachDOMContentLoadedSupport();
+		_nativeWebView = nativeWebView;
 		AttachWebResourceRequestedSupport();
+		AttachDOMContentLoadedSupport();
+
+		// Before the first navigation below, so the queued scripts run on it.
+		ApplyPendingDocumentCreatedScripts();
 
 		// Signal that native WebView is now initialized
 		_nativeWebViewInitializedTcs.TrySetResult(true);
@@ -258,18 +265,19 @@ public partial class CoreWebView2
 		CanGoForward = canGoForward;
 	}
 
-	internal void RaiseWebMessageReceived(string message)
+	/// <param name="source">The URI of the sending document, or null when the platform cannot report it.</param>
+	internal void RaiseWebMessageReceived(string message, string? source = null)
 	{
 		// WebMessageReceived must be called on the UI thread.
 		if (_owner.Dispatcher.HasThreadAccess)
 		{
-			WebMessageReceived?.Invoke(this, new(message));
+			WebMessageReceived?.Invoke(this, new(message, source));
 		}
 		else
 		{
 			_ = _owner.Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
-				() => WebMessageReceived?.Invoke(this, new(message)));
+				() => WebMessageReceived?.Invoke(this, new(message, source)));
 		}
 	}
 
