@@ -30,7 +30,7 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 	private readonly HashSet<libinput_key> _pressedKeys = new();
 	// Keys consumed by a dead-key or Compose sequence, which raise no key events.
 	private readonly HashSet<libinput_key> _consumedKeys = new();
-	private readonly Dictionary<libinput_key, (VirtualKey VirtualKey, char? UnicodeKey)> _repeatable = new();
+	private readonly Dictionary<libinput_key, (VirtualKey VirtualKey, string? ComposedText)> _repeatable = new();
 	private readonly IXamlRootHost? _host;
 
 	public FrameBufferKeyboardInputSource(IXamlRootHost host, FramebufferHostBuilder.XKBKeymapParams keymapParams)
@@ -85,7 +85,7 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 	private void OnKeyPressEvent(libinput_key key)
 	{
 		VirtualKey virtualKey;
-		char? unicodeKey = default;
+		string? text = null;
 		VirtualKeyModifiers modifiers;
 		lock (_gate)
 		{
@@ -95,27 +95,24 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 			{
 				var code = (uint)key;
 				var keysym = xkb.GetKeysym(code);
-				var text = xkb.GetUtf32(code);
+				var keyText = xkb.GetUtf32(code);
 				xkb.UpdateKey(code, down: true);
 				if (LinuxKeyMap.FromKeysym(keysym) is not VirtualKey.None and var mapped)
 				{
 					virtualKey = mapped;
 				}
-				if (xkb.Compose(keysym, text, out _) is not { } composed)
+				if (xkb.Compose(keysym, keyText, out var completeText) is not { } composed)
 				{
 					_consumedKeys.Add(key);
 					_repeat.Stop();
 					return;
 				}
-				unicodeKey = composed is >= 32 and <= 0xffff and not (>= 0xd800 and <= 0xdfff) || composed == 13 ? (char)composed : null;
+				var composedText = completeText ?? (composed != keyText ? ToText(composed) : null);
+				text = composedText ?? ToText(composed);
 				if (xkb.Repeats(code))
 				{
-					_repeatable[key] = (virtualKey, unicodeKey);
+					_repeatable[key] = (virtualKey, composedText);
 					_repeat.Start(code);
-				}
-				else
-				{
-					_repeat.Stop();
 				}
 			}
 			modifiers = GetCurrentModifiersState();
@@ -126,45 +123,51 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 			this.Log().Trace($"OnKeyPressEvent: {key} -> {virtualKey}");
 		}
 
-		var args = new KeyEventArgs(
-			"keyboard",
-			virtualKey,
-			modifiers,
-			new CorePhysicalKeyStatus
-			{
-				ScanCode = (uint)key,
-				RepeatCount = 1,
-			},
-			unicodeKey);
-
-		RaiseKeyEvent(KeyDown, args);
+		RaiseKeyDown(virtualKey, modifiers, (uint)key, wasKeyDown: false, text);
 	}
 
-	// Timer thread.
-	private void OnRepeat(uint code)
+	private void RaiseKeyDown(VirtualKey virtualKey, VirtualKeyModifiers modifiers, uint code, bool wasKeyDown, string? text)
 	{
-		KeyEventArgs args;
-		lock (_gate)
+		// A KeyDown carries one UTF-16 unit, so a longer composed string is sent unit by unit.
+		for (var i = 0; i < Math.Max(1, text?.Length ?? 0); i++)
 		{
-			var key = (libinput_key)code;
-			if (_repeat.Key != code || !_repeatable.TryGetValue(key, out var repeated))
-			{
-				return;
-			}
-			args = new KeyEventArgs(
+			RaiseKeyEvent(KeyDown, new KeyEventArgs(
 				"keyboard",
-				repeated.VirtualKey,
-				GetCurrentModifiersState(),
+				virtualKey,
+				modifiers,
 				new CorePhysicalKeyStatus
 				{
 					ScanCode = code,
 					RepeatCount = 1,
-					WasKeyDown = true,
+					WasKeyDown = wasKeyDown,
 				},
-				repeated.UnicodeKey);
+				text is { Length: > 0 } ? text[i] : null));
+		}
+	}
+
+	private static string? ToText(uint codePoint)
+		=> codePoint is >= 32 and <= 0x10ffff and not (>= 0xd800 and <= 0xdfff) || codePoint == 13 ? char.ConvertFromUtf32((int)codePoint) : null;
+
+	// Timer thread.
+	private void OnRepeat(uint code)
+	{
+		VirtualKey virtualKey;
+		VirtualKeyModifiers modifiers;
+		string? text;
+		lock (_gate)
+		{
+			var key = (libinput_key)code;
+			if (_xkb is not { } xkb || _repeat.Key != code || !_repeatable.TryGetValue(key, out var repeated))
+			{
+				return;
+			}
+			// Translate with the modifiers held now, not at press time.
+			virtualKey = LinuxKeyMap.FromKeysym(xkb.GetKeysym(code)) is not VirtualKey.None and var mapped ? mapped : repeated.VirtualKey;
+			text = repeated.ComposedText ?? ToText(xkb.GetUtf32(code));
+			modifiers = GetCurrentModifiersState();
 		}
 
-		RaiseKeyEvent(KeyDown, args);
+		RaiseKeyDown(virtualKey, modifiers, code, wasKeyDown: true, text);
 	}
 
 	private void OnKeyReleaseEvent(libinput_key key)
