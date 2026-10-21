@@ -21,7 +21,10 @@
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<Import Project="../Uno.UI.Runtime.Linux.Shared/Uno.UI.Runtime.Linux.Shared.props" />
+	<ItemGroup>
+		<PackageReference Include="Tmds.DBus.Protocol" />
+		<PackageReference Include="Tmds.DBus.Generator" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.DBus.xml" Namespace="Uno.UI.Runtime.X11.DBus" GenerateDBusTypes="true" />
@@ -34,6 +37,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.Runtime\Uno.UI.Runtime.csproj" />
+		<ProjectReference Include="..\Uno.UI.Runtime.Linux\Uno.UI.Runtime.Linux.csproj" />
 		<!-- WebGPU "init half": the host calls WebGpuContext.Create* to build a WebGpu window+context for the
 		     GraphicsContextKind.WebGpu kind. The host uses only the renderer-agnostic init API, not the renderer. -->
 		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />

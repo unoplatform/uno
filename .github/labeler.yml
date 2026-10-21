@@ -103,4 +103,4 @@ platform/x11 🐧:
     - any-glob-to-any-file:
       - src/Uno.UI.Runtime.X11/*
       - src/Uno.UI.Runtime.X11/**/*
-      - src/Uno.UI.Runtime.Linux.Shared/**/*
+      - src/Uno.UI.Runtime.Linux/**/*

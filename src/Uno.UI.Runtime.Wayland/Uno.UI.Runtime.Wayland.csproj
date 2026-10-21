@@ -4,8 +4,6 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<Import Project="../Uno.UI.Runtime.Linux.Shared/Uno.UI.Runtime.Linux.Shared.props" />
-
 	<Import Project="../targetframework-override-noplatform.props" />
 
 	<PropertyGroup>
@@ -26,6 +24,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.Runtime\Uno.UI.Runtime.csproj" />
+		<ProjectReference Include="..\Uno.UI.Runtime.Linux\Uno.UI.Runtime.Linux.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Generic.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Generic.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
