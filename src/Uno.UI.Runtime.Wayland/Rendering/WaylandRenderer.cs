@@ -175,6 +175,8 @@ internal sealed class WaylandRenderer : IDisposable, ISwapChain
 		return _context.AcquireRenderTarget(size.Width, size.Height);
 	}
 
+	void ISwapChain.SetPresentDamage(Windows.Foundation.Rect[]? damage) => _context.SetPresentDamage(damage);
+
 	void ISwapChain.Present() => _context.Present();
 
 	private void Attach(IWaylandGraphicsContext context)
