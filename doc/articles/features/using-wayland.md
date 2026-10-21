@@ -47,7 +47,7 @@ For more information, see [Rendering Backend Selection](xref:Uno.Skia.Desktop#re
 
 ### Native dependencies
 
-The host loads the following libraries at runtime: `libwayland-client.so.0`, `libwayland-cursor.so.0`, `libxkbcommon.so.0`, and, for OpenGL ES rendering, `libwayland-egl.so.1` and `libEGL.so.1`. Install these dependencies using your distribution's package manager. An EGL implementation (such as Mesa) is needed for accelerated rendering.
+The host loads the following libraries at runtime: `libwayland-client.so.0`, `libxkbcommon.so.0`, and, for OpenGL ES rendering, `libwayland-egl.so.1` and `libEGL.so.1`. On compositors without the cursor-shape protocol, cursors are loaded from the XCursor theme through `libwayland-cursor.so.0`; without it, the cursor does not change. Install these dependencies using your distribution's package manager. An EGL implementation (such as Mesa) is needed for accelerated rendering.
 
 To use the system HarfBuzz library for text shaping, configure `UseSystemHarfBuzz(true)`:
 
@@ -111,6 +111,7 @@ The runtime also reads the following session settings:
 |----------|----------|
 | `WAYLAND_DISPLAY` | Host selection and the Wayland display connection. |
 | `XCURSOR_THEME` | Cursor theme when the cursor-shape protocol is unavailable or disabled. |
+| `XCURSOR_SIZE` | Cursor size in logical pixels for that theme (default 24). |
 | `LC_ALL`, `LC_CTYPE`, `LANG` | Compose locale, using the first non-empty value in this order, or `C` when none is set. |
 | `XDG_ACTIVATION_TOKEN` | Startup activation; the token is consumed and cleared after reading. |
 
