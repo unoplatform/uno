@@ -231,7 +231,7 @@ internal sealed class WaylandKeyboardInputSource : IUnoKeyboardInputSource, IDis
 				StopRepeat();
 				_repeatKey = key;
 				var generation = _generation;
-				_repeat = new Timer(_ => _connection.Post(() =>
+				_repeat = new Timer(_ => _connection.Send(() =>
 				{
 					if (!_disposed && _focused && generation == _generation && _pressed.TryGetValue(key, out var repeated))
 					{

@@ -25,12 +25,12 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 	private readonly IWaylandTextInput _textInput;
 	private readonly Action<Action> _postToUI;
 
-	// Under _stateLock: double-buffered state, applied at done.
+	// Under the display lock: double-buffered state, applied at done.
 	private readonly WaylandTextInputBatch _pending = new();
 
-	// Under _stateLock (the display's SyncRoot): the state of each commit, keyed by its serial, so a done
+	// Under the display lock: the state of each commit, keyed by its serial, so a done
 	// applies to the session and surrounding text it was computed for.
-	private readonly object _stateLock;
+	private readonly WaylandDisplay _display;
 	private readonly WaylandTextInputStateHistory<IImeSessionHost> _committedStates = new(MaximumCommittedStates);
 	private uint _commitSerial;
 	private IImeSessionHost? _sessionHost;
@@ -55,11 +55,11 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 	private WaylandTextInputText.SurroundingText? _surroundingText;
 	private (WaylandTextInputText.SurroundingText Surrounding, string Text, (int X, int Y, int Width, int Height)? Caret, (uint Hint, uint Purpose) Content)? _lastSentState;
 
-	internal WaylandImeTextBoxExtension(IWaylandTextInput textInput, object syncRoot, Action<Action> postToUI, Action? onTextInput = null)
+	internal WaylandImeTextBoxExtension(IWaylandTextInput textInput, WaylandDisplay display, Action<Action> postToUI, Action? onTextInput = null)
 	{
-		_stateLock = syncRoot;
+		_display = display;
 		_postToUI = postToUI;
-		lock (syncRoot)
+		using (display.Lock())
 		{
 			_textInput = textInput;
 			_textInput.Enter += (_, e) => _postToUI(() => OnEnter(e.Surface));
@@ -92,10 +92,10 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 
 	internal static WaylandImeTextBoxExtension? TryCreate(WaylandConnection connection)
 	{
-		lock (connection.Display.SyncRoot)
+		using (connection.Display.Lock())
 		{
 			return connection.TextInputManager is { } manager && connection.Seat is { } seat
-				? new WaylandImeTextBoxExtension(new WaylandTextInput(manager.GetTextInput(seat)), connection.Display.SyncRoot, connection.PostToUI, connection.NotifyTextInputReceived)
+				? new WaylandImeTextBoxExtension(new WaylandTextInput(manager.GetTextInput(seat)), connection.Display, connection.PostToUI, connection.NotifyTextInputReceived)
 				: null;
 		}
 	}
@@ -197,7 +197,7 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 		var state = _enabled && _host is { } host
 			? new WaylandTextInputStateHistory<IImeSessionHost>.State(_session, host, _supportsSurrounding ? _surroundingText : null, GetTextWithoutPreedit(host), _textRevision)
 			: (WaylandTextInputStateHistory<IImeSessionHost>.State?)null;
-		lock (_stateLock)
+		using (_display.Lock())
 		{
 			_commitSerial = unchecked(_commitSerial + 1);
 			if (state is { } committedState)
@@ -210,7 +210,7 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 
 	private void Disable()
 	{
-		lock (_stateLock)
+		using (_display.Lock())
 		{
 			_session++;
 			_sessionHost = null;
@@ -289,7 +289,7 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 		_supportsSurrounding = CalculateSurrounding(host).IsSupported;
 		// Enabling again resets the input method state for the newly focused TextBox.
 		_enabled = true;
-		lock (_stateLock)
+		using (_display.Lock())
 		{
 			_pending.Begin(unchecked(_commitSerial + 1));
 			_sessionHost = host;
@@ -304,7 +304,7 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 	private void ResynchronizeState(IImeSessionHost host)
 	{
 		var supportsSurrounding = CalculateSurrounding(host).IsSupported;
-		lock (_stateLock)
+		using (_display.Lock())
 		{
 			_committedStates.Clear();
 			// Reserve the disable commit before publishing the new surrounding-text boundary.
@@ -351,7 +351,7 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 	private void OnDone(object? sender, ZwpTextInputV3.DoneEventArgs args)
 	{
 		Action? apply = null;
-		lock (_stateLock)
+		using (_display.Lock())
 		{
 			var batch = _pending.Take(args.Serial, _commitSerial);
 			if (batch.Disposition != WaylandTextInputBatchDisposition.Reject && _sessionHost is { } host)
@@ -376,7 +376,7 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 			return;
 		}
 		bool oldContext;
-		lock (_stateLock)
+		using (_display.Lock())
 		{
 			// A resync after done was posted also makes this batch's deletion stale.
 			oldContext = _pending.GetDisposition(serial, _commitSerial) == WaylandTextInputBatchDisposition.ApplyWithoutDeletion;
@@ -428,7 +428,7 @@ internal sealed class WaylandImeTextBoxExtension : IImeTextBoxExtension
 			_applyingInputMethodChange = false;
 		}
 		var currentText = GetTextWithoutPreedit(host);
-		lock (_stateLock)
+		using (_display.Lock())
 		{
 			if (serial == _commitSerial)
 			{

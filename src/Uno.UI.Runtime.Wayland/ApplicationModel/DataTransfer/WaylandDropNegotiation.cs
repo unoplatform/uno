@@ -2,7 +2,7 @@
 
 namespace Uno.UI.Runtime.Wayland;
 
-// Guarded by the display's SyncRoot, including action events from the compositor.
+// Guarded by the display lock, including action events from the compositor.
 internal sealed class WaylandDropNegotiation
 {
 	internal uint SelectedAction { get; set; }

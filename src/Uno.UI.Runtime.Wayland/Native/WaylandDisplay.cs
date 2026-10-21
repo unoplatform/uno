@@ -1,40 +1,46 @@
 #nullable enable
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Wayland.Rendering;
 using Uno.UI.Runtime.Wayland.Native;
 using Uno.UI.Runtime.Wayland.Protocols;
 
 namespace Uno.UI.Runtime.Wayland;
 
+// Threading follows the X11 host: requests are sent from any thread under Lock() and flushed when the outermost
+// lock is released, and the dispatch thread takes the lock only to dispatch events, never while it is a reader.
 internal sealed unsafe class WaylandDisplay : IDisposable
 {
 	// Bounds the startup roundtrip so a frozen compositor cannot hang host selection.
 	private const int StartupTimeoutMilliseconds = 5000;
+	// Bounds how long the dispatch loop takes to notice a stop request it was not woken for.
+	private const int DispatchPollMilliseconds = 1000;
 	private const int EINTR = 4;
 	private const int EAGAIN = 11;
 	private const int EPROTO = 71;
+	private const short POLLIN = 1;
+	private const short POLLOUT = 4;
+	private const short POLLERR = 8;
+	private const short POLLHUP = 16;
+	private const short POLLNVAL = 32;
 
 	private readonly Dictionary<nint, WaylandProxy> _proxies = new();
 	private readonly Dictionary<uint, WaylandGlobal> _globals = new();
-	private readonly ConcurrentQueue<(Action Command, Action? Rejected)> _commands = new();
-	private readonly WaylandPresentationCoordinator _presentation;
+	private readonly object _syncRoot = new();
+	// Under _syncRoot.
+	private int _lockDepth;
+	private bool _flushPending;
 	private nint _display;
 	private Thread? _thread;
-	private int _wakeRead = -1;
-	private int _wakeWrite = -1;
-	private bool _stopping;
+	private volatile bool _stopping;
 	private bool _disposing;
 	private Exception? _callbackError;
 	private volatile Exception? _dispatchError;
-	public object SyncRoot { get; } = new();
 	public WlRegistry Registry { get; private set; } = null!;
 	public int FileDescriptor { get; }
 	public bool IsDisconnected => _display == 0;
@@ -46,7 +52,7 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 	{
 		get
 		{
-			lock (SyncRoot)
+			using (Lock())
 			{
 				return _globals.Values.OrderBy(global => global.Name).ToArray();
 			}
@@ -56,13 +62,45 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 	private WaylandDisplay(nint display)
 	{
 		_display = display;
-		_presentation = new(SyncRoot, (command, rejected) => TryPost(command, rejected), () =>
-		{
-			Monitor.PulseAll(SyncRoot);
-			WakeDispatch();
-		});
 		FileDescriptor = WaylandNative.wl_display_get_fd(display);
 	}
+
+	/// <summary>
+	/// Locks the display for requests and protocol state, like XLock on X11. Event handlers run under it.
+	/// Requests are flushed when the outermost lock is released, waiting while the socket is full.
+	/// </summary>
+	public DisplayLock Lock() => new(this);
+
+	internal readonly ref struct DisplayLock
+	{
+		private readonly WaylandDisplay _display;
+
+		public DisplayLock(WaylandDisplay display)
+		{
+			_display = display;
+			Monitor.Enter(display._syncRoot);
+			display._lockDepth++;
+		}
+
+		public void Dispose()
+		{
+			try
+			{
+				if (--_display._lockDepth == 0 && _display._flushPending)
+				{
+					_display._flushPending = false;
+					_display.FlushPending();
+				}
+			}
+			finally
+			{
+				Monitor.Exit(_display._syncRoot);
+			}
+		}
+	}
+
+	// Under the lock: the request just marshalled goes out when the outermost lock is released.
+	internal void RequestSent() => _flushPending = true;
 
 	public static WaylandDisplay Connect(string? name = null)
 	{
@@ -108,7 +146,7 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 
 	public WaylandGlobal? GetGlobal(string interfaceName)
 	{
-		lock (SyncRoot)
+		using (Lock())
 		{
 			return _globals.Values.FirstOrDefault(global => global.Interface == interfaceName);
 		}
@@ -116,7 +154,7 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 
 	public WaylandProxy Bind(string interfaceName, uint maximumVersion)
 	{
-		lock (SyncRoot)
+		using (Lock())
 		{
 			var global = GetGlobal(interfaceName) ?? throw new NotSupportedException($"The compositor does not advertise {interfaceName}.");
 			var supported = (uint)ProtocolMetadata.Get(interfaceName)->Version;
@@ -126,20 +164,24 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 
 	public WlCallback Sync()
 	{
-		lock (SyncRoot)
+		using (Lock())
 		{
 			ThrowIfUnavailable();
-			using var args = new RequestArguments(1);
-			var handle = WaylandNative.wl_proxy_marshal_array_flags(_display, 0, ProtocolMetadata.Get(WlCallback.ProtocolName), 1, 0, args.Pointer);
-			var callback = new WlCallback(this, handle);
-			WakeDispatch();
-			return callback;
+			return SyncCore();
 		}
+	}
+
+	private WlCallback SyncCore()
+	{
+		using var args = new RequestArguments(1);
+		var handle = WaylandNative.wl_proxy_marshal_array_flags(_display, 0, ProtocolMetadata.Get(WlCallback.ProtocolName), 1, 0, args.Pointer);
+		RequestSent();
+		return new WlCallback(this, handle);
 	}
 
 	public void Roundtrip()
 	{
-		lock (SyncRoot)
+		using (Lock())
 		{
 			ThrowIfUnavailable();
 			if (_thread is not null)
@@ -154,7 +196,7 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 	// Startup-only roundtrip that gives up after the timeout instead of blocking like wl_display_roundtrip.
 	private void Roundtrip(int timeoutMilliseconds)
 	{
-		lock (SyncRoot)
+		using (Lock())
 		{
 			var done = false;
 			using var callback = Sync();
@@ -196,95 +238,54 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 		}
 	}
 
-	public void Flush()
+	/// <summary>
+	/// Runs <paramref name="requests"/> under the lock on the calling thread, so its requests are flushed together.
+	/// Returns false without running it once the connection is closing or failed.
+	/// </summary>
+	public void Send(Action requests) => _ = TrySend(requests);
+
+	public bool TrySend(Action requests)
 	{
-		lock (SyncRoot)
+		using (Lock())
 		{
-			ThrowIfUnavailable();
-			FlushCore();
-			WakeDispatch();
+			if (_stopping || _disposing || _display == 0 || DispatchError is not null)
+			{
+				if (WaylandDiagnostics.IsEnabled)
+				{
+					WaylandDiagnostics.Trace($"display: requests dropped ({(DispatchError is null ? "stopping" : "dispatch failed")})");
+				}
+				return false;
+			}
+			requests();
+			return true;
 		}
 	}
 
 	/// <summary>
-	/// Runs <paramref name="command"/> on the dispatch thread before its next read, under <see cref="SyncRoot"/>.
-	/// A failing command stops the loop like a failing event handler.
+	/// Holds the lock across a frame commit (surface state, then the buffer or eglSwapBuffers), so requests from
+	/// other threads cannot land inside it. EGL reads its own queue meanwhile, which the dispatch thread never blocks.
 	/// </summary>
-	public void Post(Action command) => _ = TryPost(command);
-
-	internal bool TryPost(Action command, Action? rejected = null)
-	{
-		ArgumentNullException.ThrowIfNull(command);
-		lock (SyncRoot)
-		{
-			if (!_stopping && !_disposing && _display != 0 && DispatchError is null)
-			{
-				_commands.Enqueue((command, rejected));
-				WakeDispatch();
-				return true;
-			}
-		}
-		if (WaylandDiagnostics.IsEnabled)
-		{
-			WaylandDiagnostics.Trace($"display: command dropped ({(DispatchError is null ? "stopping" : "dispatch failed")})");
-		}
-		rejected?.Invoke();
-		return false;
-	}
-
 	internal bool SubmitPresentation(Func<bool> submit)
 	{
 		if (IsDispatchThread)
 		{
 			throw new InvalidOperationException("Presentation must run outside dispatch callbacks.");
 		}
-		return _presentation.Submit(submit);
-	}
-
-	private void RejectCommands()
-	{
-		while (_commands.TryDequeue(out var command))
+		using (Lock())
 		{
-			command.Rejected?.Invoke();
-		}
-	}
-
-	private void RunCommands()
-	{
-		while (!_presentation.IsActive && _commands.TryDequeue(out var command))
-		{
-			try
-			{
-				command.Command();
-			}
-			catch (Exception error)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error("A posted Wayland display command failed.", error);
-				}
-				CaptureCallbackError(error);
-			}
-			ThrowCallbackError();
+			return submit();
 		}
 	}
 
 	public void StartDispatch()
 	{
-		lock (SyncRoot)
+		using (Lock())
 		{
 			ThrowIfUnavailable();
 			if (_thread is not null)
 			{
 				throw new InvalidOperationException("The dispatch loop is already running.");
 			}
-			int* fds = stackalloc int[2];
-			if (Posix.pipe2(fds, 0x800 | 0x80000) != 0)
-			{
-				throw new IOException($"pipe2 failed: {Marshal.GetLastPInvokeError()}");
-			}
-			_wakeRead = fds[0];
-			_wakeWrite = fds[1];
 			_stopping = false;
 			_thread = new Thread(DispatchLoop) { IsBackground = true, Name = "Uno Wayland dispatch" };
 			_thread.Start();
@@ -294,7 +295,8 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 	public void StopDispatch()
 	{
 		Thread? thread;
-		lock (SyncRoot)
+		WlCallback? wake = null;
+		using (Lock())
 		{
 			thread = _thread;
 			if (thread == Thread.CurrentThread)
@@ -302,93 +304,58 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 				throw new InvalidOperationException("Stop or dispose the display outside its event callbacks.");
 			}
 			_stopping = true;
-			Monitor.PulseAll(SyncRoot);
-			WakeDispatch();
+			if (thread is not null && _display != 0 && DispatchError is null)
+			{
+				// The reply makes the socket readable, so the loop wakes now instead of at its next poll timeout.
+				wake = SyncCore();
+			}
 		}
 		thread?.Join();
-		lock (SyncRoot)
+		using (Lock())
 		{
-			if (_thread != thread)
+			wake?.DisposeLocal();
+			if (_thread == thread)
 			{
-				return;
+				_thread = null;
 			}
-			if (_wakeRead >= 0)
-			{
-				_ = Posix.close(_wakeRead);
-				_ = Posix.close(_wakeWrite);
-				_wakeRead = _wakeWrite = -1;
-			}
-			_thread = null;
-			RejectCommands();
 		}
 	}
 
+	// libwayland is thread-safe for prepare_read, poll, read_events and cancel_read, so the lock is never held while
+	// this thread is a registered reader: a thread presenting under the lock, with EGL reading its own queue, then
+	// never waits on this one.
 	private void DispatchLoop()
 	{
 		var prepared = false;
 		try
 		{
-			Posix.PollFd* fds = stackalloc Posix.PollFd[2];
-			byte* bytes = stackalloc byte[64];
-			while (true)
+			while (!_stopping)
 			{
-				lock (SyncRoot)
+				using (Lock())
 				{
-					if (_stopping)
-					{
-						return;
-					}
-					if (_presentation.IsActive)
-					{
-						// EGL reads and dispatches its own queue; do not prepare a competing reader during submission.
-						Monitor.Wait(SyncRoot);
-						continue;
-					}
-					RunCommands();
-					if (_presentation.IsActive)
-					{
-						continue;
-					}
 					while (WaylandNative.wl_display_prepare_read(_display) != 0)
 					{
 						Check(WaylandNative.wl_display_dispatch_pending(_display));
 						ThrowCallbackError();
 					}
-					prepared = true;
-					var writable = FlushCore();
-					fds[0] = new() { Fd = FileDescriptor, Events = (short)(1 | (writable ? 4 : 0)) };
-					fds[1] = new() { Fd = _wakeRead, Events = 1 };
 				}
-				var result = Posix.poll(fds, 2, -1);
+				prepared = true;
+				var fd = new Posix.PollFd { Fd = FileDescriptor, Events = POLLIN };
+				var result = Posix.poll(&fd, 1, DispatchPollMilliseconds);
 				var error = Marshal.GetLastPInvokeError();
-				lock (SyncRoot)
+				// Non-blocking once poll returned: with nothing to read it reads nothing.
+				prepared = false;
+				Check(WaylandNative.wl_display_read_events(_display));
+				if (result < 0 && error != EINTR)
 				{
-					if (result > 0 && (fds[0].Revents & 1) != 0)
-					{
-						prepared = false;
-						Check(WaylandNative.wl_display_read_events(_display));
-					}
-					else
-					{
-						WaylandNative.wl_display_cancel_read(_display);
-						prepared = false;
-					}
-					if (_stopping)
-					{
-						return;
-					}
-					if (result < 0 && error != EINTR)
-					{
-						throw new IOException($"Wayland poll failed: {Marshal.GetPInvokeErrorMessage(error)}");
-					}
-					if ((fds[1].Revents & 1) != 0)
-					{
-						while (Posix.read(_wakeRead, bytes, 64) > 0) { }
-					}
-					if ((fds[0].Revents & (8 | 16 | 32)) != 0)
-					{
-						throw new IOException("The Wayland connection closed.");
-					}
+					throw new IOException($"Wayland poll failed: {Marshal.GetPInvokeErrorMessage(error)}");
+				}
+				if ((fd.Revents & (POLLERR | POLLHUP | POLLNVAL)) != 0)
+				{
+					throw new IOException("The Wayland connection closed.");
+				}
+				using (Lock())
+				{
 					Check(WaylandNative.wl_display_dispatch_pending(_display));
 					ThrowCallbackError();
 				}
@@ -396,10 +363,7 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 		}
 		catch (Exception error)
 		{
-			lock (SyncRoot)
-			{
-				_dispatchError = error;
-			}
+			_dispatchError = error;
 		}
 		finally
 		{
@@ -407,9 +371,37 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 			{
 				WaylandNative.wl_display_cancel_read(_display);
 			}
-			lock (SyncRoot)
+		}
+	}
+
+	// Like XFlush: waits while the socket is full. A broken connection is reported by the dispatch loop, which sees the
+	// hangup, rather than by whichever thread happened to send the last request.
+	private void FlushPending()
+	{
+		if (_display == 0)
+		{
+			return;
+		}
+		try
+		{
+			while (FlushCore())
 			{
-				RejectCommands();
+				var fd = new Posix.PollFd { Fd = FileDescriptor, Events = POLLOUT };
+				if (Posix.poll(&fd, 1, -1) < 0 && Marshal.GetLastPInvokeError() is var error && error != EINTR)
+				{
+					throw new IOException($"Wayland poll failed: {Marshal.GetPInvokeErrorMessage(error)}");
+				}
+				if ((fd.Revents & (POLLERR | POLLHUP | POLLNVAL)) != 0)
+				{
+					throw new IOException("The Wayland connection closed.");
+				}
+			}
+		}
+		catch (IOException error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Flushing Wayland requests failed: {error.Message}");
 			}
 		}
 	}
@@ -430,17 +422,9 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 		throw CreateConnectionError(errno);
 	}
 
-	internal void WakeDispatch()
-	{
-		if (_wakeWrite >= 0)
-		{
-			byte value = 1;
-			_ = Posix.write(_wakeWrite, &value, 1);
-		}
-	}
 	internal void Register(WaylandProxy proxy)
 	{
-		lock (SyncRoot)
+		using (Lock())
 		{
 			_proxies.Add(proxy.Handle, proxy);
 		}
@@ -503,7 +487,7 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 	}
 	public void Dispose()
 	{
-		lock (SyncRoot)
+		using (Lock())
 		{
 			if (_thread == Thread.CurrentThread)
 			{
@@ -512,7 +496,7 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 			_disposing = true;
 		}
 		StopDispatch();
-		lock (SyncRoot)
+		using (Lock())
 		{
 			if (_display != 0)
 			{

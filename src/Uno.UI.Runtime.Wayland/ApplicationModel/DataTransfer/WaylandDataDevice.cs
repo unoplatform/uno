@@ -22,7 +22,7 @@ internal sealed class WaylandDataDevice : IWaylandClipboardDevice
 
 	// Dispatch thread: offers announced by data_offer and not yet claimed by selection or enter.
 	private readonly Dictionary<WlDataOffer, WaylandDataOffer> _newOffers = new();
-	// Written on the dispatch thread, read under SyncRoot.
+	// Written on the dispatch thread, read under the display lock.
 	private WaylandDataOffer? _selection;
 
 	// UI thread.
@@ -99,7 +99,7 @@ internal sealed class WaylandDataDevice : IWaylandClipboardDevice
 	internal static WaylandDataDevice? Create(WaylandConnection connection)
 	{
 		var display = connection.Display;
-		lock (display.SyncRoot)
+		using (display.Lock())
 		{
 			if (connection.Seat is not { } seat || display.GetGlobal(WlDataDeviceManager.ProtocolName) is null)
 			{
@@ -124,7 +124,7 @@ internal sealed class WaylandDataDevice : IWaylandClipboardDevice
 	{
 		get
 		{
-			lock (Display.SyncRoot)
+			using (Display.Lock())
 			{
 				return _selection;
 			}
@@ -150,7 +150,7 @@ internal sealed class WaylandDataDevice : IWaylandClipboardDevice
 	}
 
 	bool IWaylandClipboardDevice.HasKeyboardFocus => _selectionSerial.HasFocus;
-	void IWaylandClipboardDevice.Post(Action action) => Display.Post(action);
+	void IWaylandClipboardDevice.Send(Action requests) => Display.Send(requests);
 	WlDataSource IWaylandClipboardDevice.CreateSource() => CreateSource();
 	void IWaylandClipboardDevice.SetSelection(WlDataSource? source) => SetSelection(source);
 

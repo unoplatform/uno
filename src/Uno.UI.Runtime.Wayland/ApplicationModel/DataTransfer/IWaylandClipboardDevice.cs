@@ -12,7 +12,7 @@ internal interface IWaylandClipboardDevice
 	// Wayland only accepts a selection from the client with keyboard focus.
 	bool HasKeyboardFocus { get; }
 	void FillContent(DataPackage package);
-	void Post(Action action);
+	void Send(Action requests);
 	WlDataSource CreateSource();
 	void SetSelection(WlDataSource? source);
 }

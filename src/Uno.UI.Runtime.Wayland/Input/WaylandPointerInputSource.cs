@@ -59,7 +59,7 @@ internal sealed class WaylandPointerInputSource : IUnoCorePointerInputSource
 		set
 		{
 			_cursor = value;
-			_connection.Post(() => { if (_entered) { _connection.SetCursor(_serial, value); } });
+			_connection.Send(() => { if (_entered) { _connection.SetCursor(_serial, value); } });
 		}
 	}
 

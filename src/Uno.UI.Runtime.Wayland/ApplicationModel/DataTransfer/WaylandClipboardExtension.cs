@@ -91,7 +91,7 @@ internal sealed class WaylandClipboardExtension : IClipboardExtension
 			return;
 		}
 		var mimeTypes = view is null ? [] : WaylandDataFormats.GetMimeTypes(view);
-		device.Post(Publish);
+		device.Send(Publish);
 		NotifyContentChanged();
 
 		void Publish()

@@ -110,8 +110,8 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 		var hostConstructionStarted = false;
 		try
 		{
-			// Create and subscribe inside one SyncRoot section so no event is dispatched before its handler exists.
-			lock (display.SyncRoot)
+			// Create and subscribe inside one locked section so no event is dispatched before its handler exists.
+			using (display.Lock())
 			{
 				_surface = connection.Compositor.CreateSurface();
 				_surface.PreferredBufferScale += OnPreferredBufferScale;
@@ -190,7 +190,7 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 			{
 				try
 				{
-					lock (display.SyncRoot)
+					using (display.Lock())
 					{
 						DestroyProtocolObjects();
 					}
@@ -464,8 +464,8 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 
 	void IWaylandDecorationsOwner.RequestClose() => _connection.PostToUI(RequestClose);
 
-	// Runs on the dispatch thread unless the window is closed.
-	private void Post(Action action) => _connection.Display.Post(() =>
+	// Sends under the display lock unless the window is closed.
+	private void Post(Action action) => _connection.Display.Send(() =>
 	{
 		if (!_closed)
 		{
@@ -745,7 +745,7 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 	private bool PreparePresentation(long generation, Func<bool> submit)
 	{
 		WaylandWindowConfiguration configuration;
-		lock (_connection.Display.SyncRoot)
+		using (_connection.Display.Lock())
 		{
 			if (_closed || !_configures.PreparePresentation(generation, _xdgSurface.AckConfigure,
 				PreparePresentationCore, out var current))
