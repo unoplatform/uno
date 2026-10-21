@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
+using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -15,6 +17,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		protected IEasingFunction _easing = LinearEase.Instance;
 		private bool _isDisposed;
 		private bool _isDelaying;
+		// Frames stop while nothing is on screen (a hidden window), so the end is also scheduled on a timer.
+		private Timer _endTimer;
 
 		protected CPUBoundAnimator(T from, T to)
 		{
@@ -64,6 +68,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public IEasingFunction GetEasingFunction() => _easing;
 
+		/// <summary>
+		/// Whether the animation reaches its final value and ends on time even when no frame comes. Off for animations
+		/// that repeat, which would otherwise keep replaying without frames.
+		/// </summary>
+		internal bool EndsWithoutFrames { get; set; } = true;
+
 		/// <inheritdoc />
 		public void Start()
 		{
@@ -74,6 +84,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			IsRunning = true;
 			_elapsed.Restart();
 			EnableFrameReporting();
+			ArmEndTimer();
 		}
 
 		/// <inheritdoc />
@@ -87,6 +98,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			IsRunning = false;
 			_elapsed.Stop();
 			DisableFrameReporting();
+			DisarmEndTimer();
 
 			AnimationPause?.Invoke(this, EventArgs.Empty);
 		}
@@ -101,6 +113,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			IsRunning = true;
 			_elapsed.Start();
 			EnableFrameReporting();
+			ArmEndTimer();
 		}
 
 		/// <inheritdoc />
@@ -114,6 +127,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			IsRunning = false;
 			_elapsed.Stop();
 			DisableFrameReporting();
+			DisarmEndTimer();
 
 			AnimationCancel?.Invoke(this, EventArgs.Empty);
 		}
@@ -160,15 +174,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			else if (elapsed >= StartDelay + Duration)
 			{
-				IsRunning = false;
-				DisableFrameReporting();
-				_elapsed.Stop();
-
-				CurrentPlayTime = Duration;
-				_currentValue = _to;
-
-				Update?.Invoke(this, EventArgs.Empty);
-				AnimationEnd?.Invoke(this, EventArgs.Empty);
+				End();
 			}
 			else
 			{
@@ -188,6 +194,52 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		protected abstract T GetUpdatedValue(long frame, T from, T to);
+
+		private void End()
+		{
+			IsRunning = false;
+			DisableFrameReporting();
+			DisarmEndTimer();
+			_elapsed.Stop();
+
+			CurrentPlayTime = Duration;
+			_currentValue = _to;
+
+			Update?.Invoke(this, EventArgs.Empty);
+			AnimationEnd?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void ArmEndTimer()
+		{
+			if (!EndsWithoutFrames || Duration == long.MaxValue)
+			{
+				return;
+			}
+
+			var remaining = Math.Max(0, StartDelay + Duration - _elapsed.ElapsedMilliseconds);
+			_endTimer ??= new Timer(_ => NativeDispatcher.Main.Enqueue(OnEndTimer));
+			_endTimer.Change(Math.Min(remaining, int.MaxValue), Timeout.Infinite);
+		}
+
+		private void DisarmEndTimer() => _endTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+
+		// Runs the normal end unless a frame got there first.
+		private void OnEndTimer()
+		{
+			if (_isDisposed || !IsRunning)
+			{
+				return;
+			}
+
+			if (_elapsed.ElapsedMilliseconds >= StartDelay + Duration)
+			{
+				End();
+			}
+			else
+			{
+				ArmEndTimer();
+			}
+		}
 
 		private void ConfigureStartInterval(long elapsed)
 		{
@@ -228,6 +280,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			IsRunning = false;
 			DisableFrameReporting();
+			_endTimer?.Dispose();
 			_elapsed.Stop();
 		}
 	}
