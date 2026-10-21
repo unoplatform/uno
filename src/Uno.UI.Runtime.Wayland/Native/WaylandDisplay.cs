@@ -13,7 +13,8 @@ using Uno.UI.Runtime.Wayland.Protocols;
 namespace Uno.UI.Runtime.Wayland;
 
 // Threading follows the X11 host: requests are sent from any thread under Lock() and flushed when the outermost
-// lock is released, and the dispatch thread takes the lock only to dispatch events, never while it is a reader.
+// lock is released. The dispatch thread takes the lock only for dispatch_pending, and never while it is a registered
+// reader (between prepare_read and read_events/cancel_read), so a thread holding the lock never waits on it.
 internal sealed unsafe class WaylandDisplay : IDisposable
 {
 	// Bounds the startup roundtrip so a frozen compositor cannot hang host selection.
@@ -112,18 +113,6 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 		return Initialize(handle);
 	}
 
-	/// <summary>Connects using a connected Unix socket, transferring ownership of the descriptor to libwayland.</summary>
-	public static WaylandDisplay ConnectToFileDescriptor(int fd)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(fd);
-		var handle = WaylandNative.wl_display_connect_to_fd(fd);
-		if (handle == 0)
-		{
-			throw new IOException("Unable to initialize the Wayland connection.");
-		}
-		return Initialize(handle);
-	}
-
 	private static WaylandDisplay Initialize(nint handle)
 	{
 		var display = new WaylandDisplay(handle);
@@ -179,61 +168,76 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 		return new WlCallback(this, handle);
 	}
 
-	public void Roundtrip()
-	{
-		using (Lock())
-		{
-			ThrowIfUnavailable();
-			if (_thread is not null)
-			{
-				throw new InvalidOperationException("Roundtrip is only allowed before starting the dispatch thread.");
-			}
-			Check(WaylandNative.wl_display_roundtrip(_display));
-			ThrowCallbackError();
-		}
-	}
-
 	// Startup-only roundtrip that gives up after the timeout instead of blocking like wl_display_roundtrip.
+	// The lock is taken only to send, flush and dispatch, never while this thread is a registered reader.
 	private void Roundtrip(int timeoutMilliseconds)
 	{
+		var done = false;
+		WlCallback callback;
 		using (Lock())
 		{
-			var done = false;
-			using var callback = Sync();
+			callback = Sync();
 			callback.Done += (_, _) => done = true;
-			var deadline = Environment.TickCount64 + timeoutMilliseconds;
-			while (!done)
+		}
+		using var syncCallback = callback;
+		var deadline = Environment.TickCount64 + timeoutMilliseconds;
+		while (!done)
+		{
+			// Flush before becoming a reader; wait for a full socket without a read prepared.
+			bool full;
+			using (Lock())
 			{
-				while (WaylandNative.wl_display_prepare_read(_display) != 0)
+				full = FlushCore();
+			}
+			var remaining = (int)Math.Max(0, deadline - Environment.TickCount64);
+			if (full && remaining > 0)
+			{
+				var wfd = new Posix.PollFd { Fd = FileDescriptor, Events = POLLOUT };
+				Posix.poll(&wfd, 1, remaining);
+				if ((wfd.Revents & (POLLERR | POLLHUP | POLLNVAL)) != 0)
+				{
+					throw new IOException("The Wayland connection closed during startup.");
+				}
+				continue;
+			}
+
+			while (WaylandNative.wl_display_prepare_read(_display) != 0)
+			{
+				using (Lock())
 				{
 					Check(WaylandNative.wl_display_dispatch_pending(_display));
+					ThrowCallbackError();
 				}
-				var remaining = deadline - Environment.TickCount64;
-				if (done || remaining <= 0)
+			}
+			var prepared = true;
+			try
+			{
+				remaining = (int)Math.Max(0, deadline - Environment.TickCount64);
+				var fd = new Posix.PollFd { Fd = FileDescriptor, Events = POLLIN };
+				Posix.poll(&fd, 1, remaining);
+				// Non-blocking once poll returned: with nothing to read it reads nothing.
+				prepared = false;
+				Check(WaylandNative.wl_display_read_events(_display));
+				if ((fd.Revents & (POLLERR | POLLHUP | POLLNVAL)) != 0)
+				{
+					throw new IOException("The Wayland connection closed during startup.");
+				}
+			}
+			finally
+			{
+				if (prepared)
 				{
 					WaylandNative.wl_display_cancel_read(_display);
-					if (done)
-					{
-						break;
-					}
-					throw new IOException($"The Wayland compositor did not answer within {timeoutMilliseconds} ms.");
 				}
-				var fd = new Posix.PollFd { Fd = FileDescriptor, Events = (short)(1 | (FlushCore() ? 4 : 0)) };
-				var result = Posix.poll(&fd, 1, (int)remaining);
-				if (result > 0 && (fd.Revents & 1) != 0)
-				{
-					Check(WaylandNative.wl_display_read_events(_display));
-				}
-				else
-				{
-					WaylandNative.wl_display_cancel_read(_display);
-					if ((fd.Revents & (8 | 16 | 32)) != 0)
-					{
-						throw new IOException("The Wayland connection closed during startup.");
-					}
-				}
+			}
+			using (Lock())
+			{
 				Check(WaylandNative.wl_display_dispatch_pending(_display));
 				ThrowCallbackError();
+			}
+			if (!done && Environment.TickCount64 >= deadline)
+			{
+				throw new IOException($"The Wayland compositor did not answer within {timeoutMilliseconds} ms.");
 			}
 		}
 	}
@@ -321,9 +325,10 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 		}
 	}
 
-	// libwayland is thread-safe for prepare_read, poll, read_events and cancel_read, so the lock is never held while
-	// this thread is a registered reader: a thread presenting under the lock, with EGL reading its own queue, then
-	// never waits on this one.
+	// libwayland is thread-safe for prepare_read, read_events and cancel_read, so none of them runs under the lock.
+	// prepare_read is retried after dispatching under the lock; poll then read_events (non-blocking after poll) run
+	// lock-free, and cancel_read happens only when leaving the loop with a read prepared. A thread presenting under
+	// the lock, with EGL reading its own queue, therefore never waits on this one.
 	private void DispatchLoop()
 	{
 		var prepared = false;
@@ -331,9 +336,10 @@ internal sealed unsafe class WaylandDisplay : IDisposable
 		{
 			while (!_stopping)
 			{
-				using (Lock())
+				// Requests queued while dispatching are flushed when the lock is released, before the next attempt.
+				while (WaylandNative.wl_display_prepare_read(_display) != 0)
 				{
-					while (WaylandNative.wl_display_prepare_read(_display) != 0)
+					using (Lock())
 					{
 						Check(WaylandNative.wl_display_dispatch_pending(_display));
 						ThrowCallbackError();
