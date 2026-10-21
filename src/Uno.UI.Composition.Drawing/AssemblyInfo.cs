@@ -30,4 +30,3 @@ using System.Runtime.CompilerServices;
 
 // Unit tests run without a host builder, so their assembly initializer registers the seams itself.
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Wayland.Tests")]
