@@ -18,7 +18,7 @@ internal sealed class WaylandClipboardExtension : IClipboardExtension
 	private DataPackageView? _content;
 	private int _generation;
 	private int? _pendingGeneration;
-	// Dispatch thread.
+	// Under the display lock.
 	private WlDataSource? _source;
 	private WaylandDataSourceContent? _sourceContent;
 	private volatile bool _isMonitoringEnabled;
@@ -31,7 +31,7 @@ internal sealed class WaylandClipboardExtension : IClipboardExtension
 		{
 			device.SelectionChanged += (_, _) =>
 			{
-				// An announcement must not overwrite a copy or clear still on its way to the dispatch thread.
+				// An announcement must not overwrite a copy or clear that is still being published.
 				if (_source is null)
 				{
 					lock (_gate)
@@ -71,27 +71,43 @@ internal sealed class WaylandClipboardExtension : IClipboardExtension
 
 	private void SetSelection(DataPackageView? view)
 	{
-		if (_device is { HasKeyboardFocus: false })
+		if (_device is not { } device)
+		{
+			// Without a seat nothing can be published, and a local-only copy would diverge from the system clipboard.
+			Warn("there is no Wayland seat");
+			return;
+		}
+		if (!device.HasKeyboardFocus)
 		{
 			// Queuing until focus returns would overwrite whatever the user copied elsewhere in the meantime.
 			WarnUnfocused();
 			return;
 		}
 		int generation;
+		DataPackageView? previousContent;
 		lock (_gate)
 		{
 			// Readable locally right away, as on WinUI.
+			previousContent = _content;
 			_content = view ?? new DataPackage().GetView();
 			generation = ++_generation;
 			_pendingGeneration = generation;
 		}
-		if (_device is not { } device)
+		var mimeTypes = view is null ? [] : WaylandDataFormats.GetMimeTypes(view);
+		if (!device.Send(Publish))
 		{
-			NotifyContentChanged();
+			// The connection is closing: the request never ran, so the copy must not be visible locally.
+			lock (_gate)
+			{
+				if (_generation == generation)
+				{
+					_content = previousContent;
+					_pendingGeneration = null;
+				}
+			}
+			Warn("the Wayland connection is closing");
 			return;
 		}
-		var mimeTypes = view is null ? [] : WaylandDataFormats.GetMimeTypes(view);
-		device.Send(Publish);
 		NotifyContentChanged();
 
 		void Publish()
@@ -102,7 +118,7 @@ internal sealed class WaylandClipboardExtension : IClipboardExtension
 			}
 			if (!device.HasKeyboardFocus)
 			{
-				// Focus left before the request reached the dispatch thread: nothing was published.
+				// Focus left before the request ran: nothing was published.
 				lock (_gate)
 				{
 					if (_generation == generation)
@@ -164,11 +180,13 @@ internal sealed class WaylandClipboardExtension : IClipboardExtension
 		}
 	}
 
-	private void WarnUnfocused()
+	private void WarnUnfocused() => Warn("Wayland only lets the window with keyboard focus set it");
+
+	private void Warn(string reason)
 	{
 		if (this.Log().IsEnabled(LogLevel.Warning))
 		{
-			this.Log().Warn("The clipboard was not set: Wayland only lets the window with keyboard focus set it.");
+			this.Log().Warn($"The clipboard was not set: {reason}.");
 		}
 	}
 
