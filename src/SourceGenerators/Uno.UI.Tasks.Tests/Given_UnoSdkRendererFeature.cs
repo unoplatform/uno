@@ -112,6 +112,25 @@ public class Given_UnoSdkRendererFeature
 		packages.Should().Contain(["Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu"]);
 	}
 
+	[TestMethod]
+	[DataRow("Library", "SkiaRenderer", true)]
+	[DataRow("Library", "Skia;SkiaRenderer", true)]
+	[DataRow("Library", "Skia", false)]
+	[DataRow("Exe", "SkiaRenderer", false)]
+	public void When_Compiling_Then_An_Ignored_SkiaRenderer_Is_Reported(string outputType, string features, bool expected)
+	{
+		var output = Compile(outputType, features);
+
+		if (expected)
+		{
+			output.Should().Contain("warning UNOB0030");
+		}
+		else
+		{
+			output.Should().NotContain("UNOB0030");
+		}
+	}
+
 	private static (string UnoFeatures, string[] Packages) Evaluate(string outputType, string features, string targetFramework = "net10.0", bool singleProject = true, string outputTypeCondition = "")
 	{
 		var result = RunProject(outputType, features, targetFramework, singleProject, ["-getProperty:UnoFeatures", "-getItem:PackageReference"], outputTypeCondition);
@@ -137,6 +156,9 @@ public class Given_UnoSdkRendererFeature
 			return (unoFeatures, packages);
 		}
 	}
+
+	private static string Compile(string outputType, string features)
+		=> RunProject(outputType, features, "net10.0", singleProject: true, ["-t:CoreCompile"]).Output;
 
 	private static DotnetMSBuild.Result RunProject(string outputType, string features, string targetFramework, bool singleProject, string[] arguments, string outputTypeCondition = "")
 	{
