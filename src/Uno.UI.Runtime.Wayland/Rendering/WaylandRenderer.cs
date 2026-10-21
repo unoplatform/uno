@@ -73,8 +73,6 @@ internal sealed class WaylandRenderer : IDisposable, ISwapChain
 	/// <summary>The negotiated backend, read by the host so its CompositionTarget can resolve one.</summary>
 	internal IDrawingFactory Factory => Volatile.Read(ref _drawingFactory);
 
-	public bool IsConfigured => _configured;
-
 	// Stages the size; the configure is acknowledged right before the first matching commit.
 	public void Configure(int logicalWidth, int logicalHeight)
 	{

@@ -59,7 +59,8 @@ public sealed class WaylandHostBuilder : IPlatformHostBuilder
 	};
 
 	/// <summary>
-	/// Uses the system HarfBuzz library for text shaping instead of libHarfBuzzSharp shipped with SkiaSharp.
+	/// Makes HarfBuzzSharp, the font provider's dependency, use the system libharfbuzz instead of its bundled
+	/// libHarfBuzzSharp, avoiding symbol clashes with other libraries (such as GTK) that load the system one.
 	/// </summary>
 	public WaylandHostBuilder UseSystemHarfBuzz(bool value)
 	{
