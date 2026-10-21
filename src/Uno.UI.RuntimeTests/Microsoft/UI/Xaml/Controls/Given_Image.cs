@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -620,6 +620,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				VerticalAlignment = VerticalAlignment.Top,
 				Source = source,
 			};
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
+		public async Task When_Image_Never_In_Tree_Then_Source_Not_Opened()
+		{
+			// As on WinUI, an Image opens its source once it is in the live tree.
+			var bitmap = new BitmapImage();
+			var opened = 0;
+			var failed = 0;
+			bitmap.ImageOpened += (_, _) => opened++;
+			bitmap.ImageFailed += (_, _) => failed++;
+			bitmap.UriSource = new Uri("ms-appx:///Assets/square100.png");
+			var image = new Image { Source = bitmap };
+
+			await Task.Delay(1000);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, opened, "An Image outside the tree must not open its source");
+			Assert.AreEqual(0, failed, "An Image outside the tree must not open its source");
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => opened == 1, message: "The Image opens its source once in the tree");
+			WindowHelper.WindowContent = null;
 		}
 
 		[TestMethod]
