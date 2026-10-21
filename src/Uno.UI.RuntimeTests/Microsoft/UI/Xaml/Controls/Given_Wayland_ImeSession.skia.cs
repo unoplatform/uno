@@ -193,7 +193,6 @@ public sealed class Given_Wayland_ImeSession
 	{
 		private const BindingFlags InstanceMembers = BindingFlags.Instance | BindingFlags.NonPublic;
 		private readonly IImeTextBoxExtension _extension;
-		private readonly object _stateLock;
 		private readonly object _pending;
 		private readonly FieldInfo _serial;
 		private readonly FieldInfo _enabled;
@@ -204,8 +203,8 @@ public sealed class Given_Wayland_ImeSession
 
 		[DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.NonPublicMethods,
 			"Uno.UI.Runtime.Wayland.WaylandImeTextBoxExtension", "Uno.UI.Runtime.Wayland")]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties,
-			"Uno.UI.Runtime.Wayland.WaylandTextInputBatch", "Uno.UI.Runtime.Wayland")]
+		[DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicFields,
+			"Uno.UI.Runtime.Wayland.WaylandImeTextBoxExtension+PendingBatch", "Uno.UI.Runtime.Wayland")]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicConstructors,
 			"Uno.UI.Runtime.Wayland.Protocols.ZwpTextInputV3+DoneEventArgs", "Uno.UI.Runtime.Wayland")]
 		[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "The Wayland runtime is present only in heads selected by SkiaWayland.")]
@@ -214,7 +213,6 @@ public sealed class Given_Wayland_ImeSession
 		{
 			_extension = extension;
 			var type = extension.GetType();
-			_stateLock = type.GetField("_stateLock", InstanceMembers)!.GetValue(extension)!;
 			_pending = type.GetField("_pending", InstanceMembers)!.GetValue(extension)!;
 			_serial = type.GetField("_commitSerial", InstanceMembers)!;
 			_enabled = type.GetField("_enabled", InstanceMembers)!;
@@ -234,41 +232,40 @@ public sealed class Given_Wayland_ImeSession
 			}
 		}
 
-		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "The injector constructor preserves the pending batch properties through DynamicDependency.")]
+		// Without the display lock, which cannot be taken through reflection: with no input method attached, nothing
+		// else writes the pending batch.
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "The injector constructor preserves the pending batch fields through DynamicDependency.")]
 		internal void Done(uint deleteBefore = 0, uint deleteAfter = 0, string? commit = null, string? preedit = null, int cursor = 0)
 		{
-			lock (_stateLock)
+			var type = _pending.GetType();
+			type.GetField("DeleteBefore", InstanceMembers)!.SetValue(_pending, deleteBefore);
+			type.GetField("DeleteAfter", InstanceMembers)!.SetValue(_pending, deleteAfter);
+			type.GetField("Commit", InstanceMembers)!.SetValue(_pending, commit);
+			type.GetField("Preedit", InstanceMembers)!.SetValue(_pending, preedit);
+			type.GetField("PreeditCursor", InstanceMembers)!.SetValue(_pending, cursor);
+			var args = _doneArgs.Invoke([_serial.GetValue(_extension)!]);
+			var postToUI = (Action<Action>)_postToUI.GetValue(_extension)!;
+			var injectionThread = Environment.CurrentManagedThreadId;
+			// Drain only the synthetic done, before a real compositor done can clear its preedit.
+			Action<Action> post = action =>
 			{
-				var type = _pending.GetType();
-				type.GetProperty("DeleteBefore", InstanceMembers)!.SetValue(_pending, deleteBefore);
-				type.GetProperty("DeleteAfter", InstanceMembers)!.SetValue(_pending, deleteAfter);
-				type.GetProperty("Commit", InstanceMembers)!.SetValue(_pending, commit);
-				type.GetProperty("Preedit", InstanceMembers)!.SetValue(_pending, preedit);
-				type.GetProperty("PreeditCursor", InstanceMembers)!.SetValue(_pending, cursor);
-				var args = _doneArgs.Invoke([_serial.GetValue(_extension)!]);
-				var postToUI = (Action<Action>)_postToUI.GetValue(_extension)!;
-				var injectionThread = Environment.CurrentManagedThreadId;
-				// Drain only the synthetic done, before a real compositor done can clear its preedit.
-				Action<Action> post = action =>
+				if (Environment.CurrentManagedThreadId == injectionThread)
 				{
-					if (Environment.CurrentManagedThreadId == injectionThread)
-					{
-						_posted.Enqueue(action);
-					}
-					else
-					{
-						postToUI(action);
-					}
-				};
-				_postToUI.SetValue(_extension, post);
-				try
-				{
-					_done.Invoke(_extension, [null, args]);
+					_posted.Enqueue(action);
 				}
-				finally
+				else
 				{
-					_postToUI.SetValue(_extension, postToUI);
+					postToUI(action);
 				}
+			};
+			_postToUI.SetValue(_extension, post);
+			try
+			{
+				_done.Invoke(_extension, [null, args]);
+			}
+			finally
+			{
+				_postToUI.SetValue(_extension, postToUI);
 			}
 		}
 	}
