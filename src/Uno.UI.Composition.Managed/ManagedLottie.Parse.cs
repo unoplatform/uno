@@ -24,13 +24,26 @@ internal sealed partial class ManagedLottie
 				return false;
 			}
 
-			var layers = new List<Layer>();
-			var byIndex = new Dictionary<int, Layer>();
-			foreach (var le in layersEl.EnumerateArray())
+			var rootComposition = ParseComposition(layersEl);
+
+			// Precomp assets are compositions of their own, which precomp layers (here or in other assets) show by id.
+			var assets = new Dictionary<string, Composition>();
+			if (root.TryGetProperty("assets", out var assetsEl) && assetsEl.ValueKind == JsonValueKind.Array)
 			{
-				var layer = ParseLayer(le);
-				layers.Add(layer);
-				byIndex[layer.Index] = layer;
+				foreach (var asset in assetsEl.EnumerateArray())
+				{
+					if (asset.TryGetProperty("id", out var id) && id.ValueKind == JsonValueKind.String
+						&& asset.TryGetProperty("layers", out var assetLayers) && assetLayers.ValueKind == JsonValueKind.Array)
+					{
+						assets[id.GetString()!] = ParseComposition(assetLayers);
+					}
+				}
+			}
+
+			ResolvePrecomps(rootComposition, assets);
+			foreach (var composition in assets.Values)
+			{
+				ResolvePrecomps(composition, assets);
 			}
 
 			animation = new ManagedLottie
@@ -40,8 +53,7 @@ internal sealed partial class ManagedLottie
 				FrameRate = F(root, "fr", 60),
 				InPoint = F(root, "ip", 0),
 				OutPoint = F(root, "op", 0),
-				Layers = layers,
-				LayersByIndex = byIndex,
+				Root = rootComposition,
 			};
 			return animation.Width > 0 && animation.Height > 0;
 		}
@@ -49,6 +61,30 @@ internal sealed partial class ManagedLottie
 		{
 			animation = null;
 			return false;
+		}
+	}
+
+	private static Composition ParseComposition(JsonElement layersEl)
+	{
+		var layers = new List<Layer>();
+		var byIndex = new Dictionary<int, Layer>();
+		foreach (var le in layersEl.EnumerateArray())
+		{
+			var layer = ParseLayer(le);
+			layers.Add(layer);
+			byIndex[layer.Index] = layer;
+		}
+		return new Composition { Layers = layers, LayersByIndex = byIndex };
+	}
+
+	private static void ResolvePrecomps(Composition composition, Dictionary<string, Composition> assets)
+	{
+		foreach (var layer in composition.Layers)
+		{
+			if (layer.Type == 0 && layer.RefId is { } refId && assets.TryGetValue(refId, out var precomp))
+			{
+				layer.Precomp = precomp;
+			}
 		}
 	}
 
@@ -60,6 +96,11 @@ internal sealed partial class ManagedLottie
 			Index = (int)F(le, "ind", 0),
 			InPoint = F(le, "ip", 0),
 			OutPoint = F(le, "op", 0),
+			StartTime = F(le, "st", 0),
+			TimeStretch = F(le, "sr", 1),
+			Width = F(le, "w", 0),
+			Height = F(le, "h", 0),
+			RefId = le.TryGetProperty("refId", out var refId) && refId.ValueKind == JsonValueKind.String ? refId.GetString() : null,
 		};
 		if (le.TryGetProperty("parent", out var parent) && parent.ValueKind == JsonValueKind.Number)
 		{
@@ -176,6 +217,12 @@ internal sealed partial class ManagedLottie
 
 	private static AnimatedVector ParseVector(JsonElement prop)
 	{
+		// Split position: X and Y keyframed separately, each a scalar property of its own.
+		if (prop.TryGetProperty("s", out var split) && split.ValueKind == JsonValueKind.True
+			&& prop.TryGetProperty("x", out var x) && prop.TryGetProperty("y", out var y))
+		{
+			return AnimatedVector.FromSplit(ParseTrack(x), ParseTrack(y));
+		}
 		if (!prop.TryGetProperty("k", out var k))
 		{
 			return AnimatedVector.Constant(Vector2.Zero);
@@ -186,6 +233,15 @@ internal sealed partial class ManagedLottie
 			return AnimatedVector.FromTrack(Track.Const(arr.Length > 0 ? arr : _zeroVector));
 		}
 		return AnimatedVector.FromTrack(ParseValueKeyframes(k));
+	}
+
+	private static Track ParseTrack(JsonElement prop)
+	{
+		if (!prop.TryGetProperty("k", out var k))
+		{
+			return Track.Const([0f]);
+		}
+		return IsAnimated(prop) ? ParseValueKeyframes(k) : Track.Const(ReadFloatArray(k));
 	}
 
 	private static AnimatedColor ParseColor(JsonElement prop)
@@ -208,7 +264,11 @@ internal sealed partial class ManagedLottie
 		foreach (var kf in kArray.EnumerateArray())
 		{
 			var frame = F(kf, "t", 0);
-			var start = kf.TryGetProperty("s", out var s) ? ReadFloatArray(s) : Array.Empty<float>();
+			// Pre-5.5 files carry each segment's end in "e" and close the track with a bare { t } keyframe, whose value
+			// is that last end: without it, the value past the final keyframe would read as nothing (zero).
+			var start = kf.TryGetProperty("s", out var s)
+				? ReadFloatArray(s)
+				: kfs.Count > 0 ? kfs[^1].End ?? kfs[^1].Start : Array.Empty<float>();
 			float[]? end = kf.TryGetProperty("e", out var e) ? ReadFloatArray(e) : null;
 			var hold = (int)F(kf, "h", 0) == 1;
 			ReadEase(kf, out var ox, out var oy, out var ix, out var iy, out var hasEase);
@@ -227,13 +287,16 @@ internal sealed partial class ManagedLottie
 		if (k.ValueKind == JsonValueKind.Array && k.GetArrayLength() > 0 && k[0].ValueKind == JsonValueKind.Object && k[0].TryGetProperty("t", out _))
 		{
 			var kfs = new List<(float, ShapeData, bool, float, float, float, float, bool)>();
+			ShapeData? previousEnd = null;
 			foreach (var kf in k.EnumerateArray())
 			{
 				var frame = F(kf, "t", 0);
-				var shapeEl = kf.TryGetProperty("s", out var s)
-					? (s.ValueKind == JsonValueKind.Array && s.GetArrayLength() > 0 ? s[0] : s)
-					: default;
-				var shape = ReadShape(shapeEl);
+				// Same pre-5.5 closing { t } keyframe as the value tracks: its shape is the previous segment's end.
+				ShapeData? read = kf.TryGetProperty("s", out var s) ? ReadShape(FirstShape(s)) : null;
+				var shape = read is { Vertices: not null } shapeRead
+					? shapeRead
+					: previousEnd ?? (kfs.Count > 0 ? kfs[^1].Item2 : AnimatedPath.Empty.Evaluate(0));
+				previousEnd = kf.TryGetProperty("e", out var e) && ReadShape(FirstShape(e)) is { Vertices: not null } end ? end : null;
 				var hold = (int)F(kf, "h", 0) == 1;
 				ReadEase(kf, out var ox, out var oy, out var ix, out var iy, out var hasEase);
 				kfs.Add((frame, shape, hold, ox, oy, ix, iy, hasEase));
@@ -243,6 +306,10 @@ internal sealed partial class ManagedLottie
 		// Static path: k is the shape object.
 		return new AnimatedPath(ReadShape(k));
 	}
+
+	// A keyframe's shape is sometimes wrapped in a one-element array.
+	private static JsonElement FirstShape(JsonElement value)
+		=> value.ValueKind == JsonValueKind.Array && value.GetArrayLength() > 0 ? value[0] : value;
 
 	private static ShapeData ReadShape(JsonElement shapeEl)
 	{

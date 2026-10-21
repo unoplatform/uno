@@ -3,15 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class InputActivationListenerActivationChangedEventArgs
 	{
-#if __SKIA__
-		internal InputActivationListenerActivationChangedEventArgs()
-		{
-		}
-#endif
 	}
 }

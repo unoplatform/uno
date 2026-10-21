@@ -125,17 +125,6 @@ namespace Uno.UI
 			public static bool SetFrameRateAsScreenRefreshRate { get; set; } = true;
 		}
 
-		public static class ContentPresenter
-		{
-			/// <summary>
-			/// Enables the implicit binding Content of a ContentPresenter to the one of the TemplatedParent
-			/// when this one is a ContentControl.
-			/// It means you can put a `<ContentPresenter />` directly in the ControlTemplate and it will
-			/// be bound automatically to its TemplatedPatent's Content.
-			/// </summary>
-			public static bool UseImplicitContentFromTemplatedParent { get; set; }
-		}
-
 		public static class DependencyObject
 		{
 			/// <summary>
@@ -267,12 +256,6 @@ namespace Uno.UI
 #if !__SKIA__
 				= true;
 #endif
-		}
-
-		public static class ProgressRing
-		{
-			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
-			public static Uri DeterminateProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json");
 		}
 
 		public static class ListViewBase
@@ -592,6 +575,32 @@ namespace Uno.UI
 #else
 				global::System.Diagnostics.Debugger.IsAttached;
 #endif
+		}
+
+		/// <summary>
+		/// Configuration for input validation, i.e. the transport of
+		/// <see cref="System.ComponentModel.INotifyDataErrorInfo"/> errors from a binding source to the
+		/// control bound to it.
+		/// </summary>
+		public static class InputValidation
+		{
+			/// <summary>
+			/// Enables input validation application-wide. Defaults to false, so applications that never validate
+			/// pay nothing for the machinery on the binding registration path.
+			/// </summary>
+			/// <remarks>
+			/// Must be set before the first binding is registered, which for XAML-declared bindings means before
+			/// <c>InitializeComponent</c> runs on the first page. Enabling it does not by itself validate
+			/// anything: each control opts in through the <c>Uno.UI.Xaml.Controls.Validation.Mode</c> attached property.
+			/// </remarks>
+			public static bool IsEnabled { get; set; }
+
+			/// <summary>
+			/// The type-to-property map the transport reads to decide which dependency property of a control
+			/// carries its input. Populated on demand from <see cref="InputValidationPropertyAttribute"/>, and
+			/// writable so that a control which cannot carry the attribute can be registered from outside Uno.
+			/// </summary>
+			public static InputValidationPropertyMap ValidationProperties { get; } = new();
 		}
 
 		/// <summary>

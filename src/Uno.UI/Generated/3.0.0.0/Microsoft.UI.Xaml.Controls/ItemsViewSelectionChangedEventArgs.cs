@@ -3,15 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ItemsViewSelectionChangedEventArgs
 	{
-#if __SKIA__
-		internal ItemsViewSelectionChangedEventArgs()
-		{
-		}
-#endif
 	}
 }

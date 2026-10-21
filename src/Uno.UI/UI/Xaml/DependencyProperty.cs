@@ -19,6 +19,7 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Media;
 
 using _View = Microsoft.UI.Xaml.UIElement;
@@ -420,6 +421,10 @@ namespace Microsoft.UI.Xaml
 			{
 				type = propertyInfo.OwnerType;
 				name = propertyInfo.Name;
+
+				// Parse() redirects to the attached property's owner, which is a different type than the one
+				// forced above -- and its registration only happens in that type's static constructor.
+				ForceInitializeTypeConstructor(type);
 			}
 
 			do
@@ -556,14 +561,14 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType.IsAssignableTo(typeof(UserControl)))
 				{
-					return Boxes.BooleanBoxes.BoxedFalse;
+					return BoolBoxes.False;
 				}
 				else if (forType.IsAssignableTo(typeof(Control)))
 				{
-					return Boxes.BooleanBoxes.BoxedTrue;
+					return BoolBoxes.True;
 				}
 
-				return Boxes.BooleanBoxes.BoxedFalse;
+				return BoolBoxes.False;
 			}
 
 #if __SKIA__
@@ -586,7 +591,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
 				{
-					return Boxes.StretchBoxes.Fill;
+					return StretchBoxes.Fill;
 				}
 			}
 

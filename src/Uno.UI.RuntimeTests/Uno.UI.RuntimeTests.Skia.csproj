@@ -11,7 +11,7 @@
 		<AssemblyName>Uno.UI.RuntimeTests</AssemblyName>
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
 
-		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<UnoEnableImplicitXamlNamespaces>true</UnoEnableImplicitXamlNamespaces>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
@@ -72,7 +72,7 @@
 		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj" />
-		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition.Drawing\Uno.UI.Composition.Drawing.csproj" />
@@ -84,7 +84,13 @@
 
 	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">
 		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
-		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
+		<!-- Graphics3DGL brings this package, whose Uno.Extensions.LogExtensionPoint makes the tests' Log() calls ambiguous
+		     with Uno.Foundation.Logging's. -->
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" ExcludeAssets="compile" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">
@@ -96,15 +102,16 @@
 	     of the suite and all samples still compile. -->
 	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'=='false'">
 		<Compile Remove="Helpers\SkiaImageAssert.cs" />
-		<Compile Remove="Tests\Microsoft_UI_Xaml_Controls\Given_AnimatedVisualPlayer.cs" />
-		<Compile Remove="Tests\Windows_UI_Composition\Given_ContainerVisual.cs" />
-		<Compile Remove="Tests\Windows_UI_Xaml_Controls\Given_Image.cs" />
-		<Compile Remove="Tests\Windows_UI_Xaml_Controls\Given_SKCanvasElement.skia.cs" />
-		<Compile Remove="Tests\Windows_UI_Xaml_Controls\Given_TextBlock.cs" />
-		<Compile Remove="Tests\Windows_UI_Xaml_Media\Given_AcrylicBrush.cs" />
-		<Compile Remove="Tests\Windows_UI_Xaml_Media\Given_Geometry.cs" />
-		<Compile Remove="Tests\Windows_UI_Xaml_Media\Given_IFont_AlternativeBackend.cs" />
-		<Compile Remove="Tests\Windows_UI_Xaml_Shapes\Given_Basic_Shapes_Parity.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Controls\Given_AnimatedVisualPlayer.cs" />
+		<Compile Remove="Microsoft\UI\Composition\Given_ContainerVisual.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Controls\Given_Image.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Controls\Given_SKCanvasElement.skia.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Controls\Given_TextBlock.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Documents\Given_GlyphRunRenderer.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Media\Given_AcrylicBrush.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Media\Given_Geometry.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Media\Given_IFont_AlternativeBackend.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Shapes\Given_Basic_Shapes_Parity.cs" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -136,7 +143,7 @@
 	</Target>
 
 	<ItemGroup>
-		<Page Update="Tests\Windows_UI_Xaml_Controls\FlyoutPages\When_PlacementTarget_Binding.xaml">
+		<Page Update="Microsoft\UI\Xaml\Controls\FlyoutPages\When_PlacementTarget_Binding.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>

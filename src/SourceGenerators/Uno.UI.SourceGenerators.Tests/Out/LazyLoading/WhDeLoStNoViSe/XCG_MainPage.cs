@@ -65,7 +65,7 @@ namespace TestRepro
 						)
 						,
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
-							new Microsoft.UI.Xaml.ElementStub( () => 
+							new Microsoft.UI.Xaml.ElementStub(() => 
 							new global::Microsoft.UI.Xaml.Controls.Border
 							{
 								IsParsing = true,
@@ -105,6 +105,7 @@ namespace TestRepro
 						)
 						,
 					}
+					,
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 				{
@@ -135,7 +136,7 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LazyLoadedBorderSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LazyLoadedBorderSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "LazyLoadedBorder");
 		private global::Microsoft.UI.Xaml.Controls.Border LazyLoadedBorder
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Border)_LazyLoadedBorderSubject.ElementInstance;

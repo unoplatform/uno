@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.IO;
 using System.Threading.Tasks;
 using Windows.UI.Text;
 
@@ -14,6 +15,13 @@ public interface IFontProvider
 {
 	/// <summary>Builds a font from raw sfnt bytes (an embedded/URI font), selecting <paramref name="familyNameHint"/> within a collection and positioning any variable axes for the requested style. Returns <c>null</c> if the bytes aren't a usable font.</summary>
 	IFont? CreateFont(byte[] data, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize);
+
+	/// <summary>
+	/// Reads a font file once into storage that every font built from it (one per size/style) shares. The default keeps
+	/// the bytes in a managed array and builds through <see cref="CreateFont"/>; a native backend reads straight into
+	/// its own memory instead.
+	/// </summary>
+	IFontFile LoadFontFile(Stream stream) => ByteArrayFontFile.Load(this, stream);
 
 	/// <summary>Resolves an installed font family, or <c>null</c> if the family is unknown (caller falls back to the default).</summary>
 	IFont? MatchFamily(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize);

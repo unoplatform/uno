@@ -37,6 +37,13 @@ internal interface ISwapChain : IGraphicsContext
 	/// whose back buffer is undefined each frame returns false (the default), forcing a full repaint.
 	/// </summary>
 	bool PreservesContents => false;
+
+	/// <summary>
+	/// False while the GPU is too far behind the frames already presented to take another, so the host skips this
+	/// frame opportunity and asks for the next one. Lets a swapchain whose platform does not pace submissions (the
+	/// browser's) keep a slow GPU from queueing frames without bound.
+	/// </summary>
+	bool IsReadyForFrame => true;
 }
 
 /// <summary>

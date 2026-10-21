@@ -59,12 +59,6 @@ namespace UITests.Windows_UI_Core
 			}
 			XamlWindow.Current.Activated += WindowActivated;
 			XamlWindow.Current.VisibilityChanged += WindowVisibilityChanged;
-#if !WINAPPSDK
-			Application.Current.EnteredBackground += AppEnteredBackground;
-			Application.Current.LeavingBackground += AppLeavingBackground;
-			Application.Current.Suspending += ApplicationSuspending;
-			Application.Current.Resuming += ApplicationResuming;
-#endif
 			CoreApplication.EnteredBackground += CoreApplicationEnteredBackground;
 			CoreApplication.LeavingBackground += CoreApplicationLeavingBackground;
 			CoreApplication.Suspending += CoreApplicationSuspending;
@@ -78,12 +72,6 @@ namespace UITests.Windows_UI_Core
 				}
 				XamlWindow.Current.Activated -= WindowActivated;
 				XamlWindow.Current.VisibilityChanged -= WindowVisibilityChanged;
-#if !WINAPPSDK
-				Application.Current.EnteredBackground -= AppEnteredBackground;
-				Application.Current.LeavingBackground -= AppLeavingBackground;
-				Application.Current.Suspending -= ApplicationSuspending;
-				Application.Current.Resuming -= ApplicationResuming;
-#endif
 				CoreApplication.EnteredBackground -= CoreApplicationEnteredBackground;
 				CoreApplication.LeavingBackground -= CoreApplicationLeavingBackground;
 				CoreApplication.Suspending -= CoreApplicationSuspending;
@@ -167,18 +155,6 @@ namespace UITests.Windows_UI_Core
 		}
 
 
-		private async void AppLeavingBackground(object sender, Windows.ApplicationModel.LeavingBackgroundEventArgs e)
-		{
-			AddHistory("Application.LeavingBackground started");
-			if (SimulateDeferrals)
-			{
-				var deferral = e.GetDeferral();
-				await Task.Delay(500);
-				deferral.Complete();
-			}
-			AddHistory("Application.LeavingBackground ended");
-		}
-
 		private async void CoreApplicationLeavingBackground(object sender, Windows.ApplicationModel.LeavingBackgroundEventArgs e)
 		{
 			AddHistory("CoreApplication.LeavingBackground started");
@@ -191,18 +167,6 @@ namespace UITests.Windows_UI_Core
 			AddHistory("CoreApplication.LeavingBackground ended");
 		}
 
-		private async void AppEnteredBackground(object sender, Windows.ApplicationModel.EnteredBackgroundEventArgs e)
-		{
-			AddHistory("Application.EnteredBackground started");
-			if (SimulateDeferrals)
-			{
-				var deferral = e.GetDeferral();
-				await Task.Delay(500);
-				deferral.Complete();
-			}
-			AddHistory("Application.EnteredBackground ended");
-		}
-
 		private async void CoreApplicationEnteredBackground(object sender, Windows.ApplicationModel.EnteredBackgroundEventArgs e)
 		{
 			AddHistory("CoreApplication.EnteredBackground started");
@@ -213,11 +177,6 @@ namespace UITests.Windows_UI_Core
 				deferral.Complete();
 			}
 			AddHistory("CoreApplication.EnteredBackground ended");
-		}
-
-		private void ApplicationResuming(object sender, object e)
-		{
-			AddHistory("Application.Resuming");
 		}
 
 		private void CoreApplicationResuming(object sender, object e)
@@ -235,18 +194,6 @@ namespace UITests.Windows_UI_Core
 				deferral.Complete();
 			}
 			AddHistory("CoreApplication.Suspending ended");
-		}
-
-		private async void ApplicationSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
-		{
-			AddHistory("Application.Suspending started");
-			if (SimulateDeferrals)
-			{
-				var deferral = e.SuspendingOperation.GetDeferral();
-				await Task.Delay(500);
-				deferral.Complete();
-			}
-			AddHistory("Application.Suspending ended");
 		}
 
 		private void AddHistory(string eventName)

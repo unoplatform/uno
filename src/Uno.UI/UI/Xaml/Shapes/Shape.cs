@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Composition;
 using System.Numerics;
 using Windows.Graphics;
@@ -116,7 +117,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeThickness
 		{
 			get => (double)this.GetValue(StrokeThicknessProperty);
-			set => this.SetValue(StrokeThicknessProperty, value);
+			set => this.SetValue(StrokeThicknessProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeThicknessProperty { get; } = DependencyProperty.Register(
@@ -124,7 +125,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: 1.0d,
+				defaultValue: DoubleBoxes.One,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeThicknessChanged()
 			) // Perf: WinUI uses AffectsMeasure, we optimize this and only invalidate measure if Stroke is not null
 		);
@@ -233,7 +234,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeMiterLimit
 		{
 			get => (double)this.GetValue(StrokeMiterLimitProperty);
-			set => this.SetValue(StrokeMiterLimitProperty, value);
+			set => this.SetValue(StrokeMiterLimitProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeMiterLimitProperty { get; } = DependencyProperty.Register(
@@ -269,7 +270,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeDashOffset
 		{
 			get => (double)this.GetValue(StrokeDashOffsetProperty);
-			set => this.SetValue(StrokeDashOffsetProperty, value);
+			set => this.SetValue(StrokeDashOffsetProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeDashOffsetProperty { get; } = DependencyProperty.Register(
@@ -277,7 +278,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsArrange
 			)
 		);
@@ -298,7 +299,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private protected CompositionSpriteShape SpriteShape => _shape;
 
-		public Shape()
+		protected Shape()
 		{
 			var visual = Visual;
 			var compositor = visual.Compositor;
@@ -370,10 +371,13 @@ namespace Microsoft.UI.Xaml.Shapes
 				return;
 			}
 
+			// XAML dashes are multiples of StrokeThickness; Composition takes absolute lengths. WinUI scales by the
+			// declared thickness, not the layout-rounded one the stroke is drawn with.
+			var thickness = StrokeThickness;
 			var compositionStrokeDashArray = new CompositionStrokeDashArray(_shape.Compositor);
 			for (int i = 0; i < strokeDashArray.Count; i++)
 			{
-				compositionStrokeDashArray.Add((float)strokeDashArray[i]);
+				compositionStrokeDashArray.Add((float)(strokeDashArray[i] * thickness));
 			}
 
 			_shape.StrokeDashArray = compositionStrokeDashArray;
@@ -403,7 +407,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void UpdateStrokeDashOffset()
 		{
-			_shape.StrokeDashOffset = (float)StrokeDashOffset;
+			_shape.StrokeDashOffset = (float)(StrokeDashOffset * StrokeThickness);
 		}
 
 		/// <summary>

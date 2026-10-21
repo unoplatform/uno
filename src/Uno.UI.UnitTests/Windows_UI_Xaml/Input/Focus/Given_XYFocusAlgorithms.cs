@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_XYFocusAlgorithms
 	{
 		/*

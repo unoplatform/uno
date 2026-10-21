@@ -146,7 +146,7 @@ internal sealed class CoverageTableFontFallbackService : IFontFallbackService
 			{
 				// TODO: use weight/stretch/style to pick the best match. Eager fetch currently
 				// happens at codepoint-resolution time, before any specific style is known.
-				stream = await _fontStreamProvider(family, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal, CancellationToken.None);
+				stream = await _fontStreamProvider(family, new FontWeight(400), FontStretch.Normal, FontStyle.Normal, CancellationToken.None);
 			}
 			catch (Exception e)
 			{

@@ -11,7 +11,7 @@ using Uno.UI.Tests.Windows_UI_Xaml.EventsTests.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.EventsTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_FrameworkElement_Event
 	{
 		[TestInitialize]

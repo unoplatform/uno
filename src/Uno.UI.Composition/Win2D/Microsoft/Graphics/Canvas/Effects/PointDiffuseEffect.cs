@@ -3,6 +3,7 @@
 using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using Microsoft.UI;
 using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
 using Windows.UI;

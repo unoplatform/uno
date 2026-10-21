@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			var chooserIntent = Intent.CreateChooser(intent, title ?? string.Empty);
 			var flags = ActivityFlags.ClearTop | ActivityFlags.NewTask;
 			chooserIntent?.SetFlags(flags);
-			ContextHelper.Current.StartActivity(chooserIntent);
+			context.StartActivity(chooserIntent);
 
 			return true;
 		}

@@ -35,11 +35,15 @@ Set `Uno.UI.FeatureConfiguration.Rendering.SkipVisualTreePainting` to `true` to 
 
 By default, `ComboBox` popup is placed in such a way that the currently selected item is centered above the `ComboBox`. If you want to adjust this behavior on non-Windows targets, set the `Uno.UI.FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement` property.
 
+## Input validation
+
+Set `Uno.UI.FeatureConfiguration.InputValidation.IsEnabled` to `true` at startup, before any page is created, to surface the `INotifyDataErrorInfo` errors of a binding source on the bound control. Default: `false`. The `Uno.UI.FeatureConfiguration.InputValidation.ValidationProperties` map selects which property of a control type is validated. See [Input validation](xref:Uno.Features.InputValidation).
+
 ## Popups
 
 ### Constraining by visible bounds
 
-By default we don't constrain popups by the visible bounds of the application view on Skia renderer targets. This is different from native renderer where popups are automatically padded by the visible bounds, which ensures the popup does not flow below the system UI (e.g. mobile device status bar or navigation bar). The `ConstrainByVisibleBounds` property allows you to control this behavior. Please note that in case the property is set to `false` (which is the default for Skia renderer), you are responsible for ensuring the content of your popups has appropriate padding around its content. This can be achieved using the [`SafeArea` control in Uno Toolkit](xref:Toolkit.Controls.SafeArea).
+By default we don't constrain popups by the visible bounds of the application view, so a popup can flow below the system UI (e.g. mobile device status bar or navigation bar). The `ConstrainByVisibleBounds` property allows you to control this behavior. Please note that in case the property is set to `false` (which is the default), you are responsible for ensuring the content of your popups has appropriate padding around its content. This can be achieved using the [`SafeArea` control in Uno Toolkit](xref:Toolkit.Controls.SafeArea).
 
 ### Prevent light dismiss on window deactivation
 

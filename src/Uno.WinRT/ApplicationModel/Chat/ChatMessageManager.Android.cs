@@ -11,7 +11,7 @@ using Windows.Foundation;
 
 namespace Windows.ApplicationModel.Chat
 {
-	public partial class ChatMessageManager
+	public static partial class ChatMessageManager
 	{
 		private const string SmsProtocol = "smsto:";
 		private const string SmsBodyExtra = "sms_body";

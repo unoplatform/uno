@@ -12,6 +12,7 @@ using Uno.UITest;
 using static System.Math;
 
 #if IS_RUNTIME_UI_TESTS
+using Microsoft.UI;
 using Windows.UI;
 
 using Rectangle = System.Drawing.Rectangle;

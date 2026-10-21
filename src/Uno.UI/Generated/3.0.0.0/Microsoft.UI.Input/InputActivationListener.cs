@@ -3,33 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class InputActivationListener : global::Microsoft.UI.Input.InputObject
 	{
-#if __SKIA__
-		internal InputActivationListener()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Input.InputActivationState State
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputActivationListener", "State");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Input.InputActivationListener GetForWindowId(global::Microsoft.UI.WindowId windowId)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputActivationListener", "GetForWindowId(WindowId windowId)");
-		}
-#endif
+		// Skipping already declared property State
+		// Skipping already declared method Microsoft.UI.Input.InputActivationListener.GetForWindowId(Microsoft.UI.WindowId)
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Input.InputActivationListener GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
@@ -40,21 +20,6 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.InputActivationChanged.add
 		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.InputActivationChanged.remove
 		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.State.get
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputActivationListener, global::Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs> InputActivationChanged
-		{
-			[global::Uno.NotImplemented("__SKIA__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputActivationListener", "event InputActivationChanged");
-			}
-			[global::Uno.NotImplemented("__SKIA__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputActivationListener", "event InputActivationChanged");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Input.InputActivationListener.InputActivationChanged
 	}
 }

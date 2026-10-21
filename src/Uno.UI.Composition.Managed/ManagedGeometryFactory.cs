@@ -8,7 +8,7 @@ namespace Uno.UI.Composition.Drawing;
 /// <c>.GeometryFactory</c>) for a Skia-less setup: any render backend consumes the neutral <see cref="IGeometry"/>
 /// it produces (the Skia backend converts it to an <c>SKPath</c>; WebGPU flattens it).
 /// </summary>
-public sealed class ManagedGeometryFactory : IGeometryFactory
+internal sealed class ManagedGeometryFactory : IGeometryFactory
 {
 	public IPathBuilder CreatePathBuilder() => new ManagedPathBuilder();
 

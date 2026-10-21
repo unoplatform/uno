@@ -1,4 +1,9 @@
 ﻿namespace Microsoft.UI.Xaml.Documents
 {
-	public partial class HyperlinkClickEventArgs : RoutedEventArgs { }
+	public partial class HyperlinkClickEventArgs : RoutedEventArgs
+	{
+		internal HyperlinkClickEventArgs()
+		{
+		}
+	}
 }

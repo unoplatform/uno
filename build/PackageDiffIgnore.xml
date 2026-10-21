@@ -2152,6 +2152,12 @@
 		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutItemExtensions" reason="Removed MenuFlyoutItemExtensions; its IsDestructive attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutExtensions" reason="Removed MenuFlyoutExtensions; its CancelTextIosOverride attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Control" reason="Removed empty FeatureConfiguration.Control holder after deleting UseLegacyContentAlignment (BC45, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/ContentPresenter" reason="Removed empty FeatureConfiguration.ContentPresenter holder after deleting UseImplicitContentFromTemplatedParent, unread since the native renderers were removed (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/ProgressRing" reason="Removed empty FeatureConfiguration.ProgressRing holder after deleting ProgressRingAsset/DeterminateProgressRingAsset; use ProgressRing.IndeterminateSource/DeterminateSource instead (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Uno.WinRTFeatureConfiguration/Focus" reason="Removed empty WinRTFeatureConfiguration.Focus holder after deleting EnableExperimentalKeyboardFocus, unread since the native iOS renderer was removed (BC56, breaking changes for 7.0)" />
+		  <!-- PrettyPrint/ViewExtensions were accidentally public in the WinAppSDK Uno.UI.Extras.dll (the WINAPPSDK||WINDOWS_UWP guard was always false there); made internal to match the intended Skia-only public surface. Still public in the Skia Uno.UI.dll build, so these entries are dark for every other diffed package. -->
+		  <Member fullName="Uno.UI.Extensions.PrettyPrint" reason="Made internal on WinAppSDK; still public in the Skia Uno.UI.dll build (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Extensions.ViewExtensions" reason="Made internal on WinAppSDK; still public in the Skia Uno.UI.dll build (breaking changes for 7.0)" />
 		  <!-- Window's event handler delegates do not exist in WinUI; the events now use TypedEventHandler (#2089). -->
 		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
@@ -2326,6 +2332,10 @@
 		  <Member fullName="Uno.Foundation.Interop.JSObjectHandle" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 		  <Member fullName="Uno.Foundation.Interop.JSObject" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 
+		  <!-- Marker for the TypeScript bindings generator, whose only input was set by the native WebAssembly DOM heads removed in 7.0. -->
+		  <Member fullName="Uno.Foundation.Interop.TSInteropMessageAttribute" reason="Removed with the TSBindings generator; nothing sets its input since the WASM DOM heads were removed (breaking changes for 7.0)" />
+		  <Member fullName="Uno.Foundation.Interop.CodeGeneration" reason="Removed with TSInteropMessageAttribute, its only user (breaking changes for 7.0)" />
+
 		  <!-- Uno-only duplicate of System.Numerics.VectorExtensions; removed in favor of the WinAppSDK-ref counterpart. -->
 		  <Member fullName="Uno.Extensions.Vector2Extensions" reason="Removed redundant Uno.Extensions.Vector2Extensions (BC72, breaking changes for 7.0)" />
 
@@ -2363,6 +2373,9 @@
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceManager" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceMap" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Colors" reason="Relocated Microsoft.UI.Colors from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.ColorHelper" reason="Relocated Microsoft.UI.ColorHelper from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (breaking changes for 7.0)" />
+		  <Member fullName="Windows.UI.ColorHelper" reason="Removed Windows.UI.ColorHelper from Uno.WinRT; it is UWP XAML-only (Microsoft.Windows.UI.Xaml projection) and not part of the WinAppSDK contract (breaking changes for 7.0)" />
 
 		  <!-- Uno-only menu-plumbing interfaces reduced to internal; WinUI has no public counterparts. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Reduced Uno-only IMenu to internal (breaking changes for 7.0, uno#8339)" />
@@ -2408,6 +2421,14 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/Frame" reason="Removed empty FeatureConfiguration.Frame holder after deleting UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Page" reason="Removed empty FeatureConfiguration.Page holder after deleting IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.PagePool" reason="Removed the Page instance pool; only the legacy Frame navigation mode used it (breaking changes for 7.0, uno#8339)" />
+		  <!-- Uno-only interface moved out of the WinUI namespace; WinUI has no counterpart. -->
+		  <Member fullName="Microsoft.Web.WebView2.Core.INativeWebViewProvider" reason="Moved Uno-only INativeWebViewProvider to Uno.Web.WebView2.Core (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.ILayoutConstraints" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Skia-Android de-singletoning: this Java listener is constructed by the host with its owning activity and was never usable by app code, which had no way to supply one. -->
+		  <Member fullName="Uno.UI.OnSystemUiVisibilityChangeListener" reason="OnSystemUiVisibilityChangeListener reduced to internal; it is bound to the activity that owns the window (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.ViewManagement.IBaseActivityEvents" reason="Removed IBaseActivityEvents: no Skia activity implements it, so ApplicationViewHelper.GetBaseActivityEvents() always returned null (breaking changes for 7.0)" />
+		  <Member fullName="Uno\.UI\.ViewManagement\.Activity[A-Za-z]+Handler" reason="Removed the Activity*Handler delegates; their only consumer was the removed IBaseActivityEvents (breaking changes for 7.0)" isRegex="true" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -2507,6 +2528,35 @@
 		  <Member fullName="System.Double Microsoft.UI.Xaml.CornerRadius::BottomLeft" reason="CornerRadius.BottomLeft is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Double Microsoft.UI.Xaml.GridLength::Value" reason="GridLength.Value is a get-only property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.GridUnitType Microsoft.UI.Xaml.GridLength::GridUnitType" reason="GridLength.GridUnitType is a get-only property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <!-- Matrix/Matrix3D/KeyTime/RepeatBehavior/GeneratorPosition fields are properties in WinUI too (uno-private#2083). -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::M11" reason="Matrix.M11 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::M12" reason="Matrix.M12 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::M21" reason="Matrix.M21 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::M22" reason="Matrix.M22 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::OffsetX" reason="Matrix.OffsetX is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::OffsetY" reason="Matrix.OffsetY is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M11" reason="Matrix3D.M11 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M12" reason="Matrix3D.M12 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M13" reason="Matrix3D.M13 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M14" reason="Matrix3D.M14 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M21" reason="Matrix3D.M21 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M22" reason="Matrix3D.M22 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M23" reason="Matrix3D.M23 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M24" reason="Matrix3D.M24 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M31" reason="Matrix3D.M31 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M32" reason="Matrix3D.M32 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M33" reason="Matrix3D.M33 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M34" reason="Matrix3D.M34 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::OffsetX" reason="Matrix3D.OffsetX is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::OffsetY" reason="Matrix3D.OffsetY is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::OffsetZ" reason="Matrix3D.OffsetZ is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M44" reason="Matrix3D.M44 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Media.Animation.KeyTime::TimeSpan" reason="KeyTime.TimeSpan is a get-only property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Animation.RepeatBehavior::Count" reason="RepeatBehavior.Count is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Media.Animation.RepeatBehavior::Duration" reason="RepeatBehavior.Duration is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.RepeatBehaviorType Microsoft.UI.Xaml.Media.Animation.RepeatBehavior::Type" reason="RepeatBehavior.Type is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition::Index" reason="GeneratorPosition.Index is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition::Offset" reason="GeneratorPosition.Offset is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 		  <!-- Uno.UI.Composition compiles the same Thickness/CornerRadius sources under its own namespace. -->
 		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Left" reason="Thickness.Left is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Top" reason="Thickness.Top is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
@@ -2550,6 +2600,13 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/VisualState::ApplySettersBeforeTransition()" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag; setters always applied at the WinUI-correct time (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseLegacyLazyApplyTemplate()" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag; templates always materialize eagerly (WinUI-aligned) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseLegacyContentAlignment()" reason="Removed Control.UseLegacyContentAlignment legacy flag; content alignment always defaults to the WinUI-correct Center/Center (BC45, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ContentPresenter::UseImplicitContentFromTemplatedParent()" reason="Removed ContentPresenter.UseImplicitContentFromTemplatedParent flag; unread since the native renderers were removed (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Uri Uno.UI.FeatureConfiguration/ProgressRing::ProgressRingAsset()" reason="Removed ProgressRing.ProgressRingAsset flag; use ProgressRing.IndeterminateSource instead (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Uri Uno.UI.FeatureConfiguration/ProgressRing::DeterminateProgressRingAsset()" reason="Removed ProgressRing.DeterminateProgressRingAsset flag; use ProgressRing.DeterminateSource instead (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/Focus::EnableExperimentalKeyboardFocus()" reason="Removed Focus.EnableExperimentalKeyboardFocus flag; keyboard focus is always enabled (BC56, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/GestureRecognizer::InterpretMouseLeftLongPressAsRightTap()" reason="Removed GestureRecognizer.InterpretMouseLeftLongPressAsRightTap flag; unread since the native Android renderer was removed (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/GestureRecognizer::InterpretForceTouchAsRightTap()" reason="Removed GestureRecognizer.InterpretForceTouchAsRightTap flag; unread since the native iOS/tvOS renderer was removed (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed PagePool.IsPoolingEnabled; it duplicated FeatureConfiguration.Page.IsPoolingEnabled, the flag Uno actually reads (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/DataTemplateSelector::UseLegacyTemplateSelectorOverload()" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag; the two-arg SelectTemplate fallback always runs (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs::IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag; manipulation Position is always container-relative (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::DisablePointersSpecificEventPrevention()" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag; specific-event prevention always used (#2053, breaking changes for 7.0)" />
@@ -2826,9 +2883,19 @@
 
 		  <!-- Legacy Frame navigation mode flags (accessors paired in <Methods> below). -->
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Frame::UseWinUIBehavior()" reason="Removed Frame.UseWinUIBehavior; Frame always follows WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.ApplicationRequiresPointerMode Microsoft.UI.Xaml.Application::RequiresPointerMode()" reason="Made internal; not part of the public WinAppSDK Application surface (accessors paired in &lt;Methods&gt;; breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <!-- ListViewBase.ItemClickCommand and its deprecated Command alias removed (accessors paired in &lt;Methods&gt;). -->
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase::ItemClickCommand()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase::Command()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI (accessors paired in <Methods> below). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement::Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.FrameworkElement::UseConstraintOptimizations()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Nullable`1&lt;System.Boolean&gt; Microsoft.UI.Xaml.FrameworkElement::AreDimensionsConstrained()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.(Border|ContentPresenter|Control|ItemsPresenter))::IsSimpleLayout\(\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -2891,6 +2958,23 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseLegacyLazyApplyTemplate(System.Boolean value)" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control.get_UseLegacyContentAlignment()" reason="Removed Control.UseLegacyContentAlignment legacy flag (BC45, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseLegacyContentAlignment(System.Boolean value)" reason="Removed Control.UseLegacyContentAlignment legacy flag (BC45, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ContentPresenter.get_UseImplicitContentFromTemplatedParent()" reason="Removed ContentPresenter.UseImplicitContentFromTemplatedParent flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/ContentPresenter.set_UseImplicitContentFromTemplatedParent(System.Boolean value)" reason="Removed ContentPresenter.UseImplicitContentFromTemplatedParent flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Uri Uno.UI.FeatureConfiguration/ProgressRing.get_ProgressRingAsset()" reason="Removed ProgressRing.ProgressRingAsset flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/ProgressRing.set_ProgressRingAsset(System.Uri value)" reason="Removed ProgressRing.ProgressRingAsset flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Uri Uno.UI.FeatureConfiguration/ProgressRing.get_DeterminateProgressRingAsset()" reason="Removed ProgressRing.DeterminateProgressRingAsset flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/ProgressRing.set_DeterminateProgressRingAsset(System.Uri value)" reason="Removed ProgressRing.DeterminateProgressRingAsset flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/Focus.get_EnableExperimentalKeyboardFocus()" reason="Removed Focus.EnableExperimentalKeyboardFocus flag (BC56, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.WinRTFeatureConfiguration/Focus.set_EnableExperimentalKeyboardFocus(System.Boolean value)" reason="Removed Focus.EnableExperimentalKeyboardFocus flag (BC56, breaking changes for 7.0)" />
+		  <!-- PrettyPrint/ViewExtensions methods made internal on WinAppSDK (type-level entries above); regex covers every overload without enumerating each signature. -->
+		  <Member fullName="Uno\.UI\.Extensions\.PrettyPrint\.\w+\(" reason="Made internal on WinAppSDK; still public in the Skia Uno.UI.dll build (breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName="Uno\.UI\.Extensions\.ViewExtensions\.(TreeGraph|FindFirstAncestor|FindFirstAncestorOrThrow|FindFirstDescendant|FindFirstDescendantOrThrow|EnumerateDescendants|AsNativeView)" reason="Made internal on WinAppSDK; still public in the Skia Uno.UI.dll build (breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/GestureRecognizer.get_InterpretMouseLeftLongPressAsRightTap()" reason="Removed GestureRecognizer.InterpretMouseLeftLongPressAsRightTap flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.WinRTFeatureConfiguration/GestureRecognizer.set_InterpretMouseLeftLongPressAsRightTap(System.Boolean value)" reason="Removed GestureRecognizer.InterpretMouseLeftLongPressAsRightTap flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/GestureRecognizer.get_InterpretForceTouchAsRightTap()" reason="Removed GestureRecognizer.InterpretForceTouchAsRightTap flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.WinRTFeatureConfiguration/GestureRecognizer.set_InterpretForceTouchAsRightTap(System.Boolean value)" reason="Removed GestureRecognizer.InterpretForceTouchAsRightTap flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool.get_IsPoolingEnabled()" reason="Removed PagePool.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PagePool.set_IsPoolingEnabled(System.Boolean value)" reason="Removed PagePool.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/DataTemplateSelector.get_UseLegacyTemplateSelectorOverload()" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/DataTemplateSelector.set_UseLegacyTemplateSelectorOverload(System.Boolean value)" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs.get_IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag (#2053, breaking changes for 7.0)" />
@@ -3385,10 +3469,19 @@
 
 		  <!-- No-op AdjustArrange(Size) (always returned its input) declared on the internal IFrameworkElement; publicly surfaced only as this implicit implementation on FrameworkElement. The lone caller in the legacy Layouter path is inlined. -->
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.FrameworkElement.AdjustArrange(Windows.Foundation.Size finalSize)" reason="Removed no-op AdjustArrange (BC70, breaking changes for 7.0)" />
+		  <!-- Grid attached-property accessors take a FrameworkElement, as in WinUI (was UIElement, or the native view type on the native heads). -->
+		  <Member fullName="System\.(Int32|Void) Microsoft\.UI\.Xaml\.Controls\.Grid(::|\.)(Get|Set)(Row|Column)(Span)?\(.+ view(, System\.Int32 \w+)?\)" reason="Grid accessors narrowed to FrameworkElement for WinUI parity (breaking changes for 7.0)" isRegex="true" />
+		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI; still resolves through inheritance (properties paired in <Properties> above). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement.get_Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_Transitions(Microsoft.UI.Xaml.Media.Animation.TransitionCollection value)" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement.get_TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <!-- SetBinding moved from DependencyObject to FrameworkElement, as in WinUI. The XAML generator now emits BindingOperations.SetBinding and BindingHelper.SetBinding instead. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(Microsoft.UI.Xaml.DependencyProperty dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="SetBinding moved to FrameworkElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="Uno-only string overload replaced by BindingHelper.SetBinding (breaking changes for 7.0)" />
 
 		  <!-- DependencyObject as class (BC26): Uno-only members demoted to internal. Recorded explicitly rather than
 		       relying on the declaring-type wildcards above, so the demotion stays documented if those are tightened.
-		       The two SetBinding overloads the XAML generator emits into consuming assemblies stay public. -->
+		       -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.DependencyObject.get_IsStoreInitialized()" reason="DependencyObject as class: removed, was a constant with no consumer (BC26, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(System.Object target, System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="DependencyObject as class: demoted to internal, not emitted by the XAML generator and no consumer (BC26, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBindingValue(System.Object value, System.String propertyName)" reason="DependencyObject as class: demoted to internal, Uno-only binder plumbing (BC26, breaking changes for 7.0)" />
@@ -3540,6 +3633,33 @@
 		  <!-- Sync generator alignment: GridLength's second constructor parameter is named `type` in WinUI. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.GridLength..ctor(System.Double value, Microsoft.UI.Xaml.GridUnitType gridUnitType)" reason="GridLength constructor parameter renamed to `type` to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 
+		  <!-- Sync generator alignment: parameter names match WinUI (uno-private#2083). -->
+		  <Member fullName="Windows.Foundation.Point Microsoft.UI.Xaml.Media.PointCollection.get_Item(System.Int32 i)" reason="PointCollection indexer parameter renamed to `index` to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PointCollection.set_Item(System.Int32 i, Windows.Foundation.Point value)" reason="PointCollection indexer parameter renamed to `index` to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.String Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.ToString(System.IFormatProvider provider)" reason="RepeatBehavior.ToString parameter renamed to `formatProvider` to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.String Microsoft.UI.Xaml.Media.Media3D.Matrix3D.ToString(System.String format, System.IFormatProvider provider)" reason="Matrix3D implements IFormattable.ToString explicitly, as in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <!-- WinUI's ToggleSwitch is sealed and these hooks are plain protected; PackageDiff reports a lost `virtual` as a removal. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToggleSwitch.OnToggled()" reason="ToggleSwitch.OnToggled is no longer virtual, matching WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToggleSwitch.OnHeaderChanged(System.Object oldContent, System.Object newContent)" reason="ToggleSwitch.OnHeaderChanged is no longer virtual, matching WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToggleSwitch.OnOffContentChanged(System.Object oldContent, System.Object newContent)" reason="ToggleSwitch.OnOffContentChanged is no longer virtual, matching WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToggleSwitch.OnOnContentChanged(System.Object oldContent, System.Object newContent)" reason="ToggleSwitch.OnOnContentChanged is no longer virtual, matching WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(System.Object obj)" reason="KeyTime.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(Microsoft.UI.Xaml.Media.Animation.KeyTime other)" reason="KeyTime.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(Microsoft.UI.Xaml.Media.Animation.KeyTime first, Microsoft.UI.Xaml.Media.Animation.KeyTime second)" reason="KeyTime.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.KeyTime.op_Equality(Microsoft.UI.Xaml.Media.Animation.KeyTime t1, Microsoft.UI.Xaml.Media.Animation.KeyTime t2)" reason="KeyTime equality operator parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.KeyTime.op_Inequality(Microsoft.UI.Xaml.Media.Animation.KeyTime t1, Microsoft.UI.Xaml.Media.Animation.KeyTime t2)" reason="KeyTime inequality operator parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior other)" reason="RepeatBehavior.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior first, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior second)" reason="RepeatBehavior.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.op_Equality(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior first, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior second)" reason="RepeatBehavior equality operator parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.op_Inequality(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior first, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior second)" reason="RepeatBehavior inequality operator parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Thickness.Equals(Microsoft.UI.Xaml.Thickness other)" reason="Thickness.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.CornerRadius.Equals(Microsoft.UI.Xaml.CornerRadius other)" reason="CornerRadius.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.UI.Composition.Thickness.Equals(Uno.UI.Composition.Thickness other)" reason="Thickness.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.UI.Composition.CornerRadius.Equals(Uno.UI.Composition.CornerRadius other)" reason="CornerRadius.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.GridLength.Equals(Microsoft.UI.Xaml.GridLength other)" reason="GridLength.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.GridLength.Equals(System.Object obj)" reason="GridLength.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Duration.Equals(Microsoft.UI.Xaml.Duration first, Microsoft.UI.Xaml.Duration second)" reason="Duration.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+
 		  <!-- Sync generator alignment: DataTemplate.LoadContent returns DependencyObject in WinUI, not UIElement. -->
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent()" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent(Microsoft.UI.Xaml.DependencyObject templatedParent)" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
@@ -3564,6 +3684,44 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.OnContentChanged(System.Object oldValue, System.Object newValue)" reason="Removed Frame override that synced the legacy navigation entry; ContentControl.OnContentChanged still applies (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.GetInstance(Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.EnsurePageInitialized(Microsoft.UI.Xaml.Controls.Frame frame, Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
+		  <!-- Legacy native-view adapter removed; native views are hosted as ContentControl/ContentPresenter content. The parameter type differed per target (Android.Views.View, UIKit.UIView, UIElement). -->
+		  <Member fullName="Microsoft\.UI\.Xaml\.FrameworkElement Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)(Try)?AdaptNative\(.+\)" reason="Removed the legacy VisualTreeHelper.AdaptNative/TryAdaptNative native-view adapter; host native views as ContentControl/ContentPresenter content (BC23, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <!-- Uno-only VisualTreeHelper.GetChildren helpers reduced to internal; WinUI has no counterpart. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)GetChildren.*\(Microsoft\.UI\.Xaml\.DependencyObject view\)" reason="Reduced Uno-only VisualTreeHelper.GetChildren to internal (breaking changes for 7.0)" isRegex="true" />
+		  <!-- BC80: layout-constraint optimization removed. Only the native Android layouter consulted it; the requester parameter type differed per target (Android.Views.View, UIKit.UIView, UIElement). -->
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.FrameworkElement.get_UseConstraintOptimizations()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_UseConstraintOptimizations(System.Boolean value)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Nullable`1&lt;System.Boolean&gt; Microsoft.UI.Xaml.FrameworkElement.get_AreDimensionsConstrained()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_AreDimensionsConstrained(System.Nullable`1&lt;System.Boolean&gt; value)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.(Border|ContentPresenter|Control|ItemsPresenter))\.get_IsSimpleLayout\(\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <Member fullName="System\.Nullable`1&lt;System\.Boolean&gt; Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.StackPanel)\.Is(Width|Height)ConstrainedInner\(.+ requester\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.ILayoutConstraints\.Is(Width|Height)Constrained\(.+ requester\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
+
+		  <!-- Skia-Android multi-window readiness: the ambient activity is owned by the activity lifecycle, and the activity events accessor only ever returned null on Skia. -->
+		  <Member fullName="System.Void Uno.UI.ContextHelper.set_Current(Android.Content.Context value)" reason="ContextHelper.Current setter reduced to internal; the value is driven by the activity lifecycle (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.ViewManagement.IBaseActivityEvents Uno.UI.ViewManagement.ApplicationViewHelper.GetBaseActivityEvents()" reason="Removed ApplicationViewHelper.GetBaseActivityEvents; it always returned null on Skia (breaking changes for 7.0)" />
+		  <!-- Application.OnActivated removed: WinUI declares it only behind Feature_UwpSupportApi, and a WinAppSDK app reads its activation from Microsoft.Windows.AppLifecycle.AppInstance instead. OnLaunched keeps its signature but loses the Uno-only `internal` half of its accessibility, listed in case the diff reports that as a removal. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs args)" reason="Removed Application.OnActivated; activations are read from AppInstance to match WinAppSDK (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)" reason="Application.OnLaunched narrowed from Uno's protected internal to WinUI's protected (breaking changes for 7.0, uno#8339)" />
+
+
+		  <!-- Application.RequiresPointerMode made internal. -->
+		  <Member fullName="Microsoft.UI.Xaml.ApplicationRequiresPointerMode Microsoft.UI.Xaml.Application.get_RequiresPointerMode()" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.set_RequiresPointerMode(Microsoft.UI.Xaml.ApplicationRequiresPointerMode value)" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
+		  <!-- ListViewBase.ItemClickCommand and its deprecated Command alias removed (paired with the <Properties> entries above). -->
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase.get_ItemClickCommand()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.set_ItemClickCommand(System.Windows.Input.ICommand value)" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase.get_Command()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.set_Command(System.Windows.Input.ICommand value)" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <!-- Application.Suspending/Resuming/EnteredBackground/LeavingBackground moved to CoreApplication, which carries the same events in the public WinAppSDK surface (events listed in <Events>). -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Resuming(System.EventHandler`1&lt;System.Object&gt; value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Resuming(System.EventHandler`1&lt;System.Object&gt; value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_EnteredBackground(Microsoft.UI.Xaml.EnteredBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_EnteredBackground(Microsoft.UI.Xaml.EnteredBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_LeavingBackground(Microsoft.UI.Xaml.LeavingBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_LeavingBackground(Microsoft.UI.Xaml.LeavingBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
@@ -3572,6 +3730,12 @@
 		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler Microsoft.UI.Xaml.Window::SizeChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler Microsoft.UI.Xaml.Window::VisibilityChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; Microsoft.UI.Xaml.Controls.SwipeItems::VectorChanged" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- App lifecycle events moved to CoreApplication (accessors paired in <Methods>). -->
+		  <Member fullName="Microsoft.UI.Xaml.SuspendingEventHandler Microsoft.UI.Xaml.Application::Suspending" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.EventHandler`1&lt;System.Object&gt; Microsoft.UI.Xaml.Application::Resuming" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.EnteredBackgroundEventHandler Microsoft.UI.Xaml.Application::EnteredBackground" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.LeavingBackgroundEventHandler Microsoft.UI.Xaml.Application::LeavingBackground" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- ====================================================================== -->
 		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->
@@ -3627,8 +3791,28 @@
 		  <Member fullName="Uno.UI.FluentTheme.v1" reason="Removed the Uno.UI.FluentTheme.v1 assembly along with the Fluent V1 scaffolding (BC71, breaking changes for 7.0)" />
 		  <!-- With V1 gone the "v2" suffix had no meaning, so the assembly was merged into Uno.UI.FluentTheme (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Uno.UI.FluentTheme.v2" reason="Merged the Uno.UI.FluentTheme.v2 assembly into Uno.UI.FluentTheme; the v2 suffix was an artifact of the removed Fluent V1/V2 split (BC71, breaking changes for 7.0)" />
+		  <!-- The runtime hosts no longer depend on SkiaSharp, so "Skia" is dropped from their assembly names (breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.Runtime.Skia" reason="Assembly renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.Android" reason="Assembly renamed Uno.UI.Runtime.Skia.Android -> Uno.UI.Runtime.Android (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.AppleUIKit" reason="Assembly renamed Uno.UI.Runtime.Skia.AppleUIKit -> Uno.UI.Runtime.AppleUIKit (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.Linux.FrameBuffer" reason="Assembly renamed Uno.UI.Runtime.Skia.Linux.FrameBuffer -> Uno.UI.Runtime.Linux.FrameBuffer (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.MacOS" reason="Assembly renamed Uno.UI.Runtime.Skia.MacOS -> Uno.UI.Runtime.MacOS (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.WebAssembly.Browser" reason="Assembly renamed Uno.UI.Runtime.Skia.WebAssembly.Browser -> Uno.UI.Runtime.WebAssembly.Browser (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.Win32" reason="Assembly renamed Uno.UI.Runtime.Skia.Win32 -> Uno.UI.Runtime.Win32 (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.Win32.Support" reason="Assembly renamed Uno.UI.Runtime.Skia.Win32.Support -> Uno.UI.Runtime.Win32.Support (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.X11" reason="Assembly renamed Uno.UI.Runtime.Skia.X11 -> Uno.UI.Runtime.X11 (breaking changes for 7.0)" />
 	  </Assemblies>
 	  <Types>
+		  <!-- Uno-only Android host types moved out of the WinUI namespaces into the host namespace; WinUI has no counterpart. -->
+		  <Member fullName="Microsoft.UI.Xaml.ApplicationActivity" reason="Moved Uno-only ApplicationActivity to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.NativeApplication" reason="Moved Uno-only NativeApplication to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.NativePage" reason="Moved Uno-only NativePage to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
+		  <!-- Uno.UI types that carried the host namespace move with it (breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.Runtime.Skia.AriaMapper" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.AriaAttributes" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.PatternCapabilities" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.SemanticElementType" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.WebAssemblyAccessibility" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
 		  <!-- Uno.UI.Lottie shipped a vendored copy of the corefx System.Json parser as public types; it was replaced by the in-box System.Text.Json. -->
 		  <Member fullName="System.Json.JsonValue" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
 		  <Member fullName="System.Json.JsonObject" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
@@ -3662,6 +3846,12 @@
 		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutItemExtensions" reason="Removed MenuFlyoutItemExtensions; its IsDestructive attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutExtensions" reason="Removed MenuFlyoutExtensions; its CancelTextIosOverride attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Control" reason="Removed empty FeatureConfiguration.Control holder after deleting UseLegacyContentAlignment (BC45, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/ContentPresenter" reason="Removed empty FeatureConfiguration.ContentPresenter holder after deleting UseImplicitContentFromTemplatedParent, unread since the native renderers were removed (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/ProgressRing" reason="Removed empty FeatureConfiguration.ProgressRing holder after deleting ProgressRingAsset/DeterminateProgressRingAsset; use ProgressRing.IndeterminateSource/DeterminateSource instead (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Uno.WinRTFeatureConfiguration/Focus" reason="Removed empty WinRTFeatureConfiguration.Focus holder after deleting EnableExperimentalKeyboardFocus, unread since the native iOS renderer was removed (BC56, breaking changes for 7.0)" />
+		  <!-- PrettyPrint/ViewExtensions were accidentally public in the WinAppSDK Uno.UI.Extras.dll (the WINAPPSDK||WINDOWS_UWP guard was always false there); made internal to match the intended Skia-only public surface. Still public in the Skia Uno.UI.dll build, so these entries are dark for every other diffed package. -->
+		  <Member fullName="Uno.UI.Extensions.PrettyPrint" reason="Made internal on WinAppSDK; still public in the Skia Uno.UI.dll build (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Extensions.ViewExtensions" reason="Made internal on WinAppSDK; still public in the Skia Uno.UI.dll build (breaking changes for 7.0)" />
 		  <!-- Window's event handler delegates do not exist in WinUI; the events now use TypedEventHandler (#2089). -->
 		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
@@ -3836,6 +4026,10 @@
 		  <Member fullName="Uno.Foundation.Interop.JSObjectHandle" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 		  <Member fullName="Uno.Foundation.Interop.JSObject" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 
+		  <!-- Marker for the TypeScript bindings generator, whose only input was set by the native WebAssembly DOM heads removed in 7.0. -->
+		  <Member fullName="Uno.Foundation.Interop.TSInteropMessageAttribute" reason="Removed with the TSBindings generator; nothing sets its input since the WASM DOM heads were removed (breaking changes for 7.0)" />
+		  <Member fullName="Uno.Foundation.Interop.CodeGeneration" reason="Removed with TSInteropMessageAttribute, its only user (breaking changes for 7.0)" />
+
 		  <!-- Uno-only duplicate of System.Numerics.VectorExtensions; removed in favor of the WinAppSDK-ref counterpart. -->
 		  <Member fullName="Uno.Extensions.Vector2Extensions" reason="Removed redundant Uno.Extensions.Vector2Extensions (BC72, breaking changes for 7.0)" />
 
@@ -3873,6 +4067,41 @@
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceManager" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceMap" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Colors" reason="Relocated Microsoft.UI.Colors from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.ColorHelper" reason="Relocated Microsoft.UI.ColorHelper from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (breaking changes for 7.0)" />
+		  <Member fullName="Windows.UI.ColorHelper" reason="Removed Windows.UI.ColorHelper from Uno.WinRT; it is UWP XAML-only (Microsoft.Windows.UI.Xaml projection) and not part of the WinAppSDK contract (breaking changes for 7.0)" />
+		  <!-- WinRT.Interop window interop relocated from Uno.UI to Uno.WinRT, matching WinAppSDK (Microsoft.Windows.SDK.NET); Uno.UI now backs it through ApiExtensibility (#22927, breaking changes for 7.0). -->
+		  <Member fullName="WinRT.Interop.InitializeWithWindow" reason="Relocated WinRT.Interop.InitializeWithWindow from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#22927, breaking changes for 7.0)" />
+		  <Member fullName="WinRT.Interop.WindowNative" reason="Relocated WinRT.Interop.WindowNative from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#22927, breaking changes for 7.0)" />
+		  <!-- Microsoft.UI.Content relocated from Uno.UI to Uno.UI.Composition, next to Microsoft.UI.Composition which shares its WinAppSDK assembly (Microsoft.InteractiveExperiences.Projection) (#22927, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Content.ChildSiteLink" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentAutomationOptions" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentCoordinateConverter" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentCoordinateRoundingMode" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentDeferral" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentEnvironmentSettingChangedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentIsland" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentIslandEnvironment" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentIslandStateChangedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentLayoutDirection" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSite" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSiteEnvironment" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSiteEnvironmentView" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSiteView" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSizePolicy" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.DesktopAttachedSiteBridge" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.DesktopChildSiteBridge" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.DesktopPopupSiteBridge" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.DesktopSiteBridge" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.IContentSiteAutomation" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.IContentSiteBridge" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.IContentSiteInput" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.IContentSiteLink" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.PopupAnchor" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#22927, breaking changes for 7.0)" />
 
 		  <!-- Uno-only menu-plumbing interfaces reduced to internal; WinUI has no public counterparts. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Reduced Uno-only IMenu to internal (breaking changes for 7.0, uno#8339)" />
@@ -3918,6 +4147,18 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/Frame" reason="Removed empty FeatureConfiguration.Frame holder after deleting UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Page" reason="Removed empty FeatureConfiguration.Page holder after deleting IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.PagePool" reason="Removed the Page instance pool; only the legacy Frame navigation mode used it (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- ItemsRepeater WinUI port: layout plumbing reduced to internal. In WinUI these are plain C++ types with no .idl projection, so they were never part of the WinUI surface. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.FlowLayoutAlgorithm" reason="Reduced Uno-only public FlowLayoutAlgorithm to internal; unprojected C++ helper in WinUI (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.IFlowLayoutAlgorithmDelegates" reason="Reduced Uno-only public IFlowLayoutAlgorithmDelegates to internal; unprojected C++ interface in WinUI (ItemsRepeater WinUI port, uno#23406)" />
+
+		  <!-- Uno-only interface moved out of the WinUI namespace; WinUI has no counterpart. -->
+		  <Member fullName="Microsoft.Web.WebView2.Core.INativeWebViewProvider" reason="Moved Uno-only INativeWebViewProvider to Uno.Web.WebView2.Core (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.ILayoutConstraints" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <!-- Skia-Android de-singletoning: this Java listener is constructed by the host with its owning activity and was never usable by app code, which had no way to supply one. -->
+		  <Member fullName="Uno.UI.OnSystemUiVisibilityChangeListener" reason="OnSystemUiVisibilityChangeListener reduced to internal; it is bound to the activity that owns the window (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.ViewManagement.IBaseActivityEvents" reason="Removed IBaseActivityEvents: no Skia activity implements it, so ApplicationViewHelper.GetBaseActivityEvents() always returned null (breaking changes for 7.0)" />
+		  <Member fullName="Uno\.UI\.ViewManagement\.Activity[A-Za-z]+Handler" reason="Removed the Activity*Handler delegates; their only consumer was the removed IBaseActivityEvents (breaking changes for 7.0)" isRegex="true" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -4017,6 +4258,35 @@
 		  <Member fullName="System.Double Microsoft.UI.Xaml.CornerRadius::BottomLeft" reason="CornerRadius.BottomLeft is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Double Microsoft.UI.Xaml.GridLength::Value" reason="GridLength.Value is a get-only property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.GridUnitType Microsoft.UI.Xaml.GridLength::GridUnitType" reason="GridLength.GridUnitType is a get-only property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <!-- Matrix/Matrix3D/KeyTime/RepeatBehavior/GeneratorPosition fields are properties in WinUI too (uno-private#2083). -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::M11" reason="Matrix.M11 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::M12" reason="Matrix.M12 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::M21" reason="Matrix.M21 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::M22" reason="Matrix.M22 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::OffsetX" reason="Matrix.OffsetX is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Matrix::OffsetY" reason="Matrix.OffsetY is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M11" reason="Matrix3D.M11 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M12" reason="Matrix3D.M12 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M13" reason="Matrix3D.M13 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M14" reason="Matrix3D.M14 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M21" reason="Matrix3D.M21 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M22" reason="Matrix3D.M22 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M23" reason="Matrix3D.M23 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M24" reason="Matrix3D.M24 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M31" reason="Matrix3D.M31 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M32" reason="Matrix3D.M32 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M33" reason="Matrix3D.M33 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M34" reason="Matrix3D.M34 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::OffsetX" reason="Matrix3D.OffsetX is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::OffsetY" reason="Matrix3D.OffsetY is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::OffsetZ" reason="Matrix3D.OffsetZ is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Media3D.Matrix3D::M44" reason="Matrix3D.M44 is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Media.Animation.KeyTime::TimeSpan" reason="KeyTime.TimeSpan is a get-only property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Media.Animation.RepeatBehavior::Count" reason="RepeatBehavior.Count is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Media.Animation.RepeatBehavior::Duration" reason="RepeatBehavior.Duration is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.RepeatBehaviorType Microsoft.UI.Xaml.Media.Animation.RepeatBehavior::Type" reason="RepeatBehavior.Type is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition::Index" reason="GeneratorPosition.Index is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition::Offset" reason="GeneratorPosition.Offset is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 		  <!-- Uno.UI.Composition compiles the same Thickness/CornerRadius sources under its own namespace. -->
 		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Left" reason="Thickness.Left is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Top" reason="Thickness.Top is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
@@ -4036,8 +4306,16 @@
 		       order, and the host opts out of kinds instead (ForceRenderingBackend/DisableRenderingBackends). -->
 		  <Member fullName="Uno.UI.Hosting.Win32RenderingBackend Uno.UI.Hosting.Win32RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Hosting.X11RenderingBackend Uno.UI.Hosting.X11RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
+		  <!-- Uno-only static sentinel fields removed; use default(Thickness) / default(CornerRadius). -->
+		  <Member fullName="Microsoft.UI.Xaml.CornerRadius Microsoft.UI.Xaml.CornerRadius::None" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Composition.CornerRadius Uno.UI.Composition.CornerRadius::None" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Thickness Microsoft.UI.Xaml.Thickness::Empty" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Composition.Thickness Uno.UI.Composition.Thickness::Empty" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
 	  </Fields>
 	  <Properties>
+		  <!-- Property types aligned to the WinUI metadata (#2086, breaking changes for 7.0). -->
+		  <Member fullName="System.Object Microsoft.UI.Xaml.Data.Binding::ElementName()" reason="WinUI sync: Binding.ElementName narrowed from object to string to match WinUI metadata (#2086, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.IEasingFunction Microsoft.UI.Xaml.Media.Animation.DoubleAnimation::EasingFunction()" reason="WinUI sync: DoubleAnimation.EasingFunction changed from IEasingFunction to EasingFunctionBase to match WinUI metadata (#2086, breaking changes for 7.0)" />
 		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersion()" reason="Removed the Uno-only XamlControlsResources.ControlsResourcesVersion property; version 2 was already forced unconditionally (BC71, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersionProperty()" reason="Removed the ControlsResourcesVersionProperty DP with its property (BC71, breaking changes for 7.0)" />
@@ -4060,6 +4338,13 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/VisualState::ApplySettersBeforeTransition()" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag; setters always applied at the WinUI-correct time (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseLegacyLazyApplyTemplate()" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag; templates always materialize eagerly (WinUI-aligned) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseLegacyContentAlignment()" reason="Removed Control.UseLegacyContentAlignment legacy flag; content alignment always defaults to the WinUI-correct Center/Center (BC45, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ContentPresenter::UseImplicitContentFromTemplatedParent()" reason="Removed ContentPresenter.UseImplicitContentFromTemplatedParent flag; unread since the native renderers were removed (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Uri Uno.UI.FeatureConfiguration/ProgressRing::ProgressRingAsset()" reason="Removed ProgressRing.ProgressRingAsset flag; use ProgressRing.IndeterminateSource instead (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Uri Uno.UI.FeatureConfiguration/ProgressRing::DeterminateProgressRingAsset()" reason="Removed ProgressRing.DeterminateProgressRingAsset flag; use ProgressRing.DeterminateSource instead (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/Focus::EnableExperimentalKeyboardFocus()" reason="Removed Focus.EnableExperimentalKeyboardFocus flag; keyboard focus is always enabled (BC56, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/GestureRecognizer::InterpretMouseLeftLongPressAsRightTap()" reason="Removed GestureRecognizer.InterpretMouseLeftLongPressAsRightTap flag; unread since the native Android renderer was removed (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/GestureRecognizer::InterpretForceTouchAsRightTap()" reason="Removed GestureRecognizer.InterpretForceTouchAsRightTap flag; unread since the native iOS/tvOS renderer was removed (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed PagePool.IsPoolingEnabled; it duplicated FeatureConfiguration.Page.IsPoolingEnabled, the flag Uno actually reads (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/DataTemplateSelector::UseLegacyTemplateSelectorOverload()" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag; the two-arg SelectTemplate fallback always runs (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs::IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag; manipulation Position is always container-relative (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::DisablePointersSpecificEventPrevention()" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag; specific-event prevention always used (#2053, breaking changes for 7.0)" />
@@ -4336,9 +4621,27 @@
 
 		  <!-- Legacy Frame navigation mode flags (accessors paired in <Methods> below). -->
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Frame::UseWinUIBehavior()" reason="Removed Frame.UseWinUIBehavior; Frame always follows WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.ApplicationRequiresPointerMode Microsoft.UI.Xaml.Application::RequiresPointerMode()" reason="Made internal; not part of the public WinAppSDK Application surface (accessors paired in &lt;Methods&gt;; breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <!-- ListViewBase.ItemClickCommand and its deprecated Command alias removed (accessors paired in &lt;Methods&gt;). -->
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase::ItemClickCommand()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase::Command()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- ItemsRepeater WinUI port: FlowLayout now exposes exactly the FlowLayout.idl DP set (LineAlignment/LineSpacing/MinItemSpacing/Orientation); the Uno-only MinColumnSpacing/MinRowSpacing pair had no WinUI counterpart. Accessors paired in <Methods> below. -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout::MinColumnSpacing()" reason="Removed Uno-only FlowLayout.MinColumnSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout::MinColumnSpacingProperty()" reason="Removed Uno-only FlowLayout.MinColumnSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout::MinRowSpacing()" reason="Removed Uno-only FlowLayout.MinRowSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout::MinRowSpacingProperty()" reason="Removed Uno-only FlowLayout.MinRowSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+
+		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI (accessors paired in <Methods> below). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement::Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Composition.CompositionLight Microsoft.UI.Xaml.Media.XamlLight::CompositionLight()" reason="XamlLight.CompositionLight is protected, as in WinUI; accessors paired in &lt;Methods&gt; (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.FrameworkElement::UseConstraintOptimizations()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Nullable`1&lt;System.Boolean&gt; Microsoft.UI.Xaml.FrameworkElement::AreDimensionsConstrained()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.(Border|ContentPresenter|Control|ItemsPresenter))::IsSimpleLayout\(\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -4401,6 +4704,23 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseLegacyLazyApplyTemplate(System.Boolean value)" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control.get_UseLegacyContentAlignment()" reason="Removed Control.UseLegacyContentAlignment legacy flag (BC45, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseLegacyContentAlignment(System.Boolean value)" reason="Removed Control.UseLegacyContentAlignment legacy flag (BC45, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ContentPresenter.get_UseImplicitContentFromTemplatedParent()" reason="Removed ContentPresenter.UseImplicitContentFromTemplatedParent flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/ContentPresenter.set_UseImplicitContentFromTemplatedParent(System.Boolean value)" reason="Removed ContentPresenter.UseImplicitContentFromTemplatedParent flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Uri Uno.UI.FeatureConfiguration/ProgressRing.get_ProgressRingAsset()" reason="Removed ProgressRing.ProgressRingAsset flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/ProgressRing.set_ProgressRingAsset(System.Uri value)" reason="Removed ProgressRing.ProgressRingAsset flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Uri Uno.UI.FeatureConfiguration/ProgressRing.get_DeterminateProgressRingAsset()" reason="Removed ProgressRing.DeterminateProgressRingAsset flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/ProgressRing.set_DeterminateProgressRingAsset(System.Uri value)" reason="Removed ProgressRing.DeterminateProgressRingAsset flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/Focus.get_EnableExperimentalKeyboardFocus()" reason="Removed Focus.EnableExperimentalKeyboardFocus flag (BC56, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.WinRTFeatureConfiguration/Focus.set_EnableExperimentalKeyboardFocus(System.Boolean value)" reason="Removed Focus.EnableExperimentalKeyboardFocus flag (BC56, breaking changes for 7.0)" />
+		  <!-- PrettyPrint/ViewExtensions methods made internal on WinAppSDK (type-level entries above); regex covers every overload without enumerating each signature. -->
+		  <Member fullName="Uno\.UI\.Extensions\.PrettyPrint\.\w+\(" reason="Made internal on WinAppSDK; still public in the Skia Uno.UI.dll build (breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName="Uno\.UI\.Extensions\.ViewExtensions\.(TreeGraph|FindFirstAncestor|FindFirstAncestorOrThrow|FindFirstDescendant|FindFirstDescendantOrThrow|EnumerateDescendants|AsNativeView)" reason="Made internal on WinAppSDK; still public in the Skia Uno.UI.dll build (breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/GestureRecognizer.get_InterpretMouseLeftLongPressAsRightTap()" reason="Removed GestureRecognizer.InterpretMouseLeftLongPressAsRightTap flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.WinRTFeatureConfiguration/GestureRecognizer.set_InterpretMouseLeftLongPressAsRightTap(System.Boolean value)" reason="Removed GestureRecognizer.InterpretMouseLeftLongPressAsRightTap flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/GestureRecognizer.get_InterpretForceTouchAsRightTap()" reason="Removed GestureRecognizer.InterpretForceTouchAsRightTap flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.WinRTFeatureConfiguration/GestureRecognizer.set_InterpretForceTouchAsRightTap(System.Boolean value)" reason="Removed GestureRecognizer.InterpretForceTouchAsRightTap flag (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool.get_IsPoolingEnabled()" reason="Removed PagePool.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PagePool.set_IsPoolingEnabled(System.Boolean value)" reason="Removed PagePool.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/DataTemplateSelector.get_UseLegacyTemplateSelectorOverload()" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/DataTemplateSelector.set_UseLegacyTemplateSelectorOverload(System.Boolean value)" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs.get_IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag (#2053, breaking changes for 7.0)" />
@@ -4489,6 +4809,7 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer..ctor(Microsoft.UI.Xaml.FrameworkElement e)" reason="AP reorganization - constructor signature alignment" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer..ctor(System.Object e)" reason="AP reorganization - constructor signature alignment" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer..ctor(System.Object e)" reason="AP reorganization - constructor signature alignment" />
+		  <Member fullName="System.Collections.Generic.List`1&lt;Microsoft.UI.Xaml.Automation.Peers.AutomationPeer&gt; Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.GetChildrenCore()" reason="Align with WinUI IList`1 return type, covariant return broke WinUI-signature overrides (#24552)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ListViewBaseHeaderItemAutomationPeer..ctor(System.Object owner)" reason="AP reorganization - constructor signature alignment" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer..ctor(System.Object o)" reason="AP reorganization - constructor signature alignment" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer..ctor(System.Object item, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer parent)" reason="AP reorganization - constructor signature alignment" />
@@ -4895,10 +5216,19 @@
 
 		  <!-- No-op AdjustArrange(Size) (always returned its input) declared on the internal IFrameworkElement; publicly surfaced only as this implicit implementation on FrameworkElement. The lone caller in the legacy Layouter path is inlined. -->
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.FrameworkElement.AdjustArrange(Windows.Foundation.Size finalSize)" reason="Removed no-op AdjustArrange (BC70, breaking changes for 7.0)" />
+		  <!-- Grid attached-property accessors take a FrameworkElement, as in WinUI (was UIElement, or the native view type on the native heads). -->
+		  <Member fullName="System\.(Int32|Void) Microsoft\.UI\.Xaml\.Controls\.Grid(::|\.)(Get|Set)(Row|Column)(Span)?\(.+ view(, System\.Int32 \w+)?\)" reason="Grid accessors narrowed to FrameworkElement for WinUI parity (breaking changes for 7.0)" isRegex="true" />
+		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI; still resolves through inheritance (properties paired in <Properties> above). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement.get_Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_Transitions(Microsoft.UI.Xaml.Media.Animation.TransitionCollection value)" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement.get_TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <!-- SetBinding moved from DependencyObject to FrameworkElement, as in WinUI. The XAML generator now emits BindingOperations.SetBinding and BindingHelper.SetBinding instead. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(Microsoft.UI.Xaml.DependencyProperty dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="SetBinding moved to FrameworkElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="Uno-only string overload replaced by BindingHelper.SetBinding (breaking changes for 7.0)" />
 
 		  <!-- DependencyObject as class (BC26): Uno-only members demoted to internal. Recorded explicitly rather than
 		       relying on the declaring-type wildcards above, so the demotion stays documented if those are tightened.
-		       The two SetBinding overloads the XAML generator emits into consuming assemblies stay public. -->
+		       -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.DependencyObject.get_IsStoreInitialized()" reason="DependencyObject as class: removed, was a constant with no consumer (BC26, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(System.Object target, System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="DependencyObject as class: demoted to internal, not emitted by the XAML generator and no consumer (BC26, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBindingValue(System.Object value, System.String propertyName)" reason="DependencyObject as class: demoted to internal, Uno-only binder plumbing (BC26, breaking changes for 7.0)" />
@@ -5050,6 +5380,33 @@
 		  <!-- Sync generator alignment: GridLength's second constructor parameter is named `type` in WinUI. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.GridLength..ctor(System.Double value, Microsoft.UI.Xaml.GridUnitType gridUnitType)" reason="GridLength constructor parameter renamed to `type` to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 
+		  <!-- Sync generator alignment: parameter names match WinUI (uno-private#2083). -->
+		  <Member fullName="Windows.Foundation.Point Microsoft.UI.Xaml.Media.PointCollection.get_Item(System.Int32 i)" reason="PointCollection indexer parameter renamed to `index` to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PointCollection.set_Item(System.Int32 i, Windows.Foundation.Point value)" reason="PointCollection indexer parameter renamed to `index` to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.String Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.ToString(System.IFormatProvider provider)" reason="RepeatBehavior.ToString parameter renamed to `formatProvider` to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.String Microsoft.UI.Xaml.Media.Media3D.Matrix3D.ToString(System.String format, System.IFormatProvider provider)" reason="Matrix3D implements IFormattable.ToString explicitly, as in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <!-- WinUI's ToggleSwitch is sealed and these hooks are plain protected; PackageDiff reports a lost `virtual` as a removal. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToggleSwitch.OnToggled()" reason="ToggleSwitch.OnToggled is no longer virtual, matching WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToggleSwitch.OnHeaderChanged(System.Object oldContent, System.Object newContent)" reason="ToggleSwitch.OnHeaderChanged is no longer virtual, matching WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToggleSwitch.OnOffContentChanged(System.Object oldContent, System.Object newContent)" reason="ToggleSwitch.OnOffContentChanged is no longer virtual, matching WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToggleSwitch.OnOnContentChanged(System.Object oldContent, System.Object newContent)" reason="ToggleSwitch.OnOnContentChanged is no longer virtual, matching WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(System.Object obj)" reason="KeyTime.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(Microsoft.UI.Xaml.Media.Animation.KeyTime other)" reason="KeyTime.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(Microsoft.UI.Xaml.Media.Animation.KeyTime first, Microsoft.UI.Xaml.Media.Animation.KeyTime second)" reason="KeyTime.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.KeyTime.op_Equality(Microsoft.UI.Xaml.Media.Animation.KeyTime t1, Microsoft.UI.Xaml.Media.Animation.KeyTime t2)" reason="KeyTime equality operator parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.KeyTime.op_Inequality(Microsoft.UI.Xaml.Media.Animation.KeyTime t1, Microsoft.UI.Xaml.Media.Animation.KeyTime t2)" reason="KeyTime inequality operator parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior other)" reason="RepeatBehavior.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior first, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior second)" reason="RepeatBehavior.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.op_Equality(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior first, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior second)" reason="RepeatBehavior equality operator parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.op_Inequality(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior first, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior second)" reason="RepeatBehavior inequality operator parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Thickness.Equals(Microsoft.UI.Xaml.Thickness other)" reason="Thickness.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.CornerRadius.Equals(Microsoft.UI.Xaml.CornerRadius other)" reason="CornerRadius.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.UI.Composition.Thickness.Equals(Uno.UI.Composition.Thickness other)" reason="Thickness.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.UI.Composition.CornerRadius.Equals(Uno.UI.Composition.CornerRadius other)" reason="CornerRadius.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.GridLength.Equals(Microsoft.UI.Xaml.GridLength other)" reason="GridLength.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.GridLength.Equals(System.Object obj)" reason="GridLength.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Duration.Equals(Microsoft.UI.Xaml.Duration first, Microsoft.UI.Xaml.Duration second)" reason="Duration.Equals parameters renamed to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+
 		  <!-- Sync generator alignment: DataTemplate.LoadContent returns DependencyObject in WinUI, not UIElement. -->
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent()" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent(Microsoft.UI.Xaml.DependencyObject templatedParent)" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
@@ -5074,6 +5431,190 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.OnContentChanged(System.Object oldValue, System.Object newValue)" reason="Removed Frame override that synced the legacy navigation entry; ContentControl.OnContentChanged still applies (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.GetInstance(Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.EnsurePageInitialized(Microsoft.UI.Xaml.Controls.Frame frame, Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
+		  <!-- Binding.ElementName (object->string) and DoubleAnimation.EasingFunction (IEasingFunction->EasingFunctionBase) accessors, aligned to WinUI metadata (#2086, breaking changes for 7.0). -->
+		  <Member fullName="System.Object Microsoft.UI.Xaml.Data.Binding.get_ElementName()" reason="WinUI sync: Binding.ElementName narrowed from object to string (#2086, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.Binding.set_ElementName(System.Object value)" reason="WinUI sync: Binding.ElementName narrowed from object to string (#2086, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.IEasingFunction Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.get_EasingFunction()" reason="WinUI sync: DoubleAnimation.EasingFunction changed from IEasingFunction to EasingFunctionBase (#2086, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.set_EasingFunction(Microsoft.UI.Xaml.Media.Animation.IEasingFunction value)" reason="WinUI sync: DoubleAnimation.EasingFunction changed from IEasingFunction to EasingFunctionBase (#2086, breaking changes for 7.0)" />
+
+		  <!-- ItemsRepeater WinUI port: FlowLayout MinColumnSpacing/MinRowSpacing accessors, paired with the <Properties> entries above. -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout.get_MinColumnSpacing()" reason="Removed Uno-only FlowLayout.MinColumnSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.FlowLayout.set_MinColumnSpacing(System.Double value)" reason="Removed Uno-only FlowLayout.MinColumnSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout.get_MinColumnSpacingProperty()" reason="Removed Uno-only FlowLayout.MinColumnSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout.get_MinRowSpacing()" reason="Removed Uno-only FlowLayout.MinRowSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.FlowLayout.set_MinRowSpacing(System.Double value)" reason="Removed Uno-only FlowLayout.MinRowSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout.get_MinRowSpacingProperty()" reason="Removed Uno-only FlowLayout.MinRowSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+
+		  <!-- ItemsRepeater WinUI port: element get/clear helpers reduced to internal (they back the layout context and are not on ItemsRepeater.idl), and StackLayout's last implicitly-implemented IFlowLayoutAlgorithmDelegates member became explicit like its siblings. -->
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ItemsRepeater.GetElementImpl(System.Int32 index, System.Boolean forceCreate, System.Boolean suppressAutoRecycle)" reason="Reduced Uno-only public ItemsRepeater.GetElementImpl to internal; not on ItemsRepeater.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsRepeater.ClearElementImpl(Microsoft.UI.Xaml.UIElement element)" reason="Reduced Uno-only public ItemsRepeater.ClearElementImpl to internal; not on ItemsRepeater.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.StackLayout.Algorithm_OnLineArranged(System.Int32 startIndex, System.Int32 countInLine, System.Double lineSize, Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext context)" reason="Made StackLayout.Algorithm_OnLineArranged an explicit IFlowLayoutAlgorithmDelegates implementation, matching its siblings (ItemsRepeater WinUI port, uno#23406)" />
+
+		  <!-- WinUI accessibility and get-only property parity: setters of properties WinUI exposes as get-only, and members WinUI declares protected (breaking changes for 7.0). -->
+		  <Member fullName="System.Void Microsoft.UI.Composition.Visual.set_Parent(Microsoft.UI.Composition.ContainerVisual value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void modreq(System.Runtime.CompilerServices.IsExternalInit) Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.set_ModifiedRestingPosition(System.Nullable`1&lt;System.Numerics.Vector3&gt; value)" reason="Init accessor is internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void modreq(System.Runtime.CompilerServices.IsExternalInit) Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.set_ModifiedRestingScale(System.Nullable`1&lt;System.Single&gt; value)" reason="Init accessor is internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void modreq(System.Runtime.CompilerServices.IsExternalInit) Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.set_NaturalRestingPosition(System.Numerics.Vector3 value)" reason="Init accessor is internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void modreq(System.Runtime.CompilerServices.IsExternalInit) Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.set_NaturalRestingScale(System.Single value)" reason="Init accessor is internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void modreq(System.Runtime.CompilerServices.IsExternalInit) Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.set_PositionVelocityInPixelsPerSecond(System.Numerics.Vector3 value)" reason="Init accessor is internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void modreq(System.Runtime.CompilerServices.IsExternalInit) Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.set_RequestId(System.Int32 value)" reason="Init accessor is internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void modreq(System.Runtime.CompilerServices.IsExternalInit) Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.set_ScaleVelocityInPercentPerSecond(System.Single value)" reason="Init accessor is internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void modreq(System.Runtime.CompilerServices.IsExternalInit) Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.set_IsInertiaFromImpulse(System.Boolean value)" reason="Init accessor is internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void modreq(System.Runtime.CompilerServices.IsExternalInit) Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.set_IsFromBinding(System.Boolean value)" reason="Init accessor is internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void modreq(System.Runtime.CompilerServices.IsExternalInit) Microsoft.UI.Input.FocusNavigationRequest.set_CorrelationId(System.Guid value)" reason="Init accessor is internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void modreq(System.Runtime.CompilerServices.IsExternalInit) Microsoft.UI.Input.FocusNavigationRequest.set_HintRect(System.Nullable`1&lt;Windows.Foundation.Rect&gt; value)" reason="Init accessor is internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_FocusState(Microsoft.UI.Xaml.FocusState value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElementWeakCollection.set_Count(System.Int32 value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElementWeakCollection.set_IsReadOnly(System.Boolean value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualState.set_Name(System.String value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualStateGroup.set_Name(System.String value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.set_DeclaringType(System.Type value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.set_Name(System.String value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.set_Type(System.Type value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.Hyperlink.set_FocusState(Microsoft.UI.Xaml.FocusState value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.TextElement.set_Name(System.String value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AutomationPeer..ctor()" reason="AutomationPeer constructor is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.set_KeyFrames(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AppBar.set_TemplateSettings(Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.CommandBar.set_CommandBarTemplateSettings(Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control.GetTemplateChild(System.String childName)" reason="Control.GetTemplateChild is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemClickEventArgs.set_ClickedItem(System.Object value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsControl.set_ItemsPanelRoot(Microsoft.UI.Xaml.Controls.Panel value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MediaPlayerElement.set_MediaPlayer(Windows.Media.Playback.MediaPlayer value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_TemplateSettings(Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.set_PipsPagerItems(System.Collections.Generic.IList`1&lt;System.Int32&gt; value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBar.set_TemplateSettings(Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_ContainerAnimationStartPosition(System.Double value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_ContainerAnimationEndPosition(System.Double value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_Container2AnimationStartPosition(System.Double value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_Container2AnimationEndPosition(System.Double value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_EllipseAnimationEndPosition(System.Double value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_EllipseAnimationWellPosition(System.Double value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_EllipseDiameter(System.Double value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_EllipseOffset(System.Double value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_ContainerAnimationMidPosition(System.Double value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_IndicatorLengthDelta(System.Double value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_ClipRect(Microsoft.UI.Xaml.Media.RectangleGeometry value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.RadioButtons.set_Items(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ScrollView.set_ComputedHorizontalScrollBarVisibility(Microsoft.UI.Xaml.Visibility value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ScrollView.set_ComputedHorizontalScrollMode(Microsoft.UI.Xaml.Controls.ScrollingScrollMode value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ScrollView.set_ComputedVerticalScrollBarVisibility(Microsoft.UI.Xaml.Visibility value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ScrollView.set_ComputedVerticalScrollMode(Microsoft.UI.Xaml.Controls.ScrollingScrollMode value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeViewItem.set_TreeViewItemTemplateSettings(Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.set_IsPointerOver(System.Boolean value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.set_FlyoutTemplateSettings(Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarTemplateSettings value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Popup.set_ActualPlacement(Microsoft.UI.Xaml.Controls.Primitives.PopupPlacementMode value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.set_ComputedHorizontalScrollMode(Microsoft.UI.Xaml.Controls.ScrollingScrollMode value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.set_ComputedVerticalScrollMode(Microsoft.UI.Xaml.Controls.ScrollingScrollMode value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Thumb.set_IsDragging(System.Boolean value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <!-- Legacy native-view adapter removed; native views are hosted as ContentControl/ContentPresenter content. The parameter type differed per target (Android.Views.View, UIKit.UIView, UIElement). -->
+		  <Member fullName="Microsoft\.UI\.Xaml\.FrameworkElement Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)(Try)?AdaptNative\(.+\)" reason="Removed the legacy VisualTreeHelper.AdaptNative/TryAdaptNative native-view adapter; host native views as ContentControl/ContentPresenter content (BC23, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <!-- Uno-only VisualTreeHelper.GetChildren helpers reduced to internal; WinUI has no counterpart. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)GetChildren.*\(Microsoft\.UI\.Xaml\.DependencyObject view\)" reason="Reduced Uno-only VisualTreeHelper.GetChildren to internal (breaking changes for 7.0)" isRegex="true" />
+		  <!-- Uno-only implicit conversion operators removed; use the explicit constructors (WinUI parity). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Brush Microsoft.UI.Xaml.Media.Brush.op_Implicit(Windows.UI.Color uiColor)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Brush Microsoft.UI.Xaml.Media.Brush.op_Implicit(System.String colorCode)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.GridLength Microsoft.UI.Xaml.GridLength.op_Implicit(System.String value)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.GridLength Microsoft.UI.Xaml.GridLength.op_Implicit(System.Double value)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.IconElement Microsoft.UI.Xaml.Controls.IconElement.op_Implicit(System.String symbol)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.CornerRadius Microsoft.UI.Xaml.CornerRadius.op_Implicit(System.Double uniformRadius)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Composition.CornerRadius Uno.UI.Composition.CornerRadius.op_Implicit(System.Double uniformRadius)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.Binding Microsoft.UI.Xaml.Data.Binding.op_Implicit(System.String path)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.BindingBase Microsoft.UI.Xaml.Data.BindingBase.op_Implicit(System.String path)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.String Microsoft.UI.Xaml.PropertyPath.op_Implicit(Microsoft.UI.Xaml.PropertyPath path)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.RowDefinition Microsoft.UI.Xaml.Controls.RowDefinition.op_Implicit(System.String value)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ColumnDefinition Microsoft.UI.Xaml.Controls.ColumnDefinition.op_Implicit(System.String value)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <!-- WinUI constructor and property accessibility parity, found once the sync generator stopped matching constructors against base types (breaking changes for 7.0). -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control..ctor()" reason="Constructor is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Panel..ctor()" reason="Constructor is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ButtonBase..ctor()" reason="Constructor is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.PickerFlyoutBase..ctor()" reason="Constructor is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.SelectorItem..ctor()" reason="Constructor is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Input.InputKeyboardSource..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Input.InputLightDismissEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Input.InputPointerSource..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Text.FontWeights..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.ApplicationInitializationCallbackParams..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.AutomationProperties..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.AutomationProperty..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.SelectionItemPatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.BindingFailedEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ColorChangedEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentDialogOpenedEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemCollection..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarButtonTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToolTipService..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.BindingOperations..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DebugSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.BlockCollection..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.ElementSoundPlayer..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Hosting.ElementCompositionPreview..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Markup.XamlBindingHelper..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Markup.XamlReader..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.VisualTreeHelper..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.RectHelper..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerCollection..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Composition.CompositionLight Microsoft.UI.Xaml.Media.XamlLight.get_CompositionLight()" reason="XamlLight.CompositionLight is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.XamlLight.set_CompositionLight(Microsoft.UI.Composition.CompositionLight value)" reason="XamlLight.CompositionLight is protected, as in WinUI (breaking changes for 7.0)" />
+		  <!-- BC80: layout-constraint optimization removed. Only the native Android layouter consulted it; the requester parameter type differed per target (Android.Views.View, UIKit.UIView, UIElement). -->
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.FrameworkElement.get_UseConstraintOptimizations()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_UseConstraintOptimizations(System.Boolean value)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Nullable`1&lt;System.Boolean&gt; Microsoft.UI.Xaml.FrameworkElement.get_AreDimensionsConstrained()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_AreDimensionsConstrained(System.Nullable`1&lt;System.Boolean&gt; value)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.(Border|ContentPresenter|Control|ItemsPresenter))\.get_IsSimpleLayout\(\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <Member fullName="System\.Nullable`1&lt;System\.Boolean&gt; Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.StackPanel)\.Is(Width|Height)ConstrainedInner\(.+ requester\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.ILayoutConstraints\.Is(Width|Height)Constrained\(.+ requester\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
+
+		  <!-- Skia-Android multi-window readiness: the ambient activity is owned by the activity lifecycle, and the activity events accessor only ever returned null on Skia. -->
+		  <Member fullName="System.Void Uno.UI.ContextHelper.set_Current(Android.Content.Context value)" reason="ContextHelper.Current setter reduced to internal; the value is driven by the activity lifecycle (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.ViewManagement.IBaseActivityEvents Uno.UI.ViewManagement.ApplicationViewHelper.GetBaseActivityEvents()" reason="Removed ApplicationViewHelper.GetBaseActivityEvents; it always returned null on Skia (breaking changes for 7.0)" />
+		  <!-- Application.OnActivated removed: WinUI declares it only behind Feature_UwpSupportApi, and a WinAppSDK app reads its activation from Microsoft.Windows.AppLifecycle.AppInstance instead. OnLaunched keeps its signature but loses the Uno-only `internal` half of its accessibility, listed in case the diff reports that as a removal. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs args)" reason="Removed Application.OnActivated; activations are read from AppInstance to match WinAppSDK (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)" reason="Application.OnLaunched narrowed from Uno's protected internal to WinUI's protected (breaking changes for 7.0, uno#8339)" />
+
+
+		  <!-- Application.RequiresPointerMode made internal. -->
+		  <Member fullName="Microsoft.UI.Xaml.ApplicationRequiresPointerMode Microsoft.UI.Xaml.Application.get_RequiresPointerMode()" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.set_RequiresPointerMode(Microsoft.UI.Xaml.ApplicationRequiresPointerMode value)" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
+		  <!-- ListViewBase.ItemClickCommand and its deprecated Command alias removed (paired with the <Properties> entries above). -->
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase.get_ItemClickCommand()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.set_ItemClickCommand(System.Windows.Input.ICommand value)" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.ListViewBase.get_Command()" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.set_Command(System.Windows.Input.ICommand value)" reason="Removed; Uno-only, not part of the WinUI ListViewBase surface (breaking changes for 7.0, uno#8339)" />
+		  <!-- Application.Suspending/Resuming/EnteredBackground/LeavingBackground moved to CoreApplication, which carries the same events in the public WinAppSDK surface (events listed in <Events>). -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Resuming(System.EventHandler`1&lt;System.Object&gt; value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Resuming(System.EventHandler`1&lt;System.Object&gt; value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_EnteredBackground(Microsoft.UI.Xaml.EnteredBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_EnteredBackground(Microsoft.UI.Xaml.EnteredBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_LeavingBackground(Microsoft.UI.Xaml.LeavingBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_LeavingBackground(Microsoft.UI.Xaml.LeavingBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
@@ -5082,6 +5623,12 @@
 		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler Microsoft.UI.Xaml.Window::SizeChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler Microsoft.UI.Xaml.Window::VisibilityChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; Microsoft.UI.Xaml.Controls.SwipeItems::VectorChanged" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- App lifecycle events moved to CoreApplication (accessors paired in <Methods>). -->
+		  <Member fullName="Microsoft.UI.Xaml.SuspendingEventHandler Microsoft.UI.Xaml.Application::Suspending" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.EventHandler`1&lt;System.Object&gt; Microsoft.UI.Xaml.Application::Resuming" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.EnteredBackgroundEventHandler Microsoft.UI.Xaml.Application::EnteredBackground" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.LeavingBackgroundEventHandler Microsoft.UI.Xaml.Application::LeavingBackground" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- ====================================================================== -->
 		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->

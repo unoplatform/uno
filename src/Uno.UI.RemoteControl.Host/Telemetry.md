@@ -26,6 +26,13 @@ Event name prefix: uno/dev-server
 | **app-launch/connected** [[src]](../Uno.UI.RemoteControl.Server/Helpers/ServiceCollectionExtensions.cs#L59)                   | TargetPlatform, IsDebug, IDE, PluginVersion, WasTimedOut, WasIdeInitiated                                              | LatencyMs                                                                                                         | No identifiers (MVID not sent)                                                      | Global         |
 | **app-launch/connection-timeout** [[src]](../Uno.UI.RemoteControl.Server/Helpers/ServiceCollectionExtensions.cs#L73)          | TargetPlatform, IsDebug, IDE, PluginVersion                                              | TimeoutSeconds                                                                                                    | No identifiers (MVID not sent)                                                      | Global         |
 
+## Account attribution
+
+Once the `Uno.Settings.DevServer` add-in has loaded and a user is signed in, every event sent through `Uno.DevTools.Telemetry` in the dev-server process carries the signed-in Uno account ID in the Application Insights `user_AuthenticatedId` field. Events sent before the add-in loads (`startup`, `addin-discovery-*`, `addin-loading-*`) are not attributed.
+
+- **Source**: the Settings add-in (`Uno.Licensing.Sdk`) publishes the ID to `TelemetryUserContext`, which is shared with every add-in that resolves `Uno.DevTools.Telemetry` to the host's copy.
+- **Opt-out**: `UNO_PLATFORM_TELEMETRY_OPTOUT=true` disables all dev-server telemetry. `LicensingSdkOptions:PublishAuthenticatedUserIdToTelemetry=false` keeps telemetry on but unattributed.
+
 ## Property Value Examples
 
 ### String Properties

@@ -25,7 +25,6 @@ namespace Windows.Storage.Pickers
 		public StorageFile this[int index]
 		{
 			get => _items[index];
-			set => throw new InvalidOperationException();
 		}
 
 		public IEnumerator<StorageFile> GetEnumerator() => _items.GetEnumerator();

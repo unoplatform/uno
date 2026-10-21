@@ -95,6 +95,8 @@ internal sealed class OwnedResources
 	// of MB; packing also lets the encoder's merge rule fire, which a buffer per op makes impossible. Split into
 	// chunks because a recording's geometry can exceed the device's maximum buffer size on its own.
 	internal System.Collections.Generic.List<VertBuf> VertexArenas;
+	// Where each packed op's vertices landed (chunk, first vertex); an op's provisional Verts tag indexes this.
+	internal System.Collections.Generic.List<(int Chunk, uint First)> PackedVertexRanges;
 	public System.Collections.Generic.List<nint> BindGroups = new();
 	// Clip-slab slot handles this bag's bind groups reference; freed with the bag (see WebGpuClipSlab).
 	public System.Collections.Generic.List<nint> ClipSlots;
@@ -109,6 +111,12 @@ internal sealed class OwnedResources
 	// Dispose in that window re-defers the old bag. Double-releasing recycles wgpu ids under in-flight uses
 	// ("BindGroup[Id] does not exist" panic); the claim makes the second hand-off a no-op.
 	public int Released;
+
+	internal readonly record struct ClipMemoEntry(ClipData Clip, System.Numerics.Matrix3x2 Xform, System.Numerics.Matrix3x2 Finv, nint Bg, nint Slot, bool AabbInClipU);
+	// The clip bind groups this bag has already made, for sharing between its ops while it is being built; dropped
+	// when the build ends, since nothing adds to a finished bag.
+	internal System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<ClipMemoEntry>> ClipMemo;
+
 }
 
 

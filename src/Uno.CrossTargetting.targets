@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<IsCrossruntime>false</IsCrossruntime>
-		<IsCrossruntime Condition="'$(UnoRuntimeIdentifier)'=='Skia' or '$(UnoRuntimeIdentifier)'=='WebAssembly' or '$(UnoRuntimeIdentifier)'=='Reference'">true</IsCrossruntime>
+		<IsCrossruntime Condition="'$(UnoRuntimeVariant)'=='Generic' or '$(UnoRuntimeVariant)'=='Wasm' or '$(UnoRuntimeVariant)'=='Reference'">true</IsCrossruntime>
 	</PropertyGroup>
 	<ItemGroup>
 		<AndroidResource Include="Resources\**\*.xml" Condition="$(IsAndroid)" />
@@ -10,17 +10,17 @@
 		<None Include="**\*.crossruntime.cs" Exclude="bin\**\*.crossruntime.cs;obj\**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 		<Compile Remove="**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 
-		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
-		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
+		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeVariant)'!='Wasm' AND '$(IsBrowserWasm)'!='true'" />
+		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeVariant)'!='Wasm' AND '$(IsBrowserWasm)'!='true'" />
 
-		<None Include="**\*.browserwasm.cs" Exclude="bin\**\*.browserwasm.cs;obj\**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
-		<Compile Remove="**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
+		<None Include="**\*.browserwasm.cs" Exclude="bin\**\*.browserwasm.cs;obj\**\*.browserwasm.cs" Condition="'$(UnoRuntimeVariant)'!='Wasm' AND '$(IsBrowserWasm)'!='true'" />
+		<Compile Remove="**\*.browserwasm.cs" Condition="'$(UnoRuntimeVariant)'!='Wasm' AND '$(IsBrowserWasm)'!='true'" />
 
-		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
-		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
+		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeVariant)'!='Generic'" />
+		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeVariant)'!='Generic'" />
 
-		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
-		<Compile Remove="**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
+		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="'$(UnoRuntimeVariant)'!='Reference'" />
+		<Compile Remove="**\*.reference.cs" Condition="'$(UnoRuntimeVariant)'!='Reference'" />
 
 		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOS)" />
 		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOS)" />
@@ -36,18 +36,16 @@
 	</ItemGroup>
 
 	<!--
-  List of known constants:
+  List of known constants for building this repository. Consumer projects get their own set from
+  build/nuget/uno.winui.common.targets and the Uno.Sdk; only __WASM__ and UNO_REFERENCE_API overlap,
+  the latter with a different meaning. See doc/articles/uno-development/preprocessor-symbols.md.
   - __SKIA__: Used when building for the Skia backend
   - __WASM__: Used when building for the WebAssembly backend
   - UNO_REFERENCE_API: True for Skia, Wasm and Reference. The name is historical: for a consumer this is
-					   simply "drawn by Uno rather than by WinUI", the same condition as HAS_UNO, and it is
-					   defined on the Android and Apple target frameworks too. Prefer HAS_UNO in new code.
+    simply "drawn by Uno rather than by WinUI", the same condition as HAS_UNO.
+    Prefer HAS_UNO in new code.
   - __CROSSRUNTIME__: Currently have the same semantics as UNO_REFERENCE_API
   - __NETSTD_REFERENCE__: Used when building the reference assemblies (only true for Reference)
-  - UNO_HAS_UIELEMENT_IMPLICIT_PINNING: Used to mark targets that have specific constraints on
-										UIElements. On iOS, this means additional weak references
-										backed fields to handle opaque native reference pinning and avoid
-										memory leaks.
   - UNO_HAS_MANAGED_SCROLL_PRESENTER: Determines if the platforms supports managed scroll presenter which
 									  uses render transforms instead of native scroll feature (if any)
   - UNO_HAS_MANAGED_POINTERS: Determines if the pointer events are dispatched by uno instead of the system (if any).
@@ -61,27 +59,27 @@
 		<DefineConstants>$(DefineConstants);__CROSSRUNTIME__;UNO_REFERENCE_API</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">
+	<PropertyGroup Condition="'$(UnoRuntimeVariant)'=='Wasm'">
 		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_LIFECYCLE;UNO_HAS_MANAGED_POINTERS;HAS_INPUT_INJECTOR</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia'">
+	<PropertyGroup Condition="'$(UnoRuntimeVariant)'=='Generic'">
 		<DefineConstants>$(DefineConstants);__SKIA__;SUPPORTS_RTL;UNO_SUPPORTS_NATIVEHOST;UNO_HAS_ENHANCED_LIFECYCLE</DefineConstants>
 		<DefineConstants>$(DefineConstants);UNO_HAS_MANAGED_POINTERS;UNO_HAS_MANAGED_SCROLL_PRESENTER;HAS_INPUT_INJECTOR</DefineConstants>
 		<DefineConstants>$(DefineConstants);HAS_COMPOSITION_API</DefineConstants>
 		<DefineConstants>$(DefineConstants);HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
+	<PropertyGroup Condition="'$(UnoRuntimeVariant)'=='Reference'">
 		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsIOS)">
-		<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsTvOS)">
-		<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAppleUIKit)">
@@ -108,7 +106,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and $(TargetFramework.EndsWith('-windows10.0.19041.0')) != 'true' and '$(TargetPlatformIdentifier)' != 'UAP'">
-		<DefineConstants>$(DefineConstants);HAS_UNO;HAS_UNO_WINUI</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_UNO;__UNO__;HAS_UNO_WINUI</DefineConstants>
 
 		<!-- Hint the VS's XAML parser -->
 		<!-- https://github.com/unoplatform/uno/issues/15517 -->
@@ -136,13 +134,18 @@
 	<Target Name="_UnoOverrideNuget"
 		  AfterTargets="AfterBuild"
 		  DependsOnTargets="BuiltProjectOutputGroup"
-		  Condition="'$(UnoNugetOverrideVersion)'!='' and ('$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference')">
+		  Condition="'$(UnoNugetOverrideVersion)'!='' and ('$(UnoRuntimeVariant)'=='' or '$(UnoRuntimeVariant)'=='Reference') and ('$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference')">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			
-			<!-- Current nuget publishing uses netX.0-android30.0 -->
-			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
+
+			<!--
+				The packages ship one Android folder per .NET version (net10.0-android30.0, net11.0-android36.0,
+				see Uno.WinRT.nuspec), so the build TFM needs the matching API suffix to hit the folder NuGet reads.
+			-->
+			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '10.0'">30.0</_OverrideAndroidApiLevel>
+			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '11.0'">36.0</_OverrideAndroidApiLevel>
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android')) AND '$(_OverrideAndroidApiLevel)' != ''">$(_OverrideTargetFramework)$(_OverrideAndroidApiLevel)</_OverrideTargetFramework>
 
 			<_overridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</_overridePackageId>
 			<_overridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName.ToLowerInvariant())</_overridePackageId>
@@ -207,25 +210,34 @@
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
 
-			<!-- Current nuget publishing uses netX.0-android30.0 -->
-			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
+			<!--
+				The packages ship one Android folder per .NET version (net10.0-android30.0, net11.0-android36.0,
+				see Uno.WinRT.nuspec), so the build TFM needs the matching API suffix to hit the folder NuGet reads.
+			-->
+			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '10.0'">30.0</_OverrideAndroidApiLevel>
+			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '11.0'">36.0</_OverrideAndroidApiLevel>
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android')) AND '$(_OverrideAndroidApiLevel)' != ''">$(_OverrideTargetFramework)$(_OverrideAndroidApiLevel)</_OverrideTargetFramework>
 
 			<CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
 			<CommonOverridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</CommonOverridePackageId>
 			<CommonOverridePackageId>$(CommonOverridePackageId.Replace('uno.ui','uno.winui'))</CommonOverridePackageId>
-			<!--
-				Uno.WinUI ships the UI layer in lib/ only — the Skia build is the compile reference,
-				so there is no uno-runtime folder to override into. uno.winrt and uno.foundation
-				still carry both flavors.
-			-->
-			<_UnoOverrideUsesRuntimeFolder>true</_UnoOverrideUsesRuntimeFolder>
-			<_UnoOverrideUsesRuntimeFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference' or '$(CommonOverridePackageId)'=='uno.winui'">false</_UnoOverrideUsesRuntimeFolder>
+			<!-- Only uno.winrt and uno.foundation ship uno-runtime folders; every other package is lib/ only. -->
+			<_UnoOverrideUsesRuntimeFolder>false</_UnoOverrideUsesRuntimeFolder>
+			<_UnoOverrideUsesRuntimeFolder Condition="('$(CommonOverridePackageId)'=='uno.winrt' or '$(CommonOverridePackageId)'=='uno.foundation') and '$(UnoRuntimeVariant)'!='' and '$(UnoRuntimeVariant)'!='Reference'">true</_UnoOverrideUsesRuntimeFolder>
 
 			<_TargetNugetFolder Condition="'$(_UnoOverrideUsesRuntimeFolder)'!='true'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-			<_TargetNugetFolder Condition="'$(_UnoOverrideUsesRuntimeFolder)'=='true'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+			<!-- The folder is the variant lowercased, as in uno.winui.runtime-replace.targets. -->
+			<_UnoRuntimeFolderName Condition="'$(UnoRuntimeVariant)'=='Generic' or '$(UnoRuntimeVariant)'=='Wasm'">$(UnoRuntimeVariant.ToLowerInvariant())</_UnoRuntimeFolderName>
+
+			<_TargetNugetFolder Condition="'$(_UnoOverrideUsesRuntimeFolder)'=='true'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(_UnoRuntimeFolderName)</_TargetNugetFolder>
 			<!-- Track ownership so shared package folders are cleaned safely. -->
 			<_OwnedCommonOverrideManifest>$(_TargetNugetFolder)\.$(MSBuildProjectName).$(_OverrideTargetFramework).owned-files.txt</_OwnedCommonOverrideManifest>
 		</PropertyGroup>
+
+		<!-- Without a folder name the override would write straight into uno-runtime\<tfm>. -->
+		<Error
+			Text="UnoRuntimeVariant '$(UnoRuntimeVariant)' has no uno-runtime folder to override. Expected Generic, Wasm or Reference."
+			Condition="'$(_UnoOverrideUsesRuntimeFolder)'=='true' AND '$(_UnoRuntimeFolderName)'==''" />
 
 		<ItemGroup>
 			<_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />

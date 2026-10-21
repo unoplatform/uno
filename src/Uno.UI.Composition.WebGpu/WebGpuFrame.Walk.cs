@@ -425,6 +425,41 @@ internal sealed unsafe partial class WebGpuFrame
 		_d.DeferCompiledRelease(e.Owned, null);
 	}
 
+	// Every entry that holds atlas slots, for EvictAtlasHolders. Weak: a recording that is collected takes its entry.
+	private static readonly List<WeakReference<WebGpuGeometryCache>> s_atlasHolders = new();
+
+	/// <summary>
+	/// Makes atlas room once an entry was refused for want of it. A slot's UVs are baked into its holder's ops, so
+	/// room is made by retiring whole entries: those not drawn this frame or the last hand back their bags (and with
+	/// them their slots) and rebuild on their next replay. The site slots stay with the entry's final release, the
+	/// one place they are freed. Called before the walk.
+	/// </summary>
+	internal void EvictAtlasHolders()
+	{
+		if (!_d.AtlasStarved) { return; }
+		_d.AtlasStarved = false;
+		_d.AtlasEvictions++;
+		for (var i = s_atlasHolders.Count - 1; i >= 0; i--)
+		{
+			if (!s_atlasHolders[i].TryGetTarget(out var e) || e.Evicted) { s_atlasHolders.RemoveAt(i); continue; }
+			if (!ReferenceEquals(e.Device, _d) || e.SitesFrame >= _d.FrameSeq - 1) { continue; }
+			s_atlasHolders.RemoveAt(i);
+			e.Evicted = true;
+			// Unpooled first, so a holder releasing concurrently takes the unpooled path and frees the site slots.
+			if (e.ContentKey != 0 && s_entryPool.TryGetValue(e.ContentKey, out var pooled) && ReferenceEquals(pooled, e)) { s_entryPool.Remove(e.ContentKey); }
+			e.ContentKey = 0;
+			if (e.Refs <= 0)
+			{
+				// Only the pool held it, and the pool has let it go: nothing else will ever release it.
+				foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); _d.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
+				_d.DeferCompiledRelease(e.Owned, null);
+				continue;
+			}
+			_d.DeferRelease(e.Owned);
+			foreach (var st in e.Stamps) { _d.DeferRelease(st.Owned); }
+		}
+	}
+
 	/// <summary>
 	/// Frees pooled entries no recording has held for a while. Called once per frame, before the walk.
 	/// </summary>
@@ -599,7 +634,7 @@ internal sealed unsafe partial class WebGpuFrame
 			if (_emitStats) { StatPoolHits++; }
 		}
 		bool miss = entry is null;
-		if (miss || AtlasNeedsRebuild(entry, rm))
+		if (miss || entry.Evicted || (entry.StarvedBeforeEviction >= 0 && _d.AtlasEvictions > entry.StarvedBeforeEviction) || AtlasNeedsRebuild(entry, rm))
 		{
 			if (_emitStats) { _statArenaRebuilds++; if (miss) { _statArMiss++; } else { _statArMasks++; } }
 			// Shared entries are released by their last holder (or the pool sweep), never by whoever rebuilds first.
@@ -609,9 +644,11 @@ internal sealed unsafe partial class WebGpuFrame
 			bool hasPath = false; foreach (var c in rr.Commands) { if (c is PathCmd) { hasPath = true; break; } }
 			int atlasBefore = WebGpuCoverage.AtlasHit + WebGpuCoverage.AtlasBaked;
 			int maskBefore = WebGpuCoverage.ClipMasksBaked + WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits;
+			int noRoomBefore = WebGpuCoverage.AtlasNoRoom;
 			bool atlasSafe = TryAtlasScale(rm, out var scale);
 			BuildCoalesced(rr.Commands, built, owned, atlasScale: atlasSafe ? scale : null, maskScale: atlasSafe ? scale : MaskScale(rm), place: new Vector2(rm.M31, rm.M32));
 			RealizeOwnedVertices(built, owned);
+			owned.ClipMemo = null;
 			bool hasPathClip = false; foreach (var o in built) { if (o.Clip.Paths is not null) { hasPathClip = true; break; } }
 			entry = new WebGpuGeometryCache
 			{
@@ -628,6 +665,8 @@ internal sealed unsafe partial class WebGpuFrame
 			};
 			entry.Refs = 1;
 			entry.ContentKey = key;
+			if (WebGpuCoverage.AtlasNoRoom != noRoomBefore) { entry.StarvedBeforeEviction = _d.AtlasEvictions; }
+			if (entry.HasAtlas || entry.HasClipMask) { s_atlasHolders.Add(new WeakReference<WebGpuGeometryCache>(entry)); }
 			if (key != 0)
 			{
 				if (s_entryPool.TryGetValue(key, out var displaced) && !ReferenceEquals(displaced, entry))
@@ -764,13 +803,15 @@ internal sealed unsafe partial class WebGpuFrame
 				}
 				else
 				{
-					var clipBg = MakeClipBgOwned(uClip, stampOwned, rm, finv, out var buf, out var folded);
+					// A later move patches each slot from the op's own clip, so only ops whose clip is unfolded may share one.
+					var clipBg = MakeClipBgOwned(uClip, stampOwned, rm, finv, out var buf, out var folded, share: siteCarries);
 					scissorClip.AabbInClipU = folded;
 					scissorClip.ScissorLoadBearing = !folded;
 					bufs.Add(buf);
 					stamped.Add(op.WithClipSite(scissorClip, clipBg, slot.SiteBg, siteCarries ? slot.SiteSlot : 0));
 				}
 			}
+			stampOwned.ClipMemo = null;
 			slot.Owned = stampOwned; slot.Ops = stamped; slot.Bufs = bufs; slot.SiteOps = siteCarries;
 			slot.Xform = rm; slot.Clip = session; slot.Basis = basis; slot.SessionEntries = sessionEntries;
 			if (_emitStats) { StampTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; }

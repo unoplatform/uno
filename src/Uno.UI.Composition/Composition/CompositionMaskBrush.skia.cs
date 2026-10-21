@@ -23,7 +23,7 @@ namespace Microsoft.UI.Composition
 			// by the mask's alpha, producing the masking effect. Layer paints are opaque (alpha only modulates).
 			session.SaveLayer();
 			session.ClipRect(bounds);
-			session.Clear(global::Windows.UI.Colors.Transparent);
+			session.Clear(global::Microsoft.UI.Colors.Transparent);
 			Source.TryPaint(session, opacity, bounds);
 			session.SaveLayerMask();
 			Mask.TryPaint(session, opacity, bounds);

@@ -4,25 +4,24 @@
 		"version": "DefaultUnoVersion",
 		"packages": [
 			"Uno.WinUI",
-			"Uno.UI.Composition.Skia",
-			"Uno.UI.Composition.WebGpu",
+			"Uno.WinUI.Composition.Skia",
+			"Uno.WinUI.Composition.WebGpu",
 			"Uno.UI.Adapter.Microsoft.Extensions.Logging",
 			"Uno.WinUI.GooglePlay",
 			"Uno.WinUI.Foldable",
 			"Uno.WinUI.MSAL",
 			"Uno.WinUI.Svg",
-			"Uno.WinUI.Lottie",
 			"Uno.WinUI.DevServer",
-			"Uno.WinUI.Runtime.Skia.Linux.FrameBuffer",
-			"Uno.WinUI.Runtime.Skia.MacOS",
-			"Uno.WinUI.Runtime.Skia.Win32",
-			"Uno.WinUI.Runtime.Skia.X11",
-			"Uno.WinUI.Runtime.Skia.Android",
-			"Uno.WinUI.Runtime.Skia.AppleUIKit",
-			"Uno.WinUI.Runtime.Skia.WebAssembly.Browser",
-			"Uno.WinUI.MediaPlayer.Skia.X11",
-			"Uno.WinUI.MediaPlayer.Skia.Win32",
-			"Uno.WinUI.WebView.Skia.X11",
+			"Uno.WinUI.Runtime.Linux.FrameBuffer",
+			"Uno.WinUI.Runtime.MacOS",
+			"Uno.WinUI.Runtime.Win32",
+			"Uno.WinUI.Runtime.X11",
+			"Uno.WinUI.Runtime.Android",
+			"Uno.WinUI.Runtime.AppleUIKit",
+			"Uno.WinUI.Runtime.WebAssembly.Browser",
+			"Uno.WinUI.MediaPlayer.X11",
+			"Uno.WinUI.MediaPlayer.Win32",
+			"Uno.WinUI.WebView.X11",
 			"Uno.WinUI.Graphics3DGL",
 			"Uno.WinUI.Graphics2DSK",
 			"Uno.WinUI.SpellChecking"
@@ -30,14 +29,15 @@
 	},
 	{
 		"group": "WasmBootstrap",
-		"version": "10.0.96",
+		"version": "10.0.98",
 		"packages": [
 			"Uno.Wasm.Bootstrap",
 			"Uno.Wasm.Bootstrap.DevServer",
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net11.0": "10.1.0-dev.214"
+			"net10.0": "10.1.0-dev.260",
+			"net11.0": "10.1.0-dev.260"
 		}
 	},
 	{
@@ -50,16 +50,9 @@
 	},
 	{
 		"group": "CoreLogging",
-		"version": "5.0.0-dev.28",
+		"version": "5.0.0-dev.34",
 		"packages": [
 			"Uno.Core.Extensions.Logging.Singleton"
-		]
-	},
-	{
-		"group": "UniversalImageLoading",
-		"version": "1.9.37",
-		"packages": [
-			"Uno.UniversalImageLoader"
 		]
 	},
 	{
@@ -71,28 +64,28 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.13.0-dev.17",
+		"version": "2.0.0-dev.36",
 		"packages": [
 			"Uno.Resizetizer"
 		]
 	},
 	{
 		"group": "sdkextras",
-		"version": "6.4.0-dev.13",
+		"version": "6.4.0-dev.15",
 		"packages": [
 			"Uno.Sdk.Extras"
 		]
 	},
 	{
 		"group": "settings",
-		"version": "1.13.0-dev.7",
+		"version": "2.0.0-dev.23",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.20.0-dev.750",
+		"version": "2.0.0-dev.2",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -102,12 +95,27 @@
 		"version": "4.151.1",
 		"packages": [
 			"SkiaSharp.Skottie",
-			"SkiaSharp.Views.Uno.WinUI",
 			"SkiaSharp.Views.WinUI",
+			"SkiaSharp.NativeAssets.Android",
+			"SkiaSharp.NativeAssets.iOS",
+			"SkiaSharp.NativeAssets.tvOS",
 			"SkiaSharp.NativeAssets.Linux",
 			"SkiaSharp.NativeAssets.macOS",
 			"SkiaSharp.NativeAssets.Win32",
 			"SkiaSharp.NativeAssets.WebAssembly"
+		]
+	},
+	{
+		"group": "HarfBuzzSharp",
+		"version": "14.2.1.1",
+		"packages": [
+			"HarfBuzzSharp.NativeAssets.Android",
+			"HarfBuzzSharp.NativeAssets.iOS",
+			"HarfBuzzSharp.NativeAssets.tvOS",
+			"HarfBuzzSharp.NativeAssets.Linux",
+			"HarfBuzzSharp.NativeAssets.macOS",
+			"HarfBuzzSharp.NativeAssets.Win32",
+			"HarfBuzzSharp.NativeAssets.WebAssembly"
 		]
 	},
 	{
@@ -140,7 +148,7 @@
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
-		"version": "10.0.10",
+		"version": "10.0.12",
 		"packages": [
 			"Microsoft.Extensions.Logging.Console"
 		],
@@ -174,7 +182,7 @@
 	},
 	{
 		"group": "UnoFonts",
-		"version": "2.9.4",
+		"version": "2.10.0-dev.9",
 		"packages": [
 			"Uno.Fonts.OpenSans",
 			"Uno.Fonts.Fluent",
@@ -296,7 +304,7 @@
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.7.0-dev.16",
+		"version": "7.0.0-dev.33",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -304,7 +312,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "7.3.0-dev.102",
+		"version": "8.0.0-dev.76",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -329,12 +337,13 @@
 			"Uno.Extensions.Serialization.Http",
 			"Uno.Extensions.Serialization.Refit",
 			"Uno.Extensions.Logging.Serilog",
-			"Uno.Extensions.Storage.WinUI"
+			"Uno.Extensions.Storage.WinUI",
+			"Uno.HotTesting.Reactive"
 		]
 	},
 	{
 		"group": "Toolkit",
-		"version": "9.1.0-dev.2",
+		"version": "11.0.0-dev.140",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -347,7 +356,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "7.1.0-dev.1",
+		"version": "9.0.0-dev.41",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
@@ -373,7 +382,7 @@
 	},
 	{
 		"group": "AppMcp",
-		"version": "1.3.0-dev.98",
+		"version": "2.0.0-dev.7",
 		"packages": [
 			"Uno.UI.App.Mcp"
 		]

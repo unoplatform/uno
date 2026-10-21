@@ -83,6 +83,11 @@ public partial class CompositionAnimation
 
 	internal virtual object? Evaluate() => null;
 
+	/// <summary>Called once the value returned by <see cref="Evaluate"/> has been applied to the target property.</summary>
+	internal virtual void OnEvaluatedValueApplied()
+	{
+	}
+
 	internal virtual void Stop()
 	{
 		if (_startedObjects.Count == 0)

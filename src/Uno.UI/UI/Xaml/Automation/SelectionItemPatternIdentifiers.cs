@@ -5,6 +5,10 @@
 /// </summary>
 public partial class SelectionItemPatternIdentifiers
 {
+	internal SelectionItemPatternIdentifiers()
+	{
+	}
+
 	/// <summary>
 	/// Identifies the IsSelected automation property.
 	/// </summary>

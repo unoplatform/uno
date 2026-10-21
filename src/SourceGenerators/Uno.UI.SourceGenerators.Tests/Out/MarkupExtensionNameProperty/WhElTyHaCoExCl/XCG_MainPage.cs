@@ -67,6 +67,7 @@ namespace TestRepro
 						)
 						,
 					}
+					,
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
@@ -76,29 +77,27 @@ namespace TestRepro
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
 						new global::Microsoft.UI.Xaml.VisualStateGroup
 						{
-							Name = "States",
 							// Source MainPage.xaml (Line 12:5)
 							States = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.VisualState
 									{
-										Name = "Visible",
 										// Source MainPage.xaml (Line 13:6)
 									}
 									.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 									{
 									__nameScope.RegisterName("Visible", __p1);
 									__that.Visible = __p1;
+									global::Uno.UI.Helpers.MarkupHelper.SetXName(__p1, "Visible");
 									global::Uno.UI.Helpers.MarkupHelper.SetVisualStateLazy(__p1, () => 
 									{
-										__p1.Name = "Visible";
 										__p1.Setters.Add(
 											global::MyProject.GlobalStaticResources.__PreserveProperties(
 												new global::Microsoft.UI.Xaml.Setter
 												{
 													Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._MyBadgeSubject, "Opacity"),
-													Value = @"1",
+													Value = "1",
 													// Source MainPage.xaml (Line 15:8)
 												}
 											)
@@ -111,11 +110,13 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 						.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 						{
 						__nameScope.RegisterName("States", __p1);
 						__that.States = __p1;
+						global::Uno.UI.Helpers.MarkupHelper.SetXName(__p1, "States");
 						}
 						))
 					)
@@ -148,19 +149,19 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _MyBadgeSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _MyBadgeSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "MyBadge");
 		private global::TestRepro.Badge MyBadge
 		{
 			get => (global::TestRepro.Badge)_MyBadgeSubject.ElementInstance;
 			set => _MyBadgeSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _StatesSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _StatesSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "States");
 		private global::Microsoft.UI.Xaml.VisualStateGroup States
 		{
 			get => (global::Microsoft.UI.Xaml.VisualStateGroup)_StatesSubject.ElementInstance;
 			set => _StatesSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _VisibleSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _VisibleSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "Visible");
 		private global::Microsoft.UI.Xaml.VisualState Visible
 		{
 			get => (global::Microsoft.UI.Xaml.VisualState)_VisibleSubject.ElementInstance;

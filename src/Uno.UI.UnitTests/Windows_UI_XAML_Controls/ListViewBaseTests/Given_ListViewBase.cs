@@ -19,7 +19,7 @@ using Uno.UI.Helpers;
 
 namespace Uno.UI.Tests.ListViewBaseTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ListViewBase
 	{
 		[TestInitialize] public void Init() => UnitTestsApp.App.EnsureApplication();

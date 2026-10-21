@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -97,25 +96,26 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	#region Default drawing-backend resolution (composition root)
 
 	// The framework holds no compile-time reference to any concrete backend. When the app declares no backend/seam,
-	// the SkiaSharp backend is lit up by reflection if its assembly is present; a SkiaSharp-free build registers each
-	// seam explicitly. Resolved by assembly-qualified name so no assembly reference is required.
+	// each default is lit up by reflection if its assembly is present; a SkiaSharp-free build registers each seam
+	// explicitly. Resolved by assembly-qualified name so no assembly reference is required. Every backend and add-in
+	// assembly has one public static *Backend entry class, and each default comes from the same Create* factory an
+	// app registers explicitly, so the two paths can't diverge.
 	private const string SkiaBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackend, Uno.UI.Composition.Skia";
-	private const string WebGpuGraphicsProviderTypeName = "Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider, Uno.UI.Composition.WebGpu";
-	private const string ManagedGeometryFactoryTypeName = "Uno.UI.Composition.Drawing.ManagedGeometryFactory, Uno.UI.Composition.Managed";
+	private const string WebGpuBackendTypeName = "Uno.UI.Composition.WebGpu.WebGpuBackend, Uno.UI.Composition.WebGpu";
+	private const string ManagedBackendTypeName = "Uno.UI.Composition.Managed.ManagedBackend, Uno.UI.Composition.Managed";
 
+	// Lottie defaults to Skottie, which comes with the Skia backend, else to the SkiaSharp-free managed engine.
+	// An app that wants the managed engine calls IUnoPlatformHostBuilder.LottieRenderer, which this light-up leaves alone.
+	//
 	// SVG has no core Skia impl: the Svg.Skia renderer ships as the optional Uno.UI.Svg add-in, with the managed
-	// engine as the built-in fallback.
-	private const string SvgAddInBackendTypeName = "Uno.UI.Svg.SvgBackend, Uno.UI.Svg";
-	private const string ManagedSvgRendererTypeName = "Uno.UI.Composition.Drawing.ManagedSvgRenderer, Uno.UI.Composition.Managed";
+	// engine as the built-in fallback. The add-in extends SkiaBackend with its factory (a C# 14 static extension,
+	// emitted as a plain static method on the add-in's extension class, which is what is looked up here).
+	private const string SvgAddInBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackendSvgExtensions, Uno.UI.Svg";
 
-	// Lottie: the Skottie add-in (Uno.UI.Lottie) is the default when referenced, else the SkiaSharp-free managed
-	// engine (Uno.UI.Composition.Managed). UNO_MANAGED_LOTTIE=1 forces the managed engine even when Skottie is present.
-	private const string SkottieLottieRendererTypeName = "Uno.UI.Lottie.SkottieLottieRenderer, Uno.UI.Lottie";
-	private const string ManagedLottieRendererTypeName = "Uno.UI.Composition.Drawing.ManagedLottieRenderer, Uno.UI.Composition.Managed";
-
-	private static readonly object _fallbackGate = new();
-	private static Type? _skiaBackendType;
-	private static bool _skiaBackendTypeResolved;
+	// Each factory lookup keeps Type.GetType and GetMethod, both with literal arguments, in one expression:
+	// that lets the trimmer (and NativeAOT) keep exactly the factory invoked, and nothing else on the type.
+	// NonPublic: SkiaBackend.CreateDefaultRenderer is internal.
+	private const BindingFlags FactoryFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
 	// Downward codec-resolve trigger: Uno.UWP's BitmapEncoder sits below Uno.UI and can't reach the codec registry,
 	// so it invokes this to lazily light up the Skia codec on first encode when Build() was never called.
@@ -171,35 +171,44 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		// UNO_WEBGPU opts an app into the WebGPU renderer (over the managed geometry engine, which WebGPU
-		// flattens) without any head code: the backend is probed reflectively, so a head that doesn't ship the
-		// WebGPU assemblies — or a probe failure — falls through to the Skia default below.
-		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain"
-			&& CreateInstanceOf<Drawing.IGraphicsProvider>(WebGpuGraphicsProviderTypeName) is { } webGpuProvider)
+		// Skia is the default renderer wherever it is referenced: naming the WebGpu feature makes the backend
+		// available, but a head opts into it by registering it on the host builder (handled above).
+		if (InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+			?.GetMethod("CreateGraphicsProvider", FactoryFlags, Type.EmptyTypes)) is { } provider)
 		{
-			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
-			if (!Drawing.GeometryFactory.IsRegistered
-				&& CreateInstanceOf<Drawing.IGeometryFactory>(ManagedGeometryFactoryTypeName) is { } managedGeometry)
-			{
-				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
-			}
+			Drawing.GraphicsRegistry.RegisterDefault(new[] { provider });
 			return;
 		}
 
-		if (InvokeSkiaFactory<Drawing.IGraphicsProvider>("CreateGraphicsProvider") is { } provider)
+		// No Skia: a SkiaSharp-free app, where WebGPU is the only renderer there is. Geometry goes to the managed
+		// engine, which WebGPU flattens.
+		if (InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(WebGpuBackendTypeName, throwOnError: false)
+			?.GetMethod("CreateGraphicsProvider", FactoryFlags, Type.EmptyTypes)) is { } webGpuProvider)
 		{
-			Drawing.GraphicsRegistry.RegisterDefault(new[] { provider });
-
-			if (InvokeSkiaFactory<Drawing.IDrawingFactory>("CreateDefaultRenderer") is { } renderer)
+			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
+			if (!Drawing.GeometryFactory.IsRegistered
+				&& InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
+					?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes)) is { } managedGeometry)
 			{
-				Drawing.DrawingRegistration.RegisterDefaultRenderer(renderer);
+				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
 			}
 		}
 	}
 
 	private static void TryLightUpFontProvider()
 	{
-		if (!Drawing.FontProvider.IsRegistered && InvokeSkiaFactory<Drawing.IFontProvider>("CreateFontProvider") is { } fontProvider)
+		if (Drawing.FontProvider.IsRegistered)
+		{
+			return;
+		}
+
+		// The managed engine is the fallback for a SkiaSharp-free head. It reads the system fonts, so it needs a
+		// bundled default passed in where those cannot be enumerated (iOS, WASM) - such a head registers its own.
+		var fontProvider = InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateFontProvider", FactoryFlags, Type.EmptyTypes))
+			?? InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateFontProvider", FactoryFlags, Type.EmptyTypes));
+		if (fontProvider is not null)
 		{
 			Drawing.FontProvider.RegisterDefault(fontProvider);
 		}
@@ -207,7 +216,16 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	private static void TryLightUpImageDecoder()
 	{
-		if (!Drawing.ImageEncoderDecoder.IsRegistered && InvokeSkiaFactory<Drawing.IImageEncoderDecoder>("CreateImageDecoder") is { } decoder)
+		if (Drawing.ImageEncoderDecoder.IsRegistered)
+		{
+			return;
+		}
+
+		var decoder = InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateImageDecoder", FactoryFlags, Type.EmptyTypes))
+			?? InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateImageDecoder", FactoryFlags, Type.EmptyTypes));
+		if (decoder is not null)
 		{
 			Drawing.ImageEncoderDecoder.RegisterDefault(decoder);
 		}
@@ -215,7 +233,16 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	private static void TryLightUpGeometryFactory()
 	{
-		if (!Drawing.GeometryFactory.IsRegistered && InvokeSkiaFactory<Drawing.IGeometryFactory>("CreateGeometryFactory") is { } geometryFactory)
+		if (Drawing.GeometryFactory.IsRegistered)
+		{
+			return;
+		}
+
+		var geometryFactory = InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes))
+			?? InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes));
+		if (geometryFactory is not null)
 		{
 			Drawing.GeometryFactory.RegisterDefault(geometryFactory);
 		}
@@ -228,8 +255,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var renderer = InvokeStaticFactory<Drawing.ISvgRenderer>(SvgAddInBackendTypeName, "CreateSvgRenderer")
-			?? CreateInstanceOf<Drawing.ISvgRenderer>(ManagedSvgRendererTypeName);
+		var renderer = InvokeFactory<Drawing.ISvgRenderer>(static () => Type.GetType(SvgAddInBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateSvgRenderer", FactoryFlags, Type.EmptyTypes))
+			?? InvokeFactory<Drawing.ISvgRenderer>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateSvgRenderer", FactoryFlags, Type.EmptyTypes));
 		if (renderer is not null)
 		{
 			Drawing.SvgRenderer.RegisterDefault(renderer);
@@ -243,80 +272,34 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var forceManaged = Environment.GetEnvironmentVariable("UNO_MANAGED_LOTTIE") is "1" or "true";
-		var renderer = (forceManaged ? null : InvokeStaticFactory<Drawing.ILottieRenderer>(SkottieLottieRendererTypeName, "CreateLottieRenderer"))
-			?? InvokeStaticFactory<Drawing.ILottieRenderer>(ManagedLottieRendererTypeName, "CreateLottieRenderer");
+		var renderer = InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes))
+			?? InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes));
 		if (renderer is not null)
 		{
 			Drawing.LottieRenderer.RegisterDefault(renderer);
 		}
 	}
 
-	/// <summary>Reflectively calls a parameterless static factory on the Skia backend, cast to the neutral seam
-	/// <typeparamref name="T"/>. Null if the backend assembly isn't present or the call fails.</summary>
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers its backend explicitly.")]
-	[UnconditionalSuppressMessage("Trimming", "IL2080", Justification = "Best-effort fallback; a trimmed/AOT app registers its backend explicitly.")]
-	private static T? InvokeSkiaFactory<T>(string methodName) where T : class
+	/// <summary>Invokes a parameterless static factory or constructor, cast to the neutral seam <typeparamref name="T"/>.
+	/// Null if the type/assembly isn't present or the call fails.</summary>
+	private static T? InvokeFactory<T>(Func<MethodBase?> resolveFactory) where T : class
 	{
+		MethodBase? factory = null;
 		try
 		{
-			if (!_skiaBackendTypeResolved)
+			factory = resolveFactory();
+			return factory switch
 			{
-				lock (_fallbackGate)
-				{
-					if (!_skiaBackendTypeResolved)
-					{
-						_skiaBackendType = Type.GetType(SkiaBackendTypeName, throwOnError: false);
-						_skiaBackendTypeResolved = true;
-					}
-				}
-			}
-
-			// NonPublic: the SkiaBackend factories are internal; reflection reaches them without a compile-time dependency.
-			return _skiaBackendType
-				?.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, Type.EmptyTypes)
-				?.Invoke(null, null) as T;
+				ConstructorInfo constructor => constructor.Invoke(null) as T,
+				MethodInfo method => method.Invoke(null, null) as T,
+				_ => null,
+			};
 		}
 		catch (Exception e)
 		{
-			LogFallbackFailure($"{SkiaBackendTypeName}.{methodName}", e);
-			return null;
-		}
-	}
-
-	/// <summary>Reflectively calls a parameterless static factory on an arbitrary assembly-qualified type (for seams
-	/// served by an add-in rather than the core Skia backend). Null if the type/assembly isn't present or the call fails.</summary>
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	private static T? InvokeStaticFactory<T>(string typeName, string methodName) where T : class
-	{
-		try
-		{
-			return Type.GetType(typeName, throwOnError: false)
-				?.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, Type.EmptyTypes)
-				?.Invoke(null, null) as T;
-		}
-		catch (Exception e)
-		{
-			LogFallbackFailure($"{typeName}.{methodName}", e);
-			return null;
-		}
-	}
-
-	/// <summary>Reflectively constructs an assembly-qualified type via its public parameterless constructor, cast to
-	/// the neutral seam interface <typeparamref name="T"/>. Null if the type/assembly isn't present or the call fails.</summary>
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	private static T? CreateInstanceOf<T>(string typeName) where T : class
-	{
-		try
-		{
-			var type = Type.GetType(typeName, throwOnError: false);
-			return type is null ? null : Activator.CreateInstance(type) as T;
-		}
-		catch (Exception e)
-		{
-			LogFallbackFailure(typeName, e);
+			LogFallbackFailure(factory is null ? $"{typeof(T).Name} lookup" : $"{factory.DeclaringType?.AssemblyQualifiedName}.{factory.Name}", e);
 			return null;
 		}
 	}
