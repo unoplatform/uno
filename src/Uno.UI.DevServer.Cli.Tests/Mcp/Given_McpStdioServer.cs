@@ -358,6 +358,21 @@ public class Given_McpStdioServer
 	}
 
 	[TestMethod]
+	[Description("TryGetInitializeArgs rejects a path containing NUL, which the full-path normalization cannot handle")]
+	public void TryGetInitializeArgs_WhenPathContainsNul_ReturnsError()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["workspaceDirectory"] = JsonSerializer.SerializeToElement(Path.Combine(Path.GetTempPath(), "repo\0x")),
+		};
+
+		var success = McpStdioServer.TryGetInitializeArgs(arguments, out _, out _, out var errorResult);
+
+		success.Should().BeFalse();
+		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("absolute path");
+	}
+
+	[TestMethod]
 	[Description("A solutionPath that uno_app_initialize cannot select is returned as the answer instead of being discarded")]
 	public async Task SelectInitialSolutionAsync_WhenSelectionIsRejected_ReturnsTheRejectionAndSaysTheWorkspaceWasApplied()
 	{
@@ -391,11 +406,13 @@ public class Given_McpStdioServer
 	[TestMethod]
 	[OSCondition(OperatingSystems.Windows)]
 	[Description("uno_app_initialize refuses a network (UNC) workspaceDirectory before any file-system access")]
-	public void TryGetInitializeArgs_WhenWorkspaceDirectoryIsUnc_ReturnsError()
+	[DataRow(@"\\server\share\repo")]
+	[DataRow(@"\??\UNC\server\share\repo")]
+	public void TryGetInitializeArgs_WhenWorkspaceDirectoryIsUnc_ReturnsError(string workspaceDirectory)
 	{
 		var arguments = new Dictionary<string, JsonElement>
 		{
-			["workspaceDirectory"] = JsonSerializer.SerializeToElement(@"\\server\share\repo"),
+			["workspaceDirectory"] = JsonSerializer.SerializeToElement(workspaceDirectory),
 		};
 
 		var success = McpStdioServer.TryGetInitializeArgs(arguments, out _, out _, out var errorResult);
@@ -403,6 +420,22 @@ public class Given_McpStdioServer
 		success.Should().BeFalse();
 		errorResult.IsError.Should().BeTrue();
 		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("local path");
+	}
+
+	[TestMethod]
+	[OSCondition(OperatingSystems.Windows)]
+	[Description("A workspaceDirectory rooted on the current drive is normalized to its full path, then accepted")]
+	public void TryGetInitializeArgs_WhenWorkspaceDirectoryHasNoDrive_ReturnsFullPath()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["workspaceDirectory"] = JsonSerializer.SerializeToElement(@"\repo"),
+		};
+
+		var success = McpStdioServer.TryGetInitializeArgs(arguments, out var workspaceDirectory, out _, out _);
+
+		success.Should().BeTrue();
+		workspaceDirectory.Should().Be(Path.GetFullPath(@"\repo"));
 	}
 
 	// -------------------------------------------------------------------

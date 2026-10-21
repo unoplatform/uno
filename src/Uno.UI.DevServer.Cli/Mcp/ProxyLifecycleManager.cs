@@ -370,8 +370,8 @@ internal class ProxyLifecycleManager
 	///   ├─ roots empty AND forceRootsFallback?
 	///   │   └─ YES → defer startup, wait for uno_app_initialize call
 	///   │
-	///   ├─ GetRootPath(rootUri) → rootPath
-	///   │   └─ null → log warning, done
+	///   ├─ for each root: GetRootPath(rootUri) → rootPath
+	///   │   └─ null (not local or unresolvable) → log warning, try the next root
 	///   │
 	///   ├─ ResolveAsync(rootPath)
 	///   │   ├─ Found Uno solution → IsResolved=true → ApplyTransition (Start before a DevServer runs;
@@ -394,47 +394,47 @@ internal class ProxyLifecycleManager
 		// anything is decided under the transition gate by WorkspaceTransitionDecisions (Ignore once a DevServer runs
 		// or a solution was selected explicitly).
 
-		if (_roots.FirstOrDefault() is { } rootUri)
+		// The first root that resolves to a local path wins; a refused or unresolvable one falls through to the next.
+		foreach (var rootUri in _roots)
 		{
-			var rootPath = GetRootPath(rootUri);
-			if (!string.IsNullOrWhiteSpace(rootPath))
+			// GetRootPath logs why it returns null.
+			if (GetRootPath(rootUri) is not { Length: > 0 } rootPath)
 			{
-				var rootWorkspaceResolution = (await _workspaceResolver.ResolveAsync(rootPath)) with
-				{
-					SelectionSource = WorkspaceSelectionSource.RootsConfirmed,
-				};
+				continue;
+			}
 
-				// Always accept a valid directory as the workspace root, even when no
-				// Uno solution is found yet (empty project, new workspace, non-Uno project).
-				// The file watcher will pick up solutions as they appear.
-				if (!rootWorkspaceResolution.IsResolved && Directory.Exists(rootPath))
-				{
-					rootWorkspaceResolution = rootWorkspaceResolution with
-					{
-						RequestedWorkingDirectory = rootPath,
-						EffectiveWorkspaceDirectory = rootPath,
-					};
-					_logger.LogInformation(
-						"No Uno workspace found at '{RootPath}'; accepting as workspace root for monitoring", rootPath);
-				}
-				LogTimeline(
-					"set-roots.resolve-workspace.complete",
-					processRootsStopwatch.ElapsedMilliseconds,
-					$"root={rootPath};kind={rootWorkspaceResolution.ResolutionKind};workspace={rootWorkspaceResolution.EffectiveWorkspaceDirectory}");
-				_logger.LogTrace("Resolved MCP root '{RootUri}' into path '{RootPath}'", rootUri, rootPath);
-				await ApplyWorkspaceResolutionAsync(rootWorkspaceResolution, WorkspaceTransitionTrigger.McpRoots);
-				LogTimeline(
-					"set-roots.apply-transition.complete",
-					processRootsStopwatch.ElapsedMilliseconds,
-					$"workspace={rootWorkspaceResolution.EffectiveWorkspaceDirectory}");
-				return;
-			}
-			else
+			var rootWorkspaceResolution = (await _workspaceResolver.ResolveAsync(rootPath)) with
 			{
-				_logger.LogWarning("Unable to resolve MCP root '{RootUri}' to a local path", rootUri);
+				SelectionSource = WorkspaceSelectionSource.RootsConfirmed,
+			};
+
+			// Always accept a valid directory as the workspace root, even when no
+			// Uno solution is found yet (empty project, new workspace, non-Uno project).
+			// The file watcher will pick up solutions as they appear.
+			if (!rootWorkspaceResolution.IsResolved && Directory.Exists(rootPath))
+			{
+				rootWorkspaceResolution = rootWorkspaceResolution with
+				{
+					RequestedWorkingDirectory = rootPath,
+					EffectiveWorkspaceDirectory = rootPath,
+				};
+				_logger.LogInformation(
+					"No Uno workspace found at '{RootPath}'; accepting as workspace root for monitoring", rootPath);
 			}
+			LogTimeline(
+				"set-roots.resolve-workspace.complete",
+				processRootsStopwatch.ElapsedMilliseconds,
+				$"root={rootPath};kind={rootWorkspaceResolution.ResolutionKind};workspace={rootWorkspaceResolution.EffectiveWorkspaceDirectory}");
+			_logger.LogTrace("Resolved MCP root '{RootUri}' into path '{RootPath}'", rootUri, rootPath);
+			await ApplyWorkspaceResolutionAsync(rootWorkspaceResolution, WorkspaceTransitionTrigger.McpRoots);
+			LogTimeline(
+				"set-roots.apply-transition.complete",
+				processRootsStopwatch.ElapsedMilliseconds,
+				$"workspace={rootWorkspaceResolution.EffectiveWorkspaceDirectory}");
+			return;
 		}
-		else if (_forceRootsFallback)
+
+		if (_roots.Length == 0 && _forceRootsFallback)
 		{
 			_logger.LogWarning(
 				"No roots provided via uno_app_initialize; DevServer startup is deferred until roots are set");
@@ -652,25 +652,45 @@ internal class ProxyLifecycleManager
 		_logger.LogTrace("Attempting to resolve root URI '{RootUri}' using current directory '{CurrentDirectory}'",
 			rootUri, _currentDirectory);
 
-		if (Uri.TryCreate(rootUri, UriKind.Absolute, out var absoluteUri) && absoluteUri.IsFile)
+		// Path.GetFullPath throws on NUL: such a root is unresolvable, not a failure of the whole roots update.
+		if (rootUri.Contains('\0'))
 		{
-			var normalizedPath = NormalizeLocalFilePath(absoluteUri.LocalPath);
-			return Path.GetFullPath(normalizedPath);
+			_logger.LogWarning("Unable to resolve MCP root path from a URI containing a NUL character");
+			return null;
 		}
 
-		if (Path.IsPathRooted(rootUri))
+		if (ResolveFullPath() is not { } rootPath)
 		{
-			return Path.GetFullPath(rootUri);
+			_logger.LogWarning("Unable to resolve MCP root path from '{RootUri}'", rootUri);
+			return null;
 		}
 
-		if (!string.IsNullOrWhiteSpace(_currentDirectory))
+		if (!LocalPathGuard.IsLocalPath(rootPath))
 		{
-			var combined = Path.Combine(_currentDirectory, rootUri);
-			return Path.GetFullPath(combined);
+			_logger.LogWarning(
+				"Ignoring MCP root '{RootUri}': the DevServer only opens a local path, not a network share or device path",
+				rootUri);
+			return null;
 		}
 
-		_logger.LogWarning("Unable to resolve MCP root path from '{RootUri}'", rootUri);
-		return null;
+		return rootPath;
+
+		string? ResolveFullPath()
+		{
+			if (Uri.TryCreate(rootUri, UriKind.Absolute, out var absoluteUri) && absoluteUri.IsFile)
+			{
+				return Path.GetFullPath(NormalizeLocalFilePath(absoluteUri.LocalPath));
+			}
+
+			if (Path.IsPathRooted(rootUri))
+			{
+				return Path.GetFullPath(rootUri);
+			}
+
+			return string.IsNullOrWhiteSpace(_currentDirectory)
+				? null
+				: Path.GetFullPath(Path.Combine(_currentDirectory, rootUri));
+		}
 	}
 
 	private static string NormalizeLocalFilePath(string localPath)

@@ -8,8 +8,10 @@ namespace Uno.UI.DevServer.Cli.Helpers;
 internal static class LocalPathGuard
 {
 	/// <summary>
-	/// <see langword="false"/> on Windows for a UNC path or a Win32 device path (\\?\, \\.\), whose root starts with two
-	/// separators; <see langword="true"/> otherwise. On Unix a network mount is a local path.
+	/// On Windows, <see langword="true"/> only for a drive-rooted path (C:\...): an allowlist, because a share is
+	/// reachable through more prefixes (\\, //, \\?\UNC\, \??\UNC\) than a blocklist can name. A drive the user mapped
+	/// to a share is their own configuration and stays local. Always <see langword="true"/> on Unix, where a network
+	/// mount is a local path.
 	/// </summary>
 	public static bool IsLocalPath(string fullPath)
 	{
@@ -18,8 +20,6 @@ internal static class LocalPathGuard
 			return true;
 		}
 
-		var root = Path.GetPathRoot(fullPath);
-		return root is null
-			|| !(root.StartsWith(@"\\", StringComparison.Ordinal) || root.StartsWith("//", StringComparison.Ordinal));
+		return Path.GetPathRoot(fullPath.AsSpan()) is [var drive, ':', '\\' or '/'] && char.IsAsciiLetter(drive);
 	}
 }
