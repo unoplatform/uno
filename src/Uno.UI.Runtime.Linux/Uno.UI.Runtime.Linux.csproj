@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override-noplatform.props" />
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<Description>This package provides the display-server independent Linux desktop services (XDG desktop portals, theme, text scale, key mapping) shared by the Uno Platform Linux hosts.</Description>
+
+		<PackageId>Uno.WinUI.Runtime.Linux</PackageId>
+
+		<RootNamespace>Uno.UI.Runtime.Linux</RootNamespace>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Tmds.DBus.Protocol" />
+		<PackageReference Include="Tmds.DBus.Generator" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.FileChooser.xml" Namespace="Uno.UI.Runtime.Linux.DBus" GenerateDBusTypes="true" />
+		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.Request.xml" Namespace="Uno.UI.Runtime.Linux.DBus" GenerateDBusTypes="true" />
+		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.Settings.xml" Namespace="Uno.UI.Runtime.Linux.DBus" GenerateDBusTypes="true" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.Runtime\Uno.UI.Runtime.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Generic.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Generic.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+	</ItemGroup>
+</Project>
