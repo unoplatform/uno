@@ -67,6 +67,7 @@ These are added directly by `HealthService.BuildHealthReport()`:
 |-----------|----------|---------|
 | `HostNotStarted` | Fatal | DevServer not yet started |
 | `NoSolutionFound` | Warning | No `.sln` or `.slnx` file found in working directory tree |
+| `WorkspaceNotResolved` | Fatal | An explicitly selected solution is not served (see [Solution selection](#solution-selection)) |
 | `HostCrashed` | Warning/Fatal | Connection state `Reconnecting` / `Degraded` |
 | `HostUnreachable` | Warning | Started but not yet connected |
 | `HostMcpEndpointNotAvailable` | Fatal | Host responds to HTTP but `/mcp` returns 404/400 — the host version predates MCP support (requires 6.6 or later). The MCP bridge cannot function without this endpoint. Remediation: upgrade the Uno.WinUI.DevServer package. |
@@ -82,7 +83,7 @@ Three codes exist in the `IssueCode` enum but are **not currently mapped** in CL
 
 ## Solution selection
 
-`uno_app_select_solution` accepts the absolute local path of any `.sln`/`.slnx` whose nearest `global.json` declares the Uno SDK, inside or outside the workspace: `candidateSolutions` are suggestions, not a filter. An explicit selection (that tool, or `--solution` at startup) stays in place across file changes and MCP roots until another one is made; while it does not resolve, the session is degraded and still reports it as `SelectedSolutionPath`.
+`uno_app_select_solution` accepts the absolute local path of any `.sln`/`.slnx` whose nearest `global.json` declares the Uno SDK, inside or outside the workspace: `candidateSolutions` are suggestions, not a filter. An explicit selection (that tool, or `--solution` at startup) stays in place across file changes and MCP roots until another one is made; while it is not served, health is unhealthy, still reports it as `SelectedSolutionPath`, and raises `WorkspaceNotResolved` naming the cause (the file is missing, or its nearest `global.json` has no usable Uno SDK, or there is none) in place of the `HostCrashed` / `HostUnreachable` advice to wait.
 
 ## Notable HealthReport Fields
 

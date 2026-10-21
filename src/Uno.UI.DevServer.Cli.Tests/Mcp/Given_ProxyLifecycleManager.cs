@@ -332,6 +332,7 @@ public class Given_ProxyLifecycleManager
 			result.EffectiveWorkspaceDirectory.Should().Be(externalWorkspace);
 			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
 			healthService.DevServerStarted.Should().BeTrue();
+			healthService.CurrentSelection!.IsExplicitSolutionSelection.Should().BeTrue();
 		}
 		finally
 		{

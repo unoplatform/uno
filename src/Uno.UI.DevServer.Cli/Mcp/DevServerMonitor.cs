@@ -101,6 +101,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		_workspaceResolution = workspaceResolution;
 		_noHostDiscoveryCount = 0;
 		_missingSelectionWarned = false;
+		SolutionNotFound = false;
 		NotAnUnoWorkspace = false;
 
 		var forwardedArgsDisplay = string.Join(" ", _forwardedArgs);
@@ -146,6 +147,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		_serverProcess = null;
 		_adoptedServerPid = null;
 		HostRespondedNoMcp = false;
+		SolutionNotFound = false;
 	}
 
 	private async Task RunMonitor(CancellationToken ct)
