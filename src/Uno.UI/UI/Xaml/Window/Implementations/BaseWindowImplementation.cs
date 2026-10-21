@@ -174,7 +174,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	private void OnNativeSizeChanged(object? sender, Size size)
 	{
-		if (_isClosed || _lastSize == size)
+		if (_lastSize == size)
 		{
 			return;
 		}
@@ -193,10 +193,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 		RaiseSizeChanged(windowSizeChanged);
 
-		if (!_isClosed)
-		{
-			XamlRoot?.RaiseChangedEvent();
-		}
+		XamlRoot?.RaiseChangedEvent();
 	}
 
 	private void OnNativeVisibleBoundsChanged(object? sender, Rect args) => SetVisibleBoundsFromNative();
