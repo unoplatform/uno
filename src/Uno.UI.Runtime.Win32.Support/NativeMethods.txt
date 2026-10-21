@@ -235,6 +235,7 @@ InternetGetConnectedState
 InvalidateRect
 IsChild
 IsClipboardFormatAvailable
+IsIconic
 IsZoomed
 LoadCursor
 LoadRegTypeLib
