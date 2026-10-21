@@ -6,18 +6,18 @@
 		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
 
-		<!-- A renderer is required, so 'skia' is implied when the app names none. Naming 'webgpu' counts as
-		     naming one, which is what lets an app be SkiaSharp-free. Listing both references both, and Skia
-		     still renders by default; the head opts into WebGPU on the host builder. WinAppSDK renders with
-		     WinUI, so nothing is implied there: a Windows head that uses SKCanvasElement lists 'skia'. The
-		     legacy 'nativerenderer' token is ignored, and 'skiarenderer' is mapped to 'skia' for backwards
-		     compatibility. 'lottie' is ignored too: Lottie is built into Uno.WinUI. -->
+		<!-- Legacy tokens: native rendering is gone, and Lottie is built into Uno.WinUI. -->
 		<UnoFeatures>$(UnoFeatures.Replace(';nativerenderer;', ';'))</UnoFeatures>
 		<UnoFeatures>$(UnoFeatures.Replace(';lottie;', ';'))</UnoFeatures>
-		<UnoFeatures>$(UnoFeatures.Replace(';skiarenderer;', ';skia;'))</UnoFeatures>
-		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And '$(IsWinAppSdk)' != 'true'">$(UnoFeatures)skia;</UnoFeatures>
+
+		<!-- The renderer is the app's choice. A head maps the legacy 'skiarenderer' to 'skia', and implies 'skia'
+		     when it names no renderer ('webgpu' counts, which keeps an app SkiaSharp-free); WinAppSDK renders with
+		     WinUI, so nothing is implied there. A library gets neither, and lists 'skia' to draw with SkiaSharp. -->
+		<UnoFeatures Condition="'$(IsUnoHead)' == 'true'">$(UnoFeatures.Replace(';skiarenderer;', ';skia;'))</UnoFeatures>
+		<UnoFeatures Condition="'$(IsUnoHead)' != 'true'">$(UnoFeatures.Replace(';skiarenderer;', ';'))</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And '$(IsWinAppSdk)' != 'true' And '$(IsUnoHead)' == 'true'">$(UnoFeatures)skia;</UnoFeatures>
 		<!-- WebGpuCanvasElement draws only with the WebGPU backend, so 'webgpucanvas' brings it in. It is added after
-		     the renderer default above, so it adds WebGPU next to Skia rather than replacing it. -->
+		     the renderer default above, so in an app it adds WebGPU next to Skia rather than replacing it. -->
 		<UnoFeatures Condition="$(UnoFeatures.Contains(';webgpucanvas;')) And !$(UnoFeatures.Contains(';webgpu;')) And '$(IsWinAppSdk)' != 'true'">$(UnoFeatures)webgpu;</UnoFeatures>
 	</PropertyGroup>
 
