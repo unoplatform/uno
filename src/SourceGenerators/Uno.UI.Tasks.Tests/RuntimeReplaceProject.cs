@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using Uno.UI.Tasks.RuntimeAssetsSelector;
 
@@ -68,28 +67,15 @@ internal sealed class RuntimeReplaceProject
 		var logPath = Path.Combine(Directory, $"{target}.log");
 		File.WriteAllText(projectPath, BuildProject());
 
-		var arguments = new List<string> { "msbuild", projectPath, $"-t:{target}", "-nologo", "-nodeReuse:false", $"-flp:LogFile={logPath};Verbosity=normal" };
+		var arguments = new List<string> { projectPath, $"-t:{target}", $"-flp:LogFile={logPath};Verbosity=normal" };
 		// A single -getProperty prints the bare value; asking for two always yields JSON.
 		arguments.AddRange((properties ?? []).Append("TargetFramework").Distinct().Select(p => $"-getProperty:{p}"));
 		arguments.AddRange((items ?? []).Select(i => $"-getItem:{i}"));
 
-		var startInfo = new ProcessStartInfo("dotnet")
-		{
-			RedirectStandardOutput = true,
-			RedirectStandardError = true,
-			UseShellExecute = false,
-			WorkingDirectory = Directory,
-		};
-		arguments.ForEach(startInfo.ArgumentList.Add);
-		startInfo.Environment["MSBUILDDISABLENODEREUSE"] = "1";
-
-		using var process = Process.Start(startInfo)!;
-		var stdout = process.StandardOutput.ReadToEndAsync();
-		var stderr = process.StandardError.ReadToEndAsync();
-		process.WaitForExit();
+		var result = DotnetMSBuild.Run(Directory, arguments);
 
 		var log = File.Exists(logPath) ? File.ReadAllText(logPath) : "";
-		return new Result(process.ExitCode, stdout.Result + stderr.Result, log);
+		return new Result(result.ExitCode, result.Output, log);
 	}
 
 	private string BuildProject()
