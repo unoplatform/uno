@@ -18,7 +18,8 @@ internal static class HealthReportFactory
 		string? upstreamError = null,
 		bool forceRootsFallback = false,
 		bool rootsProvided = false,
-		bool hostRespondedNoMcp = false)
+		bool hostRespondedNoMcp = false,
+		ValidationIssue? selectionIssue = null)
 	{
 		var issues = new List<ValidationIssue>();
 
@@ -37,7 +38,13 @@ internal static class HealthReportFactory
 			});
 		}
 
-		if (connectionState == ConnectionState.Reconnecting)
+		if (selectionIssue is not null)
+		{
+			issues.Add(selectionIssue);
+		}
+
+		// No host comes for a selection that is not served: "wait" advice below would be wrong.
+		if (connectionState == ConnectionState.Reconnecting && selectionIssue is null)
 		{
 			issues.Add(new ValidationIssue
 			{
@@ -74,7 +81,7 @@ internal static class HealthReportFactory
 				Remediation = "Check that the DevServer host process started correctly and is listening on the expected port.",
 			});
 		}
-		else if (devServerStarted && !upstreamConnected)
+		else if (devServerStarted && !upstreamConnected && selectionIssue is null)
 		{
 			issues.Add(new ValidationIssue
 			{

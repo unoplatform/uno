@@ -120,6 +120,7 @@ internal class ProxyLifecycleManager
 			SelectedSolutionPath = workspaceResolution.SelectedSolutionPath,
 			ResolutionKind = workspaceResolution.ResolutionKind,
 			SelectionSource = workspaceResolution.SelectionSource,
+			IsExplicitSolutionSelection = workspaceResolution.IsExplicitSolutionSelection,
 			CandidateSolutions = workspaceResolution.CandidateSolutions.Count > 0
 				? workspaceResolution.CandidateSolutions
 				: null,
@@ -261,18 +262,21 @@ internal class ProxyLifecycleManager
 		}
 
 		var pathProblem = SolutionPathRules.Check(normalizedSolutionPath);
+		if (pathProblem == SolutionPathRules.Problem.NotFound)
+		{
+			return CreateRejectedSelectionResult(
+				normalizedSolutionPath,
+				"Solution file not found.",
+				[DiscoveryIssueMapper.MapUnresolvedSelection(normalizedSolutionPath, selectionIsKept: false)]);
+		}
+
 		if (pathProblem != SolutionPathRules.Problem.None)
 		{
-			var (message, issueMessage) = pathProblem switch
-			{
-				SolutionPathRules.Problem.NotLocal => (
-					"The solutionPath argument must be a local path; network (UNC) and device paths are refused.",
-					"The requested solution is on a network share or device path, which the DevServer does not open."),
-				SolutionPathRules.Problem.NotSolutionFile => (
-					"The solutionPath argument must point to a .sln or .slnx file.",
-					"The requested path is not a solution file."),
-				_ => ("Solution file not found.", $"No file exists at '{normalizedSolutionPath}'."),
-			};
+			var (message, issueMessage) = pathProblem == SolutionPathRules.Problem.NotLocal
+				? ("The solutionPath argument must be a local path; network (UNC) and device paths are refused.",
+					"The requested solution is on a network share or device path, which the DevServer does not open.")
+				: ("The solutionPath argument must point to a .sln or .slnx file.",
+					"The requested path is not a solution file.");
 			return CreateRejectedSelectionResult(
 				normalizedSolutionPath,
 				message,
@@ -316,7 +320,7 @@ internal class ProxyLifecycleManager
 			return CreateRejectedSelectionResult(
 				normalizedSolutionPath,
 				"The DevServer cannot start for this solution: no global.json declaring an Uno SDK applies to it.",
-				[CreateNoUnoSdkIssue(solutionDirectory)]);
+				[DiscoveryIssueMapper.MapUnresolvedSelection(normalizedSolutionPath, selectionIsKept: false)]);
 		}
 
 		var previousResolution = _workspaceResolution;
@@ -340,24 +344,6 @@ internal class ProxyLifecycleManager
 
 	private const string SelectSolutionPathRemediation =
 		"Provide the absolute path to the intended .sln or .slnx file; uno_health lists discovered candidateSolutions as suggestions.";
-
-	// The resolver stops at the nearest global.json, as the .NET SDK does: say which one applies, or that none does.
-	private static ValidationIssue CreateNoUnoSdkIssue(string solutionDirectory)
-		=> GlobalJsonLocator.FindGlobalJson(solutionDirectory) is { } globalJsonPath
-			? new ValidationIssue
-			{
-				Code = IssueCode.WorkspaceNotResolved,
-				Severity = ValidationSeverity.Fatal,
-				Message = $"The nearest global.json ({globalJsonPath}) does not declare Uno.Sdk or Uno.Sdk.Private in msbuild-sdks.",
-				Remediation = "Add the Uno SDK to that global.json's msbuild-sdks, or choose another solution, then call uno_app_select_solution again.",
-			}
-			: new ValidationIssue
-			{
-				Code = IssueCode.WorkspaceNotResolved,
-				Severity = ValidationSeverity.Fatal,
-				Message = $"No global.json was found in {solutionDirectory} or any parent folder.",
-				Remediation = "Add a global.json declaring Uno.Sdk in msbuild-sdks next to the solution or above it, or choose another solution, then call uno_app_select_solution again.",
-			};
 
 	private async Task<CallToolResult> SelectSolution(string solutionPath, bool forceRestart, string? suggestionsRoot)
 	{
