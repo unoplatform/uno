@@ -50,9 +50,7 @@ public class Given_GlyphRunRenderer
 		using (var skFont = new SKFont(typeface, fontSize) { Edging = edging, Subpixel = true })
 		using (var builder = new SKTextBlobBuilder())
 		using (var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true })
-		using (var shader = ExpectedGlyphShader(SKColors.Black))
 		{
-			paint.Shader = shader;
 			var points = new SKPoint[positions.Length];
 			for (var i = 0; i < positions.Length; i++)
 			{
@@ -66,33 +64,6 @@ public class Given_GlyphRunRenderer
 
 		var mismatches = CountMismatches(actual, expected, info, out _);
 		Assert.AreEqual(0, mismatches, $"{mismatches} pixels differ from Skia's text rendering at {fontSize}px.");
-	}
-
-	// Skia's luminance gamma tables thin dark text and thicken light text; on Linux the session selects the neutral
-	// table, so both get the same ink. Pins that symmetry: a SkiaSharp update that starts collapsing the colour
-	// filter, or changes the build constants, shows up here.
-	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public async Task When_Skia_Draws_GlyphRun_On_Linux_Then_Coverage_Is_Neutral()
-	{
-		if (!SkiaDrawingSession.UsesNeutralGlyphCoverage)
-		{
-			Assert.Inconclusive("Neutral glyph coverage is only used on Linux.");
-		}
-
-		const float fontSize = 14f;
-		var font = CreateSkiaFont(await LoadFontData(), fontSize);
-		var (run, positions, info, baseline) = Layout(font, fontSize);
-
-		var plainDark = Ink(font, run, positions, info, baseline, SKColors.Black, SKColors.White, neutral: false);
-		var plainLight = Ink(font, run, positions, info, baseline, SKColors.White, SKColors.Black, neutral: false);
-		var neutralDark = Ink(font, run, positions, info, baseline, SKColors.Black, SKColors.White, neutral: true);
-		var neutralLight = Ink(font, run, positions, info, baseline, SKColors.White, SKColors.Black, neutral: true);
-		Assert.IsTrue(plainDark > 0 && neutralDark > 0, "Nothing was drawn.");
-
-		Assert.IsTrue(plainLight > plainDark * 1.1, $"Skia gamma expected: dark {plainDark}, light {plainLight}.");
-		Assert.IsTrue(Math.Abs(neutralDark - neutralLight) <= neutralDark * 0.02, $"Neutral coverage expected: dark {neutralDark}, light {neutralLight}.");
-		Assert.IsTrue(neutralDark > plainDark, $"Dark text should gain coverage: {plainDark} -> {neutralDark}.");
 	}
 
 	// Outline text must stay on Skia's text pipeline too, drawn as a stroked text blob.
@@ -115,9 +86,7 @@ public class Given_GlyphRunRenderer
 		using var expected = CreateSurface(info);
 		using (var builder = new SKTextBlobBuilder())
 		using (var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = strokeWidth })
-		using (var shader = ExpectedGlyphShader(SKColors.Black))
 		{
-			paint.Shader = shader;
 			var points = new SKPoint[positions.Length];
 			for (var i = 0; i < positions.Length; i++)
 			{
@@ -277,67 +246,6 @@ public class Given_GlyphRunRenderer
 		var surface = SKSurface.Create(info);
 		surface.Canvas.Clear(SKColors.White);
 		return surface;
-	}
-
-	// Spelled out rather than taken from the session: on Linux, glyphs are drawn with the colour behind an
-	// identity colour filter, which keeps Skia off its luminance gamma tables (see SkiaDrawingSession).
-	private static SKShader? ExpectedGlyphShader(SKColor color)
-	{
-		if (!SkiaDrawingSession.UsesNeutralGlyphCoverage)
-		{
-			return null;
-		}
-
-		using var identity = SKColorFilter.CreateColorMatrix(
-		[
-			1, 0, 0, 0, 0,
-			0, 1, 0, 0, 0,
-			0, 0, 1, 0, 0,
-			0, 0, 0, 1, 0,
-		]);
-		using var colorShader = SKShader.CreateColor(color);
-		return colorShader.WithColorFilter(identity);
-	}
-
-	// Total glyph coverage of the run drawn in foreground over background, through the session or with a plain paint.
-	private static long Ink(IFont font, GlyphRun run, Vector2[] positions, SKImageInfo info, float baseline, SKColor foreground, SKColor background, bool neutral)
-	{
-		using var surface = SKSurface.Create(info);
-		surface.Canvas.Clear(background);
-		if (neutral)
-		{
-			using var factory = new SkiaDrawingFactory();
-			var color = Windows.UI.Color.FromArgb(foreground.Alpha, foreground.Red, foreground.Green, foreground.Blue);
-			new SkiaDrawingSession(surface.Canvas, factory).DrawGlyphRun(font, run.Glyphs, positions, baseline, color);
-		}
-		else
-		{
-			using var builder = new SKTextBlobBuilder();
-			using var paint = new SKPaint { Color = foreground, IsAntialias = true };
-			var points = new SKPoint[positions.Length];
-			for (var i = 0; i < positions.Length; i++)
-			{
-				points[i] = new SKPoint(positions[i].X, positions[i].Y);
-			}
-
-			builder.AddPositionedRun(run.Glyphs, ((SkiaFont)font).NativeFont, points);
-			using var blob = builder.Build();
-			surface.Canvas.DrawText(blob, 0, baseline, paint);
-		}
-
-		using var image = surface.Snapshot();
-		using var pixels = image.PeekPixels();
-		long ink = 0;
-		for (var y = 0; y < info.Height; y++)
-		{
-			for (var x = 0; x < info.Width; x++)
-			{
-				var green = pixels.GetPixelColor(x, y).Green;
-				ink += background == SKColors.White ? 255 - green : green;
-			}
-		}
-
-		return ink;
 	}
 
 	private static int CountMismatches(SKSurface actual, SKSurface expected, SKImageInfo info, out int inked)

@@ -185,7 +185,3 @@ public record Entity(string Name);
 The build system will automatically preserve the `Name` property of `Entity`, allowing `{Binding MyEntity.Name}` expressions to work correctly in Native AOT builds.
 
 For more information, see [the runtime documentation](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/reflection-in-aot-mode.md) and the [.NET Native AOT documentation](https://learn.microsoft.com/dotnet/core/deploying/native-aot/).
-
-## Linux text rendering
-
-On Linux, antialiased glyphs use Skia's neutral-luminance coverage table (approximately linear, the same for dark and light text) instead of the luminance-dependent gamma tables, which thin dark text at 1x compared with Qt, GTK and cairo. Set `UNO_SKIA_TEXT_GAMMA=skia` before starting the app to restore Skia's tables.
