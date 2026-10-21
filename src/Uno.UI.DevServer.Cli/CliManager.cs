@@ -220,8 +220,8 @@ internal class CliManager
 			if (!workspaceResolution.IsResolved)
 			{
 				_logger.LogWarning(
-					"--solution {Solution} does not resolve: no global.json above it declares an Uno SDK. It stays selected and starts once its global.json declares one.",
-					solutionPath);
+					"--solution does not resolve: {Reason} It stays selected and starts once it resolves.",
+					DiscoveryIssueMapper.MapUnresolvedSelection(solutionPath, selectionIsKept: true).Message);
 			}
 		}
 		else

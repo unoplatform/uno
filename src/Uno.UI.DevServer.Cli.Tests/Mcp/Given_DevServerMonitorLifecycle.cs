@@ -246,6 +246,10 @@ public class Given_DevServerMonitorLifecycle
 
 			monitor.SolutionNotFound.Should().BeTrue();
 			warnings.Should().ContainSingle().Which.Should().Contain(deletedSolution).And.Contain("no DevServer is launched");
+
+			// Health reads the flag against the current selection: it must not outlive the run that set it.
+			await monitor.StopMonitoringAsync();
+			monitor.SolutionNotFound.Should().BeFalse();
 		}
 		finally
 		{
