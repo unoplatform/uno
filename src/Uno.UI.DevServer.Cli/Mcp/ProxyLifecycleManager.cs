@@ -591,11 +591,11 @@ internal class ProxyLifecycleManager
 
 				case WorkspaceTransitionAction.Ignore:
 					_logger.LogInformation(
-						"{Trigger} pointed to another workspace ({IncomingWorkspace}, {ResolutionKind}) than the running one ({CurrentWorkspace}); keeping the running workspace. Use uno_app_select_solution to change it.",
+						"Ignoring {Trigger} ({IncomingWorkspace}, {ResolutionKind}): roots never replace an explicitly selected solution or a workspace whose DevServer runs or failed; keeping {CurrentWorkspace}. Use uno_app_select_solution to change it.",
 						trigger,
 						nextResolution.EffectiveWorkspaceDirectory ?? nextResolution.RequestedWorkingDirectory,
 						nextResolution.ResolutionKind,
-						_workspaceResolution?.EffectiveWorkspaceDirectory);
+						_workspaceResolution?.EffectiveWorkspaceDirectory ?? _workspaceResolution?.SelectedSolutionPath);
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
 						$"trigger={trigger};action={transitionAction};workspace={_workspaceResolution?.EffectiveWorkspaceDirectory}");
 					return transitionAction;

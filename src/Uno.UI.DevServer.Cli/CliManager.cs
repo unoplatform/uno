@@ -236,8 +236,8 @@ internal class CliManager
 	/// <summary>
 	/// Extracts the MCP bridge's <c>--solution &lt;path&gt;</c>, resolved against <paramref name="baseDirectory"/>, so it
 	/// is not forwarded to the DevServer host, which receives the bridge's own <c>--solution</c>. Every spelling the
-	/// host's command-line configuration would read as that key (<c>--solution=path</c>, <c>/solution path</c>, any
-	/// casing) is consumed too: forwarded, it would replace the bridge's choice without these checks.
+	/// host's command-line configuration would read as that key (<c>--solution=path</c>, <c>/solution path</c>,
+	/// <c>solution=path</c>, any casing) is consumed too: forwarded, it would replace the bridge's choice without these checks.
 	/// </summary>
 	internal static (bool Success, string[] FilteredArgs, string? SolutionPath, string? Error) ParseMcpSolutionArgument(
 		string[] args,
@@ -293,9 +293,8 @@ internal class CliManager
 	private static bool TryMatchSolutionOption(string arg, out string? inlineValue)
 	{
 		inlineValue = null;
-		var name = arg.StartsWith("--", StringComparison.Ordinal) ? arg.AsSpan(2)
-			: arg.StartsWith('/') ? arg.AsSpan(1)
-			: ReadOnlySpan<char>.Empty;
+		var prefixLength = arg.StartsWith("--", StringComparison.Ordinal) ? 2 : arg.StartsWith('/') ? 1 : 0;
+		var name = arg.AsSpan(prefixLength);
 		if (!name.StartsWith("solution", StringComparison.OrdinalIgnoreCase))
 		{
 			return false;
@@ -304,7 +303,9 @@ internal class CliManager
 		var rest = name["solution".Length..];
 		if (rest.IsEmpty)
 		{
-			return true;
+			// The bare form is a key only with its value (solution=path): a bare "solution" is a positional argument.
+			// A bare solution=path that is the value of the previous option is consumed too; no host option takes one.
+			return prefixLength > 0;
 		}
 
 		if (rest[0] != '=')

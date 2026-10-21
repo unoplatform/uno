@@ -210,7 +210,13 @@ Use `--json` for machine-readable output suitable for automation and IDE extensi
 
 ### MCP Roots Compatibility
 
-The App MCP can use [MCP roots](https://modelcontextprotocol.io/docs/concepts/roots) as a hint for the workspace directory to scan for solutions. Roots are deprecated as of the MCP 2026-07-28 specification and only ever hint: they decide where the DevServer starts when nothing is running yet (roots that resolve to no Uno workspace then leave it unstarted, reported by `uno_health`), but never replace a running workspace or a solution selected explicitly. To choose the solution, call the `uno_app_select_solution` tool with the absolute path of any `.sln`/`.slnx` whose nearest `global.json` declares the Uno SDK (inside or outside the workspace), or start the MCP server with `--solution <path>`. Not all agents support roots:
+The App MCP can use [MCP roots](https://modelcontextprotocol.io/docs/concepts/roots) as a hint for the workspace directory to scan for solutions. Roots are deprecated as of the MCP 2026-07-28 specification and only ever hint:
+
+- They decide where the DevServer starts when nothing runs yet; roots that resolve to no Uno workspace leave it unstarted, as reported by `uno_health`.
+- They never replace a solution selected explicitly, nor a workspace whose DevServer runs or failed.
+- The first root on a local drive is used; roots on a network share are ignored.
+
+To choose the solution, call the `uno_app_select_solution` tool with the absolute path of any `.sln`/`.slnx` on a local drive whose nearest `global.json` declares the Uno SDK (inside or outside the workspace), or start the MCP server with `--solution <path>`. Not all agents support roots:
 
 | Agent | Roots Support |
 |-------|:------------:|
