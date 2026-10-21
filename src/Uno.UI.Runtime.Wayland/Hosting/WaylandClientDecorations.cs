@@ -17,7 +17,7 @@ namespace Uno.UI.Runtime.Wayland;
 
 // Client-side title bar and resize border, used when the compositor lacks xdg-decoration or picks client-side
 // mode. A synchronized subsurface below the content surface, so its state is applied with the next content commit.
-// Drawn on dispatch, or during presentation while managed dispatch is suspended.
+// Drawn on the dispatch thread.
 internal sealed class WaylandClientDecorations : IDisposable
 {
 	private const uint LeftButton = 0x110; // BTN_LEFT

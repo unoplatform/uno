@@ -82,7 +82,7 @@ When the compositor grants server-side decorations, it draws the window frame. O
 
 ### Clipboard, drag and drop, and text input
 
-Clipboard and incoming drag and drop support text, HTML, images and local file lists through the core data-device protocol. Copy/move negotiation follows the operations supported by both applications. Wayland ties clipboard ownership to a focused input serial, so set clipboard content in response to user input in the focused window. A background client cannot take the clipboard arbitrarily: content set while the window has no keyboard focus is not published, and a warning is logged.
+Clipboard and incoming drag and drop support text, HTML, images and local file lists through the core data-device protocol. Copy/move negotiation follows the operations supported by both applications. Wayland ties clipboard ownership to a focused input serial, so set clipboard content in response to user input in the focused window. A background client cannot take the clipboard arbitrarily: setting the clipboard while the window has no keyboard focus, without a seat, or while the connection is closing does nothing except log a warning. The local clipboard content is not updated either, so reading it back never reports a copy the system clipboard did not receive.
 
 Drags started in the app are handed to the compositor as soon as they start, so they can be dropped on other applications, including windows that overlap the app's own window. The dragged content is offered as local file lists (also readable as text), images, HTML and text, and the drag visual is shown as the compositor's drag icon. The operation completed by the target is reported back as the drop result. Content made only of app-private formats, or a drag without a pointer or touch grab, stays an in-app drag, as does any drag when the compositor's data device is older than version 3.
 
@@ -122,6 +122,7 @@ Enable Debug logging for the `Uno.UI.Runtime.Wayland.WaylandDiagnostics` categor
 - `WebView2` and `MediaPlayerElement` embed X11 windows, so they are not supported by the Wayland host.
 - Input uses the first seat advertised by the compositor. Output tracking follows the outputs entered by the window; the compositor determines its scale.
 - Wayland does not expose global window coordinates. Window placement and focus remain under compositor control.
+- Composition (`Visual`) animations of a hidden window finish only once it is shown again, because nothing is presented while it is hidden.
 - Portal dialogs and IME require the corresponding desktop services; a headless compositor alone does not provide them.
 
 ## Supported features by platform
