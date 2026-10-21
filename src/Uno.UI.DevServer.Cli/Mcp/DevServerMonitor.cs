@@ -51,7 +51,8 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 
 	/// <summary>
 	/// Set to true when the monitor has no solution to launch: the scan found none and the workspace
-	/// resolution selected none that exists. Reset to false when a solution is found. Used by HealthService
+	/// resolution selected none that exists, or an explicitly selected solution is missing (even when the scan
+	/// found others, which never replace it). Reset to false when a solution is found. Used by HealthService
 	/// to report a clear message to the agent.
 	/// </summary>
 	public bool SolutionNotFound { get; private set; }
@@ -73,6 +74,9 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 
 	private int _noHostDiscoveryCount;
 	private const int MaxNoHostRetries = 3;
+
+	// While a selection is missing nothing launches and the loop rescans every cycle: warn once until it exists again.
+	private bool _missingSelectionWarned;
 
 	/// <summary>
 	/// Set to <c>true</c> when the host responds to HTTP on the expected port but the
@@ -96,6 +100,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		_currentDirectory = currentDirectory;
 		_workspaceResolution = workspaceResolution;
 		_noHostDiscoveryCount = 0;
+		_missingSelectionWarned = false;
 		NotAnUnoWorkspace = false;
 
 		var forwardedArgsDisplay = string.Join(" ", _forwardedArgs);
@@ -435,7 +440,8 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 	/// The solution the host is launched with. The resolved <see cref="WorkspaceResolution.SelectedSolutionPath"/>
 	/// wins whenever the file exists: the scanned path when the rescan lists it (it keeps the on-disk casing), the
 	/// selected path itself otherwise, since the rescan is depth-limited. The first scanned solution in sorted order
-	/// is used only when no existing solution is resolved.
+	/// is used only when no existing solution is resolved, and never in place of an explicit selection
+	/// (<see cref="WorkspaceResolution.IsExplicitSolutionSelection"/>): a missing one launches nothing.
 	/// </summary>
 	internal static string? DetermineSolutionToLaunch(IReadOnlyList<string> solutionFiles,
 		WorkspaceResolution? workspaceResolution)
@@ -455,6 +461,11 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			{
 				return selectedSolutionPath;
 			}
+
+			if (workspaceResolution.IsExplicitSolutionSelection)
+			{
+				return null;
+			}
 		}
 
 		return solutionFiles
@@ -462,14 +473,30 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			.FirstOrDefault();
 	}
 
-	// Logged once per launch attempt: a healthy host keeps the loop from coming back here, and the no-host path
-	// stops after MaxNoHostRetries cycles.
-	private void WarnIfSolutionWasNotChosen(IReadOnlyList<string> solutionFiles, string? solution)
+	// A fallback is logged once per launch attempt: a healthy host keeps the loop from coming back here, and the
+	// no-host path stops after MaxNoHostRetries cycles. A missing selection launches nothing and the loop keeps
+	// rescanning, so it is logged once until the selection exists again.
+	internal void WarnIfSolutionWasNotChosen(IReadOnlyList<string> solutionFiles, string? solution)
 	{
+		if (solution is not null)
+		{
+			_missingSelectionWarned = false;
+		}
+
 		var selectedSolutionPath = _workspaceResolution?.SelectedSolutionPath;
 		if (!string.IsNullOrWhiteSpace(selectedSolutionPath))
 		{
-			if (solution is not null && !PathComparison.PathsEqual(solution, selectedSolutionPath))
+			if (solution is null)
+			{
+				if (!_missingSelectionWarned)
+				{
+					_missingSelectionWarned = true;
+					_logger.LogWarning(
+						"The selected solution {SelectedSolution} does not exist; no DevServer is launched until it does or another solution is selected",
+						selectedSolutionPath);
+				}
+			}
+			else if (!PathComparison.PathsEqual(solution, selectedSolutionPath))
 			{
 				_logger.LogWarning(
 					"The selected solution {SelectedSolution} no longer exists; launching {Solution} instead",
