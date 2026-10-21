@@ -31,8 +31,6 @@
       "Uno.ReferenceImplComparer.Tests\\Uno.ReferenceImplComparer.Tests.csproj",
       "Uno.UI.Tests.ViewLibraryProps\\Uno.UI.Tests.ViewLibraryProps.csproj",
       "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",
-      "Uno.UI.Runtime.Wayland.Scanner\\Uno.UI.Runtime.Wayland.Scanner.csproj",
-      "Uno.UI.Runtime.Wayland.Tests\\Uno.UI.Runtime.Wayland.Tests.csproj",
       "Uno.UI.UnitTests\\Uno.UI.UnitTests.csproj",
       "Uno.UI.Extras\\Uno.UI.Extras.Generic.csproj",
       "Uno.UI\\Uno.UI.csproj",
