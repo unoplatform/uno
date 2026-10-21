@@ -56,10 +56,9 @@ namespace Microsoft.UI.Xaml
 			_viewOverride = new CoreDragUIOverride(); // UWP does re-use the same instance for each update on _target
 
 			// A platform that routes the drag itself from the start also shows the drag visual, and reports the
-			// pointer through the extension (see IDragDropExtension) instead of pointer events.
-			if (extension is IImmediateDragDropExtension immediate && immediate.TryStartNativeDrag(info, CompleteFromNative))
+			// pointer through the extension instead of pointer events.
+			if (extension is { StartsNativeDragImmediately: true } && TryStartNativeDrag())
 			{
-				_hasRequestedNativeDrag = true;
 				_viewHandle.Dispose();
 			}
 		}
@@ -182,11 +181,18 @@ namespace Microsoft.UI.Xaml
 			// When the pointer goes out of the window, we hide our internal control and,
 			// if supported by the OS, we request a Drag and Drop operation with the native UI.
 			_viewHandle.Dispose();
-			if (!_hasRequestedNativeDrag)
+			TryStartNativeDrag();
+		}
+
+		// The platform is asked once per drag; a drag it declines stays managed.
+		private bool TryStartNativeDrag()
+		{
+			if (_hasRequestedNativeDrag || _extension is null)
 			{
-				_extension?.StartNativeDrag(Info, CompleteFromNative);
-				_hasRequestedNativeDrag = true;
+				return false;
 			}
+			_hasRequestedNativeDrag = true;
+			return _extension.StartNativeDrag(Info, CompleteFromNative);
 		}
 
 		private Task RaiseFinalLeave(CancellationToken ct)
