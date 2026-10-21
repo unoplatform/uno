@@ -130,7 +130,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		// synchronously initialize Position and Size here before anyone reads their values
 		OnWindowSizeOrLocationChanged();
-		UpdateDisplayInfo();
+		var dpiChanged = UpdateDisplayInfo();
+		PublishChanges();
+		if (dpiChanged)
+		{
+			_displayInformation?.NotifyDpiChanged();
+		}
 		if (RasterizationScale != 1)
 		{
 			// https://github.com/unoplatform/uno/issues/20021
@@ -330,16 +335,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				break;
 			case PInvoke.WM_SIZE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SIZE)} message.");
-				UpdateDisplayInfo();
-				OnWindowSizeOrLocationChanged();
+				OnGeometryChanged();
 				UpdateWindowState(wParam);
 				// The largest overlap decides the window's monitor, so a resize can change it without a WM_MOVE.
 				UpdateCanRevealBackdrop();
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
-				UpdateDisplayInfo();
-				OnWindowSizeOrLocationChanged();
+				OnGeometryChanged();
 				UpdateCanRevealBackdrop();
 				// No present here: the DWM backing surface survives the move, and the OS
 				// invalidates any region needing repaint via WM_PAINT.
@@ -544,9 +547,16 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		RECT rect = Unsafe.ReadUnaligned<RECT>(lParam.Value.ToPointer());
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DPICHANGED)} message with LOWORD(wParam) == {Win32Helper.LOWORD(wParam)} and lParam = RECT {rect.ToRect()}");
 		// the order of the next lines matters or else the canvas might not be resized correctly
-		UpdateDisplayInfo();
+		var dpiChanged = UpdateDisplayInfo();
 		var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
+		// The WM_SIZE sent by SetWindowPos publishes the new scale with the new size; a DPI change that keeps the size
+		// publishes it here.
+		PublishChanges();
+		if (dpiChanged)
+		{
+			_displayInformation?.NotifyDpiChanged();
+		}
 		RefreshIcon();
 	}
 
@@ -663,6 +673,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 	}
 
+	// The scale and the geometry from one native change are published together.
+	private void OnGeometryChanged()
+	{
+		var dpiChanged = UpdateDisplayInfo();
+		OnWindowSizeOrLocationChanged();
+		if (dpiChanged)
+		{
+			_displayInformation?.NotifyDpiChanged();
+		}
+	}
+
 	private void OnWindowSizeOrLocationChanged()
 	{
 		if (!PInvoke.GetClientRect(_hwnd, out RECT clientRect))
@@ -686,9 +707,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// Bounds = new Rect(windowRect.left / scale, windowRect.top / scale, windowRect.Width / scale, windowRect.Height / scale);
 		// VisibleBounds = new Rect(clientRect.left / scale, clientRect.top / scale, clientRect.Width / scale, clientRect.Height / scale);
 		var bounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
-		SetBoundsAndVisibleBounds(bounds, bounds);
-
-		SetSizes(new SizeInt32(windowRect.Width, windowRect.Height), new SizeInt32(clientRect.Width, clientRect.Height));
+		StageSizes(new SizeInt32(windowRect.Width, windowRect.Height), new SizeInt32(clientRect.Width, clientRect.Height));
+		StageVisibleBounds(bounds);
+		StageBounds(bounds);
+		PublishChanges();
 		Position = new PointInt32(windowRect.left, windowRect.top);
 	}
 

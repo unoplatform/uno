@@ -58,11 +58,25 @@ internal sealed class WaylandConfigureScheduler(Action<Action> postToUI, Action<
 		}
 	}
 
+	// UI thread: applies what is posted now rather than on its UI turn, which then finds nothing left.
+	internal void ApplyQueued()
+	{
+		ApplyPending();
+		if (applyState is not null)
+		{
+			ApplyState();
+		}
+	}
+
 	private void ApplyState()
 	{
 		WaylandWindowConfiguration configuration;
 		lock (_gate)
 		{
+			if (!_statePosted)
+			{
+				return;
+			}
 			configuration = _pendingState!;
 			_pendingState = null;
 			_statePosted = false;
@@ -85,6 +99,10 @@ internal sealed class WaylandConfigureScheduler(Action<Action> postToUI, Action<
 		WaylandWindowConfiguration configuration;
 		lock (_gate)
 		{
+			if (!_posted)
+			{
+				return;
+			}
 			_posted = false;
 			if (_heldPresentation is not null || _pending is null)
 			{
