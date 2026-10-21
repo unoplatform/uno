@@ -6252,6 +6252,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 		}
 
+		// A handle drag the system cancels (e.g. Control Center pulled down mid-drag) never gets a release, so the
+		// loupe must end when the handle loses its pointer.
+		[TestMethod]
+		public async Task When_Touch_Handle_Drag_Loses_Pointer_Ends_Loupe_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() =>
+			{
+				TextBoxCore.LoupeOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Double-tap "Text" so the selection shows its handles.
+			var word = GetCaretPoint(SUT, 7);
+			finger.Press(word);
+			finger.Release();
+			finger.Press(word);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForRender(frameCount: 2);
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the selected word should show its handles");
+
+			var handleBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			var dragStart = new Point(handleBounds.GetCenter().X, handleBounds.Bottom - 2);
+			finger.Press(dragStart);
+			finger.MoveBy(60, 0, steps: 4, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, loupe.Begins, "dragging the handle should show the loupe");
+			Assert.AreEqual(0, loupe.Ends);
+
+			// What the system sends instead of a release when it takes the touch away.
+			var cancel = Finger.GetRelease(42, new Point(dragStart.X + 60, dragStart.Y));
+			var cancelInfo = cancel.PointerInfo;
+			cancelInfo.PointerOptions = InjectedInputPointerOptions.Canceled;
+			cancel.PointerInfo = cancelInfo;
+			injector.InjectTouchInput(new[] { cancel });
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, loupe.Ends, $"cancelling the drag should end the loupe (log: {loupe.Log})");
+		}
+
 		private static FrameworkElement FindManagedLoupe()
 		{
 			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)

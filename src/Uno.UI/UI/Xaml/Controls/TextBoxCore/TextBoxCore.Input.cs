@@ -1718,6 +1718,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		DismissSelectionFlyoutForPointerPress();
 	}
 
+	void ITextSelectionGripperHost.OnGripperPointerLost() => EndCaretLoupe();
+
 	// Dismiss the selection flyout (the floating copy/paste bar) when a touch interaction begins, so it
 	// doesn't linger next to a context menu opened on the same gesture.
 	internal void DismissSelectionFlyoutForPointerPress() => TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);

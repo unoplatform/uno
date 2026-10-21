@@ -62,6 +62,12 @@ internal interface ITextSelectionGripperHost
 	/// </summary>
 	void OnGripperPressed();
 
+	/// <summary>
+	/// A gripper lost its pointer: after a release, or when the system cancelled the touch mid-drag (which never
+	/// gets a release). End whatever the drag started.
+	/// </summary>
+	void OnGripperPointerLost();
+
 	/// <summary>The gripper was long-pressed: open the context menu.</summary>
 	void RequestGripperContextMenu(PointerRoutedEventArgs args);
 
@@ -114,8 +120,8 @@ internal sealed class TextSelectionGripperPresenter
 			gripper.PointerPressed += OnGripperPointerPressed;
 			gripper.PointerReleased += OnGripperPointerReleased;
 			gripper.PointerMoved += OnGripperPointerMoved;
-			gripper.PointerCanceled += ClearGripperPointerState;
-			gripper.PointerCaptureLost += ClearGripperPointerState;
+			gripper.PointerCanceled += OnGripperPointerLost;
+			gripper.PointerCaptureLost += OnGripperPointerLost;
 		}
 
 		// Keep the grippers glued to the selection ends as the text surface is (re)drawn.
@@ -391,6 +397,12 @@ internal sealed class TextSelectionGripperPresenter
 		var gripper = (CaretWithStemAndThumb)sender;
 		gripper.SetStemVisible(false);
 		gripper.ReleasePointerCaptures();
+	}
+
+	private void OnGripperPointerLost(object sender, PointerRoutedEventArgs args)
+	{
+		ClearGripperPointerState(sender, args);
+		_host.OnGripperPointerLost();
 	}
 
 	private static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)

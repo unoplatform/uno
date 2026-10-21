@@ -466,6 +466,8 @@ namespace Microsoft.UI.Xaml.Controls
 		void ITextSelectionGripperHost.OnGripperPressed()
 			=> DismissSelectionFlyoutForPointerPress();
 
+		void ITextSelectionGripperHost.OnGripperPointerLost() { }
+
 		void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
 		{
 			var contextArgs = new ContextRequestedEventArgs();
