@@ -143,20 +143,14 @@ internal sealed class WaylandDataDevice : IWaylandClipboardDevice
 	// Dispatch thread. The serial must be the button press or touch down of the implicit grab being converted.
 	internal void StartDrag(WlDataSource source, WlSurface origin, WlSurface? icon, uint serial) => _device.StartDrag(source, origin, icon, serial);
 
-	internal void RequestSelection(Action publish, Action? cancel = null) => _selectionSerial.Request(publish, cancel);
-
-	internal void CancelPendingSelection() => _selectionSerial.CancelPendingSelection();
-
 	event EventHandler? IWaylandClipboardDevice.SelectionChanged
 	{
 		add => SelectionChanged += value;
 		remove => SelectionChanged -= value;
 	}
 
-	bool IWaylandClipboardDevice.HasSelection => Selection is not null;
+	bool IWaylandClipboardDevice.HasKeyboardFocus => _selectionSerial.HasFocus;
 	void IWaylandClipboardDevice.Post(Action action) => Display.Post(action);
-	void IWaylandClipboardDevice.RequestSelection(Action publish, Action? cancel) => RequestSelection(publish, cancel);
-	void IWaylandClipboardDevice.CancelPendingSelection() => CancelPendingSelection();
 	WlDataSource IWaylandClipboardDevice.CreateSource() => CreateSource();
 	void IWaylandClipboardDevice.SetSelection(WlDataSource? source) => SetSelection(source);
 
