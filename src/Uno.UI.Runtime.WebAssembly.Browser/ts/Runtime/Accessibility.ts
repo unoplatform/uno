@@ -7,8 +7,13 @@ namespace Uno.UI.Runtime {
 		private static semanticsRoot: HTMLDivElement;
 		private static containerElement: HTMLElement;
 		private static debugModeEnabled: boolean = false;
-		// Native position each scroll port settled at after the last managed sync.
-		private static managedScrollPositions = new WeakMap<HTMLElement, { left: number, top: number }>();
+		// Last geometry applied to each semantic scroll port, and the position its pending managed sync settled at.
+		private static scrollPortStates = new WeakMap<HTMLElement, {
+			extentWidth: number, extentHeight: number,
+			overflowX: string, overflowY: string,
+			left: number, top: number,
+			echo: { left: number, top: number } | null,
+		}>();
 
 		private static focusSentinelStart: HTMLDivElement | null = null;
 		private static focusSentinelEnd: HTMLDivElement | null = null;
@@ -193,11 +198,17 @@ namespace Uno.UI.Runtime {
 
 			element.addEventListener('scroll', (e) => {
 				let element = e.target as HTMLElement;
-				// Echo of a managed sync: managed code is already at this position, and forwarding it
-				// would cancel in-flight animations or inertia.
-				const managed = this.managedScrollPositions.get(element);
-				if (managed && managed.left === element.scrollLeft && managed.top === element.scrollTop) {
-					return;
+				const state = this.scrollPortStates.get(element);
+				if (state) {
+					// The echo of a managed sync raises one scroll event: managed code is already at this position,
+					// and forwarding it would cancel in-flight animations or inertia. Any later event is a real scroll.
+					const echo = state.echo;
+					state.echo = null;
+					if (echo && echo.left === element.scrollLeft && echo.top === element.scrollTop) {
+						return;
+					}
+					state.left = element.scrollLeft;
+					state.top = element.scrollTop;
 				}
 				this.managedOnScroll(handle, element.scrollLeft, element.scrollTop);
 			});
@@ -956,17 +967,52 @@ namespace Uno.UI.Runtime {
 			}
 		}
 
-		public static updateNativeScrollOffsets(handle: number, horizontalOffset: number, verticalOffset: number, extentWidth: number, extentHeight: number): void {
+		public static updateNativeScrollOffsets(handle: number, horizontalOffset: number, verticalOffset: number, extentWidth: number, extentHeight: number, horizontallyScrollable: boolean, verticallyScrollable: boolean): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
-			if (element) {
-				// The extent must be applied first, otherwise the browser clamps the offsets
-				// and echoes the clamped values back through the scroll event.
+			if (!element) {
+				Accessibility.debugLog(`[A11y] TS updateNativeScrollOffsets: no element for handle=${handle}`);
+				return;
+			}
+
+			// Each write is skipped when unchanged: a single layout pass syncs several times, and
+			// style or scroll writes force the browser to restyle or lay out.
+			let state = Accessibility.scrollPortStates.get(element);
+			if (!state) {
+				state = { extentWidth: NaN, extentHeight: NaN, overflowX: "", overflowY: "", left: NaN, top: NaN, echo: null };
+				Accessibility.scrollPortStates.set(element, state);
 				element.classList.add("uno-semantic-scroll-port");
+			}
+
+			// The extent must be applied first, otherwise the browser clamps the offsets
+			// and echoes the clamped values back through the scroll event.
+			if (state.extentWidth !== extentWidth) {
+				state.extentWidth = extentWidth;
 				element.style.setProperty("--uno-scroll-extent-width", `${extentWidth}px`);
+			}
+			if (state.extentHeight !== extentHeight) {
+				state.extentHeight = extentHeight;
 				element.style.setProperty("--uno-scroll-extent-height", `${extentHeight}px`);
+			}
+
+			// Stays a scroll container (hidden, not visible) so the offsets can still be applied.
+			const overflowX = horizontallyScrollable ? "scroll" : "hidden";
+			if (state.overflowX !== overflowX) {
+				state.overflowX = overflowX;
+				element.style.overflowX = overflowX;
+			}
+			const overflowY = verticallyScrollable ? "scroll" : "hidden";
+			if (state.overflowY !== overflowY) {
+				state.overflowY = overflowY;
+				element.style.overflowY = overflowY;
+			}
+
+			if (state.left !== horizontalOffset || state.top !== verticalOffset) {
+				state.left = horizontalOffset;
+				state.top = verticalOffset;
 				element.scrollLeft = horizontalOffset;
 				element.scrollTop = verticalOffset;
-				Accessibility.managedScrollPositions.set(element, { left: element.scrollLeft, top: element.scrollTop });
+				// The browser rounds the offsets; layout is already up to date after the writes, so reading is cheap.
+				state.echo = { left: element.scrollLeft, top: element.scrollTop };
 			}
 		}
 

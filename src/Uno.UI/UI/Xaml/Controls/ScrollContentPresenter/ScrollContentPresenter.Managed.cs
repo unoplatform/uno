@@ -21,7 +21,7 @@ using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter, IDirectManipulationHandler
+	public partial class ScrollContentPresenter : ContentPresenter, IDirectManipulationHandler, IScrollPortGeometry
 #if !__CROSSRUNTIME__
 		, ICustomClippingElement
 #endif
@@ -137,6 +137,19 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ExtentHeight { get; internal set; }
 
 		public double ExtentWidth { get; internal set; }
+
+		double IScrollPortGeometry.ZoomedExtentWidth => ExtentWidth * _zoomFactor;
+
+		double IScrollPortGeometry.ZoomedExtentHeight => ExtentHeight * _zoomFactor;
+
+		// Same ranges Set clamps the offsets against.
+		double IScrollPortGeometry.ScrollableWidth => Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth * _zoomFactor - ViewportWidth);
+
+		double IScrollPortGeometry.ScrollableHeight => Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight * _zoomFactor - ViewportHeight);
+
+		float IScrollPortGeometry.ZoomFactor => _zoomFactor;
+
+		void IScrollPortGeometry.ScrollToOffsets(double horizontalOffset, double verticalOffset) => Set(horizontalOffset, verticalOffset, disableAnimation: false);
 
 		internal Size ScrollBarSize => new Size(0, 0);
 
