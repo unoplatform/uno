@@ -75,7 +75,7 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 		}
 	}
 
-	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
+	public bool StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
 	{
 		// AppKit's beginDraggingSession must run on the main thread AND from the originating
 		// mouse-event context ([NSApp currentEvent] must still be that mouse event, which the
@@ -93,6 +93,7 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 				CoreDispatcherPriority.High,
 				async () => await StartNativeDragSafeAsync(info, onCompleted));
 		}
+		return true;
 	}
 
 	private async Task StartNativeDragSafeAsync(CoreDragInfo info, Action<DataPackageOperation> onCompleted)

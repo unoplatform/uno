@@ -15,7 +15,7 @@ using Windows.Foundation;
 namespace Uno.UI.Runtime.Wayland;
 
 // Drops from other clients onto one window, and drags from it to other clients. All members run on the UI thread.
-internal sealed class WaylandDragDropExtension : IImmediateDragDropExtension
+internal sealed class WaylandDragDropExtension : IDragDropExtension
 {
 	private static readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 	// Reported to Uno's drag when our own drag leaves this window again: outside the root's bounds, like a pointer would be.
@@ -151,10 +151,13 @@ internal sealed class WaylandDragDropExtension : IImmediateDragDropExtension
 		}
 	}
 
-	// Called by Uno as soon as its drag starts: the implicit grab is converted into a compositor drag, which is
-	// the only way a window covering this one can be dropped on, and onCompleted gets the action the target
-	// performed. Content no other client could take (Uno-private formats) stays a managed drag.
-	public bool TryStartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
+	// Called as soon as Uno's drag starts: the implicit grab is converted into a compositor drag, which is the only
+	// way a window covering this one can be dropped on.
+	public bool StartsNativeDragImmediately => true;
+
+	// onCompleted gets the action the target performed. Content no other client could take (Uno-private formats)
+	// stays a managed drag.
+	public bool StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
 	{
 		// Drags of other clients entering this window run a drag operation too; they already are compositor drags.
 		if (info.SourceId == _fakePointerId || Host is not { } host)
@@ -197,9 +200,6 @@ internal sealed class WaylandDragDropExtension : IImmediateDragDropExtension
 		drag.Start();
 		return true;
 	}
-
-	// Only reached for drags TryStartNativeDrag declined, which keep their implicit grab and can come back.
-	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted) { }
 
 	private void OnXamlRootUnregistered(object? sender, XamlRoot root)
 	{

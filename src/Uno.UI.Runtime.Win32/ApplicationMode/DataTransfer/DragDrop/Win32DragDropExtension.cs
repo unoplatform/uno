@@ -82,7 +82,7 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 		_dropTarget.Dispose();
 	}
 
-	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> action) => throw new NotImplementedException();
+	public bool StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> action) => throw new NotImplementedException();
 
 	private static void CompleteFileDrop(
 		TaskCompletionSource<List<IStorageItem>> completion,

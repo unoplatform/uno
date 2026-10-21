@@ -85,17 +85,18 @@ public class Given_DragOperation
 		}
 	}
 
-	private sealed class Host : IImmediateDragDropExtension
+	private sealed class Host : IDragDropExtension
 	{
 		public Action<DataPackageOperation>? OnCompleted { get; private set; }
 
-		public bool TryStartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
+		public bool StartsNativeDragImmediately => true;
+
+		public bool StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
 		{
+			Assert.IsNull(OnCompleted, "The platform must be asked once per drag.");
 			OnCompleted = onCompleted;
 			return true;
 		}
-
-		public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted) => Assert.Fail("The drag was already taken.");
 	}
 
 	private sealed class Target : ICoreDropOperationTarget
