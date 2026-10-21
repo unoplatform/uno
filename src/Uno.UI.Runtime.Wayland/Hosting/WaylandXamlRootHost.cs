@@ -540,10 +540,7 @@ internal sealed class WaylandXamlRootHost : IXamlRootHost, IWaylandFrameGate, IW
 				{
 					try
 					{
-						if (context is IWaylandGpuTeardownContext gpu && !gpu.TryMakeCurrentForTeardown())
-						{
-							(_unownedDrawingFactory as IGpuDrawingFactory)?.AbandonContext();
-						}
+						(context as IWaylandGpuTeardownContext)?.TryMakeCurrentForTeardown();
 						(_unownedDrawingFactory as IDisposable)?.Dispose();
 					}
 					finally

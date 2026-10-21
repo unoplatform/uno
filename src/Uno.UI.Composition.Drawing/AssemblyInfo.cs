@@ -9,9 +9,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.WebGpu.Init")]
 
-// The Skia backend gets IVT only to implement the host-internal IGpuDrawingFactory teardown hook.
-[assembly: InternalsVisibleTo("Uno.UI.Composition.Skia")]
-
 // The graphics negotiator (GraphicsRegistry, GraphicsInitialization, GraphicsContextFactory) is framework
 // host-plumbing, not third-party API, so it is internal + IVT'd to the Skia hosts; the third-party backend SPI
 // (IGraphicsProvider/IGraphicsContext/GraphicsContextKind/IDrawingFactory) stays public.
