@@ -62,8 +62,8 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 	{
 		if (wParam.Value != _lastWindowSizeChange)
 		{
-			// The window state changed, notify the AppWindow.
-			_window?.AppWindow.OnAppWindowChanged(AppWindowChangedEventArgs.PresenterChangedEventArgs);
+			// The window state changed: published with the geometry that follows, after the scale and before the size.
+			StagePresenterChange();
 			_lastWindowSizeChange = wParam.Value;
 		}
 	}
