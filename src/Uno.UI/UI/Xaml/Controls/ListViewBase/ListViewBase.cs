@@ -521,10 +521,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			SelectedItems.Clear();
 
-			foreach (var item in GetItemsPanelChildren().OfType<SelectorItem>())
-			{
-				item.UpdateMultiSelectStates(useTransitions: item.IsLoaded);
-			}
+			// MUX Reference ListViewBase_Partial.cpp, line 161: UpdateVisibleAndCachedItemsSelectionAndVisualState(false /* updateIsSelected */)
+			UpdateItemsMultiSelectVisualState();
 
 			ApplyMultiSelectStateToCachedItems();
 		}
@@ -534,6 +532,23 @@ namespace Microsoft.UI.Xaml.Controls
 		// MUX Reference ListViewBase_Partial_Interaction.cpp, commit 58b6a55
 		// The primary scenario is touch narrator mocking a tap, so this takes the non-keyboard interaction path.
 		internal void AutomationItemClick(SelectorItem item) => OnItemClicked(item, VirtualKeyModifiers.None);
+
+		// Uno-specific: stands in for Selector.UpdateVisibleAndCachedItemsSelectionAndVisualState(false), which is not ported.
+		// Recycled containers are refreshed by PrepareContainerForItemOverride.
+		private void UpdateItemsMultiSelectVisualState()
+		{
+			foreach (var item in GetItemsPanelChildren().OfType<SelectorItem>())
+			{
+				if (item is ListViewBaseItem)
+				{
+					item.UpdateVisualState(useTransitions: true);
+				}
+				else
+				{
+					item.UpdateMultiSelectStates(useTransitions: item.IsLoaded);
+				}
+			}
+		}
 
 		internal override void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
@@ -1087,11 +1102,28 @@ namespace Microsoft.UI.Xaml.Controls
 			// Index will be repaired by virtue of ItemsControl
 			_containersForIndexRepair.Remove(element);
 
-			base.PrepareContainerForItemOverride(element, item);
-
-			if (element is SelectorItem selectorItem)
+			// MUX Reference ListViewBase_Partial.cpp, lines 238-266
+			if (element is ListViewBaseItem listViewBaseItem)
 			{
-				selectorItem.UpdateMultiSelectStates(useTransitions: selectorItem.IsLoaded);
+				// Update all states at once whichever changes are made by bases classes
+				// Suspends the VisualState changes in order to "batch" them at the end of the preparation
+				using (new StateChangeSuspender(listViewBaseItem))
+				{
+					listViewBaseItem.ClearInteractionState();
+
+					// Will call UpdateVisualState for us.
+					base.PrepareContainerForItemOverride(element, item);
+				}
+			}
+			else
+			{
+				// Uno-specific: WinUI does nothing for non-ListViewBaseItem containers.
+				base.PrepareContainerForItemOverride(element, item);
+
+				if (element is SelectorItem selectorItem)
+				{
+					selectorItem.UpdateMultiSelectStates(useTransitions: selectorItem.IsLoaded);
+				}
 			}
 		}
 

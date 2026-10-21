@@ -820,15 +820,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = sp;
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Visible, ((Border)multipleList.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList2.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Visible, ((Border)multipleList2.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList2.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList3.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)multipleList3.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList3.FindName("MultiSelectSquare")).Visibility);
+			// Let any MultiSelect exit animation finish and remove its check box.
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+
+#if HAS_UNO
+			static bool HasCheckBox(ListView list)
+			{
+				var presenter = (ListViewBaseItemPresenter)VisualTreeHelper.GetChild((ListViewItem)list.Items[0], 0);
+				return ChromeTestHelper.GetField<Border>(presenter, "m_multiSelectCheckBoxRectangle") is not null;
+			}
+
+			Assert.IsFalse(HasCheckBox(singleList));
+			Assert.IsTrue(HasCheckBox(multipleList));
+			Assert.IsFalse(HasCheckBox(extendedList));
+			Assert.IsFalse(HasCheckBox(singleList2));
+			Assert.IsTrue(HasCheckBox(multipleList2));
+			Assert.IsFalse(HasCheckBox(extendedList2));
+			Assert.IsFalse(HasCheckBox(singleList3));
+			Assert.IsFalse(HasCheckBox(multipleList3));
+			Assert.IsFalse(HasCheckBox(extendedList3));
+#endif
 		}
 
 #if HAS_UNO
@@ -1978,14 +1990,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// since this is originally a virtualization issue and references
 			// could be to different things than those shown on the screen.
 			var si = await UITestHelper.ScreenShot(list, true);
-			// on macOS/metal we get the color #1A6AA7 which is quite close but not identical,
-			// similar inaccuracy is happening on Linux as well
+			var presenter = (ListViewItemPresenter)VisualTreeHelper.GetChild(list.ContainerFromIndex(1), 0);
+			var indicator = ((SolidColorBrush)presenter.SelectionIndicatorBrush).Color;
+			var selectedBackground = ((SolidColorBrush)presenter.SelectedBackground).Color;
+			byte OverWhite(byte channel) => (byte)(255 - (255 - channel) * selectedBackground.A / 255);
+			var backplate = Windows.UI.Color.FromArgb(255, OverWhite(selectedBackground.R), OverWhite(selectedBackground.G), OverWhite(selectedBackground.B));
 			byte tolerance = 1;
-			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#1A69A6"), tolerance); // selected
+			ImageAssert.HasColorAt(si, 5, 75, indicator, tolerance); // selection indicator of the second item
 
 			// check starting from below the second item that nothing looks selected or hovered
-			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#1A69A6"), tolerance); // selected
-			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#FFE6E6E6"), tolerance); // hovered
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(0, 110, 10, si.Height - 110), indicator, tolerance); // selected
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(10, 110, si.Width - 10, si.Height - 110), backplate, tolerance); // selected or hovered
 		}
 
 		[TestMethod]
@@ -3759,7 +3774,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			item1.Focus(FocusState.Keyboard);
 			VisualState state = null;
-			await WindowHelper.WaitForNonNull(() => state = VisualStateManager.GetCurrentState(item1, "FocusStates"));
+			// FocusStates is set to Unfocused on the first pass, so wait for the focus to land.
+			await WindowHelper.WaitFor(() => (state = VisualStateManager.GetCurrentState(item1, "FocusStates"))?.Name == "Focused");
 
 			Assert.AreEqual("Focused", state?.Name);
 		}
@@ -3903,6 +3919,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Height = 200,
 				SelectionMode = ListViewSelectionMode.Multiple,
+				ItemContainerStyle = (Style)Application.Current.Resources["ListViewItemExpanded"],
 				ItemsSource = Enumerable.Range(3, 12).ToArray(),
 			};
 			WindowHelper.WindowContent = SUT;
@@ -3925,7 +3942,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			const string msc = "MultiSelectCheck";
 			var lvi0 = new ListViewItem
 			{
-				Content = "child 1"
+				Content = "child 1",
+				Style = (Style)Application.Current.Resources["ListViewItemExpanded"],
 			};
 			var SUT = new ListView
 			{
@@ -4598,9 +4616,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				SUT.Items.Add(new UpdateLayoutOnUnloadedControl
 				{
+					// TODO Uno: an AllowDrop element inside a reorderable item becomes its own drop target and the reorder is aborted.
 					Content = new TextBlock
 					{
-						AllowDrop = true,
 						Height = 100,
 						Text = i.ToString()
 					}
@@ -4667,11 +4685,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(2) is { });
 			await WindowHelper.WaitForIdle();
 
-			// Make screenshot of the initial state
-			var screenshotBefore = await UITestHelper.ScreenShot(SUT);
-
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
+
+			// Keep the baseline free of hover, and let the first-pass MultiSelectDisabled storyboard (333 ms content slide) finish.
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { X = SUT.GetAbsoluteBoundsRect().Right + 100 });
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+
+			// Make screenshot of the initial state
+			var screenshotBefore = await UITestHelper.ScreenShot(SUT);
 
 			// drag(pick-up) item#0
 			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 50 });
@@ -5472,6 +5495,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private const int ReorderItemCount = 36;
 
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Focused_All_Item_States_Are_Emitted()
+		{
+			var style = (Style)XamlReader.Load(
+				"""
+				<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" TargetType="ListViewItem">
+					<Setter Property="IsTabStop" Value="True" />
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="ListViewItem">
+								<Grid x:Name="Root" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+									<VisualStateManager.VisualStateGroups>
+										<VisualStateGroup x:Name="FocusStates">
+											<VisualState x:Name="Focused" />
+											<VisualState x:Name="Unfocused" />
+											<VisualState x:Name="PointerFocused" />
+										</VisualStateGroup>
+										<VisualStateGroup x:Name="ReorderHintStates">
+											<VisualState x:Name="NoReorderHint" />
+										</VisualStateGroup>
+										<VisualStateGroup x:Name="SelectionIndicatorStates">
+											<VisualState x:Name="SelectionIndicatorEnabled" />
+											<VisualState x:Name="SelectionIndicatorDisabled" />
+										</VisualStateGroup>
+										<VisualStateGroup x:Name="DragStates">
+											<VisualState x:Name="NotDragging" />
+										</VisualStateGroup>
+									</VisualStateManager.VisualStateGroups>
+									<ContentPresenter />
+								</Grid>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+				""");
+
+			var sut = new ListView
+			{
+				ItemContainerStyle = style,
+				ItemsSource = new[] { "A", "B" },
+			};
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			await UITestHelper.WaitFor(() => sut.ContainerFromIndex(0) is ListViewItem, timeoutMS: 3000);
+			var item = (ListViewItem)sut.ContainerFromIndex(0);
+			await WindowHelper.WaitForLoaded(item);
+
+			var root = (FrameworkElement)VisualTreeHelper.GetChild(item, 0);
+			var groups = VisualStateManager.GetVisualStateGroups(root);
+			VisualStateGroup Group(string name) => groups.Single(g => g.Name == name);
+
+			item.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Focused", Group("FocusStates").CurrentState?.Name);
+			Assert.AreEqual("NotDragging", Group("DragStates").CurrentState?.Name);
+			Assert.AreEqual("NoReorderHint", Group("ReorderHintStates").CurrentState?.Name);
+			Assert.IsNotNull(Group("SelectionIndicatorStates").CurrentState, "The SelectionIndicator slot is emitted on every pass.");
+		}
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector

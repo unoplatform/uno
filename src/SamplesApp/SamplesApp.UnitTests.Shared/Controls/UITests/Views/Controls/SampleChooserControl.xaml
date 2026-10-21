@@ -23,11 +23,9 @@
                 <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Shell/ShellResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!--  Stock item padding is 12; the rows add 4 to land on the 16 px text inset.  -->
             <DataTemplate x:Key="ShellSampleRowTemplate" x:DataType="entities:SampleChooserContent">
                 <Grid
                     MinHeight="{StaticResource ShellRowMinHeight}"
-                    Margin="4,0,0,0"
                     AutomationProperties.Name="{x:Bind shell:ShellFunctions.RowName(ControlName, IsFavorite, IsManualTest), Mode=OneWay}"
                     ColumnSpacing="8">
                     <Grid.ColumnDefinitions>
@@ -35,17 +33,6 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <!--  Uno's ListViewItem has no selection pill yet; WinUI draws its own (the helper keeps this one collapsed there).  -->
-                    <Border
-                        Grid.ColumnSpan="3"
-                        Width="3"
-                        Height="16"
-                        Margin="-12,0,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        shell:ShellSelectionIndicator.IsEnabled="True"
-                        Background="{ThemeResource AccentFillColorDefaultBrush}"
-                        CornerRadius="1.5" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Text="{x:Bind ControlName}"
@@ -70,26 +57,12 @@
             </DataTemplate>
 
             <DataTemplate x:Key="ShellCategoryRowTemplate" x:DataType="entities:SampleChooserCategory">
-                <Grid
-                    MinHeight="{StaticResource ShellRowMinHeight}"
-                    Margin="4,0,0,0"
-                    ColumnSpacing="8">
+                <Grid MinHeight="{StaticResource ShellRowMinHeight}" ColumnSpacing="8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <!--  Uno's ListViewItem has no selection pill yet; WinUI draws its own (the helper keeps this one collapsed there).  -->
-                    <Border
-                        Grid.ColumnSpan="3"
-                        Width="3"
-                        Height="16"
-                        Margin="-12,0,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        shell:ShellSelectionIndicator.IsEnabled="True"
-                        Background="{ThemeResource AccentFillColorDefaultBrush}"
-                        CornerRadius="1.5" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Text="{x:Bind Category}"
@@ -856,25 +829,6 @@
                                     <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Shell/ShellToggleResources.xaml" />
                                 </ResourceDictionary.MergedDictionaries>
                                 <x:Double x:Key="ListViewItemMinHeight">32</x:Double>
-                                <!--  Selected rows use the subtle fill (the stock WinUI 2.6+ look), not Uno's accent-filled template default.  -->
-                                <ResourceDictionary.ThemeDictionaries>
-                                    <ResourceDictionary x:Key="Light">
-                                        <SolidColorBrush x:Key="ListViewItemBackgroundSelected" Color="{ThemeResource SubtleFillColorSecondary}" />
-                                        <SolidColorBrush x:Key="ListViewItemBackgroundSelectedPointerOver" Color="{ThemeResource SubtleFillColorTertiary}" />
-                                        <SolidColorBrush x:Key="ListViewItemBackgroundSelectedPressed" Color="{ThemeResource SubtleFillColorSecondary}" />
-                                        <SolidColorBrush x:Key="ListViewItemForegroundSelected" Color="{ThemeResource TextFillColorPrimary}" />
-                                        <SolidColorBrush x:Key="ListViewItemForegroundSelectedPointerOver" Color="{ThemeResource TextFillColorPrimary}" />
-                                        <SolidColorBrush x:Key="ListViewItemForegroundSelectedPressed" Color="{ThemeResource TextFillColorSecondary}" />
-                                    </ResourceDictionary>
-                                    <ResourceDictionary x:Key="Dark">
-                                        <SolidColorBrush x:Key="ListViewItemBackgroundSelected" Color="{ThemeResource SubtleFillColorSecondary}" />
-                                        <SolidColorBrush x:Key="ListViewItemBackgroundSelectedPointerOver" Color="{ThemeResource SubtleFillColorTertiary}" />
-                                        <SolidColorBrush x:Key="ListViewItemBackgroundSelectedPressed" Color="{ThemeResource SubtleFillColorSecondary}" />
-                                        <SolidColorBrush x:Key="ListViewItemForegroundSelected" Color="{ThemeResource TextFillColorPrimary}" />
-                                        <SolidColorBrush x:Key="ListViewItemForegroundSelectedPointerOver" Color="{ThemeResource TextFillColorPrimary}" />
-                                        <SolidColorBrush x:Key="ListViewItemForegroundSelectedPressed" Color="{ThemeResource TextFillColorSecondary}" />
-                                    </ResourceDictionary>
-                                </ResourceDictionary.ThemeDictionaries>
                             </ResourceDictionary>
                         </Grid.Resources>
                         <Grid.RowDefinitions>
