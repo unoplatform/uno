@@ -452,7 +452,7 @@ namespace Microsoft.UI.Xaml.Media
 		// element that attaches to it (MUX Reference: CImageSource::ReloadImage, imagesource.cpp): it is not retried.
 		private bool IsFailed => _imageData.Kind == ImageDataKind.Error;
 
-		private static bool IsReleasable(ImageData data) => !data.IsShared && data.CompositionSurface is CompositionImageSurface;
+		private static bool IsReleasable(ImageData data) => !data.IsShared && data.CompositionSurface is CompositionImageSurface { CanReleaseFrames: true };
 
 		/// <summary>
 		/// Releases the decoded frames of an image surface that nothing will display, unless the data is shared through

@@ -149,7 +149,19 @@ namespace Microsoft.UI.Composition
 		/// Releases the decoded frames and texture now, for an image nothing displays anymore, instead of leaving them
 		/// to the finalizer. <see cref="Image"/> is null afterwards; loading frames again makes the surface usable.
 		/// </summary>
-		internal void ReleaseFrames() => SetFrameProviderAndOnFrameChanged(null, null);
+		internal void ReleaseFrames()
+		{
+			if (CanReleaseFrames)
+			{
+				SetFrameProviderAndOnFrameChanged(null, null);
+			}
+		}
+
+		/// <summary>
+		/// Whether <see cref="ReleaseFrames"/> releases anything: a retained texture is the content itself, which nothing
+		/// could decode again.
+		/// </summary>
+		internal bool CanReleaseFrames => !_retainedTexture;
 
 		internal (bool success, object nativeResult) LoadFromStream(Stream imageStream) => LoadFromStream(null, null, imageStream);
 
