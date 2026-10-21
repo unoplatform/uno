@@ -226,18 +226,10 @@ internal class ProxyLifecycleManager
 
 		if (string.IsNullOrWhiteSpace(solutionPath) || !Path.IsPathRooted(solutionPath))
 		{
-			return CreateRejectedSelectionResult(
+			return RejectPath(
 				solutionPath,
 				"The solutionPath argument must be an absolute path to a .sln or .slnx file.",
-				[
-					new ValidationIssue
-					{
-						Code = IssueCode.WorkspaceNotResolved,
-						Severity = ValidationSeverity.Warning,
-						Message = "The requested solution path is invalid.",
-						Remediation = SelectSolutionPathRemediation,
-					},
-				]);
+				"The requested solution path is invalid.");
 		}
 
 		string normalizedSolutionPath;
@@ -247,18 +239,10 @@ internal class ProxyLifecycleManager
 		}
 		catch (Exception)
 		{
-			return CreateRejectedSelectionResult(
+			return RejectPath(
 				solutionPath,
 				"The solutionPath argument must be a valid absolute path to a .sln or .slnx file.",
-				[
-					new ValidationIssue
-					{
-						Code = IssueCode.WorkspaceNotResolved,
-						Severity = ValidationSeverity.Warning,
-						Message = "The requested solution path could not be normalized.",
-						Remediation = SelectSolutionPathRemediation,
-					},
-				]);
+				"The requested solution path could not be normalized.");
 		}
 
 		var pathProblem = SolutionPathRules.Check(normalizedSolutionPath);
@@ -272,23 +256,15 @@ internal class ProxyLifecycleManager
 
 		if (pathProblem != SolutionPathRules.Problem.None)
 		{
-			var (message, issueMessage) = pathProblem == SolutionPathRules.Problem.NotLocal
-				? ("The solutionPath argument must be a local path; network (UNC) and device paths are refused.",
+			return pathProblem == SolutionPathRules.Problem.NotLocal
+				? RejectPath(
+					normalizedSolutionPath,
+					"The solutionPath argument must be a local path; network (UNC) and device paths are refused.",
 					"The requested solution is on a network share or device path, which the DevServer does not open.")
-				: ("The solutionPath argument must point to a .sln or .slnx file.",
+				: RejectPath(
+					normalizedSolutionPath,
+					"The solutionPath argument must point to a .sln or .slnx file.",
 					"The requested path is not a solution file.");
-			return CreateRejectedSelectionResult(
-				normalizedSolutionPath,
-				message,
-				[
-					new ValidationIssue
-					{
-						Code = IssueCode.WorkspaceNotResolved,
-						Severity = ValidationSeverity.Warning,
-						Message = issueMessage,
-						Remediation = SelectSolutionPathRemediation,
-					},
-				]);
 		}
 
 		var solutionDirectory = Path.GetDirectoryName(normalizedSolutionPath) ?? normalizedSolutionPath;
@@ -342,8 +318,19 @@ internal class ProxyLifecycleManager
 		};
 	}
 
-	private const string SelectSolutionPathRemediation =
-		"Provide the absolute path to the intended .sln or .slnx file; uno_health lists discovered candidateSolutions as suggestions.";
+	private static SelectSolutionResult RejectPath(string? solutionPath, string message, string issueMessage)
+		=> CreateRejectedSelectionResult(
+			solutionPath,
+			message,
+			[
+				new ValidationIssue
+				{
+					Code = IssueCode.WorkspaceNotResolved,
+					Severity = ValidationSeverity.Warning,
+					Message = issueMessage,
+					Remediation = "Provide the absolute path to the intended .sln or .slnx file; uno_health lists discovered candidateSolutions as suggestions.",
+				},
+			]);
 
 	private async Task<CallToolResult> SelectSolution(string solutionPath, bool forceRestart, string? suggestionsRoot)
 	{
@@ -710,7 +697,7 @@ internal class ProxyLifecycleManager
 		return localPath;
 	}
 
-	private void EnsureDevServerStartedFromSolutionDirectory()
+	internal void EnsureDevServerStartedFromSolutionDirectory()
 	{
 		// An explicitly selected solution (e.g. --solution) does not wait for roots: they could not change it anyway.
 		if (_forceRootsFallback && GetSelectedSolution(_workspaceResolution) is null)
@@ -1076,7 +1063,7 @@ internal class ProxyLifecycleManager
 		}, CancellationToken.None);
 	}
 
-	private string? GetWorkspaceObservationRoot()
+	internal string? GetWorkspaceObservationRoot()
 	{
 		// An explicit selection is watched where it lives, wherever the session started.
 		if (GetSelectedSolution(_workspaceResolution) is { } selectedSolution)
@@ -1359,7 +1346,6 @@ internal class ProxyLifecycleManager
 			return directory;
 		}
 	}
-
 
 	private static string DetermineSelectionStatus(
 		WorkspaceResolution? previousResolution,
