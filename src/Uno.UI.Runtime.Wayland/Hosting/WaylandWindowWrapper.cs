@@ -303,7 +303,6 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 
 	internal protected override void Activate()
 	{
-		_host.RecordActivation();
 		_activation.Request();
 		Post(() =>
 		{
@@ -923,7 +922,6 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 		var previousStates = _uiStates;
 		var wasMinimized = _minimizeRequested;
 		_uiStates = states;
-		_connection.KeyboardInjectionPolicy.NativeActivationChanged(XamlRoot!.VisualTree.ContentRoot.InputManager, (states & WaylandToplevelStates.Activated) != 0);
 		if ((states & WaylandToplevelStates.Activated) != 0)
 		{
 			_minimizeRequested = false;
@@ -984,7 +982,6 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 			return;
 		}
 		_closed = true;
-		_connection.KeyboardInjectionPolicy.NativeActivationChanged(XamlRoot!.VisualTree.ContentRoot.InputManager, active: false);
 		Interlocked.Increment(ref _iconGeneration);
 		if (WaylandDiagnostics.IsEnabled)
 		{
