@@ -168,20 +168,11 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
 		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(StringComparer.Ordinal);
 
-		// An unresolved explicit selection keeps its path: it stays selected (and watched) until it resolves.
 		if (!File.Exists(normalizedSolutionPath))
 		{
-			return new WorkspaceResolution
-			{
-				RequestedWorkingDirectory = normalizedRequestedDirectory,
-				SelectedSolutionPath = normalizedSolutionPath,
-				ResolutionKind = candidateSolutions.Count == 0
-					? WorkspaceResolutionKind.NoCandidates
-					: WorkspaceResolutionKind.NoValidWorkspace,
-				CandidateSolutions = candidateSolutions,
-				SelectionSource = selectionSource,
-				IsExplicitSolutionSelection = true,
-			};
+			return Unresolved(candidateSolutions.Count == 0
+				? WorkspaceResolutionKind.NoCandidates
+				: WorkspaceResolutionKind.NoValidWorkspace);
 		}
 
 		var resolved = await ResolveSolutionCoreAsync(
@@ -192,11 +183,15 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 			globalJsonCache);
 		return resolved is not null
 			? resolved with { IsExplicitSolutionSelection = true }
-			: new WorkspaceResolution
+			: Unresolved(WorkspaceResolutionKind.NoValidWorkspace);
+
+		// An unresolved explicit selection keeps its path: it stays selected (and watched) until it resolves.
+		WorkspaceResolution Unresolved(WorkspaceResolutionKind kind)
+			=> new()
 			{
 				RequestedWorkingDirectory = normalizedRequestedDirectory,
 				SelectedSolutionPath = normalizedSolutionPath,
-				ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
+				ResolutionKind = kind,
 				CandidateSolutions = candidateSolutions,
 				SelectionSource = selectionSource,
 				IsExplicitSolutionSelection = true,
