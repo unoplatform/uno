@@ -632,6 +632,14 @@ public partial class CompositionTarget
 			}
 			else
 			{
+				// A frame returned unpresented (skipped draw) still owes its damage; fold it into the newer frame.
+				if (frame.damage is { Length: > 0 } skippedDamage)
+				{
+					var newer = _lastRenderedFrame.Value;
+					newer.damage = newer.damage is { Length: > 0 } newerDamage ? [.. newerDamage, .. skippedDamage] : skippedDamage;
+					_lastRenderedFrame = newer;
+				}
+
 				// The damage is a plain rect array now; only the frame holds unmanaged state.
 				frameToDelete = frame.frame;
 			}
