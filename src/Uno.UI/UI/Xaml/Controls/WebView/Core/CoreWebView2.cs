@@ -127,6 +127,13 @@ public partial class CoreWebView2
 		=> _nativeWebView as T ?? throw CapabilityUnavailable(typeName, memberName);
 
 	/// <summary>
+	/// Resolves an optional capability of the native WebView, or null when it is not initialized or lacks it.
+	/// </summary>
+	internal T? TryGetCapability<T>()
+		where T : class
+		=> _nativeWebView as T;
+
+	/// <summary>
 	/// Builds the exception for a capability the native WebView cannot serve, distinguishing "not initialized
 	/// yet" from "this platform does not implement it". The latter reproduces the generated stub exactly, so
 	/// platforms that do not opt in keep their current behaviour and not-implemented reporting.
