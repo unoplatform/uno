@@ -346,6 +346,45 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Description("uno_app_initialize's selection suggests solutions from its workspaceDirectory, not from the bridge's launch folder, since the roots applied after it are ignored")]
+	public async Task WhenSelectingWithSuggestionsRoot_CandidatesComeFromThatRoot()
+	{
+		var launchRoot = CreateTempDirectory();
+		var workspaceRoot = CreateTempDirectory();
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			await CreateUnoWorkspaceAsync(launchRoot, "launch", "Launch.slnx", "6.6.0-dev.1");
+			var workspace = await CreateUnoWorkspaceAsync(workspaceRoot, "src", "MyApp.slnx", "6.6.0-dev.1");
+			var sibling = Path.Combine(workspace, "Sibling.slnx");
+			await File.WriteAllTextAsync(sibling, string.Empty);
+			var created = CreateSubject();
+			monitor = created.Monitor;
+			SetPrivateField(created.Subject, "_currentDirectory", launchRoot);
+			SetPrivateField(created.Subject, "_devServerPort", 0);
+			SetPrivateField(created.Subject, "_forwardedArgs", new List<string>());
+
+			var result = await created.Subject.SelectSolutionAsync(Path.Combine(workspace, "MyApp.slnx"), suggestionsRoot: workspaceRoot);
+
+			result.Status.Should().Be("started");
+			var resolution = GetPrivateField<WorkspaceResolution>(created.Subject, "_workspaceResolution");
+			PathComparison.PathsEqual(resolution.RequestedWorkingDirectory, workspaceRoot).Should().BeTrue();
+			resolution.CandidateSolutions.Should().Contain(candidate => PathComparison.PathsEqual(candidate, sibling));
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(launchRoot);
+			await DeleteDirectoryWithRetriesAsync(workspaceRoot);
+		}
+	}
+
+	[TestMethod]
 	[Description("A solution deeper than the candidate scan is accepted, with the workspace of the nearest Uno global.json above it (#25524)")]
 	public async Task WhenSelectingSolutionDeeperThanTheScan_SelectionIsAccepted()
 	{
