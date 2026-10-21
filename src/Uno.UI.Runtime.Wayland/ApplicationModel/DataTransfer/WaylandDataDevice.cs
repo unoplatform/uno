@@ -150,7 +150,7 @@ internal sealed class WaylandDataDevice : IWaylandClipboardDevice
 	}
 
 	bool IWaylandClipboardDevice.HasKeyboardFocus => _selectionSerial.HasFocus;
-	void IWaylandClipboardDevice.Send(Action requests) => Display.Send(requests);
+	bool IWaylandClipboardDevice.Send(Action requests) => Display.TrySend(requests);
 	WlDataSource IWaylandClipboardDevice.CreateSource() => CreateSource();
 	void IWaylandClipboardDevice.SetSelection(WlDataSource? source) => SetSelection(source);
 

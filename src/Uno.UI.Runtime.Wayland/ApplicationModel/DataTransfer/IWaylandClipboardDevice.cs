@@ -12,7 +12,8 @@ internal interface IWaylandClipboardDevice
 	// Wayland only accepts a selection from the client with keyboard focus.
 	bool HasKeyboardFocus { get; }
 	void FillContent(DataPackage package);
-	void Send(Action requests);
+	// False when the connection is closing and the requests were not run.
+	bool Send(Action requests);
 	WlDataSource CreateSource();
 	void SetSelection(WlDataSource? source);
 }
