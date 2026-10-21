@@ -704,19 +704,16 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
 			}
 
-			var oldExtentWidth = ExtentWidth;
-			var oldExtentHeight = ExtentHeight;
-			var oldViewportWidth = ViewportWidth;
-			var oldViewportHeight = ViewportHeight;
-			var oldScrollableWidth = ScrollableWidth;
-			var oldScrollableHeight = ScrollableHeight;
-			var oldHorizontalOffset = HorizontalOffset;
-			var oldVerticalOffset = VerticalOffset;
+			var oldSize = new Size(ExtentWidth, ExtentHeight);
+
+			// Only needed to raise the automation events below.
+			var hasAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged);
+			var (oldViewportWidth, oldViewportHeight, oldScrollableWidth, oldScrollableHeight, oldHorizontalOffset, oldVerticalOffset) = hasAutomationListener
+				? (ViewportWidth, ViewportHeight, ScrollableWidth, ScrollableHeight, HorizontalOffset, VerticalOffset)
+				: default;
 
 			ViewportHeight = vpHeight;
 			ViewportWidth = vpWidth;
-
-			var oldSize = new Size(ExtentWidth, ExtentHeight);
 
 			if (_presenter?.CustomContentExtent is { } customExtent)
 			{
@@ -821,22 +818,22 @@ namespace Microsoft.UI.Xaml.Controls
 				ExtentSizeChanged?.Invoke(this, new(this, oldSize, newSize));
 			}
 
-			// Mirrors ScrollViewer::InvalidateScrollInfo_TryUpdateValues: extent/viewport changes are
-			// raised to automation clients too, not only offset changes.
+			// MUX Reference ScrollViewer_Partial.cpp, ScrollViewer::InvalidateScrollInfo_TryUpdateValues:
+			// extent/viewport changes are raised to automation clients too, not only offset changes.
 			var changed =
-				!NumericExtensions.AreClose(oldExtentWidth, ExtentWidth) ||
-				!NumericExtensions.AreClose(oldExtentHeight, ExtentHeight) ||
+				!NumericExtensions.AreClose(oldSize.Width, ExtentWidth) ||
+				!NumericExtensions.AreClose(oldSize.Height, ExtentHeight) ||
 				!NumericExtensions.AreClose(oldViewportWidth, ViewportWidth) ||
 				!NumericExtensions.AreClose(oldViewportHeight, ViewportHeight) ||
 				!NumericExtensions.AreClose(oldScrollableWidth, ScrollableWidth) ||
 				!NumericExtensions.AreClose(oldScrollableHeight, ScrollableHeight);
-			if (changed &&
-				AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged) &&
+			if (hasAutomationListener &&
+				changed &&
 				GetOrCreateAutomationPeer() is ScrollViewerAutomationPeer peer)
 			{
 				peer.RaiseAutomationEvents(
-					oldExtentWidth,
-					oldExtentHeight,
+					oldSize.Width,
+					oldSize.Height,
 					oldViewportWidth,
 					oldViewportHeight,
 					MinHorizontalOffset,
