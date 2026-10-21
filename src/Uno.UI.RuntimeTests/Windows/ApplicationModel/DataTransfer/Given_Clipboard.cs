@@ -68,6 +68,55 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(Include, SkiaWin32 | SkiaIOS)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25450")]
+	public async Task When_SetContentWithOptions_And_GetTextAsync_With_FormatId()
+	{
+		var package = new DataPackage();
+		package.SetText(TestString);
+		var options = new ClipboardContentOptions();
+
+		var setResult = Clipboard.SetContentWithOptions(package, options);
+		Assert.IsTrue(setResult);
+
+		await DelayForClipboard();
+
+		var view = Clipboard.GetContent();
+
+		Assert.IsTrue(view.Contains(StandardDataFormats.Text));
+
+		var text = await view.GetTextAsync(StandardDataFormats.Text);
+
+		Assert.AreEqual(TestString, text);
+	}
+
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, SkiaWin32 | SkiaIOS)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25450")]
+	public async Task When_SetContentWithOptions_With_Null_Options()
+	{
+		var package = new DataPackage();
+		package.SetText(TestString);
+
+		var setResult = Clipboard.SetContentWithOptions(package, null);
+		Assert.IsTrue(setResult);
+
+		await DelayForClipboard();
+
+		var view = Clipboard.GetContent();
+
+		Assert.IsTrue(view.Contains(StandardDataFormats.Text));
+
+		var text = await view.GetTextAsync(StandardDataFormats.Text);
+
+		Assert.AreEqual(TestString, text);
+	}
+
+
+	[TestMethod]
+	[RunsOnUIThread]
 	[PlatformCondition(Include, SkiaWin32)]
 	public async Task When_GetSet_Clipboard_ByteArray()
 	{
