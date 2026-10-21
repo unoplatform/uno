@@ -210,7 +210,16 @@ internal class ProxyLifecycleManager
 		await ProcessRoots();
 	}
 
-	internal async Task<SelectSolutionResult> SelectSolutionAsync(string solutionPath, bool forceRestart = false, CancellationToken ct = default)
+	/// <param name="suggestionsRoot">
+	/// The folder candidate solutions are suggested from, and the selection's requested directory; by default the
+	/// current workspace's. uno_app_initialize passes its workspaceDirectory: it selects before applying the roots,
+	/// which the explicit selection then makes ignored.
+	/// </param>
+	internal async Task<SelectSolutionResult> SelectSolutionAsync(
+		string solutionPath,
+		bool forceRestart = false,
+		string? suggestionsRoot = null,
+		CancellationToken ct = default)
 	{
 		var selectionStopwatch = Stopwatch.StartNew();
 
@@ -280,9 +289,10 @@ internal class ProxyLifecycleManager
 
 		var solutionDirectory = Path.GetDirectoryName(normalizedSolutionPath) ?? normalizedSolutionPath;
 		var observationRoot =
-			(GetSelectedSolution(_workspaceResolution) is not null
-				? _workspaceResolution?.RequestedWorkingDirectory
-				: GetWorkspaceObservationRoot())
+			suggestionsRoot
+				?? (GetSelectedSolution(_workspaceResolution) is not null
+					? _workspaceResolution?.RequestedWorkingDirectory
+					: GetWorkspaceObservationRoot())
 				?? _solutionDirectory
 				?? _currentDirectory
 				?? solutionDirectory;
@@ -349,9 +359,9 @@ internal class ProxyLifecycleManager
 				Remediation = "Add a global.json declaring Uno.Sdk in msbuild-sdks next to the solution or above it, or choose another solution, then call uno_app_select_solution again.",
 			};
 
-	private async Task<CallToolResult> SelectSolution(string solutionPath, bool forceRestart = false)
+	private async Task<CallToolResult> SelectSolution(string solutionPath, bool forceRestart, string? suggestionsRoot)
 	{
-		var result = await SelectSolutionAsync(solutionPath, forceRestart);
+		var result = await SelectSolutionAsync(solutionPath, forceRestart, suggestionsRoot);
 		var json = JsonSerializer.Serialize(result, McpJsonUtilities.DefaultOptions);
 		return new CallToolResult
 		{
@@ -1176,7 +1186,7 @@ internal class ProxyLifecycleManager
 			() => _forceRootsFallback,
 			() => _roots,
 			async roots => await SetRoots(roots),
-			async (solutionPath, forceRestart) => await SelectSolution(solutionPath, forceRestart));
+			async (solutionPath, forceRestart, suggestionsRoot) => await SelectSolution(solutionPath, forceRestart, suggestionsRoot));
 
 		_devServerMonitor.ServerLaunching += () =>
 		{
