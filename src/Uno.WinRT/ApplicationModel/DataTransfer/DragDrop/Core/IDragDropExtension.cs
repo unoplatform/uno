@@ -18,5 +18,13 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		/// the managed drag continues.
 		/// </summary>
 		bool StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted);
+
+		/// <summary>
+		/// Raised when the operation the target accepts becomes known, which is after the Enter/Over handlers
+		/// complete, so possibly later than the move that triggered them (deferrals).
+		/// </summary>
+		void AcceptedOperationChanged(CoreDragInfo info, DataPackageOperation accepted)
+		{
+		}
 	}
 }

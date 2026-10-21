@@ -109,6 +109,15 @@ internal sealed class WaylandDragDropExtension : IDragDropExtension
 		}
 	}
 
+	// Enter/Over handlers may complete after the move that raised them: the compositor must learn the late answer.
+	public void AcceptedOperationChanged(CoreDragInfo info, DataPackageOperation accepted)
+	{
+		if (_session is { } session && session.SourceId == info.SourceId)
+		{
+			UpdateAcceptance(session, accepted);
+		}
+	}
+
 	internal void Leave()
 	{
 		if (_session is { } session)
