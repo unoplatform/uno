@@ -24,6 +24,7 @@
 			"Uno.WinUI.WebView.X11",
 			"Uno.WinUI.Graphics3DGL",
 			"Uno.WinUI.Graphics2DSK",
+			"Uno.WinUI.Graphics3DWebGpu",
 			"Uno.WinUI.SpellChecking"
 		]
 	},

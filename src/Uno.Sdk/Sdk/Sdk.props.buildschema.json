@@ -609,6 +609,9 @@
 				"GLCanvas": {
 					"description": "Adds support for 3D graphics APIs based on OpenGL."
 				},
+				"WebGpuCanvas": {
+					"description": "Adds support for drawing with WebGPU, and the WebGPU rendering backend it requires."
+				},
 				"SpellChecking": {
 					"description": "Adds support for spell checking."
 				},

@@ -8,8 +8,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
 using Uno.UI.Composition.Drawing;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Effects.Interop;
@@ -157,23 +156,23 @@ internal sealed unsafe partial class WebGpuCoverage
 
 	// A texture of the entry's own size, registered as its own atlas page so it shares the key, reference count and
 	// idle sweep of a shelf slot. Format follows what will be rendered into it.
-	internal WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, WGPUTextureFormat format)
-		=> AddStandaloneSlot(key, w, h, ox, oy, format, w, h, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding);
+	internal WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format)
+		=> AddStandaloneSlot(key, w, h, ox, oy, format, w, h, TextureUsage.RenderAttachment | TextureUsage.TextureBinding);
 
 	// The entry draws w x h, over a texture of texW x texH: a blurred shadow is stored at its pyramid's top level.
-	internal WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, WGPUTextureFormat format, int texW, int texH, WGPUTextureUsage usage)
+	internal WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format, int texW, int texH, TextureUsage usage)
 	{
-		var td = new WGPUTextureDescriptor
+		var td = new TextureDescriptor
 		{
-			Size = new WGPUExtent3D { Width = (uint)texW, Height = (uint)texH, DepthOrArrayLayers = 1 },
+			Size = new Extent3D { Width = (uint)texW, Height = (uint)texH, DepthOrArrayLayers = 1 },
 			Format = format,
 			MipLevelCount = 1,
 			SampleCount = 1,
-			Dimension = WGPUTextureDimension._2D,
+			Dimension = TextureDimension.Dimension2D,
 			Usage = usage,
 		};
-		var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
-		return _d.PathAtlas.AddStandalone(key, w, h, ox, oy, tex, wgpuTextureCreateView(tex, null));
+		var tex = Api.DeviceCreateTexture(_d.Dev, &td);
+		return _d.PathAtlas.AddStandalone(key, w, h, ox, oy, tex, Api.TextureCreateView(tex, null));
 	}
 
 	/// <summary>Appends one entry as 6 solid vertices (pos, colour, coverage uv), placed at the fill's OWN origin.</summary>
@@ -208,9 +207,9 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	/// <summary>The op's clip with its own coverage texture as the innermost entry.</summary>
-	private static ClipData WithCoverage(ClipData clip, IntPtr view, bool filtered = false)
+	private static ClipData WithCoverage(ClipData clip, TextureView* view, bool filtered = false)
 	{
-		clip.Coverage = (nint)view;
+		clip.Coverage = view;
 		clip.CoverageFiltered = filtered;
 		return clip;
 	}
@@ -219,6 +218,6 @@ internal sealed unsafe partial class WebGpuCoverage
 	private DrawOp MakeAtlasOp(PathCmd pf, WebGpuPathAtlas.Page page, VertBuf quads, OwnedResources owned, bool filtered = false)
 	{
 		var clip = WithCoverage(pf.Clip, page.View, filtered);
-		return DrawOp.Own(DrawKind.Solid, _f.Vbuf(quads, VertexStride.Solid, owned), (uint)(quads.Count / VertexStride.Solid), IntPtr.Zero, clip, _f.MakeClipBg(clip, owned));
+		return DrawOp.Own(DrawKind.Solid, _f.Vbuf(quads, VertexStride.Solid, owned), (uint)(quads.Count / VertexStride.Solid), null, clip, _f.MakeClipBg(clip, owned));
 	}
 }

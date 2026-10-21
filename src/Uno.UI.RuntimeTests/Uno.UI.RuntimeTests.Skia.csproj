@@ -93,6 +93,10 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" ExcludeAssets="compile" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics3DWebGpu\Uno.WinUI.Graphics3DWebGpu.csproj" />
+	</ItemGroup>
+
 	<PropertyGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">
 		<DefineConstants>$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
 	</PropertyGroup>
