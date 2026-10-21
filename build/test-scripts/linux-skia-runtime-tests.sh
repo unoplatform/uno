@@ -58,7 +58,12 @@ if [ "$USE_WESTON" = "true" ]; then
 	export WAYLAND_DISPLAY=uno-runtime-tests
 	export UNO_EXPECT_HOST=Uno.UI.Runtime.Wayland
 	WESTON_LOG="$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/weston${UNO_TEST_RESULT_LABEL}.log"
-	weston --backend=headless --socket="$WAYLAND_DISPLAY" --width=1280 --height=1024 --scale=1 --idle-time=0 --log="$WESTON_LOG" &
+	# A fake seat gives windows keyboard focus, which Wayland requires to set the clipboard.
+	WESTON_SEAT=()
+	if weston --help 2>&1 | grep -q -- --fake-seat; then
+		WESTON_SEAT=(--fake-seat)
+	fi
+	weston --backend=headless "${WESTON_SEAT[@]}" --socket="$WAYLAND_DISPLAY" --width=1280 --height=1024 --scale=1 --idle-time=0 --log="$WESTON_LOG" &
 	WESTON_PID=$!
 	WESTON_READY=false
 	for i in $(seq 1 50); do
