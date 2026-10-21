@@ -8,7 +8,7 @@ using Windows.Foundation;
 namespace Uno.UI.Runtime.AppleUIKit.Controls;
 
 /// <summary>
-/// Shows the iOS system text magnifier (<see cref="UITextLoupeSession"/>, iOS 17+) over the Skia-rendered text
+/// Shows the iOS system text magnifier (<c>UITextLoupeSession</c>, iOS 17+) over the Skia-rendered text
 /// while the caret or a selection handle is dragged.
 /// </summary>
 /// <remarks>
@@ -17,6 +17,14 @@ namespace Uno.UI.Runtime.AppleUIKit.Controls;
 /// </remarks>
 internal sealed class InvisibleTextBoxLoupe
 {
+#if __TVOS__
+	// tvOS has no touch text editing, and no UITextLoupeSession.
+	public bool Begin(UIView textInputLayer, Point point, Rect caretRect) => false;
+
+	public void Move(Point point, Rect caretRect) { }
+
+	public void End() { }
+#else
 	private UITextLoupeSession? _session;
 	private UIView? _view;
 	private UIView? _layer;
@@ -67,4 +75,5 @@ internal sealed class InvisibleTextBoxLoupe
 		=> _view is not null && _layer is not null
 			? _view.ConvertPointFromView(new CGPoint(point.X, point.Y), _layer)
 			: new CGPoint(point.X, point.Y);
+#endif
 }
