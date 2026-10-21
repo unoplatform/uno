@@ -84,9 +84,6 @@ internal sealed class WaylandPointerInputSource : IUnoCorePointerInputSource
 		PointerPosition = new(x, y);
 		_connection.SetCursor(serial, _cursor);
 		Emit(PointerEntered);
-		// wl_pointer.enter carries a position but compositors need not follow it with motion. Uno resolves
-		// the element cursor on moves only, so without this the previous cursor stays until the pointer moves.
-		Emit(PointerMoved);
 	}
 
 	public void Leave()
