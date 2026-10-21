@@ -246,6 +246,8 @@ public class Given_CliManager
 	[DataRow("--solution={0}")]
 	[DataRow("--Solution={0}")]
 	[DataRow("/solution={0}")]
+	[DataRow("solution={0}")]
+	[DataRow("SOLUTION={0}")]
 	public void ParseMcpSolutionArgument_WhenInlineOrAlternateSpelling_ConsumesIt(string format)
 	{
 		var baseDirectory = CreateTempDirectory();
