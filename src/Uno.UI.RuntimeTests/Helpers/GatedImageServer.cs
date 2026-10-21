@@ -14,13 +14,15 @@ namespace Uno.UI.RuntimeTests.Helpers;
 /// <summary>
 /// Minimal loopback HTTP server that serves ms-appx:///Assets/square100.png, sending the response headers immediately but
 /// holding the image bytes until <see cref="ReleaseResponses"/>, so a test can act while a download is deterministically
-/// in flight. With <see cref="FailNextRequest"/> set, the next request gets an HTTP 500 instead of the image.
+/// in flight. <see cref="HoldResponses"/> holds the later ones again. With <see cref="FailNextRequest"/> set, the next
+/// request gets an HTTP 500 instead of the image.
 /// </summary>
 internal sealed class GatedImageServer : IDisposable
 {
 	private readonly TcpListener _listener;
 	private readonly byte[] _body;
-	private readonly TaskCompletionSource _release = new(TaskCreationOptions.RunContinuationsAsynchronously);
+	private TaskCompletionSource _release = new(TaskCreationOptions.RunContinuationsAsynchronously);
+	private bool _isDisposed;
 	private int _requestCount;
 	private int _bodiesSent;
 	private volatile bool _failNextRequest;
@@ -60,11 +62,24 @@ internal sealed class GatedImageServer : IDisposable
 		set => _failNextRequest = value;
 	}
 
-	public void ReleaseResponses() => _release.TrySetResult();
+	public void ReleaseResponses() => Volatile.Read(ref _release).TrySetResult();
+
+	/// <summary>
+	/// Holds the image bytes of the responses sent from now on, until <see cref="ReleaseResponses"/>.
+	/// </summary>
+	public void HoldResponses()
+	{
+		// A gate still held stays, so the requests waiting on it are released with the later ones.
+		if (!_isDisposed && Volatile.Read(ref _release).Task.IsCompleted)
+		{
+			Volatile.Write(ref _release, new(TaskCreationOptions.RunContinuationsAsynchronously));
+		}
+	}
 
 	public void Dispose()
 	{
-		_release.TrySetResult();
+		_isDisposed = true;
+		Volatile.Read(ref _release).TrySetResult();
 		_listener.Stop();
 	}
 
@@ -120,7 +135,7 @@ internal sealed class GatedImageServer : IDisposable
 			await stream.WriteAsync(Encoding.ASCII.GetBytes(headers)).ConfigureAwait(false);
 			await stream.FlushAsync().ConfigureAwait(false);
 
-			await _release.Task.ConfigureAwait(false);
+			await Volatile.Read(ref _release).Task.ConfigureAwait(false);
 
 			await stream.WriteAsync(_body).ConfigureAwait(false);
 			await stream.FlushAsync().ConfigureAwait(false);

@@ -101,9 +101,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			TryProcessPendingSource();
 
-			if (IsSourceReady())
+			if (GetSourceSize() is { } sourceSize)
 			{
-				_lastMeasuredSize = GetSourceSize();
+				_lastMeasuredSize = sourceSize;
 
 				Size ret;
 
@@ -262,12 +262,18 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private bool IsSourceReady() => Source is ImageSource && GetSurfaceSize(_currentSurface) is not null;
+		private bool IsSourceReady() => GetSourceSize() is not null;
 
-		private Size GetSourceSize()
+		private Size? GetSourceSize()
 		{
-			var size = GetSurfaceSize(_currentSurface);
-			return size is { } value ? new Size(value.X, value.Y) : default;
+			if (Source is not ImageSource source)
+			{
+				return null;
+			}
+
+			// Pixels the source released because nothing displayed them keep their size until it delivers them again (a
+			// cache-off URI downloads again), so an auto-sized Image doesn't collapse meanwhile.
+			return (GetSurfaceSize(_currentSurface) ?? source.ReleasedPixelSize) is { } size ? new Size(size.X, size.Y) : null;
 		}
 
 		// Pixel/intrinsic size of the current surface, whichever kind it is: a texture-backed CompositionImageSurface

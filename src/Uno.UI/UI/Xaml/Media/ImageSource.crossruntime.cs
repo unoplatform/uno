@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.ComponentModel;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Windows.UI.Core;
 using Microsoft.UI.Composition;
@@ -61,6 +62,12 @@ namespace Microsoft.UI.Xaml.Media
 
 		// The wait of what this source decoded while nothing subscribes to it.
 		private PendingImageReleases.Entry _pendingRelease;
+
+		/// <summary>
+		/// The pixel size of what this source released because nothing displayed it, until it opens again or changes: an
+		/// Image measures with it meanwhile, so it doesn't collapse while the source decodes or downloads again.
+		/// </summary>
+		internal Vector2? ReleasedPixelSize { get; private set; }
 
 		protected ImageSource()
 		{
@@ -319,6 +326,12 @@ namespace Microsoft.UI.Xaml.Media
 			// An open nothing waits for is stopped, which cancels an uncached download; data shared through the cache stays.
 			if (_isOpening || IsReleasable(_imageData))
 			{
+				// A stopped open keeps the size of what was released before it.
+				if (_imageData.CompositionSurface is CompositionImageSurface { Size: { } size })
+				{
+					ReleasedPixelSize = size;
+				}
+
 				ReleaseImageData();
 			}
 		}
@@ -462,6 +475,7 @@ namespace Microsoft.UI.Xaml.Media
 		private protected void InvalidateSource()
 		{
 			ReleaseImageData();
+			ReleasedPixelSize = null;
 			SourceVersion++;
 
 			if (_subscriptions.Count > 0 || this is SvgImageSource)
@@ -537,6 +551,7 @@ namespace Microsoft.UI.Xaml.Media
 		private void OnOpened(ImageData data)
 		{
 			_imageData = data; // We should also cache the targetWidth and targetHeight
+			ReleasedPixelSize = null;
 			var version = ++_dataVersion;
 
 			if (this.Log().IsEnabled(LogLevel.Debug))

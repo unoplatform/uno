@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -542,6 +542,84 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					// The client gave up on the request; the assertions report the outcome.
 				}
 			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(false, DisplayName = "Same Image")]
+		[DataRow(true, DisplayName = "Another Image")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.NativeWinUI)] // Loopback image server
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
+		public async Task When_Source_Shown_Again_While_It_Opens_Again_Then_AutoSized_Image_Keeps_Its_Size(bool anotherImage)
+		{
+			// A source nothing displayed for more than the release delay (1 s, as on WinUI) may have released its pixels: with the
+			// bitmap cache off, its URI downloads again once it is shown again. An auto-sized Image showing it then, the one that
+			// showed it before or another one (a recycled item), must have the image's size meanwhile, not lay out at 0×0.
+			using var server = await GatedImageServer.StartAsync();
+			server.ReleaseResponses();
+#if HAS_UNO
+			var cacheWasEnabled = FeatureConfiguration.Image.EnableBitmapImageCache;
+			var maxUndisplayedImageBytes = FeatureConfiguration.Image.MaxUndisplayedImageBytes;
+#endif
+
+			try
+			{
+#if HAS_UNO
+				FeatureConfiguration.Image.EnableBitmapImageCache = false;
+				FeatureConfiguration.Image.MaxUndisplayedImageBytes = 0; // Released once the pass after it left ends.
+#endif
+				var bitmap = new BitmapImage(server.Uri);
+				var image = CreateAutoSizedImage(bitmap);
+				var opened = false;
+				image.ImageOpened += (_, _) => opened = true;
+				var panel = new StackPanel { Children = { image } };
+
+				await UITestHelper.Load(panel, x => x.IsLoaded);
+				await WindowHelper.WaitFor(() => opened, message: "Pre-condition: the image opens");
+				await WindowHelper.WaitForIdle();
+				var size = new Size(image.ActualWidth, image.ActualHeight);
+				Assert.IsTrue(size.Width > 0 && size.Height > 0, "Pre-condition: the Image takes the size of its image");
+
+				server.HoldResponses();
+				panel.Children.Remove(image);
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1500);
+
+				// The layout changed meanwhile, so a returning Image is measured again.
+				panel.Width = 300;
+				var shown = anotherImage ? CreateAutoSizedImage(bitmap) : image;
+				panel.Children.Add(shown);
+				await UITestHelper.WaitForLoaded(shown, x => x.IsLoaded);
+				await WindowHelper.WaitForIdle();
+#if HAS_UNO
+				await WindowHelper.WaitFor(() => server.RequestCount == 2, message: "Pre-condition: the released image downloads again");
+				await WindowHelper.WaitForIdle();
+#endif
+				Assert.AreEqual(size, new Size(shown.ActualWidth, shown.ActualHeight), "The Image has the image's size while its source opens again");
+
+				server.ReleaseResponses();
+#if HAS_UNO
+				await WindowHelper.WaitFor(() => bitmap.IsOpened, message: "Pre-condition: the source opens again");
+#endif
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(size, new Size(shown.ActualWidth, shown.ActualHeight), "The Image keeps that size once its source opened again");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+#if HAS_UNO
+				FeatureConfiguration.Image.EnableBitmapImageCache = cacheWasEnabled;
+				FeatureConfiguration.Image.MaxUndisplayedImageBytes = maxUndisplayedImageBytes;
+#endif
+			}
+
+			static Image CreateAutoSizedImage(ImageSource source) => new Image
+			{
+				Stretch = Stretch.None,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Source = source,
+			};
 		}
 
 		[TestMethod]
