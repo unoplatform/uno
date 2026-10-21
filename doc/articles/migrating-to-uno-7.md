@@ -119,7 +119,7 @@ longer tested by Uno Platform.
 | `bundle://` image scheme removed (iOS/tvOS) | The native UIKit bundle-resource loader is gone with the native rendering layer. Use `ms-appx:///` assets instead — see [Working with assets](xref:Uno.Features.Assets). |
 | `UnoDragDropExternalSupport` trimming property removed | It could only trim the native WebAssembly drag-and-drop implementation, which is gone. On WebAssembly, drag and drop from outside the app is now handled by the browser host and is always available. The property is silently ignored if still set. |
 | `UnoEnableAlcAppSupport` is now a trimming switch (default `false`) | Trimmed builds now stub `Application.HasSecondaryApps` to `false`, dropping the ALC-aware resource resolution that secondary `Application` instances in their own `AssemblyLoadContext` depend on. Set `<UnoEnableAlcAppSupport>true</UnoEnableAlcAppSupport>` if your app hosts other Uno apps in separate ALCs. |
-| `Skia` Uno Feature no longer implied on Windows (WinAppSDK) | `Skia` is still implied on every Uno Platform target, but a Windows head now gets it only when `UnoFeatures` lists it. Without it, the Windows head no longer references `SkiaSharp.Views.WinUI`, `Uno.WinUI.Graphics2DSK` or, with the `Toolkit` feature, `Uno.Toolkit.Skia.WinUI`. If shared code uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), `SKXamlCanvas` or Toolkit Skia controls such as `ShadowContainer` on Windows, add `Skia` to `UnoFeatures` (a legacy `SkiaRenderer` entry counts as `Skia`). |
+| `Skia` Uno Feature no longer implied on Windows (WinAppSDK) | `Skia` is still implied on every Uno Platform target that lists no renderer feature (`WebGpu` counts as one), but a Windows head now gets it only when `UnoFeatures` lists it. Without it, the Windows head no longer references `SkiaSharp.Views.WinUI`, `Uno.WinUI.Graphics2DSK` or, with the `Toolkit` feature, `Uno.Toolkit.Skia.WinUI`. If shared code uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), `SKXamlCanvas` or Toolkit Skia controls such as `ShadowContainer` on Windows, add `Skia` to `UnoFeatures` (a legacy `SkiaRenderer` entry counts as `Skia`). |
 | `Uno.WinUI.Lottie` package and `Lottie` Uno Feature removed | `AnimatedVisualPlayer`, `LottieVisualSource` and `ThemableLottieVisualSource` are part of `Uno.WinUI`, and the Skottie renderer now comes with the Skia renderer, so Lottie needs no package. Remove any explicit `PackageReference` to `Uno.WinUI.Lottie`; it receives no 7.0 builds. The `Lottie` feature is ignored if still listed: it never added a Lottie package on Windows, so a Windows head still references [`CommunityToolkit.WinUI.Lottie`](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie) itself. See [Lottie](xref:Uno.Features.Lottie). |
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
 | `Microsoft.Web.WebView2` WebView backend removed (Windows) | `WebView2Aot` is now the only backend. Remove any `Environment.SetEnvironmentVariable("UNO_WEBVIEW2_BACKEND", "microsoft.web.webview2")` call — the variable is still read, but any value other than `webview2aot` now only logs a warning and `WebView2Aot` is used regardless. The `UnoUseWebView2WPF` opt-in is removed with it — it kept the `Microsoft.Web.WebView2.Wpf` reference for the WPF host, which is gone. Set `<UnoDisableWebView2Workarounds>true</UnoDisableWebView2Workarounds>` instead if you need to keep that reference (it also turns off the package-alias workaround for `Microsoft.Web.WebView2.Core`). |
@@ -127,7 +127,7 @@ longer tested by Uno Platform.
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 | `Xamarin.AndroidX.Legacy.Support.V4` no longer injected (Android) | The `Uno.Sdk` added it to every Android app head. It is the AndroidX wrapper for the Android Support Library v4, whose job was bridging pre-AndroidX *view* code — with the native Android Views renderer gone, nothing needs it. Ten packages leave the graph: `Legacy.Support.V4`, `Legacy.Support.Core.UI`, `Legacy.Support.Core.Utils`, `AsyncLayoutInflater`, `LocalBroadcastManager`, `Media`, `Print`, `SlidingPaneLayout`, `Window` and its `Window.*Core*` companions. Nothing changes version. `AndroidX.Window` still arrives with the `foldable` feature. If *your own* code uses any of these, add an explicit `PackageReference`. The `AndroidXLegacySupportV4Version` property is removed and is silently ignored if still set. |
 | `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly. Do **not** add an explicit `PackageReference` to `SkiaSharp.Views.Uno.WinUI`: every published build was compiled against Uno Platform 6.x assemblies that 7.0 no longer ships, so the app throws `FileNotFoundException` from `SkiaSharp.Views.Windows.GlobalStaticResources.Initialize()` at startup. |
-| Runtime hosts no longer carry SkiaSharp or HarfBuzz native assets | The browser host linked `libSkiaSharp.a` into every WebAssembly head, so a WebGPU-only app shipped about 6 MB of Skia it never used, and every `Uno.WinUI.Runtime.*` host referenced HarfBuzzSharp whichever font provider the app used. The native libraries now come with the head: with the `Uno.Sdk`, nothing changes, because it references the `HarfBuzzSharp.NativeAssets.*` package for each target, and the `SkiaSharp.NativeAssets.*` package when the `Skia` feature is on. A head that doesn't use the `Uno.Sdk` adds those `PackageReference`s itself, for every target it builds. |
+| Runtime hosts no longer carry SkiaSharp or HarfBuzz native assets | The browser host linked `libSkiaSharp.a` into every WebAssembly head, so a WebGPU-only app shipped about 6 MB of Skia it never used, and every `Uno.WinUI.Runtime.*` host referenced HarfBuzzSharp whichever font provider the app used. The native libraries now come with the head: with the `Uno.Sdk`, nothing changes, because it references the `HarfBuzzSharp.NativeAssets.*` package for each target, and the `SkiaSharp.NativeAssets.*` package when the `Skia` feature is on. Listing `WebGpu` without `Skia` turns `Skia` off, so an app that uses SkiaSharp itself, or links native code against SkiaSharp's native library, lists `Skia;WebGpu`. A head that doesn't use the `Uno.Sdk` adds those `PackageReference`s itself, for every target it builds. |
 | `Microsoft.Windows.Compatibility` no longer referenced implicitly (WebAssembly) | The `Uno.Sdk` added this .NET Framework porting meta-package to every WebAssembly executable, pulling in 56 extra packages — 47% of a blank app's restore graph — including 21 RID-specific native packages for a target that has no RIDs. It arrived as a .NET 5 migration workaround and nothing in Uno Platform uses it. Most of what it provides is Windows-only and throws `PlatformNotSupportedException` in a browser regardless. If *your own* code uses one of its assemblies, add an explicit `PackageReference` to that specific package — the ones that genuinely work in a browser are `System.ServiceModel.*`, `System.ServiceModel.Syndication`, `System.Runtime.Caching`, `System.IO.Packaging`, `System.Configuration.ConfigurationManager`, `System.ComponentModel.Composition`, `System.CodeDom`, `System.Reflection.Context` and `System.Security.Cryptography.Pkcs`/`.Xml` — or reference `Microsoft.Windows.Compatibility` itself. The `WindowsCompatibilityVersion` MSBuild property is removed with it; specify a version on your own `PackageReference`. |
 | `LibVLCSharp` no longer referenced implicitly | `Uno.WinUI.Runtime.X11` — which every desktop head references implicitly — carried a `LibVLCSharp` dependency it never used, so the managed assembly landed in every desktop app's output. It now arrives only with the `MediaPlayerElement` (or `MediaElement`) feature, through `Uno.WinUI.MediaPlayer.X11` / `Uno.WinUI.MediaPlayer.Win32`, which have always declared it themselves. `MediaPlayerElement` is unaffected — it already required that feature. If *your own* code uses `LibVLCSharp` types directly, add an explicit `PackageReference`. |
 | Windows App SDK default moved from 1.7 to 2.4.0 | Windows heads now build against Windows App SDK 2.x, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.4.0 or later from the **Stable release** section — installed. To stay on 1.x, set `<WinAppSdkVersion>` (and `<WinAppSdkBuildToolsVersion>`) explicitly in your Windows head. |
@@ -639,6 +639,26 @@ own target framework, the library's calls included.
   sits in the WinUI `Microsoft.Web.WebView2.Core` namespace. Code that refers to it by name, such
   as `typeof(INativeWebViewProvider)` in an `ApiExtensibility` registration, needs
   `using Uno.Web.WebView2.Core;`.
+- **`ListViewBase.ItemClickCommand` and `ListViewBase.Command`.** Neither exists in WinUI: the
+  first was a plain property (not a dependency property, so it could not be set from a `Style`)
+  that ran just before `ItemClick`, and the second was a hidden alias of it. A `ListView` or
+  `GridView` subclass may now declare its own `ItemClickCommand` without a `new` modifier.
+  Code that sets either property, and XAML that sets it to a literal value, no longer compiles.
+  XAML that sets it with `{Binding}` **still compiles but no longer does anything**, so search your
+  XAML for `ItemClickCommand=` and `Command=` on lists.
+  Handle `ItemClick` instead, or attach the command with the
+  [Uno Toolkit](xref:Toolkit.GettingStarted) `CommandExtensions.Command`, which passes the
+  clicked item as the parameter unless `CommandExtensions.CommandParameter` is set:
+
+  ```diff
+  - <ListView IsItemClickEnabled="True" ItemClickCommand="{Binding OpenItem}" />
+  + <ListView IsItemClickEnabled="True" utu:CommandExtensions.Command="{Binding OpenItem}" />
+  ```
+
+  With [XAML Behaviors](https://github.com/microsoft/XamlBehaviors), use an
+  `EventTriggerBehavior` on `ItemClick` with an `InvokeCommandAction`. Without a
+  `CommandParameter`, the action passes the `ItemClickEventArgs` to the command, so read
+  `ClickedItem` from it or convert it with an `InputConverter`.
 
 ### Activation is read from `AppInstance`
 
@@ -1350,6 +1370,13 @@ To port a custom source, move the work as follows:
   regular controls. Use `ListView` and `GridView` from the default namespace. Types that do exist in that
   namespace, such as `legacy:ProgressRing`, are unaffected.
 
+- **Binding an attached property whose owner type cannot be found is a build error.** For
+  `u:ListViewBaseCommand.Command="{Binding OpenItem}"` where `ListViewBaseCommand` does not
+  resolve, the XAML generator used to bind `Command` by name on the `ListView` itself, so the
+  markup silently hit an unrelated property of that name, or nothing at all. It now reports
+  `UXAML0001`, as it already did for a literal value. Reference the assembly that declares the
+  owner type, fix the `using:` namespace, or remove the attribute.
+
 - **A relative URI on a `Uri`-typed property now compiles to `ms-resource:///Files/…`**, the MRT
   local-resource form WinUI produces. Previously Uno emitted the relative string verbatim. This
   affects custom `Uri` properties, `HyperlinkButton.NavigateUri`, `Hyperlink.NavigateUri`,
@@ -1702,6 +1729,8 @@ recommended and templated form. Windows App SDK heads are likewise unaffected.
    bring pre-7.0 application settings into the `UnoApplicationData` container, and update any
    native/interop code that read them from `NSUserDefaults.StandardUserDefaults`.
 26. Retarget any `net9.0-*` head or library to `net10.0-*`: 7.0 ships no `net9.0` assets.
+27. Replace `ItemClickCommand` / `Command` on `ListView` and `GridView` with an `ItemClick` handler or
+   the Uno Toolkit `CommandExtensions.Command` attached property.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
 for the full Android/iOS/WebAssembly Skia bootstrapping steps.

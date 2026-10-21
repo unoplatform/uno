@@ -148,7 +148,7 @@ namespace Microsoft.UI.Composition
 					if (Uno.UI.Composition.Drawing.DrawingCapabilities.NativeStroking
 						&& stroke is CompositionColorBrush nativeStrokeColor && stroke.CanPaint()
 						&& _strokeDashArray is not { Count: > 0 }
-						&& (Geometry?.TrimStart ?? 0f) == 0f && (Geometry?.TrimEnd ?? 0f) == 0f
+						&& !TryResolveTrim(Geometry, out _, out _, out _)
 						&& StrokeStartCap == CompositionStrokeCap.Flat && StrokeEndCap == CompositionStrokeCap.Flat)
 					{
 						session.Session.StrokePath(geometryWithTransformations, WithOpacity(nativeStrokeColor.Color, session.Opacity), StrokeThickness, ToDrawingJoin(StrokeLineJoin));
@@ -326,14 +326,26 @@ namespace Microsoft.UI.Composition
 		/// <summary>Strokes <paramref name="geometry"/> through the resolved trim window (see <see cref="TryResolveTrim"/>).</summary>
 		private IGeometry GetTrimmedStrokeGeometry(IGeometry geometry, float scale = 1f)
 		{
+			var dashed = _strokeDashArray is { Count: > 0 };
 			if (!TryResolveTrim(Geometry, out var start, out var end, out var wrapEnd))
 			{
+				if (dashed && Geometry?.BuildDashGeometry() is { } dashSource)
+				{
+					using var dashGeometry = dashSource.Transform(_geometryTransform);
+					return dashGeometry.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f), scale);
+				}
+
 				return geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f), scale);
 			}
 
 			if (IsEmptyTrim(start, end, wrapEnd))
 			{
 				return EmptyGeometry();
+			}
+
+			if (dashed)
+			{
+				return GetTrimmedDashedStrokeGeometry(geometry, start, end, wrapEnd, scale);
 			}
 
 			var trimmed = geometry.GetStrokeFillGeometry(GetStrokeStyle(start, end), scale);
@@ -349,6 +361,56 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
+		// WinUI trims first and then dashes the trimmed path, so the pattern starts at the trim start and runs on
+		// across a window that wraps through the path origin.
+		private IGeometry GetTrimmedDashedStrokeGeometry(IGeometry geometry, float start, float end, float? wrapEnd, float scale)
+		{
+			using var path = geometry.GetFilledGeometry(start, end, scale);
+			var trimmed = path.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f), scale);
+			if (wrapEnd is not { } wrapped || wrapped <= 0f)
+			{
+				return trimmed;
+			}
+
+			var headStyle = GetStrokeStyle(0f, 0f) with { DashOffset = StrokeDashOffset + PathLength.Of(path, scale) };
+			using (trimmed)
+			using (var headPath = geometry.GetFilledGeometry(0f, wrapped, scale))
+			using (var head = headPath.GetStrokeFillGeometry(headStyle, scale))
+			{
+				return trimmed.Combine(head, GeometryCombineMode.Union, scale);
+			}
+		}
+
+		private sealed class PathLength : IFlattenedPathSink
+		{
+			private Vector2 _start;
+			private Vector2 _last;
+			private float _length;
+
+			public static float Of(IGeometry geometry, float scale)
+			{
+				var sink = new PathLength();
+				geometry.StreamFlattened(sink, scale);
+				return sink._length;
+			}
+
+			public void BeginContour(Vector2 start) => _start = _last = start;
+
+			public void LineTo(Vector2 point)
+			{
+				_length += Vector2.Distance(_last, point);
+				_last = point;
+			}
+
+			public void EndContour(bool closed)
+			{
+				if (closed)
+				{
+					LineTo(_start);
+				}
+			}
+		}
+
 		/// <summary>
 		/// Resolves the trim window to [TrimStart + TrimOffset, TrimEnd + TrimOffset] taken modulo 1, returning
 		/// false when no trimming is active (the whole path is drawn). A window that the offset pushes past 1.0
@@ -361,26 +423,14 @@ namespace Microsoft.UI.Composition
 			end = 0f;
 			wrapEnd = null;
 
-			if (geometry is not { } g || (g.TrimStart == default && g.TrimEnd == default && g.TrimOffset == default))
+			// A window covering the whole path draws it untrimmed, whatever the offset — wrapping its endpoints
+			// into [0,1) would otherwise collapse it to nothing.
+			if (geometry is not { } g || g.TrimEnd - g.TrimStart >= 1f)
 			{
 				return false;
 			}
 
-			if (g.TrimOffset == default)
-			{
-				start = g.TrimStart;
-				end = g.TrimEnd;
-				return true;
-			}
-
-			// A full (or wider) window stays full regardless of offset — wrapping its endpoints into [0,1)
-			// would otherwise collapse it to nothing.
-			if (g.TrimEnd - g.TrimStart >= 1f)
-			{
-				end = 1f;
-				return true;
-			}
-
+			// Like WinUI, a start past the end wraps through the path origin even without an offset.
 			start = Wrap01(g.TrimStart + g.TrimOffset);
 			end = Wrap01(g.TrimEnd + g.TrimOffset);
 

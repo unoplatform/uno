@@ -92,6 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 					_contentElement.Content = displayBlock;
 				}
 				_gripperPresenter ??= new TextSelectionGripperPresenter(this);
+				_textBoxView.AttachSpellCheckSquiggles(_contentElement);
 
 				RenderDocument();
 			}

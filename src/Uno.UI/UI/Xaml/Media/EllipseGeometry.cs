@@ -55,6 +55,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		partial void InitPartials();
 
-		internal override IGeometry GetGeometry() => CompositionGeometry.BuildEllipseGeometry(Center.ToVector2(), new Vector2((float)RadiusX, (float)RadiusY));
+		// WinUI's EllipseGeometry figure starts at 3 o'clock (CEllipseGeometry::VisitSinkInternal), which is where dashes begin.
+		internal override IGeometry GetGeometry() => CompositionGeometry.BuildEllipseGeometry(Center.ToVector2(), new Vector2((float)RadiusX, (float)RadiusY), CompositionGeometry.EllipseFigureStart.Right);
 	}
 }

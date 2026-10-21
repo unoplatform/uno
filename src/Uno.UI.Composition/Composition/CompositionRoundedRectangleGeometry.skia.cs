@@ -9,8 +9,14 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionRoundedRectangleGeometry : CompositionGeometry
 	{
 		private IGeometry? _geometry;
+		private IGeometry? _dashGeometry;
 
 		internal override IGeometrySource2D? BuildGeometry() => _geometry as IGeometrySource2D;
+
+		internal override IGeometry? BuildDashGeometry()
+			=> CornerRadius.X == 0 || CornerRadius.Y == 0
+				? null
+				: _dashGeometry ??= BuildRoundedRectangleGeometry(Offset, Size, CornerRadius, startAtTopLeftArc: true);
 
 		private IGeometry InternalBuildGeometry()
 		{
@@ -28,6 +34,8 @@ namespace Microsoft.UI.Composition
 			{
 				_geometry?.Dispose();
 				_geometry = InternalBuildGeometry();
+				_dashGeometry?.Dispose();
+				_dashGeometry = null;
 			}
 
 			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
@@ -36,6 +44,7 @@ namespace Microsoft.UI.Composition
 		private protected override void DisposeInternal()
 		{
 			_geometry?.Dispose();
+			_dashGeometry?.Dispose();
 			base.DisposeInternal();
 		}
 	}

@@ -219,6 +219,11 @@ namespace Microsoft.UI.Xaml
 
 		internal void ClearBinding()
 		{
+			if (_binding is { IsValidationSource: true } validationSource)
+			{
+				global::Microsoft.UI.Xaml.Controls.Control.OnValidationBindingCleared(validationSource);
+			}
+
 			_binding?.Dispose();
 			_binding = null;
 		}

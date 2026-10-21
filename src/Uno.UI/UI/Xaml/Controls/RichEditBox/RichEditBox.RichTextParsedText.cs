@@ -8,6 +8,8 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Composition.Drawing;
+using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -223,6 +225,17 @@ partial class RichEditBox
 					localHighlighters,
 					localComposition);
 				session.Session.Restore();
+			}
+		}
+
+		public void DrawSpellCheckSquiggles(IDrawingSession session, Color color)
+		{
+			foreach (var paragraph in _paragraphs)
+			{
+				session.Save();
+				session.Translate(0, (float)paragraph.Top);
+				paragraph.ParsedText.DrawSpellCheckSquiggles(session, color);
+				session.Restore();
 			}
 		}
 

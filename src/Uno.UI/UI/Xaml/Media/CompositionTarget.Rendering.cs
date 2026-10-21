@@ -538,13 +538,15 @@ public partial class CompositionTarget
 			// Detach returns null both for "nothing was damaged" and for "no damage information", but a frame
 			// is only ever recorded with tracking on, so on an unresized frame null means nothing changed. The
 			// target still holds the previous frame, so the clear+replay is skipped rather than repainted whole.
+			// Not under an overlay: it has to land on a fresh frame, or it blends into its last copy.
 			var nothingChanged = !resized
 				&& lastRenderedFrame.damage is null
 				&& preservesContents
 				&& !overlayEnabled
-				&& !_forceFullRepaint;
+				&& !_forceFullRepaint
+				&& !drawsOutsideDamage;
 			var deviceDamage = useDamage ? ToDevicePixels(lastRenderedFrame.damage!, rasterizationScale) : null;
-			swapChain.SetPresentDamage(nothingChanged && !drawsOutsideDamage ? [] : deviceDamage);
+			swapChain.SetPresentDamage(nothingChanged ? [] : deviceDamage);
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
 			var presentedUnchanged = nothingChanged;

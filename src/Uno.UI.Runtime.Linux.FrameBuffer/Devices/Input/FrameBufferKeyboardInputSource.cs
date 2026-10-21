@@ -239,6 +239,10 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 		{
 			modifiers |= VirtualKeyModifiers.Menu;
 		}
+		if (_pressedKeys.Contains(KEY_LEFTMETA) || _pressedKeys.Contains(KEY_RIGHTMETA))
+		{
+			modifiers |= VirtualKeyModifiers.Windows;
+		}
 
 		return modifiers;
 	}

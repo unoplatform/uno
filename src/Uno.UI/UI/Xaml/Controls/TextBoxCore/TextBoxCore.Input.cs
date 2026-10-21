@@ -461,6 +461,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 				_gripperPresenter ??= new TextSelectionGripperPresenter(this);
 			}
 
+			TextBoxView.AttachSpellCheckSquiggles(ContentElement);
 			TextBoxView.SetTextNative(Text);
 		}
 
