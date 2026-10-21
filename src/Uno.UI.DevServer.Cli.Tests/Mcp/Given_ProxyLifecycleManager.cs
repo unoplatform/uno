@@ -389,16 +389,60 @@ public class Given_ProxyLifecycleManager
 
 	[TestMethod]
 	[OSCondition(OperatingSystems.Windows)]
+	[DataRow(@"\\server\share\repo\App.slnx")]
+	[DataRow(@"\??\UNC\server\share\repo\App.slnx")]
 	[Description("A network (UNC) solution path is refused before any file-system access, which would authenticate the user to that server")]
-	public async Task WhenSelectingUncSolutionPath_RequestIsRejected()
+	public async Task WhenSelectingUncSolutionPath_RequestIsRejected(string solutionPath)
 	{
 		var created = CreateSubject();
 
-		var result = await created.Subject.SelectSolutionAsync(@"\\server\share\repo\App.slnx");
+		var result = await created.Subject.SelectSolutionAsync(solutionPath);
 
 		result.Status.Should().Be("rejected");
 		result.Message.Should().Contain("local path");
 		created.HealthService.DevServerStarted.Should().BeFalse();
+	}
+
+	[TestMethod]
+	[OSCondition(OperatingSystems.Windows)]
+	[DataRow("file://server.invalid/share/repo")]
+	[DataRow(@"\??\UNC\server.invalid\share\repo")]
+	[Description("An MCP root on a network share is ignored before any file-system access, as a selected solution would be")]
+	public async Task WhenRootsPointToNetworkShare_RootIsIgnored(string rootUri)
+	{
+		var loggerProvider = new CollectingLoggerProvider();
+		var finder = new CountingSolutionFileFinder([]);
+		var created = CreateSubject(logger: loggerProvider.CreateLogger<ProxyLifecycleManager>(), solutionFileFinder: finder);
+
+		await InvokeSetRootsAsync(created.Subject, [rootUri]);
+
+		GetPrivateField<WorkspaceResolution?>(created.Subject, "_workspaceResolution").Should().BeNull();
+		finder.CallCount.Should().Be(0);
+		loggerProvider.Messages.Should().Contain(message => message.StartsWith("Ignoring MCP root", StringComparison.Ordinal));
+	}
+
+	[TestMethod]
+	[OSCondition(OperatingSystems.Windows)]
+	[Description("A refused or unresolvable MCP root (a share, a NUL character) falls through to the next one, so a multi-root workspace still resolves its local root")]
+	public async Task WhenFirstRootsAreRefused_NextRootIsUsed()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var localRoot = Path.Combine(root, "repo");
+			Directory.CreateDirectory(localRoot);
+			var created = CreateSubject();
+
+			await InvokeSetRootsAsync(created.Subject, ["file://server.invalid/share/repo", "repo\0x", new Uri(localRoot).AbsoluteUri]);
+
+			var resolution = GetPrivateField<WorkspaceResolution>(created.Subject, "_workspaceResolution");
+			PathComparison.PathsEqual(resolution.EffectiveWorkspaceDirectory, localRoot).Should().BeTrue();
+		}
+		finally
+		{
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
 	}
 
 	[TestMethod]

@@ -614,8 +614,10 @@ internal class McpStdioServer(
 			return false;
 		}
 
-		workspaceDirectory = workspaceDirElement.GetString();
-		if (string.IsNullOrWhiteSpace(workspaceDirectory) || !Path.IsPathRooted(workspaceDirectory))
+		var requestedDirectory = workspaceDirElement.GetString();
+		if (string.IsNullOrWhiteSpace(requestedDirectory)
+			|| !Path.IsPathRooted(requestedDirectory)
+			|| requestedDirectory.Contains('\0'))
 		{
 			errorResult = new CallToolResult()
 			{
@@ -631,6 +633,8 @@ internal class McpStdioServer(
 			return false;
 		}
 
+		// Checked on the full path: "\repo" is the current drive, and only the full path shows where it leads.
+		workspaceDirectory = Path.GetFullPath(requestedDirectory);
 		if (!LocalPathGuard.IsLocalPath(workspaceDirectory))
 		{
 			errorResult = new CallToolResult()
