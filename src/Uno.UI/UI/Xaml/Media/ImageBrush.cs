@@ -17,6 +17,8 @@ namespace Microsoft.UI.Xaml.Media
 {
 	public partial class ImageBrush : TileBrush
 	{
+		private IDisposable _sourceInvalidatedRegistration;
+
 #pragma warning disable CS0067 // The event 'ImageBrush.ImageFailed' is never used
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
@@ -47,15 +49,9 @@ namespace Microsoft.UI.Xaml.Media
 
 		private static void OnImageSourceChanged(ImageBrush brush, DependencyPropertyChangedEventArgs args)
 		{
-			if (args.OldValue is ImageSource oldSource)
-			{
-				oldSource.Invalidated -= brush.OnInvalidateRender;
-			}
-
-			if (args.NewValue is ImageSource newSource)
-			{
-				newSource.Invalidated += brush.OnInvalidateRender;
-			}
+			// The current source, not args.NewValue: subscribing to that one ran app code (ImageOpened) that may have set another.
+			brush._sourceInvalidatedRegistration?.Dispose();
+			brush._sourceInvalidatedRegistration = brush.ImageSource?.RegisterInvalidated(brush.OnInvalidateRender);
 		}
 
 		internal Rect GetArrangedImageRect(Size sourceSize, Rect targetRect)

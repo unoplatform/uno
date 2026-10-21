@@ -15,6 +15,7 @@ using Uno.Helpers;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
+using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -23,9 +24,19 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		private protected ImageData _imageData = ImageData.Empty;
 
-		internal event Action? Invalidated;
+		private WeakEventHelper.WeakEventCollection? _invalidatedHandlers;
 
-		private protected void InvalidateImageSource() => Invalidated?.Invoke();
+		/// <summary>
+		/// Registers a handler called when the source changes what it shows. The source holds it weakly, as it may outlive
+		/// its consumers (an icon in a static field or the app resources): the returned registration keeps it alive.
+		/// </summary>
+		internal IDisposable RegisterInvalidated(Action handler)
+			=> WeakEventHelper.RegisterEvent(
+				_invalidatedHandlers ??= new(),
+				handler,
+				(h, s, e) => (h as Action)?.Invoke());
+
+		private protected void InvalidateImageSource() => _invalidatedHandlers?.Invoke(this, null);
 
 		public static class TraceProvider
 		{

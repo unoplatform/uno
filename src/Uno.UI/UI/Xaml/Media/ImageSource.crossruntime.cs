@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Windows.UI.Core;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -20,6 +21,7 @@ using Uno;
 using Uno.Diagnostics.Eventing;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
+using Uno.UI.Dispatching;
 using Windows.Devices.Enumeration;
 using Uno.UI.Xaml.Media;
 
@@ -107,12 +109,35 @@ namespace Microsoft.UI.Xaml.Media
 		/// calls <see cref="Subscription.Applied"/> then, and what it drew until then stays meanwhile.
 		/// </param>
 		internal Subscription Subscribe(Action<ImageData> onSourceOpened, ICompositionSurface shown = null, bool appliedOnDelivery = true)
+			=> Subscribe(onSourceOpened, shown, appliedOnDelivery, lease: null);
+
+		/// <summary>
+		/// Subscribes a subscriber that draws what it is given at once (a brush), without keeping it alive: a source that
+		/// outlives it (an icon in a static field or the app resources) must not keep it, and what it paints, alive.
+		/// </summary>
+		/// <returns>
+		/// What keeps the subscription, which the subscriber must hold: once the subscriber is collected without disposing it,
+		/// the subscription ends, so the source can release what the subscriber drew.
+		/// </returns>
+		internal IDisposable SubscribeWeakly(Action<ImageData> onSourceOpened)
+		{
+			var lease = new SubscriptionLease(onSourceOpened);
+			Subscribe(onSourceOpened, shown: null, appliedOnDelivery: true, lease);
+			return lease;
+		}
+
+		private Subscription Subscribe(Action<ImageData> onSourceOpened, ICompositionSurface shown, bool appliedOnDelivery, SubscriptionLease lease)
 		{
 			// What a subscriber still draws stays held until it draws the replacement, which only one that draws later does.
 			Debug.Assert(shown is null || !appliedOnDelivery, "Only a subscriber that draws later passes what it still draws.");
 
-			var subscription = new Subscription(this, onSourceOpened, appliedOnDelivery, KeepReplaced(shown));
+			var subscription = new Subscription(this, onSourceOpened, holdsCallbackWeakly: lease is not null, appliedOnDelivery, KeepReplaced(shown));
 			subscription.Node = _subscriptions.AddLast(subscription);
+
+			// Linked before anything is delivered, whose app code may throw: the lease still ends the subscription then.
+			lease?.Link(subscription);
+			subscription.KeepCallbackWhileOpening(_isOpening);
+
 			CancelPendingRelease();
 
 			if (_imageData.HasData)
@@ -140,13 +165,28 @@ namespace Microsoft.UI.Xaml.Media
 		internal sealed class Subscription : IDisposable
 		{
 			private readonly ImageSource _source;
+
+			// One of the two: a subscriber the source must not keep alive is referenced weakly (see SubscribeWeakly).
 			private readonly Action<ImageData> _callback;
+			private readonly WeakReference<Action<ImageData>> _weakCallback;
+
+			// A weakly held callback, also held strongly while the source opens: an app may wait for a brush's ImageOpened with
+			// nothing else referencing the brush. Ending the subscription lets it go.
+			private Action<ImageData> _callbackWhileOpening;
 			private bool _isDisposed;
 
-			internal Subscription(ImageSource source, Action<ImageData> callback, bool appliedOnDelivery, ImageData shown)
+			internal Subscription(ImageSource source, Action<ImageData> callback, bool holdsCallbackWeakly, bool appliedOnDelivery, ImageData shown)
 			{
 				_source = source;
-				_callback = callback;
+				if (holdsCallbackWeakly)
+				{
+					_weakCallback = new(callback);
+				}
+				else
+				{
+					_callback = callback;
+				}
+
 				AppliedOnDelivery = appliedOnDelivery;
 				Set(shown, default);
 			}
@@ -173,6 +213,9 @@ namespace Microsoft.UI.Xaml.Media
 
 			internal LinkedListNode<Subscription> Node { get; set; }
 
+			internal void KeepCallbackWhileOpening(bool keep)
+				=> _callbackWhileOpening = keep && _weakCallback?.TryGetTarget(out var callback) == true ? callback : null;
+
 			// Keeps the source's hold counts in step with Shown and Pending.
 			private void Set(ImageData shown, ImageData pending)
 			{
@@ -190,6 +233,14 @@ namespace Microsoft.UI.Xaml.Media
 
 			internal void Deliver(ImageData data)
 			{
+				var callback = _callback;
+				if (callback is null && !_weakCallback.TryGetTarget(out callback))
+				{
+					// The subscriber was collected, and its lease has yet to end the subscription.
+					Dispose();
+					return;
+				}
+
 				// Before the callback, which may change the source and so be given newer data, or throw.
 				if (AppliedOnDelivery)
 				{
@@ -200,7 +251,7 @@ namespace Microsoft.UI.Xaml.Media
 					Set(Shown, data);
 				}
 
-				_callback(data);
+				callback(data);
 			}
 
 			/// <summary>
@@ -221,7 +272,62 @@ namespace Microsoft.UI.Xaml.Media
 				if (!_isDisposed)
 				{
 					_isDisposed = true;
+					_callbackWhileOpening = null;
 					_source.Unsubscribe(this);
+				}
+			}
+		}
+
+		/// <summary>
+		/// What a subscriber that the source holds weakly keeps (see <see cref="SubscribeWeakly"/>): the callback, which the
+		/// source references only weakly, and the subscription, which it ends once the subscriber is collected.
+		/// </summary>
+		private sealed class SubscriptionLease(Action<ImageData> callback) : IDisposable
+		{
+			private Action<ImageData> _callback = callback;
+
+			// Weak: a live source keeps the subscription among its own, and one collected with the subscriber has nothing to end.
+			// A handle rather than a WeakReference, which may be finalized before this lease.
+			private GCHandle _subscription;
+
+			internal void Link(Subscription subscription) => _subscription = GCHandle.Alloc(subscription, GCHandleType.Weak);
+
+			public void Dispose()
+			{
+				if (_callback is not null)
+				{
+					_callback = null;
+					TakeSubscription()?.Dispose();
+					GC.SuppressFinalize(this);
+				}
+			}
+
+			private Subscription TakeSubscription()
+			{
+				if (!_subscription.IsAllocated)
+				{
+					return null;
+				}
+
+				var subscription = (Subscription)_subscription.Target;
+				_subscription.Free();
+				return subscription;
+			}
+
+			~SubscriptionLease()
+			{
+				// The subscriber was collected: the subscription must stop holding what it drew, so the source can release it.
+				// Subscriptions belong to the UI thread.
+				if (TakeSubscription() is { IsActive: true } subscription)
+				{
+					try
+					{
+						NativeDispatcher.Main.Enqueue(subscription.Dispose, NativeDispatcherPriority.Low);
+					}
+					catch (Exception)
+					{
+						// An exception escaping a finalizer ends the process, while a missed end only waits for the next delivery.
+					}
 				}
 			}
 		}
@@ -344,6 +450,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			_opening.Disposable = null;
 			_isOpening = false;
+			KeepWeakCallbacksWhileOpening(false);
 
 			if (_subscriptions.Count == 0)
 			{
@@ -493,6 +600,7 @@ namespace Microsoft.UI.Xaml.Media
 			// In progress until Complete, also while the loaders run app code (a result already at hand is published before
 			// TryOpenSourceAsync returns): a subscriber that leaves or arrives meanwhile sees an open in flight.
 			_isOpening = true;
+			KeepWeakCallbacksWhileOpening(true);
 			try
 			{
 				if (TryOpenSourceSync(null, null, out var img))
@@ -519,6 +627,10 @@ namespace Microsoft.UI.Xaml.Media
 					if (!ct.IsCancellationRequested)
 					{
 						_isOpening = isEnqueued;
+						if (!isEnqueued)
+						{
+							KeepWeakCallbacksWhileOpening(false);
+						}
 					}
 				}
 				else
@@ -539,12 +651,31 @@ namespace Microsoft.UI.Xaml.Media
 				if (!ct.IsCancellationRequested)
 				{
 					_isOpening = false;
-					OnOpened(data);
+					try
+					{
+						OnOpened(data);
+					}
+					finally
+					{
+						// Kept through the delivery; an open its listeners started meanwhile keeps its own.
+						if (!_isOpening)
+						{
+							KeepWeakCallbacksWhileOpening(false);
+						}
+					}
 				}
 				else if (!ReferenceEquals(data.CompositionSurface, _imageData.CompositionSurface))
 				{
 					ReleaseSurface(data);
 				}
+			}
+		}
+
+		private void KeepWeakCallbacksWhileOpening(bool keep)
+		{
+			foreach (var subscription in _subscriptions)
+			{
+				subscription.KeepCallbackWhileOpening(keep);
 			}
 		}
 
