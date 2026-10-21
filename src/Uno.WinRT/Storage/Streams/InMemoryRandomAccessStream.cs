@@ -8,6 +8,7 @@ namespace Windows.Storage.Streams;
 public partial class InMemoryRandomAccessStream : IStreamWrapper
 {
 	private readonly MemoryStream _stream;
+	private readonly object _cloneGate = new();
 	public InMemoryRandomAccessStream() =>
 		_stream = new();
 
@@ -30,13 +31,16 @@ public partial class InMemoryRandomAccessStream : IStreamWrapper
 
 	public IRandomAccessStream CloneStream()
 	{
-		var position = Position;
-		var destination = new MemoryStream();
-		_stream.Position = 0;
-		_stream.CopyTo(destination);
-		destination.Seek((long)position, SeekOrigin.Begin);
-		_stream.Seek((long)position, SeekOrigin.Begin);
-		return new InMemoryRandomAccessStream(destination);
+		lock (_cloneGate)
+		{
+			var position = Position;
+			var destination = new MemoryStream();
+			_stream.Position = 0;
+			_stream.CopyTo(destination);
+			destination.Seek((long)position, SeekOrigin.Begin);
+			_stream.Seek((long)position, SeekOrigin.Begin);
+			return new InMemoryRandomAccessStream(destination);
+		}
 	}
 
 	public void Dispose() => _stream.Dispose();
