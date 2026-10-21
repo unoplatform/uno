@@ -24,10 +24,10 @@ internal interface IWaylandFrameGate
 	/// <summary>Called right before the commit, with the drawn frame's size and the configured buffer size.</summary>
 	bool CanPresent(int frameWidth, int frameHeight, int bufferWidth, int bufferHeight);
 
-	/// <summary>Called after a frame was committed or consumed by the liveness fallback.</summary>
+	/// <summary>Called after a frame was committed, or when the window had no content to draw.</summary>
 	void EndFrame(bool presented);
 
-	/// <summary>Called at a display callback or liveness opportunity, independently of layout readiness.</summary>
+	/// <summary>Called at a display frame callback, independently of layout readiness.</summary>
 	void FrameOpportunity();
 }
 
@@ -55,7 +55,6 @@ internal sealed class WaylandRenderer : IDisposable, ISwapChain
 	private int _width;
 	private int _height;
 	private bool _configured;
-	private bool _commitAllowed;
 	private bool _disposed;
 
 	public WaylandRenderer(IWaylandFrameProducer frames, IWaylandFrameGate gate, WaylandRenderScale scale, IWaylandGraphicsContext context, IDrawingFactory drawingFactory, Protocols.WlSurface surface, Action<Action> postToOwner)
@@ -65,7 +64,7 @@ internal sealed class WaylandRenderer : IDisposable, ISwapChain
 		Scale = scale;
 		_context = context;
 		_drawingFactory = drawingFactory;
-		_scheduler = new WaylandFrameScheduler(surface, Render, ProduceUnpresentedFrame, postToOwner, _gate.FrameOpportunity);
+		_scheduler = new WaylandFrameScheduler(surface, Render, postToOwner, _gate.FrameOpportunity);
 		Attach(context);
 	}
 
@@ -90,17 +89,12 @@ internal sealed class WaylandRenderer : IDisposable, ISwapChain
 		_scheduler.Invalidate();
 	}
 
+	// Nothing can be committed before the first configure, which invalidates again.
 	public void Invalidate()
 	{
 		if (_configured)
 		{
 			_scheduler.Invalidate();
-		}
-		else
-		{
-			// Uno schedules its next UI frame from the native frame request, so keep consuming frames before the
-			// first configure even though nothing can be committed yet.
-			ProduceUnpresentedFrame();
 		}
 	}
 
@@ -119,7 +113,7 @@ internal sealed class WaylandRenderer : IDisposable, ISwapChain
 	// viewport must change in the same commit as the buffer they describe.
 	public bool PrepareCommit(int width, int height)
 	{
-		if (!_configured || _disposed || !_commitAllowed)
+		if (!_configured || _disposed)
 		{
 			return false;
 		}
@@ -133,30 +127,24 @@ internal sealed class WaylandRenderer : IDisposable, ISwapChain
 
 	internal void ApplyScale() => Scale.Apply(_width, _height);
 
-	private bool Render() => Draw(commit: true);
-
-	// Compositors withhold frame callbacks from hidden surfaces; Uno keeps getting frames, which are not committed.
-	private void ProduceUnpresentedFrame() => Draw(commit: false);
-
-	private bool Draw(bool commit)
+	private bool Render()
 	{
 		if (_disposed || _context is WaylandEglGraphicsContext { IsLost: true })
 		{
 			return false;
 		}
 		_gate.BeginFrame();
-		_commitAllowed = commit;
 		if (!_frames.TryRequestFrame(this))
 		{
 			_gate.EndFrame(false);
 			return false;
 		}
-		var presented = commit && _context.Committed;
-		if (presented || !commit)
+		if (!_context.Committed)
 		{
-			_gate.EndFrame(presented);
+			return false;
 		}
-		return presented;
+		_gate.EndFrame(true);
+		return true;
 	}
 
 	GraphicsContextKind IGraphicsContext.Kind => _context.Kind;
