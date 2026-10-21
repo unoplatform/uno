@@ -1,5 +1,7 @@
 ﻿using System;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Globalization;
+using CultureInfo = System.Globalization.CultureInfo;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Globalization;
 
@@ -24,6 +26,235 @@ public class Given_Calendar
 
 		calendar.Day = 1;
 		Assert.AreEqual(1, calendar.Day);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	public void When_Languages_Differ_From_CurrentCulture_Then_Names_Follow_Languages()
+	{
+		var culture = CultureInfo.CurrentCulture;
+		try
+		{
+			CultureInfo.CurrentCulture = new CultureInfo("en-US");
+
+			var calendar = new Calendar(new[] { "fr-FR" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
+			calendar.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0)));
+
+			Assert.AreEqual("lundi", calendar.DayOfWeekAsString());
+			Assert.AreEqual("lundi", calendar.Clone().DayOfWeekAsString());
+
+			var other = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour);
+			calendar.CopyTo(other);
+			Assert.AreEqual("lundi", other.DayOfWeekAsString());
+		}
+		finally
+		{
+			CultureInfo.CurrentCulture = culture;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("de-DE", "en-US", "24HourClock", "GregorianCalendar")]
+	[DataRow("en-US", "de-DE", "12HourClock", "GregorianCalendar")]
+	[DataRow("th-TH", "en-US", "24HourClock", "ThaiCalendar")]
+	public void When_Languages_Differ_From_CurrentCulture_Then_Clock_And_System_Follow_Languages(string language, string currentCulture, string expectedClock, string expectedSystem)
+	{
+		DefaultClockHelper.AssumeStockTimeFormat(language);
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
+		var culture = CultureInfo.CurrentCulture;
+		try
+		{
+			CultureInfo.CurrentCulture = new CultureInfo(currentCulture);
+
+			var calendar = new Calendar(new[] { language });
+
+			Assert.AreEqual(expectedSystem, calendar.GetCalendarSystem());
+			Assert.AreEqual(expectedClock, calendar.GetClock());
+		}
+		finally
+		{
+			CultureInfo.CurrentCulture = culture;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	public void When_Calendar_Differs_From_Language_Default_Then_Names_Follow_Calendar()
+	{
+		var arabicGregorian = (CultureInfo)new CultureInfo("ar-SA").Clone();
+		arabicGregorian.DateTimeFormat.Calendar = new global::System.Globalization.GregorianCalendar();
+		if (arabicGregorian.DateTimeFormat.GetMonthName(1) == CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1)
+			|| new CultureInfo("he-IL").DateTimeFormat.GetMonthName(1) == CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1))
+		{
+			Assert.Inconclusive("The ICU data loaded here has no Arabic or Hebrew names (the WebAssembly shard for the browser language).");
+		}
+
+		var date = new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0));
+
+		// ar-SA defaults to the Um al-Qura calendar, in which this date falls in Rajab.
+		var gregorian = new Calendar(new[] { "ar-SA" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
+		gregorian.SetDateTime(date);
+		Assert.AreEqual("يناير", gregorian.MonthAsString());
+		Assert.AreEqual("يناير", gregorian.Clone().MonthAsString());
+
+		var other = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour);
+		gregorian.CopyTo(other);
+		Assert.AreEqual("يناير", other.MonthAsString());
+
+		// Um al-Qura ends in 2077.
+		gregorian.SetDateTime(new DateTimeOffset(new DateTime(2100, 3, 1, 12, 0, 0)));
+		Assert.AreEqual("مارس", gregorian.MonthAsString());
+
+		var changed = new Calendar(new[] { "ar-SA" });
+		changed.ChangeCalendarSystem(CalendarIdentifiers.Gregorian);
+		changed.SetDateTime(date);
+		Assert.AreEqual("يناير", changed.MonthAsString());
+
+		// en-US has no names for the Hebrew calendar, so, as in WinRT, they come from Hebrew, but the
+		// period stays English.
+		var hebrew = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Hebrew, ClockIdentifiers.TwelveHour);
+		hebrew.SetDateTime(date);
+		Assert.AreEqual(5, hebrew.Month);
+		Assert.AreEqual("שבט", hebrew.MonthAsString());
+		Assert.AreEqual("PM", hebrew.PeriodAsString());
+		// WinRT separates the words with a no-break space.
+		Assert.AreEqual("יום שני", hebrew.DayOfWeekAsString().Replace('\u00A0', ' '));
+
+		// No culture formats with the Julian calendar, whose months are the Gregorian ones. January 20 is in
+		// January in both calendars.
+		var julian = new Calendar(new[] { "ar-SA" }, CalendarIdentifiers.Julian, ClockIdentifiers.TwentyFourHour);
+		julian.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 20, 12, 0, 0)));
+		Assert.AreEqual("يناير", julian.MonthAsString());
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("en-US", "ThaiCalendar", "Jan", "Monday", "2567")]
+	[DataRow("en-US", "KoreanCalendar", "Jan", "Monday", "4357")]
+	[DataRow("en-US", "TaiwanCalendar", "Jan", "Monday", "113")]
+	[DataRow("de-DE", "ThaiCalendar", "Jan", "Montag", "2567")]
+	[DataRow("de-DE", "KoreanCalendar", "Jan", "Montag", "4357")]
+	[DataRow("de-DE", "TaiwanCalendar", "Jan", "Montag", "113")]
+	public void When_Calendar_Has_Gregorian_Months_Then_Names_Follow_Language(string language, string calendarIdentifier, string expectedMonthPrefix, string expectedDayOfWeek, string expectedYear)
+	{
+		// As in WinRT, a language without names for these calendars keeps its own ("January 2567" for en-US).
+		var calendar = new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour);
+		calendar.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0)));
+
+		StringAssert.StartsWith(calendar.MonthAsString(), expectedMonthPrefix);
+		Assert.AreEqual(expectedDayOfWeek, calendar.DayOfWeekAsString());
+		Assert.AreEqual(expectedYear, calendar.YearAsString());
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinRT throws after SetToMin, see When_Julian_Calendar.
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("ar-SA", "JulianCalendar")]
+	[DataRow("fa-IR", "JulianCalendar")]
+	[DataRow("fa-IR", "")]
+	public void When_Calendar_At_Min_Then_MonthAsString_Does_Not_Throw(string language, string calendarIdentifier)
+	{
+		// The year view of CalendarView does this. Um al-Qura starts in 1900 and Persian in 622.
+		var calendar = calendarIdentifier.Length > 0
+			? new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour)
+			: new Calendar(new[] { language });
+		calendar.SetToMin();
+
+		Assert.IsFalse(string.IsNullOrEmpty(calendar.MonthAsString()));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("th-TH", "", 2024, 1, 15, "2567", "67", "002567", "1", "01", "15", "")]
+	[DataRow("ja-JP", "JapaneseCalendar", 2024, 1, 15, "6", "06", "000006", "1", "01", "15", "")]
+	[DataRow("en-US", "JulianCalendar", 2024, 1, 5, "2023", "23", "002023", "12", "12", "23", "Dec")]
+	public void When_Calendar_Is_Not_Gregorian_Then_Date_Strings_Follow_It(
+		string language,
+		string calendarIdentifier,
+		int year,
+		int month,
+		int day,
+		string expectedYear,
+		string expectedTruncatedYear,
+		string expectedPaddedYear,
+		string expectedMonth,
+		string expectedPaddedMonth,
+		string expectedDay,
+		string expectedMonthNamePrefix)
+	{
+		var calendar = calendarIdentifier.Length > 0
+			? new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour)
+			: new Calendar(new[] { language });
+		calendar.SetDateTime(new DateTimeOffset(new DateTime(year, month, day, 12, 0, 0)));
+
+		Assert.AreEqual(expectedYear, calendar.YearAsString());
+		Assert.AreEqual(expectedTruncatedYear, calendar.YearAsTruncatedString(2));
+		Assert.AreEqual(expectedPaddedYear, calendar.YearAsPaddedString(6));
+		Assert.AreEqual(expectedMonth, calendar.MonthAsNumericString());
+		Assert.AreEqual(expectedPaddedMonth, calendar.MonthAsPaddedNumericString(2));
+		Assert.AreEqual(expectedDay, calendar.DayAsString());
+
+		// Uno abbreviates the names WinRT gives in full (Dec, December). The other rows skip the name, which
+		// the WebAssembly ICU shard for an English browser lacks.
+		StringAssert.StartsWith(calendar.MonthAsString(), expectedMonthNamePrefix);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 1, "4")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 2, "24")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 3, "024")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 4, "2024")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 5, "02024")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 6, "002024")]
+	[DataRow("en-US", "GregorianCalendar", 2024, 10, "0000002024")]
+	[DataRow("en-US", "GregorianCalendar", 5, 2, "05")]
+	[DataRow("en-US", "GregorianCalendar", 5, 4, "0005")]
+	[DataRow("en-US", "GregorianCalendar", 5, 6, "000005")]
+	[DataRow("ja-JP", "JapaneseCalendar", 2024, 4, "0006")]
+	[DataRow("ja-JP", "JapaneseCalendar", 2024, 6, "000006")]
+	[DataRow("th-TH", "ThaiCalendar", 2024, 6, "002567")]
+	public void When_Year_Is_Truncated_Then_Last_Digits_Are_Padded_To_Length(string language, string calendarIdentifier, int year, int remainingDigits, string expected)
+	{
+		// WinRT pads to the length even when it is longer than the year, which its docs don't say.
+		var calendar = new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour);
+		calendar.SetDateTime(new DateTimeOffset(new DateTime(year, 1, 15, 12, 0, 0)));
+
+		Assert.AreEqual(expected, calendar.YearAsTruncatedString(remainingDigits));
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinRT uses the language's own digits (ה׳תשפ״ד, ١٤٤٥).
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("en-US", "HebrewCalendar", "5784", "5", "5")]
+	[DataRow("ar-SA", "", "1445", "7", "3")]
+	public void When_Calendar_Is_Not_Gregorian_Then_Numbers_Follow_It(string language, string calendarIdentifier, string expectedYear, string expectedMonth, string expectedDay)
+	{
+		var calendar = calendarIdentifier.Length > 0
+			? new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour)
+			: new Calendar(new[] { language });
+		calendar.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0)));
+
+		Assert.AreEqual(expectedYear, calendar.YearAsString());
+		Assert.AreEqual(expectedMonth, calendar.MonthAsNumericString());
+		Assert.AreEqual(expectedDay, calendar.DayAsString());
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("24HourClock", "0", "00", "")]
+	[DataRow("12HourClock", "12", "12", "AM")]
+	public void When_Midnight_Then_Time_Strings_Follow_Clock(string clock, string expectedHour, string expectedPaddedHour, string expectedPeriod)
+	{
+		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, clock);
+		calendar.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 15, 0, 5, 0)));
+
+		Assert.AreEqual(expectedHour, calendar.HourAsString());
+		Assert.AreEqual(expectedPaddedHour, calendar.HourAsPaddedString(2));
+		Assert.AreEqual("05", calendar.MinuteAsPaddedString(2));
+		Assert.AreEqual(expectedPeriod, calendar.PeriodAsString());
 	}
 
 	[TestMethod]

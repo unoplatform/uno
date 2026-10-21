@@ -18,8 +18,8 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || false || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<string> Clocks
 		{
 			get

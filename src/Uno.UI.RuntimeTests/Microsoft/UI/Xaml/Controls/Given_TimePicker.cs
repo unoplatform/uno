@@ -1,7 +1,9 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
@@ -103,6 +105,147 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(int.TryParse(firstItem.PrimaryText, out var firstHourValue), "First hour text should be a valid integer");
 			Assert.AreEqual(12, firstHourValue, "First hour in 12-hour clock should represent 12");
 		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+		[DataRow(13, "1:05 PM")]
+		[DataRow(0, "12:05 AM")]
+		public async Task When_Time_Selected_Then_Automation_Name_Has_Only_The_Time(int hour, string expectedTime)
+		{
+			var originalOverride = global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride;
+			try
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "en-US";
+
+				var timePicker = new TimePicker
+				{
+					Header = "Alarm",
+					ClockIdentifier = Windows.Globalization.ClockIdentifiers.TwelveHour,
+					SelectedTime = new TimeSpan(hour, 5, 0),
+				};
+				await UITestHelper.Load(timePicker);
+
+				// "<header> <short time> time picker", without the sentinel date the time is formatted on.
+				var flyoutButton = (ButtonBase)VisualTreeUtils.FindVisualChildByName(timePicker, "FlyoutButton");
+				var name = AutomationProperties.GetName(flyoutButton).Replace('\u202F', ' ').Replace('\u00A0', ' ');
+				StringAssert.StartsWith(name, $"Alarm {expectedTime}");
+			}
+			finally
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19349")]
+		[DataRow("cs-CZ", "12HourClock", "1", "FirstPickerHost", "SecondPickerHost", "ThirdPickerHost")]
+		[DataRow("cs-CZ", "24HourClock", "13", "SecondPickerHost", "ThirdPickerHost", null)]
+		[DataRow("de-DE", "12HourClock", "1", "FirstPickerHost", "SecondPickerHost", "ThirdPickerHost")]
+		[DataRow("de-DE", "24HourClock", "13", "SecondPickerHost", "ThirdPickerHost", null)]
+		[DataRow("en-US", "12HourClock", "1", "FirstPickerHost", "SecondPickerHost", "ThirdPickerHost")]
+		[DataRow("en-US", "24HourClock", "13", "SecondPickerHost", "ThirdPickerHost", null)]
+		[DataRow("ja-JP", "12HourClock", "1", "SecondPickerHost", "ThirdPickerHost", "FirstPickerHost")]
+		public async Task When_Clock_Is_Set_Then_Columns_Follow_Its_Pattern(string language, string clock, string expectedHour, string expectedHourHost, string expectedMinuteHost, string expectedPeriodHost)
+		{
+			var originalOverride = global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride;
+			try
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = language;
+
+				var timePicker = new TimePicker { ClockIdentifier = clock, SelectedTime = new TimeSpan(13, 5, 0) };
+				await UITestHelper.Load(timePicker);
+
+				// As in WinUI, the columns follow the "hour minute" pattern for the clock, which puts the period after the
+				// time, or before it in Japanese. Without a period, WinUI's ordering leaves the first column empty.
+				var hour = (TextBlock)VisualTreeUtils.FindVisualChildByName(timePicker, "HourTextBlock");
+				var minute = (TextBlock)VisualTreeUtils.FindVisualChildByName(timePicker, "MinuteTextBlock");
+				var period = VisualTreeUtils.FindVisualChildByName(timePicker, "PeriodTextBlock") as TextBlock;
+				Assert.AreEqual(expectedHour, hour.Text);
+				Assert.AreEqual("05", minute.Text);
+				Assert.AreEqual(expectedHourHost, (hour.Parent as FrameworkElement)?.Name);
+				Assert.AreEqual(expectedMinuteHost, (minute.Parent as FrameworkElement)?.Name);
+				Assert.AreEqual(expectedPeriodHost, (period?.Parent as FrameworkElement)?.Name);
+			}
+			finally
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18834")]
+		[DataRow("en-CA", "12HourClock", "5")]
+		[DataRow("ko-KR", "12HourClock", "5")]
+		[DataRow("en-GB", "24HourClock", "17")]
+		public void When_Default_ClockIdentifier_Follows_Language(string cultureName, string expectedClock, string expectedHour)
+		{
+			DefaultClockHelper.AssumeStockTimeFormat(cultureName);
+			using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
+			var originalCulture = CultureInfo.CurrentCulture;
+			var originalOverride = global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride;
+			try
+			{
+				// As in WinUI, the clock follows the app language, not CurrentCulture (the regional format).
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = cultureName;
+				CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(expectedClock == "12HourClock" ? "en-GB" : "en-US");
+
+				var timePicker = new TimePicker { SelectedTime = new TimeSpan(17, 15, 0) };
+				Assert.AreEqual(expectedClock, timePicker.ClockIdentifier);
+
+				// Lay out synchronously so the template sees the opposite CurrentCulture set above.
+				TestServices.WindowHelper.WindowContent = timePicker;
+				timePicker.UpdateLayout();
+
+				var hourTextBlock = (TextBlock)VisualTreeUtils.FindVisualChildByName(timePicker, "HourTextBlock");
+				var periodTextBlock = (TextBlock)VisualTreeUtils.FindVisualChildByName(timePicker, "PeriodTextBlock");
+				Assert.AreEqual(expectedHour, hourTextBlock.Text);
+				Assert.AreEqual(expectedClock == "12HourClock", periodTextBlock?.Parent is not null, "The period column should show only with a 12-hour clock");
+			}
+			finally
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+				CultureInfo.CurrentCulture = originalCulture;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+#if HAS_UNO
+		// The 24h rows of the WinUI probe on Windows: the device (regional format) is en-US with a 24-hour time.
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+		[DataRow("en-CA", "12HourClock", "1")]
+		[DataRow("en-US", "24HourClock", "13")]
+		[DataRow("de-DE", "24HourClock", "13")]
+		public void When_Device_Uses_24_Hour_Clock_Then_Default_ClockIdentifier_Follows_It_In_Its_Locale_Only(string language, string expectedClock, string expectedHour)
+		{
+			DefaultClockHelper.AssumeStockTimeFormat(language);
+
+			var originalOverride = global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride;
+			try
+			{
+				global::Windows.Globalization.DeviceClock.TestDevice = ("en-US", null, true);
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = language;
+
+				var timePicker = new TimePicker { SelectedTime = new TimeSpan(13, 5, 0) };
+				Assert.AreEqual(expectedClock, timePicker.ClockIdentifier);
+
+				TestServices.WindowHelper.WindowContent = timePicker;
+				timePicker.UpdateLayout();
+
+				var hourTextBlock = (TextBlock)VisualTreeUtils.FindVisualChildByName(timePicker, "HourTextBlock");
+				Assert.AreEqual(expectedHour, hourTextBlock.Text);
+			}
+			finally
+			{
+				global::Windows.Globalization.DeviceClock.TestDevice = null;
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+#endif
 
 		[TestMethod]
 		public async Task When_MinuteIncrement_Not_In_Range_Should_Throw_And_Keep_OldValue()
@@ -311,7 +454,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			TimePicker timePicker = new()
 			{
-				Time = new TimeSpan(12, 30, 0)
+				Time = new TimeSpan(12, 30, 0),
+				// The flyout helper expects a period column, which the default clock may not have.
+				ClockIdentifier = Windows.Globalization.ClockIdentifiers.TwelveHour,
 			};
 #if HAS_UNO
 			timePicker.UseNativeStyle = false;
