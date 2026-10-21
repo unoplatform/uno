@@ -41,18 +41,6 @@ internal static class WaylandToplevelStateParser
 		=> wasMinimized != isMinimized || ((previous ^ current) & (WaylandToplevelStates.Maximized | WaylandToplevelStates.Fullscreen)) != 0;
 
 	// The first activation is CodeActivated as on WinUI and X11; compositor focus then follows as PointerActivated.
-	internal static ReadOnlySpan<CoreWindowActivationState> GetActivationSequence(WaylandToplevelStates states, bool initialActivation)
-	{
-		var focused = (states & WaylandToplevelStates.Activated) != 0;
-		return (initialActivation, focused) switch
-		{
-			(true, true) => [CoreWindowActivationState.CodeActivated, CoreWindowActivationState.PointerActivated],
-			(true, false) => [CoreWindowActivationState.CodeActivated],
-			(false, true) => [CoreWindowActivationState.PointerActivated],
-			(false, false) => [CoreWindowActivationState.Deactivated],
-		};
-	}
-
 	// Both events carry a wl_array of native-endian uint32 values; unknown values are ignored.
 	internal static WaylandToplevelStates ParseStates(ReadOnlySpan<byte> array)
 		=> (WaylandToplevelStates)Parse(array, (uint)WaylandToplevelStates.All);

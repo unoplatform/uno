@@ -86,6 +86,8 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 	private long _configureGeneration;
 	private readonly WaylandPresentationState _presentation = new();
 	private readonly WaylandConfigureScheduler _configures;
+	private static readonly TimeSpan FirstConfigureTimeout = TimeSpan.FromMilliseconds(100);
+	private readonly ManualResetEventSlim _firstConfigure = new();
 	private uint? _configureSerial;
 	private long _configureSerialSequence;
 	private long _iconGeneration;
@@ -210,8 +212,6 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 
 	public override object NativeWindow => _surface;
 
-	public override bool IsReadyForActivation => _activation.IsReadyForActivation;
-
 	public override string Title
 	{
 		get => _title;
@@ -299,11 +299,21 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 				WaylandDiagnostics.Trace($"window{_id}: initial commit");
 			}
 		});
+		// Like Win32's SynchronousRenderAndDraw: wait briefly for the first configure, so the window is shown, then
+		// activated, with its real size and states. The dispatch thread signals directly; posting to this thread
+		// would deadlock.
+		if (_firstConfigure.Wait(FirstConfigureTimeout))
+		{
+			_configures.ApplyQueued();
+		}
+		else if (WaylandDiagnostics.IsEnabled)
+		{
+			WaylandDiagnostics.Trace($"window{_id}: no configure within {FirstConfigureTimeout.TotalMilliseconds} ms, shown provisionally");
+		}
 	}
 
 	internal protected override void Activate()
 	{
-		_activation.Request();
 		Post(() =>
 		{
 			if (_minimizeRequested || (_states & WaylandToplevelStates.Activated) == 0)
@@ -529,6 +539,7 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 			WaylandDiagnostics.Trace(FormattableString.Invariant($"window{_id}: configure serial={args.Serial} suggested={_pendingWidth}x{_pendingHeight} geometry={_geometryWidth}x{_geometryHeight} content={_layout.ContentWidth}x{_layout.ContentHeight} states={_states} decorations={(_serverSideDecorations ? "server" : "client")} -> {(_configureSerial is null ? "acknowledged" : "pending presentation")}"));
 		}
 		Publish(notifyActivation: true);
+		_firstConfigure.Set();
 	}
 
 	private void OnPreferredFractionalScale(object? sender, WpFractionalScaleV1.PreferredScaleEventArgs args)
@@ -870,9 +881,8 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 		var stateConfiguration = !_activation.HasAppliedConfigure && _initialConfigurationState is { Configured: true } initial && initial.Generation > configuration.Generation
 			? initial : configuration;
 		var changes = StageConfigure(layout.ContentWidth, layout.ContentHeight, layout.TitleBarHeight, configuration.Scale);
-		// Presenter and size observers must see the same configured state and geometry.
 		var presenterChanged = configuration.Configured && StageConfigurationPresenter(stateConfiguration);
-		NotifyConfigure(changes, configuration.Generation, presenterChanged ? NotifyPresenterChanged : null);
+		NotifyConfigure(changes, configuration.Generation, presenterChanged);
 		// A provisional snapshot cannot become presentable when a later dispatch configure arrives.
 		if (configuration.CanPresent && !_closed)
 		{
@@ -935,19 +945,29 @@ internal sealed class WaylandWindowWrapper : NativeWindowWrapperBase, IWaylandDe
 		NotifyConfigure(StageConfigure(width, height, titleBarHeight, scale), generation);
 	}
 
-	private WindowConfigurationChanges StageConfigure(int width, int height, int titleBarHeight, double scale)
+	private (bool BoundsChanged, bool ScaleChanged) StageConfigure(int width, int height, int titleBarHeight, double scale)
 	{
 		var geometry = WaylandWindowGeometry.Create(width, height, titleBarHeight, scale);
 		_host.Scale = geometry.Scale;
 		var bounds = new Rect(0, 0, geometry.Width, geometry.Height);
 		var client = new SizeInt32(geometry.BufferWidth, geometry.BufferHeight);
 		var outer = new SizeInt32(client.Width, geometry.OuterHeight);
-		return StageWindowConfiguration(bounds, bounds, outer, client, geometry.Scale);
+		var changes = (Bounds != bounds, RasterizationScale != geometry.Scale);
+		StageRasterizationScale(geometry.Scale);
+		StageSizes(outer, client);
+		StageVisibleBounds(bounds);
+		StageBounds(bounds);
+		return changes;
 	}
 
-	private void NotifyConfigure(WindowConfigurationChanges changes, long generation, Action? beforeSizeNotifications = null)
+	// Presenter and size observers see the same configured state and geometry.
+	private void NotifyConfigure((bool BoundsChanged, bool ScaleChanged) changes, long generation, bool presenterChanged = false)
 	{
-		NotifyWindowConfiguration(changes, () => !_closed, beforeSizeNotifications);
+		if (presenterChanged)
+		{
+			StagePresenterChange();
+		}
+		PublishChanges();
 		if (_closed)
 		{
 			return;
