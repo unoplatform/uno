@@ -5,48 +5,36 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Wayland;
 
+// UI thread. The window implementation raises CodeActivated once Show returns; configures report focus changes.
 internal sealed class WaylandWindowActivation(Action<Action> postToUI, Func<bool> canNotify, Action<CoreWindowActivationState> notify)
 {
-	private bool _pending;
-	private WaylandToplevelStates _states;
-
 	internal bool HasAppliedConfigure { get; private set; }
-
-	// Loaded can run inside CoreServices' window enumeration. The host delivers activation on a UI turn.
-	internal bool IsReadyForActivation => false;
-
-	internal void Request()
-	{
-		_pending = true;
-		postToUI(() =>
-		{
-			if (HasAppliedConfigure && _pending)
-			{
-				Raise();
-			}
-		});
-	}
 
 	internal void Configure(WaylandToplevelStates states, bool notifyActivation)
 	{
+		var initial = !HasAppliedConfigure;
 		HasAppliedConfigure = true;
-		_states = states;
-		if (notifyActivation)
+		if (!notifyActivation)
 		{
-			Raise();
+			return;
 		}
+		var focused = (states & WaylandToplevelStates.Activated) != 0;
+		if (initial)
+		{
+			// The first configure is applied while the window is shown, before its CodeActivated: only focus follows it.
+			if (focused)
+			{
+				postToUI(() => Notify(CoreWindowActivationState.PointerActivated));
+			}
+			return;
+		}
+		Notify(focused ? CoreWindowActivationState.PointerActivated : CoreWindowActivationState.Deactivated);
 	}
 
-	private void Raise()
+	private void Notify(CoreWindowActivationState state)
 	{
-		var initialActivation = _pending;
-		_pending = false;
-		foreach (var state in WaylandToplevelStateParser.GetActivationSequence(_states, initialActivation))
+		if (canNotify())
 		{
-			if (!canNotify())
-			{
-				break;
-			}
 			notify(state);
 		}
 	}
