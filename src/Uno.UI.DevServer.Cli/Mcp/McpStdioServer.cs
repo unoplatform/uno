@@ -38,6 +38,7 @@ internal class McpStdioServer(
 		Name = "uno_app_initialize",
 		Description =
 			"Initializes the Uno DevServer for a workspace. Sets the root directory, resolves the Uno solution, and starts the DevServer. "
+			+ "When solutionPath is given, the DevServer serves that solution wherever it is, and workspaceDirectory only sets where other solutions are suggested from; the result reports the workspace and solution served. "
 			+ "Call this ONCE at the start of a session. After initialization succeeds, the Uno app tools become available. "
 			+ "To switch solutions afterwards, call uno_app_select_solution rather than initializing again.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
@@ -110,7 +111,7 @@ internal class McpStdioServer(
 		Func<bool> isForceRootsFallback,
 		Func<string[]> getRoots,
 		Func<string[], Task> setRootsHandler,
-		Func<string, bool, Task<CallToolResult>> selectSolutionHandler)
+		Func<string, bool, string?, Task<CallToolResult>> selectSolutionHandler)
 	{
 		var tcs = new TaskCompletionSource();
 
@@ -139,9 +140,7 @@ internal class McpStdioServer(
 						return initError;
 					}
 
-					await setRootsHandler([workspaceDir!]);
-
-					if (await SelectInitialSolutionAsync(initSolutionPath, selectSolutionHandler) is { } rejectedSelection)
+					if (await ApplyInitializeAsync(workspaceDir!, initSolutionPath, setRootsHandler, selectSolutionHandler) is { } rejectedSelection)
 					{
 						return rejectedSelection;
 					}
@@ -177,7 +176,7 @@ internal class McpStdioServer(
 					}
 
 					var forceRestart = TryGetForceRestart(ctx.Params?.Arguments);
-					var selectionResult = await selectSolutionHandler(solutionPath!, forceRestart);
+					var selectionResult = await selectSolutionHandler(solutionPath!, forceRestart, null);
 					toolStopwatch.Stop();
 					LogTimeline(logger, "tool.select-solution.complete", toolStopwatch.ElapsedMilliseconds, toolName);
 					logger.LogDebug("Handled MCP tool {Tool} in {ElapsedMs} ms", toolName,
@@ -552,25 +551,29 @@ internal class McpStdioServer(
 	}
 
 	internal const string InitialSelectionRejectedNote =
-		"The workspaceDirectory was still applied: the DevServer serves the solution resolved from it (see uno_health). "
-		+ "Fix solutionPath and call uno_app_select_solution to change it.";
+		"solutionPath was not selected for the reason above. Call uno_app_select_solution with a valid solutionPath; "
+		+ "meanwhile uno_health shows what the DevServer serves, if anything.";
 
 	/// <summary>
-	/// Applies the optional <c>solutionPath</c> of <c>uno_app_initialize</c>, after the roots. Returns the selection's
-	/// rejection, followed by a note that the workspace itself was applied, so initialization answers with the reason
-	/// instead of waiting for the DevServer; <see langword="null"/> when no solution was given or it was accepted.
+	/// Applies <c>uno_app_initialize</c>: the optional <c>solutionPath</c> is selected first, with candidate solutions
+	/// suggested from <c>workspaceDirectory</c>, so the roots cannot start another solution before it; then
+	/// <c>workspaceDirectory</c> is applied as the roots, which an accepted selection makes ignored. Returns the selection's rejection followed by a note, so initialization answers with the
+	/// reason instead of waiting for the DevServer; <see langword="null"/> when no solution was given or it was accepted.
 	/// </summary>
-	internal static async Task<CallToolResult?> SelectInitialSolutionAsync(
+	internal static async Task<CallToolResult?> ApplyInitializeAsync(
+		string workspaceDirectory,
 		string? solutionPath,
-		Func<string, bool, Task<CallToolResult>> selectSolutionHandler)
+		Func<string[], Task> setRootsHandler,
+		Func<string, bool, string?, Task<CallToolResult>> selectSolutionHandler)
 	{
-		if (string.IsNullOrWhiteSpace(solutionPath))
-		{
-			return null;
-		}
+		var selectionResult = string.IsNullOrWhiteSpace(solutionPath)
+			? null
+			: await selectSolutionHandler(solutionPath, false, workspaceDirectory);
 
-		var selectionResult = await selectSolutionHandler(solutionPath, false);
-		return selectionResult.IsError == true
+		// Applied even after an accepted selection: until roots are set, roots-fallback mode lists only this tool.
+		await setRootsHandler([workspaceDirectory]);
+
+		return selectionResult?.IsError == true
 			? new CallToolResult
 			{
 				Content = [.. selectionResult.Content, new TextContentBlock { Text = InitialSelectionRejectedNote }],
@@ -661,16 +664,40 @@ internal class McpStdioServer(
 	}
 
 	private CallToolResult BuildInitializeResponse(string workspaceDirectory)
+		=> new()
+		{
+			Content =
+			[
+				new TextContentBlock()
+				{
+					Text = BuildInitializeResponseText(
+						workspaceDirectory,
+						healthService.CurrentSelection,
+						connected: mcpUpstreamClient.UpstreamClient.IsCompletedSuccessfully,
+						degraded: healthService.ConnectionState == ConnectionState.Degraded,
+						toolCount: toolListManager.SnapshotToolCount),
+				},
+			],
+		};
+
+	/// <summary>
+	/// The answer of <c>uno_app_initialize</c>. It reports the workspace and solution the DevServer serves, which an
+	/// explicit selection (solutionPath, --solution) can place outside the requested <paramref name="workspaceDirectory"/>.
+	/// The requested directory stands in only while nothing is selected: an unresolved selection reports no workspace.
+	/// </summary>
+	internal static string BuildInitializeResponseText(
+		string workspaceDirectory,
+		WorkspaceSelectionSnapshot? selection,
+		bool connected,
+		bool degraded,
+		int toolCount)
 	{
-		var upstreamTask = mcpUpstreamClient.UpstreamClient;
-		var connected = upstreamTask.IsCompletedSuccessfully;
-		var degraded = healthService.ConnectionState == ConnectionState.Degraded;
-		var toolCount = toolListManager.SnapshotToolCount;
-		var status = degraded ? "degraded" : connected ? "ready" : "starting";
 		var response = new
 		{
-			status,
-			workspaceDirectory,
+			status = degraded ? "degraded" : connected ? "ready" : "starting",
+			workspaceDirectory = selection?.EffectiveWorkspaceDirectory
+				?? (selection?.SelectedSolutionPath is null ? workspaceDirectory : null),
+			solutionPath = selection?.SelectedSolutionPath,
 			toolCount,
 			message = degraded
 				? "Workspace could not be resolved. Call uno_health for diagnostics. Check that the workspace contains a valid Uno solution."
@@ -679,11 +706,7 @@ internal class McpStdioServer(
 					: "DevServer is starting. Use uno_discover_tools and uno_execute_tool when ready.",
 		};
 
-		var json = JsonSerializer.Serialize(response, McpJsonUtilities.DefaultOptions);
-		return new CallToolResult
-		{
-			Content = [new TextContentBlock() { Text = json }],
-		};
+		return JsonSerializer.Serialize(response, McpJsonUtilities.DefaultOptions);
 	}
 
 	internal static IList<Tool> AppendMetaTools(IList<Tool> tools)
