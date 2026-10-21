@@ -25,8 +25,9 @@ internal interface ISwapChain : IGraphicsContext
 	/// <summary>
 	/// Acquires the color target for the next frame. The swapchain caches the target while the requested size is
 	/// unchanged and recreates it on resize (or when it becomes invalid), so callers may acquire every frame.
+	/// Null skips the frame: nothing is drawn or presented, and the recorded frame is kept for a later request.
 	/// </summary>
-	IRenderTarget AcquireRenderTarget(int width, int height);
+	IRenderTarget? AcquireRenderTarget(int width, int height);
 
 	/// <summary>Presents the frame rendered into the last-acquired target to the window.</summary>
 	void Present();

@@ -504,6 +504,11 @@ public partial class CompositionTarget
 			var target = swapChain.AcquireRenderTarget(
 				(int)Math.Round(xamlRootBounds.Width * rasterizationScale),
 				(int)Math.Round(xamlRootBounds.Height * rasterizationScale));
+			if (target is null)
+			{
+				ReturnFrame(lastRenderedFrame);
+				return lastRenderedFrame.nativeElementClipPath;
+			}
 			var resized = _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
 			if (resized)
 			{

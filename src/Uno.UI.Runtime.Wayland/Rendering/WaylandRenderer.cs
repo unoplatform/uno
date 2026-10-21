@@ -15,7 +15,10 @@ internal interface IWaylandFrameGate
 	/// <summary>Called before Uno draws its latest recorded frame.</summary>
 	void BeginFrame();
 
-	/// <summary>After <see cref="BeginFrame"/>: whether Uno's latest frame was recorded for the configured generation.</summary>
+	/// <summary>
+	/// After <see cref="BeginFrame"/>: whether Uno's latest frame was recorded for the configured generation. When it
+	/// was not, the swap chain gives Uno no render target, so the frame is skipped and kept.
+	/// </summary>
 	bool IsFrameReady { get; }
 
 	/// <summary>Called right before the commit, with the drawn frame's size and the configured buffer size.</summary>
@@ -36,9 +39,6 @@ internal interface IWaylandFrameProducer
 {
 	/// <summary>Replays Uno's latest frame into the swap chain; false when the window has no content yet.</summary>
 	bool TryRequestFrame(ISwapChain swapChain);
-
-	/// <summary>Declines the latest frame without replaying it; Uno still releases the next UI frame.</summary>
-	void SkipFrame();
 }
 
 /// <summary>
@@ -145,13 +145,6 @@ internal sealed class WaylandRenderer : IDisposable, ISwapChain
 			return false;
 		}
 		_gate.BeginFrame();
-		if (!_gate.IsFrameReady)
-		{
-			// The UI is still laying out a newer configure: its last frame would be rejected at the commit, so
-			// replaying it is wasted work. Uno schedules its next UI frame from this request, so release it anyway.
-			_frames.SkipFrame();
-			return false;
-		}
 		_commitAllowed = commit;
 		if (!_frames.TryRequestFrame(this))
 		{
@@ -169,8 +162,14 @@ internal sealed class WaylandRenderer : IDisposable, ISwapChain
 	GraphicsContextKind IGraphicsContext.Kind => _context.Kind;
 	bool ISwapChain.PreservesContents => _context.PreservesContents;
 
-	IRenderTarget ISwapChain.AcquireRenderTarget(int width, int height)
+	IRenderTarget? ISwapChain.AcquireRenderTarget(int width, int height)
 	{
+		// The UI is still laying out a newer configure: its frame would be rejected at the commit, so it is not drawn.
+		// Requesting it still lets Uno record the next UI frame.
+		if (!_gate.IsFrameReady)
+		{
+			return null;
+		}
 		var size = WaylandRenderTargetSize.GetSize(_configured, _width, _height, Scale.EffectiveScale, width, height);
 		return _context.AcquireRenderTarget(size.Width, size.Height);
 	}
