@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if !__TVOS__
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -94,3 +95,4 @@ internal sealed class AppleUIKitTextFlyoutCommands : ITextCommandBarFlyoutComman
 		presenter.PresentViewController(controller, animated: true, completionHandler: null);
 	}
 }
+#endif
