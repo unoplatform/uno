@@ -421,6 +421,272 @@ public class Given_Image_Release
 	}
 
 	[TestMethod]
+	[DataRow(SharedSource.Bitmap, DisplayName = "Bitmap")]
+	[DataRow(SharedSource.Svg, DisplayName = "Svg")]
+	[DataRow(SharedSource.CachedUri, DisplayName = "CachedUri")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25596")]
+	public async Task When_Shared_Source_Outlives_Brushes_Then_Brushes_And_Borders_Collected(SharedSource kind)
+	{
+		// An icon kept in a static field or an app resource outlives the ImageBrushes that paint it: once the elements they
+		// paint left the tree, it must keep neither the brushes nor those elements, each brush's inheritance context parent.
+		using var cache = kind == SharedSource.CachedUri ? EnableBitmapImageCache() : null;
+		var source = await CreateSharedSourceAsync(kind);
+
+		try
+		{
+			var painted = await PaintThenUnloadAsync(source);
+
+			foreach (var brush in painted.Brushes)
+			{
+				Assert.IsTrue(await TestHelper.TryWaitUntilCollected(brush), "An ImageBrush must not be kept alive by the source it painted");
+			}
+
+			foreach (var border in painted.Borders)
+			{
+				Assert.IsTrue(await TestHelper.TryWaitUntilCollected(border), "An unloaded element must not be kept alive by the source its brush painted");
+			}
+
+			GC.KeepAlive(source);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25596")]
+	public async Task When_Brushes_Of_Shared_Source_Collected_Then_Decoded_Image_Released()
+	{
+		// Once the brushes that painted a long-lived source are collected, nothing displays it: its decoded pixels must be
+		// released like those of any undisplayed image, not kept by the subscriptions of brushes that are gone.
+		using var delay = SetReleaseDelay(TimeSpan.FromMilliseconds(200));
+		var source = await CreateSharedSourceAsync(SharedSource.Bitmap);
+
+		try
+		{
+			var painted = await PaintThenUnloadAsync(source);
+			Assert.IsNotNull(painted.Surface, "Pre-condition: the brushes painted the decoded bitmap");
+
+			foreach (var brush in painted.Brushes)
+			{
+				Assert.IsTrue(await TestHelper.TryWaitUntilCollected(brush), "Pre-condition: the brushes are collected");
+			}
+
+			await WindowHelper.WaitFor(() => painted.Surface.Image is null, 5000, "The decoded pixels of a source nothing displays anymore must be released");
+			Assert.IsFalse(((BitmapImage)source).IsOpened, "The source must not keep data it released");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25596")]
+	public async Task When_Collections_Run_While_Brush_Painted_Then_Brush_Still_Notified()
+	{
+		// The source holds a brush's subscription and its invalidation handler weakly: what keeps them must live as long as
+		// the brush does, so collections don't cut a brush that is still painted off from its source.
+		using var _ = DisableBitmapImageCache();
+
+		try
+		{
+			using var server = await GatedImageServer.StartAsync();
+			var bitmap = new BitmapImage(server.Uri);
+			var brush = new ImageBrush { ImageSource = bitmap };
+			var opened = 0;
+			brush.ImageOpened += (_, _) => opened++;
+
+			await UITestHelper.Load(new Border { Width = 100, Height = 40, Background = brush });
+			await WindowHelper.WaitFor(() => server.RequestCount >= 1, 5000, "Pre-condition: the image is downloading");
+
+			CollectAll();
+			server.ReleaseResponses();
+			await WindowHelper.WaitFor(() => opened == 1, 10000, "A painted brush must get the image its source opens after collections");
+
+			var invalidations = 0;
+			using var registration = brush.RegisterInvalidateRender(() => invalidations++);
+			CollectAll();
+
+			// The new download completes later: only the source's invalidation reaches the brush now.
+			bitmap.UriSource = new Uri(server.Uri, "?second");
+			Assert.IsTrue(invalidations > 0, "A painted brush must still be told when its source changes, after collections");
+
+			// No open was in flight during that collection, so only the brush kept its subscription alive.
+			await WindowHelper.WaitFor(() => opened == 2, 10000, "A painted brush must get its source's next image after collections");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25596")]
+	public async Task When_Only_App_Waits_For_Brush_While_Source_Downloads_Then_ImageOpened_Raised()
+	{
+		// An app may wait for a brush's ImageOpened with nothing else referencing the brush: the open in flight keeps it
+		// alive, as it did when the source held its subscribers strongly. Two brushes share the source, so that it doesn't
+		// keep either as its inheritance context parent.
+		using var _ = DisableBitmapImageCache();
+		using var server = await GatedImageServer.StartAsync();
+
+		var opened = StartBrushesOpen(new BitmapImage(server.Uri));
+		await WindowHelper.WaitFor(() => server.RequestCount >= 1, 5000, "Pre-condition: the image is downloading");
+
+		CollectAll();
+		await WindowHelper.WaitForIdle();
+		CollectAll();
+
+		server.ReleaseResponses();
+		Assert.AreSame(opened, await Task.WhenAny(opened, Task.Delay(10000)), "The brushes must raise ImageOpened once their source opens");
+
+		// Not inlined, so that no local of the test keeps the brushes alive.
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static Task StartBrushesOpen(ImageSource source)
+		{
+			var opened = new Task[2];
+			for (var i = 0; i < opened.Length; i++)
+			{
+				var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+				var brush = new ImageBrush();
+				brush.ImageOpened += (_, _) => tcs.TrySetResult();
+				brush.ImageSource = source;
+				opened[i] = tcs.Task;
+			}
+
+			return Task.WhenAll(opened);
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25596")]
+	public async Task When_Brush_Leaves_Source_While_It_Downloads_Then_Brush_Collected()
+	{
+		// The open in flight keeps the brushes waiting for it alive, but not one that left the source meanwhile: another brush
+		// keeps the download going, which may take long or never end.
+		using var _ = DisableBitmapImageCache();
+		using var server = await GatedImageServer.StartAsync();
+		var source = new BitmapImage(server.Uri);
+		var waiting = new ImageBrush { ImageSource = source };
+		await WindowHelper.WaitFor(() => server.RequestCount >= 1, 5000, "Pre-condition: the image is downloading");
+
+		var left = SubscribeThenLeave(source);
+
+		Assert.IsTrue(await TestHelper.TryWaitUntilCollected(left), "A brush that left its source must not be kept alive by the source's open");
+		GC.KeepAlive(waiting);
+
+		// Not inlined, so that no local of the test keeps the brush alive.
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static WeakReference SubscribeThenLeave(ImageSource source)
+		{
+			var brush = new ImageBrush { ImageSource = source };
+			brush.ImageSource = null;
+			return new WeakReference(brush);
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25596")]
+	public async Task When_Open_Handler_Switches_Brush_Source_Then_Brush_Told_Of_Replacement_Changes()
+	{
+		// A cached open raises ImageOpened while the brush subscribes, and its handler switches the brush to another source:
+		// the brush must then be told when that source changes, not the one it was switched from.
+		using var cache = EnableBitmapImageCache();
+
+		try
+		{
+			using var server = await GatedImageServer.StartAsync();
+			server.ReleaseResponses();
+			var panel = new StackPanel();
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+
+			// Completes the cache entry for the server's image.
+			await AddAndWaitForOpened(panel, new Image { Width = 100, Height = 40, Source = new BitmapImage(server.Uri) });
+
+			var cached = new BitmapImage(server.Uri);
+			var other = new BitmapImage(new Uri(TallAssetUri));
+			var brush = new ImageBrush();
+			cached.ImageOpened += (_, _) =>
+			{
+				if (brush.ImageSource == cached)
+				{
+					brush.ImageSource = other;
+				}
+			};
+
+			var border = new Border { Width = 100, Height = 40, Background = brush };
+			panel.Children.Add(border);
+			await WindowHelper.WaitForLoaded(border);
+
+			var opened = TrackOpen(other);
+			brush.ImageSource = cached;
+			Assert.AreSame(other, brush.ImageSource, "Pre-condition: the cached open raises ImageOpened while the brush subscribes");
+			Assert.IsTrue(await opened.WaitAsync(TimeSpan.FromSeconds(10)), "Pre-condition: the other source opens");
+			await WindowHelper.WaitForIdle();
+
+			// The new download is held: only the source's invalidation reaches the brush now.
+			server.HoldResponses();
+			var invalidations = 0;
+			using var registration = brush.RegisterInvalidateRender(() => invalidations++);
+			other.UriSource = new Uri(server.Uri, "?other");
+			Assert.IsTrue(invalidations > 0, "The brush must be told when the source it shows changes");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25596")]
+	public async Task When_Brush_Open_Handler_Throws_Then_Its_Subscription_Still_Ends()
+	{
+		// An ImageOpened handler that throws while the brush subscribes leaves the brush without its subscription: once the
+		// brush is collected, that subscription must still end, or the source would never release its pixels.
+		using var delay = SetReleaseDelay(TimeSpan.FromMilliseconds(200));
+		using var decoder = TrackingDecoder.Install();
+		var bitmap = new WriteableBitmap(4, 4);
+		var keeper = bitmap.Subscribe(_ => { });
+		Assert.IsTrue(decoder.Count(4, 4) > 0, "Pre-condition: the bitmap is opened");
+
+		SubscribeThrowingBrush(bitmap);
+		CollectAll();
+		await WindowHelper.WaitForIdle();
+
+		keeper.Dispose();
+		await WindowHelper.WaitFor(() => decoder.Decoded(4, 4).All(d => d.IsReleased), 5000, "The pixels must be released once nothing displays them");
+
+		// Not inlined, so that no local of the test keeps the brush alive.
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static void SubscribeThrowingBrush(ImageSource source)
+		{
+			var brush = new ImageBrush();
+			brush.ImageOpened += (_, _) => throw new InvalidOperationException("Thrown by the app's handler");
+
+			try
+			{
+				brush.ImageSource = source;
+			}
+			catch (Exception)
+			{
+			}
+		}
+	}
+
+	private static void CollectAll()
+	{
+		GC.Collect();
+		GC.WaitForPendingFinalizers();
+		GC.Collect();
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
 	public async Task When_Stream_Load_Superseded_After_Decode_Then_Abandoned_Surface_Released()
@@ -2192,6 +2458,47 @@ public class Given_Image_Release
 		Assert.IsFalse(images.Any(image => image.IsLoaded), "Pre-condition: the Images left the tree");
 
 		return images.Select(image => new WeakReference(image)).ToArray();
+	}
+
+	private sealed record PaintedSource(WeakReference[] Brushes, WeakReference[] Borders, CompositionImageSurface Surface);
+
+	// Not inlined, so that no local of the caller keeps the brushes or the elements they painted alive.
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static async Task<PaintedSource> PaintThenUnloadAsync(ImageSource source)
+	{
+		var panel = new StackPanel();
+		await UITestHelper.Load(panel, x => x.IsLoaded);
+
+		var brushes = new[] { new ImageBrush(), new ImageBrush() };
+		var opened = brushes.Select(brush => TrackOpened(brush)).ToArray();
+		var borders = brushes.Select(brush => new Border { Width = 100, Height = 100, Background = brush }).ToArray();
+
+		foreach (var (brush, border) in brushes.Zip(borders))
+		{
+			brush.ImageSource = source;
+			panel.Children.Add(border);
+		}
+
+		await Task.WhenAll(opened).WaitAsync(TimeSpan.FromSeconds(10));
+		await WindowHelper.WaitForIdle();
+		var surface = GetSurface(source);
+
+		WindowHelper.WindowContent = null;
+		await WindowHelper.WaitForIdle();
+		Assert.IsFalse(borders.Any(border => border.IsLoaded), "Pre-condition: the painted elements left the tree");
+
+		return new(
+			brushes.Select(brush => new WeakReference(brush)).ToArray(),
+			borders.Select(border => new WeakReference(border)).ToArray(),
+			surface);
+	}
+
+	private static Task TrackOpened(ImageBrush brush)
+	{
+		var tcs = new TaskCompletionSource();
+		brush.ImageOpened += (_, _) => tcs.TrySetResult();
+		brush.ImageFailed += (_, e) => tcs.TrySetException(new Exception($"Failed to load the image: {e.ErrorMessage}"));
+		return tcs.Task;
 	}
 
 	private static Task TrackOpened(Image image)
