@@ -248,6 +248,13 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		return true;
 	}
 
+	// Stages the scale with the geometry it changes, published together like a ConfigureNotify.
+	internal void UpdateRasterizationScale(float scale)
+	{
+		StageRasterizationScale(scale);
+		UpdatePositionAndSize();
+	}
+
 	private void UpdatePositionAndSize()
 	{
 		if (_host.Closed.IsCompleted)
@@ -280,7 +287,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		XWindowAttributes windowAttrs2 = default;
 		_ = XLib.XGetWindowAttributes(display, window, ref windowAttrs2);
 
-		var scale = _xamlRoot.RasterizationScale;
+		var scale = RasterizationScale > 0 ? RasterizationScale : _xamlRoot.RasterizationScale;
 		var newWindowSize = new Size(windowAttrs2.width / scale, windowAttrs2.height / scale);
 		var bounds = new Rect(default, newWindowSize);
 		StageVisibleBounds(bounds);
