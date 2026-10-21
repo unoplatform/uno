@@ -17,7 +17,6 @@ namespace Uno.UI.Runtime.Wayland;
 //   through PostToUI. Rendering state belongs to each window's render thread.
 internal sealed class WaylandConnection : IDisposable
 {
-	internal Input.WaylandKeyboardInjectionPolicy KeyboardInjectionPolicy { get; } = new();
 	private readonly HashSet<WaylandWindowWrapper> _windows = new();
 	// Dispatch thread or SyncRoot.
 	private readonly Dictionary<uint, WaylandOutput> _outputs = new();
