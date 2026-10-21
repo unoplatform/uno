@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
@@ -19,15 +18,12 @@ namespace Uno.UI.Runtime.Wayland;
 internal sealed class WaylandDragDropExtension : IImmediateDragDropExtension
 {
 	private static readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
-	private static readonly TimeSpan _acceptancePollInterval = TimeSpan.FromMilliseconds(100);
 	// Reported to Uno's drag when our own drag leaves this window again: outside the root's bounds, like a pointer would be.
 	private static readonly Point _outsidePosition = new(-1, -1);
 
 	private readonly DragDropManager _manager;
 	private readonly WaylandDataDevice _device;
 	private Session? _session;
-	// Wayland sends motion only while the pointer moves, so a DragOver deferral that completes later is polled.
-	private Timer? _acceptancePoll;
 	private uint _frameId;
 
 	internal WaylandDragDropExtension(DragDropManager manager, WaylandDataDevice device)
@@ -76,8 +72,6 @@ internal sealed class WaylandDragDropExtension : IImmediateDragDropExtension
 		}
 		_session = session;
 		Motion(position);
-		StopAcceptancePoll();
-		_acceptancePoll = new Timer(_ => _device.PostToUI(PollAcceptance), null, _acceptancePollInterval, _acceptancePollInterval);
 	}
 
 	internal void Motion(Point position)
@@ -88,22 +82,6 @@ internal sealed class WaylandDragDropExtension : IImmediateDragDropExtension
 		}
 		session.Position = position;
 		UpdateAcceptance(session, CoreDragDropManager.ProcessMoved(Source(session, position)));
-	}
-
-	private void PollAcceptance()
-	{
-		if (_session is not { } session)
-		{
-			return;
-		}
-		// Uno answers the first move over an element with DragEnter and only the next one with DragOver, which is
-		// where WinUI apps set the accepted operation. A pointer supplies that next move; the sparse motion events
-		// of a compositor drag may not, so while nothing is accepted the poll moves again at the same position.
-		// Once accepted, an already processed frame id only reads the operation of the latest DragOver.
-		var source = session.Accepted is null or DataPackageOperation.None
-			? Source(session, session.Position)
-			: new DragEventSource(session.SourceId, 0, session.Position);
-		UpdateAcceptance(session, CoreDragDropManager.ProcessMoved(source));
 	}
 
 	// Frame ids must grow past the pointer frames Uno's drag already consumed, or the move is ignored as stale.
@@ -131,19 +109,12 @@ internal sealed class WaylandDragDropExtension : IImmediateDragDropExtension
 		}
 	}
 
-	private void StopAcceptancePoll()
-	{
-		_acceptancePoll?.Dispose();
-		_acceptancePoll = null;
-	}
-
 	internal void Leave()
 	{
 		if (_session is { } session)
 		{
 			WaylandDiagnostics.Trace(session.IsOwnDrag ? "dnd: own drag left the window" : "dnd: drag left the window");
 			_session = null;
-			StopAcceptancePoll();
 			session.Leave();
 			if (session.IsOwnDrag)
 			{
@@ -164,7 +135,6 @@ internal sealed class WaylandDragDropExtension : IImmediateDragDropExtension
 			return;
 		}
 		_session = null;
-		StopAcceptancePoll();
 		session.Dropped = true;
 		session.DropAction = session.Offer.MarkDropped();
 		if (session.DropAction == 0)
@@ -236,7 +206,6 @@ internal sealed class WaylandDragDropExtension : IImmediateDragDropExtension
 		if (root == XamlRoot)
 		{
 			XamlRootMap.Unregistered -= OnXamlRootUnregistered;
-			StopAcceptancePoll();
 			_device.RemoveDropTarget(this);
 			if (_device.OutgoingDrag is { } drag && drag.XamlRoot == root)
 			{
