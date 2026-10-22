@@ -18,6 +18,7 @@ namespace Microsoft.UI.Xaml.Media
 	public partial class ImageBrush : Brush
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
+		private SourceInvalidatedForwarder _sourceInvalidatedForwarder;
 
 #pragma warning disable CS0067 // The event 'ImageBrush.ImageFailed' is never used
 		public event RoutedEventHandler ImageOpened;
@@ -115,14 +116,40 @@ namespace Microsoft.UI.Xaml.Media
 
 		private static void OnImageSourceChanged(ImageBrush brush, DependencyPropertyChangedEventArgs args)
 		{
-			if (args.OldValue is ImageSource oldSource)
+			brush._sourceInvalidatedForwarder?.Unsubscribe();
+			brush._sourceInvalidatedForwarder = args.NewValue is ImageSource newSource
+				? new SourceInvalidatedForwarder(brush, newSource)
+				: null;
+		}
+
+		/// <summary>
+		/// Forwards the invalidation of the source without letting it keep the brush alive,
+		/// as the source may outlive the brush (e.g. a shared icon).
+		/// </summary>
+		private sealed class SourceInvalidatedForwarder
+		{
+			private readonly WeakReference<ImageBrush> _brush;
+			private readonly ImageSource _source;
+
+			public SourceInvalidatedForwarder(ImageBrush brush, ImageSource source)
 			{
-				oldSource.Invalidated -= brush.OnInvalidateRender;
+				_brush = new WeakReference<ImageBrush>(brush);
+				_source = source;
+				_source.Invalidated += OnInvalidated;
 			}
 
-			if (args.NewValue is ImageSource newSource)
+			public void Unsubscribe() => _source.Invalidated -= OnInvalidated;
+
+			private void OnInvalidated()
 			{
-				newSource.Invalidated += brush.OnInvalidateRender;
+				if (_brush.TryGetTarget(out var brush))
+				{
+					brush.OnInvalidateRender();
+				}
+				else
+				{
+					Unsubscribe();
+				}
 			}
 		}
 
