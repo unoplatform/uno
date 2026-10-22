@@ -132,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				_sourceDisposable.Disposable = null;
-				_sourceDisposable.Disposable = source.Subscribe(OnSourceOpened);
+				_sourceDisposable.Disposable = source.SubscribeWeakly(OnSourceOpened);
 			}
 		}
 

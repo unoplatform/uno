@@ -32,8 +32,12 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		private readonly SerialDisposable _opening = new SerialDisposable();
 
-		// Subscribers are held weakly, as a source that outlives its consumers (e.g. a shared icon) must not keep them alive.
+		// Every subscription's callback, held weakly, as a source that outlives its consumers (e.g. a shared icon) must not keep
+		// them alive (see SubscribeWeakly).
 		private readonly List<WeakReference<Action<ImageData>>> _subscriptions = new List<WeakReference<Action<ImageData>>>();
+
+		// The subscriptions made with Subscribe, which the source keeps alive until they are disposed.
+		private readonly List<Subscription> _heldSubscriptions = new List<Subscription>();
 
 		protected ImageSource()
 		{
@@ -57,26 +61,39 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		/// <summary>
-		/// Subscribes to this image source
+		/// Subscribes to this image source. The source keeps the subscriber alive until the returned disposable is disposed.
 		/// </summary>
 		/// <param name="onSourceOpened">
 		/// A callback that will be invoked each time the source has been updated
 		/// (i.e. a property has changed on the source AND the source has been re-opened)
 		/// </param>
+		/// <returns>A disposable that unsubscribes the callback.</returns>
+		internal IDisposable Subscribe(Action<ImageData> onSourceOpened) => Subscribe(onSourceOpened, weakly: false);
+
+		/// <summary>
+		/// Subscribes to this image source without keeping the subscriber alive, for a subscriber the source may outlive
+		/// (an Image or ImageBrush showing a shared icon).
+		/// </summary>
 		/// <returns>
-		/// A disposable that unsubscribes the callback. The source only references the callback weakly,
-		/// so the subscriber must hold this disposable for as long as it wants to be notified.
+		/// A disposable that unsubscribes the callback. It is also what keeps the callback alive, so the subscriber must
+		/// hold it for as long as it wants to be notified.
 		/// </returns>
-		internal IDisposable Subscribe(Action<ImageData> onSourceOpened)
+		internal IDisposable SubscribeWeakly(Action<ImageData> onSourceOpened) => Subscribe(onSourceOpened, weakly: true);
+
+		private IDisposable Subscribe(Action<ImageData> onSourceOpened, bool weakly)
 		{
 			var subscription = new Subscription(this, onSourceOpened);
 			_subscriptions.Add(subscription.Callback);
+			if (!weakly)
+			{
+				_heldSubscriptions.Add(subscription);
+			}
 
 			if (_imageData.HasData)
 			{
 				onSourceOpened(_imageData);
 			}
-			else if (GetSubscribers().Count == 1)
+			else if (PruneSubscriptions() == 1)
 			{
 				Open();
 			}
@@ -93,7 +110,7 @@ namespace Microsoft.UI.Xaml.Media
 		private protected void InvalidateSource()
 		{
 			_imageData = default;
-			if (GetSubscribers().Count > 0 || this is SvgImageSource)
+			if (PruneSubscriptions() > 0 || this is SvgImageSource)
 			{
 				Open();
 			}
@@ -112,8 +129,8 @@ namespace Microsoft.UI.Xaml.Media
 				}
 				else if (TryOpenSourceAsync(ct, null, null, out var asyncImg))
 				{
-					// Keep the subscribers alive until the source has opened: one awaiting it (e.g. SetSourceAsync)
-					// may have nothing else referencing it.
+					// Keep the subscribers alive until the source has opened: one waiting for it (e.g. an app awaiting
+					// a brush's ImageOpened) may have nothing else referencing it.
 					var subscribers = GetSubscribers();
 
 					DispatcherQueue.TryEnqueue(async () =>
@@ -164,6 +181,15 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		/// <summary>
+		/// Removes the subscriptions whose subscriber has been collected, and returns how many remain.
+		/// </summary>
+		private int PruneSubscriptions()
+		{
+			_subscriptions.RemoveAll(static subscription => !subscription.TryGetTarget(out _));
+			return _subscriptions.Count;
+		}
+
+		/// <summary>
 		/// Removes the subscriptions whose subscriber has been collected, and returns the callbacks of the others.
 		/// </summary>
 		private List<Action<ImageData>> GetSubscribers()
@@ -186,7 +212,7 @@ namespace Microsoft.UI.Xaml.Media
 		private sealed class Subscription : IDisposable
 		{
 			private readonly ImageSource _owner;
-			private Action<ImageData> _onSourceOpened; // Keeps the callback alive while the subscriber holds this.
+			private Action<ImageData> _onSourceOpened; // Keeps the callback alive while this is held.
 
 			public Subscription(ImageSource owner, Action<ImageData> onSourceOpened)
 			{
@@ -203,6 +229,7 @@ namespace Microsoft.UI.Xaml.Media
 				{
 					_onSourceOpened = null;
 					_owner._subscriptions.Remove(Callback);
+					_owner._heldSubscriptions.Remove(this);
 				}
 			}
 		}
