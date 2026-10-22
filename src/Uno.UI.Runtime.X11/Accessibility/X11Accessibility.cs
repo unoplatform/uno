@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using CoreWindowActivationState = Windows.UI.Core.CoreWindowActivationState;
 
@@ -293,6 +294,15 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			{
 				_focusedNode = refocused;
 			}
+			else if (rootElement.XamlRoot is { } xamlRoot
+				&& FocusManager.GetFocusedElement(xamlRoot) is UIElement focused
+				&& _nodesByHandle.TryGetValue(focused.Visual.Handle, out var seeded))
+			{
+				// A screen reader that attaches after focus was set never saw the focus event.
+				_focusedNode = seeded;
+				TrackFocusedElement(focused);
+				TrackFocusedTextBox(focused);
+			}
 			else
 			{
 				_focusedNode = null;
@@ -349,14 +359,17 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		return application;
 	}
 
+	// Raw elements, and the PopupPanel wrapping popup content (announced only as a
+	// generic "Popup"), get no node: their children attach to the nearest published parent.
+	private static bool IsFlattened(UIElement element)
+		=> AutomationProperties.GetAccessibilityView(element) == AccessibilityView.Raw
+			|| element is Microsoft.UI.Xaml.Controls.Primitives.PopupPanel;
+
 	private void BuildNodeRecursive(AtspiNode parent, UIElement child)
 	{
 		TrySubscribeScrollSource(child);
 
-		// Raw elements, and the PopupPanel wrapping popup content (announced only as a
-		// generic "Popup"), are skipped: their children attach to the nearest published parent.
-		var accessibilityView = AutomationProperties.GetAccessibilityView(child);
-		if (accessibilityView == AccessibilityView.Raw || child is Microsoft.UI.Xaml.Controls.Primitives.PopupPanel)
+		if (IsFlattened(child))
 		{
 			foreach (var childChild in child.GetChildren())
 			{
@@ -695,8 +708,8 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		return path;
 	}
 
-	// Data-only combo items have no container element (Handle stays 0), so their
-	// identity is the owning combo plus the item index.
+	// Data-only combo items have no container element (Handle stays 0), so their identity is the
+	// owning combo plus the item index: a held reference follows the index, not the item, across an insert or remove.
 	private string GetOrCreateItemPath(nint comboHandle, int index)
 	{
 		if (!_itemPathsByComboIndex.TryGetValue((comboHandle, index), out var path))
@@ -727,6 +740,18 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	{
 		TrySubscribeScrollSource(child);
 		QueueRebuildIfNeeded();
+
+		// A flattened wrapper has no node; report what it publishes beneath it.
+		if (IsFlattened(child))
+		{
+			foreach (var grandChild in child.GetChildren())
+			{
+				OnChildAdded(parent, grandChild, null);
+			}
+
+			return;
+		}
+
 		// Emit after the queued rebuild (FIFO on the same queue), so a client that
 		// re-fetches children on this signal observes the updated tree. The child is
 		// reported under its published parent (Raw ancestors are skipped), and not at
@@ -746,6 +771,16 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	{
 		// Capture the removed child's node and position before the rebuild forgets them.
 		QueueRebuildIfNeeded();
+		if (IsFlattened(child))
+		{
+			foreach (var grandChild in child.GetChildren())
+			{
+				OnChildRemoved(parent, grandChild);
+			}
+
+			return;
+		}
+
 		if (!_nodesByHandle.TryGetValue(child.Visual.Handle, out var removedNode) || removedNode.Parent is not { } oldParent)
 		{
 			return;
@@ -1264,6 +1299,17 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		}
 
 		return TryEnqueueWrite(element, () => InvokeOnUiThread(element));
+	}
+
+	bool AtspiServer.IWriteTarget.GrabFocus(AtspiNode node)
+	{
+		if (!_elementsSnapshot.TryGetValue(node.Handle, out var element))
+		{
+			return false;
+		}
+
+		// The resulting AutomationFocusChanged reaches SetNativeFocus, which emits the focused signal.
+		return TryEnqueueWrite(element, () => element.Focus(FocusState.Programmatic));
 	}
 
 	bool AtspiServer.IWriteTarget.SetRangeValue(AtspiNode node, double value)

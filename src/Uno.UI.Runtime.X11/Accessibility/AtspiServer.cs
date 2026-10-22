@@ -25,6 +25,7 @@ internal sealed class AtspiServer
 	public interface IWriteTarget
 	{
 		bool Invoke(AtspiNode node);
+		bool GrabFocus(AtspiNode node);
 		bool SetRangeValue(AtspiNode node, double value);
 		bool SetText(AtspiNode node, string text);
 		bool SelectChild(AtspiNode node, int index);
@@ -497,7 +498,8 @@ internal sealed class AtspiServer
 					ReplyAccessibleAtPoint(context, node);
 					break;
 				case AtspiDbus.GrabFocusMethod:
-					ReplyBool(context, false);
+					// Static text and frames refuse, as in other toolkits.
+					ReplyBool(context, node.Focusable && _server._writeTarget.GrabFocus(node));
 					break;
 				default:
 					context.ReplyUnknownMethodError();
@@ -527,8 +529,9 @@ internal sealed class AtspiServer
 					break;
 				case AtspiDbus.DoActionMethod:
 					{
-						_ = context.Request.GetBodyReader().ReadInt32();
-						ReplyBool(context, _server._writeTarget.Invoke(node));
+						// Only action 0 exists; another index must not activate the control.
+						var index = context.Request.GetBodyReader().ReadInt32();
+						ReplyBool(context, index == 0 && Actionable(node) && _server._writeTarget.Invoke(node));
 						break;
 					}
 				default:
