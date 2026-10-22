@@ -432,9 +432,9 @@ find $UNO_TESTS_LOCAL_TESTS_FILE -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
 ## Take a screenshot
 xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png || true
 
-# Collecting, shutting down and dumping the device logs costs 2-6 minutes per shard and only helps
-# diagnose a failing shard, so skip it for a run that produced results with no failures. A crash
-# mid-run leaves no results file (runtime tests write it once, at the end), so it still collects.
+# Collecting and dumping the device logs costs 2-6 minutes per shard and only helps diagnose a
+# failing shard, so skip it for a run that produced results with no failures. A crash mid-run
+# leaves no results file (runtime tests write it once, at the end), so it still collects.
 results_have_failures() {
 	local decoded
 
@@ -444,16 +444,22 @@ results_have_failures() {
 	grep -Eq 'result="(Failed|Error)"' <<< "$decoded"
 }
 
+collect_device_logs=true
 if [ -f "$UNO_ORIGINAL_TEST_RESULTS" ] && ! results_have_failures "$UNO_ORIGINAL_TEST_RESULTS"; then
 	echo "All tests passed; skipping the device log collection"
-else
+	collect_device_logs=false
+fi
+
+if [ "$collect_device_logs" = true ]; then
 	## Capture the device logs
 	xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH || true
+fi
 
-	## Shutting down simulator to reclaim memory
-	echo "Shutting down simulator"
-	xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
+## Shutting down simulator to reclaim memory, on every run as the tvOS runner does
+echo "Shutting down simulator"
+xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
+if [ "$collect_device_logs" = true ]; then
 	echo "Dumping device logs to $LOG_FILEPATH_FULL"
 	log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
 fi
