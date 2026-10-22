@@ -495,3 +495,10 @@ then
 fi
 
 popd
+
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-failed-tests.sh
+if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ]; then
+	uno_fail_on_failed_tests "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"
+else
+	uno_fail_on_failed_tests "$UNO_TESTS_FAILED_LIST"
+fi

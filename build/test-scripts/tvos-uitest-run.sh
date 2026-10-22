@@ -319,3 +319,6 @@ if [ $? -eq 0 ]; then
 fi
 
 popd
+
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-failed-tests.sh
+uno_fail_on_failed_tests "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"
