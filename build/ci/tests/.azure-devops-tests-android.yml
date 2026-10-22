@@ -180,6 +180,7 @@ jobs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/*TestResult*.xml'
       failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
 
   - task: PublishBuildArtifacts@1
     condition: always()
