@@ -12,14 +12,15 @@
 
 		<!-- The renderer is the app's choice. A head maps the legacy 'skiarenderer' to 'skia', and implies 'skia'
 		     when it names no renderer ('webgpu' counts, which keeps an app SkiaSharp-free); WinAppSDK renders with
-		     WinUI, so nothing is implied there. A library gets neither, and lists 'skia' to draw with SkiaSharp. -->
+		     WinUI, so nothing is implied there. A library gets neither, and lists 'skia' to draw with SkiaSharp.
+		     The target framework is tested directly: IsWinAppSdk is not set yet when the project body sets it. -->
 		<_UnoLibrarySkiaRendererIgnored Condition="'$(IsUnoHead)' != 'true' And $(UnoFeatures.Contains(';skiarenderer;'))">true</_UnoLibrarySkiaRendererIgnored>
 		<UnoFeatures Condition="'$(IsUnoHead)' == 'true'">$(UnoFeatures.Replace(';skiarenderer;', ';skia;'))</UnoFeatures>
 		<UnoFeatures Condition="'$(IsUnoHead)' != 'true'">$(UnoFeatures.Replace(';skiarenderer;', ';'))</UnoFeatures>
-		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And '$(IsWinAppSdk)' != 'true' And '$(IsUnoHead)' == 'true'">$(UnoFeatures)skia;</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And !$(TargetFramework.Contains('windows10')) And '$(IsUnoHead)' == 'true'">$(UnoFeatures)skia;</UnoFeatures>
 		<!-- WebGpuCanvasElement draws only with the WebGPU backend, so 'webgpucanvas' brings it in. It is added after
 		     the renderer default above, so in an app it adds WebGPU next to Skia rather than replacing it. -->
-		<UnoFeatures Condition="$(UnoFeatures.Contains(';webgpucanvas;')) And !$(UnoFeatures.Contains(';webgpu;')) And '$(IsWinAppSdk)' != 'true'">$(UnoFeatures)webgpu;</UnoFeatures>
+		<UnoFeatures Condition="$(UnoFeatures.Contains(';webgpucanvas;')) And !$(UnoFeatures.Contains(';webgpu;')) And !$(TargetFramework.Contains('windows10'))">$(UnoFeatures)webgpu;</UnoFeatures>
 	</PropertyGroup>
 
 	<Target Name="_UnoWarnLibrarySkiaRendererIgnored"

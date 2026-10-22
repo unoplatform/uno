@@ -94,6 +94,17 @@ public class Given_UnoSdkRendererFeature
 	}
 
 	[TestMethod]
+	[DataRow("")]
+	[DataRow("WebGpuCanvas")]
+	public void When_Windows_Head_Sets_TargetFramework_In_Its_Body_Then_No_Renderer_Is_Implied(string features)
+	{
+		var (unoFeatures, packages) = Evaluate("WinExe", features, Windows);
+
+		unoFeatures.Should().NotContain(";skia;").And.NotContain(";webgpu;");
+		packages.Should().NotContain(SkiaPackages);
+	}
+
+	[TestMethod]
 	public void When_Head_Lists_WebGpuCanvas_Then_WebGpu_Is_Added_Next_To_Skia()
 	{
 		var (unoFeatures, packages) = Evaluate("Exe", "WebGpuCanvas");
