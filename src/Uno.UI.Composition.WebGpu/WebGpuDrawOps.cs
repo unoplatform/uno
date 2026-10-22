@@ -106,6 +106,11 @@ internal unsafe struct DrawOp
 	/// (Z &lt;= X) unless the cull set it; applied on top of whatever scissor the op would otherwise get.
 	/// </summary>
 	public Vector4 CullScissor;
+	/// <summary>
+	/// Everything the op can touch, in the space its vertices are in; empty when unknown. Only drops an op that lands
+	/// wholly outside its site's clip -- unlike <see cref="Bounds"/>, it never makes the op hide anything or get hidden.
+	/// </summary>
+	public Vector4 Extent;
 
 	/// <summary>An op drawing a range of the pass's shared buffer for its kind.</summary>
 	public static DrawOp Shared(DrawKind kind, uint firstVertex, uint count, BindGroup* group1, in ClipData clip, BindGroup* clipBg)
