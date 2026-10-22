@@ -6286,7 +6286,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Touch_LongPress_Drags_Caret_Native_Loupe_Unavailable_Falls_Back_iOS()
 		{
-			TextBoxCore.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
+			var loupe = new RecordingLoupe { CanShow = false };
+			TextBoxCore.LoupeOverrideForTesting = loupe;
 			using var _ = new DisposableAction(() =>
 			{
 				TextBoxCore.LoupeOverrideForTesting = null;
@@ -6310,6 +6311,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			RaiseTouchHold(SUT, startPoint);
 			await WindowHelper.WaitForIdle();
 			Assert.IsTrue(SUT.IsManagedLoupeShowing);
+
+			// A platform loupe that started on a later move would show over the Uno-drawn one.
+			finger.MoveBy(100, 0, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, loupe.Begins, $"the platform loupe must not be retried on every move (log: {loupe.Log})");
+			Assert.IsTrue(SUT.IsManagedLoupeShowing);
+
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 			Assert.IsFalse(SUT.IsManagedLoupeShowing);
