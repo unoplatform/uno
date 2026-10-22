@@ -256,27 +256,31 @@ TRANSFORM_TOOL_BUILD_PID=$!
 ## Pre-install the application
 ##
 
-# `xcrun simctl bootstatus -b` blocks until the device reports a finished boot, but it has no
-# timeout of its own and macOS ships no timeout(1). Run it under a watchdog: a simulator that
-# never finishes booting is then reported here, instead of surfacing further down as an opaque
-# app install or launch failure.
-wait_for_boot() {
-	local udid="$1"
-	local limit="$2"
+# macOS ships no timeout(1): run a command under a watchdog that terminates it after `limit` seconds.
+run_with_limit() {
+	local limit="$1"
+	shift
 	local status=0
 
-	xcrun simctl bootstatus "$udid" -b &
-	local boot_pid=$!
+	"$@" &
+	local pid=$!
 
-	( sleep "$limit"; kill -TERM "$boot_pid" 2>/dev/null ) &
+	( sleep "$limit"; kill -TERM "$pid" 2>/dev/null ) &
 	local watchdog_pid=$!
 
-	wait "$boot_pid" || status=$?
+	wait "$pid" || status=$?
 
 	kill -TERM "$watchdog_pid" 2>/dev/null || true
 	wait "$watchdog_pid" 2>/dev/null || true
 
 	return $status
+}
+
+# `xcrun simctl bootstatus -b` blocks until the device reports a finished boot, but it has no
+# timeout of its own. Run it under a watchdog: a simulator that never finishes booting is then
+# reported here, instead of surfacing further down as an opaque app install or launch failure.
+wait_for_boot() {
+	run_with_limit "$2" xcrun simctl bootstatus "$1" -b
 }
 
 echo "Waiting for the simulator to finish booting (started $(date))"
@@ -361,6 +365,7 @@ then
 	# crash report. stderr carries it -- simctl notes log output usually goes there.
 	APP_STDOUT="$LOG_FILEPATH/app-stdout-${UITEST_RUNTIME_TEST_GROUP}.log"
 	APP_STDERR="$LOG_FILEPATH/app-stderr-${UITEST_RUNTIME_TEST_GROUP}.log"
+	UNO_IOS_APP_LAUNCH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
 	xcrun simctl launch --stdout="$APP_STDOUT" --stderr="$APP_STDERR" "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 
 	# get the process id for the app
@@ -453,9 +458,14 @@ if [ -f "$UNO_ORIGINAL_TEST_RESULTS" ] && ! results_have_failures "$UNO_ORIGINAL
 	collect_device_logs=false
 fi
 
+# Each log step can hang on a sick simulator. Bound it so the transform tool and the publish steps
+# still run before the job timeout, which would skip them and lose both results and retry list.
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-job-budget.sh
+
 if [ "$collect_device_logs" = true ]; then
 	## Capture the device logs
-	xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH || true
+	run_with_limit "$(uno_job_wait_budget 300 240)" \
+		xcrun simctl spawn "$UITEST_IOSDEVICE_ID" log collect --output $TMP_LOG_FILEPATH || true
 fi
 
 ## Shutting down simulator to reclaim memory, on every run as the tvOS runner does
@@ -464,7 +474,12 @@ xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
 if [ "$collect_device_logs" = true ]; then
 	echo "Dumping device logs to $LOG_FILEPATH_FULL"
-	log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
+	log_show_args=(--style syslog)
+	if [ -n "${UNO_IOS_APP_LAUNCH_TIME:-}" ]; then
+		log_show_args+=(--start "$UNO_IOS_APP_LAUNCH_TIME")
+	fi
+	run_with_limit "$(uno_job_wait_budget 300 180)" \
+		log show "${log_show_args[@]}" $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
 fi
 
 echo "Searching for failures in device logs"
