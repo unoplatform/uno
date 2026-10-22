@@ -16,6 +16,13 @@ partial class PasswordBox
 		_core.OnPointerMoved(e);
 	}
 
+	protected override void OnPointerCanceled(PointerRoutedEventArgs e)
+	{
+		base.OnPointerCanceled(e);
+
+		_core.OnPointerCanceled(e);
+	}
+
 	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
 	{
 		base.OnRightTapped(e);
