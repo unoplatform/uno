@@ -6032,8 +6032,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Touch_LongPress_Drags_Caret_Shows_Managed_Loupe_iOS()
 		{
+			// On a host with a platform loupe (iOS 17+), that one would show instead.
+			TextBoxCore.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
 			using var _ = new DisposableAction(() =>
-				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+			{
+				TextBoxCore.LoupeOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
 
 			var SUT = new TextBox
 			{
@@ -6166,7 +6171,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var wasEnabled = global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe;
 			global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = false;
-			using var _ = new DisposableAction(() => global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = wasEnabled);
+			TextBoxCore.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
+			using var _ = new DisposableAction(() =>
+			{
+				global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = wasEnabled;
+				TextBoxCore.LoupeOverrideForTesting = null;
+			});
 
 			var SUT = new TextBox
 			{
@@ -6184,7 +6194,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(startPoint);
 			RaiseTouchHold(SUT, startPoint);
 			await WindowHelper.WaitForIdle();
-			Assert.IsFalse(SUT.IsManagedLoupeShowing);
+			finger.MoveBy(150, 0, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.SelectionStart > 2, "the caret drag should still follow the finger");
+			Assert.IsFalse(SUT.IsManagedLoupeShowing, "the disabled Uno-drawn loupe must not show");
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 		}
@@ -6269,7 +6283,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public void EndLoupe()
 			{
 				Ends++;
-				Log += $"E({Environment.StackTrace.Split('\n').Skip(2).Take(4).Select(l => l.Trim()).Aggregate((a, b) => a + " < " + b)})";
+				Log += "E";
 			}
 		}
 
