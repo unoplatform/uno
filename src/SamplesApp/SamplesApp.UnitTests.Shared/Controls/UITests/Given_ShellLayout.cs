@@ -28,7 +28,7 @@ public class Given_ShellLayout
 	private Rect? _testHostBounds;
 
 	[TestInitialize]
-	public void RecordTestHost() => _testHostBounds = GetTestHostBounds();
+	public async Task RecordTestHost() => _testHostBounds = await WaitForSettledTestHostBounds();
 
 	// These tests change the live shell around the runner, so each must hand the next one its test host back unmoved.
 	[TestCleanup]
@@ -39,20 +39,52 @@ public class Given_ShellLayout
 			return;
 		}
 
-		bool IsBack() => GetTestHostBounds() is { } now
-			&& Math.Abs(now.X - before.X) <= 0.5
-			&& Math.Abs(now.Y - before.Y) <= 0.5
-			&& Math.Abs(now.Width - before.Width) <= 0.5;
+		static bool IsAt(Rect? bounds, Rect expected) => bounds is { } now
+			&& Math.Abs(now.X - expected.X) <= 0.5
+			&& Math.Abs(now.Y - expected.Y) <= 0.5
+			&& Math.Abs(now.Width - expected.Width) <= 0.5;
 
-		// WinUI still runs pane and chrome transitions after WaitForIdle.
-		var waited = Stopwatch.StartNew();
-		while (!IsBack() && waited.ElapsedMilliseconds < 3000)
+		var after = await WaitForSettledTestHostBounds(bounds => IsAt(bounds, before));
+
+		Assert.IsTrue(IsAt(after, before), $"The test host was at {before} and is now at {after}.");
+	}
+
+	/// <summary>
+	/// Waits until the test host holds still for a few rendered frames, and optionally until <paramref name="accept"/> is true.
+	/// </summary>
+	/// <remarks>
+	/// WaitForIdle can return before a pane transition renders its first frame, when the host is still where it will end up.
+	/// That frame then jumps it a pane width away before it slides back (see #25276).
+	/// </remarks>
+	private static async Task<Rect?> WaitForSettledTestHostBounds(Func<Rect?, bool>? accept = null)
+	{
+		const int SettledFrames = 3;
+		const int TimeoutMS = 3000;
+
+		Rect? last = null;
+		var unchangedFrames = -1;
+		void OnRendering(object? sender, object e)
 		{
-			await TestServices.WindowHelper.WaitForIdle();
-			await Task.Delay(50);
+			var now = GetTestHostBounds();
+			unchangedFrames = now == last ? unchangedFrames + 1 : 0;
+			last = now;
 		}
 
-		Assert.IsTrue(IsBack(), $"The test host was at {before} and is now at {GetTestHostBounds()}.");
+		CompositionTarget.Rendering += OnRendering;
+		try
+		{
+			var waited = Stopwatch.StartNew();
+			while ((unchangedFrames < SettledFrames || !(accept?.Invoke(last) ?? true)) && waited.ElapsedMilliseconds < TimeoutMS)
+			{
+				await Task.Delay(16);
+			}
+		}
+		finally
+		{
+			CompositionTarget.Rendering -= OnRendering;
+		}
+
+		return last ?? GetTestHostBounds();
 	}
 
 	private static Rect? GetTestHostBounds()
