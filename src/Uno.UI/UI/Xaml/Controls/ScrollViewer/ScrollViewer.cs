@@ -820,15 +820,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// MUX Reference ScrollViewer_Partial.cpp, ScrollViewer::InvalidateScrollInfo_TryUpdateValues:
 			// extent/viewport changes are raised to automation clients too, not only offset changes.
-			var changed =
-				!NumericExtensions.AreClose(oldSize.Width, ExtentWidth) ||
+			if (hasAutomationListener &&
+				(!NumericExtensions.AreClose(oldSize.Width, ExtentWidth) ||
 				!NumericExtensions.AreClose(oldSize.Height, ExtentHeight) ||
 				!NumericExtensions.AreClose(oldViewportWidth, ViewportWidth) ||
 				!NumericExtensions.AreClose(oldViewportHeight, ViewportHeight) ||
 				!NumericExtensions.AreClose(oldScrollableWidth, ScrollableWidth) ||
-				!NumericExtensions.AreClose(oldScrollableHeight, ScrollableHeight);
-			if (hasAutomationListener &&
-				changed &&
+				!NumericExtensions.AreClose(oldScrollableHeight, ScrollableHeight)) &&
 				GetOrCreateAutomationPeer() is ScrollViewerAutomationPeer peer)
 			{
 				peer.RaiseAutomationEvents(

@@ -409,6 +409,36 @@ public class Given_AccessibleScrollViewer
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Browser_Scrolls_Back_To_Last_Synced_Offset_Then_ScrollViewer_Follows()
+	{
+		var scrollViewer = new ScrollViewer { Width = 200, Height = 200, Content = new Border { Height = 800 } };
+
+		await EnsureAccessibilityEnabledAsync();
+		await UITestHelper.Load(scrollViewer);
+		var presenter = (ScrollContentPresenter)scrollViewer.Presenter!;
+		await UITestHelper.WaitFor(() => SemanticElementExists(presenter), timeoutMS: 5000,
+			message: "Timed out waiting for the semantic scroll port.");
+		await UITestHelper.WaitForIdle();
+
+		// The managed sync to 300 raises one echo, which must be ignored...
+		scrollViewer.ChangeView(null, 300, null, disableAnimation: true);
+		await UITestHelper.WaitFor(() => Math.Abs(GetNativeScrollTop(presenter) - 300) < 1, timeoutMS: 5000,
+			message: "The managed offset was not mirrored to the browser.");
+		await AssertHoldsForFramesAsync(() => Math.Abs(scrollViewer.VerticalOffset - 300) < 1, "The echo of the managed sync moved the ScrollViewer.");
+
+		SetNativeScrollTop(presenter, 100);
+		await UITestHelper.WaitFor(() => Math.Abs(scrollViewer.VerticalOffset - 100) < 1, timeoutMS: 5000,
+			message: $"ScrollViewer did not follow the browser (offset={scrollViewer.VerticalOffset}).");
+
+		// ...but a real browser scroll back to that same position must still reach managed code.
+		SetNativeScrollTop(presenter, 300);
+		await UITestHelper.WaitFor(() => Math.Abs(scrollViewer.VerticalOffset - 300) < 1, timeoutMS: 5000,
+			message: $"A browser scroll back to the last synced offset was dropped (offset={scrollViewer.VerticalOffset}).");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Semantic_Child_Overhangs_Content_Then_Browser_Scroll_Is_Clamped_To_ScrollViewer()
 	{
 		// A Canvas child drawn below the Canvas bounds extends the native range past the managed one.
