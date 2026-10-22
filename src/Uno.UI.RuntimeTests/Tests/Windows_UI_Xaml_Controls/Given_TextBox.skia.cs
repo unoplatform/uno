@@ -5978,6 +5978,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, loupe.Begins, "scrolling must not start a caret drag");
 		}
 
+		// A touch the system cancels (e.g. an edge swipe) gets no release, so the 0.5 s hold must not fire for it.
+		[TestMethod]
+		public async Task When_Touch_Press_Cancelled_Does_Not_Start_Caret_Drag_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
+			SUT.Select(0, 0);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetCaretPoint(SUT, 7);
+			finger.Press(point);
+			var cancel = Finger.GetRelease(42, point);
+			var cancelInfo = cancel.PointerInfo;
+			cancelInfo.PointerOptions = InjectedInputPointerOptions.Canceled;
+			cancel.PointerInfo = cancelInfo;
+			injector.InjectTouchInput(new[] { cancel });
+
+			await Task.Delay(650); // past 0.5 s, short of the 0.8 s Holding
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, loupe.Begins, $"a cancelled touch must not start the caret drag (log: {loupe.Log})");
+			Assert.AreEqual(0, SUT.SelectionStart, "the cancelled touch must not move the caret");
+			Assert.AreEqual(0, SUT.PointerCaptures?.Count ?? 0, "the TextBox must not capture a pointer that is gone");
+		}
+
 		private static async Task AssertLoupeFollowsCaretDrag(bool inScrollViewer)
 		{
 			var loupe = new RecordingLoupe();

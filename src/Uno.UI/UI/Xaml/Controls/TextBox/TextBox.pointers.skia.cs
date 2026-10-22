@@ -54,6 +54,8 @@ public partial class TextBox
 	private Point _iosHoldRootPoint;
 	// Set once the iOS hold timer acted on the current touch, so the later Holding (ContextRequested) is ignored.
 	private bool _iosHoldFired;
+	// The touch that pressed the TextBox: the hold's caret drag captures it, not whatever pointer moved last.
+	private Pointer _touchPressPointer;
 
 	protected override void OnPointerMoved(PointerRoutedEventArgs e)
 	{
@@ -187,6 +189,7 @@ public partial class TextBox
 			_lastPointerDown = (currentPoint, repeatedPresses);
 			_selectionFlyoutOpenAtPress = SelectionFlyout?.IsOpen == true;
 			_iosHoldFired = false;
+			_touchPressPointer = args.Pointer;
 			if (TouchSelectionConvention == TouchTextSelectionConvention.iOS)
 			{
 				StartIOSHoldTimer(currentPoint.Position);
@@ -683,7 +686,7 @@ public partial class TextBox
 		// The finger usually slides just below the text, which a parent ScrollViewer would otherwise take as a scroll:
 		// it would cancel the pointer and end the drag. Keep the touch for the caret, as Thumb and Slider do
 		// (PreventDirectManipulation for native runtimes, CancelDirectManipulations for the managed one).
-		_touchCaretDrag = PointerRoutedEventArgs.LastPointerEvent?.Pointer is { } pointer
+		_touchCaretDrag = _touchPressPointer is { } pointer
 			&& (_host.Owner.CapturePointer(pointer, options: PointerCaptureOptions.PreventDirectManipulation) is PointerCaptureResult.Added or PointerCaptureResult.AlreadyCaptured
 				|| HasPointerCapture);
 
@@ -692,6 +695,13 @@ public partial class TextBox
 			_host.Owner.CancelDirectManipulations();
 			UpdateCaretLoupe(index);
 		}
+	}
+
+	// The system took the touch away and no release follows: the hold must not act for a finger that is gone.
+	internal void OnPointerCanceled(PointerRoutedEventArgs e)
+	{
+		_isPressed = false;
+		_iosHoldTimer?.Stop();
 	}
 
 	partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e)
