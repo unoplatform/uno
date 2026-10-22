@@ -12,6 +12,12 @@ uno_fail_on_failed_tests() {
 		return 0
 	fi
 
+	# With re-runs allowed, the first run leaves the verdict to the re-run step, as its publish does.
+	if [ "${UNO_HARNESS_RERUN_PENDING:-}" = "true" ] && [ "${UITEST_ALLOW_RERUN:-}" = "true" ]; then
+		echo "Failed tests are left to the re-run step to judge."
+		return 0
+	fi
+
 	local failed
 	failed=$(tr '|' '\n' < "$list" \
 		| sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' \
