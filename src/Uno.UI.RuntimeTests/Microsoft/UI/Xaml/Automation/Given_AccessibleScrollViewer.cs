@@ -282,6 +282,22 @@ public class Given_AccessibleScrollViewer
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_ScrollContentPresenter_Has_No_Owner_Then_Semantic_Port_Created()
+	{
+		// A presenter whose ScrollOwner was never assigned (no templated ScrollViewer) is still a scroll port.
+		var presenter = new ScrollContentPresenter { Width = 200, Height = 200, Content = new Border { Height = 800 } };
+
+		await EnsureAccessibilityEnabledAsync();
+		await UITestHelper.Load(presenter);
+
+		await UITestHelper.WaitFor(() => SemanticElementExists(presenter), timeoutMS: 5000,
+			message: "Timed out waiting for the semantic scroll port.");
+		Assert.IsNull(presenter.ScrollOwner);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Axis_Not_Scrollable_Then_Browser_Cannot_Scroll_It()
 	{
 		// The content fits vertically, but a child drawn below it gives the native scroller a vertical range.
