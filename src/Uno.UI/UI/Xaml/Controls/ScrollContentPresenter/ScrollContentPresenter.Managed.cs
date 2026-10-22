@@ -138,6 +138,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public double ExtentWidth { get; internal set; }
 
+		// Explicit, so the public getters keep their non-virtual signature (implicit implementation would make them virtual).
+		double IScrollPortGeometry.HorizontalOffset => HorizontalOffset;
+
+		double IScrollPortGeometry.VerticalOffset => VerticalOffset;
+
 		double IScrollPortGeometry.ZoomedExtentWidth => ExtentWidth * _zoomFactor;
 
 		double IScrollPortGeometry.ZoomedExtentHeight => ExtentHeight * _zoomFactor;
