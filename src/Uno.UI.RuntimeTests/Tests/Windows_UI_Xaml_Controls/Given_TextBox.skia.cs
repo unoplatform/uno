@@ -5742,6 +5742,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				=> new[] { new Uno.UI.Xaml.Controls.Extensions.TextFlyoutPlatformCommand("Test", "Test Command", execute) };
 		}
 
+		// A handle pressed right after a double-tap starts a new gesture: the menu the double-tap deferred must not
+		// pop up under the finger.
+		[TestMethod]
+		public async Task When_Touch_Handle_Pressed_After_DoubleTap_Flyout_Stays_Closed_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var word = GetCaretPoint(SUT, 7);
+			finger.Press(word);
+			finger.Release();
+			finger.Press(word);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForRender(frameCount: 2);
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the selected word should show its handles");
+
+			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
+			await Task.Delay(650); // past the double-tap's 0.5 s menu delay, short of the handle's 0.8 s hold
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.SelectionFlyout?.IsOpen == true, "the deferred menu must not open while the handle is pressed");
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
+		// Typing right after a tap on the caret makes the menu that tap deferred stale.
+		[TestMethod]
+		public async Task When_Typing_After_Caret_Tap_Flyout_Stays_Closed_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+
+			var point = GetCaretPoint(SUT, 4);
+			TapAsSeparateGesture(point);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, SUT.SelectionStart, "the first tap should place the caret");
+
+			await Task.Delay(600); // past the multi-tap window
+			TapAsSeparateGesture(point);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'x'));
+			await Task.Delay(650); // past the caret tap's 0.5 s menu delay
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Somex Text", SUT.Text);
+			Assert.IsFalse(SUT.SelectionFlyout?.IsOpen == true, "the menu must not open once typing started");
+		}
+
 		// Places the caret at caretIndex by tapping, then taps it again to open the iOS caret flyout.
 		private static async Task<TextCommandBarFlyout> OpenCaretFlyout(TextBox textBox, int caretIndex)
 		{
