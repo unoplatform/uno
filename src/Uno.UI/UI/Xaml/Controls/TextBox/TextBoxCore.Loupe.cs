@@ -12,6 +12,8 @@ namespace Microsoft.UI.Xaml.Controls;
 internal sealed partial class TextBoxCore
 {
 	private bool _isLoupeActive;
+	// The platform loupe refused this drag: retried on a later move, it could start over the Uno-drawn one.
+	private bool _isNativeLoupeUnavailable;
 	private TextBoxTouchLoupe? _managedLoupe;
 	private bool _isManagedLoupeActive;
 
@@ -38,7 +40,7 @@ internal sealed partial class TextBoxCore
 		var localCaret = displayBlock.ParsedText.GetRectForIndex(caretIndex) with { Width = TextBlock.CaretThickness };
 		var toRoot = displayBlock.TransformToVisual(null);
 
-		if (FeatureConfiguration.TextBox.UseNativeTextLoupe && NativeLoupe is { } loupe)
+		if (FeatureConfiguration.TextBox.UseNativeTextLoupe && !_isNativeLoupeUnavailable && NativeLoupe is { } loupe)
 		{
 			var caretRect = toRoot.TransformBounds(localCaret);
 			var point = new Point(caretRect.X, caretRect.Y + (caretRect.Height / 2));
@@ -50,6 +52,7 @@ internal sealed partial class TextBoxCore
 			else
 			{
 				_isLoupeActive = loupe.BeginLoupe(xamlRoot, point, caretRect);
+				_isNativeLoupeUnavailable = !_isLoupeActive;
 			}
 
 			if (_isLoupeActive)
@@ -78,6 +81,8 @@ internal sealed partial class TextBoxCore
 
 	private void EndCaretLoupe()
 	{
+		_isNativeLoupeUnavailable = false;
+
 		if (_isLoupeActive)
 		{
 			_isLoupeActive = false;
