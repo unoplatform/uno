@@ -21,6 +21,8 @@ internal static class AtspiRoleMap
 	internal const string HeadingRoleName = "heading";
 	internal const uint LandmarkRoleId = 110; // ATSPI_ROLE_LANDMARK
 	internal const string LandmarkRoleName = "landmark";
+	internal const uint PasswordTextRoleId = 40; // ATSPI_ROLE_PASSWORD_TEXT
+	internal const string PasswordTextRoleName = "password text";
 	internal const uint PushButtonRoleId = 43; // ATSPI_ROLE_PUSH_BUTTON
 	internal const uint ToggleButtonRoleId = 62; // ATSPI_ROLE_TOGGLE_BUTTON
 	internal const string ToggleButtonRoleName = "toggle button";

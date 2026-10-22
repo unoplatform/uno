@@ -156,6 +156,9 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 					return;
 				}
 
+				// The router drops every peer and structure signal until a bridge is enabled.
+				AccessibilityRouter.EnsureTreeNotifications();
+
 				if (_window.RootElement is { } rootElement)
 				{
 					QueueTreeBuild(rootElement);
@@ -185,6 +188,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		}
 
 		TrackFocusedTextBox(null);
+		UnsubscribeAllScrollSources();
 		_root = null;
 		_frame = null;
 		_nodesByHandle.Clear();
@@ -272,6 +276,8 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			var firstBuild = !_treeInitialized;
 			_nodesByHandle.Clear();
 			_elementsByHandle.Clear();
+			// Re-subscribed below for what is still in the tree, so removed ScrollViewers are released.
+			UnsubscribeAllScrollSources();
 			(_originX, _originY) = GetClientOrigin();
 			_scale = rootElement.XamlRoot?.RasterizationScale ?? 1.0;
 			_root = BuildRootNode(rootElement);
@@ -364,8 +370,9 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 
 		// ComboBox items live in a popup outside the visual tree; BuildNode surfaces
 		// them as selectable child nodes, so do not descend into the combo's content
-		// presenter (which shows a copy of the selected item).
-		if (child is ComboBox)
+		// presenter (which shows a copy of the selected item). A PasswordBox is a leaf like
+		// its peer: its template parts can show the typed text.
+		if (child is ComboBox or PasswordBox)
 		{
 			return;
 		}
@@ -380,7 +387,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	{
 		var peer = element.GetOrCreateAutomationPeer();
 		var (role, roleName) = peer is not null
-			? AtspiRoleMap.GetRole(peer.GetAutomationControlType())
+			? GetPeerRole(peer)
 			: (39u, "panel");
 
 		var node = new AtspiNode
@@ -559,10 +566,13 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 
 			if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
 			{
+				// A password's text is never published, as in the base class: the mask leaks its length,
+				// and Insert/DeleteText edit the published text, so they would overwrite the real password.
+				var isPassword = peer.IsPassword();
 				node.HasText = true;
-				node.Text = valueProvider.Value ?? "";
+				node.Text = isPassword ? "" : valueProvider.Value ?? "";
 				node.ReadOnly = valueProvider.IsReadOnly;
-				node.Editable = !valueProvider.IsReadOnly;
+				node.Editable = !valueProvider.IsReadOnly && !isPassword;
 			}
 
 			if (peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandProvider)
@@ -596,6 +606,11 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			// above were captured already and are refreshed on property changes.
 		}
 	}
+
+	private static (uint Id, string Name) GetPeerRole(AutomationPeer peer)
+		=> peer.IsPassword()
+			? (AtspiRoleMap.PasswordTextRoleId, AtspiRoleMap.PasswordTextRoleName)
+			: AtspiRoleMap.GetRole(peer.GetAutomationControlType());
 
 	// Headings and landmarks have dedicated AT-SPI roles; screen readers navigate by
 	// role (e.g. Orca's H key), so a "level" attribute on a label is not enough.
@@ -641,7 +656,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 				Name = (itemElement?.Content ?? item)?.ToString() ?? $"item {index}",
 				Role = itemRole,
 				RoleName = itemRoleName,
-				Enabled = true,
+				Enabled = (comboBox.ContainerFromIndex(index) as ComboBoxItem ?? itemElement)?.IsEnabled ?? true,
 				Parent = comboNode,
 				Selectable = true,
 				Selected = index == comboBox.SelectedIndex,
@@ -1055,7 +1070,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	{
 		if (_elementsByHandle.TryGetValue(handle, out var element) && element.GetOrCreateAutomationPeer() is { } peer)
 		{
-			(node.Role, node.RoleName) = AtspiRoleMap.GetRole(peer.GetAutomationControlType());
+			(node.Role, node.RoleName) = GetPeerRole(peer);
 		}
 		ApplyStructuralRole(node);
 		_server?.EmitPropertyChange(node, "accessible-role", (int)node.Role);
@@ -1114,7 +1129,8 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			previous.SelectionChanged -= OnFocusedTextSelectionChanged;
 		}
 
-		_focusedTextBox = element as TextBox;
+		// A password's text is never published, even from a TextBox whose peer reports a password.
+		_focusedTextBox = element is TextBox candidate && candidate.GetOrCreateAutomationPeer()?.IsPassword() != true ? candidate : null;
 		if (_focusedTextBox is { } textBox)
 		{
 			textBox.SelectionChanged += OnFocusedTextSelectionChanged;
@@ -1225,6 +1241,16 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	//  emitted by the Update* overrides is the confirmation.
 	// ──────────────────────────────────────────────────────────────
 
+	// IsEnabled is read live because AtspiNode.Enabled can lag, and TextBox/ComboBox providers write to disabled controls.
+	private static bool TryEnqueueWrite(UIElement element, Action write)
+		=> element.DispatcherQueue.TryEnqueue(() =>
+		{
+			if (element is not Control { IsEnabled: false })
+			{
+				write();
+			}
+		});
+
 	bool AtspiServer.IWriteTarget.Invoke(AtspiNode node)
 	{
 		if (node.Selectable && node.Parent is { } parentNode && parentNode.RoleName == "combo box")
@@ -1237,7 +1263,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			return false;
 		}
 
-		return element.DispatcherQueue.TryEnqueue(() => InvokeOnUiThread(element));
+		return TryEnqueueWrite(element, () => InvokeOnUiThread(element));
 	}
 
 	bool AtspiServer.IWriteTarget.SetRangeValue(AtspiNode node, double value)
@@ -1247,7 +1273,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			return false;
 		}
 
-		return element.DispatcherQueue.TryEnqueue(() => SetRangeValueOnUiThread(element, value));
+		return TryEnqueueWrite(element, () => SetRangeValueOnUiThread(element, value));
 	}
 
 	bool AtspiServer.IWriteTarget.SetText(AtspiNode node, string text)
@@ -1257,7 +1283,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			return false;
 		}
 
-		return element.DispatcherQueue.TryEnqueue(() => SetTextOnUiThread(element, text));
+		return TryEnqueueWrite(element, () => SetTextOnUiThread(element, text));
 	}
 
 	bool AtspiServer.IWriteTarget.SetTextSelection(AtspiNode node, int start, int end)
@@ -1267,7 +1293,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			return false;
 		}
 
-		return textBox.DispatcherQueue.TryEnqueue(() =>
+		return TryEnqueueWrite(textBox, () =>
 		{
 			var length = textBox.Text.Length;
 			var from = Math.Clamp(Math.Min(start, end), 0, length);
@@ -1280,7 +1306,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	{
 		if (_elementsSnapshot.TryGetValue(node.Handle, out var element) && element is ComboBox comboBox)
 		{
-			return comboBox.DispatcherQueue.TryEnqueue(() => SelectComboBoxItemOnUiThread(comboBox, index));
+			return TryEnqueueWrite(comboBox, () => SelectComboBoxItemOnUiThread(comboBox, index));
 		}
 
 		// Other selection containers (ListBox/ListView): drive the item's own provider.
@@ -1290,7 +1316,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			return false;
 		}
 
-		return itemElement.DispatcherQueue.TryEnqueue(() => SelectItemOnUiThread(itemElement));
+		return TryEnqueueWrite(itemElement, () => SelectItemOnUiThread(itemElement));
 	}
 
 	private static void SelectItemOnUiThread(UIElement element)
@@ -1352,7 +1378,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	private static void SetRangeValueOnUiThread(UIElement element, double value)
 	{
 		var peer = element.GetOrCreateAutomationPeer();
-		if (peer?.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeValueProvider)
+		if (double.IsFinite(value) && peer?.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider { IsReadOnly: false } rangeValueProvider)
 		{
 			var clamped = Math.Max(rangeValueProvider.Minimum, Math.Min(rangeValueProvider.Maximum, value));
 			rangeValueProvider.SetValue(clamped);
@@ -1378,6 +1404,11 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		// A ComboBox is single-selection: AddToSelection would be rejected once an item
 		// is selected, so select (replace) instead.
 		var itemElement = comboBox.Items[index] as ComboBoxItem;
+		if ((comboBox.ContainerFromIndex(index) as ComboBoxItem ?? itemElement) is { IsEnabled: false })
+		{
+			return;
+		}
+
 		if (itemElement?.GetOrCreateAutomationPeer()?.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
 		{
 			selectionItemProvider.Select();
