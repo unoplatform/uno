@@ -41,6 +41,7 @@ internal sealed partial class TextBoxCore
 	private DispatcherTimer _deferredTouchFlyoutTimer;
 	private Point _deferredTouchFlyoutPosition;
 	private bool _deferredTouchFlyoutForSelection;
+	private (int start, int length) _deferredTouchFlyoutSelection;
 	// Set when a handle tap was the second tap of an iOS multi-tap: its flyout waits out the multi-tap window too.
 	private bool _deferGripperTapFlyout;
 	// iOS: a tap on a selection handle while the menu showed only hides it (see OnGripperTapped).
@@ -423,6 +424,7 @@ internal sealed partial class TextBoxCore
 	{
 		_deferredTouchFlyoutPosition = textBoxPoint;
 		_deferredTouchFlyoutForSelection = forSelection;
+		_deferredTouchFlyoutSelection = (SelectionStart, SelectionLength);
 
 		if (_deferredTouchFlyoutTimer is null)
 		{
@@ -440,7 +442,8 @@ internal sealed partial class TextBoxCore
 	{
 		_deferredTouchFlyoutTimer?.Stop();
 
-		if (FocusState == FocusState.Unfocused)
+		// The menu is for the caret or selection the tap left; typing since then made it stale.
+		if (FocusState == FocusState.Unfocused || (SelectionStart, SelectionLength) != _deferredTouchFlyoutSelection)
 		{
 			return;
 		}

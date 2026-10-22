@@ -1715,6 +1715,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	{
 		// A tap on a handle toggles the menu, like a tap on the selection (see OnGripperTapped).
 		_selectionFlyoutOpenAtPress = SelectionFlyout?.IsOpen == true;
+		// A handle press is a new touch too: drop a menu still waiting on the previous tap.
+		CancelDeferredTouchFlyout();
 		DismissSelectionFlyoutForPointerPress();
 	}
 
