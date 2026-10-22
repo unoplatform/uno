@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void InitializeImageSource(ImageSource source)
 		{
-			_sourceDisposable.Disposable = source.Subscribe(img =>
+			_sourceDisposable.Disposable = source.SubscribeWeakly(img =>
 			{
 				_pendingImageData = img;
 
