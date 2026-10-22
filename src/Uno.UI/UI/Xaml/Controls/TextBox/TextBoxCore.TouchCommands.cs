@@ -35,13 +35,13 @@ internal sealed partial class TextBoxCore
 	}
 
 	/// <summary>
-	/// After Select All from a touch flyout (iOS/Android conventions): show the selection's handles and bring the flyout
+	/// After Select All from a touch flyout (iOS convention): show the selection's handles and bring the flyout
 	/// back with the selection's commands. Invoking the command can close it (an overflow item closes the flyout, and
 	/// showing the handles dismisses a transient one), so it is always re-queued; if still open it only repositions.
 	/// </summary>
 	internal void OnTouchSelectAllFromFlyout()
 	{
-		if (SelectionLength == 0 || TouchSelectionConvention == TouchTextSelectionConvention.Desktop)
+		if (SelectionLength == 0 || TouchSelectionConvention != TouchTextSelectionConvention.iOS)
 		{
 			return;
 		}

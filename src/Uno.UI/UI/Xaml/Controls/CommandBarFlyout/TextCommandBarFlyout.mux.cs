@@ -901,8 +901,8 @@ partial class TextCommandBarFlyout
 
 		var selectAllInPrimaryCommands = IsButtonInPrimaryCommands(TextControlButtons.SelectAll);
 
-		// Uno specific: on a touch flyout under the mobile conventions, give the selection its handles and keep the
-		// menu up for it, as native iOS/Android do (see TextBoxCore.OnTouchSelectAllFromFlyout).
+		// Uno specific: on a touch flyout under the iOS convention, give the selection its handles and keep the
+		// menu up for it, as native iOS does (see TextBoxCore.OnTouchSelectAllFromFlyout).
 		if (m_openedByTouch && target is TextBox touchTarget)
 		{
 			touchTarget.Core.OnTouchSelectAllFromFlyout();
