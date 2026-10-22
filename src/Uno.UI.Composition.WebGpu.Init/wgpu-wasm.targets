@@ -112,4 +112,10 @@
 	     build exercises exactly that code. Last, so the roots set above win. -->
 	<Import Project="..\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.targets" />
 
+	<!-- Except the native trim: the repo imports Uno.Sdk from source, which has no task assembly beside its targets
+	     (only the package does), and a repo head always reaches WebGPU, so there is nothing to drop. -->
+	<PropertyGroup>
+		<_UnoWebGpuNativeTrim>false</_UnoWebGpuNativeTrim>
+	</PropertyGroup>
+
 </Project>
