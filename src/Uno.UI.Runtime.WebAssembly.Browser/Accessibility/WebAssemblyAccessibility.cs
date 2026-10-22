@@ -2292,9 +2292,20 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		};
 	}
 
-	private void OnAutomationNameChanged(UIElement element, string automationId)
+	private void OnAutomationNameChanged(UIElement element, AutomationPeer peer, string automationId)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
+
+		// WA-01 for names set after creation: role=generic is name-prohibited, so a generic node is a group
+		// while it has a name. An exposed landmark role takes precedence, as at creation.
+		var hasAccessibleName = !string.IsNullOrEmpty(automationId);
+		var attributes = AriaMapper.GetAriaAttributes(peer);
+		if (string.Equals(attributes.Role, "generic", StringComparison.Ordinal) &&
+			!AriaMapper.CanExposeLandmarkRole(attributes.LandmarkRole, hasAccessibleName))
+		{
+			NativeMethods.UpdateLandmarkRole(element.Visual.Handle, hasAccessibleName ? "group" : "generic");
+		}
+
 		NativeMethods.UpdateAriaLabel(element.Visual.Handle, automationId);
 	}
 
@@ -2382,7 +2393,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				this.Log().Trace($"[A11y] PROP CHANGE: Name handle={element.Visual.Handle} element={element.GetType().Name} old='{oldValue}' new='{newValue}'");
 			}
-			OnAutomationNameChanged(element, (string)newValue);
+			OnAutomationNameChanged(element, peer, (string)newValue);
 
 			// When the accessible name changes on a live region element, trigger
 			// the announcement. In WinUI3, the OS UIA framework monitors content

@@ -614,7 +614,10 @@ namespace Uno.UI.Runtime {
 		public static updateAriaLabel(handle: number, automationId: string): void {
 			Accessibility.debugLog(`[A11y] TS updateAriaLabel: handle=${handle} label='${automationId}'`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
-			if (element) {
+			if (element && (element.tagName === "P" || element.tagName === "SPAN")) {
+				// Standalone text (createTextElement) is named by its content, and a paragraph prohibits aria-label.
+				element.textContent = automationId;
+			} else if (element) {
 				// Omit an empty/whitespace aria-label rather than emitting aria-label="" (which screen
 				// readers announce as "blank"); a nameless control must carry no aria-label attribute.
 				// Write the TRIMMED value so live-sync matches the creation-time path
