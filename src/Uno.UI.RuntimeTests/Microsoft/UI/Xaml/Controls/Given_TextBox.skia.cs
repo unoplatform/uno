@@ -6923,6 +6923,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 			if (doubleTap)
 			{
+				// Let the first tap's queued flyout update run before the second tap, as between real taps (the
+				// injected timestamps still make it a double-tap). Run after it, it would show the toolbar early.
+				await WindowHelper.WaitForIdle();
 				finger.Press(tapPoint);
 				finger.Release();
 			}
@@ -6936,7 +6939,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// A double-tap also pops the selection toolbar, and its light-dismiss overlay would swallow the drag
 			// below instead of letting it reach the ScrollViewer. On a device the first drag simply dismisses it;
-			// dismiss it here (after its dispatched open has run) so a single drag can be asserted on.
+			// dismiss it here so a single drag can be asserted on. iOS opens it only once the multi-tap window has
+			// passed, so wait for it: hidden before then, it would still open over the drag.
+			if (doubleTap)
+			{
+				await WindowHelper.WaitFor(() => SUT.SelectionFlyout?.IsOpen == true, message: "the double-tap should open the selection toolbar");
+			}
 			SUT.SelectionFlyout?.Hide();
 			await WindowHelper.WaitForIdle();
 
