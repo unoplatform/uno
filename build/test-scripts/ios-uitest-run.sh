@@ -435,7 +435,16 @@ xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PRE
 # Collecting, shutting down and dumping the device logs costs 2-6 minutes per shard and only helps
 # diagnose a failing shard, so skip it for a run that produced results with no failures. A crash
 # mid-run leaves no results file (runtime tests write it once, at the end), so it still collects.
-if [ -f "$UNO_ORIGINAL_TEST_RESULTS" ] && ! grep -Eq 'result="(Failed|Error)"' "$UNO_ORIGINAL_TEST_RESULTS"; then
+results_have_failures() {
+	local decoded
+
+	# The runtime tests write UTF-16, which grep cannot match undecoded; a file that does not
+	# decode counts as failed so its logs are still collected.
+	decoded=$(iconv -f "$(file -b --mime-encoding "$1")" -t UTF-8 "$1") || return 0
+	grep -Eq 'result="(Failed|Error)"' <<< "$decoded"
+}
+
+if [ -f "$UNO_ORIGINAL_TEST_RESULTS" ] && ! results_have_failures "$UNO_ORIGINAL_TEST_RESULTS"; then
 	echo "All tests passed; skipping the device log collection"
 else
 	## Capture the device logs
