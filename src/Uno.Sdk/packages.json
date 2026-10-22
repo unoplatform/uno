@@ -1,4 +1,4 @@
-﻿[
+﻿﻿[
 	{
 		"group": "Core",
 		"version": "DefaultUnoVersion",
@@ -295,6 +295,14 @@
 		"versionOverride": {
 			"net11.0": "11.0.0-rc.1.26451.6"
 		}
+	},
+	{
+		"group": "UnoMaui",
+		"version": "10.0.101-preview.67",
+		"packages": [
+			"Uno.Maui.Embedding",
+			"Uno.Maui.Handlers"
+		]
 	},
 	{
 		"group": "MauiCompatibility",

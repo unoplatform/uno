@@ -104,6 +104,12 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
+	<!-- Uno.Maui.Embedding brings Uno.Maui.Handlers at the same version. It does not depend on Uno.Extensions, unlike mauiembedding. -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';mauihandlers;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Maui.Embedding" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls" ProjectSystem="true" Condition="!$(UnoFeatures.Contains(';mauiembedding;'))" />
+	</ItemGroup>
+
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Extensions.Implicit.Packages.ProjectSystem.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Android.targets"
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" />

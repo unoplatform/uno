@@ -25,4 +25,16 @@
 		<UseMaui>true</UseMaui>
 	</PropertyGroup>
 
+	<!--
+		MauiHandlers: MAUI controls and libraries run on Uno through Uno.Maui.Embedding / Uno.Maui.Handlers, which rewrite the Windows builds of the official MAUI assemblies.
+		- MAUI itself must be the version the rewrite rules are written for, not the one of the mauiembedding feature (override with MauiVersion).
+		- A control library that ships only platform builds (no neutral net*) has no asset for an Uno head, and restore stops with NU1202: its Windows build is the fallback.
+		  This has to be set here: a package's own build files are not imported until its first restore succeeded.
+		- UseMaui stays off: the project is an Uno project, not a MAUI one (the package turns off MAUI's global usings and default XAML items by itself).
+	-->
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauihandlers;'))">
+		<MauiVersion Condition="'$(MauiVersion)' == ''">10.0.101</MauiVersion>
+		<AssetTargetFallback>$(AssetTargetFallback);net10.0-windows10.0.19041.0;net10.0-windows10.0.19041;net10.0-windows;net9.0-windows10.0.19041.0;net8.0-windows10.0.19041.0;net7.0-windows10.0.19041.0;net6.0-windows10.0.19041.0</AssetTargetFallback>
+	</PropertyGroup>
+
 </Project>

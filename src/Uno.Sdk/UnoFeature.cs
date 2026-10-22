@@ -69,6 +69,9 @@ public enum UnoFeature
 	[UnoArea(UnoArea.Extensions)]
 	MauiEmbedding,
 
+	[UnoArea(UnoArea.Core)]
+	MauiHandlers,
+
 	[UnoArea(UnoArea.Extensions)]
 	MVUX,
 

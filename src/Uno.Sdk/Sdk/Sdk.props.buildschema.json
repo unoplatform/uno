@@ -141,6 +141,10 @@
 			"description": "Provides an explicit override for the version of .NET MAUI to use with MAUI Embedding.",
 			"type": "nuget-version"
 		},
+		"UnoMauiVersion": {
+			"description": "Provides an explicit override for the version of Uno.Maui.Embedding and Uno.Maui.Handlers to use with the MauiHandlers feature.",
+			"type": "nuget-version"
+		},
 		"UnoExtensionsVersion": {
 			"description": "Provides an explicit override for the version of Uno Extensions to use.",
 			"type": "nuget-version"
@@ -545,6 +549,10 @@
 				"MauiEmbedding": {
 					"description": "Adds support for embedding Maui controls in Uno.",
 					"helpUrl": "https://aka.platform.uno/feature-maui-embedding"
+				},
+				"MauiHandlers": {
+					"description": "Adds support for running .NET MAUI controls and libraries on Uno with Uno.Maui.Embedding and Uno.Maui.Handlers.",
+					"helpUrl": "https://aka.platform.uno/feature-maui-handlers"
 				},
 				"MVUX": {
 					"description": "Adds support for MVUX.",
