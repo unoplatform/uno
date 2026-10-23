@@ -34,6 +34,10 @@ UNO_IOS_TESTS_STARTED=false
 report_harness_crash() {
 	local status=$?
 
+	if [ -n "${APP_LOG_PID:-}" ]; then
+		kill -TERM "$APP_LOG_PID" 2>/dev/null || true
+	fi
+
 	if [ "$status" -ne 0 ] && [ "$UNO_IOS_TESTS_STARTED" != "true" ]; then
 		echo "##vso[task.setvariable variable=UNO_IOS_HARNESS_CRASHED]true"
 
@@ -352,7 +356,14 @@ then
 		fi
 	fi
 
-	UNO_IOS_TESTS_STARTED=true
+	# Stream the app's unified log to a file. The device log is only collected during teardown, which
+	# a killed job never reaches, so a stalled run otherwise leaves no record of what the app was
+	# doing. This file lands in the logs artifact and feeds the heartbeat below.
+	export APP_LOG_FILEPATH=$LOG_FILEPATH/AppLog-$LOG_PREFIX.txt
+	xcrun simctl spawn "$UITEST_IOSDEVICE_ID" log stream --style compact --level info \
+		--predicate "processImagePath CONTAINS \"SamplesApp\"" > "$APP_LOG_FILEPATH" 2>&1 &
+	APP_LOG_PID=$!
+
 	# Capture the app's own output into the published logs, as the tvOS runner does: a startup failure
 	# otherwise leaves nothing to diagnose, since the managed exception reaches neither the device log nor the
 	# crash report. stderr carries it -- simctl notes log output usually goes there.
@@ -364,21 +375,77 @@ then
 	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}'`
 	echo "App PID: $APP_PID"
 
-	# Set the timeout in seconds 
+	# The app writes `<results>.canary` before the first test, exactly as the WASM runner relies on.
+	# A launch that reports a PID but never reaches the canary is a wedged simulator, not a slow
+	# suite, and waiting the full budget for a results file that can never appear is what turns it
+	# into an opaque job timeout. Fail while UNO_IOS_TESTS_STARTED is still false so the sentinel
+	# routes this to the re-run step.
+	CANARY_FILE="$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE.canary"
+	CANARY_TIMEOUT=$((5 * 60))
+	CANARY_WAITED=0
+	CANARY_APP_EXITED=false
+	while [ ! -f "$CANARY_FILE" ] && [ $CANARY_WAITED -lt $CANARY_TIMEOUT ]; do
+		sleep 10
+		CANARY_WAITED=$((CANARY_WAITED + 10))
+
+		if [ -n "${APP_PID:-}" ] && ! ps -p "$APP_PID" > /dev/null; then
+			CANARY_APP_EXITED=true
+			break
+		fi
+	done
+
+	if [ ! -f "$CANARY_FILE" ]; then
+		if [ "$CANARY_APP_EXITED" = "true" ]; then
+			echo "##vso[task.logissue type=error]UNOBLD010: The app (PID $APP_PID) exited after ${CANARY_WAITED}s without writing $CANARY_FILE, before reaching the first test."
+		else
+			echo "##vso[task.logissue type=error]UNOBLD010: The app did not write $CANARY_FILE within $((CANARY_TIMEOUT / 60))m. It launched (PID ${APP_PID:-unknown}) but never reached the first test."
+		fi
+		echo "--- last 50 lines of the app stderr ---"
+		tail -n 50 "$APP_STDERR" 2>/dev/null || true
+		echo "--- last 50 lines of the app log ---"
+		tail -n 50 "$APP_LOG_FILEPATH" 2>/dev/null || true
+		exit 1
+	fi
+
+	echo "Canary file seen after ${CANARY_WAITED}s, the app has started running tests."
+	UNO_IOS_TESTS_STARTED=true
+
+	# Set the timeout in seconds
 	UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
 	TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
 	# Collecting the device logs, the transform tool and the publish steps need several minutes.
 	source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-job-budget.sh
 	TIMEOUT=$(uno_job_wait_budget "$TIMEOUT" 600)
+
+	if [ "$TIMEOUT" -lt 60 ]; then
+		echo "##vso[task.logissue type=error]UNOBLD011: No job budget is left to wait for test results. The steps before this point consumed the whole job timeout."
+		exit 1
+	fi
+
 	INTERVAL=15
 	END_TIME=$((SECONDS+TIMEOUT))
 
 	echo "Waiting for $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
 
 	# Loop until the file exists or the timeout is reached
+	HEARTBEAT_EVERY=$((60 / INTERVAL))
+	TICK=0
+	APP_LOG_LINES_SEEN=0
+	LOOP_START=$SECONDS
 	while [[ ! -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $END_TIME ]]; do
-		# echo "Waiting $INTERVAL seconds for test results to be written to $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
 		sleep $INTERVAL
+		TICK=$((TICK + 1))
+
+		# Without this the CI log is silent for the whole wait, which is indistinguishable from a
+		# hung agent: the stalls that prompted this went 80 minutes without printing a line. Report
+		# progress every minute, including what the app logged since the last beat, so a stall names
+		# the test it stalled on.
+		if [ $((TICK % HEARTBEAT_EVERY)) -eq 0 ]; then
+			APP_LOG_LINES_NOW=`wc -l < "$APP_LOG_FILEPATH" 2>/dev/null || echo 0`
+			echo "[heartbeat] waited $(( (SECONDS - LOOP_START) / 60 ))m, $(( (END_TIME - SECONDS) / 60 ))m of budget left, app log +$((APP_LOG_LINES_NOW - APP_LOG_LINES_SEEN)) lines"
+			tail -n 5 "$APP_LOG_FILEPATH" 2>/dev/null || true
+			APP_LOG_LINES_SEEN=$APP_LOG_LINES_NOW
+		fi
 
 		# exit loop if the APP_PID is not running anymore
 		if ! ps -p $APP_PID > /dev/null; then
@@ -399,7 +466,9 @@ then
 		# Copy the results to the build directory
 		cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
 	else
-		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
+		echo "##vso[task.logissue type=error]UNOBLD012: The test run timed out after $((TIMEOUT / 60))m without writing $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE. The app started (the canary exists), so the run stalled part-way through; the device log and the app log below cover the stall."
+		echo "--- last 50 lines of the app log ---"
+		tail -n 50 "$APP_LOG_FILEPATH" 2>/dev/null || true
 	fi
 
 else
@@ -411,6 +480,13 @@ else
 	## Run tests
 	UNO_IOS_TESTS_STARTED=true
 	dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --hangdump --hangdump-timeout 45m --hangdump-filename hang.dump --settings .runsettings --filter "$UNO_TESTS_FILTER" || true
+fi
+
+# Stop the app log stream so the file is complete before the artifacts task picks it up.
+if [ -n "${APP_LOG_PID:-}" ]; then
+	kill -TERM "$APP_LOG_PID" 2>/dev/null || true
+	wait "$APP_LOG_PID" 2>/dev/null || true
+	APP_LOG_PID=""
 fi
 
 # export the simulator logs
