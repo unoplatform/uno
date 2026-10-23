@@ -12,7 +12,7 @@ using Uno.UI.RemoteControl.VS.Helpers;
 
 namespace Uno.UI.RemoteControl.VS.IdeChannel;
 
-internal class IdeChannelClient
+internal class IdeChannelClient : IDisposable
 {
 	private NamedPipeClientStream? _pipeServer;
 	private Guid _pipeGuid;
@@ -158,7 +158,8 @@ internal class IdeChannelClient
 		}
 	}
 
-	internal void Dispose()
+	// Thread-agnostic: pipe, RPC proxy and timer only.
+	public void Dispose()
 	{
 		_IDEChannelCancellation?.Cancel();
 		_keepAliveTimer?.Dispose();

@@ -10,7 +10,7 @@ using Uno.UI.RemoteControl.VS.Notifications;
 
 namespace Uno.UI.RemoteControl.VS;
 
-internal class GlobalJsonObserver
+internal class GlobalJsonObserver : IDisposable
 {
 	private AsyncPackage _asyncPackage;
 	private DTE _dte;
@@ -111,15 +111,12 @@ internal class GlobalJsonObserver
 	{
 		await _asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-		if (
-			await _asyncPackage.GetServiceAsync(typeof(SVsShell)) is IVsShell shell
-			&& await _asyncPackage.GetServiceAsync(typeof(SVsInfoBarUIFactory)) is IVsInfoBarUIFactory infoBarFactory)
+		if (await _asyncPackage.GetServiceAsync(typeof(SVsShell)) is IVsShell shell)
 		{
-			var factory = new InfoBarFactory(infoBarFactory, shell);
 			var restartVSItem = new ActionBarItem("Restart Visual Studio");
 			var moreInformationVSItem = new ActionBarItem("More information");
 
-			var infoBar = await factory.CreateAsync(
+			var infoBar = await _infoBarFactory.CreateAsync(
 				new InfoBarModel(
 					$"The Uno.Sdk version has changed to {unoSdkVersion}, and a restart of Visual Studio is required.",
 					new[]
@@ -206,8 +203,7 @@ internal class GlobalJsonObserver
 		return null;
 	}
 
-	internal void Dispose()
-	{
-		_fileWatcher?.Dispose();
-	}
+	// Thread-agnostic: only a file watcher is released.
+	public void Dispose()
+		=> _fileWatcher?.Dispose();
 }
