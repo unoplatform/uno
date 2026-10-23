@@ -1,6 +1,7 @@
 // These tests drive the InputPane.OccludedRect setter, which is Uno-internal:
 // on native WinUI the property is read-only (the OS owns the input pane).
 #if HAS_UNO
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -478,6 +479,278 @@ public class Given_InputPane
 			await ClearOcclusion(inputPane);
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[DataRow(VerticalAlignment.Top)]
+	[DataRow(VerticalAlignment.Bottom)]
+	public async Task When_OccludedRect_Cleared_Then_Overlay_SplitView_Pane_Stays_Open(VerticalAlignment textBoxAlignment)
+	{
+		var textBox = new TextBox { Height = 40, PlaceholderText = "pane field", VerticalAlignment = textBoxAlignment };
+		var splitView = new SplitView
+		{
+			DisplayMode = SplitViewDisplayMode.Overlay,
+			Pane = new Grid { Children = { textBox } },
+			Content = new Border(),
+		};
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(splitView);
+			splitView.IsPaneOpen = true;
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic), "TextBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+
+			OccludeBelow(inputPane, WindowHeight / 2);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(splitView.IsPaneOpen, "The pane closed when the keyboard was shown.");
+
+			await ClearOcclusion(inputPane, clearContent: false);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(splitView.IsPaneOpen, "The pane closed when the keyboard was hidden.");
+		}
+		finally
+		{
+			await ClearOcclusion(inputPane);
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[DataRow(VerticalAlignment.Top)]
+	[DataRow(VerticalAlignment.Bottom)]
+	public async Task When_OccludedRect_Cleared_Then_Flyout_Stays_Open(VerticalAlignment targetAlignment)
+	{
+		var textBox = new TextBox { Width = 200, Height = 40, PlaceholderText = "flyout field" };
+		var flyout = new Flyout { Content = textBox };
+		var target = new Button { Content = "target", VerticalAlignment = targetAlignment };
+		var root = new Grid { Children = { target } };
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(root);
+			flyout.ShowAt(target);
+			await WindowHelper.WaitFor(() => flyout.IsOpen && textBox.IsLoaded, message: "The flyout did not open.");
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic), "TextBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+
+			OccludeBelow(inputPane, WindowHeight / 2);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(flyout.IsOpen, "The flyout closed when the keyboard was shown.");
+
+			await ClearOcclusion(inputPane, clearContent: false);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(flyout.IsOpen, "The flyout closed when the keyboard was hidden.");
+		}
+		finally
+		{
+			flyout.Hide();
+			await ClearOcclusion(inputPane);
+		}
+	}
+
+	// Hiding the soft keyboard, Edge on Android grows the layout viewport by its toolbar height for a moment.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25380")]
+	public async Task When_Viewport_Blips_As_Soft_Keyboard_Hides_Then_Overlay_SplitView_Pane_Stays_Open()
+	{
+		var textBox = new TextBox { Height = 40, PlaceholderText = "pane field", VerticalAlignment = VerticalAlignment.Top };
+		var splitView = new SplitView
+		{
+			DisplayMode = SplitViewDisplayMode.Overlay,
+			Pane = new Grid { Children = { textBox } },
+			Content = new Border(),
+		};
+
+		try
+		{
+			await UITestHelper.Load(splitView);
+			splitView.IsPaneOpen = true;
+			await WindowHelper.WaitForIdle();
+			await FocusNativeTextInput(textBox);
+			await ShowSoftKeyboard();
+
+			await HideSoftKeyboardWithViewportBlip();
+
+			Assert.IsTrue(splitView.IsPaneOpen, "The pane closed on the transient viewport resize.");
+		}
+		finally
+		{
+			await RestoreViewport();
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25380")]
+	public async Task When_Viewport_Blips_As_Soft_Keyboard_Hides_Then_Flyout_Stays_Open()
+	{
+		var textBox = new TextBox { Width = 200, Height = 40, PlaceholderText = "flyout field" };
+		var flyout = new Flyout { Content = textBox };
+		var target = new Button { Content = "target", VerticalAlignment = VerticalAlignment.Top };
+
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { target } });
+			flyout.ShowAt(target);
+			await WindowHelper.WaitFor(() => flyout.IsOpen && textBox.IsLoaded, message: "The flyout did not open.");
+			await FocusNativeTextInput(textBox);
+			await ShowSoftKeyboard();
+
+			await HideSoftKeyboardWithViewportBlip();
+
+			Assert.IsTrue(flyout.IsOpen, "The flyout closed on the transient viewport resize.");
+		}
+		finally
+		{
+			flyout.Hide();
+			await RestoreViewport();
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25380")]
+	public async Task When_Viewport_Height_Changes_With_Soft_Keyboard_Then_Window_Resized_Once_Settled()
+	{
+		var textBox = new TextBox { Height = 40, PlaceholderText = "field", VerticalAlignment = VerticalAlignment.Top };
+		var initialHeight = WindowHeight;
+
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { textBox } });
+			await FocusNativeTextInput(textBox);
+			await ShowSoftKeyboard();
+
+			InvokeBrowserJs($"document.documentElement.style.height = '{initialHeight + 52}px'; window.dispatchEvent(new Event('resize')); ''");
+
+			await WindowHelper.WaitFor(() => WindowHeight > initialHeight + 50, message: "The settled viewport height was not reported.");
+		}
+		finally
+		{
+			await RestoreViewport();
+			await WindowHelper.WaitFor(() => Math.Abs(WindowHeight - initialHeight) < 1, message: "The window height was not restored.");
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// Dragging the bottom edge of a desktop browser window while a TextBox is focused must keep the layout in sync.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Viewport_Height_Changes_During_Text_Entry_Without_Soft_Keyboard_Then_Window_Resized_Immediately()
+	{
+		var textBox = new TextBox { Height = 40, PlaceholderText = "field", VerticalAlignment = VerticalAlignment.Top };
+		var initialHeight = WindowHeight;
+
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { textBox } });
+			await FocusNativeTextInput(textBox);
+
+			InvokeBrowserJs($"document.documentElement.style.height = '{initialHeight + 52}px'; window.dispatchEvent(new Event('resize')); ''");
+
+			Assert.IsTrue(WindowHeight > initialHeight + 50, $"The window height ({WindowHeight}) did not follow the viewport ({initialHeight + 52}).");
+		}
+		finally
+		{
+			await RestoreViewport();
+			await WindowHelper.WaitFor(() => Math.Abs(WindowHeight - initialHeight) < 1, message: "The window height was not restored.");
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	private static async Task FocusNativeTextInput(TextBox textBox)
+	{
+		Assert.IsTrue(textBox.Focus(FocusState.Programmatic), "TextBox failed to take focus.");
+		await WindowHelper.WaitFor(
+			() => InvokeBrowserJs("document.activeElement?.id ?? ''") == "uno-input",
+			message: "The native text input did not take focus.");
+	}
+
+	// Headless browsers have no soft keyboard: stand in a visual viewport that it shrinks, and raise its resize.
+	private static async Task ShowSoftKeyboard()
+	{
+		InvokeBrowserJs("""
+			(() => {
+				const real = window.__unoTestRealViewport ??= window.visualViewport;
+				const height = document.documentElement.getBoundingClientRect().height;
+				window.__unoTestViewport = { width: innerWidth, height: height / 2, offsetTop: 0 };
+				Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => window.__unoTestViewport });
+				real.dispatchEvent(new Event('resize'));
+				return '';
+			})()
+			""");
+
+		await WindowHelper.WaitFor(() => InputPane.GetForCurrentView().Visible, message: "The simulated soft keyboard was not reported.");
+		await WindowHelper.WaitForIdle();
+	}
+
+	// Edge's sequence: the keyboard leaves the visual viewport, then the layout viewport grows by the toolbar
+	// height and shrinks back once the toolbar is re-attached.
+	private static async Task HideSoftKeyboardWithViewportBlip()
+	{
+		InvokeBrowserJs("""
+			(() => {
+				const root = document.documentElement;
+				const height = root.getBoundingClientRect().height;
+				root.style.height = (height + 52) + 'px';
+				window.__unoTestViewport = { width: innerWidth, height: height + 52, offsetTop: 0 };
+				window.__unoTestRealViewport.dispatchEvent(new Event('resize'));
+				window.dispatchEvent(new Event('resize'));
+				setTimeout(() => {
+					root.style.height = '';
+					window.__unoTestViewport = { width: innerWidth, height: height, offsetTop: 0 };
+					window.__unoTestRealViewport.dispatchEvent(new Event('resize'));
+					window.dispatchEvent(new Event('resize'));
+				}, 150);
+				return '';
+			})()
+			""");
+
+		await Task.Delay(800);
+		await WindowHelper.WaitForIdle();
+	}
+
+	private static async Task RestoreViewport()
+	{
+		InvokeBrowserJs("""
+			(() => {
+				document.documentElement.style.height = '';
+				delete window.visualViewport;
+				window.__unoTestRealViewport?.dispatchEvent(new Event('resize'));
+				window.dispatchEvent(new Event('resize'));
+				return '';
+			})()
+			""");
+
+		InputPane.GetForCurrentView().OccludedRect = new Rect(0, 0, 0, 0);
+
+		// Height-only resizes are held back for a moment after the soft keyboard hides.
+		await Task.Delay(1100);
+		InvokeBrowserJs("window.dispatchEvent(new Event('resize')); ''");
+		await WindowHelper.WaitForIdle();
+	}
+
+	private static string InvokeBrowserJs(string javascript)
+		=> Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(javascript);
 
 	private static (ScrollViewer ScrollViewer, Border Card, TextBox TextBox) BuildCenteredCardPage()
 	{
