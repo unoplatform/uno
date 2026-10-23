@@ -27,6 +27,7 @@ namespace Microsoft.UI.Xaml
 		private ManagedWeakReference _sourceDictionary;
 		private ManagedWeakReference _owner;
 		private HashSet<ResourceKey> _keyNotFoundCache;
+		private WeakReference<ResourceDictionary> _weakSelf;
 
 		/// <summary>
 		/// This event is fired when a key that has value of type <see cref="ResourceDictionary"/> is added or changed in the current <see cref="ResourceDictionary" />
@@ -1180,6 +1181,11 @@ namespace Microsoft.UI.Xaml
 			ReturnOwnerWeakReference();
 			_owner = WeakReferencePool.RentWeakReference(this, owner);
 		}
+
+		/// <summary>
+		/// A weak reference to this dictionary, shared by every theme resource reference pinned to it.
+		/// </summary>
+		internal WeakReference<ResourceDictionary> WeakSelf => _weakSelf ??= new(this);
 
 		private void ReturnOwnerWeakReference()
 		{
