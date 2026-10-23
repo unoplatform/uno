@@ -28,13 +28,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25226")]
 		public void When_Gregorian_FixedDate()
 		{
 			Validate(
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwentyFourHour,
-				new DateTimeOffset(2020, 01, 02, 03, 04, 05, 0, TimeSpan.Zero),
+				CreateLocalDateTimeOffset(2020, 01, 02, 03, 04, 05),
 				year: 2020,
 				month: 01,
 				day: 02,
@@ -42,7 +43,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 				minutes: 04,
 				seconds: 05,
 				milliseconds: 0,
-				offsetInSeconds: 0,
 				dayOfWeek: WG.DayOfWeek.Thursday,
 				era: 1,
 				firstDayInThisMonth: 1,
@@ -77,7 +77,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwentyFourHour,
-				new DateTimeOffset(2020, 08, 02, 03, 04, 05, 00, TimeSpan.Zero),
+				CreateLocalDateTimeOffset(2020, 08, 02, 03, 04, 05),
 				year: 2020,
 				month: 08,
 				day: 02,
@@ -85,7 +85,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 				minutes: 04,
 				seconds: 05,
 				milliseconds: 0,
-				offsetInSeconds: 0,
 				dayOfWeek: WG.DayOfWeek.Sunday,
 				era: 1,
 				firstDayInThisMonth: 1,
@@ -118,13 +117,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25226")]
 		public void When_Gregorian_FixedDate_TwelveHours()
 		{
 			Validate(
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				CreateLocalDateTimeOffset(2020, 01, 02, 23, 04, 05),
 				year: 2020,
 				month: 01,
 				day: 02,
@@ -132,7 +132,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 				minutes: 04,
 				seconds: 05,
 				milliseconds: 0,
-				offsetInSeconds: 0,
 				dayOfWeek: WG.DayOfWeek.Thursday,
 				era: 1,
 				firstDayInThisMonth: 1,
@@ -167,7 +166,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 08, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				CreateLocalDateTimeOffset(2020, 08, 02, 23, 04, 05),
 				year: 2020,
 				month: 08,
 				day: 02,
@@ -175,7 +174,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 				minutes: 04,
 				seconds: 05,
 				milliseconds: 0,
-				offsetInSeconds: 0,
 				dayOfWeek: WG.DayOfWeek.Sunday,
 				era: 1,
 				firstDayInThisMonth: 1,
@@ -208,13 +206,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25226")]
 		public void When_Gregorian_FixedDate_AddSecond()
 		{
 			Validate(
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				CreateLocalDateTimeOffset(2020, 01, 02, 23, 04, 05),
 				year: 2020,
 				month: 01,
 				day: 02,
@@ -222,7 +221,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 				minutes: 04,
 				seconds: 06,
 				milliseconds: 0,
-				offsetInSeconds: 0,
 				dayOfWeek: WG.DayOfWeek.Thursday,
 				era: 1,
 				firstDayInThisMonth: 1,
@@ -257,13 +255,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25226")]
 		public void When_Gregorian_FixedDate_AddMinute()
 		{
 			Validate(
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				CreateLocalDateTimeOffset(2020, 01, 02, 23, 04, 05),
 				year: 2020,
 				month: 01,
 				day: 02,
@@ -271,7 +270,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 				minutes: 05,
 				seconds: 05,
 				milliseconds: 0,
-				offsetInSeconds: 0,
 				dayOfWeek: WG.DayOfWeek.Thursday,
 				era: 1,
 				firstDayInThisMonth: 1,
@@ -306,13 +304,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25226")]
 		public void When_Gregorian_FixedDate_AddHour()
 		{
 			Validate(
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				CreateLocalDateTimeOffset(2020, 01, 02, 23, 04, 05),
 				year: 2020,
 				month: 01,
 				day: 03,
@@ -320,7 +319,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 				minutes: 04,
 				seconds: 05,
 				milliseconds: 0,
-				offsetInSeconds: 0,
 				dayOfWeek: WG.DayOfWeek.Friday,
 				era: 1,
 				firstDayInThisMonth: 1,
@@ -355,13 +353,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25226")]
 		public void When_Gregorian_FixedDate_AddDay()
 		{
 			Validate(
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				CreateLocalDateTimeOffset(2020, 01, 02, 23, 04, 05),
 				year: 2020,
 				month: 01,
 				day: 03,
@@ -369,7 +368,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 				minutes: 04,
 				seconds: 05,
 				milliseconds: 0,
-				offsetInSeconds: 0,
 				dayOfWeek: WG.DayOfWeek.Friday,
 				era: 1,
 				firstDayInThisMonth: 1,
@@ -404,13 +402,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25226")]
 		public void When_Gregorian_FixedDate_AddMonth()
 		{
 			Validate(
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				CreateLocalDateTimeOffset(2020, 01, 02, 23, 04, 05),
 				year: 2020,
 				month: 02,
 				day: 02,
@@ -418,7 +417,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 				minutes: 04,
 				seconds: 05,
 				milliseconds: 0,
-				offsetInSeconds: 0,
 				dayOfWeek: WG.DayOfWeek.Sunday,
 				era: 1,
 				firstDayInThisMonth: 1,
@@ -453,13 +451,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25226")]
 		public void When_Gregorian_FixedDate_AddYear()
 		{
 			Validate(
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				CreateLocalDateTimeOffset(2020, 01, 02, 23, 04, 05),
 				year: 2021,
 				month: 01,
 				day: 02,
@@ -467,7 +466,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 				minutes: 04,
 				seconds: 05,
 				milliseconds: 0,
-				offsetInSeconds: 0,
 				dayOfWeek: WG.DayOfWeek.Saturday,
 				era: 1,
 				firstDayInThisMonth: 1,
@@ -502,6 +500,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25226")]
 		[DataRow(2020, "Thursday")]
 		[DataRow(2021, "Saturday")]
 		public void When_Gregorian_FixedDate_Format_12h(int year, string dayOfWeek)
@@ -509,7 +508,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			ValidateFormat(culture: "en-US",
 				  calendar: WG.CalendarIdentifiers.Gregorian,
 				  clock: WG.ClockIdentifiers.TwelveHour,
-				  date: new DateTimeOffset(year, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				  date: CreateLocalDateTimeOffset(year, 01, 02, 23, 04, 05),
 				  yearAsPaddedString: year.ToString(CultureInfo.InvariantCulture),
 				  yearAsString: year.ToString(CultureInfo.InvariantCulture),
 				  monthAsPaddedNumericString: "01",
@@ -531,6 +530,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25226")]
 		[DataRow(2020, "Thursday")]
 		[DataRow(2021, "Saturday")]
 		public void When_Gregorian_FixedDate_Format_24h(int year, string dayOfWeek)
@@ -538,7 +538,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			ValidateFormat(culture: "en-US",
 				  calendar: WG.CalendarIdentifiers.Gregorian,
 				  clock: WG.ClockIdentifiers.TwentyFourHour,
-				  date: new DateTimeOffset(year, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				  date: CreateLocalDateTimeOffset(year, 01, 02, 23, 04, 05),
 				  yearAsPaddedString: year.ToString(CultureInfo.InvariantCulture),
 				  yearAsString: year.ToString(CultureInfo.InvariantCulture),
 				  monthAsPaddedNumericString: "01",
@@ -559,6 +559,12 @@ namespace Uno.UI.Tests.Windows_Globalization
 				  dayOfWeekAsString: dayOfWeek);
 		}
 
+		private static DateTimeOffset CreateLocalDateTimeOffset(int year, int month, int day, int hour, int minute, int second)
+		{
+			var localDateTime = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Unspecified);
+			return new DateTimeOffset(localDateTime, TimeZoneInfo.Local.GetUtcOffset(localDateTime));
+		}
+
 		private void Validate(
 			string culture,
 			string calendar,
@@ -571,7 +577,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 			int minutes,
 			int seconds,
 			int milliseconds,
-			int offsetInSeconds,
 			WG.DayOfWeek dayOfWeek,
 			int era,
 			int firstDayInThisMonth,
