@@ -452,11 +452,24 @@ internal class ProxyLifecycleManager
 				trigger,
 				_healthService.DevServerStarted);
 
+			// The monitor loop can exit on its own (no host after 3 discovery attempts, or
+			// start retries exhausted) while DevServerStarted stays true. In that state a
+			// Refresh is a silent no-op that never attaches, so recycle the session instead.
+			// This covers: explicit uno_app_select_solution on the same path after
+			// 'dotnet restore', and the FileSystem trigger raised by project.assets.json
+			// being written by a restore/build of a freshly scaffolded solution.
+			var monitorExited = _healthService.DevServerStarted && !_devServerMonitor.IsMonitoring;
+
 			// When forceRestart is requested and the normal transition was a no-op (Refresh),
 			// escalate to a full Restart so the DevServer host is recycled.
-			if (forceRestart && transitionAction == WorkspaceTransitionAction.Refresh && _healthService.DevServerStarted)
+			if ((forceRestart || monitorExited)
+				&& transitionAction == WorkspaceTransitionAction.Refresh
+				&& _healthService.DevServerStarted
+				&& nextResolution.IsResolved)
 			{
-				_logger.LogInformation("Force-restart requested for workspace {Workspace}; restarting DevServer",
+				_logger.LogInformation(
+					"{Reason} for workspace {Workspace}; restarting DevServer",
+					forceRestart ? "Force-restart requested" : "DevServer monitor is no longer running",
 					nextResolution.EffectiveWorkspaceDirectory);
 				transitionAction = WorkspaceTransitionAction.Restart;
 			}
@@ -477,6 +490,14 @@ internal class ProxyLifecycleManager
 					return transitionAction;
 
 				case WorkspaceTransitionAction.Start:
+					if (_healthService.DevServerStarted)
+					{
+						// A monitor from an earlier (e.g. roots-accepted, solution-less) workspace
+						// may still hold the start guard; without stopping it, StartDevServerMonitor
+						// is skipped and the new solution is never attached.
+						await StopCurrentWorkspaceAsync();
+					}
+
 					_workspaceResolution = nextResolution;
 					UpdateHealthSelectionSnapshot(nextResolution);
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
@@ -511,7 +532,7 @@ internal class ProxyLifecycleManager
 					UpdateHealthSelectionSnapshot(nextResolution);
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
-					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
+					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory, skipAmbientReuse: forceRestart);
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
 						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
@@ -651,7 +672,7 @@ internal class ProxyLifecycleManager
 		StartDevServerMonitor(_workspaceResolution.EffectiveWorkspaceDirectory);
 	}
 
-	private void StartDevServerMonitor(string? directory)
+	private void StartDevServerMonitor(string? directory, bool skipAmbientReuse = false)
 	{
 		var startMonitorStopwatch = Stopwatch.StartNew();
 		if (!_devServerStartGuard.TryStart())
@@ -676,7 +697,7 @@ internal class ProxyLifecycleManager
 		_logger.LogTrace("Starting DevServer monitor using solution directory {Directory}", normalized);
 		try
 		{
-			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs, _workspaceResolution);
+			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs, _workspaceResolution, skipAmbientReuse);
 			_healthService.DevServerStarted = true;
 			SetConnectionState(ConnectionState.Discovering);
 			_logger.LogTrace("DevServer monitor started for {Directory} (port: {Port}, forwardedArgs: {Args})",
