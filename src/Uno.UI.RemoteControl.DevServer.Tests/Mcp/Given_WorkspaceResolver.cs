@@ -37,6 +37,63 @@ public class Given_WorkspaceResolver
 	}
 
 	[TestMethod]
+	[Description("An explicitly chosen solution resolves wherever it is: the candidate scan only suggests (unoplatform/uno#25524)")]
+	public async Task WhenResolvingSolutionOutsideTheCandidateScan_SolutionIsResolved()
+	{
+		var root = CreateTempDirectory();
+		var externalRoot = CreateTempDirectory();
+		try
+		{
+			var scannedSolution = Path.Combine(root, "Scanned.slnx");
+			await File.WriteAllTextAsync(scannedSolution, string.Empty);
+			var deepDirectory = Path.Combine(externalRoot, "a", "b", "c", "d");
+			Directory.CreateDirectory(deepDirectory);
+			await File.WriteAllTextAsync(Path.Combine(externalRoot, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+			var selectedSolution = Path.Combine(deepDirectory, "App.slnx");
+			await File.WriteAllTextAsync(selectedSolution, string.Empty);
+
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance, new CountingSolutionFileFinder([scannedSolution]));
+
+			var result = await resolver.ResolveSolutionAsync(root, selectedSolution);
+
+			result.IsResolved.Should().BeTrue();
+			result.SelectedSolutionPath.Should().Be(selectedSolution);
+			result.EffectiveWorkspaceDirectory.Should().Be(externalRoot);
+			result.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
+			result.CandidateSolutions.Should().Equal([scannedSolution], "candidates stay the scanned suggestions; the selection is reported as SelectedSolutionPath");
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+			Directory.Delete(externalRoot, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("An explicit solution that does not resolve keeps its path, so it stays selected until it does")]
+	public async Task WhenExplicitSolutionDoesNotResolve_ItStaysSelected()
+	{
+		var root = CreateTempDirectory();
+		try
+		{
+			await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"sdk":{"version":"10.0.100"}}""");
+			var solutionPath = Path.Combine(root, "App.slnx");
+			await File.WriteAllTextAsync(solutionPath, string.Empty);
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance, new CountingSolutionFileFinder([]));
+
+			var result = await resolver.ResolveSolutionAsync(root, solutionPath);
+
+			result.IsResolved.Should().BeFalse();
+			result.SelectedSolutionPath.Should().Be(solutionPath, "an unresolved explicit selection keeps its path so it stays watched and selected");
+			result.IsExplicitSolutionSelection.Should().BeTrue();
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	public async Task WhenSingleValidWorkspaceIsNested_AutoDescendsToWorkspace()
 	{
 		var root = CreateTempDirectory();

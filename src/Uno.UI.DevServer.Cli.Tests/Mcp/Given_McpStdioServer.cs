@@ -357,6 +357,158 @@ public class Given_McpStdioServer
 		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("absolute path");
 	}
 
+	[TestMethod]
+	[Description("TryGetInitializeArgs rejects a path containing NUL, which the full-path normalization cannot handle")]
+	public void TryGetInitializeArgs_WhenPathContainsNul_ReturnsError()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["workspaceDirectory"] = JsonSerializer.SerializeToElement(Path.Combine(Path.GetTempPath(), "repo\0x")),
+		};
+
+		var success = McpStdioServer.TryGetInitializeArgs(arguments, out _, out _, out var errorResult);
+
+		success.Should().BeFalse();
+		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("absolute path");
+	}
+
+	[TestMethod]
+	[Description("uno_app_initialize selects its solutionPath before the workspaceDirectory reaches the roots, so the roots cannot start another solution first")]
+	public async Task ApplyInitializeAsync_WhenSelectionIsAccepted_SelectsBeforeApplyingRoots()
+	{
+		var calls = new List<string>();
+
+		var result = await McpStdioServer.ApplyInitializeAsync(
+			"/repo",
+			"/elsewhere/App.slnx",
+			RecordRoots(calls),
+			RecordSelection(calls, new CallToolResult { Content = [new TextContentBlock { Text = """{"status":"started"}""" }] }));
+
+		result.Should().BeNull();
+		calls.Should().Equal("select /elsewhere/App.slnx from /repo", "roots /repo");
+	}
+
+	[TestMethod]
+	[Description("A solutionPath that uno_app_initialize cannot select is returned as the answer, with a note pointing to what the DevServer serves instead")]
+	public async Task ApplyInitializeAsync_WhenSelectionIsRejected_ReturnsTheRejectionWithANote()
+	{
+		var calls = new List<string>();
+		var rejection = new CallToolResult { Content = [new TextContentBlock { Text = """{"status":"rejected"}""" }], IsError = true };
+
+		var result = await McpStdioServer.ApplyInitializeAsync("/repo", "/repo/App.slnx", RecordRoots(calls), RecordSelection(calls, rejection));
+
+		result.Should().NotBeNull();
+		result!.IsError.Should().BeTrue();
+		result.Content.OfType<TextContentBlock>().Select(block => block.Text).Should().Equal(
+			"""{"status":"rejected"}""",
+			McpStdioServer.InitialSelectionRejectedNote);
+		calls.Should().Equal("select /repo/App.slnx from /repo", "roots /repo");
+	}
+
+	[TestMethod]
+	[Description("Without a solutionPath, uno_app_initialize only applies the workspaceDirectory as the roots")]
+	public async Task ApplyInitializeAsync_WhenSolutionPathIsAbsent_OnlyAppliesRoots()
+	{
+		var calls = new List<string>();
+
+		var result = await McpStdioServer.ApplyInitializeAsync("/repo", null, RecordRoots(calls), RecordSelection(calls, new CallToolResult()));
+
+		result.Should().BeNull();
+		calls.Should().Equal("roots /repo");
+	}
+
+	[TestMethod]
+	[Description("uno_app_initialize reports the workspace and solution the DevServer serves, which an explicit selection can place outside workspaceDirectory")]
+	public void BuildInitializeResponseText_ReportsTheServedWorkspace()
+	{
+		var selection = new WorkspaceSelectionSnapshot
+		{
+			EffectiveWorkspaceDirectory = "/elsewhere",
+			SelectedSolutionPath = "/elsewhere/App.slnx",
+		};
+
+		var text = McpStdioServer.BuildInitializeResponseText("/repo", selection, connected: true, degraded: false, toolCount: 3);
+
+		using var json = JsonDocument.Parse(text);
+		json.RootElement.GetProperty("status").GetString().Should().Be("ready");
+		json.RootElement.GetProperty("workspaceDirectory").GetString().Should().Be("/elsewhere");
+		json.RootElement.GetProperty("solutionPath").GetString().Should().Be("/elsewhere/App.slnx");
+	}
+
+	[TestMethod]
+	[Description("Before any workspace is resolved, uno_app_initialize reports the requested workspaceDirectory")]
+	public void BuildInitializeResponseText_WithoutSelection_ReportsTheRequestedWorkspace()
+	{
+		var text = McpStdioServer.BuildInitializeResponseText("/repo", selection: null, connected: false, degraded: true, toolCount: 0);
+
+		using var json = JsonDocument.Parse(text);
+		json.RootElement.GetProperty("status").GetString().Should().Be("degraded");
+		json.RootElement.GetProperty("workspaceDirectory").GetString().Should().Be("/repo");
+		json.RootElement.GetProperty("solutionPath").ValueKind.Should().Be(JsonValueKind.Null);
+	}
+
+	[TestMethod]
+	[Description("An explicit selection that does not resolve reports no workspace rather than the requested one, which the DevServer does not serve")]
+	public void BuildInitializeResponseText_WithUnresolvedSelection_ReportsNoWorkspace()
+	{
+		var selection = new WorkspaceSelectionSnapshot { SelectedSolutionPath = "/elsewhere/App.slnx" };
+
+		var text = McpStdioServer.BuildInitializeResponseText("/repo", selection, connected: false, degraded: true, toolCount: 0);
+
+		using var json = JsonDocument.Parse(text);
+		json.RootElement.GetProperty("workspaceDirectory").ValueKind.Should().Be(JsonValueKind.Null);
+		json.RootElement.GetProperty("solutionPath").GetString().Should().Be("/elsewhere/App.slnx");
+	}
+
+	private static Func<string[], Task> RecordRoots(List<string> calls)
+		=> roots =>
+		{
+			calls.Add($"roots {string.Join(",", roots)}");
+			return Task.CompletedTask;
+		};
+
+	private static Func<string, bool, string?, Task<CallToolResult>> RecordSelection(List<string> calls, CallToolResult result)
+		=> (solutionPath, _, suggestionsRoot) =>
+		{
+			calls.Add($"select {solutionPath} from {suggestionsRoot}");
+			return Task.FromResult(result);
+		};
+
+	[TestMethod]
+	[OSCondition(OperatingSystems.Windows)]
+	[Description("uno_app_initialize refuses a network (UNC) workspaceDirectory before any file-system access")]
+	[DataRow(@"\\server\share\repo")]
+	[DataRow(@"\??\UNC\server\share\repo")]
+	public void TryGetInitializeArgs_WhenWorkspaceDirectoryIsUnc_ReturnsError(string workspaceDirectory)
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["workspaceDirectory"] = JsonSerializer.SerializeToElement(workspaceDirectory),
+		};
+
+		var success = McpStdioServer.TryGetInitializeArgs(arguments, out _, out _, out var errorResult);
+
+		success.Should().BeFalse();
+		errorResult.IsError.Should().BeTrue();
+		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("local path");
+	}
+
+	[TestMethod]
+	[OSCondition(OperatingSystems.Windows)]
+	[Description("A workspaceDirectory rooted on the current drive is normalized to its full path, then accepted")]
+	public void TryGetInitializeArgs_WhenWorkspaceDirectoryHasNoDrive_ReturnsFullPath()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["workspaceDirectory"] = JsonSerializer.SerializeToElement(@"\repo"),
+		};
+
+		var success = McpStdioServer.TryGetInitializeArgs(arguments, out var workspaceDirectory, out _, out _);
+
+		success.Should().BeTrue();
+		workspaceDirectory.Should().Be(Path.GetFullPath(@"\repo"));
+	}
+
 	// -------------------------------------------------------------------
 	// InitializeTool definition
 	// -------------------------------------------------------------------

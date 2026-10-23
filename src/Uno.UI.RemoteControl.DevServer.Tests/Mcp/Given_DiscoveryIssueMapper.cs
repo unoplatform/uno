@@ -45,7 +45,7 @@ public class Given_DiscoveryIssueMapper
 		issues[0].Code.Should().Be(IssueCode.WorkspaceAmbiguous);
 		issues[0].Severity.Should().Be(ValidationSeverity.Warning);
 		issues[0].Message.Should().Contain("Multiple Uno solutions matched the current directory");
-		issues[0].Remediation.Should().Contain("restart the MCP bridge");
+		issues[0].Remediation.Should().Contain("uno_app_select_solution", "the agent can pick the solution itself instead of restarting the bridge");
 	}
 
 	[TestMethod]
@@ -338,5 +338,178 @@ public class Given_DiscoveryIssueMapper
 		issues.Should().Contain(i => i.Code == IssueCode.DevServerPackageNotCached);
 		issues.Should().Contain(i => i.Code == IssueCode.AddInPackageNotCached);
 		issues.Should().Contain(i => i.Code == IssueCode.AddInDiscoveryFallback);
+	}
+
+	// -------------------------------------------------------------------
+	// Explicitly selected solution that does not resolve
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("A selected solution that no longer exists is named as missing")]
+	public void MapUnresolvedSelection_WhenSolutionIsMissing_SaysItDoesNotExist()
+	{
+		var solution = MissingSolution();
+
+		var issue = DiscoveryIssueMapper.MapUnresolvedSelection(solution, selectionIsKept: true);
+
+		issue.Code.Should().Be(IssueCode.WorkspaceNotResolved);
+		issue.Severity.Should().Be(ValidationSeverity.Fatal);
+		issue.Message.Should().Contain(solution).And.Contain("does not exist");
+		issue.Remediation.Should().Contain("uno_app_select_solution");
+	}
+
+	[TestMethod]
+	[Description("A selected solution whose nearest global.json does not declare the Uno SDK names that global.json, which the .NET SDK resolution stops at")]
+	public void MapUnresolvedSelection_WhenNearestGlobalJsonHasNoUnoSdk_NamesIt()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var globalJson = CreateNonUnoGlobalJson(root);
+			var solution = CreateFile(root, "src", "App.slnx");
+
+			var issue = DiscoveryIssueMapper.MapUnresolvedSelection(solution, selectionIsKept: true);
+
+			issue.Code.Should().Be(IssueCode.WorkspaceNotResolved);
+			issue.Message.Should().Contain(globalJson).And.Contain("Uno.Sdk");
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("A selected solution with no global.json above it says so, naming the solution, and asks for one next to it: only that folder is watched")]
+	public void MapUnresolvedSelection_WhenNoGlobalJson_SaysNoneWasFound()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var solution = CreateFile(root, "src", "App.slnx");
+
+			var issue = DiscoveryIssueMapper.MapUnresolvedSelection(solution, selectionIsKept: true);
+
+			issue.Message.Should().Contain("No global.json").And.Contain(solution);
+			issue.Remediation.Should().Contain("next to the solution");
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[DataRow(true, "starts by itself")]
+	[DataRow(false, "uno_app_select_solution again")]
+	[Description("A kept selection starts by itself once fixed; a rejected one is not kept and must be selected again")]
+	public void MapUnresolvedSelection_RemediationDependsOnWhetherTheSelectionIsKept(bool selectionIsKept, string expected)
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			CreateNonUnoGlobalJson(root);
+			var solution = CreateFile(root, "src", "App.slnx");
+
+			var issue = DiscoveryIssueMapper.MapUnresolvedSelection(solution, selectionIsKept);
+
+			issue.Remediation.Should().Contain(expected);
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("No selection, or one that is not explicit, has no selection issue")]
+	public void MapSelectionIssue_WhenSelectionIsNotExplicit_ReturnsNull()
+	{
+		var selection = new WorkspaceSelectionSnapshot { SelectedSolutionPath = MissingSolution() };
+
+		DiscoveryIssueMapper.MapSelectionIssue(null, monitorFoundNoSolution: true).Should().BeNull();
+		DiscoveryIssueMapper.MapSelectionIssue(selection, monitorFoundNoSolution: true).Should().BeNull();
+	}
+
+	[TestMethod]
+	[Description("An explicit selection that does not resolve is reported, as a kept selection")]
+	public void MapSelectionIssue_WhenExplicitSelectionIsUnresolved_ReportsIt()
+	{
+		var missing = MissingSolution();
+		var selection = new WorkspaceSelectionSnapshot { SelectedSolutionPath = missing, IsExplicitSolutionSelection = true };
+
+		var issue = DiscoveryIssueMapper.MapSelectionIssue(selection, monitorFoundNoSolution: false);
+
+		issue.Should().NotBeNull();
+		issue!.Message.Should().Contain(missing);
+		issue.Remediation.Should().Contain("starts by itself");
+	}
+
+	[TestMethod]
+	[Description("A resolved explicit selection whose file the monitor could not find (deleted before the watcher reacted) is reported missing")]
+	public void MapSelectionIssue_WhenResolvedSelectionIsMissingForTheMonitor_ReportsIt()
+	{
+		var missing = MissingSolution();
+		var selection = new WorkspaceSelectionSnapshot
+		{
+			SelectedSolutionPath = missing,
+			EffectiveWorkspaceDirectory = Path.GetDirectoryName(missing),
+			IsExplicitSolutionSelection = true,
+		};
+
+		DiscoveryIssueMapper.MapSelectionIssue(selection, monitorFoundNoSolution: true)!.Message.Should().Contain("does not exist");
+		DiscoveryIssueMapper.MapSelectionIssue(selection, monitorFoundNoSolution: false).Should().BeNull();
+	}
+
+	[TestMethod]
+	[Description("The monitor's no-solution flag is ignored while the resolved selection exists: it is stale from an earlier cycle, and blaming the global.json would be false")]
+	public void MapSelectionIssue_WhenMonitorFlagIsStaleAndFileExists_ReturnsNull()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var solution = CreateFile(root, "src", "App.slnx");
+			var selection = new WorkspaceSelectionSnapshot
+			{
+				SelectedSolutionPath = solution,
+				EffectiveWorkspaceDirectory = root,
+				IsExplicitSolutionSelection = true,
+			};
+
+			DiscoveryIssueMapper.MapSelectionIssue(selection, monitorFoundNoSolution: true).Should().BeNull();
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	private static string MissingSolution()
+		=> Path.Combine(Path.GetTempPath(), $"uno-issue-tests-{Guid.NewGuid():N}", "App.slnx");
+
+	private static string CreateNonUnoGlobalJson(string root)
+	{
+		var globalJson = Path.Combine(root, "global.json");
+		File.WriteAllText(globalJson, """{"sdk":{"version":"10.0.100"}}""");
+		return globalJson;
+	}
+
+	private static string CreateTempDirectory()
+	{
+		var path = Path.Combine(Path.GetTempPath(), $"uno-issue-tests-{Guid.NewGuid():N}");
+		Directory.CreateDirectory(path);
+		return path;
+	}
+
+	private static string CreateFile(string root, params string[] segments)
+	{
+		var path = Path.Combine([root, .. segments]);
+		Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+		File.WriteAllText(path, string.Empty);
+		return path;
 	}
 }

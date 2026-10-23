@@ -230,6 +230,32 @@ public class Given_HealthService
 	}
 
 	[TestMethod]
+	[Description("An explicit selection that is not served is reported as such, instead of telling the agent to wait for a host that will not come")]
+	public void HealthReport_WhenSelectionIssueIsGiven_ReportsItWithoutHostUnreachable()
+	{
+		var selectionIssue = new ValidationIssue
+		{
+			Code = IssueCode.WorkspaceNotResolved,
+			Severity = ValidationSeverity.Fatal,
+			Message = "The selected solution does not exist.",
+			Remediation = "Select another solution.",
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery: null,
+			devServerStarted: true,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: null,
+			selectionIssue: selectionIssue);
+
+		report.Status.Should().Be(HealthStatus.Unhealthy);
+		report.Issues.Should().Contain(selectionIssue);
+		report.Issues.Should().NotContain(issue => issue.Code == IssueCode.HostUnreachable);
+	}
+
+	[TestMethod]
 	public void HealthReport_WhenWorkspaceWasExplicitlySelected_ExposesSelectionSource()
 	{
 		var discovery = new DiscoveryInfo
