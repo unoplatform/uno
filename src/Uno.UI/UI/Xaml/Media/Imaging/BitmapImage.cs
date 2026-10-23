@@ -141,9 +141,62 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, ex.Message));
 		}
 
-		internal void RaiseImageOpened()
+		// WinUI raises ImageOpened once per source, so decoding the same source again after its release raises nothing
+		// (MUX Reference: CImageSource::FireImageOpened, m_publicBitmapEventFired, re-armed by ResetCallbackEvents when
+		// the source is set — imagesource.cpp).
+		private int? _imageOpenedVersion;
+
+		private void RaiseImageOpened(int version)
 		{
-			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+			if (_imageOpenedVersion != version)
+			{
+				_imageOpenedVersion = version;
+				ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+			}
+		}
+
+		// Takes the pixel size of an open's result and raises its event. Setting the size runs property-changed handlers,
+		// which may change the source: that supersedes the open, which then raises nothing and releases what it owns.
+		private ImageData Publish(ImageData imageData, int version, CancellationToken ct)
+		{
+			// Superseded while decoding, or by a size setter's handler: the open that superseded this one may have set its own
+			// size already (from a completed cache entry), which this one must not overwrite.
+			ThrowIfSuperseded(imageData, ct);
+			if (imageData.Kind == ImageDataKind.Error)
+			{
+				PixelWidth = 0;
+				ThrowIfSuperseded(imageData, ct);
+				PixelHeight = 0;
+			}
+			else if (imageData.Kind == ImageDataKind.CompositionSurface)
+			{
+				var image = ((global::Microsoft.UI.Composition.CompositionImageSurface)imageData.CompositionSurface!).Image;
+				PixelWidth = image.PixelWidth;
+				ThrowIfSuperseded(imageData, ct);
+				PixelHeight = image.PixelHeight;
+			}
+
+			ThrowIfSuperseded(imageData, ct);
+
+			if (imageData.Kind == ImageDataKind.Error)
+			{
+				RaiseImageFailed(imageData.Error);
+			}
+			else if (imageData.Kind == ImageDataKind.CompositionSurface)
+			{
+				RaiseImageOpened(version);
+			}
+
+			return imageData;
+		}
+
+		private static void ThrowIfSuperseded(ImageData imageData, CancellationToken ct)
+		{
+			if (ct.IsCancellationRequested)
+			{
+				ReleaseSurface(imageData);
+				throw new OperationCanceledException(ct);
+			}
 		}
 
 		private readonly record struct BitmapImageCacheKey(Uri Uri, int? DecodeWidth, int? DecodeHeight);
@@ -198,6 +251,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		private async Task<ImageData> TryOpenSourceAsync(CancellationToken ct)
 		{
+			var version = SourceVersion;
+
 			try
 			{
 				var (decodeWidth, decodeHeight) = GetDecodePixelSize();
@@ -239,21 +294,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 							throw;
 						}
 
-						if (imageData.Kind == ImageDataKind.Error)
-						{
-							PixelWidth = 0;
-							PixelHeight = 0;
-							RaiseImageFailed(imageData.Error);
-						}
-						else if (imageData.Kind == ImageDataKind.CompositionSurface)
-						{
-							var image = ((global::Microsoft.UI.Composition.CompositionImageSurface)imageData.CompositionSurface!).Image;
-							PixelWidth = image.PixelWidth;
-							PixelHeight = image.PixelHeight;
-							RaiseImageOpened();
-						}
-
-						return imageData;
+						return Publish(imageData, version, ct);
 					}
 				}
 				else
@@ -294,7 +335,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						{
 							try
 							{
-								return await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, loadCt, decodeWidth, decodeHeight);
+								var imageData = await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, loadCt, decodeWidth, decodeHeight);
+
+								// A cached result is shared by every source that loads the same key, so it is the cache's to
+								// release: marked once here, on the task every sharer awaits.
+								return useCache ? imageData.AsShared() : imageData;
 							}
 							catch (Exception e)
 							{
@@ -325,26 +370,28 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						}
 					}
 
-					var imageData = await imageDataTask.WaitAsync(ct);
+					ImageData imageData;
 
-					// The shared load may have completed between the cancellation and the await.
-					ct.ThrowIfCancellationRequested();
-
-					if (imageData.Kind == ImageDataKind.Error)
+					try
 					{
-						PixelWidth = 0;
-						PixelHeight = 0;
-						RaiseImageFailed(imageData.Error);
+						imageData = await imageDataTask.WaitAsync(ct);
+
+						// The shared load may have completed between the cancellation and the await.
+						ct.ThrowIfCancellationRequested();
 					}
-					else if (imageData.Kind == ImageDataKind.CompositionSurface)
+					catch (OperationCanceledException) when (ct.IsCancellationRequested)
 					{
-						var image = ((global::Microsoft.UI.Composition.CompositionImageSurface)imageData.CompositionSurface!).Image;
-						PixelWidth = image.PixelWidth;
-						PixelHeight = image.PixelHeight;
-						RaiseImageOpened();
+						// The decode cannot be stopped and this requester will never show its result, so release the surface
+						// it produces instead of leaving it to finalization (a cached result is shared and stays the cache's).
+						_ = imageDataTask.ContinueWith(
+							static t => ReleaseSurface(t.Result),
+							CancellationToken.None,
+							TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.ExecuteSynchronously,
+							TaskScheduler.Default);
+						throw;
 					}
 
-					return imageData;
+					return Publish(imageData, version, ct);
 				}
 			}
 			catch (OperationCanceledException) when (ct.IsCancellationRequested)
