@@ -144,7 +144,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private IDisposable WireExtensionEvents(IImeTextBoxExtension extension)
 		{
 			EventHandler onStarted = (_, _) => InvokeActiveHost(extension, static host => host.OnImeCompositionStarted());
-			EventHandler<ImeCompositionEventArgs> onUpdated = (_, e) => InvokeActiveHost(extension, host => host.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied));
+			EventHandler<ImeCompositionEventArgs> onUpdated = (_, e) => InvokeActiveHost(extension, host => host.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied, e.StartIndex, e.TextChangePending));
 			EventHandler<ImeCompositionEventArgs> onCompleted = (_, e) => InvokeActiveHost(extension, host => host.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied));
 			EventHandler<ImePartialCompositionEventArgs> onPartiallyCommitted = (_, e) => InvokeActiveHost(extension, host => host.OnImeCompositionPartiallyCommitted(
 				e.CommittedText,

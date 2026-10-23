@@ -8244,6 +8244,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_IME_Composition_Cancelled_After_Platform_Shortened_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "abcdef" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			SUT.Select(6, 0);
+			await WindowHelper.WaitForIdle();
+
+			var ended = new List<(int start, int length)>();
+			SUT.TextCompositionEnded += (_, e) => ended.Add((e.StartIndex, e.Length));
+
+			// The platform applies the text itself and shortens it under the composition, then cancels.
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("", textAlreadyApplied: true);
+			SUT.Text = "abc";
+			fake.SimulateCompositionCancel(textAlreadyApplied: true);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("abc", SUT.Text);
+			CollectionAssert.AreEqual(new[] { (3, 0) }, ended);
+		}
+
+		[TestMethod]
 		public async Task When_IME_Text_Selection_And_Layout_Changes_Update_Session()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -8768,10 +8796,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CompositionEnded?.Invoke(this, EventArgs.Empty);
 			}
 
-			public void SimulateCompositionCancel()
+			public void SimulateCompositionCancel(bool textAlreadyApplied = false)
 			{
 				IsComposing = false;
-				CompositionCanceled?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
+				CompositionCanceled?.Invoke(this, new ImeCompositionEventArgs(string.Empty, textAlreadyApplied: textAlreadyApplied));
 				CompositionEnded?.Invoke(this, EventArgs.Empty);
 			}
 		}
