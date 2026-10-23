@@ -34,6 +34,13 @@ namespace Uno.UI.Xaml
 			=> target.SetBindingInternal(propertyName, binding);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Binding SetBindingXBindProvider(Binding binding, object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object>? xBindBack, Type? sourceType, string[]? propertyPaths)
+		{
+			binding.SetBindingXBindProvider(compiledSource, xBindSelector, xBindBack, sourceType, propertyPaths);
+			return binding;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static AttachedDependencyObject GetDependencyObjectForXBind(this object instance)
 			=> DependencyObjectExtensions.GetAttachedDependencyObject(instance);
 
