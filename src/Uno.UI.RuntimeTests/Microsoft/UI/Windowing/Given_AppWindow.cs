@@ -80,6 +80,70 @@ public class Given_AppWindow
 		}
 	}
 
+#if __UNO__
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25650")]
+	public async Task When_Move_Down_Then_Window_Moves_Down_On_Screen()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var appWindow = window.AppWindow;
+		var originalPosition = appWindow.Position;
+		// Asks the platform where the window content is, so it does not just read back the value Move stored.
+		var before = window.NativeWrapper!.ConvertLocalToScreen(default);
+		try
+		{
+			// Downward, as the top of the screen can stop a window from moving up.
+			appWindow.Move(new PointInt32(originalPosition.X, originalPosition.Y + 20));
+			await TestServices.WindowHelper.WaitFor(() => appWindow.Position.Y != originalPosition.Y);
+
+			var after = window.NativeWrapper!.ConvertLocalToScreen(default);
+			Assert.AreEqual(before.Y + 20, after.Y, $"Window content moved from ({before.X}, {before.Y}) to ({after.X}, {after.Y}) on screen");
+			Assert.AreEqual(before.X, after.X, $"Window content moved from ({before.X}, {before.Y}) to ({after.X}, {after.Y}) on screen");
+		}
+		finally
+		{
+			appWindow.Move(originalPosition);
+			await TestServices.WindowHelper.WaitFor(() => appWindow.Position.Equals(originalPosition));
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25650")]
+	public async Task When_Resize_Then_Top_Left_Stays()
+	{
+		if (OperatingSystem.IsLinux())
+		{
+			// Resizing is currently failing in CI #9080
+			Assert.Inconclusive();
+		}
+
+		AssertPositioningAndSizingSupport();
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var appWindow = window.AppWindow;
+		var originalSize = appWindow.Size;
+		var originalPosition = appWindow.Position;
+		var before = window.NativeWrapper!.ConvertLocalToScreen(default);
+		try
+		{
+			// Smaller, as a window cannot grow taller than the screen.
+			appWindow.Resize(new SizeInt32(originalSize.Width - 20, originalSize.Height - 20));
+			await TestServices.WindowHelper.WaitFor(() => !appWindow.Size.Equals(originalSize));
+
+			Assert.AreEqual(originalPosition, appWindow.Position, $"Position changed to ({appWindow.Position.X}, {appWindow.Position.Y})");
+			var after = window.NativeWrapper!.ConvertLocalToScreen(default);
+			Assert.AreEqual(before, after, $"Window content moved from ({before.X}, {before.Y}) to ({after.X}, {after.Y}) on screen");
+		}
+		finally
+		{
+			appWindow.Resize(originalSize);
+			await TestServices.WindowHelper.WaitFor(() => appWindow.Size.Equals(originalSize));
+		}
+	}
+#endif
+
 	[TestMethod]
 	public async Task When_Resize_Before_Activate()
 	{
