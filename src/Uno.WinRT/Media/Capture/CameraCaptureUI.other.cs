@@ -1,4 +1,4 @@
-﻿#if !__IOS__ && !__ANDROID__
+﻿#if !__IOS__ && !__ANDROID__ && !__SKIA__
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;

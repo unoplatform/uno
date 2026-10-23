@@ -46,6 +46,7 @@ public class MacOSHost : UnoPlatformHost, IApplicationHost
 		MacOSAnalyticsInfoExtension.Register();
 		MacOSApplicationViewExtension.Register();
 		MacOSBadgeUpdaterExtension.Register();
+		MacOSCameraCaptureUIExtension.Register();
 		MacOSClipboardExtension.Register();
 		MacOSDragDropExtension.Register();
 		MacOSCoreApplicationExtension.Register();
