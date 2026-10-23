@@ -51,7 +51,7 @@ steps:
 
       if ($isRerun) {
         Write-Host "Attempt $($env:SYSTEM_JOBATTEMPT): leaving out the packages already on nuget.org."
-        Write-Host "nuget.org can take up to ~30 minutes to list a new package. If a package pushed that recently fails with a 409, re-run again later."
+        Write-Host "nuget.org can take up to ~20 minutes to list a new package. If a package pushed that recently fails with a 409, re-run again later."
       }
 
       $packages = Get-ChildItem $source -Recurse -Filter *.nupkg
