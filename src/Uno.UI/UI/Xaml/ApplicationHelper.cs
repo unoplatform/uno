@@ -61,6 +61,20 @@ public class ApplicationHelper
 		return Application.Current?.IsLoadableComponent(resource) ?? false;
 	}
 
+	/// <summary>
+	/// Declares that this process hosts secondary <see cref="Application"/> instances, each in its own
+	/// <see cref="System.Runtime.Loader.AssemblyLoadContext"/>, so that resource registration and
+	/// resolution run ALC-aware from that point on.
+	/// </summary>
+	/// <remarks>
+	/// Constructing a secondary <see cref="Application"/> declares this implicitly, but a host should
+	/// call it before loading its first secondary load context: anything registered from that context
+	/// ahead of the application's constructor would otherwise be treated as the host's own. The
+	/// declaration is one-way for the lifetime of the process; hosts that unload and reload secondary
+	/// applications keep it.
+	/// </remarks>
+	public static void EnableSecondaryApplicationSupport() => Application.HasSecondaryApps = true;
+
 	internal static void AddWindow(Microsoft.UI.Xaml.Window window) => _windows.Add(window);
 
 	internal static void RemoveWindow(Microsoft.UI.Xaml.Window window) => _windows.Remove(window);
