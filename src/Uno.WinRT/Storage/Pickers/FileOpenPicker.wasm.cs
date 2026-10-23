@@ -135,10 +135,6 @@ namespace Windows.Storage.Pickers
 		private async Task<FilePickerSelectedFilesArray> UploadPickerPickFilesAsync(bool multiple, CancellationToken token)
 		{
 			var temporaryFolder = ApplicationData.Current.LocalCacheFolder;
-			if (!Directory.Exists(temporaryFolder.Path))
-			{
-				await temporaryFolder.MakePersistentAsync();
-			}
 			var targetFolder = Directory.CreateDirectory(Path.Combine(temporaryFolder.Path, Guid.NewGuid().ToString()));
 
 			var fileCountString = await NativeMethods.UploadPickFilesAsync(multiple, targetFolder.FullName, BuildAcceptString());
