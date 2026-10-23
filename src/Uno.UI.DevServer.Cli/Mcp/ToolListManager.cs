@@ -14,6 +14,7 @@ internal class ToolListManager(
 	McpUpstreamClient mcpUpstreamClient)
 {
 	private volatile int _snapshotToolCount;
+	private volatile bool _hasFetchedTools;
 
 	/// <summary>Maximum time to wait for upstream list_tools before returning empty result.</summary>
 	internal const int ListToolsTimeoutMs = 60_000;
@@ -23,6 +24,24 @@ internal class ToolListManager(
 
 	/// <summary>Lock-free snapshot of tool count, safe to read from any thread without blocking.</summary>
 	public int SnapshotToolCount => _snapshotToolCount;
+
+	/// <summary>
+	/// True once at least one upstream tools/list completed successfully, so a
+	/// <see cref="SnapshotToolCount"/> of 0 means "upstream exposes no tools"
+	/// rather than "not fetched yet".
+	/// </summary>
+	public bool HasFetchedTools => _hasFetchedTools;
+
+	/// <summary>
+	/// Returns true when <paramref name="toolName"/> was present in the last upstream tool list.
+	/// </summary>
+	public bool IsKnownUpstreamTool(string toolName)
+	{
+		var names = _snapshotToolNames;
+		return names is not null && names.Contains(toolName);
+	}
+
+	private volatile HashSet<string>? _snapshotToolNames;
 
 	public async Task<ListToolsResult> ListToolsWithTimeoutAsync(CancellationToken ct)
 	{
@@ -78,6 +97,8 @@ internal class ToolListManager(
 		logger.LogDebug("Reporting {Count} tools", protocolTools.Length);
 
 		_snapshotToolCount = protocolTools.Length;
+		_snapshotToolNames = new HashSet<string>(protocolTools.Select(t => t.Name), StringComparer.Ordinal);
+		_hasFetchedTools = true;
 
 		return new() { Tools = protocolTools };
 	}
