@@ -17,13 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region BackgroundSizing DepedencyProperty
 		[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
-		public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
-
-		public BackgroundSizing BackgroundSizing
-		{
-			get => GetBackgroundSizingValue();
-			set => SetBackgroundSizingValue(value);
-		}
+		public partial BackgroundSizing BackgroundSizing { get; set; }
 
 		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -33,16 +27,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region BorderBrush DependencyProperty
 
-		public Brush BorderBrush
-		{
-			get => GetBorderBrushValue();
-			set => SetBorderBrushValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+		public partial Brush BorderBrush { get; set; }
 
 		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
-
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
-		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 		private void OnBorderBrushPropertyChanged(Brush oldValue, Brush newValue)
 		{
@@ -54,16 +42,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region BorderThickness DependencyProperty
 
-		public Thickness BorderThickness
-		{
-			get => GetBorderThicknessValue();
-			set => SetBorderThicknessValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
+		public partial Thickness BorderThickness { get; set; }
 
 		private static Thickness GetBorderThicknessDefaultValue() => default(Thickness);
-
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 		private void OnBorderThicknessPropertyChanged(Thickness oldValue, Thickness newValue)
 		{
@@ -75,16 +57,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Padding DependencyProperty
 
-		public Thickness Padding
-		{
-			get => GetPaddingValue();
-			set => SetPaddingValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
+		public partial Thickness Padding { get; set; }
 
 		private static Thickness GetPaddingDefaultValue() => default(Thickness);
-
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		private void OnPaddingPropertyChanged(Thickness oldValue, Thickness newValue)
 		{
@@ -96,16 +72,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region CornerRadius DependencyProperty
 
-		public CornerRadius CornerRadius
-		{
-			get => GetCornerRadiusValue();
-			set => SetCornerRadiusValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusPropertyChanged))]
+		public partial CornerRadius CornerRadius { get; set; }
 
 		private static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
-
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusPropertyChanged))]
-		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 		private void OnCornerRadiusPropertyChanged(CornerRadius oldValue, CornerRadius newValue)
 		{
@@ -116,12 +86,10 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region Row Property
-		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
-		public static DependencyProperty RowProperty { get; } = CreateRowProperty();
+		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), ChangedCallback = true)]
+		public static partial int GetRow(FrameworkElement element);
 
-		public static int GetRow(FrameworkElement element) => GetRowValue(element);
-
-		public static void SetRow(FrameworkElement element, int value) => SetRowValue(element, value);
+		public static partial void SetRow(FrameworkElement element, int value);
 
 		private static void OnRowChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
@@ -133,12 +101,10 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region Column Property
-		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
-		public static DependencyProperty ColumnProperty { get; } = CreateColumnProperty();
+		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), ChangedCallback = true)]
+		public static partial int GetColumn(FrameworkElement element);
 
-		public static int GetColumn(FrameworkElement element) => GetColumnValue(element);
-
-		public static void SetColumn(FrameworkElement element, int value) => SetColumnValue(element, value);
+		public static partial void SetColumn(FrameworkElement element, int value);
 
 		private static void OnColumnChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
@@ -151,10 +117,8 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region RowSpan Property
-		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
-		public static DependencyProperty RowSpanProperty { get; } = CreateRowSpanProperty();
-
-		public static int GetRowSpan(FrameworkElement element) => GetRowSpanValue(element);
+		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), ChangedCallback = true)]
+		public static partial int GetRowSpan(FrameworkElement element);
 
 		public static void SetRowSpan(FrameworkElement element, int value)
 		{
@@ -176,10 +140,8 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region ColumnSpan Property
-		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
-		public static DependencyProperty ColumnSpanProperty { get; } = CreateColumnSpanProperty();
-
-		public static int GetColumnSpan(FrameworkElement element) => GetColumnSpanValue(element);
+		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), ChangedCallback = true)]
+		public static partial int GetColumnSpan(FrameworkElement element);
 
 		public static void SetColumnSpan(FrameworkElement element, int value)
 		{
