@@ -96,6 +96,9 @@ public enum UnoFeature
 	[UnoArea(UnoArea.Theme)]
 	SimpleTheme,
 
+	[UnoArea(UnoArea.Theme)]
+	FluentTheme,
+
 	Dsp,
 
 	Mvvm,
