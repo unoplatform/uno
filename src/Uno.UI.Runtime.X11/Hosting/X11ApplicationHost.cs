@@ -328,6 +328,13 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 		// RunAsync triggers Win32 OleInitialize / STA breakage so we can't rely on real
 		// awaits here.
 		X11InputMethodDetector.DetectedInputMethod = _imeDetectionTask.Result;
+
+		// A secondary ALC app shares the process, and so the activation, of the host that started it.
+		if (_eventLoop is not null)
+		{
+			// Desktop entries written by distro packages or Flatpak pass the URI as a bare %u.
+			CommandLineActivation.Report(allowBareUri: true);
+		}
 	}
 
 	public void Dispose()
