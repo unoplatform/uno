@@ -1499,6 +1499,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private (int index, CompositionBrush brush)? _caretPaint;
 		private bool _forceFocusedForContextFlyout;
 		private long _textLayoutVersion;
+
+		// Whether the text was invalidated since it was last laid out, as opposed to only being measured under a new constraint.
+		private bool _isMeasureInvalidated = true;
+
+		private protected override void OnMeasureInvalidated() => _isMeasureInvalidated = true;
 		private double _textLayoutWidth = double.NaN;
 
 		// Touch-selection grippers (knobs), driven by the shared TextSelectionGripperPresenter. Unlike
@@ -1675,9 +1680,26 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ParsedText = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 			}
-			ParsedText = ParseText(availableSizeWithoutPadding, out var desiredSize);
-			_textLayoutWidth = availableSizeWithoutPadding.Width;
-			_textLayoutVersion++;
+
+			Size desiredSize;
+
+			// A new constraint alone does not change the lines of text that do not depend on it; arrange positions them.
+			if (!_isMeasureInvalidated
+				&& CustomTextLayout is null
+				&& ParsedText is UnicodeText parsed
+				&& parsed.IsSizeValidFor(availableSizeWithoutPadding)
+				&& _lastParsedTextCreationValues.alignment == GetAdjustedTextAlignment())
+			{
+				desiredSize = _lastParsedTextCreationValues.outSize;
+			}
+			else
+			{
+				ParsedText = ParseText(availableSizeWithoutPadding, out desiredSize);
+				_textLayoutWidth = availableSizeWithoutPadding.Width;
+				_textLayoutVersion++;
+			}
+
+			_isMeasureInvalidated = false;
 
 			desiredSize = desiredSize.Add(padding);
 
@@ -1810,9 +1832,9 @@ namespace Microsoft.UI.Xaml.Controls
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
 
 			// There's no reason to re-parse the text if the available size hasn't changed since the last measure/arrange.
-			// Note that MeasureOverride doesn't have these checks. If something in the text block has changed that would
-			// require a re-parse, the ParseText call during the measure pass will catch it. There are no changes that
-			// would require a re-parse that would invalidate arrange but not measure, except TextAlignment, which we explicitly check.
+			// If something in the text block has changed that would require a re-parse, the measure pass re-parses it, as its
+			// measure was invalidated. There are no changes that would require a re-parse that would invalidate arrange but
+			// not measure, except TextAlignment, which we explicitly check.
 			// A size change only counts in a dimension the layout used: a single left-aligned line is arranged at any height.
 			var arrangedSize = _lastParsedTextCreationValues.outSize;
 			var sizeChanged = _lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding
