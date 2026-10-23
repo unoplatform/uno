@@ -50,6 +50,7 @@
 		     Exists(), so leaving the second file out disables the trimming with no error at all. -->
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.targets" target="buildTransitive\Uno.WinUI.Composition.WebGpu.targets" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.NativeTrim.targets" target="buildTransitive\Uno.WinUI.Composition.WebGpu.NativeTrim.targets" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\wgpu-native-ios.symbols" target="buildTransitive\wgpu-native-ios.symbols" />
 
 		<!-- iOS links the static archive into the app image, so it cannot come from runtimes/; the targets above
 		     hands the right slice to the Apple SDK as a NativeReference. -->
