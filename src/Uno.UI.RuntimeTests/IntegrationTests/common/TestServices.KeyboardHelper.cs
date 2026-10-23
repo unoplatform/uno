@@ -391,6 +391,21 @@ namespace Private.Infrastructure
 				await PressKeySequence("$d$_pagedown#$u$_pagedown", element);
 			}
 
+			public static async Task PageUp(UIElement element = null)
+			{
+				await PressKeySequence("$d$_pageup#$u$_pageup", element);
+			}
+
+			public static async Task Home(UIElement element = null)
+			{
+				await PressKeySequence("$d$_home#$u$_home", element);
+			}
+
+			public static async Task End(UIElement element = null)
+			{
+				await PressKeySequence("$d$_end#$u$_end", element);
+			}
+
 			public static async Task Escape(UIElement element = null)
 			{
 				await PressKeySequence("$d$_esc#$u$_esc", element);
