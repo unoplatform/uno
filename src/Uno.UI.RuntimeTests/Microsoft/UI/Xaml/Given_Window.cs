@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -289,6 +290,39 @@ public class Given_Window
 			TestServices.WindowHelper.WindowContent = null;
 			await TestServices.WindowHelper.WaitForIdle();
 		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public void When_Vulkan_Then_Device_Is_The_Presenting_Adapter()
+	{
+		// DWM only gets a Vulkan swapchain's alpha - which a system backdrop needs - when the adapter driving the
+		// window's monitor presents it; a hybrid laptop's discrete GPU goes through a cross-adapter copy that drops it.
+		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
+		var context = GetField(wrapper, "_context");
+		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "Vulkan")
+		{
+			Assert.Inconclusive("The window did not negotiate a Vulkan context.");
+		}
+
+		var vulkan = GetField(context, "_vk");
+		var deviceLuid = (long?)vulkan!.GetType().GetProperty("DeviceLuid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(vulkan);
+
+		var factoryType = Type.GetType("Uno.UI.Runtime.Win32.Vulkan.Win32VulkanSurfaceFactory, Uno.UI.Runtime.Win32", throwOnError: true)!;
+		var factory = Activator.CreateInstance(factoryType, nonPublic: true);
+		var hwnd = ((Uno.UI.NativeElementHosting.Win32NativeWindow)wrapper!.NativeWindow).Hwnd;
+		var presentingLuid = (long?)factoryType.GetMethod("GetPresentingAdapterLuid")!.Invoke(factory, [hwnd]);
+
+		if (deviceLuid is null || presentingLuid is null)
+		{
+			Assert.Inconclusive("The driver or the display configuration doesn't report an adapter LUID.");
+		}
+
+		Assert.AreEqual(presentingLuid, deviceLuid);
+
+		static object GetField(object target, string name)
+			=> target?.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(target);
 	}
 #endif
 
