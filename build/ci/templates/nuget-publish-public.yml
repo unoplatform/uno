@@ -1,3 +1,12 @@
+parameters:
+  # The nuget.org push runs one batch after the other, and stops at the first failure.
+  # Uno.WinUI and then Uno.Sdk.Private go last: apps resolve Uno.WinUI, and the uno.templates
+  # Uno.Sdk updater picks up new versions from Uno.Sdk.Private. A push that stops midway
+  # then never exposes a version whose other packages are missing.
+  - name: pushBatches
+    type: object
+    default: [ 'Packages', 'UnoWinUI', 'UnoSdkPrivate' ]
+
 steps:
   # NuGetCommand@2 refuses to push through an API-key service connection with the
   # agent's bundled nuget.exe (6.x): it requires NuGet 7.6 or later.
@@ -7,14 +16,81 @@ steps:
     inputs:
       versionSpec: '7.9.0'
 
-  - task: NuGetCommand@2
-    condition: and(succeeded(), not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
-    displayName: 'Publish to nuget.org'
-    inputs:
-      command: 'push'
-      packagesToPush: '$(Pipeline.Workspace)/nuget-packages/**/*.nupkg'
-      nuGetFeedType: 'external'
-      publishFeedCredentials: 'nuget.org uno packages'
-      verbosityPush: 'Normal'
-      allowPackageConflicts: true
+  # Sorts the packages into one folder per batch, and sets NuGetOrgPush<batch> for each non-empty one.
+  # On a re-run, it leaves out the packages already on nuget.org: NuGetCommand@2 can't pass -SkipDuplicate,
+  # and its allowPackageConflicts doesn't recognize nuget.org's 409, so a re-run would otherwise stop on
+  # the first package the previous attempt pushed. First attempts push everything, so an unexpected
+  # duplicate still fails the build.
+  - pwsh: |
+      $ErrorActionPreference = 'Stop'
+      Add-Type -AssemblyName System.IO.Compression.FileSystem
 
+      $source = Join-Path $env:PIPELINE_WORKSPACE 'nuget-packages'
+      $target = Join-Path $env:PIPELINE_WORKSPACE 'nuget-org-push'
+      $lastBatches = @{ 'Uno.WinUI' = 'UnoWinUI'; 'Uno.Sdk.Private' = 'UnoSdkPrivate' }
+      $isRerun = [int]$env:SYSTEM_JOBATTEMPT -gt 1
+      $http = [System.Net.Http.HttpClient]::new()
+
+      function Test-OnNuGetOrg([string]$id, [string]$version) {
+        $url = "https://api.nuget.org/v3-flatcontainer/$($id.ToLowerInvariant())/index.json"
+        for ($attempt = 1; $attempt -le 3; $attempt++) {
+          try {
+            $response = $http.GetAsync($url).GetAwaiter().GetResult()
+            if ($response.StatusCode -eq [System.Net.HttpStatusCode]::NotFound) { return $false }
+            if ($response.IsSuccessStatusCode) {
+              $versions = ($response.Content.ReadAsStringAsync().GetAwaiter().GetResult() | ConvertFrom-Json).versions
+              return $versions -contains $version.Split('+')[0]
+            }
+          }
+          catch { }
+          Start-Sleep -Seconds 5
+        }
+        Write-Host "##vso[task.logissue type=warning]Couldn't check $id $version on nuget.org, so it's pushed anyway."
+        return $false
+      }
+
+      if ($isRerun) {
+        Write-Host "Attempt $($env:SYSTEM_JOBATTEMPT): leaving out the packages already on nuget.org."
+        Write-Host "nuget.org can take up to ~30 minutes to list a new package. If a package pushed that recently fails with a 409, re-run again later."
+      }
+
+      $packages = Get-ChildItem $source -Recurse -Filter *.nupkg
+      if (-not $packages) { throw "No .nupkg file under $source." }
+
+      foreach ($package in $packages) {
+        $zip = [System.IO.Compression.ZipFile]::OpenRead($package.FullName)
+        try {
+          $nuspec = $zip.Entries | Where-Object { $_.FullName -eq $_.Name -and $_.Name -like '*.nuspec' } | Select-Object -First 1
+          $reader = [System.IO.StreamReader]::new($nuspec.Open())
+          try { $metadata = ([xml]$reader.ReadToEnd()).package.metadata }
+          finally { $reader.Dispose() }
+        }
+        finally { $zip.Dispose() }
+
+        if ($isRerun -and (Test-OnNuGetOrg $metadata.id $metadata.version)) {
+          Write-Host "Already on nuget.org: $($metadata.id) $($metadata.version)"
+          continue
+        }
+
+        $batch = $lastBatches[$metadata.id] ?? 'Packages'
+        $folder = New-Item -ItemType Directory -Force (Join-Path $target $batch)
+        Copy-Item $package.FullName $folder
+        Write-Host "$($batch): $($metadata.id) $($metadata.version)"
+      }
+
+      foreach ($folder in Get-ChildItem $target -Directory -ErrorAction SilentlyContinue) {
+        Write-Host "##vso[task.setvariable variable=NuGetOrgPush$($folder.Name)]true"
+      }
+    condition: and(succeeded(), not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
+    displayName: 'Prepare the nuget.org push'
+
+  - ${{ each batch in parameters.pushBatches }}:
+    - task: NuGetCommand@2
+      condition: and(succeeded(), eq(variables['NuGetOrgPush${{ batch }}'], 'true'))
+      displayName: 'Publish to nuget.org (${{ batch }})'
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Pipeline.Workspace)/nuget-org-push/${{ batch }}/*.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'nuget.org uno packages'
+        verbosityPush: 'Normal'
