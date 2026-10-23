@@ -122,6 +122,7 @@ partial class WebView2 : IWebView
 	{
 		if (environment is not null || options is not null)
 		{
+			// A stand-in without custom options validates the default environment, so configured defaults are not rejected.
 			var validationEnvironment = environment is { IsDefaultEnvironment: false }
 				? environment
 				: new CoreWebView2Environment(null, null, null);
@@ -167,6 +168,7 @@ partial class WebView2 : IWebView
 				owner.SetCanGoForward(sender.CanGoForward);
 			}
 		}
+		// Not in WinUI: keeps CanGoBack/CanGoForward current for same-document navigations that skip the navigation events.
 		core.HistoryChanged += HistoryChanged;
 		_nativeHistoryRevoker.Disposable = Disposable.Create(() => core.HistoryChanged -= HistoryChanged);
 	}
@@ -207,11 +209,6 @@ partial class WebView2 : IWebView
 		{
 			presenter.Content = warning;
 		}
-	}
-
-	private void UpdateNativeLayout()
-	{
-		// ContentPresenter's native-element host owns HWND/WebKit bounds and window positioning.
 	}
 
 	private bool IsRenderedSubscriptionCurrent() =>

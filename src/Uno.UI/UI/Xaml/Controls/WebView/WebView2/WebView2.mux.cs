@@ -2163,8 +2163,6 @@ partial class WebView2
 		m_gotFocusRevoker.Disposable = Disposable.Create(() => GotFocus -= HandleGotFocus);
 		LosingFocus += HandleLosingFocus;
 		m_losingFocusRevoker.Disposable = Disposable.Create(() => LosingFocus -= HandleLosingFocus);
-		SizeChanged += HandleSizeChanged;
-		m_sizeChangedRevoker.Disposable = Disposable.Create(() => SizeChanged -= HandleSizeChanged);
 	}
 #if !HAS_UNO
 	// TODO Uno: Original source retained for the native/composition projection boundary of the port above.
@@ -2191,7 +2189,6 @@ partial class WebView2
 		m_gettingFocusRevoker.Disposable = null;
 		m_gotFocusRevoker.Disposable = null;
 		m_losingFocusRevoker.Disposable = null;
-		m_sizeChangedRevoker.Disposable = null;
 	}
 #if !HAS_UNO
 	// TODO Uno: Original source retained for the native/composition projection boundary of the port above.
@@ -3179,8 +3176,6 @@ partial class WebView2
 	// }
 #endif
 
-	private void HandleSizeChanged(object sender, SizeChangedEventArgs args) =>
-		UpdateNativeLayout();
 #if !HAS_UNO
 	// TODO Uno: Original source retained for the native/composition projection boundary of the port above.
 	// void WebView2::HandleSizeChanged(const winrt::IInspectable& /*sender*/, const winrt::SizeChangedEventArgs& args)
@@ -3193,7 +3188,7 @@ partial class WebView2
 	{
 		if (m_coreWebView is not null)
 		{
-			UpdateNativeLayout();
+			// Native bounds follow the ContentPresenter arrange of the native element, so only visibility is polled here.
 			// Check if the visibility property of a parent element has changed
 			CheckAndUpdateVisibility();
 		}

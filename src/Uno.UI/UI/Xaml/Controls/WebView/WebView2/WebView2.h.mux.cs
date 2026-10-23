@@ -39,7 +39,6 @@ partial class WebView2
 	private readonly SerialDisposable m_losingFocusRevoker = new();
 	private readonly SerialDisposable m_loadedRevoker = new();
 	private readonly SerialDisposable m_unloadedRevoker = new();
-	private readonly SerialDisposable m_sizeChangedRevoker = new();
 	private readonly SerialDisposable m_renderedRevoker = new();
 	private readonly SerialDisposable m_xamlRootChangedRevoker = new();
 	private long m_manipulationModeChangedToken;
