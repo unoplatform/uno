@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging;
 /// </summary>
 public partial class SvgImageSource : ImageSource
 {
-	private SvgImageSourceLoadStatus? _lastStatus;
+	private bool _openedRaised;
 
 #if __CROSSRUNTIME__
 	private IRandomAccessStream? _stream;
@@ -78,6 +78,10 @@ public partial class SvgImageSource : ImageSource
 	/// </returns>
 	public IAsyncOperation<SvgImageSourceLoadStatus> SetSourceAsync(IRandomAccessStream streamSource)
 	{
+#if __CROSSRUNTIME__
+		// Like WinUI, a new stream cancels the operation still pending for the previous one.
+		_setSourceOperation?.Supersede();
+#endif
 		UnloadImageData();
 
 #if __CROSSRUNTIME__
@@ -91,24 +95,16 @@ public partial class SvgImageSource : ImageSource
 				throw new ArgumentException(nameof(streamSource));
 			}
 
-			_lastStatus = null;
-
 #if __CROSSRUNTIME__
 			_stream = streamSource.CloneStream();
 
-			var tcs = new TaskCompletionSource<SvgImageSourceLoadStatus>();
-
-			using var x = Subscribe(OnChanged);
-
-
+			// The operation completes from its own load, not from what the source publishes: by then a handler may
+			// already have given the source another stream.
+			var load = EnsureLoad(out var loadToken);
+			var operation = new SetSourceOperation(this, load, loadToken);
 			InvalidateSource();
 
-			return await tcs.Task;
-
-			void OnChanged(ImageData data)
-			{
-				tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
-			}
+			return await operation.Task;
 #else
 			Stream = streamSource.CloneStream().AsStream();
 			StreamLoaded?.Invoke(this, EventArgs.Empty);
@@ -127,16 +123,103 @@ public partial class SvgImageSource : ImageSource
 	partial void InitPartial();
 
 	internal void RaiseImageFailed(SvgImageSourceLoadStatus loadStatus)
-	{
-		_lastStatus = loadStatus;
-		OpenFailed?.Invoke(this, new SvgImageSourceFailedEventArgs(loadStatus));
-	}
+		=> OpenFailed?.Invoke(this, new SvgImageSourceFailedEventArgs(loadStatus));
 
 	internal void RaiseImageOpened()
 	{
-		_lastStatus = SvgImageSourceLoadStatus.Success;
-		Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
+		// Like WinUI, only the first successful load of a source raises Opened: CSvgImageSource fires it while
+		// m_frameIndex is 0, and nothing resets that index for an SVG.
+		if (!_openedRaised)
+		{
+			_openedRaised = true;
+			Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
+		}
 	}
+
+#if __CROSSRUNTIME__
+	// The pending SetSourceAsync of the current load, which completes when that load has been published.
+	private SetSourceOperation? _setSourceOperation;
+
+	private protected override void OnPublished() => _setSourceOperation?.OnPublished();
+
+	/// <summary>
+	/// One SetSourceAsync: pending until its load fails, is replaced (another stream or URI, or the source is disposed),
+	/// or has been published to every element showing the source.
+	/// </summary>
+	private sealed class SetSourceOperation
+	{
+		private readonly TaskCompletionSource<SvgImageSourceLoadStatus> _completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		private readonly SvgImageSource _owner;
+		private readonly Task<ImageData> _load;
+		private readonly CancellationToken _loadToken;
+		private bool _superseded;
+
+		public SetSourceOperation(SvgImageSource owner, Task<ImageData> load, CancellationToken loadToken)
+		{
+			(_owner, _load, _loadToken) = (owner, load, loadToken);
+			owner._setSourceOperation = this;
+
+			// A replacement settles once the call that made it has returned: the source has been reset by then, and a
+			// load that set another stream from its OpenFailed handler has completed, failed.
+			load.ContinueWith(_ => Settle(published: false), CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+			loadToken.Register(() => owner.DispatcherQueue.TryEnqueue(() => Settle(published: false)));
+		}
+
+		public Task<SvgImageSourceLoadStatus> Task => _completion.Task;
+
+		public void Supersede() => _superseded = true;
+
+		// Like WinUI, a successful operation completes after the brushes showing the source raised ImageOpened, whose
+		// handler may replace it, and before images do, on their next measure.
+		public void OnPublished()
+		{
+			if (_load.IsCompleted)
+			{
+				Settle(published: true);
+			}
+		}
+
+		// The only way out of pending, taken once: a successful load waits for its publication.
+		private void Settle(bool published)
+		{
+			if (_load.IsCompletedSuccessfully && _load.Result.Error is ArgumentException invalidFormat)
+			{
+				// Like WinUI (E_INVALIDARG), even when an OpenFailed handler has set another stream since.
+				_completion.TrySetException(new ArgumentException(invalidFormat.Message));
+			}
+			else if (_load.IsFaulted)
+			{
+				_completion.TrySetException(_load.Exception!.InnerException!);
+			}
+			else if (!_load.IsCompleted || _loadToken.IsCancellationRequested)
+			{
+				// Replaced. Like WinUI, another SetSourceAsync cancels the operation, while a new UriSource (or the
+				// source's disposal) completes it.
+				if (_superseded)
+				{
+					_completion.TrySetCanceled();
+				}
+				else
+				{
+					_completion.TrySetResult(SvgImageSourceLoadStatus.Success);
+				}
+			}
+			else if (published)
+			{
+				_completion.TrySetResult(_load.Result.HasData ? SvgImageSourceLoadStatus.Success : SvgImageSourceLoadStatus.Other);
+			}
+			else
+			{
+				return;
+			}
+
+			if (_owner._setSourceOperation == this)
+			{
+				_owner._setSourceOperation = null;
+			}
+		}
+	}
+#endif
 
 	internal bool UseRasterized => !double.IsNaN(RasterizePixelWidth) && !double.IsNaN(RasterizePixelHeight);
 
@@ -165,31 +248,7 @@ public partial class SvgImageSource : ImageSource
 	private CompositionSvgSurface? _svgSurface;
 
 	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
-	{
-		if (TryOpenSvgImageData(out var imageTask))
-		{
-			asyncImage = imageTask.ContinueWith(task =>
-			{
-				var imageData = task.Result;
-
-				// The registered ISvgRenderer retains the parsed vector; the live composition surface replays it each
-				// frame at the display size — resolution-independent (crisp at any scale), no intermediate
-				// rasterization. Consumed like any other image surface (e.g. by Image's surface brush).
-				if (_svgSurface is { } surface)
-				{
-					return ImageData.FromCompositionSurface(surface);
-				}
-
-				return imageData.Kind == ImageDataKind.Error ? imageData : ImageData.Empty;
-			}, ct);
-			return true;
-		}
-		else
-		{
-			asyncImage = Task.FromResult(ImageData.Empty);
-			return false;
-		}
-	}
+		=> TryOpenSvgImageData(out asyncImage);
 
 	private async Task<ImageData> GetSvgImageDataAsync(CancellationToken ct)
 	{

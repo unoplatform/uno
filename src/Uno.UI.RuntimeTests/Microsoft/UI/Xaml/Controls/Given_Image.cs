@@ -546,6 +546,293 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_SVGImageSource_SetSourceAsync_File_Stream(bool assignSourceFirst)
+		{
+			// The file stream is read asynchronously, so the load is still in flight when anything re-opens the source.
+			var file = await CreateSvgFileAsync("red");
+			var svgImageSource = new SvgImageSource();
+			var opened = false;
+			SvgImageSourceLoadStatus? failedStatus = null;
+			svgImageSource.Opened += (_, _) => opened = true;
+			svgImageSource.OpenFailed += (_, e) => failedStatus = e.Status;
+
+			var image = new Image() { Width = 100, Height = 100 };
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+
+			if (assignSourceFirst)
+			{
+				image.Source = svgImageSource;
+			}
+
+			using (var stream = await file.OpenReadAsync())
+			{
+				Assert.AreEqual(SvgImageSourceLoadStatus.Success, await svgImageSource.SetSourceAsync(stream));
+			}
+
+			if (!assignSourceFirst)
+			{
+				image.Source = svgImageSource;
+			}
+
+			await WindowHelper.WaitFor(() => opened, message: "SvgImageSource.Opened was not raised.");
+			Assert.IsNull(failedStatus);
+			await AssertCenterColor(border, Colors.Red);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_SetSourceAsync_Twice()
+		{
+			var svgImageSource = new SvgImageSource();
+			var openedCount = 0;
+			svgImageSource.Opened += (_, _) => openedCount++;
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+
+			await SetSourceAndAssert("red", Colors.Red);
+			await SetSourceAndAssert("blue", Colors.Blue);
+
+			// As on WinUI, only the first load of a source raises Opened.
+			Assert.AreEqual(1, openedCount);
+
+			async Task SetSourceAndAssert(string fill, Color expectedColor)
+			{
+				var file = await CreateSvgFileAsync(fill);
+				using (var stream = await file.OpenReadAsync())
+				{
+					Assert.AreEqual(SvgImageSourceLoadStatus.Success, await svgImageSource.SetSourceAsync(stream));
+				}
+
+				await AssertCenterColor(border, expectedColor);
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_SetSourceAsync_Not_Svg()
+		{
+			// WinUI completes the operation with E_INVALIDARG and reports the status through OpenFailed.
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/test_image_100_150.png"));
+			var svgImageSource = new SvgImageSource();
+			SvgImageSourceLoadStatus? failedStatus = null;
+			svgImageSource.OpenFailed += (_, e) => failedStatus = e.Status;
+
+			using (var stream = await file.OpenReadAsync())
+			{
+				await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await svgImageSource.SetSourceAsync(stream));
+			}
+
+			await WindowHelper.WaitFor(() => failedStatus is not null, message: "SvgImageSource.OpenFailed was not raised.");
+			Assert.AreEqual(SvgImageSourceLoadStatus.InvalidFormat, failedStatus);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Reloaded_Then_ImageOpened_Once()
+		{
+			// WinUI raises ImageOpened on the images showing an SVG source together with the source's Opened, so only
+			// for its first load.
+			var svgImageSource = new SvgImageSource();
+			var image1 = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var image2 = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var opened1 = 0;
+			var opened2 = 0;
+			image1.ImageOpened += (_, _) => opened1++;
+			image2.ImageOpened += (_, _) => opened2++;
+			await UITestHelper.Load(new StackPanel() { Children = { image1, image2 } });
+
+			foreach (var (fill, color) in new[] { ("red", Colors.Red), ("blue", Colors.Blue) })
+			{
+				var file = await CreateSvgFileAsync(fill);
+				using (var stream = await file.OpenReadAsync())
+				{
+					Assert.AreEqual(SvgImageSourceLoadStatus.Success, await svgImageSource.SetSourceAsync(stream));
+				}
+
+				await AssertCenterColor(image1, color);
+				await AssertCenterColor(image2, color);
+			}
+
+			Assert.AreEqual(1, opened1);
+			Assert.AreEqual(1, opened2);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Reloaded_Before_Measure_Then_ImageOpened_Once()
+		{
+			// A collapsed image isn't measured, so it still holds the first load's data when the second load arrives.
+			var svgImageSource = new SvgImageSource();
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100, Visibility = Visibility.Collapsed };
+			var opened = 0;
+			image.ImageOpened += (_, _) => opened++;
+			var border = new Border() { Width = 100, Height = 100, Child = image };
+			await UITestHelper.Load(border);
+
+			foreach (var fill in new[] { "red", "blue" })
+			{
+				var file = await CreateSvgFileAsync(fill);
+				using var stream = await file.OpenReadAsync();
+				Assert.AreEqual(SvgImageSourceLoadStatus.Success, await svgImageSource.SetSourceAsync(stream));
+			}
+
+			image.Visibility = Visibility.Visible;
+			await WindowHelper.WaitFor(() => image.ActualWidth > 0, message: "The image was not laid out.");
+			await AssertCenterColor(border, Colors.Blue);
+			Assert.AreEqual(1, opened);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_SVGImageSource_SetSourceAsync_From_Opened(bool assignSourceFirst)
+		{
+			// The Opened handler gives the source another stream while the first operation is still running. Memory
+			// streams, so that each load can complete without waiting.
+			var svgImageSource = new SvgImageSource();
+			var image = new Image() { Width = 100, Height = 100 };
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+
+			if (assignSourceFirst)
+			{
+				image.Source = svgImageSource;
+			}
+
+			Task<SvgImageSourceLoadStatus> reload = null;
+			svgImageSource.Opened += (_, _) => reload ??= svgImageSource.SetSourceAsync(CreateSvgStream("blue")).AsTask();
+
+			// As on WinUI, the reload cancels the first operation.
+			await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await svgImageSource.SetSourceAsync(CreateSvgStream("red")));
+			Assert.IsNotNull(reload);
+			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await reload);
+
+			image.Source = svgImageSource;
+			await AssertCenterColor(border, Colors.Blue);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_SetSourceAsync_From_OpenFailed()
+		{
+			// The OpenFailed handler of a stream that isn't SVG gives the source a valid one: each operation reports its
+			// own outcome, as on WinUI.
+			var png = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/test_image_100_150.png"));
+			var svgImageSource = new SvgImageSource();
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+
+			using var svgStream = await (await CreateSvgFileAsync("red")).OpenReadAsync();
+			Task<SvgImageSourceLoadStatus> retry = null;
+			svgImageSource.OpenFailed += (_, _) => retry ??= svgImageSource.SetSourceAsync(svgStream).AsTask();
+
+			using (var pngStream = await png.OpenReadAsync())
+			{
+				await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await svgImageSource.SetSourceAsync(pngStream));
+			}
+
+			Assert.IsNotNull(retry);
+			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await retry);
+			await AssertCenterColor(border, Colors.Red);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_SVGImageSource_SetSourceAsync_From_Image_ImageOpened(bool collapsed)
+		{
+			// As on WinUI, an image raises ImageOpened once the operation has completed, so a stream set from its handler
+			// doesn't cancel the operation. A brush raises it before (see Given_ImageBrush).
+			var svgImageSource = new SvgImageSource();
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100, Visibility = collapsed ? Visibility.Collapsed : Visibility.Visible };
+			var border = new Border() { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+
+			using var blue = await (await CreateSvgFileAsync("blue")).OpenReadAsync();
+			Task<SvgImageSourceLoadStatus> reload = null;
+			image.ImageOpened += (_, _) => reload ??= svgImageSource.SetSourceAsync(blue).AsTask();
+
+			using (var red = await (await CreateSvgFileAsync("red")).OpenReadAsync())
+			{
+				Assert.AreEqual(SvgImageSourceLoadStatus.Success, await svgImageSource.SetSourceAsync(red));
+			}
+
+			image.Visibility = Visibility.Visible;
+			await WindowHelper.WaitFor(() => reload is not null, message: "Image.ImageOpened was not raised.");
+			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await reload);
+			await AssertCenterColor(border, Colors.Blue);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // No sockets in the browser
+		public async Task When_SVGImageSource_SetSourceAsync_Replaced_Before_Published()
+		{
+			// The Opened handler queues a new UriSource that runs after the load completed and before it is published, and
+			// whose load never completes: the operation still completes, with Success as on WinUI, rather than waiting.
+			using var server = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+			server.Start();
+			var stalled = new Uri($"http://127.0.0.1:{((System.Net.IPEndPoint)server.LocalEndpoint).Port}/stalled.svg");
+			var svgImageSource = new SvgImageSource();
+			var dispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+			svgImageSource.Opened += (_, _) => dispatcher.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High, () => svgImageSource.UriSource = stalled);
+
+			var operation = svgImageSource.SetSourceAsync(CreateSvgStream("red")).AsTask();
+
+			Assert.AreSame(operation, await Task.WhenAny(operation, Task.Delay(5000)), "The operation did not complete.");
+			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await operation);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_UriSource_Set_While_SetSourceAsync_Pending()
+		{
+			// A UriSource set while the operation's load is still reading replaces the stream. As on WinUI, the operation
+			// still succeeds (only another SetSourceAsync cancels it) and the URI's content is drawn.
+			var blue = await CreateSvgFileAsync("blue");
+			var svgImageSource = new SvgImageSource();
+			var opened = false;
+			svgImageSource.Opened += (_, _) => opened = true;
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+
+			using var red = await (await CreateSvgFileAsync("red")).OpenReadAsync();
+			var operation = svgImageSource.SetSourceAsync(red).AsTask();
+			svgImageSource.UriSource = new Uri($"ms-appdata:///local/{blue.Name}");
+
+			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await operation);
+			await WindowHelper.WaitFor(() => opened, timeoutMS: 5000, message: "The URI's content was not opened.");
+			await AssertCenterColor(border, Colors.Blue);
+		}
+
+		private static Windows.Storage.Streams.IRandomAccessStream CreateSvgStream(string fill)
+			=> System.IO.WindowsRuntimeStreamExtensions.AsRandomAccessStream(new System.IO.MemoryStream(Encoding.UTF8.GetBytes($"<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='{fill}'/></svg>")));
+
+		private static async Task<StorageFile> CreateSvgFileAsync(string fill)
+		{
+			// A file of its own for each call: the source may keep the stream it was given open.
+			var file = await ApplicationData.Current.LocalFolder.CreateFileAsync($"svg-stream-{fill}.svg", CreationCollisionOption.GenerateUniqueName);
+			await FileIO.WriteTextAsync(file, $"<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='{fill}'/></svg>");
+			return file;
+		}
+
+		private static async Task AssertCenterColor(FrameworkElement element, Color expected)
+		{
+			await WindowHelper.WaitForIdle();
+			var screenshot = await UITestHelper.ScreenShot(element);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, expected, tolerance: 10);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_SVGImageSource_Uri_Is_Null()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))

@@ -18,21 +18,40 @@ partial class SvgImageSource
 
 	private bool TryOpenSvgImageData(out Task<ImageData> asyncImage)
 	{
+		asyncImage = EnsureLoad(out _);
+		return true;
+	}
+
+	/// <summary>
+	/// Returns the load of the current source, starting it if needed, and the token that cancels it when the source
+	/// changes.
+	/// </summary>
+	private Task<ImageData> EnsureLoad(out CancellationToken loadToken)
+	{
 		// The load is shared by every open of this source, so it can't be bound to the token of the open that started
 		// it: an Image subscribing while the source's own open is in flight supersedes that open, but must reuse its
 		// load. Like WinUI, only a change of the source itself (UnloadImageSourceData) aborts the load.
-		if (_currentOpenTask is null)
+		if (_currentOpenTask is null || _loadCts is null)
 		{
 			_loadCts = new();
 			_currentOpenTask = LoadSvgImageAsync(_loadCts.Token);
 		}
 
-		asyncImage = _currentOpenTask;
-		return true;
+		loadToken = _loadCts.Token;
+		return _currentOpenTask;
 	}
 
 	private async Task<ImageData> LoadSvgImageAsync(CancellationToken ct)
 	{
+		// The load raises Opened and OpenFailed, whose handlers may replace it. It runs once EnsureLoad has stored it, so
+		// that the replacement isn't overwritten, and like on WinUI those events never fire within the call that set
+		// the source.
+		await Task.Yield();
+		if (ct.IsCancellationRequested)
+		{
+			return ImageData.Empty;
+		}
+
 		// Re-opening replaces the retained document, so release the previous one before parsing again.
 		Unload();
 
@@ -66,16 +85,21 @@ partial class SvgImageSource
 		if (renderer.Parse(imageData.ByteArray, Uno.UI.Composition.Drawing.GeometryFactory.Current) is { } document)
 		{
 			_svgDocument = document;
-			_svgSurface = new(document);
+			var surface = _svgSurface = new(document);
 			RaiseImageOpened();
 			SourceLoaded?.Invoke(this, EventArgs.Empty);
-			return imageData;
+
+			// The registered ISvgRenderer retains the parsed vector; the live composition surface replays it each frame at
+			// the display size, crisp at any scale. The data is built here, from this load: an Opened handler may already
+			// have changed the source.
+			return ImageData.FromCompositionSurface(surface);
 		}
 
 		RaiseImageFailed(SvgImageSourceLoadStatus.InvalidFormat);
 
-		// Reported as an error (not just "no data") so consumers raise their own failure, e.g. Image.ImageFailed.
-		return ImageData.FromError(new InvalidOperationException("Failed to load Svg source"));
+		// Reported as an error (not just "no data") so consumers raise their own failure, e.g. Image.ImageFailed. An
+		// ArgumentException, as WinUI's E_INVALIDARG, which SetSourceAsync rethrows.
+		return ImageData.FromError(new ArgumentException("The content is not a valid SVG document."));
 	}
 
 	internal bool IsParsed => _svgDocument is not null;
