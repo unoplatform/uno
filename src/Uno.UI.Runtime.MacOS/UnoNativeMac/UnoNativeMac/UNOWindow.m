@@ -367,6 +367,8 @@ NSWindow* uno_window_create(double width, double height)
 
 // AppKit's global origin is the primary screen's bottom-left, even for windows on other displays. WinUI's screen
 // coordinates start at the top-left with y growing downward, so window positions are flipped against this edge.
+// Always the primary screen (screens[0], the one at (0, 0)), never the window's own: flipping against the screen a
+// window happens to be on would make y depend on that screen while x stays global.
 static CGFloat uno_desktop_top(void)
 {
     return NSMaxY(NSScreen.screens.firstObject.frame);
