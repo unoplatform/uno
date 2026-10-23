@@ -10,6 +10,8 @@ parameters:
   appExtras: ''
   # Overrides the job's run condition, e.g. to skip a lane on pull requests that don't need it.
   condition: ''
+  # The emulator's Android API level.
+  apiLevel: 34
 
 jobs:
 ##
@@ -35,7 +37,7 @@ jobs:
     matrix:
 
       'Runtime Tests 0':
-        ANDROID_SIMULATOR_APILEVEL: 34
+        ANDROID_SIMULATOR_APILEVEL: ${{ parameters.apiLevel }}
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 0
@@ -44,7 +46,7 @@ jobs:
         UITEST_TEST_TIMEOUT: '2600s'
 
       'Runtime Tests 1':
-        ANDROID_SIMULATOR_APILEVEL: 34
+        ANDROID_SIMULATOR_APILEVEL: ${{ parameters.apiLevel }}
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 1
@@ -53,7 +55,7 @@ jobs:
         UITEST_TEST_TIMEOUT: '2600s'
 
       'Runtime Tests 2':
-        ANDROID_SIMULATOR_APILEVEL: 34
+        ANDROID_SIMULATOR_APILEVEL: ${{ parameters.apiLevel }}
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 2
@@ -62,7 +64,7 @@ jobs:
         UITEST_TEST_TIMEOUT: '2600s'
 
       'Runtime Tests 3':
-        ANDROID_SIMULATOR_APILEVEL: 34
+        ANDROID_SIMULATOR_APILEVEL: ${{ parameters.apiLevel }}
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 3
@@ -71,7 +73,7 @@ jobs:
         UITEST_TEST_TIMEOUT: '2600s'
 
       'Runtime Tests 4':
-        ANDROID_SIMULATOR_APILEVEL: 34
+        ANDROID_SIMULATOR_APILEVEL: ${{ parameters.apiLevel }}
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 4

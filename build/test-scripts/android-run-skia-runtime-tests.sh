@@ -81,6 +81,7 @@ then
 	sdk_install 'extras;android;m2repository'
 	sdk_install "system-images;android-28;google_apis_playstore;$EMU_ARCH"
 	sdk_install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;$EMU_ARCH"
+	grep -h "Pkg.Revision" "$ANDROID_HOME/system-images/android-$ANDROID_SIMULATOR_APILEVEL/google_apis_playstore/$EMU_ARCH/source.properties" || true
 
 	# Create emulator
 	echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n "$AVD_NAME" --abi $EMU_ARCH -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;$EMU_ARCH" --sdcard 128M --force
