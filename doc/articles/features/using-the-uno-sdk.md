@@ -285,6 +285,8 @@ If you wish to disable Implicit package usage, add the following:
 
 to your `Directory.Build.props` file or `csproj` file. You will be then able to manually add the NuGet packages for your project.
 
+The implicit references are added after your project file, so that a `PackageReference` you declare for one of them replaces it rather than duplicating it. A static `<PackageReference Remove="..." />` cannot drop one of them, even in a `Directory.Build.targets`: the SDK adds them again from its own list before restore. To leave implicit packages out, use `DisableImplicitUnoPackages`, [`DisableImplicitUnoWinAppSdkPackages`](#winappsdk-only-libraries) on Windows, or set `UnoFeatures` per target framework.
+
 > [!NOTE]
 > When disabling Implicit Uno Packages it is recommended that you use the `$(UnoVersion)` to set the version of the core Uno packages that are versioned with the SDK as the SDK requires `Uno.WinUI` to be the same version as the SDK to ensure proper compatibility.
 >
@@ -310,10 +312,20 @@ When set, `Uno.Sdk` stops adding the following implicit package references on th
 - `Uno.Sdk.Extras`
 - `Uno.Settings.DevServer`
 
+The `Uno.UI` [implicit using](#implicit-usings) is not added on that target framework either, because `Uno.WinUI` provides that namespace. If `Uno.WinUI` reaches that target anyway, explicitly or through a `UnoFeatures` package such as Toolkit, and your code relies on that using, add `<Using Include="Uno.UI" />`.
+
 The property is intentionally scoped:
 
 - It only takes effect on the Windows App SDK target framework. Other targets (Android, iOS, Skia Desktop, WebAssembly, …) are unaffected, so the cross-platform side of your library still uses `Uno.WinUI` and the rest of the Uno stack.
-- Packages added through `UnoFeatures` (Toolkit, Material, Cupertino, Simple, csharpmarkup, prism, maps, foldable, skia/Graphics2DSK, glcanvas, mvvm, dsp, Uno.Extensions.*, …) are *not* stripped. Opting into a `UnoFeatures` value is treated as an explicit request for that package, even when this property is set.
+- Packages added through `UnoFeatures` (Toolkit, Material, Cupertino, Simple, csharpmarkup, prism, maps, foldable, skia/Graphics2DSK, glcanvas, mvvm, dsp, Uno.Extensions.*, …) are *not* stripped. Opting into a `UnoFeatures` value is treated as an explicit request for that package, even when this property is set. Several of them depend on `Uno.WinUI` on Windows too. To keep a feature off the Windows target, leave it out of `UnoFeatures` there:
+
+  ```xml
+  <PropertyGroup>
+    <UnoFeatures>Toolkit;Material</UnoFeatures>
+    <UnoFeatures Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'"></UnoFeatures>
+  </PropertyGroup>
+  ```
+
 - Non-Uno implicit packages (`Microsoft.WindowsAppSDK`, `Microsoft.Windows.SDK.BuildTools`, `CommunityToolkit.Mvvm`, `SkiaSharp.Views.WinUI`, …) keep flowing as usual.
 
 If you still need one of the stripped packages on Windows for a specific reason, add it back explicitly:
@@ -440,6 +452,25 @@ Note that we are currently tracking these Visual Studio issues, make sure to upv
 
 - `net10.0-browserwasm` must be first for WebAssembly debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-must-be-first-for-WebAssembly-pub/10643720))
 - [WinAppSDK Unpackaged profile cannot be selected properly when a net10.0 mobile target is active](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735)
+
+## Implicit usings
+
+When [`ImplicitUsings`](https://learn.microsoft.com/dotnet/core/project-sdk/overview#implicit-using-directives) is enabled, the `Uno.Sdk` adds these global usings to the ones from the .NET SDK:
+
+- `Microsoft.UI.Xaml`, `Microsoft.UI.Xaml.Controls`, `Microsoft.UI.Xaml.Media` and `Microsoft.UI.Xaml.Navigation`
+- `Windows.ApplicationModel`, `Windows.Networking.Connectivity` and `Windows.Storage`
+- `System.Windows.Input`
+- `Uno.UI`, except on the Windows target of a [WinAppSDK-only library](#winappsdk-only-libraries)
+
+Remove one of them as you would a .NET SDK implicit using, for all target frameworks or only some:
+
+```xml
+<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+  <Using Remove="Uno.UI" />
+</ItemGroup>
+```
+
+To keep only the .NET SDK implicit usings, set `<DisableImplicitUnoNamespaces>true</DisableImplicitUnoNamespaces>`.
 
 ## Disabling Default Items
 
