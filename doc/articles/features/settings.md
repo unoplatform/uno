@@ -11,10 +11,10 @@ uid: Uno.Features.Settings
 
 ## Supported features
 
-| Feature                                   | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
-|-------------------------------------------|---------|---------|-----|------------|-------|--------------|--------------|
-| `ApplicationData.Current.LocalSettings`   | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `ApplicationData.Current.RoamingSettings` | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
+| Feature                                   | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|-------------------------------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `ApplicationData.Current.LocalSettings`   | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `ApplicationData.Current.RoamingSettings` | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
 
 ## Using Settings with Uno
 
