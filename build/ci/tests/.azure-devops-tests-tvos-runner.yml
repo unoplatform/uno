@@ -38,6 +38,10 @@ jobs:
   # The first run only fails on failed tests when there is no second run to do it.
   - name: FAIL_TESTS_ON_NO_RERUN
     value: ${{ eq(parameters.UITEST_ALLOW_RERUN, 'false') }}
+  # Cleared by the run script when it deliberately writes no results: nothing to re-run, or a
+  # harness failure the re-run step retries.
+  - name: UNO_TEST_RESULTS_EXPECTED
+    value: true
   - name: SamplesAppArtifactName
     value: ${{ parameters.SamplesAppArtifactName }}
   - ${{ if and(eq(parameters.SamplesAppArtifactName, ''), ne(parameters.BuildJobName, '')) }}:
@@ -109,6 +113,7 @@ jobs:
       # don't fail on failed tests when a second run is allowed, it will do it
       # see https://github.com/unoplatform/uno/issues/6714
       failTaskOnFailedTests: $(FAIL_TESTS_ON_NO_RERUN)
+      failTaskOnMissingResultsFile: $(UNO_TEST_RESULTS_EXPECTED)
 
   ## Second run: only reachable when the harness died before any test started -- a boot or
   ## install failure is worth one more attempt, unlike a genuine test failure, which would not
@@ -138,6 +143,7 @@ jobs:
       # Second run needs to fail tests
       # see https://github.com/unoplatform/uno/issues/6714
       failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
 
   - task: PublishBuildArtifacts@1
     condition: always()

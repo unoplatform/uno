@@ -41,6 +41,7 @@ report_harness_crash() {
 		# verdict to the re-run.
 		if [ "${UNO_HARNESS_RERUN_PENDING:-}" = "true" ]; then
 			echo "##vso[task.logissue type=warning]The test harness failed before any test started (exit $status); the re-run step will retry it."
+			echo "##vso[task.setvariable variable=UNO_TEST_RESULTS_EXPECTED]false"
 			exit 0
 		fi
 	fi
@@ -171,6 +172,7 @@ if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` = "invali
 	# The test results file only contains the re-run marker and no
 	# other test to rerun. We can skip this run.
 	echo "The file $UNO_TESTS_FAILED_LIST does not contain tests to re-run, skipping."
+	echo "##vso[task.setvariable variable=UNO_TEST_RESULTS_EXPECTED]false"
 	exit 0
 fi
 
@@ -254,27 +256,31 @@ TRANSFORM_TOOL_BUILD_PID=$!
 ## Pre-install the application
 ##
 
-# `xcrun simctl bootstatus -b` blocks until the device reports a finished boot, but it has no
-# timeout of its own and macOS ships no timeout(1). Run it under a watchdog: a simulator that
-# never finishes booting is then reported here, instead of surfacing further down as an opaque
-# app install or launch failure.
-wait_for_boot() {
-	local udid="$1"
-	local limit="$2"
+# macOS ships no timeout(1): run a command under a watchdog that terminates it after `limit` seconds.
+run_with_limit() {
+	local limit="$1"
+	shift
 	local status=0
 
-	xcrun simctl bootstatus "$udid" -b &
-	local boot_pid=$!
+	"$@" &
+	local pid=$!
 
-	( sleep "$limit"; kill -TERM "$boot_pid" 2>/dev/null ) &
+	( sleep "$limit"; kill -TERM "$pid" 2>/dev/null ) &
 	local watchdog_pid=$!
 
-	wait "$boot_pid" || status=$?
+	wait "$pid" || status=$?
 
 	kill -TERM "$watchdog_pid" 2>/dev/null || true
 	wait "$watchdog_pid" 2>/dev/null || true
 
 	return $status
+}
+
+# `xcrun simctl bootstatus -b` blocks until the device reports a finished boot, but it has no
+# timeout of its own. Run it under a watchdog: a simulator that never finishes booting is then
+# reported here, instead of surfacing further down as an opaque app install or launch failure.
+wait_for_boot() {
+	run_with_limit "$2" xcrun simctl bootstatus "$1" -b
 }
 
 echo "Waiting for the simulator to finish booting (started $(date))"
@@ -341,6 +347,7 @@ then
 		# if the  only contains `invalid-test-for-retry`, exit the script
 		if [ `cat "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"` = "invalid-test-for-retry" ]; then
 			echo "The file $UNO_TESTS_RUNTIMETESTS_FAILED_LIST does not contain tests to re-run, skipping."
+			echo "##vso[task.setvariable variable=UNO_TEST_RESULTS_EXPECTED]false"
 			exit 0
 		fi
 
@@ -358,6 +365,7 @@ then
 	# crash report. stderr carries it -- simctl notes log output usually goes there.
 	APP_STDOUT="$LOG_FILEPATH/app-stdout-${UITEST_RUNTIME_TEST_GROUP}.log"
 	APP_STDERR="$LOG_FILEPATH/app-stderr-${UITEST_RUNTIME_TEST_GROUP}.log"
+	UNO_IOS_APP_LAUNCH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
 	xcrun simctl launch --stdout="$APP_STDOUT" --stderr="$APP_STDERR" "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 
 	# get the process id for the app
@@ -432,21 +440,46 @@ find $UNO_TESTS_LOCAL_TESTS_FILE -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
 ## Take a screenshot
 xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png || true
 
-# Collecting, shutting down and dumping the device logs costs 2-6 minutes per shard and only helps
-# diagnose a failing shard, so skip it for a run that produced results with no failures. A crash
-# mid-run leaves no results file (runtime tests write it once, at the end), so it still collects.
-if [ -f "$UNO_ORIGINAL_TEST_RESULTS" ] && ! grep -Eq 'result="(Failed|Error)"' "$UNO_ORIGINAL_TEST_RESULTS"; then
+# Collecting and dumping the device logs costs 2-6 minutes per shard and only helps diagnose a
+# failing shard, so skip it for a run that produced results with no failures. A crash mid-run
+# leaves no results file (runtime tests write it once, at the end), so it still collects.
+results_have_failures() {
+	local decoded
+
+	# The runtime tests write UTF-16, which grep cannot match undecoded; a file that does not
+	# decode counts as failed so its logs are still collected.
+	decoded=$(iconv -f "$(file -b --mime-encoding "$1")" -t UTF-8 "$1") || return 0
+	grep -Eq 'result="(Failed|Error)"' <<< "$decoded"
+}
+
+collect_device_logs=true
+if [ -f "$UNO_ORIGINAL_TEST_RESULTS" ] && ! results_have_failures "$UNO_ORIGINAL_TEST_RESULTS"; then
 	echo "All tests passed; skipping the device log collection"
-else
+	collect_device_logs=false
+fi
+
+# Each log step can hang on a sick simulator. Bound it so the transform tool and the publish steps
+# still run before the job timeout, which would skip them and lose both results and retry list.
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-job-budget.sh
+
+if [ "$collect_device_logs" = true ]; then
 	## Capture the device logs
-	xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH || true
+	run_with_limit "$(uno_job_wait_budget 300 240)" \
+		xcrun simctl spawn "$UITEST_IOSDEVICE_ID" log collect --output $TMP_LOG_FILEPATH || true
+fi
 
-	## Shutting down simulator to reclaim memory
-	echo "Shutting down simulator"
-	xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
+## Shutting down simulator to reclaim memory, on every run as the tvOS runner does
+echo "Shutting down simulator"
+xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
+if [ "$collect_device_logs" = true ]; then
 	echo "Dumping device logs to $LOG_FILEPATH_FULL"
-	log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
+	log_show_args=(--style syslog)
+	if [ -n "${UNO_IOS_APP_LAUNCH_TIME:-}" ]; then
+		log_show_args+=(--start "$UNO_IOS_APP_LAUNCH_TIME")
+	fi
+	run_with_limit "$(uno_job_wait_budget 300 180)" \
+		log show "${log_show_args[@]}" $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
 fi
 
 echo "Searching for failures in device logs"
@@ -495,3 +528,10 @@ then
 fi
 
 popd
+
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-failed-tests.sh
+if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ]; then
+	uno_fail_on_failed_tests "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"
+else
+	uno_fail_on_failed_tests "$UNO_TESTS_FAILED_LIST"
+fi
