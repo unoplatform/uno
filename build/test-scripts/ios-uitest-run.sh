@@ -333,6 +333,16 @@ fi
 
 cd $UNO_TESTS_LOCAL_TESTS_FILE
 
+# UNO_* variables for the app (e.g. UNO_WEBGPU=1 selects the WebGPU backend), space-separated; simctl hands every
+# SIMCTL_CHILD_-prefixed variable to the launched app.
+if [ -n "${UNO_TEST_APP_ENVIRONMENT-}" ]; then
+	IFS=' ' read -r -a _UNO_APP_ENVIRONMENT <<< "$UNO_TEST_APP_ENVIRONMENT"
+	for _uno_app_variable in "${_UNO_APP_ENVIRONMENT[@]}"; do
+		export "SIMCTL_CHILD_$_uno_app_variable"
+		echo "App environment: $_uno_app_variable"
+	done
+fi
+
 echo "Starting tests in mode $UITEST_AUTOMATED_GROUP"
 
 if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
