@@ -801,7 +801,7 @@ internal partial class InputManager
 					// Second we make sure to also flag as IsOver true all elements in the branch
 					var enterCtx = new BubblingContext { IsCleanup = true, IsInternal = false, Mode = BubblingMode.Bubble };
 					var enterResult = Raise(Enter, originalSource, args, enterCtx);
-					isOriginalSourceStale |= enterCaptureResult.VisualTreeAltered;
+					isOriginalSourceStale |= enterResult.VisualTreeAltered;
 					result += enterResult;
 				}
 			}
