@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -66,6 +66,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual("group", role, "A named generic container should be promoted to role=group.");
 			Assert.AreEqual("My group", GetSemanticAttribute(control, "aria-label"), "The name should be exposed as aria-label on the group.");
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Generic_Named_After_Creation_Then_Role_Group()
+		{
+			await ResetAsync();
+
+			// Same as above, but the name arrives after the semantic node exists (e.g. a binding resolved
+			// after the tree was built), so it goes through the live name update instead of creation.
+			var control = new CustomPeerControl { Width = 50, Height = 50 };
+			await UITestHelper.Load(control);
+			control.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(control), timeoutMS: 5000, message: "Timed out waiting for the semantic element.");
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual("generic", GetSemanticAttribute(control, "role"));
+
+			AutomationProperties.SetName(control, "My group");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(control, "aria-label") == "My group", timeoutMS: 3000, message: "The name should be exposed as aria-label.");
+
+			Assert.AreEqual("group", GetSemanticAttribute(control, "role"), "A named element must not carry the name-prohibited role=generic.");
+
+			AutomationProperties.SetName(control, "");
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(control, "aria-label"), timeoutMS: 3000, message: "Clearing the name should remove aria-label.");
+
+			Assert.AreEqual("generic", GetSemanticAttribute(control, "role"), "An unnamed container goes back to role=generic.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Standalone_Text_Changes_Then_Paragraph_Text_Updated_Without_AriaLabel()
+		{
+			await ResetAsync();
+
+			var text = new TextBlock { Text = "Before" };
+			await UITestHelper.Load(new StackPanel { Children = { text } });
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(text), timeoutMS: 5000, message: "Timed out waiting for the semantic element.");
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual("Before", GetSemanticTextContent(text));
+
+			text.Text = "After";
+			await UITestHelper.WaitFor(() => GetSemanticTextContent(text) == "After", timeoutMS: 3000,
+				message: $"The paragraph must expose the new text (text='{GetSemanticTextContent(text)}').");
+
+			// A paragraph is named by its content; aria-label is prohibited on it.
+			Assert.IsFalse(SemanticElementHasAttribute(text, "aria-label"), "A standalone text paragraph must not carry aria-label.");
+		}
+
+		// The base peer reports the Custom control type (role=generic), like many app-defined controls.
+		private class CustomPeerControl : ContentControl
+		{
+			protected override AutomationPeer OnCreateAutomationPeer() => new FrameworkElementAutomationPeer(this);
+		}
+
+		private static string GetSemanticTextContent(Microsoft.UI.Xaml.UIElement element)
+			=> InvokeBrowserJs($"String(document.getElementById('{GetSemanticElementId(element)}')?.textContent ?? '')");
 
 		[TestMethod]
 		[RunsOnUIThread]
