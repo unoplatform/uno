@@ -28,7 +28,7 @@ public class Given_ShellLayout
 	private Rect? _testHostBounds;
 
 	[TestInitialize]
-	public void RecordTestHost() => _testHostBounds = GetTestHostBounds();
+	public async Task RecordTestHost() => _testHostBounds = await GetSettledTestHostBounds();
 
 	// These tests change the live shell around the runner, so each must hand the next one its test host back unmoved.
 	[TestCleanup]
@@ -44,15 +44,58 @@ public class Given_ShellLayout
 			&& Math.Abs(now.Y - before.Y) <= 0.5
 			&& Math.Abs(now.Width - before.Width) <= 0.5;
 
-		// WinUI still runs pane and chrome transitions after WaitForIdle.
+		// A slow agent can hold a transition frame for a while, so wait for the host to come back rather than for it to stop.
 		var waited = Stopwatch.StartNew();
-		while (!IsBack() && waited.ElapsedMilliseconds < 3000)
+		while (!IsBack() && waited.ElapsedMilliseconds < 5000)
 		{
 			await TestServices.WindowHelper.WaitForIdle();
-			await Task.Delay(50);
+			await WaitForFrames(2);
 		}
 
 		Assert.IsTrue(IsBack(), $"The test host was at {before} and is now at {GetTestHostBounds()}.");
+	}
+
+	// A pane transition moves the host for a few frames after WaitForIdle, and not monotonically: its Grid.Column
+	// setter lands before the slide starts. Only bounds that hold for a while are where the host really is.
+	private static async Task<Rect?> GetSettledTestHostBounds()
+	{
+		var bounds = GetTestHostBounds();
+		var unchanged = Stopwatch.StartNew();
+		var waited = Stopwatch.StartNew();
+		while (unchanged.ElapsedMilliseconds < 300 && waited.ElapsedMilliseconds < 5000)
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await WaitForFrames(2);
+
+			var now = GetTestHostBounds();
+			if (now != bounds)
+			{
+				bounds = now;
+				unchanged.Restart();
+			}
+		}
+
+		return bounds;
+	}
+
+	// Gives up quietly when nothing renders: with no frames, nothing is animating either.
+	private static async Task WaitForFrames(int count)
+	{
+		var frames = 0;
+		EventHandler<object> onRendering = (_, _) => frames++;
+		CompositionTarget.Rendering += onRendering;
+		try
+		{
+			var waited = Stopwatch.StartNew();
+			while (frames < count && waited.ElapsedMilliseconds < 500)
+			{
+				await Task.Delay(16);
+			}
+		}
+		finally
+		{
+			CompositionTarget.Rendering -= onRendering;
+		}
 	}
 
 	private static Rect? GetTestHostBounds()
