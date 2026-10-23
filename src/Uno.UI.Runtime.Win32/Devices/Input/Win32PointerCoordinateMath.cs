@@ -8,6 +8,10 @@ internal static class Win32PointerCoordinateMath
 	// ptPixelLocation is the same reading rounded to whole pixels, so a correct mapping is never further off than this.
 	internal const double MaxPreciseDeviationPx = 1.0;
 
+	// GetMessageTime exposes an unsigned 32-bit millisecond tick count through a signed int.
+	internal static ulong ToTimestampInMicroseconds(int messageTime)
+		=> unchecked((uint)messageTime) * 1000UL;
+
 	// HIMETRIC is in the digitizer's own coordinate space (its physical size, in 0.01 mm), which
 	// GetPointerDeviceRects maps onto a display rect in screen pixels. Its density is per device:
 	// it only matches 96 DPI x scale when the panel happens to, never for an external pen tablet.

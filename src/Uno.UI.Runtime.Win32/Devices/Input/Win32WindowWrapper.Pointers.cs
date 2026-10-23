@@ -149,7 +149,7 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 		var point = new PointerPoint(
 			frameId: Interlocked.Increment(ref _currentPointerFrameId),
-			timestamp: (ulong)(PInvoke.GetMessageTime() * 1000), // GetMessageTime is in ms
+			timestamp: Win32PointerCoordinateMath.ToTimestampInMicroseconds(PInvoke.GetMessageTime()),
 			device: PointerDevice.For(pointerType switch
 			{
 				POINTER_INPUT_TYPE.PT_PEN => PointerDeviceType.Pen,
@@ -252,7 +252,7 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 		var point = new PointerPoint(
 			frameId: Interlocked.Increment(ref _currentPointerFrameId),
-			timestamp: (ulong)(PInvoke.GetMessageTime() * 1000), // GetMessageTime is in ms
+			timestamp: Win32PointerCoordinateMath.ToTimestampInMicroseconds(PInvoke.GetMessageTime()),
 			device: PointerDevice.For(pointerType switch
 			{
 				POINTER_INPUT_TYPE.PT_PEN => PointerDeviceType.Pen,
