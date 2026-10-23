@@ -846,6 +846,14 @@ internal sealed unsafe partial class WebGpuFrame
 		bool innerOk = sessionInner != default;
 		foreach (var op in stamped)
 		{
+			// Nothing of it lands inside the site's clip. Dropped from this frame only: the stamp keeps the op for
+			// the replays (a scroll) that bring it into view.
+			if (boxes && op.Extent != default && IsEmpty(ClampToClip(TransformBounds(op.Extent, rm), session)))
+			{
+				StatClipCulled++;
+				continue;
+			}
+
 			var o = op;
 			o.Depth = depth;
 			o.Bounds = boxes && op.Bounds != default ? TransformBounds(op.Bounds, rm) : default;
