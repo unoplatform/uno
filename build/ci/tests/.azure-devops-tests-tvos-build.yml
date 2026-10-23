@@ -17,6 +17,7 @@ jobs:
   cancelTimeoutInMinutes: 0
 
   pool:
+    name: 'GitHub-hosted Agents'
     vmImage: ${{ parameters.vmMacImage }}
 
   variables:
@@ -55,7 +56,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp/bin/Release/$(netCurrentTargetFramework)-tvos/tvossimulator-x64/SamplesApp.app
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp/bin/Release/$(netCurrentTargetFramework)-tvos/tvossimulator-arm64/SamplesApp.app
       Contents: '**'
       TargetFolder: $(Build.BinariesDirectory)/SamplesApp.app
       CleanTargetFolder: false
