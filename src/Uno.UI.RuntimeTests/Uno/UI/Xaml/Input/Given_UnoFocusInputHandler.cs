@@ -102,6 +102,43 @@ public class Given_UnoFocusInputHandler
 	}
 #endif
 
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_GamepadDPad_FocusMove_InputDeviceIsGameController()
+	{
+		var device = await GetFocusMoveInputDeviceAsync(() => KeyboardHelper.GamepadDpadRight());
+		Assert.AreEqual(FocusInputDeviceKind.GameController, device);
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_ArrowKey_FocusMove_InputDeviceIsKeyboard()
+	{
+		var device = await GetFocusMoveInputDeviceAsync(() => KeyboardHelper.Right());
+		Assert.AreEqual(FocusInputDeviceKind.Keyboard, device);
+	}
+
+	private async Task<FocusInputDeviceKind?> GetFocusMoveInputDeviceAsync(System.Func<Task> pressRight)
+	{
+		var grid = CreateButtonGrid(XYFocusKeyboardNavigationMode.Enabled);
+		WindowHelper.WindowContent = grid;
+		await WindowHelper.WaitForIdle();
+
+		var center = (Button)grid.Children[CenterButtonIndex];
+		var right = (Button)grid.Children[RightButtonIndex];
+		center.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		FocusInputDeviceKind? device = null;
+		right.GettingFocus += (_, e) => device = e.InputDevice;
+
+		await pressRight();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(right, FocusManager.GetFocusedElement(grid.XamlRoot));
+		return device;
+	}
+
 	private async Task VerifyXYNavigationAsync(XYFocusKeyboardNavigationMode mode, VirtualKey key, bool shouldSucceed, int targetIndex)
 	{
 		var grid = CreateButtonGrid(mode);
