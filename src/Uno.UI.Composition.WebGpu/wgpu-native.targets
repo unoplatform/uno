@@ -264,17 +264,25 @@
 				<SmartLink>False</SmartLink>
 			</NativeReference>
 		</ItemGroup>
-		<!-- The final link uses -dead_strip and -exported_symbols_list (mtouch-symbols.list): a force_load'ed static
-		     lib's symbols are NOT exported unless listed, and the SDK's automatic list only covers __Internal
-		     DllImports — ours say "webgpu" and resolve at runtime through NativeLibrary.GetMainProgramHandle(),
-		     i.e. dlsym on the main image, which only sees EXPORTED symbols. Enumerate the archive's public wgpu*
-		     symbols (macOS `nm`; iOS links only happen with an Apple toolchain) and declare them as
-		     @(ReferenceNativeSymbol) so the bundler exports them. -->
-		<Exec Condition="$([MSBuild]::IsOSPlatform('OSX')) And !Exists('$(_WgpuIosDir)wgpu.symbols')"
-			Command="nm -gUj '$(_WgpuIosDir)lib/libwgpu_native.a' 2>/dev/null | grep '^_wgpu' | sed 's/^_//' | sort -u &gt; '$(_WgpuIosDir)wgpu.symbols'" />
-		<ReadLinesFromFile File="$(_WgpuIosDir)wgpu.symbols" Condition="Exists('$(_WgpuIosDir)wgpu.symbols')">
+		<!-- The final link uses -dead_strip and -exported_symbols_list (mtouch-symbols.list), and the symbol strip
+		     keeps only that list: a force_load'ed static lib's symbols are NOT exported unless listed, and the SDK's
+		     automatic list only covers __Internal DllImports — ours say "webgpu" and resolve at runtime through
+		     NativeLibrary.GetMainProgramHandle(), i.e. dlsym on the main image, which only sees EXPORTED symbols.
+		     Declare the archive's public wgpu* functions, from the list the package ships, as @(ReferenceNativeSymbol). -->
+		<PropertyGroup>
+			<_WgpuIosSymbolList>$(MSBuildThisFileDirectory)package\wgpu-native-ios.symbols</_WgpuIosSymbolList>
+		</PropertyGroup>
+		<ReadLinesFromFile File="$(_WgpuIosSymbolList)">
 			<Output TaskParameter="Lines" ItemName="_WgpuExportedSymbol" />
 		</ReadLinesFromFile>
+		<!-- The list ships in the package for consumers, who may have no `nm`; check it against the archive here, so a
+		     wgpu-native bump cannot leave it stale. -->
+		<Exec Condition="$([MSBuild]::IsOSPlatform('OSX'))" IgnoreExitCode="true" StandardOutputImportance="low"
+			Command="nm -gUj '$(_WgpuIosDir)lib/libwgpu_native.a' 2&gt;/dev/null | grep '^_wgpu' | sed 's/^_//' | LC_ALL=C sort -u | diff -q - '$(_WgpuIosSymbolList)' &gt; /dev/null">
+			<Output TaskParameter="ExitCode" PropertyName="_WgpuIosSymbolListDiffers" />
+		</Exec>
+		<Error Condition="'$(_WgpuIosSymbolListDiffers)' != '' And '$(_WgpuIosSymbolListDiffers)' != '0'"
+			Text="package/wgpu-native-ios.symbols no longer matches the public wgpu* functions of wgpu-native $(WgpuNativeVersion). Regenerate it: nm -gUj libwgpu_native.a | grep '^_wgpu' | sed 's/^_//' | LC_ALL=C sort -u" />
 		<ItemGroup>
 			<ReferenceNativeSymbol Include="@(_WgpuExportedSymbol)" SymbolType="Function" />
 		</ItemGroup>
