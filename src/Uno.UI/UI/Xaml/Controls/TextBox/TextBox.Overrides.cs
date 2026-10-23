@@ -30,6 +30,13 @@ partial class TextBox
 		_core.OnDoubleTapped(args);
 	}
 
+	protected override void OnHolding(HoldingRoutedEventArgs e)
+	{
+		base.OnHolding(e);
+
+		_core.OnHolding(e);
+	}
+
 	protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs e)
 	{
 		base.OnBringIntoViewRequested(e);

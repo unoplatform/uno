@@ -439,6 +439,10 @@ internal partial class InputManager
 
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			// As in WinUI, a press while the delayed context menu of a hold is pending is a second touch, so it drops the menu.
+			// Like the release, any press does it, also one redirected to a manipulation or a second mouse button.
+			_inputManager.ContextMenuProcessor.StopContextMenuTimer();
+
 			// If 2+ mouse buttons are pressed, we only respond to the first.
 			if (args.CurrentPoint is { PointerDeviceType: PointerDeviceType.Mouse, Properties.HasMultipleButtonsPressed: true })
 			{
@@ -478,6 +482,9 @@ internal partial class InputManager
 
 		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			// A pointer released before the delayed context menu of a hold on a pannable element no longer requests the menu.
+			_inputManager.ContextMenuProcessor.StopContextMenuTimer();
+
 			// When multiple mouse buttons are pressed and then released, we only respond to the last OnPointerReleased
 			// (i.e when no more buttons are still pressed).
 			if (args.CurrentPoint.PointerDeviceType == PointerDeviceType.Mouse && args.CurrentPoint.IsInContact)
@@ -591,6 +598,10 @@ internal partial class InputManager
 
 		private void OnPointerCancelled(PointerEventArgs args, bool isInjected = false)
 		{
+			// A cancelled pointer no longer requests the delayed hold menu; stopped here too, as a pointer redirected to a
+			// manipulation returns before CancelPointer.
+			_inputManager.ContextMenuProcessor.StopContextMenuTimer();
+
 			if (BeforeCancelTryRedirectToManipulations(args))
 			{
 				TraceIgnoredForManipulations(args);
@@ -604,6 +615,8 @@ internal partial class InputManager
 
 		internal void CancelPointer(PointerEventArgs args, bool isInjected = false, bool isDirectManipulation = false, bool isDirectManipulationResume = false)
 		{
+			_inputManager.ContextMenuProcessor.StopContextMenuTimer();
+
 			if (!HitTestOrRoot(args, _isOver, out var originalSource, out var overStaleBranch))
 			{
 				TraceIgnoredAsNoTree(args);
