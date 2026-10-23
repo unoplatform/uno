@@ -237,9 +237,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected static VirtualKeyModifiers GetKeyboardModifiers() => CoreImports.Input_GetKeyboardModifiers();
 
+		internal Style? GetBuiltInStyle() => Style.GetDefaultStyleForInstance(this, GetDefaultStyleKey());
+
 		internal bool TryGetValueFromBuiltInStyle(DependencyProperty dp, out object? value)
 		{
-			if (Style.GetDefaultStyleForInstance(this, GetDefaultStyleKey()) is { } style)
+			if (GetBuiltInStyle() is { } style)
 			{
 				return style.TryGetPropertyValue(dp, out value);
 			}

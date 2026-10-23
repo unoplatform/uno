@@ -246,8 +246,8 @@ public partial class DependencyObject
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::SetThemeResource — depends.cpp:1494-1503.
 	/// Also used directly (registration without the resolve+apply sequence) by the Setter flows that
-	/// resolve and apply the value themselves — see ResourceResolver.ApplyThemeResource and
-	/// ApplyVisualStateSetter.
+	/// resolve and apply the value themselves — see ResourceResolver.ApplyThemeResource,
+	/// ApplyVisualStateSetter and RegisterStyleThemeResource.
 	/// </remarks>
 	internal void SetThemeResource(DependencyProperty property, ThemeResourceReference themeRef, DependencyPropertyValuePrecedences? precedence = null)
 	{
@@ -544,22 +544,25 @@ public partial class DependencyObject
 	}
 
 	/// <summary>
-	/// Resolves the {ThemeResource} a Style (<see cref="DependencyPropertyValuePrecedences.Style"/>) or
-	/// built-in Style (<see cref="DependencyPropertyValuePrecedences.BuiltInStyle"/>) setter registered on
-	/// this object, for when that layer becomes the base value again. The caller scopes this object's theme
-	/// onto the requested-theme-for-subtree slot.
+	/// Resolves the {ThemeResource} reference of a Style or built-in Style layer for when that layer becomes the
+	/// base value again, first registering one for <paramref name="setter"/> when given. The caller scopes this
+	/// object's theme onto the requested-theme-for-subtree slot.
 	/// </summary>
 	/// <remarks>
-	/// MUX Reference: on ClearValue, CDependencyObject::EvaluateBaseValue (PropertySystem.cpp) takes the
-	/// setter's CThemeResource from GetValueFromStyle, and TryProcessingThemeResourcePropertyValue
-	/// (Theming.cpp) applies it through SetThemeResourceBinding, which resolves it under this
-	/// object's theme. Re-reading the setter instead resolves it against top-level resources only.
+	/// MUX Reference: on ClearValue, CDependencyObject::EvaluateBaseValue (PropertySystem.cpp) takes the setter's
+	/// CThemeResource from GetValueFromStyle, and TryProcessingThemeResourcePropertyValue (Theming.cpp) applies it
+	/// through SetThemeResourceBinding, which resolves it under this object's theme and stores it, so later theme
+	/// changes update the value.
 	/// </remarks>
-	private bool TryResolveStyleThemeResource(DependencyProperty property, DependencyPropertyValuePrecedences stylePrecedence, out object? value)
+	private bool TryResolveStyleThemeResource(DependencyProperty property, DependencyPropertyValuePrecedences stylePrecedence, Setter? setter, out object? value)
 	{
-		if (_themeResources?.Get(property, stylePrecedence) is { } themeRef)
+		try
 		{
-			try
+			var themeRef = setter is null
+				? _themeResources?.Get(property, stylePrecedence)
+				: RegisterStyleThemeResource(setter, property, stylePrecedence);
+
+			if (themeRef is not null)
 			{
 				ResolveThemeReference(themeRef, ActualInstance, cache: null);
 
@@ -569,18 +572,27 @@ public partial class DependencyObject
 					return true;
 				}
 			}
-			catch (Exception e)
+		}
+		catch (Exception e)
+		{
+			// Like UpdateThemeReference, a failed resolution must not fail the SetValue; the caller re-reads the setter.
+			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				// Like UpdateThemeReference, a failed resolution must not fail the SetValue; the caller re-reads the setter.
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().Warn($"Failed to resolve {{ThemeResource {themeRef.ResourceKey.Key}}} for the {stylePrecedence} value of {property.Name}", e);
-				}
+				this.Log().Warn($"Failed to resolve the {{ThemeResource}} {stylePrecedence} value of {property.Name}", e);
 			}
 		}
 
 		value = null;
 		return false;
+	}
+
+	// Registers what ResourceResolver.ApplyResource registers when the style applies the setter; the caller resolves and applies the value.
+	private ThemeResourceReference RegisterStyleThemeResource(Setter setter, DependencyProperty property, DependencyPropertyValuePrecedences stylePrecedence)
+	{
+		var themeRef = ResourceResolver.CreateThemeResourceReference(setter.ThemeResourceKey!.Value, setter.ResourceBindingUpdateReason, setter.ThemeResourceContext, stylePrecedence);
+		SetThemeResource(property, themeRef, stylePrecedence);
+		SetResourceBinding(property, themeRef.ResourceKey, setter.ResourceBindingUpdateReason, setter.ThemeResourceContext!, stylePrecedence, setterBindingPath: null);
+		return themeRef;
 	}
 
 	/// <summary>
