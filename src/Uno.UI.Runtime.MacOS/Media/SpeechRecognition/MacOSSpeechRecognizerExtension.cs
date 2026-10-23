@@ -51,9 +51,9 @@ internal sealed class MacOSSpeechRecognizerExtension : ISpeechRecognizerExtensio
 			_nativeHandle = 0;
 		}
 
-		// Apple expects locale identifiers like "en-US"; SpeechRecognizer ctor seeds CurrentLanguage from CultureInfo.CurrentCulture.Name
+		// Apple expects locale identifiers like "en-US"; SpeechRecognizer ctor seeds CurrentLanguage from CultureInfo.CurrentUICulture.Name
 		// which is already in BCP-47 form, so passing LanguageTag directly is correct.
-		var localeTag = language?.LanguageTag ?? CultureInfo.CurrentCulture.Name;
+		var localeTag = language?.LanguageTag ?? CultureInfo.CurrentUICulture.Name;
 		_nativeHandle = NativeUno.uno_speech_recognizer_create(localeTag);
 		if (_nativeHandle == 0)
 		{

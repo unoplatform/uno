@@ -52,7 +52,7 @@ internal sealed class TemplateParser
 
 			return TryComplete(new TemplateRootNode(date), out root);
 		}
-		else if (TryParseTime(out var time))
+		else if (TryParseTime(out var time, allowTimeZoneAlone: true))
 		{
 			bool hasWhitespace = SkipWhitespace();
 			if (hasWhitespace)
@@ -76,7 +76,7 @@ internal sealed class TemplateParser
 		return false;
 	}
 
-	private bool TryParseTime([NotNullWhen(true)] out TemplateTimeNode? time)
+	private bool TryParseTime([NotNullWhen(true)] out TemplateTimeNode? time, bool allowTimeZoneAlone = false)
 	{
 		var originalIndex = _index;
 		if (TryParseLongTime(out var longTime))
@@ -94,6 +94,13 @@ internal sealed class TemplateParser
 			if (SkipWhitespace() && TryParseHour(out var hour))
 			{
 				time = new TemplateTimeNode(timeZone, hour);
+				return true;
+			}
+
+			// WinRT also takes a time zone on its own, but not with a date, before or after it.
+			if (allowTimeZoneAlone && Completed)
+			{
+				time = new TemplateTimeNode(timeZone);
 				return true;
 			}
 		}
@@ -224,9 +231,10 @@ internal sealed class TemplateParser
 
 	private bool TryParseRelativeDate([NotNullWhen(true)] out TemplateRelativeDateNode? relativeDate)
 	{
-		if (TryParseDayOfWeek(out var dayOfWeek))
+		// Longest first, or "dayofweek month day" would stop after "dayofweek".
+		if (TryParseRelativeLongDate(out var relativeLongDate))
 		{
-			relativeDate = dayOfWeek;
+			relativeDate = relativeLongDate;
 			return true;
 		}
 		else if (TryParseMonthDay(out var monthDay))
@@ -234,9 +242,14 @@ internal sealed class TemplateParser
 			relativeDate = monthDay;
 			return true;
 		}
-		else if (TryParseRelativeLongDate(out var relativeLongDate))
+		else if (TryParseDayDayOfWeek(out var dayDayOfWeek))
 		{
-			relativeDate = relativeLongDate;
+			relativeDate = dayDayOfWeek;
+			return true;
+		}
+		else if (TryParseDayOfWeek(out var dayOfWeek))
+		{
+			relativeDate = dayOfWeek;
 			return true;
 		}
 
@@ -260,6 +273,16 @@ internal sealed class TemplateParser
 			TryParseMonth,
 			TryParseDay,
 			static (first, second) => new TemplateMonthDayNode(first, second),
+			out date
+			);
+	}
+
+	private bool TryParseDayDayOfWeek([NotNullWhen(true)] out TemplateDayDayOfWeekNode? date)
+	{
+		return TryParseTwoComponentsSeparatedByWhitespaceInAnyOrder<TemplateDayNode, TemplateDayOfWeekNode, TemplateDateNode, TemplateDayDayOfWeekNode>(
+			TryParseDay,
+			TryParseDayOfWeek,
+			static (first, second) => new TemplateDayDayOfWeekNode(first, second),
 			out date
 			);
 	}

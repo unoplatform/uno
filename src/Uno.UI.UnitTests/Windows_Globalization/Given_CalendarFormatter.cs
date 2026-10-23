@@ -9,13 +9,18 @@ namespace Uno.UI.Tests.Windows_Globalization
 	[UITestClass]
 	public class Given_CalendarFormatter
 	{
+		// As in WinRT, the long date without the day of week. A packaged WinRT probe on Windows 11 gives these
+		// patterns for every language but en-GB, whose row comes from .NET's data.
 		[TestMethod]
-		[DataRow("day month year", "en-US", "{month.integer}/{day.integer}/{year.full}")]
-		[DataRow("day month year", "en-CA", "{year.full}-{month.integer(2)}-{day.integer(2)}")]
-		[DataRow("day month year", "en-GB", "{day.integer(2)}/{month.integer(2)}/{year.full}")]
-		[DataRow("day month year", "fr-CA", "{year.full}-{month.integer(2)}-{day.integer(2)}")]
-		[DataRow("day month year", "fr-FR", "{day.integer(2)}/{month.integer(2)}/{year.full}")]
-		[DataRow("day month year", "hu-HU", "{year.full}. {month.integer(2)}. {day.integer(2)}.")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+		[DataRow("day month year", "en-US", "{month.full} {day.integer}, {year.full}")]
+		[DataRow("day month year", "en-CA", "{month.full} {day.integer}, {year.full}")]
+		[DataRow("day month year", "en-GB", "{day.integer} {month.full} {year.full}")]
+		[DataRow("day month year", "fr-CA", "{day.integer} {month.full} {year.full}")]
+		[DataRow("day month year", "fr-FR", "{day.integer} {month.full} {year.full}")]
+		[DataRow("day month year", "hu-HU", "{year.full}. {month.full} {day.integer}.")]
+		[DataRow("day month year", "ja-JP", "{year.full}年{month.integer}月{day.integer}日")]
+		[DataRow("day month year", "ko-KR", "{year.full}년 {month.integer}월 {day.integer}일")]
 		public void When_UsingVariousLanguages(string format, string language, string expectedPattern)
 		{
 			var sut = new DateTimeFormatter(format, new[] { language });
