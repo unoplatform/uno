@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 	<!--
 	Uno.Sdk is imported by path rather than via Sdk="Uno.Sdk.Private": an Sdk attribute resolves through
 	NuGet at evaluation time, so a fresh clone could not load this project until the SDK had been packed.
@@ -7,7 +7,7 @@
 	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.props" />
 
 	<PropertyGroup>
-		<!-- Desktop deliberately not first (UNOB0011): keeps VS multi-target debugging working. iOS/tvOS
+		<!-- Desktop deliberately not first: keeps VS multi-target debugging working. iOS/tvOS
 		     carry the explicit platform version to match $(NetCurrentNetCoreMobile). -->
 		<TargetFrameworks>$(NetCurrent)-browserwasm;$(NetCurrentWinAppSDK);$(NetCurrent)-android;$(NetCurrent)-ios$(NetCurrentAppleOSVersion);$(NetCurrent)-tvos$(NetCurrentAppleOSVersion);$(NetCurrent)-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>
@@ -55,14 +55,15 @@
 		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
 
 		<!--
-		Every non-WinUI TFM renders with Skia, so the runtime identifier is Skia on all of them. That is
-		what defines __SKIA__ (Uno.CrossTargetting.targets) and includes the .skia.cs variants. The
-		platform file suffixes are gated on $(IsAndroid)/$(IsAppleUIKit), not on this, so the head's own
-		.Android.cs/.iOS.cs entry points are still compiled. WinUI leaves it empty (native rendering).
+		Every non-WinUI TFM renders with Skia, so the runtime variant is Generic on all of them, and this
+		head is now the only source — the Uno.Sdk no longer sets it. That is what defines __SKIA__
+		(Uno.CrossTargetting.targets) and includes the .skia.cs variants. The platform file suffixes are
+		gated on $(IsAndroid)/$(IsAppleUIKit), not on this, so the head's own .Android.cs/.iOS.cs entry
+		points are still compiled. WinUI leaves it empty (native rendering).
 		-->
 		<!-- True for every non-WinUI TFM (desktop/wasm/android/ios/tvos) — gates the Skia framework refs. -->
 		<_IsSkiaTfm Condition="'$(_Platform)' != 'windows'">true</_IsSkiaTfm>
-		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND '$(_IsSkiaTfm)' == 'true'">Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeVariant Condition="'$(UnoRuntimeVariant)' == '' AND '$(_IsSkiaTfm)' == 'true'">Generic</UnoRuntimeVariant>
 		<!-- Apple UIKit (iOS + tvOS; no MacCatalyst). NOTE: these TFMs require macOS to build — not
 		     compile-validated on Windows. -->
 		<_IsUIKit Condition="'$(_Platform)' == 'ios' OR '$(_Platform)' == 'tvos'">true</_IsUIKit>
@@ -94,6 +95,39 @@
 
 	</PropertyGroup>
 
+	<!-- ==================== Drawing backends ==================== -->
+
+	<!--
+	  Drawing-backend build flags (app level; the framework is backend-agnostic and packaged once). Both default on
+	  = current behaviour. A build supplies the flags to pick backends, e.g. `-p:UnoDrawingBackendSkia=false` for a
+	  SkiaSharp-free app. The DefineConstants gate the registration in DrawingBackendConfiguration. NOTE: a fully
+	  Skia-free closure additionally needs the Skia runtime hosts gated (they still reference the backend).
+	-->
+	<PropertyGroup>
+		<UnoDrawingBackendSkia Condition="'$(UnoDrawingBackendSkia)'==''">true</UnoDrawingBackendSkia>
+		<!-- wgpu-native publishes no tvOS slice, so the backend's P/Invokes have nothing to link against there. -->
+		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'=='' and '$(_Platform)' == 'tvos'">false</UnoDrawingBackendWebGpu>
+		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'==''">true</UnoDrawingBackendWebGpu>
+		<DefineConstants Condition="'$(UnoDrawingBackendSkia)'=='true'">$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
+		<DefineConstants Condition="'$(UnoDrawingBackendWebGpu)'=='true'">$(DefineConstants);UNO_DRAWING_WEBGPU</DefineConstants>
+	</PropertyGroup>
+
+	<!-- Provision the modern-ABI wgpu-native next to the app so the WebGPU backend's DllImportResolver finds it. -->
+	<Import Project="..\..\Uno.UI.Composition.WebGpu\wgpu-native.targets" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
+	<!-- The browser has no wgpu-native: Dawn's emdawnwebgpu is linked into dotnet.native.wasm instead, so the same
+	     [DllImport("webgpu")] resolves there. Without it the WebGPU backend fails graphics init with a
+	     DllNotFoundException and the app never leaves its loading screen. -->
+	<Import Project="..\..\Uno.UI.Composition.WebGpu.Init\wgpu-wasm.targets" Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoDrawingBackendWebGpu)'!='false'" />
+
+	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
+		<ProjectReference Include="..\..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
+
+		<!-- Backend registration shared by every head's entry point. -->
+		<Compile Include="..\DrawingBackendConfiguration.cs" Link="DrawingBackendConfiguration.cs" />
+	</ItemGroup>
+
 	<!-- ==================== Framework via ProjectReference ==================== -->
 
 	<!-- Cross-Skia framework + AddIns shared by every Skia TFM (desktop/wasm/android/ios/tvos), NOT windows -->
@@ -103,14 +137,15 @@
 		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" />
+		<!-- Svg and Graphics2DSK are SkiaSharp-backed: a Skia-free build drops them. -->
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DWebGpu\Uno.WinUI.Graphics3DWebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 
 	</ItemGroup>
 
@@ -126,18 +161,18 @@
 
 	<!-- Desktop framework variants + runtimes + AddIns (Win32/X11/FrameBuffer/macOS) -->
 	<ItemGroup Condition="'$(_Platform)' == 'desktop'">
-		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32\Uno.UI.Runtime.Skia.Win32.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32.Support\Uno.UI.Runtime.Skia.Win32.Support.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Linux.FrameBuffer\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.MacOS\Uno.UI.Runtime.Skia.MacOS.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.Win32\Uno.UI.MediaPlayer.Skia.Win32.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.X11\Uno.UI.MediaPlayer.Skia.X11.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.WebView.Skia.X11\Uno.UI.WebView.Skia.X11.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
+		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Generic.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Generic.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Win32\Uno.UI.Runtime.Win32.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Win32.Support\Uno.UI.Runtime.Win32.Support.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.X11\Uno.UI.Runtime.X11.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Linux.FrameBuffer\Uno.UI.Runtime.Linux.FrameBuffer.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.MacOS\Uno.UI.Runtime.MacOS.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Win32\Uno.UI.MediaPlayer.Win32.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.X11\Uno.UI.MediaPlayer.X11.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.WebView.X11\Uno.UI.WebView.X11.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Generic.csproj" />
 	</ItemGroup>
 
 	<!-- browserwasm framework variants + runtime -->
@@ -145,8 +180,8 @@
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.WebAssembly.Browser\Uno.UI.Runtime.WebAssembly.Browser.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Generic.csproj" />
 	</ItemGroup>
 
 	<!-- Windows / WinAppSDK: NATIVE WinUI (no Uno.UI / SkiaSharp). Only the .Windows helper variants. -->
@@ -170,19 +205,17 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="System.CommandLine" />
-		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
-		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
-		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
-		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
+		<PackageReference Include="IdentityModel.OidcClient" />
+		<PackageReference Include="Microsoft.Identity.Client" />
+		<PackageReference Include="Uno.BenchmarkDotNet" />
+		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" />
+		<PackageReference Include="BenchmarkDotNet" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
-		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug'">
-			<!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
-			<Version>5.56.0</Version>
-		</PackageReference>
+		<!-- Not on wasm: Microsoft.Graph alone is ~40 MB of the staging download, for a single MSAL sample. -->
+		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug' AND '$(_Platform)' != 'browserwasm'" />
 		<!-- Override vulnerable transitive Microsoft.Kiota.Abstractions 1.9.1 pulled in by Microsoft.Graph -->
-		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.2" Condition="'$(Configuration)'!='Debug'" />
+		<PackageReference Include="Microsoft.Kiota.Abstractions" Condition="'$(Configuration)'!='Debug' AND '$(_Platform)' != 'browserwasm'" />
 	</ItemGroup>
 
 	<!-- Skia-only packages (desktop/wasm/android/ios/tvos, NOT windows) -->
@@ -195,26 +228,32 @@
 	<!-- Desktop-specific packages -->
 	<ItemGroup Condition="'$(_Platform)' == 'desktop'">
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Win32" />
+		<PackageReference Include="SkiaSharp.NativeAssets.macOS" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Win32" />
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="MsWebView2" />
-		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
+		<PackageReference Include="VideoLAN.LibVLC.Windows" />
 		<!-- Pins BenchmarkDotNet's transitive System.Management from 4.5.0 to 8.0.0 -->
-		<PackageReference Include="System.Management" Version="8.0.0" />
+		<PackageReference Include="System.Management" />
 	</ItemGroup>
 
 	<!-- browserwasm packages -->
 	<ItemGroup Condition="'$(_Platform)' == 'browserwasm'">
-		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
+		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
 		<!-- Pins BenchmarkDotNet's transitive System.Management from 4.5.0 to 8.0.0 -->
-		<PackageReference Include="System.Management" Version="8.0.0" />
+		<PackageReference Include="System.Management" />
 	</ItemGroup>
 
 	<!-- Windows / WinAppSDK packages (real WinUI) -->
 	<ItemGroup Condition="'$(_Platform)' == 'windows'">
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.6.0" PrivateAssets="all" />
-		<PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.0.0-rc" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" PrivateAssets="all" />
+		<PackageReference Include="CommunityToolkit.WinUI.Lottie" />
 		<!-- Provided transitively via Uno.UI on Skia; explicit on native WinUI. -->
 		<PackageReference Include="Uno.Core.Extensions.Logging" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
@@ -224,12 +263,21 @@
 
 	<!-- ==================== WASM build configuration ==================== -->
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm'">
+		<!-- Emscripten defaults MAXIMUM_MEMORY to 2GB, which caps the app's TOTAL linear memory: managed heap,
+		     Mono runtime, native Skia/wgpu and JS glue together. The perf samples deliberately build very large
+		     scenes (RealWorld_LogView at a few thousand rows) and hit that ceiling, which surfaces as a .NET heap
+		     OOM abort mid-render rather than as an obvious limit. 4GB is the wasm32 maximum. -->
+		<EmccMaximumHeapSize>4294967296</EmccMaximumHeapSize>
 		<!-- Required for net9+ workloads -->
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<NoWarn>$(NoWarn);NU1903;NU1902</NoWarn>
 		<NoWarn>$(NoWarn);$(_UnoTrimmingNoWarn);IL2007;IL2045;IL2090</NoWarn>
-		<PublishTrimmed>false</PublishTrimmed>
-		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+		<!-- Partial: only assemblies marked trimmable (mostly the BCL) are trimmed. Full trimming strips the
+		     reflection-resolved drawing backends and the app fails at Build() with no backend. -->
+		<PublishTrimmed Condition="'$(Configuration)' != 'Debug'">true</PublishTrimmed>
+		<TrimMode>partial</TrimMode>
+		<!-- Trimming turns this off by default; the runtime tests harness serializes its results by reflection. -->
+		<JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
 		<WasmIncludeFullIcuData>true</WasmIncludeFullIcuData>
 		<InvariantGlobalization>false</InvariantGlobalization>
 		<WasmShellLoadAllSatelliteResources>true</WasmShellLoadAllSatelliteResources>
@@ -238,14 +286,60 @@
 		<!-- Workaround for https://github.com/dotnet/aspnetcore/issues/63970 -->
 		<WasmFingerprintAssets>false</WasmFingerprintAssets>
 		<!--
+		Bootstrap 10.1 rewrites uno-config.js to the fingerprinted dotnet.<hash>.js on publish. With
+		assets unfingerprinted it matches dotnet.runtime.js instead and the runtime fails to start.
+		-->
+		<WasmShellEnableDotnetJsFingerprinting>false</WasmShellEnableDotnetJsFingerprinting>
+		<!--
 		This wwwroot is mounted at two roots: the runtime tests serve it at localhost:8000/ and PR
-		staging from /pr-<N>/wasm-skia-net9/. Uno.Sdk defaults this to "/" for deep-link routing, which
+		staging from /pr-<N>/wasm-skia/. Uno.Sdk defaults this to "/" for deep-link routing, which
 		bakes absolute /package_<hash>/ paths into index.html and uno-config.js and 404s under any
 		sub-folder. SamplesApp routes by query string, so "./" (the bootstrapper default, and what the
 		pre-unification head used) is the correct value.
 		-->
 		<WasmShellWebAppBasePath>./</WasmShellWebAppBasePath>
 	</PropertyGroup>
+	<!-- Opt-in AOT publish for the perf lane (-p:UnoWasmAot=true). Head-scoped: RunAOTCompilation/PublishTrimmed set
+	     globally break the netstandard2.0 generator projects in the graph. -->
+	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoWasmAot)' == 'true'">
+		<RunAOTCompilation>true</RunAOTCompilation>
+		<PublishTrimmed>true</PublishTrimmed>
+	</PropertyGroup>
+	<!-- Interpreted under AOT: the cross-compiler runs out of memory on the giant ones, the Windows-compat shims reference
+	     assemblies absent from the publish set, and the rest is sample/test infrastructure off the render path. The
+	     perf-critical Uno.UI / Composition assemblies stay AOT'd. -->
+	<ItemGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoWasmAot)' == 'true'">
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\SamplesApp.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.RuntimeTests.dll" />
+		<!-- HarfBuzz reaches back into managed code through DelegateProxies.ReferenceTableProxyImplementation
+		     while creating a font; AOT-compiled, that native-to-managed wrapper does not match what HarfBuzz
+		     calls, and the app dies during startup with "function signature mismatch" (symbolicated stack:
+		     hb_font_create -> hb_font_set_variations -> the proxy wrapper). Shaping stays fast regardless:
+		     the work is in native hb, and only the thin managed binding is interpreted. -->
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\HarfBuzzSharp.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\AwesomeAssertions.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.CodeAnalysis.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.CodeAnalysis.CSharp.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Private.Windows.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Drawing.Common.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Management.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Speech.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Data.SqlClient.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Win32.Registry.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Win32.SystemEvents.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Diagnostics.EventLog.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\BenchmarkDotNet.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Identity.Client.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Azure.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\MSTest.TestFramework.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Private.ServiceModel.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Skia.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Model.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Custom.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Silk.NET.OpenGL.dll" />
+	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
@@ -253,7 +347,6 @@
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(_Platform)' == 'browserwasm'">
-		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
 		<LinkerDescriptor Include="Platforms\WebAssembly\LinkerConfig.xml" />
 		<EmbeddedResource Include="Platforms\WebAssembly\WasmScripts\AppManifest.js" />
 		<Content Include="..\LinkedFiles\WebContent\**\*.*">
@@ -265,14 +358,14 @@
 		</WasmShellExtraFilesToDeploy>
 	</ItemGroup>
 
-	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.props" />
-	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.targets" />
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.WebAssembly.Browser\build\Uno.WinUI.Runtime.WebAssembly.Browser.props" />
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.WebAssembly.Browser\build\Uno.WinUI.Runtime.WebAssembly.Browser.targets" />
 	<!-- ==================== android (Skia) ==================== -->
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Android\Uno.UI.Runtime.Android.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.GooglePlay\Uno.UI.GooglePlay.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Foldable\Uno.UI.Foldable.netcoremobile.csproj" />
@@ -280,17 +373,19 @@
 
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
-		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Android" />
+		<PackageReference Include="Uno.UniversalImageLoader" />
 		<PackageReference Include="Xamarin.AndroidX.Browser" />
 		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
 		<PackageReference Include="Xamarin.Google.Android.Material" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
-		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
-		<!-- Pin the shrinker. Left unset, R8 9.1.31 crashes with
-		     an NPE in its API-model database while desugaring androidx.core. -->
-		<AndroidLinkTool Condition="'$(DoNotSetAndroidLinkTool)' != 'true'">r8</AndroidLinkTool>
+		<DefineConstants>$(DefineConstants);HAS_UNO;__UNO__</DefineConstants>
+		<!-- Release only: unshrunk R8 9.1.31 in release mode crashes with an NPE in its API-model
+		     database while desugaring androidx.core; shrinking avoids it. In Debug the pin would shrink
+		     with no JNI keep rules (AndroidLinkMode=None generates none) and strip AndroidX. -->
+		<AndroidLinkTool Condition="'$(DoNotSetAndroidLinkTool)' != 'true' and '$(Configuration)' == 'Release'">r8</AndroidLinkTool>
 		<!-- apk (not aab) so the runtime-test harness can deploy to emulators -->
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
@@ -321,8 +416,8 @@
 		<TrimmerRootDescriptor Include="Platforms\Android\LinkerConfig.xml" />
 	</ItemGroup>
 
-	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.props" />
-	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.targets" />
+	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Android\build\Uno.WinUI.Runtime.Android.props" />
+	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Android\build\Uno.WinUI.Runtime.Android.targets" />
 
 	<!-- ==================== iOS + tvOS (AppleUIKit + Skia) — REQUIRES macOS to build ==================== -->
 	<!-- Not compile-validated on Windows. -->
@@ -331,7 +426,7 @@
 		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.AppleUIKit\Uno.UI.Runtime.AppleUIKit.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_IsUIKit)' == 'true'">
@@ -388,7 +483,8 @@
 
 	<ItemGroup Condition="'$(_Platform)' == 'ios'">
 		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
-		<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.iOS" />
+		<PackageReference Include="Uno.Extensions.Logging.OSLog" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
 		<!-- https://github.com/dotnet/runtime/issues/109966 -->
@@ -404,6 +500,7 @@
 
 	<ItemGroup Condition="'$(_Platform)' == 'tvos'">
 		<PackageReference Include="SkiaSharp.NativeAssets.TvOS" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.tvOS" />
 
 		<!--
 		AwesomeAssertions annotates its API with JetBrains.Annotations but does not declare a package
@@ -469,8 +566,8 @@
 		<MtouchLink>Full</MtouchLink>
 	</PropertyGroup>
 
-	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />
-	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
+	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.AppleUIKit\build\Uno.WinUI.Runtime.AppleUIKit.props" />
+	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.AppleUIKit\build\Uno.WinUI.Runtime.AppleUIKit.targets" />
 
 	<!-- ==================== Windows build configuration ==================== -->
 	<PropertyGroup Condition="'$(_Platform)' == 'windows'">
@@ -530,24 +627,7 @@
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'browserwasm'">
 		<PackageReference Include="Uno.Resizetizer" />
 		<UnoIcon Include="Assets\Icons\icon.svg" ForegroundFile="Assets\Icons\icon_foreground.svg" ForegroundScale="0.65" Color="#ffffff" />
-		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
-	</ItemGroup>
-
-	<!--
-	Android resources must sit directly under mipmap-<dpi>\. Uno.Resizetizer builds the app icon
-	destination as <mipmap-dpi>\<the icon's project-relative folder>\<name>.png, and because the head
-	declares UnoRuntimeIdentifier=Skia the package's windows/skia targets also run on android, where
-	UpdatePathOfUnoIcon stamps Link=Assets\Icons\icon.svg onto the item. The generated file then lands
-	in mipmap-xxhdpi\Assets\Icons\icon.png and aapt2 rejects it with APT2144. Setting Link here keeps
-	that stamping away — both branches of UpdatePathOfUnoIcon skip items that already carry one — and
-	flattens the output to mipmap-<dpi>\icon.png, which is what @mipmap/icon resolves to.
-	Android only: on desktop the relative Link is what lays the scale-suffixed logos out under Assets\.
-	The resizetizer warns that UnoIcon.Link "will be ignored"; it is not, it is read as the output alias.
-	TODO Uno (resizetizer app kind): drop once the Uno.Resizetizer version in Uno.Sdk's packages.json
-	carries unoplatform/uno.resizetizer#377 — android then stops importing the windows/skia targets.
-	-->
-	<ItemGroup Condition="'$(_Platform)' == 'android'">
-		<UnoIcon Update="Assets\Icons\icon.svg" Link="icon.svg" />
+		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" BackgroundColor="#ffffff" />
 	</ItemGroup>
 
 	<!-- Win32 DPI-awareness manifest (desktop only; windows sets its own ApplicationManifest above) -->
@@ -570,7 +650,7 @@
 	<!-- Stage the macOS native host dylib so the desktop artifact (built on Windows, run on macOS
 	     agents) can dlopen it. It comes from the native-assets-macos artifact, not a ProjectReference. -->
 	<PropertyGroup Condition="'$(_Platform)' == 'desktop'">
-		<_libUnoNativeMacPath>$(MSBuildThisFileDirectory)..\..\Uno.UI.Runtime.Skia.MacOS\UnoNativeMac\build\$(Configuration)\libUnoNativeMac.dylib</_libUnoNativeMacPath>
+		<_libUnoNativeMacPath>$(MSBuildThisFileDirectory)..\..\Uno.UI.Runtime.MacOS\UnoNativeMac\build\$(Configuration)\libUnoNativeMac.dylib</_libUnoNativeMacPath>
 	</PropertyGroup>
 	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile"
 	        Condition="'$(_Platform)' == 'desktop' AND Exists('$(_libUnoNativeMacPath)')">
@@ -691,50 +771,6 @@
 	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.targets" />
 
 	<!--
-	Uno.Resizetizer decides "is this a Skia app" from $(UnoRuntimeIdentifier) alone, which this head sets
-	on every non-WinUI TFM. On android and ios its platform branch and its skia branch therefore both
-	match, and the skia one is evaluated last, so UnoResizetizerPlatformType lands on 'wpf': android gets
-	no mipmap/* resources and aapt2 fails on the manifest's @mipmap/icon (APT2260), while ios silently
-	ships an icon.ico instead of an asset catalog. This has to sit below the import above, because that
-	is where the package's targets — and the property they overwrite — come from.
-	TODO Uno (resizetizer app kind): this block and the splash manifest one below both go away once the
-	Uno.Resizetizer version in Uno.Sdk's packages.json carries unoplatform/uno.resizetizer#377, which
-	stops a Skia-rendered platform head matching the skia app kind in the first place.
-	-->
-	<PropertyGroup Condition="'$(_Platform)' == 'android'">
-		<UnoResizetizerPlatformType>android</UnoResizetizerPlatformType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
-		<UnoResizetizerPlatformType>ios</UnoResizetizerPlatformType>
-	</PropertyGroup>
-
-	<!--
-	Second casualty of that same double match: the apple and the skia targets files each define a target
-	named ProcessUnoSplashScreens, and the skia one is imported last, so it replaces the apple one. Only
-	the apple version publishes the UnoInfo.plist that GenerateUnoSplashApple writes as a
-	PartialAppManifest, and that partial manifest is what repoints UILaunchStoryboardName at the generated
-	UnoSplash storyboard. Left unpublished, the bundle keeps Info.plist's UILaunchStoryboardName=LaunchScreen
-	— a storyboard nothing ships — and UIKit aborts on launch with "Could not find a storyboard named
-	'LaunchScreen'", before a single runtime test runs. Republish it under a name nothing can overwrite,
-	through CollectAppManifestsDependsOn, which is the extension point Xamarin.Shared.targets documents for
-	adding PartialAppManifest items: it runs ahead of _CompileAppManifestInputs, which snapshots them.
-	-->
-	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
-		<CollectAppManifestsDependsOn>
-			$(CollectAppManifestsDependsOn);
-			_UnoSamplesAppPublishSplashPartialManifest
-		</CollectAppManifestsDependsOn>
-	</PropertyGroup>
-	<Target Name="_UnoSamplesAppPublishSplashPartialManifest"
-			DependsOnTargets="ProcessUnoSplashScreens"
-			Condition="'@(UnoSplashScreen)' != '' AND '$(DesignTimeBuild)' != 'true'">
-		<ItemGroup>
-			<_UnoSamplesAppSplashPartialManifest Include="$(_UnoIntermediateSplashScreen)UnoInfo.plist" Condition="Exists('$(_UnoIntermediateSplashScreen)UnoInfo.plist')" />
-			<PartialAppManifest Include="@(_UnoSamplesAppSplashPartialManifest)" />
-			<FileWrites Include="@(_UnoSamplesAppSplashPartialManifest)" />
-		</ItemGroup>
-	</Target>
-	<!--
 	Microsoft.Identity.Client ships no tvOS asset (only net8.0, net8.0-ios18.0, net8.0-android34.0,
 	net462, net472, netstandard2.0), so a tvos head resolves the desktop lib/net8.0 assembly. That
 	assembly carries Microsoft.Identity.Client.Platforms.Features.DesktopOs.LibSystem, which P/Invokes
@@ -750,5 +786,25 @@
 		<ItemGroup>
 			<_NativeExecutableFrameworks Remove="System" />
 		</ItemGroup>
+	</Target>
+
+	<!--
+	The display version mirrors the Uno.WinUI package version (7.0.0-dev.684 -> 7.0.684), so a TestFlight
+	build maps back to its commit. The build number is the CI run id: unique per run, including re-runs of
+	the same commit, which App Store Connect would otherwise reject as a duplicate.
+	-->
+	<Target Name="GenerateVersion"
+			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName"
+			Condition="'$(NBGV_AssemblyInformationalVersion)' != ''">
+		<PropertyGroup>
+			<_VersionHeight>$(NBGV_VersionHeight)</_VersionHeight>
+			<_VersionHeight Condition="'$(_VersionHeight)' == ''">0</_VersionHeight>
+			<_BuildNumber>$(BUILD_BUILDID)</_BuildNumber>
+			<_BuildNumber Condition="'$(_BuildNumber)' == ''">$(_VersionHeight)</_BuildNumber>
+
+			<ApplicationDisplayVersion>$(NBGV_VersionMajor).$(NBGV_VersionMinor).$(_VersionHeight)</ApplicationDisplayVersion>
+			<ApplicationVersion>$(_BuildNumber)</ApplicationVersion>
+			<InformationalVersion>$(NBGV_AssemblyInformationalVersion)</InformationalVersion>
+		</PropertyGroup>
 	</Target>
 </Project>

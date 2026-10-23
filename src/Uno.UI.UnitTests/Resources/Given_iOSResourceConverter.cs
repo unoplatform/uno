@@ -4,7 +4,7 @@ using Windows.ApplicationModel.Resources.Core;
 
 namespace Uno.UI.Tests.Resources
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_iOSResourceConverter
 	{
 		private const string DefaultLanguage = "en";

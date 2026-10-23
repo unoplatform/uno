@@ -1,0 +1,160 @@
+html,
+body {
+  /**
+      Disable root scrolling (bouncing effect on touch devices)
+    */
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  /*
+    Disable **browsers** touch (and pen) manipulations support.
+    Remarks: This has no relation with the UIElement.ManipulationMode which are handled in managed code.
+             It only ensures that uno will always get ALL pointer events instead of being stolen by the browser for its internal gesture detection.
+             This will also disable left and right swipe gesture to navigate through browser's history.
+    Remarks 2: If applied only on the root of the app, this won't break the scrolling (unlike if applied on all UIElement).
+  */
+  touch-action: none;
+}
+
+.uno-root-element {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#uno-root {
+    overflow: hidden;
+}
+
+#uno-loading {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-color: var(--light-theme-bg-color, #F3F3F3);
+}
+
+@media (prefers-color-scheme: dark) {
+  #uno-loading {
+    background-color: var(--dark-theme-bg-color, #202020);
+  }
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+.uno-aria-live {
+  position: fixed;
+  overflow: hidden;
+  transform: translate(-99999px, -99999px);
+  width: 1px;
+  height: 1px;
+}
+
+#uno-enable-accessibility {
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+#uno-semantics-root {
+  /* Match the canvas coordinate system (position:fixed relative to viewport) */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  filter: opacity(0%);
+  pointer-events: none;
+}
+
+/* Not inherited, so an extent change does not restyle the whole semantic subtree. */
+@property --uno-scroll-extent-width {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --uno-scroll-extent-height {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+/* Native scrollbars would shrink the client area below the managed viewport, and scroll anchoring
+   would move the native offset away from the managed one. */
+.uno-semantic-scroll-port {
+  scrollbar-width: none;
+  overflow-anchor: none;
+}
+
+.uno-semantic-scroll-port::-webkit-scrollbar {
+  display: none;
+}
+
+/* Semantic children are sparse, so the managed scroll extent has to define the native scroll range. */
+.uno-semantic-scroll-port::before {
+  --uno-scroll-extent-width: inherit;
+  --uno-scroll-extent-height: inherit;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--uno-scroll-extent-width);
+  height: var(--uno-scroll-extent-height);
+  pointer-events: none;
+}
+
+#uno-canvas {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+/*
+  Negotiated native elements (BrowserHtmlElementInputPolicy.Negotiated, value 1) have their panning driven
+  from BrowserPointerInputSource so the residual can be chained to the enclosing Uno ScrollViewer.
+
+  `touch-action: none` on `html, body` above is not enough: the effective touch-action of a gesture is
+  resolved only up to the nearest scroll container, so a scrollable element *inside* the native content
+  resets the chain and would still be panned by the browser. Hence the descendant selector.
+
+  `pinch-zoom` rather than `none`: it disables the single-finger panning we take over while leaving
+  multi-finger pinch-zoom to the browser. Double-tap-to-zoom is lost, which no touch-action value can
+  preserve alongside disabled panning.
+
+  Form controls, contenteditable regions and iframes - and their descendants, matching the `closest()`
+  exclusion in BrowserPointerInputSource.nativeInputSelector - are excluded: they keep full native touch
+  behavior (caret dragging, selection, nested scrolling) and do not participate in chaining. The value this
+  rule puts on the negotiation root does not reach into them: a gesture's effective touch-action intersects
+  ancestor values only up to the nearest scroll container, so the chain stops at the excluded scroller
+  itself. Iframes need the CSS exclusion too, since the touch-action of the host document would otherwise
+  restrict panning inside the embedded document, whose events never reach our negotiation handler. The root
+  selector carries the same exclusion for when the negotiated element itself is such a control. The two
+  exclusion lists must stay in sync or a gesture lands in a subtree that neither the browser nor Uno will pan.
+
+  The child combinator matters: only an element managed code registered as a negotiation root may carry
+  this policy. Hosted HTML is app- or third-party-supplied and could otherwise set the attribute itself.
+  `!important` is needed to win over inline styles set by embedded third-party content.
+*/
+#uno-native-element-host > [data-uno-native-input-policy="1"]:not(:is(input, textarea, select, iframe, [contenteditable])),
+#uno-native-element-host > [data-uno-native-input-policy="1"] *:not(:is(input, textarea, select, iframe, [contenteditable])):not(:is(input, textarea, select, iframe, [contenteditable]) *) {
+	touch-action: pinch-zoom !important;
+	overscroll-behavior: none !important;
+}
+
+/* Uno has its own HR indicator: hide default dotnet indicator. */
+#dotnet-hotreload-toast {
+  visibility: collapse;
+}

@@ -494,7 +494,9 @@ namespace Uno.UI.Helpers.WinUI
 				var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;
 				s_isOnXbox = (deviceFamily == "Windows.Xbox")
 					|| (deviceFamily == "Windows.XBoxSRA")
-					|| (deviceFamily == "Windows.XBoxERA");
+					|| (deviceFamily == "Windows.XBoxERA")
+					// Uno specific: agree with DirectUI.XboxUtility, which treats tvOS as a remote-first 10-foot platform.
+					|| DirectUI.XboxUtility.IsOnXbox();
 				s_isOnXboxInitialized = true;
 			}
 			return s_isOnXbox;

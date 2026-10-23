@@ -144,7 +144,7 @@ internal partial class NativeWebView : ICleanableNativeWebView, Uno.UI.Xaml.Cont
 	{
 		NativeMethods.BuildImports(
 #if WASM_SKIA
-			"Uno.UI.Runtime.Skia.WebAssembly.Browser"
+			"Uno.UI.Runtime.WebAssembly.Browser"
 #else
 			"Uno.UI"
 #endif

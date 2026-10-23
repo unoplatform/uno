@@ -619,29 +619,6 @@ When using the WebView2 and running on WinAppSDK, make sure to create an `x64` o
 
 ## Windows Specifics
 
-Uno 6.7 has two separate backends on Windows for WebView2:
+`WebView2Aot` is the only backend on Windows, and is required in order to use WebView2 with [Native AOT](xref:Uno.Features.NativeAOT). Uno 6.7 also shipped a `Microsoft.Web.WebView2` backend, selectable through the `UNO_WEBVIEW2_BACKEND` environment variable; that backend was removed in Uno 7.0 — `WebView2Aot` is used regardless of the variable's value, and setting it to anything other than `webview2aot` logs a warning instead of switching backends.
 
-- Microsoft.Web.WebView2
-- WebView2Aot
-
-The WebView2Aot backend is required in order to use WebView2 with [Native AOT](xref:Uno.Features.NativeAOT) on Windows.
-
-The WebView2Aot backend is the default when `net10.0-desktop` or later is the target framework.
-
-If you encounter issues with the WebView2 control on Windows when targeting .NET 10 or later, please file an issue. The previous Microsoft.Web.WebView2 backend can be used by setting the `UNO_WEBVIEW2_BACKEND` environment variable to `microsoft.web.webview2`, for example within `Main()`:
-
-```csharp
-public partial class Program
-{
-    [STAThread]
-    public static void Main(string[] args)
-    {
-        Environment.SetEnvironmentVariable("UNO_WEBVIEW2_BACKEND", "microsoft.web.webview2");
-        var host = UnoPlatformHostBuilder.Create()
-            // …
-            ;
-    }
-}
-```
-
-Uno 7 removes support for the Microsoft.Web.WebView2 backend, along with support for the `microsoft.web.webview2` value within the `UNO_WEBVIEW2_BACKEND` environment variable.
+If you encounter issues with the WebView2 control on Windows, please file an issue.

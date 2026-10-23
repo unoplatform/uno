@@ -1,4 +1,4 @@
-#pragma warning disable CS0109
+﻿#pragma warning disable CS0109
 
 using System;
 using System.Collections.Generic;
@@ -12,10 +12,13 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml;
 using Uno.UI.DataBinding;
 using Uno.UI;
+using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using System.Collections;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Windows.Foundation;
 using Windows.UI.Input;
@@ -27,7 +30,6 @@ using Uno;
 using Uno.Foundation.Logging;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
-using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Microsoft.UI.Composition;
@@ -157,11 +159,38 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void SetupInlines();
 
-		internal void InvalidateInlines(bool updateText)
+		internal void InvalidateInlines(bool updateText) => InvalidateInlines(updateText, knownText: null);
+
+		internal void InvalidateInlines(
+			string knownText,
+			IReadOnlyList<Inline> removed,
+			IReadOnlyList<Inline> inserted)
+			=> InvalidateInlines(updateText: true, knownText, removed, inserted);
+
+		internal void InvalidateInlinesWithoutTextUpdate(
+			IReadOnlyList<Inline> removed,
+			IReadOnlyList<Inline> inserted)
+			=> InvalidateInlines(updateText: false, knownText: null, removed, inserted);
+
+		private void InvalidateInlines(
+			bool updateText,
+			string knownText,
+			IReadOnlyList<Inline> removed = null,
+			IReadOnlyList<Inline> inserted = null)
 		{
+			if (updateText || removed is not null && inserted is not null)
+			{
+				// Text callbacks and hyperlink discovery must observe the final flattened inline tree.
+				Inlines.InvalidateTraversedTree();
+			}
+
 			if (updateText)
 			{
-				if (Inlines.Count == 1 && Inlines[0] is Run run)
+				if (knownText is not null)
+				{
+					_inlinesText = knownText;
+				}
+				else if (Inlines.Count == 1 && Inlines[0] is Run run)
 				{
 					_inlinesText = run.Text;
 				}
@@ -175,8 +204,18 @@ namespace Microsoft.UI.Xaml.Controls
 					Text = _inlinesText;
 				}
 
-				UpdateHyperlinks();
-				Inlines.InvalidateTraversedTree();
+				if (removed is null || inserted is null)
+				{
+					UpdateHyperlinks();
+				}
+				else
+				{
+					UpdateHyperlinks(removed, inserted);
+				}
+			}
+			else if (removed is not null && inserted is not null)
+			{
+				UpdateHyperlinks(removed, inserted);
 			}
 
 			OnInlinesChangedPartial();
@@ -442,7 +481,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double FontSize
 		{
 			get => (double)GetValue(FontSizeProperty);
-			set => SetValue(FontSizeProperty, value);
+			set => SetValue(FontSizeProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty FontSizeProperty { get; } =
@@ -481,7 +520,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: true,
+					defaultValue: BoolBoxes.True,
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
@@ -493,7 +532,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int MaxLines
 		{
 			get => (int)GetValue(MaxLinesProperty);
-			set => SetValue(MaxLinesProperty, value);
+			set => SetValue(MaxLinesProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxLinesProperty { get; } =
@@ -502,7 +541,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: IntBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnMaxLinesChanged()
 				)
@@ -634,7 +673,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: false,
+					defaultValue: BoolBoxes.False,
 					propertyChangedCallback: (s, _) => ((TextBlock)s).OnIsTextSelectionEnabledChanged()
 				)
 			);
@@ -712,7 +751,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double LineHeight
 		{
 			get => (double)GetValue(LineHeightProperty);
-			set => SetValue(LineHeightProperty, value);
+			set => SetValue(LineHeightProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty LineHeightProperty { get; } =
@@ -721,7 +760,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(double),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					0d,
+					DoubleBoxes.Zero,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged()));
 
@@ -732,6 +771,32 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnLineHeightChangedPartial();
+
+		#endregion
+
+		#region TextLineBounds Dependency Property
+
+		/// <summary>
+		/// Gets or sets a value that indicates how the line box height is determined for each line of
+		/// text displayed in the <see cref="TextBlock"/>.
+		/// </summary>
+		public TextLineBounds TextLineBounds
+		{
+			get => (TextLineBounds)GetValue(TextLineBoundsProperty);
+			set => SetValue(TextLineBoundsProperty, value);
+		}
+
+		public static DependencyProperty TextLineBoundsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(TextLineBounds),
+				typeof(TextLineBounds),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					defaultValue: TextLineBounds.Full,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).InvalidateTextBlock()
+				)
+			);
 
 		#endregion
 
@@ -777,7 +842,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					(Thickness)Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnPaddingChanged()));
 
@@ -796,7 +861,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int CharacterSpacing
 		{
 			get => (int)GetValue(CharacterSpacingProperty);
-			set => SetValue(CharacterSpacingProperty, value);
+			set => SetValue(CharacterSpacingProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty CharacterSpacingProperty { get; } =
@@ -805,7 +870,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: IntBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnCharacterSpacingChanged()
 				)
@@ -880,7 +945,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(IsTextTrimmed),
 			typeof(bool),
 			typeof(TextBlock),
-			new FrameworkPropertyMetadata(false, propertyChangedCallback: (s, e) => ((TextBlock)s).OnIsTextTrimmedChanged()));
+			new FrameworkPropertyMetadata(BoolBoxes.False, propertyChangedCallback: (s, e) => ((TextBlock)s).OnIsTextTrimmedChanged()));
 
 		public bool IsTextTrimmed
 		{
@@ -1183,6 +1248,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private readonly ObservableCollection<Hyperlink> _hyperlinks = new();
+		// Lazy: almost no TextBlock contains a hyperlink.
+		private HashSet<Hyperlink> _hyperlinkSet;
 
 		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
@@ -1209,24 +1276,89 @@ namespace Microsoft.UI.Xaml.Controls
 
 					HyperlinkOver = null;
 					_hyperlinks.Clear();
+					_hyperlinkSet?.Clear();
 				}
 
 				return;
 			}
 
 			HyperlinkOver = null;
-			var previousHyperLinks = _hyperlinks.ToHashSet();
+			var previousHyperLinks = _hyperlinkSet is { Count: > 0 } ? new HashSet<Hyperlink>(_hyperlinkSet) : null;
 			_hyperlinks.Clear();
-			foreach (var hyperlink in Inlines.TraversedTree.preorderTree.OfType<Hyperlink>())
+			_hyperlinkSet?.Clear();
+			foreach (var inline in Inlines.TraversedTree.preorderTree)
 			{
-				_hyperlinks.Add(hyperlink);
-				previousHyperLinks.Remove(hyperlink);
+				if (inline is not Hyperlink hyperlink)
+				{
+					continue;
+				}
+
+				if ((_hyperlinkSet ??= new()).Add(hyperlink))
+				{
+					_hyperlinks.Add(hyperlink);
+				}
+				previousHyperLinks?.Remove(hyperlink);
 			}
 
 			// Make sure to clear the pressed state of removed hyperlinks
-			foreach (var removed in previousHyperLinks)
+			if (previousHyperLinks is not null)
 			{
-				removed.AbortAllPointerState();
+				foreach (var removed in previousHyperLinks)
+				{
+					removed.AbortAllPointerState();
+				}
+			}
+		}
+
+		private void UpdateHyperlinks(IReadOnlyList<Inline> removed, IReadOnlyList<Inline> inserted)
+		{
+			HyperlinkOver = null;
+			List<Hyperlink> changedHyperlinks = null;
+			foreach (var inline in removed)
+			{
+				CollectHyperlinks(inline, ref changedHyperlinks);
+			}
+			if (changedHyperlinks is not null && _hyperlinkSet is not null)
+			{
+				foreach (var hyperlink in changedHyperlinks)
+				{
+					if (_hyperlinkSet.Remove(hyperlink))
+					{
+						_hyperlinks.Remove(hyperlink);
+						hyperlink.AbortAllPointerState();
+					}
+				}
+			}
+
+			changedHyperlinks?.Clear();
+			foreach (var inline in inserted)
+			{
+				CollectHyperlinks(inline, ref changedHyperlinks);
+			}
+			if (changedHyperlinks is not null)
+			{
+				foreach (var hyperlink in changedHyperlinks)
+				{
+					if ((_hyperlinkSet ??= new()).Add(hyperlink))
+					{
+						_hyperlinks.Add(hyperlink);
+					}
+				}
+			}
+		}
+
+		private static void CollectHyperlinks(Inline inline, ref List<Hyperlink> hyperlinks)
+		{
+			if (inline is Hyperlink hyperlink)
+			{
+				(hyperlinks ??= new()).Add(hyperlink);
+			}
+			if (inline is Span span)
+			{
+				foreach (var child in span.Inlines)
+				{
+					CollectHyperlinks(child, ref hyperlinks);
+				}
 			}
 		}
 
@@ -1316,7 +1448,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var enumerator = _inlines.GetEnumeratorFast();
 				while (enumerator.MoveNext())
 				{
-					((DependencyObject)enumerator.Current).UpdateResourceBindings(updateReason, resourceContextProvider: this);
+					UpdateChildThemeBindings((DependencyObject)enumerator.Current, updateReason, this);
 				}
 			}
 		}
@@ -1366,6 +1498,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _renderSelection;
 		private (int index, CompositionBrush brush)? _caretPaint;
 		private bool _forceFocusedForContextFlyout;
+		private long _textLayoutVersion;
+		private double _textLayoutWidth = double.NaN;
 
 		// Touch-selection grippers (knobs), driven by the shared TextSelectionGripperPresenter. Unlike
 		// TextBox there is no caret/insertion point in a TextBlock, so the grippers only ever appear in
@@ -1375,9 +1509,84 @@ namespace Microsoft.UI.Xaml.Controls
 		private Microsoft.UI.Input.PointerPoint? _lastPointerDownPoint;
 
 		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
-		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
+		private IParsedText _parsedText = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
+
+		// Draw replays the parsed text, so a new parse (in measure or arrange) is what calls for a repaint; an arrange
+		// that only moves the block keeps its recording.
+		internal IParsedText ParsedText
+		{
+			get => _parsedText;
+			private set
+			{
+				if (!ReferenceEquals(_parsedText, value))
+				{
+					_parsedText = value;
+					Visual.Compositor.InvalidateRender(Visual);
+				}
+			}
+		}
+
+		private ParagraphLayoutInfo? _endingParagraphLayout;
+		internal ParagraphLayoutInfo? EndingParagraphLayout
+		{
+			get => _endingParagraphLayout;
+			set
+			{
+				if (!ReferenceEquals(_endingParagraphLayout, value))
+				{
+					_endingParagraphLayout = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
+		private TextAlignment? _endingParagraphAlignment;
+		internal TextAlignment? EndingParagraphAlignment
+		{
+			get => _endingParagraphAlignment;
+			set
+			{
+				if (_endingParagraphAlignment != value)
+				{
+					_endingParagraphAlignment = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
+		private bool _alignmentIncludesTrailingWhitespace;
+		internal bool AlignmentIncludesTrailingWhitespace
+		{
+			get => _alignmentIncludesTrailingWhitespace;
+			set
+			{
+				if (_alignmentIncludesTrailingWhitespace != value)
+				{
+					_alignmentIncludesTrailingWhitespace = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
+		private bool _ignoreTrailingCharacterSpacing;
+		internal bool IgnoreTrailingCharacterSpacing
+		{
+			get => _ignoreTrailingCharacterSpacing;
+			set
+			{
+				if (_ignoreTrailingCharacterSpacing != value)
+				{
+					_ignoreTrailingCharacterSpacing = value;
+					InvalidateMeasure();
+				}
+			}
+		}
 
 		internal event EventHandler? DrawingFinished;
+
+		internal long TextLayoutVersion => _textLayoutVersion;
+
+		internal double TextLayoutWidth => _textLayoutWidth;
 
 		public TextBlock()
 		{
@@ -1423,9 +1632,24 @@ namespace Microsoft.UI.Xaml.Controls
 		/// standalone <see cref="TextBlock"/>. Typed as the engine, not the control, so it is set for a
 		/// <see cref="PasswordBox"/> as well — the engine drives selection and caret for both.
 		/// </summary>
-		internal TextBoxCore? OwningTextBox { get; init; }
+		internal ITextBoxViewHost? OwningTextBox { get; init; }
 
 		internal bool IsSpellCheckEnabled { get; set; }
+
+		private float _defaultTabStop = 48;
+
+		internal float DefaultTabStop
+		{
+			get => _defaultTabStop;
+			set
+			{
+				if (!_defaultTabStop.Equals(value))
+				{
+					_defaultTabStop = value;
+					InvalidateMeasure();
+				}
+			}
+		}
 
 		private protected override void OnLoaded()
 		{
@@ -1447,7 +1671,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
+			if (ParsedText is MathParsedText)
+			{
+				ParsedText = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
+			}
 			ParsedText = ParseText(availableSizeWithoutPadding, out var desiredSize);
+			_textLayoutWidth = availableSizeWithoutPadding.Width;
+			_textLayoutVersion++;
 
 			desiredSize = desiredSize.Add(padding);
 
@@ -1470,25 +1700,43 @@ namespace Microsoft.UI.Xaml.Controls
 			return desiredSize;
 		}
 
-		private UnicodeText ParseText(Size availableSizeWithoutPadding, out Size size)
+		private IParsedText ParseText(Size availableSizeWithoutPadding, out Size size)
 		{
 			var isTextBoxOwned = OwningTextBox is not null;
 			var adjustedTextAlignment = GetAdjustedTextAlignment();
-			var ret = new UnicodeText(
-				availableSizeWithoutPadding,
-				Inlines.TraversedTree.leafTree,
-				GetDefaultFontDetails(),
-				MaxLines,
-				(float)LineHeight,
-				LineStackingStrategy,
-				FlowDirection,
-				adjustedTextAlignment,
-				TextWrapping,
-				TextTrimming,
-				IsSpellCheckEnabled,
-				this,
-				isTextBoxOwned,
-				out size);
+			var inlines = Inlines.TraversedTree.leafTree;
+			var defaultFontDetails = GetDefaultFontDetails();
+			IParsedText ret = CustomTextLayout is { } customLayout
+				? customLayout.Create(
+					availableSizeWithoutPadding,
+					inlines,
+					defaultFontDetails,
+					this,
+					Foreground,
+					adjustedTextAlignment,
+					out size)
+				: new UnicodeText(
+					availableSizeWithoutPadding,
+					inlines,
+					defaultFontDetails,
+					MaxLines,
+					(float)LineHeight,
+					LineStackingStrategy,
+					TextLineBounds,
+					FlowDirection,
+					adjustedTextAlignment,
+					TextWrapping,
+					TextTrimming,
+					IsSpellCheckEnabled,
+					this,
+					isTextBoxOwned,
+					DefaultTabStop,
+					EndingParagraphLayout,
+					EndingParagraphAlignment,
+					Foreground,
+					AlignmentIncludesTrailingWhitespace,
+					IgnoreTrailingCharacterSpacing,
+					out size);
 
 			if (isTextBoxOwned)
 			{
@@ -1500,7 +1748,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private TextAlignment? GetAdjustedTextAlignment() =>
-			OwningTextBox is { IsTextAlignmentExplicitlySet: false }
+			OwningTextBox is { IsTextAlignmentSetToDefault: true }
 				? null
 				: TextAlignment;
 
@@ -1558,7 +1806,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			Visual.Compositor.InvalidateRender(Visual);
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
 
@@ -1566,8 +1813,11 @@ namespace Microsoft.UI.Xaml.Controls
 			// Note that MeasureOverride doesn't have these checks. If something in the text block has changed that would
 			// require a re-parse, the ParseText call during the measure pass will catch it. There are no changes that
 			// would require a re-parse that would invalidate arrange but not measure, except TextAlignment, which we explicitly check.
+			// A size change only counts in a dimension the layout used: a single left-aligned line is arranged at any height.
 			var arrangedSize = _lastParsedTextCreationValues.outSize;
-			if (_lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
+			var sizeChanged = _lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding
+				&& !(ParsedText is UnicodeText parsed && parsed.IsLayoutValidFor(availableSizeWithoutPadding));
+			if (sizeChanged || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
 			{
 				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
 			}
@@ -1594,6 +1844,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal (int index, CompositionBrush brush)? RenderCaret
 		{
+			get => _caretPaint;
 			set
 			{
 				if (_caretPaint != value)
@@ -1606,11 +1857,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void Draw(in Visual.PaintingSession session)
 		{
-			session.Canvas.Save();
-			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
-			var highligherters = _renderSelection ? TextHighlighters.Append(new TextHighlighter
+			session.Session.Save();
+			session.Session.Translate((float)Padding.Left, (float)Padding.Top);
+			// Like CTextBlock::UpdateSelectionHighlightColor, a null brush means the default selection color.
+			var selectionHighlightColor = SelectionHighlightColor ?? DefaultBrushes.SelectionHighlightColor;
+			var highligherters = _renderSelection && selectionHighlightColor.Color.A != 0 ? TextHighlighters.Append(new TextHighlighter
 			{
-				Background = SelectionHighlightColor,
+				Background = selectionHighlightColor,
 				Foreground = DefaultBrushes.SelectedTextForegroundColor,
 				Ranges =
 				{
@@ -1632,7 +1885,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
 				highligherters,
 				compositionRange);
-			session.Canvas.Restore();
+			session.Session.Restore();
 			DrawingFinished?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -1669,9 +1922,10 @@ namespace Microsoft.UI.Xaml.Controls
 			Visual.Compositor.InvalidateRender(Visual);
 		}
 
-		partial void InvalidateTextBlockPartial() => InvalidateInlineAndRequireRepaint();
+		// InvalidateTextBlock and an inlines change invalidate measure, and the parse that follows repaints (see ParsedText),
+		// so they do not invalidate the render themselves: a block that is collapsed or not in the tree is not measured
+		// and stays off the compositor.
 		partial void OnForegroundChangedPartial() => InvalidateInlineAndRequireRepaint();
-		partial void OnInlinesChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnMaxLinesChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnTextWrappingChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnLineHeightChangedPartial() => InvalidateInlineAndRequireRepaint();

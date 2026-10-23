@@ -9,6 +9,8 @@
 		<UnoForceHotReloadCodeGen>true</UnoForceHotReloadCodeGen>
 		<AssemblyName>Uno.UI.UnitTests</AssemblyName>
 		<RootNamespace>Uno.UI.Tests</RootNamespace>
+		<!-- We don't care about boxing allocations in tests -->
+		<NoWarn>$(NoWarn);UnoInternal0002</NoWarn>
 		<!--
 			This define lets the test runner alone signal it is the unit-test host
 			(distinct from runtime-test or production builds) so files Compile-linked
@@ -46,7 +48,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		<PackageReference Include="MSTest" />
 		<PackageReference Include="AwesomeAssertions" />
-		<PackageReference Include="Moq" Version="4.17.2" />
+		<PackageReference Include="Moq" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" PrivateAssets="all" />
 		<!--
 			Text measurement on Skia uses ICU. A real Skia host pulls the native ICU
@@ -100,15 +102,15 @@
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
 	<ItemGroup>
-		<Page Include="..\SamplesApp\SamplesApp.Samples\Windows\UI\Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
+		<Page Include="..\SamplesApp\SamplesApp.Samples\Microsoft\UI\Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AbsolutePathComparer.cs">
 		  <Link>Helpers\AbsolutePathComparer.cs</Link>
 		</Compile>
 		<Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
-		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\Given_ListViewBase_Items.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\Given_ListViewBase_Items.cs" />
-		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\GroupingObservableCollection.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\GroupingObservableCollection.cs" />
+		<Compile Include="..\Uno.UI.RuntimeTests\Microsoft\UI\Xaml\Controls\Given_ListViewBase_Items.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\Given_ListViewBase_Items.cs" />
+		<Compile Include="..\Uno.UI.RuntimeTests\Microsoft\UI\Xaml\Controls\GroupingObservableCollection.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\GroupingObservableCollection.cs" />
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourceConverters\AndroidResourceConverter.cs">
 			<Link>Resources\AndroidResourceConverter.cs</Link>
 		</Compile>
@@ -118,8 +120,13 @@
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourceQualifierPathResolver.cs">
 			<Link>Resources\ResourceQualifierPathResolver.cs</Link>
 		</Compile>
-		<Compile Include="..\Uno.UI.Runtime.Skia.Android\UI\Xaml\Controls\WebView\Native\Android\WebViewActivityLaunch.cs" Link="Windows_UI_XAML_Controls\WebView2Tests\WebViewActivityLaunch.cs" />
-		<Compile Include="..\AddIns\Uno.UI.WebView.Skia.X11\X11WebViewNavigationStarting.cs" Link="Windows_UI_XAML_Controls\WebView2Tests\X11WebViewNavigationStarting.cs" />
+		<Compile Include="..\Uno.UI.Runtime.Android\UI\Xaml\Controls\WebView\Native\Android\WebViewActivityLaunch.cs" Link="Windows_UI_XAML_Controls\WebView2Tests\WebViewActivityLaunch.cs" />
+		<Compile Include="..\AddIns\Uno.UI.WebView.X11\X11WebViewNavigationStarting.cs" Link="Windows_UI_XAML_Controls\WebView2Tests\X11WebViewNavigationStarting.cs" />
+		<!-- Pure math split out of the Win32/X11 pointer input sources and the macOS title bar so it's testable
+		     without a real HWND/X11 display/NSWindow (no runtime host project has its own unit test harness). -->
+		<Compile Include="..\Uno.UI.Runtime.Win32\Devices\Input\Win32PointerCoordinateMath.cs" Link="Windows_UI_Input\Win32PointerCoordinateMath.cs" />
+		<Compile Include="..\Uno.UI.Runtime.X11\Devices\Input\X11PointerCoordinateMath.cs" Link="Windows_UI_Input\X11PointerCoordinateMath.cs" />
+		<Compile Include="..\Uno.UI.Runtime.MacOS\UI\Windowing\MacOSTitleBarMath.cs" Link="Windows_UI_Input\MacOSTitleBarMath.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<!--
@@ -131,19 +138,20 @@
 			deploy time), but the unit-test runner is its own .exe and needs the real
 			Skia partials so HasThreadAccessOverride and DispatchOverride exist.
 		-->
-		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" />
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Generic.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
+		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Generic.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
 
-		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibraryProps\Uno.UI.Tests.ViewLibraryProps.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

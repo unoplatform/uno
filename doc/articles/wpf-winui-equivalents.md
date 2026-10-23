@@ -231,7 +231,7 @@ WinUI does not have an Adorner layer. Use these alternatives:
 
 | Adorner Use Case | WinUI Replacement |
 |---|---|
-| Validation indicators | `TeachingTip`, `InfoBar`, or input validation templates |
+| Validation indicators | `TeachingTip`, `InfoBar`, or [input validation](xref:Uno.Features.InputValidation) templates |
 | Resize handles | `Popup` positioned relative to target |
 | Drag preview | `DragItemsStarting` event with custom DragUI |
 | Overlay decorations | Canvas overlay or `Popup` layer |

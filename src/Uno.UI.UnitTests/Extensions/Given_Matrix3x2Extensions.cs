@@ -10,7 +10,7 @@ using Uno.Extensions;
 
 namespace Uno.UI.Tests.Extensions
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Matrix3x2Extensions
 	{
 		[TestMethod]

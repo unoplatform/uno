@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.WebView.Skia.X11;
+using Uno.UI.WebView.X11;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Controls;
 

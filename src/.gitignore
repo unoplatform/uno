@@ -2,5 +2,5 @@
 .claude/
 
 # Native binaries — built from source in CI
-Uno.UI.Runtime.Skia.MacOS/libUnoNativeMac.dylib
-Uno.UI.Runtime.Skia.MacOS/runtimes/
+Uno.UI.Runtime.MacOS/libUnoNativeMac.dylib
+Uno.UI.Runtime.MacOS/runtimes/

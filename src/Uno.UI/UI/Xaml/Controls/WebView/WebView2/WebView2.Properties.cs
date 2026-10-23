@@ -6,6 +6,7 @@
 
 using System;
 using Microsoft.Web.WebView2.Core;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Windows.UI;
 
@@ -50,12 +51,12 @@ partial class WebView2
 	/// <summary>Identifies the CanGoForward dependency property.</summary>
 	public static DependencyProperty CanGoForwardProperty { get; } =
 		DependencyProperty.Register(nameof(CanGoForward), typeof(bool), typeof(WebView2),
-			new FrameworkPropertyMetadata(default(bool), (sender, args) => ((WebView2)sender).OnPropertyChanged(args)));
+			new FrameworkPropertyMetadata(BoolBoxes.False, (sender, args) => ((WebView2)sender).OnPropertyChanged(args)));
 
 	/// <summary>Identifies the CanGoBack dependency property.</summary>
 	public static DependencyProperty CanGoBackProperty { get; } =
 		DependencyProperty.Register(nameof(CanGoBack), typeof(bool), typeof(WebView2),
-			new FrameworkPropertyMetadata(default(bool), (sender, args) => ((WebView2)sender).OnPropertyChanged(args)));
+			new FrameworkPropertyMetadata(BoolBoxes.False, (sender, args) => ((WebView2)sender).OnPropertyChanged(args)));
 
 	/// <summary>Identifies the DefaultBackgroundColor dependency property.</summary>
 	public static DependencyProperty DefaultBackgroundColorProperty { get; } =

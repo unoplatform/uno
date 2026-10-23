@@ -383,7 +383,7 @@ In the CardView sample, one of the views shows how the appearance of the custom 
 In code-behind, you must also set a translation on the Border to raise it in the Z-axis:
 
 ```csharp
-#if !HAS_UNO_WINUI
+#if !HAS_UNO
     CardBorder.Translation += new System.Numerics.Vector3(0, 0, 32);
 #endif
 ```

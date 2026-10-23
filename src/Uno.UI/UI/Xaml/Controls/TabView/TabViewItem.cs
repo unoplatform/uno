@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
@@ -183,7 +184,7 @@ public partial class TabViewItem : ListViewItem
 		}
 		else
 		{
-			SetValue(Canvas.ZIndexProperty, 0);
+			SetValue(Canvas.ZIndexProperty, IntBoxes.Zero);
 		}
 
 		UpdateWidthModeVisualState();

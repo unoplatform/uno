@@ -1,0 +1,33 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Composition.GitHubTerrain.GitHubTerrain"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="#F9F6F1"
+    RequestedTheme="Light"
+    mc:Ignorable="d">
+
+    <Grid x:Name="host">
+        <StackPanel
+            Margin="0,0,24,20"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Orientation="Horizontal"
+            Spacing="10">
+            <ToggleButton
+                x:Name="raiseToggle"
+                VerticalAlignment="Bottom"
+                Content="View: terrain"
+                IsChecked="True" />
+            <RadioButtons
+                x:Name="dataChoice"
+                VerticalAlignment="Bottom"
+                MaxColumns="2"
+                SelectedIndex="0">
+                <x:String>Field</x:String>
+                <x:String>Contributions</x:String>
+            </RadioButtons>
+        </StackPanel>
+    </Grid>
+</Page>

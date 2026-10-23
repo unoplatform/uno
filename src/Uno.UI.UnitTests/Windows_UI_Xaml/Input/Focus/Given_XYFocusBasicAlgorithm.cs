@@ -14,7 +14,7 @@ using static Uno.UI.Xaml.Input.XYFocusAlgorithmHelper;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_XYFocusBasicAlgorithm
 	{
 		[TestMethod]

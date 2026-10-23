@@ -2,6 +2,7 @@
 
 using System.Threading.Tasks;
 using Uno.UI.Xaml.Controls;
+using Uno.Web.WebView2.Core;
 
 namespace Microsoft.Web.WebView2.Core;
 

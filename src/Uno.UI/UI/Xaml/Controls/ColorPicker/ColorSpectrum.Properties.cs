@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Windows.UI;
 
@@ -55,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public int MaxHue
 		{
 			get => (int)GetValue(MaxHueProperty);
-			set => SetValue(MaxHueProperty, value);
+			set => SetValue(MaxHueProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxHueProperty { get; } =
@@ -70,7 +71,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public int MaxSaturation
 		{
 			get => (int)GetValue(MaxSaturationProperty);
-			set => SetValue(MaxSaturationProperty, value);
+			set => SetValue(MaxSaturationProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxSaturationProperty { get; } =
@@ -85,7 +86,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public int MaxValue
 		{
 			get => (int)GetValue(MaxValueProperty);
-			set => SetValue(MaxValueProperty, value);
+			set => SetValue(MaxValueProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxValueProperty { get; } =
@@ -100,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public int MinHue
 		{
 			get => (int)GetValue(MinHueProperty);
-			set => SetValue(MinHueProperty, value);
+			set => SetValue(MinHueProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MinHueProperty { get; } =
@@ -109,13 +110,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				typeof(int),
 				typeof(ColorSpectrum),
 				new FrameworkPropertyMetadata(
-					0,
+					IntBoxes.Zero,
 					(s, e) => (s as ColorSpectrum)?.OnPropertyChanged(e)));
 
 		public int MinSaturation
 		{
 			get => (int)GetValue(MinSaturationProperty);
-			set => SetValue(MinSaturationProperty, value);
+			set => SetValue(MinSaturationProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MinSaturationProperty { get; } =
@@ -124,13 +125,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				typeof(int),
 				typeof(ColorSpectrum),
 				new FrameworkPropertyMetadata(
-					0,
+					IntBoxes.Zero,
 					(s, e) => (s as ColorSpectrum)?.OnPropertyChanged(e)));
 
 		public int MinValue
 		{
 			get => (int)GetValue(MinValueProperty);
-			set => SetValue(MinValueProperty, value);
+			set => SetValue(MinValueProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MinValueProperty { get; } =
@@ -139,7 +140,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				typeof(int),
 				typeof(ColorSpectrum),
 				new FrameworkPropertyMetadata(
-					0,
+					IntBoxes.Zero,
 					(s, e) => (s as ColorSpectrum)?.OnPropertyChanged(e)));
 
 		public ColorSpectrumShape Shape

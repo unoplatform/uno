@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 using SampleControl.Entities;
 using Microsoft.UI.Xaml.Data;
@@ -207,8 +208,12 @@ namespace SampleControl.Presentation
 			get => _categories;
 			set
 			{
+				var selected = _selectedCategory;
 				_categories = value;
 				RaisePropertyChanged();
+
+				// After the bindings: WinUI's ListView drops its selection on a new ItemsSource and writes null back.
+				RemapSelectedCategory(selected);
 			}
 		}
 
@@ -435,6 +440,10 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		/// <summary>
+		/// Whether the current sample is a favorite. Setting a value that differs from the persisted state
+		/// persists it, so a TwoWay toggle button needs no command. Rapid toggles are serialised and the last one wins.
+		/// </summary>
 		public bool IsFavoritedSample
 		{
 			get => _isFavoritedSample;
@@ -442,6 +451,11 @@ namespace SampleControl.Presentation
 			{
 				_isFavoritedSample = value;
 				RaisePropertyChanged();
+
+				if (CurrentSelectedSample is { } sample && value != IsPersistedFavorite(sample))
+				{
+					_ = PersistRequestedFavoriteAsync(sample);
+				}
 			}
 		}
 
@@ -578,8 +592,7 @@ namespace SampleControl.Presentation
 			{
 				if (value)
 				{
-					SetRootTheme(ElementTheme.Dark);
-					RaisePropertyChanged();
+					SetAppTheme(ElementTheme.Dark);
 				}
 			}
 		}
@@ -591,8 +604,7 @@ namespace SampleControl.Presentation
 			{
 				if (value)
 				{
-					SetRootTheme(ElementTheme.Light);
-					RaisePropertyChanged();
+					SetAppTheme(ElementTheme.Light);
 				}
 			}
 		}
@@ -604,10 +616,17 @@ namespace SampleControl.Presentation
 			{
 				if (value)
 				{
-					SetRootTheme(ElementTheme.Default);
-					RaisePropertyChanged();
+					SetAppTheme(ElementTheme.Default);
 				}
 			}
+		}
+
+		private void RaiseThemeFlagsChanged()
+		{
+			RaisePropertyChanged(nameof(IsAppThemeDark));
+			RaisePropertyChanged(nameof(IsAppThemeLight));
+			RaisePropertyChanged(nameof(IsAppThemeSystem));
+			RaisePropertyChanged(nameof(AppThemeIndex));
 		}
 
 		private ElementTheme GetRootTheme()

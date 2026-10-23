@@ -20,6 +20,7 @@ using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation.Metadata;
 using Uno.UI.Xaml.Core;
 
@@ -273,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					true,
+					BoolBoxes.True,
 					propertyChangedCallback: OnBringIntoViewOnFocusChangeChanged));
 
 		private static void OnBringIntoViewOnFocusChangeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -429,7 +430,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ExtentHeight
 		{
 			get => (double)GetValue(ExtentHeightProperty);
-			private set => SetValue(ExtentHeightProperty, value);
+			private set => SetValue(ExtentHeightProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ExtentHeightProperty { get; } =
@@ -437,14 +438,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ExtentHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region ExtentWidth (DP - readonly)
 		public double ExtentWidth
 		{
 			get => (double)GetValue(ExtentWidthProperty);
-			private set => SetValue(ExtentWidthProperty, value);
+			private set => SetValue(ExtentWidthProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ExtentWidthProperty { get; } =
@@ -452,14 +453,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ExtentWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region ViewportHeight (DP - readonly)
 		public double ViewportHeight
 		{
 			get => (double)GetValue(ViewportHeightProperty);
-			private set => SetValue(ViewportHeightProperty, value);
+			private set => SetValue(ViewportHeightProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ViewportHeightProperty { get; } =
@@ -467,14 +468,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ViewportHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region ViewportWidth (DP - readonly)
 		public double ViewportWidth
 		{
 			get => (double)GetValue(ViewportWidthProperty);
-			private set => SetValue(ViewportWidthProperty, value);
+			private set => SetValue(ViewportWidthProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ViewportWidthProperty { get; } =
@@ -482,7 +483,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ViewportWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region ComputedHorizontalScrollBarVisibility (DP - readonly)
@@ -519,7 +520,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ScrollableHeight
 		{
 			get => (double)GetValue(ScrollableHeightProperty);
-			private set => SetValue(ScrollableHeightProperty, value);
+			private set => SetValue(ScrollableHeightProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ScrollableHeightProperty { get; } =
@@ -527,14 +528,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ScrollableHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region ScrollableWidth (DP - readonly)
 		public double ScrollableWidth
 		{
 			get => (double)GetValue(ScrollableWidthProperty);
-			private set => SetValue(ScrollableWidthProperty, value);
+			private set => SetValue(ScrollableWidthProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ScrollableWidthProperty { get; } =
@@ -542,14 +543,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ScrollableWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 		#endregion
 
 		#region VerticalOffset (DP - readonly)
 		public double VerticalOffset
 		{
 			get => (double)GetValue(VerticalOffsetProperty);
-			private set => SetValue(VerticalOffsetProperty, value);
+			private set => SetValue(VerticalOffsetProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty VerticalOffsetProperty { get; } =
@@ -558,7 +559,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					defaultValue: (double)0,
+					defaultValue: DoubleBoxes.Zero,
 					propertyChangedCallback: null
 				)
 			);
@@ -569,7 +570,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double HorizontalOffset
 		{
 			get => (double)GetValue(HorizontalOffsetProperty);
-			private set => SetValue(HorizontalOffsetProperty, value);
+			private set => SetValue(HorizontalOffsetProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty HorizontalOffsetProperty { get; } =
@@ -578,7 +579,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					defaultValue: (double)0,
+					defaultValue: DoubleBoxes.Zero,
 					propertyChangedCallback: null
 				)
 			);
@@ -703,10 +704,16 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
 			}
 
+			var oldSize = new Size(ExtentWidth, ExtentHeight);
+
+			// Only needed to raise the automation events below.
+			var hasAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged);
+			var (oldViewportWidth, oldViewportHeight, oldScrollableWidth, oldScrollableHeight, oldHorizontalOffset, oldVerticalOffset) = hasAutomationListener
+				? (ViewportWidth, ViewportHeight, ScrollableWidth, ScrollableHeight, HorizontalOffset, VerticalOffset)
+				: default;
+
 			ViewportHeight = vpHeight;
 			ViewportWidth = vpWidth;
-
-			var oldSize = new Size(ExtentWidth, ExtentHeight);
 
 			if (_presenter?.CustomContentExtent is { } customExtent)
 			{
@@ -809,6 +816,28 @@ namespace Microsoft.UI.Xaml.Controls
 			if (oldSize != newSize)
 			{
 				ExtentSizeChanged?.Invoke(this, new(this, oldSize, newSize));
+			}
+
+			// MUX Reference ScrollViewer_Partial.cpp, ScrollViewer::InvalidateScrollInfo_TryUpdateValues:
+			// extent/viewport changes are raised to automation clients too, not only offset changes.
+			if (hasAutomationListener &&
+				(!NumericExtensions.AreClose(oldSize.Width, ExtentWidth) ||
+				!NumericExtensions.AreClose(oldSize.Height, ExtentHeight) ||
+				!NumericExtensions.AreClose(oldViewportWidth, ViewportWidth) ||
+				!NumericExtensions.AreClose(oldViewportHeight, ViewportHeight) ||
+				!NumericExtensions.AreClose(oldScrollableWidth, ScrollableWidth) ||
+				!NumericExtensions.AreClose(oldScrollableHeight, ScrollableHeight)) &&
+				GetOrCreateAutomationPeer() is ScrollViewerAutomationPeer peer)
+			{
+				peer.RaiseAutomationEvents(
+					oldSize.Width,
+					oldSize.Height,
+					oldViewportWidth,
+					oldViewportHeight,
+					MinHorizontalOffset,
+					MinVerticalOffset,
+					oldHorizontalOffset,
+					oldVerticalOffset);
 			}
 		}
 
@@ -1136,7 +1165,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Scrollbar interactions are explicit offset requests: arm the intent so the post-layout
 			// recompute coerces toward this offset instead of snapping back to a stale programmatic one.
-			_verticalOffsetIntent = offset;
+			_verticalOffsetIntent = ValidateVerticalOffsetIntent(offset);
 
 			ChangeViewCore(
 				horizontalOffset: null,
@@ -1164,7 +1193,7 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 
 			// Arm the intent — see OnVerticalScrollBarScrolled.
-			_horizontalOffsetIntent = offset;
+			_horizontalOffsetIntent = ValidateHorizontalOffsetIntent(offset);
 
 			ChangeViewCore(
 				horizontalOffset: offset,
@@ -1434,11 +1463,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (horizontalOffset is double hh)
 				{
-					_horizontalOffsetIntent = hh;
+					_horizontalOffsetIntent = _isLayoutAdjustment ? hh : ValidateHorizontalOffsetIntent(hh, zoomFactor);
 				}
 				if (verticalOffset is double vv)
 				{
-					_verticalOffsetIntent = vv;
+					_verticalOffsetIntent = _isLayoutAdjustment ? vv : ValidateVerticalOffsetIntent(vv, zoomFactor);
 				}
 			}
 
@@ -1499,9 +1528,52 @@ namespace Microsoft.UI.Xaml.Controls
 		// requests in the same sense as ChangeView; the new value supersedes any prior intent so
 		// the recompute step does not pull the offset back to a stale intent (which the user has
 		// just explicitly overridden).
-		internal void SetVerticalOffsetIntent(double offset) => _verticalOffsetIntent = offset;
+		internal void SetVerticalOffsetIntent(double offset) => _verticalOffsetIntent = ValidateVerticalOffsetIntent(offset);
 
-		internal void SetHorizontalOffsetIntent(double offset) => _horizontalOffsetIntent = offset;
+		internal void SetHorizontalOffsetIntent(double offset) => _horizontalOffsetIntent = ValidateHorizontalOffsetIntent(offset);
+
+		// The intent is validated against the range at request time, like WinUI's m_Offset
+		// (SetVerticalOffsetPrivate, and AdjustTargetVerticalOffset which uses the target zoom).
+		// Left raw, a request past the extent keeps chasing it as the extent grows.
+		private double ValidateVerticalOffsetIntent(double offset, float? zoomFactor = null)
+			=> ValidateOffsetIntent(offset, ExtentHeight, ViewportHeight, zoomFactor);
+
+		private double ValidateHorizontalOffsetIntent(double offset, float? zoomFactor = null)
+			=> ValidateOffsetIntent(offset, ExtentWidth, ViewportWidth, zoomFactor);
+
+		private double ValidateOffsetIntent(double offset, double extent, double viewport, float? zoomFactor)
+		{
+			var zoom = ZoomFactor;
+			if (zoomFactor is float z && !float.IsNaN(z) && ZoomMode == ZoomMode.Enabled)
+			{
+				// The same bounds the presenter applies the zoom with.
+				var min = Math.Max(0.1f, MinZoomFactor);
+				zoom = Math.Clamp(z, min, Math.Max(min, MaxZoomFactor));
+			}
+
+			return Math.Max(0, Math.Min(offset, Math.Max(Math.Round(extent * zoom - viewport, 4), 0)));
+		}
+
+		private bool _isLayoutAdjustment;
+
+		/// <summary>
+		/// Scrolls to compensate a change of the content's own layout. Unlike a request, it is computed against an
+		/// extent this ScrollViewer has not been arranged with yet, so it is kept as is rather than clamped to the
+		/// current range, and the post-layout recompute seats it once the extent catches up.
+		/// </summary>
+		internal void ChangeViewForLayoutAdjustment(double? horizontalOffset, double? verticalOffset, bool disableAnimation = true)
+		{
+			var wasLayoutAdjustment = _isLayoutAdjustment;
+			_isLayoutAdjustment = true;
+			try
+			{
+				ChangeView(horizontalOffset, verticalOffset, null, disableAnimation);
+			}
+			finally
+			{
+				_isLayoutAdjustment = wasLayoutAdjustment;
+			}
+		}
 
 		// Recomputes VerticalOffset/HorizontalOffset = clamp(intent, 0, ScrollableHeight/Width) when
 		// an intent is armed. Called from UpdateDimensionProperties after the SV's extent/viewport

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TitleBar.h, commit fc2f82117
 
@@ -13,6 +13,7 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class TitleBar
 {
 	private readonly SerialDisposable m_inputActivationChangedToken = new();
+	private readonly SerialDisposable m_insetsChangedRevoker = new();
 	private readonly SerialDisposable m_windowRectChangedToken = new();
 	private string m_defaultAppWindowTitle;
 	private readonly SerialDisposable m_backButtonClickRevoker = new();
@@ -20,6 +21,7 @@ partial class TitleBar
 	private readonly SerialDisposable m_sizeChangedRevoker = new();
 	private readonly SerialDisposable m_iconLayoutUpdatedRevoker = new();
 	private readonly SerialDisposable m_contentLayoutUpdatedRevoker = new();
+	private readonly SerialDisposable m_paddingLayoutUpdatedRevoker = new();
 	// Add a cached AppWindow field to avoid repeated GetFromWindowId calls
 	private AppWindow m_appWindow;
 	private readonly SerialDisposable m_flowDirectionChangedRevoker = new();

@@ -10,6 +10,10 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class CoreWebView2InitializedEventArgs
 {
+	internal CoreWebView2InitializedEventArgs() : this(null)
+	{
+	}
+
 	internal CoreWebView2InitializedEventArgs(Exception? exception) => m_exception = exception;
 
 	/// <summary>Gets the exception raised when a WebView2 is created.</summary>

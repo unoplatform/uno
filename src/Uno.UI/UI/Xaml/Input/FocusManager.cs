@@ -366,7 +366,7 @@ namespace Microsoft.UI.Xaml.Input
 
 		private static partial class NativeMethods
 		{
-			[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.focusSemanticElement")]
+			[JSImport("globalThis.Uno.UI.Runtime.Accessibility.focusSemanticElement")]
 			public static partial void FocusSemanticElement(IntPtr handle);
 		}
 	}
