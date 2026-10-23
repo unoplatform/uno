@@ -23,8 +23,6 @@ partial class WebView2
 	}
 
 #pragma warning disable CS0414 // Retain the state fields from WebView2.h.
-	private bool m_isExplicitEnvironment;
-	private bool m_isExplicitControllerOptions;
 #pragma warning restore CS0414
 	private CoreWebView2Environment? m_coreWebViewEnvironment;
 #if HAS_UNO

@@ -191,7 +191,7 @@ public class Given_WebView2_Improvements
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(0, initializedCount);
-		Assert.ThrowsExactly<InvalidOperationException>(() => webView.ExecuteScriptAsync("1 + 1"));
+		await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () => await webView.ExecuteScriptAsync("1 + 1"));
 		await webView.EnsureCoreWebView2Async();
 		Assert.AreEqual(1, initializedCount);
 	}

@@ -1288,7 +1288,6 @@ partial class WebView2
 		}
 		finally
 		{
-			// TODO Uno: Also complete waiters when the native environment factory fails, before controller creation.
 			m_isImplicitCreationInProgress = false;
 			m_isExplicitCreationInProgress = false;
 			m_creationInProgressAsync = null;
@@ -1792,11 +1791,6 @@ partial class WebView2
 	// }
 #endif
 
-#pragma warning disable IDE0051 // Used by the retained composition-controller pointer projection.
-	private Rect ScaleRectToPhysicalPixels(Rect inputRect) =>
-		new(inputRect.X * m_rasterizationScale, inputRect.Y * m_rasterizationScale,
-			inputRect.Width * m_rasterizationScale, inputRect.Height * m_rasterizationScale);
-#pragma warning restore IDE0051
 #if !HAS_UNO
 	// TODO Uno: Original source retained for the native/composition projection boundary of the port above.
 	// winrt::Rect WebView2::ScaleRectToPhysicalPixels(winrt::Rect inputRect)
@@ -1810,10 +1804,6 @@ partial class WebView2
 	// }
 #endif
 
-#pragma warning disable IDE0051 // Used by the retained composition-controller pointer projection.
-	private Point ScalePointToPhysicalPixels(Point inputPoint) =>
-		new(inputPoint.X * m_rasterizationScale, inputPoint.Y * m_rasterizationScale);
-#pragma warning restore IDE0051
 #if !HAS_UNO
 	// TODO Uno: Original source retained for the native/composition projection boundary of the port above.
 	// winrt::Point WebView2::ScalePointToPhysicalPixels(winrt::Point inputPoint)
@@ -2344,14 +2334,6 @@ partial class WebView2
 			{
 				ValidateNativeCreationArguments(environment, controllerOptions);
 				m_isExplicitCreationInProgress = true;
-				if (environment is not null)
-				{
-					m_isExplicitEnvironment = true;
-				}
-				if (controllerOptions is not null)
-				{
-					m_isExplicitControllerOptions = true;
-				}
 				await CreateCoreObjects(environment, controllerOptions);
 			}
 		});
@@ -2865,16 +2847,17 @@ partial class WebView2
 	{
 		// TODO_WebView2: Consider recreating the core webview here if its process had failed,
 		// allowing the app to use this API to recover from the error.
-		if (m_coreWebView is not { } core)
-		{
-			throw new InvalidOperationException("ExecuteScriptAsync(): " + s_error_cwv2_not_present);
-		}
 		return AsyncOperation.FromTask<string?>(async cancellationToken =>
 		{
+			if (m_coreWebView is not { } core)
+			{
+				throw new InvalidOperationException("ExecuteScriptAsync(): " + s_error_cwv2_not_present);
+			}
+
 			string? returnedValue = string.Empty;
 			try
 			{
-				returnedValue = await core.ExecuteScriptAsync(javascriptCode);
+				returnedValue = await core.ExecuteScriptAsync(javascriptCode) ?? string.Empty;
 			}
 			catch (Exception error) when (IsInvalidCoreState(error))
 			{
