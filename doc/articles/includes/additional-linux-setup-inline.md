@@ -1,3 +1,12 @@
+## [**Ubuntu 24.04/26.04**](#tab/ubuntu2404)
+
+- Install the required dependencies:
+
+    ```bash
+    sudo apt update
+    sudo apt install mesa-utils libgl1 ttf-mscorefonts-installer dbus libfontconfig1 libxrandr2 libxi-dev
+    ```
+
 ## [**Ubuntu 20.04/22.04**](#tab/ubuntu2004)
 
 - Install the required dependencies:
