@@ -125,33 +125,35 @@ stages:
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
-- stage: runtime_tests_skia_tvos
-  displayName: Tests - tvOS
-  # On PRs only Apple-specific changes run it; iOS covers the shared Skia layer and the Mac pool is the bottleneck.
-  condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.TvOSTestsRequired'], 'true')))
-  # Builds from source and never consumes native-assets-macos, so it need not wait for that stage.
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: .azure-devops-tests-tvos-build.yml
-    parameters:
-      vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
-      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-  - template: .azure-devops-tests-tvos.yml
-    parameters:
-      vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
-      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+# Disable tvOS for now. CI fails on tvOS because it cannot run on the simulator on xcode-27
+# https://github.com/unoplatform/uno/issues/25659
+# - stage: runtime_tests_skia_tvos
+#   displayName: Tests - tvOS
+#   # On PRs only Apple-specific changes run it; iOS covers the shared Skia layer and the Mac pool is the bottleneck.
+#   condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.TvOSTestsRequired'], 'true')))
+#   # Builds from source and never consumes native-assets-macos, so it need not wait for that stage.
+#   dependsOn:
+#     - Setup
+# 
+#   jobs:
+#   - template: .azure-devops-tests-tvos-build.yml
+#     parameters:
+#       vmImage: '${{ parameters.vmImage }}'
+#       vmMacImage: '${{ parameters.vmMacImage }}'
+#       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+#       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+#       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
+#       poolName: '${{ parameters.poolName }}'
+#       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+#   - template: .azure-devops-tests-tvos.yml
+#     parameters:
+#       vmImage: '${{ parameters.vmImage }}'
+#       vmMacImage: '${{ parameters.vmMacImage }}'
+#       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+#       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+#       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
+#       poolName: '${{ parameters.poolName }}'
+#       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_linux
   displayName: Tests - Desktop Linux
