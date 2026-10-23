@@ -10,14 +10,16 @@
 		<projectUrl>https://platform.uno/</projectUrl>
 		<license type="expression">Apache-2.0</license>
 		<icon>uno.png</icon>
-		<description>Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today. Open source and professionally supported.</description>
-		<copyright>Copyright (C) 2015-2025 Uno Platform Inc. - all rights reserved</copyright>
+		<readme>README.md</readme>
+		<description>Foundation types for Uno Platform (Windows.Foundation and related APIs), shared by the UI framework and the WinRT APIs.</description>
+		<copyright>Copyright (C) 2015-$year$ Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 	</metadata>
 	
 	<files>
 		<!-- Icon File -->
 		<file src="..\..\src\Common\uno.png" target="/" />
+		<file src="README.md" target="/" />
 
 		<!-- net10.0-ios26.0 -->
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net10.0-ios26.0\Uno.Foundation.dll" target="lib\net10.0-ios26.0" />
