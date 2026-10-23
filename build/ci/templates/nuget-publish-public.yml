@@ -17,10 +17,12 @@ steps:
       versionSpec: '7.9.0'
 
   # Sorts the packages into one folder per batch, and sets NuGetOrgPush<batch> for each non-empty one.
-  # On a re-run, it leaves out the packages already on nuget.org: NuGetCommand@2 can't pass -SkipDuplicate,
-  # and its allowPackageConflicts doesn't recognize nuget.org's 409, so a re-run would otherwise stop on
-  # the first package the previous attempt pushed. First attempts push everything, so an unexpected
-  # duplicate still fails the build.
+  # - A package ID that isn't on nuget.org yet stops the job before anything is pushed: the CI key
+  #   can't create new IDs, so the first version has to be uploaded by hand.
+  # - On a re-run, it leaves out the packages already on nuget.org: NuGetCommand@2 can't pass -SkipDuplicate,
+  #   and its allowPackageConflicts doesn't recognize nuget.org's 409, so a re-run would otherwise stop on
+  #   the first package the previous attempt pushed. First attempts push everything, so an unexpected
+  #   duplicate still fails the build.
   - pwsh: |
       $ErrorActionPreference = 'Stop'
       Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -31,22 +33,24 @@ steps:
       $isRerun = [int]$env:SYSTEM_JOBATTEMPT -gt 1
       $http = [System.Net.Http.HttpClient]::new()
 
-      function Test-OnNuGetOrg([string]$id, [string]$version) {
+      # Reached is false when nuget.org couldn't be queried; the package is then pushed as usual.
+      function Get-NuGetOrgListing([string]$id) {
         $url = "https://api.nuget.org/v3-flatcontainer/$($id.ToLowerInvariant())/index.json"
         for ($attempt = 1; $attempt -le 3; $attempt++) {
           try {
             $response = $http.GetAsync($url).GetAwaiter().GetResult()
-            if ($response.StatusCode -eq [System.Net.HttpStatusCode]::NotFound) { return $false }
+            if ($response.StatusCode -eq [System.Net.HttpStatusCode]::NotFound) {
+              return [pscustomobject]@{ Reached = $true; Exists = $false; Versions = @() }
+            }
             if ($response.IsSuccessStatusCode) {
               $versions = ($response.Content.ReadAsStringAsync().GetAwaiter().GetResult() | ConvertFrom-Json).versions
-              return $versions -contains $version.Split('+')[0]
+              return [pscustomobject]@{ Reached = $true; Exists = $true; Versions = $versions }
             }
           }
           catch { }
           Start-Sleep -Seconds 5
         }
-        Write-Host "##vso[task.logissue type=warning]Couldn't check $id $version on nuget.org, so it's pushed anyway."
-        return $false
+        return [pscustomobject]@{ Reached = $false }
       }
 
       if ($isRerun) {
@@ -56,6 +60,7 @@ steps:
 
       $packages = Get-ChildItem $source -Recurse -Filter *.nupkg
       if (-not $packages) { throw "No .nupkg file under $source." }
+      $newPackages = @()
 
       foreach ($package in $packages) {
         $zip = [System.IO.Compression.ZipFile]::OpenRead($package.FullName)
@@ -68,7 +73,15 @@ steps:
         }
         finally { $zip.Dispose() }
 
-        if ($isRerun -and (Test-OnNuGetOrg $metadata.id $metadata.version)) {
+        $listing = Get-NuGetOrgListing $metadata.id
+        if (-not $listing.Reached) {
+          Write-Host "##vso[task.logissue type=warning]Couldn't check $($metadata.id) on nuget.org, so it's pushed anyway."
+        }
+        elseif (-not $listing.Exists) {
+          $newPackages += [pscustomobject]@{ Id = $metadata.id; File = $package.Name }
+          continue
+        }
+        elseif ($isRerun -and $listing.Versions -contains $metadata.version.Split('+')[0]) {
           Write-Host "Already on nuget.org: $($metadata.id) $($metadata.version)"
           continue
         }
@@ -77,6 +90,14 @@ steps:
         $folder = New-Item -ItemType Directory -Force (Join-Path $target $batch)
         Copy-Item $package.FullName $folder
         Write-Host "$($batch): $($metadata.id) $($metadata.version)"
+      }
+
+      if ($newPackages) {
+        foreach ($new in $newPackages) {
+          Write-Host "##vso[task.logissue type=error]New package $($new.Id) isn't on nuget.org yet, and CI can't create a new package ID. Upload $($new.File) from this build's nuget-packages artifact at https://www.nuget.org/packages/manage/upload (owner: unoplatform), wait until it's listed, then re-run this job."
+        }
+        Write-Host "##vso[task.logissue type=error]Nothing was pushed to nuget.org. If the re-run then fails with a 403, the key behind the 'nuget.org uno packages' service connection must also allow the new package."
+        exit 1
       }
 
       foreach ($folder in Get-ChildItem $target -Directory -ErrorAction SilentlyContinue) {
