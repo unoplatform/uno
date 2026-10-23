@@ -17,6 +17,10 @@ public class Given_CurrencyFormatter
 	private const char OpenPatternSymbol = '(';
 	private const char ClosePatternSymbol = ')';
 
+	// The formatters follow the app language set in ClassInit, not CurrentCulture. Like them, take the user's
+	// overrides into account, which apply when the language is the user locale.
+	private static readonly NumberFormatInfo FormatterNumberFormat = new CultureInfo("en-us").NumberFormat;
+
 	[ClassInitialize]
 	public static void ClassInit(TestContext context)
 	{
@@ -664,8 +668,8 @@ public class Given_CurrencyFormatter
 
 	private string FormatCurrencyCodeModeNegativeNumber(string text, string symbol)
 	{
-		var negativeSign = CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
-		var pattern = CultureInfo.CurrentCulture.NumberFormat.CurrencyNegativePattern;
+		var negativeSign = FormatterNumberFormat.NegativeSign;
+		var pattern = FormatterNumberFormat.CurrencyNegativePattern;
 		var spaceSymbol = NoBreakSpaceChar;
 		var stringBuilder = new StringBuilder();
 
@@ -729,8 +733,8 @@ public class Given_CurrencyFormatter
 
 	private string FormatSymbolModeNegativeNumber(string text, string symbol)
 	{
-		var negativeSign = CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
-		var pattern = CultureInfo.CurrentCulture.NumberFormat.CurrencyNegativePattern;
+		var negativeSign = FormatterNumberFormat.NegativeSign;
+		var pattern = FormatterNumberFormat.CurrencyNegativePattern;
 		var stringBuilder = new StringBuilder();
 		var spaceSymbol = NoBreakSpaceChar;
 
@@ -837,7 +841,7 @@ public class Given_CurrencyFormatter
 
 	private string FormatCurrencyCodeModePositiveNumber(string text, string symbol)
 	{
-		var pattern = CultureInfo.CurrentCulture.NumberFormat.CurrencyPositivePattern;
+		var pattern = FormatterNumberFormat.CurrencyPositivePattern;
 		var spaceSymbol = NoBreakSpaceChar;
 		var stringBuilder = new StringBuilder();
 
@@ -864,7 +868,7 @@ public class Given_CurrencyFormatter
 
 	private string FormatSymbolModePositiveNumber(string text, string symbol)
 	{
-		var pattern = CultureInfo.CurrentCulture.NumberFormat.CurrencyPositivePattern;
+		var pattern = FormatterNumberFormat.CurrencyPositivePattern;
 		var spaceSymbol = NoBreakSpaceChar;
 		var stringBuilder = new StringBuilder();
 
