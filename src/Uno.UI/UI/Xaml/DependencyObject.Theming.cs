@@ -355,17 +355,6 @@ public partial class DependencyObject
 		Theme? ownerThemeOverride = null,
 		bool preferAppResourceOverride = false)
 	{
-		// MUX Reference: Theming.cpp:364-379 — SetThemeResourceBinding pushes the owner's theme onto
-		// the core requested-theme-for-subtree slot ("Push theme that resource lookup should use to
-		// get the property value") so the lookup — including any lazy materialization it triggers —
-		// resolves in the owner's theme; scope-restored below. During a walk the slot already carries
-		// the per-element walk theme (Theming.cpp:137-149), so the set is a no-op then. The resolution
-		// leaf reads the slot (EnsureActiveThemeDictionary, Resources.cpp:764-768).
-		// Element-level theming is enhanced-lifecycle only — on native the slot stays None.
-		var core = Uno.UI.Xaml.Core.CoreServices.Instance;
-		var prevSlotTheme = Theme.None;
-		var popSlotTheme = false;
-
 		try
 		{
 			// MUX: Theming.cpp:297-298 — clear the theme ref first.
@@ -381,101 +370,14 @@ public partial class DependencyObject
 
 			_themeResources.Clear(property, precedence);
 
+			// Scoped through the SetValue below, like SetThemeResourceBinding's theme guard.
+			using var resolutionThemeScope = ScopeThemeReferenceResolution(themeRef, owner, ownerThemeOverride);
+
 			// MUX: Theming.cpp:315-346 — UpdateThemeReference(CThemeResource*)
-			bool resolved = false;
-
-			// Compute the owner's effective theme ONCE here — it feeds the slot scope below, the analog of
-			// WinUI's SetThemeResourceBinding pushing this->m_theme before resolving (Theming.cpp:368-376).
-			// Both the ancestor walk and the pinned-dict refresh resolve under that ambient.
-			// Prefer the explicit owner theme passed by the caller (the resource-context element's theme for
-			// a standalone resource DO that has no inheritance parent of its own); otherwise resolve from the
-			// owner's own inheritance chain.
-			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
-
-			// A VisualState setter value comes from outside its target's subtree, so when the same
-			// state applied a RequestedTheme boundary onto the target, resolve the setter's
-			// {ThemeResource} under the surrounding ambient theme instead — even mid-walk, where
-			// the slot carries the boundary theme (#24021).
-			if (themeRef.SetterBindingPath is not null
-				&& GetVisualStateSetterResolutionTheme() is { } setterAmbientTheme)
-			{
-				prevSlotTheme = core.GetRequestedThemeForSubTree();
-				if (prevSlotTheme != Theming.GetBaseValue(setterAmbientTheme))
-				{
-					core.SetRequestedThemeForSubTree(setterAmbientTheme);
-					popSlotTheme = true;
-				}
-			}
-			// MUX: Theming.cpp:368-376 — "Push theme that resource lookup should use to get the
-			// property value": only OUTSIDE a theme walk (`!IsProcessingThemeWalk()`) and when the
-			// owner's base theme differs from the slot. During a walk the slot already carries the
-			// walk's theme (set in NotifyThemeChanged, Theming.cpp:137-149) while the owner's
-			// per-object theme is not yet persisted — pushing here would re-scope to the stale theme.
-			else if (!IsProcessingThemeWalk)
-			{
-				prevSlotTheme = core.GetRequestedThemeForSubTree();
-				if (prevSlotTheme != Theming.GetBaseValue(ownerTheme))
-				{
-					core.SetRequestedThemeForSubTree(ownerTheme);
-					popSlotTheme = true;
-				}
-			}
-
-			// Phase A: Ancestor walk (WinUI: FindNextResolvedValueNoRef → ScopedResources::TraverseVisualTreeResources)
-			// If element is active, walk ancestor ResourceDictionaries to find the resource. This handles
-			// re-parenting correctly. Gate on IsActiveInVisualTree (set at tree Enter) rather than IsLoaded
-			// to match WinUI's IsActive() window — so an element resolves against its current ancestor scope
-			// from Enter onward (incl. after reparenting, before Loaded re-fires), not only once Loaded.
-			// Resources declared locally and unreachable from the live tree (reparented popup content) simply
-			// don't resolve here and fall through to the parse-time pinned dictionary in Phase B.
-			if (owner is UIElement { IsActiveInVisualTree: true })
-			{
-				var dicts = GetResourceDictionaries(includeAppResources: false);
-				foreach (var dict in dicts)
-				{
-					if (dict.TryGetValue(themeRef.ResourceKey, out var ancestorValue, shouldCheckSystem: false))
-					{
-						// MUX: Theming.cpp:332-336 — SetLastResolvedValue; the refresh below is skipped.
-						themeRef.SetLastResolvedValue(ancestorValue);
-						resolved = true;
-						break;
-					}
-				}
-			}
-
-			// Uno: a provisional reference (unattributable parse context) is pinned to whatever the top-level lookup found
-			// at parse time — the host's dictionary. Under an AlcContentHost, resolve it for the owning app instead.
-			if (!resolved
-				&& owner is not null
-				&& ResourceResolver.TryOwningApplicationRetrieval(themeRef.ResourceKey, themeRef.ParseContext, owner, out var owningAppValue, out var owningAppDictionary))
-			{
-				if (owningAppDictionary is not null)
-				{
-					themeRef.SetTargetDictionary(owningAppDictionary);
-				}
-
-				themeRef.SetLastResolvedValue(owningAppValue);
-				resolved = true;
-			}
-
-			// Phase B: Pinned dict fallback (WinUI: themeResource->RefreshValue())
-			// MUX: Theming.cpp:338-343 — "Call refresh if we're in a theme walk or the ref has been
-			// updated in the past *and* the value wasn't updated already by the tree lookup above."
-			// Uno: the owner-theme override threaded by the re-resolution flows (the resource-context
-			// element's theme for a standalone resource DO whose own store theme is still None) is the
-			// transitional stand-in for the owner's established m_theme, so it participates in the
-			// m_theme != Theme::None term of the C++ gate.
-			if (!resolved
-				&& (IsProcessingThemeWalk
-					|| _theme != Theme.None
-					|| ownerThemeOverride is not null
-					|| !themeRef.IsValueFromInitialTheme))
-			{
-				themeRef.RefreshValue(cache, preferAppResourceOverride);
-			}
+			ResolveThemeReference(themeRef, owner, cache, ownerThemeOverride, preferAppResourceOverride);
 
 			// MUX: Theming.cpp:385-387 — GetLastResolvedThemeValue: the value to apply is the ref's
-			// last resolved value (unchanged when the refresh gate above skipped).
+			// last resolved value (unchanged when ResolveThemeReference skipped its refresh).
 			var newValue = themeRef.LastResolvedValue;
 
 			// MUX: Theming.cpp:385-393 — SetValue with resolved value
@@ -522,14 +424,163 @@ public partial class DependencyObject
 			// Restore the ref even on failure to avoid losing it
 			_themeResources!.Set(property, precedence, themeRef);
 		}
-		finally
+	}
+
+	/// <summary>
+	/// Scopes the core requested-theme-for-subtree slot to the theme <paramref name="themeRef"/> must
+	/// resolve under for <paramref name="owner"/>.
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: Theming.cpp:364-379 — SetThemeResourceBinding pushes the owner's theme onto
+	/// the core requested-theme-for-subtree slot ("Push theme that resource lookup should use to
+	/// get the property value") so the lookup — including any lazy materialization it triggers —
+	/// resolves in the owner's theme. The resolution leaf reads the slot
+	/// (EnsureActiveThemeDictionary, Resources.cpp:764-768).
+	/// </remarks>
+	private Uno.UI.Xaml.Core.CoreServices.RequestedThemeForSubTreeScope ScopeThemeReferenceResolution(
+		ThemeResourceReference themeRef,
+		DependencyObject? owner,
+		Theme? ownerThemeOverride)
+	{
+		// A VisualState setter value comes from outside its target's subtree, so when the same
+		// state applied a RequestedTheme boundary onto the target, resolve the setter's
+		// {ThemeResource} under the surrounding ambient theme instead — even mid-walk, where
+		// the slot carries the boundary theme (#24021).
+		if (themeRef.SetterBindingPath is not null
+			&& GetVisualStateSetterResolutionTheme() is { } setterAmbientTheme)
 		{
-			// MUX: Theming.cpp:377-379 — scope-restore the slot.
-			if (popSlotTheme)
+			return Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(setterAmbientTheme);
+		}
+
+		return ScopeOwnerTheme(owner, ownerThemeOverride);
+	}
+
+	/// <summary>
+	/// Scopes the effective theme of <paramref name="owner"/> onto the core requested-theme-for-subtree
+	/// slot, outside a theme walk.
+	/// </summary>
+	/// <param name="ownerThemeOverride">
+	/// The theme to use instead: the resource-context element's theme for a standalone resource DO that has
+	/// no inheritance parent of its own.
+	/// </param>
+	/// <remarks>
+	/// MUX: Theming.cpp:368-376 — only outside a theme walk (`!IsProcessingThemeWalk()`): during a walk
+	/// the slot already carries the walk's theme (set in NotifyThemeChanged, Theming.cpp:137-149) while
+	/// the owner's per-object theme is not yet persisted — pushing would re-scope to the stale theme.
+	/// </remarks>
+	private Uno.UI.Xaml.Core.CoreServices.RequestedThemeForSubTreeScope ScopeOwnerTheme(DependencyObject? owner, Theme? ownerThemeOverride = null)
+		=> IsProcessingThemeWalk
+			? default
+			: Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner));
+
+	/// <summary>
+	/// Refreshes the resolved value of <paramref name="themeRef"/>, looking for the resource up the
+	/// tree first, under the theme the caller scoped onto the requested-theme-for-subtree slot.
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: CDependencyObject::UpdateThemeReference(CThemeResource*) — Theming.cpp:315-346.
+	/// </remarks>
+	private void ResolveThemeReference(
+		ThemeResourceReference themeRef,
+		DependencyObject? owner,
+		ThemeWalkResourceCache? cache,
+		Theme? ownerThemeOverride = null,
+		bool preferAppResourceOverride = false)
+	{
+		bool resolved = false;
+
+		// Phase A: Ancestor walk (WinUI: FindNextResolvedValueNoRef → ScopedResources::TraverseVisualTreeResources)
+		// If element is active, walk ancestor ResourceDictionaries to find the resource. This handles
+		// re-parenting correctly. Gate on IsActiveInVisualTree (set at tree Enter) rather than IsLoaded
+		// to match WinUI's IsActive() window — so an element resolves against its current ancestor scope
+		// from Enter onward (incl. after reparenting, before Loaded re-fires), not only once Loaded.
+		// Resources declared locally and unreachable from the live tree (reparented popup content) simply
+		// don't resolve here and fall through to the parse-time pinned dictionary in Phase B.
+		if (owner is UIElement { IsActiveInVisualTree: true })
+		{
+			var dicts = GetResourceDictionaries(includeAppResources: false);
+			foreach (var dict in dicts)
 			{
-				core.SetRequestedThemeForSubTree(prevSlotTheme);
+				if (dict.TryGetValue(themeRef.ResourceKey, out var ancestorValue, shouldCheckSystem: false))
+				{
+					// MUX: Theming.cpp:332-336 — SetLastResolvedValue; the refresh below is skipped.
+					themeRef.SetLastResolvedValue(ancestorValue);
+					resolved = true;
+					break;
+				}
 			}
 		}
+
+		// Uno: a provisional reference (unattributable parse context) is pinned to whatever the top-level lookup found
+		// at parse time — the host's dictionary. Under an AlcContentHost, resolve it for the owning app instead.
+		if (!resolved
+			&& owner is not null
+			&& ResourceResolver.TryOwningApplicationRetrieval(themeRef.ResourceKey, themeRef.ParseContext, owner, out var owningAppValue, out var owningAppDictionary))
+		{
+			if (owningAppDictionary is not null)
+			{
+				themeRef.SetTargetDictionary(owningAppDictionary);
+			}
+
+			themeRef.SetLastResolvedValue(owningAppValue);
+			resolved = true;
+		}
+
+		// Phase B: Pinned dict fallback (WinUI: themeResource->RefreshValue())
+		// MUX: Theming.cpp:338-343 — "Call refresh if we're in a theme walk or the ref has been
+		// updated in the past *and* the value wasn't updated already by the tree lookup above."
+		// Uno: the owner-theme override threaded by the re-resolution flows (the resource-context
+		// element's theme for a standalone resource DO whose own store theme is still None) is the
+		// transitional stand-in for the owner's established m_theme, so it participates in the
+		// m_theme != Theme::None term of the C++ gate.
+		if (!resolved
+			&& (IsProcessingThemeWalk
+				|| _theme != Theme.None
+				|| ownerThemeOverride is not null
+				|| !themeRef.IsValueFromInitialTheme))
+		{
+			themeRef.RefreshValue(cache, preferAppResourceOverride);
+		}
+	}
+
+	/// <summary>
+	/// Resolves the {ThemeResource} a Style (<see cref="DependencyPropertyValuePrecedences.Style"/>) or
+	/// built-in Style (<see cref="DependencyPropertyValuePrecedences.BuiltInStyle"/>) setter registered on
+	/// this object, for when that layer becomes the base value again. The caller scopes this object's theme
+	/// onto the requested-theme-for-subtree slot.
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: on ClearValue, CDependencyObject::EvaluateBaseValue (PropertySystem.cpp) takes the
+	/// setter's CThemeResource from GetValueFromStyle, and TryProcessingThemeResourcePropertyValue
+	/// (Theming.cpp) applies it through SetThemeResourceBinding, which resolves it under this
+	/// object's theme. Re-reading the setter instead resolves it against top-level resources only.
+	/// </remarks>
+	private bool TryResolveStyleThemeResource(DependencyProperty property, DependencyPropertyValuePrecedences stylePrecedence, out object? value)
+	{
+		if (_themeResources?.Get(property, stylePrecedence) is { } themeRef)
+		{
+			try
+			{
+				ResolveThemeReference(themeRef, ActualInstance, cache: null);
+
+				if (themeRef.IsResolved)
+				{
+					value = BindingPropertyHelper.Convert(property.Type, themeRef.LastResolvedValue);
+					return true;
+				}
+			}
+			catch (Exception e)
+			{
+				// Like UpdateThemeReference, a failed resolution must not fail the SetValue; the caller re-reads the setter.
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"Failed to resolve {{ThemeResource {themeRef.ResourceKey.Key}}} for the {stylePrecedence} value of {property.Name}", e);
+				}
+			}
+		}
+
+		value = null;
+		return false;
 	}
 
 	/// <summary>

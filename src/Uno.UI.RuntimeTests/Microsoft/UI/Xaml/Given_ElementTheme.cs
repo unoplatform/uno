@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Combinatorial.MSTest;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -4803,6 +4804,164 @@ public class Given_ElementTheme
 		}
 	}
 #endif
+
+	#endregion
+
+	#region ClearValue of a Style {ThemeResource} in a RequestedTheme subtree (issue #25313)
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25313")]
+	[RequiresFullWindow]
+	[CombinatorialData]
+	public async Task When_Local_Value_Cleared_Style_ThemeResource_Resolves_Against_Element_Theme(bool applicationDark, bool switchAtRuntime, bool localThemeDictionary)
+	{
+		using var _ = applicationDark ? ThemeHelper.UseApplicationDarkTheme() : ThemeHelper.UseApplicationLightTheme();
+		var applicationTheme = applicationDark ? ElementTheme.Dark : ElementTheme.Light;
+		var elementTheme = applicationDark ? ElementTheme.Light : ElementTheme.Dark;
+		var resourceKey = localThemeDictionary ? "Issue25313Brush" : "TextFillColorPrimaryBrush";
+
+		var root = (StackPanel)XamlReader.Load(
+			$$"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<StackPanel.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="Issue25313Brush" Color="#FF102030" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="Issue25313Brush" Color="#FFE0D0C0" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+						<Style x:Key="ThemedHost" TargetType="ContentControl">
+							<Setter Property="Foreground" Value="{ThemeResource {{resourceKey}}}" />
+						</Style>
+					</ResourceDictionary>
+				</StackPanel.Resources>
+				<ContentControl x:Name="Reference" Style="{StaticResource ThemedHost}" Content="Reference" />
+				<Grid x:Name="Subtree" RequestedTheme="{{(switchAtRuntime ? ElementTheme.Default : elementTheme)}}">
+					<ContentControl x:Name="Host" Style="{StaticResource ThemedHost}" Content="Host" />
+				</Grid>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		var reference = (ContentControl)root.FindName("Reference");
+		var subtree = (Grid)root.FindName("Subtree");
+		var host = (ContentControl)root.FindName("Host");
+
+		if (switchAtRuntime)
+		{
+			subtree.RequestedTheme = elementTheme;
+			await WindowHelper.WaitForIdle();
+		}
+
+		var applicationThemeColor = GetForegroundColor(reference);
+		var elementThemeColor = GetForegroundColor(host);
+		Assert.AreEqual(elementTheme, host.ActualTheme);
+		Assert.AreNotEqual(applicationThemeColor, elementThemeColor, "The Style's {ThemeResource} should resolve for the subtree's theme");
+		if (localThemeDictionary)
+		{
+			var expected = elementTheme == ElementTheme.Dark
+				? Windows.UI.Color.FromArgb(0xFF, 0xE0, 0xD0, 0xC0)
+				: Windows.UI.Color.FromArgb(0xFF, 0x10, 0x20, 0x30);
+			Assert.AreEqual(expected, elementThemeColor);
+		}
+
+		host.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+		await WindowHelper.WaitForIdle();
+		host.ClearValue(Control.ForegroundProperty);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(elementThemeColor, GetForegroundColor(host),
+			"Clearing the local value should restore the Style's {ThemeResource} resolved for the element's own theme");
+
+		subtree.RequestedTheme = applicationTheme;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(applicationThemeColor, GetForegroundColor(host), "The restored Style value should keep following theme changes");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25313")]
+	[RequiresFullWindow]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Local_Value_Cleared_BuiltInStyle_ThemeResource_Resolves_Against_Element_Theme(bool applicationDark)
+	{
+		using var _ = applicationDark ? ThemeHelper.UseApplicationDarkTheme() : ThemeHelper.UseApplicationLightTheme();
+		var applicationTheme = applicationDark ? ElementTheme.Dark : ElementTheme.Light;
+		var elementTheme = applicationDark ? ElementTheme.Light : ElementTheme.Dark;
+
+		var reference = new Button { Content = "Reference" };
+		var button = new Button { Content = "Button" };
+		var subtree = new Grid { Children = { button } };
+		var root = new StackPanel { Children = { reference, subtree } };
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		subtree.RequestedTheme = elementTheme;
+		await WindowHelper.WaitForIdle();
+
+		var applicationThemeColor = GetForegroundColor(reference);
+		var elementThemeColor = GetForegroundColor(button);
+		Assert.AreNotEqual(applicationThemeColor, elementThemeColor, "The built-in Style's {ThemeResource} should follow the subtree theme switch");
+
+		button.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+		await WindowHelper.WaitForIdle();
+		button.ClearValue(Control.ForegroundProperty);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(elementThemeColor, GetForegroundColor(button),
+			"Clearing the local value should restore the built-in Style's {ThemeResource} resolved for the element's own theme");
+
+		subtree.RequestedTheme = applicationTheme;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(applicationThemeColor, GetForegroundColor(button), "The restored built-in Style value should keep following theme changes");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25313")]
+	[RequiresFullWindow]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Style_Removed_BuiltInStyle_ThemeResource_Resolves_Against_Element_Theme(bool applicationDark)
+	{
+		using var _ = applicationDark ? ThemeHelper.UseApplicationDarkTheme() : ThemeHelper.UseApplicationLightTheme();
+		var elementTheme = applicationDark ? ElementTheme.Light : ElementTheme.Dark;
+
+		var outside = new Button { Content = "Outside" };
+		var reference = new Button { Content = "Reference" };
+		var button = new Button
+		{
+			Content = "Button",
+			Style = new Style(typeof(Button))
+			{
+				Setters = { new Setter(Control.ForegroundProperty, new SolidColorBrush(Microsoft.UI.Colors.Red)) },
+			},
+		};
+		var subtree = new StackPanel { Children = { reference, button } };
+		var root = new StackPanel { Children = { outside, subtree } };
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		subtree.RequestedTheme = elementTheme;
+		await WindowHelper.WaitForIdle();
+
+		var elementThemeColor = GetForegroundColor(reference);
+		Assert.AreNotEqual(GetForegroundColor(outside), elementThemeColor, "The reference Button should follow the subtree theme switch");
+
+		button.Style = null;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(elementThemeColor, GetForegroundColor(button),
+			"Removing the Style's setter should restore the built-in Style's {ThemeResource} resolved for the element's own theme");
+	}
+
+	private static Windows.UI.Color GetForegroundColor(Control control) => ((SolidColorBrush)control.Foreground).Color;
 
 	#endregion
 }
