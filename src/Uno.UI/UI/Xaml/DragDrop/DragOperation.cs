@@ -54,6 +54,13 @@ namespace Microsoft.UI.Xaml
 			_view.SetLocation(Info.Position);
 			_viewHandle = inputManager.OpenDragAndDrop(_view);
 			_viewOverride = new CoreDragUIOverride(); // UWP does re-use the same instance for each update on _target
+
+			// A platform that routes the drag itself from the start also shows the drag visual, and reports the
+			// pointer through the extension instead of pointer events.
+			if (extension is { StartsNativeDragImmediately: true } && TryStartNativeDrag())
+			{
+				_viewHandle.Dispose();
+			}
 		}
 
 		public CoreDragInfo Info { get; }
@@ -153,6 +160,7 @@ namespace Microsoft.UI.Xaml
 
 			_acceptedOperation = acceptedOperation;
 			_view.Update(acceptedOperation, _viewOverride);
+			_extension?.AcceptedOperationChanged(Info, acceptedOperation);
 		}
 
 		/// <summary>
@@ -173,15 +181,27 @@ namespace Microsoft.UI.Xaml
 
 			// When the pointer goes out of the window, we hide our internal control and,
 			// if supported by the OS, we request a Drag and Drop operation with the native UI.
-			_viewHandle.Dispose();
-			if (!_hasRequestedNativeDrag)
+			if (TryStartNativeDrag())
 			{
-				_extension?.StartNativeDrag(Info, Complete);
-				_hasRequestedNativeDrag = true;
+				_viewHandle.Dispose();
 			}
 		}
 
-		private async Task RaiseFinalLeave(CancellationToken ct)
+		// The platform is asked once per drag; a drag it declines stays managed.
+		private bool TryStartNativeDrag()
+		{
+			if (_hasRequestedNativeDrag || _extension is null)
+			{
+				return false;
+			}
+			_hasRequestedNativeDrag = true;
+			return _extension.StartNativeDrag(Info, CompleteFromNative);
+		}
+
+		private Task RaiseFinalLeave(CancellationToken ct)
+			=> RaiseFinalLeave(ct, DataPackageOperation.None);
+
+		private async Task RaiseFinalLeave(CancellationToken ct, DataPackageOperation result)
 		{
 			try
 			{
@@ -196,7 +216,29 @@ namespace Microsoft.UI.Xaml
 			}
 			finally
 			{
-				Complete(DataPackageOperation.None);
+				Complete(result);
+			}
+		}
+
+		/// <summary>
+		/// Completion reported by the native drag. A target this operation entered before the platform took over
+		/// (the pointer may never have left the window bounds) still gets its leave, exactly once, before the result.
+		/// It ** MUST ** be invoked on the UI thread.
+		/// </summary>
+		private void CompleteFromNative(DataPackageOperation result)
+		{
+			if (_state == State.Completing)
+			{
+				// A drop or final leave in flight completes with the handlers' result.
+				return;
+			}
+			if (_state == State.Over)
+			{
+				Enqueue(ct => RaiseFinalLeave(ct, result));
+			}
+			else
+			{
+				Complete(result);
 			}
 		}
 

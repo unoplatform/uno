@@ -248,6 +248,13 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		return true;
 	}
 
+	// Stages the scale with the geometry it changes, published together like a ConfigureNotify.
+	internal void UpdateRasterizationScale(float scale)
+	{
+		StageRasterizationScale(scale);
+		UpdatePositionAndSize();
+	}
+
 	private void UpdatePositionAndSize()
 	{
 		if (_host.Closed.IsCompleted)
@@ -275,15 +282,17 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 		Position = new PointInt32 { X = rootx, Y = rooty };
 		var fullSize = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
-		SetSizes(fullSize, fullSize);
+		StageSizes(fullSize, fullSize);
 
 		XWindowAttributes windowAttrs2 = default;
 		_ = XLib.XGetWindowAttributes(display, window, ref windowAttrs2);
 
-		var scale = _xamlRoot.RasterizationScale;
+		var scale = RasterizationScale > 0 ? RasterizationScale : _xamlRoot.RasterizationScale;
 		var newWindowSize = new Size(windowAttrs2.width / scale, windowAttrs2.height / scale);
 		var bounds = new Rect(default, newWindowSize);
-		SetBoundsAndVisibleBounds(bounds, bounds);
+		StageVisibleBounds(bounds);
+		StageBounds(bounds);
+		PublishChanges();
 
 		// copy the root window dimensions to the top window
 		_ = XLib.XResizeWindow(display, _host.TopX11Window.Window, windowAttrs2.width, windowAttrs2.height);

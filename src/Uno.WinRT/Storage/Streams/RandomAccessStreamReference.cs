@@ -44,7 +44,10 @@ namespace Windows.Storage.Streams
 		public static RandomAccessStreamReference CreateFromStream(IRandomAccessStream stream)
 			=> new RandomAccessStreamReference(ct =>
 			{
-				return Task.FromResult(stream.TrySetContentType());
+				// Each open gets its own position, and disposing it leaves the caller's stream open.
+				var clone = stream.CloneStream();
+				clone.Seek(0);
+				return Task.FromResult(clone.TrySetContentType());
 			});
 
 		private readonly Func<IAsyncOperation<IRandomAccessStreamWithContentType>> _open;

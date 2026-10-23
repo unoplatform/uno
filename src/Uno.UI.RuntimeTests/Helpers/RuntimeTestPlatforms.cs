@@ -20,10 +20,11 @@ public enum RuntimeTestPlatforms
 	SkiaIOS = 1 << 13,
 	SkiaTvOS = 1 << 15,
 	SkiaFrameBuffer = 1 << 16,
+	SkiaWayland = 1 << 17,
 
 	// Combined platforms
 	SkiaUIKit = SkiaIOS | SkiaTvOS,
 	SkiaMobile = SkiaAndroid | SkiaUIKit,
-	SkiaDesktop = SkiaWin32 | SkiaX11 | SkiaMacOS | SkiaIslands | SkiaFrameBuffer,
+	SkiaDesktop = SkiaWin32 | SkiaX11 | SkiaMacOS | SkiaIslands | SkiaFrameBuffer | SkiaWayland,
 	Skia = SkiaDesktop | SkiaWasm | SkiaMobile,
 }

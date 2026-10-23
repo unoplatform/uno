@@ -31,6 +31,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	private XamlRoot? _xamlRoot;
 	private protected Window? _window;
 	private float _rasterizationScale;
+	private StagedChanges _staged;
 	private readonly SerialDisposable _presenterSubscription = new SerialDisposable();
 
 	protected NativeWindowWrapperBase(Window window, XamlRoot xamlRoot) : this()
@@ -65,13 +66,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		get => _bounds;
 		set
 		{
-			if (_bounds != value)
-			{
-				_bounds = value;
-				SizeChanged?.Invoke(this, value.Size);
-
-				RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
-			}
+			StageBounds(value);
+			PublishChanges();
 		}
 	}
 
@@ -80,32 +76,20 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		get => _visibleBounds;
 		set
 		{
-			if (_visibleBounds != value)
-			{
-				_visibleBounds = value;
-				VisibleBoundsChanged?.Invoke(this, value);
-			}
+			StageVisibleBounds(value);
+			PublishChanges();
 		}
 	}
 
 	/// <summary>
-	/// The same as setting <see cref="VisibleBounds"/>, <see cref="Bounds"/> and <see cref="Size"/> but makes sure the
-	/// fired events are fired only after both properties are updated "atomically"
+	/// The same as setting <see cref="VisibleBounds"/> and <see cref="Bounds"/>, but the events are raised only once both
+	/// are updated.
 	/// </summary>
 	public void SetBoundsAndVisibleBounds(Rect bounds, Rect visibleBounds)
 	{
-		if (_visibleBounds != visibleBounds)
-		{
-			_visibleBounds = visibleBounds;
-			VisibleBoundsChanged?.Invoke(this, visibleBounds);
-		}
-
-		if (_bounds != bounds)
-		{
-			_bounds = bounds;
-			SizeChanged?.Invoke(this, bounds.Size);
-			RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
-		}
+		StageBounds(bounds);
+		StageVisibleBounds(visibleBounds);
+		PublishChanges();
 	}
 
 	public CoreWindowActivationState ActivationState
@@ -142,13 +126,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		get => _rasterizationScale;
 		set
 		{
-			if (_rasterizationScale != value)
-			{
-				_rasterizationScale = value;
-
-				_contentSite.ParentScale = value;
-				RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.RasterizationScaleChange);
-			}
+			StageRasterizationScale(value);
+			PublishChanges();
 		}
 	}
 
@@ -184,24 +163,91 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	protected void SetSizes(SizeInt32 size, SizeInt32 clientSize)
 	{
-		var anySizeChanged = false;
+		StageSizes(size, clientSize);
+		PublishChanges();
+	}
 
-		if (!Size.Equals(size))
+	// A native change that moves several values (a configure, WM_SIZE, a DPI change) stages them all, then publishes
+	// once, so every observer sees the complete new state.
+	protected void StageBounds(Rect bounds)
+	{
+		if (_bounds != bounds)
+		{
+			_bounds = bounds;
+			_staged |= StagedChanges.Bounds;
+		}
+	}
+
+	protected void StageVisibleBounds(Rect visibleBounds)
+	{
+		if (_visibleBounds != visibleBounds)
+		{
+			_visibleBounds = visibleBounds;
+			_staged |= StagedChanges.VisibleBounds;
+		}
+	}
+
+	protected void StageSizes(SizeInt32 size, SizeInt32 clientSize)
+	{
+		if (!Size.Equals(size) || !ClientSize.Equals(clientSize))
 		{
 			Size = size;
-			anySizeChanged = true;
-		}
-
-		if (!ClientSize.Equals(clientSize))
-		{
 			ClientSize = clientSize;
-			anySizeChanged = true;
+			_staged |= StagedChanges.Size;
 		}
+	}
 
-		if (anySizeChanged)
+	protected void StageRasterizationScale(float scale)
+	{
+		if (_rasterizationScale != scale)
+		{
+			_rasterizationScale = scale;
+			_contentSite.ParentScale = scale;
+			_staged |= StagedChanges.Scale;
+		}
+	}
+
+	protected void StagePresenterChange() => _staged |= StagedChanges.Presenter;
+
+	/// <summary>
+	/// Raises the events of the staged changes in a fixed order: scale, presenter, size, visible bounds, bounds.
+	/// </summary>
+	protected void PublishChanges()
+	{
+		var staged = _staged;
+		_staged = StagedChanges.None;
+		if ((staged & StagedChanges.Scale) != 0)
+		{
+			RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.RasterizationScaleChange);
+		}
+		if ((staged & StagedChanges.Presenter) != 0)
+		{
+			_window?.AppWindow.OnAppWindowChanged(AppWindowChangedEventArgs.PresenterChangedEventArgs);
+		}
+		if ((staged & StagedChanges.Size) != 0)
 		{
 			_window?.AppWindow.OnAppWindowChanged(new AppWindowChangedEventArgs() { DidSizeChange = true });
 		}
+		if ((staged & StagedChanges.VisibleBounds) != 0)
+		{
+			VisibleBoundsChanged?.Invoke(this, _visibleBounds);
+		}
+		if ((staged & StagedChanges.Bounds) != 0)
+		{
+			SizeChanged?.Invoke(this, _bounds.Size);
+			RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
+		}
+	}
+
+	[Flags]
+	private enum StagedChanges
+	{
+		None = 0,
+		Scale = 1,
+		Presenter = 2,
+		Size = 4,
+		VisibleBounds = 8,
+		Bounds = 16,
 	}
 
 	public DispatcherQueue DispatcherQueue => throw new NotImplementedException();
