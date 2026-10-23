@@ -52,6 +52,9 @@ partial class WebView2
 	private readonly SerialDisposable m_coreMoveFocusRequestedRevoker = new();
 	private AccessibilitySettings? m_accessibilitySettings;
 	private readonly SerialDisposable m_textScaleChangedRevoker = new();
+	private readonly SerialDisposable m_actualThemeChangedRevoker = new();
+	private readonly SerialDisposable m_highContrastChangedRevoker = new();
+	private readonly SerialDisposable m_pointerRevoker = new();
 
 	private XamlFocusChangeInfo m_xamlFocusChangeInfo;
 	private bool m_isVisible;

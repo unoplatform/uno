@@ -6,7 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Web.WebView2.Core;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -672,5 +674,31 @@ public class Given_WebView2_Improvements
 		}
 
 		Assert.Fail($"Cookie '{name}' was not deleted within 5 seconds.");
+	}
+
+	[TestMethod]
+	public async Task When_Theme_Changes_The_Native_Backdrop_Color()
+	{
+		var webView = await CreateWebViewAsync();
+		var border = (Border)TestServices.WindowHelper.WindowContent!;
+		try
+		{
+			var presenter = webView.GetNativePresenter();
+			Assert.IsNotNull(presenter);
+
+			border.RequestedTheme = ElementTheme.Light;
+			await TestServices.WindowHelper.WaitForIdle();
+			var lightColor = ((SolidColorBrush)presenter.Background!).Color;
+
+			border.RequestedTheme = ElementTheme.Dark;
+			await TestServices.WindowHelper.WaitForIdle();
+			var darkColor = ((SolidColorBrush)presenter.Background!).Color;
+
+			Assert.AreNotEqual(lightColor, darkColor);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 }

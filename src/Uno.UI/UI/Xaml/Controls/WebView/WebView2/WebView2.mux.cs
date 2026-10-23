@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Web.WebView2.Core;
 using Uno.Disposables;
@@ -266,6 +267,8 @@ partial class WebView2
 		m_xamlRootChangedRevoker.Disposable = null;
 		m_renderedRevoker.Disposable = null;
 		m_textScaleChangedRevoker.Disposable = null;
+		m_actualThemeChangedRevoker.Disposable = null;
+		m_highContrastChangedRevoker.Disposable = null;
 
 		if (m_manipulationModeChangedToken != 0)
 		{
@@ -2163,7 +2166,29 @@ partial class WebView2
 		m_gotFocusRevoker.Disposable = Disposable.Create(() => GotFocus -= HandleGotFocus);
 		LosingFocus += HandleLosingFocus;
 		m_losingFocusRevoker.Disposable = Disposable.Create(() => LosingFocus -= HandleLosingFocus);
+		PointerPressed += HandlePointerMessage;
+		PointerReleased += HandlePointerMessage;
+		PointerMoved += HandlePointerMessage;
+		PointerWheelChanged += HandlePointerMessage;
+		PointerEntered += HandlePointerMessage;
+		PointerExited += HandlePointerMessage;
+		PointerCanceled += HandlePointerMessage;
+		PointerCaptureLost += HandlePointerMessage;
+		m_pointerRevoker.Disposable = Disposable.Create(() =>
+		{
+			PointerPressed -= HandlePointerMessage;
+			PointerReleased -= HandlePointerMessage;
+			PointerMoved -= HandlePointerMessage;
+			PointerWheelChanged -= HandlePointerMessage;
+			PointerEntered -= HandlePointerMessage;
+			PointerExited -= HandlePointerMessage;
+			PointerCanceled -= HandlePointerMessage;
+			PointerCaptureLost -= HandlePointerMessage;
+		});
 	}
+
+	// Pointer input is routed to the native view by the host. Handled keeps ancestors such as ScrollViewer from acting on it.
+	private void HandlePointerMessage(object sender, PointerRoutedEventArgs args) => args.Handled = true;
 #if !HAS_UNO
 	// TODO Uno: Original source retained for the native/composition projection boundary of the port above.
 	// void WebView2::RegisterXamlEventHandlers()
@@ -2189,6 +2214,7 @@ partial class WebView2
 		m_gettingFocusRevoker.Disposable = null;
 		m_gotFocusRevoker.Disposable = null;
 		m_losingFocusRevoker.Disposable = null;
+		m_pointerRevoker.Disposable = null;
 	}
 #if !HAS_UNO
 	// TODO Uno: Original source retained for the native/composition projection boundary of the port above.
@@ -2437,10 +2463,37 @@ partial class WebView2
 	// }
 #endif
 
-#pragma warning disable IDE0051 // Used by the retained SystemVisualBridge background implementation.
 	private AccessibilitySettings GetAccessibilitySettings() =>
 		m_accessibilitySettings ??= new AccessibilitySettings();
-#pragma warning restore IDE0051
+
+	// Theme-appropriate backdrop shown behind the native view while it is created or torn down.
+	private void UpdateDefaultVisualBackgroundColor()
+	{
+		if (_nativePresenter is { } presenter)
+		{
+			presenter.Background = GetThemeBackgroundBrush();
+		}
+	}
+
+	private SolidColorBrush GetThemeBackgroundBrush()
+	{
+		var isHighContrast = GetAccessibilitySettings().HighContrast;
+		var helperBrushName = isHighContrast ? "BrushForThemeBackgroundColor_HC" : "BrushForThemeBackgroundColor";
+
+		// The brush is bound to the presenter so its ThemeResource follows the active theme.
+		if (!Resources.ContainsKey(helperBrushName))
+		{
+			var resourceName = isHighContrast ? "SystemColorWindowColor" : "SolidBackgroundFillColorBase";
+			var helperBrush = (SolidColorBrush)XamlReader.Load(
+				"<SolidColorBrush xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' "
+				+ "xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' "
+				+ "x:Name='" + helperBrushName + "' "
+				+ "Color='{ThemeResource " + resourceName + "}'/>");
+			Resources.Add(helperBrushName, helperBrush);
+		}
+
+		return (SolidColorBrush)Resources[helperBrushName];
+	}
 #if !HAS_UNO
 	// TODO Uno: Original source retained for the native/composition projection boundary of the port above.
 	// winrt::AccessibilitySettings WebView2::GetAccessibilitySettings()
@@ -2515,6 +2568,32 @@ partial class WebView2
 			settings.TextScaleFactorChanged += TextScaleChanged;
 			m_textScaleChangedRevoker.Disposable = Disposable.Create(() => settings.TextScaleFactorChanged -= TextScaleChanged);
 		}
+		if (m_actualThemeChangedRevoker.Disposable is null)
+		{
+			void ThemeChanged(FrameworkElement sender, object args)
+			{
+				if (weakThis.TryGetTarget(out var strongThis))
+				{
+					strongThis.UpdateDefaultVisualBackgroundColor();
+				}
+			}
+			ActualThemeChanged += ThemeChanged;
+			m_actualThemeChangedRevoker.Disposable = Disposable.Create(() => ActualThemeChanged -= ThemeChanged);
+		}
+		if (m_highContrastChangedRevoker.Disposable is null)
+		{
+			var accessibilitySettings = GetAccessibilitySettings();
+			void HighContrastChanged(AccessibilitySettings sender, object args)
+			{
+				if (weakThis.TryGetTarget(out var strongThis))
+				{
+					strongThis.UpdateDefaultVisualBackgroundColor();
+				}
+			}
+			accessibilitySettings.HighContrastChanged += HighContrastChanged;
+			m_highContrastChangedRevoker.Disposable = Disposable.Create(() => accessibilitySettings.HighContrastChanged -= HighContrastChanged);
+		}
+		UpdateDefaultVisualBackgroundColor();
 		// If we were recreating the webview after a core process failure, indicate that we have now recovered
 		m_isCoreFailure_BrowserExited_State = false;
 		//HandleGotFocus will give focus to the CWV2 if we're still pending to give it focus
