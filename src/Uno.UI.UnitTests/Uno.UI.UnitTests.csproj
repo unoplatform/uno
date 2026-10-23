@@ -125,6 +125,9 @@
 		<Compile Include="..\Uno.UI.Runtime.Win32\Devices\Input\Win32PointerCoordinateMath.cs" Link="Windows_UI_Input\Win32PointerCoordinateMath.cs" />
 		<Compile Include="..\Uno.UI.Runtime.X11\Devices\Input\X11PointerCoordinateMath.cs" Link="Windows_UI_Input\X11PointerCoordinateMath.cs" />
 		<Compile Include="..\Uno.UI.Runtime.MacOS\UI\Windowing\MacOSTitleBarMath.cs" Link="Windows_UI_Input\MacOSTitleBarMath.cs" />
+		<!-- Pure helpers of the X11 AT-SPI backend: text offsets/segmentation and role ids. -->
+		<Compile Include="..\Uno.UI.Runtime.X11\Accessibility\AtspiTextSegmentation.cs" Link="Windows_UI_Xaml_Automation\AtspiTextSegmentation.cs" />
+		<Compile Include="..\Uno.UI.Runtime.X11\Accessibility\AtspiRoleMap.cs" Link="Windows_UI_Xaml_Automation\AtspiRoleMap.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<!--
