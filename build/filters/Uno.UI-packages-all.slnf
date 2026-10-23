@@ -11,6 +11,7 @@
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.csproj",
       "AddIns\\Uno.UI.WebView.X11\\Uno.UI.WebView.X11.csproj",
       "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.Crossruntime.csproj",
+      "AddIns\\Uno.WinUI.Graphics3DWebGpu\\Uno.WinUI.Graphics3DWebGpu.csproj",
       "AddIns\\Uno.WinUI.SpellChecking\\Uno.WinUI.SpellChecking.csproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
