@@ -776,11 +776,12 @@ internal sealed partial class TextSelectionManager
 			}
 		}
 
-		if (IsCtrlPressed(pKeyEventArgs))
+		if (IsCommandModifierPressed(pKeyEventArgs))
 		{
 			switch (pKeyEventArgs.Key)
 			{
 				case VirtualKey.C:
+				case VirtualKey.Insert:
 					CopySelectionToClipboard();
 					handled = true;
 					break;
@@ -802,8 +803,8 @@ internal sealed partial class TextSelectionManager
 	private static bool IsShiftPressed(KeyRoutedEventArgs args)
 		=> args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
 
-	private static bool IsCtrlPressed(KeyRoutedEventArgs args)
-		=> args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control);
+	private static bool IsCommandModifierPressed(KeyRoutedEventArgs args)
+		=> args.KeyboardModifiers == Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 
 	private void UpdateLastSelectedTextElement()
 	{
