@@ -55,7 +55,7 @@ stages:
       resultsTimeoutMinutes: 55
       jobTimeoutInMinutes: 75
       # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
-      condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))"
+      condition: "succeeded()" # TEMP(webgpu-group9): always run the WASM WebGPU lane on this PR; revert before merge
 
 - stage: runtime_tests_skia_android
   displayName: Tests - Android
