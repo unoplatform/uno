@@ -60,6 +60,17 @@
 			<_Sha1Replace Include="..\src\Uno.Sdk\**\*" />
 		</ItemGroup>
 
+		<!-- A packaged MSBuild file outside the list above keeps its _v0 names while the assemblies they point to are
+		     renamed, so the task can't be found in a consumer's build (#25336). -->
+		<ItemGroup>
+			<_PackagedMSBuildFile Include="..\build\nuget\*.targets;..\build\nuget\*.props;..\src\**\buildTransitive\*.targets;..\src\**\buildTransitive\*.props;..\src\**\package\*.targets;..\src\**\package\*.props"
+								  Exclude="@(_Sha1Replace);..\src\**\obj\**;..\src\**\bin\**" />
+			<_UnrewrittenPackagedFile Include="@(_PackagedMSBuildFile)"
+									  Condition="$([System.IO.File]::ReadAllText('%(_PackagedMSBuildFile.FullPath)').Contains('_v0'))" />
+		</ItemGroup>
+		<Error Condition="'@(_UnrewrittenPackagedFile)' != ''"
+			   Text="These packaged files reference _v0 names that packaging renames, but they aren't in _Sha1Replace: @(_UnrewrittenPackagedFile)" />
+
 		<PropertyGroup>
 			<_ReplacedSHA>$(NBGV_GitCommitId)</_ReplacedSHA>
 
