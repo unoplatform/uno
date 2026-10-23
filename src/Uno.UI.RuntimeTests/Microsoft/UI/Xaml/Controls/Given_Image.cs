@@ -861,6 +861,87 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(changed, "Animated WebP should show different frames over time");
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25543")]
+		public async Task When_AnimatedGif_From_Stream_Changes_Frames()
+			=> await AssertFramesAdvance(await FromStreamAsync("ms-appx:///Assets/Formats/animated.gif"), "An animated GIF set from a stream");
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25543")]
+		public async Task When_AnimatedWebP_From_Stream_Changes_Frames()
+			=> await AssertFramesAdvance(await FromStreamAsync("ms-appx:///Assets/Formats/animated.webp"), "An animated WebP set from a stream");
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25543")]
+		public async Task When_AnimatedGif_From_Uri_Without_Extension_Changes_Frames()
+		{
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Formats/animated.gif"));
+			var copy = await file.CopyAsync(ApplicationData.Current.LocalFolder, Guid.NewGuid().ToString("N"));
+			try
+			{
+				var bitmap = new BitmapImage { CreateOptions = BitmapCreateOptions.IgnoreImageCache, UriSource = new Uri($"ms-appdata:///Local/{copy.Name}") };
+				await AssertFramesAdvance(bitmap, "An animated GIF from a URI without an extension");
+			}
+			finally
+			{
+				await copy.DeleteAsync();
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25543")]
+		public async Task When_Encoded_Image_May_Be_Animated()
+		{
+			// Content that may be animated skips the browser decode, which keeps only the first frame.
+			static bool MayBeAnimated(ReadOnlySpan<byte> encoded) => Uno.Helpers.ImageSourceHelpers.MayBeAnimated(encoded);
+
+			Assert.IsTrue(MayBeAnimated(await ReadAssetAsync("ms-appx:///Assets/Formats/animated.gif")));
+			Assert.IsTrue(MayBeAnimated(await ReadAssetAsync("ms-appx:///Assets/Formats/uno-overalls.gif")), "Any GIF may be animated");
+			Assert.IsTrue(MayBeAnimated("GIF87a"u8));
+			Assert.IsTrue(MayBeAnimated(await ReadAssetAsync("ms-appx:///Assets/Formats/animated.webp")));
+
+			Assert.IsFalse(MayBeAnimated(await ReadAssetAsync("ms-appx:///Assets/Formats/uno-overalls.webp")), "An extended WebP without the animation flag is still");
+			Assert.IsFalse(MayBeAnimated("RIFF\0\0\0\0WEBPVP8 \0\0\0\0\x02"u8), "A simple lossy WebP is still");
+			Assert.IsFalse(MayBeAnimated("RIFF\0\0\0\0WEBPVP8L\0\0\0\0\x02"u8), "A simple lossless WebP is still");
+			Assert.IsFalse(MayBeAnimated("RIFF\0\0\0\0WEBPVP8X\0\0\0\0"u8), "A truncated header is not read past its end");
+			Assert.IsFalse(MayBeAnimated(await ReadAssetAsync("ms-appx:///Assets/Formats/uno-overalls.png")));
+		}
+
+		private static async Task AssertFramesAdvance(BitmapImage bitmap, string what)
+		{
+			var image = new Image { Width = 100, Height = 100, Source = bitmap };
+			string failure = null;
+			var opened = false;
+			image.ImageOpened += (_, _) => opened = true;
+			image.ImageFailed += (_, e) => failure = e.ErrorMessage;
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => opened || failure is not null, timeoutMS: 10000, message: $"{what} should open");
+			Assert.IsNull(failure, $"{what} failed to open: {failure}");
+
+			Microsoft.UI.Composition.CompositionImageSurface surface = null;
+			bitmap.Subscribe(data => surface = data.CompositionSurface as Microsoft.UI.Composition.CompositionImageSurface).Dispose();
+			Assert.IsNotNull(surface);
+
+			// An animated surface moves to its next frame on a timer; a decode that kept only the first frame never does.
+			var firstFrame = surface.Image;
+			await WindowHelper.WaitFor(() => !ReferenceEquals(surface.Image, firstFrame), timeoutMS: 5000, message: $"{what} should move past its first frame");
+		}
+
+		private static async Task<BitmapImage> FromStreamAsync(string uri)
+		{
+			var bitmap = new BitmapImage();
+			using var stream = await (await StorageFile.GetFileFromApplicationUriAsync(new Uri(uri))).OpenReadAsync();
+			await bitmap.SetSourceAsync(stream);
+			return bitmap;
+		}
+
+		private static async Task<byte[]> ReadAssetAsync(string uri)
+			=> (await FileIO.ReadBufferAsync(await StorageFile.GetFileFromApplicationUriAsync(new Uri(uri)))).ToArray();
 #endif
 	}
 }
