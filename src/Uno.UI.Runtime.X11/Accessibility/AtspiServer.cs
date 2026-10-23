@@ -28,8 +28,11 @@ internal sealed class AtspiServer
 		bool GrabFocus(AtspiNode node);
 		bool SetRangeValue(AtspiNode node, double value);
 		bool SetText(AtspiNode node, string text);
+		// position, start and end are AT-SPI character offsets into the control's live text.
+		bool InsertText(AtspiNode node, int position, string text);
+		bool DeleteText(AtspiNode node, int start, int end);
 		bool SelectChild(AtspiNode node, int index);
-		// start and end are UTF-16 indices; start == end places the caret.
+		// start and end are AT-SPI character offsets into the live text; start == end places the caret.
 		bool SetTextSelection(AtspiNode node, int start, int end);
 	}
 
@@ -585,8 +588,8 @@ internal sealed class AtspiServer
 					}
 				case AtspiDbus.SetCaretOffsetMethod:
 					{
-						var offset16 = Utf16Index(text, Math.Max(0, reader.ReadInt32()));
-						ReplyBool(context, node.SelectionStart >= 0 && _server._writeTarget.SetTextSelection(node, offset16, offset16));
+						var offset = Math.Max(0, reader.ReadInt32());
+						ReplyBool(context, node.SelectionStart >= 0 && _server._writeTarget.SetTextSelection(node, offset, offset));
 						break;
 					}
 				case AtspiDbus.GetNSelectionsMethod:
@@ -604,23 +607,24 @@ internal sealed class AtspiServer
 					}
 				case AtspiDbus.AddSelectionMethod:
 					{
-						var start16 = Utf16Index(text, Math.Max(0, reader.ReadInt32()));
-						var end16 = Utf16Index(text, Math.Max(0, reader.ReadInt32()));
-						ReplyBool(context, node.SelectionStart >= 0 && !HasTextSelection(node) && _server._writeTarget.SetTextSelection(node, start16, end16));
+						var start = Math.Max(0, reader.ReadInt32());
+						var end = Math.Max(0, reader.ReadInt32());
+						ReplyBool(context, node.SelectionStart >= 0 && !HasTextSelection(node) && _server._writeTarget.SetTextSelection(node, start, end));
 						break;
 					}
 				case AtspiDbus.SetSelectionMethod:
 					{
 						var index = reader.ReadInt32();
-						var start16 = Utf16Index(text, Math.Max(0, reader.ReadInt32()));
-						var end16 = Utf16Index(text, Math.Max(0, reader.ReadInt32()));
-						ReplyBool(context, index == 0 && node.SelectionStart >= 0 && _server._writeTarget.SetTextSelection(node, start16, end16));
+						var start = Math.Max(0, reader.ReadInt32());
+						var end = Math.Max(0, reader.ReadInt32());
+						ReplyBool(context, index == 0 && node.SelectionStart >= 0 && _server._writeTarget.SetTextSelection(node, start, end));
 						break;
 					}
 				case AtspiDbus.RemoveSelectionMethod:
 					{
 						var index = reader.ReadInt32();
-						ReplyBool(context, index == 0 && HasTextSelection(node) && _server._writeTarget.SetTextSelection(node, node.SelectionEnd, node.SelectionEnd));
+						var caret = CharacterCount(text, node.SelectionEnd);
+						ReplyBool(context, index == 0 && HasTextSelection(node) && _server._writeTarget.SetTextSelection(node, caret, caret));
 						break;
 					}
 				case AtspiDbus.GetCharacterExtentsMethod:
@@ -698,30 +702,22 @@ internal sealed class AtspiServer
 				case AtspiDbus.SetTextContentsMethod:
 					ReplyBool(context, _server._writeTarget.SetText(node, reader.ReadString()));
 					break;
+				// Insert/Delete are applied to the live text on the UI thread: node.Text lags edits
+				// still queued, so two quick edits computed from it would overwrite each other.
 				case AtspiDbus.InsertTextMethod:
 					{
 						var pos = reader.ReadInt32();
 						var s = reader.ReadString();
 						var len = reader.ReadInt32();
-						var current = node.Text;
-						var pos16 = Utf16Index(current, Math.Max(0, pos));
 						var insert = len >= 0 && len < CharacterCount(s) ? s.Substring(0, Utf16Index(s, len)) : s;
-						ReplyBool(context, _server._writeTarget.SetText(node, current.Insert(pos16, insert)));
+						ReplyBool(context, _server._writeTarget.InsertText(node, Math.Max(0, pos), insert));
 						break;
 					}
 				case AtspiDbus.DeleteTextMethod:
 					{
-						var start = reader.ReadInt32();
+						var start = Math.Max(0, reader.ReadInt32());
 						var end = reader.ReadInt32();
-						var current = node.Text;
-						var start16 = Utf16Index(current, Math.Max(0, start));
-						var end16 = Math.Max(start16, Utf16Index(current, Math.Max(0, end)));
-						if (start16 >= end16)
-						{
-							ReplyBool(context, false);
-							break;
-						}
-						ReplyBool(context, _server._writeTarget.SetText(node, current.Remove(start16, end16 - start16)));
+						ReplyBool(context, end > start && _server._writeTarget.DeleteText(node, start, end));
 						break;
 					}
 				case AtspiDbus.CopyTextMethod:

@@ -580,7 +580,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
 			{
 				// A password's text is never published, as in the base class: the mask leaks its length,
-				// and Insert/DeleteText edit the published text, so they would overwrite the real password.
+				// and an edit applied to the mask would overwrite the real password.
 				var isPassword = peer.IsPassword();
 				node.HasText = true;
 				node.Text = isPassword ? "" : valueProvider.Value ?? "";
@@ -1332,6 +1332,40 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		return TryEnqueueWrite(element, () => SetTextOnUiThread(element, text));
 	}
 
+	bool AtspiServer.IWriteTarget.InsertText(AtspiNode node, int position, string text)
+		=> TryEnqueueTextEdit(node, current => current.Insert(AtspiTextSegmentation.Utf16Index(current, position), text));
+
+	bool AtspiServer.IWriteTarget.DeleteText(AtspiNode node, int start, int end)
+		=> TryEnqueueTextEdit(node, current =>
+		{
+			var start16 = AtspiTextSegmentation.Utf16Index(current, start);
+			var end16 = Math.Max(start16, AtspiTextSegmentation.Utf16Index(current, end));
+			return current.Remove(start16, end16 - start16);
+		});
+
+	// The edit reads the control's current value on the UI thread, after any edit queued before it.
+	private bool TryEnqueueTextEdit(AtspiNode node, Func<string, string> edit)
+	{
+		if (!_elementsSnapshot.TryGetValue(node.Handle, out var element))
+		{
+			return false;
+		}
+
+		return TryEnqueueWrite(element, () =>
+		{
+			var peer = element.GetOrCreateAutomationPeer();
+			if (peer?.GetPattern(PatternInterface.Value) is IValueProvider { IsReadOnly: false } valueProvider && !peer.IsPassword())
+			{
+				var current = valueProvider.Value ?? "";
+				var edited = edit(current);
+				if (!string.Equals(current, edited, StringComparison.Ordinal))
+				{
+					valueProvider.SetValue(edited);
+				}
+			}
+		});
+	}
+
 	bool AtspiServer.IWriteTarget.SetTextSelection(AtspiNode node, int start, int end)
 	{
 		if (!_elementsSnapshot.TryGetValue(node.Handle, out var element) || element is not TextBox textBox)
@@ -1339,11 +1373,12 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			return false;
 		}
 
+		// Converted against the live text: the node's copy lags edits still queued.
 		return TryEnqueueWrite(textBox, () =>
 		{
-			var length = textBox.Text.Length;
-			var from = Math.Clamp(Math.Min(start, end), 0, length);
-			var to = Math.Clamp(Math.Max(start, end), 0, length);
+			var text = textBox.Text;
+			var from = AtspiTextSegmentation.Utf16Index(text, Math.Min(start, end));
+			var to = AtspiTextSegmentation.Utf16Index(text, Math.Max(start, end));
 			textBox.Select(from, to - from);
 		});
 	}
