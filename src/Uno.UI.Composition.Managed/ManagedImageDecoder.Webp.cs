@@ -10,9 +10,26 @@ internal static partial class ManagedImageDecoder
 	// WebP: decodes both still variants — lossless (VP8L) and lossy (VP8, the RFC 6386 intra decoder). The ALPH
 	// chunk is not decoded, so a lossy WebP carrying one is declined rather than rendered opaque. Animated WebP is
 	// not handled.
-	private static bool TryDecodeWebp(byte[] d, [NotNullWhen(true)] out DecodedImage? decoded)
+	private static bool TryDecodeWebp(byte[] d, ImageBytes bytes, [NotNullWhen(true)] out DecodedImage? decoded)
 	{
 		decoded = null;
+		if (!TryFindWebpBitstream(bytes, out var lossless, out var chunk, out var size))
+		{
+			return false;
+		}
+
+		return lossless ? TryDecodeVp8l(d, chunk, out decoded) : TryDecodeVp8(bytes, chunk, size, out decoded);
+	}
+
+	/// <summary>
+	/// Walks a WebP's chunks to its image bitstream, a VP8L (lossless) or VP8 (lossy) chunk, applying every refusal the
+	/// decode makes on the way.
+	/// </summary>
+	private static bool TryFindWebpBitstream(ImageBytes d, out bool lossless, out int chunk, out int size)
+	{
+		lossless = false;
+		chunk = 0;
+		size = 0;
 		if (d.Length < 16 || d[8] != 'W' || d[9] != 'E' || d[10] != 'B' || d[11] != 'P')
 		{
 			return false;
@@ -22,43 +39,92 @@ internal static partial class ManagedImageDecoder
 		var hasAlphaChunk = false;
 		while (p + 8 <= d.Length)
 		{
-			var id = (char)d[p] + "" + (char)d[p + 1] + (char)d[p + 2] + (char)d[p + 3];
-			var size = ReadU32LE(d, p + 4);
-			var chunk = p + 8;
+			var chunkSize = ReadU32LE(d, p + 4);
+			chunk = p + 8;
 
-			if (id == "VP8L")
+			if (IsChunk(d, p, "VP8L"))
 			{
-				return TryDecodeVp8l(d, chunk, out decoded);
+				lossless = true;
+				return true;
 			}
 
-			if (id == "VP8 ")
+			if (IsChunk(d, p, "VP8 "))
 			{
 				// The alpha plane is not decoded, and rendering such a file opaque is worse than declining it.
-				if (hasAlphaChunk || size > int.MaxValue || (long)chunk + size > d.Length)
+				if (hasAlphaChunk || chunkSize > int.MaxValue || (long)chunk + chunkSize > d.Length)
 				{
 					return false;
 				}
 
-				return TryDecodeVp8(d, chunk, (int)size, out decoded);
+				size = (int)chunkSize;
+				return true;
 			}
 
-			if (id is "ANIM" or "ANMF")
+			if (IsChunk(d, p, "ANIM") || IsChunk(d, p, "ANMF"))
 			{
 				return false; // animated WebP is not handled here
 			}
 
-			hasAlphaChunk |= id == "ALPH";
+			hasAlphaChunk |= IsChunk(d, p, "ALPH");
 
 			// Unsigned size + bounds check keeps `p` moving forward; a crafted huge size can no longer wrap it.
-			if (size > int.MaxValue || (long)chunk + size > d.Length)
+			if (chunkSize > int.MaxValue || (long)chunk + chunkSize > d.Length)
 			{
 				return false;
 			}
 
-			p = chunk + (int)size + ((int)size & 1);
+			p = chunk + (int)chunkSize + ((int)chunkSize & 1);
 		}
 
 		return false;
+	}
+
+	private static bool IsChunk(ImageBytes d, int p, string id)
+		=> d[p] == id[0] && d[p + 1] == id[1] && d[p + 2] == id[2] && d[p + 3] == id[3];
+
+	/// <summary>The size <see cref="TryDecodeWebp"/> produces: its bitstream's, read from the bitstream header.</summary>
+	private static bool TryReadWebpSize(ImageBytes d, out int width, out int height)
+	{
+		width = 0;
+		height = 0;
+		if (!TryFindWebpBitstream(d, out var lossless, out var chunk, out var size))
+		{
+			return false;
+		}
+
+		if (lossless)
+		{
+			return TryReadVp8lHeader(d, chunk, out width, out height);
+		}
+
+		var vp8 = new Vp8FullDecoder(d, chunk, size);
+		if (!vp8.ParseFrameHeader())
+		{
+			return false;
+		}
+
+		width = vp8.Width;
+		height = vp8.Height;
+		return true;
+	}
+
+	/// <summary>
+	/// Reads a VP8L bitstream's 40-bit header: the 0x2F signature, the 14-bit width - 1 and height - 1, alpha_is_used and
+	/// the 3-bit version. Bytes past the end read as zero, as the bit reader's do.
+	/// </summary>
+	private static bool TryReadVp8lHeader(ImageBytes d, int offset, out int width, out int height)
+	{
+		ulong bits = 0;
+		for (var i = 0; i < 5; i++)
+		{
+			bits |= (ulong)(offset + i < d.Length ? d[offset + i] : 0) << (8 * i);
+		}
+
+		width = (int)((bits >> 8) & 0x3FFF) + 1;
+		height = (int)((bits >> 22) & 0x3FFF) + 1;
+		// 4 bytes of ARGB plus the 4-byte BGRA output; a 14-bit header pair can ask for gigabytes before a
+		// single pixel is read.
+		return (bits & 0xFF) == 0x2F && !ExceedsPixelCap(width, height, 8) && ((bits >> 37) & 0x7) == 0;
 	}
 
 	private static bool TryDecodeVp8l(byte[] d, int offset, [NotNullWhen(true)] out DecodedImage? decoded)
@@ -112,27 +178,12 @@ internal static partial class ManagedImageDecoder
 		public bool Decode(out int[] argb, out int width, out int height)
 		{
 			argb = Array.Empty<int>();
-			width = height = 0;
-
-			if (ReadBits(8) != 0x2F) // signature
+			if (!TryReadVp8lHeader(new ImageBytes(_d), _pos, out width, out height))
 			{
 				return false;
 			}
 
-			width = ReadBits(14) + 1;
-			height = ReadBits(14) + 1;
-			// 4 bytes of ARGB plus the 4-byte BGRA output; a 14-bit header pair can ask for gigabytes before a
-			// single pixel is read.
-			if (ExceedsPixelCap(width, height, 8))
-			{
-				return false;
-			}
-
-			ReadBits(1); // alpha_is_used
-			if (ReadBits(3) != 0) // version
-			{
-				return false;
-			}
+			_pos = Math.Min(_pos + 5, _d.Length); // past the 40-bit header, which ends on a byte
 
 			// Read transforms (applied in reverse after decoding).
 			var transforms = new System.Collections.Generic.List<Transform>();
