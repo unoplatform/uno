@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -23,6 +24,16 @@ internal sealed class SkiaImageDecoderBackend : IImageEncoderDecoder
 	{
 		var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
 		return new SkiaImage(SKImage.FromPixelCopy(info, bgraPremul));
+	}
+
+	public unsafe IImage CreateImage<TState>(int pixelWidth, int pixelHeight, TState state, SpanAction<byte, TState> writePixels)
+	{
+		using var bitmap = new SKBitmap(new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul));
+		writePixels(new Span<byte>((void*)bitmap.GetPixels(), bitmap.ByteCount), state);
+
+		// The image shares the pixels of an immutable bitmap instead of copying them.
+		bitmap.SetImmutable();
+		return new SkiaImage(SKImage.FromBitmap(bitmap));
 	}
 
 	public ImageFrames CreateFrames(IImage image) => new(new[] { image }, SkiaImageDecoder.SingleFrameDurations);
