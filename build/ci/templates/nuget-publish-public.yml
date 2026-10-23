@@ -61,6 +61,7 @@ steps:
         $zip = [System.IO.Compression.ZipFile]::OpenRead($package.FullName)
         try {
           $nuspec = $zip.Entries | Where-Object { $_.FullName -eq $_.Name -and $_.Name -like '*.nuspec' } | Select-Object -First 1
+          if (-not $nuspec) { throw "No .nuspec at the root of $($package.FullName)." }
           $reader = [System.IO.StreamReader]::new($nuspec.Open())
           try { $metadata = ([xml]$reader.ReadToEnd()).package.metadata }
           finally { $reader.Dispose() }
