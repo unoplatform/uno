@@ -440,10 +440,199 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
 
 			Assert.AreEqual("Item 1", si.Content);
-#if WINAPPSDK // On iOS and Android (others not tested), ContentTemplateRoot is null, and TemplatedRoot is a ContentPresenter containing an ImplicitTextBlock
 			Assert.IsInstanceOfType(si.ContentTemplateRoot, typeof(TextBlock));
 			Assert.AreEqual("Item 1", (si.ContentTemplateRoot as TextBlock).Text);
-#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(ListView))]
+		[DataRow(typeof(GridView))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_ItemTemplate_Then_Container_ContentTemplateRoot_Is_Template_Root(Type listType)
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = TextBlockItemTemplate;
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+
+			SelectorItem container = null;
+			await WindowHelper.WaitFor(() => (container = SUT.ContainerFromIndex(0) as SelectorItem) != null);
+
+			var root = container.ContentTemplateRoot as TextBlock;
+			Assert.IsNotNull(root, "ContentTemplateRoot");
+			Assert.AreEqual("Item 1", root?.Text);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(ListView))]
+		[DataRow(typeof(GridView))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_ContainerContentChanging_Then_ContentTemplateRoot_Is_Materialized(Type listType)
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = TextBlockItemTemplate;
+
+			// WinUI raises ContainerContentChanging once the container has applied its template,
+			// so a handler can fill the item from ContentTemplateRoot (the documented pattern).
+			var rootsSeen = new List<string>();
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue)
+				{
+					var container = e.ItemContainer;
+					var children = VisualTreeHelper.GetChildrenCount(container);
+					var reapplied = container.ApplyTemplate();
+					rootsSeen.Add($"{container.ContentTemplateRoot?.GetType().Name ?? "null"} children={children} reapplied={reapplied}");
+				}
+			};
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+
+			Assert.IsTrue(rootsSeen.Count >= source.Length, $"ContainerContentChanging raised {rootsSeen.Count} time(s)");
+			var expected = $"{nameof(TextBlock)} children=1 reapplied=False";
+			Assert.IsTrue(rootsSeen.All(r => r == expected), "When raised: " + string.Join(", ", rootsSeen));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_Container_Has_No_Template_Then_ContainerContentChanging_Is_Raised()
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var containerStyle = new Style(typeof(ListViewItem));
+			containerStyle.Setters.Add(new Setter(Control.TemplateProperty, null));
+			var SUT = new ListView { ItemContainerStyle = containerStyle, ItemsSource = source };
+
+			var raisedFor = new List<int>();
+			SUT.ContainerContentChanging += (s, e) => raisedFor.Add(e.ItemIndex);
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded);
+			await WindowHelper.WaitFor(() => raisedFor.Count >= source.Length);
+
+			CollectionAssert.AreEquivalent(new[] { 0, 1 }, raisedFor);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(ListView), typeof(ListViewItem))]
+		[DataRow(typeof(GridView), typeof(GridViewItem))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_Container_Collapsed_Then_ContainerContentChanging_Is_Raised(Type listType, Type containerType)
+		{
+			var source = new[] { "Item 1", "Item 2", "Item 3" };
+			var collapsedStyle = new Style(containerType);
+			collapsedStyle.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Collapsed));
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = TextBlockItemTemplate;
+			SUT.ItemContainerStyleSelector = new CollapseItemStyleSelector { Item = source[1], CollapsedStyle = collapsedStyle };
+
+			// A collapsed container is never measured, so it never gets its template; WinUI still raises
+			// ContainerContentChanging for it, with a null ContentTemplateRoot.
+			var raised = new Dictionary<int, string>();
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue)
+				{
+					raised[e.ItemIndex] = e.ItemContainer.ContentTemplateRoot?.GetType().Name ?? "null";
+				}
+			};
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var seen = string.Join(", ", raised.OrderBy(p => p.Key).Select(p => $"#{p.Key}: {p.Value}"));
+			CollectionAssert.AreEquivalent(new[] { 0, 1, 2 }, raised.Keys.ToArray(), "ContainerContentChanging raised for " + seen);
+			Assert.AreEqual(Visibility.Collapsed, ((UIElement)SUT.ContainerFromIndex(1)).Visibility);
+			Assert.AreEqual(nameof(TextBlock), raised[0], seen);
+			Assert.AreEqual(nameof(TextBlock), raised[2], seen);
+		}
+
+		private class CollapseItemStyleSelector : StyleSelector
+		{
+			public object Item { get; set; }
+
+			public Style CollapsedStyle { get; set; }
+
+			protected override Style SelectStyleCore(object item, DependencyObject container)
+				=> Equals(item, Item) ? CollapsedStyle : null;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_Containers_Recycled_Then_ContainerContentChanging_Has_Template_Root()
+		{
+			var source = Enumerable.Range(0, 100).Select(i => $"Item {i}").ToArray();
+			var SUT = new ListView { ItemTemplate = TextBlockItemTemplate, ItemsSource = source, Height = 200 };
+
+			var problems = new List<string>();
+			var maxIndex = -1;
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (e.InRecycleQueue)
+				{
+					return;
+				}
+
+				maxIndex = Math.Max(maxIndex, e.ItemIndex);
+				if (e.ItemContainer.ContentTemplateRoot is not TextBlock)
+				{
+					problems.Add($"#{e.ItemIndex}: root={e.ItemContainer.ContentTemplateRoot?.GetType().Name ?? "null"}");
+				}
+				if (SUT.IndexFromContainer(e.ItemContainer) != e.ItemIndex)
+				{
+					problems.Add($"#{e.ItemIndex}: IndexFromContainer={SUT.IndexFromContainer(e.ItemContainer)}");
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.ScrollIntoView(source[^1]);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(source.Length - 1, maxIndex, "Last item realized");
+			Assert.AreEqual(0, problems.Count, string.Join("; ", problems));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(ListView))]
+		[DataRow(typeof(GridView))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_ContainerContentChanging_Fills_Template_Root_Then_Content_Is_Laid_Out(Type listType)
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = (DataTemplate)XamlReader.Load(
+				"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><ContentControl /></DataTemplate>");
+
+			// The documented pattern: fill the materialized item template from the handler.
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue && e.ItemContainer.ContentTemplateRoot is ContentControl shell)
+				{
+					shell.Content = new TextBlock { Text = (string)e.Item };
+				}
+			};
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+
+			SelectorItem container = null;
+			await WindowHelper.WaitFor(() => (container = SUT.ContainerFromIndex(0) as SelectorItem) != null);
+			await WindowHelper.WaitForIdle();
+
+			var text = ((container.ContentTemplateRoot as ContentControl)?.Content) as TextBlock;
+			Assert.IsNotNull(text, "Item content set by the handler");
+			Assert.AreEqual("Item 1", text?.Text);
+			Assert.IsTrue(text?.ActualWidth > 0, "Item content is laid out");
 		}
 
 		[TestMethod]

@@ -1101,11 +1101,35 @@ namespace Microsoft.UI.Xaml.Controls
 
 			PrepareContainerForDragDrop(itemContainer);
 
-			ContainerContentChanging?.Invoke(this, new ContainerContentChangingEventArgs(item, itemContainer, itemIndex));
+			// WinUI raises ContainerContentChanging once the container has its template, so handlers can
+			// use ContentTemplateRoot. A new container only gets its template on its first measure, after
+			// it is added to the panel: hold the event until its template root is reported (SelectorItem).
+			// A collapsed container is never measured: like WinUI, raise it now, without a template root.
+			if (itemContainer is { TemplatedRoot: null, Visibility: not Visibility.Collapsed })
+			{
+				itemContainer.PendingContainerContentChanging = (item, itemIndex);
+			}
+			else
+			{
+				if (itemContainer is not null)
+				{
+					itemContainer.PendingContainerContentChanging = null;
+				}
+
+				RaiseContainerContentChanging(item, itemContainer, itemIndex);
+			}
 		}
+
+		internal void RaiseContainerContentChanging(object item, SelectorItem itemContainer, int itemIndex)
+			=> ContainerContentChanging?.Invoke(this, new ContainerContentChangingEventArgs(item, itemContainer, itemIndex));
 
 		internal override void ContainerClearedForItem(object item, SelectorItem itemContainer)
 		{
+			if (itemContainer is not null)
+			{
+				itemContainer.PendingContainerContentChanging = null;
+			}
+
 			ClearContainerForDragDrop(itemContainer);
 
 			base.ContainerClearedForItem(item, itemContainer);
