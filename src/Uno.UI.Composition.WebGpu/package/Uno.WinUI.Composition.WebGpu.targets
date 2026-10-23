@@ -56,22 +56,26 @@
 
 	<!-- On Windows the writable cache must sit on the emscripten toolchain's drive: building a system-lib variant
 	     computes a relpath between the two, which throws across drives. Resolved in a target because the workload
-	     sets EmscriptenSdkToolsPath after this file is imported. -->
+	     sets EmscriptenSdkToolsPath after this file is imported. The folder is per toolchain: emcc clears a cache built
+	     by another toolchain path, and on Windows that clear races the other emcc processes still reading it. -->
 	<Target Name="_UnoWebGpuAnchorWasmCache" BeforeTargets="_PrepareForBrowserWasmBuildNative"
 			Condition="'$(_UnoWebGpuWasm)' == 'true' and '$(OS)' == 'Windows_NT' and '$(EmscriptenSdkToolsPath)' != ''">
 		<PropertyGroup>
 			<_UnoWgpuDrive>$([System.IO.Path]::GetPathRoot($(EmscriptenSdkToolsPath)))</_UnoWgpuDrive>
-			<WgpuWasmCacheDir>$([MSBuild]::NormalizeDirectory($(_UnoWgpuDrive), 'uno-wgpu-wasm-emcache'))</WgpuWasmCacheDir>
-			<WgpuWasmCacheDir Condition="'$(LOCALAPPDATA)' != '' and '$([System.IO.Path]::GetPathRoot($(LOCALAPPDATA)))' == '$(_UnoWgpuDrive)'">$([MSBuild]::NormalizeDirectory($(LOCALAPPDATA), 'Uno', 'wgpu-wasm-emcache'))</WgpuWasmCacheDir>
+			<_UnoWgpuCacheName>wgpu-wasm-emcache-$([MSBuild]::StableStringHash('$(EmscriptenSdkToolsPath)').ToString('X8'))</_UnoWgpuCacheName>
+			<WgpuWasmCacheDir>$([MSBuild]::NormalizeDirectory($(_UnoWgpuDrive), 'uno-$(_UnoWgpuCacheName)'))</WgpuWasmCacheDir>
+			<WgpuWasmCacheDir Condition="'$(LOCALAPPDATA)' != '' and '$([System.IO.Path]::GetPathRoot($(LOCALAPPDATA)))' == '$(_UnoWgpuDrive)'">$([MSBuild]::NormalizeDirectory($(LOCALAPPDATA), 'Uno', '$(_UnoWgpuCacheName)'))</WgpuWasmCacheDir>
 			<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
 		</PropertyGroup>
 	</Target>
 
-	<!-- Seed the writable cache from the SDK's once, so only the port and its extra stdlibs get built. -->
+	<!-- Seed the writable cache from the SDK's once, so only the port and its extra stdlibs get built. The SDK's
+	     sanity.txt names the toolchain of the machine that built the workload, so emcc would erase the copy; without
+	     one it keeps the copy and writes its own. -->
 	<Target Name="_UnoWebGpuSeedWasmCache" BeforeTargets="_PrepareForBrowserWasmBuildNative"
 			Condition="'$(_UnoWebGpuWasm)' == 'true' and !Exists('$(WgpuWasmCacheDir)sysroot') and '$(EmscriptenCacheSdkCacheDir)' != '' and Exists('$(EmscriptenCacheSdkCacheDir)')">
 		<ItemGroup>
-			<_UnoWgpuSdkCache Include="$(EmscriptenCacheSdkCacheDir)\**\*" />
+			<_UnoWgpuSdkCache Include="$(EmscriptenCacheSdkCacheDir)\**\*" Exclude="$(EmscriptenCacheSdkCacheDir)\sanity.txt" />
 		</ItemGroup>
 		<Copy SourceFiles="@(_UnoWgpuSdkCache)"
 			DestinationFiles="@(_UnoWgpuSdkCache->'$(WgpuWasmCacheDir)%(RecursiveDir)%(Filename)%(Extension)')"
