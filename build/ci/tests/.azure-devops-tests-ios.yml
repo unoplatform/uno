@@ -6,6 +6,12 @@ parameters:
   xCodeRootBuild: ''
   poolName: ''
   XAML_FLAVOR_BUILD: ''
+  renderer: 'Skia'
+  # Names the lane's jobs and artifacts, so a second renderer lane does not collide with the Skia one.
+  variant: 'skia'
+  # UNO_* variables handed to the app, e.g. 'UNO_WEBGPU=1'.
+  appEnvironment: ''
+  condition: ''
 
   # Runtime Test Groups
   IOS_RUNTIME_TEST_GROUP_COUNT: 4
@@ -27,9 +33,12 @@ jobs:
   - template: .azure-devops-tests-ios-runner.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
-      JobName: 'Skia_iOS_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
-      JobDisplayName: 'Skia Runtime Tests ${{ RuntimeTestGroup.key }}'
-      TestRunName: 'iOS Skia Runtime Tests ${{ RuntimeTestGroup.key }}'
+      ${{ if eq(parameters.renderer, 'Skia') }}:
+        JobName: 'Skia_iOS_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
+      ${{ else }}:
+        JobName: 'Skia_iOS_${{ parameters.renderer }}_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
+      JobDisplayName: '${{ parameters.renderer }} Runtime Tests ${{ RuntimeTestGroup.key }}'
+      TestRunName: 'iOS ${{ parameters.renderer }} Runtime Tests ${{ RuntimeTestGroup.key }}'
       JobTimeoutInMinutes: 90
       vmImage: ${{ parameters.vmMacImage }}
       UITEST_SNAPSHOTS_ONLY: false
@@ -39,7 +48,9 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.IOS_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesapp.skia'
-      UITEST_VARIANT: 'skia'
+      UITEST_VARIANT: '${{ parameters.variant }}'
+      appEnvironment: '${{ parameters.appEnvironment }}'
+      condition: '${{ parameters.condition }}'
       TEST_KIND: runtime
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
       dependsOn:

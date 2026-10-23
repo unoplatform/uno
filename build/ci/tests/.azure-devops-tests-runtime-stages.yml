@@ -125,6 +125,22 @@ stages:
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
+  # The same app on the WebGPU backend, on the simulator's Metal.
+  - template: .azure-devops-tests-ios.yml
+    parameters:
+      vmImage: '${{ parameters.vmImage }}'
+      vmMacImage: '${{ parameters.vmMacImage }}'
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
+      poolName: '${{ parameters.poolName }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+      renderer: 'WebGPU'
+      variant: 'webgpu'
+      appEnvironment: 'UNO_WEBGPU=1 UNO_WEBGPU_LOG=warn'
+      # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
+      condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))"
+
 - stage: runtime_tests_skia_tvos
   displayName: Tests - tvOS
   # On PRs only Apple-specific changes run it; iOS covers the shared Skia layer and the Mac pool is the bottleneck.

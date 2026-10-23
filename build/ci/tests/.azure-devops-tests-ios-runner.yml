@@ -15,6 +15,10 @@ parameters:
   dependsOn: ''
   SamplesAppArtifactName: ''
   BuildJobName: ''
+  # UNO_* variables handed to the app, space-separated, e.g. 'UNO_WEBGPU=1'.
+  appEnvironment: ''
+  # Overrides the job's run condition, e.g. to skip a lane on pull requests that don't need it.
+  condition: ''
 
 jobs:
 - job: ${{ parameters.JobName }}
@@ -22,6 +26,8 @@ jobs:
   cancelTimeoutInMinutes: 0
   dependsOn: ${{ parameters.dependsOn }}
   displayName: ${{ parameters.JobDisplayName }}
+  ${{ if ne(parameters.condition, '') }}:
+    condition: ${{ parameters.condition }}
   pool:
     vmImage: ${{ parameters.vmImage }}
 
@@ -100,6 +106,7 @@ jobs:
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/$(SamplesAppArtifactName)/SamplesApp.app"
       SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
+      UNO_TEST_APP_ENVIRONMENT: "${{ parameters.appEnvironment }}"
 
   - task: PublishTestResults@2
     condition: always()
@@ -134,6 +141,7 @@ jobs:
       UITEST_VARIANT: "${{ parameters.UITEST_VARIANT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/$(SamplesAppArtifactName)/SamplesApp.app"
       SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
+      UNO_TEST_APP_ENVIRONMENT: "${{ parameters.appEnvironment }}"
 
   - task: PublishTestResults@2
     # Also re-run when the harness died before any test started -- a boot or install failure
