@@ -163,7 +163,13 @@
 			<_OutputTargetFiles Include="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 			<_OutputTargetRefFiles Include="@(_OutputRefFiles->'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		</ItemGroup>
-		<MakeDir Directories="$(_TargetNugetFolder);$(_TargetNugetRefFolder)" />
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+		<!--
+			Only projects that produce reference assemblies get a ref folder. NuGet takes any file under ref/<tfm>/ as the package's compile
+			assets for that framework, so a ref folder holding only the ownership manifest would leave a freshly restored app compiling
+			against no assemblies at all instead of the ones in lib/<tfm>/.
+		-->
+		<MakeDir Directories="$(_TargetNugetRefFolder)" Condition="'@(_OutputRefFiles)' != ''" />
 
 		<!-- Add override file to notify a developer that the used package is modified -->
 		<WriteLinestoFile File="$(_TargetNugetFolder)\.packageoverride"
@@ -202,7 +208,15 @@
 		<WriteLinestoFile File="$(_OwnedRefOutputManifest)"
 				 Lines="@(_OutputTargetRefFiles)"
 				 Overwrite="True"
-				 WriteOnlyWhenDifferent="true" />
+				 WriteOnlyWhenDifferent="true"
+				 Condition="'@(_OutputRefFiles)' != ''" />
+
+		<!-- Without reference assemblies, remove a manifest an earlier override left behind, and the ref folder if nothing else is in it. -->
+		<Delete Files="$(_OwnedRefOutputManifest)" Condition="'@(_OutputRefFiles)' == '' and Exists('$(_OwnedRefOutputManifest)')" ContinueOnError="true" />
+		<ItemGroup Condition="'@(_OutputRefFiles)' == '' and Exists('$(_TargetNugetRefFolder)')">
+			<_RemainingTargetRefFiles Include="$(_TargetNugetRefFolder)\**" />
+		</ItemGroup>
+		<RemoveDir Directories="$(_TargetNugetRefFolder)" Condition="'@(_OutputRefFiles)' == '' and Exists('$(_TargetNugetRefFolder)') and '@(_RemainingTargetRefFiles)' == ''" ContinueOnError="true" />
 	</Target>
 
 
