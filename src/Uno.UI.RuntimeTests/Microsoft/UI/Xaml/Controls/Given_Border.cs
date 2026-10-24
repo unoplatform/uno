@@ -235,6 +235,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Gradient_Rendered_At_Twice_The_Scale_Then_Edges_Stay_Opaque()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			// A gradient fill takes its edges from the bitmap's bounds clip, unlike a solid one.
+			var SUT = new Border()
+			{
+				Width = 300,
+				Height = 300,
+				Background = new LinearGradientBrush
+				{
+					StartPoint = new Point(0, 0),
+					EndPoint = new Point(1, 0),
+					GradientStops =
+					{
+						new GradientStop { Offset = 0, Color = Microsoft.UI.Colors.Red },
+						new GradientStop { Offset = 1, Color = Microsoft.UI.Colors.Blue },
+					},
+				},
+			};
+			await UITestHelper.Load(SUT);
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(SUT, 600, 600);
+			var screenshot = await RawBitmap.From(renderer, SUT, implicitScaling: 1);
+
+			Assert.AreEqual(255, screenshot.GetPixel(300, 0).A, "top edge");
+			Assert.AreEqual(255, screenshot.GetPixel(0, 300).A, "left edge");
+			Assert.AreEqual(255, screenshot.GetPixel(300, 599).A, "bottom edge");
+			Assert.AreEqual(255, screenshot.GetPixel(599, 300).A, "right edge");
+		}
+
+		[TestMethod]
 		public async Task When_Identical_Border_Is_Inserted_Before_Another_Then_Both_Render()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
