@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Foundation;
 using UIKit;
+using UniformTypeIdentifiers;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.Storage.Internal;
@@ -460,6 +461,38 @@ partial class StorageFile
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// For the runtime tests: presents a sheet from the top-most controller outside the export sheets' queue, as other code of the app
+		/// would: a document picker for opening files, which appears only once its service runs, or a plain controller. The returned function
+		/// dismisses it once it has appeared.
+		/// </summary>
+		public static Func<Task> PresentOther(bool documentPicker)
+		{
+			var root = UIApplication.SharedApplication.KeyWindow?.RootViewController
+				?? throw new InvalidOperationException("The app has no key window.");
+
+			var presenter = root;
+			while (presenter.PresentedViewController is { } presented)
+			{
+				presenter = presented;
+			}
+
+			UIViewController other = documentPicker ? new UIDocumentPickerViewController([UTTypes.Data], asCopy: true) : new UIViewController();
+			presenter.PresentViewController(other, true, null);
+
+			return async () =>
+			{
+				UIViewController? otherPresenter;
+				while ((otherPresenter = other.PresentingViewController) is null || other.IsBeingPresented)
+				{
+					await DelayAsync(TimeSpan.FromMilliseconds(100));
+				}
+
+				await otherPresenter.DismissViewControllerAsync(true);
+				other.Dispose();
+			};
 		}
 
 		private static async Task<bool> WaitForTransitionAsync(IUIViewControllerTransitionCoordinator coordinator)

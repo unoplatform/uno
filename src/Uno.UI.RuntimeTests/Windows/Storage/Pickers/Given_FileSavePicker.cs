@@ -15,7 +15,8 @@ using Windows.Storage.Provider;
 namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Pickers;
 
 // These cover the iOS save picker that is used when no extension is registered. The export sheet itself needs a user, so the tests only
-// present it to cancel it, and wait for it to be gone before they end. [GitHubWorkItem] is on each test: it only applies to methods.
+// present it to cancel it, and wait for it to be gone before they end. Some present another sheet outside the export sheets' queue, which
+// makes UIKit drop the export sheet's presentation. [GitHubWorkItem] is on each test: it only applies to methods.
 [TestClass]
 [PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaIOS)]
 public class Given_FileSavePicker
@@ -320,6 +321,22 @@ public class Given_FileSavePicker
 		}
 	}
 
+	// The other picker appears only once its service runs, seconds after it is asked for, and UIKit drops the sheet asked for meanwhile.
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25667")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public Task When_Another_Picker_Is_Still_Appearing_Then_The_Dropped_Sheet_Ends_And_A_Later_One_Is_Shown(bool cancel)
+		=> AssertDroppedSheetEndsAsync(documentPicker: true, cancel);
+
+	// The sheet is presented from the other sheet, the top-most controller, which is dismissed while the picker waits for its service.
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25667")]
+	public Task When_The_Presenter_Is_Dismissed_Before_The_Sheet_Appears_Then_The_Dropped_Sheet_Ends_And_A_Later_One_Is_Shown()
+		=> AssertDroppedSheetEndsAsync(documentPicker: false, cancel: false);
+
 	[TestMethod]
 	[RunsOnUIThread]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25667")]
@@ -363,15 +380,80 @@ public class Given_FileSavePicker
 		return file;
 	}
 
-	private static async Task WaitUntilShownAsync()
+	private static async Task AssertDroppedSheetEndsAsync(bool documentPicker, bool cancel)
+	{
+		var file = await PickAsync("Report");
+		var dismissOther = StorageFile.PresentOtherSheet(documentPicker);
+		var isOtherShown = true;
+		IAsyncOperation<FileUpdateStatus>? dropped = null;
+		IAsyncOperation<FileUpdateStatus>? later = null;
+
+		try
+		{
+			var presented = StorageFile.ExportSheetsPresented;
+			dropped = CachedFileManager.CompleteUpdatesAsync(file);
+			await WaitUntilAsync(
+				() => StorageFile.ExportSheetsPresented > presented,
+				$"The export sheet wasn't presented within {_sheetTimeout.TotalSeconds:0} s.");
+
+			if (!documentPicker)
+			{
+				isOtherShown = false;
+				await dismissOther().WaitAsync(_sheetTimeout);
+			}
+
+			if (cancel)
+			{
+				dropped.Cancel();
+				await Assert.ThrowsAsync<OperationCanceledException>(async () => await dropped);
+			}
+			else
+			{
+				await Assert.ThrowsAsync<InvalidOperationException>(async () => await AsTask(dropped).WaitAsync(_sheetTimeout));
+			}
+
+			// The drop releases the queue, also after a cancellation and while the other picker is still shown.
+			await WaitUntilIdleAsync();
+
+			if (isOtherShown)
+			{
+				isOtherShown = false;
+				await dismissOther().WaitAsync(_sheetTimeout);
+			}
+
+			later = CachedFileManager.CompleteUpdatesAsync(file);
+			await WaitUntilShownAsync();
+			later.Cancel();
+			await Assert.ThrowsAsync<OperationCanceledException>(async () => await later);
+		}
+		finally
+		{
+			try
+			{
+				if (isOtherShown)
+				{
+					await dismissOther().WaitAsync(_sheetTimeout);
+				}
+			}
+			finally
+			{
+				await EndAsync(file, dropped, later);
+			}
+		}
+	}
+
+	private static Task WaitUntilShownAsync()
+		=> WaitUntilAsync(() => StorageFile.IsExportSheetShown, $"The export sheet didn't appear within {_sheetTimeout.TotalSeconds:0} s.");
+
+	private static async Task WaitUntilAsync(Func<bool> condition, string timeoutMessage)
 	{
 		var waited = Stopwatch.StartNew();
 
-		while (!StorageFile.IsExportSheetShown)
+		while (!condition())
 		{
 			if (waited.Elapsed > _sheetTimeout)
 			{
-				Assert.Fail($"The export sheet didn't appear within {_sheetTimeout.TotalSeconds:0} s.");
+				Assert.Fail(timeoutMessage);
 			}
 
 			await Task.Delay(100);
