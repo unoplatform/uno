@@ -1,4 +1,4 @@
-﻿#if !__WASM__
+﻿#if !__WASM__ && !__IOS__
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Provider;
