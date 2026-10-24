@@ -477,7 +477,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				Focus(FocusState.Pointer);
 
 				var update = ManipulationUpdateKind.End;
-				if (_canRaiseClickOnPointerRelease)
+
+				// Another finger's release leaves the click armed: only the release of the press which armed it raises it.
+				if (_canRaiseClickOnPointerRelease && args.Pointer.UniqueId == _clickPress.Pointer)
 				{
 					_canRaiseClickOnPointerRelease = false;
 
@@ -506,8 +508,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			var release = args.GetCurrentPoint(null);
-			var isHold = release.Pointer == _clickPress.Pointer
-				&& Microsoft.UI.Input.GestureRecognizer.IsHold(release.Pointer, _clickPress.Timestamp, release.Timestamp);
+			var isHold = Microsoft.UI.Input.GestureRecognizer.IsHold(release.Pointer, _clickPress.Timestamp, release.Timestamp);
 
 			if (isHold && this.Log().IsEnabled(LogLevel.Debug))
 			{

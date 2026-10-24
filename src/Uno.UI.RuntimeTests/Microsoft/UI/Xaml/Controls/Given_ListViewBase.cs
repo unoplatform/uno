@@ -1156,6 +1156,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Relies on Uno's injected timestamps to hold
+		public async Task When_Second_Finger_Holds_Item_Then_No_ItemClick_Nor_Selection()
+		{
+			var list = new ListView
+			{
+				IsItemClickEnabled = true,
+				SelectionMode = ListViewSelectionMode.Single,
+				ItemsSource = new[] { "0", "1", "2" },
+			};
+			var itemClickCount = 0;
+			list.ItemClick += (_, _) => itemClickCount++;
+
+			try
+			{
+				await UITestHelper.Load(list);
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var first = injector.GetFinger(id: 1);
+				using var second = injector.GetFinger(id: 2);
+				var center = ((FrameworkElement)list.ContainerFromIndex(1)).GetAbsoluteCenter();
+
+				first.Press(center);
+				await second.Hold(new Point(center.X + 5, center.Y));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, itemClickCount, "The second finger's hold must not raise the click armed by the first one.");
+				Assert.AreEqual(-1, list.SelectedIndex);
+
+				first.Release(); // Pressed before the hold advanced the timestamps: a hold too.
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, itemClickCount);
+				Assert.AreEqual(-1, list.SelectedIndex);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
