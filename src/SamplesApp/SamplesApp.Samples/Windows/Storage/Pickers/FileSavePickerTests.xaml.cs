@@ -24,7 +24,9 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		Description =
 			"Allows testing all features of FileSavePicker. Not selecting a file should not cause an exception. " +
 			"Default extension should work on Windows. " +
-			"When the requested file does not exist yet, it should be created before the picker returns.")]
+			"When the requested file does not exist yet, it should be created before the picker returns. " +
+			"'Write and complete' writes a line to the picked file and calls CachedFileManager.CompleteUpdatesAsync, which shows the export sheet " +
+			"on iOS, and shows the status it returns.")]
 	public sealed partial class FileSavePickerTests : Page
 	{
 		public FileSavePickerTests()
@@ -235,6 +237,29 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		}
 
 		public void ClearSuggestedSaveFile() => SuggestedSaveFile = null;
+
+		public async void WriteAndComplete()
+		{
+			ErrorMessage = string.Empty;
+			StatusMessage = string.Empty;
+			if (PickedFile is null)
+			{
+				ErrorMessage = "Pick a file first.";
+				return;
+			}
+
+			try
+			{
+				CachedFileManager.DeferUpdates(PickedFile);
+				await FileIO.WriteTextAsync(PickedFile, $"Written by the FileSavePicker sample at {DateTime.Now:T}.");
+				var status = await CachedFileManager.CompleteUpdatesAsync(PickedFile);
+				StatusMessage = $"CompleteUpdatesAsync returned {status}.";
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = $"Exception occurred: {ex}.";
+			}
+		}
 
 		public async void PickSaveFile()
 		{
