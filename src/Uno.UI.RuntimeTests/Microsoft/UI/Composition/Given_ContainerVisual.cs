@@ -227,7 +227,8 @@ public class Given_ContainerVisual
 			await UITestHelper.Load(immediate);
 			var actual = await UITestHelper.ScreenShot(immediate);
 
-			await ImageAssert.AreEqualAsync(actual, expected);
+			// The collapsed and immediate renders take different GPU paths, which may round a pixel by one level.
+			await ImageAssert.AreEqualAsync(actual, expected, tolerance: 1);
 		}
 		finally
 		{
