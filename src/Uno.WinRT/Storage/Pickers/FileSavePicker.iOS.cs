@@ -11,8 +11,10 @@ namespace Windows.Storage.Pickers;
 
 public partial class FileSavePicker
 {
-	private const int MaxFileNameBytes = 255;
 	private const int MaxExtensionBytes = 16;
+
+	// A name can have 255 bytes, and a transacted write adds a suffix to it for its temporary file.
+	private static readonly int _maxFileNameBytes = 255 - Encoding.UTF8.GetByteCount(StorageStreamTransaction.TempFileSuffix);
 
 	// No iOS picker returns a new writable file before its content exists, so the file is staged in the temporary directory, and
 	// CachedFileManager.CompleteUpdatesAsync saves a copy of it with the system's export sheet.
@@ -56,13 +58,13 @@ public partial class FileSavePicker
 			}
 		}
 
-		var stem = TrimWhiteSpaceAndDots(TrimToBytes(name[..^extension.Length], MaxFileNameBytes - Encoding.UTF8.GetByteCount(extension)));
+		var stem = TrimWhiteSpaceAndDots(TrimToBytes(name[..^extension.Length], _maxFileNameBytes - Encoding.UTF8.GetByteCount(extension)));
 		if (stem.Length == 0)
 		{
 			stem = Guid.NewGuid().ToString();
 		}
 
-		return TrimToBytes(stem + extension, MaxFileNameBytes);
+		return TrimToBytes(stem + extension, _maxFileNameBytes);
 	}
 
 	private static bool IsReplacedInName(char c) => c is '/' or ':' || char.IsControl(c);

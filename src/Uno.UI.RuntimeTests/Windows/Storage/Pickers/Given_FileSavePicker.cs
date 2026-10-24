@@ -24,6 +24,9 @@ public class Given_FileSavePicker
 {
 	private static readonly TimeSpan _sheetTimeout = TimeSpan.FromSeconds(30);
 
+	// A name can have 255 bytes, and a transacted write adds ".tmp" to it for its temporary file.
+	private const int MaxNameBytes = 255 - 4;
+
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25667")]
 	public async Task When_No_Extension_Is_Registered_Then_An_Empty_Staged_File_Is_Picked()
@@ -146,7 +149,33 @@ public class Given_FileSavePicker
 		try
 		{
 			Assert.EndsWith(".txt", file.Name);
-			Assert.IsLessThanOrEqualTo(255, Encoding.UTF8.GetByteCount(file.Name));
+			Assert.IsLessThanOrEqualTo(MaxNameBytes, Encoding.UTF8.GetByteCount(file.Name));
+		}
+		finally
+		{
+			await file.DeleteAsync();
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25667")]
+	public async Task When_Name_Is_Too_Long_Then_A_Transacted_Write_Can_Commit()
+	{
+		var file = await PickAsync(new string('a', 300));
+
+		try
+		{
+			Assert.AreEqual(MaxNameBytes, Encoding.UTF8.GetByteCount(file.Name));
+
+			using (var transaction = await file.OpenTransactedWriteAsync())
+			{
+				var stream = transaction.Stream.AsStreamForWrite();
+				await stream.WriteAsync(Encoding.UTF8.GetBytes("Hello, world!"));
+				await stream.FlushAsync();
+				await transaction.CommitAsync();
+			}
+
+			Assert.AreEqual("Hello, world!", File.ReadAllText(file.Path));
 		}
 		finally
 		{
@@ -163,7 +192,7 @@ public class Given_FileSavePicker
 		try
 		{
 			Assert.StartsWith("Minutes. x", file.Name);
-			Assert.IsLessThanOrEqualTo(255, Encoding.UTF8.GetByteCount(file.Name));
+			Assert.IsLessThanOrEqualTo(MaxNameBytes, Encoding.UTF8.GetByteCount(file.Name));
 		}
 		finally
 		{
