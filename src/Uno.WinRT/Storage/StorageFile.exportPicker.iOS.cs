@@ -205,8 +205,8 @@ partial class StorageFile
 
 		/// <returns>
 		/// <see cref="FileUpdateStatus.Complete"/> when the user saved the file, under its name or another one, and
-		/// <see cref="FileUpdateStatus.Incomplete"/> when they closed the sheet without saving it, or it closed with the controller it was
-		/// presented from. The task fails with
+		/// <see cref="FileUpdateStatus.Incomplete"/> when they closed the sheet without saving it, or app code dismissed it, also with the
+		/// controller it was presented from. The task fails with
 		/// <see cref="InvalidOperationException"/> when the sheet can't be presented, also when UIKit drops its presentation.
 		/// </returns>
 		public static Task<FileUpdateStatus> PresentAsync(string path, CancellationToken ct)
@@ -361,8 +361,8 @@ partial class StorageFile
 		// waiting for another delayed presentation asked for before it (such as a document picker or the share sheet, which don't show in
 		// PresentedViewController until then), or has left the window. Neither can be seen beforehand, so this checks until the sheet
 		// appears: once the presenter shows another controller, or is out of the window with nothing presented, the sheet won't appear.
-		// Once the sheet is shown, UIKit closes it without calling the picker's delegate when the presenter is dismissed, so this checks on
-		// until the sheet is gone.
+		// Once the sheet is shown, UIKit closes it without calling the picker's delegate when app code dismisses it, or the controller it was
+		// presented from, so this checks on until the sheet is gone.
 		private async Task WatchPresentationAsync(UIViewController presenter, UIDocumentPickerViewController picker)
 		{
 			var askedAt = Stopwatch.GetTimestamp();
@@ -379,9 +379,9 @@ partial class StorageFile
 
 				if (_isPresented)
 				{
-					if (IsClosedWithPresenter(presenter, picker))
+					if (IsGone(picker))
 					{
-						await FinishClosedWithPresenterAsync();
+						await FinishGoneAsync();
 						return;
 					}
 
@@ -416,14 +416,16 @@ partial class StorageFile
 			return presenter.ViewIfLoaded?.Window is null ? $"{presenter.GetType().Name}, which it was presented from, left the window first" : null;
 		}
 
-		// The picker closes itself when the user is done, so a picker that is gone isn't enough: its presenter must be gone from the window
-		// too. While the picker is shown full screen, its presenter is out of the window, but the picker isn't.
-		private static bool IsClosedWithPresenter(UIViewController presenter, UIDocumentPickerViewController picker)
-			=> picker.PresentingViewController is null && picker.ViewIfLoaded?.Window is null && presenter.ViewIfLoaded?.Window is null;
+		// Out of the window, and neither appearing nor going away. While the picker is shown full screen, only its presenter is out of the
+		// window.
+		private static bool IsGone(UIDocumentPickerViewController picker)
+			=> picker.PresentingViewController is null && !picker.IsBeingPresented && !picker.IsBeingDismissed && picker.ViewIfLoaded?.Window is null;
 
-		// The picker calls its delegate once it has closed itself, so if the user was done just before the presenter was dismissed, that call
-		// may still be on its way. It gets a moment to come in before the call ends as Incomplete.
-		private async Task FinishClosedWithPresenterAsync()
+		// When the user closes the sheet, the picker calls its delegate as its dismissal ends: on the simulators, for saving (also a large
+		// file, or next to an existing one), Cancel and swiping down, that was before the picker was seen gone. A sheet that is gone without
+		// it was most likely dismissed by app code, but the delegate still gets a moment to come in, in case it comes later. Only then does
+		// the call end as Incomplete.
+		private async Task FinishGoneAsync()
 		{
 			await DelayAsync(_lateDelegateTime);
 
@@ -526,6 +528,15 @@ partial class StorageFile
 				other.Dispose();
 			};
 		}
+
+		/// <summary>
+		/// For the runtime tests: dismisses the shown export sheet through the controller it was presented from, which stays, as app code
+		/// that closes what is presented would.
+		/// </summary>
+		public static Task DismissShownThroughPresenter()
+			=> _shown.FirstOrDefault(sheet => sheet._isPresented)?._picker?.PresentingViewController is { } presenter
+				? presenter.DismissViewControllerAsync(true)
+				: throw new InvalidOperationException("No export sheet is shown.");
 
 		private static async Task<bool> WaitForTransitionAsync(IUIViewControllerTransitionCoordinator coordinator)
 		{

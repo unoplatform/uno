@@ -16,7 +16,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Pickers;
 
 // These cover the iOS save picker that is used when no extension is registered. The export sheet itself needs a user, so the tests only
 // present it to cancel it, and wait for it to be gone before they end. Some present another sheet outside the export sheets' queue, which
-// makes UIKit drop the export sheet's presentation, or close the sheet. [GitHubWorkItem] is on each test: it only applies to methods.
+// makes UIKit drop the export sheet's presentation, or close the sheet, or dismiss the sheet as app code would. [GitHubWorkItem] is on each
+// test: it only applies to methods.
 [TestClass]
 [PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaIOS)]
 public class Given_FileSavePicker
@@ -378,6 +379,37 @@ public class Given_FileSavePicker
 			{
 				await EndAsync(file, completion, later);
 			}
+		}
+	}
+
+	// App code that closes what is presented dismisses the sheet through the controller it was presented from, which stays. UIKit then closes
+	// the sheet without calling the picker's delegate.
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25667")]
+	public async Task When_The_Sheet_Is_Dismissed_Through_Its_Presenter_Then_It_Is_Incomplete_And_A_Later_Sheet_Is_Shown()
+	{
+		var file = await PickAsync("Report");
+		IAsyncOperation<FileUpdateStatus>? completion = null;
+		IAsyncOperation<FileUpdateStatus>? later = null;
+
+		try
+		{
+			completion = CachedFileManager.CompleteUpdatesAsync(file);
+			await WaitUntilShownAsync();
+			await StorageFile.DismissExportSheetThroughPresenter().WaitAsync(_sheetTimeout);
+
+			Assert.AreEqual(FileUpdateStatus.Incomplete, await AsTask(completion).WaitAsync(_sheetTimeout));
+			await WaitUntilIdleAsync();
+
+			later = CachedFileManager.CompleteUpdatesAsync(file);
+			await WaitUntilShownAsync();
+			later.Cancel();
+			await Assert.ThrowsAsync<OperationCanceledException>(async () => await later);
+		}
+		finally
+		{
+			await EndAsync(file, completion, later);
 		}
 	}
 

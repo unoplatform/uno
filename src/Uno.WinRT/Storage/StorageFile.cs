@@ -66,6 +66,8 @@ namespace Windows.Storage
 		internal static bool IsExportSheetShown => ExportSheet.IsShown;
 
 		internal static Func<Task> PresentOtherSheet(bool documentPicker) => ExportSheet.PresentOther(documentPicker);
+
+		internal static Task DismissExportSheetThroughPresenter() => ExportSheet.DismissShownThroughPresenter();
 #else
 		internal static Task ExportSheetsIdle => Task.CompletedTask;
 
@@ -76,6 +78,8 @@ namespace Windows.Storage
 		internal static bool IsExportSheetShown => false;
 
 		internal static Func<Task> PresentOtherSheet(bool documentPicker) => throw new PlatformNotSupportedException();
+
+		internal static Task DismissExportSheetThroughPresenter() => throw new PlatformNotSupportedException();
 #endif
 
 		public StorageProvider Provider => ProviderOverride ?? Implementation.Provider;

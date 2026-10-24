@@ -37,9 +37,9 @@ namespace Windows.Storage
 		///	On iOS, for a file from the built-in save picker, this presents
 		///	the export sheet, which saves a copy of the file, and returns
 		///	<see cref="FileUpdateStatus.Incomplete"/> if the user closes it
-		///	without saving or it closes with the controller it was presented
-		///	from, and <see cref="FileUpdateStatus.Failed"/> if the file no
-		///	longer exists when this is called. It throws
+		///	without saving or the app dismisses it, also with the controller
+		///	it was presented from, and <see cref="FileUpdateStatus.Failed"/>
+		///	if the file no longer exists when this is called. It throws
 		///	<see cref="System.InvalidOperationException"/> if the sheet can't
 		///	be shown, such as when UIKit drops its presentation because
 		///	another one asked for before it is still appearing. The file
