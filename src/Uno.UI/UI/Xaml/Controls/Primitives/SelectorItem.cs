@@ -467,7 +467,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		// WinUI's ListViewBaseItem runs its tap interaction (ItemClick and selection) only when a Tapped follows (ListViewBaseItem_Partial.cpp, OnPointerReleased),
 		// while a touch or pen hold is followed by a RightTapped. ListBoxItem and ComboBoxItem still select on a hold.
-		// TODO Uno: Use args.GestureFollowing once implemented (it is always None for now).
+		// TODO Uno: Use args.GestureFollowing once implemented (it is always None for now): https://github.com/unoplatform/uno/issues/25673
 		private bool IsListViewBaseItemHold(PointerRoutedEventArgs args)
 		{
 			if (!IsListViewBaseItem
