@@ -1188,7 +1188,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		int lineIndex;
 		if (isAboveContent)
 		{
-			// Above the text (e.g. a TextBox's top padding): hit-test the first line by X instead of snapping to its start.
+			// Above the text (e.g. a TextBox's top padding): hit-test the first line by X.
 			lineIndex = 0;
 		}
 		else
