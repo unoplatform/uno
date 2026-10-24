@@ -81,11 +81,23 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 	/// (use one of the CreateXxxSurface factories).</param>
 	public WebGpuSwapChainContext(TextureFormat colorFormat, SurfaceFactory createSurface)
 	{
-		_device = WebGpuInitDevice.GetShared(colorFormat);
-		_surface = createSurface(_device.Inst);
+		_device = WebGpuInitDevice.GetShared(colorFormat, createSurface, out _surface);
 		if (_surface == null)
 		{
 			throw new InvalidOperationException("Failed to create the wgpu surface for this window.");
+		}
+
+		// The adapter was chosen for the first window; a later one it can't present to would abort the process on
+		// configure, so refuse it here instead.
+		SurfaceCapabilities caps = default;
+		Api.SurfaceGetCapabilities(_surface, _device.Adapter, &caps);
+		var formatCount = caps.FormatCount;
+		Api.SurfaceCapabilitiesFreeMembers(caps);
+		if (formatCount == 0)
+		{
+			Api.SurfaceRelease(_surface);
+			_surface = null;
+			throw new InvalidOperationException("WebGPU: the adapter cannot present to this window.");
 		}
 	}
 
