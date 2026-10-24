@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -12,7 +13,7 @@ using Windows.UI;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Controls;
 
-[TestClass]
+[UITestClass]
 public class Given_WebView2_Lifecycle
 {
 	[TestMethod]
@@ -136,12 +137,12 @@ public class Given_WebView2_Lifecycle
 	}
 
 	[TestMethod]
-	public void When_Not_Initialized_Core_Operations_Are_Rejected()
+	public async Task When_Not_Initialized_Core_Operations_Are_Rejected()
 	{
 		var webView = new WebView2();
 		try
 		{
-			Assert.ThrowsExactly<InvalidOperationException>(() => webView.ExecuteScriptAsync("1"));
+			await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () => await webView.ExecuteScriptAsync("1"));
 			Assert.ThrowsExactly<InvalidOperationException>(webView.Reload);
 			Assert.ThrowsExactly<InvalidOperationException>(() => webView.NavigateToString("<html></html>"));
 		}

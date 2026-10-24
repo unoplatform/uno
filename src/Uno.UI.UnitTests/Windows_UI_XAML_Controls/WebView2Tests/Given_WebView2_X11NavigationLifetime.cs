@@ -7,7 +7,7 @@ using Uno.UI.WebView.X11;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Controls;
 
-[TestClass]
+[UITestClass]
 public class Given_WebView2_X11NavigationLifetime
 {
 	[TestMethod]

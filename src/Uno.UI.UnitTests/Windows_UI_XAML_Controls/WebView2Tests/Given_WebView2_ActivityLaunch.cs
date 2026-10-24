@@ -8,7 +8,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Controls;
 
-[TestClass]
+[UITestClass]
 public class Given_WebView2_ActivityLaunch
 {
 	[TestMethod]
