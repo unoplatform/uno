@@ -35,10 +35,7 @@
                     Content="Button with menu"
                     ContextFlyout="{StaticResource ItemMenu}" />
             </StackPanel>
-            <TextBlock
-                x:Name="Counters"
-                FontFamily="Consolas"
-                TextWrapping="Wrap" />
+            <TextBlock x:Name="Counters" TextWrapping="Wrap" />
         </StackPanel>
 
         <ListView
@@ -90,7 +87,6 @@
             <ScrollViewer Grid.Row="2">
                 <TextBlock
                     x:Name="Log"
-                    FontFamily="Consolas"
                     FontSize="12"
                     TextWrapping="Wrap" />
             </ScrollViewer>
