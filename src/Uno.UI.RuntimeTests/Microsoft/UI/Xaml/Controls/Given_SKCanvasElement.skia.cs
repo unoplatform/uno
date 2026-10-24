@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Private.Infrastructure;
 using SkiaSharp;
 using Uno.Foundation.Extensibility;
@@ -52,6 +54,33 @@ public class Given_SKCanvasElement
 
 		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, 400, 300), Microsoft.UI.Colors.Blue);
 		ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(0, 101, 400, 299), Microsoft.UI.Colors.Blue);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25656")]
+	public async Task When_Drawn_Through_Software_Surface_Then_Sharp_At_Device_Scale()
+	{
+		var SUT = new HalfBlackSKCanvasElement { Width = 100, Height = 100 };
+
+		// The path a backend without an SKCanvas takes when no GL island is available: marked as already requested,
+		// or the next paint would still bring up an island and draw through both. Under Skia the element draws into
+		// the SKCanvas directly and none of this applies.
+		typeof(SKCanvasElement).GetField("_islandRequested", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(SUT, true);
+		typeof(SKCanvasElement).GetMethod("OnIslandUnavailable", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(SUT, null);
+
+		await UITestHelper.Load(SUT);
+		await UITestHelper.WaitFor(() => SUT.Rendered, timeoutMS: 5000);
+		await UITestHelper.WaitForRender(2, timeoutMS: 5000);
+
+		var renderer = new RenderTargetBitmap();
+		await renderer.RenderAsync(SUT);
+		var bitmap = await RawBitmap.From(renderer, SUT, implicitScaling: 1);
+
+		// The fill ends on a device pixel boundary: a surface rasterized at 1x and stretched blends the pixels beside it.
+		var edge = (int)Math.Round(50 * SUT.XamlRoot!.RasterizationScale);
+		var row = string.Join(" ", Enumerable.Range(edge - 3, 6).Select(x => $"{x}:{bitmap.GetPixel(x, 20).A}"));
+		Assert.AreEqual(255, bitmap.GetPixel(edge - 1, 20).A, $"inside the fill, at scale {SUT.XamlRoot.RasterizationScale} ({row})");
+		Assert.AreEqual(0, bitmap.GetPixel(edge, 20).A, $"outside the fill, at scale {SUT.XamlRoot.RasterizationScale} ({row})");
 	}
 
 	[TestMethod]
@@ -254,6 +283,18 @@ public class Given_SKCanvasElement
 			Rendered = true;
 			using var paint = new SKPaint { Color = SKColors.Blue };
 			canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), paint);
+		}
+	}
+
+	private class HalfBlackSKCanvasElement : SKCanvasElement
+	{
+		public bool Rendered { get; private set; }
+
+		protected override void RenderOverride(SKCanvas canvas, Size area)
+		{
+			Rendered = true;
+			using var paint = new SKPaint { Color = SKColors.Black };
+			canvas.DrawRect(new SKRect(0, 0, 50, (float)area.Height), paint);
 		}
 	}
 
