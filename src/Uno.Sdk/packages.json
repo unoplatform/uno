@@ -297,6 +297,21 @@
 		}
 	},
 	{
+		"group": "UnoMaui",
+		"version": "10.0.101-preview.67",
+		"packages": [
+			"Uno.Maui.Embedding",
+			"Uno.Maui.Handlers"
+		]
+	},
+	{
+		"group": "UnoRehost",
+		"version": "0.1.0-preview.1",
+		"packages": [
+			"Uno.Rehost"
+		]
+	},
+	{
 		"group": "MauiCompatibility",
 		"version": "10.0.90",
 		"packages": [

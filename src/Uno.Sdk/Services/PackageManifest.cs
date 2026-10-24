@@ -167,6 +167,8 @@ internal class PackageManifest
 		public const string AndroidXWear = nameof(AndroidXWear);
 		public const string AndroidXWearTiles = nameof(AndroidXWearTiles);
 		public const string Maui = nameof(Maui);
+		public const string UnoMaui = nameof(UnoMaui);
+		public const string UnoRehost = nameof(UnoRehost);
 
 		// Microsoft.Maui.Controls.Compatibility is kept in its own group because it is no
 		// longer built or shipped as of .NET 11 Preview 6, while Microsoft.Maui.Controls and
