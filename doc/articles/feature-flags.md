@@ -60,7 +60,17 @@ Set `Uno.UI.FeatureConfiguration.Rendering.SkipVisualTreePainting` to `true` to 
 
 By default, `ComboBox` popup is placed in such a way that the currently selected item is centered above the `ComboBox`. If you want to adjust this behavior on non-Windows targets, set the `Uno.UI.FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement` property.
 
+<<<<<<< HEAD
 ### Allow popup under translucent status bar
+=======
+## Gestures
+
+### Touch and pen holds
+
+As on WinUI, a touch or pen hold is a right-tap: it raises no `Tapped` nor `DoubleTapped`, and a `ListView` or `GridView` item raises no `ItemClick` nor selection when it is released. Set `Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold` to `false` at startup to report a hold as a tap, and to raise `ItemClick` and selection on its release, as earlier versions of Uno Platform did. Default: `true`.
+
+## Input validation
+>>>>>>> b037cad (feat(input): Add an opt-out for tap suppression on hold)
 
 By default, the `ComboBox` popup will not extend under the status bar even if it is set as translucent. If you want to change this behavior, set the `Uno.UI.FeatureConfiguration.ComboBox.AllowPopupUnderTranslucentStatusBar` property to `true`. This property is Android-specific.
 

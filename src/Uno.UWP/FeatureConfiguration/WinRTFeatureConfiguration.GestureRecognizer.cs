@@ -18,6 +18,7 @@ namespace Uno
 				ShouldProvideHapticFeedback = _defaultShouldProvideHapticFeedback;
 				PatchCasesForDirectManipulation = _defaultPatchSuspiciousCases;
 				PatchCasesForUiElement = _defaultPatchSuspiciousCases;
+				SuppressTapOnHold = _defaultSuppressTapOnHold;
 			}
 
 #if __ANDROID__
@@ -61,6 +62,15 @@ namespace Uno
 			/// </summary>
 			[DefaultValue(_defaultPatchSuspiciousCases)]
 			public static GestureRecognizerSuspiciousCases PatchCasesForUiElement { get; set; } = _defaultPatchSuspiciousCases;
+
+			private const bool _defaultSuppressTapOnHold = true;
+			/// <summary>
+			/// Sets whether a touch or pen hold on a UI element is only a right-tap, as on WinUI: it raises no Tapped nor DoubleTapped,
+			/// and a ListView or GridView item raises no ItemClick nor selection. The default is true.
+			/// </summary>
+			/// <remarks>Set it at startup: a UI element reads it when it creates its gesture recognizer.</remarks>
+			[DefaultValue(_defaultSuppressTapOnHold)]
+			public static bool SuppressTapOnHold { get; set; } = _defaultSuppressTapOnHold;
 
 
 			internal const bool _defaultUseCompositionTimer = true;

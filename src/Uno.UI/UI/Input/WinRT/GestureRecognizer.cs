@@ -89,7 +89,8 @@ namespace Windows.UI.Input
 		/// Never reports a touch or pen hold as a tap, even when <see cref="GestureSettings.RightTap"/> is not enabled.
 		/// </summary>
 		/// <remarks>
-		/// Set for UIElement recognizers: on WinUI, Tapped and Holding are mutually exclusive and a touch or pen hold is followed by a RightTapped.
+		/// Set for UIElement recognizers (unless opted out with <see cref="WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold"/>):
+		/// on WinUI, Tapped and Holding are mutually exclusive and a touch or pen hold is followed by a RightTapped.
 		/// </remarks>
 		internal bool SuppressesTapOnHold { get; init; }
 
