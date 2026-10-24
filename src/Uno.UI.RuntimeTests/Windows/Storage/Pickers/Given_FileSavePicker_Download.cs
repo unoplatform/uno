@@ -16,6 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Pickers;
 public class Given_FileSavePicker_Download
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25671")]
 	[DataRow("Report.pdf")]
 	[DataRow("Report.PDF")]
 	public async Task When_Name_Ends_With_The_Choice_Extension_Then_It_Is_Not_Added_Again(string suggestedFileName)
@@ -27,6 +28,7 @@ public class Given_FileSavePicker_Download
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25671")]
 	[DataRow("Report.txt")]
 	[DataRow("Report.text")]
 	public async Task When_Name_Ends_With_Another_Choice_Extension_Then_It_Is_Kept(string suggestedFileName)
