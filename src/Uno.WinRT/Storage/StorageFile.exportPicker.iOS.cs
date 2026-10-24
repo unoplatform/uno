@@ -163,6 +163,7 @@ partial class StorageFile
 	{
 		private static readonly TimeSpan _stallWarningTime = TimeSpan.FromSeconds(15);
 		private static readonly TimeSpan _watchInterval = TimeSpan.FromMilliseconds(250);
+		private static readonly TimeSpan _lateDelegateTime = TimeSpan.FromSeconds(1);
 
 		// Keeps the picker and its delegate alive until the sheet is gone: UIKit holds the delegate weakly.
 		private static readonly HashSet<ExportSheet> _shown = new();
@@ -204,7 +205,8 @@ partial class StorageFile
 
 		/// <returns>
 		/// <see cref="FileUpdateStatus.Complete"/> when the user saved the file, under its name or another one, and
-		/// <see cref="FileUpdateStatus.Incomplete"/> when they closed the sheet without saving it. The task fails with
+		/// <see cref="FileUpdateStatus.Incomplete"/> when they closed the sheet without saving it, or it closed with the controller it was
+		/// presented from. The task fails with
 		/// <see cref="InvalidOperationException"/> when the sheet can't be presented, also when UIKit drops its presentation.
 		/// </returns>
 		public static Task<FileUpdateStatus> PresentAsync(string path, CancellationToken ct)
@@ -359,6 +361,8 @@ partial class StorageFile
 		// waiting for another delayed presentation asked for before it (such as a document picker or the share sheet, which don't show in
 		// PresentedViewController until then), or has left the window. Neither can be seen beforehand, so this checks until the sheet
 		// appears: once the presenter shows another controller, or is out of the window with nothing presented, the sheet won't appear.
+		// Once the sheet is shown, UIKit closes it without calling the picker's delegate when the presenter is dismissed, so this checks on
+		// until the sheet is gone.
 		private async Task WatchPresentationAsync(UIViewController presenter, UIDocumentPickerViewController picker)
 		{
 			var askedAt = Stopwatch.GetTimestamp();
@@ -368,9 +372,20 @@ partial class StorageFile
 			{
 				await DelayAsync(_watchInterval);
 
-				if (_isPresented || !_shown.Contains(this))
+				if (!_shown.Contains(this))
 				{
 					return;
+				}
+
+				if (_isPresented)
+				{
+					if (IsClosedWithPresenter(presenter, picker))
+					{
+						await FinishClosedWithPresenterAsync();
+						return;
+					}
+
+					continue;
 				}
 
 				if (GetDropReason(presenter, picker) is { } reason)
@@ -399,6 +414,23 @@ partial class StorageFile
 			}
 
 			return presenter.ViewIfLoaded?.Window is null ? $"{presenter.GetType().Name}, which it was presented from, left the window first" : null;
+		}
+
+		// The picker closes itself when the user is done, so a picker that is gone isn't enough: its presenter must be gone from the window
+		// too. While the picker is shown full screen, its presenter is out of the window, but the picker isn't.
+		private static bool IsClosedWithPresenter(UIViewController presenter, UIDocumentPickerViewController picker)
+			=> picker.PresentingViewController is null && picker.ViewIfLoaded?.Window is null && presenter.ViewIfLoaded?.Window is null;
+
+		// The picker calls its delegate once it has closed itself, so if the user was done just before the presenter was dismissed, that call
+		// may still be on its way. It gets a moment to come in before the call ends as Incomplete.
+		private async Task FinishClosedWithPresenterAsync()
+		{
+			await DelayAsync(_lateDelegateTime);
+
+			if (_shown.Contains(this))
+			{
+				Finish(FileUpdateStatus.Incomplete);
+			}
 		}
 
 		// The call ends with an exception rather than Failed, which is for a file that is gone: this one can be completed again.
