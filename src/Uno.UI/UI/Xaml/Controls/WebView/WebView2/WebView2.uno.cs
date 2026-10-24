@@ -8,6 +8,7 @@ using Microsoft.Web.WebView2.Core;
 using Uno;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Controls;
 using Windows.UI.Core;
@@ -33,7 +34,7 @@ partial class WebView2 : IWebView
 	[UnoOnly]
 	public static DependencyProperty IsScrollEnabledProperty { get; } =
 		DependencyProperty.Register(nameof(IsScrollEnabled), typeof(bool), typeof(WebView2),
-			new FrameworkPropertyMetadata(true,
+			new FrameworkPropertyMetadata(BoolBoxes.True,
 				(sender, args) => ((WebView2)sender)._nativeCore?.OnScrollEnabledChanged((bool)args.NewValue)));
 
 	bool IWebView.IsLoaded => IsLoaded;

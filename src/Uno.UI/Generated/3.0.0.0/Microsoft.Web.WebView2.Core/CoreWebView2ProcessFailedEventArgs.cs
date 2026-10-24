@@ -2,16 +2,11 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class CoreWebView2ProcessFailedEventArgs
 {
-#if __SKIA__
-	internal CoreWebView2ProcessFailedEventArgs()
-	{
-	}
-#endif
 	// Skipping already declared property ExitCode
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]

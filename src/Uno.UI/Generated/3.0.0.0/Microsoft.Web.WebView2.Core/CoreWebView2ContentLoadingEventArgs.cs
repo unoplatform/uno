@@ -2,16 +2,11 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class CoreWebView2ContentLoadingEventArgs
 {
-#if __SKIA__
-	internal CoreWebView2ContentLoadingEventArgs()
-	{
-	}
-#endif
 	// Skipping already declared property IsErrorPage
 	// Skipping already declared property NavigationId
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs.IsErrorPage.get

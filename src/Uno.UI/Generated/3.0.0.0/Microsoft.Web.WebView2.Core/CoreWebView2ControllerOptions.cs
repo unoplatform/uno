@@ -2,12 +2,11 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class CoreWebView2ControllerOptions
 {
-	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.CoreWebView2ControllerOptions()
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public bool AllowHostInputProcessing

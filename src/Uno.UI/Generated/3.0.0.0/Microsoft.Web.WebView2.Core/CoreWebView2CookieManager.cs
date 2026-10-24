@@ -2,16 +2,11 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class CoreWebView2CookieManager
 {
-#if __SKIA__
-	internal CoreWebView2CookieManager()
-	{
-	}
-#endif
 	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.GetCookiesAsync(string)
 	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.CreateCookie(string, string, string, string)
 	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.CopyCookie(Microsoft.Web.WebView2.Core.CoreWebView2Cookie)

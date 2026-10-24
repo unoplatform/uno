@@ -2,16 +2,11 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class CoreWebView2Cookie
 {
-#if __SKIA__
-	internal CoreWebView2Cookie()
-	{
-	}
-#endif
 	// Skipping already declared property Domain
 	// Skipping already declared property Expires
 	// Skipping already declared property IsHttpOnly

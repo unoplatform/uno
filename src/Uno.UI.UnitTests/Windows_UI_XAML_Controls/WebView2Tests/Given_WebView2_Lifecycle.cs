@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

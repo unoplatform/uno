@@ -679,6 +679,7 @@ public class Given_WebView2_Improvements
 	[TestMethod]
 	public async Task When_Theme_Changes_The_Native_Backdrop_Color()
 	{
+#if HAS_UNO
 		var webView = await CreateWebViewAsync();
 		var border = (Border)TestServices.WindowHelper.WindowContent!;
 		try
@@ -700,5 +701,6 @@ public class Given_WebView2_Improvements
 		{
 			TestServices.WindowHelper.WindowContent = null;
 		}
+#endif
 	}
 }
