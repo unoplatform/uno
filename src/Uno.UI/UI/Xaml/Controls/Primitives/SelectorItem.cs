@@ -445,6 +445,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private bool IsListViewBaseItemHold(PointerRoutedEventArgs args)
 		{
 			if (!IsListViewBaseItem
+				|| !Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold
 				|| (PointerDeviceType)args.Pointer.PointerDeviceType is not (PointerDeviceType.Touch or PointerDeviceType.Pen))
 			{
 				return false;
