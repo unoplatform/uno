@@ -1784,6 +1784,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, doubleTappedCount);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Touch_Hold_Raises_Holding_On_Parent_Then_Child_Not_Tapped()
+		{
+			var inner = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+			var outer = new Border
+			{
+				Width = 200,
+				Height = 200,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+				Child = inner
+			};
+
+			var tappedCount = 0;
+			var holdingCount = 0;
+			inner.Tapped += (_, _) => tappedCount++;
+			outer.Holding += (_, _) => holdingCount++; // Like a ContextFlyout on the parent
+
+			await UITestHelper.Load(outer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Only the parent's holding timer sees the hold: the child, which recognizes the tap, must still not raise Tapped.
+			await finger.Hold(inner.GetAbsoluteCenter(), timerOnlyHoldingSource: outer);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, holdingCount); // Started and Completed
+			Assert.AreEqual(0, tappedCount);
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
