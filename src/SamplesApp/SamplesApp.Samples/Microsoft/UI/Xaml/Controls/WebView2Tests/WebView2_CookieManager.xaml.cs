@@ -22,7 +22,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 			{
 				await WebView.EnsureCoreWebView2Async();
 			}
-			catch (Exception ex)
+			catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or NotSupportedException)
 			{
 				OutputText.Text = $"Initialization failed: {ex.Message}";
 			}
@@ -71,9 +71,8 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 				}
 				OutputText.Text = sb.ToString();
 			}
-			catch (Exception ex)
+			catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or NotSupportedException)
 			{
-				// async void: an unobserved exception would tear the app down, so every failure is reported here.
 				OutputText.Text = $"List failed: {ex.Message}";
 			}
 		}
