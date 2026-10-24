@@ -157,8 +157,11 @@ fn clipCovMapped(fc: vec2<f32>) -> f32 {
   // so the per-op device SCISSOR is cull-only and the emit collapses SetScissorRect calls (see AabbInClipU).
   var cov = 1.0;
   if (clip.ctrl.y > 0.5) {
-    let dmin = fc - vec2<f32>(clip.ctrl.z, clip.ctrl.w);
-    let dmax = vec2<f32>(clip.size.z, clip.size.w) - fc;
+    // fc is in the recording's units: size.xy (units per device pixel across the x and y edges) turns the distances
+    // into pixels, so the edge ramp stays one device pixel wide at any scale.
+    let k = select(clip.size.xy, vec2<f32>(1.0, 1.0), clip.size.xy <= vec2<f32>(0.0, 0.0));
+    let dmin = (fc - vec2<f32>(clip.ctrl.z, clip.ctrl.w)) / k;
+    let dmax = (vec2<f32>(clip.size.z, clip.size.w) - fc) / k;
     cov = clamp(0.5 + min(min(dmin.x, dmin.y), min(dmax.x, dmax.y)), 0.0, 1.0);
   }
   let n = u32(clip.ctrl.x);   // ctrl.x is the live count
