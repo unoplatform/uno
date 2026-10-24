@@ -944,7 +944,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var center = ((FrameworkElement)list.ContainerFromIndex(1)).GetAbsoluteCenter();
 
 				// On WinUI a ListViewItem runs its tap interaction only when a Tapped follows, while a touch or pen hold is a right-tap.
-				await pointer.Hold(center, advanceTimestamps: !holdingTimerOnly);
+				await pointer.Hold(center, timerOnlyHoldingSource: holdingTimerOnly ? list : null);
 				await WindowHelper.WaitForIdle();
 
 				Assert.AreEqual(0, itemClickCount);
