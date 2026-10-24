@@ -25,7 +25,7 @@
 
             <StackPanel Orientation="Horizontal" Spacing="4">
                 <Button Click="{x:Bind ViewModel.PickSuggestedSaveFile}" Content="Pick suggested save file" />
-                <Button Click="{x:Bind ViewModel.PickSuggestedSaveFile}" Content="Clear" />
+                <Button Click="{x:Bind ViewModel.ClearSuggestedSaveFile}" Content="Clear" />
                 <TextBlock Text="{x:Bind ViewModel.SuggestedSaveFile.Path, Mode=OneWay}" />
             </StackPanel>
 
@@ -80,6 +80,12 @@
                 HorizontalAlignment="Stretch"
                 Click="{x:Bind ViewModel.PickSaveFile}"
                 Content="Pick save file" />
+
+            <Button
+                Padding="12"
+                HorizontalAlignment="Stretch"
+                Click="{x:Bind ViewModel.WriteAndComplete}"
+                Content="Write and complete" />
 
             <TextBlock>
                 <Run Text="File name: " />

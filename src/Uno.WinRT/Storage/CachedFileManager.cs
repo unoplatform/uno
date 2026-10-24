@@ -34,6 +34,16 @@ namespace Windows.Storage
 		///	On most Uno Platform targets, this method immediately returns
 		///	success, as the file is already updated. In case of WASM using
 		///	the download file picker, this triggers the download file dialog.
+		///	On iOS, for a file from the built-in save picker, this presents
+		///	the export sheet, which saves a copy of the file, and returns
+		///	<see cref="FileUpdateStatus.Incomplete"/> if the user closes it
+		///	without saving or the app dismisses it, also with the controller
+		///	it was presented from, and <see cref="FileUpdateStatus.Failed"/>
+		///	if the file no longer exists when this is called. It throws
+		///	<see cref="System.InvalidOperationException"/> if the sheet can't
+		///	be shown, such as when UIKit drops its presentation because
+		///	another one asked for before it is still appearing. The file
+		///	stays until the app deletes it.
 		/// </remarks>
 		public static IAsyncOperation<FileUpdateStatus> CompleteUpdatesAsync(IStorageFile file) =>
 			AsyncOperation.FromTask(ct => CompleteUpdatesTaskAsync(file, ct));

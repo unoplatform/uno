@@ -86,6 +86,11 @@ namespace Windows.Storage.Pickers
 		/// The file name, extension, and location of this <see cref="StorageFile"/> match those specified by the user, but the file has no content.
 		/// To save the content of the file, your app must write the content to this <see cref="StorageFile"/>.
 		/// </returns>
+		/// <remarks>
+		/// On iOS, unless an <c>IFileSavePickerExtension</c> is registered, this shows nothing: it returns
+		/// a new empty file in the app's temporary directory, and <see cref="CachedFileManager.CompleteUpdatesAsync"/> saves a copy of it with
+		/// the system's export sheet.
+		/// </remarks>
 		public IAsyncOperation<StorageFile?> PickSaveFileAsync() =>
 			AsyncOperation.FromTask(cancellationToken => PickSaveFileTaskAsync(cancellationToken));
 #endif
