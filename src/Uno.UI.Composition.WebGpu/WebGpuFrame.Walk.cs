@@ -421,8 +421,7 @@ internal sealed unsafe partial class WebGpuFrame
 		if (System.Threading.Interlocked.Decrement(ref e.Refs) > 0) { return; }
 		e.IdleSince = _d.FrameSeq;
 		if (e.ContentKey != 0) { return; }
-		foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); _d.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
-		_d.DeferCompiledRelease(e.Owned, null);
+		e.ReleaseFinal(_d);
 	}
 
 	// Every entry that holds atlas slots, for EvictAtlasHolders. Weak: a recording that is collected takes its entry.
@@ -450,9 +449,8 @@ internal sealed unsafe partial class WebGpuFrame
 			e.ContentKey = 0;
 			if (e.Refs <= 0)
 			{
-				// Only the pool held it, and the pool has let it go: nothing else will ever release it.
-				foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); _d.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
-				_d.DeferCompiledRelease(e.Owned, null);
+				// No holder left: either only the pool held it and has let it go, or its last holder already freed it.
+				e.ReleaseFinal(_d);
 				continue;
 			}
 			_d.DeferRelease(e.Owned);
@@ -472,8 +470,7 @@ internal sealed unsafe partial class WebGpuFrame
 			var e = kv.Value;
 			if (e.Refs > 0 || !ReferenceEquals(e.Device, _d) || _d.FrameSeq - e.IdleSince < EntryPoolIdleFrames) { continue; }
 			(drop ??= new()).Add(kv.Key);
-			foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); _d.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
-			_d.DeferCompiledRelease(e.Owned, null);
+			e.ReleaseFinal(_d);
 		}
 		if (drop is not null) { foreach (var k in drop) { s_entryPool.Remove(k); } }
 	}
