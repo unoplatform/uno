@@ -1159,6 +1159,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Hold_Item_And_SuppressTapOnHold_Disabled_Then_ItemClick_And_Selection()
+		{
+			var original = Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold;
+			Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold = false;
+			try
+			{
+				var list = new ListView
+				{
+					IsItemClickEnabled = true,
+					SelectionMode = ListViewSelectionMode.Single,
+					ItemsSource = new[] { "0", "1", "2" },
+				};
+				var tappedOnly = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+				var itemClickCount = 0;
+				var tappedCount = 0;
+				list.ItemClick += (_, _) => itemClickCount++;
+				tappedOnly.Tapped += (_, _) => tappedCount++;
+
+				await UITestHelper.Load(new StackPanel { Children = { list, tappedOnly } });
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var finger = injector.GetFinger();
+
+				await finger.Hold(((FrameworkElement)list.ContainerFromIndex(1)).GetAbsoluteCenter());
+				await finger.Hold(tappedOnly.GetAbsoluteCenter());
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, itemClickCount);
+				Assert.AreEqual(1, list.SelectedIndex);
+				Assert.AreEqual(1, tappedCount);
+			}
+			finally
+			{
+				Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold = original;
+				WindowHelper.WindowContent = null;
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Multiple_Selection_Keyboard()
 		{
 			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();

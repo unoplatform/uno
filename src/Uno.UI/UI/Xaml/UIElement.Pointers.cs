@@ -516,7 +516,7 @@ namespace Microsoft.UI.Xaml
 			var recognizer = new GestureRecognizer(this)
 			{
 				PatchCases = WinRTFeatureConfiguration.GestureRecognizer.PatchCasesForUiElement,
-				SuppressesTapOnHold = true
+				SuppressesTapOnHold = WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold
 			};
 
 			// Allow partial parts to subscribe to pointer events (WASM)
