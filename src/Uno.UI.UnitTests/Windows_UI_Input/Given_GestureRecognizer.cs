@@ -117,6 +117,26 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+		public void Tapped_When_Holding_Raised_For_The_Press_By_Another_Recognizer()
+		{
+			using var _ = Touch();
+			var holder = new GestureRecognizer { GestureSettings = GestureSettings.Hold, SuppressesTapOnHold = true };
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap, SuppressesTapOnHold = true };
+			var taps = new List<TappedEventArgs>();
+			sut.Tapped += (snd, e) => taps.Add(e);
+			const ulong pressed = 7_100_001; // Distinct from other tests: the held press is recorded statically.
+
+			holder.ProcessDownEvent(25, 25, ts: pressed);
+			sut.ProcessDownEvent(25, 25, ts: pressed);
+			holder.ProcessMoveEvent(25, 25, ts: pressed + GestureRecognizer.HoldMinDelayMicroseconds + 1); // Raises Holding
+
+			// Like a parent which listens to Tapped only, when the child's holding timer elapsed before the pointer timestamps did.
+			sut.ProcessUpEvent(25, 25, ts: pressed + 1);
+
+			taps.Should().BeEmpty();
+		}
+
+		[TestMethod]
 		public void Tapped_Delta_X()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap };
