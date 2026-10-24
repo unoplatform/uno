@@ -84,6 +84,29 @@ public class Given_SKCanvasElement
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25656")]
+	public async Task When_Drawn_Through_GL_Island_Then_Sharp_At_Device_Scale()
+	{
+		// Under a backend without an SKCanvas the element draws through the GL island when Graphics3DGL is present
+		// (falling back to the software surface without a usable GL context); under Skia it draws directly.
+		var SUT = new HalfBlackSKCanvasElement { Width = 100, Height = 100 };
+
+		await UITestHelper.Load(SUT);
+		await UITestHelper.WaitFor(() => SUT.Rendered, timeoutMS: 5000);
+		// The island comes up a few frames after load, and its output composites on the frame after its first render.
+		await UITestHelper.WaitForRender(5, timeoutMS: 5000);
+
+		var renderer = new RenderTargetBitmap();
+		await renderer.RenderAsync(SUT);
+		var bitmap = await RawBitmap.From(renderer, SUT, implicitScaling: 1);
+
+		var edge = (int)Math.Round(50 * SUT.XamlRoot!.RasterizationScale);
+		var row = string.Join(" ", Enumerable.Range(edge - 3, 6).Select(x => $"{x}:{bitmap.GetPixel(x, 20).A}"));
+		Assert.AreEqual(255, bitmap.GetPixel(edge - 1, 20).A, $"inside the fill, at scale {SUT.XamlRoot.RasterizationScale} ({row})");
+		Assert.AreEqual(0, bitmap.GetPixel(edge, 20).A, $"outside the fill, at scale {SUT.XamlRoot.RasterizationScale} ({row})");
+	}
+
+	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)] // https://github.com/unoplatform/uno/issues/22665
 	public async Task When_Waiting_For_Another_Thread()
@@ -179,7 +202,9 @@ public class Given_SKCanvasElement
 			{
 				Assert.IsTrue(renderer.Initialized);
 				Assert.AreNotEqual(0u, renderer.Framebuffer);
-				Assert.AreEqual((100, 100), renderer.Size);
+				// The framebuffer is in device pixels.
+				var pixels = (int)Math.Round(100 * island.Element.XamlRoot!.RasterizationScale);
+				Assert.AreEqual((pixels, pixels), renderer.Size);
 			}
 		}
 		finally
