@@ -28,11 +28,11 @@ public partial class FileSavePicker
 	private string GetExportFileName()
 	{
 		var name = SuggestedSaveFile?.Name is { Length: > 0 } saveFileName ? saveFileName : SuggestedFileName;
-		name = TrimWhiteSpaceAndDots(new string(name.Select(c => c is '/' or ':' || char.IsControl(c) ? '_' : c).ToArray()));
+		name = TrimWhiteSpaceAndDots(new string(name.Select(c => IsReplacedInName(c) ? '_' : c).ToArray()));
 
 		var extensions = FileTypeChoices.Values
 			.SelectMany(choice => choice)
-			.Where(extension => extension.Length > 1 && extension[0] == '.' && !extension.Contains('*'))
+			.Where(IsUsableExtension)
 			.ToArray();
 
 		string extension;
@@ -64,6 +64,17 @@ public partial class FileSavePicker
 
 		return TrimToBytes(stem + extension, MaxFileNameBytes);
 	}
+
+	private static bool IsReplacedInName(char c) => c is '/' or ':' || char.IsControl(c);
+
+	// FileTypeChoices accepts any extension that starts with a dot, so one that could take the file out of its staging folder, or that
+	// has a character the name can't have, is skipped.
+	private static bool IsUsableExtension(string extension)
+		=> extension.Length > 1
+			&& extension[0] == '.'
+			&& !extension.Contains('*')
+			&& !extension.Contains("..", StringComparison.Ordinal)
+			&& !extension.Any(c => c == '\\' || IsReplacedInName(c));
 
 	private static string TrimWhiteSpaceAndDots(string text)
 	{

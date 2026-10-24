@@ -38,9 +38,15 @@ partial class StorageFile
 	internal static StorageFile CreateForExportPicker(string fileName)
 	{
 		var folder = IOPath.Combine(_exportPickerFolder.Value, Guid.NewGuid().ToString("N"));
-		Directory.CreateDirectory(folder);
-
 		var path = IOPath.Combine(folder, fileName);
+
+		// The picker cleans the name up, so this only makes sure that nothing else can put the file outside its folder.
+		if (!string.Equals(IOPath.GetDirectoryName(IOPath.GetFullPath(path)), IOPath.GetFullPath(folder), StringComparison.Ordinal))
+		{
+			throw new ArgumentException($"'{fileName}' isn't a plain file name.", nameof(fileName));
+		}
+
+		Directory.CreateDirectory(folder);
 
 		try
 		{

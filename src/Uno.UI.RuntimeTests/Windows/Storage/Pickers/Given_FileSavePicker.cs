@@ -56,6 +56,7 @@ public class Given_FileSavePicker
 	[DataRow(".txt", "txt.txt")]
 	[DataRow("Plans/Report", "Plans_Report.txt")]
 	[DataRow("Plans:Report", "Plans_Report.txt")]
+	[DataRow("../../Report", "_.._Report.txt")]
 	public async Task When_Name_Is_Suggested_Then_It_Ends_With_A_Choice_Extension(string suggestedFileName, string expectedName)
 	{
 		var file = await PickAsync(suggestedFileName);
@@ -200,6 +201,36 @@ public class Given_FileSavePicker
 			await FileIO.WriteTextAsync(file, "Hello, world!");
 
 			Assert.AreEqual("Hello, world!", File.ReadAllText(file.Path));
+		}
+		finally
+		{
+			await file.DeleteAsync();
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25667")]
+	[DataRow(".txt/../../existing.txt")]
+	[DataRow("./../existing")]
+	[DataRow(".txt\\..\\existing")]
+	[DataRow("..txt")]
+	[DataRow(".t:xt")]
+	[DataRow(".t\u0007xt")]
+	public async Task When_A_Choice_Extension_Is_Unsafe_Then_It_Is_Skipped(string unsafeExtension)
+	{
+		var picker = new FileSavePicker { SuggestedFileName = "Report" };
+		picker.FileTypeChoices.Add("Unsafe", new List<string> { unsafeExtension });
+		picker.FileTypeChoices.Add("Plain Text", new List<string> { ".txt" });
+
+		var file = await picker.PickSaveFileAsync();
+		Assert.IsNotNull(file);
+
+		try
+		{
+			// The file is directly in its own folder, which is directly in the staging folder.
+			var folder = Path.GetDirectoryName(file.Path)!;
+			Assert.AreEqual("Report.txt", file.Name);
+			Assert.AreEqual(Path.Combine(Path.GetTempPath(), "Uno.FileSavePicker"), Path.GetDirectoryName(folder));
 		}
 		finally
 		{
