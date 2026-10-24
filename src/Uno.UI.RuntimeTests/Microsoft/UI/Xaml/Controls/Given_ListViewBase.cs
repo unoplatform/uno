@@ -1102,16 +1102,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
-		[DataRow(PointerDeviceType.Touch, false, false)]
+		[DataRow(PointerDeviceType.Touch, false, false, true)]
 #if HAS_UNO // Pen injection is not available on WinAppSDK
-		[DataRow(PointerDeviceType.Pen, false, false)]
+		[DataRow(PointerDeviceType.Pen, false, false, true)]
 #endif
-		[DataRow(PointerDeviceType.Touch, true, false)]
-		[DataRow(PointerDeviceType.Touch, false, true)]
-		public async Task When_Hold_Item_Then_No_ItemClick_Nor_Selection(PointerDeviceType device, bool isGridView, bool holdingTimerOnly)
+		[DataRow(PointerDeviceType.Touch, true, false, true)]
+		[DataRow(PointerDeviceType.Touch, false, true, true)]
+		[DataRow(PointerDeviceType.Touch, false, false, false)]
+		public async Task When_Hold_Item_Then_No_ItemClick_Nor_Selection(PointerDeviceType device, bool isGridView, bool holdingTimerOnly, bool isItemClickEnabled)
 		{
 			ListViewBase list = isGridView ? new GridView() : new ListView();
-			list.IsItemClickEnabled = true;
+			list.IsItemClickEnabled = isItemClickEnabled;
 			list.SelectionMode = ListViewSelectionMode.Single;
 			list.ItemsSource = new[] { "0", "1", "2" };
 
@@ -1146,7 +1147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					pointer.Release();
 					await WindowHelper.WaitForIdle();
 
-					Assert.AreEqual(1, itemClickCount);
+					Assert.AreEqual(isItemClickEnabled ? 1 : 0, itemClickCount);
 					Assert.AreEqual(1, list.SelectedIndex);
 				}
 			}
