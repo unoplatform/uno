@@ -2,6 +2,8 @@
 
 using System;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.DevTools.Input;
 using Windows.Foundation;
 
@@ -10,20 +12,33 @@ namespace Uno.UI.RuntimeTests.Helpers;
 internal static class InjectedPointerHoldExtensions
 {
 	/// <summary>
-	/// Presses and releases at the same location once WinUI's 800 ms hold delay has elapsed: a touch or pen hold.
+	/// Presses and releases at the same location as a touch or pen hold.
 	/// </summary>
-	/// <param name="advanceTimestamps">
-	/// Whether the pointer timestamps also advance by the hold duration, like a device's. On Uno, injected timestamps
-	/// only advance with the injected time offsets, so otherwise only the holding timer sees the hold.
+	/// <param name="timerOnlyHoldingSource">
+	/// On Uno, an element which listens to Holding: the hold then lasts until it raises Holding and the pointer timestamps don't advance,
+	/// so only its holding timer sees the hold. Otherwise the timestamps advance past the hold delay, like a device's.
 	/// </param>
-	public static async Task Hold(this IInjectedPointer pointer, Point location, bool advanceTimestamps = true)
+	public static async Task Hold(this IInjectedPointer pointer, Point location, UIElement? timerOnlyHoldingSource = null)
 	{
 		pointer.Press(location);
 #if HAS_UNO
-		await Task.Delay(TimeSpan.FromSeconds(1));
-		if (advanceTimestamps)
+		if (timerOnlyHoldingSource is null)
 		{
 			pointer.MoveTo(location, steps: 0, stepOffsetInMilliseconds: 1000);
+		}
+		else
+		{
+			var isHolding = false;
+			HoldingEventHandler onHolding = (_, e) => isHolding |= e.HoldingState is Microsoft.UI.Input.HoldingState.Started;
+			timerOnlyHoldingSource.Holding += onHolding;
+			try
+			{
+				await UITestHelper.WaitFor(() => isHolding, timeoutMS: 5000, message: $"{timerOnlyHoldingSource} did not raise Holding.");
+			}
+			finally
+			{
+				timerOnlyHoldingSource.Holding -= onHolding;
+			}
 		}
 #else
 		// Windows only recognizes an injected hold when the contact keeps reporting frames.
