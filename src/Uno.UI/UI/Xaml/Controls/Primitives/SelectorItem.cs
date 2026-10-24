@@ -6,11 +6,13 @@ using System.Text;
 using Microsoft.UI.Xaml.Input;
 using Windows.UI.Core;
 using System.Threading.Tasks;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.Devices.Input;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if __APPLE_UIKIT__
 using UIKit;
@@ -18,6 +20,8 @@ using UIKit;
 =======
 using Uno.Foundation.Logging;
 >>>>>>> 93cb47c (fix(listview): Skip ItemClick and selection on hold)
+=======
+>>>>>>> b1c3e82 (refactor(listview): Read the press point only to arm a click)
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -407,10 +411,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
-			var point = args.GetCurrentPoint(this);
 			if (ShouldHandlePressed
 				&& IsItemClickEnabled
-				&& point.Properties.IsLeftButtonPressed)
+				&& args.GetCurrentPoint(null) is { Properties.IsLeftButtonPressed: true } point)
 			{
 				// Note: We do allow PointerCaptureResult.AlreadyCaptured as if element has been flagged as CanDrag
 				//		 (common in ListView that do allow re-ordering ;) ),
