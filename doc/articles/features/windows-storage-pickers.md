@@ -435,6 +435,7 @@ No iOS picker returns a new file to write to before its content exists. Instead,
   * `FileUpdateStatus.Incomplete` when the user closed the sheet without saving the file.
   * `FileUpdateStatus.Failed` when the file no longer exists when `CompleteUpdatesAsync` is called, for example after `DeleteAsync`.
 * Cancelling the operation that `CompleteUpdatesAsync` returns closes the sheet.
+* UIKit drops the sheet's presentation, without notice, when another presentation asked for before it is still appearing (such as a document picker or the share sheet, which wait seconds for their service), or when the controller it is presented from is dismissed before it appears. `CompleteUpdatesAsync` then throws an `InvalidOperationException` once the other controller has appeared or the presenter is gone, and the file can be completed again.
 * The file stays after `CompleteUpdatesAsync`: calling it again presents the sheet again. `DeleteAsync` deletes the file and its folder. Files that are left are deleted at the app's next run, the first time it calls `PickSaveFileAsync`.
 
 The [FileSavePicker example](#filesavepicker) above works as is.
