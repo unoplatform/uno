@@ -239,9 +239,12 @@ namespace Windows.UI.Input
 				}
 			}
 
-			// The holding timer can elapse before the pointer timestamps do (e.g. a busy UI thread): Holding then makes it a hold too.
+			// Holding and Tapped are mutually exclusive: once Holding was raised for the press, by this or another UIElement recognizer, it is a hold.
 			private bool IsHeld()
-				=> _holdingState is not null || (Up is { } up && IsLongPress(Down, up));
+				=> Up is { } up
+					&& (_recognizer.SuppressesTapOnHold
+						? _holdingState is not null || IsHold(Down.Pointer, Down.Timestamp, up.Timestamp)
+						: IsLongPress(Down, up));
 
 			private void TryEndHolding(HoldingState state)
 			{

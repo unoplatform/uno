@@ -91,10 +91,12 @@ namespace Windows.UI.Input
 		/// <remarks>
 		/// Set for UIElement recognizers (unless opted out with <see cref="WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold"/>):
 		/// on WinUI, Tapped and Holding are mutually exclusive and a touch or pen hold is followed by a RightTapped.
+		/// It also makes a press for which Holding was raised a hold, for the right-tap too. Other recognizers keep detecting holds from the timestamps only.
 		/// </remarks>
 		internal bool SuppressesTapOnHold { get; init; }
 
 		// The press (pointer and down timestamp) for which a UIElement recognizer last raised Holding.
+		// A single slot: when two fingers hold at once, the first one's release falls back to its timestamps.
 		private static (PointerIdentifier Pointer, ulong Timestamp) _lastHeldPress;
 
 		/// <summary>
