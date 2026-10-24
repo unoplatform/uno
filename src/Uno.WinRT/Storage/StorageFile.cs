@@ -54,6 +54,26 @@ namespace Windows.Storage
 		/// </summary>
 		internal StorageProvider? ProviderOverride { get; set; }
 
+		// For the runtime tests of the iOS save picker's export sheet. The runtime tests are compiled against the reference assembly and run on
+		// every platform, so these exist everywhere.
+#if __IOS__
+		internal static Task ExportSheetsIdle => ExportSheet.Idle;
+
+		internal static int ExportSheetsAskedFor => ExportSheet.AskedFor;
+
+		internal static int ExportSheetsPresented => ExportSheet.Presented;
+
+		internal static bool IsExportSheetShown => ExportSheet.IsShown;
+#else
+		internal static Task ExportSheetsIdle => Task.CompletedTask;
+
+		internal static int ExportSheetsAskedFor => 0;
+
+		internal static int ExportSheetsPresented => 0;
+
+		internal static bool IsExportSheetShown => false;
+#endif
+
 		public StorageProvider Provider => ProviderOverride ?? Implementation.Provider;
 
 		public string Path => Implementation.Path;
