@@ -5350,7 +5350,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			// Above the boundary between "Some " and "Text": the caret follows the X position.
-			await Task.Delay(600); // past the multi-tap window, so this is a fresh single tap
 			finger.Press(new Point(GetXOfIndex(SUT, 5), aboveTextY));
 			finger.Release();
 			await WindowHelper.WaitForIdle();
