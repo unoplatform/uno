@@ -234,7 +234,12 @@ else
 
 ### Staged files
 
-With the WebAssembly download picker (unless `SuggestedSaveFile` is set: it then returns that file) and on iOS, the file that `PickSaveFileAsync` returns is a staged file, kept in the browser's memory or in the app's temporary directory. `CachedFileManager.CompleteUpdatesAsync` saves it: on WebAssembly, the browser downloads it as its settings say; on iOS, the export sheet saves a copy where the user picks. The staged file stays after `CompleteUpdatesAsync`, which can be called again to save it again, until the app deletes it with `DeleteAsync`. Its `Provider.Id` is `wasmdownloadpicker` on WebAssembly and `iosexportpicker` on iOS. Until it's saved, it is the only copy of its content: on iOS, `CompleteUpdatesAsync` returns `Incomplete` when the user closes the sheet without saving. Deleting it once it's saved frees its memory on WebAssembly and its temporary storage on iOS:
+With the WebAssembly download picker (unless `SuggestedSaveFile` is set: it then returns that file) and on iOS, the file that `PickSaveFileAsync` returns is a staged file, kept in the browser's memory or in the app's temporary directory. Its `Provider.Id` is `wasmdownloadpicker` on WebAssembly and `iosexportpicker` on iOS. `CachedFileManager.CompleteUpdatesAsync` saves it, and what is left of it afterwards differs:
+
+* On WebAssembly, the browser downloads it as its settings say. Triggering the download hands the staged content over to the browser and releases it: reading the file, or completing it again without writing it again, then throws, and writing to it starts a new, empty file. `DeleteAsync` removes the staged buffer: before the download, with its content; after it, the content is already released.
+* On iOS, the export sheet saves a copy where the user picks. The staged file stays after `CompleteUpdatesAsync`, which can be called again to save it again, until the app deletes it with `DeleteAsync`, which frees its temporary storage. Until it's saved, it is the only copy of its content: `CompleteUpdatesAsync` returns `Incomplete` when the user closes the sheet without saving.
+
+This deletes a staged file once it's saved:
 
 ```csharp
 var status = await CachedFileManager.CompleteUpdatesAsync(saveFile);
@@ -291,7 +296,7 @@ In case the **File System Access API** is not available in the browser, Uno Plat
 
 For the upload picker, the browser triggers a file picker dialog and Uno Platform then copies the selected files into temporary storage of the app. The `StorageFile` instance you receive is private for your application and the changes are not reflected in the original file. To save the changes, you need to trigger the "download picker".
 
-For the download picker, the experience requires the use of [`CachedFileManager`](https://learn.microsoft.com/uwp/api/Windows.Storage.CachedFileManager). Triggering `PickSaveFileAsync` does not actually show the download picker to the user. Instead, only a temporary file is created to allow you to write any content. Afterward, calling `CompleteUpdatesAsync` opens the download dialog, which allows the user to save the file. The temporary file stays until your app deletes it; see [Staged files](#staged-files).
+For the download picker, the experience requires the use of [`CachedFileManager`](https://learn.microsoft.com/uwp/api/Windows.Storage.CachedFileManager). Triggering `PickSaveFileAsync` does not actually show the download picker to the user. Instead, only a temporary file is created to allow you to write any content. Afterward, calling `CompleteUpdatesAsync` opens the download dialog, which allows the user to save the file. Triggering the download releases the temporary file's content; see [Staged files](#staged-files).
 
 The `CachedFileManager` class works transparently with both the **Download picker** and the **File System Access API**, which means you can write a single snippet of code that handles both scenarios correctly:
 
@@ -436,7 +441,7 @@ No iOS picker returns a new file to write to before its content exists. Instead,
   * `FileUpdateStatus.Failed` when the file no longer exists when `CompleteUpdatesAsync` is called, for example after `DeleteAsync`.
 * Cancelling the operation that `CompleteUpdatesAsync` returns closes the sheet.
 * UIKit drops the sheet's presentation, without notice, when another presentation asked for before it is still appearing (such as a document picker or the share sheet, which wait seconds for their service), or when the controller it is presented from is dismissed before it appears. `CompleteUpdatesAsync` then throws an `InvalidOperationException` once the other controller has appeared or the presenter is gone, and the file can be completed again.
-* The file stays after `CompleteUpdatesAsync`: calling it again presents the sheet again. `DeleteAsync` deletes the file and its folder. Files that are left are deleted at the app's next run, the first time it calls `PickSaveFileAsync`.
+* Unlike the WebAssembly download picker's file, the file stays after `CompleteUpdatesAsync`: calling it again presents the sheet again. `DeleteAsync` deletes the file and its folder. Files that are left are deleted at the app's next run, the first time it calls `PickSaveFileAsync`.
 
 The [FileSavePicker example](#filesavepicker) above works as is.
 
