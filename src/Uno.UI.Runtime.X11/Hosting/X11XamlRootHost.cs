@@ -22,7 +22,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.X11;
 
-internal partial class X11XamlRootHost : IXamlRootHost
+internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 {
 	private const int DefaultColorDepth = 32;
 	private const int FallbackColorDepth = 24;
@@ -83,6 +83,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private X11Window? _x11Window;
 	private X11Window? _x11TopWindow;
 	private IX11Renderer? _renderer;
+	private X11Accessibility? _accessibility;
 	// This window's negotiated backend, read by its CompositionTarget when it first needs one.
 	private Uno.UI.Composition.Drawing.IDrawingFactory? _drawingFactory;
 	Uno.UI.Composition.Drawing.IDrawingFactory? IXamlRootHost.Renderer => _drawingFactory;
@@ -143,6 +144,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			using (X11Helper.XLock(RootX11Window.Display))
 			{
+				DisposeAccessibility();
 				XamlRootMap.Unregister(xamlRoot);
 				_windowToHost.Remove(winUIWindow, out var _);
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
@@ -504,6 +506,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		_ = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
+
+		InitializeAccessibility();
 	}
 
 	/// <summary>
@@ -702,6 +706,31 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	}
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
+
+	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+
+	internal void InitializeAccessibility()
+	{
+		if (_accessibility is not null)
+		{
+			return;
+		}
+
+		_accessibility = new X11Accessibility(this, _window);
+		_accessibility.Initialize();
+	}
+
+	internal void DisposeAccessibility()
+	{
+		if (_accessibility is not { } accessibility)
+		{
+			return;
+		}
+
+		_accessibility = null;
+		accessibility.Dispose();
+		AccessibilityRouter.NotifyDisposed(this);
+	}
 
 	Windows.UI.Color? IXamlRootHost.BackgroundColor
 	{
