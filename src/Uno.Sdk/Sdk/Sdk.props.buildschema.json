@@ -145,6 +145,10 @@
 			"description": "Provides an explicit override for the version of Uno.Maui.Embedding and Uno.Maui.Handlers to use with the MauiHandlers feature.",
 			"type": "nuget-version"
 		},
+		"UnoRehostVersion": {
+			"description": "Provides an explicit override for the version of Uno.Rehost to use with the Rehost feature.",
+			"type": "nuget-version"
+		},
 		"UnoExtensionsVersion": {
 			"description": "Provides an explicit override for the version of Uno Extensions to use.",
 			"type": "nuget-version"
@@ -553,6 +557,10 @@
 				"MauiHandlers": {
 					"description": "Adds support for running .NET MAUI controls and libraries on Uno with Uno.Maui.Embedding and Uno.Maui.Handlers.",
 					"helpUrl": "https://aka.platform.uno/feature-maui-handlers"
+				},
+				"Rehost": {
+					"description": "Runs Windows App SDK / WinUI 3 NuGet packages on Uno by rewriting their Windows builds with Uno.Rehost.",
+					"helpUrl": "https://aka.platform.uno/feature-rehost"
 				},
 				"MVUX": {
 					"description": "Adds support for MVUX.",

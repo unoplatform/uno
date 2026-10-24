@@ -72,6 +72,9 @@ public enum UnoFeature
 	[UnoArea(UnoArea.Core)]
 	MauiHandlers,
 
+	[UnoArea(UnoArea.Core)]
+	Rehost,
+
 	[UnoArea(UnoArea.Extensions)]
 	MVUX,
 

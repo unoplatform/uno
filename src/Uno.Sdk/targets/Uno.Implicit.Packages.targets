@@ -43,6 +43,7 @@
 				MauiVersion="$(MauiVersion)"
 				UnoExtensionsVersion="$(UnoExtensionsVersion)"
 				UnoMauiVersion="$(UnoMauiVersion)"
+				UnoRehostVersion="$(UnoRehostVersion)"
 				UnoToolkitVersion="$(UnoToolkitVersion)"
 				UnoThemesVersion="$(UnoThemesVersion)"
 				UnoCSharpMarkupVersion="$(UnoCSharpMarkupVersion)"

@@ -25,16 +25,44 @@
 		<UseMaui>true</UseMaui>
 	</PropertyGroup>
 
+	<!-- MauiHandlers runs MAUI controls through Uno.Rehost, so it implies the rehost feature (AssetTargetFallback, Uno.Rehost, pruning of the Windows App SDK). -->
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauihandlers;')) And !$(UnoFeatures.Contains(';rehost;'))">
+		<UnoFeatures>$(UnoFeatures)rehost;</UnoFeatures>
+	</PropertyGroup>
+
 	<!--
-		MauiHandlers: MAUI controls and libraries run on Uno through Uno.Maui.Embedding / Uno.Maui.Handlers, which rewrite the Windows builds of the official MAUI assemblies.
-		- MAUI itself must be the version the rewrite rules are written for, not the one of the mauiembedding feature (override with MauiVersion).
-		- A control library that ships only platform builds (no neutral net*) has no asset for an Uno head, and restore stops with NU1202: its Windows build is the fallback.
+		Rehost: Windows App SDK / WinUI 3 NuGet packages run on Uno through Uno.Rehost, which rewrites their Windows builds at the app's build.
+		- A library that ships only platform builds (no neutral net*) has no asset for an Uno head, and restore stops with NU1202: its Windows build is the fallback.
 		  This has to be set here: a package's own build files are not imported until its first restore succeeded.
+		- The Windows App SDK stays out of the restore of the non-Windows target frameworks (a Windows-only library depends on it, its build targets refuse a
+		  project that is not a Windows one, and its assemblies clash with Uno's): PrunePackageReference with a version above any real one. A net*-windows head uses the real Windows App SDK.
+	-->
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';rehost;'))">
+		<AssetTargetFallback>$(AssetTargetFallback);net10.0-windows10.0.19041.0;net10.0-windows10.0.19041;net10.0-windows;net9.0-windows10.0.19041.0;net9.0-windows10.0.19041;net8.0-windows10.0.19041.0;net8.0-windows10.0.19041;net8.0-windows10.0.17763.0;net7.0-windows10.0.19041.0;net6.0-windows10.0.19041.0</AssetTargetFallback>
+	</PropertyGroup>
+	<ItemGroup Condition="$(UnoFeatures.Contains(';rehost;')) And !$(TargetFramework.Contains('-windows'))">
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.Base" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.Runtime" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.AI" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.Widgets" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.DWrite" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.Windows.CsWinRT" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.Graphics.Win2D" Version="99.0.0" />
+	</ItemGroup>
+
+	<!--
+		MauiHandlers: MAUI controls and libraries run on Uno through Uno.Maui.Embedding / Uno.Maui.Handlers (on top of Rehost, which it implies).
+		- MAUI itself must be the version the rewrite rules are written for, not the one of the mauiembedding feature (override with MauiVersion).
 		- UseMaui stays off: the project is an Uno project, not a MAUI one (the package turns off MAUI's global usings and default XAML items by itself).
 	-->
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauihandlers;'))">
 		<MauiVersion Condition="'$(MauiVersion)' == ''">10.0.101</MauiVersion>
-		<AssetTargetFallback>$(AssetTargetFallback);net10.0-windows10.0.19041.0;net10.0-windows10.0.19041;net10.0-windows;net9.0-windows10.0.19041.0;net8.0-windows10.0.19041.0;net7.0-windows10.0.19041.0;net6.0-windows10.0.19041.0</AssetTargetFallback>
 	</PropertyGroup>
 
 </Project>

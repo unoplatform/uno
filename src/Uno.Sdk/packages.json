@@ -1,4 +1,4 @@
-﻿﻿[
+﻿[
 	{
 		"group": "Core",
 		"version": "DefaultUnoVersion",
@@ -302,6 +302,13 @@
 		"packages": [
 			"Uno.Maui.Embedding",
 			"Uno.Maui.Handlers"
+		]
+	},
+	{
+		"group": "UnoRehost",
+		"version": "0.1.0-preview.1",
+		"packages": [
+			"Uno.Rehost"
 		]
 	},
 	{
