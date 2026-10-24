@@ -55,7 +55,7 @@ stages:
       resultsTimeoutMinutes: 55
       jobTimeoutInMinutes: 75
       # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
-      condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))"
+      condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.WebGpuTestsRequired'], 'true')))"
 
 - stage: runtime_tests_skia_android
   displayName: Tests - Android
@@ -84,7 +84,7 @@ stages:
       # The newest image whose guest Vulkan driver maps more than 16 MB; API 36 faults past that (#25655).
       apiLevel: 35
       # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
-      condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))"
+      condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.WebGpuTestsRequired'], 'true')))"
 
 - stage: runtime_tests_skia_android_nativeaot
   displayName: Tests - Android+NativeAOT
