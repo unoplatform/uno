@@ -161,6 +161,7 @@ partial class StorageFile
 	private sealed class ExportSheet
 	{
 		private static readonly TimeSpan _stallWarningTime = TimeSpan.FromSeconds(15);
+		private static readonly TimeSpan _watchInterval = TimeSpan.FromMilliseconds(250);
 
 		// Keeps the picker and its delegate alive until the sheet is gone: UIKit holds the delegate weakly.
 		private static readonly HashSet<ExportSheet> _shown = new();
@@ -180,6 +181,7 @@ partial class StorageFile
 		private NSUrl? _url;
 		private UIDocumentPickerViewController? _picker;
 		private bool _isPresented;
+		private bool _isDropped;
 
 		private ExportSheet(string path, CancellationToken ct)
 		{
@@ -201,7 +203,8 @@ partial class StorageFile
 
 		/// <returns>
 		/// <see cref="FileUpdateStatus.Complete"/> when the user saved the file, under its name or another one, and
-		/// <see cref="FileUpdateStatus.Incomplete"/> when they closed the sheet without saving it.
+		/// <see cref="FileUpdateStatus.Incomplete"/> when they closed the sheet without saving it. The task fails with
+		/// <see cref="InvalidOperationException"/> when the sheet can't be presented, also when UIKit drops its presentation.
 		/// </returns>
 		public static Task<FileUpdateStatus> PresentAsync(string path, CancellationToken ct)
 		{
@@ -253,7 +256,7 @@ partial class StorageFile
 				_shown.Add(this);
 				_presentedCount++;
 				presenter.PresentViewController(_picker, true, OnPresented);
-				_ = WarnIfNotPresentedAsync();
+				_ = WatchPresentationAsync(presenter, _picker);
 			}
 			catch (Exception ex)
 			{
@@ -285,8 +288,8 @@ partial class StorageFile
 		{
 			_isPresented = true;
 
-			// A sheet cancelled before it appeared is closed now: UIKit ignores a dismissal before then.
-			if (_completion.Task.IsCanceled)
+			// A sheet that was cancelled before it appeared, or taken for dropped, is closed now: UIKit ignores a dismissal before then.
+			if (_completion.Task.IsCompleted)
 			{
 				Dismiss();
 			}
@@ -335,28 +338,82 @@ partial class StorageFile
 		{
 			_shown.Remove(this);
 
-			// Releases the picker, and lets the next sheet present, after the UIKit callback that got here returns.
+			// Releases the picker, and lets the next sheet present, after the UIKit callback that got here returns. A dropped picker is left to
+			// the GC instead, so that OnPresented can still close it if UIKit presents it after all.
 			NativeDispatcher.Main.Enqueue(() =>
 			{
-				_picker?.Dispose();
-				_picker = null;
+				if (!_isDropped || _isPresented)
+				{
+					_picker?.Dispose();
+					_picker = null;
+				}
+
 				_url?.Dispose();
 				_url = null;
 				_gone.TrySetResult();
 			});
 		}
 
-		// A sheet that UIKit doesn't present blocks the later ones for the rest of the process, so this says when that seems to happen.
-		private async Task WarnIfNotPresentedAsync()
+		// UIKit drops a presentation without calling it back if, when the picker's service runs, the controller it was presented from is
+		// waiting for another delayed presentation asked for before it (such as a document picker or the share sheet, which don't show in
+		// PresentedViewController until then), or has left the window. Neither can be seen beforehand, so this checks until the sheet
+		// appears: once the presenter shows another controller, or is out of the window with nothing presented, the sheet won't appear.
+		private async Task WatchPresentationAsync(UIViewController presenter, UIDocumentPickerViewController picker)
 		{
-			await DelayAsync(_stallWarningTime);
+			var askedAt = Stopwatch.GetTimestamp();
+			var warned = false;
 
-			if (!_isPresented && !_gone.Task.IsCompleted && this.Log().IsEnabled(LogLevel.Warning))
+			while (true)
 			{
-				this.Log().LogWarning(
-					$"The export sheet for {IOPath.GetFileName(_path)} asked for {_stallWarningTime.TotalSeconds:0} s ago hasn't appeared: " +
-					"UIKit may have dropped its presentation. Later export sheets wait for it.");
+				await DelayAsync(_watchInterval);
+
+				if (_isPresented || !_shown.Contains(this))
+				{
+					return;
+				}
+
+				if (GetDropReason(presenter, picker) is { } reason)
+				{
+					Drop(reason);
+					return;
+				}
+
+				// A drop that can't be seen, such as for a presentation that never ends, blocks the later sheets, so this says when that seems
+				// to happen.
+				if (!warned && Stopwatch.GetElapsedTime(askedAt) > _stallWarningTime && this.Log().IsEnabled(LogLevel.Warning))
+				{
+					warned = true;
+					this.Log().LogWarning(
+						$"The export sheet for {IOPath.GetFileName(_path)} asked for {_stallWarningTime.TotalSeconds:0} s ago hasn't appeared: " +
+						"UIKit may have dropped its presentation. Later export sheets wait for it.");
+				}
 			}
+		}
+
+		private static string? GetDropReason(UIViewController presenter, UIDocumentPickerViewController picker)
+		{
+			if (presenter.PresentedViewController is { } presented)
+			{
+				return presented.Handle == picker.Handle ? null : $"{presented.GetType().Name} was still appearing";
+			}
+
+			return presenter.ViewIfLoaded?.Window is null ? $"{presenter.GetType().Name}, which it was presented from, left the window first" : null;
+		}
+
+		// The call ends with an exception rather than Failed, which is for a file that is gone: this one can be completed again.
+		private void Drop(string reason)
+		{
+			_isDropped = true;
+
+			var exception = new InvalidOperationException(
+				$"The export sheet for {IOPath.GetFileName(_path)} wasn't shown: UIKit dropped its presentation, as {reason}.");
+
+			if (_completion.TrySetException(exception))
+			{
+				_cancellation.Dispose();
+			}
+
+			SetGone();
 		}
 
 		/// <returns>The controller to present from, or <see langword="null"/> if the sheet was cancelled meanwhile.</returns>
