@@ -242,7 +242,10 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		{
 			ErrorMessage = string.Empty;
 			StatusMessage = string.Empty;
-			if (PickedFile is null)
+
+			// Another file can be picked meanwhile, so the same file is written and completed.
+			var file = PickedFile;
+			if (file is null)
 			{
 				ErrorMessage = "Pick a file first.";
 				return;
@@ -250,9 +253,9 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 			try
 			{
-				CachedFileManager.DeferUpdates(PickedFile);
-				await FileIO.WriteTextAsync(PickedFile, $"Written by the FileSavePicker sample at {DateTime.Now:T}.");
-				var status = await CachedFileManager.CompleteUpdatesAsync(PickedFile);
+				CachedFileManager.DeferUpdates(file);
+				await FileIO.WriteTextAsync(file, $"Written by the FileSavePicker sample at {DateTime.Now:T}.");
+				var status = await CachedFileManager.CompleteUpdatesAsync(file);
 				StatusMessage = $"CompleteUpdatesAsync returned {status}.";
 			}
 			catch (Exception ex)
