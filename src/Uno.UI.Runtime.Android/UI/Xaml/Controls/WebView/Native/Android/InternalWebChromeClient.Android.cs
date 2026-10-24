@@ -3,6 +3,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Android.Content;
 using Android.OS;
 using Android.Webkit;
 using Microsoft.Web.WebView2.Core;
@@ -13,6 +14,7 @@ namespace Uno.UI.Xaml.Controls;
 
 internal class InternalWebChromeClient : WebChromeClient
 {
+	private const string ActivityLaunchIdExtra = "Uno.WebView.FileChooserLaunchId";
 	private readonly CoreWebView2 _coreWebView;
 
 	public InternalWebChromeClient(CoreWebView2 coreWebView)
@@ -33,12 +35,16 @@ internal class InternalWebChromeClient : WebChromeClient
 
 		var cancellationDisposable = new CancellationDisposable();
 		_fileChooserTaskDisposable.Disposable = cancellationDisposable;
+		var cancellationToken = cancellationDisposable.Token;
 
 		Task.Run(async () =>
 		{
 			try
 			{
-				await StartFileChooser(cancellationDisposable.Token, fileChooserParams);
+				await StartFileChooser(cancellationToken, fileChooserParams);
+			}
+			catch (System.OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+			{
 			}
 			catch (Exception e)
 			{
@@ -47,6 +53,16 @@ internal class InternalWebChromeClient : WebChromeClient
 		});
 
 		return true;
+	}
+
+	protected override void Dispose(bool disposing)
+	{
+		if (disposing)
+		{
+			_fileChooserTaskDisposable.Dispose();
+			Interlocked.Exchange(ref _filePathCallback, null)?.OnReceiveValue(null);
+		}
+		base.Dispose(disposing);
 	}
 
 	public override void OnPermissionRequest(PermissionRequest request) => request.Grant(request.GetResources());
@@ -94,37 +110,32 @@ internal class InternalWebChromeClient : WebChromeClient
 	/// <returns>The BaseActivity that just started (OnResume called)</returns>
 	private async Task<T> StartActivity<T>(CancellationToken ct) where T : BaseActivity
 	{
-		//Get topmost Activity
-		var currentActivity = BaseActivity.Current;
-
-		if (currentActivity != null)
+		ct.ThrowIfCancellationRequested();
+		var currentActivity = BaseActivity.Current
+			?? throw new InvalidOperationException("A current Android activity is required to open the WebView file chooser.");
+		var launch = new WebViewActivityLaunch<T>(ct);
+		void OnCurrentActivityChanged(object sender, CurrentActivityChangedEventArgs args)
 		{
-			//Set up event handler for when activity changes
-			var finished = new TaskCompletionSource<BaseActivity>();
-
-			EventHandler<CurrentActivityChangedEventArgs> handler = null;
-			handler = new EventHandler<CurrentActivityChangedEventArgs>((snd, args) =>
+			if (args.Current is T activity)
 			{
-				if (args?.Current != null)
-				{
-					finished.TrySetResult(args.Current);
-					BaseActivity.CurrentChanged -= handler;
-				}
-			});
-
-			BaseActivity.CurrentChanged += handler;
-
-			//Start a new DelegateActivity
-			currentActivity.StartActivity(typeof(T));
-
-			//Wait for it to be the current....
-			var newCurrent = await finished.Task;
-
-			//return the activity.
-			return newCurrent as T;
+				launch.OnActivityCreated(activity, activity.Intent?.GetStringExtra(ActivityLaunchIdExtra), static arrived => arrived.Finish());
+			}
 		}
 
-		return null;
+		BaseActivity.CurrentChanged += OnCurrentActivityChanged;
+		try
+		{
+			return await launch.StartAsync(id =>
+			{
+				using var intent = new Intent(currentActivity, typeof(T));
+				intent.PutExtra(ActivityLaunchIdExtra, id);
+				currentActivity.StartActivity(intent);
+			});
+		}
+		finally
+		{
+			BaseActivity.CurrentChanged -= OnCurrentActivityChanged;
+		}
 	}
 
 	private async Task StartFileChooser(CancellationToken ct, FileChooserParams fileChooserParams)
@@ -135,6 +146,6 @@ internal class InternalWebChromeClient : WebChromeClient
 
 		var result = await delegateActivity.GetActivityResult(ct, intent);
 
-		_filePathCallback.OnReceiveValue(FileChooserParams.ParseResult((int)result.ResultCode, result.Intent));
+		Interlocked.Exchange(ref _filePathCallback, null)?.OnReceiveValue(FileChooserParams.ParseResult((int)result.ResultCode, result.Intent));
 	}
 }

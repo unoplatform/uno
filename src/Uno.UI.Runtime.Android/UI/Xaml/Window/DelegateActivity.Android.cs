@@ -55,6 +55,7 @@ namespace Uno.UI
 		{
 			try
 			{
+				ct.ThrowIfCancellationRequested();
 				_originalActivities[requestCode] = this;
 				_requestCode = requestCode;
 
@@ -72,7 +73,10 @@ namespace Uno.UI
 			finally
 			{
 				Finish();//Close the activity
-				_originalActivities.Remove(requestCode);
+				if (_originalActivities.TryGetValue(requestCode, out var owner) && ReferenceEquals(owner, this))
+				{
+					_originalActivities.Remove(requestCode);
+				}
 			}
 		}
 

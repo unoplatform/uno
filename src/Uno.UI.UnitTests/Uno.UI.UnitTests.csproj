@@ -120,6 +120,8 @@
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourceQualifierPathResolver.cs">
 			<Link>Resources\ResourceQualifierPathResolver.cs</Link>
 		</Compile>
+		<Compile Include="..\Uno.UI.Runtime.Android\UI\Xaml\Controls\WebView\Native\Android\WebViewActivityLaunch.cs" Link="Windows_UI_XAML_Controls\WebView2Tests\WebViewActivityLaunch.cs" />
+		<Compile Include="..\AddIns\Uno.UI.WebView.X11\X11WebViewNavigationStarting.cs" Link="Windows_UI_XAML_Controls\WebView2Tests\X11WebViewNavigationStarting.cs" />
 		<!-- Pure math split out of the Win32/X11 pointer input sources and the macOS title bar so it's testable
 		     without a real HWND/X11 display/NSWindow (no runtime host project has its own unit test harness). -->
 		<Compile Include="..\Uno.UI.Runtime.Win32\Devices\Input\Win32PointerCoordinateMath.cs" Link="Windows_UI_Input\Win32PointerCoordinateMath.cs" />

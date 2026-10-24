@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno.UI.Composition.Drawing;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -989,6 +989,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	public SkiaAccessibilityBase? Accessibility => _accessibility;
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
+
+	void IXamlRootHost.ResignNativeFocus()
+	{
+		var focusedWindow = PInvoke.GetFocus();
+		if (PInvoke.IsChild(_hwnd, focusedWindow))
+		{
+			PInvoke.SetFocus(_hwnd);
+		}
+	}
 
 	Windows.UI.Color? IXamlRootHost.BackgroundColor
 	{

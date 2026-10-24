@@ -4,6 +4,8 @@ namespace Uno.UI.Xaml.Controls;
 
 internal interface IWebView
 {
+	bool RequiresExplicitInitialization { get; }
+
 	bool SwitchSourceBeforeNavigating { get; }
 
 	bool IsLoaded { get; }
