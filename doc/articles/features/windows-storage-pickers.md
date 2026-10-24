@@ -234,12 +234,12 @@ else
 
 ### Staged files
 
-With the WebAssembly download picker (unless `SuggestedSaveFile` is set: it then returns that file) and on iOS, the file that `PickSaveFileAsync` returns is a staged file, kept in the browser's memory or in the app's temporary directory. `CachedFileManager.CompleteUpdatesAsync` saves it: on WebAssembly, the browser downloads it as its settings say; on iOS, the export sheet saves a copy where the user picks. The staged file stays after `CompleteUpdatesAsync`, which can be called again to save it again, until the app deletes it with `DeleteAsync`. Its `Provider.Id` is `wasmdownloadpicker` on WebAssembly and `iosexportpicker` on iOS. Deleting it once it's saved frees its memory on WebAssembly and its temporary storage on iOS:
+With the WebAssembly download picker (unless `SuggestedSaveFile` is set: it then returns that file) and on iOS, the file that `PickSaveFileAsync` returns is a staged file, kept in the browser's memory or in the app's temporary directory. `CachedFileManager.CompleteUpdatesAsync` saves it: on WebAssembly, the browser downloads it as its settings say; on iOS, the export sheet saves a copy where the user picks. The staged file stays after `CompleteUpdatesAsync`, which can be called again to save it again, until the app deletes it with `DeleteAsync`. Its `Provider.Id` is `wasmdownloadpicker` on WebAssembly and `iosexportpicker` on iOS. Until it's saved, it is the only copy of its content: on iOS, `CompleteUpdatesAsync` returns `Incomplete` when the user closes the sheet without saving. Deleting it once it's saved frees its memory on WebAssembly and its temporary storage on iOS:
 
 ```csharp
-await CachedFileManager.CompleteUpdatesAsync(saveFile);
+var status = await CachedFileManager.CompleteUpdatesAsync(saveFile);
 
-if (saveFile.Provider.Id is "wasmdownloadpicker" or "iosexportpicker")
+if (status == FileUpdateStatus.Complete && saveFile.Provider.Id is "wasmdownloadpicker" or "iosexportpicker")
 {
     await saveFile.DeleteAsync();
 }
