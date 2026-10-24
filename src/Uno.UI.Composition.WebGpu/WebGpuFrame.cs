@@ -955,6 +955,10 @@ internal sealed unsafe partial class WebGpuFrame
 			cu[6] = ab.Z; cu[7] = ab.W;      // size.zw = rect max
 			foldedAabb = true;
 		}
+		// size.xy = the rect slot's units per device pixel across its x and y edges (the length of finv's row for each
+		// axis), which turn its recording-space distances into pixels like an entry's k.x.
+		var rectK = RectClipUnitsPerPixel(finv);
+		cu[4] = rectK.X; cu[5] = rectK.Y;
 		// xform = the op's pixel-space transform: px = M11*x + M21*y + M31, py = M12*x + M22*y + M32.
 		cu[8] = xform.M11; cu[9] = xform.M21; cu[10] = xform.M12; cu[11] = xform.M22;
 		cu[12] = xform.M31; cu[13] = xform.M32;   // xoff.xy
@@ -970,7 +974,7 @@ internal sealed unsafe partial class WebGpuFrame
 		// inner: the largest axis-aligned rect every clip covers in full, a pixel inside each edge. An excluded, masked or
 		// rotated entry leaves none; a rounded corner insets its sides by the inscribed-square fraction of its radii.
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
-		if (foldedAabb) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
+		if (foldedAabb) { ix = ab.X + rectK.X; iy = ab.Y + rectK.Y; iz = ab.Z - rectK.X; iw = ab.W - rectK.Y; }
 		// A fragment step in the recording's space is a column of finv; through an entry's own matrix it is the entry's
 		// step per device pixel, constant under an affine, so it is computed once here rather than per fragment.
 		var ddx = new Vector2(finv.M11, finv.M12); var ddy = new Vector2(finv.M21, finv.M22);
@@ -1007,6 +1011,13 @@ internal sealed unsafe partial class WebGpuFrame
 		cu[24] = ix; cu[25] = iy; cu[26] = iz; cu[27] = iw;
 		return more;
 	}
+
+	// How many recording-space units one device pixel spans across a vertical (x) and a horizontal (y) edge: the
+	// gradient length of that recording coordinate along the device axes.
+	private static Vector2 RectClipUnitsPerPixel(in Matrix3x2 finv)
+		=> new(
+			MathF.Max(new Vector2(finv.M11, finv.M21).Length(), 1e-6f),
+			MathF.Max(new Vector2(finv.M12, finv.M22).Length(), 1e-6f));
 
 	// Binding 4: the overflow entries, or the placeholder when the draw has none (the shader never reads it then).
 	private BindGroupEntry ClipMoreEntry(Buffer* buf, int more)
@@ -1068,7 +1079,8 @@ internal sealed unsafe partial class WebGpuFrame
 		cu[15] = finv.M32 + finv.M12 * _basisOx + finv.M22 * _basisOy;
 
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
-		if (foldedAabb) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
+		// size.xy (the rect slot's units per pixel) depends on finv's linear part alone, which this path keeps.
+		if (foldedAabb) { ix = ab.X + cu[4]; iy = ab.Y + cu[5]; iz = ab.Z - cu[4]; iw = ab.W - cu[5]; }
 		int n = na + (session.Entries?.Length ?? 0);
 		for (int i = 0; i < n; i++)
 		{

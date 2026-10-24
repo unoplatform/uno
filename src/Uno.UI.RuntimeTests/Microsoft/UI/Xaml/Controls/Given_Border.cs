@@ -201,6 +201,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Rendered_At_Twice_The_Scale_Then_Clipped_Edges_Stay_Sharp()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			// Rounded corners keep the background a shape a clip cannot simply trim, so the clips' own edges draw it:
+			// the bitmap's bounds and the RectangleGeometry.
+			var SUT = new Border()
+			{
+				Width = 300,
+				Height = 300,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				CornerRadius = new CornerRadius(50),
+				Clip = new RectangleGeometry() { Rect = new Rect(0, 0, 150, 150) },
+			};
+			await UITestHelper.Load(SUT);
+
+			// Twice the logical size draws at 2x whatever the display scale is. Every edge below lands on a pixel boundary
+			// (the bitmap's own at 0, the clip's at 150 -> 300), so the pixels beside it are fully in or fully out.
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(SUT, 600, 600);
+			var screenshot = await RawBitmap.From(renderer, SUT, implicitScaling: 1);
+
+			ImageAssert.HasColorAt(screenshot, 0, 200, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 200, 0, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 299, 200, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 200, 299, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 300, 200, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 200, 300, Microsoft.UI.Colors.Red, tolerance: 5);
+		}
+
+		[TestMethod]
 		public async Task When_Identical_Border_Is_Inserted_Before_Another_Then_Both_Render()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
