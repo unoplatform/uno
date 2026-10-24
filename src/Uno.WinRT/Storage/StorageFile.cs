@@ -68,6 +68,8 @@ namespace Windows.Storage
 		internal static Func<Task> PresentOtherSheet(bool documentPicker) => ExportSheet.PresentOther(documentPicker);
 
 		internal static Task DismissExportSheetThroughPresenter() => ExportSheet.DismissShownThroughPresenter();
+
+		internal static Task FinishExportSheet(global::Windows.Storage.Provider.FileUpdateStatus status) => ExportSheet.FinishShown(status);
 #else
 		internal static Task ExportSheetsIdle => Task.CompletedTask;
 
@@ -80,6 +82,8 @@ namespace Windows.Storage
 		internal static Func<Task> PresentOtherSheet(bool documentPicker) => throw new PlatformNotSupportedException();
 
 		internal static Task DismissExportSheetThroughPresenter() => throw new PlatformNotSupportedException();
+
+		internal static Task FinishExportSheet(global::Windows.Storage.Provider.FileUpdateStatus status) => throw new PlatformNotSupportedException();
 #endif
 
 		public StorageProvider Provider => ProviderOverride ?? Implementation.Provider;

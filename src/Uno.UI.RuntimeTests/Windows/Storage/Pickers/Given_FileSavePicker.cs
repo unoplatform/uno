@@ -348,6 +348,74 @@ public class Given_FileSavePicker
 	[TestMethod]
 	[RunsOnUIThread]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25667")]
+	public async Task When_The_Sheet_Ends_Complete_Then_The_File_Is_Deleted_Also_For_A_Joined_Call()
+	{
+		var file = await PickAsync("Report");
+		var folder = Path.GetDirectoryName(file.Path)!;
+		IAsyncOperation<FileUpdateStatus>? completion = null;
+		IAsyncOperation<FileUpdateStatus>? joined = null;
+
+		try
+		{
+			await FileIO.WriteTextAsync(file, "Hello, world!");
+			completion = CachedFileManager.CompleteUpdatesAsync(file);
+			await WaitUntilShownAsync();
+			joined = CachedFileManager.CompleteUpdatesAsync(file);
+
+			await StorageFile.FinishExportSheet(FileUpdateStatus.Complete).WaitAsync(_sheetTimeout);
+
+			Assert.AreEqual(FileUpdateStatus.Complete, await AsTask(completion).WaitAsync(_sheetTimeout));
+			Assert.AreEqual(FileUpdateStatus.Complete, await AsTask(joined).WaitAsync(_sheetTimeout));
+			Assert.IsFalse(File.Exists(file.Path));
+			Assert.IsFalse(Directory.Exists(folder));
+
+			// The file is now a deleted file.
+			Assert.AreEqual(FileUpdateStatus.Failed, await CachedFileManager.CompleteUpdatesAsync(file));
+			await Assert.ThrowsAsync<IOException>(async () => await file.OpenStreamForReadAsync());
+			await file.DeleteAsync();
+		}
+		finally
+		{
+			await EndAsync(file, completion, joined);
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25667")]
+	public async Task When_The_Sheet_Ends_Incomplete_Then_The_File_Stays_And_Can_Be_Completed_Again()
+	{
+		var file = await PickAsync("Report");
+		IAsyncOperation<FileUpdateStatus>? completion = null;
+		IAsyncOperation<FileUpdateStatus>? again = null;
+
+		try
+		{
+			await FileIO.WriteTextAsync(file, "Hello, world!");
+			completion = CachedFileManager.CompleteUpdatesAsync(file);
+			await WaitUntilShownAsync();
+			await StorageFile.FinishExportSheet(FileUpdateStatus.Incomplete).WaitAsync(_sheetTimeout);
+
+			Assert.AreEqual(FileUpdateStatus.Incomplete, await AsTask(completion).WaitAsync(_sheetTimeout));
+			Assert.AreEqual("Hello, world!", File.ReadAllText(file.Path));
+			await WaitUntilIdleAsync();
+
+			again = CachedFileManager.CompleteUpdatesAsync(file);
+			await WaitUntilShownAsync();
+			await StorageFile.FinishExportSheet(FileUpdateStatus.Complete).WaitAsync(_sheetTimeout);
+
+			Assert.AreEqual(FileUpdateStatus.Complete, await AsTask(again).WaitAsync(_sheetTimeout));
+			Assert.IsFalse(File.Exists(file.Path));
+		}
+		finally
+		{
+			await EndAsync(file, completion, again);
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25667")]
 	public async Task When_Completed_Again_While_The_Sheet_Is_Shown_Then_The_Call_Joins_It_Unless_The_First_Is_Cancelled()
 	{
 		var file = await PickAsync("Report");

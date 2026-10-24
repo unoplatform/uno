@@ -42,8 +42,9 @@ namespace Windows.Storage
 		///	if the file no longer exists when this is called. It throws
 		///	<see cref="System.InvalidOperationException"/> if the sheet can't
 		///	be shown, such as when UIKit drops its presentation because
-		///	another one asked for before it is still appearing. The file
-		///	stays until the app deletes it.
+		///	another one asked for before it is still appearing. The file is
+		///	deleted once the user saved it, and stays otherwise, so that this
+		///	can be called again.
 		/// </remarks>
 		public static IAsyncOperation<FileUpdateStatus> CompleteUpdatesAsync(IStorageFile file) =>
 			AsyncOperation.FromTask(ct => CompleteUpdatesTaskAsync(file, ct));

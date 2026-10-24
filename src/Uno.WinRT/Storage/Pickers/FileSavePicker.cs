@@ -89,7 +89,7 @@ namespace Windows.Storage.Pickers
 		/// <remarks>
 		/// On iOS, unless an <c>IFileSavePickerExtension</c> is registered, this shows nothing: it returns
 		/// a new empty file in the app's temporary directory, and <see cref="CachedFileManager.CompleteUpdatesAsync"/> saves a copy of it with
-		/// the system's export sheet.
+		/// the system's export sheet, then deletes it.
 		/// </remarks>
 		public IAsyncOperation<StorageFile?> PickSaveFileAsync() =>
 			AsyncOperation.FromTask(cancellationToken => PickSaveFileTaskAsync(cancellationToken));

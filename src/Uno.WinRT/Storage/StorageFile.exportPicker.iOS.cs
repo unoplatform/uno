@@ -23,7 +23,7 @@ namespace Windows.Storage;
 partial class StorageFile
 {
 	// Staged files are in folders of their own, so that files with the same name don't clash. Whatever an earlier run left
-	// there (staged files it didn't delete, or a crash) is deleted before the first file of this run is staged.
+	// there (staged files that weren't saved or deleted, or a crash) is deleted before the first file of this run is staged.
 	private static readonly Lazy<string> _exportPickerFolder = new(() =>
 	{
 		var folder = IOPath.Combine(IOPath.GetTempPath(), "Uno.FileSavePicker");
@@ -68,8 +68,9 @@ partial class StorageFile
 		=> (Implementation as ExportPickerStorageFile)?.ExportAsync(ct);
 
 	/// <summary>
-	/// The file the save picker returns when no extension is registered: a local file staged in a folder of its own, which stays until the app
-	/// deletes it, and which <see cref="CachedFileManager.CompleteUpdatesAsync"/> saves a copy of with the export sheet.
+	/// The file the save picker returns when no extension is registered: a local file staged in a folder of its own, which
+	/// <see cref="CachedFileManager.CompleteUpdatesAsync"/> saves a copy of with the export sheet. It is deleted once it's saved, and stays
+	/// otherwise, so that it can be completed again.
 	/// </summary>
 	private sealed class ExportPickerStorageFile : Local
 	{
@@ -85,14 +86,18 @@ partial class StorageFile
 
 		public override StorageProvider Provider => StorageProviders.IosExportPicker;
 
-		// Each step tolerates a folder that is already gone, such as after a completion that found the file gone. The staging folder is
-		// deleted also when the file was moved out of it.
 		public override Task DeleteAsync(CancellationToken ct, StorageDeleteOption options)
+		{
+			DeleteFileAndFolder();
+			return Task.CompletedTask;
+		}
+
+		// Each step tolerates a folder that is already gone, such as after a save, or a completion that found the file gone. The staging
+		// folder is deleted also when the file was moved out of it.
+		private void DeleteFileAndFolder()
 		{
 			IgnoreMissingFolder(() => File.Delete(Path));
 			IgnoreMissingFolder(() => Directory.Delete(_folder, recursive: true));
-
-			return Task.CompletedTask;
 		}
 
 		private static void IgnoreMissingFolder(Action delete)
@@ -108,8 +113,9 @@ partial class StorageFile
 		}
 
 		/// <summary>
-		/// Presents the export sheet, which saves a copy of the file. The file stays, so it can be saved again. A call made before an earlier
-		/// one for the file ends gets its result, unless the earlier one is cancelled: then it shows its own sheet once that one is gone.
+		/// Presents the export sheet, which saves a copy of the file. Once the user saved it, the file is deleted; otherwise it stays, so it can
+		/// be completed again. A call made before an earlier one for the file ends gets its result, unless the earlier one is cancelled: then
+		/// it shows its own sheet once that one is gone.
 		/// </summary>
 		public Task<FileUpdateStatus> ExportAsync(CancellationToken ct)
 		{
@@ -139,7 +145,32 @@ partial class StorageFile
 				return FileUpdateStatus.Failed;
 			}
 
-			return await ExportSheet.PresentAsync(Path, ct);
+			var status = await ExportSheet.PresentAsync(Path, ct);
+
+			// Once saved, the content is where the user picked, so the staged copy is deleted, as the WebAssembly download picker releases
+			// its content once the download is triggered. After anything else, it is the only copy, so it stays.
+			if (status == FileUpdateStatus.Complete)
+			{
+				TryDeleteAfterSave();
+			}
+
+			return status;
+		}
+
+		// A failure doesn't change the result, since the file was saved: what is left is deleted at the next run's first pick.
+		private void TryDeleteAfterSave()
+		{
+			try
+			{
+				DeleteFileAndFolder();
+			}
+			catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning($"Could not delete the saved file {Path} from the save picker folder: {ex.Message}");
+				}
+			}
 		}
 
 		internal static void TryDeleteFolder(string folder)
@@ -543,6 +574,26 @@ partial class StorageFile
 			=> _shown.FirstOrDefault(sheet => sheet._isPresented)?._picker?.PresentingViewController is { } presenter
 				? presenter.DismissViewControllerAsync(true)
 				: throw new InvalidOperationException("No export sheet is shown.");
+
+		/// <summary>
+		/// For the runtime tests: closes the shown export sheet, then ends it with a status, as the picker does when the user is done.
+		/// </summary>
+		public static Task FinishShown(FileUpdateStatus status)
+		{
+			if (_shown.FirstOrDefault(sheet => sheet._isPresented) is not { _picker.PresentingViewController: { } presenter } sheet)
+			{
+				throw new InvalidOperationException("No export sheet is shown.");
+			}
+
+			var finished = new TaskCompletionSource();
+			presenter.DismissViewController(true, () =>
+			{
+				sheet.Finish(status);
+				finished.TrySetResult();
+			});
+
+			return finished.Task;
+		}
 
 		private static async Task<bool> WaitForTransitionAsync(IUIViewControllerTransitionCoordinator coordinator)
 		{
