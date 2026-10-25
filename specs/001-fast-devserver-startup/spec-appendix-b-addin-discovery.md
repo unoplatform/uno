@@ -94,6 +94,8 @@ The parser only needs the `libraries` section. The full NuGet lock file format i
 
 **Resilience**: If `project.assets.json` is missing (no restore run), malformed, or uses an unknown `version` number, the parser MUST fall back to `packages.json` only and log a warning. Do NOT fail the entire discovery.
 
+**Which `project.assets.json` files**: those of the projects the selected solution lists (`{projectDir}/obj/project.assets.json`), at any depth, in solution order. A project under `src/MyApp/` is two levels below the workspace root, beyond the folder scan, so the solution is read first (#24311). When there is no selected solution, it cannot be read, or none of its projects is restored, discovery scans the workspace directory and its immediate subdirectories instead.
+
 **Why this works for forward compatibility**: Any package — Uno SDK or third-party — that follows the convention (`buildTransitive/*.targets` + `UnoRemoteControlAddIns` item + `tools/devserver/` layout) is discovered automatically. No code changes, no hardcoded lists.
 
 **Why this works for backward compatibility**: Existing packages (`uno.ui.app.mcp`, `uno.settings.devserver`) already follow this convention. The `.targets` files have been shipping in NuGet packages for years.
