@@ -363,10 +363,13 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 | Target | `SupportedOSPlatformVersion` |
 |--------|----------------------------|
 | Android | 21 |
-| iOS | 14.2 |
+| iOS | 14.2 (\*) |
+| Mac Catalyst | 15.0, or 14.0 before .NET 9 (\*) |
 | macOS | 10.14 |
 | tvOS  | 14.2 |
 | WinUI | 10.0.18362.0 |
+
+(\*) When the iOS or Mac Catalyst SDK in use requires a higher minimum version, such as iOS 15.0 for the iOS 27 SDK, the Uno.Sdk uses that minimum instead and says so in the build output. A `SupportedOSPlatformVersion` the app sets in its project file or `Directory.Build.props` is kept.
 
 You can set this property in a `Choose` MSBuild block in order to alter its value based on the active `TargetFramework`.
 
