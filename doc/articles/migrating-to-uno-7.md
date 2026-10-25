@@ -106,6 +106,23 @@ A head that sets these properties explicitly keeps its own value, so an app can 
 target lower versions where the underlying SDK allows it — but those combinations are no
 longer tested by Uno Platform.
 
+### UIKit scene lifecycle on iOS and tvOS
+
+Apps built with Xcode 27 and its version 27 SDKs must use the UIKit scene lifecycle, whatever
+their .NET version, or iOS and tvOS 27 refuse to launch them. An existing app needs no scene manifest
+for this: when its `Info.plist` has none, Uno Platform adopts the scene lifecycle on its behalf
+once the app is built with a version 27 SDK, and hosts the app's window in its scene. The switch
+therefore comes with the move to Xcode 27, not with the upgrade to 7.0: an app built with an
+older SDK keeps the app lifecycle unless it sets `UnoUseSceneLifecycle`. An app that declares a
+manifest keeps using it.
+
+Under the scene lifecycle UIKit no longer calls the application delegate's URL, user activity,
+home-screen shortcut, and foreground and background methods. For an app without a manifest, Uno
+Platform forwards them to the application delegate, so a custom `UnoUIApplicationDelegate` keeps
+receiving them. The activation the app was launched with then arrives that way after `OnLaunched`,
+rather than in `FinishedLaunching`'s launch options. See
+[Scene lifecycle](xref:Uno.Features.CustomizingUIApplicationDelegate#scene-lifecycle).
+
 ### Packages
 
 | Removed / changed | Migration |
