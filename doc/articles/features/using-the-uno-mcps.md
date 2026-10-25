@@ -209,7 +209,7 @@ Use `--json` for machine-readable output suitable for automation and IDE extensi
 
 The App MCP can use [MCP roots](https://modelcontextprotocol.io/docs/concepts/roots) as a hint for the workspace directory to scan for solutions. Roots are deprecated as of the MCP 2026-07-28 specification and only ever hint:
 
-- They decide where the DevServer starts when nothing runs yet; roots that resolve to no Uno workspace leave it unstarted, as reported by `uno_health`.
+- They decide where the DevServer starts when nothing runs yet; roots that resolve to no Uno workspace don't start it, as reported by `uno_health`.
 - They never replace a solution selected explicitly, nor a workspace whose DevServer runs or failed.
 - The first root on a local drive is used; roots on a network share are ignored.
 
