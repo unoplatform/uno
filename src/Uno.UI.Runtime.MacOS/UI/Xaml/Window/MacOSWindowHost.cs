@@ -73,15 +73,16 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		_context = init.Context;
 		_renderer = init.Renderer;
 
-		// A context that owns the layer's present (e.g. WebGPU) drives the drawable itself, so switch the native draw to
-		// tick-only to avoid contending for the layer's drawables; Skia-on-Metal is driven by our own render thread.
-		if (host.RenderSurfaceType != RenderSurfaceType.Software && _context is not MacOSMetalGraphicsContext)
-		{
-			NativeUno.uno_window_set_external_present(_nativeWindow.Handle, true);
-		}
-		else if (_context is MacOSMetalGraphicsContext)
+		// Skia-on-Metal and WebGPU present from our own render thread: acquiring a drawable can block for a second, which
+		// on the main thread starves the dispatcher for as long as frames keep coming. Any other context that owns the
+		// layer's present is ticked from the native draw instead, without contending for the layer's drawables.
+		if (_context is MacOSMetalGraphicsContext or global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext)
 		{
 			InitializeMetalRenderThread();
+		}
+		else if (host.RenderSurfaceType != RenderSurfaceType.Software)
+		{
+			NativeUno.uno_window_set_external_present(_nativeWindow.Handle, true);
 		}
 	}
 
@@ -167,7 +168,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			this.Log().Trace($"Window {_nativeWindow.Handle} render thread drawing {nativeWidth}x{nativeHeight}");
 		}
 
-		if (RootElement?.Visual.CompositionTarget is not CompositionTarget ct || _context is not MacOSMetalGraphicsContext metal)
+		if (RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
 		{
 			return false;
 		}
@@ -221,7 +222,12 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}, NativeDispatcherPriority.Normal);
 		}
 
-		return metal.LastPresentSucceeded;
+		return _context switch
+		{
+			MacOSMetalGraphicsContext metal => metal.LastPresentSucceeded,
+			global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext webGpu => webGpu.LastPresentSucceeded,
+			_ => false,
+		};
 	}
 
 	private void MetalDraw(double nativeWidth, double nativeHeight, nint texture)

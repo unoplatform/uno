@@ -1238,7 +1238,7 @@ void uno_window_set_external_present(UNOWindow* window, bool enabled)
     {
         window.metalViewDelegate.externalPresent = enabled;
     }
-    // The managed render thread only drives Skia-on-Metal. An external-present context is ticked from
+    // The managed render thread drives Skia-on-Metal and WebGPU. Any other external-present context is ticked from
     // drawInMTKView, so the paused view must redraw on setNeedsDisplay (uno_window_invalidate).
     NSView* view = window.renderingView;
     if ([view isKindOfClass:[MTKView class]])
