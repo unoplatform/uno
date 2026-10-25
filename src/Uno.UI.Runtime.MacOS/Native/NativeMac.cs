@@ -9,4 +9,10 @@ internal static partial class NativeMac
 
 	[LibraryImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 	internal static partial int NSApplicationMain(int argc, nint argv);
+
+	[LibraryImport("/usr/lib/libobjc.A.dylib")]
+	internal static partial IntPtr objc_autoreleasePoolPush();
+
+	[LibraryImport("/usr/lib/libobjc.A.dylib")]
+	internal static partial void objc_autoreleasePoolPop(IntPtr pool);
 }

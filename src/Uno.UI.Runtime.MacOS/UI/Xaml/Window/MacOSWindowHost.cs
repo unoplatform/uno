@@ -1138,6 +1138,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				_framePacer.OnFrameStart();
 
 				var framePresented = false;
+				// The present path calls into AppKit and Core Animation (wgpu reads the layer's view and window), and this
+				// thread has no autorelease pool: without one, what they autorelease piles up until the thread exits during
+				// window close, and dropping a view's last reference there deallocates it off the main thread.
+				var pool = NativeMac.objc_autoreleasePoolPush();
 				try
 				{
 					if (NativeUno.uno_window_get_drawable_size(_windowHandle, out var width, out var height))
@@ -1164,6 +1168,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					{
 						this.Log().Error($"macOS render thread error: {ex}");
 					}
+				}
+				finally
+				{
+					NativeMac.objc_autoreleasePoolPop(pool);
 				}
 
 				if (framePresented)
