@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
@@ -18,13 +19,18 @@ namespace Uno.UI.Runtime.AppleUIKit;
 [Register("UnoUIApplicationDelegate")]
 public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 {
+	private static readonly NativeHandle _getConfigurationSelector = Selector.GetHandle(UnoUISceneDelegate.GetConfigurationSelectorName);
+
+	private static Class? _adoptedSceneDelegateClass;
+	private static Class? _sceneDelegateClass;
+
 	private bool _preventSecondaryActivationHandling;
 
 	public UnoUIApplicationDelegate()
 	{
-		// Under the scene lifecycle each window tracks its own state through UnoUISceneDelegate,
-		// which also aggregates the app-level events.
-		if (!UnoUISceneDelegate.HasSceneManifest)
+		// Under the scene lifecycle the scene delegates track each window's state, and the app-level
+		// events with it.
+		if (!AppleUIKitLifecycle.UsesSceneLifecycle)
 		{
 			SubscribeBackgroundNotifications();
 		}
@@ -34,7 +40,7 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 	{
 		// Under the scene lifecycle UIKit delivers the launch activation through
 		// UISceneConnectionOptions instead, so these keys are never present.
-		if (launchOptions != null && !UnoUISceneDelegate.HasSceneManifest)
+		if (launchOptions != null && !AppleUIKitLifecycle.UsesSceneLifecycle)
 		{
 			if (launchOptions.TryGetValue(UIApplication.LaunchOptionsUrlKey, out var urlObject))
 			{
@@ -57,15 +63,19 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 		}
 
 		Application.Start(AppleUIKitHost.CreateAppAction);
+
+		// After Start, which configures the app's logging.
+		AppleUIKitLifecycle.LogMode();
+
 		return true;
 	}
 
 	public override bool RespondsToSelector(Selector? sel)
 	{
-		// Apps without a scene manifest must not appear to support scene configuration, otherwise
+		// Apps staying on the app lifecycle must not appear to support scene configuration, otherwise
 		// UIKit switches them to the scene lifecycle.
-		if (!UnoUISceneDelegate.HasSceneManifest &&
-			sel?.Name == UnoUISceneDelegate.GetConfigurationSelectorName)
+		if (!AppleUIKitLifecycle.UsesSceneLifecycle &&
+			sel?.Handle == _getConfigurationSelector)
 		{
 			return false;
 		}
@@ -79,9 +89,46 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 		// their own configuration name and delegate class keep working.
 		var configuration = connectingSceneSession.Configuration;
 
-		return configuration is not null
-			? configuration
-			: new UISceneConfiguration(UnoUISceneDelegate.UnoSceneConfigurationKey, connectingSceneSession.Role);
+		try
+		{
+			if (configuration is null && connectingSceneSession.TryGetRole(out var role))
+			{
+				configuration = new UISceneConfiguration(UnoUISceneDelegate.UnoSceneConfigurationKey, role);
+			}
+
+			// An app without a scene manifest, or whose manifest names no delegate class, declares none. Other roles,
+			// such as an external display, get none so that UIKit keeps mirroring them.
+			if (configuration is { DelegateClass: null } && connectingSceneSession.IsApplicationRole())
+			{
+				if (AppleUIKitLifecycle.Mode == AppleUIKitLifecycleMode.AdoptedScene)
+				{
+					configuration.DelegateClass = _adoptedSceneDelegateClass ??= new Class(typeof(AdoptedSceneDelegate));
+				}
+				else if (AppleUIKitLifecycle.Mode == AppleUIKitLifecycleMode.ManifestScene)
+				{
+					configuration.DelegateClass = _sceneDelegateClass ??= new Class(typeof(UnoUISceneDelegate));
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("Resolving a scene configuration failed.", ex);
+			}
+
+			// UIKit can't do without a configuration, and terminating with the managed exception beats a null one.
+			if (configuration is null)
+			{
+				throw;
+			}
+
+			// An exception reaching UIKit would terminate the app.
+			Application.Current?.RaiseRecoverableUnhandledException(ex);
+		}
+
+		return configuration ?? throw new InvalidOperationException(
+			$"UIKit provided no configuration for a scene session of an unknown role ({connectingSceneSession.DescribeRole()}).");
 	}
 
 	private void SubscribeBackgroundNotifications()
@@ -96,15 +143,14 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 		Guarded(() =>
 		{
 			NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(false);
-			Application.Current?.RaiseEnteredBackground(() => Application.Current?.RaiseSuspending());
+			AppleUIKitLifecycle.RaiseAppEnteredBackground();
 		});
 
 	private void OnLeavingBackground(NSNotification notification) =>
 		Guarded(() =>
 		{
 			this.LogDebug()?.LogDebug($"Application leaving background");
-			Application.Current?.RaiseResuming();
-			Application.Current?.RaiseLeavingBackground(() => NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(true));
+			AppleUIKitLifecycle.RaiseAppLeavingBackground(() => NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(true));
 		});
 
 	private void OnActivated(NSNotification notification) =>
@@ -117,7 +163,7 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 	private void OnDeactivated(NSNotification notification) =>
 		Guarded(() => NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.Deactivated));
 
-	private static void Guarded(Action action) => NativeCallbackGuard.Run(action);
+	private static void Guarded(Action action, [CallerMemberName] string callback = "") => NativeCallbackGuard.Run(action, callback);
 
 	public override bool ContinueUserActivity(UIApplication application, NSUserActivity userActivity, UIApplicationRestorationHandler completionHandler)
 	{

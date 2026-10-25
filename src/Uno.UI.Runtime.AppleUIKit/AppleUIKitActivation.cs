@@ -15,9 +15,10 @@ namespace Uno.UI.Runtime.AppleUIKit;
 /// <see cref="AppInstance"/>.
 /// </summary>
 /// <remarks>
-/// Shared by <see cref="UnoUIApplicationDelegate"/> and <see cref="UnoUISceneDelegate"/>: UIKit routes
-/// the same payloads through app-level or scene-level callbacks depending on whether the app declares a
-/// scene manifest, so both delegates must produce identical activation arguments.
+/// Shared by <see cref="UnoUIApplicationDelegate"/>, <see cref="UnoUISceneDelegate"/> and
+/// <see cref="AdoptedSceneDelegate"/>: UIKit routes the same payloads through app-level or scene-level
+/// callbacks depending on the lifecycle the app runs, so the delegates must produce identical activation
+/// arguments.
 /// </remarks>
 internal static class AppleUIKitActivation
 {
