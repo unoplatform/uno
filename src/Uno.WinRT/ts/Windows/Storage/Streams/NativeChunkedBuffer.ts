@@ -150,7 +150,7 @@ namespace Uno.Storage.Streams {
 				}
 			}
 			else {
-				// No origin-private file system: fall back to an in-memory Blob.
+				// No writable origin-private file system: fall back to an in-memory Blob.
 				source = instance.buildBlob();
 			}
 
@@ -243,6 +243,12 @@ namespace Uno.Storage.Streams {
 		}
 
 		private static async tryGetDownloadDirectoryAsync(): Promise<FileSystemDirectoryHandle> {
+			// Safari 15.2 to 18 has an origin-private file system but can't write to it from a window
+			// (no createWritable before Safari 26), so the download is built in memory there too.
+			if (typeof FileSystemFileHandle === "undefined" || typeof FileSystemFileHandle.prototype.createWritable !== "function") {
+				return null;
+			}
+
 			try {
 				const root = await navigator.storage.getDirectory();
 				return await root.getDirectoryHandle(NativeChunkedBuffer.DownloadFolderName, { create: true });
