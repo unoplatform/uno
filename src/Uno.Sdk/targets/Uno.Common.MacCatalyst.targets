@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
 		<IsMacCatalyst>true</IsMacCatalyst>
+		<_UnoDefaultedSupportedOSPlatformVersion Condition=" '$(SupportedOSPlatformVersion)' == '' ">true</_UnoDefaultedSupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition=" '$(SupportedOSPlatformVersion)' == '' AND $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &lt; '9.0' ">14.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition=" '$(SupportedOSPlatformVersion)' == '' AND $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &gt;= '9.0' ">15.0</SupportedOSPlatformVersion>
 
