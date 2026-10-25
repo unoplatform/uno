@@ -738,9 +738,14 @@ internal sealed unsafe partial class WebGpuFrame
 			WriteSite(slot.SiteSlot, rm, session, siteCarries, siteDepth);
 			// The ops' scissor, once for the whole site.
 			SetSiteScissor(slot.SiteSlot, IsFiniteAabb(session.Aabb) ? session.Aabb : ClipData.None.Aabb);
+			// An op's ClipU holds finv's linear part and the per-pixel steps derived from it, so only a stamp made at
+			// the same scale and rotation can be reused or patched where it lies.
+			var sameLinear = !fresh
+				&& slot.Xform.M11 == rm.M11 && slot.Xform.M12 == rm.M12
+				&& slot.Xform.M21 == rm.M21 && slot.Xform.M22 == rm.M22;
 			// Every op of this site is then independent of where the site is, so a move reuses the list as it
 			// stands -- no per-op work at all, which is the point of the site block.
-			if (siteCarries && !fresh && slot.SiteOps)
+			if (siteCarries && sameLinear && slot.SiteOps)
 			{
 				// The slot now serves this site: a later site still matching the old placement would rewrite the
 				// uniform these ops read and draw this site there.
@@ -760,10 +765,8 @@ internal sealed unsafe partial class WebGpuFrame
 			// copied. This is the scrolling case -- the one that restamps every op of every record every frame.
 			// The basis is free to move with it: it reaches the ClipU only through two finv translation floats,
 			// which the patch recomputes.
-			var moved = !fresh
+			var moved = sameLinear
 				&& session.Paths is null && !entry.HasPathClip
-				&& slot.Xform.M11 == rm.M11 && slot.Xform.M12 == rm.M12
-				&& slot.Xform.M21 == rm.M21 && slot.Xform.M22 == rm.M22
 				&& !(IsFiniteAabb(session.Aabb) && (finv.M12 != 0 || finv.M21 != 0))
 				&& SessionShapeUnchanged(slot.Clip, session);
 			Dictionary<PathClip[], PathClip[]> pathsMemo = null;
