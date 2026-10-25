@@ -300,6 +300,13 @@ then
 	echo "##vso[task.logissue type=error]UNOBLD002: Unknown failure, UI Thread Watchdog failed"
 fi
 
+# UIKit refuses to launch an app it considers misconfigured, such as one built with an SDK that requires the scene
+# lifecycle while the app doesn't use it (#25659). The app then exits before any test runs.
+LAUNCH_REFUSAL=$(grep -m1 -oE "Application failed to launch: [^.]*\." "$LOG_FILEPATH_FULL" || true)
+if [ -n "$LAUNCH_REFUSAL" ]; then
+	echo "##vso[task.logissue type=error]UNOBLD010: UIKit refused to launch the app. $LAUNCH_REFUSAL"
+fi
+
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	echo "##vso[task.logissue type=error]UNOBLD003: ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did the app crash ?)"
 fi
