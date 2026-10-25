@@ -213,7 +213,11 @@ namespace Uno.Storage.Streams {
 				let remaining = this._length;
 				for (let i = 0; remaining > 0; i++) {
 					const n = Math.min(remaining, chunkSize);
-					await writable.write({ type: 'write', data: this._chunks[i].subarray(0, n), position: position });
+					// Safari writes a view's whole underlying buffer, ignoring its byteOffset and byteLength
+					// (https://bugs.webkit.org/show_bug.cgi?id=302733). Each chunk owns its buffer exactly, so only
+					// the partial last chunk is copied out. The copy is right in every browser, so it isn't Safari-only.
+					const data = n === chunkSize ? this._chunks[i] : this._chunks[i].slice(0, n);
+					await writable.write({ type: 'write', data: data, position: position });
 					position += n;
 					remaining -= n;
 				}
