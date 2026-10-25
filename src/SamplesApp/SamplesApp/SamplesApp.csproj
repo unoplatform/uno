@@ -121,7 +121,7 @@
 
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
 		<ProjectReference Include="..\..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.Skia.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
 
 		<!-- Backend registration shared by every head's entry point. -->
@@ -139,7 +139,7 @@
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Generic.csproj" />
 		<!-- Svg and Graphics2DSK are SkiaSharp-backed: a Skia-free build drops them. -->
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />

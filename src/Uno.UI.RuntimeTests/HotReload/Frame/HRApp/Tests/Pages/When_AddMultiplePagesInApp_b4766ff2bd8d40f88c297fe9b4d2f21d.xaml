@@ -8,6 +8,6 @@
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<Grid>
-		<TextBlock Text="This is a live test page DynamicType { Namespace = Uno.UI.RuntimeTests, Name = When_AddMultiplePagesInApp_b4766ff2bd8d40f88c297fe9b4d2f21d, Assembly = Uno.UI.RuntimeTests.HRApp.Skia, Directory = E:\uno-wgci\src\Uno.UI.RuntimeTests\HotReload\Frame\HRApp\Tests\Pages, FilePath = E:\uno-wgci\src\Uno.UI.RuntimeTests\HotReload\Frame\HRApp\Tests\Pages\When_AddMultiplePagesInApp_b4766ff2bd8d40f88c297fe9b4d2f21d }" />
+		<TextBlock Text="This is a live test page DynamicType { Namespace = Uno.UI.RuntimeTests, Name = When_AddMultiplePagesInApp_b4766ff2bd8d40f88c297fe9b4d2f21d, Assembly = Uno.UI.RuntimeTests.HRApp, Directory = E:\uno-wgci\src\Uno.UI.RuntimeTests\HotReload\Frame\HRApp\Tests\Pages, FilePath = E:\uno-wgci\src\Uno.UI.RuntimeTests\HotReload\Frame\HRApp\Tests\Pages\When_AddMultiplePagesInApp_b4766ff2bd8d40f88c297fe9b4d2f21d }" />
 	</Grid>
 </Page>

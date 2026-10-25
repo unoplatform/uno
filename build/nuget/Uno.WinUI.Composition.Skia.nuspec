@@ -27,11 +27,11 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 
-		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net10.0\Uno.UI.Composition.Skia.dll" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net10.0\Uno.UI.Composition.Skia.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.Skia\Release\net10.0\Uno.UI.Composition.Skia.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.Skia\Release\net10.0\Uno.UI.Composition.Skia.pdb" target="lib\net10.0" />
 
-		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net11.0\Uno.UI.Composition.Skia.dll" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net11.0\Uno.UI.Composition.Skia.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.Skia\Release\net11.0\Uno.UI.Composition.Skia.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.Skia\Release\net11.0\Uno.UI.Composition.Skia.pdb" target="lib\net11.0" />
 	</files>
 
 </package>
