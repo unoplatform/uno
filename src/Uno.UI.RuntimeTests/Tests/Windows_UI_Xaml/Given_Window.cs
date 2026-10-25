@@ -531,4 +531,38 @@ public class Given_Window
 		Assert.AreEqual("Test title", window.Title);
 	}
 #endif
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeIOS)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25510")]
+	public void When_Scene_Lifecycle_Window_Hosted_In_Application_Scene()
+	{
+#if HAS_UNO
+		// UIKit and the scene delegate are read through reflection, as the Skia runtime tests are built without the iOS
+		// bindings. The native SamplesApp opts into the scene life cycle; the Skia one runs the default for its SDK.
+		static object GetProperty(object target, string name) => target?.GetType().GetProperty(name)?.GetValue(target);
+
+		var sceneDelegateType = Type.GetType("Uno.UI.Xaml.UnoUISceneDelegate, Uno.UI")
+			?? Type.GetType("Uno.UI.Xaml.UnoUISceneDelegate, Uno.UI.Runtime.Skia.AppleUIKit");
+		var usesSceneLifecycle = sceneDelegateType
+			?.GetProperty("UsesSceneLifecycle", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+			?.GetValue(null);
+
+		if (usesSceneLifecycle is false)
+		{
+			Assert.Inconclusive("The app runs the app life cycle, where the window's scene has no delegate.");
+		}
+
+		var nativeWindow = Window.InitialWindow.NativeWindow;
+		var scene = GetProperty(nativeWindow, "WindowScene");
+
+		Assert.IsNotNull(scene, "The window is not shown in a scene.");
+
+		var sceneDelegate = GetProperty(scene, "Delegate");
+
+		Assert.IsNotNull(sceneDelegate, "The application scene has no delegate.");
+		Assert.AreSame(nativeWindow, GetProperty(sceneDelegate, "Window"), "The scene delegate does not host the window.");
+#endif
+	}
 }
