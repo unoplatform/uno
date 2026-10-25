@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
 		<IsIOS>true</IsIOS>
+		<_UnoDefaultedSupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">true</_UnoDefaultedSupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.2</SupportedOSPlatformVersion>
 
 		<EnableDefaultiOSItems Condition="$(EnableDefaultiOSItems) == ''">false</EnableDefaultiOSItems>
