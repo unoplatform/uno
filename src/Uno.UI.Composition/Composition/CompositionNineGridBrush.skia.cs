@@ -42,6 +42,8 @@ namespace Microsoft.UI.Composition
 			Source.PrepareForOffscreenRasterization(session.Factory, sourceBounds, scale);
 			using var texture = session.Factory.RenderOffscreen(pixelWidth, pixelHeight, s =>
 			{
+				// The offscreen session carries the whole scale; the frame's present scale is already in it.
+				using var _ = SetPresentScale(1f);
 				s.Scale(scale.X, scale.Y);
 				Source.TryPaint(s, opacity, sourceBounds);
 			});
