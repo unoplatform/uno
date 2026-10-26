@@ -41,10 +41,11 @@ native bootstrap/heads.
 ### Rendering is Skia everywhere
 
 The `NativeRenderer` Uno Feature and the renderer-selection logic are gone — Skia is
-always used. `skiarenderer` is now implicit and mandatory for
-`android`/`ios`/`tvos`; it is kept as a no-op for back-compat, so you can
-leave `<UnoFeatures>skiarenderer</UnoFeatures>` in place or remove it — either way Skia
-renders.
+the default renderer, and `WebGpu` is the opt-in alternative. In an app, the legacy
+`skiarenderer` feature is mapped to `Skia`, which is also implied when no renderer feature is
+listed, so you can leave `<UnoFeatures>skiarenderer</UnoFeatures>` in place or remove it. In a
+library it is ignored: the renderer is the app's choice, and a library that draws with SkiaSharp
+lists `Skia` instead (see [`Skia` Uno Feature no longer implied on libraries](#packages)).
 
 WebAssembly renders to a canvas through Skia; there is no per-element DOM tree, no
 `Uno.UI.css` styling layer, and no `WindowManager.ts`.
@@ -119,7 +120,8 @@ longer tested by Uno Platform.
 | `bundle://` image scheme removed (iOS/tvOS) | The native UIKit bundle-resource loader is gone with the native rendering layer. Use `ms-appx:///` assets instead — see [Working with assets](xref:Uno.Features.Assets). |
 | `UnoDragDropExternalSupport` trimming property removed | It could only trim the native WebAssembly drag-and-drop implementation, which is gone. On WebAssembly, drag and drop from outside the app is now handled by the browser host and is always available. The property is silently ignored if still set. |
 | `UnoEnableAlcAppSupport` is now a trimming switch (default `false`) | Trimmed builds now stub `Application.HasSecondaryApps` to `false`, dropping the ALC-aware resource resolution that secondary `Application` instances in their own `AssemblyLoadContext` depend on. Set `<UnoEnableAlcAppSupport>true</UnoEnableAlcAppSupport>` if your app hosts other Uno apps in separate ALCs. |
-| `Skia` Uno Feature no longer implied on Windows (WinAppSDK) | `Skia` is still implied on every Uno Platform target that lists no renderer feature (`WebGpu` counts as one), but a Windows head now gets it only when `UnoFeatures` lists it. Without it, the Windows head no longer references `SkiaSharp.Views.WinUI`, `Uno.WinUI.Graphics2DSK` or, with the `Toolkit` feature, `Uno.Toolkit.Skia.WinUI`. If shared code uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), `SKXamlCanvas` or Toolkit Skia controls such as `ShadowContainer` on Windows, add `Skia` to `UnoFeatures` (a legacy `SkiaRenderer` entry counts as `Skia`). |
+| `Skia` Uno Feature no longer implied on Windows (WinAppSDK) | `Skia` is still implied on every Uno Platform target of an app that lists no renderer feature (`WebGpu` counts as one), but a Windows head now gets it only when `UnoFeatures` lists it. Without it, the Windows head no longer references `SkiaSharp.Views.WinUI`, `Uno.WinUI.Graphics2DSK` or, with the `Toolkit` feature, `Uno.Toolkit.Skia.WinUI`. If shared code uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), `SKXamlCanvas` or Toolkit Skia controls such as `ShadowContainer` on Windows, add `Skia` to `UnoFeatures` (a legacy `SkiaRenderer` entry counts as `Skia` in an app). |
+| `Skia` Uno Feature no longer implied on libraries | The renderer is the app's choice, so a library no longer gets the implied `Skia` feature, and a legacy `SkiaRenderer` entry is ignored there. Its package no longer depends on `Uno.WinUI.Composition.Skia` and `Uno.WinUI.Graphics2DSK`, nor through them on SkiaSharp. A library that uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), the `SkiaExtensions` conversions or Toolkit Skia controls such as `ShadowContainer` adds `Skia` to `UnoFeatures`; the build reports [UNOB0030](xref:Build.Solution.error-codes#unob0030-the-skiarenderer-uno-feature-is-ignored-in-a-library) while a library still lists `SkiaRenderer`. Apps using the `Uno.Sdk` are unchanged. A project is an app when its project file sets `OutputType` to `Exe` or `WinExe`, or sets `IsUnoHead` to `true`; a target framework where it doesn't, or an `OutputType` set later, for example in `Directory.Build.targets`, is built as a library. A head that doesn't take the `Uno.Sdk` implicit packages, and got `Uno.WinUI.Composition.Skia` only through such a library, references it itself; otherwise it fails at startup with *No drawing backend could be resolved*. |
 | `Uno.WinUI.Lottie` package and `Lottie` Uno Feature removed | `AnimatedVisualPlayer`, `LottieVisualSource` and `ThemableLottieVisualSource` are part of `Uno.WinUI`, and the Skottie renderer now comes with the Skia renderer, so Lottie needs no package. Remove any explicit `PackageReference` to `Uno.WinUI.Lottie`; it receives no 7.0 builds. The `Lottie` feature is ignored if still listed: it never added a Lottie package on Windows, so a Windows head still references [`CommunityToolkit.WinUI.Lottie`](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie) itself. See [Lottie](xref:Uno.Features.Lottie). |
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
 | `Microsoft.Web.WebView2` WebView backend removed (Windows) | `WebView2Aot` is now the only backend. Remove any `Environment.SetEnvironmentVariable("UNO_WEBVIEW2_BACKEND", "microsoft.web.webview2")` call — the variable is still read, but any value other than `webview2aot` now only logs a warning and `WebView2Aot` is used regardless. The `UnoUseWebView2WPF` opt-in is removed with it — it kept the `Microsoft.Web.WebView2.Wpf` reference for the WPF host, which is gone. Set `<UnoDisableWebView2Workarounds>true</UnoDisableWebView2Workarounds>` instead if you need to keep that reference (it also turns off the package-alias workaround for `Microsoft.Web.WebView2.Core`). |
@@ -1672,8 +1674,9 @@ recommended and templated form. Windows App SDK heads are likewise unaffected.
 
 ## Migration checklist
 
-1. Remove `<UnoFeatures>skiarenderer</UnoFeatures>` (now implicit) — and any native-only
-   feature switches.
+1. Remove `<UnoFeatures>skiarenderer</UnoFeatures>` (now implicit in apps) — and any native-only
+   feature switches. In a library that uses `SKCanvasElement`, the `SkiaExtensions` conversions or
+   Toolkit Skia controls, replace it with `Skia`.
 2. Retarget any `net*-maccatalyst` head to `net10.0-desktop` and delete
    `Platforms/MacCatalyst/`.
 3. Recompile **every** Uno-dependent library against 7.0.
