@@ -149,6 +149,15 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				listener(data);
 			}
+
+			OnPublished();
+		}
+
+		/// <summary>
+		/// Called once every subscriber has received the data of an open.
+		/// </summary>
+		private protected virtual void OnPublished()
+		{
 		}
 	}
 }
