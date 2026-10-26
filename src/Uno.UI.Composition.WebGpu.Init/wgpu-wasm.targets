@@ -65,16 +65,19 @@
 	     drive is the fallback for the rare case LocalAppData is on another drive. Resolved in a target, not a
 	     top-level property, because the workload sets EmscriptenSdkToolsPath after this file is imported; it runs
 	     before the cache is seeded, provisioned, or baked into the emcc env by _PrepareForBrowserWasmBuildNative.
-	     Non-Windows has a single root, so relpath never crosses a drive and the obj\ default stands. -->
+	     Non-Windows has a single root, so relpath never crosses a drive and the obj\ default stands. The folder is
+	     per toolchain: emcc clears a cache built by another toolchain path, and on Windows that clear races the
+	     other emcc processes still reading it. -->
 	<Target Name="_AnchorWgpuWasmCacheToToolchainDrive"
 			BeforeTargets="_PrepareForBrowserWasmBuildNative;_SeedWgpuWasmCache;_ProvisionEmdawnWebGpu"
 			Condition="'$(OS)' == 'Windows_NT' and '$(EmscriptenSdkToolsPath)' != ''">
 		<PropertyGroup>
 			<_WgpuToolchainDrive>$([System.IO.Path]::GetPathRoot($(EmscriptenSdkToolsPath)))</_WgpuToolchainDrive>
+			<_WgpuCacheName>wgpu-wasm-emcache-$([MSBuild]::StableStringHash('$(EmscriptenSdkToolsPath)').ToString('X8'))</_WgpuCacheName>
 			<!-- Drive-root fallback: always on the toolchain drive; used only when LocalAppData is elsewhere. -->
-			<WgpuWasmCacheDir>$([MSBuild]::NormalizeDirectory($(_WgpuToolchainDrive), 'uno-wgpu-wasm-emcache'))</WgpuWasmCacheDir>
+			<WgpuWasmCacheDir>$([MSBuild]::NormalizeDirectory($(_WgpuToolchainDrive), 'uno-$(_WgpuCacheName)'))</WgpuWasmCacheDir>
 			<!-- Preferred: per-user writable cache under LocalAppData when it shares the toolchain drive. -->
-			<WgpuWasmCacheDir Condition="'$(LOCALAPPDATA)' != '' and '$([System.IO.Path]::GetPathRoot($(LOCALAPPDATA)))' == '$(_WgpuToolchainDrive)'">$([MSBuild]::NormalizeDirectory($(LOCALAPPDATA), 'Uno', 'wgpu-wasm-emcache'))</WgpuWasmCacheDir>
+			<WgpuWasmCacheDir Condition="'$(LOCALAPPDATA)' != '' and '$([System.IO.Path]::GetPathRoot($(LOCALAPPDATA)))' == '$(_WgpuToolchainDrive)'">$([MSBuild]::NormalizeDirectory($(LOCALAPPDATA), 'Uno', '$(_WgpuCacheName)'))</WgpuWasmCacheDir>
 			<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
 		</PropertyGroup>
 	</Target>
@@ -91,11 +94,13 @@
 		<PatchEmdawnLibraryJs File="$(EmdawnPkgDir)webgpu\src\library_webgpu.js" />
 	</Target>
 
-	<!-- Seed the writable emcc cache from the SDK's once (so only the port + its extra stdlibs get built). -->
+	<!-- Seed the writable emcc cache from the SDK's once (so only the port + its extra stdlibs get built). The SDK's
+	     sanity.txt names the toolchain of the machine that built the workload, so emcc would erase the copy; without
+	     one it keeps the copy and writes its own. -->
 	<Target Name="_SeedWgpuWasmCache" BeforeTargets="_GenerateManagedToNative;_WasmCompileNativeSources;Build"
 			Condition="!Exists('$(WgpuWasmCacheDir)sysroot') and '$(EmscriptenCacheSdkCacheDir)' != '' and Exists('$(EmscriptenCacheSdkCacheDir)')">
 		<ItemGroup>
-			<_WgpuSdkCacheFiles Include="$(EmscriptenCacheSdkCacheDir)\**\*" />
+			<_WgpuSdkCacheFiles Include="$(EmscriptenCacheSdkCacheDir)\**\*" Exclude="$(EmscriptenCacheSdkCacheDir)\sanity.txt" />
 		</ItemGroup>
 		<Copy SourceFiles="@(_WgpuSdkCacheFiles)"
 			DestinationFiles="@(_WgpuSdkCacheFiles->'$(WgpuWasmCacheDir)%(RecursiveDir)%(Filename)%(Extension)')"
