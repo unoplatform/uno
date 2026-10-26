@@ -512,6 +512,8 @@ internal sealed unsafe partial class WebGpuFrame
 
 	/// <summary>Ops the occlusion cull dropped this frame, and ops it cut down to their uncovered bands.</summary>
 	internal static int StatCulled;
+	/// <summary>Replayed ops dropped this frame for landing wholly outside their site's clip.</summary>
+	internal static int StatClipCulled;
 	internal static int StatSplit;
 	/// <summary>Border rings cut into bands. CUMULATIVE: op building happens once per cached recording, so a
 	/// counter reset every stats interval reads zero in steady state while the rings still draw every frame.</summary>
@@ -534,6 +536,8 @@ internal sealed unsafe partial class WebGpuFrame
 			? new Vector4(MathF.Max(b.X, clip.Aabb.X), MathF.Max(b.Y, clip.Aabb.Y), MathF.Min(b.Z, clip.Aabb.Z), MathF.Min(b.W, clip.Aabb.W))
 			: b;
 
+	private static bool IsEmpty(in Vector4 b) => b.X >= b.Z || b.Y >= b.W;
+
 	private static Vector4 Inflate(Vector4 b, float pad) => new(b.X - pad, b.Y - pad, b.Z + pad, b.W + pad);
 
 	/// <summary>True when a device-space box contributes no pixels to the target: empty, or wholly outside it.</summary>
@@ -541,7 +545,7 @@ internal sealed unsafe partial class WebGpuFrame
 		=> b.X >= b.Z || b.Y >= b.W || b.Z <= 0 || b.W <= 0 || b.X >= Target.Width || b.Y >= Target.Height;
 
 	// The bounds of both; an empty (inverted) side contributes nothing.
-	private static Vector4 Union(Vector4 a, Vector4 b)
+	internal static Vector4 Union(Vector4 a, Vector4 b)
 	{
 		if (a.X >= a.Z || a.Y >= a.W) { return b; }
 		if (b.X >= b.Z || b.Y >= b.W) { return a; }
