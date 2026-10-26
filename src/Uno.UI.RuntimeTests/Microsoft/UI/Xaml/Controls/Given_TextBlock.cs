@@ -1601,6 +1601,112 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+		// A touch press doesn't capture the pointer on a selectable TextBlock, so a finger that goes down on the text and
+		// lifts over a gripper releases on a gripper that never received the matching press. Event routing swallows an
+		// exception from the presenter's handler, so the test checks that the release finishes routing instead.
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25708")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Finger_Released_On_Gripper_Without_Press()
+		{
+#if !__SKIA__
+			Assert.Inconclusive("Touch selection grippers are only implemented on Skia.");
+#else
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", sut.SelectedText.TrimEnd());
+			var grippers = sut.SelectionGrippersForTesting;
+			Assert.IsNotNull(grippers);
+
+			var endGripper = grippers.Value.end;
+			var releases = 0;
+			endGripper.AddHandler(UIElement.PointerReleasedEvent, new PointerEventHandler((_, _) => releases++), handledEventsToo: true);
+
+			var endThumb = endGripper.GetAbsoluteBounds();
+			finger.Press(new Point(bounds.Right - 5, bounds.GetCenter().Y));
+			finger.MoveTo(new Point(endThumb.GetCenter().X, endThumb.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, releases, "the unmatched release must reach the gripper and finish routing");
+			Assert.AreEqual("hello", sut.SelectedText.TrimEnd(), "an unmatched release on a gripper must keep the selection");
+			Assert.IsNotNull(sut.SelectionGrippersForTesting, "the grippers should remain visible");
+#endif
+		}
+
+		// The press a gripper records must be consumed by its own release: a tapped gripper must not pair that old press
+		// with a later unmatched release, which, held long enough in place, opened the context menu.
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25708")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Finger_Released_On_Tapped_Gripper_Without_Press()
+		{
+#if !__SKIA__
+			Assert.Inconclusive("Touch selection grippers are only implemented on Skia.");
+#else
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var contextMenu = new MenuFlyout { Items = { new MenuFlyoutItem { Text = "Item" } } };
+			var contextMenuOpenings = 0;
+			contextMenu.Opening += (_, _) => contextMenuOpenings++;
+
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+				ContextFlyout = contextMenu,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			var grippers = sut.SelectionGrippersForTesting;
+			Assert.IsNotNull(grippers);
+			var endThumb = grippers.Value.end.GetAbsoluteBounds();
+			var thumbPoint = new Point(endThumb.GetCenter().X, endThumb.Bottom - 2);
+
+			finger.Press(thumbPoint);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// Slide back onto the same point for longer (in injected time) than the hold delay.
+			finger.Press(new Point(bounds.Right - 5, bounds.GetCenter().Y));
+			finger.MoveTo(thumbPoint, steps: 10, stepOffsetInMilliseconds: 100);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, contextMenuOpenings, "an unmatched release on a tapped gripper must not open the context menu");
+			Assert.AreEqual("hello", sut.SelectedText.TrimEnd(), "an unmatched release on a tapped gripper must keep the selection");
+#endif
+		}
+
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
