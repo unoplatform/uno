@@ -189,20 +189,7 @@ public partial class CoreWebView2Settings
 		}
 	}
 #endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool IsScriptEnabled
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "IsScriptEnabled");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "IsScriptEnabled");
-		}
-	}
-#endif
+	// Skipping already declared property IsScriptEnabled
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public bool IsStatusBarEnabled
@@ -232,34 +219,8 @@ public partial class CoreWebView2Settings
 	}
 #endif
 	// Skipping already declared property IsWebMessageEnabled
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool IsZoomControlEnabled
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "IsZoomControlEnabled");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "IsZoomControlEnabled");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public string UserAgent
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "UserAgent");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "UserAgent");
-		}
-	}
-#endif
+	// Skipping already declared property IsZoomControlEnabled
+	// Skipping already declared property UserAgent
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreBrowserAcceleratorKeysEnabled.get
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreBrowserAcceleratorKeysEnabled.set
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreDefaultContextMenusEnabled.get

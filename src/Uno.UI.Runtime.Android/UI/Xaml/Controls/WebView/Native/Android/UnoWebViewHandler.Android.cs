@@ -14,5 +14,11 @@ internal class UnoWebViewHandler : UnoWebViewHandlerJavascriptInterface
 	}
 
 	[JavascriptInterface]
-	public override void PostMessage(string? message) => _nativeWebView?.OnWebMessageReceived(message);
+	public override void PostMessage(string? message)
+	{
+		if (message is not null)
+		{
+			_nativeWebView?.OnWebMessageReceived(message);
+		}
+	}
 }

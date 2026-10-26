@@ -1,0 +1,87 @@
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_DocumentCreatedScripts"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.WebView2Tests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            FontSize="18"
+            FontWeight="SemiBold"
+            Text="CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync" />
+
+        <TextBlock
+            Grid.Row="1"
+            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+            Text="Adds a snippet that runs at document start of every navigation. Reload the page to see the snippet inject the marker. Not supported on the WebAssembly browser host."
+            TextWrapping="Wrap" />
+
+        <Grid Grid.Row="2" ColumnSpacing="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox
+                x:Name="ScriptInput"
+                Grid.Column="0"
+                Text="document.body.insertAdjacentHTML('afterbegin','&lt;div style=&quot;background:#ff8;padding:6px&quot;&gt;Injected at document start ('+new Date().toISOString()+')&lt;/div&gt;')" />
+
+            <Button
+                Grid.Column="1"
+                Click="OnAddClick"
+                Content="Add" />
+
+            <Button
+                Grid.Column="2"
+                Click="OnReloadClick"
+                Content="Reload" />
+        </Grid>
+
+        <ListView
+            x:Name="ScriptList"
+            Grid.Row="3"
+            Height="100">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnSpacing="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            FontFamily="Consolas, Courier New, monospace"
+                            Text="{Binding}"
+                            TextTrimming="CharacterEllipsis" />
+                        <Button
+                            Grid.Column="1"
+                            Click="OnRemoveClick"
+                            Content="Remove"
+                            Tag="{Binding}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <controls:WebView2
+            x:Name="WebView"
+            Grid.Row="4"
+            Source="https://example.com" />
+    </Grid>
+</Page>
