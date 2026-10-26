@@ -37,6 +37,55 @@ static NSMutableSet<NSView*> *transients;
 
 @end
 
+@implementation UNONativeViewHost {
+    NSSize _naturalSize;
+}
+
+@synthesize originalSuperView;
+
+- (instancetype)initWithHostedView:(NSView*)view
+{
+    NSSize size = view.frame.size;
+    self = [super initWithFrame:NSMakeRect(0, 0, size.width, size.height)];
+    if (self) {
+        _naturalSize = size;
+        // layer-backed so `uno_window_clip_svg` can mask it
+        self.wantsLayer = YES;
+        [view removeFromSuperview];
+        view.frame = self.bounds;
+        view.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+        [self addSubview:view];
+        _hostedView = view;
+    }
+    return self;
+}
+
+- (BOOL)isFlipped
+{
+    return YES;
+}
+
+- (NSSize)naturalSize
+{
+    NSSize intrinsic = self.hostedView.intrinsicContentSize;
+    return NSMakeSize(intrinsic.width == NSViewNoIntrinsicMetric ? _naturalSize.width : intrinsic.width,
+                      intrinsic.height == NSViewNoIntrinsicMetric ? _naturalSize.height : intrinsic.height);
+}
+
+- (void)dispose {
+#if DEBUG
+    NSLog(@"UNONativeViewHost %p disposing hosted view %p with superview %p", self, self.hostedView, self.superview);
+#endif
+    if (self.superview) {
+        [self removeFromSuperview];
+    }
+    // hand the view back to the app, which may still reference it and host it elsewhere
+    [self.hostedView removeFromSuperview];
+    self.hostedView = nil;
+}
+
+@end
+
 void uno_native_track(NSView<UNONativeElement>* element)
 {
     if (!transients) {
@@ -64,6 +113,24 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
     sample.originalSuperView = ((UNOWindow*)window).renderingView;
     uno_native_track(sample);
     return sample;
+}
+
+NSView* uno_native_create_host(NSView* view)
+{
+    UNONativeViewHost* host = [[UNONativeViewHost alloc] initWithHostedView:view];
+#if DEBUG
+    NSLog(@"uno_native_create_host #%p hosting %p", host, view);
+#endif
+    uno_native_track(host);
+    return host;
+}
+
+void uno_native_set_window(NSView<UNONativeElement>* element, NSWindow* window)
+{
+#if DEBUG
+    NSLog(@"uno_native_set_window #%p window %p", element, window);
+#endif
+    element.originalSuperView = ((UNOWindow*)window).renderingView;
 }
 
 void uno_native_arrange(NSView<UNONativeElement> *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight)
@@ -123,7 +190,7 @@ bool uno_native_is_attached(NSView<UNONativeElement>* element)
 
 void uno_native_measure(NSView<UNONativeElement>* element, double childWidth, double childHeight, double availableWidth, double availableHeight, double* width, double* height)
 {
-    CGSize size = element.subviews.firstObject.frame.size;
+    CGSize size = [element respondsToSelector:@selector(naturalSize)] ? [element naturalSize] : element.subviews.firstObject.frame.size;
     
     double resolvedWidth = isfinite(availableWidth) ? availableWidth : (isfinite(childWidth) ? childWidth : -1.0);
     double resolvedHeight = isfinite(availableHeight) ? availableHeight : (isfinite(childHeight) ? childHeight : -1.0);

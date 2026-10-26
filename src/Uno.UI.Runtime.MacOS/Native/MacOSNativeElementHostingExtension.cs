@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
+using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.MacOS;
 
@@ -50,16 +51,32 @@ internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
 	}
 }
 
+/// <summary>
+/// Native container backing a public <see cref="MacOSNativeView"/>, which owns it.
+/// </summary>
+internal sealed class MacOSNativeViewPeer : MacOSNativeElement, IMacOSNativeViewPeer
+{
+	private MacOSNativeViewPeer(MacOSNativeView owner)
+	{
+		NativeHandle = NativeUno.uno_native_create_host(owner.Handle);
+	}
+
+	public static void Register() => ApiExtensibility.Register<MacOSNativeView>(typeof(IMacOSNativeViewPeer), o => new MacOSNativeViewPeer(o));
+
+	public void Dispose() => DisposeNativePeer();
+}
+
 internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private readonly ContentPresenter _presenter;
-	private readonly MacOSWindowNative? _window;
 
 	private MacOSNativeElementHostingExtension(ContentPresenter contentPresenter)
 	{
 		_presenter = contentPresenter;
-		_window = _presenter.XamlRoot?.HostWindow?.NativeWindow as MacOSWindowNative;
 	}
+
+	// Resolved on use: the XamlRoot may not be set yet when the extension is created, and can change on a reparent.
+	private MacOSWindowNative? Window => _presenter.XamlRoot?.HostWindow?.NativeWindow as MacOSWindowNative;
 
 	public static void Register() => ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new MacOSNativeElementHostingExtension(o));
 
@@ -70,7 +87,14 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 	/// </summary>
 	private bool TryGetLiveElement(object content, string operation, out MacOSNativeElement element)
 	{
-		if (content is not MacOSNativeElement nativeElement)
+		var nativeElement = content switch
+		{
+			MacOSNativeView view => view.Peer as MacOSNativeElement,
+			MacOSNativeElement e => e,
+			_ => null
+		};
+
+		if (nativeElement is null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -115,6 +139,19 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 	{
 		if (TryGetLiveElement(content, "attach", out var element))
 		{
+			if (element is MacOSNativeViewPeer)
+			{
+				// Unlike the framework-created elements, an app-provided view is not tied to a window at creation.
+				if (Window is { } window)
+				{
+					NativeUno.uno_native_set_window(element.NativeHandle, window.Handle);
+				}
+				else if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"Cannot attach a {nameof(MacOSNativeView)} as no MacOSWindowNative instance could be found.");
+				}
+			}
+
 			NativeUno.uno_native_attach(element.NativeHandle);
 			element.Detached = false;
 		}
@@ -132,7 +169,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 
 	public object? CreateSampleComponent(string text)
 	{
-		if (_window is null)
+		if (Window is not { } window)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -141,7 +178,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 			return null;
 		}
 
-		var handle = NativeUno.uno_native_create_sample(_window.Handle, text);
+		var handle = NativeUno.uno_native_create_sample(window.Handle, text);
 		return new MacOSNativeElement()
 		{
 			NativeHandle = handle,
@@ -165,7 +202,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 	}
 
-	public bool IsNativeElement(object content) => content is MacOSNativeElement;
+	public bool IsNativeElement(object content) => content is MacOSNativeElement or MacOSNativeView;
 
 	public bool IsNativeElementAttached(object owner, object nativeElement)
 	{
