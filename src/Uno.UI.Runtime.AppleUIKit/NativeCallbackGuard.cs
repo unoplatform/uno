@@ -28,9 +28,11 @@ internal static class NativeCallbackGuard
 		catch (Exception ex)
 		{
 			// Logged as well, since an app that doesn't handle UnhandledException would otherwise see nothing.
-			if (typeof(NativeCallbackGuard).Log().IsEnabled(LogLevel.Error))
+			var log = typeof(NativeCallbackGuard).Log();
+
+			if (log.IsEnabled(LogLevel.Error))
 			{
-				typeof(NativeCallbackGuard).Log().Error($"The {callback} callback failed.", ex);
+				log.Error($"The {callback} callback failed.", ex);
 			}
 
 			Application.Current?.RaiseRecoverableUnhandledException(ex);

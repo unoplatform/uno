@@ -83,10 +83,14 @@ internal static class AdoptedSceneBinder
 		if (_window is { } window)
 		{
 			Host(window, scene);
+			return;
 		}
-		else if (typeof(AdoptedSceneBinder).Log().IsEnabled(LogLevel.Debug))
+
+		var log = typeof(AdoptedSceneBinder).Log();
+
+		if (log.IsEnabled(LogLevel.Debug))
 		{
-			typeof(AdoptedSceneBinder).Log().Debug($"Scene {scene.Session?.PersistentIdentifier} connected before the app window, which it waits for.");
+			log.Debug($"Scene {scene.Session?.PersistentIdentifier} connected before the app window, which it waits for.");
 		}
 	}
 
@@ -102,9 +106,11 @@ internal static class AdoptedSceneBinder
 		_scene = null;
 		_window?.OnSceneEnteredBackground();
 
-		if (typeof(AdoptedSceneBinder).Log().IsEnabled(LogLevel.Debug))
+		var log = typeof(AdoptedSceneBinder).Log();
+
+		if (log.IsEnabled(LogLevel.Debug))
 		{
-			typeof(AdoptedSceneBinder).Log().Debug($"Scene {scene.Session?.PersistentIdentifier} disconnected, the app window is kept for the next scene.");
+			log.Debug($"Scene {scene.Session?.PersistentIdentifier} disconnected, the app window is kept for the next scene.");
 		}
 	}
 
@@ -153,11 +159,13 @@ internal static class AdoptedSceneBinder
 
 	private static void Host(NativeWindowWrapper wrapper, UIWindowScene scene)
 	{
+		var log = typeof(AdoptedSceneBinder).Log();
+
 		if (wrapper.NativeWindow is not { } window)
 		{
-			if (typeof(AdoptedSceneBinder).Log().IsEnabled(LogLevel.Warning))
+			if (log.IsEnabled(LogLevel.Warning))
 			{
-				typeof(AdoptedSceneBinder).Log().Warn("The app window has no native window to host in its scene.");
+				log.Warn("The app window has no native window to host in its scene.");
 			}
 
 			return;
@@ -170,9 +178,9 @@ internal static class AdoptedSceneBinder
 			sceneDelegate.Window = window;
 		}
 
-		if (typeof(AdoptedSceneBinder).Log().IsEnabled(LogLevel.Debug))
+		if (log.IsEnabled(LogLevel.Debug))
 		{
-			typeof(AdoptedSceneBinder).Log().Debug($"App window hosted in scene {scene.Session?.PersistentIdentifier}.");
+			log.Debug($"App window hosted in scene {scene.Session?.PersistentIdentifier}.");
 		}
 	}
 }

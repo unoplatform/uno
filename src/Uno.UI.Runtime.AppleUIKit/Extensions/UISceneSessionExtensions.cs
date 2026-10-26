@@ -32,9 +32,11 @@ internal static class UISceneSessionExtensions
 		catch (NotSupportedException e)
 		{
 			// A role introduced by a newer OS.
-			if (typeof(UISceneSessionExtensions).Log().IsEnabled(LogLevel.Debug))
+			var log = typeof(UISceneSessionExtensions).Log();
+
+			if (log.IsEnabled(LogLevel.Debug))
 			{
-				typeof(UISceneSessionExtensions).Log().Debug($"Ignoring a scene with an unknown role: {e.Message}");
+				log.Debug($"Ignoring a scene with an unknown role: {e}");
 			}
 
 			role = default;
