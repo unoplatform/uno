@@ -906,11 +906,21 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		if (_nodesByHandle.TryGetValue(handle, out var node))
 		{
 			node.Name = label ?? string.Empty;
+			var oldText = node.Text;
 			if (node.IsStaticText)
 			{
 				node.Text = node.Name;
 			}
-			_server?.EmitPropertyChange(node, "accessible-name", node.Name);
+
+			if (_server is { } server)
+			{
+				server.EmitPropertyChange(node, "accessible-name", node.Name);
+				// Static text implements Text, whose clients follow changes through text-changed.
+				if (node.IsStaticText && !string.Equals(oldText, node.Text, StringComparison.Ordinal))
+				{
+					EmitTextDiff(server, node, oldText, node.Text);
+				}
+			}
 		}
 	}
 
