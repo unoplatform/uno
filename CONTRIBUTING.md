@@ -4,7 +4,6 @@ There are lots of ways to contribute to the Uno Platform, and we appreciate the 
 
 For a full list of topics, visit our [documentation for contributors](https://platform.uno/docs/articles/uno-development/contributing-intro.html).
 
-Contribute to Uno in your browser using [GitPod.io](https://gitpod.io): [![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno).
 
 ## Code of conduct
 

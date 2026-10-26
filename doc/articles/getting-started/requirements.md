@@ -4,13 +4,11 @@ uid: Uno.GettingStarted.Requirements
 
 # Supported platforms
 
-Uno Platform applications run on [Android](#android), [iOS](#ios), [Web](#webassembly), [macOS (Desktop)](#macos---desktop), [Linux](#linux), and [Windows](#windows).
+Uno Platform applications run on [Android](#android), [iOS and tvOS](#ios), [Web](#webassembly), [macOS (Desktop)](#macos---desktop), [Linux](#linux), and [Windows](#windows).
 
 See below for the minimum supported versions for each platform.
 
 ## WebAssembly
-
-Uno Platform runs in browsers that support WebAssembly, including Chrome, Edge, Edge Dev, Opera, Firefox, and Safari. Desktop and mobile browser versions are supported, using the `net10.0-browserwasm` target framework. See the official WebAssembly site for [more details](https://webassembly.org/roadmap).
 
 Uno Platform runs in browsers that support WebAssembly, including Chromium-based browsers (e.g., Chrome, Edge, Arc, Opera etc.), as well as Firefox and Safari. Desktop and mobile browser versions are supported, using the `net10.0-browserwasm` target framework. See the official WebAssembly site for [more details](https://webassembly.org/roadmap).
 
