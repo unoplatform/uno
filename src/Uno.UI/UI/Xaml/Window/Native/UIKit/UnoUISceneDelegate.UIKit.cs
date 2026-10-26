@@ -129,18 +129,25 @@ internal sealed class UnoUISceneDelegate : UIWindowSceneDelegate
 				{
 					configuration.DelegateClass = new Class(typeof(UnoUISceneDelegate));
 				}
-				else if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Information))
+				else
 				{
-					typeof(UnoUISceneDelegate).Log().Info(
-						$"Keeping the scene delegate {configuration.DelegateClass.Name} declared by the app, which must show the app's window in its scene.");
+					var log = typeof(UnoUISceneDelegate).Log();
+
+					if (log.IsEnabled(LogLevel.Information))
+					{
+						log.Info(
+							$"Keeping the scene delegate {configuration.DelegateClass.Name} declared by the app, which must show the app's window in its scene.");
+					}
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Error))
+			var log = typeof(UnoUISceneDelegate).Log();
+
+			if (log.IsEnabled(LogLevel.Error))
 			{
-				typeof(UnoUISceneDelegate).Log().Error("Resolving a scene configuration failed.", e);
+				log.Error("Resolving a scene configuration failed.", e);
 			}
 
 			// An exception reaching UIKit would terminate the app.
@@ -293,9 +300,11 @@ internal sealed class UnoUISceneDelegate : UIWindowSceneDelegate
 
 	private static void Host(UIWindow window, UIWindowScene scene)
 	{
-		if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Debug))
+		var log = typeof(UnoUISceneDelegate).Log();
+
+		if (log.IsEnabled(LogLevel.Debug))
 		{
-			typeof(UnoUISceneDelegate).Log().Debug($"Hosting the window in scene {scene.Session?.PersistentIdentifier}.");
+			log.Debug($"Hosting the window in scene {scene.Session?.PersistentIdentifier}.");
 		}
 
 		window.WindowScene = scene;
@@ -418,9 +427,11 @@ internal sealed class UnoUISceneDelegate : UIWindowSceneDelegate
 		}
 		catch (Exception e)
 		{
-			if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Error))
+			var log = typeof(UnoUISceneDelegate).Log();
+
+			if (log.IsEnabled(LogLevel.Error))
 			{
-				typeof(UnoUISceneDelegate).Log().Error($"The {callback} scene life cycle callback failed.", e);
+				log.Error($"The {callback} scene life cycle callback failed.", e);
 			}
 
 			Application.Current?.RaiseRecoverableUnhandledException(e);
@@ -437,9 +448,11 @@ internal sealed class UnoUISceneDelegate : UIWindowSceneDelegate
 		catch (NotSupportedException e)
 		{
 			// A role the bindings don't know, introduced by a newer OS.
-			if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Debug))
+			var log = typeof(UnoUISceneDelegate).Log();
+
+			if (log.IsEnabled(LogLevel.Debug))
 			{
-				typeof(UnoUISceneDelegate).Log().Debug($"Ignoring a scene with an unknown role: {e.Message}");
+				log.Debug($"Ignoring a scene with an unknown role: {e}");
 			}
 
 			return false;
