@@ -239,6 +239,13 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 							throw;
 						}
 
+						if (ct.IsCancellationRequested)
+						{
+							// Superseded by a newer source: nothing shows this image, and its size and events aren't the source's.
+							(imageData.CompositionSurface as IDisposable)?.Dispose();
+							ct.ThrowIfCancellationRequested();
+						}
+
 						if (imageData.Kind == ImageDataKind.Error)
 						{
 							PixelWidth = 0;

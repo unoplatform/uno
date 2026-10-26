@@ -90,6 +90,11 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				Open();
 			}
+			else
+			{
+				// An open still in flight is for the previous source: its late result must not replace the new one.
+				_opening.Disposable = null;
+			}
 		}
 
 		private void Open()
