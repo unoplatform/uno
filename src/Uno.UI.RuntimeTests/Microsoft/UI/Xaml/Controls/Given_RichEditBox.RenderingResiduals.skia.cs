@@ -52,20 +52,19 @@ public partial class Given_RichEditBox
 			Assert.IsTrue(editor.UsesBoundedRichLayout);
 			await AssertRenderedColors(editor, normal, explicitColor, explicitLinkColor);
 
-			Assert.IsTrue(VisualStateManager.GoToState(editor, "PointerOver", false));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(pointerOver, ((SolidColorBrush)block.Foreground).Color);
-			await AssertRenderedColors(editor, pointerOver, explicitColor, explicitLinkColor);
-
-			Assert.IsTrue(VisualStateManager.GoToState(editor, "Focused", false));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(focused, ((SolidColorBrush)block.Foreground).Color);
-			await AssertRenderedColors(editor, focused, explicitColor, explicitLinkColor);
-
-			Assert.IsTrue(VisualStateManager.GoToState(editor, "Disabled", false));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(disabled, ((SolidColorBrush)block.Foreground).Color);
-			await AssertRenderedColors(editor, disabled, explicitColor, explicitLinkColor);
+			(string State, global::Windows.UI.Color Foreground)[] states =
+				RuntimeTestsBackendHelper.CurrentBackend == RuntimeTestBackends.WebGpu
+					// Each state change re-records the whole 8200-run story, which takes seconds per frame on the
+					// GPU-less WebGPU WASM agents, so one transition covers the inheritance there.
+					? [("Disabled", disabled)]
+					: [("PointerOver", pointerOver), ("Focused", focused), ("Disabled", disabled)];
+			foreach (var (state, foreground) in states)
+			{
+				Assert.IsTrue(VisualStateManager.GoToState(editor, state, false));
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(foreground, ((SolidColorBrush)block.Foreground).Color);
+				await AssertRenderedColors(editor, foreground, explicitColor, explicitLinkColor);
+			}
 		}
 		finally
 		{
