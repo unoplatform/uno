@@ -15,6 +15,11 @@
 	STATICALLY into the app image and WebGpuLoader resolves "webgpu" to the main program handle. A static archive
 	is never picked up from runtimes/, so it has to be handed to the Apple SDK as a NativeReference, which is
 	what this file does. The slices ship in this package, so this only selects one; nothing is downloaded.
+
+	The main program handle only sees exported symbols, and both the link and the symbol strip keep only the ones
+	listed, so every wgpu function is declared from the list shipped beside this file (the same in every slice, and
+	checked against the archive when the repo provisions it). Kept functions are no longer dead-stripped, so the
+	Metal they call is linked too.
 	-->
 	<Target Name="_UnoWebGpuLinkIosNative"
 			BeforeTargets="_SanitizeNativeReferences;_ExpandNativeReferences;_ResolveAssemblies;BeforeBuild"
@@ -30,7 +35,14 @@
 				<Kind>Static</Kind>
 				<ForceLoad>True</ForceLoad>
 				<SmartLink>False</SmartLink>
+				<Frameworks>Metal QuartzCore</Frameworks>
 			</NativeReference>
+		</ItemGroup>
+		<ReadLinesFromFile File="$(MSBuildThisFileDirectory)wgpu-native-ios.symbols" Condition="Exists('$(_UnoWgpuIosLib)')">
+			<Output TaskParameter="Lines" ItemName="_UnoWgpuIosSymbol" />
+		</ReadLinesFromFile>
+		<ItemGroup>
+			<ReferenceNativeSymbol Include="@(_UnoWgpuIosSymbol)" SymbolType="Function" />
 		</ItemGroup>
 	</Target>
 
