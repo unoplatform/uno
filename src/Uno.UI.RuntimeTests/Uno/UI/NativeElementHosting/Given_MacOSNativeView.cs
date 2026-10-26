@@ -14,14 +14,15 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_NativeElementHosting;
 
 [TestClass]
 [RunsOnUIThread]
-[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25639")]
 public class Given_MacOSNativeView
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25639")]
 	public void When_Handle_Is_Zero_Then_Throws()
 		=> Assert.ThrowsExactly<ArgumentException>(() => new MacOSNativeView(IntPtr.Zero));
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25639")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Hosted_Then_Detach_And_Reattach()
 	{
@@ -55,6 +56,7 @@ public class Given_MacOSNativeView
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25639")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Moved_Between_Windows()
 	{
@@ -89,6 +91,7 @@ public class Given_MacOSNativeView
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25639")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Disposed_Then_View_Is_Released_From_Host()
 	{
@@ -121,6 +124,7 @@ public class Given_MacOSNativeView
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25639")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Unattached_Wrapper_Is_Collected_Then_View_Is_Released()
 	{
