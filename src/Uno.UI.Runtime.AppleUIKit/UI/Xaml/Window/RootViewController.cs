@@ -215,16 +215,37 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			case GraphicsContextKind.Metal:
 				var metalView = new UnoMetalView();
 				metalView.SetOwner(this);
-				_renderView = metalView;
-				return metalView.CreateGraphicsContext();
+				return AdoptRenderView(metalView, metalView.CreateGraphicsContext);
 			case GraphicsContextKind.WebGpu:
 				var webgpuView = new UnoWebGpuMetalView();
 				webgpuView.SetOwner(this);
-				_renderView = webgpuView;
-				return webgpuView.CreateGraphicsContext();
+				return AdoptRenderView(webgpuView, webgpuView.CreateGraphicsContext);
 			default:
 				return null;
 		}
+	}
+
+	// A view whose context fails is disposed, so negotiation can move on to the next kind without its display link
+	// keeping it alive.
+	private ISwapChain? AdoptRenderView<TView>(TView view, Func<ISwapChain?> createContext)
+		where TView : UIView, IAppleUIKitRenderView
+	{
+		try
+		{
+			if (createContext() is { } context)
+			{
+				_renderView = view;
+				return context;
+			}
+		}
+		catch
+		{
+			view.Dispose();
+			throw;
+		}
+
+		view.Dispose();
+		return null;
 	}
 
 	private void UpdateNativeClipping(IGeometry geometry)
