@@ -10,7 +10,7 @@ public class Win32HostBuilder : IPlatformHostBuilder
 {
 	// Every GPU API the Win32 host can serve; forcing one excludes all the others.
 	private static readonly GraphicsContextKind[] _allKinds =
-		{ GraphicsContextKind.Vulkan, GraphicsContextKind.OpenGL, GraphicsContextKind.Software };
+		{ GraphicsContextKind.Vulkan, GraphicsContextKind.OpenGL, GraphicsContextKind.Software, GraphicsContextKind.WebGpu };
 
 	private bool _preloadMediaPlayer;
 	private readonly HashSet<GraphicsContextKind> _disabledKinds = new();
@@ -61,6 +61,7 @@ public class Win32HostBuilder : IPlatformHostBuilder
 		Win32RenderingBackend.Vulkan => GraphicsContextKind.Vulkan,
 		Win32RenderingBackend.OpenGL => GraphicsContextKind.OpenGL,
 		Win32RenderingBackend.Software => GraphicsContextKind.Software,
+		Win32RenderingBackend.WebGpu => GraphicsContextKind.WebGpu,
 		_ => throw new ArgumentOutOfRangeException(nameof(backend), backend, null),
 	};
 
