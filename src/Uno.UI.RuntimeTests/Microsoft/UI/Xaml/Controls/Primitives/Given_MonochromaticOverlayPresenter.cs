@@ -90,6 +90,76 @@ public class Given_MonochromaticOverlayPresenter
 		ImageAssert.HasColorAt(screenshot, 50, 25, Colors.Blue, tolerance: 5);
 	}
 
+	// Text recolored to its own color over an opaque background must look exactly like the text itself: any
+	// resampling of the overlay's source (a texture rasterized at another density, or off the pixel grid) blurs it.
+	[TestMethod]
+	[RequiresScaling(1f)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14353")]
+	public Task When_Text_Recolored_Is_Sharp_At_1x() => AssertRecoloredTextIsSharp();
+
+	[TestMethod]
+	[RequiresScaling(1.5f)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14353")]
+	public Task When_Text_Recolored_Is_Sharp_At_150() => AssertRecoloredTextIsSharp();
+
+	[TestMethod]
+	[RequiresScaling(2.625f)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14353")]
+	public Task When_Text_Recolored_Is_Sharp_At_2625() => AssertRecoloredTextIsSharp();
+
+	private static async Task AssertRecoloredTextIsSharp()
+	{
+		var text = new TextBlock { Text = "Sharp overlay text", FontSize = 20, Foreground = new SolidColorBrush(Colors.Black) };
+		var source = new Grid { Padding = new Thickness(3.3, 2.7, 0, 0) };
+		source.Children.Add(text);
+		var presenter = new MonochromaticOverlayPresenter
+		{
+			ReplacementColor = Colors.Black,
+			Background = new SolidColorBrush(Colors.White),
+			SourceElement = source,
+			IsHitTestVisible = false,
+		};
+		var root = new Grid
+		{
+			Width = 220,
+			Height = 40,
+			Background = new SolidColorBrush(Colors.White),
+		};
+		root.Children.Add(source);
+		root.Children.Add(presenter);
+
+		await UITestHelper.Load(root);
+		await WaitForBrushUpdate();
+		var overlaid = await UITestHelper.ScreenShot(root);
+
+		presenter.Visibility = Visibility.Collapsed;
+		await WaitForBrushUpdate();
+		var plain = await UITestHelper.ScreenShot(root);
+
+		var (maxDiff, at) = MaxDifference(overlaid, plain);
+		Assert.IsTrue(maxDiff <= 24, $"The recolored text differs from the text itself by {maxDiff} at {at}: the overlay is not pixel-sharp.");
+	}
+
+	private static (int MaxDiff, string At) MaxDifference(RawBitmap a, RawBitmap b)
+	{
+		var pa = a.GetPixels();
+		var pb = b.GetPixels();
+		Assert.AreEqual(pa.Length, pb.Length);
+		var width = a.Bitmap.PixelWidth;
+		int max = 0, at = 0;
+		for (var i = 0; i < pa.Length; i++)
+		{
+			var d = System.Math.Abs(pa[i] - pb[i]);
+			if (d > max)
+			{
+				max = d;
+				at = i / 4;
+			}
+		}
+
+		return (max, $"({at % width}, {at / width}) device px");
+	}
+
 	// Asserts that the selected value of a Date/TimePicker flyout shows through its highlight band, recolored by the
 	// MonochromaticOverlayPresenter, and that the band follows the value when the selector is scrolled.
 	internal static async Task AssertHighlightTracksSelection(FrameworkElement flyoutPresenter, LoopingSelector selector)

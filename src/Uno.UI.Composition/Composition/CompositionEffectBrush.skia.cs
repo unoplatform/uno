@@ -65,6 +65,22 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 	{
+		// A live source is redrawn every frame anyway. When the graph is just a colour matrix over it, paint it straight
+		// through that matrix at device resolution: an offscreen texture of it would be resampled onto the device
+		// pixels, which blurs text at any fractional scale.
+		if (HasLiveSourceInput
+			&& TryGetWebGpuEffectRecipe(out var liveSource, out var isBackdrop, out var liveSolid, out var liveMatrix)
+			&& liveSource is { } live && !isBackdrop && liveSolid is null)
+		{
+			using var liveFilter = session.Factory.CreateColorMatrixColorFilter(liveMatrix);
+			var liveCount = session.Save();
+			session.ClipRect(bounds);
+			session.SaveLayer(liveFilter);
+			live.TryPaint(session, opacity, bounds);
+			session.RestoreToCount(liveCount);
+			return true;
+		}
+
 		UpdateFilter(session.Factory, bounds, GetRasterizationScale(session));
 		if (_filter is { } filter)
 		{

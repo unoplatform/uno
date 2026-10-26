@@ -722,6 +722,17 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 	public void Replay(IRenderRecord data)
 	{
 		if (data is not WebGpuRenderRecord rec) { return; }
+		if (_pendingColorMatrix is { Length: >= 20 } pm)
+		{
+			// The matrix folded into this session's draws can't reach a replayed recording's commands, which are
+			// shared: draw the replay through a layer that applies it instead (e.g. an effect over a VisualSurface).
+			var count = _stack.Count;
+			PushLayer(0, pm);
+			_pendingColorMatrix = null;
+			Replay(rec);
+			RestoreToCount(count);
+			return;
+		}
 		// The nested list (with its raw image view handles) is captured by reference and may be drawn after the
 		// nested recording is disposed, so this recording holds a reference to it.
 		TrackNested(rec);
