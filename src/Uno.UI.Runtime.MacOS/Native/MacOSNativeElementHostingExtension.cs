@@ -63,7 +63,7 @@ internal sealed class MacOSNativeViewPeer : MacOSNativeElement, IMacOSNativeView
 
 	public static void Register() => ApiExtensibility.Register<MacOSNativeView>(typeof(IMacOSNativeViewPeer), o => new MacOSNativeViewPeer(o));
 
-	public void Dispose() => DisposeNativePeer();
+	void System.IDisposable.Dispose() => DisposeNativePeer();
 }
 
 internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
