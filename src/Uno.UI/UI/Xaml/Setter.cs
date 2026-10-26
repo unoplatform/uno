@@ -110,6 +110,11 @@ namespace Microsoft.UI.Xaml
 
 		internal ResourceUpdateReason ResourceBindingUpdateReason { get; set; }
 
+		/// <summary>
+		/// Whether the value is a {ThemeResource}. Hot reload also gives {StaticResource} setters a <see cref="ThemeResourceKey"/>.
+		/// </summary>
+		internal bool IsThemeResource => ThemeResourceKey.HasValue && (ResourceBindingUpdateReason & ResourceUpdateReason.ThemeResource) != 0;
+
 		public Setter(DependencyProperty targetProperty, object value)
 		{
 			Property = targetProperty;

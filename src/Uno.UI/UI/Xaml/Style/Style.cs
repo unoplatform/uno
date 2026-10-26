@@ -231,6 +231,9 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
+		internal bool TryGetSetter(DependencyProperty dp, [NotNullWhen(true)] out SetterBase? setter)
+			=> EnsureSetterMap().TryGetValue(dp, out setter);
+
 		/// <summary>
 		/// Creates a flattened list of setter methods for the whole hierarchy of
 		/// styles.
