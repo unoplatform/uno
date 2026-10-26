@@ -9,92 +9,30 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d not_win">
 
+    <!--  Port of WinUI's MonochromaticOverlayPresenterPage test page.  -->
     <ScrollViewer>
-        <StackPanel Padding="16" Spacing="24">
-            <!--  Port of WinUI's MonochromaticOverlayPresenterPage test page.  -->
-            <StackPanel Spacing="10">
-                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Date and time pickers" />
-                <TextBlock Text="Open a flyout and scroll a column: the value under the highlight band is redrawn in the highlight foreground color." TextWrapping="Wrap" />
-                <DatePicker not_win:UseNativeStyle="False" />
-                <DatePicker not_win:UseNativeStyle="False" YearVisible="False" />
-                <DatePicker not_win:UseNativeStyle="False" MonthVisible="False" />
-                <TimePicker not_win:UseNativeStyle="False" />
+        <StackPanel Padding="16" Spacing="10">
+            <TextBlock
+                MaxWidth="520"
+                HorizontalAlignment="Left"
+                Text="Open a flyout and scroll a column: the value under the highlight band is redrawn in the highlight foreground color. See MonochromaticOverlayPresenter_Playground for an interactive version."
+                TextWrapping="Wrap" />
+            <DatePicker not_win:UseNativeStyle="False" />
+            <DatePicker not_win:UseNativeStyle="False" />
+            <DatePicker not_win:UseNativeStyle="False" YearVisible="False" />
+            <DatePicker not_win:UseNativeStyle="False" MonthVisible="False" />
+            <TimePicker not_win:UseNativeStyle="False" />
 
-                <Grid Margin="2,10,0,0" HorizontalAlignment="Left">
-                    <TextBlock x:Name="Target" Text="This string will be partially highlighted" />
-                    <primitives:MonochromaticOverlayPresenter
-                        Width="50"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Stretch"
-                        Background="LightBlue"
-                        ReplacementColor="Black"
-                        SourceElement="{Binding ElementName=Target}" />
-                </Grid>
-            </StackPanel>
-
-            <StackPanel Spacing="10">
-                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Live source" />
-                <TextBlock Text="The band is a MonochromaticOverlayPresenter over a scrolling list. Scroll the list: the overlay follows the source content without being rebuilt." TextWrapping="Wrap" />
-
-                <Grid
-                    Width="240"
-                    Height="200"
-                    HorizontalAlignment="Left"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1"
-                    CornerRadius="4">
-                    <ScrollViewer x:Name="SourceScrollViewer" VerticalScrollBarVisibility="Hidden">
-                        <ItemsControl x:Name="SourceItems">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Height="40" Padding="12,0">
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            FontSize="18"
-                                            Text="{Binding}" />
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                    <primitives:MonochromaticOverlayPresenter
-                        x:Name="LiveOverlay"
-                        Width="240"
-                        Height="40"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Background="{ThemeResource AccentFillColorDefaultBrush}"
-                        IsHitTestVisible="False"
-                        ReplacementColor="{ThemeResource TextOnAccentFillColorPrimary}"
-                        SourceElement="{Binding ElementName=SourceScrollViewer}" />
-                </Grid>
-
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBlock VerticalAlignment="Center" Text="ReplacementColor:" />
-                    <ComboBox
-                        x:Name="ColorPicker"
-                        MinWidth="140"
-                        SelectedIndex="0"
-                        SelectionChanged="OnColorSelectionChanged">
-                        <x:String>Theme default</x:String>
-                        <x:String>Red</x:String>
-                        <x:String>Gold</x:String>
-                        <x:String>Black</x:String>
-                        <x:String>Transparent</x:String>
-                    </ComboBox>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBlock VerticalAlignment="Center" Text="Overlay width:" />
-                    <Slider
-                        x:Name="WidthSlider"
-                        Width="200"
-                        Maximum="240"
-                        Minimum="20"
-                        ValueChanged="OnWidthChanged"
-                        Value="240" />
-                </StackPanel>
-            </StackPanel>
+            <Grid Margin="2,10,0,0" HorizontalAlignment="Left">
+                <TextBlock x:Name="Target" Text="This string will be partially highlighted" />
+                <primitives:MonochromaticOverlayPresenter
+                    Width="50"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Stretch"
+                    Background="LightBlue"
+                    ReplacementColor="Black"
+                    SourceElement="{Binding ElementName=Target}" />
+            </Grid>
         </StackPanel>
     </ScrollViewer>
 </Page>
