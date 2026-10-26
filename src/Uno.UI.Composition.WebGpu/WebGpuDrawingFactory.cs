@@ -416,78 +416,21 @@ public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRender
 {
 	private readonly WebGpuDevice _device;
 
-	/// <summary>The main-pass surface for one render target: the host's colour (the neutral <see cref="IWebGpuRenderTarget"/>) wrapped as a surface.</summary>
-	private sealed unsafe class MainSurface
-	{
-		public WebGpuRenderSurface Surface;
-		public int Width, Height;
-		public TextureView* ColorView;   // the resolve view the backend renders into
-	}
-
-	/// <summary>
-	/// One main surface PER TARGET. A single factory serves every window - it is installed as the process-wide
-	/// <c>DrawingFactory.Current</c> - so a single surface would be disposed and rebuilt on every present as two
-	/// windows took turns, and two windows of equal size would render into whichever presented first. Keyed on the
-	/// target instance, whose lifetime is that window's swapchain context (a resize replaces it).
-	/// </summary>
-	private readonly System.Collections.Generic.Dictionary<IWebGpuRenderTarget, MainSurface> _mainSurfaces = new();
-
-	/// <summary>Targets in least-recently-presented order, so surfaces for windows that are gone cannot pile up.</summary>
-	private readonly System.Collections.Generic.List<IWebGpuRenderTarget> _mainSurfaceLru = new();
-
-	/// <summary>Distinct targets whose surfaces are kept. A handful of windows plus their in-flight resizes.</summary>
-	private const int MaxMainSurfaces = 8;
-
 	internal WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
 
 	private WebGPU Api => _device.Api;
 
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder(this);
 
-	/// <summary>
-	/// Drops the least-recently-presented main surfaces once more than <see cref="MaxMainSurfaces"/> targets are
-	/// tracked. A closed window's target is simply never presented again, so nothing else would ever release it.
-	/// </summary>
-	private void EvictMainSurfaces()
-	{
-		while (_mainSurfaceLru.Count >= MaxMainSurfaces)
-		{
-			var oldest = _mainSurfaceLru[0];
-			_mainSurfaceLru.RemoveAt(0);
-			if (_mainSurfaces.Remove(oldest, out var stale))
-			{
-				stale.Surface?.Dispose();
-			}
-		}
-	}
-
 	public unsafe IPresentSession BeginPresent(IWebGpuRenderTarget target, ReadOnlySpan<Rect> damage)
 	{
-		// A minimized window can report an empty client area; the surface's textures must still be at least 1x1.
-		var width = Math.Max(1, target.Width);
-		var height = Math.Max(1, target.Height);
-
-		if (!_mainSurfaces.TryGetValue(target, out var main))
+		// Made per present: it owns nothing (the host owns the colour), and this factory is shared by every window's
+		// render thread. A minimized window can report an empty client area; the pass still needs at least 1x1.
+		var surface = new WebGpuRenderSurface(_device, Math.Max(1, target.Width), Math.Max(1, target.Height), externalColor: true)
 		{
-			EvictMainSurfaces();
-			_mainSurfaces[target] = main = new MainSurface();
-		}
-
-		_mainSurfaceLru.Remove(target);
-		_mainSurfaceLru.Add(target);
-
-		if (main.Surface is null || main.Width != width || main.Height != height)
-		{
-			main.Surface?.Dispose();
-			main.Surface = new WebGpuRenderSurface(_device, width, height, externalColor: true);
-			main.Width = width;
-			main.Height = height;
-			main.ColorView = target.ColorView;
-		}
-
-		// Point the backend surface at the host's colour view (host owns its lifetime; the render pass only needs the view).
-		main.Surface.View = main.ColorView;
-		return new WebGpuPresentSession(_device, main.Surface, this, damage);
+			View = target.ColorView,
+		};
+		return new WebGpuPresentSession(_device, surface, this, damage);
 	}
 
 	public ITexture CreateTexture(IImage image) => new WebGpuTexture(_device, image);
