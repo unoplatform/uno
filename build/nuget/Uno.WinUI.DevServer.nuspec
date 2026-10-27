@@ -73,7 +73,7 @@
 		<!-- Force UAP/netx-win to ignore netstandard 2.0 -->
 		<file src="_._" target="build\uap10.0.16299" />
 		<file src="_._" target="build\uap10.0.19041" />
-		<file src="_._" target="build\net10.0-windows" />
+		<file src="_._" target="build\net10.0-windows7.0" />
 		<file src="_._" target="build\net11.0-windows10.0.19041.0" />
 		<file src="_._" target="build\net10.0-windows10.0.19041.0" />
 		<file src="_._" target="lib\net11.0-windows10.0.19041.0" />

@@ -69,11 +69,11 @@
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\net10.0-windows10.0.19041.0\Uno.UI.MSAL.*" target="lib\net10.0-windows10.0.19041.0" />
 		<!-- END WinUI-specific -->
 
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-android\Uno.UI.MSAL.*" target="lib\net10.0-android" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-android\Uno.UI.MSAL.*" target="lib\net10.0-android30.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-ios26.0\Uno.UI.MSAL.*" target="lib\net10.0-ios26.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.MSAL.*" target="lib\net10.0-tvos26.0" />
 
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-android\Uno.UI.MSAL.*" target="lib\net11.0-android" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-android\Uno.UI.MSAL.*" target="lib\net11.0-android30.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-ios27.0\Uno.UI.MSAL.*" target="lib\net11.0-ios27.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-tvos27.0\Uno.UI.MSAL.*" target="lib\net11.0-tvos27.0" />
 
