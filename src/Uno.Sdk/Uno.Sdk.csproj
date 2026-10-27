@@ -20,6 +20,8 @@
 	<ItemGroup>
 		<SdkFile Include="Sdk\**\*.targets;Sdk\**\*.props" />
 		<TargetFile Include="targets\**\*.props;targets\**\*.targets" />
+		<!-- Android ProGuard files, referenced by Uno.Common.Android.targets -->
+		<TargetFile Include=";targets\**\*.cfg" />
 		<None Include="**\*.buildschema.json" Pack="true" PackagePath="%(RecursiveDir)%(Filename)%(Extension)" />
 
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
@@ -62,6 +64,7 @@
 		<ItemGroup>
 			<_IntermediateSdkFile Include="$(IntermediateOutputPath)Sdk\*.props;$(IntermediateOutputPath)Sdk\*.targets" />
 			<_IntermediateTargetFile Include="$(IntermediateOutputPath)targets\*.props;$(IntermediateOutputPath)targets\*.targets" />
+			<_IntermediateTargetFile Include="$(IntermediateOutputPath)targets\*.cfg" />
 		</ItemGroup>
 
 		<ReplaceFileText

@@ -19,10 +19,6 @@ jobs:
     - name: CI_Build
       value: true
 
-    # Disable trimming for packages creation
-    - name: PublishTrimmed
-      value: false
-
     # Disable AOT for this job
     - name: RunAOTCompilation
       value: false

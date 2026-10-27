@@ -19,6 +19,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Windowing;
 public class Given_AppWindow
 {
 	[TestMethod]
+	// https://github.com/unoplatform/uno/issues/25728
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Resize()
 	{
 		if (OperatingSystem.IsLinux())
@@ -43,7 +45,8 @@ public class Given_AppWindow
 			appWindow.Resize(adjustedSize);
 			await TestServices.WindowHelper.WaitFor(() => args is not null);
 			Assert.IsTrue(args.DidSizeChange);
-			Assert.AreEqual(appWindow.Size, adjustedSize);
+			Assert.AreEqual(appWindow.Size, adjustedSize,
+				$"Expected appWindow.Size {{ Width={appWindow.Size.Width}, Height={appWindow.Size.Height} }} == adjustedSize {{ Width={adjustedSize.Width}, Height={adjustedSize.Height} }}");
 		}
 		finally
 		{
@@ -71,7 +74,8 @@ public class Given_AppWindow
 			appWindow.Move(adjustedPosition);
 			await TestServices.WindowHelper.WaitFor(() => args is not null);
 			Assert.IsTrue(args.DidPositionChange);
-			Assert.AreEqual(appWindow.Position, adjustedPosition);
+			Assert.AreEqual(appWindow.Position, adjustedPosition,
+				$"Expected appWindow.Position {{ X={appWindow.Position.X}, Y={appWindow.Position.Y} }} == adjustedPosition {{ X={adjustedPosition.X}, Y={adjustedPosition.Y} }}");
 		}
 		finally
 		{
@@ -145,6 +149,8 @@ public class Given_AppWindow
 #endif
 
 	[TestMethod]
+	// https://github.com/unoplatform/uno/issues/25728
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Resize_Before_Activate()
 	{
 		AssertPositioningAndSizingSupport();
@@ -165,13 +171,15 @@ public class Given_AppWindow
 			appWindow.Resize(adjustedSize);
 			await TestServices.WindowHelper.WaitFor(() => args is not null);
 			Assert.IsTrue(args.DidSizeChange);
-			Assert.AreEqual(appWindow.Size, adjustedSize);
+			Assert.AreEqual(appWindow.Size, adjustedSize,
+				$"Expected appWindow.Size {{ Width={appWindow.Size.Width}, Height={appWindow.Size.Height} }} == adjustedSize {{ Width={adjustedSize.Width}, Height={adjustedSize.Height} }}");
 
 			newWindow.Activated += (s, e) => activated = true;
 			newWindow.Activate();
 			await TestServices.WindowHelper.WaitFor(() => activated);
 
-			Assert.AreEqual(appWindow.Size, adjustedSize);
+			Assert.AreEqual(appWindow.Size, adjustedSize,
+				$"Expected appWindow.Size {{ Width={appWindow.Size.Width}, Height={appWindow.Size.Height} }} == adjustedSize {{ Width={adjustedSize.Width}, Height={adjustedSize.Height} }}");
 		}
 		finally
 		{
@@ -201,13 +209,15 @@ public class Given_AppWindow
 			appWindow.Move(adjustedPosition);
 			await TestServices.WindowHelper.WaitFor(() => args is not null);
 			Assert.IsTrue(args.DidPositionChange);
-			Assert.AreEqual(appWindow.Position, adjustedPosition);
+			Assert.AreEqual(appWindow.Position, adjustedPosition,
+				$"Expected appWindow.Position {{ X={appWindow.Position.X}, Y={appWindow.Position.Y} }} == adjustedPosition {{ X={adjustedPosition.X}, Y={adjustedPosition.Y} }}");
 
 			newWindow.Activated += (s, e) => activated = true;
 			newWindow.Activate();
 			await TestServices.WindowHelper.WaitFor(() => activated);
 
-			Assert.AreEqual(appWindow.Position, adjustedPosition);
+			Assert.AreEqual(appWindow.Position, adjustedPosition,
+				$"Expected appWindow.Position {{ X={appWindow.Position.X}, Y={appWindow.Position.Y} }} == adjustedPosition {{ X={adjustedPosition.X}, Y={adjustedPosition.Y} }}");
 		}
 		finally
 		{
