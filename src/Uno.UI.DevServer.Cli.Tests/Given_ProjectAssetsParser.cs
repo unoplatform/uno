@@ -15,7 +15,7 @@ public class Given_ProjectAssetsParser
 	[TestInitialize]
 	public void TestInitialize()
 	{
-		_root = Path.Combine(Path.GetTempPath(), "uno-tests-assets-" + Guid.NewGuid().ToString("N"));
+		_root = Path.Join(Path.GetTempPath(), "uno-tests-assets-" + Guid.NewGuid().ToString("N"));
 		Directory.CreateDirectory(_root);
 	}
 
@@ -32,7 +32,7 @@ public class Given_ProjectAssetsParser
 		}
 	}
 
-	private string FullPath(string relative) => Path.Combine(_root, relative.Replace('/', Path.DirectorySeparatorChar));
+	private string FullPath(string relative) => Path.Join(_root, relative.Replace('/', Path.DirectorySeparatorChar));
 
 	private string Write(string relative, string content)
 	{
@@ -45,7 +45,7 @@ public class Given_ProjectAssetsParser
 	private string Restore(string projectRelative)
 	{
 		Write(projectRelative, "<Project Sdk=\"Microsoft.NET.Sdk\" />");
-		return Write(Path.Combine(Path.GetDirectoryName(projectRelative)!, "obj", "project.assets.json"), """{ "version": 3, "libraries": {} }""");
+		return Write(Path.Join(Path.GetDirectoryName(projectRelative), "obj", "project.assets.json"), """{ "version": 3, "libraries": {} }""");
 	}
 
 	private string WriteSlnx(string relative, params string[] projectPaths)
