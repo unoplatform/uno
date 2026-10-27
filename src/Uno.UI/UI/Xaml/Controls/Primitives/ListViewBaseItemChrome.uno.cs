@@ -16,7 +16,7 @@ partial class ListViewBaseItemPresenter : IBorderInfoProvider
 	private Brush? m_chromeBackground;
 
 	// Over-content layer, hosted by the presenter visual or the secondary chrome visual.
-	private ShapeVisual? m_overContentLayerVisual;
+	internal ShapeVisual? m_overContentLayerVisual;
 
 	// The last removed outer and inner selection borders, re-added by the next Ensure call: GridView items add and remove
 	// them on every pointer-over and selection change, and a new Border costs far more in Uno than a CBorder in WinUI.
