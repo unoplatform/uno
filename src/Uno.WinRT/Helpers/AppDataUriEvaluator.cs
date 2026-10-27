@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -132,9 +133,30 @@ namespace Uno.Helpers
 				return File.OpenRead(uri.LocalPath);
 			}
 
+			return (await DownloadAsync(uri, ct)).Content;
+		}
+
+		/// <summary>
+		/// Downloads an http or https uri, and tells whether its content may be reused for it without asking the server
+		/// again: only a successful response that was not redirected, without Cache-Control no-store, no-cache or
+		/// max-age=0, or Pragma: no-cache without Cache-Control. Other freshness rules are not checked.
+		/// </summary>
+		/// <remarks>
+		/// A redirect is seen through RequestMessage.RequestUri, which the browser HttpClient on WebAssembly does not update.
+		/// </remarks>
+		public static async Task<(Stream Content, bool IsReusable)> DownloadAsync(Uri uri, CancellationToken ct)
+		{
 			_httpClient ??= new HttpClient();
 			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
-			return await response.Content.ReadAsStreamAsync();
+
+			var headers = response.Headers;
+			var isReusable = response.IsSuccessStatusCode
+				&& response.RequestMessage?.RequestUri == uri
+				&& (headers.CacheControl is { } cacheControl
+					? !cacheControl.NoStore && !cacheControl.NoCache && cacheControl.MaxAge != TimeSpan.Zero
+					: !headers.Pragma.Any(static pragma => string.Equals(pragma.Name, "no-cache", StringComparison.OrdinalIgnoreCase)));
+
+			return (await response.Content.ReadAsStreamAsync(), isReusable);
 		}
 	}
 }
