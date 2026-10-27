@@ -73,9 +73,8 @@ public class Given_ListViewBaseItemChrome_AnimationQueue
 		Assert.IsTrue(presenter.LockLayersForAnimation(multiSelect));
 		Assert.IsTrue(presenter.LockLayersForAnimation(CreateReorderHint(presenter)));
 
-		var stop = presenter.GetNextPendingAnimation() as ListViewBaseItemAnimationCommand_MultiSelect;
+		var stop = Assert.IsInstanceOfType<ListViewBaseItemAnimationCommand_MultiSelect>(presenter.GetNextPendingAnimation());
 
-		Assert.IsNotNull(stop);
 		Assert.AreNotSame(multiSelect, stop);
 		Assert.IsFalse(stop.m_isStarting);
 		Assert.IsTrue(multiSelect.m_isStarting, "The running command must keep its own flag.");
