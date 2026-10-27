@@ -619,9 +619,11 @@ public class Given_Window
 			Assert.Inconclusive("tvOS doesn't open an app's own URL.");
 		}
 
-		// The SamplesApp registers this scheme, so the URL comes back to the app. Its scene delegate reports it, or
-		// without a manifest forwards it to the application delegate, whose base implementation reports it.
-		var uri = new Uri($"uno-samples-test://activation/{Guid.NewGuid():N}");
+		// The SamplesApp registers this scheme, so the URL comes back to the app. The iOS SamplesApp declares a scene
+		// manifest, so its scene delegate reports it. Without a manifest, the scene delegate Uno adopts forwards it to
+		// the application delegate, whose base implementation reports it. The SamplesApp shows no dialog for the
+		// runtime-tests host.
+		var uri = new Uri($"uno-samples-test://runtime-tests/activation/{Guid.NewGuid():N}");
 		var activated = new TaskCompletionSource<bool>();
 
 		void OnActivated(object sender, Microsoft.Windows.AppLifecycle.AppActivationArguments args)
@@ -643,10 +645,6 @@ public class Given_Window
 		finally
 		{
 			appInstance.Activated -= OnActivated;
-
-			// The SamplesApp shows a dialog for an activation delivered into the running app.
-			await TestServices.WindowHelper.WaitForIdle();
-			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 		}
 #endif
 	}
