@@ -290,7 +290,7 @@ public class Given_ProxyLifecycleManager
 			result.Message.Should().Contain("cannot start");
 			var issue = result.Issues.Should().ContainSingle().Subject;
 			issue.Code.Should().Be(IssueCode.WorkspaceNotResolved);
-			issue.Message.Should().Contain(Path.Combine(workspaceDirectory, "global.json"), "the issue names the global.json that applies");
+			issue.Message.Should().Contain(Path.Join(workspaceDirectory, "global.json"), "the issue names the global.json that applies");
 			issue.Remediation.Should().Contain("uno_app_select_solution", "fixing global.json and selecting again is enough, no bridge restart");
 			healthService.DevServerStarted.Should().BeFalse();
 		}
@@ -312,7 +312,7 @@ public class Given_ProxyLifecycleManager
 		{
 			await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
 			var externalWorkspace = await CreateUnoWorkspaceAsync(externalRoot, "other", "Other.slnx", "6.6.0-dev.2");
-			var externalSolution = Path.Combine(externalWorkspace, "Other.slnx");
+			var externalSolution = Path.Join(externalWorkspace, "Other.slnx");
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 			var workspaceResolution = await resolver.ResolveAsync(root);
 
@@ -358,7 +358,7 @@ public class Given_ProxyLifecycleManager
 		{
 			await CreateUnoWorkspaceAsync(launchRoot, "launch", "Launch.slnx", "6.6.0-dev.1");
 			var workspace = await CreateUnoWorkspaceAsync(workspaceRoot, "src", "MyApp.slnx", "6.6.0-dev.1");
-			var sibling = Path.Combine(workspace, "Sibling.slnx");
+			var sibling = Path.Join(workspace, "Sibling.slnx");
 			await File.WriteAllTextAsync(sibling, string.Empty);
 			var created = CreateSubject();
 			monitor = created.Monitor;
@@ -366,7 +366,7 @@ public class Given_ProxyLifecycleManager
 			SetPrivateField(created.Subject, "_devServerPort", 0);
 			SetPrivateField(created.Subject, "_forwardedArgs", new List<string>());
 
-			var result = await created.Subject.SelectSolutionAsync(Path.Combine(workspace, "MyApp.slnx"), suggestionsRoot: workspaceRoot);
+			var result = await created.Subject.SelectSolutionAsync(Path.Join(workspace, "MyApp.slnx"), suggestionsRoot: workspaceRoot);
 
 			result.Status.Should().Be("started");
 			var resolution = GetPrivateField<WorkspaceResolution>(created.Subject, "_workspaceResolution");
@@ -460,7 +460,7 @@ public class Given_ProxyLifecycleManager
 
 		try
 		{
-			var localRoot = Path.Combine(root, "repo");
+			var localRoot = Path.Join(root, "repo");
 			Directory.CreateDirectory(localRoot);
 			var created = CreateSubject();
 
@@ -484,7 +484,7 @@ public class Given_ProxyLifecycleManager
 		try
 		{
 			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
-			var projectPath = Path.Combine(workspaceDirectory, "MyApp.csproj");
+			var projectPath = Path.Join(workspaceDirectory, "MyApp.csproj");
 			await File.WriteAllTextAsync(projectPath, "<Project />");
 			var created = CreateSubject();
 			SetPrivateField(created.Subject, "_currentDirectory", root);
@@ -516,7 +516,7 @@ public class Given_ProxyLifecycleManager
 			await StartSessionAsync(subject, root);
 			(await subject.SelectSolutionAsync(appSolution)).Status.Should().Be("started");
 
-			await File.WriteAllTextAsync(Path.Combine(Path.GetDirectoryName(librarySolution)!, "Lib2.slnx"), string.Empty);
+			await File.WriteAllTextAsync(Path.Join(Path.GetDirectoryName(librarySolution)!, "Lib2.slnx"), string.Empty);
 			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
 
 			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(appSolution);
@@ -589,7 +589,7 @@ public class Given_ProxyLifecycleManager
 			await StartSessionAsync(subject, root);
 			(await subject.SelectSolutionAsync(appSolution)).Status.Should().Be("started");
 
-			await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.9"}}""");
+			await File.WriteAllTextAsync(Path.Join(root, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.9"}}""");
 			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
 
 			created.HealthService.DevServerStarted.Should().BeTrue();
@@ -618,7 +618,7 @@ public class Given_ProxyLifecycleManager
 		try
 		{
 			var (_, appSolution) = await CreateDeepAppLayoutAsync(root);
-			var globalJsonPath = Path.Combine(root, "global.json");
+			var globalJsonPath = Path.Join(root, "global.json");
 			var created = CreateSubject();
 			subject = created.Subject;
 			await StartSessionAsync(subject, root);
@@ -659,7 +659,7 @@ public class Given_ProxyLifecycleManager
 		{
 			var localWorkspace = await CreateUnoWorkspaceAsync(root, "src", "Local.slnx", "6.6.0-dev.1");
 			var externalWorkspace = await CreateUnoWorkspaceAsync(externalRoot, "other", "Other.slnx", "6.6.0-dev.2");
-			var externalSolution = Path.Combine(externalWorkspace, "Other.slnx");
+			var externalSolution = Path.Join(externalWorkspace, "Other.slnx");
 			var created = CreateSubject();
 			subject = created.Subject;
 			await StartSessionAsync(subject, root);
@@ -669,7 +669,7 @@ public class Given_ProxyLifecycleManager
 
 			subject.GetWorkspaceObservationRoot().Should().Be(externalWorkspace);
 			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(externalSolution);
-			created.HealthService.CurrentSelection.CandidateSolutions.Should().Contain(Path.Combine(localWorkspace, "Local.slnx"));
+			created.HealthService.CurrentSelection.CandidateSolutions.Should().Contain(Path.Join(localWorkspace, "Local.slnx"));
 		}
 		finally
 		{
@@ -703,9 +703,9 @@ public class Given_ProxyLifecycleManager
 			SetPrivateField(subject, "_devServerPort", 0);
 			SetPrivateField(subject, "_forwardedArgs", new List<string>());
 
-			var migratedSolution = Path.Combine(workspace, "App.slnx");
+			var migratedSolution = Path.Join(workspace, "App.slnx");
 			await File.WriteAllTextAsync(migratedSolution, string.Empty);
-			File.Delete(Path.Combine(workspace, "App.sln"));
+			File.Delete(Path.Join(workspace, "App.sln"));
 			await subject.ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
 
 			created.HealthService.CurrentSelection!.SelectedSolutionPath.Should().Be(migratedSolution);
@@ -758,12 +758,12 @@ public class Given_ProxyLifecycleManager
 	// root/global.json (Uno), a library solution within the solution scan depth, and the app solution below it.
 	private static async Task<(string LibrarySolution, string AppSolution)> CreateDeepAppLayoutAsync(string root)
 	{
-		await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
-		var libraryDirectory = Directory.CreateDirectory(Path.Combine(root, "a", "Lib")).FullName;
-		var librarySolution = Path.Combine(libraryDirectory, "Lib.slnx");
+		await File.WriteAllTextAsync(Path.Join(root, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+		var libraryDirectory = Directory.CreateDirectory(Path.Join(root, "a", "Lib")).FullName;
+		var librarySolution = Path.Join(libraryDirectory, "Lib.slnx");
 		await File.WriteAllTextAsync(librarySolution, string.Empty);
-		var appDirectory = Directory.CreateDirectory(Path.Combine(root, "a", "b", "c", "d")).FullName;
-		var appSolution = Path.Combine(appDirectory, "App.slnx");
+		var appDirectory = Directory.CreateDirectory(Path.Join(root, "a", "b", "c", "d")).FullName;
+		var appSolution = Path.Join(appDirectory, "App.slnx");
 		await File.WriteAllTextAsync(appSolution, string.Empty);
 		return (librarySolution, appSolution);
 	}
@@ -786,7 +786,7 @@ public class Given_ProxyLifecycleManager
 		try
 		{
 			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
-			var missingSolution = Path.Combine(workspaceDirectory, "Missing.slnx");
+			var missingSolution = Path.Join(workspaceDirectory, "Missing.slnx");
 			var created = CreateSubject();
 			SetPrivateField(created.Subject, "_currentDirectory", root);
 

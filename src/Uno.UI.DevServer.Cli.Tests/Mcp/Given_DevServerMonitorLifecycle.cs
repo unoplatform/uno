@@ -142,7 +142,7 @@ public class Given_DevServerMonitorLifecycle
 		try
 		{
 			var shallowSolution = CreateFile(root, "a", "Lib", "Lib.slnx");
-			var missingSolution = Path.Combine(root, "a", "b", "c", "d", "App.slnx");
+			var missingSolution = Path.Join(root, "a", "b", "c", "d", "App.slnx");
 			string[] solutionFiles = [shallowSolution];
 
 			var solution = DevServerMonitor.DetermineSolutionToLaunch(solutionFiles, CreateResolution(root, missingSolution, solutionFiles));
@@ -216,7 +216,7 @@ public class Given_DevServerMonitorLifecycle
 		try
 		{
 			CreateFile(root, "a", "Lib", "Lib.slnx");
-			var deletedSolution = Path.Combine(root, "a", "b", "c", "d", "App.slnx");
+			var deletedSolution = Path.Join(root, "a", "b", "c", "d", "App.slnx");
 
 			await StartAndWaitForScanAsync(monitor, root, CreateResolution(root, deletedSolution, []));
 
@@ -239,7 +239,7 @@ public class Given_DevServerMonitorLifecycle
 		try
 		{
 			CreateFile(root, "a", "Lib", "Lib.slnx");
-			var deletedSolution = Path.Combine(root, "a", "b", "c", "d", "App.slnx");
+			var deletedSolution = Path.Join(root, "a", "b", "c", "d", "App.slnx");
 			var resolution = CreateResolution(root, deletedSolution, []) with { IsExplicitSolutionSelection = true };
 
 			await StartAndWaitForScanAsync(monitor, root, resolution);
@@ -268,7 +268,7 @@ public class Given_DevServerMonitorLifecycle
 		try
 		{
 			var scanned = CreateFile(root, "a", "Lib", "Lib.slnx");
-			var selectedSolution = Path.Combine(root, "a", "b", "c", "d", "App.slnx");
+			var selectedSolution = Path.Join(root, "a", "b", "c", "d", "App.slnx");
 			var resolution = CreateResolution(root, selectedSolution, []) with { IsExplicitSolutionSelection = true };
 			await StartAndWaitForScanAsync(monitor, root, resolution);
 			// The loop's next cycle is 10 s away: drive further cycles' warning decision directly.
@@ -379,7 +379,7 @@ public class Given_DevServerMonitorLifecycle
 
 	private static string CreateFile(string root, params string[] segments)
 	{
-		var path = Path.Combine([root, .. segments]);
+		var path = Path.Join([root, .. segments]);
 		Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 		File.WriteAllText(path, string.Empty);
 		return path;
@@ -391,7 +391,7 @@ public class Given_DevServerMonitorLifecycle
 			RequestedWorkingDirectory = Path.GetDirectoryName(selectedSolution)!,
 			EffectiveWorkspaceDirectory = root,
 			SelectedSolutionPath = selectedSolution,
-			SelectedGlobalJsonPath = Path.Combine(root, "global.json"),
+			SelectedGlobalJsonPath = Path.Join(root, "global.json"),
 			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
 			CandidateSolutions = candidates,
 		};
