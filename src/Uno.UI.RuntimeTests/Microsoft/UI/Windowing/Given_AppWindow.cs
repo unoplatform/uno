@@ -330,6 +330,40 @@ public class Given_AppWindow
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25326")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_Closed_Then_Presenter_Calls_Do_Nothing()
+	{
+		var newWindow = new Window();
+		var overlapped = (OverlappedPresenter)newWindow.AppWindow.Presenter;
+		var activated = false;
+		try
+		{
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+		}
+		finally
+		{
+			newWindow.Close();
+		}
+
+		// The NSWindow is freed once the close has completed; these calls used to reach it.
+		await TestServices.WindowHelper.WaitForIdle();
+		await Task.Delay(200);
+
+		overlapped.Maximize();
+		overlapped.Minimize();
+		overlapped.Restore();
+		overlapped.IsAlwaysOnTop = true;
+		overlapped.IsResizable = false;
+		overlapped.SetBorderAndTitleBar(false, false);
+		overlapped.PreferredMinimumWidth = 100;
+
+		Assert.AreEqual(OverlappedPresenterState.Restored, overlapped.State);
+	}
+
 	private void AssertPositioningAndSizingSupport()
 	{
 		if (!OperatingSystem.IsLinux() &&

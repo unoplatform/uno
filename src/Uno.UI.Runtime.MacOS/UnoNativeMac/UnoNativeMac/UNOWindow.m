@@ -2045,6 +2045,10 @@ NSOperatingSystemVersion _osVersion;
 
     uno_get_window_close_callback()(self);
 
+    // Detach the rendering view while the window is alive, so it (and any native element hosted in it) stops
+    // observing this window before the window goes away.
+    [self.renderingView removeFromSuperview];
+
     // Managed code has unregistered the handle by now; AppKit keeps the window alive until `close` returns.
     [windows removeObject:self];
 }
