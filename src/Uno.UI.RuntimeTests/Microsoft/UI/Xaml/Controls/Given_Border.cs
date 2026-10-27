@@ -169,7 +169,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Opaque_Background_Covers_Target_Same_Colour_Draws_Above_Other_Content()
+		public async Task When_Opaque_Background_Covers_Target_Same_Color_Draws_Above_Other_Content()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
@@ -217,6 +217,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					{
 						Background = new SolidColorBrush(Colors.Red),
 						Clip = new RectangleGeometry { Rect = new Rect(0, 0, 50, 50) },
+					},
+					new Rectangle { Width = 20, Height = 20, Fill = new SolidColorBrush(Colors.Blue) },
+				},
+			};
+
+			await UITestHelper.Load(SUT);
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorAt(screenshot, 10, 10, Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 50, 50, Colors.Blue, tolerance: 5);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 80, 80, Colors.Red, tolerance: 50);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 80, 10, Colors.Red, tolerance: 50);
+		}
+
+		[TestMethod]
+		public async Task When_Opaque_Background_Covers_Target_But_Parent_Clip_Cuts_It()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			// The background itself spans the whole target; only its parent's clip keeps it from the corners, so it
+			// must not be turned into a clear of the whole target.
+			var SUT = new Grid
+			{
+				Width = 100,
+				Height = 100,
+				Children =
+				{
+					new Grid
+					{
+						Clip = new RectangleGeometry { Rect = new Rect(0, 0, 50, 50) },
+						Children = { new Border { Background = new SolidColorBrush(Colors.Red) } },
 					},
 					new Rectangle { Width = 20, Height = 20, Fill = new SolidColorBrush(Colors.Blue) },
 				},
