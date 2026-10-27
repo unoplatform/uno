@@ -68,8 +68,6 @@
 		     compile-validated on Windows. -->
 		<_IsUIKit Condition="'$(_Platform)' == 'ios' OR '$(_Platform)' == 'tvos'">true</_IsUIKit>
 
-		<OptimizePNGs Condition="'$(_Platform)' == 'ios' OR '$(_Platform)' == 'tvos'">false</OptimizePNGs>
-
 		<!-- Keep full exception strings in release, as the current heads do -->
 		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 

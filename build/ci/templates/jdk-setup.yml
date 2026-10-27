@@ -7,6 +7,11 @@ steps:
           $java_home_env = "JAVA_HOME_17_arm64"
       }
       $val = [System.Environment]::GetEnvironmentVariable($java_home_env)
+      if ([string]::IsNullOrEmpty($val) -or -not (Test-Path $val))
+      {
+        Write-Host "##vso[task.logissue type=error]$java_home_env is not set on this agent"
+        exit 1
+      }
       echo "##vso[task.setvariable variable=JAVA_HOME]$val"
       echo "##vso[task.setvariable variable=JavaSdkDirectory]$val"
-    displayName: Select JDK 11
+    displayName: Select JDK 17

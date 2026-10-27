@@ -64,6 +64,7 @@
 		<ItemGroup>
 			<_IntermediateSdkFile Include="$(IntermediateOutputPath)Sdk\*.props;$(IntermediateOutputPath)Sdk\*.targets" />
 			<_IntermediateTargetFile Include="$(IntermediateOutputPath)targets\*.props;$(IntermediateOutputPath)targets\*.targets" />
+			<_IntermediateTargetFile Include="$(IntermediateOutputPath)targets\*.cfg" />
 		</ItemGroup>
 
 		<ReplaceFileText
