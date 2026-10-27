@@ -12,19 +12,19 @@ partial class ListViewBaseItemPresenter : IListViewBaseItemAnimationCommandVisit
 {
 	// The empty constructor and destructor are not ported; the chrome constructor lives in ListViewBaseItemChrome.mux.cs.
 
-	private sealed class AnimationState
+	internal sealed class AnimationState
 	{
 		internal Storyboard? tpStoryboard; // Ref is stored by parent class.
 		internal ListViewBaseItemAnimationCommand? pCommand;
 	}
 
 	// Private state
-	private readonly AnimationState m_pointerPressedAnimation = new();
-	private readonly AnimationState m_reorderHintAnimation = new();
-	private readonly AnimationState m_dragDropAnimation = new();
-	private readonly AnimationState m_multiSelectAnimation = new();
-	private readonly AnimationState m_indicatorSelectAnimation = new();
-	private readonly AnimationState m_selectionIndicatorAnimation = new();
+	internal readonly AnimationState m_pointerPressedAnimation = new();
+	internal readonly AnimationState m_reorderHintAnimation = new();
+	internal readonly AnimationState m_dragDropAnimation = new();
+	internal readonly AnimationState m_multiSelectAnimation = new();
+	internal readonly AnimationState m_indicatorSelectAnimation = new();
+	internal readonly AnimationState m_selectionIndicatorAnimation = new();
 
 	// Uno-specific: the Completed event registration tokens are not needed, handlers are removed by method group.
 }
