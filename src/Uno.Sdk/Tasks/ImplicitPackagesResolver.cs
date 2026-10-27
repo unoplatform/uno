@@ -38,6 +38,10 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? UnoExtensionsVersion { get; set; }
 
+	public string? UnoMauiVersion { get; set; }
+
+	public string? UnoRehostVersion { get; set; }
+
 	public string? UnoToolkitVersion { get; set; }
 
 	public string? UnoThemesVersion { get; set; }
@@ -257,6 +261,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.Toolkit, UnoToolkitVersion)
 			.UpdateManifest(PackageManifest.Group.Themes, UnoThemesVersion)
 			.UpdateManifest(PackageManifest.Group.Maui, MauiVersion)
+			.UpdateManifest(PackageManifest.Group.UnoMaui, UnoMauiVersion)
+			.UpdateManifest(PackageManifest.Group.UnoRehost, UnoRehostVersion)
 			// MauiCompatibility is a separate group only so the net11 override does not apply
 			// to it - MauiVersion must still move all of the MAUI packages together.
 			.UpdateManifest(PackageManifest.Group.MauiCompatibility, MauiVersion);
