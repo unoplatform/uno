@@ -549,6 +549,8 @@ public class Given_Window
 			?.GetProperty("UsesSceneLifecycle", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
 			?.GetValue(null);
 
+		Assert.IsNotNull(usesSceneLifecycle, "UnoUISceneDelegate.UsesSceneLifecycle was not found.");
+
 		if (usesSceneLifecycle is false)
 		{
 			Assert.Inconclusive("The app runs the app life cycle, where the window's scene has no delegate.");
