@@ -286,140 +286,128 @@ public sealed class HotReloadManager : IDisposable
 			}
 
 			// The projects owning the pass's changed files (spec 054) — resolved once and shared by the
-			// generator-error suppression below and the blocked-compilation audit in the (true, true)
-			// branch, so neither judges a project the pass never touched.
+			// generator-error read below and the blocked-compilation audit in the (true, true) branch, so
+			// neither judges a project the pass never touched.
 			var auditedProjects = ResolveAuditProjects(alignedSolution, files);
 
-			// A source generator can report an Error WITHOUT the C# compilation failing: a corrupt .resw
-			// makes the Uno XAML generator emit UXAML0003 (Error) while the assembly still compiles. Roslyn
-			// 5.x's EnC refuses to emit ANY metadata update while such a generator error is present (4.x did
-			// not), so a single broken generator input freezes hot reload for every later edit — including
-			// valid edits to unrelated files — until it is fixed. Generator diagnostics never reach
-			// compilation.GetDiagnostics() (so the GetCompilationErrors audit below cannot see them either),
-			// so read them from the change-set's projects and suppress them for the emit: a non-fatal
-			// generator error then degrades to stale generated output instead of blocking hot reload.
-			// Generated code that genuinely does NOT compile still reports a C# error and is handled by the
-			// (true, true) audit / rude-edit branches below. The suppression is applied to the emit itself,
-			// not as a retry after a blocked emit: EmitSolutionUpdateAsync commits the EnC baseline whenever
-			// it produces deltas, so a throwaway first emit would consume an applicable change.
+			// A source generator can report an Error without the C# compilation failing (a corrupt .resw makes
+			// the XAML generator report UXAML0003), and Roslyn 5.x refuses any EnC update while one is present.
+			// These never reach compilation.GetDiagnostics(), so read them from the change-set's projects and
+			// suppress them for the emit: the generated code degrades to stale instead of freezing hot reload.
+			// The suppression applies to the emit itself, not to a retry, since an emit that produces deltas
+			// commits the EnC baseline.
+			//
+			// An error located in a XAML file is not suppressed (#25527): the generator emits that page up to
+			// the error, so it would apply truncated. It blocks the pass, with no emit.
 			var generatorErrors = await GetGeneratorErrorsAsync(auditedProjects, ct).ConfigureAwait(false);
 			if (!generatorErrors.IsEmpty)
 			{
-				_tracker.Output(
-					$"Hot reload is continuing despite {generatorErrors.Length} source generator error(s); " +
-					"the affected generated code stays stale until they are fixed.");
 				diagnosticsReporter.ReportAnalyzerDiagnostics(generatorErrors);
 			}
-			// Attempt to emit anyway ...
-			var emitSolution = alignedSolution.WithSuppressedDiagnostics(generatorErrors);
 
-			// Compile the solution with those generator errors suppressed, and get deltas.
-			HotReloadEmitResult emit;
-			try
+			var blockingGeneratorErrors = GetXamlGeneratorErrors(generatorErrors);
+			if (!blockingGeneratorErrors.IsEmpty)
 			{
-				emit = await _watchService.EmitSolutionUpdateAsync(emitSolution, ct).ConfigureAwait(false);
-			}
-			catch (Exception e) when (e is not OperationCanceledException || !ct.IsCancellationRequested)
-			{
-				// The compiler itself threw while emitting the delta (e.g. dotnet/roslyn#86045). The EnC
-				// baseline does not move, so every later pass would hit the same crash until the edit is
-				// undone: report it as the rude edit it is for the user, not as a DevServer InternalError.
-				_tracker.Warn($"The compiler failed to emit the hot reload update: {e}");
-				emit = HotReloadEmitResult.Empty with
-				{
-					Status = HotReloadEmitStatus.Blocked,
-					Diagnostics = [Diagnostic.Create(_emitFailureDescriptor, Location.None, e.Message)],
-				};
-			}
-
-			var updates = emit.Deltas;
-			var emitDiagnostics = emit.Diagnostics;
-
-			_tracker.Verbose($"Emit status: {emit.Status}");
-
-			// A project the engine cannot update in place stays out of line with its sources until it is
-			// rebuilt. The condition persists across saves, so Output only when the subject changes.
-			if (emit.RequiresRebuildOrRestart)
-			{
-				// Roslyn 4.x names no project (see HotReloadEmitResult.RequiresRebuildOrRestart).
-				var subject = emit.ProjectsRequiringRebuildOrRestart is { IsEmpty: false } projects
-					? string.Join(", ", projects)
-					: "the application";
-				var message = $"Hot reload cannot update {subject}: it must be rebuilt (or restarted) before it matches its sources again.";
-
-				if (subject != _reportedRebuildSubject)
-				{
-					_reportedRebuildSubject = subject;
-					_tracker.Output(message);
-				}
-				else
-				{
-					_tracker.Verbose(message);
-				}
+				var xamlFiles = blockingGeneratorErrors
+					.Select(diagnostic => diagnostic.Location.GetLineSpan().Path)
+					.ToImmutableHashSet(PathComparer.PathEqualityComparer);
+				_tracker.Output(
+					$"Hot reload blocked by {blockingGeneratorErrors.Length} source generator error(s) in " +
+					$"{FormatFileNames(xamlFiles)} (edited: {FormatFileNames(files)}).");
+				outcome = HotReloadOperationResult.Failed;
+				diagnostics = generatorErrors;
 			}
 			else
 			{
-				_reportedRebuildSubject = null;
-			}
-
-			// emitDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
-			// of unrecoverable errors that a user cannot fix and requires an app rebuild.
-			var rudeEdits = emitDiagnostics.RemoveAll(d => d.Severity <= DiagnosticSeverity.Warning
-				|| !(d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal) || d.Descriptor == _emitFailureDescriptor));
-
-			_tracker.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
-
-			// Emit (EnC) diagnostics carry on every outcome of this branch; deltas are populated on Success only.
-			//
-			// The suppressed generator errors carry too. Suppressing them keeps hot reload running (that is
-			// the point), but they remain the reason the generated code is stale, and for the file the user
-			// just edited they are the ONLY actionable message: invalid XAML reports UXAML0001 here, while
-			// the emit sees a degraded generated tree and reports something like ENC0020 naming a generated
-			// member the user never wrote. Reporting them to the console alone left consumers with the
-			// misleading half.
-			//
-			// No dedup needed, unlike the compilation-error case below: generator diagnostics never appear in
-			// compilation.GetDiagnostics(), so they cannot already be present in emitDiagnostics. They are
-			// also already scoped to the change set's projects via auditedProjects.
-			diagnostics = emitDiagnostics.AddRange(generatorErrors);
-
-			// A project the engine names as needing a rebuild is a rude edit even without an ENC error.
-			switch (rudeEdits.IsEmpty && !emit.RequiresRebuildOrRestart, updates.IsEmpty)
-			{
-				// A rude edit is unrecoverable: the user must rebuild. Surface every diagnostic.
-				case (false, _):
-					_tracker.Output("Unable to apply hot reload because of a rude edit.");
-					diagnosticsReporter.ReportEmitDiagnostics(emitDiagnostics);
-					outcome = HotReloadOperationResult.RudeEdit;
-					break;
-
-				// Metadata updates were produced and are applicable.
-				case (true, false):
-					outcome = HotReloadOperationResult.Success;
-					deltas = updates;
-					break;
-
-				// No metadata updates, but the solution does not compile: the reload is blocked, not a no-op.
-				// The audit is scoped to the projects owning this pass's changed files (spec 054): a pass must
-				// never complete Failed on errors from projects it never touched. When the change-set resolves
-				// to no project the audit yields no errors and we fall through to NoChanges below.
-				// FIXME: these compilation errors are reported to the console but not propagated into the
-				// operation's `diagnostics`; consumers see Failed without the reason (asymmetric with rude
-				// edits). Needs dedup before fixing.
-				case (true, true) when GetCompilationErrors(auditedProjects, ct) is { Errors.IsEmpty: false } audit:
+				if (!generatorErrors.IsEmpty)
+				{
 					_tracker.Output(
-						$"Hot reload blocked by {audit.Errors.Length} compilation error(s) in " +
-						$"{string.Join(", ", audit.BlockingProjects)} " +
-						$"(edited: {FormatEditedFiles(files)}).");
-					diagnosticsReporter.ReportCompilationDiagnostics(audit.Errors);
-					outcome = HotReloadOperationResult.Failed;
-					break;
+						$"Hot reload is continuing despite {generatorErrors.Length} source generator error(s); " +
+						"the affected generated code stays stale until they are fixed.");
+				}
 
-				// (true, true) with a clean compile: genuinely nothing to apply.
-				default:
-					_tracker.Output("No hot reload changes to apply.");
-					outcome = HotReloadOperationResult.NoChanges;
-					break;
+				var emit = await EmitAsync(alignedSolution.WithSuppressedDiagnostics(generatorErrors), ct).ConfigureAwait(false);
+
+				var updates = emit.Deltas;
+				var emitDiagnostics = emit.Diagnostics;
+
+				_tracker.Verbose($"Emit status: {emit.Status}");
+
+				// A project the engine cannot update in place stays out of line with its sources until it is
+				// rebuilt. The condition persists across saves, so Output only when the subject changes.
+				if (emit.RequiresRebuildOrRestart)
+				{
+					// Roslyn 4.x names no project (see HotReloadEmitResult.RequiresRebuildOrRestart).
+					var subject = emit.ProjectsRequiringRebuildOrRestart is { IsEmpty: false } projects
+						? string.Join(", ", projects)
+						: "the application";
+					var message = $"Hot reload cannot update {subject}: it must be rebuilt (or restarted) before it matches its sources again.";
+
+					if (subject != _reportedRebuildSubject)
+					{
+						_reportedRebuildSubject = subject;
+						_tracker.Output(message);
+					}
+					else
+					{
+						_tracker.Verbose(message);
+					}
+				}
+				else
+				{
+					_reportedRebuildSubject = null;
+				}
+
+				// emitDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
+				// of unrecoverable errors that a user cannot fix and requires an app rebuild.
+				var rudeEdits = emitDiagnostics.RemoveAll(d => d.Severity <= DiagnosticSeverity.Warning
+					|| !(d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal) || d.Descriptor == _emitFailureDescriptor));
+
+				_tracker.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
+
+				// Emit (EnC) diagnostics carry on every outcome of this branch; deltas are populated on Success only.
+				// The suppressed generator errors carry too, as the reason the generated code is stale. No dedup:
+				// generator diagnostics never appear in compilation.GetDiagnostics().
+				diagnostics = emitDiagnostics.AddRange(generatorErrors);
+
+				// A project the engine names as needing a rebuild is a rude edit even without an ENC error.
+				switch (rudeEdits.IsEmpty && !emit.RequiresRebuildOrRestart, updates.IsEmpty)
+				{
+					// A rude edit is unrecoverable: the user must rebuild. Surface every diagnostic.
+					case (false, _):
+						_tracker.Output("Unable to apply hot reload because of a rude edit.");
+						diagnosticsReporter.ReportEmitDiagnostics(emitDiagnostics);
+						outcome = HotReloadOperationResult.RudeEdit;
+						break;
+
+					// Metadata updates were produced and are applicable.
+					case (true, false):
+						outcome = HotReloadOperationResult.Success;
+						deltas = updates;
+						break;
+
+					// No metadata updates, but the solution does not compile: the reload is blocked, not a no-op.
+					// The audit is scoped to the projects owning this pass's changed files (spec 054): a pass must
+					// never complete Failed on errors from projects it never touched. When the change-set resolves
+					// to no project the audit yields no errors and we fall through to NoChanges below.
+					// FIXME: these compilation errors are reported to the console but not propagated into the
+					// operation's `diagnostics`; consumers see Failed without the reason (asymmetric with rude
+					// edits). Needs dedup before fixing.
+					case (true, true) when GetCompilationErrors(auditedProjects, ct) is { Errors.IsEmpty: false } audit:
+						_tracker.Output(
+							$"Hot reload blocked by {audit.Errors.Length} compilation error(s) in " +
+							$"{string.Join(", ", audit.BlockingProjects)} " +
+							$"(edited: {FormatFileNames(files)}).");
+						diagnosticsReporter.ReportCompilationDiagnostics(audit.Errors);
+						outcome = HotReloadOperationResult.Failed;
+						break;
+
+					// (true, true) with a clean compile: genuinely nothing to apply.
+					default:
+						_tracker.Output("No hot reload changes to apply.");
+						outcome = HotReloadOperationResult.NoChanges;
+						break;
+				}
 			}
 		}
 
@@ -449,6 +437,26 @@ public sealed class HotReloadManager : IDisposable
 		}
 
 		await hotReload.Complete(outcome, diagnostics: diagnostics).ConfigureAwait(false);
+	}
+
+	private async ValueTask<HotReloadEmitResult> EmitAsync(Solution emitSolution, CancellationToken ct)
+	{
+		try
+		{
+			return await _watchService.EmitSolutionUpdateAsync(emitSolution, ct).ConfigureAwait(false);
+		}
+		catch (Exception e) when (e is not OperationCanceledException || !ct.IsCancellationRequested)
+		{
+			// The compiler itself threw while emitting the delta (e.g. dotnet/roslyn#86045). The EnC
+			// baseline does not move, so every later pass would hit the same crash until the edit is
+			// undone: report it as the rude edit it is for the user, not as a DevServer InternalError.
+			_tracker.Warn($"The compiler failed to emit the hot reload update: {e}");
+			return HotReloadEmitResult.Empty with
+			{
+				Status = HotReloadEmitStatus.Blocked,
+				Diagnostics = [Diagnostic.Create(_emitFailureDescriptor, Location.None, e.Message)],
+			};
+		}
 	}
 
 	private static CompilationAudit GetCompilationErrors(ImmutableArray<Project> auditedProjects, CancellationToken cancellationToken)
@@ -488,9 +496,9 @@ public sealed class HotReloadManager : IDisposable
 	/// absent from <see cref="Compilation.GetDiagnostics(CancellationToken)"/> — reachable only via
 	/// <see cref="RoslynExtensions.GetSourceGeneratorDiagnosticsAsync"/> — yet Roslyn 5.x's EnC refuses to
 	/// emit a metadata update while any of them is present. <see cref="ProcessSolutionChanged"/> suppresses
-	/// these for the emit so a non-fatal generator error (e.g. a corrupt <c>.resw</c> → UXAML0003) does not
-	/// block hot reload for otherwise-valid edits. Empty when there are no audited projects or when the
-	/// reflection-bound API is unavailable, so the behavior degrades to the pre-fix path.
+	/// these for the emit, except those <see cref="GetXamlGeneratorErrors"/> returns, which block the pass.
+	/// Empty when there are no audited projects or when the reflection-bound API is unavailable, so the
+	/// behavior degrades to the pre-fix path.
 	/// </summary>
 	private static async ValueTask<ImmutableArray<Diagnostic>> GetGeneratorErrorsAsync(
 		ImmutableArray<Project> auditedProjects,
@@ -510,6 +518,18 @@ public sealed class HotReloadManager : IDisposable
 
 		return errors.ToImmutable();
 	}
+
+	/// <summary>
+	/// The <paramref name="generatorErrors"/> located in a XAML file: the generator emitted that page up to
+	/// the error only. An error with no location (a generator crash, a <c>.resw</c> it cannot parse) is not
+	/// one of them.
+	/// </summary>
+	private static ImmutableArray<Diagnostic> GetXamlGeneratorErrors(ImmutableArray<Diagnostic> generatorErrors)
+		=> generatorErrors.IsEmpty
+			? generatorErrors
+			: generatorErrors
+				.Where(diagnostic => string.Equals(Path.GetExtension(diagnostic.Location.GetLineSpan().Path), ".xaml", StringComparison.OrdinalIgnoreCase))
+				.ToImmutableArray();
 
 	/// <summary>
 	/// Resolves the pass's change-set to the distinct set of projects that own those files — as source
@@ -538,7 +558,7 @@ public sealed class HotReloadManager : IDisposable
 	/// <summary>
 	/// Names the pinned assemblies for the pin summary line: distinct simple names, ordered for a
 	/// deterministic message, capped to the first 3 with a <c>+N more</c> suffix beyond (mirrors
-	/// <see cref="FormatEditedFiles"/>).
+	/// <see cref="FormatFileNames"/>).
 	/// </summary>
 	private static string FormatPinnedReferences(ImmutableArray<PinnedReference> pinned)
 	{
@@ -556,11 +576,11 @@ public sealed class HotReloadManager : IDisposable
 	}
 
 	/// <summary>
-	/// Formats the pass's edited file names for the blocked-compilation output line: base names only
+	/// Formats file names for the blocked output lines: base names only
 	/// (<see cref="Path.GetFileName(string)"/>), ordered for a deterministic message, capped to the first
 	/// 3 with a <c>+N more</c> suffix beyond.
 	/// </summary>
-	private static string FormatEditedFiles(ImmutableHashSet<string> files)
+	private static string FormatFileNames(ImmutableHashSet<string> files)
 	{
 		const int maxNamed = 3;
 		var names = files
