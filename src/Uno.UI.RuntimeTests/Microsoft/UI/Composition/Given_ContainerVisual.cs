@@ -194,7 +194,8 @@ public class Given_ContainerVisual
 			await UITestHelper.Load(fallback);
 			var actual = await UITestHelper.ScreenShot(fallback);
 
-			await ImageAssert.AreEqualAsync(actual, expected);
+			// The retained and fallback renders take different GPU paths, which may round a pixel by one level.
+			await ImageAssert.AreEqualAsync(actual, expected, tolerance: 1);
 		}
 		finally
 		{
