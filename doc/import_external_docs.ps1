@@ -10,15 +10,15 @@ Set-PSDebug -Trace 1
 # Each entry: repo name -> @{ ref = '<commit|branch>'; dest = '<sub-folder>'? }
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
-    "uno.wasm.bootstrap" = @{ ref="1e094106842f6e7f43075f06d2a0354077da3a0f" }  #latest main commit
-    "uno.themes"         = @{ ref="d20cd74337c6e5b8564a9871be46243a0bac8aac" }  #latest master commit
-    "uno.toolkit.ui"     = @{ ref="a4fde4fc6f46e231dc109227cd6e02a493bada34" }  #latest main commit
+    "uno.wasm.bootstrap" = @{ ref="68aa87df3fe54c24747636c3ac58a8c6991018c0" }  #latest release/stable/9.0 commit (Uno.Wasm.Bootstrap 9.0.23 in uno.templates servicing/6.8)
+    "uno.themes"         = @{ ref="7c4fa39fbb4718ee510c50b4d6f960b19e76ce32" }  #latest servicing/8.0 commit (Uno.Themes 8.0.0-dev.25 in uno.templates servicing/6.8)
+    "uno.toolkit.ui"     = @{ ref="ee366def771e57d5adf0d6c5bf933069237f7cd4" }  #latest servicing/10.0 commit (Uno.Toolkit 10.0.0-dev.7 in uno.templates servicing/6.8)
     "uno.check"          = @{ ref="b84ac3182979c12fdd34041147928e508026ac98" }  #latest main commit
     "uno.xamlmerge.task" = @{ ref="081dcfa44b5ce24ac0948675e5ee6b781e2107bc" }  #latest main commit
     "figma-docs"         = @{ ref="842a2792282b88586a337381b2b3786e779973b4" }  #latest main commit
-    "uno.resizetizer"    = @{ ref="e422ad9f26cf21ed02c339e717e0dd0189bb566e" }  #latest main commit
+    "uno.resizetizer"    = @{ ref="e2bed16c8ae7d403e4279a39031933399f7596ce" }  #latest servicing/1.13 commit (Uno.Resizetizer 1.13.0-dev.21 in uno.templates servicing/6.8)
     "uno.uitest"         = @{ ref="94d027295b779e28064aebf99aeaee2b393ad558" }  #latest master commit
-    "uno.extensions"     = @{ ref="3f5d79e4c4fad547bd651c4766f9d753d637330f" }  #latest main commit
+    "uno.extensions"     = @{ ref="ad9e607c558c0776044873f472a85e02f1f9fbd2" }  #latest servicing/7.4 commit (Uno.Extensions 7.4.0-dev.85 in uno.templates servicing/6.8)
     "workshops"          = @{ ref="3515c29e03dea36cf2206d797d1bf9f8620370e3" }  #latest master commit
     "uno.samples"        = @{ ref="a925b2115956900b677aadf387a18000bf66a338" }  #latest master commit
     "uno.chefs"          = @{ ref="a3241a14b04fc86a407fbcade997ba9e83b32c1d" }  #latest main commit
