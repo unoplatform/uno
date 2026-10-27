@@ -2,7 +2,6 @@
 #nullable enable
 
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -106,7 +105,7 @@ public partial class Given_ListViewItemPresenter
 		presenter.EnsureSelectionIndicator();
 		await Relayout(presenter);
 
-		var indicator = GetChromeField<Border>(presenter, "m_selectionIndicatorRectangle");
+		var indicator = presenter.m_selectionIndicatorRectangle!;
 
 		Assert.AreEqual(expectedHeight, indicator.ActualHeight, LayoutTolerance);
 		Assert.AreEqual((itemHeight - expectedHeight) / 2, GetOffset(indicator, presenter).Y, LayoutTolerance);
@@ -125,7 +124,7 @@ public partial class Given_ListViewItemPresenter
 		SetCommonState(presenter, selected ? ListViewBaseItemPresenter.CommonStates2.PressedSelected : ListViewBaseItemPresenter.CommonStates2.Pressed);
 		await Relayout(presenter);
 
-		var indicator = GetChromeField<Border>(presenter, "m_selectionIndicatorRectangle");
+		var indicator = presenter.m_selectionIndicatorRectangle!;
 
 		Assert.AreEqual(54, indicator.ActualHeight, LayoutTolerance);
 		Assert.AreEqual(23, GetOffset(indicator, presenter).Y, LayoutTolerance);
@@ -225,11 +224,11 @@ public partial class Given_ListViewItemPresenter
 		var presenter = new ListViewItemPresenter();
 		presenter.SetChromedListViewBaseItem(new ListViewItem());
 
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_backplateRectangle"));
+		Assert.IsNull(presenter.m_backplateRectangle);
 
 		presenter.Measure(new Size(100, 100));
 
-		var backplate = GetChromeField<Border?>(presenter, "m_backplateRectangle");
+		var backplate = presenter.m_backplateRectangle;
 		Assert.IsNotNull(backplate);
 		Assert.AreSame(backplate, presenter.GetChildren()[0]);
 	}
@@ -244,7 +243,7 @@ public partial class Given_ListViewItemPresenter
 
 		presenter.Measure(new Size(100, 100));
 
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_backplateRectangle"));
+		Assert.IsNull(presenter.m_backplateRectangle);
 	}
 
 	[TestMethod]
@@ -257,7 +256,7 @@ public partial class Given_ListViewItemPresenter
 		presenter.AddSecondaryChrome();
 		await Relayout(presenter);
 
-		var secondary = GetChromeField<FrameworkElement>(presenter, "m_pSecondaryChrome");
+		var secondary = presenter.m_pSecondaryChrome!;
 
 		Assert.AreEqual(new Rect(0, 0, presenter.ActualWidth, presenter.ActualHeight), LayoutInformation.GetLayoutSlot(secondary));
 		Assert.AreEqual(presenter.ActualWidth, secondary.ActualWidth, LayoutTolerance);
@@ -315,7 +314,7 @@ public partial class Given_ListViewItemPresenter
 		=> element.TransformToVisual(relativeTo).TransformPoint(default);
 
 	private static void SetMultiSelectState(ListViewBaseItemPresenter presenter, ListViewBaseItemPresenter.MultiSelectStates state)
-		=> UpdateVisualStates(presenter, (ref ListViewBaseItemPresenter.VisualStates states) => states.multiSelectState = state);
+		=> GoToChromeState(presenter, state);
 
 	private static ControlTemplate CreateLayoutPresenterTemplate()
 		=> (ControlTemplate)XamlReader.Load(

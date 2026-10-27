@@ -3,7 +3,6 @@
 
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -193,16 +192,14 @@ public partial class Given_ListViewItemPresenter
 	[TestMethod]
 	public async Task When_Template_Child_Added_Then_Inserted_Above_Backplate()
 	{
-		var presenter = new ListViewItemPresenter();
-		presenter.SetChromedListViewBaseItem(new ListViewItem());
+		using var _ = ListViewChromeHelper.UseRoundedChromeResource(true);
+		var presenter = new GridViewItemPresenter();
+		presenter.SetChromedListViewBaseItem(new GridViewItem());
 
-		var backplate = new Border();
-		SetBackplate(presenter, backplate);
-		presenter.AddChild(backplate, 0);
-
-		var outerBorder = new Border();
-		SetOuterBorder(presenter, outerBorder);
-		presenter.AddChild(outerBorder);
+		presenter.EnsureBackplate();
+		presenter.EnsureOuterBorder();
+		var backplate = presenter.m_backplateRectangle!;
+		var outerBorder = presenter.m_outerBorder!;
 
 		var first = new Grid { Width = 10, Height = 10 };
 		presenter.Content = first;
@@ -229,9 +226,8 @@ public partial class Given_ListViewItemPresenter
 		var presenter = new ListViewItemPresenter();
 		presenter.SetChromedListViewBaseItem(new ListViewItem());
 
-		var outerBorder = new Border();
-		SetOuterBorder(presenter, outerBorder);
-		presenter.AddChild(outerBorder);
+		presenter.AddSecondaryChrome();
+		var secondaryChrome = presenter.m_pSecondaryChrome!;
 
 		var first = new Grid { Width = 10, Height = 10 };
 		presenter.Content = first;
@@ -239,14 +235,14 @@ public partial class Given_ListViewItemPresenter
 		WindowHelper.WindowContent = presenter;
 		await WindowHelper.WaitForLoaded(presenter, p => p.IsLoaded);
 
-		AssertChildren(presenter, first, outerBorder);
+		AssertChildren(presenter, first, secondaryChrome);
 		Assert.AreSame(first, presenter.GetTemplateChildIfExists());
 
 		var second = new Grid { Width = 20, Height = 20 };
 		presenter.Content = second;
 		await WindowHelper.WaitForIdle();
 
-		AssertChildren(presenter, second, outerBorder);
+		AssertChildren(presenter, second, secondaryChrome);
 		Assert.IsNull(first.Parent);
 		Assert.AreSame(second, presenter.GetTemplateChildIfExists());
 	}
@@ -268,12 +264,11 @@ public partial class Given_ListViewItemPresenter
 	[TestMethod]
 	public async Task When_Only_Chrome_Children_Then_No_Template_Child()
 	{
+		using var _ = ListViewChromeHelper.UseRoundedChromeResource(true);
 		var presenter = new ListViewItemPresenter();
 		presenter.SetChromedListViewBaseItem(new ListViewItem());
 
-		var backplate = new Border();
-		SetBackplate(presenter, backplate);
-		presenter.AddChild(backplate, 0);
+		presenter.EnsureBackplate();
 
 		WindowHelper.WindowContent = presenter;
 		await WindowHelper.WaitForLoaded(presenter, p => p.IsLoaded);
@@ -345,7 +340,7 @@ public partial class Given_ListViewItemPresenter
 
 		presenter.EnsureBackplate();
 
-		var backplate = GetChromeField<Border>(presenter, "m_backplateRectangle");
+		var backplate = presenter.m_backplateRectangle!;
 		Assert.AreSame(backplate, presenter.GetChildren()[0]);
 		Assert.AreEqual(new Thickness(4, 2, 4, 2), backplate.Margin);
 		Assert.AreEqual(new CornerRadius(4), backplate.CornerRadius);
@@ -387,15 +382,13 @@ public partial class Given_ListViewItemPresenter
 		presenter.SetChromedListViewBaseItem(new GridViewItem());
 		SetCommonState(presenter, ListViewBaseItemPresenter.CommonStates2.Selected);
 
+		var outer = presenter.m_outerBorder;
+		var inner = presenter.m_innerSelectionBorder;
+		Assert.IsNotNull(outer, "Selecting a rounded GridViewItem creates the outer border");
+		Assert.IsNotNull(inner, "Selecting a rounded GridViewItem creates the inner selection border");
+
 		presenter.EnsureBackplate();
-		var backplate = GetChromeField<Border>(presenter, "m_backplateRectangle");
-		Assert.AreEqual(default(Thickness), backplate.Margin, "No outer border yet");
-
-		presenter.EnsureOuterBorder();
-		presenter.EnsureInnerSelectionBorder();
-
-		var outer = GetChromeField<Border>(presenter, "m_outerBorder");
-		var inner = GetChromeField<Border>(presenter, "m_innerSelectionBorder");
+		var backplate = presenter.m_backplateRectangle!;
 
 		Assert.AreSame(opaqueBrush, outer.BorderBrush);
 		Assert.AreEqual(new Thickness(2), outer.BorderThickness);
@@ -438,16 +431,16 @@ public partial class Given_ListViewItemPresenter
 
 		presenter.EnsureOuterBorder();
 
-		var outer = GetChromeField<Border>(presenter, "m_outerBorder");
+		var outer = presenter.m_outerBorder!;
 		Assert.AreSame(pointerOverBorderBrush, outer.BorderBrush);
 		Assert.AreEqual(new Thickness(1), outer.BorderThickness, "Unselected outer border thickness");
 
 		presenter.EnsureBackplate();
-		var backplate = GetChromeField<Border>(presenter, "m_backplateRectangle");
+		var backplate = presenter.m_backplateRectangle!;
 		Assert.AreEqual(new Thickness(1), backplate.Margin);
 
 		presenter.RemoveOuterBorder();
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_outerBorder"));
+		Assert.IsNull(presenter.m_outerBorder);
 		Assert.IsNull(outer.Parent);
 		Assert.AreEqual(default(Thickness), backplate.Margin, "Removing the outer border resets the backplate margin");
 	}
@@ -473,8 +466,8 @@ public partial class Given_ListViewItemPresenter
 
 		presenter.EnsureMultiSelectCheckBox();
 
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
-		var glyph = GetChromeField<FontIcon>(presenter, "m_multiSelectCheckGlyph");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
+		var glyph = presenter.m_multiSelectCheckGlyph!;
 
 		Assert.IsTrue(presenter.GetChildren().Contains(checkBox));
 		Assert.IsFalse(checkBox.IsHitTestVisible);
@@ -509,8 +502,8 @@ public partial class Given_ListViewItemPresenter
 
 		presenter.RemoveMultiSelectCheckBox();
 		Assert.IsFalse(presenter.GetChildren().Contains(checkBox));
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"));
-		Assert.IsNull(GetChromeField<FontIcon?>(presenter, "m_multiSelectCheckGlyph"));
+		Assert.IsNull(presenter.m_multiSelectCheckBoxRectangle);
+		Assert.IsNull(presenter.m_multiSelectCheckGlyph);
 	}
 
 	[TestMethod]
@@ -525,8 +518,8 @@ public partial class Given_ListViewItemPresenter
 
 		presenter.EnsureMultiSelectCheckBox();
 
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
-		var glyph = GetChromeField<FontIcon>(presenter, "m_multiSelectCheckGlyph");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
+		var glyph = presenter.m_multiSelectCheckGlyph!;
 
 		Assert.AreEqual(new Thickness(12, 0, 0, 0), checkBox.Margin);
 		Assert.AreEqual(default(CornerRadius), checkBox.CornerRadius);
@@ -549,7 +542,7 @@ public partial class Given_ListViewItemPresenter
 
 			presenter.EnsureMultiSelectCheckBox();
 
-			var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+			var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 			Assert.AreEqual(new Thickness(0, 2, 2, 0), checkBox.Margin);
 			Assert.AreEqual(HorizontalAlignment.Right, checkBox.HorizontalAlignment);
 			Assert.AreEqual(VerticalAlignment.Top, checkBox.VerticalAlignment);
@@ -569,7 +562,7 @@ public partial class Given_ListViewItemPresenter
 
 			presenter.EnsureMultiSelectCheckBox();
 
-			var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+			var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 			Assert.AreEqual(new Thickness(0, 4, 4, 0), checkBox.Margin, "inner selection border 1 + selected border 2 + 1");
 		}
 	}
@@ -594,7 +587,7 @@ public partial class Given_ListViewItemPresenter
 
 		presenter.EnsureSelectionIndicator();
 
-		var indicator = GetChromeField<Border>(presenter, "m_selectionIndicatorRectangle");
+		var indicator = presenter.m_selectionIndicatorRectangle!;
 		Assert.IsTrue(presenter.GetChildren().Contains(indicator));
 		Assert.IsFalse(indicator.IsHitTestVisible);
 		Assert.IsNotNull(indicator.TransitionTarget);
@@ -636,18 +629,18 @@ public partial class Given_ListViewItemPresenter
 		await WindowHelper.WaitForLoaded(presenter, p => p.IsLoaded);
 
 		// The rounded chrome creates the backplate on its first measure.
-		var backplate = GetChromeField<Border>(presenter, "m_backplateRectangle");
+		var backplate = presenter.m_backplateRectangle!;
 		AssertChildren(presenter, backplate, content);
 
 		presenter.EnsureBackplate();
-		Assert.AreSame(backplate, GetChromeField<Border>(presenter, "m_backplateRectangle"));
+		Assert.AreSame(backplate, presenter.m_backplateRectangle);
 		AssertChildren(presenter, backplate, content);
 		Assert.AreSame(content, presenter.GetTemplateChildIfExists());
 
 		presenter.EnsureMultiSelectCheckBox();
 		presenter.AddSecondaryChrome();
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
-		var secondaryChrome = GetChromeField<ListViewBaseItemSecondaryChrome>(presenter, "m_pSecondaryChrome");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
+		var secondaryChrome = presenter.m_pSecondaryChrome!;
 		AssertChildren(presenter, backplate, content, checkBox, secondaryChrome);
 		Assert.AreSame(presenter, secondaryChrome.m_pPrimaryChromeNoRef);
 
@@ -712,8 +705,8 @@ public partial class Given_ListViewItemPresenter
 
 		presenter.EnsureMultiSelectCheckBox();
 
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
-		var glyph = GetChromeField<FontIcon>(presenter, "m_multiSelectCheckGlyph");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
+		var glyph = presenter.m_multiSelectCheckGlyph!;
 		Assert.AreSame(selectedForeground, presenter.Foreground);
 		Assert.AreSame(selectedForeground, checkBox.BorderBrush);
 		Assert.AreSame(selectedForeground, glyph.Foreground);
@@ -742,9 +735,9 @@ public partial class Given_ListViewItemPresenter
 		presenter.EnsureOuterBorder();
 		presenter.EnsureInnerSelectionBorder();
 
-		var backplate = GetChromeField<Border>(presenter, "m_backplateRectangle");
-		var outer = GetChromeField<Border>(presenter, "m_outerBorder");
-		var inner = GetChromeField<Border>(presenter, "m_innerSelectionBorder");
+		var backplate = presenter.m_backplateRectangle!;
+		var outer = presenter.m_outerBorder!;
+		var inner = presenter.m_innerSelectionBorder!;
 
 		presenter.CornerRadius = new CornerRadius(8);
 
@@ -764,7 +757,7 @@ public partial class Given_ListViewItemPresenter
 			presenter = new ListViewItemPresenter { CornerRadius = new CornerRadius(4) };
 			presenter.SetChromedListViewBaseItem(new ListViewItem());
 			presenter.EnsureBackplate();
-			backplate = GetChromeField<Border>(presenter, "m_backplateRectangle");
+			backplate = presenter.m_backplateRectangle!;
 		}
 
 		using (ListViewChromeHelper.UseNonRoundedChrome())
@@ -781,7 +774,7 @@ public partial class Given_ListViewItemPresenter
 		presenter.SetChromedListViewBaseItem(new GridViewItem());
 
 		presenter.SetDragItemsCount(3);
-		var textBlock = GetChromeField<TextBlock>(presenter, "m_pDragItemsCountTextBlock");
+		var textBlock = presenter.m_pDragItemsCountTextBlock!;
 		Assert.AreEqual("3", textBlock.Text);
 		Assert.AreEqual(Visibility.Collapsed, textBlock.Visibility);
 		Assert.IsFalse(textBlock.IsHitTestVisible);
@@ -791,7 +784,7 @@ public partial class Given_ListViewItemPresenter
 
 		presenter.SetDragOverlayTextBlockVisible(true);
 
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 		Assert.AreSame(textBlock, checkBox.Child);
 		Assert.IsNull(checkBox.Clip);
 		Assert.AreEqual(Visibility.Visible, textBlock.Visibility);
@@ -816,7 +809,7 @@ public partial class Given_ListViewItemPresenter
 		listViewItemPresenter.SetChromedListViewBaseItem(new ListViewItem());
 		SetCommonState(listViewItemPresenter, ListViewBaseItemPresenter.CommonStates2.PointerOver);
 		listViewItemPresenter.EnsureMultiSelectCheckBox();
-		var checkBox = GetChromeField<Border>(listViewItemPresenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = listViewItemPresenter.m_multiSelectCheckBoxRectangle!;
 		var original = checkBox.BorderBrush;
 
 		listViewItemPresenter.CheckBoxPointerOverBorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Green);
@@ -825,7 +818,7 @@ public partial class Given_ListViewItemPresenter
 		var gridViewItemPresenter = new GridViewItemPresenter { CheckBrush = new SolidColorBrush(Microsoft.UI.Colors.Red) };
 		gridViewItemPresenter.SetChromedListViewBaseItem(new GridViewItem());
 		gridViewItemPresenter.EnsureMultiSelectCheckBox();
-		var glyph = GetChromeField<FontIcon>(gridViewItemPresenter, "m_multiSelectCheckGlyph");
+		var glyph = gridViewItemPresenter.m_multiSelectCheckGlyph!;
 		var originalGlyphBrush = glyph.Foreground;
 
 		gridViewItemPresenter.CheckBrush = new SolidColorBrush(Microsoft.UI.Colors.Green);
@@ -833,26 +826,15 @@ public partial class Given_ListViewItemPresenter
 	}
 
 	private static void SetCommonState(ListViewBaseItemPresenter presenter, ListViewBaseItemPresenter.CommonStates2 state)
-		=> UpdateVisualStates(presenter, (ref ListViewBaseItemPresenter.VisualStates states) => states.commonState2 = state);
+		=> GoToChromeState(presenter, state);
 
 	private static void SetDisabledState(ListViewBaseItemPresenter presenter, ListViewBaseItemPresenter.DisabledStates state)
-		=> UpdateVisualStates(presenter, (ref ListViewBaseItemPresenter.VisualStates states) => states.disabledState = state);
+		=> GoToChromeState(presenter, state);
 
-	private delegate void VisualStatesUpdater(ref ListViewBaseItemPresenter.VisualStates states);
-
-	// Drive the chrome state directly, without GoToChromedState side effects.
-	private static void UpdateVisualStates(ListViewBaseItemPresenter presenter, VisualStatesUpdater update)
-	{
-		var field = typeof(ListViewBaseItemPresenter).GetField("m_visualStates", BindingFlags.NonPublic | BindingFlags.Instance)!;
-		var states = (ListViewBaseItemPresenter.VisualStates)field.GetValue(presenter)!;
-		update(ref states);
-		field.SetValue(presenter, states);
-	}
-
-	private static T GetChromeField<T>(ListViewBaseItemPresenter presenter, string name)
-		=> (T)typeof(ListViewBaseItemPresenter)
-			.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)!
-			.GetValue(presenter)!;
+	// The state names match the enum members; this is the call VisualStateManager makes on the template root.
+	private static void GoToChromeState<TState>(ListViewBaseItemPresenter presenter, TState state)
+		where TState : struct, Enum
+		=> presenter.GoToElementState(state.ToString(), useTransitions: false);
 
 	private static ControlTemplate CreatePresenterTemplate()
 		=> (ControlTemplate)XamlReader.Load(
@@ -861,18 +843,6 @@ public partial class Given_ListViewItemPresenter
 				<ListViewItemPresenter Content="{TemplateBinding Content}" />
 			</ControlTemplate>
 			""");
-
-	// The backplate and outer border are created by the chrome rendering; set them directly to pin the template child index rule.
-	private static void SetBackplate(ListViewBaseItemPresenter presenter, Border backplate)
-		=> SetChromeField(presenter, "m_backplateRectangle", backplate);
-
-	private static void SetOuterBorder(ListViewBaseItemPresenter presenter, Border outerBorder)
-		=> SetChromeField(presenter, "m_outerBorder", outerBorder);
-
-	private static void SetChromeField(ListViewBaseItemPresenter presenter, string name, Border value)
-		=> typeof(ListViewBaseItemPresenter)
-			.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)!
-			.SetValue(presenter, value);
 
 	private static void AssertChildren(ListViewBaseItemPresenter presenter, params UIElement[] expected)
 	{
