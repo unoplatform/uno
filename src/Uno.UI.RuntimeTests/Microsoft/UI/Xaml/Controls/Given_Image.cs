@@ -73,11 +73,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 249, 75), tolerance: 10); // 20x20
 			var pinkBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 35, 233), tolerance: 10); // 12x20
 
-			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
-			Assert.AreEqual(new Rect(20, 30, 59, 19), redBounds);
-			Assert.AreEqual(new Rect(20, 40, 19, 19), greenBounds);
-			Assert.AreEqual(new Rect(44, 40, 19, 19), yellowBounds);
-			Assert.AreEqual(new Rect(68, 40, 11, 19), pinkBounds);
+			// The image is drawn at a fraction of its size: a filtered downscale blends the pixel on each edge between two
+			// bands, so a band may lose up to a pixel on every side it shares with another colour.
+			AssertBandBounds(new Rect(20, 20, 59, 59), orangeBounds);
+			AssertBandBounds(new Rect(20, 30, 59, 19), redBounds);
+			AssertBandBounds(new Rect(20, 40, 19, 19), greenBounds);
+			AssertBandBounds(new Rect(44, 40, 19, 19), yellowBounds);
+			AssertBandBounds(new Rect(68, 40, 11, 19), pinkBounds);
+
+			static void AssertBandBounds(Rect expected, Rect actual)
+			{
+				var off = Math.Max(
+					Math.Max(Math.Abs(actual.Left - expected.Left), Math.Abs(actual.Top - expected.Top)),
+					Math.Max(Math.Abs(actual.Right - expected.Right), Math.Abs(actual.Bottom - expected.Bottom)));
+				Assert.IsTrue(off <= 1, $"Expected {expected} (each edge within 1px), got {actual}.");
+			}
 		}
 
 		[TestMethod]
