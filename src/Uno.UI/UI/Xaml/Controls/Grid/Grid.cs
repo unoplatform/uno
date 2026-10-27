@@ -357,12 +357,13 @@ namespace Microsoft.UI.Xaml.Controls
 			ref CellCacheStackVector cellCacheVector)
 		{
 
-			SpanStoreStackVector spanStore = new SpanStoreStackVector();
-
 			if (cellsHead >= cellCount)
 			{
 				return;
 			}
+
+			// Rented from the shared ArrayPool, so it must not be created before an exit that skips the Dispose below.
+			SpanStoreStackVector spanStore = new SpanStoreStackVector();
 
 			do
 			{
