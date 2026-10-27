@@ -580,13 +580,15 @@ public class Given_Window
 	{
 #if HAS_UNO
 		// UIKit and the runtime are read through reflection, as the Skia runtime tests are built without the Apple
-		// bindings. The SamplesApp heads declare a scene manifest: without one, and with UnoUseSceneLifecycle set, this
-		// checks the scene lifecycle Uno adopts instead.
+		// bindings. The iOS SamplesApp declares a scene manifest. The tvOS one has none and sets UnoUseSceneLifecycle,
+		// so it runs the scene lifecycle Uno adopts.
 		static object GetProperty(object target, string name) => target?.GetType().GetProperty(name)?.GetValue(target);
 
 		var usesSceneLifecycle = Type.GetType("Uno.UI.Runtime.AppleUIKit.AppleUIKitLifecycle, Uno.UI.Runtime.AppleUIKit")
 			?.GetProperty("UsesSceneLifecycle", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
 			?.GetValue(null);
+
+		Assert.IsNotNull(usesSceneLifecycle, "AppleUIKitLifecycle.UsesSceneLifecycle was not found.");
 
 		if (usesSceneLifecycle is false)
 		{
