@@ -102,6 +102,8 @@ public enum UnoFeature
 
 	Prism,
 
+	Reactor,
+
 	[UnoArea(UnoArea.Core)]
 	Skia,
 

@@ -31,6 +31,16 @@
 				 Text="The SkiaRenderer Uno Feature is ignored in a library: the renderer is the app's choice. Remove it, or replace it with Skia if the library uses SKCanvasElement, the SkiaExtensions conversions or the Uno Toolkit's Skia controls. (See https://aka.platform.uno/UNOB0030)" />
 	</Target>
 
+	<!-- Uno.Microsoft.UI.Reactor has no WinAppSDK build, so the Windows target gets no reference (Uno.Implicit.Packages.ProjectSystem.targets).
+	     Fail here rather than let every Reactor type surface as a CS0246. -->
+	<Target Name="_UnoValidateReactorWinAppSdk"
+			BeforeTargets="CoreCompile"
+			Condition="'$(DesignTimeBuild)' != 'true' and $(UnoFeatures.Contains(';reactor;')) and $(TargetFramework.Contains('windows10'))">
+		<Error Code="UNOB0031"
+			   HelpLink="https://aka.platform.uno/UNOB0031"
+			   Text="The Reactor Uno Feature is not supported on the WinAppSDK target ($(TargetFramework)): Reactor on Uno Platform runs on the Uno Platform targets only. Remove the Windows target framework from this project. (See https://aka.platform.uno/UNOB0031)" />
+	</Target>
+
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
 		<UseMaui>true</UseMaui>
 	</PropertyGroup>
