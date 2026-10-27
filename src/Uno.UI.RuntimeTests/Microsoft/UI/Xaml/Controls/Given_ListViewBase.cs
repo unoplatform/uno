@@ -1022,7 +1022,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			static bool HasCheckBox(ListView list)
 			{
 				var presenter = (ListViewBaseItemPresenter)VisualTreeHelper.GetChild((ListViewItem)list.Items[0], 0);
-				return ChromeTestHelper.GetField<Border>(presenter, "m_multiSelectCheckBoxRectangle") is not null;
+				return presenter.m_multiSelectCheckBoxRectangle is not null;
 			}
 
 			Assert.IsFalse(HasCheckBox(singleList));

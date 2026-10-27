@@ -2,10 +2,8 @@
 #nullable enable
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -29,7 +27,7 @@ public partial class Given_ListViewItemPresenter
 		var (item0, presenter0) = items[0];
 		var (item1, presenter1) = items[1];
 
-		var backplate0 = ChromeTestHelper.GetField<Border>(presenter0, "m_backplateRectangle");
+		var backplate0 = presenter0.m_backplateRectangle!;
 		Assert.AreSame(item0.Background, backplate0.Background, "Normal uses the item Background");
 
 		list.SelectedIndex = 0;
@@ -42,7 +40,7 @@ public partial class Given_ListViewItemPresenter
 		VisualStateManager.GoToState(item0, "PressedSelected", false);
 		Assert.AreSame(presenter0.SelectedPressedBackground, backplate0.Background);
 
-		var backplate1 = ChromeTestHelper.GetField<Border>(presenter1, "m_backplateRectangle");
+		var backplate1 = presenter1.m_backplateRectangle!;
 		VisualStateManager.GoToState(item1, "PointerOver", false);
 		Assert.AreSame(presenter1.PointerOverBackground, backplate1.Background);
 
@@ -60,12 +58,12 @@ public partial class Given_ListViewItemPresenter
 		var (list, items) = await CreateWinUIListView(ListViewSelectionMode.Single);
 		var (_, presenter) = items[0];
 
-		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_selectionIndicatorRectangle"));
+		Assert.IsNull(presenter.m_selectionIndicatorRectangle);
 
 		list.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 
-		var indicator = ChromeTestHelper.GetField<Border>(presenter, "m_selectionIndicatorRectangle");
+		var indicator = presenter.m_selectionIndicatorRectangle!;
 		Assert.AreSame(presenter, indicator.GetParent());
 		Assert.AreSame(presenter.SelectionIndicatorBrush, indicator.Background);
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
@@ -74,7 +72,7 @@ public partial class Given_ListViewItemPresenter
 		list.SelectedIndex = -1;
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
 
-		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_selectionIndicatorRectangle"));
+		Assert.IsNull(presenter.m_selectionIndicatorRectangle);
 		Assert.IsNull(indicator.GetParent());
 	}
 
@@ -91,7 +89,7 @@ public partial class Given_ListViewItemPresenter
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
 		await WindowHelper.WaitForIdle();
 
-		var checkBox = ChromeTestHelper.GetField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 		Assert.AreSame(presenter, checkBox.GetParent());
 		Assert.AreEqual(14, checkBox.TransformToVisual(presenter).TransformPoint(default).X, 0.5, "Inline check box margin");
 		Assert.AreEqual(contentLeftBefore + 28, content.TransformToVisual(presenter).TransformPoint(default).X, 0.5, "Inline content offset");
@@ -99,7 +97,7 @@ public partial class Given_ListViewItemPresenter
 		list.SelectionMode = ListViewSelectionMode.None;
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
 
-		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"));
+		Assert.IsNull(presenter.m_multiSelectCheckBoxRectangle);
 		Assert.IsNull(checkBox.GetParent());
 	}
 
@@ -117,7 +115,7 @@ public partial class Given_ListViewItemPresenter
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
 		await WindowHelper.WaitForIdle();
 
-		var checkBox = ChromeTestHelper.GetField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 		var checkBoxOrigin = checkBox.TransformToVisual(presenter).TransformPoint(default);
 		// Rounded Overlay margin: inner selection border (1) + SelectedBorderThickness + 1 on the top and right.
 		var selectedBorderThickness = presenter.GetSelectedBorderThickness();
@@ -197,14 +195,14 @@ public partial class Given_ListViewItemPresenter
 		var (item, presenter) = items[0];
 
 		Assert.IsInstanceOfType(presenter, typeof(RevealListViewItemPresenter));
-		Assert.AreSame(item, ChromeTestHelper.GetParentItem(presenter));
+		Assert.AreSame(item, presenter.m_pParentListViewBaseItemNoRef);
 
 		list.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual("selected", presenter.Tag, "the template's own VisualStateGroups still run");
-		Assert.AreSame(presenter.SelectedBackground, ChromeTestHelper.GetField<Border>(presenter, "m_backplateRectangle").Background);
-		Assert.IsNotNull(ChromeTestHelper.GetField<Border?>(presenter, "m_selectionIndicatorRectangle"));
+		Assert.AreSame(presenter.SelectedBackground, presenter.m_backplateRectangle!.Background);
+		Assert.IsNotNull(presenter.m_selectionIndicatorRectangle);
 	}
 
 	[TestMethod]
@@ -216,14 +214,14 @@ public partial class Given_ListViewItemPresenter
 		list.SelectedIndex = 0;
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
 
-		var before = ChromeTestHelper.GetField<ListViewBaseItemPresenter.VisualStates>(presenter, "m_visualStates");
+		var before = presenter.m_visualStates;
 		var children = presenter.GetChildren().ToArray();
 
 		Assert.IsFalse(VisualStateManager.GoToState(item, "NotAChromeState", true));
 
-		Assert.AreEqual(before, ChromeTestHelper.GetField<ListViewBaseItemPresenter.VisualStates>(presenter, "m_visualStates"));
+		Assert.AreEqual(before, presenter.m_visualStates);
 		CollectionAssert.AreEqual(children, presenter.GetChildren().ToArray());
-		Assert.AreEqual(0, ChromeTestHelper.GetField<IList>(presenter, "m_animationCommands").Count);
+		Assert.AreEqual(0, presenter.m_animationCommands.Count);
 		ChromeTestHelper.AssertNoRunningAnimation(presenter);
 	}
 
@@ -236,14 +234,14 @@ public partial class Given_ListViewItemPresenter
 		list.SelectedIndex = 0;
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
 
-		var indicator = ChromeTestHelper.GetField<Border>(presenter, "m_selectionIndicatorRectangle");
+		var indicator = presenter.m_selectionIndicatorRectangle!;
 
 		// Recognised but unchanged: no work, and the probe stops at CommonStates2.
 		VisualStateManager.GoToState(item, "Selected", true);
 
-		Assert.AreEqual(0, ChromeTestHelper.GetField<IList>(presenter, "m_animationCommands").Count);
+		Assert.AreEqual(0, presenter.m_animationCommands.Count);
 		ChromeTestHelper.AssertNoRunningAnimation(presenter);
-		Assert.AreSame(indicator, ChromeTestHelper.GetField<Border>(presenter, "m_selectionIndicatorRectangle"));
+		Assert.AreSame(indicator, presenter.m_selectionIndicatorRectangle);
 	}
 
 	[TestMethod]
@@ -257,14 +255,14 @@ public partial class Given_ListViewItemPresenter
 		var (item, presenter) = items[0];
 
 		Assert.IsInstanceOfType(presenter, typeof(SubclassedListViewItemPresenter));
-		Assert.AreSame(item, ChromeTestHelper.GetParentItem(presenter));
+		Assert.AreSame(item, presenter.m_pParentListViewBaseItemNoRef);
 		Assert.AreSame(presenter, item.GetGridViewItemChromeNoRef());
 
 		list.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(ListViewBaseItemPresenter.CommonStates2.Selected, ChromeTestHelper.GetField<ListViewBaseItemPresenter.VisualStates>(presenter, "m_visualStates").commonState2);
-		Assert.IsNotNull(ChromeTestHelper.GetField<Border?>(presenter, "m_selectionIndicatorRectangle"));
+		Assert.AreEqual(ListViewBaseItemPresenter.CommonStates2.Selected, presenter.m_visualStates.commonState2);
+		Assert.IsNotNull(presenter.m_selectionIndicatorRectangle);
 	}
 
 	[TestMethod]
@@ -279,8 +277,8 @@ public partial class Given_ListViewItemPresenter
 
 		var newPresenter = (ListViewItemPresenter)VisualTreeHelper.GetChild(item, 0);
 		Assert.AreNotSame(oldPresenter, newPresenter);
-		Assert.IsNull(ChromeTestHelper.GetParentItem(oldPresenter));
-		Assert.AreSame(item, ChromeTestHelper.GetParentItem(newPresenter));
+		Assert.IsNull(oldPresenter.m_pParentListViewBaseItemNoRef);
+		Assert.AreSame(item, newPresenter.m_pParentListViewBaseItemNoRef);
 		Assert.AreSame(newPresenter, item.GetGridViewItemChromeNoRef());
 	}
 
@@ -307,7 +305,7 @@ public partial class Given_ListViewItemPresenter
 
 		var container = (ListViewItem)list.ContainerFromIndex(0);
 		var presenter = (ListViewItemPresenter)VisualTreeHelper.GetChild(container, 0);
-		Assert.IsNotNull(ChromeTestHelper.GetField<Border?>(presenter, "m_selectionIndicatorRectangle"));
+		Assert.IsNotNull(presenter.m_selectionIndicatorRectangle);
 
 		var scrollViewer = list.FindFirstDescendant<ScrollViewer>()!;
 		for (var offset = 100.0; offset < 4000 && list.IndexFromContainer(container) is 0 or -1; offset += 100)
@@ -323,10 +321,10 @@ public partial class Given_ListViewItemPresenter
 		// Re-preparing flips IsSelected with transitions (SelectorItem::OnIsSelectedChanged), so the hide animation may still be running.
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
 
-		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_selectionIndicatorRectangle"), "stale selection indicator");
-		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"), "stale check box");
-		Assert.AreSame(container.Background, ChromeTestHelper.GetField<Border>(presenter, "m_backplateRectangle").Background, "Normal backplate");
-		Assert.AreEqual(ListViewBaseItemPresenter.CommonStates2.Normal, ChromeTestHelper.GetField<ListViewBaseItemPresenter.VisualStates>(presenter, "m_visualStates").commonState2);
+		Assert.IsNull(presenter.m_selectionIndicatorRectangle, "stale selection indicator");
+		Assert.IsNull(presenter.m_multiSelectCheckBoxRectangle, "stale check box");
+		Assert.AreSame(container.Background, presenter.m_backplateRectangle!.Background, "Normal backplate");
+		Assert.AreEqual(ListViewBaseItemPresenter.CommonStates2.Normal, presenter.m_visualStates.commonState2);
 
 		scrollViewer.ChangeView(null, 0, null, disableAnimation: true);
 		await WindowHelper.WaitForIdle();
@@ -335,7 +333,7 @@ public partial class Given_ListViewItemPresenter
 		var presenter0 = (ListViewItemPresenter)VisualTreeHelper.GetChild(container0, 0);
 		Assert.IsTrue(container0.IsSelected);
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter0);
-		var indicator = ChromeTestHelper.GetField<Border?>(presenter0, "m_selectionIndicatorRectangle");
+		var indicator = presenter0.m_selectionIndicatorRectangle;
 		Assert.IsNotNull(indicator, "indicator missing after scrolling back");
 		Assert.AreSame(presenter0, indicator.GetParent());
 		Assert.AreEqual(1.0, indicator.Opacity);
@@ -356,7 +354,7 @@ public partial class Given_ListViewItemPresenter
 		item.PrepareForRecycle();
 
 		ChromeTestHelper.AssertNoRunningAnimation(presenter);
-		Assert.AreEqual(int.MaxValue, ChromeTestHelper.GetField<int>(presenter, "m_currentHighestCommandPriority"));
+		Assert.AreEqual(int.MaxValue, presenter.m_currentHighestCommandPriority);
 	}
 
 	private static Task<(ListView list, List<(ListViewItem item, ListViewItemPresenter presenter)> items)> CreateWinUIListView(ListViewSelectionMode selectionMode)
@@ -393,33 +391,24 @@ public partial class Given_ListViewItemPresenter
 
 internal static class ChromeTestHelper
 {
-	private static readonly string[] AnimationStates =
-	[
-		"m_pointerPressedAnimation",
-		"m_reorderHintAnimation",
-		"m_dragDropAnimation",
-		"m_multiSelectAnimation",
-		"m_indicatorSelectAnimation",
-		"m_selectionIndicatorAnimation",
-	];
-
-	public static T GetField<T>(ListViewBaseItemPresenter presenter, string name)
-		=> (T)typeof(ListViewBaseItemPresenter)
-			.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)!
-			.GetValue(presenter)!;
-
-	public static ContentControl? GetParentItem(ListViewBaseItemPresenter presenter)
-		=> GetField<ContentControl?>(presenter, "m_pParentListViewBaseItemNoRef");
-
 	public static Storyboard? GetRunningStoryboard(ListViewBaseItemPresenter presenter)
 		=> GetRunningAnimation(presenter).storyboard;
 
 	private static (string? name, Storyboard? storyboard) GetRunningAnimation(ListViewBaseItemPresenter presenter)
 	{
-		foreach (var name in AnimationStates)
+		(string name, ListViewBaseItemPresenter.AnimationState state)[] animations =
+		[
+			(nameof(presenter.m_pointerPressedAnimation), presenter.m_pointerPressedAnimation),
+			(nameof(presenter.m_reorderHintAnimation), presenter.m_reorderHintAnimation),
+			(nameof(presenter.m_dragDropAnimation), presenter.m_dragDropAnimation),
+			(nameof(presenter.m_multiSelectAnimation), presenter.m_multiSelectAnimation),
+			(nameof(presenter.m_indicatorSelectAnimation), presenter.m_indicatorSelectAnimation),
+			(nameof(presenter.m_selectionIndicatorAnimation), presenter.m_selectionIndicatorAnimation),
+		];
+
+		foreach (var (name, state) in animations)
 		{
-			var state = GetField<object>(presenter, name);
-			if (state.GetType().GetField("tpStoryboard", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(state) is Storyboard storyboard)
+			if (state.tpStoryboard is { } storyboard)
 			{
 				return (name, storyboard);
 			}

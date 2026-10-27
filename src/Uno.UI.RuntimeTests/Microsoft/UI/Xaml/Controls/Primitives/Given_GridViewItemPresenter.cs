@@ -50,19 +50,19 @@ public class Given_GridViewItemPresenter
 	{
 		var (_, item, presenter) = await CreateGridView();
 
-		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_outerBorder"));
+		Assert.IsNull(presenter.m_outerBorder);
 
 		VisualStateManager.GoToState(item, "PointerOver", false);
 
-		var outer = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
+		var outer = presenter.m_outerBorder!;
 		Assert.AreSame(((ListViewItemPresenter)presenter).PointerOverBorderBrush, outer.BorderBrush);
 		Assert.AreEqual(1, outer.BorderThickness.Left, 0.5, "Hover draws a 1 px outer border");
 		Assert.AreEqual(new CornerRadius(4), outer.CornerRadius);
-		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_innerSelectionBorder"));
+		Assert.IsNull(presenter.m_innerSelectionBorder);
 
 		VisualStateManager.GoToState(item, "Normal", false);
 
-		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_outerBorder"));
+		Assert.IsNull(presenter.m_outerBorder);
 		Assert.IsNull(outer.GetParent());
 	}
 
@@ -75,9 +75,9 @@ public class Given_GridViewItemPresenter
 		grid.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 
-		var outer = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
-		var inner = ChromeTestHelper.GetField<Border>(presenter, "m_innerSelectionBorder");
-		var backplate = ChromeTestHelper.GetField<Border>(presenter, "m_backplateRectangle");
+		var outer = presenter.m_outerBorder!;
+		var inner = presenter.m_innerSelectionBorder!;
+		var backplate = presenter.m_backplateRectangle!;
 		Assert.AreSame(lvip.SelectedBorderBrush, outer.BorderBrush);
 		Assert.AreSame(lvip.SelectedInnerBorderBrush, inner.BorderBrush);
 		Assert.AreSame(lvip.SelectedBackground, backplate.Background);
@@ -93,8 +93,8 @@ public class Given_GridViewItemPresenter
 		grid.SelectedIndex = -1;
 		await WindowHelper.WaitForIdle();
 
-		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_innerSelectionBorder"));
-		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_outerBorder"));
+		Assert.IsNull(presenter.m_innerSelectionBorder);
+		Assert.IsNull(presenter.m_outerBorder);
 		Assert.AreEqual(default(Thickness), backplate.Margin);
 	}
 
@@ -107,11 +107,11 @@ public class Given_GridViewItemPresenter
 		grid.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 
-		var outer = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
-		var inner = ChromeTestHelper.GetField<Border>(presenter, "m_innerSelectionBorder");
+		var outer = presenter.m_outerBorder!;
+		var inner = presenter.m_innerSelectionBorder!;
 		Assert.AreSame(presenter, inner.GetParent());
 		Assert.AreSame(presenter, outer.GetParent());
-		Assert.AreEqual(default(Thickness), ChromeTestHelper.GetField<Border>(presenter, "m_backplateRectangle").Margin);
+		Assert.AreEqual(default(Thickness), presenter.m_backplateRectangle!.Margin);
 		Assert.AreEqual(new CornerRadius(4), inner.CornerRadius, "A non-nested inner border keeps the general radius");
 	}
 
@@ -121,13 +121,13 @@ public class Given_GridViewItemPresenter
 		var (_, item, presenter) = await CreateGridView();
 
 		VisualStateManager.GoToState(item, "PointerOver", false);
-		var first = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
+		var first = presenter.m_outerBorder!;
 
 		VisualStateManager.GoToState(item, "Normal", false);
 		Assert.IsNull(first.GetParent());
 
 		VisualStateManager.GoToState(item, "PointerOver", false);
-		var second = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
+		var second = presenter.m_outerBorder!;
 
 		Assert.AreSame(first, second, "The removed outer border is added back instead of a new one");
 		Assert.AreSame(presenter, second.GetParent());
@@ -149,7 +149,7 @@ public class Given_GridViewItemPresenter
 		grid.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 		var lightBorder = ((SolidColorBrush)presenter.SelectedBorderBrush!).Color;
-		var lightOuter = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
+		var lightOuter = presenter.m_outerBorder!;
 
 		// The borders sit detached, waiting for reuse, while the theme changes.
 		grid.SelectedIndex = -1;
@@ -160,8 +160,8 @@ public class Given_GridViewItemPresenter
 		grid.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 
-		var outer = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
-		var inner = ChromeTestHelper.GetField<Border>(presenter, "m_innerSelectionBorder");
+		var outer = presenter.m_outerBorder!;
+		var inner = presenter.m_innerSelectionBorder!;
 		Assert.AreSame(lightOuter, outer, "Precondition: the border detached during the theme change is the one reused");
 		Assert.AreNotEqual(lightBorder, ((SolidColorBrush)presenter.SelectedBorderBrush!).Color, "The selected border brush differs between Light and Dark");
 		Assert.AreSame(presenter.SelectedBorderBrush, outer.BorderBrush);
@@ -176,7 +176,7 @@ public class Given_GridViewItemPresenter
 		grid.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 
-		var nested = ChromeTestHelper.GetField<Border>(presenter, "m_innerSelectionBorder");
+		var nested = presenter.m_innerSelectionBorder!;
 		Assert.AreEqual(-1, nested.Margin.Left, 0.5, "A nested inner border overlaps the outer one by 1 px");
 
 		grid.SelectedIndex = -1;
@@ -187,7 +187,7 @@ public class Given_GridViewItemPresenter
 		grid.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 
-		var inner = ChromeTestHelper.GetField<Border>(presenter, "m_innerSelectionBorder");
+		var inner = presenter.m_innerSelectionBorder!;
 		Assert.AreSame(nested, inner, "The removed inner border is added back instead of a new one");
 		Assert.AreSame(presenter, inner.GetParent());
 		Assert.AreEqual(default(Thickness), inner.Margin);
@@ -202,9 +202,9 @@ public class Given_GridViewItemPresenter
 		grid.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 
-		var outer = ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder");
-		var inner = ChromeTestHelper.GetField<Border>(presenter, "m_innerSelectionBorder");
-		var backplate = ChromeTestHelper.GetField<Border>(presenter, "m_backplateRectangle");
+		var outer = presenter.m_outerBorder!;
+		var inner = presenter.m_innerSelectionBorder!;
+		var backplate = presenter.m_backplateRectangle!;
 
 		presenter.CornerRadius = new CornerRadius(8);
 		await WindowHelper.WaitForIdle();
@@ -232,9 +232,9 @@ public class Given_GridViewItemPresenter
 		item.IsEnabled = false;
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreSame(lvip.SelectedDisabledBorderBrush, ChromeTestHelper.GetField<Border>(presenter, "m_outerBorder").BorderBrush);
+		Assert.AreSame(lvip.SelectedDisabledBorderBrush, presenter.m_outerBorder!.BorderBrush);
 		Assert.AreEqual(lvip.DisabledOpacity, presenter.GetTemplateChildIfExists()!.Opacity, 1e-6);
-		Assert.AreSame(lvip.SelectedDisabledBackground, ChromeTestHelper.GetField<Border>(presenter, "m_backplateRectangle").Background);
+		Assert.AreSame(lvip.SelectedDisabledBackground, presenter.m_backplateRectangle!.Background);
 	}
 
 	[TestMethod]
@@ -249,7 +249,7 @@ public class Given_GridViewItemPresenter
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
 		await WindowHelper.WaitForIdle();
 
-		var checkBox = ChromeTestHelper.GetField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 		Assert.AreSame(presenter, checkBox.GetParent());
 		var checkBoxOrigin = checkBox.TransformToVisual(presenter).TransformPoint(default);
 		// Rounded Overlay margin: inner selection border (1) + SelectedBorderThickness + 1 on the top and right.
@@ -261,7 +261,7 @@ public class Given_GridViewItemPresenter
 		grid.SelectionMode = ListViewSelectionMode.None;
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
 
-		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"));
+		Assert.IsNull(presenter.m_multiSelectCheckBoxRectangle);
 	}
 
 	[TestMethod]
@@ -279,10 +279,10 @@ public class Given_GridViewItemPresenter
 		var (grid, item, presenter) = await CreateGridView(style);
 		var gvip = (GridViewItemPresenter)presenter;
 
-		Assert.AreSame(item, ChromeTestHelper.GetParentItem(presenter));
+		Assert.AreSame(item, presenter.m_pParentListViewBaseItemNoRef);
 		Assert.AreSame(presenter, item.GetGridViewItemChromeNoRef());
 
-		var backplate = ChromeTestHelper.GetField<Border>(presenter, "m_backplateRectangle");
+		var backplate = presenter.m_backplateRectangle!;
 
 		VisualStateManager.GoToState(item, "PointerOver", false);
 		Assert.AreSame(gvip.PointerOverBackground, backplate.Background);
@@ -290,7 +290,7 @@ public class Given_GridViewItemPresenter
 		grid.SelectedIndex = 0;
 		await WindowHelper.WaitForIdle();
 		Assert.AreSame(gvip.SelectedBackground, backplate.Background);
-		Assert.AreEqual(ListViewBaseItemPresenter.CommonStates2.Selected, ChromeTestHelper.GetField<ListViewBaseItemPresenter.VisualStates>(presenter, "m_visualStates").commonState2);
+		Assert.AreEqual(ListViewBaseItemPresenter.CommonStates2.Selected, presenter.m_visualStates.commonState2);
 	}
 
 	[TestMethod]

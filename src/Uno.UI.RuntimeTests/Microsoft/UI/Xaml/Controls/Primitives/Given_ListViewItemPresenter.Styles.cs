@@ -208,7 +208,7 @@ public partial class Given_ListViewItemPresenter
 
 			var presenter = (ListViewItemPresenter)VisualTreeHelper.GetChild(item, 0);
 			Assert.AreEqual(new CornerRadius(4), presenter.CornerRadius);
-			Assert.IsNotNull(ChromeTestHelper.GetField<Border>(presenter, "m_backplateRectangle"), "Rounded chrome creates the backplate");
+			Assert.IsNotNull(presenter.m_backplateRectangle, "Rounded chrome creates the backplate");
 		}
 		finally
 		{

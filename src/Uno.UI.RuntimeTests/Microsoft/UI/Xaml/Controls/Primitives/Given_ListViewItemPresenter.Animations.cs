@@ -2,8 +2,7 @@
 #nullable enable
 
 using System;
-using System.Collections;
-using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -27,7 +26,7 @@ public partial class Given_ListViewItemPresenter
 
 		Process(presenter, ReorderHint(presenter, 10, 4, isStarting: true));
 
-		Assert.IsNotNull(GetAnimationStoryboard(presenter, "m_reorderHintAnimation"));
+		Assert.IsNotNull(presenter.m_reorderHintAnimation.tpStoryboard);
 
 		var transform = presenter.TransitionTarget!.CompositeTransform!;
 		await WindowHelper.WaitFor(() => Math.Abs(transform.TranslateX - 10) < AnimationTolerance, message: "TranslateX did not reach the hint offset");
@@ -56,7 +55,7 @@ public partial class Given_ListViewItemPresenter
 
 		Assert.AreEqual(10, transform.TranslateX, 0.5, "Return animation starts from the hinted offset");
 
-		await WindowHelper.WaitFor(() => GetAnimationStoryboard(presenter, "m_reorderHintAnimation") is null, message: "Completed handler did not clear the animation");
+		await WindowHelper.WaitFor(() => presenter.m_reorderHintAnimation.tpStoryboard is null, message: "Completed handler did not clear the animation");
 
 		Assert.AreEqual(0, transform.TranslateX, AnimationTolerance);
 		Assert.AreEqual(int.MaxValue, GetCurrentPriority(presenter), "Layers unlocked once the return completes");
@@ -70,7 +69,7 @@ public partial class Given_ListViewItemPresenter
 
 		Process(presenter, ReorderHint(presenter, 10, 0, isStarting: false, steadyStateOnly: true));
 
-		Assert.IsNull(GetAnimationStoryboard(presenter, "m_reorderHintAnimation"));
+		Assert.IsNull(presenter.m_reorderHintAnimation.tpStoryboard);
 		Assert.AreEqual(0, transform.TranslateX, AnimationTolerance);
 		Assert.AreEqual(int.MaxValue, GetCurrentPriority(presenter));
 	}
@@ -107,7 +106,7 @@ public partial class Given_ListViewItemPresenter
 
 		Process(presenter, DragDrop(presenter, content, DragDropState.SinglePrimary, isStarting: false));
 
-		Assert.IsNull(GetAnimationStoryboard(presenter, "m_dragDropAnimation"));
+		Assert.IsNull(presenter.m_dragDropAnimation.tpStoryboard);
 		Assert.AreEqual(1, tt.Opacity, AnimationTolerance);
 		Assert.AreEqual(1, tt.CompositeTransform!.ScaleX, AnimationTolerance);
 		Assert.AreEqual(1, content.TransitionTarget!.Opacity, AnimationTolerance);
@@ -196,7 +195,7 @@ public partial class Given_ListViewItemPresenter
 		Process(presenter, DragDrop(presenter, content, DragDropState.SinglePrimary, isStarting: true, steadyStateOnly: true));
 		Process(presenter, ReorderHint(presenter, 10, 0, isStarting: true, steadyStateOnly: true));
 
-		Assert.IsNull(GetAnimationStoryboard(presenter, "m_reorderHintAnimation"));
+		Assert.IsNull(presenter.m_reorderHintAnimation.tpStoryboard);
 		Assert.AreEqual(0, presenter.TransitionTarget!.CompositeTransform!.TranslateX, AnimationTolerance);
 		Assert.AreEqual(0, GetCurrentPriority(presenter), "The refused command does not release the drag lock");
 	}
@@ -208,7 +207,7 @@ public partial class Given_ListViewItemPresenter
 
 		Process(presenter, new ListViewBaseItemAnimationCommand_Pressed(true, new WeakReference<UIElement>(presenter), isStarting: true, steadyStateOnly: false));
 
-		Assert.IsNull(GetAnimationStoryboard(presenter, "m_pointerPressedAnimation"));
+		Assert.IsNull(presenter.m_pointerPressedAnimation.tpStoryboard);
 		Assert.AreEqual(int.MaxValue, GetCurrentPriority(presenter), "No storyboard until PointerDown/UpThemeAnimation are ported, so the lock is released");
 		Assert.AreEqual(0, GetPendingCommandCount(presenter));
 	}
@@ -219,7 +218,7 @@ public partial class Given_ListViewItemPresenter
 		using var _ = ListViewBaseItemChromeRuntimeFeatures.Override(forceRounded: true);
 		var (presenter, content) = await CreateLayoutItem();
 		presenter.EnsureMultiSelectCheckBox();
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 
 		Process(presenter, MultiSelect(presenter, content, entering: true));
 
@@ -230,12 +229,12 @@ public partial class Given_ListViewItemPresenter
 		Assert.AreEqual(-28, content.TransitionTarget!.CompositeTransform!.TranslateX, AnimationTolerance);
 		Assert.AreEqual(3, GetCurrentPriority(presenter));
 
-		await WaitForAnimationCleared(presenter, "m_multiSelectAnimation");
+		await WaitForAnimationCleared(presenter.m_multiSelectAnimation);
 
 		Assert.AreEqual(0, checkBoxTT.CompositeTransform.TranslateX, AnimationTolerance);
 		Assert.AreEqual(0, checkBoxTT.ClipTransform.TranslateX, AnimationTolerance);
 		Assert.AreEqual(0, content.TransitionTarget.CompositeTransform.TranslateX, AnimationTolerance);
-		Assert.AreSame(checkBox, GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"), "Entering keeps the check box");
+		Assert.AreSame(checkBox, presenter.m_multiSelectCheckBoxRectangle, "Entering keeps the check box");
 		Assert.AreEqual(int.MaxValue, GetCurrentPriority(presenter));
 	}
 
@@ -253,7 +252,7 @@ public partial class Given_ListViewItemPresenter
 
 		Process(presenter, MultiSelect(presenter, content, entering, rounded: rounded, contentTranslationX: contentTranslationX));
 
-		var storyboard = GetAnimationStoryboard(presenter, "m_multiSelectAnimation")!;
+		var storyboard = presenter.m_multiSelectAnimation.tpStoryboard!;
 		Assert.AreEqual(3, storyboard.Children.Count, "Check box translate + clip translate, content translate");
 		Assert.AreEqual(TimeSpan.FromMilliseconds(expectedMs), GetLastKeyTime(storyboard));
 	}
@@ -264,7 +263,7 @@ public partial class Given_ListViewItemPresenter
 		using var _ = ListViewBaseItemChromeRuntimeFeatures.Override(forceRounded: true);
 		var (presenter, content) = await CreateLayoutItem();
 		presenter.EnsureMultiSelectCheckBox();
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 
 		Process(presenter, MultiSelect(presenter, content, entering: false));
 
@@ -274,11 +273,11 @@ public partial class Given_ListViewItemPresenter
 
 		await WindowHelper.WaitFor(() => checkBoxTT.CompositeTransform.TranslateX < -10, message: "Check box did not slide out");
 		Assert.IsTrue(checkBoxTT.ClipTransform!.TranslateX > 10, "Clip slides the other way so the check box stays revealed in place");
-		Assert.AreSame(checkBox, GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"), "Still present while animating");
+		Assert.AreSame(checkBox, presenter.m_multiSelectCheckBoxRectangle, "Still present while animating");
 
-		await WaitForAnimationCleared(presenter, "m_multiSelectAnimation");
+		await WaitForAnimationCleared(presenter.m_multiSelectAnimation);
 
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"));
+		Assert.IsNull(presenter.m_multiSelectCheckBoxRectangle);
 		Assert.IsNull(checkBox.GetParent());
 		Assert.AreEqual(0, content.TransitionTarget.CompositeTransform.TranslateX, AnimationTolerance);
 		Assert.AreEqual(int.MaxValue, GetCurrentPriority(presenter));
@@ -289,19 +288,19 @@ public partial class Given_ListViewItemPresenter
 	{
 		var (presenter, content) = await CreateLayoutItem();
 		presenter.EnsureMultiSelectCheckBox();
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 
 		Process(presenter, MultiSelect(presenter, content, entering: true));
-		var entering = GetAnimationStoryboard(presenter, "m_multiSelectAnimation")!;
+		var entering = presenter.m_multiSelectAnimation.tpStoryboard!;
 
 		Process(presenter, MultiSelect(presenter, content, entering: false));
 
-		Assert.AreNotSame(entering, GetAnimationStoryboard(presenter, "m_multiSelectAnimation"), "The running enter animation is cleared");
-		Assert.AreEqual(0, GetCompletedHandlerCount(entering), "The cleared animation's Completed handler is unhooked");
+		Assert.AreNotSame(entering, presenter.m_multiSelectAnimation.tpStoryboard, "The running enter animation is cleared");
+		Assert.AreEqual(0, entering.CompletedHandlerCount, "The cleared animation's Completed handler is unhooked");
 
-		await WaitForAnimationCleared(presenter, "m_multiSelectAnimation");
+		await WaitForAnimationCleared(presenter.m_multiSelectAnimation);
 
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"));
+		Assert.IsNull(presenter.m_multiSelectCheckBoxRectangle);
 		Assert.IsNull(checkBox.GetParent());
 	}
 
@@ -314,13 +313,13 @@ public partial class Given_ListViewItemPresenter
 		for (var i = 0; i < 2; i++)
 		{
 			Process(presenter, MultiSelect(presenter, content, entering: true));
-			var storyboard = GetAnimationStoryboard(presenter, "m_multiSelectAnimation")!;
+			var storyboard = presenter.m_multiSelectAnimation.tpStoryboard!;
 
 			// OnMultiSelectCompleted stops the storyboard that is raising Completed (ClearAnimation).
-			await WaitForAnimationCleared(presenter, "m_multiSelectAnimation");
+			await WaitForAnimationCleared(presenter.m_multiSelectAnimation);
 
-			Assert.AreEqual(0, GetCompletedHandlerCount(storyboard));
-			Assert.IsNull(GetAnimationCommand(presenter, "m_multiSelectAnimation"));
+			Assert.AreEqual(0, storyboard.CompletedHandlerCount);
+			Assert.IsNull(presenter.m_multiSelectAnimation.pCommand);
 			Assert.AreEqual(int.MaxValue, GetCurrentPriority(presenter));
 			Assert.AreEqual(0, GetPendingCommandCount(presenter));
 		}
@@ -331,21 +330,21 @@ public partial class Given_ListViewItemPresenter
 	{
 		var (presenter, content) = await CreateLayoutItem();
 		presenter.EnsureMultiSelectCheckBox();
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 
 		Process(presenter, MultiSelect(presenter, content, entering: true, steadyStateOnly: true));
 
-		Assert.AreEqual(0, GetAnimationStoryboard(presenter, "m_multiSelectAnimation")!.Children.Count, "Inline steady state has no timelines");
+		Assert.AreEqual(0, presenter.m_multiSelectAnimation.tpStoryboard!.Children.Count, "Inline steady state has no timelines");
 		Assert.AreEqual(0, checkBox.TransitionTarget!.CompositeTransform!.TranslateX);
 		Assert.IsFalse(content.HasTransitionTarget() && content.TransitionTarget!.CompositeTransform!.TranslateX != 0);
 
-		await WaitForAnimationCleared(presenter, "m_multiSelectAnimation");
-		Assert.AreSame(checkBox, GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"));
+		await WaitForAnimationCleared(presenter.m_multiSelectAnimation);
+		Assert.AreSame(checkBox, presenter.m_multiSelectCheckBoxRectangle);
 
 		Process(presenter, MultiSelect(presenter, content, entering: false, steadyStateOnly: true));
-		await WaitForAnimationCleared(presenter, "m_multiSelectAnimation");
+		await WaitForAnimationCleared(presenter.m_multiSelectAnimation);
 
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"));
+		Assert.IsNull(presenter.m_multiSelectCheckBoxRectangle);
 	}
 
 	[TestMethod]
@@ -353,11 +352,11 @@ public partial class Given_ListViewItemPresenter
 	{
 		var (presenter, content) = await CreateLayoutItem();
 		presenter.EnsureMultiSelectCheckBox();
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 
 		Process(presenter, MultiSelect(presenter, content, entering: false, checkMode: ListViewItemPresenterCheckMode.Overlay));
 
-		var storyboard = GetAnimationStoryboard(presenter, "m_multiSelectAnimation")!;
+		var storyboard = presenter.m_multiSelectAnimation.tpStoryboard!;
 		Assert.AreEqual(TimeSpan.FromMilliseconds(167), GetLastKeyTime(storyboard));
 
 		var checkBoxTT = checkBox.TransitionTarget!;
@@ -365,9 +364,9 @@ public partial class Given_ListViewItemPresenter
 		Assert.AreEqual(0, checkBoxTT.CompositeTransform!.TranslateX, "Overlay does not slide");
 		Assert.IsFalse(content.HasTransitionTarget() && content.TransitionTarget!.CompositeTransform!.TranslateX != 0, "Overlay does not move the content");
 
-		await WaitForAnimationCleared(presenter, "m_multiSelectAnimation");
+		await WaitForAnimationCleared(presenter.m_multiSelectAnimation);
 
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"));
+		Assert.IsNull(presenter.m_multiSelectCheckBoxRectangle);
 	}
 
 	[TestMethod]
@@ -375,24 +374,24 @@ public partial class Given_ListViewItemPresenter
 	{
 		var (presenter, content) = await CreateLayoutItem();
 		presenter.EnsureMultiSelectCheckBox();
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 
 		Process(presenter, MultiSelect(presenter, content, entering: false, checkMode: ListViewItemPresenterCheckMode.Overlay, steadyStateOnly: true));
 
 		Assert.AreEqual(0, checkBox.TransitionTarget!.Opacity, AnimationTolerance, "Steady fade-out applies synchronously");
-		Assert.AreSame(checkBox, GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"), "Completion is never raised from inside Begin");
+		Assert.AreSame(checkBox, presenter.m_multiSelectCheckBoxRectangle, "Completion is never raised from inside Begin");
 
-		await WaitForAnimationCleared(presenter, "m_multiSelectAnimation");
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"));
+		await WaitForAnimationCleared(presenter.m_multiSelectAnimation);
+		Assert.IsNull(presenter.m_multiSelectCheckBoxRectangle);
 
 		presenter.EnsureMultiSelectCheckBox();
-		checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 
 		Process(presenter, MultiSelect(presenter, content, entering: true, checkMode: ListViewItemPresenterCheckMode.Overlay, steadyStateOnly: true));
 		Assert.AreEqual(1, checkBox.TransitionTarget!.Opacity, AnimationTolerance);
 
-		await WaitForAnimationCleared(presenter, "m_multiSelectAnimation");
-		Assert.AreSame(checkBox, GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"), "Entering keeps the check box");
+		await WaitForAnimationCleared(presenter.m_multiSelectAnimation);
+		Assert.AreSame(checkBox, presenter.m_multiSelectCheckBoxRectangle, "Entering keeps the check box");
 		Assert.AreEqual(int.MaxValue, GetCurrentPriority(presenter));
 	}
 
@@ -408,14 +407,14 @@ public partial class Given_ListViewItemPresenter
 		Assert.AreEqual(-7, indicatorTT.CompositeTransform!.TranslateX, AnimationTolerance);
 		Assert.AreEqual(7, indicatorTT.ClipTransform!.TranslateX, AnimationTolerance);
 		Assert.AreEqual(-7, content.TransitionTarget!.CompositeTransform!.TranslateX, AnimationTolerance);
-		Assert.AreEqual(TimeSpan.FromMilliseconds(83), GetLastKeyTime(GetAnimationStoryboard(presenter, "m_indicatorSelectAnimation")!));
+		Assert.AreEqual(TimeSpan.FromMilliseconds(83), GetLastKeyTime(presenter.m_indicatorSelectAnimation.tpStoryboard!));
 
-		await WaitForAnimationCleared(presenter, "m_indicatorSelectAnimation");
+		await WaitForAnimationCleared(presenter.m_indicatorSelectAnimation);
 
 		Assert.AreEqual(0, indicatorTT.CompositeTransform.TranslateX, AnimationTolerance);
 		Assert.AreEqual(0, indicatorTT.ClipTransform.TranslateX, AnimationTolerance);
 		Assert.AreEqual(0, content.TransitionTarget.CompositeTransform.TranslateX, AnimationTolerance);
-		Assert.AreSame(indicator, GetChromeField<Border?>(presenter, "m_selectionIndicatorRectangle"), "IndicatorSelect never removes the indicator");
+		Assert.AreSame(indicator, presenter.m_selectionIndicatorRectangle, "IndicatorSelect never removes the indicator");
 		Assert.AreEqual(int.MaxValue, GetCurrentPriority(presenter));
 	}
 
@@ -438,7 +437,7 @@ public partial class Given_ListViewItemPresenter
 		Process(presenter, IndicatorSelect(indicator, content, entering: true));
 
 		// Freeze at t=0: the indicator is translated 7px left and the TT clip, shifted back, still covers its resting bounds.
-		var storyboard = GetAnimationStoryboard(presenter, "m_indicatorSelectAnimation")!;
+		var storyboard = presenter.m_indicatorSelectAnimation.tpStoryboard!;
 		storyboard.Pause();
 		try
 		{
@@ -453,7 +452,7 @@ public partial class Given_ListViewItemPresenter
 			storyboard.Resume();
 		}
 
-		await WaitForAnimationCleared(presenter, "m_indicatorSelectAnimation");
+		await WaitForAnimationCleared(presenter.m_indicatorSelectAnimation);
 
 		var after = await UITestHelper.ScreenShot(root);
 		ImageAssert.HasColorAt(after, (float)restingX, (float)centerY, Microsoft.UI.Colors.Red, tolerance: 5);
@@ -467,13 +466,13 @@ public partial class Given_ListViewItemPresenter
 
 		Process(presenter, IndicatorSelect(indicator, content, entering: false));
 
-		var storyboard = GetAnimationStoryboard(presenter, "m_indicatorSelectAnimation")!;
+		var storyboard = presenter.m_indicatorSelectAnimation.tpStoryboard!;
 		Assert.AreEqual(7, content.TransitionTarget!.CompositeTransform!.TranslateX, AnimationTolerance);
 		Assert.AreEqual(0, indicator.TransitionTarget!.CompositeTransform!.TranslateX, AnimationTolerance);
 
-		await WaitForAnimationCleared(presenter, "m_indicatorSelectAnimation");
+		await WaitForAnimationCleared(presenter.m_indicatorSelectAnimation);
 
-		Assert.AreEqual(0, GetCompletedHandlerCount(storyboard));
+		Assert.AreEqual(0, storyboard.CompletedHandlerCount);
 		Assert.AreEqual(0, content.TransitionTarget.CompositeTransform.TranslateX, AnimationTolerance);
 	}
 
@@ -485,10 +484,10 @@ public partial class Given_ListViewItemPresenter
 
 		Process(presenter, IndicatorSelect(indicator, content, entering: true, steadyStateOnly: true));
 
-		Assert.AreEqual(0, GetAnimationStoryboard(presenter, "m_indicatorSelectAnimation")!.Children.Count);
+		Assert.AreEqual(0, presenter.m_indicatorSelectAnimation.tpStoryboard!.Children.Count);
 		Assert.AreEqual(0, indicator.TransitionTarget!.CompositeTransform!.TranslateX);
 
-		await WaitForAnimationCleared(presenter, "m_indicatorSelectAnimation");
+		await WaitForAnimationCleared(presenter.m_indicatorSelectAnimation);
 		Assert.AreEqual(int.MaxValue, GetCurrentPriority(presenter));
 	}
 
@@ -496,23 +495,25 @@ public partial class Given_ListViewItemPresenter
 	public async Task When_SelectionIndicator_Shown_Then_Fades_And_Grows_In()
 	{
 		using var _ = ListViewBaseItemChromeRuntimeFeatures.Override(forceRounded: true, forceSelectionIndicatorVisual: true, forceSelectionIndicatorModeInline: true);
-		var (presenter, _, indicator) = await CreateIndicatorItem();
+		var (presenter, _) = await CreateUnselectedIndicatorItem();
 
-		Process(presenter, SelectionIndicatorVisibility(indicator, selected: true));
+		// Selecting the item creates the indicator and queues its show animation.
+		presenter.GoToElementState(nameof(ListViewBaseItemPresenter.CommonStates2.Selected), useTransitions: true);
 
+		var indicator = presenter.m_selectionIndicatorRectangle!;
 		var tt = indicator.TransitionTarget!;
 		Assert.AreEqual(0, tt.Opacity, AnimationTolerance, "Starts transparent");
 		Assert.AreEqual(0, tt.CompositeTransform!.ScaleY, AnimationTolerance, "Starts from fromScale");
 		Assert.AreEqual(new Windows.Foundation.Point(0.5, 0.5), tt.TransformOrigin);
-		Assert.AreEqual(TimeSpan.FromMilliseconds(167), GetLastKeyTime(GetAnimationStoryboard(presenter, "m_selectionIndicatorAnimation")!));
+		Assert.AreEqual(TimeSpan.FromMilliseconds(167), GetLastKeyTime(presenter.m_selectionIndicatorAnimation.tpStoryboard!));
 
 		await WindowHelper.WaitFor(() => tt.Opacity > 0.5 && tt.CompositeTransform.ScaleY > 0.5, message: "Indicator did not fade/grow in");
 
-		await WaitForAnimationCleared(presenter, "m_selectionIndicatorAnimation");
+		await WaitForAnimationCleared(presenter.m_selectionIndicatorAnimation);
 
 		Assert.AreEqual(1, tt.Opacity, AnimationTolerance);
 		Assert.AreEqual(1, tt.CompositeTransform.ScaleY, AnimationTolerance);
-		Assert.AreSame(indicator, GetChromeField<Border?>(presenter, "m_selectionIndicatorRectangle"));
+		Assert.AreSame(indicator, presenter.m_selectionIndicatorRectangle);
 		Assert.AreEqual(int.MaxValue, GetCurrentPriority(presenter));
 	}
 
@@ -526,11 +527,11 @@ public partial class Given_ListViewItemPresenter
 
 		var tt = indicator.TransitionTarget!;
 		await WindowHelper.WaitFor(() => tt.Opacity < 0.9, message: "Indicator did not fade out");
-		Assert.AreSame(indicator, GetChromeField<Border?>(presenter, "m_selectionIndicatorRectangle"), "Still present while fading");
+		Assert.AreSame(indicator, presenter.m_selectionIndicatorRectangle, "Still present while fading");
 
-		await WaitForAnimationCleared(presenter, "m_selectionIndicatorAnimation");
+		await WaitForAnimationCleared(presenter.m_selectionIndicatorAnimation);
 
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_selectionIndicatorRectangle"));
+		Assert.IsNull(presenter.m_selectionIndicatorRectangle);
 		Assert.IsNull(indicator.GetParent());
 	}
 
@@ -546,16 +547,16 @@ public partial class Given_ListViewItemPresenter
 		Assert.AreEqual(1, tt.Opacity, AnimationTolerance);
 		Assert.AreEqual(1, tt.CompositeTransform!.ScaleY, AnimationTolerance);
 
-		await WaitForAnimationCleared(presenter, "m_selectionIndicatorAnimation");
-		Assert.AreSame(indicator, GetChromeField<Border?>(presenter, "m_selectionIndicatorRectangle"), "Showing keeps the indicator");
+		await WaitForAnimationCleared(presenter.m_selectionIndicatorAnimation);
+		Assert.AreSame(indicator, presenter.m_selectionIndicatorRectangle, "Showing keeps the indicator");
 
 		Process(presenter, SelectionIndicatorVisibility(indicator, selected: false, steadyStateOnly: true));
 
 		Assert.AreEqual(0, tt.Opacity, AnimationTolerance);
-		Assert.AreSame(indicator, GetChromeField<Border?>(presenter, "m_selectionIndicatorRectangle"), "Completion is never raised from inside Begin");
+		Assert.AreSame(indicator, presenter.m_selectionIndicatorRectangle, "Completion is never raised from inside Begin");
 
-		await WaitForAnimationCleared(presenter, "m_selectionIndicatorAnimation");
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_selectionIndicatorRectangle"));
+		await WaitForAnimationCleared(presenter.m_selectionIndicatorAnimation);
+		Assert.IsNull(presenter.m_selectionIndicatorRectangle);
 	}
 
 	[TestMethod]
@@ -565,18 +566,18 @@ public partial class Given_ListViewItemPresenter
 		var (presenter, _, indicator) = await CreateIndicatorItem();
 
 		Process(presenter, SelectionIndicatorVisibility(indicator, selected: false));
-		var hiding = GetAnimationStoryboard(presenter, "m_selectionIndicatorAnimation")!;
+		var hiding = presenter.m_selectionIndicatorAnimation.tpStoryboard!;
 		var tt = indicator.TransitionTarget!;
 		await WindowHelper.WaitFor(() => tt.Opacity < 0.9, message: "Indicator did not fade out");
 
 		Process(presenter, SelectionIndicatorVisibility(indicator, selected: true));
 
-		Assert.AreEqual(0, GetCompletedHandlerCount(hiding), "The interrupted animation no longer removes the indicator");
+		Assert.AreEqual(0, hiding.CompletedHandlerCount, "The interrupted animation no longer removes the indicator");
 		Assert.IsTrue(tt.Opacity > 0.05, "No 0 opacity keyframe when an animation is already running");
 
-		await WaitForAnimationCleared(presenter, "m_selectionIndicatorAnimation");
+		await WaitForAnimationCleared(presenter.m_selectionIndicatorAnimation);
 
-		Assert.AreSame(indicator, GetChromeField<Border?>(presenter, "m_selectionIndicatorRectangle"));
+		Assert.AreSame(indicator, presenter.m_selectionIndicatorRectangle);
 		Assert.AreEqual(1, tt.Opacity, AnimationTolerance);
 	}
 
@@ -586,39 +587,42 @@ public partial class Given_ListViewItemPresenter
 		using var _ = ListViewBaseItemChromeRuntimeFeatures.Override(forceRounded: true, forceSelectionIndicatorVisual: true, forceSelectionIndicatorModeInline: true);
 		var (presenter, content, indicator) = await CreateIndicatorItem();
 		presenter.EnsureMultiSelectCheckBox();
-		var checkBox = GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle");
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
 
 		Process(presenter, MultiSelect(presenter, content, entering: false));
-		var multiSelect = GetAnimationStoryboard(presenter, "m_multiSelectAnimation")!;
+		var multiSelect = presenter.m_multiSelectAnimation.tpStoryboard!;
 
 		// MultiSelect holds the priority-3 lock, so the indicator command must run on its own.
 		presenter.FlushChromeAnimations();
 		Process(presenter, SelectionIndicatorVisibility(indicator, selected: false));
-		Assert.IsNotNull(GetAnimationStoryboard(presenter, "m_selectionIndicatorAnimation"));
+		Assert.IsNotNull(presenter.m_selectionIndicatorAnimation.tpStoryboard);
 
 		presenter.FlushChromeAnimations();
 
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"));
+		Assert.IsNull(presenter.m_multiSelectCheckBoxRectangle);
 		Assert.IsNull(checkBox.GetParent());
-		Assert.AreEqual(0, GetCompletedHandlerCount(multiSelect));
-		Assert.IsNull(GetChromeField<Border?>(presenter, "m_selectionIndicatorRectangle"));
+		Assert.AreEqual(0, multiSelect.CompletedHandlerCount);
+		Assert.IsNull(presenter.m_selectionIndicatorRectangle);
 		Assert.IsNull(indicator.GetParent());
-		Assert.IsNull(GetAnimationStoryboard(presenter, "m_selectionIndicatorAnimation"));
+		Assert.IsNull(presenter.m_selectionIndicatorAnimation.tpStoryboard);
 		Assert.AreEqual(int.MaxValue, GetCurrentPriority(presenter));
 		Assert.AreEqual(0, content.TransitionTarget!.CompositeTransform!.TranslateX, AnimationTolerance);
 	}
 
-	private static async Task<(ListViewItemPresenter presenter, FrameworkElement content, Border indicator)> CreateIndicatorItem()
-	{
-		var (presenter, content) = await CreateLayoutItem(
+	private static Task<(ListViewItemPresenter presenter, FrameworkElement content)> CreateUnselectedIndicatorItem()
+		=> CreateLayoutItem(
 			inListView: true,
 			configure: p => p.SelectionIndicatorBrush = new SolidColorBrush(Microsoft.UI.Colors.Red),
 			configureItem: item => item.Margin = new Thickness(20, 0, 0, 0));
+
+	private static async Task<(ListViewItemPresenter presenter, FrameworkElement content, Border indicator)> CreateIndicatorItem()
+	{
+		var (presenter, content) = await CreateUnselectedIndicatorItem();
 		SetCommonState(presenter, ListViewBaseItemPresenter.CommonStates2.Selected);
 		presenter.EnsureSelectionIndicator();
 		await Relayout(presenter);
 
-		return (presenter, content, GetChromeField<Border>(presenter, "m_selectionIndicatorRectangle"));
+		return (presenter, content, presenter.m_selectionIndicatorRectangle!);
 	}
 
 	private static ListViewBaseItemAnimationCommand_MultiSelect MultiSelect(
@@ -635,7 +639,7 @@ public partial class Given_ListViewItemPresenter
 			20 /*checkBoxTranslationX*/,
 			contentTranslationX,
 			checkMode,
-			new WeakReference<UIElement>(GetChromeField<Border>(presenter, "m_multiSelectCheckBoxRectangle")),
+			new WeakReference<UIElement>(presenter.m_multiSelectCheckBoxRectangle!),
 			new WeakReference<UIElement>(content),
 			isStarting: true,
 			steadyStateOnly);
@@ -646,9 +650,9 @@ public partial class Given_ListViewItemPresenter
 	private static ListViewBaseItemAnimationCommand_SelectionIndicatorVisibility SelectionIndicatorVisibility(UIElement indicator, bool selected, double fromScale = 0, bool steadyStateOnly = false)
 		=> new(selected, fromScale, new WeakReference<UIElement>(indicator), isStarting: true, steadyStateOnly);
 
-	private static async Task WaitForAnimationCleared(ListViewBaseItemPresenter presenter, string animationStateField)
+	private static async Task WaitForAnimationCleared(ListViewBaseItemPresenter.AnimationState animation, [CallerArgumentExpression(nameof(animation))] string? name = null)
 	{
-		await WindowHelper.WaitFor(() => GetAnimationStoryboard(presenter, animationStateField) is null, message: $"{animationStateField} was not cleared by its Completed handler");
+		await WindowHelper.WaitFor(() => animation.tpStoryboard is null, message: $"{name} was not cleared by its Completed handler");
 		await WindowHelper.WaitForIdle();
 	}
 
@@ -669,15 +673,6 @@ public partial class Given_ListViewItemPresenter
 		return last;
 	}
 
-	private static object? GetAnimationCommand(ListViewBaseItemPresenter presenter, string animationStateField)
-	{
-		var state = GetChromeField<object>(presenter, animationStateField);
-		return state.GetType().GetField("pCommand", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(state);
-	}
-
-	private static int GetCompletedHandlerCount(Storyboard storyboard)
-		=> (typeof(Timeline).GetField("_completedHandlers", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(storyboard) as IList)?.Count ?? 0;
-
 	private static async Task<CompositeTransform> StartSettledReorderHint(ListViewItemPresenter presenter)
 	{
 		Process(presenter, ReorderHint(presenter, 10, 0, isStarting: true));
@@ -694,21 +689,14 @@ public partial class Given_ListViewItemPresenter
 	private static ListViewBaseItemAnimationCommand_DragDrop DragDrop(ListViewBaseItemPresenter presenter, FrameworkElement fadeOutTarget, DragDropState state, bool isStarting, bool steadyStateOnly = false)
 		=> new(state, new WeakReference<ListViewBaseItemPresenter>(presenter), new WeakReference<FrameworkElement>(fadeOutTarget), isStarting, steadyStateOnly);
 
-	// EnqueueAnimationCommand and ProcessAnimationCommands are private (C++ private/protected).
 	private static void Process(ListViewBaseItemPresenter presenter, ListViewBaseItemAnimationCommand command)
 	{
-		typeof(ListViewBaseItemPresenter).GetMethod("EnqueueAnimationCommand", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(presenter, [command]);
-		typeof(ListViewBaseItemPresenter).GetMethod("ProcessAnimationCommands", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(presenter, null);
+		presenter.EnqueueAnimationCommand(command);
+		presenter.ProcessAnimationCommands();
 	}
 
-	private static Storyboard? GetAnimationStoryboard(ListViewBaseItemPresenter presenter, string animationStateField)
-	{
-		var state = GetChromeField<object>(presenter, animationStateField);
-		return (Storyboard?)state.GetType().GetField("tpStoryboard", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(state);
-	}
+	private static int GetCurrentPriority(ListViewBaseItemPresenter presenter) => presenter.m_currentHighestCommandPriority;
 
-	private static int GetCurrentPriority(ListViewBaseItemPresenter presenter) => GetChromeField<int>(presenter, "m_currentHighestCommandPriority");
-
-	private static int GetPendingCommandCount(ListViewBaseItemPresenter presenter) => GetChromeField<IList>(presenter, "m_animationCommands").Count;
+	private static int GetPendingCommandCount(ListViewBaseItemPresenter presenter) => presenter.m_animationCommands.Count;
 }
 #endif
