@@ -642,6 +642,9 @@ void uno_window_maximize(NSWindow *window)
     // zoom: rather than performZoom:, which needs a zoom button (hidden with a custom title bar) and toggles back when already zoomed
     if (!window.isZoomed) {
         [window zoom:nil];
+    } else {
+        // Already the size zooming gives, as a window filling a small screen is: nothing to resize, but it is maximized.
+        ((UNOWindow*)window).overlappedPresenterState = OverlappedPresenterStateMaximized;
     }
 }
 
