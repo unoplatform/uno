@@ -35,6 +35,11 @@ public class Given_AccessibilityOnDemand
 		var items = new ObservableCollection<string> { "One", "Two", "Three" };
 		var listView = new ListView { ItemsSource = items };
 		await UITestHelper.Load(listView);
+		if (listView.CachedAutomationPeer is not null)
+		{
+			// A desktop UIA client (e.g. one tracking focus) walks the new content as soon as it loads.
+			Assert.Inconclusive("An accessibility client created the list's peer when it loaded.");
+		}
 
 		items.Add("Four");
 		items.RemoveAt(0);
