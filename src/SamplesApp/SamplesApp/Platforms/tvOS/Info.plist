@@ -60,22 +60,8 @@
 	<string>Assets.xcassets/iconapp.appiconset</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UISceneConfigurations</key>
-		<dict>
-			<key>UIWindowSceneSessionRoleApplication</key>
-			<array>
-				<dict>
-					<key>UISceneConfigurationName</key>
-					<string>__UNO_DEFAULT_SCENE_CONFIGURATION__</string>
-					<key>UISceneDelegateClassName</key>
-					<string>SceneDelegate</string>
-				</dict>
-			</array>
-		</dict>
-	</dict>
+	<!-- No scene manifest, unlike the iOS head: runs the scene lifecycle Uno adopts for such apps, whatever the SDK, so that the runtime tests cover it. -->
+	<key>UnoUseSceneLifecycle</key>
+	<true/>
 </dict>
 </plist>
