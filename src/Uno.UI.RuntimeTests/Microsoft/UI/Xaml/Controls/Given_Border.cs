@@ -192,7 +192,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			await UITestHelper.Load(SUT);
-			var screenshot = await UITestHelper.ScreenShot(SUT, scaling: UITestHelper.ScreenShotScalingMode.UseLogicalPixels);
+			var screenshot = await UITestHelper.ScreenShot(SUT);
 			ImageAssert.HasColorAt(screenshot, 5, 5, Colors.Red, tolerance: 5);
 			ImageAssert.HasColorAt(screenshot, 94, 94, Colors.Red, tolerance: 5);
 			ImageAssert.HasColorAt(screenshot, 25, 25, Colors.Blue, tolerance: 5);
@@ -223,7 +223,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			await UITestHelper.Load(SUT);
-			var screenshot = await UITestHelper.ScreenShot(SUT, scaling: UITestHelper.ScreenShotScalingMode.UseLogicalPixels);
+			var screenshot = await UITestHelper.ScreenShot(SUT);
 			ImageAssert.HasColorAt(screenshot, 10, 10, Colors.Red, tolerance: 5);
 			ImageAssert.HasColorAt(screenshot, 50, 50, Colors.Blue, tolerance: 5);
 			ImageAssert.DoesNotHaveColorAt(screenshot, 80, 80, Colors.Red, tolerance: 50);
