@@ -555,10 +555,32 @@ internal sealed partial class TextBoxCore
 #endif
 	}
 
-	internal void OnGotFocusCore()
+	internal void OnGotFocusCore(RoutedEventArgs args)
 	{
+		var owner = _host.Owner;
+
+		// From WinUI TextBoxBase::OnGotFocus:
+		// Verify that this textbox is still the focused element.
+		// This is to account for a scenario where a new element gains focus
+		// between focus manager queueing the GotFocus event and it being raised.
+		if (owner.XamlRoot is { } xamlRoot)
+		{
+			// Only return if this TextBox is the original source of the OnGotFocus event.
+			// Other controls may directly call this OnGotFocus function and we do not want
+			// to block those calls.
+			if (ReferenceEquals(args.OriginalSource, owner) && !ReferenceEquals(FocusManager.GetFocusedElement(xamlRoot), owner))
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug("GotFocus raised after the focus moved to another element, it is not brought into view.");
+				}
+
+				return;
+			}
+		}
+
 		_forceFocusedVisualState = false;
-		_host.Owner.StartBringIntoView(new BringIntoViewOptions
+		owner.StartBringIntoView(new BringIntoViewOptions
 		{
 			AnimationDesired = false
 		});

@@ -386,4 +386,26 @@ public partial class Given_PasswordBox
 		Assert.AreEqual(secret.Length, value.Length, "UIA Value must be masked to the password's length");
 	}
 #endif
+
+	[TestMethod]
+	public async Task When_Focus_Moves_Away_Before_GotFocus_Then_Not_Brought_Into_View()
+	{
+		var passwordBox = new PasswordBox();
+		var other = new Button { Content = "other" };
+		var SUT = new ScrollViewer
+		{
+			Width = 300,
+			Height = 150,
+			Content = new StackPanel { Children = { new Border { Height = 1000 }, passwordBox } }
+		};
+
+		await UITestHelper.Load(new StackPanel { Children = { other, SUT } });
+		Assert.AreEqual(0, SUT.VerticalOffset);
+
+		passwordBox.Focus(FocusState.Programmatic);
+		other.Focus(FocusState.Programmatic); // Same tick: the GotFocus of the PasswordBox, raised asynchronously, comes after this
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(0, SUT.VerticalOffset, "A PasswordBox that lost the focus before its GotFocus was raised must not be brought into view.");
+	}
 }
