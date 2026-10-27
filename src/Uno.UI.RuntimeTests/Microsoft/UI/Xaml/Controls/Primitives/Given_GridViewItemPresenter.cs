@@ -431,6 +431,84 @@ public class Given_GridViewItemPresenter
 #endif
 	}
 
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_Default_GridView_Item_Dropped_Into_Item_Center_Then_Accepted()
+	{
+#if HAS_INPUT_INJECTOR
+		var items = new ObservableCollection<string> { "0", "1", "2" };
+		var grid = new GridView
+		{
+			Width = 400,
+			Height = 200,
+			AllowDrop = true,
+			CanDragItems = true,
+			CanReorderItems = true,
+			ItemsSource = items,
+			ItemTemplate = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<Border Width="100" Height="100"><TextBlock Text="{Binding}" /></Border>
+				</DataTemplate>
+				"""),
+		};
+
+		await UITestHelper.Load(grid, x => x.IsLoaded && grid.ContainerFromIndex(2) is { });
+		await WindowHelper.WaitForIdle();
+
+		var target = (GridViewItem)grid.ContainerFromIndex(2);
+		DataPackageOperation? dropResult = null;
+		grid.DragItemsCompleted += (_, e) => dropResult = e.DropResult;
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		var bounds = target.GetAbsoluteBoundsRect();
+		var leftEdge = new Point(bounds.X + bounds.Width * 0.15, bounds.Y + bounds.Height / 2);
+		var center = new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2);
+		var dragged = Center((GridViewItem)grid.ContainerFromIndex(0));
+
+		mouse.Press(dragged);
+		await WindowHelper.WaitForIdle();
+		try
+		{
+			mouse.MoveTo(new Point(dragged.X + 20, dragged.Y), 4);
+			await WindowHelper.WaitForIdle();
+			// Moves made while the drag operation starts are not routed as drag events.
+			await Task.Delay(100);
+			mouse.MoveTo(leftEdge, 8);
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(grid.IsDragOverItem(target), "precondition: the pointer is in the reorder zone");
+
+			mouse.MoveTo(center, 4);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(grid.IsDragOverItem(target), "precondition: the pointer is in the drop-into zone");
+		}
+		finally
+		{
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
+		// The item marks the drag over handled, so the list stops updating the reorder; the operation it accepted in the reorder zone still applies.
+		await UITestHelper.WaitFor(() => dropResult is not null, timeoutMS: 2000);
+		Assert.AreEqual(DataPackageOperation.Move, dropResult);
+
+		mouse.MoveTo(new Point(center.X, center.Y + 1000));
+		await WindowHelper.WaitForIdle();
+
+		static Point Center(FrameworkElement element)
+		{
+			var b = element.GetAbsoluteBoundsRect();
+			return new Point(b.X + b.Width / 2, b.Y + b.Height / 2);
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
 	private static async Task<(GridView grid, GridViewItem item, ListViewBaseItemPresenter presenter)> CreateGridView(Style? itemContainerStyle = null, bool itemTemplate = false)
 	{
 		var grid = new GridView
