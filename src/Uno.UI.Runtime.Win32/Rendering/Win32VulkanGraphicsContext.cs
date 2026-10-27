@@ -54,7 +54,7 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 		var height = _height;
 		_vk = ClaimDevicePrewarm() is { } prewarm
 			? prewarm.Claim(
-				vk => TryCompleteForWindow(vk, hwnd, width, height),
+				vk => vk.InitializeSurface(hwnd.Value, width, height),
 				() => CreateForWindow(hwnd, width, height))
 			: CreateForWindow(hwnd, width, height);
 
@@ -95,17 +95,6 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 	internal static void DiscardDevicePrewarm() => ClaimDevicePrewarm()?.Discard();
 
 	private static BackgroundPrewarm<VulkanContext>? ClaimDevicePrewarm() => Interlocked.Exchange(ref _devicePrewarm, null);
-
-	private static bool TryCompleteForWindow(VulkanContext vk, HWND hwnd, int width, int height)
-	{
-		if (!vk.CanPresentTo(hwnd.Value))
-		{
-			return false;
-		}
-
-		vk.InitializeSurface(hwnd.Value, width, height);
-		return true;
-	}
 
 	private static VulkanContext CreateForWindow(HWND hwnd, int width, int height)
 	{

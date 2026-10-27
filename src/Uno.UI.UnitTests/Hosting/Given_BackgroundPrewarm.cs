@@ -22,7 +22,7 @@ public class Given_BackgroundPrewarm
 		var warmed = new FakeResource();
 		var sut = new BackgroundPrewarm<FakeResource>(() => warmed);
 
-		var claimed = sut.Claim(_ => true, () => throw new AssertFailedException("Fallback must not run"));
+		var claimed = sut.Claim(_ => { }, () => throw new AssertFailedException("Fallback must not run"));
 
 		Assert.AreSame(warmed, claimed);
 		Assert.IsFalse(warmed.IsDisposed);
@@ -40,7 +40,7 @@ public class Given_BackgroundPrewarm
 			return warmed;
 		});
 
-		var claim = Task.Run(() => sut.Claim(_ => true, () => new FakeResource()));
+		var claim = Task.Run(() => sut.Claim(_ => { }, () => new FakeResource()));
 		Assert.IsFalse(claim.Wait(100), "Claim returned before the warm-up finished");
 
 		gate.Set();
@@ -59,20 +59,6 @@ public class Given_BackgroundPrewarm
 		var claimed = sut.Claim(_ => throw new AssertFailedException("Nothing to complete"), () => fallback);
 
 		Assert.AreSame(fallback, claimed);
-	}
-
-	[TestMethod]
-	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24849")]
-	public void When_Warmed_Is_Not_Usable_Then_Disposed_And_Falls_Back()
-	{
-		var warmed = new FakeResource();
-		var fallback = new FakeResource();
-		var sut = new BackgroundPrewarm<FakeResource>(() => warmed);
-
-		var claimed = sut.Claim(_ => false, () => fallback);
-
-		Assert.AreSame(fallback, claimed);
-		Assert.IsTrue(warmed.IsDisposed);
 	}
 
 	[TestMethod]

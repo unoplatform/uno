@@ -137,39 +137,22 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	}
 
 	/// <summary>
-	/// Whether the device picked by <see cref="InitializeDevice"/> can present to this window. The swapchain waits
-	/// until its surface can present, so a device that never can must be rejected before <see cref="InitializeSurface"/>.
-	/// </summary>
-	public bool CanPresentTo(IntPtr nativeWindowHandle)
-	{
-		if (_device == null || _factory == null)
-		{
-			throw new InvalidOperationException("Vulkan device not initialized");
-		}
-
-		var surface = new VkSurfaceKHR { Handle = _factory.CreateSurface((VulkanInstance)_instance!, nativeWindowHandle) };
-		try
-		{
-			_instanceApi!.GetPhysicalDeviceSurfaceSupportKHR(PhysicalDeviceHandle, GraphicsQueueFamilyIndex, surface, out var supported)
-				.ThrowOnError("vkGetPhysicalDeviceSurfaceSupportKHR");
-			return supported != 0;
-		}
-		finally
-		{
-			_instanceApi!.DestroySurfaceKHR(InstanceHandle, surface, IntPtr.Zero);
-		}
-	}
-
-	/// <summary>
 	/// Completes initialization for a native window: creates the swapchain and the intermediate render
 	/// image. Requires <see cref="InitializeDevice"/> to have succeeded; may be called again with a new
-	/// window after <see cref="DisposeSurfaceResources"/>.
+	/// window after <see cref="DisposeSurfaceResources"/>. Throws when the device cannot present to the window.
 	/// </summary>
 	public void InitializeSurface(IntPtr nativeWindowHandle, int width, int height)
 	{
 		if (_device == null || _factory == null)
 		{
 			throw new InvalidOperationException("Vulkan device not initialized");
+		}
+
+		// InitializeDevice picks the device without a window, and the swapchain waits until its surface can present,
+		// so a device that never can is rejected here rather than hanging there.
+		if (!CanPresentTo(_factory, nativeWindowHandle))
+		{
+			throw new VulkanException("The Vulkan device cannot present to this window");
 		}
 
 		_nativeWindowHandle = nativeWindowHandle;
@@ -179,6 +162,21 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			var platformSurface = new DirectVulkanSurface(nativeWindowHandle, new global::Windows.Graphics.SizeInt32(width, height), _factory);
 			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
 			CreateRenderImage(width, height);
+		}
+	}
+
+	private bool CanPresentTo(IVulkanPlatformSurfaceFactory factory, IntPtr nativeWindowHandle)
+	{
+		var surface = new VkSurfaceKHR { Handle = factory.CreateSurface((VulkanInstance)_instance!, nativeWindowHandle) };
+		try
+		{
+			_instanceApi!.GetPhysicalDeviceSurfaceSupportKHR(PhysicalDeviceHandle, GraphicsQueueFamilyIndex, surface, out var supported)
+				.ThrowOnError("vkGetPhysicalDeviceSurfaceSupportKHR");
+			return supported != 0;
+		}
+		finally
+		{
+			_instanceApi!.DestroySurfaceKHR(InstanceHandle, surface, IntPtr.Zero);
 		}
 	}
 
