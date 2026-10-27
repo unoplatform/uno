@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -204,7 +203,7 @@ public class Given_ListViewBaseItemChrome_AnimationQueue
 		presenter.AddChild(templateChild);
 		presenter.AddSecondaryChrome();
 		presenter.SetChromedListViewBaseItem(item);
-		var secondaryChrome = GetField<UIElement>(presenter, "m_pSecondaryChrome");
+		var secondaryChrome = presenter.m_pSecondaryChrome!;
 
 		Assert.AreSame(templateChild, presenter.GetTemplateChildIfExists());
 		Assert.IsFalse(presenter.HasTransitionTarget());
@@ -291,18 +290,10 @@ public class Given_ListViewBaseItemChrome_AnimationQueue
 			steadyStateOnly: false);
 
 	private static void Enqueue(ListViewBaseItemPresenter presenter, ListViewBaseItemAnimationCommand command)
-		=> GetMethod("EnqueueAnimationCommand").Invoke(presenter, new object[] { command });
+		=> presenter.EnqueueAnimationCommand(command);
 
 	private static Point ComputeReorderHintOffset(ListViewBaseItemPresenter presenter, ListViewBaseItemPresenter.ReorderHintStates state)
-		=> (Point)GetMethod("ComputeReorderHintOffset").Invoke(presenter, new object[] { state })!;
-
-	private static MethodInfo GetMethod(string name)
-		=> typeof(ListViewBaseItemPresenter).GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic)
-			?? throw new InvalidOperationException($"Method {name} not found.");
-
-	private static T GetField<T>(ListViewBaseItemPresenter presenter, string name)
-		=> (T)(typeof(ListViewBaseItemPresenter).GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)
-			?? throw new InvalidOperationException($"Field {name} not found.")).GetValue(presenter)!;
+		=> presenter.ComputeReorderHintOffset(state);
 
 	private sealed class RecordingVisitor : IListViewBaseItemAnimationCommandVisitor
 	{
