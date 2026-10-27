@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Uno.UI.Runtime.Vulkan.Interop;
 using Uno.UI.Runtime.Vulkan.UnmanagedInterop;
 using Uno.UI.Composition.Drawing;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Vulkan;
 
@@ -201,8 +202,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	}
 
 	/// <summary>
-	/// Lightweight resize: only recreates the intermediate render image and cached SKSurface.
-	/// The swapchain handles its own resize via VK_ERROR_OUT_OF_DATE_KHR during presentation.
+	/// Recreates the intermediate render image and the swapchain at the surface's new size.
 	/// Use for window resize events where only the render target dimensions change.
 	/// Must be called while holding the device lock.
 	/// </summary>
@@ -215,6 +215,18 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 
 		_renderImage?.Dispose();
 		CreateRenderImage(width, height);
+
+		// A resized surface isn't reliably reported as out of date on the next acquire (Windows keeps returning
+		// VK_SUCCESS), so that frame would be presented through the old-size swapchain and stay on screen if
+		// nothing else renders after it.
+		try
+		{
+			_display.RecreateSwapchainSafe();
+		}
+		catch (VulkanException e)
+		{
+			this.Log().Warn($"Swapchain recreation on resize failed ({e.Message}); it will be recreated when presentation reports it out of date.");
+		}
 	}
 
 	// TransitionLayout submits commands, so this needs the device lock.
