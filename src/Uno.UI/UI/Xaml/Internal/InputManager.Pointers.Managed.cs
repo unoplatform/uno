@@ -508,7 +508,7 @@ internal partial class InputManager
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 			var hadCapture = PointerCapture.TryGet(args.CurrentPoint.Pointer, out var capture) && capture.IsImplicitOnly is false;
 
-			var result = RaiseUsingCaptures(Released, originalSource, routedArgs, setCursor: false);
+			var result = RaiseReleasedThenGestures(originalSource, routedArgs);
 
 			if (isOutOfWindow || (PointerDeviceType)args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
 			{
@@ -552,6 +552,87 @@ internal partial class InputManager
 			AfterReleaseForManipulations(args);
 
 			args.DispatchResult = result;
+		}
+
+		private PendingRelease? _pendingRelease;
+
+		// What is held back while PointerReleased is bubbling, until it has reached the root (cf. RaiseReleasedThenGestures).
+		private sealed class PendingRelease
+		{
+			public List<Action>? Gestures;
+			public PointerRoutedEventArgs? UnhandledUp;
+		}
+
+		/// <summary>
+		/// Defers a gesture recognized while PointerReleased is bubbling, to raise it once the release has reached the root.
+		/// </summary>
+		/// <returns>False if no PointerReleased is being raised, in which case the gesture must be raised right away.</returns>
+		internal bool TryDeferUntilReleased(Action raiseGesture)
+		{
+			if (_pendingRelease is null)
+			{
+				return false;
+			}
+
+			(_pendingRelease.Gestures ??= new()).Add(raiseGesture);
+			return true;
+		}
+
+		// Like WinUI (cf. CInputServices::RaiseDelayedPointerUpEvent and CleanPointerProcessingState), Tapped and RightTapped are raised only once
+		// PointerReleased has bubbled to the root, so ancestors (e.g. a ScrollViewer taking focus) handle the release before a gesture handler runs,
+		// and the root cleans up the focus and the captures only after those gestures.
+		private PointerEventDispatchResult RaiseReleasedThenGestures(UIElement originalSource, PointerRoutedEventArgs routedArgs)
+		{
+			var outer = _pendingRelease;
+			var pending = _pendingRelease = new PendingRelease();
+			PointerEventDispatchResult result;
+			try
+			{
+				result = RaiseUsingCaptures(Released, originalSource, routedArgs, setCursor: false);
+			}
+			finally
+			{
+				_pendingRelease = outer;
+			}
+
+			if (pending.Gestures is { } gestures)
+			{
+				if (_trace)
+				{
+					Trace($"Raising {gestures.Count} gesture(s) deferred until {Released.Name} has bubbled (args: {routedArgs.GetHashCode():X8})");
+				}
+
+				// Gesture handlers can alter the visual tree just like the PointerReleased ones.
+				UIElement.BeginPointerEventDispatch();
+				foreach (var raiseGesture in gestures)
+				{
+					RaiseDeferredGesture(raiseGesture);
+				}
+				result += UIElement.EndPointerEventDispatch();
+			}
+
+			if (pending.UnhandledUp is { } unhandledUp)
+			{
+				result += CompletePointerUp(unhandledUp, isHandled: false, isAfterHandledUp: false);
+			}
+
+			return result;
+		}
+
+		// Like an error in a PointerReleased handler (cf. UIElement.RaisePointerEvent), an error in a gesture handler is only logged.
+		private static void RaiseDeferredGesture(Action raiseGesture)
+		{
+			try
+			{
+				raiseGesture();
+			}
+			catch (Exception error)
+			{
+				if (_log.IsEnabled(LogLevel.Error))
+				{
+					_log.Error($"Failed to raise a gesture deferred until {Released.Name} has bubbled.", error);
+				}
+			}
 		}
 
 		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
