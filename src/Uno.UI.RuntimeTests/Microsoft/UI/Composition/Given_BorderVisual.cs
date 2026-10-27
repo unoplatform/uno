@@ -6,7 +6,6 @@ using Microsoft.UI.Composition;
 
 #if __SKIA__
 using Uno.UI.Composition;
-using Uno.UI.Composition.Drawing;
 using Uno.UI.Helpers;
 #endif
 
@@ -46,13 +45,14 @@ public class Given_BorderVisual
 			panel.Children.InsertAtTop(row);
 		}
 
+		var factory = Private.Infrastructure.TestServices.WindowHelper.XamlRoot!.VisualTree.RootElement!.Visual.CompositionTarget!.Renderer!;
 		using var damage = new DamageRegion();
 		for (var frame = 0; frame < Visual.PictureCollapsingOptimizationFrameThreshold * 3; frame++)
 		{
 			// Only the scroller moves: a new row comes into view every few frames.
 			scroller.Offset = new Vector3(0, -3 * frame, 0);
 			damage.Reset();
-			var recording = DrawingFactory.Current.CreateRecording();
+			var recording = factory.CreateRecording();
 			FrameRenderHelper.RecordFrame(recording, 200, 200, root, invertPath: false, damage: damage);
 			recording.Finish()?.Dispose();
 		}
