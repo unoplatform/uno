@@ -81,6 +81,28 @@ so code using those types needs updating — for example, `gl.CullFace` takes a 
 + gl.CullFace(TriangleFace.Back);
 ```
 
+## List item chrome
+
+Independently of rendering, list items now draw their chrome the way WinUI does.
+
+### `ListViewItem` and `GridViewItem` render through the item presenters
+
+`ListViewItem` and `GridViewItem` render through `ListViewItemPresenter` and
+`GridViewItemPresenter`. The default Fluent styles no longer use the expanded templates, so
+hover, selection and multi-select visuals change, and named template parts such as
+`MultiSelectSquare` no longer exist. `ListViewItemExpanded` still ships and can be set as
+`ItemContainerStyle`. The Fluent `GridViewItemExpanded` is removed, as WinUI has none, so
+`{StaticResource GridViewItemExpanded}` now resolves to an older, non-Fluent style. Copy the
+template into your app if you depend on it.
+
+### `GridViewItem` defaults to `AllowDrop="True"`
+
+As in WinUI, while a drag is over the middle of an item, the item shows its drag-over state and
+marks `DragOver` handled, so `DragOver` handlers on the `GridView` or its ancestors are not
+called there. Register them with
+`AddHandler(UIElement.DragOverEvent, handler, handledEventsToo: true)`, or set `AllowDrop` to
+`False` in your `ItemContainerStyle`.
+
 ## Manipulation and gestures
 
 Independently of rendering, manipulation recognition was realigned with WinUI.
