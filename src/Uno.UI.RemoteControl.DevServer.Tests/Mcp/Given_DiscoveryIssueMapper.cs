@@ -489,25 +489,25 @@ public class Given_DiscoveryIssueMapper
 	}
 
 	private static string MissingSolution()
-		=> Path.Combine(Path.GetTempPath(), $"uno-issue-tests-{Guid.NewGuid():N}", "App.slnx");
+		=> Path.Join(Path.GetTempPath(), $"uno-issue-tests-{Guid.NewGuid():N}", "App.slnx");
 
 	private static string CreateNonUnoGlobalJson(string root)
 	{
-		var globalJson = Path.Combine(root, "global.json");
+		var globalJson = Path.Join(root, "global.json");
 		File.WriteAllText(globalJson, """{"sdk":{"version":"10.0.100"}}""");
 		return globalJson;
 	}
 
 	private static string CreateTempDirectory()
 	{
-		var path = Path.Combine(Path.GetTempPath(), $"uno-issue-tests-{Guid.NewGuid():N}");
+		var path = Path.Join(Path.GetTempPath(), $"uno-issue-tests-{Guid.NewGuid():N}");
 		Directory.CreateDirectory(path);
 		return path;
 	}
 
 	private static string CreateFile(string root, params string[] segments)
 	{
-		var path = Path.Combine([root, .. segments]);
+		var path = Path.Join([root, .. segments]);
 		Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 		File.WriteAllText(path, string.Empty);
 		return path;
