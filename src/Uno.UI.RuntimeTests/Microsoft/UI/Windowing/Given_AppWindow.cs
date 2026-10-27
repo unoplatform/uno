@@ -19,8 +19,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Windowing;
 public class Given_AppWindow
 {
 	[TestMethod]
-	// https://github.com/unoplatform/uno/issues/25728
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Resize()
 	{
 		if (OperatingSystem.IsLinux())
@@ -41,7 +39,8 @@ public class Given_AppWindow
 		var originalSize = appWindow.Size;
 		try
 		{
-			var adjustedSize = new SizeInt32() { Width = originalSize.Width + 10, Height = originalSize.Height + 10 };
+			// Smaller, as a window cannot grow taller than the screen.
+			var adjustedSize = new SizeInt32() { Width = originalSize.Width - 10, Height = originalSize.Height - 10 };
 			appWindow.Resize(adjustedSize);
 			await TestServices.WindowHelper.WaitFor(() => args is not null);
 			Assert.IsTrue(args.DidSizeChange);
@@ -149,8 +148,6 @@ public class Given_AppWindow
 #endif
 
 	[TestMethod]
-	// https://github.com/unoplatform/uno/issues/25728
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Resize_Before_Activate()
 	{
 		AssertPositioningAndSizingSupport();
@@ -167,7 +164,8 @@ public class Given_AppWindow
 		var activated = false;
 		try
 		{
-			var adjustedSize = new SizeInt32() { Width = originalSize.Width + 10, Height = originalSize.Height + 10 };
+			// Small enough for any screen: macOS fits a window to the screen's usable area when it is first shown.
+			var adjustedSize = new SizeInt32() { Width = 600, Height = 400 };
 			appWindow.Resize(adjustedSize);
 			await TestServices.WindowHelper.WaitFor(() => args is not null);
 			Assert.IsTrue(args.DidSizeChange);
@@ -250,6 +248,48 @@ public class Given_AppWindow
 			newWindow.Activate();
 			await TestServices.WindowHelper.WaitFor(() => activated);
 			Assert.AreEqual(state, overlappedPresenter.State);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25726")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_Window_Already_Has_Its_Maximized_Frame_Then_Maximize_Reports_Maximized()
+	{
+		// A window that fills a small screen is already the size maximizing gives it, as on CI's macOS VMs.
+		AssertPositioningAndSizingSupport();
+
+		var newWindow = new Window();
+		var appWindow = newWindow.AppWindow;
+		var overlapped = (OverlappedPresenter)appWindow.Presenter;
+		var activated = false;
+		try
+		{
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+
+			overlapped.Maximize();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Maximized);
+			var maximizedPosition = appWindow.Position;
+			var maximizedSize = appWindow.Size;
+
+			overlapped.Restore();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Restored);
+			appWindow.Move(maximizedPosition);
+			appWindow.Resize(maximizedSize);
+			await TestServices.WindowHelper.WaitFor(() => appWindow.Position.Equals(maximizedPosition) && appWindow.Size.Equals(maximizedSize));
+
+			overlapped.Maximize();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Maximized);
+
+			overlapped.Restore();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Restored);
 		}
 		finally
 		{

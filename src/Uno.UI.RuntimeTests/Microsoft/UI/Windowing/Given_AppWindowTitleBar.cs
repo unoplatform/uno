@@ -243,7 +243,6 @@ public class Given_AppWindowTitleBar
 	}
 
 	[TestMethod]
-	[Ignore("https://github.com/unoplatform/uno/issues/25728")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_TitleBar_Hidden_On_MacOS_Presenter_Commands_Work()
 	{
