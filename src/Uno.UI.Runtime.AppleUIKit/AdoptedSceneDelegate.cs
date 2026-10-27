@@ -23,7 +23,10 @@ namespace Uno.UI.Runtime.AppleUIKit;
 /// </para>
 /// <para>
 /// UIKit restores a scene session with the delegate class it was saved with, so the Objective-C name must not change.
-/// Uno 6.8 registers its scene delegate under the same name.
+/// Uno 6.8 registers its scene delegate under the same name. Adding or removing a scene manifest in an app update
+/// doesn't run into this: on the iOS 27 simulator, UIKit then didn't reuse the saved class, whatever the manifest's
+/// configuration name. In manifest mode nothing would give this delegate the window, so it logs an error if it ever
+/// connects there.
 /// </para>
 /// </remarks>
 [Register("UnoAdoptedSceneDelegate")]
@@ -53,6 +56,11 @@ internal sealed class AdoptedSceneDelegate : UIWindowSceneDelegate
 
 	public override void WillConnect(UIScene scene, UISceneSession session, UISceneConnectionOptions connectionOptions)
 	{
+		if (AppleUIKitLifecycle.Mode != AppleUIKitLifecycleMode.AdoptedScene && this.Log().IsEnabled(LogLevel.Error))
+		{
+			this.Log().Error($"UIKit restored a scene session saved without a scene manifest, which gets no window in the {AppleUIKitLifecycle.Mode} lifecycle.");
+		}
+
 		if (scene is UIWindowScene windowScene)
 		{
 			NativeCallbackGuard.Run(() => AdoptedSceneBinder.Connect(windowScene));
