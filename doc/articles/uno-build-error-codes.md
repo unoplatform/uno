@@ -334,6 +334,12 @@ To fix this:
 
 To keep `SkiaRenderer` without the warning, add `UNOB0030` to `NoWarn`.
 
+### UNOB0031: The Reactor Uno Feature is not supported on WinAppSDK
+
+The `Reactor` feature references [Uno.Microsoft.UI.Reactor](https://www.nuget.org/packages/Uno.Microsoft.UI.Reactor), which runs on the Uno Platform targets (desktop, WebAssembly, Android and iOS) and has no build for the WinAppSDK target. The Uno.Sdk doesn't reference it there, and fails the Windows build with this error instead of leaving every Reactor type unresolved.
+
+To fix this, remove the `-windows10.0.xxxxx` target framework from the project. To run a Reactor app on Windows, use the `desktop` target.
+
 ## Compiler Errors
 
 ### UNO0001
