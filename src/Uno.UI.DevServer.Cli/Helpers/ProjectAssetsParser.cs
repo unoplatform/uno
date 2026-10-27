@@ -125,16 +125,15 @@ internal static class ProjectAssetsParser
 			var solutionDirectory = Path.GetDirectoryName(fullSolutionPath)!;
 			var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-			foreach (var project in model.SolutionProjects)
+			foreach (var filePath in model.SolutionProjects.Select(p => p.FilePath))
 			{
-				var filePath = project.FilePath;
 				if (string.IsNullOrWhiteSpace(filePath))
 				{
 					continue;
 				}
 
-				var projectPath = Path.GetFullPath(Path.IsPathRooted(filePath) ? filePath : Path.Combine(solutionDirectory, filePath));
-				var assets = Path.Combine(Path.GetDirectoryName(projectPath)!, "obj", "project.assets.json");
+				var projectPath = Path.GetFullPath(filePath, solutionDirectory);
+				var assets = Path.Join(Path.GetDirectoryName(projectPath), "obj", "project.assets.json");
 				if (File.Exists(assets) && seen.Add(assets))
 				{
 					results.Add(assets);
