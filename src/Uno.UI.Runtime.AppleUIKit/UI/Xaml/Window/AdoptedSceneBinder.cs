@@ -102,8 +102,10 @@ internal static class AdoptedSceneBinder
 		}
 
 		// UIKit also disconnects a background scene to reclaim memory, and the same session may reconnect: the window
-		// is kept for the next application scene rather than closed.
+		// is kept for the next application scene rather than closed. The app is in the background until then, so that
+		// scene entering the foreground is forwarded to the application delegate.
 		_scene = null;
+		_isInBackground = true;
 		_window?.OnSceneEnteredBackground();
 
 		var log = typeof(AdoptedSceneBinder).Log();
