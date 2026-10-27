@@ -391,7 +391,7 @@ namespace Microsoft.UI.Xaml
 
 			if (args.TapCount == 1)
 			{
-				that.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(src, args, that));
+				that.RaiseTappedAfterPointerReleased(src, args);
 			}
 			else // i.e. args.TapCount == 2
 			{
@@ -399,11 +399,32 @@ namespace Microsoft.UI.Xaml
 			}
 		};
 
+		private void RaiseTappedAfterPointerReleased(UIElement src, TappedEventArgs args)
+			=> RaiseAfterPointerReleased(() => SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(src, args, this)));
+
 		private static readonly TypedEventHandler<GestureRecognizer, RightTappedEventArgs> OnRecognizerRightTapped = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
+			// Raise ContextRequested for mouse/pen input after RightTapped.
+			// For touch input, ContextRequested is raised via Holding gesture instead.
+			// This matches WinUI behavior where right-click triggers context menu.
+			// Like WinUI, the content root and the position are resolved before the delayed release, whose handlers might remove the element from the tree.
+			var contextRequestRoot = args.PointerDeviceType is MuxPointerDeviceType.Mouse or MuxPointerDeviceType.Pen
+				? VisualTree.GetContentRootForElement(src)
+				: null;
+
+			// Convert element-relative position to global (app window) coordinates.
+			// args.Position is relative to 'that' (the element with the GestureRecognizer),
+			// but ContextRequestedEventArgs.TryGetPosition expects global coordinates.
+			var contextRequestPosition = contextRequestRoot is null ? default : that.TransformToVisual(null).TransformPoint(args.Position);
+
+			that.RaiseAfterPointerReleased(() => RaiseRightTapped(that, src, args, contextRequestRoot, contextRequestPosition));
+		};
+
+		private static void RaiseRightTapped(UIElement that, UIElement src, RightTappedEventArgs args, ContentRoot contextRequestRoot, Point contextRequestPosition)
+		{
 			var rightTappedArgs = new RightTappedRoutedEventArgs(src, args, that);
 			that.SafeRaiseEvent(RightTappedEvent, rightTappedArgs);
 
@@ -426,27 +447,22 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			// Raise ContextRequested for mouse/pen input after RightTapped.
-			// For touch input, ContextRequested is raised via Holding gesture instead.
-			// This matches WinUI behavior where right-click triggers context menu.
-			var deviceType = args.PointerDeviceType;
-			if (deviceType == MuxPointerDeviceType.Mouse ||
-				deviceType == MuxPointerDeviceType.Pen)
+			contextRequestRoot?.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
+				src,
+				contextRequestPosition,
+				isTouchInput: false);
+		}
+
+		private void RaiseAfterPointerReleased(Action raiseGesture)
+		{
+#if UNO_HAS_MANAGED_POINTERS
+			if (XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleased(raiseGesture) is true)
 			{
-				var contentRoot = VisualTree.GetContentRootForElement(src);
-				if (contentRoot != null)
-				{
-					// Convert element-relative position to global (app window) coordinates.
-					// args.Position is relative to 'that' (the element with the GestureRecognizer),
-					// but ContextRequestedEventArgs.TryGetPosition expects global coordinates.
-					var globalPosition = that.TransformToVisual(null).TransformPoint(args.Position);
-					contentRoot.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
-						src,
-						globalPosition,
-						isTouchInput: false);
-				}
+				return;
 			}
-		};
+#endif
+			raiseGesture();
+		}
 
 		private static readonly TypedEventHandler<GestureRecognizer, HoldingEventArgs> OnRecognizerHolding = (sender, args) =>
 		{
