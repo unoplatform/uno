@@ -62,7 +62,7 @@ public class Given_HealthService
 	public void WhenExplicitSelectionDoesNotResolve_HealthReportsWhy()
 	{
 		var (_, healthService, _) = CreateSubject();
-		var missingSolution = Path.Combine(Path.GetTempPath(), $"uno-health-tests-{Guid.NewGuid():N}", "App.slnx");
+		var missingSolution = Path.Join(Path.GetTempPath(), $"uno-health-tests-{Guid.NewGuid():N}", "App.slnx");
 		healthService.DevServerStarted = true;
 		healthService.CurrentSelection = new WorkspaceSelectionSnapshot
 		{
