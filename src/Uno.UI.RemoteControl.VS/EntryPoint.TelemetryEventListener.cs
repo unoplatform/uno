@@ -37,7 +37,7 @@ public partial class EntryPoint
 
 		private void TryForward(TelemetryEvent telemetryEvent)
 		{
-			if (ide is not { _ideChannelClient: { } client, _isDisposed: false, _ct: { IsCancellationRequested: false } ct })
+			if (ide is not { _ideChannelClient: { } client, IsDisposed: false, _ct: { IsCancellationRequested: false } ct })
 			{
 				return;
 			}

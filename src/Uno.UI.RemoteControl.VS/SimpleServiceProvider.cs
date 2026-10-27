@@ -1,45 +1,81 @@
 using System;
 using System.Collections.Immutable;
-using IAsyncDisposable = Microsoft.VisualStudio.Threading.IAsyncDisposable;
+using System.Threading;
+using System.Threading.Tasks;
+using Uno.UI.RemoteControl.VS.Helpers;
+using IVsAsyncDisposable = Microsoft.VisualStudio.Threading.IAsyncDisposable;
 
 namespace Uno.UI.RemoteControl.VS;
 
-internal class SimpleServiceProvider : IServiceProvider, IDisposable
+internal sealed class SimpleServiceProvider(ILogger? log = null) : IServiceProvider, IAsyncDisposable
 {
-	private ImmutableDictionary<Type, object> _services = ImmutableDictionary<Type, object>.Empty;
+	private ImmutableList<(Type contract, object instance)> _services = ImmutableList<(Type contract, object instance)>.Empty;
 
 	public void Register(Type contract, object instance)
-		=> ImmutableInterlocked.AddOrUpdate(
+	{
+		if (contract is null)
+		{
+			throw new ArgumentNullException(nameof(contract));
+		}
+		if (instance is null)
+		{
+			throw new ArgumentNullException(nameof(instance));
+		}
+
+		ImmutableInterlocked.Update(
 			ref _services,
-			contract ?? throw new ArgumentNullException(nameof(contract)),
-			instance ?? throw new ArgumentNullException(nameof(instance)),
-			(_, __) => instance);
+			static (services, entry) => services.RemoveAll(s => s.contract == entry.contract).Add(entry),
+			(contract, instance));
+	}
 
 	public void Register<T>(T instance)
-		=> ImmutableInterlocked.AddOrUpdate(
-			ref _services,
-			typeof(T),
-			instance ?? throw new ArgumentNullException(nameof(instance)),
-			(_, __) => instance);
+		where T : notnull
+		=> Register(typeof(T), instance);
 
 	/// <inheritdoc />
-	public virtual object? GetService(Type serviceType)
-		=> _services.TryGetValue(serviceType, out var instance) ? instance : null;
-
-	/// <inheritdoc />
-	public void Dispose()
+	public object? GetService(Type serviceType)
 	{
-		foreach (var service in _services.Values)
+		foreach (var (contract, instance) in _services)
 		{
-			switch (service)
+			if (contract == serviceType)
 			{
-				case IDisposable disposable:
-					disposable.Dispose();
-					break;
+				return instance;
+			}
+		}
 
-				case IAsyncDisposable asyncDisposable:
-					_ = asyncDisposable.DisposeAsync();
-					break;
+		return null;
+	}
+
+	/// <summary>
+	/// Disposes the registered services in reverse registration order, awaiting async ones and isolating failures.
+	/// </summary>
+	public async ValueTask DisposeAsync()
+	{
+		var services = Interlocked.Exchange(ref _services, ImmutableList<(Type contract, object instance)>.Empty);
+
+		for (var i = services.Count - 1; i >= 0; i--)
+		{
+			var (contract, instance) = services[i];
+			try
+			{
+				switch (instance)
+				{
+					case IAsyncDisposable asyncDisposable:
+						await asyncDisposable.DisposeAsync();
+						break;
+
+					case IVsAsyncDisposable vsAsyncDisposable:
+						await vsAsyncDisposable.DisposeAsync();
+						break;
+
+					case IDisposable disposable:
+						disposable.Dispose();
+						break;
+				}
+			}
+			catch (Exception e)
+			{
+				log?.Error($"Failed to dispose service {contract.Name}: {e}");
 			}
 		}
 	}
