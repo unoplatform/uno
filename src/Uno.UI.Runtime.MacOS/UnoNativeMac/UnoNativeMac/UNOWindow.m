@@ -1445,8 +1445,13 @@ NSOperatingSystemVersion _osVersion;
     return self;
 }
 
-- (void)dealloc {
-    [windows removeObject:self];
+- (void)close {
+    [super close];
+    // Removing the window from `windows` frees it. Queued only now, so it can't run until AppKit has finished
+    // closing, and it runs on a later turn, once whatever called `close` (e.g. the close button) has returned.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [windows removeObject:self];
+    });
 }
 
 @synthesize overlappedPresenterState;
@@ -2049,11 +2054,6 @@ NSOperatingSystemVersion _osVersion;
     // Detach the rendering view while the window is alive, so it (and any native element hosted in it) stops
     // observing this window before the window goes away.
     [self.renderingView removeFromSuperview];
-
-    // Released on a later turn, once AppKit has finished closing the window.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [windows removeObject:self];
-    });
 }
 
 #pragma mark - NSAccessibility
