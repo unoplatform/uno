@@ -157,7 +157,7 @@ public partial class Given_ListViewItemPresenter
 
 		item.Focus(FocusState.Keyboard);
 		await WindowHelper.WaitForIdle();
-		Assert.AreEqual(ListViewBaseItemPresenter.FocusStates.Focused, ChromeTestHelper.GetField<ListViewBaseItemPresenter.VisualStates>(presenter, "m_visualStates").focusState);
+		Assert.AreEqual(ListViewBaseItemPresenter.FocusStates.Focused, presenter.m_visualStates.focusState);
 
 		var focused = await UITestHelper.ScreenShot(root);
 		ImageAssert.DoesNotHaveColorAt(focused, ring, Colors.Blue, tolerance: PixelTolerance);
@@ -219,7 +219,7 @@ public partial class Given_ListViewItemPresenter
 	}
 
 	private static int GetOverContentShapeCount(ListViewBaseItemPresenter presenter)
-		=> ChromeTestHelper.GetField<ShapeVisual?>(presenter, "m_overContentLayerVisual") is { Parent: not null } layer ? layer.Shapes.Count : 0;
+		=> presenter.m_overContentLayerVisual is { Parent: not null } layer ? layer.Shapes.Count : 0;
 
 	private static async Task<(StackPanel root, ListViewItem item, ListViewItemPresenter presenter)> CreateRenderingItem(string? contentBackground = null)
 	{
