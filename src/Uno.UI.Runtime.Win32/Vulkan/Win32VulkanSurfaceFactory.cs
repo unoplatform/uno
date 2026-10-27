@@ -59,6 +59,18 @@ internal class Win32VulkanSurfaceFactory : IVulkanPlatformSurfaceFactory
 		return surface;
 	}
 
+	public bool SupportsPresentation(VulkanInstance instance, VkPhysicalDevice physicalDevice, uint queueFamilyIndex)
+	{
+		var queryPtr = instance.GetInstanceProcAddress(instance.Handle.Handle, "vkGetPhysicalDeviceWin32PresentationSupportKHR");
+		if (queryPtr == IntPtr.Zero)
+		{
+			return true;
+		}
+
+		var query = Marshal.GetDelegateForFunctionPointer<PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR>(queryPtr);
+		return query(physicalDevice.Handle, queueFamilyIndex) != 0;
+	}
+
 	public static bool IsVulkanAvailable()
 	{
 		if (!_vulkanChecked)
@@ -86,6 +98,8 @@ internal class Win32VulkanSurfaceFactory : IVulkanPlatformSurfaceFactory
 		if (!IsVulkanAvailable())
 			throw new VulkanException("vulkan-1.dll not found");
 	}
+
+	private delegate uint PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR(IntPtr physicalDevice, uint queueFamilyIndex);
 
 	private delegate int PFN_vkCreateWin32SurfaceKHR(IntPtr instance, ref VkWin32SurfaceCreateInfoKHR pCreateInfo, IntPtr pAllocator, out ulong pSurface);
 }
