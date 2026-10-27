@@ -349,7 +349,7 @@ public class Given_AppWindow
 			newWindow.Close();
 		}
 
-		// The NSWindow is freed on a later turn of the main run loop; these calls used to reach it.
+		// The NSWindow is freed once the close has completed; these calls used to reach it.
 		await TestServices.WindowHelper.WaitForIdle();
 		await Task.Delay(200);
 
