@@ -40,17 +40,17 @@
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-android\Uno.UI.Dispatching.dll" target="lib\net10.0-android30.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-android\Uno.UI.Dispatching.pdb" target="lib\net10.0-android30.0" />
 
-		<!-- net11.0-ios26.5 -->
-		<file src="..\..\src\Uno.WinRT\Bin\Uno.WinRT.netcoremobile\Release\net11.0-ios26.5\Uno.WinRT.dll" target="lib\net11.0-ios26.5" />
-		<file src="..\..\src\Uno.WinRT\Bin\Uno.WinRT.netcoremobile\Release\net11.0-ios26.5\Uno.WinRT.pdb" target="lib\net11.0-ios26.5" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net11.0-ios26.5\Uno.UI.Dispatching.dll" target="lib\net11.0-ios26.5" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net11.0-ios26.5\Uno.UI.Dispatching.pdb" target="lib\net11.0-ios26.5" />
+		<!-- net11.0-ios27.0 -->
+		<file src="..\..\src\Uno.WinRT\Bin\Uno.WinRT.netcoremobile\Release\net11.0-ios27.0\Uno.WinRT.dll" target="lib\net11.0-ios27.0" />
+		<file src="..\..\src\Uno.WinRT\Bin\Uno.WinRT.netcoremobile\Release\net11.0-ios27.0\Uno.WinRT.pdb" target="lib\net11.0-ios27.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net11.0-ios27.0\Uno.UI.Dispatching.dll" target="lib\net11.0-ios27.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net11.0-ios27.0\Uno.UI.Dispatching.pdb" target="lib\net11.0-ios27.0" />
 
-		<!-- net11.0-tvos26.5 -->
-		<file src="..\..\src\Uno.WinRT\Bin\Uno.WinRT.netcoremobile\Release\net11.0-tvos26.5\Uno.WinRT.dll" target="lib\net11.0-tvos26.5" />
-		<file src="..\..\src\Uno.WinRT\Bin\Uno.WinRT.netcoremobile\Release\net11.0-tvos26.5\Uno.WinRT.pdb" target="lib\net11.0-tvos26.5" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net11.0-tvos26.5\Uno.UI.Dispatching.dll" target="lib\net11.0-tvos26.5" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net11.0-tvos26.5\Uno.UI.Dispatching.pdb" target="lib\net11.0-tvos26.5" />
+		<!-- net11.0-tvos27.0 -->
+		<file src="..\..\src\Uno.WinRT\Bin\Uno.WinRT.netcoremobile\Release\net11.0-tvos27.0\Uno.WinRT.dll" target="lib\net11.0-tvos27.0" />
+		<file src="..\..\src\Uno.WinRT\Bin\Uno.WinRT.netcoremobile\Release\net11.0-tvos27.0\Uno.WinRT.pdb" target="lib\net11.0-tvos27.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net11.0-tvos27.0\Uno.UI.Dispatching.dll" target="lib\net11.0-tvos27.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net11.0-tvos27.0\Uno.UI.Dispatching.pdb" target="lib\net11.0-tvos27.0" />
 
 		<!-- net11.0-android36.0 -->
 		<file src="..\..\src\Uno.WinRT\Bin\Uno.WinRT.netcoremobile\Release\net11.0-android\Uno.WinRT.dll" target="lib\net11.0-android36.0" />

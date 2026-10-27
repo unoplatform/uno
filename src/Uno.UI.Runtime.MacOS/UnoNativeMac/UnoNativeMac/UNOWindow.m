@@ -1434,24 +1434,18 @@ NSOperatingSystemVersion _osVersion;
 - (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
     self = [super initWithContentRect:contentRect styleMask:style backing:backingStoreType defer:flag];
     if (self) {
+        // ARC and `windows` own the window; AppKit's default close-time release would over-release it.
+        self.releasedWhenClosed = NO;
         self.delegate = self;
         self.overlappedPresenterState = OverlappedPresenterStateRestored;
         self.hasPresenterTitleBar = true;
         self.showCaptionButtons = true;
-        // `windows` owns the window. Left on, AppKit's own release on close takes that reference under ARC and
-        // frees the window mid-close, while managed handles and AppKit bookkeeping still point at it.
-        self.releasedWhenClosed = NO;
     }
     return self;
 }
 
-- (void)close {
-    [super close];
-    // Removing the window from `windows` frees it. Queued only now, so it can't run until AppKit has finished
-    // closing, and it runs on a later turn, once whatever called `close` (e.g. the close button) has returned.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [windows removeObject:self];
-    });
+- (void)dealloc {
+    [windows removeObject:self];
 }
 
 @synthesize overlappedPresenterState;
@@ -2054,6 +2048,9 @@ NSOperatingSystemVersion _osVersion;
     // Detach the rendering view while the window is alive, so it (and any native element hosted in it) stops
     // observing this window before the window goes away.
     [self.renderingView removeFromSuperview];
+
+    // Managed code has unregistered the handle by now; AppKit keeps the window alive until `close` returns.
+    [windows removeObject:self];
 }
 
 #pragma mark - NSAccessibility
