@@ -4941,6 +4941,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25754")]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
@@ -4957,7 +4958,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				SUT.Items.Add(new UpdateLayoutOnUnloadedControl
 				{
-					// TODO Uno: an AllowDrop element inside a reorderable item becomes its own drop target and the reorder is aborted.
+					// TODO Uno: AllowDrop on this content makes the drop onto the next item fail (#25754).
 					Content = new TextBlock
 					{
 						Height = 100,
