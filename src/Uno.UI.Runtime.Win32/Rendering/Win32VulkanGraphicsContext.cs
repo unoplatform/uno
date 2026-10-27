@@ -35,8 +35,13 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 
 	public Win32VulkanGraphicsContext(HWND hwnd)
 	{
+		// Taken before anything can throw: this is the first kind the first window negotiates, so no later step
+		// would release the device.
+		var prewarm = ClaimDevicePrewarm();
+
 		if (!Win32VulkanSurfaceFactory.IsVulkanAvailable())
 		{
+			prewarm?.Discard();
 			throw new InvalidOperationException("Vulkan rendering not available: vulkan-1.dll not found");
 		}
 
@@ -52,7 +57,7 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 
 		var width = _width;
 		var height = _height;
-		_vk = ClaimDevicePrewarm() is { } prewarm
+		_vk = prewarm is not null
 			? prewarm.Claim(
 				vk => vk.InitializeSurface(hwnd.Value, width, height),
 				() => CreateForWindow(hwnd, width, height))
@@ -66,7 +71,8 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 
 	/// <summary>
 	/// Starts creating the Vulkan instance and device for the first window. Call only when Vulkan is the kind the
-	/// first window will negotiate first, as an unclaimed device costs tens of MB until <see cref="DiscardDevicePrewarm"/>.
+	/// first window will negotiate first: that window's Vulkan attempt claims or releases it, and an unclaimed device
+	/// costs tens of MB.
 	/// </summary>
 	internal static void StartDevicePrewarm()
 	{
@@ -90,9 +96,6 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 			}
 		});
 	}
-
-	/// <summary>Releases a prewarmed device no window claimed (the negotiation picked another kind).</summary>
-	internal static void DiscardDevicePrewarm() => ClaimDevicePrewarm()?.Discard();
 
 	private static BackgroundPrewarm<VulkanContext>? ClaimDevicePrewarm() => Interlocked.Exchange(ref _devicePrewarm, null);
 
