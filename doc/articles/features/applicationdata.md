@@ -12,14 +12,14 @@ To store persistent application data and user settings, you can utilize the `Win
 
 - ✔  Supported
 
-| Picker             | WinUI      | WebAssembly | Android | iOS   | macOS | Skia Desktop |
-|--------------------|------------|-------------|---------|-------|-------|--------------|
-| `LocalFolder`      | ✔         | ✔          | ✔       | ✔    | ✔     | ✔            |
-| `RoamingFolder`    | ✔         | ✔          | ✔       | ✔    | ✔     | ✔            |
-| `LocalCacheFolder` | ✔         | ✔          | ✔       | ✔    | ✔     | ✔            |
-| `TemporaryFolder`  | ✔         | ✔          | ✔       | ✔    | ✔     | ✔            |
-| `LocalSettings`    | ✔         | ✔          | ✔       | ✔    | ✔     | ✔            |
-| `RoamingSettings`  | ✔         | ✔          | ✔       | ✔    | ✔     | ✔            |
+| Picker             | Windows App SDK | WebAssembly (Native/Skia) | Android (Native/Skia) | iOS (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|--------------------|-----------------|----------------------------|-----------------------|-------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `LocalFolder`      | ✔               | ✔                          | ✔                     | ✔                 | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `RoamingFolder`    | ✔               | ✔                          | ✔                     | ✔                 | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `LocalCacheFolder` | ✔               | ✔                          | ✔                     | ✔                 | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `TemporaryFolder`  | ✔               | ✔                          | ✔                     | ✔                 | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `LocalSettings`    | ✔               | ✔                          | ✔                     | ✔                 | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `RoamingSettings`  | ✔               | ✔                          | ✔                     | ✔                 | ✔                     | ✔                   | ✔                                  | ✔                       |
 
 Please note that `RoamingFolder` and `RoamingSettings` are not roamed automatically across devices, they only provide a logical separation between data that you intend to roam and that you intend to keep local.
 

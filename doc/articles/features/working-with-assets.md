@@ -16,12 +16,14 @@ At the moment, the following image file types are supported as `Content` assets:
 
 |             | `.bmp` (Win BMP) | `.gif`‡ | `.heic` (Apple) | `.jpg` & `.jpeg` (JFIF) | `.png` | `.webp` | `.pdf` | `.svg` |
 | ----------- | :-------------: | :---: | :-----------: | :-----------------: | :--: | :---: | :--: | :--: |
-| WinUI       |       ✔️        |   ✔️   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
-| Android 10  |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ✔️   |  ✔️   |  ✔️   |
-| iOS 13      |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ❌   |  ✔️   |
-| macOS       |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ✔️   |  ❌   |
-| WebAssembly†       |       ✔️        |  ✔️‡   |      ❌†       |          ✔️          |  ✔️   |  ❌†   |  ❌†  |  ✔️   |
-| Skia Desktop |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
+| Windows App SDK       |       ✔️        |   ✔️   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
+| Android (Native/Skia)  |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ✔️   |  ✔️   |  ✔️   |
+| iOS (Native/Skia)      |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ❌   |  ✔️   |
+| WebAssembly (Native/Skia)†       |       ✔️        |  ✔️‡   |      ❌†       |          ✔️          |  ✔️   |  ❌†   |  ❌†  |  ✔️   |
+| Desktop (Windows, Skia) |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
+| Desktop (macOS, Skia) |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
+| Desktop (X11, Skia) |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
+| Desktop (Linux Framebuffer, Skia) |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
 
 * † Actual WebAssembly image format support is browser dependent. For example, `.webp` is not working on Safari on macOS, but works on Chromium-based browsers. Check-marks (✔️) indicate a format that can safely be expected to work on all browsers able to run Wasm applications.
 * ‡ **Gif animation support**:

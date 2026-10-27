@@ -11,11 +11,11 @@ uid: Uno.Features.Flashlight
 
 ## Supported features
 
-| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) |
-|---------------|-------|-------|-------|-------|-------|-------|-|
-| `GetDefaultAsync` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
-| `IsEnabled`     | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
-| `BrightnessLevel`     | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| Feature        | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|---------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `GetDefaultAsync` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| `IsEnabled`     | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ |
+| `BrightnessLevel`     | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ |
 
 <!-- Add any additional information on platform-specific limitations and constraints -->
 
