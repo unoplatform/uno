@@ -374,18 +374,23 @@ public class Given_WebView2
 		for (var i = 0; i < 3; i++)
 		{
 			var secondary = new global::Microsoft.UI.Xaml.Window();
-			var secondaryButton = new Button { Content = "Secondary" };
-			secondary.Content = secondaryButton;
+			try
+			{
+				var secondaryButton = new Button { Content = "Secondary" };
+				secondary.Content = secondaryButton;
 
-			var activated = false;
-			secondary.Activated += (_, _) => activated = true;
-			secondary.Activate();
-			await TestServices.WindowHelper.WaitFor(() => activated);
-			await TestServices.WindowHelper.WaitForLoaded(secondaryButton);
-			await TestServices.WindowHelper.WaitForIdle();
-
-			secondary.Close();
-			await TestServices.WindowHelper.WaitForIdle();
+				var activated = false;
+				secondary.Activated += (_, _) => activated = true;
+				secondary.Activate();
+				await TestServices.WindowHelper.WaitFor(() => activated);
+				await TestServices.WindowHelper.WaitForLoaded(secondaryButton);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+			finally
+			{
+				secondary.Close();
+				await TestServices.WindowHelper.WaitForIdle();
+			}
 		}
 
 		for (var i = 0; i < 3; i++)
