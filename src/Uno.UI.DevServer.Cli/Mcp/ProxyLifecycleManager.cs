@@ -270,8 +270,8 @@ internal class ProxyLifecycleManager
 		var solutionDirectory = Path.GetDirectoryName(normalizedSolutionPath) ?? normalizedSolutionPath;
 		var observationRoot =
 			suggestionsRoot
-				?? (GetSelectedSolution(_workspaceResolution) is not null
-					? _workspaceResolution?.RequestedWorkingDirectory
+				?? (_workspaceResolution is { } current && GetSelectedSolution(current) is not null
+					? current.RequestedWorkingDirectory
 					: GetWorkspaceObservationRoot())
 				?? _solutionDirectory
 				?? _currentDirectory
@@ -577,14 +577,16 @@ internal class ProxyLifecycleManager
 					return transitionAction;
 
 				case WorkspaceTransitionAction.Ignore:
+					// DetermineAction only ignores a trigger while a resolution is kept.
+					var keptResolution = _workspaceResolution!;
 					_logger.LogInformation(
 						"Ignoring {Trigger} ({IncomingWorkspace}, {ResolutionKind}): roots never replace an explicitly selected solution or a workspace whose DevServer runs or failed; keeping {CurrentWorkspace}. Use uno_app_select_solution to change it.",
 						trigger,
 						nextResolution.EffectiveWorkspaceDirectory ?? nextResolution.RequestedWorkingDirectory,
 						nextResolution.ResolutionKind,
-						_workspaceResolution?.EffectiveWorkspaceDirectory ?? _workspaceResolution?.SelectedSolutionPath);
+						keptResolution.EffectiveWorkspaceDirectory ?? keptResolution.SelectedSolutionPath);
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
-						$"trigger={trigger};action={transitionAction};workspace={_workspaceResolution?.EffectiveWorkspaceDirectory}");
+						$"trigger={trigger};action={transitionAction};workspace={keptResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
 
 				case WorkspaceTransitionAction.Diagnose:
@@ -672,7 +674,7 @@ internal class ProxyLifecycleManager
 
 			return string.IsNullOrWhiteSpace(_currentDirectory)
 				? null
-				: Path.GetFullPath(Path.Combine(_currentDirectory, rootUri));
+				: Path.GetFullPath(rootUri, _currentDirectory);
 		}
 	}
 

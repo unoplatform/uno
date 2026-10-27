@@ -229,7 +229,7 @@ public class Given_CliManager
 		{
 			var solutionPath = CreateSolutionFile(baseDirectory, "a", "App.slnx");
 
-			var result = CliManager.ParseMcpSolutionArgument(["--port", "0", "--solution", Path.Combine("a", "App.slnx")], baseDirectory);
+			var result = CliManager.ParseMcpSolutionArgument(["--port", "0", "--solution", Path.Join("a", "App.slnx")], baseDirectory);
 
 			result.Success.Should().BeTrue();
 			result.SolutionPath.Should().Be(solutionPath);
@@ -278,7 +278,7 @@ public class Given_CliManager
 
 		try
 		{
-			var path = Path.Combine(baseDirectory, fileName);
+			var path = Path.Join(baseDirectory, fileName);
 			if (createFile)
 			{
 				File.WriteAllText(path, string.Empty);
@@ -351,7 +351,7 @@ public class Given_CliManager
 		var resolver = new ThrowingWorkspaceResolver();
 		var cliManager = CreateCliManager(resolver);
 
-		var exitCode = await cliManager.RunAsync(["mcp", "serve", "--solution", Path.Combine(Path.GetTempPath(), $"missing-{Guid.NewGuid():N}.slnx")]);
+		var exitCode = await cliManager.RunAsync(["mcp", "serve", "--solution", Path.Join(Path.GetTempPath(), $"missing-{Guid.NewGuid():N}.slnx")]);
 
 		exitCode.Should().Be(2);
 		resolver.SolutionRequests.Should().BeEmpty();
@@ -389,7 +389,7 @@ public class Given_CliManager
 
 	private static string CreateSolutionFile(string directory, params string[] segments)
 	{
-		var path = Path.Combine([directory, .. segments]);
+		var path = Path.Join([directory, .. segments]);
 		Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 		File.WriteAllText(path, string.Empty);
 		return path;

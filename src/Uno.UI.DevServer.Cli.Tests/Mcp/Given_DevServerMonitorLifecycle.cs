@@ -119,7 +119,7 @@ public class Given_DevServerMonitorLifecycle
 		try
 		{
 			var shallowSolution = CreateFile(root, "a", "Lib", "Lib.slnx");
-			var missingSolution = Path.Combine(root, "a", "b", "c", "d", "App.slnx");
+			var missingSolution = Path.Join(root, "a", "b", "c", "d", "App.slnx");
 			string[] solutionFiles = [shallowSolution];
 			var resolution = CreateResolution(root, missingSolution, solutionFiles) with { IsExplicitSolutionSelection = true };
 
