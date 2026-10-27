@@ -1,34 +1,11 @@
 #nullable enable
 
 using System;
-using System.Globalization;
 using Foundation;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.AppleUIKit;
-
-/// <summary>
-/// The lifecycle an Apple UIKit app runs.
-/// </summary>
-internal enum AppleUIKitLifecycleMode
-{
-	/// <summary>
-	/// The app lifecycle, where the application delegate drives the app's single window.
-	/// </summary>
-	App,
-
-	/// <summary>
-	/// The scene lifecycle Uno adopts for an app without a scene manifest, which UIKit requires from the version 27
-	/// SDKs on. The app's single window is created up front and hosted in the application scene.
-	/// </summary>
-	AdoptedScene,
-
-	/// <summary>
-	/// The scene lifecycle the app declares with a scene manifest, where each window gets a scene of its own.
-	/// </summary>
-	ManifestScene,
-}
 
 /// <summary>
 /// Decides, once from the app's Info.plist, which lifecycle the app runs, and raises the app-level events every
@@ -45,20 +22,13 @@ internal static class AppleUIKitLifecycle
 	private const string SceneManifestKey = "UIApplicationSceneManifest";
 	private const string SdkVersionKey = "DTPlatformVersion";
 
-	private enum DecidedBy
-	{
-		SceneManifest,
-		UseSceneLifecycleKey,
-		SdkVersion,
-		UnknownSdkVersion,
-	}
-
 	// Before the decision, which reads them.
 	private static readonly bool _hasSceneManifest = GetInfoValue(SceneManifestKey) is not null;
 	private static readonly NSObject? _useSceneLifecycle = GetInfoValue(UseSceneLifecycleKey);
 	private static readonly string? _sdkVersion = GetInfoValue(SdkVersionKey)?.ToString();
 
-	private static readonly (AppleUIKitLifecycleMode Mode, DecidedBy DecidedBy) _decision = Decide();
+	private static readonly (AppleUIKitLifecycleMode Mode, AppleUIKitLifecycleDecidedBy DecidedBy) _decision =
+		AppleUIKitLifecycleDecision.Decide(_hasSceneManifest, (_useSceneLifecycle as NSNumber)?.BoolValue, _sdkVersion);
 
 	internal static AppleUIKitLifecycleMode Mode => _decision.Mode;
 
@@ -83,9 +53,9 @@ internal static class AppleUIKitLifecycle
 
 			var decidedBy = _decision.DecidedBy switch
 			{
-				DecidedBy.SceneManifest => "the scene manifest",
-				DecidedBy.UseSceneLifecycleKey => UseSceneLifecycleKey,
-				DecidedBy.SdkVersion => "the SDK version",
+				AppleUIKitLifecycleDecidedBy.SceneManifest => "the scene manifest",
+				AppleUIKitLifecycleDecidedBy.UseSceneLifecycleKey => UseSceneLifecycleKey,
+				AppleUIKitLifecycleDecidedBy.SdkVersion => "the SDK version",
 				_ => "an unknown SDK version",
 			};
 
@@ -101,7 +71,7 @@ internal static class AppleUIKitLifecycle
 				log.Warn($"{UseSceneLifecycleKey} is ignored, as it is neither a boolean nor a number.");
 			}
 
-			if (_decision.DecidedBy == DecidedBy.UnknownSdkVersion)
+			if (_decision.DecidedBy == AppleUIKitLifecycleDecidedBy.UnknownSdkVersion)
 			{
 				log.Warn($"The SDK version is unknown, so Uno adopts the scene lifecycle. Set {UseSceneLifecycleKey} to choose.");
 			}
@@ -121,36 +91,6 @@ internal static class AppleUIKitLifecycle
 	{
 		Application.Current?.RaiseResuming();
 		Application.Current?.RaiseLeavingBackground(onLeftBackground);
-	}
-
-	private static (AppleUIKitLifecycleMode, DecidedBy) Decide()
-	{
-		if (_hasSceneManifest)
-		{
-			return (AppleUIKitLifecycleMode.ManifestScene, DecidedBy.SceneManifest);
-		}
-
-		if (_useSceneLifecycle is NSNumber useSceneLifecycle)
-		{
-			return (useSceneLifecycle.BoolValue ? AppleUIKitLifecycleMode.AdoptedScene : AppleUIKitLifecycleMode.App, DecidedBy.UseSceneLifecycleKey);
-		}
-
-		if (!TryGetSdkMajorVersion(out var sdkMajorVersion))
-		{
-			return (AppleUIKitLifecycleMode.AdoptedScene, DecidedBy.UnknownSdkVersion);
-		}
-
-		// UIKit requires the scene lifecycle from the version 27 SDKs on, a version iOS and tvOS share. Apps built
-		// with an older SDK keep the app lifecycle unless they opt in.
-		return (sdkMajorVersion >= 27 ? AppleUIKitLifecycleMode.AdoptedScene : AppleUIKitLifecycleMode.App, DecidedBy.SdkVersion);
-	}
-
-	private static bool TryGetSdkMajorVersion(out int sdkMajorVersion)
-	{
-		sdkMajorVersion = 0;
-
-		return _sdkVersion is not null
-			&& int.TryParse(_sdkVersion.Split('.')[0], NumberStyles.None, CultureInfo.InvariantCulture, out sdkMajorVersion);
 	}
 
 	private static NSObject? GetInfoValue(string key)
