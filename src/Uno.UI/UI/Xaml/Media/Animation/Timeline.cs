@@ -36,6 +36,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			remove => _completedHandlers?.Remove(value);
 		}
 
+		internal int CompletedHandlerCount => _completedHandlers?.Count ?? 0;
+
 		protected Timeline()
 		{
 			IsAutoPropertyInheritanceEnabled = false;
