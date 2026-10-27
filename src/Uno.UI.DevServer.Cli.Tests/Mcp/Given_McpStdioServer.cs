@@ -363,7 +363,7 @@ public class Given_McpStdioServer
 	{
 		var arguments = new Dictionary<string, JsonElement>
 		{
-			["workspaceDirectory"] = JsonSerializer.SerializeToElement(Path.Combine(Path.GetTempPath(), "repo\0x")),
+			["workspaceDirectory"] = JsonSerializer.SerializeToElement(Path.Join(Path.GetTempPath(), "repo\0x")),
 		};
 
 		var success = McpStdioServer.TryGetInitializeArgs(arguments, out _, out _, out var errorResult);
