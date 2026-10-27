@@ -19,6 +19,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Windowing;
 public class Given_AppWindow
 {
 	[TestMethod]
+	// https://github.com/unoplatform/uno/issues/25728
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Resize()
 	{
 		if (OperatingSystem.IsLinux())
@@ -147,6 +149,8 @@ public class Given_AppWindow
 #endif
 
 	[TestMethod]
+	// https://github.com/unoplatform/uno/issues/25728
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Resize_Before_Activate()
 	{
 		AssertPositioningAndSizingSupport();
