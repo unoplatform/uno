@@ -44,12 +44,12 @@ public class Given_WorkspaceResolver
 		var externalRoot = CreateTempDirectory();
 		try
 		{
-			var scannedSolution = Path.Combine(root, "Scanned.slnx");
+			var scannedSolution = Path.Join(root, "Scanned.slnx");
 			await File.WriteAllTextAsync(scannedSolution, string.Empty);
-			var deepDirectory = Path.Combine(externalRoot, "a", "b", "c", "d");
+			var deepDirectory = Path.Join(externalRoot, "a", "b", "c", "d");
 			Directory.CreateDirectory(deepDirectory);
-			await File.WriteAllTextAsync(Path.Combine(externalRoot, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
-			var selectedSolution = Path.Combine(deepDirectory, "App.slnx");
+			await File.WriteAllTextAsync(Path.Join(externalRoot, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+			var selectedSolution = Path.Join(deepDirectory, "App.slnx");
 			await File.WriteAllTextAsync(selectedSolution, string.Empty);
 
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance, new CountingSolutionFileFinder([scannedSolution]));
@@ -76,8 +76,8 @@ public class Given_WorkspaceResolver
 		var root = CreateTempDirectory();
 		try
 		{
-			await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"sdk":{"version":"10.0.100"}}""");
-			var solutionPath = Path.Combine(root, "App.slnx");
+			await File.WriteAllTextAsync(Path.Join(root, "global.json"), """{"sdk":{"version":"10.0.100"}}""");
+			var solutionPath = Path.Join(root, "App.slnx");
 			await File.WriteAllTextAsync(solutionPath, string.Empty);
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance, new CountingSolutionFileFinder([]));
 
@@ -275,7 +275,7 @@ public class Given_WorkspaceResolver
 		var root = CreateTempDirectory();
 		try
 		{
-			await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"sdk":{"version":"10.0.100"}}""");
+			await File.WriteAllTextAsync(Path.Join(root, "global.json"), """{"sdk":{"version":"10.0.100"}}""");
 			await File.WriteAllTextAsync(Path.Combine(root, "RootApp.slnx"), string.Empty);
 
 			var src = Path.Combine(root, "src");
@@ -460,7 +460,7 @@ public class Given_WorkspaceResolver
 		{
 			var src = Path.Combine(root, "src");
 			Directory.CreateDirectory(src);
-			await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"sdk":{"version":"10.0.100"}}""");
+			await File.WriteAllTextAsync(Path.Join(root, "global.json"), """{"sdk":{"version":"10.0.100"}}""");
 			await File.WriteAllTextAsync(Path.Combine(src, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.nearest"}}""");
 			await File.WriteAllTextAsync(Path.Combine(src, "App.slnx"), string.Empty);
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
