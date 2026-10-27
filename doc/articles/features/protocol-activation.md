@@ -19,12 +19,13 @@ App SDK app would write.
 |**WebAssembly**|✅ Available|Cold start only: `registerProtocolHandler` navigates the browser, so the app is always started fresh and `AppInstance.Activated` never fires for a protocol activation.|
 |**Skia Desktop (macOS)**|✅ Available|On a cold start, and while the app is already running. Requires the app to run as an app bundle.|
 |**Skia Desktop (Windows)**|✅ Available|Cold start only. The registered command must pass the URI as `"----ms-protocol:%1"`. A further activation starts a second instance, see the single-instancing note below.|
-|**Skia Desktop (Linux)**|❌ Not yet|No activation is delivered. `GetActivatedEventArgs()` reports an `ExtendedActivationKind.Launch` over the process command line.|
+|**Skia Desktop (Linux, X11)**|✅ Available|Cold start only, from a desktop entry passing the URI as `"----ms-protocol:%u"` or a bare `%u`. A further activation starts a second instance, see the single-instancing note below.|
+|**Skia Desktop (Linux FrameBuffer)**|❌ Not yet|No activation is delivered. `GetActivatedEventArgs()` reports an `ExtendedActivationKind.Launch` over the process command line.|
 |**Windows (Windows App SDK head)**|✅ Available|Delivered by the Windows App SDK itself.|
 
 `Microsoft.Windows.AppLifecycle.ActivationRegistrationManager` is not implemented on any Uno Platform
-target, so a custom scheme is declared in the platform manifest as described below, never registered at
-runtime.
+target, so a custom scheme is declared in the platform manifest, or registered by your installer on
+Windows and Linux, as described below — never registered at runtime.
 
 ## Registering custom scheme
 
@@ -181,6 +182,30 @@ The `----ms-protocol:` argument is removed from `LaunchActivatedEventArgs.Argume
 only sees your own arguments. A bare `"%1"` is not treated as an activation on Windows, because it
 cannot be told apart from an argument the user typed.
 
+### Skia Desktop on Linux
+
+Linux launchers start the app through the `Exec=` line of a desktop entry that declares the
+`x-scheme-handler/<scheme>` MIME type. Save one as `~/.local/share/applications/my-app.desktop`:
+
+```ini
+[Desktop Entry]
+Type=Application
+Name=My App
+Exec=/opt/my-app/MyApp "----ms-protocol:%u"
+MimeType=x-scheme-handler/my-scheme;
+```
+
+and make it the scheme's default handler:
+
+```bash
+update-desktop-database ~/.local/share/applications
+xdg-mime default my-app.desktop x-scheme-handler/my-scheme
+```
+
+A bare `Exec=/opt/my-app/MyApp %u`, as distro packages and Flatpak manifests usually write it, works
+too: on Linux a single argument that is an absolute, non-`file:` URI is reported as a protocol
+activation. Either way the URI is removed from `LaunchActivatedEventArgs.Arguments`.
+
 ### Windows (Windows App SDK head)
 
 Works according to Windows docs. For more information, see [Handle URI activation | Microsoft Docs](https://learn.microsoft.com/windows/uwp/launch-resume/handle-uri-activation).
@@ -278,8 +303,8 @@ public partial class App : Application
 
 Points worth knowing:
 
-- **Android, iOS, tvOS, WebAssembly, macOS and Windows** deliver protocol activation; **Skia Desktop on
-  Linux does not yet**. There the code above still compiles and runs — it simply only ever sees a
+- **Android, iOS, tvOS, WebAssembly, macOS, Windows and Linux X11** deliver protocol activation; **Linux
+  FrameBuffer does not yet**. There the code above still compiles and runs — it simply only ever sees a
   `Launch` activation.
 - **On WebAssembly the activation arrives as a cold start**, because `registerProtocolHandler` makes the
   browser navigate. `Activated` therefore does not fire for a protocol activation on that target today,
