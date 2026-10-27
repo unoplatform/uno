@@ -37,7 +37,8 @@ public class Given_MacOSNativeView
 		try
 		{
 			WindowHelper.WindowContent = panel;
-			await WindowHelper.WaitForLoaded(panel);
+			// An empty panel never gets a size, which the default loaded check waits for.
+			await WindowHelper.WaitForLoaded(panel, p => p.IsLoaded);
 
 			for (var i = 0; i < 3; i++)
 			{
