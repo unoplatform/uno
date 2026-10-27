@@ -178,29 +178,29 @@ partial class ListViewBaseItemPresenter
 	internal static readonly Thickness s_selectedBorderThickness = new(0.0);
 
 	// Uno-specific: a strong reference; the item unlinks it (SetGridViewItemChrome) when retemplated.
-	private ContentControl? m_pParentListViewBaseItemNoRef;
-	private ListViewBaseItemSecondaryChrome? m_pSecondaryChrome;
+	internal ContentControl? m_pParentListViewBaseItemNoRef;
+	internal ListViewBaseItemSecondaryChrome? m_pSecondaryChrome;
 
 	// Dead WinUI code: m_pCheckGeometryData and m_checkGeometryBounds belong to the removed checkmark path.
 
 	// TextBlock we create on-the-fly to display our DragItemsCount.
 	// TODO: Integrate text rendering into the chrome.
 	// This isn't a trivial task.
-	private TextBlock? m_pDragItemsCountTextBlock;
+	internal TextBlock? m_pDragItemsCountTextBlock;
 
-	private Border? m_multiSelectCheckBoxRectangle;
+	internal Border? m_multiSelectCheckBoxRectangle;
 	private RectangleGeometry? m_multiSelectCheckBoxClip;
-	private FontIcon? m_multiSelectCheckGlyph;
+	internal FontIcon? m_multiSelectCheckGlyph;
 
-	private Border? m_backplateRectangle;
-	private Border? m_selectionIndicatorRectangle;
-	private Border? m_innerSelectionBorder;
-	private Border? m_outerBorder;
+	internal Border? m_backplateRectangle;
+	internal Border? m_selectionIndicatorRectangle;
+	internal Border? m_innerSelectionBorder;
+	internal Border? m_outerBorder;
 
 	// Dead WinUI code: m_currentCheckBrush is only used by the removed old-style draw path.
 
 	// The list of our animation commands, waiting for processing in dxaml.
-	private readonly List<ListViewBaseItemAnimationCommand> m_animationCommands = new();
+	internal readonly List<ListViewBaseItemAnimationCommand> m_animationCommands = new();
 
 	private ListViewBaseItemAnimationCommand? m_pCurrentHighestPriorityCommand;
 
@@ -212,13 +212,13 @@ partial class ListViewBaseItemPresenter
 	// processed or displayed - it just means they won't be animated).
 	// We don't own m_pCurrentHighestPriorityCommand but we get notified when the
 	// reference is no longer valid.
-	private int m_currentHighestCommandPriority = int.MaxValue;
+	internal int m_currentHighestCommandPriority = int.MaxValue;
 
 	// Used for brush transitions. Saves the last brush that we used to render the background. If this brush changes, then
 	// we kick off a brush transition (if the API enabled it).
 	private Brush? m_previousBackgroundBrush;
 
-	private VisualStates m_visualStates;
+	internal VisualStates m_visualStates;
 
 	// Uno-specific: m_isFocusVisualDrawnByFocusManager is IsFocusVisualDrawnByFocusManager() (ListViewBaseItemChrome.uno.cs).
 

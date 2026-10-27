@@ -17,7 +17,7 @@ partial class ListViewBaseItemPresenter
 	private const long REORDER_ANIMATION_DURATION_MSEC = 240;
 
 	// MUX Reference ListViewBaseItemPresenter_Partial.cpp, lines 23-39
-	private protected void ProcessAnimationCommands()
+	internal void ProcessAnimationCommands()
 	{
 		var pCommand = GetNextPendingAnimation();
 		while (pCommand is not null)

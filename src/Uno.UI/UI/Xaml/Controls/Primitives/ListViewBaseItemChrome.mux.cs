@@ -1144,7 +1144,7 @@ partial class ListViewBaseItemPresenter
 	// Enqueue the given command. It will be presented in FIFO order by DequeueAnimationCommand.
 	// This function takes control of the command's lifetime. To enforce this, it will clear the
 	// given pointer when called (no exceptions).
-	private void EnqueueAnimationCommand(ListViewBaseItemAnimationCommand command)
+	internal void EnqueueAnimationCommand(ListViewBaseItemAnimationCommand command)
 	{
 		EnsureTransitionTarget();
 
@@ -1171,7 +1171,7 @@ partial class ListViewBaseItemPresenter
 	}
 
 	// Given a reorder hint state, figure out where the hint animation should animate to.
-	private Point ComputeReorderHintOffset(ReorderHintStates state)
+	internal Point ComputeReorderHintOffset(ReorderHintStates state)
 	{
 		var reorderHintOffset = GetReorderHintOffset();
 		Point offset = default;
