@@ -836,6 +836,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Focus_Moves_Away_Before_GotFocus_Then_Not_Brought_Into_View()
+		{
+			var tb = new TextBox();
+			var other = new Button { Content = "other" };
+			var SUT = new ScrollViewer
+			{
+				Width = 300,
+				Height = 150,
+				Content = new StackPanel { Children = { new Border { Height = 1000 }, tb } }
+			};
+
+			await UITestHelper.Load(new StackPanel { Children = { other, SUT } });
+			Assert.AreEqual(0, SUT.VerticalOffset);
+
+			tb.Focus(FocusState.Programmatic);
+			other.Focus(FocusState.Programmatic); // Same tick: the GotFocus of the TextBox, raised asynchronously, comes after this
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.VerticalOffset, "A TextBox that lost the focus before its GotFocus was raised must not be brought into view.");
+		}
+
+		[TestMethod]
 		public async Task When_VerticalContentAlignment_Is_Changed()
 		{
 			// This test ensures that setting VerticalContentAlignment on the TextBox doesn't flow to:
