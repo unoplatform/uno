@@ -205,6 +205,7 @@ namespace Microsoft.UI.Xaml.Controls
 			OnUnloadedPartial();
 		}
 
+<<<<<<< HEAD
 		partial void OnUnloadedPartial();
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
@@ -253,6 +254,9 @@ namespace Microsoft.UI.Xaml.Controls
 				AnimationDesired = false
 			});
 		}
+=======
+		protected override void OnGotFocus(RoutedEventArgs e) => _core.OnGotFocusCore(e);
+>>>>>>> 76232b4 (fix(textbox): Skip bring-into-view on stale GotFocus)
 
 		protected override void OnApplyTemplate()
 		{

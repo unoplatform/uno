@@ -38,6 +38,27 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateDescriptionVisibility(true);
 		}
 
+<<<<<<< HEAD
+=======
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			_core.OnUnloadedCore();
+
+			_revealButtonSubscription.Disposable = null;
+		}
+
+		protected override void OnGotFocus(RoutedEventArgs e) => _core.OnGotFocusCore(e);
+
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			_core.ApplyTemplate();
+		}
+
+>>>>>>> 76232b4 (fix(textbox): Skip bring-into-view on stale GotFocus)
 		private void RegisterSetPasswordScope()
 		{
 			_revealButton = this.GetTemplateChild(RevealButtonPartName) as ButtonBase;
