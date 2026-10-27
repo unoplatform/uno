@@ -18,7 +18,8 @@ App SDK app would write.
 |**tvOS**|✅ Available|As iOS.|
 |**WebAssembly**|✅ Available|Cold start only: `registerProtocolHandler` navigates the browser, so the app is always started fresh and `AppInstance.Activated` never fires for a protocol activation.|
 |**Skia Desktop (macOS)**|✅ Available|On a cold start, and while the app is already running. Requires the app to run as an app bundle.|
-|**Skia Desktop (Windows, Linux)**|❌ Not yet|No activation is delivered. `GetActivatedEventArgs()` reports an `ExtendedActivationKind.Launch` over the process command line.|
+|**Skia Desktop (Windows)**|✅ Available|Cold start only. The registered command must pass the URI as `"----ms-protocol:%1"`. A further activation starts a second instance, see the single-instancing note below.|
+|**Skia Desktop (Linux)**|❌ Not yet|No activation is delivered. `GetActivatedEventArgs()` reports an `ExtendedActivationKind.Launch` over the process command line.|
 |**Windows (Windows App SDK head)**|✅ Available|Delivered by the Windows App SDK itself.|
 
 `Microsoft.Windows.AppLifecycle.ActivationRegistrationManager` is not implemented on any Uno Platform
@@ -158,7 +159,29 @@ When a link with the custom scheme gets executed, the browser navigates to that 
 reports a `Protocol` activation for it, and strips the key from the launch arguments the app sees, so
 `LaunchActivatedEventArgs.Arguments` only ever contains your own arguments.
 
-### Windows
+### Skia Desktop on Windows
+
+Windows starts the app with the URI on its command line. Uno Platform reads it in the Windows App SDK
+format, `App.exe "----ms-protocol:<uri>"`, so a scheme registered by Windows App SDK tooling works
+unchanged. Register the scheme for the current user under `HKEY_CURRENT_USER\Software\Classes`, for
+example from your installer:
+
+```reg
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Classes\my-scheme]
+@="URL:my-scheme"
+"URL Protocol"=""
+
+[HKEY_CURRENT_USER\Software\Classes\my-scheme\shell\open\command]
+@="\"C:\Program Files\MyApp\MyApp.exe\" \"----ms-protocol:%1\""
+```
+
+The `----ms-protocol:` argument is removed from `LaunchActivatedEventArgs.Arguments`, so `OnLaunched`
+only sees your own arguments. A bare `"%1"` is not treated as an activation on Windows, because it
+cannot be told apart from an argument the user typed.
+
+### Windows (Windows App SDK head)
 
 Works according to Windows docs. For more information, see [Handle URI activation | Microsoft Docs](https://learn.microsoft.com/windows/uwp/launch-resume/handle-uri-activation).
 
@@ -255,8 +278,8 @@ public partial class App : Application
 
 Points worth knowing:
 
-- **Android, iOS, tvOS, WebAssembly and macOS** deliver protocol activation; **Skia Desktop on Windows
-  and Linux does not yet**. There the code above still compiles and runs — it simply only ever sees a
+- **Android, iOS, tvOS, WebAssembly, macOS and Windows** deliver protocol activation; **Skia Desktop on
+  Linux does not yet**. There the code above still compiles and runs — it simply only ever sees a
   `Launch` activation.
 - **On WebAssembly the activation arrives as a cold start**, because `registerProtocolHandler` makes the
   browser navigate. `Activated` therefore does not fire for a protocol activation on that target today,
