@@ -99,7 +99,7 @@ internal unsafe struct DrawOp
 	/// <see cref="Bounds"/> -- that one decides whether something is hidden, this one decides what hides it.
 	/// </summary>
 	public Vector4 Cover;
-	/// <summary>The opaque colour an op with a <see cref="Cover"/> fills it with, when it is a plain rect fill.</summary>
+	/// <summary>The opaque colour an op with a <see cref="Cover"/> fills it with: a plain rect fill, or an opaque rounded rect.</summary>
 	public Windows.UI.Color Fill;
 	/// <summary>Its replay site's draw-order depth, matching what the vertex shader emits (see project).</summary>
 	public float Depth;

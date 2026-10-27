@@ -161,6 +161,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	private readonly Stack<List<DrawOp>> _opsPool = new();
 	private readonly Stack<VertBuf> _vertsPool = new();
 
+	// Pooled arrays keep the largest size they ever grew to, so one exceptional frame would pin that memory for the
+	// device's lifetime. Past these sizes a list or buffer is left to the GC; a scene that is heavy every frame stays
+	// below them and keeps its reuse.
+	private const int MaxPooledOps = 16 * 1024;
+	private const int MaxPooledVerts = 1024 * 1024;
+
 	internal List<DrawOp> RentOps()
 	{
 		lock (_opsPool)
@@ -171,6 +177,11 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 	internal void ReturnOps(List<DrawOp> ops)
 	{
+		if (ops.Capacity > MaxPooledOps)
+		{
+			return;
+		}
+
 		ops.Clear();   // drops the captured ClipData refs; keeps the backing array for reuse
 		lock (_opsPool)
 		{
@@ -195,6 +206,11 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 	internal void ReturnVerts(VertBuf verts)
 	{
+		if (verts.A.Length > MaxPooledVerts)
+		{
+			return;
+		}
+
 		verts.Clear();
 		lock (_vertsPool)
 		{

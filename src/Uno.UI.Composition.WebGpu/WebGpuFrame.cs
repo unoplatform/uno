@@ -525,10 +525,13 @@ internal sealed unsafe partial class WebGpuFrame
 	/// counter reset every stats interval reads zero in steady state while the rings still draw every frame.</summary>
 	internal static int StatRingBands;
 	internal static int StatPrepass;
+	/// <summary>Passes that cleared to an opaque whole-target fill instead of drawing it.</summary>
+	internal static int StatClearFolds;
 	internal static int StatLayerShadow, StatLayerMatrix, StatLayerMask, StatLayerPlain;
 
 	// Off for bisecting a visual regression against the cull.
 	private static readonly bool _noOcclusionCull = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_OCCLUSION_CULL") == "1";
+	private static readonly bool _noClearFold = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_CLEAR_FOLD") == "1";
 
 	private static Vector4 QuadBounds(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, in ClipData clip)
 	{
@@ -1265,12 +1268,14 @@ internal sealed unsafe partial class WebGpuFrame
 			return;
 		}
 		b.FoldedClear = op.Fill;
-		b.Ops.RemoveAt(0);
+		StatClearFolds++;
 		// Fills of that same colour drawn straight onto the clear change no pixel, their antialiased edges included.
-		while (b.Ops.Count > 1 && b.Ops[0].Fill == op.Fill && b.Ops[0].Cover != default)
+		var folded = 1;
+		while (folded < b.Ops.Count - 1 && b.Ops[folded].Fill == op.Fill && b.Ops[folded].Cover != default)
 		{
-			b.Ops.RemoveAt(0);
+			folded++;
 		}
+		b.Ops.RemoveRange(0, folded);
 	}
 
 	private static readonly Vector4 _unbounded = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
@@ -1325,7 +1330,7 @@ internal sealed unsafe partial class WebGpuFrame
 		_passDepth--;
 		if (_emitStats && _passDepth == 0) { WalkTicks += System.Diagnostics.Stopwatch.GetTimestamp() - walkStart; }
 		if (!_noOcclusionCull) { CullOccluded(b.Ops, bound); }
-		if (foldClear) { FoldClear(b, target); }
+		if (foldClear && !_noClearFold) { FoldClear(b, target); }
 		BuildPrepass(b);
 		long uploadStart = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
