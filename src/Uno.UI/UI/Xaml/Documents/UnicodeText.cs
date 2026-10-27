@@ -2044,6 +2044,38 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
+	/// <summary>
+	/// Points the runs at the current foregrounds of <paramref name="inlines"/>, the inlines this text was laid out from.
+	/// </summary>
+	/// <returns>False when the inlines no longer match the runs, or an ending paragraph marker paints with the default foreground.</returns>
+	internal bool TryUpdateForegrounds(Inline[] inlines, Brush? defaultForeground)
+	{
+		if (!ReferenceEquals(defaultForeground, _defaultForeground) && _endingParagraphLayout is { MarkerText.Length: > 0 })
+		{
+			return false;
+		}
+
+		// The constructor makes one run per non-empty inline, in order.
+		var index = 0;
+		foreach (var inline in inlines)
+		{
+			if (string.IsNullOrEmpty(inline.GetText()))
+			{
+				continue;
+			}
+
+			if (index == _runBreaks.Count)
+			{
+				return false;
+			}
+
+			_runBreaks[index] = _runBreaks[index] with { foreground = inline.Foreground };
+			index++;
+		}
+
+		return index == _runBreaks.Count;
+	}
+
 	private sealed record MarkerShape(ushort[] Glyphs, Vector2[] Positions, Rect Ink);
 
 	private static MarkerShape GetMarkerShape(ref Dictionary<(IFont font, string text), MarkerShape>? cache, IFont font, string text)
