@@ -414,13 +414,8 @@ namespace Windows.UI.Input
 				}
 			}
 
-<<<<<<< HEAD
 			private static bool IsLongPress(PointerPoint down, PointerPoint current)
-				=> current.Timestamp - down.Timestamp > HoldMinDelayMicroseconds;
-=======
-			private static bool IsLongPress(global::Microsoft.UI.Input.PointerPoint down, global::Microsoft.UI.Input.PointerPoint current)
 				=> GestureRecognizer.IsLongPress(down.Timestamp, current.Timestamp);
->>>>>>> 3e11bd3 (fix(input): Never report a touch or pen hold as a tap)
 			#endregion
 		}
 	}

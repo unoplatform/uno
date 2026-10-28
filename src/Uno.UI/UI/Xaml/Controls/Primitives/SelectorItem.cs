@@ -12,16 +12,9 @@ using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.Devices.Input;
-<<<<<<< HEAD
-<<<<<<< HEAD
 #if __APPLE_UIKIT__
 using UIKit;
 #endif
-=======
-using Uno.Foundation.Logging;
->>>>>>> 93cb47c (fix(listview): Skip ItemClick and selection on hold)
-=======
->>>>>>> b1c3e82 (refactor(listview): Read the press point only to arm a click)
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {

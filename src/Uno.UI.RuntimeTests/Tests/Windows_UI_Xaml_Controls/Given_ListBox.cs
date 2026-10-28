@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
-using Uno.UI.DevTools.Input;
+using Uno.UI.Toolkit.DevTools.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
