@@ -337,7 +337,7 @@ public partial class TreeViewList : ListView
 		// Uno specific (#25796): a two-way binding on the item's IsSelected can still hold "true" for an item that was
 		// unselected while it had no container. If another node was selected since, ignore that stale value; the base
 		// prepare then sets IsSelected from the real selection, which writes the unselection back through the binding.
-		m_staleSelectionItem = ListViewModel.TryTakeStaleUnselection(item) ? item : null;
+		m_staleSelectionItem = ListViewModel.TryTakeStaleUnselection(NodeFromContainer(element)) ? item : null;
 		try
 		{
 			// Uno: we are moving PrepareContainerForItemOverride to the top, because otherwise
