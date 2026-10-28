@@ -265,6 +265,10 @@
 			"description": "Provides an explicit override for the version of Prism to use.",
 			"type": "nuget-version"
 		},
+		"UnoReactorVersion": {
+			"description": "Provides an explicit override for the version of Uno.Microsoft.UI.Reactor to use.",
+			"type": "nuget-version"
+		},
 		"UnoFontsVersion": {
 			"description": "Provides an explicit override for the version of Uno.Fonts packages to use.",
 			"type": "nuget-version"
@@ -593,6 +597,9 @@
 				"Prism": {
 					"description": "Adds Prism support for Uno.WinUI.",
 					"helpUrl": "https://aka.platform.uno/feature-prism"
+				},
+				"Reactor": {
+					"description": "Adds Microsoft.UI.Reactor, the declarative C# UI framework, through the Uno.Microsoft.UI.Reactor package. Uno Platform targets only: not supported on WinAppSDK."
 				},
 				"Skia": {
 					"description": "Adds support for SkiaSharp.",

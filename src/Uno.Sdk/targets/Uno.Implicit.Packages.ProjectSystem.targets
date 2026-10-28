@@ -94,6 +94,11 @@
 		<_UnoProjectSystemPackageReference Include="CommunityToolkit.Mvvm" ProjectSystem="true" />
 	</ItemGroup>
 
+	<!-- Reactor on Uno Platform has no WinAppSDK build: the Windows target gets UNOB0031 instead (Uno.Features.targets). -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';reactor;')) And !$(TargetFramework.Contains('windows10'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Microsoft.UI.Reactor" ProjectSystem="true" />
+	</ItemGroup>
+
 	<ItemGroup Condition="'$(UnoDefaultFont)'=='OpenSans' AND $(_IsExecutable)">
 		<_UnoProjectSystemPackageReference Include="Uno.Fonts.OpenSans" ProjectSystem="true" />
 	</ItemGroup>

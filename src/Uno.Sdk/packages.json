@@ -182,6 +182,13 @@
 		]
 	},
 	{
+		"group": "Reactor",
+		"version": "0.1.0-dev.77",
+		"packages": [
+			"Uno.Microsoft.UI.Reactor"
+		]
+	},
+	{
 		"group": "UnoFonts",
 		"version": "2.10.0-dev.9",
 		"packages": [

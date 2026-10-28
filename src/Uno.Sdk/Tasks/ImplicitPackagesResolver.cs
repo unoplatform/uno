@@ -100,6 +100,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? PrismVersion { get; set; }
 
+	public string? UnoReactorVersion { get; set; }
+
 	public string? UnoFontsVersion { get; set; }
 
 	public string? AndroidXNavigationVersion { get; set; }
@@ -238,6 +240,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.MsalClient, MicrosoftIdentityClientVersion)
 			.UpdateManifest(PackageManifest.Group.Mvvm, CommunityToolkitMvvmVersion)
 			.UpdateManifest(PackageManifest.Group.Prism, PrismVersion)
+			.UpdateManifest(PackageManifest.Group.Reactor, UnoReactorVersion)
 			.UpdateManifest(PackageManifest.Group.UnoFonts, UnoFontsVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidMaterial, AndroidMaterialVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXSplashScreen, AndroidXSplashScreenVersion)
