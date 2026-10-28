@@ -34,7 +34,12 @@ IntPtr nsViewHandle = CreateMyNativeView(); // an NSView* obtained through inter
 contentControl.Content = new MacOSNativeView(nsViewHandle);
 ```
 
-The wrapper keeps the `NSView` alive until it is disposed, so it can be detached and reattached, or moved to a different window. Call `Dispose()` once the view is no longer needed, after removing it from the `ContentControl`; this removes the `NSView` from Uno's container and releases the reference taken by the wrapper. A wrapper that is garbage-collected without being disposed releases the view too. When unconstrained, the view is measured using its `intrinsicContentSize`, or the frame size it had when it was wrapped.
+The wrapper keeps the `NSView` alive until it is disposed, so it can be detached and reattached, or moved to a different window. Call `Dispose()` once the view is no longer needed, after removing it from the `ContentControl`; this removes the `NSView` from Uno's container, restores the frame and autoresizing mask it had when it was wrapped, and releases the reference taken by the wrapper. A wrapper that is garbage-collected without being disposed releases the view too. When unconstrained, the view is measured using its `intrinsicContentSize`, or the frame size it had when it was wrapped.
+
+The constructor throws an `ArgumentException` when the handle is not an `NSView` (for example, an `NSWindow`), and an `InvalidOperationException` when it is not called on the UI thread.
+
+> [!NOTE]
+> On macOS, when the native elements of a window are added, removed or reordered, their views are removed and added back to the window, so a native view can lose the keyboard focus at that point.
 
 ## Features
 
