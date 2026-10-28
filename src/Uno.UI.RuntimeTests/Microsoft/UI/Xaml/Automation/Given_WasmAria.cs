@@ -154,6 +154,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Landmark_TextBlock_Gets_Text_Then_Role_Region()
+		{
+			await ResetAsync();
+
+			// The landmark keeps the empty TextBlock and sends it down the generic path; its Text then names it.
+			var text = new TextBlock { Width = 100, Height = 20 };
+			AutomationProperties.SetLandmarkType(text, AutomationLandmarkType.Custom);
+			await UITestHelper.Load(text);
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(text), timeoutMS: 5000, message: "Timed out waiting for the semantic element.");
+			await UITestHelper.WaitForIdle();
+			Assert.IsFalse(SemanticElementHasAttribute(text, "role"), "An unnamed region landmark is not exposed.");
+
+			text.Text = "Results";
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(text, "aria-label") == "Results", timeoutMS: 3000, message: "The text should be exposed as aria-label.");
+
+			Assert.AreEqual("region", GetSemanticAttribute(text, "role"), "A named region landmark should be exposed.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_GridCell_Named_After_Creation_Then_Role_Stays_GridCell()
 		{
 			await ResetAsync();
