@@ -37,6 +37,14 @@ static NSMutableSet<NSView*> *transients;
 
 @end
 
+void uno_native_track(NSView<UNONativeElement>* element)
+{
+    if (!transients) {
+        transients = [[NSMutableSet alloc] initWithCapacity:10];
+    }
+    [transients addObject:element];
+}
+
 NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
 {
     // no NSLabel on macOS
@@ -54,6 +62,7 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
     NSLog(@"uno_native_create_sample #%p label: %@", sample, label.stringValue);
 #endif
     sample.originalSuperView = ((UNOWindow*)window).renderingView;
+    uno_native_track(sample);
     return sample;
 }
 
@@ -85,6 +94,8 @@ void uno_native_attach(NSView<UNONativeElement>* element)
         // note: it's too early to add a mask since the layer has not been set yet
         [elements addObject:element];
     }
+    // `elements` owns it again, so drop the reference `uno_native_detach` took to survive the round trip.
+    [transients removeObject:element];
     [element.originalSuperView addSubview:element];
 }
 
@@ -95,11 +106,8 @@ void uno_native_detach(NSView<UNONativeElement>* element)
 #endif
     element.layer.mask = nil;
 
-    if (!transients) {
-        transients = [[NSMutableSet alloc] initWithCapacity:10];
-    }
     // once removed from superview the instance can be freed by the runtime unless we keep another reference to it
-    [transients addObject:element];
+    uno_native_track(element);
     [elements removeObject:element];
     [element removeFromSuperview];
 }
@@ -148,6 +156,14 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
 #if DEBUG
     NSLog(@"uno_native_dispose #%p", element);
 #endif
+    if (!element) {
+        return;
+    }
     [element dispose];
+    // Disposal is terminal: drop BOTH strong references, so the view cannot be resurrected through
+    // `elements` by a later attach. `transients` alone is not enough — an element detached before it
+    // is disposed has already been moved out of `elements`, and one disposed while still attached
+    // would otherwise stay retained there forever.
     [transients removeObject:element];
+    [elements removeObject:element];
 }

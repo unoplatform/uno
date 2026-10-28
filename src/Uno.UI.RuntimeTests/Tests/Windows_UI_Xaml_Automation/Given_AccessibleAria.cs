@@ -25,6 +25,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	public class Given_AccessibleAria
 	{
 #if HAS_UNO
+		[TestCleanup]
+		public void DisableAccessibilityAfterTest() => DisableAccessibility();
+#endif
+
+#if HAS_UNO
 		/// <summary>
 		/// T019/T020: A control with AutomationProperties.AutomationId set but no Name must NOT
 		/// expose the AutomationId as its accessible name. aria-label is sourced only from the
