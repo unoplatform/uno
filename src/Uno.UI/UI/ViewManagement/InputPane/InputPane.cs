@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
@@ -100,6 +101,15 @@ public partial class InputPane
 		var ensureFocusedElementInView = !args.EnsuredFocusedElementInView;
 
 		UpdateRootViewport(ensureFocusedElementInView);
+
+		if (ensureFocusedElementInView)
+		{
+			// Like WinUI's RootScrollViewer::NotifyInputPaneStateChange, the open flyouts are placed again.
+			foreach (var flyout in FlyoutBase.OpenFlyouts)
+			{
+				flyout.NotifyInputPaneStateChange(Visible);
+			}
+		}
 
 		if (ensureFocusedElementInView && Visible)
 		{

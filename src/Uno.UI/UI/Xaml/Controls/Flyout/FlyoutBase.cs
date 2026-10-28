@@ -56,6 +56,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private bool m_isTargetPositionSet;
 		private Point m_targetPoint;
 
+		private bool m_presenterResized;
+		private Size m_presenterSizeBeforeResize;
+		private bool m_allowPresenterResizing = true;
+
 		internal bool IsTargetPositionSet => m_isTargetPositionSet;
 
 		private protected bool m_isPositionedForDateTimePicker;
@@ -121,6 +125,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_popup.Closed += OnPopupClosed;
 				_popup.LostFocus += OnPopupLostFocus;
 				child.Loaded += OnPresenterLoaded;
+				child.SizeChanged += OnPresenterSizeChanged;
 
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
 
@@ -609,6 +614,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			UpdateStateToShowMode(showOptions?.ShowMode ?? FlyoutShowMode.Standard);
 
+			// Reset forced resizing of width/height to get content's auto dimensions.
+			ResetPresenterSize();
+
 			OnOpening();
 
 			if (m_openingCanceled)
@@ -963,11 +971,111 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		internal static Rect CalculateAvailableWindowRect(bool isMenuFlyout, Popup popup, object placementTarget, bool hasTargetPosition, Point positionPoint, bool isFull)
 		{
 #if HAS_UNO // This is a significantly simplified version of the WinUI logic.
-			// UNO TODO: UWP also uses values coming from the input pane and app bars, if any.
-			// Make sure of migrate to XamlRoot: https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.xamlroot
-			var xamlRoot = XamlRoot.GetImplementationForElement(popup);
-			return xamlRoot.VisualTree.VisibleBounds;
+			// UNO TODO: UWP also uses values coming from the app bars, if any.
+			var availableRect = XamlRoot.GetImplementationForElement(popup)?.VisualTree.VisibleBounds ?? default;
+
+			var intersectionRect = RectHelper.Intersect(availableRect, InputPane.GetForCurrentView().OccludedRect);
+			if (intersectionRect.Height > 0)
+			{
+				availableRect.Height -= intersectionRect.Height;
+			}
+
+			return availableRect;
 #endif
+		}
+
+		/// <summary>
+		/// Places the open flyout again once the input pane shows or hides, so it stays above the pane.
+		/// </summary>
+		internal void NotifyInputPaneStateChange(bool isInputPaneVisible)
+		{
+			if (!isInputPaneVisible)
+			{
+				// The presenter's size was reduced by us to fit it on screen.
+				// Now that the IHM is going away, let it size itself again.
+				ResetPresenterSize();
+			}
+
+			PerformPlacement();
+
+			// Uno places the presenter when its popup panel arranges.
+			_popup?.PopupPanel?.InvalidateArrange();
+		}
+
+		/// <summary>
+		/// Whether the presenter can be shrunk to fit next to its target, as WinUI's ResizeToFit does.
+		/// </summary>
+		/// <remarks>
+		/// Uno leaves out the flyouts shown at a point and the full ones: their popup panel places them from their own size.
+		/// </remarks>
+		internal bool CanResizePresenter => m_allowPresenterResizing && !m_isTargetPositionSet && EffectivePlacement != FlyoutPlacementMode.Full;
+
+		/// <summary>
+		/// The presenter's own size while it is resized to fit, which its placement keeps being computed from.
+		/// </summary>
+		internal Size? PresenterSizeBeforeResize => m_presenterResized ? m_presenterSizeBeforeResize : null;
+
+		private void OnPresenterSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			if (!m_presenterResized)
+			{
+				PerformPlacement();
+			}
+		}
+
+		// MUX Reference FlyoutBase_partial.cpp, PerformPlacement: only the presenter sizing is ported, as Uno sets the
+		// presenter's position when its popup panel arranges.
+		private void PerformPlacement()
+		{
+			if (!CanResizePresenter
+				|| _popup is not { IsOpen: true, PopupPanel: { } popupPanel }
+				|| GetPresenter() is not { } presenter)
+			{
+				return;
+			}
+
+			var presenterSize = PresenterSizeBeforeResize ?? presenter.DesiredSize;
+			if (popupPanel.CalculateFlyoutPlacement(presenter, presenterSize) is not { } presenterRect)
+			{
+				return;
+			}
+
+			if (presenterRect.Size == presenterSize)
+			{
+				ResetPresenterSize();
+				return;
+			}
+
+			m_presenterSizeBeforeResize = presenterSize;
+			m_presenterResized = true;
+
+			var margin = presenter.Margin;
+			SetPresenterLength(presenter, FrameworkElement.WidthProperty, presenterRect.Width != presenterSize.Width, presenterRect.Width - margin.Left - margin.Right);
+			SetPresenterLength(presenter, FrameworkElement.HeightProperty, presenterRect.Height != presenterSize.Height, presenterRect.Height - margin.Top - margin.Bottom);
+
+			static void SetPresenterLength(Control presenter, DependencyProperty property, bool isResized, double length)
+			{
+				if (isResized)
+				{
+					presenter.SetValue(property, Math.Max(0, length));
+				}
+				else
+				{
+					presenter.ClearValue(property);
+				}
+			}
+		}
+
+		private void ResetPresenterSize()
+		{
+			if (m_presenterResized && GetPresenter() is { } presenter)
+			{
+				// Uno clears the forced size instead of setting NaN, so a FlyoutPresenterStyle Width or Height still applies.
+				presenter.ClearValue(FrameworkElement.WidthProperty);
+				presenter.ClearValue(FrameworkElement.HeightProperty);
+			}
+
+			m_presenterResized = false;
 		}
 
 		internal void SetPresenterStyle(

@@ -79,17 +79,13 @@ partial class PopupPanel
 	{
 		foreach (var child in Children)
 		{
-			var desiredSize = child.DesiredSize;
-			Size maxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
-			if (child is FrameworkElement fe)
-			{
-				maxSize = fe.GetMaxSize();// UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
-			}
-			var rect = CalculatePopupPlacement(popup, desiredSize, maxSize);
+			// A presenter resized to fit is still placed from its own size, so it keeps the side and the size it was given.
+			var desiredSize = Flyout?.PresenterSizeBeforeResize ?? child.DesiredSize;
+			var rect = CalculatePopupPlacement(popup, child, desiredSize);
 
 			if (Flyout?.IsTargetPositionSet ?? false)
 			{
-				rect = Flyout.UpdateTargetPosition(GetVisibleBounds(), desiredSize, rect);
+				rect = Flyout.UpdateTargetPosition(GetAvailableWindowRect(popup), desiredSize, rect);
 			}
 
 			child.Arrange(rect);
@@ -103,11 +99,32 @@ partial class PopupPanel
 		return popup.PlacementTarget.GetBoundsRectRelativeTo(this);
 	}
 
-	protected virtual Rect CalculatePopupPlacement(Popup popup, Size childDesiredSize, Size maxSize)
+	/// <summary>
+	/// Where the flyout's presenter is placed for the given size, or null when this panel does not place it next to a target.
+	/// </summary>
+	internal Rect? CalculateFlyoutPlacement(UIElement presenter, Size presenterSize)
+		=> Flyout is not null && Popup.PlacementTarget is not null
+			? CalculatePopupPlacement(Popup, presenter, presenterSize)
+			: default(Rect?);
+
+	private Rect CalculatePopupPlacement(Popup popup, UIElement child, Size childDesiredSize)
+	{
+		var maxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
+		var minSize = default(Size);
+		if (child is FrameworkElement fe)
+		{
+			maxSize = fe.GetMaxSize();// UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
+			minSize = new Size(fe.MinWidth, fe.MinHeight);
+		}
+
+		return CalculatePopupPlacement(popup, childDesiredSize, maxSize, minSize);
+	}
+
+	protected virtual Rect CalculatePopupPlacement(Popup popup, Size childDesiredSize, Size maxSize, Size minSize)
 	{
 		var anchorRect = GetAnchorRect(popup);
 
-		var visibleBounds = GetVisibleBounds();
+		var visibleBounds = GetAvailableWindowRect(popup);
 
 		// Make sure the desiredSize fits in the panel
 		childDesiredSize.Width = Math.Min(childDesiredSize.Width, visibleBounds.Width);
@@ -129,7 +146,15 @@ partial class PopupPanel
 		var halfChildWidth = childDesiredSize.Width / 2;
 		var halfChildHeight = childDesiredSize.Height / 2;
 
+		// Like WinUI's TestAgainstLimitsAndPlace, the flyout is kept within the available area: a target beyond it
+		// (e.g. behind the input pane) gets the flyout placed against that area's edge.
+		var anchorTop = Math.Min(anchorRect.Top, visibleBounds.Bottom);
+		var anchorBottom = Math.Max(anchorRect.Bottom, visibleBounds.Top);
+		var anchorLeft = Math.Min(anchorRect.Left, visibleBounds.Right);
+		var anchorRight = Math.Max(anchorRect.Right, visibleBounds.Left);
+
 		var finalRect = default(Rect);
+		var placementFits = false;
 
 		for (var i = 0; i < placementsToTry.Length; i++)
 		{
@@ -142,21 +167,21 @@ partial class PopupPanel
 				case FlyoutBase.MajorPlacementMode.Top:
 					finalPosition = new Point(
 						x: anchorRect.Left + halfAnchorWidth - halfChildWidth + popup.HorizontalOffset,
-						y: anchorRect.Top - PopupPlacementTargetMargin - childDesiredSize.Height + popup.VerticalOffset);
+						y: anchorTop - PopupPlacementTargetMargin - childDesiredSize.Height + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Bottom:
 					finalPosition = new Point(
 						x: anchorRect.Left + halfAnchorWidth - halfChildWidth + popup.HorizontalOffset,
-						y: anchorRect.Bottom + PopupPlacementTargetMargin + popup.VerticalOffset);
+						y: anchorBottom + PopupPlacementTargetMargin + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Left:
 					finalPosition = new Point(
-						x: anchorRect.Left - PopupPlacementTargetMargin - childDesiredSize.Width + popup.HorizontalOffset,
+						x: anchorLeft - PopupPlacementTargetMargin - childDesiredSize.Width + popup.HorizontalOffset,
 						y: anchorRect.Top + halfAnchorHeight - halfChildHeight + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Right:
 					finalPosition = new Point(
-						x: anchorRect.Right + PopupPlacementTargetMargin + popup.HorizontalOffset,
+						x: anchorRight + PopupPlacementTargetMargin + popup.HorizontalOffset,
 						y: anchorRect.Top + halfAnchorHeight - halfChildHeight + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Full:
@@ -250,8 +275,15 @@ partial class PopupPanel
 				{
 					this.Log().LogDebug($"Accepted placement {placement} (choice {i}) with finalRect={finalRect} in visibleBounds={visibleBounds}");
 				}
+				placementFits = true;
 				break; // this placement is acceptable
 			}
+		}
+
+		// Like WinUI's CalculatePlacementPrivate, a flyout that fits nowhere is resized next to its target, from the preferred placement.
+		if (!placementFits && Flyout is { CanResizePresenter: true })
+		{
+			finalRect = ResizeToFit(preferredPlacement, anchorRect, visibleBounds, minSize, finalRect);
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -376,5 +408,178 @@ partial class PopupPanel
 		return fits;
 	}
 
+	// MUX Reference FlyoutBase_partial.cpp (CalculateAvailableSpace), commit b9fa30e549de859f15fb84f153cc6136b981d10a
+	// Calculates space between container boundary and placement target for a given placement mode.
+	private static double CalculateAvailableSpace(
+		FlyoutBase.MajorPlacementMode placement,
+		Rect placementTargetBounds,
+		Rect containerRect)
+	{
+		var availableSpace = placement switch
+		{
+			FlyoutBase.MajorPlacementMode.Top => Math.Min(containerRect.Height, placementTargetBounds.Y - containerRect.Y),
+			FlyoutBase.MajorPlacementMode.Bottom => Math.Min(containerRect.Height, containerRect.Bottom - placementTargetBounds.Bottom),
+			FlyoutBase.MajorPlacementMode.Left => Math.Min(containerRect.Width, placementTargetBounds.X - containerRect.X),
+			FlyoutBase.MajorPlacementMode.Right => Math.Min(containerRect.Width, containerRect.Right - placementTargetBounds.Right),
+			_ => 0.0,
+		};
+
+		return Math.Max(0.0, availableSpace);
+	}
+
+	// MUX Reference FlyoutBase_partial.cpp (SelectSideWithMoreSpace), commit b9fa30e549de859f15fb84f153cc6136b981d10a
+	// Update placement mode and calculate available space for the best placement mode
+	// along the same axis as specified by placement.
+	private static FlyoutBase.MajorPlacementMode SelectSideWithMoreSpace(
+		FlyoutBase.MajorPlacementMode placement,
+		Rect placementTargetBounds,
+		Rect containerRect,
+		out double availableSpace)
+	{
+		var (lowSide, highSide) = IsPlacementModeVertical(placement)
+			? (FlyoutBase.MajorPlacementMode.Top, FlyoutBase.MajorPlacementMode.Bottom)
+			: (FlyoutBase.MajorPlacementMode.Left, FlyoutBase.MajorPlacementMode.Right);
+
+		var availableSpaceLow = CalculateAvailableSpace(lowSide, placementTargetBounds, containerRect);
+		var availableSpaceHigh = CalculateAvailableSpace(highSide, placementTargetBounds, containerRect);
+
+		if (availableSpaceLow > availableSpaceHigh)
+		{
+			availableSpace = availableSpaceLow;
+			return lowSide;
+		}
+		else if (availableSpaceLow < availableSpaceHigh)
+		{
+			availableSpace = availableSpaceHigh;
+			return highSide;
+		}
+
+		availableSpace = availableSpaceLow;
+		return placement;
+	}
+
+	// MUX Reference FlyoutBase_partial.cpp (ResizeToFit), commit b9fa30e549de859f15fb84f153cc6136b981d10a
+	// Size and position control to fill available space constrained by container rectangle.
+	// Uno: the margin to the target is applied here, where WinUI applies FlyoutMargin once the placement is calculated.
+	private Rect ResizeToFit(
+		FlyoutBase.MajorPlacementMode placement,
+		Rect placementTargetBounds,
+		Rect containerRect,
+		Size minControlSize,
+		Rect controlRect)
+	{
+		var controlPos = new Point(controlRect.X, controlRect.Y);
+		var controlSize = new Size(controlRect.Width, controlRect.Height);
+		var availableSpace = CalculateAvailableSpace(placement, placementTargetBounds, containerRect);
+
+		// For primary axis, if exceeding available size on side specified by placement
+		// find side with more space and adjust position and size to be next to target.
+		// For the secondary axis, if exceeding container size, set it to fill all available space.
+
+		if (IsPlacementModeVertical(placement))
+		{
+			if (controlSize.Height > availableSpace)
+			{
+				var moreSpacePlacement = SelectSideWithMoreSpace(placement, placementTargetBounds, containerRect, out var moreAvailableSpace);
+
+				// Switch sides only if there's enough space to fit minimum size Flyout.
+				if (moreSpacePlacement != placement && moreAvailableSpace >= minControlSize.Height)
+				{
+					placement = moreSpacePlacement;
+					availableSpace = moreAvailableSpace;
+				}
+
+				// Adjust size only if control has enough space to fit without going under minimum size.
+				if (controlSize.Height > availableSpace && availableSpace >= minControlSize.Height)
+				{
+					controlSize.Height = availableSpace;
+				}
+
+				// Clamp against container size.
+				if (controlSize.Height > containerRect.Height)
+				{
+					controlSize.Height = containerRect.Height;
+				}
+
+				// Adjust position to be next to placement target.
+				// Note that the position will be corrected not to exceed boundaries at the end of this function.
+				controlPos.Y = placement == FlyoutBase.MajorPlacementMode.Top
+					? placementTargetBounds.Y - PopupPlacementTargetMargin - controlSize.Height
+					: placementTargetBounds.Bottom + PopupPlacementTargetMargin;
+			}
+
+			if (controlSize.Width > containerRect.Width)
+			{
+				controlSize.Width = containerRect.Width;
+				controlPos.X = containerRect.X;
+			}
+		}
+		else
+		{
+			if (controlSize.Width > availableSpace)
+			{
+				var moreSpacePlacement = SelectSideWithMoreSpace(placement, placementTargetBounds, containerRect, out var moreAvailableSpace);
+
+				// Switch sides only if there's enough space to fit minimum size Flyout.
+				if (moreSpacePlacement != placement && moreAvailableSpace >= minControlSize.Width)
+				{
+					placement = moreSpacePlacement;
+					availableSpace = moreAvailableSpace;
+				}
+
+				// Adjust size only if control has enough space to fit without going under minimum size.
+				if (controlSize.Width > availableSpace && availableSpace >= minControlSize.Width)
+				{
+					controlSize.Width = availableSpace;
+				}
+
+				// Clamp against container size.
+				if (controlSize.Width > containerRect.Width)
+				{
+					controlSize.Width = containerRect.Width;
+				}
+
+				// Adjust position to be next to placement target.
+				// Note that the position will be corrected not to exceed boundaries at the end of this function.
+				controlPos.X = placement == FlyoutBase.MajorPlacementMode.Left
+					? placementTargetBounds.X - PopupPlacementTargetMargin - controlSize.Width
+					: placementTargetBounds.Right + PopupPlacementTargetMargin;
+			}
+
+			if (controlSize.Height > containerRect.Height)
+			{
+				controlSize.Height = containerRect.Height;
+				controlPos.Y = containerRect.Y;
+			}
+		}
+
+		// Finally, make sure we do not exceed container boundaries.
+
+		if (controlPos.X < containerRect.X)
+		{
+			controlPos.X = containerRect.X;
+		}
+		else if (controlPos.X + controlSize.Width > containerRect.Right)
+		{
+			controlPos.X = containerRect.Right - controlSize.Width;
+		}
+
+		if (controlPos.Y < containerRect.Y)
+		{
+			controlPos.Y = containerRect.Y;
+		}
+		else if (controlPos.Y + controlSize.Height > containerRect.Bottom)
+		{
+			controlPos.Y = containerRect.Bottom - controlSize.Height;
+		}
+
+		return new Rect(controlPos, controlSize);
+	}
+
 	private Rect GetVisibleBounds() => XamlRoot?.VisualTree.VisibleBounds ?? default;
+
+	// Like WinUI's FlyoutBase::PerformPlacement, a flyout is placed within the area left visible by the input pane.
+	private Rect GetAvailableWindowRect(Popup popup) => Flyout is { } flyout
+		? FlyoutBase.CalculateAvailableWindowRect(flyout is MenuFlyout, popup, popup.PlacementTarget, flyout.IsTargetPositionSet, default, FullPlacementRequested)
+		: GetVisibleBounds();
 }
