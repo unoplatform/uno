@@ -10,8 +10,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.UI;
-using Uno.Disposables;
-using Microsoft.UI.Xaml.Media.Imaging;
 using System.Numerics;
 using Microsoft.UI.Composition;
 
@@ -19,7 +17,7 @@ namespace Microsoft.UI.Xaml.Media
 {
 	public partial class ImageBrush : TileBrush
 	{
-		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
+		private IDisposable _sourceInvalidatedRegistration;
 
 #pragma warning disable CS0067 // The event 'ImageBrush.ImageFailed' is never used
 		public event RoutedEventHandler ImageOpened;
@@ -29,36 +27,12 @@ namespace Microsoft.UI.Xaml.Media
 		#region ImageSource DP
 		public static DependencyProperty ImageSourceProperty { get; } =
 			DependencyProperty.Register("ImageSource", typeof(ImageSource), typeof(ImageBrush), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) =>
-			((ImageBrush)s).OnSourceChanged((ImageSource)e.NewValue, (ImageSource)e.OldValue)));
+			((ImageBrush)s).OnSourceChangedPartial((ImageSource)e.NewValue, (ImageSource)e.OldValue)));
 
 		public ImageSource ImageSource
 		{
 			get => (ImageSource)this.GetValue(ImageSourceProperty);
 			set => this.SetValue(ImageSourceProperty, value);
-		}
-
-		private void OnSourceChanged(ImageSource newValue, ImageSource oldValue)
-		{
-			if (newValue is BitmapImage bitmapImage)
-			{
-				_sourceDisposable.Disposable = bitmapImage.RegisterDisposablePropertyChangedCallback(
-					BitmapImage.UriSourceProperty,
-					(_, _) => OnSourceChangedPartial(newValue, null)
-				);
-			}
-			else if (newValue is SvgImageSource svgImageSource)
-			{
-				_sourceDisposable.Disposable = svgImageSource.RegisterDisposablePropertyChangedCallback(
-					SvgImageSource.UriSourceProperty,
-					(_, _) => OnSourceChangedPartial(newValue, null)
-				);
-			}
-			else
-			{
-				_sourceDisposable.Disposable = null;
-			}
-
-			OnSourceChangedPartial(newValue, oldValue);
 		}
 
 		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue);
@@ -75,15 +49,9 @@ namespace Microsoft.UI.Xaml.Media
 
 		private static void OnImageSourceChanged(ImageBrush brush, DependencyPropertyChangedEventArgs args)
 		{
-			if (args.OldValue is ImageSource oldSource)
-			{
-				oldSource.Invalidated -= brush.OnInvalidateRender;
-			}
-
-			if (args.NewValue is ImageSource newSource)
-			{
-				newSource.Invalidated += brush.OnInvalidateRender;
-			}
+			// The current source, not args.NewValue: subscribing to that one ran app code (ImageOpened) that may have set another.
+			brush._sourceInvalidatedRegistration?.Dispose();
+			brush._sourceInvalidatedRegistration = brush.ImageSource?.RegisterInvalidated(brush.OnInvalidateRender);
 		}
 
 		internal Rect GetArrangedImageRect(Size sourceSize, Rect targetRect)
