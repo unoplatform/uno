@@ -632,9 +632,19 @@ internal sealed class AtspiServer
 					{
 						// No per-glyph layout is exposed; report the whole text box so magnifiers
 						// and mouse review still land on the right control.
+						if (member == AtspiDbus.GetRangeExtentsMethod)
+						{
+							_ = reader.ReadInt32(); // start_offset
+							_ = reader.ReadInt32(); // end_offset
+						}
+						else
+						{
+							_ = reader.ReadInt32(); // offset
+						}
+						var (x, y) = TranslateFromScreen(node, ToInt32(node.X), ToInt32(node.Y), reader.ReadUInt32());
 						using var writer = context.CreateReplyWriter(AtspiDbus.Int32QuadSignature);
-						writer.WriteInt32(ToInt32(node.X));
-						writer.WriteInt32(ToInt32(node.Y));
+						writer.WriteInt32(x);
+						writer.WriteInt32(y);
 						writer.WriteInt32(ToInt32(node.W));
 						writer.WriteInt32(ToInt32(node.H));
 						context.Reply(writer.CreateMessage());
@@ -1018,10 +1028,12 @@ internal sealed class AtspiServer
 
 		private static void ReplyExtents(MethodContext context, AtspiNode node)
 		{
+			var coordType = context.Request.GetBodyReader().ReadUInt32();
+			var (x, y) = TranslateFromScreen(node, ToInt32(node.X), ToInt32(node.Y), coordType);
 			using var writer = context.CreateReplyWriter(AtspiDbus.ExtentsSignature);
 			writer.WriteStructureStart();
-			writer.WriteInt32(ToInt32(node.X));
-			writer.WriteInt32(ToInt32(node.Y));
+			writer.WriteInt32(x);
+			writer.WriteInt32(y);
 			writer.WriteInt32(ToInt32(node.W));
 			writer.WriteInt32(ToInt32(node.H));
 			context.Reply(writer.CreateMessage());
@@ -1037,9 +1049,11 @@ internal sealed class AtspiServer
 		{
 			// Component.xml declares GetPosition as two separate out arguments (x, y) —
 			// only GetExtents replies with a struct.
+			var coordType = context.Request.GetBodyReader().ReadUInt32();
+			var (x, y) = TranslateFromScreen(node, ToInt32(node.X), ToInt32(node.Y), coordType);
 			using var writer = context.CreateReplyWriter(AtspiDbus.Int32PairSignature);
-			writer.WriteInt32(ToInt32(node.X));
-			writer.WriteInt32(ToInt32(node.Y));
+			writer.WriteInt32(x);
+			writer.WriteInt32(y);
 			context.Reply(writer.CreateMessage());
 		}
 
@@ -1087,6 +1101,27 @@ internal sealed class AtspiServer
 				case AtspiDbus.ParentCoordType:
 					var origin = node.Parent ?? node;
 					return (x + (int)origin.X, y + (int)origin.Y);
+				default:
+					return (x, y);
+			}
+		}
+
+		// Inverse of TranslateToScreen: published bounds are absolute screen coordinates,
+		// so a window- or parent-relative reply must subtract that same ancestor offset back out.
+		private static (int X, int Y) TranslateFromScreen(AtspiNode node, int x, int y, uint coordType)
+		{
+			switch (coordType)
+			{
+				case AtspiDbus.WindowCoordType:
+					var root = node;
+					while (root.Parent is { } rootParent)
+					{
+						root = rootParent;
+					}
+					return (x - (int)root.X, y - (int)root.Y);
+				case AtspiDbus.ParentCoordType:
+					var origin = node.Parent ?? node;
+					return (x - (int)origin.X, y - (int)origin.Y);
 				default:
 					return (x, y);
 			}
