@@ -9,16 +9,25 @@ namespace Uno.UI.Composition.Drawing;
 
 internal static partial class ManagedImageDecoder
 {
-	private static bool TryDecodePng(byte[] d, [NotNullWhen(true)] out DecodedImage? decoded)
+	/// <summary>What the chunk walk of a PNG found: IHDR's fields and where the last PLTE and tRNS chunks are.</summary>
+	private struct PngHeader
 	{
-		decoded = null;
+		public int Width, Height, BitDepth, ColorType, Interlace, BitsPerPixel;
+		public int PaletteOffset, PaletteLength, TransparencyOffset, TransparencyLength;
+	}
+
+	/// <summary>
+	/// Walks a PNG's chunks, reading their headers (and IHDR), and applies every refusal <see cref="TryDecodePng"/>
+	/// makes before inflating the image data, which <paramref name="onImageData"/> receives chunk by chunk.
+	/// </summary>
+	private static bool TryReadPngHeader(ImageBytes d, Action<int, int>? onImageData, out PngHeader header)
+	{
+		header = default;
+		header.PaletteOffset = header.TransparencyOffset = -1;
 
 		var p = 8; // skip signature
-		int width = 0, height = 0, bitDepth = 0, colorType = 0, interlace = 0;
-		byte[]? palette = null;   // RGB triplets
-		byte[]? paletteAlpha = null;
-		using var idat = new MemoryStream();
 		var sawHeader = false;
+		long imageDataLength = 0;
 
 		while (p + 8 <= d.Length)
 		{
@@ -37,23 +46,24 @@ internal static partial class ManagedImageDecoder
 			switch (type)
 			{
 				case 0x49484452: // IHDR
-					width = (int)ReadU32(d, chunk);
-					height = (int)ReadU32(d, chunk + 4);
-					bitDepth = d[chunk + 8];
-					colorType = d[chunk + 9];
-					interlace = d[chunk + 12];
+					header.Width = (int)ReadU32(d, chunk);
+					header.Height = (int)ReadU32(d, chunk + 4);
+					header.BitDepth = d[chunk + 8];
+					header.ColorType = d[chunk + 9];
+					header.Interlace = d[chunk + 12];
 					sawHeader = true;
 					break;
 				case 0x504C5445: // PLTE
-					palette = new byte[length];
-					Array.Copy(d, chunk, palette, 0, length);
+					header.PaletteOffset = chunk;
+					header.PaletteLength = length;
 					break;
 				case 0x74524E53: // tRNS
-					paletteAlpha = new byte[length];
-					Array.Copy(d, chunk, paletteAlpha, 0, length);
+					header.TransparencyOffset = chunk;
+					header.TransparencyLength = length;
 					break;
 				case 0x49444154: // IDAT
-					idat.Write(d, chunk, length);
+					imageDataLength += length;
+					onImageData?.Invoke(chunk, length);
 					break;
 				case 0x49454E44: // IEND
 					p = d.Length;
@@ -61,12 +71,12 @@ internal static partial class ManagedImageDecoder
 			}
 		}
 
-		if (!sawHeader || ExceedsPixelCap(width, height) || interlace is not (0 or 1))
+		if (!sawHeader || ExceedsPixelCap(header.Width, header.Height) || header.Interlace is not (0 or 1))
 		{
 			return false;
 		}
 
-		var channels = colorType switch
+		var channels = header.ColorType switch
 		{
 			0 => 1, // grayscale
 			2 => 3, // RGB
@@ -75,10 +85,46 @@ internal static partial class ManagedImageDecoder
 			6 => 4, // RGBA
 			_ => 0,
 		};
-		if (channels == 0 || (bitDepth != 8 && bitDepth != 16 && !(colorType is 0 or 3 && bitDepth is 1 or 2 or 4)))
+		var bitDepth = header.BitDepth;
+		var depthDecoded = header.ColorType switch
+		{
+			0 => bitDepth is 1 or 2 or 4 or 8 or 16,
+			3 => bitDepth is 1 or 2 or 4 or 8, // the index reader has no 16-bit case
+			_ => bitDepth is 8 or 16,
+		};
+		if (channels == 0 || !depthDecoded)
 		{
 			return false;
 		}
+
+		// Every pixel of a palette image reads its first entry at least.
+		if (header.ColorType == 3 && header.PaletteLength < 3)
+		{
+			return false;
+		}
+
+		header.BitsPerPixel = channels * bitDepth;
+
+		// The unfiltered scanlines are allocated from the header alone, on top of the BGRA output: up to 8 bytes per
+		// pixel for 16-bit RGBA. Re-check the cap against that real cost before allocating either buffer.
+		return imageDataLength != 0 && !ExceedsPixelCap(header.Width, header.Height, 4 + (header.BitsPerPixel + 7) / 8);
+	}
+
+	private static bool TryDecodePng(byte[] d, ImageBytes bytes, [NotNullWhen(true)] out DecodedImage? decoded)
+	{
+		decoded = null;
+
+		using var idat = new MemoryStream();
+		if (!TryReadPngHeader(bytes, (offset, length) => idat.Write(d, offset, length), out var header))
+		{
+			return false;
+		}
+
+		int width = header.Width, height = header.Height, bitDepth = header.BitDepth, colorType = header.ColorType;
+		var bitsPerPixel = header.BitsPerPixel;
+		var bytesPerPixel = Math.Max(1, bitsPerPixel / 8);
+		var palette = header.PaletteOffset < 0 ? null : d.AsSpan(header.PaletteOffset, header.PaletteLength).ToArray(); // RGB triplets
+		var paletteAlpha = header.TransparencyOffset < 0 ? null : d.AsSpan(header.TransparencyOffset, header.TransparencyLength).ToArray();
 
 		// On a greyscale (0) or truecolour (2) image, tRNS is a transparent colour KEY in raw sample values,
 		// not the per-index alpha table it is for a palette image.
@@ -96,21 +142,11 @@ internal static partial class ManagedImageDecoder
 			}
 		}
 
-		var bitsPerPixel = channels * bitDepth;
-		var bytesPerPixel = Math.Max(1, bitsPerPixel / 8);
-
-		// The unfiltered scanlines are allocated from the header alone, on top of the BGRA output: up to 8 bytes per
-		// pixel for 16-bit RGBA. Re-check the cap against that real cost before allocating either buffer.
-		if (idat.Length == 0 || ExceedsPixelCap(width, height, 4 + (bitsPerPixel + 7) / 8))
-		{
-			return false;
-		}
-
 		idat.Position = 0;
 		using var inflate = new ZLibStream(idat, CompressionMode.Decompress);
 		var bgra = new byte[width * height * 4];
 
-		if (interlace == 0)
+		if (header.Interlace == 0)
 		{
 			var stride = (width * bitsPerPixel + 7) / 8;
 			var raw = new byte[(stride + 1) * height];
@@ -352,6 +388,4 @@ internal static partial class ManagedImageDecoder
 
 		return read;
 	}
-
-	private static uint ReadU32(byte[] d, int o) => ((uint)d[o] << 24) | ((uint)d[o + 1] << 16) | ((uint)d[o + 2] << 8) | d[o + 3];
 }

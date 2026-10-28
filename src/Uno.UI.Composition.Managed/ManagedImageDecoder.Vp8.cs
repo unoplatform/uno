@@ -8,7 +8,7 @@ internal static partial class ManagedImageDecoder
 {
 	// WebP lossy: VP8 key-frame (intra) decoder — boolean entropy decode, coefficient tokens, dequant,
 	// inverse WHT/DCT, intra prediction, optional in-loop deblocking, YUV->RGB. Ported from RFC 6386 / libwebp.
-	private static bool TryDecodeVp8(byte[] data, int offset, int length, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out DecodedImage? decoded)
+	private static bool TryDecodeVp8(ImageBytes data, int offset, int length, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out DecodedImage? decoded)
 	{
 		decoded = null;
 		try
@@ -31,7 +31,7 @@ internal static partial class ManagedImageDecoder
 
 	private sealed class Vp8FullDecoder
 	{
-		private readonly byte[] _data;
+		private readonly ImageBytes _data;
 		private readonly int _offset;
 		private readonly int _length;
 
@@ -89,7 +89,7 @@ internal static partial class ManagedImageDecoder
 		private bool[] _mbHasNonZero = null!;
 		private int[] _mbYMode = null!;
 
-		public Vp8FullDecoder(byte[] data, int offset, int length)
+		public Vp8FullDecoder(ImageBytes data, int offset, int length)
 		{
 			_data = data;
 			_offset = offset;
@@ -150,7 +150,8 @@ internal static partial class ManagedImageDecoder
 
 		// ---- header ----
 
-		private bool ParseFrameHeader()
+		/// <summary>Reads the frame header, all of what <see cref="Decode"/> reads before the macroblocks, and its refusals.</summary>
+		public bool ParseFrameHeader()
 		{
 			var o = _offset;
 			var tag = _data[o] | (_data[o + 1] << 8) | (_data[o + 2] << 16);
@@ -1206,16 +1207,18 @@ internal static partial class ManagedImageDecoder
 	/// <summary>VP8 boolean (arithmetic) entropy decoder (RFC 6386 §7). Invariant value &lt; range&lt;&lt;8 keeps value 16-bit.</summary>
 	internal sealed class Vp8BoolDecoder
 	{
-		private readonly byte[] _d;
+		private readonly ImageBytes _d;
+		private readonly byte[]? _array; // the in-memory bytes, read directly in the macroblock loop
 		private int _pos;
 		private readonly int _end;
 		private uint _value;
 		private uint _range;
 		private int _bitCount;
 
-		public Vp8BoolDecoder(byte[] d, int start, int length)
+		public Vp8BoolDecoder(ImageBytes d, int start, int length)
 		{
 			_d = d;
+			_array = d.Data;
 			_pos = start;
 			_end = start + length;
 			_value = ((uint)NextByte() << 8) | NextByte();
@@ -1223,7 +1226,7 @@ internal static partial class ManagedImageDecoder
 			_bitCount = 0;
 		}
 
-		private uint NextByte() => _pos < _end && _pos < _d.Length ? _d[_pos++] : 0u;
+		private uint NextByte() => _pos < _end && _pos < _d.Length ? (_array is { } array ? array[_pos++] : _d[_pos++]) : 0u;
 
 		public int GetBit(int probability)
 		{
