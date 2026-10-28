@@ -190,17 +190,21 @@ bool uno_native_is_attached(NSView<UNONativeElement>* element)
 
 void uno_native_measure(NSView<UNONativeElement>* element, double childWidth, double childHeight, double availableWidth, double availableHeight, double* width, double* height)
 {
-    CGSize size = [element respondsToSelector:@selector(naturalSize)] ? [element naturalSize] : element.subviews.firstObject.frame.size;
-    
-    double resolvedWidth = isfinite(availableWidth) ? availableWidth : (isfinite(childWidth) ? childWidth : -1.0);
-    double resolvedHeight = isfinite(availableHeight) ? availableHeight : (isfinite(childHeight) ? childHeight : -1.0);
-    if (resolvedWidth < 0)
+    // A hosted view has no managed child, so its child size is always 0: an unconstrained axis takes its natural size.
+    bool hasNaturalSize = [element respondsToSelector:@selector(naturalSize)];
+    double resolvedWidth = isfinite(availableWidth) ? availableWidth : (isfinite(childWidth) && !hasNaturalSize ? childWidth : -1.0);
+    double resolvedHeight = isfinite(availableHeight) ? availableHeight : (isfinite(childHeight) && !hasNaturalSize ? childHeight : -1.0);
+    if (resolvedWidth < 0 || resolvedHeight < 0)
     {
-        resolvedWidth = size.width;
-    }
-    if (resolvedHeight < 0)
-    {
-        resolvedHeight = size.height;
+        CGSize size = hasNaturalSize ? [element naturalSize] : element.subviews.firstObject.frame.size;
+        if (resolvedWidth < 0)
+        {
+            resolvedWidth = size.width;
+        }
+        if (resolvedHeight < 0)
+        {
+            resolvedHeight = size.height;
+        }
     }
 
     *width = resolvedWidth;
