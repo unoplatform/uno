@@ -183,7 +183,7 @@
 	},
 	{
 		"group": "Reactor",
-		"version": "0.1.0-dev.70",
+		"version": "0.1.0-dev.77",
 		"packages": [
 			"Uno.Microsoft.UI.Reactor"
 		]
