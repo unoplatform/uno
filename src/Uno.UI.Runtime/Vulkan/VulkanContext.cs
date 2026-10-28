@@ -254,10 +254,11 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	/// Call after Skia canvas/context flush, while holding the device lock.
 	/// Used by platforms (Win32) that use a split StartPaint/EndPaint pattern.
 	/// </summary>
-	public void BlitAndPresent()
+	/// <returns><c>true</c> when the frame was presented; <c>false</c> when it was skipped.</returns>
+	public bool BlitAndPresent()
 	{
 		if (_display == null || _renderImage == null || _deviceApi == null)
-			return;
+			return false;
 
 		// Set even if the swapchain skips this present: the frame is already in the render image.
 		RenderImageHasContent = true;
@@ -279,11 +280,11 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 				// Retry acquire after recreation
 				acquireResult = _display.TryAcquireNextImage();
 				if (acquireResult != 0)
-					return; // Still failing — skip this frame
+					return false; // Still failing — skip this frame
 			}
 			catch
 			{
-				return; // Recreation failed — skip this frame
+				return false; // Recreation failed — skip this frame
 			}
 		}
 
@@ -294,10 +295,12 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			_display.PrepareCurrentImageForBlit(commandBuffer);
 			_display.BlitImageToCurrentImage(commandBuffer, _renderImage);
 			_display.EndPresentation(commandBuffer);
+			return true;
 		}
 		catch (VulkanException)
 		{
 			// Presentation failed — skip this frame
+			return false;
 		}
 	}
 
