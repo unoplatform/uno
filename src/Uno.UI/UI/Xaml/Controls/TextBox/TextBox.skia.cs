@@ -1105,6 +1105,10 @@ public partial class TextBox : ITextSelectionGripperHost
 					selectionLength = text.Length;
 				}
 				break;
+			case VirtualKey.Tab:
+				// Tab is handled by UnoFocusInputHandler for focus navigation.
+				// Never insert a tab character in TextBox (no AcceptsTab property).
+				return;
 			default:
 				// During IME composition, skip normal character insertion.
 				// The IME extension handles text updates via OnImeCompositionUpdated → ProcessTextInput.
