@@ -1,0 +1,24 @@
+<Project>
+
+	<!--
+		Sdk.props picks the WebAssembly SDK from $(TargetFramework), which it only sees as a global property: from -f, or
+		in the inner build of TargetFrameworks. A head that sets a single browserwasm TargetFramework itself, in the project,
+		in Directory.Build.props or with a file-based app's #:property, got the plain SDK and built as a desktop executable.
+
+		Moving it to TargetFrameworks makes this an outer build (IsCrossTargetingBuild is only decided by the .NET SDK's
+		Sdk.targets, after this file), which builds the inner one with TargetFramework as a global property, the same way
+		as a head that sets TargetFrameworks itself. This has to run before the other Uno targets, so they see the same
+		outer build. A head that is only known to be one later, such as an OutputType set in Directory.Build.targets, is
+		reported by UNOB0032 instead. A TargetFrameworks set next to it, for instance in Directory.Build.props, is replaced:
+		the .NET SDK only builds the TargetFramework then.
+	-->
+	<PropertyGroup Condition="
+		$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'
+		AND '$(_DefaultMicrosoftNETSdk)' == 'Microsoft.NET.Sdk'
+		AND ( '$(OutputType)' == 'Exe' OR '$(OutputType)' == 'WinExe' OR '$(IsUnoHead)' == 'true' ) ">
+		<_UnoMovedBrowserWasmTargetFramework>true</_UnoMovedBrowserWasmTargetFramework>
+		<TargetFrameworks>$(TargetFramework)</TargetFrameworks>
+		<TargetFramework></TargetFramework>
+	</PropertyGroup>
+
+</Project>
