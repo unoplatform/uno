@@ -12,6 +12,7 @@
 
 <p align="center">
   <a href="https://www.nuget.org/packages/Uno.Sdk/"><img alt="Uno.Sdk on NuGet" src="https://img.shields.io/nuget/v/uno.sdk.svg?style=flat&color=159bff&label=Uno.Sdk" /></a>
+  <a href="https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5"><img alt="master build status" src="https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=master%20build" /></a>
   <a href="https://www.nuget.org/packages/Uno.WinUI/"><img alt="NuGet downloads" src="https://img.shields.io/nuget/dt/uno.winui.svg?style=flat&color=7a67f8&label=downloads" /></a>
   <a href="https://github.com/unoplatform/uno"><img alt="GitHub stars" src="https://img.shields.io/github/stars/unoplatform/uno?style=flat&color=7a67f8&label=stars" /></a>
   <a href="https://github.com/unoplatform/uno/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/unoplatform/uno.svg?style=flat&color=7a67f8&label=contributors" /></a>
@@ -53,7 +54,7 @@ cd MyApp/MyApp
 dotnet run -f net10.0-desktop
 ```
 
-Prefer an IDE? Uno Platform has extensions for **Visual Studio**, **Visual Studio Code** and **JetBrains Rider**, and a [live project wizard](https://aka.platform.uno/app-wizard) to choose your platforms and features. The [getting started guide](https://aka.platform.uno/get-started) walks you through each setup.
+Prefer an IDE? Uno Platform has extensions for [**Visual Studio**](https://aka.platform.uno/vs-extension-marketplace), [**Visual Studio Code**](https://aka.platform.uno/vscode-extension-marketplace) and [**JetBrains Rider**](https://aka.platform.uno/rider-extension-marketplace), and a [live project wizard](https://aka.platform.uno/app-wizard) to choose your platforms and features. The [getting started guide](https://aka.platform.uno/get-started) walks you through each setup.
 
 ## 🖥️ Where your app runs
 
@@ -132,8 +133,6 @@ There has never been a better time to start. With one rendering pipeline, a cont
 3. Pick a [good first issue](https://github.com/unoplatform/uno/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22), or tell us what you'd like to work on.
 
 Working with an AI coding agent? The repository's [AGENTS.md](AGENTS.md) and [`.claude`](.claude) folder describe the build rules, platform targeting, runtime tests and samples, so your agent follows the same conventions we do.
-
-[![Build status](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=master%20build)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
 
 ## 💬 Community and support
 
