@@ -16,7 +16,7 @@ public class Given_DiscoveryIssueMapper
 		{
 			ResolutionKind = WorkspaceResolutionKind.CurrentDirectory,
 			SelectedSolutionPath = solutionPath,
-			GlobalJsonPath = Path.Combine(Path.GetTempPath(), @"repo\MyApp\global.json"),
+			GlobalJsonPath = Path.Combine(Path.GetTempPath(), "repo", "MyApp", "global.json"),
 			UnoSdkPackage = "Uno.Sdk",
 			UnoSdkVersion = "6.6.42",
 			UnoSdkPath = null,
