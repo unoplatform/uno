@@ -324,6 +324,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 				var last = treeView.RootNodes[^1];
 				await SelectNode(treeView, last);
 				Assert.AreEqual("Node 50", (string)treeView.SelectedNode?.Content, $"iteration {iteration}");
+				// Node 50 has no container here: the list's selection must still follow (Uno fallback in NotifyContainerOfSelectionChange).
+				Assert.AreSame(last, treeView.SelectedItem, $"SelectedItem must follow a node selected without a container, iteration {iteration}");
 				AssertSelectionInSync(treeView, $"after selecting Node 50, iteration {iteration}");
 
 				var firstNode = treeView.RootNodes[0];
