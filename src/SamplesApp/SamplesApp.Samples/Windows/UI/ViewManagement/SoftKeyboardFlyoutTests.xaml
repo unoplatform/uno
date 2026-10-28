@@ -1,0 +1,85 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_ViewManagement.SoftKeyboardFlyoutTests"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="16" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="8">
+            <TextBlock FontWeight="SemiBold" Text="Flyouts and the on-screen keyboard (test on a real iPad, in landscape)" />
+            <TextBlock TextWrapping="Wrap">
+                1) Tap "Open search flyout": the flyout opens above its button.
+                2) Tap the flyout's search box: once the keyboard is up, the whole flyout must sit right above it (Above keyboard: yes).
+                3) Hide the keyboard: the flyout goes back next to its button.
+                4) Close the flyout, tap "Open tall flyout", then its search box: the flyout must shrink to the area above the keyboard (height below its own height) and its list must still scroll to Item 29.
+                5) Hide the keyboard: the tall flyout gets its own height back next to its button.
+                6) Close the flyout, tap the top field to bring the keyboard up, then tap either button (they do not take focus, so the keyboard stays up): the flyout must open above the keyboard, shrunk if it is the tall one.
+            </TextBlock>
+            <TextBox x:Name="TopField" PlaceholderText="Top field: tap here to bring the keyboard up first" />
+            <TextBlock
+                x:Name="OccludedRectTextBlock"
+                FontFamily="Consolas"
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                TextWrapping="Wrap" />
+            <TextBlock
+                x:Name="PresenterTextBlock"
+                FontFamily="Consolas"
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                TextWrapping="Wrap" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Spacing="8">
+            <Button
+                x:Name="SearchFlyoutButton"
+                HorizontalAlignment="Stretch"
+                AllowFocusOnInteraction="False"
+                Content="Open search flyout (anchored near the bottom)">
+                <Button.Flyout>
+                    <Flyout
+                        x:Name="SearchFlyout"
+                        Closed="OnFlyoutClosed"
+                        Opened="OnFlyoutOpened"
+                        Placement="Top">
+                        <StackPanel
+                            x:Name="SearchFlyoutContent"
+                            Width="320"
+                            Spacing="8">
+                            <TextBox PlaceholderText="Search..." />
+                            <ListView x:Name="SearchList" MaxHeight="260" />
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <Button
+                x:Name="TallFlyoutButton"
+                HorizontalAlignment="Stretch"
+                AllowFocusOnInteraction="False"
+                Content="Open tall flyout (taller than the area above the keyboard)">
+                <Button.Flyout>
+                    <Flyout
+                        x:Name="TallFlyout"
+                        Closed="OnFlyoutClosed"
+                        Opened="OnFlyoutOpened"
+                        Placement="Top">
+                        <StackPanel
+                            x:Name="TallFlyoutContent"
+                            Width="320"
+                            Spacing="8">
+                            <TextBox PlaceholderText="Search..." />
+                            <ListView x:Name="TallList" MaxHeight="640" />
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Page>
