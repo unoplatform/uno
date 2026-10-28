@@ -343,14 +343,6 @@ public partial class TreeViewList : ListView
 			// Uno: we are moving PrepareContainerForItemOverride to the top, because otherwise
 			// the container will still be associated with the old item's state
 			base.PrepareContainerForItemOverride(element, item);
-
-			if (m_staleSelectionItem is not null
-				&& element is TreeViewItem staleContainer
-				&& staleContainer.IsSelected
-				&& NodeFromContainer(element)?.SelectionState != TreeNodeSelectionState.Selected)
-			{
-				staleContainer.IsSelected = false;
-			}
 		}
 		finally
 		{
