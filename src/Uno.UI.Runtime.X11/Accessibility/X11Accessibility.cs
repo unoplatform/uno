@@ -1403,24 +1403,42 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 
 	private static void SelectItemOnUiThread(UIElement element)
 	{
-		var peer = element.GetOrCreateAutomationPeer();
-		if (peer?.GetPattern(PatternInterface.SelectionItem) is not ISelectionItemProvider selectionItemProvider)
-		{
-			return;
-		}
-
 		// AddToSelection throws on a single-selection container that already has a
 		// selection; there, selecting the child means replacing the selection.
 		var owner = ItemsControl.ItemsControlFromItemContainer(element);
 		var multiple = owner is ListViewBase { SelectionMode: ListViewSelectionMode.Multiple or ListViewSelectionMode.Extended }
 			|| owner is ListBox { SelectionMode: SelectionMode.Multiple or SelectionMode.Extended };
-		if (multiple)
+
+		var peer = element.GetOrCreateAutomationPeer();
+		if (peer?.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
 		{
-			selectionItemProvider.AddToSelection();
+			if (multiple)
+			{
+				selectionItemProvider.AddToSelection();
+			}
+			else
+			{
+				selectionItemProvider.Select();
+			}
+			return;
 		}
-		else
+
+		// ListViewItem/ListBoxItem container peers don't implement SelectionItem (only the
+		// data item's own peer, when the item provides one, would); drive the owning
+		// Selector with the container's data item instead, so the selection actually changes.
+		if (owner is Microsoft.UI.Xaml.Controls.Primitives.Selector selector && selector.ItemFromContainer(element) is { } item)
 		{
-			selectionItemProvider.Select();
+			if (multiple && owner is ListViewBase listViewBase)
+			{
+				if (!listViewBase.SelectedItems.Contains(item))
+				{
+					listViewBase.SelectedItems.Add(item);
+				}
+			}
+			else
+			{
+				selector.SelectedItem = item;
+			}
 		}
 	}
 
