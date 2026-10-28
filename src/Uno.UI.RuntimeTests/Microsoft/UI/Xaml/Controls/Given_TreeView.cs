@@ -237,6 +237,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreSame(second, treeView.SelectedItem, "Scrolling back must not select the previously selected row again.");
 			Assert.IsFalse(((TreeViewItem)treeView.ContainerFromItem(first)).IsSelected, "The previously selected row must not show as selected.");
 			Assert.IsFalse(first.IsSelected, "The model flag of the previously selected row must be cleared.");
+			Assert.AreEqual(1, treeView.SelectedNodes.Count, "Only the clicked row may be selected.");
+			AssertSelectionInSync(treeView, "after scrolling back");
 		}
 
 		/// <summary>
@@ -298,6 +300,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.IsFalse(((TreeViewItem)treeView.ContainerFromItem(oldSelection)).IsSelected, "G1.b must not show as selected.");
 			Assert.IsFalse(oldSelection.IsSelected, "The model flag of G1.b must be cleared.");
 			Assert.IsTrue(newSelection.IsSelected, "The model flag of G2.a must stay set.");
+			Assert.AreEqual(1, treeView.SelectedNodes.Count, "Only G2.a may be selected.");
+			AssertSelectionInSync(treeView, "after re-expanding G1");
 		}
 
 		/// <summary>
@@ -387,8 +391,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(treeView.SelectedNodes.Count, treeView.SelectedItems.Count, $"SelectedNodes.Count != SelectedItems.Count ({context})");
 			for (var i = 0; i < treeView.SelectedNodes.Count; i++)
 			{
-				// Not in content mode (RootNodes), so the selected items are the nodes themselves.
-				Assert.AreSame(treeView.SelectedNodes[i], treeView.SelectedItems[i], $"SelectedNodes[{i}] != SelectedItems[{i}] ({context})");
+				// With ItemsSource (content mode), the selected items are the nodes' content; otherwise the nodes themselves.
+				var expected = treeView.ItemsSource is null ? treeView.SelectedNodes[i] : treeView.SelectedNodes[i].Content;
+				Assert.AreSame(expected, treeView.SelectedItems[i], $"SelectedNodes[{i}] != SelectedItems[{i}] ({context})");
 			}
 		}
 #endif
