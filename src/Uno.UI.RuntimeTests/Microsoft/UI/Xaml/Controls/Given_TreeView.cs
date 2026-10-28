@@ -192,8 +192,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		/// <summary>
-		/// With a two-way IsSelected binding (the ticket's repro), a row that was unselected while scrolled away must not
+		/// With a two-way IsSelected binding (#25796), a row that was unselected while scrolled away must not
 		/// come back selected when it is scrolled back into view.
+		/// Native WinUI (WinAppSDK 1.7) selects that row again and then clears the selection; Uno keeps the clicked row.
 		/// </summary>
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
@@ -243,7 +244,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 		/// <summary>
 		/// With a two-way IsSelected binding: select a row in a group, collapse the group (which clears the selection),
-		/// select another row, then re-expand the group. The old row must not take the selection back.
+		/// select another row, then re-expand the group. The old row must not take the selection back, as in native WinUI.
 		/// </summary>
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
