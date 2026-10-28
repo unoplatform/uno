@@ -117,9 +117,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
-#endif
 		public async Task When_Click_After_Scrolling_Away_From_Selection_Offset_Is_Preserved()
 		{
 			var (treeView, scrollViewer) = await LoadRootNodesTree(100);
@@ -161,9 +158,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		/// SelectionChanged and never report a null selection in between (two-way SelectedItem bindings would see it).
 		/// </summary>
 		[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
-#endif
 		public async Task When_SelectedItem_Replaced_While_Previous_Selection_Virtualized_Single_Event()
 		{
 			var (treeView, scrollViewer) = await LoadRootNodesTree(100);
@@ -204,9 +198,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#endif
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
 #endif
 		public async Task When_Click_After_Scrolling_Away_With_IsSelected_Binding_Scroll_Back_Not_Reselected()
 		{
@@ -262,9 +253,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#endif
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
 #endif
 		public async Task When_Other_Row_Selected_While_Group_Collapsed_Reexpand_Keeps_New_Selection()
 		{
@@ -327,9 +315,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#endif
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
 #endif
 		public async Task When_Select_Last_Root_Node_Then_Click_First_Node()
 		{
