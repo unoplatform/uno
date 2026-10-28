@@ -68,6 +68,17 @@ public class Given_UnoSdkLateBrowserWasmTargetFramework
 	}
 
 	[TestMethod]
+	[DataRow(BrowserWasm, false, "false")]
+	[DataRow(BrowserWasm, true, "false")]
+	[DataRow(Desktop, false, "true")]
+	public void When_A_File_Based_App_Targets_BrowserWasm_Then_PublishAot_Is_Off(string targetFramework, bool isGlobal, string expected)
+	{
+		var properties = Evaluate(new() { OutputType = "Exe", TargetFramework = targetFramework, IsGlobal = isGlobal, BodyProperties = "<FileBasedProgram>true</FileBasedProgram><PublishAot>true</PublishAot>" }, [], "PublishAot");
+
+		properties["PublishAot"].Should().Be(expected);
+	}
+
+	[TestMethod]
 	[DataRow("Exe", BrowserWasm, false, false, true)]
 	[DataRow("WinExe", BrowserWasm, false, false, true)]
 	[DataRow("Exe", BrowserWasm, false, true, false)]
