@@ -182,6 +182,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// </summary>
 	private readonly HashSet<IntPtr> _prunedHandles = new();
 	/// <summary>
+	/// Handles of nodes built by the generic path of <see cref="AddSemanticElement"/>, whose role
+	/// <see cref="ResolveGenericRole"/> owns. Factory nodes own their role (e.g. gridcell, or none for a standalone &lt;p&gt;).
+	/// </summary>
+	private readonly HashSet<IntPtr> _genericPathHandles = new();
+	/// <summary>
 	/// Controls carrying AutomationProperties.LabeledBy whose aria-labelledby IDREF is resolved AFTER
 	/// the surrounding subtree exists (FR-019/FR-022). The inline create-time resolution is
 	/// order-dependent — the labeller's node may not be registered yet when the labelled control is
@@ -528,6 +533,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				RemoveSemanticElement(semanticParent, childHandle);
 				_semanticParentMap.Remove(childHandle);
 				_prunedHandles.Remove(childHandle);
+				_genericPathHandles.Remove(childHandle);
 			}
 			QueueRelationshipRefresh();
 		}
@@ -858,8 +864,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// owns or is the nearest semantic ancestor of <paramref name="changedElement"/>, after a layout
 	/// change. The gate is layout-dependent (scrollability is only known once the content extent is
 	/// computed), but the AOM node may have been built via OnChildAdded before layout — at which point a
-	/// scrollable, named ScrollViewer is mis-emitted as <c>role=group</c>. This brings the live DOM role
-	/// in line with the current scrollable+named state once layout has settled.
+	/// scrollable, named ScrollViewer is mis-emitted as <c>role=group</c>. This re-resolves the live DOM role
+	/// through <see cref="ResolveGenericRole"/> once layout has settled.
 	/// </summary>
 	private void TryUpdateScrollRegionRole(UIElement changedElement)
 	{
@@ -870,19 +876,17 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			if (current is ScrollViewer scrollViewer)
 			{
-				if (!HasSemanticElement(scrollViewer.Visual.Handle))
+				var handle = scrollViewer.Visual.Handle;
+				if (!_genericPathHandles.Contains(handle) || scrollViewer.GetOrCreateAutomationPeer() is not { } peer)
 				{
 					return;
 				}
 
-				var peer = scrollViewer.GetOrCreateAutomationPeer();
-
-				// Only the named+scrollable case is upgraded here. The unnamed / non-scrollable cases are
-				// already correct from the build-time gate (a bare <div> with no role), and an empty-string
-				// role would be an invalid attribute — so we never write a role in those cases.
-				if (AriaMapper.QualifiesAsNamedScrollRegion(peer, scrollViewer))
+				// Scrollability only picks between region and group for a named node, so an unnamed one keeps its role.
+				var hasAccessibleName = !string.IsNullOrWhiteSpace(AriaMapper.ResolveLabel(peer));
+				if (hasAccessibleName)
 				{
-					NativeMethods.UpdateLandmarkRole(scrollViewer.Visual.Handle, "region");
+					NativeMethods.UpdateLandmarkRole(handle, ResolveGenericRole(peer, scrollViewer, hasAccessibleName));
 				}
 
 				return;
@@ -1080,6 +1084,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		@this._semanticParentMap.Clear();
 		@this._prunedHandles.Clear();
+		@this._genericPathHandles.Clear();
 		@this._pendingLabelledBy.Clear();
 		@this._relationshipPeers.Clear();
 		@this._relationshipRefreshQueued = false;
@@ -2113,6 +2118,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		if (result)
 		{
 			var handle = child.Visual.Handle;
+			_genericPathHandles.Add(handle);
 
 			// aria-roledescription from the AUTHORED AutomationProperties.LocalizedLandmarkType /
 			// LocalizedControlType attached properties (null when unset) — NOT the peer's
@@ -2245,7 +2251,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		// The name drives the role of a generic-path node (generic→group, named region/form landmarks),
 		// so re-resolve it as creation would.
-		if (IsGenericPathNode(peer, element))
+		if (_genericPathHandles.Contains(element.Visual.Handle))
 		{
 			var hasAccessibleName = !string.IsNullOrWhiteSpace(AriaMapper.ResolveLabel(peer));
 			NativeMethods.UpdateLandmarkRole(element.Visual.Handle, ResolveGenericRole(peer, element, hasAccessibleName));
@@ -2254,15 +2260,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		NativeMethods.UpdateAriaLabel(element.Visual.Handle, automationId);
 	}
 
-	// Whether the node was built by AddSemanticElement's generic path rather than the factory. Factory nodes
-	// own their role (e.g. gridcell), and a TextBlock may still be a standalone <p>, which carries no role.
-	private static bool IsGenericPathNode(AutomationPeer peer, UIElement element)
-		=> peer.GetAutomationControlType() != AutomationControlType.Text
-			&& AriaMapper.GetSemanticElementType(peer, element) == SemanticElementType.Generic;
-
 	/// <summary>
-	/// The role of a node built by the generic path of <see cref="AddSemanticElement"/>. Creation and the live
-	/// Name / LandmarkType updates share it, so a node ends up with the same role whatever order its state arrived in.
+	/// The role of a node built by the generic path of <see cref="AddSemanticElement"/>. Creation, the live
+	/// Name / LandmarkType updates and the post-layout scroll check share it, so a node ends up with the same role
+	/// whatever order its state arrived in.
 	/// </summary>
 	private string? ResolveGenericRole(AutomationPeer? peer, UIElement element, bool hasAccessibleName)
 	{
@@ -2454,7 +2455,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			var attributes = AriaMapper.GetAriaAttributes(peer);
 			var hasAccessibleName = !string.IsNullOrWhiteSpace(attributes.Label);
 			string? role;
-			if (IsGenericPathNode(peer, element))
+			if (_genericPathHandles.Contains(element.Visual.Handle))
 			{
 				role = ResolveGenericRole(peer, element, hasAccessibleName);
 			}
@@ -2856,6 +2857,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		NativeMethods.RemoveSemanticElement(IntPtr.Zero, _rootElementHandle);
 		_semanticParentMap.Clear();
 		_prunedHandles.Clear();
+		_genericPathHandles.Clear();
 		_pendingLabelledBy.Clear();
 		_relationshipPeers.Clear();
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI;
@@ -152,6 +153,70 @@ public class Given_AccessibleScrollViewer
 
 		Assert.AreEqual(string.Empty, GetSemanticAttribute(scrollViewer, "aria-roledescription"),
 			"aria-roledescription must never be emitted on an element with no accessible name (FR-014).");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Navigation_ScrollViewer_Resized_Then_Role_Stays_Navigation()
+	{
+		var scrollViewer = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			Content = new Border { Width = 50, Height = 2000 },
+		};
+		AutomationProperties.SetName(scrollViewer, "Site Navigation");
+		AutomationProperties.SetLandmarkType(scrollViewer, AutomationLandmarkType.Navigation);
+
+		await UITestHelper.Load(scrollViewer);
+		await UITestHelper.WaitForIdle();
+
+		EnableAccessibilityThroughDom();
+		await UITestHelper.WaitFor(() => SemanticElementExists(scrollViewer), timeoutMS: 5000,
+			message: "Timed out waiting for the ScrollViewer's semantic node.");
+		await UITestHelper.WaitForIdle();
+
+		// A resize re-runs the post-layout scroll-region check. The first one also raises the peer's first
+		// automatic Name change, which re-resolves the role, so only a later one exercises the check alone.
+		scrollViewer.Height = 250;
+		await UITestHelper.WaitForIdle();
+		scrollViewer.Height = 300;
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual("navigation", GetSemanticAttribute(scrollViewer, "role"),
+			"The authored landmark must win over the scroll region role after layout.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Whitespace_Named_ScrollViewer_Resized_Then_No_Region()
+	{
+		var scrollViewer = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			Content = new Border { Width = 50, Height = 2000 },
+		};
+		AutomationProperties.SetName(scrollViewer, "   ");
+
+		await UITestHelper.Load(scrollViewer);
+		await UITestHelper.WaitForIdle();
+
+		EnableAccessibilityThroughDom();
+		await UITestHelper.WaitFor(() => SemanticElementExists(scrollViewer), timeoutMS: 5000,
+			message: "Timed out waiting for the ScrollViewer's semantic node.");
+		await UITestHelper.WaitForIdle();
+
+		// The second resize is the one that runs the post-layout check without a Name change (see above).
+		scrollViewer.Height = 250;
+		await UITestHelper.WaitForIdle();
+		scrollViewer.Height = 300;
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreNotEqual("region", GetSemanticAttribute(scrollViewer, "role"),
+			"A whitespace-only name does not name the ScrollViewer, so it must not become a region after layout.");
 	}
 
 	/// <summary>
