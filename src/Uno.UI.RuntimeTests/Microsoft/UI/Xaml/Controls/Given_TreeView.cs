@@ -129,9 +129,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var offsetBeforeClick = scrollViewer.VerticalOffset;
 
 			var target = GetItemNearestViewportCenter(treeView, treeView.RootNodes);
-			var minOffset = offsetBeforeClick;
+			var maxDrift = 0.0;
 			var previousSelectionReselected = false;
-			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs e) => minOffset = Math.Min(minOffset, scrollViewer.VerticalOffset);
+			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs e) => maxDrift = Math.Max(maxDrift, Math.Abs(scrollViewer.VerticalOffset - offsetBeforeClick));
 			void OnSelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs e) => previousSelectionReselected |= e.AddedItems.Contains(first);
 			scrollViewer.ViewChanged += OnViewChanged;
 			treeView.SelectionChanged += OnSelectionChanged;
@@ -149,7 +149,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			}
 
 			Assert.IsFalse(previousSelectionReselected, "Unselecting the previous selection must not select it again.");
-			Assert.AreEqual(offsetBeforeClick, minOffset, 5, "Selecting a visible item must never scroll toward the previous selection.");
+			Assert.AreEqual(0, maxDrift, 5, "Selecting a visible item must never move the viewport.");
 			Assert.AreEqual(offsetBeforeClick, scrollViewer.VerticalOffset, 5, "Selecting a visible item must keep the viewport in place.");
 		}
 
