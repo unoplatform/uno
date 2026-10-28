@@ -1143,6 +1143,10 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	{
 		if (!_nodesByHandle.TryGetValue(handle, out var node))
 		{
+			// The new focus target isn't published (e.g. a template part, a Raw
+			// element, or a popup wrapper): unfocus whatever was focused instead of
+			// leaving it stuck reporting "focused" with no new state-changed signal.
+			UnfocusCurrentNode();
 			return;
 		}
 
@@ -1158,6 +1162,19 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		_server?.SetFocus(node);
 		_server?.EmitStateChanged(node, "focused", 1);
 		TrackFocusedTextBox(_elementsByHandle.TryGetValue(handle, out var element) ? element : null);
+	}
+
+	private void UnfocusCurrentNode()
+	{
+		if (_focusedNode is { } previous
+			&& _nodesByHandle.TryGetValue(previous.Handle, out var current) && ReferenceEquals(current, previous))
+		{
+			_server?.EmitStateChanged(previous, "focused", 0);
+		}
+
+		_focusedNode = null;
+		_server?.SetFocus(null);
+		TrackFocusedTextBox(null);
 	}
 
 	// Caret moves are only observable through TextBox.SelectionChanged, and only the
