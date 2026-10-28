@@ -455,7 +455,7 @@ namespace Uno.UI
 			// still active (state re-entry), resolve outside that boundary instead (#24021).
 			var target = bindingPath.DataContext as DependencyObject;
 			var ownerTheme =
-				target?.GetVisualStateSetterResolutionTheme()
+				(target as IDependencyObjectStoreProvider)?.Store.GetVisualStateSetterResolutionTheme()
 				?? ThemeResolution.ResolveOwnerTheme(target);
 			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
 			if (TryVisualTreeRetrieval(resourceKey, context, out var value, out var providingDictionary)

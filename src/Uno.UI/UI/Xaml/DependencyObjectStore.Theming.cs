@@ -555,16 +555,16 @@ public partial class DependencyObjectStore
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		// The ambient theme surrounding the target: mid-walk the parent's persisted theme is
 		// stale (persisted only after its subtree completes) but its walk theme is current.
-		if (Parent is DependencyObject { IsProcessingThemeWalk: true } walkingParent)
+		if (Parent is IDependencyObjectStoreProvider { Store: { IsProcessingThemeWalk: true } walkingParentStore })
 		{
-			return walkingParent.WalkTheme;
+			return walkingParentStore.WalkTheme;
 		}
 
 		// An app that never switches theme at runtime has no established per-object themes (only
 		// a theme walk persists them), and ResolveOwnerTheme's owner-less fallback reads the
 		// requested-theme-for-subtree slot — mid-boundary already carrying the very theme being
 		// escaped. Use the application base theme instead (#24021).
-		if ((Parent as DependencyObject)?.GetTheme() is null or Theme.None)
+		if ((Parent as IDependencyObjectStoreProvider)?.Store.GetTheme() is null or Theme.None)
 		{
 			return Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetBaseTheme();
 		}
