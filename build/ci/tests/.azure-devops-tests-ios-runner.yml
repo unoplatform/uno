@@ -19,7 +19,9 @@ parameters:
 jobs:
 - job: ${{ parameters.JobName }}
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
-  cancelTimeoutInMinutes: 0
+  # The test script caps its waits to end before the job timeout, but if the timeout is reached anyway,
+  # this is the window in which the always() publish steps below still run. At 0 they never did.
+  cancelTimeoutInMinutes: 10
   dependsOn: ${{ parameters.dependsOn }}
   displayName: ${{ parameters.JobDisplayName }}
   pool:
