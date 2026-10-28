@@ -128,7 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			await ScrollUntilVirtualized(treeView, scrollViewer, first);
 			var offsetBeforeClick = scrollViewer.VerticalOffset;
 
-			var target = GetNodeNearestViewportCenter(treeView);
+			var target = GetItemNearestViewportCenter(treeView, treeView.RootNodes);
 			var minOffset = offsetBeforeClick;
 			var previousSelectionReselected = false;
 			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs e) => minOffset = Math.Min(minOffset, scrollViewer.VerticalOffset);
@@ -139,7 +139,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			{
 				mouse.Press(target.Bounds.GetMidX(), target.Bounds.GetMidY());
 				mouse.Release();
-				await WindowHelper.WaitFor(() => treeView.SelectedNode == target.Node, message: "The clicked node must be selected.");
+				await WindowHelper.WaitFor(() => treeView.SelectedNode == target.Item, message: "The clicked node must be selected.");
 				await WindowHelper.WaitForIdle();
 			}
 			finally
@@ -165,7 +165,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var first = treeView.RootNodes[0];
 			await SelectNode(treeView, first);
 			await ScrollUntilVirtualized(treeView, scrollViewer, first);
-			var target = GetNodeNearestViewportCenter(treeView);
+			var target = GetItemNearestViewportCenter(treeView, treeView.RootNodes);
 
 			var selectionChanges = new List<(object[] Added, object[] Removed)>();
 			var selectedItemValues = new List<object>();
@@ -174,7 +174,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var token = treeView.RegisterPropertyChangedCallback(TreeView.SelectedItemProperty, (d, _) => selectedItemValues.Add(((TreeView)d).SelectedItem));
 			try
 			{
-				treeView.SelectedItem = target.Node;
+				treeView.SelectedItem = target.Item;
 				await WindowHelper.WaitForIdle();
 			}
 			finally
@@ -183,9 +183,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 				treeView.UnregisterPropertyChangedCallback(TreeView.SelectedItemProperty, token);
 			}
 
-			Assert.AreSame(target.Node, treeView.SelectedNode);
+			Assert.AreSame(target.Item, treeView.SelectedNode);
 			Assert.AreEqual(1, selectionChanges.Count, $"Expected a single SelectionChanged, got {selectionChanges.Count}.");
-			CollectionAssert.AreEqual(new object[] { target.Node }, selectionChanges[0].Added);
+			CollectionAssert.AreEqual(new object[] { target.Item }, selectionChanges[0].Added);
 			CollectionAssert.AreEqual(new object[] { first }, selectionChanges[0].Removed);
 			Assert.IsFalse(selectedItemValues.Contains(null), "SelectedItem must not transiently become null.");
 			AssertSelectionInSync(treeView, "after replacing the selection");
@@ -227,14 +227,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => treeView.ContainerFromItem(first) is null, timeoutMS: 3000, message: "Node 1 must be virtualized away for this scenario.");
 			await WindowHelper.WaitForIdle();
 
-			var viewport = treeView.GetAbsoluteBoundsRect();
-			var second = nodes
-				.Select(n => (Node: n, Container: treeView.ContainerFromItem(n) as TreeViewItem))
-				.Where(x => x.Container is not null)
-				.Select(x => (x.Node, Bounds: x.Container.GetAbsoluteBoundsRect()))
-				.Where(x => x.Bounds.Top >= viewport.Top && x.Bounds.Bottom <= viewport.Bottom)
-				.OrderBy(x => Math.Abs(x.Bounds.GetMidY() - viewport.GetMidY()))
-				.First().Node;
+			var second = GetItemNearestViewportCenter(treeView, nodes).Item;
 			await Click(second);
 
 			scrollViewer.ChangeView(null, 0, null, disableAnimation: true);
@@ -373,18 +366,18 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 		}
 
-		/// <summary>Returns the realized, fully visible node closest to the middle of the viewport.</summary>
-		private static (TreeViewNode Node, Rect Bounds) GetNodeNearestViewportCenter(TreeView treeView)
+		/// <summary>Returns the realized, fully visible item closest to the middle of the viewport.</summary>
+		private static (T Item, Rect Bounds) GetItemNearestViewportCenter<T>(TreeView treeView, IEnumerable<T> items)
 		{
 			var viewport = treeView.GetAbsoluteBoundsRect();
-			var target = treeView.RootNodes
-				.Select(n => (Node: n, Container: treeView.ContainerFromNode(n) as TreeViewItem))
+			var target = items
+				.Select(x => (Item: x, Container: treeView.ContainerFromItem(x) as TreeViewItem))
 				.Where(x => x.Container is not null)
-				.Select(x => (x.Node, Bounds: x.Container.GetAbsoluteBoundsRect()))
+				.Select(x => (x.Item, Bounds: x.Container.GetAbsoluteBoundsRect()))
 				.Where(x => x.Bounds.Top >= viewport.Top && x.Bounds.Bottom <= viewport.Bottom)
 				.OrderBy(x => Math.Abs(x.Bounds.GetMidY() - viewport.GetMidY()))
 				.FirstOrDefault();
-			Assert.IsNotNull(target.Node, "Expected at least one fully visible realized item.");
+			Assert.IsNotNull(target.Item, "Expected at least one fully visible realized item.");
 			return target;
 		}
 
