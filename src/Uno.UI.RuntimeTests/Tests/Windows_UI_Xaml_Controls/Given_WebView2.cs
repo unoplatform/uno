@@ -6,11 +6,13 @@ using Microsoft.UI.Xaml.Controls;
 using System.Linq;
 using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
+#if __SKIA__
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -66,6 +68,8 @@ public class Given_WebView2
 		Assert.AreEqual("\"red\"", color);
 	}
 
+	// These read the browser DOM through WasmSemanticDomHelper and BrowserHtmlElement, which the native heads don't build.
+#if __SKIA__
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Collected_Then_Native_Iframe_Is_Removed()
@@ -171,5 +175,6 @@ public class Given_WebView2
 	private static string ReadMarker(string elementId)
 		=> WasmSemanticDomHelper.InvokeBrowserJs(
 			$"(function(){{var body = document.getElementById('{elementId}')?.contentDocument?.body; return body ? (body.dataset.marker || '') : '';}})()");
+#endif
 }
 #endif
