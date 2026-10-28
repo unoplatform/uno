@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
-using Uno.UI.DevTools.Input;
+using Uno.UI.Toolkit.DevTools.Input;
 using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Helpers;
