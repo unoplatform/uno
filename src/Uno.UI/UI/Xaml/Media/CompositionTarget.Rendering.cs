@@ -414,7 +414,7 @@ public partial class CompositionTarget
 		if (nativeVisualsZOrderChanged)
 		{
 			_nativeVisualsInZOrder = nativeVisualsInZOrder;
-			ContentPresenter.OnNativeHostsRenderOrderChanged(nativeVisualsInZOrder);
+			ContentPresenter.OnNativeHostsRenderOrderChanged(this, nativeVisualsInZOrder);
 		}
 
 		FrameRendered?.Invoke();
