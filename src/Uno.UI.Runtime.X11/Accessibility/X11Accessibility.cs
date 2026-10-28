@@ -1250,34 +1250,8 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			}
 		});
 
-	// A live region (AutomationProperties.LiveSetting) announces its new content, as on macOS.
-	public override void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
-	{
-		base.NotifyAutomationEvent(peer, eventId);
-
-		if (eventId != AutomationEvents.LiveRegionChanged
-			|| IsDisposed
-			|| !IsAccessibilityEnabled
-			|| !TryGetPeerOwner(peer, out var liveElement))
-		{
-			return;
-		}
-
-		var text = ResolveName(peer);
-		if (string.IsNullOrEmpty(text))
-		{
-			return;
-		}
-
-		if (AutomationProperties.GetLiveSetting(liveElement) == AutomationLiveSetting.Assertive)
-		{
-			AnnounceAssertive(text);
-		}
-		else
-		{
-			AnnouncePolite(text);
-		}
-	}
+	// A live region (AutomationProperties.LiveSetting) announces its new content through the
+	// base NotifyAutomationEvent, as on macOS; no override is needed here.
 
 	// ──────────────────────────────────────────────────────────────
 	//  AtspiServer.IWriteTarget — drive the real control from the
