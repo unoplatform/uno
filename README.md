@@ -69,7 +69,7 @@ Prefer an IDE? Uno Platform has extensions for [**Visual Studio**](https://aka.p
 | **iOS and iPadOS** | `net10.0-ios` | iOS 15 and later |
 | **Apple TV** | `net10.0-tvos` | tvOS 15 and later |
 
-Apps target .NET 10, the current long-term support release. The [supported platforms page](https://platform.uno/docs/articles/getting-started/requirements.html) has the full details.
+New apps target .NET 10, the current long-term support release, and .NET 11 is supported too. The [supported platforms page](https://platform.uno/docs/articles/getting-started/requirements.html) has the full details.
 
 ## 🛠️ How it works
 
@@ -89,20 +89,23 @@ Uno Platform implements the WinUI API on top of a single rendering pipeline. Eac
 
 - 🎨 **One drawn UI everywhere.** The native mobile and browser-DOM renderers are gone: every Uno Platform target now draws the UI through the same pipeline, so a fix lands on every platform at once. [Native views](https://platform.uno/docs/articles/features/using-skia-hosting-native-controls.html) can still be embedded on Android, iOS, WebAssembly, Windows and Linux.
 - 🧱 **Pluggable rendering.** Skia stays the default, and a new WebGPU backend is available as an opt-in preview.
-- 📺 **Apple TV.** tvOS is now a fully implemented, supported target. Add `net10.0-tvos` to your target frameworks.
+- 📺 **Apple TV.** tvOS is now a fully implemented, supported target, and the [Siri Remote](doc/articles/features/apple-tv.md) drives focus navigation. Add `net10.0-tvos` to your target frameworks.
 - ✍️ **Rich text.** `RichTextBlock` is rebuilt on a port of WinUI's core text stack, and [`RichEditBox`](doc/articles/controls/RichEditBox.md) now works on every Uno Platform-rendered target.
 - 🧩 **More of WinUI, ported.** `ItemsRepeater` and `ItemsView` are re-synced with WinUI's sources, `LinedFlowLayout` is new, and [Lottie](doc/articles/features/Lottie.md) is built in through a port of `AnimatedVisualPlayer`.
+- ✅ **Input validation.** Errors that your view model reports through `INotifyDataErrorInfo` now reach the bound `TextBox`, `PasswordBox`, `AutoSuggestBox` or `ComboBox`, so your XAML can display them. It's [opt-in](doc/articles/features/input-validation.md), and needs no base class or MVVM framework.
+- 🔗 **Activation through `AppInstance`.** Launch and [custom protocol](doc/articles/features/protocol-activation.md) activations now arrive through the Windows App SDK `AppInstance` API, so the code you write for Windows also handles them on Android, iOS, Apple TV and WebAssembly.
+- 🪟 **Title bars on macOS.** [`ExtendsContentIntoTitleBar`](doc/articles/features/windows-ui-xaml-window.md) now works on macOS too, and keeps the native traffic-light buttons.
 - 🧈 **Smoother scrolling.** Scrolling and flings now advance on the compositor's frame clock, so on a 120 Hz screen content can move every frame.
 - 📦 **Leaner and simpler.** A much smaller `Uno.WinUI` package, fewer packages to restore, and `Uno.Sdk` single-project apps as the one project format.
 
 Upgrading from 6.x? The [migration guide](doc/articles/migrating-to-uno-7.md) walks through every breaking change.
 
-<!-- TODO: switch the relative doc links above to platform.uno/docs once the 7.0 documentation is published. -->
+<!-- TODO: switch the repo-relative doc links in this README to platform.uno/docs once the 7.0 documentation is published. -->
 
 ## 🧰 Tools for a productive dev loop
 
 - **[Hot Reload](https://aka.platform.uno/hot-reload)**: change XAML and C# while your app runs, without losing its state.
-- **[Uno Platform MCPs](https://aka.platform.uno/mcp)**: give AI agents up-to-date Uno Platform documentation, and let them see and interact with your running app. There are step-by-step guides for [Claude Code](https://platform.uno/docs/articles/get-started-ai-claude.html), [GitHub Copilot CLI](https://platform.uno/docs/articles/get-started-ai-gh-copilot-cli.html), [Codex](https://platform.uno/docs/articles/get-started-ai-codex.html) and [Cursor](https://platform.uno/docs/articles/get-started-ai-cursor.html).
+- **[Uno Platform MCPs](https://aka.platform.uno/mcp)**: give AI agents up-to-date Uno Platform documentation, and let them see and interact with your running app. There are step-by-step guides for [Claude Code](https://platform.uno/docs/articles/get-started-ai-claude.html), [GitHub Copilot CLI](https://platform.uno/docs/articles/get-started-ai-gh-copilot-cli.html), [Codex](https://platform.uno/docs/articles/get-started-ai-codex.html) and [Cursor](https://platform.uno/docs/articles/get-started-ai-cursor.html). Scripts, CI jobs and agent hooks can call the same tools from a shell with [`uno-devserver app`](doc/articles/features/devserver-app-commands.md).
 - **[Uno Platform Studio](https://aka.platform.uno/studio)**: a separate productivity suite from the Uno Platform team. It includes [Hot Design®](https://aka.platform.uno/hot-design), which turns your running app into a visual designer, the [Studio Agent](https://aka.platform.uno/studio-agent), and the [Figma plugin](https://aka.platform.uno/Design-to-Code) for design-to-code. Hot Reload and the MCPs are included in the free Community plan; see [the plans](https://platform.uno/select-subscription/) for the rest.
 
 <p align="center">
