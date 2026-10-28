@@ -611,8 +611,8 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaLabel(handle: number, automationId: string): void {
 			Accessibility.debugLog(`[A11y] TS updateAriaLabel: handle=${handle} label='${automationId}'`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
-			if (element && (element.tagName === "P" || element.tagName === "SPAN")) {
-				// Standalone text (createTextElement) is named by its content, and a paragraph prohibits aria-label.
+			if (element && element.dataset.unoStandaloneText === "true") {
+				// Standalone text is named by its content, and a paragraph prohibits aria-label.
 				element.textContent = automationId;
 			} else if (element) {
 				// Omit an empty/whitespace aria-label rather than emitting aria-label="" (which screen

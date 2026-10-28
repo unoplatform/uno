@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 using Private.Infrastructure;
@@ -99,6 +100,107 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Generic_Name_Becomes_Whitespace_Then_Role_Generic()
+		{
+			await ResetAsync();
+
+			var control = new CustomPeerControl { Width = 50, Height = 50 };
+			await UITestHelper.Load(control);
+			control.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(control), timeoutMS: 5000, message: "Timed out waiting for the semantic element.");
+			await UITestHelper.WaitForIdle();
+
+			AutomationProperties.SetName(control, "My group");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(control, "role") == "group", timeoutMS: 3000, message: "A named generic should become role=group.");
+
+			// A whitespace-only name is dropped from aria-label, so it must not keep the node a group.
+			AutomationProperties.SetName(control, "   ");
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(control, "aria-label"), timeoutMS: 3000, message: "A whitespace-only name should not be exposed as aria-label.");
+
+			Assert.AreEqual("generic", GetSemanticAttribute(control, "role"), "A whitespace-only name does not name the node.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Region_Landmark_Named_After_Creation_Then_Role_Region()
+		{
+			await ResetAsync();
+
+			// A region landmark is only exposed once named (FR-014), so the name is what promotes it.
+			var control = new CustomPeerControl { Width = 50, Height = 50 };
+			AutomationProperties.SetLandmarkType(control, AutomationLandmarkType.Custom);
+			await UITestHelper.Load(control);
+			control.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(control), timeoutMS: 5000, message: "Timed out waiting for the semantic element.");
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual("generic", GetSemanticAttribute(control, "role"), "An unnamed region landmark is not exposed.");
+
+			AutomationProperties.SetName(control, "Results");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(control, "aria-label") == "Results", timeoutMS: 3000, message: "The name should be exposed as aria-label.");
+
+			Assert.AreEqual("region", GetSemanticAttribute(control, "role"), "A named region landmark should be exposed.");
+
+			AutomationProperties.SetName(control, "");
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(control, "aria-label"), timeoutMS: 3000, message: "Clearing the name should remove aria-label.");
+
+			Assert.AreEqual("generic", GetSemanticAttribute(control, "role"), "An unnamed region landmark is no longer exposed.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_GridCell_Named_After_Creation_Then_Role_Stays_GridCell()
+		{
+			await ResetAsync();
+
+			// A grid cell peer reports the Custom control type, but the factory emits it as role=gridcell.
+			var control = new GridCellPeerControl { Width = 50, Height = 50 };
+			await UITestHelper.Load(control);
+			control.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(control), timeoutMS: 5000, message: "Timed out waiting for the semantic element.");
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual("gridcell", GetSemanticAttribute(control, "role"));
+
+			AutomationProperties.SetName(control, "Cell");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(control, "aria-label") == "Cell", timeoutMS: 3000, message: "The name should be exposed as aria-label.");
+
+			Assert.AreEqual("gridcell", GetSemanticAttribute(control, "role"), "A name change must not replace the factory-built role.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Standalone_Text_Gets_Name_Then_Paragraph_Has_No_Role()
+		{
+			await ResetAsync();
+
+			var text = new TextBlock { Text = "Before" };
+			await UITestHelper.Load(new StackPanel { Children = { text } });
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(text), timeoutMS: 5000, message: "Timed out waiting for the semantic element.");
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual("Before", GetSemanticTextContent(text));
+
+			// An explicit name makes the TextBlock take the generic path at creation, but this node is already a <p>.
+			AutomationProperties.SetName(text, "Named");
+			await UITestHelper.WaitFor(() => GetSemanticTextContent(text) == "Named", timeoutMS: 3000,
+				message: $"The paragraph must expose the name as its text (text='{GetSemanticTextContent(text)}').");
+
+			Assert.IsFalse(SemanticElementHasAttribute(text, "role"), "A standalone text paragraph takes no role.");
+			Assert.IsFalse(SemanticElementHasAttribute(text, "aria-label"), "A standalone text paragraph must not carry aria-label.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Standalone_Text_Changes_Then_Paragraph_Text_Updated_Without_AriaLabel()
 		{
 			await ResetAsync();
@@ -123,6 +225,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		private class CustomPeerControl : ContentControl
 		{
 			protected override AutomationPeer OnCreateAutomationPeer() => new FrameworkElementAutomationPeer(this);
+		}
+
+		private class GridCellPeerControl : ContentControl
+		{
+			protected override AutomationPeer OnCreateAutomationPeer() => new GridCellPeer(this);
+
+			private sealed class GridCellPeer : FrameworkElementAutomationPeer, IGridItemProvider
+			{
+				public GridCellPeer(GridCellPeerControl owner) : base(owner) { }
+
+				protected override AutomationControlType GetAutomationControlTypeCore()
+					=> AutomationControlType.Custom;
+
+				protected override object GetPatternCore(PatternInterface patternInterface)
+					=> patternInterface == PatternInterface.GridItem ? this : base.GetPatternCore(patternInterface);
+
+				public int Row => 0;
+				public int Column => 0;
+				public int RowSpan => 1;
+				public int ColumnSpan => 1;
+				public IRawElementProviderSimple ContainingGrid => null;
+			}
 		}
 
 		private static string GetSemanticTextContent(Microsoft.UI.Xaml.UIElement element)

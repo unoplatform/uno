@@ -1885,6 +1885,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var resolvedName = automationPeer is not null
 			? AriaMapper.ResolveLabel(automationPeer)
 			: AutomationProperties.GetName(child);
+<<<<<<< HEAD:src/Uno.UI.Runtime.Skia.WebAssembly.Browser/Accessibility/WebAssemblyAccessibility.cs
 		var hasAccessibleName = !string.IsNullOrEmpty(resolvedName);
 
 		// Fall back to generic semantic element for unsupported control types.
@@ -1929,6 +1930,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				role = landmarkRole;
 			}
 		}
+=======
+		// A whitespace-only name is dropped by the TS side, so it does not name the node.
+		var hasAccessibleName = !string.IsNullOrWhiteSpace(resolvedName);
+		var role = ResolveGenericRole(automationPeer, child, hasAccessibleName);
+		var landmarkType = AutomationProperties.GetLandmarkType(child);
+>>>>>>> ec781db (fix(a11y): Resolve live roles like creation):src/Uno.UI.Runtime.WebAssembly.Browser/Accessibility/WebAssemblyAccessibility.cs
 
 		// The accessible name (aria-label) comes ONLY from the resolved name (ResolveLabel).
 		// AutomationId is surfaced separately as the xamlautomationid attribute and
@@ -2105,17 +2112,101 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	{
 		Debug.Assert(IsAccessibilityEnabled);
 
-		// WA-01 for names set after creation: role=generic is name-prohibited, so a generic node is a group
-		// while it has a name. An exposed landmark role takes precedence, as at creation.
-		var hasAccessibleName = !string.IsNullOrEmpty(automationId);
-		var attributes = AriaMapper.GetAriaAttributes(peer);
-		if (string.Equals(attributes.Role, "generic", StringComparison.Ordinal) &&
-			!AriaMapper.CanExposeLandmarkRole(attributes.LandmarkRole, hasAccessibleName))
+		// The name drives the role of a generic-path node (generic→group, named region/form landmarks),
+		// so re-resolve it as creation would.
+		if (IsGenericPathNode(peer, element))
 		{
-			NativeMethods.UpdateLandmarkRole(element.Visual.Handle, hasAccessibleName ? "group" : "generic");
+			var hasAccessibleName = !string.IsNullOrWhiteSpace(AriaMapper.ResolveLabel(peer));
+			NativeMethods.UpdateLandmarkRole(element.Visual.Handle, ResolveGenericRole(peer, element, hasAccessibleName));
 		}
 
 		NativeMethods.UpdateAriaLabel(element.Visual.Handle, automationId);
+	}
+
+	// Whether the node was built by AddSemanticElement's generic path rather than the factory. Factory nodes
+	// own their role (e.g. gridcell), and a TextBlock may still be a standalone <p>, which carries no role.
+	private static bool IsGenericPathNode(AutomationPeer peer, UIElement element)
+		=> peer.GetAutomationControlType() != AutomationControlType.Text
+			&& AriaMapper.GetSemanticElementType(peer, element) == SemanticElementType.Generic;
+
+	/// <summary>
+	/// The role of a node built by the generic path of <see cref="AddSemanticElement"/>. Creation and the live
+	/// Name / LandmarkType updates share it, so a node ends up with the same role whatever order its state arrived in.
+	/// </summary>
+	private string? ResolveGenericRole(AutomationPeer? peer, UIElement element, bool hasAccessibleName)
+	{
+		// An open modal dialog's role belongs to its focus trap.
+		if (IsActiveModal(element.Visual.Handle))
+		{
+			return "dialog";
+		}
+
+		// Prefer AriaMapper role (covers Image, Group, etc.) over FindHtmlRole.
+		var role = (peer is not null ? AriaMapper.GetAriaRole(peer.GetAutomationControlType()) : null)
+			?? AutomationProperties.FindHtmlRole(element);
+
+		// FR-013/FR-014: a ScrollViewer (control type Pane → "region") only earns role=region when it
+		// is actually scrollable AND named. A non-scrollable or unnamed ScrollViewer must NOT become an
+		// (unlabeled) landmark — drop the region role so it renders as a plain structural <div>.
+		if (string.Equals(role, "region", StringComparison.Ordinal) &&
+			!(hasAccessibleName && peer is not null && AriaMapper.IsScrollable(peer, element)))
+		{
+			role = null;
+		}
+
+		// Containers with AutomationProperties.Name but no peer/role act as accessible groups.
+		// This matches WinUI3 where named containers create UIA Group elements.
+		if (string.IsNullOrEmpty(role))
+		{
+			if (!string.IsNullOrWhiteSpace(AutomationProperties.GetName(element)))
+			{
+				role = "group";
+			}
+		}
+		// WA-01: role=generic (control type Custom) is ARIA name-prohibited. When such an element has
+		// an accessible name it would otherwise emit aria-label on a prohibited role (dropped by ATs /
+		// flagged by axe "aria-label on prohibited role"). Promote it to role=group, which permits a
+		// name — matching WinUI3's named-container → UIA Group.
+		else if (string.Equals(role, "generic", StringComparison.Ordinal) && hasAccessibleName)
+		{
+			role = "group";
+		}
+
+		// Elements with a LandmarkType get the corresponding ARIA landmark role.
+		// This overrides any other role since landmarks are a higher-level semantic.
+		// FR-014: region/form landmarks are only exposed when named (an unnamed region/form is not a
+		// landmark; axe "region must have a name"). main/navigation/search are top-level landmarks
+		// identified by role alone and keep their role even when unnamed.
+		var landmarkType = AutomationProperties.GetLandmarkType(element);
+		if (landmarkType != AutomationLandmarkType.None)
+		{
+			var landmarkRole = AriaMapper.GetLandmarkRole(landmarkType);
+			if (AriaMapper.CanExposeLandmarkRole(landmarkRole, hasAccessibleName))
+			{
+				role = landmarkRole;
+			}
+			else if (peer is LandmarkTargetAutomationPeer)
+			{
+				// This peer exists only to promote the landmark. If region/form is invalid because
+				// it has no name, do not leak the peer's synthetic Group role into the DOM.
+				role = null;
+			}
+		}
+
+		return role;
+	}
+
+	private bool IsActiveModal(IntPtr handle)
+	{
+		for (var scope = ActiveModalScope; scope is not null; scope = scope.ParentScope)
+		{
+			if (scope.ModalHandle == handle)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	protected override void AnnounceOnPlatform(string text, bool assertive)
@@ -2218,10 +2309,34 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			// Sync landmark role for VoiceOver rotor navigation
 			var attributes = AriaMapper.GetAriaAttributes(peer);
+<<<<<<< HEAD:src/Uno.UI.Runtime.Skia.WebAssembly.Browser/Accessibility/WebAssemblyAccessibility.cs
 			if (!string.IsNullOrEmpty(attributes.LandmarkRole))
 			{
 				NativeMethods.UpdateLandmarkRole(element.Visual.Handle, attributes.LandmarkRole);
 			}
+=======
+			var hasAccessibleName = !string.IsNullOrWhiteSpace(attributes.Label);
+			string? role;
+			if (IsGenericPathNode(peer, element))
+			{
+				role = ResolveGenericRole(peer, element, hasAccessibleName);
+			}
+			else
+			{
+				role = AriaMapper.CanExposeLandmarkRole(attributes.LandmarkRole, hasAccessibleName)
+					? attributes.LandmarkRole
+					: attributes.Role;
+			}
+
+			NativeMethods.UpdateLandmarkRole(element.Visual.Handle, role);
+			UpdateRoleDescription(element.Visual.Handle, attributes.RoleDescription);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.LocalizedLandmarkTypeProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			var roleDescription = AriaMapper.GetAriaAttributes(peer).RoleDescription;
+			UpdateRoleDescription(element.Visual.Handle, roleDescription);
+>>>>>>> ec781db (fix(a11y): Resolve live roles like creation):src/Uno.UI.Runtime.WebAssembly.Browser/Accessibility/WebAssemblyAccessibility.cs
 		}
 		else if (automationProperty == AutomationElementIdentifiers.IsEnabledProperty &&
 			TryGetPeerOwner(peer, out element))
