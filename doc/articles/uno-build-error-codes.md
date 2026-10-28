@@ -342,22 +342,18 @@ To fix this, remove the `-windows10.0.xxxxx` target framework from the project. 
 
 ### UNOB0032: The browserwasm target framework was set after the Uno.Sdk chose the .NET SDK
 
-The Uno.Sdk builds a WebAssembly app with the `Microsoft.NET.Sdk.WebAssembly` SDK, which it chooses from `TargetFramework` before your project file and `Directory.Build.props` are read. At that point, the target framework is only known when it is passed to the build: with `-f`, or by a project with several target frameworks building each of them. A single `<TargetFramework>net10.0-browserwasm</TargetFramework>` comes too late, so the app would build with the plain .NET SDK as a desktop executable, and fail at startup.
+The Uno.Sdk builds a WebAssembly app with the `Microsoft.NET.Sdk.WebAssembly` SDK, which it chooses from `TargetFramework` before your project file and `Directory.Build.props` are read. At that point, the target framework is only known when it is passed to the build: with `-f`, or by a project with several target frameworks building each of them.
 
-To fix this, use the plural property, even with a single target framework:
+When an app sets a single `<TargetFramework>net10.0-browserwasm</TargetFramework>` itself, in the project file, in `Directory.Build.props` or with a file-based app's `#:property`, the Uno.Sdk moves it to `TargetFrameworks` after the project file is read, so the app still builds with the WebAssembly SDK. It can only do so for a project it already knows is an app at that point, from an `OutputType` of `Exe` or `WinExe`, or from `IsUnoHead`.
+
+This error means the project was only found to be an app later, typically because its `OutputType` is set in `Directory.Build.targets`. Built with the plain .NET SDK, it would be a desktop executable that fails at startup.
+
+To fix this, set `OutputType` in the project file or in `Directory.Build.props`, or use the plural property, even with a single target framework:
 
 ```xml
 <PropertyGroup>
   <TargetFrameworks>net10.0-browserwasm</TargetFrameworks>
 </PropertyGroup>
-```
-
-In a file-based app, clear the `TargetFramework` that `dotnet run app.cs` sets by default, then set `TargetFrameworks`. File-based apps also default to `PublishAot`, which WebAssembly doesn't support, so turn it off:
-
-```csharp
-#:property TargetFramework=
-#:property TargetFrameworks=net10.0-browserwasm
-#:property PublishAot=false
 ```
 
 ## Compiler Errors
