@@ -59,6 +59,15 @@ public class Given_UnoSdkLateBrowserWasmTargetFramework
 	}
 
 	[TestMethod]
+	public void When_The_TargetFramework_Is_Moved_Then_The_Outer_Build_Computes_The_Inner_Run_Command()
+	{
+		// A file-based `dotnet run app.cs` asks the outer build. On the plain SDK, the run command would be the apphost.
+		var properties = Evaluate(new() { OutputType = "Exe", TargetFramework = BrowserWasm }, ["-t:ComputeRunArguments"], "RunCommand");
+
+		properties["RunCommand"].Should().Be("dotnet");
+	}
+
+	[TestMethod]
 	[DataRow("Exe", BrowserWasm, false, false, true)]
 	[DataRow("WinExe", BrowserWasm, false, false, true)]
 	[DataRow("Exe", BrowserWasm, false, true, false)]

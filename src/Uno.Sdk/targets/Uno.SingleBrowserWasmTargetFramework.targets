@@ -21,4 +21,39 @@
 		<TargetFramework></TargetFramework>
 	</PropertyGroup>
 
+	<!--
+		A file-based `dotnet run app.cs` picks the target framework from its #:property directives rather than from the
+		evaluated project, so for a moved TargetFramework it asks the outer build for the run command. Get it from the inner
+		build. Any build that imports the .NET SDK's targets, the inner one included, gets the SDK's own ComputeRunArguments
+		instead, as it is defined later.
+	-->
+	<Target Name="ComputeRunArguments"
+			Condition=" '$(_UnoMovedBrowserWasmTargetFramework)' == 'true' ">
+		<!-- A file-based app's project only exists in memory, which a `dotnet run` that skips an up-to-date build doesn't
+			 let the MSBuild task find on its own. -->
+		<MSBuild Projects="$(MSBuildProjectFullPath)"
+				 Targets="_UnoGetInnerRunArguments"
+				 Properties="TargetFramework=$(TargetFrameworks)"
+				 SkipNonexistentProjects="Build">
+			<Output TaskParameter="TargetOutputs" ItemName="_UnoInnerRunArguments" />
+		</MSBuild>
+
+		<PropertyGroup>
+			<RunCommand>@(_UnoInnerRunArguments->'%(RunCommand)')</RunCommand>
+			<RunArguments>@(_UnoInnerRunArguments->'%(RunArguments)')</RunArguments>
+			<RunWorkingDirectory>@(_UnoInnerRunArguments->'%(RunWorkingDirectory)')</RunWorkingDirectory>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="_UnoGetInnerRunArguments"
+			DependsOnTargets="ComputeRunArguments"
+			Returns="@(_UnoInnerRunArgumentsResult)">
+		<ItemGroup>
+			<_UnoInnerRunArgumentsResult Include="$(MSBuildProjectFullPath)"
+										 RunCommand="$(RunCommand)"
+										 RunArguments="$(RunArguments)"
+										 RunWorkingDirectory="$(RunWorkingDirectory)" />
+		</ItemGroup>
+	</Target>
+
 </Project>
