@@ -56,6 +56,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	private bool _treeBuildQueued;
 	private int _nextPath = 1;
 	private double _scale = 1.0;
+	private XamlRoot? _trackedXamlRoot;
 
 	// AT-SPI clients cache object references across tree changes; a rebuild must
 	// republish the same element at the same path or a cached reference silently
@@ -281,6 +282,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			UnsubscribeAllScrollSources();
 			(_originX, _originY) = GetClientOrigin();
 			_scale = rootElement.XamlRoot?.RasterizationScale ?? 1.0;
+			TrackXamlRoot(rootElement.XamlRoot);
 			_root = BuildRootNode(rootElement);
 			_treeInitialized = true;
 			// Publish an immutable element snapshot before the tree so the reader-thread
@@ -327,6 +329,42 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			{
 				this.Log().Error($"[A11y] Failed to build AT-SPI tree: {ex.Message}", ex);
 			}
+		}
+	}
+
+	// _scale is only otherwise sampled in BuildTree; without this, a DPI change (monitor
+	// change, X resource scale update) would leave published extents and hit testing off
+	// by the old-to-new ratio until some unrelated rebuild happened to resample it.
+	private void TrackXamlRoot(XamlRoot? xamlRoot)
+	{
+		if (ReferenceEquals(_trackedXamlRoot, xamlRoot))
+		{
+			return;
+		}
+
+		if (_trackedXamlRoot is { } previousRoot)
+		{
+			previousRoot.Changed -= OnXamlRootChanged;
+		}
+
+		_trackedXamlRoot = xamlRoot;
+
+		if (_trackedXamlRoot is { } newRoot)
+		{
+			newRoot.Changed += OnXamlRootChanged;
+		}
+	}
+
+	private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)
+	{
+		if (IsDisposed || !_treeInitialized || sender.RasterizationScale == _scale)
+		{
+			return;
+		}
+
+		if (_window.RootElement is { } rootElement)
+		{
+			QueueTreeBuild(rootElement);
 		}
 	}
 
@@ -1557,6 +1595,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		_window.Activated -= OnWindowActivated;
 		_window.AppWindow.Changed -= OnAppWindowChanged;
 		AtspiEnablement.Changed -= OnEnablementChanged;
+		TrackXamlRoot(null);
 
 		StopServer();
 	}
