@@ -353,10 +353,17 @@ internal sealed class TextSelectionGripperPresenter
 
 	private void OnGripperPointerReleased(object sender, PointerRoutedEventArgs args)
 	{
+		var gripper = (CaretWithStemAndThumb)sender;
+		// Read before ClearGripperPointerState consumes the press.
+		var previous = gripper.LastPointerDown;
 		ClearGripperPointerState(sender, args);
 
-		var gripper = (CaretWithStemAndThumb)sender;
-		var previous = gripper.LastPointerDown;
+		if (previous is null)
+		{
+			// A release can reach a gripper that did not receive the matching press.
+			return;
+		}
+
 		var current = args.GetCurrentPoint(null);
 
 		var holdDuration = current.Timestamp - previous.Timestamp;
@@ -389,6 +396,7 @@ internal sealed class TextSelectionGripperPresenter
 	{
 		args.Handled = true;
 		var gripper = (CaretWithStemAndThumb)sender;
+		gripper.LastPointerDown = null;
 		gripper.SetStemVisible(false);
 		gripper.ReleasePointerCaptures();
 	}
