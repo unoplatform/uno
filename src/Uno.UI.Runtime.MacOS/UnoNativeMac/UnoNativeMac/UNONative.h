@@ -11,7 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol UNONativeElement
 
-@property (nonatomic) NSView* originalSuperView;
+/// Weak, so an element the app keeps around does not keep a closed window's rendering view alive.
+@property (nonatomic, weak, nullable) NSView* originalSuperView;
 
 -(void) dispose;
 
@@ -22,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface UNORedView : NSView<UNONativeElement>
+@interface UNORedView : NSView
 
 @end
 
@@ -38,16 +39,15 @@ NS_ASSUME_NONNULL_BEGIN
 /// every later `uno_native_*` call retains freed memory.
 void uno_native_track(NSView<UNONativeElement>* element);
 
-NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text);
+/// Creates a plain view for the samples, to be wrapped by `uno_native_create_host` before the pool drains.
+NSView* uno_native_create_sample(const char* _Nullable text);
 
-NSView* uno_native_create_host(NSView* view);
-
-/// Makes `window` the destination of the next `uno_native_attach`.
-void uno_native_set_window(NSView<UNONativeElement>* element, NSWindow* window);
+/// Returns nil when `view` is not an NSView.
+NSView* _Nullable uno_native_create_host(id view);
 
 void uno_native_arrange(NSView<UNONativeElement>* element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight);
 
-void uno_native_attach(NSView<UNONativeElement>* element);
+void uno_native_attach(NSView<UNONativeElement>* element, NSWindow* window);
 
 void uno_native_detach(NSView<UNONativeElement>* element);
 

@@ -9,8 +9,6 @@ static NSMutableSet<NSView*> *transients;
 
 @implementation UNORedView : NSView
 
-@synthesize originalSuperView;
-
 // make the background red for easier tracking
 - (BOOL)wantsUpdateLayer
 {
@@ -22,33 +20,22 @@ static NSMutableSet<NSView*> *transients;
     self.layer.backgroundColor = NSColor.redColor.CGColor;
 }
 
-- (void)detach {
-    // nothing needed
-}
-
-- (void)dispose {
-#if DEBUG
-    NSLog(@"UNORedView %p disposing with superview %p", self, self.superview);
-#endif
-    if (self.superview) {
-        [self removeFromSuperview];
-    }
-}
-
 @end
 
 @implementation UNONativeViewHost {
-    NSSize _naturalSize;
+    NSRect _originalFrame;
+    NSAutoresizingMaskOptions _originalAutoresizingMask;
 }
 
 @synthesize originalSuperView;
 
 - (instancetype)initWithHostedView:(NSView*)view
 {
-    NSSize size = view.frame.size;
-    self = [super initWithFrame:NSMakeRect(0, 0, size.width, size.height)];
+    NSRect frame = view.frame;
+    self = [super initWithFrame:NSMakeRect(0, 0, frame.size.width, frame.size.height)];
     if (self) {
-        _naturalSize = size;
+        _originalFrame = frame;
+        _originalAutoresizingMask = view.autoresizingMask;
         // layer-backed so `uno_window_clip_svg` can mask it
         self.wantsLayer = YES;
         [view removeFromSuperview];
@@ -68,19 +55,24 @@ static NSMutableSet<NSView*> *transients;
 - (NSSize)naturalSize
 {
     NSSize intrinsic = self.hostedView.intrinsicContentSize;
-    return NSMakeSize(intrinsic.width == NSViewNoIntrinsicMetric ? _naturalSize.width : intrinsic.width,
-                      intrinsic.height == NSViewNoIntrinsicMetric ? _naturalSize.height : intrinsic.height);
+    return NSMakeSize(intrinsic.width == NSViewNoIntrinsicMetric ? _originalFrame.size.width : intrinsic.width,
+                      intrinsic.height == NSViewNoIntrinsicMetric ? _originalFrame.size.height : intrinsic.height);
 }
 
 - (void)dispose {
+    NSView* view = self.hostedView;
 #if DEBUG
-    NSLog(@"UNONativeViewHost %p disposing hosted view %p with superview %p", self, self.hostedView, self.superview);
+    NSLog(@"UNONativeViewHost %p disposing hosted view %p with superview %p", self, view, self.superview);
 #endif
     if (self.superview) {
         [self removeFromSuperview];
     }
-    // hand the view back to the app, which may still reference it and host it elsewhere
-    [self.hostedView removeFromSuperview];
+    // Hand the view back to the app as it was wrapped, unless another host or the app already took it.
+    if (view.superview == self) {
+        [view removeFromSuperview];
+        view.autoresizingMask = _originalAutoresizingMask;
+        view.frame = _originalFrame;
+    }
     self.hostedView = nil;
 }
 
@@ -94,7 +86,7 @@ void uno_native_track(NSView<UNONativeElement>* element)
     [transients addObject:element];
 }
 
-NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
+NSView* uno_native_create_sample(const char* _Nullable text)
 {
     // no NSLabel on macOS
     NSTextField* label = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
@@ -102,7 +94,7 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
     label.drawsBackground = NO;
     label.editable = NO;
     label.selectable = NO;
-    label.stringValue = [NSString stringWithUTF8String:text];
+    label.stringValue = text ? [NSString stringWithUTF8String:text] : @"";
     label.frame = NSMakeRect(0, 0, label.fittingSize.width, label.fittingSize.height);
 
     UNORedView* sample = [[UNORedView alloc] initWithFrame:label.frame];
@@ -110,27 +102,21 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
 #if DEBUG
     NSLog(@"uno_native_create_sample #%p label: %@", sample, label.stringValue);
 #endif
-    sample.originalSuperView = ((UNOWindow*)window).renderingView;
-    uno_native_track(sample);
     return sample;
 }
 
-NSView* uno_native_create_host(NSView* view)
+NSView* _Nullable uno_native_create_host(id view)
 {
+    // anything else, e.g. an NSWindow, would raise an Objective-C exception that aborts the process
+    if (![view isKindOfClass:NSView.class]) {
+        return nil;
+    }
     UNONativeViewHost* host = [[UNONativeViewHost alloc] initWithHostedView:view];
 #if DEBUG
     NSLog(@"uno_native_create_host #%p hosting %p", host, view);
 #endif
     uno_native_track(host);
     return host;
-}
-
-void uno_native_set_window(NSView<UNONativeElement>* element, NSWindow* window)
-{
-#if DEBUG
-    NSLog(@"uno_native_set_window #%p window %p", element, window);
-#endif
-    element.originalSuperView = ((UNOWindow*)window).renderingView;
 }
 
 void uno_native_arrange(NSView<UNONativeElement> *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight)
@@ -143,11 +129,13 @@ void uno_native_arrange(NSView<UNONativeElement> *element, double arrangeLeft, d
 #endif
 }
 
-void uno_native_attach(NSView<UNONativeElement>* element)
+void uno_native_attach(NSView<UNONativeElement>* element, NSWindow* window)
 {
 #if DEBUG
-    NSLog(@"!!uno_native_attach %p", element);
+    NSLog(@"!!uno_native_attach %p window %p", element, window);
 #endif
+    // set on every attach, so the element follows its ContentPresenter to another window
+    element.originalSuperView = ((UNOWindow*)window).renderingView;
     bool already_attached = NO;
     if (!elements) {
         elements = [[NSMutableSet alloc] initWithCapacity:10];

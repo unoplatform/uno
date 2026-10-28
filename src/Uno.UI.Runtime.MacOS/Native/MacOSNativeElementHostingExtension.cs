@@ -1,5 +1,7 @@
 #nullable enable
 
+using System;
+using System.Threading;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
@@ -11,15 +13,14 @@ using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.MacOS;
 
-internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
+/// <summary>
+/// The managed side of a native element: an NSView conforming to <c>UNONativeElement</c>.
+/// </summary>
+internal interface IMacOSNativeElement
 {
-	// The peer is tied to the managed wrapper, not to the visual tree: `Unloaded` also fires on a reparent,
-	// after which the framework re-enters the very same element through `AttachNativeElement`.
-	~MacOSNativeElement() => DisposeNativePeer();
+	nint NativeHandle { get; }
 
-	public nint NativeHandle { get; internal set; }
-
-	internal bool Detached { get; set; }
+	bool Detached { get; set; }
 
 	/// <summary>
 	/// Set once the native peer has been released, at which point <see cref="NativeHandle"/> is zeroed.
@@ -29,7 +30,20 @@ internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
 	/// the object is deallocated. Any later call handing the stale handle back to native code would make
 	/// ARC retain freed memory, which crashes the process rather than failing the current operation.
 	/// </remarks>
-	internal bool Disposed { get; private set; }
+	bool Disposed { get; }
+}
+
+internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement, IMacOSNativeElement
+{
+	// The peer is tied to the managed wrapper, not to the visual tree: `Unloaded` also fires on a reparent,
+	// after which the framework re-enters the very same element through `AttachNativeElement`.
+	~MacOSNativeElement() => DisposeNativePeer();
+
+	public nint NativeHandle { get; internal set; }
+
+	public bool Detached { get; set; }
+
+	public bool Disposed { get; private set; }
 
 	internal void DisposeNativePeer()
 	{
@@ -54,16 +68,76 @@ internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
 /// <summary>
 /// Native container backing a public <see cref="MacOSNativeView"/>, which owns it.
 /// </summary>
-internal sealed class MacOSNativeViewPeer : MacOSNativeElement, IMacOSNativeViewPeer
+/// <remarks>
+/// Not a <see cref="MacOSNativeElement"/>: it never enters the visual tree, so it has no use for a <c>FrameworkElement</c>.
+/// </remarks>
+internal sealed class MacOSNativeViewPeer : IMacOSNativeElement, IMacOSNativeViewPeer
 {
+	private int _disposed;
+
 	private MacOSNativeViewPeer(MacOSNativeView owner)
 	{
 		NativeHandle = NativeUno.uno_native_create_host(owner.Handle);
 	}
 
+	// The wrapper was collected without being disposed.
+	~MacOSNativeViewPeer()
+	{
+		try
+		{
+			Release();
+		}
+		catch (Exception e)
+		{
+			// An exception escaping a finalizer would take the process down.
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Failed to release the native peer of a {nameof(MacOSNativeView)}.", e);
+			}
+		}
+	}
+
 	public static void Register() => ApiExtensibility.Register<MacOSNativeView>(typeof(IMacOSNativeViewPeer), o => new MacOSNativeViewPeer(o));
 
-	void System.IDisposable.Dispose() => DisposeNativePeer();
+	public nint NativeHandle { get; private set; }
+
+	public bool Detached { get; set; }
+
+	public bool Disposed => Volatile.Read(ref _disposed) != 0;
+
+	public bool IsHosting => NativeHandle != 0;
+
+	public void Dispose()
+	{
+		Release();
+		GC.SuppressFinalize(this);
+	}
+
+	private void Release()
+	{
+		if (Interlocked.Exchange(ref _disposed, 1) != 0)
+		{
+			return;
+		}
+
+		var handle = NativeHandle;
+		NativeHandle = 0;
+
+		if (handle == 0)
+		{
+			return;
+		}
+
+		// AppKit is main-thread only. Releasing at once when possible lets the app host the view again right away.
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			NativeUno.uno_native_dispose(handle);
+		}
+		else
+		{
+			MacOSDispatcher.DispatchNativeSingle(() => NativeUno.uno_native_dispose(handle), NativeDispatcherPriority.Normal);
+		}
+	}
 }
 
 internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
@@ -75,22 +149,57 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		_presenter = contentPresenter;
 	}
 
-	// Resolved on use: the XamlRoot may not be set yet when the extension is created, and can change on a reparent.
-	private MacOSWindowNative? Window => _presenter.XamlRoot?.HostWindow?.NativeWindow as MacOSWindowNative;
-
 	public static void Register() => ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new MacOSNativeElementHostingExtension(o));
+
+	/// <summary>
+	/// Resolves the window on each attach: the XamlRoot may not be set yet when the extension is created,
+	/// and changes when the presenter moves to another window.
+	/// </summary>
+	private MacOSWindowNative? GetWindow(out string missing)
+	{
+		if (_presenter.XamlRoot is not { } xamlRoot)
+		{
+			missing = "its ContentPresenter has no XamlRoot";
+			return null;
+		}
+
+		if (xamlRoot.HostWindow is not { } hostWindow)
+		{
+			missing = "its XamlRoot has no host window";
+			return null;
+		}
+
+		if (hostWindow.NativeWindow is not MacOSWindowNative window)
+		{
+			missing = $"its window is backed by a {hostWindow.NativeWindow?.GetType().FullName ?? "null"}, not a {nameof(MacOSWindowNative)}";
+			return null;
+		}
+
+		if (window.Handle == 0)
+		{
+			missing = "its window was closed";
+			return null;
+		}
+
+		missing = "";
+		return window;
+	}
 
 	/// <summary>
 	/// Resolves <paramref name="content"/> to a native element that is still safe to hand to native code.
 	/// A disposed element keeps its managed wrapper alive but its NSView is gone, so every operation has
 	/// to fail on its own rather than hand the stale handle back to ARC.
 	/// </summary>
-	private bool TryGetLiveElement(object content, string operation, out MacOSNativeElement element)
+	/// <param name="warn">
+	/// Whether a disposed element is worth a warning. Only attaching is: measure, arrange and opacity run on every layout or
+	/// <c>Opacity</c> change.
+	/// </param>
+	private bool TryGetLiveElement(object content, string operation, out IMacOSNativeElement element, bool warn = false)
 	{
 		var nativeElement = content switch
 		{
-			MacOSNativeView view => view.Peer as MacOSNativeElement,
-			MacOSNativeElement e => e,
+			MacOSNativeView view => view.Peer as IMacOSNativeElement,
+			IMacOSNativeElement e => e,
 			_ => null
 		};
 
@@ -98,7 +207,9 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Object `content` is a {content?.GetType().FullName ?? "null"} and not a MacOSNativeElement subclass.");
+				this.Log().Debug(content is MacOSNativeView
+					? $"Cannot {operation} a {nameof(MacOSNativeView)} that has no native peer."
+					: $"Cannot {operation} a {content?.GetType().FullName ?? "null"}, which is not a native element.");
 			}
 
 			element = null!;
@@ -107,9 +218,10 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 
 		if (nativeElement.Disposed || nativeElement.NativeHandle == 0)
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
+			var level = warn ? LogLevel.Warning : LogLevel.Debug;
+			if (this.Log().IsEnabled(level))
 			{
-				this.Log().Warn($"Cannot {operation} a {content.GetType().FullName} whose native peer was already disposed.");
+				this.Log().Log(level, $"Cannot {operation} a {content.GetType().FullName} whose native peer was already disposed.");
 			}
 
 			element = null!;
@@ -137,22 +249,19 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 
 	public void AttachNativeElement(object content)
 	{
-		if (TryGetLiveElement(content, "attach", out var element))
+		if (TryGetLiveElement(content, "attach", out var element, warn: true))
 		{
-			if (element is MacOSNativeViewPeer)
+			if (GetWindow(out var missing) is not { } window)
 			{
-				// Unlike the framework-created elements, an app-provided view is not tied to a window at creation.
-				if (Window is { } window)
+				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					NativeUno.uno_native_set_window(element.NativeHandle, window.Handle);
+					this.Log().Warn($"Cannot attach a {content.GetType().FullName} as {missing}.");
 				}
-				else if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().Warn($"Cannot attach a {nameof(MacOSNativeView)} as no MacOSWindowNative instance could be found.");
-				}
+
+				return;
 			}
 
-			NativeUno.uno_native_attach(element.NativeHandle);
+			NativeUno.uno_native_attach(element.NativeHandle, window.Handle);
 			element.Detached = false;
 		}
 	}
@@ -167,24 +276,8 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 	}
 
-	public object? CreateSampleComponent(string text)
-	{
-		if (Window is not { } window)
-		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"CreateSampleComponent failed as no MacOSWindowNative instance could be found.");
-			}
-			return null;
-		}
-
-		var handle = NativeUno.uno_native_create_sample(window.Handle, text);
-		return new MacOSNativeElement()
-		{
-			NativeHandle = handle,
-			AccessKey = text // FIXME: debug helper, to be removed
-		};
-	}
+	// The view is autoreleased: the wrapper has to take it before the pool drains.
+	public object? CreateSampleComponent(string text) => new MacOSNativeView(NativeUno.uno_native_create_sample(text));
 
 	public void DetachNativeElement(object content)
 	{
