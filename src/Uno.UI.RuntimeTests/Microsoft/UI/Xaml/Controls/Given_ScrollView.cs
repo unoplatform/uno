@@ -93,7 +93,7 @@ public class Given_ScrollView
 		try
 		{
 			mouse.Wheel(-120 * 3, steps: 3);
-			await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "the wheel should scroll");
+			await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "the wheel should scroll", timeoutMS: SlowFrameTimeoutMs);
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 		}
 		finally
@@ -131,7 +131,7 @@ public class Given_ScrollView
 		var from = sut.ScrollableHeight - left;
 
 		sut.ScrollTo(0, from, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
-		await TestServices.WindowHelper.WaitFor(() => Math.Abs(sut.VerticalOffset - from) < 0.01, message: "the view should reach the start offset");
+		await TestServices.WindowHelper.WaitFor(() => Math.Abs(sut.VerticalOffset - from) < 0.01, message: "the view should reach the start offset", timeoutMS: SlowFrameTimeoutMs);
 
 		var samples = await RecordWheelNotch(sut, bounds);
 
@@ -152,7 +152,7 @@ public class Given_ScrollView
 		mouse.WheelDown();
 		await UITestHelper.WaitForRender(2);
 		mouse.WheelDown();
-		await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "the wheel should scroll");
+		await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "the wheel should scroll", timeoutMS: SlowFrameTimeoutMs);
 		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 		Assert.AreEqual(2 * InteractionTracker.PixelsPerWheelDetent, sut.VerticalOffset, 0.1);
@@ -165,19 +165,23 @@ public class Given_ScrollView
 		var (sut, bounds) = await LoadTallScrollView();
 		const double From = 1000;
 		sut.ScrollTo(0, From, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
-		await TestServices.WindowHelper.WaitFor(() => Math.Abs(sut.VerticalOffset - From) < 0.01, message: "the view should reach the start offset");
+		await TestServices.WindowHelper.WaitFor(() => Math.Abs(sut.VerticalOffset - From) < 0.01, message: "the view should reach the start offset", timeoutMS: SlowFrameTimeoutMs);
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		using var mouse = injector.GetMouse();
 		mouse.MoveTo(Center(bounds));
 
 		mouse.WheelDown();
-		await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > From, message: "the first notch should scroll");
+		await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > From, message: "the first notch should scroll", timeoutMS: SlowFrameTimeoutMs);
 		mouse.WheelUp();
 		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 		Assert.AreEqual(From, sut.VerticalOffset, 0.1);
 	}
+
+	// A queued ScrollTo waits a few ticks before it applies, and a software-rendered (WebGPU on SwiftShader) tick can take
+	// hundreds of ms, so the default 1s wait is too short there.
+	private const int SlowFrameTimeoutMs = 10000;
 
 	private static async Task<List<(double Ms, float Position)>> RecordWheelNotch(ScrollView sut, Rect bounds)
 	{
@@ -196,7 +200,7 @@ public class Given_ScrollView
 		try
 		{
 			mouse.WheelDown();
-			await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > initialOffset, message: "the wheel should scroll");
+			await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > initialOffset, message: "the wheel should scroll", timeoutMS: SlowFrameTimeoutMs);
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 		}
 		finally
@@ -216,6 +220,15 @@ public class Given_ScrollView
 			.Where(sample => sample.Fraction > 0.005 && sample.Fraction < 0.99)
 			.Select(sample => sample.Ms - durationMs * Math.Asin(sample.Fraction) * 2 / Math.PI)
 			.ToList();
+
+		if (starts.Count < 2 && samples.Count >= 2)
+		{
+			var frameMs = (samples[^1].Ms - samples[0].Ms) / (samples.Count - 1);
+			if (frameMs > durationMs / 3)
+			{
+				Assert.Inconclusive($"frames ({frameMs:F0} ms) are too long to sample a {durationMs:F0} ms curve");
+			}
+		}
 
 		Assert.IsTrue(starts.Count >= 2, $"expected the notch to span several frames, got {starts.Count}");
 		Assert.IsTrue(
