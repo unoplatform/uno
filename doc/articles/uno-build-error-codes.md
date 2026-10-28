@@ -340,6 +340,22 @@ The `Reactor` feature references [Uno.Microsoft.UI.Reactor](https://www.nuget.or
 
 To fix this, remove the `-windows10.0.xxxxx` target framework from the project. To run a Reactor app on Windows, use the `desktop` target.
 
+### UNOB0032: The browserwasm target framework was set after the Uno.Sdk chose the .NET SDK
+
+The Uno.Sdk builds a WebAssembly app with the `Microsoft.NET.Sdk.WebAssembly` SDK, which it chooses from `TargetFramework` before your project file and `Directory.Build.props` are read. At that point, the target framework is only known when it is passed to the build: with `-f`, or by a project with several target frameworks building each of them.
+
+When an app sets a single `<TargetFramework>net10.0-browserwasm</TargetFramework>` itself, in the project file, in `Directory.Build.props` or with a file-based app's `#:property`, the Uno.Sdk moves it to `TargetFrameworks` after the project file is read, so the app still builds with the WebAssembly SDK. It can only do so for a project it already knows is an app at that point, from an `OutputType` of `Exe` or `WinExe`, or from `IsUnoHead`.
+
+This error means the project was only found to be an app later, typically because its `OutputType` is set in `Directory.Build.targets`. Built with the plain .NET SDK, it would be a desktop executable that fails at startup.
+
+To fix this, set `OutputType` in the project file or in `Directory.Build.props`, or use the plural property, even with a single target framework:
+
+```xml
+<PropertyGroup>
+  <TargetFrameworks>net10.0-browserwasm</TargetFrameworks>
+</PropertyGroup>
+```
+
 ## Compiler Errors
 
 ### UNO0001
