@@ -35,6 +35,7 @@ report_harness_crash() {
 		# verdict to the re-run.
 		if [ "${UNO_HARNESS_RERUN_PENDING:-}" = "true" ]; then
 			echo "##vso[task.logissue type=warning]The test harness failed before any test started (exit $status); the re-run step will retry it."
+			echo "##vso[task.setvariable variable=UNO_TEST_RESULTS_EXPECTED]false"
 			exit 0
 		fi
 	fi
@@ -196,6 +197,7 @@ if [ -f "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST" ] && [ "$UITEST_IGNORE_RERUN_FILE"
 	# if it only contains `invalid-test-for-retry`, exit the script
 	if [ `cat "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"` = "invalid-test-for-retry" ]; then
 		echo "The file $UNO_TESTS_RUNTIMETESTS_FAILED_LIST does not contain tests to re-run, skipping."
+		echo "##vso[task.setvariable variable=UNO_TEST_RESULTS_EXPECTED]false"
 		exit 0
 	fi
 
@@ -319,3 +321,6 @@ if [ $? -eq 0 ]; then
 fi
 
 popd
+
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-failed-tests.sh
+uno_fail_on_failed_tests "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"

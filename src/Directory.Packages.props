@@ -10,7 +10,7 @@
 		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>4.151.1</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>14.2.1.1</HarfbuzzSharpVersion>
-		<UnoICUVersion>77.3.0-dev.4</UnoICUVersion>
+		<UnoICUVersion>77.3.2</UnoICUVersion>
 		<!-- Uno.icu-tvos was introduced after that line and only ships 77.4.0-dev.1, which in turn
 		     is not published for -wasm/-win. Same ICU major, so the _77 symbol suffix still matches.
 		     Fold this back into UnoICUVersion once one version exists for every platform. -->
@@ -87,10 +87,6 @@
 		<PackageVersion Include="Microsoft.Kiota.Abstractions" Version="1.22.2" />
 		<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
 		<PackageVersion Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.9" />
-		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
-		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
-		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
-		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
 		<PackageVersion Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
 		<PackageVersion Include="Microsoft.Testing.Extensions.HangDump" Version="$(MicrosoftTestingPlatformVersion)" />
 		<PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="$(MicrosoftTestingPlatformVersion)" />
@@ -104,7 +100,7 @@
 		<PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28" />
 		<PackageVersion Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
 		<PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
-		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="11.0.0-rc.1.26425.128" />
+		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="11.0.0-rc.2.26504.105" />
 		<PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
 		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
 		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.6.0" />
@@ -127,7 +123,9 @@
 		<PackageVersion Include="PolySharp" Version="1.14.1" />
 		<PackageVersion Include="Refit" Version="8.0.0" />
 		<PackageVersion Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
-		<PackageVersion Include="Silk.NET.OpenGL" Version="2.16.0" />
+		<PackageVersion Include="Silk.NET.OpenGL" Version="2.23.0" />
+		<PackageVersion Include="Silk.NET.WebGPU" Version="2.23.0" />
+		<PackageVersion Include="Silk.NET.WebGPU.Extensions.WGPU" Version="2.23.0" />
 		<PackageVersion Include="SkiaSharp" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />
@@ -169,7 +167,7 @@
 		<PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="5.0.0-dev.34" />
 		<PackageVersion Include="Uno.Core.Extensions.Threading" Version="5.0.0-dev.34" />
 		<!-- Minimum for Uno.Settings.DevServer 2.x: the host's copy owns the TelemetryUserContext its add-ins publish to -->
-		<PackageVersion Include="Uno.DevTools.Telemetry" Version="1.4.0-dev.18" />
+		<PackageVersion Include="Uno.DevTools.Telemetry" Version="1.4.0-dev.21" />
 		<PackageVersion Include="Uno.Diagnostics.Eventing" Version="2.0.1" />
 		<PackageVersion Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
 		<PackageVersion Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />

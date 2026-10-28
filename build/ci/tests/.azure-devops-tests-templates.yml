@@ -86,6 +86,7 @@ jobs:
   cancelTimeoutInMinutes: 0
 
   pool:
+    name: 'GitHub-hosted Agents'
     vmImage: ${{ parameters.macOSImageName }}
 
   strategy:

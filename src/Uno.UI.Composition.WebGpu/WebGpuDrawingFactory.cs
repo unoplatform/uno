@@ -8,8 +8,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
 using Uno.UI.Composition.Drawing;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Effects.Interop;
@@ -70,7 +69,7 @@ public sealed class WebGpuEffectFilter : DrawingResource, IEffectFilter
 	~WebGpuEffectFilter() => Free();
 }
 
-public sealed class WebGpuRenderRecord : IRenderRecord
+public sealed unsafe class WebGpuRenderRecord : IRenderRecord
 {
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
@@ -171,15 +170,14 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 
 /// <summary>A host graphics context that owns a <see cref="WebGpuDevice"/> (e.g. an on-window swapchain context).
 /// Lets <see cref="WebGpuGraphicsProvider"/> obtain the device without naming the platform context type.</summary>
-internal sealed class WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceContext>
+internal sealed unsafe class WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceContext>
 {
 	private static readonly GraphicsContextKind[] _preferred = { GraphicsContextKind.WebGpu };
 
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 
-	// Builds the WebGPU render engine from the neutral device context the host created (raw wgpu handles + the
-	// host's colour format + MSAA count) — the exact seam a third-party WebGPU backend consumes. No privileged
-	// path into the host's internals. Geometry is a separate seam (GeometryFactory): WebGPU flattens everything, so
+	// Builds the WebGPU render engine from the device context the host created: its Silk.NET API, device and queue,
+	// and colour format. No privileged path into the host's internals. Geometry is a separate seam (GeometryFactory): WebGPU flattens everything, so
 	// a SkiaSharp-free app registers a ManagedGeometryFactory there rather than injecting it here.
 	private static WebGpuDrawingFactory _shared;
 	private static nint _sharedDevice;
@@ -195,12 +193,12 @@ internal sealed class WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceCo
 	public IDrawingFactory CreateGraphics(IWebGpuDeviceContext context)
 	{
 		DrawingCapabilities.NativeStroking = true;
-		if (_shared is not null && _sharedDevice == context.Device)
+		if (_shared is not null && _sharedDevice == (nint)context.Device)
 		{
 			return _shared;
 		}
 
-		_sharedDevice = context.Device;
+		_sharedDevice = (nint)context.Device;
 		return _shared = new WebGpuDrawingFactory(new WebGpuDevice(context));
 	}
 }
@@ -215,8 +213,9 @@ internal sealed class WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceCo
 public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 {
 	private readonly WebGpuDevice _d;
-	public IntPtr Tex;
-	public IntPtr View;
+	private WebGPU Api => _d.Api;
+	public Texture* Tex;
+	public TextureView* View;
 
 	public int PixelWidth { get; }
 	public int PixelHeight { get; }
@@ -230,7 +229,7 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 	/// <summary>Every texel is fully opaque, so a plain draw of it hides what it covers. False when unknown.</summary>
 	internal bool IsOpaque;
 
-	internal WebGpuTexture(WebGpuDevice device, IntPtr tex, IntPtr view, int width, int height)
+	internal WebGpuTexture(WebGpuDevice device, Texture* tex, TextureView* view, int width, int height)
 	{
 		_d = device;
 		Tex = tex;
@@ -264,14 +263,14 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 		// transparent texture so the draw is a no-op instead of a hard wgpu panic.
 		if (w <= 0 || h <= 0)
 		{
-			var td0 = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = 1, Height = 1, DepthOrArrayLayers = 1 }, Format = WGPUTextureFormat.RGBA8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst };
-			Tex = wgpuDeviceCreateTexture(device.Dev, &td0);
-			View = wgpuTextureCreateView(Tex, null);
+			var td0 = new TextureDescriptor { Size = new Extent3D { Width = 1, Height = 1, DepthOrArrayLayers = 1 }, Format = TextureFormat.Rgba8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.TextureBinding | TextureUsage.CopyDst };
+			Tex = Api.DeviceCreateTexture(device.Dev, &td0);
+			View = Api.TextureCreateView(Tex, null);
 			var transparent = new byte[4];
-			var dst0 = new WGPUTexelCopyTextureInfo { Texture = Tex, Aspect = WGPUTextureAspect.All, MipLevel = 0, Origin = default };
-			var layout0 = new WGPUTexelCopyBufferLayout { BytesPerRow = 4, RowsPerImage = 1 };
-			var ext0 = new WGPUExtent3D { Width = 1, Height = 1, DepthOrArrayLayers = 1 };
-			fixed (byte* p0 = transparent) { wgpuQueueWriteTexture(device.Q, &dst0, (IntPtr)p0, 4, &layout0, &ext0); }
+			var dst0 = new ImageCopyTexture { Texture = Tex, Aspect = TextureAspect.All, MipLevel = 0, Origin = default };
+			var layout0 = new TextureDataLayout { BytesPerRow = 4, RowsPerImage = 1 };
+			var ext0 = new Extent3D { Width = 1, Height = 1, DepthOrArrayLayers = 1 };
+			fixed (byte* p0 = transparent) { Api.QueueWriteTexture(device.Q, &dst0, p0, 4, &layout0, &ext0); }
 			return;
 		}
 		var rgba = new byte[w * h * 4];
@@ -285,15 +284,15 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 		IsOpaque = rgba.Length > 0 && alphaAnd == 255;
 		// A full mip chain: a draw that minifies the image then samples the level near its on-screen size instead of
 		// striding across the full-resolution one, which is what makes large images bandwidth-bound.
-		var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = WGPUTextureFormat.RGBA8Unorm, MipLevelCount = (uint)MipLevels(w, h), SampleCount = 1, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst | WGPUTextureUsage.CopySrc };
-		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
-		View = wgpuTextureCreateView(Tex, null);
+		var td = new TextureDescriptor { Size = new Extent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = TextureFormat.Rgba8Unorm, MipLevelCount = (uint)MipLevels(w, h), SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.TextureBinding | TextureUsage.CopyDst | TextureUsage.CopySrc };
+		Tex = Api.DeviceCreateTexture(device.Dev, &td);
+		View = Api.TextureCreateView(Tex, null);
 		for (uint level = 0; ; level++)
 		{
-			var dst = new WGPUTexelCopyTextureInfo { Texture = Tex, Aspect = WGPUTextureAspect.All, MipLevel = level, Origin = default };
-			var layout = new WGPUTexelCopyBufferLayout { BytesPerRow = (uint)(w * 4), RowsPerImage = (uint)h };
-			var ext = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 };
-			fixed (byte* p = rgba) { wgpuQueueWriteTexture(device.Q, &dst, (IntPtr)p, (nuint)rgba.Length, &layout, &ext); }
+			var dst = new ImageCopyTexture { Texture = Tex, Aspect = TextureAspect.All, MipLevel = level, Origin = default };
+			var layout = new TextureDataLayout { BytesPerRow = (uint)(w * 4), RowsPerImage = (uint)h };
+			var ext = new Extent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 };
+			fixed (byte* p = rgba) { Api.QueueWriteTexture(device.Q, &dst, p, (nuint)rgba.Length, &layout, &ext); }
 			if (w == 1 && h == 1) { break; }
 			rgba = Halve(rgba, ref w, ref h);
 		}
@@ -337,17 +336,17 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 	// last present's submit), like the per-frame bind groups and buffers.
 	protected override void Free()
 	{
-		if (View == IntPtr.Zero && Tex == IntPtr.Zero) { return; }
+		if (View == null && Tex == null) { return; }
 		if (Recycle) { _d.DeferTextureRecycle(View, Tex, PixelWidth, PixelHeight); }
 		else { _d.DeferTextureRelease(View, Tex); }
-		View = IntPtr.Zero; Tex = IntPtr.Zero;
+		View = null; Tex = null;
 	}
 
 	// Nothing can reach View/Tex once this object is collected, so a missed Release would strand the allocation for
 	// the life of the device. The release queue is concurrent, so the finalizer can hand them over — late, not lost.
 	~WebGpuTexture()
 	{
-		if (View == IntPtr.Zero && Tex == IntPtr.Zero) { return; }
+		if (View == null && Tex == null) { return; }
 		if (this.Log().IsEnabled(LogLevel.Warning))
 		{
 			this.Log().Warn($"A {PixelWidth}x{PixelHeight} WebGPU texture was finalized with live handles: a reference was never released. Freeing it late.");
@@ -413,98 +412,57 @@ internal sealed unsafe class WebGpuReadbackImage : DrawingResource, IImage
 /// it, so a SkiaSharp-free app registers the managed geometry engine (<c>ManagedBackend.CreateGeometryFactory()</c>)
 /// and links zero SkiaSharp for drawing.
 /// </summary>
-public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
+public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>, IWebGpuTextureInterop
 {
 	private readonly WebGpuDevice _device;
 
-	/// <summary>The main-pass surface for one render target: the host's colour (the neutral <see cref="IWebGpuRenderTarget"/>) wrapped as a surface.</summary>
-	private sealed class MainSurface
-	{
-		public WebGpuRenderSurface Surface;
-		public int Width, Height;
-		public IntPtr ColorView;        // the resolve view the backend renders into (imported from JsColorView on WASM)
-	}
-
-	/// <summary>
-	/// One main surface PER TARGET. A single factory serves every window - it is installed as the process-wide
-	/// <c>DrawingFactory.Current</c> - so a single surface would be disposed and rebuilt on every present as two
-	/// windows took turns, and two windows of equal size would render into whichever presented first. Keyed on the
-	/// target instance, whose lifetime is that window's swapchain context (a resize replaces it).
-	/// </summary>
-	private readonly System.Collections.Generic.Dictionary<IWebGpuRenderTarget, MainSurface> _mainSurfaces = new();
-
-	/// <summary>Targets in least-recently-presented order, so surfaces for windows that are gone cannot pile up.</summary>
-	private readonly System.Collections.Generic.List<IWebGpuRenderTarget> _mainSurfaceLru = new();
-
-	/// <summary>Distinct targets whose surfaces are kept. A handful of windows plus their in-flight resizes.</summary>
-	private const int MaxMainSurfaces = 8;
-
 	internal WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
+
+	private WebGPU Api => _device.Api;
 
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder(this);
 
-	/// <summary>
-	/// Drops the least-recently-presented main surfaces once more than <see cref="MaxMainSurfaces"/> targets are
-	/// tracked. A closed window's target is simply never presented again, so nothing else would ever release it.
-	/// </summary>
-	private void EvictMainSurfaces()
+	public unsafe IPresentSession BeginPresent(IWebGpuRenderTarget target, ReadOnlySpan<Rect> damage)
 	{
-		while (_mainSurfaceLru.Count >= MaxMainSurfaces)
+		// Made per present: it owns nothing (the host owns the colour), and this factory is shared by every window's
+		// render thread. A minimized window can report an empty client area; the pass still needs at least 1x1.
+		var surface = new WebGpuRenderSurface(_device, Math.Max(1, target.Width), Math.Max(1, target.Height), externalColor: true)
 		{
-			var oldest = _mainSurfaceLru[0];
-			_mainSurfaceLru.RemoveAt(0);
-			if (_mainSurfaces.Remove(oldest, out var stale))
-			{
-				stale.Surface?.Dispose();
-			}
-		}
-	}
-
-	public IPresentSession BeginPresent(IWebGpuRenderTarget target, ReadOnlySpan<Rect> damage)
-	{
-		// A minimized window can report an empty client area; the surface's textures must still be at least 1x1.
-		var width = Math.Max(1, target.Width);
-		var height = Math.Max(1, target.Height);
-
-		if (!_mainSurfaces.TryGetValue(target, out var main))
-		{
-			EvictMainSurfaces();
-			_mainSurfaces[target] = main = new MainSurface();
-		}
-
-		_mainSurfaceLru.Remove(target);
-		_mainSurfaceLru.Add(target);
-
-		if (main.Surface is null || main.Width != width || main.Height != height)
-		{
-			main.Surface?.Dispose();
-			main.Surface = new WebGpuRenderSurface(_device, width, height, externalColor: true);
-			main.Width = width;
-			main.Height = height;
-			// Browser: the host hands the resolve target as a live JS GPUTextureView; convert it to a wgpu view HERE
-			// (the backend's own emdawn import) — symmetric with the device import — rather than consuming a raw
-			// pointer from the contract. Imported once per size. Native targets have JsColorView == null → use the
-			// pointer directly. The imported handle wraps the same JS view the host presents from (shared underlying).
-			if (OperatingSystem.IsBrowser() && target.JsColorView is { } jsView)
-			{
-				main.ColorView = (IntPtr)WebGpuJsInterop.ImportTextureView(jsView, 0);
-				System.Console.WriteLine($"[webgpu] backend imported JS color view ptr={main.ColorView}");
-			}
-			else
-			{
-				main.ColorView = target.ColorView;
-			}
-		}
-
-		// Point the backend surface at the host's colour view (host owns its lifetime; the render pass only needs the view).
-		main.Surface.View = main.ColorView;
-		return new WebGpuPresentSession(_device, main.Surface, this, damage);
+			View = target.ColorView,
+		};
+		return new WebGpuPresentSession(_device, surface, this, damage);
 	}
 
 	public ITexture CreateTexture(IImage image) => new WebGpuTexture(_device, image);
 
 	public ITexture CreateTexture(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
 		=> new WebGpuTexture(_device, pixelWidth, pixelHeight, bgraPremul);
+
+	unsafe WebGPU IWebGpuTextureInterop.Api => Api;
+	unsafe Instance* IWebGpuTextureInterop.Instance => _device.Inst;
+	unsafe Adapter* IWebGpuTextureInterop.Adapter => _device.Adapter;
+	unsafe Device* IWebGpuTextureInterop.Device => _device.Dev;
+	unsafe Queue* IWebGpuTextureInterop.Queue => _device.Q;
+	TextureFormat IWebGpuTextureInterop.RenderTextureFormat => TextureFormat.Rgba8Unorm;
+
+	// RGBA like the uploaded textures, so the image pipeline samples it the same way.
+	unsafe ITexture IWebGpuTextureInterop.CreateRenderTexture(int pixelWidth, int pixelHeight, out Texture* texture, out TextureView* textureView)
+	{
+		pixelWidth = Math.Max(1, pixelWidth);
+		pixelHeight = Math.Max(1, pixelHeight);
+		var descriptor = new TextureDescriptor
+		{
+			Size = new Extent3D { Width = (uint)pixelWidth, Height = (uint)pixelHeight, DepthOrArrayLayers = 1 },
+			Format = TextureFormat.Rgba8Unorm,
+			MipLevelCount = 1,
+			SampleCount = 1,
+			Dimension = TextureDimension.Dimension2D,
+			Usage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding | TextureUsage.CopySrc | TextureUsage.CopyDst,
+		};
+		texture = Api.DeviceCreateTexture(_device.Dev, &descriptor);
+		textureView = Api.TextureCreateView(texture, null);
+		return new WebGpuTexture(_device, texture, textureView, pixelWidth, pixelHeight);
+	}
 
 	// Offscreen rasterization on the WebGPU device (record → present into a dedicated offscreen surface) and hand
 	// back the resolved color texture as a sampleable ITexture — no CPU read-back, so a nine-slice/glyph/SVG
@@ -520,9 +478,10 @@ public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRender
 										// The recording referenced every texture it drew; the pass is submitted, so hand those references back.
 		record.Dispose();
 		// Take ownership of the resolved color texture; disposing the surface releases only the (finished) MSAA + depth targets.
-		var (tex, view) = surface.DetachColor();
+		var texture = surface.DetachTexture(_device);
 		surface.Dispose();
-		return new WebGpuTexture(_device, tex, view, pixelWidth, pixelHeight) { Recycle = true };
+		texture.Recycle = true;
+		return texture;
 	}
 
 	// GPU→CPU read of a texture produced by this factory. Off-browser a native thread drives the map (blocking);
@@ -535,18 +494,30 @@ public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRender
 		}
 
 		int w = t.PixelWidth, h = t.PixelHeight;
-		bool srcBgra = _device.ColorFormat == WGPUTextureFormat.BGRA8Unorm;
+		bool srcBgra = _device.ColorFormat == TextureFormat.Bgra8Unorm;
 		if (!OperatingSystem.IsBrowser())
 		{
-			return _device.ReadPixelsToImage(t.Tex, w, h, srcBgra);
+			return ReadPixels(t, srcBgra);
 		}
 
-		_device.EncodeCopyTexToReadbackBuffer(t.Tex, w, h, out var buf, out var total, out var padded);
+		var buf = EncodeReadback(t, out var total, out var padded);
 		// Browser GPU→CPU map must run off the JS event loop; the JS bridge lives in the host init assembly.
 		var paddedBytes = Convert.FromBase64String(await WebGpuJsInterop.MapReadBase64Async((int)buf, total));
-		_device.DestroyBuffer(buf);
+		DestroyReadback(buf);
 		return new WebGpuReadbackImage(w, h, paddedBytes, padded, srcBgra);
 	}
+
+	private unsafe IImage ReadPixels(WebGpuTexture t, bool srcBgra)
+		=> _device.ReadPixelsToImage(t.Tex, t.PixelWidth, t.PixelHeight, srcBgra);
+
+	// The readback buffer crosses the await as an address, since a pointer cannot live in an async method.
+	private unsafe nint EncodeReadback(WebGpuTexture t, out int total, out int padded)
+	{
+		_device.EncodeCopyTexToReadbackBuffer(t.Tex, t.PixelWidth, t.PixelHeight, out var buf, out total, out padded);
+		return (nint)buf;
+	}
+
+	private unsafe void DestroyReadback(nint buf) => _device.DestroyBuffer((Silk.NET.WebGPU.Buffer*)buf);
 	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
 		=> new WebGpuShader { Radial = false, P0 = start, P1 = end, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
 	public IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)

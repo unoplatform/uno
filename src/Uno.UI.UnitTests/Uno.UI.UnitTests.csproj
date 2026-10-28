@@ -120,14 +120,17 @@
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourceQualifierPathResolver.cs">
 			<Link>Resources\ResourceQualifierPathResolver.cs</Link>
 		</Compile>
-		<!-- Pure math split out of the Win32/X11 pointer input sources and the macOS title bar so it's testable
-		     without a real HWND/X11 display/NSWindow (no runtime host project has its own unit test harness). -->
+		<!-- Pure logic split out of the Win32/X11 pointer input sources, the macOS title bar and the Apple UIKit
+		     lifecycle so it's testable without a real HWND/X11 display/NSWindow/app bundle (no runtime host project
+		     has its own unit test harness). -->
 		<Compile Include="..\Uno.UI.Runtime.Win32\Devices\Input\Win32PointerCoordinateMath.cs" Link="Windows_UI_Input\Win32PointerCoordinateMath.cs" />
 		<Compile Include="..\Uno.UI.Runtime.X11\Devices\Input\X11PointerCoordinateMath.cs" Link="Windows_UI_Input\X11PointerCoordinateMath.cs" />
 		<Compile Include="..\Uno.UI.Runtime.MacOS\UI\Windowing\MacOSTitleBarMath.cs" Link="Windows_UI_Input\MacOSTitleBarMath.cs" />
 		<!-- Pure helpers of the X11 AT-SPI backend: text offsets/segmentation and role ids. -->
 		<Compile Include="..\Uno.UI.Runtime.X11\Accessibility\AtspiTextSegmentation.cs" Link="Windows_UI_Xaml_Automation\AtspiTextSegmentation.cs" />
 		<Compile Include="..\Uno.UI.Runtime.X11\Accessibility\AtspiRoleMap.cs" Link="Windows_UI_Xaml_Automation\AtspiRoleMap.cs" />
+		<Compile Include="..\Uno.UI.Runtime.AppleUIKit\AppleUIKitLifecycleDecision.cs" Link="Hosting\AppleUIKitLifecycleDecision.cs" />
+		<Compile Include="..\Uno.UI.Runtime.Win32\Rendering\BackgroundPrewarm.cs" Link="Hosting\BackgroundPrewarm.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<!--
@@ -145,7 +148,7 @@
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
 
-		<ProjectReference Include="..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition.Skia\Uno.UI.Composition.Skia.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />

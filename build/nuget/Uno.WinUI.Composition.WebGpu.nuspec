@@ -5,10 +5,11 @@
 		<version>0.0.1</version>
 		<authors>Uno Platform</authors>
 		<icon>uno.png</icon>
+		<readme>README.md</readme>
 		<projectUrl>https://github.com/unoplatform/uno</projectUrl>
 		<license type="expression">Apache-2.0</license>
 		<description>The WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam over the managed geometry engine). Referenced by the 'WebGpu' UnoFeature; opt-in, carries the wgpu-native runtime.</description>
-		<copyright>Uno Platform</copyright>
+		<copyright>Copyright (C) 2015-$year$ Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 		<dependencies>
 			<group targetFramework="net10.0">
@@ -24,6 +25,7 @@
 
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
+		<file src="README.md" target="/" />
 
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net10.0\Uno.UI.Composition.WebGpu.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net10.0\Uno.UI.Composition.WebGpu.pdb" target="lib\net10.0" />
@@ -50,6 +52,7 @@
 		     Exists(), so leaving the second file out disables the trimming with no error at all. -->
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.targets" target="buildTransitive\Uno.WinUI.Composition.WebGpu.targets" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.NativeTrim.targets" target="buildTransitive\Uno.WinUI.Composition.WebGpu.NativeTrim.targets" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\wgpu-native-ios.symbols" target="buildTransitive\wgpu-native-ios.symbols" />
 
 		<!-- iOS links the static archive into the app image, so it cannot come from runtimes/; the targets above
 		     hands the right slice to the Apple SDK as a NativeReference. -->
@@ -61,7 +64,6 @@
 		     port ships already patched (the package folder is shared and read-only) and the targets points emcc
 		     at it. -->
 		<file src="..\..\src\Uno.UI.Composition.WebGpu.Init\obj\emdawnwebgpu\v20260624.223603\emdawnwebgpu_pkg\**" target="buildTransitive\emdawnwebgpu\emdawnwebgpu_pkg" />
-		<file src="..\..\src\Uno.UI.Composition.WebGpu.Init\Native\wgpu_wasm_stubs.c" target="buildTransitive\emdawnwebgpu" />
 	</files>
 
 </package>

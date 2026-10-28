@@ -36,7 +36,7 @@ namespace UITests.Shared.Windows_UI_Composition
 
 			gl.Enable(EnableCap.DepthTest);
 			gl.Enable(EnableCap.CullFace);
-			gl.CullFace(CullFaceMode.Back);
+			gl.CullFace(TriangleFace.Back);
 			gl.FrontFace(FrontFaceDirection.Ccw);
 
 			var sl = gl.GetStringS(StringName.ShadingLanguageVersion);

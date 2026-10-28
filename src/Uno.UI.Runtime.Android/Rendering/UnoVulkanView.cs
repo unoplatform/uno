@@ -196,7 +196,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			// Backend negotiation runs here, on the render thread, so the activity's try/catch around the view
 			// constructor cannot cover it — hand the window to the canvas view rather than leave it black.
 			this.Log().Error("UnoVulkanView: Vulkan initialization failed, falling back to the canvas view", ex);
-			_activity.FallbackToCanvasView();
+			_activity.ReplaceFailedRenderView(this);
 			return;
 		}
 

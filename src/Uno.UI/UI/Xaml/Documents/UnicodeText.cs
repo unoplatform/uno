@@ -1467,36 +1467,81 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private readonly global::System.Runtime.CompilerServices.StrongBox<List<SpellCheckSquiggle>?> _spellCheckSquiggles = new();
 
+	// A long wave is drawn as repeats of one chunk this many periods wide: one small shape a backend can cache and
+	// cull per chunk, rather than a path as long as the word (a 100K-character word made one of 18M edges).
+	private const int SpellCheckSquiggleChunkPeriods = 40;
+
 	public void DrawSpellCheckSquiggles(IDrawingSession session, Color color)
 	{
 		foreach (var squiggle in _spellCheckSquiggles.Value ?? [])
 		{
-			using var path = BuildSpellCheckSquigglyPath(squiggle.MidY, squiggle.Left, squiggle.Right, squiggle.Scale);
-			// Widened here rather than handed to StrokePath, which implies flat caps: the wave has round joins and caps.
-			using var stroke = path.GetStrokeFillGeometry(new StrokeStyle
+			var chunkWidth = 2 * SpellCheckSquigglyStepScale * squiggle.Scale * SpellCheckSquiggleChunkPeriods;
+			if (squiggle.Right - squiggle.Left <= 2 * chunkWidth)
 			{
-				Thickness = squiggle.Scale,
-				StartCap = StrokeCap.Round,
-				EndCap = StrokeCap.Round,
-				LineJoin = StrokeJoin.Round,
-			});
-			session.DrawPath(stroke, color);
+				DrawSpellCheckSquiggle(session, color, squiggle, squiggle.Left, squiggle.Right, fromMidline: true);
+				continue;
+			}
+
+			// Every chunk after the first starts and ends on the same crest, so they share one geometry and meet
+			// where the single path would have passed; their round caps overlap into its round join.
+			var x = squiggle.Left + chunkWidth;
+			DrawSpellCheckSquiggle(session, color, squiggle, squiggle.Left, x, fromMidline: true);
+			var count = (int)((squiggle.Right - x) / chunkWidth);
+			using (var chunk = BuildSpellCheckSquiggleStroke(squiggle, 0, chunkWidth, fromMidline: false))
+			{
+				var instances = global::System.Buffers.ArrayPool<PathInstance>.Shared.Rent(count);
+				for (var i = 0; i < count; i++)
+				{
+					instances[i] = new PathInstance(chunk, new Vector2(x + i * chunkWidth, 0));
+				}
+
+				session.DrawPaths(instances.AsSpan(0, count), color);
+				global::System.Buffers.ArrayPool<PathInstance>.Shared.Return(instances, clearArray: true);
+			}
+
+			x += count * chunkWidth;
+
+			if (x < squiggle.Right)
+			{
+				DrawSpellCheckSquiggle(session, color, squiggle, x, squiggle.Right, fromMidline: false);
+			}
 		}
+	}
+
+	private static void DrawSpellCheckSquiggle(IDrawingSession session, Color color, SpellCheckSquiggle squiggle, float left, float right, bool fromMidline)
+	{
+		using var stroke = BuildSpellCheckSquiggleStroke(squiggle, left, right, fromMidline);
+		session.DrawPath(stroke, color);
+	}
+
+	private static IGeometry BuildSpellCheckSquiggleStroke(SpellCheckSquiggle squiggle, float left, float right, bool fromMidline)
+	{
+		using var path = BuildSpellCheckSquigglyPath(squiggle.MidY, left, right, squiggle.Scale, fromMidline);
+		// Widened here rather than handed to StrokePath, which implies flat caps: the wave has round joins and caps.
+		return path.GetStrokeFillGeometry(new StrokeStyle
+		{
+			Thickness = squiggle.Scale,
+			StartCap = StrokeCap.Round,
+			EndCap = StrokeCap.Round,
+			LineJoin = StrokeJoin.Round,
+		});
 	}
 
 	/// <summary>
 	/// Builds a single continuous spell-check zigzag from <paramref name="left"/> to <paramref name="right"/>.
 	/// The wave phase is anchored at the left edge and the trailing partial half-wave is truncated by
 	/// interpolation instead of snapping back to the midline, so the wave stays regular no matter where it ends.
+	/// <paramref name="fromMidline"/> false starts on the lower crest instead, where the wave is after any whole
+	/// number of periods.
 	/// </summary>
-	private static IGeometry BuildSpellCheckSquigglyPath(float midY, float left, float right, float scale)
+	private static IGeometry BuildSpellCheckSquigglyPath(float midY, float left, float right, float scale, bool fromMidline = true)
 	{
 		var step = SpellCheckSquigglyStepScale * scale;
 		var amplitude = SpellCheckSquigglyAmplitudeScale * scale;
 
 		var path = GeometryFactory.Current.CreatePathBuilder();
 		var x = left;
-		var lastY = midY;
+		var lastY = fromMidline ? midY : midY + amplitude;
 		path.MoveTo(new Vector2(x, lastY));
 		var up = true;
 		while (x + step < right)

@@ -273,7 +273,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		_ = XLib.XGetWindowAttributes(display, windowToRead, ref windowAttrs);
 		_ = XLib.XTranslateCoordinates(display, windowToRead, root, 0, 0, out var rootx, out var rooty, out _);
 
-		Position = new PointInt32 { X = rootx, Y = rooty };
+		// (0, 0) is inside the frame's own X border, while a move places the frame's outer corner.
+		Position = new PointInt32 { X = rootx - windowAttrs.border_width, Y = rooty - windowAttrs.border_width };
 		var fullSize = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
 		SetSizes(fullSize, fullSize);
 

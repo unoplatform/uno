@@ -48,6 +48,9 @@
     <Project Path="AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
+    <Project Path="AddIns/Uno.WinUI.Graphics3DWebGpu/Uno.WinUI.Graphics3DWebGpu.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
     <Project Path="AddIns/Uno.WinUI.SpellChecking/Uno.WinUI.SpellChecking.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
@@ -134,13 +137,13 @@
   </Folder>
   <Folder Name="/SamplesApp/UnoIslands/">
     <Project Path="SamplesApp/UnoIslands.Shared/UnoIslands.Shared.shproj" />
-    <Project Path="SamplesApp/UnoIslands.Skia/UnoIslands.Skia.csproj">
+    <Project Path="SamplesApp/UnoIslands/UnoIslands.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="SamplesApp/UnoIslands.WinForms/UnoIslands.WinForms.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="SamplesApp/UnoIslandsSamplesApp.Skia/UnoIslandsSamplesApp.Skia.csproj">
+    <Project Path="SamplesApp/UnoIslandsSamplesApp/UnoIslandsSamplesApp.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
@@ -212,7 +215,7 @@
     <Project Path="Uno.UI.Composition/Uno.UI.Composition.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Composition.Skia/Uno.UI.Composition.SkiaBackend.csproj">
+    <Project Path="Uno.UI.Composition.Skia/Uno.UI.Composition.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.Composition.Managed/Uno.UI.Composition.Managed.csproj">
@@ -340,7 +343,7 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/RuntimeTests/">
-    <Project Path="Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Skia.csproj">
+    <Project Path="Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Generic.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Windows.csproj">

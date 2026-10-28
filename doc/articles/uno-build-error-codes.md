@@ -323,6 +323,17 @@ Uno Platform 7.0 removed the `UnoSplashScreenColor` property. The Uno.SDK ignore
 
 The same applies to `UnoSplashScreen` items declared by hand: use `BackgroundColor="#FFFFFF"` instead of `Color="#FFFFFF"`. See [Splash screen](xref:Uno.Development.SplashScreen) for the related `UnoSplashScreenDarkBackgroundColor` and `UnoSplashScreenDarkFile` properties.
 
+### UNOB0030: The SkiaRenderer Uno Feature is ignored in a library
+
+Starting with Uno Platform 7.0, the renderer is chosen by the app, not by its libraries. In an app, the legacy `SkiaRenderer` feature is still mapped to `Skia`. In a library it is ignored, so the library doesn't make SkiaSharp a dependency of every app that uses it, including apps that render with WebGPU only.
+
+To fix this:
+
+- If the library doesn't draw with SkiaSharp, remove `SkiaRenderer` from `UnoFeatures`.
+- If it uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), the `SkiaExtensions` conversions or the Uno Toolkit's Skia controls (such as `ShadowContainer`), replace `SkiaRenderer` with `Skia`.
+
+To keep `SkiaRenderer` without the warning, add `UNOB0030` to `NoWarn`.
+
 ## Compiler Errors
 
 ### UNO0001

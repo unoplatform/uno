@@ -10,7 +10,11 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<NoWarn>
+			$(NoWarn)
+			;NU1701
+			;NU5104 <!-- A stable release of a package should not have a prerelease dependency; Uno.Core.Extensions.Logging >= 5.0 is only -dev! -->
+		</NoWarn>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>

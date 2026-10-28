@@ -79,7 +79,7 @@
 		<ProjectReference Include="..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
 		<!-- Tests reference Skia backend types (SkiaFont/SkiaImage/SkiaDrawingSession/SkiaGeometrySource2D) directly;
 		     the framework no longer provides the backend transitively, so reference it here explicitly. -->
-		<ProjectReference Include="..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<ProjectReference Include="..\Uno.UI.Composition.Skia\Uno.UI.Composition.Skia.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">
@@ -91,6 +91,10 @@
 		<!-- Graphics3DGL brings this package, whose Uno.Extensions.LogExtensionPoint makes the tests' Log() calls ambiguous
 		     with Uno.Foundation.Logging's. -->
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" ExcludeAssets="compile" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics3DWebGpu\Uno.WinUI.Graphics3DWebGpu.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">

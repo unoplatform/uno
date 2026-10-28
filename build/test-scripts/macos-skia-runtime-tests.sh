@@ -42,6 +42,10 @@ export DOTNET_CreateDumpDiagnostics=1
 export DOTNET_CreateDumpLogToFile="$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/createdump-macos.log"
 export DOTNET_EnableCrashReport=1
 
+## Turns an over-released Objective-C object into a "message sent to deallocated instance" error naming its class,
+## instead of a segfault inside an autorelease pool drain.
+export NSZombieEnabled=YES
+
 ## The runtime's crash report only symbolizes managed frames. macOS writes its own .ips report, with
 ## symbolized AppKit/Foundation frames and the faulting address, so collect it when the app dies.
 CRASH_REPORTS_MARKER=$(mktemp)

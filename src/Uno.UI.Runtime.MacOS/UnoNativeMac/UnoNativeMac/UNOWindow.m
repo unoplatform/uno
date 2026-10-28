@@ -365,6 +365,21 @@ NSWindow* uno_window_create(double width, double height)
     return window;
 }
 
+// AppKit's global origin is the primary screen's bottom-left, even for windows on other displays. WinUI's screen
+// coordinates start at the top-left with y growing downward, so window positions are flipped against this edge.
+// Always the primary screen (screens[0], the one at (0, 0)), never the window's own: flipping against the screen a
+// window happens to be on would make y depend on that screen while x stays global.
+static CGFloat uno_desktop_top(void)
+{
+    return NSMaxY(NSScreen.screens.firstObject.frame);
+}
+
+static NSPoint uno_window_top_left(NSWindow *window)
+{
+    NSRect frame = window.frame;
+    return NSMakePoint(NSMinX(frame), uno_desktop_top() - NSMaxY(frame));
+}
+
 void uno_window_activate(UNOWindow *window)
 {
 #if DEBUG
@@ -372,11 +387,11 @@ void uno_window_activate(UNOWindow *window)
 #endif
     switch (window.overlappedPresenterState) {
         case OverlappedPresenterStateRestored: {
-            // ordering to front can move the window (but not resize it) from what was set before activating it, so we move it back
-            CGPoint current = window.frame.origin;
+            // ordering to front can move the window from what was set before activating it, so we move it back
+            NSPoint topLeft = NSMakePoint(NSMinX(window.frame), NSMaxY(window.frame));
             // don't call `uno_window_restore` since we want the pre-activation state (not the current one) to be used
             [window orderFrontRegardless];
-            [window setFrameOrigin:current];
+            [window setFrameTopLeftPoint:topLeft];
             break;
         }
         case OverlappedPresenterStateMinimized:
@@ -427,7 +442,7 @@ void uno_window_move(NSWindow *window, double x, double y)
 #if DEBUG
     NSLog(@"uno_window_move %@ x: %g y: %g", window, x, y);
 #endif
-    [window setFrameOrigin:NSMakePoint(x, y)];
+    [window setFrameTopLeftPoint:NSMakePoint(x, uno_desktop_top() - y)];
 }
 
 bool uno_window_resize(NSWindow *window, double width, double height)
@@ -438,9 +453,12 @@ bool uno_window_resize(NSWindow *window, double width, double height)
     bool result = false;
     if (window) {
         NSRect frame = window.frame;
+        CGFloat top = NSMaxY(frame);
         // consider the titlebar height when re-sizing the window
         CGSize content = [window contentRectForFrameRect: frame].size;
         frame.size = CGSizeMake(width, height + (frame.size.height - content.height));
+        // keep the top-left corner in place, as AppWindow.Position does not change on resize
+        frame.origin.y = top - frame.size.height;
         [window setFrame:frame display:true animate:false];
         result = true;
     }
@@ -537,12 +555,12 @@ bool uno_window_set_system_backdrop(NSWindow *window, int material)
 
 void uno_window_get_position(NSWindow *window, double *x, double *y)
 {
-    CGPoint origin = window.frame.origin;
+    NSPoint position = uno_window_top_left(window);
 #if DEBUG
-    NSLog (@"uno_window_get_position %@ %f %f", window, origin.x, origin.y);
+    NSLog (@"uno_window_get_position %@ %f %f", window, position.x, position.y);
 #endif
-    *x = origin.x;
-    *y = origin.y;
+    *x = position.x;
+    *y = position.y;
 }
 
 void uno_window_convert_local_to_screen(NSWindow *window, double x, double y, double *screenX, double *screenY)
@@ -624,6 +642,9 @@ void uno_window_maximize(NSWindow *window)
     // zoom: rather than performZoom:, which needs a zoom button (hidden with a custom title bar) and toggles back when already zoomed
     if (!window.isZoomed) {
         [window zoom:nil];
+    } else {
+        // Already the size zooming gives, as a window filling a small screen is: nothing to resize, but it is maximized.
+        ((UNOWindow*)window).overlappedPresenterState = OverlappedPresenterStateMaximized;
     }
 }
 
@@ -1416,6 +1437,8 @@ NSOperatingSystemVersion _osVersion;
 - (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
     self = [super initWithContentRect:contentRect styleMask:style backing:backingStoreType defer:flag];
     if (self) {
+        // ARC and `windows` own the window; AppKit's default close-time release would over-release it.
+        self.releasedWhenClosed = NO;
         self.delegate = self;
         self.overlappedPresenterState = OverlappedPresenterStateRestored;
         self.hasPresenterTitleBar = true;
@@ -1933,7 +1956,7 @@ NSOperatingSystemVersion _osVersion;
 }
 
 - (void)windowDidMove:(NSNotification *)notification {
-    CGPoint position = self.frame.origin;
+    NSPoint position = uno_window_top_left(self);
 #if DEBUG
     NSLog(@"UNOWindow %p windowDidMove %@ x: %g y: %g", self, notification, position.x, position.y);
 #endif
@@ -1989,6 +2012,10 @@ NSOperatingSystemVersion _osVersion;
     // AppKit lays its titlebar out again on resize
     [self layoutCaptionButtons];
 
+    // resizing from the top edge moves the top-left corner without raising windowDidMove
+    NSPoint position = uno_window_top_left(self);
+    uno_get_window_move_event_callback()(self, position.x, position.y);
+
     // the UNOMetalViewDelegate has its own resize callback but we need something for the software fallback
     if (self.metalViewDelegate == nil) {
         // consider the title bar height
@@ -2020,6 +2047,13 @@ NSOperatingSystemVersion _osVersion;
     [center removeObserver:windowDidChangeScreen name:NSApplicationDidChangeScreenParametersNotification object:self];
 
     uno_get_window_close_callback()(self);
+
+    // Detach the rendering view while the window is alive, so it (and any native element hosted in it) stops
+    // observing this window before the window goes away.
+    [self.renderingView removeFromSuperview];
+
+    // Managed code has unregistered the handle by now; AppKit keeps the window alive until `close` returns.
+    [windows removeObject:self];
 }
 
 #pragma mark - NSAccessibility

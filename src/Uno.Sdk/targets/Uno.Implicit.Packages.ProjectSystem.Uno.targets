@@ -5,7 +5,8 @@
 		The version is not required, and VS/Code waits for some design-time targets to be executed to evaluate it.
 	-->
 	<!-- This file is only imported for Uno Platform targets (not WinAppSDK). The Skia backend is referenced
-	     when the 'skia' feature is present (implied by default), so a skia-free build (e.g. WebGPU-only) drops it. -->
+	     when the 'skia' feature is present (implied by default on heads), so a skia-free build (e.g. WebGPU-only)
+	     or a library that doesn't list it drops it. -->
 	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Composition.Skia" ProjectSystem="true" />
 	</ItemGroup>
@@ -20,6 +21,10 @@
 	     managed engine instead. Lottie needs no package: Skottie comes with the Skia backend. -->
 	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) AND $(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';webgpucanvas;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DWebGpu" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';spellchecking;'))">

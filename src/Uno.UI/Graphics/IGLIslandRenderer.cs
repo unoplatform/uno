@@ -11,7 +11,10 @@ public interface IGLIslandRenderer
 	/// <summary>The island's GL context was created.</summary>
 	void Init();
 
-	/// <summary>Draws a frame into <paramref name="framebuffer"/>, which is already bound.</summary>
+	/// <summary>
+	/// Draws a frame into <paramref name="framebuffer"/>, which is already bound. <paramref name="width"/> and
+	/// <paramref name="height"/> are its size in pixels, which is the island's size times its rasterization scale.
+	/// </summary>
 	void Render(uint framebuffer, int width, int height);
 
 	/// <summary>The island's GL context is about to be destroyed.</summary>

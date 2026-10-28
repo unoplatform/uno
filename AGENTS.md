@@ -124,7 +124,7 @@ Combined impact on the `SamplesApp` desktop head (Windows, 32-core, warm NuGet c
 
 | Platform | Solution Filter |
 |----------|-----------------|
-| Skia (Desktop, WebAssembly, Android, iOS) | `Uno.UI-Skia-only.slnf` |
+| Uno (Desktop, WebAssembly, Android, iOS) | `Uno.UI-Uno-only.slnf` |
 | Windows | `Uno.UI-Windows-only.slnf` |
 | Reference API | `Uno.UI-Reference-Only.slnf` |
 | Unit Tests | `Uno.UI-UnitTests-only.slnf` |
@@ -132,8 +132,8 @@ Combined impact on the `SamplesApp` desktop head (Windows, 32-core, warm NuGet c
 **4. Build commands:**
 ```bash
 cd src
-dotnet restore Uno.UI-Skia-only.slnf                    # Restore (50-60s)
-dotnet build Uno.UI-Skia-only.slnf --no-restore         # Build (3-5min)
+dotnet restore Uno.UI-Uno-only.slnf                     # Restore (50-60s)
+dotnet build Uno.UI-Uno-only.slnf --no-restore          # Build (3-5min)
 dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj    # Unit tests (40-60s)
 ```
 

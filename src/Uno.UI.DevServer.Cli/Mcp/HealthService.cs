@@ -75,6 +75,7 @@ internal class HealthService(
 				: null,
 			forceRootsFallback: ForceRootsFallback,
 			rootsProvided: RootsProvided,
-			hostRespondedNoMcp: devServerMonitor.HostRespondedNoMcp);
+			hostRespondedNoMcp: devServerMonitor.HostRespondedNoMcp,
+			selectionIssue: DiscoveryIssueMapper.MapSelectionIssue(CurrentSelection, devServerMonitor.SolutionNotFound));
 	}
 }

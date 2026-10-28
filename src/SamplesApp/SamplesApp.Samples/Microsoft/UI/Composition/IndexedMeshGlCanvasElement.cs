@@ -158,7 +158,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				gl.DepthRange(0.0, 1.0);
 			}
 			gl.Enable(EnableCap.CullFace);
-			gl.CullFace(CullFaceMode.Back);
+			gl.CullFace(TriangleFace.Back);
 			gl.FrontFace(FrontFaceDirection.Ccw);
 
 			var mvp =
