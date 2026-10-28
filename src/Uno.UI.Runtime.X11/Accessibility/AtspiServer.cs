@@ -846,8 +846,15 @@ internal sealed class AtspiServer
 							property == AtspiDbus.CurrentValueProperty &&
 							node.HasRange)
 						{
-							_server._writeTarget.SetRangeValue(node, reader.ReadVariantValue().GetDouble());
-							ReplyVoid(context);
+							if (node.ReadOnly)
+							{
+								context.ReplyError(AtspiDbus.PropertyReadOnlyError, $"Property '{propertyInterface}.{property}' is read-only.");
+							}
+							else
+							{
+								_server._writeTarget.SetRangeValue(node, reader.ReadVariantValue().GetDouble());
+								ReplyVoid(context);
+							}
 						}
 						else if (Array.IndexOf(PropertiesOf(node, propertyInterface), property) >= 0)
 						{

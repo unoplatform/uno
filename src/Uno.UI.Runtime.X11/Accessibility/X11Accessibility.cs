@@ -575,6 +575,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 				node.Min = rangeProvider.Minimum;
 				node.Max = rangeProvider.Maximum;
 				node.Val = rangeProvider.Value;
+				node.ReadOnly = rangeProvider.IsReadOnly;
 			}
 
 			if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
