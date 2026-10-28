@@ -811,6 +811,16 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 
 		// Re-evaluates the peer's automatic properties (IsEnabled/IsOffscreen/Name/...).
 		base.NotifyInvalidatePeer(peer);
+
+		// An already-published element gets its property updates through the Update* override
+		// hooks; rebuilding the whole tree for it too (e.g. once per realized container while a
+		// virtualized ListView/ItemsRepeater scrolls) would just cost an XTranslateCoordinates
+		// round trip for nothing.
+		if (TryGetPeerOwner(peer, out var element) && _nodesByHandle.ContainsKey(element.Visual.Handle))
+		{
+			return;
+		}
+
 		QueueRebuildIfNeeded();
 	}
 
