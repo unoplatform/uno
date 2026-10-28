@@ -451,12 +451,7 @@ namespace Uno.UI
 			// (bindingPath.DataContext is the setter target), scoped onto the core
 			// requested-theme-for-subtree slot like WinUI's LookupThemeResource(theme, key); the
 			// resolution leaf reads the slot (EnsureActiveThemeDictionary, Resources.cpp:764-768).
-			// When a previous state entry applied a RequestedTheme boundary onto the target that is
-			// still active (state re-entry), resolve outside that boundary instead (#24021).
-			var target = bindingPath.DataContext as DependencyObject;
-			var ownerTheme =
-				target?.GetVisualStateSetterResolutionTheme()
-				?? ThemeResolution.ResolveOwnerTheme(target);
+			var ownerTheme = ThemeResolution.ResolveOwnerTheme(bindingPath.DataContext as DependencyObject);
 			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
 			if (TryVisualTreeRetrieval(resourceKey, context, out var value, out var providingDictionary)
 				&& bindingPath.DataContext != null)
