@@ -24,15 +24,11 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 	private bool m_isContentMode;
 
 	private int m_selectionTrackingCounter = 0;
-
-	// Uno specific (#25796): list items (content in content mode, nodes otherwise) whose node was unselected while it had
-	// no container, with the selection generation at that moment. Weak so removed items are not kept alive.
-	private readonly global::System.Runtime.CompilerServices.ConditionalWeakTable<object, global::System.Runtime.CompilerServices.StrongBox<int>> m_unselectedWithoutContainer = new();
-
-	// Uno specific (#25796): incremented every time a node is selected.
-	private int m_selectionGeneration;
 	private readonly List<WeakReference<object>> m_addedSelectedItems = new List<WeakReference<object>>();
 	private List<object> m_removedSelectedItems = new List<object>();
+
+	// Uno specific: incremented every time a node is selected (#25796).
+	private int m_selectionCount;
 
 	public TreeViewViewModel()
 	{
@@ -637,11 +633,11 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 
 	internal void NotifyContainerOfSelectionChange(TreeViewNode targetNode, TreeNodeSelectionState selectionState)
 	{
-		if (selectionState == TreeNodeSelectionState.Selected && (IsContentMode ? targetNode?.Content : targetNode) is { } selectedItem)
+		if (selectionState == TreeNodeSelectionState.Selected && targetNode is not null)
 		{
-			// Uno specific (#25796): a newer selection makes any older pending unselection stale (see TryTakeStaleUnselection).
-			m_selectionGeneration++;
-			m_unselectedWithoutContainer.Remove(selectedItem);
+			// Uno specific: a newer selection makes older unselections stale (see TryTakeStaleUnselection).
+			m_selectionCount++;
+			targetNode.UnselectedWithoutContainerAt = null;
 		}
 
 		if (m_TreeViewList != null)
@@ -657,19 +653,15 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 				// Uno specific: Workaround for TreeViewSelectRegressionTest (seems to be broken in WinUI too).
 				if (!m_TreeViewList.IsMultiselect)
 				{
-					// Only a node being selected may be forced onto the list. Unselecting a node that has no container
-					// must not touch the list's selection: assigning the node back re-selects it and scrolls to it.
-					var targetValue = IsContentMode ? targetNode?.Content : targetNode;
+					// Only a node being selected is forced onto the list: assigning an unselected node re-selects it (#25796).
 					if (selectionState == TreeNodeSelectionState.Selected)
 					{
-						m_TreeViewList.SelectedItem = targetValue;
+						m_TreeViewList.SelectedItem = IsContentMode ? targetNode?.Content : targetNode;
 					}
-					else if (targetValue is not null)
+					else if (targetNode is not null)
 					{
-						// Without a container, nothing writes this unselection back through a two-way IsSelected binding on
-						// the item, so its data can still say "selected" when it is realized again. Remember when it happened
-						// (see TreeViewList.PrepareContainerForItemOverride).
-						m_unselectedWithoutContainer.AddOrUpdate(targetValue, new global::System.Runtime.CompilerServices.StrongBox<int>(m_selectionGeneration));
+						// No container writes this unselection back to a two-way IsSelected binding on the item.
+						targetNode.UnselectedWithoutContainerAt = m_selectionCount;
 					}
 				}
 			}
@@ -677,17 +669,16 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 	}
 
 	/// <summary>
-	/// Uno specific (#25796): called when the container of <paramref name="item"/> is prepared. Returns true when the item's
-	/// node was unselected while it had no container and another node has been selected since: a "selected" value still
-	/// held by the item's binding is then stale and must not select it again. Without a later selection, the binding may
-	/// still restore it, as intended after collapsing and re-expanding its parent (#15214).
+	/// Uno specific (#25796): whether a node unselected without a container has been superseded by a newer selection,
+	/// making a "selected" value still held by its item's binding stale. Without a newer selection, that value still
+	/// selects the node when it is realized again (#15214).
 	/// </summary>
-	internal bool TryTakeStaleUnselection(object item)
+	internal bool TryTakeStaleUnselection(TreeViewNode node)
 	{
-		if (item is not null && m_unselectedWithoutContainer.TryGetValue(item, out var generation))
+		if (node?.UnselectedWithoutContainerAt is { } unselectedAt)
 		{
-			m_unselectedWithoutContainer.Remove(item);
-			return generation.Value != m_selectionGeneration;
+			node.UnselectedWithoutContainerAt = null;
+			return unselectedAt != m_selectionCount;
 		}
 
 		return false;
