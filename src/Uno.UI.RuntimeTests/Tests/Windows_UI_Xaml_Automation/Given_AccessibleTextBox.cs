@@ -23,6 +23,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	[TestClass]
 	public class Given_AccessibleTextBox
 	{
+#if HAS_UNO
+		[TestCleanup]
+		public void DisableAccessibilityAfterTest() => DisableAccessibility();
+#endif
+
 		/// <summary>
 		/// T046: Verifies that a focused textbox exposes its text value
 		/// via the IValueProvider pattern.

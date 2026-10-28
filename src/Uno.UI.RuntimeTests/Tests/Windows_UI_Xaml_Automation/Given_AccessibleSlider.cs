@@ -23,6 +23,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	[TestClass]
 	public class Given_AccessibleSlider
 	{
+#if HAS_UNO
+		[TestCleanup]
+		public void DisableAccessibilityAfterTest() => DisableAccessibility();
+#endif
+
 		/// <summary>
 		/// T026: Verifies that a focused slider exposes its Value, Minimum, and Maximum
 		/// via the IRangeValueProvider pattern. These map to aria-valuenow, aria-valuemin, aria-valuemax.
