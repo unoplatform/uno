@@ -74,13 +74,15 @@ public class Given_WebView2
 	{
 		var frame = await ShowCrossOriginContent();
 
-		Assert.AreEqual("autoplay *; encrypted-media *; clipboard-write *", frame.Allow);
+		Assert.AreEqual("autoplay *; encrypted-media *; clipboard-write *; publickey-credentials-get *; publickey-credentials-create *", frame.Allow);
 		Assert.IsTrue(frame.HasAllowFullscreen, "The frame should allow fullscreen for every origin through the allowfullscreen attribute.");
 
 		if (frame.AllowedFeatures is not null)
 		{
 			// Chrome allows picture-in-picture for every origin by default.
-			Assert.AreEqual("autoplay fullscreen encrypted-media picture-in-picture clipboard-write", frame.AllowedFeatures);
+			Assert.AreEqual(
+				"autoplay fullscreen encrypted-media picture-in-picture clipboard-write publickey-credentials-get publickey-credentials-create",
+				frame.AllowedFeatures);
 		}
 	}
 
@@ -104,14 +106,17 @@ public class Given_WebView2
 			var frame = await ShowCrossOriginContent();
 
 			Assert.AreEqual(
-				"autoplay *; encrypted-media *; clipboard-write *; camera *; microphone https://example.com; geolocation https://example.com",
+				"autoplay *; encrypted-media *; clipboard-write *; publickey-credentials-get *; publickey-credentials-create *; camera *; " +
+				"microphone https://example.com; geolocation https://example.com",
 				frame.Allow);
 			Assert.IsFalse(frame.HasAllowFullscreen, "The frame should not allow fullscreen through the allowfullscreen attribute.");
 
 			if (frame.AllowedFeatures is not null)
 			{
 				// The microphone and the location are delegated to another origin only.
-				Assert.AreEqual("autoplay encrypted-media picture-in-picture clipboard-write camera", frame.AllowedFeatures);
+				Assert.AreEqual(
+					"autoplay encrypted-media picture-in-picture clipboard-write publickey-credentials-get publickey-credentials-create camera",
+					frame.AllowedFeatures);
 			}
 		}
 		finally
@@ -136,12 +141,16 @@ public class Given_WebView2
 
 			var frame = await ShowCrossOriginContent();
 
-			Assert.AreEqual("autoplay 'none'; fullscreen 'none'; encrypted-media *; clipboard-write *", frame.Allow);
+			Assert.AreEqual(
+				"autoplay 'none'; fullscreen 'none'; encrypted-media *; clipboard-write *; publickey-credentials-get *; publickey-credentials-create *",
+				frame.Allow);
 			Assert.IsFalse(frame.HasAllowFullscreen, "The frame should not allow fullscreen through the allowfullscreen attribute.");
 
 			if (frame.AllowedFeatures is not null)
 			{
-				Assert.AreEqual("encrypted-media picture-in-picture clipboard-write", frame.AllowedFeatures);
+				Assert.AreEqual(
+					"encrypted-media picture-in-picture clipboard-write publickey-credentials-get publickey-credentials-create",
+					frame.AllowedFeatures);
 			}
 		}
 		finally
@@ -264,7 +273,7 @@ public class Given_WebView2
 			<script>
 			var policy = document.featurePolicy;
 			var features = ['autoplay', 'fullscreen', 'encrypted-media', 'picture-in-picture', 'clipboard-write', 'clipboard-read',
-				'camera', 'microphone', 'geolocation'];
+				'publickey-credentials-get', 'publickey-credentials-create', 'camera', 'microphone', 'geolocation'];
 			var allowed = policy ? features.filter(f => policy.allowsFeature(f)).join(' ') : '?';
 			parent.postMessage({ unoAllowedFeatures: allowed }, '*');
 			</script>

@@ -444,9 +444,11 @@ namespace Uno.UI
 			/// </summary>
 			/// <remarks>
 			/// <para><b>WebAssembly only.</b> It is a no-op on every other target.</para>
-			/// <para>By default, pages can play media automatically, go fullscreen, play protected (DRM) media and copy to the clipboard,
-			/// as they could in a browser tab, whatever site they come from: the list holds <c>autoplay</c>, <c>fullscreen</c>,
-			/// <c>encrypted-media</c> and <c>clipboard-write</c>. Features that need the user's permission, such as <c>camera</c> or
+			/// <para>By default, pages can play media automatically, go fullscreen, play protected (DRM) media, copy to the clipboard
+			/// and use passkeys, as they could in a browser tab, whatever site they come from: the list holds <c>autoplay</c>,
+			/// <c>fullscreen</c>, <c>encrypted-media</c>, <c>clipboard-write</c>, <c>publickey-credentials-get</c> and
+			/// <c>publickey-credentials-create</c>. Safari never lets a page from another site create a passkey, whatever the list
+			/// holds. Features that need the user's permission, such as <c>camera</c> or
 			/// <c>microphone</c>, aren't in the list, so pages from other sites can't use them.</para>
 			/// <para>Each entry is a directive in the syntax of the <c>iframe</c> <c>allow</c> attribute (<c>feature allowlist</c>),
 			/// written to that attribute when a <c>WebView2</c> applies its template and creates its <c>iframe</c>, so changes apply
@@ -466,6 +468,8 @@ namespace Uno.UI
 				"fullscreen",
 				"encrypted-media",
 				"clipboard-write",
+				"publickey-credentials-get",
+				"publickey-credentials-create",
 			};
 		}
 
