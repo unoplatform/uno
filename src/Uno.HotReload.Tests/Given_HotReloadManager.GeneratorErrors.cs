@@ -56,13 +56,14 @@ public sealed class Given_HotReloadManager_GeneratorErrors
 	public async Task When_XamlErrorHasAnotherCode_Then_Failed_AndNothingEmitted()
 	{
 		using var scenario = new Scenario();
-		scenario.Set(Xaml, "<Page><Bad /></Page> error UXAML0005");
+		// The real generator reports an unsupported clr-namespace (UXAML0006) at its line and position.
+		scenario.Set(Xaml, "<Page xmlns:local=\"clr-namespace:App\"><local:Bad /></Page> error UXAML0006");
 
 		await scenario.Edit(Xaml);
 
 		scenario.LastResult.Should().Be(HotReloadOperationResult.Failed);
 		scenario.EmitCount.Should().Be(0);
-		scenario.LastUpdate.Diagnostics.Should().ContainSingle(d => d.Id == "UXAML0005");
+		scenario.LastUpdate.Diagnostics.Should().ContainSingle(d => d.Id == "UXAML0006");
 	}
 
 	[TestMethod]
