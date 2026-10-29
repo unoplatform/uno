@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarView
 	{
-		internal class CalendarViewAutomationPeer : CalendarViewBaseItem.CalendarViewBaseItemAutomationPeer,
+		internal class CalendarViewAutomationPeer : FrameworkElementAutomationPeer,
 			ITableProvider, IGridProvider, IValueProvider, ISelectionProvider
 		{
 			private const uint BulkChildrenLimit = 20;
