@@ -15,7 +15,7 @@ public class Given_WebViewFramePermissions
 	{
 		var (allow, allowFullscreen) = WebViewFramePermissions.GetFrameAttributes(FeatureConfiguration.WebView2.PermissionsPolicy);
 
-		Assert.AreEqual("autoplay *; encrypted-media *; clipboard-write *", allow);
+		Assert.AreEqual("autoplay *; encrypted-media *; clipboard-write *; publickey-credentials-get *; publickey-credentials-create *", allow);
 		Assert.IsTrue(allowFullscreen);
 	}
 
@@ -107,7 +107,7 @@ public class Given_WebViewFramePermissions
 
 		var (allow, _) = WebViewFramePermissions.GetFrameAttributes(policy);
 
-		Assert.AreEqual("autoplay 'none'; encrypted-media *; clipboard-write *", allow);
+		Assert.AreEqual("autoplay 'none'; encrypted-media *; clipboard-write *; publickey-credentials-get *; publickey-credentials-create *", allow);
 	}
 
 	[TestMethod]
