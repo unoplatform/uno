@@ -28,6 +28,10 @@ Afterward, you can perform actions such as navigating to an HTML string:
 MyWebView.NavigateToString("<html><body><p>Hello world!</p></body></html>");
 ```
 
+## Closing a WebView2
+
+On WebAssembly, `Close()` releases the web view: it removes the `<iframe>` from the page. Afterwards, as in WinUI, `CoreWebView2` is `null`, setting `Source`, `NavigateToString` and `Reload` throw an exception, and `EnsureCoreWebView2Async` and `ExecuteScriptAsync` fail. A script that was still waiting to run completes with an empty string, which is what WinUI's code returns once the browser is gone. Other targets don't implement it yet: once the web view has been created, `Close()` reports itself as not implemented, as other unimplemented members do, and the control keeps working. Called before the control has created its web view, `Close()` closes the control on every target, and the control never creates one.
+
 ## Desktop support
 
 To enable `WebView` on the `-desktop` target, add the `WebView` Uno Feature in your `.csproj`:

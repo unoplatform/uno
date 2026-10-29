@@ -20,13 +20,16 @@ using ElementId = System.IntPtr;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-internal partial class NativeWebView : ICleanableNativeWebView
+internal partial class NativeWebView : ICleanableNativeWebView, ISupportsClose
 {
 	private readonly CoreWebView2 _coreWebView;
 	private readonly ElementId _elementId;
+	private readonly Action _removeElement;
+	private bool _isDisposed;
 	private static readonly ConcurrentDictionary<ElementId, NativeWebView> _elementIdToNativeWebView = new();
 
-	public NativeWebView(CoreWebView2 coreWebView, ElementId elementId)
+	/// <param name="removeElement">Removes the iframe from the page when the WebView2 is closed.</param>
+	public NativeWebView(CoreWebView2 coreWebView, ElementId elementId, Action removeElement)
 	{
 		NativeMethods.BuildImports(
 #if WASM_SKIA
@@ -37,6 +40,7 @@ internal partial class NativeWebView : ICleanableNativeWebView
 			);
 		_coreWebView = coreWebView;
 		_elementId = elementId;
+		_removeElement = removeElement;
 
 		NativeMethods.InitializeStyling(elementId);
 		NativeMethods.SetupEvents(elementId);
@@ -105,6 +109,14 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	public async Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
 	{
 		await Task.Yield();
+
+		// A script still waiting when the WebView2 is closed completes with an empty string, as WinUI's code returns once the
+		// browser is gone.
+		if (_isDisposed)
+		{
+			return "";
+		}
+
 		var result = NativeMethods.ExecuteScript(_elementId, script);
 
 		// String needs to be wrapped in quotes to match Windows behavior
@@ -118,9 +130,15 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	{
 		_ = _coreWebView.Owner.Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.High, () =>
 		{
+			if (_isDisposed)
+			{
+				return;
+			}
+
 			_coreWebView.RaiseNavigationStarting(url, out var cancel);
 
-			if (!cancel)
+			// A NavigationStarting handler may have closed the WebView2.
+			if (!cancel && !_isDisposed)
 			{
 				loadAction?.Invoke();
 			}
@@ -178,10 +196,26 @@ internal partial class NativeWebView : ICleanableNativeWebView
 
 	public void SetScrollingEnabled(bool isScrollingEnabled) { }
 
+	void ISupportsClose.Close() => Dispose();
+
 	public void Dispose()
 	{
-		// Todo call this and reattach if needed
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		_isDisposed = true;
 		_elementIdToNativeWebView.TryRemove(_elementId, out _);
+
+		try
+		{
+			NativeMethods.CleanupEvents(_elementId);
+		}
+		finally
+		{
+			_removeElement();
+		}
 	}
 
 	public void OnLoaded()
