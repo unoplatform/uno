@@ -1,7 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Toolkit.DevTools.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Input.Preview.Injection;
@@ -19,7 +22,7 @@ public class Given_ListBox
 #endif
 	public async Task When_Touch_Hold_Item_Then_Selected()
 	{
-		var items = new[] { new ListBoxItem { Content = "0" }, new ListBoxItem { Content = "1" }, new ListBoxItem { Content = "2" } };
+		var items = new[] { CreateItem("0"), CreateItem("1"), CreateItem("2") };
 		var list = new ListBox
 		{
 			Width = 200,
@@ -50,4 +53,11 @@ public class Given_ListBox
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	// 6.8 has no default ListBoxItem style, so only the item's content is hit-testable: stretch it over the row.
+	private static ListBoxItem CreateItem(string text) => new()
+	{
+		HorizontalContentAlignment = HorizontalAlignment.Stretch,
+		Content = new Border { Background = new SolidColorBrush(Colors.Transparent), Child = new TextBlock { Text = text } },
+	};
 }
