@@ -646,10 +646,14 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the ARIA landmark role on a semantic element.
 		 * VoiceOver rotor uses landmarks (main, navigation, search, etc.) for quick navigation.
 		 */
-		public static updateLandmarkRole(handle: number, role: string): void {
+		public static updateLandmarkRole(handle: number, role: string | null): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("role", role);
+				if (role) {
+					element.setAttribute("role", role);
+				} else {
+					element.removeAttribute("role");
+				}
 			}
 		}
 
