@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.RuntimeTests.Helpers;
@@ -351,6 +352,33 @@ public class Given_WebView2
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25736")]
+	public async Task When_Releasing_Browser_Fails_On_Retemplate_Then_New_Template_Gets_A_Browser()
+	{
+		var webView = new WebView2 { Width = 200, Height = 200 };
+
+		try
+		{
+			await UITestHelper.Load(webView);
+			await webView.EnsureCoreWebView2Async();
+			var replacedElementId = GetIframeElementId(webView);
+			MakeBrowserReleaseFail(replacedElementId);
+
+			await Retemplate(webView);
+
+			// A failure while the template is applied doesn't reach Application.UnhandledException, so the iframe checks catch it.
+			Assert.IsFalse(IsInDom(replacedElementId), "The iframe of the replaced template should still be removed.");
+			Assert.AreNotEqual(replacedElementId, GetIframeElementId(webView), "The new template should present a new iframe.");
+			await NavigateToMarker(webView, "retemplated");
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25736")]
 	public async Task When_Closed_From_CoreWebView2Initialized_On_Load_Then_No_Iframe_Is_Presented()
 	{
 		var webView = new WebView2 { Width = 200, Height = 200 };
@@ -414,6 +442,30 @@ public class Given_WebView2
 
 			var root = VisualTreeHelper.GetChild(webView, 0) as ContentPresenter;
 			Assert.IsNull(root?.Content, "A closed WebView2 should not present an iframe.");
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25736")]
+	public async Task When_Retemplated_Then_Replaced_Iframe_Is_Removed()
+	{
+		var webView = new WebView2 { Width = 200, Height = 200 };
+
+		try
+		{
+			await UITestHelper.Load(webView);
+			await NavigateToMarker(webView, "replaced");
+			var replacedElementId = GetIframeElementId(webView);
+
+			await Retemplate(webView);
+
+			Assert.AreNotEqual(replacedElementId, GetIframeElementId(webView), "The new template should present a new iframe.");
+			Assert.IsFalse(IsInDom(replacedElementId), "The iframe of the replaced template should be removed.");
 		}
 		finally
 		{
@@ -503,6 +555,17 @@ public class Given_WebView2
 		// On WebAssembly, NavigationCompleted is raised before the queued navigation loads the document.
 		var elementId = GetIframeElementId(webView);
 		await TestServices.WindowHelper.WaitFor(() => ReadMarker(elementId) == marker, timeoutMS: 10000, message: "The iframe should load the marker.");
+	}
+
+	private static async Task Retemplate(WebView2 webView)
+	{
+		webView.Template = (ControlTemplate)XamlReader.Load(
+			"""
+			<ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<ContentPresenter x:Name="WebViewTemplateRoot" />
+			</ControlTemplate>
+			""");
+		await TestServices.WindowHelper.WaitForIdle();
 	}
 
 	// Makes the first step of releasing the browser, removing the iframe's listeners, fail.

@@ -3,7 +3,7 @@
 namespace Uno.UI.Xaml.Controls;
 
 /// <summary>
-/// A native WebView that can release its browser when its WebView2 is closed.
+/// A native WebView that can release its browser when its WebView2 is closed or retemplated.
 /// </summary>
 internal interface ISupportsClose
 {

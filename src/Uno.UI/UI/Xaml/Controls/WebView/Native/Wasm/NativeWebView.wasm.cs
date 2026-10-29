@@ -28,7 +28,7 @@ internal partial class NativeWebView : ICleanableNativeWebView, ISupportsClose
 	private bool _isDisposed;
 	private static readonly ConcurrentDictionary<ElementId, NativeWebView> _elementIdToNativeWebView = new();
 
-	/// <param name="removeElement">Removes the iframe from the page when the WebView2 is closed.</param>
+	/// <param name="removeElement">Removes the iframe from the page when the WebView2 is closed or retemplated.</param>
 	public NativeWebView(CoreWebView2 coreWebView, ElementId elementId, Action removeElement)
 	{
 		NativeMethods.BuildImports(
@@ -110,8 +110,8 @@ internal partial class NativeWebView : ICleanableNativeWebView, ISupportsClose
 	{
 		await Task.Yield();
 
-		// A script still waiting when the WebView2 is closed completes with an empty string, as WinUI's code returns once the
-		// browser is gone.
+		// A script still waiting when the WebView2 is closed, or retemplated, completes with an empty string, as WinUI's code
+		// returns once the browser is gone.
 		if (_isDisposed)
 		{
 			return "";

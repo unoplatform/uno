@@ -232,6 +232,9 @@ public partial class CoreWebView2
 		}
 
 		DetachWebResourceRequestedSupport();
+
+		// The new template gets its own native WebView, so release the one it replaces.
+		ReleaseNativeWebView(_nativeWebView);
 		_nativeWebView = GetNativeWebViewFromTemplate();
 		AttachWebResourceRequestedSupport();
 
@@ -244,7 +247,7 @@ public partial class CoreWebView2
 		OnScrollEnabledChanged(_scrollEnabled);
 	}
 
-	// WinUI's Close has no documented failure, so closing the control doesn't fail when its browser can't be released.
+	// WinUI's Close has no documented failure, so closing or retemplating the control doesn't fail when its browser can't be released.
 	private void ReleaseNativeWebView(INativeWebView? nativeWebView)
 	{
 		try
