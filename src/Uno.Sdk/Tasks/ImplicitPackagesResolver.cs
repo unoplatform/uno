@@ -108,6 +108,10 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? AndroidXCollectionVersion { get; set; }
 
+	public string? AndroidXFragmentVersion { get; set; }
+
+	public string? AndroidXLifecycleVersion { get; set; }
+
 	public string? AndroidXLeanbackVersion { get; set; }
 
 	public string? AndroidXCarAppVersion { get; set; }
@@ -251,6 +255,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.AndroidXSwipeRefreshLayout, AndroidXSwipeRefreshLayoutVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXNavigation, AndroidXNavigationVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXCollection, AndroidXCollectionVersion)
+			.UpdateManifest(PackageManifest.Group.AndroidXFragment, AndroidXFragmentVersion)
+			.UpdateManifest(PackageManifest.Group.AndroidXLifecycle, AndroidXLifecycleVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXLeanback, AndroidXLeanbackVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXCarApp, AndroidXCarAppVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXWear, AndroidXWearVersion)

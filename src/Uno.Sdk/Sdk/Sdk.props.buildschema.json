@@ -281,6 +281,14 @@
 			"description": "Provides an explicit override for the version of AndroidX.Collection to use.",
 			"type": "nuget-version"
 		},
+		"AndroidXFragmentVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Fragment to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXLifecycleVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Lifecycle.LiveData to use.",
+			"type": "nuget-version"
+		},
 		"AndroidXLeanbackVersion": {
 			"description": "Provides an explicit override for the version of AndroidX.Leanback to use.",
 			"type": "nuget-version"
