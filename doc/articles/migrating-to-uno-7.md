@@ -654,6 +654,15 @@ own target framework, the library's calls included.
   }
   ```
 
+- **`Control.GetTemplateChild` is no longer public.** Uno declared it `public`; WinUI declares
+  it `protected internal`, and 7.0 now matches. Calling it on a control from outside a `Control`
+  subclass, for example `autoSuggestBox.GetTemplateChild("SuggestionsContainer")` from a page or
+  a helper, no longer compiles. Move the call into a subclass of the control, or find the
+  template part from outside by walking the control's visual tree with `VisualTreeHelper` (as
+  above) and matching `FrameworkElement.Name`. If an extension method named `GetTemplateChild`
+  is in scope, the call now binds to that method instead, so the build fails with an error about
+  its parameters (such as `CS7036`) rather than about accessibility.
+
 - **`INativeWebViewProvider` moved to `Uno.Web.WebView2.Core`.** It is Uno-only, so it no longer
   sits in the WinUI `Microsoft.Web.WebView2.Core` namespace. Code that refers to it by name, such
   as `typeof(INativeWebViewProvider)` in an `ApiExtensibility` registration, needs
