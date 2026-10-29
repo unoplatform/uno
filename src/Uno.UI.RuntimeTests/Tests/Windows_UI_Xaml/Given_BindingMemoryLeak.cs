@@ -21,6 +21,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 	public class Given_BindingMemoryLeak
 	{
+		[TestCleanup]
+		public void Cleanup()
+		{
+			// A failed test must not leave its tree rooted for retries and later tests.
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
 		[TestMethod]
 		public async Task When_xBind_View_Removed_Then_Collected()
 		{
@@ -109,6 +116,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			root.Content = null;
 
 			await AssertCollectedAsync(viewRef, vmRef);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_BrushShared_SingleOwner_Removed_Then_Owner_And_ViewModel_Collected()
+		{
+			// A long-lived brush (e.g. a static field) applied to one element at a time must not retain the
+			// last element it was applied to.
+			var sharedBrush = new SolidColorBrush(Colors.Red);
+
+			var root = new ContentControl();
+			TestServices.WindowHelper.WindowContent = root;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var (viewRef, vmRef) = CreateSingleOwnerSharedBrushView(root, sharedBrush);
+			await TestServices.WindowHelper.WaitForLoaded((FrameworkElement)root.Content);
+
+			root.Content = null;
+
+			await WaitUntilCollectedAsync(viewRef);
+			Assert.IsFalse(viewRef.IsAlive, "The element the shared brush was applied to should have been garbage collected after removal from visual tree.");
+
+			// The DataContext pushed into the brush is held at Inheritance precedence until the brush is re-associated:
+			// the collected owner still counts as a first parent, so the next one disables inheritance and drops it.
+			var next = new Border { Background = sharedBrush };
+			await AssertCollectedAsync(viewRef, vmRef);
+
+			GC.KeepAlive(next);
+			GC.KeepAlive(sharedBrush);
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		private static (WeakReference viewRef, WeakReference vmRef) CreateSingleOwnerSharedBrushView(ContentControl root, Brush sharedBrush)
+		{
+			var vm = new BindingLeak_ViewModel { Text = "Single owner shared brush test" };
+
+			var owner = new Border { Background = sharedBrush, Width = 50, Height = 50 };
+			var panel = new StackPanel { Width = 100, Height = 100, DataContext = vm };
+			panel.Children.Add(owner);
+
+			root.Content = panel;
+
+			return (new WeakReference(owner), new WeakReference(vm));
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
@@ -209,10 +259,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		private static async Task AssertCollectedAsync(WeakReference viewRef, WeakReference vmRef)
 		{
+			await WaitUntilCollectedAsync(viewRef, vmRef);
+
+			Assert.IsFalse(viewRef.IsAlive, "View should have been garbage collected after removal from visual tree.");
+			Assert.IsFalse(vmRef.IsAlive, "ViewModel should have been garbage collected after View removal from visual tree.");
+		}
+
+		private static async Task WaitUntilCollectedAsync(params WeakReference[] references)
+		{
 			var sw = Stopwatch.StartNew();
 			var timeout = TimeSpan.FromSeconds(10);
 
-			while (sw.Elapsed < timeout && (viewRef.IsAlive || vmRef.IsAlive))
+			while (sw.Elapsed < timeout && Array.Exists(references, r => r.IsAlive))
 			{
 				GC.Collect(2);
 				GC.WaitForPendingFinalizers();
@@ -234,9 +292,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				// DispatcherConditionalDisposable to be executed
 				await TestServices.WindowHelper.WaitForIdle();
 			}
-
-			Assert.IsFalse(viewRef.IsAlive, "View should have been garbage collected after removal from visual tree.");
-			Assert.IsFalse(vmRef.IsAlive, "ViewModel should have been garbage collected after View removal from visual tree.");
 		}
 	}
 }
