@@ -512,7 +512,14 @@ internal sealed partial class TextBoxCore
 		var end = EndOfLine(index); // index of the line break, or of the last character when there is none
 		var length = (end < text.Length && text[end] == '\r' ? end : end + 1) - start;
 
-		Select(start, Math.Max(0, length));
+		if (length <= 0)
+		{
+			// An empty paragraph has nothing to select: leave a caret, not handles around nothing.
+			TouchTapAt(start);
+			return;
+		}
+
+		Select(start, length);
 		CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
 	}
 
