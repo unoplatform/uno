@@ -10,8 +10,10 @@ parameters:
   appExtras: ''
   # Overrides the job's run condition, e.g. to skip a lane on pull requests that don't need it.
   condition: ''
-  # The emulator's Android API level.
-  apiLevel: 34
+  # The emulator's Android API level: the current Android release, the same on both renderers' lanes so a failure
+  # on one of them points at the renderer. Revision 7 of the API 36 image fixed its guest Vulkan driver, which
+  # faulted once 16 MB was mapped (#25655); android-run-skia-runtime-tests.sh refuses an older one.
+  apiLevel: 36
 
 jobs:
 ##

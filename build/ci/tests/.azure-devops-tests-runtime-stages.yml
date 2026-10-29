@@ -81,8 +81,6 @@ stages:
       renderer: 'WebGPU'
       testResultLabel: '-webgpu'
       appExtras: '-e UNO_WEBGPU 1 -e UNO_WEBGPU_LOG warn'
-      # Revision 7 of the API 36 image fixed its guest Vulkan driver, which faulted once 16 MB was mapped (#25655).
-      apiLevel: 36
       # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
       condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.WebGpuTestsRequired'], 'true')))"
 
