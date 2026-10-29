@@ -190,12 +190,8 @@
           href: concepts/overview/philosophy-of-uno.md
         - name: How Uno Works
           href: how-uno-works.md
-        - name: UI Renderers
-          items: 
-          - name: Skia Renderer
-            href: xref:uno.features.renderer.skia
-          - name: Native Renderer
-            href: xref:uno.features.renderer.native
+        - name: Skia Renderer
+          href: xref:uno.features.renderer.skia
         - name: Best Practices
           href: best-practices-uno.md
 
@@ -382,12 +378,8 @@
             href: uno-development/uno-internals-overview.md
           - name: Android
             href: uno-development/uno-internals-android.md
-          - name: Layouting in Android
-            href: uno-development/Uno-UI-Layouting-Android.md
           - name: iOS
             href: uno-development/uno-internals-ios.md
-          - name: Layouting in iOS
-            href: uno-development/Uno-UI-Layouting-iOS.md
           - name: WASM
             href: uno-development/uno-internals-wasm.md
           - name: macOS
@@ -458,8 +450,6 @@
             href: uno-development/api-extensions.md
           - name: The WeakEventHelper class
             href: uno-development/Internal-WeakEventHelper.md
-          - name: Debugging Uno.UI Java code with Android studio
-            href: uno-development/Uno-UI-Debugging-Android-Studio.md
           - name: Troubleshooting Memory Issues
             href: uno-development/troubleshooting-memory-issues.md
           - name: Troubleshooting Source Generation
@@ -555,6 +545,8 @@
               href: controls/Frame.md
             - name: GLCanvasElement
               href: xref:Uno.Controls.GLCanvasElement
+            - name: WebGpuCanvasElement
+              href: xref:Uno.Controls.WebGpuCanvasElement
             - name: Image
               href: xref:Uno.Features.Image
             - name: ListView and GridView
@@ -579,6 +571,8 @@
               href: features/progressring.md
             - name: RefreshContainer (Pull to Refresh)
               href: controls/RefreshContainer.md
+            - name: RichEditBox
+              href: controls/RichEditBox.md
             - name: ScrollViewer
               href: controls/ScrollViewer.md
             - name: SKCanvasElement
@@ -617,7 +611,7 @@
           href: features/working-with-animations.md
         - name: Assets and image display
           href: features/working-with-assets.md
-        - name: Build telemetry
+        - name: Tools telemetry
           href: uno-toolchain-telemetry.md
         - name: Composition API
           href: composition.md
@@ -631,8 +625,12 @@
           href: features/fluent-styles.md
         - name: Focus management
           href: features/focus-management.md
+        - name: Foldable devices and TwoPaneView
+          href: xref:Uno.Features.Foldable
         - name: Fonts
           href: features/custom-fonts.md
+        - name: Input validation
+          href: features/input-validation.md
         - name: Markup Extensions
           href: features/windows-ui-markup-extensions.md
         - name: Orientation
@@ -677,6 +675,8 @@
         href: features/android-auto.md
       - name: Android TV
         href: features/android-tv.md
+      - name: Apple TV
+        href: features/apple-tv.md
       - name: Wear OS (Android Watch)
         href: features/android-wear.md
       - name: App Actions
@@ -794,6 +794,8 @@
         href: xref:Uno.DevServer
       - name: Diagnostics (disco)
         href: xref:Uno.Features.DevServerDisco
+      - name: Driving the app from a shell (app)
+        href: xref:Uno.Features.DevServerAppCommands
     - name: Xaml Merging
       href: external/uno.xamlmerge.task/doc/toc.yml
     - name: Uno Resizetizer

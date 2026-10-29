@@ -57,15 +57,28 @@ namespace Microsoft.UI.Composition
 
 		internal event EventHandler? Stopped;
 
+		private bool _stopOnceValueApplied;
+
 		internal override object Evaluate()
 		{
 			var (value, shouldStop) = _keyframeEvaluator!.Evaluate();
 			if (shouldStop)
 			{
-				Stop();
+				// Stopped handlers read the animated property (ScrollContentPresenter's final offset), so stop only once the
+				// caller has applied this final value; otherwise an animation that ends before its first frame reports its start.
+				_stopOnceValueApplied = true;
 			}
 
 			return value;
+		}
+
+		internal override void OnEvaluatedValueApplied()
+		{
+			if (_stopOnceValueApplied)
+			{
+				_stopOnceValueApplied = false;
+				Stop();
+			}
 		}
 
 		internal object Evaluate(float progress)

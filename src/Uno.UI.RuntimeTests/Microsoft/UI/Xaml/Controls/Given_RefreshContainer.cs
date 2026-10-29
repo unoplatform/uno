@@ -114,8 +114,16 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Deferral deferral = null;
 			refreshContainer.RequestRefresh();
 
-			await Task.Delay(200); // Artificial delay to allow the indicator to animate in
-			var screenshotAfter = await TakeScreenshot(grid);
+			// The indicator animates in over a few frames: wait for it to show rather than for a fixed time, which a
+			// slower renderer spreads over more than the 200 ms this used to allow.
+			var animateIn = global::System.Diagnostics.Stopwatch.StartNew();
+			RawBitmap screenshotAfter;
+			do
+			{
+				await Task.Delay(100);
+				screenshotAfter = await TakeScreenshot(grid);
+			}
+			while (animateIn.ElapsedMilliseconds < 5000 && await AreSame(screenshotBefore, screenshotAfter));
 			await ImageAssert.AreNotEqualAsync(screenshotBefore, screenshotAfter);
 			deferral.Complete();
 
@@ -161,7 +169,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
-			ImageAssert.HasPixels(await UITestHelper.ScreenShot(sut), ExpectedPixels.At(50, 1).Pixel(Colors.DeepPink));
+			await AssertTopPixelEventually(sut, Colors.DeepPink);
 
 			// Slowly swipe down (scroll up - no inertia)
 			finger.Drag(
@@ -172,7 +180,26 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
-			ImageAssert.HasPixels(await UITestHelper.ScreenShot(sut), ExpectedPixels.At(50, 1).Pixel(Colors.Chartreuse));
+			await AssertTopPixelEventually(sut, Colors.Chartreuse);
+		}
+
+		// The content settles on the compositor after the gesture; on slow frames idle comes before the last frame.
+		private static async Task AssertTopPixelEventually(FrameworkElement sut, Color expected)
+		{
+			var deadline = DateTime.UtcNow.AddSeconds(10);
+			RawBitmap screenshot;
+			while (true)
+			{
+				screenshot = await UITestHelper.ScreenShot(sut);
+				if (screenshot.GetPixel(50, 1) == expected || DateTime.UtcNow > deadline)
+				{
+					break;
+				}
+
+				await Task.Delay(50);
+			}
+
+			ImageAssert.HasPixels(screenshot, ExpectedPixels.At(50, 1).Pixel(expected));
 		}
 
 		[TestMethod]
@@ -466,6 +493,19 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(RefreshVisualizerState.Idle, rv.State, "RefreshVisualizer should be back to Idle state after refresh completion");
 		}
 #endif
+
+		private static async Task<bool> AreSame(RawBitmap expected, RawBitmap actual)
+		{
+			try
+			{
+				await ImageAssert.AreEqualAsync(actual, expected);
+				return true;
+			}
+			catch (AssertFailedException)
+			{
+				return false;
+			}
+		}
 
 		private Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 			=> UITestHelper.ScreenShot(SUT);

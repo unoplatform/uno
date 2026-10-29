@@ -125,16 +125,6 @@ public partial class TreeViewList : ListView
 					treeViewItem.SetItemsSource(targetNode, itemsSource);
 				}
 			}
-#if HAS_UNO // #15214: workaround for initial selection being lost
-			if (treeViewItem.IsSelected)
-			{
-				ListViewModel.UpdateSelection(treeViewNode, TreeNodeSelectionState.Selected);
-			}
-			else if (ListViewModel.TreeView.PendingSelectedItem == args.Item)
-			{
-				ListViewModel.UpdateSelection(treeViewNode, TreeNodeSelectionState.Selected);
-			}
-#endif
 			treeViewItem.UpdateIndentation(targetNode.Depth);
 			treeViewItem.UpdateSelectionVisual(targetNode.SelectionState);
 		}
@@ -400,6 +390,15 @@ public partial class TreeViewList : ListView
 		{
 			ListViewModel.UpdateSelection(itemNodeImplNoRef, selectionState);
 		}
+
+#if HAS_UNO // #15214: workaround for initial selection being lost
+		// Done here rather than in OnContainerContentChanging: that is raised once the container has its
+		// template, and TreeViewItem.OnApplyTemplate would first reset IsSelected from the unselected node.
+		if (itemContainer.IsSelected || ListViewModel.TreeView.PendingSelectedItem == item)
+		{
+			ListViewModel.UpdateSelection(itemNode, TreeNodeSelectionState.Selected);
+		}
+#endif
 	}
 
 	protected override DependencyObject GetContainerForItemOverride()

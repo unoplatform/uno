@@ -192,7 +192,7 @@ public sealed partial class SplitViewTemplateSettings : DependencyObject
 		CompactPaneGridLength = new GridLength(CompactPaneLength, GridUnitType.Pixel);
 		OpenPaneGridLength = new GridLength(OpenPaneLength, GridUnitType.Pixel);
 		NegativeOpenPaneLength = -OpenPaneLength;
-		NegativeOpenPaneLengthMinusCompactLength = NegativeOpenPaneLength - CompactPaneLength;
+		NegativeOpenPaneLengthMinusCompactLength = CompactPaneLength - OpenPaneLength;
 		OpenPaneLengthMinusCompactLength = OpenPaneLength - CompactPaneLength;
 
 		// These properties were added to facilitate clipping while RectangleGeometry.Transform is not supported

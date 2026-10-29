@@ -2589,6 +2589,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 													writer.AppendLineIndented(",");
 												}
 											}
+
+											// Other initializer members (e.g. from x:Uid) can follow the collection.
+											writer.AppendLineIndented(",");
 										}
 										else
 										{
@@ -3529,8 +3532,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							var value = member.Value?.ToString();
 
 							if (
-								member.Member.Name == "Name"
-								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
+								IsXNameMember(member, objectDefinition.Type)
 								&& !isMemberInsideResourceDictionary.isInside
 							)
 							{
@@ -3555,13 +3557,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 
 								writer.AppendLineInvariantIndented("__that.{0} = {1};", value, writer.AppliedParameterName);
+
+								if (IsXNameMember(member, objectDefinition.Type) && IsXNameProvider(objectDefinition.Type))
+								{
+									BuildSetXName(writer, value);
+								}
+
 								// value is validated as non-null in ValidateName call above.
 								RegisterBackingField(type, value!, FindObjectFieldAccessibility(objectDefinition));
 							}
-							else if (member.Member.Name == "Name"
-								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+							else if (IsXNameMember(member, objectDefinition.Type))
 							{
 								writer.AppendLineInvariantIndented("// x:Name {0}", member.Value, member.Value);
+
+								if (IsXNameProvider(objectDefinition.Type))
+								{
+									BuildSetXName(writer, value);
+								}
 							}
 							else if (member.Member.Name == "Key")
 							{
@@ -3619,6 +3631,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									memberGlobalizedType,
 									member.Value,
 									writer.AppliedParameterName);
+
+								// WinUI resolves TargetName when the storyboard begins (VSM tolerates a miss), so a name missing
+								// from this scope gets a runtime-bound subject instead of failing the build.
+								CurrentScope.ReferencedElementNames.Add(member.Value.ToString() ?? "");
 							}
 							else if (
 								member.Member.Name == "TargetName" &&
@@ -4297,11 +4313,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							IsType(ownerType, Generation.DependencyObjectSymbol.Value)
 						);
 
+					var bindingTarget = prefix?.TrimEnd('.') is { Length: > 0 } receiver ? receiver : "this";
+
 					if (isDependencyProperty)
 					{
 						var propertyOwner = declaringType;
 
-						using (writer.Indent($"{prefix}SetBinding(", $"){postfix}"))
+						using (writer.Indent($"global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding({bindingTarget},", $"){postfix}"))
 						{
 							writer.AppendLineIndented($"{propertyOwner!.GetFullyQualifiedTypeIncludingGlobal()}.{member.Member.Name}Property,");
 							WriteBinding(isTemplateBindingAttachedProperty: templateBindingNode is not null && IsAttachedProperty(declaringType, member.Member.Name));
@@ -4314,9 +4332,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						var pocoBuilder = isOwnerDependencyObject ? "" : $"GetDependencyObjectForXBind().";
+						// Binding by name on the host would silently target an unrelated property of the same name.
+						if (declaringType is null
+							&& member.Member.DeclaringType is { } unresolvedOwnerType
+							&& member.Owner is { } hostObject
+							&& FindType(hostObject.Type) is not null
+							&& IsRelevantNamespace(member.Member.PreferredXamlNamespace)
+							&& IsRelevantProperty(member.Member))
+						{
+							GenerateError(
+								writer,
+								$"Property '{unresolvedOwnerType.Name}.{member.Member.Name}' cannot be bound: the type '{unresolvedOwnerType.Name}' could not be found in '{unresolvedOwnerType.PreferredXamlNamespace}'",
+								member);
+						}
 
-						using (writer.Indent($"{prefix}{pocoBuilder}SetBinding(", $"){postfix}"))
+						var target = isOwnerDependencyObject ? bindingTarget : $"{bindingTarget}.GetDependencyObjectForXBind()";
+
+						using (writer.Indent($"global::Uno.UI.Xaml.BindingHelper.SetBinding({target},", $"){postfix}"))
 						{
 							writer.AppendLineIndented($"\"{member.Member.Name}\",");
 							WriteBinding(isTemplateBindingAttachedProperty: false);
@@ -5147,7 +5179,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (string.IsNullOrWhiteSpace(memberValue))
 				{
-					throw new XamlGenerationException("The property value is invalid", owner);
+					throw new XamlGenerationException($"The property value is invalid for {memberName} of type {propertyType.Name}", owner);
 				}
 
 				return memberValue!;
@@ -5185,7 +5217,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return GetMemberValue();
 					case SpecialType.System_Single:
 					case SpecialType.System_Double:
-						return GetFloatingPointLiteral(GetMemberValue(), propertyType, owner, owner);
+						// WinUI (CDouble::CreateCValue) parses an empty or whitespace-only value as 0.
+						return string.IsNullOrWhiteSpace(memberValue)
+							? GetFloatingPointLiteral("0", propertyType, owner, owner)
+							: GetFloatingPointLiteral(memberValue!, propertyType, owner, owner);
 					case SpecialType.System_String:
 						return "\"" + DoubleEscape(memberValue) + "\"";
 					case SpecialType.System_Boolean:
@@ -5358,11 +5393,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					if (isTemplateBindingAttachedProperty)
 					{
-						return "@\"(" + memberValue + ")\"";
+						return "\"(" + DoubleEscape(memberValue) + ")\"";
 					}
 					else
 					{
-						return "@\"" + memberValue + "\"";
+						return "\"" + DoubleEscape(memberValue) + "\"";
 					}
 				}
 
@@ -5537,7 +5572,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var targetElement = FindSubElementByName(ownerControl, elementName);
 				if (targetElement != null)
 				{
-					var propertyName = target.Substring(separatorIndex + 1);
+					var propertyName = ParenthesizeBareAttachedProperty(target.Substring(separatorIndex + 1));
 					// Attached properties need to be expanded using the namespace, otherwise the resolution will be
 					// performed at runtime at a higher cost.
 					propertyName = RewriteAttachedPropertyPath(propertyName);
@@ -5561,7 +5596,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Replace("\"", "\\\"")
 				.Replace("\n", "\\n")
 				.Replace("\r", "\\r")
-				.Replace("\t", "\\t");
+				.Replace("\t", "\\t")
+				.Replace("\u0085", "\\u0085")
+				.Replace("\u2028", "\\u2028")
+				.Replace("\u2029", "\\u2029");
 		}
 
 		private static string ParseTimeSpan(string memberValue)
@@ -5985,7 +6023,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var explicitCast = string.Empty;
 				if (propertyType?.SpecialType == SpecialType.System_Object &&
 					!isPositionalParameter &&
-					FindType(m.Owner?.Type) is { } actualValueType)
+					FindType(m.Owner?.Type) is { } actualValueType &&
+					// In attribute syntax the owner is the Binding (or TemplateBinding) itself, not a typed value.
+					!IsType(actualValueType, Generation.DataBindingSymbol.Value))
 				{
 					targetValueType = actualValueType;
 
@@ -6018,6 +6058,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				return value;
 			}
+		}
+
+		/// <summary>
+		/// WinUI also accepts an attached property in a setter target without parentheses
+		/// (e.g. <c>ContentRoot.Grid.Column</c>), which the property path syntax would read as a sub-property.
+		/// </summary>
+		private string ParenthesizeBareAttachedProperty(string propertyName)
+		{
+			if (propertyName.IndexOf('(') >= 0)
+			{
+				return propertyName;
+			}
+
+			var parts = propertyName.Split(_dotArray);
+
+			return parts.Length == 2 && FindType(parts[0]) is { } ownerType && IsAttachedProperty(ownerType, parts[1])
+				? "(" + propertyName + ")"
+				: propertyName;
 		}
 
 		private string RewriteAttachedPropertyPath(string value)
@@ -6078,6 +6136,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					&& !IsAttachedProperty(type, member.Member.Name)
 					&& !IsLazyVisualStateManagerProperty(member)
 					&& _metadataHelper.FindEventType(type, member.Member.Name) == null
+					&& !IsXNameMember(member, objectDefinition.Type)
 					&& member.Member.Name != "_UnknownContent"; // We are defining the elements of a collection explicitly declared in XAML
 			}
 
@@ -6262,7 +6321,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// but is considered of an unknown type. This can happen when providing the
 						// name of a control using x:Name instead of Name.
 						var hasNameProperty = HasProperty(objectDefinition.Type, "Name");
-						if (hasNameProperty)
+						if (hasNameProperty && !IsXNameProvider(objectDefinition.Type))
 						{
 							writer.AppendLineInvariantIndented("{0} = \"{1}\"{2}", fullValueSetter, member.Value, closingPunctuation);
 						}
@@ -6270,6 +6329,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+
+		// WinUI sets x:Name on types like VisualState whose Name is get-only.
+		private static void BuildSetXName(XamlLazyApplyBlockIIndentedStringBuilder writer, string? name)
+			=> writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXName({writer.AppliedParameterName}, \"{name}\");");
 
 		private bool IsLazyVisualStateManagerProperty(XamlMemberDefinition member)
 			=> member.Owner != null

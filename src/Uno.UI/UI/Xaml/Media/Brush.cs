@@ -34,10 +34,6 @@ namespace Microsoft.UI.Xaml.Media
 			InitializeBinder();
 		}
 
-		public static implicit operator Brush(Color uiColor) => new SolidColorBrush(uiColor);
-
-		public static implicit operator Brush(string colorCode) => SolidColorBrushHelper.Parse(colorCode);
-
 		internal static IDisposable? SetupBrushChanged(Brush? newValue, ref Action? onInvalidateRender, Action newOnInvalidateRender, bool initialInvoke = true)
 		{
 			if (initialInvoke)

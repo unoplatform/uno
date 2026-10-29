@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
 using Microsoft.UI.Xaml;
@@ -12,6 +13,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Media3D;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using SamplesApp.UITests;
 using Uno.Disposables;
@@ -27,6 +29,7 @@ using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
+using Windows.UI.ViewManagement;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -532,16 +535,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 			}
 
-			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
-
-			Assert.AreNotEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
+			// The offset follows the caret over a few frames, which a software renderer can make slow.
+			await UITestHelper.WaitFor(() => ((ScrollViewer)SUT.ContentElement).HorizontalOffset != 0, timeoutMS: 5000);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Shift));
 			await WindowHelper.WaitForIdle();
 
-			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
-
-			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
+			await UITestHelper.WaitFor(() => ((ScrollViewer)SUT.ContentElement).HorizontalOffset == 0, timeoutMS: 5000);
 
 			for (int i = 0; i < 5; i++)
 			{
@@ -582,9 +582,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, mod));
 			await WindowHelper.WaitForIdle();
 
-			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
-
-			((ScrollViewer)SUT.ContentElement).VerticalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableHeight, 1.0);
+			var sv = (ScrollViewer)SUT.ContentElement;
+			await UITestHelper.WaitFor(() => Math.Abs(sv.VerticalOffset - sv.ScrollableHeight) <= 1.0, timeoutMS: 5000);
+			sv.VerticalOffset.Should().BeApproximately(sv.ScrollableHeight, 1.0);
 		}
 
 		[TestMethod]
@@ -1082,10 +1082,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var sv = SUT.FindVisualChildByType<ScrollViewer>();
 
-			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
+			var isiOS = OperatingSystem.IsIOS();
+			// The offset follows the caret over a few frames, which a software renderer can make slow.
+			await UITestHelper.WaitFor(() => isiOS ? sv.HorizontalOffset > 0 : sv.HorizontalOffset == sv.ScrollableWidth, timeoutMS: 5000);
 			sv.HorizontalOffset.Should().BeGreaterThan(0);
 
-			var isiOS = OperatingSystem.IsIOS();
 			if (!isiOS)
 			{
 				//TODO: this is flaky on iOS. Fails on CI but passes locally.
@@ -1093,7 +1094,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
-			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
+			await UITestHelper.WaitFor(() => sv.HorizontalOffset == 0, timeoutMS: 5000);
 			sv.ScrollableWidth.Should().BeGreaterThan(0);
 			Assert.AreEqual(0, sv.HorizontalOffset, "HorizontalOffset should be 0 after Home key press");
 		}
@@ -1357,7 +1358,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			SUT.Select(SUT.Text.Length, 0);
-			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
+			// The offset follows the caret over a few frames, which a software renderer can make slow.
+			await UITestHelper.WaitFor(() => sv.HorizontalOffset == sv.ScrollableWidth, timeoutMS: 5000);
 			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset, "sv.ScrollableWidth is not equal to sv.HorizontalOffset");
 
 			for (var i = 0; i < 6; i++)
@@ -1372,7 +1374,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sv.HorizontalOffset.Should().BeLessThan(sv.ScrollableWidth);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
-			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
+			await UITestHelper.WaitFor(() => sv.HorizontalOffset == 0, timeoutMS: 5000);
 			Assert.AreEqual(0, sv.HorizontalOffset);
 
 			for (var i = 0; i < 6; i++)
@@ -3153,6 +3155,183 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
+		[TestMethod]
+		public async Task When_SelectInternal_Request_Is_Clamped_Then_Clamped_Selection_Is_Kept()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hello world" };
+			await UITestHelper.Load(textBox);
+			textBox.Select(1, 3);
+
+			(int start, int length)? reported = null;
+			textBox.SelectionChanged += (_, _) => reported = (textBox.SelectionStart, textBox.SelectionLength);
+
+			var selected = textBox.Core.SelectInternal(100, 2);
+
+			Assert.IsTrue(selected);
+			Assert.AreEqual<(int, int)?>((11, 0), reported, "SelectionChanged should report the clamped selection.");
+			Assert.AreEqual(11, textBox.SelectionStart);
+			Assert.AreEqual(0, textBox.SelectionLength);
+			Assert.AreEqual(string.Empty, textBox.SelectedText);
+		}
+
+		[TestMethod]
+		public async Task When_SelectInternal_Backward_Request_Is_Clamped_Then_Selection_Stays_Consistent()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hello" };
+			await UITestHelper.Load(textBox);
+
+			var selected = textBox.Core.SelectInternal(9, -6);
+
+			Assert.IsTrue(selected);
+			Assert.AreEqual(3, textBox.SelectionStart);
+			Assert.AreEqual(2, textBox.SelectionLength);
+			Assert.AreEqual("lo", textBox.SelectedText);
+			Assert.IsTrue(textBox.IsBackwardSelection);
+		}
+
+		[TestMethod]
+		public async Task When_SelectInternal_Is_Rejected_By_SelectionChanging_Then_Original_Selection_Is_Restored()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hello world" };
+			await UITestHelper.Load(textBox);
+			textBox.Select(1, 3);
+			textBox.SelectionChanging += (_, e) => e.Cancel = true;
+
+			var selected = textBox.Core.SelectInternal(8, -4);
+
+			Assert.IsFalse(selected);
+			Assert.AreEqual(1, textBox.SelectionStart);
+			Assert.AreEqual(3, textBox.SelectionLength);
+			Assert.IsFalse(textBox.IsBackwardSelection, "A rejected backward request must not leave its direction behind.");
+		}
+
+		[TestMethod]
+		public async Task When_TextChanging_Shortens_Text_Then_Selection_Stays_In_Range()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hell" };
+			await UITestHelper.Load(textBox);
+			textBox.Focus(FocusState.Programmatic);
+			textBox.Select(textBox.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			textBox.TextChanging += (sender, _) =>
+			{
+				if (sender.Text.Length > 2)
+				{
+					sender.Text = sender.Text.Substring(0, 2);
+				}
+			};
+
+			textBox.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(textBox, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("he", textBox.Text);
+			Assert.IsLessThanOrEqualTo(textBox.Text.Length, textBox.SelectionStart + textBox.SelectionLength);
+			Assert.AreEqual(textBox.Text.Substring(textBox.SelectionStart, textBox.SelectionLength), textBox.SelectedText);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)] // WASM clipboard APIs are async (Contains() is always true after Clear()); tvOS has no clipboard
+		public async Task When_CanPasteClipboardContent_Changes_Without_Peer_Then_No_Peer_Is_Created()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			await SetClipboardText("paste me");
+			var textBox = new TextBox();
+			await UITestHelper.Load(textBox);
+			if (!textBox.CanPasteClipboardContent)
+			{
+				Assert.Inconclusive("The clipboard text is not visible to the TextBox on this platform.");
+			}
+
+			if (textBox.CachedAutomationPeer is not null)
+			{
+				Assert.Inconclusive("An accessibility client already created the TextBox peer.");
+			}
+
+			var listener = new InvalidatePeerListener();
+			var previous = AutomationPeer.TestAutomationPeerListener;
+			try
+			{
+				AutomationPeer.TestAutomationPeerListener = listener;
+
+				// Read-only always disables paste, flipping the value without touching the clipboard.
+				textBox.IsReadOnly = true;
+
+				Assert.IsFalse(textBox.CanPasteClipboardContent);
+				Assert.IsNull(textBox.CachedAutomationPeer, "Only an accessibility client may create the TextBox peer.");
+			}
+			finally
+			{
+				AutomationPeer.TestAutomationPeerListener = previous;
+				Clipboard.Clear();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)] // WASM clipboard APIs are async (Contains() is always true after Clear()); tvOS has no clipboard
+		public async Task When_CanPasteClipboardContent_Changes_With_Peer_Then_Peer_Is_Invalidated()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			await SetClipboardText("paste me");
+			var textBox = new TextBox();
+			await UITestHelper.Load(textBox);
+			if (!textBox.CanPasteClipboardContent)
+			{
+				Assert.Inconclusive("The clipboard text is not visible to the TextBox on this platform.");
+			}
+
+			var listener = new InvalidatePeerListener();
+			var previous = AutomationPeer.TestAutomationPeerListener;
+			try
+			{
+				AutomationPeer.TestAutomationPeerListener = listener;
+				var peer = textBox.GetOrCreateAutomationPeer();
+				Assert.IsNotNull(peer);
+
+				textBox.IsReadOnly = true;
+
+				CollectionAssert.Contains(listener.InvalidatedPeers, peer);
+			}
+			finally
+			{
+				AutomationPeer.TestAutomationPeerListener = previous;
+				Clipboard.Clear();
+			}
+		}
+
+		private sealed class InvalidatePeerListener : IAutomationPeerListener
+		{
+			public List<AutomationPeer> InvalidatedPeers { get; } = new();
+
+			public void NotifyInvalidatePeer(AutomationPeer peer) => InvalidatedPeers.Add(peer);
+
+			public bool ListenerExistsHelper(Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId) => true;
+
+			public void OnAutomationEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId) { }
+
+			public void NotifyAutomationEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId) { }
+
+			public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer child) { }
+
+			public void NotifyPropertyChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue) { }
+
+			public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) { }
+
+			public void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, IReadOnlyList<string> changedData) { }
+		}
+
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18371")]
@@ -3601,15 +3780,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var screenshot1 = await UITestHelper.ScreenShot(SUT);
 
+			// Thin glyph strokes (e.g. Arabic) may never reach full antialiasing coverage.
+			const byte tolerance = 10;
+
 			if (textShouldEndUpOnTheLeft)
 			{
-				ImageAssert.HasColorInRectangle(screenshot1, left, Colors.Red);
-				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, right, Colors.Red);
+				ImageAssert.HasColorInRectangle(screenshot1, left, Colors.Red, tolerance);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, right, Colors.Red, tolerance);
 			}
 			else
 			{
-				ImageAssert.HasColorInRectangle(screenshot1, right, Colors.Red);
-				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, left, Colors.Red);
+				ImageAssert.HasColorInRectangle(screenshot1, right, Colors.Red, tolerance);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, left, Colors.Red, tolerance);
 			}
 		}
 
@@ -5784,6 +5966,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SelectionFlyout?.Hide();
 			await WindowHelper.WaitForIdle();
 
+			await WaitForAndroidInputPanePositioning();
+
 			// Drag upwards on the filler below the box: the form scrolls down and the TextBox leaves the viewport.
 			var svBounds = scrollViewer.GetAbsoluteBoundsRect();
 			var from = new Point(svBounds.GetCenter().X, svBounds.Bottom - 30);
@@ -5819,6 +6003,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(expectedCaret, SUT.CaretMode, "scrolling away must not disturb the touch caret");
 		}
 
+		private static async Task WaitForAndroidInputPanePositioning()
+		{
+			if (RuntimeTestsPlatformHelper.CurrentPlatform == RuntimeTestPlatforms.SkiaAndroid)
+			{
+				// InputPane can finish opening after a touch and queue its own StartBringIntoView.
+				// Complete that setup before testing a subsequent user pan.
+				var inputPane = InputPane.GetForCurrentView();
+				if (inputPane.Visible || inputPane.TryShow())
+				{
+					await WindowHelper.WaitFor(
+						() => inputPane.Visible,
+						message: "The requested input pane must be visible before testing scrolling away from the caret.");
+					await UITestHelper.WaitForRender();
+					await WindowHelper.WaitForIdle();
+				}
+			}
+		}
+
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
 		public Task When_Touch_Tap_Does_Not_Lock_ScrollViewer_Android()
@@ -5832,6 +6034,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// The empty-field variant only started reaching the lock once an empty box stopped swallowing the tap: it
 		// now places the Android insertion handle like a filled one, which is what used to arm the clamp.
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
 		public Task When_Touch_Tap_Empty_Does_Not_Lock_ScrollViewer_Android()
 			=> AssertTouchCaretDoesNotLockScrollViewer(
@@ -5894,11 +6097,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
-			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), message: "the tap should show the insertion handle");
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), timeoutMS: 5000, message: "the tap should show the insertion handle");
 
 			// Scroll the TextBox entirely above the viewport.
 			scrollViewer.ChangeView(null, 400, null, disableAnimation: true);
-			await WindowHelper.WaitFor(() => scrollViewer.VerticalOffset > 300, message: "the form should have scrolled");
+			await WindowHelper.WaitFor(() => scrollViewer.VerticalOffset > 300, timeoutMS: 5000, message: "the form should have scrolled");
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be hidden once the TextBox is scrolled out of view");
 
@@ -5964,22 +6167,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				(int)svBounds.Bottom + 1,
 				(int)svBounds.Width,
 				(int)CaretWithStemAndThumb.ThumbSize);
-			ImageAssert.HasColorInRectangle(
-				await UITestHelper.ScreenShot(root),
-				bandBelowViewport,
-				CaretWithStemAndThumb.ThumbFillColor,
-				tolerance: 20);
+			await AssertEventually(
+				async () => ImageAssert.HasColorInRectangle(
+					await UITestHelper.ScreenShot(root),
+					bandBelowViewport,
+					CaretWithStemAndThumb.ThumbFillColor,
+					tolerance: 20));
 
 			// A few px past it and the thumb would hang entirely below the viewport, over whatever is painted there.
 			scrollViewer.ChangeView(null, offsetAtEdge - 6, null, disableAnimation: true);
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be hidden once the point it hangs from leaves the viewport");
 
-			ImageAssert.DoesNotHaveColorInRectangle(
-				await UITestHelper.ScreenShot(root),
-				bandBelowViewport,
-				CaretWithStemAndThumb.ThumbFillColor,
-				tolerance: 20);
+			await AssertEventually(
+				async () => ImageAssert.DoesNotHaveColorInRectangle(
+					await UITestHelper.ScreenShot(root),
+					bandBelowViewport,
+					CaretWithStemAndThumb.ThumbFillColor,
+					tolerance: 20));
+		}
+
+		// Gripper visuals are updated on a rendered frame, which may land after the screenshot on slow adapters.
+		private static async Task AssertEventually(Func<Task> assertion)
+		{
+			var deadline = DateTime.UtcNow.AddSeconds(10);
+			while (DateTime.UtcNow < deadline)
+			{
+				try
+				{
+					await assertion();
+					return;
+				}
+				catch (AssertFailedException)
+				{
+					await Task.Delay(50);
+				}
+			}
+
+			await assertion();
 		}
 
 		// The other half of the culling contract: a gripper the finger is holding must NOT be culled when its
@@ -6852,6 +7077,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					|| (SUT.ContextFlyout as TextCommandBarFlyout)?.IsOpen == true,
 				message: "a text command flyout should open after the long-press");
 			await WindowHelper.WaitForIdle(); // ...and let it settle before checking the steady state.
+			await UITestHelper.WaitForRender(frameCount: 2, timeoutMS: 10000); // thumbs are laid out per frame
 
 			// Steady state (Assert, not WaitFor): after the flyout opens, the word must stay selected AND both
 			// thumbs must remain — a bug that flips CaretMode back to thumbless leaves the highlight but drops the thumbs.
@@ -7147,6 +7373,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				message: "the tap should leave the insertion handle up");
 			await UITestHelper.WaitForIdle(true);
+
+			await WaitForAndroidInputPanePositioning();
 
 			// Premises spelled out rather than left to a mute "the offset did not move": the touch conventions can
 			// only be observed on CI, so each half of the scenario has to say when it is the one that broke.
@@ -8007,11 +8235,150 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			fake.SimulateCompositionUpdate("ni");
 			await WindowHelper.WaitForIdle();
 
-			// Cancel without committing — text should retain last composition
+			// Cancel without committing — the transient preedit is removed.
 			fake.SimulateCompositionCancel();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("ni", SUT.Text);
+			Assert.AreEqual("", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Text_Selection_And_Layout_Changes_Update_Session()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+			var SUT = new TextBox
+			{
+				Width = 200,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				fake.Updates.Clear();
+				SUT.Text = "abcd";
+				await WindowHelper.WaitForIdle();
+				CollectionAssert.Contains(fake.Updates, ImeSessionUpdate.TextAndSelection);
+
+				fake.Updates.Clear();
+				SUT.Select(1, 2);
+				await WindowHelper.WaitForIdle();
+				CollectionAssert.Contains(fake.Updates, ImeSessionUpdate.TextAndSelection);
+
+				fake.Updates.Clear();
+				SUT.Width = 220;
+				await WindowHelper.WaitForIdle();
+				CollectionAssert.Contains(fake.Updates, ImeSessionUpdate.TextAndSelection);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IME_Focused_Input_Options_Change_Update_Session()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+			var SUT = new TextBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("ni");
+				fake.Updates.Clear();
+
+				SUT.InputScope = new InputScope
+				{
+					Names =
+						{
+							new InputScopeName { NameValue = InputScopeNameValue.EmailSmtpAddress },
+						},
+				};
+				SUT.IsTextPredictionEnabled = false;
+				SUT.AcceptsReturn = true;
+				SUT.IsSpellCheckEnabled = false;
+
+				CollectionAssert.AreEqual(
+					new[]
+					{
+						ImeSessionUpdate.InputScope,
+						ImeSessionUpdate.TextPrediction,
+						ImeSessionUpdate.AcceptsReturn,
+						ImeSessionUpdate.SpellCheck,
+					},
+					fake.Updates);
+				Assert.IsTrue(SUT.IsComposing);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IME_Partial_Result_Preserves_Committed_Prefix()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "AB" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Select(1, 0);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("nihao");
+			fake.SimulateCompositionPartialCommit("你", "hao", cursorPosition: 3);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("A你haoB", SUT.Text);
+			Assert.IsTrue(SUT.IsComposing);
+			Assert.AreEqual(2, ((ITextBoxHost)SUT).Core.CompositionStartIndex);
+			Assert.AreEqual(3, ((ITextBoxHost)SUT).Core.CompositionLength);
+
+			fake.SimulateCompositionUpdate("ha");
+			fake.SimulateCompositionComplete("好");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("A你好B", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Partial_Result_Then_Cancel_Keeps_Only_Committed_Prefix()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "AB" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Select(1, 0);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("nihao");
+			fake.SimulateCompositionPartialCommit("你", "hao", cursorPosition: 3);
+			fake.SimulateCompositionCancel();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("A你B", SUT.Text);
 			Assert.IsFalse(SUT.IsComposing);
 		}
 
@@ -8319,13 +8686,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public bool IsComposing { get; private set; }
 			public bool EndImeSessionCalled { get; set; }
+			public List<ImeSessionUpdate> Updates { get; } = new();
 
 			public event EventHandler CompositionStarted;
 			public event EventHandler<ImeCompositionEventArgs> CompositionUpdated;
 			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
+			public event EventHandler<ImePartialCompositionEventArgs> CompositionPartiallyCommitted;
+			public event EventHandler<ImeCompositionEventArgs> CompositionCanceled;
 			public event EventHandler CompositionEnded;
 
-			public void StartImeSession(TextBoxCore core) { }
+			public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs> CandidateWindowBoundsChanged
+			{
+				add { }
+				remove { }
+			}
+
+			public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation) { }
+
+			public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update) => Updates.Add(update);
+
+			public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
+				=> Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 
 			public void EndImeSession()
 			{
@@ -8343,16 +8724,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CompositionStarted?.Invoke(this, EventArgs.Empty);
 			}
 
-			public void SimulateCompositionUpdate(string text, int cursorPosition = -1)
+			public void SimulateCompositionUpdate(
+				string text,
+				int cursorPosition = -1,
+				int resolvedLength = 0,
+				bool textAlreadyApplied = false)
 			{
-				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
+				CompositionUpdated?.Invoke(
+					this,
+					new ImeCompositionEventArgs(text, cursorPosition, resolvedLength, textAlreadyApplied));
 			}
 
-			public void SimulateCompositionComplete(string text)
+			public void SimulateCompositionComplete(string text, bool textAlreadyApplied = false)
 			{
 				IsComposing = false;
-				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionCompleted?.Invoke(
+					this,
+					new ImeCompositionEventArgs(text, textAlreadyApplied: textAlreadyApplied));
 				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionPartialCommit(
+				string committedText,
+				string compositionText,
+				int cursorPosition = -1,
+				int resolvedLength = 0,
+				bool textAlreadyApplied = false)
+			{
+				CompositionPartiallyCommitted?.Invoke(
+					this,
+					new ImePartialCompositionEventArgs(
+						committedText,
+						compositionText,
+						cursorPosition,
+						resolvedLength,
+						textAlreadyApplied));
 			}
 
 			public void SimulateDirectCommit(string text)
@@ -8365,6 +8771,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public void SimulateCompositionCancel()
 			{
 				IsComposing = false;
+				CompositionCanceled?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
 				CompositionEnded?.Invoke(this, EventArgs.Empty);
 			}
 		}
@@ -8901,6 +9308,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(
 				() => caretRect.Left >= sv.HorizontalOffset - 1
 					&& caretRect.Right <= sv.HorizontalOffset + sv.ViewportWidth + 1,
+				// The ChangeView animation alone lasts a second, the default timeout.
+				timeoutMS: 5000,
 				message: $"Caret at {caretRect.Left} never came into the viewport (width {sv.ViewportWidth})");
 
 			Assert.IsGreaterThan(0, sv.HorizontalOffset, "The viewport should have followed the previewed caret.");
@@ -9050,6 +9459,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		#endregion
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22818")]
+		public async Task When_Tab_Pressed_Should_Not_Insert_Character()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+			var button = new Button { Content = "Next" };
+			var panel = new StackPanel
+			{
+				Children = { SUT, button }
+			};
+
+			WindowHelper.WindowContent = panel;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Simulate Tab key press with unicode '\t' (as macOS/FrameBuffer/Android backends do)
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Tab, VirtualKeyModifiers.None, unicodeKey: '\t'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(string.Empty, SUT.Text, "Tab should not insert a character in TextBox");
+
+			// Ensure that Tab key still moves focus to the next control
+			var focusedElement = FocusManager.GetFocusedElement(SUT.XamlRoot) as Control;
+			Assert.AreEqual(button, focusedElement, "Tab should move focus to the next control (button)");
+		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{

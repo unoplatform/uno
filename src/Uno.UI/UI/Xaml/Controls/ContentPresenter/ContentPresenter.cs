@@ -86,8 +86,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	internal DataTemplate SelectedContentTemplate => _dataTemplateUsedLastUpdate;
 
-	protected override bool IsSimpleLayout => true;
-
 	#region Content DependencyProperty
 
 	public object Content
@@ -512,7 +510,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(Thickness),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				(Thickness)Thickness.Empty,
+				default(Thickness),
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 			)
@@ -539,7 +537,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(Thickness),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				(Thickness)Thickness.Empty,
+				default(Thickness),
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 			)
@@ -580,7 +578,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	#endregion
 
 	#region CornerRadius DependencyProperty
-	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+	private static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
 	[GeneratedDependencyProperty(ChangedCallback = true)]
 	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
@@ -743,6 +741,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		TryRegisterNativeElement(oldValue, newValue);
 
 		SetUpdateTemplate();
+
+		// The root can be materialized before this Content matches the templated parent's (it is for
+		// ListViewItem/GridViewItem), so the report made when the root changed may have been skipped.
+		// MUX: CContentPresenter::SetValue (ContentPresenter_Content).
+		ReportContentTemplateRootToTemplatedParent();
 	}
 
 	private void TrySetDataContextFromContent(object value)
@@ -1395,7 +1398,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <remarks>
 	/// <see cref="nativeVisualsInZOrder"/> is read-only and won't be modified.
 	/// </remarks>
-	internal static void OnNativeHostsRenderOrderChanged(List<Visual> nativeVisualsInZOrder)
+	internal static void OnNativeHostsRenderOrderChanged(CompositionTarget compositionTarget, List<Visual> nativeVisualsInZOrder)
 	{
 		var rentedArray = ArrayPool<(int, ContentPresenter)>.Shared.Rent(_nativeHosts.Count);
 		using var _ = new DisposableStruct<(int, ContentPresenter)[]>(static rentedArray => ArrayPool<(int, ContentPresenter)>.Shared.Return(rentedArray, clearArray: true), rentedArray);
@@ -1403,11 +1406,15 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		var count = 0;
 		foreach (var host in _nativeHosts)
 		{
-			rentedArray[count++] = (nativeVisualsInZOrder.IndexOf(host.Visual), host);
+			// The list only covers the window of `compositionTarget`: another window's hosts are not missing from it.
+			if (host.Visual.CompositionTarget == compositionTarget)
+			{
+				rentedArray[count++] = (nativeVisualsInZOrder.IndexOf(host.Visual), host);
+			}
 		}
-		new Span<(int, ContentPresenter)>(rentedArray, 0, _nativeHosts.Count).Sort((one, two) => one.Item1 - two.Item1);
+		new Span<(int, ContentPresenter)>(rentedArray, 0, count).Sort((one, two) => one.Item1 - two.Item1);
 
-		for (var index = 0; index < _nativeHosts.Count; index++)
+		for (var index = 0; index < count; index++)
 		{
 			var host = rentedArray[index].Item2;
 			var order = rentedArray[index].Item1;

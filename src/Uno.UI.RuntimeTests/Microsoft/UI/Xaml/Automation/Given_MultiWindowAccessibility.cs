@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 ///   c) the AccessibilityRouter resolves peers / elements to their owning window's instance;
 ///   d) the router's Resolve returns null for elements whose window has been disposed.
 ///
-/// Uses reflection to access internal types in Uno.UI.Runtime.Skia and its host
+/// Uses reflection to access internal types in Uno.UI.Runtime and its host
 /// assemblies because the RuntimeTests project does not take a compile-time
 /// dependency on those runtime assemblies — only the Skia Desktop host loads them.
 ///
@@ -39,6 +39,7 @@ public class Given_MultiWindowAccessibility
 
 		var primaryAccessibility = GetAccessibility(primaryOwner);
 		Assert.IsNotNull(primaryAccessibility, "Primary window must have a live accessibility instance.");
+		QueryAsAccessibilityClient(primaryAccessibility);
 		Assert.IsTrue(IsAccessibilityEnabled(primaryAccessibility),
 			"Primary window accessibility must be enabled.");
 
@@ -61,6 +62,7 @@ public class Given_MultiWindowAccessibility
 
 			var secondaryAccessibility = GetAccessibility(secondaryOwner);
 			Assert.IsNotNull(secondaryAccessibility, "Secondary window must have its own accessibility instance (FR-001).");
+			QueryAsAccessibilityClient(secondaryAccessibility);
 			Assert.IsTrue(IsAccessibilityEnabled(secondaryAccessibility),
 				"Secondary window accessibility must be enabled independently of the primary.");
 
@@ -98,6 +100,7 @@ public class Given_MultiWindowAccessibility
 			?? throw new InvalidOperationException("Primary owner missing.");
 		var primaryAccessibility = GetAccessibility(primaryOwner)
 			?? throw new InvalidOperationException("Primary accessibility missing.");
+		QueryAsAccessibilityClient(primaryAccessibility);
 
 		var secondary = new Window();
 		Button secondaryButton;
@@ -304,7 +307,7 @@ public class Given_MultiWindowAccessibility
 	}
 
 	// ──────────────────────────────────────────────────────────────
-	//  Reflection helpers — access internal types in Uno.UI.Runtime.Skia
+	//  Reflection helpers — access internal types in Uno.UI.Runtime
 	//  and the host assembly without taking a compile-time reference.
 	// ──────────────────────────────────────────────────────────────
 
@@ -329,7 +332,7 @@ public class Given_MultiWindowAccessibility
 			return null;
 		}
 
-		var ownerType = FindType("Uno.UI.Runtime.Skia.IAccessibilityOwner");
+		var ownerType = FindType("Uno.UI.Runtime.IAccessibilityOwner");
 		return ownerType is not null && ownerType.IsInstanceOfType(host) ? host : null;
 	}
 
@@ -347,7 +350,7 @@ public class Given_MultiWindowAccessibility
 		}
 
 		// Fall back to explicit interface implementation lookup.
-		var iface = FindType("Uno.UI.Runtime.Skia.IAccessibilityOwner");
+		var iface = FindType("Uno.UI.Runtime.IAccessibilityOwner");
 		if (iface is null)
 		{
 			return null;
@@ -364,6 +367,29 @@ public class Given_MultiWindowAccessibility
 		return null;
 	}
 
+	/// <summary>
+	/// macOS only builds a window's native accessibility tree once an accessibility client queries the window, so act
+	/// as one: ask the window for its accessibility children. Win32 enables it with the window and needs nothing.
+	/// </summary>
+	private static void QueryAsAccessibilityClient(object accessibility)
+	{
+		if (!OperatingSystem.IsMacOS())
+		{
+			return;
+		}
+
+		var windowHandle = (nint)accessibility.GetType()
+			.GetProperty("WindowHandle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!
+			.GetValue(accessibility)!;
+		_ = objc_msgSend(windowHandle, sel_registerName("accessibilityChildren"));
+	}
+
+	[System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.A.dylib")]
+	private static extern nint sel_registerName(string name);
+
+	[System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.A.dylib")]
+	private static extern nint objc_msgSend(nint receiver, nint selector);
+
 	private static bool IsAccessibilityEnabled(object accessibility)
 	{
 		var prop = accessibility.GetType().GetProperty(
@@ -374,7 +400,7 @@ public class Given_MultiWindowAccessibility
 
 	private static object? RouterResolveElement(UIElement element)
 	{
-		var router = FindType("Uno.UI.Runtime.Skia.AccessibilityRouter")
+		var router = FindType("Uno.UI.Runtime.AccessibilityRouter")
 			?? throw new InvalidOperationException("AccessibilityRouter type not found.");
 		var resolve = router.GetMethod(
 			"Resolve",
@@ -388,7 +414,7 @@ public class Given_MultiWindowAccessibility
 
 	private static object? RouterResolvePeer(AutomationPeer peer)
 	{
-		var router = FindType("Uno.UI.Runtime.Skia.AccessibilityRouter")
+		var router = FindType("Uno.UI.Runtime.AccessibilityRouter")
 			?? throw new InvalidOperationException("AccessibilityRouter type not found.");
 		var resolve = router.GetMethod(
 			"Resolve",

@@ -18,7 +18,10 @@ public readonly record struct PathInstance(IGeometry Geometry, Vector2 Offset);
 
 public interface IDrawingSession
 {
-	/// <summary>The current total transform, from the drawing origin to the current coordinate space.</summary>
+	/// <summary>
+	/// The current total transform, from the drawing origin to the current coordinate space. It is the full 4x4:
+	/// right after <see cref="SetMatrix"/> it returns that matrix unchanged, Z row and column included.
+	/// </summary>
 	Matrix4x4 TotalMatrix { get; }
 
 	/// <summary>
@@ -130,6 +133,22 @@ public interface IDrawingSession
 			DrawPath(i.Geometry, color, i.Offset);
 		}
 	}
+
+	/// <summary>
+	/// Draws a shaped glyph run. The default fills the run's outlines through <see cref="GlyphRunRenderer"/>, which
+	/// works with any <see cref="IFont"/>; a backend overrides it to use its own text pipeline (glyph cache, scaler
+	/// hinting) for its own fonts, and calls <see cref="GlyphRunRenderer.Draw"/> for the rest.
+	/// </summary>
+	void DrawGlyphRun(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color)
+		=> GlyphRunRenderer.Draw(this, font, glyphs, positions, baselineY, color);
+
+	/// <summary>
+	/// Draws a shaped glyph run with its outlines stroked at <paramref name="strokeWidth"/> rather than filled (outline
+	/// text). Overridden the same way as <see cref="DrawGlyphRun"/>, calling <see cref="GlyphRunRenderer.Stroke"/> for
+	/// the fonts the backend cannot draw natively.
+	/// </summary>
+	void StrokeGlyphRun(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color, float strokeWidth)
+		=> GlyphRunRenderer.Stroke(this, font, glyphs, positions, baselineY, color, strokeWidth);
 
 	/// <summary>
 	/// Draws <paramref name="silhouette"/> as a soft shadow: coverage blurred by (<paramref name="sigmaX"/>,

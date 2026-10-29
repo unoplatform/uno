@@ -548,20 +548,125 @@ public class Given_Visual_Damage
 #endif
 	}
 
+	// A visual moved by its own translation (Offset; ArrangeOffset, set by arrange; AnchorPoint, set by scrolling) keeps
+	// its recording, so its damage can't come from a re-record: the move itself must damage both placements.
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[DataRow("Offset")]
+	[DataRow("ArrangeOffset")]
+	[DataRow("AnchorPoint")]
+	public async Task When_Visual_Is_Translated_Then_It_Keeps_Its_Recording_And_Damages_Both_Positions(string property)
+	{
+#if __SKIA__
+		var compositor = Compositor.GetSharedCompositor();
+
+		var root = compositor.CreateContainerVisual();
+		root.Size = new Vector2(200, 200);
+
+		var border = compositor.CreateBorderVisual();
+		border.Size = new Vector2(100, 50);
+		border.BackgroundBrush = compositor.CreateColorBrush(Colors.Magenta);
+		root.Children.InsertAtTop(border);
+
+		using var damage = new DamageRegion();
+		RenderFrame(root, damage);
+		damage.Reset();
+
+		var recorded = border.RecordedContentForTesting;
+		Assert.IsNotNull(recorded, "The first frame should record the border's content.");
+
+		switch (property)
+		{
+			case "Offset":
+				border.Offset = new Vector3(0, 100, 0);
+				break;
+			case "ArrangeOffset":
+				border.ArrangeOffset = new Vector3(0, 100, 0);
+				break;
+			default:
+				border.AnchorPoint = new Vector2(0, 100);
+				break;
+		}
+
+		RenderFrame(root, damage);
+
+		Assert.AreSame(recorded, border.RecordedContentForTesting, $"Changing {property} re-recorded the border's content.");
+
+		using var moved = SnapshotDamage(damage);
+		Assert.IsTrue(moved.FillContains(new Vector2(50, 25)), $"The vacated region is not damaged (damage bounds: {moved.Bounds}).");
+		Assert.IsTrue(moved.FillContains(new Vector2(50, 125)), $"The new region is not damaged (damage bounds: {moved.Bounds}).");
+		Assert.IsTrue(
+			moved.Bounds.Right <= 140,
+			$"Damage is far wider than the moved visual, partial repaint is being defeated (got {moved.Bounds}).");
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	// Scale is not a translation: brushes and flattened geometry are rasterized at the scale they are drawn under, so
+	// a recording kept across a zoom would come out blurry or coarse.
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Visual_Is_Scaled_Then_It_Is_Re_Recorded()
+	{
+#if __SKIA__
+		var compositor = Compositor.GetSharedCompositor();
+
+		var root = compositor.CreateContainerVisual();
+		root.Size = new Vector2(200, 200);
+
+		var border = compositor.CreateBorderVisual();
+		border.Size = new Vector2(100, 50);
+		border.BackgroundBrush = compositor.CreateColorBrush(Colors.Magenta);
+		root.Children.InsertAtTop(border);
+
+		using var damage = new DamageRegion();
+		RenderFrame(root, damage);
+
+		var recorded = border.RecordedContentForTesting;
+		Assert.IsNotNull(recorded, "The first frame should record the border's content.");
+
+		border.Scale = new Vector3(1.5f, 1.5f, 1);
+		RenderFrame(root, damage);
+
+		Assert.AreNotSame(recorded, border.RecordedContentForTesting, "Scaling the visual kept the recording made at the old scale.");
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
 #if __SKIA__
 	private static void RenderFrame(ContainerVisual root, DamageRegion damage)
 	{
-		var recording = DrawingFactory.Current.CreateRecording();
+		// The detached tree under test renders with the main window's backend: nothing process-wide holds one.
+		var factory = Private.Infrastructure.TestServices.WindowHelper.XamlRoot!.VisualTree.RootElement!.Visual.CompositionTarget!.Renderer!;
+		var recording = factory.CreateRecording();
 		FrameRenderHelper.RecordFrame(recording, 200, 200, root, invertPath: false, damage: damage);
 		recording.Finish()?.Dispose();
 	}
 
-	// The region accumulates rects; detaching materialises them into the single geometry the frame is
-	// actually clipped to, which is what these assertions inspect.
+	// The region accumulates rects and hands them back as rects (the present clips with ClipRect per rect).
+	// These assertions are written against a geometry, so the rects are materialised into one here — in the
+	// test only; the render path never builds it.
 	private static IGeometry SnapshotDamage(DamageRegion damage, float frameSize = 200)
 	{
 		damage.ClampTo(new Rect(0, 0, frameSize, frameSize));
-		return damage.Detach(1f) ?? GeometryFactory.Current.CreateRectangleGeometry(default);
+		var rects = damage.Detach(1f);
+		if (rects is null || rects.Length == 0)
+		{
+			return GeometryFactory.Current.CreateRectangleGeometry(default);
+		}
+
+		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
+		builder.FillRule = GeometryFillRule.NonZero;
+		foreach (var r in rects)
+		{
+			builder.AddRectangle(r);
+		}
+
+		return builder.Build();
 	}
 
 	private sealed class DamageRecorder : ICompositionTarget
@@ -580,6 +685,14 @@ public class Given_Visual_Damage
 		}
 
 		public void RequestNewFrame() { }
+
+		public event EventHandler<long> FrameStarting
+		{
+			add { }
+			remove { }
+		}
+
+		public long FrameIntervalInTicks => TimeSpan.TicksPerSecond / 60;
 
 		public void AddDamage(Rect bounds) => Damage.Add(bounds);
 

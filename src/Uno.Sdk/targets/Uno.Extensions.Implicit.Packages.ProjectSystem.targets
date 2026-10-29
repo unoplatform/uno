@@ -70,7 +70,6 @@
 				AND $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) != ''
 				AND $([MSBuild]::VersionLessThan($([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')), '11.0')) " />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Graphics" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls.Build.Tasks" ProjectSystem="true" Condition="$(SingleProject) == 'true'"/>
 
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Navigation.UI" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Navigation.Fragment" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
@@ -90,6 +89,13 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.Messaging" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
+		<!--
+			Feed mocks for previews and UI testing. Dev/test-only: absent when optimized, and PrivateAssets keeps it
+			out of the consumers and nuspec of a Debug-packed library. AvailableSince skips it (UNOB0028) when the
+			Extensions version predates the package, can't be compared, or is missing from the manifest.
+		-->
+		<_UnoProjectSystemPackageReference Include="Uno.HotTesting.Reactive" ProjectSystem="true" PrivateAssets="all" AvailableSince="7.4"
+			Condition=" '$(Optimize)' != 'true' AND '$(UnoDisableHotTesting)' != 'true' " />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';serialization;'))">

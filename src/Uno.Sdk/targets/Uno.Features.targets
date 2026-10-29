@@ -6,14 +6,40 @@
 		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
 
-		<!-- Native UI rendering is removed: Skia is the only default renderer, so the 'skia' feature is always
-		     implied (it references the SkiaSharp backend and its supporting packages) even when not listed under
-		     UnoFeatures. The legacy 'nativerenderer' token is ignored, and 'skiarenderer' is mapped to 'skia'
-		     for backwards compatibility. -->
+		<!-- Legacy tokens: native rendering is gone, and Lottie is built into Uno.WinUI. -->
 		<UnoFeatures>$(UnoFeatures.Replace(';nativerenderer;', ';'))</UnoFeatures>
-		<UnoFeatures>$(UnoFeatures.Replace(';skiarenderer;', ';'))</UnoFeatures>
-		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;'))">$(UnoFeatures)skia;</UnoFeatures>
+		<UnoFeatures>$(UnoFeatures.Replace(';lottie;', ';'))</UnoFeatures>
+
+		<!-- The renderer is the app's choice. A head maps the legacy 'skiarenderer' to 'skia', and implies 'skia'
+		     when it names no renderer ('webgpu' counts, which keeps an app SkiaSharp-free); WinAppSDK renders with
+		     WinUI, so nothing is implied there. A library gets neither, and lists 'skia' to draw with SkiaSharp.
+		     The target framework is tested directly: IsWinAppSdk is not set yet when the project body sets it. -->
+		<_UnoLibrarySkiaRendererIgnored Condition="'$(IsUnoHead)' != 'true' And $(UnoFeatures.Contains(';skiarenderer;'))">true</_UnoLibrarySkiaRendererIgnored>
+		<UnoFeatures Condition="'$(IsUnoHead)' == 'true'">$(UnoFeatures.Replace(';skiarenderer;', ';skia;'))</UnoFeatures>
+		<UnoFeatures Condition="'$(IsUnoHead)' != 'true'">$(UnoFeatures.Replace(';skiarenderer;', ';'))</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And !$(TargetFramework.Contains('windows10')) And '$(IsUnoHead)' == 'true'">$(UnoFeatures)skia;</UnoFeatures>
+		<!-- WebGpuCanvasElement draws only with the WebGPU backend, so 'webgpucanvas' brings it in. It is added after
+		     the renderer default above, so in an app it adds WebGPU next to Skia rather than replacing it. -->
+		<UnoFeatures Condition="$(UnoFeatures.Contains(';webgpucanvas;')) And !$(UnoFeatures.Contains(';webgpu;')) And !$(TargetFramework.Contains('windows10'))">$(UnoFeatures)webgpu;</UnoFeatures>
 	</PropertyGroup>
+
+	<Target Name="_UnoWarnLibrarySkiaRendererIgnored"
+			BeforeTargets="CoreCompile"
+			Condition="'$(DesignTimeBuild)' != 'true' and '$(_UnoLibrarySkiaRendererIgnored)' == 'true'">
+		<Warning Code="UNOB0030"
+				 HelpLink="https://aka.platform.uno/UNOB0030"
+				 Text="The SkiaRenderer Uno Feature is ignored in a library: the renderer is the app's choice. Remove it, or replace it with Skia if the library uses SKCanvasElement, the SkiaExtensions conversions or the Uno Toolkit's Skia controls. (See https://aka.platform.uno/UNOB0030)" />
+	</Target>
+
+	<!-- Uno.Microsoft.UI.Reactor has no WinAppSDK build, so the Windows target gets no reference (Uno.Implicit.Packages.ProjectSystem.targets).
+	     Fail here rather than let every Reactor type surface as a CS0246. -->
+	<Target Name="_UnoValidateReactorWinAppSdk"
+			BeforeTargets="CoreCompile"
+			Condition="'$(DesignTimeBuild)' != 'true' and $(UnoFeatures.Contains(';reactor;')) and $(TargetFramework.Contains('windows10'))">
+		<Error Code="UNOB0031"
+			   HelpLink="https://aka.platform.uno/UNOB0031"
+			   Text="The Reactor Uno Feature is not supported on the WinAppSDK target ($(TargetFramework)): Reactor on Uno Platform runs on the Uno Platform targets only. Remove the Windows target framework from this project. (See https://aka.platform.uno/UNOB0031)" />
+	</Target>
 
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
 		<UseMaui>true</UseMaui>

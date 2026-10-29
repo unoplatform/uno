@@ -12,6 +12,7 @@ using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -32,6 +33,11 @@ using Uno.UI;
 #endif
 
 using Point = Windows.Foundation.Point;
+#if HAS_UNO_WINUI
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
 using TabView = Microsoft.UI.Xaml.Controls.TabView;
 using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
 
@@ -439,10 +445,199 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
 
 			Assert.AreEqual("Item 1", si.Content);
-#if WINAPPSDK // On iOS and Android (others not tested), ContentTemplateRoot is null, and TemplatedRoot is a ContentPresenter containing an ImplicitTextBlock
 			Assert.IsInstanceOfType(si.ContentTemplateRoot, typeof(TextBlock));
 			Assert.AreEqual("Item 1", (si.ContentTemplateRoot as TextBlock).Text);
-#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(ListView))]
+		[DataRow(typeof(GridView))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_ItemTemplate_Then_Container_ContentTemplateRoot_Is_Template_Root(Type listType)
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = TextBlockItemTemplate;
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+
+			SelectorItem container = null;
+			await WindowHelper.WaitFor(() => (container = SUT.ContainerFromIndex(0) as SelectorItem) != null);
+
+			var root = container.ContentTemplateRoot as TextBlock;
+			Assert.IsNotNull(root, "ContentTemplateRoot");
+			Assert.AreEqual("Item 1", root?.Text);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(ListView))]
+		[DataRow(typeof(GridView))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_ContainerContentChanging_Then_ContentTemplateRoot_Is_Materialized(Type listType)
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = TextBlockItemTemplate;
+
+			// WinUI raises ContainerContentChanging once the container has applied its template,
+			// so a handler can fill the item from ContentTemplateRoot (the documented pattern).
+			var rootsSeen = new List<string>();
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue)
+				{
+					var container = e.ItemContainer;
+					var children = VisualTreeHelper.GetChildrenCount(container);
+					var reapplied = container.ApplyTemplate();
+					rootsSeen.Add($"{container.ContentTemplateRoot?.GetType().Name ?? "null"} children={children} reapplied={reapplied}");
+				}
+			};
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+
+			Assert.IsTrue(rootsSeen.Count >= source.Length, $"ContainerContentChanging raised {rootsSeen.Count} time(s)");
+			var expected = $"{nameof(TextBlock)} children=1 reapplied=False";
+			Assert.IsTrue(rootsSeen.All(r => r == expected), "When raised: " + string.Join(", ", rootsSeen));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_Container_Has_No_Template_Then_ContainerContentChanging_Is_Raised()
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var containerStyle = new Style(typeof(ListViewItem));
+			containerStyle.Setters.Add(new Setter(Control.TemplateProperty, null));
+			var SUT = new ListView { ItemContainerStyle = containerStyle, ItemsSource = source };
+
+			var raisedFor = new List<int>();
+			SUT.ContainerContentChanging += (s, e) => raisedFor.Add(e.ItemIndex);
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded);
+			await WindowHelper.WaitFor(() => raisedFor.Count >= source.Length);
+
+			CollectionAssert.AreEquivalent(new[] { 0, 1 }, raisedFor);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(ListView), typeof(ListViewItem))]
+		[DataRow(typeof(GridView), typeof(GridViewItem))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_Container_Collapsed_Then_ContainerContentChanging_Is_Raised(Type listType, Type containerType)
+		{
+			var source = new[] { "Item 1", "Item 2", "Item 3" };
+			var collapsedStyle = new Style(containerType);
+			collapsedStyle.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Collapsed));
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = TextBlockItemTemplate;
+			SUT.ItemContainerStyleSelector = new CollapseItemStyleSelector { Item = source[1], CollapsedStyle = collapsedStyle };
+
+			// A collapsed container is never measured, so it never gets its template; WinUI still raises
+			// ContainerContentChanging for it, with a null ContentTemplateRoot.
+			var raised = new Dictionary<int, string>();
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue)
+				{
+					raised[e.ItemIndex] = e.ItemContainer.ContentTemplateRoot?.GetType().Name ?? "null";
+				}
+			};
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var seen = string.Join(", ", raised.OrderBy(p => p.Key).Select(p => $"#{p.Key}: {p.Value}"));
+			CollectionAssert.AreEquivalent(new[] { 0, 1, 2 }, raised.Keys.ToArray(), "ContainerContentChanging raised for " + seen);
+			Assert.AreEqual(Visibility.Collapsed, ((UIElement)SUT.ContainerFromIndex(1)).Visibility);
+			Assert.AreEqual(nameof(TextBlock), raised[0], seen);
+			Assert.AreEqual(nameof(TextBlock), raised[2], seen);
+		}
+
+		private class CollapseItemStyleSelector : StyleSelector
+		{
+			public object Item { get; set; }
+
+			public Style CollapsedStyle { get; set; }
+
+			protected override Style SelectStyleCore(object item, DependencyObject container)
+				=> Equals(item, Item) ? CollapsedStyle : null;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_Containers_Recycled_Then_ContainerContentChanging_Has_Template_Root()
+		{
+			var source = Enumerable.Range(0, 100).Select(i => $"Item {i}").ToArray();
+			var SUT = new ListView { ItemTemplate = TextBlockItemTemplate, ItemsSource = source, Height = 200 };
+
+			var problems = new List<string>();
+			var maxIndex = -1;
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (e.InRecycleQueue)
+				{
+					return;
+				}
+
+				maxIndex = Math.Max(maxIndex, e.ItemIndex);
+				if (e.ItemContainer.ContentTemplateRoot is not TextBlock)
+				{
+					problems.Add($"#{e.ItemIndex}: root={e.ItemContainer.ContentTemplateRoot?.GetType().Name ?? "null"}");
+				}
+				if (SUT.IndexFromContainer(e.ItemContainer) != e.ItemIndex)
+				{
+					problems.Add($"#{e.ItemIndex}: IndexFromContainer={SUT.IndexFromContainer(e.ItemContainer)}");
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.ScrollIntoView(source[^1]);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(source.Length - 1, maxIndex, "Last item realized");
+			Assert.AreEqual(0, problems.Count, string.Join("; ", problems));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(ListView))]
+		[DataRow(typeof(GridView))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24718")]
+		public async Task When_ContainerContentChanging_Fills_Template_Root_Then_Content_Is_Laid_Out(Type listType)
+		{
+			var source = new[] { "Item 1", "Item 2" };
+			var SUT = (ListViewBase)Activator.CreateInstance(listType);
+			SUT.ItemTemplate = (DataTemplate)XamlReader.Load(
+				"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><ContentControl /></DataTemplate>");
+
+			// The documented pattern: fill the materialized item template from the handler.
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue && e.ItemContainer.ContentTemplateRoot is ContentControl shell)
+				{
+					shell.Content = new TextBlock { Text = (string)e.Item };
+				}
+			};
+			SUT.ItemsSource = source;
+
+			await UITestHelper.Load(SUT);
+
+			SelectorItem container = null;
+			await WindowHelper.WaitFor(() => (container = SUT.ContainerFromIndex(0) as SelectorItem) != null);
+			await WindowHelper.WaitForIdle();
+
+			var text = ((container.ContentTemplateRoot as ContentControl)?.Content) as TextBlock;
+			Assert.IsNotNull(text, "Item content set by the handler");
+			Assert.AreEqual("Item 1", text?.Text);
+			Assert.IsTrue(text?.ActualWidth > 0, "Item content is laid out");
 		}
 
 		[TestMethod]
@@ -898,6 +1093,153 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
 				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
+			}
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[DataRow(PointerDeviceType.Touch, false, false, true)]
+#if HAS_UNO // Pen injection is not available on WinAppSDK
+		[DataRow(PointerDeviceType.Pen, false, false, true)]
+#endif
+		[DataRow(PointerDeviceType.Touch, true, false, true)]
+		[DataRow(PointerDeviceType.Touch, false, true, true)]
+		[DataRow(PointerDeviceType.Touch, false, false, false)]
+		public async Task When_Hold_Item_Then_No_ItemClick_Nor_Selection(PointerDeviceType device, bool isGridView, bool holdingTimerOnly, bool isItemClickEnabled)
+		{
+			ListViewBase list = isGridView ? new GridView() : new ListView();
+			list.IsItemClickEnabled = isItemClickEnabled;
+			list.SelectionMode = ListViewSelectionMode.Single;
+			list.ItemsSource = new[] { "0", "1", "2" };
+
+			var itemClickCount = 0;
+			var holdingCount = 0;
+			list.ItemClick += (_, _) => itemClickCount++;
+			if (holdingTimerOnly)
+			{
+				// Like a ContextFlyout, a Holding handler runs the holding timer, which can see the hold before the pointer timestamps do.
+				list.Holding += (_, _) => holdingCount++;
+			}
+
+			try
+			{
+				await UITestHelper.Load(list);
+
+				var pointer = (InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector")).GetPointer(device);
+				using var pointerScope = pointer as IDisposable;
+				var center = ((FrameworkElement)list.ContainerFromIndex(1)).GetAbsoluteCenter();
+
+				// On WinUI a ListViewItem runs its tap interaction only when a Tapped follows, while a touch or pen hold is a right-tap.
+				await pointer.Hold(center, timerOnlyHoldingSource: holdingTimerOnly ? list : null);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, itemClickCount);
+				Assert.AreEqual(-1, list.SelectedIndex);
+				Assert.AreEqual(holdingTimerOnly ? 2 : 0, holdingCount); // Started and Completed
+
+				if (!holdingTimerOnly) // Otherwise the injected timestamps never advanced: the next press would have the held one's timestamp.
+				{
+					pointer.Press(center);
+					pointer.Release();
+					await WindowHelper.WaitForIdle();
+
+					Assert.AreEqual(isItemClickEnabled ? 1 : 0, itemClickCount);
+					Assert.AreEqual(1, list.SelectedIndex);
+				}
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Relies on Uno's injected timestamps to hold
+		public async Task When_Second_Finger_Holds_Item_Then_No_ItemClick_Nor_Selection()
+		{
+			var list = new ListView
+			{
+				IsItemClickEnabled = true,
+				SelectionMode = ListViewSelectionMode.Single,
+				ItemsSource = new[] { "0", "1", "2" },
+			};
+			var itemClickCount = 0;
+			list.ItemClick += (_, _) => itemClickCount++;
+
+			try
+			{
+				await UITestHelper.Load(list);
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var first = injector.GetFinger(id: 1);
+				using var second = injector.GetFinger(id: 2);
+				var center = ((FrameworkElement)list.ContainerFromIndex(1)).GetAbsoluteCenter();
+
+				first.Press(center);
+				await second.Hold(new Point(center.X + 5, center.Y));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, itemClickCount, "The second finger's hold must not raise the click armed by the first one.");
+				Assert.AreEqual(-1, list.SelectedIndex);
+
+				first.Release(); // Pressed before the hold advanced the timestamps: a hold too.
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, itemClickCount);
+				Assert.AreEqual(-1, list.SelectedIndex);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Hold_Item_And_SuppressTapOnHold_Disabled_Then_ItemClick_And_Selection()
+		{
+			var original = Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold;
+			Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold = false;
+			try
+			{
+				var list = new ListView
+				{
+					IsItemClickEnabled = true,
+					SelectionMode = ListViewSelectionMode.Single,
+					ItemsSource = new[] { "0", "1", "2" },
+				};
+				var tappedOnly = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+				var itemClickCount = 0;
+				var tappedCount = 0;
+				list.ItemClick += (_, _) => itemClickCount++;
+				tappedOnly.Tapped += (_, _) => tappedCount++;
+
+				await UITestHelper.Load(new StackPanel { Children = { list, tappedOnly } });
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var finger = injector.GetFinger();
+
+				await finger.Hold(((FrameworkElement)list.ContainerFromIndex(1)).GetAbsoluteCenter());
+				await finger.Hold(tappedOnly.GetAbsoluteCenter());
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, itemClickCount);
+				Assert.AreEqual(1, list.SelectedIndex);
+				Assert.AreEqual(1, tappedCount);
+			}
+			finally
+			{
+				Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold = original;
+				WindowHelper.WindowContent = null;
 			}
 		}
 #endif
@@ -1658,15 +2000,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			for (int i = 0; i < 3; i++)
 			{
-				ScrollTo(list, 1000000); // Scroll to end
+				// The scrolls are animated: wait for each to settle rather than for a fixed time, which a renderer
+				// slower than the one the delays were tuned on outlasts.
+				await ScrollToAndWait(list, 1000000); // Scroll to end
 
-				await Task.Delay(200);
-				await WindowHelper.WaitForIdle();
-
-				ScrollTo(list, 5); // Scroll back up
-
-				await Task.Delay(600);
-				await WindowHelper.WaitForIdle();
+				await ScrollToAndWait(list, 5); // Scroll back up
 
 				var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
 
@@ -1723,16 +2061,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForIdle();
 
-			ScrollTo(list, 1000000); // Scroll to end
-
-			await Task.Delay(200);
-			await WindowHelper.WaitForIdle();
+			// The scrolls are animated: wait for each to settle rather than for a fixed time.
+			await ScrollToAndWait(list, 1000000); // Scroll to end
 
 			ScrollTo(list, 50); // scroll back up but not all the way
-			ScrollTo(list, 0);
-
-			await Task.Delay(600);
-			await WindowHelper.WaitForIdle();
+			await ScrollToAndWait(list, 0);
 
 			var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
 
@@ -3320,15 +3653,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
+			var automationPeer = FrameworkElementAutomationPeer.CreatePeerForElement(SUT);
+			Assert.IsNotNull(automationPeer);
+			_ = automationPeer.GetChildren();
+
 			source.RemoveAt(0);
 
 			await WindowHelper.WaitForIdle();
+			_ = automationPeer.GetChildren();
 
 			await AssertCollectedReference(refSource[0]);
 
 			source.Clear();
 
 			await WindowHelper.WaitForIdle();
+			_ = automationPeer.GetChildren();
 
 			foreach (var itemRef in refSource)
 			{
@@ -3797,15 +4136,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(1000);
 			var initial = GetCurrenState();
 
-			// scroll to bottom
-			ScrollTo(list, 10000);
-			await Task.Delay(500);
+			// scroll to bottom; the next batch arrives over a few frames, so wait for it rather than for a fixed time
+			await ScrollToAndWait(list, 10000);
+			await WindowHelper.WaitFor(() => source.Count >= initial.Count + BatchSize && GetCurrenState().LastMaterialized > initial.LastMaterialized, timeoutMS: 5000);
 			await WindowHelper.WaitForIdle();
 			var first = GetCurrenState();
 
 			// scroll to bottom
-			ScrollTo(list, 10000);
-			await Task.Delay(500);
+			await ScrollToAndWait(list, 10000);
+			await WindowHelper.WaitFor(() => source.Count >= first.Count + BatchSize && GetCurrenState().LastMaterialized > first.LastMaterialized, timeoutMS: 5000);
 			await WindowHelper.WaitForIdle();
 			var second = GetCurrenState();
 
@@ -4309,6 +4648,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		// For this test to work, make sure you are running the SampleApp with LightTheme enabled.
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		[Ignore("A theme change does not reach the ListViewItem content foreground yet, see https://github.com/unoplatform/uno/pull/23491")]
 		public async Task When_ThemeChange()
 		{
 			const double TotalHeight = 500; // The ListView height.
@@ -4339,26 +4679,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = grid;
 			await WindowHelper.WaitForIdle();
 			var exploredTextBlocks = new HashSet<TextBlock>();
+			var expectedLightForeground = Windows.UI.Color.FromArgb(0xE4, 0, 0, 0);
+			var expectedDarkForeground = Colors.White;
 			foreach (var listViewItem in GetPanelVisibleChildren(SUT))
 			{
 				var tb = listViewItem.FindFirstDescendant<TextBlock>();
 				exploredTextBlocks.Add(tb);
-				Assert.AreEqual(Colors.Black, ((SolidColorBrush)tb.Foreground).Color);
+				Assert.AreEqual(expectedLightForeground, ((SolidColorBrush)tb.Foreground).Color);
 			}
 
 			using (ThemeHelper.UseDarkTheme())
 			{
 				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight;
 
-				ScrollTo(SUT, scrollPosition);
-				await Task.Delay(500);
-				await WindowHelper.WaitForIdle();
+				await ScrollToAndWait(SUT, scrollPosition);
 				var seenNewTextBlock = false;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
 				{
 					var tb = listViewItem.FindFirstDescendant<TextBlock>();
 					seenNewTextBlock |= exploredTextBlocks.Add(tb);
-					Assert.AreEqual(Colors.White, ((SolidColorBrush)tb.Foreground).Color);
+					Assert.AreEqual(expectedDarkForeground, ((SolidColorBrush)tb.Foreground).Color);
 				}
 
 				Assert.IsTrue(seenNewTextBlock);
@@ -5591,7 +5931,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			protected override DataTemplate SelectTemplateCore(object item)
 			{
-				if (!_itemsSource.Contains(item))
+				// WinUI can invoke the selector with a null item while recycling a container.
+				if (item is not null && !_itemsSource.Contains(item))
 				{
 					var ex = new InvalidOperationException($"Selector called for item not in source ({item})");
 					Exception = Exception ?? ex;

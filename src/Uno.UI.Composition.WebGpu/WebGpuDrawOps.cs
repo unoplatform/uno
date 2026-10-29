@@ -4,8 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
+using Buffer = Silk.NET.WebGPU.Buffer;
 
 namespace Uno.UI.Composition.WebGpu;
 
@@ -75,17 +75,17 @@ internal enum DrawKind
 /// of its texture or gradient, and the clip it draws under. Two consecutive ops merge into one draw when they differ
 /// only in their vertex range and that range is contiguous (see the encoder).
 /// </summary>
-internal struct DrawOp
+internal unsafe struct DrawOp
 {
 	public DrawKind Kind;
-	public IntPtr Verts;       // the op's own vertex buffer, or Zero for the pass's shared buffer of its kind
+	public nint Verts;         // the op's own vertex buffer, a packed-range tag, or 0 for the pass's shared buffer of its kind
 	public uint FirstVertex;   // into Verts
 	public uint Count;         // vertices; a BackdropSegment keeps its index into the pass's backdrops here
-	public IntPtr Group1;      // the image / gradient bind group; Zero for a solid or rounded rect
+	public BindGroup* Group1;  // the image / gradient bind group; Zero for a solid or rounded rect
 	public ClipData Clip;
-	public IntPtr ClipBg;
+	public BindGroup* ClipBg;
 	/// <summary>Where the recording this op belongs to sits. Zero = it is already in device space.</summary>
-	public IntPtr SiteBg;
+	public BindGroup* SiteBg;
 	/// <summary>Its site's slot, whose scissor box the encode reads. Zero = the op carries its own.</summary>
 	public nint SiteSlot;
 	/// <summary>
@@ -99,6 +99,8 @@ internal struct DrawOp
 	/// <see cref="Bounds"/> -- that one decides whether something is hidden, this one decides what hides it.
 	/// </summary>
 	public Vector4 Cover;
+	/// <summary>The opaque colour an op with a <see cref="Cover"/> fills it with: a plain rect fill, or an opaque rounded rect.</summary>
+	public Windows.UI.Color Fill;
 	/// <summary>Its replay site's draw-order depth, matching what the vertex shader emits (see project).</summary>
 	public float Depth;
 	/// <summary>
@@ -106,24 +108,29 @@ internal struct DrawOp
 	/// (Z &lt;= X) unless the cull set it; applied on top of whatever scissor the op would otherwise get.
 	/// </summary>
 	public Vector4 CullScissor;
+	/// <summary>
+	/// Everything the op can touch, in the space its vertices are in; empty when unknown. Only drops an op that lands
+	/// wholly outside its site's clip -- unlike <see cref="Bounds"/>, it never makes the op hide anything or get hidden.
+	/// </summary>
+	public Vector4 Extent;
 
 	/// <summary>An op drawing a range of the pass's shared buffer for its kind.</summary>
-	public static DrawOp Shared(DrawKind kind, uint firstVertex, uint count, IntPtr group1, in ClipData clip, IntPtr clipBg)
+	public static DrawOp Shared(DrawKind kind, uint firstVertex, uint count, BindGroup* group1, in ClipData clip, BindGroup* clipBg)
 		=> new() { Kind = kind, FirstVertex = firstVertex, Count = count, Group1 = group1, Clip = clip, ClipBg = clipBg };
 
 	/// <summary>An op drawing a vertex buffer of its own from its start.</summary>
-	public static DrawOp Own(DrawKind kind, IntPtr verts, uint count, IntPtr group1, in ClipData clip, IntPtr clipBg)
+	public static DrawOp Own(DrawKind kind, nint verts, uint count, BindGroup* group1, in ClipData clip, BindGroup* clipBg)
 		=> new() { Kind = kind, Verts = verts, Count = count, Group1 = group1, Clip = clip, ClipBg = clipBg };
 
 	public static DrawOp Backdrop(int index, in ClipData clip)
 		=> new() { Kind = DrawKind.BackdropSegment, Count = (uint)index, Clip = clip };
 
 	/// <summary>The same draw under another clip: what a restamp of an arena op produces.</summary>
-	public DrawOp WithClip(in ClipData clip, IntPtr clipBg) { var o = this; o.Clip = clip; o.ClipBg = clipBg; return o; }
+	public DrawOp WithClip(in ClipData clip, BindGroup* clipBg) { var o = this; o.Clip = clip; o.ClipBg = clipBg; return o; }
 
-	public DrawOp WithClipSite(in ClipData clip, IntPtr clipBg, IntPtr siteBg, nint siteSlot) { var o = this; o.Clip = clip; o.ClipBg = clipBg; o.SiteBg = siteBg; o.SiteSlot = siteSlot; return o; }
+	public DrawOp WithClipSite(in ClipData clip, BindGroup* clipBg, BindGroup* siteBg, nint siteSlot) { var o = this; o.Clip = clip; o.ClipBg = clipBg; o.SiteBg = siteBg; o.SiteSlot = siteSlot; return o; }
 
-	public bool SharesBuffer => Verts == IntPtr.Zero;
+	public bool SharesBuffer => Verts == 0;
 }
 
 /// <summary>
@@ -168,12 +175,35 @@ internal sealed class WebGpuGeometryCache
 	public long SitesFrame;
 	public long ContentKey;
 	public long IdleSince;
+	// Its bags were handed back to free atlas room; the next replay rebuilds it. See WebGpuFrame.EvictAtlasHolders.
+	public bool Evicted;
+	// Built while the atlas had no room, so some of its fills fell back to geometry: rebuilt once an eviction ran.
+	public long StarvedBeforeEviction = -1;
 	// The command list this was built from, kept for the equality check that guards against a hash collision.
 	public List<WebGpuCommand> Src;
+	// Set by whichever path frees the entry for good. Its holders release on the UI or finalizer thread while the
+	// render thread evicts and sweeps, and two of them can each conclude they hold the last reference.
+	private int _released;
+
+	/// <summary>
+	/// Hands the entry's stamps (sites included) and bags to the device for a deferred free, once: a second caller
+	/// gets false and frees nothing, since a site's bind group and slab slot are not refcounted.
+	/// </summary>
+	public unsafe bool ReleaseFinal(WebGpuDevice device)
+	{
+		if (System.Threading.Interlocked.Exchange(ref _released, 1) != 0)
+		{
+			return false;
+		}
+
+		foreach (var st in Stamps) { device.DeferCompiledRelease(null, st.Owned); device.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
+		device.DeferCompiledRelease(Owned, null);
+		return true;
+	}
 }
 
 /// <summary>One stamp of an arena entry: its ops carrying the clip groups for one replay site.</summary>
-internal sealed class StampSlot
+internal sealed unsafe class StampSlot
 {
 	public List<DrawOp> Ops;
 	public OwnedResources Owned;
@@ -187,7 +217,7 @@ internal sealed class StampSlot
 	public Vector4 Basis;
 	public int SessionEntries;
 	public nint SiteSlot;
-	public IntPtr SiteBg;
+	public BindGroup* SiteBg;
 	/// <summary>Its ops were built independent of where the site sits, so a move can reuse them untouched.</summary>
 	public bool SiteOps;
 }
@@ -196,14 +226,14 @@ internal sealed class StampSlot
 /// The state one pass-encode works over: handles fixed once the pass is set up, and the parts that evolve as ops
 /// are encoded - the encoder and the counters the stats line reports.
 /// </summary>
-internal ref struct PassOps
+internal unsafe ref struct PassOps
 {
-	public IntPtr Pass;
+	public RenderPassEncoder* Pass;
 	public WebGpuRenderSurface Target;
 	public List<DrawOp> Ops;
 	public List<BackdropCmd> Backdrops;
-	public IntPtr SolidBuf, RrectBuf, GradBuf, QuadBuf;
-	public IntPtr PassBg;   // group 0 of every colour draw: this pass's projection
+	public Buffer* SolidBuf, RrectBuf, GradBuf, QuadBuf;
+	public BindGroup* PassBg;   // group 0 of every colour draw: this pass's projection
 	public nuint SolidBufBytes, RrectBufBytes, GradBufBytes, QuadBufBytes;
 
 	public PassEncoder Enc;
@@ -221,13 +251,17 @@ internal ref struct PassOps
 /// </summary>
 internal unsafe struct PassEncoder
 {
-	private IntPtr _pass;
-	private IntPtr _pipe, _bg0, _bg1, _bg2, _bg3, _vb;
+	private readonly WebGPU _api;
+	private RenderPassEncoder* _pass;
+	private RenderPipeline* _pipe;
+	private BindGroup* _bg0, _bg1, _bg2, _bg3;
+	private Buffer* _vb;
 	private nuint _vbOffset, _vbSize;
 	private int _sx, _sy, _sw, _sh;
 
-	public PassEncoder(IntPtr pass)
+	public PassEncoder(WebGPU api, RenderPassEncoder* pass)
 	{
+		_api = api;
 		_pass = pass;
 		Reset();
 	}
@@ -236,7 +270,7 @@ internal unsafe struct PassEncoder
 	/// Points the encoder at a freshly opened pass. A pass is ended and reopened mid-encode (a backdrop has to
 	/// sample what is already drawn), and every handle plus all dedup state belongs to the pass that ended.
 	/// </summary>
-	public void Rebind(IntPtr pass)
+	public void Rebind(RenderPassEncoder* pass)
 	{
 		_pass = pass;
 		Reset();
@@ -244,7 +278,8 @@ internal unsafe struct PassEncoder
 
 	public void Reset()
 	{
-		_pipe = -1; _bg0 = -1; _bg1 = -1; _bg2 = -1; _bg3 = -1; _vb = -1;
+		// An address no object has, so the first call of each kind always reaches the pass.
+		_pipe = (RenderPipeline*)-1; _bg0 = _bg1 = _bg2 = _bg3 = (BindGroup*)-1; _vb = (Buffer*)-1;
 		_vbOffset = unchecked((nuint)ulong.MaxValue);
 		_vbSize = 0;
 		_sx = _sy = _sw = _sh = -1;
@@ -255,34 +290,34 @@ internal unsafe struct PassEncoder
 	{
 		if (x == _sx && y == _sy && w == _sw && h == _sh) { return; }
 		_sx = x; _sy = y; _sw = w; _sh = h;
-		wgpuRenderPassEncoderSetScissorRect(_pass, (uint)x, (uint)y, (uint)w, (uint)h);
+		_api.RenderPassEncoderSetScissorRect(_pass, (uint)x, (uint)y, (uint)w, (uint)h);
 	}
 
-	public void Pipe(IntPtr pipe)
+	public void Pipe(RenderPipeline* pipe)
 	{
 		if (pipe == _pipe) { return; }
 		_pipe = pipe;
-		wgpuRenderPassEncoderSetPipeline(_pass, pipe);
+		_api.RenderPassEncoderSetPipeline(_pass, pipe);
 	}
 
-	public void Bg(uint group, IntPtr bg)
+	public void Bg(uint group, BindGroup* bg)
 	{
 		if (group == 0) { if (bg == _bg0) { return; } _bg0 = bg; }
 		else if (group == 1) { if (bg == _bg1) { return; } _bg1 = bg; }
 		else if (group == 2) { if (bg == _bg2) { return; } _bg2 = bg; }
 		else if (group == 3) { if (bg == _bg3) { return; } _bg3 = bg; }
-		wgpuRenderPassEncoderSetBindGroup(_pass, group, bg, 0, (uint*)null);
+		_api.RenderPassEncoderSetBindGroup(_pass, group, bg, 0, null);
 	}
 
-	public void Vb(IntPtr buf, nuint offset, nuint size)
+	public void Vb(Buffer* buf, nuint offset, nuint size)
 	{
 		if (buf == _vb && offset == _vbOffset && size == _vbSize) { return; }
 		_vb = buf; _vbOffset = offset; _vbSize = size;
-		wgpuRenderPassEncoderSetVertexBuffer(_pass, 0, buf, offset, size);
+		_api.RenderPassEncoderSetVertexBuffer(_pass, 0, buf, offset, size);
 	}
 
 	public void Draw(uint count, uint firstVertex = 0)
 	{
-		wgpuRenderPassEncoderDraw(_pass, count, 1, firstVertex, 0);
+		_api.RenderPassEncoderDraw(_pass, count, 1, firstVertex, 0);
 	}
 }

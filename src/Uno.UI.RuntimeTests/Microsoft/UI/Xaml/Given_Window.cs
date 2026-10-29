@@ -107,6 +107,46 @@ public class Given_Window
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24679")]
+	public async Task When_Secondary_Window_Closed_Then_Initial_Window_Visible()
+	{
+		AssertSupportsMultipleWindows();
+
+		var initialWindow = TestServices.WindowHelper.CurrentTestWindow;
+		var sut = new Window();
+
+		var activated = false;
+		sut.Activated += (s, e) => activated = true;
+		sut.Activate();
+		await TestServices.WindowHelper.WaitFor(() => activated);
+
+		sut.Close();
+
+		// On iOS, closing the scene that was in front must not leave the app without a foreground scene.
+		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible, timeoutMS: 15000);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24679")]
+	public async Task When_Secondary_Window_Closed_Before_Shown_Then_Initial_Window_Visible()
+	{
+		AssertSupportsMultipleWindows();
+
+		var initialWindow = TestServices.WindowHelper.CurrentTestWindow;
+		var sut = new Window();
+
+		sut.Activate();
+		sut.Close();
+
+		// On iOS the scene requested by Activate still connects after the close and gets discarded,
+		// which must not take the app's foreground scene with it.
+		await Task.Delay(TimeSpan.FromSeconds(2));
+		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible, timeoutMS: 15000);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	[RequiresFullWindow]
 	public async Task When_Secondary_Window_No_Background_Light_Dark()
 	{
@@ -531,4 +571,81 @@ public class Given_Window
 		Assert.AreEqual("Test title", window.Title);
 	}
 #endif
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaUIKit)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25510")]
+	public void When_Scene_Lifecycle_Window_Hosted_In_Application_Scene()
+	{
+#if HAS_UNO
+		// UIKit and the runtime are read through reflection, as the Skia runtime tests are built without the Apple
+		// bindings. The iOS SamplesApp declares a scene manifest. The tvOS one has none and sets UnoUseSceneLifecycle,
+		// so it runs the scene lifecycle Uno adopts.
+		static object GetProperty(object target, string name) => target?.GetType().GetProperty(name)?.GetValue(target);
+
+		var usesSceneLifecycle = Type.GetType("Uno.UI.Runtime.AppleUIKit.AppleUIKitLifecycle, Uno.UI.Runtime.AppleUIKit")
+			?.GetProperty("UsesSceneLifecycle", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+			?.GetValue(null);
+
+		Assert.IsNotNull(usesSceneLifecycle, "AppleUIKitLifecycle.UsesSceneLifecycle was not found.");
+
+		if (usesSceneLifecycle is false)
+		{
+			Assert.Inconclusive("The app runs the app lifecycle, where the window's scene has no delegate.");
+		}
+
+		var nativeWindow = Window.InitialWindow!.NativeWindow;
+		var scene = GetProperty(nativeWindow, "WindowScene");
+
+		Assert.IsNotNull(scene, "The window is not shown in a scene.");
+
+		var sceneDelegate = GetProperty(scene, "Delegate");
+
+		Assert.IsNotNull(sceneDelegate, "The application scene has no delegate.");
+		Assert.AreSame(nativeWindow, GetProperty(sceneDelegate, "Window"), "The scene delegate does not host the window.");
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaUIKit)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25510")]
+	public async Task When_Url_Opened_Then_Activation_Reported()
+	{
+#if HAS_UNO
+		if (OperatingSystem.IsTvOS())
+		{
+			Assert.Inconclusive("tvOS doesn't open an app's own URL.");
+		}
+
+		// The SamplesApp registers this scheme, so the URL comes back to the app. The iOS SamplesApp declares a scene
+		// manifest, so its scene delegate reports it. Without a manifest, the scene delegate Uno adopts forwards it to
+		// the application delegate, whose base implementation reports it. The SamplesApp shows no dialog for the
+		// runtime-tests host.
+		var uri = new Uri($"uno-samples-test://runtime-tests/activation/{Guid.NewGuid():N}");
+		var activated = new TaskCompletionSource<bool>();
+
+		void OnActivated(object sender, Microsoft.Windows.AppLifecycle.AppActivationArguments args)
+		{
+			if (args.Data is global::Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs { Uri: { } activationUri } && activationUri == uri)
+			{
+				activated.TrySetResult(true);
+			}
+		}
+
+		var appInstance = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent();
+		appInstance.Activated += OnActivated;
+
+		try
+		{
+			Assert.IsTrue(await global::Windows.System.Launcher.LaunchUriAsync(uri), "The URL was not opened.");
+			Assert.AreSame(activated.Task, await Task.WhenAny(activated.Task, Task.Delay(TimeSpan.FromSeconds(10))), "No activation was reported for the URL.");
+		}
+		finally
+		{
+			appInstance.Activated -= OnActivated;
+		}
+#endif
+	}
 }

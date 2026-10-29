@@ -8,14 +8,18 @@ namespace Uno.UI.Hosting;
 public static class UnoPlatformHostBuilderExtensions
 {
 	/// <summary>
-	/// Registers the app's graphics backend — one unit owning both its renderer and its drawing factory, minted from
+	/// Registers a graphics backend — one unit owning both its renderer and its drawing factory, minted from
 	/// a context the framework creates for the provider's <see cref="IGraphicsProvider.PreferredContexts"/>. A backend
 	/// needing a geometry engine (e.g. WebGPU) takes it via its own constructor.
 	/// </summary>
+	/// <remarks>
+	/// Repeated calls add fallbacks in order of preference: the first backend that initializes on the device is used,
+	/// e.g. <c>.GraphicsBackend(webGpu).GraphicsBackend(skia)</c> uses Skia where WebGPU is unavailable.
+	/// </remarks>
 	public static IUnoPlatformHostBuilder GraphicsBackend(this IUnoPlatformHostBuilder builder, IGraphicsProvider renderBackend)
 	{
 		ArgumentNullException.ThrowIfNull(renderBackend);
-		builder.AddDrawingRegistration(() => GraphicsRegistry.Register(new[] { renderBackend }));
+		builder.AddGraphicsBackend(renderBackend);
 		return builder;
 	}
 

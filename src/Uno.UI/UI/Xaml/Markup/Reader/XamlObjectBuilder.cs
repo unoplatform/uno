@@ -368,6 +368,24 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
+		/// <summary>
+		/// WinUI also accepts an attached property in a setter target without parentheses
+		/// (e.g. <c>ContentRoot.Grid.Column</c>), which the property path syntax would read as a sub-property.
+		/// </summary>
+		private string ParenthesizeBareAttachedProperty(string propertyName)
+		{
+			if (propertyName.Contains('('))
+			{
+				return propertyName;
+			}
+
+			var parts = propertyName.Split('.');
+
+			return parts.Length == 2 && TypeResolver.FindType(parts[0]) is { } ownerType && TypeResolver.IsAttachedProperty(ownerType, parts[1])
+				? "(" + propertyName + ")"
+				: propertyName;
+		}
+
 		private string RewriteAttachedPropertyPath(string? value)
 		{
 			value ??= "";
@@ -662,7 +680,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// This builds property setters for specified member setter.
 				var separatorIndex = targetPath.IndexOf('.');
 				var elementName = targetPath.Substring(0, separatorIndex);
-				var propertyName = targetPath.Substring(separatorIndex + 1);
+				var propertyName = ParenthesizeBareAttachedProperty(targetPath.Substring(separatorIndex + 1));
 
 				if (instance is Setter setter)
 				{
@@ -749,10 +767,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				}
 			}
 
-			// Delay resolve static resources
+			// Delay resolve static resources. Theme resources are resolved here too, so a reference to a sibling
+			// pins this dictionary as its target, like WinUI's ResourceResolver::GetDictionaryForThemeReference.
 			foreach (var provider in delayedResolutionList)
 			{
-				provider.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, containingDictionary: rd);
+				provider.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading | ResourceUpdateReason.ThemeResource, containingDictionary: rd);
 			}
 		}
 
@@ -1131,7 +1150,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				if (dependencyProperty != null)
 				{
-					provider.SetBinding(dependencyProperty, binding);
+					provider.SetBindingInternal(dependencyProperty, binding);
 				}
 				else if (TypeResolver.GetPropertyByName(member.Owner.Type, member.Member.Name) is PropertyInfo propertyInfo)
 				{

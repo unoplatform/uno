@@ -82,10 +82,10 @@ public class CommandingHelpers
 					KeyboardAccelerator keyboardAccelerator = valueAsKeyboardAccelerators[i];
 					KeyboardAccelerator keyboardAcceleratorCopy = new KeyboardAccelerator();
 
-					keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.IsEnabledProperty, new Binding { Path = "IsEnabled", Source = keyboardAccelerator });
-					keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.KeyProperty, new Binding { Path = "Key", Source = keyboardAccelerator });
-					keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.ModifiersProperty, new Binding { Path = "Modifiers", Source = keyboardAccelerator });
-					keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.ScopeOwnerProperty, new Binding { Path = "ScopeOwner", Source = keyboardAccelerator });
+					keyboardAcceleratorCopy.SetBindingInternal(KeyboardAccelerator.IsEnabledProperty, new Binding { Path = "IsEnabled", Source = keyboardAccelerator });
+					keyboardAcceleratorCopy.SetBindingInternal(KeyboardAccelerator.KeyProperty, new Binding { Path = "Key", Source = keyboardAccelerator });
+					keyboardAcceleratorCopy.SetBindingInternal(KeyboardAccelerator.ModifiersProperty, new Binding { Path = "Modifiers", Source = keyboardAccelerator });
+					keyboardAcceleratorCopy.SetBindingInternal(KeyboardAccelerator.ScopeOwnerProperty, new Binding { Path = "ScopeOwner", Source = keyboardAccelerator });
 					returnValueAsKeyboardAcceleratorCollection.Add(keyboardAcceleratorCopy);
 
 
@@ -122,7 +122,7 @@ public class CommandingHelpers
 		{
 			if (target is DependencyObject dosp)
 			{
-				dosp.SetBinding(labelProperty, new Binding { Path = "Label", Source = uiCommand });
+				dosp.SetBindingInternal(labelProperty, new Binding { Path = "Label", Source = uiCommand });
 			}
 		}
 	}
@@ -142,7 +142,7 @@ public class CommandingHelpers
 			if (target is DependencyObject dosp)
 			{
 				IconSourceToIconSourceElementConverter converter = new IconSourceToIconSourceElementConverter();
-				dosp.SetBinding(iconProperty, new Binding { Path = "IconSource", Source = uiCommand, Converter = converter });
+				dosp.SetBindingInternal(iconProperty, new Binding { Path = "IconSource", Source = uiCommand, Converter = converter });
 			}
 		}
 	}
@@ -162,7 +162,7 @@ public class CommandingHelpers
 		{
 			if (target is DependencyObject dosp)
 			{
-				dosp.SetBinding(iconSourceProperty, new Binding { Path = "IconSource", Source = uiCommand });
+				dosp.SetBindingInternal(iconSourceProperty, new Binding { Path = "IconSource", Source = uiCommand });
 			}
 		}
 	}
@@ -181,7 +181,7 @@ public class CommandingHelpers
 		{
 			var weakReference = WeakReferencePool.RentSelfWeakReference(target);
 			var converter = new KeyboardAcceleratorCopyConverter(weakReference);
-			target.SetBinding(UIElement.KeyboardAcceleratorsProperty, new Binding { Path = "KeyboardAccelerators", Source = uiCommand, Converter = converter });
+			target.SetBindingInternal(UIElement.KeyboardAcceleratorsProperty, new Binding { Path = "KeyboardAccelerators", Source = uiCommand, Converter = converter });
 		}
 	}
 
@@ -194,7 +194,7 @@ public class CommandingHelpers
 
 		if (localAccessKey == null || string.IsNullOrEmpty(localAccessKey))
 		{
-			target.SetBinding(UIElement.AccessKeyProperty, new Binding { Path = "AccessKey", Source = uiCommand });
+			target.SetBindingInternal(UIElement.AccessKeyProperty, new Binding { Path = "AccessKey", Source = uiCommand });
 		}
 	}
 

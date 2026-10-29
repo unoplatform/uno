@@ -21,6 +21,7 @@ internal sealed class DamageRegion : IDisposable
 	// Past this many distinct dirty rects the frame is effectively a full repaint anyway; collapse to bounds.
 	private const int MaxRects = 16;
 
+
 	// Finished rects. The one still being grown is _open, which joins them only when the region is materialized.
 	private readonly List<Rect> _rects = new();
 	private Rect _open;
@@ -143,7 +144,7 @@ internal sealed class DamageRegion : IDisposable
 	/// widening fixes — the clear leaks through at partial coverage even where the content is unchanged. Snapping
 	/// here makes coverage exactly 0 or 1, so the clip needs no particular antialiasing behaviour to be correct.
 	/// </remarks>
-	internal IGeometry? Detach(float rasterizationScale)
+	internal Rect[]? Detach(float rasterizationScale)
 	{
 		if (IsEmpty)
 		{
@@ -157,7 +158,7 @@ internal sealed class DamageRegion : IDisposable
 			all.Add(_open);
 		}
 
-		if (rasterizationScale > 0f && rasterizationScale != 1f)
+		if (rasterizationScale > 0f)
 		{
 			for (var i = 0; i < all.Count; i++)
 			{
@@ -165,20 +166,41 @@ internal sealed class DamageRegion : IDisposable
 			}
 		}
 
-		// One path holding a contour per rect, not a chain of Combine unions: Combine is a general polygon boolean
-		// and pays no attention to the operands being boxes, while identically-wound rect contours already union
-		// under the non-zero rule. Building the region costs a contour append per rect instead of a boolean per rect.
-		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
-		builder.FillRule = GeometryFillRule.NonZero;
-		for (var i = 0; i < all.Count; i++)
-		{
-			builder.AddRectangle(all[i]);
-		}
+		// Overlaps are folded away before the region leaves: a backend that bounds each draw by the rect it falls
+		// in would otherwise draw an overlapped op once per rect covering it, and anything translucent there would
+		// blend twice. Rects are capped at MaxRects, so the repeated pass costs nothing worth measuring.
+		MergeOverlapping(all);
 
-		var region = builder.Build();
+		var region = all.ToArray();
 
 		Reset();
 		return region;
+	}
+
+	// Unions any two rects that overlap, repeatedly, until none do.
+	private static void MergeOverlapping(List<Rect> rects)
+	{
+		for (var i = 0; i < rects.Count; i++)
+		{
+			for (var j = i + 1; j < rects.Count; j++)
+			{
+				var a = rects[i];
+				var b = rects[j];
+				a.Intersect(b);
+				if (a.IsEmpty || a.Width <= 0 || a.Height <= 0)
+				{
+					continue;
+				}
+
+				var merged = rects[i];
+				merged.Union(b);
+				rects[i] = merged;
+				rects.RemoveAt(j);
+				// The union reaches further than either rect did, so everything has to be reconsidered against it.
+				i = -1;
+				break;
+			}
+		}
 	}
 
 	internal void Reset()

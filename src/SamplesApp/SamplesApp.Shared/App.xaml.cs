@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Core;
 using Windows.UI.Popups;
@@ -42,6 +43,9 @@ using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using SampleControl.Presentation;
+using Microsoft.Windows.AppLifecycle;
+// Windows.ApplicationModel has an unrelated AppInstance of its own.
+using AppInstance = Microsoft.Windows.AppLifecycle.AppInstance;
 #else
 using DispatcherQueue = Windows.System.DispatcherQueue;
 using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
@@ -93,6 +97,11 @@ namespace SamplesApp
 #if !HAS_UNO
 			UnhandledException += App_UnhandledException;
 #endif
+
+#if HAS_UNO
+			AppInstance.GetCurrent().Activated += OnAppInstanceActivated;
+#endif
+
 			// Fix language for UI tests
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
@@ -110,8 +119,8 @@ namespace SamplesApp
 			this.InitializeComponent();
 
 #if !WINAPPSDK
-			this.Suspending += OnSuspending;
-			this.Resuming += OnResuming;
+			CoreApplication.Suspending += OnSuspending;
+			CoreApplication.Resuming += OnResuming;
 #endif
 #if __SKIA__ && !UNO_ISLANDS
 			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Low, () =>
@@ -141,11 +150,7 @@ namespace SamplesApp
 		/// will be used such as when the application is launched to open a specific file.
 		/// </summary>
 		/// <param name="e">Details about the launch request and process.</param>
-		protected
-#if HAS_UNO
-			internal
-#endif
-		override void OnLaunched(LaunchActivatedEventArgs e)
+		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 #if __SKIA__ && !UNO_ISLANDS
 			_gotOnLaunched = true;
@@ -192,6 +197,7 @@ namespace SamplesApp
 			}
 			AssertInitialWindowSize();
 
+			DetectAutomationLaunch(GetLaunchArguments(e));
 
 			InitializeFrame(e.Arguments);
 
@@ -200,6 +206,9 @@ namespace SamplesApp
 			ActivateMainWindow();
 
 			SetWindowTitle();
+#if HAS_UNO
+			ReportLaunchActivation();
+#endif
 			HandleLaunchArguments(e);
 
 			Console.WriteLine("Done loading " + sw.Elapsed);
@@ -317,32 +326,54 @@ namespace SamplesApp
 		}
 #endif
 
-#if !WINAPPSDK
-		protected
 #if HAS_UNO
-			internal
-#endif
-			override async void OnActivated(IActivatedEventArgs e)
+		private void OnAppInstanceActivated(object? sender, AppActivationArguments args)
 		{
-			base.OnActivated(e);
+			// An activation delivered into the running app: the window already exists, so only the
+			// payload needs handling. No dialog for the URLs the runtime tests open (Given_Window), as
+			// on iOS it is a native alert that would outlive the test.
+			var isRuntimeTestUrl = args.Data is ProtocolActivatedEventArgs { Uri.Host: "runtime-tests" };
+			ReportActivation(args, "Application activated", showDialog: !isRuntimeTestUrl);
+		}
 
-			EnsureMainWindow();
-			InitializeFrame();
-			ActivateMainWindow();
+		/// <summary>
+		/// Reports the activation the app was started with, if any. Called from OnLaunched, which is
+		/// where a WinAppSDK-shaped app discovers how it was activated.
+		/// </summary>
+		private void ReportLaunchActivation()
+			=> ReportActivation(AppInstance.GetCurrent().GetActivatedEventArgs(), "Application launched", showDialog: false);
 
-			if (e.Kind == ActivationKind.Protocol)
+		private async void ReportActivation(AppActivationArguments arguments, string title, bool showDialog)
+		{
+			try
 			{
-				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
-				var dlg = new MessageDialog(
-					$"PreviousState - {e.PreviousExecutionState}, " +
-					$"Uri - {protocolActivatedEventArgs.Uri}",
-					"Application activated via protocol");
-				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
+				var detail = DescribeActivation(arguments);
+				Console.WriteLine($"{title}: Kind - {arguments.Kind}, {detail}");
+
+				// Only for an activation delivered into the running app. Reporting at launch would pop a
+				// dialog on every run, including the CI runs driven by launch arguments.
+				if (showDialog &&
+					ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
 				{
-					await dlg.ShowAsync();
+					await new MessageDialog($"Kind - {arguments.Kind}, {detail}", title).ShowAsync();
 				}
 			}
+			catch (Exception ex)
+			{
+				// async void from an activation callback: a second dialog while one is open throws,
+				// and an unobserved throw here would take the process with it.
+				Console.WriteLine($"Reporting an activation failed: {ex}");
+			}
 		}
+
+		internal static string DescribeActivation(AppActivationArguments arguments) => arguments.Kind switch
+		{
+			ExtendedActivationKind.Protocol when arguments.Data is ProtocolActivatedEventArgs protocolArgs =>
+				$"Uri - {protocolArgs.Uri}, PreviousState - {protocolArgs.PreviousExecutionState}",
+			ExtendedActivationKind.Launch when arguments.Data is global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs launchArgs =>
+				$"Arguments - {launchArgs.Arguments}",
+			_ => arguments.Data?.GetType().Name ?? "(no data)",
+		};
 #endif
 
 		private void ActivateMainWindow()
@@ -410,15 +441,20 @@ namespace SamplesApp
 			}
 		}
 
-		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
-		{
+		private static string GetLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
 #if !HAS_UNO
-			var args = string.Join("&", Environment.GetCommandLineArgs().Skip(1));
+			=> string.Join("&", Environment.GetCommandLineArgs().Skip(1));
 #else
-			var args = launchActivatedEventArgs.Arguments ?? "";
+			=> launchActivatedEventArgs.Arguments ?? "";
 #endif
 
+		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
+		{
+			var args = GetLaunchArguments(launchActivatedEventArgs);
+
 			Console.WriteLine($"HandleLaunchArguments: {args}");
+
+			args = ApplyLaunchTheme(args);
 
 			// Check the "sample=" deep link before the System.CommandLine-based handlers: on
 			// platforms where Console.ResetColor throws (Android, WebAssembly), System.CommandLine's
@@ -439,25 +475,16 @@ namespace SamplesApp
 				return;
 			}
 
-			if (!string.IsNullOrEmpty(args))
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
 			{
 				try
 				{
-					var dlg = new MessageDialog(args, "Launch arguments");
-					await dlg.ShowAsync();
+					await vm.ApplyStartupPageAsync(CancellationToken.None);
 				}
 				catch (Exception ex)
 				{
-					// ContentDialog.ShowAsync() can fail this early in startup (e.g. before the
-					// window is associated with a visual tree); this dialog is a debug affordance,
-					// not critical path, so don't let it take the app down.
-					_log?.Error($"Could not show the launch-arguments dialog for '{args}' - {ex}");
+					_log?.Error($"Could not open the startup page - {ex}");
 				}
-			}
-
-			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
-			{
-				vm.SetSelectedSample(CancellationToken.None, "_None", "Playground");
 			}
 		}
 
@@ -478,7 +505,7 @@ namespace SamplesApp
 		/// </summary>
 		/// <param name="sender">The source of the suspend request.</param>
 		/// <param name="e">Details about the suspend request.</param>
-		private void OnSuspending(object sender, SuspendingEventArgs e)
+		private void OnSuspending(object? sender, SuspendingEventArgs e)
 		{
 			_isSuspended = true;
 
@@ -530,6 +557,12 @@ namespace SamplesApp
 				// Exclude logs below this level
 				builder.SetMinimumLevel(LogLevel.Debug);
 #endif
+				// UNO_SAMPLES_TRACE=Category;Other.Category enables trace logs without a rebuild, in any configuration.
+				foreach (var category in (Environment.GetEnvironmentVariable("UNO_SAMPLES_TRACE") ?? "").Split(';', StringSplitOptions.RemoveEmptyEntries))
+				{
+					builder.AddFilter(category, LogLevel.Trace);
+				}
+
 				// Runtime Tests control logging
 				builder.AddFilter("Uno.UI.Samples.Tests", LogLevel.Information);
 
@@ -546,14 +579,13 @@ namespace SamplesApp
 				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Debug);
 
 				// Display Skia related information
-				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
+				builder.AddFilter("Uno.UI.Runtime.", LogLevel.Debug);
 
 				// Surface the graphics-backend negotiation result (which renderer/context kind won)
 				builder.AddFilter("Uno.UI.Composition.Drawing", LogLevel.Information);
-				builder.AddFilter("Uno.WinUI.Runtime.Skia", LogLevel.Debug);
 				builder.AddFilter("Uno.UI.Skia", LogLevel.Debug);
 
-				// builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Trace);
+				// builder.AddFilter("Uno.UI.Runtime.", LogLevel.Trace);
 
 				// builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
 				// builder.AddFilter("Microsoft.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );
@@ -626,8 +658,13 @@ namespace SamplesApp
 		static void ParseCommandLineFeatureFlags()
 		{
 #if HAS_UNO
+#if __APPLE_UIKIT__
+			// Environment.GetCommandLineArgs() is empty on iOS/tvOS.
+			var commandLineArgs = Foundation.NSProcessInfo.ProcessInfo.Arguments;
+#else
 			var commandLineArgs = Environment.GetCommandLineArgs();
-			if (commandLineArgs.Length == 1)
+#endif
+			if (commandLineArgs.Length <= 1)
 			{
 				return;
 			}

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Silk.NET.WebGPU;
 
 namespace Uno.UI.Composition.WebGpu;
 
@@ -44,7 +45,11 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// <summary>Fills refused for footprint — the counter to watch if content renders aliased.</summary>
 	internal static int RejBig;
 
-	/// <summary>Subpixel phases per axis. 4 is the usual quality/footprint compromise.</summary>
+	/// <summary>
+	/// Subpixel phases per axis for fill entries. 4 is the usual quality/footprint compromise: text places glyphs at
+	/// arbitrary fractions, so exact phases give every occurrence its own entry and a page of text fills the atlas.
+	/// </summary>
+	public const int FillPhases = 4;
 
 	/// <summary>
 	/// W/H are part of the key because the scale is quantised: two nearby scales can share a key while needing
@@ -93,7 +98,8 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// </summary>
 	internal sealed class Page
 	{
-		public IntPtr Texture, View;
+		public Texture* Texture;
+		public TextureView* View;
 		public int W = Size, H = Size;
 		// A page sized to one big entry: never shelf-packed, retired as soon as that entry is freed.
 		public bool Standalone;
@@ -110,7 +116,7 @@ internal sealed unsafe class WebGpuPathAtlas
 
 	public IReadOnlyList<Page> Pages => _pages;
 
-	public Page AddPage(IntPtr texture, IntPtr view)
+	public Page AddPage(Texture* texture, TextureView* view)
 	{
 		var page = new Page { Texture = texture, View = view };
 		_pages.Add(page);
@@ -129,7 +135,7 @@ internal sealed unsafe class WebGpuPathAtlas
 	}
 
 	/// <summary>An entry with a texture of its own: same key, reference count and idle sweep as a page slot.</summary>
-	public Slot AddStandalone(in Key key, int w, int h, float originX, float originY, IntPtr texture, IntPtr view)
+	public Slot AddStandalone(in Key key, int w, int h, float originX, float originY, Texture* texture, TextureView* view)
 	{
 		var page = new Page { Texture = texture, View = view, W = w, H = h, Standalone = true, Live = 1 };
 		_pages.Add(page);
@@ -306,10 +312,17 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// computed in DEVICE space, while the origin is returned in the op's own space for placing the quad.
 	/// </param>
 	public static bool TryKey(long shape, in Matrix4x4 matrix, Vector2 bbMin, Vector2 bbMax, Vector2 scale, out Key key, out int w, out int h, out float originX, out float originY, bool allowBig = false, int extra = 0, Vector2 place = default)
+		=> TryKey(shape, matrix, bbMin, bbMax, scale, out key, out w, out h, out originX, out originY, out _, allowBig, extra, place, phases: 0);
+
+	/// <param name="phases">Subpixel phases per axis the key snaps to, or 0 for the exact phase.</param>
+	/// <param name="snap">The device-pixel shift from the shape's true phase to the one it is keyed at: the bake
+	/// rasterizes at the snapped phase, so an entry is the same whichever of its sharers baked it.</param>
+	public static bool TryKey(long shape, in Matrix4x4 matrix, Vector2 bbMin, Vector2 bbMax, Vector2 scale, out Key key, out int w, out int h, out float originX, out float originY, out Vector2 snap, bool allowBig = false, int extra = 0, Vector2 place = default, int phases = 0)
 	{
 		key = default;
 		w = h = 0;
 		originX = originY = 0;
+		snap = default;
 		if (shape == 0 || scale.X <= 0 || scale.Y <= 0) { return false; }
 
 		var dw = (bbMax.X - bbMin.X) * scale.X;
@@ -331,15 +344,30 @@ internal sealed unsafe class WebGpuPathAtlas
 		originX = (oxDev - place.X) / scale.X;
 		originY = (oyDev - place.Y) / scale.Y;
 
-		// A one-texel skirt keeps bilinear sampling from bleeding a neighbouring slot into the edge.
-		w = (int)MathF.Ceiling(bbMax.X * scale.X + place.X - oxDev) + 2;
-		h = (int)MathF.Ceiling(bbMax.Y * scale.Y + place.Y - oyDev) + 2;
+		int phaseX, phaseY;
+		if (phases > 0)
+		{
+			// Snapped: the entry is baked at the snapped phase itself, so its sharers draw within half a step of true.
+			// Negative so a snapped key can never equal an exact one.
+			var qx = (int)MathF.Round((devMinX - oxDev) * phases);
+			var qy = (int)MathF.Round((devMinY - oyDev) * phases);
+			snap = new Vector2((float)qx / phases - (devMinX - oxDev), (float)qy / phases - (devMinY - oyDev));
+			phaseX = -1 - qx;
+			phaseY = -1 - qy;
+		}
+		else
+		{
+			// The subpixel phase on both axes, bit for bit: entries are keyed by outline content, so a shape shares an
+			// entry with any other drawn at the same fraction, and only then. Any coarser and two shapes a fraction of a
+			// pixel apart share one mask that one of them draws misplaced, depending on which baked first.
+			phaseX = BitConverter.SingleToInt32Bits(devMinX - oxDev);
+			phaseY = BitConverter.SingleToInt32Bits(devMinY - oyDev);
+		}
 
-		// The subpixel phase on both axes, bit for bit: entries are keyed by outline content, so a shape shares an
-		// entry with any other drawn at the same fraction, and only then. Any coarser and two shapes a fraction of a
-		// pixel apart share one mask that one of them draws misplaced, depending on which baked first.
-		var phaseX = BitConverter.SingleToInt32Bits(devMinX - oxDev);
-		var phaseY = BitConverter.SingleToInt32Bits(devMinY - oyDev);
+		// A one-texel skirt keeps bilinear sampling from bleeding a neighbouring slot into the edge. Sized from the
+		// snapped outline, which is what the bake rasterizes.
+		w = (int)MathF.Ceiling(bbMax.X * scale.X + place.X + snap.X - oxDev) + 2;
+		h = (int)MathF.Ceiling(bbMax.Y * scale.Y + place.Y + snap.Y - oyDev) + 2;
 		key = new Key(
 			shape,
 			(int)MathF.Round(matrix.M11 * scale.X * 64f),

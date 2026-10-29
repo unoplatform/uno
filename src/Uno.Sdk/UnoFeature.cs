@@ -102,6 +102,8 @@ public enum UnoFeature
 
 	Prism,
 
+	Reactor,
+
 	[UnoArea(UnoArea.Core)]
 	Skia,
 
@@ -109,13 +111,13 @@ public enum UnoFeature
 	WebGpu,
 
 	[UnoArea(UnoArea.Core)]
-	Lottie,
-
-	[UnoArea(UnoArea.Core)]
 	Svg,
 
 	[UnoArea(UnoArea.Core)]
 	GLCanvas,
+
+	[UnoArea(UnoArea.Core)]
+	WebGpuCanvas,
 
 	[UnoArea(UnoArea.Core)]
 	SpellChecking,

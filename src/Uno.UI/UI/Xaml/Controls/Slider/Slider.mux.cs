@@ -1067,7 +1067,7 @@ public partial class Slider
 		double elementNewLength = 0;
 		double elementOldLength = 0;
 		bool isThumbToolTipEnabled = false;
-		Thickness padding = Thickness.Empty;
+		Thickness padding = default(Thickness);
 
 		// Extract padding from the actual size.
 		if (_tpSliderContainer == null)

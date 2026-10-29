@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
+using Buffer = Silk.NET.WebGPU.Buffer;
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 using WColor = Windows.UI.Color;
@@ -23,10 +23,11 @@ internal sealed unsafe partial class WebGpuFrame
 	private static readonly int _emitStatsEvery = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS_EVERY"), out var e) && e > 0 ? e : 60;
 
 	private readonly WebGpuDevice _d;
+	private WebGPU Api => _d.Api;
 	internal readonly WebGpuRenderSurface Target;
 	internal readonly WebGpuCoverage Coverage;
 	internal readonly WebGpuEffects Effects;
-	internal IntPtr Encoder;
+	internal CommandEncoder* Encoder;
 
 	internal WebGpuFrame(WebGpuDevice d, WebGpuRenderSurface target)
 	{
@@ -47,40 +48,104 @@ internal sealed unsafe partial class WebGpuFrame
 	private static int _passDepth;
 	internal static bool EmitStats => _emitStats;
 
-	// One frame: the main list under its root matrix, the overlay (already in device pixels) on top, one submit.
-	internal void Run(List<WebGpuCommand> cmds, in Matrix3x2 m, List<WebGpuCommand> overlay, WColor? clear)
+	/// <summary>One replay a present asked for: the recording, its root matrix, the clear in effect, and the device
+	/// rect it is confined to (null for the whole target).</summary>
+	internal readonly record struct ReplayEntry(List<WebGpuCommand> Commands, Matrix3x2 Root, WColor? Clear, Vector4? Damage);
+
+	// One frame from a single command list under its root matrix.
+	internal void Run(List<WebGpuCommand> cmds, in Matrix3x2 m, WColor? clear)
+		=> Run(new[] { new ReplayEntry(cmds, m, clear, null) });
+
+	/// <summary>
+	/// One frame from everything the present asked for, in order, each entry under its own clip.
+	/// </summary>
+	/// <remarks>
+	/// Each entry gets its own pass AND its own submit. A recording's site block lives in the slab slot the
+	/// RECORDING owns, and the slabs are flushed once per submit -- so two replays sharing a submit would both read
+	/// whichever walk wrote last. One submit each keeps them independent whatever they carry.
+	/// </remarks>
+	internal void Run(IReadOnlyList<ReplayEntry> replays)
 	{
 		long t0 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
-		Begin();
-		// Shapes queued by last frame's walk. Baked here, before the frame's own passes: opening one from inside
-		// the walk recurses through EncodePass.
-		Effects.FlushShapeBakes();
+		long t1 = 0;
 		try
 		{
-			RenderInto(cmds, m, ClipData.None, Target, clear, overlay: overlay, depth: !WebGpuDevice.NoDepthOcclusion);
+			// Partial repaint needs EVERY replay bounded: one unclipped replay repaints the whole target, so the
+			// pass clears through its load op as usual and there is nothing to preserve.
+			var partial = replays.Count > 0;
+			for (var i = 0; i < replays.Count && partial; i++) { partial = replays[i].Damage is not null; }
+
+			for (var i = 0; i < replays.Count; i++)
+			{
+				Begin();
+				try
+				{
+					// Shapes queued by last frame's walk. Baked before the frame's own passes: opening one from
+					// inside the walk recurses through EncodePass.
+					if (i == 0) { Effects.FlushShapeBakes(); }
+
+					var replay = replays[i];
+					// On a partial repaint the load op cannot clear (it would wipe the whole target), so each rect
+					// is cleared by drawing before the pass that redraws it.
+					if (partial && replay.Clear is { } bg) { ClearRect(Target, bg, replay.Damage.Value); }
+					// Only the first pass of a whole repaint may clear through its load op; a later one has to load,
+					// or it would wipe what the earlier replays just drew.
+					RenderInto(replay.Commands, replay.Root, ClipData.None, Target,
+						partial ? null : replay.Clear, load: partial || i > 0,
+						depth: !WebGpuDevice.NoDepthOcclusion, bound: replay.Damage);
+				}
+				finally
+				{
+					if (_emitStats) { t1 = System.Diagnostics.Stopwatch.GetTimestamp(); }
+					End();
+				}
+			}
 		}
 		finally
 		{
-			long t1 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
-			End();
+			if (_scratchBuf is not null)
+			{
+				_d.ReturnVerts(_scratchBuf);
+				_scratchBuf = null;
+			}
+
 			// Same cadence as the stats line, so UNO_WEBGPU_STATS_EVERY=1 gives a per-FRAME phase breakdown rather
 			// than a 60-frame average - the only way to see a distribution instead of a mean.
 			if (_emitStats && (_frameStatsCounter++ % _emitStatsEvery) == 0)
 			{
 				long t2 = System.Diagnostics.Stopwatch.GetTimestamp();
 				double toMs = 1000.0 / System.Diagnostics.Stopwatch.Frequency;
-				System.Console.WriteLine($"[webgpu-frame] cmds={cmds.Count} renderInto={(t1 - t0) * toMs:F1}ms finishSubmit={(t2 - t1) * toMs:F1}ms opsBuild={OpsBuildTicks * toMs:F1}ms (walk={WalkTicks * toMs:F1} rebuild={RebuildTicks * toMs:F1} stamp={StampTicks * toMs:F1} bake={BakeTicks * toMs:F1} upload={UploadTicks * toMs:F1}) encode={EncodeTicks * toMs:F1}ms");
+				System.Console.WriteLine($"[webgpu-frame] replays={replays.Count} damage={DescribeDamage(replays)} cmds={TotalCommands(replays)} renderInto={(t1 - t0) * toMs:F1}ms finishSubmit={(t2 - t1) * toMs:F1}ms opsBuild={OpsBuildTicks * toMs:F1}ms (walk={WalkTicks * toMs:F1} rebuild={RebuildTicks * toMs:F1} stamp={StampTicks * toMs:F1} bake={BakeTicks * toMs:F1} upload={UploadTicks * toMs:F1}) encode={EncodeTicks * toMs:F1}ms");
 				OpsBuildTicks = 0; EncodeTicks = 0; RebuildTicks = 0; StampTicks = 0; BakeTicks = 0;
 				WalkTicks = 0; UploadTicks = 0;
 			}
 		}
 	}
 
+	private static int TotalCommands(IReadOnlyList<ReplayEntry> replays)
+	{
+		var total = 0;
+		for (var i = 0; i < replays.Count; i++) { total += replays[i].Commands.Count; }
+		return total;
+	}
+
+	private static string DescribeDamage(IReadOnlyList<ReplayEntry> replays)
+	{
+		var text = "";
+		for (var i = 0; i < replays.Count; i++)
+		{
+			if (replays[i].Damage is not { } d) { return "whole"; }
+			text += (i > 0 ? "+" : "") + $"{d.Z - d.X:F0}x{d.W - d.Y:F0}";
+		}
+		return text;
+	}
+
 	/// <summary>Opens the frame's command encoder; every pass, bake and blur of the frame encodes into it.</summary>
 	internal void Begin()
 	{
 		SweepEntryPool();
-		Encoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
+		EvictAtlasHolders();
+		Encoder = Api.DeviceCreateCommandEncoder(_d.Dev, null);
 	}
 
 	/// <summary>Submits the frame and hands its layer textures back to the pool.</summary>
@@ -89,17 +154,13 @@ internal sealed unsafe partial class WebGpuFrame
 		_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 		_d.SiteSlab.Flush();
 		_d.FlushFrameSlabs();
-		var cb = wgpuCommandEncoderFinish(Encoder, null);
-		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+		var cb = Api.CommandEncoderFinish(Encoder, null);
+		_d.SubmitFrame(cb);
 		// wgpu holds its own reference until the submission completes, so both handles are dropped here -
 		// otherwise every frame leaks an encoder and a command buffer into the handle table.
-		wgpuCommandBufferRelease(cb);
-		wgpuCommandEncoderRelease(Encoder);
-		Encoder = IntPtr.Zero;
-		// Pump the device non-blocking so the CPU overlaps the next frame with the GPU: pooled-buffer reuse is
-		// queue-ordered and transient textures are refcount-released, and the swapchain's frames-in-flight cap
-		// provides the backpressure.
-		_ = wgpuDevicePoll(_d.Dev, 0u, null);
+		Api.CommandBufferRelease(cb);
+		Api.CommandEncoderRelease(Encoder);
+		Encoder = null;
 		foreach (var ls in LayerSurfaces) { _d.Pool.Return(ls.View); }
 		LayerSurfaces.Clear();
 		Effects.SweepShapeShadows();
@@ -142,15 +203,49 @@ internal sealed unsafe partial class WebGpuFrame
 		w = r - x; h = b - y; return w > 0 && h > 0;
 	}
 
-	// The pass projection bind group (group 0 of every colour draw): the basis the vertex shader projects pixels by.
-	private IntPtr MakePassBg()
+	/// <summary>Clears <paramref name="deviceRect"/>, leaving the rest of the target untouched.</summary>
+	/// <remarks>
+	/// A render pass's load-op clear always covers the whole attachment, which on a partial repaint would wipe the
+	/// pixels the repaint relies on. Clearing by drawing is the only way to bound it: one replace-blended fullscreen
+	/// triangle under a scissor writes the colour and its alpha exactly as the load-op clear would.
+	/// </remarks>
+	private void ClearRect(WebGpuRenderSurface target, WColor color, Vector4 deviceRect)
 	{
-		var buf = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
+		// The target holds premultiplied colour (every colour pipeline blends into it that way), so the clear does too.
+		var a = color.A / 255f;
+		var rgba = stackalloc float[4] { color.R / 255f * a, color.G / 255f * a, color.B / 255f * a, a };
+		var buf = _d.BufferPool.Rent(16, BufferUsage.Uniform | BufferUsage.CopyDst);
+		Api.QueueWriteBuffer(_d.Q, buf, 0, rgba, 16);
+		var entry = new BindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 16 };
+		var bgd = new BindGroupDescriptor { Layout = _d.ClearRectBgl, EntryCount = 1, Entries = &entry };
+		var bg = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &bgd));
+
+		var x = (int)MathF.Max(0f, MathF.Floor(deviceRect.X));
+		var y = (int)MathF.Max(0f, MathF.Floor(deviceRect.Y));
+		var right = (int)MathF.Min(target.Width, MathF.Ceiling(deviceRect.Z));
+		var bottom = (int)MathF.Min(target.Height, MathF.Ceiling(deviceRect.W));
+		if (right <= x || bottom <= y) { return; }
+
+		var ca = new RenderPassColorAttachment { DepthSlice = uint.MaxValue, View = target.View, LoadOp = LoadOp.Load, StoreOp = StoreOp.Store };
+		var rpd = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
+		var pass = Api.CommandEncoderBeginRenderPass(Encoder, &rpd);
+		Api.RenderPassEncoderSetScissorRect(pass, (uint)x, (uint)y, (uint)(right - x), (uint)(bottom - y));
+		Api.RenderPassEncoderSetPipeline(pass, _d.ClearRectPipe);
+		Api.RenderPassEncoderSetBindGroup(pass, 0, bg, 0, null);
+		Api.RenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		Api.RenderPassEncoderEnd(pass);
+		Api.RenderPassEncoderRelease(pass);
+	}
+
+	// The pass projection bind group (group 0 of every colour draw): the basis the vertex shader projects pixels by.
+	private BindGroup* MakePassBg()
+	{
+		var buf = _d.BufferPool.Rent(16, BufferUsage.Uniform | BufferUsage.CopyDst);
 		var basis = stackalloc float[4] { _basisOx, _basisOy, BasisW, BasisH };
-		wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)basis, 16);
-		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 16 };
-		var bgd = new WGPUBindGroupDescriptor { Layout = _d.PassBgl, EntryCount = 1, Entries = &e };
-		return _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
+		Api.QueueWriteBuffer(_d.Q, buf, 0, basis, 16);
+		var e = new BindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 16 };
+		var bgd = new BindGroupDescriptor { Layout = _d.PassBgl, EntryCount = 1, Entries = &e };
+		return _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &bgd));
 	}
 
 	private float BasisW => _basisW > 0f ? _basisW : Target.Width;
@@ -166,7 +261,7 @@ internal sealed unsafe partial class WebGpuFrame
 
 	/// <summary>This pass carries the occlusion depth buffer, so its draws use the depth pipeline variants.</summary>
 	internal bool UseDepth;
-	private IntPtr _depthView;
+	private TextureView* _depthView;
 
 	// Replay sites in draw order within a pass, and the depth step between them. 4096 sites is far past what any
 	// frame builds, and keeps neighbouring depths apart in a 24-bit buffer.
@@ -254,7 +349,7 @@ internal sealed unsafe partial class WebGpuFrame
 	// real UI: a card's corner radius alone is enough.
 	private static Vector4 ClipInner(in ClipData cd)
 	{
-		if (cd.Paths is not null || cd.Coverage != 0) { return default; }
+		if (cd.Paths is not null || cd.Coverage != null) { return default; }
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
 		if (!cd.ScissorInert && IsFiniteAabb(cd.Aabb)) { ix = cd.Aabb.X + 1f; iy = cd.Aabb.Y + 1f; iz = cd.Aabb.Z - 1f; iw = cd.Aabb.W - 1f; }
 		var ents = cd.Entries;
@@ -279,7 +374,7 @@ internal sealed unsafe partial class WebGpuFrame
 	// A clip that cannot cut the op's own shape anywhere inside its AABB: anything else and the op paints less
 	// than its rect, so it may not be trusted to hide what is under it.
 	private static bool ClipIsPlain(in ClipData c)
-		=> c.Paths is null && (c.Entries is null || c.Entries.Length == 0) && c.Coverage == 0;
+		=> c.Paths is null && (c.Entries is null || c.Entries.Length == 0) && c.Coverage == null;
 
 	// Coverage decides in PIXELS, not in the rect's own coordinates: a rect flush with the surface edge still fills
 	// its edge pixels, which a rect-versus-rect comparison with any margin for the antialiasing ramp would deny.
@@ -423,15 +518,20 @@ internal sealed unsafe partial class WebGpuFrame
 
 	/// <summary>Ops the occlusion cull dropped this frame, and ops it cut down to their uncovered bands.</summary>
 	internal static int StatCulled;
+	/// <summary>Replayed ops dropped this frame for landing wholly outside their site's clip.</summary>
+	internal static int StatClipCulled;
 	internal static int StatSplit;
 	/// <summary>Border rings cut into bands. CUMULATIVE: op building happens once per cached recording, so a
 	/// counter reset every stats interval reads zero in steady state while the rings still draw every frame.</summary>
 	internal static int StatRingBands;
 	internal static int StatPrepass;
+	/// <summary>Passes that cleared to an opaque whole-target fill instead of drawing it.</summary>
+	internal static int StatClearFolds;
 	internal static int StatLayerShadow, StatLayerMatrix, StatLayerMask, StatLayerPlain;
 
 	// Off for bisecting a visual regression against the cull.
 	private static readonly bool _noOcclusionCull = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_OCCLUSION_CULL") == "1";
+	private static readonly bool _noClearFold = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_CLEAR_FOLD") == "1";
 
 	private static Vector4 QuadBounds(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, in ClipData clip)
 	{
@@ -445,6 +545,8 @@ internal sealed unsafe partial class WebGpuFrame
 			? new Vector4(MathF.Max(b.X, clip.Aabb.X), MathF.Max(b.Y, clip.Aabb.Y), MathF.Min(b.Z, clip.Aabb.Z), MathF.Min(b.W, clip.Aabb.W))
 			: b;
 
+	private static bool IsEmpty(in Vector4 b) => b.X >= b.Z || b.Y >= b.W;
+
 	private static Vector4 Inflate(Vector4 b, float pad) => new(b.X - pad, b.Y - pad, b.Z + pad, b.W + pad);
 
 	/// <summary>True when a device-space box contributes no pixels to the target: empty, or wholly outside it.</summary>
@@ -452,7 +554,7 @@ internal sealed unsafe partial class WebGpuFrame
 		=> b.X >= b.Z || b.Y >= b.W || b.Z <= 0 || b.W <= 0 || b.X >= Target.Width || b.Y >= Target.Height;
 
 	// The bounds of both; an empty (inverted) side contributes nothing.
-	private static Vector4 Union(Vector4 a, Vector4 b)
+	internal static Vector4 Union(Vector4 a, Vector4 b)
 	{
 		if (a.X >= a.Z || a.Y >= a.W) { return b; }
 		if (b.X >= b.Z || b.Y >= b.W) { return a; }
@@ -481,27 +583,23 @@ internal sealed unsafe partial class WebGpuFrame
 		return new Vector4(min.X, min.Y, max.X, max.Y);
 	}
 
-	// Reused so the per-frame op build does not allocate a list and an array per primitive.
-	private readonly VertBuf _scratch = new();
+	// Reused so the per-frame op build does not allocate a list and an array per primitive. Rented from the device on
+	// first use and handed back when the frame ends, so its array is not reallocated every frame.
+	private VertBuf _scratchBuf;
+	private VertBuf Scratch => _scratchBuf ??= _d.RentVerts();
 	private readonly float[] _clipU = new float[ClipUFloats];   // the uniform: header + the first ClipUniformEntries entries
 	private float[] _clipMore = new float[4 * ClipEntryFloats];  // the entries past those, for the overflow buffer; grows
 
-	private readonly Stack<List<DrawOp>> _opsPool = new();
-	private List<DrawOp> RentOps() => _opsPool.Count > 0 ? _opsPool.Pop() : new(256);
-	private void ReturnOps(List<DrawOp> ops)
-	{
-		ops.Clear();   // drops the captured ClipData refs; keeps the backing array for reuse
-		_opsPool.Push(ops);
-	}
+	private List<DrawOp> RentOps() => _d.RentOps();
+	private void ReturnOps(List<DrawOp> ops) => _d.ReturnOps(ops);
 
 	// The pass's shared vertex buffers, one per layout: every per-frame draw appends its verts here in op order, so
 	// adjacent ops sharing a clip occupy a contiguous range and encode as ONE draw, and the whole pass uploads each
 	// buffer once. Fields rather than locals because the builders append to them; saved/restored around a nested build.
 	private VertBuf _solid, _rrect, _gradVerts, _quadVerts;
 	private List<BackdropCmd> _backdrops;
-	private readonly Stack<VertBuf> _vertsPool = new();
-	private VertBuf RentVerts() { var l = _vertsPool.Count > 0 ? _vertsPool.Pop() : new VertBuf(); l.Clear(); return l; }
-	private void ReturnVerts(VertBuf s) { s.Clear(); _vertsPool.Push(s); }
+	private VertBuf RentVerts() => _d.RentVerts();
+	private void ReturnVerts(VertBuf s) => _d.ReturnVerts(s);
 	private VertBuf RentRrect() => RentVerts();
 	private void ReturnRrect(VertBuf s) => ReturnVerts(s);
 
@@ -596,40 +694,41 @@ internal sealed unsafe partial class WebGpuFrame
 		return written;
 	}
 
-	internal IntPtr MakeBuffer(float[] data)
+	internal Buffer* MakeBuffer(float[] data)
 	{
 		var size = data.Length * sizeof(float);
-		var buf = _d.BufferPool.Rent(size, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst);
-		fixed (float* p = data) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
+		var buf = _d.BufferPool.Rent(size, BufferUsage.Vertex | BufferUsage.CopyDst);
+		fixed (float* p = data) { Api.QueueWriteBuffer(_d.Q, buf, 0, p, (nuint)size); }
 		return buf;
 	}
 
 	// Uploads directly from the buffer's backing array (no copy).
-	internal IntPtr MakeBuffer(VertBuf data)
+	internal Buffer* MakeBuffer(VertBuf data)
 	{
 		var size = data.Count * sizeof(float);
-		var buf = _d.BufferPool.Rent(size, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst);
-		fixed (float* p = data.A) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
+		var buf = _d.BufferPool.Rent(size, BufferUsage.Vertex | BufferUsage.CopyDst);
+		fixed (float* p = data.A) { Api.QueueWriteBuffer(_d.Q, buf, 0, p, (nuint)size); }
 		return buf;
 	}
 
-	internal IntPtr Vbuf(VertBuf data, int stride, OwnedResources owned)
-		=> owned is null ? MakeBuffer(data) : PackVerts(owned, data.Span, stride);
+	internal nint Vbuf(VertBuf data, int stride, OwnedResources owned)
+		=> owned is null ? (nint)MakeBuffer(data) : PackVerts(owned, data.Span, stride);
 
-	internal IntPtr MakeUniform(int byteSize)
-		=> _d.BufferPool.Rent(byteSize, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
+	internal Buffer* MakeUniform(int byteSize)
+		=> _d.BufferPool.Rent(byteSize, BufferUsage.Uniform | BufferUsage.CopyDst);
 
-	internal IntPtr Vbuf(float[] data, int stride, OwnedResources owned)
-		=> owned is null ? MakeBuffer(data) : PackVerts(owned, data, stride);
+	internal nint Vbuf(float[] data, int stride, OwnedResources owned)
+		=> owned is null ? (nint)MakeBuffer(data) : PackVerts(owned, data, stride);
 
 	/// <summary>A bag's arena is split once it reaches this, so one recording's geometry can never ask for a
 	/// buffer larger than the device allows (wgpu's default maximum is 256 MB).</summary>
 	private const int MaxArenaBytes = 64 << 20;
 
 	/// <summary>Appends an op's vertices to its bag's current arena chunk, aligned so the range starts on a vertex
-	/// boundary of its own stride, and returns the chunk and first-vertex index tagged negative:
-	/// <see cref="RealizeOwnedVertices"/> swaps it for that chunk's buffer.</summary>
-	private static IntPtr PackVerts(OwnedResources owned, ReadOnlySpan<float> data, int stride)
+	/// boundary of its own stride, and returns a negative tag indexing <see cref="OwnedResources.PackedVertexRanges"/>:
+	/// <see cref="RealizeOwnedVertices"/> swaps it for that chunk's buffer. An index rather than the packed range
+	/// itself, because a pointer is only 32 bits on WebAssembly.</summary>
+	private static nint PackVerts(OwnedResources owned, ReadOnlySpan<float> data, int stride)
 	{
 		var arenas = owned.VertexArenas ??= new List<VertBuf>();
 		if (arenas.Count == 0) { arenas.Add(new VertBuf()); }
@@ -644,43 +743,47 @@ internal sealed unsafe partial class WebGpuFrame
 		if (misaligned != 0) { arena.Grow(stride - misaligned).Clear(); }
 		var first = arena.Count / stride;
 		data.CopyTo(arena.Grow(data.Length));
-		return (IntPtr)(-(((long)(arenas.Count - 1) << 40) | (uint)first) - 1);
+		var ranges = owned.PackedVertexRanges ??= new List<(int Chunk, uint First)>();
+		ranges.Add((arenas.Count - 1, (uint)first));
+		return -ranges.Count;
 	}
 
 	/// <summary>Uploads a finished bag's arena chunks and points every op at the chunk it landed in.</summary>
 	internal void RealizeOwnedVertices(List<DrawOp> ops, OwnedResources owned)
 	{
 		if (owned?.VertexArenas is not { Count: > 0 } arenas) { return; }
-		var buffers = new IntPtr[arenas.Count];
+		var buffers = new Buffer*[arenas.Count];
 		for (var c = 0; c < arenas.Count; c++)
 		{
 			var arena = arenas[c];
 			if (arena.Count == 0) { continue; }
 			var size = arena.Count * sizeof(float);
-			var bd = new WGPUBufferDescriptor { Size = (nuint)size, Usage = WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst };
-			buffers[c] = wgpuDeviceCreateBuffer(_d.Dev, &bd);
-			fixed (float* p = arena.A) { wgpuQueueWriteBuffer(_d.Q, buffers[c], 0, (IntPtr)p, (nuint)size); }
+			var bd = new BufferDescriptor { Size = (nuint)size, Usage = BufferUsage.Vertex | BufferUsage.CopyDst };
+			buffers[c] = Api.DeviceCreateBuffer(_d.Dev, &bd);
+			fixed (float* p = arena.A) { Api.QueueWriteBuffer(_d.Q, buffers[c], 0, p, (nuint)size); }
 			owned.Buffers.Add((nint)buffers[c]);
 		}
 
+		var ranges = owned.PackedVertexRanges!;
 		owned.VertexArenas = null;
+		owned.PackedVertexRanges = null;
 		for (var i = 0; i < ops.Count; i++)
 		{
-			var tag = (nint)ops[i].Verts;
+			var tag = ops[i].Verts;
 			if (tag >= 0) { continue; }
-			var packed = -tag - 1;
+			var (chunk, first) = ranges[(int)(-tag - 1)];
 			var op = ops[i];
-			op.Verts = buffers[(int)(packed >> 40)];
-			op.FirstVertex = (uint)(packed & 0xFFFFFFFF);
+			op.Verts = (nint)buffers[chunk];
+			op.FirstVertex = first;
 			ops[i] = op;
 		}
 	}
 
-	internal IntPtr Ubuf(int size, OwnedResources owned)
+	internal Buffer* Ubuf(int size, OwnedResources owned)
 	{
 		if (owned is null) { return MakeUniform(size); }
-		var bd = new WGPUBufferDescriptor { Size = (nuint)size, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
-		var buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
+		var bd = new BufferDescriptor { Size = (nuint)size, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+		var buf = Api.DeviceCreateBuffer(_d.Dev, &bd);
 		owned.Buffers.Add((nint)buf);
 		return buf;
 	}
@@ -723,8 +826,9 @@ internal sealed unsafe partial class WebGpuFrame
 		bool rect = ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f;
 		u[9] = rect ? 1f : 0f;
 		u[10] = ab.X; u[11] = ab.Y;
-		// rect.x is the site's draw-order depth (see project); rect.y stays spare.
-		u[12] = depth; u[13] = 0f; u[14] = ab.Z; u[15] = ab.W;
+		// rect.x is the site's draw-order depth (see project); rect.y the pass's device pixels per target pixel, which
+		// a shadow layer rendered below its covered size needs to lift a fragment back to the device space.
+		u[12] = depth; u[13] = _basisScale; u[14] = ab.Z; u[15] = ab.W;
 
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
 		if (rect) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
@@ -764,16 +868,16 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	/// <summary>The bind group for one site slot. Lives as long as the stamp, so a move rebinds nothing.</summary>
-	private IntPtr MakeSiteBg(nint slot)
+	private BindGroup* MakeSiteBg(nint slot)
 	{
-		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = _d.SiteSlab.BufferOf(slot), Offset = _d.SiteSlab.OffsetOf(slot), Size = SiteUBytes };
-		var d = new WGPUBindGroupDescriptor { Layout = _d.SiteBgl, EntryCount = 1, Entries = &e };
-		return wgpuDeviceCreateBindGroup(_d.Dev, &d);
+		var e = new BindGroupEntry { Binding = 0, Buffer = _d.SiteSlab.BufferOf(slot), Offset = _d.SiteSlab.OffsetOf(slot), Size = SiteUBytes };
+		var d = new BindGroupDescriptor { Layout = _d.SiteBgl, EntryCount = 1, Entries = &e };
+		return Api.DeviceCreateBindGroup(_d.Dev, &d);
 	}
 
-	internal IntPtr Bg(ref WGPUBindGroupDescriptor bgd, OwnedResources owned)
+	internal BindGroup* Bg(ref BindGroupDescriptor bgd, OwnedResources owned)
 	{
-		var bg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref bgd));
+		var bg = Api.DeviceCreateBindGroup(_d.Dev, (BindGroupDescriptor*)Unsafe.AsPointer(ref bgd));
 		if (owned is null) { _d.TrackBg(bg); } else { owned.BindGroups.Add((nint)bg); }
 		return bg;
 	}
@@ -805,7 +909,7 @@ internal sealed unsafe partial class WebGpuFrame
 	/// from <paramref name="tint"/> (see ImageWgsl op.y). Pass <paramref name="owned"/> for a cached recording so
 	/// the uniform is persistent - a per-frame one would be recycled and replay in another element's colour.
 	/// </summary>
-	internal IntPtr TintedImageBg(IntPtr view, WColor tint, OwnedResources owned = null)
+	internal BindGroup* TintedImageBg(TextureView* view, WColor tint, OwnedResources owned = null)
 	{
 		var ubuf = Ubuf(WebGpuDevice.ImageUniformBytes, owned);
 		var u = stackalloc float[36];
@@ -813,12 +917,12 @@ internal sealed unsafe partial class WebGpuFrame
 		u[0] = 1f; u[1] = 1f;
 		u[4] = tint.R / 255f; u[5] = tint.G / 255f; u[6] = tint.B / 255f; u[7] = tint.A / 255f;
 		// Whole uniform, so a recycled buffer cannot leave the edge-AA flag set: the mask carries the coverage.
-		wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)u, WebGpuDevice.ImageUniformBytes);
-		var e = stackalloc WGPUBindGroupEntry[3];
-		e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = view };
-		e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-		e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = WebGpuDevice.ImageUniformBytes };
-		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = e };
+		Api.QueueWriteBuffer(_d.Q, ubuf, 0, u, WebGpuDevice.ImageUniformBytes);
+		var e = stackalloc BindGroupEntry[3];
+		e[0] = new BindGroupEntry { Binding = 0, TextureView = view };
+		e[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+		e[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = WebGpuDevice.ImageUniformBytes };
+		var bgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = e };
 		return Bg(ref bgd, owned);
 	}
 
@@ -860,6 +964,10 @@ internal sealed unsafe partial class WebGpuFrame
 			cu[6] = ab.Z; cu[7] = ab.W;      // size.zw = rect max
 			foldedAabb = true;
 		}
+		// size.xy = the rect slot's units per device pixel across its x and y edges (the length of finv's row for each
+		// axis), which turn its recording-space distances into pixels like an entry's k.x.
+		var rectK = RectClipUnitsPerPixel(finv);
+		cu[4] = rectK.X; cu[5] = rectK.Y;
 		// xform = the op's pixel-space transform: px = M11*x + M21*y + M31, py = M12*x + M22*y + M32.
 		cu[8] = xform.M11; cu[9] = xform.M21; cu[10] = xform.M12; cu[11] = xform.M22;
 		cu[12] = xform.M31; cu[13] = xform.M32;   // xoff.xy
@@ -871,11 +979,11 @@ internal sealed unsafe partial class WebGpuFrame
 		cu[15] = finv.M32 + finv.M12 * _basisOx + finv.M22 * _basisOy;
 		cu[16] = finv.M11; cu[17] = finv.M12; cu[18] = finv.M21; cu[19] = finv.M22;
 		// own.x = the op's own coverage texture is bound (sampled by vertex uv); own.y = drawn scaled or rotated, so filtered.
-		if (cd.Coverage != 0) { cu[20] = 1f; cu[21] = cd.CoverageFiltered ? 1f : 0f; }
+		if (cd.Coverage != null) { cu[20] = 1f; cu[21] = cd.CoverageFiltered ? 1f : 0f; }
 		// inner: the largest axis-aligned rect every clip covers in full, a pixel inside each edge. An excluded, masked or
 		// rotated entry leaves none; a rounded corner insets its sides by the inscribed-square fraction of its radii.
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
-		if (foldedAabb) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
+		if (foldedAabb) { ix = ab.X + rectK.X; iy = ab.Y + rectK.Y; iz = ab.Z - rectK.X; iw = ab.W - rectK.Y; }
 		// A fragment step in the recording's space is a column of finv; through an entry's own matrix it is the entry's
 		// step per device pixel, constant under an affine, so it is computed once here rather than per fragment.
 		var ddx = new Vector2(finv.M11, finv.M12); var ddy = new Vector2(finv.M21, finv.M22);
@@ -913,19 +1021,26 @@ internal sealed unsafe partial class WebGpuFrame
 		return more;
 	}
 
+	// How many recording-space units one device pixel spans across a vertical (x) and a horizontal (y) edge: the
+	// gradient length of that recording coordinate along the device axes.
+	private static Vector2 RectClipUnitsPerPixel(in Matrix3x2 finv)
+		=> new(
+			MathF.Max(new Vector2(finv.M11, finv.M21).Length(), 1e-6f),
+			MathF.Max(new Vector2(finv.M12, finv.M22).Length(), 1e-6f));
+
 	// Binding 4: the overflow entries, or the placeholder when the draw has none (the shader never reads it then).
-	private WGPUBindGroupEntry ClipMoreEntry(IntPtr buf, int more)
-		=> new() { Binding = 4, Buffer = buf != IntPtr.Zero ? buf : _d.DummyClipMore, Offset = 0, Size = (nuint)(Math.Max(more, 1) * ClipEntryBytes) };
+	private BindGroupEntry ClipMoreEntry(Buffer* buf, int more)
+		=> new() { Binding = 4, Buffer = buf != null ? buf : _d.DummyClipMore, Offset = 0, Size = (nuint)(Math.Max(more, 1) * ClipEntryBytes) };
 
 	// The overflow entries as a storage buffer: `buf` when it already exists (a restamp rewrites in place), else a new one.
-	private IntPtr WriteClipMore(int more, IntPtr buf)
+	private Buffer* WriteClipMore(int more, Buffer* buf)
 	{
-		if (buf == IntPtr.Zero)
+		if (buf == null)
 		{
-			var bd = new WGPUBufferDescriptor { Size = (nuint)(more * ClipEntryBytes), Usage = WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst };
-			buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
+			var bd = new BufferDescriptor { Size = (nuint)(more * ClipEntryBytes), Usage = BufferUsage.Storage | BufferUsage.CopyDst };
+			buf = Api.DeviceCreateBuffer(_d.Dev, &bd);
 		}
-		fixed (float* p = _clipMore) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)(more * ClipEntryBytes)); }
+		fixed (float* p = _clipMore) { Api.QueueWriteBuffer(_d.Q, buf, 0, p, (nuint)(more * ClipEntryBytes)); }
 		return buf;
 	}
 
@@ -973,7 +1088,8 @@ internal sealed unsafe partial class WebGpuFrame
 		cu[15] = finv.M32 + finv.M12 * _basisOx + finv.M22 * _basisOy;
 
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
-		if (foldedAabb) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
+		// size.xy (the rect slot's units per pixel) depends on finv's linear part alone, which this path keeps.
+		if (foldedAabb) { ix = ab.X + cu[4]; iy = ab.Y + cu[5]; iz = ab.Z - cu[4]; iw = ab.W - cu[5]; }
 		int n = na + (session.Entries?.Length ?? 0);
 		for (int i = 0; i < n; i++)
 		{
@@ -1043,46 +1159,77 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	// Owned variant exposing the ClipU slab slot so a later restamp can RewriteClipU it in place.
-	private IntPtr MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
+	private BindGroup* MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU, bool share = true)
+	{
+		if (!share) { return MakeClipBgOwnedCore(cd, owned, xform, finv, out buf, out aabbInClipU); }
+
+		// Ops of one bag that share a clip share its slot and bind group: the ClipU is a function of the clip and
+		// transform alone, so a later in-place patch writes the same values for each of them. Without this a text
+		// run pays a slab slot and a bind group per glyph op.
+		var memo = owned.ClipMemo ??= new();
+		var key = ClipMemoKey(cd, xform);
+		if (memo.TryGetValue(key, out var bucket))
+		{
+			foreach (var m in bucket)
+			{
+				if (m.Xform == xform && m.Finv == finv && m.Clip.Aabb == cd.Aabb && ClipDataEquals(m.Clip, cd))
+				{
+					buf = m.Slot;
+					aabbInClipU = m.AabbInClipU;
+					return (BindGroup*)m.Bg;
+				}
+			}
+		}
+
+		var bg = MakeClipBgOwnedCore(cd, owned, xform, finv, out buf, out aabbInClipU);
+		if (bucket is null) { memo[key] = bucket = new(1); }
+		bucket.Add(new OwnedResources.ClipMemoEntry(cd, xform, finv, (nint)bg, buf, aabbInClipU));
+		return bg;
+	}
+
+	private static int ClipMemoKey(in ClipData cd, in Matrix3x2 xform)
+		=> HashCode.Combine(cd.Aabb, (nint)cd.Coverage, cd.Entries?.Length ?? 0, cd.Paths?.Length ?? 0, xform.M31, xform.M32);
+
+	private BindGroup* MakeClipBgOwnedCore(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{
 		var masks = Coverage.ResolveClipMasks(cd, owned);
 		var more = FillClipU(cd, xform, finv, masks.Entries, out aabbInClipU);
 		var slot = _d.ClipSlab.Alloc();
 		_d.ClipSlab.Write(slot, _clipU, LiveClipUFloats(cd, masks.Entries));
-		if (more > 0) { _d.ClipSlab.SetMore(slot, WriteClipMore(more, IntPtr.Zero)); }   // freed with the slot
+		if (more > 0) { _d.ClipSlab.SetMore(slot, WriteClipMore(more, null)); }   // freed with the slot
 		(owned.ClipSlots ??= new()).Add(slot);
-		var e = stackalloc WGPUBindGroupEntry[5];
-		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = _d.ClipSlab.BufferOf(slot), Offset = _d.ClipSlab.OffsetOf(slot), Size = ClipUBytes };
-		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = masks.View != IntPtr.Zero ? masks.View : _d.DummyTex };
-		e[2] = new WGPUBindGroupEntry { Binding = 2, TextureView = cd.Coverage != 0 ? (IntPtr)cd.Coverage : _d.DummyTex };
-		e[3] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
-		e[4] = ClipMoreEntry(more > 0 ? _d.ClipSlab.MoreOf(slot) : IntPtr.Zero, more);
-		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 5, Entries = e };
+		var e = stackalloc BindGroupEntry[5];
+		e[0] = new BindGroupEntry { Binding = 0, Buffer = _d.ClipSlab.BufferOf(slot), Offset = _d.ClipSlab.OffsetOf(slot), Size = ClipUBytes };
+		e[1] = new BindGroupEntry { Binding = 1, TextureView = masks.View != null ? masks.View : _d.DummyTex };
+		e[2] = new BindGroupEntry { Binding = 2, TextureView = cd.Coverage != null ? cd.Coverage : _d.DummyTex };
+		e[3] = new BindGroupEntry { Binding = 3, Sampler = _d.Smp };
+		e[4] = ClipMoreEntry(more > 0 ? _d.ClipSlab.MoreOf(slot) : null, more);
+		var bgd = new BindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 5, Entries = e };
 		buf = slot;
 		return Bg(ref bgd, owned);
 	}
 
-	internal IntPtr MakeClipBg(ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default, Matrix3x2 finv = default)
+	internal BindGroup* MakeClipBg(ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default, Matrix3x2 finv = default)
 	{
 		if (owned is not null) { return MakeClipBgOwned(cd, owned, xform, finv, out _, out _); }
 		var masks = Coverage.ResolveClipMasks(cd, null);
 		var more = FillClipU(cd, xform, finv, masks.Entries, out _);
 		var cu = _clipU;
-		if (masks.View != IntPtr.Zero || cd.Coverage != 0 || more > 0)
+		if (masks.View != null || cd.Coverage != null || more > 0)
 		{
 			// A per-op group rather than a slab slot: the slab's persistent groups bind the placeholders, and the mask
 			// and coverage textures and the overflow entries are per op. Buffers and group are per-frame; the textures
 			// outlive them.
-			var ub = _d.BufferPool.Rent(ClipUBytes, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
-			fixed (float* pcu = cu) { wgpuQueueWriteBuffer(_d.Q, ub, 0, (IntPtr)pcu, ClipUBytes); }
-			var mb = more > 0 ? WriteClipMore(more, _d.BufferPool.Rent(more * ClipEntryBytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst)) : IntPtr.Zero;
-			var me = stackalloc WGPUBindGroupEntry[5];
-			me[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ub, Offset = 0, Size = ClipUBytes };
-			me[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = masks.View != IntPtr.Zero ? masks.View : _d.DummyTex };
-			me[2] = new WGPUBindGroupEntry { Binding = 2, TextureView = cd.Coverage != 0 ? (IntPtr)cd.Coverage : _d.DummyTex };
-			me[3] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
+			var ub = _d.BufferPool.Rent(ClipUBytes, BufferUsage.Uniform | BufferUsage.CopyDst);
+			fixed (float* pcu = cu) { Api.QueueWriteBuffer(_d.Q, ub, 0, pcu, ClipUBytes); }
+			var mb = more > 0 ? WriteClipMore(more, _d.BufferPool.Rent(more * ClipEntryBytes, BufferUsage.Storage | BufferUsage.CopyDst)) : null;
+			var me = stackalloc BindGroupEntry[5];
+			me[0] = new BindGroupEntry { Binding = 0, Buffer = ub, Offset = 0, Size = ClipUBytes };
+			me[1] = new BindGroupEntry { Binding = 1, TextureView = masks.View != null ? masks.View : _d.DummyTex };
+			me[2] = new BindGroupEntry { Binding = 2, TextureView = cd.Coverage != null ? cd.Coverage : _d.DummyTex };
+			me[3] = new BindGroupEntry { Binding = 3, Sampler = _d.Smp };
 			me[4] = ClipMoreEntry(mb, more);
-			var mbgd = new WGPUBindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 5, Entries = me };
+			var mbgd = new BindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 5, Entries = me };
 			return Bg(ref mbgd, null);
 		}
 		// Immediate ops take a recycled per-frame slab slot: its bind group is created once and reused, and the
@@ -1095,7 +1242,7 @@ internal sealed unsafe partial class WebGpuFrame
 	// The ops of one command list, built for one target basis, with the pass buffers they index. A pass encodes one
 	// build for a window or a full-size layer, and several for the layer sheet, where every size-to-content layer of
 	// the frame draws into its own slot of one texture under its own basis.
-	internal sealed class PassBuild
+	internal sealed unsafe class PassBuild
 	{
 		public List<DrawOp> Ops;
 		public List<BackdropCmd> Backdrops;
@@ -1104,10 +1251,43 @@ internal sealed unsafe partial class WebGpuFrame
 		/// <summary>The occlusion prepass' quads: 6 verts of (x, y, depth) per opaque cover.</summary>
 		public float[] Prepass;
 		public int PrepassVerts;
-		public Vector4 Bound;   // device rect every scissor stays within: a sheet slot; the whole target otherwise
-		public nint SolidBuf, RrectBuf, GradBuf, QuadBuf;
+		public Vector4 Bound;   // device rect every scissor stays within: a sheet slot, a damage region, else all of it
+		public Buffer* SolidBuf, RrectBuf, GradBuf, QuadBuf;
 		public nuint SolidBufBytes, RrectBufBytes, GradBufBytes, QuadBufBytes;
-		public IntPtr PassBg;
+		public BindGroup* PassBg;
+		/// <summary>The colour of an opaque whole-target fill taken off the front of the ops, for the pass to clear to.</summary>
+		public WColor? FoldedClear;
+	}
+
+	// A pass that clears anyway gets an opaque fill of its whole target for free from the load op; drawn, that fill
+	// would shade every pixel of the target a second time.
+	private static void FoldClear(PassBuild b, WebGpuRenderSurface target)
+	{
+		// A pass left with no draw at all loses the device on llvmpipe, so the last op stays a draw.
+		if (b.Ops.Count < 2 || b.Bound != _unbounded || b.BasisOx != 0f || b.BasisOy != 0f)
+		{
+			return;
+		}
+		var op = b.Ops[0];
+		if (op.Fill.A != 255 || op.Cover == default || op.CullScissor.Z > op.CullScissor.X)
+		{
+			return;
+		}
+		var r = PixelsFilled(op.Cover);
+		if (!op.Clip.ScissorInert) { r = Meet(r, PixelsFilled(op.Clip.Aabb)); }
+		if (r.X > 0f || r.Y > 0f || r.Z < target.Width - 1 || r.W < target.Height - 1)
+		{
+			return;
+		}
+		b.FoldedClear = op.Fill;
+		StatClearFolds++;
+		// Fills of that same colour drawn straight onto the clear change no pixel, their antialiased edges included.
+		var folded = 1;
+		while (folded < b.Ops.Count - 1 && b.Ops[folded].Fill == op.Fill && b.Ops[folded].Cover != default)
+		{
+			folded++;
+		}
+		b.Ops.RemoveRange(0, folded);
 	}
 
 	private static readonly Vector4 _unbounded = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
@@ -1119,11 +1299,12 @@ internal sealed unsafe partial class WebGpuFrame
 	// basisW/basisH default (0) to the target's own size at origin (basisOx,basisOy) — the whole-target mapping the
 	// window and full-size layers use. A size-to-content layer passes its device sub-rect.
 	internal void RenderInto(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, WColor? clear, bool load = false,
-		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f, List<WebGpuCommand> overlay = null, bool depth = false)
+		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f, List<WebGpuCommand> overlay = null, bool depth = false,
+		Vector4? bound = null)
 	{
-		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, _unbounded, overlay);
+		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, bound ?? _unbounded, overlay, foldClear: !load);
 		_singleBuild[0] = build;
-		EncodePass(target, clear, load, _singleBuild, depth);
+		EncodePass(target, build.FoldedClear ?? clear, load, _singleBuild, depth);
 	}
 
 	private readonly PassBuild[] _singleBuild = new PassBuild[1];
@@ -1131,7 +1312,7 @@ internal sealed unsafe partial class WebGpuFrame
 	/// <summary>Timestamp the current build started, for the op-build half of the stats line.</summary>
 
 	// Builds the ops for one command list under a basis: the whole draw-side work of a pass, none of the encoding.
-	internal PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null, float basisScale = 1f)
+	internal PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null, float basisScale = 1f, bool foldClear = false)
 	{
 		long passStart = _emitStats && _passDepth == 0 ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
@@ -1161,17 +1342,18 @@ internal sealed unsafe partial class WebGpuFrame
 		_passDepth--;
 		if (_emitStats && _passDepth == 0) { WalkTicks += System.Diagnostics.Stopwatch.GetTimestamp() - walkStart; }
 		if (!_noOcclusionCull) { CullOccluded(b.Ops, bound); }
+		if (foldClear && !_noClearFold) { FoldClear(b, target); }
 		BuildPrepass(b);
 		long uploadStart = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
 		// Upload the whole pass's shared geometry in ONE buffer per layout; the ops index them.
-		b.SolidBuf = _solid.Count > 0 ? (nint)MakeBuffer(_solid) : IntPtr.Zero;
+		b.SolidBuf = _solid.Count > 0 ? MakeBuffer(_solid) : null;
 		b.SolidBufBytes = (nuint)(_solid.Count * sizeof(float));
-		b.RrectBuf = _rrect.Count > 0 ? (nint)MakeBuffer(_rrect) : IntPtr.Zero;
+		b.RrectBuf = _rrect.Count > 0 ? MakeBuffer(_rrect) : null;
 		b.RrectBufBytes = (nuint)(_rrect.Count * sizeof(float));
-		b.GradBuf = _gradVerts.Count > 0 ? (nint)MakeBuffer(_gradVerts) : IntPtr.Zero;
+		b.GradBuf = _gradVerts.Count > 0 ? MakeBuffer(_gradVerts) : null;
 		b.GradBufBytes = (nuint)(_gradVerts.Count * sizeof(float));
-		b.QuadBuf = _quadVerts.Count > 0 ? (nint)MakeBuffer(_quadVerts) : IntPtr.Zero;
+		b.QuadBuf = _quadVerts.Count > 0 ? MakeBuffer(_quadVerts) : null;
 		b.QuadBufBytes = (nuint)(_quadVerts.Count * sizeof(float));
 		b.PassBg = MakePassBg();
 
@@ -1194,33 +1376,33 @@ internal sealed unsafe partial class WebGpuFrame
 		Coverage.FlushPendingBakes();
 		Effects.FlushLayerSheets(LayerDepth);
 
-		var color = new WGPURenderPassColorAttachment
+		var color = new RenderPassColorAttachment
 		{
 			DepthSlice = uint.MaxValue,
 			View = target.View,
-			LoadOp = load ? WGPULoadOp.Load : WGPULoadOp.Clear,
-			StoreOp = WGPUStoreOp.Store,
-			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
+			LoadOp = load ? LoadOp.Load : LoadOp.Clear,
+			StoreOp = StoreOp.Store,
+			ClearValue = clear.HasValue ? new Color { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
-		var depthView = depth ? _d.Pool.Rent(target.Width, target.Height, 1, WGPUTextureUsage.RenderAttachment, WebGpuDevice.DepthFormat) : IntPtr.Zero;
-		var da = new WGPURenderPassDepthStencilAttachment
+		var depthView = depth ? _d.Pool.Rent(target.Width, target.Height, 1, TextureUsage.RenderAttachment, WebGpuDevice.DepthFormat) : null;
+		var da = new RenderPassDepthStencilAttachment
 		{
 			View = depthView,
-			DepthLoadOp = WGPULoadOp.Clear,
-			DepthStoreOp = WGPUStoreOp.Store,
+			DepthLoadOp = LoadOp.Clear,
+			DepthStoreOp = StoreOp.Store,
 			DepthClearValue = 0f,   // nothing covers anything until the prepass says so
-			StencilLoadOp = WGPULoadOp.Undefined,
-			StencilStoreOp = WGPUStoreOp.Undefined,
+			StencilLoadOp = LoadOp.Undefined,
+			StencilStoreOp = StoreOp.Undefined,
 		};
-		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = depthView != IntPtr.Zero ? &da : null };
-		var pass = wgpuCommandEncoderBeginRenderPass(Encoder, &desc);
-		UseDepth = depthView != IntPtr.Zero;
+		var desc = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = depthView != null ? &da : null };
+		var pass = Api.CommandEncoderBeginRenderPass(Encoder, &desc);
+		UseDepth = depthView != null;
 		_depthView = depthView;
 		var encodeStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
 		var savedBasis = (_basisOx, _basisOy, _basisW, _basisH, _basisScale);
 		var savedBound = _bound;
-		var enc = new PassEncoder(pass);
+		var enc = new PassEncoder(Api, pass);
 		foreach (var b in builds)
 		{
 			(_basisOx, _basisOy, _basisW, _basisH, _basisScale) = (b.BasisOx, b.BasisOy, b.BasisW, b.BasisH, b.BasisScale <= 0f ? 1f : b.BasisScale);
@@ -1246,11 +1428,18 @@ internal sealed unsafe partial class WebGpuFrame
 			{
 				float ps = b.BasisScale <= 0f ? 1f : b.BasisScale;
 				var pv = MakeBuffer(b.Prepass);
-				pst.Enc.Pipe(_d.DepthPrepassPipe);
-				pst.Enc.Bg(0, b.PassBg);
-				pst.Enc.Scissor(0, 0, (int)(b.BasisW / ps), (int)(b.BasisH / ps));
-				pst.Enc.Vb(pv, 0, (nuint)(b.Prepass.Length * sizeof(float)));
-				pst.Enc.Draw((uint)b.PrepassVerts, 0);
+				// The prepass only feeds the occlusion test for this build's own draws, which never leave its bound,
+				// so on a partial repaint it covers the dirty rect rather than the surface.
+				int px = 0, py = 0, pw = (int)(b.BasisW / ps), ph = (int)(b.BasisH / ps);
+				var boundedPrepass = _bound.X > float.MinValue;
+				if (!boundedPrepass || TryScissor(_bound, out px, out py, out pw, out ph))
+				{
+					pst.Enc.Pipe(_d.DepthPrepassPipe);
+					pst.Enc.Bg(0, b.PassBg);
+					pst.Enc.Scissor(px, py, pw, ph);
+					pst.Enc.Vb(pv, 0, (nuint)(b.Prepass.Length * sizeof(float)));
+					pst.Enc.Draw((uint)b.PrepassVerts, 0);
+				}
 			}
 			EncodeOps(0, b.Ops.Count, ref pst);
 			pass = pst.Pass;   // a backdrop segment reopens the pass
@@ -1264,10 +1453,10 @@ internal sealed unsafe partial class WebGpuFrame
 		(_basisOx, _basisOy, _basisW, _basisH, _basisScale) = savedBasis;
 		_bound = savedBound;
 
-		wgpuRenderPassEncoderEnd(pass);
-		wgpuRenderPassEncoderRelease(pass);
+		Api.RenderPassEncoderEnd(pass);
+		Api.RenderPassEncoderRelease(pass);
 		UseDepth = false;
-		_depthView = IntPtr.Zero;
+		_depthView = null;
 		foreach (var b in builds) { ReleaseBuild(b); }
 	}
 

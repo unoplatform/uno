@@ -1,4 +1,4 @@
-﻿// A render target the backend owns: its MSAA colour and the single-sample view it resolves into. Also the
+﻿// A render target the backend renders into: a colour texture and its view. Also the
 // per-recording resources a session hands back when it is released.
 #nullable disable
 using System;
@@ -7,8 +7,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
 using Uno.UI.Composition.Drawing;
 using Windows.Graphics.Effects.Interop;
 using Windows.Foundation;
@@ -16,42 +15,44 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-// Renderer-internal render surface (main pass + offscreen layers): the MSAA colour the backend owns,
-// its own colour for an offscreen, a pooled one for a layer, the host's IWebGpuRenderTarget.ColorView for the main
-// pass. Not the neutral seam type — that is the host's WebGpuSwapchainTarget.
+// Renderer-internal render surface (main pass + offscreen layers): its own colour for an offscreen, a pooled one for
+// a layer, the host's IWebGpuRenderTarget.ColorView for the main pass. Not the neutral seam type — that is the host's
+// WebGpuSwapchainTarget.
 internal sealed unsafe class WebGpuRenderSurface
 {
-	public IntPtr Tex;
-	public IntPtr View;              // the colour the pass renders into, sampled afterwards as a layer / coverage / readback source
+	public Texture* Tex;
+	public TextureView* View;        // the colour the pass renders into, sampled afterwards as a layer / coverage / readback source
 	public int Width { get; }
 	public int Height { get; }
 	public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
 
-	// Only the dedicated offscreen owns its colour. A pooled surface's is reclaimed by the pool; a swapchain surface's
-	// is the per-frame acquired image, borrowed from the context, which releases it in Present.
+	// Only the dedicated offscreen owns its colour. A pooled surface's is reclaimed by the pool; the main pass's is the
+	// host's target view, which the host owns.
 	private readonly bool _ownsColor;
+	private readonly WebGPU _api;
 
 	public void Dispose()
 	{
 		if (!_ownsColor) { return; }
-		if (View != IntPtr.Zero) { wgpuTextureViewRelease(View); View = IntPtr.Zero; }
-		if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); wgpuTextureRelease(Tex); Tex = IntPtr.Zero; }
+		if (View != null) { _api.TextureViewRelease(View); View = null; }
+		if (Tex != null) { _api.TextureDestroy(Tex); _api.TextureRelease(Tex); Tex = null; }
 	}
 
 	// A dedicated offscreen (RenderOffscreen, effect evaluation): TextureBinding so the result can be sampled, CopySrc
 	// so it can be read back.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, string what = "offscreen")
 	{
+		_api = device.Api;
 		Width = width; Height = height;
 		_ownsColor = true;
-		var td = new WGPUTextureDescriptor
+		var td = new TextureDescriptor
 		{
-			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
+			Size = new Extent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
 			Format = device.ColorFormat,
 			MipLevelCount = 1,
 			SampleCount = 1,
-			Dimension = WGPUTextureDimension._2D,
-			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.CopySrc | WGPUTextureUsage.TextureBinding,
+			Dimension = TextureDimension.Dimension2D,
+			Usage = TextureUsage.RenderAttachment | TextureUsage.CopySrc | TextureUsage.TextureBinding,
 		};
 		if (device.OffscreenPool.TryRent(width, height, out var pooled, out var pooledView))
 		{
@@ -60,30 +61,32 @@ internal sealed unsafe class WebGpuRenderSurface
 			return;
 		}
 
-		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
-		View = wgpuTextureCreateView(Tex, null);
+		Tex = _api.DeviceCreateTexture(device.Dev, &td);
+		View = _api.TextureCreateView(Tex, null);
 	}
 
-	// The main pass: the colour is the acquired swapchain image, set per frame by the factory.
+	// The main pass: the colour is the host's target view, set by the factory; nothing is allocated here.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, bool externalColor)
 	{
+		_api = device.Api;
 		Width = width; Height = height;
 	}
 
 	// A transient offscreen (a layer, a sheet) rented from the pool, so a steady-state frame allocates nothing.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, WebGpuTexturePool pool)
 	{
+		_api = device.Api;
 		Width = width; Height = height;
-		View = pool.Rent(width, height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, device.ColorFormat);
+		View = pool.Rent(width, height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding | TextureUsage.CopySrc, device.ColorFormat);
 		Tex = pool.TexForView(View);
 	}
 
 	// Hands the colour to a longer-lived owner (RenderOffscreen -> ITexture); Dispose then has nothing left to release.
-	internal (IntPtr tex, IntPtr view) DetachColor()
+	internal WebGpuTexture DetachTexture(WebGpuDevice device)
 	{
-		var t = Tex; var v = View;
-		Tex = IntPtr.Zero; View = IntPtr.Zero;
-		return (t, v);
+		var texture = new WebGpuTexture(device, Tex, View, Width, Height);
+		Tex = null; View = null;
+		return texture;
 	}
 }
 
@@ -95,6 +98,8 @@ internal sealed class OwnedResources
 	// of MB; packing also lets the encoder's merge rule fire, which a buffer per op makes impossible. Split into
 	// chunks because a recording's geometry can exceed the device's maximum buffer size on its own.
 	internal System.Collections.Generic.List<VertBuf> VertexArenas;
+	// Where each packed op's vertices landed (chunk, first vertex); an op's provisional Verts tag indexes this.
+	internal System.Collections.Generic.List<(int Chunk, uint First)> PackedVertexRanges;
 	public System.Collections.Generic.List<nint> BindGroups = new();
 	// Clip-slab slot handles this bag's bind groups reference; freed with the bag (see WebGpuClipSlab).
 	public System.Collections.Generic.List<nint> ClipSlots;
@@ -109,6 +114,12 @@ internal sealed class OwnedResources
 	// Dispose in that window re-defers the old bag. Double-releasing recycles wgpu ids under in-flight uses
 	// ("BindGroup[Id] does not exist" panic); the claim makes the second hand-off a no-op.
 	public int Released;
+
+	internal readonly record struct ClipMemoEntry(ClipData Clip, System.Numerics.Matrix3x2 Xform, System.Numerics.Matrix3x2 Finv, nint Bg, nint Slot, bool AabbInClipU);
+	// The clip bind groups this bag has already made, for sharing between its ops while it is being built; dropped
+	// when the build ends, since nothing adds to a finished bag.
+	internal System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<ClipMemoEntry>> ClipMemo;
+
 }
 
 

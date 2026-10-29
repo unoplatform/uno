@@ -3,8 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
 using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
@@ -37,7 +36,8 @@ internal sealed unsafe partial class WebGpuEffects
 
 	internal sealed class ShapeShadow
 	{
-		public IntPtr Tex, View;
+		public Texture* Tex;
+		public TextureView* View;
 		public int TexW, TexH;
 		public float Pad;        // device px of blur reach baked around the shape
 		public long LastUsed;
@@ -57,9 +57,9 @@ internal sealed unsafe partial class WebGpuEffects
 	/// and, through <paramref name="pad"/>, how far the blur reaches past the shape -- the caller draws the quad
 	/// inflated by that much.
 	/// </summary>
-	internal bool TryShapeShadow(float w, float h, float radius, float sigma, out IntPtr view, out float pad)
+	internal bool TryShapeShadow(float w, float h, float radius, float sigma, out TextureView* view, out float pad)
 	{
-		view = IntPtr.Zero; pad = 0f;
+		view = null; pad = 0f;
 		if (WebGpuDevice.NoShapeShadow || w < 1f || h < 1f || sigma <= 0f) { return false; }
 		var key = new ShapeKey(w, h, radius, sigma);
 		if (_shapeShadows.TryGetValue(key, out var hit))
@@ -113,17 +113,17 @@ internal sealed unsafe partial class WebGpuEffects
 
 			int levels = BlurLevels(bsig);
 			int bw = Math.Max(1, tw >> levels), bh = Math.Max(1, th >> levels);
-			var td = new WGPUTextureDescriptor
+			var td = new TextureDescriptor
 			{
-				Size = new WGPUExtent3D { Width = (uint)bw, Height = (uint)bh, DepthOrArrayLayers = 1 },
+				Size = new Extent3D { Width = (uint)bw, Height = (uint)bh, DepthOrArrayLayers = 1 },
 				Format = WebGpuDevice.DefaultColorFormat,
 				MipLevelCount = 1,
 				SampleCount = 1,
-				Dimension = WGPUTextureDimension._2D,
-				Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.RenderAttachment,
+				Dimension = TextureDimension.Dimension2D,
+				Usage = TextureUsage.TextureBinding | TextureUsage.RenderAttachment,
 			};
-			var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
-			var texView = wgpuTextureCreateView(tex, null);
+			var tex = Api.DeviceCreateTexture(_d.Dev, &td);
+			var texView = Api.TextureCreateView(tex, null);
 			BlurPyramidRegion(surface.View, tw, th, 0f, 0f, tw, th, bsig, bsig, texView);
 			_f.LayerSurfaces.Add(surface);
 

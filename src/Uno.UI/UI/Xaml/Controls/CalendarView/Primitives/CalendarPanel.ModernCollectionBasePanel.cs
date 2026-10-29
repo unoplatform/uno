@@ -448,11 +448,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_effectiveViewport.Y += newOffset - currentOffset;			
 #endif
 
-				sv.ChangeView(
+				// The offset comes from this panel's estimated bounds, ahead of the extent the ScrollViewer was arranged with.
+				sv.ChangeViewForLayoutAdjustment(
 					horizontalOffset: null,
 					verticalOffset: newOffset,
-					zoomFactor: null,
-					forceSynchronous);
+					disableAnimation: forceSynchronous);
 
 				// Makes sure the container of the requested date is materialized before the end of this method
 				base_MeasureOverride(_lastLayoutedViewport.Size);

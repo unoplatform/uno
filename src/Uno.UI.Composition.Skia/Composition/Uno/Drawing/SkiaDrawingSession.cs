@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Composition;
 using SkiaSharp;
 using Windows.Foundation;
@@ -19,6 +20,10 @@ internal class SkiaDrawingSession : IDrawingSession
 	// fully reconfigures it from the verb's arguments, so no state leaks between draws.
 	[ThreadStatic]
 	private static SKPaint? _sparePaint;
+
+	// Build() resets the builder, so one per drawing thread is reused for every glyph run.
+	[ThreadStatic]
+	private static SKTextBlobBuilder? _textBlobBuilder;
 
 	// Recording happens on the render/UI thread and can nest (a subtree recording contains per-visual
 	// content recordings), so recorders are pooled per thread and rented/returned around each recording.
@@ -86,7 +91,9 @@ internal class SkiaDrawingSession : IDrawingSession
 		opacityPaint?.Dispose();
 	}
 
-	public Matrix4x4 TotalMatrix => _canvas.TotalMatrix.ToMatrix4x4();
+	// Read back the full 4x4 SetMatrix stored: the 3x3 TotalMatrix drops the Z row and column, so a
+	// flattening transform (M33 = 0, as AnimatedVisuals produce) would come back as M33 = 1.
+	public Matrix4x4 TotalMatrix => _canvas.TotalMatrix44;
 
 	public void SetMatrix(in Matrix4x4 matrix)
 	{
@@ -99,7 +106,8 @@ internal class SkiaDrawingSession : IDrawingSession
 		}
 	}
 
-	public void Concat(in Matrix4x4 matrix) => _canvas.Concat(matrix.ToSKMatrix());
+	// The full 4x4 like SetMatrix: going through an SKMatrix would drop the Z row and column.
+	public void Concat(in Matrix4x4 matrix) => _canvas.Concat((SKMatrix44)matrix);
 
 	public void Translate(float dx, float dy) => _canvas.Translate(dx, dy);
 
@@ -159,6 +167,44 @@ internal class SkiaDrawingSession : IDrawingSession
 	{
 		using var lease = SkiaGeometryInterop.Lease(geometry);
 		_canvas.DrawPath(lease.Path, FillPaint(color));
+	}
+
+	public void DrawGlyphRun(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color)
+	{
+		if (font is not SkiaFont skiaFont)
+		{
+			GlyphRunRenderer.Draw(this, font, glyphs, positions, baselineY, color);
+			return;
+		}
+
+		DrawTextBlob(skiaFont, glyphs, positions, baselineY, FillPaint(color));
+	}
+
+	public void StrokeGlyphRun(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color, float strokeWidth)
+	{
+		if (font is not SkiaFont skiaFont)
+		{
+			GlyphRunRenderer.Stroke(this, font, glyphs, positions, baselineY, color, strokeWidth);
+			return;
+		}
+
+		DrawTextBlob(skiaFont, glyphs, positions, baselineY, StrokePaint(color, strokeWidth));
+	}
+
+	private void DrawTextBlob(SkiaFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, SKPaint paint)
+	{
+		if (glyphs.IsEmpty)
+		{
+			return;
+		}
+
+		var builder = _textBlobBuilder ??= new SKTextBlobBuilder();
+		builder.AddPositionedRun(glyphs, font.NativeFont, MemoryMarshal.Cast<Vector2, SKPoint>(positions));
+		using var blob = builder.Build();
+		if (blob is not null)
+		{
+			_canvas.DrawText(blob, 0, baselineY, paint);
+		}
 	}
 
 	public void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color)

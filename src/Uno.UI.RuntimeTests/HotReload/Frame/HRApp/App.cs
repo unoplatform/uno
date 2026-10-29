@@ -12,7 +12,7 @@ namespace UnoApp50
 	{
 		public static Window? _window;
 
-		protected internal override void OnLaunched(LaunchActivatedEventArgs args)
+		protected override void OnLaunched(LaunchActivatedEventArgs args)
 		{
 #if (NET6_0_OR_GREATER && WINDOWS && !HAS_UNO) || HAS_UNO_WINUI
 			_window = new Window();

@@ -5,7 +5,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Tests.Uno_UI_Core
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_KeyboardStateTracker
 	{
 		// The tracker is process-wide static state, so each test uses its own key.
@@ -32,6 +32,31 @@ namespace Uno.UI.Tests.Uno_UI_Core
 			KeyboardStateTracker.OnKeyUp(VirtualKey.C);
 
 			Assert.AreEqual(CoreVirtualKeyStates.None, KeyboardStateTracker.GetKeyState(VirtualKey.C));
+		}
+
+		[TestMethod]
+		[DataRow(VirtualKey.LeftShift, VirtualKey.RightShift, VirtualKey.Shift)]
+		[DataRow(VirtualKey.RightControl, VirtualKey.LeftControl, VirtualKey.Control)]
+		[DataRow(VirtualKey.LeftMenu, VirtualKey.RightMenu, VirtualKey.Menu)]
+		public void When_One_Side_Released_Aggregate_Stays_Down(VirtualKey released, VirtualKey held, VirtualKey aggregate)
+		{
+			try
+			{
+				KeyboardStateTracker.OnKeyDown(released);
+				KeyboardStateTracker.OnKeyDown(held);
+				KeyboardStateTracker.OnKeyUp(released);
+
+				Assert.IsTrue(KeyboardStateTracker.GetKeyState(aggregate).HasFlag(CoreVirtualKeyStates.Down));
+
+				KeyboardStateTracker.OnKeyUp(held);
+
+				Assert.IsFalse(KeyboardStateTracker.GetKeyState(aggregate).HasFlag(CoreVirtualKeyStates.Down));
+			}
+			finally
+			{
+				KeyboardStateTracker.OnKeyUp(released);
+				KeyboardStateTracker.OnKeyUp(held);
+			}
 		}
 
 		[TestMethod]

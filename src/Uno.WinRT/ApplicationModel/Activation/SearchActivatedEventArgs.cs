@@ -8,6 +8,10 @@ namespace Windows.ApplicationModel.Activation;
 [NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 public sealed partial class SearchActivatedEventArgs : IActivatedEventArgs
 {
+	internal SearchActivatedEventArgs()
+	{
+	}
+
 	public ActivationKind Kind => ActivationKind.Search;
 
 	[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

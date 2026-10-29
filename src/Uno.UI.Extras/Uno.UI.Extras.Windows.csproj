@@ -29,6 +29,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Input validation value types: Uno.UI owns them, as its engine uses them -->
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\Validation\InputValidationError.cs" Link="Uno.UI\UI\Xaml\Controls\Validation\InputValidationError.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\Validation\InputValidationKind.cs" Link="Uno.UI\UI\Xaml\Controls\Validation\InputValidationKind.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\Validation\InputValidationMode.cs" Link="Uno.UI\UI\Xaml\Controls\Validation\InputValidationMode.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" />
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Threading\AsyncLock.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Threading\AsyncLock.cs" />
 
@@ -78,9 +85,6 @@
 		</PackageReference>
 
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
-
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.19041.21" />
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.19041.21" />
 	</ItemGroup>
 
 	<!-- Override existing target, this project cannot be published -->

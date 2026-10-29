@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<!-- The SkiaSharp backend runs on every platform, Skia-on-Android included, so it must stay platform-less
+		     under a mobile override: otherwise its platform-less consumers (RemoteControl, FluentTheme, …) hit
+		     NU1201. Must precede the import below, which reads it. -->
+		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override.props" />
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.Composition.Skia</AssemblyName>
+		<PackageId>Uno.WinUI.Composition.Skia</PackageId>
+		<RootNamespace>Uno.UI.Composition</RootNamespace>
+		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;IS_UNO_COMPOSITION</DefineConstants>
+
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
+		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="SkiaSharp.Skottie" />
+		<PackageReference Include="HarfBuzzSharp" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Uno.UI.Composition.Managed\HarfBuzzShapingOptions.cs" Link="Composition\Uno\Drawing\HarfBuzzShapingOptions.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Generic.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Generic.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
+	</ItemGroup>
+</Project>

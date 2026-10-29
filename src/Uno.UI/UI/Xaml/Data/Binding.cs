@@ -52,11 +52,6 @@ namespace Microsoft.UI.Xaml.Data
 			ConverterParameter = converterParameter;
 		}
 
-		public static implicit operator Binding(string path)
-		{
-			return new Binding(path);
-		}
-
 		/// <summary>
 		/// Gets or sets the path to the binding source property.
 		/// </summary>

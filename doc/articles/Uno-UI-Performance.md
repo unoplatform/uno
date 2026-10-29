@@ -8,7 +8,6 @@ This article lists various performance tips to optimize your Uno Platform applic
 
 Here's what to look for:
 
-- Make sure to choose the right renderer ([Skia](xref:uno.features.renderer.skia) or [Native](xref:uno.features.renderer.native)) for your application, depending on the feature set you'll be using.
 - Make sure to always have the simplest visual tree. There's nothing faster than something you don't draw.
 - Reduce panels in panels depth. Use Grids and relative panels where possible.
 - Force the size of images anywhere possible, using explicit `Width` and `Height` properties.
@@ -19,22 +18,6 @@ Here's what to look for:
 - `ListView` and `GridView`
   - Don't use template selectors inside the ItemTemplate, prefer using the `ItemTemplateSelector` on `ListView`/`GridView`.
   - The default [`ListViewItem` and `GridViewItem` styles](https://github.com/unoplatform/uno/blob/74b7d5d0e953fcdd94223f32f51665af7ce15c60/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L951) are very feature-rich, yet that makes them quite slow. For instance, if you know that you're not likely to use selection features for a specific ListView, create a simpler ListViewItem style that some visual states, or the elements that are only used for selection.
-  - If items content frequently change (e.g. live data in TextBlock) on iOS and Android, ListView items rendering can require the use of the `not_win:AreDimensionsConstrained="True"` [uno-specific property](https://github.com/unoplatform/uno/blob/7355d66f77777b57c660133d5ec011caaa810e29/src/Uno.UI/UI/Xaml/FrameworkElement.cs#L86).
-  
-    This attribute prevents items in a list from requesting their parent to be re-measured when their properties change. It's safe to use the `AreDimensionsConstrained` property when items always have the same size regardless of bound data, and the items and list are stretched in the non-scrolling direction. If item sizes can change when the bound data changes (eg, if they contain bound text that can wrap over multiple lines, images of undetermined size, etc), or if the list is wrapped to the items, then you shouldn't set `AreDimensionsConstrained` because the list does need to remeasure itself when item data changes in that case.
-
-    You'll need to set the property on the top-level element of your item templates, as follows:
-
-      ```xml
-      <ResourceDictionary xmlns:xamarin="http://uno.ui/xamarin" mc:Ignorable="d xamarin" ...>
-      <DataTemplate x:Key="MyTemplate">
-        <Grid Height="44" not_win:AreDimensionsConstrained="True">
-        ...
-        </Grid>
-      </DataTemplate>
-      ```
-
-    Note that WinUI does not need this, and the issue is [tracked in Uno here](https://github.com/unoplatform/uno/issues/6910).
   - Avoid controls that contain inline popups, menus, or flyouts. Doing so will create as many popups as there are items visible on the screen. As in general, there is only one popup visible at a time, it is generally best to move the popup to a separate static resource.
 
 - Updating items in `ItemsControl` can be quite expensive, using `ItemsRepeater` is generally faster at rendering similar content.
@@ -114,15 +97,8 @@ Here's what to look for:
 - Enable [AOT or PG-AOT](xref:Uno.Wasm.Bootstrap.Runtime.Execution) to get the best performance.
 - Consider enabling the [`Jiterpreter`](xref:Uno.Wasm.Bootstrap.Runtime.Execution#jiterpreter-mode) mode for faster performance.
 - When [recording a PG-AOT profile](xref:Uno.Wasm.Bootstrap.Runtime.Execution#profile-guided-aot), make sure to run through most of your application before saving the profile.
-- Adjusting the GC configuration may be useful to limit the collection runs on large allocations. Add the following to your `csproj` file:
-
-    ```xml
-    <ItemGroup>
-      <WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
-    </ItemGroup>
-    ```
-
-  You can adjust the `nursery-size` and `soft-heap-limit` based on your application's memory consumption characteristics. See the [.NET GC configuration](https://learn.microsoft.com/xamarin/android/internals/garbage-collection#configuration) for more details.
+- Do not set a large GC nursery (for example `nursery-size=64m` in `MONO_GC_PARAMS`) by default. A larger nursery means fewer but much longer minor collections, which can show up as freezes of several hundred milliseconds up to a second while scrolling or animating. If you still suspect the GC configuration is limiting your app, measure first, then add `WasmShellMonoEnvironment` entries for `MONO_GC_PARAMS` (see the [.NET GC configuration](https://learn.microsoft.com/xamarin/android/internals/garbage-collection#configuration) for the available options) and compare frame times before and after.
+- Reducing allocations on hot paths such as scrolling and animations is usually a safer way to cut GC pauses than tuning the GC.
 
 - The size of the application can be reduced by:
 
@@ -158,14 +134,6 @@ Here's what to look for:
   You may combine this with `-p:EnableLLVM=true` and `-p:AndroidEnableMarshalMethods=true` to get even better performance.
 
 - Use [String Resource Trimming](xref:Uno.Features.StringResourceTrimming) to improve package size and startup time
-
-## iOS Native Renderer Specifics
-
-On iOS with the native renderer enabled, memory leaks can happen very frequently when using cross-references on UIElement instances. Some high level analysis can be done using [this C# analyzer](https://github.com/jonathanpeppers/memory-analyzers), to determine obvious patterns that cause memory leaks.
-
-You'll find below other known memory leak patterns on iOS Native:
-
-- `VisualStateManager` must be set on the root element of a XAML file. Placing it on any other control will cause a native controls leak.
 
 ## Skia Targets Specifics
 

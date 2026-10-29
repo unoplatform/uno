@@ -8,8 +8,8 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
+using Buffer = Silk.NET.WebGPU.Buffer;
 using Uno.UI.Composition.Drawing;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Effects.Interop;
@@ -22,6 +22,7 @@ internal sealed unsafe partial class WebGpuEffects
 {
 	private readonly WebGpuFrame _f;
 	private readonly WebGpuDevice _d;
+	private WebGPU Api => _d.Api;
 	private readonly WebGpuCoverage _cov;
 
 	internal WebGpuEffects(WebGpuFrame f, WebGpuDevice d)
@@ -34,7 +35,7 @@ internal sealed unsafe partial class WebGpuEffects
 	// The blurred shadow as a texture with its device-space placement. Cached in the atlas under the silhouette's
 	// geometry, transform and blur radius (a texture of its own, since a shadow is padded by its blur reach), so a
 	// static shadow bakes once: on a miss the silhouette's coverage is baked, blurred, and resampled into the entry.
-	internal IntPtr RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size, out Vector4 uv)
+	internal TextureView* RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size, out Vector4 uv)
 	{
 		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
 		var bbMin = sh.BbMin - new Vector2(pad); var bbMax = sh.BbMax + new Vector2(pad);
@@ -75,15 +76,15 @@ internal sealed unsafe partial class WebGpuEffects
 			// The slot's texels on the top level, plus the one a bilinear tap at its far edge reads (the slot's gutter).
 			int step = 1 << BlurLevels(sigma);
 			int tw = (w + step - 1) / step + 1, th = (h + step - 1) / step + 1;
-			var slot = _cov.AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat, tw, th, WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst);
+			var slot = _cov.AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat, tw, th, TextureUsage.TextureBinding | TextureUsage.CopyDst);
 			slot.Uv = new Vector4(0f, 0f, (float)w / step / tw, (float)h / step / th);
 			_d.PathAtlas.HoldForCache(slot, _d.FrameSeq);
-			_pendingCopies.Add((sheet.Blurred, sx / step, sy / step, slot.Owner.Texture, tw, th));
+			_pendingCopies.Add(((nint)sheet.Blurred, sx / step, sy / step, (nint)slot.Owner.Texture, tw, th));
 			uv = slot.Uv;
 			return slot.Owner.View;
 		}
 		// Too big for the sheet: its own bake and pyramid.
-		var (view, tex) = _cov.NewMaskTexture(w, h);
+		var view = _cov.NewMaskTexture(w, h, out var tex);
 		_cov.AddBake(_cov.BatchFor(view, w, h, load: false), 0, 0, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
 		_d.DeferTextureRelease(view, tex);
 		return DeferBlur(view, w, h, sh.SigmaX, sh.SigmaY);
@@ -95,12 +96,12 @@ internal sealed unsafe partial class WebGpuEffects
 	private sealed class ShadowSheet
 	{
 		public WebGpuCoverage.BakeBatch Bake;
-		public IntPtr Blurred;     // the pyramid's top level for the whole sheet, rented up front so draws can bind it
+		public TextureView* Blurred; // the pyramid's top level for the whole sheet, rented up front so draws can bind it
 	}
 
 	private readonly Dictionary<int, ShadowSheet> _shadowSheetByDepth = new();
-	private readonly List<(IntPtr Src, int W, int H, float SigmaX, float SigmaY, IntPtr Dst)> _pendingBlurs = new();
-	private readonly List<(IntPtr SrcView, int X, int Y, IntPtr Dst, int W, int H)> _pendingCopies = new();   // after the blurs
+	private readonly List<(nint Src, int W, int H, float SigmaX, float SigmaY, nint Dst)> _pendingBlurs = new();
+	private readonly List<(nint SrcView, int X, int Y, nint Dst, int W, int H)> _pendingCopies = new();   // after the blurs
 	internal static int ShadowSlotsBaked;
 
 	// Reserves a w x h slot on the frame's shadow sheet for this blur depth. A slot already holds its shadow's blur
@@ -117,14 +118,14 @@ internal sealed unsafe partial class WebGpuEffects
 		if (cur is not null && !cur.Bake.Shelf.TryReserve(gw, gh, step, out x, out y)) { cur = null; }
 		if (cur is null)
 		{
-			var view = _d.Pool.Rent(WebGpuCoverage.SheetSize, WebGpuCoverage.SheetSize, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, _d.ColorFormat);
+			var view = _d.Pool.Rent(WebGpuCoverage.SheetSize, WebGpuCoverage.SheetSize, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, _d.ColorFormat);
 			int top = WebGpuCoverage.SheetSize >> levels;
-			var blurred = _d.Pool.Rent(top, top, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, WebGpuDevice.DefaultColorFormat);
+			var blurred = _d.Pool.Rent(top, top, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding | TextureUsage.CopySrc, WebGpuDevice.DefaultColorFormat);
 			cur = new ShadowSheet { Bake = _cov.BatchFor(view, WebGpuCoverage.SheetSize, WebGpuCoverage.SheetSize, load: false), Blurred = blurred };
 			_shadowSheetByDepth[levels] = cur;
 			// The sigma that maps back to exactly this depth (see BlurLevels), so the pyramid builds the same levels.
 			float depthSigma = 2f * step;
-			_pendingBlurs.Add((view, WebGpuCoverage.SheetSize, WebGpuCoverage.SheetSize, depthSigma, depthSigma, blurred));
+			_pendingBlurs.Add(((nint)view, WebGpuCoverage.SheetSize, WebGpuCoverage.SheetSize, depthSigma, depthSigma, (nint)blurred));
 			cur.Bake.Shelf.TryReserve(gw, gh, step, out x, out y);
 		}
 		sheet = cur;
@@ -132,27 +133,27 @@ internal sealed unsafe partial class WebGpuEffects
 	}
 
 	// A blur that must run after the frame's bakes: the result texture is rented now so the draw can bind it.
-	private IntPtr DeferBlur(IntPtr src, int w, int h, float sigmaX, float sigmaY)
+	private TextureView* DeferBlur(TextureView* src, int w, int h, float sigmaX, float sigmaY)
 	{
 		var levels = BlurLevels(MathF.Max(sigmaX, sigmaY));
 		while (levels > 1 && ((w >> levels) < 4 || (h >> levels) < 4)) { levels--; }
-		var dst = _d.Pool.Rent(Math.Max(1, w >> levels), Math.Max(1, h >> levels), 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-		_pendingBlurs.Add((src, w, h, sigmaX, sigmaY, dst));
+		var dst = _d.Pool.Rent(Math.Max(1, w >> levels), Math.Max(1, h >> levels), 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		_pendingBlurs.Add(((nint)src, w, h, sigmaX, sigmaY, (nint)dst));
 		return dst;
 	}
 
 	// Runs the blurs queued behind the frame's bakes, once those are encoded.
 	internal void FlushPendingBlurs()
 	{
-		foreach (var b in _pendingBlurs) { BlurPyramidRegion(b.Src, b.W, b.H, 0f, 0f, b.W, b.H, b.SigmaX, b.SigmaY, b.Dst); }
+		foreach (var b in _pendingBlurs) { BlurPyramidRegion((TextureView*)b.Src, b.W, b.H, 0f, 0f, b.W, b.H, b.SigmaX, b.SigmaY, (TextureView*)b.Dst); }
 		_pendingBlurs.Clear();
 		_shadowSheetByDepth.Clear();
 		foreach (var c in _pendingCopies)
 		{
-			var src = new WGPUTexelCopyTextureInfo { Texture = _d.Pool.TexForView(c.SrcView), MipLevel = 0, Origin = new WGPUOrigin3D { X = (uint)c.X, Y = (uint)c.Y }, Aspect = WGPUTextureAspect.All };
-			var dst = new WGPUTexelCopyTextureInfo { Texture = c.Dst, MipLevel = 0, Origin = default, Aspect = WGPUTextureAspect.All };
-			var ext = new WGPUExtent3D { Width = (uint)c.W, Height = (uint)c.H, DepthOrArrayLayers = 1 };
-			wgpuCommandEncoderCopyTextureToTexture(_f.Encoder, &src, &dst, &ext);
+			var src = new ImageCopyTexture { Texture = _d.Pool.TexForView((TextureView*)c.SrcView), MipLevel = 0, Origin = new Origin3D { X = (uint)c.X, Y = (uint)c.Y }, Aspect = TextureAspect.All };
+			var dst = new ImageCopyTexture { Texture = (Texture*)c.Dst, MipLevel = 0, Origin = default, Aspect = TextureAspect.All };
+			var ext = new Extent3D { Width = (uint)c.W, Height = (uint)c.H, DepthOrArrayLayers = 1 };
+			Api.CommandEncoderCopyTextureToTexture(_f.Encoder, &src, &dst, &ext);
 		}
 		_pendingCopies.Clear();
 	}
@@ -173,7 +174,7 @@ internal sealed unsafe partial class WebGpuEffects
 		public WebGpuRenderSurface Surface;
 		public int Depth;
 		public readonly List<WebGpuFrame.PassBuild> Builds = new();
-		public readonly Dictionary<int, IntPtr> Blurs = new();   // blur depth -> the pyramid's top level, rented up front
+		public readonly Dictionary<int, nint> Blurs = new();   // blur depth -> the pyramid's top level, rented up front
 		public Shelf Shelf = new(LayerSheetSize, LayerSheetSize);
 	}
 
@@ -203,16 +204,16 @@ internal sealed unsafe partial class WebGpuEffects
 	}
 
 	// The blurred sheet for this depth, rented now so the shadow draws can bind it; the pyramid runs after the sheet's pass.
-	internal IntPtr LayerSheetBlur(LayerSheet sheet, float sigma)
+	internal TextureView* LayerSheetBlur(LayerSheet sheet, float sigma)
 	{
 		var levels = BlurLevels(sigma);
 		if (!sheet.Blurs.TryGetValue(levels, out var blurred))
 		{
 			int top = LayerSheetSize >> levels;
-			blurred = _d.Pool.Rent(top, top, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+			blurred = (nint)_d.Pool.Rent(top, top, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 			sheet.Blurs[levels] = blurred;
 		}
-		return blurred;
+		return (TextureView*)blurred;
 	}
 
 	// Renders the sheets one level deeper than the pass about to open (the layers it composites), each followed by
@@ -236,7 +237,7 @@ internal sealed unsafe partial class WebGpuEffects
 			foreach (var (levels, blurred) in sheet.Blurs)
 			{
 				float depthSigma = 2f * (1 << levels);
-				BlurPyramidRegion(sheet.Surface.View, LayerSheetSize, LayerSheetSize, 0f, 0f, LayerSheetSize, LayerSheetSize, depthSigma, depthSigma, blurred);
+				BlurPyramidRegion(sheet.Surface.View, LayerSheetSize, LayerSheetSize, 0f, 0f, LayerSheetSize, LayerSheetSize, depthSigma, depthSigma, (TextureView*)blurred);
 			}
 		}
 		_f.LayerDepth = saved;
@@ -247,7 +248,7 @@ internal sealed unsafe partial class WebGpuEffects
 	// gaussian on the small top level. Returns the region-sized blurred view; the caller maps screen px -> region uv
 	// in the composite (bilinear upscales it). Only the region behind the acrylic element is ever processed, and the
 	// per-pass kernel is constant, so a large blur is a few tiny passes instead of a full-frame O(sigma) kernel.
-	internal IntPtr BlurPyramidRegion(IntPtr src, int fullW, int fullH, float rx, float ry, float rw, float rh, float sigmaX, float sigmaY, IntPtr dst = default)
+	internal TextureView* BlurPyramidRegion(TextureView* src, int fullW, int fullH, float rx, float ry, float rw, float rh, float sigmaX, float sigmaY, TextureView* dst = null)
 	{
 		int iw = Math.Max(1, (int)MathF.Round(rw)), ih = Math.Max(1, (int)MathF.Round(rh));
 		int levels = BlurLevels(MathF.Max(sigmaX, sigmaY));
@@ -256,30 +257,30 @@ internal sealed unsafe partial class WebGpuEffects
 		var origin = new Vector2(rx / fullW, ry / fullH);
 		var scale = new Vector2(rw / fullW, rh / fullH);
 		int cw = Math.Max(1, iw >> 1), ch = Math.Max(1, ih >> 1);
-		var cur = _d.Pool.Rent(cw, ch, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		var cur = _d.Pool.Rent(cw, ch, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 		BlurPass(src, cur, default, default, downsample: true, origin, scale);   // extract sub-rect + downsample ×2
 		for (int l = 2; l <= levels; l++)
 		{
 			int nw = Math.Max(1, cw >> 1), nh = Math.Max(1, ch >> 1);
-			var nx = _d.Pool.Rent(nw, nh, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+			var nx = _d.Pool.Rent(nw, nh, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 			BlurPass(cur, nx, default, default, downsample: true, Vector2.Zero, Vector2.One);
 			// The consumed level is safe to re-rent within the frame: passes encode sequentially into the one
 			// frame encoder, so a later renter's write is ordered after this read.
 			_d.Pool.Return(cur);
 			cur = nx; cw = nw; ch = nh;
 		}
-		var hh = _d.Pool.Rent(cw, ch, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		var hh = _d.Pool.Rent(cw, ch, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 		BlurPass(cur, hh, new Vector2(1f, 0f), new Vector2(1f / cw, 0f), downsample: false, Vector2.Zero, Vector2.One);
 		_d.Pool.Return(cur);
 		// The final pass lands in the caller's texture when it brought one (a blur deferred behind the frame's bakes).
-		var vv = dst != IntPtr.Zero ? dst : _d.Pool.Rent(cw, ch, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		var vv = dst != null ? dst : _d.Pool.Rent(cw, ch, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 		BlurPass(hh, vv, new Vector2(0f, 1f), new Vector2(0f, 1f / ch), downsample: false, Vector2.Zero, Vector2.One);
 		_d.Pool.Return(hh);
 		return vv;
 	}
 
 	// Full-source blur (shadow coverage, already bbox-sized): the region IS the whole texture.
-	private IntPtr BlurPyramid(IntPtr src, int w, int h, float sigmaX, float sigmaY)
+	private TextureView* BlurPyramid(TextureView* src, int w, int h, float sigmaX, float sigmaY)
 		=> BlurPyramidRegion(src, w, h, 0f, 0f, w, h, sigmaX, sigmaY);
 
 	/// <summary>
@@ -287,16 +288,16 @@ internal sealed unsafe partial class WebGpuEffects
 	/// covering triangle with the given pipeline and bind group, and ends the pass. The effect shaders emit the
 	/// finished pixel, so the pass clears rather than loads.
 	/// </summary>
-	private void DrawEffectPass(IntPtr pipeline, IntPtr bindGroup)
+	private void DrawEffectPass(RenderPipeline* pipeline, BindGroup* bindGroup)
 	{
-		var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _f.Target.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
-		var pass = wgpuCommandEncoderBeginRenderPass(_f.Encoder, &desc);
-		wgpuRenderPassEncoderSetPipeline(pass, pipeline);
-		wgpuRenderPassEncoderSetBindGroup(pass, 0, bindGroup, 0, (uint*)null);
-		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-		wgpuRenderPassEncoderEnd(pass);
-		wgpuRenderPassEncoderRelease(pass);
+		var color = new RenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _f.Target.View, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Store, ClearValue = default };
+		var desc = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
+		var pass = Api.CommandEncoderBeginRenderPass(_f.Encoder, &desc);
+		Api.RenderPassEncoderSetPipeline(pass, pipeline);
+		Api.RenderPassEncoderSetBindGroup(pass, 0, bindGroup, 0, null);
+		Api.RenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		Api.RenderPassEncoderEnd(pass);
+		Api.RenderPassEncoderRelease(pass);
 	}
 
 	// Standalone blur for the effect-graph evaluator's BlurEffectNode: blur `src` and draw it (upscaled from the
@@ -314,18 +315,18 @@ internal sealed unsafe partial class WebGpuEffects
 				// returned nothing for the rest, shrinking the blurred output as sigma (and so the level count)
 				// grew. One linear tap over the full target resamples it back up first.
 				var upscaled = _d.Pool.Rent(src.PixelWidth, src.PixelHeight, 1,
-					WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+					TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 				BlurPass(blurView, upscaled, default, default, downsample: true, Vector2.Zero, Vector2.One);
 				var idu = _f.MakeUniform(WebGpuDevice.CompositeUniformBytes);
 				var idc = stackalloc float[24]; idc[1] = 1f;   // params.x=0 (no colour matrix), params.y=1 (opacity)
-				wgpuQueueWriteBuffer(_d.Q, idu, 0, (IntPtr)idc, 96);
+				Api.QueueWriteBuffer(_d.Q, idu, 0, idc, 96);
 				// Two entries, not three: the composite shader uses textureLoad, so its layout has no sampler.
-				var e = stackalloc WGPUBindGroupEntry[2];
-				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = upscaled };
-				e[1] = new WGPUBindGroupEntry { Binding = 2, Buffer = idu, Offset = 0, Size = WebGpuDevice.CompositeUniformBytes };
-				var bgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBgl, EntryCount = 2, Entries = e };
-				var bg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
-				DrawEffectPass(_d.CompositeSrcOver, (IntPtr)bg);
+				var e = stackalloc BindGroupEntry[2];
+				e[0] = new BindGroupEntry { Binding = 0, TextureView = upscaled };
+				e[1] = new BindGroupEntry { Binding = 2, Buffer = idu, Offset = 0, Size = WebGpuDevice.CompositeUniformBytes };
+				var bgd = new BindGroupDescriptor { Layout = _d.CompositeBgl, EntryCount = 2, Entries = e };
+				var bg = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &bgd));
+				DrawEffectPass(_d.CompositeSrcOver, bg);
 			}
 			finally
 			{
@@ -346,15 +347,15 @@ internal sealed unsafe partial class WebGpuEffects
 			{
 				var ubuf = _f.MakeUniform(WebGpuDevice.CompositeUniformBytes);
 				var uc = stackalloc float[24]; uc[1] = 1f; uc[2] = shaderMode;   // params.x=0 (no matrix), y=1 (opacity), z=mode
-				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)uc, 96);
-				var e = stackalloc WGPUBindGroupEntry[4];
-				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = fg.View };   // src = foreground
-				e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-				e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = WebGpuDevice.CompositeUniformBytes };
-				e[3] = new WGPUBindGroupEntry { Binding = 3, TextureView = bg.View };   // dst = background
-				var bgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBlendBgl, EntryCount = 4, Entries = e };
-				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
-				DrawEffectPass(_d.CompositeBlend, (IntPtr)bgh);
+				Api.QueueWriteBuffer(_d.Q, ubuf, 0, uc, 96);
+				var e = stackalloc BindGroupEntry[4];
+				e[0] = new BindGroupEntry { Binding = 0, TextureView = fg.View };   // src = foreground
+				e[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+				e[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = WebGpuDevice.CompositeUniformBytes };
+				e[3] = new BindGroupEntry { Binding = 3, TextureView = bg.View };   // dst = background
+				var bgd = new BindGroupDescriptor { Layout = _d.CompositeBlendBgl, EntryCount = 4, Entries = e };
+				var bgh = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &bgd));
+				DrawEffectPass(_d.CompositeBlend, bgh);
 			}
 			finally
 			{
@@ -374,15 +375,15 @@ internal sealed unsafe partial class WebGpuEffects
 			{
 				var ubuf = _f.MakeUniform(32);
 				var uc = stackalloc float[8]; uc[0] = k0; uc[1] = k1; uc[2] = k2; uc[3] = k3; uc[4] = alphaMask ? 1f : 0f;
-				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)uc, 32);
-				var e = stackalloc WGPUBindGroupEntry[4];
-				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = a.View };
-				e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-				e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
-				e[3] = new WGPUBindGroupEntry { Binding = 3, TextureView = b.View };
-				var bgd = new WGPUBindGroupDescriptor { Layout = _d.EffectCombineBgl, EntryCount = 4, Entries = e };
-				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
-				DrawEffectPass(_d.EffectCombine, (IntPtr)bgh);
+				Api.QueueWriteBuffer(_d.Q, ubuf, 0, uc, 32);
+				var e = stackalloc BindGroupEntry[4];
+				e[0] = new BindGroupEntry { Binding = 0, TextureView = a.View };
+				e[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+				e[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
+				e[3] = new BindGroupEntry { Binding = 3, TextureView = b.View };
+				var bgd = new BindGroupDescriptor { Layout = _d.EffectCombineBgl, EntryCount = 4, Entries = e };
+				var bgh = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &bgd));
+				DrawEffectPass(_d.EffectCombine, bgh);
 			}
 			finally
 			{
@@ -401,14 +402,14 @@ internal sealed unsafe partial class WebGpuEffects
 			try
 			{
 				var ubuf = _f.MakeUniform(80);
-				fixed (float* p = u20) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, 80); }
-				var e = stackalloc WGPUBindGroupEntry[3];
-				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = src.View };
-				e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-				e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 80 };
-				var bgd = new WGPUBindGroupDescriptor { Layout = _d.ColorFuncBgl, EntryCount = 3, Entries = e };
-				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
-				DrawEffectPass(_d.ColorFunc, (IntPtr)bgh);
+				fixed (float* p = u20) { Api.QueueWriteBuffer(_d.Q, ubuf, 0, p, 80); }
+				var e = stackalloc BindGroupEntry[3];
+				e[0] = new BindGroupEntry { Binding = 0, TextureView = src.View };
+				e[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+				e[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 80 };
+				var bgd = new BindGroupDescriptor { Layout = _d.ColorFuncBgl, EntryCount = 3, Entries = e };
+				var bgh = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &bgd));
+				DrawEffectPass(_d.ColorFunc, bgh);
 			}
 			finally
 			{
@@ -428,12 +429,12 @@ internal sealed unsafe partial class WebGpuEffects
 			{
 				var ubuf = _f.MakeUniform(32);
 				var uc = stackalloc float[8]; uc[0] = fx; uc[1] = fy; uc[2] = ox; uc[3] = oy; uc[4] = w; uc[5] = h;
-				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)uc, 32);
-				var e = stackalloc WGPUBindGroupEntry[1];
-				e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = 32 };
-				var bgd = new WGPUBindGroupDescriptor { Layout = _d.EffectNoiseBgl, EntryCount = 1, Entries = e };
-				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
-				DrawEffectPass(_d.EffectNoise, (IntPtr)bgh);
+				Api.QueueWriteBuffer(_d.Q, ubuf, 0, uc, 32);
+				var e = stackalloc BindGroupEntry[1];
+				e[0] = new BindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = 32 };
+				var bgd = new BindGroupDescriptor { Layout = _d.EffectNoiseBgl, EntryCount = 1, Entries = e };
+				var bgh = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &bgd));
+				DrawEffectPass(_d.EffectNoise, bgh);
 			}
 			finally
 			{
@@ -442,28 +443,28 @@ internal sealed unsafe partial class WebGpuEffects
 		}
 	}
 
-	private void BlurPass(IntPtr src, IntPtr dst, Vector2 dir, Vector2 texel, bool downsample, Vector2 srcOrigin, Vector2 srcScale)
+	private void BlurPass(TextureView* src, TextureView* dst, Vector2 dir, Vector2 texel, bool downsample, Vector2 srcOrigin, Vector2 srcScale)
 	{
 		var bu = new float[12];
 		bu[0] = dir.X; bu[1] = dir.Y; bu[2] = texel.X; bu[3] = texel.Y;
 		bu[4] = downsample ? 1f : 0f; bu[5] = 0f;
 		bu[6] = srcOrigin.X; bu[7] = srcOrigin.Y; bu[8] = srcScale.X; bu[9] = srcScale.Y;
 		var ubuf = _f.MakeUniform(48);
-		fixed (float* p = bu) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, 48); }
-		var entries = stackalloc WGPUBindGroupEntry[3];
-		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = src };
-		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 48 };
-		var bgd = new WGPUBindGroupDescriptor { Layout = _d.BlurBgl, EntryCount = 3, Entries = entries };
-		var bg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
+		fixed (float* p = bu) { Api.QueueWriteBuffer(_d.Q, ubuf, 0, p, 48); }
+		var entries = stackalloc BindGroupEntry[3];
+		entries[0] = new BindGroupEntry { Binding = 0, TextureView = src };
+		entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+		entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 48 };
+		var bgd = new BindGroupDescriptor { Layout = _d.BlurBgl, EntryCount = 3, Entries = entries };
+		var bg = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &bgd));
 
-		var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = dst, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
-		var pass = wgpuCommandEncoderBeginRenderPass(_f.Encoder, &desc);
-		wgpuRenderPassEncoderSetPipeline(pass, _d.BlurPipe);
-		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
-		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-		wgpuRenderPassEncoderEnd(pass);
-		wgpuRenderPassEncoderRelease(pass);
+		var color = new RenderPassColorAttachment { DepthSlice = uint.MaxValue, View = dst, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Store, ClearValue = default };
+		var desc = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
+		var pass = Api.CommandEncoderBeginRenderPass(_f.Encoder, &desc);
+		Api.RenderPassEncoderSetPipeline(pass, _d.BlurPipe);
+		Api.RenderPassEncoderSetBindGroup(pass, 0, bg, 0, null);
+		Api.RenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		Api.RenderPassEncoderEnd(pass);
+		Api.RenderPassEncoderRelease(pass);
 	}
 }

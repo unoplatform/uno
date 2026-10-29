@@ -360,10 +360,16 @@ partial class StackLayout
 			SetScrollOrientation(scrollOrientation);
 
 			UpdateIndexBasedLayoutOrientation(orientation);
+#if HAS_UNO
+			InvalidateExtentOrigin();
+#endif
 		}
 		else if (property == SpacingProperty)
 		{
 			m_itemSpacing = (double)args.NewValue;
+#if HAS_UNO
+			InvalidateExtentOrigin();
+#endif
 		}
 
 		InvalidateLayout();
@@ -395,7 +401,7 @@ partial class StackLayout
 
 		if (!stackState.AreElementsMeasuredRegular)
 		{
-			averageElementSize = Math.Round(averageElementSize);
+			averageElementSize = Math.Round(averageElementSize, MidpointRounding.AwayFromZero);
 		}
 
 		return averageElementSize;

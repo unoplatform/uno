@@ -230,6 +230,22 @@ namespace Uno.UI
 			/// On platforms that support caching BitmapImage assets, this enables caching.
 			/// </summary>
 			public static bool EnableBitmapImageCache { get; set; } = true;
+
+			/// <summary>
+			/// The memory, in bytes, that decoded images nothing displays may keep (0 or more). Such an image keeps its pixels
+			/// for 1 second, as on WinUI, in case it is displayed again; past this limit the oldest are released first, at the
+			/// end of the next layout pass, and with 0 every one of them is. An image counts 4 bytes per pixel of its decoded
+			/// frames and of the texture drawn from it; images shared through the bitmap cache are not counted.
+			/// </summary>
+			/// <remarks>
+			/// Defaults: 128 MB on desktop, 64 MB on Android, iOS and tvOS, 32 MB on WebAssembly (its memory is capped at 2 GB
+			/// and never shrinks). Set it to the app's memory budget: a higher limit keeps more recently shown images ready, a
+			/// lower one frees them sooner. Uno decodes an image in full unless DecodePixelWidth or DecodePixelHeight is set.
+			/// </remarks>
+			public static long MaxUndisplayedImageBytes { get; set; } =
+				OperatingSystem.IsBrowser() ? 32L * 1024 * 1024
+				: OperatingSystem.IsAndroid() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() ? 64L * 1024 * 1024
+				: 128L * 1024 * 1024;
 		}
 
 		public static class BindingExpression
@@ -575,6 +591,32 @@ namespace Uno.UI
 #else
 				global::System.Diagnostics.Debugger.IsAttached;
 #endif
+		}
+
+		/// <summary>
+		/// Configuration for input validation, i.e. the transport of
+		/// <see cref="System.ComponentModel.INotifyDataErrorInfo"/> errors from a binding source to the
+		/// control bound to it.
+		/// </summary>
+		public static class InputValidation
+		{
+			/// <summary>
+			/// Enables input validation application-wide. Defaults to false, so applications that never validate
+			/// pay nothing for the machinery on the binding registration path.
+			/// </summary>
+			/// <remarks>
+			/// Must be set before the first binding is registered, which for XAML-declared bindings means before
+			/// <c>InitializeComponent</c> runs on the first page. Enabling it does not by itself validate
+			/// anything: each control opts in through the <c>Uno.UI.Xaml.Controls.Validation.Mode</c> attached property.
+			/// </remarks>
+			public static bool IsEnabled { get; set; }
+
+			/// <summary>
+			/// The type-to-property map the transport reads to decide which dependency property of a control
+			/// carries its input. Populated on demand from <see cref="InputValidationPropertyAttribute"/>, and
+			/// writable so that a control which cannot carry the attribute can be registered from outside Uno.
+			/// </summary>
+			public static InputValidationPropertyMap ValidationProperties { get; } = new();
 		}
 
 		/// <summary>

@@ -37,8 +37,8 @@ public class Given_BrowserKeyboardInputSource
 	[RunsOnUIThread]
 	public void When_OnNativeKeyboardEvent_KeyDown_Has_Expected_VirtualKey(string code, int expectedVirtualKey)
 	{
-		var sourceType = Type.GetType("Uno.UI.Runtime.Skia.BrowserKeyboardInputSource, Uno.UI.Runtime.Skia.WebAssembly.Browser", throwOnError: false);
-		Assert.IsNotNull(sourceType, "BrowserKeyboardInputSource type was not found in Uno.UI.Runtime.Skia.WebAssembly.Browser.");
+		var sourceType = Type.GetType("Uno.UI.Runtime.BrowserKeyboardInputSource, Uno.UI.Runtime.WebAssembly.Browser", throwOnError: false);
+		Assert.IsNotNull(sourceType, "BrowserKeyboardInputSource type was not found in Uno.UI.Runtime.WebAssembly.Browser.");
 
 		// GetUninitializedObject skips the ctor (which would re-attach JS DOM
 		// listeners and pollute later tests). The auto-implemented KeyDown
@@ -66,7 +66,7 @@ public class Given_BrowserKeyboardInputSource
 	[RunsOnUIThread]
 	public void When_OnNativeKeyboardEvent_ShiftEqual_Modifiers_Flow_Through()
 	{
-		var sourceType = Type.GetType("Uno.UI.Runtime.Skia.BrowserKeyboardInputSource, Uno.UI.Runtime.Skia.WebAssembly.Browser", throwOnError: false);
+		var sourceType = Type.GetType("Uno.UI.Runtime.BrowserKeyboardInputSource, Uno.UI.Runtime.WebAssembly.Browser", throwOnError: false);
 		Assert.IsNotNull(sourceType);
 
 		var instance = RuntimeHelpers.GetUninitializedObject(sourceType);

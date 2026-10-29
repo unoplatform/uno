@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.AttachedPropagation
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty_AttachedPropagation
 	{
 		[TestMethod]

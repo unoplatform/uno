@@ -38,6 +38,7 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `uno-devserver stop`: Stop the Dev Server attached to the current directory
 - `uno-devserver list`: List running Dev Server instances
 - `uno-devserver disco`: Inspect the environment — see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco)
+- `uno-devserver app <verb>`: Call one App MCP tool from a shell, with an exit code (start the app, find elements, click, screenshot, Hot Reload status) — see [Driving the app from a shell](xref:Uno.Features.DevServerAppCommands)
 - `uno-devserver cleanup`: Terminate stale Dev Server processes
 - `uno-devserver login`: Open the Uno Platform settings application
 - `uno-devserver mcp status [<client>]`: Inspect Uno MCP registration state across supported clients
@@ -51,6 +52,7 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `--force-roots-fallback`: Legacy explicit override. The DevServer auto-detects when the client does not advertise the MCP roots capability and exposes the `uno_app_initialize` tool automatically, so this flag is rarely needed.
 - `--force-generate-tool-cache`: Deprecated (no-op). Kept for backward compatibility.
 - `--solution-dir <path>`: Explicit workspace directory Uno.DevServer should monitor. Useful when starting the DevServer manually (e.g., CI agents), or for solution-less workspaces where no `.sln`/`.slnx` can be discovered. Defaults to the current working directory when omitted.
+- `--solution <path>`: In MCP mode (`--mcp-app`, `mcp serve`), the `.sln`/`.slnx` the DevServer serves, wherever it is on a local drive. It is selected explicitly, as with the `uno_app_select_solution` tool, stays selected across file changes and MCP roots, and takes precedence over `--solution-dir`. A relative path is resolved against the current working directory. An unusable value (missing, repeated, not a `.sln`/`.slnx`, not found, or on a network share) stops the command with exit code 2; a solution whose nearest `global.json` does not declare the Uno SDK stays selected, and the DevServer starts once it does (`uno_health` reports why it waits).
 
 ### Solution-less workspaces
 
@@ -137,6 +139,7 @@ The Dev Server enables Hot Reload for a faster inner loop:
 
 - [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) — how to register, inspect, and uninstall Uno MCP entries across supported agents.
 - [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) — inspect your environment and tool resolution.
+- [Driving the app from a shell (`app`)](xref:Uno.Features.DevServerAppCommands) — call the App MCP tools from scripts, CI, and agent hooks.
 - [Supported agents and features](xref:Uno.GetStarted#supported-agents-features) — per-agent capability summary.
 - Per-agent setup guides: [Claude Code](xref:Uno.GetStarted.AI.Claude), [Codex CLI](xref:Uno.GetStarted.AI.Codex), [Cursor](xref:Uno.GetStarted.AI.Cursor), [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI), [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity).
 - [Troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents).

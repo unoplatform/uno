@@ -8,7 +8,7 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
 
-    <ScrollViewer>
+    <ScrollViewer AutomationProperties.AutomationId="MobileAccessibilityRoot">
         <StackPanel Padding="20" Spacing="12">
 
             <!--  Page header  -->
@@ -18,8 +18,8 @@
                 Text="Accessibility - Screen Reader Support" />
 
             <TextBlock TextWrapping="WrapWholeWords">
-                This sample demonstrates the accessibility properties supported by the macOS VoiceOver screen reader.
-                Each section shows a specific accessibility feature with examples that can be tested with VoiceOver (Cmd+F5).
+                This sample demonstrates accessibility properties exposed to VoiceOver, TalkBack, and UI automation clients.
+                Each section provides a stable cross-platform fixture for inspecting native names, roles, states, actions, and identifiers.
             </TextBlock>
 
             <!--  ==============================================  -->
@@ -50,9 +50,9 @@
                 BorderThickness="1"
                 CornerRadius="8">
                 <StackPanel Spacing="12">
-                    <Button Content="Download survey" />
+                    <Button AutomationProperties.AutomationId="MobileA11yButton" Content="Download survey" />
                     <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{ThemeResource CaptionTextBlockStyle}">
-                        VoiceOver reads this button as "Download survey". The name is automatically derived from the Button's Content.
+                        Screen readers announce this button as "Download survey". The name is automatically derived from the Button's Content.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -68,6 +68,7 @@
                     <TextBox
                         Width="200"
                         HorizontalAlignment="Left"
+                        AutomationProperties.AutomationId="MobileA11yTextBox"
                         Header="Name" />
 
                     <TextBox
@@ -85,7 +86,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        VoiceOver reads these TextBoxes as "Name", "Nickname", and "Email".
+                        Screen readers announce these TextBoxes as "Name", "Nickname", and "Email".
                         When both Header and PlaceholderText are present, Header is used as name and PlaceholderText is used as description.
                     </TextBlock>
                 </StackPanel>
@@ -108,6 +109,7 @@
                     <ListView
                         Width="300"
                         HorizontalAlignment="Left"
+                        AutomationProperties.AutomationId="MobileA11yListView"
                         AutomationProperties.Name="Contacts">
                         <ListViewItem>Nathan Quinn</ListViewItem>
                         <ListViewItem>Jessica Lamber</ListViewItem>
@@ -118,7 +120,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        VoiceOver reads this ListView as "Contacts", while each item will be read using its respective text content.
+                        Screen readers announce this ListView as "Contacts", while each item uses its respective text content.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -148,7 +150,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        The element above has AutomationProperties.Name="Grapes image placeholder" so VoiceOver announces it by name.
+                        The element above has AutomationProperties.Name="Grapes image placeholder" so screen readers announce it by name.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -170,18 +172,20 @@
                     <TextBlock
                         x:Name="InputLabel"
                         AutomationProperties.AccessibilityView="Raw"
+                        AutomationProperties.AutomationId="MobileA11yLabeledByLabel"
                         Style="{ThemeResource BodyTextBlockStyle}"
                         Text="Searching Photos:" />
                     <TextBox
                         Width="200"
                         HorizontalAlignment="Left"
+                        AutomationProperties.AutomationId="MobileA11yLabeledByTextBox"
                         AutomationProperties.LabeledBy="{x:Bind InputLabel}" />
                     <TextBlock
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
                         The TextBox above is labeled by the TextBlock and will be read as "Searching Photos".
-                        The label TextBlock uses AccessibilityView="Raw" to hide it from VoiceOver (avoiding redundancy).
+                        The label TextBlock uses AccessibilityView="Raw" to hide it from screen readers and avoid redundancy.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -216,7 +220,10 @@
                 <StackPanel Spacing="8">
                     <!--  FullDescription  -->
                     <StackPanel Spacing="8">
-                        <CheckBox AutomationProperties.FullDescription="{x:Bind ClearCacheDescription.Text}" Content="Clear cache on exit" />
+                        <CheckBox
+                            AutomationProperties.AutomationId="MobileA11yFullDescriptionCheckBox"
+                            AutomationProperties.FullDescription="{x:Bind ClearCacheDescription.Text}"
+                            Content="Clear cache on exit" />
                         <TextBlock
                             x:Name="ClearCacheDescription"
                             AutomationProperties.AccessibilityView="Raw"
@@ -236,7 +243,7 @@
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
                         FullDescription provides an extended description. HelpText provides short contextual help.
-                        Both are read by VoiceOver in addition to the control's name.
+                        Both are exposed to screen readers in addition to the control's name.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -294,7 +301,7 @@
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
                         ListViews automatically provide position in set. For custom layouts, use PositionInSet and SizeOfSet.
-                        VoiceOver announces items as "1 of 3", "2 of 3", etc.
+                        Screen readers announce items as "1 of 3", "2 of 3", etc.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -310,7 +317,7 @@
 
             <TextBlock TextWrapping="WrapWholeWords">
                 You can hide decorative or redundant elements from screen readers by setting AccessibilityView="Raw".
-                This removes them from the accessibility tree so VoiceOver will skip them.
+                This removes them from the accessibility tree so screen readers skip them.
             </TextBlock>
 
             <Border
@@ -338,7 +345,7 @@
                         VerticalAlignment="Center"
                         TextWrapping="WrapWholeWords">
                         This is some demo text. The emoji on the left is just for decoration.
-                        To prevent VoiceOver from reading it, we set AccessibilityView to "Raw",
+                        To prevent screen readers from announcing it, we set AccessibilityView to "Raw",
                         which removes it from the accessibility tree.
                     </TextBlock>
                 </StackPanel>
@@ -375,7 +382,7 @@
                 <StackPanel Spacing="8">
                     <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="WrapWholeWords">
                         The sample below showcases Navigation, Search, Main, and Custom landmarks.
-                        VoiceOver announces these as landmark regions.
+                        Screen readers announce these as landmark regions.
                     </TextBlock>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -451,7 +458,7 @@
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
                         The sample below showcases headings at different levels.
-                        VoiceOver announces these as heading elements.
+                        Screen readers announce these as heading elements.
                     </TextBlock>
 
                     <TextBlock AutomationProperties.HeadingLevel="Level1" FontSize="26">
@@ -504,7 +511,7 @@
 
             <TextBlock TextWrapping="WrapWholeWords">
                 You can group controls together by adding an accessible name to the parent container.
-                When entering a named region, VoiceOver will announce the group name as context.
+                When entering a named region, screen readers announce the group name as context.
             </TextBlock>
 
             <Border
@@ -516,7 +523,7 @@
                 <StackPanel Spacing="8">
                     <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="WrapWholeWords">
                         The sample below groups items using accessible names.
-                        VoiceOver will read "My albums" or "Shared with me" when navigating between the groups.
+                        Screen readers announce "My albums" or "Shared with me" when navigating between the groups.
                     </TextBlock>
                     <StackPanel AutomationProperties.Name="Album browser">
                         <StackPanel AutomationProperties.Name="My albums">
@@ -566,11 +573,18 @@
                 BorderThickness="1"
                 CornerRadius="8">
                 <StackPanel Spacing="8">
-                    <CheckBox Content="Enable notifications" IsChecked="True" />
+                    <CheckBox
+                        AutomationProperties.AutomationId="MobileA11yCheckBox"
+                        Content="Enable notifications"
+                        IsChecked="True" />
                     <CheckBox Content="Send analytics" IsChecked="False" />
-                    <ToggleSwitch Header="Dark mode" IsOn="True" />
+                    <ToggleSwitch
+                        AutomationProperties.AutomationId="MobileA11yToggleSwitch"
+                        Header="Dark mode"
+                        IsOn="True" />
                     <StackPanel Orientation="Horizontal" Spacing="16">
                         <RadioButton
+                            AutomationProperties.AutomationId="MobileA11yRadioButton"
                             Content="Small"
                             GroupName="Size"
                             IsChecked="True" />
@@ -581,7 +595,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        VoiceOver announces the checked/unchecked or on/off state of these controls.
+                        Screen readers announce the checked/unchecked or on/off state of these controls.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -603,6 +617,7 @@
                     <Slider
                         Width="300"
                         HorizontalAlignment="Left"
+                        AutomationProperties.AutomationId="MobileA11ySlider"
                         Header="Volume"
                         Maximum="100"
                         Minimum="0"
@@ -611,7 +626,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        VoiceOver reads the slider value and allows incrementing/decrementing with VoiceOver gestures.
+                        Screen readers announce the slider value and support increment/decrement gestures.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -633,13 +648,14 @@
                     <PasswordBox
                         Width="200"
                         HorizontalAlignment="Left"
+                        AutomationProperties.AutomationId="MobileA11yPasswordBox"
                         Header="Password"
                         PlaceholderText="Enter your password" />
                     <TextBlock
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        VoiceOver announces this as a "secure text field" and does not expose the password text.
+                        Screen readers announce this as a secure text field and do not expose the password text.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -661,6 +677,7 @@
                     <ComboBox
                         Width="200"
                         HorizontalAlignment="Left"
+                        AutomationProperties.AutomationId="MobileA11yComboBox"
                         Header="Favorite color">
                         <ComboBoxItem Content="Red" />
                         <ComboBoxItem Content="Green" />
@@ -671,7 +688,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        VoiceOver announces the ComboBox as expandable, reads the selected value, and supports expand/collapse actions.
+                        Screen readers announce the ComboBox as expandable, read the selected value, and support expand/collapse actions.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -695,13 +712,14 @@
                         Height="100"
                         HorizontalAlignment="Left"
                         AcceptsReturn="True"
+                        AutomationProperties.AutomationId="MobileA11yMultilineTextBox"
                         Header="Comments"
                         TextWrapping="Wrap" />
                     <TextBlock
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        VoiceOver announces this as a "text area" instead of "text field" because AcceptsReturn is true.
+                        Screen readers announce this as a text area instead of a text field because AcceptsReturn is true.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -723,13 +741,14 @@
                     <TextBox
                         Width="200"
                         HorizontalAlignment="Left"
+                        AutomationProperties.AutomationId="MobileA11yRequiredTextBox"
                         AutomationProperties.IsRequiredForForm="True"
                         Header="Full name" />
                     <TextBlock
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        VoiceOver announces this field as "required" when it has IsRequiredForForm set to True.
+                        Screen readers announce this field as required when IsRequiredForForm is true.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -752,18 +771,20 @@
                 <StackPanel Spacing="8">
                     <TextBlock
                         x:Name="LiveRegionText"
+                        AutomationProperties.AutomationId="MobileA11yLiveRegion"
                         AutomationProperties.LiveSetting="Polite"
                         Style="{ThemeResource BodyTextBlockStyle}"
                         Text="Status: Ready" />
                     <Button
                         x:Name="LiveRegionButton"
+                        AutomationProperties.AutomationId="MobileA11yLiveRegionButton"
                         Click="OnUpdateLiveRegion"
                         Content="Update status" />
                     <TextBlock
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        When the status text changes, VoiceOver will automatically announce the new text
+                        When the status text changes, screen readers automatically announce the new text
                         because it is marked as a polite live region.
                     </TextBlock>
                 </StackPanel>
@@ -779,7 +800,7 @@
                 Text="IsOffscreen (visibility toggling)" />
 
             <TextBlock TextWrapping="WrapWholeWords">
-                Use inspect.exe or Accessibility Insights to verify that IsOffscreen changes
+                Use a platform accessibility inspector to verify that IsOffscreen changes
                 when elements are collapsed or made visible. Offscreen elements should report
                 IsOffscreen=True and an empty BoundingRectangle.
             </TextBlock>
@@ -808,7 +829,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        The IsOffscreen value above is read live from the button's automation peer (no inspect.exe needed).
+                        The IsOffscreen value above is read live from the button's automation peer.
                         Click "Collapse" and it should report IsOffscreen=True; click "Show" and it reports IsOffscreen=False.
                     </TextBlock>
                 </StackPanel>
@@ -924,7 +945,7 @@
                         TextWrapping="WrapWholeWords">
                         The IsOffscreen value above is read directly from the element's automation peer
                         (FrameworkElementAutomationPeer.IsOffscreen()) and updates live as you scroll, so no
-                        external tool such as inspect.exe is required. Scroll the button out of the viewport
+                        external accessibility inspector is required. Scroll the button out of the viewport
                         and it should report IsOffscreen=True (even though it is still Visible and in the live
                         tree); scroll it back into view and it reports IsOffscreen=False.
                     </TextBlock>
@@ -1057,7 +1078,7 @@
                         x:Name="CombinedStatusText"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="Use the buttons above to toggle states and verify UIA properties with inspect.exe."
+                        Text="Use the buttons above to toggle states and verify properties with a platform accessibility inspector."
                         TextWrapping="WrapWholeWords" />
                 </StackPanel>
             </Border>

@@ -72,8 +72,8 @@ internal sealed partial class ManagedGeometry
 	private IEnumerable<StrokeRun> EnumerateStrokeRuns(StrokeStyle style, float scale)
 	{
 		var hasDashes = style.DashArray is { Length: > 0 };
-		var dashes = hasDashes ? ScaleDashes(style.DashArray!, style.Thickness) : null;
-		var dashOffset = style.DashOffset * style.Thickness;
+		var dashes = hasDashes ? NormalizeDashes(style.DashArray!) : null;
+		var dashOffset = style.DashOffset;
 
 		foreach (var contour in Contours)
 		{
@@ -99,15 +99,15 @@ internal sealed partial class ManagedGeometry
 		}
 	}
 
-	private static float[] ScaleDashes(float[] dashArray, float thickness)
+	private static float[] NormalizeDashes(float[] dashArray)
 	{
-		var scaled = new float[dashArray.Length % 2 == 0 ? dashArray.Length : dashArray.Length * 2];
-		for (var i = 0; i < scaled.Length; i++)
+		var normalized = new float[dashArray.Length % 2 == 0 ? dashArray.Length : dashArray.Length * 2];
+		for (var i = 0; i < normalized.Length; i++)
 		{
-			scaled[i] = MathF.Max(0f, dashArray[i % dashArray.Length]) * thickness;
+			normalized[i] = MathF.Max(0f, dashArray[i % dashArray.Length]);
 		}
 
-		return scaled;
+		return normalized;
 	}
 
 	private static IEnumerable<StrokeRun> SplitByDashes(List<Vector2> points, float[] dashes, float dashOffset, StrokeStyle style, bool closed)

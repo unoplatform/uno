@@ -594,9 +594,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				MinHeight = 100,
 				RowDefinitions =
 				{
-					new RowDefinition{Height = 75},
+					new RowDefinition{Height = new GridLength(75)},
 					new RowDefinition(),
-					//new RowDefinition{Height = 75}, // Not working on iOS when the line below is commented
+					//new RowDefinition{Height = new GridLength(75)}, // Not working on iOS when the line below is commented
 				},
 				Children =
 				{
@@ -861,31 +861,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var layout = "";
 
 			Assert.AreEqual(expectedResult, resultStr, layout);
-		}
-
-		[TestMethod]
-		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_AreDimensionsConstrained_And_Margin()
-		{
-			const double setHeight = 45d;
-			var outerPanel = new Grid { Width = 72, Height = setHeight, Margin = new Thickness(8) };
-#if !WINAPPSDK
-			outerPanel.AreDimensionsConstrained = true;
-#endif
-			var innerView = new AspectRatioView { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
-			outerPanel.Children.Add(innerView);
-
-			TestServices.WindowHelper.WindowContent = outerPanel;
-			await TestServices.WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(setHeight, Math.Round(innerView.ActualHeight));
-
-			outerPanel.InvalidateMeasure(); // On Android, AreDimensionsConstrained=true causes view to be measured+arranged through alternate code path
-
-			await TestServices.WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(setHeight, Math.Round(innerView.ActualHeight));
 		}
 
 		[TestMethod]
@@ -1287,18 +1262,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			MeasureOverrides.Add(availableSize);
 			return base.MeasureOverride(BaseAvailableSize ?? availableSize);
-		}
-	}
-
-	public partial class AspectRatioView : FrameworkElement
-	{
-		public double AspectRatio { get; set; } = 1.5;
-
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			var height = double.IsPositiveInfinity(availableSize.Height) ? 0 : availableSize.Height;
-			var width = height * AspectRatio;
-			return new Size(width, height);
 		}
 	}
 

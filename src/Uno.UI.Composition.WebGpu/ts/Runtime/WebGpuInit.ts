@@ -1,9 +1,27 @@
-namespace Uno.UI.Runtime.Skia {
+namespace Uno.UI.Runtime {
 	// Browser WebGPU device bring-up, SkiaSharp-Graphite-style: create the adapter+device in JavaScript
 	// (navigator.gpu, awaited as a Task via [JSImport]) and graft the JS GPUDevice into emdawnwebgpu's C
 	// handle table via Module.unoWebGpuImportDevice (installed by the emdawn __postset patch). This avoids the
 	// in-WASM wgpuInstanceProcessEvents pump, which hangs when driven from a managed call stack on the browser.
 	export class WebGpuInit {
+		private static framesInFlight = 0;
+
+		// Counts a presented frame until the queue has finished everything submitted so far (the queue is FIFO, so
+		// that covers the frame's own work).
+		public static trackPresentedFrame(queuePtr: number): void {
+			const queue = WebGpuInit.getJsObject(queuePtr);
+			if (!queue || typeof queue.onSubmittedWorkDone !== "function") {
+				return;
+			}
+			WebGpuInit.framesInFlight++;
+			const done = () => { WebGpuInit.framesInFlight--; };
+			queue.onSubmittedWorkDone().then(done, done);
+		}
+
+		public static presentedFramesInFlight(): number {
+			return WebGpuInit.framesInFlight;
+		}
+
 		// Returns the imported WGPUDevice pointer (as an unsigned int), or 0 on failure. instancePtr is a real
 		// wgpuCreateInstance handle created on the managed side; it becomes the imported device's EventSource parent.
 		public static async createImportedDevice(instancePtr: number): Promise<number> {
@@ -32,6 +50,9 @@ namespace Uno.UI.Runtime.Skia {
 					console.error("WebGpuInit: adapter.requestDevice returned null");
 					return 0;
 				}
+				// A lost device otherwise only shows up later as every async operation aborting, with no reason given.
+				device.lost.then((info: any) => console.error("WebGpuInit: device lost (" + info.reason + "): " + info.message));
+				device.addEventListener("uncapturederror", (e: any) => console.error("WebGpuInit: uncaptured error: " + e.error?.message));
 				const module = (window as any).Module;
 				if (!module || typeof module.unoWebGpuImportDevice !== "function") {
 					console.error("WebGpuInit: Module.unoWebGpuImportDevice is missing (emdawn __postset patch not applied?)");
@@ -52,18 +73,6 @@ namespace Uno.UI.Runtime.Skia {
 			return module && typeof module.unoWebGpuJsObject === "function" ? module.unoWebGpuJsObject(handlePtr >>> 0) : null;
 		}
 
-		// Imports a JS GPUDevice into emdawn's handle table and returns its wgpu WGPUDevice pointer.
-		public static importDevice(device: any, instancePtr: number): number {
-			const module = (window as any).Module;
-			if (!module || typeof module.unoWebGpuImportDevice !== "function") {
-				console.error("WebGpuInit.importDevice: Module.unoWebGpuImportDevice is missing");
-				return 0;
-			}
-			const ptr = module.unoWebGpuImportDevice(device, instancePtr) >>> 0;
-			console.log("WebGpuInit: (backend) imported device ptr=" + ptr);
-			return ptr;
-		}
-
 		// Creates the offscreen resolve texture in JS (JS-primary) and imports it into emdawn's handle table.
 		public static createAndImportOffscreenTexture(device: any, width: number, height: number, usage: number): number {
 			const module = (window as any).Module;
@@ -78,16 +87,6 @@ namespace Uno.UI.Runtime.Skia {
 				usage: usage >>> 0,
 			});
 			return module.unoWebGpuImportTexture(tex, 0) >>> 0;
-		}
-
-		// Imports a JS GPUTextureView into emdawn's handle table and returns its wgpu view pointer.
-		public static importTextureView(view: any, parentPtr: number): number {
-			const module = (window as any).Module;
-			if (!module || typeof module.unoWebGpuImportTextureView !== "function") {
-				console.error("WebGpuInit.importTextureView: Module.unoWebGpuImportTextureView is missing");
-				return 0;
-			}
-			return module.unoWebGpuImportTextureView(view, parentPtr >>> 0) >>> 0;
 		}
 
 		// Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects it as RGBA8 (rows padded to

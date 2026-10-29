@@ -5,7 +5,7 @@
 	creates files directly under this folder (rather than in a consumer head
 	with a Link redirect). The samples are actually compiled via the
 	SamplesApp.Samples.props import — into the SamplesApp head for every target,
-	and into UnoIslandsSamplesApp.Skia. This csproj does not build.
+	and into UnoIslandsSamplesApp. This csproj does not build.
 	-->
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>

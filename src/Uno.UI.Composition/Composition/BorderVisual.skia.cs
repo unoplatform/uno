@@ -147,7 +147,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	{
 		UpdatePathsAndCornerClip();
 		base.ApplyPrePaintingClipping(session);
-		if (_cornerRadius != CornerRadius.None && _borderPathOuterRect is { } rect)
+		if (_cornerRadius != default(CornerRadius) && _borderPathOuterRect is { } rect)
 		{
 			session.ClipRoundRect(rect);
 		}
@@ -160,7 +160,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		UpdatePathsAndCornerClip();
 
 		var baseClip = base.GetPrePaintingClipping();
-		if (_cornerRadius != CornerRadius.None && _borderPathOuterRect is { } rect)
+		if (_cornerRadius != default(CornerRadius) && _borderPathOuterRect is { } rect)
 		{
 			// Not rebuilt per frame: this runs for every rounded border on every frame.
 			var roundRect = GetOrBuildPrePaintingRoundRectGeometry(rect);

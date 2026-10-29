@@ -143,6 +143,7 @@ internal class PackageManifest
 		public const string HotDesign = nameof(HotDesign);
 		public const string AppMcp = nameof(AppMcp);
 		public const string SkiaSharp = nameof(SkiaSharp);
+		public const string HarfBuzzSharp = nameof(HarfBuzzSharp);
 		public const string SvgSkia = nameof(SvgSkia);
 		public const string WinAppSdk = nameof(WinAppSdk);
 		public const string WinAppSdkBuildTools = nameof(WinAppSdkBuildTools);
@@ -151,6 +152,7 @@ internal class PackageManifest
 		public const string MsalClient = nameof(MsalClient);
 		public const string Mvvm = nameof(Mvvm);
 		public const string Prism = nameof(Prism);
+		public const string Reactor = nameof(Reactor);
 		public const string UnoFonts = nameof(UnoFonts);
 		public const string AndroidMaterial = nameof(AndroidMaterial);
 		public const string AndroidXSplashScreen = nameof(AndroidXSplashScreen);

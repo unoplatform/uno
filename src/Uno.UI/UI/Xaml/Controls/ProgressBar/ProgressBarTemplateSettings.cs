@@ -10,13 +10,17 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ProgressBarTemplateSettings : DependencyObject
 {
+	internal ProgressBarTemplateSettings()
+	{
+	}
+
 	public static DependencyProperty ContainerAnimationStartPositionProperty { get; } = DependencyProperty.Register(
 		nameof(ContainerAnimationStartPosition), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 	public double ContainerAnimationStartPosition
 	{
 		get => (double)GetValue(ContainerAnimationStartPositionProperty);
-		set => SetValue(ContainerAnimationStartPositionProperty, Boxer.Box(value));
+		internal set => SetValue(ContainerAnimationStartPositionProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty ContainerAnimationEndPositionProperty { get; } = DependencyProperty.Register(
@@ -25,7 +29,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double ContainerAnimationEndPosition
 	{
 		get => (double)GetValue(ContainerAnimationEndPositionProperty);
-		set => SetValue(ContainerAnimationEndPositionProperty, Boxer.Box(value));
+		internal set => SetValue(ContainerAnimationEndPositionProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty Container2AnimationStartPositionProperty { get; } = DependencyProperty.Register(
@@ -34,7 +38,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double Container2AnimationStartPosition
 	{
 		get => (double)GetValue(Container2AnimationStartPositionProperty);
-		set => SetValue(Container2AnimationStartPositionProperty, Boxer.Box(value));
+		internal set => SetValue(Container2AnimationStartPositionProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty Container2AnimationEndPositionProperty { get; } = DependencyProperty.Register(
@@ -43,7 +47,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double Container2AnimationEndPosition
 	{
 		get => (double)GetValue(Container2AnimationEndPositionProperty);
-		set => SetValue(Container2AnimationEndPositionProperty, Boxer.Box(value));
+		internal set => SetValue(Container2AnimationEndPositionProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty EllipseAnimationEndPositionProperty { get; } = DependencyProperty.Register(
@@ -52,7 +56,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double EllipseAnimationEndPosition
 	{
 		get => (double)GetValue(EllipseAnimationEndPositionProperty);
-		set => SetValue(EllipseAnimationEndPositionProperty, Boxer.Box(value));
+		internal set => SetValue(EllipseAnimationEndPositionProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty EllipseAnimationWellPositionProperty { get; } = DependencyProperty.Register(
@@ -61,7 +65,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double EllipseAnimationWellPosition
 	{
 		get => (double)GetValue(EllipseAnimationWellPositionProperty);
-		set => SetValue(EllipseAnimationWellPositionProperty, Boxer.Box(value));
+		internal set => SetValue(EllipseAnimationWellPositionProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty EllipseDiameterProperty { get; } = DependencyProperty.Register(
@@ -70,7 +74,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double EllipseDiameter
 	{
 		get => (double)GetValue(EllipseDiameterProperty);
-		set => SetValue(EllipseDiameterProperty, Boxer.Box(value));
+		internal set => SetValue(EllipseDiameterProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty EllipseOffsetProperty { get; } = DependencyProperty.Register(
@@ -79,7 +83,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double EllipseOffset
 	{
 		get => (double)GetValue(EllipseOffsetProperty);
-		set => SetValue(EllipseOffsetProperty, Boxer.Box(value));
+		internal set => SetValue(EllipseOffsetProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty ContainerAnimationMidPositionProperty { get; } = DependencyProperty.Register(
@@ -88,7 +92,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double ContainerAnimationMidPosition
 	{
 		get => (double)GetValue(ContainerAnimationMidPositionProperty);
-		set => SetValue(ContainerAnimationMidPositionProperty, Boxer.Box(value));
+		internal set => SetValue(ContainerAnimationMidPositionProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty IndicatorLengthDeltaProperty { get; } = DependencyProperty.Register(
@@ -97,7 +101,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double IndicatorLengthDelta
 	{
 		get => (double)GetValue(IndicatorLengthDeltaProperty);
-		set => SetValue(IndicatorLengthDeltaProperty, Boxer.Box(value));
+		internal set => SetValue(IndicatorLengthDeltaProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty ClipRectProperty { get; } = DependencyProperty.Register(
@@ -106,6 +110,6 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public RectangleGeometry ClipRect
 	{
 		get => (RectangleGeometry)GetValue(ClipRectProperty);
-		set => SetValue(ClipRectProperty, value);
+		internal set => SetValue(ClipRectProperty, value);
 	}
 }

@@ -192,6 +192,7 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 						.GenericApply(__that, __nameScope, __settings, ApplyTo_Ξ0_Gri)
 					)

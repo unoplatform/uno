@@ -18,7 +18,7 @@ using static Private.Infrastructure.TestServices;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	public class Given_RadioButton
+	public partial class Given_RadioButton
 	{
 		[TestMethod]
 		[RunsOnUIThread]

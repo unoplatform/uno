@@ -742,7 +742,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20842")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)]
+		// iOS: times out intermittently, https://github.com/unoplatform/uno/issues/25104
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_Window_Resized()
 		{
 			if (!Uno.UI.Xaml.Controls.NativeWindowFactory.SupportsMultipleWindows)
@@ -751,6 +752,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var window = new Window();
+			ContentDialog dialog = null;
 			try
 			{
 				bool activated = false;
@@ -758,7 +760,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				window.Activated += (s, e) => activated = true;
 				window.Activate();
 				await TestServices.WindowHelper.WaitFor(() => activated);
-				var dialog = new ContentDialog
+				dialog = new ContentDialog
 				{
 					Title = "Hello World",
 					Content = "This is a sample dialog.",
@@ -781,7 +783,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				appWindow.Changed += OnChanged;
 				var originalSize = appWindow.Size;
 
-				var adjustedSize = new SizeInt32 { Width = originalSize.Width + 10, Height = originalSize.Height + 10 };
+				// Shrink: a window that already fills a small screen cannot grow.
+				var adjustedSize = new SizeInt32 { Width = originalSize.Width - 10, Height = originalSize.Height - 10 };
 				appWindow.Resize(adjustedSize);
 				await TestServices.WindowHelper.WaitFor(() => args is not null);
 				Assert.IsTrue(args.DidSizeChange);
@@ -790,6 +793,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
+				// An open dialog keeps handling back presses after its window closes.
+				dialog?.Hide();
 				window.Close();
 			}
 		}

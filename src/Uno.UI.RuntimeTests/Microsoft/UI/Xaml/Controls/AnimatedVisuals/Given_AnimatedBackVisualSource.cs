@@ -567,10 +567,8 @@ public class Given_AnimatedBackVisualSource
 		icon.SetValue(AnimatedIcon.StateProperty, "NormalOn");
 
 		// Lottie source duration is ~2.6s; the NormalOffToNormalOn segment is ~11% of that ≈ 310ms.
-		// 1500ms is comfortably more than enough for the play (and the deferred Completed event)
-		// to settle.
-		await Task.Delay(TimeSpan.FromMilliseconds(1500));
-		await TestServices.WindowHelper.WaitForIdle();
+		// Wait for the play to land rather than for a fixed time: a software-rendered frame can take most of a second.
+		await TestServices.WindowHelper.WaitFor(() => MathF.Abs(rotateShape.RotationAngleInDegrees - 180f) < 5f, timeoutMS: 5000);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		var expandedRotation = rotateShape.RotationAngleInDegrees;

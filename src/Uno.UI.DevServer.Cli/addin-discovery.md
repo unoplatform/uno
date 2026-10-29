@@ -52,6 +52,8 @@ Forward-compatibility: when `manifest.Version > 1`, the resolver logs a warning 
 
 Parses `packages.json` from the Uno SDK and `buildTransitive/*.targets` files from NuGet packages to extract `<UnoRemoteControlAddIns>` items without invoking MSBuild.
 
+Package versions from `packages.json` are overridden by the restored `project.assets.json` of each project the selected solution lists, at any depth (`ProjectAssetsParser.FindProjectAssetsFilesAsync`). Without a readable, restored solution, the workspace directory and its immediate subdirectories are scanned instead.
+
 ## MSBuild Fallback (Host-side, 10-30s)
 
 **File:** `../Uno.UI.RemoteControl.Host/Extensibility/AddIns.cs`

@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 using System.Numerics;
-using System.Runtime.CompilerServices;
+using System.Threading;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
@@ -8,8 +8,9 @@ using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
 
 #if CROSSRUNTIME
-using Microsoft.Extensions.Logging;
-using Uno.Extensions;
+using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
+using Uno.Graphics;
 using Uno.UI.Composition.Drawing;
 #endif
 
@@ -27,9 +28,9 @@ public abstract partial class SKCanvasElement : Grid
 {
 #if CROSSRUNTIME
 	private SKCanvasVisual? _canvasVisual;
-	// Typed as FrameworkElement (not SkiaGLCanvasElement) so holding the field never type-loads the optional
-	// Graphics3DGL add-in. Concrete-island references are isolated in NoInlining methods guarded by a presence check.
-	private FrameworkElement? _island;
+	// Provided by the optional Graphics3DGL add-in through ApiExtensibility, so this assembly never references it:
+	// AOT and eager linkers fail on a reference the package doesn't carry.
+	private IGLIsland? _island;
 	private bool _islandRequested;
 	// The last resort when the backend exposes no SKCanvas and the GL island is unavailable or failed: draw into a
 	// raster SKSurface and hand its pixels to the active backend as a texture. Slower than either, never blank.
@@ -64,13 +65,12 @@ public abstract partial class SKCanvasElement : Grid
 		}
 		_islandRequested = true;
 
-		if (!IsGLCanvasElementAvailable())
+		if (!ApiExtensibility.IsRegistered<IGLIsland>())
 		{
-			// Graphics3DGL isn't referenced — no GL island, and don't touch SkiaGLCanvasElement (keeps its base
-			// assembly unloaded). Draw through the software surface instead.
+			// Graphics3DGL isn't referenced — no GL island. Draw through the software surface instead.
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
-				this.Log().LogInformation($"{nameof(SKCanvasElement)}: the active backend exposes no SKCanvas and Uno.WinUI.Graphics3DGL is not referenced; drawing through a software surface.");
+				this.Log().Info($"{nameof(SKCanvasElement)}: the active backend exposes no SKCanvas and Uno.WinUI.Graphics3DGL is not referenced; drawing through a software surface.");
 			}
 
 			_software = true;
@@ -85,7 +85,7 @@ public abstract partial class SKCanvasElement : Grid
 	{
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
-			this.Log().LogInformation($"{nameof(SKCanvasElement)}: the GL island is unavailable; drawing through a software surface.");
+			this.Log().Info($"{nameof(SKCanvasElement)}: the GL island is unavailable; drawing through a software surface.");
 		}
 
 		_software = true;
@@ -94,7 +94,7 @@ public abstract partial class SKCanvasElement : Grid
 		{
 			if (_island is not null)
 			{
-				Children.Remove(_island);
+				Children.Remove(_island.Element);
 				_island = null;
 			}
 			_canvasVisual?.Invalidate();
@@ -107,9 +107,12 @@ public abstract partial class SKCanvasElement : Grid
 	// backend. The surface persists across frames and is recreated only when the device size changes.
 	internal void PaintSoftware(IDrawingSession session, Vector2 size)
 	{
+		// A session without an SKCanvas records in the visual's logical space and applies the device scale on replay,
+		// so its matrix never carries it: without this factor the surface is rasterized at 1x and stretched.
+		var deviceScale = (float)(XamlRoot?.RasterizationScale ?? 1);
 		var m = session.TotalMatrix;
-		var sx = MathF.Max(1e-3f, new Vector2(m.M11, m.M12).Length());
-		var sy = MathF.Max(1e-3f, new Vector2(m.M21, m.M22).Length());
+		var sx = MathF.Max(1e-3f, new Vector2(m.M11, m.M12).Length() * deviceScale);
+		var sy = MathF.Max(1e-3f, new Vector2(m.M21, m.M22).Length() * deviceScale);
 		var w = Math.Max(1, (int)MathF.Ceiling(size.X * sx));
 		var h = Math.Max(1, (int)MathF.Ceiling(size.Y * sy));
 		if (_softSurface is null || _softW != w || _softH != h)
@@ -138,17 +141,12 @@ public abstract partial class SKCanvasElement : Grid
 		session.Restore();
 	}
 
-	private static bool IsGLCanvasElementAvailable()
-		=> Type.GetType("Uno.WinUI.Graphics3DGL.GLCanvasElement, Uno.WinUI.Graphics3DGL") is not null;
-
-	// Isolated so the SkiaGLCanvasElement token is JIT-resolved only once Graphics3DGL is confirmed present.
-	[MethodImpl(MethodImplOptions.NoInlining)]
 	private void CreateIsland()
 	{
-		if (_island is null)
+		if (_island is null && ApiExtensibility.CreateInstance<IGLIsland>(new SkiaGLIslandRenderer(this), out var island))
 		{
-			_island = new SkiaGLCanvasElement(this);
-			Children.Add(_island);
+			_island = island;
+			Children.Add(island.Element);
 			// The fallback was reached from a paint that already returned; re-invalidate so the visual repaints now
 			// that the island is a child (otherwise the island — and thus the drawing — never composites).
 			_canvasVisual?.Invalidate();
@@ -162,18 +160,43 @@ public abstract partial class SKCanvasElement : Grid
 	/// Invalidates the element and triggers a redraw.
 	/// </summary>
 #if CROSSRUNTIME
+	/// <remarks>
+	/// Safe to call from any thread. Drawing is commonly driven by work that finishes off the UI
+	/// thread - a decode, a download, a background render - and invalidating there directly would
+	/// race the frame: it marks the visual dirty and drops the cached recording of every ancestor,
+	/// which the UI thread may be rebuilding and the render thread may be replaying. Off the UI
+	/// thread the invalidation is posted; on it, it is applied inline so that calling
+	/// <see cref="Invalidate"/> from inside <see cref="RenderOverride"/> still schedules the next
+	/// frame without a dispatcher hop.
+	/// </remarks>
 	public void Invalidate()
 	{
-		_canvasVisual?.Invalidate();
-		if (_island is not null)
+		if (DispatcherQueue is not { } dispatcher || dispatcher.HasThreadAccess)
 		{
-			InvalidateIsland();
+			InvalidateCore();
+			return;
+		}
+
+		// Coalesce: invalidation is idempotent, and a background loop that invalidates per unit of
+		// work would otherwise post a callback per call and starve the UI thread of the frame it is
+		// asking for. One pending post is enough to get the next frame.
+		if (Interlocked.Exchange(ref _invalidatePending, 1) == 0)
+		{
+			dispatcher.TryEnqueue(() =>
+			{
+				Volatile.Write(ref _invalidatePending, 0);
+				InvalidateCore();
+			});
 		}
 	}
 
-	// Isolated: the SkiaGLCanvasElement cast is JIT-resolved only when an island exists (i.e. Graphics3DGL is present).
-	[MethodImpl(MethodImplOptions.NoInlining)]
-	private void InvalidateIsland() => ((SkiaGLCanvasElement)_island!).Invalidate();
+	private int _invalidatePending;
+
+	private void InvalidateCore()
+	{
+		_canvasVisual?.Invalidate();
+		_island?.Invalidate();
+	}
 
 	internal void InvokeRenderOverride(SKCanvas canvas, Size area) => RenderOverride(canvas, area);
 #else

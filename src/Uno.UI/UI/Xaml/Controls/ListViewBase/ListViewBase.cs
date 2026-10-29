@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
-using System.Windows.Input;
 using View = Microsoft.UI.Xaml.FrameworkElement;
 using Uno;
 using Uno.Extensions;
@@ -490,37 +488,6 @@ namespace Microsoft.UI.Xaml.Controls
 			SelectionChanged += OnSelectionChanged;
 		}
 
-
-		private ICommand _itemClickCommand;
-		//TODO: Remove this as it doesn't exist on Windows
-		public ICommand ItemClickCommand
-		{
-			get { return _itemClickCommand; }
-			set
-			{
-				_itemClickCommand = value;
-				OnItemClickCommandChangedPartial(value);
-			}
-		}
-
-		partial void OnItemClickCommandChangedPartial(ICommand value);
-
-		//Note: by a hackishly convenient coincidence, the binding u:ListViewBaseCommand.Command="{Binding [DoSomething]}" will bind to this property on Uno,
-		// because the xaml source generation fails to find ListViewBaseCommand and ignores that part entirely. So...when this property is removed, port ListViewBaseCommand
-		// to Xamarin, and all will be well.
-		/// <summary>
-		/// Deprecated, use ItemClickCommand instead.
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public ICommand Command
-		{
-			get { return ItemClickCommand; }
-			set
-			{
-				ItemClickCommand = value;
-			}
-		}
-
 		public IList<object> SelectedItems { get; }
 
 		internal (int index, SelectorItem container, object item) FocusedIndexContainerItem { get; set; } = (-1, null, null);
@@ -564,6 +531,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void ApplyMultiSelectStateToCachedItems();
 
+		// MUX Reference ListViewBase_Partial_Interaction.cpp, commit 58b6a55
+		// The primary scenario is touch narrator mocking a tap, so this takes the non-keyboard interaction path.
+		internal void AutomationItemClick(SelectorItem item) => OnItemClicked(item, VirtualKeyModifiers.None);
+
 		internal override void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
 			// Note: don't call base.OnItemClicked(), because we override the default single-selection-only handling
@@ -579,7 +550,6 @@ namespace Microsoft.UI.Xaml.Controls
 				// This is required for the NavigationView which references a non-public issue (#17546992 in NavigationViewList)
 				IsItemItsOwnContainerOverride(clickedItem);
 
-				ItemClickCommand.ExecuteIfPossible(clickedItem);
 				ItemClick?.Invoke(this, new ItemClickEventArgs { ClickedItem = clickedItem });
 			}
 
@@ -1131,11 +1101,35 @@ namespace Microsoft.UI.Xaml.Controls
 
 			PrepareContainerForDragDrop(itemContainer);
 
-			ContainerContentChanging?.Invoke(this, new ContainerContentChangingEventArgs(item, itemContainer, itemIndex));
+			// WinUI raises ContainerContentChanging once the container has its template, so handlers can
+			// use ContentTemplateRoot. A new container only gets its template on its first measure, after
+			// it is added to the panel: hold the event until its template root is reported (SelectorItem).
+			// A collapsed container is never measured: like WinUI, raise it now, without a template root.
+			if (itemContainer is { TemplatedRoot: null, Visibility: not Visibility.Collapsed })
+			{
+				itemContainer.PendingContainerContentChanging = (item, itemIndex);
+			}
+			else
+			{
+				if (itemContainer is not null)
+				{
+					itemContainer.PendingContainerContentChanging = null;
+				}
+
+				RaiseContainerContentChanging(item, itemContainer, itemIndex);
+			}
 		}
+
+		internal void RaiseContainerContentChanging(object item, SelectorItem itemContainer, int itemIndex)
+			=> ContainerContentChanging?.Invoke(this, new ContainerContentChangingEventArgs(item, itemContainer, itemIndex));
 
 		internal override void ContainerClearedForItem(object item, SelectorItem itemContainer)
 		{
+			if (itemContainer is not null)
+			{
+				itemContainer.PendingContainerContentChanging = null;
+			}
+
 			ClearContainerForDragDrop(itemContainer);
 
 			base.ContainerClearedForItem(item, itemContainer);

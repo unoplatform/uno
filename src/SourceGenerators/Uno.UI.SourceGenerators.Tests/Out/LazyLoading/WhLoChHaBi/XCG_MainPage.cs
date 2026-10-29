@@ -64,7 +64,7 @@ namespace TestRepro
 						__nameScope.RegisterName("innerTextBlock", __p1);
 						__that.innerTextBlock = __p1;
 						// FieldModifier public
-						__p1.SetBinding(
+						global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 							global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 							new Microsoft.UI.Xaml.Data.Binding()
 							{

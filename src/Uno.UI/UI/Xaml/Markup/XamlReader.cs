@@ -6,6 +6,10 @@ namespace Microsoft.UI.Xaml.Markup
 {
 	public partial class XamlReader
 	{
+		internal XamlReader()
+		{
+		}
+
 		public static object Load(string xaml)
 		{
 			var r = new XamlStringParser();

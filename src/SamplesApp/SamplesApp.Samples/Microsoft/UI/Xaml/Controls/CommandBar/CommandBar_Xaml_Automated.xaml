@@ -15,19 +15,17 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <CommandBar x:Name="cb" Style="{StaticResource XamlCommandBar}">
+        <CommandBar x:Name="cb">
             <AppBarToggleButton
                 x:Name="shuffleButton"
                 Click="Button_Click"
                 Icon="Shuffle"
-                Label="Shuffle"
-                Style="{StaticResource XamlAppBarToggleButton}" />
+                Label="Shuffle" />
             <AppBarButton
                 x:Name="playButton"
                 Click="Button_Click"
                 Icon="Play"
-                Label="Play"
-                Style="{StaticResource XamlAppBarButton}" />
+                Label="Play" />
             <CommandBar.Content>
                 <Button
                     x:Name="appBarContentButton"
@@ -38,22 +36,17 @@
         <StackPanel Grid.Row="1">
             <TextBlock x:Name="clickResult" />
         </StackPanel>
-        <CommandBar
-            x:Name="cb_Down"
-            Grid.Row="2"
-            Style="{StaticResource XamlCommandBar}">
+        <CommandBar x:Name="cb_Down" Grid.Row="2">
             <AppBarToggleButton
                 x:Name="shuffleButton_Down"
                 Click="Button_Click"
                 Icon="Shuffle"
-                Label="Shuffle Down"
-                Style="{StaticResource XamlAppBarToggleButton}" />
+                Label="Shuffle Down" />
             <AppBarButton
                 x:Name="playButton_Down"
                 Click="Button_Click"
                 Icon="Play"
-                Label="Play Down"
-                Style="{StaticResource XamlAppBarButton}" />
+                Label="Play Down" />
             <CommandBar.Content>
                 <Button
                     x:Name="appBarContentButton_Down"

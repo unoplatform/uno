@@ -60,5 +60,8 @@
 	<string>Assets.xcassets/iconapp.appiconset</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<!-- No scene manifest, unlike the iOS head: runs the scene lifecycle Uno adopts for such apps, whatever the SDK, so that the runtime tests cover it. -->
+	<key>UnoUseSceneLifecycle</key>
+	<true/>
 </dict>
 </plist>

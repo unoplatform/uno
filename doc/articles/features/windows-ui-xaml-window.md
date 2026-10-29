@@ -41,7 +41,7 @@ window.Activate();
 
 All Uno Platform desktop targets support displaying secondary windows.
 
-On **iOS**, secondary windows are backed by UIKit scenes, so the app has to opt in: it must declare a scene manifest (`UIApplicationSceneManifest`) in `Info.plist` with `UIApplicationSupportsMultipleScenes` set, and route scene callbacks through a `SceneDelegate`. Without that, the app stays single-window.
+On **iOS**, secondary windows are backed by UIKit scenes, so the app has to opt in: it must declare a scene manifest (`UIApplicationSceneManifest`) in `Info.plist` with `UIApplicationSupportsMultipleScenes` set, and route scene callbacks through a `SceneDelegate`. Without that, the app stays single-window. Built with a version 27 SDK, such an app still runs under the scene lifecycle, which Uno Platform adopts on its behalf, see [Scene lifecycle](xref:Uno.Features.CustomizingUIApplicationDelegate#scene-lifecycle).
 
 On **Android**, secondary windows are not supported yet.
 
@@ -153,7 +153,7 @@ The `nativeWindow` is an `object`, so you need to cast it to the specific type o
 
 |                                |   Skia+GTK   |               Skia+X11                |        Skia+WPF         |       iOS        |        Android        |       macOS       | WebAssembly |
 | ------------------------------ | :----------: | :-----------------------------------: | :---------------------: | :--------------: | :-------------------: | :---------------: | :---------: |
-| `WindowHelper.GetNativeWindow` | `Gtk.Window` | `Uno.UI.Runtime.Skia.X11NativeWindow` | `System.Windows.Window` | `UIKit.UIWindow` | `Android.View.Window` | `AppKit.NSWindow` |   `null`    |
+| `WindowHelper.GetNativeWindow` | `Gtk.Window` | `Uno.UI.Runtime.X11NativeWindow` | `System.Windows.Window` | `UIKit.UIWindow` | `Android.View.Window` | `AppKit.NSWindow` |   `null`    |
 
 ## Avoiding `Window.Current`
 
@@ -173,7 +173,7 @@ if (AppWindowTitleBar.IsCustomizationSupported())
 }
 ```
 
-Currently, `IsCustomizationSupported()` returns `true` on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets.
+Currently, `IsCustomizationSupported()` returns `true` on Desktop Windows and macOS (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets.
 
 ### Setting border and title bar visibility
 
@@ -192,7 +192,9 @@ overlappedPresenter.SetBorderAndTitleBar(hasBorder: true, hasTitleBar: true);
 ```
 
 > [!NOTE]
-> This API is currently supported on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets. On other platforms, the method exists but may have limited or no effect.
+> This API is currently supported on Desktop Windows and macOS (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets. On other platforms, the method exists but may have limited or no effect.
+>
+> On macOS, `hasTitleBar: false` keeps the native window frame (shadow, rounded corners, resizing) and hides the title bar and the close/minimize/zoom buttons, so you can draw your own caption buttons in XAML and call `OverlappedPresenter.Minimize()`, `Maximize()`, `Restore()` and `Window.Close()` from them. Only `hasBorder: false` as well removes the frame.
 
 ### Extending content into title bar
 
@@ -210,7 +212,30 @@ myWindow.SetTitleBar(myCustomTitleBarElement);
 ```
 
 > [!NOTE]
-> This API is currently supported on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets. On other platforms, the property exists but may have limited or no effect.
+> This API is currently supported on Desktop Windows and macOS (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets. On other platforms, the property exists but may have limited or no effect.
+
+#### macOS specifics
+
+On macOS, the window keeps its native close, minimize and zoom buttons (the "traffic lights") instead of drawing Windows-style caption buttons:
+
+* The content extends under a transparent title bar and the window title text is hidden.
+* The traffic lights are vertically centered in the title bar height (`PreferredHeightOption`). `TitleBarHeightOption.Collapsed` hides them.
+* `AppWindowTitleBar.LeftInset` reports the space they reserve, in actual pixels, so the `TitleBar` control keeps its content clear of them. `RightInset` is `0`.
+* Pressing on a `Caption` region (the element passed to `SetTitleBar`, drag rectangles, or the whole title bar strip when neither is set) drags the window. Double-clicking it follows the user's *Desktop & Dock* "Double-click a window's title bar" setting. `Passthrough` regions and the rest of the content receive input as usual.
+* `OverlappedPresenter.IsMinimizable`, `IsMaximizable` and `IsResizable` set to `false` disable (grey out) the minimize and zoom buttons, as macOS apps do, rather than hiding them. To hide the buttons and draw your own, use `SetBorderAndTitleBar(true, false)`.
+* Title bar colors (`ButtonForegroundColor`, `BackgroundColor`, etc.) and `IconShowOptions` can be set but have no effect, because macOS draws the title bar and its buttons and offers no way to recolor them. The same code can set them for WinAppSDK.
+
+#### Caption button colors on Windows
+
+On Desktop Windows, Uno draws the minimize, maximize and close buttons itself while the content extends into the title bar. They follow the `AppWindowTitleBar` button colors, as the system caption buttons do on WinAppSDK:
+
+* `ButtonForegroundColor` and `ButtonBackgroundColor` apply while the window is active, `ButtonInactiveForegroundColor` and `ButtonInactiveBackgroundColor` while it is not.
+* `ButtonHoverForegroundColor`, `ButtonHoverBackgroundColor`, `ButtonPressedForegroundColor` and `ButtonPressedBackgroundColor` apply while the pointer is over a button or presses it. The close button keeps its system hover and pressed colors.
+* `null` restores the theme default, and changes apply immediately.
+* Only the background colors keep their alpha channel.
+* As on WinAppSDK, the first time `Window.ExtendsContentIntoTitleBar` is set to `true`, `ButtonBackgroundColor` and `ButtonInactiveBackgroundColor` are set to `Colors.Transparent`.
+
+`BackgroundColor`, `ForegroundColor`, `InactiveBackgroundColor`, `InactiveForegroundColor` and `IconShowOptions` can be set but are not applied yet.
 
 ### Configuring title bar height
 
@@ -234,7 +259,7 @@ int titleBarHeight = myWindow.AppWindow.TitleBar.Height; // Height in actual pix
 ```
 
 > [!NOTE]
-> `PreferredHeightOption` is supported on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets when the title bar is extended into the content area. The `Height` property returns the value in actual pixels, not scaled points.
+> `PreferredHeightOption` is supported on Desktop Windows and macOS (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets when the title bar is extended into the content area. The `Height` property returns the value in actual pixels, not scaled points.
 
 ### Setting drag rectangles
 
@@ -254,7 +279,7 @@ myWindow.AppWindow.TitleBar.SetDragRectangles(dragRectangles);
 >
 > * The rectangles are specified in actual pixels, not scaled points.
 > * Drag rectangles must be updated when the window size or DPI scaling changes, otherwise they will be incorrectly positioned.
-> * This API is supported on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets.
+> * This API is supported on Desktop Windows and macOS (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets.
 
 Example of updating drag rectangles on window size changes:
 
@@ -290,7 +315,7 @@ nonClientInputSrc.SetRegionRects(NonClientRegionKind.Caption, new[] { maximizeBu
 >
 > * Region rectangles are specified in actual pixels, not scaled points.
 > * These rectangles must be updated when the window size or DPI scaling changes.
-> * This API is supported on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets.
+> * This API is supported on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets. On macOS (net10.0-desktop), `Caption` and `Passthrough` regions are supported (`Icon` behaves like `Caption`); the caption-button and border kinds have no macOS equivalent and are ignored.
 
 ## Setting the background color for the Window
 

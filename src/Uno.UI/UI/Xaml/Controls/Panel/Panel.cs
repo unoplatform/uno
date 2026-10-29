@@ -30,7 +30,7 @@ public partial class Panel : FrameworkElement, IPanel
 
 	private PanelTransitionHelper _transitionHelper;
 
-	public Panel()
+	protected Panel()
 	{
 		_children = new UIElementCollection(this);
 	}

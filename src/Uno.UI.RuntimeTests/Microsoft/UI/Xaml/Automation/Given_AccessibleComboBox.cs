@@ -10,7 +10,7 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime;
 using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 #endif
 

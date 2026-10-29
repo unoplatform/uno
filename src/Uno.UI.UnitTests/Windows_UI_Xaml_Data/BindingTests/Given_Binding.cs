@@ -11,7 +11,7 @@ using AwesomeAssertions.Execution;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Binding
 	{
 		[TestMethod]

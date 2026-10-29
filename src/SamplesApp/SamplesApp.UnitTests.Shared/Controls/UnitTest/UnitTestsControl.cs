@@ -91,6 +91,7 @@ namespace Uno.UI.Samples.Tests
 #endif
 
 			this.InitializeComponent();
+			InitializeShell();
 			this.Loaded += OnLoaded;
 			this.Unloaded += OnUnloaded;
 
@@ -178,7 +179,7 @@ namespace Uno.UI.Samples.Tests
 
 		// Using a DependencyProperty as the backing store for IsRunningOnCI.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty IsRunningOnCIProperty =
-			DependencyProperty.Register("IsRunningOnCI", typeof(bool), typeof(UnitTestsControl), new PropertyMetadata(false));
+			DependencyProperty.Register("IsRunningOnCI", typeof(bool), typeof(UnitTestsControl), new PropertyMetadata(false, OnIsRunningOnCIChanged));
 
 		/// <summary>
 		/// Defines the test group for splitting runtime tests on CI
@@ -273,6 +274,11 @@ namespace Uno.UI.Samples.Tests
 
 		private void OnRunTests(object sender, RoutedEventArgs e)
 		{
+			if (IsSheetDragging)
+			{
+				return;
+			}
+
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
 			// Apply test group settings from UI only when the user has entered values.
@@ -295,7 +301,7 @@ namespace Uno.UI.Samples.Tests
 			}
 
 			var config = BuildConfig();
-			testResults.Children.Clear();
+			ResetRunView();
 
 			_runner = Task.Run(() => RunTests(_cts.Token, config));
 		}
@@ -303,16 +309,21 @@ namespace Uno.UI.Samples.Tests
 
 		private void OnStopTests(object sender, RoutedEventArgs e)
 		{
+			if (IsSheetDragging)
+			{
+				return;
+			}
+
 			StopRunningTests();
 		}
 
-		private void StopRunningTests()
+		internal void StopRunningTests()
 		{
 			var cts = Interlocked.Exchange(ref _cts, null);
 			cts?.Cancel();
 		}
 
-		private async Task ReportMessage(string message, bool isRunning = true)
+		private async Task ReportMessage(string message, bool isRunning = true, string infoMessage = null)
 		{
 			_log?.Info(message);
 #if !HAS_UNO
@@ -341,6 +352,7 @@ namespace Uno.UI.Samples.Tests
 #else
 				_applicationView.Title = windowTitle;
 #endif
+				UpdateRunInfoBar(message, infoMessage, isRunning);
 			}
 
 			await TestServices.WindowHelper.RootElementDispatcher.RunAsync(Setter);
@@ -350,12 +362,9 @@ namespace Uno.UI.Samples.Tests
 		{
 			void Update()
 			{
-				RunTestCountForUITest = runTestCount.Text = _currentRun.Run.ToString();
-				ignoredTestCount.Text = _currentRun.Ignored.ToString();
-				retriedTestCount.Text = _currentRun.Retried.ToString();
-				inconclusiveTestCount.Text = _currentRun.Inconclusive.ToString();
-				succeededTestCount.Text = _currentRun.Succeeded.ToString();
-				FailedTestCountForUITest = failedTestCount.Text = _currentRun.Failed.ToString();
+				RunTestCountForUITest = _currentRun.Run.ToString();
+				FailedTestCountForUITest = _currentRun.Failed.ToString();
+				UpdateCounters();
 			}
 
 			var t = TestServices.WindowHelper.RootElementDispatcher.RunAsync(Update);
@@ -380,15 +389,7 @@ namespace Uno.UI.Samples.Tests
 				{
 					if (!IsRunningOnCI)
 					{
-						var testResultBlock = new TextBlock()
-						{
-							Text = $"{testClass.Name} ({testClass.Assembly.GetName().Name})",
-							Foreground = new SolidColorBrush(Colors.White),
-							FontSize = 16d,
-							IsTextSelectionEnabled = true
-						};
-
-						testResults.Children.Add(testResultBlock);
+						AddClassHeaderRow(testClass.Name);
 					}
 				}
 			);
@@ -433,64 +434,31 @@ namespace Uno.UI.Samples.Tests
 					ConsoleOutput = console,
 				});
 
+			var retries = _currentRun?.CurrentRepeatCount ?? 0;
+
 			void Update()
 			{
-				runTestCount.Text = _currentRun.Run.ToString();
-				ignoredTestCount.Text = _currentRun.Ignored.ToString();
-				retriedTestCount.Text = _currentRun.Retried.ToString();
-				inconclusiveTestCount.Text = _currentRun.Inconclusive.ToString();
-				succeededTestCount.Text = _currentRun.Succeeded.ToString();
-				failedTestCount.Text = _currentRun.Failed.ToString();
+				UpdateCounters();
 
-				var testResultBlock = new TextBlock()
+				var isFailed = testResult == TestResult.Failed || testResult == TestResult.Error;
+				if (error is { } && isFailed)
 				{
-					TextWrapping = TextWrapping.Wrap,
-					FontFamily = new FontFamily("Courier New"),
-					Margin = ThicknessHelper2.FromLengths(8, 0, 0, 0),
-					Foreground = new SolidColorBrush(Colors.LightGray),
-					IsTextSelectionEnabled = true
-				};
-
-				var retriesText = _currentRun.CurrentRepeatCount != 0 ? $" (Retried {_currentRun.CurrentRepeatCount} time(s))" : "";
-
-				testResultBlock.Inlines.Add(new Run
-				{
-					Text = GetTestResultIcon(testResult) + ' ' + testName + retriesText,
-					FontSize = 13.5d,
-					Foreground = new SolidColorBrush(GetTestResultColor(testResult)),
-					FontWeight = FontWeights.ExtraBold
-				});
-
-				if (message is { })
-				{
-					testResultBlock.Inlines.Add(new Run { Text = "\n  ..." + message, FontStyle = FontStyle.Italic });
-				}
-
-				if (error is { })
-				{
-					var isFailed = testResult == TestResult.Failed || testResult == TestResult.Error;
-
-					var foreground = isFailed ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Yellow);
-					testResultBlock.Inlines.Add(new Run { Text = "\nEXCEPTION>" + error.Message, Foreground = foreground });
-
-					if (isFailed)
+					failedTestDetails.Text += $"{testResult}: {testName} [{error.GetType()}] \n {error}\n\n";
+					if (failedTestDetailsRow.Height.Value == 0)
 					{
-						failedTestDetails.Text += $"{testResult}: {testName} [{error.GetType()}] \n {error}\n\n";
-						if (failedTestDetailsRow.Height.Value == 0)
-						{
-							failedTestDetailsRow.Height = new GridLength(100);
-						}
+						failedTestDetailsRow.Height = new GridLength(DefaultFailureDetailsHeight);
+						UpdateHeaderMaxHeight();
 					}
 				}
 
-				if (console is { })
+				if (isFailed)
 				{
-					testResultBlock.Inlines.Add(new Run { Text = "\nOUT>" + console, Foreground = new SolidColorBrush(Colors.Gray) });
+					AddFailure(FormatFailure(testClassInfo?.Type?.Name, testName, error?.ToString() ?? message, console));
 				}
 
 				if (!IsRunningOnCI)
 				{
-					testResults.Children.Add(testResultBlock);
+					AddResultRow(testName, duration, testResult, retries, error?.Message, message, console);
 				}
 
 				if (testResult == TestResult.Error || testResult == TestResult.Failed)
@@ -501,6 +469,43 @@ namespace Uno.UI.Samples.Tests
 
 			var t = TestServices.WindowHelper.RootElementDispatcher.RunAsync(
 				Update);
+		}
+
+		/// <summary>
+		/// Replaces characters XML cannot carry - unpaired surrogates and control characters - with a
+		/// printable escape. A single one of them anywhere in the document makes the whole results
+		/// file unparseable, costing the entire run instead of the one test that produced it.
+		/// </summary>
+		private static string ToXmlSafe(string value)
+		{
+			if (string.IsNullOrEmpty(value))
+			{
+				return value ?? string.Empty;
+			}
+
+			StringBuilder builder = null;
+			for (var i = 0; i < value.Length; i++)
+			{
+				var c = value[i];
+
+				if (char.IsHighSurrogate(c) && i + 1 < value.Length && char.IsLowSurrogate(value[i + 1]))
+				{
+					builder?.Append(c).Append(value[i + 1]);
+					i++;
+					continue;
+				}
+
+				if (XmlConvert.IsXmlChar(c))
+				{
+					builder?.Append(c);
+					continue;
+				}
+
+				builder ??= new StringBuilder(value.Length + 8).Append(value, 0, i);
+				builder.Append("U+").Append(((int)c).ToString("X4", CultureInfo.InvariantCulture));
+			}
+
+			return builder?.ToString() ?? value;
 		}
 
 		private static string GenerateNUnitTestResults(List<TestCaseResult> testCases, TestRun testRun)
@@ -561,15 +566,15 @@ namespace Uno.UI.Samples.Tests
 				var testCaseNode = doc.CreateElement("test-case");
 				testSuiteFixtureNode.AppendChild(testCaseNode);
 
-				testCaseNode.SetAttribute("name", run.TestName);
-				testCaseNode.SetAttribute("fullname", run.FullName);
+				testCaseNode.SetAttribute("name", ToXmlSafe(run.TestName));
+				testCaseNode.SetAttribute("fullname", ToXmlSafe(run.FullName));
 				if (run.ClassName is not null)
 				{
-					testCaseNode.SetAttribute("classname", run.ClassName);
+					testCaseNode.SetAttribute("classname", ToXmlSafe(run.ClassName));
 				}
 				if (run.MethodName is not null)
 				{
-					testCaseNode.SetAttribute("methodname", run.MethodName);
+					testCaseNode.SetAttribute("methodname", ToXmlSafe(run.MethodName));
 				}
 				testCaseNode.SetAttribute("duration", run.Duration.TotalSeconds.ToString(CultureInfo.InvariantCulture));
 				testCaseNode.SetAttribute("time", "0");
@@ -583,14 +588,14 @@ namespace Uno.UI.Samples.Tests
 
 					var messageNode = doc.CreateElement("message");
 					failureNode.AppendChild(messageNode);
-					messageNode.InnerText = run.Message;
+					messageNode.InnerText = ToXmlSafe(run.Message);
 				}
 
 				if (run.ConsoleOutput is not null)
 				{
 					var outputNode = doc.CreateElement("output");
 					testCaseNode.AppendChild(outputNode);
-					outputNode.InnerText = run.ConsoleOutput;
+					outputNode.InnerText = ToXmlSafe(run.ConsoleOutput);
 				}
 			}
 
@@ -667,63 +672,33 @@ namespace Uno.UI.Samples.Tests
 			};
 		}
 
-		private string GetTestResultIcon(TestResult testResult)
-		{
-			switch (testResult)
-			{
-				default:
-				case TestResult.Error:
-				case TestResult.Failed:
-					return "\uE711";
-
-				case TestResult.Skipped:
-					return "\uEE35";
-
-				case TestResult.Passed:
-					return "\uE73E";
-				case TestResult.Inconclusive:
-					return "?";
-			}
-		}
-
-		private Color GetTestResultColor(TestResult testResult)
-		{
-			switch (testResult)
-			{
-				case TestResult.Error:
-				case TestResult.Failed:
-				default:
-					return Colors.Red;
-
-				case TestResult.Skipped:
-					return Colors.DarkGray;
-
-				case TestResult.Passed:
-					return Colors.LightGreen;
-
-				case TestResult.Inconclusive:
-					return Colors.DarkViolet;
-			}
-		}
-
 		private const DynamicallyAccessedMemberTypes RunTestsForInstanceRequirements =
 			  DynamicallyAccessedMemberTypes.PublicParameterlessConstructor
 			| DynamicallyAccessedMemberTypes.PublicMethods;
 
-		public async Task RunTestsForInstance<[DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] T>(T testClassInstance)
+		public Task RunTestsForInstance<[DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] T>(T testClassInstance)
+			=> RunTestsForInstance(testClassInstance, BuildConfig());
+
+		internal async Task RunTestsForInstance<[DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] T>(T testClassInstance, UnitTestEngineConfig engineConfig)
 		{
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
-			testResults.Children.Clear();
+			ResetRunView();
+
+			_currentRun = new TestRun()
+			{
+				StartTime = DateTimeOffset.UtcNow
+			};
+			var ct = _cts.Token;
 
 			try
 			{
 				try
 				{
 					var testTypeInfo = BuildType(typeof(T));
-					var engineConfig = BuildConfig();
+					await SetPlannedTestCount(new[] { testTypeInfo }, engineConfig);
 
-					await ExecuteTestsForInstance(_cts.Token, testClassInstance, testTypeInfo, engineConfig);
+					await ExecuteTestsForInstance(ct, testClassInstance, testTypeInfo, engineConfig);
 				}
 				catch (Exception e)
 				{
@@ -740,6 +715,7 @@ namespace Uno.UI.Samples.Tests
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
 					testResults.Visibility = Visibility.Visible;
 					stopButton.IsEnabled = false;
+					ApplyRunOutcome(ct.IsCancellationRequested);
 				});
 			}
 		}
@@ -753,9 +729,13 @@ namespace Uno.UI.Samples.Tests
 
 			try
 			{
+				// Also reached without the Run button (automation, VM.RunRuntimeTests).
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(ResetRunView);
+
 				_ = ReportMessage("Enumerating tests");
 
 				var testTypes = InitializeTests();
+				await SetPlannedTestCount(testTypes, config);
 
 				_ = ReportMessage($"Running tests ({testTypes.Count()} fixtures)...");
 
@@ -792,13 +772,40 @@ namespace Uno.UI.Samples.Tests
 						testResults.Visibility = Visibility.Visible;
 					}
 					stopButton.IsEnabled = false;
+					ApplyRunOutcome(ct.IsCancellationRequested);
 				});
 			}
 
 			await GenerateTestResults();
 		}
 
-		private IEnumerable<UnitTestMethodInfo> FilterTests(IEnumerable<UnitTestMethodInfo> tests, string[] filters)
+		private async Task SetPlannedTestCount(IEnumerable<UnitTestClassInfo> testClasses, UnitTestEngineConfig config)
+		{
+			Interlocked.Exchange(ref _progressCount, 0);
+
+			// A new instance per run: a cancelled run may still be reading the previous one.
+			_plannedTests = new();
+			var planned = 0;
+			if (!_isRunningOnCICache)
+			{
+				try
+				{
+					planned = CountPlannedTests(testClasses, config, _plannedTests);
+				}
+				catch (Exception e)
+				{
+					if (_log.IsEnabled(LogLevel.Warning))
+					{
+						// Uno's Warn(string, Exception) drops the exception.
+						_log.Warn($"Failed to count the planned tests: {e}");
+					}
+				}
+			}
+
+			await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() => PlannedTestCount = planned);
+		}
+
+		private static IEnumerable<UnitTestMethodInfo> FilterTests(IEnumerable<UnitTestMethodInfo> tests, string[] filters)
 			=> tests.Where(test => !(filters?.Any() ?? false)
 				|| test.MatchesFilter(filters)
 				|| test.GetMatchingCases(filters).Any());
@@ -813,10 +820,12 @@ namespace Uno.UI.Samples.Tests
 				? ConsoleOutputRecorder.Start()
 				: default;
 
-			var tests = FilterTests(
-				testClassInfo.Tests.Select(method => new UnitTestMethodInfo(instance, method)),
-				config.Filters)
-				.ToArray();
+			var tests = _plannedTests.TryGetValue(testClassInfo, out var planned) && instance.GetType() == testClassInfo.Type
+				? planned
+				: FilterTests(
+					testClassInfo.Tests.Select(method => new UnitTestMethodInfo(instance, method)),
+					config.Filters)
+					.ToArray();
 			if (!tests.Any())
 			{
 				return;
@@ -847,6 +856,7 @@ namespace Uno.UI.Samples.Tests
 
 					if (!config.IsRunningIgnored)
 					{
+						Interlocked.Increment(ref _progressCount);
 						continue;
 					}
 				}
@@ -867,10 +877,11 @@ namespace Uno.UI.Samples.Tests
 					var fullTestName = testName + testCase.ToString();
 
 					_currentRun.Run++;
+					Interlocked.Increment(ref _progressCount);
 
 					// We await this to make sure the UI is updated before running the test.
 					// This will help developers to identify faulty tests when the app is crashing.
-					await ReportMessage($"Running test {fullTestName}");
+					await ReportMessage($"Running test {fullTestName}", infoMessage: $"{testClassInfo.TestClassName}.{fullTestName}");
 					ReportTestsResults();
 
 					var sw = new Stopwatch();
@@ -1096,6 +1107,15 @@ namespace Uno.UI.Samples.Tests
 									{
 										iterationFailed = true;
 										_currentRun.Failed++;
+
+										if (config.Iterations > 1)
+										{
+											// The iterations that passed before are not reported, so this is the failure rate.
+											var iterationText = $"Failed on iteration {iteration + 1} of {config.Iterations}";
+											Console.WriteLine($"{fullTestName}: {iterationText}");
+											console = iterationText + Environment.NewLine + console;
+										}
+
 										ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
 									}
 								}
@@ -1151,6 +1171,10 @@ namespace Uno.UI.Samples.Tests
 					{
 						_log?.Warn("The test left UWP styles applied (StyleHelper.UseUwpStyles was not disposed); restored Fluent styles.");
 					}
+
+#if HAS_UNO
+					Uno.UI.RuntimeTests.Helpers.AccessibilityBridgeHelper.DisableMobileAccessibility(TestServices.WindowHelper.XamlRoot);
+#endif
 
 					if (config.IsUnloadingTestContent)
 					{
@@ -1489,25 +1513,15 @@ namespace Uno.UI.Samples.Tests
 			).ToArray();
 
 		private void UpdateFailedTestDetailsSize(object sender, ManipulationDeltaRoutedEventArgs e)
-			=> failedTestDetailsRow.Height = new GridLength(Math.Max(0, failedTestDetailsRow.ActualHeight + e.Delta.Translation.Y));
+			=> ResizeFailureDetails(e.Delta.Translation.Y);
 
 		private void UpdateOuputSize(object sender, ManipulationDeltaRoutedEventArgs e)
-			=> outputColumn.Width = new GridLength(Math.Max(0, outputColumn.ActualWidth + e.Delta.Translation.X));
+			=> ResizeOutput(e.Delta.Translation.X);
 
 		private void CopyFailedTestDetails(object sender, RoutedEventArgs e)
-		{
-			var data = new DataPackage();
-			data.SetText(failedTestDetails.Text);
-
-			Clipboard.SetContent(data);
-		}
+			=> CopyText(string.Join("\n\n", _failures));
 
 		private void CopyTestResults(object sender, RoutedEventArgs e)
-		{
-			var data = new DataPackage();
-			data.SetText(NUnitTestResultsDocument);
-
-			Clipboard.SetContent(data);
-		}
+			=> CopyText(NUnitTestResultsDocument);
 	}
 }

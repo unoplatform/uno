@@ -421,6 +421,10 @@ namespace Microsoft.UI.Xaml
 			{
 				type = propertyInfo.OwnerType;
 				name = propertyInfo.Name;
+
+				// Parse() redirects to the attached property's owner, which is a different type than the one
+				// forced above -- and its registration only happens in that type's static constructor.
+				ForceInitializeTypeConstructor(type);
 			}
 
 			do

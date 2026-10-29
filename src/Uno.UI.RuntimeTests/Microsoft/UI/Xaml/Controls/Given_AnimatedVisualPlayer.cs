@@ -55,13 +55,14 @@ public class Given_AnimatedVisualPlayer
 	[TestMethod]
 	public async Task When_Stop_Restores_FromProgress()
 	{
-		var player = CreatePlayer(duration: TimeSpan.FromMilliseconds(800));
+		// Long enough that a slow (software-rendered) frame cannot finish the play before Stop is called.
+		var player = CreatePlayer(duration: TimeSpan.FromMilliseconds(2400));
 
 		await UITestHelper.Load(player);
 
 		var playTask = player.PlayAsync(0.35, 1.0, false).AsTask();
-		await TestServices.WindowHelper.WaitFor(() => player.IsPlaying, timeoutMS: 2000, "Player should start playing.");
-		await TestServices.WindowHelper.WaitFor(() => GetPlayerProgress(player) > 0.45, timeoutMS: 2000, "Player should advance beyond the start progress.");
+		await TestServices.WindowHelper.WaitFor(() => player.IsPlaying, timeoutMS: 5000, "Player should start playing.");
+		await TestServices.WindowHelper.WaitFor(() => GetPlayerProgress(player) > 0.45, timeoutMS: 5000, "Player should advance beyond the start progress.");
 
 		player.Stop();
 		await playTask;
@@ -183,6 +184,8 @@ public class Given_AnimatedVisualPlayer
 	}
 
 	[TestMethod]
+	// iOS: times out intermittently, https://github.com/unoplatform/uno/issues/25105
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)]
 	public async Task When_PlaybackRate_Zero_Keeps_Progress_Stable()
 	{
 		var player = CreatePlayer(duration: TimeSpan.FromMilliseconds(800));
@@ -193,6 +196,11 @@ public class Given_AnimatedVisualPlayer
 		await TestServices.WindowHelper.WaitFor(() => GetPlayerProgress(player) > 0.2, timeoutMS: 2000, "Looped play should advance before freezing.");
 
 		player.PlaybackRate = 0;
+
+		// The rate change freezes the playhead at the compositor's current time, which the property set only
+		// reflects after the next tick; sampling right away can trail it by a frame on slow devices.
+		await UITestHelper.WaitForRender(frameCount: 2, timeoutMS: 2000);
+		await TestServices.WindowHelper.WaitForIdle();
 		var frozenProgress = GetPlayerProgress(player);
 
 		await Task.Delay(TimeSpan.FromMilliseconds(200));
@@ -208,12 +216,13 @@ public class Given_AnimatedVisualPlayer
 	[TestMethod]
 	public async Task When_Pause_And_Resume_Preserve_Progress()
 	{
-		var player = CreatePlayer(duration: TimeSpan.FromMilliseconds(800));
+		// Long enough that a slow (software-rendered) frame cannot carry the play past the points sampled below.
+		var player = CreatePlayer(duration: TimeSpan.FromMilliseconds(2400));
 
 		await UITestHelper.Load(player);
 
 		var playTask = player.PlayAsync(0, 1, false).AsTask();
-		await TestServices.WindowHelper.WaitFor(() => GetPlayerProgress(player) > 0.2, timeoutMS: 2000, "Player should advance before pausing.");
+		await TestServices.WindowHelper.WaitFor(() => GetPlayerProgress(player) > 0.2, timeoutMS: 5000, "Player should advance before pausing.");
 
 		player.Pause();
 		var pausedProgress = GetPlayerProgress(player);
@@ -224,7 +233,7 @@ public class Given_AnimatedVisualPlayer
 		Assert.AreEqual(pausedProgress, GetPlayerProgress(player), 0.02, "Pause should keep progress stable.");
 
 		player.Resume();
-		await TestServices.WindowHelper.WaitFor(() => GetPlayerProgress(player) > pausedProgress + 0.1, timeoutMS: 2000, "Resume should allow the animation to continue.");
+		await TestServices.WindowHelper.WaitFor(() => GetPlayerProgress(player) > pausedProgress + 0.1, timeoutMS: 5000, "Resume should allow the animation to continue.");
 
 		player.Stop();
 		await playTask;

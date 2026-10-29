@@ -13,10 +13,7 @@
     mc:Ignorable="d ios android">
 
     <StackPanel>
-        <Slider
-            x:Name="mySlider"
-            Header="My Slider"
-            Style="{StaticResource XamlDefaultSlider}" />
+        <Slider x:Name="mySlider" Header="My Slider" />
         <TextBlock>
             <Run Text="Horizontal Value: " />
             <Run Text="{Binding Value, ElementName=mySlider}" />

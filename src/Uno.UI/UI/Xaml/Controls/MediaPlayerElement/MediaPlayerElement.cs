@@ -149,26 +149,31 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			sender.Maybe<MediaPlayerElement>(mpe =>
 			{
+				if (mpe._mediaPlayerPresenter is not null)
+				{
+					mpe._mediaPlayerPresenter.IsFullWindow = (bool)args.NewValue;
+				}
+
 				mpe.ToggleFullScreen((bool)args.NewValue);
 			});
 		}
 
 		private void ToggleFullScreen(bool showFullscreen)
 		{
-			try
+			if (XamlRoot?.HostWindow is null || _mediaPlayerPresenter is null)
 			{
-				if (XamlRoot?.HostWindow is null)
+				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().LogWarning(
-							$"Cannot toggle Full Screen as the media player was not yet " +
-							$"loaded in the visual tree.");
-					}
-
-					return;
+					this.Log().LogWarning(
+						$"Cannot toggle Full Screen as the media player was not yet " +
+						$"loaded in the visual tree.");
 				}
 
+				return;
+			}
+
+			try
+			{
 				_mediaPlayerPresenter.IsTogglingFullscreen = true;
 
 				if (showFullscreen)
@@ -206,7 +211,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
 			get { return (global::Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
-			set { SetValue(MediaPlayerProperty, value); }
+			internal set { SetValue(MediaPlayerProperty, value); }
 		}
 
 		public static DependencyProperty MediaPlayerProperty { get; } =
@@ -374,6 +379,12 @@ namespace Microsoft.UI.Xaml.Controls
 			_posterImage = this.GetTemplateChild(PosterImageName) as Image;
 			_mediaPlayerPresenter = this.GetTemplateChild(MediaPlayerPresenterName) as MediaPlayerPresenter;
 			_mediaPlayerPresenter?.SetOwner(this);
+			if (_mediaPlayerPresenter is not null)
+			{
+				// Hidden until the player reports a source; a re-applied template must not hide one already playing.
+				_mediaPlayerPresenter.Visibility = MediaPlayer?.Source is null ? Visibility.Collapsed : Visibility.Visible;
+				_mediaPlayerPresenter.IsFullWindow = IsFullWindow;
+			}
 
 			_transportControlsPresenter = this.GetTemplateChild(TransportControlsPresenterName) as ContentPresenter;
 			_transportControlsPresenter.Content = TransportControls;
@@ -392,6 +403,12 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				TransportControls?.SetMediaPlayer(MediaPlayer);
 				_isTransportControlsBound = true;
+			}
+
+			// MediaPlayerElement::UpdateIsFullWindow: honor a request made before the template was applied.
+			if (IsFullWindow)
+			{
+				ToggleFullScreen(true);
 			}
 		}
 

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference ItemsView.cpp, tag winui3/release/1.5.0
+// MUX Reference ItemsView.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 
 using System;
 using System.Collections.Generic;
@@ -457,14 +457,19 @@ partial class ItemsView : Control
 
 	void HookItemsSourceViewEvents()
 	{
-		//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+		if (m_itemsSourceViewChangedRevoker.Disposable is not null)
+		{
+			//ITEMSVIEW_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"ItemsView::OnSourceListChanged unhooked.");
 
-		m_itemsSourceViewChangedRevoker.Disposable = null;
+			m_itemsSourceViewChangedRevoker.Disposable = null;
+		}
 
 		if (m_itemsRepeater is { } itemsRepeater)
 		{
 			if (itemsRepeater.ItemsSourceView is { } itemsSourceView)
 			{
+				//ITEMSVIEW_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"ItemsView::OnSourceListChanged hooked.");
+
 				itemsSourceView.CollectionChanged += OnSourceListChanged;
 				m_itemsSourceViewChangedRevoker.Disposable = new DisposableAction(() => itemsSourceView.CollectionChanged -= OnSourceListChanged);
 
@@ -476,10 +481,10 @@ partial class ItemsView : Control
 
 	void HookItemsRepeaterEvents()
 	{
-		//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
-
 		if (m_itemsRepeater is { } itemsRepeater)
 		{
+			//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 			itemsRepeater.ElementPrepared += OnItemsRepeaterElementPrepared;
 			m_itemsRepeaterElementPreparedRevoker.Disposable = new DisposableAction(() => itemsRepeater.ElementPrepared -= OnItemsRepeaterElementPrepared);
 
@@ -530,10 +535,10 @@ partial class ItemsView : Control
 
 	void HookScrollViewEvents()
 	{
-		//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
-
 		if (m_scrollView is { } scrollView)
 		{
+			//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 			scrollView.AnchorRequested += OnScrollViewAnchorRequested;
 			m_scrollViewAnchorRequestedRevoker.Disposable = new DisposableAction(() => scrollView.AnchorRequested -= OnScrollViewAnchorRequested);
 
@@ -1372,36 +1377,57 @@ partial class ItemsView : Control
 		SelectionModel selectionModel,
 		SelectionModelSelectionChangedEventArgs args)
 	{
-		//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
-
 		// Unfortunately using an internal hook to see whether this notification orginated from a collection change or not.
 		bool selectionInvalidatedDueToCollectionChange =
 			selectionModel.SelectionInvalidatedDueToCollectionChange();
 
-		/*
-		Another option, besides a public API on SelectionModel, would have been to apply the changes
-		asynchronously like below. But that seems fragile compared to delaying the application until
-		the synchronous call to OnSourceListChanged that is about to occur.
-		DispatcherQueue().TryEnqueue(
-			DispatcherQueuePriority.Low,
-			DispatcherQueueHandler([weakThis{ get_weak() }]()
-			{
-				if (var strongThis = weakThis.get())
-				{
-					strongThis->ApplySelectionModelSelectionChange();
-				}
-			}));
-		*/
+		//ITEMSVIEW_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this, L"selectionInvalidatedDueToCollectionChange", selectionInvalidatedDueToCollectionChange);
 
 		if (selectionInvalidatedDueToCollectionChange)
 		{
-			// Delay the SelectionModel's selection changes until the upcoming OnSourceListChanged
-			// call because neither m_itemsRepeater's Children nor m_itemsRepeater's ItemsSourceView have been updated yet.
-			// ApplySelectionModelSelectionChange which uses both is thus delayed, but is still going to be called synchronously.
-			m_applySelectionChangeOnSourceListChanged = true;
+			// Delay the SelectionModel's selection changes in ApplySelectionModelSelectionChange until the upcoming ItemsView::OnSourceListChanged
+			// call or asynchronous ApplyDelayedSelectionModelSelectionChange call because neither m_itemsRepeater's Children nor m_itemsRepeater's
+			// ItemsSourceView may have been updated yet.
+			// In some scenarios, ItemsView::OnSourceListChanged is called before ItemsView::OnSelectionModelSelectionChanged - in those cases
+			// the asynchronous ApplyDelayedSelectionModelSelectionChange call is needed.
+			// In other scenarios, ItemsView::OnSourceListChanged is called after ItemsView::OnSelectionModelSelectionChanged - in those cases
+			// the asynchronous ApplyDelayedSelectionModelSelectionChange call is a no-op (because m_applySelectionChangeOnSourceListChanged is reset in ItemsView::OnSourceListChanged).
+			if (!m_applySelectionChangeOnSourceListChanged)
+			{
+				//ITEMSVIEW_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"m_applySelectionChangeOnSourceListChanged set. ApplySelectionModelSelectionChange execution delayed.");
+
+				m_applySelectionChangeOnSourceListChanged = true;
+
+				WeakReference<ItemsView> weakThis = new(this);
+
+				// Uno: WinUI also exits early when WindowsXamlManager.GetForCurrentThread() is null (Xaml core shut down), which Uno doesn't expose.
+				DispatcherQueue.TryEnqueue(
+					Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+					() =>
+					{
+						if (weakThis.TryGetTarget(out var strongThis))
+						{
+							strongThis.ApplyDelayedSelectionModelSelectionChange();
+						}
+					});
+			}
 		}
 		else
 		{
+			ApplySelectionModelSelectionChange();
+		}
+	}
+
+	void ApplyDelayedSelectionModelSelectionChange()
+	{
+		if (m_applySelectionChangeOnSourceListChanged)
+		{
+			//ITEMSVIEW_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"m_applySelectionChangeOnSourceListChanged reset. ApplySelectionModelSelectionChange invoked.");
+
+			m_applySelectionChangeOnSourceListChanged = false;
+
+			// Finally apply the SelectionModel's changes notified in ItemsView::OnSelectionModelSelectionChanged
+			// now that both m_itemsRepeater's Children & m_itemsRepeater's ItemsSourceView are up-to-date.
 			ApplySelectionModelSelectionChange();
 		}
 	}
@@ -1487,14 +1513,10 @@ partial class ItemsView : Control
 		object dataSource,
 		NotifyCollectionChangedEventArgs args)
 	{
-		if (m_applySelectionChangeOnSourceListChanged)
-		{
-			m_applySelectionChangeOnSourceListChanged = false;
+		//ITEMSVIEW_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this, L"m_applySelectionChangeOnSourceListChanged", m_applySelectionChangeOnSourceListChanged);
 
-			// Finally apply the SelectionModel's changes notified in OnSelectionModelSelectionChanged
-			// now that both m_itemsRepeater's Children & m_itemsRepeater's ItemsSourceView are up-to-date.
-			ApplySelectionModelSelectionChange();
-		}
+		// Apply any potential selection changes that were delayed in the prior ItemsView::OnSelectionModelSelectionChanged call.
+		ApplyDelayedSelectionModelSelectionChange();
 
 		// When the item count goes from 0 to strictly positive, the ItemTemplate property may
 		// have to be set to a default template which includes an ItemContainer.
@@ -1507,10 +1529,15 @@ partial class ItemsView : Control
 			if (itemsRepeater.ItemsSourceView is { } itemsSourceView)
 			{
 				var count = itemsSourceView.Count;
+				int childrenCount = VisualTreeHelper.GetChildrenCount(itemsRepeater);
 
-				for (var index = 0; index < count; index++)
+				for (int childIndex = 0; childIndex < childrenCount; childIndex++)
 				{
-					if (itemsRepeater.TryGetElement(index) is { } element)
+					var elementAsDO = VisualTreeHelper.GetChild(itemsRepeater, childIndex);
+
+					// Checking if the element represents a valid item since there are cases where an element is parented to the ItemsRepeater
+					// but not in the realized range, like for example during a delete animation.
+					if (elementAsDO is UIElement element && itemsRepeater.GetElementIndex(element) != -1)
 					{
 						element.SetValue(AutomationProperties.SizeOfSetProperty, Boxer.Box(count));
 					}
@@ -1524,6 +1551,8 @@ partial class ItemsView : Control
 		//RoutedEventArgs args
 		)
 	{
+		base.OnLoaded();
+
 		if (m_setVerticalScrollControllerOnLoaded)
 		{
 			// First occurrence of the Loaded event after template
@@ -1546,6 +1575,8 @@ partial class ItemsView : Control
 		//RoutedEventArgs args
 		)
 	{
+		base.OnUnloaded();
+
 		//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
 
 		if (!IsLoaded)
@@ -1591,6 +1622,9 @@ partial class ItemsView : Control
 		return itemIndex;
 	}
 
+	// Returns the ItemsRepeater child index for the provided UIElement.
+	// All ItemContainer instances in the element parent chain are candidates
+	// until a match is found. Returns -1 when no match was made.
 	int GetElementIndex(
 		UIElement element)
 	{
@@ -1598,7 +1632,30 @@ partial class ItemsView : Control
 
 		if (m_itemsRepeater is { } itemsRepeater)
 		{
-			return itemsRepeater.GetElementIndex(element);
+			int index = -1;
+			ItemContainer itemContainer = element as ItemContainer;
+
+			if (itemContainer == null)
+			{
+				itemContainer = SharedHelpers.GetAncestorOfType<ItemContainer>(element);
+			}
+
+			if (itemContainer != null)
+			{
+				do
+				{
+					index = itemsRepeater.GetElementIndex(itemContainer);
+
+					if (index == -1)
+					{
+						// Uno: WinUI passes itemContainer itself, which GetAncestorOfType returns as-is, looping forever.
+						itemContainer = SharedHelpers.GetAncestorOfType<ItemContainer>(VisualTreeHelper.GetParent(itemContainer));
+					}
+				}
+				while (index == -1 && itemContainer != null);
+			}
+
+			return index;
 		}
 
 		return -1;
@@ -1621,6 +1678,8 @@ partial class ItemsView : Control
 		UIElement element,
 		ref bool valueReturned)
 	{
+		valueReturned = false;
+
 		if (m_itemsRepeater is { } itemsRepeater)
 		{
 			if (itemsRepeater.ItemsSourceView is { } itemsSourceView)
@@ -1754,7 +1813,7 @@ partial class ItemsView : Control
 
 						if (useKeyboardNavigationReferenceHorizontalOffset)
 						{
-							signedHorizontalDistance = elementZoomedRect.X + elementZoomedRect.Width / 2.0f - keyboardNavigationReferenceOffset * zoomFactor;
+							signedHorizontalDistance = elementZoomedRect.X + elementZoomedRect.Width / 2.0 - (double)keyboardNavigationReferenceOffset * zoomFactor;
 						}
 						else
 						{
@@ -1768,7 +1827,7 @@ partial class ItemsView : Control
 
 						if (useKeyboardNavigationReferenceVerticalOffset)
 						{
-							signedVerticalDistance = elementZoomedRect.Y + elementZoomedRect.Height / 2.0f - keyboardNavigationReferenceOffset * zoomFactor;
+							signedVerticalDistance = elementZoomedRect.Y + elementZoomedRect.Height / 2.0 - (double)keyboardNavigationReferenceOffset * zoomFactor;
 						}
 						else
 						{

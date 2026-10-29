@@ -702,6 +702,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12839")]
+		public async Task When_Implicit_Style_Preserves_Default_Template()
+		{
+			var style = new Style(typeof(TextBox))
+			{
+				Setters =
+				{
+					new Setter(FrameworkElement.MarginProperty, new Thickness(8)),
+				},
+			};
+			var textBox = new TextBox { Text = "Hi" };
+			var host = new Grid
+			{
+				Children = { textBox },
+			};
+			host.Resources.Add(typeof(TextBox), style);
+
+			try
+			{
+				await UITestHelper.Load(host);
+
+				Assert.AreEqual(new Thickness(8), textBox.Margin);
+				Assert.IsNotNull(textBox.Template);
+				Assert.IsTrue(VisualTreeHelper.GetChildrenCount(textBox) > 0);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 #if __SKIA__
 		[Ignore("Fails on Skia")]
 #endif
@@ -1147,6 +1179,93 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => loaded);
 			await WindowHelper.WaitForIdle(); // Needed to account for lifecycle differences on mobile
 			return textBox;
+		}
+
+		[TestMethod]
+		[DataRow(14)]
+		[DataRow(20)]
+		public async Task When_SpellCheck_Squiggle_Is_Below_Descenders(double fontSize)
+		{
+			var SUT = new TextBox
+			{
+				Width = 300,
+				FontSize = fontSize,
+				Text = "gfxygib", // misspelled, with descenders
+				IsSpellCheckEnabled = true,
+				Foreground = new SolidColorBrush(Colors.Black),
+				Background = new SolidColorBrush(Colors.White),
+				BorderThickness = new Thickness(0),
+			};
+
+			await UITestHelper.Load(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var (lowestTextRow, highestSquiggleRow) = FindTextAndSquiggleRows(await UITestHelper.ScreenShot(SUT));
+
+			if (highestSquiggleRow is null)
+			{
+				Assert.Inconclusive("No spell-check squiggle was drawn (spell-check service unavailable on this host?).");
+			}
+
+			Assert.IsNotNull(lowestTextRow, "the text should be drawn");
+			Assert.IsTrue(
+				highestSquiggleRow > lowestTextRow,
+				$"the squiggle (top row {highestSquiggleRow}) should be below the text's descenders (bottom row {lowestTextRow})");
+		}
+
+		[TestMethod]
+		public async Task When_SpellCheck_Squiggle_Scrolled_Out_Of_View()
+		{
+			var SUT = new TextBox
+			{
+				Width = 120,
+				Text = "gfxygib and then enough correctly spelled words to scroll past it",
+				IsSpellCheckEnabled = true,
+				Foreground = new SolidColorBrush(Colors.Black),
+				Background = new SolidColorBrush(Colors.White),
+				BorderThickness = new Thickness(0),
+			};
+
+			await UITestHelper.Load(SUT);
+			await WindowHelper.WaitForIdle();
+
+			if (FindTextAndSquiggleRows(await UITestHelper.ScreenShot(SUT)).highestSquiggleRow is null)
+			{
+				Assert.Inconclusive("No spell-check squiggle was drawn (spell-check service unavailable on this host?).");
+			}
+
+			var scrollViewer = SUT.FindVisualChildByType<ScrollViewer>();
+			scrollViewer.ChangeView(scrollViewer.ScrollableWidth, null, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+
+			// The squiggle follows the word out of view, and isn't drawn outside the text box.
+			Assert.IsNull(
+				FindTextAndSquiggleRows(await UITestHelper.ScreenShot(SUT)).highestSquiggleRow,
+				"the misspelled word's squiggle should scroll out of view with it");
+		}
+
+		// Red pixels are the squiggle; dark ones are the text. The outermost columns are skipped: they hold the
+		// anti-aliased rounded corners.
+		internal static (int? lowestTextRow, int? highestSquiggleRow) FindTextAndSquiggleRows(RawBitmap bitmap)
+		{
+			int? lowestTextRow = null, highestSquiggleRow = null;
+			for (var y = 0; y < bitmap.Height; y++)
+			{
+				for (var x = 3; x < bitmap.Width - 3; x++)
+				{
+					var c = bitmap.GetPixel(x, y);
+					if (c.R > c.G + 60 && c.R > c.B + 60)
+					{
+						highestSquiggleRow ??= y;
+					}
+					else if (Math.Max(c.R, Math.Max(c.G, c.B)) < 100)
+					{
+						lowestTextRow = y;
+					}
+				}
+			}
+
+			return (lowestTextRow, highestSquiggleRow);
 		}
 	}
 }

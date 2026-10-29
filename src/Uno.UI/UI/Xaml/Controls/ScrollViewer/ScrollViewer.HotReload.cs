@@ -43,7 +43,28 @@ internal static partial class ScrollViewerMetadataUpdateHandler
 				_log.Debug($"Restoring state of {element.GetDebugDepth()}-{element.GetDebugName()} (v: {vOffset} | h: {hOffset})");
 			}
 
-			sv.ChangeView((double?)hOffset, (double?)vOffset, sv.ZoomFactor, true);
+			// ChangeView clamps to the current range, which a freshly reloaded ScrollViewer has not measured yet, and
+			// virtualized content may need a few passes to grow back: wait for the saved offsets to fit, within reason.
+			bool Fits() => !(vOffset is double v && v > sv.ScrollableHeight) && !(hOffset is double h && h > sv.ScrollableWidth);
+
+			if (Fits())
+			{
+				sv.ChangeView((double?)hOffset, (double?)vOffset, sv.ZoomFactor, true);
+			}
+			else
+			{
+				var remainingPasses = 10;
+				void OnLayoutUpdated(object sender, object e)
+				{
+					if (Fits() || --remainingPasses == 0)
+					{
+						sv.LayoutUpdated -= OnLayoutUpdated;
+						sv.ChangeView((double?)hOffset, (double?)vOffset, sv.ZoomFactor, true);
+					}
+				}
+
+				sv.LayoutUpdated += OnLayoutUpdated;
+			}
 		}
 
 		return Task.CompletedTask;

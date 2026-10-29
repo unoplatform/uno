@@ -14,7 +14,7 @@ using Windows.UI;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml;
 
-[TestClass]
+[UITestClass]
 public class Given_Window_SystemBackdrop
 {
 	private const string PageBackgroundKey = "ApplicationPageBackgroundThemeBrush";

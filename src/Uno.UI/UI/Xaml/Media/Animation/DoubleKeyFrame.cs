@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public abstract partial class DoubleKeyFrame : DependencyObject
 	{
-		public DoubleKeyFrame()
+		protected DoubleKeyFrame()
 		{
 			IsAutoPropertyInheritanceEnabled = false;
 			InitializeBinder();

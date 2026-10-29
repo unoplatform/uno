@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -348,7 +348,10 @@ namespace Uno.WinAppSDKSyncGenerator
 			}
 
 			var @namespace = type.ContainingNamespace.ToString();
-			if (@namespace.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal))
+			// Microsoft.UI.Content shares Composition's WinAppSDK assembly (Microsoft.InteractiveExperiences.Projection),
+			// and ContentIsland depends on Composition types, so both are hosted in Uno.UI.Composition.
+			if (@namespace.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal) ||
+				@namespace.StartsWith("Microsoft.UI.Content", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
 			}
@@ -378,29 +381,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				@namespace.StartsWith("Windows.Foundation.Metadata", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
-			}
-
-			// INTENTIONALLY RETAINED REDIRECTS:
-			// These namespaces' WinUI-correct assembly cannot host their hand-written implementations
-			// without a dedicated seam, so their generated stubs stay in the legacy location for now.
-			// Tracked by https://github.com/unoplatform/uno/issues/22927
-
-			// Microsoft.UI.Content: WinAppSDK sources these from Microsoft.InteractiveExperiences.Projection
-			// (would route to Uno.WinRT), but ContentIsland/ContentSite and their stubs depend on
-			// Uno.UI.Composition types (Compositor, Visual, ICompositionSupportsSystemBackdrop, IClosableNotifier),
-			// which Uno.WinRT cannot reference. The stubs therefore stay in Uno.UI for now; the eventual
-			// Uno home is Uno.UI.Composition, which requires a layering seam not yet in place.
-			else if (@namespace.StartsWith("Microsoft.UI.Content", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
-			}
-			// WinRT.Interop.WindowNative / InitializeWithWindow: the generated home per the WinRT.Runtime
-			// assembly is Uno.Foundation, but the hand-written implementations depend on
-			// Microsoft.UI.Xaml.Window (Uno.UI). Relocating requires an ApiExtensibility seam.
-			else if (@namespace == "WinRT.Interop"
-				&& type.Name is "WindowNative" or "InitializeWithWindow")
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
 
 			if (type.Name.Contains("AsyncAction", StringComparison.Ordinal) ||
@@ -1031,11 +1011,9 @@ namespace Uno.WinAppSDKSyncGenerator
 
 		private static bool ShouldSkipInterface(INamedTypeSymbol iface)
 		{
-			// Skip for now.
-			// For IFormattable and IEquatable, this should be fixed in the future. Currently, just removing this condition doesn't work as the implementation isn't generated properly.
-			// Note that no types implement these interfaces in UWP, but there are types that implement it in WinUI.
-			// For IDynamicInterfaceCastable, ICustomQueryInterface, or IUnmanagedVirtualMethodTableProvider, they are WinRT projection infrastructure and not important for Uno.
-			return iface.Name is "IFormattable" or "IEquatable" or "IDynamicInterfaceCastable" or "ICustomQueryInterface" or "IUnmanagedVirtualMethodTableProvider";
+			// IEquatable<T> on WinRT classes is CsWinRT COM-identity plumbing (struct equality is handled by
+			// IsSelfEquatableStructInterface). The others are WinRT projection infrastructure, not part of the API.
+			return iface.Name is "IEquatable" or "IDynamicInterfaceCastable" or "ICustomQueryInterface" or "IUnmanagedVirtualMethodTableProvider";
 		}
 
 		// IEquatable<T> on a WinRT struct is backed by the memberwise members from BuildStructEquality.
@@ -1043,6 +1021,11 @@ namespace Uno.WinAppSDKSyncGenerator
 			=> HasProjectedStructEquality(type)
 				&& iface is { Name: "IEquatable", TypeArguments.Length: 1 }
 				&& SymbolEqualityComparer.Default.Equals(iface.TypeArguments[0], type);
+
+		// A struct CsWinRT doesn't generate (WinUI hand-writes it over private fields), so BuildStructEquality skips it.
+		private static bool IsHandProjectedStruct(INamedTypeSymbol type)
+			=> type.TypeKind == TypeKind.Struct
+				&& !type.GetMembers().OfType<IFieldSymbol>().Any(f => !f.IsStatic && f.DeclaredAccessibility == Accessibility.Public);
 
 		private static bool HasProjectedStructEquality(INamedTypeSymbol type)
 			=> type.TypeKind == TypeKind.Struct && !type.GetMembers(WellKnownMemberNames.EqualityOperatorName).IsEmpty;
@@ -1358,11 +1341,55 @@ namespace Uno.WinAppSDKSyncGenerator
 			}
 		}
 
+		/// <summary>
+		/// Reports hand-written overrides whose return or property type differs from the overridden member (C# covariant returns).
+		/// WinUI members are only visited on the type that declares them, so such an override would otherwise go unnoticed,
+		/// while WinRT has no covariant returns and any further override with the WinUI signature fails with CS0508.
+		/// </summary>
+		protected void BuildOverrideTypeMismatchErrors(IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types)
+		{
+			var errors = new[] { types.AndroidSymbol, types.IOSSymbol, types.TvOSSymbol, types.NetStdReferenceSymbol, types.WasmSymbol, types.SkiaSymbol }
+				.Where(t => t is not null)
+				.SelectMany(t => t.GetMembers())
+				.Where(m => m.IsOverride
+					&& m.DeclaredAccessibility is Accessibility.Public or Accessibility.Protected or Accessibility.ProtectedOrInternal
+					&& m.Locations.All(l => l.SourceTree is { } tree && !PlatformSymbols<ISymbol>.IsGeneratedFile(tree.FilePath)))
+				.Select(GetOverrideTypeMismatch)
+				.Where(e => e is not null)
+				.Distinct()
+				.ToList();
+
+			foreach (var error in errors)
+			{
+				using (b.Indent(-b.CurrentLevel))
+				{
+					b.AppendLineInvariant($"#error {error}. Update the hand-written source file to match WinUI.");
+				}
+			}
+
+			static string GetOverrideTypeMismatch(ISymbol member)
+			{
+				var (type, overriddenType, overridden) = member switch
+				{
+					IMethodSymbol { MethodKind: MethodKind.Ordinary, OverriddenMethod: { } o } m => (m.ReturnType, o.ReturnType, (ISymbol)o),
+					IPropertySymbol { OverriddenProperty: { } o } p => (p.Type, o.Type, o),
+					_ => default,
+				};
+
+				if (overridden is null || SymbolEqualityComparer.Default.Equals(type, overriddenType))
+				{
+					return null;
+				}
+
+				return $"{member.ToDisplayString()} returns {type.ToDisplayString()} but overrides {overridden.ToDisplayString()} which returns {overriddenType.ToDisplayString()}";
+			}
+		}
+
 		protected void BuildEvents(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types)
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())
 			{
-				if (!IsNotWinAppSDKMapping(type, eventMember) || SkipEvent(eventMember))
+				if (!IsNotWinAppSDKMapping(type, eventMember))
 				{
 					continue;
 				}
@@ -1519,7 +1546,7 @@ namespace Uno.WinAppSDKSyncGenerator
 				}
 
 				if (
-						method.MethodKind == MethodKind.Ordinary
+						(method.MethodKind == MethodKind.Ordinary || (method.MethodKind is MethodKind.UserDefinedOperator or MethodKind.Conversion && IsHandProjectedStruct(type)))
 						&& !SkipMethod(type, method)
 						&& IsNotWinAppSDKMapping(type, method)
 						&& (
@@ -1548,7 +1575,12 @@ namespace Uno.WinAppSDKSyncGenerator
 							genericParameters = $"<{string.Join(", ", method.TypeParameters.Select(p => p.Name))}>";
 						}
 
-						var declaration = $"{SanitizeType(method.ReturnType)} {method.Name}{genericParameters}({parameters})";
+						var declaration = method.MethodKind switch
+						{
+							MethodKind.UserDefinedOperator => $"{SanitizeType(method.ReturnType)} operator {SyntaxFacts.GetText(SyntaxFacts.GetOperatorKind(method.Name))}({parameters})",
+							MethodKind.Conversion => $"{(method.Name == WellKnownMemberNames.ImplicitConversionName ? "implicit" : "explicit")} operator {SanitizeType(method.ReturnType)}({parameters})",
+							_ => $"{SanitizeType(method.ReturnType)} {method.Name}{genericParameters}({parameters})",
+						};
 
 						if (type.TypeKind == TypeKind.Interface || type.Name == "DependencyObject")
 						{
@@ -1622,36 +1654,6 @@ namespace Uno.WinAppSDKSyncGenerator
 
 		private bool SkipMethod(INamedTypeSymbol type, IMethodSymbol method)
 		{
-			if (method.ContainingType.Name == "Grid")
-			{
-				switch (method.Name)
-				{
-					// The base type does not match for this parameter until Uno adjusts the
-					// hierarchy based on IFrameworkElement.
-					case "SetRow":
-					case "SetRowSpan":
-					case "SetColumn":
-					case "SetColumnSpan":
-					case "GetRow":
-					case "GetRowSpan":
-					case "GetColumn":
-					case "GetColumnSpan":
-						return true;
-				}
-			}
-
-			if (method.ContainingType.Name == "FrameworkElement")
-			{
-				switch (method.Name)
-				{
-					// Those two members are located in DependencyObject but will need to be
-					// moved up.
-					case "GetBindingExpression":
-					case "SetBinding":
-						return true;
-				}
-			}
-
 			if (method.ContainingType.Name == "SwapChainPanel")
 			{
 				switch (method.Name)
@@ -1682,7 +1684,13 @@ namespace Uno.WinAppSDKSyncGenerator
 				}
 			}
 
-			if (method.Name is "FromAbi" or "IsOverridableInterface" or "IsInterfaceImplemented" or "GetInterfaceImplementation" or "GetInterface" or "GetHashCode" or "Equals")
+			if (method.Name is "FromAbi" or "IsOverridableInterface" or "IsInterfaceImplemented" or "GetInterfaceImplementation" or "GetInterface")
+			{
+				return true;
+			}
+
+			// On runtime classes these are CsWinRT COM-identity plumbing; on hand-projected structs they are real API.
+			if (method.Name is "GetHashCode" or "Equals" && !IsHandProjectedStruct(type))
 			{
 				return true;
 			}
@@ -1787,20 +1795,8 @@ namespace Uno.WinAppSDKSyncGenerator
 			return false;
 		}
 
-		private bool SkipEvent(IEventSymbol eventMember)
-		{
-			if (eventMember.ContainingType.Name == "FrameworkElement")
-			{
-				switch (eventMember.Name)
-				{
-					// Those two members are located in DependencyObject but will need to be
-					// moved up.
-					case "DataContextChanged":
-						return true;
-				}
-			}
-			return false;
-		}
+		private static string GetAccessModifier(IPropertySymbol property)
+			=> property.DeclaredAccessibility is Accessibility.Protected or Accessibility.ProtectedOrInternal ? "protected " : "public ";
 
 		private static string GetParameterRefKind(IParameterSymbol p)
 			=> p.RefKind != RefKind.None ? $"{p.RefKind.ToString().ToLowerInvariant()} " : "";
@@ -2016,7 +2012,7 @@ namespace Uno.WinAppSDKSyncGenerator
 								var propertyType = getAttached?.ReturnType ?? getLocal?.Type;
 								var propertyDisplayType = MapWinAppSDKTypes(propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
-								b.AppendLineInvariant($"public {staticQualifier}{SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} =");
+								b.AppendLineInvariant($"{GetAccessModifier(property)}{staticQualifier}{SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} =");
 
 								b.AppendLineInvariant($"{BaseXamlNamespace}.DependencyProperty.Register{attachedModifier}(");
 
@@ -2054,7 +2050,7 @@ namespace Uno.WinAppSDKSyncGenerator
 							&& property.ContainingType.GetMembers(property.Name + "Property").Any()
 						)
 						{
-							using (b.BlockInvariant($"public {staticQualifier}{MapWinAppSDKTypes(SanitizeType(property.Type))} {property.Name}"))
+							using (b.BlockInvariant($"{GetAccessModifier(property)}{staticQualifier}{MapWinAppSDKTypes(SanitizeType(property.Type))} {property.Name}"))
 							{
 								if (property.GetMethod != null)
 								{
@@ -2079,7 +2075,7 @@ namespace Uno.WinAppSDKSyncGenerator
 						}
 						else
 						{
-							string accessModifier = property.ExplicitInterfaceImplementations.IsEmpty ? "public " : string.Empty;
+							string accessModifier = property.ExplicitInterfaceImplementations.IsEmpty ? GetAccessModifier(property) : string.Empty;
 							string propertyName;
 
 							if (property.IsIndexer)
@@ -2153,37 +2149,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				switch (property.Name)
 				{
 					case "CoreWebView2":
-						return true;
-				}
-			}
-
-			if (property.ContainingType.Name == "UIElement")
-			{
-				switch (property.Name)
-				{
-					case "Opacity":
-					case "OpacityProperty":
-					case "Visibility":
-					case "VisibilityProperty":
-					case "IsHitTestVisible":
-					case "IsHitTestVisibleProperty":
-					case "Transitions":
-					case "TransitionsProperty":
-					case "RenderTransform":
-					case "RenderTransformProperty":
-					case "RenderTransformOrigin":
-					case "RenderTransformOriginProperty":
-						return true;
-				}
-			}
-
-			if (property.ContainingType.Name == "FrameworkElement")
-			{
-				switch (property.Name)
-				{
-					// This is ignored until DataContext becomes an actual DP.
-					case "DataContext":
-					case "DataContextProperty":
 						return true;
 				}
 			}
@@ -2327,8 +2292,10 @@ namespace Uno.WinAppSDKSyncGenerator
 				yield return memberSymbol;
 			}
 
+			// Constructors are not inherited: a base type's ctor must not satisfy a derived type's.
 			if (
-				symbol?.BaseType != null
+				name != WellKnownMemberNames.InstanceConstructorName
+				&& symbol?.BaseType != null
 				&& !SymbolEqualityComparer.Default.Equals(symbol.BaseType, _iOSBaseSymbol)
 				&& !SymbolEqualityComparer.Default.Equals(symbol.BaseType, _tvOSBaseSymbol)
 				&& !SymbolEqualityComparer.Default.Equals(symbol.BaseType, _androidBaseSymbol)

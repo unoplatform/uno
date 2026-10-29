@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.CompositionTests;
 
-[TestClass]
+[UITestClass]
 public class ExpressionAnimationParserTests
 {
 	[TestMethod]

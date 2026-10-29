@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Uno.Foundation.Logging;
+using Uno.Storage.Internal;
 using Windows.Foundation.Collections;
 
 namespace Windows.Storage
@@ -18,25 +18,16 @@ namespace Windows.Storage
 
 		private class FilePropertySet : IPropertySet
 		{
-			private readonly Dictionary<string, string> _values = new();
-			private readonly string _folderPath;
-			private readonly string _filePath;
+			private readonly SettingsFile _file;
 
 			public FilePropertySet(ApplicationData owner, ApplicationDataLocality locality)
-			{
-				var settingsFolderPath = owner.GetSettingsFolderPath();
-
-				_folderPath = settingsFolderPath;
-				_filePath = Path.Combine(settingsFolderPath, $"{locality}.dat");
-
-				ReadFromFile();
-			}
+				=> _file = new SettingsFile(Path.Combine(owner.GetSettingsFolderPath(), $"{locality}.dat"));
 
 			public object? this[string key]
 			{
 				get
 				{
-					if (_values.TryGetValue(key, out var value))
+					if (_file.Values.TryGetValue(key, out var value))
 					{
 						return DataTypeSerializer.Deserialize(value);
 					}
@@ -47,98 +38,23 @@ namespace Windows.Storage
 				{
 					if (value != null)
 					{
-						_values[key] = DataTypeSerializer.Serialize(value);
+						_file.Set(key, DataTypeSerializer.Serialize(value));
 					}
 					else
 					{
 						Remove(key);
 					}
-
-					WriteToFile();
-				}
-			}
-
-			private void ReadFromFile()
-			{
-				try
-				{
-
-					if (File.Exists(_filePath))
-					{
-						using (var reader = new BinaryReader(File.OpenRead(_filePath)))
-						{
-							var count = reader.ReadInt32();
-
-							if (this.Log().IsEnabled(LogLevel.Debug))
-							{
-								this.Log().Debug($"Reading {count} settings values");
-							}
-
-							for (int i = 0; i < count; i++)
-							{
-								var key = reader.ReadString();
-								var value = reader.ReadString();
-
-								_values[key] = value;
-							}
-						}
-					}
-					else
-					{
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().Debug($"File {_filePath} does not exist, skipping reading settings");
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().Error($"Failed to read settings from {_filePath}", e);
-					}
-				}
-			}
-
-			private void WriteToFile()
-			{
-				try
-				{
-					Directory.CreateDirectory(_folderPath);
-
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().Debug($"Writing {_values.Count} settings to {_filePath}");
-					}
-
-					using (var writer = new BinaryWriter(File.OpenWrite(_filePath)))
-					{
-						writer.Write(_values.Count);
-
-						foreach (var pair in _values)
-						{
-							writer.Write(pair.Key);
-							writer.Write(pair.Value ?? "");
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().Error($"Failed to write settings to {_filePath}", e);
-					}
 				}
 			}
 
 			public ICollection<string> Keys
-				=> _values.Keys;
+				=> _file.Values.Keys.ToList();
 
 			public ICollection<object> Values
-				=> _values.Values.Select(DataTypeSerializer.Deserialize).Where(item => item is not null).Select(item => item!).ToList();
+				=> _file.Values.Values.Select(TryDeserialize).Where(item => item is not null).Select(item => item!).ToList();
 
 			public int Count
-				=> _values.Count;
+				=> _file.Values.Count;
 
 			public bool IsReadOnly => false;
 
@@ -154,8 +70,7 @@ namespace Windows.Storage
 				}
 				if (value != null)
 				{
-					_values.Add(key, DataTypeSerializer.Serialize(value));
-					WriteToFile();
+					_file.Set(key, DataTypeSerializer.Serialize(value));
 				}
 			}
 
@@ -163,37 +78,32 @@ namespace Windows.Storage
 				=> Add(item.Key, item.Value);
 
 			public void Clear()
-			{
-				_values.Clear();
-				WriteToFile();
-			}
+				=> _file.Clear();
 
 			public bool Contains(KeyValuePair<string, object> item)
 				=> throw new NotSupportedException();
 
 			public bool ContainsKey(string key)
-				=> _values.ContainsKey(key);
+				=> _file.Values.ContainsKey(key);
 
 			public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 				=> throw new NotSupportedException();
 
 			public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
-				=> _values.Select(v => new KeyValuePair<string, object>(v.Key, v.Value)).GetEnumerator();
+				=> _file.Values
+					.Select(pair => new KeyValuePair<string, object>(pair.Key, TryDeserialize(pair.Value)!))
+					.Where(pair => pair.Value is not null)
+					.ToList()
+					.GetEnumerator();
 
 			public bool Remove(string key)
-			{
-				var ret = _values.Remove(key);
-
-				WriteToFile();
-
-				return ret;
-			}
+				=> _file.Remove(key);
 
 			public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
 
 			public bool TryGetValue(string key, out object? value)
 			{
-				if (_values.TryGetValue(key, out var innervalue))
+				if (_file.Values.TryGetValue(key, out var innervalue))
 				{
 					value = DataTypeSerializer.Deserialize(innervalue);
 					return true;
@@ -204,6 +114,19 @@ namespace Windows.Storage
 			}
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+			// One entry that no longer deserializes must not break enumerating the others.
+			private static object? TryDeserialize(string value)
+			{
+				try
+				{
+					return DataTypeSerializer.Deserialize(value);
+				}
+				catch (Exception e) when (e is FormatException or OverflowException or ArgumentException)
+				{
+					return null;
+				}
+			}
 		}
 	}
 }

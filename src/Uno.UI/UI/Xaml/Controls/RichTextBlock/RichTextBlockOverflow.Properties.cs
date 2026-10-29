@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(RichTextBlockOverflow),
 				new FrameworkPropertyMetadata(
-					(Thickness)Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					OnContentMeasurePropertyChanged));
 

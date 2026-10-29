@@ -6,6 +6,10 @@ namespace Windows.System
 {
 	public sealed partial class LaunchUriResult
 	{
+		internal LaunchUriResult()
+		{
+		}
+
 		// public ValueSet Result { get; }
 
 		public LaunchUriStatus Status { get; }

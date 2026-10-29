@@ -18,10 +18,12 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
-#if !IS_UNIT_TESTS
+#if IS_UNIT_TESTS
+	[global::Uno.UI.Tests.UITestClass]
+#else
 	[RunsOnUIThread]
-#endif
 	[TestClass]
+#endif
 #if !IS_UNIT_TESTS
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #endif

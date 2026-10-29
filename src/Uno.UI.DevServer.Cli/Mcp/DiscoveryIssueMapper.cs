@@ -5,11 +5,62 @@ namespace Uno.UI.DevServer.Cli.Mcp;
 /// <summary>
 /// Maps structural fields from <see cref="DiscoveryInfo"/> to <see cref="ValidationIssue"/> instances
 /// for inclusion in health reports. Uses nullability of discovery fields (not string matching on
-/// warning/error text) to determine which issues to report.
+/// warning/error text) to determine which issues to report. Also explains why an explicitly selected solution
+/// is not served, which needs a look at the file system.
 /// </summary>
 /// <seealso href="../health-diagnostics.md"/>
 internal static class DiscoveryIssueMapper
 {
+	/// <summary>
+	/// Why an explicitly selected solution does not resolve to an Uno workspace: it is missing, its nearest global.json
+	/// (where the resolver stops, as the .NET SDK does) has no usable Uno SDK, or it has none. A kept selection
+	/// (<paramref name="selectionIsKept"/>) starts by itself once fixed; a rejected one must be selected again.
+	/// </summary>
+	public static ValidationIssue MapUnresolvedSelection(string solutionPath, bool selectionIsKept)
+	{
+		var then = selectionIsKept
+			? "the selection then starts by itself; or select another solution with uno_app_select_solution."
+			: "then call uno_app_select_solution again, or select another solution.";
+
+		if (!File.Exists(solutionPath))
+		{
+			return Issue($"The selected solution {solutionPath} does not exist.", $"Restore it ({then})");
+		}
+
+		if (GlobalJsonLocator.FindGlobalJson(Path.GetDirectoryName(solutionPath) ?? solutionPath) is { } globalJsonPath)
+		{
+			return Issue(
+				$"The nearest global.json above {solutionPath} ({globalJsonPath}) does not declare a usable Uno.Sdk or Uno.Sdk.Private version in msbuild-sdks.",
+				$"Declare the Uno SDK in that global.json's msbuild-sdks ({then})");
+		}
+
+		// "Next to the solution": a kept selection without a global.json is watched from its own folder
+		// (ProxyLifecycleManager.GetSelectedSolutionObservationRoot), so one added higher up is not seen.
+		return Issue(
+			$"No global.json was found above {solutionPath}.",
+			$"Add a global.json declaring Uno.Sdk in msbuild-sdks next to the solution ({then})");
+
+		static ValidationIssue Issue(string message, string remediation)
+			=> new()
+			{
+				Code = IssueCode.WorkspaceNotResolved,
+				Severity = ValidationSeverity.Fatal,
+				Message = message,
+				Remediation = remediation,
+			};
+	}
+
+	/// <summary>
+	/// The uno_health issue for an explicit selection the DevServer does not serve: it does not resolve, or the monitor
+	/// found no solution to launch because its file went away before the workspace watcher noticed. The monitor's flag
+	/// counts only while the file is really missing, since it can lag behind a restored file.
+	/// </summary>
+	public static ValidationIssue? MapSelectionIssue(WorkspaceSelectionSnapshot? selection, bool monitorFoundNoSolution)
+		=> selection is { IsExplicitSolutionSelection: true, SelectedSolutionPath: { Length: > 0 } selectedSolution }
+			&& (selection.EffectiveWorkspaceDirectory is null || (monitorFoundNoSolution && !File.Exists(selectedSolution)))
+			? MapUnresolvedSelection(selectedSolution, selectionIsKept: true)
+			: null;
+
 	public static List<ValidationIssue> MapDiscoveryIssues(DiscoveryInfo? discovery)
 	{
 		var issues = new List<ValidationIssue>();
@@ -26,7 +77,7 @@ internal static class DiscoveryIssueMapper
 				Code = IssueCode.WorkspaceAmbiguous,
 				Severity = ValidationSeverity.Warning,
 				Message = "Multiple Uno solutions matched the current directory. The DevServer host was not started automatically.",
-				Remediation = "Start from a more specific workspace directory, or use --solution-dir to disambiguate. If the repo changed after startup, restart the MCP bridge once the intended workspace is clear.",
+				Remediation = "Call uno_app_select_solution with the absolute path of the intended .sln or .slnx (candidateSolutions lists the ones found), or start the MCP bridge from a more specific directory or with --solution-dir.",
 			});
 			return issues;
 		}

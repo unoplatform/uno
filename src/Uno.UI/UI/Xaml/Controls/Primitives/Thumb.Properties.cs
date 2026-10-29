@@ -10,7 +10,7 @@ public sealed partial class Thumb : Control
 	public bool IsDragging
 	{
 		get => (bool)GetValue(IsDraggingProperty);
-		set => SetValue(IsDraggingProperty, value);
+		internal set => SetValue(IsDraggingProperty, value);
 	}
 
 	/// <summary>

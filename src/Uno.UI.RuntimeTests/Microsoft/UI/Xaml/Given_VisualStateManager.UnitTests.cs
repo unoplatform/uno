@@ -19,7 +19,7 @@ public partial class Given_VisualStateManager
 	[TestMethod]
 	public async Task When_UsingStateTrigger()
 	{
-		var control = new Control { Name = "control" };
+		var control = new PlainControl { Name = "control" };
 
 		var trigger1 = new CustomStateTrigger(true);
 		var trigger2 = new CustomStateTrigger(false);
@@ -62,7 +62,7 @@ public partial class Given_VisualStateManager
 	[TestMethod]
 	public async Task When_UsingStateTriggerAndStoryboard()
 	{
-		var control = new Control { Name = "control" };
+		var control = new PlainControl { Name = "control" };
 
 		var trigger1 = new CustomStateTrigger(true);
 		var trigger2 = new CustomStateTrigger(false);
@@ -210,7 +210,7 @@ public partial class Given_VisualStateManager
 
 	private static (Control control, VisualStateGroup states) SetupVsmTest()
 	{
-		var control = new Control
+		var control = new PlainControl
 		{
 			Name = "control",
 			Tag = "initial",
@@ -292,6 +292,10 @@ public partial class Given_VisualStateManager
 			States.Add(stateName);
 			return base.GoToStateCore(control, templateRoot, stateName, @group, state, useTransitions);
 		}
+	}
+
+	private sealed partial class PlainControl : Control
+	{
 	}
 }
 #endif

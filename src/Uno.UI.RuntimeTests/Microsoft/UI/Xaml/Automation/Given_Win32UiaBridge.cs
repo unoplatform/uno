@@ -14,7 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	/// <summary>
 	/// Win32 UIA bridge parity tests (W32-07 / W32-09). They exercise the native bridge from the
 	/// outside — the window's <c>WM_GETOBJECT</c> contract and the UIA reserved-value interop —
-	/// because the provider types themselves are internal to <c>Uno.UI.Runtime.Skia.Win32</c>.
+	/// because the provider types themselves are internal to <c>Uno.UI.Runtime.Win32</c>.
 	/// </summary>
 	[TestClass]
 	public class Given_Win32UiaBridge
@@ -30,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			AutomationTextEditChangeType changeType, bool expected)
 		{
 			var interopType = Type.GetType(
-				"Uno.UI.Runtime.Skia.Win32.Win32UIAutomationInterop, Uno.UI.Runtime.Skia.Win32");
+				"Uno.UI.Runtime.Win32.Win32UIAutomationInterop, Uno.UI.Runtime.Win32");
 			Assert.IsNotNull(interopType);
 
 			var method = interopType.GetMethod("IsTextEditChangeTypeSupported", BindingFlags.Static | BindingFlags.NonPublic);
@@ -100,9 +100,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		public void When_ReservedNotSupportedValue_Requested_Then_Same_Sentinel_Is_Returned()
 		{
 			var interopType = Type.GetType(
-				"Uno.UI.Runtime.Skia.Win32.Win32UIAutomationInterop, Uno.UI.Runtime.Skia.Win32",
+				"Uno.UI.Runtime.Win32.Win32UIAutomationInterop, Uno.UI.Runtime.Win32",
 				throwOnError: false);
-			Assert.IsNotNull(interopType, "Unable to locate Uno.UI.Runtime.Skia.Win32.Win32UIAutomationInterop at runtime.");
+			Assert.IsNotNull(interopType, "Unable to locate Uno.UI.Runtime.Win32.Win32UIAutomationInterop at runtime.");
 
 			var method = interopType!.GetMethod(
 				"GetReservedNotSupportedValue",

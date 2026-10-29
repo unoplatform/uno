@@ -54,7 +54,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							{
 								IsParsing = true,
 								Name = "topLevel",
-								Tag = @"42",
+								Tag = "42",
 								// Source Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 11:10)
 							}
 							.Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874a_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
@@ -64,11 +64,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							__nameScope.RegisterName("topLevel", __p1);
 							__that.topLevel = __p1;
 							// FieldModifier public
-							__p1.SetBinding(
+							global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 								global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
-									Path = @"Tag",
+									Path = "Tag",
 									ElementName = "topLevel",
 									ElementNameSubject = _topLevelSubject,
 									Converter = new global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Xaml_Object_Properties_Return_Value_Converter(),
@@ -89,6 +89,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						)
 						,
 					}
+					,
 				}
 				.Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874a_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{

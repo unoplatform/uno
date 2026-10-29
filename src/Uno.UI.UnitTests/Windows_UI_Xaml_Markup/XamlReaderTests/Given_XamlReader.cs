@@ -24,7 +24,7 @@ using System.Numerics;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_XamlReader : Context
 	{
 		[TestInitialize]
@@ -179,6 +179,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.IsNotNull(grid);
 
 			Assert.AreEqual(42, Grid.GetRow(grid));
+		}
+
+		[TestMethod]
+		public void When_AutomationProperties_Are_Set()
+		{
+			var panel = (StackPanel)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<TextBlock AutomationProperties.AutomationId="LiteralId" AutomationProperties.Name="Literal name" />
+					<TextBlock AutomationProperties.AutomationId="{Binding Id}" />
+				</StackPanel>
+				""");
+
+			var literal = (TextBlock)panel.Children[0];
+			Assert.AreEqual("LiteralId", Microsoft.UI.Xaml.Automation.AutomationProperties.GetAutomationId(literal));
+			Assert.AreEqual("Literal name", Microsoft.UI.Xaml.Automation.AutomationProperties.GetName(literal));
+
+			var bound = (TextBlock)panel.Children[1];
+			var expression = bound.GetBindingExpression(Microsoft.UI.Xaml.Automation.AutomationProperties.AutomationIdProperty);
+			Assert.IsNotNull(expression);
+			Assert.AreEqual("Id", expression.ParentBinding.Path.Path);
 		}
 
 		[TestMethod]

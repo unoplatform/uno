@@ -54,7 +54,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							{
 								IsParsing = true,
 								Name = "topLevel",
-								Tag = @"42",
+								Tag = "42",
 								ContentTemplate = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem)
 								)
@@ -73,6 +73,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						)
 						,
 					}
+					,
 				}
 				.Binding_ElementName_In_Template_d9353a41d6883de0ddf51bf7c4e43f1e_XamlApply((Binding_ElementName_In_Template_d9353a41d6883de0ddf51bf7c4e43f1eXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
@@ -151,11 +152,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						__that._component_0 = __p1;
 						__nameScope.RegisterName("innerTextBlock", __p1);
 						__that.innerTextBlock = __p1;
-						__p1.SetBinding(
+						global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 							global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 							new Microsoft.UI.Xaml.Data.Binding()
 							{
-								Path = @"Tag",
+								Path = "Tag",
 								ElementName = "topLevel",
 								ElementNameSubject = _topLevelSubject,
 							}

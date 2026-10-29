@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Automation
 {
-	[Sample("Automation", Name = "Accessibility_ScreenReader", Description = "Demonstrates accessibility properties: names, headings, landmarks, live regions, IsOffscreen, IsEnabled, IsKeyboardFocusable")]
+	[Sample("Automation", Name = "Accessibility_ScreenReader", Description = "Cross-platform accessibility fixture for names, roles, identifiers, headings, landmarks, live regions, focus, and control state")]
 	public sealed partial class AccessibilityScreenReaderPage : UserControl
 	{
 		private int _statusCounter;

@@ -48,9 +48,11 @@ If neither is called, all backends are available and the first one that initiali
 
 Each platform has its own rendering backend enum reflecting the backends it supports:
 
-**`X11RenderingBackend`** (Linux): `Vulkan` (GLX-independent), `OpenGL` (via GLX), `OpenGLES` (via EGL), `Software`.
+**`X11RenderingBackend`** (Linux): `Vulkan` (GLX-independent), `OpenGL` (via GLX), `OpenGLES` (via EGL), `Software`, `WebGpu`.
 
-**`Win32RenderingBackend`** (Windows): `Vulkan`, `OpenGL` (via WGL), `Software`.
+**`Win32RenderingBackend`** (Windows): `Vulkan`, `OpenGL` (via WGL), `Software`, `WebGpu`.
+
+`WebGpu` applies when the app registers the WebGPU graphics backend. Forcing any other backend excludes it, and `DisableRenderingBackends(...WebGpu)` keeps an app that registers it on the Skia backends.
 
 For example, to prefer OpenGL ES over desktop OpenGL on X11, disable the desktop-GL backend and let negotiation fall through to it:
 
@@ -148,7 +150,7 @@ No user intervention is required. A diagnostic log message is emitted indicating
 Enable debug logging to see which rendering backend was selected:
 
 ```csharp
-builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Information);
+builder.AddFilter("Uno.UI.Runtime.", LogLevel.Information);
 ```
 
 When Vulkan is successfully initialized:

@@ -127,6 +127,59 @@ partial class Given_Clipboard
 	}
 #endif
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, SkiaAndroid)]
+	public async Task When_SetContent_Then_ContentChanged_Raised_Once()
+	{
+		await DelayForClipboard();
+
+		var raised = 0;
+		EventHandler<object> handler = (_, _) => raised++;
+		Clipboard.ContentChanged += handler;
+		try
+		{
+			var package = new DataPackage();
+			package.SetText(TestString);
+			Clipboard.SetContent(package);
+
+			Assert.AreEqual(TestString, await ClipboardHelper.WaitForTextAsync(TestString));
+
+			// Lets Android deliver its own clipboard callback for the write.
+			await DelayForClipboard();
+
+			Assert.AreEqual(1, raised);
+		}
+		finally
+		{
+			Clipboard.ContentChanged -= handler;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, SkiaAndroid)]
+	public async Task When_Clear_Then_ContentChanged_Raised_Once()
+	{
+		await ClipboardHelper.SeedDummyData();
+		await DelayForClipboard();
+
+		var raised = 0;
+		EventHandler<object> handler = (_, _) => raised++;
+		Clipboard.ContentChanged += handler;
+		try
+		{
+			Clipboard.Clear();
+			await DelayForClipboard();
+
+			Assert.AreEqual(1, raised);
+		}
+		finally
+		{
+			Clipboard.ContentChanged -= handler;
+		}
+	}
+
 	private static async Task DelayForClipboard()
 	{
 		// On some platforms, clipboard operations are not immediately available.

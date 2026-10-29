@@ -256,24 +256,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 			// Start an animation. Its animating value will serve as
 			// the inferred starting value for the next animation.
+			// Both run long enough that a multi-second frame (software rendering) between the samples cannot finish them.
 			var animation0 = new DoubleAnimation
 			{
 				From = 100,
 				To = 105,
-				Duration = new Duration(TimeSpan.FromSeconds(5)),
+				Duration = new Duration(TimeSpan.FromSeconds(30)),
 			}.BindTo(translate, nameof(translate.Y));
 			animation0.ToStoryboard().Begin();
-			await Task.Delay(125);
+			await WindowHelper.WaitFor(() => translate.Y > 50, timeoutMS: 30000, message: "animation #0 never applied a frame");
 
 			// Start an second animation which should pick up from current animating value.
 			var animation1 = new DoubleAnimation
 			{
 				// From = should be around 100~105 from animation #0
 				To = 50,
-				Duration = new Duration(TimeSpan.FromSeconds(5)),
+				Duration = new Duration(TimeSpan.FromSeconds(30)),
 			}.BindTo(translate, nameof(translate.Y));
+			var beforeSecond = translate.Y;
 			animation1.ToStoryboard().Begin();
-			await Task.Delay(125);
+			await WindowHelper.WaitFor(() => Math.Abs(translate.Y - beforeSecond) > 0.0001, timeoutMS: 30000, message: "animation #1 never applied a frame");
 
 			var value = GetTranslateY(translate, isStillAnimating: true);
 			if (value is double y)

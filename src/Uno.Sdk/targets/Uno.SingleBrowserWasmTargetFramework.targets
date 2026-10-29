@@ -1,0 +1,72 @@
+<Project>
+
+	<!--
+		Sdk.props picks the WebAssembly SDK from $(TargetFramework), which it only sees as a global property: from -f, or
+		in the inner build of TargetFrameworks. A head that sets a single browserwasm TargetFramework itself, in the project,
+		in Directory.Build.props or with a file-based app's #:property, got the plain SDK and built as a desktop executable.
+
+		Moving it to TargetFrameworks makes this an outer build (IsCrossTargetingBuild is only decided by the .NET SDK's
+		Sdk.targets, after this file), which builds the inner one with TargetFramework as a global property, the same way
+		as a head that sets TargetFrameworks itself. This has to run before the other Uno targets, so they see the same
+		outer build. A head that is only known to be one later, such as an OutputType set in Directory.Build.targets, is
+		reported by UNOB0032 instead. A TargetFrameworks set next to it, for instance in Directory.Build.props, is replaced:
+		the .NET SDK only builds the TargetFramework then.
+	-->
+	<PropertyGroup Condition="
+		$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'
+		AND '$(_DefaultMicrosoftNETSdk)' == 'Microsoft.NET.Sdk'
+		AND ( '$(OutputType)' == 'Exe' OR '$(OutputType)' == 'WinExe' OR '$(IsUnoHead)' == 'true' ) ">
+		<_UnoMovedBrowserWasmTargetFramework>true</_UnoMovedBrowserWasmTargetFramework>
+		<TargetFrameworks>$(TargetFramework)</TargetFrameworks>
+		<TargetFramework></TargetFramework>
+	</PropertyGroup>
+
+	<!--
+		A file-based app defaults to PublishAot, and browser-wasm doesn't support NativeAOT (NETSDK1203). WebAssembly AOT
+		compilation is a separate property (RunAOTCompilation).
+	-->
+	<PropertyGroup Condition="
+		'$(FileBasedProgram)' == 'true'
+		AND (
+			$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'
+			OR ( '$(TargetFramework)' == '' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFrameworks)')) == 'browserwasm' )
+		) ">
+		<PublishAot>false</PublishAot>
+	</PropertyGroup>
+
+	<!--
+		A file-based `dotnet run app.cs` picks the target framework from its #:property directives rather than from the
+		evaluated project, so for a moved TargetFramework it asks the outer build for the run command. Get it from the inner
+		build. Any build that imports the .NET SDK's targets, the inner one included, gets the SDK's own ComputeRunArguments
+		instead, as it is defined later.
+	-->
+	<Target Name="ComputeRunArguments"
+			Condition=" '$(_UnoMovedBrowserWasmTargetFramework)' == 'true' ">
+		<!-- A file-based app's project only exists in memory, which a `dotnet run` that skips an up-to-date build doesn't
+			 let the MSBuild task find on its own. -->
+		<MSBuild Projects="$(MSBuildProjectFullPath)"
+				 Targets="_UnoGetInnerRunArguments"
+				 Properties="TargetFramework=$(TargetFrameworks)"
+				 SkipNonexistentProjects="Build">
+			<Output TaskParameter="TargetOutputs" ItemName="_UnoInnerRunArguments" />
+		</MSBuild>
+
+		<PropertyGroup>
+			<RunCommand>@(_UnoInnerRunArguments->'%(RunCommand)')</RunCommand>
+			<RunArguments>@(_UnoInnerRunArguments->'%(RunArguments)')</RunArguments>
+			<RunWorkingDirectory>@(_UnoInnerRunArguments->'%(RunWorkingDirectory)')</RunWorkingDirectory>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="_UnoGetInnerRunArguments"
+			DependsOnTargets="ComputeRunArguments"
+			Returns="@(_UnoInnerRunArgumentsResult)">
+		<ItemGroup>
+			<_UnoInnerRunArgumentsResult Include="$(MSBuildProjectFullPath)"
+										 RunCommand="$(RunCommand)"
+										 RunArguments="$(RunArguments)"
+										 RunWorkingDirectory="$(RunWorkingDirectory)" />
+		</ItemGroup>
+	</Target>
+
+</Project>

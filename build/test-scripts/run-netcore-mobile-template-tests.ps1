@@ -14,6 +14,44 @@ function Assert-ExitCodeIsZero()
 	}
 }
 
+function Assert-OutputFiles()
+{
+    param ([string]$projectPath, [string[]]$expectPresent, [string[]]$expectAbsent)
+
+    # Verifies what a build actually shipped, so a case can assert both that a payload is present and that
+    # another was left out. Scoped to the Release output: the Debug build that runs first pulls packages a
+    # Release build does not (HotDesign and its SkiaSharp chain), and obj/ holds copies of its own.
+
+    $projectDir = Join-Path (Split-Path -Parent $projectPath) "bin/Release"
+    if (-not (Test-Path $projectDir))
+    {
+        # Without this an absent-assertion would pass on an output tree that was never produced.
+        throw "Expected a Release output at $projectDir, but it does not exist."
+    }
+
+    foreach ($relative in $expectPresent)
+    {
+        $matches = @(Get-ChildItem -Path $projectDir -Filter $relative -Recurse -File -ErrorAction SilentlyContinue)
+        if ($matches.Length -eq 0)
+        {
+            throw "Expected '$relative' in the output of $projectPath, but it is missing."
+        }
+
+        Write-Host "OK: '$relative' present in $projectPath"
+    }
+
+    foreach ($relative in $expectAbsent)
+    {
+        $matches = @(Get-ChildItem -Path $projectDir -Filter $relative -Recurse -File -ErrorAction SilentlyContinue)
+        if ($matches.Length -ne 0)
+        {
+            throw "Did not expect '$relative' in the output of $projectPath, found: $($matches[0].FullName)"
+        }
+
+        Write-Host "OK: '$relative' absent from $projectPath"
+    }
+}
+
 function CleanupTree()
 {
     git clean -fdx -e *.binlog
@@ -33,43 +71,7 @@ cd src/SolutionTemplate
 
 if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
 {
-    ## Configurations are split to work around UWP not building with .NET new
-    $dotnetBuildConfigurations =
-    @(
-        @("Skia.Linux.FrameBuffer", "", "")
-    )
-
-    $dotnetBuildNet6Configurations =
-    @(
-        @("Server", "", ""),
-        @("Skia.Linux.FrameBuffer", "", "")
-    )
-
-    # WinUI - Default
-    pushd UnoAppWinUI
-    for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
-    {
-        $platform=$dotnetBuildNet6Configurations[$i][0];
-        & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] $dotnetBuildNet6Configurations[$i][2] "UnoAppWinUI.$platform\UnoAppWinUI.$platform.csproj" -bl:../binlogs/UnoAppWinUI.$platform/debug/$i/msbuild.binlog
-        Assert-ExitCodeIsZero
-    }
-
-    if ($IsWindows) 
-    {
-        # Server project build (merge with above loop when .App folder is removed)
-        & dotnet build -c Debug $default "UnoAppWinUI.Server\UnoAppWinUI.Server.csproj"
-
-        # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
-        # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
-        & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj" "/p:TargetFrameworks=net11.0-windows10.0.19041;TargetFramework=net11.0-windows10.0.19041" "/bl:../binlogs/UnoAppWinUI.Windows/debug/$i/msbuild.binlog"
-        Assert-ExitCodeIsZero
-    }
-
-    CleanupTree
-
-    popd
-
-    if ($IsWindows) 
+    if ($IsWindows)
     {
         # Uno Library
         # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
@@ -83,15 +85,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
 
         & $msbuild "@build.rsp"
         Assert-ExitCodeIsZero
-
-        if (!$IsWindows)
-        {
-            # disabled on windows until android 35 is supported in the installed VS instance
-
-            # Uno Cross-Runtime Library
-            & $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln -bl:binlogs/MyCrossRuntimeLib/msbuild.binlog
-            Assert-ExitCodeIsZero
-        }
 
         #
         # Uno Library with assets, Validate assets count
@@ -193,6 +186,38 @@ $projects =
     @(2, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-r", "osx-x64", "-p:PublishAot=true"), @("OnlyMacOS", "NetCore", "Publish"),
         @("5.6/uno56netcurrent/uno56netcurrent/bin/Release/net11.0-desktop/osx-x64/publish/uno56netcurrent"), @("--exit")),
 
+    # Renderer selection and its native payload. 'skia' is implied only when the app names no renderer, and the
+    # wgpu native ships only where the app can actually reach the WebGPU backend, so each case asserts what
+    # landed in the output rather than just that the build succeeded.
+    #
+    # No renderer named: skia is implied, the WebGpu package is never referenced.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop"), @("NetCore"),
+        @(), @(), @("libSkiaSharp.dll"), @("webgpu.dll")),
+
+    # Both named, but nothing in the app goes near WebGPU: the backend is unreachable, so its native is left out.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu"), @("NetCore"),
+        @(), @(), @("libSkiaSharp.dll"), @("webgpu.dll")),
+
+    # Both named and the app's own code names the backend: it is reachable, so the native ships.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:CustomBeforeMicrosoftCommonTargets=$env:BUILD_SOURCESDIRECTORY\build\test-scripts\webgpu-probe\InjectProbe.targets", "-p:UnoWebGpuProbeProject=uno56netcurrent"), @("NetCore"),
+        @(), @(), @("webgpu.dll", "libSkiaSharp.dll"), @()),
+
+    # WebGPU named alone: skia is NOT implied, so nothing pulls SkiaSharp by any route and the app ships none
+    # of it, managed or native, while the wgpu payload does ship.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=WebGpu"), @("NetCore"),
+        @(), @(), @("webgpu.dll"), @("Uno.UI.Composition.Skia.dll", "SkiaSharp.dll", "libSkiaSharp.dll")),
+
+    # Skottie comes with the Skia backend; SVG draws through a SkiaSharp add-in behind its own feature. Without
+    # Skia, neither ships and the managed engines serve the Lottie and SVG seams.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia"), @("NetCore"),
+        @(), @(), @("SkiaSharp.Skottie.dll"), @("Uno.UI.Svg.dll")),
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Svg"), @("NetCore"),
+        @(), @(), @("Uno.UI.Svg.dll"), @()),
+
+    # No Skia renderer: nothing for the SVG add-in to draw with, even when the feature asks for it.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=WebGpu%3BSvg"), @("NetCore"),
+        @(), @(), @("webgpu.dll"), @("Uno.UI.Svg.dll", "SkiaSharp.Skottie.dll")),
+
     # 5.6 net-current runtime folder validation
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @(), @("macOS", "NetCore")),
     
@@ -218,6 +243,17 @@ $projects =
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
 
+    # The reach can be transitive: the head names nothing, and only the library it references goes near the
+    # backend. The control builds the same solution without that library code, so a pass cannot be vacuous.
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu"), @("NetCore"),
+        @(), @(), @("libSkiaSharp.dll"), @("webgpu.dll")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:CustomBeforeMicrosoftCommonTargets=$env:BUILD_SOURCESDIRECTORY\build\test-scripts\webgpu-probe\InjectProbe.targets", "-p:UnoWebGpuProbeProject=uno53lib"), @("NetCore"),
+        @(), @(), @("webgpu.dll", "libSkiaSharp.dll"), @()),
+
+    # The library names no renderer, so it brings no Skia package to a head that renders with WebGPU only.
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop", "-p:UnoHeadFeaturesOverride=WebGpu"), @("NetCore"),
+        @(), @(), @("webgpu.dll"), @("Uno.UI.Composition.Skia.dll", "Uno.WinUI.Graphics2DSK.dll", "SkiaSharp.dll", "libSkiaSharp.dll")),
+
     ## Note for contributors
     ##
     ## When adding new template versions, create them in a separate version named folder
@@ -241,6 +277,8 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $buildOptions=$projects[$i][3];
     $runCommand=$projects[$i][4];
     $runOptions=$projects[$i][5];
+    $expectPresent=$projects[$i][6];
+    $expectAbsent=$projects[$i][7];
     $runOnMacOS = $buildOptions -contains "macOS"
     $runOnlyOnMacOS = $buildOptions -contains "OnlyMacOS"
     $buildWithNetCore = $buildOptions -contains "NetCore"
@@ -264,6 +302,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
     {
         Write-Host "Skipping on Windows: $projectPath with $projectOptions"
         continue
+    }
+
+    if (($expectPresent.Length -gt 0) -or ($expectAbsent.Length -gt 0))
+    {
+        # The assertions read the output tree, so a previous case's payload must not still be sitting in it.
+        $projectBin = Join-Path (Split-Path -Parent $projectPath) "bin"
+        if (Test-Path $projectBin) { Remove-Item -Recurse -Force $projectBin }
     }
 
     # Disable most costly features to speed up the build
@@ -301,6 +346,11 @@ for($i = 0; $i -lt $projects.Length; $i++)
             Write-Host "Executing: $runCommand $runOptions"
             & $runCommand $runOptions
             Assert-ExitCodeIsZero
+        }
+
+        if (($expectPresent.Length -gt 0) -or ($expectAbsent.Length -gt 0))
+        {
+            Assert-OutputFiles -projectPath "$projectPath" -expectPresent $expectPresent -expectAbsent $expectAbsent
         }
  
         if(!$NoBuildClean)

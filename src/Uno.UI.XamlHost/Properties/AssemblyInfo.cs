@@ -15,5 +15,5 @@ using System.Runtime.InteropServices;
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
 
 
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Linux.FrameBuffer")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.X11")]

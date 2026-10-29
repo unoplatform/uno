@@ -11,19 +11,23 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Settings.DevServer" ProjectSystem="true" PrivateAssets="all" />
 	</ItemGroup>
 
+	<!--
+		The three development-time packages below (Hot Design, App MCP, DevServer) are absent from the
+		Release graph, not merely asset-excluded. IncludeAssets="None" still resolves, downloads and audits
+		the whole closure, and does not stop the package's analyzers from loading
+		(https://github.com/dotnet/sdk/issues/1212) - so re-adding an "excluded" Release entry for any of
+		them puts it back in every shipped app's dependency closure.
+	-->
 	<ItemGroup Condition=" ('$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe') AND '$(UnoDisableHotDesign)' != 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
-		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" ('$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe') AND '$(UnoDisableMCPSupport)' != 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.UI.App.Mcp" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
-		<_UnoProjectSystemPackageReference Include="Uno.UI.App.Mcp" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
 	<Choose>
@@ -90,11 +94,18 @@
 		<_UnoProjectSystemPackageReference Include="CommunityToolkit.Mvvm" ProjectSystem="true" />
 	</ItemGroup>
 
+	<!-- Reactor on Uno Platform has no WinAppSDK build: the Windows target gets UNOB0031 instead (Uno.Features.targets). -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';reactor;')) And !$(TargetFramework.Contains('windows10'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Microsoft.UI.Reactor" ProjectSystem="true" />
+	</ItemGroup>
+
 	<ItemGroup Condition="'$(UnoDefaultFont)'=='OpenSans' AND $(_IsExecutable)">
 		<_UnoProjectSystemPackageReference Include="Uno.Fonts.OpenSans" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<!-- SKCanvasElement authoring API. It draws through SkiaSharp, so it follows the Skia renderer: a head that
+	     renders with something else opts in by naming 'skia'. -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
@@ -111,8 +122,6 @@
 		Condition=" '$(IsBrowserWasm)' == 'true' " />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.WinAppSdk.targets"
 		Condition="$(TargetFramework.Contains('windows10'))" />
-	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Legacy.targets"
-		Condition="($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' AND $(TargetFramework) != '') OR ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' AND !$(TargetFramework.Contains('windows10')))" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets"
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == ''" />
 

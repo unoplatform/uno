@@ -17,11 +17,20 @@
 		<Description>WebGPU "init half" for Uno Platform: the renderer-agnostic on-window context/surface/device creation (WebGpuContext) that a host references to serve the WebGpu context kind. Carries NO native assets — those ship with the WebGPU renderer package, referenced only by an app that opts into WebGPU.</Description>
 	</PropertyGroup>
 
-	<!-- NOTE: no wgpu-native.targets here. The init half only declares the P/Invoke bindings; the native binary is
+	<!-- NOTE: no wgpu-native.targets here. The init half only declares the P/Invoke bindings (SilkCompat); the native binary is
 	     provisioned by the WebGPU renderer project (Uno.UI.Composition.WebGpu), which an app references only when it
 	     opts into WebGPU. A host referencing this init assembly therefore ships no wgpu native asset. -->
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
+	</ItemGroup>
+
+	<!-- The backend renders through Silk.NET.WebGPU 2.23, which SilkCompat runs on the stable-header natives. -->
+	<ItemGroup>
+		<PackageReference Include="Silk.NET.WebGPU" />
+		<PackageReference Include="Silk.NET.WebGPU.Extensions.WGPU" />
+		<!-- The tool that generates SilkCompat.Generated.cs, a project of its own. -->
+		<Compile Remove="SilkCompat\Generator\**" />
+		<None Remove="SilkCompat\Generator\**" />
 	</ItemGroup>
 </Project>

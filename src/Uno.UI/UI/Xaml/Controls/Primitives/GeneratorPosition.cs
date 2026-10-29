@@ -8,9 +8,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 		public GeneratorPosition(int index, int offset) { throw new NotImplementedException(); }
 
-		public int Index;
+		public int Index { get; set; }
 
-		public int Offset;
+		public int Offset { get; set; }
 
 		public override bool Equals(object o) { throw new NotImplementedException(); }
 

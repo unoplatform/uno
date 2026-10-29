@@ -22,7 +22,7 @@ namespace Windows.ApplicationModel.Calls
 					"Android app context needs to be available.");
 			}
 
-			_telephonyManager = (TelephonyManager)ContextHelper.Current
+			_telephonyManager = (TelephonyManager)ContextHelper.ApplicationContext
 				.GetSystemService(Context.TelephonyService);
 
 #pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Calls
 #pragma warning disable CA1422 // Validate platform compatibility
 			if (await Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, Android.Manifest.Permission.ReadPhoneState))
 			{
-				_telephonyManager.RegisterTelephonyCallback(ContextHelper.Current.MainExecutor, new CallCallback());
+				_telephonyManager.RegisterTelephonyCallback(ContextHelper.ApplicationContext.MainExecutor, new CallCallback());
 			}
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // TelephonyManager is obsolete in API 31

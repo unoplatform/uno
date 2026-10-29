@@ -5,10 +5,11 @@
 		<version>0.0.1</version>
 		<authors>Uno Platform</authors>
 		<icon>uno.png</icon>
+		<readme>README.md</readme>
 		<projectUrl>https://github.com/unoplatform/uno</projectUrl>
 		<license type="expression">Apache-2.0</license>
 		<description>This package provides the extensions to MSAL (Microsoft.Identity.Client) for an Uno Platform application.</description>
-		<copyright>Uno Platform</copyright>
+		<copyright>Copyright (C) 2015-$year$ Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 		<dependencies>
 			<group targetFramework="net10.0">
@@ -42,11 +43,11 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
-			<group targetFramework="net11.0-ios26.5">
+			<group targetFramework="net11.0-ios27.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
-			<group targetFramework="net11.0-tvos26.5">
+			<group targetFramework="net11.0-tvos27.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
@@ -55,9 +56,10 @@
 
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
+		<file src="README.md" target="/" />
 
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net10.0\Uno.UI.MSAL.*" target="lib\net10.0" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net11.0\Uno.UI.MSAL.*" target="lib\net11.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Generic\Release\net10.0\Uno.UI.MSAL.*" target="lib\net10.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Generic\Release\net11.0\Uno.UI.MSAL.*" target="lib\net11.0" />
 
 		<!-- BEGIN UWP-specific
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\uap10.0.19041\Uno.UI.MSAL.*" target="lib\uap10.0.19041" />
@@ -67,13 +69,13 @@
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\net10.0-windows10.0.19041.0\Uno.UI.MSAL.*" target="lib\net10.0-windows10.0.19041.0" />
 		<!-- END WinUI-specific -->
 
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-android\Uno.UI.MSAL.*" target="lib\net10.0-android" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-android\Uno.UI.MSAL.*" target="lib\net10.0-android30.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-ios26.0\Uno.UI.MSAL.*" target="lib\net10.0-ios26.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.MSAL.*" target="lib\net10.0-tvos26.0" />
 
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-android\Uno.UI.MSAL.*" target="lib\net11.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-ios26.5\Uno.UI.MSAL.*" target="lib\net11.0-ios26.5" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-tvos26.5\Uno.UI.MSAL.*" target="lib\net11.0-tvos26.5" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-android\Uno.UI.MSAL.*" target="lib\net11.0-android30.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-ios27.0\Uno.UI.MSAL.*" target="lib\net11.0-ios27.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-tvos27.0\Uno.UI.MSAL.*" target="lib\net11.0-tvos27.0" />
 
 	</files>
 

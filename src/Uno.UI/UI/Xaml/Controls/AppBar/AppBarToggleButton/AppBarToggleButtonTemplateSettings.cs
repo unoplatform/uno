@@ -11,6 +11,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 /// </summary>
 public partial class AppBarToggleButtonTemplateSettings : DependencyObject, IAppBarButtonTemplateSettings
 {
+	internal AppBarToggleButtonTemplateSettings()
+	{
+	}
+
 	/// <summary>
 	/// Gets the minimum width allocated for the accelerator key tip of an AppBarToggleButton.
 	/// </summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -39,18 +40,20 @@ public partial class Given_InteractionTracker
 
 	private async Task<string> WaitTrackerLogs(TrackerOwner owner)
 	{
-		string logs = owner.GetLogs();
-		while (true)
+		// Every motion ends in IdleStateEntered. Waiting for the logs to go quiet instead returned mid-motion
+		// whenever a frame took longer than the poll interval, as it does on the software-rendered lanes.
+		var timeout = Stopwatch.StartNew();
+		while (!owner.GetLogs().TrimEnd().Split('\n')[^1].StartsWith("IdleStateEntered:", StringComparison.Ordinal))
 		{
-			await Task.Delay(100);
-			var currentLogs = owner.GetLogs();
-			if (logs == currentLogs)
+			if (timeout.Elapsed > TimeSpan.FromSeconds(10))
 			{
-				return logs;
+				Assert.Fail($"The tracker did not return to idle. Logs:\n{owner.GetLogs()}");
 			}
 
-			logs = currentLogs;
+			await Task.Delay(50);
 		}
+
+		return owner.GetLogs();
 	}
 
 	[TestMethod]
@@ -267,6 +270,38 @@ public partial class Given_InteractionTracker
 		Assert.IsTrue(helper.IsDone);
 	}
 
+	[TestMethod]
+	public async Task When_Expression_Reads_MaxPosition()
+	{
+		var border = new Border { Width = 50, Height = 50 };
+		await UITestHelper.Load(border);
+
+		var visual = ElementCompositionPreview.GetElementVisual(border);
+		var tracker = InteractionTracker.Create(visual.Compositor);
+		tracker.MinPosition = new Vector3(-10, -20, 0);
+		tracker.MaxPosition = new Vector3(100, 200, 0);
+
+		Assert.AreEqual(new Vector3(100, 200, 0), tracker.MaxPosition);
+
+		var expression = visual.Compositor.CreateExpressionAnimation("tracker.MaxPosition");
+		expression.SetReferenceParameter("tracker", tracker);
+		visual.StartAnimation("Offset", expression);
+		try
+		{
+			Assert.AreEqual(new Vector3(100, 200, 0), visual.Offset);
+
+			// Symmetry: the MinPosition branch must keep reading the min bound.
+			var minExpression = visual.Compositor.CreateExpressionAnimation("tracker.MinPosition");
+			minExpression.SetReferenceParameter("tracker", tracker);
+			visual.StartAnimation("Offset", minExpression);
+			Assert.AreEqual(new Vector3(-10, -20, 0), visual.Offset);
+		}
+		finally
+		{
+			visual.StopAnimation("Offset");
+		}
+	}
+
 #if HAS_UNO
 	[TestMethod]
 	[RequiresFullWindow]
@@ -309,9 +344,9 @@ public partial class Given_InteractionTracker
 			TrackerLogsConstructingHelper.GetInertiaStateEntered(
 				trackerPosition: new(0.0f, 0.0f, 0.0f),
 				requestId: 0,
-				naturalRestingPosition: new(0.0f, 48.0f, 0.0f),
-				modifiedRestingPosition: new(0.0f, 48.0f, 0.0f),
-				positionVelocityInPixelsPerSecond: new(0.0f, 192.0f, 0.0f)),
+				naturalRestingPosition: new(0.0f, 32.0f, 0.0f),
+				modifiedRestingPosition: new(0.0f, 32.0f, 0.0f),
+				positionVelocityInPixelsPerSecond: new(0.0f, 32f * (MathF.PI / 2 / 0.25f), 0.0f)),
 			helper.Current);
 
 		helper.Advance();
@@ -322,16 +357,16 @@ public partial class Given_InteractionTracker
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetValuesChanged(
-				trackerPosition: new(0.0f, 48.0f, 0.0f),
+				trackerPosition: new(0.0f, 32.0f, 0.0f),
 				requestId: 0,
-				argsPosition: new(0.0f, 48.0f, 0.0f)),
+				argsPosition: new(0.0f, 32.0f, 0.0f)),
 			helper.Current);
 
 		helper.Advance();
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetIdleStateEntered(
-				trackerPosition: new(0.0f, 48.0f, 0.0f),
+				trackerPosition: new(0.0f, 32.0f, 0.0f),
 				requestId: 0),
 			helper.Current);
 

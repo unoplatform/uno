@@ -161,6 +161,10 @@
 			"description": "Provides an explicit override for the version of SkiaSharp to use.",
 			"type": "nuget-version"
 		},
+		"HarfBuzzSharpVersion": {
+			"description": "Provides an explicit override for the version of the HarfBuzzSharp native assets to use.",
+			"type": "nuget-version"
+		},
 		"SvgSkiaVersion": {
 			"description": "Provides an explicit override for the version of Svg.Skia to use.",
 			"type": "nuget-version"
@@ -241,6 +245,10 @@
 			"description": "When set to true, the Uno.Sdk will not implicitly reference Microsoft.Windows.SDK.BuildTools.WinApp for WinAppSDK executables. Set EnableWinAppRunSupport=false instead to keep the reference but disable the `dotnet run` interception.",
 			"type": "bool"
 		},
+		"UnoDisableHotTesting": {
+			"description": "When set to true, the Uno.Sdk will not implicitly reference Uno.HotTesting.Reactive in non-optimized builds of projects using the MVUX feature.",
+			"type": "bool"
+		},
 		"UnoCoreLoggingSingletonVersion": {
 			"description": "Provides an explicit override for the version of Uno.Core.Logging.Singleton to use.",
 			"type": "nuget-version"
@@ -255,6 +263,10 @@
 		},
 		"PrismVersion": {
 			"description": "Provides an explicit override for the version of Prism to use.",
+			"type": "nuget-version"
+		},
+		"UnoReactorVersion": {
+			"description": "Provides an explicit override for the version of Uno.Microsoft.UI.Reactor to use.",
 			"type": "nuget-version"
 		},
 		"UnoFontsVersion": {
@@ -305,9 +317,25 @@
 			"description": "The base size of the splash screen image. e.g.: '300,300'.",
 			"type": "string"
 		},
-		"UnoSplashScreenColor": {
-			"description": "The background color of the splash screen.",
+		"UnoSplashScreenBackgroundColor": {
+			"description": "The background color of the splash screen, used for all themes unless overridden. Replaces UnoSplashScreenColor, which was removed in Uno Platform 7.0. Defaults to '#FFFFFF', except on WebAssembly where no color is set so the splash screen follows the browser theme.",
 			"type": "color"
+		},
+		"UnoSplashScreenDarkBackgroundColor": {
+			"description": "The background color of the splash screen when the dark theme is active. Defaults to UnoSplashScreenBackgroundColor.",
+			"type": "color"
+		},
+		"UnoSplashScreenAccentColor": {
+			"description": "The accent color of the splash screen, used for the progress bar of the WebAssembly loader in all themes unless overridden. Other targets ignore it. Defaults to the WinUI accent color.",
+			"type": "color"
+		},
+		"UnoSplashScreenDarkAccentColor": {
+			"description": "The accent color of the splash screen when the dark theme is active, used for the progress bar of the WebAssembly loader. Other targets ignore it. Defaults to UnoSplashScreenAccentColor when set, otherwise to the WinUI dark theme accent color.",
+			"type": "color"
+		},
+		"UnoSplashScreenDarkFile": {
+			"description": "The path to the splash screen image file used when the dark theme is active.",
+			"type": "file"
 		},
 		"UnoSplashScreenScale": {
 			"description": "Used to scale the image that will be used as the SplashScreen.",
@@ -570,6 +598,9 @@
 					"description": "Adds Prism support for Uno.WinUI.",
 					"helpUrl": "https://aka.platform.uno/feature-prism"
 				},
+				"Reactor": {
+					"description": "Adds Microsoft.UI.Reactor, the declarative C# UI framework, through the Uno.Microsoft.UI.Reactor package. Uno Platform targets only: not supported on WinAppSDK."
+				},
 				"Skia": {
 					"description": "Adds support for SkiaSharp.",
 					"helpUrl": "https://aka.platform.uno/feature-skia"
@@ -578,16 +609,15 @@
 					"description": "Adds the WebGPU rendering backend, used alongside the default Skia backend.",
 					"helpUrl": "https://aka.platform.uno/feature-webgpu"
 				},
-				"Lottie": {
-					"description": "Adds support for Lottie animations.",
-					"helpUrl": "https://aka.platform.uno/feature-lottie"
-				},
 				"Svg": {
 					"description": "Adds support for SVG images.",
 					"helpUrl": "https://aka.platform.uno/feature-svg"
 				},
 				"GLCanvas": {
 					"description": "Adds support for 3D graphics APIs based on OpenGL."
+				},
+				"WebGpuCanvas": {
+					"description": "Adds support for drawing with WebGPU, and the WebGPU rendering backend it requires."
 				},
 				"SpellChecking": {
 					"description": "Adds support for spell checking."

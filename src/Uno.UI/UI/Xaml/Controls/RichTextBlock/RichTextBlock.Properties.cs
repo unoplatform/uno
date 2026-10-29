@@ -421,7 +421,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(RichTextBlock),
 				new FrameworkPropertyMetadata(
-					(Thickness)Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((RichTextBlock)s).InvalidateRichTextBlock()));
 

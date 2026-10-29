@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Uno.UI.RuntimeTests.Helpers;
 using Private.Infrastructure;
 using Windows.Foundation;
 using Microsoft.UI;
@@ -16,6 +17,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[RunsOnUIThread]
 	public class Given_FrameworkElement_LayoutSlot
 	{
+		[TestMethod]
+		[DataRow(67, 29)] // centring offset 28.5: banker's rounding would give 28
+		[DataRow(71, 31)] // centring offset 30.5: banker's rounding would give 30
+		public async Task When_Centered_At_Half_Pixel_Then_Rounds_Half_Up(double containerSize, double expectedOffset)
+		{
+			var SUT = new Border { Width = 10, Height = 10, HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Center, VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center };
+			var container = new Grid { Width = containerSize, Height = containerSize, Children = { SUT } };
+
+			await UITestHelper.Load(container);
+
+			if (container.XamlRoot.RasterizationScale != 1)
+			{
+				Assert.Inconclusive("The half-pixel offsets assume a rasterization scale of 1.");
+			}
+
+			var offset = SUT.TransformToVisual(container).TransformPoint(default);
+			Assert.AreEqual(new Point(expectedOffset, expectedOffset), offset);
+		}
+
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Border_Applied_In_Templated_Control()

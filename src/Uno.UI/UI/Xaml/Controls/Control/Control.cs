@@ -42,8 +42,6 @@ namespace Microsoft.UI.Xaml.Controls
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal void SetDefaultStyleKeyInternal(object defaultStyleKey) => DefaultStyleKey = defaultStyleKey;
 
-		protected override bool IsSimpleLayout => true;
-
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 
 		private protected override Type GetDefaultStyleKey() => DefaultStyleKey as Type;
@@ -468,7 +466,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="childName">The name of the template part.</param>
 		/// <returns>The first template part of the specified name; otherwise, null.</returns>
-		public DependencyObject GetTemplateChild(string childName)
+		protected internal DependencyObject GetTemplateChild(string childName)
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as DependencyObject
 				?? FindName(childName) as DependencyObject;
@@ -690,7 +688,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -713,7 +711,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -1312,7 +1310,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal static Action<Control, bool> OnIsFocusableChangedCallback { get; set; }
 
-		public Control()
+		protected Control()
 		{
 			InitializeControl();
 		}

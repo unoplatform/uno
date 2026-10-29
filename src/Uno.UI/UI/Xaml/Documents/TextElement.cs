@@ -25,7 +25,7 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 
 namespace Microsoft.UI.Xaml.Documents
 {
-	public abstract partial class TextElement : BaseClass, IThemeChangeAware
+	public abstract partial class TextElement : BaseClass, IThemeChangeAware, IXNameProvider
 	{
 		public TextElement()
 		{
@@ -333,7 +333,7 @@ namespace Microsoft.UI.Xaml.Documents
 		public string Name
 		{
 			get => _name;
-			set
+			internal set
 			{
 				if (_name != value)
 				{
@@ -342,6 +342,8 @@ namespace Microsoft.UI.Xaml.Documents
 				}
 			}
 		}
+
+		void IXNameProvider.SetXName(string name) => Name = name;
 
 		// WASM specific as on WASM BaseClass is UIElement
 

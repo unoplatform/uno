@@ -105,7 +105,7 @@ default.
 
 The **default-backend reflection lives entirely in the host builder** (`UnoPlatformHostBuilder.Build()`), not
 scattered across the seam holders. After the app's explicit registrations are applied, `Build()` reflectively
-lights up any seam the app left empty from the SkiaSharp backend (or the SVG/Lottie add-ins) — by
+lights up any seam the app left empty from the SkiaSharp backend (or the SVG add-in) — by
 assembly-qualified name, so the framework keeps no compile-time dependency on SkiaSharp — then **throws right
 there** if a *required* seam (graphics backend, font, image decoder, geometry) is still unsatisfied and no Skia
 is present, instead of NRE-ing deep in the first frame. A deliberately SkiaSharp-free app registers each seam
@@ -347,11 +347,11 @@ Three ways to remove that dependency:
 - **B) Platform font APIs behind a seam (recommended target).** Define an `IFontManager` extensibility point
   (mirroring `IFontProvider`): `family + style → font bytes/handle`, plus the existing
   codepoint→fallback. Provide it via `ApiExtensibility` with per-runtime implementations in the
-  `Uno.UI.Runtime.Skia.*` projects — **DirectWrite** (Win32), **CoreText** (macOS/iOS), **fontconfig**
+  `Uno.UI.Runtime.*` projects — **DirectWrite** (Win32), **CoreText** (macOS/iOS), **fontconfig**
   (Linux), **Android font APIs** (Android).
   *Pro:* correct, locale-aware matching + fallback chains for free; the text *logic* (metrics/shaping/render)
   becomes Skia-less regardless of resolver; matches the rest of this design (platform specifics live in
-  `Runtime.Skia.*`, core stays neutral).
+  `Uno.UI.Runtime.*`, core stays neutral).
   *Con:* several native implementations to write and maintain; variable-font positioning still needs handling
   (either the platform API instances it, or we do it in `ManagedFont`).
 
@@ -472,7 +472,7 @@ its shapes with the registered geometry engine; the Skottie add-in ignores it. T
   interpolation (linear + cubic-bézier easing + hold, over scalars/vectors/colors/bézier-paths). Gradients,
   repeaters, merge paths, stars, masks, mattes, precomps, image/text layers and effects are not modelled yet —
   an unsupported item is skipped, never fatal.
-- **`SkottieLottieRenderer`** (`Uno.UI.Lottie` add-in) — wraps `SkiaSharp.Skottie`. `Render` fast-paths on
+- **`SkottieLottieRenderer`** (Skia backend) — wraps `SkiaSharp.Skottie`. `Render` fast-paths on
   `NativeSurface is SKCanvas` (draws straight into the frame), else rasterizes to an offscreen and goes through
   `session.Factory.CreateTexture(...)` → `DrawImage` — so it plays on WebGPU too.
 
@@ -513,9 +513,9 @@ output is the evidence the interface carries everything the backend needs.
 ### WebGPU backend — per-target status & how to enable
 
 `Uno.UI.Composition.WebGpu` is the second full render backend behind the neutral seam (`WebGpuRenderer` /
-`WebGpuCommandRecorder` / `WebGpuPresentSession` + the device-bound `WebGpuDrawingFactory`). It binds the
-**modern `webgpu.h` ABI** through a generated, Silk-free interop layer (`Native/WebGpuInterop.cs`, shared by
-all targets — Dawn and wgpu-native agree on the ABI); the native library is provisioned at build (desktop
+`WebGpuCommandRecorder` / `WebGpuPresentSession` + the device-bound `WebGpuDrawingFactory`). It renders
+through **Silk.NET.WebGPU**, which SilkCompat runs on the **modern `webgpu.h` ABI** (shared by all targets —
+Dawn and wgpu-native agree on the ABI); the native library is provisioned at build (desktop
 `wgpu-native` via `wgpu-native.targets`, browser `emdawnwebgpu` via `wgpu-wasm.targets`).
 
 **On-window presentation** splits into two shapes, both opt-in via `UNO_WEBGPU=1|true|swapchain` (native hosts
@@ -601,7 +601,7 @@ plus a clear answer to "who drives."
 > **decline** (unavailable, or the host's config opted out). The host switches purely on `kind` and
 > names no backend and no `UNO_WEBGPU`. **The backend owns the kind order** (`IGraphicsProvider.PreferredContexts`,
 > walked as-is); preference is expressed two neutral ways only — the app orders the provider's kinds via
-> its constructor (`new SkiaGraphicsProvider(GraphicsContextKind.Software)` forces software), a host
+> its factory (`SkiaBackend.CreateGraphicsProvider(GraphicsContextKind.Software)` forces software), a host
 > *declines* kinds per its own config (LinuxFB `UseDRM`, WASM `forceSoftwareRendering`), and the X11/Win32
 > host builders exclude kinds up front (`ForceRenderingBackend`/`DisableRenderingBackends` →
 > `GraphicsRegistry.DisabledContextKinds`, which negotiation skips). Removed with the redesign: `INativeWindow`, `NativeWindowKind`,
@@ -651,7 +651,7 @@ identical on every platform, in the shared app bootstrap:
 
 ```csharp
 // ordered by preference: try WebGPU, fall back to Skia
-GraphicsRegistry.Register(new IGraphicsProvider[] { new WebGpuGraphicsProvider(), new SkiaGraphicsProvider() });
+GraphicsRegistry.Register(new IGraphicsProvider[] { WebGpuBackend.CreateGraphicsProvider(), SkiaBackend.CreateGraphicsProvider() });
 ```
 
 Separately, the **host** sets exactly one delegate — `GraphicsRegistry.ContextFactory =
@@ -823,9 +823,9 @@ backend itself is pluggable. They are **removed**:
 
 | Removed API | Assembly |
 |-------------|----------|
-| `X11RenderingBackend` enum (`Vulkan`/`OpenGL`/`OpenGLES`/`Software`) + `X11HostBuilder.ForceRenderingBackend(…)` / `DisableRenderingBackends(…)` | `Uno.UI.Runtime.Skia.X11` |
-| `Win32RenderingBackend` enum (`Vulkan`/`OpenGL`/`Software`) + `Win32HostBuilder.ForceRenderingBackend(…)` / `DisableRenderingBackends(…)` | `Uno.UI.Runtime.Skia.Win32` |
-| `RenderSurfaceType` enum (`Auto`/`Metal`/`Software`; `Software`/`OpenGL`) | `Uno.UI.Runtime.Skia.MacOS`, `Uno.UI.Runtime.Skia.Win32` |
+| `X11RenderingBackend` enum (`Vulkan`/`OpenGL`/`OpenGLES`/`Software`) + `X11HostBuilder.ForceRenderingBackend(…)` / `DisableRenderingBackends(…)` | `Uno.UI.Runtime.X11` |
+| `Win32RenderingBackend` enum (`Vulkan`/`OpenGL`/`Software`) + `Win32HostBuilder.ForceRenderingBackend(…)` / `DisableRenderingBackends(…)` | `Uno.UI.Runtime.Win32` |
+| `RenderSurfaceType` enum (`Auto`/`Metal`/`Software`; `Software`/`OpenGL`) | `Uno.UI.Runtime.MacOS`, `Uno.UI.Runtime.Win32` |
 | `FeatureConfiguration.Rendering.{UseOpenGLOnX11, PreferGLESOverGLOnX11, UseVulkanOnX11, UseOpenGLOnWin32, UseVulkanOnWin32}` (replaced by the host-builder methods above) | `Uno.UI` |
 
 **Rationale.** The host builder now selects a *graphics backend* (Skia / WebGPU / third party); the
@@ -856,10 +856,10 @@ backend assembly. **No assembly grants its internals (`[InternalsVisibleTo]`) to
 moved into its own assembly precisely so nothing reaches into it), so a third-party backend has the same access
 the built-in ones do: the public seam and nothing more.
 
-**WebGPU backend native/ABI:** the experimental WebGPU backend is bound to the **modern `webgpu.h` ABI**
-(no Silk.NET) and is split across two assemblies. The renderer-agnostic **init half** — the interop layer
-(`Uno.UI.Composition.WebGpu.Init/Native/WebGpuInterop.cs`, generated by `gen_webgpu.py` from the vendored,
-pinned `wgpu-native` headers), the `DllImportResolver` (`WebGpuLoader.cs`), and the on-window
+**WebGPU backend native/ABI:** the experimental WebGPU backend renders through **Silk.NET.WebGPU** on the
+**modern `webgpu.h` ABI** and is split across two assemblies. The renderer-agnostic **init half** — SilkCompat
+(`Uno.UI.Composition.WebGpu.Init/SilkCompat`: Silk.NET's function table, translated onto bindings its generator
+emits from the vendored, pinned `wgpu-native` headers), the `DllImportResolver` (`WebGpuLoader.cs`), and the on-window
 `WebGpuContext.Create*` / swapchain / browser contexts — lives in **`Uno.UI.Composition.WebGpu.Init`**, which
 a *host* references directly (no native asset of its own). The **renderer** (`WebGpuBackend`, pipelines) plus
 the desktop native fetch (`wgpu-native.targets`, resolved through the init half's loader) stay in

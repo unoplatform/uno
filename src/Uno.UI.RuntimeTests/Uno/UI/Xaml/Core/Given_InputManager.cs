@@ -719,13 +719,14 @@ public class Given_InputManager
 	public async Task When_DirectManipulationInertial_Then_AllSubsequentEventsIgnored()
 	{
 		Border elt;
+		ScrollViewer sv;
 		var root = new Grid
 		{
 			Width = 200,
 			Height = 200,
 			Children =
 			{
-				new ScrollViewer
+				(sv = new ScrollViewer
 				{
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = elt = new Border
@@ -735,7 +736,7 @@ public class Given_InputManager
 						Width = 800,
 						Height = 80000,
 					}
-				},
+				}),
 			}
 		};
 
@@ -750,7 +751,8 @@ public class Given_InputManager
 		var events = root.SubscribeToPointerEvents();
 		elt.SubscribeToPointerEvents(events);
 
-		await UITestHelper.WaitForIdle(waitForCompositionAnimations: false); // Give opportunity to ui thread to doe some work
+		// Press as soon as inertia is running: on slow frames a fixed idle wait lets it run out first.
+		await TestServices.WindowHelper.WaitFor(() => sv.VerticalOffset > 0, timeoutMS: 30000, message: "the flick never started scrolling");
 
 		finger.Press(bounds.GetCenter());
 		finger.Release(bounds.GetCenter());
@@ -1569,6 +1571,71 @@ public class Given_InputManager
 		sv.VerticalOffset.Should().BeGreaterThan(0,
 			because: "a vertical drag on a ListView whose items are SwipeControls must still scroll vertically; " +
 					 "the SwipeControl's TranslateX direct-manipulation must not cancel the ScrollContentPresenter's TranslateY DM.");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25588")]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_ManipulableElementReleasedAndRemoved_Then_Collected()
+	{
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		try
+		{
+			var sutRef = await PressAndReleaseOnManipulableElement(mouse);
+
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// PointerRoutedEventArgs.LastPointerEvent keeps its OriginalSource alive until the next pointer event.
+			mouse.MoveBy(1, 1);
+
+			await AssertCollected(sutRef);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static async Task<WeakReference> PressAndReleaseOnManipulableElement(Mouse mouse)
+	{
+		var sut = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Colors.DeepPink),
+			ManipulationMode = ManipulationModes.All,
+		};
+		var starting = false;
+		sut.ManipulationStarting += (snd, e) => starting = true;
+
+		var bounds = await UITestHelper.Load(sut);
+
+		mouse.Press(bounds.GetCenter());
+		mouse.Release();
+
+		starting.Should().BeTrue(because: "the press should have registered the element's gesture recognizer with the input manager");
+
+		return new WeakReference(sut);
+	}
+
+	private static async Task AssertCollected(WeakReference reference)
+	{
+		for (var i = 0; i < 10 && reference.IsAlive; i++)
+		{
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			GC.Collect();
+
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		reference.IsAlive.Should().BeFalse(because: "the element is no longer in the visual tree and nothing should retain it");
 	}
 
 	private static void SetCursorShape(CoreCursor cursor)

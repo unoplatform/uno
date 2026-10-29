@@ -9,12 +9,25 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionGeometry : CompositionObject
 	{
+		internal enum EllipseFigureStart
+		{
+			Top,
+			Right,
+			Left,
+		}
+
 		/// <summary>
 		/// Kappa = (sqrt(2) - 1) * 4/3;
 		//  Used to calculate bezier control points for each of the circle four arcs.
 		//  - Approximating a 1/4 circle with a bezier curve.
 		/// </summary>
 		private const double CIRCLE_BEZIER_KAPPA = 0.552284749830793398402251632279597438092895833835930764235;
+
+		/// <summary>
+		/// The same outline as <see cref="BuildGeometry"/>, starting where WinUI starts an untrimmed dash pattern, or null
+		/// when that is the trim origin too.
+		/// </summary>
+		internal virtual IGeometry? BuildDashGeometry() => null;
 
 		internal static IGeometry BuildLineGeometry(Vector2 start, Vector2 end)
 		{
@@ -44,7 +57,9 @@ namespace Microsoft.UI.Composition
 			return builder.Build();
 		}
 
-		internal static IGeometry BuildRoundedRectangleGeometry(Vector2 offset, Vector2 size, Vector2 cornerRadius)
+		/// <param name="startAtTopLeftArc">Starts the figure where the top-left arc begins (WinUI's dash origin) instead of
+		/// where it ends (the trim origin).</param>
+		internal static IGeometry BuildRoundedRectangleGeometry(Vector2 offset, Vector2 size, Vector2 cornerRadius, bool startAtTopLeftArc = false)
 		{
 			float radiusX = Clamp(cornerRadius.X, 0, size.X * 0.5f);
 			float radiusY = Clamp(cornerRadius.Y, 0, size.Y * 0.5f);
@@ -53,9 +68,24 @@ namespace Microsoft.UI.Composition
 			float bezierY = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radiusY);
 
 			var builder = GeometryFactory.Current.CreatePathBuilder();
-			var lastPoint = new Vector2(offset.X + radiusX, offset.Y);
+			var topLeftArcEnd = new Vector2(offset.X + radiusX, offset.Y);
+			var lastPoint = topLeftArcEnd;
 
-			builder.MoveTo(lastPoint);
+			void AddTopLeftArc() => builder.CubicTo(
+				new Vector2(offset.X, offset.Y + bezierY),
+				new Vector2(offset.X + bezierX, offset.Y),
+				topLeftArcEnd);
+
+			if (startAtTopLeftArc)
+			{
+				builder.MoveTo(new Vector2(offset.X, offset.Y + radiusY));
+				AddTopLeftArc();
+			}
+			else
+			{
+				builder.MoveTo(lastPoint);
+			}
+
 			// Top line
 			builder.LineTo(lastPoint + new Vector2(size.X - 2 * radiusX, 0));
 			lastPoint += new Vector2(size.X - 2 * radiusX, 0);
@@ -89,63 +119,46 @@ namespace Microsoft.UI.Composition
 			// Left line
 			builder.LineTo(lastPoint + new Vector2(0, -(size.Y - 2 * radiusY)));
 			lastPoint += new Vector2(0, -(size.Y - 2 * radiusY));
-			// Top-left Arc
-			builder.CubicTo(
-				lastPoint + new Vector2(0, -radiusY + bezierY),  // 1st control point
-				lastPoint + new Vector2(bezierX, -radiusY),      // 2nd control point
-				lastPoint + new Vector2(radiusX, -radiusY));     // End point
+			if (!startAtTopLeftArc)
+			{
+				AddTopLeftArc();
+			}
 
 			builder.Close();
 
 			return builder.Build();
 		}
 
-		internal static IGeometry BuildEllipseGeometry(Vector2 center, Vector2 radius)
+		internal static IGeometry BuildEllipseGeometry(Vector2 center, Vector2 radius, EllipseFigureStart start = EllipseFigureStart.Top)
 		{
-			float left = center.X - radius.X;
-			float top = center.Y - radius.Y;
-			float right = center.X + radius.X;
-			float bottom = center.Y + radius.Y;
-
-			float bezierX = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radius.X);
-			float bezierY = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radius.Y);
-
-			// IMPORTANT:
-			// - The order of following operations is important for dashed strokes.
-			// - Stroke might get merged in the end.
-			// - The path starts at the top (12 o'clock) and winds clockwise, matching
-			//   Windows.UI.Composition (and the After Effects/Lottie convention). This is
-			//   what a trim window [0..t] measures against, so trimmed ellipses — e.g. the
-			//   determinate ProgressRing fill and LottieGen-generated progress arcs — grow
-			//   from the top exactly as they do on WinUI. (WPF, by contrast, starts at the
-			//   bottom-right; do not "restore" that here.)
+			// The figure winds clockwise. Composition trims measure from the top (12 o'clock, the After Effects/Lottie
+			// convention) so trimmed arcs grow from the top as on WinUI, while WinUI dashes a Composition ellipse from
+			// 9 o'clock and a XAML EllipseGeometry from 3 o'clock.
+			var kx = (float)(CIRCLE_BEZIER_KAPPA * radius.X);
+			var ky = (float)(CIRCLE_BEZIER_KAPPA * radius.Y);
+			ReadOnlySpan<Vector2> anchors =
+			[
+				new(center.X, center.Y - radius.Y),
+				new(center.X + radius.X, center.Y),
+				new(center.X, center.Y + radius.Y),
+				new(center.X - radius.X, center.Y),
+			];
+			ReadOnlySpan<Vector2> tangents = [new(kx, 0), new(0, ky), new(-kx, 0), new(0, -ky)];
+			var first = start switch
+			{
+				EllipseFigureStart.Right => 1,
+				EllipseFigureStart.Left => 3,
+				_ => 0,
+			};
 
 			var builder = GeometryFactory.Current.CreatePathBuilder();
-
-			builder.MoveTo(new Vector2(left + radius.X, top));
-			// Top-right Arc
-			builder.CubicTo(
-				new Vector2(right - bezierX, top),       // 1st control point
-				new Vector2(right, top + bezierY),       // 2nd control point
-				new Vector2(right, top + radius.Y));      // End point
-
-			// Bottom-right Arc
-			builder.CubicTo(
-				new Vector2(right, bottom - bezierY),  // 1st control point
-				new Vector2(right - bezierX, bottom),  // 2nd control point
-				new Vector2(right - radius.X, bottom)); // End point
-
-			// Bottom-left Arc
-			builder.CubicTo(
-				new Vector2(left + bezierX, bottom),      // 1st control point
-				new Vector2(left, bottom - bezierY),      // 2nd control point
-				new Vector2(left, bottom - radius.Y));     // End point
-
-			// Top-left Arc
-			builder.CubicTo(
-				new Vector2(left, top + bezierY),           // 1st control point
-				new Vector2(left + bezierX, top),           // 2nd control point
-				new Vector2(left + radius.X, top));          // End point
+			builder.MoveTo(anchors[first]);
+			for (var i = 0; i < 4; i++)
+			{
+				var from = (first + i) % 4;
+				var to = (from + 1) % 4;
+				builder.CubicTo(anchors[from] + tangents[from], anchors[to] - tangents[to], anchors[to]);
+			}
 
 			builder.Close();
 

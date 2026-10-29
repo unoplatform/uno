@@ -5,9 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:App1"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:not_win="http://uno.ui/not_win"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d not_win">
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -21,7 +20,6 @@
                                 BorderThickness="{TemplateBinding BorderThickness}">
                                 <ScrollViewer
                                     x:Name="ScrollViewer"
-                                    not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}"
                                     AutomationProperties.AccessibilityView="Raw"
                                     BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
                                     HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"

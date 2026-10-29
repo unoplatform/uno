@@ -200,6 +200,17 @@ To fix this issue:
 </ItemGroup>
 ```
 
+### UNOB0022: The `SingleProject` property is no longer supported
+
+`SingleProject` was the Uno Platform 5.1-and-earlier spelling of `UnoSingleProject`. It no longer selects the single-project layout, so leaving it in place would silently build the project as if it were not a single project.
+
+Rename the property in your `.csproj`:
+
+```diff
+- <SingleProject>true</SingleProject>
++ <UnoSingleProject>true</UnoSingleProject>
+```
+
 ### UNOB0023: A runtime-enabled package provided no runtime assembly
 
 Packages such as `Uno.WinRT` and `Uno.Foundation` ship a platform-neutral compile surface under `lib/` and the assemblies that actually run under `uno-runtime/`. This diagnostic reports that one of them contributed no runtime assembly for the target framework being built, which means the reference assemblies would be deployed instead and every call into them would throw `NotImplementedException` at runtime.
@@ -244,9 +255,9 @@ To suppress it:
 
 ### UNOB0025: Runtime-enabled packages are referenced without a runtime host
 
-This application head references packages that ship their implementation under `uno-runtime/` — such as `Uno.WinRT` and `Uno.Foundation` — but no Uno Platform runtime host package was detected (each `Uno.WinUI.Runtime.Skia.*` package declares itself by setting the `UnoHasRuntimeHost` MSBuild property), so the reference assemblies would be deployed and every call into them would throw `NotImplementedException` at runtime.
+This application head references packages that ship their implementation under `uno-runtime/` — such as `Uno.WinRT` and `Uno.Foundation` — but no Uno Platform runtime host package was detected (each `Uno.WinUI.Runtime.*` package declares itself by setting the `UnoHasRuntimeHost` MSBuild property), so the reference assemblies would be deployed and every call into them would throw `NotImplementedException` at runtime.
 
-The usual cause is a version mismatch: a `Uno.WinUI.Runtime.Skia.*` package older than `Uno.WinUI` does not declare the runtime host. Align every `Uno.*` package version, then restore again.
+The usual cause is an explicit reference to a `Uno.WinUI.Runtime.Skia.*` host package, which predates the 7.0 rename and does not declare the runtime host. Those ids receive no 7.0 builds, so replace each one with its renamed `Uno.WinUI.Runtime.*` id (`Uno.WinUI.Runtime.Skia.Headless` becomes `Uno.WinUI.Runtime.Headless`; see the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for the full mapping), then align every `Uno.*` package version and restore again.
 
 When such an older runtime host is detected, this is reported as an error. Otherwise it is a warning, since an executable project that is not an application, such as a test project, can legitimately run against the reference assemblies.
 
@@ -283,6 +294,67 @@ Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs`
 | `*.reference.cs` | Delete the file, or fold it into a `*.crossruntime.cs` file. It was gated on a build flavor that an application never selected, so it compiled for no target framework |
 
 `*.skia.cs` is still recognized, but it now compiles for every target framework except the WinAppSDK one, not only for `netX.0-desktop`. See [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7) for the other changes.
+
+### UNOB0029: Uno Platform application projects must use the Uno.Sdk
+
+Starting with Uno Platform 7.0, an application must be built with the [`Uno.Sdk`](xref:Uno.Features.Uno.Sdk). The legacy project format — a `Microsoft.NET.Sdk` project referencing the `Uno.WinUI` package, together with one head project per platform (`MyApp.Mobile`, `MyApp.Wasm`, `MyApp.Skia.Gtk`, `MyApp.Windows`, …) — is no longer supported.
+
+To fix this, migrate your application to the Uno.Sdk by following the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
+
+This diagnostic is only raised for application projects (`Exe` and `WinExe`). Class libraries that reference the `Uno.WinUI` package directly are not affected, and neither are Windows App SDK heads or test projects (`IsTestProject` set to `true`, which `Microsoft.NET.Test.Sdk` and the common test runners do for you).
+
+If your project is an executable that merely links `Uno.WinUI` as a library — a console harness or a benchmark runner, for instance — disable the check:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0029Validation>true</UnoDisableUNOB0029Validation>
+</PropertyGroup>
+```
+
+### UNOB0028: The UnoSplashScreenColor property is no longer supported
+
+Uno Platform 7.0 removed the `UnoSplashScreenColor` property. The Uno.SDK ignores it, so the splash screen background falls back to its default (`#FFFFFF`, or the browser theme on WebAssembly). Rename it:
+
+```xml
+<PropertyGroup>
+  <UnoSplashScreenBackgroundColor>#FFFFFF</UnoSplashScreenBackgroundColor>
+</PropertyGroup>
+```
+
+The same applies to `UnoSplashScreen` items declared by hand: use `BackgroundColor="#FFFFFF"` instead of `Color="#FFFFFF"`. See [Splash screen](xref:Uno.Development.SplashScreen) for the related `UnoSplashScreenDarkBackgroundColor` and `UnoSplashScreenDarkFile` properties.
+
+### UNOB0030: The SkiaRenderer Uno Feature is ignored in a library
+
+Starting with Uno Platform 7.0, the renderer is chosen by the app, not by its libraries. In an app, the legacy `SkiaRenderer` feature is still mapped to `Skia`. In a library it is ignored, so the library doesn't make SkiaSharp a dependency of every app that uses it, including apps that render with WebGPU only.
+
+To fix this:
+
+- If the library doesn't draw with SkiaSharp, remove `SkiaRenderer` from `UnoFeatures`.
+- If it uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), the `SkiaExtensions` conversions or the Uno Toolkit's Skia controls (such as `ShadowContainer`), replace `SkiaRenderer` with `Skia`.
+
+To keep `SkiaRenderer` without the warning, add `UNOB0030` to `NoWarn`.
+
+### UNOB0031: The Reactor Uno Feature is not supported on WinAppSDK
+
+The `Reactor` feature references [Uno.Microsoft.UI.Reactor](https://www.nuget.org/packages/Uno.Microsoft.UI.Reactor), which runs on the Uno Platform targets (desktop, WebAssembly, Android and iOS) and has no build for the WinAppSDK target. The Uno.Sdk doesn't reference it there, and fails the Windows build with this error instead of leaving every Reactor type unresolved.
+
+To fix this, remove the `-windows10.0.xxxxx` target framework from the project. To run a Reactor app on Windows, use the `desktop` target.
+
+### UNOB0032: The browserwasm target framework was set after the Uno.Sdk chose the .NET SDK
+
+The Uno.Sdk builds a WebAssembly app with the `Microsoft.NET.Sdk.WebAssembly` SDK, which it chooses from `TargetFramework` before your project file and `Directory.Build.props` are read. At that point, the target framework is only known when it is passed to the build: with `-f`, or by a project with several target frameworks building each of them.
+
+When an app sets a single `<TargetFramework>net10.0-browserwasm</TargetFramework>` itself, in the project file, in `Directory.Build.props` or with a file-based app's `#:property`, the Uno.Sdk moves it to `TargetFrameworks` after the project file is read, so the app still builds with the WebAssembly SDK. It can only do so for a project it already knows is an app at that point, from an `OutputType` of `Exe` or `WinExe`, or from `IsUnoHead`.
+
+This error means the project was only found to be an app later, typically because its `OutputType` is set in `Directory.Build.targets`. Built with the plain .NET SDK, it would be a desktop executable that fails at startup.
+
+To fix this, set `OutputType` in the project file or in `Directory.Build.props`, or use the plural property, even with a single target framework:
+
+```xml
+<PropertyGroup>
+  <TargetFrameworks>net10.0-browserwasm</TargetFrameworks>
+</PropertyGroup>
+```
 
 ## Compiler Errors
 
@@ -331,6 +403,7 @@ Note that this change only applies to projects using the Uno.Sdk. If you're not 
 ```xml
 #pragma warning disable UNO0008 // Replace with UseStudio() when migrating to the Uno.Sdk.
 window.EnableHotReload();
+
 #pragma warning restore UNO0008
 ```
 
@@ -379,6 +452,17 @@ Uno Platform 7.0 names every conditional XAML prefix after a target framework, a
 
 The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7#removed-xaml-prefixes).
 
+### UNOB0028: An optional implicit package was skipped
+
+Some packages the Uno.Sdk adds implicitly are optional and only exist from a given version of their package group. `Uno.HotTesting.Reactive`, added for the `MVUX` feature in non-optimized builds, first ships with the 7.4 builds of Uno.Extensions. This message means the Uno.Extensions version resolved for your project is older than that, is a floating version or a range, or is missing from the Uno.Sdk package manifest, so the package was left out instead of being restored at a mismatched version.
+
+The rest of the build is unaffected. If you need the package:
+
+- Use an `UnoExtensionsVersion` of 7.4 or later, as an exact version, or
+- Reference the package explicitly with a version that matches your Uno.Extensions packages.
+
+To stop the Uno.Sdk from adding it at all, set `UnoDisableHotTesting` to `true`.
+
 ## VS Code Errors
 
 ### UVSC0001
@@ -401,3 +485,16 @@ With version 0.14 (and later) you can override the location of `msbuild.exe` by:
 1. Setting the location where your `msbuild.exe` is located
 
 ![settings](Assets/quick-start/vs-code-settings-msbuild.png)
+
+## Hot Reload Errors
+
+### UNOHR0001
+
+The compiler could not produce a Hot Reload update for a change: the C# compiler failed with an exception while emitting the update, instead of reporting the change as unsupported. The DevServer reports it as a rude edit, and the exception is in the DevServer log.
+
+The change was not applied, and the running app is unaffected. Hot Reload stays on the last version it applied, so to keep going:
+
+- Undo the change and save. Hot Reload reports no changes, and the following edits apply as usual.
+- Or restart the app to pick up the change.
+
+A known cause is [dotnet/roslyn#86045](https://github.com/dotnet/roslyn/issues/86045): adding or changing an async lambda that awaits a `dynamic` value. Uno.Extensions MVUX generated such code for commands before [unoplatform/uno.extensions#3227](https://github.com/unoplatform/uno.extensions/issues/3227), so changing a command's parameters could trigger it.

@@ -14,6 +14,10 @@ namespace Microsoft.UI.Xaml.Markup
 	/// </summary>
 	public sealed partial class XamlBindingHelper
 	{
+		internal XamlBindingHelper()
+		{
+		}
+
 		private static readonly Action ResumeRenderingOnlyOnFrameworkElement =
 			Actions.CreateOnce(() => typeof(XamlBindingHelper).Log().Error("ResumeRendering/SuspendRendering is only supported on FrameworkElement instances."));
 

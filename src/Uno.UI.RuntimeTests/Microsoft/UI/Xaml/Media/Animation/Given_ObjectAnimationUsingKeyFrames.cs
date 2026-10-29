@@ -57,9 +57,9 @@ namespace Uno.UI.RuntimeTests
 				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
-					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
 				}
 			};
 
@@ -93,9 +93,9 @@ namespace Uno.UI.RuntimeTests
 				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
-					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(100), Value = v3 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(100), Value = v3 = new object()},
 				}
 			};
 
@@ -129,9 +129,9 @@ namespace Uno.UI.RuntimeTests
 				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
-					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(100), Value = v3 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(100), Value = v3 = new object()},
 				}
 			};
 
@@ -174,9 +174,9 @@ namespace Uno.UI.RuntimeTests
 				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
-					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
 				}
 			};
 
@@ -212,9 +212,9 @@ namespace Uno.UI.RuntimeTests
 				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
-					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(50), Value = v2 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(100), Value = v3 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(50), Value = v2 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(100), Value = v3 = new object()},
 				}
 			};
 
@@ -246,9 +246,9 @@ namespace Uno.UI.RuntimeTests
 				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
-					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
 				}
 			};
 
@@ -288,9 +288,9 @@ namespace Uno.UI.RuntimeTests
 				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
-					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
 				}
 			};
 
@@ -317,9 +317,9 @@ namespace Uno.UI.RuntimeTests
 				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
-					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new DiscreteObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
 				}
 			};
 

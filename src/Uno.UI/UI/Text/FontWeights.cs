@@ -7,6 +7,10 @@ namespace Microsoft.UI.Text
 {
 	public partial class FontWeights
 	{
+		internal FontWeights()
+		{
+		}
+
 		private static FontWeight? _thin;
 		private static FontWeight? _extraLight;
 		private static FontWeight? _light;
