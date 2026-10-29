@@ -281,9 +281,15 @@ partial class PopupPanel
 		}
 
 		// Like WinUI's CalculatePlacementPrivate, a flyout that fits nowhere is resized next to its target, from the preferred placement.
+		// TODO Uno: Uno resizes as soon as the rect leaves the area, while WinUI's TestAgainstLimitsAndPlace only checks the room
+		// between the target and the area's edge (above the target for Top), so WinUI keeps a target behind the input pane unresized.
 		if (!placementFits && Flyout is { CanResizePresenter: true })
 		{
-			finalRect = ResizeToFit(preferredPlacement, anchorRect, visibleBounds, minSize, finalRect);
+			var resizedPlacement = preferredPlacement;
+			var position = new Point(finalRect.X, finalRect.Y);
+			var size = new Size(finalRect.Width, finalRect.Height);
+			FlyoutBase.ResizeToFit(ref resizedPlacement, anchorRect, visibleBounds, minSize, PopupPlacementTargetMargin, ref position, ref size);
+			finalRect = new Rect(position, size);
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -406,174 +412,6 @@ partial class PopupPanel
 		}
 
 		return fits;
-	}
-
-	// MUX Reference FlyoutBase_partial.cpp (CalculateAvailableSpace), commit b9fa30e549de859f15fb84f153cc6136b981d10a
-	// Calculates space between container boundary and placement target for a given placement mode.
-	private static double CalculateAvailableSpace(
-		FlyoutBase.MajorPlacementMode placement,
-		Rect placementTargetBounds,
-		Rect containerRect)
-	{
-		var availableSpace = placement switch
-		{
-			FlyoutBase.MajorPlacementMode.Top => Math.Min(containerRect.Height, placementTargetBounds.Y - containerRect.Y),
-			FlyoutBase.MajorPlacementMode.Bottom => Math.Min(containerRect.Height, containerRect.Bottom - placementTargetBounds.Bottom),
-			FlyoutBase.MajorPlacementMode.Left => Math.Min(containerRect.Width, placementTargetBounds.X - containerRect.X),
-			FlyoutBase.MajorPlacementMode.Right => Math.Min(containerRect.Width, containerRect.Right - placementTargetBounds.Right),
-			_ => 0.0,
-		};
-
-		return Math.Max(0.0, availableSpace);
-	}
-
-	// MUX Reference FlyoutBase_partial.cpp (SelectSideWithMoreSpace), commit b9fa30e549de859f15fb84f153cc6136b981d10a
-	// Update placement mode and calculate available space for the best placement mode
-	// along the same axis as specified by placement.
-	private static FlyoutBase.MajorPlacementMode SelectSideWithMoreSpace(
-		FlyoutBase.MajorPlacementMode placement,
-		Rect placementTargetBounds,
-		Rect containerRect,
-		out double availableSpace)
-	{
-		var (lowSide, highSide) = IsPlacementModeVertical(placement)
-			? (FlyoutBase.MajorPlacementMode.Top, FlyoutBase.MajorPlacementMode.Bottom)
-			: (FlyoutBase.MajorPlacementMode.Left, FlyoutBase.MajorPlacementMode.Right);
-
-		var availableSpaceLow = CalculateAvailableSpace(lowSide, placementTargetBounds, containerRect);
-		var availableSpaceHigh = CalculateAvailableSpace(highSide, placementTargetBounds, containerRect);
-
-		if (availableSpaceLow > availableSpaceHigh)
-		{
-			availableSpace = availableSpaceLow;
-			return lowSide;
-		}
-		else if (availableSpaceLow < availableSpaceHigh)
-		{
-			availableSpace = availableSpaceHigh;
-			return highSide;
-		}
-
-		availableSpace = availableSpaceLow;
-		return placement;
-	}
-
-	// MUX Reference FlyoutBase_partial.cpp (ResizeToFit), commit b9fa30e549de859f15fb84f153cc6136b981d10a
-	// Size and position control to fill available space constrained by container rectangle.
-	// Uno: the margin to the target is applied here, where WinUI applies FlyoutMargin once the placement is calculated.
-	private Rect ResizeToFit(
-		FlyoutBase.MajorPlacementMode placement,
-		Rect placementTargetBounds,
-		Rect containerRect,
-		Size minControlSize,
-		Rect controlRect)
-	{
-		var controlPos = new Point(controlRect.X, controlRect.Y);
-		var controlSize = new Size(controlRect.Width, controlRect.Height);
-		var availableSpace = CalculateAvailableSpace(placement, placementTargetBounds, containerRect);
-
-		// For primary axis, if exceeding available size on side specified by placement
-		// find side with more space and adjust position and size to be next to target.
-		// For the secondary axis, if exceeding container size, set it to fill all available space.
-
-		if (IsPlacementModeVertical(placement))
-		{
-			if (controlSize.Height > availableSpace)
-			{
-				var moreSpacePlacement = SelectSideWithMoreSpace(placement, placementTargetBounds, containerRect, out var moreAvailableSpace);
-
-				// Switch sides only if there's enough space to fit minimum size Flyout.
-				if (moreSpacePlacement != placement && moreAvailableSpace >= minControlSize.Height)
-				{
-					placement = moreSpacePlacement;
-					availableSpace = moreAvailableSpace;
-				}
-
-				// Adjust size only if control has enough space to fit without going under minimum size.
-				if (controlSize.Height > availableSpace && availableSpace >= minControlSize.Height)
-				{
-					controlSize.Height = availableSpace;
-				}
-
-				// Clamp against container size.
-				if (controlSize.Height > containerRect.Height)
-				{
-					controlSize.Height = containerRect.Height;
-				}
-
-				// Adjust position to be next to placement target.
-				// Note that the position will be corrected not to exceed boundaries at the end of this function.
-				controlPos.Y = placement == FlyoutBase.MajorPlacementMode.Top
-					? placementTargetBounds.Y - PopupPlacementTargetMargin - controlSize.Height
-					: placementTargetBounds.Bottom + PopupPlacementTargetMargin;
-			}
-
-			if (controlSize.Width > containerRect.Width)
-			{
-				controlSize.Width = containerRect.Width;
-				controlPos.X = containerRect.X;
-			}
-		}
-		else
-		{
-			if (controlSize.Width > availableSpace)
-			{
-				var moreSpacePlacement = SelectSideWithMoreSpace(placement, placementTargetBounds, containerRect, out var moreAvailableSpace);
-
-				// Switch sides only if there's enough space to fit minimum size Flyout.
-				if (moreSpacePlacement != placement && moreAvailableSpace >= minControlSize.Width)
-				{
-					placement = moreSpacePlacement;
-					availableSpace = moreAvailableSpace;
-				}
-
-				// Adjust size only if control has enough space to fit without going under minimum size.
-				if (controlSize.Width > availableSpace && availableSpace >= minControlSize.Width)
-				{
-					controlSize.Width = availableSpace;
-				}
-
-				// Clamp against container size.
-				if (controlSize.Width > containerRect.Width)
-				{
-					controlSize.Width = containerRect.Width;
-				}
-
-				// Adjust position to be next to placement target.
-				// Note that the position will be corrected not to exceed boundaries at the end of this function.
-				controlPos.X = placement == FlyoutBase.MajorPlacementMode.Left
-					? placementTargetBounds.X - PopupPlacementTargetMargin - controlSize.Width
-					: placementTargetBounds.Right + PopupPlacementTargetMargin;
-			}
-
-			if (controlSize.Height > containerRect.Height)
-			{
-				controlSize.Height = containerRect.Height;
-				controlPos.Y = containerRect.Y;
-			}
-		}
-
-		// Finally, make sure we do not exceed container boundaries.
-
-		if (controlPos.X < containerRect.X)
-		{
-			controlPos.X = containerRect.X;
-		}
-		else if (controlPos.X + controlSize.Width > containerRect.Right)
-		{
-			controlPos.X = containerRect.Right - controlSize.Width;
-		}
-
-		if (controlPos.Y < containerRect.Y)
-		{
-			controlPos.Y = containerRect.Y;
-		}
-		else if (controlPos.Y + controlSize.Height > containerRect.Bottom)
-		{
-			controlPos.Y = containerRect.Bottom - controlSize.Height;
-		}
-
-		return new Rect(controlPos, controlSize);
 	}
 
 	private Rect GetVisibleBounds() => XamlRoot?.VisualTree.VisibleBounds ?? default;

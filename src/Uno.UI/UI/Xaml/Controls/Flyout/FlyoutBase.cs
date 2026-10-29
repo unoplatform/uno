@@ -1023,8 +1023,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		// MUX Reference FlyoutBase_partial.cpp, PerformPlacement: only the presenter sizing is ported, as Uno sets the
-		// presenter's position when its popup panel arranges.
+		// MUX Reference FlyoutBase_partial.cpp (PerformPlacement), commit b9fa30e549de859f15fb84f153cc6136b981d10a: only the
+		// presenter sizing is ported, as Uno sets the presenter's position when its popup panel arranges.
 		private void PerformPlacement()
 		{
 			if (!CanResizePresenter
