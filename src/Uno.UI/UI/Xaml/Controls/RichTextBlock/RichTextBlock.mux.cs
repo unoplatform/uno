@@ -567,10 +567,9 @@ namespace Microsoft.UI.Xaml.Controls
 			_pageNode?.InvalidateContent();
 
 			InvalidateInlineAndRequireRepaint();
-			// Master content/property changes invalidate the linked overflow chain so it re-measures
-			// its slice from the (re)computed master break. Mirrors CRichTextBlock::InvalidateContentMeasure
-			// driving CRichTextBlockOverflow::InvalidateAllOverflowContentMeasure down the chain.
-			InvalidateOverflowChainContentMeasure();
+			// Invalidate content on subsequent overflow elements, so their page nodes are rebuilt
+			// against the new blocks instead of only re-measuring the stale ones.
+			InvalidateOverflowChainContent(clearCachedLinks: true);
 		}
 		partial void OnForegroundChangedPartial() => InvalidateInlineAndRequireRepaint();
 
