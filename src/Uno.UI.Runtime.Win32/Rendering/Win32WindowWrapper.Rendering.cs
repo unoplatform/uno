@@ -55,7 +55,7 @@ internal partial class Win32WindowWrapper
 		}
 		catch (Exception e)
 		{
-			this.LogInfo()?.Info($"Vulkan context creation failed ({e.Message}); falling through.");
+			this.LogWarn()?.Warn($"Vulkan context creation failed ({e.Message}); falling through.");
 			return null;
 		}
 	}
