@@ -189,6 +189,25 @@ XAML declarations follow the same mapping, for example
 `ElevatedView` and the `CommandBar`/`SplitView` extensions, or
 `xmlns:uub="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`.
 
+In C#, replace `using Uno.UI.Toolkit;` with the namespace from the table. Be careful with
+`using Uno.UI.Xaml.Controls;`: that namespace also contains the Uno-specific `ScrollViewer`,
+`ComboBox` and `ScrollContentPresenter` attached-property holders, so importing it next to
+`Microsoft.UI.Xaml.Controls` makes those three names ambiguous (`CS0104`). Import it only in
+files that don't use those controls, or pin the names to the WinUI controls with aliases. This
+matters most for global usings:
+
+```xml
+<ItemGroup>
+  <Using Include="Uno.UI.Xaml.Controls" />
+  <Using Include="Microsoft.UI.Xaml.Controls.ScrollViewer" Alias="ScrollViewer" />
+  <Using Include="Microsoft.UI.Xaml.Controls.ComboBox" Alias="ComboBox" />
+  <Using Include="Microsoft.UI.Xaml.Controls.ScrollContentPresenter" Alias="ScrollContentPresenter" />
+</ItemGroup>
+```
+
+The Uno holders stay reachable by their full name, for example
+`Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty`.
+
 The other Uno Platform-specific namespaces keep their names, so code using
 `DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
 `ColorExtensions` / `ImageHelper` (`Uno.Helpers`) needs no change.
