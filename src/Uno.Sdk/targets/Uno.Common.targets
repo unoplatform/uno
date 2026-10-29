@@ -56,6 +56,10 @@
 		<WindowsProjectFolder Condition=" '$(WindowsProjectFolder)' == '' ">$(PlatformsProjectFolder)Windows\</WindowsProjectFolder>
 		<WindowsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WindowsProjectFolder)'))</WindowsProjectFolder>
 		<WindowsProjectFolder Condition=" !Exists('$(WindowsProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Windows'))</WindowsProjectFolder>
+
+		<!-- Mac Catalyst was removed in 7.0: no head builds a leftover folder (UNOB0033). -->
+		<_UnoMacCatalystProjectFolder Condition=" Exists('$(PlatformsProjectFolder)MacCatalyst') ">$(PlatformsProjectFolder)MacCatalyst\</_UnoMacCatalystProjectFolder>
+		<_UnoMacCatalystProjectFolder Condition=" '$(_UnoMacCatalystProjectFolder)' == '' AND Exists('MacCatalyst') ">MacCatalyst\</_UnoMacCatalystProjectFolder>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -105,6 +109,8 @@
 			Condition=" $(IsBrowserWasm) != 'true' AND '$(WasmProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(WindowsProjectFolder)**"
 			Condition=" $(IsWinAppSdk) != 'true' AND '$(WindowsProjectFolder)'!='' " />
+		<_IgnorePlatformFiles Include="$(_UnoMacCatalystProjectFolder)**"
+			Condition=" '$(_UnoMacCatalystProjectFolder)'!='' " />
 		<Compile Remove="@(_IgnorePlatformFiles)" />
 		<Page Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
@@ -141,6 +147,15 @@
 			   AND $(TargetFrameworks.Contains('desktop')) ">
 		<ProjectCapability Include="DotNetWslLaunch" />
 	</ItemGroup>
+
+	<Target Name="_UnoWarnMacCatalystProjectFolder"
+			BeforeTargets="CoreCompile"
+			Condition=" '$(DesignTimeBuild)' != 'true' AND '$(_UnoMacCatalystProjectFolder)' != '' ">
+		<Warning Code="UNOB0033"
+				 File="$(MSBuildProjectFullPath)"
+				 HelpLink="https://aka.platform.uno/UNOB0033"
+				 Text="The '$(_UnoMacCatalystProjectFolder)' folder is not built: Mac Catalyst was removed in Uno Platform 7.0, and macOS is served by the desktop target framework. Move anything still needed to $(PlatformsProjectFolder)Desktop and delete the folder. (See https://aka.platform.uno/UNOB0033)" />
+	</Target>
 
 	<!-- Define the default folder for Hot Design previews, so they can be excluded in Release -->
 	<PropertyGroup Condition="'$(UnoDisableHotDesign)' != 'true'">
