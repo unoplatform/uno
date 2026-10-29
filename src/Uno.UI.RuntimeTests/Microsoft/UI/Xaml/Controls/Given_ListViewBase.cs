@@ -4779,7 +4779,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public Task When_SelectionChanged_Item_Is_BroughtIntoView_ListView() => When_SelectionChanged_Item_Is_BroughtIntoView<ListView>();
 
 		[TestMethod]
@@ -4852,6 +4851,123 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				else if (setup is TabView tv) { tv.SelectedItem = item; }
 				else { throw new NotImplementedException(); }
 			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SelectionChanged_Without_Focus_Item_Is_Not_BroughtIntoView()
+		{
+			var source = Enumerable.Range(0, 100).ToArray();
+			var lv = new ListView { Width = 400, Height = 200, ItemsSource = source };
+			await UITestHelper.Load(lv);
+			var sv = lv.FindFirstDescendant<ScrollViewer>();
+
+			lv.SelectedItem = source[50];
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(50, lv.SelectedIndex);
+			Assert.AreEqual(0, sv.VerticalOffset, "Selecting from code must not scroll a list that doesn't have focus.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_SelectionChanged_After_Focus_Left_Item_Is_Not_BroughtIntoView(bool scrollFocusedItemAway)
+		{
+			var source = Enumerable.Range(0, 100).ToArray();
+			var lv = new ListView { Width = 400, Height = 200, ItemsSource = source };
+			var button = new Button { Content = "Elsewhere" };
+			await UITestHelper.Load(new StackPanel { Children = { button, lv } }, _ => lv.IsLoaded);
+			var sv = lv.FindFirstDescendant<ScrollViewer>();
+			await FocusContainer(lv, 0);
+
+			if (scrollFocusedItemAway)
+			{
+				sv.ChangeView(null, sv.ScrollableHeight, null, disableAnimation: true);
+				await UITestHelper.WaitForIdle();
+			}
+
+			button.Focus(FocusState.Programmatic);
+			await UITestHelper.WaitForIdle();
+			sv.ChangeView(null, 0, null, disableAnimation: true);
+			await UITestHelper.WaitForIdle();
+
+			lv.SelectedItem = source[50];
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(50, lv.SelectedIndex);
+			Assert.AreEqual(0, sv.VerticalOffset, "Selecting from code must not scroll a list that lost focus.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SelectionChanged_With_Focus_Partially_Visible_Item_Is_Scrolled_Minimally()
+		{
+			var source = Enumerable.Range(0, 100).ToArray();
+			var lv = new ListView { Width = 400, Height = 220, ItemsSource = source };
+			await UITestHelper.Load(lv);
+			var sv = lv.FindFirstDescendant<ScrollViewer>();
+			await FocusContainer(lv, 0);
+			var (edgeIndex, hidden) = GetItemCutOffAtBottom(lv, sv);
+
+			lv.SelectedIndex = edgeIndex;
+
+			await UITestHelper.WaitFor(() => sv.VerticalOffset > 0, timeoutMS: 2000, "timed out waiting for the selected item to be brought into view");
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual(hidden, sv.VerticalOffset, 1, "The selected item should be scrolled just enough to be fully visible.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Click_Partially_Visible_Item_Is_Scrolled_Minimally()
+		{
+			var source = Enumerable.Range(0, 100).ToArray();
+			var lv = new ListView { Width = 400, Height = 220, ItemsSource = source };
+			await UITestHelper.Load(lv);
+			var sv = lv.FindFirstDescendant<ScrollViewer>();
+			var (edgeIndex, hidden) = GetItemCutOffAtBottom(lv, sv);
+			var visiblePart = ((FrameworkElement)lv.ContainerFromIndex(edgeIndex)).GetAbsoluteBounds();
+			visiblePart.Height -= hidden;
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+			mouse.Press(new Point(visiblePart.X + visiblePart.Width / 2, visiblePart.Y + visiblePart.Height / 2));
+			mouse.Release();
+
+			await UITestHelper.WaitFor(() => sv.VerticalOffset > 0, timeoutMS: 2000, "timed out waiting for the clicked item to be brought into view");
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual(edgeIndex, lv.SelectedIndex);
+			Assert.AreEqual(hidden, sv.VerticalOffset, 1, "The clicked item should be scrolled just enough to be fully visible.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Multiple_Selection_With_Focus_Only_First_Selection_Is_BroughtIntoView()
+		{
+			var source = Enumerable.Range(0, 100).ToArray();
+			var lv = new ListView { Width = 400, Height = 200, ItemsSource = source, SelectionMode = ListViewSelectionMode.Multiple };
+			await UITestHelper.Load(lv);
+			var sv = lv.FindFirstDescendant<ScrollViewer>();
+			await FocusContainer(lv, 0);
+
+			lv.SelectedItems.Add(source[50]);
+			await UITestHelper.WaitFor(() => sv.VerticalOffset > 0, timeoutMS: 2000, "timed out waiting for the first selection to be brought into view");
+
+			sv.ChangeView(null, 0, null, disableAnimation: true);
+			await UITestHelper.WaitFor(() => sv.VerticalOffset == 0, timeoutMS: 2000, "timed out waiting for the list to scroll back to the top");
+
+			lv.SelectedItems.Add(source[80]);
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual(0, sv.VerticalOffset, "Adding to an existing selection must not scroll.");
+
+			lv.SelectedItems.Remove(source[50]);
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual(80, lv.SelectedIndex);
+			Assert.AreEqual(0, sv.VerticalOffset, "Removing from the selection must not scroll.");
 		}
 
 		[TestMethod]
