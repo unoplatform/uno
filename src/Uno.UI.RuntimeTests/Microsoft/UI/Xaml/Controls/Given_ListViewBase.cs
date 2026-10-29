@@ -4798,6 +4798,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(setup);
 			await WindowHelper.WaitForIdle();
 
+			if (setup is ListView listView)
+			{
+				// A ListView only brings a new selection into view while it has focus. TabView does it on its own.
+				await FocusContainer(listView, 0);
+			}
+
 			SetSelectedItem(source.ElementAt(50));
 
 			var lv = setup as ListView ?? setup.FindFirstDescendant<ListView>(); // get the LV itself, or the TabListView within TabView used for header
@@ -6094,6 +6100,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public partial class Given_ListViewBase // helpers
 	{
+		private static async Task FocusContainer(ListViewBase lv, int index)
+		{
+			var container = (Control)lv.ContainerFromIndex(index);
+			container.Focus(FocusState.Programmatic);
+			await UITestHelper.WaitFor(() => container.FocusState != FocusState.Unfocused, timeoutMS: 2000, "timed out waiting for the item to get focus");
+			await UITestHelper.WaitForIdle();
+		}
+
+		private static (int Index, double Hidden) GetItemCutOffAtBottom(ListViewBase lv, ScrollViewer sv)
+		{
+			for (var i = 0; lv.ContainerFromIndex(i) is FrameworkElement container; i++)
+			{
+				var top = container.TransformToVisual(sv).TransformPoint(default).Y;
+				var bottom = top + container.ActualHeight;
+				if (top < sv.ViewportHeight && bottom > sv.ViewportHeight + 1)
+				{
+					return (i, bottom - sv.ViewportHeight);
+				}
+			}
+
+			throw new InvalidOperationException("No item is cut off at the bottom of the viewport.");
+		}
+
 		private static ContentControl[] GetPanelVisibleChildren(ListViewBase list)
 		{
 			return list.ItemsPanelRoot

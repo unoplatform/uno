@@ -531,6 +531,47 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void ApplyMultiSelectStateToCachedItems();
 
+		// MUX Reference ListViewBase_Partial_Selection.cpp, commit 8463f45
+		// Called after the Selector has changed the selected item.  We determine
+		// whether or not we want to call the base implementation which will focus the
+		// newSelectedIndex for us.
+		private protected override void OnSelectionChanged(
+			int oldSelectedIndex,
+			int newSelectedIndex,
+			object pOldSelectedItem,
+			object pNewSelectedItem,
+			bool animateIfBringIntoView = false,
+			FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None)
+		{
+			// Don't focus any new item during a reorder.
+			if (!_isProcessingReorder)
+			{
+				var mode = SelectionMode;
+
+				// Prevent selection from changing when SelectionMode is None
+				if (mode != ListViewSelectionMode.None)
+				{
+					var movedExistingSelection = (newSelectedIndex != -1) && (oldSelectedIndex == -1);
+					var selectionChanged = oldSelectedIndex != newSelectedIndex;
+
+					// Only call base to focus the item if we actually moved
+					// the selection or if there was a change when SelectionMode is Single
+					if (movedExistingSelection ||
+						(selectionChanged && (mode == ListViewSelectionMode.Single)))
+					{
+						// Focus the item.
+						base.OnSelectionChanged(
+							oldSelectedIndex,
+							newSelectedIndex,
+							pOldSelectedItem,
+							pNewSelectedItem,
+							animateIfBringIntoView,
+							focusNavigationDirection);
+					}
+				}
+			}
+		}
+
 		// MUX Reference ListViewBase_Partial_Interaction.cpp, commit 58b6a55
 		// The primary scenario is touch narrator mocking a tap, so this takes the non-keyboard interaction path.
 		internal void AutomationItemClick(SelectorItem item) => OnItemClicked(item, VirtualKeyModifiers.None);

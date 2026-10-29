@@ -292,6 +292,10 @@ public class Given_TreeView
 		await UITestHelper.Load(SUT);
 		await TestServices.WindowHelper.WaitFor(() => IsWithinViewport(SUT.ContainerFromItem(sources[0])), timeoutMS: 5000);
 
+		// A selection is only brought into view while the list has focus.
+		((Control)SUT.ContainerFromItem(sources[0])).Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+
 		foreach (var c in "BCDEFGHI")
 		{
 			// select and wait for the selection BringIntoView to occur. The container realization
