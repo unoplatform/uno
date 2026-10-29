@@ -41,13 +41,24 @@ internal sealed class AppleUIKitTextFlyoutCommands : ITextCommandBarFlyoutComman
 		}
 		else if (!target.IsReadOnly
 			&& OperatingSystem.IsIOSVersionAtLeast(15)
-			&& GetProxy(target) is { } proxy
-			&& proxy.CanPerform(s_captureTextFromCamera, null))
+			&& GetScanTextProxy(target) is not null)
 		{
-			// The camera's text goes into the proxy (the first responder) and reaches the TextBox like typed text.
-			yield return new("ScanText", GetLabel(ResourceAccessor.SR_TextCommandLabelScanText), () => proxy.CaptureTextFromCamera(null));
+			yield return new("ScanText", GetLabel(ResourceAccessor.SR_TextCommandLabelScanText), () => ScanText(target));
 		}
 	}
+
+	// Looked up again on the tap: the menu hides first, and the native view can be replaced while the menu is open.
+	private static void ScanText(TextBox target)
+	{
+		if (OperatingSystem.IsIOSVersionAtLeast(15) && GetScanTextProxy(target) is { } proxy)
+		{
+			proxy.CaptureTextFromCamera(null);
+		}
+	}
+
+	// The camera's text goes into the proxy (the first responder) and reaches the TextBox like typed text.
+	private static UIView? GetScanTextProxy(TextBox target)
+		=> GetProxy(target) is { } proxy && proxy.CanPerform(s_captureTextFromCamera, null) ? proxy : null;
 
 	private static string GetLabel(string resourceId) => ResourceAccessor.GetLocalizedStringResource(resourceId);
 
