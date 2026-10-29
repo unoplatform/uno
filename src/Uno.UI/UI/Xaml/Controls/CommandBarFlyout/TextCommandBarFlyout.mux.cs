@@ -354,16 +354,22 @@ partial class TextCommandBarFlyout
 		addButtonToCommandsIfPresent(TextControlButtons.Undo, SecondaryCommands);
 		addButtonToCommandsIfPresent(TextControlButtons.Redo, SecondaryCommands);
 
+		// Uno specific: the iOS touch insertion-caret flyout offers "Select" (the word at the caret), as UIKit does.
+		addButtonToCommandsIfPresent(TextControlButtons.Select, PrimaryCommands);
+
 		// Uno specific: on a touch/pen insertion-caret flyout (no selection), Select All is the only command with an
 		// empty clipboard — and a transient flyout with no primary command self-hides (see the Opened handler). Put
 		// it in the primary bar there so tapping the insertion handle always opens a usable flyout.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		var commandListForSelectAll = InputDevicePrefersPrimaryCommands && Target is TextBox { SelectionLength: 0 } and not PasswordBox
 =======
 		// Uno specific: on the iOS touch insertion-caret flyout, "Select" (the word at the caret) leads, as in UIKit.
 		addButtonToCommandsIfPresent(TextControlButtons.Select, PrimaryCommands);
 
+=======
+>>>>>>> 7fc4304 (chore(textbox): Move two flyout comments back to their code)
 		var commandListForSelectAll = InputDevicePrefersPrimaryCommands && Target is TextBox { SelectionLength: 0 }
 >>>>>>> 73c77a0 (feat(textbox): Add iOS touch flyout commands)
 			? PrimaryCommands
@@ -385,14 +391,14 @@ partial class TextCommandBarFlyout
 		}
 		addButtonToCommandsIfPresent(TextControlButtons.SelectAll, commandListForSelectAll);
 
+		// Uno specific: commands contributed by the platform (e.g. iOS Look Up, Search Web, Share), in the overflow.
+		AddPlatformCommands();
+
 		// Uno specific: the command bar shows the overflow ("...") button whenever its primary bar is taller than the
 		// compact height (i.e. its buttons carry labels), even with nothing in the overflow — which dangles a "..." over
 		// an empty menu on the label-carrying touch/pen selection flyout (most visibly the touch insertion-caret flyout,
 		// where Select All is promoted to the primary bar and nothing is secondary). For that touch/pen UX, gate the
 		// overflow button on the actual secondary-command count; keep WinUI's default (Auto) for mouse/keyboard.
-		// Uno specific: commands contributed by the platform (e.g. iOS Look Up, Search Web, Share), in the overflow.
-		AddPlatformCommands();
-
 		if (m_commandBar is { } commandBar)
 		{
 			commandBar.OverflowButtonVisibility = InputDevicePrefersPrimaryCommands && SecondaryCommands.Count == 0
