@@ -320,6 +320,132 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+<<<<<<< HEAD
+=======
+		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
+		{
+			base.OnVisibilityChanged(oldValue, newValue);
+			if (newValue == Visibility.Visible)
+			{
+				UpdateVisualState();
+			}
+			else
+			{
+				_isPointerOver = false;
+			}
+		}
+
+		protected override void OnPointerEntered(PointerRoutedEventArgs e)
+		{
+			base.OnPointerEntered(e);
+			_isPointerOver = true;
+			UpdateVisualState();
+		}
+
+		protected override void OnPointerExited(PointerRoutedEventArgs e)
+		{
+			base.OnPointerExited(e);
+			_isPointerOver = false;
+			UpdateVisualState();
+			_core.OnPointerExited(e);
+		}
+
+		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
+		{
+			base.OnPointerCaptureLost(e);
+			_isPointerOver = false;
+			UpdateVisualState();
+			_core.OnPointerCaptureLost(e);
+		}
+
+		protected override void OnPointerPressed(PointerRoutedEventArgs args)
+		{
+			base.OnPointerPressed(args);
+
+			_core.OnPointerPressed(args);
+		}
+
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			base.OnPointerReleased(args);
+
+			_core.OnPointerReleased(args);
+		}
+
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			base.OnKeyDown(args);
+
+			_core.OnKeyDown(args);
+		}
+
+		protected override void OnCharacterReceived(CharacterReceivedRoutedEventArgs e)
+		{
+			base.OnCharacterReceived(e);
+
+			_core.OnCharacterReceived(e);
+		}
+
+		private protected override void OnPostKeyDown(KeyRoutedEventArgs args)
+		{
+			_core.OnPostKeyDown(args);
+
+			var modifiers = CoreImports.Input_GetKeyboardModifiers();
+			if (!args.Handled && KeyboardAcceleratorUtility.IsKeyValidForAccelerators(args.Key, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(modifiers)))
+			{
+				bool shouldNotImpedeTextInput = KeyboardAcceleratorUtility.TextInputHasPriorityForKey(
+					args.Key,
+					modifiers.HasFlag(VirtualKeyModifiers.Control),
+					modifiers.HasFlag(VirtualKeyModifiers.Menu));
+				args.HandledShouldNotImpedeTextInput = shouldNotImpedeTextInput;
+			}
+		}
+
+		protected virtual void UpdateButtonStates() => _core.UpdateButtonStatesCore();
+
+		internal override void UpdateVisualState(bool useTransitions = true)
+			=> _core.UpdateVisualStateCore(useTransitions);
+
+		internal override string GetPlainText()
+		{
+			// Header or placeholder only — never the password.
+			if (Header is not null)
+			{
+				var plainText = FrameworkElement.GetStringFromObject(Header);
+				if (!string.IsNullOrEmpty(plainText))
+				{
+					return plainText;
+				}
+			}
+
+			return PlaceholderText ?? string.Empty;
+		}
+
+		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
+		{
+			_core.OnTemplateRecycled();
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new PasswordBoxAutomationPeer(this);
+		}
+
+		public override string GetAccessibilityInnerText()
+		{
+			// We don't want to reveal the password
+			return null;
+		}
+
+		internal override bool CanHaveChildren() => true;
+
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		{
+			base.OnIsEnabledChanged(e);
+			UpdateVisualState();
+		}
+
+>>>>>>> 27ebcf0 (fix(textbox): Stop the iOS hold when the finger leaves)
 		private void UpdateDescriptionVisibility(bool initialization)
 		{
 			if (initialization && Description == null)

@@ -707,6 +707,16 @@ public partial class TextBox
 		_iosHoldTimer?.Stop();
 	}
 
+	// Until the hold fires, nothing captures the touch: a finger that slides off lifts on another element, and no
+	// release would stop the hold.
+	internal void OnPointerExited(PointerRoutedEventArgs e)
+	{
+		if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
+		{
+			_iosHoldTimer?.Stop();
+		}
+	}
+
 	partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e)
 	{
 		_isPressed = false;

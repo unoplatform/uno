@@ -1098,6 +1098,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnPointerExited(e);
 			_isPointerOver = false;
 			UpdateVisualState();
+			_core.OnPointerExited(e);
 		}
 
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
