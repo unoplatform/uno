@@ -42,6 +42,38 @@ public class Given_MobileAccessibilityEvents_Android
 		Assert.IsNotNull(snapshot, "Element must have a virtual ID before the test mutates it.");
 	}
 
+	// Most events are recorded by a main-looper message that the view system's sync barriers can hold back past
+	// WaitForIdle, whose dispatcher work skips them, so poll for the record.
+	private static async Task<AccessibilityNativeEventRecord[]> WaitForEventsAsync(
+		XamlRoot root,
+		AccessibilityNativeEventKind kind,
+		int timeoutMs = 5000)
+	{
+		var events = new List<AccessibilityNativeEventRecord>();
+		var deadline = System.DateTimeOffset.UtcNow.AddMilliseconds(timeoutMs);
+		do
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			events.AddRange(GetAndClearEvents(root));
+			if (events.Any(e => e.Kind == kind))
+			{
+				// Collect what the same burst still records, for the tests that bound a count.
+				await Task.Delay(100);
+				await TestServices.WindowHelper.WaitForIdle();
+				events.AddRange(GetAndClearEvents(root));
+				return events.ToArray();
+			}
+
+			await Task.Delay(25);
+		}
+		while (System.DateTimeOffset.UtcNow < deadline);
+
+		return events.ToArray();
+	}
+
+	private static async Task<bool> WaitForEventAsync(XamlRoot root, AccessibilityNativeEventKind kind)
+		=> (await WaitForEventsAsync(root, kind)).Any(e => e.Kind == kind);
+
 	// Announcements go through the SkiaAccessibilityBase debounce timer, so the record only
 	// appears after it fires. Polling keeps the wait bounded but load-independent, unlike a
 	// fixed sleep sized to the debounce window.
@@ -117,11 +149,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(button.XamlRoot!);
 
 		AutomationProperties.SetName(button, "Updated");
-		await TestServices.WindowHelper.WaitForIdle();
-
-		var events = GetAndClearEvents(button.XamlRoot!);
 		Assert.IsTrue(
-			events.Any(e => e.Kind == AccessibilityNativeEventKind.NodeInvalidated),
+			await WaitForEventAsync(button.XamlRoot!, AccessibilityNativeEventKind.NodeInvalidated),
 			"Expected NodeInvalidated after Name property change.");
 	}
 
@@ -135,11 +164,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(button.XamlRoot!);
 
 		button.IsEnabled = false;
-		await TestServices.WindowHelper.WaitForIdle();
-
-		var events = GetAndClearEvents(button.XamlRoot!);
 		Assert.IsTrue(
-			events.Any(e => e.Kind == AccessibilityNativeEventKind.NodeInvalidated),
+			await WaitForEventAsync(button.XamlRoot!, AccessibilityNativeEventKind.NodeInvalidated),
 			"Expected NodeInvalidated after IsEnabled change.");
 	}
 
@@ -153,11 +179,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(button.XamlRoot!);
 
 		AutomationProperties.SetAutomationId(button, "new-id");
-		await TestServices.WindowHelper.WaitForIdle();
-
-		var events = GetAndClearEvents(button.XamlRoot!);
 		Assert.IsTrue(
-			events.Any(e => e.Kind == AccessibilityNativeEventKind.NodeInvalidated),
+			await WaitForEventAsync(button.XamlRoot!, AccessibilityNativeEventKind.NodeInvalidated),
 			"Expected NodeInvalidated after AutomationId change.");
 	}
 
@@ -175,9 +198,8 @@ public class Given_MobileAccessibilityEvents_Android
 		AutomationProperties.SetName(button, "A");
 		AutomationProperties.SetName(button, "B");
 		AutomationProperties.SetName(button, "C");
-		await TestServices.WindowHelper.WaitForIdle();
 
-		var events = GetAndClearEvents(button.XamlRoot!);
+		var events = await WaitForEventsAsync(button.XamlRoot!, AccessibilityNativeEventKind.NodeInvalidated);
 		var invalidated = events.Where(e => e.Kind == AccessibilityNativeEventKind.NodeInvalidated).ToArray();
 		Assert.AreEqual(1, invalidated.Length,
 			"Three Name changes to the same node should produce exactly one coalesced NodeInvalidated.");
@@ -218,10 +240,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(panel.XamlRoot!);
 
 		panel.Children.Add(new Button { Content = "New Child" });
-		await TestServices.WindowHelper.WaitForIdle();
-
 		Assert.IsTrue(
-			GetAndClearEvents(panel.XamlRoot!).Any(e => e.Kind == AccessibilityNativeEventKind.StructureChanged),
+			await WaitForEventAsync(panel.XamlRoot!, AccessibilityNativeEventKind.StructureChanged),
 			"Expected StructureChanged after child added.");
 	}
 
@@ -236,10 +256,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(panel.XamlRoot!);
 
 		panel.Children.Remove(child);
-		await TestServices.WindowHelper.WaitForIdle();
-
 		Assert.IsTrue(
-			GetAndClearEvents(panel.XamlRoot!).Any(e => e.Kind == AccessibilityNativeEventKind.StructureChanged),
+			await WaitForEventAsync(panel.XamlRoot!, AccessibilityNativeEventKind.StructureChanged),
 			"Expected StructureChanged after child removed.");
 	}
 
@@ -516,10 +534,8 @@ public class Given_MobileAccessibilityEvents_Android
 		textBox.GetOrCreateAutomationPeer()!.RaiseTextEditTextChangedEvent(
 			AutomationTextEditChangeType.AutoCorrect,
 			new List<string> { "helo", "hello" });
-		await TestServices.WindowHelper.WaitForIdle();
-
 		Assert.IsTrue(
-			GetAndClearEvents(textBox.XamlRoot!).Any(e => e.Kind == AccessibilityNativeEventKind.TextChanged),
+			await WaitForEventAsync(textBox.XamlRoot!, AccessibilityNativeEventKind.TextChanged),
 			"Expected TextChanged after RaiseTextEditTextChangedEvent.");
 	}
 
@@ -535,10 +551,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(textBox.XamlRoot!);
 
 		textBox.GetOrCreateAutomationPeer()!.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextChanged);
-		await TestServices.WindowHelper.WaitForIdle();
-
 		Assert.IsTrue(
-			GetAndClearEvents(textBox.XamlRoot!).Any(e => e.Kind == AccessibilityNativeEventKind.TextChanged),
+			await WaitForEventAsync(textBox.XamlRoot!, AccessibilityNativeEventKind.TextChanged),
 			"Expected TextChanged after TextPatternOnTextChanged event.");
 	}
 
@@ -555,10 +569,8 @@ public class Given_MobileAccessibilityEvents_Android
 
 		button.GetOrCreateAutomationPeer()!.RaiseAutomationEvent(
 			AutomationEvents.SelectionItemPatternOnElementSelected);
-		await TestServices.WindowHelper.WaitForIdle();
-
 		Assert.IsTrue(
-			GetAndClearEvents(button.XamlRoot!).Any(e => e.Kind == AccessibilityNativeEventKind.SelectionChanged),
+			await WaitForEventAsync(button.XamlRoot!, AccessibilityNativeEventKind.SelectionChanged),
 			"Expected SelectionChanged after SelectionItemPatternOnElementSelected.");
 	}
 
@@ -572,10 +584,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(button.XamlRoot!);
 
 		button.GetOrCreateAutomationPeer()!.RaiseAutomationEvent(AutomationEvents.SelectionPatternOnInvalidated);
-		await TestServices.WindowHelper.WaitForIdle();
-
 		Assert.IsTrue(
-			GetAndClearEvents(button.XamlRoot!).Any(e => e.Kind == AccessibilityNativeEventKind.SelectionChanged),
+			await WaitForEventAsync(button.XamlRoot!, AccessibilityNativeEventKind.SelectionChanged),
 			"Expected SelectionChanged after SelectionPatternOnInvalidated.");
 	}
 
@@ -590,10 +600,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(button.XamlRoot!);
 
 		button.GetOrCreateAutomationPeer()!.RaiseAutomationEvent(AutomationEvents.StructureChanged);
-		await TestServices.WindowHelper.WaitForIdle();
-
 		Assert.IsTrue(
-			GetAndClearEvents(button.XamlRoot!).Any(e => e.Kind == AccessibilityNativeEventKind.StructureChanged),
+			await WaitForEventAsync(button.XamlRoot!, AccessibilityNativeEventKind.StructureChanged),
 			"Expected StructureChanged after RaiseAutomationEvent(StructureChanged).");
 	}
 
@@ -606,10 +614,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(button.XamlRoot!);
 
 		button.GetOrCreateAutomationPeer()!.RaiseAutomationEvent(AutomationEvents.LayoutInvalidated);
-		await TestServices.WindowHelper.WaitForIdle();
-
 		Assert.IsTrue(
-			GetAndClearEvents(button.XamlRoot!).Any(e => e.Kind == AccessibilityNativeEventKind.StructureChanged),
+			await WaitForEventAsync(button.XamlRoot!, AccessibilityNativeEventKind.StructureChanged),
 			"Expected StructureChanged after LayoutInvalidated.");
 	}
 
@@ -622,10 +628,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(button.XamlRoot!);
 
 		button.GetOrCreateAutomationPeer()!.RaiseAutomationEvent(AutomationEvents.AsyncContentLoaded);
-		await TestServices.WindowHelper.WaitForIdle();
-
 		Assert.IsTrue(
-			GetAndClearEvents(button.XamlRoot!).Any(e => e.Kind == AccessibilityNativeEventKind.StructureChanged),
+			await WaitForEventAsync(button.XamlRoot!, AccessibilityNativeEventKind.StructureChanged),
 			"Expected StructureChanged (not WindowChanged) after AsyncContentLoaded.");
 	}
 
@@ -640,10 +644,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(button.XamlRoot!);
 
 		button.GetOrCreateAutomationPeer()!.RaiseAutomationEvent(AutomationEvents.WindowOpened);
-		await TestServices.WindowHelper.WaitForIdle();
-
 		Assert.IsTrue(
-			GetAndClearEvents(button.XamlRoot!).Any(e => e.Kind == AccessibilityNativeEventKind.WindowChanged),
+			await WaitForEventAsync(button.XamlRoot!, AccessibilityNativeEventKind.WindowChanged),
 			"Expected WindowChanged after WindowOpened.");
 	}
 
@@ -656,10 +658,8 @@ public class Given_MobileAccessibilityEvents_Android
 		GetAndClearEvents(button.XamlRoot!);
 
 		button.GetOrCreateAutomationPeer()!.RaiseAutomationEvent(AutomationEvents.MenuOpened);
-		await TestServices.WindowHelper.WaitForIdle();
-
 		Assert.IsTrue(
-			GetAndClearEvents(button.XamlRoot!).Any(e => e.Kind == AccessibilityNativeEventKind.WindowChanged),
+			await WaitForEventAsync(button.XamlRoot!, AccessibilityNativeEventKind.WindowChanged),
 			"Expected WindowChanged after MenuOpened.");
 	}
 
@@ -703,9 +703,8 @@ public class Given_MobileAccessibilityEvents_Android
 		AccessibilityPeerHelper.AndroidClearAccessibilityEventsAction?.Invoke(button.XamlRoot!);
 
 		AutomationProperties.SetName(button, "Second");
-		await TestServices.WindowHelper.WaitForIdle();
 
-		var events = GetAndClearEvents(button.XamlRoot!);
+		var events = await WaitForEventsAsync(button.XamlRoot!, AccessibilityNativeEventKind.NodeInvalidated);
 		Assert.IsTrue(events.Length > 0, "Expected events after the second change.");
 		Assert.IsTrue(
 			events.All(e => e.Kind == AccessibilityNativeEventKind.NodeInvalidated),
@@ -726,9 +725,8 @@ public class Given_MobileAccessibilityEvents_Android
 		// Two synchronous additions — both land in the same looper iteration.
 		panel.Children.Add(new Button { Content = "First" });
 		panel.Children.Add(new Button { Content = "Second" });
-		await TestServices.WindowHelper.WaitForIdle();
 
-		var structured = GetAndClearEvents(panel.XamlRoot!)
+		var structured = (await WaitForEventsAsync(panel.XamlRoot!, AccessibilityNativeEventKind.StructureChanged))
 			.Where(e => e.Kind == AccessibilityNativeEventKind.StructureChanged)
 			.ToArray();
 		Assert.IsTrue(
@@ -750,9 +748,8 @@ public class Given_MobileAccessibilityEvents_Android
 		// Remove one and add a replacement in the same synchronous block.
 		panel.Children.Remove(original);
 		panel.Children.Add(new Button { Content = "Replacement" });
-		await TestServices.WindowHelper.WaitForIdle();
 
-		var structured = GetAndClearEvents(panel.XamlRoot!)
+		var structured = (await WaitForEventsAsync(panel.XamlRoot!, AccessibilityNativeEventKind.StructureChanged))
 			.Where(e => e.Kind == AccessibilityNativeEventKind.StructureChanged)
 			.ToArray();
 		Assert.IsTrue(
