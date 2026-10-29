@@ -162,7 +162,7 @@ internal partial class NativeWebView : ICleanableNativeWebView
 
 	public void ProcessNavigation(string html)
 	{
-		ScheduleNavigationStarting(null, () => NativeMethods.SetAttribute(_elementId, "srcdoc", html));
+		ScheduleNavigationStarting(null, () => NativeMethods.NavigateToString(_elementId, html));
 		OnNavigationCompleted(this, null);
 	}
 
