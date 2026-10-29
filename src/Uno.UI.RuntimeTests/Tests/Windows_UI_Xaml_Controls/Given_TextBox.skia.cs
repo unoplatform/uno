@@ -6514,6 +6514,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
+		// An empty line has nothing to select: the triple-tap leaves a caret there, not handles around nothing.
+		[TestMethod]
+		public async Task When_Touch_TripleTap_Empty_Line_Places_Caret_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				AcceptsReturn = true,
+				Text = "a\r\rb",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetCaretPoint(SUT, 2); // the middle, empty line
+			finger.Press(point);
+			finger.Release();
+			finger.Press(point);
+			finger.Release();
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.SelectionStart, "the caret should be on the tapped empty line");
+			Assert.AreEqual(0, SUT.SelectionLength, "an empty paragraph has nothing to select");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, "a caret shows no handles");
+		}
+
 		private static async Task<TextBox> LoadFocusedTextBox_iOS(string text)
 		{
 			var SUT = new TextBox
