@@ -297,16 +297,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(InputScope),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: new InputScope()
-					{
-						Names =
-						{
-							new InputScopeName
-							{
-								NameValue = InputScopeNameValue.Default
-							}
-						}
-					},
+					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnInputScopeChanged((InputScope)e.NewValue)
 				)
 			);

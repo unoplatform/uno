@@ -31,6 +31,7 @@ namespace Microsoft.UI.Xaml.Controls;
 internal sealed partial class TextBoxCore
 {
 	private readonly ITextBoxHost _host;
+	private InputScope? _defaultInputScope;
 
 	internal TextBoxCore(ITextBoxHost host) => _host = host;
 
@@ -74,7 +75,11 @@ internal sealed partial class TextBoxCore
 
 	internal int MaxLength => _host.MaxLength;
 
-	internal InputScope InputScope => _host.InputScope;
+	// InputScope defaults to null like WinUI; the keyboard still needs a Default scope.
+	internal InputScope InputScope => _host.InputScope ?? (_defaultInputScope ??= new InputScope
+	{
+		Names = { new InputScopeName { NameValue = InputScopeNameValue.Default } },
+	});
 
 	internal TextAlignment TextAlignment => _host.TextAlignment;
 

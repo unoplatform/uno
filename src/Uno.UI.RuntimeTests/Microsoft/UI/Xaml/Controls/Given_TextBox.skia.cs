@@ -8327,6 +8327,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25822")]
+		public async Task When_InputScope_Not_Set_IME_Session_Uses_Default()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+			var SUT = new TextBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				SUT.InputScope = new InputScope { Names = { new InputScopeName(InputScopeNameValue.Number) } };
+				SUT.ClearValue(TextBox.InputScopeProperty);
+
+				Assert.IsNull(SUT.InputScope);
+				Assert.IsNotNull(fake.LastHost);
+				Assert.AreEqual(InputScopeNameValue.Default, fake.LastHost.InputScope.Names[0].NameValue);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_IME_Partial_Result_Preserves_Committed_Prefix()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -8701,9 +8729,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				remove { }
 			}
 
-			public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation) { }
+			public IImeSessionHost LastHost { get; private set; }
 
-			public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update) => Updates.Add(update);
+			public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation) => LastHost = host;
+
+			public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
+			{
+				LastHost = host;
+				Updates.Add(update);
+			}
 
 			public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
 				=> Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
