@@ -408,6 +408,89 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// WinUI's ResizeToFit: a flyout that fits on no side of its target is shrunk to the side with more room, inside the
+		// window, and its content scrolls.
+		[TestMethod]
+		public async Task When_Flyout_Fits_On_No_Side_Then_Resized_Inside_Window()
+		{
+			var windowSize = TestServices.WindowHelper.XamlRoot.Size;
+			var content = new Border
+			{
+				Width = 200,
+				Height = windowSize.Height * 1.5,
+				Background = new SolidColorBrush(Colors.Tomato),
+			};
+			var flyout = new Flyout
+			{
+				Placement = FlyoutPlacementMode.Top,
+				Content = content,
+				FlyoutPresenterStyle = new Style(typeof(FlyoutPresenter))
+				{
+					Setters = { new Setter(FrameworkElement.MaxHeightProperty, windowSize.Height * 2) },
+				},
+			};
+			var button = new Button
+			{
+				Content = "Open",
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				VerticalAlignment = VerticalAlignment.Center,
+			};
+
+			TestServices.WindowHelper.WindowContent = button;
+			await TestServices.WindowHelper.WaitForLoaded(button);
+
+			try
+			{
+				flyout.ShowAt(button);
+				await TestServices.WindowHelper.WaitForLoaded(content);
+
+				FlyoutPresenter presenter = null;
+				for (DependencyObject current = content; current is not null && presenter is null; current = VisualTreeHelper.GetParent(current))
+				{
+					presenter = current as FlyoutPresenter;
+				}
+				Assert.IsNotNull(presenter, "The flyout presenter was not found.");
+
+				var buttonBounds = button.GetOnScreenBounds();
+				await TestServices.WindowHelper.WaitFor(
+					() =>
+					{
+						var bounds = presenter.GetOnScreenBounds();
+						return bounds.Top >= -0.5
+							&& bounds.Bottom <= windowSize.Height + 0.5
+							&& bounds.Left >= -0.5
+							&& bounds.Right <= windowSize.Width + 0.5
+							&& (bounds.Bottom <= buttonBounds.Top + 0.5 || bounds.Top >= buttonBounds.Bottom - 0.5);
+					},
+					message: "The flyout was not shrunk inside the window next to its button.");
+
+				var scrollViewer = FindDescendant<ScrollViewer>(presenter);
+				Assert.IsNotNull(scrollViewer, "The presenter's ScrollViewer was not found.");
+				await TestServices.WindowHelper.WaitFor(
+					() => scrollViewer.ExtentHeight > scrollViewer.ViewportHeight + 1,
+					message: "The flyout content must scroll once shrunk.");
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+
+			static T FindDescendant<T>(DependencyObject element) where T : DependencyObject
+			{
+				for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+				{
+					var child = VisualTreeHelper.GetChild(element, i);
+					var found = child as T ?? FindDescendant<T>(child);
+					if (found is not null)
+					{
+						return found;
+					}
+				}
+
+				return null;
+			}
+		}
+
 		// "Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?"
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
