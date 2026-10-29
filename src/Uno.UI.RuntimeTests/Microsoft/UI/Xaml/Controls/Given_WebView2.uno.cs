@@ -116,6 +116,60 @@ public class Given_WebView2
 		}
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25735")]
+	public async Task When_Showing_String_Then_Source_Is_Blank()
+	{
+		var webView = new WebView2 { Width = 200, Height = 200 };
+
+		// Waits for the NavigationCompleted of the navigation that NavigateToString starts, skipping the early one (#25806).
+		async Task<string> ShowString(string html)
+		{
+			ulong? startedId = null;
+			string loadedSource = null;
+			void OnStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args) => startedId = args.NavigationId;
+			void OnCompleted(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
+			{
+				if (args.NavigationId == startedId)
+				{
+					loadedSource = sender.CoreWebView2.Source;
+				}
+			}
+
+			webView.NavigationStarting += OnStarting;
+			webView.NavigationCompleted += OnCompleted;
+			try
+			{
+				webView.NavigateToString(html);
+				await TestServices.WindowHelper.WaitFor(
+					() => loadedSource is not null,
+					timeoutMS: 10000,
+					message: "NavigationCompleted should be raised when the frame loads the string.");
+
+				return loadedSource;
+			}
+			finally
+			{
+				webView.NavigationStarting -= OnStarting;
+				webView.NavigationCompleted -= OnCompleted;
+			}
+		}
+
+		try
+		{
+			await UITestHelper.Load(webView);
+			await webView.EnsureCoreWebView2Async();
+
+			// As in WinUI, a string is reported as about:blank, not as the iframe's about:srcdoc.
+			Assert.AreEqual("about:blank", await ShowString("<p>Readable</p>"), "A string should be reported as about:blank.");
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static async Task<(WeakReference, string)> LoadNavigateAndUnloadWebView2()
 	{

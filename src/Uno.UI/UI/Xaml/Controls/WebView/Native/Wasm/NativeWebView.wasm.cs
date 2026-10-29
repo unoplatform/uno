@@ -93,7 +93,9 @@ internal partial class NativeWebView : ICleanableNativeWebView
 
 		var uriString = string.IsNullOrEmpty(absoluteUrl) ? NativeMethods.GetAttribute(_elementId, "src") : absoluteUrl;
 		Uri uri = CoreWebView2.BlankUri;
-		if (!string.IsNullOrEmpty(uriString))
+
+		// As in WinUI, a NavigateToString page is reported as about:blank, rather than as the iframe's about:srcdoc.
+		if (!string.IsNullOrEmpty(uriString) && uriString != "about:srcdoc")
 		{
 			uri = new Uri(uriString);
 		}
