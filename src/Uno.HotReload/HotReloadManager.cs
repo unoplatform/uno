@@ -366,8 +366,9 @@ public sealed class HotReloadManager : IDisposable
 				_tracker.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
 
 				// Emit (EnC) diagnostics carry on every outcome of this branch; deltas are populated on Success only.
-				// The suppressed generator errors carry too, as the reason the generated code is stale. No dedup:
-				// generator diagnostics never appear in compilation.GetDiagnostics().
+				// The suppressed generator errors carry too, as the reason the generated code is stale. They can be
+				// the only actionable message: the emit may report something like ENC0020 on a generated member the
+				// user never wrote. No dedup: generator diagnostics never appear in compilation.GetDiagnostics().
 				diagnostics = emitDiagnostics.AddRange(generatorErrors);
 
 				// A project the engine names as needing a rebuild is a rude edit even without an ENC error.
