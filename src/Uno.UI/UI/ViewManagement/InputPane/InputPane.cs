@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
@@ -102,15 +101,6 @@ public partial class InputPane
 
 		UpdateRootViewport(ensureFocusedElementInView);
 
-		if (ensureFocusedElementInView)
-		{
-			// Like WinUI's RootScrollViewer::NotifyInputPaneStateChange, the open flyouts are placed again.
-			foreach (var flyout in FlyoutBase.OpenFlyouts)
-			{
-				flyout.NotifyInputPaneStateChange(Visible);
-			}
-		}
-
 		if (ensureFocusedElementInView && Visible)
 		{
 			// Wait for proper element to be focused
@@ -142,8 +132,8 @@ public partial class InputPane
 
 	private static XamlRoot? GetXamlRoot() => Window.InitialWindow?.Content?.XamlRoot;
 
-	// Like WinUI's RootScrollViewer, the root viewport ends at the top of the input pane, unless the app
-	// handled the occlusion itself.
+	// Like WinUI's RootScrollViewer, the root viewport ends at the top of the input pane and the open flyouts are placed
+	// again, unless the app handled the occlusion itself.
 	private void UpdateRootViewport(bool ensureFocusedElementInView)
 	{
 		if (GetXamlRoot()?.VisualTree.RootElement is not { } rootElement
@@ -152,9 +142,14 @@ public partial class InputPane
 			return;
 		}
 
-		rootElementLogic.SetInputPaneViewportHeight(Visible && ensureFocusedElementInView
-			? Math.Clamp(OccludedRect.Y, 0, rootElement.ActualSize.Y)
-			: null);
+		if (ensureFocusedElementInView)
+		{
+			rootElementLogic.NotifyInputPaneStateChange(Visible, Visible ? Math.Clamp(OccludedRect.Y, 0, rootElement.ActualSize.Y) : null);
+		}
+		else
+		{
+			rootElementLogic.SetInputPaneViewportHeight(null);
+		}
 	}
 
 	private void EnsureFocusedElementInView()

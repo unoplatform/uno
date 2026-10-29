@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Uno.Foundation.Logging;
 using Uno.UI.Helpers.WinUI;
 
 namespace Uno.UI.Xaml.Core;
@@ -34,6 +36,41 @@ internal class UnoRootElementLogic
 	/// root visual scrolls within a viewport that ends at the top of the pane, as the outermost bring-into-view scroller.
 	/// </remarks>
 	internal double InputPaneVerticalOffset { get; private set; }
+
+	/// <summary>
+	/// Like WinUI's RootScrollViewer::NotifyInputPaneStateChange: sets the area left above the input pane, then places the
+	/// open flyouts of this root again.
+	/// </summary>
+	internal void NotifyInputPaneStateChange(bool isInputPaneVisible, double? viewportHeight)
+	{
+		SetInputPaneViewportHeight(viewportHeight);
+
+		if (VisualTree.GetForElement(_rootElement) is not { } visualTree)
+		{
+			return;
+		}
+
+		// Ensure Flyout size and position properly with showing/hiding IHM.
+		foreach (var flyout in FlyoutBase.OpenFlyouts.ToArray())
+		{
+			if (flyout.XamlRoot?.VisualTree != visualTree)
+			{
+				continue;
+			}
+
+			try
+			{
+				flyout.NotifyInputPaneStateChange(isInputPaneVisible);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to place {flyout.GetType().Name} again for the input pane.", e);
+				}
+			}
+		}
+	}
 
 	/// <summary>
 	/// Sets the height of the area left above the input pane, or null once the pane no longer constrains the root.
