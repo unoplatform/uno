@@ -56,8 +56,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private bool m_isTargetPositionSet;
 		private Point m_targetPoint;
 
-		private bool m_presenterResized;
+		private bool m_isPresenterWidthResized;
+		private bool m_isPresenterHeightResized;
 		private Size m_presenterSizeBeforeResize;
+		private Size? m_lastPresenterRectSize;
+		private (Size PlacementSize, Size PresenterRectSize)? m_pendingPlacement;
+		private bool m_isPlacementPending;
 		private bool m_allowPresenterResizing = true;
 
 		internal bool IsTargetPositionSet => m_isTargetPositionSet;
@@ -125,7 +129,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_popup.Closed += OnPopupClosed;
 				_popup.LostFocus += OnPopupLostFocus;
 				child.Loaded += OnPresenterLoaded;
-				child.SizeChanged += OnPresenterSizeChanged;
 
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
 
@@ -996,9 +999,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				ResetPresenterSize();
 			}
 
-			PerformPlacement();
-
-			// Uno places the presenter when its popup panel arranges.
+			// Uno places the presenter when its popup panel arranges, which resizes it again if needed (OnPresenterPlaced).
 			_popup?.PopupPanel?.InvalidateArrange();
 		}
 
@@ -1011,72 +1012,112 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		internal bool CanResizePresenter => m_allowPresenterResizing && !m_isTargetPositionSet && EffectivePlacement != FlyoutPlacementMode.Full;
 
 		/// <summary>
-		/// The presenter's own size while it is resized to fit, which its placement keeps being computed from.
+		/// The size the presenter is placed from: its size before being shrunk on each axis it was shrunk on, so it keeps the
+		/// side and the size it was given, and its desired size on the other axis, so it can still grow there.
 		/// </summary>
-		internal Size? PresenterSizeBeforeResize => m_presenterResized ? m_presenterSizeBeforeResize : null;
+		internal Size GetPresenterPlacementSize(Size desiredSize) => new(
+			m_isPresenterWidthResized ? m_presenterSizeBeforeResize.Width : desiredSize.Width,
+			m_isPresenterHeightResized ? m_presenterSizeBeforeResize.Height : desiredSize.Height);
 
-		private void OnPresenterSizeChanged(object sender, SizeChangedEventArgs args)
+		/// <summary>
+		/// Called once the popup panel placed the presenter. When that place doesn't match the presenter's size, the presenter
+		/// is sized to it after the layout pass, as WinUI does in PerformPlacement when the presenter, its target or the input
+		/// pane change.
+		/// </summary>
+		internal void OnPresenterPlaced(Size placementSize, Size presenterRectSize, Size desiredSize)
 		{
-			if (!m_presenterResized)
+			// The last size given to the presenter ends the loop when the presenter can't take it (e.g. its MaxHeight).
+			if (!CanResizePresenter
+				|| AreClose(presenterRectSize, desiredSize)
+				|| (m_lastPresenterRectSize is { } lastPresenterRectSize && AreClose(presenterRectSize, lastPresenterRectSize)))
 			{
-				PerformPlacement();
+				return;
+			}
+
+			m_pendingPlacement = (placementSize, presenterRectSize);
+
+			if (!m_isPlacementPending && GetPresenter() is { } presenter)
+			{
+				m_isPlacementPending = true;
+				presenter.LayoutUpdated += OnPresenterLayoutUpdated;
+			}
+		}
+
+		private void OnPresenterLayoutUpdated(object sender, object args)
+		{
+			if (GetPresenter() is { } presenter)
+			{
+				presenter.LayoutUpdated -= OnPresenterLayoutUpdated;
+			}
+
+			m_isPlacementPending = false;
+
+			if (m_pendingPlacement is { } pendingPlacement)
+			{
+				m_pendingPlacement = null;
+				PerformPlacement(pendingPlacement.PlacementSize, pendingPlacement.PresenterRectSize);
 			}
 		}
 
 		// MUX Reference FlyoutBase_partial.cpp (PerformPlacement), commit b9fa30e549de859f15fb84f153cc6136b981d10a: only the
-		// presenter sizing is ported, as Uno sets the presenter's position when its popup panel arranges.
-		private void PerformPlacement()
+		// presenter sizing is ported, as Uno computes the presenter's place when its popup panel arranges.
+		private void PerformPlacement(Size presenterSize, Size presenterRectSize)
 		{
 			if (!CanResizePresenter
-				|| _popup is not { IsOpen: true, PopupPanel: { } popupPanel }
+				|| _popup is not { IsOpen: true }
 				|| GetPresenter() is not { } presenter)
 			{
 				return;
 			}
 
-			var presenterSize = PresenterSizeBeforeResize ?? presenter.DesiredSize;
-			if (popupPanel.CalculateFlyoutPlacement(presenter, presenterSize) is not { } presenterRect)
-			{
-				return;
-			}
-
-			if (presenterRect.Size == presenterSize)
-			{
-				ResetPresenterSize();
-				return;
-			}
-
-			m_presenterSizeBeforeResize = presenterSize;
-			m_presenterResized = true;
-
 			var margin = presenter.Margin;
-			SetPresenterLength(presenter, FrameworkElement.WidthProperty, presenterRect.Width != presenterSize.Width, presenterRect.Width - margin.Left - margin.Right);
-			SetPresenterLength(presenter, FrameworkElement.HeightProperty, presenterRect.Height != presenterSize.Height, presenterRect.Height - margin.Top - margin.Bottom);
+			m_isPresenterWidthResized = SetPresenterLength(presenter, FrameworkElement.WidthProperty, m_isPresenterWidthResized, presenterSize.Width, presenterRectSize.Width, margin.Left + margin.Right);
+			m_isPresenterHeightResized = SetPresenterLength(presenter, FrameworkElement.HeightProperty, m_isPresenterHeightResized, presenterSize.Height, presenterRectSize.Height, margin.Top + margin.Bottom);
+			m_presenterSizeBeforeResize = presenterSize;
+			m_lastPresenterRectSize = presenterRectSize;
 
-			static void SetPresenterLength(Control presenter, DependencyProperty property, bool isResized, double length)
+			static bool SetPresenterLength(Control presenter, DependencyProperty property, bool wasResized, double length, double placedLength, double margins)
 			{
-				if (isResized)
+				if (AreClose(placedLength, length))
 				{
-					presenter.SetValue(property, Math.Max(0, length));
+					if (wasResized)
+					{
+						presenter.ClearValue(property);
+					}
+
+					return false;
 				}
-				else
-				{
-					presenter.ClearValue(property);
-				}
+
+				presenter.SetValue(property, Math.Max(0, placedLength - margins));
+				return true;
 			}
 		}
 
 		private void ResetPresenterSize()
 		{
-			if (m_presenterResized && GetPresenter() is { } presenter)
+			if (GetPresenter() is { } presenter)
 			{
 				// Uno clears the forced size instead of setting NaN, so a FlyoutPresenterStyle Width or Height still applies.
-				presenter.ClearValue(FrameworkElement.WidthProperty);
-				presenter.ClearValue(FrameworkElement.HeightProperty);
+				if (m_isPresenterWidthResized)
+				{
+					presenter.ClearValue(FrameworkElement.WidthProperty);
+				}
+
+				if (m_isPresenterHeightResized)
+				{
+					presenter.ClearValue(FrameworkElement.HeightProperty);
+				}
 			}
 
-			m_presenterResized = false;
+			m_isPresenterWidthResized = false;
+			m_isPresenterHeightResized = false;
+			m_lastPresenterRectSize = null;
+			m_pendingPlacement = null;
 		}
+
+		private static bool AreClose(double value1, double value2) => Math.Abs(value1 - value2) < 0.5;
+
+		private static bool AreClose(Size size1, Size size2) => AreClose(size1.Width, size2.Width) && AreClose(size1.Height, size2.Height);
 
 		internal void SetPresenterStyle(
 			Control pPresenter,

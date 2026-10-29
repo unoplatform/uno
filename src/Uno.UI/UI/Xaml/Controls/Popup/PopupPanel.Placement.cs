@@ -79,13 +79,16 @@ partial class PopupPanel
 	{
 		foreach (var child in Children)
 		{
-			// A presenter resized to fit is still placed from its own size, so it keeps the side and the size it was given.
-			var desiredSize = Flyout?.PresenterSizeBeforeResize ?? child.DesiredSize;
-			var rect = CalculatePopupPlacement(popup, child, desiredSize);
+			var placementSize = Flyout?.GetPresenterPlacementSize(child.DesiredSize) ?? child.DesiredSize;
+			var rect = CalculatePopupPlacement(popup, child, placementSize);
 
 			if (Flyout?.IsTargetPositionSet ?? false)
 			{
-				rect = Flyout.UpdateTargetPosition(GetAvailableWindowRect(popup), desiredSize, rect);
+				rect = Flyout.UpdateTargetPosition(GetAvailableWindowRect(popup), placementSize, rect);
+			}
+			else
+			{
+				Flyout?.OnPresenterPlaced(placementSize, new Size(rect.Width, rect.Height), child.DesiredSize);
 			}
 
 			child.Arrange(rect);
@@ -98,14 +101,6 @@ partial class PopupPanel
 	{
 		return popup.PlacementTarget.GetBoundsRectRelativeTo(this);
 	}
-
-	/// <summary>
-	/// Where the flyout's presenter is placed for the given size, or null when this panel does not place it next to a target.
-	/// </summary>
-	internal Rect? CalculateFlyoutPlacement(UIElement presenter, Size presenterSize)
-		=> Flyout is not null && Popup.PlacementTarget is not null
-			? CalculatePopupPlacement(Popup, presenter, presenterSize)
-			: default(Rect?);
 
 	private Rect CalculatePopupPlacement(Popup popup, UIElement child, Size childDesiredSize)
 	{
