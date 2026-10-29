@@ -7,6 +7,7 @@ using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -164,6 +165,69 @@ public class Given_InputInjector_RelativeRoot
 		await UITestHelper.WaitForIdle();
 
 		Assert.IsTrue(buttonClicked, "Button inside the relative root subtree should be reachable by scoped injection.");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25731")]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	[DataRow(1, true, DisplayName = "1 px move")]
+	[DataRow(20, false, DisplayName = "20 px move and back")]
+	public async Task When_Touch_Moves_With_Offset_RelativeRoot_Then_Tapped_Only_Within_Range(int moveBy, bool tapped)
+	{
+		// The margin keeps the root away from the window origin, by more than the tap range.
+		Border target;
+		Grid root;
+		var ui = new Grid
+		{
+			Children =
+			{
+				(root = new Grid
+				{
+					Width = 200,
+					Height = 200,
+					Margin = new Thickness(50),
+					HorizontalAlignment = HorizontalAlignment.Left,
+					VerticalAlignment = VerticalAlignment.Top,
+					Children =
+					{
+						(target = new Border
+						{
+							Background = new SolidColorBrush(Colors.Blue),
+							ManipulationMode = ManipulationModes.TranslateX,
+						}),
+					}
+				}),
+			}
+		};
+
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(ui);
+
+		var pressedPosition = default(Point);
+		var tappedCount = 0;
+		target.PointerPressed += (_, e) => pressedPosition = e.GetCurrentPoint(root).Position;
+		target.Tapped += (_, _) => tappedCount++;
+
+		// With a manipulation mode and handler, the gesture recognizer of the target also gets the moves.
+		target.ManipulationDelta += (_, _) => { };
+
+		// Coordinates are relative to `root` (the RelativeRoot).
+		var scopedInjector = InputInjector.TryCreate(root)
+			?? throw new InvalidOperationException("Failed to create scoped InputInjector");
+		using var finger = scopedInjector.GetFinger();
+		finger.Press(new Point(100, 100));
+		finger.MoveTo(new Point(100 + moveBy, 100));
+		finger.MoveTo(new Point(100, 100));
+		finger.Release();
+		await UITestHelper.WaitForIdle();
+
+		// A move within the tap range keeps the tap; one out of it cancels the tap even when the finger comes back.
+		// Either way, the press is where it was injected in the root.
+		Assert.AreEqual(
+			$"Tapped: {(tapped ? 1 : 0)}, press relative to the root: 100,100",
+			$"Tapped: {tappedCount}, press relative to the root: {Math.Round(pressedPosition.X)},{Math.Round(pressedPosition.Y)}");
 	}
 }
 #endif
