@@ -308,5 +308,20 @@ namespace Uno.UI.Tests.Windows_UI
 			Assert.AreEqual("#FFFFFF00", Colors.Yellow.ToString(), "Yellow");
 			Assert.AreEqual("#FF9ACD32", Colors.YellowGreen.ToString(), "YellowGreen");
 		}
+
+		[TestMethod]
+		[DataRow("#F00", "#FFFF0000")]
+		[DataRow("#FFF", "#FFFFFFFF")]
+		[DataRow("#123", "#FF112233")]
+		[DataRow("ABC", "#FFAABBCC")]
+		[DataRow("#8F00", "#88FF0000")]
+		[DataRow("#0ABC", "#00AABBCC")]
+		[DataRow("#1A69A6", "#FF1A69A6")]
+		[DataRow("#801A69A6", "#801A69A6")]
+		public void When_ParsingHexColors(string input, string expected)
+		{
+			Assert.AreEqual(expected, Colors.FromARGB(input).ToString());
+			Assert.AreEqual(expected, Colors.Parse(input.StartsWith('#') ? input : "#" + input).ToString());
+		}
 	}
 }
