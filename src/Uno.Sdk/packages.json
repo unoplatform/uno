@@ -37,8 +37,8 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net10.0": "10.1.0-dev.260",
-			"net11.0": "10.1.0-dev.260"
+			"net10.0": "10.1.0-dev.284",
+			"net11.0": "11.1.0-dev.5"
 		}
 	},
 	{
