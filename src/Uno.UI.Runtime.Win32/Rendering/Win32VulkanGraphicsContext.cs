@@ -22,6 +22,12 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 	// is created on a background thread while the app starts up.
 	private static BackgroundPrewarm<VulkanContext>? _devicePrewarm;
 
+	// Every window renders on one instance and device: drivers cap how many devices a process may create (an NVIDIA
+	// one refuses the 14th), and each costs memory and creation time. Only the swapchain and render image are per
+	// window. UI thread only.
+	private static VulkanContext? _sharedDevice;
+	private static int _sharedDeviceUsers;
+
 	private readonly VulkanContext _vk;
 	// MAILBOX present returns without blocking, so the render thread is paced here; otherwise it spins at
 	// thousands of fps rendering frames the presentation engine discards, and FrameRate is ignored.
@@ -29,6 +35,7 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 	private IDisposable? _frameLock;
 	private bool _skipPresent;
 	private bool _presented;
+	private bool _disposed;
 	private int _width, _height;
 
 	public bool PresentedLastFrame => _presented;
@@ -55,13 +62,20 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 			_width = _height = 1;
 		}
 
-		var width = _width;
-		var height = _height;
-		_vk = prewarm is not null
-			? prewarm.Claim(
-				vk => vk.InitializeSurface(hwnd.Value, width, height),
-				() => CreateForWindow(hwnd, width, height))
-			: CreateForWindow(hwnd, width, height);
+		var device = AcquireSharedDevice(prewarm);
+		var vk = VulkanContext.ForSharedDevice(device);
+		try
+		{
+			vk.InitializeSurface(hwnd.Value, _width, _height);
+		}
+		catch
+		{
+			vk.Dispose();
+			ReleaseSharedDevice();
+			throw;
+		}
+
+		_vk = vk;
 
 		// Created last so a declined negotiation (the throw above) doesn't leave a timer behind.
 		_pacer = new Win32RenderPacer(
@@ -99,11 +113,43 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 
 	private static BackgroundPrewarm<VulkanContext>? ClaimDevicePrewarm() => Interlocked.Exchange(ref _devicePrewarm, null);
 
-	private static VulkanContext CreateForWindow(HWND hwnd, int width, int height)
+	private static VulkanContext AcquireSharedDevice(BackgroundPrewarm<VulkanContext>? prewarm)
+	{
+		if (_sharedDevice is null)
+		{
+			_sharedDevice = prewarm is not null ? prewarm.Claim(static _ => { }, CreateDevice) : CreateDevice();
+		}
+		else
+		{
+			prewarm?.Discard();
+		}
+
+		_sharedDeviceUsers++;
+		return _sharedDevice;
+	}
+
+	private static void ReleaseSharedDevice()
+	{
+		if (--_sharedDeviceUsers == 0)
+		{
+			_sharedDevice?.Dispose();
+			_sharedDevice = null;
+		}
+	}
+
+	private static VulkanContext CreateDevice()
 	{
 		var vk = new VulkanContext();
-		vk.Initialize(new Win32VulkanSurfaceFactory(), hwnd.Value, width, height);
-		return vk;
+		try
+		{
+			vk.InitializeDevice(new Win32VulkanSurfaceFactory());
+			return vk;
+		}
+		catch
+		{
+			vk.Dispose();
+			throw;
+		}
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
@@ -164,12 +210,21 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 		{
 			_vk.BlitAndPresent();
 			_presented = true;
-			_pacer.WaitForNextFrame();
 		}
 
 		_frameLock.Dispose();
 		_frameLock = null;
+
+		// Outside the device lock, which every window shares: waiting for this window's next frame must not hold up
+		// the others.
+		if (_presented)
+		{
+			_pacer.WaitForNextFrame();
+		}
 	}
+
+	/// <summary>Takes the lock every window's use of the shared device and queue is serialized on.</summary>
+	public IDisposable LockDevice() => _vk.Lock();
 
 	// Retargets the pacer's timer (the degraded DwmFlush fallback, or the active pacer under a fixed FrameRate)
 	// when the window moves to a display with a different refresh rate.
@@ -177,9 +232,16 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 
 	public void Dispose()
 	{
+		if (_disposed)
+		{
+			return;
+		}
+
+		_disposed = true;
 		_frameLock?.Dispose();
 		_frameLock = null;
 		_pacer.Dispose();
 		_vk.Dispose();
+		ReleaseSharedDevice();
 	}
 }
