@@ -260,6 +260,9 @@ public class Given_SKCanvasElement
 			while (!cts.IsCancellationRequested)
 			{
 				SUT.Invalidate();
+				// Past the first call Invalidate only finds a post already pending, so without this the loop has no
+				// GC safe point: CoreCLR on iOS then cannot suspend the thread and the first GC hangs the app.
+				Thread.Yield();
 			}
 		})).ToArray();
 

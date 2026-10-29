@@ -126,13 +126,30 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		return _target!;
 	}
 
+	/// <summary>
+	/// False when the last present was dropped in a way a retry can fix (a timed-out or stale acquire); a host that
+	/// retries such frames reads it. A hidden window reports true: nothing can show until it is visible again.
+	/// </summary>
+	internal bool LastPresentSucceeded { get; private set; }
+
+	// A rendered frame the window has not shown yet. The offscreen keeps it, so the next present blits it again
+	// rather than leaving the window behind until something else changes.
+	private bool _presentOwed;
+
 	public void Present()
 	{
-		if (_disposed || !_frameAcquired || _target is null)
+		if (_disposed || _target is null)
+		{
+			return;
+		}
+
+		// Reconfiguring recreates the offscreen, so once the surface is stale only a newly rendered frame can be shown.
+		if (!_frameAcquired && (!_presentOwed || !_configured))
 		{
 			return;
 		}
 		_frameAcquired = false;
+		_presentOwed = true;
 
 		// wgpu's Vulkan swapchain gives the acquire a fixed one-second wait and reports running past it as a lost
 		// device (gfx-rs/wgpu#9029). On a CPU rasterizer the frame just submitted can take longer than that (the
@@ -161,6 +178,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 				_configured = false;
 			}
 
+			LastPresentSucceeded = st.Status == global::Uno.UI.Composition.WebGpu.SilkCompat.Xlate.SurfaceStatusOccluded;
 			return;
 		}
 
@@ -183,6 +201,8 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		Api.QueueSubmit(_device.Q, 1, &cb);
 
 		Api.SurfacePresent(_surface);
+		_presentOwed = false;
+		LastPresentSucceeded = true;
 
 		Api.CommandBufferRelease(cb);
 		Api.CommandEncoderRelease(enc);

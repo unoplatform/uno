@@ -296,6 +296,95 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Rendered_At_Twice_The_Scale_Then_Clipped_Edges_Stay_Sharp()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			// Rounded corners keep the background a shape a clip cannot simply trim, so the clips' own edges draw it:
+			// the bitmap's bounds and the RectangleGeometry.
+			var SUT = new Border()
+			{
+				Width = 300,
+				Height = 300,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				CornerRadius = new CornerRadius(50),
+				Clip = new RectangleGeometry() { Rect = new Rect(0, 0, 150, 150) },
+			};
+			await UITestHelper.Load(SUT);
+
+			// Twice the logical size draws at 2x whatever the display scale is. Every edge below lands on a pixel boundary
+			// (the bitmap's own at 0, the clip's at 150 -> 300), so the pixels beside it are fully in or fully out.
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(SUT, 600, 600);
+			var screenshot = await RawBitmap.From(renderer, SUT, implicitScaling: 1);
+
+			ImageAssert.HasColorAt(screenshot, 0, 200, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 200, 0, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 299, 200, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 200, 299, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 300, 200, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 200, 300, Microsoft.UI.Colors.Red, tolerance: 5);
+		}
+
+		[TestMethod]
+		public async Task When_Rendered_At_Another_Scale_Then_Edges_Stay_Sharp()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new Border()
+			{
+				Width = 300,
+				Height = 300,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				CornerRadius = new CornerRadius(50),
+				Clip = new RectangleGeometry() { Rect = new Rect(0, 0, 150, 150) },
+			};
+			// Placed outside the window, so frames on screen never draw it and only the bitmaps below do.
+			Canvas.SetLeft(SUT, -10000);
+			var sibling = new Border() { Width = 10, Height = 10, Background = new SolidColorBrush(Microsoft.UI.Colors.Blue) };
+			await UITestHelper.Load(new Canvas() { Width = 20, Height = 20, Children = { SUT, sibling } });
+
+			// A render at 1x, then a frame on screen that does not draw it, leaves what that render compiled unused and
+			// free for the next render to take: at 3.5x it has to be redone rather than drawn with 1x edges.
+			await new RenderTargetBitmap().RenderAsync(SUT, 300, 300);
+#if __SKIA__
+			var target = (CompositionTarget)SUT.Visual.CompositionTarget!;
+			var presented = 0L;
+			EventHandler<FramePresentedInfo> onPresented = (_, info) => System.Threading.Interlocked.Exchange(ref presented, info.Sequence);
+			target.FramePresented += onPresented;
+			try
+			{
+				var recorded = target.LastRecordedSequence;
+				sibling.Background = new SolidColorBrush(Microsoft.UI.Colors.Green);
+				await WindowHelper.WaitFor(() => System.Threading.Interlocked.Read(ref presented) > recorded, timeoutMS: 5000, message: "the change should be presented");
+			}
+			finally
+			{
+				target.FramePresented -= onPresented;
+			}
+#else
+			sibling.Background = new SolidColorBrush(Microsoft.UI.Colors.Green);
+			await UITestHelper.WaitForRender(frameCount: 2);
+#endif
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(SUT, 1050, 1050);
+			var screenshot = await RawBitmap.From(renderer, SUT, implicitScaling: 1);
+
+			// Every edge lands on a pixel boundary (the bitmap's own at 0, the clip's at 150 -> 525).
+			ImageAssert.HasColorAt(screenshot, 0, 350, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 350, 0, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 524, 350, Microsoft.UI.Colors.Red, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, 350, 524, Microsoft.UI.Colors.Red, tolerance: 5);
+		}
+
+		[TestMethod]
 		public async Task When_Identical_Border_Is_Inserted_Before_Another_Then_Both_Render()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))

@@ -7,6 +7,9 @@
 	<PropertyGroup>
 		<WgpuNativeVersion>v29.0.1.1</WgpuNativeVersion>
 		<WgpuNativeCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-native\$(WgpuNativeVersion)\</WgpuNativeCacheDir>
+		<!-- iOS heads link through the package's own wiring (Uno.WinUI.Composition.WebGpu.targets), pointed at the
+		     per-RID layout _ProvisionWgpuNativeIos lays out here, the same one the package ships. -->
+		<UnoWebGpuIosLibDir Condition="'$(UnoWebGpuIosLibDir)' == ''">$(WgpuNativeCacheDir)ios-rid\</UnoWebGpuIosLibDir>
 	</PropertyGroup>
 
 	<!-- The Apple mobile SDKs (Xamarin.MacDev.Tasks) register their own "Unzip" task with different parameters,
@@ -240,9 +243,11 @@
 	     @(NativeReference) (feeding _ExpandNativeReferences); items added only before BeforeBuild arrive too late
 	     and the static lib silently never reaches the native link. -->
 	<Target Name="_ProvisionWgpuNativeIos"
-			BeforeTargets="_SanitizeNativeReferences;_ExpandNativeReferences;_ResolveAssemblies;BeforeBuild"
+			BeforeTargets="_UnoWebGpuLinkIosNative;_SanitizeNativeReferences;_ExpandNativeReferences;_ResolveAssemblies;BeforeBuild"
 			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">
 		<PropertyGroup>
+			<_WgpuIsTvos>false</_WgpuIsTvos>
+			<_WgpuIsTvos Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">true</_WgpuIsTvos>
 			<_WgpuIosSlice Condition="'$(RuntimeIdentifier)' == 'ios-arm64'">aarch64</_WgpuIosSlice>
 			<_WgpuIosSlice Condition="'$(RuntimeIdentifier)' == 'iossimulator-arm64'">aarch64-simulator</_WgpuIosSlice>
 			<_WgpuIosSlice Condition="'$(RuntimeIdentifier)' == 'iossimulator-x64'">x86_64-simulator</_WgpuIosSlice>
@@ -257,7 +262,19 @@
 			DestinationFolder="$(_WgpuIosDir)" Retries="3" />
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(_WgpuIosDir)lib\libwgpu_native.a')"
 			SourceFiles="$(_WgpuIosDir)$(_WgpuIosZip)" DestinationFolder="$(_WgpuIosDir)" />
-		<ItemGroup>
+
+		<!-- iOS: the package's _UnoWebGpuLinkIosNative links it, from the per-RID layout the package ships, so a repo
+		     iOS head exercises the same wiring a consumer gets. -->
+		<PropertyGroup Condition="'$(_WgpuIsTvos)' != 'true'">
+			<_WgpuIosRid>$(RuntimeIdentifier)</_WgpuIosRid>
+			<_WgpuIosRid Condition="'$(_WgpuIosRid)' == ''">ios-arm64</_WgpuIosRid>
+		</PropertyGroup>
+		<Copy Condition="'$(_WgpuIsTvos)' != 'true'"
+			SourceFiles="$(_WgpuIosDir)lib\libwgpu_native.a"
+			DestinationFolder="$(UnoWebGpuIosLibDir)$(_WgpuIosRid)" SkipUnchangedFiles="true" />
+
+		<!-- tvOS, which the package does not cover, links it here. -->
+		<ItemGroup Condition="'$(_WgpuIsTvos)' == 'true'">
 			<NativeReference Include="$(_WgpuIosDir)lib\libwgpu_native.a">
 				<Kind>Static</Kind>
 				<ForceLoad>True</ForceLoad>
@@ -268,11 +285,12 @@
 		     keeps only that list: a force_load'ed static lib's symbols are NOT exported unless listed, and the SDK's
 		     automatic list only covers __Internal DllImports — ours say "webgpu" and resolve at runtime through
 		     NativeLibrary.GetMainProgramHandle(), i.e. dlsym on the main image, which only sees EXPORTED symbols.
-		     Declare the archive's public wgpu* functions, from the list the package ships, as @(ReferenceNativeSymbol). -->
+		     The package declares the archive's public wgpu* functions, from the list it ships, as @(ReferenceNativeSymbol);
+		     tvOS, which it does not cover, declares them here. -->
 		<PropertyGroup>
 			<_WgpuIosSymbolList>$(MSBuildThisFileDirectory)package\wgpu-native-ios.symbols</_WgpuIosSymbolList>
 		</PropertyGroup>
-		<ReadLinesFromFile File="$(_WgpuIosSymbolList)">
+		<ReadLinesFromFile File="$(_WgpuIosSymbolList)" Condition="'$(_WgpuIsTvos)' == 'true'">
 			<Output TaskParameter="Lines" ItemName="_WgpuExportedSymbol" />
 		</ReadLinesFromFile>
 		<!-- The list ships in the package for consumers, who may have no `nm`; check it against the archive here, so a
@@ -283,7 +301,7 @@
 		</Exec>
 		<Error Condition="'$(_WgpuIosSymbolListDiffers)' != '' And '$(_WgpuIosSymbolListDiffers)' != '0'"
 			Text="package/wgpu-native-ios.symbols no longer matches the public wgpu* functions of wgpu-native $(WgpuNativeVersion). Regenerate it: nm -gUj libwgpu_native.a | grep '^_wgpu' | sed 's/^_//' | LC_ALL=C sort -u" />
-		<ItemGroup>
+		<ItemGroup Condition="'$(_WgpuIsTvos)' == 'true'">
 			<ReferenceNativeSymbol Include="@(_WgpuExportedSymbol)" SymbolType="Function" />
 		</ItemGroup>
 	</Target>

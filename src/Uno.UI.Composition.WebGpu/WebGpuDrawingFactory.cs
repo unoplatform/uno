@@ -154,8 +154,7 @@ public sealed unsafe class WebGpuRenderRecord : IRenderRecord
 			c.IdleSince = dev.FrameSeq;
 			if (c.ContentKey == 0)
 			{
-				foreach (var st in c.Stamps) { dev.DeferCompiledRelease(null, st.Owned); dev.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
-				dev.DeferCompiledRelease(c.Owned, null);
+				c.ReleaseFinal(dev);
 			}
 		}
 		if (Nested is { } nested) { foreach (var n in nested) { n.Release(); } }
