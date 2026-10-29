@@ -475,6 +475,52 @@ public class Given_WebView2
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25736")]
+	public async Task When_Retemplated_Then_Navigation_Completes()
+	{
+		var webView = new WebView2 { Width = 200, Height = 200 };
+
+		try
+		{
+			await UITestHelper.Load(webView);
+			await webView.EnsureCoreWebView2Async();
+			await Retemplate(webView);
+
+			await NavigateToStringAndWaitForLoad(webView, "<html><body data-marker='retemplated'></body></html>");
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25736")]
+	public async Task When_Shown_After_Collapsed_Load_Then_Navigation_Completes()
+	{
+		var webView = new WebView2 { Width = 200, Height = 200, Visibility = Microsoft.UI.Xaml.Visibility.Collapsed };
+
+		try
+		{
+			// A collapsed element isn't measured, so the WebView2 is loaded before its template is applied.
+			await UITestHelper.Load(webView, x => x.IsLoaded);
+			Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(webView), "A collapsed WebView2 should not have applied its template yet.");
+
+			webView.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+			await TestServices.WindowHelper.WaitForIdle();
+			_ = GetIframeElementId(webView); // The template is applied now.
+
+			await NavigateToStringAndWaitForLoad(webView, "<html><body data-marker='shown'></body></html>");
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Unloaded_While_Referenced_Then_Native_Iframe_Is_Kept()
 	{
 		var webView = new WebView2 { Width = 200, Height = 200 };
@@ -572,6 +618,40 @@ public class Given_WebView2
 	private static void MakeBrowserReleaseFail(string elementId)
 		=> WasmSemanticDomHelper.InvokeBrowserJs(
 			$"(function(){{document.getElementById('{elementId}').removeEventListener=function(){{throw new Error('Simulated failure');}};return '';}})()");
+
+	// Waits for the NavigationCompleted of the navigation that NavigateToString starts, skipping the early one (#25806).
+	private static async Task<string> NavigateToStringAndWaitForLoad(WebView2 webView, string html)
+	{
+		ulong? startedId = null;
+		string loadedSource = null;
+		var loaded = false;
+		void OnNavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args) => startedId = args.NavigationId;
+		void OnNavigationCompleted(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
+		{
+			if (args.NavigationId == startedId)
+			{
+				(loaded, loadedSource) = (true, sender.CoreWebView2.Source);
+			}
+		}
+
+		webView.NavigationStarting += OnNavigationStarting;
+		webView.NavigationCompleted += OnNavigationCompleted;
+		try
+		{
+			webView.NavigateToString(html);
+			await TestServices.WindowHelper.WaitFor(
+				() => loaded,
+				timeoutMS: 10000,
+				message: "NavigationCompleted should be raised when the frame loads the string.");
+
+			return loadedSource;
+		}
+		finally
+		{
+			webView.NavigationStarting -= OnNavigationStarting;
+			webView.NavigationCompleted -= OnNavigationCompleted;
+		}
+	}
 
 	private static string GetIframeElementId(WebView2 webView)
 	{
