@@ -30,6 +30,7 @@ namespace Windows.UI.Input
 		private class Gesture
 		{
 			private readonly GestureRecognizer _recognizer;
+			private readonly Point _downTapRangePosition;
 			private DispatcherQueueTimer? _holdingTimer;
 			private HoldingState? _holdingState;
 
@@ -61,6 +62,7 @@ namespace Windows.UI.Input
 				Settings = recognizer._gestureSettings & GestureSettingsHelper.SupportedGestures; // Keep only flags of supported gestures, so we can more quickly disable us if possible
 
 				Down = down;
+				_downTapRangePosition = recognizer.GetTapRangePosition(down);
 				PointerIdentifier = GetPointerIdentifier(down);
 				PointerType = (PointerDeviceType)down.PointerDevice.PointerDeviceType;
 
@@ -84,7 +86,7 @@ namespace Windows.UI.Input
 				}
 
 				// Update internal state
-				HasMovedOutOfTapRange |= IsOutOfTapRange(Down.Position, point.Position);
+				HasMovedOutOfTapRange = HasMovedOutOfTapRange || IsOutOfTapRange(_downTapRangePosition, _recognizer.GetTapRangePosition(point));
 				HasChangedPointerIdentifier |= PointerIdentifier != GetPointerIdentifier(point);
 				HasExceedMinHoldPressure |= point.Properties.Pressure >= HoldMinPressure;
 
@@ -165,7 +167,7 @@ namespace Windows.UI.Input
 					}
 
 					// Note: Up cannot be 'null' here!
-					_recognizer._lastSingleTap = (PointerIdentifier, Up!.Timestamp, Up.Position);
+					_recognizer._lastSingleTap = (PointerIdentifier, Up!.Timestamp, _recognizer.GetTapRangePosition(Up));
 
 					if (Settings.HasFlag(GestureSettings.Tap))
 					{
@@ -179,7 +181,7 @@ namespace Windows.UI.Input
 
 			private bool TryRecognizeMultiTap()
 			{
-				if (Settings.HasFlag(GestureSettings.DoubleTap) && IsMultiTapGesture(_recognizer._lastSingleTap, Down))
+				if (Settings.HasFlag(GestureSettings.DoubleTap) && _recognizer.IsMultiTapGesture(Down))
 				{
 					_recognizer._lastSingleTap = default; // The Recognizer supports only double tap, even on UWP
 					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(Down.PointerId, PointerType, Down.Position, tapCount: 2));
@@ -324,28 +326,12 @@ namespace Windows.UI.Input
 				}
 
 				// For the pointer up, we check only the distance, as it's expected that the pressed button changed!
-				if (IsOutOfTapRange(points.Down.Position, points.Up.Position))
+				if (IsOutOfTapRange(points._downTapRangePosition, points._recognizer.GetTapRangePosition(points.Up)))
 				{
 					return false;
 				}
 
 				return true;
-			}
-
-			public static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, global::Microsoft.UI.Input.PointerPoint down)
-			{
-				if (previousTap.ts == 0) // i.s. no previous tap to compare with
-				{
-					return false;
-				}
-
-				var currentId = GetPointerIdentifier(down);
-				var currentTs = down.Timestamp;
-				var currentPosition = down.Position;
-
-				return previousTap.id == currentId
-					&& currentTs - previousTap.ts <= MultiTapMaxDelayMicroseconds
-					&& !IsOutOfTapRange(previousTap.position, currentPosition);
 			}
 
 			private static bool IsRightTapGesture(Gesture points, out bool isLongPress)
