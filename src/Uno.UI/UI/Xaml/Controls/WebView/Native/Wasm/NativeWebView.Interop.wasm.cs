@@ -56,6 +56,9 @@ internal static partial class NativeWebView
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.navigateToString")]
 		internal static partial void NavigateToString(ElementId htmlId, string html);
 
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.getCurrentUrl")]
+		internal static partial string? GetCurrentUrl(ElementId htmlId);
+
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.setupEvents")]
 		internal static partial void SetupEvents(ElementId htmlId);
 

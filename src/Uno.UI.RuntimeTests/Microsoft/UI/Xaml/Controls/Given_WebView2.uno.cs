@@ -298,6 +298,82 @@ public class Given_WebView2
 		}
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25735")]
+	public async Task When_Url_Read_Before_Cross_Origin_Content_Arrives_Then_Its_Url_Is_Reported()
+	{
+		const string DataUrl = "data:text/html,arriving";
+
+		var webView = new WebView2 { Width = 200, Height = 200 };
+		string loadedSource = null;
+		void OnNavigationCompleted(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args) => loadedSource ??= sender.CoreWebView2.Source;
+
+		try
+		{
+			await UITestHelper.Load(webView);
+			await webView.EnsureCoreWebView2Async();
+			var elementId = GetIframeElementId(webView);
+			webView.NavigationCompleted += OnNavigationCompleted;
+
+			// Start a navigation to a cross-origin document and, in the same task, read the frame's URL as Loaded does when the
+			// WebView2 is added to the tree again before that document arrives.
+			WasmSemanticDomHelper.InvokeBrowserJs(
+				$"(function(){{var w=Microsoft.UI.Xaml.Controls.WebView;w.navigate('{elementId}','{DataUrl}');w.getCurrentUrl('{elementId}');return '';}})()");
+
+			await TestServices.WindowHelper.WaitFor(
+				() => loadedSource is not null,
+				timeoutMS: 10000,
+				message: "NavigationCompleted should be raised when the cross-origin document loads.");
+
+			Assert.AreEqual(DataUrl, loadedSource, "The cross-origin document should be reported with its own URL, not the previous page's.");
+		}
+		finally
+		{
+			webView.NavigationCompleted -= OnNavigationCompleted;
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25735")]
+	public async Task When_Loaded_Again_Then_Source_Is_Kept()
+	{
+		// A cross-origin document, whose location the browser hides.
+		const string DataUrl = "data:text/html,kept";
+
+		var webView = new WebView2 { Width = 200, Height = 200 };
+		var documentLoaded = false;
+		void OnNavigationCompleted(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
+			=> documentLoaded |= sender.CoreWebView2.Source == DataUrl;
+
+		try
+		{
+			await UITestHelper.Load(webView);
+			await webView.EnsureCoreWebView2Async();
+			webView.NavigationCompleted += OnNavigationCompleted;
+
+			webView.CoreWebView2.Navigate(DataUrl);
+			await TestServices.WindowHelper.WaitFor(
+				() => documentLoaded,
+				timeoutMS: 10000,
+				message: "NavigationCompleted should be raised for the document, with Source set to its URL.");
+
+			// Unloading and loading the WebView2 again keeps its frame and the document it shows.
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+			await UITestHelper.Load(webView);
+
+			Assert.AreEqual(new Uri(DataUrl), webView.Source, "Loading the WebView2 again should keep the Source of the document it shows.");
+		}
+		finally
+		{
+			webView.NavigationCompleted -= OnNavigationCompleted;
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static async Task<(WeakReference, string)> LoadNavigateAndUnloadWebView2()
 	{
