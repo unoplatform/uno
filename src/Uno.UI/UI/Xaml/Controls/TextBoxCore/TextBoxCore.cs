@@ -971,6 +971,7 @@ internal sealed partial class TextBoxCore
 				// The all to ProcessTextInput may be recursing, we only want to restore
 				// the state on the last one.
 				_isInputModifyingText = false;
+				_platformTextApplyInProgress = false;
 			}
 		}
 

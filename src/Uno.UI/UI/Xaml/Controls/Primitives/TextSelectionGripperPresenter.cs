@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
@@ -74,14 +75,11 @@ internal interface ITextSelectionGripperHost
 	void QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection);
 
 	/// <summary>
-	/// The gripper was tapped (not dragged or held): treat it like a tap on the text at the character the gripper
-	/// points at. <paramref name="anchorIndex"/> is that character index (the gripper's own selection edge / caret),
-	/// so the tap pins there instead of re-sampling the finger — which sits on the thumb below the caret line and
-	/// would spill onto the line below (on a single-line box, the end of the text). <paramref name="press"/> is the
-	/// tap's <em>press</em> point, so the host can fold it into its multi-tap counter (a tap landing on the insertion
-	/// handle is still the second tap of a double-tap-to-select-word).
+	/// The gripper was tapped (not dragged or held). <paramref name="anchorIndex"/> is the caret or selection edge it
+	/// points at, and <paramref name="press"/> the tap's press point, which the host folds into its multi-tap counter.
+	/// Returns false when the host took it as a tap on the text below the handle, which doesn't re-open the flyout.
 	/// </summary>
-	void OnGripperTapped(PointerPoint press, int anchorIndex);
+	bool OnGripperTapped(PointerPoint press, int anchorIndex);
 }
 
 /// <summary>
@@ -306,13 +304,8 @@ internal sealed class TextSelectionGripperPresenter
 		var moveSurface = args.GetCurrentPoint(surface).Position;
 		var sampleY = moveSurface.Y - gripper.GrabOffsetY - surface.Padding.Top;
 
-		// Clamp the sampled Y into the text's vertical span (first line's centre .. last line's centre) so a finger
-		// that drifts above or below the text still adjusts the caret horizontally, instead of GetIndexAt clamping
-		// the out-of-range Y and snapping the caret to a line's start/end. GetRectForIndex clamps its index, so
-		// int.MaxValue yields the last line's rect.
-		var firstLine = surface.ParsedText.GetRectForIndex(0);
-		var lastLine = surface.ParsedText.GetRectForIndex(int.MaxValue);
-		sampleY = Math.Clamp(sampleY, firstLine.GetMidY(), lastLine.GetMidY());
+		// A finger drifting above or below the text still moves the caret along the nearest line.
+		sampleY = surface.ParsedText.ClampYToLines(sampleY);
 
 		var point = new Point(moveSurface.X - surface.Padding.Left, sampleY);
 		var index = Math.Max(0, surface.ParsedText.GetIndexAt(point, false, true));
@@ -374,9 +367,9 @@ internal sealed class TextSelectionGripperPresenter
 			// the thumb below the caret line, so re-sampling the release point would spill onto the line below and
 			// jump to the end of the text — the same hazard the drag path avoids with GrabOffsetY.
 			var anchorIndex = gripper == _startGripper ? _host.SelectionLowerIndex : _host.SelectionUpperIndex;
-			_host.OnGripperTapped(previous, anchorIndex);
+			var tappedHandle = _host.OnGripperTapped(previous, anchorIndex);
 			// A tap on the (single) insertion handle re-opens the flyout even over a collapsed caret.
-			_host.QueueGripperSelectionFlyout(args, allowEmptySelection: true);
+			_host.QueueGripperSelectionFlyout(args, allowEmptySelection: tappedHandle);
 		}
 		else
 		{

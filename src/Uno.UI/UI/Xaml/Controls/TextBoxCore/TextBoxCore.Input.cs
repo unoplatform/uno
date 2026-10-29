@@ -68,6 +68,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	// will be one "run"/"action". However, there are some arbitrary exceptions, so that is only a rule of thumb.
 	private bool _currentlyTyping;
 	private bool _suppressCurrentlyTyping;
+	private bool _isApplyingNativeInput;
 	private SelectionDetails _selectionWhenTypingStarted;
 	private string _textWhenTypingStarted;
 
@@ -120,7 +121,42 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	ContentControl ITextBoxViewHost.ContentElement => _contentElement;
 
-	string ITextBoxViewHost.ProcessTextInput(string newText, int selectionStart, int selectionLength) => ProcessTextInput(newText);
+	// An edit the platform's input field already applied, with the caret it left there. Like a key the TextBox handles,
+	// it extends the current typing run: its own caret move doesn't end the run, so undo takes back the whole of it.
+	internal void ApplyNativeInput(string text, int selectionStart, int selectionLength)
+	{
+		_isApplyingNativeInput = true;
+		try
+		{
+			TextBoxView.UpdateTextFromNative(text);
+			SelectInternal(selectionStart, selectionLength);
+		}
+		finally
+		{
+			_isApplyingNativeInput = false;
+		}
+	}
+
+	// The platform's input field already applied this edit. It is typing, undoable like a key the TextBox handles, and a
+	// read-only TextBox refuses it (TextBoxView then puts its text back in the field).
+	string ITextBoxViewHost.ProcessTextInput(string newText, int selectionStart, int selectionLength)
+	{
+		if (IsReadOnly)
+		{
+			return Text;
+		}
+
+		TrySetCurrentlyTyping(true);
+		_clearHistoryOnTextChanged = false;
+		try
+		{
+			return ProcessTextInput(newText);
+		}
+		finally
+		{
+			_clearHistoryOnTextChanged = true;
+		}
+	}
 
 	bool ITextBoxViewHost.IsComposing => IsComposing;
 
@@ -622,7 +658,10 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	partial void SelectPartial(int start, int length)
 	{
-		TrySetCurrentlyTyping(false);
+		if (!_isApplyingNativeInput)
+		{
+			TrySetCurrentlyTyping(false);
+		}
 
 		if (!_inSelectInternal)
 		{
@@ -1417,6 +1456,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	partial void OnTextChangedPartial()
 	{
 		CancelCompositionOnExternalChange();
+		_touchMultiTapAnchor = null;
 
 		// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
 		// Close the selection flyout when text changes.
@@ -1717,28 +1757,44 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 			// re-opens the flyout even over a collapsed caret. Desktop never gets the empty-selection flyout.
 			allowEmptySelection: allowEmptySelection && TouchSelectionConvention != TouchTextSelectionConvention.Desktop);
 
-	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
+	bool ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
 	{
-		// The insertion handle (EndOnly gripper) sits over the character it points at, so the second tap of
-		// a double-tap lands on the handle instead of the text. Fold it into the same multi-tap counter as
-		// OnPointerReleasedPartial (press-to-press) so the double-tap still selects the word.
-		var repeatedPresses = _lastPointerDown.point is { } previous && IsTouchMultiTap(previous, press)
-			? _lastPointerDown.repeatedPresses + 1
-			: 0;
-		_lastPointerDown = (press, repeatedPresses);
+		var displayBlock = TextBoxView.DisplayBlock;
+		var anchorRect = displayBlock.ParsedText.GetRectForIndex(anchorIndex);
+		// Without an inverse (a singular transform), the tap counts as one at the handle.
+		var fingerPoint = ToTouchTextPoint(displayBlock.TransformToVisual(null).Inverse?.TransformPoint(press.Position) ?? new Point(anchorRect.X, anchorRect.Y));
 
-		// Act on the character the handle points at, not the finger's position on the thumb (which hangs below
-		// the caret line and would jump the caret to the end of the text).
-		if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && repeatedPresses >= 1)
+		// The insertion handle's thumb hangs over the line below the caret, where a tap is meant for that line's text.
+		var isMobile = TouchSelectionConvention != TouchTextSelectionConvention.Desktop;
+		var tapsTextBelow = isMobile
+			&& _caretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing
+			&& GetTextLineTop(fingerPoint) != anchorRect.Y;
+		// Anywhere else on the handle, the tap is on the handle's line, under the finger.
+		var textPoint = tapsTextBelow ? fingerPoint : new Point(fingerPoint.X, anchorRect.Y + anchorRect.Height / 2);
+
+		// The insertion handle (EndOnly gripper) sits over the character it points at, so the taps of a double-tap
+		// can land on the handle instead of the text. Fold them into the same multi-tap counter as
+		// OnPointerReleasedPartial (press-to-press) so the double-tap still selects the word.
+		var repeatedPresses = CountTouchPress(press, textPoint, GetCharacterIndexAt(textPoint));
+
+		if (isMobile && repeatedPresses >= 1 && _touchMultiTapAnchor is { } anchor)
 		{
-			TouchSelectWordAt(anchorIndex);
+			TouchSelectWordAt(anchor.character);
+		}
+		else if (tapsTextBelow)
+		{
+			TouchTap(textPoint, wasFocused: true);
 		}
 		else if (_caretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
+			// Act on the character the handle points at, not the finger's position on the thumb (which hangs below
+			// the caret line and would jump the caret to the end of the text).
 			TouchTapAt(anchorIndex);
 		}
 		// Both thumbs showing: the tap grabbed a selection edge, so keep the selection (native iOS/Android)
 		// instead of collapsing it to a caret. The presenter re-shows the selection flyout on release.
+
+		return !tapsTextBelow;
 	}
 	#endregion
 

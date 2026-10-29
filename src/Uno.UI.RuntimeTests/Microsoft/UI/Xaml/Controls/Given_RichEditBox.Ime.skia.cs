@@ -581,6 +581,8 @@ public partial class Given_RichEditBox
 	public async Task When_Wasm_Composition_Commit_And_Cancel_Follow_Browser_Events()
 	{
 		var sut = new RichEditBox();
+		var ended = new List<(int start, int length)>();
+		sut.TextCompositionEnded += (_, e) => ended.Add((e.StartIndex, e.Length));
 		try
 		{
 			WindowHelper.WindowContent = sut;
@@ -591,7 +593,7 @@ public partial class Given_RichEditBox
 			await WindowHelper.WaitForIdle();
 
 			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.value='AniB';input.setSelectionRange(2,2);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'ni'}));return 'ok';})()");
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'ni'}));input.value='AniB';input.setSelectionRange(2,2);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'ni'}));return 'ok';})()");
 			await WindowHelper.WaitForIdle();
 			GetTextWithoutFinalEop(sut.Document, out var text);
 			Assert.AreEqual("AniB", text);
@@ -602,18 +604,20 @@ public partial class Given_RichEditBox
 					"(function(){const input=document.getElementById('uno-input');return `${input.value}|${input.selectionStart}`;})()"));
 
 			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-				"(function(){const input=document.getElementById('uno-input');input.value='AB';input.setSelectionRange(1,1);input.dispatchEvent(new CompositionEvent('compositionend',{data:''}));return 'ok';})()");
+				"(function(){const input=document.getElementById('uno-input');input.setSelectionRange(1,3);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:''}));input.value='AB';input.setSelectionRange(1,1);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'deleteCompositionText'}));input.dispatchEvent(new CompositionEvent('compositionend',{data:''}));return 'ok';})()");
 			await WindowHelper.WaitForIdle();
 			GetTextWithoutFinalEop(sut.Document, out text);
 			Assert.AreEqual("AB", text);
+			CollectionAssert.AreEqual(new[] { (1, 0) }, ended, "the cancel ends the composition once, with nothing committed");
 
 			sut.Document.Selection.SetRange(1, 1);
 			await WindowHelper.WaitForIdle();
 			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.value='AhaoB';input.setSelectionRange(3,3);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'hao'}));input.value='A好B';input.setSelectionRange(2,2);input.dispatchEvent(new CompositionEvent('compositionend',{data:'好'}));return 'ok';})()");
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'hao'}));input.value='AhaoB';input.setSelectionRange(4,4);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'hao'}));input.setSelectionRange(1,4);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'好'}));input.value='A好B';input.setSelectionRange(2,2);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'好'}));input.dispatchEvent(new CompositionEvent('compositionend',{data:'好'}));return 'ok';})()");
 			await WindowHelper.WaitForIdle();
 			GetTextWithoutFinalEop(sut.Document, out text);
 			Assert.AreEqual("A好B", text);
+			CollectionAssert.AreEqual(new[] { (1, 0), (1, 1) }, ended, "the commit ends the composition once, with the committed text");
 		}
 		finally
 		{
@@ -626,6 +630,8 @@ public partial class Given_RichEditBox
 	public async Task When_Wasm_External_Edit_Invalidates_Stale_Composition_Callbacks()
 	{
 		var sut = new RichEditBox();
+		var ended = 0;
+		sut.TextCompositionEnded += (_, _) => ended++;
 		try
 		{
 			WindowHelper.WindowContent = sut;
@@ -636,10 +642,11 @@ public partial class Given_RichEditBox
 			await WindowHelper.WaitForIdle();
 
 			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.value='AniB';input.setSelectionRange(2,2);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'ni'}));return 'ok';})()");
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'ni'}));input.value='AniB';input.setSelectionRange(2,2);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'ni'}));return 'ok';})()");
 			await WindowHelper.WaitForIdle();
 			sut.Document.SetText(TextSetOptions.None, "XY");
 			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, ended, "the external edit ends the composition");
 
 			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
 				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'stale'}));input.dispatchEvent(new CompositionEvent('compositionend',{data:'stale'}));return 'ok';})()");
@@ -647,6 +654,7 @@ public partial class Given_RichEditBox
 
 			GetTextWithoutFinalEop(sut.Document, out var text);
 			Assert.AreEqual("XY", text);
+			Assert.AreEqual(1, ended, "the stale composition events must not end it again");
 		}
 		finally
 		{

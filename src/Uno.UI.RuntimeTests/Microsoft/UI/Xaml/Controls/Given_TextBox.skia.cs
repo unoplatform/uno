@@ -122,6 +122,556 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// Gboard commits a word, then commits the space as a separate edit. Chromium sends no input event after
+		// compositionend, so the space is its own input event and must not be mistaken for the commit's echo.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Commits_Words_And_Spaces_Separately()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hello", "hello", 5));
+				await ReplayOnHiddenInput(ImeEnd("hello"));
+				await ReplayOnHiddenInput(NativeInput("hello ", 6, "insertText"));
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(6, 6, "world", "hello world", 11));
+				await ReplayOnHiddenInput(ImeEnd("world"));
+				await ReplayOnHiddenInput(NativeInput("hello world ", 12, "insertText"));
+
+				Assert.AreEqual("hello world ", SUT.Text);
+				Assert.AreEqual(12, SUT.SelectionStart);
+				Assert.AreEqual("hello world |12", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// After a backspace, Gboard marks the word before the caret as composing without changing it, then
+		// replaces it as the user types. Only the replacement is composition text.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Recomposes_Existing_Word()
+		{
+			var SUT = await LoadFocusedForBrowserIme("hello world ");
+			var started = 0;
+			TextCompositionChangedEventArgs changed = null;
+			SUT.TextCompositionStarted += (_, _) => started++;
+			SUT.TextCompositionChanged += (_, e) => changed = e;
+			try
+			{
+				await ReplayOnHiddenInput(NativeInput("hello world", 11, "deleteContentBackward"));
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput("t.dispatchEvent(new CompositionEvent('compositionupdate',{data:'world'}));");
+
+				Assert.AreEqual("hello world", SUT.Text, "marking a word as composing must not insert it again");
+				Assert.AreEqual(0, started, "a composition that changes no text is not reported");
+
+				await ReplayOnHiddenInput(ImeCompose(6, 11, "worlds", "hello worlds", 12));
+
+				Assert.AreEqual("hello worlds", SUT.Text);
+				Assert.AreEqual(12, SUT.SelectionStart);
+				Assert.AreEqual(1, started);
+				Assert.AreEqual(6, changed?.StartIndex, "the composition is the re-composed word");
+				Assert.AreEqual(6, changed?.Length);
+
+				await ReplayOnHiddenInput(ImeEnd("worlds"));
+				await ReplayOnHiddenInput(NativeInput("hello worlds ", 13, "insertText"));
+
+				Assert.AreEqual("hello worlds ", SUT.Text);
+				Assert.AreEqual(13, SUT.SelectionStart);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Gboard marks the word at the caret as composing after every caret move, so a tap elsewhere happens
+		// with that composition open and must still move the browser's caret.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Marks_Word_Then_Caret_Moves()
+		{
+			var SUT = await LoadFocusedForBrowserIme("hello world");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput("t.dispatchEvent(new CompositionEvent('compositionupdate',{data:'world'}));");
+
+				SUT.Select(2, 0);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("hello world|2", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The browser owns the input's value while a composition edits it; a TextBox text that differs from it
+		// must still reach the input once the composition ends.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composes_And_TextBox_Changes_Text()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hel", "hel", 3));
+				Assert.AreEqual("hel", SUT.Text);
+
+				SUT.Text = "XY";
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("XY", SUT.Text);
+				Assert.AreEqual("XY", GetHiddenInputState().Split('|')[0]);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composes_Past_MaxLength()
+		{
+			var SUT = await LoadFocusedForBrowserIme("", maxLength: 3);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hel", "hel", 3));
+				await ReplayOnHiddenInput(ImeCompose(0, 3, "hell", "hell", 4));
+				Assert.AreEqual("hel", SUT.Text, "MaxLength rejects the longer text");
+
+				await ReplayOnHiddenInput(ImeEnd("hell"));
+
+				Assert.AreEqual("hel", SUT.Text);
+				Assert.AreEqual("hel", GetHiddenInputState().Split('|')[0]);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composes_With_TextChanging_Filter()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			var ended = 0;
+			SUT.TextCompositionEnded += (_, _) => ended++;
+			SUT.TextChanging += (sender, _) => sender.Text = sender.Text.ToUpperInvariant();
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "he", "he", 2));
+				await ReplayOnHiddenInput(ImeCompose(0, 2, "hel", "hel", 3));
+
+				Assert.AreEqual("HEL", SUT.Text);
+				Assert.AreEqual(0, ended, "the filter's edit must not end the composition");
+				Assert.AreEqual("hel|3", GetHiddenInputState(), "the browser owns the input while composing");
+
+				await ReplayOnHiddenInput(ImeEnd("hel"));
+
+				Assert.AreEqual("HEL", SUT.Text);
+				Assert.AreEqual(1, ended);
+				Assert.AreEqual("HEL", GetHiddenInputState().Split('|')[0]);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The commit changes the composed text, as a conversion does. Chromium dispatches the commit's input event
+		// before compositionend; other browsers are expected to dispatch it after (not verified on a device). A
+		// multi-line TextBox uses \r where its textarea holds \n, which must not count as a TextBox edit to restore.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(false, false)]
+		[DataRow(false, true)]
+		[DataRow(true, false)]
+		[DataRow(true, true)]
+		public async Task When_Browser_Ime_Commit_Changes_Composed_Text(bool multiline, bool inputAfterCompositionEnd)
+		{
+			var SUT = await LoadFocusedForBrowserIme("", acceptsReturn: multiline);
+			try
+			{
+				var prefix = "";
+				if (multiline)
+				{
+					prefix = "a\\nb ";
+					await ReplayOnHiddenInput(NativeInput(prefix, 4, "insertText"));
+					Assert.AreEqual("a\rb ", SUT.Text);
+				}
+				var start = SUT.Text.Length;
+
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(start, start, "kan", prefix + "kan", start + 3));
+				await ReplayOnHiddenInput(ImeCompose(start, start + 3, "kanji", prefix + "kanji", start + 5));
+				if (inputAfterCompositionEnd)
+				{
+					await ReplayOnHiddenInput(
+						$"t.value='{prefix}KANJI';t.setSelectionRange({start + 5},{start + 5});"
+						+ ImeEnd("KANJI")
+						+ "t.dispatchEvent(new InputEvent('input',{inputType:'insertFromComposition',data:'KANJI'}));");
+				}
+				else
+				{
+					await ReplayOnHiddenInput(ImeCompose(start, start + 5, "KANJI", prefix + "KANJI", start + 5));
+					await ReplayOnHiddenInput(ImeEnd("KANJI"));
+				}
+
+				Assert.AreEqual(SUT.Text[..start] + "KANJI", SUT.Text);
+				Assert.AreEqual(start + 5, SUT.SelectionStart);
+				Assert.AreEqual($"{(multiline ? "a\nb " : "")}KANJI|{start + 5}", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Samsung Keyboard sends Backspace as a key without a physical code. The browser applies it, as it applies the
+		// keyboard's other edits, and the TextBox follows the input: an edit made by the TextBox would leave the
+		// keyboard's own copy of the text stale, and its next suggestion would replace the wrong range.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Soft_Keyboard_Backspace_Has_No_Code()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one two");
+			try
+			{
+				SUT.Select(4, 0);
+				await UITestHelper.WaitFor(() => GetHiddenInputState() == "one two|4", timeoutMS: 3000, message: "the caret should reach the hidden input");
+
+				var keyDown = InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');const e=new KeyboardEvent('keydown',{key:'Backspace',code:'',keyCode:8,bubbles:true,cancelable:true});t.dispatchEvent(e);t.dispatchEvent(new KeyboardEvent('keyup',{key:'Backspace',code:'',keyCode:8,bubbles:true,cancelable:true}));return e.defaultPrevented ? 'prevented' : 'allowed';})()");
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("allowed", keyDown, "the browser must apply the key");
+				Assert.AreEqual("one two", SUT.Text, "the TextBox must not apply the key too");
+
+				await ReplayOnHiddenInput(NativeInput("onetwo", 3, "deleteContentBackward"));
+
+				Assert.AreEqual("onetwo", SUT.Text);
+				Assert.AreEqual(3, SUT.SelectionStart);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Emptying the text assigns the hidden input an empty value. Chrome on Android fires no selectionchange for it
+		// (desktop Chrome may, hence the detached handler), so the input's own caret restore stays pending. A
+		// composition the keyboard starts next must keep its caret.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composes_After_TextBox_Cleared()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one two");
+			try
+			{
+				DetachSelectionChangeHandler();
+				SUT.Text = "";
+				await WindowHelper.WaitForIdle();
+				ReattachSelectionChangeHandler();
+				Assert.AreEqual("|0", GetHiddenInputState());
+
+				await ReplayOnHiddenInput(ImeStart() + ImeCompose(0, 0, "T", "T", 1) + "document.onselectionchange();");
+
+				Assert.AreEqual("T|1", GetHiddenInputState());
+				Assert.AreEqual(1, SUT.SelectionStart);
+			}
+			finally
+			{
+				ReattachSelectionChangeHandler();
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A multi-line TextBox's textarea breaks lines with \n where the TextBox uses \r. An input that leaves the text as
+		// it was (Samsung Keyboard re-sends its composition before committing it) must not count as the TextBox reverting
+		// it, which would restore a caret the browser host doesn't track.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Browser_Multiline_Input_Repeats_Text(bool composes)
+		{
+			var SUT = await LoadFocusedForBrowserIme("", acceptsReturn: true);
+			try
+			{
+				await ReplayOnHiddenInput(NativeInput("one\\ntwo", 7, "insertText"));
+				Assert.AreEqual("one\rtwo", SUT.Text);
+
+				if (composes)
+				{
+					await ReplayOnHiddenInput(ImeStart());
+					await ReplayOnHiddenInput(ImeCompose(7, 7, "s", "one\\ntwos", 8));
+					await ReplayOnHiddenInput(ImeCompose(7, 8, "s", "one\\ntwos", 8));
+					await ReplayOnHiddenInput(ImeEnd("s"));
+				}
+				else
+				{
+					await ReplayOnHiddenInput(NativeInput("one\\ntwo", 7, "insertText"));
+				}
+				await WindowHelper.WaitForIdle();
+
+				var caret = composes ? 8 : 7;
+				Assert.AreEqual(composes ? "one\rtwos" : "one\rtwo", SUT.Text);
+				Assert.AreEqual(caret, SUT.SelectionStart);
+				Assert.AreEqual($"{SUT.Text.Replace('\r', '\n')}|{caret}", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Android keyboards send Enter as an unidentified keydown, then an Enter keyup without a physical code. The
+		// TextBox gets a single KeyDown and KeyUp for it: focus-next behaviors act on the KeyUp.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Soft_Keyboard_Enter_Raises_One_KeyUp()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one");
+			var (keyDowns, keyUps) = (0, 0);
+			SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, e) => keyDowns += e.Key == VirtualKey.Enter ? 1 : 0), handledEventsToo: true);
+			SUT.AddHandler(UIElement.KeyUpEvent, new KeyEventHandler((_, e) => keyUps += e.Key == VirtualKey.Enter ? 1 : 0), handledEventsToo: true);
+			try
+			{
+				await ReplayOnHiddenInput(
+					"t.dispatchEvent(new KeyboardEvent('keydown',{key:'Unidentified',code:'',keyCode:229,bubbles:true,cancelable:true}));"
+					+ "t.dispatchEvent(new KeyboardEvent('keyup',{key:'Enter',code:'',keyCode:13,bubbles:true,cancelable:true}));");
+
+				Assert.AreEqual(1, keyDowns);
+				Assert.AreEqual(1, keyUps);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The TextBox refuses the input's edit (MaxLength, or a BeforeTextChanging handler cancelling it), so the caret
+		// goes back to where the edit started, not to the start of the text.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Browser_Input_Edit_Is_Refused(bool cancelled)
+		{
+			var SUT = await LoadFocusedForBrowserIme("12", maxLength: cancelled ? 0 : 2);
+			if (cancelled)
+			{
+				SUT.BeforeTextChanging += (_, e) => e.Cancel = !e.NewText.All(char.IsDigit);
+			}
+			try
+			{
+				SUT.Select(1, 0);
+				await UITestHelper.WaitFor(() => GetHiddenInputState() == "12|1", timeoutMS: 3000, message: "the caret should reach the hidden input");
+
+				await ReplayOnHiddenInput(NativeInput(cancelled ? "1a2" : "132", 2, "insertText"));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("12", SUT.Text);
+				Assert.AreEqual(1, SUT.SelectionStart);
+				Assert.AreEqual("12|1", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The hidden input stays editable under a read-only TextBox (it carries the caret and the keyboard): the
+		// TextBox refuses what the keyboard types there.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Input_Edits_Read_Only_TextBox()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one");
+			SUT.IsReadOnly = true;
+			try
+			{
+				await ReplayOnHiddenInput(NativeInput("onex", 4, "insertText"));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("one", SUT.Text);
+				Assert.AreEqual("one|3", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Text the browser applied (a composition, here) is typing: undo takes it back, as it does a key the TextBox
+		// handles.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composition_Is_Undone()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one ");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(4, 4, "tw", "one tw", 6));
+				await ReplayOnHiddenInput(ImeCompose(4, 6, "two", "one two", 7));
+				await ReplayOnHiddenInput(ImeEnd("two"));
+				Assert.AreEqual("one two", SUT.Text);
+
+				SUT.Undo();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("one ", SUT.Text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Only a plain deletion is left to the browser: Shift+Delete is a cut in Chromium, which the TextBox handles.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Soft_Keyboard_Modified_Delete_Has_No_Code()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one");
+			try
+			{
+				var keyDown = InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');const e=new KeyboardEvent('keydown',{key:'Delete',code:'',keyCode:46,shiftKey:true,bubbles:true,cancelable:true});t.dispatchEvent(e);t.dispatchEvent(new KeyboardEvent('keyup',{key:'Delete',code:'',keyCode:46,shiftKey:true,bubbles:true,cancelable:true}));return e.defaultPrevented ? 'prevented' : 'allowed';})()");
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("prevented", keyDown, "the TextBox handles a modified deletion");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// An app's SelectionChanged handler throws while the input reports a caret move. The input must still follow the
+		// TextBox's later caret moves.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Selection_Handler_Throws()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one two");
+			var throws = true;
+			SUT.SelectionChanged += (_, _) =>
+			{
+				if (throws)
+				{
+					throws = false;
+					throw new InvalidOperationException("an app handler failing");
+				}
+			};
+			try
+			{
+				// The browser's own selectionchange would run the handler again, without throwing, before the TextBox
+				// moves the caret: the handler runs once, here.
+				DetachSelectionChangeHandler();
+				await ReplayOnHiddenInput("t.setSelectionRange(2,2);");
+				ReattachSelectionChangeHandler();
+				await ReplayOnHiddenInput("try{document.onselectionchange();}catch(e){}");
+				Assert.IsFalse(throws, "the handler should have run");
+
+				SUT.Select(5, 0);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("one two|5", GetHiddenInputState());
+			}
+			finally
+			{
+				ReattachSelectionChangeHandler();
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Keeps the browser's own selectionchange events away from the input's handler, so a test can run it itself.
+		private static void DetachSelectionChangeHandler()
+			=> InvokeBrowserJs("(function(){window.__unoSelectionChange=document.onselectionchange;document.onselectionchange=null;return 'ok';})()");
+
+		private static void ReattachSelectionChangeHandler()
+			=> InvokeBrowserJs("(function(){if(window.__unoSelectionChange){document.onselectionchange=window.__unoSelectionChange;delete window.__unoSelectionChange;}return 'ok';})()");
+
+		private static async Task<TextBox> LoadFocusedForBrowserIme(string text, int maxLength = 0, bool acceptsReturn = false)
+		{
+			// Accessibility types through per-element semantic inputs instead of the shared one under test.
+			DisableAccessibility();
+
+			var SUT = new TextBox { Width = 300, Text = text, MaxLength = maxLength, AcceptsReturn = acceptsReturn };
+			await UITestHelper.Load(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			SUT.Select(text.Length, 0);
+			await UITestHelper.WaitFor(() => GetHiddenInputState() == $"{text}|{text.Length}", timeoutMS: 3000, message: $"hidden input should mirror the TextBox, it is '{GetHiddenInputState()}'");
+			return SUT;
+		}
+
+		// The steps replay the order Chromium dispatches IME events in: compositionupdate while the range it
+		// replaces is selected, then the edit and its input event. No input event follows compositionend.
+		private static async Task ReplayOnHiddenInput(string step)
+		{
+			Assert.AreEqual("ok", InvokeBrowserJs($"(function(){{const t=document.getElementById('uno-input');if(!t){{return 'missing';}}{step}return 'ok';}})()"));
+			await WindowHelper.WaitForIdle();
+		}
+
+		private static string ImeStart() => "t.dispatchEvent(new CompositionEvent('compositionstart'));";
+
+		private static string ImeCompose(int replacedStart, int replacedEnd, string data, string value, int caret)
+			=> $"t.setSelectionRange({replacedStart},{replacedEnd});t.dispatchEvent(new CompositionEvent('compositionupdate',{{data:'{data}'}}));"
+				+ $"t.value='{value}';t.setSelectionRange({caret},{caret});t.dispatchEvent(new InputEvent('input',{{isComposing:true,inputType:'insertCompositionText',data:'{data}'}}));";
+
+		private static string ImeEnd(string data) => $"t.dispatchEvent(new CompositionEvent('compositionend',{{data:'{data}'}}));";
+
+		private static string NativeInput(string value, int caret, string inputType)
+			=> $"t.value='{value}';t.setSelectionRange({caret},{caret});t.dispatchEvent(new InputEvent('input',{{inputType:'{inputType}'}}));";
+
+		private static string GetHiddenInputState()
+			=> InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');return t ? `${t.value}|${t.selectionStart}` : 'missing';})()");
+
 		// "tracking": the input sits over the TextBox's inner text block, so it is within the TextBox bounds
 		// (inflated by a pixel to absorb device-pixel rounding between the XAML and DOM rects). "offscreen":
 		// entirely above the viewport, whatever the TextBox does, so there is no rect for the browser to
@@ -5582,6 +6132,266 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
+		// The first tap puts the caret after the letter under the finger, and on Android the second tap lands on the
+		// insertion handle there. The word is the one under the finger, not the one after the caret.
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Touch_DoubleTap_Trailing_Half_Of_Letter_Before_Punctuation(bool android)
+		{
+			var SUT = new TextBox { Width = 400, Text = "alpha-beta gamma", TouchSelectionConvention = GetMobileConvention(android) };
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetPointInCharacter(SUT, 4, 0.75); // the last 'a' of "alpha"
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(5, SUT.SelectionStart, "the first tap puts the caret between \"alpha\" and \"-\"");
+
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("alpha", SUT.SelectedText);
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Touch_DoubleTap_Second_Tap_Drifts_Along_Line(bool android)
+		{
+			var SUT = new TextBox { Width = 400, Text = "Some Texture", TouchSelectionConvention = GetMobileConvention(android) };
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetPointInCharacter(SUT, 5, 0.5);
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// Past the 10 DIP tap range, as a finger often lands on a double-tap's second tap.
+			finger.Press(new Point(point.X + 15, point.Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Texture", SUT.SelectedText);
+		}
+
+		// Native Android's insertion handle hangs its thumb over the line below the caret. A tap there, quick enough
+		// to be a double-tap, is a tap on that line: it moves the caret instead of selecting the word above.
+		[TestMethod]
+		[DataRow(true, false)]
+		[DataRow(true, true)]
+		[DataRow(false, false)]
+		public async Task When_Touch_Taps_On_Adjacent_Lines(bool android, bool pauseBetweenTaps)
+		{
+			using var _ = new DisposableAction(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox { Width = 400, AcceptsReturn = true, Text = "one two\rthree four", TouchSelectionConvention = GetMobileConvention(android) };
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var displayBlock = SUT.TextBoxView.DisplayBlock;
+			var firstLine = displayBlock.ParsedText.GetRectForIndex(1);
+			var secondLine = displayBlock.ParsedText.GetRectForIndex(9);
+			var toScreen = displayBlock.TransformToVisual(null);
+			var tapX = firstLine.Left + firstLine.Width * 0.75;
+			var first = toScreen.TransformPoint(new Point(tapX, firstLine.Bottom - 3));
+			var second = toScreen.TransformPoint(new Point(tapX, secondLine.Top + 3));
+			// "three four" spans indexes 8 to 18; the tap puts the caret at the boundary nearest to it.
+			var expectedCaret = Enumerable.Range(8, 11).OrderBy(i => Math.Abs(displayBlock.ParsedText.GetRectForIndex(i).Left - tapX)).First();
+
+			finger.Press(first);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, SUT.SelectionStart);
+
+			if (android)
+			{
+				// The handle popup is placed on a later frame.
+				await WindowHelper.WaitFor(
+					() => SUT.VisibleGrippersForTesting?.end.GetAbsoluteBoundsRect().Contains(second) == true,
+					timeoutMS: 3000,
+					message: $"the second tap {second} should land on the insertion handle");
+			}
+
+			if (pauseBetweenTaps)
+			{
+				TapAfterMultiTapWindow(injector, second);
+			}
+			else
+			{
+				finger.Press(second);
+				finger.Release();
+			}
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionLength, "taps on two lines are not a double-tap");
+			Assert.AreEqual(expectedCaret, SUT.SelectionStart, "the caret should move to the tapped position on the second line");
+			Assert.IsFalse(SUT.SelectionFlyout?.IsOpen ?? false, "a tap on the text doesn't open the flyout the way a tap on the handle does");
+		}
+
+		// Tapping where the caret already is lands both taps of the double-tap on the insertion handle, which points
+		// at the caret position after "alpha". The word is still the one under the finger.
+		[TestMethod]
+		public async Task When_Touch_DoubleTap_On_Insertion_Handle_Selects_Word_Under_Finger()
+		{
+			using var _ = new DisposableAction(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox { Width = 400, Text = "alpha-beta gamma", TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android };
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetPointInCharacter(SUT, 4, 0.75); // the last 'a' of "alpha"
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting?.end.GetAbsoluteBoundsRect().Contains(point) == true,
+				timeoutMS: 3000,
+				message: "the insertion handle should be under the finger");
+			Assert.AreEqual(5, SUT.SelectionStart);
+
+			TapAfterMultiTapWindow(injector, point);
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("alpha", SUT.SelectedText);
+		}
+
+		// The text changes between the taps (an app reformats it, say), so the first tap's character belongs to
+		// another text: the second tap starts over instead of selecting a word of the new text, or past its end.
+		[TestMethod]
+		[DataRow("ab")]
+		[DataRow("one two three four five")]
+		public async Task When_Touch_DoubleTap_Text_Changes_Between_Taps(string newText)
+		{
+			var SUT = new TextBox { Width = 400, Text = "alpha-beta gamma", TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS };
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetPointInCharacter(SUT, 12, 0.5); // in "gamma"
+			var tapX = SUT.TextBoxView.DisplayBlock.TransformToVisual(null).Inverse.TransformPoint(point).X;
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Text = newText;
+			await WindowHelper.WaitForIdle();
+
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			var parsedText = SUT.TextBoxView.DisplayBlock.ParsedText;
+			var expectedCaret = Enumerable.Range(0, newText.Length + 1).OrderBy(i => Math.Abs(parsedText.GetRectForIndex(i).Left - tapX)).First();
+			Assert.AreEqual(newText, SUT.Text);
+			Assert.AreEqual(0, SUT.SelectionLength, $"the second tap selected '{SUT.SelectedText}'");
+			Assert.AreEqual(expectedCaret, SUT.SelectionStart, "the second tap is a single tap, which places the caret");
+		}
+
+		// A finger often lands on the box's padding below the text it targets, or under the last line of a tall box.
+		// Native Android and iOS place the caret on the nearest line by X there, not at the end of the text.
+		[TestMethod]
+		[DataRow(true, false)]
+		[DataRow(false, false)]
+		[DataRow(true, true)]
+		public async Task When_Touch_Tap_Below_Text_Places_Caret_By_X(bool android, bool multiline)
+		{
+			using var _ = new DisposableAction(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = multiline
+				? new TextBox { Width = 400, Height = 120, AcceptsReturn = true, Text = "one two\rthree four", TouchSelectionConvention = GetMobileConvention(android) }
+				: new TextBox { Width = 400, Text = "Hello Jackie how are you", TouchSelectionConvention = GetMobileConvention(android) };
+			var bounds = await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = new Point(GetPointInCharacter(SUT, multiline ? 9 : 1, 0.75).X, bounds.Bottom - 3);
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			var displayBlock = SUT.TextBoxView.DisplayBlock;
+			var tapX = displayBlock.TransformToVisual(null).Inverse.TransformPoint(point).X;
+			var (lineStart, lineEnd) = multiline ? (8, 18) : (0, SUT.Text.Length);
+			var expectedCaret = Enumerable.Range(lineStart, lineEnd - lineStart + 1).OrderBy(i => Math.Abs(displayBlock.ParsedText.GetRectForIndex(i).Left - tapX)).First();
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(expectedCaret, SUT.SelectionStart, "the caret should follow the finger on the last line");
+		}
+
+		[TestMethod]
+		public async Task When_Touch_LongPress_Below_Text_Selects_Word_Under_Finger_Android()
+		{
+			var SUT = new TextBox { Width = 400, Text = "Hello Jackie how are you", TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android };
+			var bounds = await UITestHelper.Load(SUT);
+
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(new Point(GetPointInCharacter(SUT, 8, 0.5).X, bounds.Bottom - 3)); // in "Jackie"
+			SUT.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Jackie", SUT.SelectedText);
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Touch_DoubleTap_Below_Text_Selects_Word_Under_Finger(bool android)
+		{
+			using var _ = new DisposableAction(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox { Width = 400, Text = "Hello Jackie how are you", TouchSelectionConvention = GetMobileConvention(android) };
+			var bounds = await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = new Point(GetPointInCharacter(SUT, 8, 0.5).X, bounds.Bottom - 3); // in "Jackie"
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Jackie", SUT.SelectedText);
+		}
+
+		// Injected touches are stamped by the injector's own clock, which a Task.Delay doesn't advance: the press carries
+		// the wait that takes it out of the previous tap's multi-tap window.
+		private static void TapAfterMultiTapWindow(InputInjector injector, Point position)
+		{
+			var press = Uno.UI.DevTools.Input.Finger.GetPress(42, position);
+			var info = press.PointerInfo;
+			info.TimeOffsetInMilliseconds = 600;
+			press.PointerInfo = info;
+			injector.InjectTouchInput(new[] { press });
+			injector.InjectTouchInput(new[] { Uno.UI.DevTools.Input.Finger.GetRelease(42, position) });
+		}
+
+		private static TextBoxCore.TouchTextSelectionConvention GetMobileConvention(bool android)
+			=> android ? TextBoxCore.TouchTextSelectionConvention.Android : TextBoxCore.TouchTextSelectionConvention.iOS;
+
+		private static Point GetPointInCharacter(TextBox textBox, int index, double fractionOfWidth)
+		{
+			var displayBlock = textBox.TextBoxView.DisplayBlock;
+			var rect = displayBlock.ParsedText.GetRectForIndex(index);
+			return displayBlock.TransformToVisual(null).TransformPoint(new Point(rect.Left + rect.Width * fractionOfWidth, rect.Top + rect.Height / 2));
+		}
+
 		// Regression: tapping the single Android insertion handle re-sampled the finger point, which sits on the
 		// thumb a line below the caret, so GetIndexAt spilled onto the next render line and jumped the caret to the
 		// end of the text. A tap on the handle must keep the caret where the handle already is. Sister (no-drag case)
@@ -5626,13 +6436,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var caretBeforeTap = SUT.SelectionStart;
 			Assert.IsTrue(caretBeforeTap < SUT.Text.Length, $"the first tap should place the caret mid-text (len {SUT.Text.Length}, was {caretBeforeTap})");
 
-			// Wait past the 500ms multi-tap window so tapping the handle is a single tap (not double-tap-to-select-word).
-			await Task.Delay(600);
-
 			// Tap the THUMB near its bottom edge (what a real finger hits) — the geometry that used to jump the caret.
+			// Past the multi-tap window, so tapping the handle is a single tap (not double-tap-to-select-word).
 			var gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
-			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
-			finger.Release();
+			TapAfterMultiTapWindow(injector, new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
 			await WindowHelper.WaitForIdle();
 
 			// The tap keeps a collapsed caret exactly where the handle was — it must NOT jump to the end of the text.
@@ -5687,13 +6494,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Clipboard.Clear();
 			await WindowHelper.WaitFor(() => !SUT.CanPasteClipboardContent, message: "the clipboard should read empty so Paste is unavailable");
 
-			// Wait past the 500ms multi-tap window so the handle tap is a single tap (not a double-tap-to-select-word).
-			await Task.Delay(600);
+			// The gripper popup is positioned on a later frame; tap it only once it sits over the TextBox.
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "the insertion handle should be positioned over the TextBox before tapping it");
 
-			// Tap the insertion handle itself (grab near its bottom edge, what a real finger hits).
+			// Tap the insertion handle itself (grab near its bottom edge, what a real finger hits), past the multi-tap
+			// window so the handle tap is a single tap (not a double-tap-to-select-word).
 			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
-			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
-			finger.Release();
+			TapAfterMultiTapWindow(injector, new Point(handle.GetCenter().X, handle.Bottom - 2));
 			await WindowHelper.WaitForIdle();
 			// The flyout visibility update is queued to the dispatcher; wait for it to actually open instead of a fixed delay.
 			await WindowHelper.WaitFor(
@@ -5957,12 +6776,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				() => SUT.CaretMode == expectedCaret,
 				message: $"the {convention} touch gesture should leave the caret in {expectedCaret} - the mode that used to arm the scroll lock");
 
-			// Past the multi-tap window, so the drag that follows is not folded into the tap gesture.
-			await Task.Delay(600);
-
 			// A double-tap also pops the selection toolbar, and its light-dismiss overlay would swallow the drag
 			// below instead of letting it reach the ScrollViewer. On a device the first drag simply dismisses it;
 			// dismiss it here (after its dispatched open has run) so a single drag can be asserted on.
+			await Task.Delay(600);
 			SUT.SelectionFlyout?.Hide();
 			await WindowHelper.WaitForIdle();
 
@@ -6255,9 +7072,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					&& g.Top < scrollViewer.GetAbsoluteBoundsRect().Bottom,
 				timeoutMS: 3000,
 				message: "the insertion handle should be positioned before dragging it");
-
-			// Past the multi-tap window, so the drag that follows is its own gesture.
-			await Task.Delay(600);
 
 			// Small steps on purpose: one of them lands the caret on the first line below the viewport, which is the
 			// step that used to cull the gripper and drop its capture. A single big move would sample the last line
@@ -6721,9 +7535,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				return;
 			}
 			await WindowHelper.WaitFor(() => moreButton.Visibility == Visibility.Visible && moreButton.GetAbsoluteBoundsRect().Width > 0, message: "the overflow (\"...\") button should be shown while the full selection keeps Select All in the overflow");
-			await Task.Delay(600); // clear the multi-tap window from the double-tap before tapping the MoreButton
-			finger.Press(moreButton.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
+			TapAfterMultiTapWindow(injector, moreButton.GetAbsoluteBoundsRect().GetCenter());
 			await WindowHelper.WaitFor(() => commandBar.IsOpen, message: "tapping the overflow button should open the command bar (realizing Select All in the overflow)");
 			await WindowHelper.WaitForIdle();
 
@@ -6734,14 +7546,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen != true, message: "the selection flyout should close before collapsing the selection");
 			await WindowHelper.WaitForIdle();
 
-			// Wait past the 500ms multi-tap window so the next tap is a single tap (collapse to a caret) rather than a
-			// double-tap-to-select-word.
-			await Task.Delay(600);
-
 			// A plain tap in the text collapses the selection to a caret with the single insertion handle (native
-			// Android). Tapping a selection thumb would NOT do this - it keeps the selection.
-			finger.Press(farPoint);
-			finger.Release();
+			// Android). Tapping a selection thumb would NOT do this - it keeps the selection. It comes after the
+			// multi-tap window, so it isn't a double-tap-to-select-word.
+			TapAfterMultiTapWindow(injector, farPoint);
 			await WindowHelper.WaitFor(
 				() => SUT.SelectedText == "" && SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				message: "a plain tap should collapse the selection to the single insertion handle");
@@ -6762,13 +7570,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				timeoutMS: 3000,
 				message: "the insertion handle should be positioned over the TextBox before tapping it");
 
-			await Task.Delay(600); // a single tap on the handle, not a double-tap-to-select-word
-
 			// Tap the insertion handle (grab near its bottom edge, what a real finger hits) to reopen the flyout over
-			// the caret - now with Select All promoted from the overflow to the lone primary command.
+			// the caret - now with Select All promoted from the overflow to the lone primary command. A single tap on
+			// the handle, not a double-tap-to-select-word.
 			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
-			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
-			finger.Release();
+			TapAfterMultiTapWindow(injector, new Point(handle.GetCenter().X, handle.Bottom - 2));
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(
 				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
@@ -6879,10 +7685,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => moreButton.Visibility == Visibility.Visible && moreButton.GetAbsoluteBoundsRect().Width > 0, message: "the overflow (\"...\") button should be shown while the proofing button sits in the overflow");
 
 			// Tap the overflow to expand the bar - this realizes the proofing button (firing its Loaded handler, the
-			// code path under test). Wait past the multi-tap window from the double-tap first.
-			await Task.Delay(600);
-			finger.Press(moreButton.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
+			// code path under test).
+			TapAfterMultiTapWindow(injector, moreButton.GetAbsoluteBoundsRect().GetCenter());
 			await WindowHelper.WaitFor(() => commandBar.IsOpen, message: "tapping the overflow button should expand the command bar");
 			// Confirm the proofing button actually loaded, so the assertion below is not vacuous.
 			await WindowHelper.WaitFor(() => proofingButton.IsLoaded, message: "the proofing button should be realized once the overflow is expanded");
@@ -6926,6 +7730,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public Task When_Touch_LongPress_Selects_Word_Android()
 			=> AssertTouchLongPress(TextBoxCore.TouchTextSelectionConvention.Android, expectWordSelected: true);
+
+		// A long-press selects the word under the finger, like a double-tap: on the trailing half of a letter, the
+		// nearest caret position is already past that letter.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Trailing_Half_Of_Letter_Before_Punctuation_Android()
+		{
+			var SUT = new TextBox { Width = 400, Text = "alpha-beta gamma", TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android };
+			await UITestHelper.Load(SUT);
+
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(GetPointInCharacter(SUT, 4, 0.75)); // the last 'a' of "alpha"
+			SUT.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("alpha", SUT.SelectedText);
+		}
 
 		[TestMethod]
 		public Task When_Touch_LongPress_Keeps_ContextMenu_Desktop()
@@ -7301,6 +8121,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 			// The capture taken to drag the caret must be released on pointer up, not held past the gesture.
 			Assert.AreEqual(0, SUT.PointerCaptures?.Count ?? 0, "the caret-drag pointer capture must be released on release");
+		}
+
+		// The finger usually slides just below the text while it drags the caret: the caret stays on the line, by X,
+		// instead of jumping to the end of the text.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drag_Below_Text_Keeps_Caret_On_Line_iOS()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 40, bounds.GetCenter().Y);
+
+			finger.Press(startPoint);
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(startPoint);
+			SUT.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+			await WindowHelper.WaitForIdle();
+			var caretAfterPress = SUT.SelectionStart;
+
+			finger.MoveBy(0, bounds.Height, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(caretAfterPress, SUT.SelectionStart);
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
 		}
 
 		// Was When_Touch_Focused_Then_Scrolled_Away, which asserted that a touch-focused TextBox stayed pinned
@@ -8680,6 +9536,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.IsComposing);
 			Assert.IsFalse(fake.EndImeSessionCalled, "EndImeSession should NOT be called for IME-driven text changes");
 			Assert.AreEqual("nihao", SUT.Text);
+		}
+
+		// Skia-Android and the browser apply the composition themselves, then sync the text. A TextChanging handler that
+		// edits that text runs within the sync, so its edit belongs to the composition and doesn't restart the IME.
+		[TestMethod]
+		public async Task When_IME_Platform_Applied_Composition_Is_Edited_By_TextChanging()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			SUT.TextChanging += (sender, _) => sender.Text = sender.Text.ToUpperInvariant();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			fake.EndImeSessionCalled = false;
+
+			var host = (IImeSessionHost)SUT.Core;
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni", textAlreadyApplied: true);
+			host.UpdateTextFromNative("ni", 2, 0);
+			fake.SimulateCompositionUpdate("nih", textAlreadyApplied: true);
+			host.UpdateTextFromNative("NIh", 3, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("NIH", SUT.Text);
+			Assert.IsTrue(SUT.IsComposing, "the app's edit is part of the composition step");
+			Assert.IsFalse(fake.EndImeSessionCalled, "the IME session must not restart");
 		}
 
 		private class FakeImeTextBoxExtension : IImeTextBoxExtension
