@@ -63,24 +63,25 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 		}
 
 		var device = AcquireSharedDevice(prewarm);
-		var vk = VulkanContext.ForSharedDevice(device);
+		VulkanContext? vk = null;
 		try
 		{
+			vk = VulkanContext.ForSharedDevice(device);
 			vk.InitializeSurface(hwnd.Value, _width, _height);
+
+			// Created last so a declined negotiation (a throw above) doesn't leave a timer behind.
+			_pacer = new Win32RenderPacer(
+				FeatureConfiguration.CompositionTarget.FrameRate,
+				FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate);
 		}
 		catch
 		{
-			vk.Dispose();
+			vk?.Dispose();
 			ReleaseSharedDevice();
 			throw;
 		}
 
 		_vk = vk;
-
-		// Created last so a declined negotiation (the throw above) doesn't leave a timer behind.
-		_pacer = new Win32RenderPacer(
-			FeatureConfiguration.CompositionTarget.FrameRate,
-			FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate);
 	}
 
 	/// <summary>
@@ -200,20 +201,26 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 			return;
 		}
 
-		_pacer.OnFrameStart();
-
-		if (_skipPresent)
+		try
 		{
-			_skipPresent = false;
-		}
-		else
-		{
-			_vk.BlitAndPresent();
-			_presented = true;
-		}
+			_pacer.OnFrameStart();
 
-		_frameLock.Dispose();
-		_frameLock = null;
+			if (_skipPresent)
+			{
+				_skipPresent = false;
+			}
+			else
+			{
+				_vk.BlitAndPresent();
+				_presented = true;
+			}
+		}
+		finally
+		{
+			// Every window shares this lock, so a frame that throws must not keep it.
+			_frameLock.Dispose();
+			_frameLock = null;
+		}
 
 		// Outside the device lock, which every window shares: waiting for this window's next frame must not hold up
 		// the others.
