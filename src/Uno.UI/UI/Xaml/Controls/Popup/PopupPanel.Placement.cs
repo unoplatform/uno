@@ -133,7 +133,7 @@ partial class PopupPanel
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().LogDebug($"Calculating actual placement for preferredPlacement={preferredPlacement} with justification={FlyoutBase.GetJustificationFromPlacementMode(popup.DesiredPlacement, FullPlacementRequested)} from PopupPlacement={popup.DesiredPlacement}, for childDesiredSize={childDesiredSize}, maxSize={maxSize}");
+			this.Log().LogDebug($"Calculating actual placement for preferredPlacement={preferredPlacement} with justification={FlyoutBase.GetJustificationFromPlacementMode(popup.DesiredPlacement, FullPlacementRequested)} from PopupPlacement={popup.DesiredPlacement}, for childDesiredSize={childDesiredSize}, maxSize={maxSize}, minSize={minSize} in visibleBounds={visibleBounds}");
 		}
 
 		var halfAnchorWidth = anchorRect.Width / 2;
@@ -285,6 +285,11 @@ partial class PopupPanel
 			var size = new Size(finalRect.Width, finalRect.Height);
 			FlyoutBase.ResizeToFit(ref resizedPlacement, anchorRect, visibleBounds, minSize, PopupPlacementTargetMargin, ref position, ref size);
 			finalRect = new Rect(position, size);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"No placement fits: resized on the {resizedPlacement} side to finalRect={finalRect} in visibleBounds={visibleBounds}");
+			}
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -366,7 +371,7 @@ partial class PopupPanel
 
 		if (controlSize == 0 && typeof(PopupPanel).Log().IsEnabled(LogLevel.Warning))
 		{
-			typeof(PopupPanel).Log().LogWarning($"{nameof(anchorSize)} is 0");
+			typeof(PopupPanel).Log().LogWarning($"{nameof(controlSize)} is 0");
 		}
 
 		if ((highLimit - lowLimit) > controlSize &&
