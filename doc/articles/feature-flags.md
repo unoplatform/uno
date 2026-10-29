@@ -83,6 +83,20 @@ Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover = true;
 
 The flag only takes effect on iOS Skia, on iOS 26 or later, and only affects `TextBox` instances configured for a numeric keyboard on iPad. It has no effect on other platforms, on iOS versions prior to 26, or on non-numeric keyboards. Defaults to `false`.
 
+### Text magnifier when dragging the caret (iOS)
+
+On iOS, and in WebAssembly apps running in a browser on iPhone or iPad, a magnifier shows over the text while the caret (touch and hold) or a selection handle is dragged, as in native iOS text fields. Two flags control it:
+
+- `Uno.UI.FeatureConfiguration.TextBox.UseNativeTextLoupe` uses the system magnifier (`UITextLoupeSession`). It only takes effect on iOS Skia, on iOS 17 or later.
+- `Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe` uses a magnifier drawn by Uno where the system one isn't used: in the browser, on iOS versions prior to 17, or when `UseNativeTextLoupe` is `false`.
+
+Both default to `true`. To turn the magnifier off, set both to `false`:
+
+```csharp
+Uno.UI.FeatureConfiguration.TextBox.UseNativeTextLoupe = false;
+Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = false;
+```
+
 ## ToolTips
 
 By default, `ToolTips` are disabled on all platforms except for WebAssembly and Skia (see [#10791](https://github.com/unoplatform/uno/issues/10791)). To enable them on a specific platform, set the `UseToolTips` configuration flag to `true`. You can add the following in the end of the `App` constructor:
