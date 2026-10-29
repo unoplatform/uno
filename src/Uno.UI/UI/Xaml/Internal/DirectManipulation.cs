@@ -251,8 +251,9 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	}
 
 	/// <inheritdoc />
-	public void ProcessMove(_PointerEventArgs args)
+	public void ProcessMove(PointerRoutedEventArgs routedArgs)
 	{
+		var args = routedArgs.CoreArgs;
 		if (!IsTracking(args.CurrentPoint.Pointer)) // The IGestureRecognizer is being called for all pointers of the same type, but direct-manipulation should only process the ones that are currently tracked.
 		{
 			return;
