@@ -1027,9 +1027,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		internal void OnPresenterPlaced(Size placementSize, Size presenterRectSize, Size desiredSize)
 		{
 			// The last size given to the presenter ends the loop when the presenter can't take it (e.g. its MaxHeight).
+			// An empty place (no window yet, or an input pane covering it all) would latch a zero-size presenter.
 			if (!CanResizePresenter
 				|| AreClose(presenterRectSize, desiredSize)
-				|| (m_lastPresenterRectSize is { } lastPresenterRectSize && AreClose(presenterRectSize, lastPresenterRectSize)))
+				|| (m_lastPresenterRectSize is { } lastPresenterRectSize && AreClose(presenterRectSize, lastPresenterRectSize))
+				|| presenterRectSize.Width <= 0
+				|| presenterRectSize.Height <= 0)
 			{
 				return;
 			}

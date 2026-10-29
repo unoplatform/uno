@@ -278,7 +278,7 @@ partial class PopupPanel
 		// Like WinUI's CalculatePlacementPrivate, a flyout that fits nowhere is resized next to its target, from the preferred placement.
 		// TODO Uno: Uno resizes as soon as the rect leaves the area, while WinUI's TestAgainstLimitsAndPlace only checks the room
 		// between the target and the area's edge (above the target for Top), so WinUI keeps a target behind the input pane unresized.
-		if (!placementFits && Flyout is { CanResizePresenter: true })
+		if (!placementFits && Flyout is { CanResizePresenter: true } && visibleBounds.Width > 0 && visibleBounds.Height > 0)
 		{
 			var resizedPlacement = preferredPlacement;
 			var position = new Point(finalRect.X, finalRect.Y);
