@@ -357,7 +357,14 @@ internal readonly partial struct UnicodeText : IParsedText
 
 				if (!inline.FontInfo.FontHandle.ContainsGlyph(codepoint))
 				{
-					newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontInfo;
+					// A character several scripts share (Common or Inherited, e.g. tatweel, the Arabic comma, combining
+					// marks) stays in the run's fallback font: a font change mid-word splits the shaping run and breaks
+					// joining. A letter of its own script still gets the fallback for that script.
+					newFontDetails = newScript is UScriptCommon or UScriptInherited
+						&& currentFontDetails != inline.FontInfo
+						&& currentFontDetails.FontHandle.ContainsGlyph(codepoint)
+						? currentFontDetails
+						: GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontInfo;
 				}
 				else
 				{
@@ -2880,6 +2887,10 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static float GetLineSpaceAfter(Line line)
 		=> line is { isLastLineOfParagraph: true, paragraphLayout: { } layout } ? layout.SpaceAfter : 0;
+
+	// ICU UScriptCode values.
+	private const int UScriptCommon = 0;
+	private const int UScriptInherited = 1;
 
 	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, IFontCacheUpdateListener fontListener)
 	{
