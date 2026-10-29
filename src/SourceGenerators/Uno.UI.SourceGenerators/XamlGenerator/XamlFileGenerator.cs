@@ -3939,7 +3939,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? "(__rootInstance as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference"
 					: $"({targetInstance} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference";
 
-				var method = ResolveXBindMethod(targetType, path, bind);
+				var method = ResolveXBindMethod(targetType, path, bind, canReferenceNamedElements: !template.isInside);
 				var invokeTarget = (method.isStatic, template.isInside) switch
 				{
 					(true, _) => method.declaringType.GetFullyQualifiedTypeIncludingGlobal(), // If the method is static, the target onto which the method should be invoked is the declaringType itself
@@ -4008,7 +4008,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private (string path, ITypeSymbol declaringType, IMethodSymbol symbol, bool isStatic) ResolveXBindMethod(INamedTypeSymbol contextType, string path, IXamlLocation location)
+		private (string path, ITypeSymbol declaringType, IMethodSymbol symbol, bool isStatic) ResolveXBindMethod(INamedTypeSymbol contextType, string path, IXamlLocation location, bool canReferenceNamedElements)
 		{
 			if (path.Contains("."))
 			{
@@ -4029,10 +4029,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var memberName = RewriteNamespaces(parts[i]);
 					var next = currentType.GetAllMembersWithName(memberName).FirstOrDefault();
 
+					// x:Name fields are generated alongside this code, so they are not yet members of the context type.
+					var namedElement = next is null && i == 0 && !isStatic && canReferenceNamedElements
+						? FindSubElementByName(_fileDefinition.Objects.First(), memberName)
+						: null;
+
 					currentType = next switch
 					{
 						IFieldSymbol fs => fs.Type,
 						IPropertySymbol ps => ps.Type,
+						null when namedElement is not null => GetType(namedElement.Type),
 						null => throw new XamlGenerationException($"Unable to find member {parts[i]} on type {currentType}", location),
 						_ => throw new XamlGenerationException($"The field {next.Name} is not supported for x:Bind event binding", location)
 					};
