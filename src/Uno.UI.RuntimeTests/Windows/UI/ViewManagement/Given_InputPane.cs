@@ -486,7 +486,7 @@ public class Given_InputPane
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Flyout_Opened_While_Occluded_Then_Placed_Above_Occlusion()
 	{
-		var page = BuildBottomFlyoutPage();
+		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.25);
 
 		var inputPane = InputPane.GetForCurrentView();
 		try
@@ -518,7 +518,7 @@ public class Given_InputPane
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Flyout_Field_Focused_Then_Flyout_Moved_Above_Occlusion()
 	{
-		var page = BuildBottomFlyoutPage();
+		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.25);
 
 		var inputPane = InputPane.GetForCurrentView();
 		try
@@ -562,7 +562,7 @@ public class Given_InputPane
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Flyout_Taller_Than_Area_Above_Occlusion_Then_Resized_To_Fit(bool occludeBeforeOpening)
 	{
-		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.7);
+		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.6);
 
 		var inputPane = InputPane.GetForCurrentView();
 		try
@@ -575,8 +575,7 @@ public class Given_InputPane
 			var naturalTop = GetTop(presenter);
 
 			var occludedTop = WindowHeight * 0.55;
-			Assert.IsTrue(GetBottom(presenter) <= GetTop(page.Button), "Test setup: the flyout must open above its button while nothing is occluded.");
-			Assert.IsTrue(naturalHeight > occludedTop + 20, $"Test setup: the flyout ({naturalHeight:F1}px) must be taller than the area above the keyboard ({occludedTop:F1}).");
+			AssertTallerThanAreaAboveOcclusion(page, presenter, occludedTop);
 
 			if (occludeBeforeOpening)
 			{
@@ -599,15 +598,7 @@ public class Given_InputPane
 				OccludeBelow(inputPane, occludedTop);
 			}
 
-			await WaitFor(
-				() => GetBottom(presenter) <= occludedTop + 0.5 && GetTop(presenter) >= -0.5 && presenter.ActualHeight < naturalHeight - 1,
-				() => $"The flyout (top {GetTop(presenter):F1}, height {presenter.ActualHeight:F1}, was {naturalHeight:F1}) was not shrunk above the keyboard top ({occludedTop:F1}).");
-			await WindowHelper.WaitForIdle();
-
-			var scrollViewer = (ScrollViewer)((Control)presenter).GetTemplateChild("ScrollViewer");
-			Assert.IsTrue(
-				scrollViewer.ExtentHeight > scrollViewer.ViewportHeight + 1,
-				$"The flyout content must scroll once shrunk (extent {scrollViewer.ExtentHeight:F1}, viewport {scrollViewer.ViewportHeight:F1}).");
+			await WaitForShrunkAboveOcclusion(presenter, occludedTop, naturalHeight);
 
 			await ClearOcclusion(inputPane, clearContent: false);
 
@@ -621,26 +612,158 @@ public class Given_InputPane
 		}
 	}
 
-	private static (Grid Root, TextBox TopField, Button Button, Flyout Flyout, TextBox FlyoutField) BuildBottomFlyoutPage(double listMaxHeight = 260)
+	// The keyboard stays up while a shrunk flyout closes and opens again: it must be shrunk again, not open at its own height.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Resized_Flyout_Reopened_While_Occluded_Then_Resized_Again()
+	{
+		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.6);
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(page.Root);
+
+			page.Flyout.ShowAt(page.Button);
+			var presenter = await WaitForFlyoutPresenter(page.Flyout);
+			var naturalHeight = presenter.ActualHeight;
+			var occludedTop = WindowHeight * 0.55;
+			AssertTallerThanAreaAboveOcclusion(page, presenter, occludedTop);
+
+			Assert.IsTrue(page.FlyoutField.Focus(FocusState.Programmatic), "Flyout TextBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+			OccludeBelow(inputPane, occludedTop);
+			await WaitForShrunkAboveOcclusion(presenter, occludedTop, naturalHeight);
+
+			page.Flyout.Hide();
+			await WindowHelper.WaitFor(() => !page.Flyout.IsOpen, message: "The flyout did not close.");
+			Assert.IsTrue(page.TopField.Focus(FocusState.Programmatic), "Top TextBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+
+			page.Flyout.ShowAt(page.Button);
+			presenter = await WaitForFlyoutPresenter(page.Flyout);
+
+			await WaitForShrunkAboveOcclusion(presenter, occludedTop, naturalHeight);
+		}
+		finally
+		{
+			await CloseFlyoutAndClearOcclusion(page.Flyout, inputPane);
+		}
+	}
+
+	// Only the height is forced while the keyboard is up: content that gets wider (e.g. results widening while typing)
+	// must widen the presenter rather than be clipped to its former width.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Resized_Flyout_Content_Widens_Then_Presenter_Widens()
+	{
+		var widening = new Border { Width = 160, Height = 20 };
+		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.6, contentWidth: null, extraContent: widening);
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(page.Root);
+
+			page.Flyout.ShowAt(page.Button);
+			var presenter = await WaitForFlyoutPresenter(page.Flyout);
+			var naturalHeight = presenter.ActualHeight;
+			var occludedTop = WindowHeight * 0.55;
+			AssertTallerThanAreaAboveOcclusion(page, presenter, occludedTop);
+
+			Assert.IsTrue(page.FlyoutField.Focus(FocusState.Programmatic), "Flyout TextBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+			OccludeBelow(inputPane, occludedTop);
+			await WaitForShrunkAboveOcclusion(presenter, occludedTop, naturalHeight);
+			var widthBefore = presenter.ActualWidth;
+
+			widening.Width = 360;
+
+			await WaitFor(
+				() => presenter.ActualWidth > widthBefore + 100 && LayoutInformation.GetLayoutSlot(presenter).Width >= presenter.ActualWidth - 0.5,
+				() => $"The flyout (width {presenter.ActualWidth:F1}, was {widthBefore:F1}) was not widened inside its slot (width {LayoutInformation.GetLayoutSlot(presenter).Width:F1}).");
+			await WaitForShrunkAboveOcclusion(presenter, occludedTop, naturalHeight);
+		}
+		finally
+		{
+			await CloseFlyoutAndClearOcclusion(page.Flyout, inputPane);
+		}
+	}
+
+	// CalendarDatePicker opts out of the presenter resizing (DisablePresenterResizing), like in WinUI.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_CalendarDatePicker_Flyout_Does_Not_Fit_Then_Not_Resized()
+	{
+		var picker = new CalendarDatePicker { VerticalAlignment = VerticalAlignment.Bottom };
+		var root = new Grid { Padding = new Thickness(16), Children = { picker } };
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(root);
+
+			var occludedTop = OccludeBelow(inputPane, WindowHeight * 0.3);
+			await WindowHelper.WaitForIdle();
+
+			picker.IsCalendarOpen = true;
+			FrameworkElement presenter = null;
+			await WindowHelper.WaitFor(
+				() => (presenter = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Select(p => p.Child).OfType<FlyoutPresenter>().FirstOrDefault()) is { ActualHeight: > 0 },
+				message: "The calendar flyout did not open.");
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(presenter.ActualHeight > occludedTop, $"Test setup: the calendar ({presenter.ActualHeight:F1}px) must be taller than the area above the keyboard ({occludedTop:F1}).");
+			Assert.AreEqual(DependencyProperty.UnsetValue, presenter.ReadLocalValue(FrameworkElement.HeightProperty), "The calendar flyout presenter must not be given a height.");
+			Assert.AreEqual(DependencyProperty.UnsetValue, presenter.ReadLocalValue(FrameworkElement.WidthProperty), "The calendar flyout presenter must not be given a width.");
+		}
+		finally
+		{
+			picker.IsCalendarOpen = false;
+			VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ToList().ForEach(p => p.IsOpen = false);
+			await ClearOcclusion(inputPane);
+		}
+	}
+
+	private static (Grid Root, TextBox TopField, Button Button, Flyout Flyout, TextBox FlyoutField) BuildBottomFlyoutPage(
+		double listMaxHeight,
+		double? contentWidth = 320,
+		UIElement extraContent = null)
 	{
 		var flyoutField = new TextBox { PlaceholderText = "Search..." };
+		var content = new StackPanel
+		{
+			Spacing = 8,
+			Children =
+			{
+				flyoutField,
+				new ListView
+				{
+					MaxHeight = listMaxHeight,
+					ItemsSource = Enumerable.Range(0, 30).Select(i => $"Item {i}").ToList(),
+				},
+			},
+		};
+		if (contentWidth is { } width)
+		{
+			content.Width = width;
+		}
+		if (extraContent is not null)
+		{
+			content.Children.Insert(1, extraContent);
+		}
+
 		var flyout = new Flyout
 		{
 			Placement = FlyoutPlacementMode.Top,
-			Content = new StackPanel
-			{
-				Width = 320,
-				Spacing = 8,
-				Children =
-				{
-					flyoutField,
-					new ListView
-					{
-						MaxHeight = listMaxHeight,
-						ItemsSource = Enumerable.Range(0, 30).Select(i => $"Item {i}").ToList(),
-					},
-				},
-			},
+			Content = content,
 		};
 		var button = new Button
 		{
@@ -682,6 +805,25 @@ public class Given_InputPane
 		Assert.IsTrue(
 			GetBottom(presenter) >= occludedTop - BringIntoViewPadding,
 			$"The flyout (bottom {GetBottom(presenter):F1}) was moved way above the keyboard top ({occludedTop:F1}).");
+	}
+
+	// Like WinUI's ResizeToFit, a flyout that fits nowhere above the keyboard is shrunk there and its content scrolls.
+	private static async Task WaitForShrunkAboveOcclusion(FrameworkElement presenter, double occludedTop, double naturalHeight)
+	{
+		await WaitForFlyoutAboveOcclusion(presenter, occludedTop);
+
+		Assert.IsTrue(presenter.ActualHeight < naturalHeight - 1, $"The flyout (height {presenter.ActualHeight:F1}) was not shrunk from its own height ({naturalHeight:F1}).");
+
+		var scrollViewer = (ScrollViewer)((Control)presenter).GetTemplateChild("ScrollViewer");
+		await WaitFor(
+			() => scrollViewer.ExtentHeight > scrollViewer.ViewportHeight + 1,
+			() => $"The flyout content must scroll once shrunk (extent {scrollViewer.ExtentHeight:F1}, viewport {scrollViewer.ViewportHeight:F1}).");
+	}
+
+	private static void AssertTallerThanAreaAboveOcclusion((Grid Root, TextBox TopField, Button Button, Flyout Flyout, TextBox FlyoutField) page, FrameworkElement presenter, double occludedTop)
+	{
+		Assert.IsTrue(GetBottom(presenter) <= GetTop(page.Button), "Test setup: the flyout must open above its button while nothing is occluded.");
+		Assert.IsTrue(presenter.ActualHeight > occludedTop + 20, $"Test setup: the flyout ({presenter.ActualHeight:F1}px) must be taller than the area above the keyboard ({occludedTop:F1}).");
 	}
 
 	// Builds the failure message once the wait timed out, so it shows where the flyout ended up rather than where it started.
