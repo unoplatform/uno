@@ -224,7 +224,8 @@ internal sealed class ManagedFont : IFont
 		{
 			glyphs[i] = (ushort)infos[i].Codepoint;
 			clusters[i] = (int)infos[i].Cluster;
-			offsets[i] = new Vector2(pos[i].XOffset * scale, pos[i].YOffset * scale);
+			// HarfBuzz offsets are y-up, glyph runs are placed in y-down canvas space.
+			offsets[i] = new Vector2(pos[i].XOffset * scale, -pos[i].YOffset * scale);
 			advances[i] = pos[i].XAdvance * scale;
 		}
 
