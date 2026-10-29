@@ -191,6 +191,269 @@ public class Given_Transform
 		GC.KeepAlive(projection);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	public async Task When_Transform_Shared_By_Brushes_Then_Discarded_Brushes_Collected()
+	{
+		// Transforms are shareable: one used by many brushes (e.g. a resource referenced from a template) outlives
+		// them and must not keep the discarded ones alive.
+		var transform = new TranslateTransform();
+
+		var root = new StackPanel { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		try
+		{
+			var brushRefs = CreateElementsWithTransformedBrush(root, transform, count: 5);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			root.Children.Clear();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			foreach (var brushRef in brushRefs)
+			{
+				Assert.IsTrue(await TestHelper.TryWaitUntilCollected(brushRef), "A discarded brush using the shared transform was not collected.");
+			}
+
+			// Red on the left half, blue on the right; moving the relative transform by half the width turns it all red.
+			var survivor = new Border { Width = 40, Height = 10, HorizontalAlignment = HorizontalAlignment.Left, Background = CreateSplitBrush(transform) };
+			root.Children.Add(survivor);
+			await TestServices.WindowHelper.WaitForLoaded(survivor);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var before = await UITestHelper.ScreenShot(root);
+			ImageAssert.HasColorAt(before, 30, 5, Colors.Blue, tolerance: 5);
+
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+			GC.Collect(2);
+
+			transform.X = 0.5;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var after = await UITestHelper.ScreenShot(root);
+			ImageAssert.HasColorAt(after, 30, 5, Colors.Red, tolerance: 5);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		GC.KeepAlive(transform);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	public async Task When_Transform_Shared_By_Geometries_Then_Discarded_Elements_Collected()
+	{
+		// A geometry listens to its transform and the element it clips to the geometry, so a transform shared across
+		// geometries must not keep the discarded geometries, and through them their elements, alive.
+		var transform = new TranslateTransform();
+
+		var root = new StackPanel { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		try
+		{
+			var elementRefs = CreateElementsWithTransformedClip(root, transform, count: 5);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			root.Children.Clear();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			foreach (var elementRef in elementRefs)
+			{
+				Assert.IsTrue(await TestHelper.TryWaitUntilCollected(elementRef), "A discarded element clipped by a geometry using the shared transform was not collected.");
+			}
+
+			// The clip shows the first 10 pixels of the element; moving it by 20 shows the 20-30 range instead.
+			var survivor = CreateTransformedClipElement(transform);
+			root.Children.Add(survivor);
+			await TestServices.WindowHelper.WaitForLoaded(survivor);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var before = await UITestHelper.ScreenShot(root);
+			ImageAssert.HasColorAt(before, 5, 5, Colors.Red, tolerance: 5);
+			ImageAssert.DoesNotHaveColorAt(before, 25, 5, Colors.Red, tolerance: 5);
+
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+			GC.Collect(2);
+
+			transform.X = 20;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var after = await UITestHelper.ScreenShot(root);
+			ImageAssert.HasColorAt(after, 25, 5, Colors.Red, tolerance: 5);
+			ImageAssert.DoesNotHaveColorAt(after, 5, 5, Colors.Red, tolerance: 5);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		GC.KeepAlive(transform);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	public async Task When_Transform_Shared_By_TransformGroups_Then_Discarded_Groups_Collected()
+	{
+		// A TransformGroup listens to its children, so a child transform shared across groups must not keep the
+		// discarded groups alive.
+		var transform = new ScaleTransform { ScaleX = 2, ScaleY = 2 };
+
+		var root = new StackPanel { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		try
+		{
+			var groupRefs = CreateElementsWithTransformGroup(root, transform, count: 5);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			root.Children.Clear();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			foreach (var groupRef in groupRefs)
+			{
+				Assert.IsTrue(await TestHelper.TryWaitUntilCollected(groupRef), "A discarded TransformGroup containing the shared transform was not collected.");
+			}
+
+			var survivor = new Border
+			{
+				Width = 10,
+				Height = 10,
+				Background = new SolidColorBrush(Colors.Red),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				RenderTransform = new TransformGroup { Children = { transform } },
+			};
+			root.Children.Add(survivor);
+			await TestServices.WindowHelper.WaitForLoaded(survivor);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var before = await UITestHelper.ScreenShot(root);
+			ImageAssert.HasColorAt(before, 15, 5, Colors.Red, tolerance: 5);
+			ImageAssert.DoesNotHaveColorAt(before, 25, 5, Colors.Red, tolerance: 5);
+
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+			GC.Collect(2);
+
+			transform.ScaleX = 3;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var after = await UITestHelper.ScreenShot(root);
+			ImageAssert.HasColorAt(after, 25, 5, Colors.Red, tolerance: 5);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		GC.KeepAlive(transform);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	public async Task When_TransformGroup_Children_Cleared_Then_Removed_Child_Collected()
+	{
+		// Clear() reports a Reset without the removed items; a long-lived group rebuilt in code must still let go of
+		// the transforms it no longer contains, and keep following the ones added afterwards.
+		var group = new TransformGroup();
+		var childRef = AddChildTransform(group);
+
+		group.Children.Clear();
+
+		Assert.IsTrue(await TestHelper.TryWaitUntilCollected(childRef), "A transform cleared from a TransformGroup was not collected.");
+
+		var newChild = new ScaleTransform { ScaleX = 3 };
+		group.Children.Add(newChild);
+		newChild.ScaleX = 4;
+
+		Assert.AreEqual(4, group.Value.M11, "The group no longer follows a child added after Clear().");
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static WeakReference AddChildTransform(TransformGroup group)
+	{
+		var child = new ScaleTransform { ScaleX = 2 };
+		group.Children.Add(child);
+		return new WeakReference(child);
+	}
+
+	private static LinearGradientBrush CreateSplitBrush(Transform relativeTransform)
+		=> new()
+		{
+			StartPoint = new(0, 0),
+			EndPoint = new(1, 0),
+			GradientStops =
+			{
+				new GradientStop { Color = Colors.Red, Offset = 0 },
+				new GradientStop { Color = Colors.Red, Offset = 0.5 },
+				new GradientStop { Color = Colors.Blue, Offset = 0.5 },
+				new GradientStop { Color = Colors.Blue, Offset = 1 },
+			},
+			RelativeTransform = relativeTransform,
+		};
+
+	private static Border CreateTransformedClipElement(Transform transform)
+		=> new()
+		{
+			Width = 40,
+			Height = 10,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			Background = new SolidColorBrush(Colors.Red),
+			Clip = new RectangleGeometry { Rect = new(0, 0, 10, 10), Transform = transform },
+		};
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static List<WeakReference> CreateElementsWithTransformedBrush(Panel root, Transform transform, int count)
+	{
+		var refs = new List<WeakReference>(count);
+
+		for (var i = 0; i < count; i++)
+		{
+			var brush = CreateSplitBrush(transform);
+			root.Children.Add(new Border { Width = 40, Height = 10, Background = brush });
+			refs.Add(new WeakReference(brush));
+		}
+
+		return refs;
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static List<WeakReference> CreateElementsWithTransformedClip(Panel root, Transform transform, int count)
+	{
+		var refs = new List<WeakReference>(count);
+
+		for (var i = 0; i < count; i++)
+		{
+			var element = CreateTransformedClipElement(transform);
+			root.Children.Add(element);
+			refs.Add(new WeakReference(element));
+		}
+
+		return refs;
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static List<WeakReference> CreateElementsWithTransformGroup(Panel root, Transform transform, int count)
+	{
+		var refs = new List<WeakReference>(count);
+
+		for (var i = 0; i < count; i++)
+		{
+			var group = new TransformGroup { Children = { transform } };
+			root.Children.Add(new Border { Width = 10, Height = 10, RenderTransform = group });
+			refs.Add(new WeakReference(group));
+		}
+
+		return refs;
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static async Task<List<WeakReference>> CreateStyledPopups(Panel root, Style style, int count)
 	{
