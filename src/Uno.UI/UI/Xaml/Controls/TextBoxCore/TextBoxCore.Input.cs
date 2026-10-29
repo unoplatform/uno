@@ -537,19 +537,19 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
 		_clipboardChangeSubscription.Disposable = null;
-		TextBoxView?.OnFocusStateChanged(focusState);
 
 		if (focusState != FocusState.Unfocused)
 		{
 			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-			_textBoxNotificationsSingleton?.OnFocused(this);
-			StartImeSession();
+			RequestPlatformTextInput(focusState);
 			UpdateCanPasteClipboardContent();
 			Clipboard.ContentChanged += OnClipboardContentChanged;
 			_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
 		}
 		else
 		{
+			TextBoxView?.OnFocusStateChanged(focusState);
+
 			// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
 			// Check if focus is moving to a text control flyout before deciding to unfocus.
 			_forceFocusedVisualState = ShouldForceFocusedVisualState();
@@ -580,6 +580,44 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 			_timer.Stop();
 		}
 		UpdateDisplaySelection();
+	}
+
+	private bool _isPlatformTextInputRequestPending;
+
+	// A TextBox focused while a pointer release is processed can lose the focus before the release completes (e.g. a ScrollViewer focuses
+	// its first TextBox before a Tapped handler moves the focus away, like in WinUI). Opening the soft keyboard right away would flash it.
+	private void RequestPlatformTextInput(FocusState focusState)
+	{
+		if (_isPlatformTextInputRequestPending)
+		{
+			return;
+		}
+
+#if UNO_HAS_MANAGED_POINTERS
+		if (Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseProcessed(OnReleaseProcessed) is true)
+		{
+			_isPlatformTextInputRequestPending = true;
+			return;
+		}
+#endif
+
+		StartPlatformTextInput(focusState);
+	}
+
+	private void OnReleaseProcessed()
+	{
+		_isPlatformTextInputRequestPending = false;
+		if (FocusState is not FocusState.Unfocused and var focusState)
+		{
+			StartPlatformTextInput(focusState);
+		}
+	}
+
+	private void StartPlatformTextInput(FocusState focusState)
+	{
+		TextBoxView?.OnFocusStateChanged(focusState);
+		_textBoxNotificationsSingleton?.OnFocused(this);
+		StartImeSession();
 	}
 
 	// Ported from: TextBoxBase.cpp ShouldForceFocusedVisualState (lines 5286-5290)

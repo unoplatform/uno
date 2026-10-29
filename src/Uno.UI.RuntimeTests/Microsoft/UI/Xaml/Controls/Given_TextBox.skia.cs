@@ -8682,10 +8682,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("nihao", SUT.Text);
 		}
 
+		[TestMethod]
+		public async Task When_Focused_Only_While_Tap_Is_Released_Then_Ime_Session_Not_Started()
+		{
+			// Like in WinUI, a ScrollViewer focuses its first TextBox when a tap inside it is released, but here the Tapped handler moves the
+			// focus away right after: that short-lived focus must not open the platform text input (soft keyboard).
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var firstField = new TextBox { Header = "first" };
+			var tappable = new Border { Height = 60, Background = new SolidColorBrush(Microsoft.UI.Colors.LightBlue) };
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 300,
+				Height = 300,
+				Content = new StackPanel { Children = { firstField, tappable } }
+			};
+			var focusTarget = new Button { Content = "focus target" };
+			var initialFocus = new Button { Content = "initial focus" };
+			tappable.Tapped += (_, _) => focusTarget.Focus(FocusState.Programmatic);
+			var wasFieldFocused = false;
+			firstField.GettingFocus += (_, _) => wasFieldFocused = true;
+
+			await UITestHelper.Load(new StackPanel { Children = { initialFocus, focusTarget, scrollViewer } });
+			initialFocus.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(tappable.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(wasFieldFocused, "The ScrollViewer is expected to focus its first TextBox on release.");
+			Assert.AreSame(focusTarget, FocusManager.GetFocusedElement(focusTarget.XamlRoot));
+			Assert.AreEqual(0, fake.StartCount, "The IME session must not start for a TextBox that lost the focus before the release completed.");
+		}
+
+		[TestMethod]
+		public async Task When_Tapped_Then_Ime_Session_Started_Once_Released()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Width = 200 };
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreSame(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
+			Assert.AreEqual(1, fake.StartCount);
+		}
+
 		private class FakeImeTextBoxExtension : IImeTextBoxExtension
 		{
 			public bool IsComposing { get; private set; }
 			public bool EndImeSessionCalled { get; set; }
+			public int StartCount { get; private set; }
 			public List<ImeSessionUpdate> Updates { get; } = new();
 
 			public event EventHandler CompositionStarted;
@@ -8701,7 +8758,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				remove { }
 			}
 
-			public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation) { }
+			public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation) => StartCount++;
 
 			public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update) => Updates.Add(update);
 
