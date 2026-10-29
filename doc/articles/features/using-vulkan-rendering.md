@@ -97,6 +97,15 @@ To force software rendering on both paths, disable each one:
 .UseAndroid(b => b.UseVulkan(false).UseOpenGL(false))
 ```
 
+## Startup Time and Memory
+
+Vulkan and OpenGL have different costs, and how large the difference is depends on the GPU driver:
+
+- **Memory:** Vulkan usually uses more memory than OpenGL. A blank app uses about 8 MB more on integrated Intel graphics, while several tens of megabytes more have been measured with some discrete GPU drivers.
+- **Startup:** creating a Vulkan device can take a few hundred milliseconds. On Windows the host creates the first window's device on a background thread while the app starts, so that window opens about as fast as with OpenGL. Additional windows, and the Linux (X11) and Android hosts, create their device when the window is created.
+
+If memory or startup time matter more to your app than Vulkan's rendering performance, measure both backends on your target hardware, and [disable Vulkan](#disabling-vulkan) if OpenGL suits it better.
+
 ## Disabling Vulkan
 
 Vulkan is the default on Android, Linux (X11) and Windows (Win32) since Uno Platform 7.0.

@@ -912,7 +912,10 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   Before 7.0 Vulkan was opt-in. Devices without a usable Vulkan driver fall back to other
   available backends, so no configuration is needed - but the GPU path most apps actually
   run on has changed, so re-test rendering on your target devices, especially custom
-  `SKCanvas` drawing and native-element interop. To disable Vulkan on desktop while keeping
+  `SKCanvas` drawing and native-element interop. Vulkan can also use more memory than
+  OpenGL, by an amount that depends on the GPU driver; see
+  [Startup Time and Memory](xref:Uno.Skia.Vulkan#startup-time-and-memory).
+  To disable Vulkan on desktop while keeping
   fallback, use `.UseX11(b => b.DisableRenderingBackends(X11RenderingBackend.Vulkan))` or
   `.UseWin32(b => b.DisableRenderingBackends(Win32RenderingBackend.Vulkan))`. To select only
   OpenGL, use `ForceRenderingBackend` with the matching `OpenGL` enum value; a forced backend
