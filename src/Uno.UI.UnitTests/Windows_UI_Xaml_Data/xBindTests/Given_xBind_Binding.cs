@@ -804,6 +804,28 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25477")]
+		public void When_Event_NamedElement()
+		{
+			var SUT = new Binding_Event_NamedElement();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(0, SUT.namedTarget.CheckedRaised);
+			Assert.AreEqual(0, SUT.namedTarget.UncheckedRaised);
+
+			SUT.myCheckBox.IsChecked = true;
+
+			Assert.AreEqual(1, SUT.namedTarget.CheckedRaised);
+			Assert.AreEqual(0, SUT.namedTarget.UncheckedRaised);
+
+			SUT.myCheckBox.IsChecked = false;
+
+			Assert.AreEqual(1, SUT.namedTarget.CheckedRaised);
+			Assert.AreEqual(1, SUT.namedTarget.UncheckedRaised);
+		}
+
+		[TestMethod]
 		public void When_Event_DataTemplate()
 		{
 			var SUT = new Binding_Event_DataTemplate();
