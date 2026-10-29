@@ -21,32 +21,34 @@ public partial class FlyoutBase
 	}
 
 	// Calculates space between container boundary and placement target for a given placement mode.
+	// Uno: the margin to the target is left out of that space, so a resized flyout keeps its gap to the target.
 	private static double CalculateAvailableSpace(
 		MajorPlacementMode placement,
 		Rect placementTargetBounds,
-		Rect containerRect)
+		Rect containerRect,
+		double targetMargin)
 	{
 		var availableSpace = 0.0;
 
 		switch (placement)
 		{
 			case MajorPlacementMode.Top:
-				availableSpace = placementTargetBounds.Y - containerRect.Y;
+				availableSpace = placementTargetBounds.Y - containerRect.Y - targetMargin;
 				availableSpace = Math.Min(containerRect.Height, availableSpace);
 				break;
 
 			case MajorPlacementMode.Bottom:
-				availableSpace = (containerRect.Y + containerRect.Height) - (placementTargetBounds.Y + placementTargetBounds.Height);
+				availableSpace = (containerRect.Y + containerRect.Height) - (placementTargetBounds.Y + placementTargetBounds.Height) - targetMargin;
 				availableSpace = Math.Min(containerRect.Height, availableSpace);
 				break;
 
 			case MajorPlacementMode.Left:
-				availableSpace = placementTargetBounds.X - containerRect.X;
+				availableSpace = placementTargetBounds.X - containerRect.X - targetMargin;
 				availableSpace = Math.Min(containerRect.Width, availableSpace);
 				break;
 
 			case MajorPlacementMode.Right:
-				availableSpace = (containerRect.X + containerRect.Width) - (placementTargetBounds.X + placementTargetBounds.Width);
+				availableSpace = (containerRect.X + containerRect.Width) - (placementTargetBounds.X + placementTargetBounds.Width) - targetMargin;
 				availableSpace = Math.Min(containerRect.Width, availableSpace);
 				break;
 		}
@@ -62,14 +64,15 @@ public partial class FlyoutBase
 		ref MajorPlacementMode placement,
 		Rect placementTargetBounds,
 		Rect containerRect,
+		double targetMargin,
 		out double availableSpace)
 	{
 		availableSpace = 0.0;
 
 		if (IsPlacementModeVertical(placement))
 		{
-			var availableSpaceTop = CalculateAvailableSpace(MajorPlacementMode.Top, placementTargetBounds, containerRect);
-			var availableSpaceBottom = CalculateAvailableSpace(MajorPlacementMode.Bottom, placementTargetBounds, containerRect);
+			var availableSpaceTop = CalculateAvailableSpace(MajorPlacementMode.Top, placementTargetBounds, containerRect, targetMargin);
+			var availableSpaceBottom = CalculateAvailableSpace(MajorPlacementMode.Bottom, placementTargetBounds, containerRect, targetMargin);
 
 			if (availableSpaceTop > availableSpaceBottom)
 			{
@@ -88,8 +91,8 @@ public partial class FlyoutBase
 		}
 		else
 		{
-			var availableSpaceLeft = CalculateAvailableSpace(MajorPlacementMode.Left, placementTargetBounds, containerRect);
-			var availableSpaceRight = CalculateAvailableSpace(MajorPlacementMode.Right, placementTargetBounds, containerRect);
+			var availableSpaceLeft = CalculateAvailableSpace(MajorPlacementMode.Left, placementTargetBounds, containerRect, targetMargin);
+			var availableSpaceRight = CalculateAvailableSpace(MajorPlacementMode.Right, placementTargetBounds, containerRect, targetMargin);
 
 			if (availableSpaceLeft > availableSpaceRight)
 			{
@@ -119,7 +122,7 @@ public partial class FlyoutBase
 		ref Point controlPos,
 		ref Size controlSize)
 	{
-		var availableSpace = CalculateAvailableSpace(placement, placementTargetBounds, containerRect);
+		var availableSpace = CalculateAvailableSpace(placement, placementTargetBounds, containerRect, targetMargin);
 
 		// For primary axis, if exceeding available size on side specified by placement
 		// find side with more space and adjust position and size to be next to target.
@@ -130,7 +133,7 @@ public partial class FlyoutBase
 			if (controlSize.Height > availableSpace)
 			{
 				var moreSpacePlacement = placement;
-				SelectSideWithMoreSpace(ref moreSpacePlacement, placementTargetBounds, containerRect, out var moreAvailableSpace);
+				SelectSideWithMoreSpace(ref moreSpacePlacement, placementTargetBounds, containerRect, targetMargin, out var moreAvailableSpace);
 
 				// Switch sides only if there's enough space to fit minimum size Flyout.
 				if (moreSpacePlacement != placement && moreAvailableSpace >= minControlSize.Height)
@@ -174,7 +177,7 @@ public partial class FlyoutBase
 			if (controlSize.Width > availableSpace)
 			{
 				var moreSpacePlacement = placement;
-				SelectSideWithMoreSpace(ref moreSpacePlacement, placementTargetBounds, containerRect, out var moreAvailableSpace);
+				SelectSideWithMoreSpace(ref moreSpacePlacement, placementTargetBounds, containerRect, targetMargin, out var moreAvailableSpace);
 
 				// Switch sides only if there's enough space to fit minimum size Flyout.
 				if (moreSpacePlacement != placement && moreAvailableSpace >= minControlSize.Width)
