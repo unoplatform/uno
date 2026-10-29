@@ -171,7 +171,7 @@ namespace Windows.UI.Input
 
 					if (Settings.HasFlag(GestureSettings.Tap))
 					{
-						_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(Down.PointerId, PointerType, Down.Position, tapCount: 1));
+						_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(Down.PointerId, PointerType, Down.Position, Down.RawPosition, tapCount: 1));
 						return true;
 					}
 				}
@@ -184,7 +184,7 @@ namespace Windows.UI.Input
 				if (Settings.HasFlag(GestureSettings.DoubleTap) && _recognizer.IsMultiTapGesture(Down))
 				{
 					_recognizer._lastSingleTap = default; // The Recognizer supports only double tap, even on UWP
-					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(Down.PointerId, PointerType, Down.Position, tapCount: 2));
+					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(Down.PointerId, PointerType, Down.Position, Down.RawPosition, tapCount: 2));
 
 					return true;
 				}
@@ -198,7 +198,7 @@ namespace Windows.UI.Input
 			{
 				if (Settings.HasFlag(GestureSettings.RightTap) && IsRightTapGesture(this, out var isLongPress))
 				{
-					_recognizer.RightTapped?.Invoke(_recognizer, new RightTappedEventArgs(Down.PointerId, PointerType, Down.Position));
+					_recognizer.RightTapped?.Invoke(_recognizer, new RightTappedEventArgs(Down.PointerId, PointerType, Down.Position, Down.RawPosition));
 
 					return true;
 				}
@@ -221,7 +221,9 @@ namespace Windows.UI.Input
 
 					if (currentState == HoldingState.Started)
 					{
-						_recognizer.Holding?.Invoke(_recognizer, new HoldingEventArgs(Down.PointerId, PointerType, Down.Position, HoldingState.Canceled));
+						_recognizer.Holding?.Invoke(
+							_recognizer,
+							new HoldingEventArgs(Down.PointerId, PointerType, Down.Position, Down.RawPosition, HoldingState.Canceled));
 					}
 				}
 				else if (SupportsHolding()
@@ -237,7 +239,9 @@ namespace Windows.UI.Input
 						_lastHeldPress = (Down.Pointer, Down.Timestamp);
 					}
 
-					_recognizer.Holding?.Invoke(_recognizer, new HoldingEventArgs(Down.PointerId, PointerType, Down.Position, HoldingState.Started));
+					_recognizer.Holding?.Invoke(
+						_recognizer,
+						new HoldingEventArgs(Down.PointerId, PointerType, Down.Position, Down.RawPosition, HoldingState.Started));
 				}
 			}
 
@@ -257,7 +261,7 @@ namespace Windows.UI.Input
 				if (_holdingState == HoldingState.Started)
 				{
 					_holdingState = state;
-					_recognizer.Holding?.Invoke(_recognizer, new HoldingEventArgs(Down.PointerId, PointerType, Down.Position, state));
+					_recognizer.Holding?.Invoke(_recognizer, new HoldingEventArgs(Down.PointerId, PointerType, Down.Position, Down.RawPosition, state));
 				}
 			}
 
