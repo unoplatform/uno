@@ -142,7 +142,7 @@ rather than in `FinishedLaunching`'s launch options. See
 | `Uno.WinUI.Lottie` package and `Lottie` Uno Feature removed | `AnimatedVisualPlayer`, `LottieVisualSource` and `ThemableLottieVisualSource` are part of `Uno.WinUI`, and the Skottie renderer now comes with the Skia renderer, so Lottie needs no package. Remove any explicit `PackageReference` to `Uno.WinUI.Lottie`; it receives no 7.0 builds. The `Lottie` feature is ignored if still listed: it never added a Lottie package on Windows, so a Windows head still references [`CommunityToolkit.WinUI.Lottie`](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie) itself. See [Lottie](xref:Uno.Features.Lottie). |
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
 | `Microsoft.Web.WebView2` WebView backend removed (Windows) | `WebView2Aot` is now the only backend. Remove any `Environment.SetEnvironmentVariable("UNO_WEBVIEW2_BACKEND", "microsoft.web.webview2")` call — the variable is still read, but any value other than `webview2aot` now only logs a warning and `WebView2Aot` is used regardless. The `UnoUseWebView2WPF` opt-in is removed with it — it kept the `Microsoft.Web.WebView2.Wpf` reference for the WPF host, which is gone. Set `<UnoDisableWebView2Workarounds>true</UnoDisableWebView2Workarounds>` instead if you need to keep that reference (it also turns off the package-alias workaround for `Microsoft.Web.WebView2.Core`). |
-| `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
+| `Uno.WinUI` no longer ships `net*-android/ios/tvos/maccatalyst` UI assemblies | The package's `lib` folder holds only `netX.0` (the Skia build, used by every target framework except the WinAppSDK one) and `netX.0-windows10.0.19041.0`. Your projects keep their platform target frameworks; they all compile against the `netX.0` assemblies. Libraries built against 6.x are binary-incompatible, so recompile all of them against 7.0 and remove native bootstrap. See [Platform targeting in multi-targeted libraries](#platform-targeting-in-multi-targeted-libraries) for which target frameworks a library keeps. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 | `Xamarin.AndroidX.Legacy.Support.V4` no longer injected (Android) | The `Uno.Sdk` added it to every Android app head. It is the AndroidX wrapper for the Android Support Library v4, whose job was bridging pre-AndroidX *view* code — with the native Android Views renderer gone, nothing needs it. Ten packages leave the graph: `Legacy.Support.V4`, `Legacy.Support.Core.UI`, `Legacy.Support.Core.Utils`, `AsyncLayoutInflater`, `LocalBroadcastManager`, `Media`, `Print`, `SlidingPaneLayout`, `Window` and its `Window.*Core*` companions. Nothing changes version. `AndroidX.Window` still arrives with the `foldable` feature. If *your own* code uses any of these, add an explicit `PackageReference`. The `AndroidXLegacySupportV4Version` property is removed and is silently ignored if still set. |
 | `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly. Do **not** add an explicit `PackageReference` to `SkiaSharp.Views.Uno.WinUI`: every published build was compiled against Uno Platform 6.x assemblies that 7.0 no longer ships, so the app throws `FileNotFoundException` from `SkiaSharp.Views.Windows.GlobalStaticResources.Initialize()` at startup. |
@@ -267,6 +267,18 @@ What this means for an upgrade:
   replaced. The build reports [UNOB0020](xref:Build.Solution.error-codes) when it can detect this.
 - Nothing to do if your libraries already ship a `netX.0` asset. It is still the asset used by the
   `net10.0-desktop` and `net10.0-browserwasm` heads, and workarounds built for the 6.x behavior keep working.
+
+Which target frameworks should a library keep? `Uno.WinUI` shipping only `netX.0` and
+`netX.0-windows10.0.19041.0` does not mean a library can drop its other targets:
+
+- A library without platform-specific code (no `#if __ANDROID__`, `__IOS__`, `__WASM__` or `__DESKTOP__`, and no
+  `android:`, `ios:`, `wasm:` or `desktop:` XAML prefixes) only needs `netX.0`, plus
+  `netX.0-windows10.0.19041.0` if it supports WinAppSDK.
+- A library with platform-specific code keeps the matching `-android`, `-ios`, `-tvos`, `-browserwasm` or
+  `-desktop` target. Each one compiles with its own symbols and XAML prefixes, and a head with that target framework
+  uses that asset rather than the `netX.0` one.
+- Dropping a platform target framework does not break consumers, since their heads fall back to the `netX.0` asset,
+  but that platform's `#if` blocks and conditional XAML no longer apply in the library.
 
 > [!NOTE]
 > `*.skia.cs` means "compiled by Uno Platform rather than by WinUI". It does not name a drawing backend: `Uno.UI`
