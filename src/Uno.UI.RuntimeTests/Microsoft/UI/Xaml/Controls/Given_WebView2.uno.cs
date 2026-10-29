@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.RuntimeTests.Helpers;
@@ -64,6 +65,89 @@ public class Given_WebView2
 		color = await webView.ExecuteScriptAsync("document.getElementById('test').style.backgroundColor.toString()");
 
 		Assert.AreEqual("\"red\"", color);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25739")]
+	public async Task When_Showing_Cross_Origin_Content_Then_It_Can_Use_Browser_Tab_Features()
+	{
+		var frame = await ShowCrossOriginContent();
+
+		Assert.AreEqual("autoplay *; encrypted-media *; clipboard-write *", frame.Allow);
+		Assert.IsTrue(frame.HasAllowFullscreen, "The frame should allow fullscreen for every origin through the allowfullscreen attribute.");
+
+		if (frame.AllowedFeatures is not null)
+		{
+			// Chrome allows picture-in-picture for every origin by default.
+			Assert.AreEqual("autoplay fullscreen encrypted-media picture-in-picture clipboard-write", frame.AllowedFeatures);
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25739")]
+	public async Task When_Permissions_Policy_Changed_Then_New_Web_View_Uses_It()
+	{
+		var policy = FeatureConfiguration.WebView2.PermissionsPolicy;
+		var defaultPolicy = policy.ToArray();
+
+		try
+		{
+			policy.Remove("fullscreen");
+			policy.Add("camera");
+			policy.Add("microphone https://example.com");
+
+			// The browser splits a directive on any ASCII whitespace, not only spaces.
+			policy.Add("geolocation\nhttps://example.com");
+
+			var frame = await ShowCrossOriginContent();
+
+			Assert.AreEqual(
+				"autoplay *; encrypted-media *; clipboard-write *; camera *; microphone https://example.com; geolocation https://example.com",
+				frame.Allow);
+			Assert.IsFalse(frame.HasAllowFullscreen, "The frame should not allow fullscreen through the allowfullscreen attribute.");
+
+			if (frame.AllowedFeatures is not null)
+			{
+				// The microphone and the location are delegated to another origin only.
+				Assert.AreEqual("autoplay encrypted-media picture-in-picture clipboard-write camera", frame.AllowedFeatures);
+			}
+		}
+		finally
+		{
+			RestorePermissionsPolicy(defaultPolicy);
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25739")]
+	public async Task When_Default_Feature_Added_Again_Then_Added_Entry_Wins()
+	{
+		var policy = FeatureConfiguration.WebView2.PermissionsPolicy;
+		var defaultPolicy = policy.ToArray();
+
+		try
+		{
+			// The browser would keep the first directive for a feature, so the default entries must be replaced, not repeated.
+			policy.Add("autoplay 'none'");
+			policy.Add("fullscreen 'none'");
+
+			var frame = await ShowCrossOriginContent();
+
+			Assert.AreEqual("autoplay 'none'; fullscreen 'none'; encrypted-media *; clipboard-write *", frame.Allow);
+			Assert.IsFalse(frame.HasAllowFullscreen, "The frame should not allow fullscreen through the allowfullscreen attribute.");
+
+			if (frame.AllowedFeatures is not null)
+			{
+				Assert.AreEqual("encrypted-media picture-in-picture clipboard-write", frame.AllowedFeatures);
+			}
+		}
+		finally
+		{
+			RestorePermissionsPolicy(defaultPolicy);
+		}
 	}
 
 	[TestMethod]
@@ -171,5 +255,81 @@ public class Given_WebView2
 	private static string ReadMarker(string elementId)
 		=> WasmSemanticDomHelper.InvokeBrowserJs(
 			$"(function(){{var body = document.getElementById('{elementId}')?.contentDocument?.body; return body ? (body.dataset.marker || '') : '';}})()");
+
+	// Shows a document with an opaque origin, so cross-origin to the app, and returns its frame's attributes and the features
+	// the document reports it may use. Only Chromium tells the latter, so it's null in other browsers.
+	private static async Task<(string Allow, bool HasAllowFullscreen, string AllowedFeatures)> ShowCrossOriginContent()
+	{
+		const string Probe = """
+			<script>
+			var policy = document.featurePolicy;
+			var features = ['autoplay', 'fullscreen', 'encrypted-media', 'picture-in-picture', 'clipboard-write', 'clipboard-read',
+				'camera', 'microphone', 'geolocation'];
+			var allowed = policy ? features.filter(f => policy.allowsFeature(f)).join(' ') : '?';
+			parent.postMessage({ unoAllowedFeatures: allowed }, '*');
+			</script>
+			""";
+
+		var webView = new WebView2 { Width = 200, Height = 200 };
+
+		try
+		{
+			await UITestHelper.Load(webView);
+			await webView.EnsureCoreWebView2Async();
+			var elementId = GetIframeElementId(webView);
+
+			WasmSemanticDomHelper.InvokeBrowserJs($$"""
+				(function () {
+					window.__unoAllowedFeatures = null;
+					window.__unoAllowedFeaturesListener = function (e) {
+						if (e.source === document.getElementById('{{elementId}}').contentWindow && e.data && e.data.unoAllowedFeatures !== undefined) {
+							window.__unoAllowedFeatures = e.data.unoAllowedFeatures;
+						}
+					};
+					window.addEventListener('message', window.__unoAllowedFeaturesListener);
+					return '';
+				})()
+				""");
+
+			webView.CoreWebView2.Navigate("data:text/html;base64," + Convert.ToBase64String(Encoding.UTF8.GetBytes(Probe)));
+
+			static string ReadReport()
+				=> WasmSemanticDomHelper.InvokeBrowserJs("(function(){var f=window.__unoAllowedFeatures;return f===null?'':'allowed:'+f;})()");
+
+			await TestServices.WindowHelper.WaitFor(
+				() => ReadReport().Length > 0,
+				timeoutMS: 10000,
+				message: "The cross-origin document should report the features it may use.");
+
+			var allowedFeatures = ReadReport()["allowed:".Length..];
+			var allow = WasmSemanticDomHelper.InvokeBrowserJs($"(function(){{return document.getElementById('{elementId}').getAttribute('allow') ?? '';}})()");
+			var hasAllowFullscreen = WasmSemanticDomHelper.InvokeBrowserJs(
+				$"(function(){{return document.getElementById('{elementId}').hasAttribute('allowfullscreen') ? '1' : '0';}})()") == "1";
+
+			return (allow, hasAllowFullscreen, allowedFeatures == "?" ? null : allowedFeatures);
+		}
+		finally
+		{
+			WasmSemanticDomHelper.InvokeBrowserJs("""
+				(function () {
+					window.removeEventListener('message', window.__unoAllowedFeaturesListener);
+					delete window.__unoAllowedFeaturesListener;
+					delete window.__unoAllowedFeatures;
+					return '';
+				})()
+				""");
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	private static void RestorePermissionsPolicy(string[] directives)
+	{
+		var policy = FeatureConfiguration.WebView2.PermissionsPolicy;
+		policy.Clear();
+		foreach (var directive in directives)
+		{
+			policy.Add(directive);
+		}
+	}
 }
 #endif

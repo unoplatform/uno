@@ -438,6 +438,35 @@ namespace Uno.UI
 			/// </remarks>
 			public static string AdditionalBrowserArguments { get; set; }
 
+			/// <summary>
+			/// The browser features that pages shown in a <see cref="Microsoft.UI.Xaml.Controls.WebView2"/> can use, as Permissions
+			/// Policy directives.
+			/// </summary>
+			/// <remarks>
+			/// <para><b>WebAssembly only.</b> It is a no-op on every other target.</para>
+			/// <para>By default, pages can play media automatically, go fullscreen, play protected (DRM) media and copy to the clipboard,
+			/// as they could in a browser tab, whatever site they come from: the list holds <c>autoplay</c>, <c>fullscreen</c>,
+			/// <c>encrypted-media</c> and <c>clipboard-write</c>. Features that need the user's permission, such as <c>camera</c> or
+			/// <c>microphone</c>, aren't in the list, so pages from other sites can't use them.</para>
+			/// <para>Each entry is a directive in the syntax of the <c>iframe</c> <c>allow</c> attribute (<c>feature allowlist</c>),
+			/// written to that attribute when a <c>WebView2</c> applies its template and creates its <c>iframe</c>, so changes apply
+			/// to the iframes created afterwards. A feature name alone applies to every page the web view shows, and a feature name
+			/// followed by an allowlist, such as <c>camera https://example.com</c>, is written as is. A later entry for a feature
+			/// replaces an earlier one, so adding <c>autoplay 'none'</c> overrides the default <c>autoplay</c> entry and blocks
+			/// autoplay for every page. A feature without an entry gets the browser's default, which for most features lets pages
+			/// from the app's own origin use it, such as content shown with <c>NavigateToString</c>. When <c>fullscreen</c> applies
+			/// to every page, it is written as the <c>allowfullscreen</c> attribute, which browsers read as <c>fullscreen *</c>.</para>
+			/// <para>The browser still asks the user before a page uses a feature that needs permission. If the app's server sends a
+			/// <c>Permissions-Policy</c> header that lists a feature, the header must also allow it for the origins of the pages it's
+			/// passed to; features the header doesn't list aren't affected.</para>
+			/// </remarks>
+			public static IList<string> PermissionsPolicy { get; } = new List<string>
+			{
+				"autoplay",
+				"fullscreen",
+				"encrypted-media",
+				"clipboard-write",
+			};
 		}
 
 		public static class Xaml

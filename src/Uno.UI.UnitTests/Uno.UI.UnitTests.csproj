@@ -128,6 +128,10 @@
 		<Compile Include="..\Uno.UI.Runtime.MacOS\UI\Windowing\MacOSTitleBarMath.cs" Link="Windows_UI_Input\MacOSTitleBarMath.cs" />
 		<Compile Include="..\Uno.UI.Runtime.AppleUIKit\AppleUIKitLifecycleDecision.cs" Link="Hosting\AppleUIKitLifecycleDecision.cs" />
 		<Compile Include="..\Uno.UI.Runtime.Win32\Rendering\BackgroundPrewarm.cs" Link="Hosting\BackgroundPrewarm.cs" />
+		<!-- Pure parsing split out of the WebAssembly WebView2 provider, so it's testable without a browser (same reason as above). -->
+		<Compile Include="..\Uno.UI.Runtime.WebAssembly.Browser\UI\Xaml\Controls\WebView\WebViewFramePermissions.cs">
+			<Link>Windows_UI_XAML_Controls\WebView2Tests\WebViewFramePermissions.cs</Link>
+		</Compile>
 	</ItemGroup>
 	<ItemGroup>
 		<!--
