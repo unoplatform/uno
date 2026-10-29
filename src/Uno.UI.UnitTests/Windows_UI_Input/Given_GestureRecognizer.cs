@@ -298,6 +298,22 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25731")]
+		public void Tapped_RawPosition_Is_The_Press()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap, MeasuresTapRangeInWindow = true };
+			var taps = new List<TappedEventArgs>();
+			sut.Tapped += (snd, e) => taps.Add(e);
+
+			sut.ProcessDownEvent(GetPoint(25, 25).At(rawPosition: new Point(125, 125), position: new Point(25, 25)));
+			sut.ProcessUpEvent(GetPoint(25, 25).At(rawPosition: new Point(130, 125), position: new Point(25, 25)));
+
+			var tap = taps.Should().ContainSingle().Subject;
+			tap.RawPosition.Should().Be(new Point(125, 125));
+			tap.Position.Should().Be(new Point(25, 25));
+		}
+
+		[TestMethod]
 #if RUNTIME_NATIVE_AOT
 		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
 #endif  // RUNTIME_NATIVE_AOT
@@ -2358,13 +2374,27 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			=> GetPoint(25, 25, ts: ts).At(rawPosition: new Point(rawX, rawY), position: new Point(25, 25));
 
 		public static TappedEventArgs Tap(double x, double y, uint tapCount = 1, PointerDeviceType? device = null)
-			=> new TappedEventArgs(1, device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), tapCount);
+			=> new TappedEventArgs(
+				1,
+				device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch,
+				new Point(x, y),
+				new Point(x, y),
+				tapCount);
 
 		public static RightTappedEventArgs RightTap(double x, double y, PointerDeviceType? device = null)
-			=> new RightTappedEventArgs(1, device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y));
+			=> new RightTappedEventArgs(
+				1,
+				device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch,
+				new Point(x, y),
+				new Point(x, y));
 
 		public static HoldingEventArgs Hold(double x, double y, HoldingState state, PointerDeviceType? device = null, uint? ptId = null)
-			=> new HoldingEventArgs(ptId ?? 1, device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), state);
+			=> new HoldingEventArgs(
+				ptId ?? 1,
+				device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch,
+				new Point(x, y),
+				new Point(x, y),
+				state);
 
 		public static DraggingEventArgs Drag(PointerPoint point, DraggingState state)
 			=> new DraggingEventArgs(point, state, 1);
