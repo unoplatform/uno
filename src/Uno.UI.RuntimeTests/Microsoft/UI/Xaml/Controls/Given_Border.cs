@@ -387,11 +387,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Gradient_Rendered_At_Twice_The_Scale_Then_Edges_Stay_Opaque()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
-			{
-				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
-			}
-
 			// A gradient fill takes its edges from the bitmap's bounds clip, unlike a solid one.
 			var SUT = new Border()
 			{
