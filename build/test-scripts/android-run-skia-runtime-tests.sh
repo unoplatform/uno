@@ -81,6 +81,13 @@ then
 	sdk_install 'extras;android;m2repository'
 	sdk_install "system-images;android-28;google_apis_playstore;$EMU_ARCH"
 	sdk_install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;$EMU_ARCH"
+	IMAGE_REVISION=$(grep -h "Pkg.Revision" "$ANDROID_HOME/system-images/android-$ANDROID_SIMULATOR_APILEVEL/google_apis_playstore/$EMU_ARCH/source.properties" | cut -d= -f2 | cut -d. -f1 || true)
+	echo "System image android-$ANDROID_SIMULATOR_APILEVEL revision: $IMAGE_REVISION"
+	# Before revision 7, the API 36 image's Vulkan driver crashes the app partway through the run (#25655).
+	if [[ "$ANDROID_SIMULATOR_APILEVEL" == "36" && "${IMAGE_REVISION:-0}" -lt 7 ]]; then
+		echo "##vso[task.logissue type=error]The android-36 system image is revision ${IMAGE_REVISION:-unknown}; revision 7 or later is required (#25655)."
+		exit 1
+	fi
 
 	# Create emulator
 	echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n "$AVD_NAME" --abi $EMU_ARCH -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;$EMU_ARCH" --sdcard 128M --force
