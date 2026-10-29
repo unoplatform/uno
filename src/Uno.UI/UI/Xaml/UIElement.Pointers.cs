@@ -456,7 +456,7 @@ namespace Microsoft.UI.Xaml
 		private void RaiseAfterPointerReleased(Action raiseGesture)
 		{
 #if UNO_HAS_MANAGED_POINTERS
-			if (XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleased(raiseGesture) is true)
+			if (XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseBubbled(raiseGesture) is true)
 			{
 				return;
 			}

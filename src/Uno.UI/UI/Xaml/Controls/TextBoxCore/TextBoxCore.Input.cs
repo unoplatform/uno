@@ -168,6 +168,14 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		InitializeIme();
 	}
 
+	// Test hook: replaces the platform notifications (e.g. the Android soft keyboard and autofill) until disposed.
+	internal static IDisposable SetNotificationsProviderForTesting(ITextBoxNotificationsProviderSingleton provider)
+	{
+		var original = _textBoxNotificationsSingleton;
+		_textBoxNotificationsSingleton = provider;
+		return Disposable.Create(() => _textBoxNotificationsSingleton = original);
+	}
+
 	internal CaretDisplayMode CaretMode
 	{
 		get => _caretMode;
@@ -594,9 +602,14 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		}
 
 #if UNO_HAS_MANAGED_POINTERS
-		if (Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseProcessed(OnReleaseProcessed) is true)
+		if (Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnPointerReleaseCompleted) is true)
 		{
 			_isPlatformTextInputRequestPending = true;
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("Platform text input deferred until the pointer release has completed.");
+			}
+
 			return;
 		}
 #endif
@@ -604,12 +617,16 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		StartPlatformTextInput(focusState);
 	}
 
-	private void OnReleaseProcessed()
+	private void OnPointerReleaseCompleted()
 	{
 		_isPlatformTextInputRequestPending = false;
 		if (FocusState is not FocusState.Unfocused and var focusState)
 		{
 			StartPlatformTextInput(focusState);
+		}
+		else if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("Platform text input not started: the focus moved away before the pointer release completed.");
 		}
 	}
 

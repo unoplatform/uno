@@ -8683,14 +8683,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Focused_Only_While_Tap_Is_Released_Then_Ime_Session_Not_Started()
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Focused_Only_While_Tap_Is_Released_Then_Platform_Text_Input_Not_Started(bool isPassword)
 		{
 			// Like in WinUI, a ScrollViewer focuses its first TextBox when a tap inside it is released, but here the Tapped handler moves the
-			// focus away right after: that short-lived focus must not open the platform text input (soft keyboard).
-			var fake = new FakeImeTextBoxExtension();
-			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+			// focus away right after: that short-lived focus must not open the platform text input (soft keyboard, browser input, IME).
+			var ime = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(ime);
+			var notifications = new CountingTextBoxNotifications();
+			using var notificationsDisposable = TextBox.SetNotificationsProviderForTesting(notifications);
 
-			var firstField = new TextBox { Header = "first" };
+			Control firstField = isPassword ? new PasswordBox() : new TextBox();
 			var tappable = new Border { Height = 60, Background = new SolidColorBrush(Microsoft.UI.Colors.LightBlue) };
 			var scrollViewer = new ScrollViewer
 			{
@@ -8701,12 +8705,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var focusTarget = new Button { Content = "focus target" };
 			var initialFocus = new Button { Content = "initial focus" };
 			tappable.Tapped += (_, _) => focusTarget.Focus(FocusState.Programmatic);
-			var wasFieldFocused = false;
-			firstField.GettingFocus += (_, _) => wasFieldFocused = true;
 
 			await UITestHelper.Load(new StackPanel { Children = { initialFocus, focusTarget, scrollViewer } });
 			initialFocus.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
+
+			var wasFieldFocused = false;
+			firstField.GettingFocus += (_, _) => wasFieldFocused = true;
+			Assert.AreEqual(0, notifications.FocusedCount, "No text input should be focused before the tap.");
+			using var hiddenInput = HiddenInputFocusCounter.TryStart(firstField);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
@@ -8714,19 +8721,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(wasFieldFocused, "The ScrollViewer is expected to focus its first TextBox on release.");
+			Assert.IsTrue(wasFieldFocused, "The ScrollViewer is expected to focus its first text input on release.");
 			Assert.AreSame(focusTarget, FocusManager.GetFocusedElement(focusTarget.XamlRoot));
-			Assert.AreEqual(0, fake.StartCount, "The IME session must not start for a TextBox that lost the focus before the release completed.");
+			Assert.AreEqual(0, notifications.FocusedCount, "The platform must not be notified of a focus lost before the release completed (Android shows the soft keyboard).");
+			Assert.AreEqual(0, ime.StartCount, "The IME session must not start for a text input that lost the focus before the release completed.");
+			if (hiddenInput is not null)
+			{
+				Assert.AreEqual(0, hiddenInput.Count, "The browser's hidden input must not be focused for a focus lost before the release completed.");
+			}
 		}
 
 		[TestMethod]
-		public async Task When_Tapped_Then_Ime_Session_Started_Once_Released()
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Tapped_Then_Platform_Text_Input_Started_Once_Released(bool isPassword)
 		{
-			var fake = new FakeImeTextBoxExtension();
-			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+			var ime = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(ime);
+			var notifications = new CountingTextBoxNotifications();
+			using var notificationsDisposable = TextBox.SetNotificationsProviderForTesting(notifications);
 
-			var SUT = new TextBox { Width = 200 };
-			await UITestHelper.Load(SUT);
+			Control SUT = isPassword ? new PasswordBox { Width = 200 } : new TextBox { Width = 200 };
+			var initialFocus = new Button { Content = "initial focus" };
+			await UITestHelper.Load(new StackPanel { Children = { initialFocus, SUT } });
+			initialFocus.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, notifications.FocusedCount, "No text input should be focused before the tap.");
+			using var hiddenInput = HiddenInputFocusCounter.TryStart(SUT);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
@@ -8735,7 +8757,84 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreSame(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
-			Assert.AreEqual(1, fake.StartCount);
+			Assert.AreEqual(1, notifications.FocusedCount);
+			// A PasswordBox never starts an IME session.
+			Assert.AreEqual(isPassword ? 0 : 1, ime.StartCount);
+			if (hiddenInput is not null)
+			{
+				Assert.AreEqual(1, hiddenInput.Count, "The browser's hidden input should be focused to start the text entry.");
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Focus_Moved_Away_On_Touch_Exit_Then_Platform_Text_Input_Not_Started()
+		{
+			// A finger release raises PointerExited only after PointerReleased and the gestures: the platform text input waits for it too.
+			var ime = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(ime);
+			var notifications = new CountingTextBoxNotifications();
+			using var notificationsDisposable = TextBox.SetNotificationsProviderForTesting(notifications);
+
+			var SUT = new TextBox { Width = 200 };
+			var focusTarget = new Button { Content = "focus target" };
+			await UITestHelper.Load(new StackPanel { Children = { focusTarget, SUT } });
+			focusTarget.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var wasFocused = false;
+			SUT.GettingFocus += (_, _) => wasFocused = true;
+			SUT.AddHandler(UIElement.PointerExitedEvent, new PointerEventHandler((_, _) => focusTarget.Focus(FocusState.Programmatic)), handledEventsToo: true);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(wasFocused, "The TextBox is expected to take the focus on release.");
+			Assert.AreSame(focusTarget, FocusManager.GetFocusedElement(SUT.XamlRoot));
+			Assert.AreEqual(0, notifications.FocusedCount);
+			Assert.AreEqual(0, ime.StartCount);
+		}
+
+		private sealed class CountingTextBoxNotifications : ITextBoxNotificationsProviderSingleton
+		{
+			public int FocusedCount { get; private set; }
+
+			public void OnFocused(TextBoxCore core) => FocusedCount++;
+
+			public void OnUnfocused(TextBoxCore core) { }
+
+			public void OnEnteredVisualTree(TextBoxCore core) { }
+
+			public void OnLeaveVisualTree(TextBoxCore core) { }
+
+			public void FinishAutofillContext(bool shouldSave) { }
+
+			public void NotifyValueChanged(TextBoxCore core) { }
+
+			public void NotifySelectionChanged(TextBoxCore core) { }
+		}
+
+		// Counts the focusin events of the browser's shared hidden <input>, which the browser host focuses to start a text entry.
+		// Null on other hosts, and when accessibility routes the text entry through the per-element semantic inputs instead.
+		private sealed class HiddenInputFocusCounter : IDisposable
+		{
+			public static HiddenInputFocusCounter TryStart(UIElement field)
+			{
+				if (!OperatingSystem.IsBrowser() || SemanticElementExists(field))
+				{
+					return null;
+				}
+
+				InvokeBrowserJs("(function(){const c=window.__unoHiddenInputFocusins={count:0};c.listener=e=>{if(e.target.id==='uno-input'){c.count++;}};document.addEventListener('focusin',c.listener,true);return 'ok';})()");
+				return new();
+			}
+
+			public int Count => int.Parse(InvokeBrowserJs("(function(){return String(window.__unoHiddenInputFocusins.count);})()"), System.Globalization.CultureInfo.InvariantCulture);
+
+			public void Dispose()
+				=> InvokeBrowserJs("(function(){const c=window.__unoHiddenInputFocusins;document.removeEventListener('focusin',c.listener,true);delete window.__unoHiddenInputFocusins;return 'ok';})()");
 		}
 
 		private class FakeImeTextBoxExtension : IImeTextBoxExtension
