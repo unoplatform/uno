@@ -1180,6 +1180,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			// by pushing/shrinking the scrollviewer.
 			//Assert.AreEqual(new Rect(0, -filler.Height, setup.Width, setup.Height), procs[0].Args.EffectiveViewport, "Invalid EVP values.");
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24917")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_EVP_Handler_Throws()
+		{
+			const string message = "Simulated EffectiveViewportChanged exception";
+			var thrower = new Border { Width = 50, Height = 50 };
+			var sibling = new Border { Width = 50, Height = 50 };
+			var throwCount = 0;
+			var siblingCount = 0;
+			var reportedCount = 0;
+
+			void OnThrowerEVPChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+			{
+				throwCount++;
+				throw new InvalidOperationException(message);
+			}
+
+			void OnSiblingEVPChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args) => siblingCount++;
+
+			void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+			{
+				if (e.Exception?.Message == message)
+				{
+					reportedCount++;
+					e.Handled = true;
+				}
+			}
+
+			thrower.EffectiveViewportChanged += OnThrowerEVPChanged;
+			sibling.EffectiveViewportChanged += OnSiblingEVPChanged;
+			Application.Current.UnhandledException += OnUnhandledException;
+			try
+			{
+				WindowContent = new ScrollViewer { Content = new StackPanel { Children = { thrower, sibling } } };
+				await WaitForIdle();
+
+				var next = new Border { Width = 50, Height = 50 };
+				WindowContent = next;
+				await WaitForLoaded(next);
+
+				Assert.IsTrue(next.IsLoaded);
+				Assert.IsTrue(throwCount > 0, "The throwing handler should have been raised.");
+				Assert.AreEqual(throwCount, reportedCount, "Each exception should be reported through Application.UnhandledException.");
+				Assert.IsTrue(siblingCount > 0, "Other elements of the same batch should still be notified.");
+			}
+			finally
+			{
+				thrower.EffectiveViewportChanged -= OnThrowerEVPChanged;
+				sibling.EffectiveViewportChanged -= OnSiblingEVPChanged;
+				Application.Current.UnhandledException -= OnUnhandledException;
+				WindowContent = null;
+			}
+		}
 	}
 	public partial class Given_FrameworkElement_EffectiveViewport
 	{

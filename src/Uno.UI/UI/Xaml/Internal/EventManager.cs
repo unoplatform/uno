@@ -35,17 +35,21 @@ internal sealed partial class EventManager
 
 	internal void RaiseEffectiveViewportChangedEvents()
 	{
-		for (int i = 0; i < _effectiveViewportChangedQueue.Count; i++)
+		var queue = _effectiveViewportChangedQueue;
+		_effectiveViewportChangedQueue = new(32);
+
+		foreach (var (fe, args) in queue)
 		{
-			var (fe, args) = _effectiveViewportChangedQueue[i];
-
-			_effectiveViewportChangedQueue[i] = default;
-
-			fe.RaiseEffectiveViewportChanged(args);
+			// As in WinUI, a throwing handler is reported and does not prevent the other elements from being notified.
+			try
+			{
+				fe.RaiseEffectiveViewportChanged(args);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+			}
 		}
-
-		_effectiveViewportChangedQueue.Clear();
-
 	}
 
 	private void AddToLoadedEventList(UIElement element)
