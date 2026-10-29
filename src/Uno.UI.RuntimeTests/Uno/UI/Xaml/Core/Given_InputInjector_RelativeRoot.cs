@@ -172,13 +172,15 @@ public class Given_InputInjector_RelativeRoot
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
-	[DataRow(1, true, DisplayName = "1 px move")]
-	[DataRow(20, false, DisplayName = "20 px move and back")]
-	public async Task When_Touch_Moves_With_Offset_RelativeRoot_Then_Tapped_Only_Within_Range(int moveBy, bool tapped)
+	[DataRow(1, false, true, DisplayName = "1 px move")]
+	[DataRow(20, false, false, DisplayName = "20 px move and back")]
+	[DataRow(1, true, true, DisplayName = "1 px move, the root moved by its handler")]
+	public async Task When_Touch_Moves_With_Offset_RelativeRoot_Then_Tapped_Only_Within_Range(int moveBy, bool moveRoot, bool tapped)
 	{
 		// The margin keeps the root away from the window origin, by more than the tap range.
 		Border target;
 		Grid root;
+		var rootTransform = new TranslateTransform();
 		var ui = new Grid
 		{
 			Children =
@@ -188,6 +190,7 @@ public class Given_InputInjector_RelativeRoot
 					Width = 200,
 					Height = 200,
 					Margin = new Thickness(50),
+					RenderTransform = rootTransform,
 					HorizontalAlignment = HorizontalAlignment.Left,
 					VerticalAlignment = VerticalAlignment.Top,
 					Children =
@@ -213,13 +216,19 @@ public class Given_InputInjector_RelativeRoot
 		// With a manipulation mode and handler, the gesture recognizer of the target also gets the moves.
 		target.ManipulationDelta += (_, _) => { };
 
+		// A handler that moves the root must not change where the move it handles was, on screen.
+		target.PointerMoved += (_, _) => rootTransform.X = moveRoot ? 50 : 0;
+
 		// Coordinates are relative to `root` (the RelativeRoot).
 		var scopedInjector = InputInjector.TryCreate(root)
 			?? throw new InvalidOperationException("Failed to create scoped InputInjector");
 		using var finger = scopedInjector.GetFinger();
+		// Each move is a single event, so the root moves while the first one is routed.
 		finger.Press(new Point(100, 100));
-		finger.MoveTo(new Point(100 + moveBy, 100));
-		finger.MoveTo(new Point(100, 100));
+		finger.MoveTo(new Point(100 + moveBy, 100), steps: 0);
+
+		// Back where the finger pressed, on screen.
+		finger.MoveTo(new Point(100 - rootTransform.X, 100), steps: 0);
 		finger.Release();
 		await UITestHelper.WaitForIdle();
 
