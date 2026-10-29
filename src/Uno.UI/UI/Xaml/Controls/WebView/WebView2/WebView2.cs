@@ -53,7 +53,18 @@ public partial class WebView2 : Control, IWebView
 
 	CoreDispatcher IWebView.Dispatcher => Dispatcher;
 
-	protected override void OnApplyTemplate() => _coreWebView2?.OnOwnerApplyTemplate();
+	protected override void OnApplyTemplate()
+	{
+		_coreWebView2?.OnOwnerApplyTemplate();
+
+#if __SKIA__
+		// A template applied to a loaded WebView2, as when it's retemplated, gets no Loaded to register its native WebView.
+		if (IsLoaded)
+		{
+			_coreWebView2?.OnLoaded();
+		}
+#endif
+	}
 
 	private void WebView2_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 	{
