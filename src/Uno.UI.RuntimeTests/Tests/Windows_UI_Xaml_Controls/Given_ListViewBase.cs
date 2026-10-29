@@ -35,6 +35,11 @@ using Foundation;
 #endif
 
 using Point = Windows.Foundation.Point;
+#if HAS_UNO_WINUI
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
 using TabView = Microsoft.UI.Xaml.Controls.TabView;
 using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
 
@@ -910,6 +915,153 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
 				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
+			}
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[DataRow(PointerDeviceType.Touch, false, false, true)]
+#if HAS_UNO // Pen injection is not available on WinAppSDK
+		[DataRow(PointerDeviceType.Pen, false, false, true)]
+#endif
+		[DataRow(PointerDeviceType.Touch, true, false, true)]
+		[DataRow(PointerDeviceType.Touch, false, true, true)]
+		[DataRow(PointerDeviceType.Touch, false, false, false)]
+		public async Task When_Hold_Item_Then_No_ItemClick_Nor_Selection(PointerDeviceType device, bool isGridView, bool holdingTimerOnly, bool isItemClickEnabled)
+		{
+			ListViewBase list = isGridView ? new GridView() : new ListView();
+			list.IsItemClickEnabled = isItemClickEnabled;
+			list.SelectionMode = ListViewSelectionMode.Single;
+			list.ItemsSource = new[] { "0", "1", "2" };
+
+			var itemClickCount = 0;
+			var holdingCount = 0;
+			list.ItemClick += (_, _) => itemClickCount++;
+			if (holdingTimerOnly)
+			{
+				// Like a ContextFlyout, a Holding handler runs the holding timer, which can see the hold before the pointer timestamps do.
+				list.Holding += (_, _) => holdingCount++;
+			}
+
+			try
+			{
+				await UITestHelper.Load(list);
+
+				var pointer = (InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector")).GetPointer(device);
+				using var pointerScope = pointer as IDisposable;
+				var center = ((FrameworkElement)list.ContainerFromIndex(1)).GetAbsoluteCenter();
+
+				// On WinUI a ListViewItem runs its tap interaction only when a Tapped follows, while a touch or pen hold is a right-tap.
+				await pointer.Hold(center, timerOnlyHoldingSource: holdingTimerOnly ? list : null);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, itemClickCount);
+				Assert.AreEqual(-1, list.SelectedIndex);
+				Assert.AreEqual(holdingTimerOnly ? 2 : 0, holdingCount); // Started and Completed
+
+				if (!holdingTimerOnly) // Otherwise the injected timestamps never advanced: the next press would have the held one's timestamp.
+				{
+					pointer.Press(center);
+					pointer.Release();
+					await WindowHelper.WaitForIdle();
+
+					Assert.AreEqual(isItemClickEnabled ? 1 : 0, itemClickCount);
+					Assert.AreEqual(1, list.SelectedIndex);
+				}
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Relies on Uno's injected timestamps to hold
+		public async Task When_Second_Finger_Holds_Item_Then_No_ItemClick_Nor_Selection()
+		{
+			var list = new ListView
+			{
+				IsItemClickEnabled = true,
+				SelectionMode = ListViewSelectionMode.Single,
+				ItemsSource = new[] { "0", "1", "2" },
+			};
+			var itemClickCount = 0;
+			list.ItemClick += (_, _) => itemClickCount++;
+
+			try
+			{
+				await UITestHelper.Load(list);
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var first = injector.GetFinger(id: 1);
+				using var second = injector.GetFinger(id: 2);
+				var center = ((FrameworkElement)list.ContainerFromIndex(1)).GetAbsoluteCenter();
+
+				first.Press(center);
+				await second.Hold(new Point(center.X + 5, center.Y));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, itemClickCount, "The second finger's hold must not raise the click armed by the first one.");
+				Assert.AreEqual(-1, list.SelectedIndex);
+
+				first.Release(); // Pressed before the hold advanced the timestamps: a hold too.
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, itemClickCount);
+				Assert.AreEqual(-1, list.SelectedIndex);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Hold_Item_And_SuppressTapOnHold_Disabled_Then_ItemClick_And_Selection()
+		{
+			var original = Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold;
+			Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold = false;
+			try
+			{
+				var list = new ListView
+				{
+					IsItemClickEnabled = true,
+					SelectionMode = ListViewSelectionMode.Single,
+					ItemsSource = new[] { "0", "1", "2" },
+				};
+				var tappedOnly = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+				var itemClickCount = 0;
+				var tappedCount = 0;
+				list.ItemClick += (_, _) => itemClickCount++;
+				tappedOnly.Tapped += (_, _) => tappedCount++;
+
+				await UITestHelper.Load(new StackPanel { Children = { list, tappedOnly } });
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var finger = injector.GetFinger();
+
+				await finger.Hold(((FrameworkElement)list.ContainerFromIndex(1)).GetAbsoluteCenter());
+				await finger.Hold(tappedOnly.GetAbsoluteCenter());
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, itemClickCount);
+				Assert.AreEqual(1, list.SelectedIndex);
+				Assert.AreEqual(1, tappedCount);
+			}
+			finally
+			{
+				Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold = original;
+				WindowHelper.WindowContent = null;
 			}
 		}
 #endif

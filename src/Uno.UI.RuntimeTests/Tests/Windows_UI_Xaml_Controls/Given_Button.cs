@@ -308,6 +308,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Touch_Hold_Without_ContextFlyout_Then_Click()
+		{
+			var SUT = new Button { Content = "text" };
+			var clickCount = 0;
+			SUT.Click += (_, _) => clickCount++;
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Unlike a ListViewItem, a Button clicks on a touch hold which opens no menu: WinUI's ButtonBase clicks on the
+			// unhandled RightTapped, while Uno clicks on the release as it doesn't implement GestureFollowing yet.
+			await finger.Hold(SUT.GetAbsoluteCenter());
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, clickCount);
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		public async Task When_Button_Flyout_TemplateBinding()
