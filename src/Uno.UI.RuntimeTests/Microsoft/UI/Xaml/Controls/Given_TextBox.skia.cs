@@ -6127,6 +6127,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.PointerCaptures?.Count ?? 0, "the TextBox must not capture a pointer that is gone");
 		}
 
+		// A finger that slips off the TextBox before the hold lifts on another element, so no release reaches the
+		// TextBox: the 0.5 s hold must not fire for it either.
+		[TestMethod]
+		public async Task When_Touch_Released_Outside_Does_Not_Start_Caret_Drag_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
+			SUT.Select(0, 0);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Pressed by the bottom edge, the finger leaves the box without leaving the tap range (which would end the hold).
+			var bounds = SUT.GetAbsoluteBounds();
+			var x = GetCaretPoint(SUT, 7).X;
+			finger.Press(new Point(x, bounds.Bottom - 2));
+			finger.MoveTo(new Point(x, bounds.Bottom + 4));
+			finger.Release();
+
+			await Task.Delay(650); // past 0.5 s, short of the 0.8 s Holding
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, loupe.Begins, $"a touch released outside must not start the caret drag (log: {loupe.Log})");
+			Assert.AreEqual(0, SUT.SelectionStart, "a touch released outside must not move the caret");
+		}
+
+		// A finger drifting off the text onto the TextBox's padding is still on the TextBox: the hold must still start
+		// the caret drag.
+		[TestMethod]
+		public async Task When_Touch_Hold_Drifts_Within_TextBox_Starts_Caret_Drag_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() =>
+			{
+				TextBoxCore.LoupeOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
+			SUT.Select(0, 0);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var text = SUT.TextBoxView.DisplayBlock.GetAbsoluteBounds();
+			var x = GetCaretPoint(SUT, 7).X;
+			finger.Press(new Point(x, text.Bottom - 1));
+			finger.MoveTo(new Point(x, text.Bottom + 4));
+
+			await Task.Delay(650); // past 0.5 s, short of the 0.8 s Holding
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, loupe.Begins, $"the hold should start the caret drag (log: {loupe.Log})");
+			finger.Release();
+		}
+
 		private static async Task AssertLoupeFollowsCaretDrag(bool inScrollViewer)
 		{
 			var loupe = new RecordingLoupe();
