@@ -714,7 +714,7 @@ internal partial class InputManager
 			// Finally raise the event, either on the OriginalSource or on the capture owners if any
 			result += RaiseUsingCaptures(Move, originalSource, routedArgs, setCursor: true);
 
-			AfterMoveForManipulations(args);
+			AfterMoveForManipulations(routedArgs);
 
 			args.DispatchResult = result;
 		}
