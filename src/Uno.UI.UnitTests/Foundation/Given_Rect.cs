@@ -184,5 +184,45 @@ namespace Uno.UI.Tests.Foundation
 			Assert.AreEqual("1.50,2.00,3.00,0.10", ((IFormattable)sut).ToString("F2", CultureInfo.InvariantCulture));
 			Assert.AreEqual("Empty.", ((IFormattable)Rect.Empty).ToString("F2", CultureInfo.InvariantCulture));
 		}
+
+		[TestMethod]
+		public void When_Union_WithEmpty()
+		{
+			var sut = new Rect(1, 2, 3, 4);
+
+			sut.Union(Rect.Empty);
+
+			Assert.AreEqual(new Rect(1, 2, 3, 4), sut);
+		}
+
+		[TestMethod]
+		public void When_Union_FromEmpty()
+		{
+			var sut = Rect.Empty;
+
+			sut.Union(new Rect(1, 2, 3, 4));
+
+			Assert.AreEqual(new Rect(1, 2, 3, 4), sut);
+		}
+
+		[TestMethod]
+		public void When_Union_BothEmpty()
+		{
+			var sut = Rect.Empty;
+
+			sut.Union(Rect.Empty);
+
+			Assert.IsTrue(sut.IsEmpty);
+		}
+
+		[TestMethod]
+		public void When_Union()
+		{
+			var sut = new Rect(1, 2, 3, 4);
+
+			sut.Union(new Rect(-1, 5, 2, 10));
+
+			Assert.AreEqual(new Rect(-1, 2, 5, 13), sut);
+		}
 	}
 }
