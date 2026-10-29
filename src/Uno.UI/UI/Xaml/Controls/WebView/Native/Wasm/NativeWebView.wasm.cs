@@ -190,7 +190,9 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	{
 		_elementIdToNativeWebView.TryAdd(_elementId, this);
 		NativeMethods.SetupEvents(_elementId);
-		DispatchLoadEvent(_elementId, null);
+
+		// The frame may already show a document, as after a reparent, so report its URL rather than the src attribute's.
+		DispatchLoadEvent(_elementId, NativeMethods.GetCurrentUrl(_elementId));
 	}
 
 	public void OnUnloaded()

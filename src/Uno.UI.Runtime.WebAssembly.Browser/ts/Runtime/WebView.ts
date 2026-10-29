@@ -74,6 +74,13 @@ namespace Microsoft.UI.Xaml.Controls {
             }
         }
 
+        // The URL of the frame's document or, when the browser hides it, the last URL known for the frame. Reading it doesn't
+        // change that last URL, so a navigation that hasn't loaded yet keeps the URL it recorded.
+        static getCurrentUrl(htmlId: string): string | null {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
+            return iframe?.contentWindow ? WebView.readUrl(iframe).url : null;
+        }
+
         private static readUrl(iframe: HTMLIFrameElement): { url: string | null, isCrossOrigin: boolean } {
             try {
                 return { url: iframe.contentWindow.location.href, isCrossOrigin: false };
