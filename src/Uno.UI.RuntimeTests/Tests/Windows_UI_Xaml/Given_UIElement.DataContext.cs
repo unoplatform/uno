@@ -361,5 +361,233 @@ partial class Given_UIElement
 		owner.Background = brush;
 		return new WeakReference(owner);
 	}
+
+	// An object that isn't a UIElement holds the DataContext its element pushes into it weakly; the element owns it. The tests
+	// below force collections and check that such objects and their bindings still resolve to the right view model, never to
+	// the weak handle or to nothing, and that a DataContext set on the object itself is still owned by it.
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	public async Task NonFE_Inherited_DataContext_Survives_GC_While_Owner_Alive()
+	{
+		var brush = new SolidColorBrush(Colors.SkyBlue);
+		BindingOperations.SetBinding(brush, SolidColorBrush.ColorProperty, new Binding { Path = new(nameof(DataContextModel.Color)) });
+
+		var row = new RowDefinition();
+		BindingOperations.SetBinding(row, RowDefinition.HeightProperty, new Binding { Path = new(nameof(DataContextModel.RowHeight)) });
+
+		var run = new Run();
+		BindingOperations.SetBinding(run, Run.TextProperty, new Binding { Path = new(nameof(DataContextModel.Text)) });
+
+		var trigger = new StateTrigger();
+		BindingOperations.SetBinding(trigger, StateTrigger.IsActiveProperty, new Binding { Path = new(nameof(DataContextModel.IsActive)) });
+
+		var textBlock = new TextBlock();
+		textBlock.Inlines.Add(run);
+		var owner = new Grid { Width = 100, Height = 100 };
+		owner.RowDefinitions.Add(row);
+		owner.Children.Add(new Border { Background = brush });
+		owner.Children.Add(textBlock);
+		VisualStateManager.SetVisualStateGroups(owner, new List<VisualStateGroup> { new() { States = { new VisualState { StateTriggers = { trigger } } } } });
+
+		SetOwnedDataContext(owner, Colors.Red, rowHeight: 40, text: "first", isActive: true);
+		await UITestHelper.Load(owner, x => x.IsLoaded);
+		await CollectAsync();
+
+		AssertBound("1. after a collection", Colors.Red, 40, "first", true);
+		Assert.AreSame(owner.DataContext, brush.DataContext, "1. the brush still resolves its owner's DataContext");
+		Assert.AreSame(owner.DataContext, row.DataContext, "1. the row still resolves its owner's DataContext");
+		Assert.AreSame(owner.DataContext, run.DataContext, "1. the run still resolves its owner's DataContext");
+		Assert.AreSame(owner.DataContext, trigger.DataContext, "1. the trigger still resolves its owner's DataContext");
+
+		UpdateOwnedDataContext(owner, Colors.Green, rowHeight: 30, text: "updated", isActive: false);
+		await CollectAsync();
+		AssertBound("2. after the view model changed", Colors.Green, 30, "updated", false);
+
+		// A null DataContext reaches every object below the owner, and the next one replaces it.
+		owner.DataContext = null;
+		await CollectAsync();
+		Assert.IsNull(brush.DataContext, "3. the brush follows its owner's null DataContext");
+		Assert.IsNull(trigger.DataContext, "3. the trigger follows its owner's null DataContext");
+
+		SetOwnedDataContext(owner, Colors.Blue, rowHeight: 20, text: "second", isActive: true);
+		await CollectAsync();
+		AssertBound("4. after a new DataContext", Colors.Blue, 20, "second", true);
+		Assert.AreSame(owner.DataContext, brush.DataContext, "4. the brush resolves its owner's new DataContext");
+
+		UpdateOwnedDataContext(owner, Colors.Yellow, rowHeight: 10, text: "updated again", isActive: false);
+		await CollectAsync();
+		AssertBound("5. after the new view model changed", Colors.Yellow, 10, "updated again", false);
+
+		void AssertBound(string step, Windows.UI.Color color, double rowHeight, string text, bool isActive)
+		{
+			Assert.AreEqual(color, brush.Color, $"{step}: SolidColorBrush.Color");
+			Assert.AreEqual(rowHeight, row.Height.Value, $"{step}: RowDefinition.Height");
+			Assert.AreEqual(text, run.Text, $"{step}: Run.Text");
+			Assert.AreEqual(isActive, trigger.IsActive, $"{step}: StateTrigger.IsActive");
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	public async Task NonFE_Binding_Added_After_DataContext_Pushed_Then_Resolves()
+	{
+		var brush = new SolidColorBrush(Colors.SkyBlue);
+		var owner = new Border { Width = 10, Height = 10, Background = brush };
+		SetOwnedDataContext(owner, Colors.Red);
+		await UITestHelper.Load(owner, x => x.IsLoaded);
+		await CollectAsync();
+
+		// A new binding starts from the DataContext read back from the brush.
+		BindingOperations.SetBinding(brush, SolidColorBrush.ColorProperty, new Binding { Path = new(nameof(DataContextModel.Color)) });
+		Assert.AreEqual(Colors.Red, brush.Color, "1. the binding resolves against the inherited DataContext");
+
+		UpdateOwnedDataContext(owner, Colors.Green);
+		await CollectAsync();
+		Assert.AreEqual(Colors.Green, brush.Color, "2. the binding follows the view model");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	public async Task NonFE_DataContext_Bound_To_Sub_Then_Resolves_And_Updates()
+	{
+		var brush = new SolidColorBrush(Colors.SkyBlue);
+		BindingOperations.SetBinding(brush, SolidColorBrush.ColorProperty, new Binding { Path = new(nameof(DataContextModel.Color)) });
+		var owner = new Border { Width = 10, Height = 10, Background = brush };
+		SetOwnedDataContext(owner, Colors.Yellow, sub: Colors.Red);
+		await UITestHelper.Load(owner, x => x.IsLoaded);
+		await CollectAsync();
+
+		// DataContext="{Binding Sub}" on the brush, added after the owner pushed its DataContext: the binding starts from
+		// the inherited DataContext, and the bound Sub becomes the brush's own (local) DataContext.
+		BindingOperations.SetBinding(brush, SolidColorBrush.DataContextProperty, new Binding { Path = new(nameof(DataContextModel.Sub)) });
+		Assert.AreEqual(Colors.Red, brush.Color, "1. bound against the sub view model");
+
+		await CollectAsync();
+		ReplaceOwnedSub(owner, Colors.Green);
+		await CollectAsync();
+		Assert.AreEqual(Colors.Green, brush.Color, "2. a new sub view model is picked up");
+
+		SetOwnedDataContext(owner, Colors.Yellow, sub: Colors.Blue);
+		await CollectAsync();
+		Assert.AreEqual(Colors.Blue, brush.Color, "3. a new owner DataContext is picked up");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	public async Task NonFE_Local_DataContext_Stays_Owned()
+	{
+		// Only the inherited DataContext is non-owning: a DataContext set on the object itself is kept.
+		var brush = new SolidColorBrush(Colors.SkyBlue);
+		var flyout = new Flyout();
+		var brushModelRef = SetLocalDataContext(brush);
+		var flyoutModelRef = SetLocalDataContext(flyout);
+
+		var owner = new Border { Width = 10, Height = 10, Background = brush };
+		Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.SetAttachedFlyout(owner, flyout);
+		SetOwnedDataContext(owner, Colors.Red);
+		await UITestHelper.Load(owner, x => x.IsLoaded);
+		await CollectAsync();
+
+		Assert.IsTrue(brushModelRef.IsAlive, "The brush's local DataContext must not be collected");
+		Assert.AreSame(brushModelRef.Target, brush.DataContext, "The brush's local DataContext wins over the inherited one");
+		Assert.IsTrue(flyoutModelRef.IsAlive, "The flyout's local DataContext must not be collected");
+		Assert.AreSame(flyoutModelRef.Target, flyout.DataContext, "The flyout keeps its local DataContext");
+	}
+
+	private static async Task CollectAsync()
+	{
+		for (var i = 0; i < 2; i++)
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+			GC.Collect(2);
+			await Task.Yield();
+		}
+
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	// The view models are created and changed in non-inlined frames, so only the owner element references them.
+
+	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+	private static void SetOwnedDataContext(
+		FrameworkElement owner, Windows.UI.Color color, double rowHeight = 0, string text = null, bool isActive = false, Windows.UI.Color? sub = null)
+		=> owner.DataContext = new DataContextModel
+		{
+			Color = color,
+			RowHeight = new GridLength(rowHeight),
+			Text = text,
+			IsActive = isActive,
+			Sub = sub is { } subColor ? new DataContextModel { Color = subColor } : null,
+		};
+
+	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+	private static void UpdateOwnedDataContext(FrameworkElement owner, Windows.UI.Color color, double rowHeight = 0, string text = null, bool isActive = false)
+	{
+		var model = (DataContextModel)owner.DataContext;
+		model.Color = color;
+		model.RowHeight = new GridLength(rowHeight);
+		model.Text = text;
+		model.IsActive = isActive;
+	}
+
+	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+	private static void ReplaceOwnedSub(FrameworkElement owner, Windows.UI.Color subColor)
+		=> ((DataContextModel)owner.DataContext).Sub = new DataContextModel { Color = subColor };
+
+	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+	private static WeakReference SetLocalDataContext(DependencyObject target)
+	{
+		var model = new DataContextModel();
+		switch (target)
+		{
+			case Brush brush:
+				brush.DataContext = model;
+				break;
+			case Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase flyout:
+				flyout.DataContext = model;
+				break;
+			default:
+				throw new ArgumentException($"Unsupported target {target.GetType()}", nameof(target));
+		}
+
+		return new WeakReference(model);
+	}
+
+	private sealed class DataContextModel : System.ComponentModel.INotifyPropertyChanged
+	{
+		private Windows.UI.Color _color;
+		private GridLength _rowHeight;
+		private string _text;
+		private bool _isActive;
+		private DataContextModel _sub;
+
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+		public Windows.UI.Color Color { get => _color; set => Set(ref _color, value); }
+
+		public GridLength RowHeight { get => _rowHeight; set => Set(ref _rowHeight, value); }
+
+		public string Text { get => _text; set => Set(ref _text, value); }
+
+		public bool IsActive { get => _isActive; set => Set(ref _isActive, value); }
+
+		public DataContextModel Sub { get => _sub; set => Set(ref _sub, value); }
+
+		private void Set<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string name = null)
+		{
+			field = value;
+			PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(name));
+		}
+	}
 #endif
 }

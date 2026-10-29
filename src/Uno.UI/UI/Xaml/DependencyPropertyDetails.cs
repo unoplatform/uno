@@ -58,7 +58,13 @@ namespace Microsoft.UI.Xaml
 
 		public DependencyProperty Property { get; }
 
-		internal DependencyPropertyDetails(DependencyProperty property, bool isTemplatedParentOrDataContext)
+		/// <param name="property">The property whose value this instance stores.</param>
+		/// <param name="isTemplatedParentOrDataContext">Whether the property is the owner's TemplatedParent or DataContext property.</param>
+		/// <param name="hasWeakInheritedStorage">
+		/// Hold the value set at <see cref="DependencyPropertyValuePrecedences.Inheritance"/> without owning it; values set at
+		/// other precedences stay strong.
+		/// </param>
+		internal DependencyPropertyDetails(DependencyProperty property, bool isTemplatedParentOrDataContext, bool hasWeakInheritedStorage)
 		{
 			Property = property;
 
@@ -68,6 +74,9 @@ namespace Microsoft.UI.Xaml
 			_flags |= hasValueInherits ? Flags.ValueInherits : Flags.None;
 			_flags |= hasValueDoesNotInherits ? Flags.ValueDoesNotInherit : Flags.None;
 			_flags |= property.IsPropMethodCall ? Flags.IsPropMethodCall : Flags.None;
+			_flags |= hasWeakInheritedStorage ? Flags.WeakInheritedStorage : Flags.None;
+
+			Debug.Assert(!(hasWeakInheritedStorage && property.HasWeakStorage), "A DataContext property never has WeakStorage.");
 		}
 
 		private void GetPropertyInheritanceConfiguration(
@@ -117,7 +126,8 @@ namespace Microsoft.UI.Xaml
 			// PropMethodCall DPs never use inheritance — their value is always computed from the backing field.
 			if (!IsPropMethodCall && precedence == DependencyPropertyValuePrecedences.Inheritance)
 			{
-				_inheritedValue = value;
+				// With weak inherited storage, only _inheritedValue and _value (below) hold the wrapper; every reader unwraps it.
+				_inheritedValue = HasWeakInheritedStorage ? WrapInheritedValue(value) : value;
 			}
 
 			// We are setting or unsetting a value for precedence lower than our current.
@@ -153,11 +163,12 @@ namespace Microsoft.UI.Xaml
 			if (_value is ModifiedValue modifiedValue)
 			{
 				// If our value is ModifiedValue, then the BaseValue is stored there.
+				// It is held strongly, as EnsureModifiedValue does: a ModifiedValue never holds the weak inherited wrapper.
 				modifiedValue.SetBaseValue(value, precedence);
 
 				if (!IsPropMethodCall && _baseValueSource == DependencyPropertyValuePrecedences.Inheritance)
 				{
-					modifiedValue.SetBaseValue(_inheritedValue, DependencyPropertyValuePrecedences.Inheritance);
+					modifiedValue.SetBaseValue(StrongInheritedValue, DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
 			else if (!IsPropMethodCall)
@@ -239,7 +250,7 @@ namespace Microsoft.UI.Xaml
 			=> _baseValueSource;
 
 		internal object? GetInheritedValue()
-			=> _inheritedValue;
+			=> Unwrap(_inheritedValue);
 
 		internal ModifiedValue? GetModifiedValue()
 			=> _value as ModifiedValue;
@@ -317,12 +328,49 @@ namespace Microsoft.UI.Xaml
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private object? Unwrap(object? value)
-			=> HasWeakStorage && value is ManagedWeakReference mwr
-			? mwr.Target
+			=> (_flags & (Flags.WeakStorage | Flags.WeakInheritedStorage)) != 0
+			? UnwrapWeak(value)
 			: value;
+
+		// WeakStorage and WeakInheritedStorage are never set together (asserted in the constructor).
+		private object? UnwrapWeak(object? value)
+			=> HasWeakStorage
+				? (value is ManagedWeakReference mwr ? mwr.Target : value)
+				: (value is WeakInheritedValue inherited ? inherited.Target : value);
+
+		private object? StrongInheritedValue
+			=> _inheritedValue is WeakInheritedValue inherited ? inherited.Target : _inheritedValue;
+
+		/// <summary>
+		/// Stores a value set at <see cref="DependencyPropertyValuePrecedences.Inheritance"/> without owning it, in a single
+		/// <see cref="WeakInheritedValue"/> that is retargeted in place, so a new value allocates nothing.
+		/// </summary>
+		private object? WrapInheritedValue(object? value)
+		{
+			if (value == DependencyProperty.UnsetValue)
+			{
+				// An unset value drops the handle, which nothing else refers to once the caller replaces _inheritedValue and _value:
+				// free its GC handle now rather than in its finalizer.
+				(_inheritedValue as WeakInheritedValue)?.Dispose();
+				return value;
+			}
+
+			if (_inheritedValue is WeakInheritedValue inherited)
+			{
+				// Safe to retarget: it is only referenced as the current inherited value (_inheritedValue, and _value while the
+				// inherited value is the base value).
+				inherited.Target = value;
+				return inherited;
+			}
+
+			return value is null ? null : new WeakInheritedValue { Target = value };
+		}
 
 		private bool HasWeakStorage
 			=> (_flags & Flags.WeakStorage) != 0;
+
+		private bool HasWeakInheritedStorage
+			=> (_flags & Flags.WeakInheritedStorage) != 0;
 
 		internal bool HasValueInherits
 			=> (_flags & Flags.ValueInherits) != 0;
@@ -373,6 +421,19 @@ namespace Microsoft.UI.Xaml
 			/// The property uses PropMethodCall — value is stored on the object via a backing field, not in DependencyPropertyDetails.
 			/// </summary>
 			IsPropMethodCall = 1 << 3,
+
+			/// <summary>
+			/// The value set at Inheritance precedence is held weakly, in a <see cref="WeakInheritedValue"/>.
+			/// </summary>
+			WeakInheritedStorage = 1 << 4,
+		}
+
+		/// <summary>
+		/// A weak handle to an inherited value. Private, so that no value set by a caller (a <see cref="ManagedWeakReference"/>
+		/// for instance) can be taken for it.
+		/// </summary>
+		private sealed class WeakInheritedValue : ManagedGCHandle
+		{
 		}
 	}
 }
