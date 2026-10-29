@@ -23,7 +23,8 @@ public class Given_XamlGeneratorError : BaseTestClass
 	[TestMethod]
 	public async Task When_XamlBroken_Then_PassFails_AndPageKept_UntilFixed()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token;
+		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(300));
+		var ct = cts.Token;
 		var hr = RemoteControlClient.Instance?.Processors.OfType<ClientHotReloadProcessor>().SingleOrDefault()
 			?? throw new InvalidOperationException("Hot-reload not initialized properly");
 
