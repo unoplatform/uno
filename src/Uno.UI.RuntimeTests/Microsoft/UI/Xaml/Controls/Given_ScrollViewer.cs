@@ -3099,9 +3099,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += onRendering;
 			try
 			{
+				var settled = false;
+				SUT.ViewChanged += (_, e) => settled |= !e.IsIntermediate;
+
 				stopwatch.Start();
 				SUT.ChangeView(null, Distance, null, disableAnimation: false); // far enough for the longest duration
-				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+				// Not an idle wait: on a slow host the whole animation fits between two frames, and idle returns before one shows it.
+				await WindowHelper.WaitFor(() => settled, timeoutMS: 10000);
+
+				// Each sample reads the frame before it, so the last frame shows up one frame later.
+				await UITestHelper.WaitForRender(2, timeoutMS: 5000);
 			}
 			finally
 			{
