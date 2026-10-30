@@ -61,7 +61,7 @@ public partial class WebView2
 					if (newUri != null)
 					{
 						var targetUrl = newUri.IsAbsoluteUri ? newUri.AbsoluteUri : newUri.OriginalString;
-						webView.CoreWebView2.Navigate(targetUrl);
+						webView.NavigateFromSource(targetUrl);
 					}
 				}
 			}));
@@ -79,7 +79,7 @@ public partial class WebView2
 			typeof(WebView2),
 			new FrameworkPropertyMetadata(
 				BoolBoxes.True,
-				(s, e) => ((WebView2)s)?.CoreWebView2.OnScrollEnabledChanged((bool)e.NewValue)));
+				(s, e) => ((WebView2)s)?._coreWebView2?.OnScrollEnabledChanged((bool)e.NewValue)));
 
 #pragma warning disable 67
 	/// <summary>
