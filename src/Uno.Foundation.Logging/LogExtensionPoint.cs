@@ -37,6 +37,13 @@ namespace Uno.Foundation.Logging
 		public static Logger Log<T>(this T instance)
 		{
 			var type = instance as Type ?? typeof(T);
+
+			if (LoggerFactory.ExternalLoggerFactory is null)
+			{
+				// Don't memoize the null logger, so the type picks up a real one once logging is initialized.
+				return _loggerFactory.CreateLogger(type);
+			}
+
 			return _loggers.GetValue(type, static t => _loggerFactory.CreateLogger(t));
 		}
 
