@@ -8,25 +8,29 @@ namespace Uno.Storage.Pickers;
 public static class FileSystemAccessApiInformation
 {
 	/// <summary>
-	/// Checks whether the File System Access API file open picker is available.
+	/// Checks whether <see cref="FileOpenPicker"/> can pick files under the current
+	/// <see cref="WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration"/>, with the File System Access API or the upload picker.
 	/// </summary>
 	/// <returns>A value indicating whether the picker is supported.</returns>
-	public static bool IsOpenPickerSupported => FileOpenPicker.IsNativePickerSupported();
+	public static bool IsOpenPickerSupported => FileOpenPicker.IsSupported();
 
 	/// <summary>
-	/// Checks whether the File System Access API file save picker is available.
+	/// Checks whether <see cref="FileSavePicker"/> can pick a file under the current
+	/// <see cref="WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration"/>, with the File System Access API or the download picker.
 	/// </summary>
 	/// <returns>A value indicating whether the picker is supported.</returns>
-	public static bool IsSavePickerSupported => FileSavePicker.IsNativePickerSupported();
+	public static bool IsSavePickerSupported => FileSavePicker.IsSupported();
 
 	/// <summary>
-	/// Checks whether both file open and file save pickers from the File System Access API are available.
+	/// Checks whether both <see cref="FileOpenPicker"/> and <see cref="FileSavePicker"/> can pick files under the current
+	/// <see cref="WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration"/>.
 	/// </summary>
 	/// <returns>A value indicating whether the picker is supported.</returns>
 	public static bool AreFilePickersSupported => IsOpenPickerSupported && IsSavePickerSupported;
 
 	/// <summary>
 	/// Checks whether the File System Access API folder open picker is available.
+	/// <see cref="FolderPicker"/> has no other implementation.
 	/// </summary>
 	/// <returns>A value indicating whether the picker is supported.</returns>
 	public static bool IsFolderPickerSupported => FolderPicker.IsNativePickerSupported();
