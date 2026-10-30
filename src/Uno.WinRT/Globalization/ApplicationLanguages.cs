@@ -40,7 +40,7 @@ public static partial class ApplicationLanguages
 				typeof(ApplicationLanguages).Log().LogDebug($"PLO: {_primaryLanguageOverride} -> {value}");
 				_primaryLanguageOverride = value;
 
-				// Only the language list follows immediately; the culture is applied on the next app start, as on WinUI.
+				// Only the language list follows immediately; the UI culture follows on the next app start.
 				ApplyLanguages();
 
 #if !IS_UNIT_TESTS
@@ -69,6 +69,7 @@ public static partial class ApplicationLanguages
 
 	internal static void ApplyCulture()
 	{
+		string language;
 		var primaryLanguageOverride = PrimaryLanguageOverride;
 		if (!string.IsNullOrEmpty(primaryLanguageOverride))
 		{
@@ -77,17 +78,15 @@ public static partial class ApplicationLanguages
 				typeof(ApplicationLanguages).Log().Debug($"Using {primaryLanguageOverride} (from PrimaryLanguageOverride) as primary language");
 			}
 
-			setCulture(primaryLanguageOverride);
+			language = primaryLanguageOverride;
 		}
 		else if (Languages.Count > 0)
 		{
-			var language = Languages[0];
+			language = Languages[0];
 			if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
 			{
 				typeof(ApplicationLanguages).Log().Debug($"Using {language} (from Languages) as primary language");
 			}
-
-			setCulture(language);
 		}
 		else
 		{
@@ -95,16 +94,41 @@ public static partial class ApplicationLanguages
 			{
 				typeof(ApplicationLanguages).Log().Warn($"Unable to determine the default culture, using invariant culture");
 			}
+
+			return;
 		}
 
-		static void setCulture(string cultureId)
+		// As in WinUI, the language list doesn't reach CurrentCulture: formatting follows the user's regional
+		// settings, which the runtime has already read into it. Uno applies the list to the UI culture.
+		var uiCulture = CreateCulture(language);
+		CultureInfo.CurrentUICulture = uiCulture;
+		CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
+
+		if (GetFormatCulture(uiCulture, CultureInfo.CurrentCulture, CultureInfo.InstalledUICulture) is { } culture)
 		{
-			var culture = CreateCulture(cultureId);
 			CultureInfo.CurrentCulture = culture;
 			CultureInfo.DefaultThreadCurrentCulture = culture;
-			CultureInfo.CurrentUICulture = culture;
-			CultureInfo.DefaultThreadCurrentUICulture = culture;
 		}
+	}
+
+	// Null when CurrentCulture stays: the app set it, or the runtime's pick reflects the user's format preferences.
+	internal static CultureInfo? GetFormatCulture(CultureInfo uiCulture, CultureInfo current, CultureInfo runtimeDefault)
+	{
+		// Until the app sets one, CurrentCulture is the runtime's read-only user default itself (InstalledUICulture),
+		// so any other instance is the app's, even with the same name.
+		if (!ReferenceEquals(current, runtimeDefault))
+		{
+			return null;
+		}
+
+#if __ANDROID__
+		// The runtime drops the locale's -u- extensions, which carry the Android 14 regional preferences
+		// (first day of week...), so format with the system locale itself.
+		return ManifestLanguages.Count > 0 ? CreateCulture(ManifestLanguages[0]) : null;
+#else
+		// No user locale (e.g. LANG unset or C on Linux): format in the app language rather than invariant.
+		return current.Name.Length == 0 && !InvariantCulture ? uiCulture : null;
+#endif
 	}
 
 #if !__IOS__ && !__TVOS__
@@ -198,9 +222,27 @@ public static partial class ApplicationLanguages
 #endif
 	}
 
+	// The culture of the first language a WinRT globalization object was given, which drives its formatting
+	// (CurrentCulture follows the user's regional format instead). Falls back to CurrentCulture.
+	internal static CultureInfo ResolveCulture(IReadOnlyList<string> languages)
+	{
+		if (languages.Count > 0)
+		{
+			try
+			{
+				return CreateCulture(languages[0]);
+			}
+			catch (CultureNotFoundException)
+			{
+			}
+		}
+
+		return CultureInfo.CurrentCulture;
+	}
+
 	private static Regex? _cultureFormatRegex;
 
-	private static CultureInfo CreateCulture(string cultureId)
+	internal static CultureInfo CreateCulture(string cultureId)
 	{
 		try
 		{
