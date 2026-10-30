@@ -66,7 +66,6 @@ namespace Microsoft.UI.Xaml
 
 		private readonly Flags _flags;
 		private string _name;
-		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		private Type _propertyType;
 		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		private Type _ownerType;
@@ -76,7 +75,6 @@ namespace Microsoft.UI.Xaml
 
 		private DependencyProperty(
 			string name,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 			Type propertyType,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 			Type ownerType,
@@ -151,12 +149,6 @@ namespace Microsoft.UI.Xaml
 		internal bool IsDependencyObjectCollection
 			=> (_flags & Flags.IsDependencyObjectCollection) != 0;
 
-		// Like WinUI, the public overloads don't annotate propertyType. Annotating it made every property typed by a generic
-		// parameter or by a runtime Type warn (IL2087/IL2072) in consuming libraries, which they can't fix on their side.
-		// The only reflection on propertyType is GetUninitializedObject for the default value of a non-nullable value type,
-		// and NativeAOT supports that for any value type reachable through typeof().
-		private const string PropertyTypeNotAnnotated = "propertyType is intentionally not annotated, matching WinUI. The only reflection on it is GetUninitializedObject for a non-nullable value type's default value, which works for any value type reachable through typeof().";
-
 		/// <summary>
 		/// Registers a dependency property on the specified <paramref name="ownerType"/>.
 		/// </summary>
@@ -166,7 +158,7 @@ namespace Microsoft.UI.Xaml
 		/// <param name="typeMetadata">The metadata to use when creating the property</param>
 		/// <returns>A dependency property instance</returns>
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = PropertyTypeNotAnnotated)]
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Like WinUI, propertyType carries no trimming requirement. Its only annotated callee is FixMetadataIfNeeded, whose GetUninitializedObject runs only for value types, which ILC treats as constructed once they are reachable through typeof().")]
 		public static DependencyProperty Register(
 			string name,
 			Type propertyType,
@@ -241,7 +233,7 @@ namespace Microsoft.UI.Xaml
 		/// <param name="defaultMetadata">The metadata to use when creating the property</param>
 		/// <returns>A dependency property instance</returns>
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = PropertyTypeNotAnnotated)]
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Like WinUI, propertyType carries no trimming requirement. Its only annotated callee is FixMetadataIfNeeded, whose GetUninitializedObject runs only for value types, which ILC treats as constructed once they are reachable through typeof().")]
 		public static DependencyProperty RegisterAttached(
 			string name,
 			Type propertyType,
@@ -280,8 +272,11 @@ namespace Microsoft.UI.Xaml
 		/// This method is to ensure that all uno controls defined dependency properties are using <see cref="FrameworkPropertyMetadata"/>.
 		/// This is achieved by banning the other public overload in Uno.UI directory.
 		/// </remarks>
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
-		internal static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, FrameworkPropertyMetadata typeMetadata)
+		internal static DependencyProperty RegisterAttached(
+			string name,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
+			FrameworkPropertyMetadata typeMetadata)
 #pragma warning disable RS0030 // Do not used banned APIs
 			=> RegisterAttached(name, propertyType, ownerType, (PropertyMetadata)typeMetadata);
 #pragma warning restore RS0030 // Do not used banned APIs
@@ -333,7 +328,6 @@ namespace Microsoft.UI.Xaml
 			get { return _ownerType; }
 		}
 
-		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		internal Type Type
 		{
 			get { return _propertyType; }

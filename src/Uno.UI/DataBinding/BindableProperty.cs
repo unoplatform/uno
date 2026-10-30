@@ -15,6 +15,7 @@ namespace Uno.UI.DataBinding
 	/// </summary>
 	public class BindableProperty : IBindableProperty
 	{
+		[UnconditionalSuppressMessage("Trimming", "IL2074", Justification = "Like WinUI, a DependencyProperty's type carries no trimming requirement. A binding that continues through the property's value resolves its next step with the BindableMetadata generated for the app.")]
 		public BindableProperty(DependencyProperty property)
 		{
 			DependencyProperty = property;

@@ -362,6 +362,10 @@ partial class ClipboardSamplePageViewModel {
 }
 ```
 
+### Dependency property types
+
+`DependencyProperty.Register` and `RegisterAttached` put no trimming requirement on `propertyType`, as in WinUI: a property typed by a generic parameter, by `System.Type` or by a `Type` obtained at runtime registers without IL2087, IL2111 or IL2072. The `ownerType` argument still requires the owner's constructors, fields and properties to be preserved, so an owner that is itself a generic parameter needs the same `[DynamicallyAccessedMembers]` on that parameter.
+
 ### XAML Attached Properties
 
 XAML binding can involve Reflection, which can include use of attached properties.  If Reflection Metadata doesn't include a required attached property, then the app log will contain messages such as:

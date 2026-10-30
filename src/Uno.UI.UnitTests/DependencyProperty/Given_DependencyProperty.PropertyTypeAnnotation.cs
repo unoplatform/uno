@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -32,13 +32,10 @@ public static class GenericPropertyTypeOwner<T>
 
 public partial class Given_DependencyProperty
 {
-	/// <summary>
-	/// https://github.com/unoplatform/uno/issues/25840
-	/// A [DynamicallyAccessedMembers] requirement on propertyType makes every property typed by a generic parameter
-	/// (IL2087), by System.Type (IL2111) or by a runtime Type (IL2072) warn in consuming libraries, which can't fix
-	/// it on their side. WinUI doesn't annotate it; neither must the public overloads here.
-	/// </summary>
+	// A trimming requirement on propertyType warns (IL2087/IL2111/IL2072) in every consuming library that registers
+	// a property typed by a generic parameter, by System.Type or by a runtime Type; WinUI has none.
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25840")]
 	public void When_Register_PropertyType_Has_No_DynamicallyAccessedMembers()
 	{
 		var parameterTypes = new[] { typeof(string), typeof(Type), typeof(Type), typeof(PropertyMetadata) };
@@ -49,13 +46,12 @@ public partial class Given_DependencyProperty
 			Assert.IsNotNull(method, name);
 
 			var propertyType = method.GetParameters().Single(p => p.Name == "propertyType");
-			Assert.IsNull(
-				propertyType.GetCustomAttribute<DynamicallyAccessedMembersAttribute>(),
-				$"{name}: propertyType must not carry [DynamicallyAccessedMembers], see https://github.com/unoplatform/uno/issues/25840");
+			Assert.IsNull(propertyType.GetCustomAttribute<DynamicallyAccessedMembersAttribute>(), $"{name}: propertyType must not carry [DynamicallyAccessedMembers]");
 		}
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25840")]
 	public void When_PropertyType_Is_Generic_Parameter_Then_Default_Value()
 	{
 		// A null default on a non-nullable value type is replaced by the type's zero value at registration.
@@ -69,6 +65,7 @@ public partial class Given_DependencyProperty
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25840")]
 	public void When_PropertyType_Is_Generic_Parameter_Then_SetValue_GetValue()
 	{
 		var SUT = new MockDependencyObject();
