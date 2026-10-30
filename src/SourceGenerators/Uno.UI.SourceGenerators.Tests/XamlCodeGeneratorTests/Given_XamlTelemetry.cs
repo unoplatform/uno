@@ -34,4 +34,19 @@ public class Given_XamlTelemetry
 	[TestMethod]
 	public void When_TargetFramework_Platform_Is_Unknown()
 		=> Assert.AreEqual("Unknown", XamlCodeGeneration.GetUnoRuntime("net10.0-somethingelse", "__DESKTOP__"));
+
+	[TestMethod]
+	[DataRow("true", false)]
+	[DataRow("True", false)]
+	[DataRow("1", false)]
+	[DataRow("", true)]
+	public void When_Build_Opted_Out_Then_No_Client(string telemetryOptOut, bool isDesignTimeBuild)
+		=> Assert.IsNull(XamlCodeGeneration.CreateTelemetry(telemetryOptOut, isDesignTimeBuild, () => new object()));
+
+	[TestMethod]
+	[DataRow("")]
+	[DataRow("false")]
+	[DataRow("0")]
+	public void When_Build_Not_Opted_Out_Then_Client_Is_Created(string telemetryOptOut)
+		=> Assert.IsNotNull(XamlCodeGeneration.CreateTelemetry(telemetryOptOut, isDesignTimeBuild: false, () => new object()));
 }

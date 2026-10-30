@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
@@ -23,13 +24,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void InitTelemetry(GeneratorExecutionContext context)
 		{
-			var telemetryOptOut = context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut");
-
-			bool? isTelemetryOptout()
-				=> telemetryOptOut.Equals("true", StringComparison.OrdinalIgnoreCase)
-				|| telemetryOptOut.Equals("1", StringComparison.OrdinalIgnoreCase)
-				|| _isDesignTimeBuild;
-
 			string getCurrentDirectory()
 			{
 				var solutionDir = context.GetMSBuildPropertyValue("SolutionDir");
@@ -47,15 +41,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return Environment.CurrentDirectory;
 			}
 
-			if (isTelemetryOptout() is true)
-			{
-				_telemetry = new Telemetry(
+			// _isDesignTimeBuild isn't set yet when this runs, so it's read from the context.
+			_telemetry = CreateTelemetry(
+				context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut"),
+				Helpers.DesignTimeHelper.IsDesignTime(context),
+				() => new Telemetry(
 					InstrumentationKey,
 					"uno/generation",
-					enabledProvider: isTelemetryOptout,
 					currentDirectoryProvider: getCurrentDirectory,
-					versionAssembly: GetType().Assembly);
-			}
+					versionAssembly: GetType().Assembly));
+		}
+
+		/// <summary>
+		/// Creates no client for an opted-out or design-time build, nor in the browser, where the WebAssembly
+		/// build can't run one.
+		/// </summary>
+		internal static T CreateTelemetry<T>(string telemetryOptOut, bool isDesignTimeBuild, Func<T> createClient)
+			where T : class
+		{
+			var isOptedOut = string.Equals(telemetryOptOut, "true", StringComparison.OrdinalIgnoreCase)
+				|| string.Equals(telemetryOptOut, "1", StringComparison.OrdinalIgnoreCase)
+				|| isDesignTimeBuild
+				|| RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER"));
+
+			return isOptedOut ? null : createClient();
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
