@@ -21,6 +21,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Button
             Grid.Row="0"
@@ -35,6 +36,11 @@
             x:Name="tokenBox"
             Grid.Row="1"
             Grid.Column="1" />
+        <TextBlock
+            x:Name="status"
+            Grid.Row="4"
+            Grid.Column="1"
+            TextWrapping="Wrap" />
         <Button
             Grid.Row="2"
             Grid.Column="0"

@@ -32,7 +32,6 @@ namespace UITests.Msal
 	, IAuthenticationProvider
 #endif
 	{
-#if !DISABLE_GRAPH
 		private const string CLIENT_ID = "03c890e9-d868-4d90-9c0a-919eff5b4d27";
 		private const string TENANT_ID = "a297d6c0-b635-41a3-b1e3-558efe71e413";
 
@@ -62,36 +61,39 @@ namespace UITests.Msal
 		private readonly string[] SCOPES = new[] { "https://graph.microsoft.com/User.Read", "https://graph.microsoft.com/email", "https://graph.microsoft.com/profile" };
 
 		private readonly IPublicClientApplication _app;
-#endif
 
 		public MsalLoginAndGraph()
 		{
 			this.InitializeComponent();
 
-#if !DISABLE_GRAPH
 			_app = PublicClientApplicationBuilder
 				.Create(CLIENT_ID)
 				.WithTenantId(TENANT_ID)
 				.WithRedirectUri(RedirectUri)
 				.WithUnoHelpers()
 				.Build();
-#endif
 		}
 
-		private
-#if !DISABLE_GRAPH
-			async
-#endif
-			void SignIn(object sender, RoutedEventArgs e)
+		private async void SignIn(object sender, RoutedEventArgs e)
 		{
-#if !DISABLE_GRAPH
-			var result = await _app.AcquireTokenInteractive(SCOPES)
-				.WithPrompt(Prompt.SelectAccount)
-				.WithUnoHelpers()
-				.ExecuteAsync();
+			try
+			{
+				var result = await _app.AcquireTokenInteractive(SCOPES)
+					.WithPrompt(Prompt.SelectAccount)
+					.WithUnoHelpers()
+					.ExecuteAsync();
 
-			tokenBox.Text = result.AccessToken;
-#endif
+				tokenBox.Text = result.AccessToken;
+				status.Text = "Signed in";
+			}
+			catch (MsalException ex)
+			{
+				status.Text = $"{ex.GetType().Name} ({ex.ErrorCode}): {ex.Message}";
+			}
+			catch (Exception ex)
+			{
+				status.Text = $"{ex.GetType().Name}: {ex.Message}";
+			}
 		}
 
 		private
