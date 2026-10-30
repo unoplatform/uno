@@ -160,4 +160,6 @@ partial class TextBox
 	internal (CaretWithStemAndThumb start, CaretWithStemAndThumb end)? VisibleGrippersForTesting => _core.VisibleGrippersForTesting;
 
 	internal static IDisposable SetImeExtensionForTesting(IImeTextBoxExtension extension) => TextBoxCore.SetImeExtensionForTesting(extension);
+
+	internal static IDisposable SetNotificationsProviderForTesting(ITextBoxNotificationsProviderSingleton provider) => TextBoxCore.SetNotificationsProviderForTesting(provider);
 }

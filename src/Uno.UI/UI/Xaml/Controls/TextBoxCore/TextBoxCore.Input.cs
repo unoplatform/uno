@@ -168,6 +168,14 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		InitializeIme();
 	}
 
+	// Test hook: replaces the platform notifications (e.g. the Android soft keyboard and autofill) until disposed.
+	internal static IDisposable SetNotificationsProviderForTesting(ITextBoxNotificationsProviderSingleton provider)
+	{
+		var original = _textBoxNotificationsSingleton;
+		_textBoxNotificationsSingleton = provider;
+		return Disposable.Create(() => _textBoxNotificationsSingleton = original);
+	}
+
 	internal CaretDisplayMode CaretMode
 	{
 		get => _caretMode;
@@ -537,19 +545,19 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
 		_clipboardChangeSubscription.Disposable = null;
-		TextBoxView?.OnFocusStateChanged(focusState);
 
 		if (focusState != FocusState.Unfocused)
 		{
 			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-			_textBoxNotificationsSingleton?.OnFocused(this);
-			StartImeSession();
+			RequestPlatformTextInput(focusState);
 			UpdateCanPasteClipboardContent();
 			Clipboard.ContentChanged += OnClipboardContentChanged;
 			_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
 		}
 		else
 		{
+			TextBoxView?.OnFocusStateChanged(focusState);
+
 			// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
 			// Check if focus is moving to a text control flyout before deciding to unfocus.
 			_forceFocusedVisualState = ShouldForceFocusedVisualState();
@@ -580,6 +588,53 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 			_timer.Stop();
 		}
 		UpdateDisplaySelection();
+	}
+
+	private bool _isPlatformTextInputRequestPending;
+
+	// A TextBox focused while a pointer release is processed can lose the focus before the release completes (e.g. a ScrollViewer focuses
+	// its first TextBox before a Tapped handler moves the focus away, like in WinUI). Opening the soft keyboard right away would flash it.
+	private void RequestPlatformTextInput(FocusState focusState)
+	{
+		if (_isPlatformTextInputRequestPending)
+		{
+			return;
+		}
+
+#if UNO_HAS_MANAGED_POINTERS
+		if (Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnPointerReleaseCompleted) is true)
+		{
+			_isPlatformTextInputRequestPending = true;
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("Platform text input deferred until the pointer release has completed.");
+			}
+
+			return;
+		}
+#endif
+
+		StartPlatformTextInput(focusState);
+	}
+
+	private void OnPointerReleaseCompleted()
+	{
+		_isPlatformTextInputRequestPending = false;
+		if (FocusState is not FocusState.Unfocused and var focusState)
+		{
+			StartPlatformTextInput(focusState);
+		}
+		else if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("Platform text input not started: the focus moved away before the pointer release completed.");
+		}
+	}
+
+	private void StartPlatformTextInput(FocusState focusState)
+	{
+		TextBoxView?.OnFocusStateChanged(focusState);
+		_textBoxNotificationsSingleton?.OnFocused(this);
+		StartImeSession();
 	}
 
 	// Ported from: TextBoxBase.cpp ShouldForceFocusedVisualState (lines 5286-5290)
