@@ -163,6 +163,8 @@ internal class PackageManifest
 		public const string AndroidXSwipeRefreshLayout = nameof(AndroidXSwipeRefreshLayout);
 		public const string AndroidXNavigation = nameof(AndroidXNavigation);
 		public const string AndroidXCollection = nameof(AndroidXCollection);
+		public const string AndroidXFragment = nameof(AndroidXFragment);
+		public const string AndroidXLifecycle = nameof(AndroidXLifecycle);
 		public const string AndroidXLeanback = nameof(AndroidXLeanback);
 		public const string AndroidXCarApp = nameof(AndroidXCarApp);
 		public const string AndroidXWear = nameof(AndroidXWear);

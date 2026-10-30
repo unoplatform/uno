@@ -74,6 +74,8 @@
 				UnoFontsVersion="$(UnoFontsVersion)"
 				AndroidXNavigationVersion="$(AndroidXNavigationVersion)"
 				AndroidXCollectionVersion="$(AndroidXCollectionVersion)"
+				AndroidXFragmentVersion="$(AndroidXFragmentVersion)"
+				AndroidXLifecycleVersion="$(AndroidXLifecycleVersion)"
 				AndroidXLeanbackVersion="$(AndroidXLeanbackVersion)"
 				AndroidXCarAppVersion="$(AndroidXCarAppVersion)"
 				AndroidXWearVersion="$(AndroidXWearVersion)"

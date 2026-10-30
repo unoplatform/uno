@@ -77,6 +77,10 @@
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Navigation.Common" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Collection" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Collection.Ktx" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
+		<!-- MAUI's own Lifecycle.LiveData and Navigation's Fragment.Ktx pin exact minor ranges below the
+		     Lifecycle 2.11 / Fragment 1.9 that Uno's AndroidX packages resolve, which fails restore with NU1608. -->
+		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Fragment.Ktx" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
+		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';navigation;')) AND !$(UnoFeatures.Contains(';prism;'))">
