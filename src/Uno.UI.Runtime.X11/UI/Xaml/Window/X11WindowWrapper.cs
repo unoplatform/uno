@@ -88,6 +88,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		_host.ExtendContentIntoTitleBar(extend);
 	}
 
+	internal void SetPresenterHasTitleBar(bool hasTitleBar) => _host.SetPresenterHasTitleBar(hasTitleBar);
+
 	private void OnWindowClosing()
 	{
 		var closingArgs = RaiseClosing();
@@ -273,7 +275,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		_ = XLib.XGetWindowAttributes(display, windowToRead, ref windowAttrs);
 		_ = XLib.XTranslateCoordinates(display, windowToRead, root, 0, 0, out var rootx, out var rooty, out _);
 
-		// (0, 0) is inside the frame's own X border, while a move places the frame's outer corner.
+		// (0, 0) is inside the window's own X border, while a move places its outer corner. Without a reparenting
+		// frame this reads the client window, whose border is 0.
 		Position = new PointInt32 { X = rootx - windowAttrs.border_width, Y = rooty - windowAttrs.border_width };
 		var fullSize = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
 		SetSizes(fullSize, fullSize);
