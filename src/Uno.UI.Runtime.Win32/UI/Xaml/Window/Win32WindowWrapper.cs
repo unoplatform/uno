@@ -576,7 +576,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// and disposing the context first would destroy the device out from under them. Safe even though
 		// DrawingFactory.Current may still point here -- Dispose frees only the GPU contexts, and everything
 		// reached through Current (recordings, textures, offscreens) is CPU-side.
-		(_renderer as IDisposable)?.Dispose();
+		// On Vulkan every window shares one device and queue, and the GRContext's teardown waits on that queue, so it
+		// runs under the device lock like the other windows' frames.
+		using (_context is Win32VulkanGraphicsContext vulkan ? vulkan.LockDevice() : null)
+		{
+			(_renderer as IDisposable)?.Dispose();
+		}
 		_context.Dispose();
 		_rendererDisposed = true;
 		if (_frameThemeSource is not null)
