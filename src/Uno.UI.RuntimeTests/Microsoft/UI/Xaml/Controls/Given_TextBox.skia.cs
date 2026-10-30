@@ -6931,6 +6931,142 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Task When_Touch_LongPress_Keeps_ContextMenu_Desktop()
 			=> AssertTouchLongPress(TextBoxCore.TouchTextSelectionConvention.Desktop, expectWordSelected: false);
 
+		// Touch defers focus to the release (ShouldFocusOnPointerPressed), so a hold on an initially unfocused text control
+		// must focus it when the hold starts: otherwise the word is selected while unfocused (selection not rendered) and
+		// the focus taken on release resets the caret mode, wiping Android's selection handles.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_LongPress_Unfocused_Selects_Word_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var other = new Button { Content = "Other" };
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(new StackPanel { Children = { other, SUT } });
+
+			other.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(FocusState.Unfocused, SUT.FocusState, "premise: the text box starts unfocused");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await WindowHelper.WaitFor(() => SUT.SelectedText == "Text", timeoutMS: 5000, message: "the hold should have selected the word");
+			Assert.AreNotEqual(FocusState.Unfocused, SUT.FocusState, "the hold should have focused the text box");
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Text", SUT.SelectedText, "the release must keep the word selected");
+			Assert.AreNotEqual(FocusState.Unfocused, SUT.FocusState, "the text box must stay focused after the release");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "the release must keep the selection handles");
+		}
+
+		// Same for a text control focused from the keyboard: the touch release takes pointer focus, and the focus state change
+		// resets the caret mode, so the hold must take pointer focus when it starts for the selection handles to survive.
+		// No selection flyout: with one open, the release doesn't reach the text box.
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_LongPress_Keyboard_Focused_Keeps_Handles_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				SelectionFlyout = null,
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(FocusState.Keyboard, SUT.FocusState, "premise: the text box starts focused from the keyboard");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await WindowHelper.WaitFor(() => SUT.SelectedText == "Text", timeoutMS: 5000, message: "the hold should have selected the word");
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Text", SUT.SelectedText, "the release must keep the word selected");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "the release must keep the selection handles");
+		}
+
+		// A hold that can't take focus doesn't act (TextBoxCore.OnHolding). The delayed ContextRequested of the same hold (the
+		// text viewport is pannable) must not select the word unfocused either, nor open a flyout instead. Not focusable rather
+		// than a cancelled GettingFocus, which Focus() reports as a success (UpdateFocus, as in WinUI).
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_LongPress_Not_Focusable_Does_Nothing_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var other = new Button { Content = "Other" };
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				IsTabStop = false,
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+			var holdStarted = 0;
+			SUT.AddHandler(UIElement.HoldingEvent, new HoldingEventHandler((_, e) => holdStarted += e.HoldingState == Microsoft.UI.Input.HoldingState.Started ? 1 : 0), handledEventsToo: true);
+
+			await UITestHelper.Load(new StackPanel { Children = { other, SUT } });
+
+			other.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var processor = VisualTree.GetContentRootForElement(SUT)?.InputManager?.ContextMenuProcessor
+				?? throw new InvalidOperationException("ContextMenuProcessor should be available for this test.");
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await WindowHelper.WaitFor(() => holdStarted == 1, timeoutMS: 5000, message: "the hold should be recognized");
+
+			var delayedRequest = processor.GetContextMenuTimer() ?? throw new InvalidOperationException("the hold on the pannable text viewport should delay its ContextRequested");
+			await WindowHelper.WaitFor(() => !delayedRequest.IsEnabled, timeoutMS: 5000, message: "the delayed ContextRequested of the hold should be raised while still holding");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(FocusState.Unfocused, SUT.FocusState, "premise: the text box can't take focus");
+			Assert.AreEqual(0, SUT.SelectionLength, "a hold that can't take focus must not select the word");
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count, "nor open a flyout");
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+		}
+
 		// A touch long-press on a mobile convention must select the word BEFORE the text control's flyout
 		// computes its commands. Regression: the inner DisplayBlock's ContextRequested class handler used to
 		// open the ContextFlyout with an empty selection (Cut/Copy omitted) before OnContextRequestedImpl
@@ -7301,6 +7437,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 			// The capture taken to drag the caret must be released on pointer up, not held past the gesture.
 			Assert.AreEqual(0, SUT.PointerCaptures?.Count ?? 0, "the caret-drag pointer capture must be released on release");
+		}
+
+		// The hold acts when it starts (OnHolding), but a hold lasting past the delay still gets the ContextMenuProcessor's
+		// delayed ContextRequested (the text viewport is pannable): it belongs to the hold already handled, so it must not
+		// restart the caret drag at the point where the hold started, open the context flyout nor make a selection.
+		// The release of the hold is then a touch right-tap at the press point, which must not move the caret back either.
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaIOS)] // iOS convention: run on Desktop (dev) + real iOS only
+		public async Task When_Touch_Held_Past_Delayed_ContextRequested_No_Flyout_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+			{
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			var contextRequested = 0;
+			SUT.AddHandler(UIElement.ContextRequestedEvent, new TypedEventHandler<UIElement, ContextRequestedEventArgs>((_, _) => contextRequested++), handledEventsToo: true);
+			var rightTapped = 0;
+			SUT.AddHandler(UIElement.RightTappedEvent, new RightTappedEventHandler((_, _) => rightTapped++), handledEventsToo: true);
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.Left + 15, bounds.GetCenter().Y));
+			await WindowHelper.WaitFor(() => (SUT.PointerCaptures?.Count ?? 0) == 1, timeoutMS: 5000, message: "the hold should start the caret drag");
+			var caretAtHold = SUT.SelectionStart;
+			Assert.AreEqual(0, contextRequested, "the caret drag starts with the hold, before the delayed ContextRequested");
+
+			// Within the tap range, so the viewport's ScrollViewer doesn't take the gesture over (which stops the delayed request).
+			// Injected timestamps only advance by the given offsets: carry the press past the hold delay, so that the release
+			// is recognized as a right-tap.
+			finger.MoveBy(Microsoft.UI.Input.GestureRecognizer.TapMaxXDelta - 1, 0, stepOffsetInMilliseconds: 100);
+			await WindowHelper.WaitForIdle();
+			var caretAfterDrag = SUT.SelectionStart;
+			Assert.IsTrue(caretAfterDrag > caretAtHold, $"caret should advance with the drag (was {caretAtHold}, now {caretAfterDrag})");
+
+			await WindowHelper.WaitFor(() => contextRequested == 1, timeoutMS: 5000, message: "the delayed ContextRequested of the hold should be raised while still holding");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(caretAfterDrag, SUT.SelectionStart, "the delayed request must not move the caret back to where the hold started");
+			Assert.AreEqual(0, SUT.SelectionLength, "a caret, not a selection");
+			Assert.IsFalse(SUT.ContextFlyout?.IsOpen ?? false, "the delayed request must not open the context flyout");
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, rightTapped, "premise: the release of the hold is a touch right-tap");
+			Assert.AreEqual(caretAfterDrag, SUT.SelectionStart, "the right-tap of the release must not move the caret back to the press point");
+			Assert.IsFalse(SUT.ContextFlyout?.IsOpen ?? false);
 		}
 
 		// Was When_Touch_Focused_Then_Scrolled_Away, which asserted that a touch-focused TextBox stayed pinned
