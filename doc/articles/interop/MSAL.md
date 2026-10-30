@@ -64,9 +64,10 @@ Follow [Considerations for using Xamarin iOS with MSAL.NET](https://learn.micros
 On WebAssembly, `.WithUnoHelpers()` configures an `HttpClient` factory that works in the browser
 and, for interactive token acquisition, a web UI that signs in through the
 [`WebAuthenticationBroker`](xref:Uno.Features.WAB) popup. The popup's title, size and timeout follow
-`WinRTFeatureConfiguration.WebAuthenticationBroker`. Closing the popup, or letting it time out,
-surfaces as an `MsalClientException` with the `authentication_canceled` error code, and a popup
-blocked by the browser surfaces as `authentication_ui_failed`. Leave
+`WinRTFeatureConfiguration.WebAuthenticationBroker`. Closing the popup, or canceling the token
+passed to `ExecuteAsync()`, surfaces as an `MsalClientException` with the `authentication_canceled`
+error code and closes the popup. A popup that times out or is blocked by the browser surfaces as
+`authentication_ui_failed`. Leave
 `WinRTFeatureConfiguration.WebAuthenticationBroker.IFrameHtmlId` unset: when it is set, the broker
 signs in through an iframe instead, which Microsoft Entra ID refuses to load.
 
