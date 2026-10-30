@@ -27,6 +27,18 @@
 		<WasmShellNativeCompile Include="$(MSBuildThisFileDirectory)native/uno_gl_shim.c" Visible="false" />
 	</ItemGroup>
 
+	<!--
+		See native/uno_os_thread_id.c. Static for the same reason as above, and because the nested publish
+		build that links the native runtime only runs WasmNestedPublishApp, never our targets.
+	-->
+	<ItemGroup Condition=" '$(IsUnoHead)' == 'true' AND ('$(WasmEnableThreads)' == 'true' OR '$(WasmShellEnableThreads)' == 'true') ">
+		<WasmShellNativeCompile Include="$(MSBuildThisFileDirectory)native/uno_os_thread_id.c" Visible="false" />
+	</ItemGroup>
+
+	<PropertyGroup Condition=" '$(IsUnoHead)' == 'true' AND ('$(WasmEnableThreads)' == 'true' OR '$(WasmShellEnableThreads)' == 'true') AND !$(EmccExtraLDFlags.Contains('SystemNative_TryGetUInt32OSThreadId')) ">
+		<EmccExtraLDFlags>$(EmccExtraLDFlags) -Wl,--wrap=SystemNative_TryGetUInt32OSThreadId</EmccExtraLDFlags>
+	</PropertyGroup>
+
 	<Target Name="_UnoValidateNoUnoWasmDOMRuntimeDependency"
 			AfterTargets="CopyFilesToOutputDirectory"
 			Condition=" '$(UnoDisableValidateNoUnoWasmDOMRuntimeDependency)' == '' ">
