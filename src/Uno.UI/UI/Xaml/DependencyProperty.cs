@@ -151,6 +151,12 @@ namespace Microsoft.UI.Xaml
 		internal bool IsDependencyObjectCollection
 			=> (_flags & Flags.IsDependencyObjectCollection) != 0;
 
+		// Like WinUI, the public overloads don't annotate propertyType. Annotating it made every property typed by a generic
+		// parameter or by a runtime Type warn (IL2087/IL2072) in consuming libraries, which they can't fix on their side.
+		// The only reflection on propertyType is GetUninitializedObject for the default value of a non-nullable value type,
+		// and NativeAOT supports that for any value type reachable through typeof().
+		private const string PropertyTypeNotAnnotated = "propertyType is intentionally not annotated, matching WinUI. The only reflection on it is GetUninitializedObject for a non-nullable value type's default value, which works for any value type reachable through typeof().";
+
 		/// <summary>
 		/// Registers a dependency property on the specified <paramref name="ownerType"/>.
 		/// </summary>
@@ -160,9 +166,10 @@ namespace Microsoft.UI.Xaml
 		/// <param name="typeMetadata">The metadata to use when creating the property</param>
 		/// <returns>A dependency property instance</returns>
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = PropertyTypeNotAnnotated)]
 		public static DependencyProperty Register(
 			string name,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
+			Type propertyType,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			PropertyMetadata typeMetadata)
 		{
@@ -234,9 +241,10 @@ namespace Microsoft.UI.Xaml
 		/// <param name="defaultMetadata">The metadata to use when creating the property</param>
 		/// <returns>A dependency property instance</returns>
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = PropertyTypeNotAnnotated)]
 		public static DependencyProperty RegisterAttached(
 			string name,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
+			Type propertyType,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			PropertyMetadata defaultMetadata)
 		{
