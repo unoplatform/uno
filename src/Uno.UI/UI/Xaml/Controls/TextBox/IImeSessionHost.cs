@@ -79,7 +79,8 @@ namespace Microsoft.UI.Xaml.Controls
 		void OnImeCompositionStarted();
 
 		/// <summary>Called when the IME composition string changes.</summary>
-		void OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied);
+		/// <param name="compositionStart">Where the platform-applied composition starts in the text, or -1 if unknown.</param>
+		void OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied, int compositionStart = -1);
 
 		/// <summary>Called when the user commits text from the IME.</summary>
 		void OnImeCompositionCompleted(string committedText, bool textAlreadyApplied);

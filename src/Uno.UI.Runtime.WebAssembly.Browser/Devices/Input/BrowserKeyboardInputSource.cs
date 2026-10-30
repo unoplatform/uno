@@ -49,7 +49,8 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 
 		var args = new KeyEventArgs(
 			"keyboard",
-			BrowserVirtualKeyHelper.FromCode(code),
+			// Soft keyboards (Samsung Keyboard's arrows and Enter, say) send keys without a physical code.
+			string.IsNullOrEmpty(code) ? BrowserVirtualKeyHelper.FromKey(key) : BrowserVirtualKeyHelper.FromCode(code),
 			(shift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None) | (ctrl ? VirtualKeyModifiers.Control : VirtualKeyModifiers.None) | (meta ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.None) | (alt ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.None),
 			new CorePhysicalKeyStatus
 			{

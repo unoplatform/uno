@@ -62,6 +62,33 @@ public class Given_BrowserKeyboardInputSource
 			$"event.code='{code}' should map to VirtualKey 0x{expectedVirtualKey:X2}, got 0x{(int)captured.VirtualKey:X2}.");
 	}
 
+	// Soft keyboards send some keys without a physical code (Samsung Keyboard's arrows and Enter, say): the key names them.
+	[TestMethod]
+	[DataRow("Backspace", (int)VirtualKey.Back)]
+	[DataRow("Delete", (int)VirtualKey.Delete)]
+	[DataRow("ArrowLeft", (int)VirtualKey.Left)]
+	[DataRow("Enter", (int)VirtualKey.Enter)]
+	[RunsOnUIThread]
+	public void When_OnNativeKeyboardEvent_Has_No_Code_Maps_The_Key(string key, int expectedVirtualKey)
+	{
+		var sourceType = Type.GetType("Uno.UI.Runtime.BrowserKeyboardInputSource, Uno.UI.Runtime.WebAssembly.Browser", throwOnError: false);
+		Assert.IsNotNull(sourceType);
+
+		var instance = RuntimeHelpers.GetUninitializedObject(sourceType);
+
+		KeyEventArgs? captured = null;
+		var keyDownEvent = sourceType.GetEvent("KeyDown", BindingFlags.Public | BindingFlags.Instance);
+		var handler = new TypedEventHandler<object, KeyEventArgs>((_, args) => captured = args);
+		keyDownEvent!.AddEventHandler(instance, handler);
+
+		var onNative = sourceType.GetMethod("OnNativeKeyboardEvent", BindingFlags.NonPublic | BindingFlags.Static);
+		onNative!.Invoke(null, new object[] { instance, true, false, false, false, false, string.Empty, key });
+
+		Assert.IsNotNull(captured);
+		Assert.AreEqual(expectedVirtualKey, (int)captured!.VirtualKey,
+			$"key '{key}' without a code should map to VirtualKey 0x{expectedVirtualKey:X2}, got 0x{(int)captured.VirtualKey:X2}.");
+	}
+
 	[TestMethod]
 	[RunsOnUIThread]
 	public void When_OnNativeKeyboardEvent_ShiftEqual_Modifiers_Flow_Through()

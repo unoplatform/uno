@@ -47,25 +47,40 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		_ => "forward",
 	};
 
+	// A managed exception (from an app's TextChanging or SelectionChanged handler, say) must not cross back into the
+	// JS DOM-event callback, which would leave the input's state half-updated.
+	private static void RunFromNative(Action action)
+	{
+		try
+		{
+			action();
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
 	[JSExport]
-	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength)
+	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength) => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
 		switch (FocusManager.GetFocusedElement(xamlRoot!))
 		{
 			case ITextBoxHost { Core: { } core }:
-				core.TextBoxView.UpdateTextFromNative(text);
-				core.SelectInternal(selectionStart, selectionLength);
+				// A multi-line TextBox's textarea breaks lines with \n where the TextBox uses \r: a text differing only
+				// by them is not an edit of the TextBox's own, which it would echo back and revert the caret for.
+				core.ApplyNativeInput(text.Replace('\n', '\r'), selectionStart, selectionLength);
 				break;
 			case RichEditBox richEditBox:
 				richEditBox.UpdateTextFromNative(text, selectionStart, selectionLength);
 				break;
 		}
-	}
+	});
 
 	[JSExport]
-	private static void OnNativePaste(string clipboardText)
+	private static void OnNativePaste(string clipboardText) => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
@@ -78,7 +93,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 				richEditBox.PasteFromClipboard(clipboardText);
 				break;
 		}
-	}
+	});
 
 	[JSExport]
 	private static int GetNativePasteSourceLimit()
@@ -102,7 +117,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
-	private static void OnSelectionChanged(int selectionStart, int selectionLength)
+	private static void OnSelectionChanged(int selectionStart, int selectionLength) => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
@@ -115,7 +130,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 				richEditBox.SelectFromNative(selectionStart, selectionLength);
 				break;
 		}
-	}
+	});
 
 	[JSExport]
 	private static void OnNativeBlur()
@@ -150,7 +165,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
-	private static void OnEnterKeyPressed()
+	private static void OnEnterKeyPressed() => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 
@@ -162,7 +177,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			keyArgs.Handled = false;
 			control.RaiseEvent(UIElement.KeyUpEvent, keyArgs);
 		}
-	}
+	});
 
 	// The "overlay layer" is the DOM, which is always present.
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
@@ -344,8 +359,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public int GetSelectionStart() => 0;
 	public int GetSelectionLength() => 0;
-	public int GetSelectionStartBeforeKeyDown() => 0;
-	public int GetSelectionLengthBeforeKeyDown() => 0;
+	// Read before the TextBox applies the input's edit: the selection the edit started from, which a reverted edit restores.
+	public int GetSelectionStartBeforeKeyDown() => SelectionStart;
+	public int GetSelectionLengthBeforeKeyDown() => SelectionLength;
 
 	private string GetEnterKeyHintValue()
 	{

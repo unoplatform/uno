@@ -215,7 +215,7 @@ namespace Microsoft.UI.Xaml.Controls
 			InvokeCompositionEvent(() => TextCompositionStarted?.Invoke(this, args));
 		}
 
-		void IImeSessionHost.OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied)
+		void IImeSessionHost.OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied, int compositionStart)
 		{
 			if (IsReadOnly || !_isComposing)
 			{
@@ -233,15 +233,16 @@ namespace Microsoft.UI.Xaml.Controls
 				// events aren't swallowed by the IsComposing check.
 				_platformTextApplyInProgress = true;
 				_compositionAppliedByPlatform = true;
+				if (compositionStart >= 0)
+				{
+					// An IME re-composing an existing word starts the composition before the caret.
+					_compositionStartIndex = compositionStart;
+				}
+				_compositionLength = compositionText.Length;
 			}
 			else
 			{
 				_compositionLength = ReplaceCompositionText(compositionText, cursorPosition);
-			}
-
-			if (textAlreadyApplied)
-			{
-				_compositionLength = compositionText.Length;
 			}
 			_compositionResolvedLength = Math.Clamp(resolvedLength, 0, _compositionLength);
 

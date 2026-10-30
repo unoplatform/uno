@@ -2343,8 +2343,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Both grippers sit on the current selection's edges, so tapping either one keeps the selection and
 		// re-shows the grippers/flyout — there's no insertion handle (or editable caret) to re-place, so press
 		// and anchorIndex are unused here.
-		void ITextSelectionGripperHost.OnGripperTapped(Microsoft.UI.Input.PointerPoint press, int anchorIndex)
-			=> ShowGrippers();
+		bool ITextSelectionGripperHost.OnGripperTapped(Microsoft.UI.Input.PointerPoint press, int anchorIndex)
+		{
+			ShowGrippers();
+			return true;
+		}
 		#endregion
 		#endregion
 

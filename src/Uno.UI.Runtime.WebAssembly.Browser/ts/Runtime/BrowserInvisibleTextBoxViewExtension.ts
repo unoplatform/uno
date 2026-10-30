@@ -40,12 +40,20 @@
 		private static isInSelectionChange: boolean;
 		private static acceptsReturn: boolean;
 		private static isComposing: boolean;
+		// Set once the composition changes the text: Gboard marks an existing word as composing (to offer
+		// corrections) without editing it, and the TextBox must not treat that word as new composition text.
+		private static isCompositionReported: boolean;
+		private static compositionText: string = "";
 		private static compositionStart: number = 0;
-		private static suppressNextInput: boolean;
+		private static pendingCompositionStart: number = -1;
+		// The TextBox's text, set while the browser owns the value during a composition (see setText).
+		private static pendingText: string | null = null;
+		private static isSyncingFromNative: boolean;
 		private static enterHandledByKeyDown: boolean;
 		private static compositionGeneration: number = 0;
 
 		private static waitingAsyncOnSelectionChange: boolean;
+		private static waitingSelectionValue: string;
 		private static nextSelectionStart: number;
 		private static nextSelectionEnd: number;
 		private static nextSelectionDirection: "forward" | "backward" | "none";
@@ -77,23 +85,44 @@
 					let input = document.activeElement;
 					if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
 						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
-
-						if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
+						try {
+							const restoresSelection = BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange
+								&& BrowserInvisibleTextBoxViewExtension.isAssignedValueCaret(input);
 							BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
-							input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
-						}
-						else {
-							if (input.selectionDirection == "backward") {
-								BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
-							} else {
-								BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionStart, input.selectionEnd - input.selectionStart);
+							if (restoresSelection) {
+								input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
+							}
+							else {
+								if (input.selectionDirection == "backward") {
+									BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
+								} else {
+									BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionStart, input.selectionEnd - input.selectionStart);
+								}
 							}
 						}
-
-						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+						finally {
+							// Left set, it would keep every later caret move from reaching the input.
+							BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+						}
 					}
 				}
 			}
+		}
+
+		// Assigning the value moves the caret to its end, which the pending restore undoes. Chrome fires no
+		// selectionchange for that, so the restore can still be pending when the user or the IME moves on.
+		private static isAssignedValueCaret(input: HTMLInputElement | HTMLTextAreaElement) {
+			const end = input.value.length;
+			return input.value === BrowserInvisibleTextBoxViewExtension.waitingSelectionValue
+				&& input.selectionStart === end
+				&& input.selectionEnd === end;
+		}
+
+		// A modified deletion (Shift+Delete cuts in Chromium) keeps going through the TextBox.
+		private static isSoftKeyboardDeletion(ev: KeyboardEvent) {
+			return ev.code === ""
+				&& (ev.key === "Backspace" || ev.key === "Delete")
+				&& !ev.ctrlKey && !ev.altKey && !ev.metaKey && !ev.shiftKey;
 		}
 
 		// Neutralizes the touch-only, WebKit-internal race that dismisses the soft keyboard right
@@ -139,8 +168,7 @@
 			BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
 			// A previous input may have been removed mid-composition without a compositionend;
 			// never carry that state over to a fresh element.
-			BrowserInvisibleTextBoxViewExtension.isComposing = false;
-			BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
+			BrowserInvisibleTextBoxViewExtension.resetComposition();
 			const input = document.createElement(acceptsReturn && !isPasswordBox ? "textarea" : "input");
 			// The keydown/keyup handlers capture acceptsReturn by closure; record it so canRetarget
 			// only reuses the element when the captured behavior still matches.
@@ -177,20 +205,27 @@
 			input.setAttribute("inputmode", inputMode);
 			input.setAttribute("enterkeyhint", enterKeyHint);
 
+			let activeCompositionGeneration = 0;
+			// A replaced input, or a composition superseded by invalidateComposition, must not reach the TextBox that
+			// now owns the shared input.
+			const isActiveComposition = () => input === BrowserInvisibleTextBoxViewExtension.inputElement
+				&& activeCompositionGeneration === BrowserInvisibleTextBoxViewExtension.compositionGeneration;
+
+			// The input's value is the source of truth for the text, composition included: browsers apply the
+			// composition to the value themselves, and event order around compositionend varies by browser.
 			input.oninput = ev => {
-				// During IME composition, text state is managed by the composition event path.
-				// The oninput event still fires but we must skip the normal text sync.
-				// Also suppress the final input event after compositionend (browser fires input after compositionend).
-				if (BrowserInvisibleTextBoxViewExtension.isComposing || BrowserInvisibleTextBoxViewExtension.suppressNextInput) {
-					BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
+				let input = ev.target as HTMLInputElement;
+				if (input !== BrowserInvisibleTextBoxViewExtension.inputElement) {
+					// A replaced input would push its text into the TextBox that now owns the shared input.
 					return;
 				}
-				let input = ev.target as HTMLInputElement;
-				if (input.selectionDirection == "backward") {
-					BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
-				} else {
-					BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
-				}
+				BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
+					if (BrowserInvisibleTextBoxViewExtension.isComposing && isActiveComposition()) {
+						// Before the text sync, so the TextBox knows the change belongs to the composition.
+						BrowserInvisibleTextBoxViewExtension.reportComposition(input);
+					}
+					BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+				});
 			};
 
 			input.onpaste = ev => {
@@ -224,46 +259,117 @@
 
 			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(input, acceptsReturn);
 
-			let activeCompositionGeneration = 0;
 			input.addEventListener("compositionstart", () => {
+				if (input !== BrowserInvisibleTextBoxViewExtension.inputElement) {
+					return;
+				}
 				activeCompositionGeneration = ++BrowserInvisibleTextBoxViewExtension.compositionGeneration;
+				BrowserInvisibleTextBoxViewExtension.resetComposition();
+				// The IME now drives the selection; a restore pending from an earlier value assignment is stale.
+				BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
 				BrowserInvisibleTextBoxViewExtension.isComposing = true;
 				BrowserInvisibleTextBoxViewExtension.compositionStart = input.selectionStart ?? 0;
-				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
 			});
 
 			input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
-				if (activeCompositionGeneration !== BrowserInvisibleTextBoxViewExtension.compositionGeneration) {
+				if (!isActiveComposition()) {
 					return;
 				}
-				// Use input.selectionStart for cursor position when available,
-				// as the IME may place the caret within the preedit string.
-				const selectionStart = input.selectionStart;
-				const cursorPosition = selectionStart === null
-					? ev.data.length
-					: Math.max(0, Math.min(
-						selectionStart - BrowserInvisibleTextBoxViewExtension.compositionStart,
-						ev.data.length));
-				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(ev.data, cursorPosition);
+				BrowserInvisibleTextBoxViewExtension.compositionText = ev.data ?? "";
+				// Chromium selects the range the composition replaces before dispatching this event, which locates a
+				// re-composed word; reportComposition validates it against the applied text.
+				if (input.selectionStart !== null && input.selectionEnd !== null) {
+					BrowserInvisibleTextBoxViewExtension.pendingCompositionStart = Math.min(input.selectionStart, input.selectionEnd);
+				}
 			});
 
 			input.addEventListener("compositionend", (ev: CompositionEvent) => {
-				if (activeCompositionGeneration !== BrowserInvisibleTextBoxViewExtension.compositionGeneration) {
+				if (!isActiveComposition()) {
 					return;
 				}
-				BrowserInvisibleTextBoxViewExtension.isComposing = false;
-				// The browser fires an input event after compositionend with the committed text.
-				// Suppress it to avoid double-inserting — the commit is handled by OnCompositionCompleted.
-				BrowserInvisibleTextBoxViewExtension.suppressNextInput = true;
-				if (ev.data.length > 0) {
-					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
-				} else {
-					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
-				}
+				const wasReported = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
+				const textDiffers = BrowserInvisibleTextBoxViewExtension.pendingText !== null;
+				BrowserInvisibleTextBoxViewExtension.resetComposition();
+				BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
+					if (wasReported) {
+						if (ev.data.length > 0) {
+							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
+						} else {
+							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
+						}
+					}
+					if (textDiffers) {
+						// The TextBox re-applies its edits (a TextChanging filter, MaxLength) to the committed value and
+						// pushes the result to the input. Where the commit's input event follows compositionend, it syncs again.
+						BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+					}
+				});
 			});
 
 			document.body.appendChild(input);
 			BrowserInvisibleTextBoxViewExtension.inputElement = input;
+		}
+
+		// Tells the TextBox which part of the input's value is being composed. The composition is applied to the
+		// value by the browser and synced as text, so this only places the composition range (and its underline).
+		private static reportComposition(input: HTMLInputElement | HTMLTextAreaElement) {
+			const text = BrowserInvisibleTextBoxViewExtension.compositionText;
+			if (!BrowserInvisibleTextBoxViewExtension.isCompositionReported && text.length === 0) {
+				return;
+			}
+
+			const value = input.value;
+			const caret = input.selectionStart ?? value.length;
+			const pending = BrowserInvisibleTextBoxViewExtension.pendingCompositionStart;
+			BrowserInvisibleTextBoxViewExtension.pendingCompositionStart = -1;
+			const known = BrowserInvisibleTextBoxViewExtension.compositionStart;
+			// Outside Chromium the selection may not mark the replaced range, and repeated text could match it, so a
+			// composition keeps the start it was first reported at.
+			const candidates = BrowserInvisibleTextBoxViewExtension.isCompositionReported
+				? [known, pending, caret - text.length]
+				: [pending, known, caret - text.length];
+			const start = candidates.find(s => s >= 0 && value.startsWith(text, s)) ?? Math.min(known, value.length);
+			BrowserInvisibleTextBoxViewExtension.compositionStart = start;
+
+			if (!BrowserInvisibleTextBoxViewExtension.isCompositionReported) {
+				BrowserInvisibleTextBoxViewExtension.isCompositionReported = true;
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
+			}
+			const cursorPosition = Math.max(0, Math.min(caret - start, text.length));
+			BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(text, cursorPosition, start);
+		}
+
+		// Marks a TextBox update made in response to the input, whose echo back to the input must not be applied.
+		private static runSyncingFromNative(action: () => void) {
+			const wasSyncing = BrowserInvisibleTextBoxViewExtension.isSyncingFromNative;
+			BrowserInvisibleTextBoxViewExtension.isSyncingFromNative = true;
+			try {
+				action();
+			} finally {
+				BrowserInvisibleTextBoxViewExtension.isSyncingFromNative = wasSyncing;
+			}
+		}
+
+		private static syncTextFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
+			if (input.selectionDirection == "backward") {
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
+			} else {
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
+			}
+		}
+
+		// Every composition field except compositionGeneration, which superseded composition events are checked against.
+		private static resetComposition() {
+			BrowserInvisibleTextBoxViewExtension.isComposing = false;
+			BrowserInvisibleTextBoxViewExtension.isCompositionReported = false;
+			BrowserInvisibleTextBoxViewExtension.compositionText = "";
+			BrowserInvisibleTextBoxViewExtension.pendingCompositionStart = -1;
+			BrowserInvisibleTextBoxViewExtension.pendingText = null;
+		}
+
+		// A textarea normalizes line breaks to \n, and an input strips them.
+		private static asInputValue(input: HTMLInputElement | HTMLTextAreaElement, text: string) {
+			return input instanceof HTMLTextAreaElement ? text.replace(/\r\n?/g, "\n") : text.replace(/[\r\n]/g, "");
 		}
 
 		// Applies the same keydown/keyup guards used on the invisible <input> to any text input
@@ -313,6 +419,14 @@
 					return;
 				}
 
+				// Some soft keyboards (Samsung Keyboard) send Backspace and Delete as keys without a physical code. The
+				// browser applies them too: an edit made by the TextBox would leave the keyboard's own copy of the text
+				// stale, and its next suggestion would replace the wrong range.
+				if (BrowserInvisibleTextBoxViewExtension.isSoftKeyboardDeletion(ev)) {
+					ev.stopPropagation();
+					return;
+				}
+
 				ev.preventDefault();
 			});
 
@@ -333,6 +447,8 @@
 					&& !BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown
 					&& !ev.isComposing) {
 					ev.preventDefault();
+					// OnEnterKeyPressed raises both KeyDown and KeyUp: the document listener must not raise another KeyUp.
+					ev.stopPropagation();
 					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
 				}
 
@@ -340,7 +456,9 @@
 					BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown = false;
 				}
 
-				if (BrowserInvisibleTextBoxViewExtension.isComposing || ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
+				if (BrowserInvisibleTextBoxViewExtension.isComposing
+					|| ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE
+					|| BrowserInvisibleTextBoxViewExtension.isSoftKeyboardDeletion(ev)) {
 					ev.stopPropagation();
 				}
 			});
@@ -518,15 +636,19 @@
 		public static setText(text: string) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input != null) {
-				// During IME composition the browser manages the hidden input's value.
-				// Overwriting it would destroy the native composition state and cursor.
-				if (BrowserInvisibleTextBoxViewExtension.isComposing) {
+				// While a composition edits the text, the browser owns the value: overwriting it would destroy the
+				// composition. A TextBox text that differs from it (an app edit, MaxLength) is reconciled once it ends.
+				if (BrowserInvisibleTextBoxViewExtension.isCompositionReported) {
+					BrowserInvisibleTextBoxViewExtension.pendingText = BrowserInvisibleTextBoxViewExtension.asInputValue(input, text) === input.value ? null : text;
 					return;
 				}
+				BrowserInvisibleTextBoxViewExtension.pendingText = null;
 
 				// input could be null beccause we could call setText without focusing first
 
-				if (input.value != text) {
+				// Compared as the input holds it (a textarea's \n for the TextBox's \r): assigning an equivalent value
+				// would look like an outside edit to the keyboard.
+				if (BrowserInvisibleTextBoxViewExtension.asInputValue(input, text) !== input.value) {
 					// When setting input.value, the browser will try to set the selection to the end, which isn't what we want.
 					// The browser doesn't raise onselectionchange synchronously though, so we set a flag that we're waiting
 					// for a future selection change that is the result of setting value.
@@ -539,13 +661,14 @@
 					BrowserInvisibleTextBoxViewExtension.nextSelectionEnd = input.selectionEnd;
 					BrowserInvisibleTextBoxViewExtension.nextSelectionDirection = input.selectionDirection;
 					input.value = text;
+					BrowserInvisibleTextBoxViewExtension.waitingSelectionValue = input.value;
 				}
 			}
 		}
 
 		public static replaceText(start: number, length: number, replacement: string) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
-			if (input == null || BrowserInvisibleTextBoxViewExtension.isComposing) {
+			if (input == null || BrowserInvisibleTextBoxViewExtension.isCompositionReported) {
 				return;
 			}
 
@@ -555,10 +678,13 @@
 		}
 
 		public static invalidateComposition() {
-			const wasComposing = BrowserInvisibleTextBoxViewExtension.isComposing;
+			// The TextBox ended the composition, so its text wins over the value the composition left.
+			const text = BrowserInvisibleTextBoxViewExtension.pendingText;
 			BrowserInvisibleTextBoxViewExtension.compositionGeneration++;
-			BrowserInvisibleTextBoxViewExtension.isComposing = false;
-			BrowserInvisibleTextBoxViewExtension.suppressNextInput = wasComposing;
+			BrowserInvisibleTextBoxViewExtension.resetComposition();
+			if (text !== null) {
+				BrowserInvisibleTextBoxViewExtension.setText(text);
+			}
 		}
 
 		public static restartComposition() {
@@ -600,12 +726,16 @@
 		}
 
 		public static updateSelection(start: number, length: number, direction: "forward" | "backward") {
-			// During IME composition the browser manages the hidden input's selection.
-			if (BrowserInvisibleTextBoxViewExtension.isComposing) {
-				return;
-			}
 			if (!BrowserInvisibleTextBoxViewExtension.isInSelectionChange) {
 				const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+
+				// While a composition edits the text, only a caret the user moved elsewhere (a tap) is pushed, which
+				// lets the IME commit the composition. Echoes of the input's own selection would disturb it.
+				if (BrowserInvisibleTextBoxViewExtension.isCompositionReported
+					&& (BrowserInvisibleTextBoxViewExtension.isSyncingFromNative
+						|| (input?.selectionStart === start && input?.selectionEnd === start + length))) {
+					return;
+				}
 
 				// See comment in setText.
 				if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
