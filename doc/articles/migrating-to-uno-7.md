@@ -925,6 +925,16 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   `FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = false` before building the host.
   See [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
+List selection scrolling was also realigned with WinUI:
+
+- **A new selection is brought into view only while the list has focus.** `ListView` and
+  `GridView` used to scroll to every newly selected item. Now, as on WinUI, setting
+  `SelectedItem` or `SelectedIndex` from code on a list that doesn't have focus leaves the
+  scroll position alone, and a focused list scrolls only as far as needed to show the item.
+  Clicking or keyboard navigation still brings the item into view, since they focus the list.
+  In `Multiple` mode only the first selection is brought into view. Call
+  `ScrollIntoView(item)` after selecting if you need the old behavior.
+
 Independently of rendering, `Uno.WinUI.MSAL`'s `WithUnoHelpers()` changed on WebAssembly:
 
 - **`WithUnoHelpers()` no longer wires an interactive web UI on WebAssembly.** The WASM-only

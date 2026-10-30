@@ -591,11 +591,12 @@ namespace Microsoft.UI.Xaml
 		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
 		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
 
+		// Whether this element or one of its descendants has the focus, like WinUI's FrameworkElement::HasFocus.
 		internal virtual
 			bool HasFocus()
 		{
-			var focusManager = VisualTree.GetFocusManagerForElement(this);
-			return focusManager?.FocusedElement == this;
+			var focused = VisualTree.GetFocusManagerForElement(this)?.FocusedElement;
+			return focused is not null && (focused == this || this.IsAncestorOf(focused));
 		}
 
 		/// <summary>
