@@ -31,6 +31,13 @@ namespace Uno.ReferenceImplComparer
 
 		private static int FailOnEmptyResults(string inputFile)
 		{
+			// The app produces no results file when it fails to start or crashes.
+			if (!File.Exists(inputFile))
+			{
+				Console.WriteLine($"The test results file {inputFile} does not exist");
+				return 1;
+			}
+
 			var doc = new XmlDocument();
 			doc.LoadXml(File.ReadAllText(inputFile));
 
