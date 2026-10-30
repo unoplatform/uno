@@ -467,14 +467,8 @@ public partial class ComboBox : Selector
 	/// This is required by some apps trying to emulate the native iPhone look for ComboBox.
 	/// The standard popup layouter works like on Windows, and doesn't stretch to take the full size of the screen.
 	/// </remarks>
-	public bool IsPopupFullscreen
-	{
-		get => GetIsPopupFullscreenValue();
-		set => SetIsPopupFullscreenValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty IsPopupFullscreenProperty { get; } = CreateIsPopupFullscreenProperty();
+	public partial bool IsPopupFullscreen { get; set; }
 
 	/// <summary>
 	/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.

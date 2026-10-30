@@ -71,14 +71,8 @@ namespace Microsoft.UI.Xaml.Media
 
 		#region Color Dependency Property
 
-		public Color Color
-		{
-			get => GetColorValue();
-			set => SetColorValue(value);
-		}
-
 		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnColorChanged))]
-		public static DependencyProperty ColorProperty { get; } = CreateColorProperty();
+		public partial Color Color { get; set; }
 
 		private static Color GetColorDefaultValue() => Colors.Transparent;
 
