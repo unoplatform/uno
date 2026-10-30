@@ -52,6 +52,8 @@ public partial class RangeBase : Control
 
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
+		base.OnPropertyChanged2(args);
+
 		if (args.Property == MinimumProperty)
 		{
 			HandlePropertyChanged(
