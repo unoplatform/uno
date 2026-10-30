@@ -358,6 +358,9 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		// Unload can happen mid-drag without an intervening blur (e.g. ListView/ItemsRepeater
 		// recycling), which would otherwise strand IsCaretDragActive permanently true.
 		CancelCaretDrag();
+		EndCaretLoupe();
+		CancelDeferredTouchFlyout();
+		_iosHoldTimer?.Stop();
 		_forceFocusedVisualState = false;
 		_timer.Stop();
 		_gripperPresenter?.Hide();
@@ -568,6 +571,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		{
 			EndImeSession();
 			TrySetCurrentlyTyping(false);
+			EndCaretLoupe();
+			CancelDeferredTouchFlyout();
 			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 			if (SelectionFlyout?.IsOpen == true)
 			{
@@ -637,7 +642,12 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 		// Even when using Skia TextBox, we may need to call Select,
 		// which will update the native input in case of Wasm Skia for example.
-		TextBoxView?.Select(start, length);
+		// Not while the platform loupe shows (a caret or handle drag): on iOS, moving the first responder's selection
+		// makes UIKit dismiss the loupe. EndCaretLoupe syncs the final selection once the drag is over.
+		if (!_isLoupeActive)
+		{
+			TextBoxView?.Select(start, length);
+		}
 
 		if (length == 0 && CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
@@ -1693,9 +1703,22 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	void ITextSelectionGripperHost.MoveGripperCaret(int index) => Select(index, 0);
 
-	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper) => UpdateScrolling(isEndGripper);
+	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper)
+	{
+		UpdateScrolling(isEndGripper);
 
-	void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
+		// Called on every handle move, so it doubles as the drag tick for the iOS magnifier.
+		UpdateCaretLoupe(isEndGripper ? SelectionStart + SelectionLength : SelectionStart);
+	}
+
+	void ITextSelectionGripperHost.OnGripperPressed()
+	{
+		// A tap on a handle toggles the menu, like a tap on the selection (see OnGripperTapped).
+		_selectionFlyoutOpenAtPress = SelectionFlyout?.IsOpen == true;
+		DismissSelectionFlyoutForPointerPress();
+	}
+
+	void ITextSelectionGripperHost.OnGripperPointerLost() => EndCaretLoupe();
 
 	// Dismiss the selection flyout (the floating copy/paste bar) when a touch interaction begins, so it
 	// doesn't linger next to a context menu opened on the same gesture.
@@ -1703,6 +1726,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
 	{
+		EndCaretLoupe();
+
 		// Ported from TextBoxBase.cpp OnGripperHeld: a held gripper opens the context flyout.
 		var contextArgs = new ContextRequestedEventArgs();
 		contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
@@ -1710,32 +1735,75 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	}
 
 	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection)
-		=> QueueUpdateSelectionFlyoutVisibility(
+	{
+		// The handle interaction is over (released), so the magnifier goes away.
+		EndCaretLoupe();
+
+		if (_suppressGripperTapFlyout)
+		{
+			// The tap hid the menu (see OnGripperTapped).
+			_suppressGripperTapFlyout = false;
+			_deferGripperTapFlyout = false;
+			return;
+		}
+
+		if (_deferGripperTapFlyout)
+		{
+			// A triple-tap may still follow this double-tap (see OnGripperTapped).
+			_deferGripperTapFlyout = false;
+			QueueDeferredTouchFlyout(args.GetCurrentPoint(Owner).Position, forSelection: true);
+			return;
+		}
+
+		QueueUpdateSelectionFlyoutVisibility(
 			args.Pointer.PointerDeviceType,
 			args.GetCurrentPoint(Owner).Position,
 			// The single insertion handle only exists under the mobile (iOS/Android) conventions; tapping it
 			// re-opens the flyout even over a collapsed caret. Desktop never gets the empty-selection flyout.
 			allowEmptySelection: allowEmptySelection && TouchSelectionConvention != TouchTextSelectionConvention.Desktop);
+	}
 
 	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
 	{
 		// The insertion handle (EndOnly gripper) sits over the character it points at, so the second tap of
 		// a double-tap lands on the handle instead of the text. Fold it into the same multi-tap counter as
 		// OnPointerReleasedPartial (press-to-press) so the double-tap still selects the word.
-		var repeatedPresses = _lastPointerDown.point is { } previous && IsTouchMultiTap(previous, press)
+		// iOS: after a double-tap, its word's handles may sit well away from where the finger tapped, so a quick tap on
+		// one of them continues the multi-tap whatever the distance - the handle belongs to that very selection.
+		var continuesMultiTap = _lastPointerDown.point is { } previous
+			&& (IsTouchMultiTap(previous, press)
+				|| (TouchSelectionConvention == TouchTextSelectionConvention.iOS
+					&& _lastPointerDown.repeatedPresses >= 1
+					&& press.Timestamp - previous.Timestamp <= GestureRecognizer.MultiTapMaxDelayMicroseconds));
+		var repeatedPresses = continuesMultiTap
 			? _lastPointerDown.repeatedPresses + 1
 			: 0;
 		_lastPointerDown = (press, repeatedPresses);
 
 		// Act on the character the handle points at, not the finger's position on the thumb (which hangs below
 		// the caret line and would jump the caret to the end of the text).
-		if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && repeatedPresses >= 1)
+		if (TouchSelectionConvention == TouchTextSelectionConvention.iOS && repeatedPresses >= 2)
+		{
+			// After a double-tap the word's handles sit over it, so the third tap of a triple-tap often lands on one.
+			TouchSelectParagraphAt(anchorIndex);
+		}
+		else if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && repeatedPresses >= 1)
 		{
 			TouchSelectWordAt(anchorIndex);
+
+			// iOS: a triple-tap may follow, so the flyout must not open (and swallow it) yet.
+			_deferGripperTapFlyout = TouchSelectionConvention == TouchTextSelectionConvention.iOS;
 		}
 		else if (_caretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
 			TouchTapAt(anchorIndex);
+		}
+		else if (TouchSelectionConvention == TouchTextSelectionConvention.iOS)
+		{
+			// Native iOS: a handle sits over its selection (a short word is mostly covered by them), so a tap on one
+			// toggles the edit menu like a tap on the selection. Opening waits out the multi-tap window.
+			_suppressGripperTapFlyout = _selectionFlyoutOpenAtPress;
+			_deferGripperTapFlyout = !_selectionFlyoutOpenAtPress;
 		}
 		// Both thumbs showing: the tap grabbed a selection edge, so keep the selection (native iOS/Android)
 		// instead of collapsing it to a caret. The presenter re-shows the selection flyout on release.

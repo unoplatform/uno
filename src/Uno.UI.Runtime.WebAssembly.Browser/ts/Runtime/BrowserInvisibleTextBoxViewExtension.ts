@@ -101,15 +101,22 @@
 		// events, but per the Pointer Events spec that does NOT suppress the compatibility
 		// mouse events touch browsers synthesize, so the trailing mousedown still reaches the
 		// canvas and blurs #uno-input. We can't preventDefault it from the pointer path, so we
-		// intercept the mouse event itself, scoped to the single tap that just focused the input.
+		// intercept the mouse event itself, scoped to a touch/pen tap that focused the input or landed
+		// while it was focused.
 		private static installTrailingClickGuard() {
-			// Any new pointer gesture disarms a stale flag, so only the mouse events synthesized
-			// from the very tap that focused the input are ever swallowed. Also records the pointer
+			// Every new pointer gesture re-decides the flag, so only the mouse events synthesized from
+			// a tap the guard covers are ever swallowed. Also records the pointer
 			// type: the bug is exclusive to touch/pen, where the compat mousedown is deferred until
 			// after focus. With a mouse, mousedown precedes focus, so there is nothing to guard.
 			document.addEventListener("pointerdown", (ev: PointerEvent) => {
 				BrowserInvisibleTextBoxViewExtension.lastPointerType = ev.pointerType;
-				BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick = false;
+				// A touch while the input already has focus (a tap that moves the caret in the focused TextBox)
+				// gets the same deferred compat mousedown, which blurs the input and dismisses the keyboard, so
+				// every other tap would close it. No focusin fires to arm the guard for that tap: arm it here.
+				// A tap that moves focus elsewhere is still honored, since managed code blurs the input itself.
+				BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick =
+					(ev.pointerType === "touch" || ev.pointerType === "pen")
+					&& document.activeElement?.id === UnoDomIds.input;
 			}, { capture: true });
 
 			// focusin bubbles (unlike focus), so a single document-level listener catches the
