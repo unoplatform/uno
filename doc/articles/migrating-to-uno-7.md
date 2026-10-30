@@ -927,12 +927,14 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
 
 Independently of rendering, `Uno.WinUI.MSAL`'s `WithUnoHelpers()` changed on WebAssembly:
 
-- **`WithUnoHelpers()` no longer wires an interactive web UI on WebAssembly.** The WASM-only
-  flavor of `Uno.UI.MSAL` that provided it was removed; `PublicClientApplicationBuilder
-  .WithUnoHelpers()` and `AcquireTokenInteractiveParameterBuilder.WithUnoHelpers()` are now
-  no-ops there, same as they always were on WinUI. Interactive sign-in on WebAssembly needs
-  your own `WithCustomWebUi(...)` (and `WithHttpClientFactory(...)` if needed) — see
-  [MSAL: WebAssembly](xref:Uno.Interop.MSAL#webassembly).
+- **`WithUnoHelpers()` signs in through `WebAuthenticationBroker` on WebAssembly.** The WASM-only
+  flavor of `Uno.UI.MSAL` was removed, and its helpers now ship in the main assembly.
+  `PublicClientApplicationBuilder.WithUnoHelpers()` still sets a browser-compatible
+  `HttpClient` factory, and `AcquireTokenInteractiveParameterBuilder.WithUnoHelpers()` sets a
+  web UI that uses the [`WebAuthenticationBroker`](xref:Uno.Features.WAB) popup, configured
+  through `WinRTFeatureConfiguration.WebAuthenticationBroker`. Both replace a
+  `WithHttpClientFactory(...)` or `WithCustomWebUi(...)` called before them, so call your own
+  after `WithUnoHelpers()` — see [MSAL: WebAssembly](xref:Uno.Interop.MSAL#webassembly).
 
 On Android, retargeted drawables now keep their file extension in their resource name:
 
