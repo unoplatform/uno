@@ -309,10 +309,6 @@
 			"description": "Provides an explicit override for the version of Microsoft.Identity.Client to use.",
 			"type": "nuget-version"
 		},
-		"MicrosoftWebView2Version": {
-			"description": "Provides an explicit override for the version of Microsoft.Web.WebView2 to use.",
-			"type": "nuget-version"
-		},
 		"VlcNativeWindowsAssetsVersion": {
 			"description": "Provides an explicit override for the version of VideoLAN.LibVLC.Windows, used by the MediaPlayerElement feature on desktop, to use.",
 			"type": "nuget-version"

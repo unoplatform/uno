@@ -397,13 +397,6 @@
 		]
 	},
 	{
-		"group": "MicrosoftWebView2",
-		"version": "1.0.4078.44",
-		"packages": [
-			"Microsoft.Web.WebView2"
-		]
-	},
-	{
 		"group": "AppMcp",
 		"version": "2.0.0-dev.7",
 		"packages": [
