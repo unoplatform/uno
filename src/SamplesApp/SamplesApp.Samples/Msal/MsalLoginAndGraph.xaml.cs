@@ -17,6 +17,9 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.MSAL;
 using Uno.UI.Samples.Controls;
 using Prompt = Microsoft.Identity.Client.Prompt;
+#if __WASM__
+using Uno;
+#endif
 #if !DISABLE_GRAPH
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
@@ -61,6 +64,7 @@ namespace UITests.Msal
 		private readonly string[] SCOPES = new[] { "https://graph.microsoft.com/User.Read", "https://graph.microsoft.com/email", "https://graph.microsoft.com/profile" };
 
 		private readonly IPublicClientApplication _app;
+		private CancellationTokenSource _signInCts;
 
 		public MsalLoginAndGraph()
 		{
@@ -76,12 +80,24 @@ namespace UITests.Msal
 
 		private async void SignIn(object sender, RoutedEventArgs e)
 		{
+			_signInCts?.Cancel();
+			var cts = _signInCts = new CancellationTokenSource();
+#if __WASM__
+			var originalTimeout = WinRTFeatureConfiguration.WebAuthenticationBroker.AuthenticationTimeout;
+			if (shortTimeout.IsChecked == true)
+			{
+				WinRTFeatureConfiguration.WebAuthenticationBroker.AuthenticationTimeout = TimeSpan.FromSeconds(5);
+			}
+#endif
+
 			try
 			{
+				status.Text = "Signing in...";
+
 				var result = await _app.AcquireTokenInteractive(SCOPES)
 					.WithPrompt(Prompt.SelectAccount)
 					.WithUnoHelpers()
-					.ExecuteAsync();
+					.ExecuteAsync(cts.Token);
 
 				tokenBox.Text = result.AccessToken;
 				status.Text = "Signed in";
@@ -94,7 +110,16 @@ namespace UITests.Msal
 			{
 				status.Text = $"{ex.GetType().Name}: {ex.Message}";
 			}
+			finally
+			{
+#if __WASM__
+				WinRTFeatureConfiguration.WebAuthenticationBroker.AuthenticationTimeout = originalTimeout;
+#endif
+			}
 		}
+
+		private void CancelSignIn(object sender, RoutedEventArgs e)
+			=> _signInCts?.Cancel();
 
 		private
 #if !DISABLE_GRAPH

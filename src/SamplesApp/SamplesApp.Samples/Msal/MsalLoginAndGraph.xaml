@@ -23,12 +23,19 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Button
+        <StackPanel
             Grid.Row="0"
             Grid.Column="1"
-            Click="SignIn">
-            Sign-In Interactively
-        </Button>
+            Orientation="Horizontal"
+            Spacing="8">
+            <Button Click="SignIn">
+                Sign-In Interactively
+            </Button>
+            <Button Click="CancelSignIn">
+                Cancel
+            </Button>
+            <CheckBox x:Name="shortTimeout" Content="5 second popup timeout (WebAssembly)" />
+        </StackPanel>
         <TextBlock Grid.Row="1" Grid.Column="0">
             Token:
         </TextBlock>
