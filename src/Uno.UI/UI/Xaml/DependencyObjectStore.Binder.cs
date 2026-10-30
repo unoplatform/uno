@@ -38,7 +38,10 @@ namespace Microsoft.UI.Xaml
 	{
 		private readonly object _gate = new object();
 
-		private object? _associatedParent; // see note in AssociateParent(object)
+		// Non-owning, like WinUI's CMultiParentShareableDependencyObject::AddParent (MultiParentShareableDependencyObject.cpp)
+		// which tracks raw parent pointers: a shared value (brush, backdrop, ...) must not keep the last element it was
+		// applied to alive. See AssociateParent(object).
+		private ManagedWeakReference? _associatedParentRef;
 
 		private HashtableEx? _childrenBindableMap; // maps DependencyProperty to _childrenBindable[index]
 		private List<object?>? _childrenBindable;
@@ -706,22 +709,25 @@ namespace Microsoft.UI.Xaml
 			//		of ResourceDictionary and ContentControl.  It is ok to have multiple parents as long as
 			//		the first parent is a ResourceDictionary, or if the first parent is a ContentControl and there are at most
 			//		two parents.
-			// todo: if we are to implement that in the future, we should promote `object? _associatedParent` into a `List/HashSet<object?>? _associatedParents`
+			// todo: if we are to implement that in the future, we should promote `_associatedParentRef` into a `List/HashSet<ManagedWeakReference>? _associatedParentRefs`
 
-			if (_associatedParent == null)
+			if (_associatedParentRef is null)
 			{
-				_associatedParent = parent;
+				SetAssociatedParent(parent);
 				RegisterCollectibleParentAssociation(parent);
 			}
 			else
 			{
-				// if there are multiple parents (would be if we count the previous one `_associatedParent` and the current one `parent`),
+				// if there are multiple parents (would be if we count the previous one `_associatedParentRef` and the current one `parent`),
 				// it means that the current instance is shared across multiple owners/parents,
 				// which means that it should no longer participate in any dc propagation.
+				// A previous parent that was collected without unassociating still counts, so the outcome does not depend
+				// on whether a collection happened in between: WinUI frees the slot deterministically when the parent is
+				// destroyed, which has no equivalent here; only an explicit unassociation or the ALC sweep frees it.
 				_inheritanceContextEnabled = false;
 
 				ClearInheritedDataContext();
-				_associatedParent = null;
+				SetAssociatedParent(null);
 			}
 		}
 		private void UnassociateParent(object? parent)
@@ -729,9 +735,33 @@ namespace Microsoft.UI.Xaml
 			if (parent == null) return;
 			if (!_inheritanceContextEnabled) return;
 
-			if (ReferenceEquals(_associatedParent, parent))
+			if (ReferenceEquals(AssociatedParent, parent))
 			{
-				_associatedParent = null;
+				SetAssociatedParent(null);
+
+				// Losing the only parent removes the inheritance context (WinUI: no mentor, bindings re-resolve against
+				// nothing), so the DataContext inherited from it, and the values bindings copied from it, must go too.
+				ClearInheritedDataContext();
+			}
+		}
+
+		/// <summary>
+		/// The single parent this shareable object is associated with, or null when there is none or it has been collected.
+		/// </summary>
+		internal object? AssociatedParent
+			=> _associatedParentRef?.TryGetTarget<object>(out var parent) is true ? parent : null;
+
+		private void SetAssociatedParent(object? parent)
+		{
+			if (_associatedParentRef is { } previous)
+			{
+				WeakReferencePool.ReturnWeakReference(this, previous);
+				_associatedParentRef = null;
+			}
+
+			if (parent is not null)
+			{
+				_associatedParentRef = WeakReferencePool.RentWeakReference(this, parent);
 			}
 		}
 
