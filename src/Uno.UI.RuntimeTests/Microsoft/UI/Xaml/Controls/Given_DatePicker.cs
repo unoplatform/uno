@@ -385,6 +385,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20693")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+		public async Task When_Item_Tapped_And_Accepted_Before_Scroll_Settles()
+		{
+			var datePicker = new DatePicker { SelectedDate = new DateTimeOffset(new DateTime(2024, 6, 15)) };
+			TestServices.WindowHelper.WindowContent = datePicker;
+			await TestServices.WindowHelper.WaitForLoaded(datePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+			var (daySelector, _, _) = await DateTimePickerHelper.GetDayMonthYearLoopingSelectorsFromOpenFlyout();
+			var presenter = await DateTimePickerHelper.GetOpenDatePickerFlyoutPresenter();
+			var acceptButton = (Button)TreeHelper.GetVisualChildByName(presenter, "AcceptButton");
+			var item = VisualTreeUtils.FindVisualChildrenByType<LoopingSelectorItem>(daySelector)
+				.Single(i => VisualTreeUtils.FindVisualChildrenByType<TextBlock>(i).Any(t => t.Text == "17"));
+
+			// Tapping an item scrolls it into the middle with an animation; accept before that animation ends.
+			TestServices.InputHelper.MoveMouse(item);
+			await TestServices.WindowHelper.WaitForIdle();
+			TestServices.InputHelper.LeftMouseClick(item);
+			TestServices.InputHelper.LeftMouseClick(acceptButton);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(new DateTime(2024, 6, 17), datePicker.SelectedDate?.Date);
+		}
+
+#endif
+
 		private static void CheckDateTimeTextBlockPartPosition(DatePicker datePicker, string id, int expectedColumn)
 		{
 			var textBlock = MUXControlsTestApp.Utilities.VisualTreeUtils.FindVisualChildByName(datePicker, id) as TextBlock;
