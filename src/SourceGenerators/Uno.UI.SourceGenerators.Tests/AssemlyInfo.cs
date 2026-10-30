@@ -3,10 +3,10 @@
 namespace Uno.UI.SourceGenerators.Tests;
 
 [TestClass]
-public class AssemblyHooks
+public static class AssemblyHooks
 {
-	// Keeps the generators run by these tests from sending build telemetry.
+	// The generators these tests run would otherwise send build telemetry from developers' machines.
 	[AssemblyInitialize]
-	public static void OptOutOfTelemetry(TestContext context)
+	public static void OptOutOfTelemetry(TestContext _)
 		=> Environment.SetEnvironmentVariable("UNO_PLATFORM_TELEMETRY_OPTOUT", "true");
 }
