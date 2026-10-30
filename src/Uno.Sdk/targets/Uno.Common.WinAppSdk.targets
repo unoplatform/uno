@@ -18,6 +18,10 @@
 
 		<!-- Opt out of legacy VCLibs/UniversalCRT.Debug SDK framework package references added by Microsoft.WinUI.AppX.targets. -->
 		<WinUISDKReferences Condition=" '$(WinUISDKReferences)' == '' ">false</WinUISDKReferences>
+
+		<!-- Uno's Windows assemblies are built against the .87 Windows SDK projection (WinRT.Runtime 2.3). The .NET 10 SDK
+		     defaults to .57 (WinRT.Runtime 2.2), which fails with CS1705. A minimum never lowers a newer SDK's default. -->
+		<WindowsSdkPackageMinimumRevision Condition=" '$(WindowsSdkPackageMinimumRevision)' == '' ">87</WindowsSdkPackageMinimumRevision>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" $(_IsExecutable) == 'true' ">
