@@ -46,6 +46,34 @@ In case of WebAssembly, the control is supported via a native `<iframe>` element
 - The [`frame-ancestors` Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors) can be used to allow embedding a site you have control over, while at the same time blocking third-party sites from embedding
 - External site you are embedding must not block embedding via [`X-FRAME-OPTIONS` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options)
 
+### Browser features available to pages
+
+Pages shown in a `WebView2` can play media automatically, go fullscreen, play protected (DRM) media, copy to the clipboard and use passkeys, as they could in a browser tab, whatever site they come from. By default, pages from other sites can't use features that need the user's permission, such as the camera, the microphone or the location.
+
+To change which features pages from other sites can use, edit `Uno.UI.FeatureConfiguration.WebView2.PermissionsPolicy` during application startup, before any `WebView2` is created or shown. For example, this stops pages from other sites from playing media automatically and lets pages from `https://example.com` use the camera:
+
+```csharp
+public App()
+{
+    Uno.UI.FeatureConfiguration.WebView2.PermissionsPolicy.Remove("autoplay");
+    Uno.UI.FeatureConfiguration.WebView2.PermissionsPolicy.Add("camera https://example.com");
+    this.InitializeComponent();
+}
+```
+
+Each entry is a [Permissions Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Permissions_Policy) directive in the syntax of the [`allow` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#allow) (`feature allowlist`), not that of the `Permissions-Policy` header (`feature=(allowlist)`). The entries are written to the `allow` attribute of the `<iframe>` that shows the web content when a `WebView2` applies its template:
+
+- By default, the list holds `autoplay`, `fullscreen`, `encrypted-media`, `clipboard-write`, `publickey-credentials-get` and `publickey-credentials-create`.
+- `publickey-credentials-get` lets pages sign in with a passkey, and `publickey-credentials-create` lets them create one. Chromium and Firefox support both in a frame from another site (creating a passkey there since Chrome 123 and Firefox 123), and creating one there also needs a click in that page. Safari lets a page from another site sign in with a passkey, but never lets it create one: WebKit only creates passkeys in a document that's same-origin with the pages that contain it.
+- A feature name alone applies to every page the web view shows.
+- A feature name followed by an allowlist, such as `camera https://example.com`, is written as is.
+- A later entry for a feature replaces an earlier one, so adding `autoplay 'none'` overrides the default `autoplay` entry and blocks autoplay for every page.
+- A feature without an entry gets the browser's default, which for most features lets pages from the app's own origin use it, such as content shown with `NavigateToString`.
+- When `fullscreen` applies to every page, it's written as the `<iframe>`'s `allowfullscreen` attribute, which browsers read as `fullscreen *`.
+- The browser still asks the user before a page uses a feature that needs permission, such as the camera or the microphone.
+- If the app's server sends a `Permissions-Policy` header that lists a feature, the header's allowlist for it must also include the origins of the pages it's passed to, for example `camera=(self "https://example.com")`. A feature that the header limits to `self` can't be passed to pages from other sites. Features the header doesn't list aren't affected.
+- The setting has no effect on other targets.
+
 ## Executing JavaScript
 
 When a page is loaded inside the `WebView2` control, you can execute custom JavaScript code. To do this, call the `ExecuteScriptAsync` method:

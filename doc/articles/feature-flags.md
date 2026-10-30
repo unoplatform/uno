@@ -157,6 +157,21 @@ public App()
 }
 ```
 
+### PermissionsPolicy
+
+The browser features that pages shown in a `WebView2` can use, as Permissions Policy directives written to the `allow` attribute of its `<iframe>` (`fullscreen` for every page as `allowfullscreen`). This is **WebAssembly only**; it is a no-op on other targets. By default it holds `autoplay`, `fullscreen`, `encrypted-media`, `clipboard-write`, `publickey-credentials-get` and `publickey-credentials-create`. Features that need the user's permission, such as the camera, aren't in it, so pages from other sites can't use them unless an entry allows them. Edit it during application startup, before any `WebView2` is created or shown:
+
+```csharp
+public App()
+{
+    Uno.UI.FeatureConfiguration.WebView2.PermissionsPolicy.Remove("autoplay");
+    Uno.UI.FeatureConfiguration.WebView2.PermissionsPolicy.Add("camera https://example.com");
+    this.InitializeComponent();
+}
+```
+
+See [WebView2 → Browser features available to pages](xref:Uno.Controls.WebView2#browser-features-available-to-pages) for how the entries are applied.
+
 ## `ApplicationData`
 
 On Skia Desktop targets, it is possible to override the default `ApplicationData` folder locations using `WinRTFeatureConfiguration.ApplicationData` properties. For more information, see [related docs here](/articles/features/applicationdata.md#data-location-on-skia-desktop)
