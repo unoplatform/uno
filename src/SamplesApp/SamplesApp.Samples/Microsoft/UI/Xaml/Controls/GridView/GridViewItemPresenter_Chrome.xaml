@@ -1,0 +1,79 @@
+﻿<Page
+    x:Class="Uno.UI.Samples.Content.UITests.GridView.GridViewItemPresenter_Chrome"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style
+            x:Key="PresenterItemStyle"
+            BasedOn="{StaticResource DefaultGridViewItemStyle}"
+            TargetType="GridViewItem">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="80" />
+        </Style>
+
+        <!--  Legacy presenter, with the default GridViewItem template values it supports  -->
+        <Style
+            x:Key="LegacyPresenterItemStyle"
+            BasedOn="{StaticResource PresenterItemStyle}"
+            TargetType="GridViewItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridViewItem">
+                        <GridViewItemPresenter
+                            x:Name="Root"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            CheckBrush="{ThemeResource GridViewItemCheckBrush}"
+                            ContentMargin="{TemplateBinding Padding}"
+                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                            DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                            DragBackground="{ThemeResource GridViewItemDragBackground}"
+                            DragForeground="{ThemeResource GridViewItemDragForeground}"
+                            DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
+                            FocusBorderBrush="{ThemeResource GridViewItemFocusBorderBrush}"
+                            PlaceholderBackground="{ThemeResource GridViewItemPlaceholderBackground}"
+                            PointerOverBackground="{ThemeResource GridViewItemBackgroundPointerOver}"
+                            ReorderHintOffset="{ThemeResource GridViewItemReorderHintThemeOffset}"
+                            SelectedBackground="{ThemeResource GridViewItemBackgroundSelected}"
+                            SelectedBorderThickness="{ThemeResource GridViewItemSelectedBorderThickness}"
+                            SelectedForeground="{ThemeResource GridViewItemForegroundSelected}"
+                            SelectedPointerOverBackground="{ThemeResource GridViewItemBackgroundSelectedPointerOver}"
+                            SelectedPointerOverBorderBrush="{ThemeResource GridViewItemSelectedPointerOverBorderBrush}"
+                            SelectionCheckMarkVisualEnabled="{ThemeResource GridViewItemSelectionCheckMarkVisualEnabled}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid Padding="16" ColumnSpacing="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Spacing="8">
+            <ComboBox x:Name="SelectionModeBox" Header="SelectionMode" />
+            <ComboBox x:Name="CheckModeBox" Header="CheckMode" />
+            <ComboBox x:Name="IndicatorModeBox" Header="SelectionIndicatorMode" />
+            <CheckBox
+                x:Name="RoundedBox"
+                Content="Rounded chrome"
+                IsChecked="True" />
+            <CheckBox x:Name="DisabledBox" Content="Disable every 3rd item" />
+            <CheckBox x:Name="BrushesBox" Content="Custom brushes" />
+            <CheckBox
+                x:Name="LegacyPresenterBox"
+                Checked="OnLegacyPresenterChanged"
+                Content="Legacy GridViewItemPresenter"
+                Unchecked="OnLegacyPresenterChanged" />
+        </StackPanel>
+
+        <Border x:Name="ListHost" Grid.Column="1" />
+    </Grid>
+</Page>
