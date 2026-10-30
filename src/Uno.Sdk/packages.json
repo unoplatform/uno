@@ -335,7 +335,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "8.0.0-dev.76",
+		"version": "8.0.0-dev.150",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -366,7 +366,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "11.0.0-dev.140",
+		"version": "11.0.0-dev.157",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -379,7 +379,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "9.0.0-dev.41",
+		"version": "9.0.0-dev.61",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
