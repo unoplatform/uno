@@ -709,5 +709,52 @@ public class Given_CompositionTarget
 
 		return (ticks, frames);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_Content_Changes_While_Minimized_Then_Restore_Presents_It()
+	{
+		// Skia-on-Metal presents into a minimized window's layer, which keeps that content when restored. WebGPU gets an
+		// Occluded surface instead and presents nothing, so its frame has to be retried once the window shows.
+		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is not ("1" or "true" or "neutral" or "swapchain"))
+		{
+			Assert.Inconclusive("Only WebGPU skips the present of a hidden window.");
+		}
+
+		var text = new TextBlock { Text = "Before" };
+		var window = new Window { Content = new Border { Child = text } };
+		var activated = false;
+		window.Activated += (_, _) => activated = true;
+		window.Activate();
+		await TestServices.WindowHelper.WaitFor(() => activated);
+		await TestServices.WindowHelper.WaitForLoaded(text);
+
+		var presenter = (Microsoft.UI.Windowing.OverlappedPresenter)window.AppWindow.Presenter;
+		var target = (CompositionTarget)text.Visual.CompositionTarget!;
+		var presentedSinceRestore = 0;
+		EventHandler<FramePresentedInfo> onPresented = (_, _) => presentedSinceRestore++;
+		try
+		{
+			presenter.Minimize();
+			await TestServices.WindowHelper.WaitFor(() => presenter.State == Microsoft.UI.Windowing.OverlappedPresenterState.Minimized);
+			await Task.Delay(1000);
+
+			// The frame for this change is made while the window is hidden, so it cannot reach the screen.
+			text.Text = "After";
+			await Task.Delay(1000);
+
+			target.FramePresented += onPresented;
+			presenter.Restore();
+
+			// Nothing changes after the restore, so only a retried frame can show the new text.
+			await TestServices.WindowHelper.WaitFor(() => presentedSinceRestore > 0, 5000, "The frame made while the window was hidden was never presented.");
+		}
+		finally
+		{
+			target.FramePresented -= onPresented;
+			window.Close();
+		}
+	}
 }
 #endif
