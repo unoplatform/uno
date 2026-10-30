@@ -58,8 +58,9 @@ Uno.SDK single-project model.
 
 The `net*-maccatalyst` target framework is no longer supported. The `Uno.Sdk` no longer
 produces a Mac Catalyst head: `maccatalyst` is not a recognized `TargetFramework`, the
-`Platforms/MacCatalyst/` folder is no longer picked up, and the `MacCatalystProjectFolder`
-property is gone. The `__MACCATALYST__` conditional symbol is never defined, and the
+`Platforms/MacCatalyst/` folder is no longer built (a leftover one is left out of every target
+framework, with warning [UNOB0033](xref:Build.Solution.error-codes#unob0033-a-platformsmaccatalyst-or-platformsmacos-folder-is-not-built)),
+and the `MacCatalystProjectFolder` property is gone. The `__MACCATALYST__` conditional symbol is never defined, and the
 `.iOS.cs` and `.UIKit.cs` file suffixes now apply only to `net10.0-ios` and `net10.0-tvos`.
 
 macOS remains a fully supported target through the **`net10.0-desktop`** head, which runs
