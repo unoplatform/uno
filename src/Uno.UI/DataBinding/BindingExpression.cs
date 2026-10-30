@@ -262,6 +262,13 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				_IsCurrentlyPushingTwoWay = true;
 
+				// Like WinUI, a target still showing the TargetNullValue pushes null back to the source.
+				if (ParentBinding.TargetNullValue is { } targetNullValue
+					&& Equals(value, ConvertToBoundPropertyType(targetNullValue)))
+				{
+					value = null;
+				}
+
 				// Convert if necessary
 				if (ParentBinding.Converter != null)
 				{
@@ -274,6 +281,12 @@ namespace Microsoft.UI.Xaml.Data
 						ParentBinding.ConverterParameter,
 						GetCurrentCulture()
 					);
+
+					// Like WinUI, UnsetValue means no conversion could happen: stop without touching the source.
+					if (value == DependencyProperty.UnsetValue)
+					{
+						return;
+					}
 				}
 
 				if (ParentBinding.XBindBack != null)
