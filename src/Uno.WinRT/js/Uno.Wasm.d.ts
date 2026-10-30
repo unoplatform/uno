@@ -341,9 +341,11 @@ declare namespace Windows.Phone.Devices.Notification {
 }
 declare namespace Windows.Security.Authentication.Web {
     class WebAuthenticationBroker {
+        private static readonly aborts;
         static getReturnUrl(): string;
-        static authenticateUsingIframe(iframeId: string, urlNavigate: string, urlRedirect: string, timeout: number): Promise<string>;
-        static authenticateUsingWindow(urlNavigate: string, urlRedirect: string, title: string, popUpWidth: number, popUpHeight: number, timeout: number): Promise<string>;
+        static abort(operationId: number): void;
+        static authenticateUsingIframe(operationId: number, iframeId: string, urlNavigate: string, urlRedirect: string, timeout: number): Promise<string>;
+        static authenticateUsingWindow(operationId: number, urlNavigate: string, urlRedirect: string, title: string, popUpWidth: number, popUpHeight: number, timeout: number): Promise<string>;
         private static startMonitoringRedirect;
     }
 }

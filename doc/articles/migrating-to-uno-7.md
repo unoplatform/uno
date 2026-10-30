@@ -936,6 +936,14 @@ Independently of rendering, `Uno.WinUI.MSAL`'s `WithUnoHelpers()` changed on Web
   `WithHttpClientFactory(...)` or `WithCustomWebUi(...)` called before them, so call your own
   after `WithUnoHelpers()` — see [MSAL: WebAssembly](xref:Uno.Interop.MSAL#webassembly).
 
+On WebAssembly, `WebAuthenticationBroker.AuthenticateAsync()` changed how it ends:
+
+- **A timeout returns `ErrorHttp` instead of `UserCancel`.** When
+  `WinRTFeatureConfiguration.WebAuthenticationBroker.AuthenticationTimeout` elapses, the result is
+  `WebAuthenticationStatus.ErrorHttp` with `ResponseErrorDetail` 408, so it can be told apart
+  from the user closing the popup. Canceling the operation now also closes the popup or
+  `<iframe>`, and the `<iframe>` mode now honors the timeout.
+
 On Android, retargeted drawables now keep their file extension in their resource name:
 
 - **Retargeted drawables are renamed.** Images under `Assets` that Uno packages as Android
