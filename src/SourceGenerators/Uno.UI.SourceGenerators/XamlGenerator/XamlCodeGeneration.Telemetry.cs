@@ -22,6 +22,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void InitTelemetry(GeneratorExecutionContext context)
 		{
+			// The opt-out variable is read through the build: a reused compiler server may predate it, and the
+			// telemetry library ignores it when it's "1".
+			if (IsTelemetryDisabled(
+				context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut"),
+				context.GetMSBuildPropertyValue("UNO_PLATFORM_TELEMETRY_OPTOUT"),
+				context.GetMSBuildPropertyValue("UnoIsHotReloadHost"),
+				_isDesignTimeBuild))
+			{
+				return;
+			}
+
 			string getCurrentDirectory()
 			{
 				var solutionDir = context.GetMSBuildPropertyValue("SolutionDir");
@@ -39,44 +50,35 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return Environment.CurrentDirectory;
 			}
 
-			// Read from the build, not the process: _isDesignTimeBuild isn't set yet, and a reused compiler server
-			// may predate the opt-out variable, which the telemetry library also ignores when it's "1".
-			_telemetry = CreateTelemetry(
-				context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut"),
-				context.GetMSBuildPropertyValue("UNO_PLATFORM_TELEMETRY_OPTOUT"),
-				Helpers.DesignTimeHelper.IsDesignTime(context),
-				() => new Telemetry(
-					InstrumentationKey,
-					"uno/generation",
-					currentDirectoryProvider: getCurrentDirectory,
-					versionAssembly: GetType().Assembly));
+			_telemetry = new Telemetry(
+				InstrumentationKey,
+				"uno/generation",
+				currentDirectoryProvider: getCurrentDirectory,
+				versionAssembly: GetType().Assembly);
 		}
 
 		/// <summary>
-		/// Creates no client when the build or its environment opts out, for a design-time build, or when the
-		/// generator itself runs in a browser.
+		/// Whether the generator creates no telemetry client: the build or its environment opted out, it's a
+		/// design-time or hot-reload build, or the generator itself runs in a browser.
 		/// </summary>
-		internal static T CreateTelemetry<T>(string telemetryOptOut, string environmentOptOut, bool isDesignTimeBuild, Func<T> createClient)
-			where T : class
+		internal static bool IsTelemetryDisabled(string telemetryOptOut, string environmentOptOut, string hotReloadHost, bool isDesignTimeBuild)
 		{
-			static bool optsOut(string value)
+			static bool isSet(string value)
 				=> string.Equals(value, "true", StringComparison.OrdinalIgnoreCase)
 				|| string.Equals(value, "1", StringComparison.OrdinalIgnoreCase);
 
-			var isOptedOut = optsOut(telemetryOptOut)
-				|| optsOut(environmentOptOut)
+			return isSet(telemetryOptOut)
+				|| isSet(environmentOptOut)
+				|| isSet(hotReloadHost)
 				|| isDesignTimeBuild
 				|| RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER"));
-
-			return isOptedOut ? null : createClient();
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
 
 		private void TrackGenerationDone(TimeSpan elapsed)
 		{
-			if (IsTelemetryEnabled
-				&& !_isDesignTimeBuild)
+			if (IsTelemetryEnabled)
 			{
 				try
 				{
@@ -99,8 +101,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TrackGenerationFailed(Exception exception, TimeSpan elapsed)
 		{
-			if (IsTelemetryEnabled
-				&& !_isDesignTimeBuild)
+			if (IsTelemetryEnabled)
 			{
 				try
 				{
@@ -125,8 +126,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TrackStartGeneration(XamlFileDefinition[] files)
 		{
-			if (IsTelemetryEnabled
-				&& !_isDesignTimeBuild)
+			if (IsTelemetryEnabled)
 			{
 				try
 				{
