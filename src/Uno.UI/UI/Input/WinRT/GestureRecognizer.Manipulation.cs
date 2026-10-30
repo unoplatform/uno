@@ -75,6 +75,7 @@ namespace Windows.UI.Input
 			private ManipulationStatus _status = ManipulationStatus.Starting;
 			private Points _origins;
 			private Points _currents;
+			private readonly Point _originTapRangePosition;
 			private (ushort onStart, ushort current) _contacts;
 			private ManipulationCommit _head = new(ManipulationDelta.Empty, default, 0);
 
@@ -150,6 +151,7 @@ namespace Windows.UI.Input
 				_deviceType = (PointerDeviceType)pointer1.PointerDevice.PointerDeviceType;
 
 				_origins = _currents = pointer1;
+				_originTapRangePosition = recognizer.GetTapRangePosition(pointer1);
 				_contacts = (0, 1);
 
 				switch (_deviceType)
@@ -697,7 +699,7 @@ namespace Windows.UI.Input
 				//		 those thresholds are lower than a Tap, which does not match the UWP behavior.
 				var down = _origins.Pointer1;
 				var current = _currents.Pointer1;
-				var isOutOfRange = IsOutOfTapRange(down.Position, current.Position);
+				var isOutOfRange = IsOutOfTapRange(_originTapRangePosition, _recognizer.GetTapRangePosition(current));
 
 				switch (_deviceType)
 				{

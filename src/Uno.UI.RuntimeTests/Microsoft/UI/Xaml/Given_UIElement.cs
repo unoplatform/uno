@@ -1823,6 +1823,210 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, tappedCount);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25731")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Touch_Swipe_Then_Not_Tapped(bool elementFollowsFinger)
+		{
+			var transform = new TranslateTransform();
+			var inner = new Border
+			{
+				Width = 300,
+				Height = 100,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				RenderTransform = transform,
+				// So the press of the swipe can't complete a double-tap with the tap, whatever the platform's double-tap range.
+				IsDoubleTapEnabled = false
+			};
+			var outer = new Border
+			{
+				Width = 400,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+				ManipulationMode = ManipulationModes.TranslateX,
+				Child = inner
+			};
+
+			var tappedCount = 0;
+			inner.Tapped += (_, _) => tappedCount++;
+			outer.ManipulationDelta += (_, e) =>
+			{
+				// Like a list that scrolls its rows by handling the manipulation events instead of using a ScrollViewer.
+				if (elementFollowsFinger)
+				{
+					transform.X = e.Cumulative.Translation.X;
+				}
+			};
+
+			using var _ = UITestHelper.ResetWindowContent();
+			await UITestHelper.Load(outer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// The finger stays over the element, whether the element moves or not.
+			var bounds = inner.GetAbsoluteBounds();
+			var start = new Windows.Foundation.Point(bounds.X + 50, bounds.Y + bounds.Height / 2);
+
+			// The parent's manipulation mode doesn't prevent a plain tap.
+			finger.Tap(start);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, tappedCount);
+
+			finger.Drag(start, new Windows.Foundation.Point(start.X + 200, start.Y));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(elementFollowsFinger ? 200 : 0, transform.X, 1, "The element followed the finger, or stayed.");
+
+			// The finger travelled 200 px on screen: even when the element moved with it, that is not a tap.
+			Assert.AreEqual(1, tappedCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25731")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[DataRow(PressGesture.Tap)]
+		[DataRow(PressGesture.DoubleTap)]
+		[DataRow(PressGesture.Hold)]
+		[DataRow(PressGesture.MouseRightTap)]
+		public async Task When_Element_Moves_Under_Pointer_Then_Gesture_Positioned_At_Press(PressGesture gesture)
+		{
+			// Where the pointer presses, from the top-left corner of the element on screen, and the scale of the element,
+			// so that a position in the element isn't a distance on screen.
+			const double Offset = 50;
+			const double Scale = 2;
+
+			var transform = new CompositeTransform { ScaleX = Scale, ScaleY = Scale };
+			var element = new Border
+			{
+				Width = 150,
+				Height = 50,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				RenderTransform = transform,
+				// So a slow agent can't turn a tap into a hold.
+				IsHoldingEnabled = gesture is PressGesture.Hold,
+				// The child, not the element, is the original source of the gestures.
+				Child = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.Blue) }
+			};
+
+			var press = default(Windows.Foundation.Point);
+			var positions = new System.Collections.Generic.List<(string Name, Windows.Foundation.Point Actual, Windows.Foundation.Point Expected)>();
+			void Record(string name, Func<UIElement, Windows.Foundation.Point> getPosition)
+			{
+				var pressInElement = new Windows.Foundation.Point((Offset - transform.TranslateX) / Scale, Offset / Scale);
+				positions.Add((name, getPosition(null), press));
+				positions.Add(($"{name} relative to the element", getPosition(element), pressInElement));
+			}
+
+			// The element moves on once the gesture was raised: the position still doesn't follow it.
+			void RecordAndMoveOn(string name, Func<UIElement, Windows.Foundation.Point> getPosition)
+			{
+				Record(name, getPosition);
+				transform.TranslateX = 60;
+				Record($"{name} after the element moved on", getPosition);
+			}
+
+			var holdingStarted = false;
+			element.Tapped += (_, e) =>
+			{
+				if (gesture is PressGesture.Tap)
+				{
+					RecordAndMoveOn("Tapped", e.GetPosition);
+				}
+			};
+			element.DoubleTapped += (_, e) => RecordAndMoveOn("DoubleTapped", e.GetPosition);
+			element.Holding += (_, e) =>
+			{
+				holdingStarted |= e.HoldingState is Microsoft.UI.Input.HoldingState.Started;
+				Record($"Holding {e.HoldingState}", e.GetPosition);
+			};
+			element.RightTapped += (_, e) => Record("RightTapped", e.GetPosition);
+			element.ContextRequested += (_, e) => Record("ContextRequested", relativeTo =>
+			{
+				Assert.IsTrue(e.TryGetPosition(relativeTo, out var position), "ContextRequested has no position.");
+				return position;
+			});
+
+			using var _ = UITestHelper.ResetWindowContent();
+			await UITestHelper.Load(element);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var bounds = element.GetAbsoluteBounds();
+			press = new Windows.Foundation.Point(bounds.X + Offset, bounds.Y + Offset);
+
+			// The element moves under the pointer, which stays in place.
+			async Task MoveElement()
+			{
+				transform.TranslateX = 30;
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			if (gesture is PressGesture.MouseRightTap)
+			{
+				using var mouse = injector.GetMouse();
+				mouse.PressRight(press);
+				await MoveElement();
+				mouse.ReleaseRight();
+			}
+			else
+			{
+				using var finger = injector.GetFinger();
+				if (gesture is PressGesture.DoubleTap)
+				{
+					// DoubleTapped is raised at the second press, before the element moves.
+					finger.Tap(press);
+				}
+
+				finger.Press(press);
+				await MoveElement();
+				if (gesture is PressGesture.Hold)
+				{
+					await TestServices.WindowHelper.WaitFor(() => holdingStarted, timeoutMS: 3000);
+				}
+
+				finger.Release();
+			}
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// As on WinUI, the gestures are raised in this order, and positioned where the pointer pressed in the window,
+			// not where that point of the element went.
+			var expectedNames = gesture switch
+			{
+				PressGesture.Tap => new[] { "Tapped", "Tapped after the element moved on" },
+				PressGesture.DoubleTap => new[] { "DoubleTapped", "DoubleTapped after the element moved on" },
+				PressGesture.Hold => new[] { "Holding Started", "ContextRequested", "Holding Completed", "RightTapped" },
+				_ => new[] { "RightTapped", "ContextRequested" },
+			};
+			CollectionAssert.AreEqual(
+				expectedNames.SelectMany(n => new[] { n, $"{n} relative to the element" }).ToArray(),
+				positions.Select(p => p.Name).ToArray());
+			foreach (var (name, actual, expected) in positions)
+			{
+				Assert.AreEqual(expected.X, actual.X, 1, $"{name} (X)");
+				Assert.AreEqual(expected.Y, actual.Y, 1, $"{name} (Y)");
+			}
+		}
+
+		public enum PressGesture
+		{
+			Tap,
+			DoubleTap,
+			Hold,
+			MouseRightTap,
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]

@@ -9,16 +9,22 @@ namespace Windows.UI.Input;
 
 public partial class RightTappedEventArgs
 {
-	internal RightTappedEventArgs(uint pointerId, PointerDeviceType type, Point position)
+	internal RightTappedEventArgs(uint pointerId, PointerDeviceType type, Point position, Point rawPosition)
 	{
 		PointerId = pointerId;
 		PointerDeviceType = type;
 		Position = position;
+		RawPosition = rawPosition;
 	}
 
 	public PointerDeviceType PointerDeviceType { get; }
 
 	public Point Position { get; }
+
+	/// <summary>
+	/// The <see cref="PointerPoint.RawPosition"/> of the press, which is relative to the window for a UIElement recognizer.
+	/// </summary>
+	internal Point RawPosition { get; }
 
 	internal uint PointerId { get; }
 
