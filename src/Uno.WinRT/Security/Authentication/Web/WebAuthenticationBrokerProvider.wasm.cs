@@ -69,6 +69,11 @@ namespace Uno.AuthenticationBroker
 			{
 				return new WebAuthenticationResult(aex.Message, 0, WebAuthenticationStatus.ErrorHttp);
 			}
+			catch (JSException jsex)
+			{
+				// A rejected JS promise, e.g. a blocked popup ("Can't open window").
+				return new WebAuthenticationResult(jsex.Message, 0, WebAuthenticationStatus.ErrorHttp);
+			}
 		}
 
 		internal static partial class NativeMethods
