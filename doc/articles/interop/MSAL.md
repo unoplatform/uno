@@ -61,27 +61,18 @@ Follow [Considerations for using Xamarin iOS with MSAL.NET](https://learn.micros
 
 ## WebAssembly
 
-`.WithUnoHelpers()` does nothing on WebAssembly — as on WinUI, it is only there so the same code
-compiles across heads without `#if` conditionals. MSAL's default interactive web UI cannot run
-inside a WebAssembly app (it opens a native browser popup outside the sandbox), so you must supply
-your own browser-based web UI, and an HTTP client factory if the default `HttpClient` does not work
-for your scenario:
+On WebAssembly, `.WithUnoHelpers()` configures an `HttpClient` factory that works in the browser
+and, for interactive token acquisition, a web UI that signs in through the
+[`WebAuthenticationBroker`](xref:Uno.Features.WAB) popup. The popup's title, size and timeout follow
+`WinRTFeatureConfiguration.WebAuthenticationBroker`. Closing the popup, or canceling the token
+passed to `ExecuteAsync()`, surfaces as an `MsalClientException` with the `authentication_canceled`
+error code and closes the popup. A popup that times out or is blocked by the browser surfaces as
+`authentication_ui_failed`. Leave
+`WinRTFeatureConfiguration.WebAuthenticationBroker.IFrameHtmlId` unset: when it is set, the broker
+signs in through an iframe instead, which Microsoft Entra ID refuses to load.
 
-```csharp
-IPublicClientApplication _app = PublicClientApplicationBuilder.Create(clientId)
-    [...]
-    .WithHttpClientFactory(myHttpClientFactory) // optional, only if needed
-    .Build();
-
-var authResult = await _app.AcquireTokenInteractive(scopes)
-    .WithCustomWebUi(myCustomWebUi) // required on WebAssembly
-    .ExecuteAsync();
-```
-
-`myCustomWebUi` implements `Microsoft.Identity.Client.Extensibility.ICustomWebUi` and drives the
-authentication flow through the browser — for example with a popup window monitored through
-`System.Runtime.InteropServices.JavaScript` `JSImport`/`JSExport` interop.
-There is no built-in Uno implementation to fall back to.
+`.WithUnoHelpers()` replaces any `.WithHttpClientFactory(...)` or `.WithCustomWebUi(...)` called
+before it. To use your own, call them after `.WithUnoHelpers()`.
 
 Particularities for WASM:
 

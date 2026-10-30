@@ -5,6 +5,8 @@ uid: Uno.Features.WAB
 # Web Authentication Broker
 
 * The timeout is set by default to 5 minutes. You can change it using `WinRTFeatureConfiguration.WebAuthenticationBroker.AuthenticationTimeout`.
+  On WebAssembly, a timeout returns `WebAuthenticationStatus.ErrorHttp` with `ResponseErrorDetail` set to 408 (Request Timeout), while closing the popup returns `WebAuthenticationStatus.UserCancel`.
+* On WebAssembly, canceling the operation returned by `AuthenticateAsync()` (for example through `AsTask(cancellationToken)`) closes the popup or `<iframe>`.
 
 ## Usage on WebAssembly
 
