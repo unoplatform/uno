@@ -706,6 +706,22 @@ namespace Uno.UI.Helpers.WinUI
 
 				return symbolIcon;
 			}
+			else if (iconSource is Microsoft.UI.Xaml.Controls.ImageIconSource imageIconSource)
+			{
+				ImageIcon imageIcon = new ImageIcon();
+
+				if (imageIconSource.ImageSource != null)
+				{
+					imageIcon.Source = imageIconSource.ImageSource;
+				}
+
+				if (imageIconSource.Foreground != null)
+				{
+					imageIcon.Foreground = imageIconSource.Foreground;
+				}
+
+				return imageIcon;
+			}
 			else if (iconSource is Microsoft.UI.Xaml.Controls.BitmapIconSource bitmapIconSource)
 			{
 				BitmapIcon bitmapIcon = new BitmapIcon();
