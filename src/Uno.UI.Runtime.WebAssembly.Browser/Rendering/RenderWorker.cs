@@ -1,24 +1,21 @@
 using System;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Foundation;
-using Uno.UI.Helpers;
+using Uno.Foundation.Logging;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.WebAssembly.Browser;
 
 namespace Uno.UI.Runtime;
 
 /// <summary>
 /// Manages the dedicated render worker thread for WASM-MT.
-/// The render worker owns the OffscreenCanvas, WebGL context, and all SkiaSharp GL resources.
-/// It receives SKPicture frames from the deputy thread and replays them onto the GL surface.
+/// The render worker owns the OffscreenCanvas and the WebGL context: the deputy thread records frames
+/// and signals presents, and the worker drives them through the shared swapchain loop.
 /// </summary>
 internal static partial class RenderWorker
 {
@@ -28,13 +25,6 @@ internal static partial class RenderWorker
 	private static readonly SemaphoreSlim _frameAvailable = new(0, 1);
 
 	private static IXamlRootHost? _host;
-
-	private static GRContext? _grContext;
-	private static GRBackendRenderTarget? _backendRenderTarget;
-	private static SKSurface? _surface;
-	private static SKCanvas? _canvas;
-
-	private static readonly RetainedLayer _retainedLayer = new();
 
 	private const string ModuleName = "uno-render-worker";
 
@@ -47,45 +37,56 @@ internal static partial class RenderWorker
 		}
 	}
 
-	internal static void Start(WebAssemblyBrowserHost host, string canvasId)
+	internal static Task<ISwapChain> StartAsync(IXamlRootHost host, string canvasId)
 	{
 		_host = host;
 
-		_workerTask = StartWorker(canvasId, WebAssemblyThreading.WindowObject);
+		var contextReady = new TaskCompletionSource<ISwapChain>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		_workerTask = StartWorker(canvasId, WebAssemblyThreading.WindowObject, contextReady);
+
+		return contextReady.Task;
 	}
 
 	/// <summary>
 	/// Starts the render worker via JSWebWorker.RunAsync()
 	/// We use unsafe accessors since the type is not in the reference assemblies, only in the mt runtime ones.
 	/// </summary>
-	private static Task StartWorker(string canvasId, JSObject window)
-		=> JSWebWorkerRunAsync(null, () => RenderWorkerMain(canvasId, window));
+	private static Task StartWorker(string canvasId, JSObject window, TaskCompletionSource<ISwapChain> contextReady)
+		=> JSWebWorkerRunAsync(null, () => RenderWorkerMain(canvasId, window, contextReady));
 
-	private static async Task RenderWorkerMain(string canvasId, JSObject windowObject)
+	private static async Task RenderWorkerMain(string canvasId, JSObject windowObject, TaskCompletionSource<ISwapChain> contextReady)
 	{
-		// Install OffscreenCanvas message handler and and GL setup code on this worker's JS context.
-		await JSHost.ImportAsync("uno-render-worker", $"../{Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_APP_BASE")}/render-worker.js");
+		WasmRenderWorkerGraphicsContext context;
 
-		// Get render worker's pthread ID.
-		var workerPThreadId = NativeMethods.PThreadSelf();
+		try
+		{
+			// Install OffscreenCanvas message handler and GL setup code on this worker's JS context.
+			await JSHost.ImportAsync(ModuleName, $"../{Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_APP_BASE")}/render-worker.js");
 
-		// Transfer OffscreenCanvas from main browser thread to render worker.
-		// windowObject forces a dispatch to the main browser thread.
-		NativeMethods.TransferCanvasToWorker(canvasId, workerPThreadId, windowObject);
+			// Get render worker's pthread ID.
+			var workerPThreadId = NativeMethods.PThreadSelf();
 
-		// Wait for GL context to be ready.
-		var glInfo = await NativeMethods.GLReady();
+			// Transfer OffscreenCanvas from main browser thread to render worker.
+			// windowObject forces a dispatch to the main browser thread.
+			NativeMethods.TransferCanvasToWorker(canvasId, workerPThreadId, windowObject);
 
-		var glContextHandle = glInfo.GetPropertyAsInt32("glContextHandle");
-		var fboId = (uint)glInfo.GetPropertyAsInt32("fboId");
-		var stencil = glInfo.GetPropertyAsInt32("stencil");
-		var samples = glInfo.GetPropertyAsInt32("samples");
+			// Wait for GL context to be ready.
+			var glInfo = await NativeMethods.GLReady();
 
-		// Make GL context current and create SkiaSharp resources.
-		NativeMethods.GLMakeCurrent(glContextHandle);
+			context = new WasmRenderWorkerGraphicsContext(
+				glInfo.GetPropertyAsInt32("glContextHandle"),
+				(uint)glInfo.GetPropertyAsInt32("fboId"),
+				glInfo.GetPropertyAsInt32("stencil"),
+				glInfo.GetPropertyAsInt32("samples"));
+		}
+		catch (Exception e)
+		{
+			contextReady.SetException(e);
+			return;
+		}
 
-		_grContext = GRContext.CreateGl(GRGlInterface.Create());
-		_grContext.SetResourceCacheLimit(256 * 1024 * 1024 /* 256 MB */);
+		contextReady.SetResult(context);
 
 		// === Render loop ===
 		// IMPORTANT: Must use async wait (SemaphoreSlim.WaitAsync).
@@ -100,44 +101,16 @@ internal static partial class RenderWorker
 				continue;
 			}
 
-			NativeMethods.GLMakeCurrent(glContextHandle);
-
-			var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_canvas, size =>
+			try
 			{
-				var width = (int)size.Width;
-				var height = (int)size.Height;
+				var (path, fillType) = BrowserRenderer.GetSvgClipPath(compositionTarget.OnNativePlatformFrameRequested(context));
 
-				NativeMethods.ResizeCanvas(width, height);
-
-				_surface?.Dispose();
-				_surface = null;
-
-				_backendRenderTarget?.Dispose();
-
-				var glFramebufferInfo = new GRGlFramebufferInfo(fboId, /* RGBA8 */ 0x8058u);
-
-				_backendRenderTarget = new GRBackendRenderTarget(width, height, samples, stencil, glFramebufferInfo);
-
-				_surface = SKSurface.Create(_grContext, _backendRenderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888);
-
-				return _canvas = _retainedLayer.EnsureSurface(_grContext, width, height, SKColors.Transparent).Canvas;
-			});
-
-			if (_canvas is not null)
-			{
-				if (_surface is { } surface)
-				{
-					_retainedLayer.Present(surface);
-				}
-
-				_grContext.Flush(submit: true);
+				BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHostAsync(path, fillType);
 			}
-
-			var (path, fillType) = !currentClipPath.IsEmpty ?
-				(currentClipPath.ToSvgPathData(), currentClipPath.FillType is SKPathFillType.EvenOdd ? "evenodd" : "nonzero") :
-					("", "nonzero");
-
-			BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHostAsync(path, fillType);
+			catch (Exception e)
+			{
+				typeof(RenderWorker).LogError()?.Error("Rendering a frame failed.", e);
+			}
 		}
 	}
 
@@ -151,7 +124,7 @@ internal static partial class RenderWorker
 		[LibraryImport("*", EntryPoint = "pthread_self")]
 		internal static partial int PThreadSelf();
 
-		[JSImport("globalThis.Uno.UI.Runtime.RenderWorker.transferAndSetupGL")]
+		[JSImport($"globalThis.Uno.UI.Runtime.{nameof(RenderWorker)}.transferAndSetupGL")]
 		internal static partial void TransferCanvasToWorker(string canvasId, int targetPthreadId, JSObject window);
 
 		[JSImport("glReady", ModuleName)]

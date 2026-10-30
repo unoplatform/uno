@@ -99,14 +99,6 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 
 			CompositionTarget.FrameRenderingOptions = (false, false);
 			_renderer = await BrowserRenderer.CreateAsync(this, _forceSoftwareRendering);
-
-			if (WebAssemblyThreading.IsThreadingEnabled)
-			{
-				// Start the dedicated render worker: it creates a JSWebWorker with its own
-				// JS interop, receives the OffscreenCanvas, sets up WebGL, and enters a render
-				// loop waiting for frame signals from the deputy.
-				RenderWorker.Start(this, WebAssemblyWindowWrapper.Instance.CanvasId);
-			}
 		}
 	}
 

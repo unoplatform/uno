@@ -54,7 +54,7 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 	public bool NeedsForceResize() => false;
 
-	private sealed class WebGlRenderTarget(uint framebufferId, int sampleCount, int stencilBits, int width, int height) : IGLRenderTarget
+	internal sealed class WebGlRenderTarget(uint framebufferId, int sampleCount, int stencilBits, int width, int height) : IGLRenderTarget
 	{
 		public uint FramebufferId => framebufferId;
 		public int SampleCount => sampleCount;

@@ -4,6 +4,7 @@ using Uno.UI.Composition.Drawing;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Media;
+using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 
@@ -79,6 +80,13 @@ internal partial class BrowserRenderer
 	/// </summary>
 	private async Task<ISwapChain?> CreateContextAsync(GraphicsContextKind kind, bool forceSoftwareRendering)
 	{
+		if (WebAssemblyThreading.IsThreadingEnabled)
+		{
+			return kind == GraphicsContextKind.WebGL && !forceSoftwareRendering
+				? await RenderWorker.StartAsync(_host, WebAssemblyWindowWrapper.Instance.CanvasId)
+				: null;
+		}
+
 		switch (kind)
 		{
 			case GraphicsContextKind.WebGL when !forceSoftwareRendering:
@@ -121,6 +129,14 @@ internal partial class BrowserRenderer
 		}
 	}
 
+	[JSExport]
+	internal static Task RenderFrameAsync([JSMarshalAs<JSType.Any>] object instance)
+	{
+		RenderFrame(instance);
+
+		return Task.CompletedTask;
+	}
+
 	private void RenderFrame()
 	{
 		// The RootElement may not be set yet during startup because the JavaScript
@@ -153,6 +169,12 @@ internal partial class BrowserRenderer
 			return;
 		}
 
+		if (WebAssemblyThreading.IsThreadingEnabled)
+		{
+			RenderWorker.SignalFrameAvailable();
+			return;
+		}
+
 		if (!_context.IsReadyForFrame)
 		{
 			// The GPU is still behind on earlier frames: keep the request and try again on the next frame callback.
@@ -174,19 +196,14 @@ internal partial class BrowserRenderer
 
 	private static void ApplyNativeElementClip(IGeometry currentClipPath)
 	{
-		string path, fillType;
-		if (!currentClipPath.IsEmpty)
-		{
-			path = currentClipPath.ToSvgPathData();
-			fillType = currentClipPath.FillRule == GeometryFillRule.EvenOdd ? "evenodd" : "nonzero";
-		}
-		else
-		{
-			path = "";
-			fillType = "nonzero";
-		}
+		var (path, fillType) = GetSvgClipPath(currentClipPath);
 		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(path, fillType);
 	}
+
+	internal static (string Path, string FillType) GetSvgClipPath(IGeometry clipPath)
+		=> !clipPath.IsEmpty
+			? (clipPath.ToSvgPathData(), clipPath.FillRule == GeometryFillRule.EvenOdd ? "evenodd" : "nonzero")
+			: ("", "nonzero");
 
 
 	internal static partial class NativeMethods

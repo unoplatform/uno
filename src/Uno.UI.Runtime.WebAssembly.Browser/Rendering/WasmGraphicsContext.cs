@@ -47,6 +47,52 @@ internal sealed class WasmGLGraphicsContext : ISwapChain, IGLDeviceContext
 	public void Dispose() { }
 }
 
+internal sealed class WasmRenderWorkerGraphicsContext : ISwapChain, IGLDeviceContext
+{
+	private readonly int _glContextHandle;
+	private readonly uint _framebufferId;
+	private readonly int _stencilBits;
+	private readonly int _sampleCount;
+	private IRenderTarget? _target;
+	private int _width;
+	private int _height;
+
+	public WasmRenderWorkerGraphicsContext(int glContextHandle, uint framebufferId, int stencilBits, int sampleCount)
+	{
+		_glContextHandle = glContextHandle;
+		_framebufferId = framebufferId;
+		_stencilBits = stencilBits;
+		_sampleCount = sampleCount;
+	}
+
+	public GraphicsContextKind Kind => GraphicsContextKind.WebGL;
+
+	public Func<string, nint> GetProcAddress => global::Uno.UI.Runtime.WebAssembly.Browser.Graphics.WasmGLFunctions.GetProcAddress;
+
+	public bool PreservesContents => false;
+
+	public IRenderTarget AcquireRenderTarget(int width, int height)
+	{
+		width = Math.Max(1, width);
+		height = Math.Max(1, height);
+
+		RenderWorker.NativeMethods.GLMakeCurrent(_glContextHandle);
+		if (_target is null || width != _width || height != _height)
+		{
+			RenderWorker.NativeMethods.ResizeCanvas(width, height);
+			_target = new WebGlBrowserRenderer.WebGlRenderTarget(_framebufferId, _sampleCount, _stencilBits, width, height);
+			_width = width;
+			_height = height;
+		}
+
+		return _target;
+	}
+
+	public void Present() { }
+
+	public void Dispose() { }
+}
+
 /// <summary>
 /// Neutral software <see cref="ISwapChain"/> for the browser: hands the backend a neutral
 /// <see cref="ISoftwareRenderTarget"/> over the JS pixel buffer; <see cref="Present"/> blits it to the canvas.
