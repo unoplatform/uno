@@ -78,8 +78,25 @@ The Pro license App MCP app tools are:
 - `uno_app_element_peer_action`, used to invoke a specific element automation peer action
 - `uno_app_get_element_datacontext`, used to get a textual representation of the DataContext on a FrameworkElement
 
+The tools on offer depend on the App MCP version and on your license. Run `uno-devserver app tools` to list the ones available to you; depending on the version, the App MCP also offers tools such as `uno_app_find_elements`, `uno_app_hot_reload_status`, and `uno_app_restart`. See [Driving the app from a shell](xref:Uno.Features.DevServerAppCommands#verbs) for the full list.
+
 > [!TIP]
 > Scripts, CI jobs, and agent hooks can call these tools without an MCP client: `uno-devserver app <verb>` runs one tool and exits with a code to test. See [Driving the app from a shell](xref:Uno.Features.DevServerAppCommands).
+
+## Hot Reload with agents
+
+The App MCP lets an agent edit your code and see the result in the running app, without rebuilding it. The App MCP tells the agent how to do this when it connects, so you don't need to describe it in your prompts:
+
+1. **Start the app with `uno_app_start`**, not with `dotnet run`. The app starts without a debugger, so the [Dev Server](xref:Uno.DevServer) applies every edit the agent saves to disk. The result of `uno_app_start` ends with the app's Hot Reload state.
+2. **Edit and save** a `.xaml` or `.cs` file. The agent does not rebuild or restart the app.
+3. **Confirm the edit with `uno_app_hot_reload_status`**, passing the edited file. The verdict tells whether the edit reached the app. When it did not, the result carries the compiler errors to fix.
+4. **Check the result** in the app with `uno_app_find_elements`, a visual tree snapshot, or a screenshot.
+5. **Restart only when needed.** Some changes, such as changing a method signature, cannot be applied to a running app (a "rude edit"). The verdict then says `rudeEdit`, and the agent calls `uno_app_restart` once its related edits are done.
+
+The verdicts are listed in [Driving the app from a shell](xref:Uno.Features.DevServerAppCommands#exit-codes). An agent hook can run the same check after each edit with `uno-devserver app hot-reload-status --file <file> --no-start`.
+
+> [!NOTE]
+> If you start the app yourself from your IDE, the agent can still interact with it, but [how the app was started](xref:Uno.Features.HotReload#how-hot-reload-applies-your-changes) decides which edits are applied. Under Visual Studio, an edit made by an agent running outside Visual Studio may not be applied. With the debugger attached in Rider, or in VS Code on desktop or WebAssembly, no edit is applied.
 
 ## Registering and diagnosing Uno MCPs
 

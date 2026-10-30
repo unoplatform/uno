@@ -171,9 +171,11 @@ Choosing the right agent for your development depends on your needs and environm
 | Codex CLI            | 0.50.0       | ✅    | ❌     | ✅         | ❌      | Desktop, Web | [mcp.json](https://github.com/openai/codex/issues/2628)|
 | Claude Code          | 2.0.25       | ✅    | ✅     | ✅         | ✅        | Desktop, Web | |
 
+In the **Hot Reload** column, ✅ means that the edits the agent makes are applied to the running app, and that the agent can confirm each one, as described in [Hot Reload with agents](xref:Uno.Features.Uno.MCPs#hot-reload-with-agents). Which platforms support Hot Reload also depends on how the app is started: see [Hot Reload by launch method](xref:Uno.Features.HotReload#hot-reload-by-launch-method).
+
 **Notes:**
 
-1. VS Hot Reload support in agents is coming soon
+1. VS Hot Reload support in agents is coming soon: in Visual Studio, Visual Studio applies Hot Reload itself, from the changes it sees in its editor.
 2. Rider (via Junie) supports stdio MCP servers only; HTTP/remote MCP servers (used by Uno Docs) are not yet supported — see [JUNIE-461](https://youtrack.jetbrains.com/issue/JUNIE-461/MCP-Remote-Server-Support).
 
 For registration, inspection, and diagnostics of Uno MCPs across these agents, see [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) and the [Dev Server reference](xref:Uno.DevServer).

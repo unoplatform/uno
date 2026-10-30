@@ -28,12 +28,27 @@ The Uno Platform **Hot Reload** feature provides a way to modify the XAML and C#
   - Extensible [**State restoration**](xref:Uno.Contributing.Internals.HotReload)
   - Support for partial **tree hot reload**, where modifying a `UserControl` instantiated in multiple locations will reload it without reloading its parents.
 
-Hot Reload features are now consistent across platforms and IDEs, but with some debugger-specific variations. You can check below the list of currently supported features.
+Whether Hot Reload works depends on how you start the app more than on the IDE you use: see [How Hot Reload applies your changes](#how-hot-reload-applies-your-changes) and [Hot Reload by launch method](#hot-reload-by-launch-method).
 
 For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk/latest) to take advantage of all the latest improvements and support. Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.
 
 > [!IMPORTANT]
 > When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
+
+## How Hot Reload applies your changes
+
+When you save a file, the change is compiled into an update, and the update is applied to the running app. Two engines can do this, and the way you start the app decides which one runs:
+
+- **Visual Studio**: when the app is built and started from Visual Studio, Visual Studio compiles and applies the update itself.
+- **The Uno Platform [Dev Server](xref:Uno.DevServer)**: in every other case (VS Code, Rider, the command line, AI agents), the Dev Server watches your project files, compiles the update, and sends it to the app.
+
+Two rules follow from this, and they explain most of the tables below:
+
+- **A debugger has to apply the update itself.** While a debugger is attached, .NET only accepts updates that come through that debugger. Visual Studio's debugger does this on every target, and the Uno Platform debugger in VS Code does it for Android and iOS. The other debuggers do not, so start the app **without the debugger** in VS Code (desktop and WebAssembly) and in Rider. In the other direction, Visual Studio applies updates to Android and iOS apps only when its debugger is attached.
+- **The Dev Server follows the files on disk.** It picks up a change whatever made it: your editor, an AI agent, a script, or a `git checkout`. Visual Studio applies the changes it sees in its editor, so a file changed by another tool, such as an AI agent running outside Visual Studio, may not be applied. When an agent edits your code, let the agent start the app (see the **AI agents** tab below).
+
+> [!TIP]
+> To see which engine your app uses, [raise the app's log level](#troubleshooting) to `Debug` and look for the line `Metadata updates supported: … (dev server: …, VS: …)`. If both are `False`, nothing can apply your changes with the current launch method.
 
 ## How to use Hot Reload
 
@@ -59,10 +74,61 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 - Wait a few seconds for the hot reload engine to become available (see our troubleshooting tips below).
 - Make changes to your XAML or C# code, then save your file.
 
+### [**Command line**](#tab/cli)
+
+- Install the Dev Server tool: `dotnet tool install -g uno.devserver`.
+- Sign in to your Uno Platform account: `uno-devserver login` opens the Uno Platform settings application, where you can sign in.
+- From the folder that contains your solution, start the Dev Server **before** building the app. It records its port in each project's `.csproj.user` file, and the app reads that port when it is built:
+
+  ```bash
+  uno-devserver start
+  ```
+
+- Build and run the app in Debug, which is the default for `dotnet run`:
+
+  ```bash
+  dotnet run --project src/MyApp/MyApp.csproj -f net10.0-desktop
+  ```
+
+- Make changes to your XAML or C# code, then save your file.
+- Stop the Dev Server with `uno-devserver stop` when you are done.
+
+Instead of `dotnet run`, `uno-devserver app start --projectPath src/MyApp/MyApp.csproj --targetFramework net10.0-desktop` builds and starts the app through the Dev Server, and `uno-devserver app hot-reload-status --file <file>` tells you whether a saved edit was applied. See [Driving the app from a shell](xref:Uno.Features.DevServerAppCommands).
+
+> [!NOTE]
+> `dotnet watch` is not integrated with Uno Platform Hot Reload. Use the Dev Server as described above instead.
+
+### [**AI agents**](#tab/agents)
+
+- Register the Uno Platform MCPs in your agent: see [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs#registering-and-diagnosing-uno-mcps).
+- Ask the agent to start the app. It uses the App MCP's `uno_app_start` tool, which starts the app without a debugger, so the Dev Server applies every edit the agent saves.
+- After each edit, the agent calls `uno_app_hot_reload_status` to confirm that the change reached the app. When an edit cannot be hot reloaded (a rude edit), it calls `uno_app_restart`.
+
+If you start the app yourself from your IDE instead, the IDE's rules apply. In particular, under Visual Studio an edit made by an agent running outside Visual Studio may not be applied. See [Hot Reload with agents](xref:Uno.Features.Uno.MCPs#hot-reload-with-agents).
+
 ---
 
 > [!IMPORTANT]
 > Using [.NET 10](https://dotnet.microsoft.com/download/dotnet/10.0) or later (`net10.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, or WebAssembly project heads. On Windows, [Visual Studio 17.12](https://visualstudio.microsoft.com/vs) or later is required.
+
+## Hot Reload by launch method
+
+All launch methods need a **Debug** build. The per-OS tables below give the details for each IDE.
+
+| How the app is started | Engine | Desktop | WebAssembly | Android, iOS |
+|---|---|:---:|:---:|:---:|
+| Visual Studio, with the debugger (`F5`) | Visual Studio | ✅ | ✅ | ✅ |
+| Visual Studio, without the debugger (`Ctrl+F5`) | Visual Studio | ✅ | ✅ | ❌ |
+| VS Code or Rider, without the debugger | Dev Server | ✅ | ✅ | ✅ |
+| VS Code, with the debugger | Dev Server, applied by the Uno Platform debugger | ❌ | ❌ | ✅ |
+| Rider, with the debugger | None | ❌ | ❌ | ❌ |
+| Command line: `uno-devserver start`, then `dotnet run` | Dev Server | ✅ | ✅ | ✅ |
+| AI agent: App MCP `uno_app_start` | Dev Server | ✅ | ✅ | ✅<sup>1</sup> |
+| `dotnet watch` | Not supported | ❌ | ❌ | ❌ |
+
+- WinAppSDK (`net10.0-windows10.x`) is supported by Visual Studio only: see the Windows table below.
+- iOS requires a Mac, directly or [through SSH from VS Code](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app).
+- <sup>1</sup> The platforms an agent can start depend on the agent: see [Supported agents features](xref:Uno.GetStarted#supported-agents-features).
 
 ## Supported features per OS
 
@@ -447,15 +513,10 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
 
   If you need to share logs when opening an issue on the GitHub [Uno Platform repository](https://github.com/unoplatform/uno), it is recommended to set `LogLevel` to **Trace** to provide the most detailed logs for investigation.
 
-- If you're getting `ENC0003: Updating 'attribute' requires restarting the application`, add the following in the `Directory.Build.props` (or in each .csproj project head):
+- If you're getting `ENC0003: Updating 'attribute' requires restarting the application` or `ENC0033: Deleting attribute requires restarting the application`, update to Uno Platform 6.7 or later. Starting with 6.7, Debug builds leave out the generated assembly version attributes that cause these errors.
 
-  ```xml
-  <PropertyGroup>
-    <!-- Required for Hot Reload (See https://github.com/unoplatform/uno.templates/issues/376) -->
-    <GenerateAssemblyInfo Condition="'$(Configuration)'=='Debug'">false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  ```
-  
+  If you previously added `<GenerateAssemblyInfo>false</GenerateAssemblyInfo>` to your `Directory.Build.props` or project file to work around this, remove it: it also removes assembly metadata that the [App MCP](xref:Uno.Features.Uno.MCPs#app-mcp-local) needs, as well as the `InternalsVisibleTo` attributes declared in your project file.
+
   Also [make sure](https://github.com/dotnet/sdk/issues/36666#issuecomment-2162173453) that you're not referencing `Microsoft.SourceLink.*` packages.
 
 - If you're getting the `Unable to access Dispatcher/DispatcherQueue` error, you'll need to update your app to Uno.Sdk 5.6 or later, and update your `App.cs` file:
