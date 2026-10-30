@@ -69,6 +69,52 @@ namespace Uno.UI.Tests.Windows_Foundation_Collections
 		}
 
 		[TestMethod]
+		public void When_Item_Set_VectorChanged()
+		{
+			var vector = new ObservableVector<string>() { "one", "two", "three" };
+			var count = 0;
+			vector.VectorChanged += (o, e) =>
+			{
+				count++;
+				Assert.AreEqual(1u, e.Index);
+				Assert.AreEqual(CollectionChange.ItemChanged, e.CollectionChange);
+			};
+
+			vector[1] = "TWO";
+
+			Assert.AreEqual(1, count);
+			Assert.AreEqual("TWO", vector[1]);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25238")]
+		public void When_Same_Item_Set_VectorChanged()
+		{
+			var two = "two";
+			var vector = new ObservableVector<string>() { "one", two, "three" };
+			var typedCount = 0;
+			var untypedCount = 0;
+			vector.VectorChanged += (o, e) =>
+			{
+				typedCount++;
+				Assert.AreEqual(1u, e.Index);
+				Assert.AreEqual(CollectionChange.ItemChanged, e.CollectionChange);
+			};
+			vector.UntypedVectorChanged += (o, e) =>
+			{
+				untypedCount++;
+				Assert.AreEqual(1u, e.Index);
+				Assert.AreEqual(CollectionChange.ItemChanged, e.CollectionChange);
+			};
+
+			vector[1] = two;
+			((IList)vector)[1] = two;
+
+			Assert.AreEqual(2, typedCount);
+			Assert.AreEqual(2, untypedCount);
+		}
+
+		[TestMethod]
 		public void When_IListOverride_IndexOf()
 		{
 			var vector = new MyObservableVector();
