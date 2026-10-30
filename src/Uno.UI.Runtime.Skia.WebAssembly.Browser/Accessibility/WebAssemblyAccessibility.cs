@@ -781,6 +781,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				if (containerVisual.Owner?.Target is UIElement changedElement)
 				{
 					TryUpdateScrollRegionRole(changedElement);
+
+					// A zoom change alters the scroll port's range without raising any scroll pattern
+					// property change, but its view change re-emits the port here.
+					if (changedElement is IScrollPortGeometry)
+					{
+						UpdateNativeScrollOffsets(changedElement);
+					}
 				}
 
 				// T058: a previously-Collapsed element pruned at build/add time has no semantic node; now
@@ -800,15 +807,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					// Use the full element-to-semantic-parent transform so that
 					// RenderTransform, Scale, etc. are reflected in the position.
 					var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
-					var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
 					if (semanticParentElement is not null)
 					{
-						var transform = UIElement.GetTransform(from: element, to: semanticParentElement);
-						var transformedRect = transform.Transform(localRect);
+						var transformedRect = GetRectInSemanticParent(element, semanticParentElement);
 						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
 					}
 					else
 					{
+						var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
 						var transform = UIElement.GetTransform(from: element, to: null);
 						var transformedRect = transform.Transform(localRect);
 						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
@@ -1073,20 +1079,55 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	public static void OnScroll(IntPtr handle, double horizontalOffset, double verticalOffset)
 	{
 		var @this = Instance;
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+		if (GCHandle.FromIntPtr(handle).Target is not ContainerVisual { Owner.Target: UIElement owner })
 		{
-			// // TODO (DOTI): We shouldn't check individual scrollers.
-			// Instead, we should scroll using automation peers once they are implemented correctly for SCP and ScrollPresenter
-			if (owner is ScrollContentPresenter scp)
+			return;
+		}
+
+		if (owner is not IScrollPortGeometry port)
+		{
+			if (@this.Log().IsEnabled(LogLevel.Debug))
 			{
-				scp.Set(horizontalOffset, verticalOffset);
+				@this.Log().Debug($"[A11y] OnScroll ignored for {owner.GetType().Name}: not a mirrored scroll port.");
 			}
-			else if (owner is ScrollPresenter sp)
-			{
-				sp.ScrollTo(horizontalOffset, verticalOffset);
-			}
+			return;
+		}
+
+		// The native range can exceed the managed one (e.g. a semantic child drawn past the content), and the
+		// scroller may apply offsets asynchronously, so clamp here and push the clamped target back.
+		var clampedHorizontalOffset = Math.Clamp(horizontalOffset, 0, port.ScrollableWidth);
+		var clampedVerticalOffset = Math.Clamp(verticalOffset, 0, port.ScrollableHeight);
+
+		if (@this.Log().IsEnabled(LogLevel.Trace))
+		{
+			@this.Log().Trace($"[A11y] OnScroll {owner.GetType().Name}: requested=({horizontalOffset}, {verticalOffset}) clamped=({clampedHorizontalOffset}, {clampedVerticalOffset})");
+		}
+
+		port.ScrollToOffsets(clampedHorizontalOffset, clampedVerticalOffset);
+
+		if (clampedHorizontalOffset != horizontalOffset || clampedVerticalOffset != verticalOffset)
+		{
+			UpdateNativeScrollOffsets(owner, port, clampedHorizontalOffset, clampedVerticalOffset);
 		}
 	}
+
+	private static void UpdateNativeScrollOffsets(UIElement scrollPort)
+	{
+		if (scrollPort is IScrollPortGeometry port)
+		{
+			UpdateNativeScrollOffsets(scrollPort, port, port.HorizontalOffset, port.VerticalOffset);
+		}
+	}
+
+	private static void UpdateNativeScrollOffsets(UIElement scrollPort, IScrollPortGeometry port, double horizontalOffset, double verticalOffset)
+		=> NativeMethods.UpdateNativeScrollOffsets(
+			scrollPort.Visual.Handle,
+			horizontalOffset,
+			verticalOffset,
+			port.ZoomedExtentWidth,
+			port.ZoomedExtentHeight,
+			port.ScrollableWidth > 0,
+			port.ScrollableHeight > 0);
 
 	/// <summary>
 	/// Called when a button element is invoked (clicked, Enter pressed, or Space pressed).
@@ -1822,6 +1863,40 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	private static Windows.Foundation.Rect GetRectInSemanticParent(UIElement element, UIElement semanticParent)
+	{
+		var localRect = new Windows.Foundation.Rect(0, 0, element.Visual.Size.X, element.Visual.Size.Y);
+
+		// The semantic element of a scroll port is a native scroller that applies the scroll offset itself,
+		// so its children are positioned in zoomed content coordinates: relative to the scrolled content, whose
+		// arranged offset (unlike its visual transform) includes neither the scroll translation nor the zoom.
+		if (semanticParent is IScrollPortGeometry port && GetScrollPortContent(element, semanticParent) is { } content)
+		{
+			var rect = UIElement.GetTransform(from: element, to: content).Transform(localRect);
+			var zoom = port.ZoomFactor;
+			return new Windows.Foundation.Rect(
+				content.ActualOffset.X + rect.X * zoom,
+				content.ActualOffset.Y + rect.Y * zoom,
+				rect.Width * zoom,
+				rect.Height * zoom);
+		}
+
+		return UIElement.GetTransform(from: element, to: semanticParent).Transform(localRect);
+
+		static UIElement? GetScrollPortContent(UIElement element, UIElement scrollPort)
+		{
+			for (var current = element; current is not null; current = current.GetParent() as UIElement)
+			{
+				if (current.GetParent() == scrollPort)
+				{
+					return current;
+				}
+			}
+
+			return null;
+		}
+	}
+
 	private bool AddSemanticElement(IntPtr parentHandle, UIElement child, int? index)
 	{
 		// Use UIElement.GetTransform for position calculation — this accounts for
@@ -1829,12 +1904,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Falling back to manual offset accumulation only when the semantic parent element
 		// is not found (e.g., root element).
 		float x, y, width, height;
-		var localRect = new Windows.Foundation.Rect(0, 0, child.Visual.Size.X, child.Visual.Size.Y);
 		var semanticParentElement = FindUIElementByHandle(child, parentHandle);
 		if (semanticParentElement is not null)
 		{
-			var transform = UIElement.GetTransform(from: child, to: semanticParentElement);
-			var transformedRect = transform.Transform(localRect);
+			var transformedRect = GetRectInSemanticParent(child, semanticParentElement);
 			x = (float)transformedRect.X;
 			y = (float)transformedRect.Y;
 			width = (float)transformedRect.Width;
@@ -1903,7 +1976,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var horizontallyScrollable = false;
 		var verticallyScrollable = false;
 
-		if (automationPeer is IScrollProvider scrollProvider)
+		if (child is IScrollPortGeometry scrollPort)
+		{
+			// Kept in sync with the managed geometry by UpdateNativeScrollOffsets.
+			horizontallyScrollable = scrollPort.ScrollableWidth > 0;
+			verticallyScrollable = scrollPort.ScrollableHeight > 0;
+		}
+		else if (automationPeer is IScrollProvider scrollProvider)
 		{
 			horizontallyScrollable = scrollProvider.HorizontallyScrollable;
 			verticallyScrollable = scrollProvider.VerticallyScrollable;
@@ -1930,6 +2009,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 
 		var result = NativeMethods.AddSemanticElement(parentHandle, child.Visual.Handle, index, width, height, x, y, role ?? string.Empty, name ?? string.Empty, IsAccessibilityFocusable(child, child.IsFocusable), ariaChecked, child.Visual.IsVisible, horizontallyScrollable, verticallyScrollable, child.GetType().Name, xamlAutomationId);
+
+		if (result)
+		{
+			UpdateNativeScrollOffsets(child);
+		}
 
 		if (!result && this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -2388,10 +2472,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 		}
 		else if ((automationProperty == ScrollPatternIdentifiers.HorizontalScrollPercentProperty ||
-			automationProperty == ScrollPatternIdentifiers.VerticalScrollPercentProperty) &&
-			TryGetPeerOwner(peer, out element) && element is ScrollViewer { Presenter: { } presenter } sv)
+			automationProperty == ScrollPatternIdentifiers.VerticalScrollPercentProperty ||
+			automationProperty == ScrollPatternIdentifiers.HorizontalViewSizeProperty ||
+			automationProperty == ScrollPatternIdentifiers.VerticalViewSizeProperty ||
+			automationProperty == ScrollPatternIdentifiers.HorizontallyScrollableProperty ||
+			automationProperty == ScrollPatternIdentifiers.VerticallyScrollableProperty) &&
+			TryGetPeerOwner(peer, out element))
 		{
-			NativeMethods.UpdateNativeScrollOffsets(presenter.Visual.Handle, sv.HorizontalOffset, sv.VerticalOffset);
+			// ScrollViewer raises these through its own peer while its presenter is the scroll port;
+			// ScrollPresenter is the scroll port itself.
+			UpdateNativeScrollOffsets(element is ScrollViewer { Presenter: { } presenter } ? presenter : element);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.LabeledByProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -2707,7 +2797,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		internal static partial void UpdateAriaChecked(IntPtr handle, string? ariaChecked);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateNativeScrollOffsets")]
-		internal static partial void UpdateNativeScrollOffsets(IntPtr handle, double horizontalOffset, double verticalOffset);
+		internal static partial void UpdateNativeScrollOffsets(IntPtr handle, double horizontalOffset, double verticalOffset, double extentWidth, double extentHeight, bool horizontallyScrollable, bool verticallyScrollable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateSemanticElementPositioning")]
 		internal static partial void UpdateSemanticElementPositioning(IntPtr handle, float width, float height, float x, float y);
