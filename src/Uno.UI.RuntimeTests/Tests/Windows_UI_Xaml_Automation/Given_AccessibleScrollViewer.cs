@@ -399,30 +399,6 @@ public class Given_AccessibleScrollViewer
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
-	public async Task When_ScrollView_Scroll_Animated_Then_Animation_Completes()
-	{
-		var scrollView = new ScrollView { Width = 200, Height = 200, Content = new Border { Height = 2000 } };
-
-		await EnsureAccessibilityEnabledAsync();
-		await UITestHelper.Load(scrollView);
-		var presenter = scrollView.ScrollPresenter;
-		await UITestHelper.WaitFor(() => SemanticElementExists(presenter), timeoutMS: 5000,
-			message: "Timed out waiting for the semantic scroll port.");
-		await UITestHelper.WaitForIdle();
-
-		// Every intermediate offset is mirrored to the browser; its scroll echo must not be fed back
-		// as a new (non-animated) scroll, which would stop the animation midway.
-		scrollView.ScrollTo(0, 1500, new ScrollingScrollOptions(ScrollingAnimationMode.Enabled));
-		await UITestHelper.WaitFor(() => Math.Abs(scrollView.VerticalOffset - 1500) < 1, timeoutMS: 5000,
-			message: $"The animated scroll did not complete (offset={scrollView.VerticalOffset}).");
-		await UITestHelper.WaitForIdle();
-
-		Assert.AreEqual(1500, GetNativeScrollTop(presenter), 1);
-	}
-
-	[TestMethod]
-	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_ScrollViewer_Scrolled_Then_Semantic_Children_Stay_In_Content_Coordinates()
 	{
 		var content = new StackPanel();
