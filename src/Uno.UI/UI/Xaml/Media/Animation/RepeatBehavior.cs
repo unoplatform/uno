@@ -1,5 +1,4 @@
-﻿using Uno.UI.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -81,7 +80,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				&& repeatBehavior1.Duration.Equals(repeatBehavior2.Duration);
 
 		public override string ToString()
-			=> ToString(CultureInfo.InvariantCulture);
+			=> ConvertToString(null, null);
 
 		public string ToString(IFormatProvider formatProvider)
 			=> ConvertToString(null, formatProvider);
@@ -93,7 +92,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			=> Type switch
 			{
 				RepeatBehaviorType.Count => Count.ToString(format, formatProvider) + "x",
-				RepeatBehaviorType.Duration => Duration.ToXamlString(formatProvider),
+				RepeatBehaviorType.Duration => Duration.ToString(),
 				RepeatBehaviorType.Forever => ForeverLiteral,
 
 				_ => throw new NotSupportedException("This RepeatBehavior type is not supported.")
