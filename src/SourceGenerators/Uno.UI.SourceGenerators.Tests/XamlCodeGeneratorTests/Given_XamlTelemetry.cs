@@ -43,19 +43,24 @@ public class Given_XamlTelemetry
 	[DataRow("", "TRUE")]
 	[DataRow("", "1")]
 	[DataRow("false", "1")]
-	public void When_Build_Opted_Out_Then_No_Client(string telemetryOptOut, string environmentOptOut)
-		=> Assert.IsNull(XamlCodeGeneration.CreateTelemetry(telemetryOptOut, environmentOptOut, isDesignTimeBuild: false, () => new object()));
+	public void When_Build_Opted_Out_Then_Telemetry_Is_Disabled(string telemetryOptOut, string environmentOptOut)
+		=> Assert.IsTrue(XamlCodeGeneration.IsTelemetryDisabled(telemetryOptOut, environmentOptOut, hotReloadHost: "", isDesignTimeBuild: false));
 
 	[TestMethod]
-	public void When_Design_Time_Build_Then_No_Client()
-		=> Assert.IsNull(XamlCodeGeneration.CreateTelemetry("", "", isDesignTimeBuild: true, () => new object()));
+	public void When_Design_Time_Build_Then_Telemetry_Is_Disabled()
+		=> Assert.IsTrue(XamlCodeGeneration.IsTelemetryDisabled("", "", hotReloadHost: "", isDesignTimeBuild: true));
 
 	[TestMethod]
-	[DataRow("", "")]
-	[DataRow("false", "")]
-	[DataRow("0", "")]
-	[DataRow("", "false")]
-	[DataRow("", "0")]
-	public void When_Build_Not_Opted_Out_Then_Client_Is_Created(string telemetryOptOut, string environmentOptOut)
-		=> Assert.IsNotNull(XamlCodeGeneration.CreateTelemetry(telemetryOptOut, environmentOptOut, isDesignTimeBuild: false, () => new object()));
+	public void When_Hot_Reload_Host_Then_Telemetry_Is_Disabled()
+		=> Assert.IsTrue(XamlCodeGeneration.IsTelemetryDisabled("", "", hotReloadHost: "True", isDesignTimeBuild: false));
+
+	[TestMethod]
+	[DataRow("", "", "")]
+	[DataRow("false", "", "")]
+	[DataRow("0", "", "")]
+	[DataRow("", "false", "")]
+	[DataRow("", "0", "")]
+	[DataRow("", "", "False")]
+	public void When_Build_Not_Opted_Out_Then_Telemetry_Is_Enabled(string telemetryOptOut, string environmentOptOut, string hotReloadHost)
+		=> Assert.IsFalse(XamlCodeGeneration.IsTelemetryDisabled(telemetryOptOut, environmentOptOut, hotReloadHost, isDesignTimeBuild: false));
 }
