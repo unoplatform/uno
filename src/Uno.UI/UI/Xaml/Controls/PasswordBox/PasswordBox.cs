@@ -281,16 +281,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(InputScope),
 				typeof(PasswordBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: new InputScope()
-					{
-						Names =
-						{
-							new InputScopeName
-							{
-								NameValue = InputScopeNameValue.Default
-							}
-						}
-					},
+					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?._core.OnInputScopeChanged((InputScope)e.NewValue)
 				)
 			);

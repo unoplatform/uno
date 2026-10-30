@@ -95,7 +95,7 @@ internal interface ITextBoxHost
 
 	int MaxLength { get; }
 
-	InputScope InputScope { get; }
+	InputScope? InputScope { get; }
 
 	TextAlignment TextAlignment { get; }
 
