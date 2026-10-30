@@ -5,6 +5,8 @@ using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Composition.Drawing;
+using Uno.UI.Composition.Managed;
+using Uno.UI.Composition.Skia;
 using Windows.Storage;
 using Windows.UI.Text;
 
@@ -69,6 +71,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 			Assert.IsNull(fontFile.CreateFont(null, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal, 14f));
 		}
 
+		[TestMethod]
+		public async Task When_Family_Not_Installed_Then_Resolved_Through_Provider()
+		{
+			var family = $"Uno Missing {Guid.NewGuid():N}";
+			var original = FontProvider.Current;
+			var provider = new FamilyProvider(original, family, await LoadAssetFont());
+			FontProvider.Current = provider;
+			try
+			{
+				var details = await FontDetailsCache.GetFont(family, 14f, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal).loadedTask;
+
+				Assert.AreEqual(1, provider.MatchFamilyAsyncCalls);
+				Assert.AreEqual("SymbolsRuntimeTest01", details.FontHandle.FamilyName);
+			}
+			finally
+			{
+				FontProvider.Current = original;
+			}
+		}
+
+		[TestMethod]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Fallback_Disabled_Then_Codepoint_Not_Resolved_From_Other_Fonts(bool managed)
+		{
+			const int Ideograph = 0x4E2D;
+			var enabled = managed ? ManagedBackend.CreateFontProvider() : SkiaBackend.CreateFontProvider();
+			var disabled = managed ? ManagedBackend.CreateFontProvider(enableFallback: false) : SkiaBackend.CreateFontProvider(enableFallback: false);
+
+			if (await enabled.MatchCharacterAsync(Ideograph, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal, 14f) is null)
+			{
+				Assert.Inconclusive("No installed font covers U+4E2D.");
+			}
+
+			Assert.IsNull(await disabled.MatchCharacterAsync(Ideograph, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal, 14f));
+		}
+
+		private static async Task<IFont> LoadAssetFont()
+		{
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(FontAsset));
+			using var stream = await file.OpenStreamForReadAsync();
+			using var fontFile = FontProvider.Current.LoadFontFile(stream);
+			return fontFile.CreateFont(null, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal, 14f)!;
+		}
+
 		private static async Task<FontDetails> LoadFont(string path)
 			=> await FontDetailsCache.GetFont(new Uri(path).AbsoluteUri, 14f, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal).loadedTask;
 
@@ -80,6 +127,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 			using var target = File.Create(path);
 			await source.CopyToAsync(target);
 			return path;
+		}
+
+		// Resolves the family only through MatchFamilyAsync, as a provider that fetches fonts on demand would.
+		private sealed class FamilyProvider(IFontProvider inner, string family, IFont font) : IFontProvider
+		{
+			public int MatchFamilyAsyncCalls { get; private set; }
+
+			public IFont? CreateFont(byte[] data, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+				=> inner.CreateFont(data, familyNameHint, weight, stretch, style, fontSize);
+
+			public IFont? MatchFamily(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+				=> inner.MatchFamily(familyName, weight, stretch, style, fontSize);
+
+			public ValueTask<IFont?> MatchFamilyAsync(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+			{
+				if (familyName != family)
+				{
+					return inner.MatchFamilyAsync(familyName, weight, stretch, style, fontSize);
+				}
+
+				MatchFamilyAsyncCalls++;
+				return new(font);
+			}
+
+			public ValueTask<IFont?> MatchCharacterAsync(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+				=> inner.MatchCharacterAsync(codepoint, weight, stretch, style, fontSize);
+
+			public IFont GetDefaultFont(FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+				=> inner.GetDefaultFont(weight, stretch, style, fontSize);
 		}
 
 		private sealed class NonSeekableStream(Stream inner) : Stream

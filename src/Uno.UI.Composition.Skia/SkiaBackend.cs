@@ -14,6 +14,12 @@ public static class SkiaBackend
 {
 	public static IFontProvider CreateFontProvider() => new SkiaFontProvider();
 
+	/// <param name="enableFallback">
+	/// <c>false</c> renders only from the requested fonts: a missing glyph stays missing instead of coming from an
+	/// installed font or, in the browser, a downloaded Noto font.
+	/// </param>
+	public static IFontProvider CreateFontProvider(bool enableFallback) => new SkiaFontProvider(enableFallback);
+
 	public static IImageEncoderDecoder CreateImageDecoder() => new SkiaImageDecoderBackend();
 
 	public static IGeometryFactory CreateGeometryFactory() => new SkiaGeometryFactory();

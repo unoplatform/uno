@@ -859,6 +859,12 @@ them does not change behavior on any currently-supported target:
 - `WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap` (Android) and
   `.InterpretForceTouchAsRightTap` (iOS/tvOS).
 
+`FeatureConfiguration.Font.FallbackService`, `IFontFallbackService` and `EmptyFontFallbackService` are
+removed: font fallback is now part of the font provider. To turn fallback off,
+register the built-in provider with `SkiaBackend.CreateFontProvider(enableFallback: false)` (or
+`ManagedBackend.CreateFontProvider(enableFallback: false)` with the WebGPU backend); to customize it,
+implement `IFontProvider`. See [Font fallback for unsupported codepoints](xref:Uno.Features.CustomFonts#font-fallback-for-unsupported-codepoints).
+
 ### Behavioral changes (same API, different result)
 
 Because rendering moves from `Canvas`/`CALayer`/CSS to Skia, expect subtle differences and
