@@ -31,6 +31,30 @@ namespace Microsoft.UI.Composition
 		// Beyond this, a magnified element's offscreen costs more memory than the sharpness is worth.
 		private const float MaxRasterizationScale = 8f;
 
+		// The display scale is applied when a recorded frame is presented, so it is never in a frame recording's
+		// transform. Set while a frame records, so content rasterized offscreen then is sized for the device.
+		[ThreadStatic]
+		private static float t_presentScale;
+
+		/// <summary>
+		/// Sets the scale the recording being made will be presented at, until disposed. An offscreen pass whose session
+		/// already carries the full scale sets it back to 1 for its duration.
+		/// </summary>
+		internal static PresentScaleScope SetPresentScale(float scale) => new(scale);
+
+		internal readonly struct PresentScaleScope : IDisposable
+		{
+			private readonly float _previous;
+
+			public PresentScaleScope(float scale)
+			{
+				_previous = t_presentScale;
+				t_presentScale = scale;
+			}
+
+			public void Dispose() => t_presentScale = _previous;
+		}
+
 		/// <summary>
 		/// The device pixels per logical unit of <paramref name="session"/>'s current transform, per axis. Content
 		/// rasterized offscreen has to be sized by this: rasterizing at logical size and letting the session magnify
@@ -41,10 +65,11 @@ namespace Microsoft.UI.Composition
 		private protected static Vector2 GetRasterizationScale(IDrawingSession session)
 		{
 			var matrix = session.TotalMatrix;
+			var present = t_presentScale > 0f ? t_presentScale : 1f;
 
 			// Row norms of the 2x2 linear part, so a rotated (or skewed) transform still reports what it magnifies by.
-			var x = MathF.Sqrt((matrix.M11 * matrix.M11) + (matrix.M12 * matrix.M12));
-			var y = MathF.Sqrt((matrix.M21 * matrix.M21) + (matrix.M22 * matrix.M22));
+			var x = MathF.Sqrt((matrix.M11 * matrix.M11) + (matrix.M12 * matrix.M12)) * present;
+			var y = MathF.Sqrt((matrix.M21 * matrix.M21) + (matrix.M22 * matrix.M22)) * present;
 
 			return new Vector2(Quantize(x), Quantize(y));
 
