@@ -36,17 +36,26 @@ public class Given_XamlTelemetry
 		=> Assert.AreEqual("Unknown", XamlCodeGeneration.GetUnoRuntime("net10.0-somethingelse", "__DESKTOP__"));
 
 	[TestMethod]
-	[DataRow("true", false)]
-	[DataRow("True", false)]
-	[DataRow("1", false)]
-	[DataRow("", true)]
-	public void When_Build_Opted_Out_Then_No_Client(string telemetryOptOut, bool isDesignTimeBuild)
-		=> Assert.IsNull(XamlCodeGeneration.CreateTelemetry(telemetryOptOut, isDesignTimeBuild, () => new object()));
+	[DataRow("true", "")]
+	[DataRow("True", "")]
+	[DataRow("1", "")]
+	[DataRow("", "true")]
+	[DataRow("", "TRUE")]
+	[DataRow("", "1")]
+	[DataRow("false", "1")]
+	public void When_Build_Opted_Out_Then_No_Client(string telemetryOptOut, string environmentOptOut)
+		=> Assert.IsNull(XamlCodeGeneration.CreateTelemetry(telemetryOptOut, environmentOptOut, isDesignTimeBuild: false, () => new object()));
 
 	[TestMethod]
-	[DataRow("")]
-	[DataRow("false")]
-	[DataRow("0")]
-	public void When_Build_Not_Opted_Out_Then_Client_Is_Created(string telemetryOptOut)
-		=> Assert.IsNotNull(XamlCodeGeneration.CreateTelemetry(telemetryOptOut, isDesignTimeBuild: false, () => new object()));
+	public void When_Design_Time_Build_Then_No_Client()
+		=> Assert.IsNull(XamlCodeGeneration.CreateTelemetry("", "", isDesignTimeBuild: true, () => new object()));
+
+	[TestMethod]
+	[DataRow("", "")]
+	[DataRow("false", "")]
+	[DataRow("0", "")]
+	[DataRow("", "false")]
+	[DataRow("", "0")]
+	public void When_Build_Not_Opted_Out_Then_Client_Is_Created(string telemetryOptOut, string environmentOptOut)
+		=> Assert.IsNotNull(XamlCodeGeneration.CreateTelemetry(telemetryOptOut, environmentOptOut, isDesignTimeBuild: false, () => new object()));
 }

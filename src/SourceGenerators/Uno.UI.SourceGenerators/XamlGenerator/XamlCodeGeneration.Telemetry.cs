@@ -41,9 +41,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return Environment.CurrentDirectory;
 			}
 
-			// _isDesignTimeBuild isn't set yet when this runs, so it's read from the context.
+			// Read from the build, not the process: _isDesignTimeBuild isn't set yet, and a reused compiler server
+			// may predate the opt-out variable, which the telemetry library also ignores when it's "1".
 			_telemetry = CreateTelemetry(
 				context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut"),
+				context.GetMSBuildPropertyValue("UNO_PLATFORM_TELEMETRY_OPTOUT"),
 				Helpers.DesignTimeHelper.IsDesignTime(context),
 				() => new Telemetry(
 					InstrumentationKey,
@@ -53,14 +55,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Creates no client for an opted-out or design-time build, nor in the browser, where the WebAssembly
-		/// build can't run one.
+		/// Creates no client when the build or its environment opts out, for a design-time build, or when the
+		/// generator itself runs in a browser.
 		/// </summary>
-		internal static T CreateTelemetry<T>(string telemetryOptOut, bool isDesignTimeBuild, Func<T> createClient)
+		internal static T CreateTelemetry<T>(string telemetryOptOut, string environmentOptOut, bool isDesignTimeBuild, Func<T> createClient)
 			where T : class
 		{
-			var isOptedOut = string.Equals(telemetryOptOut, "true", StringComparison.OrdinalIgnoreCase)
-				|| string.Equals(telemetryOptOut, "1", StringComparison.OrdinalIgnoreCase)
+			static bool optsOut(string value)
+				=> string.Equals(value, "true", StringComparison.OrdinalIgnoreCase)
+				|| string.Equals(value, "1", StringComparison.OrdinalIgnoreCase);
+
+			var isOptedOut = optsOut(telemetryOptOut)
+				|| optsOut(environmentOptOut)
 				|| isDesignTimeBuild
 				|| RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER"));
 
