@@ -274,6 +274,8 @@ namespace Microsoft.UI.Xaml
 			/// for all other cases **a full hit test must be performed**.
 			/// This means that we must not "capture"/cache the current top-most-element (a.k.a. OriginalSource) and try to update it on the next event
 			/// as this flag does not take into consideration RenderTransform and other layout modification that does not alter the state of the pointer.
+			/// It is only set when an element is removed, collapsed or recycled, so the input manager keeps an original source that is
+			/// still live and hit-test visible.
 			/// </remarks>
 			/// <remarks>This is used only for managed dispatch.</remarks>
 			public bool VisualTreeAltered { get; set; }
