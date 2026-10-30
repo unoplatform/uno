@@ -9,7 +9,7 @@ namespace Uno.Devices.Midi.Internal
 	/// <summary>
 	/// Handles WASM MIDI access permission request
 	/// </summary>
-	public static partial class WasmMidiAccess
+	internal static partial class WasmMidiAccess
 	{
 		private static bool _webMidiAccessible;
 

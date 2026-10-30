@@ -10,7 +10,7 @@ namespace Uno.UI.Tests
 	// ItemsRepeater (and ScrollPresenter/SwipeItem), matching WinUI. These tests guard the
 	// property-name resolution across the type hierarchy now that there is no single
 	// FrameworkElement-level Background.
-	[TestClass]
+	[UITestClass]
 	public class Given_DependencyProperty_BackgroundOwnership
 	{
 		[TestMethod]

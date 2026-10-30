@@ -2,12 +2,12 @@
 using System;
 using Windows.Foundation;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Windows.System;
-using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
+	public partial class ScrollContentPresenter : ContentPresenter
 	{
 		public ScrollContentPresenter()
 		{
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public object ScrollOwner
 		{
-			get => _scroller.Target;
+			get => _scroller?.Target;
 			set
 			{
 				if (_scroller is { } oldScroller)
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(SizesContentToTemplatedParent),
 			typeof(bool),
 			typeof(ScrollContentPresenter),
-			new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+			new FrameworkPropertyMetadata(BoolBoxes.False, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public bool SizesContentToTemplatedParent
 		{
@@ -102,26 +102,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				Content = null;
 			}
-		}
-
-		bool ILayoutConstraints.IsWidthConstrained(View requester)
-		{
-			if (requester != null && CanHorizontallyScroll)
-			{
-				return false;
-			}
-
-			return this.IsWidthConstrainedSimple() ?? (Parent as ILayoutConstraints)?.IsWidthConstrained(this) ?? false;
-		}
-
-		bool ILayoutConstraints.IsHeightConstrained(View requester)
-		{
-			if (requester != null && CanVerticallyScroll)
-			{
-				return false;
-			}
-
-			return this.IsHeightConstrainedSimple() ?? (Parent as ILayoutConstraints)?.IsHeightConstrained(this) ?? false;
 		}
 
 		public double ViewportHeight => DesiredSize.Height - Margin.Top - Margin.Bottom;
@@ -215,11 +195,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var desiredSize = child.DesiredSize;
 
 				childRect.Width = Math.Max(finalSize.Width, desiredSize.Width);
-				// The keyboard-occlusion pad shrinks the viewport so the BringIntoView that follows lands the
-				// focused element right above the input pane. It must not re-arrange content that sizes itself
-				// to the viewport: arranging against the un-occluded height turns the pad into scrollable
-				// extent instead, so a centered or stretched layout stays where it was.
-				childRect.Height = Math.Max(finalSize.Height + _occludedRectPadding.Bottom, desiredSize.Height);
+				childRect.Height = Math.Max(finalSize.Height, desiredSize.Height);
 
 				child.Arrange(childRect);
 
@@ -322,9 +298,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						success = Set(
-							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
-							disableAnimation: false);
+						success = AddWheelImpulse(GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta), 0);
 					}
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
@@ -340,9 +314,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						success = Set(
-							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-							disableAnimation: false);
+						success = AddWheelImpulse(0, GetVerticalScrollWheelDelta(DesiredSize, -delta));
 					}
 				}
 

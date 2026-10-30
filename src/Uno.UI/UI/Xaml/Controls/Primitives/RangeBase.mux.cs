@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -35,7 +36,7 @@ public partial class RangeBase : Control
 		if (pDP == LargeChangeProperty ||
 			pDP == MaximumProperty)
 		{
-			pValue = 1.0;
+			pValue = DoubleBoxes.One;
 		}
 		else if (pDP == SmallChangeProperty)
 		{

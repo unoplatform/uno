@@ -14,7 +14,7 @@
 
 		public static onStateChanged(event: WebMidi.MIDIConnectionEvent) {
 			if (!MidiDeviceConnectionWatcher.dispatchStateChanged) {
-				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 					MidiDeviceConnectionWatcher.dispatchStateChanged =
 						(<any>globalThis).DotnetExports.Uno.Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher.DispatchStateChangedAsync;
 				} else {

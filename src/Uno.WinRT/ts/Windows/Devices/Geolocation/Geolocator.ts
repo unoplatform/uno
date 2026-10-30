@@ -32,7 +32,7 @@
 				const exports: any = (<any>globalThis).DotnetExports?.Uno?.Uno?.Devices?.Geolocation?.Geolocator;
 
 				if (exports !== undefined) {
-					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 						Geolocator.dispatchAccessRequest = exports.DispatchAccessRequestAsync;
 						Geolocator.dispatchError = exports.DispatchErrorAsync;
 						Geolocator.dispatchGeoposition = exports.DispatchGeopositionAsync;

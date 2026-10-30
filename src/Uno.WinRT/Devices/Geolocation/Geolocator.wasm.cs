@@ -257,7 +257,7 @@ namespace Windows.Devices.Geolocation
 
 namespace Uno.Devices.Geolocation
 {
-	public sealed partial class Geolocator
+	internal sealed partial class Geolocator
 	{
 		[JSExport]
 		internal static void DispatchAccessRequest(string serializedAccessStatus)

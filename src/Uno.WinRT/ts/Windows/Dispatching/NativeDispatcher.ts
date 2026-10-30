@@ -6,7 +6,7 @@
 
 		public static init() {
 
-			if (!(<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+			if (!(<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 				NativeDispatcher._dispatcherCallback = (<any>globalThis).DotnetExports.UnoUIDispatching.Uno.UI.Dispatching.NativeDispatcher.DispatcherCallback;
 				NativeDispatcher.WakeUp(true);
 				NativeDispatcher._isReady = true;

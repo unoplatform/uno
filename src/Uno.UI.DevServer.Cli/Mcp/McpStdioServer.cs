@@ -27,6 +27,21 @@ internal class McpStdioServer(
 	/// <summary>Maximum time to wait for the upstream to connect during uno_app_initialize.</summary>
 	internal const int InitializeTimeoutMs = 120_000; // 2 minutes
 
+	/// <summary>
+	/// How the app tools are meant to be used, sent in the initialize result. Kept in step with the
+	/// Uno.UI.App.Mcp add-in's own ServerInstructions (MCPServicesRegistration.cs), which direct HTTP
+	/// clients of the host receive instead. Two differences: the discover/execute sentence, and the
+	/// fallback for an add-in without uno_app_restart (1.4 and earlier), since the proxy serves any version.
+	/// </summary>
+	internal const string AppToolsInstructions =
+		"""
+		Tools for a running Uno Platform app, to validate its actual behavior instead of relying on implicit knowledge. When only uno_health, uno_discover_tools and uno_execute_tool are listed, call uno_discover_tools once, then run each app tool as uno_execute_tool(toolName, arguments).
+		Start the app with uno_app_start(projectPath, targetFramework, connectionTimeoutSeconds: 120), never with dotnet run; its result ends with a 'Hot Reload:' line.
+		After editing a .xaml or .cs file, do not build, restart or start again: call uno_app_hot_reload_status(file, waitForMs: 10000) to confirm the edit was applied (its result carries the compiler diagnostics when it was not), then assert with uno_app_find_elements.
+		When that result reports RudeEdit, finish the related edits, then call uno_app_restart once (if the app tools have no uno_app_restart: uno_app_close, then uno_app_start); use it also to reload app data or after a Release build. uno_app_start does not stop a running app: to change launch arguments or platform, uno_app_close first (desktop), then uno_app_start.
+		Locate and act on elements by automationId or name; take a visual tree snapshot only to discover a screen, and a screenshot only for a visual check. Close the app with uno_app_close.
+		""";
+
 	// ── Meta-tool definitions ──────────────────────────────────────────
 	// These tools provide a stable compatibility layer while the direct upstream
 	// tool set changes during DevServer startup, reconnects, or license-driven
@@ -38,10 +53,11 @@ internal class McpStdioServer(
 		Name = "uno_app_initialize",
 		Description =
 			"Initializes the Uno DevServer for a workspace. Sets the root directory, resolves the Uno solution, and starts the DevServer. "
+			+ "When solutionPath is given, the DevServer serves that solution wherever it is, and workspaceDirectory only sets where other solutions are suggested from; the result reports the workspace and solution served. "
 			+ "Call this ONCE at the start of a session. After initialization succeeds, the Uno app tools become available. "
-			+ "Do NOT call uno_app_select_solution after a successful initialization unless uno_health reports a WorkspaceAmbiguous issue.",
+			+ "To switch solutions afterwards, call uno_app_select_solution rather than initializing again.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
-			"""{"type":"object","required":["workspaceDirectory"],"properties":{"workspaceDirectory":{"type":"string","description":"Absolute path to the workspace root directory."},"solutionPath":{"type":"string","description":"Optional absolute path to the .sln or .slnx file to use."}}}"""),
+			"""{"type":"object","required":["workspaceDirectory"],"properties":{"workspaceDirectory":{"type":"string","description":"Absolute path to the workspace root directory."},"solutionPath":{"type":"string","description":"Optional absolute path to the .sln or .slnx file to use; it may be outside workspaceDirectory."}}}"""),
 		Annotations = new() { Title = "Initialize Workspace", DestructiveHint = false, IdempotentHint = true, ReadOnlyHint = false, OpenWorldHint = false },
 	};
 
@@ -110,7 +126,7 @@ internal class McpStdioServer(
 		Func<bool> isForceRootsFallback,
 		Func<string[]> getRoots,
 		Func<string[], Task> setRootsHandler,
-		Func<string, bool, Task<CallToolResult>> selectSolutionHandler)
+		Func<string, bool, string?, Task<CallToolResult>> selectSolutionHandler)
 	{
 		var tcs = new TaskCompletionSource();
 
@@ -123,6 +139,13 @@ internal class McpStdioServer(
 					Name = "uno-devserver",
 					Version = AssemblyVersionHelper.GetAssemblyVersion(typeof(McpStdioServer).Assembly),
 				};
+
+				// Sent once in the initialize result and kept by the client for the whole session: the
+				// place to state how the app tools are meant to be used, which no tool description or
+				// skill reaches as reliably (uno.app-mcp#191 measurements, FieldCheck runs of 2026-10-09/10).
+				// Static because initialize answers before the upstream host is connected, so the add-in's
+				// own ServerInstructions cannot be forwarded.
+				options.ServerInstructions = AppToolsInstructions;
 			})
 			.WithStdioServerTransport()
 			.WithCallToolHandler(async (ctx, ct) =>
@@ -139,11 +162,9 @@ internal class McpStdioServer(
 						return initError;
 					}
 
-					await setRootsHandler([workspaceDir!]);
-
-					if (!string.IsNullOrWhiteSpace(initSolutionPath))
+					if (await ApplyInitializeAsync(workspaceDir!, initSolutionPath, setRootsHandler, selectSolutionHandler) is { } rejectedSelection)
 					{
-						await selectSolutionHandler(initSolutionPath, false);
+						return rejectedSelection;
 					}
 
 					// Wait for upstream to connect unless the workspace already entered
@@ -177,7 +198,7 @@ internal class McpStdioServer(
 					}
 
 					var forceRestart = TryGetForceRestart(ctx.Params?.Arguments);
-					var selectionResult = await selectSolutionHandler(solutionPath!, forceRestart);
+					var selectionResult = await selectSolutionHandler(solutionPath!, forceRestart, null);
 					toolStopwatch.Stop();
 					LogTimeline(logger, "tool.select-solution.complete", toolStopwatch.ElapsedMilliseconds, toolName);
 					logger.LogDebug("Handled MCP tool {Tool} in {ElapsedMs} ms", toolName,
@@ -551,6 +572,38 @@ internal class McpStdioServer(
 		return true;
 	}
 
+	internal const string InitialSelectionRejectedNote =
+		"solutionPath was not selected for the reason above. Call uno_app_select_solution with a valid solutionPath; "
+		+ "meanwhile uno_health shows what the DevServer serves, if anything.";
+
+	/// <summary>
+	/// Applies <c>uno_app_initialize</c>: the optional <c>solutionPath</c> is selected first, with candidate solutions
+	/// suggested from <c>workspaceDirectory</c>, so the roots cannot start another solution before it; then
+	/// <c>workspaceDirectory</c> is applied as the roots, which an accepted selection makes ignored. Returns the selection's rejection followed by a note, so initialization answers with the
+	/// reason instead of waiting for the DevServer; <see langword="null"/> when no solution was given or it was accepted.
+	/// </summary>
+	internal static async Task<CallToolResult?> ApplyInitializeAsync(
+		string workspaceDirectory,
+		string? solutionPath,
+		Func<string[], Task> setRootsHandler,
+		Func<string, bool, string?, Task<CallToolResult>> selectSolutionHandler)
+	{
+		var selectionResult = string.IsNullOrWhiteSpace(solutionPath)
+			? null
+			: await selectSolutionHandler(solutionPath, false, workspaceDirectory);
+
+		// Applied even after an accepted selection: until roots are set, roots-fallback mode lists only this tool.
+		await setRootsHandler([workspaceDirectory]);
+
+		return selectionResult?.IsError == true
+			? new CallToolResult
+			{
+				Content = [.. selectionResult.Content, new TextContentBlock { Text = InitialSelectionRejectedNote }],
+				IsError = true,
+			}
+			: null;
+	}
+
 	internal static bool TryGetInitializeArgs(
 		IDictionary<string, JsonElement>? arguments,
 		out string? workspaceDirectory,
@@ -586,8 +639,10 @@ internal class McpStdioServer(
 			return false;
 		}
 
-		workspaceDirectory = workspaceDirElement.GetString();
-		if (string.IsNullOrWhiteSpace(workspaceDirectory) || !Path.IsPathRooted(workspaceDirectory))
+		var requestedDirectory = workspaceDirElement.GetString();
+		if (string.IsNullOrWhiteSpace(requestedDirectory)
+			|| !Path.IsPathRooted(requestedDirectory)
+			|| requestedDirectory.Contains('\0'))
 		{
 			errorResult = new CallToolResult()
 			{
@@ -596,6 +651,24 @@ internal class McpStdioServer(
 					new TextContentBlock()
 					{
 						Text = "The 'workspaceDirectory' argument must be a non-empty absolute path."
+					}
+				],
+				IsError = true
+			};
+			return false;
+		}
+
+		// Checked on the full path: "\repo" is the current drive, and only the full path shows where it leads.
+		workspaceDirectory = Path.GetFullPath(requestedDirectory);
+		if (!LocalPathGuard.IsLocalPath(workspaceDirectory))
+		{
+			errorResult = new CallToolResult()
+			{
+				Content =
+				[
+					new TextContentBlock()
+					{
+						Text = "The 'workspaceDirectory' argument must be a local path; network (UNC) and device paths are refused."
 					}
 				],
 				IsError = true
@@ -613,16 +686,40 @@ internal class McpStdioServer(
 	}
 
 	private CallToolResult BuildInitializeResponse(string workspaceDirectory)
+		=> new()
+		{
+			Content =
+			[
+				new TextContentBlock()
+				{
+					Text = BuildInitializeResponseText(
+						workspaceDirectory,
+						healthService.CurrentSelection,
+						connected: mcpUpstreamClient.UpstreamClient.IsCompletedSuccessfully,
+						degraded: healthService.ConnectionState == ConnectionState.Degraded,
+						toolCount: toolListManager.SnapshotToolCount),
+				},
+			],
+		};
+
+	/// <summary>
+	/// The answer of <c>uno_app_initialize</c>. It reports the workspace and solution the DevServer serves, which an
+	/// explicit selection (solutionPath, --solution) can place outside the requested <paramref name="workspaceDirectory"/>.
+	/// The requested directory stands in only while nothing is selected: an unresolved selection reports no workspace.
+	/// </summary>
+	internal static string BuildInitializeResponseText(
+		string workspaceDirectory,
+		WorkspaceSelectionSnapshot? selection,
+		bool connected,
+		bool degraded,
+		int toolCount)
 	{
-		var upstreamTask = mcpUpstreamClient.UpstreamClient;
-		var connected = upstreamTask.IsCompletedSuccessfully;
-		var degraded = healthService.ConnectionState == ConnectionState.Degraded;
-		var toolCount = toolListManager.SnapshotToolCount;
-		var status = degraded ? "degraded" : connected ? "ready" : "starting";
 		var response = new
 		{
-			status,
-			workspaceDirectory,
+			status = degraded ? "degraded" : connected ? "ready" : "starting",
+			workspaceDirectory = selection?.EffectiveWorkspaceDirectory
+				?? (selection?.SelectedSolutionPath is null ? workspaceDirectory : null),
+			solutionPath = selection?.SelectedSolutionPath,
 			toolCount,
 			message = degraded
 				? "Workspace could not be resolved. Call uno_health for diagnostics. Check that the workspace contains a valid Uno solution."
@@ -631,11 +728,7 @@ internal class McpStdioServer(
 					: "DevServer is starting. Use uno_discover_tools and uno_execute_tool when ready.",
 		};
 
-		var json = JsonSerializer.Serialize(response, McpJsonUtilities.DefaultOptions);
-		return new CallToolResult
-		{
-			Content = [new TextContentBlock() { Text = json }],
-		};
+		return JsonSerializer.Serialize(response, McpJsonUtilities.DefaultOptions);
 	}
 
 	internal static IList<Tool> AppendMetaTools(IList<Tool> tools)

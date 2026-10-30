@@ -15,6 +15,10 @@ parameters:
   dependsOn: ''
   SamplesAppArtifactName: ''
   BuildJobName: ''
+  # UNO_* variables handed to the app, space-separated, e.g. 'UNO_WEBGPU=1'.
+  appEnvironment: ''
+  # Overrides the job's run condition, e.g. to skip a lane on pull requests that don't need it.
+  condition: ''
 
 jobs:
 - job: ${{ parameters.JobName }}
@@ -22,7 +26,10 @@ jobs:
   cancelTimeoutInMinutes: 0
   dependsOn: ${{ parameters.dependsOn }}
   displayName: ${{ parameters.JobDisplayName }}
+  ${{ if ne(parameters.condition, '') }}:
+    condition: ${{ parameters.condition }}
   pool:
+    name: 'GitHub-hosted Agents'
     vmImage: ${{ parameters.vmImage }}
 
   variables:
@@ -34,6 +41,13 @@ jobs:
     value: $(Pipeline.Workspace)/.nuget/packages
   - name: UITEST_ALLOW_RERUN
     value: ${{ parameters.UITEST_ALLOW_RERUN }}
+  # The first run only fails on failed tests when there is no second run to do it.
+  - name: FAIL_TESTS_ON_NO_RERUN
+    value: ${{ eq(parameters.UITEST_ALLOW_RERUN, 'false') }}
+  # Cleared by the run script when it deliberately writes no results: nothing to re-run, or a
+  # harness failure the re-run step retries.
+  - name: UNO_TEST_RESULTS_EXPECTED
+    value: true
   - name: UNO_UITEST_BUCKET_COUNT
     value: 5
   - name: SamplesAppArtifactName
@@ -43,6 +57,10 @@ jobs:
       value: $[ dependencies.${{ parameters.BuildJobName }}.outputs['set_ios_artifact.SamplesAppArtifactName'] ]
 
   steps:
+  - template: ../templates/job-deadline.yml
+    parameters:
+      timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
+
   - checkout: self
     clean: true
 
@@ -75,21 +93,6 @@ jobs:
     # https://github.com/actions/virtual-environments/issues/1932
     displayName: Apply workaround for Azure Devops issue 1932
 
-  - task: PowerShell@2
-    displayName: 'Fill Rerun Variable'
-    inputs:
-      ## Expression evaluation for task parameters is not supported
-      ## Invert UITEST_ALLOW_RERUN in a task
-      targetType: inline
-      script: |
-        Set-PSDebug -Trace 1
-        if( "${{ parameters.UITEST_ALLOW_RERUN }}" -eq "false") {
-          $val = "true"
-        } else {
-          $val = "false"
-        }
-        echo "##vso[task.setvariable variable=FAIL_TESTS_ON_NO_RERUN]$val"
-
   ## First UI Tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
       TFM="$(netCurrentTargetFramework)-ios" $(build.sourcesdirectory)/build/test-scripts/ios-uitest-run.sh
@@ -97,6 +100,7 @@ jobs:
     displayName: Run iOS Simulator Tests
 
     env:
+      UNO_HARNESS_RERUN_PENDING: "true"
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
       UITEST_SNAPSHOTS_ONLY: "${{ parameters.UITEST_SNAPSHOTS_ONLY }}"
@@ -107,6 +111,7 @@ jobs:
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/$(SamplesAppArtifactName)/SamplesApp.app"
       SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
+      UNO_TEST_APP_ENVIRONMENT: "${{ parameters.appEnvironment }}"
 
   - task: PublishTestResults@2
     condition: always()
@@ -118,6 +123,7 @@ jobs:
       # don't fail on failed tests, second run will do it
       # see https://github.com/unoplatform/uno/issues/6714
       failTaskOnFailedTests: $(FAIL_TESTS_ON_NO_RERUN)
+      failTaskOnMissingResultsFile: $(UNO_TEST_RESULTS_EXPECTED)
 
   ## Second UI Tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
@@ -141,6 +147,7 @@ jobs:
       UITEST_VARIANT: "${{ parameters.UITEST_VARIANT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/$(SamplesAppArtifactName)/SamplesApp.app"
       SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
+      UNO_TEST_APP_ENVIRONMENT: "${{ parameters.appEnvironment }}"
 
   - task: PublishTestResults@2
     # Also re-run when the harness died before any test started -- a boot or install failure
@@ -154,6 +161,7 @@ jobs:
       # Second run needs to fail tests
       # see https://github.com/unoplatform/uno/issues/6714
       failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
 
   - task: PublishTestResults@2
     condition: always()

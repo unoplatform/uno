@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.UI.Samples.Controls;
+using Microsoft.UI;
 using Windows.UI;
 using System.Reflection;
 using Windows.UI.ViewManagement;

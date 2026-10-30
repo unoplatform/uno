@@ -14,7 +14,7 @@ using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.ComboBoxTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ComboBox
 	{
 		[TestInitialize]

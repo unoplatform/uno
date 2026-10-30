@@ -4,9 +4,6 @@ uid: Uno.Skia.Embedding.Native
 
 # Embedding Native Elements in Skia Apps
 
-> [!NOTE]
-> This document describes Skia renderer native embedding, for other platforms/renderers see the [native views](xref:Uno.Development.NativeViews) documentation.
-
 Uno Platform apps always render with Skia, and you can embed native controls in them. This is useful if you want to use a native control for a specific task, for instance, to integrate an existing native platform control.
 
 Each target platform has its own idea of a native element.
@@ -15,7 +12,7 @@ Each target platform has its own idea of a native element.
 |---------------------------------|------------------------------------------------------------------------------------|----------------------------------------------|
 | Skia Desktop (Win32)            | Uno.UI.NativeElementHosting.Win32NativeWindow                                      | A native Windows window with a unique `Hwnd` |
 | Skia Desktop (X11)              | Uno.UI.NativeElementHosting.X11NativeWindow                                        | A native X11 window with a unique `XID`      |
-| Skia Desktop (macOS)            | Not yet supported.                                                                 | Hosting an arbitrary `NSView` is not publicly exposed yet |
+| Skia Desktop (macOS)            | Uno.UI.NativeElementHosting.MacOSNativeView                                        | An AppKit `NSView`, wrapped from its handle  |
 | WebAssembly                     | [Uno.UI.NativeElementHosting.BrowserHtmlElement](xref:Uno.Interop.WasmJavaScript1) | An HTML element with a unique `id`.          |
 | Android                         | Android.Views.View                                                                 | An Android view.                             |
 | Apple UIKit                     | UIKit.UIView                                                                       | An UIKit view.                               |
@@ -27,6 +24,22 @@ The app developer is responsible for creating the native element and internal ch
 To embed a native element, you will need to set the native control as `Content` of a `ContentControl`, either via code or XAML. On desktop platforms, it's often more straightforward to create the native element via code since the parameters for creating the native element are not known ahead of time. For example, on Win32, you need to create a native Windows window first, get its `Hwnd` and then create a `Win32NativeWindow` instance with that `Hwnd` value.
 
 Do not set a `ContentTemplate` or a `ContentTemplateSelector` on the `ContentControl`.
+
+### macOS
+
+On macOS, wrap the `NSView*` pointer of a native view in a `MacOSNativeView`, on the UI thread. The pointer can come from any Objective-C interop layer or native library, for example the `Handle` of an `NSView` created through bindings:
+
+```csharp
+IntPtr nsViewHandle = CreateMyNativeView(); // an NSView* obtained through interop
+contentControl.Content = new MacOSNativeView(nsViewHandle);
+```
+
+The wrapper keeps the `NSView` alive until it is disposed, so it can be detached and reattached, or moved to a different window. Call `Dispose()` once the view is no longer needed, after removing it from the `ContentControl`; this removes the `NSView` from Uno's container, restores the frame and autoresizing mask it had when it was wrapped, and releases the reference taken by the wrapper. A wrapper that is garbage-collected without being disposed releases the view too. When unconstrained, the view is measured using its `intrinsicContentSize`, or the frame size it had when it was wrapped.
+
+The constructor throws an `ArgumentException` when the handle is not an `NSView` (for example, an `NSWindow`), and an `InvalidOperationException` when it is not called on the UI thread.
+
+> [!NOTE]
+> On macOS, when the native elements of a window are added, removed or reordered, their views are removed and added back to the window, so a native view can lose the keyboard focus at that point.
 
 ## Features
 
@@ -79,7 +92,7 @@ If a drag over negotiated content does not scroll the enclosing `ScrollViewer`:
 
 - Confirm `InputPolicy` is set to `Negotiated` — it is `NativeOnly` by default, and it must be set on the element that is assigned as the `ContentPresenter`/`ContentControl` content, not on a nested element.
 - Confirm the target is not inside an `iframe`, a form control, or a `contenteditable` region.
-- Enable `Debug` logging on `Uno.UI.Runtime.Skia.BrowserNativeElementHostingExtension` — it logs when a delta arrives for an unknown element and when no `ScrollViewer` in the ancestry consumed one.
+- Enable `Debug` logging on `Uno.UI.Runtime.BrowserNativeElementHostingExtension` — it logs when a delta arrives for an unknown element and when no `ScrollViewer` in the ancestry consumed one.
 
 ## Limitations
 

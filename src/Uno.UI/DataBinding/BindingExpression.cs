@@ -39,6 +39,17 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal DependencyPropertyDetails TargetPropertyDetails { get; }
 
+		/// <summary>
+		/// Set when this expression targets the validation property of its owner, so that
+		/// <see cref="OnValueChanged"/> re-resolves the validation source on every path resolution.
+		/// </summary>
+		internal bool IsValidationSource { get; set; }
+
+		/// <summary>
+		/// The owner of the bound property: an expression offers no other way back to it.
+		/// </summary>
+		internal ManagedWeakReference ViewReference => _view;
+
 		private object ExplicitSource
 		{
 			get => _explicitSourceStore?.Target;
@@ -86,6 +97,35 @@ namespace Microsoft.UI.Xaml.Data
 
 		public object DataItem => _bindingPath.DataItem;
 
+		/// <summary>
+		/// The object and property name at the leaf of the binding path, i.e. what may implement
+		/// <see cref="System.ComponentModel.INotifyDataErrorInfo"/>.
+		/// </summary>
+		/// <remarks>
+		/// A compiled binding resolves through its update sources and leaves <see cref="_bindingPath"/> empty,
+		/// so <see cref="DataItem"/> alone would silently never validate an x:Bind. Several update sources have
+		/// no single leaf.
+		/// </remarks>
+		internal (object Source, string PropertyName) GetValidationLeaf()
+		{
+			BindingPath path;
+
+			if (_updateSources is null)
+			{
+				path = _bindingPath;
+			}
+			else if (_updateSources.Length == 1)
+			{
+				path = _updateSources[0];
+			}
+			else
+			{
+				return default;
+			}
+
+			return (path.DataItem, path.LeafPropertyName);
+		}
+
 		internal bool IsExplicitlySourced => _isElementNameSource || (_explicitSourceStore?.IsAlive ?? false);
 
 		internal BindingExpression(
@@ -112,7 +152,7 @@ namespace Microsoft.UI.Xaml.Data
 			_targetOwnerType = targetPropertyDetails.Property.OwnerType;
 			TargetPropertyDetails = targetPropertyDetails;
 			_bindingPath = new BindingPath(
-				path: ParentBinding.Path,
+				path: ParentBinding.Path?.Path ?? "",
 				fallbackValue: ParentBinding.FallbackValue,
 				forAnimations: false,
 				allowPrivateMembers: ParentBinding.IsXBind
@@ -137,9 +177,24 @@ namespace Microsoft.UI.Xaml.Data
 					.ToArray();
 			}
 
-			if (ParentBinding.ElementName != null)
+			if (ParentBinding.ElementNameSubject != null)
 			{
 				_isElementNameSource = true;
+			}
+			else if (ParentBinding.ElementName != null)
+			{
+				// ElementName is resolved through the ElementNameSubject set by the XAML code generator
+				// and the runtime reader. A Binding created in code with only the name set cannot be
+				// resolved yet, but it must still count as explicitly sourced so that it doesn't silently
+				// bind the name as a property path against the DataContext.
+				_isElementNameSource = true;
+
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning(
+						$"The binding on {TargetName} sets ElementName '{ParentBinding.ElementName}' without an ElementNameSubject. " +
+						"ElementName bindings created in code are not supported yet, use the XAML syntax instead.");
+				}
 			}
 
 			if (!(GetWeakDataContext()?.IsAlive ?? false))
@@ -364,7 +419,7 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal void ApplyElementName()
 		{
-			if (ParentBinding.ElementName is ElementNameSubject elementNameSubject)
+			if (ParentBinding.ElementNameSubject is { } elementNameSubject)
 			{
 
 				if (elementNameSubject.IsLoadTimeBound)
@@ -636,6 +691,11 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal void OnValueChanged(object o)
 		{
+			if (IsValidationSource)
+			{
+				Microsoft.UI.Xaml.Controls.Control.OnValidationSourceChanged(this);
+			}
+
 			if (ParentBinding.XBindSelector != null)
 			{
 				SetTargetValueForXBindSelector();

@@ -19,10 +19,6 @@ jobs:
     - name: CI_Build
       value: true
 
-    # Disable trimming for packages creation
-    - name: PublishTrimmed
-      value: false
-
     # Disable AOT for this job
     - name: RunAOTCompilation
       value: false
@@ -53,7 +49,7 @@ jobs:
     displayName: Restoring macOS native assets
     inputs:
       artifact: native-assets-macos
-      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.MacOS/UnoNativeMac/build/Release
 
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later

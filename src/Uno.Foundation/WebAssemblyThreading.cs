@@ -24,10 +24,10 @@ public static partial class WebAssemblyThreading
 
 	internal static partial class NativeMethods
 	{
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled")]
+		[JSImport("globalThis.Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled")]
 		internal static partial bool IsThreadingEnabled();
 
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyThreading.getWindowObject")]
+		[JSImport("globalThis.Uno.UI.Runtime.WebAssemblyThreading.getWindowObject")]
 		internal static partial JSObject GetWindowObject();
 	}
 }

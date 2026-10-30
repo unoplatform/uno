@@ -1,0 +1,343 @@
+#nullable enable
+
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Controls.Extensions;
+
+namespace Uno.UI.Runtime.Android;
+
+/// <summary>
+/// Android Skia implementation of <see cref="IImeTextBoxExtension"/>.
+/// Bridges Android <see cref="TextInputConnection"/> text and composition state to the active
+/// <see cref="IImeSessionHost"/>.
+/// </summary>
+/// <remarks>
+/// Timing: The composition callback fires from <see cref="ObservableEditingState.EndBatchEdit"/>
+/// which happens BEFORE <see cref="TextInputConnection.EndBatchEdit"/> calls
+/// the active host's native text-update path. The callback therefore marks the composition as
+/// platform-applied before the document is synchronized.
+/// </remarks>
+internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
+{
+	private bool _isComposing;
+	private int _lastComposingStart = -1;
+	private int _lastComposingEnd = -1;
+	private int _lastFullTextLength;
+	private bool _sessionActive;
+	private TextInputConnection? _subscribedConnection;
+	private IImeSessionHost? _activeHost;
+	private ImeSessionActivation _activation;
+	private TextInputPlugin? _subscribedPlugin;
+	private Uno.UI.Xaml.Controls.NativeWindowWrapper? _boundWrapper;
+
+	public bool IsComposing => _isComposing;
+
+	public event EventHandler? CompositionStarted;
+	public event EventHandler<ImeCompositionEventArgs>? CompositionUpdated;
+	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
+	public event EventHandler<ImePartialCompositionEventArgs>? CompositionPartiallyCommitted
+	{
+		add { }
+		remove { }
+	}
+	public event EventHandler<ImeCompositionEventArgs>? CompositionCanceled;
+	public event EventHandler? CompositionEnded;
+
+	// TODO #8341: the foreground-activity fallback is ambiguous once multiple windows exist.
+	private TextInputPlugin? Plugin
+		=> (AndroidSkiaXamlRootHost.GetActivity(_activeHost?.XamlRoot) ?? BaseActivity.Current as ApplicationActivity)?.RenderView?.TextInputPlugin;
+
+	public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
+	{
+		if (host is TextBoxCore { IsPassword: true })
+		{
+			return;
+		}
+
+		_sessionActive = true;
+		_activeHost = host;
+		_activation = activation;
+
+		try
+		{
+			// The wrapper outlives the activities driving its window, so it is what can tell an active
+			// session that the render view (and with it the plugin) was replaced.
+			_boundWrapper = AndroidSkiaXamlRootHost.GetActivity(host.XamlRoot)?.Wrapper;
+			if (_boundWrapper is { } wrapper)
+			{
+				wrapper.CurrentActivityChanged -= OnCurrentActivityChanged;
+				wrapper.CurrentActivityChanged += OnCurrentActivityChanged;
+			}
+
+			if (Plugin is { } plugin && ReferenceEquals(plugin, _subscribedPlugin))
+			{
+				// Same plugin, new or re-activated host: only the plugin's session moves.
+				plugin.StartImeSession(host, activation);
+				SubscribeToConnection(plugin.ActiveInputConnection);
+			}
+			else
+			{
+				BindToPlugin(Plugin);
+			}
+		}
+		catch
+		{
+			_sessionActive = false;
+			_activeHost = null;
+			UnbindFromPlugin();
+			throw;
+		}
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("IME session started.");
+		}
+	}
+
+	/// <summary>
+	/// Points the session at <paramref name="plugin"/>, moving the subscriptions and the active host
+	/// off the previous one. Re-creating the activity that drives the window replaces the render view
+	/// and with it the plugin, while the focused host keeps its session.
+	/// </summary>
+	private void BindToPlugin(TextInputPlugin? plugin)
+	{
+		if (plugin is null)
+		{
+			// The activity takes the window in OnCreate and only builds its render view -- and with
+			// it the plugin -- in OnStart. Keep the current binding until one exists, rather than
+			// unbinding the session into nothing.
+			return;
+		}
+
+		if (ReferenceEquals(plugin, _subscribedPlugin))
+		{
+			return;
+		}
+
+		if (_subscribedPlugin is { } previous)
+		{
+			previous.InputConnectionCreated -= OnInputConnectionCreated;
+			if (_activeHost is { } previousHost)
+			{
+				previous.EndImeSession(previousHost);
+			}
+		}
+
+		UnsubscribeFromConnection();
+		_subscribedPlugin = plugin;
+
+		plugin.InputConnectionCreated += OnInputConnectionCreated;
+		if (_activeHost is { } host)
+		{
+			plugin.StartImeSession(host, _activation);
+		}
+		SubscribeToConnection(plugin.ActiveInputConnection);
+	}
+
+	private void UnbindFromPlugin()
+	{
+		if (_boundWrapper is { } wrapper)
+		{
+			wrapper.CurrentActivityChanged -= OnCurrentActivityChanged;
+			_boundWrapper = null;
+		}
+
+		UnsubscribeFromConnection();
+
+		if (_subscribedPlugin is { } plugin)
+		{
+			plugin.InputConnectionCreated -= OnInputConnectionCreated;
+			_subscribedPlugin = null;
+		}
+	}
+
+	/// <summary>
+	/// Moves an active session onto the replacement activity's plugin. The managed host keeps
+	/// its session across the re-creation, so nothing else re-runs <see cref="StartImeSession"/>.
+	/// </summary>
+	private void OnCurrentActivityChanged(object? sender, EventArgs args)
+	{
+		if (_sessionActive)
+		{
+			BindToPlugin(Plugin);
+		}
+	}
+
+	public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
+	{
+		_subscribedPlugin?.UpdateImeSession(host, update);
+	}
+
+	public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		return Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
+	}
+
+	public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged
+	{
+		add { }
+		remove { }
+	}
+
+	public void EndImeSession()
+	{
+		_sessionActive = false;
+
+		// End on the plugin this session bound to, not whichever one resolves now: after a
+		// re-creation those differ, and the old one would keep the handler and the host.
+		if (_subscribedPlugin is { } plugin && _activeHost is { } host)
+		{
+			plugin.EndImeSession(host);
+		}
+
+		UnbindFromPlugin();
+		_activeHost = null;
+
+		if (_isComposing)
+		{
+			_isComposing = false;
+			_lastComposingStart = -1;
+			_lastComposingEnd = -1;
+			CompositionEnded?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
+	private void SubscribeToConnection(TextInputConnection? connection)
+	{
+		if (connection is null || connection == _subscribedConnection)
+		{
+			return;
+		}
+
+		UnsubscribeFromConnection();
+		_subscribedConnection = connection;
+		connection.CompositionStateChanged += OnCompositionStateChanged;
+	}
+
+	private void UnsubscribeFromConnection()
+	{
+		if (_subscribedConnection is { } old)
+		{
+			old.CompositionStateChanged -= OnCompositionStateChanged;
+			_subscribedConnection = null;
+		}
+	}
+
+	private void OnInputConnectionCreated(object? sender, TextInputConnectionCreatedEventArgs args)
+	{
+		if (_sessionActive)
+		{
+			SubscribeToConnection(args.Connection);
+		}
+	}
+
+	private void OnCompositionStateChanged(int composingStart, int composingEnd, string? composingText, string fullText, bool textChanged)
+	{
+		if (!_sessionActive)
+		{
+			return;
+		}
+
+		bool wasComposing = _isComposing;
+		bool isNowComposing = composingStart >= 0 && composingEnd > composingStart;
+
+		if (!wasComposing && isNowComposing)
+		{
+			// Don't treat passive autocorrect/spell-check compositions (composing region
+			// set on existing text without any text change) as a real composition session.
+			// Without this filter, the IME setting a composing region on pre-existing text
+			// would set _isComposing=true on the TextBox, causing all subsequent key events
+			// to be swallowed by the IsComposing check in OnKeyDown.
+			if (!textChanged)
+			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Ignoring passive composition (no text change): [{composingStart}..{composingEnd}] '{composingText}'");
+				}
+				return;
+			}
+
+			// Transition: Idle → Composing
+			_isComposing = true;
+			_lastComposingStart = composingStart;
+			_lastComposingEnd = composingEnd;
+			_lastFullTextLength = fullText.Length;
+
+			CompositionStarted?.Invoke(this, EventArgs.Empty);
+
+			if (!string.IsNullOrEmpty(composingText))
+			{
+				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(composingText, textAlreadyApplied: true));
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Composition started: [{composingStart}..{composingEnd}] '{composingText}'");
+			}
+		}
+		else if (wasComposing && isNowComposing)
+		{
+			// Transition: Composing → Composing (preedit update)
+			_lastComposingStart = composingStart;
+			_lastComposingEnd = composingEnd;
+			_lastFullTextLength = fullText.Length;
+
+			if (!string.IsNullOrEmpty(composingText))
+			{
+				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(composingText, textAlreadyApplied: true));
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Composition updated: [{composingStart}..{composingEnd}] '{composingText}'");
+			}
+		}
+		else if (wasComposing && !isNowComposing)
+		{
+			// Transition: Composing → Idle (commit or cancel)
+			_isComposing = false;
+
+			// Compute the committed text. The old composing region was at
+			// [_lastComposingStart.._lastComposingEnd). The text outside
+			// that region is unchanged, so:
+			//   nonComposingLength = _lastFullTextLength - oldComposingLength
+			//   committedLength = fullText.Length - nonComposingLength
+			var oldComposingLength = _lastComposingEnd - _lastComposingStart;
+			var nonComposingLength = _lastFullTextLength - oldComposingLength;
+			var committedLength = fullText.Length - nonComposingLength;
+
+			if (committedLength > 0 && _lastComposingStart >= 0
+				&& _lastComposingStart + committedLength <= fullText.Length)
+			{
+				var committedText = fullText.Substring(_lastComposingStart, committedLength);
+				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(committedText, textAlreadyApplied: true));
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Composition committed: '{committedText}' at {_lastComposingStart}");
+				}
+			}
+			else if (committedLength == 0)
+			{
+				// Composing region removed without replacement — cancel.
+				CompositionCanceled?.Invoke(
+					this,
+					new ImeCompositionEventArgs(string.Empty, textAlreadyApplied: true));
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace("Composition cancelled (no committed text)");
+				}
+			}
+
+			_lastComposingStart = -1;
+			_lastComposingEnd = -1;
+			CompositionEnded?.Invoke(this, EventArgs.Empty);
+		}
+	}
+}

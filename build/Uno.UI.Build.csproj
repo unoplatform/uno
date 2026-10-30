@@ -20,6 +20,7 @@
 
 	<ItemGroup>
 		<None Include="..\src\Directory.Build.targets" Link="Directory.Build.targets" />
+		<None Include="..\src\Directory.Packages.props" Link="Directory.Packages.props" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -58,6 +59,17 @@
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*.*" />
 			<_Sha1Replace Include="..\src\Uno.Sdk\**\*" />
 		</ItemGroup>
+
+		<!-- A packaged MSBuild file outside the list above keeps its _v0 names while the assemblies they point to are
+		     renamed, so the task can't be found in a consumer's build (#25336). -->
+		<ItemGroup>
+			<_PackagedMSBuildFile Include="..\build\nuget\*.targets;..\build\nuget\*.props;..\src\**\buildTransitive\*.targets;..\src\**\buildTransitive\*.props;..\src\**\package\*.targets;..\src\**\package\*.props"
+								  Exclude="@(_Sha1Replace);..\src\**\obj\**;..\src\**\bin\**" />
+			<_UnrewrittenPackagedFile Include="@(_PackagedMSBuildFile)"
+									  Condition="$([System.IO.File]::ReadAllText('%(_PackagedMSBuildFile.FullPath)').Contains('_v0'))" />
+		</ItemGroup>
+		<Error Condition="'@(_UnrewrittenPackagedFile)' != ''"
+			   Text="These packaged files reference _v0 names that packaging renames, but they aren't in _Sha1Replace: @(_UnrewrittenPackagedFile)" />
 
 		<PropertyGroup>
 			<_ReplacedSHA>$(NBGV_GitCommitId)</_ReplacedSHA>
@@ -148,9 +160,11 @@
 
 		<ItemGroup>
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.nuspec" />
+			<_NuspecFiles Include=".\nuget\Uno.WinUI.Composition.Skia.nuspec" />
+			<_NuspecFiles Include=".\nuget\Uno.WinUI.Composition.WebGpu.Init.nuspec" />
+			<_NuspecFiles Include=".\nuget\Uno.WinUI.Composition.WebGpu.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.Foundation.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinRT.nuspec" />
-			<_NuspecFiles Include=".\nuget\Uno.WinUI.Lottie.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.MSAL.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Graphics2DSK.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Svg.nuspec" />
@@ -160,12 +174,18 @@
 
 		<!-- Update Uno.WinUI references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
-		
+
+		<!-- Update Uno.WinUI.Composition.Skia references version (the Svg add-in extends its SkiaBackend) -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Composition.Skia']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
+
 		<!-- Update Uno.Foundation references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
 		
 		<!-- Update Uno.WinRT references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinRT']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
+
+		<!-- Update Uno.WinUI.Composition.WebGpu.Init references version (the WebGpu renderer depends on it) -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Composition.WebGpu.Init']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
 
 		<!-- Update Uno.WinUI.DevServer.Messaging references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.DevServer.Messaging']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
@@ -185,20 +205,31 @@
 
 	<Target Name="BuildNuGetPackage" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(Configuration)'=='Release'">
 		<PropertyGroup>
-			<!-- NU5123: Long paths - disabled as tragets in Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive have too long paths -->
+			<!-- NU5123: Long paths - disabled as targets in Uno.UI.Runtime.WebAssembly.Browser\buildTransitive have too long paths -->
 			<NuSpecProperties>NoWarn=NU5100,NU5105,NU5131;NU5123;branch=$(NBGV_BuildingRef);commitid=$(NBGV_GitCommitId)</NuSpecProperties>
-			<NuSpecProperties>$(NuSpecProperties);winuisourcepath=$(NetUWPOrWinUI);winuitargetpath=$(NetUWPOrWinUI)</NuSpecProperties>
+			<NuSpecProperties>$(NuSpecProperties);winuisourcepath=$(NetUWPOrWinUI)</NuSpecProperties>
+			<NuSpecProperties>$(NuSpecProperties);year=$([System.DateTime]::UtcNow.Year)</NuSpecProperties>
 		</PropertyGroup>
 
 		<!-- Pre-validation of contents to be packed -->
 		<Error Text="The Uno.UI.Extras PRI file is not present in src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release"
 					 Condition="!exists('..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$(NetUWPOrWinUI)\Uno.UI.Extras.pri')" />
 
+		<!-- The WebGpu package ships a native per desktop RID, but a build only provisions its own host's. This
+		     fetches the rest so the pack does not fail NU5019 on the Windows packaging agent. -->
+		<MSBuild Projects="..\src\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Targets="ProvisionWgpuNativeForPack" />
+
+		<!-- The WebGpu package also ships the emdawnwebgpu port for WASM, already patched: a consumer cannot
+		     patch it themselves in the shared, read-only NuGet folder. -->
+		<MSBuild Projects="..\src\Uno.UI.Composition.WebGpu.Init\wgpu-wasm.targets" Targets="ProvisionEmdawnForPack" />
+
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Composition.Skia.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Composition.WebGpu.Init.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Composition.WebGpu.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.Foundation.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinRT.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
-		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.MSAL.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Graphics2DSK.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Svg.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
@@ -206,7 +237,7 @@
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.XamlHost.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 	</Target>
 
-	<!-- 7.0 is Skia-only: fail the pack if a native UI rendering head package is produced. -->
+	<!-- The native UI rendering heads were retired in 7.0: fail the pack if one of their packages is produced. -->
 	<Target Name="ValidateNoNativeUIHeadPackages" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(Configuration)'=='Release'">
 		<ItemGroup>
 			<!--
@@ -216,12 +247,12 @@
 			<_ProducedPackage Include="$(MSBuildThisFileDirectory)*$(NBGV_SemVer2).nupkg" />
 			<_ProducedPackage Include="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\*$(NBGV_SemVer2).nupkg" Condition="'$(BUILD_ARTIFACTSTAGINGDIRECTORY)'!=''" />
 
-			<!-- Anchored so Uno.WinUI.Runtime.Skia.WebAssembly.Browser and Uno.Foundation.Runtime.WebAssembly do not match. -->
+			<!-- Anchored so Uno.Foundation.Runtime.WebAssembly does not match, and excluding the Uno.WinUI.Runtime.WebAssembly.Browser host. -->
 			<_ForbiddenNativeHeadPackage Include="@(_ProducedPackage)"
-				Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '^Uno\.WinUI(\.Runtime)?\.(WebAssembly|Wasm)\.'))" />
+				Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '^Uno\.WinUI(\.Runtime)?\.(WebAssembly|Wasm)\.(?!Browser\.)'))" />
 		</ItemGroup>
 		<Error Condition="'@(_ForbiddenNativeHeadPackage)'!=''"
-			   Text="Native UI head package(s) produced but must not ship in 7.0 (Skia is the only renderer): @(_ForbiddenNativeHeadPackage->'%(Filename)', ', '). Remove them from the pack pipeline." />
+			   Text="Retired native UI head package(s) produced but must not ship in 7.0: @(_ForbiddenNativeHeadPackage->'%(Filename)', ', '). Remove them from the pack pipeline." />
 	</Target>
 
 	<!--
@@ -240,26 +271,27 @@
 	</PropertyGroup>
 
 	<Target Name="ValidatePackage" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(SkipValidatePackage)'!='true'">
+		<!-- The hosts are diffed against the last build published under their pre-7.0 Uno.WinUI.Runtime.Skia.* ids. -->
 		<ItemGroup>
 			<_diffPackage Include="Uno.WinUI" Other="Uno.WinUI.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Foldable" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Foldable.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.GooglePlay" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.GooglePlay.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Lottie" Other="Uno.WinUI.Lottie.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.MSAL" Other="Uno.WinUI.MSAL.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Svg" Other="Uno.WinUI.Svg.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Runtime.Skia" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Skia.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Linux.FrameBuffer.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinUI.Runtime.Skia.MacOS" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.MacOS.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinUI.Runtime.Skia" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.XamlHost" Other="Uno.WinUI.XamlHost.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.Foundation.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.Logging.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.Foundation.Runtime.WebAssembly" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.Runtime.WebAssembly.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.UI.Adapter.Microsoft.Extensions.Logging.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.Foundation" Other="Uno.Foundation.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinRT" Other="Uno.WinRT.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Skia.WebAssembly.Browser.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Runtime.Skia.Win32" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Skia.Win32.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Runtime.Skia.X11" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Skia.X11.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Runtime.Skia.Android" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Skia.Android.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Runtime.Skia.AppleUIKit" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Skia.AppleUIKit.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.WebAssembly.Browser.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinUI.Runtime.Skia.Win32" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Win32.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinUI.Runtime.Skia.X11" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.X11.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinUI.Runtime.Skia.Android" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Android.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinUI.Runtime.Skia.AppleUIKit" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.AppleUIKit.$(NBGV_SemVer2).nupkg" />
 		</ItemGroup>
 
 		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.1.0-dev.29" IgnoreExitCode="true" />
@@ -289,7 +321,7 @@
 
 	<!--
 		Uno.WinUI no longer ships an uno-runtime folder: lib/ is the Skia build. Uno.WinRT still
-		ships both the skia and webassembly flavors against a Reference lib/, so that is where the
+		ships its generic and wasm variants against a Reference lib/, so that is where the
 		reference-vs-runtime API comparison still has something to validate.
 	-->
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="BuildNuGetPackage">

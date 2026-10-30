@@ -1,0 +1,434 @@
+﻿#if HAS_UNO_WINUI || WINDOWS
+using System;
+using System.Reflection;
+using System.Threading.Tasks;
+using Combinatorial.MSTest;
+using AwesomeAssertions;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using Private.Infrastructure;
+using Windows.Graphics;
+
+namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Windowing;
+
+[TestClass]
+[RunsOnUIThread]
+#if !__SKIA__ && !WINDOWS
+[Ignore]
+#endif
+public class Given_AppWindow
+{
+	[TestMethod]
+	public async Task When_Resize()
+	{
+		if (OperatingSystem.IsLinux())
+		{
+			// Currently failing in CI #9080
+			Assert.Inconclusive();
+		}
+
+		AssertPositioningAndSizingSupport();
+
+		var appWindow = TestServices.WindowHelper.CurrentTestWindow.AppWindow;
+		AppWindowChangedEventArgs args = null;
+		void OnChanged(AppWindow s, AppWindowChangedEventArgs e)
+		{
+			args = e;
+		}
+		appWindow.Changed += OnChanged;
+		var originalSize = appWindow.Size;
+		try
+		{
+			// Smaller, as a window cannot grow taller than the screen.
+			var adjustedSize = new SizeInt32() { Width = originalSize.Width - 10, Height = originalSize.Height - 10 };
+			appWindow.Resize(adjustedSize);
+			await TestServices.WindowHelper.WaitFor(() => args is not null);
+			Assert.IsTrue(args.DidSizeChange);
+			Assert.AreEqual(appWindow.Size, adjustedSize,
+				$"Expected appWindow.Size {{ Width={appWindow.Size.Width}, Height={appWindow.Size.Height} }} == adjustedSize {{ Width={adjustedSize.Width}, Height={adjustedSize.Height} }}");
+		}
+		finally
+		{
+			appWindow.Resize(originalSize);
+			await TestServices.WindowHelper.WaitFor(() => appWindow.Size.Equals(originalSize));
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Move()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var appWindow = TestServices.WindowHelper.CurrentTestWindow.AppWindow;
+		AppWindowChangedEventArgs args = null;
+		void OnChanged(AppWindow s, AppWindowChangedEventArgs e)
+		{
+			args = e;
+		}
+		appWindow.Changed += OnChanged;
+		var originalPosition = appWindow.Position;
+		try
+		{
+			var adjustedPosition = new PointInt32() { X = originalPosition.X + 10, Y = originalPosition.Y + 10 };
+			appWindow.Move(adjustedPosition);
+			await TestServices.WindowHelper.WaitFor(() => args is not null);
+			Assert.IsTrue(args.DidPositionChange);
+			Assert.AreEqual(appWindow.Position, adjustedPosition,
+				$"Expected appWindow.Position {{ X={appWindow.Position.X}, Y={appWindow.Position.Y} }} == adjustedPosition {{ X={adjustedPosition.X}, Y={adjustedPosition.Y} }}");
+		}
+		finally
+		{
+			appWindow.Move(originalPosition);
+			await TestServices.WindowHelper.WaitFor(() => appWindow.Position.Equals(originalPosition));
+		}
+	}
+
+#if __UNO__
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25650")]
+	public async Task When_Move_Down_Then_Window_Moves_Down_On_Screen()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var appWindow = window.AppWindow;
+		var originalPosition = appWindow.Position;
+		// Asks the platform where the window content is, so it does not just read back the value Move stored.
+		var before = window.NativeWrapper!.ConvertLocalToScreen(default);
+		try
+		{
+			// Downward, as the top of the screen can stop a window from moving up.
+			appWindow.Move(new PointInt32(originalPosition.X, originalPosition.Y + 20));
+			await TestServices.WindowHelper.WaitFor(() => appWindow.Position.Y != originalPosition.Y);
+
+			var after = window.NativeWrapper!.ConvertLocalToScreen(default);
+			Assert.AreEqual(before.Y + 20, after.Y, $"Window content moved from ({before.X}, {before.Y}) to ({after.X}, {after.Y}) on screen");
+			Assert.AreEqual(before.X, after.X, $"Window content moved from ({before.X}, {before.Y}) to ({after.X}, {after.Y}) on screen");
+		}
+		finally
+		{
+			appWindow.Move(originalPosition);
+			await TestServices.WindowHelper.WaitFor(() => appWindow.Position.Equals(originalPosition));
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25650")]
+	public async Task When_Resize_Then_Top_Left_Stays()
+	{
+		if (OperatingSystem.IsLinux())
+		{
+			// Resizing is currently failing in CI #9080
+			Assert.Inconclusive();
+		}
+
+		AssertPositioningAndSizingSupport();
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var appWindow = window.AppWindow;
+		var originalSize = appWindow.Size;
+		var originalPosition = appWindow.Position;
+		var before = window.NativeWrapper!.ConvertLocalToScreen(default);
+		try
+		{
+			// Smaller, as a window cannot grow taller than the screen.
+			appWindow.Resize(new SizeInt32(originalSize.Width - 20, originalSize.Height - 20));
+			await TestServices.WindowHelper.WaitFor(() => !appWindow.Size.Equals(originalSize));
+
+			Assert.AreEqual(originalPosition, appWindow.Position, $"Position changed to ({appWindow.Position.X}, {appWindow.Position.Y})");
+			var after = window.NativeWrapper!.ConvertLocalToScreen(default);
+			Assert.AreEqual(before, after, $"Window content moved from ({before.X}, {before.Y}) to ({after.X}, {after.Y}) on screen");
+		}
+		finally
+		{
+			appWindow.Resize(originalSize);
+			await TestServices.WindowHelper.WaitFor(() => appWindow.Size.Equals(originalSize));
+		}
+	}
+#endif
+
+	[TestMethod]
+	public async Task When_Resize_Before_Activate()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var newWindow = new Window();
+		var appWindow = newWindow.AppWindow;
+		AppWindowChangedEventArgs args = null;
+		void OnChanged(AppWindow s, AppWindowChangedEventArgs e)
+		{
+			args = e;
+		}
+		appWindow.Changed += OnChanged;
+		var originalSize = appWindow.Size;
+		var activated = false;
+		try
+		{
+			// Small enough for any screen: macOS fits a window to the screen's usable area when it is first shown.
+			var adjustedSize = new SizeInt32() { Width = 600, Height = 400 };
+			appWindow.Resize(adjustedSize);
+			await TestServices.WindowHelper.WaitFor(() => args is not null);
+			Assert.IsTrue(args.DidSizeChange);
+			Assert.AreEqual(appWindow.Size, adjustedSize,
+				$"Expected appWindow.Size {{ Width={appWindow.Size.Width}, Height={appWindow.Size.Height} }} == adjustedSize {{ Width={adjustedSize.Width}, Height={adjustedSize.Height} }}");
+
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+
+			Assert.AreEqual(appWindow.Size, adjustedSize,
+				$"Expected appWindow.Size {{ Width={appWindow.Size.Width}, Height={appWindow.Size.Height} }} == adjustedSize {{ Width={adjustedSize.Width}, Height={adjustedSize.Height} }}");
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Move_Before_Activate()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var newWindow = new Window();
+		var appWindow = newWindow.AppWindow;
+		AppWindowChangedEventArgs args = null;
+		void OnChanged(AppWindow s, AppWindowChangedEventArgs e)
+		{
+			args = e;
+		}
+		appWindow.Changed += OnChanged;
+		var originalPosition = appWindow.Position;
+		var activated = false;
+		try
+		{
+			var adjustedPosition = new PointInt32() { X = 40, Y = 40 };
+			appWindow.Move(adjustedPosition);
+			await TestServices.WindowHelper.WaitFor(() => args is not null);
+			Assert.IsTrue(args.DidPositionChange);
+			Assert.AreEqual(appWindow.Position, adjustedPosition,
+				$"Expected appWindow.Position {{ X={appWindow.Position.X}, Y={appWindow.Position.Y} }} == adjustedPosition {{ X={adjustedPosition.X}, Y={adjustedPosition.Y} }}");
+
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+
+			Assert.AreEqual(appWindow.Position, adjustedPosition,
+				$"Expected appWindow.Position {{ X={appWindow.Position.X}, Y={appWindow.Position.Y} }} == adjustedPosition {{ X={adjustedPosition.X}, Y={adjustedPosition.Y} }}");
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
+		}
+	}
+
+	[TestMethod]
+	[CombinatorialData]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21435")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.NativeWinUI)] // Skia/X11: Fail in CI (#21194)
+	public async Task When_Change_Window_State_Before_Activate(OverlappedPresenterState state)
+	{
+		AssertPositioningAndSizingSupport();
+		var newWindow = new Window();
+		var appWindow = newWindow.AppWindow;
+		var activated = false;
+		try
+		{
+			var overlappedPresenter = (OverlappedPresenter)appWindow.Presenter;
+			Action act = state switch
+			{
+				OverlappedPresenterState.Maximized => () => overlappedPresenter.Maximize(),
+				OverlappedPresenterState.Minimized => () => overlappedPresenter.Minimize(),
+				_ => () => overlappedPresenter.Restore()
+			};
+			act.Should().NotThrow();
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+			Assert.AreEqual(state, overlappedPresenter.State);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25726")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_Window_Already_Has_Its_Maximized_Frame_Then_Maximize_Reports_Maximized()
+	{
+		// A window that fills a small screen is already the size maximizing gives it, as on CI's macOS VMs.
+		AssertPositioningAndSizingSupport();
+
+		var newWindow = new Window();
+		var appWindow = newWindow.AppWindow;
+		var overlapped = (OverlappedPresenter)appWindow.Presenter;
+		var activated = false;
+		try
+		{
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+
+			overlapped.Maximize();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Maximized);
+			var maximizedPosition = appWindow.Position;
+			var maximizedSize = appWindow.Size;
+
+			overlapped.Restore();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Restored);
+			appWindow.Move(maximizedPosition);
+			appWindow.Resize(maximizedSize);
+			await TestServices.WindowHelper.WaitFor(() => appWindow.Position.Equals(maximizedPosition) && appWindow.Size.Equals(maximizedSize));
+
+			overlapped.Maximize();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Maximized);
+
+			overlapped.Restore();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Restored);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21745")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Maximized_With_Extended_TitleBar_Client_Is_Inset_From_Window()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var newWindow = new Window();
+		newWindow.ExtendsContentIntoTitleBar = true;
+		var appWindow = newWindow.AppWindow;
+		var overlapped = (OverlappedPresenter)appWindow.Presenter;
+		var activated = false;
+		try
+		{
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+
+			overlapped.Maximize();
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Maximized);
+
+			var size = appWindow.Size;             // outer window rect: overhangs the monitor when maximized
+			var clientSize = appWindow.ClientSize; // client rect: must be inset back onto the visible work area
+
+			// The maximized window rect overhangs the monitor by the resize frame on every edge. With the native
+			// overhang correction the client is inset back inside the window, so it must be strictly smaller than
+			// the window on both axes. Before the fix the client equalled the window (no inset), i.e. the chrome
+			// bled off-screen and these would have been equal.
+			clientSize.Width.Should().BeLessThan(size.Width);
+			clientSize.Height.Should().BeLessThan(size.Height);
+
+			// The inset equals the resize-frame thickness per side (a handful of DPI-scaled px), never the whole
+			// window - guard against a degenerate or grossly over-large inset.
+			(size.Width - clientSize.Width).Should().BeInRange(1, 120);
+			(size.Height - clientSize.Height).Should().BeInRange(1, 120);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_Activated_ClientSize_Is_Physical_Content_Size()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var content = new Microsoft.UI.Xaml.Controls.Grid();
+		var newWindow = new Window { Content = content };
+		var activated = false;
+		try
+		{
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated && content.ActualWidth > 0);
+
+			// Without any resize or move: macOS used to report 0 until the next one.
+			var xamlRoot = content.XamlRoot;
+			var clientSize = newWindow.AppWindow.ClientSize;
+			clientSize.Width.Should().BeCloseTo((int)(xamlRoot.Size.Width * xamlRoot.RasterizationScale), 2);
+			clientSize.Height.Should().BeCloseTo((int)(xamlRoot.Size.Height * xamlRoot.RasterizationScale), 2);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			newWindow.Close();
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25326")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_Closed_Then_Presenter_Calls_Do_Nothing()
+	{
+		var newWindow = new Window();
+		var overlapped = (OverlappedPresenter)newWindow.AppWindow.Presenter;
+		var activated = false;
+		try
+		{
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+		}
+		finally
+		{
+			newWindow.Close();
+		}
+
+		// The NSWindow is freed once the close has completed; these calls used to reach it.
+		await TestServices.WindowHelper.WaitForIdle();
+		await Task.Delay(200);
+
+		overlapped.Maximize();
+		overlapped.Minimize();
+		overlapped.Restore();
+		overlapped.IsAlwaysOnTop = true;
+		overlapped.IsResizable = false;
+		overlapped.SetBorderAndTitleBar(false, false);
+		overlapped.PreferredMinimumWidth = 100;
+
+		Assert.AreEqual(OverlappedPresenterState.Restored, overlapped.State);
+	}
+
+	private void AssertPositioningAndSizingSupport()
+	{
+		if (!OperatingSystem.IsLinux() &&
+			!OperatingSystem.IsWindows() &&
+			!OperatingSystem.IsMacOS() ||
+			TestServices.WindowHelper.IsXamlIsland ||
+			IsGtk() ||
+			RuntimeTestsPlatformHelper.CurrentPlatform == RuntimeTestPlatforms.SkiaFrameBuffer)
+		{
+			Assert.Inconclusive("This test only supported on Windows, macOS and Linux apps currently.");
+		}
+	}
+
+	private bool IsGtk()
+	{
+		var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+		foreach (Assembly a in assemblies)
+		{
+			if (a.GetName().Name == "GtkSharp")
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+}
+#endif

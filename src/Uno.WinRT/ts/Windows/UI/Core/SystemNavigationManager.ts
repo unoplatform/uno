@@ -15,7 +15,7 @@
 		constructor() {
 			var that = this;
 			var dispatchBackRequest =
-				(<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled() ?
+				(<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled() ?
 					(<any>globalThis).DotnetExports.Uno.Windows.UI.Core.SystemNavigationManager.DispatchBackRequestAsync :
 						(<any>globalThis).DotnetExports.Uno.Windows.UI.Core.SystemNavigationManager.DispatchBackRequest;
 

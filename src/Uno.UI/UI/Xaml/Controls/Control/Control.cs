@@ -3,12 +3,14 @@ using Uno.UI;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Markup;
 using System.ComponentModel;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Uno;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using System.Diagnostics.CodeAnalysis;
@@ -39,8 +41,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal void SetDefaultStyleKeyInternal(object defaultStyleKey) => DefaultStyleKey = defaultStyleKey;
-
-		protected override bool IsSimpleLayout => true;
 
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 
@@ -162,7 +162,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_suppressIsEnabled)
 			{
-				return false;
+				return BoolBoxes.False;
 			}
 
 			// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
@@ -175,7 +175,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// If the parent is disabled, this control must be disabled as well
 			if (parentValue is false)
 			{
-				return false;
+				return BoolBoxes.False;
 			}
 
 			// otherwise use the more local value
@@ -466,7 +466,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="childName">The name of the template part.</param>
 		/// <returns>The first template part of the specified name; otherwise, null.</returns>
-		public DependencyObject GetTemplateChild(string childName)
+		protected internal DependencyObject GetTemplateChild(string childName)
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as DependencyObject
 				?? FindName(childName) as DependencyObject;
@@ -576,7 +576,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double FontSize
 		{
 			get { return (double)this.GetValue(FontSizeProperty); }
-			set { this.SetValue(FontSizeProperty, value); }
+			set { this.SetValue(FontSizeProperty, Boxer.Box(value)); }
 		}
 
 		public static DependencyProperty FontSizeProperty { get; } =
@@ -607,7 +607,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					true,
+					BoolBoxes.True,
 #if __SKIA__
 					// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
 					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
@@ -688,7 +688,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -711,7 +711,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -1310,7 +1310,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal static Action<Control, bool> OnIsFocusableChangedCallback { get; set; }
 
-		public Control()
+		protected Control()
 		{
 			InitializeControl();
 		}

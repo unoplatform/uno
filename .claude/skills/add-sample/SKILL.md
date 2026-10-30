@@ -27,10 +27,11 @@ You are executing the **Add Sample Skill**. This skill creates a SamplesApp samp
    - **Scenario**: What the sample demonstrates (e.g., `BasicUsage`, `CustomStyle`, `DataBinding`)
 
 2. Find existing folder under `src/SamplesApp/SamplesApp.Samples/` matching the control's namespace. Folders are a nested hierarchy mirroring the API namespace, same as `src/Uno.UI`:
-   - WinUI controls: `Microsoft/UI/Xaml/Controls/` (e.g., `Microsoft/UI/Xaml/Controls/NavigationViewTests/`)
-   - XAML framework: `Windows/UI/Xaml/Controls/` (e.g., `Windows/UI/Xaml/Controls/Button/`)
-   - Shapes: `Windows/UI/Xaml/Shapes/`
-   - Media: `Windows/UI/Xaml/Media/`
+   - Controls: `Microsoft/UI/Xaml/Controls/` (e.g., `Microsoft/UI/Xaml/Controls/Button/`, `Microsoft/UI/Xaml/Controls/NavigationViewTests/`)
+   - Shapes: `Microsoft/UI/Xaml/Shapes/`
+   - Media: `Microsoft/UI/Xaml/Media/`
+   - Composition: `Microsoft/UI/Composition/`
+   - Pure WinRT APIs keep their `Windows/` prefix (e.g., `Windows/Storage/`, `Windows/UI/Input/`)
    - Search for existing samples of the same control to find the right folder
 
 3. Generate file names: `ControlName_Scenario.xaml` and `ControlName_Scenario.xaml.cs`
@@ -65,7 +66,7 @@ Create the XAML file with:
 ### Phase 2: Create Code-Behind
 
 Create the code-behind file with:
-- Namespace copied from neighbouring samples in the same folder, e.g. `UITests.Shared.Windows_UI_Xaml_Controls.Button` for `Windows/UI/Xaml/Controls/Button/`. Namespaces keep the legacy underscore form — don't derive them from the nested folder path.
+- Namespace copied from neighbouring samples in the same folder, e.g. `UITests.Shared.Windows_UI_Xaml_Controls.Button` for `Microsoft/UI/Xaml/Controls/Button/`. Namespaces keep the legacy underscore form — don't derive them from the nested folder path.
 - `[Sample("CategoryName")]` attribute from `Uno.UI.Samples.Controls`
 - `sealed partial class` inheriting from `Page`
 - `this.InitializeComponent()` in constructor
@@ -119,7 +120,7 @@ dotnet xstyler -f src/SamplesApp/SamplesApp.Samples/FolderName/SampleName.xaml
 
 - **Sample attribute source:** `src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UITests/Views/Controls/SampleAttribute.cs`
 - **Sample folder:** `src/SamplesApp/SamplesApp.Samples/` (XAML and `.cs` are picked up by glob)
-- **Example samples:** Browse `src/SamplesApp/SamplesApp.Samples/Windows/UI/Xaml/Controls/` for patterns
+- **Example samples:** Browse `src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/` for patterns
 
 ## Common Mistakes to Avoid
 

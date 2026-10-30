@@ -32,7 +32,7 @@ namespace Windows.System.Power {
 			if (!PowerManager.battery) {
 				PowerManager.battery = await navigator.getBattery();
 
-				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 					PowerManager.dispatchChargingChanged =
 						(<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchChargingChangedAsync;
 					PowerManager.dispatchRemainingChargePercentChanged =

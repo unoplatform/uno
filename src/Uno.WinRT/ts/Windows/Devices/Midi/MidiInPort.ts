@@ -27,7 +27,7 @@
 
 		public static startMessageListener(managedId: string) {
 			if (!MidiInPort.dispatchMessage) {
-				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 					MidiInPort.dispatchMessage = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Midi.MidiInPort.DispatchMessageAsync;
 				} else {
 					MidiInPort.dispatchMessage = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Midi.MidiInPort.DispatchMessage;

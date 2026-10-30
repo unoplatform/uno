@@ -1,9 +1,8 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
-using System.Numerics;
-using SkiaSharp;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition;
 
@@ -11,7 +10,7 @@ public partial class Visual
 {
 	private interface IPrivateSessionFactory
 	{
-		void CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, DamageRegion? damage, out PaintingSession session);
+		void CreateInstance(Visual visual, IDrawingSession drawingSession, float opacity, DamageRegion? damage, out PaintingSession session);
 	}
 
 	/// <summary>
@@ -22,31 +21,30 @@ public partial class Visual
 		// This dance is done to make it so that only Visual can create a PaintingSession
 		public readonly struct SessionFactory : IPrivateSessionFactory
 		{
-			void IPrivateSessionFactory.CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, DamageRegion? damage, out PaintingSession session)
+			void IPrivateSessionFactory.CreateInstance(Visual visual, IDrawingSession drawingSession, float opacity, DamageRegion? damage, out PaintingSession session)
 			{
-				session = new PaintingSession(visual, canvas, ref rootTransform, opacity, damage);
+				session = new PaintingSession(visual, drawingSession, opacity, damage);
 			}
 		}
 
-		private PaintingSession(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, DamageRegion? damage)
+		private PaintingSession(Visual visual, IDrawingSession drawingSession, float opacity, DamageRegion? damage)
 		{
-			Canvas = canvas;
-			RootTransform = ref rootTransform;
+			Session = drawingSession;
 			Opacity = opacity;
 			Damage = damage;
 
-			_saveCount = canvas.Save();
+			_saveCount = Session.Save();
 		}
 
-		public void Dispose() => Canvas.RestoreToCount(_saveCount);
+		public void Dispose() => Session.RestoreToCount(_saveCount);
 
-		public readonly SKCanvas Canvas;
-
-		/// <summary>The transform matrix to the root visual of this drawing session (which isn't necessarily the identity matrix due to scaling (DPI) and/or RenderTargetBitmap.</summary>
-		public readonly ref Matrix4x4 RootTransform;
+		/// <summary>The backend-neutral drawing surface for this session.</summary>
+		public readonly IDrawingSession Session;
 
 		public readonly float Opacity;
 
+		/// <summary>The per-frame damage (dirty-region) accumulator threaded through the render walk, or null when
+		/// damage tracking is disabled for this pass (e.g. offscreen surfaces / RenderTargetBitmap that repaint fully).</summary>
 		public readonly DamageRegion? Damage;
 
 		private readonly int _saveCount;

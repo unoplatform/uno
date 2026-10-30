@@ -1,0 +1,224 @@
+﻿using System;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading;
+using System.Threading.Tasks;
+using Uno.Web.WebView2.Core;
+using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
+using Uno.Extensions.ApplicationModel.Core;
+using Uno.Foundation;
+using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
+using Uno.Graphics;
+using Uno.Media.Playback;
+using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
+using Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
+using Windows.Graphics.Display;
+using Windows.Media.Playback;
+using Microsoft.UI.Xaml.Media;
+using Uno.Helpers;
+using Microsoft.Windows.AppLifecycle;
+using Windows.ApplicationModel.Activation;
+using __Windows.ApplicationModel.Core;
+
+namespace Uno.UI.Runtime.WebAssembly.Browser;
+
+internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHost, IXamlRootHost
+{
+	private readonly CoreApplicationExtension? _coreApplicationExtension;
+
+	private readonly bool _forceSoftwareRendering;
+	private readonly Func<Application> _appBuilder;
+	private BrowserRenderer? _renderer;
+
+	// Read by the CompositionTarget the first time it needs a backend.
+	Uno.UI.Composition.Drawing.IDrawingFactory? IXamlRootHost.Renderer => _renderer?.Factory;
+	private readonly ManualResetEvent _terminationGate = new(false);
+
+	/// <summary>
+	/// Whether the host has been initialized for the whole process.
+	/// </summary>
+	/// <remarks>This field does not need synchronized since it's set only once at the beginning of the process.</remarks>
+	private static bool _isInitialized;
+	/// <summary>
+	/// Whether the main run loop has been started for the whole process.
+	/// </summary>
+	/// <remarks>This field does not need synchronized since it's set only once at the beginning of the process.</remarks>
+	private static bool _isRunning;
+
+	/// <summary>
+	/// Creates a host for a Uno Skia FrameBuffer application.
+	/// </summary>
+	/// <param name="appBuilder">App builder.</param>
+	/// <param name="forceSoftwareRendering">Whether to force software rendering.</param>
+	/// <remarks>
+	/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
+	/// </remarks>
+	public WebAssemblyBrowserHost(Func<Application> appBuilder, bool forceSoftwareRendering)
+	{
+		_forceSoftwareRendering = forceSoftwareRendering;
+		_appBuilder = appBuilder;
+
+		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
+	}
+
+	protected override void Initialize() { }
+
+	protected async override Task InitializeAsync()
+	{
+		if (!_isInitialized)
+		{
+			_isInitialized = true;
+
+			WebAssemblyThreading.Initialize();
+
+			NativeMethods.PersistBootstrapperLoader();
+
+			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
+			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new BrowserPointerInputSource());
+			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new BrowserKeyboardInputSource());
+			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new WebAssemblyWindowFactoryExtension(this));
+			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new BrowserInvisibleTextBoxViewExtension(o));
+			ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => WasmImeTextBoxExtension.Instance);
+			ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => BrowserSkiaTextBoxNotificationsProviderSingleton.Instance);
+			ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new BrowserNativeElementHostingExtension(o));
+			ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), o => new BrowserMediaPlayerExtension(o));
+			ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new BrowserMediaPlayerPresenterExtension(o));
+			ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
+			ApiExtensibility.Register(typeof(IDragDropExtension), _ => BrowserDragDropExtension.Instance);
+			ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new WasmNativeOpenGLWrapper(xamlRoot));
+
+			await CoreApplicationNative.InitializeExports();
+
+			await WebAssemblyWindowWrapper.Initialize();
+
+			CompositionTarget.FrameRenderingOptions = (false, false);
+			_renderer = await BrowserRenderer.CreateAsync(this, _forceSoftwareRendering);
+
+			if (WebAssemblyThreading.IsThreadingEnabled)
+			{
+				// Start the dedicated render worker: it creates a JSWebWorker with its own
+				// JS interop, receives the OffscreenCanvas, sets up WebGL, and enters a render
+				// loop waiting for frame signals from the deputy.
+				RenderWorker.Start(this, WebAssemblyWindowWrapper.Instance.CanvasId);
+			}
+		}
+	}
+
+	protected async override Task RunLoop()
+	{
+		var wasRunning = _isRunning;
+
+		_isRunning = true;
+
+		Application CreateApp(ApplicationInitializationCallbackParams _)
+		{
+			if (!wasRunning)
+			{
+				// Ensure BrowserHtmlElement is initialized once per application lifetime
+				// Secondary ALCs should not re-initialize it
+				BrowserHtmlElement.Initialize();
+			}
+
+			var app = _appBuilder();
+			app.Host = this;
+
+			if (!wasRunning)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Display Information: " +
+						$"ResolutionScale: {DisplayInformation.GetForCurrentView().ResolutionScale}, " +
+						$"LogicalDpi: {DisplayInformation.GetForCurrentView().LogicalDpi}, " +
+						$"RawPixelsPerViewPixel: {DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel}, " +
+						$"DiagonalSizeInInches: {DisplayInformation.GetForCurrentView().DiagonalSizeInInches}, " +
+						$"ScreenInRawPixels: {DisplayInformation.GetForCurrentView().ScreenWidthInRawPixels}x{DisplayInformation.GetForCurrentView().ScreenHeightInRawPixels}");
+				}
+
+				// Force initialization of the DisplayInformation, once per application lifetime
+				DisplayInformation.GetForCurrentView();
+			}
+
+			return app;
+		}
+
+		try
+		{
+			if (!wasRunning)
+			{
+				// Once per page: AppInstance is shared, so a secondary ALC host must not re-push
+				// the activation the primary one already consumed.
+				TryReportProtocolActivation();
+			}
+
+			Application.Start(CreateApp);
+
+			if (!wasRunning)
+			{
+				// Secondary ALCs should not block the main loop
+				await Task.Delay(-1);
+			}
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine($"App failed to initialize: {e}");
+
+			throw;
+		}
+	}
+
+	void IXamlRootHost.InvalidateRender()
+	{
+		_renderer?.InvalidateRender();
+		Window.CurrentSafe?.RootElement?.XamlRoot?.InvalidateOverlays();
+	}
+
+	internal void RemoveSplashScreen() => NativeMethods.RemoveLoading();
+
+	/// <summary>
+	/// Reports a protocol activation carried in the page's query string.
+	/// </summary>
+	/// <remarks>
+	/// <c>navigator.registerProtocolHandler</c> always navigates the browser, so a protocol
+	/// activation on WebAssembly is always a cold start. There is no running-app case to report,
+	/// and <see cref="AppInstance.Activated"/> consequently never fires for it on this target.
+	/// </remarks>
+	private static void TryReportProtocolActivation()
+	{
+		var arguments = NativeMethods.GetSearchParams();
+		if (string.IsNullOrEmpty(arguments))
+		{
+			return;
+		}
+
+		if (ProtocolActivationParser.TryParseActivationUri(arguments, out var activationUri, out var remainingArguments))
+		{
+			// The activation key is Uno's transport, not something the app asked to be launched with.
+			Application.SetArguments(remainingArguments);
+
+			AppInstance.GetCurrent().SetOrRaiseActivation(
+				AppActivationArguments.CreateProtocol(
+					new ProtocolActivatedEventArgs(activationUri, ApplicationExecutionState.NotRunning)));
+		}
+	}
+
+	// Graphics initialization runs before the app has launched its window, and the contract is nullable for
+	// exactly that: asserting one exists crashed the browser host before it could render.
+	UIElement? IXamlRootHost.RootElement => Window.CurrentSafe?.RootElement;
+
+	private static partial class NativeMethods
+	{
+		[JSImport("globalThis.Uno.UI.Runtime.WebAssemblyWindowWrapper.persistBootstrapperLoader")]
+		public static partial void PersistBootstrapperLoader();
+		[JSImport("globalThis.Uno.UI.Runtime.WebAssemblyWindowWrapper.removeLoading")]
+		public static partial void RemoveLoading();
+
+		[JSImport("globalThis.Uno.UI.Runtime.WebAssemblyWindowWrapper.getSearchParams")]
+		public static partial string GetSearchParams();
+	}
+}

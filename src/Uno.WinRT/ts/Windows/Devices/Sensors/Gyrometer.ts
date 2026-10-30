@@ -17,7 +17,7 @@ namespace Windows.Devices.Sensors {
 		public static initialize(): boolean {
 			try {
 				if (typeof window.Gyroscope === "function") {
-					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Gyrometer.DispatchReadingAsync;
 					} else {
 						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Gyrometer.DispatchReading;

@@ -36,6 +36,9 @@
     -->
     <UnoFeatures>
     </UnoFeatures>
+    <UnoFeatures Condition=" '$(UnoFeaturesOverride)' != '' ">$(UnoFeaturesOverride)</UnoFeatures>
+    <!-- Read by the head only, so a test can give it a renderer the library doesn't name. -->
+    <UnoFeatures Condition=" '$(UnoHeadFeaturesOverride)' != '' ">$(UnoHeadFeaturesOverride)</UnoFeatures>
 
     <NoWarn>$(NoWarn);NU1605;IL2026;IL2008;IL2104</NoWarn>
   </PropertyGroup>

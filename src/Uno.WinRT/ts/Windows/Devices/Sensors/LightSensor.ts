@@ -21,7 +21,7 @@ namespace Windows.Devices.Sensors {
 		public static initialize(): boolean {
 			try {
 				if (typeof window.AmbientLightSensor === "function") {
-					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 						LightSensor.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.LightSensor.DispatchReadingAsync;
 					} else {
 						LightSensor.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.LightSensor.DispatchReading;

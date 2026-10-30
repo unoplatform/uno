@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.UI.Xaml.Input;
 using Windows.UI.Core;
 using System.Threading.Tasks;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Automation;
@@ -77,8 +78,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private uint _goToStateRequest;
 		private TimeSpan _pauseStateUpdateUntil;
 		private bool _canRaiseClickOnPointerRelease;
+		private (PointerIdentifier Pointer, ulong Timestamp) _clickPress;
 
-		public SelectorItem()
+		protected SelectorItem()
 		{
 			AddHandler(ManipulationStartedEvent, _onManipulationStarted, handledEventsToo: true);
 
@@ -94,11 +96,65 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			AddHandler(PointerCaptureLostEvent, _onPointerExitedOrCanceled, handledEventsToo: true);
 		}
 
+		/// <summary>
+		/// ContainerContentChanging arguments held back until this container has its template,
+		/// see <see cref="ListViewBase.ContainerPreparedForItem"/>.
+		/// </summary>
+		internal (object Item, int Index)? PendingContainerContentChanging { get; set; }
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
 
 			UpdateVisualStates(useTransitions: IsLoaded);
+		}
+
+		private protected override void OnContentTemplateRootChanged()
+		{
+			base.OnContentTemplateRootChanged();
+
+			// The materialized item template is what ContainerContentChanging handlers work with.
+			// The root can be reported while this container's own template is still being loaded,
+			// before it is attached: that report is picked up by the measure that follows.
+			if (ContentTemplateRoot is not null && TemplatedRoot is not null)
+			{
+				RaisePendingContainerContentChanging();
+			}
+		}
+
+		protected override global::Windows.Foundation.Size MeasureOverride(global::Windows.Foundation.Size availableSize)
+		{
+			// The template is applied right before this measure.
+			if (ContentTemplateRoot is not null)
+			{
+				RaisePendingContainerContentChanging();
+			}
+
+			// Fallback for a template that never reports a root (no ContentPresenter, or Template is null).
+			// Not raised here: a ContentPresenter without explicit Content/ContentTemplate bindings only gets
+			// them on its Loaded, after this measure, so give it until the queued callback to report.
+			if (PendingContainerContentChanging is not null && !_pendingContainerContentChangingFallbackQueued)
+			{
+				_pendingContainerContentChangingFallbackQueued = true;
+				_ = DispatcherQueue.TryEnqueue(() =>
+				{
+					_pendingContainerContentChangingFallbackQueued = false;
+					RaisePendingContainerContentChanging();
+				});
+			}
+
+			return base.MeasureOverride(availableSize);
+		}
+
+		private bool _pendingContainerContentChangingFallbackQueued;
+
+		private void RaisePendingContainerContentChanging()
+		{
+			if (PendingContainerContentChanging is { } pending)
+			{
+				PendingContainerContentChanging = null;
+				(ItemsControl.ItemsControlFromItemContainer(this) as ListViewBase)?.RaiseContainerContentChanging(pending.Item, this, pending.Index);
+			}
 		}
 
 		private protected Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
@@ -386,11 +442,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			if (ShouldHandlePressed
 				&& IsItemClickEnabled
-				&& args.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+				&& args.GetCurrentPoint(null) is { Properties.IsLeftButtonPressed: true } point)
 			{
 				// Note: We do allow PointerCaptureResult.AlreadyCaptured as if element has been flagged as CanDrag
 				//		 (common in ListView that do allow re-ordering ;) ),
 				//		 the pointer might have already been captured for this SelectorItem.
+
+				// Another finger does not replace the press which armed the click: its release decides whether it was a hold.
+				if (!_canRaiseClickOnPointerRelease || _clickPress.Pointer == point.Pointer)
+				{
+					_clickPress = (point.Pointer, point.Timestamp);
+				}
 
 				_canRaiseClickOnPointerRelease = true;
 			}
@@ -414,17 +476,45 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				Focus(FocusState.Pointer);
 
 				var update = ManipulationUpdateKind.End;
-				if (_canRaiseClickOnPointerRelease)
+
+				// Another finger's release leaves the click armed: only the release of the press which armed it raises it.
+				if (_canRaiseClickOnPointerRelease && args.Pointer.UniqueId == _clickPress.Pointer)
 				{
 					_canRaiseClickOnPointerRelease = false;
 
-					update = ManipulationUpdateKind.Clicked;
-					Selector?.OnItemClicked(this, args.KeyModifiers);
+					if (!IsListViewBaseItemHold(args))
+					{
+						update = ManipulationUpdateKind.Clicked;
+						Selector?.OnItemClicked(this, args.KeyModifiers);
+					}
 				}
 
 				args.Handled = ShouldHandlePressed;
 				UpdateCommonStatesWithoutNeedsLayout(true, (PointerDeviceType)args.Pointer.PointerDeviceType, update);
 			}
+		}
+
+		// WinUI's ListViewBaseItem runs its tap interaction (ItemClick and selection) only when a Tapped follows (ListViewBaseItem_Partial.cpp, OnPointerReleased),
+		// while a touch or pen hold is followed by a RightTapped. ListBoxItem and ComboBoxItem still select on a hold.
+		// TODO Uno: Use args.GestureFollowing once implemented (it is always None for now): https://github.com/unoplatform/uno/issues/25673
+		private bool IsListViewBaseItemHold(PointerRoutedEventArgs args)
+		{
+			if (!IsListViewBaseItem
+				|| !Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold
+				|| (PointerDeviceType)args.Pointer.PointerDeviceType is not (PointerDeviceType.Touch or PointerDeviceType.Pen))
+			{
+				return false;
+			}
+
+			var release = args.GetCurrentPoint(null);
+			var isHold = Microsoft.UI.Input.GestureRecognizer.IsHold(release.Pointer, _clickPress.Timestamp, release.Timestamp);
+
+			if (isHold && this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"{release.Pointer} hold of {release.Timestamp - _clickPress.Timestamp} µs on {this}: no ItemClick nor selection.");
+			}
+
+			return isHold;
 		}
 
 		/// <inheritdoc />

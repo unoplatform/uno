@@ -40,7 +40,7 @@ namespace Windows.Media {
 
 		public static initialize(managedId: string, culture: string) {
 			if (!SpeechRecognizer.dispatchResult) {
-				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 					SpeechRecognizer.dispatchError = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchErrorAsync;
 					SpeechRecognizer.dispatchHypothesis = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchHypothesisAsync;
 					SpeechRecognizer.dispatchResult = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchResultAsync;

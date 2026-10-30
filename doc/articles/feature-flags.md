@@ -18,14 +18,10 @@ Use `Uno.UI.FeatureConfiguration.Font.MaximumTextScaleFactor` to control this.
 
 ## Rendering backend (Skia)
 
-The rendering backend for the Skia renderer can be configured per platform. On desktop, the preferred approach is the [host builder API](xref:Uno.Skia.Vulkan). The feature flags below are kept for backwards compatibility and for platforms (like Android) that don't use a host builder.
+The rendering backend for the Skia renderer can be configured per platform. On desktop (X11, Win32) it is configured through the [host builder API](xref:Uno.Skia.Vulkan) (`ForceRenderingBackend` / `DisableRenderingBackends`), not feature flags. The feature flags below apply to platforms (like Android) that don't use a host builder.
 
-- `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid` — Enables Vulkan rendering on Android (Skia). Default: `false`.
-- `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnX11` — Enables Vulkan rendering on Linux/X11. Default: `false`.
-- `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnWin32` — Enables Vulkan rendering on Windows/Win32. Default: `false`.
+- `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid` — Enables Vulkan rendering on Android (Skia). Default: `true` since Uno Platform 7.0. Set to `false` to fall back to OpenGL ES.
 - `Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid` — Enables OpenGL ES rendering on Android (Skia). Default: `true`.
-- `Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnX11` — Enables OpenGL rendering on Linux/X11. Default: `null` (auto-detect).
-- `Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnWin32` — Enables OpenGL rendering on Windows/Win32. Default: `null` (auto-detect).
 
 For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
@@ -33,17 +29,35 @@ For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
 Set `Uno.UI.FeatureConfiguration.Rendering.SkipVisualTreePainting` to `true` to skip painting of the visual tree entirely, producing frames with no visual output. Frame scheduling, rendering events, composition animations and `RenderTargetBitmap` keep working as usual. This is intended for scenarios where the visual output is of no interest (e.g. automated tests) to save CPU/GPU. Default: `false`.
 
+## Images (Skia)
+
+### Memory kept for undisplayed images
+
+A decoded image that nothing displays anymore (its `Image` was unloaded or given another source) keeps its pixels for 1 second, as on WinUI, so that it shows them at once if it comes back. `Uno.UI.FeatureConfiguration.Image.MaxUndisplayedImageBytes` bounds the memory these images hold: past it, the oldest are released first at the end of the next layout pass, and with `0` every one of them is. An image counts 4 bytes per pixel of its decoded frames and of the texture drawn from it; images shared through the bitmap cache (`EnableBitmapImageCache`) are not counted. Defaults: 128 MB on desktop, 64 MB on Android, iOS and tvOS, 32 MB on WebAssembly.
+
+Uno decodes an image at its full size unless `DecodePixelWidth` or `DecodePixelHeight` is set, where WinUI decodes it at its rendered size by default, so the same images can hold far more memory than on WinUI. Set the limit to the app's memory budget: a higher one keeps more recently shown images ready to show again, a lower one (down to `0`) frees them sooner. A decode size reduces what each image holds in the first place.
+
 ## ComboBox
 
 ### Default preferred placement
 
 By default, `ComboBox` popup is placed in such a way that the currently selected item is centered above the `ComboBox`. If you want to adjust this behavior on non-Windows targets, set the `Uno.UI.FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement` property.
 
+## Gestures
+
+### Touch and pen holds
+
+As on WinUI, a touch or pen hold is a right-tap: it raises no `Tapped` nor `DoubleTapped`, and a `ListView` or `GridView` item raises no `ItemClick` nor selection when it is released. Set `Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold` to `false` at startup to report a hold as a tap, and to raise `ItemClick` and selection on its release, as earlier versions of Uno Platform did. Default: `true`.
+
+## Input validation
+
+Set `Uno.UI.FeatureConfiguration.InputValidation.IsEnabled` to `true` at startup, before any page is created, to surface the `INotifyDataErrorInfo` errors of a binding source on the bound control. Default: `false`. The `Uno.UI.FeatureConfiguration.InputValidation.ValidationProperties` map selects which property of a control type is validated. See [Input validation](xref:Uno.Features.InputValidation).
+
 ## Popups
 
 ### Constraining by visible bounds
 
-By default we don't constrain popups by the visible bounds of the application view on Skia renderer targets. This is different from native renderer where popups are automatically padded by the visible bounds, which ensures the popup does not flow below the system UI (e.g. mobile device status bar or navigation bar). The `ConstrainByVisibleBounds` property allows you to control this behavior. Please note that in case the property is set to `false` (which is the default for Skia renderer), you are responsible for ensuring the content of your popups has appropriate padding around its content. This can be achieved using the [`SafeArea` control in Uno Toolkit](xref:Toolkit.Controls.SafeArea).
+By default we don't constrain popups by the visible bounds of the application view, so a popup can flow below the system UI (e.g. mobile device status bar or navigation bar). The `ConstrainByVisibleBounds` property allows you to control this behavior. Please note that in case the property is set to `false` (which is the default), you are responsible for ensuring the content of your popups has appropriate padding around its content. This can be achieved using the [`SafeArea` control in Uno Toolkit](xref:Toolkit.Controls.SafeArea).
 
 ### Prevent light dismiss on window deactivation
 

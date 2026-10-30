@@ -53,7 +53,7 @@ public partial class DependencyObject
 		newParams.VisualTree = null;
 		@params = newParams;
 
-		foreach (var propertyDetail in _properties.GetAllDetails())
+		foreach (var propertyDetail in AllPropertyDetails)
 		{
 			if (!ShouldEnterLeaveProperty(propertyDetail))
 			{
@@ -91,7 +91,7 @@ public partial class DependencyObject
 				// so guard the enumeration and skip the collection if it can't be safely enumerated.
 				try
 				{
-					foreach (var innerValue in enumerable)
+					foreach (var innerValue in new DependencyObjectItems(enumerable))
 					{
 						if (innerValue is DependencyObject innerDependencyObject)
 						{
@@ -103,16 +103,16 @@ public partial class DependencyObject
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().Debug($"Skipping Enter walk of non-enumerable collection on property '{propertyDetail!.Property.Name}': {e.Message}");
+						this.Log().Debug($"Aborting the Enter walk of the collection on property '{propertyDetail!.Property.Name}': {e}");
 					}
 				}
 			}
 
 			if (propertyValue is IAdditionalChildrenProvider additional)
 			{
-				foreach (var innerValue in additional.GetAdditionalChildObjects())
+				foreach (var innerValue in new DependencyObjectItems(additional.GetAdditionalChildObjects()))
 				{
-					EnterObjectProperty(innerValue, namescopeOwner, @params);
+					EnterObjectProperty((DependencyObject)innerValue, namescopeOwner, @params);
 				}
 			}
 		}
@@ -124,7 +124,7 @@ public partial class DependencyObject
 	/// </summary>
 	private void LeaveProperties(DependencyObject? namescopeOwner, LeaveParams @params)
 	{
-		foreach (var propertyDetail in _properties.GetAllDetails())
+		foreach (var propertyDetail in AllPropertyDetails)
 		{
 			if (!ShouldEnterLeaveProperty(propertyDetail))
 			{
@@ -142,7 +142,7 @@ public partial class DependencyObject
 			{
 				try
 				{
-					foreach (var innerValue in enumerable)
+					foreach (var innerValue in new DependencyObjectItems(enumerable))
 					{
 						if (innerValue is DependencyObject innerDependencyObject)
 						{
@@ -154,16 +154,16 @@ public partial class DependencyObject
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().Debug($"Skipping Leave walk of non-enumerable collection on property '{propertyDetail!.Property.Name}': {e.Message}");
+						this.Log().Debug($"Aborting the Leave walk of the collection on property '{propertyDetail!.Property.Name}': {e}");
 					}
 				}
 			}
 
 			if (propertyValue is IAdditionalChildrenProvider additional)
 			{
-				foreach (var innerValue in additional.GetAdditionalChildObjects())
+				foreach (var innerValue in new DependencyObjectItems(additional.GetAdditionalChildObjects()))
 				{
-					LeaveObjectProperty(innerValue, namescopeOwner, @params);
+					LeaveObjectProperty((DependencyObject)innerValue, namescopeOwner, @params);
 				}
 			}
 		}
@@ -196,7 +196,7 @@ public partial class DependencyObject
 	private bool ShouldEnterLeaveProperty(DependencyPropertyDetails? propertyDetail)
 	{
 		if (propertyDetail == null
-			|| propertyDetail == _properties.DataContextPropertyDetails)
+			|| propertyDetail == DataContextPropertyDetails)
 		{
 			return false;
 		}

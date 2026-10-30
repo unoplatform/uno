@@ -57,9 +57,7 @@ internal class CliManager
 				// "mcp serve" is the MCP STDIO proxy
 				if (mcpArgs is { Length: > 0 } && string.Equals(mcpArgs[0], "serve", StringComparison.OrdinalIgnoreCase))
 				{
-					var mcpWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
-					LogVersionBanner();
-					return await RunMcpProxyAsync(mcpArgs[1..], requestedWorkingDirectory, mcpWorkspaceResolution);
+					return await RunMcpBridgeAsync(mcpArgs[1..], requestedWorkingDirectory, hasExplicitWorkspaceOverride);
 				}
 
 				return RunMcpSubcommand(mcpArgs, requestedWorkingDirectory);
@@ -67,12 +65,20 @@ internal class CliManager
 
 			if (originalArgs.Contains("--mcp-app"))
 			{
-				var mcpWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
-				LogVersionBanner();
-				return await RunMcpProxyAsync(
+				return await RunMcpBridgeAsync(
 					originalArgs.Where(a => a != "--mcp-app").ToArray(),
 					requestedWorkingDirectory,
-					mcpWorkspaceResolution);
+					hasExplicitWorkspaceOverride);
+			}
+
+			// Like Program.IsAppCommand: the global options (--log-level, --file-log) may come before the verb.
+			if (AppCommandHandler.AppVerbIndex(originalArgs) is var appIndex and >= 0)
+			{
+				var appWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+				var appWorkingDirectory = appWorkspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+				return await new AppCommandHandler(_logger).RunAsync(
+					originalArgs[(appIndex + 1)..],
+					noStart => EnsureHostAsync(appWorkingDirectory, appWorkspaceResolution.SelectedSolutionPath, noStart));
 			}
 
 			var isDisco = originalArgs is { Length: > 0 } &&
@@ -187,6 +193,129 @@ internal class CliManager
 			|| string.Equals(command, "stop", StringComparison.OrdinalIgnoreCase)
 			|| string.Equals(command, "disco", StringComparison.OrdinalIgnoreCase)
 			|| string.Equals(command, "health", StringComparison.OrdinalIgnoreCase);
+
+	/// <summary>
+	/// Starts the MCP bridge. A <c>--solution &lt;path&gt;</c> argument selects that solution explicitly, as
+	/// uno_app_select_solution does (MCP server configurations pass it instead of relying on roots); otherwise the
+	/// workspace is discovered from the working directory or --solution-dir.
+	/// </summary>
+	private async Task<int> RunMcpBridgeAsync(string[] bridgeArgs, string requestedWorkingDirectory, bool hasExplicitWorkspaceOverride)
+	{
+		var solutionArgument = ParseMcpSolutionArgument(bridgeArgs, Environment.CurrentDirectory);
+		if (!solutionArgument.Success)
+		{
+			_logger.LogError("{Error}", solutionArgument.Error);
+			return 2;
+		}
+
+		WorkspaceResolution workspaceResolution;
+		if (solutionArgument.SolutionPath is { } solutionPath)
+		{
+			if (hasExplicitWorkspaceOverride)
+			{
+				_logger.LogInformation("--solution {Solution} takes precedence over --solution-dir for the solution to serve", solutionPath);
+			}
+
+			workspaceResolution = await _workspaceResolver.ResolveSolutionAsync(requestedWorkingDirectory, solutionPath);
+			if (!workspaceResolution.IsResolved)
+			{
+				_logger.LogWarning(
+					"--solution does not resolve: {Reason} It stays selected and starts once it resolves.",
+					DiscoveryIssueMapper.MapUnresolvedSelection(solutionPath, selectionIsKept: true).Message);
+			}
+		}
+		else
+		{
+			workspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+		}
+
+		LogVersionBanner();
+		return await RunMcpProxyAsync(solutionArgument.FilteredArgs, requestedWorkingDirectory, workspaceResolution);
+	}
+
+	/// <summary>
+	/// Extracts the MCP bridge's <c>--solution &lt;path&gt;</c>, resolved against <paramref name="baseDirectory"/>, so it
+	/// is not forwarded to the DevServer host, which receives the bridge's own <c>--solution</c>. Every spelling the
+	/// host's command-line configuration would read as that key (<c>--solution=path</c>, <c>/solution path</c>,
+	/// <c>solution=path</c>, any casing) is consumed too: forwarded, it would replace the bridge's choice without these checks.
+	/// </summary>
+	internal static (bool Success, string[] FilteredArgs, string? SolutionPath, string? Error) ParseMcpSolutionArgument(
+		string[] args,
+		string baseDirectory)
+	{
+		string? rawSolutionPath = null;
+		var filteredArgs = new List<string>(args.Length);
+
+		for (var i = 0; i < args.Length; i++)
+		{
+			if (!TryMatchSolutionOption(args[i], out var inlineValue))
+			{
+				filteredArgs.Add(args[i]);
+				continue;
+			}
+
+			if (rawSolutionPath is not null)
+			{
+				return (false, [], null, "--solution was given more than once.");
+			}
+
+			rawSolutionPath = inlineValue ?? (i + 1 < args.Length ? args[++i] : null);
+			if (string.IsNullOrWhiteSpace(rawSolutionPath))
+			{
+				return (false, [], null, "Missing value for --solution: expected the path of a .sln or .slnx file.");
+			}
+		}
+
+		if (rawSolutionPath is null)
+		{
+			return (true, filteredArgs.ToArray(), null, null);
+		}
+
+		string solutionPath;
+		try
+		{
+			solutionPath = Path.GetFullPath(rawSolutionPath, baseDirectory);
+		}
+		catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
+		{
+			return (false, [], null, $"Invalid --solution path '{rawSolutionPath}': {ex.Message}");
+		}
+
+		return SolutionPathRules.Check(solutionPath) switch
+		{
+			SolutionPathRules.Problem.None => (true, filteredArgs.ToArray(), solutionPath, null),
+			SolutionPathRules.Problem.NotLocal => (false, [], null, $"--solution must be a local path; network (UNC) and device paths are refused: '{solutionPath}'."),
+			SolutionPathRules.Problem.NotSolutionFile => (false, [], null, $"--solution must point to a .sln or .slnx file: '{solutionPath}'."),
+			_ => (false, [], null, $"--solution file not found: '{solutionPath}'."),
+		};
+	}
+
+	private static bool TryMatchSolutionOption(string arg, out string? inlineValue)
+	{
+		inlineValue = null;
+		var prefixLength = arg.StartsWith("--", StringComparison.Ordinal) ? 2 : arg.StartsWith('/') ? 1 : 0;
+		var name = arg.AsSpan(prefixLength);
+		if (!name.StartsWith("solution", StringComparison.OrdinalIgnoreCase))
+		{
+			return false;
+		}
+
+		var rest = name["solution".Length..];
+		if (rest.IsEmpty)
+		{
+			// The bare form is a key only with its value (solution=path): a bare "solution" is a positional argument.
+			// A bare solution=path that is the value of the previous option is consumed too; no host option takes one.
+			return prefixLength > 0;
+		}
+
+		if (rest[0] != '=')
+		{
+			return false;
+		}
+
+		inlineValue = rest[1..].ToString();
+		return true;
+	}
 
 	private Task<WorkspaceResolution> ResolveWorkspaceAsync(string requestedWorkingDirectory, bool hasExplicitWorkspaceOverride)
 		=> hasExplicitWorkspaceOverride
@@ -377,17 +506,18 @@ internal class CliManager
 
 		if (exitCode is not null)
 		{
-			// Display output for debugging purposes
-			if (!string.IsNullOrWhiteSpace(stdOut))
-			{
-				_logger.LogDebug("Settings application stdout:\n{Stdout}", stdOut);
-			}
-			if (!string.IsNullOrWhiteSpace(stdErr))
-			{
-				_logger.LogError("Settings application stderr:\n{Stderr}", stdErr);
-			}
+			// The settings app writes its exit reason to its output; surface it so the cause is
+			// visible instead of a bare exit code.
+			var reason = FormatSettingsExitReason(stdOut, stdErr);
 
-			_logger.LogError("Settings application exited with code {ExitCode}", exitCode);
+			if (!string.IsNullOrWhiteSpace(reason))
+			{
+				_logger.LogError("Settings application exited with code {ExitCode}: {Reason}", exitCode, reason);
+			}
+			else
+			{
+				_logger.LogError("Settings application exited with code {ExitCode} (no diagnostic output captured).", exitCode);
+			}
 
 			return 1;
 		}
@@ -396,6 +526,28 @@ internal class CliManager
 			_logger.LogInformation("Settings application started successfully");
 			return 0;
 		}
+	}
+
+	/// <summary>
+	/// Labels stdout/stderr (stdout first — the app writes its exit reason there) and collapses
+	/// internal whitespace so the reason stays a single log line.
+	/// </summary>
+	internal static string FormatSettingsExitReason(string? stdOut, string? stdErr)
+	{
+		var parts = new List<string>();
+		if (!string.IsNullOrWhiteSpace(stdOut))
+		{
+			parts.Add($"stdout: {CollapseWhitespace(stdOut)}");
+		}
+		if (!string.IsNullOrWhiteSpace(stdErr))
+		{
+			parts.Add($"stderr: {CollapseWhitespace(stdErr)}");
+		}
+
+		return string.Join("; ", parts);
+
+		static string CollapseWhitespace(string value)
+			=> string.Join(" ", value.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
 	}
 
 	private async Task<int> RunMcpProxyAsync(string[] args, string requestedWorkingDirectory, WorkspaceResolution workspaceResolution)
@@ -927,6 +1079,56 @@ internal class CliManager
 		}
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput, enableMajorRollForward: enableMajorRollForward);
+	}
+
+	/// <summary>
+	/// Returns the HTTP port of a ready DevServer for the solution, starting one the same way
+	/// <c>start</c> does when none is registered, unless <paramref name="noStart"/>. Null when no solution was
+	/// resolved, no host may be started, or the start failed.
+	/// </summary>
+	private async Task<int?> EnsureHostAsync(string workingDirectory, string? solutionPath, bool noStart)
+	{
+		if (string.IsNullOrWhiteSpace(solutionPath))
+		{
+			_logger.LogError("No solution resolved under {Directory}; pass --solution-dir <path>.", workingDirectory);
+			return null;
+		}
+
+		var lookup = new AmbientRegistryLookup();
+		if (lookup.FindBySolution(solutionPath) is { } existing)
+		{
+			_logger.LogDebug("Using DevServer on port {Port} (PID {Pid}) for {Solution}", existing.Port, existing.ProcessId, solutionPath);
+			return existing.Port;
+		}
+
+		if (noStart)
+		{
+			_logger.LogError("No DevServer is running for {Solution} (--no-start); run `uno-devserver start` first.", solutionPath);
+			return null;
+		}
+
+		var hostLaunchPlan = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
+		if (hostLaunchPlan is null)
+		{
+			return null; // errors already logged
+		}
+
+		var exitCode = await CreateStartCommandHandler().RunAsync(
+			hostLaunchPlan.HostPath, ["start"], workingDirectory, ResolveAddInsForCommand(workingDirectory),
+			solutionPath, enableMajorRollForward: hostLaunchPlan.RequiresMajorRollForward);
+
+		if (exitCode != 0)
+		{
+			return null;
+		}
+
+		if (lookup.FindBySolution(solutionPath) is { } started)
+		{
+			return started.Port;
+		}
+
+		_logger.LogError("The DevServer started but did not register for {Solution}; run `uno-devserver health`.", solutionPath);
+		return null;
 	}
 
 	private StartCommandHandler CreateStartCommandHandler()

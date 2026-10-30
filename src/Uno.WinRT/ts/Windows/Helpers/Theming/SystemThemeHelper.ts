@@ -23,7 +23,7 @@ namespace Uno.Helpers.Theming {
 
 		public static observeSystemTheme() {
 			if (!SystemThemeHelper.dispatchThemeChange) {
-				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 					SystemThemeHelper.dispatchThemeChange = (<any>globalThis).DotnetExports.Uno.Uno.Helpers.Theming.SystemThemeHelper.DispatchSystemThemeChangeAsync;
 				} else {
 					SystemThemeHelper.dispatchThemeChange = (<any>globalThis).DotnetExports.Uno.Uno.Helpers.Theming.SystemThemeHelper.DispatchSystemThemeChange;
@@ -39,7 +39,7 @@ namespace Uno.Helpers.Theming {
 
 		public static observeHighContrast() {
 			if (!SystemThemeHelper.dispatchHighContrastChange) {
-				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 					SystemThemeHelper.dispatchHighContrastChange = (<any>globalThis).DotnetExports.Uno.Uno.Helpers.Theming.SystemThemeHelper.DispatchHighContrastChangeAsync;
 				} else {
 					SystemThemeHelper.dispatchHighContrastChange = (<any>globalThis).DotnetExports.Uno.Uno.Helpers.Theming.SystemThemeHelper.DispatchHighContrastChange;

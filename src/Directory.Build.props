@@ -67,8 +67,8 @@
   <ItemGroup Condition=" '$(MicrosoftNetCompilersToolsetVersion)' != ''">
     <!--This override is used to validate the use of specific version of the C# Compiler-->
 	<!-- Both compiler version and CodeStyle package version should be kept in sync -->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
-	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" PrivateAssets="all" />
+	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" PrivateAssets="all" />
   </ItemGroup>
 
 	<PropertyGroup>
@@ -82,12 +82,12 @@
   -->
 	<PropertyGroup>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Tests.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Skia.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Generic.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Wasm.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.netcoremobile.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Reference.csproj</_AdjustedOutputProjects>
 
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinRT.Skia.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinRT.Generic.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinRT.Wasm.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinRT.netcoremobile.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinRT.Reference.csproj</_AdjustedOutputProjects>
@@ -95,31 +95,28 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.csproj</_AdjustedOutputProjects>
 
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RuntimeTests.Skia.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RuntimeTests.Generic.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RuntimeTests.Windows.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Tests.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Skia.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Generic.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.netcoremobile.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Windows.csproj</_AdjustedOutputProjects>
-
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Tests.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.csproj</_AdjustedOutputProjects>
 
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.X11.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.Win32.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.X11.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Win32.csproj</_AdjustedOutputProjects>
 		
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.WebView.Skia.X11.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.WebView.X11.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Extras.Tests.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Extras.Skia.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Extras.Generic.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Extras.Windows.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Foldable.netcoremobile.csproj</_AdjustedOutputProjects>
@@ -135,12 +132,15 @@
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.netcoremobile.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Skia.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Generic.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Wasm.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Reference.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Skia.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Managed.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Drawing.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.csproj</_AdjustedOutputProjects>
@@ -163,16 +163,6 @@
 		<DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
 	</PropertyGroup>
 
-	<ItemGroup Condition="('$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'=='') and '$(AndroidManifest)'==''">
-		<!--
-	Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)
-	Make sure to include on the versions that are needed to avoid growing the nuget cache unnecessarily.
-	-->
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" PrivateAssets="All" />
-	</ItemGroup>
-
 	<PropertyGroup>
 		<IsAndroid>false</IsAndroid>
 		<IsAndroid Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='android'">true</IsAndroid>
@@ -185,9 +175,6 @@
 
 		<IsAppleUIKit>false</IsAppleUIKit>
 		<IsAppleUIKit Condition="$(IsIOS) or $(IsTvOS)">true</IsAppleUIKit>
-
-		<IsApple>false</IsApple>
-		<IsApple Condition="$(IsIOS) or $(IsTvOS)">true</IsApple>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -245,7 +232,7 @@
 				<AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
 			</PropertyGroup>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0-preview.24454.1" PrivateAssets="All" />
+				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="All" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
@@ -269,9 +256,11 @@
 				<!-- Optional: Include PDB in the built .nupkg -->
 				<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 			</PropertyGroup>
-			<ItemGroup>
-				<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
-			</ItemGroup>
+			<!--
+				SourceLink itself is provided implicitly by the .NET SDK (Microsoft.NET.Sdk.SourceLink.props), so no
+				PackageReference is needed. Referencing one would suppress the SDK's copy and pin an older, unmaintained
+				Microsoft.Build.Tasks.Git.
+			-->
 		</When>
 	</Choose>
 

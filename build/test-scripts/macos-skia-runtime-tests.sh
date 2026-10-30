@@ -12,8 +12,10 @@ fi
 
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-macos-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
-export TEST_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-macos-runtime-tests-results.xml
+# A label (e.g. -webgpu) keeps a variant lane's results and retry list apart from the default lane's.
+export UNO_TEST_RESULT_LABEL=${UNO_TEST_RESULT_LABEL:-}
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-macos${UNO_TEST_RESULT_LABEL}-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
+export TEST_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-macos${UNO_TEST_RESULT_LABEL}-runtime-tests-results.xml
 
 ## Create the failed-tests directory up front: every abort path below (a crashed harness,
 ## a killed app, a non-zero transform tool) otherwise skips the mkdir and leaves
@@ -40,7 +42,33 @@ export DOTNET_CreateDumpDiagnostics=1
 export DOTNET_CreateDumpLogToFile="$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/createdump-macos.log"
 export DOTNET_EnableCrashReport=1
 
+## Turns an over-released Objective-C object into a "message sent to deallocated instance" error naming its class,
+## instead of a segfault inside an autorelease pool drain.
+export NSZombieEnabled=YES
+
+## The runtime's crash report only symbolizes managed frames. macOS writes its own .ips report, with
+## symbolized AppKit/Foundation frames and the faulting address, so collect it when the app dies.
+CRASH_REPORTS_MARKER=$(mktemp)
+
+set +e
 dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE
+APP_EXIT_CODE=$?
+set -e
+
+if [ $APP_EXIT_CODE -ne 0 ]; then
+	echo "SamplesApp exited with code $APP_EXIT_CODE, collecting macOS crash reports"
+
+	# ReportCrash writes the report asynchronously after the process is gone.
+	for i in $(seq 1 30); do
+		if [ -n "$(find ~/Library/Logs/DiagnosticReports -newer "$CRASH_REPORTS_MARKER" -type f 2>/dev/null)" ]; then
+			break
+		fi
+		sleep 1
+	done
+
+	find ~/Library/Logs/DiagnosticReports -newer "$CRASH_REPORTS_MARKER" -type f -exec cp {} "$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/" \; 2>/dev/null || true
+	exit $APP_EXIT_CODE
+fi
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool

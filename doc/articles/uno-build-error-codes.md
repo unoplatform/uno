@@ -49,7 +49,7 @@ The build process has detected that you have set the value `UnoGenerateAotProfil
 
 ### UNOB0008: Building a WinUI class library with dotnet build is not supported
 
-Building a `net8.0-windows10.x.x` class library using `dotnet build` is not supported at this time because of a [Windows App SDK issue](https://github.com/microsoft/WindowsAppSDK/issues/3548), when the library contains XAML files.
+Building a `net10.0-windows10.x.x` class library using `dotnet build` is not supported at this time because of a [Windows App SDK issue](https://github.com/microsoft/WindowsAppSDK/issues/3548), when the library contains XAML files.
 
 To work around this, use `msbuild /r` on Windows. You can build using `msbuild` with a **Developer Command Prompt for VS 2022** (or 2026), or by using `vswhere` or using [GitHub actions scripts](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/ci-for-winui3?pivots=winui3-packaged-csharp) in a CI environment.
 
@@ -69,37 +69,31 @@ Alternatively you may disable the Implicit Package References
 
 ### UNOB0010: The browserwasm TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents debugging and Hot Reload from working properly for all targets when the `net8.0-browserwasm` TargetFramework is placed first in the `TargetFrameworks` property.
+In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents debugging and Hot Reload from working properly for all targets when the `net10.0-browserwasm` TargetFramework is placed first in the `TargetFrameworks` property.
 
-Make sure to place `net8.0-browserwasm` last in your `<TargetFrameworks>` property.
-
-This warning can be disabled by adding the following to your `.csproj`:
-
-```xml
-<PropertyGroup>
-  <UnoDisableVSWarnBrowserNotFirst>true</UnoDisableVSWarnBrowserNotFirst>
-</PropertyGroup>
-```
-
-### UNOB0011: The desktop TargetFramework must be placed first in the TargetFrameworks property
-
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-desktop` TargetFramework is placed first in the `TargetFrameworks` property.
-
-Make sure to place `net8.0-desktop` first in your `<TargetFrameworks>` property.
+Make sure to place `net10.0-browserwasm` last in your `<TargetFrameworks>` property.
 
 This warning can be disabled by adding the following to your `.csproj`:
 
 ```xml
 <PropertyGroup>
-  <UnoDisableVSWarnDesktopNotFirst>true</UnoDisableVSWarnDesktopNotFirst>
+  <UnoDisableVSWarnBrowserIsFirst>true</UnoDisableVSWarnBrowserIsFirst>
 </PropertyGroup>
 ```
+
+### UNOB0011: Retired
+
+> [!NOTE]
+> This error code is retired. It warned when the desktop TargetFramework was placed first
+> while targeting Visual Studio 17.11 or earlier — a version that can no longer build Uno
+> Platform 7.0 (minimum MSBuild is 17.14). The check and its `UnoDisableVSWarnDesktopIsFirst`
+> opt-out have been removed. This heading is kept so existing links to it still resolve.
 
 ### UNOB0012: The windows TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-windows10.xxx` TargetFramework is placed first in the `TargetFrameworks` property.
+In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net10.0-windows10.xxx` TargetFramework is placed first in the `TargetFrameworks` property.
 
-Make sure that `net8.0-windows10.xxx` is not first in your `<TargetFrameworks>` property.
+Make sure that `net10.0-windows10.xxx` is not first in your `<TargetFrameworks>` property.
 
 This warning can be disabled by adding the following to your `.csproj`:
 
@@ -109,11 +103,11 @@ This warning can be disabled by adding the following to your `.csproj`:
 </PropertyGroup>
 ```
 
-### UNOB0013: The net8.0 TargetFramework must not be placed first in the TargetFrameworks property
+### UNOB0013: The net10.0 TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0` TargetFramework is placed first in the `TargetFrameworks` property.
+In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net10.0` TargetFramework is placed first in the `TargetFrameworks` property.
 
-Make sure that `net8.0` is not first in your `<TargetFrameworks>` property.
+Make sure that `net10.0` is not first in your `<TargetFrameworks>` property.
 
 This warning can be disabled by adding the following to your `.csproj`:
 
@@ -129,19 +123,13 @@ When building with Rider on Linux or macOS, unsupported target frameworks are [n
 
 See how to [make platforms conditional](xref:Uno.GettingStarted.CreateAnApp.Rider#considerations-for-macos-and-linux) for Rider.
 
-### UNOB0015: The desktop TargetFramework must be placed first
+### UNOB0015: Retired
 
-In Visual Studio 17.13 or earlier, when both mobile (`-ios`, `-android`) and `desktop` target frameworks are used, the `-desktop` target framework must be placed first in order for WSL debugging to work.
-
-If `-desktop` is not first, the following message will appear:
-
-```text
-The project doesn't know how to run the profile with name 'MyApp (Desktop WSL2)' and command 'WSL2'.
-```
-
-To fix the issue, reorder the items in your `.csproj` so that `TargetFrameworks` contains `netX.0-desktop` as the first target framework, or upgrade to Visual Studio 17.13 (when a stable release will be available).
-
-The Uno Platform team is following this [Visual Studio issue](https://developercommunity.visualstudio.com/t/WSL-launch-profile-cannot-be-found-when/10776961).
+> [!NOTE]
+> This error code is retired. It warned when the desktop TargetFramework was not placed
+> first while targeting Visual Studio 17.12.x specifically — a version that can no longer
+> build Uno Platform 7.0 (minimum MSBuild is 17.14). The check has been removed. This
+> heading is kept so existing links to it still resolve.
 
 ### UNOB0016: The Publish Profile file must not contain the "PublishDir"
 
@@ -197,11 +185,190 @@ To suppress it:
 </PropertyGroup>
 ```
 
+### UNOB0021: A package has no version in the Uno.Sdk manifest and does not exist on nuget.org
+
+The Uno.Sdk adds some package references implicitly and takes their versions from its package manifest. When the manifest has no version for one of them, the Uno.Sdk falls back to the latest version on nuget.org. This error means that package isn't on nuget.org at all, which usually means the Uno.Sdk version you use was built against packages that are only available on a private feed.
+
+To fix this issue:
+
+- Update to a newer Uno.Sdk version, or
+- Reference the package explicitly with a version, which replaces the implicit reference (with Central Package Management, put the version in a `PackageVersion` item instead):
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Uno.UI.Composition.Skia" Version="X.X.X" />
+</ItemGroup>
+```
+
+### UNOB0022: The `SingleProject` property is no longer supported
+
+`SingleProject` was the Uno Platform 5.1-and-earlier spelling of `UnoSingleProject`. It no longer selects the single-project layout, so leaving it in place would silently build the project as if it were not a single project.
+
+Rename the property in your `.csproj`:
+
+```diff
+- <SingleProject>true</SingleProject>
++ <UnoSingleProject>true</UnoSingleProject>
+```
+
+### UNOB0023: A runtime-enabled package provided no runtime assembly
+
+Packages such as `Uno.WinRT` and `Uno.Foundation` ship a platform-neutral compile surface under `lib/` and the assemblies that actually run under `uno-runtime/`. This diagnostic reports that one of them contributed no runtime assembly for the target framework being built, which means the reference assemblies would be deployed instead and every call into them would throw `NotImplementedException` at runtime.
+
+The most common cause is a package built for Uno Platform 6.x. Uno Platform 7.0 renamed the runtime folders from `uno-runtime/<tfm>/skia` and `uno-runtime/<tfm>/webassembly` to `uno-runtime/<tfm>/generic` and `uno-runtime/<tfm>/wasm`, and a package in the old layout is not binary compatible with 7.0 anyway, so it has to be updated to a version built for 7.0. `SkiaSharp.Views.Uno.WinUI` is one such package; applications drawing with Skia on Uno Platform can use [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) instead.
+
+Other causes are a partially restored package, a `PackageBasePath` pointing at a location that does not contain the expected `uno-runtime` folder, or a mismatched set of Uno Platform package versions. Verify that all `Uno.*` package versions match, then clear `obj/` and `bin/` and restore again.
+
+The same code reports a package that provides its runtime assemblies but lacks one of the pieces a head needs: the browser build of a WinRT assembly under `uno-runtime/<tfm>/wasm`, the `lib/netX.0-<platform>` implementation for an Android, iOS or tvOS head, or the matching reference assembly. It also reports a cross-runtime library whose `UnoRuntimeVariant` is not `Generic`, `Wasm` or `Reference`, and a head with a Uno Platform runtime host whose target platform has no runtime assets — only `desktop`, `browserwasm`, `android`, `ios`, `tvos` and plain `netX.0` target frameworks do. The message names the package and the path that was expected.
+
+Before Uno Platform 7.0 this situation was reported only as a build message, so it surfaced as a runtime failure rather than a build failure.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0023Validation>true</UnoDisableUNOB0023Validation>
+</PropertyGroup>
+```
+
+### UNOB0024: A runtime identifier property no longer selects runtime assets
+
+`UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` and `UnoWinRTRuntimeIdentifier` used to tell the build which runtime assets to deploy. As of Uno Platform 7.0 that is decided by the target framework, so setting them on an application head no longer selects anything and they can be removed.
+
+A cross-runtime *library* used `UnoRuntimeIdentifier` to name the `uno-runtime` folder its output is packed into. It now sets `UnoRuntimeVariant` instead — `Generic`, `Wasm` or `Reference` — and the folders are named after it (`generic` and `wasm`, formerly `skia` and `webassembly`). The old property is still honored for a library, mapping `skia` to `Generic` and `webassembly` to `Wasm`.
+
+The warning therefore covers three situations, each with its own message:
+
+| Message | Where | What to do |
+|---|---|---|
+| `UnoUIRuntimeIdentifier and UnoWinRTRuntimeIdentifier no longer have any effect` | any project | remove them |
+| `UnoRuntimeIdentifier no longer selects runtime assets for an application head` | a project with a Uno Platform runtime host | remove it |
+| `UnoRuntimeIdentifier is deprecated for cross-runtime libraries` | a library without a runtime host | set the `UnoRuntimeVariant` value the message names |
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0024Validation>true</UnoDisableUNOB0024Validation>
+</PropertyGroup>
+```
+
+### UNOB0025: Runtime-enabled packages are referenced without a runtime host
+
+This application head references packages that ship their implementation under `uno-runtime/` — such as `Uno.WinRT` and `Uno.Foundation` — but no Uno Platform runtime host package was detected (each `Uno.WinUI.Runtime.*` package declares itself by setting the `UnoHasRuntimeHost` MSBuild property), so the reference assemblies would be deployed and every call into them would throw `NotImplementedException` at runtime.
+
+The usual cause is an explicit reference to a `Uno.WinUI.Runtime.Skia.*` host package, which predates the 7.0 rename and does not declare the runtime host. Those ids receive no 7.0 builds, so replace each one with its renamed `Uno.WinUI.Runtime.*` id (`Uno.WinUI.Runtime.Skia.Headless` becomes `Uno.WinUI.Runtime.Headless`; see the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for the full mapping), then align every `Uno.*` package version and restore again.
+
+When such an older runtime host is detected, this is reported as an error. Otherwise it is a warning, since an executable project that is not an application, such as a test project, can legitimately run against the reference assemblies.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0025Validation>true</UnoDisableUNOB0025Validation>
+</PropertyGroup>
+```
+
+### UNOB0026: A referenced assembly was built for a UI runtime that no longer exists
+
+Uno Platform releases before 7.0 stamped the UI runtime an assembly was built for into its `UnoUIRuntimeIdentifier` assembly metadata. This diagnostic reports a referenced assembly whose stamp names one of the native renderers, which 7.0 removed — such an assembly cannot run against this release.
+
+Update the package to a version built for Uno Platform 7.0. Assemblies built by 7.0 carry no stamp, since there is a single UI runtime, and are always accepted.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0026Validation>true</UnoDisableUNOB0026Validation>
+</PropertyGroup>
+```
+
+### UNOB0027: The file suffix is no longer recognized by Uno Platform 7.0
+
+Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs` file suffixes. The build no longer excludes these files from any target framework, so each of them now compiles for every target framework of the project, the WinAppSDK one included. Rename or remove the file:
+
+| Suffix | Replacement |
+|---|---|
+| `*.Apple.cs` | `*.UIKit.cs`, which has the same rule |
+| `*.iOSmacOS.cs` | `*.iOS.cs`. It named the native macOS target, which was removed in 7.0 |
+| `*.reference.cs` | Delete the file, or fold it into a `*.crossruntime.cs` file. It was gated on a build flavor that an application never selected, so it compiled for no target framework |
+
+`*.skia.cs` is still recognized, but it now compiles for every target framework except the WinAppSDK one, not only for `netX.0-desktop`. See [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7) for the other changes.
+
+### UNOB0029: Uno Platform application projects must use the Uno.Sdk
+
+Starting with Uno Platform 7.0, an application must be built with the [`Uno.Sdk`](xref:Uno.Features.Uno.Sdk). The legacy project format — a `Microsoft.NET.Sdk` project referencing the `Uno.WinUI` package, together with one head project per platform (`MyApp.Mobile`, `MyApp.Wasm`, `MyApp.Skia.Gtk`, `MyApp.Windows`, …) — is no longer supported.
+
+To fix this, migrate your application to the Uno.Sdk by following the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
+
+This diagnostic is only raised for application projects (`Exe` and `WinExe`). Class libraries that reference the `Uno.WinUI` package directly are not affected, and neither are Windows App SDK heads or test projects (`IsTestProject` set to `true`, which `Microsoft.NET.Test.Sdk` and the common test runners do for you).
+
+If your project is an executable that merely links `Uno.WinUI` as a library — a console harness or a benchmark runner, for instance — disable the check:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0029Validation>true</UnoDisableUNOB0029Validation>
+</PropertyGroup>
+```
+
+### UNOB0028: The UnoSplashScreenColor property is no longer supported
+
+Uno Platform 7.0 removed the `UnoSplashScreenColor` property. The Uno.SDK ignores it, so the splash screen background falls back to its default (`#FFFFFF`, or the browser theme on WebAssembly). Rename it:
+
+```xml
+<PropertyGroup>
+  <UnoSplashScreenBackgroundColor>#FFFFFF</UnoSplashScreenBackgroundColor>
+</PropertyGroup>
+```
+
+The same applies to `UnoSplashScreen` items declared by hand: use `BackgroundColor="#FFFFFF"` instead of `Color="#FFFFFF"`. See [Splash screen](xref:Uno.Development.SplashScreen) for the related `UnoSplashScreenDarkBackgroundColor` and `UnoSplashScreenDarkFile` properties.
+
+### UNOB0030: The SkiaRenderer Uno Feature is ignored in a library
+
+Starting with Uno Platform 7.0, the renderer is chosen by the app, not by its libraries. In an app, the legacy `SkiaRenderer` feature is still mapped to `Skia`. In a library it is ignored, so the library doesn't make SkiaSharp a dependency of every app that uses it, including apps that render with WebGPU only.
+
+To fix this:
+
+- If the library doesn't draw with SkiaSharp, remove `SkiaRenderer` from `UnoFeatures`.
+- If it uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), the `SkiaExtensions` conversions or the Uno Toolkit's Skia controls (such as `ShadowContainer`), replace `SkiaRenderer` with `Skia`.
+
+To keep `SkiaRenderer` without the warning, add `UNOB0030` to `NoWarn`.
+
+### UNOB0031: The Reactor Uno Feature is not supported on WinAppSDK
+
+The `Reactor` feature references [Uno.Microsoft.UI.Reactor](https://www.nuget.org/packages/Uno.Microsoft.UI.Reactor), which runs on the Uno Platform targets (desktop, WebAssembly, Android and iOS) and has no build for the WinAppSDK target. The Uno.Sdk doesn't reference it there, and fails the Windows build with this error instead of leaving every Reactor type unresolved.
+
+To fix this, remove the `-windows10.0.xxxxx` target framework from the project. To run a Reactor app on Windows, use the `desktop` target.
+
+### UNOB0032: The browserwasm target framework was set after the Uno.Sdk chose the .NET SDK
+
+The Uno.Sdk builds a WebAssembly app with the `Microsoft.NET.Sdk.WebAssembly` SDK, which it chooses from `TargetFramework` before your project file and `Directory.Build.props` are read. At that point, the target framework is only known when it is passed to the build: with `-f`, or by a project with several target frameworks building each of them.
+
+When an app sets a single `<TargetFramework>net10.0-browserwasm</TargetFramework>` itself, in the project file, in `Directory.Build.props` or with a file-based app's `#:property`, the Uno.Sdk moves it to `TargetFrameworks` after the project file is read, so the app still builds with the WebAssembly SDK. It can only do so for a project it already knows is an app at that point, from an `OutputType` of `Exe` or `WinExe`, or from `IsUnoHead`.
+
+This error means the project was only found to be an app later, typically because its `OutputType` is set in `Directory.Build.targets`. Built with the plain .NET SDK, it would be a desktop executable that fails at startup.
+
+To fix this, set `OutputType` in the project file or in `Directory.Build.props`, or use the plural property, even with a single target framework:
+
+```xml
+<PropertyGroup>
+  <TargetFrameworks>net10.0-browserwasm</TargetFrameworks>
+</PropertyGroup>
+```
+
 ## Compiler Errors
 
 ### UNO0001
 
 A member is not implemented, see [this page](xref:Uno.Development.NotImplemented) for more details.
+
+The warning is reported for the target frameworks where the member is missing. WinUI and Composition APIs have one
+implementation shared by every Uno target, so a missing one is reported everywhere. A WinRT API (`Windows.*`) can be
+implemented on some platforms only; a plain `net10.0` library can run on any of them, so it gets the warning only when
+the desktop and WebAssembly implementations are both missing.
+
+To suppress it, use `#pragma warning disable Uno0001` around the call, or `<NoWarn>$(NoWarn);Uno0001</NoWarn>` in
+the project.
 
 ### UNO0002
 
@@ -217,14 +384,15 @@ Invocations to `Dispose` can cause the application to crash in `__NSObject_Dispo
 
 The method `InitializeComponent` should always be called in class constructor. A missing call will lead to hard-to-diagnose bugs. This analyzer reports when it's missing to make issues more apparent.
 
-### UNO0007
+### UNO0007: Retired
 
 **An assembly required for a component is missing**
 
-Some components like `ProgressRing` and `MediaPlayerElement` requires you to reference a specific NuGet package for them to work correctly.
-
-- For `ProgressRing`, it requires Lottie dependency. For more information about adding Lottie to your project, see [Lottie for Uno](xref:Uno.Features.Lottie).
-- For `MediaPlayerElement` on WebAssembly or Gtk, it requires `Uno.WinUI.MediaPlayer.WebAssembly` or `Uno.WinUI.MediaPlayer.Skia.Gtk` NuGet package. For more information, see [MediaPlayerElement](xref:Uno.Controls.MediaPlayerElement).
+> [!NOTE]
+> This diagnostic is retired. It reported a missing NuGet package for `ProgressRing` (Lottie) and, on the
+> native WebAssembly and GTK targets, for `MediaPlayerElement`. `ProgressRing` no longer needs Lottie, and
+> Uno Platform 7.0 removed those targets and the packages it recommended. This heading is kept so existing
+> links to it still resolve.
 
 ### UNO0008
 
@@ -235,14 +403,18 @@ Note that this change only applies to projects using the Uno.Sdk. If you're not 
 ```xml
 #pragma warning disable UNO0008 // Replace with UseStudio() when migrating to the Uno.Sdk.
 window.EnableHotReload();
+
 #pragma warning restore UNO0008
 ```
 
 ## XAML Errors
 
-### UNOX0001
+### UNOX0001: Retired
 
-The `ProgressRing` control [needs an additional Lottie](xref:Uno.Features.Lottie) dependency to be enabled.
+> [!NOTE]
+> This error code is retired. It warned that `ProgressRing` needed an additional Lottie
+> dependency; `ProgressRing` now renders through generated Composition visuals and no longer
+> needs one. This heading is kept so existing links to it still resolve.
 
 ### UXAML0006
 
@@ -258,6 +430,38 @@ WinUI only supports the `using:` xmlns form. The WPF/Silverlight `clr-namespace:
 The assembly is inferred from the compilation, so the `;assembly=` token has no replacement — drop it. The declaration is rejected even when its prefix is never used; the only exemption is a prefix listed in `mc:Ignorable` on the root element.
 
 The same rule is enforced at run time by `XamlReader.Load` and Hot Reload, which throw a `XamlParseException`.
+
+### UXAML0007
+
+**The conditional XAML prefix was removed in Uno Platform 7.0**
+
+Uno Platform 7.0 names every conditional XAML prefix after a target framework, and removed the prefixes that named a renderer or a distinction that no longer exists. A removed prefix no longer selects a platform, so the markup using it is not rewritten or rejected — it silently changes meaning:
+
+- Listed in `mc:Ignorable` (the usual form for a positive prefix such as `skia`), its content is **ignored on every target**.
+- Declared with the presentation namespace (the usual form for a negative prefix such as `not_skia`), it is an alias of the default namespace, so its content **applies on every target**.
+
+| Removed prefix | Replacement |
+|---|---|
+| `skia`, `netstdref` | `not_winappsdk` |
+| `not_skia`, `not_netstdref` | `winappsdk` |
+| `androidskia`, `iosskia`, `tvosskia`, `wasmskia` (and their `not_` forms) | `android`, `ios`, `tvos`, `wasm` (and their `not_` forms) |
+| `macos` | Remove it with the markup using it. It named the native macOS head, which has selected nothing since Uno Platform 5.0. Gate macOS-only code with `OperatingSystem.IsMacOS()` instead |
+| `not_macos` | Drop the prefix from the markup using it. It has applied on every target since Uno Platform 5.0 — `desktop`/`not_desktop` are not equivalent, since they also cover Windows and Linux |
+| `not_mux` | Remove it with the markup using it. It dates from UWP support and never applied |
+| `xamarin`, `legacy` listed in `mc:Ignorable` | Drop the prefix from the markup using it |
+
+The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7#removed-xaml-prefixes).
+
+### UNOB0028: An optional implicit package was skipped
+
+Some packages the Uno.Sdk adds implicitly are optional and only exist from a given version of their package group. `Uno.HotTesting.Reactive`, added for the `MVUX` feature in non-optimized builds, first ships with the 7.4 builds of Uno.Extensions. This message means the Uno.Extensions version resolved for your project is older than that, is a floating version or a range, or is missing from the Uno.Sdk package manifest, so the package was left out instead of being restored at a mismatched version.
+
+The rest of the build is unaffected. If you need the package:
+
+- Use an `UnoExtensionsVersion` of 7.4 or later, as an exact version, or
+- Reference the package explicitly with a version that matches your Uno.Extensions packages.
+
+To stop the Uno.Sdk from adding it at all, set `UnoDisableHotTesting` to `true`.
 
 ## VS Code Errors
 
@@ -281,3 +485,16 @@ With version 0.14 (and later) you can override the location of `msbuild.exe` by:
 1. Setting the location where your `msbuild.exe` is located
 
 ![settings](Assets/quick-start/vs-code-settings-msbuild.png)
+
+## Hot Reload Errors
+
+### UNOHR0001
+
+The compiler could not produce a Hot Reload update for a change: the C# compiler failed with an exception while emitting the update, instead of reporting the change as unsupported. The DevServer reports it as a rude edit, and the exception is in the DevServer log.
+
+The change was not applied, and the running app is unaffected. Hot Reload stays on the last version it applied, so to keep going:
+
+- Undo the change and save. Hot Reload reports no changes, and the following edits apply as usual.
+- Or restart the app to pick up the change.
+
+A known cause is [dotnet/roslyn#86045](https://github.com/dotnet/roslyn/issues/86045): adding or changing an async lambda that awaits a `dynamic` value. Uno.Extensions MVUX generated such code for commands before [unoplatform/uno.extensions#3227](https://github.com/unoplatform/uno.extensions/issues/3227), so changing a command's parameters could trigger it.

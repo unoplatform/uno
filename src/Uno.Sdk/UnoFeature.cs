@@ -102,21 +102,22 @@ public enum UnoFeature
 
 	Prism,
 
+	Reactor,
+
 	[UnoArea(UnoArea.Core)]
 	Skia,
 
-	// Skia is always the renderer in 7.0; this feature is implied and kept only for back-compat.
 	[UnoArea(UnoArea.Core)]
-	SkiaRenderer,
-
-	[UnoArea(UnoArea.Core)]
-	Lottie,
+	WebGpu,
 
 	[UnoArea(UnoArea.Core)]
 	Svg,
 
 	[UnoArea(UnoArea.Core)]
 	GLCanvas,
+
+	[UnoArea(UnoArea.Core)]
+	WebGpuCanvas,
 
 	[UnoArea(UnoArea.Core)]
 	SpellChecking,

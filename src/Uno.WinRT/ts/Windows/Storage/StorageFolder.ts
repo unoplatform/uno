@@ -67,7 +67,7 @@ namespace Windows.Storage {
 		private static onStorageInitialized() {
 			if (!StorageFolder.dispatchStorageInitialized) {
 				if ((<any>globalThis).DotnetExports !== undefined) {
-					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 						StorageFolder.dispatchStorageInitialized = (<any>globalThis).DotnetExports.Uno.Windows.Storage.StorageFolder.DispatchStorageInitializedAsync;
 					}
 					else {

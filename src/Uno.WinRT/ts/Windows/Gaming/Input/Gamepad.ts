@@ -65,7 +65,7 @@
 
 		private static onGamepadConnected(e: any) {
 			if (!Gamepad.dispatchGamepadAdded) {
-				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 					Gamepad.dispatchGamepadAdded = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadAddedAsync;
 				} else {
 					Gamepad.dispatchGamepadAdded = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadAdded;
@@ -76,7 +76,7 @@
 
 		private static onGamepadDisconnected(e: any) {
 			if (!Gamepad.dispatchGamepadRemoved) {
-				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 					Gamepad.dispatchGamepadRemoved = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadRemovedAsync;
 				} else {
 					Gamepad.dispatchGamepadRemoved = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadRemoved;

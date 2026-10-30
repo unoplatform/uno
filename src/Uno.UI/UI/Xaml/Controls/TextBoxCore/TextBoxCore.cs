@@ -103,7 +103,15 @@ internal sealed partial class TextBoxCore
 	private bool CanPasteClipboardContent
 	{
 		get => _host.CanPasteClipboardContent;
-		set => _host.CanPasteClipboardContent = value;
+		set
+		{
+			if (_host.CanPasteClipboardContent != value)
+			{
+				_host.CanPasteClipboardContent = value;
+				// A peer that doesn't exist yet reads the fresh value when it gets created.
+				_host.Owner.CachedAutomationPeer?.InvalidatePeer();
+			}
+		}
 	}
 #endif
 
@@ -142,6 +150,7 @@ internal sealed partial class TextBoxCore
 	private GeneralTransform TransformToVisual(UIElement visual) => _host.Owner.TransformToVisual(visual);
 
 	// Platform hooks, implemented in TextBoxCore.Input.cs.
+	partial void OnLoadedPartial();
 	partial void OnUnloadedPartial();
 	partial void SetInputReturnTypePlatform(InputReturnType inputReturnType);
 	partial void OnTextChangedPartial();
@@ -247,6 +256,7 @@ internal sealed partial class TextBoxCore
 
 	internal void OnLoadedCore()
 	{
+		OnLoadedPartial();
 		// This workaround is added in OnLoaded rather than OnApplyTemplate.
 		// Apparently, sometimes (e.g, Material style), the TextBox style setters are executed after OnApplyTemplate
 		// So, the style setters would override what the workaround does.
@@ -365,7 +375,8 @@ internal sealed partial class TextBoxCore
 
 	internal void OnPointerCaptureLost(PointerRoutedEventArgs e) => OnPointerCaptureLostPartial(e);
 
-	internal void Select(int start, int length)
+	/// <returns><c>false</c> only when a SelectionChanging handler rejected the update.</returns>
+	internal bool Select(int start, int length)
 	{
 		if (start < 0)
 		{
@@ -397,15 +408,18 @@ internal sealed partial class TextBoxCore
 
 		if (SelectionStart == start && SelectionLength == length)
 		{
-			return;
+			return true;
 		}
 
-		if (_host.RaiseSelectionChanging(start, length))
+		if (!_host.RaiseSelectionChanging(start, length))
 		{
-			SelectPartial(start, length);
-			_host.RaiseSelectionChanged();
-			SelectionChanged?.Invoke(this, new RoutedEventArgs(_host.Owner));
+			return false;
 		}
+
+		SelectPartial(start, length);
+		_host.RaiseSelectionChanged();
+		SelectionChanged?.Invoke(this, new RoutedEventArgs(_host.Owner));
+		return true;
 	}
 
 	/// <summary>
@@ -612,6 +626,13 @@ internal sealed partial class TextBoxCore
 		}
 	}
 
+	/// <summary>
+	/// Pushes <see cref="Uno.UI.Xaml.Controls.TextBoxExtensions.ShowKeyboardDismissButtonProperty"/> to the
+	/// native input view. Only takes effect while the control is being edited; the value is read again when
+	/// the native view is created, so a change made while unfocused is picked up on the next focus.
+	/// </summary>
+	internal void OnShowKeyboardDismissButtonChanged() => TextBoxView?.UpdateProperties();
+
 	private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 	{
 		UpdateButtonStates();
@@ -719,7 +740,14 @@ internal sealed partial class TextBoxCore
 	{
 		if (_placeHolder != null)
 		{
-			_placeHolder.Visibility = Text.IsNullOrEmpty() ? Visibility.Visible : Visibility.Collapsed;
+			var isEmpty = Text.IsNullOrEmpty();
+			if (!isEmpty && Owner.GetValue(Microsoft.UI.Xaml.Automation.AutomationProperties.DescribedByProperty) is global::System.Collections.Generic.IList<DependencyObject> { Count: > 0 })
+			{
+				// Matches WinUI's UpdatePlaceholderTextPresenterVisibility: a hidden placeholder must not keep describing the control.
+				DirectUI.TextBoxPlaceholderTextHelper.ClearPlaceholderTextBlockDescribedBy(Owner);
+			}
+
+			_placeHolder.Visibility = isEmpty ? Visibility.Visible : Visibility.Collapsed;
 		}
 	}
 

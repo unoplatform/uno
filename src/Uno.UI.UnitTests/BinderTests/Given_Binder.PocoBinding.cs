@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -18,7 +17,7 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Binder_PocoBinding
 	{
 		[TestMethod]
@@ -28,7 +27,7 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 
 			SUT.MyProperty = "41";
 
-			SUT.SetBinding("MyProperty", new Binding { Path = "Value", Mode = BindingMode.TwoWay });
+			SUT.SetBindingInternal("MyProperty", new Binding { Path = "Value", Mode = BindingMode.TwoWay });
 
 			SUT.DataContext = new { Value = "42" };
 
@@ -40,7 +39,7 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 		{
 			var SUT = new MyObject();
 
-			SUT.SetBinding("MyProperty", new Binding { Path = "Value", Mode = BindingMode.TwoWay });
+			SUT.SetBindingInternal("MyProperty", new Binding { Path = "Value", Mode = BindingMode.TwoWay });
 
 			SUT.MyProperty = "41";
 

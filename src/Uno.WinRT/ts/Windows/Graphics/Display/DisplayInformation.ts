@@ -141,7 +141,7 @@
 			const currentDpi = window.devicePixelRatio;
 			if (Math.abs(DisplayInformation.lastDpi - currentDpi) > 0.001) {
 				if (DisplayInformation.dispatchDisplayMetricsChanged == null) {
-					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 						DisplayInformation.dispatchDisplayMetricsChanged =
 							(<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchDisplayMetricsChangedAsync;
 					} else {
@@ -156,7 +156,7 @@
 
 		private static onOrientationChange() {
 			if (DisplayInformation.dispatchDisplayMetricsChanged == null) {
-				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 					DisplayInformation.dispatchDisplayMetricsChanged =
 						(<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchDisplayMetricsChangedAsync;
 				} else {

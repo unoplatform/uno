@@ -4,11 +4,11 @@
 		<UnoGenerateXamlSourcesProvider>True</UnoGenerateXamlSourcesProvider>
 
 		<!--
-		The AlcApp / HRApp / HRUnoLib helper projects live under Tests/, inside this project's glob cone.
+		The AlcApp / HRApp / HRUnoLib helper projects live inside this project's glob cone.
 		The repo-wide exclusion is `obj/**;bin/**`, which is relative to the project directory and so does
 		not cover theirs — once any of them has been built, their generated AssemblyAttributes.cs is picked
-		up here and the compile fails with CS0579.
+		up here and the compile fails with CS0579. Matched at any depth so it survives folder moves.
 		-->
-		<DefaultItemExcludes>$(DefaultItemExcludes);Tests/**/obj/**;Tests/**/bin/**</DefaultItemExcludes>
+		<DefaultItemExcludes>$(DefaultItemExcludes);**/obj/**;**/bin/**</DefaultItemExcludes>
 	</PropertyGroup>
 </Project>

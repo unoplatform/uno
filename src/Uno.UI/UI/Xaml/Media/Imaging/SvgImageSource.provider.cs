@@ -4,86 +4,99 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.Foundation.Extensibility;
-using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
-using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {
-	private const string SvgPackageName = "Uno.WinUI.Svg";
-
 	private Task<ImageData>? _currentOpenTask;
-
-	private ISvgProvider? _svgProvider;
+	private CancellationTokenSource? _loadCts;
 
 	internal event EventHandler? SourceLoaded;
 
-	private void InitSvgProvider()
+	private bool TryOpenSvgImageData(out Task<ImageData> asyncImage)
 	{
-		if (!ApiExtensibility.CreateInstance(this, out _svgProvider))
+		// The load is shared by every open of this source, so it can't be bound to the token of the open that started
+		// it: an Image subscribing while the source's own open is in flight supersedes that open, but must reuse its
+		// load. Like WinUI, only a change of the source itself (UnloadImageSourceData) aborts the load.
+		if (_currentOpenTask is null)
 		{
-			LogSvgPackageError();
+			_loadCts = new();
+			_currentOpenTask = LoadSvgImageAsync(_loadCts.Token);
 		}
 
-		if (_svgProvider is not null)
-		{
-			_svgProvider.SourceLoaded += OnSourceLoaded;
-		}
-	}
-
-	private bool TryOpenSvgImageData(CancellationToken ct, out Task<ImageData> asyncImage)
-	{
-		_currentOpenTask ??= LoadSvgImageAsync(ct);
 		asyncImage = _currentOpenTask;
 		return true;
 	}
 
 	private async Task<ImageData> LoadSvgImageAsync(CancellationToken ct)
 	{
-		if (_svgProvider is null)
+		// Re-opening replaces the retained document, so release the previous one before parsing again.
+		Unload();
+
+		var imageData = await GetSvgImageDataAsync(ct);
+		if (ct.IsCancellationRequested)
 		{
-			LogSvgPackageError();
+			// The source changed while reading; the load that replaced this one publishes the result.
 			return ImageData.Empty;
 		}
 
-		var imageData = await GetSvgImageDataAsync(ct);
-
-		if (imageData.Kind == ImageDataKind.ByteArray &&
-			imageData.ByteArray is not null &&
-			await _svgProvider.TryLoadSvgDataAsync(imageData.ByteArray))
+		if (imageData.Kind != ImageDataKind.ByteArray || imageData.ByteArray is null)
 		{
+			// An aborted load (the source changed mid-read) is not a load failure.
+			if (imageData.Kind == ImageDataKind.Error && imageData.Error is not OperationCanceledException)
+			{
+				RaiseImageFailed(SvgImageSourceLoadStatus.Other);
+				return imageData;
+			}
+
+			return ImageData.Empty;
+		}
+
+		// The single registered ISvgRenderer (Skia by default, or the managed engine / an app-supplied one when
+		// registered via the host builder) parses the markup into a retained vector document. When none is registered
+		// there is nothing to draw at all; when the markup can't be parsed, the source failed to open.
+		if (Uno.UI.Composition.Drawing.SvgRenderer.Current is not { } renderer)
+		{
+			return ImageData.Empty;
+		}
+
+		if (renderer.Parse(imageData.ByteArray, Uno.UI.Composition.Drawing.GeometryFactory.Current) is { } document)
+		{
+			_svgDocument = document;
+			_svgSurface = new(document);
+			RaiseImageOpened();
+			SourceLoaded?.Invoke(this, EventArgs.Empty);
 			return imageData;
 		}
 
-		return ImageData.Empty;
+		RaiseImageFailed(SvgImageSourceLoadStatus.InvalidFormat);
+
+		// Reported as an error (not just "no data") so consumers raise their own failure, e.g. Image.ImageFailed.
+		return ImageData.FromError(new InvalidOperationException("Failed to load Svg source"));
 	}
 
-	internal UIElement? GetCanvas() => _svgProvider?.GetCanvas();
+	internal bool IsParsed => _svgDocument is not null;
 
-	internal bool IsParsed => _svgProvider?.IsParsed ?? false;
+	internal Size SourceSize => _svgDocument?.SourceSize ?? default;
 
-	internal Size SourceSize => _svgProvider?.SourceSize ?? default;
-
-	private void OnSourceLoaded(object? sender, EventArgs e) => SourceLoaded?.Invoke(this, EventArgs.Empty);
-
-	private void Unload() => _svgProvider?.Unload();
+	private void Unload()
+	{
+		// The surface owns the parsed document (see CompositionSvgSurface), so disposing it releases both.
+		_svgSurface?.Dispose();
+		_svgSurface = null;
+		_svgDocument = null;
+	}
 
 	private protected override void UnloadImageSourceData()
 	{
+		_loadCts?.Cancel();
+		_loadCts?.Dispose();
+		_loadCts = null;
 		_currentOpenTask = null;
 		Unload();
-	}
-
-	private void LogSvgPackageError()
-	{
-		if (this.Log().IsEnabled(LogLevel.Error))
-		{
-			this.Log().LogError($"To use SVG on this platform, make sure to install the {SvgPackageName} package.");
-		}
 	}
 }
 #endif

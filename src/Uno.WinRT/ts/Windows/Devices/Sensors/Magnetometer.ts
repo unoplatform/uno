@@ -17,7 +17,7 @@ namespace Windows.Devices.Sensors {
 		public static initialize(): boolean {
 			try {
 				if (typeof window.Magnetometer === "function") {
-					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
 						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Magnetometer.DispatchReadingAsync;
 					} else {
 						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Magnetometer.DispatchReading;

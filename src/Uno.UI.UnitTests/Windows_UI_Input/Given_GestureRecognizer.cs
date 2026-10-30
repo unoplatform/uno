@@ -17,7 +17,7 @@ using static Uno.UI.Tests.Windows_UI_Input.GestureRecognizerTestExtensions;
 
 namespace Uno.UI.Tests.Windows_UI_Input
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_GestureRecognizer
 	{
 		private const int MicrosecondsPerMillisecond = 1000;
@@ -64,6 +64,76 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.CanBeDoubleTap(GetPoint(28, 28)).Should().BeFalse();
 			sut.ProcessUpEvent(27, 27, ts: long.MaxValue); // No matter the duration
 			taps.Should().BeEquivalentTo([Tap(25, 25)]);
+		}
+
+		[TestMethod]
+		[DataRow(PointerDeviceType.Touch, false)]
+		[DataRow(PointerDeviceType.Pen, false)]
+		[DataRow(PointerDeviceType.Mouse, true)]
+		public void Tapped_Duration_When_SuppressesTapOnHold(PointerDeviceType device, bool isTap)
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap, SuppressesTapOnHold = true };
+			var taps = new List<TappedEventArgs>();
+			sut.Tapped += (snd, e) => taps.Add(e);
+
+			sut.ProcessDownEvent(25, 25, ts: 1, device: device);
+			sut.ProcessUpEvent(25, 25, ts: GestureRecognizer.HoldMinDelayMicroseconds + 2, device: device);
+
+			taps.Should().HaveCount(isTap ? 1 : 0);
+		}
+
+		[TestMethod]
+		public void DoubleTapped_After_Hold_When_SuppressesTapOnHold()
+		{
+			using var _ = Touch();
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap | GestureSettings.DoubleTap, SuppressesTapOnHold = true };
+			var taps = new List<TappedEventArgs>();
+			sut.Tapped += (snd, e) => taps.Add(e);
+
+			const ulong holdEnd = GestureRecognizer.HoldMinDelayMicroseconds + 2;
+			sut.ProcessDownEvent(25, 25, ts: 1);
+			sut.ProcessUpEvent(25, 25, ts: holdEnd);
+			sut.ProcessDownEvent(25, 25, ts: holdEnd + 1);
+			sut.ProcessUpEvent(25, 25, ts: holdEnd + 2);
+
+			taps.Should().ContainSingle().Which.TapCount.Should().Be(1u);
+		}
+
+		[TestMethod]
+		public void IsHold_When_Holding_Raised_For_The_Press()
+		{
+			using var _ = Touch();
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Hold, SuppressesTapOnHold = true };
+			const ulong pressed = 7_000_001; // Distinct from other tests: the held press is recorded statically.
+
+			var down = sut.ProcessDownEvent(25, 25, ts: pressed);
+			GestureRecognizer.IsHold(down.Pointer, pressed, pressed + 1).Should().BeFalse();
+
+			sut.ProcessMoveEvent(25, 25, ts: pressed + GestureRecognizer.HoldMinDelayMicroseconds + 1); // Raises Holding
+
+			// Like when the holding timer elapsed before the pointer timestamps did.
+			GestureRecognizer.IsHold(down.Pointer, pressed, pressed + 1).Should().BeTrue();
+			GestureRecognizer.IsHold(down.Pointer, pressed + 2, pressed + 3).Should().BeFalse(); // Another press
+		}
+
+		[TestMethod]
+		public void Tapped_When_Holding_Raised_For_The_Press_By_Another_Recognizer()
+		{
+			using var _ = Touch();
+			var holder = new GestureRecognizer { GestureSettings = GestureSettings.Hold, SuppressesTapOnHold = true };
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap, SuppressesTapOnHold = true };
+			var taps = new List<TappedEventArgs>();
+			sut.Tapped += (snd, e) => taps.Add(e);
+			const ulong pressed = 7_100_001; // Distinct from other tests: the held press is recorded statically.
+
+			holder.ProcessDownEvent(25, 25, ts: pressed);
+			sut.ProcessDownEvent(25, 25, ts: pressed);
+			holder.ProcessMoveEvent(25, 25, ts: pressed + GestureRecognizer.HoldMinDelayMicroseconds + 1); // Raises Holding
+
+			// Like a parent which listens to Tapped only, when the child's holding timer elapsed before the pointer timestamps did.
+			sut.ProcessUpEvent(25, 25, ts: pressed + 1);
+
+			taps.Should().BeEmpty();
 		}
 
 		[TestMethod]
