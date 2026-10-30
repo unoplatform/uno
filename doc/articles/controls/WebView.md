@@ -46,6 +46,16 @@ In case of WebAssembly, the control is supported via a native `<iframe>` element
 - The [`frame-ancestors` Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors) can be used to allow embedding a site you have control over, while at the same time blocking third-party sites from embedding
 - External site you are embedding must not block embedding via [`X-FRAME-OPTIONS` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options)
 
+### Limitations
+
+The browser hides a page from another origin (another site, a `data:` URL, or a page in a sandboxed frame) from the app that shows it, which limits what `WebView2` can report and do on WebAssembly:
+
+- After going back or forward to a page from another origin, or after a page moves to a page from another origin by itself (through a link, a script or a server redirect), `Source` can be an earlier URL: the page before it or, after a redirect, the URL before the redirect.
+- `NavigationCompleted` reports success for pages that refuse to be shown in a frame (`X-Frame-Options`, CSP `frame-ancestors`) and for network errors, where the browser shows its own error page.
+- For pages from another origin, `DocumentTitle` is empty, `GoBack`, `GoForward`, `Reload` and `Stop` throw an exception, and `ExecuteScriptAsync` fails.
+- Pages from another origin never raise `NewWindowRequested`, so the new windows their links and scripts open can't be handled by the app.
+- Pages shown through `SetVirtualHostNameToFolderMapping` report the URL of the file in the app's package (`.../package_<hash>/<folder>/...`) rather than the virtual host URL (such as `http://UnoNativeAssets/index.html`).
+
 ## Executing JavaScript
 
 When a page is loaded inside the `WebView2` control, you can execute custom JavaScript code. To do this, call the `ExecuteScriptAsync` method:
