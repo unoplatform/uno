@@ -38,6 +38,15 @@ native bootstrap/heads.
 
 ## What changed
 
+### Accessibility support on mobile
+
+With the full transition to Skia rendering across all targets, native accessibility support for **Android (TalkBack)** and **iOS (VoiceOver)** is now active by default:
+
+- **Android** — Integrates with TalkBack using `AccessibilityNodeInfo.contentDescription` and touch exploration helpers.
+- **iOS** — Creates native `UIAccessibilityElement` wrappers so VoiceOver can navigate the semantic tree.
+
+No manual opt-in is required for these platforms; they seamlessly map `AutomationProperties` and `AutomationPeer` to the native assistive layers.
+
 ### Rendering is Skia everywhere
 
 The `NativeRenderer` Uno Feature and the renderer-selection logic are gone — Skia is

@@ -23,7 +23,7 @@ The accessible name is resolved in this order:
 | Windows (Win32) | Skia | UIAutomation `Name` property |
 | macOS | Skia | `NSAccessibility.accessibilityLabel` |
 | Web (WASM) | Skia | `aria-label` attribute on the semantic DOM element |
-| Android (WIP) | Skia | `AccessibilityNodeInfo.contentDescription` |
+| Android | Skia | `AccessibilityNodeInfo.contentDescription` |
 
 ## AutomationId
 

@@ -15,8 +15,8 @@ Uno Platform implements the WinUI [UI Automation](https://learn.microsoft.com/wi
 | macOS                  | Skia      | VoiceOver                      | ✔      |
 | Web (WASM)             | Skia      | Any screen reader (via ARIA)   | ✔      |
 | Linux                  | Skia      | —                              | Planned |
-| Android                | Skia      | TalkBack                       | WIP    |
-| iOS                    | Skia      | VoiceOver                      | WIP    |
+| Android                | Skia      | TalkBack                       | ✔      |
+| iOS                    | Skia      | VoiceOver                      | ✔      |
 
 ## How it works
 
@@ -25,6 +25,8 @@ On Skia-rendered targets, Uno maintains a **semantic accessibility tree** alongs
 - **Windows (Win32)** — Exposes a UIAutomation provider tree that Narrator and other UIAutomation clients can inspect.
 - **macOS** — Creates native `NSAccessibility` elements so VoiceOver can navigate the application.
 - **Web (WASM)** — Generates a hidden semantic DOM overlay with the appropriate [ARIA](https://www.w3.org/WAI/standards-guidelines/aria/) roles and attributes, making the app accessible to any browser-based screen reader.
+- **Android** — Integrates with TalkBack using `AccessibilityNodeInfo.contentDescription` and touch exploration helpers.
+- **iOS** — Creates native `UIAccessibilityElement` wrappers so VoiceOver can interact with the semantic tree.
 
 > [!NOTE]
 > On WASM, the accessibility layer activates when the user first presses the `Tab` key. A visually hidden **"Enable accessibility"** element becomes reachable via Tab or screen reader and must be activated (click, `Enter`, or `Space`) before the full semantic tree is available. This is done to avoid performance overhead when accessibility is not needed.
