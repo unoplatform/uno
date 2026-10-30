@@ -12,7 +12,7 @@ The `FontFamily` of many controls (e.g. `TextBox` or `Control`) property allows 
 
 The default text font on WinUI is [Segoe UI](https://learn.microsoft.com/en-us/typography/font-list/segoe-ui). However, Segoe UI isn't available on macOS, Linux, or Browsers running on macOS or Linux.
 
-In order to get a consistent experience across targets, Uno Platform 5.3 or later automatically sets the default text font to OpenSans by using the [Uno.Fonts.OpenSans](https://nuget.org/packages/Uno.Fonts.OpenSans) NuGet package. This font is used on all targets except Windows App SDK, where Segoe UI continues to be used.
+In order to get a consistent experience across targets, Uno Platform 5.3 or later automatically sets the default text font to OpenSans by using the [Uno.Fonts.OpenSans](https://nuget.org/packages/Uno.Fonts.OpenSans) NuGet package. This font is used on all targets except Windows App SDK, where Segoe UI continues to be used. Uno.Sdk only applies this default to app projects, so a class library doesn't change the default text font of the app that references it.
 
 ### Disabling Open Sans
 
