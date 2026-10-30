@@ -20,6 +20,15 @@
 		<WinUISDKReferences Condition=" '$(WinUISDKReferences)' == '' ">false</WinUISDKReferences>
 	</PropertyGroup>
 
+	<!--
+		The .NET SDK validates the Windows platform version of the target framework against a list that it ships (NETSDK1140),
+		and that list can be older than the Windows SDK projection that WindowsSdkPackageVersion selects (see dotnet/sdk#55834).
+		Accept the platform version of the target framework, like it's done for the desktop and browserwasm targets.
+	-->
+	<ItemGroup Condition=" '$(TargetPlatformVersion)' != '' ">
+		<SdkSupportedTargetPlatformVersion Include="$(TargetPlatformVersion)" />
+	</ItemGroup>
+
 	<PropertyGroup Condition=" $(_IsExecutable) == 'true' ">
 		<!-- Set EnableMsixTooling to true only for executables - setting this on class libraries prevents assets from being correctly copied to windows target -->
 		<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' ">true</EnableMsixTooling>
