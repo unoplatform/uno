@@ -611,7 +611,10 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaLabel(handle: number, automationId: string): void {
 			Accessibility.debugLog(`[A11y] TS updateAriaLabel: handle=${handle} label='${automationId}'`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
-			if (element) {
+			if (element && element.dataset.unoStandaloneText === "true") {
+				// Standalone text is named by its content, and a paragraph prohibits aria-label.
+				element.textContent = automationId;
+			} else if (element) {
 				// Omit an empty/whitespace aria-label rather than emitting aria-label="" (which screen
 				// readers announce as "blank"); a nameless control must carry no aria-label attribute.
 				// Write the TRIMMED value so live-sync matches the creation-time path
@@ -643,10 +646,14 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the ARIA landmark role on a semantic element.
 		 * VoiceOver rotor uses landmarks (main, navigation, search, etc.) for quick navigation.
 		 */
-		public static updateLandmarkRole(handle: number, role: string): void {
+		public static updateLandmarkRole(handle: number, role: string | null): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("role", role);
+				if (role) {
+					element.setAttribute("role", role);
+				} else {
+					element.removeAttribute("role");
+				}
 			}
 		}
 
