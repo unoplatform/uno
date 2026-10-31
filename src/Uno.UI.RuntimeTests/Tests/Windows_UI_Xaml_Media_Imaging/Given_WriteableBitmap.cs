@@ -193,5 +193,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 				ImageAssert.HasColorAt(snapshot, 1, 1, Color.FromArgb(0xFF, 0xFA, 0xB8, 0x63), tolerance: 5);
 			}
 		}
+
+#if __SKIA__
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25549")]
+		public async Task When_WriteableBitmap_SetSource_Undecodable_Stream()
+		{
+			var writeableBitmap = new WriteableBitmap(2, 3);
+			var noise = new byte[1024];
+			new Random(1234).NextBytes(noise);
+
+			writeableBitmap.SetSource(new MemoryStream(noise).AsRandomAccessStream());
+
+			Assert.AreEqual(2, writeableBitmap.PixelWidth);
+			Assert.AreEqual(3, writeableBitmap.PixelHeight);
+			Assert.AreEqual(2u * 3 * 4, writeableBitmap.PixelBuffer.Length);
+
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			using (var stream = await file.OpenReadAsync())
+			{
+				await writeableBitmap.SetSourceAsync(stream);
+			}
+
+			Assert.AreEqual(147, writeableBitmap.PixelWidth);
+			Assert.AreEqual(147, writeableBitmap.PixelHeight);
+			Assert.AreEqual(147u * 147 * 4, writeableBitmap.PixelBuffer.Length);
+		}
+#endif
 	}
 }
