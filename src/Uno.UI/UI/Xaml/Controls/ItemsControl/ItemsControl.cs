@@ -1291,10 +1291,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (!isOwnContainer)
 				{
+					// Like WinUI, set the content first: assigning the selector resolves the template with the current content.
+					SetContent(containerAsContentPresenter, ContentPresenter.ContentProperty);
+
 					containerAsContentPresenter.ContentTemplate = ItemTemplate;
 					containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
-
-					SetContent(containerAsContentPresenter, ContentPresenter.ContentProperty);
 				}
 			}
 			else if (element is ContentControl containerAsContentControl)
