@@ -204,6 +204,101 @@ namespace Uno.UI.Runtime {
 		}
 
 		/**
+		 * Creates a split button: a group of a primary button (or toggle button, when pressed is not null)
+		 * and a menu button. Both act on the split button's own peer, through its handle.
+		 */
+		public static createSplitButtonElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			primaryLabel: string | null,
+			secondaryLabel: string | null,
+			secondaryWidth: number,
+			expanded: boolean,
+			pressed: string | null,
+			disabled: boolean,
+			isFocusable: boolean
+		): void {
+			const group = document.createElement('div');
+			this.applyCommonStyles(group, x, y, width, height, handle);
+			group.setAttribute('role', 'group');
+			group.dataset.unoFocusDelegate = 'true';
+			group.tabIndex = -1;
+			this.setAriaStringAttribute(group, 'aria-label', label);
+
+			const callbacks = this.getCallbacks();
+			const menuWidth = secondaryWidth > 0 && secondaryWidth < width ? secondaryWidth : Math.min(width / 2, 32);
+
+			const primary = this.createSplitButtonPart(handle, 'primary', 0, width - menuWidth, height, primaryLabel, disabled, isFocusable);
+			if (pressed !== null) {
+				primary.setAttribute('aria-pressed', pressed);
+			}
+			primary.addEventListener('click', (e) => {
+				e.preventDefault();
+				if (primary.hasAttribute('aria-pressed')) {
+					callbacks.onToggle?.(handle);
+				} else {
+					callbacks.onInvoke?.(handle);
+				}
+			});
+
+			const secondary = this.createSplitButtonPart(handle, 'secondary', width - menuWidth, menuWidth, height, secondaryLabel, disabled, isFocusable);
+			secondary.setAttribute('aria-haspopup', 'menu');
+			secondary.setAttribute('aria-expanded', String(expanded));
+			secondary.addEventListener('click', (e) => {
+				e.preventDefault();
+				callbacks.onExpandCollapse?.(handle);
+			});
+
+			group.appendChild(primary);
+			group.appendChild(secondary);
+			this.appendToParent(group, parentHandle, index);
+		}
+
+		private static createSplitButtonPart(handle: number, part: string, x: number, width: number, height: number, label: string | null, disabled: boolean, isFocusable: boolean): HTMLButtonElement {
+			const element = document.createElement('button');
+			element.id = `uno-semantics-${handle}-${part}`;
+			element.dataset.unoSplitPart = part;
+			element.style.position = 'absolute';
+			element.style.left = `${x}px`;
+			element.style.top = '0px';
+			element.style.width = `${width}px`;
+			element.style.height = `${height}px`;
+			this.setAriaStringAttribute(element, 'aria-label', label);
+			SemanticElements.applySplitButtonPartState(element, disabled, isFocusable);
+
+			// Focus on either part is focus on the split button.
+			const callbacks = this.getCallbacks();
+			element.addEventListener('focus', () => callbacks.onFocus?.(handle));
+			element.addEventListener('blur', () => callbacks.onBlur?.(handle));
+			return element;
+		}
+
+		private static applySplitButtonPartState(element: HTMLButtonElement, disabled: boolean, isFocusable: boolean): void {
+			element.disabled = disabled;
+			if (disabled) {
+				element.setAttribute('aria-disabled', 'true');
+			} else {
+				element.removeAttribute('aria-disabled');
+			}
+			Accessibility.updateElementFocusability(element, isFocusable && !disabled);
+		}
+
+		/**
+		 * Returns the named part of a split button node ("primary" or "secondary"), or null for other nodes.
+		 */
+		public static getSplitButtonPart(element: HTMLElement, part: string): HTMLButtonElement | null {
+			return element.dataset.unoFocusDelegate === 'true'
+				? element.querySelector<HTMLButtonElement>(`:scope > [data-uno-split-part="${part}"]`)
+				: null;
+		}
+
+		/**
 		 * Creates a toggle button semantic element (button with aria-pressed).
 		 * Used for ToggleButton, AppBarToggleButton, etc.
 		 * Called from C# via JSImport.
@@ -912,7 +1007,7 @@ namespace Uno.UI.Runtime {
 		public static updateExpandCollapseState(handle: number, expanded: boolean): void {
 			const element = document.getElementById(`uno-semantics-${handle}`);
 			if (element) {
-				element.setAttribute('aria-expanded', String(expanded));
+				(SemanticElements.getSplitButtonPart(element, 'secondary') ?? element).setAttribute('aria-expanded', String(expanded));
 				// Clear activedescendant when collapsing
 				if (!expanded) {
 					element.removeAttribute('aria-activedescendant');
@@ -951,6 +1046,15 @@ namespace Uno.UI.Runtime {
 		 */
 		public static updateDisabledState(handle: number, disabled: boolean): void {
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLButtonElement | HTMLInputElement;
+			if (element && element.dataset.unoFocusDelegate === 'true') {
+				for (const part of ['primary', 'secondary']) {
+					const button = SemanticElements.getSplitButtonPart(element, part);
+					if (button) {
+						SemanticElements.applySplitButtonPartState(button, disabled, !disabled);
+					}
+				}
+				return;
+			}
 			if (element) {
 				if ('disabled' in element) {
 					element.disabled = disabled;

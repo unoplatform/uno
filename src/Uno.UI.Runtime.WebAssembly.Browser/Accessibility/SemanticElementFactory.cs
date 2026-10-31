@@ -64,6 +64,7 @@ internal static partial class SemanticElementFactory
 		var created = elementType switch
 		{
 			SemanticElementType.Button => CreateButtonElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
+			SemanticElementType.SplitButton => CreateSplitButtonElement(peer, handle, parentHandle, index, x, y, width, height, attributes, owner, isFocusable),
 			SemanticElementType.ToggleButton => CreateToggleButtonElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
 			SemanticElementType.Switch => CreateSwitchElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
 			SemanticElementType.Checkbox => CreateCheckboxElement(peer, handle, parentHandle, index, x, y, width, height, attributes, false, isFocusable),
@@ -101,7 +102,7 @@ internal static partial class SemanticElementFactory
 		// Ensure aria-label is applied for all control types (FR-030, WCAG 4.1.2)
 		// Button/Checkbox/Radio already pass label during creation; apply for others
 		if (created && !string.IsNullOrEmpty(attributes.Label) &&
-			elementType is not (SemanticElementType.Button or SemanticElementType.Checkbox or SemanticElementType.RadioButton))
+			elementType is not (SemanticElementType.Button or SemanticElementType.Checkbox or SemanticElementType.RadioButton or SemanticElementType.SplitButton))
 		{
 			NativeMethods.UpdateAriaLabel(handle, attributes.Label);
 		}
@@ -189,7 +190,7 @@ internal static partial class SemanticElementFactory
 		// own factory (Expander, NavigationViewItem, SplitButton, MenuFlyoutSubItem).
 		// ComboBox and TreeItem already pass `expanded` at creation time.
 		if (created && attributes.Expanded.HasValue &&
-			elementType is not (SemanticElementType.ComboBox or SemanticElementType.TreeItem))
+			elementType is not (SemanticElementType.ComboBox or SemanticElementType.TreeItem or SemanticElementType.SplitButton))
 		{
 			NativeMethods.UpdateExpandCollapseState(handle, attributes.Expanded.Value);
 		}
@@ -202,7 +203,7 @@ internal static partial class SemanticElementFactory
 
 		// Apply aria-haspopup from the C# value (popup kind decided by AriaMapper from the
 		// ExpandCollapse pattern / control type), not hardcoded in TS (FR-028).
-		if (created && !string.IsNullOrEmpty(attributes.HasPopup))
+		if (created && !string.IsNullOrEmpty(attributes.HasPopup) && elementType != SemanticElementType.SplitButton)
 		{
 			NativeMethods.UpdateAriaHasPopup(handle, attributes.HasPopup);
 		}
@@ -559,6 +560,57 @@ internal static partial class SemanticElementFactory
 			selected,
 			positionInSet,
 			sizeOfSet,
+			isFocusable);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a split button. WinUI exposes it as one UIA element whose Invoke (or Toggle) pattern runs
+	/// the primary action and whose ExpandCollapse pattern opens the menu. ARIA has no such role, so it is
+	/// a group of two buttons driven by those same patterns; the template's own buttons stay Raw.
+	/// </summary>
+	private static bool CreateSplitButtonElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes,
+		UIElement? owner,
+		bool isFocusable)
+	{
+		var splitButton = owner as SplitButton;
+		var primaryPart = splitButton?.PrimaryButtonPart;
+		var secondaryPart = splitButton?.SecondaryButtonPart;
+
+		// The group carries only an explicit name; the primary button is named by its content, as the
+		// template's primary button is, and the menu button by the name SplitButton gives that part.
+		var groupLabel = owner is not null ? AutomationProperties.GetName(owner) : null;
+		var primaryLabel = primaryPart?.GetOrCreateAutomationPeer()?.GetName() is { Length: > 0 } primaryName ? primaryName : attributes.Label;
+		var secondaryLabel = secondaryPart?.GetOrCreateAutomationPeer()?.GetName();
+		var secondaryWidth = secondaryPart is { ActualWidth: > 0 } ? (float)secondaryPart.ActualWidth : 0f;
+		var pressed = peer.GetPattern(PatternInterface.Toggle) is IToggleProvider toggleProvider
+			? (toggleProvider.ToggleState == ToggleState.On ? "true" : "false")
+			: null;
+
+		NativeMethods.CreateSplitButtonElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			groupLabel,
+			primaryLabel,
+			secondaryLabel,
+			secondaryWidth,
+			attributes.Expanded ?? false,
+			pressed,
+			attributes.Disabled,
 			isFocusable);
 		return true;
 	}
@@ -1345,6 +1397,9 @@ internal static partial class SemanticElementFactory
 
 	private static partial class NativeMethods
 	{
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.createSplitButtonElement")]
+		internal static partial void CreateSplitButtonElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, string? primaryLabel, string? secondaryLabel, float secondaryWidth, bool expanded, string? pressed, bool disabled, bool isFocusable);
+
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.createButtonElement")]
 		internal static partial void CreateButtonElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, bool disabled, bool isFocusable);
 

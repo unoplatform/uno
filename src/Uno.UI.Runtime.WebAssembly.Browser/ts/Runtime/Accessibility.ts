@@ -348,19 +348,30 @@ namespace Uno.UI.Runtime {
 			// into the ScrollViewer through the scroll listener.
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.focus({ preventScroll: true });
+				Accessibility.focusNode(element);
 			} else {
 				// Element might not be in DOM yet due to batched/deferred mutations.
 				// Retry once after the next animation frame.
 				requestAnimationFrame(() => {
 					const retryElement = Accessibility.getSemanticElementByHandle(handle);
 					if (retryElement) {
-						retryElement.focus({ preventScroll: true });
+						Accessibility.focusNode(retryElement);
 					} else {
 						Accessibility.debugWarn(`[A11y] TS focusSemanticElement: element NOT FOUND handle=${handle} (after retry)`);
 					}
 				});
 			}
+		}
+
+		// A node made of focusable parts (a split button) keeps focus on the part that has it.
+		private static focusNode(element: HTMLElement) {
+			if (element.dataset.unoFocusDelegate === 'true') {
+				if (!element.contains(document.activeElement)) {
+					SemanticElements.getSplitButtonPart(element, 'primary')?.focus({ preventScroll: true });
+				}
+				return;
+			}
+			element.focus({ preventScroll: true });
 		}
 
 		/**
@@ -608,7 +619,17 @@ namespace Uno.UI.Runtime {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				Accessibility.debugLog(`[A11y] TS updateIsFocusable: handle=${handle} focusable=${isFocusable}`);
-				Accessibility.updateElementFocusability(element, isFocusable);
+				if (element.dataset.unoFocusDelegate === 'true') {
+					// The group itself is never a tab stop; its enabled parts follow the control.
+					for (const part of ['primary', 'secondary']) {
+						const button = SemanticElements.getSplitButtonPart(element, part);
+						if (button && !button.disabled) {
+							Accessibility.updateElementFocusability(button, isFocusable);
+						}
+					}
+				} else {
+					Accessibility.updateElementFocusability(element, isFocusable);
+				}
 			}
 			// Silently skip if element doesn't exist in the semantic DOM.
 			// Many controls get IsFocusable updates but aren't in the semantic
@@ -760,7 +781,7 @@ namespace Uno.UI.Runtime {
 		public static updateAriaPressed(handle: number, pressed: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("aria-pressed", pressed);
+				(SemanticElements.getSplitButtonPart(element, 'primary') ?? element).setAttribute("aria-pressed", pressed);
 			}
 		}
 

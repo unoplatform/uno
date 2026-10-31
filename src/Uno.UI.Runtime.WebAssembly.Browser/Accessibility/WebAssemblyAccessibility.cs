@@ -2487,7 +2487,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// ToggleButton uses aria-pressed, ToggleSwitch uses role="switch" + aria-checked,
 			// CheckBox/RadioButton use native checked property + aria-checked
 			var elementType = AriaMapper.GetSemanticElementType(peer, element);
-			if (elementType == SemanticElementType.ToggleButton)
+			if (elementType is SemanticElementType.ToggleButton or SemanticElementType.SplitButton)
 			{
 				NativeMethods.UpdateAriaPressed(element.Visual.Handle, ariaChecked ?? "false");
 			}
