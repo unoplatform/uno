@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Native;
@@ -10,7 +9,7 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Uno.UI.Runtime;
-using Uno.UI.Runtime.Linux.FrameBuffer.Devices.Input;
+using Uno.UI.Runtime.Linux.Input;
 using static Uno.UI.Runtime.Native.LibInput;
 using static Uno.UI.Runtime.Native.libinput_key;
 
@@ -24,11 +23,17 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
 	event TypedEventHandler<object, CharacterReceivedEventArgs>? IUnoKeyboardInputSource.CharacterReceived { add { } remove { } }
 
-	private readonly IntPtr _xkbState;
-	private HashSet<libinput_key> _pressedKeys = new HashSet<libinput_key>();
+	// libinput events arrive on the input thread and repeats on a timer thread.
+	private readonly object _gate = new();
+	private readonly XkbKeyboard? _xkb;
+	private readonly XkbKeyRepeat _repeat;
+	private readonly HashSet<libinput_key> _pressedKeys = new();
+	// Keys consumed by a dead-key or Compose sequence, which raise no key events.
+	private readonly HashSet<libinput_key> _consumedKeys = new();
+	private readonly Dictionary<libinput_key, (VirtualKey VirtualKey, string? ComposedText)> _repeatable = new();
 	private readonly IXamlRootHost? _host;
 
-	public unsafe FrameBufferKeyboardInputSource(IXamlRootHost host, FramebufferHostBuilder.XKBKeymapParams keymapParams)
+	public FrameBufferKeyboardInputSource(IXamlRootHost host, FramebufferHostBuilder.XKBKeymapParams keymapParams)
 	{
 		if (_instance is not null)
 		{
@@ -36,27 +41,11 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 		}
 		_instance = this;
 		_host = host;
+		_repeat = new XkbKeyRepeat(OnRepeat);
 
 		try
 		{
-			var context = LibXKBCommon.xkb_context_new(LibXKBCommon.xkb_context_flags.XKB_CONTEXT_NO_FLAGS);
-			if (context == IntPtr.Zero)
-			{
-				throw new InvalidOperationException($"{nameof(LibXKBCommon.xkb_context_new)} failed and returned null.");
-			}
-
-			using var ruleNames = new LibXKBCommon.xkb_rule_names(keymapParams);
-			var keymap = LibXKBCommon.xkb_keymap_new_from_names(context, &ruleNames, LibXKBCommon.xkb_keymap_compile_flags.XKB_KEYMAP_COMPILE_NO_FLAGS);
-			if (keymap == IntPtr.Zero)
-			{
-				throw new InvalidOperationException($"{nameof(LibXKBCommon.xkb_keymap_new_from_names)} failed and returned null.");
-			}
-
-			_xkbState = LibXKBCommon.xkb_state_new(keymap);
-			if (_xkbState == IntPtr.Zero)
-			{
-				throw new InvalidOperationException($"{nameof(LibXKBCommon.xkb_state_new)} failed and returned null.");
-			}
+			_xkb = XkbKeyboard.FromNames(keymapParams.rules, keymapParams.model, keymapParams.layout, keymapParams.variant, keymapParams.options);
 		}
 		catch (Exception e)
 		{
@@ -93,91 +82,123 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 		}
 	}
 
-	private unsafe void OnKeyPressEvent(libinput_key key)
+	private void OnKeyPressEvent(libinput_key key)
 	{
-		char? unicodeKey = default;
-		if (_xkbState != IntPtr.Zero)
+		VirtualKey virtualKey;
+		string? text = null;
+		VirtualKeyModifiers modifiers;
+		lock (_gate)
 		{
-			// https://github.com/xkbcommon/libxkbcommon/blob/master/test/state.c#L34
-			var keycode = (uint)key + /* EVDEV_OFFSET */ 8;
-			var keysym = LibXKBCommon.xkb_state_key_get_one_sym(_xkbState, keycode);
-			if (keysym == /* XKB_KEY_NoSymbol */ 0)
+			_pressedKeys.Add(key);
+			virtualKey = ConvertToVirtualKey(key);
+			if (_xkb is { } xkb)
 			{
-				this.LogError()?.Error($"{nameof(LibXKBCommon.xkb_state_key_get_one_sym)} failed to translate keycode {keycode} to a keysym");
-			}
-			if (this.Log().IsTraceEnabled())
-			{
-				var keysymName = stackalloc byte[64];
-				var size = LibXKBCommon.xkb_keysym_get_name(keysym, keysymName, 64);
-				if (size == -1)
+				var code = (uint)key;
+				var keysym = xkb.GetKeysym(code);
+				var keyText = xkb.GetUtf32(code);
+				xkb.UpdateKey(code, down: true);
+				if (LinuxKeyMap.FromKeysym(keysym) is not VirtualKey.None and var mapped)
 				{
-					this.LogError()?.Error($"{nameof(LibXKBCommon.xkb_keysym_get_name)} failed to translate keysym {keysym} to a string representation.");
+					virtualKey = mapped;
 				}
-				else
+				if (xkb.Compose(keysym, keyText, out var completeText) is not { } composed)
 				{
-					var name = Marshal.PtrToStringAnsi((IntPtr)keysymName);
-					this.LogTrace()?.Trace($"{nameof(LibXKBCommon.xkb_keysym_get_name)} translated keycode {keycode} to '{name}'");
+					_consumedKeys.Add(key);
+					_repeat.Stop();
+					return;
+				}
+				var composedText = completeText ?? (composed != keyText ? ToText(composed) : null);
+				text = composedText ?? ToText(composed);
+				if (xkb.Repeats(code))
+				{
+					_repeatable[key] = (virtualKey, composedText);
+					_repeat.Start(code);
 				}
 			}
-			var utf8Buffersize = LibXKBCommon.xkb_state_key_get_utf8(_xkbState, keycode, null, 0) + 1;
-			if (utf8Buffersize <= 1)
-			{
-				this.LogError()?.Error($"{nameof(LibXKBCommon.xkb_state_key_get_utf8)} failed to translate keycode {keycode} to a utf8 char.");
-			}
-			else
-			{
-				var utf8Buffer = stackalloc byte[utf8Buffersize];
-				_ = LibXKBCommon.xkb_state_key_get_utf8(_xkbState, keycode, utf8Buffer, utf8Buffersize);
-				var utf8String = Marshal.PtrToStringAnsi((IntPtr)utf8Buffer)!;
-				unicodeKey = utf8String[0];
-			}
-
-			_ = LibXKBCommon.xkb_state_update_key(_xkbState, keycode, LibXKBCommon.xkb_key_direction.XKB_KEY_DOWN);
+			modifiers = GetCurrentModifiersState();
 		}
-		var virtualKey = ConvertToVirtualKey(key);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"OnKeyPressEvent: {key} -> {virtualKey}");
 		}
 
-		_pressedKeys.Add(key);
+		RaiseKeyDown(virtualKey, modifiers, (uint)key, wasKeyDown: false, text);
+	}
 
-		var args = new KeyEventArgs(
-			"keyboard",
-			virtualKey,
-			GetCurrentModifiersState(),
-			new CorePhysicalKeyStatus
+	private void RaiseKeyDown(VirtualKey virtualKey, VirtualKeyModifiers modifiers, uint code, bool wasKeyDown, string? text)
+	{
+		// A KeyDown carries one UTF-16 unit, so a longer composed string is sent unit by unit.
+		for (var i = 0; i < Math.Max(1, text?.Length ?? 0); i++)
+		{
+			RaiseKeyEvent(KeyDown, new KeyEventArgs(
+				"keyboard",
+				virtualKey,
+				modifiers,
+				new CorePhysicalKeyStatus
+				{
+					ScanCode = code,
+					RepeatCount = 1,
+					WasKeyDown = wasKeyDown,
+				},
+				text is { Length: > 0 } ? text[i] : null));
+		}
+	}
+
+	private static string? ToText(uint codePoint)
+		=> codePoint is >= 32 and <= 0x10ffff and not (>= 0xd800 and <= 0xdfff) || codePoint == 13 ? char.ConvertFromUtf32((int)codePoint) : null;
+
+	// Timer thread.
+	private void OnRepeat(uint code)
+	{
+		VirtualKey virtualKey;
+		VirtualKeyModifiers modifiers;
+		string? text;
+		lock (_gate)
+		{
+			var key = (libinput_key)code;
+			if (_xkb is not { } xkb || _repeat.Key != code || !_repeatable.TryGetValue(key, out var repeated))
 			{
-				ScanCode = (uint)key,
-				RepeatCount = 1,
-			},
-			unicodeKey);
+				return;
+			}
+			// Translate with the modifiers held now, not at press time.
+			virtualKey = LinuxKeyMap.FromKeysym(xkb.GetKeysym(code)) is not VirtualKey.None and var mapped ? mapped : repeated.VirtualKey;
+			text = repeated.ComposedText ?? ToText(xkb.GetUtf32(code));
+			modifiers = GetCurrentModifiersState();
+		}
 
-		RaiseKeyEvent(KeyDown, args);
+		RaiseKeyDown(virtualKey, modifiers, code, wasKeyDown: true, text);
 	}
 
 	private void OnKeyReleaseEvent(libinput_key key)
 	{
-		if (_xkbState != IntPtr.Zero)
+		VirtualKey virtualKey;
+		VirtualKeyModifiers modifiers;
+		lock (_gate)
 		{
-			var keycode = (uint)key + /* EVDEV_OFFSET */ 8;
-			_ = LibXKBCommon.xkb_state_update_key(_xkbState, keycode, LibXKBCommon.xkb_key_direction.XKB_KEY_UP);
+			virtualKey = _repeatable.Remove(key, out var pressed) ? pressed.VirtualKey : ConvertToVirtualKey(key);
+			if (_repeat.Key == (uint)key)
+			{
+				_repeat.Stop();
+			}
+			_xkb?.UpdateKey((uint)key, down: false);
+			_pressedKeys.Remove(key);
+			if (_consumedKeys.Remove(key))
+			{
+				return;
+			}
+			modifiers = GetCurrentModifiersState();
 		}
-
-		var virtualKey = ConvertToVirtualKey(key);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"OnKeyReleaseEvent: {key} -> {virtualKey}");
 		}
 
-		_pressedKeys.Remove(key);
-
 		var args = new KeyEventArgs(
 			"keyboard",
 			virtualKey,
-			GetCurrentModifiersState(),
+			modifiers,
 			new CorePhysicalKeyStatus
 			{
 				ScanCode = (uint)key,
@@ -199,6 +220,11 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 
 	internal VirtualKeyModifiers GetCurrentModifiersState()
 	{
+		if (_xkb is { } xkb)
+		{
+			return xkb.Modifiers;
+		}
+
 		var modifiers = VirtualKeyModifiers.None;
 
 		if (_pressedKeys.Contains(KEY_LEFTSHIFT) || _pressedKeys.Contains(KEY_RIGHTSHIFT))

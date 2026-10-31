@@ -205,6 +205,22 @@ stages:
       testRunTitle: 'Linux WebGPU Runtime Tests'
       testResultLabel: '-webgpu'
 
+  - template: .azure-devops-tests-desktop-linux.yml
+    parameters:
+      vmImage: '${{ parameters.vmImage }}'
+      vmMacImage: '${{ parameters.vmMacImage }}'
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
+      poolName: '${{ parameters.poolName }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+      useXvfb: 'false'
+      useWeston: 'true'
+      runSnapshotTests: false
+      jobPrefix: 'Skia_Linux_Wayland'
+      testRunTitle: 'Linux Wayland Skia Runtime Tests'
+      testResultLabel: '-wayland'
+
 - stage: runtime_tests_skia_linux_framebuffer
   displayName: Tests - Desktop Linux Framebuffer
   dependsOn:

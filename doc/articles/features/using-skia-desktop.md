@@ -9,6 +9,7 @@ Uno Platform supports running applications using a common Skia Desktop shell, wh
 The currently supported targets and platforms are:
 
 - Linux X11
+- [Linux Wayland](xref:Uno.Skia.Linux.Wayland)
 - [Linux Framebuffer](xref:Uno.Skia.Linux.Framebuffer)
 - Windows (Using Win32 shell)
 - [macOS (Using an AppKit shell)](xref:Uno.Skia.macOS)
@@ -112,9 +113,13 @@ Each platform exposes its own `RenderingBackend` enum with only the backends it 
 
 Alternatively, you can use `FeatureConfiguration.Rendering` flags for backwards compatibility. The builder API takes precedence when both are used.
 
+## Wayland specifics
+
+Register `.UseWayland()` before `.UseX11()` to prefer native Wayland when a compositor is reachable and retain X11 fallback otherwise. The native host uses compositor-provided integer or fractional scaling, server-side or client-side decorations, desktop portals, clipboard/drop protocols and compositor IME sessions. See [Using the Wayland host](xref:Uno.Skia.Linux.Wayland) for dependencies, protocol fallbacks and limitations.
+
 ## X11 Specifics
 
-When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI scaling cannot be determined in a reliable way. In order to specify the scaling to be used by Uno Platform, set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. The default value is `1.0`.
+When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI scaling cannot be determined in a reliable way. Register the [Wayland host](xref:Uno.Skia.Linux.Wayland) before `UseX11()` to get the scale from the compositor, or set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable to specify the scaling to be used by Uno Platform. The default value is `1.0`.
 
 The X11 support uses DBus for various interactions with the system, such as file selection. Make sure that dbus is installed.
 

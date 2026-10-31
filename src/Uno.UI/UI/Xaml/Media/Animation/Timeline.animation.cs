@@ -230,6 +230,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				SetAnimatorDuration();//Set the duration of the animator
 
+				if (_animator is CPUBoundAnimator<T> cpuBound)
+				{
+					cpuBound.EndsWithoutFrames = _owner.RepeatBehavior is { Type: RepeatBehaviorType.Count, Count: <= 1 };
+				}
+
 				_animator.DisposeWith(_subscriptions);
 
 				if (ReportEachFrame())
