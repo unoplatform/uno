@@ -291,7 +291,7 @@ namespace Microsoft.UI.Xaml
 						{
 							if (GetUIElementAdjustedParentInternal() is { } pParent)
 							{
-								pParent.OnChildDesiredSizeChanged(pParent);
+								pParent.OnChildDesiredSizeChanged(this);
 							}
 						}
 					}
