@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DirectUI;
 using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
@@ -11,7 +12,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ItemsStackPanel : Panel, IVirtualizingPanel, IInsertionPanel
+	public partial class ItemsStackPanel : Panel, IVirtualizingPanel, IInsertionPanel, IOrientedPanel
 	{
 		VirtualizingPanelLayout _layout;
 
@@ -25,6 +26,10 @@ namespace Microsoft.UI.Xaml.Controls
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
 
 		internal override Orientation? PhysicalOrientation => Orientation;
+
+		Orientation IOrientedPanel.LogicalOrientation => Orientation;
+
+		Orientation IOrientedPanel.PhysicalOrientation => Orientation;
 
 		public ItemsStackPanel()
 		{
