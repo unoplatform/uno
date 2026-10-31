@@ -125,13 +125,19 @@ namespace Uno.UI.Dispatching
 		}
 
 #if __ANDROID__ || __WASM__ || __SKIA__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
+		// Frames rendered while Low/Idle work waits before one such item runs ahead of the rest. A UI thread that
+		// is busy every frame (rendering plus the per-frame Normal tick) would otherwise never reach those queues.
+		private const int MaxRendersBeforeLowPriorityItem = 3;
+
+		private int _rendersWhileLowPriorityWaits;
+
 		private static void DispatchItems()
 		{
 			// Currently, we have a singleton NativeDispatcher.
 			// We want DispatchItems to be static to avoid delegate allocations.
 			var @this = NativeDispatcher.Main;
 
-			Action? action = @this.TryGetRenderAction();
+			Action? action = @this.TryDequeueStarvedLowPriorityItem() ?? @this.TryGetRenderAction();
 
 			if (action is null)
 			{
@@ -151,6 +157,11 @@ namespace Uno.UI.Dispatching
 							if (Interlocked.Decrement(ref @this._globalCount) > 0)
 							{
 								@this.EnqueueNative(@this._currentPriority);
+							}
+
+							if (p >= (int)NativeDispatcherPriority.Low)
+							{
+								@this._rendersWhileLowPriorityWaits = 0;
 							}
 
 							if (@this._currentPriority == NativeDispatcherPriority.Normal)
@@ -203,6 +214,42 @@ namespace Uno.UI.Dispatching
 			}
 		}
 
+		private Action? TryDequeueStarvedLowPriorityItem()
+		{
+			if (_rendersWhileLowPriorityWaits < MaxRendersBeforeLowPriorityItem)
+			{
+				return null;
+			}
+
+			lock (_gate)
+			{
+				if (_queues[(int)NativeDispatcherPriority.High].Count > 0)
+				{
+					return null;
+				}
+
+				for (var p = (int)NativeDispatcherPriority.Low; p <= (int)NativeDispatcherPriority.Idle; p++)
+				{
+					if (_queues[p].Count > 0)
+					{
+						var action = Unsafe.As<Action>(_queues[p].Dequeue());
+						_currentPriority = (NativeDispatcherPriority)p;
+						_rendersWhileLowPriorityWaits = 0;
+
+						if (Interlocked.Decrement(ref _globalCount) > 0)
+						{
+							EnqueueNative(_currentPriority);
+						}
+
+						return action;
+					}
+				}
+
+				_rendersWhileLowPriorityWaits = 0;
+				return null;
+			}
+		}
+
 		private Action? TryGetRenderAction()
 		{
 			lock (_gate)
@@ -216,6 +263,11 @@ namespace Uno.UI.Dispatching
 							_compositionTargets[compositionTarget] = (renderAction: null, normalItemsToProcessBeforeNextRenderAction: _queues[(int)NativeDispatcherPriority.Normal].Count);
 
 							_currentPriority = NativeDispatcherPriority.High;
+
+							if (_queues[(int)NativeDispatcherPriority.Low].Count + _queues[(int)NativeDispatcherPriority.Idle].Count > 0)
+							{
+								_rendersWhileLowPriorityWaits++;
+							}
 
 							if (Interlocked.Decrement(ref _globalCount) > 0)
 							{
