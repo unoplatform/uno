@@ -337,7 +337,7 @@ When `UnoFeatures` includes `MVUX`, the `Uno.Sdk` also references [`Uno.HotTesti
 
 - It is absent from optimized (Release) builds. Code that uses its types must only compile in non-optimized builds, for example under `#if DEBUG`, or the Release build fails.
 - It is referenced with `PrivateAssets="all"`, so it does not flow to projects that reference yours, nor into the package of a library packed in Debug. A test project that doesn't use the `MVUX` feature references it directly, at the same version as the app's Uno.Extensions packages.
-- It follows `UnoExtensionsVersion`, and is skipped (`UNOB0028`) when that version is older than the 7.4 builds that first ship it, or is a floating version or a range.
+- It follows `UnoExtensionsVersion`, and is skipped (`UNOB0030`) when that version is older than the 7.4 builds that first ship it, or is a floating version or a range.
 - Debug and Release restore different packages. Restore the configuration you build before any `--no-restore` build, and if you use `RestoreLockedMode`, give each configuration its own lock file, e.g. `<NuGetLockFilePath>packages.$(Configuration).lock.json</NuGetLockFilePath>`.
 
 To turn the implicit reference off:
