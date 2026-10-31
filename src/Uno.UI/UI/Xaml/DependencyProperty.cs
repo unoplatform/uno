@@ -181,24 +181,27 @@ namespace Microsoft.UI.Xaml
 			return newProperty;
 		}
 
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification =
-			"Like WinUI, propertyType carries no trimming requirement, so the constructor requirement of GetUninitializedObject cannot be satisfied by annotation. " +
-			"The call only runs for value types, which call no constructor but must be kept as constructed types. " +
-			"Both toolchains ensure that by policy rather than by contract: ILLink treats value types as always implicitly boxed (see the GetUninitializedObject comment in dotnet/runtime), " +
-			"and ILC emits a constructed MethodTable for every value type reachable through typeof() (MetadataEETypeNode). No alternative API avoids this requirement.")]
 		private static PropertyMetadata FixMetadataIfNeeded(Type propertyType, PropertyMetadata metadata)
 		{
 			if (metadata is null)
 			{
-				var defaultValue = propertyType.IsNullable() ? null : RuntimeHelpers.GetUninitializedObject(propertyType);
+				var defaultValue = propertyType.IsNullable() ? null : CreateValueTypeDefault(propertyType);
 				return new PropertyMetadata(defaultValue);
 			}
 			else if (!propertyType.IsNullable() && metadata.DefaultValue is null)
 			{
-				return metadata.CloneWithOverwrittenDefaultValue(RuntimeHelpers.GetUninitializedObject(propertyType));
+				return metadata.CloneWithOverwrittenDefaultValue(CreateValueTypeDefault(propertyType));
 			}
 
 			return metadata;
+		}
+
+		// Unlike GetUninitializedObject, Box carries no trimming requirement: a value type reachable
+		// through typeof() stays a constructed type under both ILC and ILLink, which is all Box needs.
+		private static object CreateValueTypeDefault(Type valueType)
+		{
+			var zeroed = new byte[RuntimeHelpers.SizeOf(valueType.TypeHandle)];
+			return RuntimeHelpers.Box(ref zeroed[0], valueType.TypeHandle);
 		}
 
 		/// <summary>
