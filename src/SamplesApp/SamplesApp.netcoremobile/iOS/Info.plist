@@ -68,6 +68,10 @@
 			</array>
 		</dict>
 	</array>
+	<!-- Runs the UIKit scene life cycle, which the iOS 27 SDK requires, with older SDKs too. The Skia head keeps the
+	     default, so that CI covers both life cycles. -->
+	<key>UnoUseSceneLifecycle</key>
+	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>

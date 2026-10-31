@@ -171,6 +171,23 @@
 				 Text="The $(_UnoFirstOriginalTargetFramework) TargetFramework must not be placed first in the TargetFrameworks property in order for other platforms debugging to work. (See https://aka.platform.uno/UNOB0013)" />
 	</Target>
 
+	<!--
+		Apple workloads raise their minimum OS version over time (15.0 for the iOS 27 SDK), and fail the build below it.
+		Follow the workload when it requires more than the default picked by Uno; a version set by the app is kept.
+		This runs here because the workload defines MinSupportedOSPlatformVersion after Uno.Common.*.targets.
+	-->
+	<PropertyGroup Condition=" '$(_UnoDefaultedSupportedOSPlatformVersion)' == 'true' AND '$(MinSupportedOSPlatformVersion)' != '' ">
+		<_UnoRaisedSupportedOSPlatformVersionFrom Condition=" $([MSBuild]::VersionLessThan('$(SupportedOSPlatformVersion)', '$(MinSupportedOSPlatformVersion)')) ">$(SupportedOSPlatformVersion)</_UnoRaisedSupportedOSPlatformVersionFrom>
+		<SupportedOSPlatformVersion Condition=" '$(_UnoRaisedSupportedOSPlatformVersionFrom)' != '' ">$(MinSupportedOSPlatformVersion)</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<Target Name="_UnoReportRaisedSupportedOSPlatformVersion"
+			BeforeTargets="BeforeBuild"
+			Condition=" '$(_UnoRaisedSupportedOSPlatformVersionFrom)' != '' ">
+		<Message Importance="high"
+				 Text="SupportedOSPlatformVersion is $(SupportedOSPlatformVersion) rather than the Uno default of $(_UnoRaisedSupportedOSPlatformVersionFrom), which this $(TargetPlatformIdentifier) SDK no longer supports. Set SupportedOSPlatformVersion to choose the version." />
+	</Target>
+
 	<!-- Include any additional targets that packages defined by other packages -->
 	<Import Project="$(AfterUnoSdkTargets)" Condition="'$(AfterUnoSdkTargets)' != ''"/>
 
