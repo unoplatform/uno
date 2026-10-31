@@ -2761,6 +2761,35 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 			NativeMethods.UpdateAriaInvalid(element.Visual.Handle, invalid);
 		}
+		else if (automationProperty == AutomationElementIdentifiers.LiveSettingProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			OnLiveSettingChanged(element, oldValue as AutomationLiveSetting? ?? AutomationLiveSetting.Off, newValue as AutomationLiveSetting? ?? AutomationLiveSetting.Off);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.ItemStatusProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			NativeMethods.UpdateAriaBusy(element.Visual.Handle, SemanticElementFactory.IsBusyStatus(newValue as string));
+		}
+	}
+
+	private void OnLiveSettingChanged(UIElement element, AutomationLiveSetting oldValue, AutomationLiveSetting newValue)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"[A11y] PROP CHANGE: LiveSetting handle={element.Visual.Handle} element={element.GetType().Name} old={oldValue} new={newValue}");
+		}
+
+		if ((oldValue == AutomationLiveSetting.Off) != (newValue == AutomationLiveSetting.Off))
+		{
+			// Turning a live region on or off can change whether the element is semantic and which
+			// creation path it takes (e.g. a TextBlock leaves the bare-text path), so re-create it.
+			ReAddSemanticElement(element);
+		}
+		else if (newValue != AutomationLiveSetting.Off)
+		{
+			NativeMethods.UpdateAriaLive(element.Visual.Handle, newValue == AutomationLiveSetting.Assertive ? "assertive" : "polite");
+		}
 	}
 
 	public override void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
@@ -2919,6 +2948,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		UIElement element,
 		AccessibilityView oldValue,
 		AccessibilityView newValue)
+		=> ReAddSemanticElement(element);
+
+	private void ReAddSemanticElement(UIElement element)
 	{
 		var parent = element.GetParent() as UIElement
 			?? element.GetParentInternal(publicParentOnly: false) as UIElement;
@@ -3156,6 +3188,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaLive")]
 		internal static partial void UpdateAriaLive(IntPtr handle, string ariaLive);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaBusy")]
+		internal static partial void UpdateAriaBusy(IntPtr handle, bool busy);
 
 		// ===== Relationship Attributes =====
 

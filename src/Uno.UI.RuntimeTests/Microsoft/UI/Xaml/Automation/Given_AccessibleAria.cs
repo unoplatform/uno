@@ -345,6 +345,88 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"A runtime Text change must update the semantic element's aria-label when the accessible name is derived from Text.");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_LiveSetting_Changes_Then_AriaLive_Updates()
+		{
+			var region = new Grid { Width = 100, Height = 30 };
+			AutomationProperties.SetName(region, "Status");
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Assertive);
+
+			await UITestHelper.Load(region);
+			region.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(region), timeoutMS: 5000, message: "Timed out waiting for the semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("assertive", GetSemanticAttribute(region, "aria-live"));
+
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Polite);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(region, "aria-live") == "polite", timeoutMS: 5000,
+				message: "aria-live must follow a runtime LiveSetting change to Polite.");
+
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Off);
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(region, "aria-live"), timeoutMS: 5000,
+				message: "aria-live must be removed when LiveSetting changes to Off.");
+			Assert.IsTrue(SemanticElementExists(region), "The named container must stay in the semantic tree.");
+
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Assertive);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(region, "aria-live") == "assertive", timeoutMS: 5000,
+				message: "aria-live must be restored when LiveSetting changes back from Off.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBlock_Becomes_Live_Then_AriaLive_Is_Emitted()
+		{
+			var textBlock = new TextBlock { Text = "Ready" };
+			var root = new StackPanel { Children = { textBlock } };
+
+			await UITestHelper.Load(root);
+			textBlock.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitForIdle();
+
+			AutomationProperties.SetLiveSetting(textBlock, AutomationLiveSetting.Polite);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(textBlock, "aria-live") == "polite", timeoutMS: 5000,
+				message: "A TextBlock that becomes a live region at runtime must emit aria-live.");
+
+			AutomationProperties.SetLiveSetting(textBlock, AutomationLiveSetting.Off);
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(textBlock, "aria-live"), timeoutMS: 5000,
+				message: "aria-live must be removed when the TextBlock stops being a live region.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_ItemStatus_Changes_Then_AriaBusy_Updates()
+		{
+			var region = new Grid { Width = 100, Height = 30 };
+			AutomationProperties.SetName(region, "Results");
+			AutomationProperties.SetItemStatus(region, "Ready");
+
+			await UITestHelper.Load(region);
+			region.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(region), timeoutMS: 5000, message: "Timed out waiting for the semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsFalse(SemanticElementHasAttribute(region, "aria-busy"));
+
+			AutomationProperties.SetItemStatus(region, "Loading");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(region, "aria-busy") == "true", timeoutMS: 5000,
+				message: "A busy ItemStatus set at runtime must emit aria-busy=true.");
+
+			AutomationProperties.SetItemStatus(region, "Ready");
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(region, "aria-busy"), timeoutMS: 5000,
+				message: "aria-busy must be removed when ItemStatus is no longer busy.");
+		}
+
 		/// <summary>
 		/// WASM DOM seam: same Name-from-Text propagation as above, but for a NON-live TextBlock
 		/// (kept as a semantic node via an explicit LandmarkType, which takes the generic path and
