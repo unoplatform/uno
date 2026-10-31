@@ -169,17 +169,8 @@ internal static partial class SemanticElementFactory
 			}
 		}
 
-		// Apply aria-labelledby when AutomationProperties.LabeledBy resolves to a labeller that has
-		// its own semantic node. The IDREF is computed above (not in AriaMapper) because only the
-		// WASM layer can map the labeller UIElement → its uno-semantics-{handle} id and verify the
-		// node is actually present (no dangling IDREF — FR-019/FR-022). When it is present the
-		// competing flattened aria-label has already been suppressed (see WA-04 above).
-		if (created && labelledById is not null)
-		{
-			NativeMethods.UpdateAriaLabelledBy(handle, labelledById);
-		}
-
-		// Apply relationship attributes (aria-describedby, aria-controls, aria-flowto)
+		// Apply relationship attributes (aria-labelledby, aria-describedby, aria-controls, aria-flowto).
+		// When the labeller has a node, the competing flattened aria-label was suppressed above (WA-04).
 		if (created)
 		{
 			WebAssemblyAccessibility.Instance.UpdateRelationships(peer, handle);
@@ -1156,43 +1147,75 @@ internal static partial class SemanticElementFactory
 	}
 
 	/// <summary>
-	/// Resolves AutomationPeer collections to space-separated DOM element IDs.
+	/// The IDREF lists of an element's relationship attributes; an empty string means the attribute is absent.
 	/// </summary>
-	internal static bool ResolveRelationshipAttributes(
-		AutomationPeer peer,
-		out string? describedByIds,
-		out string? controlledIds,
-		out string? flowsToIds)
+	internal readonly record struct RelationshipIds(string LabelledBy, string DescribedBy, string Controls, string FlowTo)
 	{
-		describedByIds = ResolvePeerCollectionToIdList(peer.GetDescribedBy(), out var hasDescribedBy);
-		controlledIds = ResolvePeerCollectionToIdList(peer.GetControlledPeers(), out var hasControlledPeers);
-		flowsToIds = ResolvePeerCollectionToIdList(peer.GetFlowsTo(), out var hasFlowsTo);
-		return hasDescribedBy || hasControlledPeers || hasFlowsTo;
+		public static RelationshipIds None { get; } = new(string.Empty, string.Empty, string.Empty, string.Empty);
 	}
 
 	/// <summary>
-	/// Applies resolved ARIA relationship attributes (describedby, controls, flowto) to a semantic element.
+	/// Resolves the relationship IDREFs of a peer, keeping only targets that currently have a semantic node.
+	/// Returns whether the element has relationships at all, whether or not their targets are in the tree.
 	/// </summary>
-	internal static void ApplyRelationshipAttributes(
-		IntPtr handle,
-		string? describedByIds,
-		string? controlledIds,
-		string? flowsToIds,
-		bool clearMissing)
+	internal static bool ResolveRelationshipAttributes(AutomationPeer peer, out RelationshipIds ids)
 	{
-		if (describedByIds is not null || clearMissing)
+		var describedByIds = ResolvePeerCollectionToIdList(peer.GetDescribedBy(), out var hasDescribedBy);
+		var controlledIds = ResolvePeerCollectionToIdList(peer.GetControlledPeers(), out var hasControlledPeers);
+		var flowsToIds = ResolvePeerCollectionToIdList(peer.GetFlowsTo(), out var hasFlowsTo);
+		var labelledById = ResolveLabelledByIdRef(peer);
+
+		ids = new RelationshipIds(labelledById ?? string.Empty, describedByIds ?? string.Empty, controlledIds ?? string.Empty, flowsToIds ?? string.Empty);
+
+		return labelledById is not null || hasDescribedBy || hasControlledPeers || hasFlowsTo || DeclaresRelationships(peer);
+	}
+
+	// A Collapsed element has no automation peer (as in WinUI), so the peer queries above return nothing
+	// while every target is collapsed. The declared relationships still make the element a relationship source.
+	private static bool DeclaresRelationships(AutomationPeer peer)
+	{
+		if (peer is not FrameworkElementAutomationPeer { Owner: { } owner })
 		{
-			NativeMethods.UpdateAriaDescribedBy(handle, describedByIds ?? string.Empty);
+			return false;
 		}
 
-		if (controlledIds is not null || clearMissing)
+		return AutomationProperties.GetLabeledBy(owner) is not null
+			|| HasItems(owner.GetValue(AutomationProperties.DescribedByProperty))
+			|| HasItems(owner.GetValue(AutomationProperties.ControlledPeersProperty))
+			|| HasItems(owner.GetValue(AutomationProperties.FlowsToProperty));
+
+		// Read the raw values: the public getters create an empty collection on first access.
+		static bool HasItems(object? value) => value switch
 		{
-			NativeMethods.UpdateAriaControls(handle, controlledIds ?? string.Empty);
+			ICollection<DependencyObject> dependencyObjects => dependencyObjects.Count > 0,
+			ICollection<UIElement> elements => elements.Count > 0,
+			_ => false,
+		};
+	}
+
+	/// <summary>
+	/// Writes the relationship attributes that differ from the previously written ones.
+	/// </summary>
+	internal static void ApplyRelationshipAttributes(IntPtr handle, RelationshipIds previous, RelationshipIds current)
+	{
+		if (current.LabelledBy != previous.LabelledBy)
+		{
+			NativeMethods.UpdateAriaLabelledBy(handle, current.LabelledBy);
 		}
 
-		if (flowsToIds is not null || clearMissing)
+		if (current.DescribedBy != previous.DescribedBy)
 		{
-			NativeMethods.UpdateAriaFlowTo(handle, flowsToIds ?? string.Empty);
+			NativeMethods.UpdateAriaDescribedBy(handle, current.DescribedBy);
+		}
+
+		if (current.Controls != previous.Controls)
+		{
+			NativeMethods.UpdateAriaControls(handle, current.Controls);
+		}
+
+		if (current.FlowTo != previous.FlowTo)
+		{
+			NativeMethods.UpdateAriaFlowTo(handle, current.FlowTo);
 		}
 	}
 

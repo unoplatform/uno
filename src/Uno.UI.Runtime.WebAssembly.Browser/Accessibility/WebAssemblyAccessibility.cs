@@ -187,14 +187,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// </summary>
 	private readonly HashSet<IntPtr> _genericPathHandles = new();
 	/// <summary>
-	/// Controls carrying AutomationProperties.LabeledBy whose aria-labelledby IDREF is resolved AFTER
-	/// the surrounding subtree exists (FR-019/FR-022). The inline create-time resolution is
-	/// order-dependent — the labeller's node may not be registered yet when the labelled control is
-	/// built (following sibling / Header child) — so it is re-resolved by a deferred drain once every
-	/// labeller is present: at the end of CreateAOM for the initial build, and at the end of the
-	/// outermost OnChildAdded call for panels loaded after accessibility is already enabled.
+	/// Semantic nodes that are the source of a relationship (aria-labelledby, aria-describedby,
+	/// aria-controls, aria-flowto). Their IDREFs are re-resolved whenever semantic nodes are added or
+	/// removed, so a target that appears later (following sibling, Header child, shown after being
+	/// Collapsed) is referenced, and one that leaves the tree is never left dangling (FR-019/FR-022).
 	/// </summary>
-	private readonly List<(IntPtr Handle, WeakReference<AutomationPeer> Peer)> _pendingLabelledBy = new();
 	private readonly Dictionary<IntPtr, RelationshipState> _relationshipPeers = new();
 	private bool _relationshipRefreshQueued;
 
@@ -204,15 +201,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		public WeakReference<AutomationPeer> Peer { get; }
 		public bool HasRelationships { get; set; }
+		public SemanticElementFactory.RelationshipIds WrittenIds { get; set; } = SemanticElementFactory.RelationshipIds.None;
 		public bool IsUpdating { get; set; }
 		public AutomationPeer? PendingPeer { get; set; }
 	}
 
 	/// <summary>
 	/// Reentrancy depth of <see cref="OnChildAdded"/>. OnChildAdded recurses through a whole subtree
-	/// synchronously, so the outermost call (depth returning to 0) is the point at which every labeller
-	/// in that subtree has been registered — the moment to drain <see cref="_pendingLabelledBy"/> so a
-	/// following-sibling labeller resolves order-independently on the dynamic path too.
+	/// synchronously, so the outermost call (depth returning to 0) is the point at which every node of
+	/// that subtree is registered — the moment to refresh relationships once for the whole batch.
 	/// </summary>
 	private int _onChildAddedDepth;
 
@@ -434,18 +431,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					if (AddSemanticElement(semanticParent, child, index))
 					{
 						_semanticParentMap[childHandle] = semanticParent;
-
-						// FR-019/FR-022: defer aria-labelledby resolution on the dynamic path too. The
-						// inline resolution inside AddSemanticElement is order-dependent — a following-
-						// sibling labeller has not registered yet when this control is added — so record
-						// it and re-resolve when the outermost OnChildAdded subtree completes (below).
-						// The HasSemanticElement gate in ResolveLabelledByIdRef still applies at drain
-						// time, so no dangling IDREF is emitted.
-						if (AutomationProperties.GetLabeledBy(child) is not null
-							&& child.GetOrCreateAutomationPeer() is { } labelledPeer)
-						{
-							_pendingLabelledBy.Add((childHandle, new WeakReference<AutomationPeer>(labelledPeer)));
-						}
 					}
 					else
 					{
@@ -484,12 +469,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 		finally
 		{
-			// Outermost call complete: the whole added subtree (and any following-sibling labellers
-			// within it) is now registered, so re-resolve the deferred aria-labelledby IDREFs. Mirrors
-			// the CreateAOM drain, making the dynamic path order-independent (FR-019/FR-022).
+			// Outermost call complete: the whole added subtree is registered, so relationship targets
+			// within it (e.g. a following-sibling labeller) can now be resolved (FR-019/FR-022).
 			if (--_onChildAddedDepth == 0)
 			{
-				DrainPendingLabelledBy();
 				QueueRelationshipRefresh();
 			}
 		}
@@ -522,7 +505,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			// Only remove from DOM if this element was actually in the semantic tree
 			var childHandle = child.Visual.Handle;
-			_pendingLabelledBy.RemoveAll(entry => entry.Handle == childHandle);
 			_relationshipPeers.Remove(childHandle);
 			if (_semanticParentMap.TryGetValue(childHandle, out var semanticParent))
 			{
@@ -1091,7 +1073,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		@this._semanticParentMap.Clear();
 		@this._prunedHandles.Clear();
 		@this._genericPathHandles.Clear();
-		@this._pendingLabelledBy.Clear();
 		@this._relationshipPeers.Clear();
 		@this._relationshipRefreshQueued = false;
 		@this._onChildAddedDepth = 0;
@@ -1515,52 +1496,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			BuildSemanticsTreeRecursive(rootHandle, child, depth: 1);
 		}
 
-		// FR-019/FR-022: now that the full AOM exists, every labeller with a semantic node is
-		// registered. Re-resolve the deferred aria-labelledby IDREFs so emission is order-independent
-		// (covers labellers built after the labelled control). HasSemanticElement still gates each one.
-		DrainPendingLabelledBy();
+		// FR-019/FR-022: now that the full AOM exists, every relationship target with a semantic node is
+		// registered, so sources built before their targets (e.g. a following-sibling labeller) resolve.
 		QueueRelationshipRefresh();
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug($"[A11y] CreateAOM complete");
-		}
-	}
-
-	/// <summary>
-	/// Re-resolves every deferred aria-labelledby IDREF now that more of the tree exists, then clears
-	/// the queue. Shared by the CreateAOM drain and the OnChildAdded drain so both paths are
-	/// order-independent (a labeller built after the labelled control still resolves). Each entry is
-	/// gated by <see cref="SemanticElementFactory.ResolveLabelledByIdRef"/>, which only emits when the
-	/// labeller actually has a semantic node — so a dangling IDREF is never written (FR-019/FR-022).
-	/// </summary>
-	private void DrainPendingLabelledBy()
-	{
-		if (_pendingLabelledBy.Count == 0)
-		{
-			return;
-		}
-
-		// Re-resolve each deferred entry; emit + drop the ones whose labeller now has a semantic node,
-		// and KEEP the rest. OnChildAdded fires per-element, so a following-sibling labeller may not be
-		// registered when its labelled control drains — keeping the entry lets it resolve on the
-		// labeller's own (later) drain. ResolveLabelledByIdRef's HasSemanticElement gate still applies.
-		for (var i = _pendingLabelledBy.Count - 1; i >= 0; i--)
-		{
-			var (labelledHandle, labelledPeerReference) = _pendingLabelledBy[i];
-			if (!HasSemanticElement(labelledHandle)
-				|| !labelledPeerReference.TryGetTarget(out var labelledPeer))
-			{
-				_pendingLabelledBy.RemoveAt(i);
-				continue;
-			}
-
-			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(labelledPeer);
-			if (labelledById is not null)
-			{
-				NativeMethods.UpdateAriaLabelledBy(labelledHandle, labelledById);
-				_pendingLabelledBy.RemoveAt(i);
-			}
 		}
 	}
 
@@ -1590,8 +1532,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			while (state.PendingPeer is { } currentPeer)
 			{
 				state.PendingPeer = null;
-				var hasRelationships = SemanticElementFactory.ResolveRelationshipAttributes(
-					currentPeer, out var describedByIds, out var controlledIds, out var flowsToIds);
+				var hasRelationships = SemanticElementFactory.ResolveRelationshipAttributes(currentPeer, out var ids);
 				if (!_relationshipPeers.TryGetValue(handle, out var current) || !ReferenceEquals(current, state))
 				{
 					return;
@@ -1599,9 +1540,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 				if (state.PendingPeer is null)
 				{
-					SemanticElementFactory.ApplyRelationshipAttributes(
-						handle, describedByIds, controlledIds, flowsToIds, clearMissing: state.HasRelationships);
-					state.HasRelationships = hasRelationships;
+					var previous = state.WrittenIds;
+					SemanticElementFactory.ApplyRelationshipAttributes(handle, previous, ids);
+					state.WrittenIds = ids;
+
+					// A custom peer can stop returning a relationship while its target is collapsed and
+					// return it again later, so a source stays tracked until its own node is removed.
+					state.HasRelationships |= hasRelationships;
+
+					// aria-labelledby replaced the flattened aria-label; restore the name once the labeller is gone.
+					if (previous.LabelledBy.Length > 0 && ids.LabelledBy.Length == 0 && TryGetPeerOwner(currentPeer, out var owner))
+					{
+						OnAutomationNameChanged(owner, currentPeer, AriaMapper.ResolveLabel(currentPeer) ?? string.Empty);
+					}
 				}
 			}
 
@@ -1996,16 +1947,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 		}
 
-		// FR-019/FR-022: defer aria-labelledby resolution. The labeller's semantic node may not be
-		// registered yet at this control's create time (a following sibling or a Header/template child
-		// registers after the labelled control), so record the control and re-resolve at the end of
-		// CreateAOM. The HasSemanticElement gate still applies there, so no dangling IDREF is emitted.
-		if (_isCreatingAOM && _semanticParentMap.ContainsKey(handle) && AutomationProperties.GetLabeledBy(child) is not null
-			&& child.GetOrCreateAutomationPeer() is { } labelledPeer)
-		{
-			_pendingLabelledBy.Add((handle, new WeakReference<AutomationPeer>(labelledPeer)));
-		}
-
 		// Register virtualized containers (and backfill their already-realized items) at AOM-build
 		// time. OnChildAdded is suppressed during the initial build (_isCreatingAOM guard), so without
 		// this a NavigationView/list already realized at Enable-Accessibility time would never emit its
@@ -2281,13 +2222,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					NativeMethods.SetAccessKey(handle, accessKey);
 				}
 
-				// aria-labelledby from AutomationProperties.LabeledBy, mirroring the factory path.
-				// Only emitted when the labeller has a semantic node (no dangling IDREF — FR-019/FR-022).
-				var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(automationPeer);
-				if (labelledById is not null)
-				{
-					NativeMethods.UpdateAriaLabelledBy(handle, labelledById);
-				}
+				// Relationship attributes, mirroring the factory path (no dangling IDREF — FR-019/FR-022).
+				UpdateRelationships(automationPeer, handle);
 			}
 
 			// Owner-scoped attributes sourced from AutomationProperties attached properties
@@ -2698,16 +2634,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// ScrollPresenter is the scroll port itself.
 			UpdateNativeScrollOffsets(element is ScrollViewer { Presenter: { } presenter } ? presenter : element);
 		}
-		else if (automationProperty == AutomationElementIdentifiers.LabeledByProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			// Dynamic aria-labelledby: when LabeledBy changes after creation. Resolve the new
-			// labeller → its semantic id (guarded on HasSemanticElement); clear the attribute when
-			// the labeller was removed or is not semantic, so no dangling IDREF survives.
-			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(peer);
-			NativeMethods.UpdateAriaLabelledBy(element.Visual.Handle, labelledById ?? string.Empty);
-		}
-		else if ((automationProperty == AutomationElementIdentifiers.DescribedByProperty ||
+		else if ((automationProperty == AutomationElementIdentifiers.LabeledByProperty ||
+			automationProperty == AutomationElementIdentifiers.DescribedByProperty ||
 			automationProperty == AutomationElementIdentifiers.ControlledPeersProperty ||
 			automationProperty == AutomationElementIdentifiers.FlowsToProperty) &&
 			TryGetPeerOwner(peer, out element))
@@ -2948,7 +2876,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		_semanticParentMap.Clear();
 		_prunedHandles.Clear();
 		_genericPathHandles.Clear();
-		_pendingLabelledBy.Clear();
 		_relationshipPeers.Clear();
 
 		_isCreatingAOM = true;
@@ -3167,11 +3094,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaFlowTo")]
 		internal static partial void UpdateAriaFlowTo(IntPtr handle, string idList);
-
-		// ===== Relationship Updates =====
-
-		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaLabelledBy")]
-		internal static partial void UpdateAriaLabelledBy(IntPtr handle, string idList);
 
 		// ===== Roving Tabindex =====
 
