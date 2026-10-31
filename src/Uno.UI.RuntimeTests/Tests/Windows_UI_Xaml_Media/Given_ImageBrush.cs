@@ -115,6 +115,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			}, 10);
 		}
 
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaMobile)] // No sockets in the browser
+		public async Task When_SvgImageSource_Assigned_While_Opening()
+		{
+			// Setting UriSource opens the source, so the brush subscribes while that open is still in flight. A slow
+			// server keeps it in flight deterministically.
+			const string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='red'/></svg>";
+			using var server = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+			server.Start();
+			var port = ((System.Net.IPEndPoint)server.LocalEndpoint).Port;
+			var serving = ServeOnceAsync(server, svg);
+
+			var svgImageSource = new SvgImageSource(new Uri($"http://127.0.0.1:{port}/red.svg"));
+			var opened = false;
+			svgImageSource.Opened += (_, _) => opened = true;
+
+			var border = new Border { Width = 100, Height = 100, Background = new ImageBrush { ImageSource = svgImageSource } };
+			await UITestHelper.Load(border);
+			await serving;
+			await WindowHelper.WaitFor(() => opened, message: "SvgImageSource.Opened was not raised.");
+			await WindowHelper.WaitForIdle();
+
+			var screenshot = await UITestHelper.ScreenShot(border);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Microsoft.UI.Colors.Red, tolerance: 10);
+
+			static async Task ServeOnceAsync(System.Net.Sockets.TcpListener server, string body)
+			{
+				using var client = await server.AcceptTcpClientAsync();
+				using var stream = client.GetStream();
+				var buffer = new byte[4096];
+				_ = await stream.ReadAsync(buffer);
+				await Task.Delay(200);
+
+				var payload = System.Text.Encoding.UTF8.GetBytes(body);
+				var header = System.Text.Encoding.ASCII.GetBytes($"HTTP/1.1 200 OK\r\nContent-Type: image/svg+xml\r\nContent-Length: {payload.Length}\r\nConnection: close\r\n\r\n");
+				try
+				{
+					await stream.WriteAsync(header);
+					await stream.WriteAsync(payload);
+				}
+				catch (System.IO.IOException)
+				{
+					// The client gave up on the request; the assertions report the outcome.
+				}
+			}
+		}
+
 #if __SKIA__
 		[TestMethod]
 		[Ignore("Flaky. https://github.com/unoplatform/uno/issues/9080")]
