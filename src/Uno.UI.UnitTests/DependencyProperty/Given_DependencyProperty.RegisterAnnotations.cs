@@ -30,6 +30,15 @@ public static class GenericPropertyTypeOwner<T>
 			new PropertyMetadata(null));
 }
 
+/// <summary>
+/// A value type with a reference field, registered only through <c>typeof(T)</c>.
+/// </summary>
+public struct GenericPropertyTypeStruct
+{
+	public string Text;
+	public int Count;
+}
+
 public partial class Given_DependencyProperty
 {
 	// A trimming requirement on propertyType or ownerType warns (IL2087/IL2111/IL2072) in every consuming library that
@@ -59,6 +68,8 @@ public partial class Given_DependencyProperty
 		// A null default on a non-nullable value type is replaced by the type's zero value at registration.
 		Assert.AreEqual(0, GenericPropertyTypeOwner<int>.ValueProperty.GetMetadata(typeof(GenericPropertyTypeOwner<int>)).DefaultValue);
 		Assert.AreEqual(default(Thickness), GenericPropertyTypeOwner<Thickness>.ValueProperty.GetMetadata(typeof(GenericPropertyTypeOwner<Thickness>)).DefaultValue);
+		Assert.AreEqual(Visibility.Visible, GenericPropertyTypeOwner<Visibility>.ValueProperty.GetMetadata(typeof(GenericPropertyTypeOwner<Visibility>)).DefaultValue);
+		Assert.AreEqual(default(GenericPropertyTypeStruct), GenericPropertyTypeOwner<GenericPropertyTypeStruct>.ValueProperty.GetMetadata(typeof(GenericPropertyTypeOwner<GenericPropertyTypeStruct>)).DefaultValue);
 
 		// Nullable value types and reference types keep the null default.
 		Assert.IsNull(GenericPropertyTypeOwner<int?>.ValueProperty.GetMetadata(typeof(GenericPropertyTypeOwner<int?>)).DefaultValue);
@@ -73,6 +84,7 @@ public partial class Given_DependencyProperty
 		var SUT = new MockDependencyObject();
 
 		Assert.AreEqual(0, SUT.GetValue(GenericPropertyTypeOwner<int>.AttachedValueProperty));
+		Assert.AreEqual(Visibility.Visible, SUT.GetValue(GenericPropertyTypeOwner<Visibility>.AttachedValueProperty));
 		Assert.IsNull(SUT.GetValue(GenericPropertyTypeOwner<string>.AttachedValueProperty));
 
 		SUT.SetValue(GenericPropertyTypeOwner<int>.AttachedValueProperty, 42);
