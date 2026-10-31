@@ -143,6 +143,72 @@ namespace Uno.UI.Tests.ItemsControlTests
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25444")]
+		public void When_ItemTemplateSelector_Never_Receives_Null_Item()
+		{
+			var panel = new StackPanel();
+			var selector = new RecordingTemplateSelector();
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				InternalItemsPanelRoot = panel,
+				ItemTemplateSelector = selector,
+				ItemsSource = new[] { "a", "b", "c" },
+			};
+
+			Assert.AreEqual(0, selector.NullItemCalls);
+			CollectionAssert.AreEquivalent(new[] { "a", "b", "c" }, selector.Items.Distinct().ToArray());
+			Assert.AreEqual(3, panel.Children.Count);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25444")]
+		public void When_ItemTemplateSelector_Dereferences_Item()
+		{
+			var panel = new StackPanel();
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				InternalItemsPanelRoot = panel,
+				ItemTemplateSelector = new DereferencingTemplateSelector(),
+				ItemsSource = new[] { "a", "b", "c" },
+			};
+
+			Assert.AreEqual(3, panel.Children.Count);
+		}
+
+		private class RecordingTemplateSelector : DataTemplateSelector
+		{
+			private readonly DataTemplate _template = new DataTemplate(null, (_, _) => new Border());
+
+			public int NullItemCalls { get; private set; }
+
+			public List<object> Items { get; } = new();
+
+			protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+			{
+				if (item is null)
+				{
+					NullItemCalls++;
+					return null;
+				}
+
+				Items.Add(item);
+				return _template;
+			}
+		}
+
+		private class DereferencingTemplateSelector : DataTemplateSelector
+		{
+			private readonly DataTemplate _template = new DataTemplate(null, (_, _) => new Border());
+
+			protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+				=> ((string)item).Length > 0 ? _template : null;
+		}
+
+		[TestMethod]
 		public void When_OnItemsSourceChanged_AfterRemove_ThenIndexesAreRecalculated()
 		{
 			void Operation(ObservableCollection<string> list)
