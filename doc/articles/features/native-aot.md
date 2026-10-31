@@ -362,6 +362,10 @@ partial class ClipboardSamplePageViewModel {
 }
 ```
 
+### Dependency property registration
+
+`DependencyProperty.Register` and `RegisterAttached` put no trimming requirement on `propertyType` or `ownerType`, as in WinUI: a property typed or owned by a generic parameter, by `System.Type` or by a `Type` obtained at runtime registers without IL2087, IL2111 or IL2072. Reflection metadata for an owner's members comes from the generated `BindableMetadata` (types marked `[Bindable]`, which includes every concrete public `DependencyObject`), not from registration; see [XAML Attached Properties](#xaml-attached-properties) for owners that only hold attached properties.
+
 ### XAML Attached Properties
 
 XAML binding can involve Reflection, which can include use of attached properties.  If Reflection Metadata doesn't include a required attached property, then the app log will contain messages such as:

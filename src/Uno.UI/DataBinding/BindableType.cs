@@ -18,7 +18,7 @@ namespace Uno.UI.DataBinding
 	public class BindableType : IBindableType
 	{
 		internal const DynamicallyAccessedMemberTypes TypeRequirements =
-			  DynamicallyAccessedMemberTypes.NonPublicConstructors  // DependencyProperty.Register()
+			  DynamicallyAccessedMemberTypes.NonPublicConstructors
 			| DynamicallyAccessedMemberTypes.PublicConstructors
 			| DynamicallyAccessedMemberTypes.PublicFields
 			| DynamicallyAccessedMemberTypes.PublicProperties
