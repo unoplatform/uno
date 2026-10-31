@@ -36,6 +36,8 @@ public interface IDrawingFactory
 	/// <summary>
 	/// Uploads a neutral <see cref="IImage"/>'s pixels into a backend-specific GPU <see cref="ITexture"/>; the caller
 	/// owns and disposes the result. Decoding (producing neutral pixels) is separate, in <see cref="IImageEncoderDecoder"/>.
+	/// A backend may share the image's pixels instead of copying them; the texture then holds a reference on the image,
+	/// so either can be disposed first.
 	/// </summary>
 	ITexture CreateTexture(IImage image);
 

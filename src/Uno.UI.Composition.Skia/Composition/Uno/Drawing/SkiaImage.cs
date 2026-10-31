@@ -22,9 +22,19 @@ internal sealed class SkiaImage : DrawingResource, IImage
 	public unsafe void CopyPixels(Span<byte> destination)
 	{
 		var info = new SKImageInfo(PixelWidth, PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
+		// ReadPixels writes the whole image through a raw pointer, so a short destination would be overrun.
+		if (destination.Length < info.BytesSize64)
+		{
+			throw new ArgumentException($"The destination holds {destination.Length} bytes, but the image needs {info.BytesSize64}.", nameof(destination));
+		}
+
 		fixed (byte* dst = destination)
 		{
-			Image.ReadPixels(info, (nint)dst, info.RowBytes, 0, 0);
+			// A failed read leaves the destination untouched, which the caller would show as a transparent image.
+			if (!Image.ReadPixels(info, (nint)dst, info.RowBytes, 0, 0))
+			{
+				throw new InvalidOperationException("Failed to read the image's pixels.");
+			}
 		}
 	}
 }
