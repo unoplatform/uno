@@ -32,11 +32,11 @@ public static class GenericPropertyTypeOwner<T>
 
 public partial class Given_DependencyProperty
 {
-	// A trimming requirement on propertyType warns (IL2087/IL2111/IL2072) in every consuming library that registers
-	// a property typed by a generic parameter, by System.Type or by a runtime Type; WinUI has none.
+	// A trimming requirement on propertyType or ownerType warns (IL2087/IL2111/IL2072) in every consuming library that
+	// registers a property typed or owned by a generic parameter, by System.Type or by a runtime Type; WinUI has none.
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25840")]
-	public void When_Register_PropertyType_Has_No_DynamicallyAccessedMembers()
+	public void When_Register_Type_Parameters_Have_No_DynamicallyAccessedMembers()
 	{
 		var parameterTypes = new[] { typeof(string), typeof(Type), typeof(Type), typeof(PropertyMetadata) };
 
@@ -45,8 +45,10 @@ public partial class Given_DependencyProperty
 			var method = typeof(DependencyProperty).GetMethod(name, BindingFlags.Public | BindingFlags.Static, parameterTypes);
 			Assert.IsNotNull(method, name);
 
-			var propertyType = method.GetParameters().Single(p => p.Name == "propertyType");
-			Assert.IsNull(propertyType.GetCustomAttribute<DynamicallyAccessedMembersAttribute>(), $"{name}: propertyType must not carry [DynamicallyAccessedMembers]");
+			foreach (var parameter in method.GetParameters().Where(p => p.ParameterType == typeof(Type)))
+			{
+				Assert.IsNull(parameter.GetCustomAttribute<DynamicallyAccessedMembersAttribute>(), $"{name}: {parameter.Name} must not carry [DynamicallyAccessedMembers]");
+			}
 		}
 	}
 
