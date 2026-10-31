@@ -457,7 +457,7 @@ public class Given_ImeSessionCoordinator_RootOwnership
 
 		public bool RaisePaste() => false;
 		public void OnImeCompositionStarted() => Callbacks.Add("started");
-		public void OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied) => Callbacks.Add("updated");
+		public void OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied, int startIndex, bool textChangePending) => Callbacks.Add("updated");
 		public void OnImeCompositionCompleted(string committedText, bool textAlreadyApplied) => Callbacks.Add("completed");
 		public void OnImeCompositionPartiallyCommitted(string committedText, string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied) => Callbacks.Add("partially-committed");
 		public void OnImeCompositionCanceled(bool textAlreadyApplied) => Callbacks.Add("canceled");
