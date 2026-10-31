@@ -1291,9 +1291,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (!isOwnContainer)
 				{
+					containerAsContentPresenter.ContentTemplate = ItemTemplate;
+
 					SetContent(containerAsContentPresenter, ContentPresenter.ContentProperty);
 
-					containerAsContentPresenter.ContentTemplate = ItemTemplate;
 					containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
 				}
 			}
