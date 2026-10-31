@@ -2,6 +2,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -38,6 +39,10 @@ internal sealed class SkiaFontProvider : IFontProvider
 	// shaping (e.g. Arabic joining).
 	private readonly Dictionary<(string Family, int Weight, FontStretch Stretch, FontStyle Style, float Size), IFont> _matchedFamilyCache = new();
 	private readonly object _matchCharacterGate = new();
+
+	// The installed families don't change during a session, and the lookup can scan them all (fontconfig), so each
+	// name is checked once rather than once per requested size. Ordinal, because the platform lookups may not ignore case.
+	private static readonly ConcurrentDictionary<string, bool> _familyExists = new(StringComparer.Ordinal);
 
 	public IFont? CreateFont(byte[] data, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
@@ -105,6 +110,13 @@ internal sealed class SkiaFontProvider : IFontProvider
 
 	public IFont? MatchFamily(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
+		// FromFamilyName substitutes the font manager's default typeface for an unknown family rather than
+		// failing (on WASM that is Skia's embedded monospace font), so ask the font manager first.
+		if (!FamilyExists(familyName))
+		{
+			return null;
+		}
+
 		// FromFamilyName may return null (https://github.com/mono/SkiaSharp/issues/1058) or an empty typeface
 		// on some platforms when the family isn't found; treat both as "not found".
 		var typeface = SKTypeface.FromFamilyName(familyName, weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant());
@@ -115,6 +127,21 @@ internal sealed class SkiaFontProvider : IFontProvider
 
 		return MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
 	}
+
+	private static bool FamilyExists(string familyName)
+		=> _familyExists.GetOrAdd(familyName, static name =>
+		{
+			// CoreText's FromFamilyName maps these CSS generic names to Helvetica, Times and Courier, but its family
+			// lookup doesn't (map_css_names in SkFontMgr_mac_ct.cpp), so they count as present there.
+			if ((OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsMacCatalyst())
+				&& name is "sans-serif" or "serif" or "monospace")
+			{
+				return true;
+			}
+
+			using var styles = SKFontManager.Default.GetFontStyles(name);
+			return styles is { Count: > 0 };
+		});
 
 	public ValueTask<IFont?> MatchCharacterAsync(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
