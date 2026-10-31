@@ -158,7 +158,6 @@ namespace Microsoft.UI.Xaml
 		/// <param name="typeMetadata">The metadata to use when creating the property</param>
 		/// <returns>A dependency property instance</returns>
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Like WinUI, propertyType carries no trimming requirement. Its only annotated callee is FixMetadataIfNeeded, whose GetUninitializedObject runs only for value types, which ILC treats as constructed once they are reachable through typeof().")]
 		public static DependencyProperty Register(
 			string name,
 			Type propertyType,
@@ -184,10 +183,12 @@ namespace Microsoft.UI.Xaml
 			return newProperty;
 		}
 
-		private static PropertyMetadata FixMetadataIfNeeded(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
-			Type propertyType,
-			PropertyMetadata metadata)
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification =
+			"Like WinUI, propertyType carries no trimming requirement, so the constructor requirement of GetUninitializedObject cannot be satisfied by annotation. " +
+			"The call only runs for value types, which call no constructor but must be kept as constructed types. " +
+			"Both toolchains ensure that by policy rather than by contract: ILLink treats value types as always implicitly boxed (see the GetUninitializedObject comment in dotnet/runtime), " +
+			"and ILC emits a constructed MethodTable for every value type reachable through typeof() (MetadataEETypeNode). No alternative API avoids this requirement.")]
+		private static PropertyMetadata FixMetadataIfNeeded(Type propertyType, PropertyMetadata metadata)
 		{
 			if (metadata is null)
 			{
@@ -233,7 +234,6 @@ namespace Microsoft.UI.Xaml
 		/// <param name="defaultMetadata">The metadata to use when creating the property</param>
 		/// <returns>A dependency property instance</returns>
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Like WinUI, propertyType carries no trimming requirement. Its only annotated callee is FixMetadataIfNeeded, whose GetUninitializedObject runs only for value types, which ILC treats as constructed once they are reachable through typeof().")]
 		public static DependencyProperty RegisterAttached(
 			string name,
 			Type propertyType,
