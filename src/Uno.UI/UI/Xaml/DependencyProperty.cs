@@ -67,7 +67,6 @@ namespace Microsoft.UI.Xaml
 		private readonly Flags _flags;
 		private string _name;
 		private Type _propertyType;
-		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		private Type _ownerType;
 		private readonly int _uniqueId;
 
@@ -76,7 +75,6 @@ namespace Microsoft.UI.Xaml
 		private DependencyProperty(
 			string name,
 			Type propertyType,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 			Type ownerType,
 			PropertyMetadata defaultMetadata,
 			bool attached)
@@ -161,7 +159,7 @@ namespace Microsoft.UI.Xaml
 		public static DependencyProperty Register(
 			string name,
 			Type propertyType,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
+			Type ownerType,
 			PropertyMetadata typeMetadata)
 		{
 			typeMetadata = FixMetadataIfNeeded(propertyType, typeMetadata);
@@ -218,8 +216,8 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		internal static DependencyProperty Register(
 			string name,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
+			Type propertyType,
+			Type ownerType,
 			FrameworkPropertyMetadata typeMetadata)
 #pragma warning disable RS0030 // Do not used banned APIs
 			=> Register(name, propertyType, ownerType, (PropertyMetadata)typeMetadata);
@@ -237,7 +235,7 @@ namespace Microsoft.UI.Xaml
 		public static DependencyProperty RegisterAttached(
 			string name,
 			Type propertyType,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
+			Type ownerType,
 			PropertyMetadata defaultMetadata)
 		{
 			defaultMetadata = FixMetadataIfNeeded(propertyType, defaultMetadata);
@@ -272,11 +270,7 @@ namespace Microsoft.UI.Xaml
 		/// This method is to ensure that all uno controls defined dependency properties are using <see cref="FrameworkPropertyMetadata"/>.
 		/// This is achieved by banning the other public overload in Uno.UI directory.
 		/// </remarks>
-		internal static DependencyProperty RegisterAttached(
-			string name,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
-			FrameworkPropertyMetadata typeMetadata)
+		internal static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, FrameworkPropertyMetadata typeMetadata)
 #pragma warning disable RS0030 // Do not used banned APIs
 			=> RegisterAttached(name, propertyType, ownerType, (PropertyMetadata)typeMetadata);
 #pragma warning restore RS0030 // Do not used banned APIs
@@ -322,7 +316,6 @@ namespace Microsoft.UI.Xaml
 			return _ownerTypeMetadata.CloneWithOverwrittenDefaultValue(defaultValueForType);
 		}
 
-		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		internal Type OwnerType
 		{
 			get { return _ownerType; }
