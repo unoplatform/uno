@@ -14,6 +14,28 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 	public class Given_Selector
 	{
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25266")]
+		[DataRow(Orientation.Horizontal)]
+		[DataRow(Orientation.Vertical)]
+		public void When_ItemsStackPanel_GetItemsHostOrientations(Orientation orientation)
+		{
+			var SUT = new OrientationProbeSelector()
+			{
+				ItemsPanelRoot = new ItemsStackPanel() { Orientation = orientation },
+			};
+
+			var (physical, logical) = SUT.Probe();
+
+			Assert.AreEqual(orientation, physical);
+			Assert.AreEqual(orientation, logical);
+		}
+
+		private class OrientationProbeSelector : Selector
+		{
+			public (Orientation Physical, Orientation Logical) Probe() => GetItemsHostOrientations();
+		}
+
+		[TestMethod]
 		public void When_Empty_SelectedValuePath()
 		{
 			var SUT = new Selector();
