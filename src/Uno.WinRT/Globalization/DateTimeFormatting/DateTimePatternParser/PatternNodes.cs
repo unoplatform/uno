@@ -296,10 +296,12 @@ internal sealed class PatternPeriodNode : PatternDateTimeNode
 			return;
 		}
 
+		// The ideal length is a hint, so designators like "p.m." or "μ.μ." stay whole. Only the narrow
+		// form, which .NET doesn't provide, is approximated by the first character.
 		string period = dateTime.ToString("tt", culture);
-		if (IdealLength.HasValue && IdealLength.Value < period.Length)
+		if (IdealLength == 1 && period.Length > 1)
 		{
-			builder.Append(period.Substring(0, IdealLength.Value));
+			builder.Append(period[0]);
 		}
 		else
 		{
