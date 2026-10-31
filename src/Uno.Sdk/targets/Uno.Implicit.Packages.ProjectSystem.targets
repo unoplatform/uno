@@ -135,15 +135,22 @@
 		The strip is gated to library projects (i.e. non-executable output): application heads need
 		the implicit Uno packages on Windows to build and run, so setting the property on a head
 		project is a no-op rather than a way to break the head's build from a shared
-		Directory.Build.props.
+		Directory.Build.props. The Uno.UI implicit using follows the same condition.
 	-->
-	<ItemGroup Condition=" '$(DisableImplicitUnoWinAppSdkPackages)' == 'true' AND $(TargetFramework.Contains('windows10')) AND '$(_ImplicitRestoreOutputType)' != 'WinExe' AND '$(_ImplicitRestoreOutputType)' != 'Exe' ">
+	<ItemGroup Condition=" '$(_UnoIsWinAppSdkOnlyLibrary)' == 'true' ">
 		<_UnoProjectSystemPackageReference Remove="Uno.WinUI" />
 		<_UnoProjectSystemPackageReference Remove="Uno.Resizetizer" />
 		<_UnoProjectSystemPackageReference Remove="Uno.Sdk.Extras" />
 		<_UnoProjectSystemPackageReference Remove="Uno.Settings.DevServer" />
 	</ItemGroup>
 
+	<!--
+		Added after the project body so that a PackageReference the project declares replaces the implicit one
+		instead of duplicating it. A <PackageReference Remove="..." /> in the project therefore has nothing to
+		remove yet, and one placed later is undone by UnoImplicitPackages, which adds them again from
+		_UnoProjectSystemPackageReference. The documented opt-outs are the DisableImplicitUno* properties and
+		UnoFeatures.
+	-->
 	<ItemGroup>
 		<PackageReference Include="@(_UnoProjectSystemPackageReference)" Exclude="@(PackageReference)" />
 	</ItemGroup>
