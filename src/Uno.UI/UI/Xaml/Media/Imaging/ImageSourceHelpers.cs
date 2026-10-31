@@ -18,6 +18,7 @@ using Uno.Foundation.Logging;
 #if __SKIA__
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
+using Uno.UI.Composition.Drawing;
 #endif
 
 namespace Uno.Helpers;
@@ -65,7 +66,7 @@ internal static partial class ImageSourceHelpers
 					return ImageData.Empty;
 				}
 
-				var bytes = decodedBufferObject.GetPropertyAsByteArray("bytes");
+				using var bytes = decodedBufferObject.GetPropertyAsJSObject("bytes");
 				if (bytes is null)
 				{
 					return ImageData.Empty;
@@ -73,16 +74,9 @@ internal static partial class ImageSourceHelpers
 
 				try
 				{
-					// The browser Canvas API returns RGBA; the neutral image surface takes BGRA — swap R/B in place,
-					// as the bytes are already a managed copy of the JS buffer.
-					for (var i = 0; i + 3 < bytes.Length; i += 4)
-					{
-						(bytes[i], bytes[i + 2]) = (bytes[i + 2], bytes[i]);
-					}
-
-					var browserSurface = new CompositionImageSurface();
-					browserSurface.CopyPixels(width, height, bytes);
-					return ImageData.FromCompositionSurface(browserSurface);
+					// The worker already converted the pixels to BGRA premultiplied: copy them straight into the image's own storage.
+					var image = ImageEncoderDecoder.Current.CreateImage(width, height, bytes, static (pixels, source) => CopyPixels(source, pixels));
+					return ImageData.FromCompositionSurface(new CompositionImageSurface(image));
 				}
 				catch (Exception e)
 				{
@@ -108,6 +102,9 @@ internal static partial class ImageSourceHelpers
 	// https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/6.0/byte-array-interop#receive-byte-array-in-javascript-from-net-1
 	[JSImport($"globalThis.Uno.UI.Runtime.ImageLoader.loadFromArray")]
 	private static partial Task<JSObject> LoadFromArray(byte[] array);
+
+	[JSImport($"globalThis.Uno.UI.Runtime.ImageLoader.copyPixels")]
+	private static partial void CopyPixels(JSObject source, [JSMarshalAs<JSType.MemoryView>] Span<byte> destination);
 #endif
 
 	public static async Task<ImageData> GetImageDataFromUriAsBytes(Uri uri, CancellationToken ct)
