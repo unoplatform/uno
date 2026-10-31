@@ -157,7 +157,9 @@ internal partial class WebAssemblyAccessibility
 		var totalCount = comboBox.Items.Count;
 		var offset = GetOffsetRelativeToSemanticParent(item, region.ContainerHandle);
 		var label = item.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var selected = comboBox.AutomationPeerIsSelected(index, comboBox.ItemFromIndex(index));
 
+		// The head, not the listbox, carries this combobox's aria-activedescendant (below).
 		region.OnItemRealized(
 			item.Visual.Handle,
 			index,
@@ -165,11 +167,14 @@ internal partial class WebAssemblyAccessibility
 			offset.X, offset.Y,
 			item.Visual.Size.X, item.Visual.Size.Y,
 			"option",
-			label);
+			label,
+			selectable: true,
+			selected,
+			active: false);
 
 		// Point aria-activedescendant at the selected option so the combobox head
 		// announces the active item without moving DOM focus off the head.
-		if (item.IsSelected)
+		if (selected)
 		{
 			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, item.Visual.Handle);
 		}

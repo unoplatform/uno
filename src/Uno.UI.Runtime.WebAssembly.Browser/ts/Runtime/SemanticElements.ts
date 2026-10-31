@@ -1572,7 +1572,10 @@ namespace Uno.UI.Runtime {
 			width: number,
 			height: number,
 			role: string,
-			label: string
+			label: string,
+			selectable: boolean,
+			selected: boolean,
+			active: boolean
 		): void {
 			SemanticElements.scheduleVirtualizedMutation(() => {
 				const container = document.getElementById(`uno-semantics-${containerHandle}`);
@@ -1593,6 +1596,7 @@ namespace Uno.UI.Runtime {
 					if (existingItem.parentElement !== container) {
 						container.appendChild(existingItem);
 					}
+					SemanticElements.applyVirtualizedSelection(container, existingItem, selectable, selected, active);
 					return;
 				}
 
@@ -1618,7 +1622,36 @@ namespace Uno.UI.Runtime {
 				});
 
 				container.appendChild(element);
+				SemanticElements.applyVirtualizedSelection(container, element, selectable, selected, active);
 			});
+		}
+
+		/**
+		 * Applies a realized item's selection. The container's aria-activedescendant follows its active
+		 * item and is dropped when a recycled node now shows a different, inactive item.
+		 */
+		private static applyVirtualizedSelection(container: HTMLElement, item: HTMLElement, selectable: boolean, selected: boolean, active: boolean): void {
+			if (selectable) {
+				item.setAttribute('aria-selected', String(selected));
+			} else {
+				item.removeAttribute('aria-selected');
+			}
+
+			if (active) {
+				container.setAttribute('aria-activedescendant', item.id);
+			} else if (container.getAttribute('aria-activedescendant') === item.id) {
+				container.removeAttribute('aria-activedescendant');
+			}
+		}
+
+		/**
+		 * Removes the aria-activedescendant of the container that references a node being removed.
+		 */
+		public static clearActiveDescendantTo(element: HTMLElement): void {
+			const container = element.parentElement?.closest('[aria-activedescendant]');
+			if (container && container.getAttribute('aria-activedescendant') === element.id) {
+				container.removeAttribute('aria-activedescendant');
+			}
 		}
 
 		/**
@@ -1629,6 +1662,7 @@ namespace Uno.UI.Runtime {
 			SemanticElements.scheduleVirtualizedMutation(() => {
 				const element = document.getElementById(`uno-semantics-${itemHandle}`);
 				if (element && element.parentElement) {
+					SemanticElements.clearActiveDescendantTo(element);
 					element.parentElement.removeChild(element);
 				}
 			});
