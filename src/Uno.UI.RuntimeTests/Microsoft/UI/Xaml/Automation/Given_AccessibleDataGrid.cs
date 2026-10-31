@@ -307,6 +307,82 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.IsFalse(SemanticElementHasAttribute(control, "aria-colindex"), "A header without a GridItem column must NOT emit aria-colindex.");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Grid_Counts_Change_After_Creation_Then_Aria_Counts_Follow()
+		{
+			var grid = new GridContainerControl { RowCountValue = 0, ColumnCountValue = 0 };
+			var panel = new StackPanel { Children = { grid } };
+
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(grid), timeoutMS: 5000, message: "Timed out waiting for the grid semantic element.");
+			await UITestHelper.WaitForIdle();
+			Assert.IsFalse(SemanticElementHasAttribute(grid, "aria-rowcount"));
+
+			// Rows arrive after the grid node exists, as when a DataGrid loads its data; its peer raises no event.
+			grid.RowCountValue = 67;
+			grid.ColumnCountValue = 6;
+			panel.Children.Add(new GridRowControl());
+
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(grid, "aria-rowcount") == "67" && GetSemanticAttribute(grid, "aria-colcount") == "6",
+				timeoutMS: 5000,
+				message: "aria-rowcount/aria-colcount must follow the grid's counts after the tree under it changes.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Toolkit_Column_Is_Sorted_Then_Aria_Sort_Follows()
+		{
+			var header = new ToolkitColumnHeaderControl();
+			var panel = new StackPanel { Children = { header } };
+
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(header), timeoutMS: 5000, message: "Timed out waiting for the header semantic element.");
+			await UITestHelper.WaitForIdle();
+			Assert.IsFalse(SemanticElementHasAttribute(header, "aria-sort"));
+
+			// Sorting re-lays the grid's rows; the header peer raises no event for its new SortDirection.
+			header.SortHelpText = "Ascending";
+			panel.Children.Add(new GridRowControl());
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(header, "aria-sort") == "ascending", timeoutMS: 5000,
+				message: "aria-sort must follow the toolkit header's sort direction.");
+
+			header.SortHelpText = null;
+			panel.Children.RemoveAt(1);
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(header, "aria-sort"), timeoutMS: 5000,
+				message: "aria-sort must be removed when the column is no longer sorted.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_ColumnHeader_ItemStatus_Changes_Then_Aria_Sort_Follows()
+		{
+			var header = new ColumnHeaderControl();
+
+			await UITestHelper.Load(header, x => x.IsLoaded);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(header), timeoutMS: 5000, message: "Timed out waiting for the header semantic element.");
+			await UITestHelper.WaitForIdle();
+
+			AutomationProperties.SetItemStatus(header, "Ascending");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(header, "aria-sort") == "ascending", timeoutMS: 5000,
+				message: "aria-sort must follow a runtime ItemStatus change.");
+
+			AutomationProperties.SetItemStatus(header, "Descending");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(header, "aria-sort") == "descending", timeoutMS: 5000,
+				message: "aria-sort must follow a runtime ItemStatus change.");
+
+			AutomationProperties.SetItemStatus(header, string.Empty);
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(header, "aria-sort"), timeoutMS: 5000,
+				message: "aria-sort must be removed when the header is no longer sorted.");
+		}
+
 		/// <summary>
 		/// Issue #4: a header reporting a descending ItemStatus emits aria-sort=descending.
 		/// </summary>
@@ -448,8 +524,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		// the same mock covers the multi-select, single-select and empty-grid cases.
 		private sealed partial class GridContainerControl : SizedMockControl
 		{
-			public int RowCountValue { get; init; } = 500;
-			public int ColumnCountValue { get; init; } = 3;
+			public int RowCountValue { get; set; } = 500;
+			public int ColumnCountValue { get; set; } = 3;
 			public bool CanSelectMultipleValue { get; init; } = true;
 
 			protected override AutomationPeer OnCreateAutomationPeer() => new GridPeer(this);
@@ -492,8 +568,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				=> AutomationControlType.HeaderItem;
 		}
 
-		// A column header reporting an ascending sort via the generic ItemStatus channel (the only
-		// channel the fix can read, since the WCT header peer has no UIA sort pattern).
+		// A column header reporting its sort like the toolkit's DataGridColumnHeaderAutomationPeer:
+		// GetHelpTextCore returns "Ascending"/"Descending" from the column's SortDirection.
+		private sealed partial class ToolkitColumnHeaderControl : SizedMockControl
+		{
+			public string SortHelpText { get; set; }
+
+			protected override AutomationPeer OnCreateAutomationPeer() => new ToolkitColumnHeaderPeer(this);
+		}
+
+		private sealed partial class ToolkitColumnHeaderPeer : ColumnHeaderPeer
+		{
+			private readonly ToolkitColumnHeaderControl _owner;
+
+			public ToolkitColumnHeaderPeer(ToolkitColumnHeaderControl owner) : base(owner) => _owner = owner;
+
+			protected override string GetHelpTextCore() => _owner.SortHelpText ?? base.GetHelpTextCore();
+		}
+
+		// A column header reporting an ascending sort via the generic ItemStatus channel.
 		private sealed partial class SortedColumnHeaderControl : SizedMockControl
 		{
 			protected override AutomationPeer OnCreateAutomationPeer() => new SortedColumnHeaderPeer(this);

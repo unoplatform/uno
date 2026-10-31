@@ -198,6 +198,28 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private readonly Dictionary<IntPtr, RelationshipState> _relationshipPeers = new();
 	private bool _relationshipRefreshQueued;
 
+	/// <summary>
+	/// Grid and column-header nodes whose aria-rowcount/aria-colcount and aria-sort are read from
+	/// their peers. A grid's peer (e.g. the Community Toolkit DataGrid's) raises no event when its
+	/// item count, columns or sort change, so these are re-read after the tree under it changes.
+	/// </summary>
+	private readonly Dictionary<IntPtr, GridState> _grids = new();
+	private readonly Dictionary<IntPtr, ColumnHeaderState> _columnHeaders = new();
+	private bool _gridRefreshQueued;
+
+	private sealed class GridState(AutomationPeer peer, int rowCount, int columnCount)
+	{
+		public WeakReference<AutomationPeer> Peer { get; } = new(peer);
+		public int RowCount { get; set; } = rowCount;
+		public int ColumnCount { get; set; } = columnCount;
+	}
+
+	private sealed class ColumnHeaderState(AutomationPeer peer, string? sort)
+	{
+		public WeakReference<AutomationPeer> Peer { get; } = new(peer);
+		public string? Sort { get; set; } = sort;
+	}
+
 	private sealed class RelationshipState
 	{
 		public RelationshipState(AutomationPeer peer) => Peer = new WeakReference<AutomationPeer>(peer);
@@ -491,6 +513,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				DrainPendingLabelledBy();
 				QueueRelationshipRefresh();
+				QueueGridRefresh();
 			}
 		}
 	}
@@ -524,6 +547,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			var childHandle = child.Visual.Handle;
 			_pendingLabelledBy.RemoveAll(entry => entry.Handle == childHandle);
 			_relationshipPeers.Remove(childHandle);
+			_grids.Remove(childHandle);
+			_columnHeaders.Remove(childHandle);
 			if (_semanticParentMap.TryGetValue(childHandle, out var semanticParent))
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
@@ -536,6 +561,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				_genericPathHandles.Remove(childHandle);
 			}
 			QueueRelationshipRefresh();
+			QueueGridRefresh();
 		}
 		catch (Exception ex)
 		{
@@ -1094,6 +1120,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		@this._pendingLabelledBy.Clear();
 		@this._relationshipPeers.Clear();
 		@this._relationshipRefreshQueued = false;
+		@this._grids.Clear();
+		@this._columnHeaders.Clear();
+		@this._gridRefreshQueued = false;
 		@this._onChildAddedDepth = 0;
 		@this._rootElementHandle = IntPtr.Zero;
 		@this._focusSearchRoot = null;
@@ -1653,6 +1682,75 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				_relationshipPeers.Remove(handle);
 			}
+		}
+	}
+
+	internal void TrackGrid(AutomationPeer peer, IntPtr handle, int rowCount, int columnCount)
+		=> _grids[handle] = new GridState(peer, rowCount, columnCount);
+
+	internal void TrackColumnHeader(AutomationPeer peer, IntPtr handle, string? sort)
+		=> _columnHeaders[handle] = new ColumnHeaderState(peer, sort);
+
+	private void QueueGridRefresh()
+	{
+		if (!_isAccessibilityEnabled || IsDisposed || _gridRefreshQueued || (_grids.Count == 0 && _columnHeaders.Count == 0))
+		{
+			return;
+		}
+
+		_gridRefreshQueued = true;
+		NativeDispatcher.Main.Enqueue(RefreshGrids, NativeDispatcherPriority.Normal);
+	}
+
+	private void RefreshGrids()
+	{
+		_gridRefreshQueued = false;
+		if (!_isAccessibilityEnabled || IsDisposed)
+		{
+			return;
+		}
+
+		foreach (var (handle, state) in _grids.ToArray())
+		{
+			if (!HasSemanticElement(handle) || !state.Peer.TryGetTarget(out var peer))
+			{
+				_grids.Remove(handle);
+				continue;
+			}
+
+			if (peer.GetPattern(PatternInterface.Grid) is IGridProvider grid
+				&& (grid.RowCount != state.RowCount || grid.ColumnCount != state.ColumnCount))
+			{
+				state.RowCount = grid.RowCount;
+				state.ColumnCount = grid.ColumnCount;
+				NativeMethods.UpdateGridCounts(handle, state.RowCount, state.ColumnCount);
+			}
+		}
+
+		foreach (var handle in _columnHeaders.Keys.ToArray())
+		{
+			UpdateColumnHeaderSort(handle);
+		}
+	}
+
+	private void UpdateColumnHeaderSort(IntPtr handle)
+	{
+		if (!_columnHeaders.TryGetValue(handle, out var state))
+		{
+			return;
+		}
+
+		if (!HasSemanticElement(handle) || !state.Peer.TryGetTarget(out var peer))
+		{
+			_columnHeaders.Remove(handle);
+			return;
+		}
+
+		var sort = SemanticElementFactory.GetSortDirection(peer);
+		if (sort != state.Sort)
+		{
+			state.Sort = sort;
+			NativeMethods.UpdateAriaSort(handle, sort ?? string.Empty);
 		}
 	}
 
@@ -2511,6 +2609,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 			OnAutomationNameChanged(element, peer, (string)newValue);
 
+			// A grid that rebinds its rows in place (e.g. after a sort) raises no structural change,
+			// but its cells' names change, so re-read the grid's counts and sort state.
+			QueueGridRefresh();
+
 			// When the accessible name changes on a live region element, trigger
 			// the announcement. In WinUI3, the OS UIA framework monitors content
 			// changes on live regions automatically. We replicate that here.
@@ -2532,6 +2634,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				this.Log().Trace($"[A11y] PROP CHANGE: HelpText handle={element.Visual.Handle} element={element.GetType().Name} new='{newValue}'");
 			}
 			NativeMethods.UpdateAriaDescription(element.Visual.Handle, (string)newValue);
+			UpdateColumnHeaderSort(element.Visual.Handle);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.LandmarkTypeProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -2770,6 +2873,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			TryGetPeerOwner(peer, out element))
 		{
 			NativeMethods.UpdateAriaBusy(element.Visual.Handle, SemanticElementFactory.IsBusyStatus(newValue as string));
+			UpdateColumnHeaderSort(element.Visual.Handle);
 		}
 	}
 
@@ -2982,6 +3086,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		_genericPathHandles.Clear();
 		_pendingLabelledBy.Clear();
 		_relationshipPeers.Clear();
+		_grids.Clear();
+		_columnHeaders.Clear();
 
 		_isCreatingAOM = true;
 		try
@@ -3191,6 +3297,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaBusy")]
 		internal static partial void UpdateAriaBusy(IntPtr handle, bool busy);
+
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateGridCounts")]
+		internal static partial void UpdateGridCounts(IntPtr handle, int rowCount, int columnCount);
+
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateAriaSort")]
+		internal static partial void UpdateAriaSort(IntPtr handle, string sort);
 
 		// ===== Relationship Attributes =====
 

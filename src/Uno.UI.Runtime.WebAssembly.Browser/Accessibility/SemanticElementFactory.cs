@@ -896,6 +896,7 @@ internal static partial class SemanticElementFactory
 			colCount,
 			multiSelectable,
 			isFocusable);
+		WebAssemblyAccessibility.Instance.TrackGrid(peer, handle, rowCount, colCount);
 		return true;
 	}
 
@@ -1018,6 +1019,7 @@ internal static partial class SemanticElementFactory
 			colIndex,
 			sort,
 			isFocusable);
+		WebAssemblyAccessibility.Instance.TrackColumnHeader(peer, handle, sort);
 		return true;
 	}
 
@@ -1036,26 +1038,35 @@ internal static partial class SemanticElementFactory
 	}
 
 	/// <summary>
-	/// Resolves a column header's sort direction for aria-sort. UIA has no sort pattern and the
-	/// Community Toolkit DataGrid column-header peer does not expose sort state, so this reads the
-	/// generic ItemStatus channel ("ascending"/"descending") which an app — or an enhanced peer —
-	/// can populate. Returns null when no sort is advertised, so the JS omits aria-sort entirely.
+	/// Resolves a column header's sort direction for aria-sort. UIA has no sort pattern: an app (or an
+	/// enhanced peer) can report it through ItemStatus ("ascending"/"descending"), and the Community
+	/// Toolkit DataGrid column-header peer reports its column's SortDirection as the help text
+	/// "Ascending"/"Descending". Returns null when no sort is advertised, so the JS omits aria-sort.
 	/// </summary>
-	private static string? GetSortDirection(AutomationPeer peer)
+	internal static string? GetSortDirection(AutomationPeer peer)
 	{
 		var status = peer.GetItemStatus();
-		if (string.IsNullOrEmpty(status))
+		if (!string.IsNullOrEmpty(status))
 		{
-			return null;
+			var normalized = status.ToLowerInvariant();
+			if (normalized.Contains("ascend"))
+			{
+				return "ascending";
+			}
+
+			if (normalized.Contains("descend"))
+			{
+				return "descending";
+			}
 		}
 
-		var normalized = status.ToLowerInvariant();
-		if (normalized.Contains("ascend"))
+		var helpText = peer.GetHelpText();
+		if (string.Equals(helpText, "Ascending", StringComparison.OrdinalIgnoreCase))
 		{
 			return "ascending";
 		}
 
-		if (normalized.Contains("descend"))
+		if (string.Equals(helpText, "Descending", StringComparison.OrdinalIgnoreCase))
 		{
 			return "descending";
 		}
