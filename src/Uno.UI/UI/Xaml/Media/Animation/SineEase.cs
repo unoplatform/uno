@@ -1,17 +1,13 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+// MUX Reference EasingFunctions.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 
-namespace Microsoft.UI.Xaml.Media.Animation
+using System;
+
+namespace Microsoft.UI.Xaml.Media.Animation;
+
+public partial class SineEase : EasingFunctionBase
 {
-	public partial class SineEase : EasingFunctionBase
-	{
-		private protected override double EaseInCore(double normalizedTime)
-		{
-			return 1.0 - EaseOutSine(1 - normalizedTime);
-		}
-
-		private static double EaseOutSine(double normalizedTime)
-		{
-			return Math.Sin(normalizedTime * (Math.PI / 2));
-		}
-	}
+	private protected override float EaseInCore(float normalizedTime)
+		=> 1.0f - MathF.Sin((1.0f - normalizedTime) * (FloatPi / 2.0f));
 }

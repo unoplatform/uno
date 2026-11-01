@@ -1,46 +1,60 @@
-﻿namespace Microsoft.UI.Xaml.Media.Animation
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+// MUX Reference EasingFunctions.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+
+#nullable enable
+
+using System;
+
+namespace Microsoft.UI.Xaml.Media.Animation;
+
+public partial class EasingFunctionBase : DependencyObject, IEasingFunction
 {
-	public partial class EasingFunctionBase : DependencyObject, IEasingFunction
+	internal const float FloatPi = 3.1415926535897932384626433832795f;
+	internal const float FloatE = 2.7182818284590452353602874713527f;
+	internal const float FloatEpsilon = 0.0001f;
+
+	private protected EasingFunctionBase()
 	{
-		private protected EasingFunctionBase()
-		{
-			InitializeBinder();
-		}
-
-		public EasingMode EasingMode
-		{
-			get => (EasingMode)this.GetValue(EasingModeProperty);
-			set => this.SetValue(EasingModeProperty, value);
-		}
-
-		public static DependencyProperty EasingModeProperty { get; } =
-			DependencyProperty.Register("EasingMode", typeof(EasingMode), typeof(EasingFunctionBase), new FrameworkPropertyMetadata(EasingMode.EaseOut));
-
-		// https://github.com/dotnet/wpf/blob/ebe5937b557c3fa9cb29fb3a417c71652573c7e4/src/Microsoft.DotNet.Wpf/src/PresentationCore/System/Windows/Media/Animation/EasingFunctionBase.cs#L45-L61
-		public double Ease(double normalizedTime)
-		{
-			switch (EasingMode)
-			{
-				case EasingMode.EaseIn:
-					return EaseInCore(normalizedTime);
-				case EasingMode.EaseOut:
-					// EaseOut is the same as EaseIn, except time is reversed & the result is flipped.
-					return 1.0 - EaseInCore(1.0 - normalizedTime);
-				case EasingMode.EaseInOut:
-				default:
-					// EaseInOut is a combination of EaseIn & EaseOut fit to the 0-1, 0-1 range.
-					return (normalizedTime < 0.5)
-						? EaseInCore(normalizedTime * 2.0) * 0.5
-						: (1.0 - EaseInCore((1.0 - normalizedTime) * 2.0)) * 0.5 + 0.5;
-			}
-		}
-
-		private protected virtual double EaseInCore(double normalizedTime)
-		{
-			return normalizedTime;
-		}
-
-		double IEasingFunction.Ease(double currentTime, double startValue, double finalValue, double duration)
-			=> startValue + Ease(currentTime / duration) * (finalValue - startValue);
+		InitializeBinder();
 	}
+
+	public EasingMode EasingMode
+	{
+		get => (EasingMode)this.GetValue(EasingModeProperty);
+		set => this.SetValue(EasingModeProperty, value);
+	}
+
+	public static DependencyProperty EasingModeProperty { get; } =
+		DependencyProperty.Register("EasingMode", typeof(EasingMode), typeof(EasingFunctionBase), new FrameworkPropertyMetadata(EasingMode.EaseOut));
+
+	public double Ease(double normalizedTime) => EaseValue((float)normalizedTime);
+
+	internal float EaseValue(float normalizedTime)
+	{
+		switch (EasingMode)
+		{
+			case EasingMode.EaseIn:
+				return EaseInCore(normalizedTime);
+			case EasingMode.EaseOut:
+				return 1.0f - EaseInCore(1.0f - normalizedTime);
+			case EasingMode.EaseInOut:
+				if (normalizedTime < 0.5f)
+				{
+					return EaseInCore(normalizedTime * 2.0f) / 2.0f;
+				}
+
+				return (1.0f - EaseInCore(2.0f - normalizedTime * 2.0f)) / 2.0f + 0.5f;
+			default:
+				return 0;
+		}
+	}
+
+	internal static float EaseValue(EasingFunctionBase? easing, float value)
+		=> easing is null ? value : easing.EaseValue(value);
+
+	private protected virtual float EaseInCore(float normalizedTime) => normalizedTime;
+
+	double IEasingFunction.Ease(double currentTime, double startValue, double finalValue, double duration)
+		=> startValue + Ease(currentTime / duration) * (finalValue - startValue);
 }

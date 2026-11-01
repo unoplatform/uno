@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public double Ease(double currentTime, double startValue, double finalValue, double duration)
 		{
 			// 0 <= t <= 1
-			var t = currentTime / duration;
+			var t = (float)(currentTime / duration);
 
 			var splineProgress = KeySpline.GetSplineProgress(t);
 

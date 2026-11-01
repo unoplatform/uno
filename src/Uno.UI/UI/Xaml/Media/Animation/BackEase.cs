@@ -1,26 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+// MUX Reference EasingFunctions.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+
+using System;
 using Uno.UI.Helpers.Boxes;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation;
+
+public partial class BackEase : EasingFunctionBase
 {
-	public partial class BackEase : EasingFunctionBase
+	public double Amplitude
 	{
-		public double Amplitude
+		get => (double)this.GetValue(AmplitudeProperty);
+		set => this.SetValue(AmplitudeProperty, Boxer.Box(value));
+	}
+
+	public static DependencyProperty AmplitudeProperty { get; } =
+		DependencyProperty.Register("Amplitude", typeof(double), typeof(BackEase), new FrameworkPropertyMetadata(DoubleBoxes.One));
+
+	private protected override float EaseInCore(float normalizedTime)
+	{
+		if (normalizedTime < 0.0f)
 		{
-			get { return (double)this.GetValue(AmplitudeProperty); }
-			set { this.SetValue(AmplitudeProperty, Boxer.Box(value)); }
+			normalizedTime = 0.0f;
 		}
 
-		public static DependencyProperty AmplitudeProperty { get; } =
-			DependencyProperty.Register("Amplitude", typeof(double), typeof(BackEase), new FrameworkPropertyMetadata(DoubleBoxes.One));
-
-		// https://github.com/dotnet/wpf/blob/c3439bc20a3c2ee28d98e7d0eebcf7edcc37b7b9/src/Microsoft.DotNet.Wpf/src/PresentationCore/System/Windows/Media/Animation/BackEase.cs#L42-L45
-		private protected override double EaseInCore(double normalizedTime)
-		{
-			double amp = Math.Max(0.0, Amplitude);
-			return Math.Pow(normalizedTime, 3.0) - normalizedTime * amp * Math.Sin(Math.PI * normalizedTime);
-		}
+		return (normalizedTime * normalizedTime * normalizedTime) - normalizedTime * (float)Amplitude * MathF.Sin(normalizedTime * FloatPi);
 	}
 }

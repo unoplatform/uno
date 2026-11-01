@@ -10,10 +10,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class KeySpline : DependencyObject
 	{
-		const int Steps = 64;
-
-		private Point[] _positions;
-		private bool _isDirty;
+		private float _cp1X, _cp1Y, _cp2X, _cp2Y;
+		private float _lastT;
 
 		/// <summary>
 		/// Initializes a new instance of the KeySpline class.
@@ -61,7 +59,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			set
 			{
 				_controlPoint1 = ValidateControlPointValue(value);
-				_isDirty = true;
+				_cp1X = (float)_controlPoint1.X;
+				_cp1Y = (float)_controlPoint1.Y;
 			}
 		}
 
@@ -76,7 +75,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			set
 			{
 				_controlPoint2 = ValidateControlPointValue(value);
-				_isDirty = true;
+				_cp2X = (float)_controlPoint2.X;
+				_cp2Y = (float)_controlPoint2.Y;
 			}
 		}
 
@@ -124,62 +124,113 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// <param name="linearProgress">the linear progress</param>
 		/// <returns>the spline progress</returns>
 		public double GetSplineProgress(double linearProgress)
+			=> GetSplineProgress((float)linearProgress);
+
+		// Copyright (c) Microsoft Corporation. All rights reserved.
+		// Licensed under the MIT License.
+		// MUX Reference KeySpline.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+		internal float GetSplineProgress(float linearProgress)
 		{
-			Build();
-
-			for (int i = _positions.Length - 2; i >= 0; i--)
+			if (linearProgress == 0 || linearProgress == 1)
 			{
-				var currentPos = _positions[i];
+				return linearProgress;
+			}
 
-				if (linearProgress >= currentPos.X)
+			// Dynamic search interval to clamp with
+			float rBottom = 0.0f;
+			float rTop = 1.0f;
+			float rFuzz = 0.000001f; // computational zero
+			float rAccuracy = 0.001f; // 1/3 the desired accuracy in X
+
+			float rT = _lastT;
+			while (rTop - rBottom > rFuzz)
+			{
+				GetXAndDeltaX(rT, out var rX, out var rDeltaX);
+
+				var rAbsDeltaX = MathF.Abs(rDeltaX);
+
+				// Clamp down the search interval, relying on the monotonicity of X(t)
+				if (rX > linearProgress)
 				{
-					var nextPos = _positions[i + 1];
+					rTop = rT;
+				}
+				else
+				{
+					rBottom = rT;
+				}
 
-					var deltaX = nextPos.X - currentPos.X;
-					var deltaY = nextPos.Y - currentPos.Y;
+				// The desired accuracy is ultimately in y, not x; dy/dt <= 3 so we omit that factor
+				if (MathF.Abs(rX - linearProgress) < rAccuracy * rAbsDeltaX)
+				{
+					break;
+				}
 
-					var innerLinearProgress = (linearProgress - currentPos.X) / deltaX;
+				if (rAbsDeltaX > rFuzz)
+				{
+					// Nonzero derivative, use Newton-Raphson to obtain the next guess
+					float rNext = rT - (rX - linearProgress) / rDeltaX;
 
-					var ret = currentPos.Y + deltaY * innerLinearProgress;
-
-					return ret;
+					if (rNext >= rTop)
+					{
+						rT = (rT + rTop) / 2;
+					}
+					else if (rNext <= rBottom)
+					{
+						rT = (rT + rBottom) / 2;
+					}
+					else
+					{
+						rT = rNext;
+					}
+				}
+				else
+				{
+					// Zero derivative, halve the search interval
+					rT = (rBottom + rTop) / 2.0f;
 				}
 			}
 
-			return -1;
+			// Cache this value to reduce next iteration search
+			_lastT = rT;
+
+			return ComputeSplineValueY(rT);
 		}
 
-
-		private Point GetProgress(float t)
+		private float ComputeSplineValueY(float rT)
 		{
-			var bx = ControlPoint1.X;
-			var by = ControlPoint1.Y;
-			var cx = ControlPoint2.X;
-			var cy = ControlPoint2.Y;
+			float rOneMinusT = 1.0f - rT;
+			float rOneMinusTSquared = rOneMinusT * rOneMinusT;
+			float rTSquared = rT * rT;
+			float rTCubed = rT * rTSquared;
 
-			var B1_t = 3 * t * Math.Pow(1 - t, 2);
-			var B2_t = 3 * Math.Pow(t, 2) * (1 - t);
-			var B3_t = Math.Pow(t, 3);
+			float rB13 = 3.0f * rOneMinusTSquared * rT;
+			float rB23 = 3.0f * rOneMinusT * rTSquared;
+			float rB33 = rTCubed;
 
-			var px_t = (B1_t * bx) + (B2_t * cx) + B3_t;
-			var py_t = (B1_t * by) + (B2_t * cy) + B3_t;
-
-			return new Point(px_t, py_t);
+			return rB13 * _cp1Y + rB23 * _cp2Y + rB33;
 		}
 
-		private void Build()
+		private void GetXAndDeltaX(float rT, out float rX, out float rDeltaX)
 		{
-			if (_isDirty)
-			{
-				_isDirty = false;
+			float rOneMinusT = 1.0f - rT;
+			float rOneMinusTSquared = rOneMinusT * rOneMinusT;
+			float rTSquared = rT * rT;
+			float rTCubed = rT * rTSquared;
 
-				_positions = new Point[Steps + 1];
+			float rB13 = 3.0f * rOneMinusTSquared * rT;
+			float rB23 = 3.0f * rOneMinusT * rTSquared;
+			float rB33 = rTCubed;
 
-				for (int i = 0; i < Steps + 1; i++)
-				{
-					_positions[i] = GetProgress(i / (float)Steps);
-				}
-			}
+			rX = rB13 * _cp1X + rB23 * _cp2X + rB33;
+
+			float rBX = 3.0f * _cp1X;
+			float rCX = 3.0f * _cp2X;
+			float rBX_CX = 2.0f * (rCX - rBX);
+			float r3CX = 3.0f - rCX;
+
+			rDeltaX = rOneMinusTSquared * rBX
+				+ rT * rOneMinusT * rBX_CX
+				+ r3CX * rTSquared;
 		}
 	}
 }
