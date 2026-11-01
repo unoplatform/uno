@@ -5,6 +5,7 @@
 #nullable enable
 
 using System.Collections.Generic;
+using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Media.Animation;
 
@@ -22,6 +23,10 @@ internal sealed class LayoutTransitionStorage
 	internal readonly List<Transition> m_registeredTransitions = new();
 	internal readonly List<Storyboard> m_transitionStoryboards = new();
 	internal bool m_bRegisteredInLayoutManager;
+
+	// Uno: WinUI keeps an unloading element in its parent's UIElementCollection unloading storage. Uno removes it
+	// from its parent right away and only keeps its visual in the parent's visual until the transition ends.
+	internal ContainerVisual? m_unloadingParentVisual;
 
 	internal TransitionTrigger GetTrigger() => m_trigger;
 
@@ -72,6 +77,16 @@ internal sealed class LayoutTransitionStorage
 
 		// clear out all earlier transitions that were registered for this element but not executed yet.
 		m_registeredTransitions.Clear();
+	}
+
+	// MUX Reference CUIElementCollection::RemoveUnloadedElement (UIElementCollection.cpp)
+	internal void RemoveUnloadedElement(UIElement pTarget)
+	{
+		if (m_unloadingParentVisual is { } parentVisual)
+		{
+			m_unloadingParentVisual = null;
+			parentVisual.Children.Remove(pTarget.Visual);
+		}
 	}
 
 	internal void RegisterStoryboard(Storyboard pStoryboard) => m_transitionStoryboards.Add(pStoryboard);

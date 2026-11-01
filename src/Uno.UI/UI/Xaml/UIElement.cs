@@ -1657,6 +1657,12 @@ namespace Microsoft.UI.Xaml
 				currentParent.RemoveChild(child);
 			}
 
+			if (Media.Animation.Transition.HasActiveTransition(child, Media.Animation.TransitionTrigger.Unload))
+			{
+				// Finishes the unload, which takes the child's visual out of the parent rendering it.
+				Media.Animation.Transition.CancelTransitions(child);
+			}
+
 			child.SetParent(this);
 
 			if (index is { } actualIndex && actualIndex != _children.Count)
@@ -1737,8 +1743,8 @@ namespace Microsoft.UI.Xaml
 			{
 				TrackStubChild(child, -1);
 				UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(this, child);
-				UnloadElement(child);
-				InnerRemoveChild(child);
+				var isUnloading = UnloadElement(child);
+				InnerRemoveChild(child, keepVisual: isUnloading);
 
 				// Force a new measure of this element
 				InvalidateMeasure();
@@ -1788,12 +1794,20 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void InnerRemoveChild(UIElement child)
+		private void InnerRemoveChild(UIElement child, bool keepVisual = false)
 		{
 			child.SetParent(null);
 			if (Visual != null)
 			{
-				Visual.Children.Remove(child.Visual);
+				if (keepVisual)
+				{
+					// Still rendered while its unload transition runs, see UnloadElement.
+					child.GetLayoutTransitionStorage()!.m_unloadingParentVisual = Visual;
+				}
+				else
+				{
+					Visual.Children.Remove(child.Visual);
+				}
 			}
 			OnChildRemoved(child);
 		}

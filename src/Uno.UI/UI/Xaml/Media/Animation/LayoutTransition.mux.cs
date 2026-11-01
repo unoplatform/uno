@@ -299,6 +299,12 @@ partial class Transition
 		// finally remove the storyboards
 		pStorage.ClearStoryboards();
 		pStorage.UnregisterElementForTransitions(pTarget);
+
+		if (trigger == TransitionTrigger.Unload)
+		{
+			// unload target
+			pStorage.RemoveUnloadedElement(pTarget);
+		}
 	}
 
 	private static void ValidateTransitionWasSetup(UIElement pTarget)
