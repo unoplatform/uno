@@ -90,8 +90,19 @@ namespace Microsoft.UI.Xaml
 			OnModifying();
 		}
 
-		/// <summary>Called before any mutation, to let a collection refuse it.</summary>
+		/// <summary>Called before any mutation but a removal, to let a collection refuse it.</summary>
 		private protected virtual void OnModifying() { }
+
+		/// <summary>Whether items can be removed now; a refused removal is ignored.</summary>
+		private protected virtual bool CanRemoveItems() => true;
+
+		private void EnsureNotLockedForRemoval()
+		{
+			if (_isLocked > 0)
+			{
+				throw new InvalidOperationException("Collection is locked.");
+			}
+		}
 
 		public DependencyObjectCollection()
 		{
@@ -188,7 +199,12 @@ namespace Microsoft.UI.Xaml
 
 		public void RemoveAt(int index)
 		{
-			EnsureNotLocked();
+			EnsureNotLockedForRemoval();
+
+			if (!CanRemoveItems())
+			{
+				return;
+			}
 
 			OnRemoved(_list[index]);
 
@@ -298,7 +314,12 @@ namespace Microsoft.UI.Xaml
 
 		public bool Remove(T item)
 		{
-			EnsureNotLocked();
+			EnsureNotLockedForRemoval();
+
+			if (!CanRemoveItems())
+			{
+				return false;
+			}
 
 			var index = _list.IndexOf(item);
 

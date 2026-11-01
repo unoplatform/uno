@@ -13,7 +13,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 		}
 
-		// CTimingCollection::CheckCanBeModified: key frames can't change while the storyboard of their animation runs.
+		// CTimingCollection: the animation is the timing owner of its key frames, which can't be added or cleared while
+		// its storyboard runs, and whose removal is then ignored.
 		private protected override void OnModifying() => (this.GetParent() as Timeline)?.CheckCanBeModified();
+
+		private protected override bool CanRemoveItems() => (this.GetParent() as Timeline)?.CanBeModified() ?? true;
 	}
 }

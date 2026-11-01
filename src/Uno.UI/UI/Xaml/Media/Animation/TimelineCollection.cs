@@ -28,6 +28,9 @@ public sealed partial class TimelineCollection : DependencyObjectCollection<Time
 
 	private protected override void OnModifying() => _timingOwner?.CheckCanBeModified();
 
+	// CTimingCollection::RemoveAt ignores the removal while the storyboard runs.
+	private protected override bool CanRemoveItems() => _timingOwner?.CanBeModified() ?? true;
+
 	private protected override void OnAdded(Timeline d)
 	{
 		base.OnAdded(d);
