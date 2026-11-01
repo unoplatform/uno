@@ -399,9 +399,299 @@ public class Given_NavigationTransitionInfo
 #endif
 	}
 
+	private const string RotationPath = "(UIElement.Projection).(PlaneProjection.RotationY)";
+	private const string CenterXPath = "(UIElement.Projection).(PlaneProjection.CenterOfRotationX)";
+	private const string CenterZPath = "(UIElement.Projection).(PlaneProjection.CenterOfRotationZ)";
+
+	[TestMethod]
+	public void When_Common_NavigatingTo()
+	{
+#if HAS_UNO
+		var element = new Border();
+		var timelines = CreateSingleStoryboard(new CommonNavigationTransitionInfo(), element, NavigationTrigger.NavigatingTo);
+
+		Assert.HasCount(5, timelines);
+		AssertPageTurnstile(element, timelines,
+			[Linear(-80, 0), Linear(-80, 128), Easing(0, 556, exponent: 6, EasingMode.EaseOut)],
+			[Linear(0, 0), Linear(0, 128), Linear(1, 129)]);
+		AssertHitTestDisabled(element, timelines[4]);
+#endif
+	}
+
+	[TestMethod]
+	public void When_Common_NavigatingAway()
+	{
+#if HAS_UNO
+		var element = new Border();
+		var timelines = CreateSingleStoryboard(new CommonNavigationTransitionInfo(), element, NavigationTrigger.NavigatingAway);
+
+		Assert.HasCount(5, timelines);
+		AssertPageTurnstile(element, timelines,
+			[Linear(0, 0), Easing(50, 128, exponent: 6, EasingMode.EaseIn)],
+			[Linear(1, 0), Linear(1, 128), Linear(0, 129)]);
+		AssertHitTestDisabled(element, timelines[4]);
+#endif
+	}
+
+	[TestMethod]
+	public void When_Common_BackNavigatingTo()
+	{
+#if HAS_UNO
+		var element = new Border();
+		var timelines = CreateSingleStoryboard(new CommonNavigationTransitionInfo(), element, NavigationTrigger.BackNavigatingTo);
+
+		Assert.HasCount(5, timelines);
+		AssertPageTurnstile(element, timelines,
+			[Linear(50, 0), Linear(50, 128), Easing(0, 556, exponent: 6, EasingMode.EaseOut)],
+			[Linear(0, 0), Linear(0, 128), Linear(1, 129)]);
+		AssertHitTestDisabled(element, timelines[4]);
+#endif
+	}
+
+	[TestMethod]
+	public void When_Common_BackNavigatingAway()
+	{
+#if HAS_UNO
+		var element = new Border();
+		var timelines = CreateSingleStoryboard(new CommonNavigationTransitionInfo(), element, NavigationTrigger.BackNavigatingAway);
+
+		Assert.HasCount(5, timelines);
+		AssertPageTurnstile(element, timelines,
+			[Linear(0, 0), Easing(-80, 128, exponent: 6, EasingMode.EaseIn)],
+			[Linear(1, 0), Linear(1, 128), Linear(0, 129)]);
+		AssertHitTestDisabled(element, timelines[4]);
+#endif
+	}
+
+	[TestMethod]
+	public void When_Common_Staggering_Without_Targets()
+	{
+#if HAS_UNO
+		// Without a visible stagger target the page turnstiles.
+		var element = new Border();
+		var info = new CommonNavigationTransitionInfo { IsStaggeringEnabled = true };
+		var timelines = CreateSingleStoryboard(info, element, NavigationTrigger.NavigatingTo);
+
+		Assert.HasCount(5, timelines);
+		AssertPageTurnstile(element, timelines,
+			[Linear(-80, 0), Linear(-80, 128), Easing(0, 556, exponent: 6, EasingMode.EaseOut)],
+			[Linear(0, 0), Linear(0, 128), Linear(1, 129)]);
+#endif
+	}
+
+	[TestMethod]
+	public async Task When_Common_Staggering_NavigatingTo()
+	{
+#if HAS_UNO
+		await RunStaggerTest(NavigationTrigger.NavigatingTo, (page, timelines, targets) =>
+		{
+			AssertStaggerPageOpacity(page, timelines, Linear(0, 0), Linear(0, 128), Linear(1, 129));
+			AssertStaggerTarget(targets[0], timelines, 1,
+				[Linear(-80, 0), Linear(-80, 64), Easing(0, 278, exponent: 6, EasingMode.EaseOut)],
+				[Linear(0, 0), Linear(0, 64), Linear(1, 65)]);
+			AssertStaggerTarget(targets[1], timelines, 5,
+				[Linear(-80, 0), Linear(-80, 97), Easing(0, 311, exponent: 6, EasingMode.EaseOut)],
+				[Linear(0, 0), Linear(0, 97), Linear(1, 98)]);
+		});
+#endif
+	}
+
+	[TestMethod]
+	public async Task When_Common_Staggering_NavigatingAway()
+	{
+#if HAS_UNO
+		// WinUI passes the unset page easing here, so the rotation is linear.
+		await RunStaggerTest(NavigationTrigger.NavigatingAway, (page, timelines, targets) =>
+		{
+			AssertStaggerPageOpacity(page, timelines, Linear(1, 0), Linear(1, 128), Linear(0, 129));
+			AssertStaggerTarget(targets[0], timelines, 1,
+				[Linear(0, 0), Linear(50, 64)],
+				[Linear(1, 0), Linear(1, 64), Linear(0, 65)]);
+			AssertStaggerTarget(targets[1], timelines, 5,
+				[Linear(0, 33), Linear(50, 97)],
+				[Linear(1, 33), Linear(1, 97), Linear(0, 98)]);
+		});
+#endif
+	}
+
+	[TestMethod]
+	public async Task When_Common_Staggering_BackNavigatingTo()
+	{
+#if HAS_UNO
+		// WinUI passes the unset page easing here, so the rotation is linear.
+		await RunStaggerTest(NavigationTrigger.BackNavigatingTo, (page, timelines, targets) =>
+		{
+			AssertStaggerPageOpacity(page, timelines, Linear(0, 0), Linear(0, 128), Linear(1, 129));
+			AssertStaggerTarget(targets[0], timelines, 1,
+				[Linear(50, 0), Linear(50, 64), Linear(0, 278)],
+				[Linear(0, 0), Linear(0, 64), Linear(1, 65)]);
+			AssertStaggerTarget(targets[1], timelines, 5,
+				[Linear(50, 0), Linear(50, 97), Linear(0, 311)],
+				[Linear(0, 0), Linear(0, 97), Linear(1, 98)]);
+		});
+#endif
+	}
+
+	[TestMethod]
+	public async Task When_Common_Staggering_BackNavigatingAway()
+	{
+#if HAS_UNO
+		await RunStaggerTest(NavigationTrigger.BackNavigatingAway, (page, timelines, targets) =>
+		{
+			AssertStaggerPageOpacity(page, timelines, Linear(1, 0), Linear(1, 128), Linear(0, 129));
+			AssertStaggerTarget(targets[0], timelines, 1,
+				[Linear(0, 0), Easing(-80, 64, exponent: 6, EasingMode.EaseIn)],
+				[Linear(1, 0), Linear(1, 64), Linear(0, 65)]);
+			AssertStaggerTarget(targets[1], timelines, 5,
+				[Linear(0, 33), Easing(-80, 97, exponent: 6, EasingMode.EaseIn)],
+				[Linear(1, 33), Linear(1, 97), Linear(0, 98)]);
+		});
+#endif
+	}
+
+	[TestMethod]
+	public async Task When_Common_Turnstile_Applied_To_Projection()
+	{
+#if HAS_UNO
+		var element = new Border { Width = 100, Height = 100 };
+		TestServices.WindowHelper.WindowContent = element;
+		await TestServices.WindowHelper.WaitForLoaded(element);
+
+		var storyboard = new CommonNavigationTransitionInfo().CreateStoryboards(element, NavigationTrigger.NavigatingAway).Single();
+		var completed = false;
+		storyboard.Completed += (_, _) => completed = true;
+		storyboard.Begin();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(element.IsHitTestVisible);
+
+		await TestServices.WindowHelper.WaitFor(() => completed);
+
+		var projection = (PlaneProjection)element.Projection;
+		Assert.AreEqual(50, projection.RotationY, 1e-9);
+		Assert.AreEqual(-0.1, projection.CenterOfRotationX, 1e-9);
+		Assert.AreEqual(-100, projection.CenterOfRotationZ, 1e-9);
+		Assert.AreEqual(0, element.Opacity, 1e-9);
+
+		storyboard.Stop();
+
+		Assert.IsTrue(element.IsHitTestVisible);
+#endif
+	}
+
+	[TestMethod]
+	public void When_Common_NavigationState()
+	{
+#if HAS_UNO
+		var info = new CommonNavigationTransitionInfo();
+
+		Assert.AreEqual("0", info.GetNavigationStateCoreInternal());
+
+		info.IsStaggeringEnabled = true;
+		Assert.AreEqual("1", info.GetNavigationStateCoreInternal());
+
+		var restored = new CommonNavigationTransitionInfo();
+		restored.SetNavigationStateCoreInternal("1");
+		Assert.IsTrue(restored.IsStaggeringEnabled);
+
+		restored.SetNavigationStateCoreInternal("42");
+		Assert.IsFalse(restored.IsStaggeringEnabled);
+		Assert.AreEqual("0", restored.GetNavigationStateCoreInternal());
+#endif
+	}
+
 	private class CustomTransitionInfo : NavigationTransitionInfo
 	{
 	}
+
+#if HAS_UNO
+	private static async Task RunStaggerTest(NavigationTrigger trigger, Action<UIElement, List<Timeline>, Border[]> assert)
+	{
+		// Two visible descendants, plus a descendant outside the page bounds and an intersecting non-descendant.
+		var first = new Border { Width = 50, Height = 50 };
+		var second = new Border { Width = 50, Height = 50 };
+		var offPage = new Border { Width = 50, Height = 50 };
+		var sibling = new Border { Width = 50, Height = 50, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+		Canvas.SetLeft(second, 60);
+		Canvas.SetLeft(offPage, 300);
+
+		var page = new Canvas { Width = 200, Height = 200, Children = { first, second, offPage } };
+		var root = new Grid { Width = 400, Height = 200, Children = { page, sibling } };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+
+		Border[] registered = [first, offPage, sibling, second];
+
+		try
+		{
+			foreach (var element in registered)
+			{
+				CommonNavigationTransitionInfo.SetIsStaggerElement(element, true);
+			}
+
+			var info = new CommonNavigationTransitionInfo { IsStaggeringEnabled = true };
+			var timelines = CreateSingleStoryboard(info, page, trigger);
+
+			Assert.HasCount(10, timelines);
+			assert(page, timelines, [first, second]);
+			AssertHitTestDisabled(page, timelines[9]);
+
+			Assert.IsNull(page.Projection);
+			Assert.IsNull(offPage.Projection);
+			Assert.IsNull(sibling.Projection);
+		}
+		finally
+		{
+			foreach (var element in registered)
+			{
+				CommonNavigationTransitionInfo.SetIsStaggerElement(element, false);
+			}
+		}
+	}
+
+	private static void AssertPageTurnstile(UIElement element, List<Timeline> timelines, Action<DoubleKeyFrame>[] rotation, Action<DoubleKeyFrame>[] opacity)
+	{
+		Assert.IsInstanceOfType<PlaneProjection>(element.Projection);
+
+		for (var i = 0; i < 4; i++)
+		{
+			AssertSame(element, timelines[i]);
+		}
+
+		AssertKeyFrames(timelines[0], RotationPath, rotation);
+		AssertKeyFrames(timelines[1], CenterXPath, Linear(-0.1, 0));
+		AssertKeyFrames(timelines[2], CenterZPath, Linear(-100, 0));
+		AssertKeyFrames(timelines[3], nameof(UIElement.Opacity), opacity);
+	}
+
+	private static void AssertStaggerPageOpacity(UIElement page, List<Timeline> timelines, params Action<DoubleKeyFrame>[] opacity)
+	{
+		AssertSame(page, timelines[0]);
+		AssertKeyFrames(timelines[0], nameof(UIElement.Opacity), opacity);
+	}
+
+	private static void AssertStaggerTarget(UIElement target, List<Timeline> timelines, int index, Action<DoubleKeyFrame>[] rotation, Action<DoubleKeyFrame>[] opacity)
+	{
+		Assert.IsInstanceOfType<PlaneProjection>(target.Projection);
+
+		for (var i = index; i < index + 4; i++)
+		{
+			AssertSame(target, timelines[i]);
+		}
+
+		AssertKeyFrames(timelines[index], RotationPath, rotation);
+		AssertKeyFrames(timelines[index + 1], CenterXPath, Linear(-0.1, 0));
+		AssertKeyFrames(timelines[index + 2], CenterZPath, Linear(-100, 0));
+		AssertKeyFrames(timelines[index + 3], nameof(UIElement.Opacity), opacity);
+	}
+
+	private static Action<DoubleKeyFrame> Linear(double value, long ms) => frame =>
+	{
+		Assert.IsInstanceOfType<LinearDoubleKeyFrame>(frame);
+		AssertFrame(frame, value, ms);
+	};
+#endif
 
 #if HAS_UNO
 	private static List<Timeline> CreateSingleStoryboard(NavigationTransitionInfo info, UIElement element, NavigationTrigger trigger)
