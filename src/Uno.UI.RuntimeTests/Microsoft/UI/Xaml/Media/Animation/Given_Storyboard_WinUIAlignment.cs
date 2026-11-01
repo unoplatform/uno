@@ -393,6 +393,59 @@ public class Given_Storyboard_WinUIAlignment
 		storyboard.Stop();
 	}
 
+	[TestMethod]
+	public async Task When_Transition_Animates_A_Property_Set_By_The_Target_State_Then_Setter_Value_Is_Kept()
+	{
+		var control = (ContentControl)Microsoft.UI.Xaml.Markup.XamlReader.Load("""
+			<ContentControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+							xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<ContentControl.Template>
+					<ControlTemplate TargetType="ContentControl">
+						<Grid>
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="States">
+									<VisualStateGroup.Transitions>
+										<VisualTransition From="First" To="Second">
+											<Storyboard>
+												<DoubleAnimation Storyboard.TargetName="Target" Storyboard.TargetProperty="Opacity" To="0.8" Duration="0:0:0.15" />
+											</Storyboard>
+										</VisualTransition>
+									</VisualStateGroup.Transitions>
+									<VisualState x:Name="First">
+										<Storyboard>
+											<DoubleAnimation Storyboard.TargetName="Target" Storyboard.TargetProperty="Opacity" To="0.5" Duration="0" />
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Second">
+										<VisualState.Setters>
+											<Setter Target="Target.Opacity" Value="0.2" />
+										</VisualState.Setters>
+									</VisualState>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+							<Border x:Name="Target" Width="50" Height="50" Background="Pink" />
+						</Grid>
+					</ControlTemplate>
+				</ContentControl.Template>
+			</ContentControl>
+			""");
+
+		TestServices.WindowHelper.WindowContent = control;
+		await TestServices.WindowHelper.WaitForLoaded(control);
+
+		var target = (Border)((FrameworkElement)VisualTreeHelper.GetChild(control, 0)).FindName("Target");
+
+		VisualStateManager.GoToState(control, "First", false);
+		await TestServices.WindowHelper.WaitFor(() => target.Opacity == 0.5, message: "the first state should apply its animation");
+
+		VisualStateManager.GoToState(control, "Second", true);
+
+		// The transition is stopped once the setter is applied; stopping it must not clear the setter's value.
+		await TestServices.WindowHelper.WaitFor(() => Math.Abs(target.Opacity - 0.2) < 0.001, message: "the setter of the target state should win after the transition");
+		await Task.Delay(200);
+		Assert.AreEqual(0.2, target.Opacity, 0.001);
+	}
+
 	private static async Task<Border> LoadBorder()
 	{
 		var border = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Pink) };

@@ -168,6 +168,13 @@ namespace Private.Infrastructure
 
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+#if HAS_UNO
+				// As WinUI's idle synchronizer, wait for the animation operations deferred to the next tick (visual state setters).
+				while (Uno.UI.Xaml.Core.CoreServices.Instance.HasDeferredAnimationOperations && Stopwatch.GetElapsedTime(start).TotalMilliseconds < 2000)
+				{
+					await Task.Delay(5);
+				}
+#endif
 
 				var elapsedMs = (long)Stopwatch.GetElapsedTime(start).TotalMilliseconds;
 				if (elapsedMs < SlowIdleMs)
