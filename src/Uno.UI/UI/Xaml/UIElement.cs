@@ -1580,9 +1580,23 @@ namespace Microsoft.UI.Xaml
 			UpdateHitTest();
 		}
 
+		/// <summary>
+		/// The opacity theme animations animate on top of <see cref="Opacity"/>.
+		/// </summary>
+		/// <remarks>
+		/// TODO Uno: Stand-in for WinUI's (UIElement.TransitionTarget).Opacity, which is not ported.
+		/// </remarks>
+		internal static DependencyProperty TransitionTargetOpacityProperty { get; } = DependencyProperty.Register(
+			"TransitionTargetOpacity",
+			typeof(double),
+			typeof(UIElement),
+			new FrameworkPropertyMetadata(Uno.UI.Helpers.Boxes.DoubleBoxes.One, (DependencyObject s, DependencyPropertyChangedEventArgs _) => ((UIElement)s).UpdateOpacity()));
+
 		private void UpdateOpacity()
 		{
-			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
+			Visual.Opacity = Visibility == Visibility.Visible
+				? (float)(Opacity * (double)GetValue(TransitionTargetOpacityProperty))
+				: 0;
 		}
 
 		internal ContainerVisual Visual

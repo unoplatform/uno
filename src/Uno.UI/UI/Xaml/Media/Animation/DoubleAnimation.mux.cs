@@ -158,6 +158,11 @@ partial class DoubleAnimation
 				global::System.Diagnostics.Debug.Assert(pSender is PlaneProjection);
 				isIndependentAnimation = true;
 			}
+			// TODO Uno: TransitionTarget.Opacity is a property of the element itself (UIElement.TransitionTargetOpacity).
+			else if (property == UIElement.TransitionTargetOpacityProperty)
+			{
+				isIndependentAnimation = true;
+			}
 			// TODO Uno: CompositeTransform3D and TransitionTarget properties: those types are not implemented.
 			else
 			{

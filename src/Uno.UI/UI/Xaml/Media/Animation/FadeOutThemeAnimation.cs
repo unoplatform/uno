@@ -11,7 +11,8 @@ namespace Microsoft.UI.Xaml.Media.Animation;
 /// </summary>
 /// <remarks>
 /// TODO Uno: WinUI implements the theme animations as dynamic timelines (CDynamicTimeline) that generate their child
-/// animations from the theme. Here it is an opacity animation to 0 with the default animation duration.
+/// animations from the theme, animating (UIElement.TransitionTarget).Opacity. Here it animates the stand-in
+/// UIElement.TransitionTargetOpacity to 0 with the default animation duration, leaving Opacity to the storyboard.
 /// </remarks>
 public partial class FadeOutThemeAnimation : Timeline
 {
@@ -46,12 +47,13 @@ public partial class FadeOutThemeAnimation : Timeline
 
 	internal override void OnBegin()
 	{
-		if (NameScope.GetNameScope(this)?.FindName(TargetName) is DependencyObject target)
+		if (!string.IsNullOrEmpty(TargetName)
+			&& (NameScope.GetNameScope(this)?.FindName(TargetName) ?? ResolveName(TargetName, GetTimingParent())) is DependencyObject target)
 		{
 			Target = target;
 		}
 
-		SetTargetProperty(UIElement.OpacityProperty);
+		SetTargetProperty(UIElement.TransitionTargetOpacityProperty);
 
 		base.OnBegin();
 	}
@@ -61,14 +63,14 @@ public partial class FadeOutThemeAnimation : Timeline
 
 	private protected override void GetAnimationBaseValue()
 	{
-		if (GetResolvedTargetObject()?.GetValue(UIElement.OpacityProperty) is double value)
+		if (GetResolvedTargetObject()?.GetValue(UIElement.TransitionTargetOpacityProperty) is double value)
 		{
 			m_vBaseValue = (float)value;
 		}
 	}
 
 	private protected override bool FindIndependentAnimationTargetsRecursive(DependencyObject pTargetObject, DependencyObject? pSender, List<DependencyObject>? pIATargets)
-		=> DoubleAnimation.FindIndependentAnimationTargetsRecursive(this, UIElement.OpacityProperty, pTargetObject, pSender, pIATargets);
+		=> DoubleAnimation.FindIndependentAnimationTargetsRecursive(this, UIElement.TransitionTargetOpacityProperty, pTargetObject, pSender, pIATargets);
 
 	private protected override void ValueAssign(AssignmentOperand destOperand, AssignmentOperand sourceOperand)
 		=> GetInternalOperand(destOperand) = GetInternalOperand(sourceOperand);
