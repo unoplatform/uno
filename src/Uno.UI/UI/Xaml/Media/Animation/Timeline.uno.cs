@@ -175,6 +175,36 @@ partial class Timeline : IThemeChangeAware
 		return ceiling <= 0 ? 0 : ceiling >= uint.MaxValue ? uint.MaxValue : (uint)ceiling;
 	}
 
+	/// <summary>
+	/// Gives this timeline, its key frames and its child timelines the theme WinUI establishes when they enter the tree
+	/// (CDependencyObject::EnterImpl theme block), so their {ThemeResource} references resolve in that theme.
+	/// </summary>
+	/// <remarks>
+	/// TODO Uno: Uno's theme walk doesn't recurse into children that aren't UIElements yet, and visual state storyboards
+	/// are materialized after their element entered the tree.
+	/// </remarks>
+	internal void EstablishTheme(Theme theme)
+	{
+		// A no-op for objects that already have the theme.
+		NotifyThemeChanged(theme);
+
+		if (KeyFrames_Core is { } keyFrames)
+		{
+			foreach (var keyFrame in keyFrames)
+			{
+				(keyFrame as DependencyObject)?.NotifyThemeChanged(theme);
+			}
+		}
+
+		if (this is Storyboard storyboard)
+		{
+			foreach (var child in storyboard.Children)
+			{
+				child.EstablishTheme(theme);
+			}
+		}
+	}
+
 	void IThemeChangeAware.OnThemeChanged() => NotifyThemeChangedCore();
 
 	// CDependencyObject::NotifyThemeChangedCore

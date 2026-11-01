@@ -270,6 +270,15 @@ namespace Microsoft.UI.Xaml
 				ResourceResolver.PopScope();
 			}
 
+			// The storyboards were materialized after the element entered the tree, so they missed the theme WinUI gives
+			// them at Enter (CDependencyObject::EnterImpl theme block). Without it, a later resolution of their {ThemeResource}
+			// references (e.g. on Loading) falls back to the application theme, and the animations apply that value.
+			if (element is DependencyObject { IsProcessingThemeWalk: false } themedOwner && themedOwner.GetTheme() is var ownerTheme && ownerTheme != Theme.None)
+			{
+				target.transition?.EstablishTheme(ownerTheme);
+				target.animation?.EstablishTheme(ownerTheme);
+			}
+
 			// As in WinUI (VisualStateManagerActuator), the storyboards of the target state start before the running ones
 			// are stopped: an animation of the new state takes over the properties it shares with a running one (handoff),
 			// and stopping the old storyboard restores only the properties nothing animates anymore.
