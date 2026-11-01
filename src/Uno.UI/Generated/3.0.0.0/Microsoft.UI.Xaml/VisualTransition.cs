@@ -9,20 +9,7 @@ public partial class VisualTransition : global::Microsoft.UI.Xaml.DependencyObje
 {
 	// Skipping already declared property From
 	// Skipping already declared property GeneratedDuration
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase GeneratedEasingFunction
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.VisualTransition", "GeneratedEasingFunction");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.VisualTransition", "GeneratedEasingFunction");
-		}
-	}
-#endif
+	// Skipping already declared property GeneratedEasingFunction
 	// Skipping already declared property Storyboard
 	// Skipping already declared property To
 	// Skipping already declared method Microsoft.UI.Xaml.VisualTransition.VisualTransition()

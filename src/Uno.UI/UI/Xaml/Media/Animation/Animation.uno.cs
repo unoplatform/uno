@@ -15,6 +15,9 @@ partial class Timeline
 	private static object? GetAnimationBaseValue(DependencyObject target, DependencyProperty property)
 		=> target.GetBaseValue(property).value;
 
+	// CAnimation::IsIndependentAnimation, for the visual transitions generator.
+	internal bool IsIndependentAnimationFor(DependencyObject targetObject) => IsIndependentAnimation(targetObject);
+
 	// CDependencyObject::SetAnimatedValue
 	private static void SetAnimatedValue(DependencyObject target, DependencyProperty property, object? value)
 		=> target.SetValue(property, value, DependencyPropertyValuePrecedences.Animations);

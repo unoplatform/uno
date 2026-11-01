@@ -25,6 +25,10 @@ namespace Microsoft.UI.Xaml
 
 		private (VisualState state, VisualTransition transition) _current;
 
+		// The storyboard VisualStateManager generated for the running transition (VisualTransition.GeneratedDuration).
+		private Storyboard _currentDynamicStoryboard;
+		private int _transitionToken;
+
 		public event VisualStateChangedEventHandler CurrentStateChanging;
 
 		public event VisualStateChangedEventHandler CurrentStateChanged;
@@ -285,11 +289,21 @@ namespace Microsoft.UI.Xaml
 			_current = targetValues;
 
 			// Finally effectively apply the target state!
-			var transitionAnimation = useTransitions ? target.transition : null;
+			var visualTransition = useTransitions ? targetValues.transition : null;
+			var transitionAnimation = visualTransition is not null ? target.transition : null;
 
 			// A zero-duration transition doesn't delay the target state: both start right away (VisualTransition::IsZeroDuration).
-			var zeroDurationTransition = transitionAnimation is null || IsZeroDuration(transitionAnimation);
+			var zeroDurationTransition = visualTransition is null || visualTransition.IsZeroDuration();
 
+			var previousDynamicStoryboard = _currentDynamicStoryboard;
+			_currentDynamicStoryboard = null;
+
+			// A transition interrupted by another state change must not complete into its state.
+			var transitionToken = ++_transitionToken;
+
+			// If the visual transition is of a non-zero duration we'll try to build a storyboard that smoothly
+			// transitions any properties that aren't explicitly transitioned in the VisualTransition's Storyboard.
+			Storyboard dynamicStoryboard = null;
 			if (!zeroDurationTransition)
 			{
 				ClearPropertiesNotSetInNextState(
@@ -298,18 +312,44 @@ namespace Microsoft.UI.Xaml
 					null,
 					transitionAnimation);
 
+				dynamicStoryboard = DynamicTransitionStoryboardGenerator.GenerateDynamicTransitionAnimations(
+					visualTransition,
+					new[] { current.transition, current.animation, previousDynamicStoryboard },
+					target.animation,
+					ResolveSetters(element, current.setters),
+					ResolveSetters(element, target.setters));
+				_currentDynamicStoryboard = dynamicStoryboard;
+
 				// Note: As of 2021-08-16 win 19043, if the transitionAnimation is Repeat=Forever, we actually never apply the state!
 
-				transitionAnimation!.Completed += OnTransitionCompleted;
-
-				void OnTransitionCompleted(object s, object a)
+				// The target state starts once every storyboard of the transition completed (VisualStateManagerActuator::FinishVisualTransition).
+				var pendingCallbacks = 0;
+				SubscribeToCompletion(dynamicStoryboard);
+				if (transitionAnimation is not null)
 				{
-					transitionAnimation.Completed -= OnTransitionCompleted;
+					SubscribeToCompletion(transitionAnimation);
+				}
 
-					ApplyTargetState();
+				void SubscribeToCompletion(Storyboard storyboard)
+				{
+					pendingCallbacks++;
+					storyboard.Completed += OnTransitionCompleted;
 
-					// The new state's storyboard starts before the transition stops, for smooth handoff.
-					StopStoryboards(transitionAnimation, null, target.animation, null);
+					void OnTransitionCompleted(object s, object a)
+					{
+						storyboard.Completed -= OnTransitionCompleted;
+
+						if (transitionToken != _transitionToken || --pendingCallbacks > 0)
+						{
+							return;
+						}
+
+						ApplyTargetState();
+
+						// The new state's storyboard starts before the transition stops, for smooth handoff.
+						StopStoryboards(new[] { transitionAnimation, dynamicStoryboard }, keep: target.animation);
+						_currentDynamicStoryboard = null;
+					}
 				}
 			}
 			else
@@ -333,7 +373,16 @@ namespace Microsoft.UI.Xaml
 				ApplyTargetState();
 			}
 
-			StopStoryboards(current.transition, current.animation, transitionAnimation, zeroDurationTransition ? target.animation : null);
+			if (dynamicStoryboard is not null)
+			{
+				AttemptStartStoryboard(dynamicStoryboard);
+			}
+
+			StopStoryboards(
+				new[] { current.transition, current.animation, previousDynamicStoryboard },
+				keep: transitionAnimation,
+				keep2: zeroDurationTransition ? target.animation : null,
+				keep3: dynamicStoryboard);
 
 			void ApplyTargetState()
 			{
@@ -500,32 +549,51 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// VisualStateManagerActuator::StopAndRemoveStoryboards: stops the running storyboards, but the ones just started.
-		private static void StopStoryboards(Storyboard first, Storyboard second, Storyboard keep1, Storyboard keep2)
+		private static void StopStoryboards(Storyboard[] storyboards, Storyboard keep = null, Storyboard keep2 = null, Storyboard keep3 = null)
 		{
-			if (first is not null && first != keep1 && first != keep2)
+			for (var i = 0; i < storyboards.Length; i++)
 			{
-				first.StopPrivate();
-			}
-
-			if (second is not null && second != first && second != keep1 && second != keep2)
-			{
-				second.StopPrivate();
+				var storyboard = storyboards[i];
+				if (storyboard is not null
+					&& storyboard != keep
+					&& storyboard != keep2
+					&& storyboard != keep3
+					&& Array.IndexOf(storyboards, storyboard) == i)
+				{
+					storyboard.StopPrivate();
+				}
 			}
 		}
 
-		// CVisualTransition::IsZeroDuration
-		private static bool IsZeroDuration(Storyboard storyboard)
+		// The resolved setters of a state, for the visual transition generator.
+		private List<ResolvedVisualStateSetter> ResolveSetters(IFrameworkElement element, SetterBaseCollection setters)
 		{
-			// TODO Uno: VisualTransition.GeneratedDuration is not implemented, so it always counts as zero.
-			const bool visualTransitionZeroDuration = true;
+			var resolved = new List<ResolvedVisualStateSetter>();
+			if (setters is null || element is null)
+			{
+				return resolved;
+			}
 
-			// We use the GetDuration method to ensure that we take into account offshifted
-			// start times.
-			storyboard.GetDuration(out _, out var rDuration);
-			var storyboardNullOrZeroDuration = rDuration == 0.0f;
+			try
+			{
+				ResourceResolver.PushNewScope(_xamlScope);
 
-			return visualTransitionZeroDuration && storyboardNullOrZeroDuration;
+				foreach (var setterBase in setters)
+				{
+					if (setterBase is Setter setter && setter.TryResolveVisualStateSetter(element, out var resolvedSetter))
+					{
+						resolved.Add(resolvedSetter);
+					}
+				}
+			}
+			finally
+			{
+				ResourceResolver.PopScope();
+			}
+
+			return resolved;
 		}
+
 
 		private VisualTransition FindTransition(string oldStateName, string newStateName)
 		{

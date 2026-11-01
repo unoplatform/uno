@@ -273,20 +273,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void EnqueueDeferredSetterOperation(IFrameworkElement owner, Media.Animation.DeferredAnimationOperation.DeferredOperation operation, Action? reapplyThemeResource = null)
 		{
-			if (_bindingPath is null)
-			{
-				return;
-			}
-
-			IBindingItem? leaf = null;
-			foreach (var item in _bindingPath.GetPathItems())
-			{
-				leaf = item;
-			}
-
-			if (leaf?.DataContext is not DependencyObject targetObject
-				|| string.IsNullOrEmpty(leaf.PropertyName)
-				|| DependencyProperty.GetProperty(targetObject.GetType(), leaf.PropertyName) is not { } targetProperty)
+			if (!TryGetLeafTarget(out var targetObject, out var targetProperty))
 			{
 				return;
 			}
@@ -308,6 +295,64 @@ namespace Microsoft.UI.Xaml
 
 			// Schedule a tick to ensure the deferred animation operation queue gets flushed
 			Media.Animation.TimeManager.RequestAdditionalFrame(0);
+		}
+
+		/// <summary>
+		/// The object and property a visual state setter targets, with its value converted to the type of the property
+		/// (VisualStateSetterHelper::ResolvedVisualStateSetter).
+		/// </summary>
+		internal bool TryResolveVisualStateSetter(IFrameworkElement owner, out ResolvedVisualStateSetter resolved)
+		{
+			resolved = default;
+
+			if (TryGetOrCreateBindingPath(owner) is null || !TryGetLeafTarget(out var targetObject, out var targetProperty))
+			{
+				return false;
+			}
+
+			object? value;
+			if (ThemeResourceKey.HasValue)
+			{
+				if (!ResourceResolver.TryStaticRetrieval(ThemeResourceKey.Value, ThemeResourceContext, out value))
+				{
+					return false;
+				}
+			}
+			else
+			{
+				value = _valueProvider != null ? _valueProvider() : _value;
+			}
+
+			resolved = new ResolvedVisualStateSetter(targetObject, targetProperty, BindingPropertyHelper.Convert(targetProperty.Type, value));
+			return true;
+		}
+
+		private bool TryGetLeafTarget([NotNullWhen(true)] out DependencyObject? targetObject, [NotNullWhen(true)] out DependencyProperty? targetProperty)
+		{
+			targetObject = null;
+			targetProperty = null;
+
+			if (_bindingPath is null)
+			{
+				return false;
+			}
+
+			IBindingItem? leaf = null;
+			foreach (var item in _bindingPath.GetPathItems())
+			{
+				leaf = item;
+			}
+
+			if (leaf?.DataContext is not DependencyObject leafObject
+				|| string.IsNullOrEmpty(leaf.PropertyName)
+				|| DependencyProperty.GetProperty(leafObject.GetType(), leaf.PropertyName) is not { } leafProperty)
+			{
+				return false;
+			}
+
+			targetObject = leafObject;
+			targetProperty = leafProperty;
+			return true;
 		}
 
 		private string DebuggerDisplay => $"Property={Property?.Name ?? "<null>"},Target={Target?.Target?.ToString() ?? Target?.TargetName ?? "<null>"},Value={Value?.ToString() ?? "<null>"}";

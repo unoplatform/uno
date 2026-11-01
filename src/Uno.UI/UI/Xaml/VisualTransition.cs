@@ -72,27 +72,30 @@ namespace Microsoft.UI.Xaml
 
 		#endregion
 
-		private Duration _generatedDuration;
+		/// <summary>
+		/// Gets or sets the time that it takes to move from one state to another, for the animations VisualStateManager
+		/// generates between the states.
+		/// </summary>
+		public Duration GeneratedDuration { get; set; } = new Duration(TimeSpan.Zero);
 
 		/// <summary>
-		/// This property is not yet implemented in Uno Platform.
+		/// Gets or sets the easing function applied to the generated animations.
 		/// </summary>
-		/// <remarks>
-		/// The code was moved here to override the LogLevel.
-		/// </remarks>
-		[Uno.NotImplemented("__SKIA__")]
-		public Duration GeneratedDuration
+		public EasingFunctionBase GeneratedEasingFunction { get; set; }
+
+		// CVisualTransition::IsZeroDuration
+		internal bool IsZeroDuration()
 		{
-			get
+			var visualTransitionZeroDuration = !GeneratedDuration.HasTimeSpan || GeneratedDuration.TimeSpan == TimeSpan.Zero;
+			var storyboardNullOrZeroDuration = true;
+			if (Storyboard is { } storyboard)
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.VisualTransition", "Duration VisualTransition.GeneratedDuration", LogLevel.Debug);
-				return _generatedDuration;
+				// We use the GetDuration method to ensure that we take into account offshifted
+				// start times.
+				storyboard.GetDuration(out _, out var rDuration);
+				storyboardNullOrZeroDuration = rDuration == 0.0f;
 			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.VisualTransition", "Duration VisualTransition.GeneratedDuration", LogLevel.Debug);
-				_generatedDuration = value;
-			}
+			return visualTransitionZeroDuration && storyboardNullOrZeroDuration;
 		}
 	}
 }
