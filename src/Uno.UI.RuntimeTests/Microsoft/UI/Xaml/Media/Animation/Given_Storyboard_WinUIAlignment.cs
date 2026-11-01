@@ -103,6 +103,38 @@ public class Given_Storyboard_WinUIAlignment
 	}
 
 	[TestMethod]
+	public async Task When_KeyFrames_Change_While_Running_Then_Throws()
+	{
+		var (border, translate) = await LoadTranslatedBorder();
+
+		var doubleAnimation = new DoubleAnimationUsingKeyFrames();
+		doubleAnimation.KeyFrames.Add(new LinearDoubleKeyFrame { KeyTime = TimeSpan.FromMilliseconds(2000), Value = 100 });
+		Storyboard.SetTarget(doubleAnimation, translate);
+		Storyboard.SetTargetProperty(doubleAnimation, nameof(TranslateTransform.X));
+
+		var colorAnimation = new ColorAnimationUsingKeyFrames();
+		colorAnimation.KeyFrames.Add(new LinearColorKeyFrame { KeyTime = TimeSpan.FromMilliseconds(2000), Value = Colors.Blue });
+		Storyboard.SetTarget(colorAnimation, border.Background);
+		Storyboard.SetTargetProperty(colorAnimation, nameof(SolidColorBrush.Color));
+
+		var storyboard = new Storyboard();
+		storyboard.Children.Add(doubleAnimation);
+		storyboard.Children.Add(colorAnimation);
+		storyboard.Begin();
+
+		AssertThrows(() => doubleAnimation.KeyFrames.Add(new LinearDoubleKeyFrame { KeyTime = TimeSpan.FromMilliseconds(500), Value = 50 }));
+		AssertThrows(() => doubleAnimation.KeyFrames.RemoveAt(0));
+		AssertThrows(() => colorAnimation.KeyFrames.Clear());
+
+		storyboard.Stop();
+
+		// Once the storyboard stops, the key frames can change again.
+		doubleAnimation.KeyFrames.Add(new LinearDoubleKeyFrame { KeyTime = TimeSpan.FromMilliseconds(500), Value = 50 });
+		colorAnimation.KeyFrames.Clear();
+		Assert.AreEqual(2, doubleAnimation.KeyFrames.Count);
+	}
+
+	[TestMethod]
 	public async Task When_Nested_Storyboard_Is_Controlled_Directly_Then_Throws()
 	{
 		var (_, translate) = await LoadTranslatedBorder();
