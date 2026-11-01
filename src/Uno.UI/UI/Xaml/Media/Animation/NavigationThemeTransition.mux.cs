@@ -1,8 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference ThemeTransitions.cpp, tag winui3/release/1.7-stable
+// MUX Reference ThemeTransitions.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 
+#nullable enable
+
+using System.Collections.Generic;
 using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Media.Animation;
 
@@ -32,158 +36,142 @@ public partial class NavigationThemeTransition
 
 	#endregion
 
-	/// <summary>
-	/// Attaches the transition to a Page element.
-	/// </summary>
+	// Uno: driven by the layout transition machinery (LayoutTransition.mux.cs), not by the element's Loaded event.
 	internal override void AttachToElement(IFrameworkElement element)
 	{
-		// NavigationThemeTransition only works with Page elements
-		if (element is Page page)
-		{
-			page.Loaded += OnPageLoaded;
-			page.Unloaded += OnPageUnloaded;
-		}
 	}
 
-	/// <summary>
-	/// Detaches the transition from a Page element.
-	/// </summary>
 	internal override void DetachFromElement(IFrameworkElement element)
 	{
-		if (element is Page page)
-		{
-			page.Loaded -= OnPageLoaded;
-			page.Unloaded -= OnPageUnloaded;
-		}
 	}
 
-	private void OnPageLoaded(object sender, RoutedEventArgs e)
+	internal override bool ParticipatesInTransition(UIElement element, TransitionTrigger transitionTrigger) =>
+		(transitionTrigger == TransitionTrigger.Load) || (transitionTrigger == TransitionTrigger.Unload);
+
+	internal override void CreateStoryboard(
+		UIElement element,
+		Rect start,
+		Rect destination,
+		TransitionTrigger transitionTrigger,
+		IList<Storyboard> storyboards)
 	{
-		if (sender is not Page page)
+		NavigationTransitionInfo? spDefinition;
+
+		var shouldRun = ((transitionTrigger == TransitionTrigger.Load) || (transitionTrigger == TransitionTrigger.Unload));
+
+		if (!shouldRun)
 		{
 			return;
 		}
 
-		RunNavigationAnimation(page, isEntering: true);
-	}
-
-	private void OnPageUnloaded(object sender, RoutedEventArgs e)
-	{
-		if (sender is not Page page)
+		// NTT could be placed on any element: only continue if this is a page.
+		if (element is not Page spPage)
 		{
 			return;
 		}
 
-		RunNavigationAnimation(page, isEntering: false);
-	}
-
-	private void RunNavigationAnimation(Page page, bool isEntering)
-	{
-		// Get the Frame from the Page
-		var frame = page.Frame;
-		if (frame is null)
+		// Get the NavigationTransitionInfo (from Frame.Navigate) from the Frame.  If we aren't in
+		// a frame then there is no navigation, so bail.
+		var spFrame = spPage.Frame;
+		if (spFrame is null)
 		{
 			return;
 		}
 
-		// Get navigation state from Frame
-		frame.GetNavigationTransitionInfoOverride(
-			out var definitionOverride,
-			out var isBackNavigation,
-			out var isInitialPage);
+		spFrame.GetNavigationTransitionInfoOverride(out spDefinition, out var isBackNavigation, out var isInitialPage);
 
-		// Resolve the NavigationTransitionInfo to use. This also mirrors a page/frame-declared
-		// transition back onto the frame as its override, matching NavigationThemeTransition::CreateStoryboard.
-		var transitionInfo = ResolveNavigationTransitionInfo(
-			definitionOverride,
-			page,
-			frame,
-			isBackNavigation,
-			isInitialPage,
-			out var shouldRun);
-
-		if (!shouldRun || transitionInfo is null)
+		// Check to see if the override was set.
+		if (spDefinition is null)
 		{
-			return;
-		}
+			// We will always run an animation unless it is the forward navigation to the first page.
+			shouldRun = (!isInitialPage || isBackNavigation);
 
-		// Determine the navigation trigger based on direction and enter/exit state
-		var trigger = GetNavigationTrigger(isBackNavigation, isEntering);
+			// Check new page for its default.
+			NavigationThemeTransition? spNavigationThemeTransition = null;
 
-		// Create and run the storyboards
-		var storyboards = transitionInfo.CreateStoryboards(page, trigger);
-
-		foreach (var storyboard in storyboards)
-		{
-			storyboard.Begin();
-		}
-	}
-
-	private NavigationTransitionInfo ResolveNavigationTransitionInfo(
-		NavigationTransitionInfo definitionOverride,
-		Page page,
-		Frame frame,
-		bool isBackNavigation,
-		bool isInitialPage,
-		out bool shouldRun)
-	{
-		// Priority 1: an override was passed in through Frame.Navigate(), use this definition.
-		if (definitionOverride is not null)
-		{
-			shouldRun = true;
-			return definitionOverride;
-		}
-
-		// We will always run an animation unless it is the forward navigation to the first page.
-		shouldRun = !isInitialPage || isBackNavigation;
-
-		// Priority 2: check new page for its default, then the Frame's ContentTransitions.
-		var themeTransition =
-			GetNavigationThemeTransitionFromCollection((frame.Content as UIElement)?.Transitions)
-			?? GetNavigationThemeTransitionFromCollection(frame.ContentTransitions);
-
-		if (themeTransition is not null)
-		{
-			// We have a NavigationThemeTransition so we will run the animation.
-			shouldRun = true;
-
-			// See if there is a specific animation being requested.
-			if (themeTransition.DefaultNavigationTransitionInfo is { } transitionInfo)
+			// Get the current page (new page) from the Frame.
+			// Get the Transitions collection from the Page.
+			if (spFrame.Content is UIElement spCurrentPageAsUIElement)
 			{
-				// Set this override definition as the override on the Frame.
-				frame.SetNavigationTransitionInfoOverride(transitionInfo);
-				return transitionInfo;
+				spNavigationThemeTransition = GetNavigationThemeTransitionFromCollection(spCurrentPageAsUIElement.Transitions);
+			}
+
+			if (spNavigationThemeTransition is null)
+			{
+				// App did not override Page.Transitions, so get the
+				// Frame.ContentTransitions.
+				spNavigationThemeTransition = GetNavigationThemeTransitionFromCollection(spFrame.ContentTransitions);
+			}
+
+			if (spNavigationThemeTransition is not null)
+			{
+				// We have Navigation Theme Transition so we will run the animation.
+				shouldRun = true;
+
+				// See if there is a specific animation being requested.
+				spDefinition = spNavigationThemeTransition.DefaultNavigationTransitionInfo;
+				if (spDefinition is not null)
+				{
+					// Set this override definition as the override on the Frame.
+					spFrame.SetNavigationTransitionInfoOverride(spDefinition);
+				}
 			}
 		}
 
-		// Priority 3: fall back to EntranceNavigationTransitionInfo.
-		return new EntranceNavigationTransitionInfo();
-	}
-
-	private static NavigationThemeTransition GetNavigationThemeTransitionFromCollection(TransitionCollection transitions)
-	{
-		if (transitions is null)
+		if (shouldRun)
 		{
-			return null;
-		}
+			// If the definition has not been set yet, use the default definition.
+			spDefinition ??= new EntranceNavigationTransitionInfo();
 
-		// Search in reverse order (last one wins)
-		for (int i = transitions.Count - 1; i >= 0; i--)
-		{
-			if (transitions[i] is NavigationThemeTransition ntt)
+			IList<Storyboard>? created = null;
+			if (isBackNavigation)
 			{
-				return ntt;
+				if (transitionTrigger == TransitionTrigger.Load)
+				{
+					created = spDefinition.CreateStoryboards(element, NavigationTrigger.BackNavigatingTo);
+				}
+				else if (transitionTrigger == TransitionTrigger.Unload)
+				{
+					created = spDefinition.CreateStoryboards(element, NavigationTrigger.BackNavigatingAway);
+				}
+			}
+			else
+			{
+				if (transitionTrigger == TransitionTrigger.Load)
+				{
+					created = spDefinition.CreateStoryboards(element, NavigationTrigger.NavigatingTo);
+				}
+				else if (transitionTrigger == TransitionTrigger.Unload)
+				{
+					created = spDefinition.CreateStoryboards(element, NavigationTrigger.NavigatingAway);
+				}
+			}
+
+			if (created is not null)
+			{
+				foreach (var storyboard in created)
+				{
+					storyboards.Add(storyboard);
+				}
 			}
 		}
 
-		return null;
+		// TODO Uno: prune the element lists once the info types expose their Clear methods (ThemeTransitions.cpp:263-266).
 	}
 
-	private static NavigationTrigger GetNavigationTrigger(bool isBackNavigation, bool isEntering) => (isBackNavigation, isEntering) switch
+	private static NavigationThemeTransition? GetNavigationThemeTransitionFromCollection(TransitionCollection? transitions)
 	{
-		(true, true) => NavigationTrigger.BackNavigatingTo,
-		(true, false) => NavigationTrigger.BackNavigatingAway,
-		(false, true) => NavigationTrigger.NavigatingTo,
-		(false, false) => NavigationTrigger.NavigatingAway,
-	};
+		NavigationThemeTransition? themeTransition = null;
+
+		// Get the size of that collection (if we have one)
+		var numTransitions = transitions?.Count ?? 0;
+
+		// Iterate through the collection to find an NTT.
+		for (var k = numTransitions; themeTransition is null && k > 0; k--)
+		{
+			themeTransition = transitions![k - 1] as NavigationThemeTransition;
+		}
+
+		return themeTransition;
+	}
 }

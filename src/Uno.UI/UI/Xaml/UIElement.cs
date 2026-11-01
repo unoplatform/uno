@@ -1737,6 +1737,7 @@ namespace Microsoft.UI.Xaml
 			{
 				TrackStubChild(child, -1);
 				UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(this, child);
+				UnloadElement(child);
 				InnerRemoveChild(child);
 
 				// Force a new measure of this element

@@ -148,6 +148,12 @@ namespace Uno.UI.Xaml.Core
 				UpdateLayoutAndRaiseLoaded();
 			}
 
+			// create transitions that have been deferred until now
+			if (Microsoft.UI.Xaml.Media.Animation.Transition.RealizeRegisteredLayoutTransitions())
+			{
+				UpdateLayoutAndRaiseLoaded();
+			}
+
 			// Loaded has been raised for what this pass brought back into the tree: release the undisplayed images now due.
 			PendingImageReleases.OnLayoutPassCompleted();
 

@@ -91,6 +91,9 @@ public partial class Panel : FrameworkElement, IPanel
 		set { this.SetValue(ChildrenTransitionsProperty, value); }
 	}
 
+	// TODO Uno: WinUI falls back to the owning ItemsControl's ItemContainerTransitions when this is an items host.
+	internal override TransitionCollection GetTransitionsForChildElementNoAddRef(UIElement child) => ChildrenTransitions;
+
 	// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
 	public static DependencyProperty ChildrenTransitionsProperty { get; } =
 		DependencyProperty.Register("ChildrenTransitions", typeof(TransitionCollection), typeof(Panel), new FrameworkPropertyMetadata(null, OnChildrenTransitionsChanged));
