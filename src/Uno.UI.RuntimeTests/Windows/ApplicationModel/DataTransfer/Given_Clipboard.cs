@@ -125,6 +125,31 @@ partial class Given_Clipboard
 		SkiaImageAssert.ArePixelsEqual(bytes, results);
 #endif
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, SkiaWin32)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25866")]
+	public async Task When_Clipboard_Bitmap_Reopened_After_Dispose_Then_Reads_All_Of_It()
+	{
+		var package = new DataPackage();
+		package.SetBitmap(await ToRAReferenceAsync(Convert.FromBase64String(TestBmpBase64)));
+		Clipboard.SetContent(package);
+
+		var reference = await Clipboard.GetContent().GetBitmapAsync();
+
+		// An app opens the pasted bitmap to read its size, disposes it, then opens it again to read the content.
+		ulong size;
+		using (var first = await reference.OpenReadAsync())
+		{
+			size = first.Size;
+		}
+
+		Assert.AreNotEqual(0ul, size);
+		using var second = await reference.OpenReadAsync();
+		Assert.AreEqual(0ul, second.Position);
+		Assert.AreEqual(size, (ulong)ToBytes(second).Length);
+	}
 #endif
 
 	[TestMethod]

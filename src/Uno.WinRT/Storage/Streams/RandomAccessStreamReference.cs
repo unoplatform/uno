@@ -44,7 +44,11 @@ namespace Windows.Storage.Streams
 		public static RandomAccessStreamReference CreateFromStream(IRandomAccessStream stream)
 			=> new RandomAccessStreamReference(ct =>
 			{
-				return Task.FromResult(stream.TrySetContentType());
+				// As on WinUI, each open clones the source, so it has its own position and lifetime, and a source that can't be cloned fails the open.
+				// No Seek(0): Uno's clones start at 0, and some Android document streams can't seek.
+				var clone = stream.CloneStream();
+				var contentType = (stream as IRandomAccessStreamWithContentType)?.ContentType ?? RandomAccessStreamWithContentType.DefaultContentType;
+				return Task.FromResult(clone.TrySetContentType(contentType));
 			});
 
 		private readonly Func<IAsyncOperation<IRandomAccessStreamWithContentType>> _open;
