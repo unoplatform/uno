@@ -2336,6 +2336,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
+		/// <summary>
+		/// Finds the x:Name or Name of an element, skipping attached properties such as AutomationProperties.Name.
+		/// </summary>
+		private XamlMemberDefinition? FindNameMember(XamlObjectDefinition xamlObjectDefinition)
+		{
+			foreach (var member in xamlObjectDefinition.Members)
+			{
+				if (member.Member.Name == "Name" && !IsAttachedProperty(member))
+				{
+					return member;
+				}
+			}
+
+			return null;
+		}
+
 		private XamlMemberDefinition? FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName, string ns)
 		{
 			foreach (var member in xamlObjectDefinition.Members)
@@ -6780,7 +6796,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			foreach (var element in EnumerateSubElements(topLevelControl))
 			{
-				var nameMember = FindMember(element, "Name");
+				var nameMember = FindNameMember(element);
 
 				if (nameMember?.Value is string name)
 				{
@@ -6799,7 +6815,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var list = new List<string>();
 			foreach (var element in EnumerateSubElements(xamlObjectDefinition, stoppingCondition: IsNewScope))
 			{
-				var nameMember = FindMember(element, "Name");
+				var nameMember = FindNameMember(element);
 
 				if (nameMember?.Value is string name)
 				{
@@ -6913,7 +6929,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| loadMember?.Value?.ToString()?.ToLowerInvariant() == "false"
 				|| hasLoadMarkup)
 			{
-				var nameMember = FindMember(definition, "Name");
+				var nameMember = FindNameMember(definition);
 				var nameField = nameMember is { Value: string name } ? SanitizeResourceName(name) : null;
 
 				if (loadMember != null && nameMember == null)

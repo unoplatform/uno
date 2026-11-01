@@ -11,6 +11,7 @@ using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
@@ -106,6 +107,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			sut.IsLoad = false;
 
 			Assert.IsFalse(((ElementStub)parent.Child).Load);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24827")]
+		public async Task When_xLoad_xBind_With_AutomationProperties_Name()
+		{
+			var sut = new When_xLoad_xBind_AutomationName();
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			Assert.IsNull(sut.DeferredPanel);
+			Assert.IsNull(sut.SaveButton);
+
+			sut.IsShown = true;
+
+			Assert.IsNotNull(sut.DeferredPanel);
+			Assert.AreEqual("Notes", AutomationProperties.GetName(sut.NotesBox));
+			Assert.IsNotNull(sut.SaveButton);
+			Assert.AreEqual("Save", AutomationProperties.GetName(sut.SaveButton));
+			var saveParent = (Border)sut.SaveButton.Parent;
+
+			sut.IsShown = false;
+
+			Assert.IsNull(sut.DeferredPanel);
+			Assert.IsFalse(((ElementStub)saveParent.Child).Load);
 		}
 
 		[TestMethod]
