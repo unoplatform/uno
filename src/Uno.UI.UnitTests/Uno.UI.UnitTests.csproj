@@ -128,6 +128,9 @@
 		<Compile Include="..\Uno.UI.Runtime.MacOS\UI\Windowing\MacOSTitleBarMath.cs" Link="Windows_UI_Input\MacOSTitleBarMath.cs" />
 		<Compile Include="..\Uno.UI.Runtime.AppleUIKit\AppleUIKitLifecycleDecision.cs" Link="Hosting\AppleUIKitLifecycleDecision.cs" />
 		<Compile Include="..\Uno.UI.Runtime.Win32\Rendering\BackgroundPrewarm.cs" Link="Hosting\BackgroundPrewarm.cs" />
+		<!-- Pure logic split out of the iOS photo picker, which needs a photo library. -->
+		<Compile Include="..\Uno.WinRT\Storage\Pickers\Internal\PhotoPickerRepresentation.iOS.cs" Link="Windows_Storage\PhotoPickerRepresentation.iOS.cs" />
+		<Compile Include="..\Uno.WinRT\Storage\Pickers\Internal\PhotoPickerType.iOS.cs" Link="Windows_Storage\PhotoPickerType.iOS.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<!--

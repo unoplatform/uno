@@ -38,8 +38,7 @@ On some platforms, you can further customize the file-picking experience by util
 | SetMultipleFilesLimit   | ✖   | ✖           | ✖      | ✔     | ✖ |
 
 *(1) - Only for the native file pickers - see WebAssembly section below*\
-*(2) - For FileOpenPicker, VideosLibrary and PicturesLibrary are used to apply `image/*` and `video/*` filters*\
-*(3) - PicturesLibrary opens the picture library with the image picker controller*\
+*(3) - For FileOpenPicker, PicturesLibrary and VideosLibrary open the Photos picker - see iOS section below*\
 *(4) - See Android section below*
 
 On platforms where the additional features are not supported yet, setting them will not have any effect.
@@ -196,7 +195,7 @@ var pickedFiles = await fileOpenPicker.PickMultipleFilesAsync();
 > `SuggestedStartLocation` should be set to prevent crashes on WinUI. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk), which allows picking any type of file.
 >
 > [!NOTE]
-> On iOS, the built-in image picker does not support the selection of multiple files. Therefore, we fall back to the document picker instead. However, this requires you to specify not only the `SuggestedStartLocation` set to `PicturesLibrary`, but also specify file type extensions in `FileTypeFilter` (e.g. `.jpg` and `.png`), otherwise the OS will not display the Photos app as a file provider in the picker.
+> On iOS, with `SuggestedStartLocation` set to `PicturesLibrary` or `VideosLibrary`, picking one file or several opens the Photos picker. See [Photos and videos](#photos-and-videos) in the iOS section below.
 
 ### FileSavePicker
 
@@ -453,3 +452,16 @@ public App()
 ```
 
 As this is quite complex, you can find a working implementation of a folder-based save file picker in [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples/tree/master/UI/FileSavePickeriOS). You can modify and adjust this implementation as you see fit for your specific use case.
+
+### Photos and videos
+
+With `SuggestedStartLocation` set to `PicturesLibrary` or `VideosLibrary`, `FileOpenPicker` opens the Photos picker, for one file or several. It shows photos, videos or both, depending on the extensions in `FileTypeFilter`, but it can't hide formats the filter doesn't list, such as GIF, or HEIC (the format iPhones take photos in). When the user picks a photo or video in such a format:
+
+* If iOS can provide it in a format the filter lists, the picker returns it in that format. For example, a HEIC photo is returned as a JPEG when the filter lists `.jpg` or `.jpeg` but not `.heic`. A Live Photo is returned as its still photo, as a JPEG when the filter allows JPEG.
+* Otherwise, it is left out: `PickMultipleFilesAsync` returns the other files the user picked, and `PickSingleFileAsync` returns `null`, as when the user cancels. A warning is logged.
+
+Videos are only returned in their own file type. iPhones record `.mov` videos, so a filter that lists `.mp4` but not `.mov` leaves them out. With `*` in the filter, every photo and video is returned.
+
+The returned files are copies in the app's temporary folder, named after the photo or video in the photo library, with the extension of the format they're returned in, such as `IMG_0001.jpeg`. The picked items are loaded at the same time, each copied file by file rather than loaded into memory, so large videos can be picked, but copying them, and converting them, can take a while. An item that can't be loaded, such as a photo stored only in iCloud while the device is offline, is left out, and an error is logged.
+
+Uno Platform never deletes these copies, but iOS can delete the contents of the temporary folder while the app isn't running. Copy the files you want to keep to another folder, such as `ApplicationData.Current.LocalFolder`.
