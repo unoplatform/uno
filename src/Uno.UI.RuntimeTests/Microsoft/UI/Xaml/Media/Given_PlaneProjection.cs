@@ -218,5 +218,17 @@ public class Given_PlaneProjection
 
 		Assert.IsNull(border.Projection);
 	}
+
+	[TestMethod]
+	public void When_Projection_Then_RenderTransform_Set()
+	{
+		var border = new Border { Width = 100, Height = 100 };
+		border.Projection = new PlaneProjection { RotationX = 30 };
+
+		// The projection alone creates a render transform adapter without a transform; replacing it must not throw.
+		border.RenderTransform = new CompositeTransform { ScaleX = 2 };
+
+		Assert.IsInstanceOfType<CompositeTransform>(border.RenderTransform);
+	}
 }
 #endif
