@@ -279,6 +279,10 @@ public partial class CompositionTarget
 			return;
 		}
 
+		// Animations begun since the last frame (often during layout) would otherwise only get their first value in the
+		// Rendering raise after this frame is presented, briefly showing their target at its base value.
+		Animation.NewTimelinesTick.Run();
+
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
 

@@ -6,7 +6,7 @@ using Microsoft.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-	internal abstract class CPUBoundAnimator<T> : IValueAnimator where T : struct
+	internal abstract class CPUBoundAnimator<T> : IValueAnimator, INewTimelineTick where T : struct
 	{
 		private readonly T _from;
 		private readonly T _to;
@@ -16,6 +16,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		protected IEasingFunction _easing = LinearEase.Instance;
 		private bool _isDisposed;
 		private bool _isDelaying;
+		private bool _hasTicked;
 
 		// Frames stop while a host shows nothing (a hidden or minimized window), but the end of an animation is a
 		// point in time: this ends it there when no frame got there first.
@@ -79,6 +80,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			IsRunning = true;
 			_elapsed.Restart();
 			EnableFrameReporting();
+
+			_hasTicked = false;
+			if (StartDelay <= 0)
+			{
+				NewTimelinesTick.Register(this);
+			}
+
 			ArmEndTimer();
 		}
 
@@ -181,8 +189,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 		}
 
+		bool INewTimelineTick.IsAwaitingNewTimelineTick => IsRunning && !_isDisposed && !_hasTicked;
+
+		void INewTimelineTick.TickNewTimeline()
+		{
+			if (((INewTimelineTick)this).IsAwaitingNewTimelineTick)
+			{
+				OnFrame(null, null);
+			}
+		}
+
 		protected void OnFrame(object sender, object e)
 		{
+			_hasTicked = true;
 			var elapsed = _elapsed.ElapsedMilliseconds;
 
 			if (elapsed < StartDelay)
