@@ -198,26 +198,19 @@ namespace Microsoft.UI.Xaml
 
 		// WinUI infers the default from the property type only for the value types of its XAML metadata
 		// (CDependencyProperty::GetDefaultValue): zero for its enums, primitives and structs, 1* for GridLength,
-		// null for everything else, custom value types included. Matching by type identity keeps reflection out.
+		// null for everything else, custom value types included. Matching by type identity and name keeps reflection out.
 		private static object GetTypeDefaultValue(Type propertyType)
 		{
 			if (propertyType.IsEnum)
 			{
-				return IsFrameworkEnum(propertyType) ? Enum.ToObject(propertyType, 0) : null;
+				return IsWinUIEnum(propertyType) ? Enum.ToObject(propertyType, 0) : null;
 			}
 
 			return _knownTypeDefaults.TryGetValue(propertyType, out var defaultValue) ? defaultValue : null;
 		}
 
-		// The enums WinUI knows are its XAML and WinRT ones, which Uno defines in these assemblies.
-		private static bool IsFrameworkEnum(Type enumType)
-		{
-			var assembly = enumType.Assembly;
-
-			return assembly == typeof(DependencyProperty).Assembly
-				|| assembly == typeof(global::Windows.UI.Color).Assembly
-				|| assembly == typeof(global::Windows.Foundation.Point).Assembly;
-		}
+		private static bool IsWinUIEnum(Type enumType)
+			=> enumType.FullName is { } name && _winUIEnums.Contains(name);
 
 		private static readonly Dictionary<Type, object> _knownTypeDefaults = new()
 		{

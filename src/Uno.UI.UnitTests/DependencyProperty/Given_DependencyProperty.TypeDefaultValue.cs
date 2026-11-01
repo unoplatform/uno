@@ -44,6 +44,8 @@ public partial class Given_DependencyProperty
 			(typeof(Orientation), Orientation.Vertical),
 			(typeof(global::Windows.UI.Text.FontStyle), global::Windows.UI.Text.FontStyle.Normal),
 			(typeof(global::Windows.Foundation.Collections.CollectionChange), global::Windows.Foundation.Collections.CollectionChange.Reset),
+			(typeof(global::Windows.System.VirtualKey), global::Windows.System.VirtualKey.None),
+			(typeof(global::Microsoft.UI.Input.PointerDeviceType), global::Microsoft.UI.Input.PointerDeviceType.Touch),
 		};
 
 		foreach (var (propertyType, expected) in cases)
@@ -65,7 +67,8 @@ public partial class Given_DependencyProperty
 	{
 		var SUT = new MockDependencyObject();
 
-		// Custom value types, nullable value types and the value types outside WinUI's XAML metadata.
+		// Custom value types, nullable value types and the value types outside WinUI's XAML metadata,
+		// including the enums Uno and WinRT define outside it.
 		var propertyTypes = new[]
 		{
 			typeof(TypeDefaultStruct),
@@ -86,6 +89,8 @@ public partial class Given_DependencyProperty
 			typeof(Microsoft.UI.Xaml.Media.Animation.KeyTime),
 			typeof(System.Numerics.Vector2),
 			typeof(Microsoft.UI.Composition.CompositionStretch),
+			typeof(global::Windows.Storage.FileAttributes),
+			typeof(global::Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode),
 			typeof(string),
 			typeof(object),
 			typeof(Type),
