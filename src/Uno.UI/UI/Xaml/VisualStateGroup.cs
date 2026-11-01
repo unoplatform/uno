@@ -276,7 +276,12 @@ namespace Microsoft.UI.Xaml
 			_current = targetValues;
 
 			// Finally effectively apply the target state!
-			if (useTransitions && target.transition is { } transitionAnimation)
+			var transitionAnimation = useTransitions ? target.transition : null;
+
+			// A zero-duration transition doesn't delay the target state: both start right away (VisualTransition::IsZeroDuration).
+			var zeroDurationTransition = transitionAnimation is null || IsZeroDuration(transitionAnimation);
+
+			if (!zeroDurationTransition)
 			{
 				ClearPropertiesNotSetInNextState(
 					element,
@@ -286,9 +291,7 @@ namespace Microsoft.UI.Xaml
 
 				// Note: As of 2021-08-16 win 19043, if the transitionAnimation is Repeat=Forever, we actually never apply the state!
 
-				transitionAnimation.Completed += OnTransitionCompleted;
-				AttemptStartStoryboard(transitionAnimation);
-				StopStoryboards(current.transition, current.animation, transitionAnimation);
+				transitionAnimation!.Completed += OnTransitionCompleted;
 
 				void OnTransitionCompleted(object s, object a)
 				{
@@ -297,7 +300,7 @@ namespace Microsoft.UI.Xaml
 					ApplyTargetState();
 
 					// The new state's storyboard starts before the transition stops, for smooth handoff.
-					StopStoryboards(transitionAnimation, null, target.animation);
+					StopStoryboards(transitionAnimation, null, target.animation, null);
 				}
 			}
 			else
@@ -307,10 +310,21 @@ namespace Microsoft.UI.Xaml
 					current.setters,
 					target.setters,
 					target.animation);
-
-				ApplyTargetState();
-				StopStoryboards(current.transition, current.animation, target.animation);
 			}
+
+			// Finally we're far enough along to attempt to actually start all these storyboards. These
+			// actions can potentially fail if they can't resolve their TargetName properties.
+			if (transitionAnimation is not null)
+			{
+				AttemptStartStoryboard(transitionAnimation);
+			}
+
+			if (zeroDurationTransition)
+			{
+				ApplyTargetState();
+			}
+
+			StopStoryboards(current.transition, current.animation, transitionAnimation, zeroDurationTransition ? target.animation : null);
 
 			void ApplyTargetState()
 			{
@@ -318,7 +332,10 @@ namespace Microsoft.UI.Xaml
 				ApplyTargetStateSetters();
 
 				// Starts target state animation
-				if (target.animation is { } stateAnimation)
+				// TODO Uno: Uno re-enters the current state on forced trigger refreshes, where WinUI's GoToState is a no-op:
+				// a running storyboard of the re-entered state keeps running rather than restarting.
+				if (target.animation is { } stateAnimation
+					&& (stateAnimation != current.animation || stateAnimation.IsInStoppedState()))
 				{
 					AttemptStartStoryboard(stateAnimation);
 				}
@@ -457,18 +474,32 @@ namespace Microsoft.UI.Xaml
 			// TODO Uno: When animations aren't enabled, WinUI skips all non-essential transition storyboards to their end frame.
 		}
 
-		// VisualStateManagerActuator::StopAndRemoveStoryboards
-		private static void StopStoryboards(Storyboard first, Storyboard second, Storyboard keep)
+		// VisualStateManagerActuator::StopAndRemoveStoryboards: stops the running storyboards, but the ones just started.
+		private static void StopStoryboards(Storyboard first, Storyboard second, Storyboard keep1, Storyboard keep2)
 		{
-			if (first is not null && first != keep)
+			if (first is not null && first != keep1 && first != keep2)
 			{
 				first.StopPrivate();
 			}
 
-			if (second is not null && second != keep && second != first)
+			if (second is not null && second != first && second != keep1 && second != keep2)
 			{
 				second.StopPrivate();
 			}
+		}
+
+		// CVisualTransition::IsZeroDuration
+		private static bool IsZeroDuration(Storyboard storyboard)
+		{
+			// TODO Uno: VisualTransition.GeneratedDuration is not implemented, so it always counts as zero.
+			const bool visualTransitionZeroDuration = true;
+
+			// We use the GetDuration method to ensure that we take into account offshifted
+			// start times.
+			storyboard.GetDuration(out _, out var rDuration);
+			var storyboardNullOrZeroDuration = rDuration == 0.0f;
+
+			return visualTransitionZeroDuration && storyboardNullOrZeroDuration;
 		}
 
 		private VisualTransition FindTransition(string oldStateName, string newStateName)
