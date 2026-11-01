@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference ThemeTransitions.h
+// Licensed under the MIT License.
+
+// MUX Reference src/dxaml/xcp/dxaml/idl/winrt/main/microsoft.ui.xaml.private.idl, tag winui3/release/2.5.1, commit ba3a8d59e
 
 namespace Microsoft.UI.Xaml.Media.Animation;
 
