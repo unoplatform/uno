@@ -21,6 +21,32 @@ partial class UIElement
 	/// </summary>
 	internal virtual TransitionCollection? GetTransitionsForChildElementNoAddRef(UIElement child) => null;
 
+	// Uno: transitions that don't take part in the layout transition machinery hook the element itself,
+	// as ContentPresenter does for its ContentTransitions.
+	private void OnTransitionsChanged(TransitionCollection? oldValue, TransitionCollection? newValue)
+	{
+		if (this is not IFrameworkElement element)
+		{
+			return;
+		}
+
+		if (oldValue is not null)
+		{
+			foreach (var transition in oldValue)
+			{
+				transition.DetachFromElement(element);
+			}
+		}
+
+		if (newValue is not null)
+		{
+			foreach (var transition in newValue)
+			{
+				transition.AttachToElement(element);
+			}
+		}
+	}
+
 	// MUX Reference CUIElementCollection::UnloadElement (UIElementCollection.cpp), tag winui3/release/2.5.1, commit ba3a8d59e
 	private bool UnloadElement(UIElement pRemove)
 	{
