@@ -103,35 +103,69 @@ public class Given_Storyboard_WinUIAlignment
 	}
 
 	[TestMethod]
-	public async Task When_KeyFrames_Change_While_Running_Then_Throws()
+	public async Task When_Object_Key_Frames_Change_While_Running_Then_Add_Throws_And_Removal_Is_Ignored()
 	{
-		var (border, translate) = await LoadTranslatedBorder();
+		var border = await LoadBorder();
+
+		var objectAnimation = new ObjectAnimationUsingKeyFrames();
+		objectAnimation.KeyFrames.Add(new DiscreteObjectKeyFrame { KeyTime = TimeSpan.FromMilliseconds(2000), Value = Visibility.Collapsed });
+		Storyboard.SetTarget(objectAnimation, border);
+		Storyboard.SetTargetProperty(objectAnimation, nameof(UIElement.Visibility));
+
+		var storyboard = new Storyboard { Children = { objectAnimation } };
+		storyboard.Begin();
+
+		AssertThrows(() => objectAnimation.KeyFrames.Add(new DiscreteObjectKeyFrame { KeyTime = TimeSpan.FromMilliseconds(500), Value = Visibility.Visible }));
+		AssertThrows(() => objectAnimation.KeyFrames.Clear());
+
+		// CTimingCollection::RemoveAt doesn't fail, it ignores the removal.
+		objectAnimation.KeyFrames.RemoveAt(0);
+		Assert.AreEqual(1, objectAnimation.KeyFrames.Count);
+
+		storyboard.Stop();
+
+		// Once the storyboard stops, the key frames can change again.
+		objectAnimation.KeyFrames.Add(new DiscreteObjectKeyFrame { KeyTime = TimeSpan.FromMilliseconds(500), Value = Visibility.Visible });
+		objectAnimation.KeyFrames.RemoveAt(0);
+		Assert.AreEqual(1, objectAnimation.KeyFrames.Count);
+	}
+
+	[TestMethod]
+	public async Task When_Double_Key_Frames_Change_While_Running_Then_Add_Throws_And_Removal_Is_Ignored()
+	{
+		var (_, translate) = await LoadTranslatedBorder();
 
 		var doubleAnimation = new DoubleAnimationUsingKeyFrames();
 		doubleAnimation.KeyFrames.Add(new LinearDoubleKeyFrame { KeyTime = TimeSpan.FromMilliseconds(2000), Value = 100 });
 		Storyboard.SetTarget(doubleAnimation, translate);
 		Storyboard.SetTargetProperty(doubleAnimation, nameof(TranslateTransform.X));
 
-		var colorAnimation = new ColorAnimationUsingKeyFrames();
-		colorAnimation.KeyFrames.Add(new LinearColorKeyFrame { KeyTime = TimeSpan.FromMilliseconds(2000), Value = Colors.Blue });
-		Storyboard.SetTarget(colorAnimation, border.Background);
-		Storyboard.SetTargetProperty(colorAnimation, nameof(SolidColorBrush.Color));
-
-		var storyboard = new Storyboard();
-		storyboard.Children.Add(doubleAnimation);
-		storyboard.Children.Add(colorAnimation);
+		var storyboard = new Storyboard { Children = { doubleAnimation } };
 		storyboard.Begin();
 
 		AssertThrows(() => doubleAnimation.KeyFrames.Add(new LinearDoubleKeyFrame { KeyTime = TimeSpan.FromMilliseconds(500), Value = 50 }));
-		AssertThrows(() => doubleAnimation.KeyFrames.RemoveAt(0));
-		AssertThrows(() => colorAnimation.KeyFrames.Clear());
+
+		doubleAnimation.KeyFrames.RemoveAt(0);
+		Assert.AreEqual(1, doubleAnimation.KeyFrames.Count);
+
+		storyboard.Stop();
+	}
+
+	[TestMethod]
+	public async Task When_Child_Is_Removed_While_Running_Then_Removal_Is_Ignored()
+	{
+		var (_, translate) = await LoadTranslatedBorder();
+
+		var storyboard = CreateAnimation(translate, nameof(TranslateTransform.X), to: 100, durationMs: 2000);
+		storyboard.Begin();
+
+		storyboard.Children.RemoveAt(0);
+		Assert.AreEqual(1, storyboard.Children.Count);
 
 		storyboard.Stop();
 
-		// Once the storyboard stops, the key frames can change again.
-		doubleAnimation.KeyFrames.Add(new LinearDoubleKeyFrame { KeyTime = TimeSpan.FromMilliseconds(500), Value = 50 });
-		colorAnimation.KeyFrames.Clear();
-		Assert.AreEqual(2, doubleAnimation.KeyFrames.Count);
+		storyboard.Children.RemoveAt(0);
+		Assert.AreEqual(0, storyboard.Children.Count);
 	}
 
 	[TestMethod]
