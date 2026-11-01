@@ -711,6 +711,68 @@ public class Given_Frame
 		Assert.AreEqual(0.0, (cachedPage.RenderTransform as TranslateTransform)?.Y ?? 0.0, 0.001, "The exit animation's translation should not stick to the cached page.");
 	}
 
+	[TestMethod]
+	[DataRow("DrillIn")]
+	[DataRow("SlideFromLeft")]
+	[DataRow("Entrance")]
+	[DataRow("Common")]
+	[DataRow("Continuum")]
+	public async Task When_Cached_Page_Reshown_App_Opacity_Preserved(string transition)
+	{
+		NavigationTransitionInfo info = transition switch
+		{
+			"DrillIn" => new DrillInNavigationTransitionInfo(),
+			"SlideFromLeft" => new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromLeft },
+			"Entrance" => new EntranceNavigationTransitionInfo(),
+			"Common" => new CommonNavigationTransitionInfo(),
+			_ => new ContinuumNavigationTransitionInfo(),
+		};
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = info });
+
+		frame.Navigate(typeof(CachedTransitionPage));
+		await WaitForTransitionsToSettle(frame);
+		var cachedPage = (Page)frame.Content;
+
+		// The transitions still replace RenderTransform/Projection until a TransitionTarget equivalent exists (#25876).
+		var appOrigin = new global::Windows.Foundation.Point(0.25, 0.75);
+		cachedPage.Opacity = 0.6;
+		cachedPage.RenderTransformOrigin = appOrigin;
+
+		frame.Navigate(typeof(SecondPage));
+		await WaitForTransitionsToSettle(frame);
+
+		frame.GoBack(new SuppressNavigationTransitionInfo());
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.AreSame(cachedPage, frame.Content);
+		Assert.AreEqual(0.6, cachedPage.Opacity, 0.001, "The app's opacity should survive the exit and the suppressed return.");
+		Assert.AreEqual(appOrigin, cachedPage.RenderTransformOrigin, "The app's transform origin should survive the exit and the suppressed return.");
+	}
+
+	[TestMethod]
+	public async Task When_Navigating_Again_Before_Transition_Ends_Cached_Page_Not_Stale()
+	{
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = new DrillInNavigationTransitionInfo() });
+
+		frame.Navigate(typeof(CachedTransitionPage));
+		await WaitForTransitionsToSettle(frame);
+		var cachedPage = (Page)frame.Content;
+
+		frame.Navigate(typeof(SecondPage));
+		await TestServices.WindowHelper.WaitForIdle();
+		frame.GoBack(new DrillInNavigationTransitionInfo());
+		await TestServices.WindowHelper.WaitForIdle();
+		frame.Navigate(typeof(ThirdPage));
+		await WaitForTransitionsToSettle(frame);
+
+		frame.GoBack(new SuppressNavigationTransitionInfo());
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.AreSame(cachedPage, frame.Content);
+		Assert.AreEqual(1.0, cachedPage.Opacity, 0.001, "Interrupted transitions should not leave their values on the cached page.");
+		Assert.AreEqual(1.0, (cachedPage.RenderTransform as ScaleTransform)?.ScaleX ?? 1.0, 0.001);
+	}
+
 	private static async Task<Frame> CreateTransitionFrame(NavigationThemeTransition contentTransition)
 	{
 		var frame = new Frame { Width = 300, Height = 200 };
