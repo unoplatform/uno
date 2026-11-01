@@ -185,24 +185,57 @@ namespace Microsoft.UI.Xaml
 		{
 			if (metadata is null)
 			{
-				var defaultValue = propertyType.IsNullable() ? null : CreateValueTypeDefault(propertyType);
-				return new PropertyMetadata(defaultValue);
+				return new PropertyMetadata(GetTypeDefaultValue(propertyType));
 			}
-			else if (!propertyType.IsNullable() && metadata.DefaultValue is null)
+
+			if (metadata.DefaultValue is null && GetTypeDefaultValue(propertyType) is { } typeDefault)
 			{
-				return metadata.CloneWithOverwrittenDefaultValue(CreateValueTypeDefault(propertyType));
+				return metadata.CloneWithOverwrittenDefaultValue(typeDefault);
 			}
 
 			return metadata;
 		}
 
-		// Unlike GetUninitializedObject, Box carries no trimming requirement: a value type reachable
-		// through typeof() stays a constructed type under both ILC and ILLink, which is all Box needs.
-		private static object CreateValueTypeDefault(Type valueType)
+		// WinUI infers the default from the property type only for the value types of its XAML metadata
+		// (CDependencyProperty::GetDefaultValue): zero for its enums, primitives and structs, 1* for GridLength,
+		// null for everything else, custom value types included. Matching by type identity keeps reflection out.
+		private static object GetTypeDefaultValue(Type propertyType)
 		{
-			var zeroed = new byte[RuntimeHelpers.SizeOf(valueType.TypeHandle)];
-			return RuntimeHelpers.Box(ref zeroed[0], valueType.TypeHandle);
+			if (propertyType.IsEnum)
+			{
+				return IsFrameworkEnum(propertyType) ? Enum.ToObject(propertyType, 0) : null;
+			}
+
+			return _knownTypeDefaults.TryGetValue(propertyType, out var defaultValue) ? defaultValue : null;
 		}
+
+		// The enums WinUI knows are its XAML and WinRT ones, which Uno defines in these assemblies.
+		private static bool IsFrameworkEnum(Type enumType)
+		{
+			var assembly = enumType.Assembly;
+
+			return assembly == typeof(DependencyProperty).Assembly
+				|| assembly == typeof(global::Windows.UI.Color).Assembly
+				|| assembly == typeof(global::Windows.Foundation.Point).Assembly;
+		}
+
+		private static readonly Dictionary<Type, object> _knownTypeDefaults = new()
+		{
+			[typeof(bool)] = BoolBoxes.False,
+			[typeof(int)] = IntBoxes.Zero,
+			[typeof(long)] = 0L,
+			[typeof(float)] = 0f,
+			[typeof(double)] = DoubleBoxes.Zero,
+			[typeof(TimeSpan)] = TimeSpan.Zero,
+			[typeof(DateTimeOffset)] = default(DateTimeOffset),
+			[typeof(global::Windows.Foundation.Point)] = default(global::Windows.Foundation.Point),
+			[typeof(global::Windows.Foundation.Size)] = default(global::Windows.Foundation.Size),
+			[typeof(global::Windows.Foundation.Rect)] = default(global::Windows.Foundation.Rect),
+			[typeof(global::Windows.UI.Color)] = default(global::Windows.UI.Color),
+			[typeof(Thickness)] = default(Thickness),
+			[typeof(CornerRadius)] = default(CornerRadius),
+			[typeof(GridLength)] = new GridLength(1, GridUnitType.Star),
+		};
 
 		/// <summary>
 		/// Registers a dependency property on the specified <paramref name="ownerType"/>.

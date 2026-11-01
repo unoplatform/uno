@@ -65,11 +65,12 @@ public partial class Given_DependencyProperty
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25840")]
 	public void When_PropertyType_Is_Generic_Parameter_Then_Default_Value()
 	{
-		// A null default on a non-nullable value type is replaced by the type's zero value at registration.
+		// A null default is replaced at registration by WinUI's default for the property type: the zero value for the
+		// value types WinUI knows, null for a custom one.
 		Assert.AreEqual(0, GenericPropertyTypeOwner<int>.ValueProperty.GetMetadata(typeof(GenericPropertyTypeOwner<int>)).DefaultValue);
 		Assert.AreEqual(default(Thickness), GenericPropertyTypeOwner<Thickness>.ValueProperty.GetMetadata(typeof(GenericPropertyTypeOwner<Thickness>)).DefaultValue);
 		Assert.AreEqual(Visibility.Visible, GenericPropertyTypeOwner<Visibility>.ValueProperty.GetMetadata(typeof(GenericPropertyTypeOwner<Visibility>)).DefaultValue);
-		Assert.AreEqual(default(GenericPropertyTypeStruct), GenericPropertyTypeOwner<GenericPropertyTypeStruct>.ValueProperty.GetMetadata(typeof(GenericPropertyTypeOwner<GenericPropertyTypeStruct>)).DefaultValue);
+		Assert.IsNull(GenericPropertyTypeOwner<GenericPropertyTypeStruct>.ValueProperty.GetMetadata(typeof(GenericPropertyTypeOwner<GenericPropertyTypeStruct>)).DefaultValue);
 
 		// Nullable value types and reference types keep the null default.
 		Assert.IsNull(GenericPropertyTypeOwner<int?>.ValueProperty.GetMetadata(typeof(GenericPropertyTypeOwner<int?>)).DefaultValue);

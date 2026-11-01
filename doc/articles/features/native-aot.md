@@ -364,7 +364,7 @@ partial class ClipboardSamplePageViewModel {
 
 ### Dependency property registration
 
-`DependencyProperty.Register` and `RegisterAttached` put no trimming requirement on `propertyType` or `ownerType`, as in WinUI: a property typed or owned by a generic parameter, by `System.Type` or by a `Type` obtained at runtime registers without IL2087, IL2111 or IL2072. Reflection metadata for an owner's members comes from the generated `BindableMetadata` (types marked `[Bindable]`, which includes every concrete public `DependencyObject`), not from registration; see [XAML Attached Properties](#xaml-attached-properties) for owners that only hold attached properties.
+`DependencyProperty.Register` and `RegisterAttached` put no trimming requirement on `propertyType` or `ownerType`, as in WinUI: a property typed or owned by a generic parameter, by `System.Type` or by a `Type` obtained at runtime registers without IL2087, IL2111 or IL2072. Reflection metadata for an owner's members comes from the generated `BindableMetadata` (types marked `[Bindable]`, which includes every concrete public `DependencyObject`), not from registration; see [XAML Attached Properties](#xaml-attached-properties) for owners that only hold attached properties. A property registered without a default value gets the WinUI default for its type from a fixed table of value types (the zero value for the WinUI primitives, structs and enums, `null` for anything else), so nothing reflects over the property type.
 
 ### XAML Attached Properties
 
