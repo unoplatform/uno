@@ -137,9 +137,9 @@ public partial class NavigationThemeTransition
 		// We will always run an animation unless it is the forward navigation to the first page.
 		shouldRun = !isInitialPage || isBackNavigation;
 
-		// Priority 2: check the page for its default, then the Frame's ContentTransitions.
+		// Priority 2: check new page for its default, then the Frame's ContentTransitions.
 		var themeTransition =
-			GetNavigationThemeTransitionFromCollection(page.Transitions)
+			GetNavigationThemeTransitionFromCollection((frame.Content as UIElement)?.Transitions)
 			?? GetNavigationThemeTransitionFromCollection(frame.ContentTransitions);
 
 		if (themeTransition is not null)
