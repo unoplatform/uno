@@ -344,6 +344,8 @@
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Skia.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Model.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Custom.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.SceneGraph.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Animation.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Silk.NET.OpenGL.dll" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
