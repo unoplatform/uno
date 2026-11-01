@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams;
 using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace Uno.UI.RuntimeTests.Tests
 {
@@ -168,6 +169,19 @@ namespace Uno.UI.RuntimeTests.Tests
 			file1.Seek(5);
 
 			Assert.AreNotEqual(file1.Position, file2.Position);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25866")]
+		public async Task When_CloneStream_Then_ContentType_Is_Kept()
+		{
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			using var stream = await file.OpenReadAsync();
+			Assert.AreEqual("image/png", stream.ContentType);
+
+			using var clone = stream.CloneStream();
+
+			Assert.AreEqual("image/png", Assert.IsInstanceOfType<IRandomAccessStreamWithContentType>(clone).ContentType);
 		}
 
 		[TestMethod]
