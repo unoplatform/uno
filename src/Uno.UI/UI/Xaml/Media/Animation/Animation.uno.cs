@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Collections.Generic;
+using Uno.UI.Media;
 
 namespace Microsoft.UI.Xaml.Media.Animation;
 
@@ -31,13 +32,51 @@ partial class Timeline
 	/// </summary>
 	/// <remarks>
 	/// TODO Uno: WinUI tracks every association of a shareable object (a brush or transform used by several elements).
-	/// Uno tracks a single parent.
+	/// Uno sets the parent for some properties only (not for RenderTransform, Projection or Clip), so the users of
+	/// transforms, projections and geometries are found through the objects that listen to their changes.
 	/// </remarks>
 	private static IEnumerable<DependencyObject> GetParentItems(DependencyObject target)
 	{
-		if (target.GetParent() is DependencyObject parent)
+		var parent = target.GetParent() as DependencyObject;
+		if (parent is not null)
 		{
 			yield return parent;
+		}
+
+		switch (target)
+		{
+			case Transform transform:
+				foreach (var listener in transform.GetChangedListeners())
+				{
+					var user = listener.Target switch
+					{
+						NativeRenderTransformAdapter adapter => adapter.Owner as DependencyObject,
+						DependencyObject dependencyObject => dependencyObject,
+						_ => null,
+					};
+
+					if (user is not null && user != parent)
+					{
+						yield return user;
+					}
+				}
+
+				break;
+
+			case Projection { Owner: { } owner } when owner != parent:
+				yield return owner;
+				break;
+
+			case Geometry geometry:
+				foreach (var listener in geometry.GetGeometryChangedListeners())
+				{
+					if (listener.Target is DependencyObject user && user != parent)
+					{
+						yield return user;
+					}
+				}
+
+				break;
 		}
 	}
 

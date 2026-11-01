@@ -695,6 +695,14 @@ partial class Timeline
 			AnimationGetNaturalDuration(out pDurationType, out pDurationValue);
 			return;
 		}
+
+		// TODO Uno: The unported theme animations are zero-length (see OnBegin).
+		if (IsUnportedThemeTimeline())
+		{
+			pDurationType = DurationType.TimeSpan;
+			pDurationValue = 0.0f;
+			return;
+		}
 #endif
 
 		// Timelines defaults infinite animation
@@ -729,10 +737,16 @@ partial class Timeline
 			m_IsCompletedEventFired = true;
 
 			// ... And fire it!
-			foreach (var handler in handlers.ToArray())
+			// CEventManager::Raise posts the event to the dispatcher (it is not raised synchronously), so the handlers
+			// run after the tick, once every timeline has applied its values.
+			var handlersSnapshot = handlers.ToArray();
+			global::Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(() =>
 			{
-				handler(this, null!);
-			}
+				foreach (var handler in handlersSnapshot)
+				{
+					handler(this, null!);
+				}
+			}, global::Uno.UI.Dispatching.NativeDispatcherPriority.Normal);
 		}
 	}
 

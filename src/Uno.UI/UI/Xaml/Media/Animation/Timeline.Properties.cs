@@ -135,7 +135,7 @@ partial class Timeline
 			nameof(RepeatBehavior),
 			typeof(RepeatBehavior),
 			typeof(Timeline),
-			new FrameworkPropertyMetadata(new RepeatBehavior(1), (s, e) => ((Timeline)s).m_repeatBehavior = (RepeatBehavior)e.NewValue));
+			new FrameworkPropertyMetadata(new RepeatBehavior(1), (s, e) => ((Timeline)s).m_repeatBehavior = RepeatBehaviorVOHelperCreate((RepeatBehavior)e.NewValue)));
 
 	/// <summary>
 	/// Gets or sets the rate, relative to its parent, at which time progresses for this Timeline.

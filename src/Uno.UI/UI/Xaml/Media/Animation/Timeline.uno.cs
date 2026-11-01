@@ -153,6 +153,21 @@ partial class Timeline : IThemeChangeAware
 		}
 	}
 
+	// The framework timelines that are neither animations nor storyboards: the theme animations, which WinUI implements as
+	// dynamic timelines.
+	private bool IsUnportedThemeTimeline()
+		=> !IsAnimation() && this is not Storyboard && GetType().Assembly == typeof(Timeline).Assembly && GetType().Name.EndsWith("ThemeAnimation", StringComparison.Ordinal);
+
+	// RepeatBehaviorVOHelper::Create: the core value only keeps the field that matters for its type, and the count of a
+	// Duration or Forever repeat behavior is the default count (1), where the public struct has 0.
+	private static RepeatBehavior RepeatBehaviorVOHelperCreate(RepeatBehavior value)
+		=> value.Type switch
+		{
+			RepeatBehaviorType.Duration => new RepeatBehavior(value.Duration) { Count = 1 },
+			RepeatBehaviorType.Forever => new RepeatBehavior { Type = RepeatBehaviorType.Forever, Count = 1 },
+			_ => new RepeatBehavior(value.Count),
+		};
+
 	// XcpCeiling, as a frame request delay in milliseconds.
 	private protected static uint XcpCeiling(double milliseconds)
 	{

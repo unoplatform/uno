@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -35,6 +35,9 @@ namespace Microsoft.UI.Xaml.Media
 		/// Notifies that a value of this transform changed (usually this means that the <see cref="MatrixCore"/> has been updated).
 		/// </summary>
 		internal event EventHandler? Changed;
+
+		/// <summary>The objects listening to <see cref="Changed"/>: the users of this transform.</summary>
+		internal Delegate[] GetChangedListeners() => Changed?.GetInvocationList() ?? Array.Empty<Delegate>();
 
 		protected void NotifyChanged()
 		{

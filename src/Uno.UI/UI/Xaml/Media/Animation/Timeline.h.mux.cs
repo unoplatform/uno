@@ -41,6 +41,13 @@ partial class Timeline
 			AnimationOnBegin();
 			return;
 		}
+
+		// TODO Uno: The theme animations (CDynamicTimeline in WinUI) are not ported. They begin as empty, zero-length
+		// timelines, so that the storyboards containing them still run and complete.
+		if (IsUnportedThemeTimeline())
+		{
+			return;
+		}
 #endif
 
 		throw new InvalidOperationException();

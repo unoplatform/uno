@@ -20,6 +20,9 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal event Action GeometryChanged;
 
+		/// <summary>The objects listening to <see cref="GeometryChanged"/>: the users of this geometry.</summary>
+		internal Delegate[] GetGeometryChangedListeners() => GeometryChanged?.GetInvocationList() ?? Array.Empty<Delegate>();
+
 		private protected void RaiseGeometryChanged()
 			=> GeometryChanged?.Invoke();
 
