@@ -42,12 +42,6 @@ public partial class NavigationThemeTransition
 		{
 			page.Loaded += OnPageLoaded;
 			page.Unloaded += OnPageUnloaded;
-
-			// If the page is already loaded, run the enter animation immediately
-			if (page.IsLoaded)
-			{
-				RunNavigationAnimation(page, isEntering: true);
-			}
 		}
 	}
 
@@ -162,16 +156,7 @@ public partial class NavigationThemeTransition
 			}
 		}
 
-		// Priority 3: use this transition's DefaultNavigationTransitionInfo, for the case where it
-		// was attached without being reachable through either transition collection. This deliberately
-		// does not force shouldRun: WinUI finds no transition at all in that case, so the initial
-		// forward navigation stays unanimated and only the info being used differs.
-		if (DefaultNavigationTransitionInfo is not null)
-		{
-			return DefaultNavigationTransitionInfo;
-		}
-
-		// Priority 4: fall back to EntranceNavigationTransitionInfo.
+		// Priority 3: fall back to EntranceNavigationTransitionInfo.
 		return new EntranceNavigationTransitionInfo();
 	}
 
