@@ -669,6 +669,26 @@ public class Given_Frame
 		Assert.AreSame(firstInfo, frame.BackStack[0].NavigationTransitionInfo);
 	}
 
+	[TestMethod]
+	public async Task When_Cached_Page_Reshown_No_Stale_Animated_Values()
+	{
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = new EntranceNavigationTransitionInfo() });
+
+		frame.Navigate(typeof(CachedTransitionPage));
+		await WaitForTransitionsToSettle(frame);
+		var cachedPage = (Page)frame.Content;
+
+		frame.Navigate(typeof(SecondPage));
+		await WaitForTransitionsToSettle(frame);
+
+		frame.GoBack(new SuppressNavigationTransitionInfo());
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.AreSame(cachedPage, frame.Content);
+		Assert.AreEqual(1.0, cachedPage.Opacity, 0.001, "The exit animation's opacity should not stick to the cached page.");
+		Assert.AreEqual(0.0, (cachedPage.RenderTransform as TranslateTransform)?.Y ?? 0.0, 0.001, "The exit animation's translation should not stick to the cached page.");
+	}
+
 	private static async Task<Frame> CreateTransitionFrame(NavigationThemeTransition contentTransition)
 	{
 		var frame = new Frame { Width = 300, Height = 200 };
