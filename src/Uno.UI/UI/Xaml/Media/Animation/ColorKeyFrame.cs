@@ -1,11 +1,11 @@
-﻿using Uno;
+using Uno;
 using Uno.Extensions;
 using Windows.UI;
 using NotImplementedException = System.NotImplementedException;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-	public abstract partial class ColorKeyFrame : DependencyObject
+	public abstract partial class ColorKeyFrame : DependencyObject, IKeyFrame
 	{
 		protected ColorKeyFrame()
 		{
@@ -37,7 +37,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			set => SetValue(KeyTimeProperty, value);
 		}
 
-		internal virtual IEasingFunction GetEasingFunction() => null;
+		float IKeyFrame.Percent { get; set; }
+
+		internal virtual bool IsDiscrete => false;
+
+		bool IKeyFrame.IsDiscrete => IsDiscrete;
+
+		internal virtual float GetEffectiveProgress(float progress) => progress;
+
+		float IKeyFrame.GetEffectiveProgress(float progress) => GetEffectiveProgress(progress);
+
+		object IKeyFrame.GetValue() => Value;
 
 		public override string ToString() => "KeyTime: {0}, Value: {1}".InvariantCultureFormat(KeyTime, Value);
 	}

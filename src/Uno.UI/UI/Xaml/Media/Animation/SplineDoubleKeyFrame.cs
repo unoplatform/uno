@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -55,11 +55,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			set { this.SetValue(KeySplineProperty, value); }
 		}
 		public static DependencyProperty KeySplineProperty { get; } =
-			DependencyProperty.Register("KeySpline", typeof(KeySpline), typeof(SplineDoubleKeyFrame), new FrameworkPropertyMetadata(new KeySpline()));
+			DependencyProperty.Register("KeySpline", typeof(KeySpline), typeof(SplineDoubleKeyFrame), new FrameworkPropertyMetadata(null));
 
-		internal override IEasingFunction GetEasingFunction()
-		{
-			return new SplineEasingFunction(KeySpline);
-		}
+		internal override float GetEffectiveProgress(float progress) => KeySpline is { } keySpline ? keySpline.GetSplineProgress(progress) : 0;
 	}
 }

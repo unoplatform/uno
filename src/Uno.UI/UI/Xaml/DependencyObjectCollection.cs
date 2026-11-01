@@ -86,7 +86,12 @@ namespace Microsoft.UI.Xaml
 			{
 				throw new InvalidOperationException("Collection is locked.");
 			}
+
+			OnModifying();
 		}
+
+		/// <summary>Called before any mutation, to let a collection refuse it.</summary>
+		private protected virtual void OnModifying() { }
 
 		public DependencyObjectCollection()
 		{

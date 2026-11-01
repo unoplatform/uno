@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	partial class EasingColorKeyFrame : ColorKeyFrame
 	{
@@ -13,6 +13,6 @@
 			set => SetValue(EasingFunctionProperty, value);
 		}
 
-		internal override IEasingFunction GetEasingFunction() => EasingFunction;
+		internal override float GetEffectiveProgress(float progress) => EasingFunctionBase.EaseValue(EasingFunction, progress);
 	}
 }

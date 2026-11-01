@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -38,27 +38,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 		}
 
-		internal override IEasingFunction GetEasingFunction()
-		{
-			return _easingFunction;
-		}
+		internal override bool IsDiscrete => true;
 
-		private static readonly IEasingFunction _easingFunction = new DiscreteDoubleKeyFrameEasingFunction();
-
-		/// <summary>
-		/// This is a fake easing function that has no equivalent on GPU.
-		/// We should implement DoubleAnimationUsingKeyFrames in a way to not use this.
-		/// </summary>
-		internal class DiscreteDoubleKeyFrameEasingFunction : IEasingFunction
-		{
-			public double Ease(double currentTime, double startValue, double finalValue, double duration)
-			{
-				if (currentTime < duration)
-				{
-					return startValue;
-				}
-				return finalValue;
-			}
-		}
-	}
-}
+		// Discrete keyframes clamp to the starting value of the time segment
+		internal override float GetEffectiveProgress(float progress) => 0;
+	}
+}

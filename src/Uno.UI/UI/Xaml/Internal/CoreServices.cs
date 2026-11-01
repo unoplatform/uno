@@ -148,6 +148,10 @@ namespace Uno.UI.Xaml.Core
 				UpdateLayoutAndRaiseLoaded();
 			}
 
+			// As in WinUI (CCoreServices::Tick), tick the storyboards begun during layout (Loaded handlers, visual state
+			// changes) so their animated values are set in this frame.
+			Microsoft.UI.Xaml.Media.Animation.TimeManager.Instance.TickNewTimelinesAfterLayout();
+
 			// Loaded has been raised for what this pass brought back into the tree: release the undisplayed images now due.
 			PendingImageReleases.OnLayoutPassCompleted();
 

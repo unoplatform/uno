@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
@@ -6,7 +6,7 @@ using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-	public abstract partial class DoubleKeyFrame : DependencyObject
+	public abstract partial class DoubleKeyFrame : DependencyObject, IKeyFrame
 	{
 		protected DoubleKeyFrame()
 		{
@@ -49,7 +49,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			DependencyProperty.Register("KeyTime", typeof(KeyTime), typeof(DoubleKeyFrame), new FrameworkPropertyMetadata(default(KeyTime)));
 
 
-		internal abstract IEasingFunction GetEasingFunction();
+		float IKeyFrame.Percent { get; set; }
+
+		internal virtual bool IsDiscrete => false;
+
+		bool IKeyFrame.IsDiscrete => IsDiscrete;
+
+		internal virtual float GetEffectiveProgress(float progress) => progress;
+
+		float IKeyFrame.GetEffectiveProgress(float progress) => GetEffectiveProgress(progress);
+
+		object IKeyFrame.GetValue() => Value;
 
 		public override string ToString()
 		{

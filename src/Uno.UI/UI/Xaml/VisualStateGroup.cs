@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,6 @@ using Uno.UI;
 using Windows.Foundation.Collections;
 using System.Buffers;
 using Uno.UI.DataBinding;
-using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
 namespace Microsoft.UI.Xaml
 {
@@ -271,27 +270,9 @@ namespace Microsoft.UI.Xaml
 				ResourceResolver.PopScope();
 			}
 
-			// Stops running animations (transition or state's storyboard)
-			// Note about animations (as of 2021-08-16 win 19043):
-			//		Any "running animation", either from the current transition or the current state's storyboard,
-			//		is being "paused" for properties that are going to be animated by the "next animation" (again transition or target state's storyboard),
-			//		and rollbacked for properties that won't be animated anymore.
-			var runningAnimation = (current.transition?.State ?? Stopped) is Stopped
-				? current.animation
-				: current.transition;
-			var nextAnimation = target.transition ?? target.animation;
-			if (runningAnimation != null)
-			{
-				if (nextAnimation is null)
-				{
-					runningAnimation.Stop();
-				}
-				else
-				{
-					runningAnimation.TurnOverAnimationsTo(nextAnimation);
-				}
-			}
-
+			// As in WinUI (VisualStateManagerActuator), the storyboards of the target state start before the running ones
+			// are stopped: an animation of the new state takes over the properties it shares with a running one (handoff),
+			// and stopping the old storyboard restores only the properties nothing animates anymore.
 			_current = targetValues;
 
 			// Finally effectively apply the target state!
@@ -300,32 +281,23 @@ namespace Microsoft.UI.Xaml
 				ClearPropertiesNotSetInNextState(
 					element,
 					current.setters,
-					runningAnimation,
 					null,
 					transitionAnimation);
 
 				// Note: As of 2021-08-16 win 19043, if the transitionAnimation is Repeat=Forever, we actually never apply the state!
 
 				transitionAnimation.Completed += OnTransitionCompleted;
-				transitionAnimation.Begin();
+				AttemptStartStoryboard(transitionAnimation);
+				StopStoryboards(current.transition, current.animation, transitionAnimation);
 
 				void OnTransitionCompleted(object s, object a)
 				{
 					transitionAnimation.Completed -= OnTransitionCompleted;
 
-					if (target.animation is { } stateAnimation)
-					{
-						transitionAnimation.TurnOverAnimationsTo(stateAnimation);
-					}
-
-					ClearPropertiesNotSetInNextState(
-						element,
-						null,
-						transitionAnimation,
-						target.setters,
-						target.animation);
-
 					ApplyTargetState();
+
+					// The new state's storyboard starts before the transition stops, for smooth handoff.
+					StopStoryboards(transitionAnimation, null, target.animation);
 				}
 			}
 			else
@@ -333,11 +305,11 @@ namespace Microsoft.UI.Xaml
 				ClearPropertiesNotSetInNextState(
 					element,
 					current.setters,
-					runningAnimation,
 					target.setters,
 					target.animation);
 
 				ApplyTargetState();
+				StopStoryboards(current.transition, current.animation, target.animation);
 			}
 
 			void ApplyTargetState()
@@ -348,7 +320,7 @@ namespace Microsoft.UI.Xaml
 				// Starts target state animation
 				if (target.animation is { } stateAnimation)
 				{
-					stateAnimation.Begin();
+					AttemptStartStoryboard(stateAnimation);
 				}
 
 				onStateChanged();
@@ -415,11 +387,10 @@ namespace Microsoft.UI.Xaml
 		private static void ClearPropertiesNotSetInNextState(
 			IFrameworkElement element,
 			SetterBaseCollection prevSetters,
-			Storyboard prevAnimation,
 			SetterBaseCollection nextSetters,
 			Storyboard nextAnimation)
 		{
-			if (element is null || (prevSetters is null && prevAnimation is null))
+			if (element is null || prevSetters is null)
 			{
 				return;
 			}
@@ -458,17 +429,45 @@ namespace Microsoft.UI.Xaml
 					}
 				}
 			}
+		}
 
-			if (prevAnimation is { })
+		// VisualStateManagerActuator::AttemptStartStoryboard
+		private void AttemptStartStoryboard(Storyboard storyboard)
+		{
+			try
 			{
-				foreach (var item in prevAnimation.Children.Items)
+				storyboard.BeginPrivate(true);
+			}
+			catch (InvalidOperationException e)
+			{
+				// TODO Uno: WinUI lets GoToState fail when a storyboard target can't be resolved. Uno still resolves some
+				// targets lazily (x:Load, deferred elements), so the failure is logged instead.
+				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					// Animations with a null path are always cleared.
-					if (item.PropertyInfo is not { } prevPath || !propertiesNotToClear.Any(path => prevPath.PrefixOfOrEqualTo(path)))
-					{
-						item.PropertyInfo.ClearValue();
-					}
+					this.Log().Warn($"Failed to begin a storyboard of the visual state group {Name}: {e.Message}");
 				}
+
+				return;
+			}
+
+			// We do this next bit because of course VSM is a special snowflake and unlike when
+			// Storyboards are typically started, VSM applies their first-frame values synchronously.
+			Storyboard.ZeroSeekAlignedToLastTick(storyboard);
+
+			// TODO Uno: When animations aren't enabled, WinUI skips all non-essential transition storyboards to their end frame.
+		}
+
+		// VisualStateManagerActuator::StopAndRemoveStoryboards
+		private static void StopStoryboards(Storyboard first, Storyboard second, Storyboard keep)
+		{
+			if (first is not null && first != keep)
+			{
+				first.StopPrivate();
+			}
+
+			if (second is not null && second != keep && second != first)
+			{
+				second.StopPrivate();
 			}
 		}
 

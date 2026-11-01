@@ -1642,14 +1642,21 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_overlayOpeningStoryboard.Stop();
 
-				Storyboard.SetTarget(m_overlayOpeningStoryboard, m_overlayLayoutTransitionElement);
+				// TODO Uno: Layout transition elements are not supported, m_overlayLayoutTransitionElement can be null.
+				if (m_overlayLayoutTransitionElement is { })
+				{
+					Storyboard.SetTarget(m_overlayOpeningStoryboard, m_overlayLayoutTransitionElement);
+				}
 			}
 
 			if (m_overlayClosingStoryboard is { })
 			{
 				m_overlayClosingStoryboard.Stop();
 
-				Storyboard.SetTarget(m_overlayClosingStoryboard, m_overlayLayoutTransitionElement);
+				if (m_overlayLayoutTransitionElement is { })
+				{
+					Storyboard.SetTarget(m_overlayClosingStoryboard, m_overlayLayoutTransitionElement);
+				}
 			}
 		}
 

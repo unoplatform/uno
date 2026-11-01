@@ -1,15 +1,9 @@
-﻿namespace Microsoft.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	partial class DiscreteColorKeyFrame : ColorKeyFrame
 	{
-		internal override IEasingFunction GetEasingFunction() => _easingFunction;
+		internal override bool IsDiscrete => true;
 
-		private static readonly IEasingFunction _easingFunction = new DiscreteDoubleKeyFrame.DiscreteDoubleKeyFrameEasingFunction();
-
-		internal class DiscreteDoubleKeyFrameEasingFunction : IEasingFunction
-		{
-			public double Ease(double currentTime, double startValue, double finalValue, double duration)
-				=> currentTime < duration ? startValue : finalValue;
-		}
+		internal override float GetEffectiveProgress(float progress) => 0;
 	}
 }

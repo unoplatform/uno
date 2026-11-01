@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -33,10 +33,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 		}
 
-		internal override IEasingFunction GetEasingFunction()
-		{
-			// The default easing function is linear
-			return null;
-		}
 	}
 }

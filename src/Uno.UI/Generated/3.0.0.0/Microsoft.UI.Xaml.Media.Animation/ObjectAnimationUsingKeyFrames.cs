@@ -7,28 +7,8 @@ namespace Microsoft.UI.Xaml.Media.Animation;
 #endif
 public partial class ObjectAnimationUsingKeyFrames : global::Microsoft.UI.Xaml.Media.Animation.Timeline
 {
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty EnableDependentAnimationProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(EnableDependentAnimation), typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool EnableDependentAnimation
-	{
-		get
-		{
-			return (bool)this.GetValue(EnableDependentAnimationProperty);
-		}
-		set
-		{
-			this.SetValue(EnableDependentAnimationProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
+	// Skipping already declared property EnableDependentAnimationProperty
+	// Skipping already declared property EnableDependentAnimation
 	// Skipping already declared property KeyFrames
 	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.ObjectAnimationUsingKeyFrames()
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.ObjectAnimationUsingKeyFrames()

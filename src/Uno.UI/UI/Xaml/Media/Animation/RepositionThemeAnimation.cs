@@ -1,14 +1,22 @@
-﻿namespace Microsoft.UI.Xaml.Media.Animation;
+﻿#nullable enable
+
+namespace Microsoft.UI.Xaml.Media.Animation;
 
 #if __SKIA__
 [global::Uno.NotImplemented]
 #endif
-public partial class RepositionThemeAnimation : Timeline, ITimeline
+public partial class RepositionThemeAnimation : Timeline
 {
-	// RepositionThemeAnimation is currently not implemented.
-	// But we need to call OnCompleted() so that whenever RepositionThemeAnimation is
-	// included in a Storyboard, we want to allow the Storyboard to fire Completed event
-	// This is important especially when RepositionThemeAnimation is part of a transition Storyboard.
-	// Visual state setters aren't executed unless the transition is completed.
-	void ITimeline.Begin() => OnCompleted();
+	// TODO Uno: RepositionThemeAnimation (a CDynamicTimeline in WinUI) is not implemented. It begins as an empty, zero-length
+	// timeline, so that a Storyboard containing it still completes: visual state setters aren't applied until a transition
+	// storyboard completes.
+	internal override void OnBegin()
+	{
+	}
+
+	internal override void GetNaturalDuration(out DurationType pDurationType, out float pDurationValue)
+	{
+		pDurationType = DurationType.TimeSpan;
+		pDurationValue = 0;
+	}
 }

@@ -1,7 +1,7 @@
-﻿namespace Microsoft.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	partial class SplineColorKeyFrame : ColorKeyFrame
 	{
-		internal override IEasingFunction GetEasingFunction() => new SplineEasingFunction(KeySpline);
+		internal override float GetEffectiveProgress(float progress) => KeySpline is { } keySpline ? keySpline.GetSplineProgress(progress) : 0;
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -56,9 +56,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public static DependencyProperty EasingFunctionProperty { get; } =
 			DependencyProperty.Register("EasingFunction", typeof(EasingFunctionBase), typeof(EasingDoubleKeyFrame), new FrameworkPropertyMetadata(null));
 
-		internal override IEasingFunction GetEasingFunction()
-		{
-			return EasingFunction;
-		}
+		internal override float GetEffectiveProgress(float progress) => EasingFunctionBase.EaseValue(EasingFunction, progress);
 	}
 }

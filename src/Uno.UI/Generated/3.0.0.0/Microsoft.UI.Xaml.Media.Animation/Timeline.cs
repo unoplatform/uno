@@ -7,72 +7,19 @@ namespace Microsoft.UI.Xaml.Media.Animation;
 #endif
 public partial class Timeline : global::Microsoft.UI.Xaml.DependencyObject
 {
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static bool AllowDependentAnimations
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.Timeline", "AllowDependentAnimations");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.Timeline", "AllowDependentAnimations");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty AutoReverseProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(AutoReverse), typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Media.Animation.Timeline),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
+	// Skipping already declared property AllowDependentAnimations
+	// Skipping already declared property AutoReverseProperty
 	// Skipping already declared property BeginTimeProperty
 	// Skipping already declared property DurationProperty
 	// Skipping already declared property FillBehaviorProperty
 	// Skipping already declared property RepeatBehaviorProperty
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty SpeedRatioProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(SpeedRatio), typeof(double),
-		typeof(global::Microsoft.UI.Xaml.Media.Animation.Timeline),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool AutoReverse
-	{
-		get
-		{
-			return (bool)this.GetValue(AutoReverseProperty);
-		}
-		set
-		{
-			this.SetValue(AutoReverseProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
+	// Skipping already declared property SpeedRatioProperty
+	// Skipping already declared property AutoReverse
 	// Skipping already declared property BeginTime
 	// Skipping already declared property Duration
 	// Skipping already declared property FillBehavior
 	// Skipping already declared property RepeatBehavior
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public double SpeedRatio
-	{
-		get
-		{
-			return (double)this.GetValue(SpeedRatioProperty);
-		}
-		set
-		{
-			this.SetValue(SpeedRatioProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
+	// Skipping already declared property SpeedRatio
 	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Timeline.Timeline()
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Timeline()
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AllowDependentAnimations.get
