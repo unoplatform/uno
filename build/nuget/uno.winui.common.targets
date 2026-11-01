@@ -61,6 +61,7 @@
 	
 	<Import Project="$(SourceGeneratorBasePath)Uno.UI.SourceGenerators.props" />
 	<Import Project="$(UnoUIMSBuildTasksTargetPath)Uno.UI.Tasks.targets" />
+	<Import Project="uno.winui.version.targets" />
 
 	<Target Name="_UnoWinUICommonFeatureDefines" AfterTargets="PrepareForBuild">
 

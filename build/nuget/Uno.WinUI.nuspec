@@ -199,6 +199,7 @@
 
 		<file src="uno.winui.cross-runtime.targets" target="buildTransitive" />
 		<file src="uno.winui.common.targets" target="buildTransitive" />
+		<file src="uno.winui.version.targets" target="buildTransitive" />
 		<file src="uno.winui.common.props" target="buildTransitive" />
 		<file src="uno.winui.runtime-replace.targets" target="buildTransitive" />
 		<file src="uno.winui.winappsdk.targets" target="buildTransitive" />
