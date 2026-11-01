@@ -336,10 +336,6 @@
                                                 <DiscreteDoubleKeyFrame KeyTime="0:0:0.150" Value="0" />
                                                 <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                                             </DoubleAnimationUsingKeyFrames>
-                                            <!--Uno only: Make sure to set visibility only AFTER opacity -->
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
-                                            </ObjectAnimationUsingKeyFrames>
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MonthViewTransform" Storyboard.TargetProperty="ScaleX">
                                                 <SplineDoubleKeyFrame KeyTime="0:0:0.150" Value="0.84" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                                             </DoubleAnimationUsingKeyFrames>
@@ -414,6 +410,9 @@
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                                             </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
+                                            </ObjectAnimationUsingKeyFrames>
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Opacity">
                                                 <SplineDoubleKeyFrame KeyTime="0:0:0.150" Value="0" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                                             </DoubleAnimationUsingKeyFrames>
@@ -422,10 +421,6 @@
                                                 <DiscreteDoubleKeyFrame KeyTime="0:0:0.150" Value="0" />
                                                 <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                                             </DoubleAnimationUsingKeyFrames>
-                                            <!--Uno only: Make sure to set visibility only AFTER opacity -->
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
-                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
-                                            </ObjectAnimationUsingKeyFrames>
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewTransform" Storyboard.TargetProperty="ScaleX">
                                                 <SplineDoubleKeyFrame KeyTime="0:0:0.150" Value="0.84" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                                             </DoubleAnimationUsingKeyFrames>
