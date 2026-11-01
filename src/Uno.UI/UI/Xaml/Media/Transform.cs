@@ -36,9 +36,6 @@ namespace Microsoft.UI.Xaml.Media
 		/// </summary>
 		internal event EventHandler? Changed;
 
-		/// <summary>The objects listening to <see cref="Changed"/>: the users of this transform.</summary>
-		internal Delegate[] GetChangedListeners() => Changed?.GetInvocationList() ?? Array.Empty<Delegate>();
-
 		protected void NotifyChanged()
 		{
 			MatrixCore = ToMatrix(new Point(0, 0));

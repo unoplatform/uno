@@ -1,7 +1,6 @@
 #nullable enable
 
 using System.Collections.Generic;
-using Uno.UI.Media;
 
 namespace Microsoft.UI.Xaml.Media.Animation;
 
@@ -31,9 +30,8 @@ partial class Timeline
 	/// The objects <paramref name="target"/> is associated with (CDependencyObject::GetParentCount / GetParentItem).
 	/// </summary>
 	/// <remarks>
-	/// TODO Uno: WinUI tracks every association of a shareable object (a brush or transform used by several elements).
-	/// Uno sets the parent for some properties only (not for RenderTransform, Projection or Clip), so the users of
-	/// transforms, projections and geometries are found through the objects that listen to their changes.
+	/// TODO Uno: WinUI tracks every association of a shareable object. Uno parents only some property values, so the
+	/// holders of brushes, transforms, geometries and projections come from <see cref="SharedParentAssociations"/>.
 	/// </remarks>
 	private static IEnumerable<DependencyObject> GetParentItems(DependencyObject target)
 	{
@@ -43,40 +41,12 @@ partial class Timeline
 			yield return parent;
 		}
 
-		switch (target)
+		foreach (var associatedParent in SharedParentAssociations.GetParents(target))
 		{
-			case Transform transform:
-				foreach (var listener in transform.GetChangedListeners())
-				{
-					var user = listener.Target switch
-					{
-						NativeRenderTransformAdapter adapter => adapter.Owner as DependencyObject,
-						DependencyObject dependencyObject => dependencyObject,
-						_ => null,
-					};
-
-					if (user is not null && user != parent)
-					{
-						yield return user;
-					}
-				}
-
-				break;
-
-			case Projection { Owner: { } owner } when owner != parent:
-				yield return owner;
-				break;
-
-			case Geometry geometry:
-				foreach (var listener in geometry.GetGeometryChangedListeners())
-				{
-					if (listener.Target is DependencyObject user && user != parent)
-					{
-						yield return user;
-					}
-				}
-
-				break;
+			if (associatedParent != parent)
+			{
+				yield return associatedParent;
+			}
 		}
 	}
 

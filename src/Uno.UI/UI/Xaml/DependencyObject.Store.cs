@@ -2013,6 +2013,8 @@ namespace Microsoft.UI.Xaml
 		{
 			var propertyMetadata = property.Metadata;
 
+			SharedParentAssociations.Update(actualInstanceAlias, previousValue, newValue);
+
 			if (propertyMetadata is FrameworkPropertyMetadata frameworkPropertyMetadata)
 			{
 				if (frameworkPropertyMetadata.Options.HasLogicalChild())
