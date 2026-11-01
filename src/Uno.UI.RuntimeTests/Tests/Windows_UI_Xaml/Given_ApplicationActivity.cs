@@ -231,6 +231,98 @@ public class Given_ApplicationActivity
 		Assert.IsFalse(firstPresent!.Value.Partial, "The first frame on the recreated render image repainted only its damage region, leaving the rest of the window blank.");
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Reads internal activity state through reflection, which NativeAOT trims away.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24862")]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("get_DrivesWindow", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, "Android.Content.Intent", "Mono.Android")]
+	[DynamicDependency("StartActivity", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("Finish", "Android.App.Activity", "Mono.Android")]
+	[DynamicDependency("get_IsFinishing", "Android.App.Activity", "Mono.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
+	public async Task When_Stacked_Activity_Finishes_Then_Window_Returns_To_Original()
+	{
+		// An intent delivered in the standard launch mode stacks a second instance of the activity, which takes the
+		// window over. When it finishes, the window must go back to the one still running rather than close with it.
+		var stackedType = Type.GetType("SamplesApp.Droid.StackedWindowActivity, SamplesApp");
+		if (stackedType is null)
+		{
+			Assert.Inconclusive("The app hosting the tests declares no stacked test activity.");
+		}
+
+		var border = new Microsoft.UI.Xaml.Controls.Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+		await UITestHelper.Load(border);
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		Assert.IsNotNull(window);
+		var closed = false;
+		void OnClosed(object sender, Microsoft.UI.Xaml.WindowEventArgs args) => closed = true;
+		window.Closed += OnClosed;
+
+		var original = GetWindowActivity();
+		Assert.IsNotNull(original);
+		object stacked = null;
+
+		try
+		{
+			var intentType = Type.GetType("Android.Content.Intent, Mono.Android")!;
+			var contextType = Type.GetType("Android.Content.Context, Mono.Android")!;
+			var intent = intentType.GetConstructor(new[] { contextType, typeof(Type) })!.Invoke(new object[] { original, stackedType });
+			original.GetType().GetMethod("StartActivity", new[] { intentType })!.Invoke(original, new[] { intent });
+
+			await TestServices.WindowHelper.WaitFor(
+				() => (stacked = GetWindowActivity()) is { } current && !ReferenceEquals(current, original),
+				timeoutMS: 10000,
+				message: "The stacked activity never took the window over.");
+			Assert.AreEqual(false, GetMember(original, "DrivesWindow"), "The covered activity must stop presenting the window.");
+			await TestServices.WindowHelper.WaitForIdle();
+
+			stacked.GetType().GetMethod("Finish", Type.EmptyTypes)!.Invoke(stacked, null);
+
+			await TestServices.WindowHelper.WaitFor(
+				() => ReferenceEquals(GetWindowActivity(), original),
+				timeoutMS: 10000,
+				message: "The window was not handed back to the activity still running.");
+			Assert.IsFalse(closed, "The window closed with the stacked activity.");
+			Assert.AreEqual(true, GetMember(original, "DrivesWindow"));
+
+			// A request latched while the window changed hands must not keep the original from presenting again.
+			var target = (Microsoft.UI.Xaml.Media.CompositionTarget)border.Visual.CompositionTarget!;
+			var presented = false;
+			EventHandler<Microsoft.UI.Xaml.Media.FramePresentedInfo> onPresented = (_, _) => Volatile.Write(ref presented, true);
+			target.FramePresented += onPresented;
+			try
+			{
+				border.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Blue);
+				await TestServices.WindowHelper.WaitFor(() => Volatile.Read(ref presented), timeoutMS: 5000, message: "No frame was presented after the window was handed back.");
+			}
+			finally
+			{
+				target.FramePresented -= onPresented;
+			}
+		}
+		finally
+		{
+			window.Closed -= OnClosed;
+
+			if (stacked is not null && !ReferenceEquals(stacked, original) && GetMember(stacked, "IsFinishing") is false)
+			{
+				stacked.GetType().GetMethod("Finish", Type.EmptyTypes)!.Invoke(stacked, null);
+			}
+		}
+	}
+
 	private static object GetMember(object instance, string name)
 		=> instance.GetType()
 			.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)

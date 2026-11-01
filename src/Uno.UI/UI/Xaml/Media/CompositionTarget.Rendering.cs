@@ -104,6 +104,13 @@ public partial class CompositionTarget
 		}
 
 		((ICompositionTarget)this).RequestNewFrame();
+
+		// A request still latched from before the swap absorbs the one above without asking the host for a frame,
+		// and a swap is exactly when the view that request went to may have stopped drawing.
+		if (ContentRoot?.XamlRoot is { } xamlRoot)
+		{
+			XamlRootMap.GetHostForRoot(xamlRoot)?.InvalidateRender();
+		}
 	}
 
 	// Non-throwing peek at renderer availability. False while a declared backend initializes asynchronously (WASM

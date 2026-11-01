@@ -90,8 +90,10 @@ namespace Uno.UI.Runtime.Android
 		/// still runs OnPause/OnStop after its replacement resumed, and forwarding those would
 		/// deactivate and background the window the replacement now drives.
 		/// </summary>
-		private protected override bool IsDrivingWindow
-			=> _wrapper is null || ReferenceEquals(_wrapper.CurrentActivity, this);
+		private protected override bool IsDrivingWindow => DrivesWindow;
+
+		/// <inheritdoc cref="IsDrivingWindow"/>
+		internal bool DrivesWindow => _wrapper is null || ReferenceEquals(_wrapper.CurrentActivity, this);
 
 		internal RelativeLayout RelativeLayout { get; private set; } = null!;
 
@@ -365,13 +367,11 @@ namespace Uno.UI.Runtime.Android
 
 				// A XamlRoot host registered before OnStart can only attach its accessibility adapter
 				// once this activity's render view exists.
-				foreach (var pair in XamlRootMap.Enumerate())
-				{
-					if (pair.Value is AndroidSkiaXamlRootHost androidHost && ReferenceEquals(androidHost.Activity, this))
-					{
-						androidHost.TryConfigureHelper();
-					}
-				}
+				ConfigureAccessibilityHelpers();
+			}
+			else
+			{
+				TryReclaimWindow();
 			}
 
 			// The window was handed over in OnCreate, before this render view existed; state bound to
@@ -384,14 +384,63 @@ namespace Uno.UI.Runtime.Android
 			if (!_isContentViewSet && Wrapper.Window is { RootElement: not null } existingWindow)
 			{
 				EnsureContentView();
-
-				if (existingWindow.RootElement.XamlRoot is { } xamlRoot && _nativeLayerHost is { } nativeLayerHost)
-				{
-					AndroidSkiaNativeElementHostingExtension.AdoptNativeElements(xamlRoot, nativeLayerHost);
-				}
+				AdoptNativeElements(existingWindow);
 
 				existingWindow.Activate();
 				InvalidateRender();
+			}
+		}
+
+		/// <summary>
+		/// Called from the render thread once this activity's render view has negotiated a renderer. Any record the
+		/// window attempted while it had none (between a takeover and the new surface) was skipped.
+		/// </summary>
+		internal void OnRendererAvailable()
+			=> NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (DrivesWindow && RootElement?.Visual.CompositionTarget is Uno.UI.Composition.ICompositionTarget compositionTarget)
+				{
+					// The skipped record already cleared the target's request, so a frame alone would record nothing.
+					compositionTarget.RequestNewFrame();
+					// A request still latched for the previous view absorbs the one above without asking this one.
+					InvalidateRender();
+				}
+			});
+
+		/// <summary>
+		/// Takes the window back from a copy of this activity that an intent stacked on top in the standard launch
+		/// mode, once that copy is finishing, rather than let the window close with it. Runs from OnStart, and from
+		/// OnResume for a copy finished before this activity was stopped.
+		/// </summary>
+		private void TryReclaimWindow()
+		{
+			if (!_started || _wrapper is not { CurrentActivity: { IsFinishing: true } owner } wrapper || ReferenceEquals(owner, this))
+			{
+				return;
+			}
+
+			wrapper.CurrentActivity = this;
+			ConfigureAccessibilityHelpers();
+			AdoptNativeElements(wrapper.Window);
+			InvalidateRender();
+		}
+
+		private void ConfigureAccessibilityHelpers()
+		{
+			foreach (var pair in XamlRootMap.Enumerate())
+			{
+				if (pair.Value is AndroidSkiaXamlRootHost androidHost && ReferenceEquals(androidHost.Activity, this))
+				{
+					androidHost.TryConfigureHelper();
+				}
+			}
+		}
+
+		private void AdoptNativeElements(Microsoft.UI.Xaml.Window? window)
+		{
+			if (window?.RootElement?.XamlRoot is { } xamlRoot && _nativeLayerHost is { } nativeLayerHost)
+			{
+				AndroidSkiaNativeElementHostingExtension.AdoptNativeElements(xamlRoot, nativeLayerHost);
 			}
 		}
 
@@ -550,6 +599,8 @@ namespace Uno.UI.Runtime.Android
 
 		protected override void OnResume()
 		{
+			TryReclaimWindow();
+
 			base.OnResume();
 
 			RaiseConfigurationChanges();
