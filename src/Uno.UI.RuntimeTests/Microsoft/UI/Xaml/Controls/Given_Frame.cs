@@ -594,6 +594,38 @@ public class Given_Frame
 		Assert.AreEqual(1.0, oldPageOpacity.MinOpacity, 0.001, "The outgoing page should use the new page's SuppressNavigationTransitionInfo.");
 	}
 
+	[TestMethod]
+	public async Task When_Page_Transitions_Has_NavigationThemeTransition()
+	{
+		var frame = await CreateTransitionFrame(null);
+
+		// The initial navigation only animates when a NavigationThemeTransition is found on the page or the frame.
+		using var pageOpacity = new MinOpacityTracker();
+		frame.Navigate(typeof(NavigationThemeTransitionPage));
+		pageOpacity.Track((UIElement)frame.Content);
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.IsTrue(pageOpacity.MinOpacity < 0.5, $"Page.Transitions' NavigationThemeTransition should animate the page in (min opacity {pageOpacity.MinOpacity}).");
+	}
+
+	[TestMethod]
+	public async Task When_Navigating_Default_Transition_Info_Stored_On_Committed_Entry()
+	{
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = new DrillInNavigationTransitionInfo() });
+
+		var firstInfo = new EntranceNavigationTransitionInfo();
+		frame.Navigate(typeof(FirstPage), null, firstInfo);
+		await WaitForTransitionsToSettle(frame);
+
+		frame.Navigate(typeof(SecondPage));
+		await WaitForTransitionsToSettle(frame);
+
+		// WinUI stores the transition's default on the current entry once the navigation is committed,
+		// so the entry of the page navigated away from keeps its own info.
+		Assert.AreEqual(1, frame.BackStack.Count);
+		Assert.AreSame(firstInfo, frame.BackStack[0].NavigationTransitionInfo);
+	}
+
 	private static async Task<Frame> CreateTransitionFrame(NavigationThemeTransition contentTransition)
 	{
 		var frame = new Frame { Width = 300, Height = 200 };
@@ -664,6 +696,14 @@ internal partial class SecondPage : Page
 
 internal partial class ThirdPage : Page
 {
+}
+
+internal partial class NavigationThemeTransitionPage : Page
+{
+	public NavigationThemeTransitionPage()
+	{
+		Transitions = new TransitionCollection { new NavigationThemeTransition() };
+	}
 }
 
 internal partial class SuppressTransitionPage : Page
