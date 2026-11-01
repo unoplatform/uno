@@ -47,16 +47,18 @@ internal static class SharedParentAssociations
 		}
 	}
 
-	internal static IEnumerable<DependencyObject> GetParents(DependencyObject value)
+	/// <summary>
+	/// Adds the live holders of <paramref name="value"/> to <paramref name="destination"/>, but <paramref name="except"/>.
+	/// </summary>
+	internal static void AddParents(DependencyObject value, List<DependencyObject> destination, DependencyObject? except)
 	{
 		if (_parents.TryGetValue(value, out var parents))
 		{
-			// A copy, since walking the parents can change the associations.
-			foreach (var parent in parents.ToArray())
+			foreach (var parent in parents)
 			{
-				if (parent.TryGetTarget(out var target))
+				if (parent.TryGetTarget(out var target) && !ReferenceEquals(target, except))
 				{
-					yield return target;
+					destination.Add(target);
 				}
 			}
 		}

@@ -817,19 +817,27 @@ partial class Timeline
 	{
 		var isIndependentAnimation = pIsIndependentAnimation;
 
-		foreach (var pParent in GetParentItems(pTargetObject))
+		var parentItems = RentParentItems(pTargetObject);
+		try
 		{
-			isIndependentAnimation = FindIndependentAnimationTargetsRecursive(
-				pParent,
-				pTargetObject,
-				pIATargets);
-
-			// If we encounter any dependent consumer of this animation, treat the entire animation as dependent. The
-			// exception is if we're targeting a TransitionTarget - see block below.
-			if (!isIndependentAnimation)
+			foreach (var pParent in parentItems)
 			{
-				break;
+				isIndependentAnimation = FindIndependentAnimationTargetsRecursive(
+					pParent,
+					pTargetObject,
+					pIATargets);
+
+				// If we encounter any dependent consumer of this animation, treat the entire animation as dependent. The
+				// exception is if we're targeting a TransitionTarget - see block below.
+				if (!isIndependentAnimation)
+				{
+					break;
+				}
 			}
+		}
+		finally
+		{
+			ReturnParentItems(parentItems);
 		}
 
 		// TODO Uno: TransitionTarget is not ported, so the TransitionTarget exception does not apply.
@@ -901,11 +909,19 @@ partial class Timeline
 			else
 			{
 				// For continuous animations, only those that qualify as independent will be ticked on the UI thread.
+#if HAS_UNO
+				// TODO Uno: The targets aren't handed to a compositor, they only feed the consumer check: the list is reused across ticks.
+				var iaTargets = t_iaTargets ??= new List<DependencyObject>();
+#else
 				var iaTargets = new List<DependencyObject>();
+#endif
 				isIndependentAnimation = FindIndependentAnimationTargets(
 					target,
 					null /* sender, for recursive calls */,
 					iaTargets);
+#if HAS_UNO
+				iaTargets.Clear();
+#endif
 
 				if (isIndependentAnimation)
 				{

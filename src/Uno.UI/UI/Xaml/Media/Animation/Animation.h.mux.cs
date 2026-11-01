@@ -4,6 +4,7 @@
 
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 
 namespace Microsoft.UI.Xaml.Media.Animation;
@@ -24,6 +25,11 @@ partial class Timeline
 
 #if !HAS_UNO
 	// TODO Uno: IsAnimationValueNull: Uno's From/To/By are nullable properties, a null value means "not set".
+#endif
+
+#if HAS_UNO
+	[ThreadStatic]
+	private static List<DependencyObject>? t_iaTargets;
 #endif
 
 	private bool IsIndependentAnimation(DependencyObject pTargetObject)

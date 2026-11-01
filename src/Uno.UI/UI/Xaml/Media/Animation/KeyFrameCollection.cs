@@ -38,7 +38,19 @@ internal sealed partial class KeyFrameCollection
 		var index = 0;
 		var isSame = true;
 
-		if (source is not null)
+		if (source is IReadOnlyList<IKeyFrame> list)
+		{
+			// The key frame collections are lists: checking them by index doesn't allocate an enumerator on every tick.
+			for (; index < list.Count; index++)
+			{
+				if (index >= _snapshot.Count || !ReferenceEquals(_snapshot[index], list[index]))
+				{
+					isSame = false;
+					break;
+				}
+			}
+		}
+		else if (source is not null)
 		{
 			foreach (var keyFrame in source)
 			{
