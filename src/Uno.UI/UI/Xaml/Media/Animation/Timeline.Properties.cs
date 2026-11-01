@@ -78,7 +78,7 @@ partial class Timeline
 			nameof(BeginTime),
 			typeof(TimeSpan?),
 			typeof(Timeline),
-			new FrameworkPropertyMetadata(TimeSpan.Zero, (s, e) => ((Timeline)s).m_pBeginTime = (TimeSpan?)e.NewValue));
+			new FrameworkPropertyMetadata(null, (s, e) => ((Timeline)s).m_pBeginTime = (TimeSpan?)e.NewValue));
 
 	/// <summary>
 	/// Gets or sets the length of time for which this timeline plays, not counting repetitions.

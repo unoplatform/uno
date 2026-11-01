@@ -77,7 +77,7 @@ partial class Timeline
 
 	// TODO Uno specific: WinUI reads these from the property system storage; Uno caches them on property changes.
 	private protected RepeatBehavior m_repeatBehavior = new RepeatBehavior(1);
-	private protected TimeSpan? m_pBeginTime = TimeSpan.Zero;
+	private protected TimeSpan? m_pBeginTime;
 	private protected Duration m_duration = Duration.Automatic;
 
 	private protected WeakReference<Timeline>? m_timingParent;
