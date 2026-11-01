@@ -5,6 +5,7 @@
 
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 
 namespace Microsoft.UI.Xaml.Media.Animation;
@@ -30,6 +31,15 @@ public sealed partial class TimelineCollection : DependencyObjectCollection<Time
 
 	// CTimingCollection::RemoveAt ignores the removal while the storyboard runs.
 	private protected override bool CanRemoveItems() => _timingOwner?.CanBeModified() ?? true;
+
+	// A timeline belongs to a single timing parent, like any element associated with a collection (CDOCollection).
+	private protected override void ValidateItem(Timeline item)
+	{
+		if (_timingOwner is not null && item.GetTimingParent() is { } timingParent && timingParent != _timingOwner)
+		{
+			throw new InvalidOperationException("Element is already the child of another element.");
+		}
+	}
 
 	private protected override void OnAdded(Timeline d)
 	{
