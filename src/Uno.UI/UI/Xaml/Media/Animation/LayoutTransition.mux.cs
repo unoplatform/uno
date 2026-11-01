@@ -5,6 +5,7 @@
 #nullable enable
 
 using System.Collections.Generic;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Media.Animation;
@@ -14,6 +15,9 @@ partial class Transition
 	// Uno: CLayoutManager's deferred transition state. Uno has no per-tree layout manager, so it is static.
 	private static readonly List<UIElement> s_elementsWithDeferredTransitions = new();
 	private static readonly List<UIElement> s_elementsEnteredTree = new();
+
+	// Uno: CCoreServices::GetDefaultNavigationTransition, created the first time a page under a frame navigates.
+	private static Transition? s_defaultNavigationTransition;
 
 	/// <summary>
 	/// Whether this transition runs for <paramref name="element"/> on <paramref name="transitionTrigger"/> (ITransitionPrivate::ParticipatesInTransition).
@@ -367,6 +371,45 @@ partial class Transition
 		if (transitions is not null)
 		{
 			GetApplicableTransitionsNoAddRefs(transitions, pTarget, trigger, applicableTransitions);
+		}
+
+		// If we have a page and there are no transitions defined, then add the default navigation transition
+		if (applicableTransitions.Count == 0 && pTarget is Page)
+		{
+			var defaultNavigationTransition = s_defaultNavigationTransition;
+			if (defaultNavigationTransition is null)
+			{
+				// It can be expensive to create this transition if the dll isn't already loaded, so we will do a pre check
+				// here to see if we really need this.  The page must be under a frame and we must be navigating from a
+				// page.
+				if (pTarget.GetParent() is ContentPresenter contentPresenter)
+				{
+					if (contentPresenter.GetParent() is Frame frame)
+					{
+						// Obviously if we have entries on the backstack then we are navigating (as opposed to being
+						// the initial load, however, we also hit this code as we unload, but before it enters the
+						// backstack.  This is different than when the transition is played.  By then the entry is in
+						// the backstack.  So on our first transtion, at the time of unload of the "from" page, there
+						// is no entry in the back stack.  Now, even though the transition on the "from" page is never
+						// used (we use the navigating away from the "to" page instead), it never the less must have
+						// a transition on it to even hit the transition code (where it will use the "to" page transtions).
+						// So, if we are unloading, a page, we will also assume we are navigating.
+						if (frame.BackStackDepth > 0 || trigger == TransitionTrigger.Unload)
+						{
+							defaultNavigationTransition = new NavigationThemeTransition();
+							s_defaultNavigationTransition = defaultNavigationTransition;
+						}
+					}
+				}
+			}
+			if (defaultNavigationTransition is not null)
+			{
+				var participate = defaultNavigationTransition.ParticipateInTransitions(pTarget, trigger);
+				if (participate)
+				{
+					applicableTransitions.Add(defaultNavigationTransition);
+				}
+			}
 		}
 
 		if (pInheritedCollection is not null)
