@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -229,6 +230,84 @@ public class Given_PlaneProjection
 		border.RenderTransform = new CompositeTransform { ScaleX = 2 };
 
 		Assert.IsInstanceOfType<CompositeTransform>(border.RenderTransform);
+	}
+
+	[TestMethod]
+	[DataRow("RotationY")]
+	[DataRow("(UIElement.Projection).(PlaneProjection.RotationY)")]
+	public async Task When_RotationY_Animated(string targetProperty)
+	{
+		// PlaneProjection animations are independent, so they run without EnableDependentAnimation.
+		var projection = new PlaneProjection();
+		var border = new Border { Width = 100, Height = 100, Projection = projection };
+
+		await UITestHelper.Load(border);
+
+		var animation = new DoubleAnimationUsingKeyFrames();
+		animation.KeyFrames.Add(new LinearDoubleKeyFrame { Value = 0, KeyTime = TimeSpan.Zero });
+		animation.KeyFrames.Add(new LinearDoubleKeyFrame { Value = 50, KeyTime = TimeSpan.FromMilliseconds(100) });
+		Storyboard.SetTarget(animation, targetProperty == "RotationY" ? projection : border);
+		Storyboard.SetTargetProperty(animation, targetProperty);
+
+		var storyboard = new Storyboard { Children = { animation } };
+		var completed = false;
+		storyboard.Completed += (_, _) => completed = true;
+		storyboard.Begin();
+
+		await TestServices.WindowHelper.WaitFor(() => completed);
+
+		Assert.AreEqual(50, projection.RotationY, 1e-9);
+
+		storyboard.Stop();
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_RotationY_Changes_Rendering()
+	{
+#if HAS_UNO
+		var target = new Border { Width = 200, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+		var host = new Border { Width = 200, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Child = target };
+
+		await UITestHelper.Load(host);
+
+		var before = await UITestHelper.ScreenShot(host);
+
+		// The CommonNavigationTransitionInfo turnstile start values.
+		target.Projection = new PlaneProjection
+		{
+			RotationY = -80,
+			CenterOfRotationX = -0.1,
+			CenterOfRotationZ = -100,
+		};
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var after = await UITestHelper.ScreenShot(host);
+
+		var redBefore = CountRedPixels(before);
+		var redAfter = CountRedPixels(after);
+
+		Assert.IsGreaterThan(0, redBefore);
+		Assert.IsLessThan(redBefore / 2, redAfter, $"Red pixels before: {redBefore}, after: {redAfter}");
+#endif
+	}
+
+	private static int CountRedPixels(RawBitmap bitmap)
+	{
+		var count = 0;
+		for (var x = 0; x < bitmap.Width; x++)
+		{
+			for (var y = 0; y < bitmap.Height; y++)
+			{
+				var pixel = bitmap.GetPixel(x, y);
+				if (pixel.R > 200 && pixel.G < 60 && pixel.B < 60)
+				{
+					count++;
+				}
+			}
+		}
+
+		return count;
 	}
 }
 #endif
