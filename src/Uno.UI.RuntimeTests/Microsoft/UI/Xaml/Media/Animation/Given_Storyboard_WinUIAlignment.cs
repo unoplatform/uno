@@ -277,7 +277,7 @@ public class Given_Storyboard_WinUIAlignment
 
 		Assert.AreEqual(1.0, animation.SpeedRatio);
 		Assert.IsFalse(animation.AutoReverse);
-		Assert.AreEqual(TimeSpan.Zero, animation.BeginTime);
+		Assert.IsNull(animation.BeginTime);
 		Assert.AreEqual(Duration.Automatic, animation.Duration);
 		Assert.AreEqual(FillBehavior.HoldEnd, animation.FillBehavior);
 		Assert.AreEqual(RepeatBehaviorType.Count, animation.RepeatBehavior.Type);

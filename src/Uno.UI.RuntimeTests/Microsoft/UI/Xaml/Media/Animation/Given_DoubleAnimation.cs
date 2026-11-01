@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -290,7 +290,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 		[TestMethod]
 		[CombinatorialData]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_OverridingFillingValue_WithLocalValue(bool skipToFill)
 		{
 			var translate = new TranslateTransform();
@@ -314,7 +313,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			}.BindTo(translate, nameof(translate.Y));
 			if (skipToFill)
 			{
-				animation0.ToStoryboard().SkipToFill();
+				var storyboard0 = animation0.ToStoryboard();
+				storyboard0.Begin();
+				storyboard0.SkipToFill();
 			}
 			else
 			{
