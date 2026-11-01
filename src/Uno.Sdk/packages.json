@@ -121,7 +121,7 @@
 	},
 	{
 		"group": "SvgSkia",
-		"version": "3.0.6",
+		"version": "5.2.3",
 		"packages": [
 			"Svg.Skia"
 		]

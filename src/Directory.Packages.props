@@ -141,7 +141,7 @@
 		<PackageVersion Include="SkiaSharp.Views.WPF" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="Spectre.Console" Version="0.49.1" />
 		<PackageVersion Include="StreamJsonRpc" Version="2.17.11" />
-		<PackageVersion Include="Svg.Skia" Version="3.0.6" />
+		<PackageVersion Include="Svg.Skia" Version="5.2.3" />
 		<PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
 		<PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
 		<PackageVersion Include="System.Data.SqlClient" Version="4.8.6" />
