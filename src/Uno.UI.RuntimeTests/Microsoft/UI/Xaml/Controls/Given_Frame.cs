@@ -638,6 +638,28 @@ public class Given_Frame
 	}
 
 	[TestMethod]
+	public async Task When_Navigating_With_BackStack_Implicit_NavigationThemeTransition()
+	{
+		var frame = await CreateTransitionFrame(null);
+
+		using var initialOpacity = new MinOpacityTracker();
+		frame.Navigate(typeof(FirstPage));
+		initialOpacity.Track((UIElement)frame.Content);
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.AreEqual(1.0, initialOpacity.MinOpacity, 0.001, "The initial page has no transitions and an empty back stack, so it should not animate.");
+
+		using var oldPageOpacity = MinOpacityTracker.Start((UIElement)frame.Content);
+		using var newPageOpacity = new MinOpacityTracker();
+		frame.Navigate(typeof(SecondPage));
+		newPageOpacity.Track((UIElement)frame.Content);
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.IsTrue(newPageOpacity.MinOpacity < 0.5, $"The implicit NavigationThemeTransition should fade the new page in (min opacity {newPageOpacity.MinOpacity}).");
+		Assert.IsTrue(oldPageOpacity.MinOpacity < 0.99, $"With the navigation committed the old page is no longer the initial page, so it should start fading out (min opacity {oldPageOpacity.MinOpacity}).");
+	}
+
+	[TestMethod]
 	public async Task When_Page_Transitions_Has_NavigationThemeTransition()
 	{
 		var frame = await CreateTransitionFrame(null);
