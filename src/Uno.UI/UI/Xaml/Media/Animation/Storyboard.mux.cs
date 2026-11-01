@@ -563,7 +563,7 @@ partial class Storyboard
 
 		SeekPrivate(seekTime);
 
-		// TODO Uno: FlushDeferredAnimationOperationQueue - Uno doesn't defer custom property animation values.
+		Uno.UI.Xaml.Core.CoreServices.Instance.FlushDeferredAnimationOperationQueue();
 	}
 
 	// Moves the current time to a specified interval and forces an immediate update.
@@ -574,6 +574,8 @@ partial class Storyboard
 		EnsureIsRootStoryboard();
 
 		SeekAlignedToLastTick(seekTime);
+
+		Uno.UI.Xaml.Core.CoreServices.Instance.FlushDeferredAnimationOperationQueue();
 	}
 
 	// Synchronously moves the current time to the fill portion of the storyboard.
@@ -584,6 +586,8 @@ partial class Storyboard
 		EnsureIsRootStoryboard();
 
 		SkipToFillPrivate();
+
+		Uno.UI.Xaml.Core.CoreServices.Instance.FlushDeferredAnimationOperationQueue();
 	}
 
 	// Static wrapper to Pause the Storyboard
@@ -593,6 +597,8 @@ partial class Storyboard
 		EnsureIsRootStoryboard();
 
 		PausePrivate();
+
+		Uno.UI.Xaml.Core.CoreServices.Instance.FlushDeferredAnimationOperationQueue();
 	}
 
 	// Wrapper to Resume the Storyboard
@@ -602,6 +608,8 @@ partial class Storyboard
 		EnsureIsRootStoryboard();
 
 		ResumePrivate();
+
+		Uno.UI.Xaml.Core.CoreServices.Instance.FlushDeferredAnimationOperationQueue();
 	}
 
 	// Wrapper to Stop the Storyboard
@@ -616,6 +624,8 @@ partial class Storyboard
 		// If there are pending DComp pauses or seeks, clear them out so we won't apply them when creating animation instances.
 		ClearPendingDCompAnimationOperationsRecursive();
 #endif
+
+		Uno.UI.Xaml.Core.CoreServices.Instance.FlushDeferredAnimationOperationQueue();
 	}
 
 	// Wrapper to Begin the Storyboard
@@ -636,6 +646,8 @@ partial class Storyboard
 		// If there are pending DComp pauses or seeks, clear them out so we won't apply them when creating animation instances.
 		ClearPendingDCompAnimationOperationsRecursive();
 #endif
+
+		Uno.UI.Xaml.Core.CoreServices.Instance.FlushDeferredAnimationOperationQueue();
 	}
 
 	// Returns true if this Storyboard is the root of its timing tree.

@@ -363,6 +363,7 @@ namespace Microsoft.UI.Xaml
 						if (setterBase is Setter setter)
 						{
 							setter.ApplyValue(element);
+							setter.EnqueueDeferredSetterOperation(element, DeferredAnimationOperation.DeferredOperation.Set, () => ReapplySetter(setter, element));
 						}
 					}
 				}
@@ -443,8 +444,23 @@ namespace Microsoft.UI.Xaml
 						(setter.TryGetOrCreateBindingPath(element) is not { } prevPath || !propertiesNotToClear.Any(path => prevPath.PrefixOfOrEqualTo(path))))
 					{
 						setter.ClearValue();
+						setter.EnqueueDeferredSetterOperation(element, DeferredAnimationOperation.DeferredOperation.Clear);
 					}
 				}
+			}
+		}
+
+		// Applies a {ThemeResource} setter again, in the resource context of the visual states.
+		private void ReapplySetter(Setter setter, IFrameworkElement element)
+		{
+			try
+			{
+				ResourceResolver.PushNewScope(_xamlScope);
+				setter.ApplyValue(element);
+			}
+			finally
+			{
+				ResourceResolver.PopScope();
 			}
 		}
 

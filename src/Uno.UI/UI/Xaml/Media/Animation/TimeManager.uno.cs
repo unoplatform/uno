@@ -46,7 +46,18 @@ partial class TimeManager
 		_lastFrameTimeInSeconds = frameTimeInSeconds;
 		_hasTickedThisFrame = true;
 
-		Tick(newTimelinesOnly: false, GetFrameScheduler());
+		try
+		{
+			Tick(newTimelinesOnly: false, GetFrameScheduler());
+		}
+		catch
+		{
+			Uno.UI.Xaml.Core.CoreServices.Instance.FlushDeferredAnimationOperationQueue(doDeferredOperation: false);
+			throw;
+		}
+
+		// If there are any pending SetValue calls (queued during Tick), invoke them now (CCoreServices::Tick).
+		Uno.UI.Xaml.Core.CoreServices.Instance.FlushDeferredAnimationOperationQueue();
 	}
 
 	/// <summary>

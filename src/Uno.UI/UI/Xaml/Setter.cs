@@ -266,6 +266,50 @@ namespace Microsoft.UI.Xaml
 			_bindingPath?.ClearValue();
 		}
 
+		/// <summary>
+		/// Queues the visual state setter operation just performed to run again on the next tick, as WinUI does
+		/// (VisualStateSetterHelper::PerformSetterOperation, MSFT:11036284): a storyboard stopped in between, like the
+		/// visual transition that preceded the state, must not clear the value of the setter.
+		/// </summary>
+		internal void EnqueueDeferredSetterOperation(IFrameworkElement owner, Media.Animation.DeferredAnimationOperation.DeferredOperation operation, Action? reapplyThemeResource = null)
+		{
+			if (_bindingPath is null)
+			{
+				return;
+			}
+
+			IBindingItem? leaf = null;
+			foreach (var item in _bindingPath.GetPathItems())
+			{
+				leaf = item;
+			}
+
+			if (leaf?.DataContext is not DependencyObject targetObject
+				|| string.IsNullOrEmpty(leaf.PropertyName)
+				|| DependencyProperty.GetProperty(targetObject.GetType(), leaf.PropertyName) is not { } targetProperty)
+			{
+				return;
+			}
+
+			var setterValue = DependencyProperty.UnsetValue;
+			if (operation == Media.Animation.DeferredAnimationOperation.DeferredOperation.Set)
+			{
+				setterValue = targetObject.GetAnimatedValue(targetProperty);
+				if (setterValue == DependencyProperty.UnsetValue)
+				{
+					return;
+				}
+			}
+
+			// TODO Uno: WinUI defers custom properties entirely; Uno performs every setter operation synchronously.
+			var core = Uno.UI.Xaml.Core.CoreServices.Instance;
+			core.RemoveMatchingDeferredAnimationOperations(targetObject, targetProperty);
+			core.EnqueueDeferredAnimationOperation(new((targetObject, targetProperty), setterValue, operation, this, ThemeResourceKey.HasValue ? reapplyThemeResource : null));
+
+			// Schedule a tick to ensure the deferred animation operation queue gets flushed
+			Media.Animation.TimeManager.RequestAdditionalFrame(0);
+		}
+
 		private string DebuggerDisplay => $"Property={Property?.Name ?? "<null>"},Target={Target?.Target?.ToString() ?? Target?.TargetName ?? "<null>"},Value={Value?.ToString() ?? "<null>"}";
 	}
 }
