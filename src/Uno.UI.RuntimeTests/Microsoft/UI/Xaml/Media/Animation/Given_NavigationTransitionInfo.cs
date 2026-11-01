@@ -137,6 +137,204 @@ public class Given_NavigationTransitionInfo
 	}
 
 	[TestMethod]
+	public void When_Entrance_NavigatingTo()
+	{
+#if HAS_UNO
+		var element = new Border();
+		var timelines = CreateSingleStoryboard(new EntranceNavigationTransitionInfo(), element, NavigationTrigger.NavigatingTo);
+
+		Assert.HasCount(2, timelines);
+		AssertKeyFrames(timelines[0], "Y",
+			Discrete(140, 0),
+			Discrete(140, 150),
+			Spline(0, 450, SlideInCP1, SlideInCP2));
+		AssertKeyFrames(timelines[1], nameof(UIElement.Opacity),
+			Discrete(0, 0),
+			Discrete(1, 150));
+		AssertSame(element, timelines[1]);
+#endif
+	}
+
+	[TestMethod]
+	public void When_Entrance_NavigatingAway()
+	{
+#if HAS_UNO
+		var element = new Border();
+		var timelines = CreateSingleStoryboard(new EntranceNavigationTransitionInfo(), element, NavigationTrigger.NavigatingAway);
+
+		Assert.HasCount(1, timelines);
+		AssertKeyFrames(timelines[0], nameof(UIElement.Opacity),
+			Discrete(1, 0),
+			Spline(0, 150, SlideOutCP1, SlideOutCP2));
+		Assert.IsNull(element.RenderTransform);
+#endif
+	}
+
+	[TestMethod]
+	public void When_Entrance_BackNavigatingAway()
+	{
+#if HAS_UNO
+		var element = new Border();
+		var timelines = CreateSingleStoryboard(new EntranceNavigationTransitionInfo(), element, NavigationTrigger.BackNavigatingAway);
+
+		Assert.HasCount(2, timelines);
+		AssertKeyFrames(timelines[0], "Y",
+			Discrete(0, 0),
+			Spline(140, 150, SlideOutCP1, SlideOutCP2));
+		AssertKeyFrames(timelines[1], nameof(UIElement.Opacity),
+			Discrete(1, 0),
+			Discrete(0, 150));
+#endif
+	}
+
+	[TestMethod]
+	public void When_Entrance_BackNavigatingTo()
+	{
+#if HAS_UNO
+		var element = new Border();
+		var timelines = CreateSingleStoryboard(new EntranceNavigationTransitionInfo(), element, NavigationTrigger.BackNavigatingTo);
+
+		Assert.HasCount(1, timelines);
+		AssertKeyFrames(timelines[0], nameof(UIElement.Opacity),
+			Discrete(0, 0),
+			Discrete(0, 150),
+			Spline(1, 450, SlideInCP1, SlideInCP2));
+#endif
+	}
+
+	[TestMethod]
+	public void When_Entrance_TargetElement_Outside_Page()
+	{
+#if HAS_UNO
+		// WinUI returns the last live target element even when no target is inside the page.
+		var page = new Border();
+		var outside = new Border();
+
+		try
+		{
+			EntranceNavigationTransitionInfo.SetIsTargetElement(outside, true);
+
+			var timelines = CreateSingleStoryboard(new EntranceNavigationTransitionInfo(), page, NavigationTrigger.NavigatingAway);
+
+			AssertSame(outside, timelines[0]);
+		}
+		finally
+		{
+			EntranceNavigationTransitionInfo.SetIsTargetElement(outside, false);
+		}
+#endif
+	}
+
+	[TestMethod]
+	public void When_Entrance_TargetElement_Is_Page()
+	{
+#if HAS_UNO
+		// An element is not its own ancestor, so the page itself never counts as a target inside the page.
+		var page = new Border();
+		var outside = new Border();
+
+		try
+		{
+			EntranceNavigationTransitionInfo.SetIsTargetElement(page, true);
+			EntranceNavigationTransitionInfo.SetIsTargetElement(outside, true);
+
+			var timelines = CreateSingleStoryboard(new EntranceNavigationTransitionInfo(), page, NavigationTrigger.NavigatingAway);
+
+			AssertSame(outside, timelines[0]);
+		}
+		finally
+		{
+			EntranceNavigationTransitionInfo.SetIsTargetElement(page, false);
+			EntranceNavigationTransitionInfo.SetIsTargetElement(outside, false);
+		}
+#endif
+	}
+
+	[TestMethod]
+	public async Task When_Entrance_TargetElement_Inside_Page()
+	{
+#if HAS_UNO
+		var inner = new Border { Width = 50, Height = 50 };
+		var page = new Border { Width = 100, Height = 100, Child = inner };
+		var outside = new Border();
+		TestServices.WindowHelper.WindowContent = page;
+		await TestServices.WindowHelper.WaitForLoaded(page);
+
+		try
+		{
+			EntranceNavigationTransitionInfo.SetIsTargetElement(inner, true);
+			EntranceNavigationTransitionInfo.SetIsTargetElement(outside, true);
+
+			var timelines = CreateSingleStoryboard(new EntranceNavigationTransitionInfo(), page, NavigationTrigger.NavigatingAway);
+
+			AssertSame(inner, timelines[0]);
+		}
+		finally
+		{
+			EntranceNavigationTransitionInfo.SetIsTargetElement(inner, false);
+			EntranceNavigationTransitionInfo.SetIsTargetElement(outside, false);
+		}
+#endif
+	}
+
+	[TestMethod]
+	[DataRow(0 /* NavigatingAway */, 1.0, 1.04, 100L, 1.0, 0.0, 100L, false)]
+	[DataRow(1 /* NavigatingTo */, 0.94, 1.0, 783L, 0.0, 1.0, 333L, false)]
+	[DataRow(2 /* BackNavigatingAway */, 1.0, 0.96, 100L, 1.0, 0.0, 100L, false)]
+	[DataRow(3 /* BackNavigatingTo */, 1.06, 1.0, 333L, 0.0, 1.0, 333L, true)]
+	public void When_DrillIn(int trigger, double scaleFrom, double scaleTo, long scaleDuration, double opacityFrom, double opacityTo, long opacityDuration, bool backScaleCurve)
+	{
+#if HAS_UNO
+		var element = new Border();
+		var timelines = CreateSingleStoryboard(new DrillInNavigationTransitionInfo(), element, (NavigationTrigger)trigger);
+
+		var scaleCP1 = backScaleCurve ? new Point(0.12, 0.0) : new Point(0.1, 0.9);
+		var scaleCP2 = backScaleCurve ? new Point(0.0, 1.0) : new Point(0.2, 1.0);
+		var opacityCP1 = new Point(0.17, 0.17);
+		var opacityCP2 = new Point(0.0, 1.0);
+
+		Assert.HasCount(4, timelines);
+
+		AssertSame(element, timelines[0]);
+		Assert.AreEqual(nameof(UIElement.RenderTransformOrigin), Storyboard.GetTargetProperty(timelines[0]));
+
+		AssertKeyFrames(timelines[1], nameof(ScaleTransform.ScaleX),
+			Spline(scaleFrom, 0, scaleCP1, scaleCP2),
+			Spline(scaleTo, scaleDuration, scaleCP1, scaleCP2));
+		AssertKeyFrames(timelines[2], nameof(ScaleTransform.ScaleY),
+			Spline(scaleFrom, 0, scaleCP1, scaleCP2),
+			Spline(scaleTo, scaleDuration, scaleCP1, scaleCP2));
+		AssertSame(element, timelines[3]);
+		AssertKeyFrames(timelines[3], nameof(UIElement.Opacity),
+			Spline(opacityFrom, 0, opacityCP1, opacityCP2),
+			Spline(opacityTo, opacityDuration, opacityCP1, opacityCP2));
+
+		// The origin is animated, not set.
+		Assert.AreEqual(new Point(0, 0), element.RenderTransformOrigin);
+#endif
+	}
+
+	[TestMethod]
+	public async Task When_DrillIn_TransformOrigin_Restored_On_Stop()
+	{
+#if HAS_UNO
+		var element = new Border { Width = 100, Height = 100 };
+		TestServices.WindowHelper.WindowContent = element;
+		await TestServices.WindowHelper.WaitForLoaded(element);
+
+		var storyboard = new DrillInNavigationTransitionInfo().CreateStoryboards(element, NavigationTrigger.NavigatingTo).Single();
+		storyboard.Begin();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(new Point(0.5, 0.5), element.RenderTransformOrigin);
+
+		storyboard.Stop();
+
+		Assert.AreEqual(new Point(0, 0), element.RenderTransformOrigin);
+#endif
+	}
+
+	[TestMethod]
 	public async Task When_Slide_HitTest_Disabled_While_Running()
 	{
 #if HAS_UNO
@@ -154,6 +352,55 @@ public class Given_NavigationTransitionInfo
 
 		Assert.IsTrue(element.IsHitTestVisible);
 #endif
+	}
+
+	[TestMethod]
+	public void When_Suppress()
+	{
+#if HAS_UNO
+		// The transition uses an empty storyboard.
+		Assert.IsEmpty(new SuppressNavigationTransitionInfo().CreateStoryboards(new Border(), NavigationTrigger.NavigatingTo));
+#endif
+	}
+
+	[TestMethod]
+	public void When_NavigationState()
+	{
+#if HAS_UNO
+		NavigationTransitionInfo[] infos =
+		[
+			new SlideNavigationTransitionInfo(),
+			new EntranceNavigationTransitionInfo(),
+			new DrillInNavigationTransitionInfo(),
+			new SuppressNavigationTransitionInfo(),
+		];
+
+		foreach (var info in infos)
+		{
+			Assert.AreEqual("0", info.GetNavigationStateCoreInternal(), info.GetType().Name);
+
+			info.SetNavigationStateCoreInternal("42");
+
+			Assert.AreEqual("0", info.GetNavigationStateCoreInternal(), info.GetType().Name);
+		}
+#endif
+	}
+
+	[TestMethod]
+	public void When_NavigationState_Base()
+	{
+#if HAS_UNO
+		// The base NavigationTransitionInfo implementation neither stores nor returns a state.
+		var info = new CustomTransitionInfo();
+
+		info.SetNavigationStateCoreInternal("42");
+
+		Assert.IsNull(info.GetNavigationStateCoreInternal());
+#endif
+	}
+
+	private class CustomTransitionInfo : NavigationTransitionInfo
+	{
 	}
 
 #if HAS_UNO
