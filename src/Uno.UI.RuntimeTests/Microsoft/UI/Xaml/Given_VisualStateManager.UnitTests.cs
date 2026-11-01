@@ -161,10 +161,10 @@ public partial class Given_VisualStateManager
 		group.Transitions.Add(transition);
 
 		VisualStateManager.GoToState(control, "state1", true);
-		Assert.AreEqual(Timeline.TimelineState.Active, transition.Storyboard.State);
+		Assert.AreEqual(ClockState.Active, transition.Storyboard.GetCurrentState());
 
 		VisualStateManager.GoToState(control, "state2", true);
-		Assert.AreEqual(Timeline.TimelineState.Stopped, transition.Storyboard.State);
+		Assert.AreEqual(ClockState.Stopped, transition.Storyboard.GetCurrentState());
 	}
 
 	[TestMethod]
@@ -174,10 +174,10 @@ public partial class Given_VisualStateManager
 		var animation = group.States[0].Storyboard = AnimateTag(control, "state1", 5);
 
 		VisualStateManager.GoToState(control, "state1", true);
-		Assert.AreEqual(Timeline.TimelineState.Active, animation.State);
+		Assert.AreEqual(ClockState.Active, animation.GetCurrentState());
 
 		VisualStateManager.GoToState(control, "state2", true);
-		Assert.AreEqual(Timeline.TimelineState.Stopped, animation.State);
+		Assert.AreEqual(ClockState.Stopped, animation.GetCurrentState());
 	}
 
 	[TestMethod]
