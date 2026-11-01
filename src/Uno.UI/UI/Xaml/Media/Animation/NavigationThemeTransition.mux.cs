@@ -156,7 +156,10 @@ public partial class NavigationThemeTransition
 			}
 		}
 
-		// TODO Uno: prune the element lists once the info types expose their Clear methods (ThemeTransitions.cpp:263-266).
+		CommonNavigationTransitionInfo.ClearStaggerElements();
+		ContinuumNavigationTransitionInfo.ClearExitElements();
+		ContinuumNavigationTransitionInfo.ClearEntranceElements();
+		EntranceNavigationTransitionInfo.ClearTargetElements();
 	}
 
 	private static NavigationThemeTransition? GetNavigationThemeTransitionFromCollection(TransitionCollection? transitions)
