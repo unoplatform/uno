@@ -2153,6 +2153,101 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25871")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Drag_Returns_To_Visited_Target_Then_Overrides_Are_Reset()
+		{
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				Assert.Inconclusive("Drag and drop doesn't work in Uno islands.");
+			}
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var source = new Rectangle { Fill = new SolidColorBrush(Microsoft.UI.Colors.Red), Width = 100, Height = 60, CanDrag = true };
+			var defaultTarget = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.Blue), Width = 100, Height = 60, AllowDrop = true };
+			var overridingTarget = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.Green), Width = 100, Height = 60, AllowDrop = true };
+			var otherTarget = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.Yellow), Width = 100, Height = 60, AllowDrop = true };
+			var hasLeftOverridingTarget = false;
+			overridingTarget.DragLeave += (_, _) => hasLeftOverridingTarget = true;
+			overridingTarget.DragOver += (_, e) =>
+			{
+				e.AcceptedOperation = DataPackageOperation.Copy;
+				if (hasLeftOverridingTarget)
+				{
+					e.DragUIOverride.Caption = "Second visit";
+				}
+				else
+				{
+					e.DragUIOverride.Caption = "First visit";
+					e.DragUIOverride.IsContentVisible = false;
+				}
+			};
+			defaultTarget.DragOver += (_, e) => e.AcceptedOperation = DataPackageOperation.Copy;
+			otherTarget.DragOver += (_, e) => e.AcceptedOperation = DataPackageOperation.Copy;
+
+			await UITestHelper.Load(new StackPanel { Children = { source, defaultTarget, overridingTarget, otherTarget } });
+
+			mouse.MoveTo(source.GetAbsoluteBoundsRect().GetCenter());
+			await UITestHelper.WaitForIdle();
+			mouse.Press();
+			try
+			{
+				await UITestHelper.WaitForIdle();
+				for (var i = 0; i < 4; i++)
+				{
+					mouse.MoveBy(0, 10); // Starts the drag.
+					await UITestHelper.WaitForIdle();
+				}
+				Assert.IsNotNull(GetDragView(), "The drag didn't start.");
+
+				await MoveOver(defaultTarget);
+				await UITestHelper.WaitFor(() => IsDefault(GetDragView()), message: "The first target doesn't have the default drag visual.");
+
+				await MoveOver(overridingTarget);
+				await UITestHelper.WaitFor(
+					() => GetDragView() is { Caption: "First visit", ContentVisibility: Visibility.Collapsed },
+					message: "The drag visual didn't get the overriding target's caption and hidden content.");
+
+				// Back over a target that the drag was over before: WinUI resets the overrides once the drag leaves the element that set them.
+				await MoveOver(defaultTarget);
+				await UITestHelper.WaitFor(() => IsDefault(GetDragView()), message: "The overrides stayed when the drag came back to the first target.");
+
+				// The overriding target starts from the default state again, so only its new override applies.
+				await MoveOver(overridingTarget);
+				await UITestHelper.WaitFor(
+					() => GetDragView() is { Caption: "Second visit", ContentVisibility: Visibility.Visible },
+					message: "The overriding target didn't get a fresh state on its second visit.");
+
+				await MoveOver(otherTarget);
+				await UITestHelper.WaitFor(() => IsDefault(GetDragView()), message: "The last target doesn't have the default drag visual.");
+			}
+			finally
+			{
+				mouse.Release();
+				await UITestHelper.WaitForIdle();
+			}
+
+			async Task MoveOver(FrameworkElement target)
+			{
+				mouse.MoveTo(target.GetAbsoluteBoundsRect().GetCenter(), 5);
+				await UITestHelper.WaitForIdle();
+				mouse.MoveBy(0, 1);
+				await UITestHelper.WaitForIdle();
+			}
+
+			static bool IsDefault(DragView view)
+				=> view is { ContentVisibility: Visibility.Visible, CaptionVisibility: Visibility.Visible }
+					&& view.Caption is not ("First visit" or "Second visit");
+
+			static DragView GetDragView() => TestServices.WindowHelper.XamlRoot.VisualTree.RootElement.FindFirstDescendant<DragView>();
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[CombinatorialData]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
