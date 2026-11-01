@@ -98,6 +98,13 @@ namespace Microsoft.UI.Xaml
 		public DataPackageOperation ProcessAborted(long pointerId)
 			=> FindOperation(pointerId)?.Aborted() ?? DataPackageOperation.None;
 
+		/// <summary>
+		/// Whether the drop target replaced or hid the content of the given pointer's drag visual.
+		/// False when the pointer has no drag operation.
+		/// </summary>
+		internal bool IsContentReplacedOrHidden(long pointerId)
+			=> FindOperation(pointerId)?.IsContentReplacedOrHidden ?? false;
+
 		private DragOperation? FindOperation(IDragEventSource src)
 			=> _dragOperations.FirstOrDefault(drag => drag.Info.SourceId == src.Id);
 
