@@ -446,6 +446,90 @@ public class Given_Storyboard_WinUIAlignment
 	}
 
 	[TestMethod]
+	public async Task When_Transition_Has_GeneratedDuration_Then_Independent_Property_Is_Interpolated()
+	{
+		var (control, target) = await LoadGeneratedTransitionControl();
+
+		VisualStateManager.GoToState(control, "First", false);
+		await TestServices.WindowHelper.WaitFor(() => target.Opacity == 1, message: "the first state should apply its animation");
+
+		VisualStateManager.GoToState(control, "Second", true);
+
+		var sawIntermediateValue = false;
+		var sw = Stopwatch.StartNew();
+		while (sw.ElapsedMilliseconds < 3000 && target.Opacity != 0.2)
+		{
+			if (target.Opacity is > 0.25 and < 0.95)
+			{
+				sawIntermediateValue = true;
+			}
+
+			await Task.Delay(16);
+		}
+
+		Assert.AreEqual(0.2, target.Opacity, 0.001, "the generated animation should end on the value of the target state");
+		Assert.IsTrue(sawIntermediateValue, "the generated animation should interpolate the independent Opacity over GeneratedDuration");
+	}
+
+	[TestMethod]
+	public async Task When_Transition_Has_GeneratedDuration_Then_State_Changes_After_It()
+	{
+		var (control, _) = await LoadGeneratedTransitionControl();
+
+		VisualStateManager.GoToState(control, "First", false);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var group = VisualStateManager.GetVisualStateGroups((FrameworkElement)VisualTreeHelper.GetChild(control, 0))[0];
+		var changedAfter = default(TimeSpan?);
+		var sw = Stopwatch.StartNew();
+		group.CurrentStateChanged += (_, _) => changedAfter = sw.Elapsed;
+
+		VisualStateManager.GoToState(control, "Second", true);
+		await TestServices.WindowHelper.WaitFor(() => changedAfter is not null, timeoutMS: 3000, message: "the state change should complete");
+
+		Assert.IsTrue(changedAfter >= TimeSpan.FromMilliseconds(400), $"The state should change once the 500ms generated transition completes, it changed after {changedAfter}");
+	}
+
+	private static async Task<(Control control, Border target)> LoadGeneratedTransitionControl()
+	{
+		var control = (ContentControl)Microsoft.UI.Xaml.Markup.XamlReader.Load("""
+			<ContentControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+							xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<ContentControl.Template>
+					<ControlTemplate TargetType="ContentControl">
+						<Grid>
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="States">
+									<VisualStateGroup.Transitions>
+										<VisualTransition From="First" To="Second" GeneratedDuration="0:0:0.5" />
+									</VisualStateGroup.Transitions>
+									<VisualState x:Name="First">
+										<Storyboard>
+											<DoubleAnimation Storyboard.TargetName="Target" Storyboard.TargetProperty="Opacity" To="1" Duration="0" />
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Second">
+										<Storyboard>
+											<DoubleAnimation Storyboard.TargetName="Target" Storyboard.TargetProperty="Opacity" To="0.2" Duration="0" />
+										</Storyboard>
+									</VisualState>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+							<Border x:Name="Target" Width="50" Height="50" Background="Pink" />
+						</Grid>
+					</ControlTemplate>
+				</ContentControl.Template>
+			</ContentControl>
+			""");
+
+		TestServices.WindowHelper.WindowContent = control;
+		await TestServices.WindowHelper.WaitForLoaded(control);
+
+		var target = (Border)((FrameworkElement)VisualTreeHelper.GetChild(control, 0)).FindName("Target");
+		return (control, target);
+	}
+
+	[TestMethod]
 	public async Task When_Transition_Animates_A_Property_Set_By_The_Target_State_Then_Setter_Value_Is_Kept()
 	{
 		var control = (ContentControl)Microsoft.UI.Xaml.Markup.XamlReader.Load("""
