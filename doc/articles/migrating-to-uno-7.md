@@ -953,9 +953,10 @@ Dependency properties registered without a default value now follow WinUI:
 - **Custom value types default to `null`.** `DependencyProperty.Register` with no metadata, or
   with a `null` `DefaultValue`, used to synthesize the zero value of any value type. It now does
   what WinUI does: `int`, `long`, `float`, `double`, `bool`, `TimeSpan`, `DateTimeOffset`,
-  `Point`, `Size`, `Rect`, `Color`, `Thickness`, `CornerRadius` and the WinUI and WinRT enums get
-  their zero value, `GridLength` gets `1*`, and every other value type (your own structs and
-  enums, `DateTime`, `Guid`, `decimal`, `Duration`, `Matrix`, `Vector2`, ...) gets `null`, so a
+  `Point`, `Size`, `Rect`, `Color`, `Thickness`, `CornerRadius` and the enums of WinUI's XAML
+  metadata (`Visibility`, `Orientation`, `FontStyle`, `VirtualKey`, ...) get their zero value,
+  `GridLength` gets `1*`, and every other value type (your own structs and enums, `DateTime`,
+  `Guid`, `decimal`, `Duration`, `Matrix`, `Vector2`, ...) gets `null`, so a
   `(MyEnum)GetValue(...)` wrapper on such a property throws until a value is set. Pass the
   default explicitly, for example `new PropertyMetadata(MyEnum.None)`. Code that already runs
   on Windows is unaffected, since it needed the explicit default there.
