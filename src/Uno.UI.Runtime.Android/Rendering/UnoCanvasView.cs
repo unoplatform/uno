@@ -357,7 +357,9 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 			_torndown = true;
 			FreeContext();
-			Dispose();
+
+			// The peer is left alive: GLSurfaceView can still call OnDrawFrame until its thread exits, and a call into
+			// a disposed peer is bound to a fresh invoker that calls back into Java, recursing until the stack overflows.
 		}
 	}
 }
