@@ -30,12 +30,12 @@ public partial class InMemoryRandomAccessStream : IStreamWrapper
 
 	public IRandomAccessStream CloneStream()
 	{
-		var position = Position;
-		var destination = new MemoryStream();
-		_stream.Position = 0;
-		_stream.CopyTo(destination);
-		destination.Seek((long)position, SeekOrigin.Begin);
-		_stream.Seek((long)position, SeekOrigin.Begin);
+		// As on WinUI, a disposed stream can't be cloned, and the clone starts at 0. Copying the buffer leaves this stream's position alone.
+		ObjectDisposedException.ThrowIf(!_stream.CanRead, this);
+		var content = _stream.TryGetBuffer(out var buffer) ? buffer : new ArraySegment<byte>(_stream.ToArray());
+		var destination = new MemoryStream(content.Count);
+		destination.Write(content.Array!, content.Offset, content.Count);
+		destination.Position = 0;
 		return new InMemoryRandomAccessStream(destination);
 	}
 
