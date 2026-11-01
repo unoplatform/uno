@@ -106,7 +106,11 @@ namespace Uno.UI.Media
 		/// <inheritdoc />
 		public void Dispose()
 		{
-			Transform.Changed -= UpdateOnTransformPropertyChanged;
+			if (Transform is not null)
+			{
+				Transform.Changed -= UpdateOnTransformPropertyChanged;
+			}
+
 			Cleanup();
 		}
 
