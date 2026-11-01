@@ -18,4 +18,7 @@ public partial class PointKeyFrameCollection : DependencyObjectCollection<PointK
 		: base(owner, isAutoPropertyInheritanceEnabled: isAutoPropertyInheritanceEnabled)
 	{
 	}
+
+	// CTimingCollection::CheckCanBeModified: key frames can't change while the storyboard of their animation runs.
+	private protected override void OnModifying() => (this.GetParent() as Timeline)?.CheckCanBeModified();
 }

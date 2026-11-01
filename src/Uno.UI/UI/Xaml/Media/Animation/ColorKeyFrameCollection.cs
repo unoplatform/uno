@@ -7,5 +7,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public ColorKeyFrameCollection() : base(null, false)
 		{
 		}
+
+		internal ColorKeyFrameCollection(DependencyObject owner, bool isAutoPropertyInheritanceEnabled)
+			: base(owner, isAutoPropertyInheritanceEnabled: isAutoPropertyInheritanceEnabled)
+		{
+		}
+
+		// CTimingCollection::CheckCanBeModified: key frames can't change while the storyboard of their animation runs.
+		private protected override void OnModifying() => (this.GetParent() as Timeline)?.CheckCanBeModified();
 	}
 }

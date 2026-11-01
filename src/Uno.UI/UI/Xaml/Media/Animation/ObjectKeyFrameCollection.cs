@@ -15,5 +15,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			: base(parent: owner, isAutoPropertyInheritanceEnabled: isAutoPropertyInheritanceEnabled)
 		{
 		}
+
+		// CTimingCollection::CheckCanBeModified: key frames can't change while the storyboard of their animation runs.
+		private protected override void OnModifying() => (this.GetParent() as Timeline)?.CheckCanBeModified();
 	}
 }

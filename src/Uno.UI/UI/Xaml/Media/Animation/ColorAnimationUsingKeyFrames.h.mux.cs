@@ -11,7 +11,7 @@ partial class ColorAnimationUsingKeyFrames
 	public ColorAnimationUsingKeyFrames()
 	{
 #if HAS_UNO
-		KeyFrames = new ColorKeyFrameCollection();
+		KeyFrames = new ColorKeyFrameCollection(this, isAutoPropertyInheritanceEnabled: false);
 #endif
 	}
 
