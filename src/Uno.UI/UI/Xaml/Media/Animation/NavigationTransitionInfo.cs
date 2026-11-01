@@ -1,23 +1,34 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+// MUX Reference NavigationTransitionInfo_Partial.h, tag winui3/release/2.5.1, commit ba3a8d59e
+
 using System.Collections.Generic;
-using System.Text;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class NavigationTransitionInfo : DependencyObject
 	{
-		private string _navigationState;
-
 		protected NavigationTransitionInfo()
 		{
 			InitializeBinder();
 		}
 
-		protected virtual string GetNavigationStateCore() => _navigationState;
+		/// <summary>
+		/// When overridden in a derived class, gets the string that is stored in the navigation history for this transition.
+		/// </summary>
+		/// <returns>The navigation state string.</returns>
+		protected virtual string GetNavigationStateCore() => null;
 
 		internal string GetNavigationStateCoreInternal() => GetNavigationStateCore();
 
-		protected virtual void SetNavigationStateCore(string navigationState) => _navigationState = navigationState;
+		/// <summary>
+		/// When overridden in a derived class, restores this transition from a string read from the navigation history.
+		/// </summary>
+		/// <param name="navigationState">The navigation state string.</param>
+		protected virtual void SetNavigationStateCore(string navigationState)
+		{
+		}
 
 		internal void SetNavigationStateCoreInternal(string navigationState) => SetNavigationStateCore(navigationState);
 

@@ -1,6 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference ThemeTransitions.cpp, tag winui3/release/1.7-stable
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+// MUX Reference ThemeTransitions.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 
 using System;
 using System.Collections.Generic;
@@ -15,14 +16,17 @@ namespace Microsoft.UI.Xaml.Media.Animation;
 /// </summary>
 public partial class EntranceNavigationTransitionInfo : NavigationTransitionInfo
 {
-	// Animation constants from WinUI
-	private const double TranslationOffset = 140;
-	private const long OutDuration = 150;
-	private const long InDuration = 300;
-
-	private static readonly List<WeakReference<UIElement>> s_targetElements = new();
+	private static readonly List<WeakReference<DependencyObject>> s_spTargetElements = new();
 
 	public EntranceNavigationTransitionInfo() : base() { }
+
+	/// <inheritdoc />
+	protected override string GetNavigationStateCore() => "0";
+
+	/// <inheritdoc />
+	protected override void SetNavigationStateCore(string navigationState)
+	{
+	}
 
 	#region IsTargetElement Attached Property
 
@@ -51,31 +55,58 @@ public partial class EntranceNavigationTransitionInfo : NavigationTransitionInfo
 		[DynamicDependency(nameof(SetIsTargetElement))]
 		get;
 	} = DependencyProperty.RegisterAttached(
+		// UNO TODO: WinUI registers this property as "IsEntranceElement". Uno resolves attached properties
+		// by their registered name, so it keeps the public name.
 		"IsTargetElement",
 		typeof(bool),
 		typeof(EntranceNavigationTransitionInfo),
-		new FrameworkPropertyMetadata(BoolBoxes.False, OnIsTargetElementChanged)
+		new FrameworkPropertyMetadata(BoolBoxes.False, OnPropertyChanged)
 	);
 
-	private static void OnIsTargetElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	private static void OnPropertyChanged(DependencyObject pSender, DependencyPropertyChangedEventArgs pArgs)
 	{
-		if (d is not UIElement element)
+		var spDO = pSender;
+
+		if (pArgs.Property == IsTargetElementProperty)
 		{
-			return;
-		}
+			// This is an attached property, bubble up to page.
+			var isTargetElement = (bool)pArgs.NewValue;
 
-		var isTargetElement = (bool)e.NewValue;
-
-		// Remove existing entry for this element
-		lock (s_targetElements)
-		{
-			s_targetElements.RemoveAll(wr => !wr.TryGetTarget(out var target) || target == element);
-
-			// Add if the new value is true
-			if (isTargetElement)
+			lock (s_spTargetElements)
 			{
-				s_targetElements.Add(new WeakReference<UIElement>(element));
+				// Erase the value in the list.
+				for (var it = 0; it < s_spTargetElements.Count; ++it)
+				{
+					s_spTargetElements[it].TryGetTarget(out var spItAsDO);
+
+					if (spItAsDO == spDO)
+					{
+						s_spTargetElements.RemoveAt(it);
+						break;
+					}
+				}
+
+				if (isTargetElement)
+				{
+					s_spTargetElements.Add(new WeakReference<DependencyObject>(spDO));
+				}
 			}
+		}
+	}
+
+	private static List<WeakReference<DependencyObject>> GetTargetElements()
+	{
+		lock (s_spTargetElements)
+		{
+			return new(s_spTargetElements);
+		}
+	}
+
+	internal static void ClearTargetElements()
+	{
+		lock (s_spTargetElements)
+		{
+			s_spTargetElements.RemoveAll(it => !it.TryGetTarget(out _));
 		}
 	}
 
@@ -83,134 +114,118 @@ public partial class EntranceNavigationTransitionInfo : NavigationTransitionInfo
 
 	private protected override IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
 	{
-		var storyboard = new Storyboard();
+		var spElement = element;
+		DependencyObject spAnimationTargetAsDO;
+		Storyboard spStoryboard = new();
 
-		// Find the target element (either a marked element or the page itself)
-		var targetElement = GetLogicalTargetElement(element) ?? element;
+		// UNO TODO: WinUI animates "(UIElement.TransitionTarget).(TransitionTarget.CompositeTransform).TranslateY" and
+		// "(UIElement.TransitionTarget).Opacity"; Uno animates a TranslateTransform set as RenderTransform, and UIElement.Opacity.
+		var propertyNameTranslateY = nameof(TranslateTransform.Y);
+		var propertyNameOpacity = nameof(UIElement.Opacity);
 
-		var inControlPoint1 = new Point(0.1, 0.9);
-		var inControlPoint2 = new Point(0.2, 1.0);
-		var outControlPoint1 = new Point(0.7, 0.0);
-		var outControlPoint2 = new Point(1.0, 0.5);
+		var spTarget = GetLogicalTargetElement(element);
 
-		switch (trigger)
+		if (spTarget is not null)
 		{
-			case NavigationTrigger.NavigatingAway:
-				// Fade out with spline
-				AddSplineOpacityAnimation(storyboard, targetElement, 1.0, 0, 0.0, OutDuration, outControlPoint1, outControlPoint2);
-				break;
-
-			case NavigationTrigger.NavigatingTo:
-				// Discrete opacity: 0 -> 1 at outDuration
-				AddDiscreteOpacityAnimation(storyboard, targetElement, 0.0, 0, 1.0, OutDuration);
-
-				// TranslateY: start at offset, stay there until outDuration, then animate to 0
-				AddEntranceTranslateYAnimation(storyboard, EnsureTranslateTransform(targetElement), TranslationOffset, OutDuration, 0.0, OutDuration + InDuration, inControlPoint1, inControlPoint2);
-				break;
-
-			case NavigationTrigger.BackNavigatingAway:
-				// Discrete opacity: 1 -> 0 at outDuration
-				AddDiscreteOpacityAnimation(storyboard, targetElement, 1.0, 0, 0.0, OutDuration);
-
-				// TranslateY: 0 -> offset with spline
-				AddSplineTranslateYAnimation(storyboard, EnsureTranslateTransform(targetElement), 0.0, 0, TranslationOffset, OutDuration, outControlPoint1, outControlPoint2);
-				break;
-
-			case NavigationTrigger.BackNavigatingTo:
-				// Opacity: 0 -> 0 at outDuration, then spline to 1
-				AddDelayedSplineOpacityAnimation(storyboard, targetElement, 0.0, OutDuration, 1.0, OutDuration + InDuration, inControlPoint1, inControlPoint2);
-				break;
+			spAnimationTargetAsDO = spTarget;
+		}
+		else
+		{
+			spAnimationTargetAsDO = spElement;
 		}
 
-		return new List<Storyboard> { storyboard };
+		var spTimelines = spStoryboard.Children;
+
+		{
+			const double translationOffset = 140;
+			Point inControlPoint1 = new(0.1f, 0.9f);
+			Point inControlPoint2 = new(0.2f, 1.0f);
+			Point outControlPoint1 = new(0.7f, 0.0f);
+			Point outControlPoint2 = new(1.0f, .5f);
+			const long outDuration = 150;
+			const long inDuration = 300;
+
+			DoubleAnimationUsingKeyFrames spTranslateYAnimation = null;
+			DoubleAnimationUsingKeyFrames spOpacityAnimation = null;
+
+			switch (trigger)
+			{
+				case NavigationTrigger.NavigatingAway:
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 1.0, 0);
+					NavigateTransitionHelper.RegisterSplineKeyFrame(spOpacityAnimation, 0.0, outDuration, outControlPoint1, outControlPoint2);
+					break;
+				case NavigationTrigger.NavigatingTo:
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 0.0, 0);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 1.0, outDuration);
+
+					spTranslateYAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spTranslateYAnimation, translationOffset, 0);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spTranslateYAnimation, translationOffset, outDuration);
+					NavigateTransitionHelper.RegisterSplineKeyFrame(spTranslateYAnimation, 0.0, outDuration + inDuration, inControlPoint1, inControlPoint2);
+					break;
+				case NavigationTrigger.BackNavigatingAway:
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 1.0, 0);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 0.0, outDuration);  // Hide it at end of translate animation
+
+					spTranslateYAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spTranslateYAnimation, 0.0, 0);
+					NavigateTransitionHelper.RegisterSplineKeyFrame(spTranslateYAnimation, translationOffset, outDuration, outControlPoint1, outControlPoint2);
+					break;
+				case NavigationTrigger.BackNavigatingTo:
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 0.0, 0);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 0.0, outDuration);
+					NavigateTransitionHelper.RegisterSplineKeyFrame(spOpacityAnimation, 1.0, outDuration + inDuration, inControlPoint1, inControlPoint2);
+					break;
+			}
+
+			if (spTranslateYAnimation != null)
+			{
+				TranslateTransform translateTransform = new();
+				((UIElement)spAnimationTargetAsDO).RenderTransform = translateTransform;
+				Storyboard.SetTarget(spTranslateYAnimation, translateTransform);
+				Storyboard.SetTargetProperty(spTranslateYAnimation, propertyNameTranslateY);
+				spTimelines.Add(spTranslateYAnimation);
+			}
+
+			if (spOpacityAnimation != null)
+			{
+				Storyboard.SetTarget(spOpacityAnimation, spAnimationTargetAsDO);
+				Storyboard.SetTargetProperty(spOpacityAnimation, propertyNameOpacity);
+				spTimelines.Add(spOpacityAnimation);
+			}
+		}
+
+		return new List<Storyboard> { spStoryboard };
 	}
 
 	private static UIElement GetLogicalTargetElement(UIElement page)
 	{
-		lock (s_targetElements)
+		UIElement spTargetElement = null;
+
+		var targetElements = GetTargetElements();
+
+		foreach (var it in targetElements)
 		{
-			foreach (var weakRef in s_targetElements)
+			// A dead reference resets the result, as resolving a WinUI weak reference does.
+			spTargetElement = it.TryGetTarget(out var target) ? target as UIElement : null;
+
+			if (spTargetElement is not null)
 			{
-				if (weakRef.TryGetTarget(out var targetElement) && IsAncestor(page, targetElement))
+				// UNO TODO: WinUI fails when the page or the target is not a FrameworkElement.
+				if (page is FrameworkElement spPageAsFE
+					&& spTargetElement is FrameworkElement spTargetElementAsFE
+					&& NavigateTransitionHelper.IsAncestor(spPageAsFE, spTargetElementAsFE))
 				{
-					return targetElement;
+					// Valid target element found.
+					break;
 				}
 			}
 		}
 
-		return null;
-	}
-
-	private static bool IsAncestor(UIElement potentialAncestor, UIElement element)
-	{
-		var current = element as DependencyObject;
-		while (current != null)
-		{
-			if (current == potentialAncestor)
-			{
-				return true;
-			}
-			current = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(current);
-		}
-		return false;
-	}
-
-	private static TranslateTransform EnsureTranslateTransform(UIElement element)
-	{
-		var translateTransform = new TranslateTransform();
-		element.RenderTransform = translateTransform;
-		return translateTransform;
-	}
-
-	private static void AddDiscreteOpacityAnimation(Storyboard storyboard, UIElement element, double startValue, long startTimeMs, double endValue, long endTimeMs)
-	{
-		var opacityAnimation = new DoubleAnimationUsingKeyFrames();
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(startValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(startTimeMs))));
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(endValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(endTimeMs))));
-		Storyboard.SetTarget(opacityAnimation, element);
-		Storyboard.SetTargetProperty(opacityAnimation, nameof(UIElement.Opacity));
-		storyboard.Children.Add(opacityAnimation);
-	}
-
-	private static void AddSplineOpacityAnimation(Storyboard storyboard, UIElement element, double startValue, long startTimeMs, double endValue, long endTimeMs, Point controlPoint1, Point controlPoint2)
-	{
-		var opacityAnimation = new DoubleAnimationUsingKeyFrames();
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(startValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(startTimeMs))));
-		opacityAnimation.KeyFrames.Add(new SplineDoubleKeyFrame(endValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(endTimeMs)), new KeySpline(controlPoint1, controlPoint2)));
-		Storyboard.SetTarget(opacityAnimation, element);
-		Storyboard.SetTargetProperty(opacityAnimation, nameof(UIElement.Opacity));
-		storyboard.Children.Add(opacityAnimation);
-	}
-
-	private static void AddDelayedSplineOpacityAnimation(Storyboard storyboard, UIElement element, double holdValue, long holdTimeMs, double endValue, long endTimeMs, Point controlPoint1, Point controlPoint2)
-	{
-		var opacityAnimation = new DoubleAnimationUsingKeyFrames();
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(holdValue, KeyTime.FromTimeSpan(TimeSpan.Zero)));
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(holdValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(holdTimeMs))));
-		opacityAnimation.KeyFrames.Add(new SplineDoubleKeyFrame(endValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(endTimeMs)), new KeySpline(controlPoint1, controlPoint2)));
-		Storyboard.SetTarget(opacityAnimation, element);
-		Storyboard.SetTargetProperty(opacityAnimation, nameof(UIElement.Opacity));
-		storyboard.Children.Add(opacityAnimation);
-	}
-
-	private static void AddEntranceTranslateYAnimation(Storyboard storyboard, TranslateTransform translateTransform, double holdValue, long holdTimeMs, double endValue, long endTimeMs, Point controlPoint1, Point controlPoint2)
-	{
-		var translateAnimation = new DoubleAnimationUsingKeyFrames();
-		translateAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(holdValue, KeyTime.FromTimeSpan(TimeSpan.Zero)));
-		translateAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(holdValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(holdTimeMs))));
-		translateAnimation.KeyFrames.Add(new SplineDoubleKeyFrame(endValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(endTimeMs)), new KeySpline(controlPoint1, controlPoint2)));
-		Storyboard.SetTarget(translateAnimation, translateTransform);
-		Storyboard.SetTargetProperty(translateAnimation, nameof(TranslateTransform.Y));
-		storyboard.Children.Add(translateAnimation);
-	}
-
-	private static void AddSplineTranslateYAnimation(Storyboard storyboard, TranslateTransform translateTransform, double startValue, long startTimeMs, double endValue, long endTimeMs, Point controlPoint1, Point controlPoint2)
-	{
-		var translateAnimation = new DoubleAnimationUsingKeyFrames();
-		translateAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(startValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(startTimeMs))));
-		translateAnimation.KeyFrames.Add(new SplineDoubleKeyFrame(endValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(endTimeMs)), new KeySpline(controlPoint1, controlPoint2)));
-		Storyboard.SetTarget(translateAnimation, translateTransform);
-		Storyboard.SetTargetProperty(translateAnimation, nameof(TranslateTransform.Y));
-		storyboard.Children.Add(translateAnimation);
+		return spTargetElement;
 	}
 }

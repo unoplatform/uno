@@ -38,6 +38,14 @@ public partial class SlideNavigationTransitionInfo : NavigationTransitionInfo
 
 	public SlideNavigationTransitionInfo() : base() { }
 
+	/// <inheritdoc />
+	protected override string GetNavigationStateCore() => "0";
+
+	/// <inheritdoc />
+	protected override void SetNavigationStateCore(string navigationState)
+	{
+	}
+
 	private protected override IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
 	{
 		var spElement = element;
