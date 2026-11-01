@@ -6,6 +6,7 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -152,6 +153,42 @@ public class Given_DragView
 		var expectedX = -toolTipPanel.ActualWidth / 2;
 		Assert.AreEqual(expectedX, translateTransform.X, 0.1,
 			"TranslateTransform.X should center the panel after visibility change");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25869")]
+	public async Task When_Shown_Then_Loaded_And_Content_Image_Decodes()
+	{
+		var inputManager = TestServices.WindowHelper.XamlRoot.VisualTree.ContentRoot.InputManager;
+
+		// Twice, as the drag layer is removed when the last drag ends, and added again for the next one.
+		for (var i = 0; i < 2; i++)
+		{
+			// An image that nothing else shows, so only the drag visual can decode it.
+			var bitmap = new BitmapImage(new Uri("ms-appx:///Assets/square100.png"));
+			var ui = new DragUI(PointerDeviceType.Mouse);
+			ui.SetContentFromBitmapImage(bitmap);
+			var dragView = new DragView(ui);
+
+			DragRoot? dragRoot;
+			using (inputManager.OpenDragAndDrop(dragView))
+			{
+				await TestServices.WindowHelper.WaitFor(() => dragView.IsLoaded, message: $"The drag visual wasn't loaded (drag {i + 1}).");
+				await TestServices.WindowHelper.WaitFor(
+					() => bitmap.PixelWidth > 0,
+					timeoutMS: 5000,
+					message: $"The drag visual's image wasn't decoded (drag {i + 1}).");
+
+				// Loading the drag layer doesn't make it hit-testable: the drag mustn't hide what's under the pointer.
+				dragRoot = VisualTreeHelper.GetParent(dragView) as DragRoot;
+				Assert.IsNotNull(dragRoot);
+				Assert.AreEqual(HitTestability.Collapsed, dragRoot.GetHitTestVisibility());
+			}
+
+			await TestServices.WindowHelper.WaitFor(() => !dragView.IsLoaded, message: $"The drag visual wasn't unloaded (drag {i + 1}).");
+			Assert.IsFalse(dragRoot.IsActiveInVisualTree);
+		}
 	}
 #endif
 }
