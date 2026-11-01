@@ -524,6 +524,56 @@ public class Given_Frame
 		Assert.IsInstanceOfType(SUT.Content, typeof(SecondPage));
 	}
 
+	[TestMethod]
+	public async Task When_Entrance_Transition_First_Frame_Of_New_Page_Is_Hidden()
+	{
+#if __SKIA__
+		var frame = new Frame { Width = 300, Height = 200, ContentTransitions = new TransitionCollection { new NavigationThemeTransition() } };
+		var button = new Button { Content = "Navigate" };
+		button.Click += (_, _) => frame.Navigate(typeof(SecondPage), null, new EntranceNavigationTransitionInfo());
+		TestServices.WindowHelper.WindowContent = new StackPanel { Children = { button, frame } };
+		await TestServices.WindowHelper.WaitForLoaded(button);
+
+		frame.Navigate(typeof(FirstPage));
+		await TestServices.WindowHelper.WaitFor(() => frame.Content is FirstPage { IsLoaded: true });
+		await TestServices.WindowHelper.WaitForIdle();
+
+		double? firstOpacity = null;
+		var compositionTarget = (Microsoft.UI.Xaml.Media.CompositionTarget)frame.Visual.CompositionTarget!;
+		Action onFrameRendered = () =>
+		{
+			if (firstOpacity is null && frame.Content is SecondPage page)
+			{
+				firstOpacity = page.Opacity;
+			}
+		};
+
+		var injector = global::Windows.UI.Input.Preview.Injection.InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = global::Uno.UI.DevTools.Input.InputInjectorExtensions.GetMouse(injector);
+		var buttonBounds = button.GetAbsoluteBounds();
+		var center = new global::Windows.Foundation.Point(buttonBounds.X + buttonBounds.Width / 2, buttonBounds.Y + buttonBounds.Height / 2);
+		mouse.MoveTo(center);
+
+		compositionTarget.FrameRendered += onFrameRendered;
+		try
+		{
+			mouse.Press(center);
+			mouse.Release();
+			await TestServices.WindowHelper.WaitFor(() => firstOpacity is not null);
+		}
+		finally
+		{
+			compositionTarget.FrameRendered -= onFrameRendered;
+		}
+
+		// Entrance holds the incoming page at opacity 0 before fading it in; a fully opaque first frame is the flash.
+		Assert.AreEqual(0, firstOpacity!.Value, 0.01, "The first frame showing the new page should still have it hidden.");
+#else
+		await Task.CompletedTask;
+		Assert.Inconclusive("Inspects Uno's recorded frames.");
+#endif
+	}
+
 	[TestCleanup]
 	public void Cleanup()
 	{
