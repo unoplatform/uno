@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
 using Combinatorial.MSTest;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -574,6 +575,73 @@ public class Given_Frame
 #endif
 	}
 
+	#region Navigation transition orchestration
+
+	[TestMethod]
+	public async Task When_NavigationThemeTransition_Unload_Uses_New_Page_Transitions()
+	{
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = new EntranceNavigationTransitionInfo() });
+
+		frame.Navigate(typeof(FirstPage));
+		await WaitForTransitionsToSettle(frame);
+		var oldPage = (Page)frame.Content;
+
+		// The new page asks for no animation, which WinUI also applies to the page navigated away from.
+		using var oldPageOpacity = MinOpacityTracker.Start(oldPage);
+		frame.Navigate(typeof(SuppressTransitionPage));
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.AreEqual(1.0, oldPageOpacity.MinOpacity, 0.001, "The outgoing page should use the new page's SuppressNavigationTransitionInfo.");
+	}
+
+	private static async Task<Frame> CreateTransitionFrame(NavigationThemeTransition contentTransition)
+	{
+		var frame = new Frame { Width = 300, Height = 200 };
+		if (contentTransition is not null)
+		{
+			frame.ContentTransitions = new TransitionCollection { contentTransition };
+		}
+
+		TestServices.WindowHelper.WindowContent = frame;
+		await TestServices.WindowHelper.WaitForLoaded(frame);
+		return frame;
+	}
+
+	// The longest built-in navigation storyboard (DrillIn) runs for under 800ms.
+	private static async Task WaitForTransitionsToSettle(Frame frame)
+	{
+		await TestServices.WindowHelper.WaitFor(() => frame.Content is FrameworkElement { IsLoaded: true });
+		await Task.Delay(1000);
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	private sealed class MinOpacityTracker : IDisposable
+	{
+		private UIElement _element;
+
+		public double MinOpacity { get; private set; } = double.MaxValue;
+
+		public static MinOpacityTracker Start(UIElement element)
+		{
+			var tracker = new MinOpacityTracker();
+			tracker.Track(element);
+			return tracker;
+		}
+
+		public void Track(UIElement element)
+		{
+			_element = element;
+			MinOpacity = Math.Min(MinOpacity, element.Opacity);
+			CompositionTarget.Rendering += OnRendering;
+		}
+
+		private void OnRendering(object sender, object e) => MinOpacity = Math.Min(MinOpacity, _element.Opacity);
+
+		public void Dispose() => CompositionTarget.Rendering -= OnRendering;
+	}
+
+	#endregion
+
 	[TestCleanup]
 	public void Cleanup()
 	{
@@ -596,6 +664,14 @@ internal partial class SecondPage : Page
 
 internal partial class ThirdPage : Page
 {
+}
+
+internal partial class SuppressTransitionPage : Page
+{
+	public SuppressTransitionPage()
+	{
+		Transitions = new TransitionCollection { new NavigationThemeTransition { DefaultNavigationTransitionInfo = new SuppressNavigationTransitionInfo() } };
+	}
 }
 
 internal partial class DisallowNavigatingFromPage : Page
