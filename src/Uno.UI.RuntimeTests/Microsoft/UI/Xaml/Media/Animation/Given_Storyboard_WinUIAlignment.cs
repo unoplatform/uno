@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -149,6 +150,23 @@ public class Given_Storyboard_WinUIAlignment
 		Assert.AreEqual(1, doubleAnimation.KeyFrames.Count);
 
 		storyboard.Stop();
+	}
+
+	[TestMethod]
+	public async Task When_Timeline_Is_Already_In_Another_Storyboard_Then_Add_Throws()
+	{
+		var (_, translate) = await LoadTranslatedBorder();
+
+		var animation = CreateDoubleAnimation(translate, nameof(TranslateTransform.X), to: 100, durationMs: 100);
+		var first = new Storyboard { Children = { animation } };
+		var second = new Storyboard();
+
+		AssertThrows(() => second.Children.Add(animation));
+
+		// Once removed from its storyboard, it can be added to another one.
+		first.Children.Remove(animation);
+		second.Children.Add(animation);
+		Assert.AreEqual(1, second.Children.Count);
 	}
 
 	[TestMethod]
