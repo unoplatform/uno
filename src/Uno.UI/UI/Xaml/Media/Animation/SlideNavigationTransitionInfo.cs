@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference ThemeTransitions.cpp, tag winui3/release/1.7-stable
+// Licensed under the MIT License.
 
-using System;
+// MUX Reference ThemeTransitions.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+
 using System.Collections.Generic;
 using Windows.Foundation;
 
@@ -13,20 +13,6 @@ namespace Microsoft.UI.Xaml.Media.Animation;
 /// </summary>
 public partial class SlideNavigationTransitionInfo : NavigationTransitionInfo
 {
-	// Animation constants from WinUI for FromLeft/FromRight
-	private const double HorizontalTranslationExitOffset = 150;
-	private const double HorizontalTranslationEntranceOffset = -200;
-	private const long HorizontalOutDuration = 150;
-	private const long HorizontalInDuration = 300;
-
-	// Animation constants from WinUI for FromBottom
-	private const double VerticalSlideOffsetIn = 200;
-	private const double VerticalSlideOffsetOut = 100;
-	private const long VerticalSlideStartTime = 0;
-	private const long VerticalSlideMidTime = 167;
-	private const long VerticalSlideEndTime = 500;
-	private const double SlideEaseExponent = 6.0;
-
 	#region Effect DependencyProperty
 
 	/// <summary>
@@ -54,192 +40,142 @@ public partial class SlideNavigationTransitionInfo : NavigationTransitionInfo
 
 	private protected override IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
 	{
-		var storyboard = new Storyboard();
+		var spElement = element;
+		Storyboard spStoryboard = new();
+		var spTimelines = spStoryboard.Children;
+		EasingFunctionBase spEasing;
 
-		if (Effect == SlideNavigationTransitionEffect.FromLeft || Effect == SlideNavigationTransitionEffect.FromRight)
+		DependencyObject spAnimationTargetAsDO = spElement;
+
+		// Our translate may be in the x or y directions so let the right code path initialize it.
+		string propertyNameTranslate;
+
+		// Create storyboard.
+		DoubleAnimationUsingKeyFrames spTranslateAnimation = null;
+		DoubleAnimationUsingKeyFrames spOpacityAnimation = null;
+		var effect = Effect;
+		if (effect == SlideNavigationTransitionEffect.FromLeft || effect == SlideNavigationTransitionEffect.FromRight)
 		{
-			CreateHorizontalSlideAnimations(storyboard, element, trigger);
+			const double translationExitOffset = 150;
+			const double translationEntranceOffset = -200;
+			Point inControlPoint1 = new(0.1f, 0.9f);
+			Point inControlPoint2 = new(0.2f, 1.0f);
+			Point outControlPoint1 = new(0.7f, 0.0f);
+			Point outControlPoint2 = new(1.0f, .5f);
+			const long outDuration = 150;
+			const long inDuration = 300;
+			double reverseTranslationFactor = effect == SlideNavigationTransitionEffect.FromLeft ? 1 : -1;
+
+			propertyNameTranslate = nameof(TranslateTransform.X);
+			switch (trigger)
+			{
+				case NavigationTrigger.NavigatingAway:
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 1.0, 0);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 0.0, outDuration);
+
+					spTranslateAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spTranslateAnimation, 0.0, 0);
+					NavigateTransitionHelper.RegisterSplineKeyFrame(spTranslateAnimation, translationExitOffset * reverseTranslationFactor, outDuration, outControlPoint1, outControlPoint2);
+					break;
+				case NavigationTrigger.NavigatingTo:
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 0.0, 0);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 1.0, outDuration);
+
+					spTranslateAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spTranslateAnimation, translationEntranceOffset * reverseTranslationFactor, outDuration);
+					NavigateTransitionHelper.RegisterSplineKeyFrame(spTranslateAnimation, 0.0, outDuration + inDuration, inControlPoint1, inControlPoint2);
+					break;
+				case NavigationTrigger.BackNavigatingAway:
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 1.0, 0);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 0.0, outDuration);  // Hide it at end of translate animation
+
+					spTranslateAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spTranslateAnimation, 0.0, 0);
+					NavigateTransitionHelper.RegisterSplineKeyFrame(spTranslateAnimation, translationEntranceOffset * reverseTranslationFactor, outDuration, outControlPoint1, outControlPoint2);
+					break;
+				case NavigationTrigger.BackNavigatingTo:
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 0.0, 0);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, 1.0, outDuration);
+
+					spTranslateAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spTranslateAnimation, translationExitOffset * reverseTranslationFactor, outDuration);
+					NavigateTransitionHelper.RegisterSplineKeyFrame(spTranslateAnimation, 0.0, outDuration + inDuration, inControlPoint1, inControlPoint2);
+					break;
+			}
 		}
-		else // FromBottom
+		else
 		{
-			CreateVerticalSlideAnimations(storyboard, element, trigger);
+			propertyNameTranslate = nameof(TranslateTransform.Y);
+			switch (trigger)
+			{
+				case NavigationTrigger.NavigatingTo:
+					spEasing = NavigateTransitionHelper.GetExponentialEase(NavigateTransitionHelper.SLIDE_EASE, EasingMode.EaseOut);
+
+					spTranslateAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spTranslateAnimation, NavigateTransitionHelper.SLIDE_OFFSET_IN, NavigateTransitionHelper.SLIDE_START_TIME);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spTranslateAnimation, NavigateTransitionHelper.SLIDE_OFFSET_IN, NavigateTransitionHelper.SLIDE_MID_TIME);
+					NavigateTransitionHelper.RegisterEasingKeyFrame(spTranslateAnimation, NavigateTransitionHelper.NO_OFFSET, NavigateTransitionHelper.SLIDE_END_TIME, spEasing);
+
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.NO_OPACITY, NavigateTransitionHelper.SLIDE_START_TIME);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.NO_OPACITY, NavigateTransitionHelper.SLIDE_MID_TIME - 10);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.FULL_OPACITY, NavigateTransitionHelper.SLIDE_MID_TIME);
+					break;
+				case NavigationTrigger.NavigatingAway:
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.FULL_OPACITY, NavigateTransitionHelper.SLIDE_START_TIME);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.FULL_OPACITY, NavigateTransitionHelper.SLIDE_MID_TIME - 10);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.NO_OPACITY, NavigateTransitionHelper.SLIDE_MID_TIME);
+					break;
+				case NavigationTrigger.BackNavigatingTo:
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.NO_OPACITY, NavigateTransitionHelper.SLIDE_START_TIME);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.NO_OPACITY, NavigateTransitionHelper.SLIDE_MID_TIME - 10);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.FULL_OPACITY, NavigateTransitionHelper.SLIDE_MID_TIME);
+					break;
+				case NavigationTrigger.BackNavigatingAway:
+					spEasing = NavigateTransitionHelper.GetExponentialEase(NavigateTransitionHelper.SLIDE_EASE, EasingMode.EaseIn);
+
+					spTranslateAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spTranslateAnimation, NavigateTransitionHelper.NO_OFFSET, NavigateTransitionHelper.SLIDE_START_TIME);
+					NavigateTransitionHelper.RegisterEasingKeyFrame(spTranslateAnimation, NavigateTransitionHelper.SLIDE_OFFSET_OUT, NavigateTransitionHelper.SLIDE_END_TIME, spEasing);
+
+					spOpacityAnimation = new();
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.FULL_OPACITY, NavigateTransitionHelper.SLIDE_START_TIME);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.FULL_OPACITY, NavigateTransitionHelper.SLIDE_MID_TIME - 10);
+					NavigateTransitionHelper.RegisterDiscreteKeyFrame(spOpacityAnimation, NavigateTransitionHelper.NO_OPACITY, NavigateTransitionHelper.SLIDE_MID_TIME);
+					break;
+			}
 		}
 
-		return new List<Storyboard> { storyboard };
-	}
-
-	private static TranslateTransform EnsureTranslateTransform(UIElement element)
-	{
-		var translateTransform = new TranslateTransform();
-		element.RenderTransform = translateTransform;
-		return translateTransform;
-	}
-
-	private void CreateHorizontalSlideAnimations(Storyboard storyboard, UIElement element, NavigationTrigger trigger)
-	{
-		// Every horizontal trigger translates, so the transform is always needed here.
-		var translateTransform = EnsureTranslateTransform(element);
-
-		// Direction factor: FromLeft = 1, FromRight = -1
-		double directionFactor = Effect == SlideNavigationTransitionEffect.FromLeft ? 1.0 : -1.0;
-
-		var inControlPoint1 = new Point(0.1, 0.9);
-		var inControlPoint2 = new Point(0.2, 1.0);
-		var outControlPoint1 = new Point(0.7, 0.0);
-		var outControlPoint2 = new Point(1.0, 0.5);
-
-		switch (trigger)
+		if (spTranslateAnimation != null)
 		{
-			case NavigationTrigger.NavigatingAway:
-				// Exit: opacity 1->0 at outDuration, translate 0->exitOffset
-				AddDiscreteOpacityAnimation(storyboard, element, 1.0, 0, 0.0, HorizontalOutDuration);
-				AddSplineTranslateXAnimation(storyboard, translateTransform,
-					0.0, 0,
-					HorizontalTranslationExitOffset * directionFactor, HorizontalOutDuration,
-					outControlPoint1, outControlPoint2);
-				break;
-
-			case NavigationTrigger.NavigatingTo:
-				// Enter: opacity 0->1 at outDuration, translate entranceOffset->0
-				AddDiscreteOpacityAnimation(storyboard, element, 0.0, 0, 1.0, HorizontalOutDuration);
-				AddSplineTranslateXAnimation(storyboard, translateTransform,
-					HorizontalTranslationEntranceOffset * directionFactor, HorizontalOutDuration,
-					0.0, HorizontalOutDuration + HorizontalInDuration,
-					inControlPoint1, inControlPoint2);
-				break;
-
-			case NavigationTrigger.BackNavigatingAway:
-				// Back exit: opacity 1->0 at outDuration, translate 0->entranceOffset
-				AddDiscreteOpacityAnimation(storyboard, element, 1.0, 0, 0.0, HorizontalOutDuration);
-				AddSplineTranslateXAnimation(storyboard, translateTransform,
-					0.0, 0,
-					HorizontalTranslationEntranceOffset * directionFactor, HorizontalOutDuration,
-					outControlPoint1, outControlPoint2);
-				break;
-
-			case NavigationTrigger.BackNavigatingTo:
-				// Back enter: opacity 0->1 at outDuration, translate exitOffset->0
-				AddDiscreteOpacityAnimation(storyboard, element, 0.0, 0, 1.0, HorizontalOutDuration);
-				AddSplineTranslateXAnimation(storyboard, translateTransform,
-					HorizontalTranslationExitOffset * directionFactor, HorizontalOutDuration,
-					0.0, HorizontalOutDuration + HorizontalInDuration,
-					inControlPoint1, inControlPoint2);
-				break;
+			// Target property was initialized to the appropriate value depending on which codepath we took.
+			// UNO TODO: WinUI animates "(UIElement.TransitionTarget).(TransitionTarget.CompositeTransform)", which Uno lacks,
+			// so the key frames target a TranslateTransform installed as the element's RenderTransform instead.
+			TranslateTransform translateTransform = new();
+			spElement.RenderTransform = translateTransform;
+			Storyboard.SetTarget(spTranslateAnimation, translateTransform);
+			Storyboard.SetTargetProperty(spTranslateAnimation, propertyNameTranslate);
+			spTimelines.Add(spTranslateAnimation);
 		}
-	}
 
-	private static void CreateVerticalSlideAnimations(Storyboard storyboard, UIElement element, NavigationTrigger trigger)
-	{
-		// The transform is created only for the triggers that translate, so the fade-only
-		// triggers leave the element's RenderTransform untouched.
-		switch (trigger)
+		if (spOpacityAnimation != null)
 		{
-			case NavigationTrigger.NavigatingTo:
-				// Enter from bottom with slide up and fade in
-				AddVerticalEnterAnimation(storyboard, element, EnsureTranslateTransform(element), new ExponentialEase { Exponent = SlideEaseExponent, EasingMode = EasingMode.EaseOut });
-				break;
-
-			case NavigationTrigger.NavigatingAway:
-				// Exit by fading out (no translate)
-				AddVerticalExitAnimation(storyboard, element);
-				break;
-
-			case NavigationTrigger.BackNavigatingTo:
-				// Back enter: just fade in (no translate)
-				AddVerticalBackEnterAnimation(storyboard, element);
-				break;
-
-			case NavigationTrigger.BackNavigatingAway:
-				// Back exit: slide down and fade out
-				AddVerticalBackExitAnimation(storyboard, element, EnsureTranslateTransform(element), new ExponentialEase { Exponent = SlideEaseExponent, EasingMode = EasingMode.EaseIn });
-				break;
+			// UNO TODO: WinUI animates "(UIElement.TransitionTarget).Opacity"; Uno animates UIElement.Opacity.
+			var propertyNameOpacity = nameof(UIElement.Opacity);
+			Storyboard.SetTarget(spOpacityAnimation, spAnimationTargetAsDO);
+			Storyboard.SetTargetProperty(spOpacityAnimation, propertyNameOpacity);
+			spTimelines.Add(spOpacityAnimation);
 		}
-	}
 
-	private static void AddVerticalEnterAnimation(Storyboard storyboard, UIElement element, TranslateTransform translateTransform, EasingFunctionBase easing)
-	{
-		// TranslateY: start at SLIDE_OFFSET_IN, stay there until MID_TIME, then animate to 0
-		var translateAnimation = new DoubleAnimationUsingKeyFrames();
-		translateAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(VerticalSlideOffsetIn, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideStartTime))));
-		translateAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(VerticalSlideOffsetIn, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideMidTime))));
-		translateAnimation.KeyFrames.Add(new EasingDoubleKeyFrame(0.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideEndTime)), easing));
-		Storyboard.SetTarget(translateAnimation, translateTransform);
-		Storyboard.SetTargetProperty(translateAnimation, nameof(TranslateTransform.Y));
-		storyboard.Children.Add(translateAnimation);
+		// Ensure sure that the animated pages are not hit test visible while animating.
+		NavigateTransitionHelper.RemoveHitTestVisbility(spTimelines, spAnimationTargetAsDO);
 
-		// Opacity: 0 until just before MID_TIME, then 1
-		var opacityAnimation = new DoubleAnimationUsingKeyFrames();
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(0.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideStartTime))));
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(0.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideMidTime - 10))));
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(1.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideMidTime))));
-		Storyboard.SetTarget(opacityAnimation, element);
-		Storyboard.SetTargetProperty(opacityAnimation, nameof(UIElement.Opacity));
-		storyboard.Children.Add(opacityAnimation);
-	}
-
-	private static void AddVerticalExitAnimation(Storyboard storyboard, UIElement element)
-	{
-		// Just fade out
-		var opacityAnimation = new DoubleAnimationUsingKeyFrames();
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(1.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideStartTime))));
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(1.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideMidTime - 10))));
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(0.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideMidTime))));
-		Storyboard.SetTarget(opacityAnimation, element);
-		Storyboard.SetTargetProperty(opacityAnimation, nameof(UIElement.Opacity));
-		storyboard.Children.Add(opacityAnimation);
-	}
-
-	private static void AddVerticalBackEnterAnimation(Storyboard storyboard, UIElement element)
-	{
-		// Just fade in
-		var opacityAnimation = new DoubleAnimationUsingKeyFrames();
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(0.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideStartTime))));
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(0.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideMidTime - 10))));
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(1.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideMidTime))));
-		Storyboard.SetTarget(opacityAnimation, element);
-		Storyboard.SetTargetProperty(opacityAnimation, nameof(UIElement.Opacity));
-		storyboard.Children.Add(opacityAnimation);
-	}
-
-	private static void AddVerticalBackExitAnimation(Storyboard storyboard, UIElement element, TranslateTransform translateTransform, EasingFunctionBase easing)
-	{
-		// TranslateY: 0 -> SLIDE_OFFSET_OUT
-		var translateAnimation = new DoubleAnimationUsingKeyFrames();
-		translateAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(0.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideStartTime))));
-		translateAnimation.KeyFrames.Add(new EasingDoubleKeyFrame(VerticalSlideOffsetOut, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideEndTime)), easing));
-		Storyboard.SetTarget(translateAnimation, translateTransform);
-		Storyboard.SetTargetProperty(translateAnimation, nameof(TranslateTransform.Y));
-		storyboard.Children.Add(translateAnimation);
-
-		// Opacity: fade out
-		var opacityAnimation = new DoubleAnimationUsingKeyFrames();
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(1.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideStartTime))));
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(1.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideMidTime - 10))));
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(0.0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(VerticalSlideMidTime))));
-		Storyboard.SetTarget(opacityAnimation, element);
-		Storyboard.SetTargetProperty(opacityAnimation, nameof(UIElement.Opacity));
-		storyboard.Children.Add(opacityAnimation);
-	}
-
-	private static void AddDiscreteOpacityAnimation(Storyboard storyboard, UIElement element, double startValue, long startTimeMs, double endValue, long endTimeMs)
-	{
-		var opacityAnimation = new DoubleAnimationUsingKeyFrames();
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(startValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(startTimeMs))));
-		opacityAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(endValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(endTimeMs))));
-		Storyboard.SetTarget(opacityAnimation, element);
-		Storyboard.SetTargetProperty(opacityAnimation, nameof(UIElement.Opacity));
-		storyboard.Children.Add(opacityAnimation);
-	}
-
-	private static void AddSplineTranslateXAnimation(Storyboard storyboard, TranslateTransform translateTransform,
-		double startValue, long startTimeMs, double endValue, long endTimeMs, Point controlPoint1, Point controlPoint2)
-	{
-		var translateAnimation = new DoubleAnimationUsingKeyFrames();
-		translateAnimation.KeyFrames.Add(new DiscreteDoubleKeyFrame(startValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(startTimeMs))));
-		translateAnimation.KeyFrames.Add(new SplineDoubleKeyFrame(endValue, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(endTimeMs)),
-			new KeySpline(controlPoint1, controlPoint2)));
-		Storyboard.SetTarget(translateAnimation, translateTransform);
-		Storyboard.SetTargetProperty(translateAnimation, nameof(TranslateTransform.X));
-		storyboard.Children.Add(translateAnimation);
+		return new List<Storyboard> { spStoryboard };
 	}
 }
