@@ -35,6 +35,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 	private readonly ApplicationActivity _activity;
 	private readonly InternalRenderer _renderer;
+	private bool _teardownRequested;
 
 	public UnoCanvasView(ApplicationActivity activity) : base(activity)
 	{
@@ -63,13 +64,14 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		// GLSurfaceView drives IRenderer.OnDrawFrame on its own GL thread, so freeing the Skia and
 		// GL state from the UI thread can race a frame in flight. Queue the teardown there and wait
 		// for it; the renderer refuses to rebuild its context afterwards.
+		_teardownRequested = true;
 		var torndown = new ManualResetEventSlim(false);
 
 		QueueEvent(new Java.Lang.Runnable(() =>
 		{
 			try
 			{
-				_renderer.TeardownOnRenderThread();
+				_renderer.Teardown();
 			}
 			catch (Exception ex)
 			{
@@ -91,10 +93,21 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		}
 		else if (this.Log().IsEnabled(LogLevel.Warning))
 		{
-			// Either the GL thread is gone (the surface was destroyed first, so the queued work never
-			// runs) or it is merely slow and will still signal this event, which is why it is left to
-			// the GC rather than disposed from under it.
+			// The GL thread is slow or gone; OnDetachedFromWindow frees the state once it has exited. The event is
+			// left to the GC because a slow thread can still signal it.
 			this.Log().Warn("The GL thread did not run the renderer teardown within the timeout.");
+		}
+	}
+
+	protected override void OnDetachedFromWindow()
+	{
+		// Joins the GL thread, so nothing can race freeing what it owned (a no-op if the teardown already ran there).
+		base.OnDetachedFromWindow();
+
+		// A detach alone may be followed by a reattach, which restarts the GL thread on the same renderer.
+		if (_teardownRequested)
+		{
+			_renderer.Teardown();
 		}
 	}
 
@@ -221,6 +234,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		private readonly ApplicationActivity _activity = view._activity;
 
 		private bool _torndown;
+		private int _teardownClaimed;
 
 		private ISwapChain? _context;
 		private IDrawingFactory? _renderer;
@@ -331,11 +345,16 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		}
 
 		/// <summary>
-		/// Frees the GL and Skia state from the thread that owns it. Must run on the GL thread,
-		/// which is where every other access to these objects happens.
+		/// Frees the GL and Skia state, once. Must run on the GL thread, which is where every other access to these
+		/// objects happens, or after that thread has exited.
 		/// </summary>
-		internal void TeardownOnRenderThread()
+		internal void Teardown()
 		{
+			if (Interlocked.Exchange(ref _teardownClaimed, 1) != 0)
+			{
+				return;
+			}
+
 			_torndown = true;
 			FreeContext();
 			Dispose();
