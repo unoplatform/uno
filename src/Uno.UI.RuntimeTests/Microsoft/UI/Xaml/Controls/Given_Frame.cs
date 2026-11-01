@@ -595,6 +595,49 @@ public class Given_Frame
 	}
 
 	[TestMethod]
+	public async Task When_Navigating_Outgoing_Page_Rendered_Until_Exit_Completes()
+	{
+#if HAS_UNO
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = new EntranceNavigationTransitionInfo() });
+
+		frame.Navigate(typeof(FirstPage));
+		await WaitForTransitionsToSettle(frame);
+		var oldPage = (Page)frame.Content;
+		var oldVisual = oldPage.Visual;
+
+		var renderedWithOldPage = 0;
+		var compositionTarget = (Microsoft.UI.Xaml.Media.CompositionTarget)frame.Visual.CompositionTarget!;
+		Action onFrameRendered = () =>
+		{
+			if (oldVisual.Parent is not null)
+			{
+				renderedWithOldPage++;
+			}
+		};
+
+		compositionTarget.FrameRendered += onFrameRendered;
+		try
+		{
+			frame.Navigate(typeof(SecondPage));
+
+			// Logically gone right away, as WinUI's unloading elements are no longer children.
+			Assert.IsNull(Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(oldPage));
+			Assert.IsNotNull(oldVisual.Parent, "The outgoing page's visual should stay in the tree while its exit storyboard runs.");
+
+			await TestServices.WindowHelper.WaitFor(() => renderedWithOldPage > 0);
+			await TestServices.WindowHelper.WaitFor(() => oldVisual.Parent is null, timeoutMS: 3000, message: "The outgoing page's visual should be removed once its exit storyboard completes.");
+		}
+		finally
+		{
+			compositionTarget.FrameRendered -= onFrameRendered;
+		}
+#else
+		await Task.CompletedTask;
+		Assert.Inconclusive("Inspects Uno's composition visuals.");
+#endif
+	}
+
+	[TestMethod]
 	public async Task When_Page_Transitions_Has_NavigationThemeTransition()
 	{
 		var frame = await CreateTransitionFrame(null);
@@ -696,6 +739,14 @@ internal partial class SecondPage : Page
 
 internal partial class ThirdPage : Page
 {
+}
+
+internal partial class CachedTransitionPage : Page
+{
+	public CachedTransitionPage()
+	{
+		NavigationCacheMode = NavigationCacheMode.Required;
+	}
 }
 
 internal partial class NavigationThemeTransitionPage : Page
