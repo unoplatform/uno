@@ -127,14 +127,51 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		}
 	}
 
+	// The a11y bus can register with D-Bus after this process starts (e.g. a login-time race with
+	// at-spi2-registryd), so a single failed attempt must not leave the app invisible to Orca for
+	// the rest of the session.
+	private const int MaxStartAttempts = 5;
+	private static readonly TimeSpan[] StartRetryDelays =
+	{
+		TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10)
+	};
+
 	private async void StartServerSafely()
 	{
 		_serverStarting = true;
 		try
 		{
-			var server = await AtspiServer.TryStartAsync(ResolveApplicationName(), this);
+			AtspiServer? server = null;
+			for (var attempt = 0; attempt < MaxStartAttempts; attempt++)
+			{
+				if (attempt > 0)
+				{
+					await Task.Delay(StartRetryDelays[attempt - 1]);
+
+					// A closed window or accessibility switched off during the backoff must still
+					// abort cleanly, the same invariant the post-connect check below enforces.
+					lock (_serverGate)
+					{
+						if (IsDisposed || !AtspiEnablement.IsEnabled)
+						{
+							return;
+						}
+					}
+				}
+
+				server = await AtspiServer.TryStartAsync(ResolveApplicationName(), this);
+				if (server is not null)
+				{
+					break;
+				}
+			}
+
 			if (server is null)
 			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"[A11y] Giving up starting the AT-SPI server after {MaxStartAttempts} attempts.");
+				}
 				return;
 			}
 
