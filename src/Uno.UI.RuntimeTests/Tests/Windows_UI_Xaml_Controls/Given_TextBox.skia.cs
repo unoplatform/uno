@@ -8494,28 +8494,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var notifications = new CountingTextBoxNotifications();
 			using var notificationsDisposable = TextBox.SetNotificationsProviderForTesting(notifications);
 
-			Control SUT = isPassword ? new PasswordBox { Width = 200 } : new TextBox { Width = 200 };
-			var initialFocus = new Button { Content = "initial focus" };
-			await UITestHelper.Load(new StackPanel { Children = { initialFocus, SUT } });
-			initialFocus.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(0, notifications.FocusedCount, "No text input should be focused before the tap.");
-			using var hiddenInput = HiddenInputFocusCounter.TryStart(SUT);
-
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var finger = injector.GetFinger();
-			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreSame(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
-			Assert.AreEqual(1, notifications.FocusedCount);
-			// A PasswordBox never starts an IME session.
-			Assert.AreEqual(isPassword ? 0 : 1, ime.StartCount);
-			if (hiddenInput is not null)
+			try
 			{
-				Assert.AreEqual(1, hiddenInput.Count, "The browser's hidden input should be focused to start the text entry.");
+				Control SUT = isPassword ? new PasswordBox { Width = 200 } : new TextBox { Width = 200 };
+				var initialFocus = new Button { Content = "initial focus" };
+				await UITestHelper.Load(new StackPanel { Children = { initialFocus, SUT } });
+				initialFocus.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, notifications.FocusedCount, "No text input should be focused before the tap.");
+				using var hiddenInput = HiddenInputFocusCounter.TryStart(SUT);
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var finger = injector.GetFinger();
+				finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreSame(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
+				Assert.AreEqual(1, notifications.FocusedCount);
+				// A PasswordBox never starts an IME session.
+				Assert.AreEqual(isPassword ? 0 : 1, ime.StartCount);
+				if (hiddenInput is not null)
+				{
+					Assert.AreEqual(1, hiddenInput.Count, "The browser's hidden input should be focused to start the text entry.");
+				}
+			}
+			finally
+			{
+				await ReleaseSharedInput();
 			}
 		}
 
@@ -8559,27 +8566,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var notifications = new CountingTextBoxNotifications();
 			using var notificationsDisposable = TextBox.SetNotificationsProviderForTesting(notifications);
 
-			var SUT = new TextBox { Width = 200 };
-			var focusTarget = new Button { Content = "focus target" };
-			var root = new StackPanel { Children = { focusTarget, SUT } };
-			await UITestHelper.Load(root);
-			SUT.Focus(FocusState.Pointer);
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(1, notifications.FocusedCount);
-
-			if (isFocusMovedAway)
+			try
 			{
-				root.AddHandler(UIElement.TappedEvent, new TappedEventHandler((_, _) => focusTarget.Focus(FocusState.Programmatic)), handledEventsToo: true);
+				var SUT = new TextBox { Width = 200 };
+				var focusTarget = new Button { Content = "focus target" };
+				var root = new StackPanel { Children = { focusTarget, SUT } };
+				await UITestHelper.Load(root);
+				SUT.Focus(FocusState.Pointer);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(1, notifications.FocusedCount);
+
+				if (isFocusMovedAway)
+				{
+					root.AddHandler(UIElement.TappedEvent, new TappedEventHandler((_, _) => focusTarget.Focus(FocusState.Programmatic)), handledEventsToo: true);
+				}
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var finger = injector.GetFinger();
+				finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreSame(isFocusMovedAway ? focusTarget : SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
+				Assert.AreEqual(isFocusMovedAway ? 1 : 2, notifications.FocusedCount, "The platform must be notified again only if the TextBox still has the focus once the release completed.");
 			}
-
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var finger = injector.GetFinger();
-			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreSame(isFocusMovedAway ? focusTarget : SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
-			Assert.AreEqual(isFocusMovedAway ? 1 : 2, notifications.FocusedCount, "The platform must be notified again only if the TextBox still has the focus once the release completed.");
+			finally
+			{
+				await ReleaseSharedInput();
+			}
 		}
 
 		private sealed class CountingTextBoxNotifications : ITextBoxNotificationsProviderSingleton
@@ -8601,7 +8615,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public void NotifySelectionChanged(TextBoxCore core) { }
 		}
 
-		// Counts the focusin events of the browser's shared hidden <input>, which the browser host focuses to start a text entry.
+		// Counts the focus() calls on the browser's shared hidden <input>, which the browser host focuses to start a text entry.
+		// Calls, not focusin events: Chrome raises no focus events while its window doesn't have the system focus, as on CI.
 		// Null on other hosts, and when accessibility routes the text entry through the per-element semantic inputs instead.
 		private sealed class HiddenInputFocusCounter : IDisposable
 		{
@@ -8612,14 +8627,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					return null;
 				}
 
-				InvokeBrowserJs("(function(){const c=window.__unoHiddenInputFocusins={count:0};c.listener=e=>{if(e.target.id==='uno-input'){c.count++;}};document.addEventListener('focusin',c.listener,true);return 'ok';})()");
+				InvokeBrowserJs("(function(){const c=window.__unoHiddenInputFocusCalls={count:0,focus:HTMLElement.prototype.focus};HTMLElement.prototype.focus=function(options){if(this.id==='uno-input'){c.count++;}return c.focus.call(this,options);};return 'ok';})()");
 				return new();
 			}
 
-			public int Count => int.Parse(InvokeBrowserJs("(function(){return String(window.__unoHiddenInputFocusins.count);})()"), System.Globalization.CultureInfo.InvariantCulture);
+			public int Count => int.Parse(InvokeBrowserJs("(function(){return String(window.__unoHiddenInputFocusCalls.count);})()"), System.Globalization.CultureInfo.InvariantCulture);
 
 			public void Dispose()
-				=> InvokeBrowserJs("(function(){const c=window.__unoHiddenInputFocusins;document.removeEventListener('focusin',c.listener,true);delete window.__unoHiddenInputFocusins;return 'ok';})()");
+				=> InvokeBrowserJs("(function(){const c=window.__unoHiddenInputFocusCalls;HTMLElement.prototype.focus=c.focus;delete window.__unoHiddenInputFocusCalls;return 'ok';})()");
 		}
 
 		private class FakeImeTextBoxExtension : IImeTextBoxExtension
