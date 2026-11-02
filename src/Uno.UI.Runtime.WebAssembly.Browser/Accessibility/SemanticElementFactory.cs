@@ -583,14 +583,8 @@ internal static partial class SemanticElementFactory
 		bool isFocusable)
 	{
 		var splitButton = owner as SplitButton;
-		var primaryPart = splitButton?.PrimaryButtonPart;
 		var secondaryPart = splitButton?.SecondaryButtonPart;
-
-		// The group carries only an explicit name; the primary button is named by its content, as the
-		// template's primary button is, and the menu button by the name SplitButton gives that part.
-		var groupLabel = owner is not null ? AutomationProperties.GetName(owner) : null;
-		var primaryLabel = primaryPart?.GetOrCreateAutomationPeer()?.GetName() is { Length: > 0 } primaryName ? primaryName : attributes.Label;
-		var secondaryLabel = secondaryPart?.GetOrCreateAutomationPeer()?.GetName();
+		var (groupLabel, primaryLabel, secondaryLabel) = GetSplitButtonLabels(splitButton, peer);
 		var secondaryWidth = secondaryPart is { ActualWidth: > 0 } ? (float)secondaryPart.ActualWidth : 0f;
 		var pressed = peer.GetPattern(PatternInterface.Toggle) is IToggleProvider toggleProvider
 			? (toggleProvider.ToggleState == ToggleState.On ? "true" : "false")
@@ -613,6 +607,32 @@ internal static partial class SemanticElementFactory
 			attributes.Disabled,
 			isFocusable);
 		return true;
+	}
+
+	/// <summary>
+	/// The group carries only an explicit name; the primary button is named by its content, as the
+	/// template's primary button is, and the menu button by the name SplitButton gives that part.
+	/// </summary>
+	private static (string? Group, string? Primary, string? Secondary) GetSplitButtonLabels(SplitButton? splitButton, AutomationPeer peer)
+	{
+		var groupLabel = splitButton is not null ? AutomationProperties.GetName(splitButton) : null;
+		var primaryLabel = splitButton?.PrimaryButtonPart?.GetOrCreateAutomationPeer()?.GetName() is { Length: > 0 } primaryName
+			? primaryName
+			: AriaMapper.ResolveLabel(peer);
+		var secondaryLabel = splitButton?.SecondaryButtonPart?.GetOrCreateAutomationPeer()?.GetName();
+		return (groupLabel, primaryLabel, secondaryLabel);
+	}
+
+	/// <summary>
+	/// Re-reads the names of a split button node after its name or one of its template parts' names changed.
+	/// </summary>
+	internal static void UpdateSplitButtonLabels(SplitButton splitButton)
+	{
+		if (splitButton.GetOrCreateAutomationPeer() is { } peer)
+		{
+			var (groupLabel, primaryLabel, secondaryLabel) = GetSplitButtonLabels(splitButton, peer);
+			NativeMethods.UpdateSplitButtonLabels(splitButton.Visual.Handle, groupLabel, primaryLabel, secondaryLabel);
+		}
 	}
 
 	/// <summary>
@@ -1397,6 +1417,9 @@ internal static partial class SemanticElementFactory
 
 	private static partial class NativeMethods
 	{
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateSplitButtonLabels")]
+		internal static partial void UpdateSplitButtonLabels(IntPtr handle, string? label, string? primaryLabel, string? secondaryLabel);
+
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.createSplitButtonElement")]
 		internal static partial void CreateSplitButtonElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, string? primaryLabel, string? secondaryLabel, float secondaryWidth, bool expanded, string? pressed, bool disabled, bool isFocusable);
 

@@ -463,6 +463,11 @@ namespace Uno.UI.Runtime {
 				return;
 			}
 
+			// A node made of focusable parts (a split button) is not a group member and never a tab stop itself.
+			if (activeElement.dataset.unoFocusDelegate === 'true') {
+				return;
+			}
+
 			// Promote the active element to the single tab stop (tabindex="0").
 			// Sibling group members are demoted to tabindex="-1" below.
 			activeElement.tabIndex = 0;
@@ -620,13 +625,10 @@ namespace Uno.UI.Runtime {
 			if (element) {
 				Accessibility.debugLog(`[A11y] TS updateIsFocusable: handle=${handle} focusable=${isFocusable}`);
 				if (element.dataset.unoFocusDelegate === 'true') {
-					// The group itself is never a tab stop; its enabled parts follow the control.
-					for (const part of ['primary', 'secondary']) {
-						const button = SemanticElements.getSplitButtonPart(element, part);
-						if (button && !button.disabled) {
-							Accessibility.updateElementFocusability(button, isFocusable);
-						}
-					}
+					// The group itself is never a tab stop; remember the request so re-enabling honors it.
+					element.dataset.unoFocusable = String(isFocusable);
+					const primary = SemanticElements.getSplitButtonPart(element, 'primary');
+					SemanticElements.applySplitButtonState(element, primary?.disabled ?? false);
 				} else {
 					Accessibility.updateElementFocusability(element, isFocusable);
 				}

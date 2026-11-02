@@ -2333,6 +2333,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	{
 		Debug.Assert(IsAccessibilityEnabled);
 
+		// A split button node is named by its explicit name and its (Raw) template parts, not by its peer name.
+		if (FindOwningSplitButton(element) is { } splitButton)
+		{
+			if (HasSemanticElement(splitButton.Visual.Handle))
+			{
+				SemanticElementFactory.UpdateSplitButtonLabels(splitButton);
+			}
+			return;
+		}
+
 		// The name drives the role of a generic-path node (generic→group, named region/form landmarks),
 		// so re-resolve it as creation would.
 		if (_genericPathHandles.Contains(element.Visual.Handle))
@@ -2342,6 +2352,27 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 
 		NativeMethods.UpdateAriaLabel(element.Visual.Handle, automationId);
+	}
+
+	private static SplitButton? FindOwningSplitButton(UIElement element)
+	{
+		if (element is SplitButton splitButton)
+		{
+			return splitButton;
+		}
+
+		if (element is Button)
+		{
+			for (var parent = element.GetParent() as UIElement; parent is not null; parent = parent.GetParent() as UIElement)
+			{
+				if (parent is SplitButton owner)
+				{
+					return owner.PrimaryButtonPart == element || owner.SecondaryButtonPart == element ? owner : null;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	/// <summary>
