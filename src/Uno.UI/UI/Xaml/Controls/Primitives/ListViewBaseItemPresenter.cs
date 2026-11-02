@@ -138,6 +138,6 @@ public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 		});
 
 		// Uno-specific: WinUI re-renders after UpdateRequiresCompNodeForRoundedCorners; the post layer depends on it.
-		RenderLayers();
+		InvalidateRender();
 	}
 }
