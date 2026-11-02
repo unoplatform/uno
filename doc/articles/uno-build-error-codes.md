@@ -356,6 +356,12 @@ To fix this, set `OutputType` in the project file or in `Directory.Build.props`,
 </PropertyGroup>
 ```
 
+### UNOB0033: A Platforms/MacCatalyst or Platforms/MacOS folder is not built
+
+Uno Platform 7.0 removed the Mac Catalyst target framework, and the native macOS target was removed before it; macOS is served by the `desktop` target framework instead. Projects created with older templates can still contain a `Platforms/MacCatalyst/` or `Platforms/MacOS/` folder (or a `MacCatalyst/` or `MacOS/` folder at the project root). The Uno.Sdk leaves their files out of every target framework and reports this warning, since none of them can use that code.
+
+To fix this, move anything still needed to `Platforms/Desktop/`, and delete the folder. Code that should only run on macOS goes in an `OperatingSystem.IsMacOS()` check there. See [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7#mac-catalyst-is-removed) for the other migration steps.
+
 ## Compiler Errors
 
 ### UNO0001
