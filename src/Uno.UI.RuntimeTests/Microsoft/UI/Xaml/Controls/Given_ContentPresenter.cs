@@ -11,6 +11,7 @@ using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
@@ -519,6 +520,93 @@ public partial class Given_ContentPresenter
 		}
 
 		Assert.IsFalse(reference.IsAlive);
+	}
+
+	[TestMethod]
+	public void When_Implicit_Content_Binding_Presented_On_First_Measure()
+	{
+		var SUT = new ContentControl
+		{
+			Template = (ControlTemplate)XamlReader.Load(
+				"<ControlTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='ContentControl'><ContentPresenter/></ControlTemplate>"),
+			Content = new Border { Width = 40, Height = 50 },
+		};
+
+		SUT.Measure(new Size(200, 200));
+
+		Assert.IsFalse(SUT.IsLoaded);
+		Assert.AreEqual(new Size(40, 50), SUT.DesiredSize);
+	}
+
+	[TestMethod]
+	public async Task When_Binding_DataContext_Set_After_First_Measure()
+	{
+		// A ContentPresenter's own DataContext is its Content, so the binding needs an ancestor DataContext.
+		var root = (Grid)XamlReader.Load(
+			"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><ContentPresenter Content='{Binding Foo}'/></Grid>");
+		var SUT = (ContentPresenter)root.Children[0];
+		root.Measure(new Size(200, 200));
+
+		var model = new PresenterModel { Foo = "first" };
+		root.DataContext = model;
+
+		try
+		{
+			await UITestHelper.Load(root, x => x.IsLoaded);
+			Assert.AreEqual("first", SUT.Content);
+
+			model.Foo = "second";
+			Assert.AreEqual("second", SUT.Content);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_OnApplyTemplate_Called_Once_Across_Measure_And_Load()
+	{
+		var SUT = new ApplyTemplateCountingPresenter { Content = new Border { Width = 10, Height = 10 } };
+		SUT.Measure(new Size(200, 200));
+
+		try
+		{
+			await UITestHelper.Load(SUT);
+			Assert.AreEqual(1, SUT.ApplyTemplateCount);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	private class ApplyTemplateCountingPresenter : ContentPresenter
+	{
+		public int ApplyTemplateCount { get; private set; }
+
+		protected override void OnApplyTemplate()
+		{
+			ApplyTemplateCount++;
+			base.OnApplyTemplate();
+		}
+	}
+
+	private class PresenterModel : System.ComponentModel.INotifyPropertyChanged
+	{
+		private string _foo;
+
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+		public string Foo
+		{
+			get => _foo;
+			set
+			{
+				_foo = value;
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Foo)));
+			}
+		}
 	}
 
 	public class AlignmentTestConfiguration
