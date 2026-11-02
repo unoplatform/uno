@@ -836,7 +836,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Focus_Moves_Away_Before_GotFocus_Then_Not_Brought_Into_View()
 		{
 			var tb = new TextBox();

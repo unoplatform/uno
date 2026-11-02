@@ -144,6 +144,33 @@ public partial class Given_UIElement_GestureEventOrder
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_RightTapped_Ancestor_Is_Not_RightTapped_Twice()
+	{
+		var (outer, owner, inner) = CreateTree();
+		var ownerRightTapped = 0;
+		var outerRightTapped = 0;
+		var outerContextRequested = 0;
+
+		owner.RightTapped += (_, _) => ownerRightTapped++;
+		outer.RightTapped += (_, _) => outerRightTapped++; // Receives the owner's RightTapped by bubbling, its own recognizer must not raise it again
+		outer.ContextRequested += (_, _) => outerContextRequested++; // A second RightTapped would request a second context menu
+
+		await UITestHelper.Load(outer);
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using (var mouse = injector.GetMouse())
+		{
+			mouse.PressRight(inner.GetAbsoluteCenter());
+			mouse.ReleaseRight();
+		}
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, ownerRightTapped);
+		Assert.AreEqual(1, outerRightTapped);
+		Assert.AreEqual(1, outerContextRequested);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_RightTapped_Then_Raised_After_PointerReleased_Bubbled_And_Before_ContextRequested()
 	{
 		var (outer, owner, inner) = CreateTree();
