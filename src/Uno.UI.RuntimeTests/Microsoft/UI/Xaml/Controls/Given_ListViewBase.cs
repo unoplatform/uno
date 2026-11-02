@@ -4941,11 +4941,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25754")]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
-		public async Task When_UpdateLayout_In_DragDropping()
+		public async Task When_UpdateLayout_In_DragDropping() => await When_UpdateLayout_In_DragDropping_Common(contentAllowDrop: false);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25754")]
+		[Ignore("AllowDrop on the item content makes the drop onto the next item fail (#25754).")]
+		public async Task When_UpdateLayout_In_DragDropping_Content_AllowDrop() => await When_UpdateLayout_In_DragDropping_Common(contentAllowDrop: true);
+
+		private async Task When_UpdateLayout_In_DragDropping_Common(bool contentAllowDrop)
 		{
 			var SUT = new ListView
 			{
@@ -4958,9 +4965,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				SUT.Items.Add(new UpdateLayoutOnUnloadedControl
 				{
-					// TODO Uno: AllowDrop on this content makes the drop onto the next item fail (#25754).
 					Content = new TextBlock
 					{
+						AllowDrop = contentAllowDrop,
 						Height = 100,
 						Text = i.ToString()
 					}
