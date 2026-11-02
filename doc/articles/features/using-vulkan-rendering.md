@@ -23,28 +23,18 @@ Vulkan provides lower driver overhead and more efficient GPU utilization compare
 
 ## Enabling Vulkan
 
-### Using the Host Builder (Recommended — Desktop)
+Vulkan is enabled by default, so no code is needed to use it. On Android, Linux (X11) and Windows (Win32), Vulkan is tried first, and the app falls back to the other backends when it can't be created.
 
-On desktop platforms, the preferred way to enable Vulkan is through the platform host builder:
+### Using the Host Builder (Desktop)
 
-```csharp
-var host = UnoPlatformHostBuilder.Create()
-    .App(() => new App())
-    .UseX11(b => b.ForceRenderingBackend(X11RenderingBackend.Vulkan))
-    .UseWin32(b => b.ForceRenderingBackend(Win32RenderingBackend.Vulkan))
-    .UseLinuxFrameBuffer()
-    .UseMacOS()
-    .Build();
-
-host.Run();
-```
-
-Two builder methods control which backends negotiation may use:
+On desktop platforms, two host builder methods control which backends negotiation may use:
 
 - `ForceRenderingBackend(backend)` — restrict negotiation to that single backend (every other is excluded; if it can't be created, none is tried).
 - `DisableRenderingBackends(params backends)` — remove the listed backends, leaving every other available in the default preference order (Vulkan → OpenGL → OpenGL ES → software).
 
 If neither is called, all backends are available and the first one that initializes wins.
+
+Calling `ForceRenderingBackend(X11RenderingBackend.Vulkan)` or `ForceRenderingBackend(Win32RenderingBackend.Vulkan)` doesn't make Vulkan more likely to be used, since it is already tried first. It only removes the fallback, so the app fails to start on a machine without a usable Vulkan driver.
 
 Each platform has its own rendering backend enum reflecting the backends it supports:
 
@@ -52,7 +42,7 @@ Each platform has its own rendering backend enum reflecting the backends it supp
 
 **`Win32RenderingBackend`** (Windows): `Vulkan`, `OpenGL` (via WGL), `Software`, `WebGpu`.
 
-`WebGpu` applies when the app registers the WebGPU graphics backend. Forcing any other backend excludes it, and `DisableRenderingBackends(...WebGpu)` keeps an app that registers it on the Skia backends.
+`WebGpu` applies when the app registers the [WebGPU graphics backend](xref:uno.features.renderer.webgpu). Forcing any other backend excludes it, and `DisableRenderingBackends(...WebGpu)` keeps an app that registers it on the Skia backends.
 
 For example, to prefer OpenGL ES over desktop OpenGL on X11, disable the desktop-GL backend and let negotiation fall through to it:
 
