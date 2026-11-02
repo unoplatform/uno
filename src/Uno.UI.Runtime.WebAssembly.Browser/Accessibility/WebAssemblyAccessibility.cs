@@ -1506,7 +1506,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	internal void UpdateRelationships(AutomationPeer peer, IntPtr handle)
+	internal void UpdateRelationships(AutomationPeer peer, IntPtr handle, bool nodeCreated = false)
 	{
 		if (!_relationshipPeers.TryGetValue(handle, out var state))
 		{
@@ -1516,6 +1516,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		else
 		{
 			state.Peer.SetTarget(peer);
+
+			// A notification raised before the node existed cached IDs that were never written; a new node starts empty.
+			if (nodeCreated && !state.IsUpdating)
+			{
+				state.WrittenIds = SemanticElementFactory.RelationshipIds.None;
+			}
 		}
 
 		state.PendingPeer = peer;
@@ -2223,7 +2229,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				}
 
 				// Relationship attributes, mirroring the factory path (no dangling IDREF — FR-019/FR-022).
-				UpdateRelationships(automationPeer, handle);
+				UpdateRelationships(automationPeer, handle, nodeCreated: true);
 			}
 
 			// Owner-scoped attributes sourced from AutomationProperties attached properties

@@ -107,17 +107,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 					timeoutMS: 5000,
 					message: $"{attribute} must resolve a visible target.");
 
+				var isLabelledBy = attribute == "aria-labelledby";
+				if (isLabelledBy)
+				{
+					Assert.IsFalse(SemanticElementHasAttribute(source, "aria-label"), "aria-labelledby must suppress the competing aria-label.");
+				}
+
 				target.Visibility = Visibility.Collapsed;
 				await UITestHelper.WaitFor(
 					() => !SemanticElementExists(target) && !SemanticElementHasAttribute(source, attribute),
 					timeoutMS: 5000,
 					message: $"{attribute} must not reference a collapsed target.");
 
+				if (isLabelledBy)
+				{
+					await UITestHelper.WaitFor(
+						() => GetSemanticAttribute(source, "aria-label") == "Related target",
+						timeoutMS: 5000,
+						message: "The peer name must be restored as aria-label once the labeller leaves the tree.");
+				}
+
 				target.Visibility = Visibility.Visible;
 				await UITestHelper.WaitFor(
 					() => SemanticElementExists(target) && GetSemanticAttribute(source, attribute) == targetId,
 					timeoutMS: 5000,
 					message: $"{attribute} must be restored when the target becomes visible again.");
+
+				if (isLabelledBy)
+				{
+					Assert.IsFalse(SemanticElementHasAttribute(source, "aria-label"), "aria-label must be suppressed again once the labeller is shown.");
+				}
 			}
 			finally
 			{
@@ -155,6 +174,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 					() => SemanticElementExists(target) && GetSemanticAttribute(source, attribute) == GetSemanticElementId(target),
 					timeoutMS: 5000,
 					message: $"{attribute} must appear once a target that started collapsed is shown.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+				await UITestHelper.WaitForIdle();
+			}
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow("aria-describedby")]
+		[DataRow("aria-labelledby")]
+		public async Task When_Source_Configured_Detached_Then_Attached_Same_Turn_Relation_Is_Emitted(string attribute)
+		{
+#if HAS_UNO
+			var (source, target) = CreateRelation(attribute);
+			var panel = new StackPanel { Children = { target } };
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(target), timeoutMS: 5000, message: "Timed out waiting for the target's semantic node.");
+
+				// Re-apply the relation while the source is detached, then attach it in the same UI turn.
+				switch (attribute)
+				{
+					case "aria-describedby":
+						AutomationProperties.GetDescribedBy(source).Clear();
+						AutomationProperties.GetDescribedBy(source).Add(target);
+						break;
+					default:
+						AutomationProperties.SetLabeledBy(source, null);
+						AutomationProperties.SetLabeledBy(source, target);
+						break;
+				}
+				panel.Children.Insert(0, source);
+
+				await UITestHelper.WaitFor(
+					() => SemanticElementExists(source) && GetSemanticAttribute(source, attribute) == GetSemanticElementId(target),
+					timeoutMS: 5000,
+					message: $"{attribute} must be emitted for a source configured while detached and attached in the same turn.");
 			}
 			finally
 			{

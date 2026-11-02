@@ -173,7 +173,7 @@ internal static partial class SemanticElementFactory
 		// When the labeller has a node, the competing flattened aria-label was suppressed above (WA-04).
 		if (created)
 		{
-			WebAssemblyAccessibility.Instance.UpdateRelationships(peer, handle);
+			WebAssemblyAccessibility.Instance.UpdateRelationships(peer, handle, nodeCreated: true);
 		}
 
 		// Apply aria-expanded for ExpandCollapse-capable elements not handled by their
