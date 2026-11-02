@@ -478,6 +478,31 @@ internal partial class InputManager
 
 		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			_releaseDepth++;
+			try
+			{
+				OnPointerReleasedCore(args, isInjected);
+			}
+			finally
+			{
+				if (--_releaseDepth == 0 && _afterRelease is { } afterRelease)
+				{
+					_afterRelease = null;
+					if (_trace)
+					{
+						Trace($"Running {afterRelease.Count} action(s) deferred until the {Released.Name} has completed");
+					}
+
+					foreach (var action in afterRelease)
+					{
+						RunDeferred(action, isGesture: false);
+					}
+				}
+			}
+		}
+
+		private void OnPointerReleasedCore(Windows.UI.Core.PointerEventArgs args, bool isInjected)
+		{
 			// When multiple mouse buttons are pressed and then released, we only respond to the last OnPointerReleased
 			// (i.e when no more buttons are still pressed).
 			if (args.CurrentPoint.PointerDeviceType == PointerDeviceType.Mouse && args.CurrentPoint.IsInContact)
@@ -567,7 +592,7 @@ internal partial class InputManager
 		/// Defers a gesture recognized while PointerReleased is bubbling, to raise it once the release has reached the root.
 		/// </summary>
 		/// <returns>False if no PointerReleased is being raised, in which case the gesture must be raised right away.</returns>
-		internal bool TryDeferUntilReleased(Action raiseGesture)
+		internal bool TryDeferUntilReleaseBubbled(Action raiseGesture)
 		{
 			if (_pendingRelease is null)
 			{
@@ -575,6 +600,26 @@ internal partial class InputManager
 			}
 
 			(_pendingRelease.Gestures ??= new()).Add(raiseGesture);
+			return true;
+		}
+
+		private int _releaseDepth;
+		private List<Action>? _afterRelease;
+
+		/// <summary>
+		/// Defers an action until the pointer release being processed (the outermost one if they are nested) has completed: PointerReleased bubbled,
+		/// the gestures it ended were raised, the root cleaned up the focus and the captures, and the exit events were raised.
+		/// </summary>
+		/// <remarks>The action must not alter the visual tree: it runs once the dispatch result of the release has been computed.</remarks>
+		/// <returns>False if no release is being processed, in which case the action must be run right away.</returns>
+		internal bool TryDeferUntilReleaseCompleted(Action action)
+		{
+			if (_releaseDepth == 0)
+			{
+				return false;
+			}
+
+			(_afterRelease ??= new()).Add(action);
 			return true;
 		}
 
@@ -606,7 +651,7 @@ internal partial class InputManager
 				UIElement.BeginPointerEventDispatch();
 				foreach (var raiseGesture in gestures)
 				{
-					RaiseDeferredGesture(raiseGesture);
+					RunDeferred(raiseGesture, isGesture: true);
 				}
 				result += UIElement.EndPointerEventDispatch();
 			}
@@ -619,18 +664,22 @@ internal partial class InputManager
 			return result;
 		}
 
-		// Like an error in a PointerReleased handler (cf. UIElement.RaisePointerEvent), an error in a gesture handler is only logged.
-		private static void RaiseDeferredGesture(Action raiseGesture)
+		// Like an error in a PointerReleased handler (cf. UIElement.RaisePointerEvent), an error in a deferred gesture handler or action is only logged.
+		private static void RunDeferred(Action action, bool isGesture)
 		{
 			try
 			{
-				raiseGesture();
+				action();
 			}
 			catch (Exception error)
 			{
 				if (_log.IsEnabled(LogLevel.Error))
 				{
-					_log.Error($"Failed to raise a gesture deferred until {Released.Name} has bubbled.", error);
+					_log.Error(
+						isGesture
+							? $"Failed to raise a gesture deferred until the {Released.Name} has bubbled."
+							: $"Failed to run an action deferred until the {Released.Name} has completed.",
+						error);
 				}
 			}
 		}

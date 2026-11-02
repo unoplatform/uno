@@ -163,4 +163,6 @@ partial class TextBox
 	internal bool IsManagedLoupeShowing => _core.IsManagedLoupeShowing;
 
 	internal static IDisposable SetImeExtensionForTesting(IImeTextBoxExtension extension) => TextBoxCore.SetImeExtensionForTesting(extension);
+
+	internal static IDisposable SetNotificationsProviderForTesting(ITextBoxNotificationsProviderSingleton provider) => TextBoxCore.SetNotificationsProviderForTesting(provider);
 }
