@@ -33,7 +33,7 @@ To display a new window (both primary and secondary), you can utilize the `Micro
 
 ```csharp
 var window = new Window();
-window.Content = new TextBlock() { "Hello, world" };
+window.Content = new TextBlock() { Text = "Hello, world" };
 window.Activate();
 ```
 
@@ -112,6 +112,9 @@ if (MainWindow.AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter
 ```
 
 These properties allow you to set the maximum dimensions for the window. When set, the window cannot be resized beyond these values by the user. This is useful for constraining the window size to fit specific design requirements or to prevent the window from becoming too large for the content to display properly.
+
+> [!NOTE]
+> On macOS (net10.0-desktop), `PreferredMinimumWidth`, `PreferredMinimumHeight`, `PreferredMaximumWidth` and `PreferredMaximumHeight` are applied in points (logical pixels) to the whole window frame, including the title bar, while `AppWindow.Resize` takes physical pixels and sizes the area below the title bar. On a display with a scale factor other than 1, the same number therefore means a different size: on a Retina display (scale factor 2), `Resize` with a width of `2048` gives a window 1024 points wide, but `PreferredMinimumWidth = 2048` requires at least 2048 points. To use both together on macOS, divide the preferred values by the window's scale factor (for example `XamlRoot.RasterizationScale`), and allow for the title bar height in the minimum and maximum heights.
 
 > [!NOTE]
 > If your app uses Uno Navigation, set the sizing options before you start the Host (see the code below). This makes sure the window appears as expected.
@@ -308,7 +311,7 @@ var nonClientInputSrc = InputNonClientPointerSource.GetForWindowId(appWindow.Id)
 // Define the maximize button region to enable Snap Layouts
 var maximizeButtonRect = new RectInt32(100, 0, 46, 32); // x, y, width, height in actual pixels
 
-nonClientInputSrc.SetRegionRects(NonClientRegionKind.Caption, new[] { maximizeButtonRect });
+nonClientInputSrc.SetRegionRects(NonClientRegionKind.Maximize, new[] { maximizeButtonRect });
 ```
 
 > [!IMPORTANT]
