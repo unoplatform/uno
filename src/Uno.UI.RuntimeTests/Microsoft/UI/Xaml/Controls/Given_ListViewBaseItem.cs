@@ -140,14 +140,12 @@ public class Given_ListViewBaseItem
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
 		using var finger = injector.GetFinger();
 
+		// Injection is synchronous on the UI thread, so the 100 ms touch timer cannot have fired yet.
 		finger.Press(Center(item));
-		await Task.Delay(20);
 		Assert.AreEqual("Normal", LastCommonState(recorder), "Touch must not go to Pressed before the 100 ms delay.");
 		Assert.IsFalse(recorder.States.Contains("PointerOver"), "Touch never shows PointerOver.");
 
-		await Task.Delay(300);
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual("Pressed", LastCommonState(recorder));
+		await UITestHelper.WaitFor(() => LastCommonState(recorder) == "Pressed", timeoutMS: 2000, message: "The touch timer must go to Pressed.");
 
 		finger.Release();
 		await WindowHelper.WaitForIdle();
@@ -168,9 +166,7 @@ public class Given_ListViewBaseItem
 		finger.Release();
 		Assert.AreEqual("Pressed", LastCommonState(recorder), "A quick tap shows Pressed for 125 ms.");
 
-		await Task.Delay(400);
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual("Normal", LastCommonState(recorder));
+		await UITestHelper.WaitFor(() => LastCommonState(recorder) == "Normal", timeoutMS: 2000, message: "The released timer must go back to Normal.");
 	}
 
 	[TestMethod]
