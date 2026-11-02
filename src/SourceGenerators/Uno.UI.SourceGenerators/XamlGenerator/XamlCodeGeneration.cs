@@ -183,6 +183,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			_generatorContext = context;
+			_isDesignTimeBuild = Helpers.DesignTimeHelper.IsDesignTime(context);
 			InitTelemetry(context);
 
 			_metadataHelper = new RoslynMetadataHelper(context);
@@ -319,7 +320,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			_isWasm = context.GetMSBuildPropertyValue("DefineConstantsProperty")?.Contains("__WASM__") ?? false;
-			_isDesignTimeBuild = Helpers.DesignTimeHelper.IsDesignTime(context);
 
 			StringSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_String);
 			ObjectSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_Object);
