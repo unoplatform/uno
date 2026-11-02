@@ -8,7 +8,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator;
 
 /// <summary>
 /// Validation of xmlns declarations: the WPF-style <c>clr-namespace:</c> form, which WinUI does not support,
-/// and the conditional prefixes removed in Uno Platform 7.0.
+/// and the conditional prefixes and <c>Uno.UI.Toolkit</c> namespace removed in Uno Platform 7.0.
 /// </summary>
 internal static class XamlNamespaceValidation
 {
@@ -45,6 +45,24 @@ internal static class XamlNamespaceValidation
 		["xamarin"] = DropPrefixAdvice,
 		[LegacyPrefix] = DropPrefixAdvice,
 	};
+
+	/// <summary>
+	/// The <c>Uno.UI.Toolkit</c> namespace removed in 7.0, whose types moved to the <c>Uno.UI.*</c> namespaces.
+	/// </summary>
+	private const string RemovedToolkitNamespace = UsingNamespacePrefix + "Uno.UI.Toolkit";
+
+	public static bool IsRemovedToolkitNamespace(string @namespace)
+		=> @namespace == RemovedToolkitNamespace;
+
+	public static string FormatRemovedToolkitNamespaceMessage(string prefix)
+	{
+		var declaration = prefix.Length > 0 ? $"xmlns:{prefix}" : "xmlns";
+
+		return $"The 'Uno.UI.Toolkit' namespace was removed in Uno Platform 7.0, so '{declaration}=\"{RemovedToolkitNamespace}\"' no longer resolves. "
+			+ "Point it at the namespace of the types the markup uses: 'using:Uno.UI.Xaml.Controls' for ElevatedView, CommandBarExtensions and SplitViewExtensions, "
+			+ "'using:Uno.UI.Behaviors' for VisibleBoundsPadding, 'using:Uno.UI.Xaml' for UIElementExtensions, 'using:Uno.UI.Xaml.Automation' for AutomationPropertiesExtensions, "
+			+ "and 'using:Uno.UI.Xaml.Controls.Primitives' for ScrollBarExtensions. MenuFlyoutExtensions and MenuFlyoutItemExtensions were removed.";
+	}
 
 	public static bool IsClrNamespace(string @namespace)
 		=> @namespace.StartsWith(ClrNamespacePrefix, StringComparison.Ordinal);
