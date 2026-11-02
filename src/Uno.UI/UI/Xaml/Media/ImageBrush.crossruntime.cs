@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Media
 		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue)
 		{
 			ImageDataCache = default;
-			_sourceSubscription.Disposable = newValue?.Subscribe(OnSourceOpened);
+			_sourceSubscription.Disposable = newValue?.SubscribeWeakly(OnSourceOpened);
 		}
 
 		private void OnSourceOpened(ImageData image)
