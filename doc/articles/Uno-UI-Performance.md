@@ -17,7 +17,7 @@ Here's what to look for:
 - Use `x:Load={x:Bind MyVisibility}` where appropriate as toggling from `true` to `false` effectively removes a part of the visual tree from memory. Note that setting back to true re-creates the visual tree.
 - `ListView` and `GridView`
   - Don't use template selectors inside the ItemTemplate, prefer using the `ItemTemplateSelector` on `ListView`/`GridView`.
-  - The default `ListViewItem` style uses the lightweight `ListViewItemPresenter` (opt in for `GridViewItem` with `DefaultGridViewItemStyle`). It draws the selection and focus chrome itself and only creates elements on demand, such as the multi-select check box. Prefer customizing its brush and mode properties over re-templating items with a full visual tree.
+  - The default `ListViewItem` and `GridViewItem` styles use the lightweight `ListViewItemPresenter`. It draws the selection and focus chrome itself and only creates elements on demand, such as the multi-select check box. Prefer customizing its brush and mode properties over re-templating items with a full visual tree.
   - Avoid controls that contain inline popups, menus, or flyouts. Doing so will create as many popups as there are items visible on the screen. As in general, there is only one popup visible at a time, it is generally best to move the popup to a separate static resource.
 
 - Updating items in `ItemsControl` can be quite expensive, using `ItemsRepeater` is generally faster at rendering similar content.
