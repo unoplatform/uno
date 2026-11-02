@@ -3865,6 +3865,107 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[DataRow(false, DisplayName = "Stock ListViewItem template")]
+		[DataRow(true, DisplayName = "Container template binding only Content and ContentTemplate")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25919")]
+		public async Task When_ItemTemplateSelector_Then_Container_Never_Presents_Placeholder(bool useBasicContainerStyle)
+		{
+			// The implicit ListViewItem style is based on it, but doesn't apply to the ListViewItem subclass used here.
+			var stockContainerStyle = Application.Current.Resources["ListViewItemExpanded"] as Style;
+			Assert.IsNotNull(stockContainerStyle);
+
+			var SUT = new ContentProbeListView
+			{
+				ItemContainerStyle = useBasicContainerStyle ? BasicContainerStyle : stockContainerStyle,
+				ItemTemplateSelector = new LambdaDataTemplateSelector(_ => SelectableItemTemplateA),
+				ItemsSource = Enumerable.Range(0, 3).Select(i => new DefaultItem { Name = $"Item {i}", Value = i }).ToArray(),
+			};
+
+			var contentChangingRoots = new List<string>();
+			SUT.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue)
+				{
+					contentChangingRoots.Add((e.ItemContainer.ContentTemplateRoot as TextBlock)?.Text);
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var container = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0) as ListViewItem);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Selectable A", (container.ContentTemplateRoot as TextBlock)?.Text);
+			Assert.IsNotEmpty(SUT.Probes.Where(p => p.Stage == ContentProbeListViewItem.MeasureStage).ToArray(), "The item containers were never measured.");
+
+			// Each layout pass can be followed by a rendered frame, so the placeholder must never be there.
+			var placeholders = SUT.Probes.Where(p => p.IsPlaceholder).Select(p => $"{p.Stage}: '{p.RootText}'").ToArray();
+			Assert.IsEmpty(placeholders, "An item container presented the placeholder before the selected template: " + string.Join("; ", placeholders));
+
+			var unexpectedRoots = contentChangingRoots.Where(text => text != "Selectable A").ToArray();
+			Assert.IsEmpty(unexpectedRoots, "ContainerContentChanging was raised with another root than the selected template's: " + string.Join("; ", unexpectedRoots));
+		}
+
+		[TestMethod]
+		[DataRow(nameof(ContentPresenter.ContentTemplate))]
+		[DataRow(nameof(ContentPresenter.ContentTemplateSelector))]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25919")]
+		public async Task When_ItemTemplateSelector_And_Presenter_Sets_Its_Own_Then_Presenter_Wins(string presenterProperty)
+		{
+			// Set after Content, so the presenter gets its Content before its own template is known.
+			// cp:ItemTemplateSelector picks its RedTemplate for items that aren't an ItemViewModel.
+			var presenterTemplate = presenterProperty == nameof(ContentPresenter.ContentTemplate)
+				? """
+					<ContentPresenter.ContentTemplate>
+						<DataTemplate>
+							<TextBlock Text="From presenter" />
+						</DataTemplate>
+					</ContentPresenter.ContentTemplate>
+					"""
+				: """
+					<ContentPresenter.ContentTemplateSelector>
+						<cp:ItemTemplateSelector>
+							<cp:ItemTemplateSelector.RedTemplate>
+								<DataTemplate>
+									<TextBlock Text="From presenter" />
+								</DataTemplate>
+							</cp:ItemTemplateSelector.RedTemplate>
+						</cp:ItemTemplateSelector>
+					</ContentPresenter.ContentTemplateSelector>
+					""";
+
+			var SUT = new ContentProbeListView
+			{
+				ItemTemplateSelector = new LambdaDataTemplateSelector(_ => SelectableItemTemplateA),
+				ItemContainerStyle = XamlHelper.LoadXaml<Style>($$"""
+					<Style TargetType="ListViewItem" xmlns:cp="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ContentPresenterPages">
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="ListViewItem">
+									<ContentPresenter Content="{TemplateBinding Content}">
+										{{presenterTemplate}}
+									</ContentPresenter>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+					"""),
+				ItemsSource = Enumerable.Range(0, 3).Select(i => new DefaultItem { Name = $"Item {i}", Value = i }).ToArray(),
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var container = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0) as ListViewItem);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("From presenter", (container.ContentTemplateRoot as TextBlock)?.Text);
+			Assert.IsNotEmpty(SUT.Probes.Where(p => p.Stage == ContentProbeListViewItem.MeasureStage).ToArray(), "The item containers were never measured.");
+
+			var otherRoots = SUT.Probes.Where(p => p.RootText is not null && p.RootText != "From presenter").Select(p => $"{p.Stage}: '{p.RootText}'").ToArray();
+			Assert.IsEmpty(otherRoots, "An item container presented another root than the presenter's own template: " + string.Join("; ", otherRoots));
+		}
+
+		[TestMethod]
 		public async Task When_List_Given_More_Space()
 		{
 
@@ -6194,6 +6295,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				ItemsChangedAction?.Invoke();
 			}
 		}
+
+		/// <summary>
+		/// Records the content root of its item containers whenever they are templated, measured or arranged.
+		/// </summary>
+		public partial class ContentProbeListView : ListView
+		{
+			public List<ContentProbe> Probes { get; } = new();
+
+			protected override DependencyObject GetContainerForItemOverride() => new ContentProbeListViewItem(Probes);
+		}
+
+		public partial class ContentProbeListViewItem : ListViewItem
+		{
+			public const string MeasureStage = "Measure";
+
+			private readonly List<ContentProbe> _probes;
+
+			public ContentProbeListViewItem(List<ContentProbe> probes) => _probes = probes;
+
+			protected override void OnApplyTemplate()
+			{
+				base.OnApplyTemplate();
+				Probe("ApplyTemplate");
+			}
+
+			protected override global::Windows.Foundation.Size MeasureOverride(global::Windows.Foundation.Size availableSize)
+			{
+				Probe(MeasureStage);
+				return base.MeasureOverride(availableSize);
+			}
+
+			protected override global::Windows.Foundation.Size ArrangeOverride(global::Windows.Foundation.Size finalSize)
+			{
+				var size = base.ArrangeOverride(finalSize);
+				Probe("Arrange");
+				return size;
+			}
+
+			private void Probe(string stage)
+			{
+				var rootText = (ContentTemplateRoot as TextBlock)?.Text;
+
+				// Without a template, the presenter shows Content.ToString() in a TextBlock.
+				_probes.Add(new(stage, rootText, rootText is not null && rootText == Content?.ToString()));
+			}
+		}
+
+		public record ContentProbe(string Stage, string RootText, bool IsPlaceholder);
 
 		public class ViewItem : List<string>
 		{
