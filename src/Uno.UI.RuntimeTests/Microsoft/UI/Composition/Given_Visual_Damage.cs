@@ -498,6 +498,83 @@ public class Given_Visual_Damage
 #endif
 	}
 
+	// Scrolling moves a stable subtree without changing it, so it is replayed from its cached children picture and its
+	// descendants are not walked: their last-rendered bounds stay where they were before the scroll. Removing that
+	// subtree (navigating away from the scrolled page) must still damage where it was painted last.
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25478")]
+	public async Task When_Scrolled_Collapsed_Subtree_Is_Removed_Then_Its_Current_Area_Is_Damaged()
+	{
+#if __SKIA__
+		var compositor = Compositor.GetSharedCompositor();
+
+		var root = compositor.CreateContainerVisual();
+		root.Size = new Vector2(200, 200);
+
+		var target = new DamageRecorder();
+		root.CompositionTarget = target;
+
+		var page = compositor.CreateContainerVisual();
+		page.Size = new Vector2(200, 200);
+		root.Children.InsertAtTop(page);
+
+		var scroller = compositor.CreateContainerVisual();
+		scroller.Size = new Vector2(200, 200);
+		page.Children.InsertAtTop(scroller);
+
+		var content = compositor.CreateContainerVisual();
+		content.Size = new Vector2(200, 200);
+		scroller.Children.InsertAtTop(content);
+
+		// Enough visuals for the content to qualify for collapsing.
+		for (var i = 0; i < Visual.PictureCollapsingOptimizationVisualCountThreshold; i++)
+		{
+			var filler = compositor.CreateSpriteVisual();
+			filler.Brush = compositor.CreateColorBrush(Colors.Magenta);
+			filler.Size = new Vector2(1, 1);
+			content.Children.InsertAtTop(filler);
+		}
+
+		var marker = compositor.CreateSpriteVisual();
+		marker.Brush = compositor.CreateColorBrush(Colors.Magenta);
+		marker.Size = new Vector2(20, 20);
+		marker.Offset = new Vector3(10, 10, 0);
+		content.Children.InsertAtTop(marker);
+
+		using var damage = new DamageRegion();
+		for (var frame = 0; frame <= Visual.PictureCollapsingOptimizationFrameThreshold + 5; frame++)
+		{
+			damage.Reset();
+			RenderFrame(root, damage);
+		}
+
+		// Moving the scroller invalidates its ancestors, so the stable content is the one collapsed next.
+		scroller.Offset = new Vector3(0, 1, 0);
+		damage.Reset();
+		RenderFrame(root, damage);
+
+		// Scrolled: the content is replayed at its new placement without walking the marker.
+		scroller.Offset = new Vector3(0, 100, 0);
+		damage.Reset();
+		RenderFrame(root, damage);
+
+		damage.Reset();
+		target.Damage.Clear();
+		root.Children.Remove(page);
+		RenderFrame(root, damage);
+
+		// The marker was last painted at (10, 110)-(30, 130).
+		using var reported = SnapshotDamage(damage);
+		Assert.IsTrue(
+			target.Damage.Exists(r => r.Contains(new Point(20, 120))) || reported.FillContains(new Vector2(20, 120)),
+			$"Removing the scrolled page did not damage where its content was last painted (target damage: {string.Join(", ", target.Damage)}).");
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
 	// A visual that repaints every frame changes without raising any of the flags that invalidate a cached children
 	// picture. Once its subtree is stable long enough to be collapsed into one, it would no longer be walked: frozen
 	// on screen and never damaged again. Painting it has to keep its ancestors from collapsing.
