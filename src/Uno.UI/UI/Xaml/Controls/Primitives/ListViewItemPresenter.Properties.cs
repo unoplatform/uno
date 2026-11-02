@@ -85,6 +85,7 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: color of multi-drag DND overlay. Semitransparent.
 	/// </summary>
+	// TODO Uno: https://github.com/unoplatform/uno/issues/25922
 	[Uno.NotImplemented]
 	public Brush? DragBackground
 	{
@@ -102,6 +103,7 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: color of multi-drag DND overlay item count.
 	/// </summary>
+	// TODO Uno: https://github.com/unoplatform/uno/issues/25922
 	[Uno.NotImplemented]
 	public Brush? DragForeground
 	{
@@ -119,6 +121,7 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: shown when has keyboard focus.
 	/// </summary>
+	// TODO Uno: https://github.com/unoplatform/uno/issues/25923
 	[Uno.NotImplemented]
 	public Brush? FocusBorderBrush
 	{
@@ -267,6 +270,7 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: opacity of InnerDragContent when dragging.
 	/// </summary>
+	// TODO Uno: https://github.com/unoplatform/uno/issues/25922
 	[Uno.NotImplemented]
 	public double DragOpacity
 	{
@@ -460,6 +464,7 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: shown when has keyboard focus.
 	/// </summary>
+	// TODO Uno: https://github.com/unoplatform/uno/issues/25923
 	[Uno.NotImplemented]
 	public Brush? FocusSecondaryBorderBrush
 	{
