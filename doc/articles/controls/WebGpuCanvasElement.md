@@ -7,11 +7,15 @@ uid: Uno.Controls.WebGpuCanvasElement
 > [!IMPORTANT]
 > This functionality is only available when the app renders with the WebGPU backend. With any other backend, the element doesn't render, and it reports this through `IsWebGpuInitialized` and `OnWebGpuUnavailable`. It isn't available on WinAppSDK.
 
-`WebGpuCanvasElement` is a control for drawing with your own WebGPU commands. It can be enabled by adding the `WebGpuCanvas` [UnoFeature](xref:Uno.Features.Uno.Sdk), which also adds the WebGPU backend. The app still has to select that backend on its host builder:
+`WebGpuCanvasElement` is a control for drawing with your own WebGPU commands. It can be enabled by adding the `WebGpuCanvas` [UnoFeature](xref:Uno.Features.Uno.Sdk), which also adds the WebGPU backend. The app still has to select that backend on its host builder. Register Skia after it, so the app falls back to Skia where WebGPU can't be initialized:
 
 ```csharp
-builder.GraphicsBackend(Uno.UI.Composition.WebGpu.WebGpuBackend.CreateGraphicsProvider());
+builder
+    .GraphicsBackend(Uno.UI.Composition.WebGpu.WebGpuBackend.CreateGraphicsProvider())
+    .GraphicsBackend(Uno.UI.Composition.Skia.SkiaBackend.CreateGraphicsProvider());
 ```
+
+Registering WebGPU alone replaces the implicit Skia default, so the app then has no fallback. See [WebGPU Rendering Backend](xref:uno.features.renderer.webgpu).
 
 The element renders on the same WebGPU device as the rest of the app. Your commands render into a texture, and the backend draws that texture in the element's place with no copy.
 

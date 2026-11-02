@@ -227,6 +227,8 @@
         href: xref:Uno.Skia.macOS
       - name: Vulkan Rendering Backend
         href: xref:Uno.Skia.Vulkan
+      - name: WebGPU Rendering Backend
+        href: xref:uno.features.renderer.webgpu
       - name: Getting Started With Tests
         href: xref:Uno.Authoring.Tests
       - name: Logging
