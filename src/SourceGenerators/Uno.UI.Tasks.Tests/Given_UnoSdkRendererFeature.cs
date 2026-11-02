@@ -90,37 +90,26 @@ public class Given_UnoSdkRendererFeature
 
 		unoFeatures.Should().NotContain(";skia;");
 		packages.Should().NotContain(SkiaPackages);
-		packages.Should().Contain("Uno.WinUI.Composition.WebGpu");
+		packages.Should().Contain(["Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu"]);
 	}
 
 	[TestMethod]
-	[DataRow("")]
-	[DataRow("WebGpuCanvas")]
-	public void When_Windows_Head_Sets_TargetFramework_In_Its_Body_Then_No_Renderer_Is_Implied(string features)
+	public void When_Library_Lists_WebGpu_Then_The_Canvas_Comes_With_It()
 	{
-		var (unoFeatures, packages) = Evaluate("WinExe", features, Windows);
+		var (unoFeatures, packages) = Evaluate("Library", "WebGpu");
+
+		unoFeatures.Should().NotContain(";skia;");
+		packages.Should().NotContain(SkiaPackages);
+		packages.Should().Contain(["Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu"]);
+	}
+
+	[TestMethod]
+	public void When_Windows_Head_Sets_TargetFramework_In_Its_Body_Then_No_Renderer_Is_Implied()
+	{
+		var (unoFeatures, packages) = Evaluate("WinExe", "", Windows);
 
 		unoFeatures.Should().NotContain(";skia;").And.NotContain(";webgpu;");
 		packages.Should().NotContain(SkiaPackages);
-	}
-
-	[TestMethod]
-	public void When_Head_Lists_WebGpuCanvas_Then_WebGpu_Is_Added_Next_To_Skia()
-	{
-		var (unoFeatures, packages) = Evaluate("Exe", "WebGpuCanvas");
-
-		unoFeatures.Should().Contain(";skia;").And.Contain(";webgpu;");
-		packages.Should().Contain(["Uno.WinUI.Composition.Skia", "Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu"]);
-	}
-
-	[TestMethod]
-	public void When_Library_Lists_WebGpuCanvas_Then_Only_WebGpu_Is_Added()
-	{
-		var (unoFeatures, packages) = Evaluate("Library", "WebGpuCanvas");
-
-		unoFeatures.Should().Contain(";webgpu;").And.NotContain(";skia;");
-		packages.Should().NotContain(SkiaPackages);
-		packages.Should().Contain(["Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu"]);
 	}
 
 	[TestMethod]
