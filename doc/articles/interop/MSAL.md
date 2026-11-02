@@ -66,7 +66,9 @@ and, for interactive token acquisition, a web UI that signs in through the
 [`WebAuthenticationBroker`](xref:Uno.Features.WAB) popup. The popup's title, size and timeout follow
 `WinRTFeatureConfiguration.WebAuthenticationBroker`. Closing the popup, or canceling the token
 passed to `ExecuteAsync()`, surfaces as an `MsalClientException` with the `authentication_canceled`
-error code and closes the popup. A popup that times out or is blocked by the browser surfaces as
+error code and closes the popup. An `authentication_canceled` reported as soon as the popup opens
+usually means the hosting page enforces COOP (see below), which hides the popup from the app. A
+popup that times out or is blocked by the browser surfaces as
 `authentication_ui_failed`. Leave
 `WinRTFeatureConfiguration.WebAuthenticationBroker.IFrameHtmlId` unset: when it is set, the broker
 signs in through an iframe instead, which Microsoft Entra ID refuses to load.
@@ -84,6 +86,8 @@ Particularities for WASM:
 * Because of browser security requirements, the `redirectUri` must be on the same **protocol** (http/https), **hostname** & **port** as your application. The path is not particularly important and there's a good practice to set the callback URI to some static content defined in your `wwwroot` folder (could be an empty page). For example:
 
   * Define this *Redirect URI* in Azure AD: `http://localhost:5000/authentication/login-callback.htm` - for local development using the port  `5000` with `http` protocol. (Azure AD accepts non-`https` redirect URIs for localhost to simplify development - `https` will work too).
+
+    Register it under the **Single-page application** platform. Under *Mobile and desktop applications*, the token request sent from the browser fails CORS with `AADSTS9002326`.
 
     > Note about the port number: If you're using IISExpress to run your application from VisualStudio, it could be on another port. That's the default port for Kestrel. Make sure to register the right port in Azure AD and provide the right uri at runtime.
     >
