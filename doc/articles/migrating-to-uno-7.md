@@ -887,16 +887,22 @@ re-baseline visual tests:
 
 Independently of rendering, list items now draw their chrome the way WinUI does:
 
-- **`ListViewItem` and `GridViewItem` render through `ListViewItemPresenter` and
-  `GridViewItemPresenter`.** The default Fluent styles no longer use the expanded templates, so
-  hover, selection and multi-select visuals change, and named template parts such as
-  `MultiSelectSquare` no longer exist. `ListViewItemExpanded` still ships and can be set as
-  `ItemContainerStyle`. The Fluent `GridViewItemExpanded` is removed, as WinUI has none, so
-  `{StaticResource GridViewItemExpanded}` now resolves to an older, non-Fluent style. Copy the
-  template into your app if you depend on it.
-- **`GridViewItem` defaults to `AllowDrop="True"`**, as in WinUI. While a drag is over the middle
-  of an item, the item shows its drag-over state and marks `DragOver` handled, so `DragOver`
-  handlers on the `GridView` or its ancestors are not called there. Register them with
+- **`ListViewItem` renders through `ListViewItemPresenter`.** The default Fluent style no
+  longer uses the expanded template, so hover, selection and multi-select visuals change, and
+  named template parts such as `MultiSelectSquare` no longer exist. `ListViewItemExpanded` still
+  ships and can be set as `ItemContainerStyle`.
+- **`GridViewItem` keeps its expanded template for now.** To opt into the WinUI chrome, set
+  `ItemContainerStyle="{StaticResource DefaultGridViewItemStyle}"`. As in WinUI, that style also
+  roots on `ListViewItemPresenter` and sets `AllowDrop="True"`.
+- **`ListViewItemPresenter` and `GridViewItemPresenter` must be the root of the item template.**
+  A retemplate such as `<Grid><ListViewItemPresenter /></Grid>` rendered before, but now throws
+  `InvalidOperationException` ("can only be used as the first child in the template") during
+  measure, as in WinUI. Make the presenter the template root, or use a plain `ContentPresenter`.
+- **Items with `AllowDrop="True"` accept drops into their middle.** While a drag is over the
+  middle of such an item (the center 60% of a `ListViewItem`, 40% of a `GridViewItem`), the item
+  shows its drag-over state and marks `DragOver` handled, as in WinUI. So `DragOver` handlers on
+  the list or its ancestors are not called there, and built-in reordering only happens over the
+  edge zones of the item. Register handlers with
   `AddHandler(UIElement.DragOverEvent, handler, handledEventsToo: true)`, or set `AllowDrop` to
   `False` in your `ItemContainerStyle`.
 
