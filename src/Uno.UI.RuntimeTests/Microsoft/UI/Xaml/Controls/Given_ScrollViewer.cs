@@ -3163,7 +3163,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		[DataRow(0d, 1000.7)]
 		[DataRow(1500d, 500.3)]
 		[DataRow(100.3, 100.9)]
@@ -3181,6 +3180,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.ChangeView(null, start, null, disableAnimation: true);
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => SUT.VerticalOffset == start); // WinUI applies it on a later frame
 
 			var offsets = new List<double> { SUT.VerticalOffset };
 			var isFinal = false;
@@ -3193,11 +3193,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.ChangeView(null, target, null, disableAnimation: false);
 			await WindowHelper.WaitFor(() => isFinal, timeoutMS: 3000);
 
+			// WinUI animates with float offsets, so it can end on 500.29998779296875 for 500.3. The steps this test catches
+			// are 0.1px or more.
+			const double Tolerance = 0.001;
 			var direction = Math.Sign(target - start);
 			Assert.IsTrue(
-				offsets.Zip(offsets.Skip(1)).All(step => (step.Second - step.First) * direction >= 0),
+				offsets.Zip(offsets.Skip(1)).All(step => (step.Second - step.First) * direction >= -Tolerance),
 				$"The offsets moved back: {string.Join(", ", offsets)}");
-			Assert.AreEqual(target, SUT.VerticalOffset);
+			Assert.AreEqual(target, SUT.VerticalOffset, Tolerance);
 		}
 
 		[TestMethod]
