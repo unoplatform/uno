@@ -79,6 +79,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private readonly Window _window;
 
 	private int _synchronizedShutDownTopWindowIdleCounter;
+	private readonly X11TitleBarDecorations _titleBarDecorations = new();
 
 	private X11Window? _x11Window;
 	private X11Window? _x11TopWindow;
@@ -172,13 +173,17 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	}
 
 	internal void ExtendContentIntoTitleBar(bool extend)
-	{
-		if (Closed.IsCompleted)
-		{
-			return;
-		}
+		=> SetDecorations(_titleBarDecorations.ExtendContentIntoTitleBar(extend));
 
-		X11Helper.SetMotifWMDecorations(RootX11Window, !extend, 0xFF);
+	internal void SetPresenterHasTitleBar(bool hasTitleBar)
+		=> SetDecorations(_titleBarDecorations.SetPresenterHasTitleBar(hasTitleBar));
+
+	private void SetDecorations(int decorations)
+	{
+		if (!Closed.IsCompleted)
+		{
+			X11Helper.SetMotifWMDecorationsWord(RootX11Window, decorations);
+		}
 	}
 
 	private void UpdateWindowPropertiesFromPackage()
