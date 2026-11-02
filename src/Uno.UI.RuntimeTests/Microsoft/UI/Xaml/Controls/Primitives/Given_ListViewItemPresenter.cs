@@ -174,6 +174,26 @@ public partial class Given_ListViewItemPresenter
 	}
 
 	[TestMethod]
+	public void When_Presenter_Is_Not_Template_Root_Then_Measure_Throws()
+	{
+		var item = new ListViewItem
+		{
+			Content = "Item",
+			Template = (ControlTemplate)XamlReader.Load(
+				"""
+				<ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" TargetType="ListViewItem">
+					<Grid><ListViewItemPresenter /></Grid>
+				</ControlTemplate>
+				"""),
+		};
+		item.ApplyTemplate();
+
+		var ex = Assert.ThrowsExactly<InvalidOperationException>(() => item.Measure(new Size(100, 100)));
+
+		Assert.AreEqual("ListViewItemPresenter can only be used as the first child in the template for a ListViewItem.", ex.Message);
+	}
+
+	[TestMethod]
 	public void When_Linked_Then_Measure_Does_Not_Throw()
 	{
 		var presenter = new ListViewItemPresenter();
