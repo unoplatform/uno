@@ -78,4 +78,12 @@ partial class TextCommandBarFlyout
 			SecondaryCommands.Add(button);
 		}
 	}
+
+	private protected override void OnClosed()
+	{
+		base.OnClosed();
+
+		// The actions capture their TextBox and the default flyout is shared: once closed, let the TextBox go.
+		m_platformActions.Clear();
+	}
 }

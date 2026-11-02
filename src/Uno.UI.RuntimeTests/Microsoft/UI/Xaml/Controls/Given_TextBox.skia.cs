@@ -5805,6 +5805,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				=> new[] { new Uno.UI.Xaml.Controls.Extensions.TextFlyoutPlatformCommand("Test", "Test Command", execute) };
 		}
 
+		// Its action holds on to an object of its own, as the iOS Look Up, Share and Scan Text actions hold their TextBox.
+		private sealed class CapturingFlyoutCommands : Uno.UI.Xaml.Controls.Extensions.ITextCommandBarFlyoutCommandsExtension
+		{
+			public WeakReference Captured { get; private set; }
+
+			public IEnumerable<Uno.UI.Xaml.Controls.Extensions.TextFlyoutPlatformCommand> GetCommands(TextBox target)
+			{
+				var captured = new object();
+				Captured = new WeakReference(captured);
+				return new[] { new Uno.UI.Xaml.Controls.Extensions.TextFlyoutPlatformCommand("Test", "Test Command", () => GC.KeepAlive(captured)) };
+			}
+		}
+
+		// The default selection flyout is shared by every TextBox: once it closes, what its platform commands' actions
+		// hold on to (their TextBox, and so its DataContext) must not stay alive with it.
+		[TestMethod]
+		public async Task When_Touch_Flyout_Closed_Platform_Command_Actions_Are_Released()
+		{
+			var commands = new CapturingFlyoutCommands();
+			TextCommandBarFlyout.PlatformCommandsOverrideForTesting = commands;
+			using var _ = new DisposableAction(() => TextCommandBarFlyout.PlatformCommandsOverrideForTesting = null);
+
+			var elsewhere = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			var textBox = new TextBox { Width = 400, Text = "Some Text" };
+			await UITestHelper.Load(new StackPanel { Children = { elsewhere, textBox } });
+			textBox.Focus(FocusState.Programmatic);
+			textBox.Select(0, 4);
+
+			// A touch makes the flyout open as a touch flyout, the only kind that gets platform commands.
+			TapAsSeparateGesture(elsewhere.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			var flyout = (TextCommandBarFlyout)textBox.SelectionFlyout;
+			flyout.ShowAt(textBox);
+			await WindowHelper.WaitFor(() => flyout.IsOpen, message: "the flyout should open");
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(
+				flyout.SecondaryCommands.OfType<AppBarButton>().Any(b => b.Label == "Test Command"),
+				"the touch flyout should have the platform command");
+
+			flyout.Hide();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(
+				await TestHelper.TryWaitUntilCollected(commands.Captured),
+				"the closed flyout should not keep what its platform command's action holds alive");
+		}
+
 		// A handle pressed right after a double-tap starts a new gesture: the menu the double-tap deferred must not
 		// pop up under the finger.
 		[TestMethod]
