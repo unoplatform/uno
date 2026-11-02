@@ -49,15 +49,21 @@ internal static class DpiBootstrap
 
 	private static unsafe string GetErrorMessage(uint errorCode)
 	{
-		IntPtr* messagePtr = stackalloc IntPtr[1];
+		var message = IntPtr.Zero;
 		var messageLength = PInvoke.FormatMessage(
 			FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_IGNORE_INSERTS,
 			default,
 			errorCode,
 			0,
-			new PWSTR((char*)messagePtr),
+			new PWSTR((char*)&message),
 			0);
-		var message = *messagePtr;
+
+		// The system has no text for some codes; this only builds a log message, so it must not throw.
+		if (messageLength == 0 || message == IntPtr.Zero)
+		{
+			return $"Unknown error 0x{errorCode:X8}";
+		}
+
 		try
 		{
 			return Marshal.PtrToStringUni(message, (int)messageLength);
