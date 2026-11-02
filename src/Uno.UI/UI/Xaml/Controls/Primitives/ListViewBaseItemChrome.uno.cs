@@ -58,12 +58,19 @@ partial class ListViewBaseItemPresenter : IBorderInfoProvider
 
 	BorderVisual IBorderInfoProvider.BorderVisual => ChromeVisual;
 
-	internal override void OnArrangeVisual(Rect rect, Rect? clip)
-	{
-		base.OnArrangeVisual(rect, clip);
+	// Set by InvalidateRender and consumed once by the next arrange, standing in for WinUI's NWSetContentDirty.
+	private bool m_layersDirty;
+	private Size m_layersSize;
 
-		// The layers are sized from the chrome bounds.
-		RenderLayers();
+	internal override void AfterArrange()
+	{
+		base.AfterArrange();
+
+		// The layers are sized from the chrome bounds, so a move alone keeps them.
+		if (m_layersDirty || m_layersSize != new Size(ActualWidth, ActualHeight))
+		{
+			RenderLayers();
+		}
 	}
 
 	/// <summary>
@@ -72,6 +79,9 @@ partial class ListViewBaseItemPresenter : IBorderInfoProvider
 	/// <remarks>Uno-specific: replaces the hwwalk.cpp RenderLayer calls (PrimaryChrome_Pre, PrimaryChrome_Post, SecondaryChrome_Post).</remarks>
 	private void RenderLayers()
 	{
+		m_layersDirty = false;
+		m_layersSize = new Size(ActualWidth, ActualHeight);
+
 		// Uno-specific: configured eagerly from property changes, so an unlinked presenter draws nothing instead of raising the wrong-parent error.
 		var canRender = m_pParentListViewBaseItemNoRef is not null;
 

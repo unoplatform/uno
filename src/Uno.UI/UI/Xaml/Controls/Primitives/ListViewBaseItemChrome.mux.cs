@@ -784,7 +784,10 @@ partial class ListViewBaseItemPresenter
 
 	// The "ListViewBaseItemRoundedChromeEnabled" theme resource value is used to turn on/off the rendering with rounded corners.
 	// For performance reasons, the resource is only evaluated once. TAEF tests can invalidate the cache by calling TestServices::Utilities::DeleteResourceDictionaryCaches().
-	internal bool IsRoundedListViewBaseItemChromeEnabled()
+	internal bool IsRoundedListViewBaseItemChromeEnabled() => IsRoundedListViewBaseItemChromeEnabledCached();
+
+	// Uno-specific: also read by ListViewBaseItem.ChangeVisualState, where WinUI calls the uncached static on every state change.
+	internal static bool IsRoundedListViewBaseItemChromeEnabledCached()
 	{
 		s_isRoundedListViewBaseItemChromeEnabled ??= IsRoundedListViewBaseItemChromeEnabledStatic();
 
@@ -1208,8 +1211,12 @@ partial class ListViewBaseItemPresenter
 	internal void InvalidateRender()
 	{
 		// Uno-specific: WinUI dirties this, the parent item and the secondary chrome (NWSetContentDirty) for the next render walk;
-		// Uno has no per-frame walk of the chrome, so the layers are configured right away.
-		RenderLayers();
+		// Uno has no per-frame walk of the chrome, so the layers are rebuilt once by the next arrange.
+		if (!m_layersDirty)
+		{
+			m_layersDirty = true;
+			InvalidateArrange();
+		}
 	}
 
 	// Uno-specific: CListViewBaseItemChrome::OnPropertyChanged (C:2377-2383) calls the base then OnPropertyChangedNewStyle;
@@ -2425,7 +2432,7 @@ partial class ListViewBaseItemPresenter
 			}
 
 			shouldDrawFocusRect = true;
-			// Uno-specific: m_isFocusVisualDrawnByFocusManager = true is derived by IsFocusVisualDrawnByFocusManager() (A33).
+			// Uno-specific: m_isFocusVisualDrawnByFocusManager = true is derived by IsFocusVisualDrawnByFocusManager().
 		}
 	}
 
