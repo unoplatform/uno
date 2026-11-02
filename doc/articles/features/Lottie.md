@@ -162,3 +162,5 @@ mapping.
 ## Limitations
 
 On Android, the `Stretch` mode of `Fill` is not currently supported.
+
+The Skottie renderer ignores Skottie's `SkSL Shader` and `SkSL Color Filter` effects, which run shader code embedded in the animation file. Running that code from an untrusted source is unsafe, and After Effects exports don't produce these effects.

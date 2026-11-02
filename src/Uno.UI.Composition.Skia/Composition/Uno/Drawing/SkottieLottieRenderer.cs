@@ -3,6 +3,7 @@
 using System;
 using SkiaSharp;
 using SkiaSharp.SceneGraph;
+using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 using System.Numerics;
@@ -19,7 +20,22 @@ internal sealed class SkottieLottieRenderer : ILottieRenderer
 {
 	public ILottieAnimation? Load(string animationJson, IGeometryFactory geometry)
 	{
-		using var stream = new Utf8StringStream(animationJson);
+		if (SkottieSkslEffectFilter.Filter(animationJson) is not { } json)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("The Lottie animation was not loaded: it may contain SkSL effects but is not valid JSON.");
+			}
+
+			return null;
+		}
+
+		if (!ReferenceEquals(json, animationJson) && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("SkSL effects were removed from the Lottie animation: running untrusted SkSL is unsafe.");
+		}
+
+		using var stream = new Utf8StringStream(json);
 		return SkiaSharp.Skottie.Animation.TryCreate(stream, out var animation) && animation is not null
 			? new SkottieLottieAnimation(animation)
 			: null;
