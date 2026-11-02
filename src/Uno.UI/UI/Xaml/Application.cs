@@ -412,7 +412,17 @@ namespace Microsoft.UI.Xaml
 			// OnLaunched should execute only for full apps, not for individual islands.
 			if (CoreApplication.IsFullFledgedApp && !WasLaunched)
 			{
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetLaunchArguments(appInstance)));
+				try
+				{
+					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetLaunchArguments(appInstance)));
+				}
+				catch (Exception e)
+				{
+					if (!RaiseUnhandledException(e))
+					{
+						throw;
+					}
+				}
 			}
 
 			WasLaunched = true;
@@ -466,6 +476,16 @@ namespace Microsoft.UI.Xaml
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
 
+		/// <summary>
+		/// Raises <see cref="UnhandledException"/> as WinUI does for an exception the app code left unhandled.
+		/// </summary>
+		/// <returns>Whether a handler set <see cref="UnhandledExceptionEventArgs.Handled"/>; if not, the caller rethrows.</returns>
+		private bool RaiseUnhandledException(Exception e)
+		{
+			var args = new UnhandledExceptionEventArgs(e, false);
+			UnhandledException?.Invoke(this, args);
+			return args.Handled;
+		}
 
 		private void InitializeTextScaling()
 		{
