@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class TextBoxView
+	internal partial class TextBoxView
 	{
 		private readonly IOverlayTextBoxViewExtension? _overlayTextBoxViewExtension;
 

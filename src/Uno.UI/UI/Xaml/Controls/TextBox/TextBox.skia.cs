@@ -428,6 +428,7 @@ public partial class TextBox : ITextSelectionGripperHost
 				}
 			}
 
+			TextBoxView.AttachSpellCheckSquiggles(ContentElement);
 			TextBoxView.SetTextNative(Text);
 		}
 	}
