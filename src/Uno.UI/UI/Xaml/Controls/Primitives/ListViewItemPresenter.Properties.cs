@@ -85,6 +85,7 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: color of multi-drag DND overlay. Semitransparent.
 	/// </summary>
+	[Uno.NotImplemented]
 	public Brush? DragBackground
 	{
 		get => GetDragBackgroundValue();
@@ -101,6 +102,7 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: color of multi-drag DND overlay item count.
 	/// </summary>
+	[Uno.NotImplemented]
 	public Brush? DragForeground
 	{
 		get => GetDragForegroundValue();
@@ -117,6 +119,7 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: shown when has keyboard focus.
 	/// </summary>
+	[Uno.NotImplemented]
 	public Brush? FocusBorderBrush
 	{
 		get => GetFocusBorderBrushValue();
@@ -254,7 +257,7 @@ partial class ListViewItemPresenter
 		set => SetDisabledOpacityValue(value);
 	}
 
-	[GeneratedDependencyProperty(DefaultValue = 0.55f, LocalCache = false, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	[GeneratedDependencyProperty(DefaultValue = 0.55, LocalCache = false, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty DisabledOpacityProperty { get; } = CreateDisabledOpacityProperty();
 
 	#endregion
@@ -264,6 +267,7 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: opacity of InnerDragContent when dragging.
 	/// </summary>
+	[Uno.NotImplemented]
 	public double DragOpacity
 	{
 		get => GetDragOpacityValue();
@@ -456,6 +460,7 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: shown when has keyboard focus.
 	/// </summary>
+	[Uno.NotImplemented]
 	public Brush? FocusSecondaryBorderBrush
 	{
 		get => GetFocusSecondaryBorderBrushValue();

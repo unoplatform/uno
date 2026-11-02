@@ -19,7 +19,6 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ListViewItem);
 		}
 
-		[global::Uno.NotImplemented]
 		public ListViewItemTemplateSettings TemplateSettings { get; } = new();
 
 		protected override AutomationPeer OnCreateAutomationPeer()
