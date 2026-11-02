@@ -27,6 +27,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_GridViewItemPresenter
 {
+	// The implicit GridViewItem style still uses the expanded template, so opt into WinUI's presenter-based one.
+	private static Style DefaultStyle => (Style)Application.Current.Resources["DefaultGridViewItemStyle"];
+
 	[TestInitialize]
 	public void Init() => ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
 
@@ -138,7 +141,7 @@ public class Given_GridViewItemPresenter
 	[TestMethod]
 	public async Task When_Theme_Changes_While_Deselected_Reselected_Borders_Use_New_Theme()
 	{
-		var grid = new GridView { Width = 400, Height = 300, ItemsSource = new[] { "Item 0", "Item 1" } };
+		var grid = new GridView { Width = 400, Height = 300, ItemsSource = new[] { "Item 0", "Item 1" }, ItemContainerStyle = DefaultStyle };
 		var root = new Grid { RequestedTheme = ElementTheme.Light, Children = { grid } };
 		WindowHelper.WindowContent = root;
 		await WindowHelper.WaitForLoaded(grid);
@@ -360,6 +363,7 @@ public class Given_GridViewItemPresenter
 		{
 			Width = 400,
 			Height = 200,
+			ItemContainerStyle = DefaultStyle,
 			AllowDrop = true,
 			CanDragItems = true,
 			CanReorderItems = true,
@@ -443,6 +447,7 @@ public class Given_GridViewItemPresenter
 		{
 			Width = 400,
 			Height = 200,
+			ItemContainerStyle = DefaultStyle,
 			AllowDrop = true,
 			CanDragItems = true,
 			CanReorderItems = true,
@@ -527,10 +532,7 @@ public class Given_GridViewItemPresenter
 				</DataTemplate>
 				""");
 		}
-		if (itemContainerStyle is not null)
-		{
-			grid.ItemContainerStyle = itemContainerStyle;
-		}
+		grid.ItemContainerStyle = itemContainerStyle ?? DefaultStyle;
 
 		WindowHelper.WindowContent = grid;
 		await WindowHelper.WaitForLoaded(grid);
