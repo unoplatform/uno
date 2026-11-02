@@ -274,19 +274,78 @@ namespace Windows.UI.Input
 				_holdingTimer.State = this;
 				_holdingTimer.Tick += OnHoldingTimerTick;
 				_holdingTimer.Start();
+				_pendingHolds.Add(this);
 			}
 
 			private void StopHoldingTimer()
 			{
-				_holdingTimer?.Stop();
-				_holdingTimer = null;
+				if (_holdingTimer is { } timer)
+				{
+					timer.Stop();
+					_holdingTimer = null;
+					_pendingHolds.Remove(this);
+				}
 			}
 
 			private static void OnHoldingTimerTick(DispatcherQueueTimer timer, object _)
 			{
-				timer.Stop();
-				((Gesture)timer.State).TryUpdateHolding(timeElapsed: true);
+				var gesture = (Gesture)timer.State;
+
+#if IS_UNO_UI_PROJECT
+				// Each element which listens to Holding runs its own timer for the press, and they can tick in any order.
+				// Like WinUI, the hold must be raised once, bubbling from the deepest element (which prevents its ancestors' hold).
+				foreach (var deeper in GetDescendantHoldsOfSamePress(gesture))
+				{
+					deeper.OnHoldingTimeElapsed();
+				}
+#endif
+
+				gesture.OnHoldingTimeElapsed();
 			}
+
+			private void OnHoldingTimeElapsed()
+			{
+				StopHoldingTimer();
+				TryUpdateHolding(timeElapsed: true);
+			}
+
+#if IS_UNO_UI_PROJECT
+			// The pending holds of the same press owned by descendants of the gesture's owner, deepest first.
+			private static Gesture[] GetDescendantHoldsOfSamePress(Gesture gesture)
+			{
+				if (_pendingHolds.Count < 2 || gesture._recognizer.Owner is not global::Microsoft.UI.Xaml.UIElement owner)
+				{
+					return [];
+				}
+
+				return _pendingHolds
+					.Where(other => other != gesture
+						&& other.PointerIdentifier == gesture.PointerIdentifier
+						&& other.Down.Timestamp == gesture.Down.Timestamp)
+					.Select(other => (other, depth: GetDepthBelow(other._recognizer.Owner as global::Microsoft.UI.Xaml.UIElement, owner)))
+					.Where(x => x.depth > 0)
+					.OrderByDescending(x => x.depth)
+					.Select(x => x.other)
+					.ToArray();
+			}
+
+			// The number of levels between the ancestor and the element, 0 if the element is not one of its descendants.
+			private static int GetDepthBelow(global::Microsoft.UI.Xaml.UIElement? element, global::Microsoft.UI.Xaml.UIElement ancestor)
+			{
+				var depth = 0;
+				for (var current = element; current is not null; current = global::Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(current) as global::Microsoft.UI.Xaml.UIElement)
+				{
+					if (current == ancestor)
+					{
+						return depth;
+					}
+
+					depth++;
+				}
+
+				return 0;
+			}
+#endif
 			#endregion
 
 			#region Gestures recognition (static helpers that defines the actual gestures behavior)
