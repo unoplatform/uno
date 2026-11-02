@@ -64,13 +64,14 @@
 
 	<!--
 		The Win32 host references WebView2Aot (and through it DirectNAot) for its WebView2 support. Without the
-		`webview` feature nothing creates a WebView, and trimming spends minutes, or hangs, analyzing their deep COM
-		interface chains, so their assets are left out. Set `UnoIncludeWebView2Aot` to keep them.
+		`webview` feature, or a direct Microsoft.Web.WebView2 reference, nothing creates a WebView, and trimming spends
+		minutes, or hangs, analyzing their deep COM interface chains, so their assets are left out. Set
+		`UnoIncludeWebView2Aot` to keep them.
 	-->
 	<Target Name="_UnoRemoveUnusedWebView2Aot"
 			AfterTargets="ResolvePackageAssets"
 			Condition=" '$(IsUnoHead)' == 'true' AND !$(UnoFeatures.Contains(';webview;')) AND '$(UnoIncludeWebView2Aot)' != 'true' ">
-		<ItemGroup>
+		<ItemGroup Condition=" '@(PackageReference->WithMetadataValue('Identity', 'Microsoft.Web.WebView2'))' == '' ">
 			<RuntimeCopyLocalItems Remove="@(RuntimeCopyLocalItems)" Condition="'%(NuGetPackageId)' == 'WebView2Aot' OR '%(NuGetPackageId)' == 'DirectNAot' OR '%(NuGetPackageId)' == 'DirectNAot.Extensions'" />
 			<NativeCopyLocalItems Remove="@(NativeCopyLocalItems)" Condition="'%(NuGetPackageId)' == 'WebView2Aot' OR '%(NuGetPackageId)' == 'DirectNAot' OR '%(NuGetPackageId)' == 'DirectNAot.Extensions'" />
 			<RuntimeTargetsCopyLocalItems Remove="@(RuntimeTargetsCopyLocalItems)" Condition="'%(NuGetPackageId)' == 'WebView2Aot' OR '%(NuGetPackageId)' == 'DirectNAot' OR '%(NuGetPackageId)' == 'DirectNAot.Extensions'" />
