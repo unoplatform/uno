@@ -7469,6 +7469,319 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
+		// The first tap puts the caret after the letter under the finger, and on Android the second tap lands on the
+		// insertion handle there. The word is the one under the finger, not the one after the caret.
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Touch_DoubleTap_Trailing_Half_Of_Letter_Before_Punctuation(bool android)
+		{
+			var SUT = new TextBox { Width = 400, Text = "alpha-beta gamma", TouchSelectionConvention = GetMobileConvention(android) };
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetPointInCharacter(SUT, 4, 0.75); // the last 'a' of "alpha"
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(5, SUT.SelectionStart, "the first tap puts the caret between \"alpha\" and \"-\"");
+
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("alpha", SUT.SelectedText);
+		}
+
+		// At a soft wrap, the caret position after a line's last character starts the next line, where a tap on that
+		// character's trailing half lands. The taps still belong to the line under the finger; the next line is shorter.
+		[TestMethod]
+		[DataRow(true, false)]
+		[DataRow(true, true)]
+		[DataRow(false, false)]
+		[DataRow(false, true)]
+		public async Task When_Touch_Taps_End_Of_Wrapped_Line(bool android, bool secondTapOnNextLine)
+		{
+			using var _ = new DisposableAction(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox { Width = 120, TextWrapping = TextWrapping.Wrap, Text = "Supercalifragilistic", TouchSelectionConvention = GetMobileConvention(android) };
+			await UITestHelper.Load(SUT);
+
+			var parsedText = SUT.TextBoxView.DisplayBlock.ParsedText;
+			var lastOnFirstLine = Enumerable.Range(0, SUT.Text.Length - 1).First(i => parsedText.GetRectForIndex(i + 1).Y != parsedText.GetRectForIndex(i).Y);
+			var firstTap = GetPointInCharacter(SUT, lastOnFirstLine, 0.85);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(firstTap);
+			finger.Release();
+			var lineHeight = parsedText.GetRectForIndex(lastOnFirstLine + 1).Y - parsedText.GetRectForIndex(lastOnFirstLine).Y;
+			finger.Press(secondTapOnNextLine
+				? new Point(firstTap.X, firstTap.Y + lineHeight)
+				: GetPointInCharacter(SUT, lastOnFirstLine, 0.3));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			if (secondTapOnNextLine)
+			{
+				Assert.AreEqual(0, SUT.SelectionLength, "quick taps on adjacent lines aren't a double-tap");
+			}
+			else
+			{
+				Assert.AreEqual(SUT.Text, SUT.SelectedText);
+			}
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Touch_DoubleTap_Second_Tap_Drifts_Along_Line(bool android)
+		{
+			var SUT = new TextBox { Width = 400, Text = "Some Texture", TouchSelectionConvention = GetMobileConvention(android) };
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetPointInCharacter(SUT, 5, 0.5);
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// Past the 10 DIP tap range, as a finger often lands on a double-tap's second tap.
+			finger.Press(new Point(point.X + 15, point.Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Texture", SUT.SelectedText);
+		}
+
+		// Native Android's insertion handle hangs its thumb over the line below the caret. A tap there, quick enough
+		// to be a double-tap, is a tap on that line: it moves the caret instead of selecting the word above. A later
+		// tap there is on the handle, which shows the paste flyout and keeps the caret.
+		[TestMethod]
+		[DataRow(true, false)]
+		[DataRow(true, true)]
+		[DataRow(false, false)]
+		public async Task When_Touch_Taps_On_Adjacent_Lines(bool android, bool pauseBetweenTaps)
+		{
+			using var _ = new DisposableAction(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox { Width = 400, AcceptsReturn = true, Text = "one two\rthree four", TouchSelectionConvention = GetMobileConvention(android) };
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var displayBlock = SUT.TextBoxView.DisplayBlock;
+			var firstLine = displayBlock.ParsedText.GetRectForIndex(1);
+			var secondLine = displayBlock.ParsedText.GetRectForIndex(9);
+			var toScreen = displayBlock.TransformToVisual(null);
+			var tapX = firstLine.Left + firstLine.Width * 0.75;
+			// iOS takes a tap this close to the caret as a tap on the caret, which toggles the edit menu: tap the next
+			// line beside it, still close enough for a double-tap.
+			var secondTapX = android ? tapX : tapX + 20;
+			var first = toScreen.TransformPoint(new Point(tapX, firstLine.Bottom - 3));
+			var second = toScreen.TransformPoint(new Point(secondTapX, secondLine.Top + 3));
+			// "three four" spans indexes 8 to 18; the tap puts the caret at the boundary nearest to it.
+			var expectedCaret = Enumerable.Range(8, 11).OrderBy(i => Math.Abs(displayBlock.ParsedText.GetRectForIndex(i).Left - secondTapX)).First();
+
+			finger.Press(first);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, SUT.SelectionStart);
+
+			if (android)
+			{
+				// The handle popup is placed on a later frame.
+				await WindowHelper.WaitFor(
+					() => SUT.VisibleGrippersForTesting?.end.GetAbsoluteBoundsRect().Contains(second) == true,
+					timeoutMS: 3000,
+					message: $"the second tap {second} should land on the insertion handle");
+			}
+
+			if (pauseBetweenTaps)
+			{
+				TapAfterMultiTapWindow(injector, second);
+			}
+			else
+			{
+				finger.Press(second);
+				finger.Release();
+			}
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionLength, "taps on two lines are not a double-tap");
+			if (pauseBetweenTaps)
+			{
+				await WindowHelper.WaitFor(
+					() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+					message: "a tap on the handle shows the flyout");
+				Assert.AreEqual(2, SUT.SelectionStart, "a tap on the handle keeps the caret");
+			}
+			else
+			{
+				Assert.AreEqual(expectedCaret, SUT.SelectionStart, "the caret should move to the tapped position on the second line");
+				Assert.IsFalse(SUT.SelectionFlyout?.IsOpen ?? false, "a tap on the text doesn't open the flyout the way a tap on the handle does");
+			}
+		}
+
+		// Tapping where the caret already is lands both taps of the double-tap on the insertion handle, which points
+		// at the caret position after "alpha". The word is still the one under the finger.
+		[TestMethod]
+		public async Task When_Touch_DoubleTap_On_Insertion_Handle_Selects_Word_Under_Finger()
+		{
+			using var _ = new DisposableAction(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox { Width = 400, Text = "alpha-beta gamma", TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android };
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetPointInCharacter(SUT, 4, 0.75); // the last 'a' of "alpha"
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting?.end.GetAbsoluteBoundsRect().Contains(point) == true,
+				timeoutMS: 3000,
+				message: "the insertion handle should be under the finger");
+			Assert.AreEqual(5, SUT.SelectionStart);
+
+			TapAfterMultiTapWindow(injector, point);
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("alpha", SUT.SelectedText);
+		}
+
+		// The text changes between the taps (an app reformats it, say), so the first tap's character belongs to
+		// another text: the second tap starts over instead of selecting a word of the new text, or past its end.
+		[TestMethod]
+		[DataRow("ab")]
+		[DataRow("one two three four five")]
+		public async Task When_Touch_DoubleTap_Text_Changes_Between_Taps(string newText)
+		{
+			var SUT = new TextBox { Width = 400, Text = "alpha-beta gamma", TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS };
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetPointInCharacter(SUT, 12, 0.5); // in "gamma"
+			var tapX = SUT.TextBoxView.DisplayBlock.TransformToVisual(null).Inverse.TransformPoint(point).X;
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Text = newText;
+			await WindowHelper.WaitForIdle();
+
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			var parsedText = SUT.TextBoxView.DisplayBlock.ParsedText;
+			var expectedCaret = Enumerable.Range(0, newText.Length + 1).OrderBy(i => Math.Abs(parsedText.GetRectForIndex(i).Left - tapX)).First();
+			Assert.AreEqual(newText, SUT.Text);
+			Assert.AreEqual(0, SUT.SelectionLength, $"the second tap selected '{SUT.SelectedText}'");
+			Assert.AreEqual(expectedCaret, SUT.SelectionStart, "the second tap is a single tap, which places the caret");
+		}
+
+		// A finger often lands on the box's padding below the text it targets, or under the last line of a tall box.
+		// Native Android and iOS place the caret on the nearest line by X there, not at the end of the text.
+		[TestMethod]
+		[DataRow(true, false)]
+		[DataRow(false, false)]
+		[DataRow(true, true)]
+		public async Task When_Touch_Tap_Below_Text_Places_Caret_By_X(bool android, bool multiline)
+		{
+			using var _ = new DisposableAction(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = multiline
+				? new TextBox { Width = 400, Height = 120, AcceptsReturn = true, Text = "one two\rthree four", TouchSelectionConvention = GetMobileConvention(android) }
+				: new TextBox { Width = 400, Text = "Hello Jackie how are you", TouchSelectionConvention = GetMobileConvention(android) };
+			var bounds = await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = new Point(GetPointInCharacter(SUT, multiline ? 9 : 1, 0.75).X, bounds.Bottom - 3);
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			var displayBlock = SUT.TextBoxView.DisplayBlock;
+			var tapX = displayBlock.TransformToVisual(null).Inverse.TransformPoint(point).X;
+			var (lineStart, lineEnd) = multiline ? (8, 18) : (0, SUT.Text.Length);
+			var expectedCaret = Enumerable.Range(lineStart, lineEnd - lineStart + 1).OrderBy(i => Math.Abs(displayBlock.ParsedText.GetRectForIndex(i).Left - tapX)).First();
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(expectedCaret, SUT.SelectionStart, "the caret should follow the finger on the last line");
+		}
+
+		[TestMethod]
+		public async Task When_Touch_LongPress_Below_Text_Selects_Word_Under_Finger_Android()
+		{
+			var SUT = new TextBox { Width = 400, Text = "Hello Jackie how are you", TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android };
+			var bounds = await UITestHelper.Load(SUT);
+
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(new Point(GetPointInCharacter(SUT, 8, 0.5).X, bounds.Bottom - 3)); // in "Jackie"
+			SUT.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Jackie", SUT.SelectedText);
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Touch_DoubleTap_Below_Text_Selects_Word_Under_Finger(bool android)
+		{
+			using var _ = new DisposableAction(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox { Width = 400, Text = "Hello Jackie how are you", TouchSelectionConvention = GetMobileConvention(android) };
+			var bounds = await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = new Point(GetPointInCharacter(SUT, 8, 0.5).X, bounds.Bottom - 3); // in "Jackie"
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Jackie", SUT.SelectedText);
+		}
+
+		// Injected touches are stamped by the injector's own clock, which a Task.Delay doesn't advance: the press carries
+		// the wait that takes it out of the previous tap's multi-tap window.
+		private static void TapAfterMultiTapWindow(InputInjector injector, Point position)
+		{
+			var press = Uno.UI.DevTools.Input.Finger.GetPress(42, position);
+			var info = press.PointerInfo;
+			info.TimeOffsetInMilliseconds = 600;
+			press.PointerInfo = info;
+			injector.InjectTouchInput(new[] { press });
+			injector.InjectTouchInput(new[] { Uno.UI.DevTools.Input.Finger.GetRelease(42, position) });
+		}
+
+		private static TextBoxCore.TouchTextSelectionConvention GetMobileConvention(bool android)
+			=> android ? TextBoxCore.TouchTextSelectionConvention.Android : TextBoxCore.TouchTextSelectionConvention.iOS;
+
+		private static Point GetPointInCharacter(TextBox textBox, int index, double fractionOfWidth)
+		{
+			var displayBlock = textBox.TextBoxView.DisplayBlock;
+			var rect = displayBlock.ParsedText.GetRectForIndex(index);
+			return displayBlock.TransformToVisual(null).TransformPoint(new Point(rect.Left + rect.Width * fractionOfWidth, rect.Top + rect.Height / 2));
+		}
+
 		// Regression: tapping the single Android insertion handle re-sampled the finger point, which sits on the
 		// thumb a line below the caret, so GetIndexAt spilled onto the next render line and jumped the caret to the
 		// end of the text. A tap on the handle must keep the caret where the handle already is. Sister (no-drag case)
@@ -7513,13 +7826,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var caretBeforeTap = SUT.SelectionStart;
 			Assert.IsTrue(caretBeforeTap < SUT.Text.Length, $"the first tap should place the caret mid-text (len {SUT.Text.Length}, was {caretBeforeTap})");
 
-			// Wait past the 500ms multi-tap window so tapping the handle is a single tap (not double-tap-to-select-word).
-			await Task.Delay(600);
-
 			// Tap the THUMB near its bottom edge (what a real finger hits) — the geometry that used to jump the caret.
+			// Past the multi-tap window, so tapping the handle is a single tap (not double-tap-to-select-word).
 			var gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
-			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
-			finger.Release();
+			TapAfterMultiTapWindow(injector, new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
 			await WindowHelper.WaitForIdle();
 
 			// The tap keeps a collapsed caret exactly where the handle was — it must NOT jump to the end of the text.
@@ -7574,13 +7884,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Clipboard.Clear();
 			await WindowHelper.WaitFor(() => !SUT.CanPasteClipboardContent, message: "the clipboard should read empty so Paste is unavailable");
 
-			// Wait past the 500ms multi-tap window so the handle tap is a single tap (not a double-tap-to-select-word).
-			await Task.Delay(600);
+			// The gripper popup is positioned on a later frame; tap it only once it sits over the TextBox.
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "the insertion handle should be positioned over the TextBox before tapping it");
 
-			// Tap the insertion handle itself (grab near its bottom edge, what a real finger hits).
+			// Tap the insertion handle itself (grab near its bottom edge, what a real finger hits), past the multi-tap
+			// window so the handle tap is a single tap (not a double-tap-to-select-word).
 			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
-			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
-			finger.Release();
+			TapAfterMultiTapWindow(injector, new Point(handle.GetCenter().X, handle.Bottom - 2));
 			await WindowHelper.WaitForIdle();
 			// The flyout visibility update is queued to the dispatcher; wait for it to actually open instead of a fixed delay.
 			await WindowHelper.WaitFor(
@@ -7846,9 +8168,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(
 				() => SUT.CaretMode == expectedCaret,
 				message: $"the {convention} touch gesture should leave the caret in {expectedCaret} - the mode that used to arm the scroll lock");
-
-			// Past the multi-tap window, so the drag that follows is not folded into the tap gesture.
-			await Task.Delay(600);
 
 			// A double-tap also pops the selection toolbar, and its light-dismiss overlay would swallow the drag
 			// below instead of letting it reach the ScrollViewer. On a device the first drag simply dismisses it;
@@ -8150,9 +8469,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					&& g.Top < scrollViewer.GetAbsoluteBoundsRect().Bottom,
 				timeoutMS: 3000,
 				message: "the insertion handle should be positioned before dragging it");
-
-			// Past the multi-tap window, so the drag that follows is its own gesture.
-			await Task.Delay(600);
 
 			// Small steps on purpose: one of them lands the caret on the first line below the viewport, which is the
 			// step that used to cull the gripper and drop its capture. A single big move would sample the last line
@@ -8616,9 +8932,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				return;
 			}
 			await WindowHelper.WaitFor(() => moreButton.Visibility == Visibility.Visible && moreButton.GetAbsoluteBoundsRect().Width > 0, message: "the overflow (\"...\") button should be shown while the full selection keeps Select All in the overflow");
-			await Task.Delay(600); // clear the multi-tap window from the double-tap before tapping the MoreButton
-			finger.Press(moreButton.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
+			TapAfterMultiTapWindow(injector, moreButton.GetAbsoluteBoundsRect().GetCenter());
 			await WindowHelper.WaitFor(() => commandBar.IsOpen, message: "tapping the overflow button should open the command bar (realizing Select All in the overflow)");
 			await WindowHelper.WaitForIdle();
 
@@ -8629,14 +8943,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen != true, message: "the selection flyout should close before collapsing the selection");
 			await WindowHelper.WaitForIdle();
 
-			// Wait past the 500ms multi-tap window so the next tap is a single tap (collapse to a caret) rather than a
-			// double-tap-to-select-word.
-			await Task.Delay(600);
-
 			// A plain tap in the text collapses the selection to a caret with the single insertion handle (native
-			// Android). Tapping a selection thumb would NOT do this - it keeps the selection.
-			finger.Press(farPoint);
-			finger.Release();
+			// Android). Tapping a selection thumb would NOT do this - it keeps the selection. It comes after the
+			// multi-tap window, so it isn't a double-tap-to-select-word.
+			TapAfterMultiTapWindow(injector, farPoint);
 			await WindowHelper.WaitFor(
 				() => SUT.SelectedText == "" && SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				message: "a plain tap should collapse the selection to the single insertion handle");
@@ -8657,13 +8967,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				timeoutMS: 3000,
 				message: "the insertion handle should be positioned over the TextBox before tapping it");
 
-			await Task.Delay(600); // a single tap on the handle, not a double-tap-to-select-word
-
 			// Tap the insertion handle (grab near its bottom edge, what a real finger hits) to reopen the flyout over
-			// the caret - now with Select All promoted from the overflow to the lone primary command.
+			// the caret - now with Select All promoted from the overflow to the lone primary command. A single tap on
+			// the handle, not a double-tap-to-select-word.
 			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
-			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
-			finger.Release();
+			TapAfterMultiTapWindow(injector, new Point(handle.GetCenter().X, handle.Bottom - 2));
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(
 				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
@@ -8774,10 +9082,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => moreButton.Visibility == Visibility.Visible && moreButton.GetAbsoluteBoundsRect().Width > 0, message: "the overflow (\"...\") button should be shown while the proofing button sits in the overflow");
 
 			// Tap the overflow to expand the bar - this realizes the proofing button (firing its Loaded handler, the
-			// code path under test). Wait past the multi-tap window from the double-tap first.
-			await Task.Delay(600);
-			finger.Press(moreButton.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
+			// code path under test).
+			TapAfterMultiTapWindow(injector, moreButton.GetAbsoluteBoundsRect().GetCenter());
 			await WindowHelper.WaitFor(() => commandBar.IsOpen, message: "tapping the overflow button should expand the command bar");
 			// Confirm the proofing button actually loaded, so the assertion below is not vacuous.
 			await WindowHelper.WaitFor(() => proofingButton.IsLoaded, message: "the proofing button should be realized once the overflow is expanded");
@@ -8821,6 +9127,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public Task When_Touch_LongPress_Selects_Word_Android()
 			=> AssertTouchLongPress(TextBoxCore.TouchTextSelectionConvention.Android, expectWordSelected: true);
+
+		// A long-press selects the word under the finger, like a double-tap: on the trailing half of a letter, the
+		// nearest caret position is already past that letter.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Trailing_Half_Of_Letter_Before_Punctuation_Android()
+		{
+			var SUT = new TextBox { Width = 400, Text = "alpha-beta gamma", TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android };
+			await UITestHelper.Load(SUT);
+
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(GetPointInCharacter(SUT, 4, 0.75)); // the last 'a' of "alpha"
+			SUT.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("alpha", SUT.SelectedText);
+		}
 
 		[TestMethod]
 		public Task When_Touch_LongPress_Keeps_ContextMenu_Desktop()
@@ -9196,6 +9518,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 			// The capture taken to drag the caret must be released on pointer up, not held past the gesture.
 			Assert.AreEqual(0, SUT.PointerCaptures?.Count ?? 0, "the caret-drag pointer capture must be released on release");
+		}
+
+		// The finger usually slides just below the text while it drags the caret: the caret stays on the line, by X,
+		// instead of jumping to the end of the text.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drag_Below_Text_Keeps_Caret_On_Line_iOS()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 40, bounds.GetCenter().Y);
+
+			finger.Press(startPoint);
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(startPoint);
+			SUT.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+			await WindowHelper.WaitForIdle();
+			var caretAfterPress = SUT.SelectionStart;
+
+			finger.MoveBy(0, bounds.Height, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(caretAfterPress, SUT.SelectionStart);
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
 		}
 
 		// Was When_Touch_Focused_Then_Scrolled_Away, which asserted that a touch-focused TextBox stayed pinned
