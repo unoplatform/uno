@@ -22,6 +22,22 @@
 	<Target Name="_UnoRemoveReferences"
 			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)">
 		<ItemGroup>
+			<!--
+			The Windows assets NuGet resolved for this TFM are kept as they are, so they go through trimming and
+			ReadyToRun like any other package assembly. Re-adding them by path bypassed the linker.
+			-->
+			<_UnoWinUIWindowsReference
+				Include="@(ReferencePath)"
+				Condition="'%(ReferencePath.NuGetPackageId)'=='Uno.WinUI' and $([System.String]::Copy('%(ReferencePath.FullPath)').Contains('-windows'))" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_UnoWinUIWindowsLibDir Condition="'@(_UnoWinUIWindowsReference)'!=''">@(_UnoWinUIWindowsReference->'%(RootDir)%(Directory)'->Distinct())</_UnoWinUIWindowsLibDir>
+			<_UnoWinUIWindowsLibDir Condition="'@(_UnoWinUIWindowsReference)'=='' and '$(PkgUno_WinUI)'!=''">$(PkgUno_WinUI)/lib/net$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)', 2))-windows10.0.19041.0/</_UnoWinUIWindowsLibDir>
+		</PropertyGroup>
+
+		<!-- Otherwise (e.g. a TFM below the package's Windows SDK version), NuGet picked the cross-platform assets: swap in the Windows ones. -->
+		<ItemGroup Condition="'@(_UnoWinUIWindowsReference)'==''">
 			<_UnoReferencePathToRemove
 				Include="@(ReferencePath)"
 				Condition="'%(ReferencePath.NuGetPackageId)'=='Uno.UI' or '%(ReferencePath.NuGetPackageId)'=='Uno.WinUI'" />
@@ -32,15 +48,15 @@
 
 			<!-- Clear items -->
 			<_UnoReferencePathToRemove Remove="@(_UnoReferencePathToRemove)" />
+			<_UnoWinUIWindowsReference Remove="@(_UnoWinUIWindowsReference)" />
 		</ItemGroup>
 
-		<ItemGroup Condition="'$(PkgUno_WinUI)'!=''">
-			<!-- This must be aligned with $winuisourcepath$ in the nuspec -->
-			<ReferencePath Include="$(PkgUno_WinUI)/lib/net10.0-windows10.0.19041.0/*.dll" />
-			<ReferenceCopyLocalPaths Include="$(PkgUno_WinUI)/lib/net10.0-windows10.0.19041.0/*.dll" />
+		<ItemGroup Condition="'@(_UnoWinUIWindowsReference)'=='' and '$(PkgUno_WinUI)'!=''">
+			<ReferencePath Include="$(_UnoWinUIWindowsLibDir)*.dll" />
+			<ReferenceCopyLocalPaths Include="$(_UnoWinUIWindowsLibDir)*.dll" />
 		</ItemGroup>
 
-		<ItemGroup Condition="'$(PkgUno_UI)'!=''">
+		<ItemGroup Condition="'@(_UnoWinUIWindowsReference)'=='' and '$(PkgUno_UI)'!=''">
 			<!-- This must be aligned with $winuisourcepath$ in the nuspec -->
 			<ReferencePath Include="$(PkgUno_UI)/lib/UAP/*.dll" />
 			<ReferenceCopyLocalPaths Include="$(PkgUno_UI)/lib/UAP/*.dll" />
@@ -49,6 +65,7 @@
 
 	<Target Name="_UnoIncludeUIExtras"
 			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)"
+			DependsOnTargets="_UnoRemoveReferences"
 			Condition="$(ShouldComputeInputPris)">
 		
 		<!-- 
@@ -56,14 +73,14 @@
 		need to be included explicitly.
 		-->
 		
-		<ItemGroup>
-			<PriOutputs Include="$(PkgUno_WinUI)/lib/net10.0-windows10.0.19041.0/Uno.UI.Extras.pri"
+		<ItemGroup Condition="'$(_UnoWinUIWindowsLibDir)'!=''">
+			<PriOutputs Include="$(_UnoWinUIWindowsLibDir)Uno.UI.Extras.pri"
 						TargetPath="Uno.UI.Extras.pri"
 						CopyLocal="True"
 						CopyToOutputDirectory="PreserveNewest"
 						OutputGroup="CopyLocalFilesOutputGroup" />
 
-			<_UnoUIExtrasAssets Include="$(PkgUno_WinUI)/lib/net10.0-windows10.0.19041.0/Uno.UI.Extras/**"/>
+			<_UnoUIExtrasAssets Include="$(_UnoWinUIWindowsLibDir)Uno.UI.Extras/**"/>
 
 			<None
 				Include="@(_UnoUIExtrasAssets)"
