@@ -319,7 +319,7 @@ internal sealed partial class TextBoxCore
 			if (wasFocused)
 			{
 				// See comment in OnPointerReleased for why we do this
-				_textBoxNotificationsSingleton?.OnFocused(this);
+				NotifyFocusedAgain();
 			}
 #endif
 		}
@@ -354,7 +354,7 @@ internal sealed partial class TextBoxCore
 				// 3. User taps on TextBox again. In this case, we want to call UpdateFocusState so that the soft keyboard is re-shown again.
 				//
 				// This approach feels hacky though and may not handle programmatic focus properly, i.e, when programmatic focus is requested on an already-focused TextBox. This is a niche case though.
-				_textBoxNotificationsSingleton?.OnFocused(this);
+				NotifyFocusedAgain();
 			}
 #endif
 		}

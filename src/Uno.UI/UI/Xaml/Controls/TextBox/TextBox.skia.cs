@@ -553,6 +553,32 @@ public partial class TextBox : ITextSelectionGripperHost
 		}
 	}
 
+	// Tapping an already-focused TextBox re-shows the soft keyboard the user may have hidden. Deferred for the same reason: a Tapped handler can still move the focus away.
+	private void NotifyFocusedAgain()
+	{
+		if (_isPlatformTextInputRequestPending)
+		{
+			return;
+		}
+
+#if UNO_HAS_MANAGED_POINTERS
+		if (Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnFocusedAgainReleaseCompleted) is true)
+		{
+			return;
+		}
+#endif
+
+		_textBoxNotificationsSingleton?.OnFocused(this);
+	}
+
+	private void OnFocusedAgainReleaseCompleted()
+	{
+		if (FocusState is not FocusState.Unfocused)
+		{
+			_textBoxNotificationsSingleton?.OnFocused(this);
+		}
+	}
+
 	private void StartPlatformTextInput(FocusState focusState)
 	{
 		TextBoxView?.OnFocusStateChanged(focusState);

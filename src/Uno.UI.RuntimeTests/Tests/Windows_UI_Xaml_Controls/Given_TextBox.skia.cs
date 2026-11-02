@@ -8550,6 +8550,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, ime.StartCount);
 		}
 
+		[TestMethod]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Focused_TextBox_Tapped_Then_Platform_Notified_Again_Once_Released(bool isFocusMovedAway)
+		{
+			// Tapping an already-focused TextBox notifies the platform again to re-show the soft keyboard the user may have hidden.
+			var notifications = new CountingTextBoxNotifications();
+			using var notificationsDisposable = TextBox.SetNotificationsProviderForTesting(notifications);
+
+			var SUT = new TextBox { Width = 200 };
+			var focusTarget = new Button { Content = "focus target" };
+			var root = new StackPanel { Children = { focusTarget, SUT } };
+			await UITestHelper.Load(root);
+			SUT.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, notifications.FocusedCount);
+
+			if (isFocusMovedAway)
+			{
+				root.AddHandler(UIElement.TappedEvent, new TappedEventHandler((_, _) => focusTarget.Focus(FocusState.Programmatic)), handledEventsToo: true);
+			}
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreSame(isFocusMovedAway ? focusTarget : SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
+			Assert.AreEqual(isFocusMovedAway ? 1 : 2, notifications.FocusedCount, "The platform must be notified again only if the TextBox still has the focus once the release completed.");
+		}
+
 		private sealed class CountingTextBoxNotifications : ITextBoxNotificationsProviderSingleton
 		{
 			public int FocusedCount { get; private set; }
