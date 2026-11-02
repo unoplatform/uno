@@ -37,7 +37,10 @@ partial class InputManager
 
 			void ProcessDown(Windows.UI.Core.PointerEventArgs args);
 
-			void ProcessMove(Windows.UI.Core.PointerEventArgs args);
+			/// <summary>
+			/// Processes a move once it was routed, with the point the routed args captured before routing it.
+			/// </summary>
+			void ProcessMove(PointerRoutedEventArgs args);
 
 			void ProcessUp(Windows.UI.Core.PointerEventArgs args);
 
@@ -326,9 +329,9 @@ partial class InputManager
 		private bool BeforeMoveTryRedirectToManipulations(Windows.UI.Core.PointerEventArgs args)
 			=> _directManipulations.Get(args.CurrentPoint.Pointer)?.TryProcessMove(args) ?? false;
 
-		private void AfterMoveForManipulations(Windows.UI.Core.PointerEventArgs args)
+		private void AfterMoveForManipulations(PointerRoutedEventArgs args)
 		{
-			if (_gestureRecognizers.TryGetValue(args.CurrentPoint.PointerDeviceType, out var recognizers))
+			if (_gestureRecognizers.TryGetValue(args.CoreArgs.CurrentPoint.PointerDeviceType, out var recognizers))
 			{
 				foreach (var recognizer in recognizers)
 				{
@@ -456,9 +459,11 @@ partial class InputManager
 			public void ProcessDown(PointerEventArgs args) { } // Currently, to avoid any regression for 6.0 SR1, only the move is processed.
 
 			/// <inheritdoc />
-			public void ProcessMove(PointerEventArgs args)
+			public void ProcessMove(PointerRoutedEventArgs args)
 			{
-				recognizer.ProcessMoveEvents([GetRelativePoint(args)]);
+				// Relative to the location of the element, to be backward compatible with the current behavior, but we should consider to use
+				// only absolute location in the GestureRecognizer and make it relative only in the ManipXXX**Routed**EventArgs.
+				recognizer.ProcessMoveEvents([args.GetCurrentPoint(element)]);
 				if (recognizer.IsDragging)
 				{
 					XamlRoot.GetCoreDragDropManager(element.XamlRoot).ProcessMoved(new PointerRoutedEventArgs(args, element));
@@ -470,19 +475,6 @@ partial class InputManager
 
 			/// <inheritdoc />
 			public void ProcessCancel(PointerEventArgs args) { } // Currently, to avoid any regression for 6.0 SR1, only the move is processed.
-
-			/// <summary>
-			/// Get the PointerPoint relative to the location of the element.
-			/// This is to be backward compatible with the current behavior, but we should consider to use only absolute location in the GestureRecognizer
-			/// and then make the position relative to the UIElement only in the conversion from ManipXXXEventArgs to ManipXXX**Routed**EventArgs.
-			/// </summary>
-			private PointerPoint GetRelativePoint(PointerEventArgs args)
-			{
-				var absolutePoint = args.CurrentPoint;
-				var relativePosition = UIElement.GetTransform(element, null).Inverse().Transform(args.CurrentPoint.Position);
-
-				return absolutePoint.At(relativePosition);
-			}
 
 			/// <inheritdoc />
 			public override string ToString()

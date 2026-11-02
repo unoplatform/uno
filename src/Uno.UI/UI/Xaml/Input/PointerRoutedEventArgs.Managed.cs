@@ -12,7 +12,6 @@ using Windows.UI.Core;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 using Uno.Extensions;
 
-
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 
@@ -27,29 +26,24 @@ namespace Microsoft.UI.Xaml.Input
 
 		internal PointerRoutedEventArgs(
 			PointerEventArgs pointerEventArgs,
-			UIElement source) : this()
+			UIElement source)
+			: this(pointerEventArgs, GetWindowPoint(pointerEventArgs), source)
+		{
+		}
+
+		/// <summary>
+		/// Creates the args of the same pointer event for another original source, with the point of <paramref name="args"/>
+		/// rather than one converted again, which could differ if a handler moved the root of a scoped InputInjector.
+		/// </summary>
+		internal PointerRoutedEventArgs(PointerRoutedEventArgs args, UIElement source)
+			: this(args._pointerEventArgs, args._currentPoint, source)
+		{
+		}
+
+		private PointerRoutedEventArgs(PointerEventArgs pointerEventArgs, PointerPoint currentPoint, UIElement source) : this()
 		{
 			_pointerEventArgs = pointerEventArgs;
-
-			// When a RelativeRoot is set (scoped InputInjector), coordinates are
-			// relative to that element. Transform to window-absolute so that
-			// GetCurrentPoint(relativeTo) and event routing across the full
-			// visual tree work correctly.
-			// When a RelativeRoot is set (scoped InputInjector), coordinates are
-			// relative to that element. Transform to window-absolute so that
-			// GetCurrentPoint(relativeTo) and event routing across the full
-			// visual tree work correctly.
-			if (pointerEventArgs.RelativeRoot is UIElement relativeRoot)
-			{
-				var windowPos = UIElement
-					.GetTransform(from: relativeRoot, to: null)
-					.Transform(pointerEventArgs.CurrentPoint.Position);
-				_currentPoint = pointerEventArgs.CurrentPoint.At(windowPos, windowPos);
-			}
-			else
-			{
-				_currentPoint = _pointerEventArgs.CurrentPoint;
-			}
+			_currentPoint = currentPoint;
 
 			FrameId = pointerEventArgs.CurrentPoint.FrameId;
 			Pointer = GetPointer(pointerEventArgs);
@@ -72,13 +66,26 @@ namespace Microsoft.UI.Xaml.Input
 			}
 			else
 			{
-				var absolutePosition = _pointerEventArgs.CurrentPoint.Position;
+				var absolutePosition = _currentPoint.Position;
 				// This is the same as relativeTo.TransformToVisual(null).Inverse.TransformPoint(absolutePosition);
 				// However, TransformToVisual will allocate a MatrixTransform object, while this version is allocation-less
 				var relativePosition = UIElement.GetTransform(from: relativeTo, to: null).Inverse().Transform(absolutePosition);
 
 				return _currentPoint.At(relativePosition);
 			}
+		}
+
+		// A scoped InputInjector gives positions relative to its root: bring them to the window.
+		private static PointerPoint GetWindowPoint(PointerEventArgs args)
+		{
+			var point = args.CurrentPoint;
+			if (args.RelativeRoot is UIElement relativeRoot)
+			{
+				var windowPosition = UIElement.GetTransform(from: relativeRoot, to: null).Transform(point.Position);
+				return point.At(windowPosition, windowPosition);
+			}
+
+			return point;
 		}
 
 		private Pointer GetPointer(PointerEventArgs args)
