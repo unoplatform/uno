@@ -877,7 +877,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		[ThreadStatic]
-		private static uint _lastDragStartFrameId;
+		private static uint? _lastDragStartFrameId; // Null until the first drag: 0 is a valid FrameId.
 
 		private void OnDragStarting(DraggingEventArgs args)
 		{
