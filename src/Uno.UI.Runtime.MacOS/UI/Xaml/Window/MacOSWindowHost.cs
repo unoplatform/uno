@@ -255,6 +255,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_initializationCompleted = SizeChanged is not null;
 			if (!_initializationCompleted)
 			{
+				RequestFrameAfterThisPass();
 				return; // not yet...
 			}
 		}
@@ -295,6 +296,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_initializationCompleted = SizeChanged is not null;
 			if (!_initializationCompleted)
 			{
+				RequestFrameAfterThisPass();
 				return; // not yet...
 			}
 		}
@@ -433,6 +435,17 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		accessibility.Dispose();
 		AccessibilityRouter.NotifyDisposed(this);
 	}
+
+	// This display pass consumed the window's needsDisplay without a frame, so ask again from a later turn: invalidating
+	// from inside the pass would be cleared when it ends.
+	private void RequestFrameAfterThisPass()
+		=> NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (_nativeWindow.Handle != 0)
+			{
+				NativeUno.uno_window_invalidate(_nativeWindow.Handle);
+			}
+		});
 
 	void IXamlRootHost.InvalidateRender()
 	{
