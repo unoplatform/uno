@@ -60,7 +60,7 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     Hosting;
     Toolkit;
     Logging;
-    Serilog;
+    LoggingSerilog;
     MVUX;
     Configuration;
     Http;
@@ -81,6 +81,9 @@ Here are the supported features:
 
 | Feature              | Description                                                                                                                                                                                                                                |
 |----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `AndroidAuto`        | Configures the Android target for [Android Auto and Android Automotive OS](xref:Uno.Features.AndroidAuto) by adding the [Xamarin.AndroidX.Car.App.App](https://www.nuget.org/packages/Xamarin.AndroidX.Car.App.App) package.            |
+| `AndroidTV`          | Configures the Android target for [Android TV](xref:Uno.Features.AndroidTv) by adding the [Xamarin.AndroidX.Leanback](https://www.nuget.org/packages/Xamarin.AndroidX.Leanback) package.                                                 |
+| `AndroidWear`        | Adds [Wear OS](xref:Uno.Features.AndroidWear) support to the Android target with the [Xamarin.AndroidX.Wear](https://www.nuget.org/packages/Xamarin.AndroidX.Wear) and [Xamarin.AndroidX.Wear.Tiles](https://www.nuget.org/packages/Xamarin.AndroidX.Wear.Tiles) packages, and raises the default Android `SupportedOSPlatformVersion` to 26. |
 | `Authentication`     | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for Custom [Authentication](xref:Uno.Extensions.Authentication.Overview).                                                                                                 |
 | `AuthenticationMsal` | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for [Authentication](xref:Uno.Extensions.Authentication.Overview) using [Microsoft.Identity.Client](xref:Uno.Extensions.Authentication.HowToMsalAuthentication).          |
 | `AuthenticationOidc` | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for [Authentication](xref:Uno.Extensions.Authentication.Overview) using a custom [Oidc](xref:Uno.Extensions.Authentication.HowToOidcAuthentication) client.               |
@@ -89,10 +92,10 @@ Here are the supported features:
 | `Cupertino`          | Adds support for the [Cupertino Design Theme](xref:Uno.Themes.Cupertino.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Cupertino Design Toolkit](xref:Toolkit.GettingStarted.Cupertino) library. |
 | `Dsp`                | Adds support for the [Uno.Dsp.Tasks packages](https://www.nuget.org/packages?q=uno.dsp.tasks).                                                                                                                                             |
 | `Extensions`         | Adds the most commonly used Extensions Packages for Hosting, Configuration, and Logging.                                                                                                                                                   |
+| `ExtensionsCore`     | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI), without the other Extensions packages. Same as `ThemeService`.                                                                     |
 | `Foldable`           | Adds a reference to [Uno.WinUI.Foldable](https://www.nuget.org/packages/Uno.WinUI.Foldable).                                                                                                                                               |
 | `GLCanvas`           | Adds support for the [OpenGL Canvas](xref:Uno.Controls.GLCanvasElement).                                                                                                                                                                   |
 | `WebGpuCanvas`       | Adds support for the [WebGPU Canvas](xref:Uno.Controls.WebGpuCanvasElement), and the WebGPU rendering backend it requires.                                                                                                                 |
-| `SpellChecking`           | Adds support for [spell checking](xref:Uno.Features.SpellChecking).                                                                                                                                                                   |
 | `GooglePlay`         | Adds support for [In App Reviews](xref:Uno.Features.StoreContext). For more information, see the [Store Context documentation](xref:Uno.Features.StoreContext).                                                                            |
 | `Hosting`            | Adds support for [Dependency Injection](xref:Uno.Extensions.DependencyInjection.Overview) using [Uno.Extensions.Hosting packages](https://www.nuget.org/packages?q=Uno.Extensions.Hosting).                                                |
 | `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                |
@@ -103,6 +106,7 @@ Here are the supported features:
 | `LoggingSerilog`     | Adds support for [Serilog](https://github.com/serilog/serilog) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                       |
 | `Material`           | Adds support for the [Material Design Theme](xref:Uno.Themes.Material.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Material Design Toolkit](xref:Toolkit.GettingStarted.Material) library.     |
 | `MauiEmbedding`      | Adds support for [embedding Maui controls in Uno Platform applications](xref:Uno.Extensions.Maui.Overview).                                                                                                                                |
+| `MediaElement`       | Deprecated alias of `MediaPlayerElement`, kept for compatibility. Use `MediaPlayerElement` instead.                                                                                                                                      |
 | `MediaPlayerElement`       | Adds native references where needed to use [MediaPlayerElement](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.mediaplayerelement).                                                                                                |
 | `Mvvm`               | Adds support for the [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm) package.                                                                                                                                |
 | `MVUX`               | Adds support for [MVUX](xref:Uno.Extensions.Mvux.Overview). Non-optimized builds also reference `Uno.HotTesting.Reactive`; see [MVUX feed mocks](#mvux-feed-mocks-in-non-optimized-builds).                              |
@@ -387,11 +391,10 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 
 | Target | `SupportedOSPlatformVersion` |
 |--------|----------------------------|
-| Android | 24 |
-| iOS | 14.2 |
-| macOS | 10.14 |
-| tvOS  | 14.2 |
-| WinUI | 10.0.18362.0 |
+| Android | 24 (26 when the `AndroidWear` feature is used) |
+| iOS | 15.0 |
+| tvOS  | 15.0 |
+| WinUI | 10.0.19041.0 |
 
 You can set this property in a `Choose` MSBuild block in order to alter its value based on the active `TargetFramework`.
 
@@ -404,23 +407,18 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
     </When>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
       <PropertyGroup>
-        <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
-      </PropertyGroup>
-    </When>
-    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
-      <PropertyGroup>
-        <SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvOS'">
       <PropertyGroup>
-        <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
     <When Condition="$(TargetFramework.Contains('windows10'))">
       <PropertyGroup>
-        <SupportedOSPlatformVersion>10.0.18362.0</SupportedOSPlatformVersion>
-        <TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
+        <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+        <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
       </PropertyGroup>
     </When>
   </Choose>
