@@ -434,7 +434,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 							if (getMethod != null)
 							{
-								writer.AppendLineIndented($@"bindableType.AddProperty({ownerType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{dependencyProperty});");
+								// The type is named for trimming: a binding path may continue into the value.
+								writer.AppendLineIndented($@"bindableType.AddProperty({ownerType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{dependencyProperty}, typeof({getMethod.ReturnType.GetFullyQualifiedTypeIncludingGlobal()}));");
 							}
 						}
 

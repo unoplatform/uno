@@ -85,6 +85,17 @@ namespace Uno.UI.DataBinding
 			_properties[property.Name] = new BindableProperty(property);
 		}
 
+		/// <summary>
+		/// Adds a dependency property, naming its type so that trimming keeps the members a binding path can continue into.
+		/// </summary>
+		public void AddProperty(
+			DependencyProperty property,
+			[DynamicallyAccessedMembers(TypeRequirements)]
+			Type propertyType)
+		{
+			_properties[property.Name] = new BindableProperty(property);
+		}
+
 		public void AddProperty(
 			string name,
 			[DynamicallyAccessedMembers(TypeRequirements)]
