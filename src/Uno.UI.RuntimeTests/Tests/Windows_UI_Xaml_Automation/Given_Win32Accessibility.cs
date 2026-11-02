@@ -3,7 +3,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -375,6 +378,48 @@ public class Given_Win32Accessibility
 	}
 
 	[TestMethod]
+	public async Task When_Removed_Element_Provider_Is_Still_Referenced_Owner_Is_Collected()
+	{
+		var host = new StackPanel();
+		nint providerUnknown = 0;
+
+		try
+		{
+			await UITestHelper.Load(host, x => x.IsLoaded);
+			var ownerRef = AddNamedUserControl(host);
+			await WindowHelper.WaitForIdle();
+
+			// Stands in for a UIA client that still references the provider after the element is removed.
+			(providerUnknown, var providerRef) = HoldProvider(host);
+
+			host.Children.Clear();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(IsInvalidated(providerRef), "The removed element's provider should be invalidated.");
+
+			var sw = Stopwatch.StartNew();
+			while (ownerRef.IsAlive && sw.Elapsed < TimeSpan.FromSeconds(10))
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+				GC.Collect(2);
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.IsFalse(ownerRef.IsAlive, "An invalidated provider must not keep its owner element alive.");
+		}
+		finally
+		{
+			if (providerUnknown != 0)
+			{
+				Marshal.Release(providerUnknown);
+			}
+
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public void When_Traversing_Deep_Cyclic_Descendants()
 	{
 		var accessibilityType = FindType("Uno.UI.Runtime.Skia.Win32.Win32Accessibility")
@@ -425,6 +470,33 @@ public class Given_Win32Accessibility
 		Assert.IsTrue(visited.Contains(target), "Deep descendants after a cycle must still be reached.");
 		Assert.AreEqual(descendants.Length + 1, visited.Count);
 	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static WeakReference AddNamedUserControl(Panel host)
+	{
+		// The name force-promotes the UserControl into the UIA tree, so it gets its own provider.
+		var item = new UserControl { Content = new Button { Content = "Action" } };
+		AutomationProperties.SetName(item, "Item");
+		host.Children.Add(item);
+
+		return new WeakReference(item);
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static (nint Unknown, WeakReference Provider) HoldProvider(Panel host)
+	{
+		var item = host.Children[0];
+		var accessibility = ResolveAccessibility(item)
+			?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+		var provider = GetOrCreateProvider(accessibility, item)
+			?? throw new InvalidOperationException("UserControl provider not found.");
+
+		return (Marshal.GetIUnknownForObject(provider), new WeakReference(provider));
+	}
+
+	private static bool IsInvalidated(WeakReference providerRef)
+		=> providerRef.Target is { } provider
+			&& provider.GetType().GetProperty("IsInvalidated", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(provider) is true;
 
 	private static object? ResolveAccessibility(UIElement element)
 	{
