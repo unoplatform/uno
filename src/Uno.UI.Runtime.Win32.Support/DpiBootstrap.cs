@@ -1,11 +1,7 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Windows.Win32;
-using Windows.Win32.Foundation;
-using Windows.Win32.System.Diagnostics.Debug;
 using Windows.Win32.UI.HiDpi;
-using Uno.Foundation.Logging;
 
 #pragma warning disable CA2255
 
@@ -42,35 +38,6 @@ internal static class DpiBootstrap
 		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 		{
 			PInvoke.SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-		}
-	}
-
-	private static string GetErrorMessage() => GetErrorMessage((uint)Marshal.GetLastWin32Error());
-
-	private static unsafe string GetErrorMessage(uint errorCode)
-	{
-		var message = IntPtr.Zero;
-		var messageLength = PInvoke.FormatMessage(
-			FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_IGNORE_INSERTS,
-			default,
-			errorCode,
-			0,
-			new PWSTR((char*)&message),
-			0);
-
-		// The system has no text for some codes; this only builds a log message, so it must not throw.
-		if (messageLength == 0 || message == IntPtr.Zero)
-		{
-			return $"Unknown error 0x{errorCode:X8}";
-		}
-
-		try
-		{
-			return Marshal.PtrToStringUni(message, (int)messageLength);
-		}
-		finally
-		{
-			PInvoke.LocalFree(new HLOCAL(message.ToPointer()));
 		}
 	}
 }
