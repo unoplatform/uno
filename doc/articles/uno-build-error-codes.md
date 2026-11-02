@@ -500,6 +500,24 @@ Uno Platform 7.0 names every conditional XAML prefix after a target framework, a
 
 The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7#removed-xaml-prefixes).
 
+### UXAML0009
+
+**The `Uno.UI.Toolkit` XAML namespace was removed in Uno Platform 7.0**
+
+The types of the `Uno.UI.Toolkit` namespace moved to the `Uno.UI.*` namespaces in Uno Platform 7.0, and there is no forwarding alias, so an `xmlns` declaration pointing at `using:Uno.UI.Toolkit` resolves nothing. Without this warning, each type the page uses is only reported as not found (`UXAML0001`). Point the declaration at the namespace of the types the markup uses:
+
+| Type | Namespace |
+|---|---|
+| `ElevatedView`, `CommandBarExtensions`, `SplitViewExtensions` | `using:Uno.UI.Xaml.Controls` |
+| `VisibleBoundsPadding` | `using:Uno.UI.Behaviors` |
+| `UIElementExtensions` | `using:Uno.UI.Xaml` |
+| `AutomationPropertiesExtensions` | `using:Uno.UI.Xaml.Automation` |
+| `ScrollBarExtensions` | `using:Uno.UI.Xaml.Controls.Primitives` |
+
+A page that uses types from more than one of these namespaces needs one declaration for each. `MenuFlyoutExtensions` and `MenuFlyoutItemExtensions` were removed, with no replacement.
+
+The diagnostic is raised on the `xmlns` declaration, and not for a prefix listed in `mc:Ignorable`. See [`Uno.UI.Toolkit` types move to the `Uno.UI.*` namespaces](xref:Uno.Development.MigratingToUno7#unouitoolkit-types-move-to-the-unoui-namespaces).
+
 ## VS Code Errors
 
 ### UVSC0001
