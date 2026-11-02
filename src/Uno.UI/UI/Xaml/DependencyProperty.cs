@@ -206,7 +206,14 @@ namespace Microsoft.UI.Xaml
 				return IsWinUIEnum(propertyType) ? Enum.ToObject(propertyType, 0) : null;
 			}
 
-			return _knownTypeDefaults.TryGetValue(propertyType, out var defaultValue) ? defaultValue : null;
+			if (!_knownTypeDefaults.TryGetValue(propertyType, out var defaultValue))
+			{
+				return null;
+			}
+
+			// A box per property: a two-way binding through a path like Margin.Left writes into the box GetValue
+			// returns, which must not be the default of another property. The primitives keep their cached boxes.
+			return propertyType.IsPrimitive ? defaultValue : RuntimeHelpers.GetObjectValue(defaultValue);
 		}
 
 		private static bool IsWinUIEnum(Type enumType)

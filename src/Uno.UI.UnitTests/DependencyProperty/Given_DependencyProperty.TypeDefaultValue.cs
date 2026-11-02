@@ -3,6 +3,7 @@
 using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
 using Windows.UI;
@@ -155,5 +156,35 @@ public partial class Given_DependencyProperty
 		SUT.ClearValue(enumProperty);
 
 		Assert.IsNull(SUT.GetValue(enumProperty));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25840")]
+	public void When_TwoWay_Binding_Writes_Into_Struct_Default_Then_Other_Properties_Keep_Theirs()
+	{
+		var prefix = nameof(When_TwoWay_Binding_Writes_Into_Struct_Default_Then_Other_Properties_Keep_Theirs);
+		var boundProperty = DependencyProperty.Register(prefix + "_Bound", typeof(Thickness), typeof(MockDependencyObject), new PropertyMetadata(null));
+		var otherProperty = DependencyProperty.Register(prefix + "_Other", typeof(Thickness), typeof(MockDependencyObject), new PropertyMetadata(null));
+		var targetProperty = DependencyProperty.Register(prefix + "_Target", typeof(double), typeof(MockDependencyObject), new PropertyMetadata(null));
+
+		// Through the reflection setter, a two-way binding into a struct member writes into the box
+		// GetValue returns, which is the registered default while the property is unset.
+		var source = new MockDependencyObject();
+		var target = new MockDependencyObject();
+		BindingOperations.SetBinding(target, targetProperty, new Binding
+		{
+			Source = source,
+			Path = new PropertyPath(prefix + "_Bound.Left"),
+			Mode = BindingMode.TwoWay,
+		});
+		target.SetValue(targetProperty, 42d);
+
+		var laterProperty = DependencyProperty.Register(prefix + "_Later", typeof(Thickness), typeof(MockDependencyObject), new PropertyMetadata(null));
+
+		Assert.AreEqual(default(Thickness), new MockDependencyObject().GetValue(otherProperty));
+		Assert.AreEqual(default(Thickness), new MockDependencyObject().GetValue(laterProperty));
+		Assert.AreNotSame(
+			boundProperty.GetMetadata(typeof(MockDependencyObject)).DefaultValue,
+			otherProperty.GetMetadata(typeof(MockDependencyObject)).DefaultValue);
 	}
 }
