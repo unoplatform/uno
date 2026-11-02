@@ -316,13 +316,15 @@ internal sealed class AtspiServer
 		for (var i = node.Children.Count - 1; i >= 0; i--)
 		{
 			var child = node.Children[i];
-			if (Contains(child, x, y))
+			// A hidden child (scrolled out of its viewport, collapsed, ...) still carries its
+			// unclipped bounds (see ApplyBounds), so a point inside them must not resolve to it.
+			if (!child.Offscreen && Contains(child, x, y))
 			{
 				return FindAccessibleAtPoint(child, x, y) ?? child;
 			}
 		}
 
-		return Contains(node, x, y) ? node : null;
+		return !node.Offscreen && Contains(node, x, y) ? node : null;
 	}
 
 	private static void WriteReference(ref MessageWriter writer, AtspiReference reference)
