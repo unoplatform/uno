@@ -9,7 +9,7 @@ native iOS/tvOS UIKit, and the native WebAssembly DOM renderer) and makes
 **Skia the single, implicit rendering engine on every target**. It also removes the
 **Mac Catalyst** target framework entirely.
 
-Skia already runs on every platform — desktop (Win32, WPF, X11, GTK, macOS, FrameBuffer),
+Skia already runs on every platform — desktop (Win32, X11, macOS and the Linux framebuffer),
 Skia-on-Android, Skia-on-iOS, and Skia-on-WebAssembly. In 7.0 it becomes the *only* UI
 rendering path: a `UIElement` is a plain managed object backed by a `Composition.Visual`
 on all platforms, drawn into a single Skia surface.
@@ -75,10 +75,12 @@ on macOS with Skia rendering. To migrate:
 5. Publish with the [macOS desktop packaging](xref:uno.publishing.desktop.macos) flow
    instead of the Mac Catalyst one.
 
-The `IsMacCatalyst` and `IsIOSOrCatalyst` MSBuild properties are also gone — replace them
-with `IsIOS` and `IsAppleUIKit` respectively. A condition that references either property
-as a bare boolean (for example `Condition="$(IsAndroid) or $(IsIOSOrCatalyst)"`) now fails
-with `MSB4100` instead of silently evaluating to `false`, since the property is undefined.
+The `IsMacCatalyst` and `IsIOSOrCatalyst` MSBuild properties are also gone. Replace
+`IsIOSOrCatalyst` with `IsIOS`, not `IsAppleUIKit`, which is also `true` for tvOS. Remove
+conditions on `IsMacCatalyst`, and put anything they guarded that macOS still needs under
+`IsDesktop`. A condition that references either property as a bare boolean
+(for example `Condition="$(IsAndroid) or $(IsIOSOrCatalyst)"`) now fails with
+`MSB4100` instead of silently evaluating to `false`, since the property is undefined.
 
 ### .NET 9 is no longer supported
 
@@ -150,7 +152,7 @@ rather than in `FinishedLaunching`'s launch options. See
 | Runtime hosts no longer carry SkiaSharp or HarfBuzz native assets | The browser host linked `libSkiaSharp.a` into every WebAssembly head, so a WebGPU-only app shipped about 6 MB of Skia it never used, and every `Uno.WinUI.Runtime.*` host referenced HarfBuzzSharp whichever font provider the app used. The native libraries now come with the head: with the `Uno.Sdk`, nothing changes, because it references the `HarfBuzzSharp.NativeAssets.*` package for each target, and the `SkiaSharp.NativeAssets.*` package when the `Skia` feature is on. Listing `WebGpu` without `Skia` turns `Skia` off, so an app that uses SkiaSharp itself, or links native code against SkiaSharp's native library, lists `Skia;WebGpu`. A head that doesn't use the `Uno.Sdk` adds those `PackageReference`s itself, for every target it builds. |
 | `Microsoft.Windows.Compatibility` no longer referenced implicitly (WebAssembly) | The `Uno.Sdk` added this .NET Framework porting meta-package to every WebAssembly executable, pulling in 56 extra packages — 47% of a blank app's restore graph — including 21 RID-specific native packages for a target that has no RIDs. It arrived as a .NET 5 migration workaround and nothing in Uno Platform uses it. Most of what it provides is Windows-only and throws `PlatformNotSupportedException` in a browser regardless. If *your own* code uses one of its assemblies, add an explicit `PackageReference` to that specific package — the ones that genuinely work in a browser are `System.ServiceModel.*`, `System.ServiceModel.Syndication`, `System.Runtime.Caching`, `System.IO.Packaging`, `System.Configuration.ConfigurationManager`, `System.ComponentModel.Composition`, `System.CodeDom`, `System.Reflection.Context` and `System.Security.Cryptography.Pkcs`/`.Xml` — or reference `Microsoft.Windows.Compatibility` itself. The `WindowsCompatibilityVersion` MSBuild property is removed with it; specify a version on your own `PackageReference`. |
 | `LibVLCSharp` no longer referenced implicitly | `Uno.WinUI.Runtime.X11` — which every desktop head references implicitly — carried a `LibVLCSharp` dependency it never used, so the managed assembly landed in every desktop app's output. It now arrives only with the `MediaPlayerElement` (or `MediaElement`) feature, through `Uno.WinUI.MediaPlayer.X11` / `Uno.WinUI.MediaPlayer.Win32`, which have always declared it themselves. `MediaPlayerElement` is unaffected — it already required that feature. If *your own* code uses `LibVLCSharp` types directly, add an explicit `PackageReference`. |
-| Windows App SDK default moved from 1.7 to 2.4.0 | Windows heads now build against Windows App SDK 2.x, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.4.0 or later from the **Stable release** section — installed. To stay on 1.x, set `<WinAppSdkVersion>` (and `<WinAppSdkBuildToolsVersion>`) explicitly in your Windows head. |
+| Windows App SDK default moved from 1.7 to 2.5.1 | Windows heads now build against Windows App SDK 2.5.1, the version the `Uno.Sdk` pins, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.5 or later from the **Stable release** section — installed. A Windows head can't stay on 1.x: `Uno.WinUI` requires `Microsoft.WindowsAppSDK` 2.4.0 or later, so a `<WinAppSdkVersion>` set to a 1.x version is a package downgrade that NuGet rejects. |
 | `Uno.UI.Toolkit` types moved to the `Uno.UI.*` namespaces | The old name was routinely confused with the separate Uno Toolkit (`Uno.Toolkit.UI`). Each type now sits in the namespace it belongs to — see [the mapping table below](#unouitoolkit-types-move-to-the-unoui-namespaces). Type names and behavior are unchanged. `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers` and `Uno.UI.Maps` are unaffected — only the `Uno.UI.Toolkit*` namespaces moved. |
 | [`Uno.UI.HotDesign`](xref:Uno.HotDesign.Overview), `Uno.UI.App.Mcp` ([MCP support](xref:Uno.Features.Uno.MCPs)) and [`Uno.WinUI.DevServer`](xref:Uno.DevServer) no longer resolve implicitly in Release builds | These development-time packages were nominally "excluded" from Release restores via `Exclude="all" IncludeAssets="None"`, which never actually worked — `Exclude` is not a package-id filter and `IncludeAssets="None"` still resolves, downloads and audits the whole closure. The implicit references are now genuinely absent when `$(Optimize) == 'true'`; an explicit `PackageReference` with a version that you add yourself is still honored in every configuration. If your project restores with `packages.lock.json` and `RestoreLockedMode=true`, give each configuration its own lock file (`<NuGetLockFilePath>packages.$(Configuration).lock.json</NuGetLockFilePath>`), regenerate both after upgrading, and restore the matching configuration before any `--no-restore` build — a single lock file no longer satisfies both Debug and Release. `UnoDisableHotDesign` and `UnoDisableMCPSupport` still suppress their respective implicit package reference in any configuration; `Uno.WinUI.DevServer` has no such switch, since it is gated by `$(Optimize)` alone. |
 | `Uno.HotTesting.Reactive` referenced implicitly by MVUX in non-optimized builds | Projects using the `MVUX` feature, class libraries included, now restore MVUX feed mocks when `$(Optimize)` is not `true`, so the Debug/Release lock-file and `--no-restore` guidance of the `Uno.UI.HotDesign` row applies to them too. Code using its types must only compile in non-optimized builds. Set `UnoDisableHotTesting` to `true` to opt out; see [MVUX feed mocks](xref:Uno.Features.Uno.Sdk#mvux-feed-mocks-in-non-optimized-builds). |
@@ -189,6 +191,15 @@ XAML declarations follow the same mapping, for example
 `xmlns:toolkit="using:Uno.UI.Toolkit"` becomes `xmlns:uuxc="using:Uno.UI.Xaml.Controls"` for
 `ElevatedView` and the `CommandBar`/`SplitView` extensions, or
 `xmlns:uub="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`.
+
+The assembly that holds these types is renamed too, from `Uno.UI.Toolkit` to `Uno.UI.Extras`. It
+still ships in the `Uno.WinUI` package, so package references don't change, but anything that names
+the assembly does: assembly-qualified type names, and trimming or IL merge configuration.
+
+```diff
+- Type.GetType("Uno.UI.Toolkit.ElevatedView, Uno.UI.Toolkit")
++ Type.GetType("Uno.UI.Xaml.Controls.ElevatedView, Uno.UI.Extras")
+```
 
 The other Uno Platform-specific namespaces keep their names, so code using
 `DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
@@ -630,7 +641,8 @@ own target framework, the library's calls included.
 
   | Removed member | Replacement |
   | --- | --- |
-  | `ExplicitStyle`, `ImplicitStyle` | `Style` — one level for both, as in WinUI |
+  | `ExplicitStyle` | `Style` — 6.x already stored both explicit and implicit style values here, and 7.0 keeps one level for both, as in WinUI |
+  | `ImplicitStyle` | `BuiltInStyle` — despite its name, 6.x stored the values of the control's default style here |
   | `DefaultStyle` | `BuiltInStyle` |
   | `TemplatedParent` | none — it was never written and every read saw the default |
 
@@ -726,6 +738,14 @@ process *started* with, so an activation that arrives while the app is already r
 `AppInstance.GetCurrent().Activated` — subscribe to it in the `App` constructor. See
 [Custom protocol activation](xref:Uno.Features.ProtocolActivation) for a complete `App.xaml.cs`.
 
+**On iOS and tvOS under the [UIKit scene lifecycle](#uikit-scene-lifecycle-on-ios-and-tvos), a cold-start
+activation arrives after `OnLaunched`.** UIKit only hands the app the URL, universal link or home-screen
+shortcut it was started with when the first scene connects, which happens after `OnLaunched` has run. At
+that point `GetActivatedEventArgs()` still reports `Launch`; the real activation is then raised on
+`AppInstance.GetCurrent().Activated`, and `GetActivatedEventArgs()` returns it from then on. Handle the
+`Activated` event as well as reading `GetActivatedEventArgs()` in `OnLaunched`, and the app gets the
+activation on every target.
+
 **`Application.OnLaunched` is `protected virtual`**, not Uno's `protected internal virtual`, matching
 WinUI. Declare the override as `protected override void OnLaunched(LaunchActivatedEventArgs args)` —
 which is what the templates generate, and what C# already required of an override in another assembly.
@@ -787,7 +807,7 @@ Skia/WinUI behavior:
   `WebView.ForceSoftwareRendering`, `PointerRoutedEventArgs.AllowRelativeTimeStamp`,
   `TextBlock.IsJavaStringCachedEnabled` / `JavaStringCachedCapacity`,
   `AppBarButton.EnableBitmapIconTint`, `TimePickerFlyout.UseLegacyTimeSetting`,
-  `NavigationView.EnableUno19516Workaround`, `AndroidSettings.IsEdgeToEdgeEnabled`.
+  `NavigationView.EnableUno19516Workaround`.
 - **iOS:** `Image.LegacyIosAlignment`,
   `FrameworkElement.IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews`,
   `CommandBar.AllowNativePresenterContent`, `DatePicker.UseLegacyStyle`,
@@ -848,17 +868,47 @@ a difference:
 - `GetNavigationState` and `SetNavigationState` now serialize and restore the navigation history
   instead of only storing the string.
 
+`FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled` is also removed, and Android apps are now
+always edge-to-edge. In 6.x the Android host read the flag at startup and, when it was `false`, left
+the system bars opaque on Android 14 and earlier (Android 15 enforces edge-to-edge regardless). An app
+that set it to `false` now draws behind the status and navigation bars on every Android version, so
+keep content out of them with the [Uno Toolkit `SafeArea`](xref:Toolkit.Controls.SafeArea) or
+`ApplicationView.VisibleBounds`.
+
+The following cross-platform compatibility flags are also removed. Each one restored an earlier Uno
+Platform behavior that differed from WinUI; the WinUI behavior was already their default and is now the
+only one, so only apps that changed one of them see a difference:
+
+| Removed flag | Behavior apps now get |
+| --- | --- |
+| `FeatureConfiguration.FrameworkElement.UseLegacyHitTest` | A non-null `Background` makes a `Panel`, `Border` or `ContentPresenter` hit-testable, but not other elements such as a `Control`. |
+| `FeatureConfiguration.Popup.EnableLightDismissByDefault` | `Popup.IsLightDismissEnabled` defaults to `false`. Set it to `true` on each popup that should close when the user taps outside it. |
+| `FeatureConfiguration.VisualState.ApplySettersBeforeTransition` | A `VisualState`'s `Setters` are applied when its `VisualTransition` storyboard ends, not when the state change starts. |
+| `FeatureConfiguration.Binding.IgnoreINPCSameReferences` | A `PropertyChanged` notification re-evaluates the binding path even when the property returns the same reference. |
+| `FeatureConfiguration.DataTemplateSelector.UseLegacyTemplateSelectorOverload` | When `SelectTemplateCore(object)` returns `null`, `SelectTemplateCore(object, DependencyObject)` is called with the container. |
+| `FeatureConfiguration.ManipulationRoutedEventArgs.IsAbsolutePositionEnabled` | `Position` in `ManipulationStarted`, `ManipulationDelta` and `ManipulationCompleted` is relative to the element handling the manipulation, not to the window. |
+| `FeatureConfiguration.UIElement.DisablePointersSpecificEventPrevention` | When a gesture event such as `Tapped` bubbles up from a child, an ancestor only stops recognizing that same gesture for the pointer, instead of ending all of its gesture recognition. |
+| `FeatureConfiguration.UIElement.UseInvalidateMeasurePath` / `UseInvalidateArrangePath` | Layout always re-measures and re-arranges only the elements on an invalidated path. To turn this off for one subtree, use `FrameworkElementHelper.SetUseMeasurePathDisabled` / `SetUseArrangePathDisabled`. |
+| `FeatureConfiguration.Control.UseLegacyLazyApplyTemplate` / `UseDeferredOnApplyTemplate` | No change on Skia. In 6.x only the native renderers read them; every target now uses the Skia control lifecycle, which applies the template as WinUI does. |
+
 The following flags are also removed. Their readers were removed earlier (with the native renderers,
-or when a control was rewritten), but the public setters stayed behind as silent no-ops — removing
-them does not change behavior on any currently-supported target:
+or when a control was rewritten), or they could not be set, so removing them does not change behavior on
+any currently-supported target:
 
 - `FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent`.
-- `FeatureConfiguration.ProgressRing.ProgressRingAsset` / `.DeterminateProgressRingAsset` — use
-  `ProgressRing.IndeterminateSource` / `.DeterminateSource` to customize the animated visual instead.
+- `FeatureConfiguration.UIElement.ShowClippingBounds`, documented as iOS-only and no longer read.
+- `FeatureConfiguration.Timeline.DefaultsStartingValueFromAnimatedValue`, which had no setter. An
+  animation without `From` still starts from the current animated value.
 - `WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus` (iOS/tvOS) — keyboard focus
   handling is always enabled.
 - `WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap` (Android) and
   `.InterpretForceTouchAsRightTap` (iOS/tvOS).
+
+`FeatureConfiguration.ProgressRing.ProgressRingAsset` and `.DeterminateProgressRingAsset` are also
+removed. In 6.x they were still read: they named the Lottie file a `ProgressRing` played when its
+`IndeterminateSource` or `DeterminateSource` was not set. Without them, such a ring plays the built-in
+WinUI animation, so an app that pointed them at its own animation sets `ProgressRing.IndeterminateSource`
+/ `.DeterminateSource` instead, for example in an implicit `ProgressRing` style.
 
 `FeatureConfiguration.Font.FallbackService`, `IFontFallbackService` and `EmptyFontFallbackService` are
 removed: font fallback is now part of the font provider. To turn fallback off,
@@ -906,6 +956,13 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   starts sooner. Mouse goes from 1px to 4px, matching the Win32 system drag threshold
   (`SM_CXDRAG`), so a small wiggle during a click is no longer reported as a drag. Code that
   relied on a near-zero mouse threshold to start a drag should re-test.
+- **A touch or pen hold is no longer a tap.** As on WinUI, a hold raises `Holding` and then
+  `RightTapped`, but no `Tapped` or `DoubleTapped`, and releasing a hold on a `ListView` or `GridView`
+  item raises no `ItemClick` and doesn't change the selection. Code that used a long press as a slow
+  tap should handle `Holding` or `RightTapped` instead. To get the earlier behavior back, set
+  `Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold` to `false` at startup (default
+  `true`). That does not bring back the browser's own long-press text selection and callout on the
+  WebAssembly host page, which 7.0 turns off. See [Feature flags](xref:Uno.Development.FeatureFlags#touch-and-pen-holds).
 - **SkiaSharp 4 is the default.** The Uno.Sdk now resolves the whole SkiaSharp package group —
   `SkiaSharp`, `SkiaSharp.Skottie`, the `SkiaSharp.Views.*` packages and every
   `SkiaSharp.NativeAssets.*` — at a `4.x` version; on 6.x it was `3.x` with 4 available opt-in
@@ -915,6 +972,16 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   `SKFont`. If you pin SkiaSharp packages yourself, move **all** of them — managed and
   native-asset alike — to the same 4.x version, since a managed/native mismatch fails at
   runtime rather than at build time.
+- **[`GLCanvasElement`](xref:Uno.Controls.GLCanvasElement) subclasses compile against Silk.NET.OpenGL
+  2.23** (6.x used 2.16). The OpenGL calls are unchanged, but some enum types passed to them are renamed,
+  so code using those types needs updating — for example, `gl.CullFace` takes a `TriangleFace` instead of a
+  `CullFaceMode`:
+
+  ```diff
+  - gl.CullFace(CullFaceMode.Back);
+  + gl.CullFace(TriangleFace.Back);
+  ```
+
 - **Vulkan is the default rendering backend** on Android, Linux (X11) and Windows (Win32).
   Before 7.0 Vulkan was opt-in. Devices without a usable Vulkan driver fall back to other
   available backends, so no configuration is needed - but the GPU path most apps actually
@@ -1334,6 +1401,29 @@ WinUI types is unaffected.
   `SelectorItem` and `PickerFlyoutBase` have `protected` constructors, as in WinUI.
   Derive from them instead (a bare `class MyControl : Control { }` behaves like the old
   `new Control()`).
+- **`Timeline` and `ObjectKeyFrame` have `protected` constructors**, as in WinUI, so
+  `new Timeline()` and `new ObjectKeyFrame()` no longer compile. Construct a concrete animation or
+  key frame (`DoubleAnimation`, `DiscreteObjectKeyFrame`, …) instead.
+- **Templates can no longer be built from a factory delegate.** The `Func<View>` constructors of
+  `DataTemplate`, `ControlTemplate`, `ItemsPanelTemplate` and `FrameworkTemplate` are removed, and their
+  `(object owner, FrameworkTemplateBuilder factory)` constructors are no longer public; WinUI has none of them.
+  `MarkupHelper.CreateDataTemplate` and its `ControlTemplate` and `ItemsPanelTemplate` siblings are
+  `[EditorBrowsable(Never)]` helpers for XAML-generated code, not a replacement to call by hand. Declare the
+  template in XAML, load it at runtime with `XamlReader.Load`, as in WinUI, or use the template extensions of
+  [C# Markup](xref:Uno.Extensions.Markup.Overview) (`.ItemTemplate<T>(item => …)`):
+
+  ```csharp
+  var template = (DataTemplate)XamlReader.Load(
+      """
+      <DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+          <TextBlock Text="{Binding Name}" />
+      </DataTemplate>
+      """);
+  ```
+
+- **`Control.GetTemplateChild` is `protected`**, as in WinUI. Call it from your control's
+  `OnApplyTemplate` override; code outside the control that reached into its template should
+  have the control expose what it needs instead.
 - **`Shape` has a `protected` constructor**, as in WinUI. It was already abstract, so only
   derived classes calling `base()` see the change, and they keep compiling.
 - **Types WinUI never lets you construct lose their implicit public constructor.** This covers
@@ -1651,9 +1741,11 @@ process-wide statics, so the ambient Android context APIs changed shape:
 
 ### Templates and project heads
 
-New apps get Skia heads only. Existing apps should drop native `*.Mobile` / native
-`*.Wasm` (DOM) heads in favor of the Skia heads (`Skia.netcoremobile`,
-`Skia.WebAssembly.Browser`, and the desktop Skia head) and remove native bootstrap code.
+New apps are a single `Sdk="Uno.Sdk"` project in which every target framework renders with Skia.
+An existing app that still has separate head projects (`*.Mobile`, `*.Wasm`, `*.Skia.*`, …) cannot
+keep them, even as Skia heads: application projects must use the `Uno.Sdk`, so convert it to a single
+project as described in [The `Uno.Sdk` is required for applications](#the-unosdk-is-required-for-applications),
+and remove native bootstrap code.
 
 ### iOS Hot Restart is not supported
 
