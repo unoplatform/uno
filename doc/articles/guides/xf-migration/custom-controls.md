@@ -469,3 +469,6 @@ The structure remains very similar, and much of the logic can be reused with min
 ## Sample Code
 
 The complete sample project showing how to migrate a Xamarin.Forms custom control to Uno Platform is available in the [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples/tree/master/UI/CardViewMigration).
+
+> [!NOTE]
+> This sample targets Uno Platform 5.4.8, which predates Uno Platform 7.0. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7) to update it.

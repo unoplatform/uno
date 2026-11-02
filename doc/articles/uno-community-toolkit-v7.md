@@ -10,6 +10,8 @@ This tutorial will walk you through adding and implementing the `DataGrid` contr
 
 > [!NOTE]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [`DataGrid` Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/WindowsCommunityToolkit/Version-7.x/UnoWCTDataGridSample).
+>
+> This sample targets Uno Platform 5.2.161, which predates Uno Platform 7.0. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7) to update it.
 
 ## Prerequisites
 

@@ -9,6 +9,8 @@ OpenID Connect is a layer over OAuth 2.0, allowing a simpler integration into ap
 This article will document the usage of `IdentityModel.OidcClient` into an Uno application using the [`WebAuthenticationBroker`](../features/web-authentication-broker.md). You can find more in [the IdentityModel.OidcClient documentation](https://identitymodel.readthedocs.io/en/latest/native/overview.html).
 
 > The code of this article can be found in the [Uno Samples GitHub repository](https://github.com/unoplatform/Uno.Samples/tree/master/UI/Authentication.OidcDemo).
+>
+> This sample targets Uno Platform 5.1.87, which predates Uno Platform 7.0. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7) to update it.
 
 ## Limitations
 

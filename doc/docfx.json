@@ -11,8 +11,12 @@
                     "*.md"
                 ],
                 "exclude": [
-                    "**/includes/**"
+                    "**/includes/**",
+                    "articles/external/uno.samples/**"
                 ]
+            },
+            {
+                "files": ["articles/external/uno.samples/doc/samples.md"]
             }
         ],
         "resource": [
@@ -25,6 +29,9 @@
 					"articles/**.svg",
 					"articles/llms/**",
 					"search.html"
+				],
+				"exclude": [
+					"articles/external/uno.samples/**"
 				]
             }
         ],

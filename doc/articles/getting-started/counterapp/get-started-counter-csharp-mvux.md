@@ -6,6 +6,8 @@ uid: Uno.Workshop.Counter.CSharp.MVUX
 
 [Download the complete C# Markup + MVUX sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVUX)
 
+[!INCLUDE [Sample version](includes/include-sample-version.md)]
+
 [!INCLUDE [Intro](includes/include-intro.md)]
 
 In this tutorial, you will learn how to:

@@ -19,6 +19,8 @@ Throughout the how-to, there will be notes on recommended practices and tips tha
 > [!TIP]
 > The complete source code that goes along with this tutorial is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
 >
+> This sample targets Uno Platform 5.1.87, which predates Uno Platform 7.0. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7) to update it.
+>
 > [!TIP]
 > For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](xref:Uno.GetStarted.vs2022)
 

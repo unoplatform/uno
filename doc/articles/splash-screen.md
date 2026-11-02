@@ -223,6 +223,6 @@ You can customize the splash screen image and background color by adjusting seve
 
 ## See also
 
-* [Completed sample on GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SplashScreenSample)
+* [Completed sample on GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SplashScreenSample) (targets Uno Platform 5.1.87, which predates Uno Platform 7.0)
 * [Ask for help on Discord](https://www.platform.uno/discord)
 * [Uno.Resizetizer repository](https://github.com/unoplatform/uno.resizetizer)

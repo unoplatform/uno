@@ -6,6 +6,8 @@ uid: Uno.Workshop.Counter.CSharp.MVVM
 
 [Download the complete C# Markup + MVVM sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVVM)  
 
+[!INCLUDE [Sample version](includes/include-sample-version.md)]
+
 [!INCLUDE [Intro](includes/include-intro.md)]
 
 In this tutorial you will learn how to:

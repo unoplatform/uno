@@ -186,3 +186,6 @@ The choice depends on your requirements:
 ## Sample Code
 
 The complete sample code demonstrating these techniques is available in the [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples/tree/master/UI/MigratingEffects).
+
+> [!NOTE]
+> This sample targets Uno Platform 5.1.87, which predates Uno Platform 7.0. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7) to update it.
