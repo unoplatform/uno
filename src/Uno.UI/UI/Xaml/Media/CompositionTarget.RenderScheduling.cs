@@ -128,15 +128,38 @@ public partial class CompositionTarget
 		// for good: the request latches, every later one coalesces into it, and nothing else would ever ask again.
 		if (shouldEnqueue || IsRenderRequestStalled())
 		{
-			if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
-			{
-				host.InvalidateRender();
-			}
+			AskHostForFrame();
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} invalidated render");
 		}
 		else
 		{
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} found no need to invalidate render.");
+		}
+	}
+
+	/// <summary>
+	/// Called once the window's host is registered. A request made before it existed latched with nobody asked, and
+	/// every later request coalesces into it, so the new host is asked for the frame it is owed.
+	/// </summary>
+	internal void OnHostAttached()
+	{
+		bool isWaitingForFrame;
+		lock (_renderingStateGate)
+		{
+			isWaitingForFrame = RenderRequested || _renderedAheadOfTime;
+		}
+
+		if (isWaitingForFrame)
+		{
+			AskHostForFrame();
+		}
+	}
+
+	private void AskHostForFrame()
+	{
+		if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
+		{
+			host.InvalidateRender();
 		}
 	}
 
