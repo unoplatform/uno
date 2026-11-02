@@ -1526,6 +1526,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
+		// The empty line after a trailing line break is a line of its own: clicking it, or below it, puts the caret
+		// there, after the break.
+		[TestMethod]
+		[DataRow(false, DisplayName = "on the empty line")]
+		[DataRow(true, DisplayName = "below it")]
+		public async Task When_Pointer_Click_Empty_Last_Line(bool below)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Height = below ? 200 : double.NaN,
+				AcceptsReturn = true,
+				Text = "abc\r",
+				VerticalContentAlignment = VerticalAlignment.Top
+			};
+
+			await UITestHelper.Load(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			SUT.Select(0, 0);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var point = GetCaretPoint(SUT, 4);
+			mouse.MoveTo(below ? new Point(point.X + 20, SUT.GetAbsoluteBounds().Bottom - 10) : point);
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(4, SUT.SelectionStart, "the caret should be on the empty last line");
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
 		[TestMethod]
 		public async Task When_Pointer_Tap_After_Ending_Spaces()
 		{
@@ -6564,7 +6599,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// An empty line has nothing to select: the triple-tap leaves a caret there, not handles around nothing.
 		[TestMethod]
-		public async Task When_Touch_TripleTap_Empty_Line_Places_Caret_iOS()
+		[DataRow("a\r\rb", 2, DisplayName = "middle line")]
+		[DataRow("abc\r", 4, DisplayName = "last line")]
+		public async Task When_Touch_TripleTap_Empty_Line_Places_Caret_iOS(string text, int emptyLineIndex)
 		{
 			using var _ = new DisposableAction(() =>
 				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
@@ -6573,7 +6610,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				AcceptsReturn = true,
-				Text = "a\r\rb",
+				Text = text,
 				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
 			};
 
@@ -6582,7 +6619,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 
-			var point = GetCaretPoint(SUT, 2); // the middle, empty line
+			var point = GetCaretPoint(SUT, emptyLineIndex);
 			finger.Press(point);
 			finger.Release();
 			finger.Press(point);
@@ -6591,7 +6628,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(2, SUT.SelectionStart, "the caret should be on the tapped empty line");
+			Assert.AreEqual(emptyLineIndex, SUT.SelectionStart, "the caret should be on the tapped empty line");
 			Assert.AreEqual(0, SUT.SelectionLength, "an empty paragraph has nothing to select");
 			Assert.AreEqual(TextBoxCore.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, "a caret shows no handles");
 		}
