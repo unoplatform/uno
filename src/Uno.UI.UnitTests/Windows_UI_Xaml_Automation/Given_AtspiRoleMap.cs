@@ -34,6 +34,10 @@ public class Given_AtspiRoleMap
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24380")]
 	public void When_StructuralRoleIsUsed_Then_IdMatchesAtspi()
 	{
+		// Each side is a compile-time constant with the same value today, which MSTEST0032 reads as a
+		// tautology; the point is to fail a future build the moment either constant is edited to no
+		// longer match at-spi2-core's AtspiRole enum, which the analyzer cannot anticipate.
+#pragma warning disable MSTEST0032
 		Assert.AreEqual(75u, AtspiRoleMap.ApplicationRoleId);
 		Assert.AreEqual(23u, AtspiRoleMap.FrameRoleId);
 		Assert.AreEqual(16u, AtspiRoleMap.DialogRoleId);
@@ -41,5 +45,6 @@ public class Given_AtspiRoleMap
 		Assert.AreEqual(110u, AtspiRoleMap.LandmarkRoleId);
 		Assert.AreEqual(40u, AtspiRoleMap.PasswordTextRoleId);
 		Assert.AreEqual(62u, AtspiRoleMap.ToggleButtonRoleId);
+#pragma warning restore MSTEST0032
 	}
 }
