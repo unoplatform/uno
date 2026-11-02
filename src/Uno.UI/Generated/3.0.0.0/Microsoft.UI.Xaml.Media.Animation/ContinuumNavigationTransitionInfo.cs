@@ -2,107 +2,24 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Animation;
 
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class ContinuumNavigationTransitionInfo : global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo
 {
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty ExitElementContainerProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-		"ExitElementContainer", typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty ExitElementProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(ExitElement), typeof(global::Microsoft.UI.Xaml.UIElement),
-		typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty IsEntranceElementProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-		"IsEntranceElement", typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty IsExitElementProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-		"IsExitElement", typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.UIElement ExitElement
-	{
-		get
-		{
-			return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(ExitElementProperty);
-		}
-		set
-		{
-			this.SetValue(ExitElementProperty, value);
-		}
-	}
-#endif
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public ContinuumNavigationTransitionInfo() : base()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo", "ContinuumNavigationTransitionInfo()");
-	}
-#endif
+	// Skipping already declared property ExitElementContainerProperty
+	// Skipping already declared property ExitElementProperty
+	// Skipping already declared property IsEntranceElementProperty
+	// Skipping already declared property IsExitElementProperty
+	// Skipping already declared property ExitElement
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ContinuumNavigationTransitionInfo()
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ContinuumNavigationTransitionInfo()
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static bool GetIsEntranceElement(global::Microsoft.UI.Xaml.UIElement element)
-	{
-		return (bool)element.GetValue(IsEntranceElementProperty);
-	}
-#endif
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static void SetIsEntranceElement(global::Microsoft.UI.Xaml.UIElement element, bool value)
-	{
-		element.SetValue(IsEntranceElementProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-	}
-#endif
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static bool GetIsExitElement(global::Microsoft.UI.Xaml.UIElement element)
-	{
-		return (bool)element.GetValue(IsExitElementProperty);
-	}
-#endif
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static void SetIsExitElement(global::Microsoft.UI.Xaml.UIElement element, bool value)
-	{
-		element.SetValue(IsExitElementProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-	}
-#endif
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static bool GetExitElementContainer(global::Microsoft.UI.Xaml.Controls.ListViewBase element)
-	{
-		return (bool)element.GetValue(ExitElementContainerProperty);
-	}
-#endif
-#if false // Implemented in ContinuumNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static void SetExitElementContainer(global::Microsoft.UI.Xaml.Controls.ListViewBase element, bool value)
-	{
-		element.SetValue(ExitElementContainerProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.GetIsEntranceElement(Microsoft.UI.Xaml.UIElement)
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.SetIsEntranceElement(Microsoft.UI.Xaml.UIElement, bool)
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.GetIsExitElement(Microsoft.UI.Xaml.UIElement)
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.SetIsExitElement(Microsoft.UI.Xaml.UIElement, bool)
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.GetExitElementContainer(Microsoft.UI.Xaml.Controls.ListViewBase)
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.SetExitElementContainer(Microsoft.UI.Xaml.Controls.ListViewBase, bool)
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementContainerProperty.get
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementProperty.get
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsEntranceElementProperty.get

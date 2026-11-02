@@ -7,28 +7,8 @@ namespace Microsoft.UI.Xaml.Media.Animation;
 #endif
 public partial class SlideNavigationTransitionInfo : global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo
 {
-#if false // Implemented in SlideNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty EffectProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(Effect), typeof(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect),
-		typeof(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect)));
-#endif
-#if false // Implemented in SlideNavigationTransitionInfo.cs
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect Effect
-	{
-		get
-		{
-			return (global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect)this.GetValue(EffectProperty);
-		}
-		set
-		{
-			this.SetValue(EffectProperty, value);
-		}
-	}
-#endif
+	// Skipping already declared property EffectProperty
+	// Skipping already declared property Effect
 	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.SlideNavigationTransitionInfo()
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.SlideNavigationTransitionInfo()
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.EffectProperty.get
