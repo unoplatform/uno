@@ -95,7 +95,6 @@ Here are the supported features:
 | `ExtensionsCore`     | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI), without the other Extensions packages. Same as `ThemeService`.                                                                     |
 | `Foldable`           | Adds a reference to [Uno.WinUI.Foldable](https://www.nuget.org/packages/Uno.WinUI.Foldable).                                                                                                                                               |
 | `GLCanvas`           | Adds support for the [OpenGL Canvas](xref:Uno.Controls.GLCanvasElement).                                                                                                                                                                   |
-| `WebGpuCanvas`       | Adds support for the [WebGPU Canvas](xref:Uno.Controls.WebGpuCanvasElement), and the WebGPU rendering backend it requires.                                                                                                                 |
 | `GooglePlay`         | Adds support for [In App Reviews](xref:Uno.Features.StoreContext). For more information, see the [Store Context documentation](xref:Uno.Features.StoreContext).                                                                            |
 | `Hosting`            | Adds support for [Dependency Injection](xref:Uno.Extensions.DependencyInjection.Overview) using [Uno.Extensions.Hosting packages](https://www.nuget.org/packages?q=Uno.Extensions.Hosting).                                                |
 | `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                |
@@ -122,8 +121,8 @@ Here are the supported features:
 | `Svg`                | Renders [SVG](xref:Uno.Features.SVG) with Svg.Skia, through [Uno.WinUI.Svg](https://www.nuget.org/packages/Uno.WinUI.Svg), instead of the managed SVG engine built into Uno Platform. Applies to apps using the Skia renderer, and has no effect on Windows (WinAppSDK), where the OS renders SVG. |
 | `ThemeService`       | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI).                                                                                                                                    |
 | `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |
-| `WebGpu`             | Adds the WebGPU rendering backend (`Uno.WinUI.Composition.WebGpu`) on Uno Platform targets. When both `Skia` and `WebGpu` are listed, both backends are referenced, Skia still renders by default, and the app opts into WebGPU on its host builder. Listing `WebGpu` without `Skia` makes the app SkiaSharp-free (see `Skia` above). |
-| `WebView`            | Adds support for the [WebView2 control](xref:Uno.Controls.WebView2).
+| `WebGpu`             | Adds the WebGPU rendering backend (`Uno.WinUI.Composition.WebGpu`) and the [WebGPU Canvas](xref:Uno.Controls.WebGpuCanvasElement) on Uno Platform targets. When both `Skia` and `WebGpu` are listed, both backends are referenced, Skia still renders by default, and the app opts into WebGPU on its host builder. Listing `WebGpu` without `Skia` makes the app SkiaSharp-free (see `Skia` above). |
+| `WebView`            | Adds support for the [WebView2 control](xref:Uno.Controls.WebView2). |
 
 ## Implicit Packages
 

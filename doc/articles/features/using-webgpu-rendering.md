@@ -19,7 +19,7 @@ Add the `WebGpu` [UnoFeature](xref:Uno.Features.Uno.Sdk) to the app project:
 
 `WebGpu` counts as a renderer feature, so listing it stops `Skia` from being implied. List both, as above, to keep SkiaSharp in the app, which the fallback described below needs. Listing `WebGpu` without `Skia` produces an app with no SkiaSharp (see [Apps without SkiaSharp](#apps-without-skiasharp)).
 
-The `WebGpuCanvas` feature, which adds [`WebGpuCanvasElement`](xref:Uno.Controls.WebGpuCanvasElement), also adds the WebGPU backend. It doesn't count as a renderer feature, so `Skia` is still implied next to it.
+The `WebGpu` feature also adds [`WebGpuCanvasElement`](xref:Uno.Controls.WebGpuCanvasElement), which draws only with the WebGPU backend.
 
 ## Selecting WebGPU on the host builder
 
