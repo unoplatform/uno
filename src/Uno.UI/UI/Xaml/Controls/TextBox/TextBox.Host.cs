@@ -44,7 +44,7 @@ partial class TextBox : ITextBoxHost
 
 	int ITextBoxHost.MaxLength => MaxLength;
 
-	InputScope ITextBoxHost.InputScope => InputScope;
+	InputScope? ITextBoxHost.InputScope => InputScope;
 
 	TextAlignment ITextBoxHost.TextAlignment => TextAlignment;
 

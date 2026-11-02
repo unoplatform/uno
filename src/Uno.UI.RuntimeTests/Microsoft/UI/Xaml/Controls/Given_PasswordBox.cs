@@ -21,6 +21,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public partial class Given_PasswordBox
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25822")]
+	public void When_InputScope_Not_Set_Then_Null()
+	{
+		var SUT = new PasswordBox();
+		Assert.IsNull(SUT.InputScope);
+
+		SUT.InputScope = new InputScope { Names = { new InputScopeName(InputScopeNameValue.NumericPin) } };
+		Assert.IsNull(new PasswordBox().InputScope);
+
+		SUT.ClearValue(PasswordBox.InputScopeProperty);
+		Assert.IsNull(SUT.InputScope);
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia & ~RuntimeTestPlatforms.SkiaTvOS)] // https://github.com/unoplatform/uno/issues/9080
 	public async Task When_PasswordChar_Visual_Comparison()
 	{

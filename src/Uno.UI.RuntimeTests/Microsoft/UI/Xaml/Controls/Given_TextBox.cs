@@ -49,6 +49,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_TextBox
 	{
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25822")]
+		public void When_InputScope_Not_Set_Then_Null()
+		{
+			var SUT = new TextBox();
+			Assert.IsNull(SUT.InputScope);
+
+			SUT.InputScope = new InputScope { Names = { new InputScopeName(InputScopeNameValue.Number) } };
+			Assert.IsNull(new TextBox().InputScope);
+
+			SUT.ClearValue(TextBox.InputScopeProperty);
+			Assert.IsNull(SUT.InputScope);
+		}
+
 #if __SKIA__
 		// Apple platforms (macOS, iOS, tvOS) use Command key for standard shortcuts
 		private readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
