@@ -45,7 +45,7 @@ partial class ListViewBaseItemPresenter
 					{
 						if (command.m_pAnimationTarget.TryGetTarget(out _))
 						{
-							// TODO Uno: PointerDownThemeAnimation/PointerUpThemeAnimation are not ported (follow-up A3); no storyboard is created, so the command is disposed below.
+							// TODO Uno: PointerDownThemeAnimation/PointerUpThemeAnimation are not ported; no storyboard is created, so the command is disposed below.
 						}
 					}
 				}
@@ -851,7 +851,9 @@ partial class ListViewBaseItemPresenter
 		if (resources.TryGetValue(resourceKey, out var boxedResource, shouldCheckSystem: false))
 		{
 			// WinUI fails on a null or non-double resource (IFCPTR / IReference<double> cast).
-			pValue = (double)boxedResource!;
+			pValue = boxedResource is double value
+				? value
+				: throw new global::System.InvalidCastException($"The '{resourceKey}' resource must be a Double, but was {boxedResource?.GetType().Name ?? "null"}.");
 		}
 	}
 }

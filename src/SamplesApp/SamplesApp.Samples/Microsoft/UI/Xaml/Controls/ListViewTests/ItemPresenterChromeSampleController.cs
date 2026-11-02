@@ -234,7 +234,13 @@ internal sealed class ItemPresenterChromeSampleController
 		if (!_roundedOverridden)
 		{
 			_roundedOverridden = true;
-			_previousRounded = resources.ContainsKey(RoundedResourceKey) ? resources[RoundedResourceKey] : null;
+#if HAS_UNO
+			// ContainsKey also sees merged dictionaries; restoring that value would pin it as a local entry.
+			var hadValue = resources.ContainsKeyLocal(RoundedResourceKey);
+#else
+			var hadValue = resources.ContainsKey(RoundedResourceKey);
+#endif
+			_previousRounded = hadValue ? resources[RoundedResourceKey] : null;
 		}
 
 		resources[RoundedResourceKey] = false;
