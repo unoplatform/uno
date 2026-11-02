@@ -159,5 +159,8 @@ partial class TextBox
 
 	internal (CaretWithStemAndThumb start, CaretWithStemAndThumb end)? VisibleGrippersForTesting => _core.VisibleGrippersForTesting;
 
+	// Test hook: whether the Uno-drawn text loupe is painted (the platform one, when there is one, is not).
+	internal bool IsManagedLoupeShowing => _core.IsManagedLoupeShowing;
+
 	internal static IDisposable SetImeExtensionForTesting(IImeTextBoxExtension extension) => TextBoxCore.SetImeExtensionForTesting(extension);
 }

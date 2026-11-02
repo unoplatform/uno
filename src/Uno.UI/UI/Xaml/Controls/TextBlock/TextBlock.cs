@@ -2324,6 +2324,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
 
+		void ITextSelectionGripperHost.OnGripperPointerLost() { }
+
 		// Dismiss the selection flyout (the floating copy bar) when a touch interaction begins, so it
 		// doesn't linger next to a context menu opened on the same gesture.
 		internal void DismissSelectionFlyoutForPointerPress() => TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);

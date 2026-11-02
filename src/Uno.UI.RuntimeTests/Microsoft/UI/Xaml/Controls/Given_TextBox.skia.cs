@@ -1531,6 +1531,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
+		// The empty line after a trailing line break is a line of its own: clicking it, or below it, puts the caret
+		// there, after the break.
+		[TestMethod]
+		[DataRow(false, DisplayName = "on the empty line")]
+		[DataRow(true, DisplayName = "below it")]
+		public async Task When_Pointer_Click_Empty_Last_Line(bool below)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Height = below ? 200 : double.NaN,
+				AcceptsReturn = true,
+				Text = "abc\r",
+				VerticalContentAlignment = VerticalAlignment.Top
+			};
+
+			await UITestHelper.Load(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			SUT.Select(0, 0);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var point = GetCaretPoint(SUT, 4);
+			mouse.MoveTo(below ? new Point(point.X + 20, SUT.GetAbsoluteBounds().Bottom - 10) : point);
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(4, SUT.SelectionStart, "the caret should be on the empty last line");
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
 		[TestMethod]
 		public async Task When_Pointer_Tap_After_Ending_Spaces()
 		{
@@ -5491,6 +5526,1277 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Task When_Touch_Tap_Collapses_Selection_iOS()
 			=> AssertTouchTapCollapsesSelection(TextBoxCore.TouchTextSelectionConvention.iOS);
 
+		// Native iOS: tapping the caret toggles the edit menu (the selection flyout) instead of moving the caret.
+		[TestMethod]
+		public async Task When_Touch_Tap_On_Caret_Toggles_Flyout_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+
+			// First tap places the caret before "Text".
+			var point = GetCaretPoint(SUT, 5);
+			TapAsSeparateGesture(point);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(5, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Wait past the 500ms multi-tap window (real time: each tap gets a fresh injector), then tap the caret again:
+			// it opens the menu without moving the caret.
+			await Task.Delay(600);
+			TapAsSeparateGesture(point);
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				timeoutMS: 3000,
+				message: "tapping the caret should open the edit menu");
+			Assert.AreEqual(5, SUT.SelectionStart, "tapping the caret must not move it");
+			Assert.AreEqual(0, SUT.SelectionLength, "tapping the caret must not select");
+
+			// Tapping the caret again while the menu shows hides it.
+			await Task.Delay(600);
+			TapAsSeparateGesture(point);
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen != true,
+				message: "tapping the caret while the menu shows should hide it");
+			await Task.Delay(600); // a reopen would come after the multi-tap window
+			Assert.IsFalse((SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true, "the menu must stay hidden");
+		}
+
+		// Native iOS: tapping a touch selection (its handles showing) toggles the edit menu instead of collapsing it.
+		// (An unfocused field still collapses it to a caret: When_Touch_Tap_Collapses_Selection_iOS.)
+		[TestMethod]
+		public async Task When_Touch_Tap_On_Selection_Toggles_Flyout_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			bool IsMenuOpen() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true;
+
+			// Double-tap "Text": it is selected with its handles, and the menu follows once a triple-tap can't.
+			var point = GetCaretPoint(SUT, 7);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using (var finger = injector.GetFinger())
+			{
+				// Let the UI settle between the taps, as a real finger would.
+				finger.Press(point);
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				finger.Press(point);
+				finger.Release();
+			}
+			await WindowHelper.WaitFor(IsMenuOpen, timeoutMS: 3000, message: "the double-tap should open the edit menu");
+			Assert.AreEqual("Text", SUT.SelectedText);
+
+			// Tapping the selection while the menu shows hides the menu, keeping the selection.
+			await Task.Delay(600); // past the multi-tap window
+			TapAsSeparateGesture(point);
+			await WindowHelper.WaitFor(() => !IsMenuOpen(), message: "tapping the selection while the menu shows should hide it");
+			Assert.AreEqual("Text", SUT.SelectedText, "the tap must not change the selection");
+			await Task.Delay(600); // a reopen would come after the multi-tap window
+			Assert.IsFalse(IsMenuOpen(), "the menu must stay hidden");
+			Assert.AreEqual("Text", SUT.SelectedText, "hiding the menu must not collapse the selection");
+
+			// Tapping it again brings the menu back, still keeping the selection.
+			TapAsSeparateGesture(point);
+			await WindowHelper.WaitFor(IsMenuOpen, timeoutMS: 3000, message: "tapping the selection should open the edit menu");
+			Assert.AreEqual("Text", SUT.SelectedText, "tapping the selection must not collapse it");
+		}
+
+		// A selection the app made in code (e.g. a select-all on focus) shows no handles; a tap in it places the caret,
+		// or the caret could never be placed in such a field.
+		[TestMethod]
+		public async Task When_Touch_Tap_On_Code_Selection_Places_Caret_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Some Text", SUT.SelectedText);
+
+			TapAsSeparateGesture(GetCaretPoint(SUT, 5));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionLength, "the tap should collapse the code selection");
+			Assert.AreEqual(5, SUT.SelectionStart, "the caret should go where the finger tapped");
+		}
+
+		// The first tap of a double/triple-tap usually lands on the caret. It must not pop the edit menu right away:
+		// the open menu would swallow the next tap (as a light-dismiss) and the double-tap would never register.
+		[TestMethod]
+		public async Task When_Touch_DoubleTap_On_Caret_Selects_Word_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+
+			// Put the caret before "Text".
+			var point = GetCaretPoint(SUT, 5);
+			TapAsSeparateGesture(point);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(5, SUT.SelectionStart);
+			await Task.Delay(600); // past the multi-tap window
+
+			// Double-tap on the caret, letting the UI settle between the taps as a real finger would.
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse((SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true, "the caret tap must not open the menu before a double-tap could follow");
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Text", SUT.SelectedText, "the double-tap on the caret should select the word");
+		}
+
+		// Native iOS: lifting the finger after dragging the caret leaves it there, with no edit menu.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drag_Release_Does_Not_Open_Flyout_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var start = GetCaretPoint(SUT, 2);
+			finger.Press(start);
+			RaiseTouchHold(SUT, start);
+			await WindowHelper.WaitForIdle();
+
+			finger.MoveTo(GetCaretPoint(SUT, 7), stepOffsetInMilliseconds: 20);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(700); // past any deferred flyout
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse((SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true, "dragging the caret must not open the edit menu");
+			Assert.AreEqual(0, SUT.SelectionLength, "the caret drag places a caret, it doesn't select");
+			Assert.AreEqual(7, SUT.SelectionStart, "the caret should follow the finger");
+		}
+
+		// A press-and-hold released in place (the caret never moved) brings up the edit menu at the caret.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Release_In_Place_Opens_Flyout_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var start = GetCaretPoint(SUT, 2);
+			finger.Press(start);
+			RaiseTouchHold(SUT, start);
+			await WindowHelper.WaitForIdle();
+			finger.Release();
+
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "releasing a press-and-hold in place should open the edit menu");
+			Assert.AreEqual(2, SUT.SelectionStart);
+		}
+
+		// Native iOS: holding inside a selection keeps the selection (it doesn't start a caret drag) and shows the menu.
+		[TestMethod]
+		public async Task When_Touch_LongPress_In_Selection_Keeps_Selection_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			SUT.Select(5, 4);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Hold over the middle of the selected word.
+			var left = GetCaretPoint(SUT, 6);
+			var right = GetCaretPoint(SUT, 7);
+			var point = new Point((left.X + right.X) / 2, left.Y);
+			finger.Press(point);
+			RaiseTouchHold(SUT, point);
+			// Let the hold last past the Holding threshold (in injected time) so the release isn't read as a tap.
+			finger.MoveBy(0, 0, steps: 1, stepOffsetInMilliseconds: 900);
+			finger.Release();
+
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "holding a selection should show the edit menu");
+			Assert.AreEqual("Text", SUT.SelectedText, "holding a selection must keep it");
+		}
+
+		// UIKit's insertion-caret edit menu leads with "Select" (the word at the caret); the iOS touch flyout does too.
+		[TestMethod]
+		public async Task When_Touch_Caret_Flyout_Select_Selects_Word_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			var flyout = await OpenCaretFlyout(SUT, caretIndex: 4); // right after "Some"
+
+			var select = flyout.PrimaryCommands.OfType<AppBarButton>().FirstOrDefault(b => b.Label == "Select");
+			Assert.IsNotNull(select, "the iOS caret flyout should offer Select");
+			InvokeButton(select);
+
+			await WindowHelper.WaitFor(() => SUT.SelectedText == "Some", message: "Select should select the word before the caret");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "the selected word gets both handles");
+			await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "the menu should come back for the selected word");
+		}
+
+		// Native iOS: Select All from the caret's edit menu selects everything with both handles, and the menu comes
+		// back at once with the selection's commands (Cut, Copy…).
+		[TestMethod]
+		public async Task When_Touch_Caret_Flyout_SelectAll_Shows_Handles_And_Menu_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			var flyout = await OpenCaretFlyout(SUT, caretIndex: 4);
+
+			var selectAll = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).OfType<AppBarButton>()
+				.FirstOrDefault(b => b.Label == "Select All");
+			Assert.IsNotNull(selectAll, "the caret flyout should offer Select All");
+			InvokeButton(selectAll);
+
+			await WindowHelper.WaitFor(() => SUT.SelectedText == "Some Text", message: "Select All should select everything");
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				message: $"the selection should show both handles (caret mode {SUT.CaretMode})");
+			await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "the menu should come back for the selection");
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(
+				flyout.PrimaryCommands.OfType<AppBarButton>().Any(b => b.Label == "Copy"),
+				"the menu should now offer the selection's commands (Copy)");
+		}
+
+		[TestMethod]
+		public async Task When_Touch_Caret_Flyout_No_Select_Android()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			SUT.TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android;
+
+			// Android: a tap places the caret with its insertion handle, and tapping the handle opens the flyout.
+			TapAsSeparateGesture(GetCaretPoint(SUT, 4));
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting is not null,
+				message: "the Android tap should show the insertion handle");
+			await Task.Delay(600); // past the multi-tap window
+			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			TapAsSeparateGesture(new Point(handle.GetCenter().X, handle.Bottom - 2));
+
+			var flyout = (TextCommandBarFlyout)SUT.SelectionFlyout;
+			await WindowHelper.WaitFor(() => flyout.IsOpen, message: "tapping the handle should open the flyout");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(
+				flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).OfType<AppBarButton>().Any(b => b.Label == "Select"),
+				"Select is an iOS-only command");
+		}
+
+		// A platform's ITextCommandBarFlyoutCommandsExtension commands land in the touch flyout's overflow and run on tap.
+		[TestMethod]
+		public async Task When_Touch_Flyout_Shows_Platform_Commands_iOS()
+		{
+			var invoked = false;
+			TextCommandBarFlyout.PlatformCommandsOverrideForTesting = new TestFlyoutCommands(() => invoked = true);
+			using var _ = new DisposableAction(() =>
+			{
+				TextCommandBarFlyout.PlatformCommandsOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			var flyout = await OpenCaretFlyout(SUT, caretIndex: 4);
+
+			var command = flyout.SecondaryCommands.OfType<AppBarButton>().FirstOrDefault(b => b.Label == "Test Command");
+			Assert.IsNotNull(command, "the platform command should be in the overflow");
+			InvokeButton(command);
+
+			await WindowHelper.WaitFor(() => invoked, message: "tapping the platform command should run it");
+			await WindowHelper.WaitFor(() => !flyout.IsOpen, message: "running a platform command closes the flyout");
+		}
+
+		private sealed class TestFlyoutCommands(Action execute) : Uno.UI.Xaml.Controls.Extensions.ITextCommandBarFlyoutCommandsExtension
+		{
+			public IEnumerable<Uno.UI.Xaml.Controls.Extensions.TextFlyoutPlatformCommand> GetCommands(TextBox target)
+				=> new[] { new Uno.UI.Xaml.Controls.Extensions.TextFlyoutPlatformCommand("Test", "Test Command", execute) };
+		}
+
+		// Its action holds on to an object of its own, as the iOS Look Up, Share and Scan Text actions hold their TextBox.
+		private sealed class CapturingFlyoutCommands : Uno.UI.Xaml.Controls.Extensions.ITextCommandBarFlyoutCommandsExtension
+		{
+			public WeakReference Captured { get; private set; }
+
+			public IEnumerable<Uno.UI.Xaml.Controls.Extensions.TextFlyoutPlatformCommand> GetCommands(TextBox target)
+			{
+				var captured = new object();
+				Captured = new WeakReference(captured);
+				return new[] { new Uno.UI.Xaml.Controls.Extensions.TextFlyoutPlatformCommand("Test", "Test Command", () => GC.KeepAlive(captured)) };
+			}
+		}
+
+		// The default selection flyout is shared by every TextBox: once it closes, what its platform commands' actions
+		// hold on to (their TextBox, and so its DataContext) must not stay alive with it.
+		[TestMethod]
+		public async Task When_Touch_Flyout_Closed_Platform_Command_Actions_Are_Released()
+		{
+			var commands = new CapturingFlyoutCommands();
+			TextCommandBarFlyout.PlatformCommandsOverrideForTesting = commands;
+			using var _ = new DisposableAction(() => TextCommandBarFlyout.PlatformCommandsOverrideForTesting = null);
+
+			var elsewhere = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			var textBox = new TextBox { Width = 400, Text = "Some Text" };
+			await UITestHelper.Load(new StackPanel { Children = { elsewhere, textBox } });
+			textBox.Focus(FocusState.Programmatic);
+			textBox.Select(0, 4);
+
+			// A touch makes the flyout open as a touch flyout, the only kind that gets platform commands.
+			TapAsSeparateGesture(elsewhere.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			var flyout = (TextCommandBarFlyout)textBox.SelectionFlyout;
+			flyout.ShowAt(textBox);
+			await WindowHelper.WaitFor(() => flyout.IsOpen, message: "the flyout should open");
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(
+				flyout.SecondaryCommands.OfType<AppBarButton>().Any(b => b.Label == "Test Command"),
+				"the touch flyout should have the platform command");
+
+			flyout.Hide();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(
+				await TestHelper.TryWaitUntilCollected(commands.Captured),
+				"the closed flyout should not keep what its platform command's action holds alive");
+		}
+
+		// A handle pressed right after a double-tap starts a new gesture: the menu the double-tap deferred must not
+		// pop up under the finger.
+		[TestMethod]
+		public async Task When_Touch_Handle_Pressed_After_DoubleTap_Flyout_Stays_Closed_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var word = GetCaretPoint(SUT, 7);
+			finger.Press(word);
+			finger.Release();
+			finger.Press(word);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForRender(frameCount: 2);
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the selected word should show its handles");
+
+			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
+			await Task.Delay(650); // past the double-tap's 0.5 s menu delay, short of the handle's 0.8 s hold
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.SelectionFlyout?.IsOpen == true, "the deferred menu must not open while the handle is pressed");
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
+		// Typing right after a tap on the caret makes the menu that tap deferred stale.
+		[TestMethod]
+		public async Task When_Typing_After_Caret_Tap_Flyout_Stays_Closed_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+
+			var point = GetCaretPoint(SUT, 4);
+			TapAsSeparateGesture(point);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, SUT.SelectionStart, "the first tap should place the caret");
+
+			await Task.Delay(600); // past the multi-tap window
+			TapAsSeparateGesture(point);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'x'));
+			await Task.Delay(650); // past the caret tap's 0.5 s menu delay
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Somex Text", SUT.Text);
+			Assert.IsFalse(SUT.SelectionFlyout?.IsOpen == true, "the menu must not open once typing started");
+		}
+
+		// Places the caret at caretIndex by tapping, then taps it again to open the iOS caret flyout.
+		private static async Task<TextCommandBarFlyout> OpenCaretFlyout(TextBox textBox, int caretIndex)
+		{
+			var point = GetCaretPoint(textBox, caretIndex);
+			TapAsSeparateGesture(point);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(caretIndex, textBox.SelectionStart, "the first tap should place the caret");
+
+			await Task.Delay(600); // past the multi-tap window
+			TapAsSeparateGesture(point);
+			var flyout = (TextCommandBarFlyout)textBox.SelectionFlyout;
+			await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "tapping the caret should open the flyout");
+			await WindowHelper.WaitForIdle();
+			return flyout;
+		}
+
+		private static void InvokeButton(AppBarButton button)
+		{
+			if (FrameworkElementAutomationPeer.CreatePeerForElement(button) is not ButtonAutomationPeer peer)
+			{
+				Assert.Fail($"{button.Label} should expose a ButtonAutomationPeer");
+				return;
+			}
+			peer.Invoke();
+		}
+
+		// After a double-tap selects the word, the menu must wait out the multi-tap window: shown at once, it would
+		// light-dismiss on the third tap, which then never reaches the TextBox and the triple-tap is lost.
+		[TestMethod]
+		public async Task When_Touch_TripleTap_With_Settling_Selects_Paragraph_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				AcceptsReturn = true,
+				Text = "First paragraph here\rSecond one",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+
+			await UITestHelper.Load(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Let the UI settle between the taps, as it does between a real finger's taps.
+			var point = GetCaretPoint(SUT, 7);
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("paragraph", SUT.SelectedText, "the double-tap should select the word");
+			Assert.IsFalse((SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true, "the menu must not open before a triple-tap could follow");
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("First paragraph here", SUT.SelectedText, "the triple-tap should select the paragraph");
+		}
+
+		// A finger's taps don't land on the same pixel: a few DIPs of drift between them must still count as a multi-tap.
+		[TestMethod]
+		public async Task When_Touch_DoubleTap_With_Finger_Drift_Selects_Word_iOS()
+		{
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var first = GetCaretPoint(SUT, 7);
+			finger.Press(first);
+			finger.Release();
+			finger.Press(new Point(first.X + 18, first.Y + 6)); // well past Uno's 10 DIP gesture tap range, still "Text"
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Text", SUT.SelectedText);
+		}
+
+		// The loupe follows a press-and-hold caret drag for its whole length: begun on the hold, moved with the finger,
+		// and ended only on release.
+		[TestMethod]
+		public Task When_Touch_LongPress_Drag_Keeps_Loupe_iOS()
+			=> AssertLoupeFollowsCaretDrag(inScrollViewer: false);
+
+		// Same, for a TextBox inside a ScrollViewer (the usual form layout): the finger's move must not hand the gesture
+		// to the ScrollViewer and end the loupe.
+		[TestMethod]
+		public Task When_Touch_LongPress_Drag_Keeps_Loupe_In_ScrollViewer_iOS()
+			=> AssertLoupeFollowsCaretDrag(inScrollViewer: true);
+
+		// A press-and-hold caret drag usually runs with the finger just below the text (so it doesn't hide it), i.e. off
+		// the TextBox. The drag and its loupe must keep going there, with the caret following the finger horizontally.
+		[TestMethod]
+		public Task When_Touch_LongPress_Drag_Off_Text_Keeps_Dragging_iOS()
+			=> AssertCaretDragOffText(inScrollViewer: false);
+
+		// Same inside a vertical ScrollViewer (the usual form layout): sliding down is also the scroll gesture, and the
+		// ScrollViewer must not take the touch away from a caret drag that is already running.
+		[TestMethod]
+		public Task When_Touch_LongPress_Drag_Off_Text_Keeps_Dragging_In_ScrollViewer_iOS()
+			=> AssertCaretDragOffText(inScrollViewer: true);
+
+		private static async Task AssertCaretDragOffText(bool inScrollViewer)
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			ScrollViewer scrollViewer = null;
+			if (inScrollViewer)
+			{
+				scrollViewer = new ScrollViewer
+				{
+					Height = 300,
+					Content = new StackPanel { Children = { new Border { Height = 50 }, SUT, new Border { Height = 1000 } } }
+				};
+				await UITestHelper.Load(scrollViewer);
+			}
+			else
+			{
+				await UITestHelper.Load(SUT);
+			}
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var start = GetCaretPoint(SUT, 2);
+			finger.Press(start);
+			RaiseTouchHold(SUT, start);
+			await WindowHelper.WaitForIdle();
+
+			// Slide down off the TextBox, then along under the text.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.MoveTo(new Point(start.X, bounds.Bottom + 40), steps: 4, stepOffsetInMilliseconds: 20);
+			finger.MoveTo(new Point(start.X + 120, bounds.Bottom + 40), steps: 6, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, loupe.Ends, $"dragging off the text must not end the loupe (log: {loupe.Log})");
+			if (scrollViewer is not null)
+			{
+				Assert.AreEqual(0, scrollViewer.VerticalOffset, "the caret drag must not scroll the ScrollViewer");
+			}
+			Assert.IsTrue(SUT.SelectionStart > 2, $"the caret should follow the finger horizontally (at {SUT.SelectionStart})");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, loupe.Ends, "releasing should end the loupe");
+		}
+
+		// Native iOS: the press-and-hold acts after 0.5 s (UIKit), not the gesture recognizer's 0.8 s Holding.
+		[TestMethod]
+		public async Task When_Touch_Hold_Starts_Caret_Drag_After_Half_Second_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() =>
+			{
+				TextBoxCore.LoupeOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(GetCaretPoint(SUT, 2));
+			await Task.Delay(650); // past 0.5 s, well short of the 0.8 s Holding
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, loupe.Begins, "the caret drag (and its loupe) should start after 0.5 s");
+
+			finger.MoveBy(120, 0, steps: 6, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.SelectionStart > 2, "the caret should follow the finger");
+
+			await Task.Delay(400); // let the 0.8 s Holding come and go: it must not restart anything
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, loupe.Begins, "the later Holding must not start a second drag");
+			Assert.AreEqual(1, loupe.Ends);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		// A press that turns into a scroll before 0.5 s must not start a caret drag.
+		[TestMethod]
+		public async Task When_Touch_Press_Then_Scroll_Does_Not_Start_Caret_Drag_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			var scrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Content = new StackPanel { Children = { new Border { Height = 100 }, SUT, new Border { Height = 1000 } } }
+			};
+			await UITestHelper.Load(scrollViewer);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var start = GetCaretPoint(SUT, 2);
+			finger.Press(start);
+			finger.MoveTo(new Point(start.X, start.Y - 80), steps: 4, stepOffsetInMilliseconds: 20);
+			await Task.Delay(650);
+			await WindowHelper.WaitForIdle();
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, loupe.Begins, "scrolling must not start a caret drag");
+		}
+
+		// A touch the system cancels (e.g. an edge swipe) gets no release, so the 0.5 s hold must not fire for it.
+		[TestMethod]
+		public async Task When_Touch_Press_Cancelled_Does_Not_Start_Caret_Drag_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
+			SUT.Select(0, 0);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetCaretPoint(SUT, 7);
+			finger.Press(point);
+			var cancel = Finger.GetRelease(42, point);
+			var cancelInfo = cancel.PointerInfo;
+			cancelInfo.PointerOptions = InjectedInputPointerOptions.Canceled;
+			cancel.PointerInfo = cancelInfo;
+			injector.InjectTouchInput(new[] { cancel });
+
+			await Task.Delay(650); // past 0.5 s, short of the 0.8 s Holding
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, loupe.Begins, $"a cancelled touch must not start the caret drag (log: {loupe.Log})");
+			Assert.AreEqual(0, SUT.SelectionStart, "the cancelled touch must not move the caret");
+			Assert.AreEqual(0, SUT.PointerCaptures?.Count ?? 0, "the TextBox must not capture a pointer that is gone");
+		}
+
+		// A finger that slips off the TextBox before the hold lifts on another element, so no release reaches the
+		// TextBox: the 0.5 s hold must not fire for it either.
+		[TestMethod]
+		public async Task When_Touch_Released_Outside_Does_Not_Start_Caret_Drag_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
+			SUT.Select(0, 0);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Pressed by the bottom edge, the finger leaves the box without leaving the tap range (which would end the hold).
+			var bounds = SUT.GetAbsoluteBounds();
+			var x = GetCaretPoint(SUT, 7).X;
+			finger.Press(new Point(x, bounds.Bottom - 2));
+			finger.MoveTo(new Point(x, bounds.Bottom + 4));
+			finger.Release();
+
+			await Task.Delay(650); // past 0.5 s, short of the 0.8 s Holding
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, loupe.Begins, $"a touch released outside must not start the caret drag (log: {loupe.Log})");
+			Assert.AreEqual(0, SUT.SelectionStart, "a touch released outside must not move the caret");
+		}
+
+		// A finger drifting off the text onto the TextBox's padding is still on the TextBox: the hold must still start
+		// the caret drag.
+		[TestMethod]
+		public async Task When_Touch_Hold_Drifts_Within_TextBox_Starts_Caret_Drag_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() =>
+			{
+				TextBoxCore.LoupeOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
+			SUT.Select(0, 0);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var text = SUT.TextBoxView.DisplayBlock.GetAbsoluteBounds();
+			var x = GetCaretPoint(SUT, 7).X;
+			finger.Press(new Point(x, text.Bottom - 1));
+			finger.MoveTo(new Point(x, text.Bottom + 4));
+
+			await Task.Delay(650); // past 0.5 s, short of the 0.8 s Holding
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, loupe.Begins, $"the hold should start the caret drag (log: {loupe.Log})");
+			finger.Release();
+		}
+
+		private static async Task AssertLoupeFollowsCaretDrag(bool inScrollViewer)
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+
+			if (inScrollViewer)
+			{
+				await UITestHelper.Load(new ScrollViewer
+				{
+					Height = 200,
+					Content = new StackPanel { Children = { SUT, new Border { Height = 1000 } } }
+				});
+			}
+			else
+			{
+				await UITestHelper.Load(SUT);
+			}
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var start = GetCaretPoint(SUT, 2);
+			finger.Press(start);
+			RaiseTouchHold(SUT, start);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, loupe.Begins, "the hold should show the loupe");
+
+			finger.MoveBy(120, 0, steps: 6, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, loupe.Ends, $"moving the finger must not end the loupe (log: {loupe.Log})");
+			Assert.IsTrue(loupe.Moves > 0, $"the loupe should follow the finger (log: {loupe.Log})");
+			Assert.IsTrue(SUT.SelectionStart > 2, "the caret should follow the finger");
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, loupe.Ends, "releasing should end the loupe");
+		}
+
+		// Where the platform has no text magnifier (the browser, iOS before 17), Uno draws one while the caret is dragged.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drags_Caret_Shows_Managed_Loupe_iOS()
+		{
+			// On a host with a platform loupe (iOS 17+), that one would show instead.
+			TextBoxCore.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
+			using var _ = new DisposableAction(() =>
+			{
+				TextBoxCore.LoupeOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+
+			Assert.IsFalse(SUT.IsManagedLoupeShowing, "no loupe before the drag");
+
+			finger.Press(startPoint);
+			RaiseTouchHold(SUT, startPoint);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsManagedLoupeShowing, "the hold starts the caret drag, which shows the loupe");
+
+			var loupe = FindManagedLoupe();
+			var firstLeft = loupe.GetAbsoluteBoundsRect().Left;
+
+			// It is not an empty box: the magnified text and the caret are painted. (The text surface is transparent,
+			// so any painted pixel differs from the corner's.)
+			var canvas = (Canvas)((Border)loupe).Child;
+			var shot = await UITestHelper.ScreenShot(canvas);
+			var empty = shot[1, 1];
+			var inkedPixels = 0;
+			for (var x = 4; x < shot.Width - 4; x++)
+			{
+				for (var y = 4; y < shot.Height - 4; y++)
+				{
+					if (shot[x, y] != empty)
+					{
+						inkedPixels++;
+					}
+				}
+			}
+			Assert.IsTrue(inkedPixels > 20, $"the loupe should show the magnified text (only {inkedPixels} painted pixels)");
+
+			// The text under the caret is what the loupe centers on.
+			var textBlock = canvas.Children.OfType<TextBlock>().Single();
+			var caretRect = SUT.TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(SUT.SelectionStart);
+			var caretMiddle = new Point(caretRect.X, caretRect.Y + (caretRect.Height / 2));
+			var inLoupe = textBlock.TransformToVisual(canvas).TransformPoint(caretMiddle);
+			Assert.AreEqual(canvas.Width / 2, inLoupe.X, 1.5, "the caret's text is horizontally centered in the loupe");
+			Assert.AreEqual(canvas.Height / 2, inLoupe.Y, 1.5, "the caret's text is vertically centered in the loupe");
+
+			Assert.IsTrue(loupe.GetAbsoluteBoundsRect().Bottom <= bounds.Top + 1, "the loupe sits above the text, out of the finger's way");
+
+			finger.MoveBy(150, 0, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsManagedLoupeShowing, "moving the finger keeps the loupe");
+			Assert.IsTrue(FindManagedLoupe().GetAbsoluteBoundsRect().Left > firstLeft, "the loupe follows the caret");
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(SUT.IsManagedLoupeShowing, "releasing hides the loupe");
+		}
+
+		// The loupe's copy of the text has to lay out like the TextBox's, or it centers on the wrong text. A default-aligned
+		// TextBox aligns right-to-left text to the right, from its content.
+		[TestMethod]
+		[DataRow(FlowDirection.LeftToRight, DisplayName = "left-to-right flow")]
+		[DataRow(FlowDirection.RightToLeft, DisplayName = "right-to-left flow")]
+		public async Task When_Touch_Drags_Caret_In_RightToLeft_Text_Managed_Loupe_Magnifies_It_iOS(FlowDirection flowDirection)
+		{
+			TextBoxCore.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
+			using var _ = new DisposableAction(() =>
+			{
+				TextBoxCore.LoupeOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			const string text = "\u05E9\u05DC\u05D5\u05DD \u05E2\u05D5\u05DC\u05DD"; // "Hello world" in Hebrew
+			var SUT = new TextBox
+			{
+				Width = 400,
+				FlowDirection = flowDirection,
+				Text = text,
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var start = GetCaretPoint(SUT, 4);
+			finger.Press(start);
+			RaiseTouchHold(SUT, start);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsManagedLoupeShowing, "the hold starts the caret drag, which shows the loupe");
+
+			var canvas = (Canvas)((Border)FindManagedLoupe()).Child;
+			var magnified = canvas.Children.OfType<TextBlock>().Single();
+			var source = SUT.TextBoxView.DisplayBlock;
+			static double ScreenX(TextBlock block, int index)
+			{
+				var rect = block.ParsedText.GetRectForIndex(index);
+				return block.TransformToVisual(null).TransformPoint(new Point(rect.X, rect.Y + (rect.Height / 2))).X;
+			}
+
+			var caret = SUT.SelectionStart;
+			var loupeCenter = canvas.TransformToVisual(null).TransformPoint(new Point(canvas.Width / 2, canvas.Height / 2)).X;
+			Assert.AreEqual(loupeCenter, ScreenX(magnified, caret), 1.5, "the loupe should center on the caret's own text");
+
+			// Around it, every caret stop is where the magnified TextBox puts it.
+			for (var i = 0; i <= text.Length; i++)
+			{
+				Assert.AreEqual(
+					TextBoxTouchLoupe.Magnification * (ScreenX(source, i) - ScreenX(source, caret)),
+					ScreenX(magnified, i) - ScreenX(magnified, caret),
+					1.5,
+					$"caret stop {i} (the caret is at {caret})");
+			}
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
+		// The platform loupe, when there is one, is the one shown.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drags_Caret_Native_Loupe_Wins_Over_Managed_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+
+			finger.Press(startPoint);
+			RaiseTouchHold(SUT, startPoint);
+			finger.MoveBy(100, 0, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, loupe.Begins, "the platform loupe is used");
+			Assert.IsFalse(SUT.IsManagedLoupeShowing, "the Uno-drawn loupe must not show over the platform one");
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
+		// A platform loupe that can't show (iOS before 17) falls back to the Uno-drawn one.
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drags_Caret_Native_Loupe_Unavailable_Falls_Back_iOS()
+		{
+			var loupe = new RecordingLoupe { CanShow = false };
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() =>
+			{
+				TextBoxCore.LoupeOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+
+			finger.Press(startPoint);
+			RaiseTouchHold(SUT, startPoint);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsManagedLoupeShowing);
+
+			// A platform loupe that started on a later move would show over the Uno-drawn one.
+			finger.MoveBy(100, 0, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, loupe.Begins, $"the platform loupe must not be retried on every move (log: {loupe.Log})");
+			Assert.IsTrue(SUT.IsManagedLoupeShowing);
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(SUT.IsManagedLoupeShowing);
+		}
+
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drags_Caret_Managed_Loupe_Disabled_iOS()
+		{
+			var wasEnabled = global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe;
+			global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = false;
+			TextBoxCore.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
+			using var _ = new DisposableAction(() =>
+			{
+				global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = wasEnabled;
+				TextBoxCore.LoupeOverrideForTesting = null;
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag through",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+
+			finger.Press(startPoint);
+			RaiseTouchHold(SUT, startPoint);
+			await WindowHelper.WaitForIdle();
+			finger.MoveBy(150, 0, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.SelectionStart > 2, "the caret drag should still follow the finger");
+			Assert.IsFalse(SUT.IsManagedLoupeShowing, "the disabled Uno-drawn loupe must not show");
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
+		// A handle drag the system cancels (e.g. Control Center pulled down mid-drag) never gets a release, so the
+		// loupe must end when the handle loses its pointer.
+		[TestMethod]
+		public async Task When_Touch_Handle_Drag_Loses_Pointer_Ends_Loupe_iOS()
+		{
+			var loupe = new RecordingLoupe();
+			TextBoxCore.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() =>
+			{
+				TextBoxCore.LoupeOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Double-tap "Text" so the selection shows its handles.
+			var word = GetCaretPoint(SUT, 7);
+			finger.Press(word);
+			finger.Release();
+			finger.Press(word);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForRender(frameCount: 2);
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the selected word should show its handles");
+
+			var handleBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			var dragStart = new Point(handleBounds.GetCenter().X, handleBounds.Bottom - 2);
+			finger.Press(dragStart);
+			finger.MoveBy(60, 0, steps: 4, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, loupe.Begins, "dragging the handle should show the loupe");
+			Assert.AreEqual(0, loupe.Ends);
+
+			// What the system sends instead of a release when it takes the touch away.
+			var cancel = Finger.GetRelease(42, new Point(dragStart.X + 60, dragStart.Y));
+			var cancelInfo = cancel.PointerInfo;
+			cancelInfo.PointerOptions = InjectedInputPointerOptions.Canceled;
+			cancel.PointerInfo = cancelInfo;
+			injector.InjectTouchInput(new[] { cancel });
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, loupe.Ends, $"cancelling the drag should end the loupe (log: {loupe.Log})");
+		}
+
+		private static FrameworkElement FindManagedLoupe()
+		{
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+				.Select(p => p.Child)
+				.OfType<Border>()
+				.FirstOrDefault(b => b.Child is Canvas && b.Width == 120);
+			return popup ?? throw new InvalidOperationException("The managed text loupe popup is not open");
+		}
+
+		private sealed class RecordingLoupe : Uno.UI.Xaml.Controls.Extensions.INativeTextLoupeExtension
+		{
+			public bool CanShow { get; init; } = true;
+			public int Begins { get; private set; }
+			public int Moves { get; private set; }
+			public int Ends { get; private set; }
+			public string Log { get; private set; } = "";
+
+			public bool BeginLoupe(XamlRoot xamlRoot, Point point, Rect caretRect)
+			{
+				Begins++;
+				Log += "B";
+				return CanShow;
+			}
+
+			public void MoveLoupe(Point point, Rect caretRect)
+			{
+				Moves++;
+				Log += "M";
+			}
+
+			public void EndLoupe()
+			{
+				Ends++;
+				Log += "E";
+			}
+		}
+
+		// After a double-tap the word's selection handles show; the third tap of a triple-tap often lands on one of
+		// them. It must still select the paragraph, not re-select the word and pop the edit menu.
+		[TestMethod]
+		public async Task When_Touch_TripleTap_Third_Tap_On_Handle_Selects_Paragraph_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				AcceptsReturn = true,
+				Text = "First paragraph here\rSecond one",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+
+			await UITestHelper.Load(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetCaretPoint(SUT, 7);
+			finger.Press(point);
+			finger.Release();
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForRender(frameCount: 2); // the handles are laid out per frame
+			Assert.AreEqual("paragraph", SUT.SelectedText, "the double-tap should select the word");
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the selected word should show its handles");
+
+			// Third tap on the end handle (where a finger aiming at the word often lands).
+			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("First paragraph here", SUT.SelectedText, "the triple-tap should select the paragraph");
+		}
+
+		// Native iOS: a triple-tap selects the paragraph under the tap, without its line break.
+		[TestMethod]
+		public async Task When_Touch_TripleTap_Selects_Paragraph_iOS()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				AcceptsReturn = true,
+				Text = "First paragraph here\rSecond one",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Three back-to-back taps on the first line fall inside the multi-tap window.
+			var point = GetCaretPoint(SUT, 3);
+			finger.Press(point);
+			finger.Release();
+			finger.Press(point);
+			finger.Release();
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("First paragraph here", SUT.SelectedText);
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+		}
+
+		// An empty line has nothing to select: the triple-tap leaves a caret there, not handles around nothing.
+		[TestMethod]
+		[DataRow("a\r\rb", 2, DisplayName = "middle line")]
+		[DataRow("abc\r", 4, DisplayName = "last line")]
+		public async Task When_Touch_TripleTap_Empty_Line_Places_Caret_iOS(string text, int emptyLineIndex)
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				AcceptsReturn = true,
+				Text = text,
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var point = GetCaretPoint(SUT, emptyLineIndex);
+			finger.Press(point);
+			finger.Release();
+			finger.Press(point);
+			finger.Release();
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(emptyLineIndex, SUT.SelectionStart, "the caret should be on the tapped empty line");
+			Assert.AreEqual(0, SUT.SelectionLength, "an empty paragraph has nothing to select");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, "a caret shows no handles");
+		}
+
+		private static async Task<TextBox> LoadFocusedTextBox_iOS(string text)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = text,
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+
+			await UITestHelper.Load(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			return SUT;
+		}
+
+		// Screen point (XamlRoot coordinates) of the caret position before the character at index.
+		private static Point GetCaretPoint(TextBox textBox, int index)
+		{
+			var displayBlock = textBox.TextBoxView.DisplayBlock;
+			var rect = displayBlock.ParsedText.GetRectForIndex(index);
+			return displayBlock.TransformToVisual(null).TransformPoint(new Point(rect.Left + 1, rect.Top + (rect.Height / 2)));
+		}
+
+		// Injected touches continue from the previous gesture's timestamp (+1ms), so back-to-back taps from one injector
+		// always read as a multi-tap. A fresh injector starts from the real clock, which puts this tap in its own gesture.
+		private static void TapAsSeparateGesture(Point point)
+		{
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(point);
+			finger.Release();
+		}
+
+		// Simulates the 800ms hold as a touch ContextRequested (the iOS long-press entry), as
+		// When_Touch_LongPress_Drags_Caret_iOS does, without waiting on the holding timer.
+		private static void RaiseTouchHold(TextBox textBox, Point point)
+		{
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(point);
+			textBox.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+		}
+
 		// Native iOS/Android: a single tap places a caret (it does NOT select a word like the Windows convention).
 		private static async Task AssertTouchSingleTapPlacesCaret(TextBoxCore.TouchTextSelectionConvention convention, TextBoxCore.CaretDisplayMode expectedCaret)
 		{
@@ -5949,6 +7255,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 			if (doubleTap)
 			{
+				// Let the first tap's queued flyout update run before the second tap, as between real taps (the
+				// injected timestamps still make it a double-tap). Run after it, it would show the toolbar early.
+				await WindowHelper.WaitForIdle();
 				finger.Press(tapPoint);
 				finger.Release();
 			}
@@ -5962,7 +7271,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// A double-tap also pops the selection toolbar, and its light-dismiss overlay would swallow the drag
 			// below instead of letting it reach the ScrollViewer. On a device the first drag simply dismisses it;
-			// dismiss it here (after its dispatched open has run) so a single drag can be asserted on.
+			// dismiss it here so a single drag can be asserted on. iOS opens it only once the multi-tap window has
+			// passed, so wait for it: hidden before then, it would still open over the drag.
+			if (doubleTap)
+			{
+				await WindowHelper.WaitFor(() => SUT.SelectionFlyout?.IsOpen == true, message: "the double-tap should open the selection toolbar");
+			}
 			SUT.SelectionFlyout?.Hide();
 			await WindowHelper.WaitForIdle();
 
