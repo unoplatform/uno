@@ -887,13 +887,13 @@ re-baseline visual tests:
 
 Independently of rendering, list items now draw their chrome the way WinUI does:
 
-- **`ListViewItem` renders through `ListViewItemPresenter`.** The default Fluent style no
-  longer uses the expanded template, so hover, selection and multi-select visuals change, and
-  named template parts such as `MultiSelectSquare` no longer exist. `ListViewItemExpanded` still
-  ships and can be set as `ItemContainerStyle`.
-- **`GridViewItem` keeps its expanded template for now.** To opt into the WinUI chrome, set
-  `ItemContainerStyle="{StaticResource DefaultGridViewItemStyle}"`. As in WinUI, that style also
-  roots on `ListViewItemPresenter` and sets `AllowDrop="True"`.
+- **`ListViewItem` and `GridViewItem` render through `ListViewItemPresenter`**, as in WinUI. The
+  default Fluent styles no longer use the expanded templates, so hover, selection and
+  multi-select visuals change, and named template parts such as `MultiSelectSquare` no longer
+  exist. `ListViewItemExpanded` still ships and can be set as `ItemContainerStyle`. The Fluent
+  `GridViewItemExpanded` is removed, as WinUI has none, so `{StaticResource GridViewItemExpanded}`
+  now resolves to an older, non-Fluent style. Copy the template into your app if you depend on it.
+- **`GridViewItem` defaults to `AllowDrop="True"`**, as in WinUI (see below).
 - **`ListViewItemPresenter` and `GridViewItemPresenter` must be the root of the item template.**
   A retemplate such as `<Grid><ListViewItemPresenter /></Grid>` rendered before, but now throws
   `InvalidOperationException` ("can only be used as the first child in the template") during
