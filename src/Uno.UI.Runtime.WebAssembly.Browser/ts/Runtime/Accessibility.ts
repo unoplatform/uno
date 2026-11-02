@@ -880,7 +880,22 @@ namespace Uno.UI.Runtime {
 				// on any change; the browser default (false — announce only changed nodes) is
 				// correct for the common status/log case. A region whose WinUI semantics require
 				// atomic announcement must opt in explicitly elsewhere.
-				element.setAttribute("aria-live", ariaLive);
+				if (ariaLive) {
+					element.setAttribute("aria-live", ariaLive);
+				} else {
+					element.removeAttribute("aria-live");
+				}
+			}
+		}
+
+		/**
+		 * Moves a semantic element before a sibling, keeping DOM reading order aligned with the visual tree.
+		 */
+		public static moveSemanticElementBefore(handle: number, anchorHandle: number): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			const anchor = Accessibility.getSemanticElementByHandle(anchorHandle);
+			if (element && anchor && element !== anchor && anchor.parentElement && element.parentElement === anchor.parentElement) {
+				anchor.parentElement.insertBefore(element, anchor);
 			}
 		}
 
