@@ -262,24 +262,44 @@ Second, you can use it in XAML in this way:
 
 When the Skia rendering pipeline is asked to render a codepoint that the active font family cannot draw (for example, a CJK ideograph in a Latin-only font, or an emoji in `Segoe UI`), Uno Platform falls back to a font that does cover that codepoint. This is part of the font provider, exposed by `IFontProvider.MatchCharacterAsync`.
 
+A `FontFamily` that names a font the platform doesn't have installed goes through the provider too, via `IFontProvider.MatchFamilyAsync`. On WebAssembly, the built-in provider uses it to download a named [Noto](https://fonts.google.com/noto) family (for example `FontFamily="Noto Sans JP"`).
+
 ### Built-in fallback
 
 The default font provider handles fallback automatically, per platform, with no configuration required:
 
 - **Desktop** (Windows, macOS, Linux) resolves the codepoint against the operating system's installed fonts.
-- **WebAssembly** downloads the matching [Noto](https://fonts.google.com/noto) font on demand — the browser has no broadly-covering installed fonts, so the font bytes are fetched the first time a codepoint needs them and cached afterwards.
+- **WebAssembly** downloads the matching Noto font on demand — the browser has no broadly-covering installed fonts, so the font bytes are fetched the first time a codepoint needs them and cached afterwards.
 - **Android** resolves against the bundled system fonts under `/system/fonts`.
 
 The method is asynchronous because acquiring a fallback font can require I/O (the WebAssembly Noto fetch). An already-available font resolves synchronously; only an on-demand fetch defers, and the text is re-rendered once it arrives.
 
+### Disabling fallback
+
+To render text only from the fonts your app asks for, register the built-in provider with fallback turned off:
+
+```csharp
+var host = UnoPlatformHostBuilder.Create()
+    .App(() => new App())
+    .FontProvider(SkiaBackend.CreateFontProvider(enableFallback: false)) // using Uno.UI.Composition.Skia;
+    .UseX11()
+    .UseWin32()
+    .Build();
+```
+
+With the WebGPU backend, use `ManagedBackend.CreateFontProvider(enableFallback: false)` (namespace `Uno.UI.Composition.Managed`) instead.
+
+A glyph that the requested font doesn't have then stays missing: it isn't taken from an installed font, and on WebAssembly no Noto font is downloaded, either for a missing glyph or for a `FontFamily` naming a Noto family. Families your app bundles and installed families named in `FontFamily` still resolve.
+
 ### Customizing fallback
 
-Fallback is not a separate extension point — it is part of the font provider. To customize it, supply your own `IFontProvider` through the host builder and implement `MatchCharacterAsync`:
+Fallback is not a separate extension point — it is part of the font provider. To customize it, supply your own `IFontProvider` through the host builder and implement `MatchCharacterAsync` (per codepoint) and `MatchFamilyAsync` (families named by `FontFamily`). The built-in provider is available from `SkiaBackend.CreateFontProvider()` (or `ManagedBackend.CreateFontProvider()` with the WebGPU backend), so a custom provider can wrap it:
 
 ```csharp
 using System.Threading.Tasks;
 using Windows.UI.Text;
 using Uno.UI.Composition.Drawing;
+using Uno.UI.Composition.Skia;
 
 public sealed class MyFontProvider : IFontProvider
 {
@@ -292,6 +312,10 @@ public sealed class MyFontProvider : IFontProvider
 
     public IFont? MatchFamily(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
         => _inner.MatchFamily(familyName, weight, stretch, style, fontSize);
+
+    // Delegate to keep the built-in by-name download on WebAssembly, or return MatchFamily(...) to resolve installed families only.
+    public ValueTask<IFont?> MatchFamilyAsync(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+        => _inner.MatchFamilyAsync(familyName, weight, stretch, style, fontSize);
 
     public IFont GetDefaultFont(FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
         => _inner.GetDefaultFont(weight, stretch, style, fontSize);
@@ -316,10 +340,10 @@ Register it on the host builder before `Build()`:
 ```csharp
 var host = UnoPlatformHostBuilder.Create()
     .App(() => new App())
-    .FontProvider(new MyFontProvider(/* inner */))
+    .FontProvider(new MyFontProvider(SkiaBackend.CreateFontProvider()))
     .UseX11()
     .UseWin32()
     .Build();
 ```
 
-To disable fallback entirely, return `null` from `MatchCharacterAsync` (and don't call `FontFallback`).
+A custom provider that should never fall back returns `null` from `MatchCharacterAsync` (without calling `FontFallback`), and returns the result of `MatchFamily` from `MatchFamilyAsync`.

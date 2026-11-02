@@ -38,6 +38,9 @@ internal sealed class SkiaFontProvider : IFontProvider
 	// shaping (e.g. Arabic joining).
 	private readonly Dictionary<(string Family, int Weight, FontStretch Stretch, FontStyle Style, float Size), IFont> _matchedFamilyCache = new();
 	private readonly object _matchCharacterGate = new();
+	private readonly bool _enableFallback;
+
+	public SkiaFontProvider(bool enableFallback = true) => _enableFallback = enableFallback;
 
 	public IFont? CreateFont(byte[] data, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
@@ -116,8 +119,17 @@ internal sealed class SkiaFontProvider : IFontProvider
 		return MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
 	}
 
+	public async ValueTask<IFont?> MatchFamilyAsync(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+		=> (_enableFallback ? await FontFallback.MatchFamilyAsync(this, familyName, weight, stretch, style, fontSize) : null)
+			?? MatchFamily(familyName, weight, stretch, style, fontSize);
+
 	public ValueTask<IFont?> MatchCharacterAsync(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
+		if (!_enableFallback)
+		{
+			return default;
+		}
+
 		var key = (codepoint, weight.Weight, stretch, style, fontSize);
 		lock (_matchCharacterGate)
 		{

@@ -27,6 +27,13 @@ public interface IFontProvider
 	IFont? MatchFamily(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize);
 
 	/// <summary>
+	/// Resolves a family by name for text, which may fetch it on demand when it is not installed (the built-in providers
+	/// download a named Noto family in the browser, which has no installed fonts). A provider that never fetches returns
+	/// its <see cref="MatchFamily"/> result. An installed match completes synchronously.
+	/// </summary>
+	ValueTask<IFont?> MatchFamilyAsync(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize);
+
+	/// <summary>
 	/// Finds a font that can render <paramref name="codepoint"/> when the requested family can't, or <c>null</c> if none.
 	/// Asynchronous because fallback may fetch a font on demand (e.g. the browser downloading a Noto font); an installed
 	/// match completes synchronously (callers can consume the completed <see cref="ValueTask{T}"/> without awaiting).
