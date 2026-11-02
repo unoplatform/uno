@@ -2524,7 +2524,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		if (!isBelowContent && p.Y >= _xyTable[^1].prefixSummedHeight)
 		{
-			return extendedSelection ? _lines[^1].end - (ignoreEndingNewLine ? TrailingCRLFInLine(_lines[^1]) : 0) : -1;
+			// On the empty line after a trailing line break, whose only caret stop is the end of the text.
+			return extendedSelection ? _text.Length : -1;
 		}
 
 		int lineIndex;
@@ -2546,7 +2547,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				return 0;
 			}
 
-			return _text.Length - (ignoreEndingNewLine ? TrailingCRLFInLine(_endingNewLineLineHeight is null ? lastLine : null) : 0);
+			return _text.Length - (ignoreEndingNewLine && _endingNewLineLineHeight is null ? TrailingCRLFInLine(lastLine) : 0);
 		}
 		else
 		{

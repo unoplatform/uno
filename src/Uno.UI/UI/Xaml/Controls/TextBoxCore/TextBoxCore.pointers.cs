@@ -507,7 +507,8 @@ internal sealed partial class TextBoxCore
 			return;
 		}
 
-		index = Math.Clamp(index, 0, text.Length - 1);
+		// text.Length stays: after a trailing line break, it is the empty last line.
+		index = Math.Clamp(index, 0, text.Length);
 		var start = StartOfLine(index);
 		var end = EndOfLine(index); // index of the line break, or of the last character when there is none
 		var length = (end < text.Length && text[end] == '\r' ? end : end + 1) - start;
