@@ -2708,6 +2708,11 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
 
+	// The alignment the layout used: a default-aligned TextBox gets one from its content's direction.
+	internal TextAlignment TextAlignment => _textAlignment;
+
+	internal Size AvailableSize => _availableSize;
+
 	public float FirstLineBaseline => (float)GetBaselineForIndex(0);
 
 	private static List<int> GetWords(string text)

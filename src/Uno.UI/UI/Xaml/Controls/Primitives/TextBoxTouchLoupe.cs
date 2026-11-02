@@ -2,6 +2,7 @@
 
 using System;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.Xaml.Core;
@@ -21,7 +22,7 @@ internal sealed class TextBoxTouchLoupe
 	private const double LoupeWidth = 120;
 	private const double LoupeHeight = 52;
 	private const double CornerRadius = 12;
-	private const double Magnification = 1.3;
+	internal const double Magnification = 1.3;
 	private const double GapAboveCaret = 12;
 	private const double EdgeMargin = 4;
 
@@ -131,12 +132,24 @@ internal sealed class TextBoxTouchLoupe
 		_text.FontStretch = source.FontStretch;
 		_text.CharacterSpacing = source.CharacterSpacing;
 		_text.TextWrapping = source.TextWrapping;
-		_text.TextAlignment = source.TextAlignment;
+		// Lay the copy out as the source was: in its layout's width, wider than the TextBlock once aligned, and with the
+		// alignment it resolved, which a default-aligned TextBox takes from the text's direction.
+		if (source.ParsedText is UnicodeText layout)
+		{
+			_text.TextAlignment = layout.TextAlignment;
+			_text.Width = double.IsFinite(layout.AvailableSize.Width) ? layout.AvailableSize.Width : source.ActualWidth;
+		}
+		else
+		{
+			_text.TextAlignment = source.TextAlignment;
+			_text.Width = source.ActualWidth;
+		}
+
 		_text.LineHeight = source.LineHeight;
 		_text.LineStackingStrategy = source.LineStackingStrategy;
 		_text.Foreground = source.Foreground;
-		// Wrapping (and so every line's position) depends on the width the text had.
-		_text.Width = source.ActualWidth;
+		// Right-to-left text lays itself out in visual order, and a TextBlock in a left-to-right parent isn't mirrored.
+		_text.FlowDirection = source.FlowDirection;
 
 		_caret.Fill = source.Foreground;
 
