@@ -14,6 +14,7 @@ using Windows.Graphics.Interop.Direct2D;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Helpers;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Linux.FrameBuffer.UI;
 using System.Runtime.CompilerServices;
@@ -42,6 +43,7 @@ namespace Uno.UI.Runtime
 		private const int FlipIdle = 0;
 		private const int FlipInFlight = 1;
 		private const int FlipInFlightWithPending = 2;
+		private const int EINTR = 4;
 		private int _flipState;
 		private readonly GCHandle _selfHandle;
 
@@ -293,7 +295,7 @@ namespace Uno.UI.Runtime
 							}
 							catch
 							{
-								Volatile.Write(ref _flipState, FlipIdle);
+								ResetFlipStateAfterFailure();
 								throw;
 							}
 							return;
@@ -383,6 +385,12 @@ namespace Uno.UI.Runtime
 				if (res < 0)
 				{
 					var errno = Marshal.GetLastWin32Error();
+					if (errno == EINTR)
+					{
+						// poll(2) is never restarted after a signal handler, whatever SA_RESTART says.
+						continue;
+					}
+
 					var errnoStringPtr = Libc.strerror(errno);
 					var errorString = Marshal.PtrToStringAnsi(errnoStringPtr);
 					throw new InvalidOperationException($"{nameof(Libc.poll)} failed ({errno}) : {errorString}");
@@ -414,19 +422,36 @@ namespace Uno.UI.Runtime
 		{
 			try
 			{
-				if (Interlocked.CompareExchange(ref _flipState, FlipInFlight, FlipInFlightWithPending) == FlipInFlightWithPending)
+				// Only a CAS may return the gate to idle: a request can turn InFlight into InFlightWithPending at any
+				// point, and an unconditional write would discard it with nothing left to ask again.
+				while (true)
 				{
-					DrawAndFlip();
-				}
-				else
-				{
-					Volatile.Write(ref _flipState, FlipIdle);
+					if (Interlocked.CompareExchange(ref _flipState, FlipIdle, FlipInFlight) == FlipInFlight)
+					{
+						return;
+					}
+
+					if (Interlocked.CompareExchange(ref _flipState, FlipInFlight, FlipInFlightWithPending) == FlipInFlightWithPending)
+					{
+						DrawAndFlip();
+						return;
+					}
 				}
 			}
 			catch (Exception e)
 			{
-				Volatile.Write(ref _flipState, FlipIdle);
-				this.LogError()?.Error($"The DRM page-flip handler failed; the next invalidation re-arms it: {e}");
+				this.LogError()?.Error($"The DRM page-flip handler failed: {e}");
+				ResetFlipStateAfterFailure();
+			}
+		}
+
+		// A request that arrived while the failed frame was in progress is still owed a frame. It is posted rather than
+		// served inline, so a persistent failure (lost DRM master) retries at the dispatcher's pace instead of spinning.
+		private void ResetFlipStateAfterFailure()
+		{
+			if (Interlocked.Exchange(ref _flipState, FlipIdle) == FlipInFlightWithPending)
+			{
+				NativeDispatcher.Main.Enqueue(InvalidateRender, NativeDispatcherPriority.Normal);
 			}
 		}
 
