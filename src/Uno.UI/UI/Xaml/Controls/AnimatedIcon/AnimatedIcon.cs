@@ -704,11 +704,11 @@ namespace Microsoft.UI.Xaml.Controls
 			m_foregroundColorPropertyChangedRevoker.Disposable = null;
 			if (Foreground is SolidColorBrush foregroundSolidColorBrush)
 			{
-				var token = foregroundSolidColorBrush.RegisterPropertyChangedCallback(SolidColorBrush.ColorProperty, OnForegroundBrushColorPropertyChanged);
-				m_foregroundColorPropertyChangedRevoker.Disposable = Disposable.Create(() =>
-				{
-					foregroundSolidColorBrush.UnregisterPropertyChangedCallback(SolidColorBrush.ColorProperty, token);
-				});
+				// Uno specific: WinUI's handler doesn't own the icon. Register weakly so an app-lifetime brush
+				// (e.g. a ThemeResource) doesn't root the icon and its DataContext.
+				m_foregroundColorPropertyChangedRevoker.Disposable = foregroundSolidColorBrush.RegisterDisposablePropertyChangedCallback(
+					SolidColorBrush.ColorProperty,
+					(s, e) => OnForegroundBrushColorPropertyChanged(s, e.Property));
 				TrySetForegroundProperty(foregroundSolidColorBrush.Color);
 			}
 		}
