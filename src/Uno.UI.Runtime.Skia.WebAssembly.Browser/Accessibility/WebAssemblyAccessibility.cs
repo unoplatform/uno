@@ -64,9 +64,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private LiveRegionManager? _liveRegionManager;
 	private FocusSynchronizer? _focusSynchronizer;
 	private UIElement? _focusSearchRoot;
+	private DirectUI.FocusController? _focusController;
 	private bool _suppressDeparture;
 	internal ModalFocusScope? ActiveModalScope { get; set; }
 	private readonly List<VirtualizedSemanticRegion> _virtualizedRegions = new();
+	// Unsubscribe actions for the ContentDialogs whose Opened/Closed events drive modal focus scopes.
+	// Weak so a dialog that left the tree is not kept alive; it stays subscribed so Closed still runs.
+	private readonly ConditionalWeakTable<ContentDialog, Action> _trackedDialogs = new();
 	private const int PreserveTextSelectionSentinel = -1;
 
 	/// <summary>
@@ -174,6 +178,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// no other post-build path creates a node and there is no show-counterpart to hide.
 	/// </summary>
 	private readonly HashSet<IntPtr> _prunedHandles = new();
+	/// <summary>
+	/// Handles of nodes built by the generic path of <see cref="AddSemanticElement"/>, whose role
+	/// <see cref="ResolveGenericRole"/> owns. Factory nodes own their role (e.g. gridcell, or none for a standalone &lt;p&gt;).
+	/// </summary>
+	private readonly HashSet<IntPtr> _genericPathHandles = new();
 	/// <summary>
 	/// Controls carrying AutomationProperties.LabeledBy whose aria-labelledby IDREF is resolved AFTER
 	/// the surrounding subtree exists (FR-019/FR-022). The inline create-time resolution is
@@ -504,6 +513,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				RemoveSemanticElement(semanticParent, childHandle);
 				_semanticParentMap.Remove(childHandle);
 				_prunedHandles.Remove(childHandle);
+				_genericPathHandles.Remove(childHandle);
 			}
 		}
 		catch (Exception ex)
@@ -551,16 +561,24 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				false);
 			_virtualizedRegions.Add(region);
 
-			repeater.ElementPrepared += (s, e) =>
-				EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, "option");
+			void OnElementPrepared(ItemsRepeater s, ItemsRepeaterElementPreparedEventArgs e)
+				=> EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, "option");
 
-			repeater.ElementClearing += (s, e) =>
+			void OnElementClearing(ItemsRepeater s, ItemsRepeaterElementClearingEventArgs e)
 			{
 				var info = ItemsRepeater.GetVirtualizationInfo(e.Element);
 				if (info is not null)
 				{
 					region.OnItemUnrealized(e.Element.Visual.Handle, info.Index);
 				}
+			}
+
+			repeater.ElementPrepared += OnElementPrepared;
+			repeater.ElementClearing += OnElementClearing;
+			region.Detach = () =>
+			{
+				repeater.ElementPrepared -= OnElementPrepared;
+				repeater.ElementClearing -= OnElementClearing;
 			};
 
 			// Backfill items realized before this container was registered (the AOM-build / Enable-
@@ -588,7 +606,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			var itemRole = isGrid ? "row" : "option";
 
-			listView.ContainerContentChanging += (s, e) =>
+			void OnContainerContentChanging(ListViewBase s, ContainerContentChangingEventArgs e)
 			{
 				if (!e.InRecycleQueue)
 				{
@@ -601,7 +619,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					region.OnItemUnrealized(itemElement.Visual.Handle, e.ItemIndex);
 				}
-			};
+			}
+
+			listView.ContainerContentChanging += OnContainerContentChanging;
+			region.Detach = () => listView.ContainerContentChanging -= OnContainerContentChanging;
 
 			// Backfill already-materialized containers (the Enable-Accessibility-after-load flow).
 			var totalCount = listView.Items?.Count ?? 0;
@@ -663,9 +684,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	private void TryRegisterModalDialog(UIElement element)
 	{
-		if (element is ContentDialog dialog)
+		if (element is ContentDialog dialog && !_trackedDialogs.TryGetValue(dialog, out _))
 		{
-			dialog.Opened += (s, e) =>
+			void OnOpened(ContentDialog s, ContentDialogOpenedEventArgs e)
 			{
 				if (!IsAccessibilityEnabled)
 				{
@@ -697,9 +718,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					NativeMethods.AnnounceAssertive(dialogTitle);
 				}
-			};
+			}
 
-			dialog.Closed += (s, e) =>
+			void OnClosed(ContentDialog s, ContentDialogClosedEventArgs e)
 			{
 				if (!IsAccessibilityEnabled || ActiveModalScope is null)
 				{
@@ -718,7 +739,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						lrm.ActiveModalHandle = parentScope?.ModalHandle ?? IntPtr.Zero;
 					}
 				}
-			};
+			}
+
+			dialog.Opened += OnOpened;
+			dialog.Closed += OnClosed;
+			_trackedDialogs.AddOrUpdate(dialog, () =>
+			{
+				dialog.Opened -= OnOpened;
+				dialog.Closed -= OnClosed;
+			});
 		}
 	}
 
@@ -752,6 +781,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				if (containerVisual.Owner?.Target is UIElement changedElement)
 				{
 					TryUpdateScrollRegionRole(changedElement);
+
+					// A zoom change alters the scroll port's range without raising any scroll pattern
+					// property change, but its view change re-emits the port here.
+					if (changedElement is IScrollPortGeometry)
+					{
+						UpdateNativeScrollOffsets(changedElement);
+					}
 				}
 
 				// T058: a previously-Collapsed element pruned at build/add time has no semantic node; now
@@ -771,15 +807,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					// Use the full element-to-semantic-parent transform so that
 					// RenderTransform, Scale, etc. are reflected in the position.
 					var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
-					var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
 					if (semanticParentElement is not null)
 					{
-						var transform = UIElement.GetTransform(from: element, to: semanticParentElement);
-						var transformedRect = transform.Transform(localRect);
+						var transformedRect = GetRectInSemanticParent(element, semanticParentElement);
 						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
 					}
 					else
 					{
+						var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
 						var transform = UIElement.GetTransform(from: element, to: null);
 						var transformedRect = transform.Transform(localRect);
 						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
@@ -810,8 +845,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// owns or is the nearest semantic ancestor of <paramref name="changedElement"/>, after a layout
 	/// change. The gate is layout-dependent (scrollability is only known once the content extent is
 	/// computed), but the AOM node may have been built via OnChildAdded before layout — at which point a
-	/// scrollable, named ScrollViewer is mis-emitted as <c>role=group</c>. This brings the live DOM role
-	/// in line with the current scrollable+named state once layout has settled.
+	/// scrollable, named ScrollViewer is mis-emitted as <c>role=group</c>. This re-resolves the live DOM role
+	/// through <see cref="ResolveGenericRole"/> once layout has settled.
 	/// </summary>
 	private void TryUpdateScrollRegionRole(UIElement changedElement)
 	{
@@ -822,19 +857,17 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			if (current is ScrollViewer scrollViewer)
 			{
-				if (!HasSemanticElement(scrollViewer.Visual.Handle))
+				var handle = scrollViewer.Visual.Handle;
+				if (!_genericPathHandles.Contains(handle) || scrollViewer.GetOrCreateAutomationPeer() is not { } peer)
 				{
 					return;
 				}
 
-				var peer = scrollViewer.GetOrCreateAutomationPeer();
-
-				// Only the named+scrollable case is upgraded here. The unnamed / non-scrollable cases are
-				// already correct from the build-time gate (a bare <div> with no role), and an empty-string
-				// role would be an invalid attribute — so we never write a role in those cases.
-				if (AriaMapper.QualifiesAsNamedScrollRegion(peer, scrollViewer))
+				// Scrollability only picks between region and group for a named node, so an unnamed one keeps its role.
+				var hasAccessibleName = !string.IsNullOrWhiteSpace(AriaMapper.ResolveLabel(peer));
+				if (hasAccessibleName)
 				{
-					NativeMethods.UpdateLandmarkRole(scrollViewer.Visual.Handle, "region");
+					NativeMethods.UpdateLandmarkRole(handle, ResolveGenericRole(peer, scrollViewer, hasAccessibleName));
 				}
 
 				return;
@@ -956,29 +989,145 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
 		if (focusManager is not null)
 		{
-			focusManager.FocusObserver.FocusController.FocusDeparting -= @this.OnFocusDeparting;
-			focusManager.FocusObserver.FocusController.FocusDeparting += @this.OnFocusDeparting;
+			@this._focusController = focusManager.FocusObserver.FocusController;
+			@this._focusController.FocusDeparting -= @this.OnFocusDeparting;
+			@this._focusController.FocusDeparting += @this.OnFocusDeparting;
 		}
+	}
+
+	/// <summary>
+	/// Undoes <see cref="EnableAccessibility"/>: removes the semantic DOM and unhooks every subsystem,
+	/// so the app is back to its non-accessible cost and focus behavior. It can be enabled again.
+	/// </summary>
+	[JSExport]
+	public static void DisableAccessibility()
+	{
+		var @this = Instance;
+		if (!@this._isAccessibilityEnabled)
+		{
+			return;
+		}
+
+		if (@this.Log().IsEnabled(LogLevel.Debug))
+		{
+			@this.Log().Debug("[A11y] DisableAccessibility() called");
+		}
+
+		// Cleared first so any handler still subscribed below bails out while we tear down.
+		@this._isAccessibilityEnabled = false;
+
+		if (@this._focusController is { } focusController)
+		{
+			focusController.FocusDeparting -= @this.OnFocusDeparting;
+			@this._focusController = null;
+		}
+
+		FocusManager.SuppressNativeFocus = false;
+		if (Control.OnIsFocusableChangedCallback == @this.UpdateIsFocusable)
+		{
+			Control.OnIsFocusableChangedCallback = null;
+		}
+
+		@this._focusSynchronizer?.Uninitialize();
+		@this._focusSynchronizer = null;
+		@this._liveRegionManager?.ClearPending();
+		@this._liveRegionManager = null;
+
+		for (var scope = @this.ActiveModalScope; scope is not null; scope = scope.ParentScope)
+		{
+			scope.Deactivate();
+		}
+		@this.ActiveModalScope = null;
+
+		foreach (var comboBox in @this._trackedComboBoxes.ToArray())
+		{
+			@this.TryUnregisterComboBox(comboBox);
+		}
+
+		foreach (var region in @this._virtualizedRegions)
+		{
+			region.Dispose();
+		}
+		@this._virtualizedRegions.Clear();
+
+		foreach (var (_, detach) in @this._trackedDialogs)
+		{
+			detach();
+		}
+		@this._trackedDialogs.Clear();
+
+		lock (@this._updateLock)
+		{
+			@this._debounceTimer?.Dispose();
+			@this._debounceTimer = null;
+			@this._pendingUpdates.Clear();
+		}
+
+		@this._semanticParentMap.Clear();
+		@this._prunedHandles.Clear();
+		@this._genericPathHandles.Clear();
+		@this._pendingLabelledBy.Clear();
+		@this._onChildAddedDepth = 0;
+		@this._rootElementHandle = IntPtr.Zero;
+		@this._focusSearchRoot = null;
+		@this._suppressDeparture = false;
+
+		NativeMethods.ResetSemanticsRoot();
 	}
 
 	[JSExport]
 	public static void OnScroll(IntPtr handle, double horizontalOffset, double verticalOffset)
 	{
 		var @this = Instance;
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+		if (GCHandle.FromIntPtr(handle).Target is not ContainerVisual { Owner.Target: UIElement owner })
 		{
-			// // TODO (DOTI): We shouldn't check individual scrollers.
-			// Instead, we should scroll using automation peers once they are implemented correctly for SCP and ScrollPresenter
-			if (owner is ScrollContentPresenter scp)
+			return;
+		}
+
+		if (owner is not IScrollPortGeometry port)
+		{
+			if (@this.Log().IsEnabled(LogLevel.Debug))
 			{
-				scp.Set(horizontalOffset, verticalOffset);
+				@this.Log().Debug($"[A11y] OnScroll ignored for {owner.GetType().Name}: not a mirrored scroll port.");
 			}
-			else if (owner is ScrollPresenter sp)
-			{
-				sp.ScrollTo(horizontalOffset, verticalOffset);
-			}
+			return;
+		}
+
+		// The native range can exceed the managed one (e.g. a semantic child drawn past the content), and the
+		// scroller may apply offsets asynchronously, so clamp here and push the clamped target back.
+		var clampedHorizontalOffset = Math.Clamp(horizontalOffset, 0, port.ScrollableWidth);
+		var clampedVerticalOffset = Math.Clamp(verticalOffset, 0, port.ScrollableHeight);
+
+		if (@this.Log().IsEnabled(LogLevel.Trace))
+		{
+			@this.Log().Trace($"[A11y] OnScroll {owner.GetType().Name}: requested=({horizontalOffset}, {verticalOffset}) clamped=({clampedHorizontalOffset}, {clampedVerticalOffset})");
+		}
+
+		port.ScrollToOffsets(clampedHorizontalOffset, clampedVerticalOffset);
+
+		if (clampedHorizontalOffset != horizontalOffset || clampedVerticalOffset != verticalOffset)
+		{
+			UpdateNativeScrollOffsets(owner, port, clampedHorizontalOffset, clampedVerticalOffset);
 		}
 	}
+
+	private static void UpdateNativeScrollOffsets(UIElement scrollPort)
+	{
+		if (scrollPort is IScrollPortGeometry port)
+		{
+			UpdateNativeScrollOffsets(scrollPort, port, port.HorizontalOffset, port.VerticalOffset);
+		}
+	}
+
+	private static void UpdateNativeScrollOffsets(UIElement scrollPort, IScrollPortGeometry port, double horizontalOffset, double verticalOffset)
+		=> NativeMethods.UpdateNativeScrollOffsets(
+			scrollPort.Visual.Handle,
+			horizontalOffset,
+			verticalOffset,
+			port.ZoomedExtentWidth,
+			port.ZoomedExtentHeight,
+			port.ScrollableWidth > 0,
+			port.ScrollableHeight > 0);
 
 	/// <summary>
 	/// Called when a button element is invoked (clicked, Enter pressed, or Space pressed).
@@ -1714,6 +1863,40 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	private static Windows.Foundation.Rect GetRectInSemanticParent(UIElement element, UIElement semanticParent)
+	{
+		var localRect = new Windows.Foundation.Rect(0, 0, element.Visual.Size.X, element.Visual.Size.Y);
+
+		// The semantic element of a scroll port is a native scroller that applies the scroll offset itself,
+		// so its children are positioned in zoomed content coordinates: relative to the scrolled content, whose
+		// arranged offset (unlike its visual transform) includes neither the scroll translation nor the zoom.
+		if (semanticParent is IScrollPortGeometry port && GetScrollPortContent(element, semanticParent) is { } content)
+		{
+			var rect = UIElement.GetTransform(from: element, to: content).Transform(localRect);
+			var zoom = port.ZoomFactor;
+			return new Windows.Foundation.Rect(
+				content.ActualOffset.X + rect.X * zoom,
+				content.ActualOffset.Y + rect.Y * zoom,
+				rect.Width * zoom,
+				rect.Height * zoom);
+		}
+
+		return UIElement.GetTransform(from: element, to: semanticParent).Transform(localRect);
+
+		static UIElement? GetScrollPortContent(UIElement element, UIElement scrollPort)
+		{
+			for (var current = element; current is not null; current = current.GetParent() as UIElement)
+			{
+				if (current.GetParent() == scrollPort)
+				{
+					return current;
+				}
+			}
+
+			return null;
+		}
+	}
+
 	private bool AddSemanticElement(IntPtr parentHandle, UIElement child, int? index)
 	{
 		// Use UIElement.GetTransform for position calculation — this accounts for
@@ -1721,12 +1904,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Falling back to manual offset accumulation only when the semantic parent element
 		// is not found (e.g., root element).
 		float x, y, width, height;
-		var localRect = new Windows.Foundation.Rect(0, 0, child.Visual.Size.X, child.Visual.Size.Y);
 		var semanticParentElement = FindUIElementByHandle(child, parentHandle);
 		if (semanticParentElement is not null)
 		{
-			var transform = UIElement.GetTransform(from: child, to: semanticParentElement);
-			var transformedRect = transform.Transform(localRect);
+			var transformedRect = GetRectInSemanticParent(child, semanticParentElement);
 			x = (float)transformedRect.X;
 			y = (float)transformedRect.Y;
 			width = (float)transformedRect.Width;
@@ -1782,50 +1963,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var resolvedName = automationPeer is not null
 			? AriaMapper.ResolveLabel(automationPeer)
 			: AutomationProperties.GetName(child);
-		var hasAccessibleName = !string.IsNullOrEmpty(resolvedName);
-
-		// Fall back to generic semantic element for unsupported control types.
-		// Prefer AriaMapper role (covers Image, Group, etc.) over FindHtmlRole.
-		var role = (automationPeer is not null
-			? AriaMapper.GetAriaRole(automationPeer.GetAutomationControlType())
-			: null)
-			?? AutomationProperties.FindHtmlRole(child);
-
-		// FR-013/FR-014: a ScrollViewer (control type Pane → "region") only earns role=region when it
-		// is actually scrollable AND named. A non-scrollable or unnamed ScrollViewer must NOT become an
-		// (unlabeled) landmark — drop the region role so it renders as a plain structural <div>.
-		if (string.Equals(role, "region", StringComparison.Ordinal) &&
-			!AriaMapper.QualifiesAsNamedScrollRegion(automationPeer, child))
-		{
-			role = null;
-		}
-
-		// Containers with AutomationProperties.Name but no peer/role act as accessible groups.
-		// This matches WinUI3 where named containers create UIA Group elements.
-		if (string.IsNullOrEmpty(role))
-		{
-			var automationName = AutomationProperties.GetName(child);
-			if (!string.IsNullOrEmpty(automationName))
-			{
-				role = "group";
-			}
-		}
-
-		// Elements with a LandmarkType get the corresponding ARIA landmark role.
-		// This overrides any other role since landmarks are a higher-level semantic.
-		// FR-014: region/form landmarks are only exposed when named (an unnamed region/form is not a
-		// landmark; axe "region must have a name"). main/navigation/search are top-level landmarks
-		// identified by role alone and keep their role even when unnamed.
+		// A whitespace-only name is dropped by the TS side, so it does not name the node.
+		var hasAccessibleName = !string.IsNullOrWhiteSpace(resolvedName);
+		var role = ResolveGenericRole(automationPeer, child, hasAccessibleName);
 		var landmarkType = AutomationProperties.GetLandmarkType(child);
-		if (landmarkType != AutomationLandmarkType.None)
-		{
-			var landmarkRole = AriaMapper.GetLandmarkRole(landmarkType);
-			if (!string.IsNullOrEmpty(landmarkRole)
-				&& (landmarkRole is not ("region" or "form") || hasAccessibleName))
-			{
-				role = landmarkRole;
-			}
-		}
 
 		// The accessible name (aria-label) comes ONLY from the resolved name (ResolveLabel).
 		// AutomationId is surfaced separately as the xamlautomationid attribute and
@@ -1835,7 +1976,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var horizontallyScrollable = false;
 		var verticallyScrollable = false;
 
-		if (automationPeer is IScrollProvider scrollProvider)
+		if (child is IScrollPortGeometry scrollPort)
+		{
+			// Kept in sync with the managed geometry by UpdateNativeScrollOffsets.
+			horizontallyScrollable = scrollPort.ScrollableWidth > 0;
+			verticallyScrollable = scrollPort.ScrollableHeight > 0;
+		}
+		else if (automationPeer is IScrollProvider scrollProvider)
 		{
 			horizontallyScrollable = scrollProvider.HorizontallyScrollable;
 			verticallyScrollable = scrollProvider.VerticallyScrollable;
@@ -1863,6 +2010,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		var result = NativeMethods.AddSemanticElement(parentHandle, child.Visual.Handle, index, width, height, x, y, role ?? string.Empty, name ?? string.Empty, IsAccessibilityFocusable(child, child.IsFocusable), ariaChecked, child.Visual.IsVisible, horizontallyScrollable, verticallyScrollable, child.GetType().Name, xamlAutomationId);
 
+		if (result)
+		{
+			UpdateNativeScrollOffsets(child);
+		}
+
 		if (!result && this.Log().IsEnabled(LogLevel.Error))
 		{
 			this.Log().Error($"[A11y] AddSemanticElement failed for {child.GetType().Name} handle={child.Visual.Handle} — parent={parentHandle} may not exist in JS DOM");
@@ -1872,6 +2024,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		if (result)
 		{
 			var handle = child.Visual.Handle;
+			_genericPathHandles.Add(handle);
 
 			// aria-roledescription from the AUTHORED AutomationProperties.LocalizedLandmarkType /
 			// LocalizedControlType attached properties (null when unset) — NOT the peer's
@@ -1998,10 +2151,87 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		};
 	}
 
-	private void OnAutomationNameChanged(UIElement element, string automationId)
+	private void OnAutomationNameChanged(UIElement element, AutomationPeer peer, string automationId)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
+
+		// The name drives the role of a generic-path node (named containers, named region/form landmarks),
+		// so re-resolve it as creation would.
+		if (_genericPathHandles.Contains(element.Visual.Handle))
+		{
+			var hasAccessibleName = !string.IsNullOrWhiteSpace(AriaMapper.ResolveLabel(peer));
+			NativeMethods.UpdateLandmarkRole(element.Visual.Handle, ResolveGenericRole(peer, element, hasAccessibleName));
+		}
+
 		NativeMethods.UpdateAriaLabel(element.Visual.Handle, automationId);
+	}
+
+	/// <summary>
+	/// The role of a node built by the generic path of <see cref="AddSemanticElement"/>. Creation, the live
+	/// Name / LandmarkType updates and the post-layout scroll check share it, so a node ends up with the same role
+	/// whatever order its state arrived in.
+	/// </summary>
+	private string? ResolveGenericRole(AutomationPeer? peer, UIElement element, bool hasAccessibleName)
+	{
+		// An open modal dialog's role belongs to its focus trap.
+		if (IsActiveModal(element.Visual.Handle))
+		{
+			return "dialog";
+		}
+
+		// Prefer AriaMapper role (covers Image, Group, etc.) over FindHtmlRole.
+		var role = (peer is not null ? AriaMapper.GetAriaRole(peer.GetAutomationControlType()) : null)
+			?? AutomationProperties.FindHtmlRole(element);
+
+		// FR-013/FR-014: a ScrollViewer (control type Pane → "region") only earns role=region when it
+		// is actually scrollable AND named. A non-scrollable or unnamed ScrollViewer must NOT become an
+		// (unlabeled) landmark — drop the region role so it renders as a plain structural <div>.
+		if (string.Equals(role, "region", StringComparison.Ordinal) &&
+			!(hasAccessibleName && peer is not null && AriaMapper.IsScrollable(peer, element)))
+		{
+			role = null;
+		}
+
+		// Containers with AutomationProperties.Name but no peer/role act as accessible groups.
+		// This matches WinUI3 where named containers create UIA Group elements.
+		if (string.IsNullOrEmpty(role))
+		{
+			if (!string.IsNullOrWhiteSpace(AutomationProperties.GetName(element)))
+			{
+				role = "group";
+			}
+		}
+
+		// Elements with a LandmarkType get the corresponding ARIA landmark role.
+		// This overrides any other role since landmarks are a higher-level semantic.
+		// FR-014: region/form landmarks are only exposed when named (an unnamed region/form is not a
+		// landmark; axe "region must have a name"). main/navigation/search are top-level landmarks
+		// identified by role alone and keep their role even when unnamed.
+		var landmarkType = AutomationProperties.GetLandmarkType(element);
+		if (landmarkType != AutomationLandmarkType.None)
+		{
+			var landmarkRole = AriaMapper.GetLandmarkRole(landmarkType);
+			if (!string.IsNullOrEmpty(landmarkRole)
+				&& (landmarkRole is not ("region" or "form") || hasAccessibleName))
+			{
+				role = landmarkRole;
+			}
+		}
+
+		return role;
+	}
+
+	private bool IsActiveModal(IntPtr handle)
+	{
+		for (var scope = ActiveModalScope; scope is not null; scope = scope.ParentScope)
+		{
+			if (scope.ModalHandle == handle)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	protected override void AnnounceOnPlatform(string text, bool assertive)
@@ -2075,7 +2305,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				this.Log().Trace($"[A11y] PROP CHANGE: Name handle={element.Visual.Handle} element={element.GetType().Name} old='{oldValue}' new='{newValue}'");
 			}
-			OnAutomationNameChanged(element, (string)newValue);
+			OnAutomationNameChanged(element, peer, (string)newValue);
 
 			// When the accessible name changes on a live region element, trigger
 			// the announcement. In WinUI3, the OS UIA framework monitors content
@@ -2104,7 +2334,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			// Sync landmark role for VoiceOver rotor navigation
 			var attributes = AriaMapper.GetAriaAttributes(peer);
-			if (!string.IsNullOrEmpty(attributes.LandmarkRole))
+			if (_genericPathHandles.Contains(element.Visual.Handle))
+			{
+				var hasAccessibleName = !string.IsNullOrWhiteSpace(attributes.Label);
+				NativeMethods.UpdateLandmarkRole(element.Visual.Handle, ResolveGenericRole(peer, element, hasAccessibleName));
+			}
+			else if (!string.IsNullOrEmpty(attributes.LandmarkRole))
 			{
 				NativeMethods.UpdateLandmarkRole(element.Visual.Handle, attributes.LandmarkRole);
 			}
@@ -2237,10 +2472,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 		}
 		else if ((automationProperty == ScrollPatternIdentifiers.HorizontalScrollPercentProperty ||
-			automationProperty == ScrollPatternIdentifiers.VerticalScrollPercentProperty) &&
-			TryGetPeerOwner(peer, out element) && element is ScrollViewer { Presenter: { } presenter } sv)
+			automationProperty == ScrollPatternIdentifiers.VerticalScrollPercentProperty ||
+			automationProperty == ScrollPatternIdentifiers.HorizontalViewSizeProperty ||
+			automationProperty == ScrollPatternIdentifiers.VerticalViewSizeProperty ||
+			automationProperty == ScrollPatternIdentifiers.HorizontallyScrollableProperty ||
+			automationProperty == ScrollPatternIdentifiers.VerticallyScrollableProperty) &&
+			TryGetPeerOwner(peer, out element))
 		{
-			NativeMethods.UpdateNativeScrollOffsets(presenter.Visual.Handle, sv.HorizontalOffset, sv.VerticalOffset);
+			// ScrollViewer raises these through its own peer while its presenter is the scroll port;
+			// ScrollPresenter is the scroll port itself.
+			UpdateNativeScrollOffsets(element is ScrollViewer { Presenter: { } presenter } ? presenter : element);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.LabeledByProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -2556,7 +2797,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		internal static partial void UpdateAriaChecked(IntPtr handle, string? ariaChecked);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateNativeScrollOffsets")]
-		internal static partial void UpdateNativeScrollOffsets(IntPtr handle, double horizontalOffset, double verticalOffset);
+		internal static partial void UpdateNativeScrollOffsets(IntPtr handle, double horizontalOffset, double verticalOffset, double extentWidth, double extentHeight, bool horizontallyScrollable, bool verticallyScrollable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateSemanticElementPositioning")]
 		internal static partial void UpdateSemanticElementPositioning(IntPtr handle, float width, float height, float x, float y);
@@ -2631,7 +2872,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		internal static partial void UpdateAriaDescription(IntPtr handle, string description);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateLandmarkRole")]
-		internal static partial void UpdateLandmarkRole(IntPtr handle, string role);
+		internal static partial void UpdateLandmarkRole(IntPtr handle, string? role);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaRoleDescription")]
 		internal static partial void UpdateAriaRoleDescription(IntPtr handle, string roleDescription);
@@ -2706,6 +2947,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.focusSemanticElement")]
 		internal static partial void FocusSemanticElement(IntPtr handle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.resetSemanticsRoot")]
+		internal static partial void ResetSemanticsRoot();
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.installFocusSentinels")]
 		internal static partial void InstallFocusSentinels();

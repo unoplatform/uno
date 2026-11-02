@@ -382,4 +382,7 @@ public static class FrameworkElementExtensions
 {
 	public static Rect GetAbsoluteBounds(this FrameworkElement element)
 		=> element.TransformToVisual(null).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
+
+	public static Point GetAbsoluteCenter(this FrameworkElement element)
+		=> element.TransformToVisual(null).TransformPoint(new Point(element.ActualWidth / 2, element.ActualHeight / 2));
 }

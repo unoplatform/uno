@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -25,4 +26,11 @@ internal interface IParsedText
 	internal (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index);
 
 	bool IsBaseDirectionRightToLeft { get; }
+
+	/// <summary>
+	/// Draws the spell-check squiggles laid out by the last <see cref="Draw"/>, in the text's own coordinates.
+	/// <see cref="Draw"/> leaves them out: they sit below the line box, where the text's own clip would cut them, so the
+	/// owning TextBox draws them in a layer of its own.
+	/// </summary>
+	void DrawSpellCheckSquiggles(SKCanvas canvas, float opacity);
 }

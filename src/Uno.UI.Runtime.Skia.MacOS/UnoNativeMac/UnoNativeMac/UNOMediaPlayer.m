@@ -284,6 +284,7 @@ UNOMediaPlayerView* uno_mediaplayer_create_view(void)
 #if DEBUG_MEDIAPLAYER
     NSLog(@"uno_mediaplayer_create_view #%p %@", view, view.layer);
 #endif
+    uno_native_track(view);
     return view;
 }
 

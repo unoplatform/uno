@@ -113,6 +113,7 @@ NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
     webview.cancelString = [NSString stringWithUTF8String:cancel];
 
     webview.originalSuperView = ((UNOWindow*)window).renderingView;
+    uno_native_track(webview);
     return webview;
 }
 
@@ -122,7 +123,18 @@ void uno_webview_register_message_handler(WKWebView *webview)
     NSLog(@"uno_webview_register_message_handler %p", webview);
 #endif
     __weak id weakSelf = webview;
+    // `addScriptMessageHandler:name:` raises on a name that is already taken, and the webview outlives
+    // every visual tree exit, so a re-entering element registers on the same WKWebView a second time.
+    [webview.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebView"];
     [webview.configuration.userContentController addScriptMessageHandler:weakSelf name:@"unoWebView"];
+}
+
+void uno_webview_unregister_message_handler(WKWebView *webview)
+{
+#if DEBUG
+    NSLog(@"uno_webview_unregister_message_handler %p", webview);
+#endif
+    [webview.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebView"];
 }
 
 const char* uno_webview_get_title(WKWebView *webview)
@@ -233,13 +245,14 @@ void uno_webview_execute_script(WKWebView *webview, NSInteger handle, const char
 #endif
     NSString *js = [NSString stringWithUTF8String:javascript];
     [webview evaluateJavaScript:js completionHandler:^(NSObject* result, NSError *error) {
-        const char* r = nil;
-        const char* e = nil;
+        // UTF8String points into its NSString, so the strings must outlive the callback that copies them.
+        NS_VALID_UNTIL_END_OF_SCOPE NSString *r = nil;
+        NS_VALID_UNTIL_END_OF_SCOPE NSString *e = nil;
         if (error) {
 #if DEBUG
             NSLog(@"uno_webview_execute_script %p completionHandler error: %@", webview, error);
 #endif
-            e = error.description.UTF8String;
+            e = error.description;
         } else if (result != nil) {
             if ([NSJSONSerialization isValidJSONObject:result]) {
 #if DEBUG
@@ -251,12 +264,12 @@ void uno_webview_execute_script(WKWebView *webview, NSInteger handle, const char
 #if DEBUG
                     NSLog(@"uno_webview_execute_script %p completionHandler jsonError: %@", webview, jsonError);
 #endif
-                    e = jsonError.description.UTF8String;
+                    e = jsonError.description;
                 } else {
 #if DEBUG
                     NSLog(@"uno_webview_execute_script %p completionHandler data: %@", webview, data);
 #endif
-                    r = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] UTF8String];
+                    r = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 }
             } else if ([result isKindOfClass:NSString.class]) {
                 // double quote existing quotes so we can quote the whole thing
@@ -265,16 +278,16 @@ void uno_webview_execute_script(WKWebView *webview, NSInteger handle, const char
 #if DEBUG
                 NSLog(@"uno_webview_execute_script %p completionHandler string: %@", webview, quoted);
 #endif
-                r = quoted.UTF8String;
+                r = quoted;
             } else {
                 NSString *s = result.description;
 #if DEBUG
                 NSLog(@"uno_webview_execute_script %p completionHandler object: %@", webview, s);
 #endif
-                r = s.UTF8String;
+                r = s;
             }
         }
-        uno_get_execute_callback()(handle, r, e);
+        uno_get_execute_callback()(handle, r.UTF8String, e.UTF8String);
     }];
 }
 
@@ -288,9 +301,8 @@ void uno_webview_invoke_script(WKWebView *webview, NSInteger handle, const char 
 #if DEBUG
         NSLog(@"uno_webview_invoke_script %p completionHandler result: %@ error: %@", webview, result, error);
 #endif
-        const char* r = result ? result.UTF8String : nil;
-        const char* e = error ? error.description.UTF8String : nil;
-        uno_get_invoke_callback()(handle, r, e);
+        NS_VALID_UNTIL_END_OF_SCOPE NSString *e = error.description;
+        uno_get_invoke_callback()(handle, result.UTF8String, e.UTF8String);
     }];
 }
 

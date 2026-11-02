@@ -11,7 +11,8 @@ steps:
       sudo dpkg -i packages-microsoft-prod.deb
       sudo apt-get install apt-transport-https
       sudo apt-get update
-      sudo apt-get install -y msopenjdk-17
+      # uno-check can't parse five-part versions such as 17.0.21.0.2 (unoplatform/uno.check#590)
+      sudo apt-get install -y msopenjdk-17=17.0.20.1-1
       sudo update-java-alternatives --set msopenjdk-17-amd64
     displayName: Install OpenJDK 17
     retryCountOnTaskFailure: 3

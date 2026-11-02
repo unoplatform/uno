@@ -83,7 +83,7 @@ namespace Microsoft.UI.Xaml.Media
 			void OnImageSourceChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
 			{
 				var newImageSource = (args.NewValue as ImageSource);
-				subscriptionDisposable.Disposable = newImageSource?.Subscribe(OnSourceOpened);
+				subscriptionDisposable.Disposable = newImageSource?.SubscribeWeakly(OnSourceOpened);
 			}
 
 			void OnStretchChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
@@ -101,7 +101,7 @@ namespace Microsoft.UI.Xaml.Media
 				preserveAspectRatio = SetPreserveAspectRatio();
 			}
 
-			subscriptionDisposable.Disposable = ImageSource?.Subscribe(OnSourceOpened);
+			subscriptionDisposable.Disposable = ImageSource?.SubscribeWeakly(OnSourceOpened);
 
 			void OnSourceOpened(ImageData data)
 			{

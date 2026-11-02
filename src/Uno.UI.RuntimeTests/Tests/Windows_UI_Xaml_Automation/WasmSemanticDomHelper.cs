@@ -33,6 +33,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		}
 
 		/// <summary>
+		/// Tears the semantic DOM down again. Accessibility would otherwise stay on for the rest of the
+		/// app, slowing down and changing the focus behavior of every test that runs after it.
+		/// </summary>
+		public static void DisableAccessibility()
+		{
+			if (!OperatingSystem.IsBrowser())
+			{
+				return;
+			}
+
+			InvokeBrowserJs("(function(){globalThis.Uno.UI.Runtime.Skia.Accessibility.disableAccessibility(); return 'ok';})()");
+		}
+
+		/// <summary>
 		/// Returns the deterministic id assigned to a UIElement's semantic node. Targets the exact
 		/// element under test via its Visual.Handle; a generic role selector would match the first
 		/// semantic node of that kind in the document, which is usually not the element under test

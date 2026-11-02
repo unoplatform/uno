@@ -40,6 +40,15 @@
     id<CAMetalDrawable> drawable = view.currentDrawable;
     if (drawable == nil)
     {
+        // Returning without calling managed code would stop this window rendering for good: AppKit has
+        // already cleared needsDisplay to make this call, and the managed side latches its frame request
+        // (CompositionTarget.RenderRequested stays set), so every later RequestNewFrame coalesces into the
+        // invalidation that produced this dropped frame. Re-arm on a later turn -- setting it here would be
+        // cleared by the display pass we are inside of.
+        __weak MTKView *weakView = view;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC / 120)), dispatch_get_main_queue(), ^{
+            weakView.needsDisplay = YES;
+        });
         return;
     }
 

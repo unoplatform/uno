@@ -23,7 +23,18 @@ if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 fi
 
 cd $SamplesAppArtifactPath
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE
+## A native crash leaves no results and no managed stack: print the faulting thread from the
+## crash report macOS writes, so a SIGSEGV can be diagnosed from the log.
+EXIT_CODE=0
+dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE || EXIT_CODE=$?
+if [ $EXIT_CODE -ne 0 ]; then
+	sleep 10 # ReportCrash writes the report asynchronously
+	CRASH_REPORT=$(ls -t ~/Library/Logs/DiagnosticReports/dotnet*.ips 2>/dev/null | head -1 || true)
+	if [ -n "$CRASH_REPORT" ]; then
+		python3 $BUILD_SOURCESDIRECTORY/build/test-scripts/macos-crash-report-summary.py "$CRASH_REPORT" || true
+	fi
+	exit $EXIT_CODE
+fi
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool

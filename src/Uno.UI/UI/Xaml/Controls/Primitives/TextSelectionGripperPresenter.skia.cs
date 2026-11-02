@@ -307,9 +307,9 @@ internal sealed class TextSelectionGripperPresenter
 		var sampleY = moveSurface.Y - gripper.GrabOffsetY - surface.Padding.Top;
 
 		// Clamp the sampled Y into the text's vertical span (first line's centre .. last line's centre) so a finger
-		// that drifts above or below the text still adjusts the caret horizontally, instead of GetIndexAt clamping
-		// the out-of-range Y and snapping the caret to a line's start/end. GetRectForIndex clamps its index, so
-		// int.MaxValue yields the last line's rect.
+		// that drifts below the text still adjusts the caret horizontally: GetIndexAt hit-tests a Y above the text on
+		// the first line by X, but snaps a Y below it to the end of the last line. GetRectForIndex clamps its index,
+		// so int.MaxValue yields the last line's rect.
 		var firstLine = surface.ParsedText.GetRectForIndex(0);
 		var lastLine = surface.ParsedText.GetRectForIndex(int.MaxValue);
 		sampleY = Math.Clamp(sampleY, firstLine.GetMidY(), lastLine.GetMidY());

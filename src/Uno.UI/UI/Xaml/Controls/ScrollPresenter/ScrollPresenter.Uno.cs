@@ -6,8 +6,14 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-partial class ScrollPresenter : IBorderInfoProvider
+partial class ScrollPresenter : IBorderInfoProvider, IScrollPortGeometry
 {
+	double IScrollPortGeometry.ZoomedExtentWidth => GetZoomedExtentWidth();
+
+	double IScrollPortGeometry.ZoomedExtentHeight => GetZoomedExtentHeight();
+
+	void IScrollPortGeometry.ScrollToOffsets(double horizontalOffset, double verticalOffset) => ScrollToOffsets(horizontalOffset, verticalOffset);
+
 #if !UNO_HAS_BORDER_VISUAL
 	private BorderLayerRenderer _borderRenderer;
 #endif
