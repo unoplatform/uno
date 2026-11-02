@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
@@ -33,7 +35,7 @@ public partial class Given_DependencyProperty
 			(typeof(float), 0f),
 			(typeof(double), 0d),
 			(typeof(TimeSpan), TimeSpan.Zero),
-			(typeof(DateTimeOffset), default(DateTimeOffset)),
+			(typeof(DateTimeOffset), default(DateTimeOffset)), // Uno deviation: WinUI gives the WinRT epoch, 1601-01-01
 			(typeof(Point), default(Point)),
 			(typeof(Size), default(Size)),
 			(typeof(Rect), default(Rect)),
@@ -179,6 +181,8 @@ public partial class Given_DependencyProperty
 		});
 		target.SetValue(targetProperty, 42d);
 
+		Assert.AreEqual(42d, ((Thickness)source.GetValue(boundProperty)).Left);
+
 		var laterProperty = DependencyProperty.Register(prefix + "_Later", typeof(Thickness), typeof(MockDependencyObject), new PropertyMetadata(null));
 
 		Assert.AreEqual(default(Thickness), new MockDependencyObject().GetValue(otherProperty));
@@ -186,5 +190,38 @@ public partial class Given_DependencyProperty
 		Assert.AreNotSame(
 			boundProperty.GetMetadata(typeof(MockDependencyObject)).DefaultValue,
 			otherProperty.GetMetadata(typeof(MockDependencyObject)).DefaultValue);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25840")]
+	public void When_WinUI_Enum_Table_Then_Every_Name_Resolves_To_An_Uno_Enum()
+	{
+		// The table matches enums by full name, so a renamed or missing enum silently loses its typed zero.
+		// The WinUI enums Uno does not define are listed here, so that any other gap is a deliberate decision.
+		var knownMissing = new List<string>
+		{
+			"Microsoft.UI.Xaml.Controls.ControlHeaderPlacement",
+			"Microsoft.UI.Xaml.Controls.InputValidationErrorEventAction",
+			"Microsoft.UI.Xaml.Controls.InputValidationKind",
+			"Microsoft.UI.Xaml.Controls.InputValidationMode",
+			"Microsoft.UI.Xaml.Interop.NotifyCollectionChangedAction",
+			"Microsoft.UI.Xaml.MarkupExtensionType",
+			"Microsoft.UI.Xaml.Media.TextFormattingMode",
+			"Microsoft.UI.Xaml.Media.TextHintingMode",
+			"Microsoft.UI.Xaml.Media.TextRenderingMode",
+			"Microsoft.UI.Xaml.Printing.PrintDocumentFormat",
+			"Windows.UI.Xaml.Interop.TypeKind",
+		};
+
+		// Touching one type per assembly loads the assemblies the table spans.
+		_ = (typeof(DependencyProperty), typeof(global::Windows.System.VirtualKey), typeof(global::Windows.Foundation.Point));
+		var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+		var missing = DependencyProperty._winUIEnums
+			.Where(name => !assemblies.Any(assembly => assembly.GetType(name)?.IsEnum == true))
+			.OrderBy(name => name, StringComparer.Ordinal)
+			.ToList();
+
+		CollectionAssert.AreEquivalent(knownMissing, missing, string.Join(", ", missing));
 	}
 }

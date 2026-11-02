@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
 using Uno;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
@@ -163,6 +164,7 @@ namespace Microsoft.UI.Xaml
 			PropertyMetadata typeMetadata)
 		{
 			typeMetadata = FixMetadataIfNeeded(propertyType, typeMetadata);
+			LogNullValueTypeDefault(name, propertyType, ownerType, typeMetadata);
 
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: false);
 
@@ -194,6 +196,18 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return metadata;
+		}
+
+		// A value type outside the WinUI table defaults to null, and the typed GetValue cast then throws far
+		// from here; the log names the registration for a 7.0 migration.
+		private static void LogNullValueTypeDefault(string name, Type propertyType, Type ownerType, PropertyMetadata metadata)
+		{
+			if (metadata.DefaultValue is null
+				&& !propertyType.IsNullable()
+				&& typeof(DependencyProperty).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(DependencyProperty).Log().Debug($"{ownerType}.{name} ({propertyType}) is registered without a default value and reads back null until one is set; see the Uno 7.0 migration notes.");
+			}
 		}
 
 		// WinUI infers the default from the property type only for the value types of its XAML metadata
@@ -275,6 +289,7 @@ namespace Microsoft.UI.Xaml
 			PropertyMetadata defaultMetadata)
 		{
 			defaultMetadata = FixMetadataIfNeeded(propertyType, defaultMetadata);
+			LogNullValueTypeDefault(name, propertyType, ownerType, defaultMetadata);
 
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, defaultMetadata, attached: true);
 
@@ -374,7 +389,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// Matching by owner and name keeps the trimmer from rooting RichTextBlock: reading one of its statics
-		// keeps its static constructor, and Register's ownerType annotation then keeps the whole control.
+		// would keep its static constructor, and with it every registration and callback of the control.
 		internal bool IsRichTextBlockProperty(string name)
 			=> _ownerType == typeof(RichTextBlock) && _name == name;
 

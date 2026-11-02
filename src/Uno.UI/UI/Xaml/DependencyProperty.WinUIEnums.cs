@@ -13,7 +13,7 @@ public sealed partial class DependencyProperty
 {
 	// The enums of WinUI's XAML type table: a property of one of these types registered without a default
 	// gets the typed zero, any other enum gets null, as CDependencyProperty::GetDefaultValue does.
-	private static readonly HashSet<string> _winUIEnums = new()
+	internal static readonly HashSet<string> _winUIEnums = new()
 	{
 		"Microsoft.UI.Input.HoldingState",
 		"Microsoft.UI.Input.PointerDeviceType",
@@ -147,6 +147,7 @@ public sealed partial class DependencyProperty
 		"Microsoft.UI.Xaml.Input.XYFocusNavigationStrategy",
 		"Microsoft.UI.Xaml.Input.XYFocusNavigationStrategyOverride",
 		"Microsoft.UI.Xaml.Interop.NotifyCollectionChangedAction",
+		"System.Collections.Specialized.NotifyCollectionChangedAction", // the projection of the Interop enum above
 		"Microsoft.UI.Xaml.LineStackingStrategy",
 		"Microsoft.UI.Xaml.MarkupExtensionType",
 		"Microsoft.UI.Xaml.Media.AlignmentX",

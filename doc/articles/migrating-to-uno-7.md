@@ -959,7 +959,13 @@ Dependency properties registered without a default value now follow WinUI:
   `Guid`, `decimal`, `Duration`, `Matrix`, `Vector2`, ...) gets `null`, so a
   `(MyEnum)GetValue(...)` wrapper on such a property throws until a value is set. Pass the
   default explicitly, for example `new PropertyMetadata(MyEnum.None)`. Code that already runs
-  on Windows is unaffected, since it needed the explicit default there.
+  on Windows is unaffected, since it needed the explicit default there. The WinUI documentation
+  says a value type gets "the default of the type", but the WinAppSDK runtime does that only for
+  the types above; the table was measured on it. `SetValue(null)` on such a property is now
+  stored rather than rejected with an `InvalidOperationException`, and `ClearValue`, or a
+  binding that produces `null`, leaves it `null` too. With Debug logging enabled for
+  `Microsoft.UI.Xaml.DependencyProperty`, every registration that gets a `null` default is
+  listed at startup.
 
 ### `SystemBackdrop` no longer rewrites your content's backgrounds
 
