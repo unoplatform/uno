@@ -925,25 +925,29 @@ namespace Uno.UI.Runtime {
 		 * Screen readers use this to announce the currently focused option without moving DOM focus.
 		 */
 		public static updateActiveDescendant(containerHandle: number, activeItemHandle: number): void {
-			const container = document.getElementById(`uno-semantics-${containerHandle}`);
-			if (container) {
-				if (activeItemHandle !== 0) {
-					const activeId = `uno-semantics-${activeItemHandle}`;
-					container.setAttribute('aria-activedescendant', activeId);
-				} else {
-					container.removeAttribute('aria-activedescendant');
+			SemanticElements.runInVirtualizedOrder(() => {
+				const container = document.getElementById(`uno-semantics-${containerHandle}`);
+				if (container) {
+					if (activeItemHandle !== 0) {
+						const activeId = `uno-semantics-${activeItemHandle}`;
+						container.setAttribute('aria-activedescendant', activeId);
+					} else {
+						container.removeAttribute('aria-activedescendant');
+					}
 				}
-			}
+			});
 		}
 
 		/**
 		 * Updates the selected state of a list item element.
 		 */
 		public static updateSelectionState(handle: number, selected: boolean): void {
-			const element = document.getElementById(`uno-semantics-${handle}`);
-			if (element) {
-				element.setAttribute('aria-selected', String(selected));
-			}
+			SemanticElements.runInVirtualizedOrder(() => {
+				const element = document.getElementById(`uno-semantics-${handle}`);
+				if (element) {
+					element.setAttribute('aria-selected', String(selected));
+				}
+			});
 		}
 
 		/**
@@ -1491,6 +1495,18 @@ namespace Uno.UI.Runtime {
 		}
 
 		/**
+		 * Runs a selection update after the virtualized mutations already queued, so a realization snapshot
+		 * taken earlier cannot overwrite it; runs it immediately when nothing is queued.
+		 */
+		private static runInVirtualizedOrder(mutation: () => void): void {
+			if (SemanticElements.virtualizedMutationQueue.length > 0) {
+				SemanticElements.virtualizedMutationQueue.push(mutation);
+			} else {
+				mutation();
+			}
+		}
+
+		/**
 		 * Drops queued virtualized mutations; used when the semantic DOM is torn down.
 		 */
 		public static resetVirtualizedMutations(): void {
@@ -1645,12 +1661,17 @@ namespace Uno.UI.Runtime {
 		}
 
 		/**
-		 * Removes the aria-activedescendant of the container that references a node being removed.
+		 * Removes every aria-activedescendant that references a node being removed: its container's, or for a
+		 * ComboBox option, the head's (outside the listbox subtree). Only item roles can be referenced.
 		 */
 		public static clearActiveDescendantTo(element: HTMLElement): void {
-			const container = element.parentElement?.closest('[aria-activedescendant]');
-			if (container && container.getAttribute('aria-activedescendant') === element.id) {
-				container.removeAttribute('aria-activedescendant');
+			const role = element.getAttribute('role');
+			if (!element.id || (role !== 'option' && role !== 'row' && role !== 'treeitem' && role !== 'gridcell')) {
+				return;
+			}
+
+			for (const owner of Array.from(document.querySelectorAll(`[aria-activedescendant="${element.id}"]`))) {
+				owner.removeAttribute('aria-activedescendant');
 			}
 		}
 

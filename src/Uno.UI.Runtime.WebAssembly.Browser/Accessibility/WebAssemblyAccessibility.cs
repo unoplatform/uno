@@ -583,7 +583,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			_virtualizedRegions.Add(region);
 
 			void OnElementPrepared(ItemsRepeater s, ItemsRepeaterElementPreparedEventArgs e)
-				=> EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, "option");
+				=> EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, GetVirtualizedItemRole(repeater));
 
 			void OnElementClearing(ItemsRepeater s, ItemsRepeaterElementClearingEventArgs e)
 			{
@@ -610,7 +610,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				var info = ItemsRepeater.GetVirtualizationInfo(itemElement);
 				if (info is not null && info.IsRealized)
 				{
-					EmitRealizedItem(region, repeater.Visual.Handle, itemElement, info.Index, totalCount, "option");
+					EmitRealizedItem(region, repeater.Visual.Handle, itemElement, info.Index, totalCount, GetVirtualizedItemRole(repeater));
 				}
 			}
 		}
@@ -625,7 +625,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				listView.SelectionMode == ListViewSelectionMode.Extended);
 			_virtualizedRegions.Add(region);
 
-			var itemRole = isGrid ? "row" : "option";
+			var itemRole = GetVirtualizedItemRole(listView);
 
 			void OnContainerContentChanging(ListViewBase s, ContainerContentChangingEventArgs e)
 			{
@@ -657,6 +657,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 		}
 	}
+
+	/// <summary>
+	/// The role of a realized item of a virtualized container, shared by its first emission and any re-emission.
+	/// </summary>
+	private static string GetVirtualizedItemRole(UIElement container) => container is GridView ? "row" : "option";
 
 	/// <summary>
 	/// Emits a single realized virtualized item into its region — shared by the live
@@ -2971,7 +2976,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			var index = listView.IndexFromContainer(element);
 			if (index >= 0)
 			{
-				EmitRealizedItem(listRegion, listView.Visual.Handle, element, index, listView.Items?.Count ?? 0, listView is GridView ? "row" : "option", listView);
+				EmitRealizedItem(listRegion, listView.Visual.Handle, element, index, listView.Items?.Count ?? 0, GetVirtualizedItemRole(listView), listView);
 			}
 
 			return true;
@@ -2986,7 +2991,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			if (ItemsRepeater.GetVirtualizationInfo(element) is { IsRealized: true } info)
 			{
-				EmitRealizedItem(repeaterRegion, repeater.Visual.Handle, element, info.Index, repeater.ItemsSourceView?.Count ?? 0, "option");
+				EmitRealizedItem(repeaterRegion, repeater.Visual.Handle, element, info.Index, repeater.ItemsSourceView?.Count ?? 0, GetVirtualizedItemRole(repeater));
 			}
 
 			return true;
