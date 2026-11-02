@@ -6393,6 +6393,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(SUT.IsManagedLoupeShowing, "releasing hides the loupe");
 		}
 
+		// The loupe's copy of the text has to lay out like the TextBox's, or it centers on the wrong text. A default-aligned
+		// TextBox aligns right-to-left text to the right, from its content.
+		[TestMethod]
+		[DataRow(FlowDirection.LeftToRight, DisplayName = "left-to-right flow")]
+		[DataRow(FlowDirection.RightToLeft, DisplayName = "right-to-left flow")]
+		public async Task When_Touch_Drags_Caret_In_RightToLeft_Text_Managed_Loupe_Magnifies_It_iOS(FlowDirection flowDirection)
+		{
+			TextBoxCore.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
+			using var _ = new DisposableAction(() =>
+			{
+				TextBoxCore.LoupeOverrideForTesting = null;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			const string text = "\u05E9\u05DC\u05D5\u05DD \u05E2\u05D5\u05DC\u05DD"; // "Hello world" in Hebrew
+			var SUT = new TextBox
+			{
+				Width = 400,
+				FlowDirection = flowDirection,
+				Text = text,
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var start = GetCaretPoint(SUT, 4);
+			finger.Press(start);
+			RaiseTouchHold(SUT, start);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsManagedLoupeShowing, "the hold starts the caret drag, which shows the loupe");
+
+			var canvas = (Canvas)((Border)FindManagedLoupe()).Child;
+			var magnified = canvas.Children.OfType<TextBlock>().Single();
+			var source = SUT.TextBoxView.DisplayBlock;
+			static double ScreenX(TextBlock block, int index)
+			{
+				var rect = block.ParsedText.GetRectForIndex(index);
+				return block.TransformToVisual(null).TransformPoint(new Point(rect.X, rect.Y + (rect.Height / 2))).X;
+			}
+
+			var caret = SUT.SelectionStart;
+			var loupeCenter = canvas.TransformToVisual(null).TransformPoint(new Point(canvas.Width / 2, canvas.Height / 2)).X;
+			Assert.AreEqual(loupeCenter, ScreenX(magnified, caret), 1.5, "the loupe should center on the caret's own text");
+
+			// Around it, every caret stop is where the magnified TextBox puts it.
+			for (var i = 0; i <= text.Length; i++)
+			{
+				Assert.AreEqual(
+					TextBoxTouchLoupe.Magnification * (ScreenX(source, i) - ScreenX(source, caret)),
+					ScreenX(magnified, i) - ScreenX(magnified, caret),
+					1.5,
+					$"caret stop {i} (the caret is at {caret})");
+			}
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
 		// The platform loupe, when there is one, is the one shown.
 		[TestMethod]
 		public async Task When_Touch_LongPress_Drags_Caret_Native_Loupe_Wins_Over_Managed_iOS()
