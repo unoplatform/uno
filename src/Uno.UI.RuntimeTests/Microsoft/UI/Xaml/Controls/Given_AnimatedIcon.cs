@@ -63,6 +63,42 @@ public partial class Given_AnimatedIcon
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Unloaded_From_Ancestor_With_State_Then_Not_Rooted_By_Ancestor()
+	{
+		var host = new Border { Width = 50, Height = 50 };
+		AnimatedIcon.SetState(host, "Normal");
+		await UITestHelper.Load(host);
+
+		var weakRef = Attach(host, new SolidColorBrush(Colors.Red), withSource: false);
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual("Normal", AnimatedIcon.GetState((AnimatedIcon)host.Child));
+
+		host.Child = null;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(await TestHelper.TryWaitUntilCollected(weakRef), "An unloaded AnimatedIcon is still rooted by the ancestor it copies State from.");
+	}
+
+	[TestMethod]
+	public async Task When_Ancestor_State_Changes_Then_Icon_State_Follows()
+	{
+		var icon = new AnimatedIcon { Width = 20, Height = 20 };
+		var host = new Border { Width = 50, Height = 50, Child = icon };
+		AnimatedIcon.SetState(host, "Normal");
+		await UITestHelper.Load(host);
+		Assert.AreEqual("Normal", AnimatedIcon.GetState(icon));
+
+		// The subscription to the ancestor must survive a GC while the icon is alive.
+		GC.Collect();
+		GC.WaitForPendingFinalizers();
+
+		AnimatedIcon.SetState(host, "PointerOver");
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual("PointerOver", AnimatedIcon.GetState(icon));
+	}
+
+	[TestMethod]
 	public async Task When_Loaded_Then_Brush_Color_Change_Reaches_Source()
 	{
 		var brush = new SolidColorBrush(Colors.Red);

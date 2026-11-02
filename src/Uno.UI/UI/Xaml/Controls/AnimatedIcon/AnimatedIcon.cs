@@ -134,11 +134,10 @@ namespace Microsoft.UI.Xaml.Controls
 			if (ancestorWithState != null)
 			{
 				m_ancestorStatePropertyChangedRevoker.Disposable = null;
-				var token = ancestorWithState.RegisterPropertyChangedCallback(property, OnAncestorAnimatedIconStatePropertyChanged);
-				m_ancestorStatePropertyChangedRevoker.Disposable = Disposable.Create(() =>
-				{
-					ancestorWithState.UnregisterPropertyChangedCallback(property, token);
-				});
+				// Uno specific: registered weakly, like the Foreground brush, so a long-lived ancestor doesn't root the icon.
+				m_ancestorStatePropertyChangedRevoker.Disposable = ancestorWithState.RegisterDisposablePropertyChangedCallback(
+					property,
+					(s, e) => OnAncestorAnimatedIconStatePropertyChanged(s, e.Property));
 			}
 
 			// Wait until loaded to apply the fallback icon source property because we need the icon source
