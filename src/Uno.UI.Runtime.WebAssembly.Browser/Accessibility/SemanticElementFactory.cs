@@ -117,8 +117,10 @@ internal static partial class SemanticElementFactory
 			}
 		}
 
-		// Apply aria-description from HelpText for VoiceOver secondary context
-		if (created && !string.IsNullOrEmpty(attributes.Description))
+		// Apply aria-description from HelpText for VoiceOver secondary context. A column header whose help text
+		// is its sort direction already reports it as aria-sort, so it is not announced twice.
+		if (created && !string.IsNullOrEmpty(attributes.Description)
+			&& !(elementType == SemanticElementType.ColumnHeader && GetSortFromHelpText(attributes.Description) is not null))
 		{
 			NativeMethods.UpdateAriaDescription(handle, attributes.Description);
 		}
@@ -1043,6 +1045,10 @@ internal static partial class SemanticElementFactory
 	/// Toolkit DataGrid column-header peer reports its column's SortDirection as the help text
 	/// "Ascending"/"Descending". Returns null when no sort is advertised, so the JS omits aria-sort.
 	/// </summary>
+	/// <remarks>
+	/// The help text match relies on the Toolkit peer's literal, non-localized strings, and is only applied to
+	/// column-header nodes.
+	/// </remarks>
 	internal static string? GetSortDirection(AutomationPeer peer)
 	{
 		var status = peer.GetItemStatus();
@@ -1060,7 +1066,11 @@ internal static partial class SemanticElementFactory
 			}
 		}
 
-		var helpText = peer.GetHelpText();
+		return GetSortFromHelpText(peer.GetHelpText());
+	}
+
+	internal static string? GetSortFromHelpText(string? helpText)
+	{
 		if (string.Equals(helpText, "Ascending", StringComparison.OrdinalIgnoreCase))
 		{
 			return "ascending";

@@ -1733,6 +1733,24 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	private bool IsInTrackedGrid(UIElement element)
+	{
+		if (_grids.Count == 0)
+		{
+			return false;
+		}
+
+		for (var current = element; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (_grids.ContainsKey(current.Visual.Handle))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private void UpdateColumnHeaderSort(IntPtr handle)
 	{
 		if (!_columnHeaders.TryGetValue(handle, out var state))
@@ -2611,7 +2629,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			// A grid that rebinds its rows in place (e.g. after a sort) raises no structural change,
 			// but its cells' names change, so re-read the grid's counts and sort state.
-			QueueGridRefresh();
+			if (IsInTrackedGrid(element))
+			{
+				QueueGridRefresh();
+			}
 
 			// When the accessible name changes on a live region element, trigger
 			// the announcement. In WinUI3, the OS UIA framework monitors content
@@ -2633,8 +2654,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				this.Log().Trace($"[A11y] PROP CHANGE: HelpText handle={element.Visual.Handle} element={element.GetType().Name} new='{newValue}'");
 			}
-			NativeMethods.UpdateAriaDescription(element.Visual.Handle, (string)newValue);
-			UpdateColumnHeaderSort(element.Visual.Handle);
+			var handle = element.Visual.Handle;
+			var isSortHelpText = _columnHeaders.ContainsKey(handle) && SemanticElementFactory.GetSortFromHelpText(newValue as string) is not null;
+			NativeMethods.UpdateAriaDescription(handle, isSortHelpText ? string.Empty : (string)newValue);
+			UpdateColumnHeaderSort(handle);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.LandmarkTypeProperty &&
 			TryGetPeerOwner(peer, out element))

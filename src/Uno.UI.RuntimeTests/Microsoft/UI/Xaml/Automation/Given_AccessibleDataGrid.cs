@@ -361,6 +361,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Toolkit_Column_Starts_Sorted_Then_Sort_Is_Not_Also_A_Description()
+		{
+			var header = new ToolkitColumnHeaderControl { SortHelpText = "Descending" };
+
+			await UITestHelper.Load(header, x => x.IsLoaded);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(header), timeoutMS: 5000, message: "Timed out waiting for the header semantic element.");
+
+			Assert.AreEqual("descending", GetSemanticAttribute(header, "aria-sort"));
+			Assert.IsFalse(SemanticElementHasAttribute(header, "aria-description"), "The sort direction must not be announced twice.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_ColumnHeader_ItemStatus_Changes_Then_Aria_Sort_Follows()
 		{
 			var header = new ColumnHeaderControl();
