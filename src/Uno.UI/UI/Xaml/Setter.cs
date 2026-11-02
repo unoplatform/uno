@@ -136,7 +136,7 @@ namespace Microsoft.UI.Xaml
 			Value = value;
 		}
 
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Owner and property types are kept by the generated BindableMetadata")]
 		internal override void ApplyTo(DependencyObject o)
 		{
 			if (Property != null)
@@ -175,7 +175,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Owner and property types are kept by the generated BindableMetadata")]
 		internal override bool TryGetSetterValue(out object? value)
 		{
 			if (ThemeResourceKey.HasValue)

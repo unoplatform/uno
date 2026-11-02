@@ -434,8 +434,15 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 							if (getMethod != null)
 							{
-								// The type is named for trimming: a binding path may continue into the value.
-								writer.AppendLineIndented($@"bindableType.AddProperty({ownerType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{dependencyProperty}, typeof({getMethod.ReturnType.GetFullyQualifiedTypeIncludingGlobal()}));");
+								// The type is named for trimming, since a binding path may continue into the value;
+								// a type the generated code cannot spell leaves the property untyped.
+								var returnType = getMethod.ReturnType;
+								var canNameType = !getMethod.IsGenericMethod
+									&& returnType.TypeKind is not (TypeKind.Dynamic or TypeKind.TypeParameter or TypeKind.Error or TypeKind.Pointer or TypeKind.FunctionPointer);
+
+								writer.AppendLineIndented(canNameType
+									? $@"bindableType.AddProperty({ownerTypeName}.{dependencyProperty}, typeof({returnType.GetFullyQualifiedTypeIncludingGlobal()}));"
+									: $@"bindableType.AddProperty({ownerTypeName}.{dependencyProperty});");
 							}
 						}
 

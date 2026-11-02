@@ -88,6 +88,12 @@ public class Given_BindableTypeProvidersSourceGenerator
 				public static Mode GetMode(DependencyObject target) => (Mode)target.GetValue(ModeProperty);
 
 				public static void SetMode(DependencyObject target, Mode value) => target.SetValue(ModeProperty, value);
+
+				public static readonly DependencyProperty DataProperty = DependencyProperty.RegisterAttached("Data", typeof(object), typeof(Owner), null);
+
+				public static dynamic GetData(DependencyObject target) => target.GetValue(DataProperty);
+
+				public static void SetData(DependencyObject target, dynamic value) => target.SetValue(DataProperty, (object)value);
 			}
 			""");
 
@@ -95,6 +101,7 @@ public class Given_BindableTypeProvidersSourceGenerator
 
 		test.GeneratedCode.Should().Contain("bindableType.AddProperty(global::MyProject.Owner.PayloadProperty, typeof(global::MyProject.Payload));");
 		test.GeneratedCode.Should().Contain("bindableType.AddProperty(global::MyProject.Owner.ModeProperty, typeof(global::MyProject.Mode));");
+		test.GeneratedCode.Should().Contain("bindableType.AddProperty(global::MyProject.Owner.DataProperty);");
 	}
 
 	private static Test CreateTest(int typeCount, params string[] preprocessorSymbols)
