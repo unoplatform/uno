@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Web.WebView2.Core;
@@ -167,15 +168,29 @@ public class Win32Host : UnoPlatformHost, IApplicationHost
 
 	protected override Task RunLoop()
 	{
-		Win32EventLoop.Schedule(() => Application.Start(_ =>
+		var ownsLoop = !_isRunning;
+		ExceptionDispatchInfo? startupFailure = null;
+
+		Win32EventLoop.Schedule(() =>
 		{
-			var app = _appBuilder();
-			app.Host = this;
+			try
+			{
+				Application.Start(_ =>
+				{
+					var app = _appBuilder();
+					app.Host = this;
 
-			return app;
-		}), NativeDispatcherPriority.Normal);
+					return app;
+				});
+			}
+			catch (Exception e) when (ownsLoop)
+			{
+				// The event loop only logs what a dispatched action throws, and with no window it would never exit.
+				startupFailure = ExceptionDispatchInfo.Capture(e);
+			}
+		}, NativeDispatcherPriority.Normal);
 
-		if (!_isRunning)
+		if (ownsLoop)
 		{
 			_isRunning = true;
 
@@ -183,6 +198,9 @@ public class Win32Host : UnoPlatformHost, IApplicationHost
 			while (true)
 			{
 				Win32EventLoop.RunOnce();
+
+				// Surfaced from Run like an exception on any other thread, so it terminates the process.
+				startupFailure?.Throw();
 
 				if (_allWindowsClosed && !Win32EventLoop.HasMessages())
 				{
