@@ -978,7 +978,7 @@ partial class ListViewBaseItem
 
 			criteria.isMultiSelect = spListView.IsMultiSelectCheckBoxEnabled;
 
-			criteria.isIndicatorSelect = ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic();
+			criteria.isIndicatorSelect = ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledCached();
 
 			var selectionMode = spListView.SelectionMode;
 
