@@ -49,6 +49,19 @@ public class Given_GridViewItemPresenter
 	}
 
 	[TestMethod]
+	public async Task When_Implicit_GridViewItem_Style_Roots_On_Presenter()
+	{
+		var grid = new GridView { Width = 400, Height = 300, ItemsSource = new[] { "Item 0" } };
+		WindowHelper.WindowContent = grid;
+		await WindowHelper.WaitForLoaded(grid);
+		await WindowHelper.WaitForIdle();
+
+		var item = (GridViewItem)grid.ContainerFromIndex(0);
+		Assert.IsInstanceOfType(VisualTreeHelper.GetChild(item, 0), typeof(ListViewItemPresenter));
+		Assert.IsTrue(item.AllowDrop, "WinUI's DefaultGridViewItemStyle sets AllowDrop");
+	}
+
+	[TestMethod]
 	public async Task When_Default_GridViewItem_PointerOver_Shows_Outer_Border()
 	{
 		var (_, item, presenter) = await CreateGridView();
