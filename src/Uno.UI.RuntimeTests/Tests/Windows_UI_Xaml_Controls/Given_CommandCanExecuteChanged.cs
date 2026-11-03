@@ -248,6 +248,59 @@ public class Given_CommandCanExecuteChanged
 		Assert.IsFalse(((Control)control).IsEnabled);
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.NativeAndroid)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25969")]
+	public async Task When_BindableButton_Never_Attached_Then_Not_Rooted_By_Command()
+	{
+#if __ANDROID__
+		var command = new TestCommand();
+		var refs = CreateBindableButtons(command);
+		Assert.AreEqual(Count, command.SubscriberCount);
+
+		await CollectAsync(refs);
+
+		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "A never-attached BindableButton is still rooted by its ClickCommand.");
+		GC.KeepAlive(command);
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.NativeAndroid)]
+	public async Task When_BindableButton_Alive_Through_GC_Then_CanExecuteChanged_Still_Updates_Enabled()
+	{
+#if __ANDROID__
+		var command = new TestCommand();
+		var button = new Uno.UI.Controls.BindableButton(Uno.UI.ContextHelper.Current) { ClickCommand = command };
+		Assert.IsTrue(button.Enabled);
+
+		await CollectAsync(new List<WeakReference>(), until: () => true);
+
+		command.CanExecuteValue = false;
+		Assert.IsFalse(button.Enabled, "The BindableButton lost its subscription while still alive.");
+		GC.KeepAlive(button);
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+#if __ANDROID__
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static List<WeakReference> CreateBindableButtons(ICommand command)
+	{
+		var refs = new List<WeakReference>();
+		for (var i = 0; i < Count; i++)
+		{
+			refs.Add(new WeakReference(new Uno.UI.Controls.BindableButton(Uno.UI.ContextHelper.Current) { ClickCommand = command }));
+		}
+		return refs;
+	}
+#endif
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static List<WeakReference> CreateNeverLoaded(string controlType, ICommand command)
 	{
