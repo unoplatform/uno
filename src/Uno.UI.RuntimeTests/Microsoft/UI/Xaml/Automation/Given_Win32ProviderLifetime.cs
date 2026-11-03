@@ -92,18 +92,18 @@ public class Given_Win32ProviderLifetime
 		{
 			await UITestHelper.Load(host, x => x.IsLoaded);
 			GetOrCreateProvider(ResolveAccessibility(host), host);
-			File.WriteAllText(Path.Combine(probeDirectory, "ready"), string.Empty);
-			await UITestHelper.WaitFor(() => File.Exists(Path.Combine(probeDirectory, "subscribed")),
+			File.WriteAllText(Path.Join(probeDirectory, "ready"), string.Empty);
+			await UITestHelper.WaitFor(() => File.Exists(Path.Join(probeDirectory, "subscribed")),
 				timeoutMS: 15000, message: "The native UIA client did not subscribe to the parent.");
 
 			var child = new Button { Content = "UIA event child" };
 			AutomationProperties.SetAutomationId(child, "UnoUiaEventChild");
 			host.Children.Add(child);
-			await UITestHelper.WaitFor(() => File.Exists(Path.Combine(probeDirectory, "added")),
+			await UITestHelper.WaitFor(() => File.Exists(Path.Join(probeDirectory, "added")),
 				timeoutMS: 15000, message: "The native UIA client did not receive ChildAdded (null runtime ID).");
 
 			host.Children.Clear();
-			await UITestHelper.WaitFor(() => File.Exists(Path.Combine(probeDirectory, "removed")),
+			await UITestHelper.WaitFor(() => File.Exists(Path.Join(probeDirectory, "removed")),
 				timeoutMS: 15000, message: "The native UIA client did not receive ChildRemoved with the child's runtime ID.");
 		}
 		finally

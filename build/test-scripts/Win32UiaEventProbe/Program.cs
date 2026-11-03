@@ -15,7 +15,7 @@ internal static class Program
 			return 1;
 		}
 
-		// UIA subscription and removal must run on the same MTA thread, outside the provider process.
+		// The UIA client must subscribe from an MTA thread in a separate process from the provider.
 		return Run(Path.GetFullPath(args[0]), Path.GetFullPath(args[1]));
 	}
 
@@ -130,6 +130,14 @@ internal static class Program
 			{
 				process.Kill(entireProcessTree: true);
 				process.WaitForExit();
+			}
+			try
+			{
+				Directory.Delete(probeDirectory, recursive: true);
+			}
+			catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+			{
+				// A leftover marker folder must not fail the run.
 			}
 		}
 	}
