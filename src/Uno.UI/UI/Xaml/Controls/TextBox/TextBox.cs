@@ -1103,6 +1103,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnPointerExitedPartial(PointerRoutedEventArgs e);
 
+		protected override void OnPointerCanceled(PointerRoutedEventArgs e)
+		{
+			base.OnPointerCanceled(e);
+			OnPointerCanceledPartial(e);
+		}
+
+		partial void OnPointerCanceledPartial(PointerRoutedEventArgs e);
+
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
 		{
 			base.OnPointerCaptureLost(e);

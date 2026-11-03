@@ -705,10 +705,8 @@ public partial class TextBox
 	}
 
 	// The system took the touch away and no release follows: the hold must not act for a finger that is gone.
-	protected override void OnPointerCanceled(PointerRoutedEventArgs e)
+	partial void OnPointerCanceledPartial(PointerRoutedEventArgs e)
 	{
-		base.OnPointerCanceled(e);
-
 		_isPressed = false;
 		_iosHoldTimer?.Stop();
 	}
