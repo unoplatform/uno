@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_core.OnUnloadedCore();
 		}
 
-		protected override void OnGotFocus(RoutedEventArgs e) => _core.OnGotFocusCore();
+		protected override void OnGotFocus(RoutedEventArgs e) => _core.OnGotFocusCore(e);
 
 		protected override void OnApplyTemplate()
 		{
