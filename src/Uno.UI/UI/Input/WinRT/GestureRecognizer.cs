@@ -97,6 +97,9 @@ namespace Windows.UI.Input
 		// A single slot: when two fingers hold at once, the first one's release falls back to its timestamps.
 		private static (PointerIdentifier Pointer, ulong Timestamp) _lastHeldPress;
 
+		// The gestures whose holding timer is running.
+		private static readonly List<Gesture> _pendingHolds = new();
+
 		/// <summary>
 		/// Determines whether a press is a hold: it lasted longer than <see cref="HoldMinDelayMicroseconds"/>,
 		/// or a UIElement recognizer already raised Holding for it (the holding timer can elapse before the pointer timestamps do).
