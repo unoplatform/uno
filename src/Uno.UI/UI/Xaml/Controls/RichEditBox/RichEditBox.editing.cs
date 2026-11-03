@@ -920,6 +920,7 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				_platformTextApplyInProgress = false;
+				RaisePendingCompositionChange();
 				SelectFromNative(selectionStart, selectionLength);
 			}
 			if (nativeTextNeedsCorrection)

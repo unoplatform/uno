@@ -14,6 +14,9 @@ namespace Uno.UI.Runtime;
 /// WASM browser implementation of <see cref="IImeTextBoxExtension"/>.
 /// Bridges browser CompositionEvent APIs (compositionstart/compositionupdate/compositionend)
 /// to the managed TextBox composition event lifecycle (Started → Updated → Completed → Ended).
+/// The hidden input applies the text itself (synced through the input event), so composition
+/// events only carry the preedit and where it sits in the text, and a completion is only reported
+/// once the committed text is in the input.
 /// </summary>
 internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 {
@@ -32,7 +35,12 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 		add { }
 		remove { }
 	}
-	public event EventHandler<ImeCompositionEventArgs>? CompositionCanceled;
+	// A cancel reaches the TextBox as the input event that removes the preedit, then an end.
+	public event EventHandler<ImeCompositionEventArgs>? CompositionCanceled
+	{
+		add { }
+		remove { }
+	}
 	public event EventHandler? CompositionEnded;
 
 	public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
@@ -91,24 +99,26 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	}
 
 	[JSExport]
-	private static void OnCompositionUpdated(string text, int cursorPosition)
+	private static void OnCompositionUpdated(string text, int startIndex, bool textChangePending)
 	{
 		if (!Instance._isComposing)
 		{
 			return;
 		}
-		Instance.CompositionUpdated?.Invoke(Instance, new ImeCompositionEventArgs(text, cursorPosition));
+		Instance.CompositionUpdated?.Invoke(Instance, new ImeCompositionEventArgs(text, textAlreadyApplied: true, startIndex: startIndex, textChangePending: textChangePending));
 	}
 
 	[JSExport]
 	private static void OnCompositionCompleted(string text)
 	{
+		// A compositionend for a composition that a managed text change already ended has nothing left to commit.
 		if (!Instance._isComposing)
 		{
 			return;
 		}
+
 		Instance._isComposing = false;
-		Instance.CompositionCompleted?.Invoke(Instance, new ImeCompositionEventArgs(text));
+		Instance.CompositionCompleted?.Invoke(Instance, new ImeCompositionEventArgs(text, textAlreadyApplied: true));
 		Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);
 	}
 
@@ -121,19 +131,6 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 		}
 
 		Instance._isComposing = false;
-		Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);
-	}
-
-	[JSExport]
-	private static void OnCompositionCanceled()
-	{
-		if (!Instance._isComposing)
-		{
-			return;
-		}
-
-		Instance._isComposing = false;
-		Instance.CompositionCanceled?.Invoke(Instance, new ImeCompositionEventArgs(string.Empty));
 		Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);
 	}
 }
