@@ -585,8 +585,7 @@ public class Given_ResourceLoader_Alc
 				"A .upri whose stream ends before its resource count is just as malformed as one ending mid pair, so it must surface as InvalidDataException too — not as the raw EndOfStreamException.");
 
 			Assert.IsTrue(
-				error.Message.Contains(truncatedLoaderName.Split('/')[0], StringComparison.Ordinal)
-					|| error.Message.Contains("resource count", StringComparison.Ordinal),
+				error.Message.Contains("Embedded.upri", StringComparison.Ordinal),
 				$"The message must identify the truncated file rather than being context-free (got '{error.Message}').");
 			Assert.IsInstanceOfType<EndOfStreamException>(
 				error.InnerException,
@@ -606,6 +605,40 @@ public class Given_ResourceLoader_Alc
 			CultureInfo.CurrentUICulture = previousCulture;
 			ApplicationLanguages.PrimaryLanguageOverride = previousPlo;
 			_ResourceLoader.DefaultLanguage = previousDefault;
+		}
+	}
+
+	[TestMethod]
+	[Description("A .upri whose loader-name length runs past the end of the stream must be rejected as InvalidDataException before the name is read.")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23959")]
+	public void When_AddLookupAssembly_Upri_Name_Length_Exceeds_Stream_Then_Throws_InvalidDataException()
+	{
+		var collectibleAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.nameOverrun", isCollectible: true);
+		try
+		{
+			byte[] payload;
+			using (var stream = new MemoryStream())
+			{
+				using (var writer = new BinaryWriter(stream, Encoding.UTF8, leaveOpen: true))
+				{
+					writer.Write("uno"u8); // magic
+					writer.Write(3); // version
+					writer.Write7BitEncodedInt(1000); // name length far beyond the payload
+					writer.Write("short"u8);
+				}
+
+				payload = stream.ToArray();
+			}
+
+			var overrun = LoadAssemblyWithUpri(collectibleAlc, "Uno.UI.Tests.NameOverrunUpri", payload);
+
+			Assert.ThrowsExactly<InvalidDataException>(() => _ResourceLoader.AddLookupAssembly(overrun));
+			Assert.IsFalse(_ResourceLoader.ContainsLookupAssembly(overrun), "A failed registration must be rolled back.");
+		}
+		finally
+		{
+			_ResourceLoader.ClearNonDefaultAlcAssemblies();
+			collectibleAlc.Unload();
 		}
 	}
 

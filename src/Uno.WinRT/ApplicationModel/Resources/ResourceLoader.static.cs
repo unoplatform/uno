@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.Linq;
@@ -57,8 +58,6 @@ partial class ResourceLoader
 	private static readonly HashSet<(Assembly Assembly, string ResourceName)> _parsedResources = new();
 	private static readonly Dictionary<string, ResourceLoader> _loaders = new(StringComparer.OrdinalIgnoreCase); // _loaders[RES_PACK ?? "Resources"]._resources[CULTURE][RES_KEY]
 	private static LoaderContext? _loaderContext;
-
-	private static ReadOnlySpan<byte> _expectedUnoSequence => [0x75, 0x6E, 0x6F]; // == "uno"
 
 	private static string[] EnsureLoadersCultures()
 	{
@@ -140,7 +139,21 @@ partial class ResourceLoader
 		{
 			if (name.EndsWith(".upri", StringComparison.Ordinal))
 			{
-				ProcessResourceFile(assembly, name, assembly.GetManifestResourceStream(name), languagePreferences, resolveLoaderResources, parsedMarkers);
+				// Surfaced as InvalidDataException so the rebuild guard skips the assembly instead of aborting.
+				var resourceStream = assembly.GetManifestResourceStream(name);
+				if (resourceStream is not UnmanagedMemoryStream stream)
+				{
+					resourceStream?.Dispose();
+					throw new InvalidDataException($"The resource file {name} could not be read.");
+				}
+
+				ProcessResourceFile(
+					assembly,
+					name,
+					stream,
+					languagePreferences,
+					resolveLoaderResources,
+					parsedMarkers);
 			}
 		}
 	}
@@ -534,115 +547,103 @@ partial class ResourceLoader
 			.ToArray();
 	}
 
-	private static void ProcessResourceFile(
+	private static unsafe void ProcessResourceFile(
 		Assembly assembly,
-		string fileName,
-		Stream? stream,
+		string filename,
+		UnmanagedMemoryStream stream,
 		string[] languagePreferences,
 		Func<string, Dictionary<string, Dictionary<string, string>>> resolveLoaderResources,
 		HashSet<(Assembly Assembly, string ResourceName)> parsedMarkers)
 	{
-		// Malformed/unreadable .upri content is surfaced as InvalidDataException (a data-format
-		// exception) so the per-assembly guard in RebuildLoaderResourcesFromSurvivors can skip the
-		// offending assembly instead of aborting the whole rebuild.
-		if (stream is null)
-		{
-			throw new InvalidDataException($"The resource file {fileName} could not be read.");
-		}
-
 		using (var reader = new BinaryReader(stream))
 		{
-			// "Magic" sequence to ensure we're reading a proper resource file
-			Span<byte> magic = stackalloc byte[3];
-			var magicCount = reader.Read(magic);
-			if (magicCount != 3 || !magic.SequenceEqual(_expectedUnoSequence))
+			var upriHeader = "uno\x03\x00\x00\x00"u8;
+
+			Span<byte> header = stackalloc byte[7];
+
+			if (reader.Read(header) != 7 || !header.SequenceEqual(upriHeader))
 			{
-				throw new InvalidDataException($"The file {fileName} is not a resource file");
+				ThrowInvalidDataException(filename);
 			}
 
-			var version = reader.ReadInt32();
-			if (version is not (3 or 2))
+			// The UPRI V3 file format puts the name before the culture.
+			// If the culture doesn't match, we end up allocating name strings needlessly.
+			// So we defer allocating the strings up until we actually need them.
+			var nameLength = reader.Read7BitEncodedInt();
+
+			if (nameLength < 0 || nameLength > stream.Length - stream.Position)
 			{
-				throw new InvalidDataException($"The resource file {fileName} has an invalid version (got {version}, expecting 2 or 3)");
+				ThrowInvalidDataException(filename);
 			}
 
-			var name = reader.ReadString();
+			var nameBytes = new Span<byte>(stream.PositionPointer, nameLength);
+
+			stream.Position += nameLength;
+
 			var culture = reader.ReadString();
 
-			if (!languagePreferences.Contains(culture, FastBaseCultureComparer.Instance))
+			if (languagePreferences.Contains(culture, FastBaseCultureComparer.Instance) &&
+				parsedMarkers.Add((assembly, filename)))
 			{
-				// Currently only load the resources for the current culture.
+				var name = Encoding.UTF8.GetString(nameBytes);
+
+				var loaderResources = resolveLoaderResources(name);
+
+				ref var resources = ref CollectionsMarshal.GetValueRefOrAddDefault(loaderResources, culture, out var exists);
+
+				if (!exists)
+				{
+					resources = [];
+				}
+
+				int? declaredCount = null;
+				try
+				{
+					var resourceCount = reader.ReadInt32();
+					declaredCount = resourceCount;
+
+					for (var x = 0; x < resourceCount; x++)
+					{
+						var key = reader.ReadString();
+						var value = reader.ReadString();
+
+						resources![key] = value;
+					}
+				}
+				catch (EndOfStreamException error)
+				{
+					// A stream that ends anywhere in the entry list — mid pair, or inside the declared
+					// count itself — surfaces as BinaryReader's context-free EndOfStreamException;
+					// restate it as the documented InvalidDataException naming the file, like every
+					// other malformed-.upri case.
+					ThrowTruncatedResourceFile(filename, declaredCount, error);
+				}
+			}
+			else
+			{
 				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					_log.LogDebug($"Skipping resource file {fileName} for {culture} (preferences: {string.Join(",", languagePreferences)})");
+					LogSkipResource(filename, culture);
 				}
-				return;
-			}
-			if (!parsedMarkers.Add((assembly, fileName/* keyed by fileName, not name */)))
-			{
-				if (_log.IsEnabled(LogLevel.Debug))
-				{
-					_log.LogDebug($"Skipping already parsed resource file {fileName} for {culture}");
-				}
-				return;
-			}
-
-			var loaderResources = resolveLoaderResources(name);
-			if (!loaderResources.TryGetValue(culture, out var resources))
-			{
-				loaderResources[culture] = resources = new Dictionary<string, string>();
-			}
-
-			StringBuilder sb = new();
-			int? declaredCount = null;
-			try
-			{
-				var resourceCount = reader.ReadInt32();
-				declaredCount = resourceCount;
-
-				for (var i = 0; i < resourceCount; i++)
-				{
-					var key = reader.ReadString();
-					var value = reader.ReadString();
-
-					if (version == 2)
-					{
-						// Restore the original format
-						key = key.Replace("/", ".");
-
-						var firstDotIndex = key.IndexOf('.');
-						if (firstDotIndex != -1)
-						{
-							sb.Clear();
-							sb.Append(key);
-
-							sb[firstDotIndex] = '/';
-
-							key = sb.ToString();
-						}
-					}
-
-					if (_log.IsEnabled(LogLevel.Debug))
-					{
-						_log.LogDebug($"[{name}, {culture}, {fileName}] Adding resource: {key}={value}");
-					}
-
-					resources[key] = value;
-				}
-			}
-			catch (EndOfStreamException error)
-			{
-				// A stream that ends anywhere in the entry list — mid pair, or inside the declared
-				// count itself — surfaces as BinaryReader's context-free EndOfStreamException;
-				// restate it as the documented InvalidDataException naming the file, like every
-				// other malformed-.upri case.
-				throw new InvalidDataException(
-					declaredCount is { } count
-						? $"Truncated resource file {fileName}: it declares {count} resource(s) but the stream ended early."
-						: $"Truncated resource file {fileName}: the stream ended before its resource count could be read.",
-					error);
 			}
 		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static void LogSkipResource(string filename, string culture)
+			=> _log.LogDebug($"Skipping resource file {filename} for {culture} (not a preferred culture or already parsed).");
+
+		[DoesNotReturn]
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static void ThrowInvalidDataException(string filename) => throw new InvalidDataException($"The resource file {filename} is invalid.");
+
+		[DoesNotReturn]
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static void ThrowTruncatedResourceFile(string filename, int? declaredCount, EndOfStreamException error)
+			=> throw new InvalidDataException(
+				declaredCount is { } count
+					? $"Truncated resource file {filename}: it declares {count} resource(s) but the stream ended early."
+					: $"Truncated resource file {filename}: the stream ended before its resource count could be read.",
+				error);
 	}
 
 	private static ResourceLoader GetOrCreateNamedResourceLoader(string name) =>
