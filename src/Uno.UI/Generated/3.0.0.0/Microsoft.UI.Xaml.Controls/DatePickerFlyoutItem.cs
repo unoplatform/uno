@@ -11,39 +11,12 @@ public partial class DatePickerFlyoutItem : global::Microsoft.UI.Xaml.Dependency
 	// Skipping already declared property SecondaryTextProperty
 	// Skipping already declared property PrimaryText
 	// Skipping already declared property SecondaryText
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::System.Type Type
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem", "Type");
-		}
-	}
-#endif
+	// Skipping already declared property Type
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryTextProperty.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryTextProperty.get
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Data.ICustomProperty GetCustomProperty(string name)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem", "GetCustomProperty(string name)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Data.ICustomProperty GetIndexedProperty(string name, global::System.Type type)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem", "GetIndexedProperty(string name, Type type)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public string GetStringRepresentation()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem", "GetStringRepresentation()");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.GetCustomProperty(string)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.GetIndexedProperty(string, System.Type)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.GetStringRepresentation()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryText.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryText.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryText.get
