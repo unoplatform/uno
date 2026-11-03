@@ -1,11 +1,21 @@
 ﻿namespace Windows.Security.Authentication.Web {
 	export class WebAuthenticationBroker {
 
+		private static readonly aborts = new Map<number, () => void>();
+
 		public static getReturnUrl() {
 			return window.location.origin;
 		}
 
+		public static abort(operationId: number) {
+			const abort = WebAuthenticationBroker.aborts.get(operationId);
+			if (abort) {
+				abort();
+			}
+		}
+
 		public static authenticateUsingIframe(
+			operationId: number,
 			iframeId: string,
 			urlNavigate: string,
 			urlRedirect: string,
@@ -13,6 +23,7 @@
 		) {
 			return new Promise<string>((ok, err) => {
 				let iframe: HTMLIFrameElement;
+				let timer: number = null;
 
 				if (iframeId) {
 					iframe = document.getElementById(iframeId) as HTMLIFrameElement;
@@ -25,12 +36,15 @@
 					document.body.append(iframe);
 				}
 
-				const terminate = () => {
+				const terminate = (result: string) => {
+					window.clearTimeout(timer);
+					WebAuthenticationBroker.aborts.delete(operationId);
 					iframe.removeEventListener("load", onload);
 					iframe.src = "about:blank";
 					if (!iframeId) {
 						iframe.remove();
 					}
+					ok(result);
 				}
 
 				const onload = () => {
@@ -39,15 +53,15 @@
 					}
 
 					const currentUrl = iframe.contentDocument.URL;
-					console.log("iframe src=" + currentUrl);
 
 					if (currentUrl.indexOf(urlRedirect) === 0) {
-						terminate();
-						ok(`success|${currentUrl}`);
+						terminate(`success|${currentUrl}`);
 					}
 				};
 
 				iframe.addEventListener("load", onload);
+				timer = window.setTimeout(() => terminate("timeout"), timeout);
+				WebAuthenticationBroker.aborts.set(operationId, () => terminate("cancel"));
 
 				iframe.src = urlNavigate;
 			})
@@ -55,6 +69,7 @@
 		}
 
 		public static authenticateUsingWindow(
+			operationId: number,
 			urlNavigate: string,
 			urlRedirect: string,
 			title: string,
@@ -74,6 +89,7 @@
 						return; // Prevent re-entry when win.close() triggers beforeunload
 					}
 					closing = true;
+					WebAuthenticationBroker.aborts.delete(operationId);
 
 					if (timerSubscription) {
 						window.clearInterval(timerSubscription);
@@ -122,6 +138,8 @@
 						close();
 					}
 				};
+
+				WebAuthenticationBroker.aborts.set(operationId, completeUserCancel);
 
 				try {
 					/**
