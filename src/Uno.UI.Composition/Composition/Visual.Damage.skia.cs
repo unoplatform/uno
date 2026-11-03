@@ -3,7 +3,6 @@
 using System;
 using System.Numerics;
 using SkiaSharp;
-using Uno.Disposables;
 using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition;
@@ -17,15 +16,9 @@ public partial class Visual
 
 	private bool _subtreeChangedThisFrame;
 
-	// The local-space geometry this visual paints, returned by Paint when the picture is (re)recorded and
-	// reused for the per-frame damage region instead of being rebuilt every frame. A moved-but-unchanged
-	// visual keeps it (its picture isn't re-recorded, so neither is this). Null means the visual paints
-	// nothing analytically describable, and damage falls back to its bounds.
-	private SKPath? _ownContentPath;
-
 	internal virtual float DamageRegionSamplingMargin => 0;
 
-	private void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage, SKPath clip, bool clipChanged)
+	private void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage, SKRect clipBounds, bool clipChanged)
 	{
 		if (damage is null)
 		{
@@ -42,9 +35,7 @@ public partial class Visual
 		// else would report that as damage. Two independent signals, because neither covers the other:
 		// clipChanged is raised where a Clip/LayoutClip is mutated, so it catches a shape change inside
 		// unchanged bounds; the bounds fingerprint catches clips this visual never sees mutate, such as the
-		// frame's root clip. Bounds are compared rather than the path, to stay cheap on this per-visual,
-		// per-frame path.
-		var clipBounds = clip.Bounds;
+		// frame's root clip.
 		clipChanged |= clipBounds != _lastClipBounds;
 		_lastClipBounds = clipBounds;
 
@@ -53,21 +44,9 @@ public partial class Visual
 			return;
 		}
 
-		// A visual that only moved is damaged at its old location too, and that one is only ever a rect, so
-		// exact geometry for the new location buys nothing. See TryGetPaintDamageRegion for what it costs.
-		var preferBounds = moved && !contentChanged;
-
-		if (TryGetPaintDamageRegion(clip, preferBounds, out var bounds, out var regionPath))
+		if (TryGetPaintDamageRegion(clipBounds, out var bounds))
 		{
-			if (regionPath is not null)
-			{
-				damage.Union(regionPath);
-				_pathPool.Free(regionPath);
-			}
-			else
-			{
-				damage.UnionRect(bounds);
-			}
+			damage.UnionRect(bounds);
 
 			if (_hasLastRenderBounds && (matrix != _lastRenderMatrix || bounds != _lastRenderBounds))
 			{
@@ -84,136 +63,51 @@ public partial class Visual
 		}
 	}
 
-	private bool TryGetPaintDamageRegion(SKPath clip, bool preferBounds, out SKRect bounds, out SKPath? regionPath)
+	// Rect-only, deliberately: an exact region would cost path booleans per visual per frame, and during a
+	// scroll every visual reaches this point. The rect is a superset of the exact region, so it only widens damage.
+	private bool TryGetPaintDamageRegion(SKRect clipBounds, out SKRect bounds)
 	{
 		bounds = default;
-		regionPath = null;
 
-		var clipPath = _pathPool.Allocate();
-		var contentPath = _pathPool.Allocate();
-		var keepClipPath = false;
-		var keepContentPath = false;
-		try
+		if (clipBounds.Width <= 0 || clipBounds.Height <= 0)
 		{
-			clipPath.Rewind();
-			clipPath.AddPath(clip);
-			if (clipPath.IsEmpty)
-			{
-				return false;
-			}
+			return false;
+		}
 
-			var clipIsRect = clipPath.IsRect;
-			var clipRect = clipPath.Bounds;
-
-			var hasLocalBounds = TryGetLocalContentBounds(out var local);
-
-			// The exact branch is the expensive part of this method: a stroke-to-fill outset plus two path
-			// booleans, per visual per frame. Skip it for a visual that only moved — but only if bounds can
-			// answer for it, since falling through to the clip would report far more than the exact path did.
-			if ((!preferBounds || !hasLocalBounds)
-				&& ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
-			{
-				contentPath.Rewind();
-				contentPath.AddPath(ownContent);
-				contentPath.Transform(TotalMatrix.ToSKMatrix());
-				OutsetForAntialiasing(contentPath);
-				contentPath.Op(clipPath, SKPathOp.Intersect, contentPath);
-				if (contentPath.IsEmpty)
-				{
-					return false;
-				}
-				bounds = contentPath.Bounds;
-				regionPath = contentPath;
-				keepContentPath = true;
-				return true;
-			}
-
-			if (hasLocalBounds)
-			{
-				if (local.IsEmpty)
-				{
-					return false;
-				}
-
-				var samplingMargin = DamageRegionSamplingMargin;
-				if (samplingMargin > 0)
-				{
-					local.Inflate(samplingMargin, samplingMargin);
-				}
-
-				var root = TotalMatrix.ToSKMatrix().MapRect(local);
-				root.Inflate(2, 2);
-				root = new SKRect(
-					(float)Math.Floor(root.Left),
-					(float)Math.Floor(root.Top),
-					(float)Math.Ceiling(root.Right),
-					(float)Math.Ceiling(root.Bottom));
-
-				if (clipIsRect)
-				{
-					var clipped = SKRect.Intersect(root, clipRect);
-					if (clipped.IsEmpty)
-					{
-						return false;
-					}
-					bounds = clipped;
-					return true;
-				}
-
-				var rectPath = _pathPool.Allocate();
-				using var rectPathDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rectPath);
-				rectPath.Rewind();
-				rectPath.AddRect(root);
-				clipPath.Op(rectPath, SKPathOp.Intersect, clipPath);
-
-				if (clipPath.IsEmpty)
-				{
-					return false;
-				}
-				bounds = clipPath.Bounds;
-				regionPath = clipPath;
-				keepClipPath = true;
-				return true;
-			}
-
-			if (clipIsRect)
-			{
-				bounds = clipRect;
-				return true;
-			}
-			bounds = clipPath.Bounds;
-			regionPath = clipPath;
-			keepClipPath = true;
+		if (!TryGetLocalContentBounds(out var local))
+		{
+			bounds = clipBounds;
 			return true;
 		}
-		finally
+
+		if (local.IsEmpty)
 		{
-			if (!keepClipPath)
-			{
-				_pathPool.Free(clipPath);
-			}
-			if (!keepContentPath)
-			{
-				_pathPool.Free(contentPath);
-			}
+			return false;
 		}
-	}
 
-	private static readonly SKPaint _outsetPaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 4f, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
+		var samplingMargin = DamageRegionSamplingMargin;
+		if (samplingMargin > 0)
+		{
+			local.Inflate(samplingMargin, samplingMargin);
+		}
 
-	private static void OutsetForAntialiasing(SKPath path)
-	{
-		var band = _pathPool.Allocate();
-		using var bandDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), band);
-		var result = _pathPool.Allocate();
-		using var resultDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), result);
+		// Covers antialiasing bleed past the content edge.
+		var root = TotalMatrix.ToSKMatrix().MapRect(local);
+		root.Inflate(2, 2);
+		root = new SKRect(
+			(float)Math.Floor(root.Left),
+			(float)Math.Floor(root.Top),
+			(float)Math.Ceiling(root.Right),
+			(float)Math.Ceiling(root.Bottom));
 
-		band.Rewind();
-		result.Rewind();
-		_outsetPaint.GetFillPath(path, band);
-		path.Op(band, SKPathOp.Union, result);
-		path.Rewind();
-		path.AddPath(result);
+		var clipped = SKRect.Intersect(root, clipBounds);
+		if (clipped.Width <= 0 || clipped.Height <= 0)
+		{
+			return false;
+		}
+
+		bounds = clipped;
+		return true;
 	}
 
 	internal virtual bool TryGetLocalContentBounds(out SKRect localBounds)
