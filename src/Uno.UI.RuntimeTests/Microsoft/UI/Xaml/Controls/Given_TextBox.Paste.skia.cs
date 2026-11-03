@@ -340,6 +340,408 @@ public class Given_TextBox_Paste
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Pasting_Right_After_Typing()
+	{
+		try
+		{
+			var SUT = await LoadFocused("", maxLength: 0);
+			await Type(SUT, "he");
+
+			await Paste(SUT, "X");
+			AssertState(SUT, "heX", 3, 0);
+
+			await Undo(SUT);
+			AssertState(SUT, "he", 2, 0, "the paste is its own undo step");
+			await Undo(SUT);
+			AssertState(SUT, "", 0, 0, "then the typing");
+			Assert.IsFalse(SUT.CanUndo);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Cutting_Right_After_Typing()
+	{
+		try
+		{
+			var SUT = await LoadFocused("", maxLength: 0);
+			await Type(SUT, "hey");
+			SUT.Select(0, 1);
+
+			await Cut(SUT);
+			AssertState(SUT, "ey", 0, 0);
+
+			await Undo(SUT);
+			AssertState(SUT, "hey", 0, 1, "the cut is its own undo step");
+			await Undo(SUT);
+			AssertState(SUT, "", 0, 0, "then the typing");
+			Assert.IsFalse(SUT.CanUndo);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Cutting_Nothing_While_Typing()
+	{
+		try
+		{
+			var SUT = await LoadFocused("", maxLength: 0);
+			await Type(SUT, "he");
+
+			await Cut(SUT);
+			await Type(SUT, "llo");
+			Assert.AreEqual("hello", SUT.Text);
+
+			await Undo(SUT);
+			AssertState(SUT, "he", 2, 0, "cutting nothing ends the typing run but is no step of its own");
+			await Undo(SUT);
+			AssertState(SUT, "", 0, 0);
+			Assert.IsFalse(SUT.CanUndo);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Cutting_Nothing_Then_Redo_Is_Kept()
+	{
+		try
+		{
+			var SUT = await LoadFocused("01234", maxLength: 0);
+			SUT.Select(5, 0);
+			await Type(SUT, "y");
+			await Undo(SUT);
+			Assert.IsTrue(SUT.CanRedo);
+
+			SUT.Select(2, 0);
+			await Cut(SUT);
+			AssertState(SUT, "01234", 2, 0);
+			Assert.IsFalse(SUT.CanUndo);
+			Assert.IsTrue(SUT.CanRedo, "cutting nothing keeps the redo history");
+
+			await Redo(SUT);
+			Assert.AreEqual("01234y", SUT.Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	[DataRow("01234", 5, "ab", DisplayName = "At MaxLength")]
+	[DataRow("0123", 5, "\U0001F600b", DisplayName = "Room for half a pair")]
+	[DataRow("012", 0, "", DisplayName = "Empty paste, no selection")]
+	[DataRow("012", 0, "\r\nabc", DisplayName = "Single-line, the first pasted line is empty")]
+	public async Task When_Paste_Changes_Nothing_Then_No_Undo_Step(string text, int maxLength, string pasted)
+	{
+		try
+		{
+			var SUT = await LoadFocused(text, maxLength);
+			SUT.Select(text.Length, 0);
+			var events = new TextEvents(SUT);
+
+			await Paste(SUT, pasted);
+
+			AssertState(SUT, text, text.Length, 0);
+			Assert.IsFalse(SUT.CanUndo);
+			events.AssertCounts(beforeTextChanging: 0, textChanging: 0, textChanged: 0);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Undoing_After_A_Paste_That_Changed_Nothing()
+	{
+		try
+		{
+			var SUT = await LoadFocused("0", maxLength: 3);
+			SUT.Select(1, 0);
+			await Paste(SUT, "ab");
+			Assert.AreEqual("0ab", SUT.Text);
+
+			await Paste(SUT, "c");
+			Assert.AreEqual("0ab", SUT.Text);
+
+			await Undo(SUT);
+			AssertState(SUT, "0", 1, 0, "one Undo reverts the last paste that changed the text");
+			Assert.IsFalse(SUT.CanUndo);
+			Assert.IsTrue(SUT.CanRedo);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Redo_Survives_A_Paste_That_Changed_Nothing()
+	{
+		try
+		{
+			var SUT = await LoadFocused("0", maxLength: 3);
+			SUT.Select(1, 0);
+			await Paste(SUT, "ab");
+			await Undo(SUT);
+			Assert.IsTrue(SUT.CanRedo);
+
+			SUT.Select(1, 0);
+			await Paste(SUT, "");
+			Assert.IsFalse(SUT.CanUndo);
+			Assert.IsTrue(SUT.CanRedo, "a paste that changes nothing keeps the redo history");
+
+			await Redo(SUT);
+			Assert.AreEqual("0ab", SUT.Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Typing_Then_A_Paste_That_Changes_Nothing()
+	{
+		try
+		{
+			var SUT = await LoadFocused("", maxLength: 3);
+			await Type(SUT, "hey");
+
+			await Paste(SUT, "z");
+			Assert.AreEqual("hey", SUT.Text);
+
+			await Undo(SUT);
+			AssertState(SUT, "", 0, 0, "one Undo reverts the typing");
+			Assert.IsFalse(SUT.CanUndo);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Pasting_Empty_Text_Over_A_Selection()
+	{
+		try
+		{
+			var SUT = await LoadFocused("01234", maxLength: 0);
+			SUT.Select(1, 2);
+			var events = new TextEvents(SUT);
+
+			await Paste(SUT, "");
+			AssertState(SUT, "034", 1, 0, "the selection is deleted");
+			events.AssertCounts(beforeTextChanging: 1, textChanging: 1, textChanged: 1);
+
+			await Undo(SUT);
+			AssertState(SUT, "01234", 1, 2);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Paste_Replaces_A_Selection_With_The_Same_Text()
+	{
+		try
+		{
+			// WinUI records the replacement even though the text stays the same. It also raises the text events here, so a
+			// BeforeTextChanging handler could refuse it; Uno raises none, because the text doesn't change.
+			var SUT = await LoadFocused("abc", maxLength: 0);
+			SUT.Select(0, 1);
+
+			await Paste(SUT, "a");
+			AssertState(SUT, "abc", 1, 0);
+			Assert.IsTrue(SUT.CanUndo);
+
+			await Undo(SUT);
+			AssertState(SUT, "abc", 0, 1, "Undo puts the selection back");
+			Assert.IsTrue(SUT.CanRedo);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_BeforeTextChanging_Cancels_A_Paste()
+	{
+		try
+		{
+			// WinUI also clears the rest of the undo history when a handler cancels an edit; Uno keeps it.
+			var SUT = await LoadFocused("012", maxLength: 0);
+			SUT.Select(3, 0);
+			SUT.BeforeTextChanging += (_, e) => e.Cancel = true;
+			var events = new TextEvents(SUT);
+
+			await Paste(SUT, "ab");
+
+			AssertState(SUT, "012", 3, 0);
+			Assert.IsFalse(SUT.CanUndo, "a cancelled paste has nothing to undo");
+			events.AssertCounts(beforeTextChanging: 1, textChanging: 0, textChanged: 0);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_BeforeTextChanging_Cancels_A_Cut()
+	{
+		try
+		{
+			// WinUI also clears the rest of the undo history when a handler cancels an edit; Uno keeps it.
+			var SUT = await LoadFocused("01234", maxLength: 0);
+			SUT.Select(1, 2);
+			SUT.BeforeTextChanging += (_, e) => e.Cancel = true;
+			var events = new TextEvents(SUT);
+
+			await Cut(SUT);
+
+			AssertState(SUT, "01234", 1, 2);
+			Assert.IsFalse(SUT.CanUndo, "a cancelled cut has nothing to undo");
+			events.AssertCounts(beforeTextChanging: 1, textChanging: 0, textChanged: 0, paste: 0);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Undoing_A_Paste_Shortened_To_Fit()
+	{
+		try
+		{
+			var SUT = await LoadFocused("01234", maxLength: 5);
+			SUT.Select(1, 2);
+
+			await Paste(SUT, "abcdef");
+			AssertState(SUT, "0ab34", 3, 0);
+			Assert.IsTrue(SUT.CanUndo);
+
+			await Undo(SUT);
+			AssertState(SUT, "01234", 1, 2, "Undo puts back the replaced text and its selection");
+			Assert.IsTrue(SUT.CanRedo);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Undoing_A_Paste_Into_Text_Longer_Than_MaxLength()
+	{
+		try
+		{
+			var SUT = await LoadFocused("0123456789", maxLength: 5);
+			SUT.Select(2, 3);
+
+			await Paste(SUT, "ab");
+			AssertState(SUT, "0156789", 2, 0, "the selection is deleted and nothing fits");
+
+			await Undo(SUT);
+			AssertState(SUT, "0123456789", 2, 3);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Undoing_A_Paste_Over_A_Backward_Selection()
+	{
+		try
+		{
+			// Not recorded on WinUI: the WinUI recording app can't select backward.
+			var SUT = await LoadFocused("01234", maxLength: 0);
+			SUT.Core.SelectInternal(3, -2);
+
+			await Paste(SUT, "x");
+			AssertState(SUT, "0x34", 2, 0);
+
+			await Undo(SUT);
+			AssertState(SUT, "01234", 1, 2);
+			Assert.IsTrue(SUT.Core.IsBackwardSelection, "Undo puts the selection back with its direction");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Undo_Runs_In_TextChanging_During_A_Cut()
+	{
+		try
+		{
+			// Not recorded on WinUI. An Undo that a handler runs inside a cut doesn't make the cut clear the history.
+			var SUT = await LoadFocused("", maxLength: 0);
+			await Type(SUT, "ab");
+			SUT.Select(0, 0);
+			SUT.Select(2, 0);
+			await Type(SUT, "c");
+			SUT.Select(0, 1);
+
+			var undoOnce = true;
+			SUT.TextChanging += (_, _) =>
+			{
+				if (undoOnce)
+				{
+					undoOnce = false;
+					SUT.Undo();
+				}
+			};
+
+			await Cut(SUT);
+
+			while (SUT.CanUndo)
+			{
+				await Undo(SUT);
+			}
+
+			Assert.AreEqual("", SUT.Text, "the typing before the cut can still be undone");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	private static async Task<TextBox> LoadFocused(string text, int maxLength, bool acceptsReturn = false, Action<TextBox>? configure = null)
 	{
 		// Text before MaxLength, the order XAML applies them in when Text comes first.
@@ -364,9 +766,24 @@ public class Given_TextBox_Paste
 		await WindowHelper.WaitForIdle();
 	}
 
+	private static async Task Type(UIElement element, string text)
+	{
+		foreach (var c in text)
+		{
+			element.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
 	private static async Task Undo(TextBox textBox)
 	{
 		textBox.Undo();
+		await WindowHelper.WaitForIdle();
+	}
+
+	private static async Task Redo(TextBox textBox)
+	{
+		textBox.Redo();
 		await WindowHelper.WaitForIdle();
 	}
 
