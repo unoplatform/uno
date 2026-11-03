@@ -742,6 +742,53 @@ public class Given_TextBox_Paste
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	[DataRow("012", 3, 0, "ab", "012ab", 5, DisplayName = "At the end")]
+	[DataRow("0123", 1, 0, "ab", "0ab123", 3, DisplayName = "In the middle")]
+	[DataRow("abc", 0, 1, "a", "abc", 1, DisplayName = "Over a selection, same text")]
+	public async Task When_Redoing_A_Paste(string text, int selectionStart, int selectionLength, string pasted, string expectedText, int expectedCaret)
+	{
+		try
+		{
+			var SUT = await LoadFocused(text, maxLength: 0);
+			SUT.Select(selectionStart, selectionLength);
+			await Paste(SUT, pasted);
+
+			await Undo(SUT);
+			AssertState(SUT, text, selectionStart, selectionLength);
+
+			await Redo(SUT);
+			AssertState(SUT, expectedText, expectedCaret, 0, "the caret ends after the pasted text");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Redoing_A_Cut()
+	{
+		try
+		{
+			var SUT = await LoadFocused("01234", maxLength: 0);
+			SUT.Select(1, 2);
+			await Cut(SUT);
+			await Undo(SUT);
+			AssertState(SUT, "01234", 1, 2);
+
+			await Redo(SUT);
+
+			AssertState(SUT, "034", 1, 0, "the caret ends where the cut text was");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	private static async Task<TextBox> LoadFocused(string text, int maxLength, bool acceptsReturn = false, Action<TextBox>? configure = null)
 	{
 		// Text before MaxLength, the order XAML applies them in when Text comes first.
