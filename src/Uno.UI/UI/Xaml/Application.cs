@@ -502,7 +502,10 @@ namespace Microsoft.UI.Xaml
 		{
 			AccentColorResourceUpdater.UpdateAccentColorResources();
 			UISettings.OnColorValuesChanged();
-			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+
+			// Like WinUI, an accent change re-notifies the whole tree through FrameworkTheming. Forced, as a
+			// palette can change while the accent itself stays the same.
+			WinUICoreServices.Instance.Theming.OnThemeChanged(forceUpdate: true);
 		}
 
 #if __SKIA__
