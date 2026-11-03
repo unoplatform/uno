@@ -218,7 +218,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	/// </summary>
 	internal Win32RawElementProvider? GetOrCreateProvider(UIElement element)
 	{
-		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
+		if (!IsAccessibilityEnabled)
 		{
 			return null;
 		}
@@ -226,6 +226,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		if (TryGetLiveProvider(element, out var existing))
 		{
 			return existing;
+		}
+
+		if (Volatile.Read(ref _providerCleanupDepth) > 0)
+		{
+			return null;
 		}
 
 		var peer = element.GetOrCreateAutomationPeer();
@@ -275,7 +280,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	internal Win32RawElementProvider? GetProvider(UIElement element)
 	{
-		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
+		if (!IsAccessibilityEnabled)
 		{
 			return null;
 		}
@@ -283,6 +288,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		if (TryGetLiveProvider(element, out var provider))
 		{
 			return provider;
+		}
+
+		if (Volatile.Read(ref _providerCleanupDepth) > 0)
+		{
+			return null;
 		}
 
 		var peer = element.GetOrCreateAutomationPeer();
@@ -302,7 +312,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	private Win32RawElementProvider? GetOrCreateProviderForResolvedPeer(AutomationPeer resolvedPeer)
 	{
-		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
+		if (!IsAccessibilityEnabled)
 		{
 			return null;
 		}
@@ -315,6 +325,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				RegisterPopupPanelAlias(popup, existingByPeer);
 			}
 			return existingByPeer;
+		}
+
+		if (Volatile.Read(ref _providerCleanupDepth) > 0)
+		{
+			return null;
 		}
 
 		if (!resolvedPeer.TryGetProviderOwner(out var element))
