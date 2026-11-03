@@ -87,7 +87,7 @@ Uno Platform implements the WinUI API on top of a single rendering pipeline. Eac
 
 <!-- TODO: link the Uno Platform 7.0 release blog post here once it is published. -->
 
-- 🎨 **One drawn UI everywhere.** The native mobile and browser-DOM renderers are gone: every Uno Platform target now draws the UI through the same pipeline, so a fix lands on every platform at once. [Native views](https://platform.uno/docs/articles/features/using-skia-hosting-native-controls.html) can still be embedded on Android, iOS, WebAssembly, Windows and Linux.
+- 🎨 **One drawn UI everywhere.** The native mobile and browser-DOM renderers are gone: every Uno Platform target now draws the UI through the same pipeline, so a fix lands on every platform at once. [Native views](https://platform.uno/docs/articles/features/using-skia-hosting-native-controls.html) can still be embedded on Windows, macOS, Linux (X11), WebAssembly, Android and iOS.
 - 🧱 **Pluggable rendering.** Skia stays the default, and a new WebGPU backend is available as an opt-in preview.
 - 📺 **Apple TV.** tvOS is now a fully implemented, supported target, and the [Siri Remote](doc/articles/features/apple-tv.md) drives focus navigation. Add `net10.0-tvos` to your target frameworks.
 - ✍️ **Rich text.** `RichTextBlock` is rebuilt on a port of WinUI's core text stack, and [`RichEditBox`](doc/articles/controls/RichEditBox.md) now works on every Uno Platform-rendered target.
