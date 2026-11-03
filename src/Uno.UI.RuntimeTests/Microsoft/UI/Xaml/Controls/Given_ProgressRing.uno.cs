@@ -11,12 +11,6 @@ using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 
-#if HAS_UNO_WINUI && !WINAPPSDK
-using ProgressRing = Uno.UI.Controls.Legacy.ProgressRing;
-#else
-using ProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
@@ -28,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
 		public async Task When_ProgressRing_Visible()
 		{
-			const int expectedSize = 20;
+			const int expectedSize = 32;
 			var ring = new ProgressRing() { IsActive = true };
 			try
 			{
