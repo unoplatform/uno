@@ -90,10 +90,12 @@ Make sure to setup your environment first by [following our instructions](xref:U
         ```
 
     > [!NOTE]
-    > `PrimaryLanguageOverride` drives resource lookup (`x:Uid`, `ResourceLoader`) immediately, but
-    > it does not change `CultureInfo.CurrentCulture` — as on Windows, the culture follows on the
-    > next app start. If number, date, or currency formatting must switch in the same session, set
-    > the culture yourself next to the override:
+    > `PrimaryLanguageOverride` drives resource lookup (`x:Uid`, `ResourceLoader`) and the
+    > `Windows.Globalization` formatters immediately, and Uno also applies it to
+    > `CultureInfo.CurrentUICulture` from the next app start. As on Windows, it never changes
+    > `CultureInfo.CurrentCulture`, so .NET formatting (`ToString`, `string.Format`) follows the
+    > user's regional format. If that formatting must follow the chosen language, set the culture
+    > yourself next to the override, and again at startup:
     >
     > ```csharp
     > Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = tag;
