@@ -625,6 +625,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 		if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
 		{
+			IsSoftwareKeyboardSuppressed = false;
+			_isKeyboardRequestedByTap = false;
 			EndImeSession();
 			TrySetCurrentlyTyping(false);
 			EndCaretLoupe();
@@ -691,6 +693,15 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 			return;
 		}
 
+		// A tap opens the keyboard a programmatic focus kept hidden, as in WinUI. The focus origin can't tell: tapping the focused
+		// box leaves it programmatic.
+		if (IsSoftwareKeyboardSuppressed)
+		{
+			_isKeyboardRequestedByTap = true;
+			RequestPlatformTextInput(FocusState);
+			return;
+		}
+
 #if UNO_HAS_MANAGED_POINTERS
 		if (Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnFocusedAgainReleaseCompleted) is true)
 		{
@@ -709,11 +720,23 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		}
 	}
 
+	/// <summary>
+	/// Whether the current focus keeps the software keyboard hidden (<c>PreventKeyboardDisplayOnProgrammaticFocus</c>).
+	/// </summary>
+	internal bool IsSoftwareKeyboardSuppressed { get; private set; }
+
+	private bool _isKeyboardRequestedByTap;
+
 	private void StartPlatformTextInput(FocusState focusState)
 	{
-		TextBoxView?.OnFocusStateChanged(focusState);
+		// FocusState is coerced to the last input device: the focus request's own state tells whether it was programmatic.
+		var origin = _isKeyboardRequestedByTap
+			? FocusState.Pointer
+			: VisualTree.GetFocusManagerForElement(Owner)?.GetRealFocusStateForFocusedElement() ?? focusState;
+		IsSoftwareKeyboardSuppressed = _host.PreventKeyboardDisplayOnProgrammaticFocus && origin == FocusState.Programmatic;
+		TextBoxView?.OnFocusStateChanged(focusState, IsSoftwareKeyboardSuppressed);
 		_textBoxNotificationsSingleton?.OnFocused(this);
-		StartImeSession();
+		StartImeSession(origin);
 	}
 
 	// Ported from: TextBoxBase.cpp ShouldForceFocusedVisualState (lines 5286-5290)

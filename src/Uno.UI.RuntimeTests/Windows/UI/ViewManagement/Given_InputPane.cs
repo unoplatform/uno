@@ -22,13 +22,16 @@ public class Given_InputPane
 	// WinUI keeps the focused element this far from the input pane (ExtraPixelsForBringIntoView).
 	private const double BringIntoViewPadding = 20;
 
+	// The keyboard is simulated through OccludedRect. Each field keeps the real one hidden: on a device or emulator, it would
+	// report its own occlusion over the simulated one whenever it shows or hides.
+
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_OccludedRect_Set_Then_Focused_TextBox_Scrolled_Into_View()
 	{
-		var textBox = new TextBox { Height = 40, PlaceholderText = "bottom" };
+		var textBox = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "bottom" };
 		var scrollViewer = new ScrollViewer
 		{
 			Content = new StackPanel
@@ -68,7 +71,7 @@ public class Given_InputPane
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Focused_TextBox_Has_Content_Below_Then_Scrolled_Above_Occlusion()
 	{
-		var textBox = new TextBox { Height = 40, PlaceholderText = "middle" };
+		var textBox = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "middle" };
 		var scrollViewer = new ScrollViewer
 		{
 			Content = new StackPanel
@@ -114,7 +117,7 @@ public class Given_InputPane
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Field_In_Panel_Starting_Near_Occlusion_Then_Brought_Above_It()
 	{
-		var textBox = new TextBox { Height = 40, PlaceholderText = "panel field" };
+		var textBox = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "panel field" };
 		var panel = new ScrollViewer
 		{
 			Content = new StackPanel
@@ -162,7 +165,7 @@ public class Given_InputPane
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Field_Not_In_ScrollViewer_Then_Brought_Above_Occlusion()
 	{
-		var textBox = new TextBox { Height = 40, PlaceholderText = "bottom", VerticalAlignment = VerticalAlignment.Bottom };
+		var textBox = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "bottom", VerticalAlignment = VerticalAlignment.Bottom };
 		var root = new Grid { Children = { textBox } };
 
 		var inputPane = InputPane.GetForCurrentView();
@@ -188,8 +191,8 @@ public class Given_InputPane
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Focus_Moves_While_Occluded_Then_New_Field_Brought_Above_Occlusion()
 	{
-		var first = new TextBox { Height = 40, PlaceholderText = "first" };
-		var second = new TextBox { Height = 40, PlaceholderText = "second" };
+		var first = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "first" };
+		var second = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "second" };
 		var root = new Grid
 		{
 			Children =
@@ -231,7 +234,7 @@ public class Given_InputPane
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Content_Moved_Above_Occlusion_Then_Tap_Hits_Rendered_Element()
 	{
-		var textBox = new TextBox { Height = 40, PlaceholderText = "field" };
+		var textBox = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "field" };
 		var button = new Button { Content = "Tap me", Height = 40 };
 		var clicks = 0;
 		button.Click += (_, _) => clicks++;
@@ -281,7 +284,7 @@ public class Given_InputPane
 	public async Task When_AutoSuggestBox_In_Moved_Content_Then_Suggestions_Fit_Visible_Area()
 	{
 		var autoSuggestBox = new AutoSuggestBox { MaxSuggestionListHeight = 2000 };
-		var bottomField = new TextBox { Height = 40, PlaceholderText = "bottom" };
+		var bottomField = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "bottom" };
 		var root = new Grid
 		{
 			Children =
@@ -305,6 +308,7 @@ public class Given_InputPane
 			await WaitForAboveOcclusion(bottomField, occludedTop);
 
 			var textBox = (TextBox)autoSuggestBox.GetTemplateChild("TextBox");
+			textBox.PreventKeyboardDisplayOnProgrammaticFocus = true;
 			Assert.IsTrue(textBox.Focus(FocusState.Programmatic), "AutoSuggestBox failed to take focus.");
 			await WindowHelper.WaitForIdle();
 			Assert.IsTrue(GetTop(textBox) > 0 && GetBottom(textBox) < occludedTop, "Test setup: the AutoSuggestBox must be visible above the keyboard.");
@@ -336,7 +340,7 @@ public class Given_InputPane
 	public async Task When_OccludedRect_Cleared_Then_Content_Restored()
 	{
 		var appPadding = new Thickness(10, 20, 30, 40);
-		var textBox = new TextBox { Height = 40, PlaceholderText = "bottom" };
+		var textBox = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "bottom" };
 		var scrollViewer = new ScrollViewer
 		{
 			Padding = appPadding,
@@ -417,7 +421,7 @@ public class Given_InputPane
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)] // Android CI: the baseline is captured with the layout already shifted
 	public async Task When_App_Ensured_Focused_Element_In_View_Then_Layout_Untouched()
 	{
-		var textBox = new TextBox { Height = 40, PlaceholderText = "bottom", VerticalAlignment = VerticalAlignment.Bottom };
+		var textBox = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "bottom", VerticalAlignment = VerticalAlignment.Bottom };
 		var root = new Grid { Children = { textBox } };
 
 		var inputPane = InputPane.GetForCurrentView();
@@ -453,7 +457,7 @@ public class Given_InputPane
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Occluded_Field_In_Viewport_Sized_Content_Then_Scrolled_Above_Occlusion()
 	{
-		var textBox = new TextBox { Height = 40, PlaceholderText = "bottom", VerticalAlignment = VerticalAlignment.Bottom };
+		var textBox = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "bottom", VerticalAlignment = VerticalAlignment.Bottom };
 		var scrollViewer = new ScrollViewer
 		{
 			Content = new Grid { Children = { textBox } },
@@ -481,7 +485,7 @@ public class Given_InputPane
 
 	private static (ScrollViewer ScrollViewer, Border Card, TextBox TextBox) BuildCenteredCardPage()
 	{
-		var textBox = new TextBox { Height = 40, PlaceholderText = "user" };
+		var textBox = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "user" };
 		var card = new Border
 		{
 			Width = 300,
