@@ -346,7 +346,8 @@ internal static class Win32UIAutomationInterop
 	internal static extern int UiaRaiseStructureChangedEvent(
 		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider,
 		StructureChangeType structureChangeType,
-		[MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_I4)] int[]? runtimeId);
+		[MarshalAs(UnmanagedType.LPArray)] int[]? runtimeId,
+		int runtimeIdLen);
 
 	// Returns true when one or more UIA clients are listening for events. WinUI gates the
 	// StructureChanged registration (CUIElement::EnterPCScene / LeavePCScene) on the equivalent

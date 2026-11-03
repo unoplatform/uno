@@ -680,7 +680,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	{
 		try
 		{
-			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(provider, type, runtimeId);
+			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(provider, type, runtimeId, runtimeId?.Length ?? 0);
 		}
 		catch (Exception ex)
 		{
