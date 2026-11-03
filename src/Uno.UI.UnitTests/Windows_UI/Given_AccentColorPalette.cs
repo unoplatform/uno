@@ -30,7 +30,7 @@ public class Given_AccentColorPalette
 	public void When_Accent_Is_Not_Normalized_By_Windows_Then_Matches_Windows(
 		string accent, string light1, string light2, string light3, string dark1, string dark2, string dark3)
 	{
-		AssertPalette(AccentColorPalette.FromAccentColor(Parse(accent)), accent, light1, light2, light3, dark1, dark2, dark3);
+		AssertPalette(AccentPaletteGenerator.Generate(Parse(accent), normalize: false), accent, light1, light2, light3, dark1, dark2, dark3);
 	}
 
 	[TestMethod]
@@ -40,7 +40,7 @@ public class Given_AccentColorPalette
 	public void When_Accent_Is_Windows_Swatch_Then_Uses_Tuned_Palette(
 		string accent, string light1, string light2, string light3, string dark1, string dark2, string dark3)
 	{
-		AssertPalette(AccentColorPalette.FromAccentColor(Parse(accent)), accent, light1, light2, light3, dark1, dark2, dark3);
+		AssertPalette(AccentPaletteGenerator.Generate(Parse(accent), normalize: false), accent, light1, light2, light3, dark1, dark2, dark3);
 	}
 
 	// Windows adjusts these accents when picked; captured the same way. Order: Input, then Accent, Light1-3, Dark1-3.
@@ -68,7 +68,7 @@ public class Given_AccentColorPalette
 	[DataRow("FFFFFF")]
 	public void When_Windows_Would_Normalize_Then_Accent_Is_Preserved_And_Shades_Are_Ordered(string accent)
 	{
-		var palette = AccentColorPalette.FromAccentColor(Parse(accent));
+		var palette = AccentPaletteGenerator.Generate(Parse(accent), normalize: false);
 
 		Assert.AreEqual(Parse(accent), palette.Accent);
 
