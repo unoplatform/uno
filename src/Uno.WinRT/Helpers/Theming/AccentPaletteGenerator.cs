@@ -80,14 +80,17 @@ internal static class AccentPaletteGenerator
 		}
 
 		var (h, s, l) = RgbToHslSingle(accent.R, accent.G, accent.B);
-		var palette = 0.25f > l || (1.0 - l) < 0.25 || 0.15f > s
-			? GetGrayPalette(h, s, l)
+		var isGray = 0.25f > l || (1.0 - l) < 0.25 || 0.15f > s;
+		var palette = isGray
+			? GetGrayPalette(h, s, l, clampLightness: true)
 			: GetFormulaPalette(accent.R, accent.G, accent.B, clampLightness: true);
 
 		if (!normalize && palette[0] != rgb)
 		{
-			// Windows would have adjusted the accent: keep it, and derive the shades around it with the same Lab math.
-			palette = GetFormulaPalette(accent.R, accent.G, accent.B, clampLightness: false);
+			// Windows would have adjusted the accent: keep it, and derive the shades around it with the same branch's math.
+			palette = isGray
+				? GetGrayPalette(h, s, l, clampLightness: false)
+				: GetFormulaPalette(accent.R, accent.G, accent.B, clampLightness: false);
 			palette[0] = rgb;
 		}
 
@@ -123,15 +126,18 @@ internal static class AccentPaletteGenerator
 	private const float OneThird = 1f / 3f;
 	private const float TwoThirds = 2f / 3f;
 
-	private static int[] GetGrayPalette(float h, float s, float l)
+	private static int[] GetGrayPalette(float h, float s, float l, bool clampLightness)
 	{
-		if (0.25f > l)
+		if (clampLightness)
 		{
-			l = 0.25f;
-		}
-		else if ((1.0 - l) < 0.25)
-		{
-			l = 0.75f;
+			if (0.25f > l)
+			{
+				l = 0.25f;
+			}
+			else if ((1.0 - l) < 0.25)
+			{
+				l = 0.75f;
+			}
 		}
 
 		var spread = Math.Abs(0.5f - l);
@@ -144,9 +150,14 @@ internal static class AccentPaletteGenerator
 			offsets[i] = spread * _grayOffsets[i];
 		}
 
-		// Shift the whole ramp back into [0, 1] when an end overflows.
-		var shift = offsets[0] + l;
-		shift = 1f < shift ? shift - 1f : Math.Min(0f, offsets[6] + l);
+		// Shift the whole ramp back into [0, 1] when an end overflows. A preserved accent must stay put,
+		// so its ramp is clipped instead.
+		var shift = 0f;
+		if (clampLightness)
+		{
+			shift = offsets[0] + l;
+			shift = 1f < shift ? shift - 1f : Math.Min(0f, offsets[6] + l);
+		}
 
 		// Offsets run Light3 to Dark3; the result is ordered Accent, Light1-3, Dark1-3.
 		var ramp = new int[7];
