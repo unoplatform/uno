@@ -25,6 +25,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 public class Given_Win32ProviderLifetime
 {
 	[TestMethod]
+	public async Task When_Cleanup_Reenters_Live_Provider_Lookup()
+	{
+		var host = new StackPanel();
+		var child = new Button { Content = "Connected sibling" };
+		host.Children.Add(child);
+		try
+		{
+			await UITestHelper.Load(host, x => x.IsLoaded);
+			var accessibility = ResolveAccessibility(host);
+			var provider = GetOrCreateProvider(accessibility, child);
+			var type = accessibility.GetType();
+			var cleanupDepth = type.GetField("_providerCleanupDepth", BindingFlags.Instance | BindingFlags.NonPublic)!;
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(child);
+			var newChild = new Button();
+			Assert.AreEqual(0, cleanupDepth.GetValue(accessibility));
+			cleanupDepth.SetValue(accessibility, 1);
+			try
+			{
+				foreach (var name in new[] { "GetProvider", "GetOrCreateProvider" })
+				{
+					var method = type.GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic)!;
+					Assert.AreSame(provider, method.Invoke(accessibility, new object[] { child }),
+						"Native disconnect callbacks must still find connected sibling providers.");
+					Assert.IsNull(method.Invoke(accessibility, new object[] { newChild }),
+						"Cleanup must prevent provider creation during native callbacks.");
+				}
+				Assert.AreSame(provider, type.GetMethod("GetProviderForPeer", BindingFlags.Instance | BindingFlags.NonPublic)!
+					.Invoke(accessibility, new object[] { peer, false }));
+			}
+			finally
+			{
+				cleanupDepth.SetValue(accessibility, 0);
+			}
+			Assert.IsFalse(IsInvalidated(provider));
+			Assert.AreSame(provider, GetOrCreateProvider(accessibility, child));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Native_Client_Observes_Structure_Changes()
 	{
 		var probeDirectory = Environment.GetEnvironmentVariable("UNO_UIA_STRUCTURE_PROBE");
