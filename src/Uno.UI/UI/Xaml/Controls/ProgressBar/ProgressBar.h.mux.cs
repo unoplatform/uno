@@ -30,4 +30,7 @@ partial class ProgressBar
 	private const string s_DeterminateStateName = "Determinate";
 	private const string s_UpdatingStateName = "Updating";
 	private const string s_UpdatingWithErrorStateName = "UpdatingError";
+
+	// C++ DBL_EPSILON; C#'s double.Epsilon is the smallest denormal instead.
+	private const double DBL_EPSILON = 2.220446049250313E-16;
 }
