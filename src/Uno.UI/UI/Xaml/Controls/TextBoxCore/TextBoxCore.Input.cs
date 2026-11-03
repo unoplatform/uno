@@ -71,10 +71,15 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	private bool _isApplyingNativeInput;
 	private SelectionDetails _selectionWhenTypingStarted;
 	private string _textWhenTypingStarted;
+	// Whether the open typing run has changed the text; a run whose keys were all refused or cancelled is no undo step.
+	private bool _hasTypingRunChangedText;
 
 	private int _historyIndex;
 	private (int start, int length, bool isBackward) _lastNotifiedSelection = (-1, -1, false);
 	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
+
+	// The undo step of the deletion that OnKeyDownSkia is applying, recorded only once the deletion is applied.
+	private HistoryRecord? _pendingHistoryRecord;
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 	private ScrollViewer _imeScrollViewer;
@@ -161,6 +166,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		var textBefore = Text;
 		var startsTypingRun = !_currentlyTyping;
 		TrySetCurrentlyTyping(true);
+		var clearHistoryOnTextChanged = _clearHistoryOnTextChanged;
 		_clearHistoryOnTextChanged = false;
 		try
 		{
@@ -176,7 +182,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		}
 		finally
 		{
-			_clearHistoryOnTextChanged = true;
+			_clearHistoryOnTextChanged = clearHistoryOnTextChanged;
 		}
 	}
 
@@ -215,9 +221,12 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	void ITextViewEditorHost.TrySetCurrentlyTyping(bool value) => TrySetCurrentlyTyping(value);
 
-	void ITextViewEditorHost.CommitReplace(string oldText, string newText, int caret) => CommitAction(new ReplaceAction(oldText, newText, caret));
+	// The editor works out a deletion before OnKeyDownSkia applies it, so its undo step waits for the deletion to be applied.
+	void ITextViewEditorHost.CommitReplace(string oldText, string newText, int caret)
+		=> _pendingHistoryRecord = CreateHistoryRecord(new ReplaceAction(oldText, newText, caret));
 
-	void ITextViewEditorHost.CommitDelete(string oldText, string newText, int selectionStart, int selectionLength) => CommitAction(new DeleteAction(oldText, newText, selectionStart, selectionLength));
+	void ITextViewEditorHost.CommitDelete(string oldText, string newText, int selectionStart, int selectionLength)
+		=> _pendingHistoryRecord = CreateHistoryRecord(new DeleteAction(oldText, newText, selectionStart, selectionLength));
 
 	static TextBoxCore()
 	{
@@ -356,7 +365,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	}
 
 	// Ported from: TextBoxBase.cpp pattern for applying text replacement (similar to PasteFromClipboardPartial)
-	private void ReplaceWithSuggestion(int replaceStart, int replaceEnd, string suggestion)
+	internal void ReplaceWithSuggestion(int replaceStart, int replaceEnd, string suggestion)
 	{
 		if (IsReadOnly)
 		{
@@ -367,13 +376,11 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 		var oldText = Text;
 		var newText = oldText.Remove(replaceStart, replaceEnd - replaceStart).Insert(replaceStart, suggestion);
+		var caret = replaceStart + suggestion.Length;
+		var record = CreateHistoryRecord(new ReplaceAction(oldText, newText, caret));
 
-		CommitAction(new ReplaceAction(oldText, newText, replaceStart + suggestion.Length));
-
-		_clearHistoryOnTextChanged = false;
-		_pendingSelection = (replaceStart + suggestion.Length, 0);
-		ProcessTextInput(newText);
-		_clearHistoryOnTextChanged = true;
+		_pendingSelection = (caret, 0);
+		ProcessTextInputKeepingHistory(newText, record);
 	}
 
 	private void OnClipboardContentChanged(object sender, object e)
@@ -397,17 +404,17 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 		if (newValue)
 		{
+			_hasTypingRunChangedText = false;
 			_textWhenTypingStarted = Text;
 			_selectionWhenTypingStarted = (
 				_selection.start,
 				_selection.length,
 				_selection.selectionEndsAtTheStart);
 		}
-		else
+		else if (_hasTypingRunChangedText)
 		{
-			_historyIndex++;
-			_history.RemoveAllAt(_historyIndex);
-			_history.Add(new HistoryRecord(
+			// A run whose keys MaxLength or a handler all refused changed nothing, so it is no undo step and keeps Redo.
+			CommitRecord(new HistoryRecord(
 				new ReplaceAction(_textWhenTypingStarted, Text, _selection.start),
 				_selectionWhenTypingStarted.start,
 				_selectionWhenTypingStarted.length,
@@ -1199,6 +1206,9 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 			// TODO: PageUp/Down
 			case VirtualKey.Back when !IsReadOnly:
 				KeyDownBack(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
+
+				// This pass only works out Handled on a copy of the text; OnKeyDownSkia records the step of the deletion it applies.
+				_pendingHistoryRecord = null;
 				break;
 		}
 	}
@@ -1229,16 +1239,14 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		var end = Math.Max(selectionStart, selectionStart + selectionLength);
 		text = text[..start] + e.Character + text[end..];
 
-		_suppressCurrentlyTyping = true;
-		_clearHistoryOnTextChanged = false;
 		_pendingSelection = (start + 1, 0);
-		ProcessTextInput(text);
-		_clearHistoryOnTextChanged = true;
-		_suppressCurrentlyTyping = false;
+		ProcessTextInputKeepingHistory(text);
 	}
 
 	private void OnKeyDownSkia(KeyRoutedEventArgs args)
 	{
+		_pendingHistoryRecord = null;
+
 		if (SelectionFlyout?.IsOpen == true)
 		{
 			SelectionFlyout.Hide();
@@ -1417,16 +1425,14 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 		var caretXOffset = _caretXOffset;
 
-		_suppressCurrentlyTyping = true;
-		_clearHistoryOnTextChanged = false;
 		if (!HasPointerCapture)
 		{
 			_pendingSelection = (selectionStart, selectionLength);
 		}
 
-		ProcessTextInput(text);
-		_clearHistoryOnTextChanged = true;
-		_suppressCurrentlyTyping = false;
+		var record = _pendingHistoryRecord;
+		_pendingHistoryRecord = null;
+		ProcessTextInputKeepingHistory(text, record);
 
 		// don't change the caret offset when moving up and down
 		if (args.Key is VirtualKey.Up or VirtualKey.Down)
@@ -1570,6 +1576,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	{
 		CancelCompositionOnExternalChange();
 		_touchMultiTapAnchor = null;
+		_hasTypingRunChangedText |= _currentlyTyping;
 
 		// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
 		// Close the selection flyout when text changes.
@@ -1688,14 +1695,56 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	/// Adds a new Action at the present point in history and deletes the old "future"
 	/// </summary>
 	private void CommitAction(TextBoxAction action)
+		=> CommitRecord(CreateHistoryRecord(action));
+
+	/// <summary>
+	/// The undo step of <paramref name="action"/>, with the selection from before the action.
+	/// </summary>
+	private HistoryRecord CreateHistoryRecord(TextBoxAction action)
+		=> new(action, _selection.start, _selection.length, _selection.selectionEndsAtTheStart);
+
+	/// <summary>
+	/// Adds <paramref name="record"/> at the present point in history and deletes the old "future".
+	/// </summary>
+	private void CommitRecord(HistoryRecord record)
 	{
 		_historyIndex++;
 		_history.RemoveAllAt(_historyIndex);
-		_history.Add(new HistoryRecord(action, _selection.start, _selection.length, _selection.selectionEndsAtTheStart));
+		_history.Add(record);
+	}
+
+	/// <summary>
+	/// Applies user input whose undo step the caller or a typing run records: the text change neither clears the history nor
+	/// ends the typing run, and an IME composition doesn't take it for an outside change.
+	/// </summary>
+	/// <param name="record">The edit's own undo step, recorded only if the edit is applied, or null when a typing run records
+	/// the edit.</param>
+	/// <returns>Whether the edit was applied: MaxLength or a BeforeTextChanging handler can refuse it.</returns>
+	private bool ProcessTextInputKeepingHistory(string newText, HistoryRecord? record = null)
+	{
+		var (clearHistoryOnTextChanged, suppressCurrentlyTyping) = (_clearHistoryOnTextChanged, _suppressCurrentlyTyping);
+		_clearHistoryOnTextChanged = false;
+		_suppressCurrentlyTyping = true;
+		try
+		{
+			ProcessTextInput(newText, out var applied);
+			if (applied && record is { } appliedRecord)
+			{
+				CommitRecord(appliedRecord);
+			}
+
+			return applied;
+		}
+		finally
+		{
+			_clearHistoryOnTextChanged = clearHistoryOnTextChanged;
+			_suppressCurrentlyTyping = suppressCurrentlyTyping;
+		}
 	}
 
 	internal void Undo()
 	{
+		_pendingHistoryRecord = null;
 		TrySetCurrentlyTyping(false);
 		if (_historyIndex == 0 || HasPointerCapture)
 		{
@@ -1705,59 +1754,80 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		var currentAction = _history[_historyIndex];
 		_historyIndex--;
 
+		var clearHistoryOnTextChanged = _clearHistoryOnTextChanged;
 		_clearHistoryOnTextChanged = false;
-		switch (currentAction.Action)
+		try
 		{
-			case ReplaceAction r:
-				// remember that we use the possibly-negative format in _pendingSelection
-				_pendingSelection = currentAction.SelectionEndsAtTheStart ?
-					(currentAction.SelectionStart + currentAction.SelectionLength, -currentAction.SelectionLength) :
-					(currentAction.SelectionStart, currentAction.SelectionLength);
-				ProcessTextInput(r.OldText, limitToMaxLength: false);
-				break;
-			case DeleteAction d:
-				_pendingSelection = (d.UndoSelectionStart, d.UndoSelectionLength);
-				ProcessTextInput(d.OldText, limitToMaxLength: false);
-				break;
-			case SentinelAction:
-				break;
-			default:
-				global::System.Diagnostics.CI.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
-				break;
+			switch (currentAction.Action)
+			{
+				case ReplaceAction r:
+					// remember that we use the possibly-negative format in _pendingSelection
+					_pendingSelection = currentAction.SelectionEndsAtTheStart ?
+						(currentAction.SelectionStart + currentAction.SelectionLength, -currentAction.SelectionLength) :
+						(currentAction.SelectionStart, currentAction.SelectionLength);
+					ProcessTextInput(r.OldText, limitToMaxLength: false);
+					break;
+				case DeleteAction d:
+					_pendingSelection = (d.UndoSelectionStart, d.UndoSelectionLength);
+					ProcessTextInput(d.OldText, limitToMaxLength: false);
+					break;
+				case SentinelAction:
+					break;
+				default:
+					global::System.Diagnostics.CI.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
+					break;
+			}
 		}
-		_clearHistoryOnTextChanged = true;
+		finally
+		{
+			_clearHistoryOnTextChanged = clearHistoryOnTextChanged;
+		}
 	}
 
 	internal void Redo()
 	{
+		_pendingHistoryRecord = null;
 		if (_historyIndex == _history.Count - 1 || HasPointerCapture)
+		{
+			// With nothing to redo, a typing run goes on.
+			return;
+		}
+
+		// Ending an open typing run first commits it, which deletes the "future" this would redo.
+		TrySetCurrentlyTyping(false);
+		if (_historyIndex == _history.Count - 1)
 		{
 			return;
 		}
 
-		TrySetCurrentlyTyping(false);
-
 		_historyIndex++;
 		var currentAction = _history[_historyIndex];
 
+		var clearHistoryOnTextChanged = _clearHistoryOnTextChanged;
 		_clearHistoryOnTextChanged = false;
-		switch (currentAction.Action)
+		try
 		{
-			case ReplaceAction r:
-				_pendingSelection = (r.caretIndexAfterReplacement, 0); // we always have an empty selection here.
-				ProcessTextInput(r.NewText, limitToMaxLength: false);
-				break;
-			case DeleteAction d:
-				_pendingSelection = (Math.Min(d.UndoSelectionStart, d.UndoSelectionStart + d.UndoSelectionLength), 0);
-				ProcessTextInput(d.NewText, limitToMaxLength: false);
-				break;
-			case SentinelAction:
-				break;
-			default:
-				global::System.Diagnostics.CI.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
-				break;
+			switch (currentAction.Action)
+			{
+				case ReplaceAction r:
+					_pendingSelection = (r.caretIndexAfterReplacement, 0); // we always have an empty selection here.
+					ProcessTextInput(r.NewText, limitToMaxLength: false);
+					break;
+				case DeleteAction d:
+					_pendingSelection = (Math.Min(d.UndoSelectionStart, d.UndoSelectionStart + d.UndoSelectionLength), 0);
+					ProcessTextInput(d.NewText, limitToMaxLength: false);
+					break;
+				case SentinelAction:
+					break;
+				default:
+					global::System.Diagnostics.CI.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
+					break;
+			}
 		}
-		_clearHistoryOnTextChanged = true;
+		finally
+		{
+			_clearHistoryOnTextChanged = clearHistoryOnTextChanged;
+		}
 	}
 
 	internal bool IsDelegatingFocusToTemplateChild()

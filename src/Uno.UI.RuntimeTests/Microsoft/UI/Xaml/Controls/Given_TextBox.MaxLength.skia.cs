@@ -594,6 +594,405 @@ public partial class Given_TextBox_MaxLength
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	public async Task When_Suggestion_Is_Refused_Then_Undo_And_Redo_Keep_Text()
+	{
+		try
+		{
+			// Not recorded on WinUI: the WinUI recording app can't open the spelling menu. A spelling suggestion is user input: one that doesn't
+			// fit isn't applied, and it leaves no undo step that Redo could apply past MaxLength.
+			var SUT = await LoadFocused("abcde", maxLength: 5);
+
+			SUT.Core.ReplaceWithSuggestion(0, 2, "xyz");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcde", SUT.Text);
+			Assert.IsFalse(SUT.CanUndo);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcde", SUT.Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	[DataRow(VirtualKey.Delete, VirtualKeyModifiers.None, 0, 1, DisplayName = "Delete over a selection")]
+	[DataRow(VirtualKey.Back, VirtualKeyModifiers.None, 3, 0, DisplayName = "Backspace")]
+	[DataRow(VirtualKey.Back, VirtualKeyModifiers.Control, 3, 0, DisplayName = "Ctrl+Backspace")]
+	public async Task When_BeforeTextChanging_Cancels_A_Deletion_Then_No_Undo_Step(
+		VirtualKey key, VirtualKeyModifiers modifiers, int selectionStart, int selectionLength)
+	{
+		try
+		{
+			// WinUI also clears the rest of the undo history when a handler cancels an edit; Uno keeps it. The WinUI recording
+			// app can't hold Ctrl down.
+			var SUT = await LoadFocused("abc", maxLength: 5);
+			SUT.BeforeTextChanging += (_, e) => e.Cancel = true;
+
+			SUT.Select(selectionStart, selectionLength);
+			await Press(SUT, key, modifiers);
+			await Press(SUT, VirtualKey.Left); // ends a typing run the key may have opened
+
+			Assert.AreEqual("abc", SUT.Text);
+			Assert.IsFalse(SUT.CanUndo);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	public async Task When_A_Handler_Throws_During_A_Deletion()
+	{
+		try
+		{
+			// Not recorded on WinUI. The deletion that threw leaves no undo step, and the next edits are recorded as usual.
+			var SUT = await LoadFocused("abc", maxLength: 0);
+			var throwOnce = true;
+			SUT.BeforeTextChanging += (_, _) =>
+			{
+				if (throwOnce)
+				{
+					throwOnce = false;
+					throw new InvalidOperationException("Thrown by the test.");
+				}
+			};
+
+			SUT.Select(0, 0);
+			await Press(SUT, VirtualKey.Delete);
+			Assert.AreEqual("abc", SUT.Text);
+
+			await Type(SUT, "x");
+			Assert.AreEqual("xabc", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abc", SUT.Text);
+			Assert.IsFalse(SUT.CanUndo);
+
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("xabc", SUT.Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	public async Task When_Deleting_A_Word_Then_Undo_Takes_One_Step()
+	{
+		try
+		{
+			// Not recorded on WinUI: the WinUI recording app can't hold Ctrl down.
+			var SUT = await LoadFocused("abc def", maxLength: 0);
+			SUT.Select(7, 0);
+
+			await Press(SUT, VirtualKey.Back, VirtualKeyModifiers.Control);
+			Assert.AreEqual("abc ", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abc def", SUT.Text);
+			Assert.IsFalse(SUT.CanUndo);
+
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abc ", SUT.Text);
+			Assert.IsFalse(SUT.CanRedo);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	public async Task When_A_KeyDown_Handler_Undoes_Before_Ctrl_Backspace()
+	{
+		try
+		{
+			// Not recorded on WinUI: the WinUI recording app can't hold Ctrl down. The word deletion that the key press works out before its
+			// handlers run isn't recorded for the Undo that a handler runs.
+			var SUT = await LoadFocused("", maxLength: 0);
+			await Type(SUT, "abc def");
+
+			var undoOnce = true;
+			SUT.KeyDown += (_, e) =>
+			{
+				if (undoOnce && e.Key == VirtualKey.Back)
+				{
+					undoOnce = false;
+					SUT.Undo();
+				}
+			};
+
+			await Press(SUT, VirtualKey.Back, VirtualKeyModifiers.Control);
+			Assert.AreEqual("", SUT.Text, "the handler undid the typing, and the key press then had nothing to delete");
+			Assert.IsTrue(SUT.CanRedo);
+
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abc def", SUT.Text);
+			Assert.IsFalse(SUT.CanRedo);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	[DataRow(0, DisplayName = "No MaxLength")]
+	[DataRow(5, DisplayName = "MaxLength 5")]
+	public async Task When_Redoing_During_A_Typing_Run(int maxLength)
+	{
+		try
+		{
+			var SUT = await LoadFocused("", maxLength: maxLength);
+			await Type(SUT, "ab");
+			await Press(SUT, VirtualKey.Left);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			Assert.IsTrue(SUT.CanRedo);
+
+			await Type(SUT, "x");
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("x", SUT.Text, "typing replaced what Redo would have put back");
+			Assert.IsFalse(SUT.CanRedo);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	public async Task When_Redoing_Nothing_While_Typing()
+	{
+		try
+		{
+			// With nothing to redo, Redo doesn't end the typing run, so one Undo removes all the typing.
+			var SUT = await LoadFocused("", maxLength: 0);
+			await Type(SUT, "he");
+			SUT.Redo();
+			await Type(SUT, "llo");
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	public async Task When_Typed_Keys_Are_Refused_Then_Redo_Is_Kept()
+	{
+		try
+		{
+			var SUT = await LoadRedoable();
+
+			await Type(SUT, "xy");
+			Assert.AreEqual("abc", SUT.Text, "the keys don't fit");
+			Assert.IsTrue(SUT.CanRedo);
+
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("bc", SUT.Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	public async Task When_Typed_Keys_Are_Refused_Then_Undo_Skips_Them()
+	{
+		try
+		{
+			var SUT = await LoadRedoable();
+
+			await Type(SUT, "x");
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text, "Undo undoes the typing before the refused key");
+			Assert.IsFalse(SUT.CanUndo);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	public async Task When_Code_Set_During_A_Deletion_Is_Cancelled_Then_Undo_Restores()
+	{
+		try
+		{
+			// Not recorded on WinUI. Cancelling the text a handler sets from code doesn't cancel the deletion, so its step is kept.
+			var SUT = await LoadFocused("0123", maxLength: 5);
+			var armed = true;
+			SUT.TextChanging += (_, _) =>
+			{
+				if (armed && SUT.Text == "123")
+				{
+					armed = false;
+					SUT.Text = "abc";
+				}
+			};
+			SUT.BeforeTextChanging += (_, e) => e.Cancel = e.NewText == "abc";
+
+			SUT.Select(0, 0);
+			await Press(SUT, VirtualKey.Delete);
+			Assert.AreEqual("123", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("0123", SUT.Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	public async Task When_A_Handler_Throws_During_A_Suggestion()
+	{
+		try
+		{
+			// Not recorded on WinUI: the WinUI recording app can't open the spelling menu. The suggestion that threw leaves the
+			// history as it was, so text set from code still clears it.
+			var SUT = await LoadFocused("", maxLength: 0);
+			await Type(SUT, "abc");
+			await Press(SUT, VirtualKey.Left);
+			var throwOnce = true;
+			SUT.BeforeTextChanging += (_, _) =>
+			{
+				if (throwOnce)
+				{
+					throwOnce = false;
+					throw new InvalidOperationException("Thrown by the test.");
+				}
+			};
+
+			try
+			{
+				SUT.Core.ReplaceWithSuggestion(0, 3, "xyz");
+			}
+			catch (InvalidOperationException)
+			{
+			}
+
+			SUT.Text = "code";
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(SUT.CanUndo, "text set from code cleared the history");
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("code", SUT.Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+	[DataRow(false, DisplayName = "Deletion")]
+	[DataRow(true, DisplayName = "Paste")]
+	public async Task When_Undo_Runs_In_TextChanging_During_An_Edit(bool paste)
+	{
+		try
+		{
+			// Not recorded on WinUI. An Undo that a handler runs inside an edit doesn't make that edit clear the history.
+			var SUT = await LoadFocused("", maxLength: 0);
+			await Type(SUT, "ab");
+			await Press(SUT, VirtualKey.Left);
+			SUT.Select(2, 0);
+			await Type(SUT, "c");
+			await Press(SUT, VirtualKey.Left);
+			SUT.Select(3, 0);
+
+			var undoOnce = true;
+			SUT.TextChanging += (_, _) =>
+			{
+				if (undoOnce)
+				{
+					undoOnce = false;
+					SUT.Undo();
+				}
+			};
+
+			if (paste)
+			{
+				SUT.Core.PasteFromClipboard("d");
+				await WindowHelper.WaitForIdle();
+			}
+			else
+			{
+				await Press(SUT, VirtualKey.Back);
+			}
+
+			while (SUT.CanUndo)
+			{
+				SUT.Undo();
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual("", SUT.Text, "the typing before the edit can still be undone");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// "abc" at MaxLength 3, typed, with the deletion of its first character undone: one Redo step, the caret at the end.
+	private static async Task<TextBox> LoadRedoable()
+	{
+		var SUT = await LoadFocused("", maxLength: 3);
+		await Type(SUT, "abc");
+		SUT.Select(0, 1);
+		await Press(SUT, VirtualKey.Delete);
+		SUT.Undo();
+		SUT.Select(3, 0);
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("abc", SUT.Text);
+		Assert.IsTrue(SUT.CanRedo);
+		return SUT;
+	}
+
 	private static async Task<TextBox> LoadFocused(string text, int maxLength, bool acceptsReturn = false, Action<TextBox>? configure = null)
 	{
 		// Text before MaxLength, the order XAML applies them in when Text comes first.
