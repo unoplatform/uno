@@ -80,6 +80,27 @@ public class Given_AccentColorPalette
 		}
 	}
 
+	// Low-saturation accents Windows nudges by one unit when truncating its HSL round-trip.
+	[TestMethod]
+	[DataRow("484849")]
+	[DataRow("4C4C4D")]
+	[DataRow("4F4F50")]
+	public void When_Gray_Accent_Is_Preserved_Then_Shades_Match_Windows(string accent)
+	{
+		var windows = AccentPaletteGenerator.Generate(Parse(accent), normalize: true);
+		Assert.AreNotEqual(Parse(accent), windows.Accent, "Windows should adjust this accent.");
+
+		var palette = AccentPaletteGenerator.Generate(Parse(accent), normalize: false);
+
+		Assert.AreEqual(Parse(accent), palette.Accent, "Accent");
+		Assert.AreEqual(windows.Light1, palette.Light1, "Light1");
+		Assert.AreEqual(windows.Light2, palette.Light2, "Light2");
+		Assert.AreEqual(windows.Light3, palette.Light3, "Light3");
+		Assert.AreEqual(windows.Dark1, palette.Dark1, "Dark1");
+		Assert.AreEqual(windows.Dark2, palette.Dark2, "Dark2");
+		Assert.AreEqual(windows.Dark3, palette.Dark3, "Dark3");
+	}
+
 	private static void AssertPalette(AccentColorPalette palette, string accent, string light1, string light2, string light3, string dark1, string dark2, string dark3)
 	{
 		Assert.AreEqual(Parse(accent), palette.Accent, "Accent");
