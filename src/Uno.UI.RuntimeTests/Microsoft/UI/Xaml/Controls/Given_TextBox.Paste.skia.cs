@@ -129,6 +129,51 @@ public class Given_TextBox_Paste
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	[DataRow("a\nb", DisplayName = "LF")]
+	[DataRow("a\r\nb", DisplayName = "CR LF")]
+	[DataRow("a\rb", DisplayName = "CR")]
+	public async Task When_Pasting_Several_Lines_Into_A_Single_Line_TextBox(string pasted)
+	{
+		try
+		{
+			var SUT = await LoadFocused("XY", maxLength: 0);
+			SUT.Select(1, 0);
+			var events = new TextEvents(SUT);
+
+			await Paste(SUT, pasted);
+
+			AssertState(SUT, "XaY", 2, 0, "the pasted text's first line goes in, and the text after the caret stays");
+			events.AssertCounts(beforeTextChanging: 1, textChanging: 1, textChanged: 1);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	public async Task When_Pasting_Text_That_Starts_With_A_Line_Break_Into_A_Single_Line_TextBox()
+	{
+		try
+		{
+			var SUT = await LoadFocused("012", maxLength: 0);
+			SUT.Select(3, 0);
+			var events = new TextEvents(SUT);
+
+			await Paste(SUT, "\r\nabc");
+
+			AssertState(SUT, "012", 3, 0);
+			events.AssertCounts(beforeTextChanging: 0, textChanging: 0, textChanged: 0);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	private static async Task<TextBox> LoadFocused(string text, int maxLength, bool acceptsReturn = false, Action<TextBox>? configure = null)
 	{
 		// Text before MaxLength, the order XAML applies them in when Text comes first.

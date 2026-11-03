@@ -1138,6 +1138,13 @@ internal sealed partial class TextBoxCore
 		var selectionStart = SelectionStart;
 		var selectionLength = SelectionLength;
 		var currentText = Text;
+
+		if (!AcceptsReturn)
+		{
+			// A single-line TextBox takes the pasted text's first line and keeps the text after the caret, as on WinUI.
+			clipboardText = NormalizeLineBreaks(clipboardText);
+		}
+
 		var adjustedClipboardText = clipboardText;
 
 		if (selectionLength > 0)
