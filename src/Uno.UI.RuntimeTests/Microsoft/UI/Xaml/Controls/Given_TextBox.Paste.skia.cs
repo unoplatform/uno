@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.System;
 using static Private.Infrastructure.TestServices;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -198,6 +199,100 @@ public class Given_TextBox_Paste
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[DataRow("text/html", "<img>", "0123", 1, 2, DisplayName = "No text, an image")]
+	[DataRow("text/plain", "ab", "0ab3", 3, 0, DisplayName = "Text")]
+	[DataRow("text/plain", "", "03", 1, 0, DisplayName = "Empty text")]
+	public async Task When_The_Browser_Pastes(string type, string data, string expectedText, int expectedSelectionStart, int expectedSelectionLength)
+	{
+		try
+		{
+			// WinUI was measured with an empty clipboard for the case without text.
+			var SUT = await LoadFocused("0123", maxLength: 0);
+			SUT.Select(1, 2);
+			await UITestHelper.WaitFor(
+				() => HiddenNativeTextBoxExists(), timeoutMS: 3000, message: "the hidden input should exist while the TextBox is focused");
+
+			Assert.AreEqual("ok", InvokeBrowserJs(DispatchPaste("document.getElementById('uno-input')", type, data)));
+			await WindowHelper.WaitForIdle();
+
+			AssertState(SUT, expectedText, expectedSelectionStart, expectedSelectionLength);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_The_Semantic_Element_Pastes_No_Text()
+	{
+		try
+		{
+			// With accessibility on, the semantic element takes the paste instead of the hidden input.
+			var SUT = await LoadFocused("0123", maxLength: 0);
+			SUT.Select(1, 2);
+			SUT.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(SUT), timeoutMS: 5000, message: "the semantic element should be created");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ok", InvokeBrowserJs(DispatchPaste($"document.getElementById('{GetSemanticElementId(SUT)}')", "text/html", "<img>")));
+			await WindowHelper.WaitForIdle();
+
+			AssertState(SUT, "0123", 1, 2, "nothing to paste, so the selection stays");
+		}
+		finally
+		{
+			DisableAccessibility();
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_The_Browser_Pastes_No_Text_Into_A_RichEditBox()
+	{
+		try
+		{
+			// Not recorded on WinUI. A RichEditBox still raises Paste when the clipboard has no text.
+			var SUT = new RichEditBox { Width = 200 };
+			await UITestHelper.Load(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			var paste = 0;
+			SUT.Paste += (_, _) => paste++;
+			await UITestHelper.WaitFor(
+				() => HiddenNativeTextBoxExists(), timeoutMS: 3000, message: "the hidden input should exist while the RichEditBox is focused");
+
+			Assert.AreEqual("ok", InvokeBrowserJs(DispatchPaste("document.getElementById('uno-input')", "text/html", "<img>")));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, paste);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// Dispatches a paste of data with the given MIME type to the element, the way the browser does.
+	private static string DispatchPaste(string element, string type, string data)
+		=> $$"""
+			(function () {
+				const element = {{element}};
+				const clipboardData = new DataTransfer();
+				clipboardData.setData('{{type}}', '{{data}}');
+				element.dispatchEvent(new ClipboardEvent('paste', { clipboardData, bubbles: true, cancelable: true }));
+				return 'ok';
+			})()
+			""";
 
 	private static async Task<TextBox> LoadFocused(string text, int maxLength, bool acceptsReturn = false, Action<TextBox>? configure = null)
 	{

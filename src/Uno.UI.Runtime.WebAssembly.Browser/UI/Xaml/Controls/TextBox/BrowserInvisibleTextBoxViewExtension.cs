@@ -85,6 +85,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		}
 	});
 
+	/// <param name="clipboardText">The pasted text, or null when the clipboard has no text (an image, for instance).</param>
 	[JSExport]
 	private static void OnNativePaste(string clipboardText) => RunFromNative(() =>
 	{
@@ -93,10 +94,15 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		switch (FocusManager.GetFocusedElement(xamlRoot!))
 		{
 			case ITextBoxHost { Core: { } core }:
-				core.PasteFromClipboard(clipboardText);
+				// With no text to paste, the selection stays, as on WinUI.
+				if (clipboardText is not null)
+				{
+					core.PasteFromClipboard(clipboardText);
+				}
 				break;
 			case RichEditBox richEditBox:
-				richEditBox.PasteFromClipboard(clipboardText);
+				// RichEditBox still raises Paste for it.
+				richEditBox.PasteFromClipboard(clipboardText ?? string.Empty);
 				break;
 		}
 	});
