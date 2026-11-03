@@ -26,17 +26,23 @@ partial class TextCommandBarFlyout
 
 	// UIKit offers "Select" (the word at the caret) on the insertion-caret edit menu; only there.
 	private static bool ShouldOfferSelectCommand(TextBox textBox, bool prefersPrimaryCommands)
+#if __SKIA__
 		=> prefersPrimaryCommands
 			&& textBox.SelectionLength == 0
-			&& textBox.Core.TouchSelectionConvention == TextBoxCore.TouchTextSelectionConvention.iOS
+			&& textBox.TouchSelectionConvention == TextBox.TouchTextSelectionConvention.iOS
 			&& !string.IsNullOrWhiteSpace(textBox.Text);
+#else
+		=> false;
+#endif
 
 	private void ExecuteSelectCommand()
 	{
+#if __SKIA__
 		if (Target is TextBox textBox)
 		{
-			textBox.Core.SelectWordAtCaretForTouch();
+			textBox.SelectWordAtCaretForTouch();
 		}
+#endif
 
 		if (IsButtonInPrimaryCommands(TextControlButtons.Select))
 		{
@@ -49,6 +55,7 @@ partial class TextCommandBarFlyout
 	{
 		if (!InputDevicePrefersPrimaryCommands
 			|| Target is not TextBox textBox
+			|| textBox is PasswordBox // PasswordBox derives from TextBox in Uno Platform
 			|| (PlatformCommandsOverrideForTesting ?? s_platformCommands.Value) is not { } provider)
 		{
 			return;

@@ -5,7 +5,7 @@ using CoreGraphics;
 using UIKit;
 using Windows.Foundation;
 
-namespace Uno.UI.Runtime.AppleUIKit.Controls;
+namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
 /// <summary>
 /// Shows the iOS system text magnifier (<c>UITextLoupeSession</c>, iOS 17+) over the Skia-rendered text

@@ -1195,13 +1195,14 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 			else
 			{
-				return _text.Length - (ignoreEndingNewLine ? TrailingCRLFInLine(_endingNewLineLineHeight is null ? _lines[^1] : null) : 0);
+				return _text.Length - (ignoreEndingNewLine && _endingNewLineLineHeight is null ? TrailingCRLFInLine(_lines[^1]) : 0);
 			}
 		}
 
 		if (p.Y >= _xyTable[^1].prefixSummedHeight)
 		{
-			return extendedSelection ? _lines[^1].end - (ignoreEndingNewLine ? TrailingCRLFInLine(_lines[^1]) : 0) : -1;
+			// On the empty line after a trailing line break, whose only caret stop is the end of the text.
+			return extendedSelection ? _text.Length : -1;
 		}
 
 		int lineIndex;
@@ -1364,6 +1365,11 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
+
+	// The alignment the layout used: a default-aligned TextBox gets one from its content's direction.
+	internal TextAlignment TextAlignment => _textAlignment;
+
+	internal Size AvailableSize => _availableSize;
 
 	private static List<int> GetWords(string text)
 	{

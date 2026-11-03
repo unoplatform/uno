@@ -11,7 +11,7 @@ using UIKit;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Controls.Extensions;
 
-namespace Uno.UI.Runtime.AppleUIKit.Controls;
+namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
 /// <summary>
 /// The iOS text services added to the TextBox touch selection flyout, as UIKit's own edit menu offers them:
@@ -78,7 +78,7 @@ internal sealed class AppleUIKitTextFlyoutCommands : ITextCommandBarFlyoutComman
 		=> Present(target, new UIActivityViewController(new NSObject[] { new NSString(text) }, null));
 
 	private static UIView? GetProxy(TextBox target)
-		=> (target.Core.TextBoxView?.Extension as InvisibleTextBoxViewExtension)?.NativeView;
+		=> (target.TextBoxView?.Extension as InvisibleTextBoxViewExtension)?.NativeView;
 
 	// Presents over the topmost view controller. On iPad it is a popover pointing at the selection; on iPhone UIKit
 	// adapts it to a sheet.
@@ -101,7 +101,7 @@ internal sealed class AppleUIKitTextFlyoutCommands : ITextCommandBarFlyoutComman
 		{
 			// A popover with no source makes UIKit throw on iPad, so fall back to the middle of the layer.
 			popover.SourceView = layer;
-			popover.SourceRect = target.Core.TryGetSelectionBoundsInRoot(out var bounds)
+			popover.SourceRect = target.TryGetSelectionBoundsInRoot(out var bounds)
 				? new CoreGraphics.CGRect(bounds.X, bounds.Y, bounds.Width, bounds.Height)
 				: new CoreGraphics.CGRect(layer.Bounds.Width / 2, layer.Bounds.Height / 2, 0, 0);
 		}

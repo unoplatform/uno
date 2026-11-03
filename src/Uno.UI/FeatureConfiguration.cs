@@ -638,19 +638,6 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool DisableNumberPadPopover { get; set; }
 
-<<<<<<< HEAD
-#if __ANDROID__
-			/// <summary>
-			/// The legacy <see cref="Microsoft.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.
-			/// This property defaults to <see langword="false"/> matching UWP, where InputScope only affects the keyboard layout,
-			/// but doesn't do any validation.
-			/// </summary>
-			/// <remarks>
-			/// This is available on Android only
-			/// </remarks>
-			public static bool UseLegacyInputScope { get; set; }
-#endif
-=======
 			/// <summary>
 			/// When set to <see langword="true"/> (the default), dragging the caret or a selection handle by touch on
 			/// iOS shows the system text magnifier (<c>UITextLoupeSession</c>, iOS 17+).
@@ -664,7 +651,18 @@ namespace Uno.UI
 			/// iPad) and iOS before 17. It is never shown when the system text magnifier is.
 			/// </summary>
 			public static bool UseManagedTextLoupe { get; set; } = true;
->>>>>>> 56a23aa (feat(textbox): Add a text loupe for touch drags)
+
+#if __ANDROID__
+			/// <summary>
+			/// The legacy <see cref="Microsoft.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.
+			/// This property defaults to <see langword="false"/> matching UWP, where InputScope only affects the keyboard layout,
+			/// but doesn't do any validation.
+			/// </summary>
+			/// <remarks>
+			/// This is available on Android only
+			/// </remarks>
+			public static bool UseLegacyInputScope { get; set; }
+#endif
 		}
 
 		public static class ScrollViewer

@@ -63,9 +63,6 @@ public partial class TextBox
 		base.OnPointerMoved(e);
 		e.Handled = true;
 
-<<<<<<< HEAD:src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.pointers.skia.cs
-		if (!_isSkiaTextBox || !HasPointerCapture)
-=======
 		// A finger that moves away before the iOS hold delay is a pan or a scroll, not a press-and-hold.
 		if (_iosHoldTimer?.IsEnabled == true
 			&& e.Pointer.PointerDeviceType == PointerDeviceType.Touch
@@ -74,8 +71,7 @@ public partial class TextBox
 			_iosHoldTimer.Stop();
 		}
 
-		if (!HasPointerCapture)
->>>>>>> 138c921 (feat(textbox): Follow iOS touch editing gestures):src/Uno.UI/UI/Xaml/Controls/TextBoxCore/TextBoxCore.pointers.cs
+		if (!_isSkiaTextBox || !HasPointerCapture)
 		{
 			return;
 		}
@@ -284,7 +280,7 @@ public partial class TextBox
 			// caret never moved) brings up the edit menu at the caret.
 			if (SelectionLength == 0 && SelectionStart == _touchCaretDragStartIndex)
 			{
-				QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, args.GetCurrentPoint(Owner).Position, allowEmptySelection: true);
+				QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, args.GetCurrentPoint(this).Position, allowEmptySelection: true);
 			}
 			return;
 		}
@@ -312,7 +308,7 @@ public partial class TextBox
 				// Native iOS: tapping the caret of a focused empty field shows the edit menu (Paste); tapping it again
 				// while the menu shows just hides it.
 				TouchTapAt(0);
-				QueueDeferredTouchFlyout(args.GetCurrentPoint(Owner).Position, forSelection: false);
+				QueueDeferredTouchFlyout(args.GetCurrentPoint(this).Position, forSelection: false);
 			}
 			else if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop)
 			{
@@ -340,7 +336,7 @@ public partial class TextBox
 				if (TouchSelectionConvention == TouchTextSelectionConvention.iOS)
 				{
 					// A triple-tap may follow: hold the flyout until it can't (see QueueDeferredTouchFlyout).
-					QueueDeferredTouchFlyout(args.GetCurrentPoint(Owner).Position, forSelection: true);
+					QueueDeferredTouchFlyout(args.GetCurrentPoint(this).Position, forSelection: true);
 					return;
 				}
 			}
@@ -350,7 +346,7 @@ public partial class TextBox
 			// Native iOS: tapping the caret toggles the edit menu instead of moving the caret.
 			if (!_selectionFlyoutOpenAtPress)
 			{
-				QueueDeferredTouchFlyout(args.GetCurrentPoint(Owner).Position, forSelection: false);
+				QueueDeferredTouchFlyout(args.GetCurrentPoint(this).Position, forSelection: false);
 			}
 			return;
 		}
@@ -365,7 +361,7 @@ public partial class TextBox
 			// select-all on focus, still collapses to a caret at the tap, or the caret could never be placed in it.
 			if (!_selectionFlyoutOpenAtPress)
 			{
-				QueueDeferredTouchFlyout(args.GetCurrentPoint(Owner).Position, forSelection: true);
+				QueueDeferredTouchFlyout(args.GetCurrentPoint(this).Position, forSelection: true);
 			}
 			return;
 		}
@@ -662,18 +658,18 @@ public partial class TextBox
 
 		if (TextBoxView?.DisplayBlock is not { } displayBlock
 			|| displayBlock.TransformToVisual(null).Inverse is not { } toDisplayBlock
-			|| Owner.TransformToVisual(null).Inverse is not { } toOwner)
+			|| TransformToVisual(null).Inverse is not { } toTextBox)
 		{
 			return;
 		}
 
 		_iosHoldFired = true;
-		HandleTouchHold_iOS(toDisplayBlock.TransformPoint(_iosHoldRootPoint), toOwner.TransformPoint(_iosHoldRootPoint));
+		HandleTouchHold_iOS(toDisplayBlock.TransformPoint(_iosHoldRootPoint), toTextBox.TransformPoint(_iosHoldRootPoint));
 	}
 
 	private bool IsAncestorScrollViewerManipulating()
 	{
-		foreach (var parent in Owner.GetAllParents(includeCurrent: false))
+		foreach (var parent in this.GetAllParents(includeCurrent: false))
 		{
 			if (parent is ScrollViewer { IsInManipulation: true })
 			{
@@ -685,7 +681,7 @@ public partial class TextBox
 	}
 
 	// iOS long-press: place the caret at the press point and capture the pointer so the caret follows
-	// the finger (see OnPointerMoved), with the platform magnifier where there is one (TextBoxCore.Loupe.cs).
+	// the finger (see OnPointerMoved), with the platform magnifier where there is one (TextBox.Loupe.skia.cs).
 	private void BeginTouchCaretDrag(Point displayBlockPoint)
 	{
 		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(displayBlockPoint, true, true));
@@ -698,26 +694,28 @@ public partial class TextBox
 		// it would cancel the pointer and end the drag. Keep the touch for the caret, as Thumb and Slider do
 		// (PreventDirectManipulation for native runtimes, CancelDirectManipulations for the managed one).
 		_touchCaretDrag = _touchPressPointer is { } pointer
-			&& (_host.Owner.CapturePointer(pointer, options: PointerCaptureOptions.PreventDirectManipulation) is PointerCaptureResult.Added or PointerCaptureResult.AlreadyCaptured
+			&& (CapturePointer(pointer, options: PointerCaptureOptions.PreventDirectManipulation) is PointerCaptureResult.Added or PointerCaptureResult.AlreadyCaptured
 				|| HasPointerCapture);
 
 		if (_touchCaretDrag)
 		{
-			_host.Owner.CancelDirectManipulations();
+			CancelDirectManipulations();
 			UpdateCaretLoupe(index);
 		}
 	}
 
 	// The system took the touch away and no release follows: the hold must not act for a finger that is gone.
-	internal void OnPointerCanceled(PointerRoutedEventArgs e)
+	protected override void OnPointerCanceled(PointerRoutedEventArgs e)
 	{
+		base.OnPointerCanceled(e);
+
 		_isPressed = false;
 		_iosHoldTimer?.Stop();
 	}
 
 	// Until the hold fires, nothing captures the touch: a finger that slides off lifts on another element, and no
 	// release would stop the hold.
-	internal void OnPointerExited(PointerRoutedEventArgs e)
+	partial void OnPointerExitedPartial(PointerRoutedEventArgs e)
 	{
 		if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 		{

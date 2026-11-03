@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Controls;
 // Native iOS shows a magnifier over the text while the caret (press-and-hold drag) or a selection handle is
 // dragged. The platform draws it (see INativeTextLoupeExtension); this only feeds it the caret position. Where the
 // platform has none (the browser, iOS before 17) Uno draws its own (see TextBoxTouchLoupe).
-internal sealed partial class TextBoxCore
+public partial class TextBox
 {
 	private bool _isLoupeActive;
 	// The platform loupe refused this drag: retried on a later move, it could start over the Uno-drawn one.
@@ -31,7 +31,7 @@ internal sealed partial class TextBoxCore
 	private void UpdateCaretLoupe(int caretIndex)
 	{
 		if (TouchSelectionConvention != TouchTextSelectionConvention.iOS
-			|| Owner.XamlRoot is not { } xamlRoot
+			|| XamlRoot is not { } xamlRoot
 			|| TextBoxView?.DisplayBlock is not { } displayBlock)
 		{
 			return;

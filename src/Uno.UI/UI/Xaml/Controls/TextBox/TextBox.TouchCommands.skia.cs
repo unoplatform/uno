@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 // Helpers for the touch selection flyout commands (TextCommandBarFlyout "Select", and platform commands that
 // need to anchor UI at the selection).
-internal sealed partial class TextBoxCore
+public partial class TextBox
 {
 	/// <summary>
 	/// Selects the word at the caret, with both selection handles, as the iOS "Select" command does.
@@ -31,7 +31,7 @@ internal sealed partial class TextBoxCore
 		TouchSelectWordAt(caret);
 
 		// As for Select All: the flyout comes back for the new selection (see OnTouchSelectAllFromFlyout).
-		QueueUpdateSelectionFlyoutVisibility(Microsoft.UI.Input.PointerDeviceType.Touch, new Point(Owner.ActualWidth / 2, 0));
+		QueueUpdateSelectionFlyoutVisibility(Microsoft.UI.Input.PointerDeviceType.Touch, new Point(ActualWidth / 2, 0));
 	}
 
 	/// <summary>
@@ -47,7 +47,7 @@ internal sealed partial class TextBoxCore
 		}
 
 		CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
-		QueueUpdateSelectionFlyoutVisibility(Microsoft.UI.Input.PointerDeviceType.Touch, new Point(Owner.ActualWidth / 2, 0));
+		QueueUpdateSelectionFlyoutVisibility(Microsoft.UI.Input.PointerDeviceType.Touch, new Point(ActualWidth / 2, 0));
 	}
 
 	/// <summary>
@@ -82,12 +82,12 @@ internal sealed partial class TextBoxCore
 		}
 
 		var selection = displayBlock.TransformToVisual(null).TransformBounds(local);
-		var owner = Owner.TransformToVisual(null).TransformBounds(new Rect(0, 0, Owner.ActualWidth, Owner.ActualHeight));
+		var textBoxBounds = TransformToVisual(null).TransformBounds(new Rect(0, 0, ActualWidth, ActualHeight));
 
 		// The text can be scrolled inside the TextBox; never anchor at text that is out of view.
 		var visible = selection;
-		visible.Intersect(owner);
-		bounds = visible.IsEmpty ? owner : visible;
+		visible.Intersect(textBoxBounds);
+		bounds = visible.IsEmpty ? textBoxBounds : visible;
 		return true;
 	}
 }

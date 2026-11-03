@@ -361,17 +361,7 @@ partial class TextCommandBarFlyout
 		// empty clipboard — and a transient flyout with no primary command self-hides (see the Opened handler). Put
 		// it in the primary bar there so tapping the insertion handle always opens a usable flyout.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 		var commandListForSelectAll = InputDevicePrefersPrimaryCommands && Target is TextBox { SelectionLength: 0 } and not PasswordBox
-=======
-		// Uno specific: on the iOS touch insertion-caret flyout, "Select" (the word at the caret) leads, as in UIKit.
-		addButtonToCommandsIfPresent(TextControlButtons.Select, PrimaryCommands);
-
-=======
->>>>>>> 7fc4304 (chore(textbox): Move two flyout comments back to their code)
-		var commandListForSelectAll = InputDevicePrefersPrimaryCommands && Target is TextBox { SelectionLength: 0 }
->>>>>>> 73c77a0 (feat(textbox): Add iOS touch flyout commands)
 			? PrimaryCommands
 			: SecondaryCommands;
 		if ((buttonsToAdd & TextControlButtons.SelectAll) != TextControlButtons.None &&
@@ -908,11 +898,13 @@ partial class TextCommandBarFlyout
 		var selectAllInPrimaryCommands = IsButtonInPrimaryCommands(TextControlButtons.SelectAll);
 
 		// Uno specific: on a touch flyout under the iOS convention, give the selection its handles and keep the
-		// menu up for it, as native iOS does (see TextBoxCore.OnTouchSelectAllFromFlyout).
-		if (m_openedByTouch && target is TextBox touchTarget)
+		// menu up for it, as native iOS does (see TextBox.OnTouchSelectAllFromFlyout).
+#if __SKIA__
+		if (m_openedByTouch && target is TextBox touchTarget and not PasswordBox) // PasswordBox derives from TextBox in Uno Platform
 		{
-			touchTarget.Core.OnTouchSelectAllFromFlyout();
+			touchTarget.OnTouchSelectAllFromFlyout();
 		}
+#endif
 
 		if (selectAllInPrimaryCommands)
 		{

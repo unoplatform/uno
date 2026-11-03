@@ -28,27 +28,9 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 
 	internal TextBoxView Owner => _owner;
 
-<<<<<<< HEAD:src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Controls/TextBox/InvisibleTextBoxViewExtension.cs
-=======
 	/// <summary>The invisible native text view (the first responder while the TextBox has focus), if created.</summary>
 	internal UIView? NativeView => _textBoxView as UIView;
 
-	private IImeSessionHost? ImeHost => _owner.Host as IImeSessionHost;
-
-	internal AppleUIKitImeTextBoxExtension? GetImeExtension(IInvisibleTextBoxView source)
-	{
-		if (ReferenceEquals(_textBoxView, source)
-			&& ImeHost is { XamlRoot: { } xamlRoot } host
-			&& ReferenceEquals(host.TextBoxView, _owner)
-			&& ReferenceEquals(_textBoxViewRoot, xamlRoot))
-		{
-			return ImeSessionCoordinator.GetExtension(host) as AppleUIKitImeTextBoxExtension;
-		}
-
-		return null;
-	}
-
->>>>>>> 73c77a0 (feat(textbox): Add iOS touch flyout commands):src/Uno.UI.Runtime.AppleUIKit/UI/Xaml/Controls/TextBox/InvisibleTextBoxViewExtension.cs
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
 
 	public void StartEntry()
@@ -190,19 +172,15 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 			_textBoxView.AutocapitalizationType = UITextAutocapitalizationType.Sentences;
 		}
 
-<<<<<<< HEAD:src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Controls/TextBox/InvisibleTextBoxViewExtension.cs
 		_textBoxView.SecureTextEntry = textBox is PasswordBox;
-=======
-		_textBoxView.SecureTextEntry = host is TextBoxCore { IsPassword: true };
 
 		// Lets iOS offer AutoFill (saved passwords, contact details) for the field. Only assigned when there is a
 		// type: the proxy is created per entry, so its native default (none) stands otherwise.
-		if (InputScopeHelper.ConvertInputScopeToTextContentType(host.InputScope, host is TextBoxCore { IsPassword: true }) is { } contentType)
+		if (InputScopeHelper.ConvertInputScopeToTextContentType(textBox.InputScope, textBox is PasswordBox) is { } contentType)
 		{
 			_textBoxView.TextContentType = contentType;
 		}
 
->>>>>>> 9c46cf5 (feat(ios): Map InputScope to UITextContentType):src/Uno.UI.Runtime.AppleUIKit/UI/Xaml/Controls/TextBox/InvisibleTextBoxViewExtension.cs
 		SetSoftKeyboardTheme();
 
 		// KeyboardType may have changed — re-evaluate the native view

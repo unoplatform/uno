@@ -5690,7 +5690,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			InvokeButton(select);
 
 			await WindowHelper.WaitFor(() => SUT.SelectedText == "Some", message: "Select should select the word before the caret");
-			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "the selected word gets both handles");
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "the selected word gets both handles");
 			await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "the menu should come back for the selected word");
 		}
 
@@ -5712,7 +5712,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitFor(() => SUT.SelectedText == "Some Text", message: "Select All should select everything");
 			await WindowHelper.WaitFor(
-				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
 				message: $"the selection should show both handles (caret mode {SUT.CaretMode})");
 			await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "the menu should come back for the selection");
 			await WindowHelper.WaitForIdle();
@@ -5728,7 +5728,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
 
 			var SUT = await LoadFocusedTextBox_iOS("Some Text");
-			SUT.TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android;
+			SUT.TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android;
 
 			// Android: a tap places the caret with its insertion handle, and tapping the handle opens the flyout.
 			TapAsSeparateGesture(GetCaretPoint(SUT, 4));
@@ -5920,7 +5920,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 400,
 				AcceptsReturn = true,
 				Text = "First paragraph here\rSecond one",
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 
 			await UITestHelper.Load(SUT);
@@ -5993,14 +5993,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private static async Task AssertCaretDragOffText(bool inScrollViewer)
 		{
 			var loupe = new RecordingLoupe();
-			TextBoxCore.LoupeOverrideForTesting = loupe;
-			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+			TextBox.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBox.LoupeOverrideForTesting = null);
 
 			var SUT = new TextBox
 			{
 				Width = 400,
 				Text = "Some Text long enough to drag through",
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 			ScrollViewer scrollViewer = null;
 			if (inScrollViewer)
@@ -6051,10 +6051,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Touch_Hold_Starts_Caret_Drag_After_Half_Second_iOS()
 		{
 			var loupe = new RecordingLoupe();
-			TextBoxCore.LoupeOverrideForTesting = loupe;
+			TextBox.LoupeOverrideForTesting = loupe;
 			using var _ = new DisposableAction(() =>
 			{
-				TextBoxCore.LoupeOverrideForTesting = null;
+				TextBox.LoupeOverrideForTesting = null;
 				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
 			});
 
@@ -6085,14 +6085,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Touch_Press_Then_Scroll_Does_Not_Start_Caret_Drag_iOS()
 		{
 			var loupe = new RecordingLoupe();
-			TextBoxCore.LoupeOverrideForTesting = loupe;
-			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+			TextBox.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBox.LoupeOverrideForTesting = null);
 
 			var SUT = new TextBox
 			{
 				Width = 400,
 				Text = "Some Text long enough to drag through",
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 			var scrollViewer = new ScrollViewer
 			{
@@ -6122,8 +6122,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Touch_Press_Cancelled_Does_Not_Start_Caret_Drag_iOS()
 		{
 			var loupe = new RecordingLoupe();
-			TextBoxCore.LoupeOverrideForTesting = loupe;
-			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+			TextBox.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBox.LoupeOverrideForTesting = null);
 
 			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
 			SUT.Select(0, 0);
@@ -6153,8 +6153,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Touch_Released_Outside_Does_Not_Start_Caret_Drag_iOS()
 		{
 			var loupe = new RecordingLoupe();
-			TextBoxCore.LoupeOverrideForTesting = loupe;
-			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+			TextBox.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBox.LoupeOverrideForTesting = null);
 
 			var SUT = await LoadFocusedTextBox_iOS("Some Text long enough to drag through");
 			SUT.Select(0, 0);
@@ -6182,10 +6182,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Touch_Hold_Drifts_Within_TextBox_Starts_Caret_Drag_iOS()
 		{
 			var loupe = new RecordingLoupe();
-			TextBoxCore.LoupeOverrideForTesting = loupe;
+			TextBox.LoupeOverrideForTesting = loupe;
 			using var _ = new DisposableAction(() =>
 			{
-				TextBoxCore.LoupeOverrideForTesting = null;
+				TextBox.LoupeOverrideForTesting = null;
 				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
 			});
 
@@ -6210,14 +6210,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private static async Task AssertLoupeFollowsCaretDrag(bool inScrollViewer)
 		{
 			var loupe = new RecordingLoupe();
-			TextBoxCore.LoupeOverrideForTesting = loupe;
-			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+			TextBox.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBox.LoupeOverrideForTesting = null);
 
 			var SUT = new TextBox
 			{
 				Width = 400,
 				Text = "Some Text long enough to drag through",
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 
 			if (inScrollViewer)
@@ -6262,10 +6262,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Touch_LongPress_Drags_Caret_Shows_Managed_Loupe_iOS()
 		{
 			// On a host with a platform loupe (iOS 17+), that one would show instead.
-			TextBoxCore.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
+			TextBox.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
 			using var _ = new DisposableAction(() =>
 			{
-				TextBoxCore.LoupeOverrideForTesting = null;
+				TextBox.LoupeOverrideForTesting = null;
 				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
 			});
 
@@ -6273,7 +6273,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = "Some Text long enough to drag through",
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 			await UITestHelper.Load(SUT);
 
@@ -6337,10 +6337,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(FlowDirection.RightToLeft, DisplayName = "right-to-left flow")]
 		public async Task When_Touch_Drags_Caret_In_RightToLeft_Text_Managed_Loupe_Magnifies_It_iOS(FlowDirection flowDirection)
 		{
-			TextBoxCore.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
+			TextBox.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
 			using var _ = new DisposableAction(() =>
 			{
-				TextBoxCore.LoupeOverrideForTesting = null;
+				TextBox.LoupeOverrideForTesting = null;
 				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
 			});
 
@@ -6350,7 +6350,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 400,
 				FlowDirection = flowDirection,
 				Text = text,
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 			await UITestHelper.Load(SUT);
 
@@ -6394,14 +6394,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Touch_LongPress_Drags_Caret_Native_Loupe_Wins_Over_Managed_iOS()
 		{
 			var loupe = new RecordingLoupe();
-			TextBoxCore.LoupeOverrideForTesting = loupe;
-			using var _ = new DisposableAction(() => TextBoxCore.LoupeOverrideForTesting = null);
+			TextBox.LoupeOverrideForTesting = loupe;
+			using var _ = new DisposableAction(() => TextBox.LoupeOverrideForTesting = null);
 
 			var SUT = new TextBox
 			{
 				Width = 400,
 				Text = "Some Text long enough to drag through",
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 			await UITestHelper.Load(SUT);
 
@@ -6426,10 +6426,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Touch_LongPress_Drags_Caret_Native_Loupe_Unavailable_Falls_Back_iOS()
 		{
 			var loupe = new RecordingLoupe { CanShow = false };
-			TextBoxCore.LoupeOverrideForTesting = loupe;
+			TextBox.LoupeOverrideForTesting = loupe;
 			using var _ = new DisposableAction(() =>
 			{
-				TextBoxCore.LoupeOverrideForTesting = null;
+				TextBox.LoupeOverrideForTesting = null;
 				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
 			});
 
@@ -6437,7 +6437,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = "Some Text long enough to drag through",
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 			await UITestHelper.Load(SUT);
 
@@ -6467,18 +6467,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var wasEnabled = global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe;
 			global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = false;
-			TextBoxCore.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
+			TextBox.LoupeOverrideForTesting = new RecordingLoupe { CanShow = false };
 			using var _ = new DisposableAction(() =>
 			{
 				global::Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = wasEnabled;
-				TextBoxCore.LoupeOverrideForTesting = null;
+				TextBox.LoupeOverrideForTesting = null;
 			});
 
 			var SUT = new TextBox
 			{
 				Width = 400,
 				Text = "Some Text long enough to drag through",
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 			await UITestHelper.Load(SUT);
 
@@ -6505,10 +6505,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Touch_Handle_Drag_Loses_Pointer_Ends_Loupe_iOS()
 		{
 			var loupe = new RecordingLoupe();
-			TextBoxCore.LoupeOverrideForTesting = loupe;
+			TextBox.LoupeOverrideForTesting = loupe;
 			using var _ = new DisposableAction(() =>
 			{
-				TextBoxCore.LoupeOverrideForTesting = null;
+				TextBox.LoupeOverrideForTesting = null;
 				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false);
 			});
 
@@ -6596,7 +6596,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 400,
 				AcceptsReturn = true,
 				Text = "First paragraph here\rSecond one",
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 
 			await UITestHelper.Load(SUT);
@@ -6634,7 +6634,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 400,
 				AcceptsReturn = true,
 				Text = "First paragraph here\rSecond one",
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 
 			await UITestHelper.Load(SUT);
@@ -6653,7 +6653,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("First paragraph here", SUT.SelectedText);
-			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
 		// An empty line has nothing to select: the triple-tap leaves a caret there, not handles around nothing.
@@ -6670,7 +6670,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 400,
 				AcceptsReturn = true,
 				Text = text,
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 
 			await UITestHelper.Load(SUT);
@@ -6689,7 +6689,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(emptyLineIndex, SUT.SelectionStart, "the caret should be on the tapped empty line");
 			Assert.AreEqual(0, SUT.SelectionLength, "an empty paragraph has nothing to select");
-			Assert.AreEqual(TextBoxCore.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, "a caret shows no handles");
+			Assert.AreEqual(TextBox.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, "a caret shows no handles");
 		}
 
 		private static async Task<TextBox> LoadFocusedTextBox_iOS(string text)
@@ -6698,7 +6698,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = text,
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
 			};
 
 			await UITestHelper.Load(SUT);
