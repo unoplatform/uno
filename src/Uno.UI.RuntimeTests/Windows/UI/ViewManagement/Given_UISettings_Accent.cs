@@ -114,6 +114,27 @@ public class Given_UISettings_Accent
 #endif
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_OverridePalette_Then_OverrideAccentColor_Reports_It()
+	{
+#if HAS_UNO
+		var previousOverride = Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor;
+		var palette = Uno.Helpers.Theming.AccentColorPalette.Default;
+
+		try
+		{
+			Uno.Helpers.Theming.AccentColorHelper.SetOverridePalette(palette);
+
+			Assert.AreEqual(palette.Accent, Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor);
+		}
+		finally
+		{
+			Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor = previousOverride;
+		}
+#endif
+	}
+
 #if HAS_UNO
 	private static async Task<Color> ResolveAccentBrushColor()
 	{
