@@ -79,6 +79,43 @@ input::-ms-clear {
   pointer-events: none;
 }
 
+/* Not inherited, so an extent change does not restyle the whole semantic subtree. */
+@property --uno-scroll-extent-width {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --uno-scroll-extent-height {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+/* Native scrollbars would shrink the client area below the managed viewport, and scroll anchoring
+   would move the native offset away from the managed one. */
+.uno-semantic-scroll-port {
+  scrollbar-width: none;
+  overflow-anchor: none;
+}
+
+.uno-semantic-scroll-port::-webkit-scrollbar {
+  display: none;
+}
+
+/* Semantic children are sparse, so the managed scroll extent has to define the native scroll range. */
+.uno-semantic-scroll-port::before {
+  --uno-scroll-extent-width: inherit;
+  --uno-scroll-extent-height: inherit;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--uno-scroll-extent-width);
+  height: var(--uno-scroll-extent-height);
+  pointer-events: none;
+}
+
 #uno-canvas {
     position: fixed;
     width: 100%;

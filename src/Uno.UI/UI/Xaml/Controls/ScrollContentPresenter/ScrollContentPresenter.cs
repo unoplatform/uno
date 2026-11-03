@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public object ScrollOwner
 		{
-			get => _scroller.Target;
+			get => _scroller?.Target;
 			set
 			{
 				if (_scroller is { } oldScroller)
