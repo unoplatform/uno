@@ -170,7 +170,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Gets the full plain text content of the RichTextBlock by concatenating all paragraph inlines.
 		/// </summary>
-		internal new string GetPlainText()
+		internal override string GetPlainText()
 		{
 			if (Blocks.Count == 0)
 			{

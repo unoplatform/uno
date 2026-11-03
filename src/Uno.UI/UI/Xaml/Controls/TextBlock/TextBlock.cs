@@ -1431,6 +1431,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override AutomationPeer OnCreateAutomationPeer() => new TextBlockAutomationPeer(this);
 
+		// MUX Reference TextBlock_Partial.cpp, commit d505d1ddf
+		internal override string GetPlainText() => Text;
+
 		public override string GetAccessibilityInnerText() => Text;
 
 		// This approximates UWP behavior
