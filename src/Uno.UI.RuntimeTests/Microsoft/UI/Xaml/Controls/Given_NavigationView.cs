@@ -810,6 +810,30 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			GC.KeepAlive(nv);
 		}
 
+		[TestMethod]
+		public async Task When_SplitView_CompactPaneLength_Changes_Then_MenuItem_Follows()
+		{
+			var item = new MUXC.NavigationViewItem { Content = "Item" };
+			var nv = new MUXC.NavigationView
+			{
+				PaneDisplayMode = MUXC.NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				IsSettingsVisible = false,
+				Width = 400,
+				Height = 500,
+				MenuItems = { item },
+			};
+			await UITestHelper.Load(nv);
+
+			// The subscription to the SplitView must survive a GC while the item is alive.
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+
+			nv.CompactPaneLength = 72;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(72, item.CompactPaneLength);
+		}
+
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		private static WeakReference AddMenuItem(MUXC.NavigationView nv, string kind)
 		{
