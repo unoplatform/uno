@@ -140,6 +140,8 @@ public class Given_ProgressBar
 	}
 
 	[TestMethod]
+	// Native WinUI leaves CurrentState untouched while the control is collapsed, even though GoToState returns true.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Indeterminate_Collapsed_Then_Determinate_State()
 	{
 		var sut = new ProgressBar
