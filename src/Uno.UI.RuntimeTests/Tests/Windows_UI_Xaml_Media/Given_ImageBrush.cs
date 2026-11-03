@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation.Metadata;
@@ -113,6 +114,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				ImageAssert.HasColorAt(bitmap, BorderOffset, centerY, expectations.Left, tolerance: 28);
 				ImageAssert.HasColorAt(bitmap, width - BorderOffset, centerY, expectations.Right, tolerance: 28);
 			}, 10);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25596")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_Source_Outlives_Brushes()
+		{
+			// Like an icon held in a static field or in the application resources.
+			var source = new BitmapImage(new Uri("ms-appx:///Assets/square100.png"));
+
+			var (firstBorder, secondBorder, firstBrush, secondBrush) = await ShowAndRemoveBorders(source);
+
+			Assert.IsTrue(await TestHelper.TryWaitUntilCollected(firstBorder), "The first border should be collected once removed, even though its brush's source is alive.");
+			Assert.IsTrue(await TestHelper.TryWaitUntilCollected(secondBorder), "The second border should be collected once removed, even though its brush's source is alive.");
+			Assert.IsTrue(await TestHelper.TryWaitUntilCollected(firstBrush), "The first brush should be collected once its border is, even though its source is alive.");
+			Assert.IsTrue(await TestHelper.TryWaitUntilCollected(secondBrush), "The second brush should be collected once its border is, even though its source is alive.");
+			GC.KeepAlive(source);
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		private static async Task<(WeakReference, WeakReference, WeakReference, WeakReference)> ShowAndRemoveBorders(ImageSource source)
+		{
+			// Two brushes share the source, as they would an icon. A source used by a single brush also
+			// references that brush as its inheritance context, which is not covered here.
+			var firstBrush = new ImageBrush { ImageSource = source };
+			var secondBrush = new ImageBrush { ImageSource = source };
+			var opened = 0;
+			firstBrush.ImageOpened += (_, _) => opened++;
+			secondBrush.ImageOpened += (_, _) => opened++;
+
+			var firstBorder = new Border { Width = 50, Height = 50, Background = firstBrush };
+			var secondBorder = new Border { Width = 50, Height = 50, Background = secondBrush };
+
+			try
+			{
+				await UITestHelper.Load(new StackPanel { Children = { firstBorder, secondBorder } });
+				await WindowHelper.WaitFor(() => opened == 2, timeoutMS: 5000, message: "Both brushes should open the source.");
+
+				return (new(firstBorder), new(secondBorder), new(firstBrush), new(secondBrush));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
 		}
 
 #if __SKIA__
