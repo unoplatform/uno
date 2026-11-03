@@ -498,19 +498,22 @@ public partial class Given_SkiaAndroidAccessibilityNode
 		Assert.IsNotNull(firstId);
 		Assert.IsNotNull(secondId);
 		Assert.AreNotEqual(firstId, secondId);
+		// Inside each peer's area of the host, wherever the host is: the window's top-left holds the test runner's own nodes.
 		var scale = host.XamlRoot!.RasterizationScale;
+		var firstPoint = host.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(20, 15));
+		var secondPoint = host.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(60, 15));
 		Assert.AreEqual(
 			firstId,
 			AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor?.Invoke(
 				host.XamlRoot!,
-				20 * scale,
-				15 * scale));
+				firstPoint.X * scale,
+				firstPoint.Y * scale));
 		Assert.AreEqual(
 			secondId,
 			AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor?.Invoke(
 				host.XamlRoot!,
-				60 * scale,
-				15 * scale));
+				secondPoint.X * scale,
+				secondPoint.Y * scale));
 
 		Assert.IsTrue(AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(firstId.Value, 0x10));
 		Assert.IsTrue(AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(secondId.Value, 0x10));
@@ -745,12 +748,14 @@ public partial class Given_SkiaAndroidAccessibilityNode
 
 	private sealed class SharedOwnerInvokePeer : FrameworkElementAutomationPeer, IInvokeProvider
 	{
+		private readonly FrameworkElement _owner;
 		private readonly string _name;
 		private readonly double _x;
 
 		internal SharedOwnerInvokePeer(FrameworkElement owner, string name, double x)
 			: base(owner)
 		{
+			_owner = owner;
 			_name = name;
 			_x = x;
 		}
@@ -763,7 +768,9 @@ public partial class Given_SkiaAndroidAccessibilityNode
 
 		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Button;
 
-		protected override Windows.Foundation.Rect GetBoundingRectangleCore() => new(_x, 10, 30, 20);
+		// In window coordinates, as WinUI reports them, so the area follows the owner wherever it is laid out.
+		protected override Windows.Foundation.Rect GetBoundingRectangleCore()
+			=> _owner.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(_x, 10, 30, 20));
 
 		protected override object? GetPatternCore(PatternInterface patternInterface)
 			=> patternInterface == PatternInterface.Invoke ? this : base.GetPatternCore(patternInterface);
