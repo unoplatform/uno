@@ -719,6 +719,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// An edit that didn't go in records nothing, so it has no future to delete either.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_Browser_Input_Is_Refused_Then_Redo_Stays()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab", maxLength: 3);
+			try
+			{
+				await ReplayOnHiddenInput(NativeInput("abc", 3, "insertText"));
+				SUT.Undo();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("ab", SUT.Text);
+				Assert.IsTrue(SUT.CanRedo);
+
+				await ReplayOnHiddenInput(NativeInput("abxy", 4, "insertText"));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("ab", SUT.Text);
+				Assert.IsTrue(SUT.CanRedo);
+
+				SUT.Redo();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("abc", SUT.Text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A refused edit in the middle of a typing run doesn't end the run: undo takes back what the run did apply.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_Browser_Input_Is_Refused_During_A_Typing_Run()
+		{
+			var SUT = await LoadFocusedForBrowserIme("a", maxLength: 3);
+			try
+			{
+				await ReplayOnHiddenInput(NativeInput("ab", 2, "insertText"));
+				await ReplayOnHiddenInput(NativeInput("abc", 3, "insertText"));
+				await ReplayOnHiddenInput(NativeInput("abcd", 4, "insertText"));
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("abc", SUT.Text);
+
+				SUT.Undo();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("a", SUT.Text);
+				Assert.IsFalse(SUT.CanUndo, "the run is one undo step");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		// Text the browser applied (a composition, here) is typing: undo takes it back, as it does a key the TextBox
 		// handles.
 		[TestMethod]
