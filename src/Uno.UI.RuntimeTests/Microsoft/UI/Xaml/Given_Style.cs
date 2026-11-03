@@ -107,7 +107,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				TargetType = typeof(ContentControl),
 			};
 
-			Application.Current.Resources.Add(typeof(ContentControl), appStyle);
+			var appResources = Application.Current.Resources;
+			var hadPreviousAppStyle = appResources.TryGetValue(typeof(ContentControl), out var previousAppStyle);
+			appResources[typeof(ContentControl)] = appStyle;
 
 			try
 			{
@@ -131,7 +133,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 			finally
 			{
-				Application.Current.Resources.Remove(typeof(ContentControl));
+				if (hadPreviousAppStyle)
+				{
+					appResources[typeof(ContentControl)] = previousAppStyle;
+				}
+				else
+				{
+					appResources.Remove(typeof(ContentControl));
+				}
+
 				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
