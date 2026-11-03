@@ -1162,30 +1162,18 @@ internal sealed partial class TextBoxCore
 		}
 
 		currentText = currentText.Insert(selectionStart, adjustedClipboardText);
-		PasteFromClipboardPartial(adjustedClipboardText, selectionStart, currentText);
-
-#if __SKIA__
 		try
 		{
-			_clearHistoryOnTextChanged = false;
-			_suppressCurrentlyTyping = true;
-#else
-		{
-#endif
-			ProcessTextInput(currentText);
+			PasteFromClipboardPartial(adjustedClipboardText, selectionStart, currentText);
 		}
-#if __SKIA__
 		finally
 		{
-			_suppressCurrentlyTyping = false;
-			_clearHistoryOnTextChanged = true;
 			if (Text.IsNullOrEmpty())
 			{
 				// On WinUI, the caret never has thumbs if there is no text
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 			}
 		}
-#endif
 
 		_host.RaisePaste(new TextControlPasteEventArgs());
 	}

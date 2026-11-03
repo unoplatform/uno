@@ -1646,34 +1646,30 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	partial void PasteFromClipboardPartial(string adjustedClipboardText, int selectionStart, string newText)
 	{
-		if (_currentlyTyping)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-		else
-		{
-			// we only commit an action if we were not typing, because if we were typing and we now set CurrentlyTyping = false,
-			// we will already get a new action from the setter, so we don't need to commit another one here.
-			CommitAction(new ReplaceAction(Text, newText, selectionStart));
-		}
+		// A paste is its own undo step, as on WinUI, recorded once it is applied. Replacing a selection counts even with the same
+		// text; inserting nothing where nothing is selected doesn't.
+		TrySetCurrentlyTyping(false);
+		HistoryRecord? record = SelectionLength > 0 || adjustedClipboardText.Length > 0
+			? CreateHistoryRecord(new ReplaceAction(Text, newText, selectionStart))
+			: null;
 
 		_pendingSelection = (selectionStart + adjustedClipboardText.Length, 0);
+		ProcessTextInputKeepingHistory(newText, record);
 	}
 
 	partial void CutSelectionToClipboardPartial()
 	{
-		if (_currentlyTyping)
+		// A cut is its own undo step, as on WinUI, recorded once it is applied. With nothing selected, it only ends the typing run.
+		TrySetCurrentlyTyping(false);
+		if (SelectionLength == 0)
 		{
-			TrySetCurrentlyTyping(false);
+			return;
 		}
-		else
-		{
-			// we only commit an action if we were not typing, because if we were typing and we now set CurrentlyTyping = false,
-			// we will already get a new action from the setter, so we don't need to commit another one here.
-			CommitAction(new ReplaceAction(Text, Text.Remove(SelectionStart, SelectionLength), SelectionStart + SelectionLength));
-		}
+
+		var newText = Text.Remove(SelectionStart, SelectionLength);
+		var record = CreateHistoryRecord(new ReplaceAction(Text, newText, SelectionStart + SelectionLength));
 		_pendingSelection = (_selection.start, 0);
-		ProcessTextInputKeepingHistory(Text.Remove(SelectionStart, SelectionLength));
+		ProcessTextInputKeepingHistory(newText, record);
 	}
 
 	private void EnsureHistory()
@@ -1691,12 +1687,6 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		_history.Clear();
 		EnsureHistory();
 	}
-
-	/// <summary>
-	/// Adds a new Action at the present point in history and deletes the old "future"
-	/// </summary>
-	private void CommitAction(TextBoxAction action)
-		=> CommitRecord(CreateHistoryRecord(action));
 
 	/// <summary>
 	/// The undo step of <paramref name="action"/>, with the selection from before the action.
