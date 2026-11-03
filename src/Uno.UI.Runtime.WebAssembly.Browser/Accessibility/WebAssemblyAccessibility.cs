@@ -374,6 +374,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		OnChildAdded(parent, child, index, peerChildrenScope: null, isRecursive: false);
+	}
+
+	private void OnChildAdded(UIElement parent, UIElement child, int? index, PeerChildrenScope? peerChildrenScope, bool isRecursive)
+	{
 		// AddChild also fires while a subtree is still detached (XAML builds bottom-up) and for live parents under
 		// a Collapsed ancestor. A node emitted then hangs off the semantic root with zero geometry; attaching the
 		// subtree root, or showing the ancestor, replays every descendant through the recursion below instead.
@@ -388,6 +393,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		// A recursive call gets the scope from its caller; otherwise the peers above the parent decide.
+		if (!isRecursive && !TryResolvePeerChildrenScope(parent, out peerChildrenScope))
+		{
+			return;
+		}
+
 		_onChildAddedDepth++;
 		try
 		{
@@ -399,6 +410,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			if (IsPrunedAsHidden(child))
 			{
 				_prunedHandles.Add(child.Visual.Handle);
+				return;
+			}
+
+			if (!TryEnterPeerChildrenScope(child, peerChildrenScope, out var childPeerChildrenScope))
+			{
+				_peerExcludedHandles.Add(child.Visual.Handle);
 				return;
 			}
 
@@ -471,7 +488,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				// (fired per-child by UIElement) and this recursion.
 				foreach (var childChild in child._children)
 				{
-					OnChildAdded(child, childChild, null);
+					OnChildAdded(child, childChild, null, childPeerChildrenScope, isRecursive: true);
 				}
 			}
 		}
@@ -524,6 +541,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			var childHandle = child.Visual.Handle;
 			_pendingLabelledBy.RemoveAll(entry => entry.Handle == childHandle);
 			_relationshipPeers.Remove(childHandle);
+			_peerExcludedHandles.Remove(childHandle);
 			if (_semanticParentMap.TryGetValue(childHandle, out var semanticParent))
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
@@ -821,8 +839,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					{
 						return;
 					}
+					if (!TryResolvePeerChildrenScope(shownParent, out var shownPeerChildrenScope))
+					{
+						return;
+					}
 					var shownParentHandle = shownParent is not null ? FindSemanticParent(shownParent) : _rootElementHandle;
-					BuildSemanticsTreeRecursive(shownParentHandle, shownElement);
+					BuildSemanticsTreeRecursive(shownParentHandle, shownElement, shownPeerChildrenScope);
 					return;
 				}
 
@@ -1090,6 +1112,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		@this._semanticParentMap.Clear();
 		@this._prunedHandles.Clear();
+		@this._peerExcludedHandles.Clear();
 		@this._genericPathHandles.Clear();
 		@this._pendingLabelledBy.Clear();
 		@this._relationshipPeers.Clear();
@@ -1510,9 +1533,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			this.Log().Debug($"[A11y] CreateAOM: building tree for {topLevelChildren.Count} top-level children of {rootElement.GetType().Name}");
 		}
+		TryEnterPeerChildrenScope(rootElement, scope: null, out var rootPeerChildrenScope);
 		foreach (var child in topLevelChildren)
 		{
-			BuildSemanticsTreeRecursive(rootHandle, child, depth: 1);
+			BuildSemanticsTreeRecursive(rootHandle, child, rootPeerChildrenScope, depth: 1);
 		}
 
 		// FR-019/FR-022: now that the full AOM exists, every labeller with a semantic node is
@@ -1950,9 +1974,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		return false;
 	}
 
-	internal void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child, int depth = 0)
+	private void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child, PeerChildrenScope? peerChildrenScope, int depth = 0)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
+
+		if (!TryEnterPeerChildrenScope(child, peerChildrenScope, out var childPeerChildrenScope))
+		{
+			_peerExcludedHandles.Add(child.Visual.Handle);
+			return;
+		}
 
 		TrySubscribeScrollSource(child);
 		// Subscribe ComboBoxes encountered during the initial walk, and realize any options
@@ -2037,7 +2067,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Always recurse into children
 		foreach (var childChild in child.GetChildren())
 		{
-			BuildSemanticsTreeRecursive(effectiveParent, childChild, depth + 1);
+			BuildSemanticsTreeRecursive(effectiveParent, childChild, childPeerChildrenScope, depth + 1);
 		}
 	}
 
@@ -2947,6 +2977,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		NativeMethods.RemoveSemanticElement(IntPtr.Zero, _rootElementHandle);
 		_semanticParentMap.Clear();
 		_prunedHandles.Clear();
+		_peerExcludedHandles.Clear();
 		_genericPathHandles.Clear();
 		_pendingLabelledBy.Clear();
 		_relationshipPeers.Clear();
