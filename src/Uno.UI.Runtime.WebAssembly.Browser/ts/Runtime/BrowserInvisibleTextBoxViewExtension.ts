@@ -533,10 +533,18 @@
 			// TextBoxes, and detaching in between would dismiss the soft keyboard (see blur).
 			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
 
+			// With accessibility enabled, the semantic node of the text control is its native editing surface. Focus it
+			// directly: focusing the shared input first would have the semantic sync blur it right away, and that
+			// browser-initiated blur would unfocus the TextBox (focus bouncing off and back on).
 			const semanticElement = document.getElementById(`uno-semantics-${handle}`);
-			if (semanticElement && document.activeElement === semanticElement) {
-				BrowserInvisibleTextBoxViewExtension.detach();
-				return false;
+			if (semanticElement) {
+				if (document.activeElement !== semanticElement) {
+					BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(() => semanticElement.focus({ preventScroll: true }));
+				}
+				if (document.activeElement === semanticElement) {
+					BrowserInvisibleTextBoxViewExtension.detach();
+					return false;
+				}
 			}
 
 			const existingInput = BrowserInvisibleTextBoxViewExtension.inputElement;
