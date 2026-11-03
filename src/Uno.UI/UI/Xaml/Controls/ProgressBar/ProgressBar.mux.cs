@@ -192,7 +192,7 @@ partial class ProgressBar
 						}
 					}
 				}
-				else if (Math.Abs(maximum - minimum) > double.Epsilon)
+				else if (Math.Abs(maximum - minimum) > DBL_EPSILON)
 				{
 					double increment = maxIndicatorWidth / (maximum - minimum);
 					double indicatorWidth = increment * (Value - minimum);
