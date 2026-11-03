@@ -1,4 +1,6 @@
 trigger:
+  # Pushes that land while a build is running go into one build together (#25991).
+  batch: true
   branches:
     include:
       - master
