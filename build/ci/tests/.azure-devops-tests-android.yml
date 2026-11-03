@@ -24,7 +24,7 @@ jobs:
   displayName: '${{ parameters.renderer }}'
   timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
-  # Reports failures without failing the build until the lane passes 95% of master builds for two weeks (#25988).
+  # Reports failures without failing the build until the lane passes 95% of master builds for two weeks.
   ${{ if eq(parameters.renderer, 'WebGPU') }}:
     continueOnError: true
   dependsOn: Skia_Android_Tests_Build
