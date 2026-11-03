@@ -31,6 +31,7 @@ public class Given_CommandCanExecuteChanged
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25969")]
 	public async Task When_Never_Loaded_Then_Not_Rooted_By_Command(string controlType)
 	{
 		var command = new TestCommand(); // outlives the controls
@@ -48,6 +49,7 @@ public class Given_CommandCanExecuteChanged
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25969")]
 	public async Task When_Never_Loaded_With_XamlUICommand_Then_Not_Rooted_By_Command()
 	{
 		var command = new XamlUICommand { Label = "Print" };
@@ -67,6 +69,7 @@ public class Given_CommandCanExecuteChanged
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25969")]
 	public async Task When_Screen_With_Unopened_MenuFlyout_Dropped_Then_Not_Rooted_By_Command(bool shown)
 	{
 		var command = new TestCommand();
@@ -103,6 +106,7 @@ public class Given_CommandCanExecuteChanged
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25969")]
 	public async Task When_Owner_Collected_Then_Subscription_Removed_From_Command()
 	{
 		var command = new TestCommand();
