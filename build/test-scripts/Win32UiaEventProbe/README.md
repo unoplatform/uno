@@ -15,5 +15,7 @@ skipped tests, or timeout. App output is saved alongside the results as `.log`.
 
 The native-client test is inconclusive in a regular runtime-test run because it
 requires this external process. The other provider lifetime tests run normally.
-The probe requires the .NET 10 Windows Desktop runtime; the SamplesApp can use a
-different supported .NET version.
+CI runs this probe after the Windows Skia runtime tests
+(`build/ci/tests/.azure-devops-tests-desktop-windows.yml`).
+The probe needs a .NET 10 or newer Windows Desktop runtime; the SamplesApp can
+use a different supported .NET version.
