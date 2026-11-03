@@ -17,6 +17,14 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 	private int _compositionStartIndex;
 	private int _compositionLength;
 	private int _compositionResolvedLength;
+	// The selection that the composition's first applied text replaces. Until some composition text is applied, the composition
+	// has no text of its own (_compositionLength is 0), and an empty replacement leaves the selection alone.
+	private int _compositionSelectionLength;
+	private bool _compositionApplied;
+	// A platform that applies the text itself reports each update before syncing its text, which can still be refused: the range
+	// to go back to then, and whether the last update was refused.
+	private (int startIndex, int length, int resolvedLength) _compositionRangeBeforePlatformSync;
+	private bool _wasPlatformSyncRefused;
 
 	internal bool ShouldSwallowKeyDuringComposition => _isComposing && !_compositionAppliedByPlatform;
 
@@ -152,12 +160,14 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		_compositionAppliedByPlatform = false;
 		_platformTextApplyInProgress = false;
 		_compositionStartIndex = SelectionStart;
-		// Initialize from SelectionLength so the first ReplaceCompositionText
-		// replaces the selected range, matching normal typing behavior.
-		_compositionLength = SelectionLength;
+		// The first ReplaceCompositionText replaces the selected range, matching normal typing behavior.
+		_compositionSelectionLength = SelectionLength;
+		_compositionLength = 0;
 		_compositionResolvedLength = 0;
+		_compositionApplied = false;
+		_wasPlatformSyncRefused = false;
 
-		_host.RaiseTextCompositionStarted(new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength));
+		_host.RaiseTextCompositionStarted(new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionSelectionLength));
 	}
 
 	void IImeSessionHost.OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied, int compositionStart)
@@ -176,15 +186,17 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 			// Mark the session so key events aren't swallowed by the IsComposing check
 			// (Android key events are independent of composition events).
 			_compositionAppliedByPlatform = true;
+			OnPlatformCompositionUpdate();
 			if (compositionStart >= 0)
 			{
 				// An IME re-composing an existing word starts the composition before the caret.
 				_compositionStartIndex = compositionStart;
 			}
 		}
-		else
+		else if (!ReplaceCompositionText(compositionText, cursorPosition))
 		{
-			ReplaceCompositionText(compositionText, cursorPosition);
+			// Keep the range on the text that is really there, so clearing or cancelling the composition can't delete a neighbor.
+			return;
 		}
 
 		_compositionLength = compositionText.Length;
@@ -210,6 +222,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		{
 			_platformTextApplyInProgress = true;
 			_compositionAppliedByPlatform = true;
+			OnPlatformCompositionUpdate();
 		}
 		else
 		{
@@ -217,7 +230,17 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 			var combinedCursorPosition = cursorPosition >= 0
 				? committedText.Length + Math.Min(cursorPosition, compositionText.Length)
 				: -1;
-			ReplaceCompositionText(combinedText, combinedCursorPosition);
+			if (!ReplaceCompositionText(combinedText, combinedCursorPosition))
+			{
+				// The committed part goes in on its own when it fits; the composition that follows it is dropped.
+				if (committedText.Length == 0 || !ReplaceCompositionText(committedText))
+				{
+					// Nothing was applied: the range keeps covering the text that is really there.
+					return;
+				}
+
+				compositionText = string.Empty;
+			}
 		}
 
 		_compositionStartIndex = Math.Min(_compositionStartIndex + committedText.Length, Text.Length);
@@ -236,13 +259,15 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		}
 
 		TrySetCurrentlyTyping(true);
-		if (!textAlreadyApplied)
-		{
-			ReplaceCompositionText(committedText);
-		}
-
 		var startIndex = _compositionStartIndex;
 		var committedLength = committedText.Length;
+		if (textAlreadyApplied ? _wasPlatformSyncRefused : !ReplaceCompositionText(committedText))
+		{
+			// A refused commit leaves the composition text that was already there, so report that range.
+			startIndex = Math.Min(startIndex, Text.Length);
+			committedLength = Math.Min(_compositionLength, Text.Length - startIndex);
+		}
+
 		_isComposing = false;
 		_compositionAppliedByPlatform = false;
 		_compositionLength = 0;
@@ -305,14 +330,52 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 	{
 	}
 
-	private void ReplaceCompositionText(string newText, int cursorPosition = -1)
+	// Runs before the update changes the range.
+	private void OnPlatformCompositionUpdate()
 	{
+		_compositionRangeBeforePlatformSync = (_compositionStartIndex, _compositionLength, _compositionResolvedLength);
+		_wasPlatformSyncRefused = false;
+		_compositionApplied = true;
+	}
+
+	/// <summary>
+	/// The text the platform synced after reporting a composition update was refused, so no text change ends the platform's text
+	/// apply, and the range goes back to the text that is really there.
+	/// </summary>
+	private void OnPlatformSyncRefused()
+	{
+		_platformTextApplyInProgress = false;
+		if (!_isComposing)
+		{
+			return;
+		}
+
+		(_compositionStartIndex, _compositionLength, _compositionResolvedLength) = _compositionRangeBeforePlatformSync;
+		_wasPlatformSyncRefused = true;
+
+		_host.RaiseTextCompositionChanged(new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength));
+		InvalidateTextBoxRender();
+	}
+
+	/// <summary>
+	/// Replaces the composition range with <paramref name="newText"/>, through the user-input path.
+	/// </summary>
+	/// <returns>Whether the replacement was applied: MaxLength or a BeforeTextChanging handler can refuse it, and an empty
+	/// replacement before any composition text was applied leaves the selection it would replace.</returns>
+	private bool ReplaceCompositionText(string newText, int cursorPosition = -1)
+	{
+		if (!_compositionApplied && newText.Length == 0)
+		{
+			return false;
+		}
+
 		var text = Text;
 		// Clamp indices to text bounds in case the platform modified the text
 		// out-of-band (e.g., Android IME autocorrect during a composition session)
 		// leaving _compositionStartIndex/_compositionLength stale.
 		var startIndex = Math.Min(_compositionStartIndex, text.Length);
-		var endIndex = Math.Min(_compositionStartIndex + _compositionLength, text.Length);
+		var length = _compositionApplied ? _compositionLength : _compositionSelectionLength;
+		var endIndex = Math.Min(_compositionStartIndex + length, text.Length);
 		var replaced = text[..startIndex] + newText + text[endIndex..];
 
 		// Place the caret at the IME-reported cursor position within the composition,
@@ -322,18 +385,10 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 			? Math.Min(cursorPosition, newText.Length)
 			: newText.Length;
 
-		_suppressCurrentlyTyping = true;
-		_clearHistoryOnTextChanged = false;
-		try
-		{
-			_pendingSelection = (startIndex + caretOffset, 0);
-			ProcessTextInput(replaced);
-		}
-		finally
-		{
-			_clearHistoryOnTextChanged = true;
-			_suppressCurrentlyTyping = false;
-		}
+		_pendingSelection = (startIndex + caretOffset, 0);
+		var applied = ProcessTextInputKeepingHistory(replaced);
+		_compositionApplied |= applied;
+		return applied;
 	}
 
 	/// <summary>

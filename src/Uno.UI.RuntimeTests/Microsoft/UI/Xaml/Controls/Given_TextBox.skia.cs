@@ -782,6 +782,81 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// The browser reports the composition before syncing its text. The refused text leaves no composition range on the
+		// neighbor at the caret, no undo step, and the input goes back to the TextBox's text once the composition ends.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_Browser_Ime_Is_Refused_Then_Range_Stays_On_The_Text()
+		{
+			var SUT = await LoadFocusedForBrowserIme("abcd", maxLength: 4);
+			(int start, int length) changed = default;
+			var ended = new List<(int start, int length)>();
+			SUT.TextCompositionChanged += (_, e) => changed = (e.StartIndex, e.Length);
+			SUT.TextCompositionEnded += (_, e) => ended.Add((e.StartIndex, e.Length));
+			try
+			{
+				SUT.Select(2, 0);
+				await UITestHelper.WaitFor(() => GetHiddenInputState() == "abcd|2", timeoutMS: 3000, message: "the caret should reach the hidden input");
+
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(2, 2, "x", "abxcd", 3));
+
+				Assert.AreEqual("abcd", SUT.Text);
+				Assert.AreEqual(2, SUT.SelectionStart);
+				Assert.AreEqual((2, 0), changed);
+
+				await ReplayOnHiddenInput(ImeEnd("x"));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("abcd", SUT.Text);
+				Assert.AreEqual("abcd|2", GetHiddenInputState());
+				CollectionAssert.AreEqual(new[] { (2, 0) }, ended);
+
+				SUT.Select(0, 0);
+				await WindowHelper.WaitForIdle();
+				Assert.IsFalse(SUT.CanUndo, "the composition changed nothing");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_Browser_Ime_Grows_Past_MaxLength_Then_Range_Stays_On_The_Text()
+		{
+			var SUT = await LoadFocusedForBrowserIme("", maxLength: 3);
+			(int start, int length) changed = default;
+			var ended = new List<(int start, int length)>();
+			SUT.TextCompositionChanged += (_, e) => changed = (e.StartIndex, e.Length);
+			SUT.TextCompositionEnded += (_, e) => ended.Add((e.StartIndex, e.Length));
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hel", "hel", 3));
+				await ReplayOnHiddenInput(ImeCompose(0, 3, "hell", "hell", 4));
+
+				Assert.AreEqual("hel", SUT.Text);
+				Assert.AreEqual((0, 3), changed);
+
+				await ReplayOnHiddenInput(ImeEnd("hell"));
+
+				Assert.AreEqual("hel", SUT.Text);
+				CollectionAssert.AreEqual(new[] { (0, 3) }, ended);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		// Text the browser applied (a composition, here) is typing: undo takes it back, as it does a key the TextBox
 		// handles.
 		[TestMethod]
@@ -10421,6 +10496,328 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(SUT.IsComposing);
 		}
 
+		public enum ImeEnding
+		{
+			Cancel,
+			EmptyUpdate,
+			EmptyCommit,
+			End,
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		[DataRow("0123456789", 0, 3, "k", 5, false, ImeEnding.Cancel, DisplayName = "Text longer than MaxLength, cancelled")]
+		[DataRow("0123456789", 0, 3, "k", 5, false, ImeEnding.EmptyUpdate, DisplayName = "Text longer than MaxLength, emptied")]
+		[DataRow("0123456789", 0, 3, "k", 5, false, ImeEnding.EmptyCommit, DisplayName = "Text longer than MaxLength, committed empty")]
+		[DataRow("0123456789", 0, 3, "k", 5, false, ImeEnding.End, DisplayName = "Text longer than MaxLength, ended")]
+		[DataRow("01234", 1, 2, "kan", 5, false, ImeEnding.Cancel, DisplayName = "Text at MaxLength, cancelled")]
+		[DataRow("01234", 1, 2, "kan", 5, false, ImeEnding.End, DisplayName = "Text at MaxLength, ended")]
+		[DataRow("01234", 1, 2, "k", 0, true, ImeEnding.Cancel, DisplayName = "Refused by BeforeTextChanging, cancelled")]
+		[DataRow("01234", 1, 2, "k", 0, true, ImeEnding.EmptyCommit, DisplayName = "Refused by BeforeTextChanging, committed empty")]
+		public async Task When_IME_Composition_Over_A_Selection_Is_Refused_Then_Ending_It_Keeps_Text(
+			string text,
+			int selectionStart,
+			int selectionLength,
+			string composed,
+			int maxLength,
+			bool refuseInBeforeTextChanging,
+			ImeEnding ending)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = text, MaxLength = maxLength };
+			var ended = new List<(int start, int length)>();
+			SUT.TextCompositionEnded += (_, e) => ended.Add((e.StartIndex, e.Length));
+			SUT.BeforeTextChanging += (_, e) => e.Cancel = refuseInBeforeTextChanging && e.NewText.Contains(composed);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Select(selectionStart, selectionLength);
+				await WindowHelper.WaitForIdle();
+
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate(composed);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(text, SUT.Text, "the composition is refused");
+				Assert.AreEqual(0, SUT.Core.CompositionLength, "no composition text is in the TextBox");
+
+				switch (ending)
+				{
+					case ImeEnding.Cancel:
+						fake.SimulateCompositionCancel();
+						break;
+					case ImeEnding.EmptyUpdate:
+						// The IME empties its preedit, for example after the user deletes the composed character.
+						fake.SimulateCompositionUpdate("");
+						await WindowHelper.WaitForIdle();
+						Assert.AreEqual(text, SUT.Text, "emptying the refused composition removes nothing");
+						fake.SimulateCompositionCancel();
+						break;
+					case ImeEnding.EmptyCommit:
+						fake.SimulateCompositionComplete("");
+						break;
+					case ImeEnding.End:
+						fake.SimulateCompositionEnd();
+						break;
+				}
+
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(text, SUT.Text, "ending the refused composition removes nothing");
+				CollectionAssert.AreEqual(new[] { (selectionStart, 0) }, ended, "the ended composition has no text");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_IME_Commit_Fits_After_A_Refused_Update()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "01234", MaxLength = 5 };
+			var changed = new List<(int start, int length)>();
+			var ended = new List<(int start, int length)>();
+			SUT.TextCompositionChanged += (_, e) => changed.Add((e.StartIndex, e.Length));
+			SUT.TextCompositionEnded += (_, e) => ended.Add((e.StartIndex, e.Length));
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Select(1, 2);
+				await WindowHelper.WaitForIdle();
+
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("k");
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("0k34", SUT.Text);
+
+				fake.SimulateCompositionUpdate("kan");
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("0k34", SUT.Text, "the longer reading doesn't fit");
+
+				fake.SimulateCompositionComplete("\u304B\u3093");
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("0\u304B\u309334", SUT.Text, "the commit replaces the composition range");
+
+				CollectionAssert.AreEqual(new[] { (1, 1) }, changed, "no change is reported for the refused update");
+				CollectionAssert.AreEqual(new[] { (1, 2) }, ended);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_IME_Commit_Is_Refused_By_MaxLength()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "012", MaxLength = 4 };
+			var ended = new List<(int start, int length)>();
+			SUT.TextCompositionEnded += (_, e) => ended.Add((e.StartIndex, e.Length));
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Select(3, 0);
+				await WindowHelper.WaitForIdle();
+
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("k");
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("012k", SUT.Text);
+
+				fake.SimulateCompositionComplete("\u304B\u3093");
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("012k", SUT.Text, "the commit doesn't fit, so the composition text stays");
+				CollectionAssert.AreEqual(new[] { (3, 1) }, ended, "the ended range is the text that is there");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		// A platform that applies the text itself reports each update before syncing its text. When the TextBox refuses that text,
+		// the range goes back to the text that is really there, so it doesn't end up on a neighbor.
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_IME_Text_Applied_By_The_Platform_Is_Refused_Then_Range_Stays()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "abcd", MaxLength = 4 };
+			(int start, int length) changed = default;
+			var ended = new List<(int start, int length)>();
+			SUT.TextCompositionChanged += (_, e) => changed = (e.StartIndex, e.Length);
+			SUT.TextCompositionEnded += (_, e) => ended.Add((e.StartIndex, e.Length));
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Select(2, 0);
+				await WindowHelper.WaitForIdle();
+
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("x", cursorPosition: 1, textAlreadyApplied: true);
+				((IImeSessionHost)SUT.Core).UpdateTextFromNative("abxcd", 3, 0);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("abcd", SUT.Text);
+				Assert.AreEqual(2, SUT.SelectionStart);
+				Assert.AreEqual(0, SUT.Core.CompositionLength);
+				Assert.AreEqual((2, 0), changed, "the last report is the range that is really there");
+
+				fake.SimulateCompositionComplete("x", textAlreadyApplied: true);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("abcd", SUT.Text);
+				CollectionAssert.AreEqual(new[] { (2, 0) }, ended);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_IME_Text_Applied_By_The_Platform_Grows_Past_MaxLength_Then_Range_Stays()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { MaxLength = 3 };
+			var ended = new List<(int start, int length)>();
+			SUT.TextCompositionEnded += (_, e) => ended.Add((e.StartIndex, e.Length));
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("hel", cursorPosition: 3, textAlreadyApplied: true);
+				((IImeSessionHost)SUT.Core).UpdateTextFromNative("hel", 3, 0);
+				fake.SimulateCompositionUpdate("hell", cursorPosition: 4, textAlreadyApplied: true);
+				((IImeSessionHost)SUT.Core).UpdateTextFromNative("hell", 4, 0);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("hel", SUT.Text);
+				Assert.AreEqual(3, SUT.Core.CompositionLength);
+
+				fake.SimulateCompositionComplete("hell", textAlreadyApplied: true);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("hel", SUT.Text);
+				CollectionAssert.AreEqual(new[] { (0, 3) }, ended);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_IME_Partial_Commit_Applied_By_The_Platform_Is_Refused_Then_Range_Stays()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "ab", MaxLength = 3 };
+			var ended = new List<(int start, int length)>();
+			SUT.TextCompositionEnded += (_, e) => ended.Add((e.StartIndex, e.Length));
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Select(2, 0);
+				await WindowHelper.WaitForIdle();
+
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("c", cursorPosition: 1, textAlreadyApplied: true);
+				((IImeSessionHost)SUT.Core).UpdateTextFromNative("abc", 3, 0);
+				fake.SimulateCompositionPartialCommit("c", "de", cursorPosition: 2, textAlreadyApplied: true);
+				((IImeSessionHost)SUT.Core).UpdateTextFromNative("abcde", 5, 0);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("abc", SUT.Text);
+				Assert.AreEqual(2, SUT.Core.CompositionStartIndex);
+				Assert.AreEqual(1, SUT.Core.CompositionLength);
+
+				fake.SimulateCompositionComplete("cde", textAlreadyApplied: true);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("abc", SUT.Text);
+				CollectionAssert.AreEqual(new[] { (2, 1) }, ended);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_IME_Partial_Commit_Is_Refused_By_MaxLength()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "01", MaxLength = 4 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Select(2, 0);
+				await WindowHelper.WaitForIdle();
+
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("ab");
+				await WindowHelper.WaitForIdle();
+
+				fake.SimulateCompositionPartialCommit("AB", "cd");
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("01AB", SUT.Text, "the committed part fits on its own");
+				Assert.AreEqual(4, SUT.Core.CompositionStartIndex);
+				Assert.AreEqual(0, SUT.Core.CompositionLength);
+
+				fake.SimulateCompositionCancel();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("01AB", SUT.Text, "cancelling keeps the committed part");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 		[TestMethod]
 		public async Task When_IME_Direct_Commit_Without_Composition()
 		{
@@ -11468,6 +11865,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				IsComposing = false;
 				CompositionCanceled?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionEnd()
+			{
+				IsComposing = false;
 				CompositionEnded?.Invoke(this, EventArgs.Empty);
 			}
 		}

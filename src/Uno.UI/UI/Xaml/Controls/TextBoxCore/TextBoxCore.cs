@@ -972,18 +972,19 @@ internal sealed partial class TextBoxCore
 	/// <param name="applied">Whether the edit went in: false when MaxLength or a BeforeTextChanging handler refused it.</param>
 	internal string ProcessTextInput(string newText, out bool applied, bool limitToMaxLength = true)
 	{
+		var isPlatformSync = _platformTextApplyInProgress && !_isInputModifyingText;
+
 		if (limitToMaxLength && IsRefusedByMaxLength(newText))
 		{
 #if __SKIA__
 			_pendingSelection = null;
 #endif
-			// No text change follows, which is what would otherwise end the platform's text apply.
-			if (!_isInputModifyingText)
+			applied = false;
+			if (isPlatformSync)
 			{
-				_platformTextApplyInProgress = false;
+				OnPlatformSyncRefused();
 			}
 
-			applied = false;
 			return Text;
 		}
 
@@ -1023,6 +1024,11 @@ internal sealed partial class TextBoxCore
 				_isInputModifyingText = false;
 				_platformTextApplyInProgress = false;
 			}
+		}
+
+		if (isPlatformSync && !applied)
+		{
+			OnPlatformSyncRefused();
 		}
 
 		return Text; //This may have been modified by BeforeTextChanging, TextChanging, DP callback, etc
