@@ -494,22 +494,20 @@ internal sealed partial class TextBoxCore
 		}
 
 		CopySelectionToClipboard();
+		CutSelection();
+	}
+
+	/// <summary>
+	/// Removes the selection the way a cut does, without copying it: as user input, recorded as an undo step.
+	/// </summary>
+	internal void CutSelection()
+	{
+		if (IsReadOnly || IsPassword)
+		{
+			return;
+		}
+
 		CutSelectionToClipboardPartial();
-#if __SKIA__
-		try
-		{
-			_suppressCurrentlyTyping = true;
-#else
-		{
-#endif
-			Text = Text.Remove(SelectionStart, SelectionLength);
-		}
-#if __SKIA__
-		finally
-		{
-			_suppressCurrentlyTyping = false;
-		}
-#endif
 	}
 
 	internal void OnTextChangedCore(string? oldValue, string? newValue)

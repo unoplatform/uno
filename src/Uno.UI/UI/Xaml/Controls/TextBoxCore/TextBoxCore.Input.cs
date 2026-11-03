@@ -1673,6 +1673,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 			CommitAction(new ReplaceAction(Text, Text.Remove(SelectionStart, SelectionLength), SelectionStart + SelectionLength));
 		}
 		_pendingSelection = (_selection.start, 0);
+		ProcessTextInputKeepingHistory(Text.Remove(SelectionStart, SelectionLength));
 	}
 
 	private void EnsureHistory()
