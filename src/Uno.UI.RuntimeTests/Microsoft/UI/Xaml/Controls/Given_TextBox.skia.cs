@@ -572,6 +572,153 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// The browser's caret belongs to the text the TextBox refused, so the TextBox's selection doesn't move, not even on its
+		// way back to where it was.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_Browser_Input_Is_Refused_By_MaxLength_Then_Selection_Stays()
+		{
+			var SUT = await LoadFocusedForBrowserIme("012", maxLength: 3);
+			var selectionChanges = 0;
+			try
+			{
+				SUT.Select(1, 1);
+				await UITestHelper.WaitFor(() => GetHiddenInputState() == "012|1", timeoutMS: 3000, message: "the selection should reach the hidden input");
+				await WindowHelper.WaitForIdle();
+				SUT.SelectionChanged += (_, _) => selectionChanges++;
+
+				await ReplayOnHiddenInput(NativeInput("0xy2", 3, "insertText"));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("012", SUT.Text);
+				Assert.AreEqual(1, SUT.SelectionStart);
+				Assert.AreEqual(1, SUT.SelectionLength);
+				Assert.AreEqual(0, selectionChanges);
+				Assert.AreEqual("012|1", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Text set from code can be longer than MaxLength. Soft keyboards delete from it through the browser, which is no reason
+		// to refuse the edit, and undo puts the whole text back.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_Browser_Input_Deletes_From_Text_Longer_Than_MaxLength()
+		{
+			var SUT = await LoadFocusedForBrowserIme("0123456789", maxLength: 5);
+			try
+			{
+				await ReplayOnHiddenInput(NativeInput("012345678", 9, "deleteContentBackward"));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("012345678", SUT.Text);
+				Assert.AreEqual(9, SUT.SelectionStart);
+				Assert.AreEqual("012345678|9", GetHiddenInputState());
+
+				SUT.Undo();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("0123456789", SUT.Text);
+				Assert.AreEqual("0123456789", GetHiddenInputState().Split('|')[0]);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_Browser_Input_Adds_To_Text_Longer_Than_MaxLength()
+		{
+			var SUT = await LoadFocusedForBrowserIme("0123456789", maxLength: 5);
+			try
+			{
+				await ReplayOnHiddenInput(NativeInput("0123456789x", 11, "insertText"));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("0123456789", SUT.Text);
+				Assert.AreEqual(10, SUT.SelectionStart);
+				Assert.AreEqual("0123456789|10", GetHiddenInputState());
+				Assert.IsFalse(SUT.CanUndo, "a refused edit leaves nothing to undo");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The refused edit's caret must not wait for the next text change, which would land there instead of at the start. The text
+		// changes right after the edit, because the selection the browser reports later would clear that caret too.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_Browser_Input_Edits_Read_Only_TextBox_Then_Text_From_Code_Starts_At_Zero()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one");
+			SUT.IsReadOnly = true;
+			try
+			{
+				var replay = ReplayOnHiddenInput(NativeInput("onex", 4, "insertText"));
+				SUT.Text = "other text";
+
+				Assert.AreEqual(0, SUT.SelectionStart);
+
+				await replay;
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A refused update changes no text, which still has to end the platform's text apply: the next change from code is an
+		// outside change that ends the composition.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_Browser_Ime_Update_Is_Refused_Then_Text_From_Code_Ends_Composition()
+		{
+			var SUT = await LoadFocusedForBrowserIme("", maxLength: 3);
+			var ended = 0;
+			SUT.TextCompositionEnded += (_, _) => ended++;
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hel", "hel", 3));
+				await ReplayOnHiddenInput(ImeCompose(0, 3, "hell", "hell", 4));
+				Assert.AreEqual("hel", SUT.Text);
+				Assert.AreEqual(0, ended);
+
+				SUT.Text = "XY";
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, ended);
+				Assert.AreEqual("XY", SUT.Text);
+				Assert.AreEqual("XY", GetHiddenInputState().Split('|')[0]);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		// Text the browser applied (a composition, here) is typing: undo takes it back, as it does a key the TextBox
 		// handles.
 		[TestMethod]

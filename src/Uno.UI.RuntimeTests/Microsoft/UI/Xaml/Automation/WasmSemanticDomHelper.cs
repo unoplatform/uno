@@ -136,6 +136,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); return e ? (e.getAttribute('type') || '') : ''; }})()");
 
 		/// <summary>
+		/// Whether the hidden browser input that a focused TextBox takes its text from is in the DOM.
+		/// </summary>
+		public static bool HiddenNativeTextBoxExists()
+			=> InvokeBrowserJs("(function(){return document.getElementById('uno-input') ? '1' : '0';})()") == "1";
+
+		/// <summary>
 		/// Invokes <c>Uno.Foundation.WebAssemblyRuntime.InvokeJS</c> via reflection. The runtime
 		/// assembly isn't a direct reference of the runtime-tests project, so the lookup is kept
 		/// here in one place — and intentionally fails fast (<c>Assert.IsNotNull</c>) so a
