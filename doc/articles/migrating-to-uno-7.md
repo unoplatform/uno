@@ -965,6 +965,25 @@ On Android, retargeted drawables now keep their file extension in their resource
   `foo`. Move images you load by URI into `Assets` so Uno packages them, or reference the native
   drawable directly (`Resource.Drawable.foo`).
 
+Dependency properties registered without a default value now follow WinUI:
+
+- **Custom value types default to `null`.** `DependencyProperty.Register` with no metadata, or
+  with a `null` `DefaultValue`, used to synthesize the zero value of any value type. It now does
+  what WinUI does: `int`, `long`, `float`, `double`, `bool`, `TimeSpan`, `DateTimeOffset`,
+  `Point`, `Size`, `Rect`, `Color`, `Thickness`, `CornerRadius` and the enums of WinUI's XAML
+  metadata (`Visibility`, `Orientation`, `FontStyle`, `VirtualKey`, ...) get their zero value,
+  `GridLength` gets `1*`, and every other value type (your own structs and enums, `DateTime`,
+  `Guid`, `decimal`, `Duration`, `Matrix`, `Vector2`, ...) gets `null`, so a
+  `(MyEnum)GetValue(...)` wrapper on such a property throws until a value is set. Pass the
+  default explicitly, for example `new PropertyMetadata(MyEnum.None)`. Code that already runs
+  on Windows is unaffected, since it needed the explicit default there. The WinUI documentation
+  says a value type gets "the default of the type", but the WinAppSDK runtime does that only for
+  the types above; the table was measured on it. `SetValue(null)` on such a property is now
+  stored rather than rejected with an `InvalidOperationException`, and `ClearValue`, or a
+  binding that produces `null`, leaves it `null` too. With Debug logging enabled for
+  `Microsoft.UI.Xaml.DependencyProperty`, every registration that gets a `null` default is
+  listed at startup.
+
 ### `SystemBackdrop` no longer rewrites your content's backgrounds
 
 Setting `Window.SystemBackdrop` used to walk the whole visual tree and replace the
