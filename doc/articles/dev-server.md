@@ -50,7 +50,15 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `--mcp-wait-tools-list`: Wait for the upstream Uno App tools to become available before responding to clients. Use this when working with MCP agents that do not react to `tools/list_changed` (for example, Codex or Claude Code).
 - `--force-roots-fallback`: Legacy explicit override. The DevServer auto-detects when the client does not advertise the MCP roots capability and exposes the `uno_app_initialize` tool automatically, so this flag is rarely needed.
 - `--force-generate-tool-cache`: Deprecated (no-op). Kept for backward compatibility.
-- `--solution-dir <path>`: Explicit solution directory Uno.DevServer should monitor. Useful when starting the DevServer manually (e.g., CI agents). Defaults to the current working directory when omitted.
+- `--solution-dir <path>`: Explicit workspace directory Uno.DevServer should monitor. Useful when starting the DevServer manually (e.g., CI agents), or for solution-less workspaces where no `.sln`/`.slnx` can be discovered. Defaults to the current working directory when omitted.
+- `--solution <path>`: In MCP mode (`--mcp-app`, `mcp serve`), the `.sln`/`.slnx` the DevServer serves, wherever it is on a local drive. It is selected explicitly, as with the `uno_app_select_solution` tool, stays selected across file changes and MCP roots, and takes precedence over `--solution-dir`. A relative path is resolved against the current working directory. An unusable value (missing, repeated, not a `.sln`/`.slnx`, not found, or on a network share) stops the command with exit code 2; a solution whose nearest `global.json` does not declare the Uno SDK stays selected, and the DevServer starts once it does (`uno_health` reports why it waits).
+
+### Solution-less workspaces
+
+A solution file is not required to use the Dev Server. When no `.sln` or `.slnx` file is present, the workspace is resolved from the `global.json` file that declares your `Uno.Sdk` version — run `uno-devserver start` from the project directory, or pass `--solution-dir <path>` to select it explicitly.
+
+> [!NOTE]
+> Solution-less workspaces are supported starting with **Uno.Sdk 6.6**. On earlier versions the Dev Server starts, but Uno Platform Studio add-ins are not loaded.
 
 For more information about Uno MCP registration, native-client alternatives, and supported MCP workflows, see [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
 
