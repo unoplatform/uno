@@ -115,6 +115,40 @@ public class Given_UISettings_Accent
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4444")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_OverrideAccentColor_Then_Loaded_Element_Updates()
+	{
+#if HAS_UNO
+		var previousOverride = Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor;
+		var customAccent = Color.FromArgb(0xFF, 0xE0, 0x12, 0x34);
+
+		try
+		{
+			var border = (Border)XamlReader.Load(
+				"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Width="10" Height="10">
+					<Border.Background>
+						<SolidColorBrush Color="{ThemeResource SystemAccentColor}" />
+					</Border.Background>
+				</Border>
+				""");
+			await UITestHelper.Load(border);
+
+			Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor = customAccent;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(customAccent, ((SolidColorBrush)border.Background).Color);
+		}
+		finally
+		{
+			Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor = previousOverride;
+			WindowHelper.WindowContent = null;
+		}
+#endif
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_OverridePalette_Then_OverrideAccentColor_Reports_It()
 	{
