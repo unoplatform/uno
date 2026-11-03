@@ -1355,6 +1355,11 @@ recompile against 7.0 rather than swapping assemblies in place.
   + ((IObservableVector<SwipeItem>)items).VectorChanged += OnItemsChanged;
   ```
 
+- **`Windows.Storage.ThumbnailMode` is removed.** WinRT has no such type, and it made
+  `ThumbnailMode` ambiguous (`CS0104`) in any file importing both `Windows.Storage` and
+  `Windows.Storage.FileProperties`. Use `Windows.Storage.FileProperties.ThumbnailMode`, as in
+  WinUI.
+
 ### Uno-only implicit conversions and static fields removed
 
 Uno exposed a few C# shortcuts that WinUI doesn't have. Code using them compiled on Uno heads but
