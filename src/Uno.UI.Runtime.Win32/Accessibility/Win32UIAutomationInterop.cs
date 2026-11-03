@@ -306,6 +306,7 @@ internal static class Win32UIAutomationInterop
 
 	// UIA error HRESULTs
 	internal const int UIA_E_ELEMENTNOTAVAILABLE = unchecked((int)0x80040201);
+	internal const int E_UNEXPECTED = unchecked((int)0x8000FFFF);
 
 	// Win32 helpers for coordinate conversion
 

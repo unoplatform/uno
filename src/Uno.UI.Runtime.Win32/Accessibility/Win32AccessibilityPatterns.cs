@@ -856,21 +856,29 @@ internal sealed class UiaItemContainerProviderWrapper : IUiaItemContainerProvide
 		_accessibility = accessibility;
 	}
 
+	// MUX Reference UIAPatternProviderWrapper.cpp, CUIAItemContainerProviderWrapper::FindItemByProperty
+	// The property id goes through CUIAWindow::ConvertIdToAPAutomationProperties and, for ControlType, the value
+	// through CUIAWindow::ConvertIdToAPAutomationControlType before the peer is called.
 	public IRawElementProviderSimple? FindItemByProperty(IRawElementProviderSimple? startAfter, int propertyId, object value)
 	{
-		// Resolve propertyId back to the managed AutomationProperty if possible.
-		var property = MapPropertyId(propertyId);
-		if (property is null)
-		{
-			return null;
-		}
-
 		// startAfter arrives as a COM provider — translate via its peer so the
 		// managed ItemContainer can compare item peers.
 		Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple? managedStartAfter = null;
 		if (startAfter is Win32RawElementProvider w32 && w32.RepresentedPeer is { } peer)
 		{
 			managedStartAfter = new Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple(peer);
+		}
+
+		var property = ConvertIdToAutomationProperty(propertyId);
+		if (property == AutomationElementIdentifiers.ControlTypeProperty)
+		{
+			if (value is not int controlTypeId)
+			{
+				// IFCEXPECT_RETURN(val.vt == VT_I4)
+				throw new COMException(null, Win32UIAutomationInterop.E_UNEXPECTED);
+			}
+
+			value = (int)Win32RawElementProvider.MapControlTypeId(controlTypeId);
 		}
 
 		var match = _inner.FindItemByProperty(managedStartAfter, property, value);
@@ -882,13 +890,19 @@ internal sealed class UiaItemContainerProviderWrapper : IUiaItemContainerProvide
 		return null;
 	}
 
-	private static AutomationProperty? MapPropertyId(int propertyId) => propertyId switch
+	// MUX Reference UIAWindow.cpp, CUIAWindow::ConvertIdToAPAutomationProperties, followed by
+	// AutomationPeer_Partial.cpp, AutomationPeer::GetAutomationPropertyFromUIAXcpEnum.
+	private static AutomationProperty? ConvertIdToAutomationProperty(int propertyId) => propertyId switch
 	{
-		Win32UIAutomationInterop.UIA_NamePropertyId => AutomationElementIdentifiers.NameProperty,
-		Win32UIAutomationInterop.UIA_AutomationIdPropertyId => AutomationElementIdentifiers.AutomationIdProperty,
 		Win32UIAutomationInterop.UIA_ControlTypePropertyId => AutomationElementIdentifiers.ControlTypeProperty,
+		Win32UIAutomationInterop.UIA_AutomationIdPropertyId => AutomationElementIdentifiers.AutomationIdProperty,
+		Win32UIAutomationInterop.UIA_NamePropertyId => AutomationElementIdentifiers.NameProperty,
 		Win32UIAutomationInterop.UIA_SelectionItemIsSelectedPropertyId => SelectionItemPatternIdentifiers.IsSelectedProperty,
-		_ => null,
+		// APEmptyProperty: no criterion, the next item matches.
+		0 => null,
+		// Other ids become (APAutomationProperties)0, which GetAutomationPropertyFromUIAXcpEnum rejects with
+		// UIA_E_INVALIDOPERATION, the HRESULT of InvalidOperationException.
+		_ => throw new InvalidOperationException("UIA_OPERATION_CANNOT_BE_PERFORMED"),
 	};
 }
 
