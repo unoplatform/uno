@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using Microsoft.UI.Input;
+using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -222,6 +223,15 @@ internal sealed partial class TextBoxCore
 	/// Set when the <see cref="Text"/> property is being cleared via delete button.
 	/// </summary>
 	private bool _isInputClearingText;
+	/// <summary>
+	/// Set when a BeforeTextChanging handler cancels the edit that <see cref="ProcessTextInput(string, out bool, bool)"/> applies.
+	/// </summary>
+	private bool _wasInputCancelled;
+	/// <summary>
+	/// Set while <see cref="Text"/> takes the value of <see cref="ProcessTextInput(string, out bool, bool)"/>, until that value's
+	/// coercion runs, so a value set from code by a handler during the edit can't mark the edit as cancelled.
+	/// </summary>
+	private bool _isCoercingInput;
 	/// <summary>
 	/// Indicates how many TextChanged events are pending. This is needed for AutoSuggestBox, which needs to
 	/// respond only to the last TextChange event, not all of them.
@@ -780,28 +790,12 @@ internal sealed partial class TextBoxCore
 			return ""; //Pushing null to the binding resets the text. (Setting null to the Text property directly throws an exception.)
 		}
 
-		if (MaxLength > 0 && baseString.Length > MaxLength)
-		{
-			// Reject the new string if it's longer than the MaxLength
-#if __SKIA__
-			_pendingSelection = null;
-#endif
-			return DependencyProperty.UnsetValue;
-		}
+		var isCoercingInput = _isCoercingInput;
+		_isCoercingInput = false;
 
-		if (!AcceptsReturn)
-		{
-			baseString = GetFirstLine(baseString);
-		}
+		// The pending selection uses indices from before the \n of each \r\n is removed, so it moves with the removal.
+		baseString = NormalizeLineBreaks(baseString, adjustPendingSelection: true);
 #if __SKIA__
-		else
-		{
-			// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
-			// the _pendingSelection uses indices before this removal.
-			// On UIKit targets we use invisible overlay and replacing newlines would break the sync between
-			// the native input and the managed representation.
-			baseString = RemoveLF(baseString);
-		}
 
 		// make sure this coercion doesn't cause the pending selection to be out of range
 		if (_pendingSelection is { } selection2)
@@ -814,6 +808,11 @@ internal sealed partial class TextBoxCore
 
 		if (_host.RaiseBeforeValueChanging(baseString))
 		{
+			if (isCoercingInput)
+			{
+				_wasInputCancelled = true;
+			}
+
 #if __SKIA__
 			// On WinUI, when a selection is canceled, the TextBox invokes a bunch of weird
 			// SelectionChanging events followed by a bunch of matching SelectionChanged.
@@ -964,16 +963,43 @@ internal sealed partial class TextBoxCore
 	/// Respond to text input from user interaction.
 	/// </summary>
 	/// <param name="newText">The most recent version of the text from the input field.</param>
+	/// <param name="limitToMaxLength">Whether <see cref="MaxLength"/> applies; undo and redo put back text the control already held.</param>
 	/// <returns>The value of the <see cref="Text"/> property, which may have been modified programmatically.</returns>
-	internal string ProcessTextInput(string newText)
+	internal string ProcessTextInput(string newText, bool limitToMaxLength = true)
+		=> ProcessTextInput(newText, out _, limitToMaxLength);
+
+	/// <inheritdoc cref="ProcessTextInput(string, bool)"/>
+	/// <param name="applied">Whether the edit went in: false when MaxLength or a BeforeTextChanging handler refused it.</param>
+	internal string ProcessTextInput(string newText, out bool applied, bool limitToMaxLength = true)
 	{
+		if (limitToMaxLength && IsRefusedByMaxLength(newText))
+		{
+#if __SKIA__
+			_pendingSelection = null;
+#endif
+			// No text change follows, which is what would otherwise end the platform's text apply.
+			if (!_isInputModifyingText)
+			{
+				_platformTextApplyInProgress = false;
+			}
+
+			applied = false;
+			return Text;
+		}
+
 		var isCurrentlyModifying = _isInputModifyingText;
+		var wasInputCancelled = _wasInputCancelled;
+		var wasCoercingInput = _isCoercingInput;
 
 		try
 		{
 			_isInputModifyingText = true;
+			_wasInputCancelled = false;
+			_isCoercingInput = true;
 			var oldText = Text;
 			Text = newText;
+			_isCoercingInput = false;
+			applied = !_wasInputCancelled;
 
 #if __SKIA__
 			if (_pendingSelection is { } selection && Text == oldText)
@@ -988,6 +1014,8 @@ internal sealed partial class TextBoxCore
 		}
 		finally
 		{
+			_isCoercingInput = wasCoercingInput;
+			_wasInputCancelled = wasInputCancelled;
 			if (!isCurrentlyModifying)
 			{
 				// The all to ProcessTextInput may be recursing, we only want to restore
@@ -998,6 +1026,89 @@ internal sealed partial class TextBoxCore
 		}
 
 		return Text; //This may have been modified by BeforeTextChanging, TextChanging, DP callback, etc
+	}
+
+	/// <summary>
+	/// MaxLength limits user input only. It refuses an edit that would leave the text longer than MaxLength unless the edit
+	/// only deletes, so while the text is over the limit, a replacement of the same length or shorter is refused too. Text
+	/// that doesn't change, such as a caret move, is let through.
+	/// </summary>
+	private bool IsRefusedByMaxLength(string newText)
+	{
+		// Normalizing line breaks never lengthens the text, so text within MaxLength needs no closer look.
+		if (MaxLength <= 0 || newText.Length <= MaxLength)
+		{
+			return false;
+		}
+
+		// Compare the text as the coercion will store it, so a native view's line breaks don't hide a deletion.
+		var text = Text;
+		var normalizedText = NormalizeLineBreaks(newText);
+		return normalizedText.Length > MaxLength
+			&& normalizedText != text
+			&& !IsDeletionOnly(text, normalizedText);
+	}
+
+	/// <summary>
+	/// Returns <paramref name="text"/> with its line breaks as the TextBox stores them, as on WinUI: only the first line in a
+	/// single-line TextBox, and \r for every line break in a multi-line one. The coercion and the MaxLength check both use it.
+	/// </summary>
+	/// <param name="adjustPendingSelection">Whether the pending selection, which counts each \r\n as two characters, follows the change.</param>
+	private string NormalizeLineBreaks(string text, bool adjustPendingSelection = false)
+		=> AcceptsReturn ? RemoveLF(text, adjustPendingSelection) : GetFirstLine(text);
+
+	/// <summary>
+	/// Whether <paramref name="newText"/> is <paramref name="oldText"/> with one contiguous range deleted.
+	/// </summary>
+	private static bool IsDeletionOnly(string oldText, string newText)
+	{
+		if (newText.Length >= oldText.Length)
+		{
+			return false;
+		}
+
+		var prefixLength = oldText.AsSpan().CommonPrefixLength(newText);
+		return oldText.AsSpan(prefixLength).EndsWith(newText.AsSpan(prefixLength));
+	}
+
+	/// <summary>
+	/// Fills the text from an autofill service. Like Android's own text fields, it cuts the value to MaxLength, and the value
+	/// goes in as user input.
+	/// </summary>
+	internal void ApplyAutofill(string value)
+	{
+		if (IsReadOnly || !Owner.IsEnabled)
+		{
+			return;
+		}
+
+		if (MaxLength > 0)
+		{
+			value = TextUnitNavigation.TruncateToUtf16Limit(value, MaxLength);
+		}
+
+		SetPendingSelection(value.Length, 0);
+		ProcessTextInput(value);
+	}
+
+	/// <summary>
+	/// Applies an edit made in an accessibility element, such as the browser's semantic text box or a macOS selected-text
+	/// replacement, as user input, so MaxLength applies. It mirrors RichEditBox.ApplyAccessibilityTextInput.
+	/// </summary>
+	/// <returns>Whether the edit was applied. When it wasn't, the host shows its element the TextBox's text again.</returns>
+	internal bool ApplyAccessibilityTextInput(string? value, int selectionStart, int selectionEnd)
+	{
+		if (IsReadOnly || !Owner.IsEnabled)
+		{
+			return false;
+		}
+
+		var text = value ?? string.Empty;
+		var start = Math.Clamp(selectionStart, 0, text.Length);
+		var end = Math.Clamp(selectionEnd, start, text.Length);
+		SetPendingSelection(start, end - start);
+		ProcessTextInput(text, out var applied);
+		return applied;
 	}
 
 	private void DeleteButtonClick()

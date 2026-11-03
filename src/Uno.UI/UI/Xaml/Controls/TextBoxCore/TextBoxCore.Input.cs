@@ -130,8 +130,17 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		{
 			// Pending so the text change itself lands the caret here instead of passing through 0.
 			SetPendingSelection(selectionStart, selectionLength);
-			TextBoxView.UpdateTextFromNative(text);
-			SelectInternal(selectionStart, selectionLength);
+
+			// The native caret belongs to the native text, so a refused edit keeps the TextBox's own selection.
+			if (TextBoxView.UpdateTextFromNative(text))
+			{
+				SelectInternal(selectionStart, selectionLength);
+			}
+			else
+			{
+				// The next text change mustn't land on the refused edit's caret.
+				_pendingSelection = null;
+			}
 		}
 		finally
 		{
@@ -141,10 +150,11 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	// The platform's input field already applied this edit. It is typing, undoable like a key the TextBox handles, and a
 	// read-only TextBox refuses it (TextBoxView then puts its text back in the field).
-	string ITextBoxViewHost.ProcessTextInput(string newText, int selectionStart, int selectionLength)
+	string ITextBoxViewHost.ProcessTextInput(string newText, int selectionStart, int selectionLength, out bool applied)
 	{
 		if (IsReadOnly)
 		{
+			applied = false;
 			return Text;
 		}
 
@@ -154,7 +164,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		_clearHistoryOnTextChanged = false;
 		try
 		{
-			var text = ProcessTextInput(newText);
+			var text = ProcessTextInput(newText, out applied);
 			if (startsTypingRun && text == textBefore)
 			{
 				// A refused edit (MaxLength, BeforeTextChanging) isn't typing: its run would record an undo step that
@@ -1583,10 +1593,14 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 	}
 
-	private string RemoveLF(string baseString)
+	private string RemoveLF(string baseString, bool adjustPendingSelection)
 	{
+		if (!baseString.Contains('\n'))
+		{
+			return baseString;
+		}
 
-		var builder = new StringBuilder();
+		var builder = new StringBuilder(baseString.Length);
 		for (int i = 0; i < baseString.Length; i++)
 		{
 			var c = baseString[i];
@@ -1596,7 +1610,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 			}
 			else if (c == '\r' && i + 1 < baseString.Length && baseString[i + 1] == '\n')
 			{
-				if (_pendingSelection is { } selection)
+				if (adjustPendingSelection && _pendingSelection is { } selection)
 				{
 					var (start, end) = (selection.start, selection.start + selection.length);
 					if (start > i)
@@ -1699,11 +1713,11 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 				_pendingSelection = currentAction.SelectionEndsAtTheStart ?
 					(currentAction.SelectionStart + currentAction.SelectionLength, -currentAction.SelectionLength) :
 					(currentAction.SelectionStart, currentAction.SelectionLength);
-				ProcessTextInput(r.OldText);
+				ProcessTextInput(r.OldText, limitToMaxLength: false);
 				break;
 			case DeleteAction d:
 				_pendingSelection = (d.UndoSelectionStart, d.UndoSelectionLength);
-				ProcessTextInput(d.OldText);
+				ProcessTextInput(d.OldText, limitToMaxLength: false);
 				break;
 			case SentinelAction:
 				break;
@@ -1731,11 +1745,11 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		{
 			case ReplaceAction r:
 				_pendingSelection = (r.caretIndexAfterReplacement, 0); // we always have an empty selection here.
-				ProcessTextInput(r.NewText);
+				ProcessTextInput(r.NewText, limitToMaxLength: false);
 				break;
 			case DeleteAction d:
 				_pendingSelection = (Math.Min(d.UndoSelectionStart, d.UndoSelectionStart + d.UndoSelectionLength), 0);
-				ProcessTextInput(d.NewText);
+				ProcessTextInput(d.NewText, limitToMaxLength: false);
 				break;
 			case SentinelAction:
 				break;

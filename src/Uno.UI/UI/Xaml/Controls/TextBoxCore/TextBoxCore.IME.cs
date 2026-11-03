@@ -68,8 +68,13 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 	{
 		// Pending so the text change itself lands the caret here instead of passing through 0.
 		SetPendingSelection(selectionStart, selectionLength);
-		ProcessTextInput(text);
-		Select(selectionStart, selectionLength);
+		ProcessTextInput(text, out var applied);
+
+		// The native caret belongs to the native text, so a refused edit keeps the TextBox's own selection.
+		if (applied)
+		{
+			Select(selectionStart, selectionLength);
+		}
 	}
 
 	void IImeSessionHost.SelectFromNative(int selectionStart, int selectionLength)
