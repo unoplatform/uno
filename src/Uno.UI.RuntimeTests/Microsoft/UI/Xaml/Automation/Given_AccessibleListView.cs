@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI;
@@ -271,6 +272,96 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			Assert.IsTrue(selected.IsSelected, "The selected item's peer must report IsSelected.");
 			Assert.IsFalse(unselected.IsSelected, "An unselected item's peer must not report IsSelected.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24628")]
+		[DataRow("ListView")]
+		[DataRow("GridView")]
+		[DataRow("ListBox")]
+		[DataRow("ComboBox")]
+		public async Task When_Item_Peer_Select_Then_Selector_Selects_Item(string selectorKind)
+		{
+			Selector selector = selectorKind switch
+			{
+				"ListView" => new ListView(),
+				"GridView" => new GridView(),
+				"ListBox" => new ListBox(),
+				_ => new ComboBox(),
+			};
+			selector.ItemsSource = new List<string> { "Alpha", "Beta", "Gamma" };
+
+			try
+			{
+				await UITestHelper.Load(selector, x => x.IsLoaded);
+
+				var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(selector);
+				var beta = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Beta").GetPattern(PatternInterface.SelectionItem);
+				var gamma = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Gamma").GetPattern(PatternInterface.SelectionItem);
+				Assert.IsNotNull(beta, "The item peer must advertise the SelectionItem pattern.");
+				Assert.IsFalse(beta.IsSelected);
+				Assert.IsNotNull(beta.SelectionContainer, "The selection container must be the owning selector.");
+
+				beta.Select();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, selector.SelectedIndex, "Select() on the item peer must select that item.");
+				Assert.IsTrue(beta.IsSelected);
+				Assert.IsFalse(gamma.IsSelected);
+
+				gamma.Select();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(2, selector.SelectedIndex, "Select() must replace the single selection.");
+				Assert.IsFalse(beta.IsSelected);
+				Assert.IsTrue(gamma.IsSelected);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24628")]
+		public async Task When_Item_Peer_AddToSelection_And_RemoveFromSelection_Then_Multiple_Selection_Changes()
+		{
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { "Alpha", "Beta", "Gamma" },
+				SelectionMode = ListViewSelectionMode.Multiple,
+			};
+
+			try
+			{
+				await UITestHelper.Load(listView);
+
+				var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+				var alpha = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Alpha").GetPattern(PatternInterface.SelectionItem);
+				var gamma = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Gamma").GetPattern(PatternInterface.SelectionItem);
+
+				alpha.AddToSelection();
+				gamma.AddToSelection();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.HasCount(2, listView.SelectedItems);
+				Assert.IsTrue(alpha.IsSelected);
+				Assert.IsTrue(gamma.IsSelected);
+
+				alpha.RemoveFromSelection();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.HasCount(1, listView.SelectedItems);
+				Assert.AreEqual("Gamma", listView.SelectedItems[0]);
+				Assert.IsFalse(alpha.IsSelected);
+				Assert.IsTrue(gamma.IsSelected);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
