@@ -97,20 +97,14 @@ namespace Uno.UI
 
 		public static class AccentColor
 		{
-			private static Windows.UI.Color? _overrideAccentColor;
-
 			/// <summary>
 			/// Override the system accent color. Shade variants are derived using the Windows algorithm.
 			/// Set to null to revert to the OS accent color (or default blue if unavailable).
 			/// </summary>
 			public static Windows.UI.Color? OverrideAccentColor
 			{
-				get => _overrideAccentColor;
-				set
-				{
-					_overrideAccentColor = value;
-					Uno.Helpers.Theming.AccentColorHelper.SetOverrideAccentColor(value);
-				}
+				get => Uno.Helpers.Theming.AccentColorHelper.OverrideAccentColor;
+				set => Uno.Helpers.Theming.AccentColorHelper.SetOverrideAccentColor(value);
 			}
 
 			/// <summary>

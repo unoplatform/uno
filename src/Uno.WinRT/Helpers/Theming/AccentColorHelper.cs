@@ -37,6 +37,11 @@ internal static partial class AccentColorHelper
 	}
 
 	/// <summary>
+	/// Gets the accent of the active override (color or exact palette), or null when the platform accent is used.
+	/// </summary>
+	internal static Color? OverrideAccentColor => _overrideAccentColor ?? _overridePalette?.Accent;
+
+	/// <summary>
 	/// Gets whether palettes derived from a single accent color adjust the accent itself like Windows does.
 	/// </summary>
 	internal static bool NormalizeAccentColor { get; private set; }
