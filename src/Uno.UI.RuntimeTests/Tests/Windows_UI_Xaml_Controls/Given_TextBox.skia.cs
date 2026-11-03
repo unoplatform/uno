@@ -118,6 +118,587 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// Gboard commits a word, then commits the space as a separate edit. Chromium sends no input event after
+		// compositionend, so the space is its own input event and must not be mistaken for the commit's echo.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Commits_Words_And_Spaces_Separately()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hello", "hello", 5));
+				await ReplayOnHiddenInput(ImeEnd("hello"));
+				await ReplayOnHiddenInput(NativeInput("hello ", 6, "insertText"));
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(6, 6, "world", "hello world", 11));
+				await ReplayOnHiddenInput(ImeEnd("world"));
+				await ReplayOnHiddenInput(NativeInput("hello world ", 12, "insertText"));
+
+				Assert.AreEqual("hello world ", SUT.Text);
+				Assert.AreEqual(12, SUT.SelectionStart);
+				Assert.AreEqual("hello world |12", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// After a backspace, Gboard marks the word before the caret as composing without changing it, then
+		// replaces it as the user types. Only the replacement is composition text.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Recomposes_Existing_Word()
+		{
+			var SUT = await LoadFocusedForBrowserIme("hello world ");
+			var started = 0;
+			TextCompositionChangedEventArgs changed = null;
+			SUT.TextCompositionStarted += (_, _) => started++;
+			SUT.TextCompositionChanged += (_, e) => changed = e;
+			try
+			{
+				await ReplayOnHiddenInput(NativeInput("hello world", 11, "deleteContentBackward"));
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput("t.dispatchEvent(new CompositionEvent('compositionupdate',{data:'world'}));");
+
+				Assert.AreEqual("hello world", SUT.Text, "marking a word as composing must not insert it again");
+				Assert.AreEqual(0, started, "a composition that changes no text is not reported");
+
+				await ReplayOnHiddenInput(ImeCompose(6, 11, "worlds", "hello worlds", 12));
+
+				Assert.AreEqual("hello worlds", SUT.Text);
+				Assert.AreEqual(12, SUT.SelectionStart);
+				Assert.AreEqual(1, started);
+				Assert.AreEqual(6, changed?.StartIndex, "the composition is the re-composed word");
+				Assert.AreEqual(6, changed?.Length);
+
+				await ReplayOnHiddenInput(ImeEnd("worlds"));
+				await ReplayOnHiddenInput(NativeInput("hello worlds ", 13, "insertText"));
+
+				Assert.AreEqual("hello worlds ", SUT.Text);
+				Assert.AreEqual(13, SUT.SelectionStart);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Gboard marks the word at the caret as composing after every caret move, so a tap elsewhere happens
+		// with that composition open and must still move the browser's caret.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Marks_Word_Then_Caret_Moves()
+		{
+			var SUT = await LoadFocusedForBrowserIme("hello world");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput("t.dispatchEvent(new CompositionEvent('compositionupdate',{data:'world'}));");
+
+				SUT.Select(2, 0);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("hello world|2", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The browser owns the input's value while a composition edits it; a TextBox text that differs from it
+		// must still reach the input once the composition ends.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composes_And_TextBox_Changes_Text()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hel", "hel", 3));
+				Assert.AreEqual("hel", SUT.Text);
+
+				SUT.Text = "XY";
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("XY", SUT.Text);
+				Assert.AreEqual("XY", GetHiddenInputState().Split('|')[0]);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composes_Past_MaxLength()
+		{
+			var SUT = await LoadFocusedForBrowserIme("", maxLength: 3);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hel", "hel", 3));
+				await ReplayOnHiddenInput(ImeCompose(0, 3, "hell", "hell", 4));
+				Assert.AreEqual("hel", SUT.Text, "MaxLength rejects the longer text");
+
+				await ReplayOnHiddenInput(ImeEnd("hell"));
+
+				Assert.AreEqual("hel", SUT.Text);
+				Assert.AreEqual("hel", GetHiddenInputState().Split('|')[0]);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composes_With_TextChanging_Filter()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			var ended = 0;
+			SUT.TextCompositionEnded += (_, _) => ended++;
+			SUT.TextChanging += (sender, _) => sender.Text = sender.Text.ToUpperInvariant();
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "he", "he", 2));
+				await ReplayOnHiddenInput(ImeCompose(0, 2, "hel", "hel", 3));
+
+				Assert.AreEqual("HEL", SUT.Text);
+				Assert.AreEqual(0, ended, "the filter's edit must not end the composition");
+				Assert.AreEqual("hel|3", GetHiddenInputState(), "the browser owns the input while composing");
+
+				await ReplayOnHiddenInput(ImeEnd("hel"));
+
+				Assert.AreEqual("HEL", SUT.Text);
+				Assert.AreEqual(1, ended);
+				Assert.AreEqual("HEL", GetHiddenInputState().Split('|')[0]);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The commit changes the composed text, as a conversion does. Chromium dispatches the commit's input event
+		// before compositionend, Firefox after it; either way, the composition ends with the committed text. A
+		// multi-line TextBox uses \r where its textarea holds \n, which must not count as a TextBox edit to restore.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(false, false)]
+		[DataRow(false, true)]
+		[DataRow(true, false)]
+		[DataRow(true, true)]
+		public async Task When_Browser_Ime_Commit_Changes_Composed_Text(bool multiline, bool inputAfterCompositionEnd)
+		{
+			var SUT = await LoadFocusedForBrowserIme("", acceptsReturn: multiline);
+			string textAtCompositionEnded = null;
+			SUT.TextCompositionEnded += (_, _) => textAtCompositionEnded = SUT.Text;
+			try
+			{
+				var prefix = "";
+				if (multiline)
+				{
+					prefix = "a\\nb ";
+					await ReplayOnHiddenInput(NativeInput(prefix, 4, "insertText"));
+					Assert.AreEqual("a\rb ", SUT.Text);
+				}
+				var start = SUT.Text.Length;
+
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(start, start, "kan", prefix + "kan", start + 3));
+				await ReplayOnHiddenInput(ImeCompose(start, start + 3, "kanji", prefix + "kanji", start + 5));
+				if (inputAfterCompositionEnd)
+				{
+					await ReplayOnHiddenInput(
+						$"t.setSelectionRange({start},{start + 5});t.dispatchEvent(new CompositionEvent('compositionupdate',{{data:'KANJI'}}));"
+						+ $"t.value='{prefix}KANJI';t.setSelectionRange({start + 5},{start + 5});"
+						+ ImeEnd("KANJI")
+						+ "t.dispatchEvent(new InputEvent('input',{inputType:'insertFromComposition',data:'KANJI'}));");
+				}
+				else
+				{
+					await ReplayOnHiddenInput(ImeCompose(start, start + 5, "KANJI", prefix + "KANJI", start + 5));
+					await ReplayOnHiddenInput(ImeEnd("KANJI"));
+				}
+
+				Assert.AreEqual(SUT.Text[..start] + "KANJI", SUT.Text);
+				Assert.AreEqual(SUT.Text, textAtCompositionEnded);
+				Assert.AreEqual(start + 5, SUT.SelectionStart);
+				Assert.AreEqual($"{(multiline ? "a\nb " : "")}KANJI|{start + 5}", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Samsung Keyboard sends Backspace as a key without a physical code. The browser applies it, as it applies the
+		// keyboard's other edits, and the TextBox follows the input: an edit made by the TextBox would leave the
+		// keyboard's own copy of the text stale, and its next suggestion would replace the wrong range.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Soft_Keyboard_Backspace_Has_No_Code()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one two");
+			try
+			{
+				SUT.Select(4, 0);
+				await UITestHelper.WaitFor(() => GetHiddenInputState() == "one two|4", timeoutMS: 3000, message: "the caret should reach the hidden input");
+
+				var keyDown = InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');const e=new KeyboardEvent('keydown',{key:'Backspace',code:'',keyCode:8,bubbles:true,cancelable:true});t.dispatchEvent(e);t.dispatchEvent(new KeyboardEvent('keyup',{key:'Backspace',code:'',keyCode:8,bubbles:true,cancelable:true}));return e.defaultPrevented ? 'prevented' : 'allowed';})()");
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("allowed", keyDown, "the browser must apply the key");
+				Assert.AreEqual("one two", SUT.Text, "the TextBox must not apply the key too");
+
+				await ReplayOnHiddenInput(NativeInput("onetwo", 3, "deleteContentBackward"));
+
+				Assert.AreEqual("onetwo", SUT.Text);
+				Assert.AreEqual(3, SUT.SelectionStart);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Emptying the text assigns the hidden input an empty value. Chrome on Android fires no selectionchange for it
+		// (desktop Chrome may, hence the detached handler), so the input's own caret restore stays pending. A
+		// composition the keyboard starts next must keep its caret.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composes_After_TextBox_Cleared()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one two");
+			try
+			{
+				DetachSelectionChangeHandler();
+				SUT.Text = "";
+				await WindowHelper.WaitForIdle();
+				ReattachSelectionChangeHandler();
+				Assert.AreEqual("|0", GetHiddenInputState());
+
+				await ReplayOnHiddenInput(ImeStart() + ImeCompose(0, 0, "T", "T", 1) + "document.onselectionchange();");
+
+				Assert.AreEqual("T|1", GetHiddenInputState());
+				Assert.AreEqual(1, SUT.SelectionStart);
+			}
+			finally
+			{
+				ReattachSelectionChangeHandler();
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A multi-line TextBox's textarea breaks lines with \n where the TextBox uses \r. An input that leaves the text as
+		// it was (Samsung Keyboard re-sends its composition before committing it) must not count as the TextBox reverting
+		// it, which would restore a caret the browser host doesn't track.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Browser_Multiline_Input_Repeats_Text(bool composes)
+		{
+			var SUT = await LoadFocusedForBrowserIme("", acceptsReturn: true);
+			try
+			{
+				await ReplayOnHiddenInput(NativeInput("one\\ntwo", 7, "insertText"));
+				Assert.AreEqual("one\rtwo", SUT.Text);
+
+				if (composes)
+				{
+					await ReplayOnHiddenInput(ImeStart());
+					await ReplayOnHiddenInput(ImeCompose(7, 7, "s", "one\\ntwos", 8));
+					await ReplayOnHiddenInput(ImeCompose(7, 8, "s", "one\\ntwos", 8));
+					await ReplayOnHiddenInput(ImeEnd("s"));
+				}
+				else
+				{
+					await ReplayOnHiddenInput(NativeInput("one\\ntwo", 7, "insertText"));
+				}
+				await WindowHelper.WaitForIdle();
+
+				var caret = composes ? 8 : 7;
+				Assert.AreEqual(composes ? "one\rtwos" : "one\rtwo", SUT.Text);
+				Assert.AreEqual(caret, SUT.SelectionStart);
+				Assert.AreEqual($"{SUT.Text.Replace('\r', '\n')}|{caret}", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Android keyboards send Enter as an unidentified keydown, then an Enter keyup without a physical code. The
+		// TextBox gets a single KeyDown and KeyUp for it: focus-next behaviors act on the KeyUp.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Soft_Keyboard_Enter_Raises_One_KeyUp()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one");
+			var (keyDowns, keyUps) = (0, 0);
+			SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, e) => keyDowns += e.Key == VirtualKey.Enter ? 1 : 0), handledEventsToo: true);
+			SUT.AddHandler(UIElement.KeyUpEvent, new KeyEventHandler((_, e) => keyUps += e.Key == VirtualKey.Enter ? 1 : 0), handledEventsToo: true);
+			try
+			{
+				await ReplayOnHiddenInput(
+					"t.dispatchEvent(new KeyboardEvent('keydown',{key:'Unidentified',code:'',keyCode:229,bubbles:true,cancelable:true}));"
+					+ "t.dispatchEvent(new KeyboardEvent('keyup',{key:'Enter',code:'',keyCode:13,bubbles:true,cancelable:true}));");
+
+				Assert.AreEqual(1, keyDowns);
+				Assert.AreEqual(1, keyUps);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The TextBox refuses the input's edit (MaxLength, or a BeforeTextChanging handler cancelling it), so the caret
+		// goes back to where the edit started, not to the start of the text.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Browser_Input_Edit_Is_Refused(bool cancelled)
+		{
+			var SUT = await LoadFocusedForBrowserIme("12", maxLength: cancelled ? 0 : 2);
+			if (cancelled)
+			{
+				SUT.BeforeTextChanging += (_, e) => e.Cancel = !e.NewText.All(char.IsDigit);
+			}
+			try
+			{
+				SUT.Select(1, 0);
+				await UITestHelper.WaitFor(() => GetHiddenInputState() == "12|1", timeoutMS: 3000, message: "the caret should reach the hidden input");
+
+				await ReplayOnHiddenInput(NativeInput(cancelled ? "1a2" : "132", 2, "insertText"));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("12", SUT.Text);
+				Assert.AreEqual(1, SUT.SelectionStart);
+				Assert.AreEqual("12|1", GetHiddenInputState());
+				Assert.IsFalse(SUT.CanUndo, "a refused edit leaves nothing to undo");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The text change of an input the browser applied lands the caret where the input left it. Passing through the
+		// start of the text first would raise SelectionChanged there and push that caret back to the input.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Input_Moves_Caret_Directly()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one");
+			var carets = new List<int>();
+			SUT.SelectionChanged += (_, _) => carets.Add(SUT.SelectionStart);
+			try
+			{
+				await ReplayOnHiddenInput(NativeInput("onex", 4, "insertText"));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("onex", SUT.Text);
+				Assert.AreEqual("4", string.Join(",", carets));
+				Assert.AreEqual("onex|4", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The hidden input stays editable under a read-only TextBox (it carries the caret and the keyboard): the
+		// TextBox refuses what the keyboard types there.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Input_Edits_Read_Only_TextBox()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one");
+			SUT.IsReadOnly = true;
+			try
+			{
+				await ReplayOnHiddenInput(NativeInput("onex", 4, "insertText"));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("one", SUT.Text);
+				Assert.AreEqual("one|3", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Text the browser applied (a composition, here) is typing: undo takes it back, as it does a key the TextBox
+		// handles.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composition_Is_Undone()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one ");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(4, 4, "tw", "one tw", 6));
+				await ReplayOnHiddenInput(ImeCompose(4, 6, "two", "one two", 7));
+				await ReplayOnHiddenInput(ImeEnd("two"));
+				Assert.AreEqual("one two", SUT.Text);
+
+				SUT.Undo();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("one ", SUT.Text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Only a plain deletion is left to the browser: Shift+Delete is a cut in Chromium, which the TextBox handles.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Soft_Keyboard_Modified_Delete_Has_No_Code()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one");
+			try
+			{
+				var keyDown = InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');const e=new KeyboardEvent('keydown',{key:'Delete',code:'',keyCode:46,shiftKey:true,bubbles:true,cancelable:true});t.dispatchEvent(e);t.dispatchEvent(new KeyboardEvent('keyup',{key:'Delete',code:'',keyCode:46,shiftKey:true,bubbles:true,cancelable:true}));return e.defaultPrevented ? 'prevented' : 'allowed';})()");
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("prevented", keyDown, "the TextBox handles a modified deletion");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// An app's SelectionChanged handler throws while the input reports a caret move. The input must still follow the
+		// TextBox's later caret moves.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Selection_Handler_Throws()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one two");
+			var throws = true;
+			SUT.SelectionChanged += (_, _) =>
+			{
+				if (throws)
+				{
+					throws = false;
+					throw new InvalidOperationException("an app handler failing");
+				}
+			};
+			try
+			{
+				// The browser's own selectionchange would run the handler again, without throwing, before the TextBox
+				// moves the caret: the handler runs once, here.
+				DetachSelectionChangeHandler();
+				await ReplayOnHiddenInput("t.setSelectionRange(2,2);");
+				ReattachSelectionChangeHandler();
+				await ReplayOnHiddenInput("try{document.onselectionchange();}catch(e){}");
+				Assert.IsFalse(throws, "the handler should have run");
+
+				SUT.Select(5, 0);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("one two|5", GetHiddenInputState());
+			}
+			finally
+			{
+				ReattachSelectionChangeHandler();
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Keeps the browser's own selectionchange events away from the input's handler, so a test can run it itself.
+		private static void DetachSelectionChangeHandler()
+			=> InvokeBrowserJs("(function(){window.__unoSelectionChange=document.onselectionchange;document.onselectionchange=null;return 'ok';})()");
+
+		private static void ReattachSelectionChangeHandler()
+			=> InvokeBrowserJs("(function(){if(window.__unoSelectionChange){document.onselectionchange=window.__unoSelectionChange;delete window.__unoSelectionChange;}return 'ok';})()");
+
+		private static async Task<TextBox> LoadFocusedForBrowserIme(string text, int maxLength = 0, bool acceptsReturn = false)
+		{
+			// Accessibility types through per-element semantic inputs instead of the shared one under test.
+			DisableAccessibility();
+
+			var SUT = new TextBox { Width = 300, Text = text, MaxLength = maxLength, AcceptsReturn = acceptsReturn };
+			await UITestHelper.Load(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			SUT.Select(text.Length, 0);
+			await UITestHelper.WaitFor(() => GetHiddenInputState() == $"{text}|{text.Length}", timeoutMS: 3000, message: $"hidden input should mirror the TextBox, it is '{GetHiddenInputState()}'");
+			return SUT;
+		}
+
+		// The steps replay the order Chromium dispatches IME events in: compositionupdate while the range it
+		// replaces is selected, then the edit and its input event. No input event follows compositionend.
+		private static async Task ReplayOnHiddenInput(string step)
+		{
+			Assert.AreEqual("ok", InvokeBrowserJs($"(function(){{const t=document.getElementById('uno-input');if(!t){{return 'missing';}}{step}return 'ok';}})()"));
+			await WindowHelper.WaitForIdle();
+		}
+
+		private static string ImeStart() => "t.dispatchEvent(new CompositionEvent('compositionstart'));";
+
+		private static string ImeCompose(int replacedStart, int replacedEnd, string data, string value, int caret)
+			=> $"t.setSelectionRange({replacedStart},{replacedEnd});t.dispatchEvent(new CompositionEvent('compositionupdate',{{data:'{data}'}}));"
+				+ $"t.value='{value}';t.setSelectionRange({caret},{caret});t.dispatchEvent(new InputEvent('input',{{isComposing:true,inputType:'insertCompositionText',data:'{data}'}}));";
+
+		private static string ImeEnd(string data) => $"t.dispatchEvent(new CompositionEvent('compositionend',{{data:'{data}'}}));";
+
+		private static string NativeInput(string value, int caret, string inputType)
+			=> $"t.value='{value}';t.setSelectionRange({caret},{caret});t.dispatchEvent(new InputEvent('input',{{inputType:'{inputType}'}}));";
+
+		private static string GetHiddenInputState()
+			=> InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');return t ? `${t.value}|${t.selectionStart}` : 'missing';})()");
+
 		// "tracking": the input sits over the TextBox's inner text block, so it is within the TextBox bounds
 		// (inflated by a pixel to absorb device-pixel rounding between the XAML and DOM rects). "offscreen":
 		// entirely above the viewport, whatever the TextBox does, so there is no rect for the browser to
@@ -9955,6 +10536,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				=> InvokeBrowserJs("(function(){const c=window.__unoHiddenInputFocusCalls;HTMLElement.prototype.focus=c.focus;delete window.__unoHiddenInputFocusCalls;return 'ok';})()");
 		}
 
+		// Skia-Android and the browser apply the composition themselves, then sync the text. A TextChanging handler that
+		// edits that text runs within the sync, so its edit belongs to the composition and doesn't restart the IME.
+		[TestMethod]
+		public async Task When_IME_Platform_Applied_Composition_Is_Edited_By_TextChanging()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			SUT.TextChanging += (sender, _) => sender.Text = sender.Text.ToUpperInvariant();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			fake.EndImeSessionCalled = false;
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni", textAlreadyApplied: true);
+			SUT.ProcessTextInput("ni");
+			fake.SimulateCompositionUpdate("nih", textAlreadyApplied: true);
+			SUT.ProcessTextInput("NIh");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("NIH", SUT.Text);
+			Assert.IsTrue(SUT.IsComposing, "the app's edit is part of the composition step");
+			Assert.IsFalse(fake.EndImeSessionCalled, "the IME session must not restart");
+		}
+
 		private class FakeImeTextBoxExtension : IImeTextBoxExtension
 		{
 			public bool IsComposing { get; private set; }
@@ -9984,9 +10594,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CompositionStarted?.Invoke(this, EventArgs.Empty);
 			}
 
-			public void SimulateCompositionUpdate(string text, int cursorPosition = -1)
+			public void SimulateCompositionUpdate(string text, int cursorPosition = -1, bool textAlreadyApplied = false)
 			{
-				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
+				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition, textAlreadyApplied: textAlreadyApplied));
 			}
 
 			public void SimulateCompositionComplete(string text)

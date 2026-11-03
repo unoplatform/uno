@@ -25,20 +25,41 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	private string SelectionDirection => _view.TextBox is { IsBackwardSelection: true } ? "backward" : "forward";
 
+	// A managed exception (from an app's TextChanging, SelectionChanged or TextComposition* handler, say) must not cross
+	// back into the JS DOM-event callback, which would leave the input's state half-updated. It is logged too, since the
+	// app may not handle UnhandledException.
+	internal static void RunFromNative(Action action)
+	{
+		try
+		{
+			action();
+		}
+		catch (Exception e)
+		{
+			if (typeof(BrowserInvisibleTextBoxViewExtension).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(BrowserInvisibleTextBoxViewExtension).Log().Error("A text input callback from the browser failed.", e);
+			}
+
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
 	[JSExport]
-	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength)
+	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength) => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
 		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
 		{
-			textBox.TextBoxView.UpdateTextFromNative(text);
-			textBox.SelectInternal(selectionStart, selectionLength);
+			// A multi-line TextBox's textarea breaks lines with \n where the TextBox uses \r: a text differing only
+			// by them is not an edit of the TextBox's own, which it would echo back and revert the caret for.
+			textBox.ApplyNativeInput(text.Replace('\n', '\r'), selectionStart, selectionLength);
 		}
-	}
+	});
 
 	[JSExport]
-	private static void OnNativePaste(string clipboardText)
+	private static void OnNativePaste(string clipboardText) => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
@@ -46,10 +67,10 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		{
 			textBox.PasteFromClipboard(clipboardText);
 		}
-	}
+	});
 
 	[JSExport]
-	private static void OnSelectionChanged(int selectionStart, int selectionLength)
+	private static void OnSelectionChanged(int selectionStart, int selectionLength) => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
@@ -57,7 +78,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		{
 			textBox.SelectInternal(selectionStart, selectionLength);
 		}
-	}
+	});
 
 	[JSExport]
 	private static void OnNativeBlur()
@@ -92,7 +113,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
-	private static void OnEnterKeyPressed()
+	private static void OnEnterKeyPressed() => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 
@@ -104,7 +125,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			keyArgs.Handled = false;
 			textBox.RaiseEvent(UIElement.KeyUpEvent, keyArgs);
 		}
-	}
+	});
 
 	// The "overlay layer" is the DOM, which is always present.
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
@@ -141,6 +162,10 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	internal static void DetachNativeInputPreservingFocus() => NativeMethods.Detach();
+
+	internal static void InvalidateComposition() => NativeMethods.InvalidateComposition();
+
+	internal static void RestartComposition() => NativeMethods.RestartComposition();
 
 	public void UpdateSize()
 	{
@@ -251,8 +276,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public int GetSelectionStart() => 0;
 	public int GetSelectionLength() => 0;
-	public int GetSelectionStartBeforeKeyDown() => 0;
-	public int GetSelectionLengthBeforeKeyDown() => 0;
+	// Read before the TextBox applies the input's edit: the selection the edit started from, which a reverted edit restores.
+	public int GetSelectionStartBeforeKeyDown() => _view.TextBox?.SelectionStart ?? 0;
+	public int GetSelectionLengthBeforeKeyDown() => _view.TextBox?.SelectionLength ?? 0;
 
 	private string GetEnterKeyHintValue()
 	{
@@ -307,5 +333,11 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setInputMode")]
 		public static partial void SetInputMode(string inputMode);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.invalidateComposition")]
+		public static partial void InvalidateComposition();
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.restartComposition")]
+		public static partial void RestartComposition();
 	}
 }

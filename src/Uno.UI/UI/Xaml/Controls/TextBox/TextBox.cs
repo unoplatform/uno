@@ -1413,6 +1413,9 @@ namespace Microsoft.UI.Xaml.Controls
 					// The all to ProcessTextInput may be recursing, we only want to restore
 					// the state on the last one.
 					_isInputModifyingText = false;
+#if __SKIA__
+					_platformTextApplyInProgress = false;
+#endif
 				}
 			}
 

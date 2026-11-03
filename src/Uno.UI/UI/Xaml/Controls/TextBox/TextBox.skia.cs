@@ -70,6 +70,7 @@ public partial class TextBox : ITextSelectionGripperHost
 	// will be one "run"/"action". However, there are some arbitrary exceptions, so that is only a rule of thumb.
 	private bool _currentlyTyping;
 	private bool _suppressCurrentlyTyping;
+	private bool _isApplyingNativeInput;
 	private SelectionDetails _selectionWhenTypingStarted;
 	private string _textWhenTypingStarted;
 
@@ -86,6 +87,55 @@ public partial class TextBox : ITextSelectionGripperHost
 	internal TextBoxView TextBoxView => _textBoxView;
 
 	internal ContentControl ContentElement => _contentElement;
+
+	// An edit the platform's input field already applied, with the caret it left there. Like a key the TextBox handles,
+	// it extends the current typing run: its own caret move doesn't end the run, so undo takes back the whole of it.
+	internal void ApplyNativeInput(string text, int selectionStart, int selectionLength)
+	{
+		_isApplyingNativeInput = true;
+		try
+		{
+			// Pending so the text change itself lands the caret here instead of passing through 0.
+			SetPendingSelection(selectionStart, selectionLength);
+			TextBoxView.UpdateTextFromNative(text);
+			SelectInternal(selectionStart, selectionLength);
+		}
+		finally
+		{
+			_isApplyingNativeInput = false;
+		}
+	}
+
+	// The platform's input field already applied this edit. It is typing, undoable like a key the TextBox handles, and a
+	// read-only TextBox refuses it (TextBoxView then puts its text back in the field).
+	internal string ProcessNativeTextInput(string newText)
+	{
+		if (IsReadOnly)
+		{
+			return Text;
+		}
+
+		var textBefore = Text;
+		var startsTypingRun = !_currentlyTyping;
+		TrySetCurrentlyTyping(true);
+		_clearHistoryOnTextChanged = false;
+		try
+		{
+			var text = ProcessTextInput(newText);
+			if (startsTypingRun && text == textBefore)
+			{
+				// A refused edit (MaxLength, BeforeTextChanging) isn't typing: its run would record an undo step that
+				// changes nothing.
+				_currentlyTyping = false;
+			}
+
+			return text;
+		}
+		finally
+		{
+			_clearHistoryOnTextChanged = true;
+		}
+	}
 
 	static TextBox()
 	{
@@ -615,7 +665,10 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	partial void SelectPartial(int start, int length)
 	{
-		TrySetCurrentlyTyping(false);
+		if (!_isApplyingNativeInput)
+		{
+			TrySetCurrentlyTyping(false);
+		}
 
 		if (!_inSelectInternal)
 		{
