@@ -195,7 +195,7 @@ public class Given_WebView2
 #endif
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)] // Temporarily disabled due to #11997; on macOS 26 these segfault the test process
 	public async Task When_ExecuteScriptAsync_Has_No_Result()
 	{
 		async Task Do()
@@ -221,7 +221,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)] // Temporarily disabled due to #11997; on macOS 26 these segfault the test process
 	public async Task When_ExecuteScriptAsync()
 	{
 		async Task Do()
@@ -253,7 +253,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)] // Temporarily disabled due to #11997; on macOS 26 these segfault the test process
 	public async Task When_ExecuteScriptAsync_String_Double_Quote()
 	{
 		async Task Do()
@@ -280,7 +280,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)] // Temporarily disabled due to #11997; on macOS 26 these segfault the test process
 	public async Task When_ExecuteScriptAsync_String()
 	{
 		async Task Do()
@@ -385,7 +385,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)] // Temporarily disabled due to #11997; on macOS 26 these segfault the test process
 	public async Task When_ExecuteScriptAsync_Non_String()
 	{
 		async Task Do()

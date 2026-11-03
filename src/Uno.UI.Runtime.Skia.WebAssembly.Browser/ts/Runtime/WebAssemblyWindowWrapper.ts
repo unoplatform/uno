@@ -1,10 +1,12 @@
-namespace Uno.UI.Runtime.Skia {
+﻿namespace Uno.UI.Runtime.Skia {
 
 	export class WebAssemblyWindowWrapper {
 		private containerElement: HTMLDivElement;
 		private canvasElement: HTMLCanvasElement;
 		private onResize: any;
 		private onViewportOcclusionChanged: any;
+		private onWindowFocusChanged: any;
+		private onDocumentVisibilityChanged: any;
 		private owner: any;
 		private lastReportedOcclusion: number = -1;
 		private viewportResizeObserver: ResizeObserver | undefined;
@@ -43,6 +45,8 @@ namespace Uno.UI.Runtime.Skia {
 			WebAssemblyWindowWrapper.assemblyExports = await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
 			this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
 			this.onViewportOcclusionChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnViewportOcclusionChanged;
+			this.onWindowFocusChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnWindowFocusChanged;
+			this.onDocumentVisibilityChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnDocumentVisibilityChanged;
 
 			this.containerElement = (document.getElementById("uno-body") as HTMLDivElement);
 
@@ -67,6 +71,11 @@ namespace Uno.UI.Runtime.Skia {
 			window.addEventListener("contextmenu", x => {
 				x.preventDefault();
 			})
+
+			// The browser has no window activation; focus/blur and page visibility are the equivalents.
+			window.addEventListener("focus", () => this.onWindowFocusChanged(this.owner, true));
+			window.addEventListener("blur", () => this.onWindowFocusChanged(this.owner, false));
+			document.addEventListener("visibilitychange", () => this.onDocumentVisibilityChanged(this.owner, !document.hidden));
 
 			// The on-screen keyboard shrinks the visual viewport without firing window "resize",
 			// so track it separately to report keyboard occlusion to the InputPane (issue 3).

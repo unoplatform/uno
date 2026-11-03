@@ -51,9 +51,13 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	// Apple's GLES-on-Metal driver advertises GL_EXT_read_format_bgra yet rejects BGRA reads from
 	// the element's framebuffer (and reports an RGBA implementation-defined read pair). When an
 	// actual BGRA read doesn't work we read RGBA (always legal on GLES) and swap R/B into the
-	// BGRA back buffer. Desktop GL keeps BGRA (core), and WASM keeps BGRA too (its JS shim swaps
-	// internally), so this stays false there.
+	// BGRA back buffer. Desktop GL keeps BGRA (core), so this stays false there. WebGL counts as GLES
+	// and never accepts BGRA reads.
 	private bool _readbackAsRgbaWithSwap;
+
+	// Every element gets its context from the same platform logic, so the probe runs once per process rather
+	// than per element (a failing probe also makes the browser log a WebGL warning each time).
+	private static bool? _needsRgbaReadbackSwap;
 
 	// Rate-limits the pending-GL-error warning in Render to once per element.
 	private bool _warnedPendingGlError;
@@ -338,7 +342,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 				// FBO 0), so framebuffer-dependent init calls such as glValidateProgram would otherwise
 				// fail with "Current draw framebuffer is invalid".
 				_gl.BindFramebuffer(GLEnum.Framebuffer, _details!.Framebuffer);
-				_readbackAsRgbaWithSwap = NeedsRgbaReadbackSwap(_gl);
+				_readbackAsRgbaWithSwap = _needsRgbaReadbackSwap ??= NeedsRgbaReadbackSwap(_gl);
 				Init(_gl);
 			}
 			catch (Exception e)
@@ -576,16 +580,11 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	// is bound (see OnLoaded). Any GLES context can lack BGRA read support, and extension strings
 	// can't be trusted for it (Apple's GLES-on-Metal driver advertises GL_EXT_read_format_bgra yet
 	// rejects BGRA reads from the element's framebuffer), so on GLES we probe with an actual 1x1
-	// BGRA read; everywhere else BGRA is used directly (see _readbackAsRgbaWithSwap).
+	// BGRA read; everywhere else BGRA is used directly (see _readbackAsRgbaWithSwap). WebGL is GLES
+	// too (emscripten reports "OpenGL ES 3.0 (WebGL 2.0 ...)"), and WebGL 2.0 never accepts BGRA, so
+	// the probe always selects RGBA there.
 	private static bool NeedsRgbaReadbackSwap(GL gl)
 	{
-		// WASM readback stays BGRA regardless of what the context reports: the JS shim swaps
-		// internally and doesn't surface the native readback capabilities.
-		if (OperatingSystem.IsBrowser())
-		{
-			return false;
-		}
-
 		// GLES version strings are mandated to start with "OpenGL ES"; desktop GL version strings
 		// never have this prefix. BGRA readback is core on desktop GL.
 		if (!(gl.GetStringS(StringName.Version)?.StartsWith("OpenGL ES", StringComparison.Ordinal) ?? false))

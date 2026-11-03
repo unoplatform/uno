@@ -1762,13 +1762,109 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			finger.Release();
 			await TestServices.WindowHelper.WaitForIdle();
 
-			// These numbers are incorrect. They should be 2 and 1, but there's a bug or 2 in GestureRecognizer.
-			Assert.AreEqual(3, tappedCount);
+			// A touch hold is a right-tap, not a tap, even though only the holding timer saw it (injected timestamps didn't advance).
+			// Holding is raised twice: Started and Completed.
+			Assert.AreEqual(2, tappedCount);
+			Assert.AreEqual(2, rightTappedCount);
 			Assert.AreEqual(2, holdingCount);
 			Assert.AreEqual(inner, holdingOriginalSource);
 			Assert.IsTrue(outer.GetAbsoluteBoundsRect().Contains(holdingPos), $"holdingPos: {holdingPos}, outer absolute bounds: {outer.GetAbsoluteBoundsRect()}");
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Touch_Hold_Then_Not_Tapped(bool holdOnRightTappedChild)
+		{
+			var inner = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+			var outer = new Border
+			{
+				Width = 200,
+				Height = 200,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+				Child = inner
+			};
+
+			var tappedCount = 0;
+			var doubleTappedCount = 0;
+			var rightTappedCount = 0;
+			inner.RightTapped += (_, _) => rightTappedCount++;
+			outer.Tapped += (_, _) => tappedCount++;
+			outer.DoubleTapped += (_, _) => doubleTappedCount++;
+
+			await UITestHelper.Load(outer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var outerBounds = outer.GetAbsoluteBounds();
+			var position = holdOnRightTappedChild
+				? inner.GetAbsoluteCenter()
+				: new Windows.Foundation.Point(outerBounds.X + 10, outerBounds.Y + 10);
+
+			// On WinUI a touch hold is a right-tap for every element, including one that only listens to Tapped.
+			await finger.Hold(position);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(holdOnRightTappedChild ? 1 : 0, rightTappedCount);
+			Assert.AreEqual(0, tappedCount);
+
+			// The hold must not count as the first tap of a double-tap.
+			finger.Press(position);
+			finger.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, tappedCount);
+			Assert.AreEqual(0, doubleTappedCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Touch_Hold_Raises_Holding_On_Parent_Then_Child_Not_Tapped()
+		{
+			var inner = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+			var outer = new Border
+			{
+				Width = 200,
+				Height = 200,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+				Child = inner
+			};
+
+			var tappedCount = 0;
+			var holdingCount = 0;
+			inner.Tapped += (_, _) => tappedCount++;
+			outer.Holding += (_, _) => holdingCount++; // Like a ContextFlyout on the parent
+
+			await UITestHelper.Load(outer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Only the parent's holding timer sees the hold: the child, which recognizes the tap, must still not raise Tapped.
+			await finger.Hold(inner.GetAbsoluteCenter(), timerOnlyHoldingSource: outer);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, holdingCount); // Started and Completed
+			Assert.AreEqual(0, tappedCount);
+		}
 
 #if HAS_UNO
 		[TestMethod]

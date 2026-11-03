@@ -228,6 +228,7 @@ namespace Uno.WinAppSDKSyncGenerator
 					if (type.TypeKind != TypeKind.Enum)
 					{
 						BuildInterfaceImplementations(type, b, allSymbols, writtenMethods);
+						BuildOverrideTypeMismatchErrors(b, allSymbols);
 					}
 				}
 

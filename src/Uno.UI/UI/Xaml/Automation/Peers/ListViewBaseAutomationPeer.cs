@@ -26,7 +26,7 @@ public partial class ListViewBaseAutomationPeer : SelectorAutomationPeer, IDropT
 
 	public string[] DropEffects => GetDropEffects();
 
-	protected override List<AutomationPeer> GetChildrenCore()
+	protected override IList<AutomationPeer> GetChildrenCore()
 	{
 		var owner = ListViewBaseOwner;
 		var baseChildrenEnumerable = base.GetChildrenCore();

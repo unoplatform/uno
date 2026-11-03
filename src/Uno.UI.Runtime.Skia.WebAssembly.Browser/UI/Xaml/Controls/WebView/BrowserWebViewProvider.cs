@@ -21,6 +21,8 @@ internal class BrowserWebViewProvider : INativeWebViewProvider
 		if (content is null)
 		{
 			content = BrowserHtmlElement.CreateHtmlElement("iframe");
+			// As in WinUI, the browser survives unloads (a reparent re-enters the same WebView2) and goes away with the control.
+			content.RemoveFromDomWhenCollected();
 			contentPresenter.Content = content;
 		}
 

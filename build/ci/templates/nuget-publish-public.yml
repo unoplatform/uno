@@ -1,4 +1,12 @@
 steps:
+  # NuGetCommand@2 refuses to push through an API-key service connection with the
+  # agent's bundled nuget.exe (6.x): it requires NuGet 7.6 or later.
+  - task: NuGetToolInstaller@1
+    condition: and(succeeded(), not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
+    displayName: 'Install NuGet 7.9.0'
+    inputs:
+      versionSpec: '7.9.0'
+
   - task: NuGetCommand@2
     condition: and(succeeded(), not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
     displayName: 'Publish to nuget.org'

@@ -813,9 +813,29 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	// Wave metrics in units of fontSize / 12: half-period and half-height of the zigzag.
-	// Sized so the wave band fits within the font's descent for typical fonts.
 	private const float SpellCheckSquigglyStepScale = 3;
 	private const float SpellCheckSquigglyAmplitudeScale = 1;
+
+	// One misspelled word's wave on one line, in the text's own coordinates.
+	private readonly record struct SpellCheckSquiggle(float Left, float Right, float MidY, float Scale);
+
+	private readonly global::System.Runtime.CompilerServices.StrongBox<List<SpellCheckSquiggle>?> _spellCheckSquiggles = new();
+
+	public void DrawSpellCheckSquiggles(SKCanvas canvas, float opacity)
+	{
+		if (_spellCheckSquiggles.Value is not { } squiggles)
+		{
+			return;
+		}
+
+		_spareSpellCheckPaint.Color = SKColors.Red.WithAlpha((byte)(255 * Math.Clamp(opacity, 0f, 1f)));
+		foreach (var squiggle in squiggles)
+		{
+			using var path = BuildSpellCheckSquigglyPath(squiggle.MidY, squiggle.Left, squiggle.Right, squiggle.Scale);
+			_spareSpellCheckPaint.StrokeWidth = squiggle.Scale;
+			canvas.DrawPath(path, _spareSpellCheckPaint);
+		}
+	}
 
 	/// <summary>
 	/// Builds a single continuous spell-check zigzag from <paramref name="left"/> to <paramref name="right"/>.
@@ -958,12 +978,11 @@ internal readonly partial struct UnicodeText : IParsedText
 					// which renders as an irregular scribble. A word wrapped across lines (or switching
 					// fonts via fallback) gets one wave per (line, font) span.
 					var scale = fontDetails.SKFontSize / 12.0f;
-					// The text visual clips at y + lineHeight, so the whole wave band (midline ± amplitude
-					// plus the stroke) must fit above the line bottom or its lower vertices get cut off and
-					// the wave renders as disconnected peaks. Place it just below the baseline and clamp.
+					// The wave's top edge (midline - amplitude - half the stroke) sits on the font's descent, so it
+					// clears the descenders. That is below the line box; the owning TextBox draws the squiggles in a
+					// layer clipped to its padding box rather than to the text (see TextBoxView.SpellCheck).
 					var amplitude = SpellCheckSquigglyAmplitudeScale * scale;
-					var underlineY = y + line.baselineOffset + 2.5f * scale;
-					underlineY = Math.Min(underlineY, y + line.lineHeight - (amplitude + scale));
+					var underlineY = y + line.baselineOffset + fontDetails.SKFontMetrics.Descent + amplitude + scale / 2;
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
 					spellCheckUnderlines[(wordBoundariesIndex, lineIndex, scale)] =
@@ -1016,12 +1035,12 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
+		var squiggles = new List<SpellCheckSquiggle>(spellCheckUnderlines.Count);
 		foreach (var ((_, _, scale), (left, right, midY)) in spellCheckUnderlines)
 		{
-			using var path = BuildSpellCheckSquigglyPath(midY, left, right, scale);
-			_spareSpellCheckPaint.StrokeWidth = scale;
-			session.Canvas.DrawPath(path, _spareSpellCheckPaint);
+			squiggles.Add(new SpellCheckSquiggle(left, right, midY, scale));
 		}
+		_spellCheckSquiggles.Value = squiggles;
 
 		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
 		{
@@ -1155,9 +1174,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			return extendedSelection ? 0 : -1;
 		}
 
-		if (p.Y < 0)
+		var isAboveContent = p.Y < 0;
+		if (isAboveContent && !extendedSelection)
 		{
-			return extendedSelection ? 0 : -1;
+			return -1;
 		}
 
 		if (p.Y >= _xyTable[^1].prefixSummedHeight + (_endingNewLineLineHeight ?? 0))
@@ -1184,14 +1204,23 @@ internal readonly partial struct UnicodeText : IParsedText
 			return extendedSelection ? _lines[^1].end - (ignoreEndingNewLine ? TrailingCRLFInLine(_lines[^1]) : 0) : -1;
 		}
 
-		var lineIndex = _xyTable.BinarySearch(
-			((float)p.Y, null!, default),
-			Comparer<(float prefixSummedHeight, List<(float sumUntilAfterCluster, Cluster cluster)> prefixSummedWidths, Line line)>.Create(
-				static (a, b) => a.prefixSummedHeight.CompareTo(b.prefixSummedHeight)));
-
-		if (lineIndex < 0)
+		int lineIndex;
+		if (isAboveContent)
 		{
-			lineIndex = ~lineIndex;
+			// Above the text (e.g. a TextBox's top padding): hit-test the first line by X.
+			lineIndex = 0;
+		}
+		else
+		{
+			lineIndex = _xyTable.BinarySearch(
+				((float)p.Y, null!, default),
+				Comparer<(float prefixSummedHeight, List<(float sumUntilAfterCluster, Cluster cluster)> prefixSummedWidths, Line line)>.Create(
+					static (a, b) => a.prefixSummedHeight.CompareTo(b.prefixSummedHeight)));
+
+			if (lineIndex < 0)
+			{
+				lineIndex = ~lineIndex;
+			}
 		}
 
 		var line = _xyTable[lineIndex].line;

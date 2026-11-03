@@ -3,20 +3,26 @@ namespace Uno.UI.Runtime.Skia {
 		static workerScriptUrl = URL.createObjectURL(new Blob([`
 const offscreenCanvas = new OffscreenCanvas(0, 0);
 const context = offscreenCanvas.getContext("2d", { willReadFrequently: true });
-onmessage = async (e) => {
-	const [array, seqNo] = e.data;
-	const image = new Blob([array]);
+const readPixels = async (array) => {
+	const imageBitmap = await createImageBitmap(new Blob([array]), { premultiplyAlpha: "premultiply" });
 	try {
-		const imageBitmap = await createImageBitmap(image, { premultiplyAlpha: "premultiply" });
 		offscreenCanvas.width = imageBitmap.width;
 		offscreenCanvas.height = imageBitmap.height;
 		context.drawImage(imageBitmap, 0, 0);
-		const imageData = context.getImageData(
-			0, 0,
-			imageBitmap.width,
-			imageBitmap.height
-		);
-		
+		return context.getImageData(0, 0, imageBitmap.width, imageBitmap.height);
+	} finally {
+		// Workers live as long as the app: without this, each one keeps the last image's pixels in its
+		// canvas (until the next decode resizes it) and in the bitmap (until the worker's own GC).
+		imageBitmap.close();
+		offscreenCanvas.width = 0;
+		offscreenCanvas.height = 0;
+	}
+};
+onmessage = async (e) => {
+	const [array, seqNo] = e.data;
+	try {
+		const imageData = await readPixels(array);
+
 		// Due to a bug in Skia on WASM, we need the pixels to be
 		// alpha-premultiplied because using SKAlphaType.Unpremul is not working
 		// correctly (see also https://github.com/unoplatform/uno/issues/20727),
@@ -34,8 +40,8 @@ onmessage = async (e) => {
 			response: {
 				error: null,
 				bytes: new Uint8Array(imageData.data.buffer), // does not copy
-				width: imageBitmap.width,
-				height: imageBitmap.height
+				width: imageData.width,
+				height: imageData.height
 			}
 		},
 		[imageData.data.buffer]);
@@ -43,7 +49,17 @@ onmessage = async (e) => {
 		postMessage({seqNo: seqNo, response: { error: e.toString() }});
 	}
 };`], { type: 'application/javascript' }));
-		static availableWorkers: Worker[] = Array.from({ length: navigator.hardwareConcurrency }).map((_, i) => {
+		// Workers are created on demand, up to one per logical processor: each one is an isolate with its own heap
+		// and canvas, so creating them all up front costs every app memory whether or not it decodes an image.
+		static maxWorkers = Math.max(1, navigator.hardwareConcurrency || 1);
+		static workerCount = 0;
+		static availableWorkers: Worker[] = [];
+		static pendingJobs = new Array<(worker: Worker) => void>();
+		static sequenceNumber = 0;
+		static pendingPromiseResolvers = new Map<Number, (value: (PromiseLike<object> | object)) => void>();
+
+		private static createWorker(): Worker {
+			ImageLoader.workerCount++;
 			const worker = new Worker(ImageLoader.workerScriptUrl);
 			const listener = (ev: MessageEvent) => {
 				const promiseResolver = ImageLoader.pendingPromiseResolvers.get(ev.data.seqNo);
@@ -58,20 +74,18 @@ onmessage = async (e) => {
 			}
 			worker.addEventListener("message", listener);
 			return worker;
-		});
-		static pendingJobs = new Array<(worker: Worker) => void>();
-		static sequenceNumber = 0;
-		static pendingPromiseResolvers = new Map<Number, (value: (PromiseLike<object> | object)) => void>();
+		}
 
 		public static loadFromArray(array: Uint8Array): Promise<object> {
 			const seqNo = ++ImageLoader.sequenceNumber;
 			return new Promise<object>((resolve) => {
 				ImageLoader.pendingPromiseResolvers.set(seqNo, resolve);
-				if (ImageLoader.availableWorkers.length == 0) {
-					ImageLoader.pendingJobs.push(worker => worker.postMessage([array, seqNo], [array.buffer]));
+				if (ImageLoader.availableWorkers.length != 0) {
+					ImageLoader.availableWorkers.pop().postMessage([array, seqNo], [array.buffer]);
+				} else if (ImageLoader.workerCount < ImageLoader.maxWorkers) {
+					ImageLoader.createWorker().postMessage([array, seqNo], [array.buffer]);
 				} else {
-					const worker = ImageLoader.availableWorkers.pop();
-					worker.postMessage([array, seqNo], [array.buffer]);
+					ImageLoader.pendingJobs.push(worker => worker.postMessage([array, seqNo], [array.buffer]));
 				}
 			});
 		}

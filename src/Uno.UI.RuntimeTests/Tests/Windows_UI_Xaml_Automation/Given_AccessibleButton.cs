@@ -26,6 +26,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	[TestClass]
 	public class Given_AccessibleButton
 	{
+#if HAS_UNO
+		[TestCleanup]
+		public void DisableAccessibilityAfterTest() => DisableAccessibility();
+#endif
+
 		/// <summary>
 		/// T016: Verifies that a focusable button has correct keyboard focusability settings.
 		/// When rendered as a semantic element, this translates to tabindex="0".

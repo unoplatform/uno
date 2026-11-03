@@ -90,6 +90,17 @@ public sealed class HotReloadManager : IDisposable
 		return new HotReloadManager(solution.Workspace, watch, handler, changesDetector, solutionUpdater, tracker, solution);
 	}
 
+	// Synthesized for a compiler exception during the EnC emit, which completes the pass as a rude edit.
+#pragma warning disable RS2008 // Enable analyzer release tracking
+	private static readonly DiagnosticDescriptor _emitFailureDescriptor = new(
+		"UNOHR0001",
+		"Hot Reload update could not be emitted",
+		"The compiler could not produce a Hot Reload update for this change ({0}). Undo the change to keep going, or restart the app.",
+		"HotReload",
+		DiagnosticSeverity.Error,
+		isEnabledByDefault: true);
+#pragma warning restore RS2008 // Enable analyzer release tracking
+
 	private readonly FastAsyncLock _solutionUpdateGate = new();
 	private readonly Workspace _innerWorkspace;
 	private readonly IWatchHotReloadService _watchService;
@@ -101,6 +112,9 @@ public sealed class HotReloadManager : IDisposable
 
 	// The last pin set reported at Output level; guarded by _solutionUpdateGate (single-flight passes).
 	private ImmutableHashSet<PinnedReference>? _reportedPins;
+
+	// The last rebuild-required subject reported at Output level; guarded like _reportedPins.
+	private string? _reportedRebuildSubject;
 
 	// Internal (not private) so unit tests can drive the manager with a stub
 	// IWatchHotReloadService; production code goes through CreateAsync.
@@ -286,9 +300,8 @@ public sealed class HotReloadManager : IDisposable
 			// generator error then degrades to stale generated output instead of blocking hot reload.
 			// Generated code that genuinely does NOT compile still reports a C# error and is handled by the
 			// (true, true) audit / rude-edit branches below. The suppression is applied to the emit itself,
-			// not as a retry after a blocked emit: EmitSolutionUpdateAsync advances the EnC baseline as a
-			// side effect, so a throwaway first emit would consume the change and leave a second nothing to
-			// apply.
+			// not as a retry after a blocked emit: EmitSolutionUpdateAsync commits the EnC baseline whenever
+			// it produces deltas, so a throwaway first emit would consume an applicable change.
 			var generatorErrors = await GetGeneratorErrorsAsync(auditedProjects, ct).ConfigureAwait(false);
 			if (!generatorErrors.IsEmpty)
 			{
@@ -301,10 +314,58 @@ public sealed class HotReloadManager : IDisposable
 			var emitSolution = alignedSolution.WithSuppressedDiagnostics(generatorErrors);
 
 			// Compile the solution with those generator errors suppressed, and get deltas.
-			var (updates, emitDiagnostics) = await _watchService.EmitSolutionUpdateAsync(emitSolution, ct).ConfigureAwait(false);
+			HotReloadEmitResult emit;
+			try
+			{
+				emit = await _watchService.EmitSolutionUpdateAsync(emitSolution, ct).ConfigureAwait(false);
+			}
+			catch (Exception e) when (e is not OperationCanceledException || !ct.IsCancellationRequested)
+			{
+				// The compiler itself threw while emitting the delta (e.g. dotnet/roslyn#86045). The EnC
+				// baseline does not move, so every later pass would hit the same crash until the edit is
+				// undone: report it as the rude edit it is for the user, not as a DevServer InternalError.
+				_tracker.Warn($"The compiler failed to emit the hot reload update: {e}");
+				emit = HotReloadEmitResult.Empty with
+				{
+					Status = HotReloadEmitStatus.Blocked,
+					Diagnostics = [Diagnostic.Create(_emitFailureDescriptor, Location.None, e.Message)],
+				};
+			}
+
+			var updates = emit.Deltas;
+			var emitDiagnostics = emit.Diagnostics;
+
+			_tracker.Verbose($"Emit status: {emit.Status}");
+
+			// A project the engine cannot update in place stays out of line with its sources until it is
+			// rebuilt. The condition persists across saves, so Output only when the subject changes.
+			if (emit.RequiresRebuildOrRestart)
+			{
+				// Roslyn 4.x names no project (see HotReloadEmitResult.RequiresRebuildOrRestart).
+				var subject = emit.ProjectsRequiringRebuildOrRestart is { IsEmpty: false } projects
+					? string.Join(", ", projects)
+					: "the application";
+				var message = $"Hot reload cannot update {subject}: it must be rebuilt (or restarted) before it matches its sources again.";
+
+				if (subject != _reportedRebuildSubject)
+				{
+					_reportedRebuildSubject = subject;
+					_tracker.Output(message);
+				}
+				else
+				{
+					_tracker.Verbose(message);
+				}
+			}
+			else
+			{
+				_reportedRebuildSubject = null;
+			}
+
 			// emitDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
 			// of unrecoverable errors that a user cannot fix and requires an app rebuild.
-			var rudeEdits = emitDiagnostics.RemoveAll(d => d.Severity <= DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
+			var rudeEdits = emitDiagnostics.RemoveAll(d => d.Severity <= DiagnosticSeverity.Warning
+				|| !(d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal) || d.Descriptor == _emitFailureDescriptor));
 
 			_tracker.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
 
@@ -322,7 +383,8 @@ public sealed class HotReloadManager : IDisposable
 			// also already scoped to the change set's projects via auditedProjects.
 			diagnostics = emitDiagnostics.AddRange(generatorErrors);
 
-			switch (rudeEdits.IsEmpty, updates.IsEmpty)
+			// A project the engine names as needing a rebuild is a rude edit even without an ENC error.
+			switch (rudeEdits.IsEmpty && !emit.RequiresRebuildOrRestart, updates.IsEmpty)
 			{
 				// A rude edit is unrecoverable: the user must rebuild. Surface every diagnostic.
 				case (false, _):

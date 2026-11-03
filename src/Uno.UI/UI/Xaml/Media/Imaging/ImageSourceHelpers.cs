@@ -48,7 +48,9 @@ internal static partial class ImageSourceHelpers
 
 		if (OperatingSystem.IsBrowser() && attemptLoadingWithBrowserCanvasApi && !hasTargetSize)
 		{
-			var decodedBufferObject = await LoadFromArray(buffer);
+			// The JS object holds the decoded pixels until it is released, and its finalizer only runs when the GC
+			// happens to collect: allocations outside the managed heap don't prompt one.
+			using var decodedBufferObject = await LoadFromArray(buffer);
 
 			if (decodedBufferObject.GetPropertyAsString("error") is { } errorMessage)
 			{

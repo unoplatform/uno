@@ -24,6 +24,10 @@ using System.Net.Http;
 using System.Threading;
 using Windows.Storage.Streams;
 using System.Diagnostics;
+#if __SKIA__
+using SkiaSharp;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {
@@ -490,6 +494,87 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			Assert.AreEqual(100, bitmapImage.PixelWidth, "PixelWidth should match DecodePixelWidth");
 			Assert.AreEqual(150, bitmapImage.PixelHeight, "PixelHeight should preserve aspect ratio");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Workers_Are_Reused()
+		{
+			// The workers are called directly because a failed browser decode falls back to SKCodec, so the image would
+			// still open. One more decode than there are workers makes at least one of them decode again after its reset.
+			var workers = int.Parse(WasmSemanticDomHelper.InvokeBrowserJs("String(navigator.hardwareConcurrency)"));
+			var images = new (byte[] Png, int Width, int Height, (int R, int G, int B, int A) PremultipliedFirstPixel)[]
+			{
+				(CreatePng(300, 200, new SKColor(200, 100, 50, 128)), 300, 200, (100, 50, 25, 128)),
+				(CreatePng(2, 3, SKColors.Blue), 2, 3, (0, 0, 255, 255)),
+				(CreatePng(5, 4, SKColors.Red), 5, 4, (255, 0, 0, 255)),
+			};
+			var batch = Enumerable.Range(0, workers + 1).Select(i => images[i % images.Length]).ToArray();
+
+			var results = await DecodeInBrowser(batch.Select(image => image.Png).ToArray());
+
+			for (var i = 0; i < batch.Length; i++)
+			{
+				AssertDecoded(results[i], batch[i].Width, batch[i].Height, batch[i].PremultipliedFirstPixel);
+			}
+
+			var invalid = await DecodeInBrowser(new byte[] { 1, 2, 3, 4 });
+			Assert.IsTrue(invalid[0].StartsWith("error:", StringComparison.Ordinal), $"An invalid image should report an error, got '{invalid[0]}'.");
+			AssertDecoded((await DecodeInBrowser(images[0].Png))[0], images[0].Width, images[0].Height, images[0].PremultipliedFirstPixel);
+		}
+
+		private static byte[] CreatePng(int width, int height, SKColor color)
+		{
+			using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+			bitmap.Erase(color);
+			using var data = bitmap.Encode(SKEncodedImageFormat.Png, 100);
+			return data.ToArray();
+		}
+
+		private static void AssertDecoded(string result, int width, int height, (int R, int G, int B, int A) premultipliedFirstPixel)
+		{
+			Assert.IsFalse(result.StartsWith("error:", StringComparison.Ordinal) || result.StartsWith("exception:", StringComparison.Ordinal), $"The browser worker failed to decode the image: {result}");
+			var values = result.Split(',').Select(int.Parse).ToArray();
+
+			Assert.AreEqual(width, values[0], $"Width ({result})");
+			Assert.AreEqual(height, values[1], $"Height ({result})");
+			Assert.AreEqual(width * height * 4, values[2], $"Byte count ({result})");
+			var (r, g, b, a) = premultipliedFirstPixel;
+			Assert.IsTrue(
+				Math.Abs(values[3] - r) <= 2 && Math.Abs(values[4] - g) <= 2 && Math.Abs(values[5] - b) <= 2 && Math.Abs(values[6] - a) <= 2,
+				$"First pixel is RGBA {values[3]},{values[4]},{values[5]},{values[6]}, expected {r},{g},{b},{a}.");
+		}
+
+		private static int _browserDecodeCalls;
+
+		// Decodes the images concurrently and returns, for each, "width,height,byteCount,r,g,b,a", "error: <reason>" or
+		// "exception: <reason>".
+		private static async Task<string[]> DecodeInBrowser(params byte[][] images)
+		{
+			var key = $"__unoBrowserDecode{++_browserDecodeCalls}";
+			var encoded = string.Join(",", images.Select(image => $"'{Convert.ToBase64String(image)}'"));
+			WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){"
+				+ $"var images=[{encoded}].map(function(s){{return Uint8Array.from(atob(s),function(c){{return c.charCodeAt(0);}});}});"
+				+ "var clean=function(e){return String(e).replace(/\\s+/g,' ');};"
+				+ "Promise.all(images.map(function(bytes){return Uno.UI.Runtime.Skia.ImageLoader.loadFromArray(bytes).then(function(r){"
+				+ "return r.error?'error: '+clean(r.error):[r.width,r.height,r.bytes.length,r.bytes[0],r.bytes[1],r.bytes[2],r.bytes[3]].join(',');"
+				+ "},function(e){return 'exception: '+clean(e);});}))"
+				+ $".then(function(all){{globalThis['{key}']=all.join('\\n');}});return '';}})()");
+
+			try
+			{
+				var result = "";
+				await WindowHelper.WaitFor(
+					() => (result = WasmSemanticDomHelper.InvokeBrowserJs($"globalThis['{key}']")) != "",
+					timeoutMS: 10000,
+					message: $"The browser decode of {images.Length} image(s) did not complete.");
+				return result.Split('\n');
+			}
+			finally
+			{
+				WasmSemanticDomHelper.InvokeBrowserJs($"delete globalThis['{key}']");
+			}
 		}
 #endif
 

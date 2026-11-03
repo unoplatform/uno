@@ -29,6 +29,23 @@ body {
     overflow: hidden;
 }
 
+#uno-root,
+#uno-body {
+  /* The app draws its own text and selection: a long-press must not select or call out the host. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Hosted HTML and editable semantic elements keep the native selection (WebKit inherits -webkit-user-select).
+   :where() keeps it at zero specificity, so hosted pages can still style their own elements. */
+:where(#uno-native-element-host),
+:where(#uno-root, #uno-body) :where(input, textarea, [contenteditable]:not([contenteditable="false"])) {
+  user-select: text;
+  -webkit-user-select: text;
+  -webkit-touch-callout: default;
+}
+
 #uno-loading {
   position: fixed;
   width: 100%;
@@ -76,6 +93,43 @@ input::-ms-clear {
   height: 100%;
   overflow: hidden;
   filter: opacity(0%);
+  pointer-events: none;
+}
+
+/* Not inherited, so an extent change does not restyle the whole semantic subtree. */
+@property --uno-scroll-extent-width {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --uno-scroll-extent-height {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+/* Native scrollbars would shrink the client area below the managed viewport, and scroll anchoring
+   would move the native offset away from the managed one. */
+.uno-semantic-scroll-port {
+  scrollbar-width: none;
+  overflow-anchor: none;
+}
+
+.uno-semantic-scroll-port::-webkit-scrollbar {
+  display: none;
+}
+
+/* Semantic children are sparse, so the managed scroll extent has to define the native scroll range. */
+.uno-semantic-scroll-port::before {
+  --uno-scroll-extent-width: inherit;
+  --uno-scroll-extent-height: inherit;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--uno-scroll-extent-width);
+  height: var(--uno-scroll-extent-height);
   pointer-events: none;
 }
 

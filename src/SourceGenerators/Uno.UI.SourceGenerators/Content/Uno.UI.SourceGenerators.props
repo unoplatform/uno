@@ -105,6 +105,9 @@
 		<CompilerVisibleProperty Include="ShouldAnnotateGeneratedXaml" />
 		<CompilerVisibleProperty Include="DefaultLanguage" />
 		<CompilerVisibleProperty Include="UnoPlatformTelemetryOptOut" />
+		<!-- The UNO_PLATFORM_TELEMETRY_OPTOUT environment variable, read through MSBuild so a reused compiler server sees the current value -->
+		<CompilerVisibleProperty Include="UNO_PLATFORM_TELEMETRY_OPTOUT" />
+		<CompilerVisibleProperty Include="UnoIsHotReloadHost" />
 		<CompilerVisibleProperty Include="UnoPlatformDefaultSymbolsFontFamily" />
 		<CompilerVisibleProperty Include="ExcludeXamlNamespacesProperty" />
 		<CompilerVisibleProperty Include="IncludeXamlNamespacesProperty" />

@@ -100,6 +100,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		{
 			var keyArgs = new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None);
 			textBox.RaiseEvent(UIElement.KeyDownEvent, keyArgs);
+
+			keyArgs.Handled = false;
+			textBox.RaiseEvent(UIElement.KeyUpEvent, keyArgs);
 		}
 	}
 

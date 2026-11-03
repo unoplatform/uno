@@ -17,8 +17,19 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		private readonly record struct BitmapImageCacheKey(Uri Uri, int? DecodeWidth, int? DecodeHeight);
 
 		private static readonly LRUCache<BitmapImageCacheKey, Task<ImageData>> _bitmapImageCache = new(FeatureConfiguration.Image.MaxBitmapImageCacheCount);
+
+		// Test hook: resolves the uri like the loader does so tests can observe cache membership for a key.
+		internal static async Task<Task<ImageData>> GetCachedImageDataTaskForTesting(Uri uri, int? decodeWidth, int? decodeHeight)
+		{
+			uri = await TryResolveLocalResource(uri);
+			return _bitmapImageCache.TryGetValue(new BitmapImageCacheKey(uri, decodeWidth, decodeHeight), out var imageDataTask) ? imageDataTask : null;
+		}
+
 		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
+
+		private static bool IsFailedLoad(Task<ImageData> load)
+			=> load.IsFaulted || (load.IsCompletedSuccessfully && load.Result.Kind == ImageDataKind.Error);
 
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
@@ -123,35 +134,67 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						uri = await TryResolveLocalResource(uri);
 					}
 
-					var ignoreCache = CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
+					var useCache = FeatureConfiguration.Image.EnableBitmapImageCache
+						&& !CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
 					var cacheKey = new BitmapImageCacheKey(uri, decodeWidth, decodeHeight);
 
-					if (ignoreCache
-						|| !_bitmapImageCache.TryGetValue(cacheKey, out var imageDataTask))
+					Task<ImageData> imageDataTask = null;
+
+					if (useCache && _bitmapImageCache.TryGetValue(cacheKey, out imageDataTask) && IsFailedLoad(imageDataTask))
 					{
+						// A lookup can see a load that just failed before its eviction continuation below has run
+						// (e.g. an immediate retry from ImageFailed); treat it as a miss so the retry downloads again.
+						_bitmapImageCache.Remove(cacheKey, imageDataTask);
+						imageDataTask = null;
+					}
+
+					if (imageDataTask is null)
+					{
+						// A cached load is shared by every BitmapImage opening the same key, so it never runs on a single
+						// requester's token (cancelling one must not fail the others); releasing a request leaves the shared
+						// download running (MUX Reference: ImageCache::OnRequestReleasing — ImageCache.cpp). Only an
+						// uncached load is cancelled with its sole requester.
+						var loadCt = useCache ? CancellationToken.None : ct;
+
 						imageDataTask = Task.Run(async () =>
 						{
 							try
 							{
-								return await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct, decodeWidth, decodeHeight);
+								return await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, loadCt, decodeWidth, decodeHeight);
 							}
 							catch (Exception e)
 							{
 								return ImageData.FromError(e);
 							}
-						}, ct);
+						}, loadCt);
 
-						if (FeatureConfiguration.Image.EnableBitmapImageCache)
+						if (useCache)
 						{
 							_bitmapImageCache.Add(cacheKey, imageDataTask);
-							// if loading failed not because of an actual failure but because
-							// the task was canceled (usually because the Uri changed), we
-							// don't want to cache the failed task
-							ct.Register(() => _bitmapImageCache.Remove(cacheKey));
+
+							// A failed load must not keep failing later requesters. WinUI's provider store does not own its
+							// ImageCache, so a failed one is dropped once released and the next request downloads again
+							// (MUX Reference: ImageProvider::OnImageCacheInvalidated — ImageProvider.cpp); the LRU owns its
+							// entries, so drop a failed load as soon as it completes, and only while it is still the stored
+							// one (MUX Reference: ImageProvider::RemoveImageCache — ImageProvider.cpp).
+							_ = imageDataTask.ContinueWith(
+								t =>
+								{
+									if (IsFailedLoad(t))
+									{
+										_bitmapImageCache.Remove(cacheKey, t);
+									}
+								},
+								CancellationToken.None,
+								TaskContinuationOptions.ExecuteSynchronously,
+								TaskScheduler.Default);
 						}
 					}
 
-					var imageData = await imageDataTask;
+					var imageData = await imageDataTask.WaitAsync(ct);
+
+					// The shared load may have completed between the cancellation and the await.
+					ct.ThrowIfCancellationRequested();
 
 					if (imageData.Kind == ImageDataKind.Error)
 					{
@@ -169,6 +212,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 					return imageData;
 				}
+			}
+			catch (OperationCanceledException) when (ct.IsCancellationRequested)
+			{
+				// A superseded open is not a load failure; ImageSource.Open drops it.
+				throw;
 			}
 			catch (Exception e)
 			{

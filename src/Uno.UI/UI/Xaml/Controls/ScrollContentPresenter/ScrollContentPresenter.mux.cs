@@ -94,8 +94,8 @@ public partial class ScrollContentPresenter
 		double targetZoomedVerticalOffset = 0.0;
 		double appliedOffsetX = 0.0;
 		double appliedOffsetY = 0.0;
-		var viewportWidth = ViewportWidth;
-		var viewportHeight = ViewportHeight;
+		var viewportWidth = Scroller.ViewportWidth;
+		var viewportHeight = Scroller.ViewportHeight;
 		var zoomFactor = Scroller.ZoomFactor;
 
 		// Adjust for region blocked by keyboard. Only needed where the occlusion padding is
@@ -190,8 +190,8 @@ public partial class ScrollContentPresenter
 		double targetY = transformedRect.Y;
 		double targetHeight = transformedRect.Height;
 
-		var viewportWidth = ViewportWidth;
-		var viewportHeight = ViewportHeight;
+		var viewportWidth = Scroller.ViewportWidth;
+		var viewportHeight = Scroller.ViewportHeight;
 		var zoomFactor = Scroller.ZoomFactor;
 
 		// Adjust for region blocked by keyboard. Android-only: on Skia the occlusion padding

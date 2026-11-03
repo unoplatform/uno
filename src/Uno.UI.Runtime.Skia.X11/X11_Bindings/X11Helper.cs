@@ -338,6 +338,9 @@ internal static partial class X11Helper
 		return _getAtom(display, name, only_if_exists);
 	}
 
+	[LibraryImport(libX11)]
+	public static partial int XkbSetDetectableAutoRepeat(IntPtr display, int detectable, out int supported);
+
 	[LibraryImport("libc")]
 	public unsafe static partial int poll(Pollfd* __fds, IntPtr __nfds, int __timeout);
 

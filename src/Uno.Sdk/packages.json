@@ -94,7 +94,7 @@
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.20.450",
+		"version": "1.20.485",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -142,22 +142,22 @@
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
-		"version": "9.0.19",
+		"version": "9.0.20",
 		"packages": [
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.11"
+			"net10.0": "10.0.12"
 		}
 	},
 	{
 		"group": "WindowsCompatibility",
-		"version": "9.0.19",
+		"version": "9.0.20",
 		"packages": [
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.11"
+			"net10.0": "10.0.12"
 		}
 	},
 	{
@@ -351,7 +351,7 @@
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.7.10",
+		"version": "6.7.21",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -421,14 +421,14 @@
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.4129.50",
+		"version": "1.0.4191.47",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]
 	},
 	{
 		"group": "AppMcp",
-		"version": "1.3.3",
+		"version": "1.3.7",
 		"packages": [
 			"Uno.UI.App.Mcp"
 		]

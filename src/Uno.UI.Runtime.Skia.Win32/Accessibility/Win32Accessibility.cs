@@ -463,30 +463,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		return peer is not null ? FindExistingProviderForPeer(peer, resolveEventsSource: true) : null;
 	}
 
+	// Like WinUI, raise no BoundingRectangle change on layout: UIA clients pull it on demand, and raising it
+	// for every moved element made each scroll frame pay a native UIA call per realized element.
 	protected override void OnSizeOrOffsetChanged(Visual visual)
 	{
-		// UIA pulls BoundingRectangle on demand, so we only need to notify
-		// clients that the property has changed so they re-query it.
-		if (visual is ContainerVisual containerVisual
-			&& containerVisual.Owner?.Target is UIElement owner
-			&& _providers.TryGetValue(owner, out var provider))
-		{
-			try
-			{
-				_ = Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
-					provider,
-					Win32UIAutomationInterop.UIA_BoundingRectanglePropertyId,
-					null,
-					null);
-			}
-			catch (Exception ex)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Failed to raise BoundingRectangle changed event: {ex.Message}");
-				}
-			}
-		}
 	}
 
 	private void CleanupProviders(UIElement element)
@@ -538,10 +518,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// Only drop the element→provider mapping when this provider owns it.
 		// Virtual providers share their owner UIElement with the canonical peer's
 		// provider and must not evict it.
-		if (_providers.TryGetValue(provider.Owner, out var byElement)
+		if (provider.Owner is { } owner
+			&& _providers.TryGetValue(owner, out var byElement)
 			&& ReferenceEquals(byElement, provider))
 		{
-			_providers.Remove(provider.Owner);
+			_providers.Remove(owner);
 		}
 
 		_disconnectedProviders.Add(provider);
@@ -902,9 +883,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 						provider, Win32UIAutomationInterop.UIA_LiveRegionChangedEventId);
 					// Also announce the live region text for reliable Narrator delivery
 					var label = peer.GetName();
-					if (!string.IsNullOrEmpty(label))
+					if (!string.IsNullOrEmpty(label)
+						&& provider.Owner is { } owner)
 					{
-						var liveSetting = AutomationProperties.GetLiveSetting(provider.Owner);
+						var liveSetting = AutomationProperties.GetLiveSetting(owner);
 						if (liveSetting == AutomationLiveSetting.Assertive)
 						{
 							AnnounceAssertive(label);

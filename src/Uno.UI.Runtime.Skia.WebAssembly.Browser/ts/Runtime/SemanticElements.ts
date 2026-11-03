@@ -551,6 +551,8 @@ namespace Uno.UI.Runtime.Skia {
 			element.style.fontWeight = 'inherit';
 
 			element.textContent = text;
+			// Lets live name updates target this node's content instead of aria-label.
+			element.dataset.unoStandaloneText = "true";
 
 			this.appendToParent(element, parentHandle, index);
 		}
@@ -1436,6 +1438,17 @@ namespace Uno.UI.Runtime.Skia {
 					SemanticElements.flushVirtualizedMutations();
 				});
 			}
+		}
+
+		/**
+		 * Drops queued virtualized mutations; used when the semantic DOM is torn down.
+		 */
+		public static resetVirtualizedMutations(): void {
+			if (SemanticElements.virtualizedRafId !== 0) {
+				cancelAnimationFrame(SemanticElements.virtualizedRafId);
+				SemanticElements.virtualizedRafId = 0;
+			}
+			SemanticElements.virtualizedMutationQueue = [];
 		}
 
 		/**

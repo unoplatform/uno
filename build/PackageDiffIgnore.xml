@@ -2920,6 +2920,20 @@
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.AnimatedVisuals\.Animated.+VisualSource\.(Load|Unload|Pause|Resume|Stop|Play|SetProgress|Update|Measure)\(.*\)" reason="AnimatedIcon rework: Uno-specific legacy IAnimatedVisualSource no-op hooks moved to explicit interface implementations (not in WinUI; still callable via the interface)" isRegex="true" />
 	  </Methods>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="6.7">
+	  <Types>
+	  </Types>
+	  <Events>
+	  </Events>
+	  <Fields>
+	  </Fields>
+	  <Properties>
+	  </Properties>
+	  <Methods>
+		  <!-- Backport of uno#25141: GetChildrenCore returns IList<AutomationPeer> again, as in WinUI and 6.5. -->
+		  <Member fullName="System.Collections.Generic.List`1&lt;Microsoft.UI.Xaml.Automation.Peers.AutomationPeer&gt; Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.GetChildrenCore()" reason="Align with WinUI IList`1 return type, covariant return broke WinUI-signature overrides (#24552)" />
+	  </Methods>
+	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.

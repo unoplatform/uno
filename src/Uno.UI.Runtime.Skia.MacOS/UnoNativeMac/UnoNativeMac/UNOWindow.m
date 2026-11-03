@@ -1191,6 +1191,8 @@ NSOperatingSystemVersion _osVersion;
 - (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
     self = [super initWithContentRect:contentRect styleMask:style backing:backingStoreType defer:flag];
     if (self) {
+        // ARC and `windows` own the window; AppKit's default close-time release would over-release it.
+        self.releasedWhenClosed = NO;
         self.delegate = self;
         self.overlappedPresenterState = OverlappedPresenterStateRestored;
     }
@@ -1573,6 +1575,9 @@ NSOperatingSystemVersion _osVersion;
     [center removeObserver:windowDidChangeScreen name:NSApplicationDidChangeScreenParametersNotification object:self];
 
     uno_get_window_close_callback()(self);
+
+    // Managed code has unregistered the handle by now; AppKit keeps the window alive until `close` returns.
+    [windows removeObject:self];
 }
 
 #pragma mark - NSAccessibility

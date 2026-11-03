@@ -89,7 +89,11 @@ public partial class InputPane
 			Hiding?.Invoke(this, args);
 		}
 
-		if (!args.EnsuredFocusedElementInView)
+		var ensureFocusedElementInView = !args.EnsuredFocusedElementInView;
+
+		UpdateRootViewportPartial(ensureFocusedElementInView);
+
+		if (ensureFocusedElementInView)
 		{
 			// Wait for proper element to be focused
 			_ = UI.Core.CoreDispatcher.Main.RunAsync(
@@ -100,4 +104,6 @@ public partial class InputPane
 	}
 
 	partial void EnsureFocusedElementInViewPartial();
+
+	partial void UpdateRootViewportPartial(bool ensureFocusedElementInView);
 }
