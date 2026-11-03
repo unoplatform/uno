@@ -65,12 +65,12 @@ internal static class Program
 					sender is AutomationElement child && child.Current.AutomationId == "UnoUiaEventChild")
 				{
 					Volatile.Write(ref childRuntimeId, child.GetRuntimeId());
-					File.WriteAllText(Path.Combine(probeDirectory, "added"), string.Empty);
+					File.WriteAllText(Path.Join(probeDirectory, "added"), string.Empty);
 				}
 				else if (e.StructureChangeType == StructureChangeType.ChildRemoved &&
 					Volatile.Read(ref childRuntimeId) is { } expected && e.GetRuntimeId().SequenceEqual(expected))
 				{
-					File.WriteAllText(Path.Combine(probeDirectory, "removed"), string.Join(",", expected));
+					File.WriteAllText(Path.Join(probeDirectory, "removed"), string.Join(",", expected));
 				}
 			}
 			catch (ElementNotAvailableException)
@@ -84,7 +84,7 @@ internal static class Program
 			var deadline = Stopwatch.StartNew();
 			while (!process.HasExited && deadline.Elapsed < TimeSpan.FromMinutes(10))
 			{
-				if (parent is null && File.Exists(Path.Combine(probeDirectory, "ready")))
+				if (parent is null && File.Exists(Path.Join(probeDirectory, "ready")))
 				{
 					process.Refresh();
 					var window = AutomationElement.FromHandle(process.MainWindowHandle);
@@ -93,7 +93,7 @@ internal static class Program
 					if (parent is not null)
 					{
 						Automation.AddStructureChangedEventHandler(parent, TreeScope.Subtree, handler);
-						File.WriteAllText(Path.Combine(probeDirectory, "subscribed"), string.Empty);
+						File.WriteAllText(Path.Join(probeDirectory, "subscribed"), string.Empty);
 					}
 				}
 				Thread.Sleep(50);
@@ -105,7 +105,7 @@ internal static class Program
 				return 1;
 			}
 			process.WaitForExit();
-			if (process.ExitCode != 0 || !File.Exists(results) || !File.Exists(Path.Combine(probeDirectory, "removed")))
+			if (process.ExitCode != 0 || !File.Exists(results) || !File.Exists(Path.Join(probeDirectory, "removed")))
 			{
 				Console.Error.WriteLine($"Native event probe failed (app exit {process.ExitCode}); see {results}.log");
 				return 1;
