@@ -29,33 +29,6 @@ namespace Uno.WinAppSDKSyncGenerator
 		private const string BaseXamlNamespace = "Microsoft.UI.Xaml";
 
 		/// <summary>
-		/// Types whose hand-written partial class inherits from a collection base class
-		/// (DependencyObjectCollection&lt;T&gt; or List&lt;T&gt;), which already provides
-		/// IList&lt;T&gt;/ICollection&lt;T&gt;/IEnumerable&lt;T&gt; implementations.
-		/// The generator must not emit NotImplemented stubs for these collection interfaces
-		/// or their member methods/properties, as they would hide the working base class methods.
-		/// The generator's FindMatchingMethod fails to match inherited generic methods
-		/// (e.g., Add(T) when T is substituted), so these types need explicit skipping.
-		/// </summary>
-		private static readonly HashSet<string> _skipCollectionInterfaceImplementationTypes = new()
-		{
-			BaseXamlNamespace + ".SetterBaseCollection",
-			BaseXamlNamespace + ".DependencyObjectCollection",
-			BaseXamlNamespace + ".Documents.BlockCollection",
-			BaseXamlNamespace + ".Input.KeyboardAcceleratorCollection",
-			BaseXamlNamespace + ".Media.Animation.ColorKeyFrameCollection",
-			BaseXamlNamespace + ".Media.Animation.DoubleKeyFrameCollection",
-			BaseXamlNamespace + ".Media.Animation.ObjectKeyFrameCollection",
-			BaseXamlNamespace + ".Media.Animation.TimelineCollection",
-			BaseXamlNamespace + ".Media.GeometryCollection",
-			BaseXamlNamespace + ".Media.GradientStopCollection",
-			BaseXamlNamespace + ".Media.PathFigureCollection",
-			BaseXamlNamespace + ".Media.PathSegmentCollection",
-			BaseXamlNamespace + ".Media.Animation.TransitionCollection",
-			BaseXamlNamespace + ".Media.DoubleCollection",
-		};
-
-		/// <summary>
 		/// Types whose generated partial must not restate the WinUI base class, because Uno's
 		/// hand-written hierarchy diverges and a second, conflicting base clause is a CS0263.
 		/// Most of this list came from the pre-7.0 native view hierarchy and became obsolete with
@@ -750,15 +723,6 @@ namespace Uno.WinAppSDKSyncGenerator
 							continue;
 						}
 
-						// Skip generating collection interface implementations for types
-						// whose base class already provides working implementations.
-						if (_skipCollectionInterfaceImplementationTypes.Contains(type.ToString())
-							&& IsCollectionInterface(inner))
-						{
-							b.AppendLineInvariant($"// Processing: {inner}");
-							continue;
-						}
-
 						if (implementedInterfaces.Add(inner))
 						{
 							BuildInterfaceImplementation(b, type, inner, types, writtenMethods);
@@ -946,67 +910,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			}
 
 			return typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-		}
-
-		private static bool IsCollectionInterface(INamedTypeSymbol iface)
-		{
-			var name = iface.OriginalDefinition.ToDisplayString();
-			return name is
-				"System.Collections.Generic.IList<T>" or
-				"System.Collections.Generic.ICollection<T>" or
-				"System.Collections.Generic.IEnumerable<T>" or
-				"System.Collections.IEnumerable";
-		}
-
-		/// <summary>
-		/// Checks if a member (method or property) is an implementation of a collection
-		/// interface member (IList&lt;T&gt;, ICollection&lt;T&gt;, IEnumerable&lt;T&gt;, IEnumerable).
-		/// Used to skip generating NotImplemented stubs for members that are already
-		/// provided by the DependencyObjectCollection&lt;T&gt; base class.
-		/// </summary>
-		private static bool IsCollectionInterfaceMember(ISymbol member, INamedTypeSymbol containingType)
-		{
-			foreach (var iface in containingType.AllInterfaces)
-			{
-				if (!IsCollectionInterface(iface))
-				{
-					continue;
-				}
-
-				foreach (var ifaceMember in iface.GetMembers())
-				{
-					if (ifaceMember.Kind != member.Kind)
-					{
-						continue;
-					}
-
-					var impl = containingType.FindImplementationForInterfaceMember(ifaceMember);
-					if (impl != null && SymbolEqualityComparer.Default.Equals(impl, member))
-					{
-						return true;
-					}
-
-					// CsWinRT projections may use explicit interface implementations for
-					// collection members (e.g., IList<T>.this[int]) while also exposing a
-					// public member with the same signature. FindImplementationForInterfaceMember
-					// returns the explicit implementation, which won't equal the public member.
-					// Fall back to name+kind matching for indexers and common collection members.
-					if (member is IPropertySymbol memberProp && ifaceMember is IPropertySymbol ifaceProp
-						&& memberProp.IsIndexer && ifaceProp.IsIndexer)
-					{
-						return true;
-					}
-
-					if (member is IMethodSymbol memberMethod && ifaceMember is IMethodSymbol ifaceMethod
-						&& memberMethod.Name == ifaceMethod.Name
-						&& memberMethod.Parameters.Length == ifaceMethod.Parameters.Length)
-					{
-						return true;
-					}
-				}
-			}
-
-			return false;
 		}
 
 		private static bool ShouldSkipInterface(INamedTypeSymbol iface)
@@ -1557,17 +1460,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				{
 					if (methods.HasUndefined)
 					{
-						// Skip generating stubs for collection methods on types whose
-						// base class (DependencyObjectCollection<T>) already provides
-						// working implementations. The generator's FindMatchingMethod
-						// fails to match inherited generic methods.
-						if (_skipCollectionInterfaceImplementationTypes.Contains(type.ToString())
-							&& IsCollectionInterfaceMember(method, type))
-						{
-							b.AppendLineInvariant($"// Skipping collection method provided by base class: {method}");
-							continue;
-						}
-
 						methods.AppendIf(b);
 						string genericParameters = string.Empty;
 						if (method.TypeParameters.Length > 0)
@@ -1965,15 +1857,6 @@ namespace Uno.WinAppSDKSyncGenerator
 
 				if (allMembers.HasUndefined)
 				{
-					// Skip generating stubs for collection properties (e.g., indexer)
-					// on types whose base class already provides them.
-					if (_skipCollectionInterfaceImplementationTypes.Contains(type.ToString())
-						&& IsCollectionInterfaceMember(property, type))
-					{
-						b.AppendLineInvariant($"// Skipping collection property provided by base class: {property.Name}");
-						continue;
-					}
-
 					allMembers.AppendIf(b);
 
 					if (type.TypeKind == TypeKind.Interface)
