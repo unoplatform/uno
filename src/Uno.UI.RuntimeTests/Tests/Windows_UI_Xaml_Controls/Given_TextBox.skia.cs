@@ -6689,7 +6689,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(emptyLineIndex, SUT.SelectionStart, "the caret should be on the tapped empty line");
 			Assert.AreEqual(0, SUT.SelectionLength, "an empty paragraph has nothing to select");
-			Assert.AreEqual(TextBox.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, "a caret shows no handles");
+			// The thumbless iOS caret blinks on a 500 ms timer: wait for its shown half rather than sampling it once.
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.ThumblessCaretShowing,
+				timeoutMS: 3000,
+				message: "a caret shows no handles");
 		}
 
 		private static async Task<TextBox> LoadFocusedTextBox_iOS(string text)
