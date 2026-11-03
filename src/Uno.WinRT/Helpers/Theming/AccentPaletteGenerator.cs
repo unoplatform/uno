@@ -348,7 +348,7 @@ internal static class AccentPaletteGenerator
 		return (h, s, l);
 	}
 
-	private static int HslToRgbDouble(double hue, double saturation, double lightness)
+	internal static int HslToRgbDouble(double hue, double saturation, double lightness)
 	{
 		var h = hue % 1.0;
 		if (hue < 0)
@@ -367,9 +367,12 @@ internal static class AccentPaletteGenerator
 		}
 
 		var h6 = h * 6.0;
-		var sextant = (int)Math.Floor(h6);
+		var floor = Math.Floor(h6);
+		var fraction = h6 - floor;
+
+		// A hue that rounds up to exactly 1.0 is red again, like 0.0.
+		var sextant = (int)floor % 6;
 		var p = l + l - q;
-		var fraction = h6 - sextant;
 		var vsf = (q - p) / q * q * fraction;
 		var mid1 = q - vsf;
 		var mid2 = vsf + p;
