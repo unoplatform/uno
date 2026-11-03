@@ -5,7 +5,7 @@ using Windows.UI;
 
 namespace Uno.UI.Tests.Windows_UI;
 
-[TestClass]
+[UITestClass]
 public class Given_AccentColorPalette
 {
 	// Palettes captured from Windows 11 (UISettings.GetColorValue) after setting each accent as the system accent.
