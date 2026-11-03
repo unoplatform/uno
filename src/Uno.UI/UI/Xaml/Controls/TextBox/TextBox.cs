@@ -205,7 +205,6 @@ namespace Microsoft.UI.Xaml.Controls
 			OnUnloadedPartial();
 		}
 
-<<<<<<< HEAD
 		partial void OnUnloadedPartial();
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
@@ -248,15 +247,34 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnGotFocus(RoutedEventArgs e)
 		{
+#if __SKIA__
+			// From WinUI TextBoxBase::OnGotFocus:
+			// Verify that this textbox is still the focused element.
+			// This is to account for a scenario where a new element gains focus
+			// between focus manager queueing the GotFocus event and it being raised.
+			if (XamlRoot is { } xamlRoot)
+			{
+				// Only return if this TextBox is the original source of the OnGotFocus event.
+				// Other controls may directly call this OnGotFocus function and we do not want
+				// to block those calls.
+				if (ReferenceEquals(e.OriginalSource, this) && !ReferenceEquals(FocusManager.GetFocusedElement(xamlRoot), this))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug("GotFocus raised after the focus moved to another element, it is not brought into view.");
+					}
+
+					return;
+				}
+			}
+#endif
+
 			_forceFocusedVisualState = false;
 			StartBringIntoView(new BringIntoViewOptions
 			{
 				AnimationDesired = false
 			});
 		}
-=======
-		protected override void OnGotFocus(RoutedEventArgs e) => _core.OnGotFocusCore(e);
->>>>>>> 76232b4 (fix(textbox): Skip bring-into-view on stale GotFocus)
 
 		protected override void OnApplyTemplate()
 		{
@@ -1142,7 +1160,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (wasFocused)
 				{
 					// See comment in OnPointerReleased for why we do this
-					_textBoxNotificationsSingleton?.OnFocused(this);
+					NotifyFocusedAgain();
 				}
 #endif
 			}
@@ -1186,7 +1204,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// 3. User taps on TextBox again. In this case, we want to call UpdateFocusState so that the soft keyboard is re-shown again.
 					//
 					// This approach feels hacky though and may not handle programmatic focus properly, i.e, when programmatic focus is requested on an already-focused TextBox. This is a niche case though.
-					_textBoxNotificationsSingleton?.OnFocused(this);
+					NotifyFocusedAgain();
 				}
 #endif
 			}

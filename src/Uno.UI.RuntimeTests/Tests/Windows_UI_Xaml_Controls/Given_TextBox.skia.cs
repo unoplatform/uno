@@ -8600,19 +8600,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public int FocusedCount { get; private set; }
 
-			public void OnFocused(TextBoxCore core) => FocusedCount++;
+			public void OnFocused(TextBox textBox) => FocusedCount++;
 
-			public void OnUnfocused(TextBoxCore core) { }
+			public void OnUnfocused(TextBox textBox) { }
 
-			public void OnEnteredVisualTree(TextBoxCore core) { }
+			public void OnEnteredVisualTree(TextBox textBox) { }
 
-			public void OnLeaveVisualTree(TextBoxCore core) { }
+			public void OnLeaveVisualTree(TextBox textBox) { }
 
 			public void FinishAutofillContext(bool shouldSave) { }
 
-			public void NotifyValueChanged(TextBoxCore core) { }
+			public void NotifyValueChanged(TextBox textBox) { }
 
-			public void NotifySelectionChanged(TextBoxCore core) { }
+			public void NotifySelectionChanged(TextBox textBox) { }
 		}
 
 		// Counts the focus() calls on the browser's shared hidden <input>, which the browser host focuses to start a text entry.
@@ -8641,33 +8641,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public bool IsComposing { get; private set; }
 			public bool EndImeSessionCalled { get; set; }
-<<<<<<< HEAD:src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Controls/Given_TextBox.skia.cs
-=======
 			public int StartCount { get; private set; }
-			public List<ImeSessionUpdate> Updates { get; } = new();
->>>>>>> 82f9274 (fix(textbox): Defer input until release completes):src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/Given_TextBox.skia.cs
 
 			public event EventHandler CompositionStarted;
 			public event EventHandler<ImeCompositionEventArgs> CompositionUpdated;
 			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
 			public event EventHandler CompositionEnded;
 
-<<<<<<< HEAD:src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Controls/Given_TextBox.skia.cs
-			public void StartImeSession(TextBox textBox) { }
-=======
-			public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs> CandidateWindowBoundsChanged
-			{
-				add { }
-				remove { }
-			}
-
-			public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation) => StartCount++;
-
-			public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update) => Updates.Add(update);
-
-			public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
-				=> Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
->>>>>>> 82f9274 (fix(textbox): Defer input until release completes):src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/Given_TextBox.skia.cs
+			public void StartImeSession(TextBox textBox) => StartCount++;
 
 			public void EndImeSession()
 			{

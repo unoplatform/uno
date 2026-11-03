@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Shapes;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
@@ -447,39 +448,18 @@ public partial class TextBox : ITextSelectionGripperHost
 
 		if (_isSkiaTextBox)
 		{
-<<<<<<< HEAD:src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.skia.cs
 			if (focusState != FocusState.Unfocused)
-=======
-			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-			RequestPlatformTextInput(focusState);
-			UpdateCanPasteClipboardContent();
-			Clipboard.ContentChanged += OnClipboardContentChanged;
-			_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
-		}
-		else
-		{
-			TextBoxView?.OnFocusStateChanged(focusState);
-
-			// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
-			// Check if focus is moving to a text control flyout before deciding to unfocus.
-			_forceFocusedVisualState = ShouldForceFocusedVisualState();
-
-			// Ported from: TextBoxBase.cpp UpdateFocusState (lines 5009-5016)
-			// Hide touch caret thumbs when context flyout is opening.
-			if (_forceFocusedVisualState && ShouldHideGrippersOnFlyoutOpening()
-				&& CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing
-					or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
->>>>>>> 82f9274 (fix(textbox): Defer input until release completes):src/Uno.UI/UI/Xaml/Controls/TextBoxCore/TextBoxCore.Input.cs
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-				_textBoxNotificationsSingleton?.OnFocused(this);
-				StartImeSession();
+				RequestPlatformTextInput(focusState);
 				UpdateCanPasteClipboardContent();
 				Clipboard.ContentChanged += OnClipboardContentChanged;
 				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
 			}
 			else
 			{
+				TextBoxView?.OnFocusStateChanged(focusState);
+
 				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
 				// Check if focus is moving to a text control flyout before deciding to unfocus.
 				_forceFocusedVisualState = ShouldForceFocusedVisualState();
@@ -511,6 +491,10 @@ public partial class TextBox : ITextSelectionGripperHost
 			}
 			UpdateDisplaySelection();
 		}
+		else
+		{
+			TextBoxView?.OnFocusStateChanged(focusState);
+		}
 	}
 
 	private bool _isPlatformTextInputRequestPending;
@@ -525,7 +509,7 @@ public partial class TextBox : ITextSelectionGripperHost
 		}
 
 #if UNO_HAS_MANAGED_POINTERS
-		if (Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnPointerReleaseCompleted) is true)
+		if (XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnPointerReleaseCompleted) is true)
 		{
 			_isPlatformTextInputRequestPending = true;
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -562,7 +546,7 @@ public partial class TextBox : ITextSelectionGripperHost
 		}
 
 #if UNO_HAS_MANAGED_POINTERS
-		if (Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnFocusedAgainReleaseCompleted) is true)
+		if (XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnFocusedAgainReleaseCompleted) is true)
 		{
 			return;
 		}

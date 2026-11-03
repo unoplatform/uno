@@ -163,7 +163,6 @@ partial class InputManager
 				return;
 			}
 
-<<<<<<< HEAD
 #if __ANDROID__ || __APPLE_UIKIT__ // Not needed on WASM as we do have native support of the exit event
 			// On iOS we use the RootVisual to raise the UWP-only exit event (in managed only)
 			// Note: This is useless for managed pointers where the Exit is raised properly
@@ -184,7 +183,6 @@ partial class InputManager
 			}
 #endif
 
-=======
 #if UNO_HAS_MANAGED_POINTERS
 			if (_pendingRelease is { } pendingRelease)
 			{
@@ -199,7 +197,6 @@ partial class InputManager
 
 		private PointerEventDispatchResult CompletePointerUp(PointerRoutedEventArgs args, bool isHandled, bool isAfterHandledUp)
 		{
->>>>>>> d09ed95 (fix(input): Raise Tapped after PointerReleased)
 			// Uno specific: To ensure focus is properly lost when clicking "outside" the app's content,
 			// we set focus here. In the case of UWP, the focus is set to the root ScrollViewer instead,
 			// but Uno does not have it on all targets yet.

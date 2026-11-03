@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
-using Uno.UI.DevTools.Input;
+using Uno.UI.Toolkit.DevTools.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Input.Preview.Injection;
 #if HAS_UNO_WINUI
@@ -21,7 +21,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 /// Tapped / RightTapped (and the ContextRequested that follows RightTapped) are raised only once PointerReleased has bubbled to the root.
 /// </summary>
 [TestClass]
-[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // The mouse injection of the WinUI test head misplaces the pointer
+// The mouse injection of the WinUI test head misplaces the pointer, and the native renderers don't use the managed pointers.
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 public partial class Given_UIElement_GestureEventOrder
 {
 	// The recognizer that raises Tapped / RightTapped belongs to the OWNER, while the pointer hits the INNER element below it (like a
