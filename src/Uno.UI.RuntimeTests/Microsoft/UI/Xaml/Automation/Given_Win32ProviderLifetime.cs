@@ -36,9 +36,16 @@ public class Given_Win32ProviderLifetime
 			var accessibility = ResolveAccessibility(host);
 			var provider = GetOrCreateProvider(accessibility, child);
 			var type = accessibility.GetType();
+			// The real re-entry (UiaDisconnectProvider → Navigate(Parent)) hands its result to UIA only,
+			// so enter the cleanup state directly and make the same lookups.
 			var cleanupDepth = type.GetField("_providerCleanupDepth", BindingFlags.Instance | BindingFlags.NonPublic)!;
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(child);
 			var newChild = new Button();
+			var getProviderForPeer = type.GetMethod("GetProviderForPeer", BindingFlags.Instance | BindingFlags.NonPublic)!;
+			// Keyed by its peer and the peer's owner only, like a provider UIA reached through peer navigation.
+			var redirected = new PeerRedirectingControl();
+			var peerKeyedProvider = getProviderForPeer.Invoke(accessibility, new object[] { FrameworkElementAutomationPeer.CreatePeerForElement(redirected), false });
+			Assert.IsNotNull(peerKeyedProvider);
 			Assert.AreEqual(0, cleanupDepth.GetValue(accessibility));
 			cleanupDepth.SetValue(accessibility, 1);
 			try
@@ -48,11 +55,12 @@ public class Given_Win32ProviderLifetime
 					var method = type.GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic)!;
 					Assert.AreSame(provider, method.Invoke(accessibility, new object[] { child }),
 						"Native disconnect callbacks must still find connected sibling providers.");
+					Assert.AreSame(peerKeyedProvider, method.Invoke(accessibility, new object[] { redirected }),
+						"Native disconnect callbacks must find a provider registered only by its peer.");
 					Assert.IsNull(method.Invoke(accessibility, new object[] { newChild }),
 						"Cleanup must prevent provider creation during native callbacks.");
 				}
-				Assert.AreSame(provider, type.GetMethod("GetProviderForPeer", BindingFlags.Instance | BindingFlags.NonPublic)!
-					.Invoke(accessibility, new object[] { peer, false }));
+				Assert.AreSame(provider, getProviderForPeer.Invoke(accessibility, new object[] { peer, false }));
 			}
 			finally
 			{
