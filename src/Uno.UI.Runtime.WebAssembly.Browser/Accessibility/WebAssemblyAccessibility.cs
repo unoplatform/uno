@@ -987,36 +987,50 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 
 		@this._isAccessibilityEnabled = true;
-		@this._isCreatingAOM = true;
 		try
 		{
-			@this.CreateAOM(rootElement);
+			@this._isCreatingAOM = true;
+			try
+			{
+				@this.CreateAOM(rootElement);
+			}
+			finally
+			{
+				@this._isCreatingAOM = false;
+			}
+			Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
+
+			// Initialize subsystems
+			@this._liveRegionManager = new LiveRegionManager();
+			@this._focusSynchronizer = new FocusSynchronizer(@this);
+			@this._focusSynchronizer.Initialize();
+
+			// Suppress the duplicate FocusManager.FocusNative path.
+			// The FocusSynchronizer handles all focus sync via FocusManager.GotFocus
+			// and performs semantic tree resolution before calling into JS.
+			FocusManager.SuppressNativeFocus = true;
+
+			@this._focusSearchRoot = rootElement;
+			NativeMethods.InstallFocusSentinels();
+
+			var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
+			if (focusManager is not null)
+			{
+				@this._focusController = focusManager.FocusObserver.FocusController;
+				@this._focusController.FocusDeparting -= @this.OnFocusDeparting;
+				@this._focusController.FocusDeparting += @this.OnFocusDeparting;
+			}
 		}
-		finally
+		catch (Exception ex)
 		{
-			@this._isCreatingAOM = false;
-		}
-		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
+			// A half-enabled state is dead (the subsystems set up after the failure are missing) and would make
+			// every later call return early, so undo it: accessibility can then be enabled again.
+			if (@this.Log().IsEnabled(LogLevel.Error))
+			{
+				@this.Log().Error("[A11y] EnableAccessibility() failed; accessibility was disabled again so it can be retried.", ex);
+			}
 
-		// Initialize subsystems
-		@this._liveRegionManager = new LiveRegionManager();
-		@this._focusSynchronizer = new FocusSynchronizer(@this);
-		@this._focusSynchronizer.Initialize();
-
-		// Suppress the duplicate FocusManager.FocusNative path.
-		// The FocusSynchronizer handles all focus sync via FocusManager.GotFocus
-		// and performs semantic tree resolution before calling into JS.
-		FocusManager.SuppressNativeFocus = true;
-
-		@this._focusSearchRoot = rootElement;
-		NativeMethods.InstallFocusSentinels();
-
-		var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
-		if (focusManager is not null)
-		{
-			@this._focusController = focusManager.FocusObserver.FocusController;
-			@this._focusController.FocusDeparting -= @this.OnFocusDeparting;
-			@this._focusController.FocusDeparting += @this.OnFocusDeparting;
+			DisableAccessibility();
 		}
 	}
 
@@ -1951,6 +1965,23 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	internal void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child, int depth = 0)
+	{
+		// Same contract as OnChildAdded: an element that fails (e.g. a peer throwing from a property the ARIA
+		// mapping reads) is logged and skipped with its subtree, and the rest of the tree is still built.
+		try
+		{
+			BuildSemanticsTreeRecursiveCore(parentHandle, child, depth);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"[A11y] BuildSemanticsTreeRecursive failed for {child.GetType().Name}: {ex.Message}", ex);
+			}
+		}
+	}
+
+	private void BuildSemanticsTreeRecursiveCore(IntPtr parentHandle, UIElement child, int depth)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
 
