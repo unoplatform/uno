@@ -137,26 +137,6 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	}
 
 	[JSExport]
-	private static void OnCompositionEnded()
-	{
-		if (!Instance._isComposing)
-		{
-			return;
-		}
-
-		Instance._isComposing = false;
-		Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);
-	}
-
-	[JSExport]
-	private static Task OnCompositionEndedAsync()
-	{
-		OnCompositionEnded();
-
-		return Task.CompletedTask;
-	}
-
-	[JSExport]
 	private static void OnCompositionCanceled()
 	{
 		if (!Instance._isComposing)
