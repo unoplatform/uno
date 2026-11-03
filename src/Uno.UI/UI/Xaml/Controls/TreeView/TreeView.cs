@@ -122,6 +122,14 @@ public partial class TreeView : Control
 
 	internal void UpdateSelection(TreeViewNode node, bool isSelected)
 	{
+#if HAS_UNO
+		// Uno specific (#25796): ignore a stale IsSelected pushed by the item's binding while its container is prepared.
+		if (ListControl?.IsPreparingStaleSelection(node) == true)
+		{
+			return;
+		}
+#endif
+
 		var viewModel = ListControl?.ListViewModel;
 		if (viewModel != null)
 		{
