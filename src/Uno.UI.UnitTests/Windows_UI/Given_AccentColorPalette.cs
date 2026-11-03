@@ -101,6 +101,13 @@ public class Given_AccentColorPalette
 		Assert.AreEqual(windows.Dark3, palette.Dark3, "Dark3");
 	}
 
+	[TestMethod]
+	public void When_Hue_Rounds_Up_To_One_Then_Wraps_To_Red()
+	{
+		// -1e-17 % 1.0 + 1.0 rounds to exactly 1.0.
+		Assert.AreEqual(0xFF0000, AccentPaletteGenerator.HslToRgbDouble(-1e-17, 1.0, 0.5));
+	}
+
 	private static void AssertPalette(AccentColorPalette palette, string accent, string light1, string light2, string light3, string dark1, string dark2, string dark3)
 	{
 		Assert.AreEqual(Parse(accent), palette.Accent, "Accent");
