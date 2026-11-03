@@ -136,7 +136,7 @@ public partial class TreeViewItemAutomationPeer : ListViewItemAutomationPeer, IE
 
 	protected override string GetClassNameCore()
 	{
-		return nameof(TreeViewItem);
+		return typeof(TreeViewItem).FullName!;
 	}
 
 	// IAutomationPeerOverrides3

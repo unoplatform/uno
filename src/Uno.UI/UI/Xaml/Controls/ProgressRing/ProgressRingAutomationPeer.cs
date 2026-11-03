@@ -39,7 +39,7 @@ public partial class ProgressRingAutomationPeer : FrameworkElementAutomationPeer
 	}
 
 	protected override string GetClassNameCore()
-		=> nameof(ProgressRing);
+		=> typeof(ProgressRing).FullName!;
 
 	protected override string GetNameCore()
 	{

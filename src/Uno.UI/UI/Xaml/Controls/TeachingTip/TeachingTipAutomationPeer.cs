@@ -31,7 +31,7 @@ public partial class TeachingTipAutomationPeer : FrameworkElementAutomationPeer,
 		}
 	}
 
-	protected override string GetClassNameCore() => nameof(TeachingTip);
+	protected override string GetClassNameCore() => typeof(TeachingTip).FullName!;
 
 	WindowInteractionState IWindowProvider.InteractionState
 	{

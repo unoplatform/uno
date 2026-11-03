@@ -59,7 +59,7 @@ public partial class ColorSpectrumAutomationPeer : FrameworkElementAutomationPee
 	}
 
 	protected override string GetClassNameCore()
-		=> nameof(ColorSpectrum);
+		=> typeof(ColorSpectrum).FullName!;
 
 	protected override string GetHelpTextCore()
 		=> ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_HelpTextColorSpectrum);

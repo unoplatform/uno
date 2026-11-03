@@ -23,7 +23,7 @@ public partial class AnimatedVisualPlayerAutomationPeer : FrameworkElementAutoma
 	}
 
 	protected override string GetClassNameCore()
-		=> nameof(AnimatedVisualPlayer);
+		=> typeof(AnimatedVisualPlayer).FullName!;
 
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Image;

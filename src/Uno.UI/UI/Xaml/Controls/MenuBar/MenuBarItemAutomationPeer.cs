@@ -47,7 +47,7 @@ public partial class MenuBarItemAutomationPeer : FrameworkElementAutomationPeer,
 	}
 
 	protected override string GetClassNameCore()
-		=> nameof(MenuBarItem);
+		=> typeof(MenuBarItem).FullName!;
 
 	// IInvokeProvider
 	public void Invoke()
