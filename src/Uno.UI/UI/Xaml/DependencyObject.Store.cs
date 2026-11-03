@@ -1585,6 +1585,10 @@ namespace Microsoft.UI.Xaml
 		/// Allocation-free counterpart of <see cref="GetResourceDictionaries"/>, for the lookups that run
 		/// per theme reference and per implicit-style resolution.
 		/// </summary>
+		/// <remarks>
+		/// The result is a single-pass enumerator, not an enumerable: consume it directly in one
+		/// <c>foreach</c>. A stored copy that was already walked yields nothing.
+		/// </remarks>
 		internal ResourceDictionaryWalker EnumerateResourceDictionaries(
 			bool includeAppResources,
 			FrameworkElement? resourceContextProvider = null,
