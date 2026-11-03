@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
+using Colors = Microsoft.UI.Colors;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
@@ -211,5 +212,17 @@ public partial class Given_AnimatedIcon
 			diagnostics = null;
 			return null;
 		}
+
+#if HAS_UNO
+		void IAnimatedVisualSource.Update(AnimatedVisualPlayer player) { }
+		void IAnimatedVisualSource.Load() { }
+		void IAnimatedVisualSource.Unload() { }
+		void IAnimatedVisualSource.Play(double fromProgress, double toProgress, bool looped) { }
+		void IAnimatedVisualSource.Stop() { }
+		void IAnimatedVisualSource.Pause() { }
+		void IAnimatedVisualSource.Resume() { }
+		void IAnimatedVisualSource.SetProgress(double progress) { }
+		global::Windows.Foundation.Size IAnimatedVisualSource.Measure(global::Windows.Foundation.Size availableSize) => availableSize;
+#endif
 	}
 }
