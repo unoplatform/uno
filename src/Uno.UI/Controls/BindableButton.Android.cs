@@ -17,6 +17,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.Extensions;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Controls
 {
@@ -98,16 +99,8 @@ namespace Uno.UI.Controls
 
 			if (newCommand != null)
 			{
-				EventHandler handler = (s, e) => UpdateEnabledState();
-
-				newCommand.CanExecuteChanged += handler;
-
-				_commandCanExecute.Disposable = Disposable
-					.Create(() =>
-					{
-						newCommand.CanExecuteChanged -= handler;
-					}
-				);
+				// Weak, so a long-lived command doesn't keep a button that is never attached alive.
+				_commandCanExecute.Disposable = WeakCanExecuteChangedSubscription.Create(newCommand, this, static button => button.UpdateEnabledState());
 			}
 
 			UpdateEnabledState();
