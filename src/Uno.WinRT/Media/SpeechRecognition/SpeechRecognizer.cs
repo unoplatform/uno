@@ -22,7 +22,7 @@ namespace Windows.Media.SpeechRecognition
 		public event TypedEventHandler<SpeechRecognizer, SpeechRecognizerStateChangedEventArgs> StateChanged;
 
 		public SpeechRecognizer()
-			: this(new Language(CultureInfo.CurrentCulture.Name))
+			: this(new Language(CultureInfo.CurrentUICulture.Name))
 		{
 		}
 

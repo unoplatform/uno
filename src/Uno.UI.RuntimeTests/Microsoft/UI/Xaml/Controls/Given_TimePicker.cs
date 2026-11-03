@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -102,6 +103,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// In 12-hour clock, the first hour should represent 12 (not 0), regardless of formatting or digit shapes
 			Assert.IsTrue(int.TryParse(firstItem.PrimaryText, out var firstHourValue), "First hour text should be a valid integer");
 			Assert.AreEqual(12, firstHourValue, "First hour in 12-hour clock should represent 12");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18834")]
+		[DataRow("en-CA", "12HourClock", "5")]
+		[DataRow("ko-KR", "12HourClock", "5")]
+		[DataRow("en-GB", "24HourClock", "17")]
+		public void When_Default_ClockIdentifier_Follows_Language(string cultureName, string expectedClock, string expectedHour)
+		{
+			var originalCulture = CultureInfo.CurrentCulture;
+			var originalOverride = global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride;
+			try
+			{
+				// As in WinUI, the clock follows the app language, not CurrentCulture (the regional format).
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = cultureName;
+				CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(expectedClock == "12HourClock" ? "en-GB" : "en-US");
+
+				var timePicker = new TimePicker { SelectedTime = new TimeSpan(17, 15, 0) };
+				Assert.AreEqual(expectedClock, timePicker.ClockIdentifier);
+
+				// Lay out synchronously so the template sees the opposite CurrentCulture set above.
+				TestServices.WindowHelper.WindowContent = timePicker;
+				timePicker.UpdateLayout();
+
+				var hourTextBlock = (TextBlock)VisualTreeUtils.FindVisualChildByName(timePicker, "HourTextBlock");
+				var periodTextBlock = (TextBlock)VisualTreeUtils.FindVisualChildByName(timePicker, "PeriodTextBlock");
+				Assert.AreEqual(expectedHour, hourTextBlock.Text);
+				Assert.AreEqual(expectedClock == "12HourClock", periodTextBlock?.Parent is not null, "The period column should show only with a 12-hour clock");
+			}
+			finally
+			{
+				global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = originalOverride;
+				CultureInfo.CurrentCulture = originalCulture;
+				TestServices.WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
