@@ -174,6 +174,31 @@ public class Given_TextBox_Paste
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25998")]
+	[DataRow("01", "a\r\nb", "01a\rb", DisplayName = "CR LF counts as one character")]
+	[DataRow("01", "a\r\nbc", "01a\rb", DisplayName = "Shortened after the line break")]
+	[DataRow("01", "a\nb", "01a\rb", DisplayName = "LF")]
+	[DataRow("012", "\r\n\r\n\r\n", "012\r\r", DisplayName = "Line breaks only")]
+	public async Task When_Pasting_Line_Breaks_Into_A_Multiline_TextBox_With_MaxLength(string text, string pasted, string expectedText)
+	{
+		try
+		{
+			var SUT = await LoadFocused(text, maxLength: 5, acceptsReturn: true);
+			SUT.Select(text.Length, 0);
+			var events = new TextEvents(SUT);
+
+			await Paste(SUT, pasted);
+
+			AssertState(SUT, expectedText, expectedText.Length, 0);
+			events.AssertCounts(beforeTextChanging: 1, textChanging: 1, textChanged: 1);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	private static async Task<TextBox> LoadFocused(string text, int maxLength, bool acceptsReturn = false, Action<TextBox>? configure = null)
 	{
 		// Text before MaxLength, the order XAML applies them in when Text comes first.
