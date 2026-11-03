@@ -135,7 +135,7 @@
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.28000.2526",
+		"version": "10.0.28000.2705",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
@@ -398,7 +398,7 @@
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.4078.44",
+		"version": "1.0.4191.47",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]
