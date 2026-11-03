@@ -829,21 +829,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				if (_semanticParentMap.TryGetValue(handle, out var semanticParentHandle)
 					&& containerVisual.Owner?.Target is UIElement element)
 				{
-					// Use the full element-to-semantic-parent transform so that
-					// RenderTransform, Scale, etc. are reflected in the position.
-					var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
-					if (semanticParentElement is not null)
-					{
-						var transformedRect = GetRectInSemanticParent(element, semanticParentElement);
-						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
-					}
-					else
-					{
-						var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
-						var transform = UIElement.GetTransform(from: element, to: null);
-						var transformedRect = transform.Transform(localRect);
-						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
-					}
+					UpdateSemanticElementPositioning(element, semanticParentHandle);
 				}
 				else
 				{
@@ -854,6 +840,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
 						var transformedRect = transform.Transform(localRect);
 						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+
+						// A semantic node is positioned relative to its nearest semantic ancestor, across the pruned
+						// elements in between. Moving a pruned element (e.g. arranging a re-created page) moves its
+						// semantic descendants without changing their own offsets, so nothing else re-positions them.
+						if (handle != _rootElementHandle)
+						{
+							UpdateSemanticDescendantsPositioning(rootElement);
+						}
 					}
 					else
 					{
@@ -861,6 +855,50 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						NativeMethods.UpdateSemanticElementPositioning(handle, visual.Size.X, visual.Size.Y, totalOffset.X, totalOffset.Y);
 					}
 				}
+			}
+		}
+	}
+
+	private void UpdateSemanticElementPositioning(UIElement element, IntPtr semanticParentHandle)
+	{
+		var handle = element.Visual.Handle;
+
+		// Use the full element-to-semantic-parent transform so that
+		// RenderTransform, Scale, etc. are reflected in the position.
+		var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
+		if (semanticParentElement is not null)
+		{
+			var transformedRect = GetRectInSemanticParent(element, semanticParentElement);
+			NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+		}
+		else
+		{
+			var localRect = new Windows.Foundation.Rect(0, 0, element.Visual.Size.X, element.Visual.Size.Y);
+			var transform = UIElement.GetTransform(from: element, to: null);
+			var transformedRect = transform.Transform(localRect);
+			NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+		}
+	}
+
+	/// <summary>
+	/// Re-positions the nearest semantic descendants of an element that has no semantic node itself.
+	/// </summary>
+	private void UpdateSemanticDescendantsPositioning(UIElement prunedElement)
+	{
+		foreach (var child in prunedElement.GetChildren())
+		{
+			if (IsPrunedAsHidden(child))
+			{
+				continue;
+			}
+
+			if (_semanticParentMap.TryGetValue(child.Visual.Handle, out var semanticParentHandle))
+			{
+				UpdateSemanticElementPositioning(child, semanticParentHandle);
+			}
+			else
+			{
+				UpdateSemanticDescendantsPositioning(child);
 			}
 		}
 	}
