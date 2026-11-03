@@ -29,6 +29,9 @@ jobs:
   displayName: '${{ parameters.renderer }}'
   timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
+  # WebGPU lanes report failures without failing the build until they're stable (#25988).
+  ${{ if eq(parameters.renderer, 'WebGPU') }}:
+    continueOnError: true
 
   ${{ if ne(parameters.vmLinuxPool, '') }}:
     pool: ${{ parameters.vmLinuxPool }}

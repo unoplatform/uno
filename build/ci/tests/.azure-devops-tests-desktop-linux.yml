@@ -65,6 +65,9 @@ jobs:
   displayName: '${{ parameters.renderer }} Runtime Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
+  # WebGPU lanes report failures without failing the build until they're stable (#25988).
+  ${{ if eq(parameters.renderer, 'WebGPU') }}:
+    continueOnError: true
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}

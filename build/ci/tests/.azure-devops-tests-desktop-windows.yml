@@ -125,6 +125,8 @@ jobs:
   displayName: 'WebGPU Runtime Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
+  # WebGPU lanes report failures without failing the build until they're stable (#25988).
+  continueOnError: true
   # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1); master runs it always.
   condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.WebGpuTestsRequired'], 'true')))
 
