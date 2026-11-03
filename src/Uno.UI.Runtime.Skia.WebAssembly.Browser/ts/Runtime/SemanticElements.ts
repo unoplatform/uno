@@ -551,6 +551,8 @@ namespace Uno.UI.Runtime.Skia {
 			element.style.fontWeight = 'inherit';
 
 			element.textContent = text;
+			// Lets live name updates target this node's content instead of aria-label.
+			element.dataset.unoStandaloneText = "true";
 
 			this.appendToParent(element, parentHandle, index);
 		}
