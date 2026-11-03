@@ -375,6 +375,164 @@ public class Given_Win32Accessibility
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24753")]
+	[DataRow("TextBox")]
+	[DataRow("PasswordBox")]
+	[DataRow("TextBlock")]
+	[DataRow("RichTextBlock")]
+	[DataRow("RichEditBox")]
+	public async Task When_TextRange_BoundingRectangles_Are_In_Screen_Space(string kind)
+	{
+		var element = CreateTextElement(kind);
+
+		try
+		{
+			await UITestHelper.Load(new Grid
+			{
+				Padding = new Thickness(60, 40, 0, 0),
+				Children = { element },
+			});
+
+			var accessibility = ResolveAccessibility(element)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+			var provider = GetOrCreateProvider(accessibility, element)
+				?? throw new InvalidOperationException("Text element provider not found.");
+			var bounds = GetBoundingRectangle(provider);
+			var documentRange = GetDocumentRange(provider);
+			var rectangles = InvokeTextMember<double[]>(documentRange, "GetBoundingRectangles");
+
+			Assert.IsNotEmpty(rectangles);
+			for (var i = 0; i < rectangles.Length; i += 4)
+			{
+				// Both go through the same client-logical to screen-physical mapping, so the text
+				// geometry lies within the element whatever the window position or DPI scale.
+				Assert.IsTrue(
+					rectangles[i] >= bounds.Left - 1
+						&& rectangles[i + 1] >= bounds.Top - 1
+						&& rectangles[i] + rectangles[i + 2] <= bounds.Left + bounds.Width + 1
+						&& rectangles[i + 1] + rectangles[i + 3] <= bounds.Top + bounds.Height + 1,
+					$"Text rect ({rectangles[i]}, {rectangles[i + 1]}, {rectangles[i + 2]}, {rectangles[i + 3]}) "
+						+ $"must lie within the element bounds {bounds}.");
+			}
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24753")]
+	[DataRow("RichTextBlock")]
+	[DataRow("RichEditBox")]
+	public async Task When_TextProvider_RangeFromPoint_Uses_Screen_Space(string kind)
+	{
+		var element = CreateTextElement(kind);
+
+		try
+		{
+			await UITestHelper.Load(new Grid
+			{
+				Padding = new Thickness(60, 40, 0, 0),
+				Children = { element },
+			});
+
+			var accessibility = ResolveAccessibility(element)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+			var provider = GetOrCreateProvider(accessibility, element)
+				?? throw new InvalidOperationException("Text element provider not found.");
+			var bounds = GetBoundingRectangle(provider);
+			var textProvider = GetPatternProvider(provider, UiaTextPatternId)
+				?? throw new InvalidOperationException("Text pattern not found.");
+			var documentRange = GetDocumentRange(provider);
+			var lineRectangles = InvokeTextMember<double[]>(documentRange, "GetBoundingRectangles");
+			Assert.IsNotEmpty(lineRectangles);
+
+			// A screen point just inside the start of the first line, which must be inside the element's screen bounds.
+			var x = lineRectangles[0] + 3;
+			var y = lineRectangles[1] + lineRectangles[3] / 2;
+			Assert.IsTrue(
+				x > bounds.Left && x < bounds.Left + bounds.Width && y > bounds.Top && y < bounds.Top + bounds.Height,
+				$"({x}, {y}) must be inside the element bounds {bounds}.");
+
+			var range = InvokeTextMember<object>(textProvider, "RangeFromPoint", CreateUiaPoint(textProvider, x, y));
+			range.GetType().GetMethod("ExpandToEnclosingUnit")!.Invoke(range, new object[] { Microsoft.UI.Xaml.Automation.Text.TextUnit.Word });
+			var hitWord = InvokeTextMember<string>(range, "GetText", -1);
+			Assert.AreEqual("First", hitWord.Trim(), "RangeFromPoint at the first line's start must resolve the first word.");
+
+			// A point at the element's bottom-right resolves a later position, not the start.
+			var end = InvokeTextMember<object>(
+				textProvider,
+				"RangeFromPoint",
+				CreateUiaPoint(textProvider, lineRectangles[^4] + lineRectangles[^2] - 3, lineRectangles[^3] + lineRectangles[^1] / 2));
+			end.GetType().GetMethod("ExpandToEnclosingUnit")!.Invoke(end, new object[] { Microsoft.UI.Xaml.Automation.Text.TextUnit.Word });
+			Assert.AreNotEqual("First", InvokeTextMember<string>(end, "GetText", -1).Trim());
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	private const int UiaTextPatternId = 10014;
+
+	private static FrameworkElement CreateTextElement(string kind)
+	{
+		const string text = "First words. Second words wrap here.";
+		switch (kind)
+		{
+			case "TextBox":
+				return new TextBox { Text = text, Width = 200, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+			case "PasswordBox":
+				return new PasswordBox { Password = "secret", Width = 200, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+			case "TextBlock":
+				return new TextBlock { Text = text, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+			case "RichTextBlock":
+				var richTextBlock = new RichTextBlock { Width = 120, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+				var paragraph = new Microsoft.UI.Xaml.Documents.Paragraph();
+				paragraph.Inlines.Add(new Microsoft.UI.Xaml.Documents.Run { Text = text });
+				richTextBlock.Blocks.Add(paragraph);
+				return richTextBlock;
+			case "RichEditBox":
+				var richEditBox = new RichEditBox { Width = 160, Height = 80, TextWrapping = TextWrapping.Wrap, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+				richEditBox.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, text);
+				return richEditBox;
+			default:
+				throw new ArgumentOutOfRangeException(nameof(kind));
+		}
+	}
+
+	private static object GetDocumentRange(object provider)
+	{
+		var textProvider = GetPatternProvider(provider, UiaTextPatternId)
+			?? throw new InvalidOperationException("Text pattern not found.");
+		return textProvider.GetType().GetProperty("DocumentRange", BindingFlags.Instance | BindingFlags.Public)?.GetValue(textProvider)
+			?? throw new InvalidOperationException("DocumentRange not found.");
+	}
+
+	private static object? GetPatternProvider(object provider, int patternId)
+		=> provider.GetType().GetMethod("GetPatternProvider", BindingFlags.Instance | BindingFlags.Public)
+			?.Invoke(provider, new object[] { patternId });
+
+	private static object CreateUiaPoint(object textProvider, double x, double y)
+	{
+		var pointType = textProvider.GetType().Assembly.GetType("Uno.UI.Runtime.Win32.UiaPoint")
+			?? throw new InvalidOperationException("UiaPoint not found.");
+		var point = Activator.CreateInstance(pointType)!;
+		pointType.GetField("X")!.SetValue(point, x);
+		pointType.GetField("Y")!.SetValue(point, y);
+		return point;
+	}
+
+	private static T InvokeTextMember<T>(object target, string name, params object[] arguments)
+	{
+		var method = target.GetType().GetMethod(name, BindingFlags.Instance | BindingFlags.Public)
+			?? throw new InvalidOperationException($"{target.GetType().Name}.{name} not found.");
+		return (T)(method.Invoke(target, arguments)
+			?? throw new InvalidOperationException($"{target.GetType().Name}.{name} returned null."));
+	}
+
+	[TestMethod]
 	public void When_Traversing_Deep_Cyclic_Descendants()
 	{
 		var accessibilityType = FindType("Uno.UI.Runtime.Win32.Win32Accessibility")

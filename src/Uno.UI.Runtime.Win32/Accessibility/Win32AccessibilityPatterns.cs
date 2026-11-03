@@ -655,10 +655,19 @@ internal sealed class UiaTextProviderWrapper : IUiaTextProvider
 		return null;
 	}
 
+	// MUX Reference UIAPatternProviderWrapper.cpp, CUIATextProviderWrapper::RangeFromPoint
 	public IUiaTextRangeProvider? RangeFromPoint(UiaPoint point)
 	{
-		var range = _inner.RangeFromPoint(new Windows.Foundation.Point(point.X, point.Y));
+		var range = _inner.RangeFromPoint(ToClientPoint(point, _accessibility));
 		return range is not null ? new UiaTextRangeProviderWrapper(range, _accessibility) : null;
+	}
+
+	// Transform to the client coordinate point from the screen point
+	internal static Windows.Foundation.Point ToClientPoint(UiaPoint screenLocation, Win32Accessibility accessibility)
+	{
+		var clientPoint = new Windows.Foundation.Point(screenLocation.X, screenLocation.Y);
+		accessibility.TransformScreenToClient(ref clientPoint);
+		return clientPoint;
 	}
 
 	public IUiaTextRangeProvider? DocumentRange
@@ -744,10 +753,30 @@ internal sealed class UiaTextRangeProviderWrapper : IUiaTextRangeProvider, IUiaT
 			var value => value,
 		};
 
+	// MUX Reference UIAPatternProviderWrapper.cpp, CUIATextRangeProviderWrapper::GetBoundingRectangles
 	public double[] GetBoundingRectangles()
 	{
 		_inner.GetBoundingRectangles(out var rects);
-		return rects ?? Array.Empty<double>();
+		if (rects is null)
+		{
+			return Array.Empty<double>();
+		}
+
+		// Transform X,Y,width,height to the screen coordinate point from the client coordinate
+		for (var i = 0; i + 3 < rects.Length; i += 4)
+		{
+			var rect = new Windows.Foundation.Rect(rects[i], rects[i + 1], rects[i + 2], rects[i + 3]);
+
+			// Transform to the screen coordinate point from the client point
+			_accessibility.TransformClientToScreen(ref rect);
+
+			rects[i] = rect.X;
+			rects[i + 1] = rect.Y;
+			rects[i + 2] = rect.Width;
+			rects[i + 3] = rect.Height;
+		}
+
+		return rects;
 	}
 
 	public IRawElementProviderSimple? GetEnclosingElement()
@@ -922,7 +951,7 @@ internal sealed class UiaTextProvider2Wrapper : IUiaTextProvider2
 	}
 
 	public IUiaTextRangeProvider? RangeFromPoint(UiaPoint point)
-		=> Wrap(_inner.RangeFromPoint(new Windows.Foundation.Point(point.X, point.Y)), _accessibility);
+		=> Wrap(_inner.RangeFromPoint(UiaTextProviderWrapper.ToClientPoint(point, _accessibility)), _accessibility);
 
 	public IUiaTextRangeProvider? DocumentRange => Wrap(_inner.DocumentRange, _accessibility);
 	public SupportedTextSelection SupportedTextSelection => _inner.SupportedTextSelection;
@@ -984,7 +1013,7 @@ internal sealed class UiaTextEditProviderWrapper : IUiaTextEditProvider
 	}
 
 	public IUiaTextRangeProvider? RangeFromPoint(UiaPoint point)
-		=> UiaTextProvider2Wrapper.Wrap(_inner.RangeFromPoint(new Windows.Foundation.Point(point.X, point.Y)), _accessibility);
+		=> UiaTextProvider2Wrapper.Wrap(_inner.RangeFromPoint(UiaTextProviderWrapper.ToClientPoint(point, _accessibility)), _accessibility);
 
 	public IUiaTextRangeProvider? DocumentRange => UiaTextProvider2Wrapper.Wrap(_inner.DocumentRange, _accessibility);
 	public SupportedTextSelection SupportedTextSelection => _inner.SupportedTextSelection;

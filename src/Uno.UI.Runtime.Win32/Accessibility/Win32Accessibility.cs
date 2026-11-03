@@ -140,6 +140,46 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	protected override bool PushesTextValue => false;
 
+	// MUX Reference UIAWindow.cpp, CUIAWindow::TransformClientToScreen (XRECTF overload)
+	// Uno's providers report root-relative logical pixels, so the DPI scale is applied before ClientToScreen,
+	// as Win32RawElementProvider.BoundingRectangle does for element bounds.
+	internal bool TransformClientToScreen(ref Windows.Foundation.Rect rect)
+	{
+		var dpiScale = GetDpiScale();
+		var clientOrigin = new System.Drawing.Point(0, 0);
+		if (!Win32UIAutomationInterop.ClientToScreen(_hwnd, ref clientOrigin))
+		{
+			return false;
+		}
+
+		rect = new Windows.Foundation.Rect(
+			clientOrigin.X + rect.X * dpiScale,
+			clientOrigin.Y + rect.Y * dpiScale,
+			rect.Width * dpiScale,
+			rect.Height * dpiScale);
+		return true;
+	}
+
+	// MUX Reference UIAWindow.cpp, CUIAWindow::TransformScreenToClient
+	internal bool TransformScreenToClient(ref Windows.Foundation.Point point)
+	{
+		var clientPoint = new System.Drawing.Point((int)point.X, (int)point.Y);
+		if (!Win32UIAutomationInterop.ScreenToClient(_hwnd, ref clientPoint))
+		{
+			return false;
+		}
+
+		var dpiScale = GetDpiScale();
+		point = new Windows.Foundation.Point(clientPoint.X / dpiScale, clientPoint.Y / dpiScale);
+		return true;
+	}
+
+	private double GetDpiScale()
+	{
+		var dpiScale = Win32UIAutomationInterop.GetDpiForWindow(_hwnd) / (double)Win32UIAutomationInterop.USER_DEFAULT_SCREEN_DPI;
+		return dpiScale > 0 ? dpiScale : 1.0;
+	}
+
 	public override bool ListenerExistsHelper(AutomationEvents eventId) =>
 		IsAccessibilityEnabled
 		&& (eventId == AutomationEvents.AutomationFocusChanged || AreUiaClientsListening());
