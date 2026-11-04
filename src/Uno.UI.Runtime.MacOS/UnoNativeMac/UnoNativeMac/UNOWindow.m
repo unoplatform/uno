@@ -442,8 +442,21 @@ bool uno_windows_close_all(void)
 #if DEBUG
     NSLog(@"uno_windows_close_all %lu", (unsigned long)windows.count);
 #endif
-    // a copy, since a window leaves `windows` as it closes
-    for (NSWindow *window in [windows allObjects]) {
+    // front to back, so the order does not depend on the set and the window in front is asked first;
+    // hidden windows are not in `orderedWindows`, so they come last. A copy, since a window leaves `windows` as it closes.
+    NSMutableArray<NSWindow*> *ordered = [NSMutableArray arrayWithCapacity:windows.count];
+    for (NSWindow *window in [NSApp orderedWindows]) {
+        if ([windows containsObject:window]) {
+            [ordered addObject:window];
+        }
+    }
+    for (NSWindow *window in windows) {
+        if (![ordered containsObject:window]) {
+            [ordered addObject:window];
+        }
+    }
+
+    for (NSWindow *window in ordered) {
         id<NSWindowDelegate> delegate = window.delegate;
         if ([delegate respondsToSelector:@selector(windowShouldClose:)] && ![delegate windowShouldClose:window]) {
             return false;
