@@ -333,9 +333,9 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 			var init = GraphicsRegistry.Initialize();
 			_context = init.Context;
 			Volatile.Write(ref _renderer, init.Renderer);
-			_activity.OnRendererAvailable();
 			// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
 			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
+			_activity.OnRendererAvailable();
 		}
 
 		protected override void Dispose(bool disposing)

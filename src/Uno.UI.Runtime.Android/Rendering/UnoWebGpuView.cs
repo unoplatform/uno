@@ -212,10 +212,10 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		session.Context = init.Context;
 		session.Renderer = init.Renderer;
 		Volatile.Write(ref _renderer, init.Renderer);
-		_activity.OnRendererAvailable();
 		// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
 			init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;
+		_activity.OnRendererAvailable();
 	}
 
 	private void RenderFrame(RenderSession session)
