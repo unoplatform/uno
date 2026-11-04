@@ -20,19 +20,22 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 	private readonly Func<IdeChannelClient?> _ideChannelAccessor;
 	private readonly string _packageVersion;
 	private readonly string _ideVersion;
+	private readonly Action<string>? _debugLog;
 
 	private VsAppLaunchStateConsumer(
 		AsyncPackage package,
 		VsAppLaunchStateService<AppLaunchDetails> stateService,
 		Func<IdeChannelClient?> ideChannelAccessor,
 		string packageVersion,
-		string ideVersion)
+		string ideVersion,
+		Action<string>? debugLog)
 	{
 		_package = package;
 		_stateService = stateService;
 		_ideChannelAccessor = ideChannelAccessor;
 		_packageVersion = packageVersion;
 		_ideVersion = ideVersion;
+		_debugLog = debugLog;
 	}
 
 	public static async Task<VsAppLaunchStateConsumer> CreateAsync(
@@ -40,9 +43,10 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 		VsAppLaunchStateService<AppLaunchDetails> stateService,
 		Func<IdeChannelClient?> ideChannelAccessor,
 		string packageVersion,
-		string ideVersion)
+		string ideVersion,
+		Action<string>? debugLog = null)
 	{
-		var c = new VsAppLaunchStateConsumer(package, stateService, ideChannelAccessor, packageVersion, ideVersion);
+		var c = new VsAppLaunchStateConsumer(package, stateService, ideChannelAccessor, packageVersion, ideVersion, debugLog);
 		await c.InitializeAsync();
 		return c;
 	}
@@ -126,14 +130,15 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 				if (unconfiguredProject != null
 					&& unconfiguredProject.FullPath.Equals(projectPath, StringComparison.InvariantCultureIgnoreCase))
 				{
-					var configuredProject = await GetActiveDebugFrameworkConfiguredProjectAsync(unconfiguredProject)
-						?? await unconfiguredProject.GetSuggestedConfiguredProjectAsync();
+					var launchedProject = await GetActiveDebugFrameworkConfiguredProjectAsync(unconfiguredProject);
+					var configuredProject = launchedProject ?? await unconfiguredProject.GetSuggestedConfiguredProjectAsync();
 					if (configuredProject?.Services?.ProjectPropertiesProvider != null)
 					{
 						var projectProperties = configuredProject.Services.ProjectPropertiesProvider.GetCommonProperties();
 						var targetPath = await projectProperties.GetEvaluatedPropertyValueAsync("TargetPath");
 						if (!string.IsNullOrEmpty(targetPath))
 						{
+							_debugLog?.Invoke($"[AppLaunch] Registering {targetPath} from the {(launchedProject is null ? "suggested" : "active debug framework's")} configured project");
 							return targetPath;
 						}
 					}
@@ -152,11 +157,12 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 	/// Gets the configured project the debugger launches, the one of the active debug framework. For a multi-targeted
 	/// project the suggested configured project is the first target framework instead, which need not be the launched one.
 	/// </summary>
-	private static async Task<ConfiguredProject?> GetActiveDebugFrameworkConfiguredProjectAsync(UnconfiguredProject unconfiguredProject)
+	private async Task<ConfiguredProject?> GetActiveDebugFrameworkConfiguredProjectAsync(UnconfiguredProject unconfiguredProject)
 	{
 		try
 		{
 			// The referenced project system package predates this service, so it is resolved by reflection (see ProfilesObserver)
+			// https://github.com/dotnet/project-system/blob/fb1a4eed736e01f2a17e4627836addafe5f92dda/src/Microsoft.VisualStudio.ProjectSystem.Managed/ProjectSystem/Debug/IActiveDebugFrameworkServices.cs#L27-L30
 			var servicesType = Type.GetType("Microsoft.VisualStudio.ProjectSystem.Debug.IActiveDebugFrameworkServices, Microsoft.VisualStudio.ProjectSystem.Managed");
 			var exportProvider = unconfiguredProject.Services.ActiveConfiguredProjectProvider?.ActiveConfiguredProject?.Services.ExportProvider;
 
@@ -168,10 +174,12 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 			{
 				return await getConfiguredProject;
 			}
+
+			_debugLog?.Invoke($"[AppLaunch] The active debug framework's configured project is unavailable (service type from {servicesType?.Assembly.Location ?? "nowhere"})");
 		}
-		catch
+		catch (Exception e)
 		{
-			// Fall back to the suggested configured project
+			_debugLog?.Invoke($"[AppLaunch] Failed to get the active debug framework's configured project: {e.GetBaseException().Message}");
 		}
 
 		return null;
