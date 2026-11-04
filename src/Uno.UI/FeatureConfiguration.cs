@@ -230,6 +230,22 @@ namespace Uno.UI
 			/// On platforms that support caching BitmapImage assets, this enables caching.
 			/// </summary>
 			public static bool EnableBitmapImageCache { get; set; } = true;
+
+			/// <summary>
+			/// The memory, in bytes, that decoded images nothing displays may keep (0 or more). Such an image keeps its pixels
+			/// for 1 second, as on WinUI, in case it is displayed again; past this limit the oldest are released first, at the
+			/// end of the next layout pass, and with 0 every one of them is. An image counts 4 bytes per pixel of its decoded
+			/// frames and of the texture drawn from it; images shared through the bitmap cache are not counted.
+			/// </summary>
+			/// <remarks>
+			/// Defaults: 128 MB on desktop, 64 MB on Android, iOS and tvOS, 32 MB on WebAssembly (its memory is capped at 2 GB
+			/// and never shrinks). Set it to the app's memory budget: a higher limit keeps more recently shown images ready, a
+			/// lower one frees them sooner. Uno decodes an image in full unless DecodePixelWidth or DecodePixelHeight is set.
+			/// </remarks>
+			public static long MaxUndisplayedImageBytes { get; set; } =
+				OperatingSystem.IsBrowser() ? 32L * 1024 * 1024
+				: OperatingSystem.IsAndroid() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() ? 64L * 1024 * 1024
+				: 128L * 1024 * 1024;
 		}
 
 		public static class BindingExpression
@@ -320,6 +336,20 @@ namespace Uno.UI
 			/// on iOS versions prior to 26.
 			/// </remarks>
 			public static bool DisableNumberPadPopover { get; set; }
+
+			/// <summary>
+			/// When set to <see langword="true"/> (the default), dragging the caret or a selection handle by touch on
+			/// iOS shows the system text magnifier (<c>UITextLoupeSession</c>, iOS 17+).
+			/// </summary>
+			/// <remarks>This is currently an iOS Skia-only feature and has no effect on other platforms.</remarks>
+			public static bool UseNativeTextLoupe { get; set; } = true;
+
+			/// <summary>
+			/// When set to <see langword="true"/> (the default), dragging the caret or a selection handle by touch under the
+			/// iOS text-selection convention shows an Uno-drawn magnifier on hosts with no system one: the browser (Safari on
+			/// iPad) and iOS before 17. It is never shown when the system text magnifier is.
+			/// </summary>
+			public static bool UseManagedTextLoupe { get; set; } = true;
 		}
 
 		public static class ScrollViewer

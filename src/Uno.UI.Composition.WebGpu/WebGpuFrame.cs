@@ -103,6 +103,12 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 		finally
 		{
+			if (_scratchBuf is not null)
+			{
+				_d.ReturnVerts(_scratchBuf);
+				_scratchBuf = null;
+			}
+
 			// Same cadence as the stats line, so UNO_WEBGPU_STATS_EVERY=1 gives a per-FRAME phase breakdown rather
 			// than a 60-frame average - the only way to see a distribution instead of a mean.
 			if (_emitStats && (_frameStatsCounter++ % _emitStatsEvery) == 0)
@@ -512,15 +518,20 @@ internal sealed unsafe partial class WebGpuFrame
 
 	/// <summary>Ops the occlusion cull dropped this frame, and ops it cut down to their uncovered bands.</summary>
 	internal static int StatCulled;
+	/// <summary>Replayed ops dropped this frame for landing wholly outside their site's clip.</summary>
+	internal static int StatClipCulled;
 	internal static int StatSplit;
 	/// <summary>Border rings cut into bands. CUMULATIVE: op building happens once per cached recording, so a
 	/// counter reset every stats interval reads zero in steady state while the rings still draw every frame.</summary>
 	internal static int StatRingBands;
 	internal static int StatPrepass;
+	/// <summary>Passes that cleared to an opaque whole-target fill instead of drawing it.</summary>
+	internal static int StatClearFolds;
 	internal static int StatLayerShadow, StatLayerMatrix, StatLayerMask, StatLayerPlain;
 
 	// Off for bisecting a visual regression against the cull.
 	private static readonly bool _noOcclusionCull = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_OCCLUSION_CULL") == "1";
+	private static readonly bool _noClearFold = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_CLEAR_FOLD") == "1";
 
 	private static Vector4 QuadBounds(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, in ClipData clip)
 	{
@@ -534,6 +545,8 @@ internal sealed unsafe partial class WebGpuFrame
 			? new Vector4(MathF.Max(b.X, clip.Aabb.X), MathF.Max(b.Y, clip.Aabb.Y), MathF.Min(b.Z, clip.Aabb.Z), MathF.Min(b.W, clip.Aabb.W))
 			: b;
 
+	private static bool IsEmpty(in Vector4 b) => b.X >= b.Z || b.Y >= b.W;
+
 	private static Vector4 Inflate(Vector4 b, float pad) => new(b.X - pad, b.Y - pad, b.Z + pad, b.W + pad);
 
 	/// <summary>True when a device-space box contributes no pixels to the target: empty, or wholly outside it.</summary>
@@ -541,7 +554,7 @@ internal sealed unsafe partial class WebGpuFrame
 		=> b.X >= b.Z || b.Y >= b.W || b.Z <= 0 || b.W <= 0 || b.X >= Target.Width || b.Y >= Target.Height;
 
 	// The bounds of both; an empty (inverted) side contributes nothing.
-	private static Vector4 Union(Vector4 a, Vector4 b)
+	internal static Vector4 Union(Vector4 a, Vector4 b)
 	{
 		if (a.X >= a.Z || a.Y >= a.W) { return b; }
 		if (b.X >= b.Z || b.Y >= b.W) { return a; }
@@ -570,27 +583,23 @@ internal sealed unsafe partial class WebGpuFrame
 		return new Vector4(min.X, min.Y, max.X, max.Y);
 	}
 
-	// Reused so the per-frame op build does not allocate a list and an array per primitive.
-	private readonly VertBuf _scratch = new();
+	// Reused so the per-frame op build does not allocate a list and an array per primitive. Rented from the device on
+	// first use and handed back when the frame ends, so its array is not reallocated every frame.
+	private VertBuf _scratchBuf;
+	private VertBuf Scratch => _scratchBuf ??= _d.RentVerts();
 	private readonly float[] _clipU = new float[ClipUFloats];   // the uniform: header + the first ClipUniformEntries entries
 	private float[] _clipMore = new float[4 * ClipEntryFloats];  // the entries past those, for the overflow buffer; grows
 
-	private readonly Stack<List<DrawOp>> _opsPool = new();
-	private List<DrawOp> RentOps() => _opsPool.Count > 0 ? _opsPool.Pop() : new(256);
-	private void ReturnOps(List<DrawOp> ops)
-	{
-		ops.Clear();   // drops the captured ClipData refs; keeps the backing array for reuse
-		_opsPool.Push(ops);
-	}
+	private List<DrawOp> RentOps() => _d.RentOps();
+	private void ReturnOps(List<DrawOp> ops) => _d.ReturnOps(ops);
 
 	// The pass's shared vertex buffers, one per layout: every per-frame draw appends its verts here in op order, so
 	// adjacent ops sharing a clip occupy a contiguous range and encode as ONE draw, and the whole pass uploads each
 	// buffer once. Fields rather than locals because the builders append to them; saved/restored around a nested build.
 	private VertBuf _solid, _rrect, _gradVerts, _quadVerts;
 	private List<BackdropCmd> _backdrops;
-	private readonly Stack<VertBuf> _vertsPool = new();
-	private VertBuf RentVerts() { var l = _vertsPool.Count > 0 ? _vertsPool.Pop() : new VertBuf(); l.Clear(); return l; }
-	private void ReturnVerts(VertBuf s) { s.Clear(); _vertsPool.Push(s); }
+	private VertBuf RentVerts() => _d.RentVerts();
+	private void ReturnVerts(VertBuf s) => _d.ReturnVerts(s);
 	private VertBuf RentRrect() => RentVerts();
 	private void ReturnRrect(VertBuf s) => ReturnVerts(s);
 
@@ -955,6 +964,10 @@ internal sealed unsafe partial class WebGpuFrame
 			cu[6] = ab.Z; cu[7] = ab.W;      // size.zw = rect max
 			foldedAabb = true;
 		}
+		// size.xy = the rect slot's units per device pixel across its x and y edges (the length of finv's row for each
+		// axis), which turn its recording-space distances into pixels like an entry's k.x.
+		var rectK = RectClipUnitsPerPixel(finv);
+		cu[4] = rectK.X; cu[5] = rectK.Y;
 		// xform = the op's pixel-space transform: px = M11*x + M21*y + M31, py = M12*x + M22*y + M32.
 		cu[8] = xform.M11; cu[9] = xform.M21; cu[10] = xform.M12; cu[11] = xform.M22;
 		cu[12] = xform.M31; cu[13] = xform.M32;   // xoff.xy
@@ -970,7 +983,7 @@ internal sealed unsafe partial class WebGpuFrame
 		// inner: the largest axis-aligned rect every clip covers in full, a pixel inside each edge. An excluded, masked or
 		// rotated entry leaves none; a rounded corner insets its sides by the inscribed-square fraction of its radii.
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
-		if (foldedAabb) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
+		if (foldedAabb) { ix = ab.X + rectK.X; iy = ab.Y + rectK.Y; iz = ab.Z - rectK.X; iw = ab.W - rectK.Y; }
 		// A fragment step in the recording's space is a column of finv; through an entry's own matrix it is the entry's
 		// step per device pixel, constant under an affine, so it is computed once here rather than per fragment.
 		var ddx = new Vector2(finv.M11, finv.M12); var ddy = new Vector2(finv.M21, finv.M22);
@@ -1007,6 +1020,13 @@ internal sealed unsafe partial class WebGpuFrame
 		cu[24] = ix; cu[25] = iy; cu[26] = iz; cu[27] = iw;
 		return more;
 	}
+
+	// How many recording-space units one device pixel spans across a vertical (x) and a horizontal (y) edge: the
+	// gradient length of that recording coordinate along the device axes.
+	private static Vector2 RectClipUnitsPerPixel(in Matrix3x2 finv)
+		=> new(
+			MathF.Max(new Vector2(finv.M11, finv.M21).Length(), 1e-6f),
+			MathF.Max(new Vector2(finv.M12, finv.M22).Length(), 1e-6f));
 
 	// Binding 4: the overflow entries, or the placeholder when the draw has none (the shader never reads it then).
 	private BindGroupEntry ClipMoreEntry(Buffer* buf, int more)
@@ -1068,7 +1088,8 @@ internal sealed unsafe partial class WebGpuFrame
 		cu[15] = finv.M32 + finv.M12 * _basisOx + finv.M22 * _basisOy;
 
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
-		if (foldedAabb) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
+		// size.xy (the rect slot's units per pixel) depends on finv's linear part alone, which this path keeps.
+		if (foldedAabb) { ix = ab.X + cu[4]; iy = ab.Y + cu[5]; iz = ab.Z - cu[4]; iw = ab.W - cu[5]; }
 		int n = na + (session.Entries?.Length ?? 0);
 		for (int i = 0; i < n; i++)
 		{
@@ -1234,6 +1255,39 @@ internal sealed unsafe partial class WebGpuFrame
 		public Buffer* SolidBuf, RrectBuf, GradBuf, QuadBuf;
 		public nuint SolidBufBytes, RrectBufBytes, GradBufBytes, QuadBufBytes;
 		public BindGroup* PassBg;
+		/// <summary>The colour of an opaque whole-target fill taken off the front of the ops, for the pass to clear to.</summary>
+		public WColor? FoldedClear;
+	}
+
+	// A pass that clears anyway gets an opaque fill of its whole target for free from the load op; drawn, that fill
+	// would shade every pixel of the target a second time.
+	private static void FoldClear(PassBuild b, WebGpuRenderSurface target)
+	{
+		// A pass left with no draw at all loses the device on llvmpipe, so the last op stays a draw.
+		if (b.Ops.Count < 2 || b.Bound != _unbounded || b.BasisOx != 0f || b.BasisOy != 0f)
+		{
+			return;
+		}
+		var op = b.Ops[0];
+		if (op.Fill.A != 255 || op.Cover == default || op.CullScissor.Z > op.CullScissor.X)
+		{
+			return;
+		}
+		var r = PixelsFilled(op.Cover);
+		if (!op.Clip.ScissorInert) { r = Meet(r, PixelsFilled(op.Clip.Aabb)); }
+		if (r.X > 0f || r.Y > 0f || r.Z < target.Width - 1 || r.W < target.Height - 1)
+		{
+			return;
+		}
+		b.FoldedClear = op.Fill;
+		StatClearFolds++;
+		// Fills of that same colour drawn straight onto the clear change no pixel, their antialiased edges included.
+		var folded = 1;
+		while (folded < b.Ops.Count - 1 && b.Ops[folded].Fill == op.Fill && b.Ops[folded].Cover != default)
+		{
+			folded++;
+		}
+		b.Ops.RemoveRange(0, folded);
 	}
 
 	private static readonly Vector4 _unbounded = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
@@ -1248,9 +1302,9 @@ internal sealed unsafe partial class WebGpuFrame
 		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f, List<WebGpuCommand> overlay = null, bool depth = false,
 		Vector4? bound = null)
 	{
-		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, bound ?? _unbounded, overlay);
+		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, bound ?? _unbounded, overlay, foldClear: !load);
 		_singleBuild[0] = build;
-		EncodePass(target, clear, load, _singleBuild, depth);
+		EncodePass(target, build.FoldedClear ?? clear, load, _singleBuild, depth);
 	}
 
 	private readonly PassBuild[] _singleBuild = new PassBuild[1];
@@ -1258,7 +1312,7 @@ internal sealed unsafe partial class WebGpuFrame
 	/// <summary>Timestamp the current build started, for the op-build half of the stats line.</summary>
 
 	// Builds the ops for one command list under a basis: the whole draw-side work of a pass, none of the encoding.
-	internal PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null, float basisScale = 1f)
+	internal PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null, float basisScale = 1f, bool foldClear = false)
 	{
 		long passStart = _emitStats && _passDepth == 0 ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
@@ -1288,6 +1342,7 @@ internal sealed unsafe partial class WebGpuFrame
 		_passDepth--;
 		if (_emitStats && _passDepth == 0) { WalkTicks += System.Diagnostics.Stopwatch.GetTimestamp() - walkStart; }
 		if (!_noOcclusionCull) { CullOccluded(b.Ops, bound); }
+		if (foldClear && !_noClearFold) { FoldClear(b, target); }
 		BuildPrepass(b);
 		long uploadStart = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 

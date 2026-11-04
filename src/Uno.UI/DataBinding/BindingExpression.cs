@@ -267,7 +267,7 @@ namespace Microsoft.UI.Xaml.Data
 				{
 					value = ConvertBack();
 
-					[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+					[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Owner and property types are kept by the generated BindableMetadata")]
 					object ConvertBack() => ParentBinding.Converter.ConvertBack(
 						value,
 						_bindingPath.ValueType,
@@ -920,7 +920,7 @@ namespace Microsoft.UI.Xaml.Data
 			}
 		}
 
-		[UnconditionalSuppressMessage("Trimming", "IL2077", Justification = "Types manipulated here have been marked earlier")]
+		[UnconditionalSuppressMessage("Trimming", "IL2077", Justification = "Owner and property types are kept by the generated BindableMetadata")]
 		private object ConvertToBoundPropertyType(object value)
 		{
 			// _boundPropertyType can be null for properties not bound for the actual instance (no matching properties found)

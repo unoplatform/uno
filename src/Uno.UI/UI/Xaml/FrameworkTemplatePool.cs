@@ -457,7 +457,8 @@ namespace Microsoft.UI.Xaml
 
 		private bool CanUsePool()
 		{
-			if (_platformProvider.CanUseMemoryManager)
+			// The limit reads 0 until the runtime has a memory reading (on Skia, before the first GC).
+			if (_platformProvider.CanUseMemoryManager && _platformProvider.AppMemoryUsageLimit > 0)
 			{
 				return ((float)_platformProvider.AppMemoryUsage / _platformProvider.AppMemoryUsageLimit) < HighMemoryThreshold;
 			}

@@ -250,6 +250,10 @@ $projects =
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:CustomBeforeMicrosoftCommonTargets=$env:BUILD_SOURCESDIRECTORY\build\test-scripts\webgpu-probe\InjectProbe.targets", "-p:UnoWebGpuProbeProject=uno53lib"), @("NetCore"),
         @(), @(), @("webgpu.dll", "libSkiaSharp.dll"), @()),
 
+    # The library names no renderer, so it brings no Skia package to a head that renders with WebGPU only.
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop", "-p:UnoHeadFeaturesOverride=WebGpu"), @("NetCore"),
+        @(), @(), @("webgpu.dll"), @("Uno.UI.Composition.Skia.dll", "Uno.WinUI.Graphics2DSK.dll", "SkiaSharp.dll", "libSkiaSharp.dll")),
+
     ## Note for contributors
     ##
     ## When adding new template versions, create them in a separate version named folder

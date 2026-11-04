@@ -13,7 +13,7 @@
 	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<!-- Inheritors render with Silk.NET.WebGPU, through the API the backend hands over at run time. -->
 		<PackageReference Include="Silk.NET.WebGPU" />
 	</ItemGroup>

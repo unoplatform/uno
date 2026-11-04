@@ -29,11 +29,25 @@ For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
 Set `Uno.UI.FeatureConfiguration.Rendering.SkipVisualTreePainting` to `true` to skip painting of the visual tree entirely, producing frames with no visual output. Frame scheduling, rendering events, composition animations and `RenderTargetBitmap` keep working as usual. This is intended for scenarios where the visual output is of no interest (e.g. automated tests) to save CPU/GPU. Default: `false`.
 
+## Images (Skia)
+
+### Memory kept for undisplayed images
+
+A decoded image that nothing displays anymore (its `Image` was unloaded or given another source) keeps its pixels for 1 second, as on WinUI, so that it shows them at once if it comes back. `Uno.UI.FeatureConfiguration.Image.MaxUndisplayedImageBytes` bounds the memory these images hold: past it, the oldest are released first at the end of the next layout pass, and with `0` every one of them is. An image counts 4 bytes per pixel of its decoded frames and of the texture drawn from it; images shared through the bitmap cache (`EnableBitmapImageCache`) are not counted. Defaults: 128 MB on desktop, 64 MB on Android, iOS and tvOS, 32 MB on WebAssembly.
+
+Uno decodes an image at its full size unless `DecodePixelWidth` or `DecodePixelHeight` is set, where WinUI decodes it at its rendered size by default, so the same images can hold far more memory than on WinUI. Set the limit to the app's memory budget: a higher one keeps more recently shown images ready to show again, a lower one (down to `0`) frees them sooner. A decode size reduces what each image holds in the first place.
+
 ## ComboBox
 
 ### Default preferred placement
 
 By default, `ComboBox` popup is placed in such a way that the currently selected item is centered above the `ComboBox`. If you want to adjust this behavior on non-Windows targets, set the `Uno.UI.FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement` property.
+
+## Gestures
+
+### Touch and pen holds
+
+As on WinUI, a touch or pen hold is a right-tap: it raises no `Tapped` nor `DoubleTapped`, and a `ListView` or `GridView` item raises no `ItemClick` nor selection when it is released. Set `Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold` to `false` at startup to report a hold as a tap, and to raise `ItemClick` and selection on its release, as earlier versions of Uno Platform did. Default: `true`.
 
 ## Input validation
 
@@ -86,6 +100,20 @@ Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover = true;
 ```
 
 The flag only takes effect on iOS Skia, on iOS 26 or later, and only affects `TextBox` instances configured for a numeric keyboard on iPad. It has no effect on other platforms, on iOS versions prior to 26, or on non-numeric keyboards. Defaults to `false`.
+
+### Text magnifier when dragging the caret (iOS)
+
+On iOS, and in WebAssembly apps running in a browser on iPhone or iPad, a magnifier shows over the text while the caret (touch and hold) or a selection handle is dragged, as in native iOS text fields. Two flags control it:
+
+- `Uno.UI.FeatureConfiguration.TextBox.UseNativeTextLoupe` uses the system magnifier (`UITextLoupeSession`). It only takes effect on iOS Skia, on iOS 17 or later.
+- `Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe` uses a magnifier drawn by Uno where the system one isn't used: in the browser, on iOS versions prior to 17, or when `UseNativeTextLoupe` is `false`.
+
+Both default to `true`. To turn the magnifier off, set both to `false`:
+
+```csharp
+Uno.UI.FeatureConfiguration.TextBox.UseNativeTextLoupe = false;
+Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = false;
+```
 
 ## ToolTips
 

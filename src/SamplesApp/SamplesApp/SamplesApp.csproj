@@ -118,10 +118,16 @@
 	     [DllImport("webgpu")] resolves there. Without it the WebGPU backend fails graphics init with a
 	     DllNotFoundException and the app never leaves its loading screen. -->
 	<Import Project="..\..\Uno.UI.Composition.WebGpu.Init\wgpu-wasm.targets" Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoDrawingBackendWebGpu)'!='false'" />
+	<!-- iOS links the static wgpu-native through the package's own wiring, so the iOS lanes test what apps get. -->
+	<Import Project="..\..\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.targets" Condition="'$(_Platform)' == 'ios' AND '$(UnoDrawingBackendWebGpu)'!='false'" />
+	<!-- Except the native trim: its detection task ships only in the Uno.Sdk package, and this head reaches WebGPU anyway. -->
+	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
+		<_UnoWebGpuNativeTrim>false</_UnoWebGpuNativeTrim>
+	</PropertyGroup>
 
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
 		<ProjectReference Include="..\..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.Skia.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
 
 		<!-- Backend registration shared by every head's entry point. -->
@@ -139,7 +145,7 @@
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Generic.csproj" />
 		<!-- Svg and Graphics2DSK are SkiaSharp-backed: a Skia-free build drops them. -->
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
@@ -338,6 +344,8 @@
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Skia.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Model.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Custom.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.SceneGraph.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Animation.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Silk.NET.OpenGL.dll" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
@@ -489,7 +497,7 @@
 	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
 		<!-- https://github.com/dotnet/runtime/issues/109966 -->
 		<_IsDedupEnabled>false</_IsDedupEnabled>
-		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-arm64</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'ios' AND '$(BuildForTestFlight)' == 'true'">
@@ -514,7 +522,7 @@
 		<PackageReference Include="JetBrains.Annotations" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'tvos'">
-		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-arm64</RuntimeIdentifier>
 
 		<!-- Only a default: a contributor or CI without that profile installed can override it. -->
 		<CodesignProvision Condition="'$(CodesignProvision)' == ''">Uno Dev Samples</CodesignProvision>

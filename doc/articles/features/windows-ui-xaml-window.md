@@ -41,7 +41,7 @@ window.Activate();
 
 All Uno Platform desktop targets support displaying secondary windows.
 
-On **iOS**, secondary windows are backed by UIKit scenes, so the app has to opt in: it must declare a scene manifest (`UIApplicationSceneManifest`) in `Info.plist` with `UIApplicationSupportsMultipleScenes` set, and route scene callbacks through a `SceneDelegate`. Without that, the app stays single-window.
+On **iOS**, secondary windows are backed by UIKit scenes, so the app has to opt in: it must declare a scene manifest (`UIApplicationSceneManifest`) in `Info.plist` with `UIApplicationSupportsMultipleScenes` set, and route scene callbacks through a `SceneDelegate`. Without that, the app stays single-window. Built with a version 27 SDK, such an app still runs under the scene lifecycle, which Uno Platform adopts on its behalf, see [Scene lifecycle](xref:Uno.Features.CustomizingUIApplicationDelegate#scene-lifecycle).
 
 On **Android**, secondary windows are not supported yet.
 

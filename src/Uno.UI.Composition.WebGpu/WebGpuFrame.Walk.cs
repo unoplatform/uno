@@ -160,7 +160,7 @@ internal sealed unsafe partial class WebGpuFrame
 							AppendAaRect(_rrect, rc0.Color, a0, a1, a2, a3);
 							var aop = DrawOp.Shared(DrawKind.RoundedRect, ast, 6, null, cd, MakeClipBg(cd));
 							aop.Bounds = AaRect(a0, a1, a2, a3);
-							if (rc0.Color.A == 255 && ClipIsPlain(cd)) { aop.Cover = aop.Bounds; }
+							if (rc0.Color.A == 255 && ClipIsPlain(cd)) { aop.Cover = aop.Bounds; aop.Fill = rc0.Color; }
 							ops.Add(aop);
 							break;
 						}
@@ -170,7 +170,7 @@ internal sealed unsafe partial class WebGpuFrame
 						{
 							var (s0, s1, s2, s3) = identity ? (rc0.P0, rc0.P1, rc0.P2, rc0.P3) : (Map(rc0.P0, m), Map(rc0.P1, m), Map(rc0.P2, m), Map(rc0.P3, m));
 							sop.Bounds = AaRect(s0, s1, s2, s3);
-							if (rc0.Color.A == 255 && ClipIsPlain(cd)) { sop.Cover = sop.Bounds; }
+							if (rc0.Color.A == 255 && ClipIsPlain(cd)) { sop.Cover = sop.Bounds; sop.Fill = rc0.Color; }
 						}
 						ops.Add(sop);
 						ci = j - 1;
@@ -186,6 +186,7 @@ internal sealed unsafe partial class WebGpuFrame
 						var rop = DrawOp.Shared(DrawKind.RoundedRect, st, rn, null, cd, MakeClipBg(cd));
 						rop.Bounds = AaRect(r0, r1, r2, r3);
 						rop.Cover = OpaqueRrect(rri) ? Meet(RrectCover(rri, rop.Bounds), ClipInner(cd)) : default;
+						if (rop.Cover != default) { rop.Fill = rri.Color; }
 						ops.Add(rop);
 						break;
 					}
@@ -421,8 +422,7 @@ internal sealed unsafe partial class WebGpuFrame
 		if (System.Threading.Interlocked.Decrement(ref e.Refs) > 0) { return; }
 		e.IdleSince = _d.FrameSeq;
 		if (e.ContentKey != 0) { return; }
-		foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); _d.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
-		_d.DeferCompiledRelease(e.Owned, null);
+		e.ReleaseFinal(_d);
 	}
 
 	// Every entry that holds atlas slots, for EvictAtlasHolders. Weak: a recording that is collected takes its entry.
@@ -450,9 +450,8 @@ internal sealed unsafe partial class WebGpuFrame
 			e.ContentKey = 0;
 			if (e.Refs <= 0)
 			{
-				// Only the pool held it, and the pool has let it go: nothing else will ever release it.
-				foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); _d.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
-				_d.DeferCompiledRelease(e.Owned, null);
+				// No holder left: either only the pool held it and has let it go, or its last holder already freed it.
+				e.ReleaseFinal(_d);
 				continue;
 			}
 			_d.DeferRelease(e.Owned);
@@ -472,8 +471,7 @@ internal sealed unsafe partial class WebGpuFrame
 			var e = kv.Value;
 			if (e.Refs > 0 || !ReferenceEquals(e.Device, _d) || _d.FrameSeq - e.IdleSince < EntryPoolIdleFrames) { continue; }
 			(drop ??= new()).Add(kv.Key);
-			foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); _d.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
-			_d.DeferCompiledRelease(e.Owned, null);
+			e.ReleaseFinal(_d);
 		}
 		if (drop is not null) { foreach (var k in drop) { s_entryPool.Remove(k); } }
 	}
@@ -741,9 +739,14 @@ internal sealed unsafe partial class WebGpuFrame
 			WriteSite(slot.SiteSlot, rm, session, siteCarries, siteDepth);
 			// The ops' scissor, once for the whole site.
 			SetSiteScissor(slot.SiteSlot, IsFiniteAabb(session.Aabb) ? session.Aabb : ClipData.None.Aabb);
+			// An op's ClipU holds finv's linear part and the per-pixel steps derived from it, so only a stamp made at
+			// the same scale and rotation can be reused or patched where it lies.
+			var sameLinear = !fresh
+				&& slot.Xform.M11 == rm.M11 && slot.Xform.M12 == rm.M12
+				&& slot.Xform.M21 == rm.M21 && slot.Xform.M22 == rm.M22;
 			// Every op of this site is then independent of where the site is, so a move reuses the list as it
 			// stands -- no per-op work at all, which is the point of the site block.
-			if (siteCarries && !fresh && slot.SiteOps)
+			if (siteCarries && sameLinear && slot.SiteOps)
 			{
 				// The slot now serves this site: a later site still matching the old placement would rewrite the
 				// uniform these ops read and draw this site there.
@@ -763,10 +766,8 @@ internal sealed unsafe partial class WebGpuFrame
 			// copied. This is the scrolling case -- the one that restamps every op of every record every frame.
 			// The basis is free to move with it: it reaches the ClipU only through two finv translation floats,
 			// which the patch recomputes.
-			var moved = !fresh
+			var moved = sameLinear
 				&& session.Paths is null && !entry.HasPathClip
-				&& slot.Xform.M11 == rm.M11 && slot.Xform.M12 == rm.M12
-				&& slot.Xform.M21 == rm.M21 && slot.Xform.M22 == rm.M22
 				&& !(IsFiniteAabb(session.Aabb) && (finv.M12 != 0 || finv.M21 != 0))
 				&& SessionShapeUnchanged(slot.Clip, session);
 			Dictionary<PathClip[], PathClip[]> pathsMemo = null;
@@ -846,6 +847,14 @@ internal sealed unsafe partial class WebGpuFrame
 		bool innerOk = sessionInner != default;
 		foreach (var op in stamped)
 		{
+			// Nothing of it lands inside the site's clip. Dropped from this frame only: the stamp keeps the op for
+			// the replays (a scroll) that bring it into view.
+			if (boxes && op.Extent != default && IsEmpty(ClampToClip(TransformBounds(op.Extent, rm), session)))
+			{
+				StatClipCulled++;
+				continue;
+			}
+
 			var o = op;
 			o.Depth = depth;
 			o.Bounds = boxes && op.Bounds != default ? TransformBounds(op.Bounds, rm) : default;

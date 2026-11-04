@@ -252,7 +252,7 @@ The filter can also arrive via the `UITEST_RUNTIME_TESTS_FILTER` environment var
 |------|-------|
 | WinAppSDK | 2.4.0 — keep the csproj, `src/Uno.Sdk/packages.json`, the CI runtime installer URL and this table in lockstep |
 | Windows App Runtime (CI) | `https://aka.ms/windowsappsdk/2.4/2.4.0/windowsappruntimeinstall-x64.exe` — pin the exact stable version; `<minor>/latest` can resolve to an experimental build whose framework fails the MSIX dependency with `0x80073CF3` |
-| `winapp` CLI | 0.6.x — bundled in `Microsoft.Windows.SDK.BuildTools.WinApp` (referenced by the head) |
+| `winapp` CLI | 0.7.x — bundled in `Microsoft.Windows.SDK.BuildTools.WinApp` (referenced by the head) |
 
 ### Inspecting a running app
 

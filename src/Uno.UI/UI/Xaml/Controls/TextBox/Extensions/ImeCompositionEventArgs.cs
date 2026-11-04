@@ -30,12 +30,18 @@ internal class ImeCompositionEventArgs : EventArgs
 	/// </summary>
 	public bool TextAlreadyApplied { get; }
 
-	public ImeCompositionEventArgs(string text, int cursorPosition = -1, int resolvedLength = 0, bool textAlreadyApplied = false)
+	/// <summary>
+	/// Index of the composition in the TextBox text when the platform already applied it, or -1 if not available.
+	/// </summary>
+	public int CompositionStart { get; }
+
+	public ImeCompositionEventArgs(string text, int cursorPosition = -1, int resolvedLength = 0, bool textAlreadyApplied = false, int compositionStart = -1)
 	{
 		Text = text;
 		CursorPosition = cursorPosition;
 		ResolvedLength = resolvedLength;
 		TextAlreadyApplied = textAlreadyApplied;
+		CompositionStart = compositionStart;
 	}
 }
 

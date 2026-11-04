@@ -22,6 +22,8 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	private VulkanInstanceApi? _instanceApi;
 	private VulkanDeviceApi? _deviceApi;
 	private bool _disposed;
+	// False for a context that renders to its own window on another context's instance and device.
+	private bool _ownsDevice = true;
 	private IVulkanPlatformSurfaceFactory? _factory;
 	private IntPtr _nativeWindowHandle;
 
@@ -84,37 +86,74 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		_factory = factory;
 		_nativeWindowHandle = nativeWindowHandle;
 
-		// Create Vulkan instance
-		var getProcAddr = factory.GetVkGetInstanceProcAddr();
-		_instance = VulkanInstance.Create(getProcAddr, factory.RequiredInstanceExtensions);
-
-		// Create instance API
-		_instanceApi = new VulkanInstanceApi(_instance);
-
-		// Create surface so we can check device presentation support
-		var surfaceHandle = factory.CreateSurface((VulkanInstance)_instance, nativeWindowHandle);
-		var vkSurface = new VkSurfaceKHR { Handle = surfaceHandle };
-
-		// Create device (checks surface presentation support)
-		_device = VulkanDevice.Create((VulkanInstance)_instance, _instanceApi, vkSurface);
-
-		// Destroy the temporary surface used for device selection
-		_instanceApi.DestroySurfaceKHR(new VkInstance { Handle = _instance.Handle }, vkSurface, IntPtr.Zero);
-
-		// Create device API
-		_deviceApi = new VulkanDeviceApi(_device);
-
-		// All subsequent operations access device handles and require the device lock
-		using (_device.Lock())
+		// A failed attempt must not leave its instance, device or surface on the window: the caller falls back to
+		// another renderer on that same window, and a driver that ran out of devices crashes under the leftovers.
+		try
 		{
-			// Create display (swapchain) via platform surface wrapper
-			var platformSurface = new DirectVulkanSurface(nativeWindowHandle, new global::Windows.Graphics.SizeInt32(width, height), factory);
-			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
+			// Create Vulkan instance
+			var getProcAddr = factory.GetVkGetInstanceProcAddr();
+			_instance = VulkanInstance.Create(getProcAddr, factory.RequiredInstanceExtensions);
 
-			// Create intermediate render image (TransitionLayout submits commands, needs lock). The Skia backend
-			// builds its own GRContext-Vulkan over this image via the neutral IVulkanDeviceContext/RenderTarget.
-			CreateRenderImage(width, height);
+			// Create instance API
+			_instanceApi = new VulkanInstanceApi(_instance);
+
+			// Create surface so we can check device presentation support
+			var surfaceHandle = factory.CreateSurface((VulkanInstance)_instance, nativeWindowHandle);
+			var vkSurface = new VkSurfaceKHR { Handle = surfaceHandle };
+			try
+			{
+				// Create device (checks surface presentation support)
+				_device = VulkanDevice.Create((VulkanInstance)_instance, _instanceApi, vkSurface);
+			}
+			finally
+			{
+				// Destroy the temporary surface used for device selection
+				_instanceApi.DestroySurfaceKHR(new VkInstance { Handle = _instance.Handle }, vkSurface, IntPtr.Zero);
+			}
+
+			// Create device API
+			_deviceApi = new VulkanDeviceApi(_device);
+
+			// All subsequent operations access device handles and require the device lock
+			using (_device.Lock())
+			{
+				// Create display (swapchain) via platform surface wrapper
+				var platformSurface = new DirectVulkanSurface(nativeWindowHandle, new global::Windows.Graphics.SizeInt32(width, height), factory);
+				_display = VulkanDisplay.CreateDisplay(this, platformSurface);
+
+				// Create intermediate render image (TransitionLayout submits commands, needs lock). The Skia backend
+				// builds its own GRContext-Vulkan over this image via the neutral IVulkanDeviceContext/RenderTarget.
+				CreateRenderImage(width, height);
+			}
 		}
+		catch
+		{
+			Dispose();
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Creates a context that renders to its own window on <paramref name="device"/>'s instance and device. Complete
+	/// it with <see cref="InitializeSurface"/>; disposing it releases only its window resources, and the device stays
+	/// with <paramref name="device"/>, which must outlive it.
+	/// </summary>
+	public static VulkanContext ForSharedDevice(VulkanContext device)
+	{
+		if (device._device is null || device._factory is null)
+		{
+			throw new InvalidOperationException("Vulkan device not initialized");
+		}
+
+		return new VulkanContext
+		{
+			_ownsDevice = false,
+			_factory = device._factory,
+			_instance = device._instance,
+			_instanceApi = device._instanceApi,
+			_device = device._device,
+			_deviceApi = device._deviceApi,
+		};
 	}
 
 	/// <summary>
@@ -130,20 +169,29 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		var getProcAddr = factory.GetVkGetInstanceProcAddr();
 		_instance = VulkanInstance.Create(getProcAddr, factory.RequiredInstanceExtensions);
 		_instanceApi = new VulkanInstanceApi(_instance);
-		_device = VulkanDevice.Create((VulkanInstance)_instance, _instanceApi);
+		var instance = (VulkanInstance)_instance;
+		_device = VulkanDevice.Create(instance, _instanceApi,
+			supportsPresentation: (physicalDevice, queueFamily) => factory.SupportsPresentation(instance, physicalDevice, queueFamily));
 		_deviceApi = new VulkanDeviceApi(_device);
 	}
 
 	/// <summary>
 	/// Completes initialization for a native window: creates the swapchain and the intermediate render
 	/// image. Requires <see cref="InitializeDevice"/> to have succeeded; may be called again with a new
-	/// window after <see cref="DisposeSurfaceResources"/>.
+	/// window after <see cref="DisposeSurfaceResources"/>. Throws when the device cannot present to the window.
 	/// </summary>
 	public void InitializeSurface(IntPtr nativeWindowHandle, int width, int height)
 	{
 		if (_device == null || _factory == null)
 		{
 			throw new InvalidOperationException("Vulkan device not initialized");
+		}
+
+		// InitializeDevice picks the device without a window, and the swapchain waits until its surface can present,
+		// so a device that never can is rejected here rather than hanging there.
+		if (!CanPresentTo(_factory, nativeWindowHandle))
+		{
+			throw new VulkanException("The Vulkan device cannot present to this window");
 		}
 
 		_nativeWindowHandle = nativeWindowHandle;
@@ -153,6 +201,21 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			var platformSurface = new DirectVulkanSurface(nativeWindowHandle, new global::Windows.Graphics.SizeInt32(width, height), _factory);
 			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
 			CreateRenderImage(width, height);
+		}
+	}
+
+	private bool CanPresentTo(IVulkanPlatformSurfaceFactory factory, IntPtr nativeWindowHandle)
+	{
+		var surface = new VkSurfaceKHR { Handle = factory.CreateSurface((VulkanInstance)_instance!, nativeWindowHandle) };
+		try
+		{
+			_instanceApi!.GetPhysicalDeviceSurfaceSupportKHR(PhysicalDeviceHandle, GraphicsQueueFamilyIndex, surface, out var supported)
+				.ThrowOnError("vkGetPhysicalDeviceSurfaceSupportKHR");
+			return supported != 0;
+		}
+		finally
+		{
+			_instanceApi!.DestroySurfaceKHR(InstanceHandle, surface, IntPtr.Zero);
 		}
 	}
 
@@ -300,6 +363,12 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	{
 		if (_disposed) return;
 		_disposed = true;
+
+		if (!_ownsDevice)
+		{
+			DisposeSurfaceResources();
+			return;
+		}
 
 		var device = _device;
 

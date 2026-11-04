@@ -20,7 +20,7 @@
 		<NetCurrent>net11.0</NetCurrent>
 
 		<NetPreviousAppleOSVersion>26.0</NetPreviousAppleOSVersion>
-		<NetCurrentAppleOSVersion>26.5</NetCurrentAppleOSVersion>
+		<NetCurrentAppleOSVersion>27.0</NetCurrentAppleOSVersion>
 
 		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios$(NetCurrentAppleOSVersion);$(NetCurrent)-tvos$(NetCurrentAppleOSVersion)</NetCurrentNetCoreMobile>
 		<NetPreviousNetCoreApple>$(NetPrevious)-ios$(NetPreviousAppleOSVersion);$(NetPrevious)-tvos$(NetPreviousAppleOSVersion)</NetPreviousNetCoreApple>

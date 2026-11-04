@@ -311,7 +311,16 @@ If your project is an executable that merely links `Uno.WinUI` as a library — 
 </PropertyGroup>
 ```
 
-### UNOB0028: The UnoSplashScreenColor property is no longer supported
+<a name="unob0028"></a>
+
+### UNOB0028: The UnoSplashScreenColor property is no longer supported, or an optional implicit package was skipped
+
+This code is reported for two unrelated causes. The text of the diagnostic tells which one applies:
+
+- A warning that the `UnoSplashScreenColor` property is no longer supported: see [The UnoSplashScreenColor property is no longer supported](#unob0028-the-unosplashscreencolor-property-is-no-longer-supported).
+- A build message, shown at `normal` verbosity or higher, that the implicit reference to a package was skipped: see [An optional implicit package was skipped](#unob0028-an-optional-implicit-package-was-skipped).
+
+#### UNOB0028: The UnoSplashScreenColor property is no longer supported
 
 Uno Platform 7.0 removed the `UnoSplashScreenColor` property. The Uno.SDK ignores it, so the splash screen background falls back to its default (`#FFFFFF`, or the browser theme on WebAssembly). Rename it:
 
@@ -322,6 +331,64 @@ Uno Platform 7.0 removed the `UnoSplashScreenColor` property. The Uno.SDK ignore
 ```
 
 The same applies to `UnoSplashScreen` items declared by hand: use `BackgroundColor="#FFFFFF"` instead of `Color="#FFFFFF"`. See [Splash screen](xref:Uno.Development.SplashScreen) for the related `UnoSplashScreenDarkBackgroundColor` and `UnoSplashScreenDarkFile` properties.
+
+#### UNOB0028: An optional implicit package was skipped
+
+Some packages the Uno.Sdk adds implicitly are optional and only exist from a given version of their package group. `Uno.HotTesting.Reactive`, added for the `MVUX` feature in non-optimized builds, first ships with the 7.4 builds of Uno.Extensions. This message means the Uno.Extensions version resolved for your project is older than that, is a floating version or a range, or is missing from the Uno.Sdk package manifest, so the package was left out instead of being restored at a mismatched version.
+
+The rest of the build is unaffected. If you need the package:
+
+- Use an `UnoExtensionsVersion` of 7.4 or later, as an exact version, or
+- Reference the package explicitly with a version that matches your Uno.Extensions packages.
+
+To stop the Uno.Sdk from adding it at all, set `UnoDisableHotTesting` to `true`.
+
+### UNOB0030: The SkiaRenderer Uno Feature is ignored in a library
+
+Starting with Uno Platform 7.0, the renderer is chosen by the app, not by its libraries. In an app, the legacy `SkiaRenderer` feature is still mapped to `Skia`. In a library it is ignored, so the library doesn't make SkiaSharp a dependency of every app that uses it, including apps that render with WebGPU only.
+
+To fix this:
+
+- If the library doesn't draw with SkiaSharp, remove `SkiaRenderer` from `UnoFeatures`.
+- If it uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), the `SkiaExtensions` conversions or the Uno Toolkit's Skia controls (such as `ShadowContainer`), replace `SkiaRenderer` with `Skia`.
+
+To keep `SkiaRenderer` without the warning, add `UNOB0030` to `NoWarn`.
+
+### UNOB0031: The Reactor Uno Feature is not supported on WinAppSDK
+
+The `Reactor` feature references [Uno.Microsoft.UI.Reactor](https://www.nuget.org/packages/Uno.Microsoft.UI.Reactor), which runs on the Uno Platform targets (desktop, WebAssembly, Android and iOS) and has no build for the WinAppSDK target. The Uno.Sdk doesn't reference it there, and fails the Windows build with this error instead of leaving every Reactor type unresolved.
+
+To fix this, remove the `-windows10.0.xxxxx` target framework from the project. To run a Reactor app on Windows, use the `desktop` target.
+
+### UNOB0032: The browserwasm target framework was set after the Uno.Sdk chose the .NET SDK
+
+The Uno.Sdk builds a WebAssembly app with the `Microsoft.NET.Sdk.WebAssembly` SDK, which it chooses from `TargetFramework` before your project file and `Directory.Build.props` are read. At that point, the target framework is only known when it is passed to the build: with `-f`, or by a project with several target frameworks building each of them.
+
+When an app sets a single `<TargetFramework>net10.0-browserwasm</TargetFramework>` itself, in the project file, in `Directory.Build.props` or with a file-based app's `#:property`, the Uno.Sdk moves it to `TargetFrameworks` after the project file is read, so the app still builds with the WebAssembly SDK. It can only do so for a project it already knows is an app at that point, from an `OutputType` of `Exe` or `WinExe`, or from `IsUnoHead`.
+
+This error means the project was only found to be an app later, typically because its `OutputType` is set in `Directory.Build.targets`. Built with the plain .NET SDK, it would be a desktop executable that fails at startup.
+
+To fix this, set `OutputType` in the project file or in `Directory.Build.props`, or use the plural property, even with a single target framework:
+
+```xml
+<PropertyGroup>
+  <TargetFrameworks>net10.0-browserwasm</TargetFrameworks>
+</PropertyGroup>
+```
+
+### UNOB0033: A Platforms/MacCatalyst or Platforms/MacOS folder is not built
+
+Uno Platform 7.0 removed the Mac Catalyst target framework, and the native macOS target was removed before it; macOS is served by the `desktop` target framework instead. Projects created with older templates can still contain a `Platforms/MacCatalyst/` or `Platforms/MacOS/` folder (or a `MacCatalyst/` or `MacOS/` folder at the project root). The Uno.Sdk leaves their files out of every target framework and reports this warning, since none of them can use that code.
+
+To fix this, move anything still needed to `Platforms/Desktop/`, and delete the folder. Code that should only run on macOS goes in an `OperatingSystem.IsMacOS()` check there. See [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7#mac-catalyst-is-removed) for the other migration steps.
+
+### UNOB0035: The Prism Uno Feature is no longer supported
+
+Starting with Uno Platform 7.0, the `Uno.Sdk` no longer references [Prism](https://github.com/PrismLibrary/Prism). The `Prism` feature is ignored if still listed in `UnoFeatures`, and the build reports this warning. Without a Prism reference of its own, the project then fails to compile wherever it uses Prism types.
+
+The Prism packages published so far (`Prism.Uno.WinUI` 9.0.537 and earlier) were built against Uno Platform 5 and don't build with Uno Platform 7.0.
+
+To fix this, remove `Prism` from `UnoFeatures`, and reference Prism's packages directly, using a Prism release built for Uno Platform 7.0: add a `PackageReference` to `Prism.DryIoc.Uno.WinUI` in an app, or to `Prism.Uno.WinUI` in a library, and to `Prism.Uno.WinUI.Markup` if the project uses C# Markup. When the solution uses Central Package Management, as the Uno Platform templates do, the version goes in `Directory.Packages.props`. The `PrismVersion` property no longer has any effect and can be removed.
 
 ## Compiler Errors
 
@@ -418,17 +485,6 @@ Uno Platform 7.0 names every conditional XAML prefix after a target framework, a
 | `xamarin`, `legacy` listed in `mc:Ignorable` | Drop the prefix from the markup using it |
 
 The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7#removed-xaml-prefixes).
-
-### UNOB0028: An optional implicit package was skipped
-
-Some packages the Uno.Sdk adds implicitly are optional and only exist from a given version of their package group. `Uno.HotTesting.Reactive`, added for the `MVUX` feature in non-optimized builds, first ships with the 7.4 builds of Uno.Extensions. This message means the Uno.Extensions version resolved for your project is older than that, is a floating version or a range, or is missing from the Uno.Sdk package manifest, so the package was left out instead of being restored at a mismatched version.
-
-The rest of the build is unaffected. If you need the package:
-
-- Use an `UnoExtensionsVersion` of 7.4 or later, as an exact version, or
-- Reference the package explicitly with a version that matches your Uno.Extensions packages.
-
-To stop the Uno.Sdk from adding it at all, set `UnoDisableHotTesting` to `true`.
 
 ## VS Code Errors
 

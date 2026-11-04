@@ -24,6 +24,15 @@ internal static class DrawingBackendConfiguration
 			builder.GraphicsBackend(global::Uno.UI.Composition.WebGpu.WebGpuBackend.CreateGraphicsProvider());
 			builder.GeometryFactory(ManagedBackend.CreateGeometryFactory());
 		}
+#if UNO_DRAWING_SKIA
+		else if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "fallback")
+		{
+			// WebGPU where the device has it, otherwise Skia (over the same managed geometry).
+			builder.GraphicsBackend(global::Uno.UI.Composition.WebGpu.WebGpuBackend.CreateGraphicsProvider());
+			builder.GraphicsBackend(global::Uno.UI.Composition.Skia.SkiaBackend.CreateGraphicsProvider());
+			builder.GeometryFactory(ManagedBackend.CreateGeometryFactory());
+		}
+#endif
 		else
 #endif
 		{

@@ -87,6 +87,11 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	TextureFormat IWebGpuDeviceContext.ColorFormat => _device.ColorFormat;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
 	public bool IsReadyForFrame => WebGpuJsInterop.PresentedFramesInFlight() < MaxFramesInFlight;
+
+	// The scene renders into _presentTex, recreated only on resize, and Present() blits all of it to the canvas. Last
+	// frame's pixels are therefore still there when the next frame starts, so the compositor can repaint only the damage.
+	public bool PreservesContents => true;
+
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		width = Math.Max(1, width);

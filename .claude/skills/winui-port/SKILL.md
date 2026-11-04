@@ -240,6 +240,16 @@ void InitializeSomething()
 }
 ```
 
+**Revoking:** C++ `revoker.revoke()` / `revoker = {}` becomes `_myEventRevoker.Disposable = null`. Never call `_myEventRevoker.Dispose()` on a field that gets assigned again: a disposed `SerialDisposable` disposes every later value on assignment, so the next subscription is revoked the moment it is made.
+
+**Property-changed revokers:** C++ `RegisterPropertyChanged(source, prop, { this, &T::Handler })` doesn't own `this`, but Uno's public token API (`RegisterPropertyChangedCallback` + `UnregisterPropertyChangedCallback`) holds the callback strongly. When `source` can outlive the control (an ancestor such as the NavigationView's SplitView, a brush or other shared resource, a user-supplied object), register weakly and keep the returned `IDisposable` in the revoker:
+```csharp
+_splitViewIsPaneOpenChangedRevoker.Disposable = splitView.RegisterDisposablePropertyChangedCallback(
+    SplitView.IsPaneOpenProperty,
+    (s, e) => OnSplitViewPropertyChanged(s, e.Property));
+```
+Prefer this to revoking on `Unloaded` and re-subscribing on `Loaded`: WinUI keeps these subscriptions while unloaded. On `this` or a template part, the token API is fine.
+
 **CompositeDisposable for multiple events in OnApplyTemplate:**
 ```csharp
 private readonly SerialDisposable _eventSubscriptions = new SerialDisposable();

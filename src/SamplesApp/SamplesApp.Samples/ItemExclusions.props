@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project>
 	<ItemGroup>
-		<Page Remove="$(MSBuildThisFileDirectory)Msal\**" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Msal\**" />
-
 		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Media\RevealBrushes\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Media\RevealBrushes\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Media\RevealBrushes\**"

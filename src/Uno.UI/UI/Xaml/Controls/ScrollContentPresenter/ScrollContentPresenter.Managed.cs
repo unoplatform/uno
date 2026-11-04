@@ -21,7 +21,7 @@ using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter, IDirectManipulationHandler
+	public partial class ScrollContentPresenter : ContentPresenter, IDirectManipulationHandler, IScrollPortGeometry
 #if !__CROSSRUNTIME__
 		, ICustomClippingElement
 #endif
@@ -137,6 +137,24 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ExtentHeight { get; internal set; }
 
 		public double ExtentWidth { get; internal set; }
+
+		// Explicit, so the public getters keep their non-virtual signature (implicit implementation would make them virtual).
+		double IScrollPortGeometry.HorizontalOffset => HorizontalOffset;
+
+		double IScrollPortGeometry.VerticalOffset => VerticalOffset;
+
+		double IScrollPortGeometry.ZoomedExtentWidth => ExtentWidth * _zoomFactor;
+
+		double IScrollPortGeometry.ZoomedExtentHeight => ExtentHeight * _zoomFactor;
+
+		// Same ranges Set clamps the offsets against.
+		double IScrollPortGeometry.ScrollableWidth => Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth * _zoomFactor - ViewportWidth);
+
+		double IScrollPortGeometry.ScrollableHeight => Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight * _zoomFactor - ViewportHeight);
+
+		float IScrollPortGeometry.ZoomFactor => _zoomFactor;
+
+		void IScrollPortGeometry.ScrollToOffsets(double horizontalOffset, double verticalOffset) => Set(horizontalOffset, verticalOffset, disableAnimation: false);
 
 		internal Size ScrollBarSize => new Size(0, 0);
 
@@ -580,8 +598,12 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				double GetAnimatedHorizontalOffset() => Math.Round(-visual.AnchorPoint.X + centeringOffsetX);
-				double GetAnimatedVerticalOffset() => Math.Round(-visual.AnchorPoint.Y + centeringOffsetY);
+				// The pixel it is drawn at can be past a fractional target, e.g. 907 before a final 906.67, or behind the
+				// fractional offset last reported: kept between the two, the reported offsets never move back.
+				var start = ScrollOffsets;
+				double GetAnimatedHorizontalOffset() => Between(Math.Round(-visual.AnchorPoint.X + centeringOffsetX), start.X, horizontalOffset);
+				double GetAnimatedVerticalOffset() => Between(Math.Round(-visual.AnchorPoint.Y + centeringOffsetY), start.Y, verticalOffset);
+				static double Between(double value, double from, double to) => Math.Clamp(value, Math.Min(from, to), Math.Max(from, to));
 
 				scrollAnimation.Stopped += OnStopped;
 

@@ -155,7 +155,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		_host.RaiseTextCompositionStarted(new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength));
 	}
 
-	void IImeSessionHost.OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied)
+	void IImeSessionHost.OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied, int compositionStart)
 	{
 		if (IsReadOnly)
 		{
@@ -171,6 +171,11 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 			// Mark the session so key events aren't swallowed by the IsComposing check
 			// (Android key events are independent of composition events).
 			_compositionAppliedByPlatform = true;
+			if (compositionStart >= 0)
+			{
+				// An IME re-composing an existing word starts the composition before the caret.
+				_compositionStartIndex = compositionStart;
+			}
 		}
 		else
 		{
@@ -340,9 +345,12 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 		if (_platformTextApplyInProgress)
 		{
-			// The platform already applied the text (e.g., Android EndBatchEdit).
-			// Don't cancel the composition — just clear the flag.
-			_platformTextApplyInProgress = false;
+			// The platform already applied the text (e.g., Android EndBatchEdit), so don't cancel the composition.
+			// While its text is processed, edits by TextChanging handlers belong to it too: ProcessTextInput clears the flag.
+			if (!_isInputModifyingText)
+			{
+				_platformTextApplyInProgress = false;
+			}
 			return;
 		}
 

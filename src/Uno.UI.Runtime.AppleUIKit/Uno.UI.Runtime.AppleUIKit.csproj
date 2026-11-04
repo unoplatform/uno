@@ -23,6 +23,11 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<DefineConstants>$(DefineConstants);UIKIT_SKIA</DefineConstants>
+
+		<NoWarn Condition=" $(IsTvOS) ">
+			$(NoWarn)
+			;NU5104 <!-- A stable release of a package should not have a prerelease dependency; Uno.icu-tvos only has -dev versions! -->
+		</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup Condition="!$(IsTvOS)">

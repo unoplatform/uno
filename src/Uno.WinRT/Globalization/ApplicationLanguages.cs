@@ -121,16 +121,8 @@ public static partial class ApplicationLanguages
 			=> string.IsNullOrEmpty(name) ? "en-US" : name;
 
 #if __ANDROID__
-		string? lt = null;
 		var config = ContextHelper.Current?.Resources?.Configuration;
-		if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
-		{
-			lt = config?.Locales?.Get(0)?.ToLanguageTag();
-		}
-		else
-		{
-			lt = config?.Locale?.ToLanguageTag();
-		}
+		string? lt = config?.Locales?.Get(0)?.ToLanguageTag();
 #endif
 
 		var languages = new[]

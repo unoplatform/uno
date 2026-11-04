@@ -157,13 +157,6 @@ namespace SamplesApp
 #endif
 			EnsureMainWindow();
 
-#if __WASM__
-			DispatcherQueue.Main.TryEnqueue(
-				DispatcherQueuePriority.High,
-				() => InitWasmSampleRunner()
-			);
-#endif
-
 			SetupAndroidEnvironment();
 
 #if __IOS__ && !TESTFLIGHT
@@ -330,8 +323,10 @@ namespace SamplesApp
 		private void OnAppInstanceActivated(object? sender, AppActivationArguments args)
 		{
 			// An activation delivered into the running app: the window already exists, so only the
-			// payload needs handling.
-			ReportActivation(args, "Application activated", showDialog: true);
+			// payload needs handling. No dialog for the URLs the runtime tests open (Given_Window), as
+			// on iOS it is a native alert that would outlive the test.
+			var isRuntimeTestUrl = args.Data is ProtocolActivatedEventArgs { Uri.Host: "runtime-tests" };
+			ReportActivation(args, "Application activated", showDialog: !isRuntimeTestUrl);
 		}
 
 		/// <summary>
@@ -351,7 +346,7 @@ namespace SamplesApp
 				// Only for an activation delivered into the running app. Reporting at launch would pop a
 				// dialog on every run, including the CI runs driven by launch arguments.
 				if (showDialog &&
-					ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
+					ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno.WinRT", nameof(MessageDialog.ShowAsync)))
 				{
 					await new MessageDialog($"Kind - {arguments.Kind}, {detail}", title).ShowAsync();
 				}

@@ -127,30 +127,54 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	/// The process-wide device, created on first use. One device serves every window on purpose: the drawing
 	/// factory built from it is installed as the process-wide <c>DrawingFactory.Current</c>, so a device owned by
 	/// one window would die with that window and leave every other window recording against a released device -
-	/// which wgpu answers by aborting the process. Windows own their SURFACES; this outlives all of them.
+	/// which wgpu answers by aborting the process. Windows own their SURFACES; this outlives all of them. Returns the
+	/// calling window's surface too, created on the device's instance.
 	/// </summary>
-	internal static WebGpuInitDevice GetShared(TextureFormat colorFormat)
+	internal static WebGpuInitDevice GetShared(TextureFormat colorFormat, SurfaceFactory createSurface, out Surface* surface)
 	{
 		lock (_sharedGate)
 		{
-			return _shared ??= new WebGpuInitDevice(colorFormat);
+			if (_shared is null)
+			{
+				_shared = new WebGpuInitDevice(colorFormat, createSurface, out surface);
+			}
+			else
+			{
+				surface = createSurface(_shared.Inst);
+			}
+
+			return _shared;
 		}
 	}
 
-	public WebGpuInitDevice(TextureFormat colorFormat)
+	private WebGpuInitDevice(TextureFormat colorFormat, SurfaceFactory createSurface, out Surface* surface)
 	{
 		ColorFormat = colorFormat;
 		EnableNativeLog();
 		Inst = CreateInstance();
 
+		// The adapter has to present to the window: unasked, wgpu can pick one that cannot (its OpenGL adapter for an
+		// X11 window when there is no Vulkan driver), and configuring the surface then aborts the process.
+		surface = createSurface(Inst);
+		if (surface == null)
+		{
+			Api.InstanceRelease(Inst);
+			throw new InvalidOperationException("Failed to create the wgpu surface for this window.");
+		}
+
 		var abox = new nint[1];
 		var ah = GCHandle.Alloc(abox);
-		var aopts = new RequestAdapterOptions { PowerPreference = PowerPreference.HighPerformance };
+		var aopts = new RequestAdapterOptions { PowerPreference = PowerPreference.HighPerformance, CompatibleSurface = surface };
 		Api.InstanceRequestAdapter(Inst, &aopts, new PfnRequestAdapterCallback(&OnAdapter), (void*)GCHandle.ToIntPtr(ah));
 		for (int i = 0; i < 1000 && abox[0] == 0; i++) { Api.InstanceProcessEvents(Inst); }
 		Adapter = (Adapter*)abox[0];
 		ah.Free();
-		if (Adapter == null) { throw new InvalidOperationException("WebGPU: wgpuInstanceRequestAdapter returned no adapter (no compatible GPU/driver, or the callback never fired)."); }
+		if (Adapter == null)
+		{
+			Api.SurfaceRelease(surface);
+			Api.InstanceRelease(Inst);
+			throw new InvalidOperationException("WebGPU: no adapter can present to this window (no compatible GPU/driver, or the callback never fired).");
+		}
 
 		var dbox = new nint[1];
 		var dh = GCHandle.Alloc(dbox);

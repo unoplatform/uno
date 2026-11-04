@@ -44,6 +44,8 @@ internal interface IInvisibleTextBoxView
 
 	UIKeyboardAppearance KeyboardAppearance { get; set; }
 
+	global::Foundation.NSString TextContentType { get; set; }
+
 	UITextPosition BeginningOfDocument { get; }
 
 	nint GetOffsetFromPosition(UITextPosition fromPosition, UITextPosition toPosition);

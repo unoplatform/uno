@@ -23,6 +23,37 @@ internal static class InputScopeHelper
 		}
 	}
 
+	/// <summary>
+	/// The <c>textContentType</c> iOS reads to offer AutoFill in the QuickType bar (saved passwords, the user's
+	/// own contact details). Null when the field has no AutoFill meaning, leaving the native default.
+	/// </summary>
+	public static NSString? ConvertInputScopeToTextContentType(InputScope value, bool isPassword)
+	{
+		if (isPassword)
+		{
+			return UITextContentType.Password;
+		}
+
+		switch (value.GetFirstInputScopeNameValue())
+		{
+			case InputScopeNameValue.EmailSmtpAddress:
+			case InputScopeNameValue.EmailNameOrAddress:
+				return UITextContentType.EmailAddress;
+
+			case InputScopeNameValue.TelephoneNumber:
+				return UITextContentType.TelephoneNumber;
+
+			case InputScopeNameValue.Url:
+				return UITextContentType.Url;
+
+			case InputScopeNameValue.PersonalFullName:
+				return UITextContentType.Name;
+
+			default:
+				return null;
+		}
+	}
+
 	public static UIKeyboardType ConvertInputScopeToKeyboardType(InputScope value)
 	{
 		switch (value.GetFirstInputScopeNameValue())

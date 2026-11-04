@@ -164,14 +164,7 @@ internal static class FontDetailsCache
 			return fontFile.CreateFont(familyNameHint, weight, stretch, style, fontSize);
 		}
 
-		// A family the platform does not have may still be fetchable by name -- master consulted the fallback
-		// source before the platform lookup, which is the only way a browser resolves a named Noto family.
-		if (await FontFallback.MatchFamilyAsync(manager, name, weight, stretch, style, fontSize) is { } fetched)
-		{
-			return fetched;
-		}
-
-		return manager.MatchFamily(name, weight, stretch, style, fontSize);
+		return await manager.MatchFamilyAsync(name, weight, stretch, style, fontSize);
 	}
 
 	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((

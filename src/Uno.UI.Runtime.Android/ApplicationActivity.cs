@@ -395,10 +395,10 @@ namespace Uno.UI.Runtime.Android
 			}
 		}
 
-		private IUnoRenderView CreateRenderView()
+		private IUnoRenderView CreateRenderView(bool allowWebGpu = true)
 		{
 			// Pick the Android view class matching the registered backend's context kind (host reads the neutral kind).
-			if (global::Uno.UI.Composition.Drawing.GraphicsRegistry.HasBackendPreferring(
+			if (allowWebGpu && global::Uno.UI.Composition.Drawing.GraphicsRegistry.HasBackendPreferring(
 				global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu))
 			{
 				try
@@ -442,27 +442,30 @@ namespace Uno.UI.Runtime.Android
 		}
 
 		/// <summary>
-		/// Swaps the active render view for the GL/canvas one after a GPU backend failed to initialize on its own
-		/// render thread. <see cref="CreateRenderView"/>'s try/catch only covers the view constructor, so without
-		/// this a failed negotiation leaves a dead render thread and a permanently black window.
+		/// Replaces a render view whose GPU backend failed to initialize on its own render thread.
+		/// <see cref="CreateRenderView"/>'s try/catch only covers the view constructor, so without this a failed
+		/// negotiation leaves a dead render thread and a permanently black window. A failed WebGPU view goes through
+		/// the rest of the view chain (Vulkan, then canvas), so a registered fallback backend gets the same view a
+		/// non-WebGPU app would; any other failed view gets the GL/canvas one.
 		/// </summary>
-		internal void FallbackToCanvasView()
+		internal void ReplaceFailedRenderView(IUnoRenderView failedView)
 		{
-			// A null render view means OnDestroy already tore the stack down.
+			// A null layout means OnDestroy already tore the stack down.
 			var layout = RelativeLayout;
-			if (layout is null || _renderView is null or UnoCanvasView)
+			if (layout is null || failedView is UnoCanvasView)
 			{
 				return;
 			}
 
 			RunOnUiThread(() =>
 			{
-				if (_renderView is null or UnoCanvasView)
+				if (!ReferenceEquals(_renderView, failedView))
 				{
 					return;
 				}
 
-				typeof(ApplicationActivity).Log().Warn("Falling back to the OpenGL ES/software render view.");
+				var replacement = failedView is UnoWebGpuView ? CreateRenderView(allowWebGpu: false) : new UnoCanvasView(this);
+				typeof(ApplicationActivity).Log().Warn($"Falling back to the {replacement.GetType().Name} render view.");
 
 				if (_renderViewAsView is { } failed)
 				{
@@ -472,15 +475,15 @@ namespace Uno.UI.Runtime.Android
 					layout.Post(() => failed.Dispose());
 				}
 
-				var canvasView = new UnoCanvasView(this);
-				canvasView.LayoutParameters = new ViewGroup.LayoutParams(
+				var replacementView = (View)replacement;
+				replacementView.LayoutParameters = new ViewGroup.LayoutParams(
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
-				_renderView = canvasView;
-				_renderViewAsView = canvasView;
+				_renderView = replacement;
+				_renderViewAsView = replacementView;
 
 				// Index 0 keeps it under the native layer host, as in OnStart.
-				layout.AddView(canvasView, 0);
+				layout.AddView(replacementView, 0);
 
 				InvalidateRender();
 			});

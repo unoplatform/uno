@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -39,18 +40,20 @@ public partial class Given_InteractionTracker
 
 	private async Task<string> WaitTrackerLogs(TrackerOwner owner)
 	{
-		string logs = owner.GetLogs();
-		while (true)
+		// Every motion ends in IdleStateEntered. Waiting for the logs to go quiet instead returned mid-motion
+		// whenever a frame took longer than the poll interval, as it does on the software-rendered lanes.
+		var timeout = Stopwatch.StartNew();
+		while (!owner.GetLogs().TrimEnd().Split('\n')[^1].StartsWith("IdleStateEntered:", StringComparison.Ordinal))
 		{
-			await Task.Delay(100);
-			var currentLogs = owner.GetLogs();
-			if (logs == currentLogs)
+			if (timeout.Elapsed > TimeSpan.FromSeconds(10))
 			{
-				return logs;
+				Assert.Fail($"The tracker did not return to idle. Logs:\n{owner.GetLogs()}");
 			}
 
-			logs = currentLogs;
+			await Task.Delay(50);
 		}
+
+		return owner.GetLogs();
 	}
 
 	[TestMethod]

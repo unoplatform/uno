@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Foundation;
 using Microsoft.UI.Xaml;
 using UIKit;
@@ -32,10 +33,6 @@ public class UnoUISceneDelegate : UISceneDelegate
 {
 	internal const string GetConfigurationSelectorName = "application:configurationForConnectingSceneSession:options:";
 	internal const string UnoSceneConfigurationKey = "__UNO_DEFAULT_SCENE_CONFIGURATION__";
-	internal const string UIApplicationSceneManifestKey = "UIApplicationSceneManifest";
-
-	private static readonly bool _hasSceneManifest =
-		NSBundle.MainBundle.InfoDictionary?.ContainsKey(new NSString(UIApplicationSceneManifestKey)) == true;
 
 	// Sessions the app asked UIKit to destroy, and the subset that was not in the background at the time and
 	// so must hand the foreground over. UIKit callbacks all run on the main thread.
@@ -49,12 +46,6 @@ public class UnoUISceneDelegate : UISceneDelegate
 	/// </summary>
 	[Export("window")]
 	public UIWindow? Window { get; set; }
-
-	/// <summary>
-	/// Gets a value indicating whether the app declares a scene manifest, and therefore runs the
-	/// scene-based lifecycle rather than the app-level one.
-	/// </summary>
-	internal static bool HasSceneManifest => _hasSceneManifest;
 
 	[Export("scene:willConnectToSession:options:")]
 	public sealed override void WillConnect(UIScene scene, UISceneSession session, UISceneConnectionOptions connectionOptions)
@@ -74,7 +65,7 @@ public class UnoUISceneDelegate : UISceneDelegate
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Warn($"Ignoring a non-window scene (role: {session.Role}).");
+					this.Log().Warn($"Ignoring a non-window scene (role: {session.DescribeRole()}).");
 				}
 
 				return;
@@ -89,7 +80,7 @@ public class UnoUISceneDelegate : UISceneDelegate
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
 					this.Log().Warn(
-						$"No window is awaiting a scene (session: {session.PersistentIdentifier}, role: {session.Role}); " +
+						$"No window is awaiting a scene (session: {session.PersistentIdentifier}, role: {session.DescribeRole()}); " +
 						$"discarding the session. This happens when the OS restores more scenes than the app created windows for.");
 				}
 
@@ -112,6 +103,11 @@ public class UnoUISceneDelegate : UISceneDelegate
 		}
 		catch (Exception ex)
 		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("Connecting a scene failed.", ex);
+			}
+
 			Application.Current?.RaiseRecoverableUnhandledException(ex);
 		}
 	}
@@ -132,10 +128,10 @@ public class UnoUISceneDelegate : UISceneDelegate
 		// Full-screen iPadOS shows one scene at a time, and a scene that is still connecting is already
 		// on its way to the front: destroying it without bringing another forward leaves the app with no
 		// foreground scene, and it gets suspended.
-		if (scene.ActivationState != UISceneActivationState.Background)
+		if (scene.ActivationState != UISceneActivationState.Background && session.TryGetRole(out var role))
 		{
 			_foregroundHandoffs.Add(sessionId);
-			ActivateRemainingScene(session.Role);
+			ActivateRemainingScene(role);
 		}
 
 		UIApplication.SharedApplication.RequestSceneSessionDestruction(session, null, OnError);
@@ -161,7 +157,7 @@ public class UnoUISceneDelegate : UISceneDelegate
 		{
 			// Only a scene of the same role (not, say, an external display) keeps the app in the foreground.
 			if (connectedScene is not UIWindowScene { Session: { } session } ||
-				session.Role != role ||
+				!session.HasRole(role) ||
 				_destroyedSessions.Contains(session.PersistentIdentifier))
 			{
 				continue;
@@ -220,7 +216,7 @@ public class UnoUISceneDelegate : UISceneDelegate
 		{
 			if (connectedScene.ActivationState is UISceneActivationState.ForegroundActive or UISceneActivationState.ForegroundInactive &&
 				connectedScene.Session is { } session &&
-				session.Role == role &&
+				session.HasRole(role) &&
 				!_destroyedSessions.Contains(session.PersistentIdentifier))
 			{
 				return true;
@@ -241,9 +237,11 @@ public class UnoUISceneDelegate : UISceneDelegate
 				var sessionId = session.PersistentIdentifier;
 				_destroyedSessions.Remove(sessionId);
 
-				if (_foregroundHandoffs.Remove(sessionId) && !HasForegroundScene(session.Role))
+				if (_foregroundHandoffs.Remove(sessionId) &&
+					session.TryGetRole(out var role) &&
+					!HasForegroundScene(role))
 				{
-					ActivateRemainingScene(session.Role);
+					ActivateRemainingScene(role);
 				}
 			}
 
@@ -371,5 +369,5 @@ public class UnoUISceneDelegate : UISceneDelegate
 		return null;
 	}
 
-	private void Forward(Action action) => NativeCallbackGuard.Run(action);
+	private void Forward(Action action, [CallerMemberName] string callback = "") => NativeCallbackGuard.Run(action, callback);
 }

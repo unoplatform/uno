@@ -80,18 +80,17 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Themes.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';prism;'))">
-		<_UnoProjectSystemPackageReference Include="Prism.Uno.WinUI" ProjectSystem="true" Condition="!$(_IsExecutable)" />
-		<_UnoProjectSystemPackageReference Include="Prism.DryIoc.Uno.WinUI" ProjectSystem="true" Condition="$(_IsExecutable)" />
-		<_UnoProjectSystemPackageReference Include="Prism.Uno.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
-	</ItemGroup>
-
 	<ItemGroup Condition="$(UnoFeatures.Contains(';dsp;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Dsp.Tasks" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';mvvm;'))">
 		<_UnoProjectSystemPackageReference Include="CommunityToolkit.Mvvm" ProjectSystem="true" />
+	</ItemGroup>
+
+	<!-- Reactor on Uno Platform has no WinAppSDK build: the Windows target gets UNOB0031 instead (Uno.Features.targets). -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';reactor;')) And !$(TargetFramework.Contains('windows10'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Microsoft.UI.Reactor" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(UnoDefaultFont)'=='OpenSans' AND $(_IsExecutable)">
