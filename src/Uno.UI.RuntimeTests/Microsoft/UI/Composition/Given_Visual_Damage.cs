@@ -550,15 +550,18 @@ public class Given_Visual_Damage
 			RenderFrame(root, damage);
 		}
 
-		// Moving the scroller invalidates its ancestors, so the stable content is the one collapsed next.
+		// Moving the scroller invalidates its ancestors, so the scroller, whose children are stable, is the one collapsed next.
 		scroller.Offset = new Vector3(0, 1, 0);
 		damage.Reset();
 		RenderFrame(root, damage);
 
-		// Scrolled: the content is replayed at its new placement without walking the marker.
+		// Scrolled: the scroller's children are replayed at their new placement without walking the marker.
 		scroller.Offset = new Vector3(0, 100, 0);
 		damage.Reset();
 		RenderFrame(root, damage);
+
+		// Walked instead, the marker would record its new bounds and the removal would pass without the fix.
+		Assert.IsNotNull(scroller.ChildrenContentForTesting, "The scrolled content should have been collapsed and replayed, not walked.");
 
 		damage.Reset();
 		target.Damage.Clear();
@@ -570,6 +573,81 @@ public class Given_Visual_Damage
 		Assert.IsTrue(
 			target.Damage.Exists(r => r.Contains(new Point(20, 120))) || reported.FillContains(new Vector2(20, 120)),
 			$"Removing the scrolled page did not damage where its content was last painted (target damage: {string.Join(", ", target.Damage)}).");
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	// The drop-shadow fallback (taken when the shadow can't be computed analytically, here because a descendant is
+	// projected) replays its own recording of the subtree under a scroll, so the subtree isn't walked either.
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25478")]
+	public async Task When_Scrolled_Shadow_Fallback_Subtree_Is_Removed_Then_Its_Current_Area_Is_Damaged()
+	{
+#if __SKIA__
+		var compositor = Compositor.GetSharedCompositor();
+
+		var root = compositor.CreateContainerVisual();
+		root.Size = new Vector2(200, 200);
+
+		var target = new DamageRecorder();
+		root.CompositionTarget = target;
+
+		var page = compositor.CreateContainerVisual();
+		page.Size = new Vector2(200, 200);
+		root.Children.InsertAtTop(page);
+
+		var scroller = compositor.CreateContainerVisual();
+		scroller.Size = new Vector2(200, 200);
+		page.Children.InsertAtTop(scroller);
+
+		var content = compositor.CreateContainerVisual();
+		content.Size = new Vector2(200, 200);
+		content.ShadowState = new Uno.UI.Composition.Composition.ShadowState(0, 4, 4, 4, Colors.Black);
+		scroller.Children.InsertAtTop(content);
+
+		var projected = compositor.CreateSpriteVisual();
+		projected.Brush = compositor.CreateColorBrush(Colors.Magenta);
+		projected.Size = new Vector2(20, 20);
+		projected.Offset = new Vector3(40, 10, 0);
+		projected.TransformMatrix = new Matrix4x4(
+			1, 0, 0, -0.001f,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1);
+		content.Children.InsertAtTop(projected);
+
+		var marker = compositor.CreateSpriteVisual();
+		marker.Brush = compositor.CreateColorBrush(Colors.Magenta);
+		marker.Size = new Vector2(20, 20);
+		marker.Offset = new Vector3(10, 10, 0);
+		content.Children.InsertAtTop(marker);
+
+		using var damage = new DamageRegion();
+		for (var frame = 0; frame < 3; frame++)
+		{
+			damage.Reset();
+			RenderFrame(root, damage);
+		}
+
+		scroller.Offset = new Vector3(0, 100, 0);
+		damage.Reset();
+		RenderFrame(root, damage);
+
+		Assert.IsNotNull(content.ShadowFallbackContentForTesting, "The content should have been drawn through the shadow fallback recording.");
+
+		damage.Reset();
+		target.Damage.Clear();
+		root.Children.Remove(page);
+		RenderFrame(root, damage);
+
+		// The marker was last painted at (10, 110)-(30, 130).
+		using var reported = SnapshotDamage(damage);
+		Assert.IsTrue(
+			target.Damage.Exists(r => r.Contains(new Point(20, 120))) || reported.FillContains(new Vector2(20, 120)),
+			$"Removing the scrolled page did not damage where its shadowed content was last painted (target damage: {string.Join(", ", target.Damage)}).");
 #else
 		await Task.CompletedTask;
 #endif
