@@ -31,6 +31,8 @@
 		<WasmAotProfilePath Condition=" $(WasmAotProfilePath) == '' AND Exists('$(WasmProjectFolder)$(WasmAotFileName)') ">$(WasmProjectFolder)$(WasmAotFileName)</WasmAotProfilePath>
 		<WasmAotProfilePath Condition=" $(WasmAotProfilePath) == '' AND Exists('$(WasmAotFileName)') ">$(WasmAotFileName)</WasmAotProfilePath>
 
+		<UnoXamlResourcesTrimming Condition=" '$(UnoXamlResourcesTrimming)' == '' ">true</UnoXamlResourcesTrimming>
+
 		<UnoEnableDefaultCompressedItems Condition=" '$(UnoEnableDefaultCompressedItems)' == '' ">true</UnoEnableDefaultCompressedItems>
 		<!-- based on https://github.com/dotnet/sdk/blob/be30c95a22d25aaedaed184ee4d188c5e31218c8/src/StaticWebAssetsSdk/Targets/Microsoft.NET.Sdk.StaticWebAssets.Compression.targets#L25 -->
 		<CompressionIncludePatterns Condition="'$(UnoEnableDefaultCompressedItems)' == 'true' AND '$(TargetFramework)' != '' AND $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) != '' AND $([MSBuild]::VersionGreaterThanOrEquals($([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')), '9.0'))">

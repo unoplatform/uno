@@ -12,7 +12,15 @@ As of Uno Platform 6.0, XAML Resources Trimming is available for apps targeting 
 
 ## Using XAML Resources trimming for applications
 
-In order for an application to enable resources trimming, the following needs to be added to all projects of your solution that reference the Uno.WinUI (or Uno.UI) package, as well as the WebAssembly head project:
+WebAssembly apps using the Uno.Sdk enable resources trimming by default in Release builds. To turn it off, set the property to `false` in the app project:
+
+```xml
+<PropertyGroup>
+    <UnoXamlResourcesTrimming>false</UnoXamlResourcesTrimming>
+</PropertyGroup>
+```
+
+For other targets, in order for an application to enable resources trimming, the following needs to be added to all projects of your solution that reference the Uno.WinUI (or Uno.UI) package, as well as the WebAssembly head project:
 
 ```xml
 <PropertyGroup>
