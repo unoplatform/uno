@@ -139,9 +139,9 @@ public class Given_HotReloadOutcomeTelemetry
 
 	[TestMethod]
 	[Description(
-		"An operation with no result in time is aborted by its timeout: the user saved and nothing happened, " +
-		"so it is sent as notify-failed with Result=Timeout.")]
-	public async Task When_OperationTimesOut_Then_FailedWithTimeoutIsSent()
+		"An operation aborted by its timeout is sent as notify-timeout: visible, yet not a failure, since a slow " +
+		"pass can still apply its update and an update request that changed nothing never starts a pass.")]
+	public async Task When_OperationTimesOut_Then_TimeoutIsSent()
 	{
 		var tracker = CreateTracker();
 		var telemetry = new RecordingTelemetry();
@@ -151,9 +151,55 @@ public class Given_HotReloadOutcomeTelemetry
 		await operation.OnTimeoutAsync();
 
 		var evt = telemetry.Events.Should().ContainSingle().Which;
-		evt.Name.Should().Be("notify-failed");
-		evt.Properties["Event"].Should().Be("Failed");
-		evt.Properties["Result"].Should().Be("Timeout");
+		evt.Name.Should().Be("notify-timeout");
+		evt.Properties["Event"].Should().Be("Timeout");
+		evt.Properties["Result"].Should().Be("Aborted");
+	}
+
+	[TestMethod]
+	[Description(
+		"A pass slower than the timeout still applies its update, but the operation already completed as timed out: " +
+		"its late result is dropped, so the one event sent is notify-timeout, never a failure.")]
+	public async Task When_PassOutlivesTheTimeout_Then_OnlyTheTimeoutIsSent()
+	{
+		var emitEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+		var releaseEmit = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+		using var harness = new HotReloadManagerHarness(async _ =>
+		{
+			emitEntered.SetResult();
+			await releaseEmit.Task;
+			return ([HotReloadManagerHarness.CreateEmptyUpdate()], []);
+		});
+		var telemetry = new RecordingTelemetry();
+		new HotReloadOutcomeTelemetry(harness.Tracker, telemetry).Attach(CancellationToken.None);
+
+		var pass = harness.Manager.ProcessFileChanges(Task.FromResult(ImmutableHashSet.Create("/work/Model.cs")), CancellationToken.None);
+		await emitEntered.Task.WaitAsync(_testTimeout);
+		await harness.Tracker.Current!.OnTimeoutAsync();
+		releaseEmit.SetResult();
+		await pass.WaitAsync(_testTimeout);
+
+		harness.Handler.Calls.Should().ContainSingle().Which.Result.Should().Be(HotReloadOperationResult.Success, "the update was still sent");
+		telemetry.Events.Should().ContainSingle().Which.Name.Should().Be("notify-timeout");
+	}
+
+	[TestMethod]
+	[Description(
+		"Workspace teardown runs its token callbacks last-registered first, so the file watcher's disposal can complete " +
+		"a pass before the reporter unsubscribes. The reporter checks the token, so that completion sends nothing.")]
+	public async Task When_ATeardownCallbackCompletesAnOperation_Then_NoEventIsSent()
+	{
+		var tracker = CreateTracker();
+		var telemetry = new RecordingTelemetry();
+		using var workspace = new CancellationTokenSource();
+		new HotReloadOutcomeTelemetry(tracker, telemetry).Attach(workspace.Token);
+
+		var operation = await tracker.StartHotReload(ImmutableHashSet.Create("/work/Model.cs"));
+		workspace.Token.Register(() => operation.Complete(HotReloadOperationResult.InternalError, new OperationCanceledException()).AsTask().Wait());
+		await workspace.CancelAsync();
+
+		operation.Result.Should().Be(HotReloadOperationResult.InternalError);
+		telemetry.Events.Should().BeEmpty();
 	}
 
 	[TestMethod]

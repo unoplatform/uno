@@ -39,7 +39,7 @@ internal sealed class HotReloadOutcomeTelemetry(HotReloadTracker tracker, ITelem
 	}
 
 	/// <summary>
-	/// Leaves out an operation an IDE notification starts or completes: the IDE reports its outcome itself (Source=IDE).
+	/// Leaves out an operation an IDE notification starts, continues or completes: the IDE reports its outcome itself (Source=IDE).
 	/// </summary>
 	public void SkipReportedByIde(HotReloadOperation operation)
 		=> _reportedByIde.AddOrUpdate(operation, _marker);
@@ -55,7 +55,7 @@ internal sealed class HotReloadOutcomeTelemetry(HotReloadTracker tracker, ITelem
 
 		var properties = new Dictionary<string, string>
 		{
-			["Event"] = outcome.Event.ToString(),
+			["Event"] = outcome.Event,
 			["Source"] = HotReloadEventSource.DevServer.ToString(),
 			["Result"] = outcome.Result,
 		};
@@ -72,15 +72,18 @@ internal sealed class HotReloadOutcomeTelemetry(HotReloadTracker tracker, ITelem
 		telemetry.TrackEvent(outcome.Name, properties, measurements);
 	}
 
-	private static (HotReloadEvent Event, string Name, string Result)? GetOutcome(HotReloadOperation operation)
+	private static (string Event, string Name, string Result)? GetOutcome(HotReloadOperation operation)
 		=> operation.Result switch
 		{
-			HotReloadOperationResult.Success => (HotReloadEvent.Completed, HotReloadOutcomeEvents.Completed, "Success"),
-			HotReloadOperationResult.NoChanges => (HotReloadEvent.NoChanges, HotReloadOutcomeEvents.NoChanges, "NoChanges"),
-			HotReloadOperationResult.RudeEdit => (HotReloadEvent.RudeEdit, HotReloadOutcomeEvents.RudeEdit, "RudeEdit"),
-			HotReloadOperationResult.Failed => (HotReloadEvent.Failed, HotReloadOutcomeEvents.Failed, "Failed"),
-			HotReloadOperationResult.InternalError => (HotReloadEvent.Failed, HotReloadOutcomeEvents.Failed, "InternalError"),
-			HotReloadOperationResult.Aborted when operation.IsTimedOut => (HotReloadEvent.Failed, HotReloadOutcomeEvents.Failed, "Timeout"),
+			HotReloadOperationResult.Success => (nameof(HotReloadEvent.Completed), HotReloadOutcomeEvents.Completed, "Success"),
+			HotReloadOperationResult.NoChanges => (nameof(HotReloadEvent.NoChanges), HotReloadOutcomeEvents.NoChanges, "NoChanges"),
+			HotReloadOperationResult.RudeEdit => (nameof(HotReloadEvent.RudeEdit), HotReloadOutcomeEvents.RudeEdit, "RudeEdit"),
+			HotReloadOperationResult.Failed => (nameof(HotReloadEvent.Failed), HotReloadOutcomeEvents.Failed, "Failed"),
+			HotReloadOperationResult.InternalError => (nameof(HotReloadEvent.Failed), HotReloadOutcomeEvents.Failed, "InternalError"),
+
+			// No result in time is not a failure: a slow pass can still apply its update after it, and an update
+			// request that changed nothing never starts a pass.
+			HotReloadOperationResult.Aborted when operation.IsTimedOut => ("Timeout", HotReloadOutcomeEvents.Timeout, "Aborted"),
 			_ => null, // Aborted by a newer operation: that one carries the outcome.
 		};
 }

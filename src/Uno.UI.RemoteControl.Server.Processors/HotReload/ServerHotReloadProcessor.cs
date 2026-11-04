@@ -289,7 +289,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		// An operation an IDE notification starts or completes is the IDE's to report (Source=IDE).
+		// An operation an IDE notification starts, continues or completes is the IDE's to report (Source=IDE).
 		private async ValueTask<HotReloadOperation> StartOrContinueHotReload(HotReloadEventSource source)
 		{
 			var operation = await _tracker.StartOrContinueHotReload();

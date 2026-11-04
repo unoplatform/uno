@@ -10,4 +10,7 @@ internal static class HotReloadOutcomeEvents
 	public const string NoChanges = "notify-no-changes";
 	public const string Failed = "notify-failed";
 	public const string RudeEdit = "notify-rude-edit";
+
+	/// <summary>An operation of the dev-server's own workspace that got no result in time. Never sent by the IDE.</summary>
+	public const string Timeout = "notify-timeout";
 }
