@@ -56,6 +56,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private bool m_isTargetPositionSet;
 		private Point m_targetPoint;
 
+		// TODO Uno: the presenter is sized after its PopupPanel placed it, then placed again. This goes away once FlyoutBase
+		// places the presenter itself, as in WinUI (see PopupPanel.Placement.cs).
 		private bool m_isPresenterWidthResized;
 		private bool m_isPresenterHeightResized;
 		private Size m_presenterSizeBeforeResize;
