@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
@@ -125,7 +126,8 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 				if (unconfiguredProject != null
 					&& unconfiguredProject.FullPath.Equals(projectPath, StringComparison.InvariantCultureIgnoreCase))
 				{
-					var configuredProject = await unconfiguredProject.GetSuggestedConfiguredProjectAsync();
+					var configuredProject = await GetActiveDebugFrameworkConfiguredProjectAsync(unconfiguredProject)
+						?? await unconfiguredProject.GetSuggestedConfiguredProjectAsync();
 					if (configuredProject?.Services?.ProjectPropertiesProvider != null)
 					{
 						var projectProperties = configuredProject.Services.ProjectPropertiesProvider.GetCommonProperties();
@@ -141,6 +143,35 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 		catch
 		{
 			// ignore
+		}
+
+		return null;
+	}
+
+	/// <summary>
+	/// Gets the configured project the debugger launches, the one of the active debug framework. For a multi-targeted
+	/// project the suggested configured project is the first target framework instead, which need not be the launched one.
+	/// </summary>
+	private static async Task<ConfiguredProject?> GetActiveDebugFrameworkConfiguredProjectAsync(UnconfiguredProject unconfiguredProject)
+	{
+		try
+		{
+			// The referenced project system package predates this service, so it is resolved by reflection (see ProfilesObserver)
+			var servicesType = Type.GetType("Microsoft.VisualStudio.ProjectSystem.Debug.IActiveDebugFrameworkServices, Microsoft.VisualStudio.ProjectSystem.Managed");
+			var exportProvider = unconfiguredProject.Services.ActiveConfiguredProjectProvider?.ActiveConfiguredProject?.Services.ExportProvider;
+
+			if (servicesType is not null
+				&& exportProvider is not null
+				&& typeof(MefExtensions).GetMethods().FirstOrDefault(m => m.Name == "GetService") is { } getServiceMethod
+				&& getServiceMethod.MakeGenericMethod(servicesType).Invoke(null, [exportProvider, /*allow default*/true]) is { } services
+				&& servicesType.GetMethod("GetConfiguredProjectForActiveFrameworkAsync")?.Invoke(services, []) is Task<ConfiguredProject> getConfiguredProject)
+			{
+				return await getConfiguredProject;
+			}
+		}
+		catch
+		{
+			// Fall back to the suggested configured project
 		}
 
 		return null;
