@@ -519,10 +519,11 @@ jobs:
               pr_full=1
               continue
             fi
-            # Escape < so generics like List<T> aren't swallowed as HTML tags, then break
-            # @mentions with an empty comment (GitHub still links &#64;). sed, because
-            # bash 5.2 expands & in ${//}.
-            t="$(sed 's/</\&lt;/g; s/@/@<!-- -->/g' <<<"$t")"
+            # Escape & first so entities already in a title (&#64;name decodes to a
+            # mention) stay literal, then < so generics like List<T> aren't swallowed as
+            # HTML tags, then break @mentions with an empty comment. sed, because bash 5.2
+            # expands & in ${//}.
+            t="$(sed 's/&/\&amp;/g; s/</\&lt;/g; s/@/@<!-- -->/g' <<<"$t")"
             if [[ ",${excluded_prs// /}," == *",${n},"* ]]; then
               line="- ~~#${n}~~ ${t} — _excluded_"
             else
