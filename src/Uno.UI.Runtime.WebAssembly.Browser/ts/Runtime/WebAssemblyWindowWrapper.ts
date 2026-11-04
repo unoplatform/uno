@@ -73,8 +73,14 @@
 			})
 
 			// The browser has no window activation; focus/blur and page visibility are the equivalents.
-			window.addEventListener("focus", () => this.onWindowFocusChanged(this.owner, true));
-			window.addEventListener("blur", () => this.onWindowFocusChanged(this.owner, false));
+			// iOS WebKit blurs the window when the on-screen keyboard is dismissed and focuses it again on the
+			// next tap, which would light-dismiss the open popups: page visibility is the app's active state there.
+			if (BrowserInputHelper.isIOS) {
+				document.addEventListener("visibilitychange", () => this.onWindowFocusChanged(this.owner, !document.hidden));
+			} else {
+				window.addEventListener("focus", () => this.onWindowFocusChanged(this.owner, true));
+				window.addEventListener("blur", () => this.onWindowFocusChanged(this.owner, false));
+			}
 			document.addEventListener("visibilitychange", () => this.onDocumentVisibilityChanged(this.owner, !document.hidden));
 
 			// The on-screen keyboard shrinks the visual viewport without firing window "resize",

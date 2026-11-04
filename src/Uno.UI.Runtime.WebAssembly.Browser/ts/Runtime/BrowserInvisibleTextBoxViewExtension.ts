@@ -3,15 +3,15 @@
 		private static _exports: any;
 		private static _imeExports: any;
 		private static readonly isMacOS = navigator?.platform.toUpperCase().includes('MAC') ?? false;
-		// iPadOS 13+ reports itself as a Mac, so touch support is what tells it apart from macOS Safari.
-		private static readonly isIOS = /iP(ad|hone|od)/.test(navigator?.platform ?? "")
-			|| (navigator?.platform === "MacIntel" && (navigator.maxTouchPoints ?? 0) > 1);
 
 		// iOS WebKit scrolls the page to reveal the focused editable, on focus and on every keyboard frame
 		// change. The page is position:fixed, so that scroll pans the whole canvas and shifts hit-testing by
 		// the same amount. Off-screen there is nothing to reveal; the TextBox draws its own caret, selection
 		// and grippers, so the input's position and size are unused there.
-		private static readonly keepsInputOffscreen = BrowserInvisibleTextBoxViewExtension.isIOS;
+		// A getter, so this class doesn't depend on the order the runtime scripts are emitted in.
+		private static get keepsInputOffscreen(): boolean {
+			return BrowserInputHelper.isIOS;
+		}
 		private static readonly offscreenTop = "-10000px";
 
 		// The InputPane drives the bring-into-view of the focused TextBox; the browser's own scroll-to-focus
