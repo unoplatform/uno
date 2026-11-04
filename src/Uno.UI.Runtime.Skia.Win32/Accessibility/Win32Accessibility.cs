@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -32,6 +33,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private readonly Win32SyntheticPaneProvider _innerPane;
 	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
 	private readonly ConditionalWeakTable<AutomationPeer, Win32RawElementProvider> _peerProviders = new();
+	private int _providerCleanupDepth;
 	// Pending StructureChanged events, coalesced onto the dispatcher. We record the specific
 	// add/remove/invalidate so the flush can emit the WinUI-faithful event type (ChildAdded on the
 	// added element, ChildRemoved on the container with the removed child's runtime id) rather than
@@ -172,14 +174,19 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	/// </summary>
 	internal Win32RawElementProvider? GetOrCreateProvider(UIElement element)
 	{
+		if (!IsAccessibilityEnabled)
+		{
+			return null;
+		}
+
 		if (_providers.TryGetValue(element, out var existing))
 		{
 			return existing;
 		}
 
-		if (!IsAccessibilityEnabled)
+		if (IsCleaningUpProviders)
 		{
-			return null;
+			return FindLiveProviderForCachedPeer(element);
 		}
 
 		var peer = element.GetOrCreateAutomationPeer();
@@ -205,9 +212,19 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	internal Win32RawElementProvider? GetProvider(UIElement element)
 	{
+		if (!IsAccessibilityEnabled)
+		{
+			return null;
+		}
+
 		if (_providers.TryGetValue(element, out var provider))
 		{
 			return provider;
+		}
+
+		if (IsCleaningUpProviders)
+		{
+			return FindLiveProviderForCachedPeer(element);
 		}
 
 		var peer = element.GetOrCreateAutomationPeer();
@@ -218,6 +235,16 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	private Win32RawElementProvider? GetOrCreateProviderForResolvedPeer(AutomationPeer resolvedPeer)
 	{
+		if (!IsAccessibilityEnabled)
+		{
+			return null;
+		}
+
+		if (IsCleaningUpProviders)
+		{
+			return FindLiveProviderForResolvedPeer(resolvedPeer);
+		}
+
 		// Fast path: already have a provider keyed by this exact peer.
 		if (_peerProviders.TryGetValue(resolvedPeer, out var existingByPeer))
 		{
@@ -287,6 +314,31 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 			return provider;
 		}
+	}
+
+	// UiaDisconnectProvider calls back into the provider it disconnects (e.g. Navigate(Parent)), so lookups
+	// made during CleanupProviders must find connected providers without creating or registering any.
+	private bool IsCleaningUpProviders => Volatile.Read(ref _providerCleanupDepth) > 0;
+
+	private Win32RawElementProvider? FindLiveProviderForCachedPeer(UIElement element)
+		=> element.CachedAutomationPeer is { } peer
+			? FindLiveProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true))
+			: null;
+
+	private Win32RawElementProvider? FindLiveProviderForResolvedPeer(AutomationPeer resolvedPeer)
+	{
+		if (_peerProviders.TryGetValue(resolvedPeer, out var byPeer))
+		{
+			return byPeer;
+		}
+
+		// Same match as the element-keyed reuse in GetOrCreateProviderForResolvedPeer, so a virtual
+		// peer never resolves to the provider of the element that hosts it.
+		return resolvedPeer.TryGetProviderOwner(out var owner)
+			&& _providers.TryGetValue(owner, out var byOwner)
+			&& byOwner.RepresentsPeer(resolvedPeer)
+				? byOwner
+				: null;
 	}
 
 	// ──────────────────────────────────────────────────────────────
@@ -475,27 +527,38 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// on deep visual trees when subtrees are removed.
 		var stack = new Stack<UIElement>();
 		stack.Push(element);
+		Interlocked.Increment(ref _providerCleanupDepth);
 
-		while (stack.Count > 0)
+		try
 		{
-			var current = stack.Pop();
-
-			if (_providers.TryGetValue(current, out var provider))
+			while (stack.Count > 0)
 			{
-				// Invalidate (mirrors WinUI's CUIAWrapper::Invalidate): clears the
-				// cached children, cascades the disconnect to virtual children —
-				// e.g. WCT DataGrid rows/cells not reachable via the element table —
-				// disconnects from UIA, and updates the lookup tables + tombstone
-				// via OnProviderInvalidated. Every subsequent call on the provider
-				// then fails with UIA_E_ELEMENTNOTAVAILABLE instead of the CCW being
-				// GC'd out from under a client's proxy (0x80070002).
-				provider.Invalidate();
-			}
+				var current = stack.Pop();
+				var provider = TryGetExistingProviderForElement(current);
 
-			foreach (var child in current.GetChildren())
-			{
-				stack.Push(child);
+				// Some visual elements expose a peer owned by another element. PopupPanel, for example,
+				// returns its Popup's peer, so the provider is keyed by Popup rather than PopupPanel.
+				if (provider is not null)
+				{
+					// Invalidate (mirrors WinUI's CUIAWrapper::Invalidate): clears the
+					// cached children, cascades the disconnect to virtual children —
+					// e.g. WCT DataGrid rows/cells not reachable via the element table —
+					// disconnects from UIA, and updates the lookup tables + tombstone
+					// via OnProviderInvalidated. Every subsequent call on the provider
+					// then fails with UIA_E_ELEMENTNOTAVAILABLE instead of the CCW being
+					// GC'd out from under a client's proxy (0x80070002).
+					provider.Invalidate();
+				}
+
+				foreach (var child in current.GetChildren())
+				{
+					stack.Push(child);
+				}
 			}
+		}
+		finally
+		{
+			Interlocked.Decrement(ref _providerCleanupDepth);
 		}
 	}
 
@@ -680,7 +743,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	{
 		try
 		{
-			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(provider, type, runtimeId);
+			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(provider, type, runtimeId, runtimeId?.Length ?? 0);
 		}
 		catch (Exception ex)
 		{
