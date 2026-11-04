@@ -4,8 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Input;
-using Uno.Foundation.Logging;
-using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Input;
 
@@ -56,17 +55,10 @@ internal static class WeakCanExecuteChangedSubscription
 		{
 			if (Interlocked.Exchange(ref _command, null) is { } command)
 			{
-				try
-				{
-					command.CanExecuteChanged -= OnCanExecuteChanged;
-				}
-				catch (Exception e)
-				{
-					if (typeof(WeakCanExecuteChangedSubscription).Log().IsEnabled(LogLevel.Error))
-					{
-						typeof(WeakCanExecuteChangedSubscription).Log().Error($"Failed to unsubscribe from CanExecuteChanged of {command.GetType()}", e);
-					}
-				}
+				SubscriptionCleanup.Run(
+					() => command.CanExecuteChanged -= OnCanExecuteChanged,
+					typeof(WeakCanExecuteChangedSubscription),
+					$"a CanExecuteChanged subscription from {command.GetType()}");
 			}
 		}
 	}
@@ -84,27 +76,7 @@ internal static class WeakCanExecuteChangedSubscription
 			_subscription.Dispose();
 		}
 
-		// The command isn't required to be thread-safe, so don't touch it from the finalizer thread.
 		~Handle()
-		{
-			try
-			{
-				NativeDispatcher.Main.Enqueue(_subscription.Dispose);
-			}
-			catch (Exception e)
-			{
-				// An exception escaping a finalizer terminates the process, even one thrown by the logger.
-				try
-				{
-					if (typeof(WeakCanExecuteChangedSubscription).Log().IsEnabled(LogLevel.Error))
-					{
-						typeof(WeakCanExecuteChangedSubscription).Log().Error("Failed to schedule the removal of a CanExecuteChanged subscription", e);
-					}
-				}
-				catch
-				{
-				}
-			}
-		}
+			=> SubscriptionCleanup.EnqueueFromFinalizer(_subscription.Dispose, typeof(WeakCanExecuteChangedSubscription), "a CanExecuteChanged subscription");
 	}
 }
