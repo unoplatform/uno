@@ -6,8 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Uno.Foundation.Logging;
-using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Interop;
 using _IBindableIterable = System.Collections.IEnumerable;
@@ -82,27 +81,10 @@ public partial class ItemsSourceView
 
 	~ItemsSourceView()
 	{
-		// Uno-specific: the source isn't required to be thread-safe, so don't touch it from the finalizer thread.
+		// Uno-specific
 		if (_collectionChangedListener is { } listener)
 		{
-			try
-			{
-				NativeDispatcher.Main.Enqueue(listener.Dispose);
-			}
-			catch (Exception e)
-			{
-				// An exception escaping a finalizer terminates the process, even one thrown by the logger.
-				try
-				{
-					if (typeof(ItemsSourceView).Log().IsEnabled(LogLevel.Error))
-					{
-						typeof(ItemsSourceView).Log().Error("Failed to schedule the removal of an items source subscription", e);
-					}
-				}
-				catch
-				{
-				}
-			}
+			SubscriptionCleanup.EnqueueFromFinalizer(listener.Dispose, typeof(ItemsSourceView), "an items source subscription");
 		}
 	}
 
@@ -256,17 +238,7 @@ public partial class ItemsSourceView
 		{
 			if (global::System.Threading.Interlocked.Exchange(ref _unsubscribe, null) is { } unsubscribe)
 			{
-				try
-				{
-					unsubscribe();
-				}
-				catch (Exception e)
-				{
-					if (typeof(ItemsSourceView).Log().IsEnabled(LogLevel.Error))
-					{
-						typeof(ItemsSourceView).Log().Error("Failed to unsubscribe from the items source", e);
-					}
-				}
+				SubscriptionCleanup.Run(unsubscribe, typeof(ItemsSourceView), "an items source subscription");
 			}
 		}
 	}

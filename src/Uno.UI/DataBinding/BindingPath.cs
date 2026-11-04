@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Media;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.DataBinding
 {
@@ -528,7 +528,7 @@ namespace Uno.UI.DataBinding
 		}
 
 		// Uno-specific: held by the binding only, so a binding dropped without being disposed doesn't leave its handler on
-		// the source: the finalizer removes it, on the UI thread since the source isn't required to be thread-safe.
+		// the source: the finalizer removes it.
 		private sealed class PropertyChangedSubscription : IDisposable
 		{
 			private INotifyPropertyChanged? _source;
@@ -562,37 +562,10 @@ namespace Uno.UI.DataBinding
 				}
 
 				var handler = _handler;
-				try
-				{
-					NativeDispatcher.Main.Enqueue(() =>
-					{
-						try
-						{
-							source.PropertyChanged -= handler;
-						}
-						catch (Exception e)
-						{
-							if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
-							{
-								typeof(BindingPath).Log().Error($"Failed to remove the PropertyChanged handler of a collected binding from {source.GetType()}", e);
-							}
-						}
-					});
-				}
-				catch (Exception e)
-				{
-					// An exception escaping a finalizer terminates the process, even one thrown by the logger.
-					try
-					{
-						if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
-						{
-							typeof(BindingPath).Log().Error("Failed to schedule the removal of the PropertyChanged handler of a collected binding", e);
-						}
-					}
-					catch
-					{
-					}
-				}
+				SubscriptionCleanup.EnqueueFromFinalizer(
+					() => source.PropertyChanged -= handler,
+					typeof(BindingPath),
+					"the PropertyChanged handler of a collected binding");
 			}
 		}
 
