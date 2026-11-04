@@ -13,9 +13,9 @@ namespace Uno.UI.Dispatching
 {
 	internal sealed partial class NativeDispatcher
 	{
-		// In MT mode, the runtime's JSSynchronizationContext is installed on the deputy thread.
-		// Uno dispatcher work items are posted into it via Post() so the runtime's pump loop
-		// drains both JS interop and Uno dispatcher items from a single queue.
+		// In MT mode, the runtime installs its JSSynchronizationContext on the deputy thread, captured
+		// here since Application.Start replaces it with Uno's. Dispatcher work is posted into it via Post()
+		// so the runtime's pump loop drains both JS interop and Uno dispatcher items from a single queue.
 		private static SynchronizationContext _deputySynchronizationContext;
 
 		private static int _uiThreadId;
