@@ -32,6 +32,12 @@ namespace Uno.UI.Tasks.IcuData
 		{
 			try
 			{
+				// Rewriting unchanged outputs would bump the embedded resource and recompile the app on every build.
+				if (IsUpToDate(StartupOutputPath) && IsUpToDate(DictionariesOutputPath))
+				{
+					return true;
+				}
+
 				var entries = ReadEntries(File.ReadAllBytes(SourcePath), out var header);
 
 				WritePackage(StartupOutputPath, header, entries.Where(IsStartupEntry));
@@ -45,6 +51,9 @@ namespace Uno.UI.Tasks.IcuData
 				return false;
 			}
 		}
+
+		private bool IsUpToDate(string output)
+			=> File.Exists(output) && File.GetLastWriteTimeUtc(output) >= File.GetLastWriteTimeUtc(SourcePath);
 
 		public static bool IsDictionary(IcuDataEntry entry) => entry.Name.EndsWith(".dict", StringComparison.Ordinal);
 
