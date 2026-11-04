@@ -1120,7 +1120,18 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnPointerExited(e);
 			_isPointerOver = false;
 			UpdateVisualState();
+			OnPointerExitedPartial(e);
 		}
+
+		partial void OnPointerExitedPartial(PointerRoutedEventArgs e);
+
+		protected override void OnPointerCanceled(PointerRoutedEventArgs e)
+		{
+			base.OnPointerCanceled(e);
+			OnPointerCanceledPartial(e);
+		}
+
+		partial void OnPointerCanceledPartial(PointerRoutedEventArgs e);
 
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
 		{
