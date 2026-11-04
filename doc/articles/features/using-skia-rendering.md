@@ -49,7 +49,7 @@ You can use our [Visual Studio Wizard](xref:Uno.GettingStarted.UsingWizard) to c
 
 ## Using Skia rendering for existing apps
 
-Skia rendering requires no opt-in: it is the default renderer on every Uno Platform target. An app renders with another backend only when it registers one on its host builder, such as the experimental [WebGPU backend](xref:uno.features.renderer.webgpu), and an app that lists the `WebGpu` `UnoFeature` without `Skia` contains no SkiaSharp.
+Skia rendering requires no opt-in: it is the default renderer on every Uno Platform target. An app renders with another backend, such as the experimental [WebGPU backend](xref:uno.features.renderer.webgpu), when it registers one on its host builder, or when it lists the `WebGpu` `UnoFeature` without `Skia`, which leaves out SkiaSharp and makes WebGPU the only renderer.
 
 ### Using Skia Desktop
 
