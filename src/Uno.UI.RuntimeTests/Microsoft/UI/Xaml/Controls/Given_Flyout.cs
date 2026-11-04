@@ -432,6 +432,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if WINAPPSDK
 			// Uno keeps flyouts inside the window. An unconstrained WinUI flyout gets its own window and is placed within the monitor.
 			flyout.ShouldConstrainToRootBounds = true;
+
+			// WinUI adds its FlyoutMargin once ResizeToFit filled the room below the target, so the flyout overflows the window's
+			// bottom edge by that margin (only X and Y are clamped). Uno's ResizeToFit leaves room for the margin.
+			const double overflow = 4;
+#else
+			const double overflow = 0;
 #endif
 			var button = new Button
 			{
@@ -462,7 +468,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					{
 						var bounds = presenter.GetOnScreenBounds();
 						return bounds.Top >= -0.5
-							&& bounds.Bottom <= windowSize.Height + 0.5
+							&& bounds.Bottom <= windowSize.Height + overflow + 0.5
 							&& bounds.Left >= -0.5
 							&& bounds.Right <= windowSize.Width + 0.5
 							&& (bounds.Bottom <= buttonBounds.Top + 0.5 || bounds.Top >= buttonBounds.Bottom - 0.5);
