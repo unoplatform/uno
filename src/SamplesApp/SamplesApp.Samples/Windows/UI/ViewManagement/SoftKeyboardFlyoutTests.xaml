@@ -37,6 +37,7 @@
                 TextWrapping="Wrap" />
         </StackPanel>
 
+        <!--  The buttons don't take focus, so the keyboard stays up in step 6. Their flyouts inherit that, as in WinUI, so the search boxes allow it again.  -->
         <StackPanel Grid.Row="2" Spacing="8">
             <Button
                 x:Name="SearchFlyoutButton"
@@ -53,7 +54,7 @@
                             x:Name="SearchFlyoutContent"
                             Width="320"
                             Spacing="8">
-                            <TextBox PlaceholderText="Search..." />
+                            <TextBox AllowFocusOnInteraction="True" PlaceholderText="Search..." />
                             <ListView x:Name="SearchList" MaxHeight="260" />
                         </StackPanel>
                     </Flyout>
@@ -74,7 +75,7 @@
                             x:Name="TallFlyoutContent"
                             Width="320"
                             Spacing="8">
-                            <TextBox PlaceholderText="Search..." />
+                            <TextBox AllowFocusOnInteraction="True" PlaceholderText="Search..." />
                             <ListView x:Name="TallList" MaxHeight="640" />
                         </StackPanel>
                     </Flyout>
