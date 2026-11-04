@@ -3,7 +3,11 @@ uid: Build.Solution.error-codes
 ---
 # Uno error codes
 
+<!-- Give each titled code a short anchor, <a name="<code in lowercase>"></a>, above its heading: aka.platform.uno/<code> links point to it, and it keeps working when the title changes. -->
+
 ## MSBuild Errors
+
+<a name="unob0001"></a>
 
 ### UNOB0001: Cannot build with both Uno.WinUI and Uno.UI NuGet packages referenced
 
@@ -13,6 +17,8 @@ To fix this issue, you may be explicitly referencing `Uno.UI` and `Uno.WinUI` in
 
 For instance, if your project references `Uno.WinUI`, and you try to reference `SkiaSharp.View.Uno`, you will get this error. To fix it, you'll need to reference `SkiaSharp.View.Uno.WinUI` instead.
 
+<a name="unob0002"></a>
+
 ### UNOB0002: Project XX contains a reference to Uno Platform but does not contain a WinAppSDK compatible target framework
 
 This error code means that a WinAppSDK project is referencing a project in your solution which is not providing a `net7.0-windows10.xx` TargetFramework.
@@ -21,11 +27,15 @@ This can happen if a project contains only a `net7.0` TargetFramework and has a 
 
 To fix this, it is best to start from a `Cross Platform Library` project template provided by the Uno Platform [visual studio extension](xref:Guide.HowTo.Create-Control-Library), or using [`dotnet new`](xref:Uno.GetStarted.dotnet-new).
 
+<a name="unob0003"></a>
+
 ### UNOB0003: Ignoring resource XX, could not determine the language
 
 This error may occur during resources (`.resw`) analysis if the framework does not recognize the specified language code.
 
 For instance, the language code `zh-CN` is not recognized and `zh-Hans` should be used instead.
+
+<a name="unob0004"></a>
 
 ### UNOB0004: The $(UnoVersion) property must match the version of the Uno.Sdk defined in global.json
 
@@ -33,19 +43,27 @@ The build process has determined that an MSBuild property was defined to overrid
 
 Follow this guide in order to [update the Uno Platform packages](xref:Uno.Development.UpgradeUnoNuget).
 
+<a name="unob0005"></a>
+
 ### UNOB0005: The Version of Uno.WinUI must match the version of the Uno.Sdk found in global.json
 
 The build process has determined that the version of the Uno.WinUI NuGet package does not match the Uno.Sdk version. In general, restarting your IDE and compiling again will fix this issue.
 
 Follow this guide in order to [update the Uno Platform packages](xref:Uno.Development.UpgradeUnoNuget).
 
+<a name="unob0006"></a>
+
 ### UNOB0006: The UnoFeature 'XX' was selected, but the property XXXVersion was not set
 
 The build process has determined that you have specified an UnoFeature that requires a version to be set for a Package group such as Uno.Extensions, Uno.Toolkit.WinUI, Uno Themes, or C# Markup. Update your `csproj` file or `Directory.Build.props` with the property specified in the error along with the version that you would like to pin your build to.
 
+<a name="unob0007"></a>
+
 ### UNOB0007: AOT compilation is only supported in Release mode. Please set the 'Optimize' property to 'true' in the project file
 
 The build process has detected that you have set the value `UnoGenerateAotProfile` to true for a build configuration that has not optimized the assembly (i.e. Debug build Configuration). You should only generate an AOT profile from a build Configuration that will optimize the assembly such as the Release build Configuration.
+
+<a name="unob0008"></a>
 
 ### UNOB0008: Building a WinUI class library with dotnet build is not supported
 
@@ -54,6 +72,8 @@ Building a `net10.0-windows10.x.x` class library using `dotnet build` is not sup
 To work around this, use `msbuild /r` on Windows. You can build using `msbuild` with a **Developer Command Prompt for VS 2022** (or 2026), or by using `vswhere` or using [GitHub actions scripts](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/ci-for-winui3?pivots=winui3-packaged-csharp) in a CI environment.
 
 This particular check can be disabled by setting the msbuild property `UnoDisableValidateWinAppSDK3548` to `true`.
+
+<a name="unob0009"></a>
 
 ### UNOB0009: Uno Platform Implicit Package references are enabled
 
@@ -66,6 +86,8 @@ Alternatively you may disable the Implicit Package References
   <DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>
 </PropertyGroup>
 ```
+
+<a name="unob0010"></a>
 
 ### UNOB0010: The browserwasm TargetFramework must not be placed first in the TargetFrameworks property
 
@@ -81,6 +103,8 @@ This warning can be disabled by adding the following to your `.csproj`:
 </PropertyGroup>
 ```
 
+<a name="unob0011"></a>
+
 ### UNOB0011: Retired
 
 > [!NOTE]
@@ -88,6 +112,8 @@ This warning can be disabled by adding the following to your `.csproj`:
 > while targeting Visual Studio 17.11 or earlier — a version that can no longer build Uno
 > Platform 7.0 (minimum MSBuild is 17.14). The check and its `UnoDisableVSWarnDesktopIsFirst`
 > opt-out have been removed. This heading is kept so existing links to it still resolve.
+
+<a name="unob0012"></a>
 
 ### UNOB0012: The windows TargetFramework must not be placed first in the TargetFrameworks property
 
@@ -103,6 +129,8 @@ This warning can be disabled by adding the following to your `.csproj`:
 </PropertyGroup>
 ```
 
+<a name="unob0013"></a>
+
 ### UNOB0013: The net10.0 TargetFramework must not be placed first in the TargetFrameworks property
 
 In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net10.0` TargetFramework is placed first in the `TargetFrameworks` property.
@@ -117,11 +145,15 @@ This warning can be disabled by adding the following to your `.csproj`:
 </PropertyGroup>
 ```
 
+<a name="unob0014"></a>
+
 ### UNOB0014: The target framework is not supported on macOS or Linux
 
 When building with Rider on Linux or macOS, unsupported target frameworks are [not filtered automatically like other IDEs](https://youtrack.jetbrains.com/issue/RIDER-114790/Unsupported-target-framework-filtering).
 
 See how to [make platforms conditional](xref:Uno.GettingStarted.CreateAnApp.Rider#considerations-for-macos-and-linux) for Rider.
+
+<a name="unob0015"></a>
 
 ### UNOB0015: Retired
 
@@ -131,17 +163,23 @@ See how to [make platforms conditional](xref:Uno.GettingStarted.CreateAnApp.Ride
 > build Uno Platform 7.0 (minimum MSBuild is 17.14). The check has been removed. This
 > heading is kept so existing links to it still resolve.
 
+<a name="unob0016"></a>
+
 ### UNOB0016: The Publish Profile file must not contain the "PublishDir"
 
 When publishing an app using ClickOnce on Windows, the `PublishProfile` file may not contain a `PublishDir` entry if the command line parameter `UnoClickOncePublishDir` has been set.
 
 This situation is due to an MSBuild property overriding bug found in the .NET SDK. For more information, see our [publishing with ClickOnce](xref:uno.publishing.desktop#windows-clickonce) documentation.
 
+<a name="unob0017"></a>
+
 ### UNOB0017: A reference to either Uno.WinUI.Runtime.WebAssembly or Uno.WinUI.WebAssembly has been detected
 
 The `Uno.WinUI.Runtime.WebAssembly` and `Uno.WinUI.WebAssembly` packages must not be referenced directly alongside the Skia browser head. Removing the explicit reference resolves the diagnostic.
 
 This is generally a package authoring error, make sure to open an issue in the Uno Platform repository to report the problem.
+
+<a name="unob0018"></a>
 
 ### UNOB0018: Code signing cannot be applied on files with extended attributes (e.g. iCloud)
 
@@ -150,6 +188,8 @@ On macOS code signing will fail if the project's output is located inside a dire
 ref: https://developer.apple.com/library/archive/qa/qa1940/_index.html
 
 Solution: Move your Uno solution/project(s) to a different location, one that is not backed up by iCloud.
+
+<a name="unob0019"></a>
 
 ### UNOB0019: The DevServer package cannot be used with optimized builds
 
@@ -166,6 +206,8 @@ To fix this issue:
   <PackageReference Include="Uno.WinUI.DevServer" Version="X.X.X" />
 </ItemGroup>
 ```
+
+<a name="unob0020"></a>
 
 ### UNOB0020: A referenced platform-specific assembly uses Uno Platform types that no longer exist
 
@@ -185,6 +227,8 @@ To suppress it:
 </PropertyGroup>
 ```
 
+<a name="unob0021"></a>
+
 ### UNOB0021: A package has no version in the Uno.Sdk manifest and does not exist on nuget.org
 
 The Uno.Sdk adds some package references implicitly and takes their versions from its package manifest. When the manifest has no version for one of them, the Uno.Sdk falls back to the latest version on nuget.org. This error means that package isn't on nuget.org at all, which usually means the Uno.Sdk version you use was built against packages that are only available on a private feed.
@@ -200,6 +244,8 @@ To fix this issue:
 </ItemGroup>
 ```
 
+<a name="unob0022"></a>
+
 ### UNOB0022: The `SingleProject` property is no longer supported
 
 `SingleProject` was the Uno Platform 5.1-and-earlier spelling of `UnoSingleProject`. It no longer selects the single-project layout, so leaving it in place would silently build the project as if it were not a single project.
@@ -210,6 +256,8 @@ Rename the property in your `.csproj`:
 - <SingleProject>true</SingleProject>
 + <UnoSingleProject>true</UnoSingleProject>
 ```
+
+<a name="unob0023"></a>
 
 ### UNOB0023: A runtime-enabled package provided no runtime assembly
 
@@ -230,6 +278,8 @@ To suppress it:
   <UnoDisableUNOB0023Validation>true</UnoDisableUNOB0023Validation>
 </PropertyGroup>
 ```
+
+<a name="unob0024"></a>
 
 ### UNOB0024: A runtime identifier property no longer selects runtime assets
 
@@ -253,6 +303,8 @@ To suppress it:
 </PropertyGroup>
 ```
 
+<a name="unob0025"></a>
+
 ### UNOB0025: Runtime-enabled packages are referenced without a runtime host
 
 This application head references packages that ship their implementation under `uno-runtime/` — such as `Uno.WinRT` and `Uno.Foundation` — but no Uno Platform runtime host package was detected (each `Uno.WinUI.Runtime.*` package declares itself by setting the `UnoHasRuntimeHost` MSBuild property), so the reference assemblies would be deployed and every call into them would throw `NotImplementedException` at runtime.
@@ -269,6 +321,8 @@ To suppress it:
 </PropertyGroup>
 ```
 
+<a name="unob0026"></a>
+
 ### UNOB0026: A referenced assembly was built for a UI runtime that no longer exists
 
 Uno Platform releases before 7.0 stamped the UI runtime an assembly was built for into its `UnoUIRuntimeIdentifier` assembly metadata. This diagnostic reports a referenced assembly whose stamp names one of the native renderers, which 7.0 removed — such an assembly cannot run against this release.
@@ -283,6 +337,8 @@ To suppress it:
 </PropertyGroup>
 ```
 
+<a name="unob0027"></a>
+
 ### UNOB0027: The file suffix is no longer recognized by Uno Platform 7.0
 
 Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs` file suffixes. The build no longer excludes these files from any target framework, so each of them now compiles for every target framework of the project, the WinAppSDK one included. Rename or remove the file:
@@ -294,6 +350,8 @@ Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs`
 | `*.reference.cs` | Delete the file, or fold it into a `*.crossruntime.cs` file. It was gated on a build flavor that an application never selected, so it compiled for no target framework |
 
 `*.skia.cs` is still recognized, but it now compiles for every target framework except the WinAppSDK one, not only for `netX.0-desktop`. See [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7) for the other changes.
+
+<a name="unob0029"></a>
 
 ### UNOB0029: Uno Platform application projects must use the Uno.Sdk
 
@@ -334,11 +392,15 @@ To fix this:
 
 To keep `SkiaRenderer` without the warning, add `UNOB0030` to `NoWarn`.
 
+<a name="unob0031"></a>
+
 ### UNOB0031: The Reactor Uno Feature is not supported on WinAppSDK
 
 The `Reactor` feature references [Uno.Microsoft.UI.Reactor](https://www.nuget.org/packages/Uno.Microsoft.UI.Reactor), which runs on the Uno Platform targets (desktop, WebAssembly, Android and iOS) and has no build for the WinAppSDK target. The Uno.Sdk doesn't reference it there, and fails the Windows build with this error instead of leaving every Reactor type unresolved.
 
 To fix this, remove the `-windows10.0.xxxxx` target framework from the project. To run a Reactor app on Windows, use the `desktop` target.
+
+<a name="unob0032"></a>
 
 ### UNOB0032: The browserwasm target framework was set after the Uno.Sdk chose the .NET SDK
 
@@ -356,11 +418,15 @@ To fix this, set `OutputType` in the project file or in `Directory.Build.props`,
 </PropertyGroup>
 ```
 
+<a name="unob0033"></a>
+
 ### UNOB0033: A Platforms/MacCatalyst or Platforms/MacOS folder is not built
 
 Uno Platform 7.0 removed the Mac Catalyst target framework, and the native macOS target was removed before it; macOS is served by the `desktop` target framework instead. Projects created with older templates can still contain a `Platforms/MacCatalyst/` or `Platforms/MacOS/` folder (or a `MacCatalyst/` or `MacOS/` folder at the project root). The Uno.Sdk leaves their files out of every target framework and reports this warning, since none of them can use that code.
 
 To fix this, move anything still needed to `Platforms/Desktop/`, and delete the folder. Code that should only run on macOS goes in an `OperatingSystem.IsMacOS()` check there. See [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7#mac-catalyst-is-removed) for the other migration steps.
+
+<a name="unob0035"></a>
 
 ### UNOB0035: The Prism Uno Feature is no longer supported
 
@@ -398,6 +464,8 @@ Invocations to `Dispose` can cause the application to crash in `__NSObject_Dispo
 
 The method `InitializeComponent` should always be called in class constructor. A missing call will lead to hard-to-diagnose bugs. This analyzer reports when it's missing to make issues more apparent.
 
+<a name="uno0007"></a>
+
 ### UNO0007: Retired
 
 **An assembly required for a component is missing**
@@ -422,6 +490,8 @@ window.EnableHotReload();
 ```
 
 ## XAML Errors
+
+<a name="unox0001"></a>
 
 ### UNOX0001: Retired
 
