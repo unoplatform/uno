@@ -65,7 +65,7 @@ on:
 env:
   # Temporary 7.0 stabilization sync; set to '' once 7.0 is out.
   STABILIZATION_BRANCH: 'release/stable/7.0'
-  # Space-separated master PR numbers kept out of STABILIZATION_BRANCH.
+  # Comma-separated master PR numbers kept out of STABILIZATION_BRANCH.
   # 25994 = version bump to 7.1-dev after branching 7.0.
   STABILIZATION_EXCLUDED_PRS: '25994'
 
@@ -234,7 +234,7 @@ jobs:
           if [ -n "$STABILIZATION_BRANCH" ] && [ "$FEATURE" = "$STABILIZATION_BRANCH" ]; then
             excluded_prs="$STABILIZATION_EXCLUDED_PRS"
           fi
-          for n in $excluded_prs; do
+          for n in ${excluded_prs//,/ }; do
             sha="$(gh pr view "$n" --json mergeCommit --jq '.mergeCommit.oid // empty' 2>/dev/null || true)"
             if [ -z "$sha" ] || ! git cat-file -e "${sha}^{commit}" 2>/dev/null; then
               note "❌ excluded PR #$n has no reachable merge commit"
@@ -266,10 +266,38 @@ jobs:
             fi
           fi
 
+          # Was $1 recorded in the sync branch as an `-s ours` merge (tree unchanged)?
+          excluded_in_sync() {
+            local c p1 rest p
+            while read -r c p1 rest; do
+              for p in $rest; do
+                if [ "$p" = "$1" ] && [ "$(git rev-parse "${c}^{tree}")" = "$(git rev-parse "${p1}^{tree}")" ]; then
+                  return 0
+                fi
+              done
+            done < <(git rev-list --parents "origin/${SYNC_BRANCH}" --not "origin/${FEATURE}")
+            return 1
+          }
+
+          # An exclusion added after the sync branch already took that PR in: rebuild
+          # from the target tip, dropping the sync branch (and any human resolution on it).
+          TAINTED=""
+          if [ "$SYNC_EXISTS" = "1" ]; then
+            for sha in "${EXCLUDED_SHAS[@]}"; do
+              if git merge-base --is-ancestor "$sha" "origin/${SYNC_BRANCH}" && ! excluded_in_sync "$sha"; then
+                TAINTED="${TAINTED} $(git rev-parse --short "$sha")"
+              fi
+            done
+          fi
+          if [ -n "$TAINTED" ]; then
+            echo "::warning::${SYNC_BRANCH} already contains excluded commit(s)${TAINTED}; rebuilding from ${FEATURE}."
+            HAS_HUMAN_WORK=0
+          fi
+
           # --- 2. No-op guard: sync branch already contains BOTH current master and
           #        current feature tip -> don't rebuild/force-push (avoids restarting CI
           #        or dismissing a pending approval). Just ensure PR + auto-merge state. ---
-          if [ "$SYNC_EXISTS" = "1" ] \
+          if [ "$SYNC_EXISTS" = "1" ] && [ -z "$TAINTED" ] \
              && git merge-base --is-ancestor "origin/master" "origin/${SYNC_BRANCH}" \
              && git merge-base --is-ancestor "origin/${FEATURE}" "origin/${SYNC_BRANCH}"; then
             pr="$(open_pr)"
@@ -426,6 +454,9 @@ jobs:
           extra=""
           if [ -n "$excluded_list" ]; then
             extra="- Release stabilization: master PRs **excluded** from this branch (recorded as merged, changes dropped):${excluded_list}"
+          fi
+          if [ -n "$TAINTED" ]; then
+            extra="$(printf '%s\n%s' "$extra" "- **Rebuilt:** the previous sync branch already contained newly excluded commit(s)${TAINTED}, so it was rebuilt from \`${FEATURE}\`; any conflict resolution pushed to it must be redone.")"
           fi
           if [ -n "$PARTIAL" ]; then
             extra="$(printf '%s\n%s' "$extra" "- **Partial:** stopped at \`${PARTIAL}\` (just before an excluded PR) because of conflicts; the next run continues after you push a resolution.")"
