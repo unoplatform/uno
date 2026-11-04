@@ -334,7 +334,8 @@ public class Given_ApplicationLaunchMonitor
 		matched.Should().BeFalse();
 		connections.Should().BeEmpty();
 		timeouts.Should().ContainSingle().Which.IsDebug.Should().BeTrue();
-		classified.Should().Contain(c => c.WasIdeInitiated && c.Launch!.IsDebug == false);
+		classified.Select(c => c.WasIdeInitiated).Should().Equal(false, true); // non-IDE after the retry, then the late match
+		classified[1].Launch!.IsDebug.Should().BeFalse();
 	}
 
 	[TestMethod]
@@ -363,6 +364,63 @@ public class Given_ApplicationLaunchMonitor
 		connections.Should().ContainSingle().Which.IsDebug.Should().BeTrue();
 		classified.Should().NotContain(c => c.WasIdeInitiated);
 		timeouts.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void WhenTimedOutLaunchWithOtherIsDebugIsAheadOfLiveOne_ThenConnectionTakesTheLiveOne()
+	{
+		// Arrange: an F5 whose app never connected, then F5 again on the same build
+		using var sut = CreateMonitor(
+			out var clock,
+			out _,
+			out var timeouts,
+			out var connections,
+			out var connectionWasTimedOut,
+			timeout: TimeSpan.FromSeconds(60));
+		var mvid = Guid.NewGuid();
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
+		clock.Advance(TimeSpan.FromMinutes(2));
+		var liveRegisteredAt = clock.GetUtcNow();
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
+
+		// Act: the app connects before the debugger attached
+		var matched = sut.ReportConnection(mvid, "Wasm", isDebug: false);
+		clock.Advance(TimeSpan.FromMinutes(2));
+
+		// Assert
+		matched.Should().BeTrue();
+		connections.Should().ContainSingle().Which.RegisteredAt.Should().Be(liveRegisteredAt);
+		connectionWasTimedOut.Should().Equal(false);
+		timeouts.Should().ContainSingle(); // only the first launch
+	}
+
+	[TestMethod]
+	public void WhenTimedOutLaunchIsAheadOfLiveOne_ThenConnectionTakesTheLiveOne()
+	{
+		// Arrange
+		using var sut = CreateMonitor(
+			out var clock,
+			out _,
+			out var timeouts,
+			out var connections,
+			out var connectionWasTimedOut,
+			timeout: TimeSpan.FromSeconds(60));
+		var mvid = Guid.NewGuid();
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin");
+		clock.Advance(TimeSpan.FromMinutes(2));
+		var liveRegisteredAt = clock.GetUtcNow();
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin");
+
+		// Act
+		sut.ReportConnection(mvid, "Wasm", isDebug: false);
+		var lateMatched = sut.ReportConnection(mvid, "Wasm", isDebug: false);
+		clock.Advance(TimeSpan.FromMinutes(2));
+
+		// Assert: the live launch first, then the timed-out one is still matchable
+		lateMatched.Should().BeTrue();
+		connections.Select(c => c.RegisteredAt).Should().Equal(liveRegisteredAt, liveRegisteredAt - TimeSpan.FromMinutes(2));
+		connectionWasTimedOut.Should().Equal(false, true);
+		timeouts.Should().ContainSingle();
 	}
 
 	[TestMethod]

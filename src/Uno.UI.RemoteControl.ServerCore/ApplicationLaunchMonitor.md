@@ -36,14 +36,19 @@ monitor.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "VisualStudio", plugin:
 monitor.ReportConnection(mvid, "Wasm", isDebug: true);
 ```
 
-The monitor pairs the connection with the oldest pending launch for the same (mvid, platform, isDebug). If no connection arrives before the timeout, `OnTimeout` is invoked.
+The monitor pairs the connection with a pending launch for the same (mvid, platform). It takes, in order:
+1. the oldest launch with the same isDebug that has not timed out;
+2. the oldest launch with the other isDebug that has not timed out;
+3. the oldest timed-out launch with the same isDebug.
 
-When no launch has the same isDebug, the monitor falls back to one with the other value that has not timed out yet. The IDE reports whether it started the debugger, but the app reports whether a debugger was attached when it connected, and the two can differ for the same launch. In the same way, a launch registered after the app connected pairs with a recent connection that has the other isDebug.
+If no connection arrives before the timeout, `OnTimeout` is invoked, and the launch stays matchable until `Retention`.
+
+The other isDebug is accepted because the IDE reports whether it started the debugger, while the app reports whether a debugger was attached when it connected, and the two can differ for the same launch. In the same way, a launch registered after the app connected pairs with a connection that has the other isDebug if that connection is within the timeout.
 
 ## Notes
 - Platform matching is case-sensitive ("Wasm" != "wasm").
 - A null platform is normalized to "Unspecified".
-- Registrations are consumed in FIFO order per key.
+- Registrations are consumed in FIFO order per key, launches that have not timed out first.
 - Always dispose the monitor (use `using` as shown).
 
 ## Analytics events

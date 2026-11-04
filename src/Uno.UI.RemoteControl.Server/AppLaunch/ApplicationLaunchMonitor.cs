@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace Uno.UI.RemoteControl.Server.AppLaunch;
@@ -23,6 +24,8 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	{
 		/// <summary>
 		/// Timeout after which a registered launch is considered expired. Defaults to 60 seconds.
+		/// A connection pairs with a launch that has not timed out before one that has, and pairs across IsDebug values
+		/// only within this timeout.
 		/// </summary>
 		public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(60);
 
@@ -45,7 +48,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 		/// <summary>
 		/// How long to retain launch entries before scavenging them from internal storage.
-		/// This is independent from <see cref="Timeout"/> which only triggers the OnTimeout callback.
+		/// This is independent from <see cref="Timeout"/>, after which a launch is reported to OnTimeout but stays matchable.
 		/// Default: 0.5 hour.
 		/// </summary>
 		public TimeSpan Retention { get; set; } = TimeSpan.FromHours(0.5);
@@ -89,7 +92,9 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 		DateTimeOffset RegisteredAt);
 
 	/// <summary>
-	/// A classification result for a pending connection.
+	/// A classification result for a pending connection. When <c>WasIdeInitiated</c> is true,
+	/// <c>IsDebug</c> is the launch's value, as for <see cref="Options.OnConnected"/>; otherwise it is the
+	/// connection's.
 	/// </summary>
 	public sealed record PendingClassification(
 		Guid Mvid,
@@ -110,7 +115,9 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 		public Key WithOtherIsDebug() => this with { IsDebug = !IsDebug };
 	}
 
-	private readonly ConcurrentDictionary<Key, ConcurrentQueue<LaunchEvent>> _pending = new();
+	// Registered launches per key, oldest first. Guarded by a lock on the dictionary, because a connection can take a
+	// launch that is not the first of its list (see TryDequeueLaunch).
+	private readonly Dictionary<Key, List<LaunchEvent>> _pending = new();
 
 	// Track timeout timers for each launch event
 	private readonly ConcurrentDictionary<LaunchEvent, IDisposable> _timeoutTasks = new();
@@ -170,8 +177,15 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 		var ev = new LaunchEvent(mvid, platform, isDebug, ide, plugin, now);
 		var key = new Key(mvid, platform, isDebug);
 
-		var queue = _pending.GetOrAdd(key, static _ => new ConcurrentQueue<LaunchEvent>());
-		queue.Enqueue(ev);
+		lock (_pending)
+		{
+			if (!_pending.TryGetValue(key, out var launches))
+			{
+				_pending[key] = launches = new List<LaunchEvent>();
+			}
+
+			launches.Add(ev);
+		}
 
 		// Schedule automatic timeout
 		ScheduleAppLaunchTimeout(ev, key);
@@ -193,17 +207,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 			if (TryDequeueLaunch(key, out var matched, out var wasTimedOut) && matched is not null)
 			{
 				// Don't invoke OnConnected; instead, classify the pending connection as IDE-initiated
-				try
-				{
-					_options.OnPendingClassified?.Invoke(new PendingClassification(
-						key.Mvid,
-						key.Platform,
-						key.IsDebug,
-						pending.ConnectedAt,
-						true,
-						matched));
-				}
-				catch { }
+				ClassifyAsIdeInitiated(pending, matched);
 			}
 		}
 	}
@@ -300,50 +304,73 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	}
 
 	/// <summary>
-	/// Attempts to dequeue a registered launch for the specified key, cancelling its timeout timer and indicating
-	/// whether the launch had previously timed out. A launch with the other IsDebug value is used only when none
-	/// matches the key exactly, and only before its timeout.
+	/// Attempts to dequeue the registered launch a connection with the specified key matches, cancelling its timeout
+	/// timer and indicating whether the launch had previously timed out. Launches that have not timed out come first,
+	/// the oldest with the same IsDebug value and then the oldest with the other one; otherwise the oldest timed-out
+	/// launch with the same IsDebug value.
 	/// </summary>
-	private bool TryDequeueLaunch(Key key, out LaunchEvent? ev, out bool wasTimedOut)
-		=> TryDequeueExactLaunch(key, onlyBeforeTimeout: false, out ev, out wasTimedOut)
-			|| TryDequeueExactLaunch(key.WithOtherIsDebug(), onlyBeforeTimeout: true, out ev, out wasTimedOut);
-
-	private bool TryDequeueExactLaunch(Key key, bool onlyBeforeTimeout, out LaunchEvent? ev, out bool wasTimedOut)
+	private bool TryDequeueLaunch(Key key, [NotNullWhen(true)] out LaunchEvent? ev, out bool wasTimedOut)
 	{
 		wasTimedOut = false;
-		ev = default!;
-		if (_pending.TryGetValue(key, out var queue)
-			&& (!onlyBeforeTimeout || (queue.TryPeek(out var oldest) && IsBeforeTimeout(oldest.RegisteredAt)))
-			&& queue.TryDequeue(out ev))
+
+		lock (_pending)
 		{
-			// Cancel / dispose the timeout timer for this event if still present
-			if (_timeoutTasks.TryRemove(ev, out var timeoutTimer))
-			{
-				try
-				{
-					timeoutTimer.Dispose();
-				}
-				catch
-				{
-					// Swallow any exceptions during timer disposal
-				}
-			}
-
-			// If queue is now empty, remove it from dictionary
-			if (queue.IsEmpty)
-			{
-				_pending.TryRemove(key, out _);
-			}
-
-			if (_timedOut.TryRemove(ev, out var flag))
-			{
-				wasTimedOut = flag;
-			}
-
-			return true;
+			var cutoff = GetTimeoutCutoff();
+			ev = TryTakeLaunch(key, cutoff)
+				?? TryTakeLaunch(key.WithOtherIsDebug(), cutoff)
+				?? TryTakeLaunch(key, DateTimeOffset.MinValue);
 		}
 
-		return false;
+		if (ev is null)
+		{
+			return false;
+		}
+
+		// Cancel / dispose the timeout timer for this event if still present
+		if (_timeoutTasks.TryRemove(ev, out var timeoutTimer))
+		{
+			try
+			{
+				timeoutTimer.Dispose();
+			}
+			catch
+			{
+				// Swallow any exceptions during timer disposal
+			}
+		}
+
+		if (_timedOut.TryRemove(ev, out var flag))
+		{
+			wasTimedOut = flag;
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// Removes and returns the oldest launch for the key registered after the cutoff. Call under the lock on _pending.
+	/// </summary>
+	private LaunchEvent? TryTakeLaunch(Key key, DateTimeOffset registeredAfter)
+	{
+		if (!_pending.TryGetValue(key, out var launches))
+		{
+			return null;
+		}
+
+		var index = launches.FindIndex(launch => launch.RegisteredAt > registeredAfter);
+		if (index < 0)
+		{
+			return null;
+		}
+
+		var ev = launches[index];
+		launches.RemoveAt(index);
+		if (launches.Count == 0)
+		{
+			_pending.Remove(key);
+		}
+
+		return ev;
 	}
 
 	/// <summary>
@@ -359,14 +386,36 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 		var otherKey = key.WithOtherIsDebug();
 		return _pendingConnections.TryGetValue(otherKey, out pending)
-			&& IsBeforeTimeout(pending.ConnectedAt)
+			&& pending.ConnectedAt > GetTimeoutCutoff()
 			&& _pendingConnections.TryRemove(otherKey, out pending)
 				? pending
 				: null;
 	}
 
-	private bool IsBeforeTimeout(DateTimeOffset since)
-		=> _timeProvider.GetUtcNow() - since < _options.Timeout;
+	/// <summary>
+	/// Launches registered, or connections made, at or before this time are past the timeout.
+	/// </summary>
+	private DateTimeOffset GetTimeoutCutoff()
+		=> _timeProvider.GetUtcNow() - _options.Timeout;
+
+	/// <summary>
+	/// Reports a pending connection as IDE-initiated. Like <see cref="Options.OnConnected"/>, it carries the launch's
+	/// IsDebug value, which can differ from the connection's.
+	/// </summary>
+	private void ClassifyAsIdeInitiated(PendingItem pending, LaunchEvent launch)
+	{
+		try
+		{
+			_options.OnPendingClassified?.Invoke(new PendingClassification(
+				launch.Mvid,
+				launch.Platform,
+				launch.IsDebug,
+				pending.ConnectedAt,
+				true,
+				launch));
+		}
+		catch { }
+	}
 
 	private void SchedulePendingConnection(Key key)
 	{
@@ -405,23 +454,12 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	private void HandlePendingRetry(Key key)
 	{
 		// Try to find a launch now
-		if (TryDequeueLaunch(key, out var ev, out var wasTimedOut) && ev is not null)
+		if (TryDequeueLaunch(key, out var ev, out var wasTimedOut))
 		{
 			if (_pendingConnections.TryRemove(key, out var pending))
 			{
 				try { pending.RetryTimer?.Dispose(); } catch { }
-				try
-				{
-					// Like OnConnected, an IDE-initiated connection reports the launch's IsDebug
-					_options.OnPendingClassified?.Invoke(new PendingClassification(
-						key.Mvid,
-						key.Platform,
-						ev.IsDebug,
-						pending.ConnectedAt,
-						true,
-						ev));
-				}
-				catch { }
+				ClassifyAsIdeInitiated(pending, ev);
 			}
 		}
 		else
@@ -451,40 +489,45 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	private void RunScavengePass()
 	{
 		var cutoff = _timeProvider.GetUtcNow() - _options.Retention;
-		// Clean pending queues
-		foreach (var kvp in _pending.ToArray())
+		// Clean registered launches
+		var scavenged = new List<LaunchEvent>();
+		lock (_pending)
 		{
-			var key = kvp.Key;
-			var queue = kvp.Value;
-			var temp = new Queue<LaunchEvent>();
-			while (queue.TryDequeue(out var ev))
+			var emptied = new List<Key>();
+			foreach (var kvp in _pending)
 			{
-				if (ev.RegisteredAt >= cutoff)
+				kvp.Value.RemoveAll(ev =>
 				{
-					temp.Enqueue(ev);
-				}
-				else
-				{
-					// dispose any associated timeout task
-					if (_timeoutTasks.TryRemove(ev, out var t))
+					if (ev.RegisteredAt >= cutoff)
 					{
-						try { t.Dispose(); } catch { }
+						return false;
 					}
-					// remove any record of timed-out state for scavenged items
-					_timedOut.TryRemove(ev, out _);
+
+					scavenged.Add(ev);
+					return true;
+				});
+
+				if (kvp.Value.Count == 0)
+				{
+					emptied.Add(kvp.Key);
 				}
 			}
 
-			// re-enqueue remaining
-			while (temp.Count > 0)
+			foreach (var key in emptied)
 			{
-				queue.Enqueue(temp.Dequeue());
+				_pending.Remove(key);
 			}
+		}
 
-			if (queue.IsEmpty)
+		foreach (var ev in scavenged)
+		{
+			// dispose any associated timeout task
+			if (_timeoutTasks.TryRemove(ev, out var t))
 			{
-				_pending.TryRemove(key, out _);
+				try { t.Dispose(); } catch { }
 			}
+			// remove any record of timed-out state for scavenged items
+			_timedOut.TryRemove(ev, out _);
 		}
 
 		// Clean pending connections older than retention
@@ -518,7 +561,10 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 		_timeoutTasks.Clear();
 		_timedOut.Clear();
-		_pending.Clear();
+		lock (_pending)
+		{
+			_pending.Clear();
+		}
 
 		// Flush pending connections as non-IDE initiated
 		foreach (var kvp in _pendingConnections.ToArray())
