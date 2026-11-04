@@ -285,6 +285,7 @@ public class HotReloadOperation
 		finally
 		{
 			_completed.TrySetResult();
+			_owner.OnOperationCompleted(this);
 		}
 	}
 

@@ -483,8 +483,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			_workspaceRegistry.Unregister(this);
 			_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Disposed);
-			_ct.Cancel();
+			// The workspace first: its teardown stops the outcome telemetry before cancelling the in-flight update requests.
 			_workspace?.Ct.Cancel();
+			_ct.Cancel();
 		}
 
 		/// <summary>

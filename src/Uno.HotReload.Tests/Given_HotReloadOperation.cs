@@ -64,4 +64,59 @@ public class Given_HotReloadOperation
 		first.Result.Should().Be(HotReloadOperationResult.Success);
 		reporter.Warnings.Should().BeEmpty("chain-aborting an already-completed predecessor is routine, not a dropped result");
 	}
+
+	[TestMethod]
+	[Description(
+		"OperationCompleted is raised once per operation, after its result and completion time are set; " +
+		"a late completion the operation drops raises nothing.")]
+	public async Task When_OperationCompletes_Then_OperationCompletedIsRaisedOnceWithItsResult()
+	{
+		var tracker = new HotReloadTracker((_, _) => ValueTask.CompletedTask, reporter: new RecordingReporter());
+		var raised = new List<(HotReloadOperation Operation, HotReloadOperationResult? Result, DateTimeOffset? CompletionTime)>();
+		tracker.OperationCompleted += (_, operation) => raised.Add((operation, operation.Result, operation.CompletionTime));
+
+		var operation = await tracker.StartHotReload(ImmutableHashSet.Create("/work/Page.xaml"));
+		await operation.Complete(HotReloadOperationResult.Success);
+		await operation.Complete(HotReloadOperationResult.Failed);
+
+		var (raisedOperation, result, completionTime) = raised.Should().ContainSingle().Which;
+		raisedOperation.Should().BeSameAs(operation);
+		result.Should().Be(HotReloadOperationResult.Success);
+		completionTime.Should().NotBeNull();
+	}
+
+	[TestMethod]
+	[Description("A newer operation completing aborts its predecessor: both operations are raised, each once.")]
+	public async Task When_NewerOperationCompletes_Then_EachOperationIsRaisedOnce()
+	{
+		var tracker = new HotReloadTracker((_, _) => ValueTask.CompletedTask, reporter: new RecordingReporter());
+		var raised = new List<(long Id, HotReloadOperationResult? Result)>();
+		tracker.OperationCompleted += (_, operation) => raised.Add((operation.Id, operation.Result));
+
+		var first = await tracker.StartHotReload(ImmutableHashSet.Create("/work/A.cs"));
+		var second = await tracker.StartHotReload(ImmutableHashSet.Create("/work/B.cs"));
+		await second.Complete(HotReloadOperationResult.Success);
+
+		raised.Should().Equal(
+			(first.Id, HotReloadOperationResult.Aborted),
+			(second.Id, HotReloadOperationResult.Success));
+	}
+
+	[TestMethod]
+	[Description(
+		"A failing OperationCompleted handler (e.g. telemetry) must not fail the hot reload: the operation " +
+		"completes as usual and the handler's exception is reported.")]
+	public async Task When_OperationCompletedHandlerThrows_Then_OperationStillCompletesAndErrorIsReported()
+	{
+		var reporter = new RecordingReporter();
+		var tracker = new HotReloadTracker((_, _) => ValueTask.CompletedTask, reporter: reporter);
+		tracker.OperationCompleted += (_, _) => throw new InvalidOperationException("handler failure");
+
+		var operation = await tracker.StartHotReload(ImmutableHashSet.Create("/work/Page.xaml"));
+		await operation.Complete(HotReloadOperationResult.Success);
+
+		operation.Result.Should().Be(HotReloadOperationResult.Success);
+		await operation.WaitForCompletionAsync(CancellationToken.None).WaitAsync(TimeSpan.FromSeconds(5));
+		reporter.Errors.Should().ContainSingle().Which.Should().Contain("handler failure");
+	}
 }
