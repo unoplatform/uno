@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private Size m_presenterSizeBeforeResize;
 		private Size? m_lastPresenterRectSize;
 		private (Size PlacementSize, Size PresenterRectSize)? m_pendingPlacement;
-		private bool m_isPlacementPending;
+		private Control m_pendingPlacementPresenter;
 		private bool m_allowPresenterResizing = true;
 
 		internal bool IsTargetPositionSet => m_isTargetPositionSet;
@@ -1051,21 +1051,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			m_pendingPlacement = (placementSize, presenterRectSize);
 
-			if (!m_isPlacementPending && GetPresenter() is { } presenter)
+			if (m_pendingPlacementPresenter is null && GetPresenter() is { } presenter)
 			{
-				m_isPlacementPending = true;
+				m_pendingPlacementPresenter = presenter;
 				presenter.LayoutUpdated += OnPresenterLayoutUpdated;
 			}
 		}
 
 		private void OnPresenterLayoutUpdated(object sender, object args)
 		{
-			if (GetPresenter() is { } presenter)
+			// LayoutUpdated has no sender, as in WinUI: unsubscribe from the presenter it was added to, which may since have been replaced.
+			if (m_pendingPlacementPresenter is { } presenter)
 			{
 				presenter.LayoutUpdated -= OnPresenterLayoutUpdated;
+				m_pendingPlacementPresenter = null;
 			}
-
-			m_isPlacementPending = false;
 
 			if (m_pendingPlacement is { } pendingPlacement)
 			{
