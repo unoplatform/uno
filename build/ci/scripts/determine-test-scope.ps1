@@ -42,7 +42,8 @@ $scopeVariables = [ordered]@{
 #                           PascalCase names (iOSResourceConverter) and the files that gate these
 #                           lanes, so a change to the gate runs the lanes it gates. Shared files
 #                           are caught by their changed lines instead (see $uikitContentPattern),
-#                           and PRs into any branch other than master always enable it.
+#                           PRs into any branch other than master always enable it, and so does
+#                           the ci/run-ios label ($uikitLabel).
 $patterns = @{
     TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
     ScreenshotsRequired   = [regex]'(?i)^src/(uno\.ui|addins).*\.cs$'
@@ -163,9 +164,27 @@ if (-not $scopeVariables['UIKitTestsRequired']) {
     } elseif ($uikitFiles.Count -gt 0) {
         Write-Host "Changed lines in '$($uikitFiles[0])' match iOS/tvOS code for UIKitTestsRequired."
         $scopeVariables['UIKitTestsRequired'] = $true
-    } else {
-        Write-Host "No iOS/tvOS paths or changed lines: Tests - iOS is skipped on this PR and runs on master. Queue the pipeline manually on the branch to run it."
     }
+}
+
+# Maintainers force the iOS stage on a PR with this label. The labels are read anonymously; if that
+# fails the label is ignored rather than enabling iOS on every PR, since a rerun picks it up.
+$uikitLabel = 'ci/run-ios'
+if (-not $scopeVariables['UIKitTestsRequired'] -and $env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER) {
+    $repository = if ($env:BUILD_REPOSITORY_NAME) { $env:BUILD_REPOSITORY_NAME } else { 'unoplatform/uno' }
+    try {
+        $labels = Invoke-RestMethod -Uri "https://api.github.com/repos/$repository/issues/$($env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)/labels" -Headers @{ 'User-Agent' = 'uno-ci-test-scope'; 'Accept' = 'application/vnd.github+json' } -TimeoutSec 20
+        if (@($labels | Where-Object { $_.name -eq $uikitLabel }).Count -gt 0) {
+            Write-Host "The PR has the '$uikitLabel' label: enabling UIKitTestsRequired."
+            $scopeVariables['UIKitTestsRequired'] = $true
+        }
+    } catch {
+        Write-Host "##vso[task.logissue type=warning]Unable to read the PR's labels, so '$uikitLabel' is ignored: $($_.Exception.Message)"
+    }
+}
+
+if (-not $scopeVariables['UIKitTestsRequired']) {
+    Write-Host "No iOS/tvOS paths, changed lines or '$uikitLabel' label: Tests - iOS is skipped on this PR and runs on master. Add the label and rerun the pipeline to run it."
 }
 
 Publish-TestScopes -Values $scopeVariables
