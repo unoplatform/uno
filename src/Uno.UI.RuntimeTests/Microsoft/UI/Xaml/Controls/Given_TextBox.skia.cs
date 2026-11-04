@@ -11167,6 +11167,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(fake.EndImeSessionCalled, "the IME session must not restart");
 		}
 
+		// The Android IME echoes every selection back as a normalized range, which used to flip a backward
+		// selection forward and scroll the caret to the end of the text.
+		[TestMethod]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_IME_Echoes_Backward_Selection_Then_Direction_Kept(bool withText)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "some text" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsBackwardSelection, "Shift+Home from the end should select backwards");
+
+			var host = (IImeSessionHost)SUT.Core;
+			if (withText)
+			{
+				host.UpdateTextFromNative(SUT.Text, 0, SUT.Text.Length);
+			}
+			else
+			{
+				host.SelectFromNative(0, SUT.Text.Length);
+			}
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+			Assert.IsTrue(SUT.IsBackwardSelection, "an IME echo of the current range must not reverse it");
+		}
+
 		private class FakeImeTextBoxExtension : IImeTextBoxExtension
 		{
 			public bool IsComposing { get; private set; }
