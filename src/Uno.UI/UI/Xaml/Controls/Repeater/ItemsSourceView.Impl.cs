@@ -6,7 +6,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Interop;
 using _IBindableIterable = System.Collections.IEnumerable;
@@ -28,7 +29,7 @@ public partial class ItemsSourceView
 	private readonly IReadOnlyList<object> m_vectorView;
 	private readonly IKeyIndexMapping m_uniqueIdMaping;
 
-	private IDisposable _collectionChangedListener;
+	private SourceSubscription _collectionChangedListener;
 
 	public ItemsSourceView(object source)
 	{
@@ -81,7 +82,28 @@ public partial class ItemsSourceView
 
 	~ItemsSourceView()
 	{
-		UnListenToCollectionChanges();
+		// Uno-specific: the source isn't required to be thread-safe, so don't touch it from the finalizer thread.
+		if (_collectionChangedListener is { } listener)
+		{
+			try
+			{
+				NativeDispatcher.Main.Enqueue(listener.Dispose);
+			}
+			catch (Exception e)
+			{
+				// An exception escaping a finalizer terminates the process, even one thrown by the logger.
+				try
+				{
+					if (typeof(ItemsSourceView).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(ItemsSourceView).Log().Error("Failed to schedule the removal of an items source subscription", e);
+					}
+				}
+				catch
+				{
+				}
+			}
+		}
 	}
 
 	#region IDataSourceOverrides
@@ -144,11 +166,6 @@ public partial class ItemsSourceView
 	IList<object> WrapIterable(IEnumerable<object> iterable)
 		=> new List<object>(iterable);
 
-	void UnListenToCollectionChanges()
-	{
-		_collectionChangedListener?.Dispose();
-	}
-
 	void ListenToCollectionChanges(object vector)
 	{
 		if (m_vector is null)
@@ -160,27 +177,97 @@ public partial class ItemsSourceView
 			MUX_ASSERT(m_vector is not null);
 		}
 
+		// Uno-specific: like WinUI's raw-'this' delegate, the source must not keep this view alive, so it only gets a
+		// subscription holding this view weakly (removed by the finalizer). The lambdas below must not capture 'this'.
+		var subscription = new SourceSubscription(this);
+
 		switch (vector)
 		{
 			case INotifyCollectionChanged incc:
-				_collectionChangedListener = Disposable.Create(() => incc.CollectionChanged -= OnCollectionChanged);
-				incc.CollectionChanged += OnCollectionChanged;
+				subscription.Unsubscribe = () => incc.CollectionChanged -= subscription.OnCollectionChanged;
+				incc.CollectionChanged += subscription.OnCollectionChanged;
+				_collectionChangedListener = subscription;
 				break;
 
 			case IBindableObservableVector bindableObservableVector:
-				_collectionChangedListener = Disposable.Create(() => bindableObservableVector.VectorChanged -= OnBindableVectorChanged);
-				bindableObservableVector.VectorChanged += OnBindableVectorChanged;
+				subscription.Unsubscribe = () => bindableObservableVector.VectorChanged -= subscription.OnBindableVectorChanged;
+				bindableObservableVector.VectorChanged += subscription.OnBindableVectorChanged;
+				_collectionChangedListener = subscription;
 				break;
 
 			case IObservableVector<object> observableVector:
-				_collectionChangedListener = Disposable.Create(() => observableVector.VectorChanged -= OnVectorChanged);
-				observableVector.VectorChanged += OnVectorChanged;
+				subscription.Unsubscribe = () => observableVector.VectorChanged -= subscription.OnVectorChanged;
+				observableVector.VectorChanged += subscription.OnVectorChanged;
+				_collectionChangedListener = subscription;
 				break;
 
 			case IObservableVector observableVectorUntyped:
-				_collectionChangedListener = Disposable.Create(() => observableVectorUntyped.UntypedVectorChanged -= OnUntypedVectorChanged);
-				observableVectorUntyped.UntypedVectorChanged += OnUntypedVectorChanged;
+				subscription.Unsubscribe = () => observableVectorUntyped.UntypedVectorChanged -= subscription.OnUntypedVectorChanged;
+				observableVectorUntyped.UntypedVectorChanged += subscription.OnUntypedVectorChanged;
+				_collectionChangedListener = subscription;
 				break;
+		}
+	}
+
+	// Uno-specific: referenced by the source only, so it must not reference the view.
+	private sealed class SourceSubscription : IDisposable
+	{
+		private readonly WeakReference<ItemsSourceView> _owner;
+		private Action _unsubscribe;
+
+		public SourceSubscription(ItemsSourceView owner) => _owner = new WeakReference<ItemsSourceView>(owner);
+
+		public Action Unsubscribe { set => _unsubscribe = value; }
+
+		// Not unsubscribed here once the view is dead: a source may raise over its live handler list.
+		public void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (_owner.TryGetTarget(out var owner))
+			{
+				owner.OnCollectionChanged(sender, e);
+			}
+		}
+
+		public void OnBindableVectorChanged(IBindableObservableVector sender, object e)
+		{
+			if (_owner.TryGetTarget(out var owner))
+			{
+				owner.OnBindableVectorChanged(sender, e);
+			}
+		}
+
+		public void OnVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs e)
+		{
+			if (_owner.TryGetTarget(out var owner))
+			{
+				owner.OnVectorChanged(sender, e);
+			}
+		}
+
+		public void OnUntypedVectorChanged(object sender, IVectorChangedEventArgs e)
+		{
+			if (_owner.TryGetTarget(out var owner))
+			{
+				owner.OnUntypedVectorChanged(sender, e);
+			}
+		}
+
+		public void Dispose()
+		{
+			if (global::System.Threading.Interlocked.Exchange(ref _unsubscribe, null) is { } unsubscribe)
+			{
+				try
+				{
+					unsubscribe();
+				}
+				catch (Exception e)
+				{
+					if (typeof(ItemsSourceView).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(ItemsSourceView).Log().Error("Failed to unsubscribe from the items source", e);
+					}
+				}
+			}
 		}
 	}
 

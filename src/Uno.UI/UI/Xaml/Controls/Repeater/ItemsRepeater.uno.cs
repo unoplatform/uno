@@ -14,6 +14,7 @@
 //   StackLayout; the only difference on enhanced-lifecycle is that the OnLoaded re-layout
 //   pass is no longer forced.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Microsoft.UI.Xaml;
@@ -51,9 +52,7 @@ partial class ItemsRepeater : IPanel
 
 		if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is { } itemsSourceView)
 		{
-			itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
-			_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-				itemsSourceView.CollectionChanged -= OnItemsSourceViewChanged);
+			_dataSourceSubscriptionsRevoker.Disposable = SubscribeToItemsSourceView(itemsSourceView, this);
 		}
 
 		// Uno specific: re-supply the effective provider so layout-provided defaults survive an
@@ -84,5 +83,28 @@ partial class ItemsRepeater : IPanel
 			//		 This is expected to only flag containers as recyclable and should not have any significant perf impact.
 			OnItemsSourceViewChanged(m_itemsSourceView, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
+	}
+
+	// Uno-specific: holds the repeater weakly, like WinUI's raw-'this' delegate, since a repeater that never loads
+	// never unloads to remove it. Static so the handler cannot capture the repeater.
+	private static IDisposable SubscribeToItemsSourceView(ItemsSourceView view, ItemsRepeater repeater)
+	{
+		var weakRepeater = new WeakReference<ItemsRepeater>(repeater);
+		NotifyCollectionChangedEventHandler handler = null;
+		handler = (sender, args) =>
+		{
+			if (weakRepeater.TryGetTarget(out var target))
+			{
+				target.OnItemsSourceViewChanged(sender, args);
+			}
+			else
+			{
+				// ItemsSourceView raises over a snapshot of its handlers, so removing this one here is safe.
+				view.CollectionChanged -= handler;
+			}
+		};
+
+		view.CollectionChanged += handler;
+		return Disposable.Create(() => view.CollectionChanged -= handler);
 	}
 }
