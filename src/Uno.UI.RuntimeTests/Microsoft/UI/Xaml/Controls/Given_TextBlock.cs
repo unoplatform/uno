@@ -118,7 +118,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				},
 			};
 
+#if HAS_UNO
+			// The fonts load asynchronously, and a TextBlock draws with a fallback until its own arrives: without this,
+			// whichever screenshot runs first can catch one of them blank or in the wrong face.
+			Assert.IsTrue(await FontFamilyHelper.PreloadAsync(SUT.FontFamily, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle), "The manifest font failed to load.");
+			Assert.IsTrue(await FontFamilyHelper.PreloadAsync(expectedTB.FontFamily, expectedTB.FontWeight, expectedTB.FontStretch, expectedTB.FontStyle), "The expected font failed to load.");
+			Assert.IsTrue(await FontFamilyHelper.PreloadAsync(differentTB.FontFamily, differentTB.FontWeight, differentTB.FontStretch, differentTB.FontStyle), "The different font failed to load.");
+#endif
+
 			await UITestHelper.Load(sp);
+			await WindowHelper.WaitForIdle();
 			var actual = await UITestHelper.ScreenShot(SUTContainer);
 			var expected = await UITestHelper.ScreenShot(expectedTBContainer);
 			var different = await UITestHelper.ScreenShot(differentTBContainer);
