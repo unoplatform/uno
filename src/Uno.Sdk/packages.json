@@ -51,7 +51,7 @@
 	},
 	{
 		"group": "CoreLogging",
-		"version": "5.0.0-dev.34",
+		"version": "5.0.0",
 		"packages": [
 			"Uno.Core.Extensions.Logging.Singleton"
 		]
@@ -121,7 +121,7 @@
 	},
 	{
 		"group": "SvgSkia",
-		"version": "3.0.6",
+		"version": "5.2.3",
 		"packages": [
 			"Svg.Skia"
 		]
@@ -135,14 +135,14 @@
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.28000.2526",
+		"version": "10.0.28000.2705",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
 	},
 	{
 		"group": "WinAppSdkBuildToolsWinApp",
-		"version": "0.6.0",
+		"version": "0.7.1",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools.WinApp"
 		]
@@ -170,15 +170,6 @@
 		"version": "8.4.2",
 		"packages": [
 			"CommunityToolkit.Mvvm"
-		]
-	},
-	{
-		"group": "Prism",
-		"version": "9.0.537",
-		"packages": [
-			"Prism.DryIoc.Uno.WinUI",
-			"Prism.Uno.WinUI",
-			"Prism.Uno.WinUI.Markup"
 		]
 	},
 	{
@@ -293,6 +284,21 @@
 		]
 	},
 	{
+		"group": "AndroidXFragment",
+		"version": "1.9.0",
+		"packages": [
+			"Xamarin.AndroidX.Fragment",
+			"Xamarin.AndroidX.Fragment.Ktx"
+		]
+	},
+	{
+		"group": "AndroidXLifecycle",
+		"version": "2.11.0.1",
+		"packages": [
+			"Xamarin.AndroidX.Lifecycle.LiveData"
+		]
+	},
+	{
 		"group": "Maui",
 		"version": "10.0.90",
 		"packages": [
@@ -320,7 +326,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "8.0.0-dev.76",
+		"version": "8.0.0-dev.150",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -351,7 +357,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "11.0.0-dev.140",
+		"version": "11.0.0-dev.157",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -364,7 +370,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "9.0.0-dev.41",
+		"version": "9.0.0-dev.61",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
@@ -383,7 +389,7 @@
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.4078.44",
+		"version": "1.0.4191.47",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]

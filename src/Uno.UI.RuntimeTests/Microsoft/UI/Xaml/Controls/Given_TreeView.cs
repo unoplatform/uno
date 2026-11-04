@@ -108,6 +108,300 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #endif
 
 #if HAS_UNO
+		/// <summary>
+		/// Clicking an item after scrolling away from the previous selection must select it in place.
+		/// The previous selection has no container at that point; unselecting it must not select it again,
+		/// because that scrolls the previous selection back into view.
+		/// </summary>
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Click_After_Scrolling_Away_From_Selection_Offset_Is_Preserved()
+		{
+			var (treeView, scrollViewer) = await LoadRootNodesTree(100);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var first = treeView.RootNodes[0];
+			await SelectNode(treeView, first);
+			await ScrollUntilVirtualized(treeView, scrollViewer, first);
+			var offsetBeforeClick = scrollViewer.VerticalOffset;
+
+			var target = GetItemNearestViewportCenter(treeView, treeView.RootNodes);
+			var maxDrift = 0.0;
+			var previousSelectionReselected = false;
+			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs e) => maxDrift = Math.Max(maxDrift, Math.Abs(scrollViewer.VerticalOffset - offsetBeforeClick));
+			void OnSelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs e) => previousSelectionReselected |= e.AddedItems.Contains(first);
+			scrollViewer.ViewChanged += OnViewChanged;
+			treeView.SelectionChanged += OnSelectionChanged;
+			try
+			{
+				mouse.Press(target.Bounds.GetMidX(), target.Bounds.GetMidY());
+				mouse.Release();
+				await WindowHelper.WaitFor(() => treeView.SelectedNode == target.Item, message: "The clicked node must be selected.");
+				await WindowHelper.WaitForIdle();
+			}
+			finally
+			{
+				scrollViewer.ViewChanged -= OnViewChanged;
+				treeView.SelectionChanged -= OnSelectionChanged;
+			}
+
+			Assert.IsFalse(previousSelectionReselected, "Unselecting the previous selection must not select it again.");
+			Assert.AreEqual(0, maxDrift, 5, "Selecting a visible item must never move the viewport.");
+			Assert.AreEqual(offsetBeforeClick, scrollViewer.VerticalOffset, 5, "Selecting a visible item must keep the viewport in place.");
+		}
+
+		/// <summary>
+		/// Replacing the selection from code while the previous selection has no container must raise a single
+		/// SelectionChanged and never report a null selection in between (two-way SelectedItem bindings would see it).
+		/// </summary>
+		[TestMethod]
+		public async Task When_SelectedItem_Replaced_While_Previous_Selection_Virtualized_Single_Event()
+		{
+			var (treeView, scrollViewer) = await LoadRootNodesTree(100);
+
+			var first = treeView.RootNodes[0];
+			await SelectNode(treeView, first);
+			await ScrollUntilVirtualized(treeView, scrollViewer, first);
+			var target = GetItemNearestViewportCenter(treeView, treeView.RootNodes);
+
+			var selectionChanges = new List<(object[] Added, object[] Removed)>();
+			var selectedItemValues = new List<object>();
+			void OnSelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs e) => selectionChanges.Add((e.AddedItems.ToArray(), e.RemovedItems.ToArray()));
+			treeView.SelectionChanged += OnSelectionChanged;
+			var token = treeView.RegisterPropertyChangedCallback(TreeView.SelectedItemProperty, (d, _) => selectedItemValues.Add(((TreeView)d).SelectedItem));
+			try
+			{
+				treeView.SelectedItem = target.Item;
+				await WindowHelper.WaitForIdle();
+			}
+			finally
+			{
+				treeView.SelectionChanged -= OnSelectionChanged;
+				treeView.UnregisterPropertyChangedCallback(TreeView.SelectedItemProperty, token);
+			}
+
+			Assert.AreSame(target.Item, treeView.SelectedNode);
+			Assert.AreEqual(1, selectionChanges.Count, $"Expected a single SelectionChanged, got {selectionChanges.Count}.");
+			CollectionAssert.AreEqual(new object[] { target.Item }, selectionChanges[0].Added);
+			CollectionAssert.AreEqual(new object[] { first }, selectionChanges[0].Removed);
+			Assert.IsFalse(selectedItemValues.Contains(null), "SelectedItem must not transiently become null.");
+			AssertSelectionInSync(treeView, "after replacing the selection");
+		}
+
+		/// <summary>
+		/// With a two-way IsSelected binding (#25796), a row that was unselected while scrolled away must not
+		/// come back selected when it is scrolled back into view.
+		/// Native WinUI (WinAppSDK 1.7) selects that row again and then clears the selection; Uno keeps the clicked row.
+		/// </summary>
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Click_After_Scrolling_Away_With_IsSelected_Binding_Scroll_Back_Not_Reselected()
+		{
+			var nodes = Enumerable.Range(1, 100).Select(i => new TestTreeNodeModel("Node " + i, isExpanded: false)).ToList();
+			var treeView = new TreeView { Height = 300, Width = 300, ItemTemplate = TreeViewItemTemplate, ItemsSource = nodes };
+			await UITestHelper.Load(treeView);
+			var scrollViewer = treeView.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(scrollViewer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			async Task Click(TestTreeNodeModel item)
+			{
+				var bounds = ((TreeViewItem)treeView.ContainerFromItem(item)).GetAbsoluteBoundsRect();
+				mouse.Press(bounds.GetMidX(), bounds.GetMidY());
+				mouse.Release();
+				await WindowHelper.WaitFor(() => treeView.SelectedItem == item, message: $"{item.Label} must be selected by the click.");
+				await WindowHelper.WaitForIdle();
+			}
+
+			var first = nodes[0];
+			await Click(first);
+			Assert.IsTrue(first.IsSelected, "The two-way binding must push the selection into the model.");
+
+			scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight, null, disableAnimation: true);
+			await WindowHelper.WaitFor(() => treeView.ContainerFromItem(first) is null, timeoutMS: 3000, message: "Node 1 must be virtualized away for this scenario.");
+			await WindowHelper.WaitForIdle();
+
+			var second = GetItemNearestViewportCenter(treeView, nodes).Item;
+			await Click(second);
+
+			scrollViewer.ChangeView(null, 0, null, disableAnimation: true);
+			await WindowHelper.WaitFor(() => treeView.ContainerFromItem(first) is TreeViewItem, message: "Node 1 must be realized after scrolling to the top.");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreSame(second, treeView.SelectedItem, "Scrolling back must not select the previously selected row again.");
+			Assert.IsFalse(((TreeViewItem)treeView.ContainerFromItem(first)).IsSelected, "The previously selected row must not show as selected.");
+			Assert.IsFalse(first.IsSelected, "The model flag of the previously selected row must be cleared.");
+			Assert.AreEqual(1, treeView.SelectedNodes.Count, "Only the clicked row may be selected.");
+			AssertSelectionInSync(treeView, "after scrolling back");
+		}
+
+		/// <summary>
+		/// With a two-way IsSelected binding: select a row in a group, collapse the group (which clears the selection),
+		/// select another row, then re-expand the group. The old row must not take the selection back, as in native WinUI.
+		/// </summary>
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Other_Row_Selected_While_Group_Collapsed_Reexpand_Keeps_New_Selection()
+		{
+			var tvm = new TestTreeViewModel
+			{
+				new("G1")
+				{
+					new("G1.a"),
+					new("G1.b"),
+				},
+				new("G2")
+				{
+					new("G2.a"),
+				},
+			};
+			var treeView = new TreeView { Height = 300, Width = 300, ItemTemplate = TreeViewItemTemplate, ItemsSource = tvm.ItemsSource };
+			await UITestHelper.Load(treeView);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			async Task Click(TestTreeNodeModel item)
+			{
+				await WindowHelper.WaitFor(() => treeView.ContainerFromItem(item) is TreeViewItem, message: $"{item.Label} must be realized.");
+				await WindowHelper.WaitForIdle();
+				var bounds = ((TreeViewItem)treeView.ContainerFromItem(item)).GetAbsoluteBoundsRect();
+				mouse.Press(bounds.GetMidX(), bounds.GetMidY());
+				mouse.Release();
+				await WindowHelper.WaitFor(() => treeView.SelectedItem == item, message: $"{item.Label} must be selected by the click.");
+				await WindowHelper.WaitForIdle();
+			}
+
+			var oldSelection = tvm.GetNode("G1.b");
+			var newSelection = tvm.GetNode("G2.a");
+			var group = tvm.GetNode("G1");
+
+			await Click(oldSelection);
+
+			group.IsExpanded = false;
+			await WindowHelper.WaitFor(() => treeView.ContainerFromItem(oldSelection) is null, message: "G1.b must be hidden by collapsing G1.");
+			await WindowHelper.WaitForIdle();
+
+			await Click(newSelection);
+
+			group.IsExpanded = true;
+			await WindowHelper.WaitFor(() => treeView.ContainerFromItem(oldSelection) is TreeViewItem, message: "G1.b must be realized again after expanding G1.");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreSame(newSelection, treeView.SelectedItem, "Re-expanding the group must not give the selection back to G1.b.");
+			Assert.IsFalse(((TreeViewItem)treeView.ContainerFromItem(oldSelection)).IsSelected, "G1.b must not show as selected.");
+			Assert.IsFalse(oldSelection.IsSelected, "The model flag of G1.b must be cleared.");
+			Assert.IsTrue(newSelection.IsSelected, "The model flag of G2.a must stay set.");
+			Assert.AreEqual(1, treeView.SelectedNodes.Count, "Only G2.a may be selected.");
+			AssertSelectionInSync(treeView, "after re-expanding G1");
+		}
+
+		/// <summary>
+		/// Port of the TreeViewSelectRegressionTest UI test (https://github.com/microsoft/microsoft-ui-xaml/issues/1756):
+		/// select the last root node, then tap the first one. Repeated since the original bug did not reproduce consistently.
+		/// Like the original, it also checks that SelectedNodes and SelectedItems stay in sync.
+		/// </summary>
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Select_Last_Root_Node_Then_Click_First_Node()
+		{
+			var (treeView, scrollViewer) = await LoadRootNodesTree(50);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			for (var iteration = 0; iteration < 5; iteration++)
+			{
+				var last = treeView.RootNodes[^1];
+				await SelectNode(treeView, last);
+				Assert.AreEqual("Node 50", (string)treeView.SelectedNode?.Content, $"iteration {iteration}");
+				// Node 50 has no container here: the list's selection must still follow (Uno fallback in NotifyContainerOfSelectionChange).
+				Assert.AreSame(last, treeView.SelectedItem, $"SelectedItem must follow a node selected without a container, iteration {iteration}");
+				AssertSelectionInSync(treeView, $"after selecting Node 50, iteration {iteration}");
+
+				var firstNode = treeView.RootNodes[0];
+				scrollViewer.ChangeView(null, 0, null, disableAnimation: true);
+				await WindowHelper.WaitFor(() => treeView.ContainerFromNode(firstNode) is TreeViewItem, message: $"Node 1 must be realized after scrolling to the top (iteration {iteration})");
+				await WindowHelper.WaitForIdle();
+
+				var bounds = ((TreeViewItem)treeView.ContainerFromNode(firstNode)).GetAbsoluteBoundsRect();
+				mouse.Press(bounds.GetMidX(), bounds.GetMidY());
+				mouse.Release();
+				await WindowHelper.WaitFor(() => treeView.SelectedNode == firstNode, message: $"Node 1 must be selected after the click (iteration {iteration})");
+
+				Assert.AreEqual("Node 1", (string)treeView.SelectedNode?.Content, $"iteration {iteration}");
+				AssertSelectionInSync(treeView, $"after clicking Node 1, iteration {iteration}");
+			}
+		}
+
+		private static async Task<(TreeView Tree, ScrollViewer ScrollViewer)> LoadRootNodesTree(int count)
+		{
+			var treeView = new TreeView { Height = 300, Width = 300 };
+			for (var i = 1; i <= count; i++)
+			{
+				treeView.RootNodes.Add(new TreeViewNode { Content = "Node " + i });
+			}
+
+			await UITestHelper.Load(treeView);
+			var scrollViewer = treeView.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(scrollViewer);
+			return (treeView, scrollViewer);
+		}
+
+		private static async Task SelectNode(TreeView treeView, TreeViewNode node)
+		{
+			treeView.SelectedNode = node;
+			await WindowHelper.WaitFor(() => treeView.SelectedNode == node, message: $"{node.Content} must be selected.");
+			await WindowHelper.WaitForIdle();
+		}
+
+		/// <summary>Scrolls to the end of the list and waits until <paramref name="node"/> has no container.</summary>
+		private static async Task ScrollUntilVirtualized(TreeView treeView, ScrollViewer scrollViewer, TreeViewNode node)
+		{
+			scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight, null, disableAnimation: true);
+			await WindowHelper.WaitFor(() => treeView.ContainerFromNode(node) is null, timeoutMS: 3000, message: $"{node.Content} must be virtualized away for this scenario.");
+			await WindowHelper.WaitForIdle();
+		}
+
+		/// <summary>Returns the realized, fully visible item closest to the middle of the viewport.</summary>
+		private static (T Item, Rect Bounds) GetItemNearestViewportCenter<T>(TreeView treeView, IEnumerable<T> items)
+		{
+			var viewport = treeView.GetAbsoluteBoundsRect();
+			var target = items
+				.Select(x => (Item: x, Container: treeView.ContainerFromItem(x) as TreeViewItem))
+				.Where(x => x.Container is not null)
+				.Select(x => (x.Item, Bounds: x.Container.GetAbsoluteBoundsRect()))
+				.Where(x => x.Bounds.Top >= viewport.Top && x.Bounds.Bottom <= viewport.Bottom)
+				.OrderBy(x => Math.Abs(x.Bounds.GetMidY() - viewport.GetMidY()))
+				.FirstOrDefault();
+			Assert.IsNotNull(target.Item, "Expected at least one fully visible realized item.");
+			return target;
+		}
+
+		/// <summary>Same invariant as the UI test sample's GetSelection: SelectedNodes and SelectedItems are in sync.</summary>
+		private static void AssertSelectionInSync(TreeView treeView, string context)
+		{
+			Assert.AreEqual(treeView.SelectedNodes.Count, treeView.SelectedItems.Count, $"SelectedNodes.Count != SelectedItems.Count ({context})");
+			for (var i = 0; i < treeView.SelectedNodes.Count; i++)
+			{
+				// With ItemsSource (content mode), the selected items are the nodes' content; otherwise the nodes themselves.
+				var expected = treeView.ItemsSource is null ? treeView.SelectedNodes[i] : treeView.SelectedNodes[i].Content;
+				Assert.AreSame(expected, treeView.SelectedItems[i], $"SelectedNodes[{i}] != SelectedItems[{i}] ({context})");
+			}
+		}
+#endif
+
+#if HAS_UNO
 		[TestMethod]
 		[CombinatorialData]
 		public async Task When_Scrolled_IsExpanded_Should_Be_Preserved(bool bindIsExpanded)

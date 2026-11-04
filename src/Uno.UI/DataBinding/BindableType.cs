@@ -18,7 +18,7 @@ namespace Uno.UI.DataBinding
 	public class BindableType : IBindableType
 	{
 		internal const DynamicallyAccessedMemberTypes TypeRequirements =
-			  DynamicallyAccessedMemberTypes.NonPublicConstructors  // DependencyProperty.Register()
+			  DynamicallyAccessedMemberTypes.NonPublicConstructors
 			| DynamicallyAccessedMemberTypes.PublicConstructors
 			| DynamicallyAccessedMemberTypes.PublicFields
 			| DynamicallyAccessedMemberTypes.PublicProperties
@@ -81,6 +81,17 @@ namespace Uno.UI.DataBinding
 		}
 
 		public void AddProperty(DependencyProperty property)
+		{
+			_properties[property.Name] = new BindableProperty(property);
+		}
+
+		/// <summary>
+		/// Adds a dependency property, naming its type so that trimming keeps the members a binding path can continue into.
+		/// </summary>
+		public void AddProperty(
+			DependencyProperty property,
+			[DynamicallyAccessedMembers(TypeRequirements)]
+			Type propertyType)
 		{
 			_properties[property.Name] = new BindableProperty(property);
 		}

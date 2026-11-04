@@ -356,6 +356,20 @@ To fix this, set `OutputType` in the project file or in `Directory.Build.props`,
 </PropertyGroup>
 ```
 
+### UNOB0033: A Platforms/MacCatalyst or Platforms/MacOS folder is not built
+
+Uno Platform 7.0 removed the Mac Catalyst target framework, and the native macOS target was removed before it; macOS is served by the `desktop` target framework instead. Projects created with older templates can still contain a `Platforms/MacCatalyst/` or `Platforms/MacOS/` folder (or a `MacCatalyst/` or `MacOS/` folder at the project root). The Uno.Sdk leaves their files out of every target framework and reports this warning, since none of them can use that code.
+
+To fix this, move anything still needed to `Platforms/Desktop/`, and delete the folder. Code that should only run on macOS goes in an `OperatingSystem.IsMacOS()` check there. See [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7#mac-catalyst-is-removed) for the other migration steps.
+
+### UNOB0035: The Prism Uno Feature is no longer supported
+
+Starting with Uno Platform 7.0, the `Uno.Sdk` no longer references [Prism](https://github.com/PrismLibrary/Prism). The `Prism` feature is ignored if still listed in `UnoFeatures`, and the build reports this warning. Without a Prism reference of its own, the project then fails to compile wherever it uses Prism types.
+
+The Prism packages published so far (`Prism.Uno.WinUI` 9.0.537 and earlier) were built against Uno Platform 5 and don't build with Uno Platform 7.0.
+
+To fix this, remove `Prism` from `UnoFeatures`, and reference Prism's packages directly, using a Prism release built for Uno Platform 7.0: add a `PackageReference` to `Prism.DryIoc.Uno.WinUI` in an app, or to `Prism.Uno.WinUI` in a library, and to `Prism.Uno.WinUI.Markup` if the project uses C# Markup. When the solution uses Central Package Management, as the Uno Platform templates do, the version goes in `Directory.Packages.props`. The `PrismVersion` property no longer has any effect and can be removed.
+
 ## Compiler Errors
 
 ### UNO0001

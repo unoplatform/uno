@@ -14,9 +14,10 @@ using Uno.UI.Runtime.AppleUIKit.Controls;
 
 namespace Uno.UI.Runtime.AppleUIKit;
 
-internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
+internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INativeTextLoupeExtension
 {
 	private readonly TextBoxView _owner;
+	private readonly InvisibleTextBoxLoupe _loupe = new();
 	private UIView? _latestNativeView;
 	private IInvisibleTextBoxView? _textBoxView;
 	private XamlRoot? _textBoxViewRoot;
@@ -28,6 +29,9 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	}
 
 	internal TextBoxView Owner => _owner;
+
+	/// <summary>The invisible native text view (the first responder while the TextBox has focus), if created.</summary>
+	internal UIView? NativeView => _textBoxView as UIView;
 
 	private IImeSessionHost? ImeHost => _owner.Host as IImeSessionHost;
 
@@ -86,6 +90,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void EndEntry()
 	{
+		_loupe.End();
+
 		if (_textBoxView is not null)
 		{
 			RemoveViewFromTextInputLayer();
@@ -219,6 +225,14 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 
 		_textBoxView.SecureTextEntry = host is TextBoxCore { IsPassword: true };
+
+		// Lets iOS offer AutoFill (saved passwords, contact details) for the field. Only assigned when there is a
+		// type: the proxy is created per entry, so its native default (none) stands otherwise.
+		if (InputScopeHelper.ConvertInputScopeToTextContentType(host.InputScope, host is TextBoxCore { IsPassword: true }) is { } contentType)
+		{
+			_textBoxView.TextContentType = contentType;
+		}
+
 		SetSoftKeyboardTheme();
 
 		// KeyboardType may have changed — re-evaluate the native view
@@ -508,6 +522,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			element is AutoSuggestBox ||
 			element is NumberBox;
 	}
+
+	public bool BeginLoupe(XamlRoot xamlRoot, Windows.Foundation.Point point, Windows.Foundation.Rect caretRect)
+		=> GetOverlayLayer(xamlRoot) is { } layer && _loupe.Begin(layer, point, caretRect);
+
+	public void MoveLoupe(Windows.Foundation.Point point, Windows.Foundation.Rect caretRect) => _loupe.Move(point, caretRect);
+
+	public void EndLoupe() => _loupe.End();
 
 	internal static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>
 		(XamlRootMap.GetHostForRoot(xamlRoot) as IAppleUIKitXamlRootHost)?.TextInputLayer;

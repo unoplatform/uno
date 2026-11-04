@@ -178,7 +178,10 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 				_configured = false;
 			}
 
-			LastPresentSucceeded = st.Status == global::Uno.UI.Composition.WebGpu.SilkCompat.Xlate.SurfaceStatusOccluded;
+			// An occluded surface presented nothing, so the window keeps what it showed before it was hidden. Report it
+			// so the render thread retries (with backoff) until the window shows again; nothing else asks for a frame
+			// when it is restored.
+			LastPresentSucceeded = false;
 			return;
 		}
 

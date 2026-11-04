@@ -157,13 +157,6 @@ namespace SamplesApp
 #endif
 			EnsureMainWindow();
 
-#if __WASM__
-			DispatcherQueue.Main.TryEnqueue(
-				DispatcherQueuePriority.High,
-				() => InitWasmSampleRunner()
-			);
-#endif
-
 			SetupAndroidEnvironment();
 
 #if __IOS__ && !TESTFLIGHT
@@ -353,7 +346,7 @@ namespace SamplesApp
 				// Only for an activation delivered into the running app. Reporting at launch would pop a
 				// dialog on every run, including the CI runs driven by launch arguments.
 				if (showDialog &&
-					ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
+					ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno.WinRT", nameof(MessageDialog.ShowAsync)))
 				{
 					await new MessageDialog($"Kind - {arguments.Kind}, {detail}", title).ShowAsync();
 				}

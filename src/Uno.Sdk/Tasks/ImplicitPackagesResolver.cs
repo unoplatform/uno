@@ -98,8 +98,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? CommunityToolkitMvvmVersion { get; set; }
 
-	public string? PrismVersion { get; set; }
-
 	public string? UnoReactorVersion { get; set; }
 
 	public string? UnoFontsVersion { get; set; }
@@ -107,6 +105,10 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	public string? AndroidXNavigationVersion { get; set; }
 
 	public string? AndroidXCollectionVersion { get; set; }
+
+	public string? AndroidXFragmentVersion { get; set; }
+
+	public string? AndroidXLifecycleVersion { get; set; }
 
 	public string? AndroidXLeanbackVersion { get; set; }
 
@@ -239,7 +241,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.MicrosoftLoggingConsole, MicrosoftLoggingVersion)
 			.UpdateManifest(PackageManifest.Group.MsalClient, MicrosoftIdentityClientVersion)
 			.UpdateManifest(PackageManifest.Group.Mvvm, CommunityToolkitMvvmVersion)
-			.UpdateManifest(PackageManifest.Group.Prism, PrismVersion)
 			.UpdateManifest(PackageManifest.Group.Reactor, UnoReactorVersion)
 			.UpdateManifest(PackageManifest.Group.UnoFonts, UnoFontsVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidMaterial, AndroidMaterialVersion)
@@ -251,6 +252,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.AndroidXSwipeRefreshLayout, AndroidXSwipeRefreshLayoutVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXNavigation, AndroidXNavigationVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXCollection, AndroidXCollectionVersion)
+			.UpdateManifest(PackageManifest.Group.AndroidXFragment, AndroidXFragmentVersion)
+			.UpdateManifest(PackageManifest.Group.AndroidXLifecycle, AndroidXLifecycleVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXLeanback, AndroidXLeanbackVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXCarApp, AndroidXCarAppVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXWear, AndroidXWearVersion)

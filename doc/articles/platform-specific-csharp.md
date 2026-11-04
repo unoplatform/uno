@@ -82,6 +82,20 @@ In a class library, `#if` blocks behave the same way. The asset built for `net10
 > [!TIP]
 > Conditionals can be combined with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. It is also possible to define custom conditional compilation symbols per project in the 'Build' tab in the project's properties.
 
+### Uno Platform version
+
+`UNO_<major>_<minor>_OR_GREATER` is defined for the Uno Platform release a project builds against and for every release before it, in the style of .NET's `NET8_0_OR_GREATER`. A library that compiles against more than one Uno Platform version can use it to branch:
+
+```csharp
+#if UNO_7_0_OR_GREATER
+    // Uno Platform 7.0 and later
+#else
+    // Uno Platform 6.x
+#endif
+```
+
+The symbols come with the `Uno.WinUI` package and exist from Uno Platform 7.0 onwards, so an older release defines none of them: treat a missing symbol as an older version. Like `__UNO__`, they are not defined in the Windows App SDK target framework.
+
 ### Windows-specific code
 
 On `net10.0-windows10.0.xxxxx` target framework, an Uno Platform application isn't using Uno.UI at all. It's compiled using Microsoft's own tooling. For that reason, the `__UNO__` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.

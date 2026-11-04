@@ -261,10 +261,6 @@
 			"description": "Provides an explicit override for the version of the CommunityToolkit.Mvvm to use.",
 			"type": "nuget-version"
 		},
-		"PrismVersion": {
-			"description": "Provides an explicit override for the version of Prism to use.",
-			"type": "nuget-version"
-		},
 		"UnoReactorVersion": {
 			"description": "Provides an explicit override for the version of Uno.Microsoft.UI.Reactor to use.",
 			"type": "nuget-version"
@@ -279,6 +275,14 @@
 		},
 		"AndroidXCollectionVersion": {
 			"description": "Provides an explicit override for the version of AndroidX.Collection to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXFragmentVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Fragment to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXLifecycleVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Lifecycle.LiveData to use.",
 			"type": "nuget-version"
 		},
 		"AndroidXLeanbackVersion": {
@@ -593,10 +597,6 @@
 				"Mvvm": {
 					"description": "Adds support for the CommunityToolkit.Mvvm package.",
 					"helpUrl": "https://aka.platform.uno/feature-mvvm"
-				},
-				"Prism": {
-					"description": "Adds Prism support for Uno.WinUI.",
-					"helpUrl": "https://aka.platform.uno/feature-prism"
 				},
 				"Reactor": {
 					"description": "Adds Microsoft.UI.Reactor, the declarative C# UI framework, through the Uno.Microsoft.UI.Reactor package. Uno Platform targets only: not supported on WinAppSDK."

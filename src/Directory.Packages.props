@@ -103,7 +103,7 @@
 		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="11.0.0-rc.2.26504.105" />
 		<PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
 		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
-		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.6.0" />
+		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.7.1" />
 		<PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
 		<PackageVersion Include="ModelContextProtocol" Version="1.1.0" />
 		<PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.1.0" />
@@ -141,7 +141,7 @@
 		<PackageVersion Include="SkiaSharp.Views.WPF" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="Spectre.Console" Version="0.49.1" />
 		<PackageVersion Include="StreamJsonRpc" Version="2.17.11" />
-		<PackageVersion Include="Svg.Skia" Version="3.0.6" />
+		<PackageVersion Include="Svg.Skia" Version="5.2.3" />
 		<PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
 		<PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
 		<PackageVersion Include="System.Data.SqlClient" Version="4.8.6" />
@@ -160,14 +160,14 @@
 		<PackageVersion Include="Unity" Version="5.11.10" />
 		<PackageVersion Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
 		<PackageVersion Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
-		<PackageVersion Include="Uno.Core.Extensions" Version="5.0.0-dev.34" />
-		<PackageVersion Include="Uno.Core.Extensions.Compatibility" Version="5.0.0-dev.34" />
-		<PackageVersion Include="Uno.Core.Extensions.Disposables" Version="5.0.0-dev.34" />
-		<PackageVersion Include="Uno.Core.Extensions.Logging" Version="5.0.0-dev.34" />
-		<PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="5.0.0-dev.34" />
-		<PackageVersion Include="Uno.Core.Extensions.Threading" Version="5.0.0-dev.34" />
+		<PackageVersion Include="Uno.Core.Extensions" Version="5.0.0" />
+		<PackageVersion Include="Uno.Core.Extensions.Compatibility" Version="5.0.0" />
+		<PackageVersion Include="Uno.Core.Extensions.Disposables" Version="5.0.0" />
+		<PackageVersion Include="Uno.Core.Extensions.Logging" Version="5.0.0" />
+		<PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="5.0.0" />
+		<PackageVersion Include="Uno.Core.Extensions.Threading" Version="5.0.0" />
 		<!-- Minimum for Uno.Settings.DevServer 2.x: the host's copy owns the TelemetryUserContext its add-ins publish to -->
-		<PackageVersion Include="Uno.DevTools.Telemetry" Version="1.4.0-dev.21" />
+		<PackageVersion Include="Uno.DevTools.Telemetry" Version="1.4.1" />
 		<PackageVersion Include="Uno.Diagnostics.Eventing" Version="2.0.1" />
 		<PackageVersion Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
 		<PackageVersion Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />

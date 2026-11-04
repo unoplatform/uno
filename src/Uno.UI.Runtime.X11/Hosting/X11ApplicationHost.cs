@@ -135,6 +135,8 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 			}
 		}
 
+		AccessibilityRouter.EnsureInitialized();
+
 		CompositionTarget.FrameRenderingOptions = (true, true);
 	}
 

@@ -357,7 +357,14 @@ internal readonly partial struct UnicodeText : IParsedText
 
 				if (!inline.FontInfo.FontHandle.ContainsGlyph(codepoint))
 				{
-					newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontInfo;
+					// A character several scripts share (Common or Inherited, e.g. tatweel, the Arabic comma, combining
+					// marks) stays in the run's fallback font: a font change mid-word splits the shaping run and breaks
+					// joining. A letter of its own script still gets the fallback for that script.
+					newFontDetails = newScript is UScriptCommon or UScriptInherited
+						&& currentFontDetails != inline.FontInfo
+						&& currentFontDetails.FontHandle.ContainsGlyph(codepoint)
+						? currentFontDetails
+						: GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontInfo;
 				}
 				else
 				{
@@ -2569,7 +2576,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		if (!isBelowContent && p.Y >= _xyTable[^1].prefixSummedHeight)
 		{
-			return extendedSelection ? _lines[^1].end - (ignoreEndingNewLine ? TrailingCRLFInLine(_lines[^1]) : 0) : -1;
+			// On the empty line after a trailing line break, whose only caret stop is the end of the text.
+			return extendedSelection ? _text.Length : -1;
 		}
 
 		int lineIndex;
@@ -2591,7 +2599,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				return 0;
 			}
 
-			return _text.Length - (ignoreEndingNewLine ? TrailingCRLFInLine(_endingNewLineLineHeight is null ? lastLine : null) : 0);
+			return _text.Length - (ignoreEndingNewLine && _endingNewLineLineHeight is null ? TrailingCRLFInLine(lastLine) : 0);
 		}
 		else
 		{
@@ -2752,6 +2760,11 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
 
+	// The alignment the layout used: a default-aligned TextBox gets one from its content's direction.
+	internal TextAlignment TextAlignment => _textAlignment;
+
+	internal Size AvailableSize => _availableSize;
+
 	public float FirstLineBaseline => (float)GetBaselineForIndex(0);
 
 	private static List<int> GetWords(string text)
@@ -2880,6 +2893,10 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static float GetLineSpaceAfter(Line line)
 		=> line is { isLastLineOfParagraph: true, paragraphLayout: { } layout } ? layout.SpaceAfter : 0;
+
+	// ICU UScriptCode values.
+	private const int UScriptCommon = 0;
+	private const int UScriptInherited = 1;
 
 	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, IFontCacheUpdateListener fontListener)
 	{

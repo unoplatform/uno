@@ -326,10 +326,12 @@ internal static unsafe partial class Xlate
 		NativeMemory.Free(capabilities.AlphaModes);
 	}
 
-	// WGPUSurfaceGetCurrentTextureStatus_Occluded, a wgpu-native extension (ffi/wgpu.h) the generated header lacks. It is
-	// passed through under the same value, which the Silk.NET enum has no name for.
-	private const WGPUSurfaceGetCurrentTextureStatus WgpuSurfaceStatusOccluded = (WGPUSurfaceGetCurrentTextureStatus)0x00030001;
-	internal const SW.SurfaceGetCurrentTextureStatus SurfaceStatusOccluded = (SW.SurfaceGetCurrentTextureStatus)0x00030001;
+	// wgpu-native reports Occluded through its own enum, separate from WGPUSurfaceGetCurrentTextureStatus. It is passed
+	// through under the same value, which the Silk.NET enum has no name for.
+	private const WGPUSurfaceGetCurrentTextureStatus WgpuSurfaceStatusOccluded =
+		(WGPUSurfaceGetCurrentTextureStatus)WGPUNativeSurfaceGetCurrentTextureStatus.WGPUSurfaceGetCurrentTextureStatus_Occluded;
+	internal const SW.SurfaceGetCurrentTextureStatus SurfaceStatusOccluded =
+		(SW.SurfaceGetCurrentTextureStatus)WGPUNativeSurfaceGetCurrentTextureStatus.WGPUSurfaceGetCurrentTextureStatus_Occluded;
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
 	private static void wgpuSurfaceGetCurrentTexture(nint surface, nint surfaceTexture)
