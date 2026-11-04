@@ -32,10 +32,4 @@ public partial class PathFigureCollection : global::System.Collections.Generic.I
 	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.PathFigure>
 	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.PathFigure>
 	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.PathFigure>
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.PathFigure>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.PathFigure>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.IEnumerable
 }

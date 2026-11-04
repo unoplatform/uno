@@ -32,10 +32,4 @@ public partial class PathSegmentCollection : global::System.Collections.Generic.
 	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.PathSegment>
 	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.PathSegment>
 	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.PathSegment>
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.PathSegment>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.PathSegment>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.IEnumerable
 }

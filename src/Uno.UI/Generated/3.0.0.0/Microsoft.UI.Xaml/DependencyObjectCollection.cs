@@ -36,14 +36,4 @@ public partial class DependencyObjectCollection : global::Windows.Foundation.Col
 	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.DependencyObject>
 	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.DependencyObject>
 	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.DependencyObject>
-	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.DependencyObject>
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.DependencyObject>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.DependencyObject>
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.DependencyObject>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.DependencyObject>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.IEnumerable
 }
