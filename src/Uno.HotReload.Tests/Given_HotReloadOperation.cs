@@ -119,4 +119,25 @@ public class Given_HotReloadOperation
 		await operation.WaitForCompletionAsync(CancellationToken.None).WaitAsync(TimeSpan.FromSeconds(5));
 		reporter.Errors.Should().ContainSingle().Which.Should().Contain("handler failure");
 	}
+
+	[TestMethod]
+	[Description(
+		"An operation aborted by its timeout is marked as timed out, so it can be told apart from one a newer " +
+		"operation aborted, which is not.")]
+	public async Task When_OperationTimesOut_Then_ItIsMarkedTimedOut_AndASupersededOneIsNot()
+	{
+		var tracker = new HotReloadTracker((_, _) => ValueTask.CompletedTask, reporter: new RecordingReporter());
+
+		var timedOut = await tracker.StartHotReload(ImmutableHashSet.Create("/work/A.cs"));
+		await timedOut.OnTimeoutAsync();
+
+		var superseded = await tracker.StartHotReload(ImmutableHashSet.Create("/work/B.cs"));
+		var newer = await tracker.StartHotReload(ImmutableHashSet.Create("/work/C.cs"));
+		await newer.Complete(HotReloadOperationResult.Success);
+
+		timedOut.Result.Should().Be(HotReloadOperationResult.Aborted);
+		timedOut.IsTimedOut.Should().BeTrue();
+		superseded.Result.Should().Be(HotReloadOperationResult.Aborted);
+		superseded.IsTimedOut.Should().BeFalse();
+	}
 }

@@ -120,13 +120,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					var manager = await HotReloadManager.CreateAsync(LoadSolutionFromDisk, configureServer.MetadataUpdateCapabilities, new DelegateHotReloadHandler(SendUpdates), _tracker, ct);
 					ct.Register(() => manager.Dispose());
 
-					// Report the outcome of the hot reloads applied from this workspace, for as long as it lives. Visual Studio
-					// applies the hot reload of an app it built, and reports its outcome itself (Notify, Source=IDE).
-					if (!_isRunningInsideVisualStudio)
-					{
-						var outcomeTelemetry = HotReloadOutcomeTelemetry.Attach(_tracker, _telemetry);
-						ct.Register(() => outcomeTelemetry.Dispose());
-					}
+					AttachOutcomeTelemetry(ct);
 
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });
 					await Notify(HotReloadEvent.Ready);

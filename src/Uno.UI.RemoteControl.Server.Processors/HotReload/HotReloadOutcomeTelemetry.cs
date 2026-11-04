@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using Uno.HotReload.Tracking;
 using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Server.Telemetry;
@@ -10,25 +12,43 @@ namespace Uno.UI.RemoteControl.Host.HotReload;
 
 /// <summary>
 /// Reports the outcome of each hot-reload operation the dev-server applies from its own workspace, with the
-/// event names of the outcomes the IDE reports (see <c>ServerHotReloadProcessor.Notify</c>) and <c>Source=DevServer</c>.
+/// event names of the outcomes the IDE reports (<see cref="HotReloadOutcomeEvents"/>) and <c>Source=DevServer</c>.
 /// </summary>
-internal static class HotReloadOutcomeTelemetry
+internal sealed class HotReloadOutcomeTelemetry(HotReloadTracker tracker, ITelemetry telemetry)
 {
-	/// <returns>The subscription to the <paramref name="tracker"/>: dispose it to stop reporting.</returns>
-	public static IDisposable Attach(HotReloadTracker tracker, ITelemetry telemetry)
-	{
-		EventHandler<HotReloadOperation> handler = (_, operation) => Track(telemetry, operation);
-		tracker.OperationCompleted += handler;
+	private static readonly object _marker = new();
 
-		return new Subscription(tracker, handler);
+	private readonly ConditionalWeakTable<HotReloadOperation, object> _reportedByIde = new();
+
+	/// <summary>
+	/// Reports the outcomes of the operations that complete until <paramref name="workspaceToken"/> is cancelled:
+	/// a pass that ends with its workspace (shutdown, hot reload disabled) is not an outcome the user saw.
+	/// </summary>
+	public void Attach(CancellationToken workspaceToken)
+	{
+		EventHandler<HotReloadOperation> handler = (_, operation) =>
+		{
+			if (!workspaceToken.IsCancellationRequested && !_reportedByIde.TryGetValue(operation, out _))
+			{
+				Track(operation);
+			}
+		};
+
+		tracker.OperationCompleted += handler;
+		workspaceToken.Register(() => tracker.OperationCompleted -= handler);
 	}
 
-	private static void Track(ITelemetry telemetry, HotReloadOperation operation)
+	/// <summary>
+	/// Leaves out an operation an IDE notification starts or completes: the IDE reports its outcome itself (Source=IDE).
+	/// </summary>
+	public void SkipReportedByIde(HotReloadOperation operation)
+		=> _reportedByIde.AddOrUpdate(operation, _marker);
+
+	private void Track(HotReloadOperation operation)
 	{
-		// An operation without files was started by an IDE notification, and the IDE reports its outcome (Source=IDE).
-		if (operation.ConsideredFilePaths.IsEmpty
-			|| operation.Result is not { } result
-			|| GetOutcomeEvent(result) is not { } outcome)
+		// Only the files the solution knows: a batch of files outside it (a log, .DS_Store) is not a hot reload.
+		var fileCount = operation.ConsideredFilePaths.Except(operation.IgnoredFilePaths).Count;
+		if (fileCount is 0 || GetOutcome(operation) is not { } outcome)
 		{
 			return;
 		}
@@ -36,13 +56,13 @@ internal static class HotReloadOutcomeTelemetry
 		var properties = new Dictionary<string, string>
 		{
 			["Event"] = outcome.Event.ToString(),
-			["Source"] = "DevServer",
-			["Result"] = result.ToString(),
+			["Source"] = HotReloadEventSource.DevServer.ToString(),
+			["Result"] = outcome.Result,
 		};
 
 		var measurements = new Dictionary<string, double>
 		{
-			["FileCount"] = operation.ConsideredFilePaths.Count,
+			["FileCount"] = fileCount,
 		};
 		if (operation.CompletionTime is { } completionTime)
 		{
@@ -52,19 +72,15 @@ internal static class HotReloadOutcomeTelemetry
 		telemetry.TrackEvent(outcome.Name, properties, measurements);
 	}
 
-	private static (HotReloadEvent Event, string Name)? GetOutcomeEvent(HotReloadOperationResult result)
-		=> result switch
+	private static (HotReloadEvent Event, string Name, string Result)? GetOutcome(HotReloadOperation operation)
+		=> operation.Result switch
 		{
-			HotReloadOperationResult.Success => (HotReloadEvent.Completed, "notify-completed"),
-			HotReloadOperationResult.NoChanges => (HotReloadEvent.NoChanges, "notify-no-changes"),
-			HotReloadOperationResult.RudeEdit => (HotReloadEvent.RudeEdit, "notify-rude-edit"),
-			HotReloadOperationResult.Failed or HotReloadOperationResult.InternalError => (HotReloadEvent.Failed, "notify-failed"),
-			_ => null, // Aborted: superseded by a newer operation, or no result in time.
+			HotReloadOperationResult.Success => (HotReloadEvent.Completed, HotReloadOutcomeEvents.Completed, "Success"),
+			HotReloadOperationResult.NoChanges => (HotReloadEvent.NoChanges, HotReloadOutcomeEvents.NoChanges, "NoChanges"),
+			HotReloadOperationResult.RudeEdit => (HotReloadEvent.RudeEdit, HotReloadOutcomeEvents.RudeEdit, "RudeEdit"),
+			HotReloadOperationResult.Failed => (HotReloadEvent.Failed, HotReloadOutcomeEvents.Failed, "Failed"),
+			HotReloadOperationResult.InternalError => (HotReloadEvent.Failed, HotReloadOutcomeEvents.Failed, "InternalError"),
+			HotReloadOperationResult.Aborted when operation.IsTimedOut => (HotReloadEvent.Failed, HotReloadOutcomeEvents.Failed, "Timeout"),
+			_ => null, // Aborted by a newer operation: that one carries the outcome.
 		};
-
-	private sealed class Subscription(HotReloadTracker tracker, EventHandler<HotReloadOperation> handler) : IDisposable
-	{
-		public void Dispose()
-			=> tracker.OperationCompleted -= handler;
-	}
 }

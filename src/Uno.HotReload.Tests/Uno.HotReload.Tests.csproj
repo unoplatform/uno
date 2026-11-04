@@ -16,8 +16,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- The dev-server's hot-reload outcome telemetry, linked (with the two contracts it uses) to test it against a real manager. -->
+		<!-- The dev-server's hot-reload outcome telemetry, linked (with the names and contracts it uses) to test it against a real manager. -->
 		<Compile Include="..\Uno.UI.RemoteControl.Server.Processors\HotReload\HotReloadOutcomeTelemetry.cs" Link="DevServer\HotReloadOutcomeTelemetry.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Server.Processors\HotReload\HotReloadOutcomeEvents.cs" Link="DevServer\HotReloadOutcomeEvents.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Server.Processors\HotReload\HotReloadEventSource.cs" Link="DevServer\HotReloadEventSource.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.ServerCore\Telemetry\ITelemetry.cs" Link="DevServer\ITelemetry.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Messaging\IDEChannel\HotReloadEvent.cs" Link="DevServer\HotReloadEvent.cs" />
 	</ItemGroup>
