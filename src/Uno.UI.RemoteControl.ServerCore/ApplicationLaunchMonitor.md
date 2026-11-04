@@ -38,6 +38,8 @@ monitor.ReportConnection(mvid, "Wasm", isDebug: true);
 
 The monitor pairs the connection with the oldest pending launch for the same (mvid, platform, isDebug). If no connection arrives before the timeout, `OnTimeout` is invoked.
 
+When no launch has the same isDebug, the monitor falls back to one with the other value that has not timed out yet. The IDE reports whether it started the debugger, but the app reports whether a debugger was attached when it connected, and the two can differ for the same launch. In the same way, a launch registered after the app connected pairs with a recent connection that has the other isDebug.
+
 ## Notes
 - Platform matching is case-sensitive ("Wasm" != "wasm").
 - A null platform is normalized to "Unspecified".

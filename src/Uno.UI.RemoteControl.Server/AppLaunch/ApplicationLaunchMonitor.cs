@@ -103,7 +103,12 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	private readonly Options _options;
 
 	// Non-allocating composite key (avoids string creation per lookup)
-	private readonly record struct Key(Guid Mvid, string Platform, bool IsDebug);
+	private readonly record struct Key(Guid Mvid, string Platform, bool IsDebug)
+	{
+		// The IDE reports whether it launched the debugger, the app whether one was attached when it connected:
+		// the two can differ for the same launch, so a key with the other value is the fallback match.
+		public Key WithOtherIsDebug() => this with { IsDebug = !IsDebug };
+	}
 
 	private readonly ConcurrentDictionary<Key, ConcurrentQueue<LaunchEvent>> _pending = new();
 
@@ -181,7 +186,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 		}
 
 		// If there's already a pending connection for this key (late match), classify it immediately as IDE-initiated
-		if (_pendingConnections.TryRemove(key, out var pending))
+		if (TryTakePendingConnection(key) is { } pending)
 		{
 			try { pending.RetryTimer?.Dispose(); } catch { }
 			// Consume the launch event without invoking OnConnected to avoid double telemetry
@@ -296,13 +301,20 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 	/// <summary>
 	/// Attempts to dequeue a registered launch for the specified key, cancelling its timeout timer and indicating
-	/// whether the launch had previously timed out.
+	/// whether the launch had previously timed out. A launch with the other IsDebug value is used only when none
+	/// matches the key exactly, and only before its timeout.
 	/// </summary>
 	private bool TryDequeueLaunch(Key key, out LaunchEvent? ev, out bool wasTimedOut)
+		=> TryDequeueExactLaunch(key, onlyBeforeTimeout: false, out ev, out wasTimedOut)
+			|| TryDequeueExactLaunch(key.WithOtherIsDebug(), onlyBeforeTimeout: true, out ev, out wasTimedOut);
+
+	private bool TryDequeueExactLaunch(Key key, bool onlyBeforeTimeout, out LaunchEvent? ev, out bool wasTimedOut)
 	{
 		wasTimedOut = false;
 		ev = default!;
-		if (_pending.TryGetValue(key, out var queue) && queue.TryDequeue(out ev))
+		if (_pending.TryGetValue(key, out var queue)
+			&& (!onlyBeforeTimeout || (queue.TryPeek(out var oldest) && IsBeforeTimeout(oldest.RegisteredAt)))
+			&& queue.TryDequeue(out ev))
 		{
 			// Cancel / dispose the timeout timer for this event if still present
 			if (_timeoutTasks.TryRemove(ev, out var timeoutTimer))
@@ -333,6 +345,28 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 		return false;
 	}
+
+	/// <summary>
+	/// Removes the pending connection a newly registered launch matches: the exact key first, then the other IsDebug
+	/// value for a connection recent enough to belong to this launch.
+	/// </summary>
+	private PendingItem? TryTakePendingConnection(Key key)
+	{
+		if (_pendingConnections.TryRemove(key, out var pending))
+		{
+			return pending;
+		}
+
+		var otherKey = key.WithOtherIsDebug();
+		return _pendingConnections.TryGetValue(otherKey, out pending)
+			&& IsBeforeTimeout(pending.ConnectedAt)
+			&& _pendingConnections.TryRemove(otherKey, out pending)
+				? pending
+				: null;
+	}
+
+	private bool IsBeforeTimeout(DateTimeOffset since)
+		=> _timeProvider.GetUtcNow() - since < _options.Timeout;
 
 	private void SchedulePendingConnection(Key key)
 	{
@@ -371,17 +405,18 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	private void HandlePendingRetry(Key key)
 	{
 		// Try to find a launch now
-		if (TryDequeueLaunch(key, out var ev, out var wasTimedOut))
+		if (TryDequeueLaunch(key, out var ev, out var wasTimedOut) && ev is not null)
 		{
 			if (_pendingConnections.TryRemove(key, out var pending))
 			{
 				try { pending.RetryTimer?.Dispose(); } catch { }
 				try
 				{
+					// Like OnConnected, an IDE-initiated connection reports the launch's IsDebug
 					_options.OnPendingClassified?.Invoke(new PendingClassification(
 						key.Mvid,
 						key.Platform,
-						key.IsDebug,
+						ev.IsDebug,
 						pending.ConnectedAt,
 						true,
 						ev));
