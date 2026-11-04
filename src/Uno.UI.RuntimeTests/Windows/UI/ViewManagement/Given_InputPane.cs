@@ -483,7 +483,7 @@ public class Given_InputPane
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaMobile)] // Mobile CI: focusing a TextBox brings up the device's keyboard, whose real occlusion replaces the simulated one
 	public async Task When_Flyout_Opened_While_Occluded_Then_Placed_Above_Occlusion()
 	{
 		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.25);
@@ -515,7 +515,7 @@ public class Given_InputPane
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaMobile)] // Mobile CI: focusing a TextBox brings up the device's keyboard, whose real occlusion replaces the simulated one
 	public async Task When_Flyout_Field_Focused_Then_Flyout_Moved_Above_Occlusion()
 	{
 		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.25);
@@ -559,7 +559,7 @@ public class Given_InputPane
 	[RequiresFullWindow]
 	[DataRow(true)]
 	[DataRow(false)]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaMobile)] // Mobile CI: focusing a TextBox brings up the device's keyboard, whose real occlusion replaces the simulated one
 	public async Task When_Flyout_Taller_Than_Area_Above_Occlusion_Then_Resized_To_Fit(bool occludeBeforeOpening)
 	{
 		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.6);
@@ -574,7 +574,7 @@ public class Given_InputPane
 			var naturalHeight = presenter.ActualHeight;
 			var naturalTop = GetTop(presenter);
 
-			var occludedTop = WindowHeight * 0.55;
+			var occludedTop = GetOccludedTopBelow(naturalHeight);
 			AssertTallerThanAreaAboveOcclusion(page, presenter, occludedTop);
 
 			if (occludeBeforeOpening)
@@ -617,7 +617,7 @@ public class Given_InputPane
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaMobile)] // Mobile CI: focusing a TextBox brings up the device's keyboard, whose real occlusion replaces the simulated one
 	public async Task When_Flyout_Fits_No_Side_Of_Visible_Button_Then_Resized_To_Fit()
 	{
 		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.6, buttonTop: WindowHeight * 0.2);
@@ -668,7 +668,7 @@ public class Given_InputPane
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaMobile)] // Mobile CI: focusing a TextBox brings up the device's keyboard, whose real occlusion replaces the simulated one
 	public async Task When_Resized_Flyout_Reopened_While_Occluded_Then_Resized_Again()
 	{
 		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.6);
@@ -681,7 +681,7 @@ public class Given_InputPane
 			page.Flyout.ShowAt(page.Button);
 			var presenter = await WaitForFlyoutPresenter(page.Flyout);
 			var naturalHeight = presenter.ActualHeight;
-			var occludedTop = WindowHeight * 0.55;
+			var occludedTop = GetOccludedTopBelow(naturalHeight);
 			AssertTallerThanAreaAboveOcclusion(page, presenter, occludedTop);
 
 			Assert.IsTrue(page.FlyoutField.Focus(FocusState.Programmatic), "Flyout TextBox failed to take focus.");
@@ -710,7 +710,7 @@ public class Given_InputPane
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaMobile)] // Mobile CI: focusing a TextBox brings up the device's keyboard, whose real occlusion replaces the simulated one
 	public async Task When_Resized_Flyout_Content_Widens_Then_Presenter_Widens()
 	{
 		var widening = new Border { Width = 160, Height = 20 };
@@ -724,7 +724,7 @@ public class Given_InputPane
 			page.Flyout.ShowAt(page.Button);
 			var presenter = await WaitForFlyoutPresenter(page.Flyout);
 			var naturalHeight = presenter.ActualHeight;
-			var occludedTop = WindowHeight * 0.55;
+			var occludedTop = GetOccludedTopBelow(naturalHeight);
 			AssertTallerThanAreaAboveOcclusion(page, presenter, occludedTop);
 
 			Assert.IsTrue(page.FlyoutField.Focus(FocusState.Programmatic), "Flyout TextBox failed to take focus.");
@@ -761,7 +761,8 @@ public class Given_InputPane
 		{
 			await UITestHelper.Load(root);
 
-			var occludedTop = OccludeBelow(inputPane, WindowHeight * 0.3);
+			// The calendar is about 350px tall, so on a tall window the area above a keyboard at 30% of the height would still fit it.
+			var occludedTop = OccludeBelow(inputPane, System.Math.Min(WindowHeight * 0.3, 200));
 			await WindowHelper.WaitForIdle();
 
 			picker.IsCalendarOpen = true;
@@ -928,6 +929,9 @@ public class Given_InputPane
 	}
 
 	private static double WindowHeight => WindowHelper.XamlRoot.Size.Height;
+
+	// FlyoutPresenter's default MaxHeight caps the flyout on a tall window, so the keyboard top must stay below the flyout's height.
+	private static double GetOccludedTopBelow(double flyoutHeight) => System.Math.Min(WindowHeight * 0.55, flyoutHeight - 60);
 
 	private static double OccludeBelow(InputPane inputPane, double occludedTop)
 	{
