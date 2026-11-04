@@ -15,6 +15,7 @@ ServerCore purposely owns only abstractions; the host must register concrete ser
 | `IRemoteControlConfiguration` | Singleton | Provides configuration values that processors expect (feature flags, file paths, etc.). | Wrap an `IConfiguration` (see `ConfigurationRemoteControlConfiguration` in `Uno.UI.RemoteControl.Host`). |
 | `IIdeChannel` | Singleton | Bridges IDE-originated commands (e.g., keep alive, diagnostics) to the server. Must raise `MessageFromIde` and honor `WaitForReady`. | Reuse `IdeChannelServer` from `Uno.UI.RemoteControl.Host` or provide a test-specific stub. |
 | `IApplicationLaunchMonitor` | Singleton | Tracks app launch/connect events for telemetry. See [ApplicationLaunchMonitor.md](ApplicationLaunchMonitor.md). | `Uno.UI.RemoteControl.Server.AppLaunch.ApplicationLaunchMonitor`. |
+| `AppLaunchIdeMessageHandler` | Singleton, resolved at startup | Registers the launches the IDE announces with `IApplicationLaunchMonitor`, once per host. Resolve it before the IDE can announce a launch. | Provided by ServerCore; `InProcessDevServer` registers and resolves it. |
 | `IRemoteControlProcessorFactory` | Scoped | Discovers and instantiates processors when a client sends `ProcessorsDiscovery`. | `DefaultRemoteControlProcessorFactory` (from `Uno.UI.RemoteControl.Server`) or a custom factory for embedded scenarios. |
 | `IRemoteControlServer` / `IRemoteControlServerConnection` | Scoped | Connection-scoped runtime that processes frames. | Registered by `AddRemoteControlServerCore()`. |
 | `ITelemetry` (optional) | Scoped | Receives server telemetry events per connection. | `ServiceCollectionExtensions.AddConnectionTelemetry()` in `Uno.UI.RemoteControl.Server`. |
@@ -65,11 +66,13 @@ services.AddLogging(builder => builder.AddConsole());
 services.AddSingleton<IRemoteControlConfiguration>(_ => new ConfigurationRemoteControlConfiguration(configuration));
 services.AddSingleton<IIdeChannel, IdeChannelServer>();
 services.AddSingleton<IApplicationLaunchMonitor>(_ => new ApplicationLaunchMonitor());
+services.AddSingleton<AppLaunchIdeMessageHandler>();
 services.AddSingleton<IRemoteControlProcessorFactory, DefaultRemoteControlProcessorFactory>();
 services.AddConnectionTelemetry(solutionPath);
 services.AddRemoteControlServerCore();
 
 var serviceProvider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
+_ = serviceProvider.GetRequiredService<AppLaunchIdeMessageHandler>(); // before the IDE can announce a launch
 var builder = new RemoteControlServerBuilder(services);
 await using var host = builder.BuildShared(serviceProvider);
 await host.StartAsync(ct);

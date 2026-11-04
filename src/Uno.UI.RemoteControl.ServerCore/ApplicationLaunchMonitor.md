@@ -50,7 +50,7 @@ Events emitted by the monitor are prefixed with `uno/dev-server/app-launch/`. Se
 ## Integration points (IDE, transport, HTTP)
 The dev-server can receive registration and connection events through multiple channels:
 
-- IDE → DevServer: `AppLaunchRegisterIdeMessage` (scope: `AppLaunch`) carrying MVID, Platform, IsDebug. Triggers `RegisterLaunch`.
+- IDE → DevServer: `AppLaunchRegisterIdeMessage` over the IDE channel, carrying MVID, Platform, IsDebug. Triggers `RegisterLaunch` once per host, through `AppLaunchIdeMessageHandler` (not once per connection).
 - Runtime → DevServer over transport (WebSocket by default) (scope: `DevServerChannel`): `AppLaunchMessage` with `Step = Launched`. Triggers `RegisterLaunch`.
 - HTTP GET → DevServer: `GET /applaunch/{mvid}?platform={platform}&isDebug={true|false}`. Triggers `RegisterLaunch`.
 

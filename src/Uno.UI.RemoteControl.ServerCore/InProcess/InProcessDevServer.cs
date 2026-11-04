@@ -77,6 +77,8 @@ public sealed class InProcessDevServer : IAsyncDisposable
 			?? options.ApplicationLaunchMonitor
 			?? CreateDefaultLaunchMonitor(sp));
 
+		services.AddSingleton<AppLaunchIdeMessageHandler>();
+
 		services.AddScoped<IRemoteControlProcessorFactory>(sp =>
 			options.ProcessorFactoryFactory?.Invoke(sp)
 			?? CreateDefaultProcessorFactory(sp));
@@ -98,6 +100,10 @@ public sealed class InProcessDevServer : IAsyncDisposable
 
 		var activeIdeChannel = provider.GetRequiredService<IIdeChannel>();
 		var defaultDescriptor = options.DefaultConnectionDescriptor ?? RemoteControlConnectionDescriptor.InProcess;
+
+		// Launches announced by the IDE are registered here, once per host rather than once per connection.
+		_ = provider.GetRequiredService<AppLaunchIdeMessageHandler>();
+
 		return new InProcessDevServer(provider, host, activeIdeChannel, defaultDescriptor);
 	}
 

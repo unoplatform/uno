@@ -29,6 +29,8 @@ using ServerCoreProcessorFactory = RemoteServerCore::Uno.UI.RemoteControl.Server
 using ServerCoreProcessorResult = RemoteServerCore::Uno.UI.RemoteControl.ServerCore.RemoteControlProcessorDiscoveryResult;
 using ServerCoreProcessorsDiscovery = RemoteServerCore::Uno.UI.RemoteControl.Messages.ProcessorsDiscovery;
 using ServerCoreDiscoveredProcessor = RemoteServerCore::Uno.UI.RemoteControl.Messages.DiscoveredProcessor;
+using ServerCoreAppLaunchIdeMessageHandler = RemoteServerCore::Uno.UI.RemoteControl.Server.AppLaunch.AppLaunchIdeMessageHandler;
+using ServerCoreInProcessDevServer = RemoteServerCore::DevServerCore.InProcessDevServer;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.DevServer.Tests.RemoteControlServerBehaviorTests.DiagnosticsAwareProcessor))]
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.DevServer.Tests.RemoteControlServerBehaviorTests.IdeRoutingProcessor))]
@@ -156,6 +158,83 @@ public class RemoteControlServerBehaviorTests
 		payload.Count.Should().BeGreaterThanOrEqualTo(1);
 	}
 
+	// One launch announced by the IDE must register one launch, however many connections the devserver has had.
+	[TestMethod]
+	public async Task IdeLaunchRegistration_ShouldRegisterOnce_AfterConnectionsCameAndWent()
+	{
+		var ideChannel = new TestIdeChannel();
+		var launchMonitor = new FakeLaunchMonitor();
+		using var handler = new ServerCoreAppLaunchIdeMessageHandler(ideChannel, launchMonitor);
+
+		for (var i = 0; i < 3; i++)
+		{
+			using var closed = RemoteControlServerTestContext.Create(ideChannel, launchMonitor);
+			await closed.RunAsync([closed.CreateDiscoveryFrame(Guid.NewGuid().ToString("N"))]);
+		}
+
+		using var live = RemoteControlServerTestContext.Create(ideChannel, launchMonitor);
+		await live.RunAsync([live.CreateDiscoveryFrame(Guid.NewGuid().ToString("N"))]);
+
+		ideChannel.Emit(CreateIdeLaunch());
+
+		launchMonitor.Registrations.Should().ContainSingle();
+	}
+
+	// A closed connection must stop handling IDE messages (e.g. hot reload events): its processors are already disposed.
+	[TestMethod]
+	public async Task IdeMessages_ShouldNotReachClosedConnections()
+	{
+		var ideChannel = new TestIdeChannel();
+
+		ScriptedFrameTransport closedTransport;
+		using (var closed = RemoteControlServerTestContext.Create(ideChannel))
+		{
+			closedTransport = await closed.RunAsync([closed.CreateDiscoveryFrame(Guid.NewGuid().ToString("N"))]);
+		}
+
+		using var live = RemoteControlServerTestContext.Create(ideChannel);
+		var liveTransport = await live.RunAsync([live.CreateDiscoveryFrame(Guid.NewGuid().ToString("N"))]);
+
+		ideChannel.Emit(new TestIdeCommand());
+
+		closedTransport.SentFrames.Should().NotContain(f => f.Name == IdeRouteNotification.MessageName);
+		DeserializeSentMessage<IdeRouteNotification>(liveTransport, IdeRouteNotification.MessageName).Count.Should().Be(1);
+	}
+
+	// The IDE announces a launch before the app connects, often while no application is connected at all.
+	[TestMethod]
+	public async Task InProcessDevServer_ShouldRegisterIdeLaunchesOnce_WithOrWithoutConnectedApplications()
+	{
+		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+		var ideChannel = new TestIdeChannel();
+		var launchMonitor = new FakeLaunchMonitor();
+		var devserver = ServerCoreInProcessDevServer.Create(options =>
+		{
+			options.IdeChannel = ideChannel;
+			options.ApplicationLaunchMonitor = launchMonitor;
+			options.ProcessorFactoryFactory = sp => new TestProcessorFactory(sp);
+		});
+
+		try
+		{
+			ideChannel.Emit(CreateIdeLaunch());
+			launchMonitor.Registrations.Should().ContainSingle("no application is connected yet");
+
+			var application = devserver.ConnectApplication(ct: cts.Token);
+			await PingAsync(application, cts.Token);
+
+			ideChannel.Emit(CreateIdeLaunch());
+			launchMonitor.Registrations.Should().HaveCount(2, "the connected application must not register the launch a second time");
+		}
+		finally
+		{
+			await devserver.DisposeAsync();
+		}
+
+		ideChannel.Emit(CreateIdeLaunch());
+		launchMonitor.Registrations.Should().HaveCount(2, "a disposed devserver must stop listening to an IDE channel that outlives it");
+	}
+
 	// Ensures RemoteControlServerHost creates independent DI scopes per connection and disposes transports deterministically.
 	[TestMethod]
 	public async Task RemoteControlServerHost_ShouldIsolateScopesAndDisposeTransport()
@@ -242,7 +321,7 @@ public class RemoteControlServerBehaviorTests
 
 		public string AssemblyPath { get; }
 
-		public static RemoteControlServerTestContext Create()
+		public static RemoteControlServerTestContext Create(TestIdeChannel? ideChannel = null, FakeLaunchMonitor? launchMonitor = null)
 		{
 			var services = new ServiceCollection();
 			var telemetry = new FakeTelemetry();
@@ -250,8 +329,8 @@ public class RemoteControlServerBehaviorTests
 			var serviceProvider = services.BuildServiceProvider();
 
 			var configuration = new InMemoryRemoteControlConfiguration();
-			var ideChannel = new TestIdeChannel();
-			var launchMonitor = new FakeLaunchMonitor();
+			ideChannel ??= new TestIdeChannel();
+			launchMonitor ??= new FakeLaunchMonitor();
 			var processorFactory = new TestProcessorFactory(serviceProvider);
 			var server = new ServerCoreRemoteControlServer(configuration, ideChannel, launchMonitor, processorFactory, serviceProvider);
 			processorFactory.AttachServer(server);
@@ -501,6 +580,27 @@ public class RemoteControlServerBehaviorTests
 	{
 		var frame = transport.SentFrames.Single(f => f.Name == messageName);
 		return frame.GetContent<T>();
+	}
+
+	private static AppLaunchRegisterIdeMessage CreateIdeLaunch()
+		=> new(Guid.NewGuid(), "Desktop", IsDebug: true, "UnitTestIDE", "unit-plugin");
+
+	// A keep-alive round trip proves the connection's server is running, hence subscribed to the IDE channel.
+	private static async Task PingAsync(IFrameTransport transport, CancellationToken ct)
+	{
+		await transport.SendAsync(
+			Frame.Create(ProtocolVersion, WellKnownScopes.DevServerChannel, KeepAliveMessage.Name, new KeepAliveMessage { SequenceId = 1 }),
+			ct);
+
+		while (await transport.ReceiveAsync(ct) is { } frame)
+		{
+			if (frame.Name == KeepAliveMessage.Name)
+			{
+				return;
+			}
+		}
+
+		throw new InvalidOperationException("Transport closed before the keep-alive was answered.");
 	}
 
 	public sealed class DiagnosticsAwareProcessor : IServerProcessor
