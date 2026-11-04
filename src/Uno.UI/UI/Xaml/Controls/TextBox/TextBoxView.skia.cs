@@ -184,7 +184,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var oldText = textBox.Text; // preexisting text
 				var oldSelection = SelectionBeforeKeyDown; // On Gtk, SelectionBeforeKeyDown just points to Selection, which is updated by SetTextNative, so we need to read it before SetTextNative.
-				var modifiedText = textBox.ProcessTextInput(newText); // new text after BeforeTextChanging, TextChanging, DP callback, etc
+				var modifiedText = textBox.ProcessNativeTextInput(newText); // new text after BeforeTextChanging, TextChanging, DP callback, etc
 				UpdateDisplayBlockText(modifiedText);
 				if (modifiedText != newText)
 				{

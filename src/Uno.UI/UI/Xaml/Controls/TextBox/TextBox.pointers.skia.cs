@@ -22,6 +22,10 @@ public partial class TextBox
 	/// (see OnPointerPressedPartial) and Touch (OnPointerPressedPartial / OnGripperTapped).
 	/// </summary>
 	private (PointerPoint point, int repeatedPresses) _lastPointerDown;
+	// The character under the first tap of a touch multi-tap, whose word a double-tap selects, and the top of
+	// that tap's text line, which the next taps must land on. Cleared when the text changes.
+	private (int character, double lineTop)? _touchMultiTapAnchor;
+	private bool _lastTouchPressOnHandle;
 	private (int start, int length, bool tripleTap)? _mouseMultiTapChunk;
 	// this is necessary because we can receive a PointerReleased without a PointerPressed (e.g. clicking on the
 	// TextBox while the context menu is open to dismiss it). We want to ignore such PointerPressed's.
@@ -81,8 +85,8 @@ public partial class TextBox
 			if (_touchCaretDrag)
 			{
 				// iOS caret dragging (started by a long-press): the caret follows the finger.
-				var point = e.GetCurrentPoint(TextBoxView.DisplayBlock);
-				var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point.Position, true, true));
+				var point = ToTouchTextPoint(e.GetCurrentPoint(TextBoxView.DisplayBlock).Position);
+				var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true));
 				Select(index, 0);
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				UpdateCaretLoupe(index);
@@ -154,16 +158,93 @@ public partial class TextBox
 			&& !GestureRecognizer.IsOutOfTapRange(previousTap.position, currentPosition);
 	}
 
-	// Touch taps can't reuse IsMultiTapGesture: successive touch presses get different pointer ids,
-	// so we compare only the timing and distance between the two taps.
-	private bool IsTouchMultiTap(PointerPoint previous, PointerPoint current)
+	// A finger drifts more between the taps of a double-tap than the shared tap range allows (iOS allows more still,
+	// see IOSTouchMultiTapSlop). The line check keeps quick taps on adjacent lines apart.
+	private const double TouchMultiTapMaxDelta = 24;
+
+	private static bool IsWithinTouchMultiTapDelay(PointerPoint previous, PointerPoint current)
 		=> previous.PointerDeviceType == PointerDeviceType.Touch
 			&& current.PointerDeviceType == PointerDeviceType.Touch
-			&& current.Timestamp - previous.Timestamp <= GestureRecognizer.MultiTapMaxDelayMicroseconds
-			&& (TouchSelectionConvention == TouchTextSelectionConvention.iOS
-				? Math.Abs(current.Position.X - previous.Position.X) <= IOSTouchMultiTapSlop
-					&& Math.Abs(current.Position.Y - previous.Position.Y) <= IOSTouchMultiTapSlop
-				: !GestureRecognizer.IsOutOfTapRange(previous.Position, current.Position));
+			&& current.Timestamp - previous.Timestamp <= GestureRecognizer.MultiTapMaxDelayMicroseconds;
+
+	// Touch taps can't reuse IsMultiTapGesture: successive touch presses get different pointer ids,
+	// so we compare only the timing, distance and text line of the two taps.
+	private bool IsTouchMultiTap(PointerPoint previous, PointerPoint current, Point currentTextPoint)
+	{
+		var maxDelta = TouchSelectionConvention == TouchTextSelectionConvention.iOS ? IOSTouchMultiTapSlop : TouchMultiTapMaxDelta;
+		return IsWithinTouchMultiTapDelay(previous, current)
+			&& Math.Abs(current.Position.X - previous.Position.X) <= maxDelta
+			&& Math.Abs(current.Position.Y - previous.Position.Y) <= maxDelta
+			&& _touchMultiTapAnchor is { } anchor
+			&& GetTextLineTop(currentTextPoint) == anchor.lineTop;
+	}
+
+	// A press as quick after a tap on the text as a double-tap's second tap.
+	private bool QuicklyFollowsTextTap(PointerPoint press)
+		=> !_lastTouchPressOnHandle
+			&& _lastPointerDown.point is { } previous
+			&& IsWithinTouchMultiTapDelay(previous, press);
+
+	// Counts a touch press (on the text or on a handle) into the multi-tap sequence.
+	private int CountTouchPress(PointerPoint press, Point textPoint, int character, bool onHandle)
+	{
+		var continuesMultiTap = _lastPointerDown.point is { } previous
+			&& (IsTouchMultiTap(previous, press, textPoint)
+				// iOS: after a double-tap, its word's handles may sit well away from where the finger tapped, so a quick
+				// tap on one of them continues the multi-tap whatever the distance - the handle belongs to that very selection.
+				|| (onHandle
+					&& TouchSelectionConvention == TouchTextSelectionConvention.iOS
+					&& _lastPointerDown.repeatedPresses >= 1
+					&& IsWithinTouchMultiTapDelay(previous, press)));
+		var repeatedPresses = continuesMultiTap
+			? _lastPointerDown.repeatedPresses + 1
+			: 0;
+		_lastPointerDown = (press, repeatedPresses);
+		_lastTouchPressOnHandle = onHandle;
+		if (repeatedPresses == 0)
+		{
+			_touchMultiTapAnchor = (character, GetTextLineTop(textPoint));
+		}
+
+		return repeatedPresses;
+	}
+
+	private double GetTextLineTop(Point textPoint)
+		=> TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(GetCharacterIndexAt(textPoint)).Y;
+
+	// A finger often lands a little below or above the text it targets, on the box's padding. Native iOS/Android
+	// hit-test it on the nearest line, by X.
+	private Point ToTouchTextPoint(Point displayBlockPoint)
+		=> TouchSelectionConvention == TouchTextSelectionConvention.Desktop
+			? displayBlockPoint
+			: new Point(displayBlockPoint.X, TextBoxView.DisplayBlock.ParsedText.ClampYToLines(displayBlockPoint.Y));
+
+	// GetIndexAt returns the caret position nearest to the point, which is after the character under the finger
+	// when the finger is on that character's trailing half. At a soft wrap, that position starts the next line.
+	private int GetCharacterIndexAt(Point textPoint)
+	{
+		var parsedText = TextBoxView.DisplayBlock.ParsedText;
+		var index = Math.Max(0, parsedText.GetIndexAt(textPoint, true, true));
+		if (index == 0)
+		{
+			return 0;
+		}
+
+		var before = parsedText.GetRectForIndex(index - 1);
+		var at = parsedText.GetRectForIndex(index);
+		if (before.Y != at.Y)
+		{
+			return textPoint.Y < at.Y ? index - 1 : index;
+		}
+
+		if (before.Left <= textPoint.X && textPoint.X < before.Right)
+		{
+			return index - 1;
+		}
+
+		// Past the end of the line: the line's last character is the nearest one.
+		return at.Width == 0 ? index - 1 : index;
+	}
 
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
 	{
@@ -180,10 +261,8 @@ public partial class TextBox
 		{
 			// We handle touch on the PointerReleased end, but count repeated taps here (mirroring the
 			// mouse multi-tap path) so a touch double-tap can select a word on release.
-			var repeatedPresses = _lastPointerDown.point is { } previous && IsTouchMultiTap(previous, currentPoint)
-				? _lastPointerDown.repeatedPresses + 1
-				: 0;
-			_lastPointerDown = (currentPoint, repeatedPresses);
+			var textPoint = ToTouchTextPoint(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position);
+			CountTouchPress(currentPoint, textPoint, GetCharacterIndexAt(textPoint), onHandle: false);
 			_selectionFlyoutOpenAtPress = SelectionFlyout?.IsOpen == true;
 			_iosHoldFired = false;
 			_touchPressPointer = args.Pointer;
@@ -320,7 +399,7 @@ public partial class TextBox
 			return;
 		}
 
-		var displayBlockPoint = args.GetCurrentPoint(TextBoxView.DisplayBlock).Position;
+		var displayBlockPoint = ToTouchTextPoint(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position);
 		if (isMobileMultiTap)
 		{
 			if (TouchSelectionConvention == TouchTextSelectionConvention.iOS && _lastPointerDown.repeatedPresses >= 2)
@@ -330,8 +409,9 @@ public partial class TextBox
 			}
 			else
 			{
-				// Native iOS/Android: a double-tap selects the word under the tap.
-				TouchSelectWord(displayBlockPoint);
+				// Native iOS/Android: a double-tap selects the word under the first tap (or under this one, if the
+				// text changed since its press).
+				TouchSelectWordAt(_touchMultiTapAnchor?.character ?? GetCharacterIndexAt(displayBlockPoint));
 
 				if (TouchSelectionConvention == TouchTextSelectionConvention.iOS)
 				{
@@ -540,7 +620,7 @@ public partial class TextBox
 	}
 
 	private void TouchSelectWord(Point point)
-		=> TouchSelectWordAt(Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true)));
+		=> TouchSelectWordAt(GetCharacterIndexAt(point));
 
 	private void TouchSelectWordAt(int index)
 	{
@@ -596,7 +676,7 @@ public partial class TextBox
 			else
 			{
 				// Android
-				TouchSelectWord(displayBlockPoint);
+				TouchSelectWord(ToTouchTextPoint(displayBlockPoint));
 				QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, textBoxPoint);
 			}
 
@@ -617,18 +697,19 @@ public partial class TextBox
 	// anywhere else the caret starts following the finger.
 	private void HandleTouchHold_iOS(Point displayBlockPoint, Point textBoxPoint)
 	{
+		var textPoint = ToTouchTextPoint(displayBlockPoint);
 		if (Text.IsNullOrEmpty())
 		{
 			HandleEmptyTextTouchGesture(textBoxPoint);
 		}
-		else if (IsInSelection(displayBlockPoint))
+		else if (IsInSelection(textPoint))
 		{
 			// Native iOS: holding a selection keeps it and shows the edit menu.
 			QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, textBoxPoint);
 		}
 		else
 		{
-			BeginTouchCaretDrag(displayBlockPoint);
+			BeginTouchCaretDrag(textPoint);
 		}
 	}
 
