@@ -9,6 +9,7 @@
 		private onDocumentVisibilityChanged: any;
 		private owner: any;
 		private lastReportedOcclusion: number = -1;
+		private isKeyboardOcclusionReportScheduled = false;
 		private isKeyboardBlurPending = false;
 		private viewportResizeObserver: ResizeObserver | undefined;
 		private lastObservedViewportSize: { width: number, height: number } | undefined;
@@ -81,8 +82,8 @@
 			// The on-screen keyboard shrinks the visual viewport without firing window "resize",
 			// so track it separately to report keyboard occlusion to the InputPane (issue 3).
 			if (window.visualViewport) {
-				window.visualViewport.addEventListener("resize", () => this.reportKeyboardOcclusion());
-				window.visualViewport.addEventListener("scroll", () => this.reportKeyboardOcclusion());
+				window.visualViewport.addEventListener("resize", () => this.scheduleKeyboardOcclusionReport());
+				window.visualViewport.addEventListener("scroll", () => this.scheduleKeyboardOcclusionReport());
 			}
 
 			this.resize();
@@ -149,6 +150,19 @@
 			}
 
 			this.onDocumentVisibilityChanged(this.owner, !document.hidden);
+		}
+
+		// The visual viewport fires "resize" and "scroll" together, and on every frame while the keyboard slides: report once per frame.
+		private scheduleKeyboardOcclusionReport() {
+			if (this.isKeyboardOcclusionReportScheduled) {
+				return;
+			}
+
+			this.isKeyboardOcclusionReportScheduled = true;
+			requestAnimationFrame(() => {
+				this.isKeyboardOcclusionReportScheduled = false;
+				this.reportKeyboardOcclusion();
+			});
 		}
 
 		// Reports how much of the viewport the on-screen keyboard occludes, in the same CSS pixels
