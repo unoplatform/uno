@@ -36,6 +36,7 @@
 	<ItemGroup>
 
 		<_UnoInjectedResource Include="WasmScripts\**\*.js" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+		<UnoLinkerSubstitution Include="ILLink\WasmAssets.Substitutions.xml" />
 		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
 
 		<UpToDateCheckInput Include="ts\**\*" />
