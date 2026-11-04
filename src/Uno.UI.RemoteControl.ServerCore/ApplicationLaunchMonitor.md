@@ -51,6 +51,7 @@ Step 2 comes before step 3 on purpose. A launch whose app never connects (a clos
 - Platform matching is case-sensitive ("Wasm" != "wasm").
 - A null platform is normalized to "Unspecified".
 - Registrations are consumed oldest first, launches that have not timed out before those that have.
+- A launch counts as timed out once its timeout has fired; `OnTimeout` is then invoked for it, possibly at the same time as a connection that takes it reports it as timed out. A launch a connection takes before its timeout fires is never reported to `OnTimeout`, and a connection and a launch are paired in one step, so neither can be taken without the other.
 - Always dispose the monitor (use `using` as shown).
 
 ## Analytics events

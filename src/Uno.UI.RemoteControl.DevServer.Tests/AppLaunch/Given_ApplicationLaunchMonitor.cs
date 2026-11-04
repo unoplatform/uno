@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Microsoft.Extensions.Time.Testing;
 using Uno.UI.RemoteControl.Server.AppLaunch;
 
@@ -723,5 +724,96 @@ public class Given_ApplicationLaunchMonitor
 		classified[0].Launch.Should().NotBeNull();
 		classified[0].Launch!.Ide.Should().Be(ide);
 		classified[0].Launch!.Plugin.Should().Be(plugin);
+	}
+
+	[TestMethod]
+	public void WhenSameLaunchIsRegisteredTwiceInOneTick_ThenBothConnectWithoutTimingOut()
+	{
+		// Arrange: two launches with equal fields, which a value-keyed timer table would conflate
+		using var sut = CreateMonitor(
+			out var clock,
+			out _,
+			out var timeouts,
+			out var connections,
+			out var connectionWasTimedOut,
+			timeout: TimeSpan.FromSeconds(60));
+		var mvid = Guid.NewGuid();
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
+
+		// Act
+		sut.ReportConnection(mvid, "Wasm", isDebug: true);
+		sut.ReportConnection(mvid, "Wasm", isDebug: true);
+		clock.Advance(TimeSpan.FromMinutes(2));
+
+		// Assert
+		connections.Should().HaveCount(2);
+		connectionWasTimedOut.Should().Equal(false, false);
+		timeouts.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public async Task WhenConnectionsRaceTheirTimeouts_ThenNoLaunchIsReportedTimedOutAfterItConnected()
+	{
+		// Arrange: real timers, with a timeout about as long as the time between a registration and its connection
+		var connectedOnTime = new ConcurrentDictionary<Guid, bool>();
+		var timedOut = new ConcurrentDictionary<Guid, bool>();
+		using var sut = new ApplicationLaunchMonitor(TimeProvider.System, new ApplicationLaunchMonitor.Options
+		{
+			Timeout = TimeSpan.FromMilliseconds(1),
+			OnConnected = (e, wasTimedOut) =>
+			{
+				if (!wasTimedOut)
+				{
+					connectedOnTime[e.Mvid] = true;
+				}
+			},
+			OnTimeout = e => timedOut[e.Mvid] = true,
+		});
+
+		// Act
+		await Parallel.ForAsync(0, 5000, async (_, _) =>
+		{
+			var mvid = Guid.NewGuid();
+			sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
+			await Task.Yield();
+			sut.ReportConnection(mvid, "Wasm", isDebug: true);
+		});
+		await Task.Delay(500); // let the last timeout callbacks run
+
+		// Assert: in either order, no launch both connected on time and timed out
+		connectedOnTime.Keys.Intersect(timedOut.Keys).Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public async Task WhenRegistrationsRaceThePendingRetry_ThenEveryConnectionIsClassifiedAsIdeInitiatedOnce()
+	{
+		// Arrange: real timers, with the retry window about as long as the time between a connection and its registration
+		var ideInitiated = new ConcurrentDictionary<Guid, int>();
+		using var sut = new ApplicationLaunchMonitor(TimeProvider.System, new ApplicationLaunchMonitor.Options
+		{
+			Timeout = TimeSpan.FromMinutes(1),
+			PendingRetryWindow = TimeSpan.FromMilliseconds(1),
+			OnPendingClassified = c =>
+			{
+				if (c.WasIdeInitiated)
+				{
+					ideInitiated.AddOrUpdate(c.Mvid, 1, (_, n) => n + 1);
+				}
+			},
+		});
+		var mvids = Enumerable.Range(0, 5000).Select(_ => Guid.NewGuid()).ToArray();
+
+		// Act
+		await Parallel.ForEachAsync(mvids, async (mvid, _) =>
+		{
+			sut.ReportConnection(mvid, "Wasm", isDebug: true);
+			await Task.Delay(1);
+			sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
+		});
+		await Task.Delay(500); // let the last retry callbacks run
+
+		// Assert
+		mvids.Where(m => !ideInitiated.TryGetValue(m, out var n) || n != 1).Should().BeEmpty();
 	}
 }
