@@ -61,6 +61,8 @@ jobs:
     parameters:
       timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
 
+  - template: ../templates/mac-rerun-limit.yml
+
   - checkout: self
     clean: true
 
@@ -114,7 +116,7 @@ jobs:
       UNO_TEST_APP_ENVIRONMENT: "${{ parameters.appEnvironment }}"
 
   - task: PublishTestResults@2
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     inputs:
       testRunTitle: ${{ parameters.TestRunName }}
       testResultsFormat: 'NUnit'
@@ -164,7 +166,7 @@ jobs:
       failTaskOnMissingResultsFile: true
 
   - task: PublishTestResults@2
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
       testRunTitle: ${{ parameters.TestRunName }}
@@ -172,7 +174,7 @@ jobs:
       failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
@@ -183,7 +185,7 @@ jobs:
   # them in a separate artifacts container.
   # This is needed so that screenshot comparison doesn't unnecessarily download large files, which slows it down.
   - task: PublishBuildArtifacts@1
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/ios-ui-tests-logs
@@ -192,7 +194,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     displayName: Publish Failed Tests Results List
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results

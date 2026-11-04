@@ -105,6 +105,8 @@ jobs:
     NuGetAuditMode: direct
 
   steps:
+  - template: ../templates/mac-rerun-limit.yml
+
   - task: DownloadBuildArtifacts@0
     inputs:
       artifactName: 'nuget-packages'

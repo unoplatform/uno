@@ -33,6 +33,10 @@ jobs:
 
   steps:
 
+  - template: ../templates/mac-rerun-limit.yml
+
+  - checkout: self
+
   - task: DownloadPipelineArtifact@2
     displayName: Downloading $(SamplesAppArtifactName)
     inputs:
@@ -73,7 +77,7 @@ jobs:
         UNO_WEBGPU_LOG: warn
 
   - task: PublishTestResults@2
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     inputs:
       testRunTitle: 'macOS ${{ parameters.renderer }} Runtime Tests'
       testResultsFormat: 'NUnit'
@@ -82,7 +86,7 @@ jobs:
       failTaskOnMissingResultsFile: true
 
   - task: PublishBuildArtifacts@1
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     displayName: Publish Failed Tests Results
     retryCountOnTaskFailure: 3
     inputs:
