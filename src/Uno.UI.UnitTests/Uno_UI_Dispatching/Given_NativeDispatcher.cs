@@ -59,6 +59,54 @@ public class Given_NativeDispatcher
 		Assert.IsTrue(idleItems >= 5, $"Idle work was starved by rendering ({idleItems} idle items over {renders} frames).");
 	}
 
+	// The starved item only goes ahead of rendering: pending Normal work (await continuations post at Normal) still
+	// runs first.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24032")]
+	public void When_Every_Frame_Is_Busy_Then_Normal_Work_Still_Runs_Before_Low()
+	{
+		using var pump = new DispatcherPump();
+
+		var order = new List<string>();
+		var renders = 0;
+		pump.Dispatcher.Enqueue(() => order.Add("Low"), NativeDispatcherPriority.Low);
+
+		// Queued on the render that makes the Low item due to jump ahead of the next one.
+		pump.StartRenderLoop(() =>
+		{
+			if (++renders == 3)
+			{
+				pump.Dispatcher.Enqueue(() => order.Add("Normal"), NativeDispatcherPriority.Normal);
+			}
+		});
+		pump.Run(100, () => order.Count == 2);
+
+		CollectionAssert.AreEqual(new[] { "Normal", "Low" }, order);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24032")]
+	public void When_Every_Frame_Is_Busy_Then_High_Work_Still_Runs_Before_Low()
+	{
+		using var pump = new DispatcherPump();
+
+		var order = new List<string>();
+		var renders = 0;
+		pump.Dispatcher.Enqueue(() => order.Add("Low"), NativeDispatcherPriority.Low);
+
+		// Queued on the render that makes the Low item due to jump ahead of the next one.
+		pump.StartRenderLoop(() =>
+		{
+			if (++renders == 3)
+			{
+				pump.Dispatcher.Enqueue(() => order.Add("High"), NativeDispatcherPriority.High);
+			}
+		});
+		pump.Run(100, () => order.Count == 2);
+
+		CollectionAssert.AreEqual(new[] { "High", "Low" }, order);
+	}
+
 	[TestMethod]
 	public void When_Not_Rendering_Then_Priority_Order_Is_Kept()
 	{
@@ -84,6 +132,7 @@ public class Given_NativeDispatcher
 	{
 		private readonly Action<Action, NativeDispatcherPriority> _previousDispatch;
 		private readonly Func<bool> _previousHasThreadAccess;
+		private readonly Func<bool> _previousDispatchBehindPending;
 		private readonly Queue<Action> _pending = new();
 		private readonly object _renderTarget = new();
 
@@ -95,8 +144,11 @@ public class Given_NativeDispatcher
 		{
 			_previousDispatch = NativeDispatcher.DispatchOverride;
 			_previousHasThreadAccess = NativeDispatcher.HasThreadAccessOverride;
+			_previousDispatchBehindPending = NativeDispatcher.DispatchBehindPendingOverride;
 
 			NativeDispatcher.HasThreadAccessOverride = () => true;
+			// Otherwise an enqueue behind a pending dispatch posts an extra pump turn.
+			NativeDispatcher.DispatchBehindPendingOverride = () => false;
 			NativeDispatcher.DispatchOverride = (action, _) => _pending.Enqueue(action);
 
 			Dispatcher.RemoveCompositionTargets(_ => true);
@@ -142,6 +194,7 @@ public class Given_NativeDispatcher
 			{
 				NativeDispatcher.DispatchOverride = _previousDispatch;
 				NativeDispatcher.HasThreadAccessOverride = _previousHasThreadAccess;
+				NativeDispatcher.DispatchBehindPendingOverride = _previousDispatchBehindPending;
 			}
 		}
 
