@@ -41,13 +41,16 @@ internal class ParentProcessObserver
 
 					gracefulShutdown();
 
-					await Task.Delay(5_500, ct);
+					// Use CancellationToken.None for the forced-exit delay: gracefulShutdown()
+					// may cancel `ct`, so waiting on ct would throw and skip the forced exit.
+					await Task.Delay(5_500, CancellationToken.None);
+					log.LogWarning($"Graceful shutdown did not complete 5.5s after parent process {ppid} was lost, forcing exit...");
 					telemetry?.TrackEvent(
 						"parent-process-lost-forced-exit",
 						default(Dictionary<string, string>),
 						null);
 
-					await Task.Delay(250, ct); // Give time for analytics to log something
+					await Task.Delay(250, CancellationToken.None); // Give time for analytics to log something
 					Environment.Exit(4);
 				}
 			}

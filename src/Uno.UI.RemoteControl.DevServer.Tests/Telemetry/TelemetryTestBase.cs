@@ -214,11 +214,19 @@ public abstract class TelemetryTestBase
 	/// Assert that at least one event with the given event name exists (optionally for a given prefix).
 	/// </summary>
 	protected static void AssertHasEvent(List<(string Prefix, JsonDocument Json)> events, string eventName, string? prefix = null)
-	{
-		var filtered = prefix == null ? events : events.Where(e => e.Prefix == prefix);
-		filtered.Any(e => e.Json.RootElement.TryGetProperty("EventName", out var n) && n.GetString() == eventName)
+		=> HasEvent(events, eventName, prefix)
 			.Should().BeTrue($"Should contain event '{eventName}'{(prefix != null ? $" with prefix '{prefix}'" : "")}");
-	}
+
+	/// <summary>
+	/// Assert that no event with the given event name exists (optionally for a given prefix).
+	/// </summary>
+	protected static void AssertNoEvent(List<(string Prefix, JsonDocument Json)> events, string eventName, string? prefix = null)
+		=> HasEvent(events, eventName, prefix)
+			.Should().BeFalse($"Should not contain event '{eventName}'{(prefix != null ? $" with prefix '{prefix}'" : "")}");
+
+	private static bool HasEvent(List<(string Prefix, JsonDocument Json)> events, string eventName, string? prefix)
+		=> (prefix == null ? events : events.Where(e => e.Prefix == prefix))
+			.Any(e => e.Json.RootElement.TryGetProperty("EventName", out var n) && n.GetString() == eventName);
 
 	/// <summary>
 	/// Assert that at least one event with the given event name exists and has the specified property with the expected value.
