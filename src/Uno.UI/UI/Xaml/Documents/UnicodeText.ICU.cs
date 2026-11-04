@@ -19,7 +19,7 @@ internal readonly partial struct UnicodeText
 	internal static int BreakIteratorOpenCount;
 	internal static int BreakIteratorCloseCount;
 
-	private static class ICU
+	private static partial class ICU
 	{
 		private static Assembly? _dataAssembly;
 
@@ -231,13 +231,23 @@ internal readonly partial struct UnicodeText
 				{
 					throw new InvalidOperationException($"Failed to find icudt.dat resource in {_dataAssembly.FullName}.");
 				}
-				// udata_setCommonData does not copy the buffer, so it needs to be pinned.
-				// For alignment, the ICU docs require 16-byte alignment. https://unicode-org.github.io/icu/userguide/icu_data/#alignment
-				var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
-				stream.ReadExactly(new Span<byte>(data, (int)stream.Length));
-				GetMethod<udata_setCommonData>()((IntPtr)data, out var errorCode);
-				CheckErrorCode<udata_setCommonData>(errorCode);
+				using (stream)
+				{
+					RegisterCommonData(stream);
+				}
+
+				InitOnDemandDictionaries(_dataAssembly);
 			}
+		}
+
+		private static unsafe void RegisterCommonData(Stream stream)
+		{
+			// udata_setCommonData does not copy the buffer, so it needs to be pinned.
+			// For alignment, the ICU docs require 16-byte alignment. https://unicode-org.github.io/icu/userguide/icu_data/#alignment
+			var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
+			stream.ReadExactly(new Span<byte>(data, (int)stream.Length));
+			GetMethod<udata_setCommonData>()((IntPtr)data, out var errorCode);
+			CheckErrorCode<udata_setCommonData>(errorCode);
 		}
 
 		public static T GetMethod<T>() where T : class
@@ -324,6 +334,9 @@ internal readonly partial struct UnicodeText
 
 			public string? LocaleName;
 
+			// An iterator remembers scripts it found no dictionary for, so it must not outlive newly registered data.
+			public int DataGeneration;
+
 			~BreakIteratorCache() => Close();
 
 			public void Close()
@@ -361,10 +374,11 @@ internal readonly partial struct UnicodeText
 
 			isCached = true;
 			var cache = _breakIterators ??= new();
-			if (!string.Equals(cache.LocaleName, localeName, StringComparison.Ordinal))
+			if (!string.Equals(cache.LocaleName, localeName, StringComparison.Ordinal) || cache.DataGeneration != _dataGeneration)
 			{
 				cache.Close();
 				cache.LocaleName = localeName;
+				cache.DataGeneration = _dataGeneration;
 			}
 
 			var iterator = cache.Iterators[boundaryType];

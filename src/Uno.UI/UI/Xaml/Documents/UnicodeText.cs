@@ -459,6 +459,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else
 		{
+			if (!allAscii)
+			{
+				ICU.EnsureDictionaries(_text, fontListener);
+			}
+
 			AppendBoundaries(/* Line */ 2, _text, 0, lineOpportunityBreaks);
 		}
 
@@ -2770,6 +2775,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static List<int> GetWords(string text)
 	{
 		var boundaries = new List<int>();
+		ICU.EnsureDictionaries(text, listener: null);
 		AppendBoundaries(/* Word */ 1, text, 0, boundaries);
 		var ret = new List<int> { boundaries[0] };
 		for (var index = 1; index < boundaries.Count; index++)
