@@ -73,7 +73,7 @@ jobs:
       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - task: DownloadPipelineArtifact@2
-    condition: gt(variables['System.JobAttempt'], 1)
+    condition: and(succeeded(), gt(variables['System.JobAttempt'], 1))
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:

@@ -1,6 +1,7 @@
 <#
 .SYNOPSIS
-Determines which optional CI test scopes must run for a pull request based on the touched files.
+Determines which optional CI test scopes must run for a pull request based on the touched files
+and, for iOS/tvOS, the changed lines.
 
 .DESCRIPTION
 This script inspects the diff between the PR head and its target branch to figure out which
@@ -40,7 +41,8 @@ $scopeVariables = [ordered]@{
 #                           per-minute Mac agents; other changes get them on master. Matches
 #                           PascalCase names (iOSResourceConverter) and the files that gate these
 #                           lanes, so a change to the gate runs the lanes it gates. Shared files
-#                           are caught by their changed lines instead (see $uikitContentPattern).
+#                           are caught by their changed lines instead (see $uikitContentPattern),
+#                           and PRs into any branch other than master always enable it.
 $patterns = @{
     TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
     ScreenshotsRequired   = [regex]'(?i)^src/(uno\.ui|addins).*\.cs$'
@@ -48,9 +50,10 @@ $patterns = @{
     UIKitTestsRequired    = [regex]'(?i)(?:^|[/._-])(?:tvos|ios|uikit|appleuikit|apple)(?:[/._-]|$)|(?:^|[/._-])(?-i:iOS|tvOS|UIKit|Apple)(?-i:[A-Z])|^\.vsts-ci\.yml$|(?:^|/)_?global\.json$|^build/ci/templates/(?:dotnet-mobile-install-mac|ios-build-select-version|mac-rerun-limit)\.yml$|^build/ci/\.azure-devops-stages\.yml$|^build/ci/tests/\.azure-devops-tests-runtime-stages\.yml$|^build/ci/scripts/determine-test-scope\.ps1$'
 }
 
-# iOS/tvOS-only code in shared files: platform conditionals, OperatingSystem checks and iOS-only
-# runtime tests. git's -G matches these in the PR's added or removed lines.
-$uikitContentPattern = '__IOS__|__APPLE_UIKIT__|__TVOS__|IsIOS\(\)|IsTvOS\(\)|IsMacCatalyst\(\)|Skia(IOS|UIKit|TvOS)'
+# iOS/tvOS-only code in shared files: C# conditionals and platform checks, iOS-only runtime-test
+# platforms, MSBuild conditions and target frameworks, and XAML ios:/tvos: attributes.
+# git's -G (POSIX extended regex) matches these in the PR's added or removed lines.
+$uikitContentPattern = '__IOS__|__APPLE_UIKIT__|__TVOS__|Is(IOS|TvOS)(\(|VersionAtLeast)|IsUIKit\(|IsMobile\(|Skia(IOS|UIKit|TvOS|Mobile)|\$\(Is(IOS|TvOS|AppleUIKit)\)|-(ios|tvos)[;<"'']|uno\.ui/(ios|tvos)|[ <](ios|tvos):'
 
 function Set-TestScopeVariable {
     param(
@@ -92,6 +95,12 @@ $targetRef = if ([string]::IsNullOrWhiteSpace($env:SYSTEM_PULLREQUEST_TARGETBRAN
     $env:SYSTEM_PULLREQUEST_TARGETBRANCH
 }
 
+# Release and servicing PRs stabilize a branch, so they keep the iOS stage.
+if ($targetRef -notmatch '^(refs/heads/)?master$') {
+    Write-Host "Target branch '$targetRef' is not master: enabling UIKitTestsRequired."
+    $scopeVariables['UIKitTestsRequired'] = $true
+}
+
 $prevErrorPref = $ErrorActionPreference
 $ErrorActionPreference = 'Continue'
 git fetch origin $targetRef --depth=200 2>&1 | Out-Null
@@ -107,8 +116,19 @@ if ($fetchExitCode -ne 0) {
     return
 }
 
-$diffArgs = @('--name-only', 'FETCH_HEAD..HEAD')
-$changedFiles = git diff @diffArgs | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+# --no-renames lists both sides of a move, so a file moved out of an iOS folder still counts.
+$ErrorActionPreference = 'Continue'
+$changedFiles = git diff --name-only --no-renames FETCH_HEAD..HEAD | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+$diffExitCode = $LASTEXITCODE
+$ErrorActionPreference = $prevErrorPref
+
+if ($diffExitCode -ne 0) {
+    Write-Host ("##vso[task.logissue type=warning]Unable to list the changed files (git exit code {0}). Enabling all test scopes." -f $diffExitCode)
+    Enable-AllScopes -Values $scopeVariables
+    Publish-TestScopes -Values $scopeVariables
+    $global:LASTEXITCODE = 0
+    return
+}
 
 if (-not $changedFiles) {
     Publish-TestScopes -Values $scopeVariables
@@ -132,14 +152,19 @@ foreach ($file in $changedFiles) {
 }
 
 if (-not $scopeVariables['UIKitTestsRequired']) {
-    $uikitFiles = @(git diff --name-only "-G$uikitContentPattern" FETCH_HEAD..HEAD | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
-    if ($LASTEXITCODE -ne 0) {
-        Write-Warning "Unable to search the diff for iOS/tvOS code. Enabling UIKitTestsRequired."
+    $ErrorActionPreference = 'Continue'
+    $uikitFiles = @(git diff --name-only --no-renames "-G$uikitContentPattern" FETCH_HEAD..HEAD | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    $searchExitCode = $LASTEXITCODE
+    $ErrorActionPreference = $prevErrorPref
+    if ($searchExitCode -ne 0) {
+        Write-Host ("##vso[task.logissue type=warning]Unable to search the diff for iOS/tvOS code (git exit code {0}). Enabling UIKitTestsRequired." -f $searchExitCode)
         $scopeVariables['UIKitTestsRequired'] = $true
         $global:LASTEXITCODE = 0
     } elseif ($uikitFiles.Count -gt 0) {
         Write-Host "Changed lines in '$($uikitFiles[0])' match iOS/tvOS code for UIKitTestsRequired."
         $scopeVariables['UIKitTestsRequired'] = $true
+    } else {
+        Write-Host "No iOS/tvOS paths or changed lines: Tests - iOS is skipped on this PR and runs on master. Queue the pipeline manually on the branch to run it."
     }
 }
 
