@@ -433,6 +433,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if WINAPPSDK
 			// Uno keeps flyouts inside the window. An unconstrained WinUI flyout gets its own window and is placed within the monitor.
 			flyout.ShouldConstrainToRootBounds = true;
+
+			// WinUI adds its FlyoutMargin once ResizeToFit filled the room below the target, so the flyout overflows the window's
+			// bottom edge by that margin (only X and Y are clamped). Uno's ResizeToFit leaves room for the margin.
+			const double overflow = 4;
+#else
+			const double overflow = 0;
 #endif
 			var button = new Button
 			{
@@ -463,7 +469,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					{
 						var bounds = presenter.GetOnScreenBounds();
 						return bounds.Top >= -0.5
-							&& bounds.Bottom <= windowSize.Height + 0.5
+							&& bounds.Bottom <= windowSize.Height + overflow + 0.5
 							&& bounds.Left >= -0.5
 							&& bounds.Right <= windowSize.Width + 0.5
 							&& (bounds.Bottom <= buttonBounds.Top + 0.5 || bounds.Top >= buttonBounds.Bottom - 0.5);
@@ -485,19 +491,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				flyout.Hide();
 			}
 
-			static T FindDescendant<T>(DependencyObject element) where T : class, DependencyObject
+			// Pattern matching instead of "as T": DependencyObject is an interface on Uno 6.x but a class on WinAppSDK,
+			// so neither "as T" nor a "class" constraint compiles on both.
+			static T FindDescendant<T>(DependencyObject element) where T : DependencyObject
 			{
 				for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
 				{
 					var child = VisualTreeHelper.GetChild(element, i);
-					var found = child as T ?? FindDescendant<T>(child);
-					if (found is not null)
+					if (child is T match)
+					{
+						return match;
+					}
+
+					if (FindDescendant<T>(child) is { } found)
 					{
 						return found;
 					}
 				}
 
-				return null;
+				return default;
 			}
 		}
 
