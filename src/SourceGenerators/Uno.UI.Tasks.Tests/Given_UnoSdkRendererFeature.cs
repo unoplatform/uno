@@ -56,7 +56,7 @@ public class Given_UnoSdkRendererFeature
 
 	[TestMethod]
 	[DataRow("SkiaRenderer", new[] { "Uno.WinUI.Composition.Skia" })]
-	[DataRow("SkiaRenderer;WebGpu", new[] { "Uno.WinUI.Composition.Skia", "Uno.WinUI.Composition.WebGpu" })]
+	[DataRow("SkiaRenderer;WebGpu", new[] { "Uno.WinUI.Composition.Skia", "Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu" })]
 	public void When_Head_Lists_SkiaRenderer_Then_It_Maps_To_Skia(string features, string[] expected)
 	{
 		var (unoFeatures, packages) = Evaluate("Exe", features);
@@ -109,6 +109,15 @@ public class Given_UnoSdkRendererFeature
 
 		unoFeatures.Should().NotContain(";skia;").And.NotContain(";webgpu;");
 		packages.Should().NotContain(SkiaPackages);
+	}
+
+	// WinAppSDK has no WebGPU backend, so a listed WebGpu must add none of its packages there.
+	[TestMethod]
+	public void When_Windows_Head_Lists_WebGpu_Then_No_WebGpu_Package_Is_Referenced()
+	{
+		var (_, packages) = Evaluate("WinExe", "WebGpu", Windows);
+
+		packages.Should().NotContain(["Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu"]);
 	}
 
 	[TestMethod]
