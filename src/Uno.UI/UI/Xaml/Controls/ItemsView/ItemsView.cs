@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 using DirectUI;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Foundation.Logging;
@@ -308,9 +308,13 @@ partial class ItemsView : Control
 				}
 
 				// The default ItemTemplate uses an ItemContainer for its root element since this is an ItemsView requirement for now.
-				var defaultItemTemplate = XamlReader.Load("<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><ItemContainer><TextBlock Text='{Binding}'/></ItemContainer></DataTemplate>") as DataTemplate;
-
-				ItemTemplate = defaultItemTemplate;
+				// Uno: built in code rather than with XamlReader.Load, so the trimmer sees ItemContainer being created.
+				ItemTemplate = new DataTemplate(null, (_, _) =>
+				{
+					var textBlock = new TextBlock();
+					textBlock.SetBinding(TextBlock.TextProperty, new Binding());
+					return new ItemContainer { Child = textBlock };
+				});
 			}
 		}
 	}
