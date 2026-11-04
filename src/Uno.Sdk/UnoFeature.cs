@@ -67,10 +67,10 @@ public enum UnoFeature
 	Logging,
 
 	[UnoArea(UnoArea.Extensions)]
-	MauiEmbedding,
+	MauiNativeEmbedding,
 
 	[UnoArea(UnoArea.Core)]
-	MauiHandlers,
+	MauiEmbedding,
 
 	[UnoArea(UnoArea.Core)]
 	Rehost,

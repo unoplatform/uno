@@ -104,13 +104,13 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
-	<!-- Uno.Maui.Embedding brings Uno.Maui.Handlers at the same version. It does not depend on Uno.Extensions, unlike mauiembedding. -->
-	<ItemGroup Condition="$(UnoFeatures.Contains(';mauihandlers;'))">
+	<!-- Uno.Maui.Embedding brings Uno.Maui.Handlers at the same version. It does not depend on Uno.Extensions, unlike mauinativeembedding. -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Maui.Embedding" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls" ProjectSystem="true" Condition="!$(UnoFeatures.Contains(';mauiembedding;'))" />
+		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls" ProjectSystem="true" Condition="!$(UnoFeatures.Contains(';mauinativeembedding;'))" />
 	</ItemGroup>
 
-	<!-- Uno.Rehost rewrites the Windows builds of Windows App SDK packages for Uno; it is also what MauiHandlers builds on. -->
+	<!-- Uno.Rehost rewrites the Windows builds of Windows App SDK packages for Uno; it is also what MauiEmbedding builds on. -->
 	<ItemGroup Condition="$(UnoFeatures.Contains(';rehost;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Rehost" ProjectSystem="true" />
 	</ItemGroup>

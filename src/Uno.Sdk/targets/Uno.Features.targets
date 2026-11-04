@@ -21,12 +21,12 @@
 		<UnoFeatures Condition="$(UnoFeatures.Contains(';webgpucanvas;')) And !$(UnoFeatures.Contains(';webgpu;')) And '$(IsWinAppSdk)' != 'true'">$(UnoFeatures)webgpu;</UnoFeatures>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauinativeembedding;'))">
 		<UseMaui>true</UseMaui>
 	</PropertyGroup>
 
-	<!-- MauiHandlers runs MAUI controls through Uno.Rehost, so it implies the rehost feature (AssetTargetFallback, Uno.Rehost, pruning of the Windows App SDK). -->
-	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauihandlers;')) And !$(UnoFeatures.Contains(';rehost;'))">
+	<!-- MauiEmbedding runs MAUI controls through Uno.Rehost, so it implies the rehost feature (AssetTargetFallback, Uno.Rehost, pruning of the Windows App SDK). -->
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;')) And !$(UnoFeatures.Contains(';rehost;'))">
 		<UnoFeatures>$(UnoFeatures)rehost;</UnoFeatures>
 	</PropertyGroup>
 
@@ -57,11 +57,11 @@
 	</ItemGroup>
 
 	<!--
-		MauiHandlers: MAUI controls and libraries run on Uno through Uno.Maui.Embedding / Uno.Maui.Handlers (on top of Rehost, which it implies).
-		- MAUI itself must be the version the rewrite rules are written for, not the one of the mauiembedding feature (override with MauiVersion).
+		MauiEmbedding: MAUI controls and libraries run on Uno through Uno.Maui.Embedding / Uno.Maui.Handlers (on top of Rehost, which it implies).
+		- MAUI itself must be the version the rewrite rules are written for, not the one of the mauinativeembedding feature (override with MauiVersion).
 		- UseMaui stays off: the project is an Uno project, not a MAUI one (the package turns off MAUI's global usings and default XAML items by itself).
 	-->
-	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauihandlers;'))">
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
 		<MauiVersion Condition="'$(MauiVersion)' == ''">10.0.101</MauiVersion>
 	</PropertyGroup>
 
