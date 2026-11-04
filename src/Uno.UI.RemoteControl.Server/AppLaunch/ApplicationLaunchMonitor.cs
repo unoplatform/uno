@@ -415,7 +415,10 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 				true,
 				launch));
 		}
-		catch { }
+		catch
+		{
+			// best-effort, swallow: a failing callback must not stop the monitor from matching
+		}
 	}
 
 	private void SchedulePendingConnection(Key key)
@@ -525,7 +528,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 			// dispose any associated timeout task
 			if (_timeoutTasks.TryRemove(ev, out var t))
 			{
-				try { t.Dispose(); } catch { }
+				try { t.Dispose(); } catch { /* best-effort */ }
 			}
 			// remove any record of timed-out state for scavenged items
 			_timedOut.TryRemove(ev, out _);
