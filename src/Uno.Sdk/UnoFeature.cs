@@ -100,8 +100,6 @@ public enum UnoFeature
 
 	Mvvm,
 
-	Prism,
-
 	Reactor,
 
 	[UnoArea(UnoArea.Core)]

@@ -173,15 +173,6 @@
 		]
 	},
 	{
-		"group": "Prism",
-		"version": "9.0.537",
-		"packages": [
-			"Prism.DryIoc.Uno.WinUI",
-			"Prism.Uno.WinUI",
-			"Prism.Uno.WinUI.Markup"
-		]
-	},
-	{
 		"group": "Reactor",
 		"version": "0.1.0-dev.77",
 		"packages": [
