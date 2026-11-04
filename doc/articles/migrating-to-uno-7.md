@@ -460,7 +460,8 @@ own target framework, the library's calls included.
 - **`Uno.UI.Controls.Legacy.ProgressRing`:** the ellipse-based ring, its `DefaultWuxProgressRingStyle`
   style and `Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings` are removed. It only existed to
   contrast with the native ring on Android and iOS, which are gone. Use `Microsoft.UI.Xaml.Controls.ProgressRing`
-  (drop the `legacy:` prefix) and add the [Lottie package](xref:Uno.Features.Lottie) reference it needs to render.
+  (drop the `legacy:` prefix); it needs no extra package. Its default size is 32x32 instead of 20x20, so set
+  `Width` and `Height` explicitly if your layout relied on the smaller ring.
 - **Native base classes / identity:** `BindableView` (and `Bindable*` widget wrappers),
   `BindableUIView` (and `BindableUI*`). `UIElement` no longer inherits a native
   `View`/`UIView`/DOM element. Remove casts to `Android.Views.View` / `UIKit.UIView`;
