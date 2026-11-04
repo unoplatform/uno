@@ -429,6 +429,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					Setters = { new Setter(FrameworkElement.MaxHeightProperty, windowSize.Height * 2) },
 				},
 			};
+#if WINAPPSDK
+			// Uno keeps flyouts inside the window. An unconstrained WinUI flyout gets its own window and is placed within the monitor.
+			flyout.ShouldConstrainToRootBounds = true;
+#endif
 			var button = new Button
 			{
 				Content = "Open",
@@ -452,8 +456,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNotNull(presenter, "The flyout presenter was not found.");
 
 				var buttonBounds = button.GetOnScreenBounds();
-				await TestServices.WindowHelper.WaitFor(
-					() =>
+				try
+				{
+					await TestServices.WindowHelper.WaitFor(() =>
 					{
 						var bounds = presenter.GetOnScreenBounds();
 						return bounds.Top >= -0.5
@@ -461,8 +466,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 							&& bounds.Left >= -0.5
 							&& bounds.Right <= windowSize.Width + 0.5
 							&& (bounds.Bottom <= buttonBounds.Top + 0.5 || bounds.Top >= buttonBounds.Bottom - 0.5);
-					},
-					message: "The flyout was not shrunk inside the window next to its button.");
+					});
+				}
+				catch (AssertFailedException)
+				{
+					Assert.Fail($"The flyout ({presenter.GetOnScreenBounds()}) was not shrunk inside the window ({windowSize}) next to its button ({buttonBounds}).");
+				}
 
 				var scrollViewer = FindDescendant<ScrollViewer>(presenter);
 				Assert.IsNotNull(scrollViewer, "The presenter's ScrollViewer was not found.");
