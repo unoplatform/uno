@@ -992,11 +992,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal void NotifyInputPaneStateChange(bool isInputPaneVisible)
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug($"Input pane {(isInputPaneVisible ? "visible" : "hidden")}: placing the flyout again.");
-			}
-
 			if (!isInputPaneVisible)
 			{
 				// The presenter's size was reduced by us to fit it on screen.

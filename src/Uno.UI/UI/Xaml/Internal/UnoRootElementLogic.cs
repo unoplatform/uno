@@ -51,7 +51,13 @@ internal class UnoRootElementLogic
 		}
 
 		// Ensure Flyout size and position properly with showing/hiding IHM.
-		foreach (var flyout in FlyoutBase.OpenFlyouts.ToArray())
+		var openFlyouts = FlyoutBase.OpenFlyouts.ToArray();
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug($"Input pane {(isInputPaneVisible ? "visible" : "hidden")}, viewport height {viewportHeight?.ToString() ?? "unconstrained"}: placing {openFlyouts.Count(f => f.XamlRoot?.VisualTree == visualTree)} of {openFlyouts.Length} open flyouts again.");
+		}
+
+		foreach (var flyout in openFlyouts)
 		{
 			if (flyout.XamlRoot?.VisualTree != visualTree)
 			{
