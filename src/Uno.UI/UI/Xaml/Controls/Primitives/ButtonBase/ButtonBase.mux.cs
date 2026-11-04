@@ -47,6 +47,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Event registration token corresponding to subscription for ICommand.CanExecuteChanged event.
 		/// </summary>
+		/// <remarks>Weak, like WinUI's WeakEventPtr: the command must not keep the button alive.</remarks>
 		private readonly SerialDisposable _canExecuteChangedHandler = new SerialDisposable();
 
 		// Previously we released the capture from the pointer that we extracted from pointer released args. However, righttapped args
@@ -164,16 +165,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				if (command != null)
 				{
-					void CanExecuteChangedHandler(object? sender, object args)
-					{
-						UpdateCanExecute();
-					}
-
-					command.CanExecuteChanged += CanExecuteChangedHandler;
-					_canExecuteChangedHandler.Disposable = Disposable.Create(() =>
-					{
-						command.CanExecuteChanged -= CanExecuteChangedHandler;
-					});
+					_canExecuteChangedHandler.Disposable = WeakCanExecuteChangedSubscription.Create(command, this, static button => button.UpdateCanExecute());
 				}
 
 				// In case we missed an update to CanExecute while the CanExecuteChanged handler was unhooked,
@@ -248,18 +240,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				var newCommand = newValue as ICommand;
 
-				void CanExecuteChangedHandler(object? sender, object args)
-				{
-					UpdateCanExecute();
-				}
-
 				if (newCommand != null)
 				{
-					newCommand.CanExecuteChanged += CanExecuteChangedHandler;
-					_canExecuteChangedHandler.Disposable = Disposable.Create(() =>
-					{
-						newCommand.CanExecuteChanged -= CanExecuteChangedHandler;
-					});
+					_canExecuteChangedHandler.Disposable = WeakCanExecuteChangedSubscription.Create(newCommand, this, static button => button.UpdateCanExecute());
 				}
 
 				var newCommandAsUICommand = newCommand as XamlUICommand;
