@@ -512,8 +512,10 @@ jobs:
             if [ "$pr_total" -gt "$MAX_PR_LINES" ]; then
               continue
             fi
-            # Escape @ so listing a title never pings anyone (sed: bash 5.2 expands & in ${//}).
-            t="$(sed 's/@/\&#64;/g' <<<"$t")"
+            # Escape < so generics like List<T> aren't swallowed as HTML tags, then break
+            # @mentions with an empty comment (GitHub still links &#64;). sed, because
+            # bash 5.2 expands & in ${//}.
+            t="$(sed 's/</\&lt;/g; s/@/@<!-- -->/g' <<<"$t")"
             if [[ ",${excluded_prs// /}," == *",${n},"* ]]; then
               pr_lines+=("- ~~#${n}~~ ${t} — _excluded_")
             else
