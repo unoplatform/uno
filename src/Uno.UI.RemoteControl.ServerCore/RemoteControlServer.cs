@@ -230,7 +230,7 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 		}
 		if (message is AppLaunchRegisterIdeMessage)
 		{
-			// Host-wide: registered once by AppLaunchIdeMessageHandler, not once per connection.
+			// Registered host-wide by AppLaunchIdeMessageHandler.
 		}
 		else if (_processors.TryGetValue(message.Scope, out var processor))
 		{

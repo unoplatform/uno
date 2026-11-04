@@ -149,8 +149,8 @@ namespace Uno.UI.RemoteControl.Host
 				//		 This is required for UDEI to **not** log invalid timeout message.
 				globalServiceProvider.GetService<IIdeChannel>();
 
-				// Launches announced by the IDE are registered here, once per host rather than once per connection.
-				globalServiceProvider.GetRequiredService<AppLaunchIdeMessageHandler>();
+				// Subscribes to the IDE channel, so it must exist before the IDE can announce a launch.
+				_ = globalServiceProvider.GetRequiredService<AppLaunchIdeMessageHandler>();
 
 #pragma warning disable ASPDEPR004
 				// STEP 2: Create the WebApplication builder with reference to the global service provider
