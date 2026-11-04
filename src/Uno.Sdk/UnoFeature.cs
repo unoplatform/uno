@@ -73,7 +73,7 @@ public enum UnoFeature
 	MauiEmbedding,
 
 	[UnoArea(UnoArea.Core)]
-	Rehost,
+	Retarget,
 
 	[UnoArea(UnoArea.Extensions)]
 	MVUX,
