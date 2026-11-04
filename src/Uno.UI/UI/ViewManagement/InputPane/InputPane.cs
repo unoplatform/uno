@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 
 namespace Windows.UI.ViewManagement;
@@ -117,6 +118,9 @@ public partial class InputPane
 
 	private Lazy<IInputPaneExtension?>? _inputPaneExtension;
 
+	// WinUI's m_bHandledFocusElementInView: whether the framework adjusted for a Showing, which Hiding then undoes.
+	private bool _handledFocusedElementInView;
+
 	partial void InitializePlatform()
 	{
 		_inputPaneExtension = new(() =>
@@ -133,21 +137,33 @@ public partial class InputPane
 	private static XamlRoot? GetXamlRoot() => Window.InitialWindow?.Content?.XamlRoot;
 
 	// Like WinUI's RootScrollViewer, the root viewport ends at the top of the input pane and the open flyouts are placed
-	// again, unless the app handled the occlusion itself.
+	// again, unless the app handled the occlusion itself. Like WinUI's InputPaneHandler, Hiding only undoes a Showing
+	// the framework handled.
 	private void UpdateRootViewport(bool ensureFocusedElementInView)
 	{
 		if (GetXamlRoot()?.VisualTree.RootElement is not { } rootElement
 			|| rootElement is not Uno.UI.Xaml.Core.IRootElement { RootElementLogic: { } rootElementLogic })
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Input pane {(Visible ? "shown" : "hidden")} ({OccludedRect}): no root to adjust.");
+			}
+
 			return;
 		}
 
-		if (ensureFocusedElementInView)
+		if (ensureFocusedElementInView && (Visible || _handledFocusedElementInView))
 		{
+			_handledFocusedElementInView |= Visible;
 			rootElementLogic.NotifyInputPaneStateChange(Visible, Visible ? Math.Clamp(OccludedRect.Y, 0, rootElement.ActualSize.Y) : null);
 		}
 		else
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Input pane {(Visible ? "shown" : "hidden")} ({OccludedRect}): the app handles it, so the open flyouts are not placed again.");
+			}
+
 			rootElementLogic.SetInputPaneViewportHeight(null);
 		}
 	}
