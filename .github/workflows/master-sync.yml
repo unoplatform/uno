@@ -17,6 +17,14 @@ name: Sync master into feature branches
 #
 # "Active" = a `feature/*` branch with a commit within ACTIVITY_DAYS (default 30).
 #
+# Release stabilization (temporary): while a just-branched release is stabilizing,
+# STABILIZATION_BRANCH is synced the same way, every run. Leave it empty between
+# releases to disable. STABILIZATION_EXCLUDED_PRS lists master PRs it must never
+# receive (e.g. the post-branching version bump). Each is recorded as merged with
+# `git merge -s ours` right after merging its parent, so ancestry stays intact and
+# later syncs only bring in what came after it. This needs a merge-commit or
+# squash merged PR; for a rebase-merged one only its last commit would be skipped.
+#
 # Token: falls back to the default GITHUB_TOKEN, but that is NOT sufficient in
 # general. A sync merge that updates `.github/workflows/**` cannot be pushed by
 # GITHUB_TOKEN at all — GitHub rejects it with "refusing to allow a GitHub App to
@@ -53,6 +61,13 @@ on:
         type: boolean
         required: false
         default: false
+
+env:
+  # Temporary 7.0 stabilization sync; set to '' once 7.0 is out.
+  STABILIZATION_BRANCH: 'release/stable/7.0'
+  # Space-separated master PR numbers kept out of STABILIZATION_BRANCH.
+  # 25994 = version bump to 7.1-dev after branching 7.0.
+  STABILIZATION_EXCLUDED_PRS: '25994'
 
 # Permissions are set per-job below (least privilege): enumerate only reads,
 # sync needs write to push branches and manage PRs.
@@ -108,14 +123,31 @@ jobs:
           done < <(git for-each-ref --sort=-committerdate \
                      --format='%(committerdate:unix)%09%(refname:short)' \
                      'refs/remotes/origin/feature/*')
+          features="$(jq 'length' <<<"$json")"
+
+          stab=""
+          if [ -n "$STABILIZATION_BRANCH" ]; then
+            if git ls-remote --exit-code --heads origin "$STABILIZATION_BRANCH" >/dev/null 2>&1; then
+              json=$(jq -cn --argjson cur "$json" --arg b "$STABILIZATION_BRANCH" '$cur + [$b]')
+              stab="Release stabilization: \`${STABILIZATION_BRANCH}\` (excluding PRs: ${STABILIZATION_EXCLUDED_PRS:-none})"
+            else
+              echo "::warning::STABILIZATION_BRANCH '${STABILIZATION_BRANCH}' does not exist; clear it in master-sync.yml."
+              stab="> ⚠️ STABILIZATION_BRANCH \`${STABILIZATION_BRANCH}\` does not exist."
+            fi
+          fi
+
           echo "branches=$json" >> "$GITHUB_OUTPUT"
           echo "count=$(jq 'length' <<<"$json")" >> "$GITHUB_OUTPUT"
           {
             echo "### Active \`feature/*\` branches (≤ ${ACTIVITY_DAYS}d)"
-            if [ "$(jq 'length' <<<"$json")" -eq 0 ]; then
+            if [ "$features" -eq 0 ]; then
               echo "_None._"
             else
-              jq -r '.[] | "- `\(.)`"' <<<"$json"
+              jq -r '.[:'"$features"'][] | "- `\(.)`"' <<<"$json"
+            fi
+            if [ -n "$stab" ]; then
+              echo ""
+              echo "$stab"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -194,6 +226,30 @@ jobs:
           incoming="$(git rev-list --count "origin/${FEATURE}..origin/master")" || { note "❌ rev-list failed"; exit 1; }
           range="$(git rev-parse --short "origin/${FEATURE}")..$(git rev-parse --short origin/master)" || { note "❌ rev-parse failed"; exit 1; }
 
+          # Stabilization only: excluded master PRs, resolved to their merge commits and
+          # kept while still pending (on master, not yet in the target).
+          EXCLUDED_SHAS=()
+          excluded_list=""
+          excluded_prs=""
+          if [ -n "$STABILIZATION_BRANCH" ] && [ "$FEATURE" = "$STABILIZATION_BRANCH" ]; then
+            excluded_prs="$STABILIZATION_EXCLUDED_PRS"
+          fi
+          for n in $excluded_prs; do
+            sha="$(gh pr view "$n" --json mergeCommit --jq '.mergeCommit.oid // empty' 2>/dev/null || true)"
+            if [ -z "$sha" ] || ! git cat-file -e "${sha}^{commit}" 2>/dev/null; then
+              note "❌ excluded PR #$n has no reachable merge commit"
+              exit 1
+            fi
+            excluded_list="${excluded_list} #${n}"
+            if git merge-base --is-ancestor "$sha" origin/master \
+               && ! git merge-base --is-ancestor "$sha" "origin/${FEATURE}"; then
+              EXCLUDED_SHAS+=("$sha")
+            fi
+          done
+          if [ "${#EXCLUDED_SHAS[@]}" -gt 0 ]; then
+            mapfile -t EXCLUDED_SHAS < <(git rev-list --no-walk=sorted --topo-order --reverse "${EXCLUDED_SHAS[@]}")
+          fi
+
           # Does the existing sync branch carry non-bot (human resolution) commits?
           HAS_HUMAN_WORK=0
           SYNC_EXISTS=0
@@ -249,22 +305,46 @@ jobs:
 
           CONFLICT=0
           conflict_files=""
-          if git merge --no-ff --no-edit origin/master; then
-            CONFLICT=0
-          # Test for unmerged entries via command substitution, never a pipe: under
-          # `pipefail` a reader that exits early (`grep -q`) can SIGPIPE the producer,
-          # and the 141 becomes the pipeline's status — reporting a conflicted merge
-          # as clean and dropping us into the "non-conflict failure" branch below.
-          elif [ -n "$(git ls-files -u)" ]; then
-            CONFLICT=1
-            conflict_files="$(git diff --name-only --diff-filter=U || true)"
-            git add -A
-            git commit --no-edit || { git merge --abort 2>/dev/null || true; note "❌ conflict commit failed"; exit 1; }
-          else
-            git status --short || true
-            git merge --abort 2>/dev/null || true
-            note "❌ merge failed (non-conflict) — see logs"
-            exit 1
+          merge_in() {
+            if git merge --no-ff --no-edit "$1"; then
+              return 0
+            # Test for unmerged entries via command substitution, never a pipe: under
+            # `pipefail` a reader that exits early (`grep -q`) can SIGPIPE the producer,
+            # and the 141 becomes the pipeline's status — reporting a conflicted merge
+            # as clean and dropping us into the "non-conflict failure" branch below.
+            elif [ -n "$(git ls-files -u)" ]; then
+              CONFLICT=1
+              conflict_files="$(git diff --name-only --diff-filter=U || true)"
+              git add -A
+              git commit --no-edit || { git merge --abort 2>/dev/null || true; note "❌ conflict commit failed"; exit 1; }
+            else
+              git status --short || true
+              git merge --abort 2>/dev/null || true
+              note "❌ merge failed (non-conflict) — see logs"
+              exit 1
+            fi
+          }
+
+          # Excluded PRs: bring in master up to each one, then record it as merged
+          # without its changes. A conflict stops here; once resolved, the next run
+          # continues from the human's work.
+          PARTIAL=""
+          for sha in "${EXCLUDED_SHAS[@]}"; do
+            if git merge-base --is-ancestor "$sha" HEAD; then
+              continue
+            fi
+            merge_in "${sha}^1"
+            if [ "$CONFLICT" = "1" ]; then
+              PARTIAL="$(git rev-parse --short "${sha}^1")"
+              break
+            fi
+            git merge --no-ff -s ours \
+              -m "chore(automation): Exclude $(git rev-parse --short "$sha") from ${FEATURE}" \
+              -m "Records '$(git log -1 --format=%s "$sha")' as merged without its changes." "$sha"
+          done
+
+          if [ -z "$PARTIAL" ]; then
+            merge_in origin/master
           fi
 
           pr="$(open_pr)"
@@ -343,12 +423,21 @@ jobs:
             detail="- Auto-merge: **enabled** — lands once required CI is green and a reviewer approves."
           fi
 
+          extra=""
+          if [ -n "$excluded_list" ]; then
+            extra="- Release stabilization: master PRs **excluded** from this branch (recorded as merged, changes dropped):${excluded_list}"
+          fi
+          if [ -n "$PARTIAL" ]; then
+            extra="$(printf '%s\n%s' "$extra" "- **Partial:** stopped at \`${PARTIAL}\` (just before an excluded PR) because of conflicts; the next run continues after you push a resolution.")"
+          fi
+
           body="$(printf '%s\n' \
             "Automated sync — merges the latest \`master\` into \`${FEATURE}\`." \
             "" \
             "- Incoming commits from master: **${incoming}**" \
             "- Range: \`${range}\`" \
             "- Merge method: **merge commit** (preserves ancestry so future syncs stay minimal)" \
+            "${extra}" \
             "" \
             "${detail}" \
             "" \
