@@ -256,6 +256,7 @@ public class Given_AcrylicBrush
 	[TestMethod]
 	[RunsOnUIThread]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20634")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer)] // Flaky on 6.x: https://github.com/unoplatform/uno/issues/26018
 	public async Task When_Idle()
 	{
 		var scrollBar = new ScrollBar { Orientation = Orientation.Vertical, Width = 30, Height = 200 };
