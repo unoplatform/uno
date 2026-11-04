@@ -730,6 +730,10 @@ public partial class Given_SkiaAndroidAccessibilityNode
 		{
 			Width = 100;
 			Height = 100;
+
+			// The native hit test starts at the XAML element under the point and walks up: without a background the host isn't
+			// hit, and an accessible element above it (the runner's content presenter on CI) wins over its peers.
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
 			FirstPeer = new SharedOwnerInvokePeer(this, "Shared Owner A", 10);
 			SecondPeer = new SharedOwnerInvokePeer(this, "Shared Owner B", 50);
 		}
