@@ -492,9 +492,15 @@ jobs:
           if [ -n "$PARTIAL" ]; then
             upto="$PARTIAL"
           fi
+          # Cap by entries and by characters: GitHub rejects bodies over 65,536 chars,
+          # which would fail `gh pr create`. 50,000 leaves room for the rest of the body.
           MAX_PR_LINES=250
+          PR_LIST_BUDGET=50000
           pr_lines=()
           pr_total=0
+          pr_listed=0
+          pr_chars=0
+          pr_full=0
           for c in $(git rev-list --first-parent --reverse "$upto" --not "origin/${FEATURE}"); do
             subject="$(git show -s --format=%s "$c")"
             if [[ "$subject" =~ ^Merge\ pull\ request\ \#([0-9]+) ]]; then
@@ -509,7 +515,8 @@ jobs:
               continue
             fi
             pr_total=$(( pr_total + 1 ))
-            if [ "$pr_total" -gt "$MAX_PR_LINES" ]; then
+            if [ "$pr_full" = "1" ] || [ "$pr_listed" -ge "$MAX_PR_LINES" ]; then
+              pr_full=1
               continue
             fi
             # Escape < so generics like List<T> aren't swallowed as HTML tags, then break
@@ -517,13 +524,20 @@ jobs:
             # bash 5.2 expands & in ${//}.
             t="$(sed 's/</\&lt;/g; s/@/@<!-- -->/g' <<<"$t")"
             if [[ ",${excluded_prs// /}," == *",${n},"* ]]; then
-              pr_lines+=("- ~~#${n}~~ ${t} — _excluded_")
+              line="- ~~#${n}~~ ${t} — _excluded_"
             else
-              pr_lines+=("- #${n} ${t}")
+              line="- #${n} ${t}"
             fi
+            if [ $(( pr_chars + ${#line} + 1 )) -gt "$PR_LIST_BUDGET" ]; then
+              pr_full=1
+              continue
+            fi
+            pr_chars=$(( pr_chars + ${#line} + 1 ))
+            pr_lines+=("$line")
+            pr_listed=$(( pr_listed + 1 ))
           done
-          if [ "$pr_total" -gt "$MAX_PR_LINES" ]; then
-            pr_lines+=("- …and $(( pr_total - MAX_PR_LINES )) more, see the [full comparison](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/compare/${FEATURE}...$(git rev-parse "$upto")).")
+          if [ "$pr_listed" -lt "$pr_total" ]; then
+            pr_lines+=("- …and $(( pr_total - pr_listed )) more, see the [full comparison](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/compare/${FEATURE}...$(git rev-parse "$upto")).")
           elif [ "$pr_total" -eq 0 ]; then
             pr_lines+=("_No PR merges in this range._")
           fi
