@@ -165,7 +165,6 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 	}
 
 	[TestMethod]
-	[Ignore]
 	public async Task WhenRegisteredAndRuntimeConnects_SuccessEventEmitted_UsingIdeChannel()
 	{
 		// PRE-ARRANGE: Create a solution file
