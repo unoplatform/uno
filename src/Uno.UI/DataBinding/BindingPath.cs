@@ -18,6 +18,8 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.DataBinding
 {
@@ -505,7 +507,8 @@ namespace Uno.UI.DataBinding
 					{
 						if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
-							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{dataContextReference.Target?.GetType()}]");
+							var target = dataContextReference.IsDisposed ? null : dataContextReference.Target;
+							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{target?.GetType()}]");
 						}
 
 						if (!newValueActionWeak.IsDisposed
@@ -518,23 +521,79 @@ namespace Uno.UI.DataBinding
 
 				notify.PropertyChanged += handler;
 
-				return Disposable.Create(() =>
-				{
-					// This weak reference ensure that the closure will not link
-					// the caller and the callee, in the same way "newValueActionWeak"
-					// does not link the callee to the caller.
-					var that = dataContextReference.Target as System.ComponentModel.INotifyPropertyChanged;
-
-					if (that != null)
-					{
-						that.PropertyChanged -= handler;
-					}
-
-					Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, newValueActionWeak);
-				});
+				return new PropertyChangedSubscription(notify, handler, newValueActionWeak);
 			}
 
 			return null;
+		}
+
+		// Uno-specific: held by the binding only, so a binding dropped without being disposed doesn't leave its handler on
+		// the source: the finalizer removes it, on the UI thread since the source isn't required to be thread-safe.
+		private sealed class PropertyChangedSubscription : IDisposable
+		{
+			private INotifyPropertyChanged? _source;
+			private readonly PropertyChangedEventHandler _handler;
+			private readonly ManagedWeakReference _newValueActionWeak;
+
+			public PropertyChangedSubscription(INotifyPropertyChanged source, PropertyChangedEventHandler handler, ManagedWeakReference newValueActionWeak)
+			{
+				_source = source;
+				_handler = handler;
+				_newValueActionWeak = newValueActionWeak;
+			}
+
+			public void Dispose()
+			{
+				GC.SuppressFinalize(this);
+
+				if (Interlocked.Exchange(ref _source, null) is { } source)
+				{
+					source.PropertyChanged -= _handler;
+					Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, _newValueActionWeak);
+				}
+			}
+
+			// Doesn't return the weak reference to the pool: its handles may already be finalized.
+			~PropertyChangedSubscription()
+			{
+				if (Interlocked.Exchange(ref _source, null) is not { } source)
+				{
+					return;
+				}
+
+				var handler = _handler;
+				try
+				{
+					NativeDispatcher.Main.Enqueue(() =>
+					{
+						try
+						{
+							source.PropertyChanged -= handler;
+						}
+						catch (Exception e)
+						{
+							if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+							{
+								typeof(BindingPath).Log().Error($"Failed to remove the PropertyChanged handler of a collected binding from {source.GetType()}", e);
+							}
+						}
+					});
+				}
+				catch (Exception e)
+				{
+					// An exception escaping a finalizer terminates the process, even one thrown by the logger.
+					try
+					{
+						if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+						{
+							typeof(BindingPath).Log().Error("Failed to schedule the removal of the PropertyChanged handler of a collected binding", e);
+						}
+					}
+					catch
+					{
+					}
+				}
+			}
 		}
 
 		internal bool OnlyLeafNodeNull()
