@@ -60,6 +60,34 @@ public class Given_IcuDataSplitTask
 		}
 	}
 
+	[TestMethod]
+	public void When_Outputs_Up_To_Date_Then_Not_Rewritten()
+	{
+		var folder = Directory.CreateTempSubdirectory("uno-icu-split-");
+		try
+		{
+			var (startupPath, dictionariesPath) = RunTask(folder);
+			var stamp = File.GetLastWriteTimeUtc(Path.Combine(folder.FullName, "icudt.dat")).AddMinutes(1);
+			File.SetLastWriteTimeUtc(startupPath, stamp);
+			File.SetLastWriteTimeUtc(dictionariesPath, stamp);
+
+			new IcuDataSplitTask_v0
+			{
+				BuildEngine = new RecordingBuildEngine(),
+				SourcePath = Path.Combine(folder.FullName, "icudt.dat"),
+				StartupOutputPath = startupPath,
+				DictionariesOutputPath = dictionariesPath,
+			}.Execute().Should().BeTrue();
+
+			File.GetLastWriteTimeUtc(startupPath).Should().Be(stamp, "a rewritten embedded resource recompiles the app");
+			File.GetLastWriteTimeUtc(dictionariesPath).Should().Be(stamp);
+		}
+		finally
+		{
+			folder.Delete(recursive: true);
+		}
+	}
+
 	private static (IReadOnlyList<IcuDataEntry> Startup, IReadOnlyList<IcuDataEntry> Dictionaries) Split()
 	{
 		var folder = Directory.CreateTempSubdirectory("uno-icu-split-");
