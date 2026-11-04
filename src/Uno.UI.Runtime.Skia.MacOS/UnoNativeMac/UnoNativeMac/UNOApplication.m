@@ -3,6 +3,7 @@
 //
 
 #import "UNOApplication.h"
+#import "UNOWindow.h"
 
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
@@ -213,11 +214,14 @@ bool uno_application_is_bundled(void)
     return NSRunningApplication.currentApplication.bundleIdentifier != nil;
 }
 
+static bool application_exit_requested;
+
 void uno_application_quit(void)
 {
 #if DEBUG
     NSLog(@"uno_application_quit");
 #endif
+    application_exit_requested = true;
     NSApplication *app = [NSApplication sharedApplication];
     [app terminate:app];
 }
@@ -240,7 +244,22 @@ void uno_application_quit(void)
     NSLog(@"UNOApplicationDelegate.applicationShouldTerminate %@", sender);
 #endif
     // Check if the application can exit (ICoreApplicationExtension.CanExit)
-    return uno_get_application_can_exit_callback()() ? NSTerminateNow : NSTerminateCancel;
+    if (!uno_get_application_can_exit_callback()()) {
+        return NSTerminateCancel;
+    }
+
+    // `Application.Exit()` ends the application without asking its windows, as on WinUI
+    if (application_exit_requested) {
+        return NSTerminateNow;
+    }
+
+    // Any other quit (Cmd+Q, the application menu, the Dock, a logout) closes the windows as the user would, so
+    // `AppWindow.Closing` can cancel it and `Closed` runs; then `DispatcherShutdownMode` decides, as after the last window
+    if (!uno_windows_close_all()) {
+        return NSTerminateCancel;
+    }
+
+    return [self applicationShouldTerminateAfterLastWindowClosed:sender] ? NSTerminateNow : NSTerminateCancel;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
