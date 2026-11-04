@@ -44,7 +44,7 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 		Func<IdeChannelClient?> ideChannelAccessor,
 		string packageVersion,
 		string ideVersion,
-		Action<string>? debugLog = null)
+		Action<string>? debugLog)
 	{
 		var c = new VsAppLaunchStateConsumer(package, stateService, ideChannelAccessor, packageVersion, ideVersion, debugLog);
 		await c.InitializeAsync();
@@ -59,7 +59,7 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 	{
 		var packageVersion = typeof(VsAppLaunchStateConsumer).Assembly.GetName().Version?.ToString() ?? string.Empty;
 		var ideVersion = "vswin";
-		return CreateAsync(package, stateService, ideChannelAccessor, packageVersion, ideVersion);
+		return CreateAsync(package, stateService, ideChannelAccessor, packageVersion, ideVersion, debugLog: null);
 	}
 
 	private Task InitializeAsync()
@@ -87,12 +87,14 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 			var targetPath = await GetTargetPathAsync(details.StartupProjectPath);
 			if (targetPath == null || !File.Exists(targetPath))
 			{
+				Log($"[AppLaunch] Launch not registered: no built TargetPath ({targetPath ?? "none found"})");
 				return;
 			}
 
 			var (mvid, platform) = AssemblyInfoReader.Read(targetPath);
 			if (mvid == Guid.Empty || string.IsNullOrEmpty(platform))
 			{
+				Log($"[AppLaunch] Launch not registered: {targetPath} has no MVID or TargetPlatform");
 				return;
 			}
 
@@ -101,11 +103,16 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 			{
 				var message = new AppLaunchRegisterIdeMessage(mvid, platform, isDebug, _ideVersion, _packageVersion);
 				await ideChannel.SendToDevServerAsync(message, CancellationToken.None);
+				Log($"[AppLaunch] Sent the launch registration to the IDE channel: mvid={mvid} platform={platform} isDebug={isDebug}");
+			}
+			else
+			{
+				Log($"[AppLaunch] Launch not registered: {(ideChannel is null ? "no IDE channel" : "the launch has no IsDebug value")}");
 			}
 		}
-		catch
+		catch (Exception e)
 		{
-			// swallow
+			Log($"[AppLaunch] Launch not registered: {e}");
 		}
 	}
 
@@ -138,16 +145,16 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 						var targetPath = await projectProperties.GetEvaluatedPropertyValueAsync("TargetPath");
 						if (!string.IsNullOrEmpty(targetPath))
 						{
-							_debugLog?.Invoke($"[AppLaunch] Registering {targetPath} from the {(launchedProject is null ? "suggested" : "active debug framework's")} configured project");
+							Log($"[AppLaunch] Selected TargetPath {targetPath} from the {(launchedProject is null ? "suggested" : "active debug framework's")} configured project");
 							return targetPath;
 						}
 					}
 				}
 			}
 		}
-		catch
+		catch (Exception e)
 		{
-			// ignore
+			Log($"[AppLaunch] Failed to read the TargetPath: {e}");
 		}
 
 		return null;
@@ -166,23 +173,56 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 			var servicesType = Type.GetType("Microsoft.VisualStudio.ProjectSystem.Debug.IActiveDebugFrameworkServices, Microsoft.VisualStudio.ProjectSystem.Managed");
 			var exportProvider = unconfiguredProject.Services.ActiveConfiguredProjectProvider?.ActiveConfiguredProject?.Services.ExportProvider;
 
-			if (servicesType is not null
-				&& exportProvider is not null
-				&& typeof(MefExtensions).GetMethods().FirstOrDefault(m => m.Name == "GetService") is { } getServiceMethod
-				&& getServiceMethod.MakeGenericMethod(servicesType).Invoke(null, [exportProvider, /*allow default*/true]) is { } services
-				&& servicesType.GetMethod("GetConfiguredProjectForActiveFrameworkAsync")?.Invoke(services, []) is Task<ConfiguredProject> getConfiguredProject)
+			string failure;
+			if (servicesType is null)
 			{
-				return await getConfiguredProject;
+				failure = "IActiveDebugFrameworkServices was not found";
+			}
+			else if (exportProvider is null)
+			{
+				failure = "the project has no active configured project";
+			}
+			else if (typeof(MefExtensions).GetMethods().FirstOrDefault(m => m.Name == "GetService") is not { } getServiceMethod)
+			{
+				failure = "MefExtensions.GetService was not found";
+			}
+			else if (getServiceMethod.MakeGenericMethod(servicesType).Invoke(null, [exportProvider, /*allow default*/true]) is not { } services)
+			{
+				failure = $"IActiveDebugFrameworkServices is not exported (type loaded from {servicesType.Assembly.Location})";
+			}
+			else if (servicesType.GetMethod("GetConfiguredProjectForActiveFrameworkAsync")?.Invoke(services, []) is not Task<ConfiguredProject> getConfiguredProject)
+			{
+				failure = "GetConfiguredProjectForActiveFrameworkAsync was not found";
+			}
+			else if (await getConfiguredProject is { } configuredProject)
+			{
+				return configuredProject;
+			}
+			else
+			{
+				failure = "GetConfiguredProjectForActiveFrameworkAsync returned none";
 			}
 
-			_debugLog?.Invoke($"[AppLaunch] The active debug framework's configured project is unavailable (service type from {servicesType?.Assembly.Location ?? "nowhere"})");
+			Log($"[AppLaunch] No configured project for the active debug framework: {failure}");
 		}
 		catch (Exception e)
 		{
-			_debugLog?.Invoke($"[AppLaunch] Failed to get the active debug framework's configured project: {e.GetBaseException().Message}");
+			Log($"[AppLaunch] No configured project for the active debug framework: {e}");
 		}
 
 		return null;
+	}
+
+	private void Log(string message)
+	{
+		try
+		{
+			_debugLog?.Invoke(message);
+		}
+		catch
+		{
+			// A failure to log must not stop the launch registration
+		}
 	}
 
 	private static async Task<UnconfiguredProject?> GetUnconfiguredProjectAsync(
