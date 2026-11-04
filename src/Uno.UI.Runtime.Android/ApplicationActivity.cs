@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -44,6 +45,7 @@ namespace Uno.UI.Runtime.Android
 		private InputPane _inputPane;
 
 		private bool _started;
+		private bool _resumed;
 		private bool _isContentViewSet;
 
 		private NativeWindowWrapper? _wrapper;
@@ -410,20 +412,41 @@ namespace Uno.UI.Runtime.Android
 		/// <summary>
 		/// Takes the window back from a copy of this activity that an intent stacked on top in the standard launch
 		/// mode, once that copy is finishing, rather than let the window close with it. Runs from OnStart, and from
-		/// OnResume for a copy finished before this activity was stopped.
+		/// OnResume for a copy finished before this activity was stopped. Once resumed, it also takes the window from
+		/// a copy that is not, such as one left in another task when the user switched back here through Recents.
 		/// </summary>
-		private void TryReclaimWindow()
+		private void TryReclaimWindow(bool resuming = false)
 		{
-			if (!_started || _wrapper is not { CurrentActivity: { IsFinishing: true } owner } wrapper || ReferenceEquals(owner, this))
+			if (!_started || _wrapper is not { CurrentActivity: { } owner } wrapper || ReferenceEquals(owner, this))
 			{
 				return;
 			}
 
+			if (owner.IsFinishing || (resuming && !owner._resumed))
+			{
+				TakeWindow(wrapper);
+			}
+		}
+
+		private void TakeWindow(NativeWindowWrapper wrapper)
+		{
 			wrapper.CurrentActivity = this;
 			ConfigureAccessibilityHelpers();
 			AdoptNativeElements(wrapper.Window);
 			InvalidateRender();
 		}
+
+		/// <summary>
+		/// The most recently active copy of this activity, other than this one, still alive and sharing <paramref name="wrapper"/>.
+		/// </summary>
+		private ApplicationActivity? FindLiveSibling(NativeWindowWrapper wrapper)
+			=> Instances.Values
+				.OfType<ApplicationActivity>()
+				.Where(activity => !ReferenceEquals(activity, this)
+					&& ReferenceEquals(activity._wrapper, wrapper)
+					&& !activity.IsDestroyed
+					&& !activity.IsFinishing)
+				.MaxBy(activity => activity.LastActivation);
 
 		private void ConfigureAccessibilityHelpers()
 		{
@@ -599,7 +622,8 @@ namespace Uno.UI.Runtime.Android
 
 		protected override void OnResume()
 		{
-			TryReclaimWindow();
+			_resumed = true;
+			TryReclaimWindow(resuming: true);
 
 			base.OnResume();
 
@@ -620,6 +644,7 @@ namespace Uno.UI.Runtime.Android
 
 		protected override void OnPause()
 		{
+			_resumed = false;
 			base.OnPause();
 
 			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
@@ -673,9 +698,18 @@ namespace Uno.UI.Runtime.Android
 			// StartActivity/Finish restart idiom the successor has already taken the wrapper.
 			if (IsFinishing && _wrapper is { } wrapper && ReferenceEquals(wrapper.CurrentActivity, this))
 			{
-				wrapper.OnNativeClosed();
-				wrapper.XamlRootHost?.Dispose();
-				wrapper.XamlRootHost = null;
+				// A copy still alive that did not reclaim the window first, such as one in another task that won't
+				// come back to the foreground, takes it over rather than let it close.
+				if (FindLiveSibling(wrapper) is { } sibling)
+				{
+					sibling.TakeWindow(wrapper);
+				}
+				else
+				{
+					wrapper.OnNativeClosed();
+					wrapper.XamlRootHost?.Dispose();
+					wrapper.XamlRootHost = null;
+				}
 			}
 		}
 
