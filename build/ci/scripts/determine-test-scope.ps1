@@ -4,7 +4,7 @@ Determines which optional CI test scopes must run for a pull request based on th
 
 .DESCRIPTION
 This script inspects the diff between the PR head and its target branch to figure out which
-optional test stages (template tests, the screenshot comparison and tvOS) should execute. It sets
+optional test stages (template tests, the screenshot comparison, iOS and tvOS) should execute. It sets
 Azure DevOps variables (both standard and task output) for each scope so subsequent stages can
 conditionally run.
 
@@ -25,7 +25,7 @@ $scopeVariables = [ordered]@{
     TemplateTestsRequired = $false
     ScreenshotsRequired   = $false
     WebGpuTestsRequired   = $false
-    TvOSTestsRequired     = $false
+    UIKitTestsRequired    = $false
 }
 
 # Heuristics:
@@ -35,16 +35,22 @@ $scopeVariables = [ordered]@{
 #                           that could affect rendered output.
 #   WebGpuTestsRequired   - the WebGPU backend, its native packaging and loaders, or the runtime-test
 #                           infrastructure. Gates every WebGPU lane but Linux's, which always runs.
-#   TvOSTestsRequired     - Apple-specific code or tvOS CI plumbing. tvOS shares the Skia layer with
-#                           iOS, which runs on every PR, so other changes are covered there. Also
-#                           matches PascalCase names (iOSResourceConverter) and the files that gate
-#                           the tvOS stage, so a change to the gate runs the lane it gates.
+#   UIKitTestsRequired    - iOS/tvOS code, the Apple toolchain (Xcode image, SDK, workloads) or the
+#                           iOS/tvOS CI plumbing. Gates the iOS and tvOS stages, which run on
+#                           per-minute Mac agents; other changes get them on master. Matches
+#                           PascalCase names (iOSResourceConverter) and the files that gate these
+#                           lanes, so a change to the gate runs the lanes it gates. Shared files
+#                           are caught by their changed lines instead (see $uikitContentPattern).
 $patterns = @{
     TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
     ScreenshotsRequired   = [regex]'(?i)^src/(uno\.ui|addins).*\.cs$'
     WebGpuTestsRequired   = [regex]'(?i)(?:webgpu|wgpu|^build/ci/tests/|^build/test-scripts/)'
-    TvOSTestsRequired     = [regex]'(?i)(?:^|[/._-])(?:tvos|ios|uikit|appleuikit|apple)(?:[/._-]|$)|(?:^|[/._-])(?-i:iOS|tvOS|UIKit|Apple)(?-i:[A-Z])|^build/ci/\.azure-devops-stages\.yml$|^build/ci/tests/\.azure-devops-tests-runtime-stages\.yml$|^build/ci/scripts/determine-test-scope\.ps1$'
+    UIKitTestsRequired    = [regex]'(?i)(?:^|[/._-])(?:tvos|ios|uikit|appleuikit|apple)(?:[/._-]|$)|(?:^|[/._-])(?-i:iOS|tvOS|UIKit|Apple)(?-i:[A-Z])|^\.vsts-ci\.yml$|(?:^|/)_?global\.json$|^build/ci/templates/(?:dotnet-mobile-install-mac|ios-build-select-version|mac-rerun-limit)\.yml$|^build/ci/\.azure-devops-stages\.yml$|^build/ci/tests/\.azure-devops-tests-runtime-stages\.yml$|^build/ci/scripts/determine-test-scope\.ps1$'
 }
+
+# iOS/tvOS-only code in shared files: platform conditionals, OperatingSystem checks and iOS-only
+# runtime tests. git's -G matches these in the PR's added or removed lines.
+$uikitContentPattern = '__IOS__|__APPLE_UIKIT__|__TVOS__|IsIOS\(\)|IsTvOS\(\)|IsMacCatalyst\(\)|Skia(IOS|UIKit|TvOS)'
 
 function Set-TestScopeVariable {
     param(
@@ -122,6 +128,18 @@ foreach ($file in $changedFiles) {
             Write-Host "File '$normalized' matches pattern for $($scope.Key)."
             $scopeVariables[$scope.Key] = $true
         }
+    }
+}
+
+if (-not $scopeVariables['UIKitTestsRequired']) {
+    $uikitFiles = @(git diff --name-only "-G$uikitContentPattern" FETCH_HEAD..HEAD | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    if ($LASTEXITCODE -ne 0) {
+        Write-Warning "Unable to search the diff for iOS/tvOS code. Enabling UIKitTestsRequired."
+        $scopeVariables['UIKitTestsRequired'] = $true
+        $global:LASTEXITCODE = 0
+    } elseif ($uikitFiles.Count -gt 0) {
+        Write-Host "Changed lines in '$($uikitFiles[0])' match iOS/tvOS code for UIKitTestsRequired."
+        $scopeVariables['UIKitTestsRequired'] = $true
     }
 }
 
