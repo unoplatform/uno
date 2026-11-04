@@ -650,11 +650,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is not null)
 			{
-				m_itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
-				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-				{
-					m_itemsSourceView.CollectionChanged -= OnItemsSourceViewChanged;
-				});
+				_dataSourceSubscriptionsRevoker.Disposable = SubscribeToItemsSourceView(m_itemsSourceView, this);
 			}
 
 			// Uno-specific: re-supply the effective provider so layout-provided defaults survive an
@@ -702,6 +698,29 @@ namespace Microsoft.UI.Xaml.Controls
 			_stackLayoutMeasureCounter = 0u;
 		}
 
+		// Uno-specific: holds the repeater weakly, like WinUI's raw-'this' delegate, since a repeater that never loads
+		// never unloads to remove it. Static so the handler cannot capture the repeater.
+		private static IDisposable SubscribeToItemsSourceView(ItemsSourceView view, ItemsRepeater repeater)
+		{
+			var weakRepeater = new WeakReference<ItemsRepeater>(repeater);
+			NotifyCollectionChangedEventHandler handler = null;
+			handler = (sender, args) =>
+			{
+				if (weakRepeater.TryGetTarget(out var target))
+				{
+					target.OnItemsSourceViewChanged(sender, args);
+				}
+				else
+				{
+					// ItemsSourceView raises over a snapshot of its handlers, so removing this one here is safe.
+					view.CollectionChanged -= handler;
+				}
+			};
+
+			view.CollectionChanged += handler;
+			return Disposable.Create(() => view.CollectionChanged -= handler);
+		}
+
 		private void OnDataSourcePropertyChanged(ItemsSourceView oldValue, ItemsSourceView newValue)
 		{
 			if (m_isLayoutInProgress)
@@ -718,11 +737,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (newValue != null)
 			{
-				newValue.CollectionChanged += OnItemsSourceViewChanged;
-				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-				{
-					newValue.CollectionChanged -= OnItemsSourceViewChanged;
-				});
+				_dataSourceSubscriptionsRevoker.Disposable = SubscribeToItemsSourceView(newValue, this);
 			}
 
 			var layout = Layout;
