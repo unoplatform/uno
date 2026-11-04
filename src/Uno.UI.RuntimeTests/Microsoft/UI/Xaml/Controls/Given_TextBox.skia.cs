@@ -8217,6 +8217,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(expectedCaret, SUT.CaretMode, "scrolling away must not disturb the touch caret");
 		}
 
+		// Replacing content under a focused TextBox, as a page navigation does, hands focus to the next one a frame
+		// or more after the first lost it. Hiding the keyboard in between makes the IME restart its view, and each
+		// restart raises InputPane.Showing again, bringing the focused element back into view.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+		[Ignore("Reads internal keyboard state through reflection, which NativeAOT trims away.")]
+#endif
+		[System.Diagnostics.CodeAnalysis.DynamicDependency("get_HideRequestCount", "Uno.UI.Runtime.Android.TextInputPlugin", "Uno.UI.Runtime.Android")]
+		[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "The assembly only exists on Android, the only platform this test runs on.")]
+		public async Task When_Focused_TextBox_Replaced_By_Another_Then_Keyboard_Is_Not_Hidden()
+		{
+			var first = new TextBox { Width = 200, Text = "first" };
+			await UITestHelper.Load(first);
+			Assert.IsTrue(first.Focus(FocusState.Pointer), "The first TextBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+
+			var hides = GetKeyboardHideCount();
+
+			var second = new TextBox { Width = 200, Text = "second" };
+			await UITestHelper.Load(second);
+			Assert.IsTrue(second.Focus(FocusState.Pointer), "The second TextBox failed to take focus.");
+
+			// Past the deferral a hide would have waited out.
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(hides, GetKeyboardHideCount(), "The keyboard was hidden while focus moved to the other TextBox.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+		[Ignore("Reads internal keyboard state through reflection, which NativeAOT trims away.")]
+#endif
+		[System.Diagnostics.CodeAnalysis.DynamicDependency("get_HideRequestCount", "Uno.UI.Runtime.Android.TextInputPlugin", "Uno.UI.Runtime.Android")]
+		[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "The assembly only exists on Android, the only platform this test runs on.")]
+		public async Task When_Focused_TextBox_Removed_Then_Keyboard_Is_Hidden()
+		{
+			var textBox = new TextBox { Width = 200, Text = "text" };
+			await UITestHelper.Load(textBox);
+			Assert.IsTrue(textBox.Focus(FocusState.Pointer), "The TextBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+
+			var hides = GetKeyboardHideCount();
+
+			await UITestHelper.Load(new Border { Width = 100, Height = 100 });
+
+			await WindowHelper.WaitFor(
+				() => GetKeyboardHideCount() > hides,
+				timeoutMS: 2000,
+				message: "The keyboard was not hidden once no TextBox took the focus over.");
+		}
+
+		private static int GetKeyboardHideCount()
+			=> (int)Type.GetType("Uno.UI.Runtime.Android.TextInputPlugin, Uno.UI.Runtime.Android")!
+				.GetProperty("HideRequestCount", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!
+				.GetValue(null)!;
+
 		private static async Task WaitForAndroidInputPanePositioning()
 		{
 			if (RuntimeTestsPlatformHelper.CurrentPlatform == RuntimeTestPlatforms.SkiaAndroid)
