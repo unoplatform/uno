@@ -63,7 +63,7 @@
 	</Target>
 
 	<!--
-		The `webview` feature's `Microsoft.Web.WebView2` package pulls in the WPF-specific
+		An explicit `Microsoft.Web.WebView2` reference pulls in the WPF-specific
 		Microsoft.Web.WebView2.Wpf reference even on a plain (non-WPF) desktop head; strip it
 		by default. Set `UnoDisableWebView2Workarounds` to keep it.
 	-->
@@ -80,8 +80,8 @@
 	</Target>
 
 	<!--
-		Workarounds for manual inclusion of WebView2's files which prevent 
-		`PackageReference.Aliases` from being used.
+		The package adds its managed references by hand, so `PackageReference.Aliases` never reaches
+		Microsoft.Web.WebView2.Core; apply it here so it doesn't clash with Uno's own Microsoft.Web.WebView2.Core types.
 	-->
 	<Target Name="_UnoWebView2Workaround"
 			AfterTargets="ResolveAssemblyReferences"
