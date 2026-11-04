@@ -203,7 +203,8 @@ internal static class FontDetailsCache
 					: $"{key} could not be found, using system default");
 			}
 
-			font = FontProvider.MatchFamily(FeatureConfiguration.Font.DefaultTextFontFamily, weight, stretch, style, fontSize)
+			font = (canChange ? TryCreateFromLoadedNormalFace(name, weight, stretch, style, fontSize) : null)
+				?? FontProvider.MatchFamily(FeatureConfiguration.Font.DefaultTextFontFamily, weight, stretch, style, fontSize)
 				?? FontProvider.GetDefaultFont(weight, stretch, style, fontSize);
 		}
 
@@ -211,6 +212,32 @@ internal static class FontDetailsCache
 		var detailsTask = AwaitDetails(fontTask, details, key, fontSize);
 		return (details, detailsTask);
 	});
+
+	/// <summary>
+	/// While a face of a URI family is still loading, renders with the family's already-loaded normal face, so the
+	/// text keeps its typeface (only its weight or style catches up) instead of flashing a system font.
+	/// </summary>
+	private static IFont? TryCreateFromLoadedNormalFace(string name, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+	{
+		var hashIndex = name.IndexOf('#');
+		var source = hashIndex > 0 ? name.Substring(0, hashIndex) : name;
+		if (!Uri.TryCreate(source, UriKind.Absolute, out var uri))
+		{
+			return null;
+		}
+
+		IFontFile? normalFace;
+		lock (_fontDataGate)
+		{
+			if (!_manifestUriCache.TryGetValue((uri.OriginalString, Microsoft.UI.Text.FontWeights.Normal.Weight, FontStyle.Normal, FontStretch.Normal), out var normalUri)
+				|| !_fontFileByUri.TryGetValue(normalUri.OriginalString, out normalFace))
+			{
+				return null;
+			}
+		}
+
+		return normalFace.CreateFont(hashIndex > 0 ? name.Substring(hashIndex + 1) : null, weight, stretch, style, fontSize);
+	}
 
 	private static async Task<FontDetails> AwaitDetails(Task<IFont?> task, FontDetails fallback, FontEntry key, float fontSize)
 	{
