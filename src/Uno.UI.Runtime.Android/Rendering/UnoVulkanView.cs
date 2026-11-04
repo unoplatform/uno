@@ -255,10 +255,10 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
 		_context = init.Context;
 		Volatile.Write(ref _renderer, init.Renderer);
-		_activity.OnRendererAvailable();
 		// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
 			init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;
+		_activity.OnRendererAvailable();
 
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
