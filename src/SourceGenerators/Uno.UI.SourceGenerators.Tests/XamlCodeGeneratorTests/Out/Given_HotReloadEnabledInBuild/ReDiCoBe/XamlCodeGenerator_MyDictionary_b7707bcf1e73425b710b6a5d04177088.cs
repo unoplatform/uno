@@ -105,6 +105,11 @@ namespace MyProject
 						{
 							IsParsing = true,
 						}
+						.GenericApply(((__p1) => 
+						{
+						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MyDictionary.xaml#L1:2");
+						}
+						))
 						;
 						_MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/C:/Project/0/MyDictionary.xaml");
 						_MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary.CreationComplete();
