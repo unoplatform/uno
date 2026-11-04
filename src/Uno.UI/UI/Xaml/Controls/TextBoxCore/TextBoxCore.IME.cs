@@ -66,6 +66,12 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 	void IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
 	{
+		if (IsNativeEchoOfCurrentSelection(selectionStart, selectionLength)
+			&& string.Equals(text, Text.Replace('\r', '\n'), StringComparison.Ordinal))
+		{
+			return;
+		}
+
 		// Pending so the text change itself lands the caret here instead of passing through 0.
 		SetPendingSelection(selectionStart, selectionLength);
 		ProcessTextInput(text);
@@ -73,7 +79,17 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 	}
 
 	void IImeSessionHost.SelectFromNative(int selectionStart, int selectionLength)
-		=> Select(selectionStart, selectionLength);
+	{
+		if (!IsNativeEchoOfCurrentSelection(selectionStart, selectionLength))
+		{
+			Select(selectionStart, selectionLength);
+		}
+	}
+
+	// Native selections are normalized and can't tell which end the caret is on, so re-applying an echo
+	// of the current range would flip a backward selection forward.
+	private bool IsNativeEchoOfCurrentSelection(int selectionStart, int selectionLength)
+		=> selectionStart == _selection.start && selectionLength == _selection.length;
 
 	bool IImeSessionHost.RaisePaste()
 	{
