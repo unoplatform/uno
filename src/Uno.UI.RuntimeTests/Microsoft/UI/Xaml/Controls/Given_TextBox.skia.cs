@@ -8233,10 +8233,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					}
 
 					// The CI emulator can accept the request yet never show a keyboard. Cancel it so it can't
-					// open (and bring the caret back into view) in the middle of the pan.
+					// open (and bring the caret back into view) in the middle of the pan. InputPane.TryHide
+					// no-ops while the pane isn't visible, so go to the platform directly.
 					if (!inputPane.Visible)
 					{
-						inputPane.TryHide();
+						Console.WriteLine($"{nameof(WaitForAndroidInputPanePositioning)}: the input pane didn't open within 5s, hiding it and continuing without a keyboard.");
+						if (ApiExtensibility.CreateInstance<IInputPaneExtension>(inputPane, out var inputPaneExtension))
+						{
+							inputPaneExtension.TryHide();
+						}
 					}
 
 					await UITestHelper.WaitForRender();
@@ -11182,6 +11187,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[DataRow(false)]
 		[DataRow(true)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26010")]
 		public async Task When_IME_Echoes_Backward_Selection_Then_Direction_Kept(bool withText)
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -11213,6 +11219,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
 			Assert.IsTrue(SUT.IsBackwardSelection, "an IME echo of the current range must not reverse it");
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart, "the caret should still be at the start, so Shift+Right shrinks the selection from there");
+			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionLength);
+		}
+
+		// An Android composing-region change raises a platform-applied update even when the text is unchanged. The
+		// echo that follows must not leave the app's next Text assignment treated as platform-applied.
+		[TestMethod]
+		public async Task When_IME_Echo_After_Platform_Applied_Update_Then_External_Text_Cancels_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var host = (IImeSessionHost)SUT.Core;
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni", textAlreadyApplied: true);
+			host.UpdateTextFromNative("ni", 2, 0);
+			fake.SimulateCompositionUpdate("ni", textAlreadyApplied: true);
+			host.UpdateTextFromNative("ni", 2, 0);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsComposing);
+
+			SUT.Text = "replaced";
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("replaced", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing, "an app-assigned Text must cancel the composition");
 		}
 
 		private class FakeImeTextBoxExtension : IImeTextBoxExtension
