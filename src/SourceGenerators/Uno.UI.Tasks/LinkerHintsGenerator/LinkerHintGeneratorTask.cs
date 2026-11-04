@@ -240,9 +240,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			{
 				foreach (var type in asm.MainModule.Types)
 				{
-					// Search for dependency object types that are still available after the current
-					// linker pass.
-					if (IsDependencyObject(type))
+					// Search for dependency object types that can still be created after the current
+					// linker pass. A surviving TypeDef alone (e.g. kept by an `is` check) is not enough:
+					// its hint would let the bindable metadata construct it and keep its whole implementation.
+					if (CanBeCreated(type) && IsDependencyObject(type))
 					{
 						features[LinkerHintsHelpers.GetPropertyAvailableName(type.FullName)] = "true";
 					}
@@ -275,6 +276,13 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			return features;
 		}
 
+
+		/// <summary>
+		/// Abstract types stay available so their derived types' hints can hold; a concrete type only
+		/// counts once the pass kept one of its instance constructors.
+		/// </summary>
+		public static bool CanBeCreated(TypeDefinition type)
+			=> type.IsAbstract || type.Methods.Any(m => m.IsConstructor && !m.IsStatic);
 
 		private bool IsDependencyObject(TypeDefinition type)
 		{
