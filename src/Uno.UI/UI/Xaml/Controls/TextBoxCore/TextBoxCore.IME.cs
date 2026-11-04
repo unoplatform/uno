@@ -67,8 +67,14 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 	void IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
 	{
 		if (IsNativeEchoOfCurrentSelection(selectionStart, selectionLength)
-			&& string.Equals(text, Text.Replace('\r', '\n'), StringComparison.Ordinal))
+			&& IsNativeEchoOfCurrentText(text))
 		{
+			// ProcessTextInput is skipped, so clear what its finally would have.
+			if (!_isInputModifyingText)
+			{
+				_platformTextApplyInProgress = false;
+			}
+
 			return;
 		}
 
@@ -90,6 +96,27 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 	// of the current range would flip a backward selection forward.
 	private bool IsNativeEchoOfCurrentSelection(int selectionStart, int selectionLength)
 		=> selectionStart == _selection.start && selectionLength == _selection.length;
+
+	// Native text reports line breaks as '\n'; compares without allocating a normalized copy per keystroke.
+	private bool IsNativeEchoOfCurrentText(string text)
+	{
+		var current = Text;
+		if (text.Length != current.Length)
+		{
+			return false;
+		}
+
+		for (var i = 0; i < current.Length; i++)
+		{
+			var c = current[i] == '\r' ? '\n' : current[i];
+			if (c != text[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 	bool IImeSessionHost.RaisePaste()
 	{
