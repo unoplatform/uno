@@ -214,6 +214,13 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			AssertHasEvent(events, "uno/dev-server/app-launch/launched");
 			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
 
+			// The connection must be paired with the launch the IDE registered.
+			AssertEventHasProperty(
+				events,
+				"uno/dev-server/app-launch/connected",
+				"WasIdeInitiated",
+				"True");
+
 			helper.ConsoleOutput.Length.Should().BeGreaterThan(0, "Dev server should produce some output");
 		}
 		finally

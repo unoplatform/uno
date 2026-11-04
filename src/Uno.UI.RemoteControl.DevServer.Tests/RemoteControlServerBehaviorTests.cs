@@ -235,6 +235,38 @@ public class RemoteControlServerBehaviorTests
 		launchMonitor.Registrations.Should().HaveCount(2, "a disposed devserver must stop listening to an IDE channel that outlives it");
 	}
 
+	// A provider supplied through ServiceProviderFactory may not dispose its singletons, so the devserver must unsubscribe itself.
+	[TestMethod]
+	public async Task InProcessDevServer_ShouldStopRegisteringIdeLaunches_WhenItsProviderDoesNotDisposeSingletons()
+	{
+		var ideChannel = new TestIdeChannel();
+		var launchMonitor = new FakeLaunchMonitor();
+		ServiceProvider? innerProvider = null;
+		var devserver = ServerCoreInProcessDevServer.Create(options =>
+		{
+			options.IdeChannel = ideChannel;
+			options.ApplicationLaunchMonitor = launchMonitor;
+			options.ProcessorFactoryFactory = sp => new TestProcessorFactory(sp);
+			options.ServiceProviderFactory = services => new NonDisposingServiceProvider(innerProvider = services.BuildServiceProvider());
+		});
+
+		try
+		{
+			await devserver.DisposeAsync();
+
+			ideChannel.Emit(CreateIdeLaunch());
+
+			launchMonitor.Registrations.Should().BeEmpty();
+		}
+		finally
+		{
+			if (innerProvider is not null)
+			{
+				await innerProvider.DisposeAsync();
+			}
+		}
+	}
+
 	// Ensures RemoteControlServerHost creates independent DI scopes per connection and disposes transports deterministically.
 	[TestMethod]
 	public async Task RemoteControlServerHost_ShouldIsolateScopesAndDisposeTransport()
@@ -679,6 +711,19 @@ public class RemoteControlServerBehaviorTests
 	}
 
 	private sealed record TestIdeCommand() : IdeMessage(IdeRoutingProcessor.ScopeName);
+
+	private sealed class NonDisposingServiceProvider : IServiceProvider
+	{
+		private readonly IServiceProvider _inner;
+
+		public NonDisposingServiceProvider(IServiceProvider inner)
+		{
+			_inner = inner;
+		}
+
+		public object? GetService(Type serviceType)
+			=> _inner.GetService(serviceType);
+	}
 
 	private sealed class InMemoryRemoteControlConfiguration : ServerCoreConfiguration
 	{
