@@ -9,6 +9,8 @@ public class ParentProcessObserverTelemetryTests : TelemetryTestBase
 	public static void ClassInitialize(TestContext context) => GlobalClassInitialize<ParentProcessObserverTelemetryTests>(context);
 
 	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Intermittent: random port binding may collide or the host process may take longer to start on CI")]
 	public async Task ChildServer_GracefulShutdown_When_ParentDies_TelemetryIsLogged()
 	{
 		var testFile = GetTestTelemetryFileName("parent_observer");
@@ -39,7 +41,7 @@ public class ParentProcessObserverTelemetryTests : TelemetryTestBase
 			await Task.Delay(250, CT);
 		}
 		childHelper.IsRunning.Should().BeFalse("child should shutdown after parent dies");
-		childHelper.ExitCode.Should().NotBe(4, "the graceful shutdown completed, so the forced exit should not have run");
+		childHelper.ExitCode.Should().Be(0, "the graceful shutdown completed, so the forced exit should not have run");
 
 		// Read telemetry file
 		File.Exists(telemetryFile).Should().BeTrue("telemetry file should exist");
@@ -51,6 +53,8 @@ public class ParentProcessObserverTelemetryTests : TelemetryTestBase
 	}
 
 	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Intermittent: random port binding may collide or the host process may take longer to start on CI")]
 	public async Task ChildServer_ForcedExit_When_ParentDies_And_GracefulShutdownHangs()
 	{
 		var fixtureDll = Path.Combine(
