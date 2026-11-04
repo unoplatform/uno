@@ -64,6 +64,9 @@ variables:
   # macOS-26 has no iOS 26.1 simulator runtime: Select Xcode downloads it for the build jobs (actool
   # needs it), while the simulator tests use this Xcode, whose runtime is preinstalled.
   xCodeRootSimulator: '/Applications/Xcode_26.6.app'
+  # Apple Silicon image (GitHub-hosted Agents pool) for the iOS Skia tests, which push shards past
+  # their timeout on the Intel macOS-26 agents. It ships both Xcodes above.
+  macOSArm64VMImage: 'macos-26-arm64'
 
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline
