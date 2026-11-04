@@ -69,7 +69,6 @@
 				UnoCoreLoggingSingletonVersion="$(UnoCoreLoggingSingletonVersion)"
 				UnoDspTasksVersion="$(UnoDspTasksVersion)"
 				CommunityToolkitMvvmVersion="$(CommunityToolkitMvvmVersion)"
-				PrismVersion="$(PrismVersion)"
 				UnoReactorVersion="$(UnoReactorVersion)"
 				UnoFontsVersion="$(UnoFontsVersion)"
 				AndroidXNavigationVersion="$(AndroidXNavigationVersion)"
