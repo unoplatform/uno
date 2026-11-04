@@ -42,7 +42,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 		/// <summary>
 		/// Callback invoked when a registered application successfully connected.
 		/// The boolean parameter indicates whether the launch previously timed out (OnTimeout was invoked)
-		/// before the connection.
+		/// before the connection. The launch's IsDebug can differ from the one the connection reported.
 		/// </summary>
 		public Action<LaunchEvent, bool>? OnConnected { get; set; }
 
@@ -75,7 +75,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 		/// <summary>
 		/// How often the monitor runs a scavenging pass to remove very old entries.
-		/// Default: 1 minute.
+		/// Default: 5 minutes.
 		/// </summary>
 		public TimeSpan ScavengeInterval { get; set; } = TimeSpan.FromMinutes(5);
 	}
@@ -162,7 +162,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	/// <summary>
 	/// Register that an application was launched.
 	/// Automatically starts the timeout countdown from the current time provider value.
-	/// Multiple registrations for the same key are kept and consumed in FIFO order.
+	/// Multiple registrations for the same key are kept; <see cref="ReportConnection"/> says which one a connection takes.
 	/// </summary>
 	/// <param name="mvid">The MVID of the root/head application.</param>
 	/// <param name="platform">The platform used to run the application. Cannot be null or empty.</param>
@@ -204,9 +204,8 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 		{
 			try { pending.RetryTimer?.Dispose(); } catch { }
 			// Consume the launch event without invoking OnConnected to avoid double telemetry
-			if (TryDequeueLaunch(key, out var matched, out var wasTimedOut) && matched is not null)
+			if (TryDequeueLaunch(key, out var matched, out _))
 			{
-				// Don't invoke OnConnected; instead, classify the pending connection as IDE-initiated
 				ClassifyAsIdeInitiated(pending, matched);
 			}
 		}
@@ -270,7 +269,9 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 	/// <summary>
 	/// Reports an application successfully connecting back to development server.
-	/// If a matching registered launch exists, it consumes the oldest registration and the OnConnected callback is invoked for it.
+	/// If a registered launch with the same MVID and platform exists, it consumes one and invokes OnConnected for it:
+	/// the oldest launch with the same IsDebug that has not timed out, then the oldest with the other IsDebug that has
+	/// not timed out, then the oldest timed-out launch with the same IsDebug (OnConnected then reports it as timed out).
 	/// Cancels the timeout task for the connected launch.
 	/// </summary>
 	/// <param name="mvid">The MVID of the root/head application being connected.</param>
@@ -282,9 +283,8 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 		var key = new Key(mvid, platform, isDebug);
 
-		// Consume first the oldest pending event if present (registered launch).
-		// When consuming, cancel its timeout timer and invoke OnConnected with it.
-		if (TryDequeueLaunch(key, out var ev, out var wasTimedOut) && ev is not null)
+		// Consume a registered launch if one matches, cancelling its timeout timer, and invoke OnConnected with it.
+		if (TryDequeueLaunch(key, out var ev, out var wasTimedOut))
 		{
 			try
 			{
@@ -374,23 +374,24 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	}
 
 	/// <summary>
-	/// Removes the pending connection a newly registered launch matches: the exact key first, then the other IsDebug
-	/// value for a connection recent enough to belong to this launch.
+	/// Removes the pending connection a newly registered launch matches, in the same order as a connection takes a
+	/// launch: one within the timeout with the same IsDebug value, then with the other one; otherwise an older one with
+	/// the same IsDebug value.
 	/// </summary>
 	private PendingItem? TryTakePendingConnection(Key key)
 	{
-		if (_pendingConnections.TryRemove(key, out var pending))
-		{
-			return pending;
-		}
+		var cutoff = GetTimeoutCutoff();
+		return TryTakePendingConnection(key, cutoff)
+			?? TryTakePendingConnection(key.WithOtherIsDebug(), cutoff)
+			?? TryTakePendingConnection(key, DateTimeOffset.MinValue);
+	}
 
-		var otherKey = key.WithOtherIsDebug();
-		return _pendingConnections.TryGetValue(otherKey, out pending)
-			&& pending.ConnectedAt > GetTimeoutCutoff()
-			&& _pendingConnections.TryRemove(otherKey, out pending)
+	private PendingItem? TryTakePendingConnection(Key key, DateTimeOffset connectedAfter)
+		=> _pendingConnections.TryGetValue(key, out var pending)
+			&& pending.ConnectedAt > connectedAfter
+			&& _pendingConnections.TryRemove(key, out pending)
 				? pending
 				: null;
-	}
 
 	/// <summary>
 	/// Launches registered, or connections made, at or before this time are past the timeout.
@@ -454,7 +455,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	private void HandlePendingRetry(Key key)
 	{
 		// Try to find a launch now
-		if (TryDequeueLaunch(key, out var ev, out var wasTimedOut))
+		if (TryDequeueLaunch(key, out var ev, out _))
 		{
 			if (_pendingConnections.TryRemove(key, out var pending))
 			{

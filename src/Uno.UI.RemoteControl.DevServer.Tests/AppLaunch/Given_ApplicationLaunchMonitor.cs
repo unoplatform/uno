@@ -105,7 +105,7 @@ public class Given_ApplicationLaunchMonitor
 			out _,
 			out var timeouts,
 			out var connections,
-			out _,
+			out var connectionWasTimedOut,
 			timeout: TimeSpan.FromMilliseconds(500));
 		var mvid = Guid.NewGuid();
 
@@ -128,6 +128,7 @@ public class Given_ApplicationLaunchMonitor
 		timeouts.Should().HaveCount(1);
 		connections.Should().HaveCount(2);
 		connections[0].RegisteredAt.Should().BeOnOrBefore(connections[1].RegisteredAt);
+		connectionWasTimedOut.Should().Equal(false, false); // the two active ones, not the expired one
 	}
 
 	[TestMethod]
@@ -142,7 +143,7 @@ public class Given_ApplicationLaunchMonitor
 			out _,
 			out var timeouts,
 			out var connections,
-			out _,
+			out var connectionWasTimedOut,
 			timeout: TimeSpan.FromMilliseconds(100));
 		var mvid = Guid.NewGuid();
 
@@ -178,6 +179,7 @@ public class Given_ApplicationLaunchMonitor
 		{
 			connections[i - 1].RegisteredAt.Should().BeOnOrBefore(connections[i].RegisteredAt);
 		}
+		connectionWasTimedOut.Should().NotContain(true); // the active ones, not the expired ones
 	}
 
 	[TestMethod]
@@ -392,6 +394,85 @@ public class Given_ApplicationLaunchMonitor
 		connections.Should().ContainSingle().Which.RegisteredAt.Should().Be(liveRegisteredAt);
 		connectionWasTimedOut.Should().Equal(false);
 		timeouts.Should().ContainSingle(); // only the first launch
+	}
+
+	[TestMethod]
+	public void WhenTimedOutLaunchHasSameIsDebugAndLiveOneHasTheOther_ThenConnectionTakesTheLiveOne()
+	{
+		// Arrange: a Ctrl+F5 whose app never connected, then an F5 of the same build
+		using var sut = CreateMonitor(
+			out var clock,
+			out _,
+			out _,
+			out var connections,
+			out var connectionWasTimedOut,
+			timeout: TimeSpan.FromSeconds(60));
+		var mvid = Guid.NewGuid();
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin");
+		clock.Advance(TimeSpan.FromMinutes(2));
+		var liveRegisteredAt = clock.GetUtcNow();
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
+
+		// Act: the F5's app connects before the debugger attached
+		sut.ReportConnection(mvid, "Wasm", isDebug: false);
+
+		// Assert: the live launch with the other IsDebug, not the timed-out one with the same
+		connections.Should().ContainSingle().Which.Should().Match<ApplicationLaunchMonitor.LaunchEvent>(c => c.IsDebug && c.RegisteredAt == liveRegisteredAt);
+		connectionWasTimedOut.Should().Equal(false);
+	}
+
+	[TestMethod]
+	public void WhenLaunchRegistersWithTimedOutLaunchOfSameKeyPending_ThenPendingConnectionTakesTheNewLaunch()
+	{
+		// Arrange
+		var classified = new List<ApplicationLaunchMonitor.PendingClassification>();
+		using var sut = CreateMonitor(
+			out var clock,
+			out _,
+			out _,
+			out _,
+			out _,
+			timeout: TimeSpan.FromSeconds(60),
+			onPendingClassified: c => classified.Add(c));
+		var mvid = Guid.NewGuid();
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin"); // never connects
+		clock.Advance(TimeSpan.FromMinutes(2));
+		sut.ReportConnection(mvid, "Wasm", isDebug: false).Should().BeFalse();
+
+		// Act: the connection's own launch registers after it
+		clock.Advance(TimeSpan.FromSeconds(1));
+		var newRegisteredAt = clock.GetUtcNow();
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
+
+		// Assert
+		classified.Should().ContainSingle().Which.Launch!.RegisteredAt.Should().Be(newRegisteredAt);
+	}
+
+	[TestMethod]
+	public void WhenLaunchRegistersWithOldSameIsDebugAndRecentOtherIsDebugConnectionsPending_ThenItTakesTheRecentOne()
+	{
+		// Arrange
+		var classified = new List<ApplicationLaunchMonitor.PendingClassification>();
+		using var sut = CreateMonitor(
+			out var clock,
+			out _,
+			out _,
+			out _,
+			out _,
+			timeout: TimeSpan.FromSeconds(60),
+			onPendingClassified: c => classified.Add(c));
+		var mvid = Guid.NewGuid();
+		sut.ReportConnection(mvid, "Wasm", isDebug: true); // started outside the IDE
+		clock.Advance(TimeSpan.FromMinutes(10));
+		var recentConnectedAt = clock.GetUtcNow();
+		sut.ReportConnection(mvid, "Wasm", isDebug: false); // the debugger hasn't attached yet
+
+		// Act
+		clock.Advance(TimeSpan.FromMilliseconds(500));
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
+
+		// Assert
+		classified.Where(c => c.WasIdeInitiated).Should().ContainSingle().Which.ConnectedAt.Should().Be(recentConnectedAt);
 	}
 
 	[TestMethod]
