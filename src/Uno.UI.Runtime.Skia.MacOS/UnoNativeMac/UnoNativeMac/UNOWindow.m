@@ -403,6 +403,22 @@ void uno_window_close(NSWindow *window)
     [window performClose:nil];
 }
 
+bool uno_windows_close_all(void)
+{
+#if DEBUG
+    NSLog(@"uno_windows_close_all %lu", (unsigned long)windows.count);
+#endif
+    // a copy, since a window leaves `windows` as it closes
+    for (NSWindow *window in [windows allObjects]) {
+        id<NSWindowDelegate> delegate = window.delegate;
+        if ([delegate respondsToSelector:@selector(windowShouldClose:)] && ![delegate windowShouldClose:window]) {
+            return false;
+        }
+        [window close];
+    }
+    return true;
+}
+
 void uno_window_move(NSWindow *window, double x, double y)
 {
 #if DEBUG
