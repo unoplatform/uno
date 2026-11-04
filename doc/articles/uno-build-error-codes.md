@@ -311,6 +311,8 @@ If your project is an executable that merely links `Uno.WinUI` as a library — 
 </PropertyGroup>
 ```
 
+<a name="unob0028"></a>
+
 ### UNOB0028: The UnoSplashScreenColor property is no longer supported, or an optional implicit package was skipped
 
 This code is reported for two unrelated causes. The text of the diagnostic tells which one applies:
@@ -318,9 +320,7 @@ This code is reported for two unrelated causes. The text of the diagnostic tells
 - A warning that the `UnoSplashScreenColor` property is no longer supported: see [The UnoSplashScreenColor property is no longer supported](#unob0028-the-unosplashscreencolor-property-is-no-longer-supported).
 - A build message, shown at `normal` verbosity or higher, that the implicit reference to a package was skipped: see [An optional implicit package was skipped](#unob0028-an-optional-implicit-package-was-skipped).
 
-<a name="unob0028-the-unosplashscreencolor-property-is-no-longer-supported"></a>
-
-#### The UnoSplashScreenColor property is no longer supported
+#### UNOB0028: The UnoSplashScreenColor property is no longer supported
 
 Uno Platform 7.0 removed the `UnoSplashScreenColor` property. The Uno.SDK ignores it, so the splash screen background falls back to its default (`#FFFFFF`, or the browser theme on WebAssembly). Rename it:
 
@@ -332,9 +332,7 @@ Uno Platform 7.0 removed the `UnoSplashScreenColor` property. The Uno.SDK ignore
 
 The same applies to `UnoSplashScreen` items declared by hand: use `BackgroundColor="#FFFFFF"` instead of `Color="#FFFFFF"`. See [Splash screen](xref:Uno.Development.SplashScreen) for the related `UnoSplashScreenDarkBackgroundColor` and `UnoSplashScreenDarkFile` properties.
 
-<a name="unob0028-an-optional-implicit-package-was-skipped"></a>
-
-#### An optional implicit package was skipped
+#### UNOB0028: An optional implicit package was skipped
 
 Some packages the Uno.Sdk adds implicitly are optional and only exist from a given version of their package group. `Uno.HotTesting.Reactive`, added for the `MVUX` feature in non-optimized builds, first ships with the 7.4 builds of Uno.Extensions. This message means the Uno.Extensions version resolved for your project is older than that, is a floating version or a range, or is missing from the Uno.Sdk package manifest, so the package was left out instead of being restored at a mismatched version.
 
