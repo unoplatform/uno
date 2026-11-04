@@ -612,6 +612,58 @@ public class Given_InputPane
 		}
 	}
 
+	// Like WinUI's ResizeToFit: the button stays above the keyboard, but once the keyboard is up the flyout fits on no side of it,
+	// so it is shrunk on the side with more room.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Flyout_Fits_No_Side_Of_Visible_Button_Then_Resized_To_Fit()
+	{
+		var page = BuildBottomFlyoutPage(listMaxHeight: WindowHeight * 0.6, buttonTop: WindowHeight * 0.2);
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(page.Root);
+
+			page.Flyout.ShowAt(page.Button);
+			var presenter = await WaitForFlyoutPresenter(page.Flyout);
+			var naturalHeight = presenter.ActualHeight;
+			var naturalTop = GetTop(presenter);
+
+			var occludedTop = WindowHeight * 0.55;
+			var buttonTop = GetTop(page.Button);
+			var buttonBottom = GetBottom(page.Button);
+			Assert.IsTrue(naturalTop >= buttonBottom - 0.5, "Test setup: the flyout must open below its button while nothing is occluded.");
+			Assert.IsTrue(buttonBottom < occludedTop, "Test setup: the button must stay above the keyboard.");
+			Assert.IsTrue(naturalHeight > buttonTop && naturalHeight > occludedTop - buttonBottom, $"Test setup: the flyout ({naturalHeight:F1}px) must fit on no side of its button once the keyboard is up.");
+
+			Assert.IsTrue(page.FlyoutField.Focus(FocusState.Programmatic), "Flyout TextBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+			OccludeBelow(inputPane, occludedTop);
+
+			await WaitFor(
+				() => GetTop(presenter) >= buttonBottom - 0.5 && GetBottom(presenter) <= occludedTop + 0.5 && presenter.ActualHeight < naturalHeight - 1,
+				() => $"The flyout (top {GetTop(presenter):F1}, bottom {GetBottom(presenter):F1}) was not shrunk between its button ({buttonBottom:F1}) and the keyboard top ({occludedTop:F1}).");
+
+			var scrollViewer = (ScrollViewer)((Control)presenter).GetTemplateChild("ScrollViewer");
+			await WaitFor(
+				() => scrollViewer.ExtentHeight > scrollViewer.ViewportHeight + 1,
+				() => $"The flyout content must scroll once shrunk (extent {scrollViewer.ExtentHeight:F1}, viewport {scrollViewer.ViewportHeight:F1}).");
+
+			await ClearOcclusion(inputPane, clearContent: false);
+
+			await WaitFor(
+				() => System.Math.Abs(presenter.ActualHeight - naturalHeight) < 0.5 && System.Math.Abs(GetTop(presenter) - naturalTop) < 0.5,
+				() => $"The flyout (top {GetTop(presenter):F1}, height {presenter.ActualHeight:F1}) did not get its size back below its button once the keyboard hid (top {naturalTop:F1}, height {naturalHeight:F1}).");
+		}
+		finally
+		{
+			await CloseFlyoutAndClearOcclusion(page.Flyout, inputPane);
+		}
+	}
+
 	// The keyboard stays up while a shrunk flyout closes and opens again: it must be shrunk again, not open at its own height.
 	[TestMethod]
 	[RunsOnUIThread]
@@ -735,7 +787,8 @@ public class Given_InputPane
 	private static (Grid Root, TextBox TopField, Button Button, Flyout Flyout, TextBox FlyoutField) BuildBottomFlyoutPage(
 		double listMaxHeight,
 		double? contentWidth = 320,
-		UIElement extraContent = null)
+		UIElement extraContent = null,
+		double? buttonTop = null)
 	{
 		var flyoutField = new TextBox { PlaceholderText = "Search..." };
 		var content = new StackPanel
@@ -782,7 +835,15 @@ public class Given_InputPane
 			},
 			Children = { topField, button },
 		};
-		Grid.SetRow(button, 1);
+		if (buttonTop is { } top)
+		{
+			button.VerticalAlignment = VerticalAlignment.Top;
+			button.Margin = new Thickness(0, top, 0, 0);
+		}
+		else
+		{
+			Grid.SetRow(button, 1);
+		}
 
 		return (root, topField, button, flyout, flyoutField);
 	}
@@ -795,7 +856,7 @@ public class Given_InputPane
 		return flyout.GetPresenter();
 	}
 
-	// Like WinUI, the flyout must sit right above the keyboard rather than move to the top of the window.
+	// The flyout must sit right above the keyboard rather than move to the top of the window.
 	private static async Task WaitForFlyoutAboveOcclusion(FrameworkElement presenter, double occludedTop)
 	{
 		await WaitFor(
@@ -807,7 +868,8 @@ public class Given_InputPane
 			$"The flyout (bottom {GetBottom(presenter):F1}) was moved way above the keyboard top ({occludedTop:F1}).");
 	}
 
-	// Like WinUI's ResizeToFit, a flyout that fits nowhere above the keyboard is shrunk there and its content scrolls.
+	// A flyout that fits nowhere above the keyboard is shrunk there and its content scrolls. With its button behind the
+	// keyboard, this is Uno's behaviour: WinUI leaves that flyout unresized (see the TODO in PopupPanel.Placement.cs).
 	private static async Task WaitForShrunkAboveOcclusion(FrameworkElement presenter, double occludedTop, double naturalHeight)
 	{
 		await WaitForFlyoutAboveOcclusion(presenter, occludedTop);
