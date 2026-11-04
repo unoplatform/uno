@@ -8226,9 +8226,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var inputPane = InputPane.GetForCurrentView();
 				if (inputPane.Visible || inputPane.TryShow())
 				{
-					await WindowHelper.WaitFor(
-						() => inputPane.Visible,
-						message: "The requested input pane must be visible before testing scrolling away from the caret.");
+					var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+					while (!inputPane.Visible && stopwatch.Elapsed < TimeSpan.FromSeconds(5))
+					{
+						await Task.Delay(50);
+					}
+
+					// The CI emulator can accept the request yet never show a keyboard. Cancel it so it can't
+					// open (and bring the caret back into view) in the middle of the pan.
+					if (!inputPane.Visible)
+					{
+						inputPane.TryHide();
+					}
+
 					await UITestHelper.WaitForRender();
 					await WindowHelper.WaitForIdle();
 				}
