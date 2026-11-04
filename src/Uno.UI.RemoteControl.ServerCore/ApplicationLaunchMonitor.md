@@ -18,7 +18,7 @@ var options = new ApplicationLaunchMonitor.Options
     // Default is 60s
     Timeout = TimeSpan.FromSeconds(30),
     OnRegistered = ev => logger.LogInformation($"Launch registered: {ev.Mvid} ({ev.Platform})"),
-    OnConnected = ev => logger.LogInformation($"Connected: {ev.Mvid} ({ev.Platform})"),
+    OnConnected = (ev, wasTimedOut) => logger.LogInformation($"Connected: {ev.Mvid} ({ev.Platform}), timed out first: {wasTimedOut}"),
     OnTimeout   = ev => logger.LogWarning($"Timed out: {ev.Mvid} ({ev.Platform})")
 };
 
@@ -51,7 +51,9 @@ Step 2 comes before step 3 on purpose. A launch whose app never connects (a clos
 - Platform matching is case-sensitive ("Wasm" != "wasm").
 - A null platform is normalized to "Unspecified".
 - Registrations are consumed oldest first, launches that have not timed out before those that have.
-- A launch counts as timed out once its timeout has fired; `OnTimeout` is then invoked for it, possibly at the same time as a connection that takes it reports it as timed out. A launch a connection takes before its timeout fires is never reported to `OnTimeout`, and a connection and a launch are paired in one step, so neither can be taken without the other.
+- A launch counts as timed out once its timeout has fired; `OnTimeout` is then invoked for it, possibly at the same time as a connection that takes it reports it as timed out. A launch a connection takes before its timeout fires is never reported to `OnTimeout`.
+- A pending connection has no timeout timer, so whether it is within the timeout is read from the clock.
+- `Timeout` must be positive and at most about 49 days; the constructor throws otherwise, and the host ignores other values of `UNO_DEVSERVER_APPLAUNCH_TIMEOUT`.
 - Always dispose the monitor (use `using` as shown).
 
 ## Analytics events

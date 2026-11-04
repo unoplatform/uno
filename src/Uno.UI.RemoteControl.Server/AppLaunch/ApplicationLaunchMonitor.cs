@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace Uno.UI.RemoteControl.Server.AppLaunch;
@@ -15,13 +16,17 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 {
 	internal const string DefaultPlatform = "Unspecified";
 
+	// The longest a TimeProvider timer can wait.
+	internal static readonly TimeSpan MaxTimeout = TimeSpan.FromMilliseconds(uint.MaxValue - 1);
+
 	/// <summary>
 	/// Options that control the behavior of <see cref="ApplicationLaunchMonitor"/>.
 	/// </summary>
 	public class Options
 	{
 		/// <summary>
-		/// Timeout after which a registered launch is considered expired. Defaults to 60 seconds; must be positive.
+		/// Timeout after which a registered launch is considered expired. Defaults to 60 seconds. It must be positive and
+		/// at most about 49 days, the longest a timer can wait; the monitor's constructor throws otherwise.
 		/// A connection pairs with a launch that has not timed out before one that has, and pairs across IsDebug values
 		/// only within this timeout.
 		/// </summary>
@@ -127,15 +132,17 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	// Periodic scavenger timer (removes very old entries beyond Retention)
 	private readonly IDisposable? _scavengeTimer;
 
+	// Once listed, an entry changes only under _gate, and once IsRemoved is set none of its fields changes again, so a
+	// removed entry can be read outside the lock. The same holds for PendingConnection.
 	private sealed class LaunchEntry(LaunchEvent launch)
 	{
 		public LaunchEvent Event { get; } = launch;
 
 		public IDisposable? TimeoutTimer { get; set; }
 
-		// Set under _gate. Once removed (matched or scavenged), a launch's timeout is no longer reported.
 		public bool TimedOut { get; set; }
 
+		// Matched, scavenged or disposed: the launch's timeout is no longer reported.
 		public bool IsRemoved { get; set; }
 	}
 
@@ -147,7 +154,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 		public IDisposable? RetryTimer { get; set; }
 
-		// Set under _gate once the connection is matched, replaced or scavenged.
+		// Matched, replaced, scavenged or disposed.
 		public bool IsRemoved { get; set; }
 	}
 
@@ -160,6 +167,10 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	{
 		_timeProvider = timeProvider ?? TimeProvider.System;
 		_options = options ?? new Options();
+		if (_options.Timeout <= TimeSpan.Zero || _options.Timeout > MaxTimeout)
+		{
+			throw new ArgumentOutOfRangeException(nameof(options), _options.Timeout, "Options.Timeout must be positive and at most about 49 days.");
+		}
 
 		// Start periodic scavenger to remove very old entries. Use a periodic timer via TimeProvider so tests can control it.
 		try
@@ -227,12 +238,12 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 			// best-effort, swallow
 		}
 
+		// The launch just added is always takeable, so a taken connection always comes with a launch
+		Debug.Assert(pending is null || matched is not null);
 		if (pending is not null && matched is not null)
 		{
 			// Consume the launch event without invoking OnConnected to avoid double telemetry
-			DisposeTimer(pending.RetryTimer);
-			DisposeTimer(matched.TimeoutTimer);
-			ClassifyAsIdeInitiated(pending, matched.Event);
+			CompleteLateMatch(pending, matched);
 		}
 	}
 
@@ -262,6 +273,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	/// </summary>
 	private void HandleTimeout(LaunchEntry launch)
 	{
+		IDisposable? timer;
 		lock (_gate)
 		{
 			if (launch.IsRemoved)
@@ -272,9 +284,11 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 			// Instead of removing the timed-out launch, we keep it available for future connections, and record that it
 			// timed out so the connection that takes it reports it.
 			launch.TimedOut = true;
+			timer = launch.TimeoutTimer;
+			launch.TimeoutTimer = null;
 		}
 
-		DisposeTimer(launch.TimeoutTimer);
+		DisposeTimer(timer);
 		try
 		{
 			_options.OnTimeout?.Invoke(launch.Event);
@@ -324,7 +338,6 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 		if (matched is not null)
 		{
-			// Cancel the launch's timeout timer and invoke OnConnected with it
 			DisposeTimer(matched.TimeoutTimer);
 			try
 			{
@@ -345,16 +358,18 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 	/// <summary>
 	/// Takes the registered launch a connection with the specified key matches, so that its timeout is no longer
-	/// reported. Launches that have not timed out come first, the oldest with the same IsDebug value and then the oldest
-	/// with the other one; otherwise the oldest timed-out launch with the same IsDebug value. Call under _gate.
+	/// reported. Launches that have not timed out come first, the oldest with the same IsDebug value and then, when
+	/// allowed, the oldest with the other one; otherwise the oldest timed-out launch with the same IsDebug value.
+	/// Call under _gate.
 	/// </summary>
-	private LaunchEntry? TryTakeLaunch(Key key)
-		=> TryTakeLaunch(key, timedOut: false)
-			?? TryTakeLaunch(key.WithOtherIsDebug(), timedOut: false)
-			?? TryTakeLaunch(key, timedOut: true);
+	private LaunchEntry? TryTakeLaunch(Key key, bool allowOtherIsDebug = true)
+		=> TryTakeOldestLaunch(key, timedOut: false)
+			?? (allowOtherIsDebug ? TryTakeOldestLaunch(key.WithOtherIsDebug(), timedOut: false) : null)
+			?? TryTakeOldestLaunch(key, timedOut: true);
 
-	private LaunchEntry? TryTakeLaunch(Key key, bool timedOut)
+	private LaunchEntry? TryTakeOldestLaunch(Key key, bool timedOut)
 	{
+		Debug.Assert(Monitor.IsEntered(_gate));
 		if (!_pending.TryGetValue(key, out var launches))
 		{
 			return null;
@@ -391,6 +406,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 	private PendingConnection? TryTakePendingConnectionAfter(Key key, DateTimeOffset connectedAfter)
 	{
+		Debug.Assert(Monitor.IsEntered(_gate));
 		if (!_pendingConnections.TryGetValue(key, out var pending) || pending.ConnectedAt <= connectedAfter)
 		{
 			return null;
@@ -403,11 +419,22 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 	// Call under _gate.
 	private void RemovePendingConnection(PendingConnection pending)
 	{
+		Debug.Assert(Monitor.IsEntered(_gate));
 		pending.IsRemoved = true;
 		if (_pendingConnections.TryGetValue(pending.Key, out var current) && current == pending)
 		{
 			_pendingConnections.Remove(pending.Key);
 		}
+	}
+
+	/// <summary>
+	/// Completes a late match taken under _gate: cancels both timers and reports the connection as IDE-initiated.
+	/// </summary>
+	private void CompleteLateMatch(PendingConnection pending, LaunchEntry launch)
+	{
+		DisposeTimer(pending.RetryTimer);
+		DisposeTimer(launch.TimeoutTimer);
+		ClassifyAsIdeInitiated(pending, launch.Event);
 	}
 
 	/// <summary>
@@ -482,16 +509,18 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 	private void HandlePendingRetry(PendingConnection pending)
 	{
+		// Like a late registration, take a launch with the other IsDebug only for a connection within the timeout
+		var withinTimeout = pending.ConnectedAt > _timeProvider.GetUtcNow() - _options.Timeout;
 		LaunchEntry? matched;
 		lock (_gate)
 		{
 			if (pending.IsRemoved)
 			{
-				return; // matched, replaced or scavenged since the retry was scheduled
+				return; // matched, replaced, scavenged or disposed since the retry was scheduled
 			}
 
 			// Try to find a launch now
-			matched = TryTakeLaunch(pending.Key);
+			matched = TryTakeLaunch(pending.Key, allowOtherIsDebug: withinTimeout);
 			if (matched is not null)
 			{
 				RemovePendingConnection(pending);
@@ -500,9 +529,7 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 
 		if (matched is not null)
 		{
-			DisposeTimer(pending.RetryTimer);
-			DisposeTimer(matched.TimeoutTimer);
-			ClassifyAsIdeInitiated(pending, matched.Event);
+			CompleteLateMatch(pending, matched);
 		}
 		else
 		{
@@ -621,7 +648,6 @@ public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDispo
 			_pendingConnections.Clear();
 		}
 
-		// Dispose all timeout timers
 		foreach (var launch in launches)
 		{
 			DisposeTimer(launch.TimeoutTimer);
