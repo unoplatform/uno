@@ -96,7 +96,7 @@ public class Given_BitmapIcon
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Flaky on Skia iOS/tvOS only - https://github.com/unoplatform/uno/issues/24489
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24489")]
 	public async Task When_Foreground_Changed_With_ShowAsMonochrome_True()
 	{
 		var bitmapIcon = new BitmapIcon
@@ -143,7 +143,6 @@ public class Given_BitmapIcon
 		};
 
 		var image = await LoadOpened(bitmapIcon);
-
 
 		// Track whether the image gets reloaded after our foreground change.
 		int imageOpenedCount = 0;
@@ -226,7 +225,7 @@ public class Given_BitmapIcon
 		await UITestHelper.Load(bitmapIcon);
 
 		var image = bitmapIcon.FindFirstDescendantOrThrow<Image>();
-		await TestServices.WindowHelper.WaitFor(() => image.Source is BitmapSource { PixelWidth: > 0 }, message: "The BitmapIcon's image should open.");
+		await TestServices.WindowHelper.WaitFor(() => image.Source is BitmapSource { PixelWidth: > 0 }, timeoutMS: 5000, message: "The BitmapIcon's image should open.");
 		await TestServices.WindowHelper.WaitForIdle();
 
 		return image;
