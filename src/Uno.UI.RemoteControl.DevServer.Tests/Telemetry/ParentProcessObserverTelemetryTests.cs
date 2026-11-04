@@ -57,16 +57,16 @@ public class ParentProcessObserverTelemetryTests : TelemetryTestBase
 	[Description("Intermittent: random port binding may collide or the host process may take longer to start on CI")]
 	public async Task ChildServer_ForcedExit_When_ParentDies_And_GracefulShutdownHangs()
 	{
-		var fixtureDll = Path.Combine(
-			Path.GetDirectoryName(typeof(ParentProcessObserverTelemetryTests).Assembly.Location)!,
+		var fixtureDll = Path.Join(
+			Path.GetDirectoryName(typeof(ParentProcessObserverTelemetryTests).Assembly.Location),
 			"Fixtures", "AddInWithHangingHostedService", "AddInWithHangingHostedService.dll");
 		File.Exists(fixtureDll).Should()
 			.BeTrue("hanging hosted-service fixture must be staged by _BuildAndCopyAddInTestFixtures");
 
 		var tempDir = Path.GetTempPath();
-		var telemetryFile = Path.Combine(tempDir, GetTestTelemetryFileName("parent_observer_forced_exit"));
+		var telemetryFile = Path.Join(tempDir, GetTestTelemetryFileName("parent_observer_forced_exit"));
 
-		await using var parentHelper = CreateTelemetryHelperWithExactPath(Path.Combine(tempDir, GetTestTelemetryFileName("parent")));
+		await using var parentHelper = CreateTelemetryHelperWithExactPath(Path.Join(tempDir, GetTestTelemetryFileName("parent")));
 		await using var childHelper = CreateTelemetryHelperWithExactPath(telemetryFile);
 
 		var parentStarted = await parentHelper.StartAsync(CT);
