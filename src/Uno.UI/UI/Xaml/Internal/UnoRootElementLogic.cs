@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,7 +55,7 @@ internal class UnoRootElementLogic
 		var openFlyouts = FlyoutBase.OpenFlyouts.ToArray();
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().LogDebug($"Input pane {(isInputPaneVisible ? "visible" : "hidden")}, viewport height {viewportHeight?.ToString() ?? "unconstrained"}: placing {openFlyouts.Count(f => f.XamlRoot?.VisualTree == visualTree)} of {openFlyouts.Length} open flyouts again.");
+			this.Log().LogDebug($"Input pane {(isInputPaneVisible ? "visible" : "hidden")}, viewport height {viewportHeight?.ToString(CultureInfo.InvariantCulture) ?? "unconstrained"}: placing {openFlyouts.Count(f => f.XamlRoot?.VisualTree == visualTree)} of {openFlyouts.Length} open flyouts again.");
 		}
 
 		foreach (var flyout in openFlyouts)

@@ -1115,7 +1115,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					return false;
 				}
 
-				presenter.SetValue(property, Math.Max(0, placedLength - margins));
+				presenter.SetValue(property, Boxer.Box(Math.Max(0, placedLength - margins)));
 				return true;
 			}
 		}
