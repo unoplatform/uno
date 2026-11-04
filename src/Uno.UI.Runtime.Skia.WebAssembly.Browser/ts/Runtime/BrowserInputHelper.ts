@@ -3,6 +3,10 @@ namespace Uno.UI.Runtime.Skia {
 		// Read by BrowserPointerInputSource.onPointerEventReceived
 		public static isBrowserZoomEnabled: boolean = true;
 
+		// iPadOS 13+ reports itself as a Mac, so touch support is what tells it apart from macOS Safari.
+		public static readonly isIOS = /iP(ad|hone|od)/.test(navigator?.platform ?? "")
+			|| (navigator?.platform === "MacIntel" && (navigator.maxTouchPoints ?? 0) > 1);
+
 		public static setBrowserZoomEnabled(enabled: boolean): void {
 			BrowserInputHelper.isBrowserZoomEnabled = enabled;
 		}
