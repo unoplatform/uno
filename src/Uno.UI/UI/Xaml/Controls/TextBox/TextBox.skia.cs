@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Shapes;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
@@ -69,6 +70,7 @@ public partial class TextBox : ITextSelectionGripperHost
 	// will be one "run"/"action". However, there are some arbitrary exceptions, so that is only a rule of thumb.
 	private bool _currentlyTyping;
 	private bool _suppressCurrentlyTyping;
+	private bool _isApplyingNativeInput;
 	private SelectionDetails _selectionWhenTypingStarted;
 	private string _textWhenTypingStarted;
 
@@ -86,11 +88,68 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	internal ContentControl ContentElement => _contentElement;
 
+	// An edit the platform's input field already applied, with the caret it left there. Like a key the TextBox handles,
+	// it extends the current typing run: its own caret move doesn't end the run, so undo takes back the whole of it.
+	internal void ApplyNativeInput(string text, int selectionStart, int selectionLength)
+	{
+		_isApplyingNativeInput = true;
+		try
+		{
+			// Pending so the text change itself lands the caret here instead of passing through 0.
+			SetPendingSelection(selectionStart, selectionLength);
+			TextBoxView.UpdateTextFromNative(text);
+			SelectInternal(selectionStart, selectionLength);
+		}
+		finally
+		{
+			_isApplyingNativeInput = false;
+		}
+	}
+
+	// The platform's input field already applied this edit. It is typing, undoable like a key the TextBox handles, and a
+	// read-only TextBox refuses it (TextBoxView then puts its text back in the field).
+	internal string ProcessNativeTextInput(string newText)
+	{
+		if (IsReadOnly)
+		{
+			return Text;
+		}
+
+		var textBefore = Text;
+		var startsTypingRun = !_currentlyTyping;
+		TrySetCurrentlyTyping(true);
+		_clearHistoryOnTextChanged = false;
+		try
+		{
+			var text = ProcessTextInput(newText);
+			if (startsTypingRun && text == textBefore)
+			{
+				// A refused edit (MaxLength, BeforeTextChanging) isn't typing: its run would record an undo step that
+				// changes nothing.
+				_currentlyTyping = false;
+			}
+
+			return text;
+		}
+		finally
+		{
+			_clearHistoryOnTextChanged = true;
+		}
+	}
+
 	static TextBox()
 	{
 		_platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
 		InitializeIme();
+	}
+
+	// Test hook: replaces the platform notifications (e.g. the Android soft keyboard and autofill) until disposed.
+	internal static IDisposable SetNotificationsProviderForTesting(ITextBoxNotificationsProviderSingleton provider)
+	{
+		var original = _textBoxNotificationsSingleton;
+		_textBoxNotificationsSingleton = provider;
+		return Disposable.Create(() => _textBoxNotificationsSingleton = original);
 	}
 
 	internal CaretDisplayMode CaretMode
@@ -345,6 +404,9 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	partial void OnUnloadedPartial()
 	{
+		EndCaretLoupe();
+		CancelDeferredTouchFlyout();
+		_iosHoldTimer?.Stop();
 		_forceFocusedVisualState = false;
 		_timer.Stop();
 		_gripperPresenter?.Hide();
@@ -436,21 +498,21 @@ public partial class TextBox : ITextSelectionGripperHost
 	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
 		_clipboardChangeSubscription.Disposable = null;
-		TextBoxView?.OnFocusStateChanged(focusState);
 
 		if (_isSkiaTextBox)
 		{
 			if (focusState != FocusState.Unfocused)
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-				_textBoxNotificationsSingleton?.OnFocused(this);
-				StartImeSession();
+				RequestPlatformTextInput(focusState);
 				UpdateCanPasteClipboardContent();
 				Clipboard.ContentChanged += OnClipboardContentChanged;
 				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
 			}
 			else
 			{
+				TextBoxView?.OnFocusStateChanged(focusState);
+
 				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
 				// Check if focus is moving to a text control flyout before deciding to unfocus.
 				_forceFocusedVisualState = ShouldForceFocusedVisualState();
@@ -469,6 +531,8 @@ public partial class TextBox : ITextSelectionGripperHost
 			{
 				EndImeSession();
 				TrySetCurrentlyTyping(false);
+				EndCaretLoupe();
+				CancelDeferredTouchFlyout();
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 				if (SelectionFlyout?.IsOpen == true)
 				{
@@ -482,6 +546,83 @@ public partial class TextBox : ITextSelectionGripperHost
 			}
 			UpdateDisplaySelection();
 		}
+		else
+		{
+			TextBoxView?.OnFocusStateChanged(focusState);
+		}
+	}
+
+	private bool _isPlatformTextInputRequestPending;
+
+	// A TextBox focused while a pointer release is processed can lose the focus before the release completes (e.g. a ScrollViewer focuses
+	// its first TextBox before a Tapped handler moves the focus away, like in WinUI). Opening the soft keyboard right away would flash it.
+	private void RequestPlatformTextInput(FocusState focusState)
+	{
+		if (_isPlatformTextInputRequestPending)
+		{
+			return;
+		}
+
+#if UNO_HAS_MANAGED_POINTERS
+		if (XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnPointerReleaseCompleted) is true)
+		{
+			_isPlatformTextInputRequestPending = true;
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("Platform text input deferred until the pointer release has completed.");
+			}
+
+			return;
+		}
+#endif
+
+		StartPlatformTextInput(focusState);
+	}
+
+	private void OnPointerReleaseCompleted()
+	{
+		_isPlatformTextInputRequestPending = false;
+		if (FocusState is not FocusState.Unfocused and var focusState)
+		{
+			StartPlatformTextInput(focusState);
+		}
+		else if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("Platform text input not started: the focus moved away before the pointer release completed.");
+		}
+	}
+
+	// Tapping an already-focused TextBox re-shows the soft keyboard the user may have hidden. Deferred for the same reason: a Tapped handler can still move the focus away.
+	private void NotifyFocusedAgain()
+	{
+		if (_isPlatformTextInputRequestPending)
+		{
+			return;
+		}
+
+#if UNO_HAS_MANAGED_POINTERS
+		if (XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnFocusedAgainReleaseCompleted) is true)
+		{
+			return;
+		}
+#endif
+
+		_textBoxNotificationsSingleton?.OnFocused(this);
+	}
+
+	private void OnFocusedAgainReleaseCompleted()
+	{
+		if (FocusState is not FocusState.Unfocused)
+		{
+			_textBoxNotificationsSingleton?.OnFocused(this);
+		}
+	}
+
+	private void StartPlatformTextInput(FocusState focusState)
+	{
+		TextBoxView?.OnFocusStateChanged(focusState);
+		_textBoxNotificationsSingleton?.OnFocused(this);
+		StartImeSession();
 	}
 
 	// Ported from: TextBoxBase.cpp ShouldForceFocusedVisualState (lines 5286-5290)
@@ -524,7 +665,10 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	partial void SelectPartial(int start, int length)
 	{
-		TrySetCurrentlyTyping(false);
+		if (!_isApplyingNativeInput)
+		{
+			TrySetCurrentlyTyping(false);
+		}
 
 		if (!_inSelectInternal)
 		{
@@ -539,7 +683,12 @@ public partial class TextBox : ITextSelectionGripperHost
 
 		// Even when using Skia TextBox, we may need to call Select,
 		// which will update the native input in case of Wasm Skia for example.
-		TextBoxView?.Select(start, length);
+		// Not while the platform loupe shows (a caret or handle drag): on iOS, moving the first responder's selection
+		// makes UIKit dismiss the loupe. EndCaretLoupe syncs the final selection once the drag is over.
+		if (!_isLoupeActive)
+		{
+			TextBoxView?.Select(start, length);
+		}
 
 		if (_isSkiaTextBox)
 		{
@@ -1670,6 +1819,7 @@ public partial class TextBox : ITextSelectionGripperHost
 		if (_isSkiaTextBox)
 		{
 			CancelCompositionOnExternalChange();
+			_touchMultiTapAnchor = null;
 
 			// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
 			// Close the selection flyout when text changes.
@@ -1962,9 +2112,24 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	void ITextSelectionGripperHost.MoveGripperCaret(int index) => Select(index, 0);
 
-	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper) => UpdateScrolling(isEndGripper);
+	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper)
+	{
+		UpdateScrolling(isEndGripper);
 
-	void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
+		// Called on every handle move, so it doubles as the drag tick for the iOS magnifier.
+		UpdateCaretLoupe(isEndGripper ? SelectionStart + SelectionLength : SelectionStart);
+	}
+
+	void ITextSelectionGripperHost.OnGripperPressed()
+	{
+		// A tap on a handle toggles the menu, like a tap on the selection (see OnGripperTapped).
+		_selectionFlyoutOpenAtPress = SelectionFlyout?.IsOpen == true;
+		// A handle press is a new touch too: drop a menu still waiting on the previous tap.
+		CancelDeferredTouchFlyout();
+		DismissSelectionFlyoutForPointerPress();
+	}
+
+	void ITextSelectionGripperHost.OnGripperPointerLost() => EndCaretLoupe();
 
 	// Dismiss the selection flyout (the floating copy/paste bar) when a touch interaction begins, so it
 	// doesn't linger next to a context menu opened on the same gesture.
@@ -1972,6 +2137,8 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
 	{
+		EndCaretLoupe();
+
 		// Ported from TextBoxBase.cpp OnGripperHeld: a held gripper opens the context flyout.
 		var contextArgs = new ContextRequestedEventArgs();
 		contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
@@ -1979,35 +2146,90 @@ public partial class TextBox : ITextSelectionGripperHost
 	}
 
 	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection)
-		=> QueueUpdateSelectionFlyoutVisibility(
+	{
+		// The handle interaction is over (released), so the magnifier goes away.
+		EndCaretLoupe();
+
+		if (_suppressGripperTapFlyout)
+		{
+			// The tap hid the menu (see OnGripperTapped).
+			_suppressGripperTapFlyout = false;
+			_deferGripperTapFlyout = false;
+			return;
+		}
+
+		if (_deferGripperTapFlyout)
+		{
+			// A triple-tap may still follow this double-tap (see OnGripperTapped).
+			_deferGripperTapFlyout = false;
+			QueueDeferredTouchFlyout(args.GetCurrentPoint(this).Position, forSelection: true);
+			return;
+		}
+
+		QueueUpdateSelectionFlyoutVisibility(
 			args.Pointer.PointerDeviceType,
 			args.GetCurrentPoint(this).Position,
 			// The single insertion handle only exists under the mobile (iOS/Android) conventions; tapping it
 			// re-opens the flyout even over a collapsed caret. Desktop never gets the empty-selection flyout.
 			allowEmptySelection: allowEmptySelection && TouchSelectionConvention != TouchTextSelectionConvention.Desktop);
+	}
 
-	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
+	bool ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
 	{
-		// The insertion handle (EndOnly gripper) sits over the character it points at, so the second tap of
-		// a double-tap lands on the handle instead of the text. Fold it into the same multi-tap counter as
-		// OnPointerReleasedPartial (press-to-press) so the double-tap still selects the word.
-		var repeatedPresses = _lastPointerDown.point is { } previous && IsTouchMultiTap(previous, press)
-			? _lastPointerDown.repeatedPresses + 1
-			: 0;
-		_lastPointerDown = (press, repeatedPresses);
+		var displayBlock = TextBoxView.DisplayBlock;
+		var anchorRect = displayBlock.ParsedText.GetRectForIndex(anchorIndex);
+		// Without an inverse (a singular transform), the tap counts as one at the handle.
+		var fingerPoint = ToTouchTextPoint(displayBlock.TransformToVisual(null).Inverse?.TransformPoint(press.Position) ?? new Point(anchorRect.X, anchorRect.Y));
 
-		// Act on the character the handle points at, not the finger's position on the thumb (which hangs below
-		// the caret line and would jump the caret to the end of the text).
-		if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && repeatedPresses >= 1)
+		// The insertion handle's thumb hangs over the line below the caret. A tap there, as quick after the tap on the
+		// text as a double-tap, is meant for that line's text. Any other tap is on the handle, which shows the paste
+		// flyout (native Android).
+		var isMobile = TouchSelectionConvention != TouchTextSelectionConvention.Desktop;
+		var tapsTextBelow = isMobile
+			&& _caretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing
+			&& QuicklyFollowsTextTap(press)
+			&& GetTextLineTop(fingerPoint) != anchorRect.Y;
+		// Anywhere else on the handle, the tap is on the handle's line, under the finger.
+		var textPoint = tapsTextBelow ? fingerPoint : new Point(fingerPoint.X, anchorRect.Y + anchorRect.Height / 2);
+
+		// The insertion handle (EndOnly gripper) sits over the character it points at, so the taps of a double-tap
+		// can land on the handle instead of the text. Fold them into the same multi-tap counter as
+		// OnPointerReleasedPartial (press-to-press) so the double-tap still selects the word.
+		var repeatedPresses = CountTouchPress(press, textPoint, GetCharacterIndexAt(textPoint), onHandle: !tapsTextBelow);
+
+		if (TouchSelectionConvention == TouchTextSelectionConvention.iOS && repeatedPresses >= 2)
 		{
-			TouchSelectWordAt(anchorIndex);
+			// After a double-tap the word's handles sit over it, so the third tap of a triple-tap often lands on one.
+			TouchSelectParagraphAt(anchorIndex);
+		}
+		else if (isMobile && repeatedPresses >= 1 && _touchMultiTapAnchor is { } anchor)
+		{
+			TouchSelectWordAt(anchor.character);
+
+			// iOS: a triple-tap may follow, so the flyout must not open (and swallow it) yet.
+			_deferGripperTapFlyout = TouchSelectionConvention == TouchTextSelectionConvention.iOS;
+		}
+		else if (tapsTextBelow)
+		{
+			TouchTap(textPoint, wasFocused: true);
 		}
 		else if (_caretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
+			// Act on the character the handle points at, not the finger's position on the thumb (which hangs below
+			// the caret line and would jump the caret to the end of the text).
 			TouchTapAt(anchorIndex);
+		}
+		else if (TouchSelectionConvention == TouchTextSelectionConvention.iOS)
+		{
+			// Native iOS: a handle sits over its selection (a short word is mostly covered by them), so a tap on one
+			// toggles the edit menu like a tap on the selection. Opening waits out the multi-tap window.
+			_suppressGripperTapFlyout = _selectionFlyoutOpenAtPress;
+			_deferGripperTapFlyout = !_selectionFlyoutOpenAtPress;
 		}
 		// Both thumbs showing: the tap grabbed a selection edge, so keep the selection (native iOS/Android)
 		// instead of collapsing it to a caret. The presenter re-shows the selection flyout on release.
+
+		return !tapsTextBelow;
 	}
 	#endregion
 

@@ -742,6 +742,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
 
+		void ITextSelectionGripperHost.OnGripperPointerLost() { }
+
 		// Dismiss the selection flyout (the floating copy bar) when a touch interaction begins, so it
 		// doesn't linger next to a context menu opened on the same gesture.
 		internal void DismissSelectionFlyoutForPointerPress() => TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
@@ -761,8 +763,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Both grippers sit on the current selection's edges, so tapping either one keeps the selection and
 		// re-shows the grippers/flyout — there's no insertion handle (or editable caret) to re-place, so press
 		// and anchorIndex are unused here.
-		void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
-			=> ShowGrippers();
+		bool ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
+		{
+			ShowGrippers();
+			return true;
+		}
 		#endregion
 		#endregion
 

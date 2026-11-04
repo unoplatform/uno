@@ -48,7 +48,7 @@ public partial class TextBox
 			return;
 		}
 		imeExtension.CompositionStarted += static (_, _) => _activeImeTextBox?.OnImeCompositionStarted();
-		imeExtension.CompositionUpdated += static (_, e) => _activeImeTextBox?.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied);
+		imeExtension.CompositionUpdated += static (_, e) => _activeImeTextBox?.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied, e.CompositionStart);
 		imeExtension.CompositionCompleted += static (_, e) => _activeImeTextBox?.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied);
 		imeExtension.CompositionEnded += static (_, _) => _activeImeTextBox?.OnImeCompositionEnded();
 		_imeExtension = imeExtension;
@@ -117,7 +117,7 @@ public partial class TextBox
 		TextCompositionStarted?.Invoke(this, new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength));
 	}
 
-	private void OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied)
+	private void OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied, int compositionStart)
 	{
 		if (IsReadOnly)
 		{
@@ -133,6 +133,11 @@ public partial class TextBox
 			// Mark the session so key events aren't swallowed by the IsComposing check
 			// (Android key events are independent of composition events).
 			_compositionAppliedByPlatform = true;
+			if (compositionStart >= 0)
+			{
+				// An IME re-composing an existing word starts the composition before the caret.
+				_compositionStartIndex = compositionStart;
+			}
 		}
 		else
 		{
@@ -238,9 +243,12 @@ public partial class TextBox
 
 		if (_platformTextApplyInProgress)
 		{
-			// The platform already applied the text (e.g., Android EndBatchEdit).
-			// Don't cancel the composition — just clear the flag.
-			_platformTextApplyInProgress = false;
+			// The platform already applied the text (e.g., Android EndBatchEdit), so don't cancel the composition.
+			// While its text is processed, edits by TextChanging handlers belong to it too: ProcessTextInput clears the flag.
+			if (!_isInputModifyingText)
+			{
+				_platformTextApplyInProgress = false;
+			}
 			return;
 		}
 
@@ -277,7 +285,7 @@ public partial class TextBox
 		_imeExtension = extension;
 
 		EventHandler onStarted = (_, _) => _activeImeTextBox?.OnImeCompositionStarted();
-		EventHandler<ImeCompositionEventArgs> onUpdated = (_, e) => _activeImeTextBox?.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied);
+		EventHandler<ImeCompositionEventArgs> onUpdated = (_, e) => _activeImeTextBox?.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied, e.CompositionStart);
 		EventHandler<ImeCompositionEventArgs> onCompleted = (_, e) => _activeImeTextBox?.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied);
 		EventHandler onEnded = (_, _) => _activeImeTextBox?.OnImeCompositionEnded();
 
