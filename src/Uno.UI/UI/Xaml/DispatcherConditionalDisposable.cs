@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml
 	/// </remarks>
 	internal abstract class DispatcherConditionalDisposable : ConditionalDisposable
 	{
-		public DispatcherConditionalDisposable(object target, WeakReference conditionSource) : base(target, conditionSource)
+		public DispatcherConditionalDisposable(object target, object conditionSource) : base(target, conditionSource)
 		{
 		}
 
