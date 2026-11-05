@@ -27,6 +27,8 @@ public partial class ToolTipService
 
 	private static AutomaticToolTipInputMode s_lastEnterInputMode = AutomaticToolTipInputMode.Mouse;
 
+	internal static bool s_bOpeningAutomaticToolTip;
+
 	private static void RegisterToolTip(
 		DependencyObject owner,
 		FrameworkElement container,
@@ -128,13 +130,19 @@ public partial class ToolTipService
 		if (m_CurrentToolTip == toolTip)
 		{
 			m_OpenTimer?.Stop();
-			m_CloseTimer?.Stop();
-
-			m_CurrentToolTip.IsOpen = false;
 		}
-		else
+
+		ReleaseToolTip(toolTip);
+		toolTip.IsOpen = false;
+	}
+
+	// A ToolTip roots its owner: once closed, the service must not keep it, or the owner leaks after leaving the tree.
+	internal static void ReleaseToolTip(ToolTip toolTip)
+	{
+		if (m_CurrentToolTip == toolTip)
 		{
-			toolTip.IsOpen = false;
+			m_CloseTimer?.Stop();
+			m_CurrentToolTip = null;
 		}
 	}
 
@@ -142,10 +150,19 @@ public partial class ToolTipService
 	{
 		m_OpenTimer.Stop();
 
-		if (m_CurrentToolTip is { })
+		if (m_CurrentToolTip is { } toolTip)
 		{
-			m_CurrentToolTip.m_inputMode = s_lastEnterInputMode;
-			m_CurrentToolTip.IsOpen = true;
+			toolTip.m_inputMode = s_lastEnterInputMode;
+
+			s_bOpeningAutomaticToolTip = true;
+			try
+			{
+				toolTip.IsOpen = true;
+			}
+			finally
+			{
+				s_bOpeningAutomaticToolTip = false;
+			}
 		}
 
 		if (m_CloseTimer is null)
@@ -161,9 +178,9 @@ public partial class ToolTipService
 	{
 		m_CloseTimer.Stop();
 
-		if (m_CurrentToolTip is { })
+		if (m_CurrentToolTip is { } toolTip)
 		{
-			m_CurrentToolTip.IsOpen = false;
+			CloseToolTipImpl(toolTip);
 		}
 	}
 
