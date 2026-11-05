@@ -132,6 +132,17 @@ public class Given_SkiaTexture
 		Assert.AreEqual(IntPtr.Zero, image.Image.Handle, "The pixels should be freed with the recording.");
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25547")]
+	public void When_CopyPixels_Destination_Is_Too_Short_Then_It_Throws()
+	{
+		using var image = CreateRedImage();
+		var buffer = new byte[Size * Size * 4];
+
+		Assert.ThrowsExactly<ArgumentException>(() => image.CopyPixels(buffer.AsSpan(0, buffer.Length - 4)));
+		Assert.AreEqual(0, buffer[^1], "Nothing should be written past the destination.");
+	}
+
 	private static SkiaImage CreateRedImage()
 	{
 		var info = new SKImageInfo(Size, Size, SKColorType.Bgra8888, SKAlphaType.Premul);
