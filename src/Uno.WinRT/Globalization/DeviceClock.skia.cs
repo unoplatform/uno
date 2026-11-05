@@ -14,7 +14,14 @@ partial class DeviceClock
 		=> localeTag = GetExtension()?.GetLocaleTag();
 
 	static partial void ReadPlatform24Hour(ref bool? is24Hour)
-		=> is24Hour = IsTwentyFourHourPattern(GetExtension()?.GetHourFormat());
+		=> is24Hour = IsTwentyFourHourPattern(GetExtension()?.GetFormatFromTemplate("j", null));
+
+	// The locale's patterns for the clock, which the H or h of the template forces.
+	static partial void ReadPlatformTimePatterns(string localeTag, bool is24Hour, ref string? shortPattern, ref string? longPattern)
+	{
+		shortPattern = GetExtension()?.GetFormatFromTemplate(is24Hour ? "Hmm" : "hmm", localeTag);
+		longPattern = GetExtension()?.GetFormatFromTemplate(is24Hour ? "Hmmss" : "hmmss", localeTag);
+	}
 
 	// Only macOS has one: Windows' setting is in .NET's culture already, and Linux has none.
 	private static IDeviceClockExtension? GetExtension()

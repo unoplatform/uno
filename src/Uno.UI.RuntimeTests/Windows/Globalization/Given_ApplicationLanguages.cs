@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Globalization;
 using Windows.Storage;
 
@@ -119,6 +120,8 @@ public class Given_ApplicationLanguages
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
 	public void When_ApplyCulture_With_Runtime_Culture_Then_Culture_Follows_System_Locale_On_Android_Only()
 	{
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
 		var culture = CultureInfo.CurrentCulture;
 		var uiCulture = CultureInfo.CurrentUICulture;
 		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
@@ -160,11 +163,102 @@ public class Given_ApplicationLanguages
 		}
 	}
 
+	// The device's 12/24-hour setting reaches CurrentCulture as a customized time format does on Windows; .NET leaves it
+	// out on Android, iOS and macOS. At least one row differs from the culture's own clock.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+	[DataRow(true)]
+	[DataRow(false)]
+	public void When_ApplyCulture_With_Device_Clock_Then_Culture_Time_Follows(bool device24Hour)
+	{
+		var culture = CultureInfo.CurrentCulture;
+		var uiCulture = CultureInfo.CurrentUICulture;
+		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
+		var threadUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+		try
+		{
+			if (CultureInfo.InstalledUICulture.Name.Length == 0)
+			{
+				Assert.Inconclusive("The runtime found no user locale.");
+			}
+
+			// The culture the runtime picked at startup, and the device's locale it formats in.
+			var runtimeCulture = CultureInfo.InstalledUICulture;
+			var locale = OperatingSystem.IsAndroid() ? new CultureInfo(ApplicationLanguages.ManifestLanguages[0]).Name : runtimeCulture.Name;
+			DeviceClock.TestDevice = (locale, null, device24Hour);
+			DeviceClock.TestTimePatterns = (_, is24Hour) => is24Hour ? ("HH:mm", "HH:mm:ss") : ("h:mm a", "h:mm:ss a");
+			CultureInfo.CurrentCulture = runtimeCulture;
+			CultureInfo.DefaultThreadCurrentCulture = null;
+
+			ApplicationLanguages.ApplyCulture();
+
+			var time = new DateTime(2024, 1, 15, 13, 5, 9);
+			CultureInfo.CurrentCulture.Name.Should().Be(locale);
+			time.ToString("t", CultureInfo.CurrentCulture).Contains("13").Should().Be(device24Hour);
+			time.ToString("T", CultureInfo.CurrentCulture).Contains("13").Should().Be(device24Hour);
+
+			// DefaultThreadCurrentCulture, which new threads take, formats the same: the runtime's culture when it stays null.
+			var threadFormat = (CultureInfo.DefaultThreadCurrentCulture ?? runtimeCulture).DateTimeFormat;
+			threadFormat.ShortTimePattern.Should().Be(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
+			threadFormat.LongTimePattern.Should().Be(CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern);
+		}
+		finally
+		{
+			DeviceClock.TestDevice = null;
+			DeviceClock.TestTimePatterns = null;
+			CultureInfo.CurrentCulture = culture;
+			CultureInfo.CurrentUICulture = uiCulture;
+			CultureInfo.DefaultThreadCurrentCulture = threadCulture;
+			CultureInfo.DefaultThreadCurrentUICulture = threadUICulture;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+	[DataRow(true)]
+	[DataRow(false)]
+	public void When_App_Set_Culture_Then_Device_Clock_Not_Applied(bool device24Hour)
+	{
+		var culture = CultureInfo.CurrentCulture;
+		var uiCulture = CultureInfo.CurrentUICulture;
+		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
+		var threadUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+		try
+		{
+			// The app's own culture, named as the device's locale.
+			var appCulture = (CultureInfo)CultureInfo.InstalledUICulture.Clone();
+			DeviceClock.TestDevice = (appCulture.Name, null, device24Hour);
+			DeviceClock.TestTimePatterns = (_, is24Hour) => is24Hour ? ("HH:mm", "HH:mm:ss") : ("h:mm a", "h:mm:ss a");
+			CultureInfo.CurrentCulture = appCulture;
+			CultureInfo.DefaultThreadCurrentCulture = null;
+
+			ApplicationLanguages.ApplyCulture();
+
+			CultureInfo.CurrentCulture.Should().BeSameAs(appCulture);
+			CultureInfo.DefaultThreadCurrentCulture.Should().BeNull();
+		}
+		finally
+		{
+			DeviceClock.TestDevice = null;
+			DeviceClock.TestTimePatterns = null;
+			CultureInfo.CurrentCulture = culture;
+			CultureInfo.CurrentUICulture = uiCulture;
+			CultureInfo.DefaultThreadCurrentCulture = threadCulture;
+			CultureInfo.DefaultThreadCurrentUICulture = threadUICulture;
+		}
+	}
+
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
 	public void When_ApplyCulture_Without_User_Locale_Then_Culture_Follows_Language()
 	{
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
 		if (ApplicationLanguages.InvariantCulture)
 		{
 			Assert.Inconclusive("Invariant globalization mode has no culture to fall back to.");
