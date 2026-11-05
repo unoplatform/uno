@@ -245,6 +245,10 @@
 			"description": "When set to true, the Uno.Sdk will not implicitly reference Microsoft.Windows.SDK.BuildTools.WinApp for WinAppSDK executables. Set EnableWinAppRunSupport=false instead to keep the reference but disable the `dotnet run` interception.",
 			"type": "bool"
 		},
+		"UnoEnableSkiaOnWinAppSdk": {
+			"description": "When set to true, the Skia Uno Feature applies on the WinAppSDK target, which brings the SkiaSharp packages and native libraries. WinUI renders the app without them, so it is off by default. Set it when the Windows build uses SKXamlCanvas, Uno Toolkit Skia controls such as ShadowContainer, or SkiaSharp directly.",
+			"type": "bool"
+		},
 		"UnoDisableHotTesting": {
 			"description": "When set to true, the Uno.Sdk will not implicitly reference Uno.HotTesting.Reactive in non-optimized builds of projects using the MVUX feature.",
 			"type": "bool"
