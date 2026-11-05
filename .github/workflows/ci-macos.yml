@@ -1,18 +1,38 @@
-# Spike: can the per-minute Azure Pipelines Mac lanes run on free GitHub-hosted runners?
-# Reuses the ADO scripts unmodified and maps the ADO variables they read.
-name: macOS CI spike
+# The iOS and macOS desktop lanes: free on GitHub-hosted runners, per-minute on Azure Pipelines.
+# Reuses the Azure Pipelines test scripts, so the BUILD_* variables below map what they read.
+name: macOS CI
 
 on:
   push:
-    branches: [ 'spike/macos-gha' ]
+    branches: &branches
+      - master
+      - 'servicing/*'
+      - 'release/beta/*'
+      - 'release/stable/*'
+      - 'feature/*'
+      - 'legacy/*'
+    paths: &paths
+      - '**'
+      - '!.dependabot/**'
+      - '!.github/**'
+      - '.github/workflows/ci-macos.yml'
+      - '.github/actions/macos-ci-setup/**'
+      - '!doc/**'
+      - '!**/*.md'
+      - '!build/cSpell.json'
+      - '!build/.markdownlint.json'
   pull_request:
-    paths:
-      - '.github/workflows/macos-spike.yml'
-      - '.github/actions/macos-spike-setup/**'
+    branches: *branches
+    paths: *paths
   workflow_dispatch:
 
 permissions:
   contents: read
+
+# macOS runners are limited across the org, so a new push replaces a PR's running jobs.
+concurrency:
+  group: ci-macos-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
@@ -25,34 +45,26 @@ env:
   XCODE_ROOT: '/Applications/Xcode_27.app'
 
 jobs:
-  probe:
-    name: Probe runner
-    runs-on: xcode-27
-    timeout-minutes: 15
+  scope:
+    name: Determine test scope
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      webgpu: ${{ steps.scope.outputs.webgpu }}
     steps:
-      - name: Describe the machine
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 200
+      - id: scope
+        shell: pwsh
+        env:
+          BUILD_REASON: ${{ github.event_name == 'pull_request' && 'PullRequest' || 'IndividualCI' }}
+          SYSTEM_PULLREQUEST_TARGETBRANCH: ${{ github.base_ref && format('refs/heads/{0}', github.base_ref) || '' }}
         run: |
-          uname -a
-          sw_vers
-          sysctl -n machdep.cpu.brand_string hw.ncpu hw.memsize
-          system_profiler SPHardwareDataType SPDisplaysDataType
-          df -h /
-          ls -d /Applications/Xcode*
-          xcrun simctl list runtimes
-          xcrun simctl list devices available | grep -E 'iPad Pro 13|Apple TV' || true
-      - name: Probe Metal
-        run: |
-          cat > "$RUNNER_TEMP/metal.swift" <<'EOF'
-          import Metal
-          guard let d = MTLCreateSystemDefaultDevice() else { print("Metal: NO DEVICE"); exit(1) }
-          print("Metal device: \(d.name)")
-          print("Low power: \(d.isLowPower), unified memory: \(d.hasUnifiedMemory)")
-          print("Max working set MB: \(d.recommendedMaxWorkingSetSize / 1_048_576)")
-          for (n, f) in [("apple7", MTLGPUFamily.apple7), ("apple8", .apple8), ("mac2", .mac2), ("metal3", .metal3)] {
-            print("Family \(n): \(d.supportsFamily(f))")
-          }
-          EOF
-          swift "$RUNNER_TEMP/metal.swift"
+          $output = & build/ci/scripts/determine-test-scope.ps1 6>&1 | Out-String
+          Write-Host $output
+          $required = $output -match 'WebGpuTestsRequired requires tests: true'
+          "webgpu=$($required.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
 
   native:
     name: Native macOS build
@@ -62,7 +74,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - uses: ./.github/actions/macos-spike-setup
+      - uses: ./.github/actions/macos-ci-setup
         with:
           select-xcode: 'false'
       - name: Build Skia macOS native
@@ -85,7 +97,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - uses: ./.github/actions/macos-spike-setup
+      - uses: ./.github/actions/macos-ci-setup
         with:
           uno-check-tfm: ${{ env.NET_TFM }}-desktop
           select-xcode: 'false'
@@ -97,11 +109,6 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/logs"
           dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -c Release "-p:UnoTargetFrameworkOverride=$NET_TFM-desktop" -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -f "$NET_TFM-desktop" "/bl:$RUNNER_TEMP/logs/build-generic.binlog"
-      - name: Report resources
-        if: always()
-        run: |
-          df -h /
-          vm_stat | head -8
       - name: Pack the app
         run: tar -C "src/SamplesApp/SamplesApp/bin/Release/$NET_TFM-desktop" -cf "$RUNNER_TEMP/samplesapp-desktop.tar" .
       - uses: actions/upload-artifact@v4
@@ -119,19 +126,13 @@ jobs:
 
   desktop-tests:
     name: macOS ${{ matrix.renderer }} runtime tests
-    needs: desktop-build
+    needs: [ scope, desktop-build ]
     runs-on: xcode-27
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - renderer: Skia
-            label: ''
-            webgpu: ''
-          - renderer: WebGPU
-            label: '-webgpu'
-            webgpu: '1'
+        renderer: ${{ fromJSON(needs.scope.outputs.webgpu == 'true' && '["Skia","WebGPU"]' || '["Skia"]') }}
     env:
       BUILD_SOURCESDIRECTORY: ${{ github.workspace }}
       SamplesAppArtifactName: samplesapp-desktop-skia
@@ -140,7 +141,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - uses: ./.github/actions/macos-spike-setup
+      - uses: ./.github/actions/macos-ci-setup
         with:
           select-xcode: 'false'
       - uses: actions/download-artifact@v4
@@ -151,6 +152,7 @@ jobs:
         run: |
           mkdir -p "$SamplesAppArtifactPath"
           tar -C "$SamplesAppArtifactPath" -xf "$RUNNER_TEMP/app/samplesapp-desktop.tar"
+      # Used to build the hot reload test secondary app during the runtime tests.
       - name: Build HR dependencies
         run: |
           (cd src/SourceGenerators/Uno.UI.Tasks && dotnet build -c Debug)
@@ -158,17 +160,17 @@ jobs:
           (cd src/Uno.UI.RemoteControl.Host && dotnet build -c Debug)
       - name: Run macOS runtime tests
         env:
-          UNO_TEST_RESULT_LABEL: ${{ matrix.label }}
-          UNO_WEBGPU: ${{ matrix.webgpu }}
-          UNO_WEBGPU_LOG: ${{ matrix.webgpu && 'warn' || '' }}
+          UNO_TEST_RESULT_LABEL: ${{ matrix.renderer == 'WebGPU' && '-webgpu' || '' }}
+          RENDERER: ${{ matrix.renderer }}
         run: |
-          # ADO only defines these for the WebGPU lane; an empty value must not read as set.
-          [ -n "$UNO_WEBGPU" ] || unset UNO_WEBGPU UNO_WEBGPU_LOG
+          if [ "$RENDERER" = "WebGPU" ]; then
+            export UNO_WEBGPU=1 UNO_WEBGPU_LOG=warn
+          fi
           chmod +x build/test-scripts/macos-skia-runtime-tests.sh
           build/test-scripts/macos-skia-runtime-tests.sh
-      - name: Summarize results
+      - name: Check results
         if: always()
-        run: python3 .github/actions/macos-spike-setup/summary.py "macOS ${{ matrix.renderer }}" build/skia-macos*-runtime-tests-results.xml
+        run: python3 .github/actions/macos-ci-setup/summary.py "macOS ${{ matrix.renderer }}" build/skia-macos*-runtime-tests-results.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -191,7 +193,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - uses: ./.github/actions/macos-spike-setup
+      - uses: ./.github/actions/macos-ci-setup
         with:
           uno-check-tfm: ${{ env.NET_TFM }}-ios
       - name: Build iOS Skia Head
@@ -199,11 +201,6 @@ jobs:
           mkdir -p "$BUILD_ARTIFACTSTAGINGDIRECTORY"
           chmod +x build/test-scripts/skia-ios-uitest-build.sh
           TFM="$NET_TFM-ios" build/test-scripts/skia-ios-uitest-build.sh
-      - name: Report resources
-        if: always()
-        run: |
-          df -h /
-          vm_stat | head -8
       # upload-artifact drops the executable bits and symlinks an .app relies on.
       - name: Pack the app
         run: tar -C "src/SamplesApp/SamplesApp/bin/Release/$NET_TFM-ios/iossimulator-arm64" -cf "$RUNNER_TEMP/SamplesApp.app.tar" SamplesApp.app
@@ -222,14 +219,14 @@ jobs:
 
   ios-tests:
     name: iOS ${{ matrix.renderer }} runtime tests ${{ matrix.group }}
-    needs: ios-build
+    needs: [ scope, ios-build ]
     runs-on: xcode-27
     timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
         group: [ '0', '1', '2', '3' ]
-        renderer: [ Skia, WebGPU ]
+        renderer: ${{ fromJSON(needs.scope.outputs.webgpu == 'true' && '["Skia","WebGPU"]' || '["Skia"]') }}
     env:
       BUILD_SOURCESDIRECTORY: ${{ github.workspace }}
       BUILD_ARTIFACTSTAGINGDIRECTORY: ${{ github.workspace }}/artifacts
@@ -249,7 +246,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - uses: ./.github/actions/macos-spike-setup
+      - uses: ./.github/actions/macos-ci-setup
       - uses: actions/download-artifact@v4
         with:
           name: samplesapp-ios-skia
@@ -265,9 +262,9 @@ jobs:
         run: |
           chmod +x build/test-scripts/ios-uitest-run.sh
           TFM="$NET_TFM-ios" build/test-scripts/ios-uitest-run.sh
-      - name: Summarize results
+      - name: Check results
         if: always()
-        run: python3 .github/actions/macos-spike-setup/summary.py "iOS ${{ matrix.renderer }} ${{ matrix.group }}" build/TestResult-original.xml
+        run: python3 .github/actions/macos-ci-setup/summary.py "iOS ${{ matrix.renderer }} ${{ matrix.group }}" build/TestResult-original.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -278,3 +275,20 @@ jobs:
             ios-ui-tests-logs
           if-no-files-found: ignore
           retention-days: 14
+
+  # One stable name for a ruleset to require, whichever matrix legs ran.
+  result:
+    name: macOS CI result
+    if: always()
+    needs: [ scope, native, desktop-build, desktop-tests, ios-build, ios-tests ]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Fail unless every job succeeded
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "$RESULTS"
+          for r in $RESULTS; do
+            [ "$r" = "success" ] || exit 1
+          done

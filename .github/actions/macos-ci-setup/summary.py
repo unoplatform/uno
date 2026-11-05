@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Writes a pass/fail line to the job summary: GitHub has no equivalent of ADO's PublishTestResults.
+# Reports the results and fails the job on failed tests, which ADO's PublishTestResults did.
 import glob
 import os
 import sys
@@ -8,6 +8,7 @@ import xml.etree.ElementTree as ET
 title, patterns = sys.argv[1], sys.argv[2:]
 files = [f for p in patterns for f in glob.glob(p)]
 lines = []
+failed = 0
 
 for path in files:
     root = ET.parse(path).getroot()
@@ -19,6 +20,7 @@ for path in files:
     )
     for case in root.iter("test-case"):
         if case.get("result") == "Failed":
+            failed += 1
             lines.append(f"- {case.get('fullname')}")
 
 if not files:
@@ -30,3 +32,5 @@ summary = os.environ.get("GITHUB_STEP_SUMMARY")
 if summary:
     with open(summary, "a", encoding="utf-8") as f:
         f.write(text + "\n")
+
+sys.exit(1 if failed or not files else 0)

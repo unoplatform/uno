@@ -1,12 +1,12 @@
-name: macOS spike setup
-description: Mirrors the ADO dotnet-install, Xcode selection and workload templates.
+name: macOS CI setup
+description: Installs .NET, and optionally the pinned Xcode and the workloads for a TFM.
 
 inputs:
   uno-check-tfm:
-    description: TFM to install workloads for. Empty skips the workloads, as the ADO test jobs do.
+    description: TFM to install workloads for. Empty skips the workloads.
     default: ''
   select-xcode:
-    description: Switch to the pinned Xcode, as the ADO iOS jobs do.
+    description: Switch to the pinned Xcode.
     default: 'true'
 
 runs:
@@ -25,7 +25,6 @@ runs:
         echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
 
     - name: Restore the .NET and workloads cache
-      id: dotnet-cache
       uses: actions/cache@v4
       with:
         path: .dotnet
@@ -55,5 +54,5 @@ runs:
       shell: bash
       run: |
         dotnet tool update --global uno.check --version "$GlobalUnoCheckVersion" --add-source https://api.nuget.org/v3/index.json
-        # ADO ignores the exit code too (ignoreLASTEXITCODE): the skipped checks can report failure.
+        # The skipped checks can report failure; a missing workload fails the build that follows.
         uno-check -v --ci --non-interactive --fix --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip maui --skip vsmac --skip unosdk --skip dotnetnewunotemplates --pre-major --preview-major --tfm "${{ inputs.uno-check-tfm }}" || true
