@@ -76,6 +76,7 @@ public partial class CompositionTarget
 	// Every host answers a request with a frame, so a request left unanswered is a host bug that would otherwise
 	// leave the app silently frozen. Written from the rendering thread, read from the UI thread.
 	private long _lastNativeFrameTimestamp = Stopwatch.GetTimestamp();
+	private long _renderRequestTimestamp; // only set or read under _renderingStateGate
 	private long _lastStalledRenderLogTimestamp;
 	private int _stalledRenderReports;
 
@@ -105,6 +106,7 @@ public partial class CompositionTarget
 			if (!_renderedAheadOfTime && !RenderRequested)
 			{
 				RenderRequested = true;
+				_renderRequestTimestamp = Stopwatch.GetTimestamp();
 				shouldEnqueue = true;
 			}
 			else if (_renderedAheadOfTime)
@@ -137,8 +139,17 @@ public partial class CompositionTarget
 	/// </summary>
 	private void ReportIfRenderRequestStalled()
 	{
-		var sinceFrameMs = (long)Stopwatch.GetElapsedTime(Interlocked.Read(ref _lastNativeFrameTimestamp)).TotalMilliseconds;
-		if (sinceFrameMs < StalledRenderReportMs || _stalledRenderReports >= MaxStalledRenderReports)
+		long requestTimestamp;
+		lock (_renderingStateGate)
+		{
+			requestTimestamp = _renderRequestTimestamp;
+		}
+
+		// Measured from the request, not the last frame: an idle window gets no frames, so that would age a new request.
+		var requestAgeMs = (long)Stopwatch.GetElapsedTime(requestTimestamp).TotalMilliseconds;
+		if (Interlocked.Read(ref _lastNativeFrameTimestamp) >= requestTimestamp
+			|| requestAgeMs < StalledRenderReportMs
+			|| _stalledRenderReports >= MaxStalledRenderReports)
 		{
 			return;
 		}
@@ -155,7 +166,7 @@ public partial class CompositionTarget
 		if (this.Log().IsEnabled(LogLevel.Warning))
 		{
 			this.Log().Warn(
-				$"CompositionTarget#{GetHashCode()}: a render request has been outstanding for {sinceFrameMs}ms with no "
+				$"CompositionTarget#{GetHashCode()}: a render request has been outstanding for {requestAgeMs}ms with no "
 				+ $"frame from the host (renderRequested={_renderRequested}, renderedAheadOfTime={_renderedAheadOfTime}, "
 				+ $"requestedAfterAheadOfTimePaint={_renderRequestedAfterAheadOfTimePaint}).");
 		}
