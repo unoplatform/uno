@@ -48,7 +48,6 @@ public class FlyoutAutomationIntegrationTests
 
 	[TestMethod]
 	[Description("Verify AutomationProperties for Flyout.")]
-	[Ignore("Pending Popup port")]
 	public async Task VerifyAutomationProperties()
 	{
 		var flyoutWithName = await FlyoutHelper.CreateDefaultFlyout(FlyoutPlacementMode.Left);
@@ -289,7 +288,6 @@ public class FlyoutAutomationIntegrationTests
 
 	[TestMethod]
 	[Description("Validates the default IsDialog property from flyout dialog's popup is set to true")]
-	[Ignore("Pending Popup port")]
 	public async Task DoesFlyoutSetIsDialogPropertyToTrueByDefault()
 	{
 		var flyout = await FlyoutHelper.CreateDefaultFlyout(FlyoutPlacementMode.Left);
@@ -326,7 +324,6 @@ public class FlyoutAutomationIntegrationTests
 
 	[TestMethod]
 	[Description("Verify that a flyout with an Automation ID and name propagate them to the presenter.")]
-	[Ignore("Pending Popup port")]
 	public async Task VerifyAutomationNameAndIdPropagateToPresenter()
 	{
 		string flyoutName = "FlyoutName";

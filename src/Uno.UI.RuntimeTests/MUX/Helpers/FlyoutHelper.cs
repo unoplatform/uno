@@ -254,9 +254,12 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 				center = target.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(target.ActualWidth / 2, target.ActualHeight / 2));
 			});
 
-			var injector = Windows.UI.Input.Preview.Injection.InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var pen = injector.GetPen();
-			await Uno.UI.RuntimeTests.Helpers.InjectedPointerHoldExtensions.Hold(pen, center);
+			await RunOnUIThread(async () =>
+			{
+				var injector = Windows.UI.Input.Preview.Injection.InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var pen = injector.GetPen();
+				await Uno.UI.RuntimeTests.Helpers.InjectedPointerHoldExtensions.Hold(pen, center);
+			});
 
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.SynchronouslyTickUIThread(60);
