@@ -345,6 +345,9 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	private void Shutdown()
 	{
+		// CContentRoot::Close: clear the popups from the popup root, otherwise they would stay open on a tree that is going away.
+		Window.Content?.XamlRoot?.VisualTree.PopupRoot?.CloseAllPopupsForTreeReset();
+
 		if (NativeWindowFactory.SupportsMultipleWindows)
 		{
 			ApplicationHelper.RemoveWindow(Window);

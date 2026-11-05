@@ -133,10 +133,10 @@ partial class Popup
 		// When an app is running in an islands-only context, there are times where we can't find
 		// a popup root for a given popup.  For example, if an app creates a popup in code and
 		// calls Open, we don't know which island it's associated with -- we just fail out here.
-		// TODO Uno: WinUI raises ERROR_POPUP_XAMLROOT_NOT_SET here.
-		if (pPopupRoot is null && this.Log().IsEnabled(LogLevel.Warning))
+		if (pPopupRoot is null)
 		{
-			this.Log().Warn("The popup can't open: it has no XamlRoot.");
+			// ERROR_POPUP_XAMLROOT_NOT_SET, E_UNEXPECTED
+			throw new global::System.Runtime.InteropServices.COMException("Popup.XamlRoot must be set before the popup can be opened.", unchecked((int)0x8000FFFF));
 		}
 
 		// If it's been requested that this popup be windowed,

@@ -483,7 +483,6 @@ namespace Uno.UI.Xaml.Core
 
 			if (PopupRoot is not null)
 			{
-				PopupRoot.CloseAllPopupsForTreeReset();
 				RemoveRoot(PopupRoot);
 			}
 
