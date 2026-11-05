@@ -468,17 +468,12 @@ namespace Uno.UI.DataBinding
 			var indexerWeak = new WeakReference<BindingItem>(indexer);
 			NotifyCollectionChangedEventHandler handler = (s, args) =>
 			{
-				if (!indexerWeak.TryGetTarget(out var item))
+				// The collection raises PropertyChanged for "Item[]", which doesn't match the "Item[0]" the indexer
+				// listens to: re-read the indexer's value, so that it reaches the target (and the rest of the path).
+				if (indexerWeak.TryGetTarget(out var item))
 				{
-					return;
+					item.OnCollectionChanged();
 				}
-
-				BindingItem tail = item;
-				while (tail.Next != null)
-				{
-					tail = tail.Next;
-				}
-				tail.Path?.OnValueChanged(item.DataContext);
 			};
 
 			notify.CollectionChanged += handler;
