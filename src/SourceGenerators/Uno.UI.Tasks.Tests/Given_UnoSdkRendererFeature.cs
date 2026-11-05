@@ -105,6 +105,28 @@ public class Given_UnoSdkRendererFeature
 	}
 
 	[TestMethod]
+	[DataRow("SkiaRenderer")]
+	[DataRow("SkiaRenderer;Toolkit")]
+	public void When_Windows_Head_Lists_SkiaRenderer_Then_Skia_Is_Not_Referenced(string features)
+	{
+		var (unoFeatures, packages) = Evaluate("WinExe", features, Windows);
+
+		unoFeatures.Should().NotContain(";skia;").And.NotContain(";skiarenderer;");
+		packages.Should().NotContain(SkiaPackages);
+	}
+
+	[TestMethod]
+	[DataRow("Skia")]
+	[DataRow("Skia;SkiaRenderer")]
+	public void When_Windows_Head_Lists_Skia_Then_Skia_Is_Referenced(string features)
+	{
+		var (unoFeatures, packages) = Evaluate("WinExe", features, Windows);
+
+		unoFeatures.Should().Contain(";skia;");
+		packages.Should().Contain(["Uno.WinUI.Graphics2DSK", "SkiaSharp.Views.WinUI"]);
+	}
+
+	[TestMethod]
 	public void When_Head_Lists_WebGpuCanvas_Then_WebGpu_Is_Added_Next_To_Skia()
 	{
 		var (unoFeatures, packages) = Evaluate("Exe", "WebGpuCanvas");
