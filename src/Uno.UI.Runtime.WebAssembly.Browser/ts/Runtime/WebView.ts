@@ -65,6 +65,19 @@ namespace Microsoft.UI.Xaml.Controls {
             iframe.style.border = "0";
         }
 
+        static enableCredentialless(htmlId: string) {
+            // Only useful under COEP, where cross-origin frames are otherwise blocked; elsewhere it would only drop credentials.
+            if (!(<any>globalThis).crossOriginIsolated) {
+                return;
+            }
+
+            if (!("credentialless" in HTMLIFrameElement.prototype)) {
+                console.warn("Credentialless iframes are not supported by this browser, cross-origin WebView2 content may be blocked.");
+            }
+
+            (<HTMLIFrameElement>document.getElementById(htmlId)).setAttribute("credentialless", "");
+        }
+
         static getPackageBase(): string {
             if (WebView.cachedPackageBase !== null) {
                 return WebView.cachedPackageBase;

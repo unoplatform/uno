@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
+using Uno.UI;
 using Uno.UI.Xaml.Controls;
 using Windows.Storage;
 using Windows.Storage.Helpers;
@@ -37,6 +38,11 @@ internal partial class NativeWebView : ICleanableNativeWebView
 			);
 		_coreWebView = coreWebView;
 		_elementId = elementId;
+
+		if (FeatureConfiguration.WebView2.Credentialless)
+		{
+			NativeMethods.EnableCredentialless(elementId);
+		}
 
 		NativeMethods.InitializeStyling(elementId);
 		NativeMethods.SetupEvents(elementId);
