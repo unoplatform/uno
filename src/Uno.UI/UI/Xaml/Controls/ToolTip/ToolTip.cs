@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private PlacementMode? m_pToolTipServicePlacementModeOverride;
 		private bool m_bIsPopupPositioned;
 		//private bool m_bClosing;
-		//private bool m_bIsOpenAsAutomaticToolTip;
+		private bool m_bIsOpenAsAutomaticToolTip;
 		private bool m_bCallPerformPlacementAtNextPopupOpen;
 		internal AutomaticToolTipInputMode m_inputMode = AutomaticToolTipInputMode.Mouse; // TODO Uno: This should be set from ToolTipService
 		internal bool m_isSliderThumbToolTip;
@@ -138,6 +138,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnOpenChanged(bool isOpen)
 		{
+			if (isOpen)
+			{
+				m_bIsOpenAsAutomaticToolTip = ToolTipService.s_bOpeningAutomaticToolTip;
+			}
+
 			PerformPlacementInternal();
 			if (_owner is not null)
 			{
@@ -168,6 +173,14 @@ namespace Microsoft.UI.Xaml.Controls
 #if UNO_HAS_ENHANCED_LIFECYCLE
 				UnsubscribeOwnerThemeChanged();
 #endif
+
+				// As in WinUI, closing releases the ToolTip from the service only if the service opened it.
+				if (!isOpen && m_bIsOpenAsAutomaticToolTip)
+				{
+					m_bIsOpenAsAutomaticToolTip = false;
+					ToolTipService.ReleaseToolTip(this);
+				}
+
 				Closed?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Closed", useTransitions: true);
 			}
