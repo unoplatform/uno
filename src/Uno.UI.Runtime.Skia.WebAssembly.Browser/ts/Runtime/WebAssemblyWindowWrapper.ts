@@ -9,6 +9,8 @@
 		private onDocumentVisibilityChanged: any;
 		private owner: any;
 		private lastReportedOcclusion: number = -1;
+		private isKeyboardOcclusionReportScheduled = false;
+		private isKeyboardBlurPending = false;
 		private viewportResizeObserver: ResizeObserver | undefined;
 		private lastObservedViewportSize: { width: number, height: number } | undefined;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
@@ -73,15 +75,15 @@
 			})
 
 			// The browser has no window activation; focus/blur and page visibility are the equivalents.
-			window.addEventListener("focus", () => this.onWindowFocusChanged(this.owner, true));
-			window.addEventListener("blur", () => this.onWindowFocusChanged(this.owner, false));
-			document.addEventListener("visibilitychange", () => this.onDocumentVisibilityChanged(this.owner, !document.hidden));
+			window.addEventListener("focus", () => this.onWindowFocus());
+			window.addEventListener("blur", () => this.onWindowBlur());
+			document.addEventListener("visibilitychange", () => this.onVisibilityChange());
 
 			// The on-screen keyboard shrinks the visual viewport without firing window "resize",
 			// so track it separately to report keyboard occlusion to the InputPane (issue 3).
 			if (window.visualViewport) {
-				window.visualViewport.addEventListener("resize", () => this.reportKeyboardOcclusion());
-				window.visualViewport.addEventListener("scroll", () => this.reportKeyboardOcclusion());
+				window.visualViewport.addEventListener("resize", () => this.scheduleKeyboardOcclusionReport());
+				window.visualViewport.addEventListener("scroll", () => this.scheduleKeyboardOcclusionReport());
 			}
 
 			this.resize();
@@ -117,6 +119,50 @@
 				window.dispatchEvent(new Event("resize"));
 			});
 			this.viewportResizeObserver.observe(rootElement);
+		}
+
+		// iOS WebKit blurs the window when the on-screen keyboard is dismissed and focuses it again on the next tap.
+		// That isn't a deactivation: reporting it would light-dismiss the open popups.
+		private onWindowBlur() {
+			if (BrowserInputHelper.isIOS && this.lastReportedOcclusion > 0) {
+				this.isKeyboardBlurPending = true;
+				return;
+			}
+
+			this.isKeyboardBlurPending = false;
+			this.onWindowFocusChanged(this.owner, false);
+		}
+
+		private onWindowFocus() {
+			if (this.isKeyboardBlurPending) {
+				this.isKeyboardBlurPending = false;
+				return;
+			}
+
+			this.onWindowFocusChanged(this.owner, true);
+		}
+
+		private onVisibilityChange() {
+			// Hiding the page after a keyboard blur does deactivate it.
+			if (document.hidden && this.isKeyboardBlurPending) {
+				this.isKeyboardBlurPending = false;
+				this.onWindowFocusChanged(this.owner, false);
+			}
+
+			this.onDocumentVisibilityChanged(this.owner, !document.hidden);
+		}
+
+		// The visual viewport fires "resize" and "scroll" together, and on every frame while the keyboard slides: report once per frame.
+		private scheduleKeyboardOcclusionReport() {
+			if (this.isKeyboardOcclusionReportScheduled) {
+				return;
+			}
+
+			this.isKeyboardOcclusionReportScheduled = true;
+			requestAnimationFrame(() => {
+				this.isKeyboardOcclusionReportScheduled = false;
+				this.reportKeyboardOcclusion();
+			});
 		}
 
 		// Reports how much of the viewport the on-screen keyboard occludes, in the same CSS pixels
