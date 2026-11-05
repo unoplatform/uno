@@ -55,6 +55,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private (Matrix4x4 matrix, Matrix4x4 localMatrix) _totalMatrix = (Matrix4x4.Identity, Matrix4x4.Identity);
+	private Visual? _transformParent;
+	private Visual? _transformChild;
 	// Opaque per-visual retained state owned by the rendering backend (Skia: an SKPicture). _content is
 	// this visual's own painted content; _childrenContent is a collapsed subtree cache.
 	private IRenderRecord? _content;
@@ -227,6 +229,34 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// this is for effect brushes that apply an effect on an already-drawn area, so these need to be painted every frame.
 	internal virtual bool RequiresRepaintOnEveryFrame => false;
 
+	/// <summary>
+	/// The visual this visual is positioned against instead of its parent, for an element drawn away from its logical
+	/// parent: an open popup's child sits under the popup root but transforms with the popup (MUX: CPopupRoot's render walk).
+	/// </summary>
+	internal Visual? TransformParent
+	{
+		get => _transformParent;
+		set
+		{
+			if (_transformParent != value)
+			{
+				if (_transformParent is { } previous && previous._transformChild == this)
+				{
+					previous._transformChild = null;
+				}
+
+				_transformParent = value;
+
+				if (value is not null)
+				{
+					value._transformChild = this;
+				}
+
+				SetMatrixDirty();
+			}
+		}
+	}
+
 	/// <returns>true if wasn't dirty</returns>
 	internal bool SetMatrixDirty()
 	{
@@ -246,6 +276,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
+
+		// Not a pure ancestor move for that visual: its place within its actual parent changes.
+		if (!matrixDirty)
+		{
+			_transformChild?.SetMatrixDirty();
+		}
+
 		return !matrixDirty;
 	}
 
@@ -272,7 +309,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var localMatrix = Matrix4x4.Identity;
 
 				// Start out with the final matrix of the parent
-				var matrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
+				var parentMatrix = (_transformParent ?? Parent)?.TotalMatrix ?? Matrix4x4.Identity;
+				var matrix = parentMatrix;
 
 				// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
 				var offsetMatrix = GetOffsetMatrix();
@@ -287,6 +325,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					localMatrix = transform * localMatrix;
 					matrix = transform * matrix;
+				}
+
+				// The drawing walk goes through the actual parent: the local matrix has to bring it to the transform parent.
+				if (_transformParent is not null && Matrix4x4.Invert(Parent?.TotalMatrix ?? Matrix4x4.Identity, out var inverseActualParent))
+				{
+					localMatrix = localMatrix * parentMatrix * inverseActualParent;
 				}
 
 				_totalMatrix = (matrix, localMatrix);
