@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Uno.UI.Helpers;
 
@@ -518,51 +519,76 @@ namespace Uno.UI.DataBinding
 
 				notify.PropertyChanged += handler;
 
-				return new PropertyChangedSubscription(notify, handler, newValueActionWeak);
+				// The lambdas below must not capture 'notify': the subscription holds the source weakly.
+				return new WeakSourceSubscription<INotifyPropertyChanged>(
+					notify,
+					source => source.PropertyChanged -= handler,
+					() => Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, newValueActionWeak),
+					"the PropertyChanged handler of a collected binding");
 			}
 
 			return null;
 		}
 
 		// Uno-specific: held by the binding only, so a binding dropped without being disposed doesn't leave its handler on
-		// the source: the finalizer removes it.
-		private sealed class PropertyChangedSubscription : IDisposable
+		// the source: the finalizer removes it. The source is held by a raw weak handle (no finalizer of its own, unlike a
+		// pooled ManagedWeakReference), so a source that dies with the binding is collected at once and needs no removal.
+		private sealed class WeakSourceSubscription<TSource> : IDisposable
+			where TSource : class
 		{
-			private INotifyPropertyChanged? _source;
-			private readonly PropertyChangedEventHandler _handler;
-			private readonly ManagedWeakReference _newValueActionWeak;
+			private readonly Action<TSource> _unsubscribe;
+			private readonly Action? _onDisposed;
+			private readonly string _description;
+			private IntPtr _source;
 
-			public PropertyChangedSubscription(INotifyPropertyChanged source, PropertyChangedEventHandler handler, ManagedWeakReference newValueActionWeak)
+			/// <param name="unsubscribe">Must not capture <paramref name="source"/>.</param>
+			/// <param name="onDisposed">Runs on an explicit Dispose only, not from the finalizer.</param>
+			public WeakSourceSubscription(TSource source, Action<TSource> unsubscribe, Action? onDisposed, string description)
 			{
-				_source = source;
-				_handler = handler;
-				_newValueActionWeak = newValueActionWeak;
+				_unsubscribe = unsubscribe;
+				_onDisposed = onDisposed;
+				_description = description;
+				_source = GCHandle.ToIntPtr(GCHandle.Alloc(source, GCHandleType.Weak));
 			}
 
 			public void Dispose()
 			{
 				GC.SuppressFinalize(this);
 
-				if (Interlocked.Exchange(ref _source, null) is { } source)
+				if (TakeSource(out var source))
 				{
-					source.PropertyChanged -= _handler;
-					Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, _newValueActionWeak);
+					if (source is not null)
+					{
+						_unsubscribe(source);
+					}
+
+					_onDisposed?.Invoke();
 				}
 			}
 
-			// Doesn't return the weak reference to the pool: its handles may already be finalized.
-			~PropertyChangedSubscription()
+			~WeakSourceSubscription()
 			{
-				if (Interlocked.Exchange(ref _source, null) is not { } source)
+				if (TakeSource(out var source) && source is not null)
 				{
-					return;
+					var unsubscribe = _unsubscribe;
+					SubscriptionCleanup.EnqueueFromFinalizer(() => unsubscribe(source), typeof(BindingPath), _description);
+				}
+			}
+
+			// Frees the handle exactly once: returns false if it was already taken.
+			private bool TakeSource(out TSource? source)
+			{
+				var pointer = Interlocked.Exchange(ref _source, IntPtr.Zero);
+				if (pointer == IntPtr.Zero)
+				{
+					source = null;
+					return false;
 				}
 
-				var handler = _handler;
-				SubscriptionCleanup.EnqueueFromFinalizer(
-					() => source.PropertyChanged -= handler,
-					typeof(BindingPath),
-					"the PropertyChanged handler of a collected binding");
+				var handle = GCHandle.FromIntPtr(pointer);
+				source = handle.Target as TSource;
+				handle.Free();
+				return true;
 			}
 		}
 
