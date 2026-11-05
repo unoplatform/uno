@@ -4,7 +4,11 @@ name: macOS CI spike
 
 on:
   push:
-    branches: [ 'spike/macos-gha', 'dev/mazi/macos-gha-spike' ]
+    branches: [ 'spike/macos-gha' ]
+  pull_request:
+    paths:
+      - '.github/workflows/macos-spike.yml'
+      - '.github/actions/macos-spike-setup/**'
   workflow_dispatch:
 
 permissions:
@@ -164,7 +168,7 @@ jobs:
           build/test-scripts/macos-skia-runtime-tests.sh
       - name: Summarize results
         if: always()
-        run: python3 build/test-scripts/macos-spike-summary.py "macOS ${{ matrix.renderer }}" build/skia-macos*-runtime-tests-results.xml
+        run: python3 .github/actions/macos-spike-setup/summary.py "macOS ${{ matrix.renderer }}" build/skia-macos*-runtime-tests-results.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -263,7 +267,7 @@ jobs:
           TFM="$NET_TFM-ios" build/test-scripts/ios-uitest-run.sh
       - name: Summarize results
         if: always()
-        run: python3 build/test-scripts/macos-spike-summary.py "iOS ${{ matrix.renderer }} ${{ matrix.group }}" build/TestResult-original.xml
+        run: python3 .github/actions/macos-spike-setup/summary.py "iOS ${{ matrix.renderer }} ${{ matrix.group }}" build/TestResult-original.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:
