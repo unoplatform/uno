@@ -199,6 +199,9 @@ internal partial class X11XamlRootHost
 						case XEventName.ConfigureNotify:
 							RaiseConfigureCallback();
 							break;
+						// A keyboard grab, such as a window manager's shortcut, doesn't move the focus.
+						case XEventName.FocusIn or XEventName.FocusOut when @event.FocusChangeEvent.mode != (int)NotifyMode.NotifyNormal:
+							break;
 						case XEventName.FocusIn:
 							QueueAction(this, () =>
 							{
@@ -207,6 +210,7 @@ internal partial class X11XamlRootHost
 									AccessibilityRouter.SetActive(this);
 								}
 								_focusCallback(true);
+								RestackPopupSites();
 							});
 							break;
 						case XEventName.FocusOut:
@@ -276,12 +280,14 @@ internal partial class X11XamlRootHost
 							{
 								this.Log().Debug($"Window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is mapped.");
 							}
+							QueueOwnerMappedForPopups(true);
 							break;
 						case XEventName.UnmapNotify:
 							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
 								this.Log().Debug($"Window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is unmapped.");
 							}
+							QueueOwnerMappedForPopups(false);
 							break;
 						case XEventName.ReparentNotify:
 							if (this.Log().IsEnabled(LogLevel.Debug))
@@ -293,6 +299,10 @@ internal partial class X11XamlRootHost
 							PrintUnexpectedEventError(@event);
 							break;
 					}
+				}
+				else if (@event.type is XEventName.Expose && _popupSitesByWindow.TryGetValue(@event.AnyEvent.window, out var popupSite))
+				{
+					popupSite.InvalidateRender();
 				}
 				else
 				{

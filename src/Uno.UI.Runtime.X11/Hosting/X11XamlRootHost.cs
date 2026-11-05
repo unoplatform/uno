@@ -14,6 +14,7 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
@@ -29,12 +30,15 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 
 	// Note For KeyPress/KeyRelease: subscribing on the top window prevents key inputs from hitting when the pointer
 	// is outside the window. https://github.com/unoplatform/uno/issues/19310
+	// Note For FocusIn/FocusOut: the window manager focuses the root window. The top window only hears of that while
+	// the pointer is inside it, so clicking another app's window would otherwise never deactivate this one.
 	private const IntPtr RootEventsMask =
 		(IntPtr)EventMask.ExposureMask |
 		(IntPtr)EventMask.StructureNotifyMask |
 		(IntPtr)EventMask.VisibilityChangeMask |
 		(IntPtr)EventMask.KeyPressMask |
 		(IntPtr)EventMask.KeyReleaseMask |
+		(IntPtr)EventMask.FocusChangeMask |
 		(IntPtr)EventMask.NoEventMask;
 	private const IntPtr TopEventsMask =
 		(IntPtr)EventMask.ExposureMask |
@@ -116,6 +120,7 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 			_configureTimer.Stop();
 			_configureScheduled = 0;
 			_configureCallback();
+			OnConfigureForPopups();
 		};
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
@@ -154,6 +159,8 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 				_renderRequested.Dispose();
 				_renderer?.Dispose();
 			}
+
+			NativeDispatcher.Main.Enqueue(ClosePopupSites, NativeDispatcherPriority.High);
 		});
 	}
 
@@ -476,6 +483,7 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 		// The renderer is installed per-window on the CompositionTarget by the render driver each frame (each X11
 		// window owns a distinct GPU context, so the backend factory is per-window, never a process-wide singleton).
 		_drawingFactory = init.Renderer;
+		GraphicsContextKind = init.Context.Kind;
 		_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, init.Context, init.Renderer);
 		// Report whether the negotiated context rasterizes on the CPU (effect brushes read this while recording).
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
@@ -609,7 +617,7 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 
 	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md
 	// https://learnopengl.com/Advanced-OpenGL/Framebuffers
-	private unsafe static X11Window CreateGLXWindow(IntPtr display, int screen, Size size, IntPtr parent)
+	internal unsafe static X11Window CreateGLXWindow(IntPtr display, int screen, Size size, IntPtr parent, bool isPopup = false)
 	{
 		if (!GlxInterface.glXQueryExtension(display, out _, out _))
 		{
@@ -649,6 +657,15 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 		XSetWindowAttributes attribs = default;
 		// Setting the colormap here is necessary, otherwise we get a GLX error on some environments. cf. https://github.com/unoplatform/uno/issues/21285
 		attribs.colormap = XLib.XCreateColormap(display, parent, visual->visual, /* AllocNone */ 0);
+		var valueMask = XCreateWindowFlags.CWColormap;
+		if (isPopup)
+		{
+			// The parent is the screen's root here, whose depth this window doesn't share, so the border can't be inherited.
+			attribs.border_pixel = 0;
+			attribs.override_redirect = /* True */ 1;
+			valueMask |= XCreateWindowFlags.CWBorderPixel | XCreateWindowFlags.CWOverrideRedirect;
+		}
+
 		var window = XLib.XCreateWindow(
 			display,
 			parent,
@@ -660,7 +677,7 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 			(int)visual->depth,
 			/* InputOutput */ 1,
 			visual->visual,
-			(UIntPtr)XCreateWindowFlags.CWColormap,
+			(UIntPtr)valueMask,
 			ref attribs);
 
 		_ = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_STENCIL_SIZE, out var stencil);
@@ -668,7 +685,7 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 		return new X11Window(display, window, (stencil, samples, context));
 	}
 
-	private static X11Window CreateSoftwareRenderWindow(IntPtr display, int screen, Size size, IntPtr parent)
+	internal static X11Window CreateSoftwareRenderWindow(IntPtr display, int screen, Size size, IntPtr parent, bool isPopup = false)
 	{
 		var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, DefaultColorDepth, 4, out var info);
 		var success = matchVisualInfoResult != 0;
@@ -693,7 +710,7 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 		var xSetWindowAttributes = new XSetWindowAttributes()
 		{
 			// Settings to true when WindowStyle is None
-			//override_redirect = true,
+			override_redirect = isPopup ? 1 : 0,
 			colormap = XLib.XCreateColormap(display, parent, visual, /* AllocNone */ 0),
 			border_pixel = 0,
 		};
@@ -701,7 +718,7 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 				0
 				| SetWindowValuemask.BorderPixel
 				| SetWindowValuemask.ColorMap
-			//| SetWindowValuemask.OverrideRedirect
+			| (isPopup ? SetWindowValuemask.OverrideRedirect : SetWindowValuemask.Nothing)
 			;
 		var window = XLib.XCreateWindow(display, parent, 0, 0, (int)size.Width,
 			(int)size.Height, 0, (int)depth, /* InputOutput */ 1, visual,
@@ -767,6 +784,7 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 				{
 					_configureScheduled = 0;
 					_configureCallback();
+					OnConfigureForPopups();
 				});
 			}
 			else
