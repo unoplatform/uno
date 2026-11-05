@@ -246,7 +246,10 @@ namespace Microsoft.UI.Xaml.Controls
 				popupChild.MinWidth = _layoutRoot.ActualWidth;
 				popupChild.MaxHeight = MaxSuggestionListHeight;
 
-				Rect windowRect = XamlRoot?.VisualTree.VisibleBounds ?? default;
+				// MUX Reference AutoSuggestBox_Partial.cpp: a windowed popup aligns against its monitor.
+				Rect windowRect = popup.IsWindowed
+					? FlyoutBase.CalculateAvailableMonitorRect(popup, this.TransformToVisual(null).TransformPoint(default))
+					: XamlRoot?.VisualTree.VisibleBounds ?? default;
 
 				var inputPaneRect = InputPane.GetForCurrentView().OccludedRect;
 

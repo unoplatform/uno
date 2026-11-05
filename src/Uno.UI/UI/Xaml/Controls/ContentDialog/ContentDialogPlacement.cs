@@ -9,5 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 		Popup,
 		[NotImplemented]
 		InPlace,
+		UnconstrainedPopup,
 	}
 }

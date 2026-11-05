@@ -839,7 +839,7 @@ partial class FlyoutBase
 
 				if (IsWindowedPopup())
 				{
-					contentRect = CalculateAvailableMonitorRect(_popup, positionValue);
+					contentRect = Popup.CalculateAvailableMonitorRect(xamlRoot, positionValue);
 				}
 				else
 				{
@@ -1344,7 +1344,7 @@ partial class FlyoutBase
 
 	private void ForwardSystemBackdropToPopup()
 	{
-		// TODO Uno: Stage D, Popup.SystemBackdrop is not implemented, so GetSystemBackdrop has nowhere to go:
+		// TODO Uno: Popup.SystemBackdrop is not implemented (see Popup.ApplyRootRoundedCornerClipToSystemBackdrop), so GetSystemBackdrop has nowhere to go:
 		// FlyoutBase.SystemBackdrop takes precedence over MenuFlyoutPresenter.SystemBackdrop (FlyoutBase_partial.cpp lines 1612-1667).
 	}
 
@@ -1784,7 +1784,8 @@ partial class FlyoutBase
 			// it's happening outside the island)  Since XAML won't know then what the last input device _really_ was, we update XAML's
 			// notion of last input device with what the system has here, and open the Flyout with the appropriate FocusState.
 			// We only care about this for windowed popups.
-			// TODO Uno: Stage D, CPopup::GetShouldShowKeyboardCues for a windowed popup in a XamlIslandRoot.
+			// TODO Uno: CPopup::GetShouldShowKeyboardCues for a windowed popup in a XamlIslandRoot: a popup's content has no
+			// input focus controller, and a window's root isn't told about input outside of it.
 
 			// If the user is using a UIA client such as Narrator, we want to treat things as if the device used to open
 			// the flyout was a keyboard. Otherwise, AllowFocusOnInteraction being false might result in focus not moving into the
@@ -2235,8 +2236,7 @@ partial class FlyoutBase
 
 	internal static void HideFlyout(FlyoutBase flyout) => flyout?.Hide();
 
-	// TODO Uno: windowed - DXamlCore::CalculateAvailableMonitorRect is not ported, so this is only the XAML root's visible bounds.
-	private static Rect CalculateAvailableMonitorRect(Popup popup, Point targetPosition) => GetVisibleBounds(popup, null);
+	internal static Rect CalculateAvailableMonitorRect(UIElement targetElement, Point targetPointClientLogical) => Popup.CalculateAvailableMonitorRect(targetElement.XamlRoot, targetPointClientLogical);
 
 	private static Rect GetVisibleBounds(Popup popup, FrameworkElement placementTarget)
 	{
@@ -2276,7 +2276,7 @@ partial class FlyoutBase
 				popupPosition = centerOfTarget;
 			}
 
-			pAvailableRect = CalculateAvailableMonitorRect(popup, popupPosition);
+			pAvailableRect = Popup.CalculateAvailableMonitorRect(popup.XamlRoot ?? placementTarget?.XamlRoot, popupPosition);
 		}
 		else
 		{
@@ -2488,7 +2488,7 @@ partial class FlyoutBase
 			{
 				if (!_popup.WasEverOpened)
 				{
-					// TODO Uno: windowed - CPopup::SetIsWindowed is not ported.
+					_popup.SetIsWindowed();
 				}
 			}
 		}
@@ -2655,7 +2655,7 @@ partial class FlyoutBase
 		if (useMonitorBounds)
 		{
 			// Calculate the available monitor bounds to set the target position within the monitor bounds
-			availableRect = CalculateAvailableMonitorRect(_popup, targetPoint);
+			availableRect = Popup.CalculateAvailableMonitorRect(_popup.XamlRoot ?? XamlRoot, targetPoint);
 		}
 		else
 		{

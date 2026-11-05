@@ -109,7 +109,8 @@ public partial class ComboBox : Selector
 			// We use Popup's light dismiss logic for window size changes.
 			popup.SetDismissalTriggerFlags(DismissalTriggerFlags.WindowSizeChange);
 
-			// TODO Uno: Stage D, ComboBoxes should always use a windowed popup to break out of the bounds of the main island/window.
+			// ComboBoxes should always use a windowed popup to break out of the bounds of the main island/window.
+			popup.ShouldConstrainToRootBounds = false;
 
 			ReevaluateIsOverlayVisible();
 		}

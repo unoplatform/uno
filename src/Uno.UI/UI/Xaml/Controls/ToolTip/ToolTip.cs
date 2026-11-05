@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal const double DEFAULT_MOUSE_OFFSET = 20;   // Default offset for automatic tooltips opened by mouse.
 		internal const double DEFAULT_TOUCH_OFFSET = 44;  // Default offset for automatic tooltips opened by touch.
 
-		//private const double CONTEXT_MENU_HINT_VERTICAL_OFFSET = -5;    // The hint is slightly above center in the vertical axis.
+		private const double CONTEXT_MENU_HINT_VERTICAL_OFFSET = -5;    // The hint is slightly above center in the vertical axis.
 
 		private const int m_mousePlacementVerticalOffset = 11;  // Mouse placement vertical offset
 
@@ -154,6 +154,13 @@ namespace Microsoft.UI.Xaml.Controls
 			if (isOpen && GetOwnerFrameworkElement() is { } flowDirectionSource)
 			{
 				Popup.FlowDirection = flowDirectionSource.FlowDirection;
+			}
+
+			// ToolTip sets the location to the out of Xaml Window by using the windowed Popup in Threshold Windows
+			if (isOpen && Primitives.Popup.DoesPlatformSupportWindowedPopup() && !Popup.IsWindowed)
+			{
+				// Set the windowed popup to support the render popup at the out of Xaml window
+				Popup.SetIsWindowed();
 			}
 
 			Popup.IsOpen = isOpen;
@@ -376,13 +383,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (spPopup != null && IsOpen)
 			{
-				// UNO TODO
-				//if (static_cast<CPopup*>(spPopup.Cast<Popup>()->GetHandle())->IsWindowed())
-				//{
-				//	// Sets the location of the ToolTip's Popup out of the Xaml window.
-				//	PerformPlacementWithWindowedPopup(pTargetRect);
-				//}
-				//else
+				if (spPopup.IsWindowed)
+				{
+					// Sets the location of the ToolTip's Popup out of the Xaml window.
+					PerformPlacementWithWindowedPopup(pTargetRect);
+				}
+				else
 				{
 					// Sets the location of the ToolTip's Popup within the Xaml window.
 					PerformPlacementWithPopup(pTargetRect);
@@ -767,6 +773,338 @@ namespace Microsoft.UI.Xaml.Controls
 			// make a breaking change.
 		}
 
+
+		// MUX Reference ToolTip_Partial.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+		private void PerformPlacementWithWindowedPopup(Rect? pTargetRect)
+		{
+			// Make sure we can actually place the ToolTip.  The size should be > 0, and
+			// IsOpen and IsEnabled should be true.
+			var tooltipActualWidth = ActualWidth;
+			var tooltipActualHeight = ActualHeight;
+
+			if (!IsOpen ||
+				!IsEnabled ||
+				!(tooltipActualWidth > 0) ||
+				!(tooltipActualHeight > 0))
+			{
+				return;
+			}
+
+			// Get the horizontal/vertical offset between the target and ToolTip
+			var horizontalOffset = HorizontalOffset;
+			var verticalOffset = VerticalOffset;
+
+			// If the ToolTipService is opening the ToolTip, then its Placement is used,
+			// regardless of what the ToolTip.Placement has been set to.
+			var placement = m_pToolTipServicePlacementModeOverride ?? Placement;
+
+			var spTarget = GetOwnerFrameworkElement();
+
+			_Debug.Assert(spTarget != null, "pTarget expected to be non-null in ToolTip_Partial::PerformPlacement()");
+			var bIsRTL = false;
+			if (spTarget != null)
+			{
+				bIsRTL = spTarget.FlowDirection == FlowDirection.RightToLeft;
+
+				// We should not do placement if the target is no longer in the live tree.
+				if (!spTarget.IsLoaded)
+				{
+					return;
+				}
+			}
+
+			Point currentPoint;
+
+			// Get the current position to find the nearest available monitor bounds
+			if ((!m_isSliderThumbToolTip) &&
+				(AutomaticToolTipInputMode.Touch == m_inputMode || AutomaticToolTipInputMode.Mouse == m_inputMode))
+			{
+				// TODO Uno: GetCurrentPointFromRootOrCoreWindow and ToolTipService::s_lastPointerEnteredPoint.
+				currentPoint = PointerRoutedEventArgs.LastPointerEvent?.GetCurrentPoint(null).Position ?? new Point();
+			}
+			else
+			{
+				currentPoint = spTarget?.TransformToVisual(null).TransformPoint(default) ?? default;
+			}
+
+			// Get the available monitor bounds to render the Windowed Popup ToolTip
+			var availableMonitorRect = FlyoutBase.CalculateAvailableMonitorRect(this, currentPoint);
+
+			// PlacementMode.Mouse only makes sense for automatic ToolTips opened by touch or mouse.
+			if (placement == PlacementMode.Mouse &&
+				(m_inputMode == AutomaticToolTipInputMode.Touch || m_inputMode == AutomaticToolTipInputMode.Mouse))
+			{
+				// Set the ToolTip with using Windowed Popup for the mouse placement
+				PerformMousePlacementWithWindowedPopup(
+					bIsRTL,
+					availableMonitorRect,
+					currentPoint,
+					tooltipActualWidth,
+					tooltipActualHeight,
+					horizontalOffset,
+					verticalOffset,
+					placement);
+			}
+			else
+			{
+				// For ToolTips opened by keyboard focus, PlacementMode_Mouse doesn't make any sense.
+				// Fall back to the default - PlacementMode_Top.
+				if (placement == PlacementMode.Mouse)
+				{
+					placement = PlacementMode.Top;
+				}
+
+				// Sets the directional(Left, Top, Right and Bottom) placement with the Windowed Popup.
+				PerformDirectionalPlacementWithWindowedPopup(
+					spTarget,
+					bIsRTL,
+					availableMonitorRect,
+					currentPoint,
+					tooltipActualWidth,
+					tooltipActualHeight,
+					horizontalOffset,
+					verticalOffset,
+					placement,
+					pTargetRect);
+			}
+		}
+
+		// Sets the mouse placement with the Windowed Popup.
+		private void PerformMousePlacementWithWindowedPopup(
+			bool bIsRTL,
+			Rect availableMonitorRect,
+			Point currentPoint,
+			double tooltipActualWidth,
+			double tooltipActualHeight,
+			double horizontalOffset,
+			double verticalOffset,
+			PlacementMode placement)
+		{
+			var spPopup = Popup;
+
+			// Set the current point with the initial left/top
+			var left = currentPoint.X;
+			var top = currentPoint.Y;
+
+			// If we are in RTL mode, then flip the X coordinate around so that it appears to be in LTR mode. That
+			// means all of the LTR logic will still work.
+			if (bIsRTL)
+			{
+				left = availableMonitorRect.Width - currentPoint.X;
+			}
+
+			MovePointToPointerToolTipShowPosition(ref left, ref top, placement);
+
+			top += m_mousePlacementVerticalOffset + verticalOffset;
+			left += horizontalOffset;
+
+			// pessimistic check of top value - can be 0 only if TextBlock().FontSize == 0
+			top = Math.Max(TOOLTIP_TOLERANCE, top);
+
+			var minX = availableMonitorRect.X;
+			var minY = availableMonitorRect.Y;
+			var maxX = availableMonitorRect.X + availableMonitorRect.Width;
+			var maxY = availableMonitorRect.Y + availableMonitorRect.Height;
+
+			Rect toolTipRect = new(left, top, tooltipActualWidth, tooltipActualHeight);
+
+			Rect intersectionRect = new(availableMonitorRect.X, availableMonitorRect.Y, maxX, maxY);
+
+			intersectionRect.Intersect(toolTipRect);
+
+			if ((Math.Abs(intersectionRect.Width - toolTipRect.Width) < TOOLTIP_TOLERANCE) &&
+				(Math.Abs(intersectionRect.Height - toolTipRect.Height) < TOOLTIP_TOLERANCE))
+			{
+				// The placement algorithm operates in LTR mode (with transformed data if it
+				// is really in RTL mode), so we also need to transform the X value it returns.
+				if (bIsRTL)
+				{
+					left = availableMonitorRect.Width - left;
+				}
+
+				// ToolTip is completely inside the Xaml window
+				spPopup.VerticalOffset = top;
+				spPopup.HorizontalOffset = left;
+			}
+			else
+			{
+				if (toolTipRect.Y + toolTipRect.Height > maxY)
+				{
+					// If the lower edge of the plug-in obscures the ToolTip,
+					// it repositions itself to align with the upper edge of the bounding box of the mouse.
+					top += maxY - (toolTipRect.Y + toolTipRect.Height) - TOOLTIP_TOLERANCE;
+				}
+
+				if (toolTipRect.Y < minY)
+				{
+					// If the upper edge of Plug-in obscures the ToolTip,
+					// the control repositions itself to align with the upper edge.
+					// align with the top of the plug-in
+					top = minY;
+				}
+
+				if (toolTipRect.X + toolTipRect.Width > maxX)
+				{
+					// If the right edge obscures the ToolTip,
+					// it opens in the opposite direction from the obscuring edge.
+					left += maxX - (toolTipRect.X + toolTipRect.Width) - TOOLTIP_TOLERANCE;
+				}
+
+				if (toolTipRect.X < minX)
+				{
+					// If the left edge obscures the ToolTip,
+					// it then aligns with the obscuring screen edge
+					left = minX;
+				}
+
+				// if right/bottom doesn't fit into the plug-in bounds, clip the ToolTip
+				CalculateTooltipClip(new Rect(0, 0, toolTipRect.Width, toolTipRect.Height), maxX, maxY);
+
+				// The placement algorithm operates in LTR mode (with transformed data if it
+				// is really in RTL mode), so we also need to transform the X value it returns.
+				if (bIsRTL)
+				{
+					left = availableMonitorRect.Width - left;
+				}
+
+				// position the parent Popup
+				spPopup.VerticalOffset = top + verticalOffset;
+				spPopup.HorizontalOffset = left + horizontalOffset;
+			}
+		}
+
+		// Sets the directional(Left, Top, Right and Bottom) placement with the Windowed Popup.
+		private void PerformDirectionalPlacementWithWindowedPopup(
+			FrameworkElement? pTarget,
+			bool bIsRTL,
+			Rect availableMonitorRect,
+			Point currentPoint,
+			double tooltipActualWidth,
+			double tooltipActualHeight,
+			double horizontalOffset,
+			double verticalOffset,
+			PlacementMode placement,
+			Rect? pTargetRect)
+		{
+			var spPopup = Popup;
+
+			if (pTarget is null)
+			{
+				return;
+			}
+
+			// Set the constraint rect with the available monitor rect
+			var constraint = availableMonitorRect;
+
+			Size szFlyout = new((int)tooltipActualWidth, (int)tooltipActualHeight);
+
+			var targetActualWidth = pTarget.ActualWidth;
+			var targetActualHeight = pTarget.ActualHeight;
+
+			var placementRect = GetPlacementRectInWindowCoordinates();
+			Rect rcDockTo;
+
+			if (!m_isSliderThumbToolTip &&
+				(AutomaticToolTipInputMode.Touch == m_inputMode || AutomaticToolTipInputMode.Mouse == m_inputMode))
+			{
+				var left = currentPoint.X;
+				var top = currentPoint.Y;
+				MovePointToPointerToolTipShowPosition(ref left, ref top, placement);
+
+				rcDockTo = new Rect((int)left, (int)top, 0, 0);
+
+				// For touch, we need to account for the fact that the context menu hint has a vertical offset.
+				if (AutomaticToolTipInputMode.Touch == m_inputMode)
+				{
+					rcDockTo.Y += CONTEXT_MENU_HINT_VERTICAL_OFFSET;
+				}
+			}
+			else if (pTargetRect.HasValue)
+			{
+				// Slider case - position ToolTip over Thumb rect
+				// TextElement case - position ToolTip over text element if the input mode is not mouse or touch.
+				rcDockTo = pTargetRect.Value;
+			}
+			else if (!placementRect.IsEmpty)
+			{
+				rcDockTo = new Rect((int)placementRect.X, (int)placementRect.Y, (int)placementRect.Width, (int)placementRect.Height);
+			}
+			else
+			{
+				// currentPoint.X should be the left edge of the target, so adjust for RTL by
+				// subtracting the width of the target.
+				if (bIsRTL)
+				{
+					currentPoint.X -= targetActualWidth;
+				}
+
+				rcDockTo = new Rect((int)currentPoint.X, (int)currentPoint.Y, (int)targetActualWidth, (int)targetActualHeight);
+			}
+
+			// If horizontal & vertical offset are not specified, use the system defaults.
+			if (!this.IsDependencyPropertySet(HorizontalOffsetProperty))
+			{
+				switch (m_inputMode)
+				{
+					case AutomaticToolTipInputMode.Keyboard:
+						horizontalOffset = DEFAULT_KEYBOARD_OFFSET;
+						break;
+					case AutomaticToolTipInputMode.Mouse:
+						horizontalOffset = DEFAULT_MOUSE_OFFSET;
+						break;
+					case AutomaticToolTipInputMode.Touch:
+						horizontalOffset = DEFAULT_TOUCH_OFFSET;
+						break;
+				}
+			}
+
+			if (!this.IsDependencyPropertySet(VerticalOffsetProperty))
+			{
+				switch (m_inputMode)
+				{
+					case AutomaticToolTipInputMode.Keyboard:
+						verticalOffset = DEFAULT_KEYBOARD_OFFSET;
+						break;
+					case AutomaticToolTipInputMode.Mouse:
+						verticalOffset = DEFAULT_MOUSE_OFFSET;
+						break;
+					case AutomaticToolTipInputMode.Touch:
+						verticalOffset = DEFAULT_TOUCH_OFFSET;
+						break;
+				}
+			}
+
+			// Reverse Left/Right placement for RTL, because the target is flipped.
+			if (bIsRTL)
+			{
+				if (placement == PlacementMode.Right)
+				{
+					placement = PlacementMode.Left;
+				}
+				else if (placement == PlacementMode.Left)
+				{
+					placement = PlacementMode.Right;
+				}
+			}
+
+			// To honor horizontal/vertical offset, inflate the placement target by these offsets before calling into
+			// the Windows popup positioning logic.
+			rcDockTo.Inflate((int)horizontalOffset, (int)verticalOffset);
+
+			(var rcResult, _) = ToolTipPositioning.QueryRelativePosition(
+				constraint,
+				szFlyout,
+				rcDockTo,
+				placement);
+
+			// ToolTipPositioning::QueryRelativePosition is used to position in LTR and RTL. In LTR, the horizontal
+			// offset is  in rcResult.left. In RTL, the horizontal offset is in rcResult.right because the
+			// popup is flipped.
+
+			// Position tooltip by setting popup's offsets
+			spPopup.HorizontalOffset = bIsRTL ? rcResult.Right : rcResult.Left;
+			spPopup.VerticalOffset = rcResult.Top;
+		}
 
 		private void CalculateTooltipClip(
 			Rect toolTipRect, double maxX, double maxY)

@@ -646,17 +646,26 @@ internal partial class CascadingMenuHelper
 			ownerPosition = transformToRoot.TransformPoint(ownerPosition);
 		}
 
-#if HAS_UNO
-		// TODO: We are missing part of the logic here connected to windowed menus.
-#endif
+		Rect availableWindowRect;
 
-		// Get the available window rect
-		Rect availableWindowRect = FlyoutBase.CalculateAvailableWindowRect(
-			popup,
-			null /* placementTarget */,
-			true /* hasTargetPosition */,
-			ownerPosition,
-			false /* isFull */);
+		// If the current menu is a windowed popup, the position setting will be within the current nearest
+		// monitor boundary. Otherwise, the position will be within the Xaml window boundary.
+		if (popup.IsWindowed)
+		{
+			// Get the available monitor bounds from the current nearest monitor.
+			// IHM bounds will be excluded from the monitor bounds.
+			availableWindowRect = FlyoutBase.CalculateAvailableMonitorRect(popup, ownerPosition);
+		}
+		else
+		{
+			// Get the available window rect
+			availableWindowRect = FlyoutBase.CalculateAvailableWindowRect(
+				popup,
+				null /* placementTarget */,
+				true /* hasTargetPosition */,
+				ownerPosition,
+				false /* isFull */);
+		}
 
 		GetPositionAndDirection(
 			presenterWidth,

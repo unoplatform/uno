@@ -3569,7 +3569,16 @@ partial class ComboBox
 		var p01t = spGt.TransformPoint(p01);
 
 		// Get current window size
-		Rect rootRect = XamlRoot?.VisualTree.VisibleBounds ?? default;
+		Rect rootRect;
+
+		if (m_tpPopupPart is { IsWindowed: true })
+		{
+			rootRect = FlyoutBase.CalculateAvailableMonitorRect(m_tpElementPopupChild, p00t);
+		}
+		else
+		{
+			rootRect = XamlRoot?.VisualTree.VisibleBounds ?? default;
+		}
 
 		var rootWindowSize = new Size(rootRect.Width, rootRect.Height);
 		if (rootWindowSize.Height == 0 || rootWindowSize.Width == 0)

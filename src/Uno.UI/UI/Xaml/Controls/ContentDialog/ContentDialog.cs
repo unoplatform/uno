@@ -26,7 +26,10 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class
 		ContentDialog : ContentControl, IBackButtonListener
 	{
-		internal readonly Popup _popup;
+		internal Popup _popup;
+
+		// MUX Reference ContentDialog_Partial.cpp, m_isWindowed
+		private bool m_isWindowed;
 		private Popup m_tpSmokeLayerPopup;
 		private Rectangle m_tpSmokeLayer;
 		private TaskCompletionSource<ContentDialogResult> _tcs;
@@ -54,30 +57,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public ContentDialog() : base()
 		{
-			_popup = new Popup()
-			{
-				IsContentDialog = true,
-			};
+			_popup = CreatePopup();
 
 			var thisRef = (this as IWeakReferenceProvider).WeakReference;
-			_popup.Opened += (s, e) =>
-			{
-				if (thisRef.Target is ContentDialog that)
-				{
-					that.SetDialogFocus();
-
-					that.Opened?.Invoke(that, new ContentDialogOpenedEventArgs());
-					that.UpdateVisualState();
-				}
-			};
-
-			_popup.Closed += (s, e) =>
-			{
-				if (thisRef.Target is ContentDialog that)
-				{
-					that.Hide();
-				}
-			};
 
 			this.KeyDown += OnPopupKeyDown;
 			var inputPane = InputPane.GetForCurrentView();
@@ -343,7 +325,50 @@ namespace Microsoft.UI.Xaml.Controls
 		public event TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs> CloseButtonClick;
 
 		public IAsyncOperation<ContentDialogResult> ShowAsync(ContentDialogPlacement placement)
-			=> ShowAsync();
+		{
+			bool ifWasWindowed = m_isWindowed;
+
+			m_isWindowed = placement == ContentDialogPlacement.UnconstrainedPopup;
+
+			// A popup can't go back to being constrained once it was opened.
+			if (ifWasWindowed != m_isWindowed && !_popup.IsOpen)
+			{
+				_popup = CreatePopup();
+			}
+
+			return ShowAsync();
+		}
+
+		private Popup CreatePopup()
+		{
+			Popup popup = new()
+			{
+				IsContentDialog = true,
+				ShouldConstrainToRootBounds = !m_isWindowed,
+			};
+
+			var thisRef = (this as IWeakReferenceProvider).WeakReference;
+			popup.Opened += (s, e) =>
+			{
+				if (thisRef.Target is ContentDialog that)
+				{
+					that.SetDialogFocus();
+
+					that.Opened?.Invoke(that, new ContentDialogOpenedEventArgs());
+					that.UpdateVisualState();
+				}
+			};
+
+			popup.Closed += (s, e) =>
+			{
+				if (thisRef.Target is ContentDialog that)
+				{
+					that.Hide();
+				}
+			};
+
+			return popup;
+		}
 
 		private void UnregisterEvents()
 		{

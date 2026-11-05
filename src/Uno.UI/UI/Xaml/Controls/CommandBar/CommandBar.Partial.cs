@@ -1681,18 +1681,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 				visibleBounds = XamlRoot?.Bounds ?? Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
 
-				bool windowed = false;
-				//windowed = m_tpOverflowPopup && m_tpOverflowPopup.Cast<Popup>()->IsWindowed();
+				bool windowed = m_tpOverflowPopup is { IsWindowed: true };
 				if (windowed)
 				{
-					// UNO TODO: Windowed modes are not supported
-					//ctl::ComPtr<xaml_media::IGeneralTransform> transform;
-					//IFC_RETURN(TransformToVisual(nullptr, &transform));
+					var topLeftPoint = TransformToVisual(null).TransformPoint(default);
 
-					//wf::Point topLeftPoint = { 0, 0 };
-					//IFC_RETURN(transform->TransformPoint(topLeftPoint, &topLeftPoint));
-
-					//IFC_RETURN(DXamlCore::GetCurrent()->CalculateAvailableMonitorRect(this, topLeftPoint, &availableBounds));
+					availableBounds = FlyoutBase.CalculateAvailableMonitorRect(this, topLeftPoint);
 				}
 				else
 				{
@@ -1754,28 +1748,27 @@ namespace Microsoft.UI.Xaml.Controls
 				// If the overflow popup is windowed, we'll have already accounted for the size of the
 				// main content in terms of transformation, so we'll only animate the remainder.
 
-				// UNO TODO: Windowed modes are not supported
-				//if (m_tpOverflowPopup is { })
-				//{
-				//	var closedDisplayMode = AppBarClosedDisplayMode.Hidden;
-				//	closedDisplayMode = ClosedDisplayMode;
+				if (m_tpOverflowPopup is { IsWindowed: true })
+				{
+					var closedDisplayMode = AppBarClosedDisplayMode.Hidden;
+					closedDisplayMode = ClosedDisplayMode;
 
-				//	switch (closedDisplayMode)
-				//	{
-				//		case AppBarClosedDisplayMode.Compact:
-				//			contentHeightForAnimation -= m_compactHeight;
-				//			break;
+					switch (closedDisplayMode)
+					{
+						case AppBarClosedDisplayMode.Compact:
+							contentHeightForAnimation -= m_compactHeight;
+							break;
 
-				//		case AppBarClosedDisplayMode.Minimal:
-				//			contentHeightForAnimation -= m_minimalHeight;
-				//			break;
+						case AppBarClosedDisplayMode.Minimal:
+							contentHeightForAnimation -= m_minimalHeight;
+							break;
 
-				//		case AppBarClosedDisplayMode.Hidden:
-				//		default:
-				//			// The hidden height is zero, so nothing to do here.
-				//			break;
-				//	}
-				//}
+						case AppBarClosedDisplayMode.Hidden:
+						default:
+							// The hidden height is zero, so nothing to do here.
+							break;
+					}
+				}
 
 				templateSettings.OverflowContentHeight = contentHeightForAnimation;
 				templateSettings.NegativeOverflowContentHeight = -contentHeightForAnimation;

@@ -188,13 +188,12 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 			{
 				var spParentMenuFlyout = spParentMenuFlyoutPresenter.GetParentMenuFlyout();
 				// Set the windowed Popup if the MenuFlyout is set the windowed Popup
-				// TODO Uno: Windowed popup support
-				if (spParentMenuFlyout is not null) //&& spParentMenuFlyout.IsWindowedPopup())
+				if (spParentMenuFlyout is not null && spParentMenuFlyout.IsWindowedPopup())
 				{
-					//spPopup.SetIsWindowed();
+					spPopup.SetIsWindowed();
 
 					// Ensure the sub menu is the windowed Popup
-					// global::System.Diagnostics.Debug.Assert((spPopup.IsWindowed())
+					global::System.Diagnostics.Debug.Assert(spPopup.IsWindowed);
 
 					XamlRoot xamlRoot = XamlRoot.GetForElement(spParentMenuFlyoutPresenter);
 					if (xamlRoot is not null)
