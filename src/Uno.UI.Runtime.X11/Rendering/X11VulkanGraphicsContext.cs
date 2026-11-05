@@ -77,13 +77,8 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 		return _vk.CurrentRenderTarget;
 	}
 
-	/// <summary>Whether the last frame was rendered but not presented, so the window still needs another one.</summary>
-	public bool DroppedLastFrame { get; private set; }
-
 	public void Present()
 	{
-		DroppedLastFrame = false;
-
 		// No frame was acquired this tick (the compositor skipped drawing — e.g. no recorded frame yet or empty
 		// bounds), so the device lock was never taken; there is nothing to blit/present.
 		if (_frameLock is null)
@@ -94,7 +89,6 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 		if (_skipPresent)
 		{
 			_skipPresent = false;
-			DroppedLastFrame = true;
 		}
 		else
 		{
