@@ -1,6 +1,8 @@
 #nullable enable
 
 using System;
+using System.Collections.Concurrent;
+using System.Threading;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 
@@ -11,6 +13,13 @@ namespace Uno.UI.Helpers;
 /// </summary>
 internal static class SubscriptionCleanup
 {
+	// A collected page can release thousands of subscriptions at once: remove them in batches, at Low priority, so they
+	// neither flood the dispatcher with one item each nor hold back rendering.
+	private const int MaxRemovalsPerBatch = 256;
+
+	private static readonly ConcurrentQueue<PendingRemoval> _pendingRemovals = new();
+	private static int _isBatchScheduled;
+
 	/// <summary>Runs <paramref name="unsubscribe"/>, logging rather than throwing if the event source fails.</summary>
 	internal static void Run(Action unsubscribe, Type logOwner, string subscription)
 	{
@@ -35,7 +44,8 @@ internal static class SubscriptionCleanup
 	{
 		try
 		{
-			NativeDispatcher.Main.Enqueue(() => Run(unsubscribe, logOwner, subscription));
+			_pendingRemovals.Enqueue(new PendingRemoval(unsubscribe, logOwner, subscription));
+			ScheduleBatch();
 		}
 		catch (Exception e)
 		{
@@ -52,4 +62,48 @@ internal static class SubscriptionCleanup
 			}
 		}
 	}
+
+	private static void ScheduleBatch()
+	{
+		if (Interlocked.Exchange(ref _isBatchScheduled, 1) == 0)
+		{
+			try
+			{
+				NativeDispatcher.Main.Enqueue(RunBatch, NativeDispatcherPriority.Low);
+			}
+			catch
+			{
+				Volatile.Write(ref _isBatchScheduled, 0);
+				throw;
+			}
+		}
+	}
+
+	private static void RunBatch()
+	{
+		// Cleared before dequeuing, so that a removal queued meanwhile schedules another batch instead of being missed.
+		Volatile.Write(ref _isBatchScheduled, 0);
+
+		for (var i = 0; i < MaxRemovalsPerBatch && _pendingRemovals.TryDequeue(out var removal); i++)
+		{
+			Run(removal.Unsubscribe, removal.LogOwner, removal.Subscription);
+		}
+
+		if (!_pendingRemovals.IsEmpty)
+		{
+			try
+			{
+				ScheduleBatch();
+			}
+			catch (Exception e)
+			{
+				if (typeof(SubscriptionCleanup).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(SubscriptionCleanup).Log().Error("Failed to schedule the next batch of subscription removals", e);
+				}
+			}
+		}
+	}
+
+	private readonly record struct PendingRemoval(Action Unsubscribe, Type LogOwner, string Subscription);
 }
