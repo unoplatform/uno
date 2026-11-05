@@ -452,24 +452,26 @@ namespace Uno.UI.DataBinding
 			tail ??= item;
 		}
 
-		private static IDisposable? SubscribeToNotifyCollectionChanged(BindingItem bindingItem)
+		/// <summary>
+		/// Subscribes an indexer item (the "[0]" of "Items[0]") to the changes of the collection it indexes into, its DataContext.
+		/// </summary>
+		/// <remarks>
+		/// Made by the indexer rather than by the item before it, so that the subscription follows the collection when
+		/// it's replaced: the indexer resubscribes on each DataContext change.
+		/// </remarks>
+		private static IDisposable? SubscribeToNotifyCollectionChanged(BindingItem indexer)
 		{
-			if (!bindingItem.PropertyType.Is(typeof(INotifyCollectionChanged)) ||
-				bindingItem.Next?.PropertyName.StartsWith('[') != true)
-			{
-				return null;
-			}
-
-			if ((INotifyCollectionChanged?)bindingItem.Value is not { } notify)
+			if (!indexer.PropertyName.StartsWith('[') ||
+				indexer.DataContext is not INotifyCollectionChanged notify)
 			{
 				return null;
 			}
 
 			// Uno-specific: a collection that outlives the binding must not keep it alive, so the handler holds the item weakly.
-			var weakBindingItem = new WeakReference<BindingItem>(bindingItem);
+			var indexerWeak = new WeakReference<BindingItem>(indexer);
 			NotifyCollectionChangedEventHandler handler = (s, args) =>
 			{
-				if (!weakBindingItem.TryGetTarget(out var item))
+				if (!indexerWeak.TryGetTarget(out var item))
 				{
 					return;
 				}
@@ -479,7 +481,7 @@ namespace Uno.UI.DataBinding
 				{
 					tail = tail.Next;
 				}
-				tail.Path?.OnValueChanged(item.Value);
+				tail.Path?.OnValueChanged(item.DataContext);
 			};
 
 			notify.CollectionChanged += handler;

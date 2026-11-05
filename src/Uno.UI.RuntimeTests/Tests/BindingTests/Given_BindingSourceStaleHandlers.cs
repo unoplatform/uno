@@ -30,6 +30,96 @@ namespace Uno.UI.RuntimeTests.Tests;
 public class Given_BindingSourceStaleHandlers
 {
 	private const int Count = 5;
+	private const string IndexerPath = nameof(CountingViewModel.Items) + "[0]";
+
+	// Path=Items[0]: the binding subscribes to Items.CollectionChanged, with a handler that held the binding strongly.
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Indexer_Path_Elements_Collected_Then_CollectionChanged_Handlers_Removed(bool loaded)
+	{
+		var vm = new CountingViewModel(); // outlives the elements, and never raises
+		var baseline = vm.Items.CollectionChangedCount;
+
+		var refs = await CreateBoundAsync(vm, IndexerPath, loaded);
+		Assert.AreEqual(baseline + Count, vm.Items.CollectionChangedCount, "Each binding should subscribe once.");
+
+		await CollectAsync(refs, () => vm.Items.CollectionChangedCount == baseline);
+		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The bound elements were not collected.");
+		Assert.AreEqual(baseline, vm.Items.CollectionChangedCount, "CollectionChanged handlers of collected bindings are still on the collection.");
+	}
+
+	// The handler of a collected binding must not remove itself during the raise: LiveCollection raises over its live
+	// handler list, which throws if it changes, where ObservableCollection's multicast delegate wouldn't notice.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Indexer_Path_Collection_Raises_After_Collection_Then_Safe()
+	{
+		var vm = new CountingViewModel();
+		var refs = await CreateBoundAsync(vm, nameof(CountingViewModel.LiveItems) + "[0]", loaded: false);
+		Assert.AreEqual(Count, vm.LiveItems.CollectionChangedCount, "Each binding should subscribe once.");
+
+		// Let the work queued while creating the elements run, then stop yielding to the dispatcher:
+		// it would remove the handlers before the raise.
+		for (var i = 0; i < 3; i++)
+		{
+			await WindowHelper.WaitForIdle();
+		}
+
+		for (var i = 0; i < 10 && refs.Any(r => r.IsAlive); i++)
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+		}
+		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The bound elements were not collected.");
+
+		vm.LiveItems[0] = "changed"; // reaches the handlers of the collected bindings
+		await CollectAsync(refs, () => vm.LiveItems.CollectionChangedCount == 0);
+
+		Assert.AreEqual(0, vm.LiveItems.CollectionChangedCount, "CollectionChanged handlers of collected bindings are still on the collection.");
+	}
+
+	// The subscription is made by the indexer on the collection it indexes into, so it follows a replaced collection.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Indexer_Path_Collection_Replaced_Then_Handler_Moves_To_New_Collection()
+	{
+		var vm = new CountingViewModel();
+		var original = vm.Items;
+
+		var element = new TextBlock { DataContext = vm };
+		element.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(IndexerPath) });
+		Assert.AreEqual(1, original.CollectionChangedCount);
+
+		var replacement = new CountingCollection { "replaced" };
+		vm.Items = replacement;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("replaced", element.Text);
+		Assert.AreEqual(0, original.CollectionChangedCount, "The binding is still subscribed to the replaced collection.");
+		Assert.AreEqual(1, replacement.CollectionChangedCount, "The binding didn't subscribe to the new collection.");
+		GC.KeepAlive(element);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Indexer_Path_Binding_Cleared_Then_CollectionChanged_Handler_Removed()
+	{
+		var vm = new CountingViewModel();
+		var baseline = vm.Items.CollectionChangedCount;
+
+		var element = new TextBlock { DataContext = vm };
+		element.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(IndexerPath) });
+		Assert.AreEqual(baseline + 1, vm.Items.CollectionChangedCount);
+
+		element.ClearValue(TextBlock.TextProperty);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(baseline, vm.Items.CollectionChangedCount);
+		vm.Items[0] = "changed";
+		Assert.AreEqual("", element.Text);
+	}
 
 	// A DependencyObject source: the binding registers a property-changed callback on it.
 	[TestMethod]
@@ -49,6 +139,24 @@ public class Given_BindingSourceStaleHandlers
 		Assert.AreEqual(baseline, CallbackCount(source, FrameworkElement.TagProperty), "Callbacks of collected bindings are still on the source.");
 
 		source.Tag = "changed"; // must not reach a collected binding
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static async Task<List<WeakReference>> CreateBoundAsync(CountingViewModel vm, string path, bool loaded)
+	{
+		var refs = new List<WeakReference>();
+		var panel = new StackPanel();
+		for (var i = 0; i < Count; i++)
+		{
+			var element = new TextBlock { DataContext = vm };
+			element.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(path) });
+			Assert.AreEqual("first", element.Text);
+			panel.Children.Add(element);
+			refs.Add(new WeakReference(element));
+		}
+
+		await ShowAndRemoveAsync(panel, loaded);
+		return refs;
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
@@ -134,5 +242,121 @@ public class Given_BindingSourceStaleHandlers
 
 			await WindowHelper.WaitForIdle();
 		}
+	}
+
+	public sealed class CountingViewModel : INotifyPropertyChanged
+	{
+		private readonly List<PropertyChangedEventHandler> _handlers = new();
+		private string _name = "first";
+
+		public int SubscriberCount => _handlers.Count;
+
+		private CountingCollection _items = new() { "first" };
+
+		public CountingCollection Items
+		{
+			get => _items;
+			set
+			{
+				_items = value;
+				var args = new PropertyChangedEventArgs(nameof(Items));
+				foreach (var handler in _handlers.ToArray())
+				{
+					handler(this, args);
+				}
+			}
+		}
+
+		public LiveCollection LiveItems { get; } = new();
+
+		public event PropertyChangedEventHandler? PropertyChanged
+		{
+			add => _handlers.Add(value!);
+			remove => _handlers.Remove(value!);
+		}
+
+		public string Name
+		{
+			get => _name;
+			set
+			{
+				_name = value;
+				var args = new PropertyChangedEventArgs(nameof(Name));
+				foreach (var handler in _handlers) // throws if the list changes during the raise
+				{
+					handler(this, args);
+				}
+			}
+		}
+	}
+
+	// Counts the subscribers of both events an indexer binding subscribes to.
+	public sealed class CountingCollection : ObservableCollection<string>
+	{
+		public int CollectionChangedCount { get; private set; }
+
+		public int PropertyChangedCount { get; private set; }
+
+		public override event NotifyCollectionChangedEventHandler? CollectionChanged
+		{
+			add
+			{
+				CollectionChangedCount++;
+				base.CollectionChanged += value;
+			}
+			remove
+			{
+				CollectionChangedCount--;
+				base.CollectionChanged -= value;
+			}
+		}
+
+		protected override event PropertyChangedEventHandler? PropertyChanged
+		{
+			add
+			{
+				PropertyChangedCount++;
+				base.PropertyChanged += value;
+			}
+			remove
+			{
+				PropertyChangedCount--;
+				base.PropertyChanged -= value;
+			}
+		}
+	}
+
+	// Raises over its live handler list, like a source with a custom add/remove: removing a handler mid-raise throws.
+	public sealed class LiveCollection : INotifyCollectionChanged, IEnumerable<string>
+	{
+		private readonly List<NotifyCollectionChangedEventHandler> _handlers = new();
+		private readonly List<string> _items = new() { "first" };
+
+		public int CollectionChangedCount => _handlers.Count;
+
+		public event NotifyCollectionChangedEventHandler? CollectionChanged
+		{
+			add => _handlers.Add(value!);
+			remove => _handlers.Remove(value!);
+		}
+
+		public string this[int index]
+		{
+			get => _items[index];
+			set
+			{
+				var oldItem = _items[index];
+				_items[index] = value;
+				var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, oldItem, index);
+				foreach (var handler in _handlers) // throws if the list changes during the raise
+				{
+					handler(this, args);
+				}
+			}
+		}
+
+		public IEnumerator<string> GetEnumerator() => _items.GetEnumerator();
+
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
 }
