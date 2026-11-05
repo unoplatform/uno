@@ -708,6 +708,24 @@ partial class FlyoutBase
 		}
 	}
 
+	private void SetPopupLightDismissBehavior()
+	{
+		// TODO Uno: put_IsLightDismissEnabled(m_isLightDismissOverlayEnabled) is applied by IsLightDismissOverlayEnabled.
+		if (m_shouldOverlayPassThroughAllInput)
+		{
+			if (OverlayInputPassThroughElement is null && XamlRoot?.VisualTree.PublicRootVisual is { } rootVisual)
+			{
+				OverlayInputPassThroughElement = rootVisual;
+				m_ownsOverlayInputPassThroughElement = true;
+			}
+		}
+		else if (m_ownsOverlayInputPassThroughElement)
+		{
+			OverlayInputPassThroughElement = null;
+			m_ownsOverlayInputPassThroughElement = false;
+		}
+	}
+
 	private void ReevaluateIsOverlayVisible()
 	{
 		bool isOverlayVisible = LightDismissOverlayHelper.IsOverlayVisibleForMode(LightDismissOverlayMode);
@@ -1097,6 +1115,7 @@ partial class FlyoutBase
 		ApplyTargetPosition();
 
 		_popup.SetShouldTakeFocus(m_shouldTakeFocus);
+		SetPopupLightDismissBehavior();
 		_popup.Opacity = 1.0;
 
 		var placementMode = GetEffectivePlacement();

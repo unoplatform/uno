@@ -438,7 +438,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private void UpdateStateToShowMode(FlyoutShowMode showMode)
 		{
-			// TODO Uno: m_shouldHideIfPointerMovesAway and m_shouldOverlayPassThroughAllInput not handled yet.
+			// TODO Uno: m_shouldHideIfPointerMovesAway not handled yet.
 
 			if (showMode == FlyoutShowMode.Auto)
 			{
@@ -451,10 +451,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				case FlyoutShowMode.Standard:
 					m_shouldTakeFocus = true;
+					m_shouldOverlayPassThroughAllInput = false;
 					break;
 				case FlyoutShowMode.Transient:
 				case FlyoutShowMode.TransientWithDismissOnPointerMoveAway:
 					m_shouldTakeFocus = false;
+					m_shouldOverlayPassThroughAllInput = true;
 					break;
 			}
 		}

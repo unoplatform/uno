@@ -62,6 +62,8 @@ partial class FlyoutBase
 	private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
 	private bool m_shouldTakeFocus = true;
+	private bool m_shouldOverlayPassThroughAllInput;
+	private bool m_ownsOverlayInputPassThroughElement;
 	private bool m_isPositionedForDateTimePicker;
 
 	private bool m_hasPlacementOverride;
