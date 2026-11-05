@@ -3547,7 +3547,6 @@ public class FlyoutIntegrationTests
 
 	[TestMethod]
 	[Description("Validates that a flyout opened as transient allows input to pass through its light-dismiss layer.")]
-	[Ignore("Pending Popup port")]
 	public async Task ValidateTransientFlyoutLightDismissLayerAllowsInputToPassThrough()
 	{
 		Flyout flyout = null;
