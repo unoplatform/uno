@@ -723,10 +723,19 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			var window = GetWindowHost(handle);
 			var cancel = new CancelEventArgs();
 			window?.Closing?.Invoke(window, cancel);
+			if (cancel.Cancel && typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Debug))
+			{
+				// a cancelled quit leaves no other trace
+				typeof(MacOSWindowHost).Log().Debug($"AppWindow.Closing cancelled the close of window 0x{handle:X}, and the application's quit if one was in progress.");
+			}
 			return cancel.Cancel ? 0 : 1;
 		}
 		catch (Exception e)
 		{
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(MacOSWindowHost).Log().Error($"An AppWindow.Closing handler of window 0x{handle:X} threw, so the window stays open, and the application's quit if one was in progress is cancelled.", e);
+			}
 			Application.Current.RaiseRecoverableUnhandledException(e);
 			return 0;
 		}
