@@ -146,6 +146,11 @@ public partial class ToolTipService
 		}
 	}
 
+	/// <summary>
+	/// The tooltip the service is opening or showing, if any; for tests.
+	/// </summary>
+	internal static ToolTip CurrentToolTipForTesting => m_CurrentToolTip;
+
 	private static void OnOpenTimerTick(object sender, object e)
 	{
 		m_OpenTimer.Stop();
