@@ -735,7 +735,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 			? FocusState.Pointer
 			: VisualTree.GetFocusManagerForElement(Owner)?.GetRealFocusStateForFocusedElement() ?? focusState;
 		IsSoftwareKeyboardSuppressed = _host.PreventKeyboardDisplayOnProgrammaticFocus && origin == FocusState.Programmatic;
-		TextBoxView?.OnFocusStateChanged(focusState, IsSoftwareKeyboardSuppressed);
+		TextBoxView?.OnFocusStateChanged(origin, IsSoftwareKeyboardSuppressed);
 		_textBoxNotificationsSingleton?.OnFocused(this);
 		StartImeSession(origin);
 	}

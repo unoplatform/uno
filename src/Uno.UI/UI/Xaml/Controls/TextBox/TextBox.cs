@@ -667,6 +667,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnTapped(e);
 
+			_core.OnTapped(e);
 			OnTappedPartial();
 		}
 
