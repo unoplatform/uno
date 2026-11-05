@@ -57,6 +57,34 @@ stages:
       # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
       condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.WebGpuTestsRequired'], 'true')))"
 
+- stage: runtime_tests_skia_browser_threads
+  displayName: Tests - WebAssembly Threads
+  dependsOn:
+    - Setup
+
+  jobs:
+  # The same app with WebAssembly threading, on the previous TFM until the current one publishes with threads again.
+  - template: .azure-devops-tests-webassembly-build.yml
+    parameters:
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+      jobName: 'Skia_Tests_Build_Browser_Threads'
+      displayName: 'Build Samples App (Threads)'
+      targetFramework: '$(netPreviousTargetFramework)'
+      installPreviousWasmTools: true
+      artifactName: 'samplesapp-wasm-skia-threads'
+      publishArguments: '-p:WasmEnableThreads=true'
+
+  - template: .azure-devops-tests-webassembly.yml
+    parameters:
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+      jobName: 'Skia_Browser_Threads_Runtime_Tests'
+      buildJobName: 'Skia_Tests_Build_Browser_Threads'
+      renderer: 'Skia Threads'
+      testResultLabel: '-threads'
+      crossOriginIsolated: true
+
 - stage: runtime_tests_skia_android
   displayName: Tests - Android
   dependsOn:
