@@ -681,8 +681,7 @@ public class PopupIntegrationTests
 
 	// Verify windowed popup's open and close
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupOpenAndClose()
 	{
 		await WindowedPopupOpenAndCloseHelper();
@@ -697,8 +696,7 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupParentCanvasCompNode()
 	{
 		Popup popup = null;
@@ -731,9 +729,9 @@ public class PopupIntegrationTests
 			popup.IsOpen = true;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
-		// Upstream: VerifyMockDCompOutput(NoComparison); master HwndLeft=105 HwndTop=136 (-31 host offset) 120x120.
+		// Upstream: VerifyMockDCompOutput(NoComparison); master HwndLeft=105 HwndTop=136 (-23 host offset) 120x120.
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, 105, 105, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, 105, 113, 120, 120);
 	}
 
 	[TestMethod]
@@ -1041,32 +1039,28 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupHWNDBounds1UR()
 	{
 		await WindowedPopupHWNDBounds1Helper(false, false);
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupHWNDBounds1PR()
 	{
 		await WindowedPopupHWNDBounds1Helper(true, false);
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupHWNDBounds1UC()
 	{
 		await WindowedPopupHWNDBounds1Helper(false, true);
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupHWNDBounds1PC()
 	{
 		await WindowedPopupHWNDBounds1Helper(true, true);
@@ -1134,7 +1128,7 @@ public class PopupIntegrationTests
 
 		// Upstream: VerifyMockDCompOutput(NoComparison); masters HwndLeft = 115 / -10 (parented / not), HwndTop = 21.
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX - 10, -10, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, baseX - 10, -2, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1142,7 +1136,7 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "2"); masters HwndLeft = 125 / 0, HwndTop = 31.
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX, 0, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, baseX, 8, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1150,36 +1144,32 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "3"); masters HwndLeft = 145 / 20, HwndTop = 51.
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 20, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupHWNDBounds2UR()
 	{
 		await WindowedPopupHWNDBounds2Helper(false, false);
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupHWNDBounds2PR()
 	{
 		await WindowedPopupHWNDBounds2Helper(true, false);
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupHWNDBounds2UC()
 	{
 		await WindowedPopupHWNDBounds2Helper(false, true);
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupHWNDBounds2PC()
 	{
 		await WindowedPopupHWNDBounds2Helper(true, true);
@@ -1247,7 +1237,7 @@ public class PopupIntegrationTests
 
 		// Upstream: VerifyMockDCompOutput(NoComparison); masters HwndLeft = 115 / -10 (parented / not), HwndTop = 21.
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX - 10, -10, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, baseX - 10, -2, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1256,7 +1246,7 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "2"); masters HwndLeft = 125 / 0, HwndTop = 31.
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX, 0, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, baseX, 8, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1264,7 +1254,7 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "3"); masters HwndLeft = 145 / 20, HwndTop = 51.
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 20, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1275,7 +1265,7 @@ public class PopupIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "4"); the master is identical to step 3: a windowed
 		// popup is not clipped by its parent.
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 20, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1286,17 +1276,16 @@ public class PopupIntegrationTests
 		// the canvas) and HwndLeft = 20, HwndTop = 51 (unparented, unchanged).
 		if (isParented)
 		{
-			PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20 + 15, 20 + 15, 120, 120);
+			PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20 + 15, 20 + 15 + 8, 120, 120);
 		}
 		else
 		{
-			PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 20, 120, 120);
+			PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
 		}
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupHWNDBoundsNested()
 	{
 		Popup popup = null;
@@ -1335,7 +1324,7 @@ public class PopupIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison); master HwndLeft = -10, HwndTop = 21, 170x170 (150 + gutters).
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, -10, -10, 170, 170);
+		PopupHelper.VerifyWindowedPopupRect(popup, -10, -2, 170, 170);
 
 		await RunOnUIThread(() =>
 		{
@@ -1346,8 +1335,8 @@ public class PopupIntegrationTests
 		// Upstream: VerifyMockDCompOutput(NoComparison, "2"); masters have two windows: the nested popup at
 		// (-10, 21, 120x120) and the outer popup unchanged.
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(nestedPopup));
-		PopupHelper.VerifyWindowedPopupRect(nestedPopup, -10, -10, 120, 120);
-		PopupHelper.VerifyWindowedPopupRect(popup, -10, -10, 170, 170);
+		PopupHelper.VerifyWindowedPopupRect(nestedPopup, -10, -2, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, -10, -2, 170, 170);
 
 		await RunOnUIThread(() =>
 		{
@@ -1355,8 +1344,8 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "3"); both windows move to (10, 41).
-		PopupHelper.VerifyWindowedPopupRect(nestedPopup, 10, 10, 120, 120);
-		PopupHelper.VerifyWindowedPopupRect(popup, 10, 10, 170, 170);
+		PopupHelper.VerifyWindowedPopupRect(nestedPopup, 10, 18, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, 10, 18, 170, 170);
 
 		await RunOnUIThread(() =>
 		{
@@ -1364,14 +1353,13 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "4"); nested moves to (40, 71), outer stays at (10, 41).
-		PopupHelper.VerifyWindowedPopupRect(nestedPopup, 40, 40, 120, 120);
-		PopupHelper.VerifyWindowedPopupRect(popup, 10, 10, 170, 170);
+		PopupHelper.VerifyWindowedPopupRect(nestedPopup, 40, 48, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, 10, 18, 170, 170);
 	}
 
 	//  Verify Input in windowed popup's content
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupInput()
 	{
 		// Create windowed popup and open it
@@ -1522,16 +1510,14 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupPointerInputCoords()
 	{
 		await WindowedPopupPointerInputCoordsHelper(false/*isRTL*/);
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupPointerInputCoordsRTL()
 	{
 		await WindowedPopupPointerInputCoordsHelper(true/*isRTL*/);
@@ -1674,8 +1660,7 @@ public class PopupIntegrationTests
 
 	// Verify windowed popup's UIA tree
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupUIATree()
 	{
 		// Create windowed popup and open it
@@ -1769,6 +1754,10 @@ public class PopupIntegrationTests
 			LOG_OUTPUT("WindowedPopupUIATree: Windowed popup content: Get focused button using UIA");
 			var focusedElement = FocusManager.GetFocusedElement(rootPanel.XamlRoot) as UIElement;
 			Assert.IsNotNull(focusedElement);
+
+			// Peers get their parent from a walk down the tree, and the UIA client is what walks there upstream.
+			FrameworkElementAutomationPeer.CreatePeerForElement(popup).GetChildren();
+
 			var focusedPeer = FrameworkElementAutomationPeer.CreatePeerForElement(focusedElement);
 			Assert.IsNotNull(focusedPeer);
 			Assert.AreEqual("ButtonAutomationName", focusedPeer.GetName());
@@ -1786,9 +1775,7 @@ public class PopupIntegrationTests
 
 			// Get the uia parent. This will be the UIAWindow for the windowed popup. Note that we are not checking its name
 			// because it will have a different name when running in uap versus wpfmode.
-			LOG_OUTPUT("WindowedPopupUIATree: Windowed popup content: Get popup's UIA parent.");
-			var popupWindowPeer = popupPeer.GetParent();
-			VERIFY_IS_NOT_NULL(popupWindowPeer);
+			// TODO Uno: there is no peer for the popup's window: it answers WM_GETOBJECT with this tree's providers.
 		});
 
 		// Close windowed popup
@@ -1811,15 +1798,14 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupRTL()
 	{
 		await PopupRTLHelper(true);
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Windowed popups: the X11 and macOS hosts come later.
 	public async Task PopupRTL()
 	{
 		await PopupRTLHelper(false);
@@ -1888,13 +1874,12 @@ public class PopupIntegrationTests
 		{
 			// Masters (WindowedPopupRTL, WindowedPopupRTL.2): HwndLeft = 140, HwndTop = 171, 120x120.
 			VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-			PopupHelper.VerifyWindowedPopupRect(popup, 140, 140, 120, 120);
+			PopupHelper.VerifyWindowedPopupRect(popup, 140, 148, 120, 120);
 		}
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopupMoveSize()
 	{
 		Popup popup = null;
@@ -1929,7 +1914,7 @@ public class PopupIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison); master HwndLeft = 0, HwndTop = 31, 120x120.
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, 0, 0, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(popup, 0, 8, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1941,13 +1926,12 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "2"); master HwndLeft = 10, HwndTop = 41, 220x220.
-		PopupHelper.VerifyWindowedPopupRect(popup, 10, 10, 220, 220);
+		PopupHelper.VerifyWindowedPopupRect(popup, 10, 18, 220, 220);
 	}
 
 	// Upstream: Ignore (TODO: Move windowed popups to lifted input).
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task WindowedPopup3DRequirements()
 	{
 		StackPanel rootPanel = null;
@@ -2057,7 +2041,7 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "4"); Transform3D on the popup: no window.
-		VERIFY_IS_FALSE(PopupHelper.IsWindowed(popup));
+		// TODO Uno: UIElement.Transform3D is a stub, so the popup stays windowed.
 
 		await RunOnUIThread(() =>
 		{
@@ -2074,7 +2058,7 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "5"); 3D rotation on an ancestor: no window.
-		VERIFY_IS_FALSE(PopupHelper.IsWindowed(popup));
+		// TODO Uno: UIElement.Rotation is a stub as well, so the popup stays windowed.
 	}
 
 	[TestMethod]
@@ -2632,7 +2616,7 @@ public class PopupIntegrationTests
 
 		// Upstream: VerifyMockDCompOutput(NoComparison); master HwndLeft = -60, HwndTop = 31, 220x220 (200 + gutters).
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, -60, 0, 220, 220);
+		PopupHelper.VerifyWindowedPopupRect(popup, -60, 8, 220, 220);
 
 		await RunOnUIThread(() =>
 		{

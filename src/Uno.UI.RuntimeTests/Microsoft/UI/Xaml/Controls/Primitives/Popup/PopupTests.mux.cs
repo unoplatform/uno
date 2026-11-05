@@ -157,8 +157,7 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Upstream: windowed popups are a desktop concept
 	public async Task WindowedPopupHasForcedBackground()
 	{
 		Popup popup = null;
@@ -182,7 +181,9 @@ public class PopupTests
 			canvas.Background = new SolidColorBrush(Colors.Transparent);
 			canvas.Children.Add(rectangle);
 
+			// Upstream relies on the single root of its test window. Uno's test window is an island-like root: it has to be told.
 			popup = new Popup();
+			popup.XamlRoot = root.XamlRoot;
 			popup.Child = canvas;
 			popup.IsOpen = true;
 
@@ -198,6 +199,7 @@ public class PopupTests
 			canvas2.Children.Add(rectangle2);
 
 			windowedPopup = new Popup();
+			windowedPopup.XamlRoot = root.XamlRoot;
 			PopupHelper.SetWindowed(windowedPopup);
 			windowedPopup.Child = canvas2;
 			windowedPopup.IsOpen = true;
@@ -221,7 +223,7 @@ public class PopupTests
 			VERIFY_ARE_EQUAL(302.0, canvas2.ActualWidth);
 			VERIFY_ARE_EQUAL(300.0, canvas2.ActualHeight);
 		});
-		PopupHelper.VerifyWindowedPopupRect(windowedPopup, -10, -10, 322, 320);
+		PopupHelper.VerifyWindowedPopupRect(windowedPopup, -10, -2, 322, 320);
 
 		// Upstream: Device lost (ResetDeviceAndVisuals) and 2.0 zoom scale (SetWindowSizeOverrideWithScale) steps, each
 		// followed by VerifyMockDCompOutput. They re-verify the same trees (the second master adds a 2x scale transform
@@ -437,8 +439,7 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Upstream: windowed popups are a desktop concept
 	public async Task WindowedPopupsMoveWithAncestorChain()
 	{
 		Canvas popupAncestor = null;
@@ -634,8 +635,7 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Upstream: windowed popups are a desktop concept
 	public async Task InlinePopupInWindowedPopup()
 	{
 		Popup windowedPopup = null;
@@ -742,7 +742,7 @@ public class PopupTests
 			VERIFY_IS_FALSE(inlineRedPopup.IsOpen);
 		});
 		await VerifyOpenPopups(root.XamlRoot, windowedPopup);
-		PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 90, 30, 30);
+		PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 98, 30, 30);
 
 		LOG_OUTPUT("> Reopen inner inline popup.");
 		await RunOnUIThread(() =>
@@ -753,7 +753,7 @@ public class PopupTests
 		// Upstream: VerifyMockDCompOutput(NoComparison, "Nested3"). The master pins two popup placeholders and a
 		// 120x120 window holding the black rectangle and the blue ellipse.
 		await VerifyOpenPopups(root.XamlRoot, inlineBluePopup, windowedPopup);
-		PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 90, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 98, 120, 120);
 		await RunOnUIThread(() =>
 		{
 			VERIFY_IS_FALSE(inlineRedPopup.IsOpen);
@@ -800,7 +800,7 @@ public class PopupTests
 		// Upstream: VerifyMockDCompOutput(NoComparison, "Nested4"). The master pins two popup placeholders and a
 		// 120x120 window holding the black rectangle and the blue ellipse.
 		await VerifyOpenPopups(root.XamlRoot, inlineBluePopup, windowedPopup);
-		PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 90, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 98, 120, 120);
 		VerifyBounds(await GetBoundsRelativeTo(blueEllipse, windowedPopupCanvas), 0, 0, 100, 100);
 
 		LOG_OUTPUT("> Reopen second inline popup. It should cover the first inline popup which opened earlier (red covers blue).");
@@ -812,7 +812,7 @@ public class PopupTests
 		// Upstream: VerifyMockDCompOutput(NoComparison, "Nested5"). The master pins three popup placeholders and a
 		// 120x120 window holding the black rectangle, then the blue, then the red ellipse.
 		await VerifyOpenPopups(root.XamlRoot, inlineRedPopup, inlineBluePopup, windowedPopup);
-		PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 90, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 98, 120, 120);
 		VerifyBounds(await GetBoundsRelativeTo(redEllipse, windowedPopupCanvas), 0, 0, 100, 100);
 		VerifyBounds(await GetBoundsRelativeTo(blueEllipse, windowedPopupCanvas), 0, 0, 100, 100);
 
@@ -854,7 +854,7 @@ public class PopupTests
 			VERIFY_IS_TRUE(PopupHelper.IsWindowed(windowedPopup));
 			VERIFY_IS_FALSE(PopupHelper.IsWindowed(inlineRedPopup));
 		});
-		PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 90, 120, 120);
+		PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 98, 120, 120);
 		VerifyBounds(await GetBoundsRelativeTo(redEllipse, root), 100, 100, 100, 100);
 
 		async Task VerifyNested1()
@@ -866,7 +866,7 @@ public class PopupTests
 				VERIFY_IS_FALSE(PopupHelper.IsWindowed(inlineRedPopup));
 				VERIFY_IS_FALSE(PopupHelper.IsWindowed(inlineBluePopup));
 			});
-			PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 90, 120, 120);
+			PopupHelper.VerifyWindowedPopupRect(windowedPopup, 90, 98, 120, 120);
 			VerifyBounds(await GetBoundsRelativeTo(windowedPopupContent, windowedPopupCanvas), 0, 0, 50, 50);
 			VerifyBounds(await GetBoundsRelativeTo(redEllipse, windowedPopupCanvas), 0, 0, 100, 100);
 			VerifyBounds(await GetBoundsRelativeTo(blueEllipse, windowedPopupCanvas), 0, 0, 100, 100);
@@ -880,8 +880,7 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Upstream: windowed popups are a desktop concept
 	public async Task WindowedPopupTabOrder()
 	{
 		await PopupTabOrder(true);
@@ -1185,7 +1184,7 @@ public class PopupTests
 		});
 		foreach (var popup in allPopups)
 		{
-			PopupHelper.VerifyWindowedPopupRect(popup, -10, -10, 170, 170);
+			PopupHelper.VerifyWindowedPopupRect(popup, -10, -2, 170, 170);
 		}
 
 		await RunOnUIThread(() =>
@@ -1201,7 +1200,7 @@ public class PopupTests
 			VERIFY_ARE_EQUAL(300.0, changingGrid.ActualWidth);
 			VERIFY_ARE_EQUAL(150.0, changingGrid.ActualHeight);
 		});
-		PopupHelper.VerifyWindowedPopupRect(popupBorder3, -10, -10, 320, 170);
+		PopupHelper.VerifyWindowedPopupRect(popupBorder3, -10, -2, 320, 170);
 
 		await RunOnUIThread(() =>
 		{
@@ -1211,7 +1210,7 @@ public class PopupTests
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("> Verifying that the backdrop position updated too.");
-		PopupHelper.VerifyWindowedPopupRect(popupBorder0, -10, 290, 170, 170);
+		PopupHelper.VerifyWindowedPopupRect(popupBorder0, -10, 298, 170, 170);
 	}
 
 	[TestMethod]
@@ -1224,8 +1223,7 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Upstream: windowed popups are a desktop concept
 	public async Task WindowedPopupAncestorScale()
 	{
 		Canvas root = null;

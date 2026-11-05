@@ -100,8 +100,17 @@ internal static class PopupHelper
 
 	// Verifies the windowed popup's window rect against expectations expressed in DIPs at 100% scale,
 	// relative to the XamlRoot content origin. Allows 1 physical pixel of rounding slack.
+	// The masters' HwndTop sits on a window whose client area starts 23 px down. That offset follows from
+	// CThemeShadow::GetInsetsForWindowedPopup (ThemeShadow.cpp:190): 10 on the left, 2 on top, and a popup at the
+	// origin has HwndLeft = -10 and HwndTop = 21. So an expected Y here is HwndTop - 23.
 	public static void VerifyWindowedPopupRect(Popup popup, double x, double y, double width, double height)
 	{
+		// Upstream's WaitForIdle includes a frame, whose render walk is what moves the window. Uno's waits for no frame.
+#if HAS_UNO
+		popup.XamlRoot.Content?.UpdateLayout();
+		popup.Reposition();
+#endif
+
 		var scale = popup.XamlRoot.RasterizationScale;
 		var rect = GetWindowedPopupMoveAndResizeRect(popup);
 

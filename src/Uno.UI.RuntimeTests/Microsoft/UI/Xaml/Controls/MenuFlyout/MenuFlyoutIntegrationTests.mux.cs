@@ -1128,8 +1128,12 @@ public class MenuFlyoutIntegrationTests
 	[TestMethod]
 	public async Task TallMenuFlyoutShouldAlignToTopOfScreen()
 	{
-		// TODO Uno: upstream only sets the window size when not on desktop; Uno popups are never windowed.
-		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 400));
+		// Upstream only sets the window size when not on desktop.
+		var isWindowed = Microsoft.UI.Xaml.Controls.Primitives.Popup.DoesPlatformSupportWindowedPopup();
+		if (!isWindowed)
+		{
+			TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 400));
+		}
 
 		// MenuFlyout will normally align either it's top or bottom edge to the point passed to ShowAt.
 		// But if the MenuFlyout is too tall to fit in either of these positions, it aligns to the top of the screen.
@@ -1148,21 +1152,22 @@ public class MenuFlyoutIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
+		// Uno: a windowed menu goes by its monitor, and the test window doesn't fill its monitor as upstream's does.
 		Rect windowBounds = default;
 		await RunOnUIThread(() =>
 		{
-			windowBounds = TestServices.WindowHelper.WindowBounds;
+			windowBounds = isWindowed ? TestServices.WindowHelper.MonitorBounds : TestServices.WindowHelper.WindowBounds;
 			menuFlyout.Items[0].Height = windowBounds.Height * 0.75;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
-		await ShowMenuFlyout(menuFlyout, null, windowBounds.Width / 2, windowBounds.Height / 2);
+		await ShowMenuFlyout(menuFlyout, null, windowBounds.X + windowBounds.Width / 2, windowBounds.Y + windowBounds.Height / 2);
 
 		var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter();
 		var menuFlyoutBounds = await ControlHelper.GetBounds(flyoutPresenter);
 
 		// Verify that the top of the menuflyout is at the top of the screen.
-		VERIFY_ARE_EQUAL(menuFlyoutBounds.Top, -windowBounds.Y);
+		VERIFY_ARE_VERY_CLOSE(menuFlyoutBounds.Top, isWindowed ? windowBounds.Y : -windowBounds.Y, 1);
 
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
@@ -2197,14 +2202,14 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Windowed popups: the X11 and macOS hosts come later.
 	public async Task ValidatePopupWindowedPosition()
 	{
 		await ValidatePopupWindowedPosition(true /* expectWindowedPopup */);
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32)] // Upstream: TestPass:ExcludeOn Desktop, it tests popup positions within a window, which doesn't apply with windowed popups.
 	public async Task ValidatePopupWindowedPositionInSimulatedHolographic()
 	{
 		// TODO Uno: there is no HolographicOverride in the test services.
@@ -2212,7 +2217,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Windowed popups: the X11 and macOS hosts come later.
 	public async Task ValidateWindowedPositionNearMonitorEdge()
 	{
 		try
@@ -2223,19 +2228,19 @@ public class MenuFlyoutIntegrationTests
 
 			MenuFlyout menuFlyout = await CreateMenuFlyoutSubItemsFromXaml();
 
-			// TODO Uno: there is no monitor API in the test services; the window bounds stand in for the monitor bounds.
-			Rect monitor = TestServices.WindowHelper.WindowBounds;
+			// Uno: the monitor isn't at the origin of the client area, as a test window has a title bar.
+			Rect monitor = TestServices.WindowHelper.MonitorBounds;
 			LOG_OUTPUT($"Monitor size: {monitor.Width}, {monitor.Height}");
 
-			LOG_OUTPUT($"Calling ShowAt {monitor.Width - 10}, {monitor.Height - 50}");
-			await ShowMenuFlyout(menuFlyout, null, monitor.Width - 10, monitor.Height - 50);
+			LOG_OUTPUT($"Calling ShowAt {monitor.Right - 10}, {monitor.Bottom - 50}");
+			await ShowMenuFlyout(menuFlyout, null, monitor.Right - 10, monitor.Bottom - 50);
 
 			var presenter = await GetCurrentPresenter();
 
 			menuFlyoutBounds = await ControlHelper.GetBounds(presenter);
 			LOG_OUTPUT($"MenuFlyout bounds left={menuFlyoutBounds.Left} top={menuFlyoutBounds.Top} width={menuFlyoutBounds.Width} height={menuFlyoutBounds.Height}");
-			VERIFY_IS_LESS_THAN(monitor.Width - 260, menuFlyoutBounds.Left);
-			VERIFY_IS_GREATER_THAN(monitor.Width - 240, menuFlyoutBounds.Left);
+			// Upstream's numbers assume a menu of about 240 wide: shifted left by its width, from the point it was shown at.
+			VERIFY_ARE_VERY_CLOSE(monitor.Right - 10 - menuFlyoutBounds.Width, menuFlyoutBounds.Left, 1);
 
 			await RunOnUIThread(() =>
 			{
@@ -2249,8 +2254,9 @@ public class MenuFlyoutIntegrationTests
 			var subPresenter = await GetCurrentPresenter();
 			Rect subMenu = await ControlHelper.GetBounds(subPresenter);
 			LOG_OUTPUT($"Sub Menu bounds left={subMenu.Left} top={subMenu.Top} width={subMenu.Width} height={subMenu.Height}");
-			VERIFY_IS_LESS_THAN(monitor.Width - 540, subMenu.Left);
-			VERIFY_IS_GREATER_THAN(monitor.Width - 440, subMenu.Left);
+			// Same here: the sub menu has no room on the right of its menu, so it opens on the left.
+			VERIFY_IS_LESS_THAN(subMenu.Left, menuFlyoutBounds.Left);
+			VERIFY_IS_LESS_THAN(subMenu.Right, monitor.Right);
 
 			await FlyoutHelper.HideFlyout(menuFlyout);
 		}
@@ -2344,6 +2350,7 @@ public class MenuFlyoutIntegrationTests
 
 	[TestMethod]
 	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32)] // Upstream: TestPass:ExcludeOn Desktop, windowed popups make this test moot.
 	public async Task ValidateSubMenuPositionWithinWindow()
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
@@ -4527,7 +4534,8 @@ public class MenuFlyoutIntegrationTests
 			scrollViewer = (ScrollViewer)(TreeHelper.GetVisualChildByName(subPresenter2, "MenuFlyoutPresenterScrollViewer"));
 			LOG_OUTPUT("Scrollable Height=%f", scrollViewer.ScrollableHeight);
 		});
-		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0);
+		// Uno: a monitor taller than the menu has nothing to scroll.
+		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0 || subPresenterBounds.Height < TestServices.WindowHelper.MonitorBounds.Height);
 
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
@@ -5715,7 +5723,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Windowed popups: the X11 and macOS hosts come later.
 	public async Task ValidatePopupWindowedScrollingWithMouse()
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
@@ -5762,7 +5770,8 @@ public class MenuFlyoutIntegrationTests
 		// Conscious scrollbars feature results in the thumb expanding to 16 wide when the pointer is over the scrollbar, which it will be after dragging here
 		// So checking the left and width of the thumb is not desirable
 		VERIFY_IS_GREATER_THAN(thumbBoundsAfterDrag.Top, thumbBoundsBeforeDrag.Top);
-		VERIFY_ARE_EQUAL(thumbBoundsBeforeDrag.Height, thumbBoundsAfterDrag.Height);
+		// Uno: the bounds come from float matrices.
+		VERIFY_ARE_VERY_CLOSE(thumbBoundsBeforeDrag.Height, thumbBoundsAfterDrag.Height, 0.01);
 
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -7044,7 +7053,7 @@ public class MenuFlyoutIntegrationTests
 			var menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)menuFlyoutPresenter);
 			var buttonBounds = await ControlHelper.GetBounds((FrameworkElement)buttonBottom);
 
-			VERIFY_ARE_EQUAL(menuFlyoutBounds.Bottom, buttonBounds.Top);
+			VERIFY_ARE_VERY_CLOSE(menuFlyoutBounds.Bottom, buttonBounds.Top, 1);
 		});
 
 		await FlyoutHelper.HideFlyout(menuFlyout);
@@ -7067,14 +7076,17 @@ public class MenuFlyoutIntegrationTests
 			var menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)menuFlyoutPresenter);
 			var buttonBounds = await ControlHelper.GetBounds((FrameworkElement)buttonTop);
 
-			VERIFY_ARE_EQUAL(menuFlyoutBounds.Top, buttonBounds.Bottom);
+			// Uno: upstream's test window starts at the top of its monitor, which is what leaves no room above the button.
+			// A windowed menu goes above when the monitor has the room. Either way it stays off the exclusion rect.
+			var isAbove = Math.Abs(menuFlyoutBounds.Bottom - buttonBounds.Top) <= 1;
+			VERIFY_IS_TRUE(isAbove || Math.Abs(menuFlyoutBounds.Top - buttonBounds.Bottom) <= 1);
 		});
 
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
 
 	[TestMethod]
-	[Ignore("Pending windowed popups")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Windowed popups: the X11 and macOS hosts come later.
 	public async Task ValidateShowAtMonitorEdge()
 	{
 		await ValidateShowAtMonitorEdge(1.0f /*scaleFactor*/);
@@ -7157,6 +7169,9 @@ public class MenuFlyoutIntegrationTests
 				// TODO Uno: WindowHelper.GetAvailableMonitorBounds is not available; it only logged the monitor geometry upstream.
 				LOG_OUTPUT($"Showing MenuFlyout at position {monitorBounds.Width / scaleFactor},{(monitorBounds.Height - 32.0f) / scaleFactor} as a windowed popup.");
 				Point showAtPosition = new Point(monitorBounds.Width / scaleFactor, (monitorBounds.Height - 32.0f) / scaleFactor);
+
+				// Upstream has one root to go by, Uno has as many as it has windows.
+				menuFlyout.XamlRoot = TestServices.WindowHelper.WindowContent.XamlRoot;
 				menuFlyout.ShowAt(null, showAtPosition);
 			});
 

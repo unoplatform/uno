@@ -139,6 +139,14 @@ namespace Private.Infrastructure
 
 			public static Rect WindowBounds => CurrentTestWindow?.Bounds ?? default;
 
+#if HAS_UNO
+			/// <summary>
+			/// The work area of the window's monitor, relative to the client area of the window, in DIPs.
+			/// Upstream: WindowHelper.MonitorBounds.
+			/// </summary>
+			public static Rect MonitorBounds => Microsoft.UI.Xaml.Controls.Primitives.Popup.CalculateAvailableMonitorRect(XamlRoot, default);
+#endif
+
 			internal static Page SetupSimulatedAppPage()
 			{
 				var spFrame = new Frame();
