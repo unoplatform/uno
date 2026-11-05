@@ -19,6 +19,25 @@ namespace Microsoft.UI.Xaml.Controls
 		// FlyoutPresenter_partial.cpp GetPlainText / GetOwnerName).
 		private ManagedWeakReference _wrFlyout;
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether the default shadow effect is shown.
+		/// </summary>
+		public bool IsDefaultShadowEnabled
+		{
+			get => (bool)GetValue(IsDefaultShadowEnabledProperty);
+			set => SetValue(IsDefaultShadowEnabledProperty, Boxer.Box(value));
+		}
+
+		/// <summary>
+		/// Identifies the IsDefaultShadowEnabled dependency property.
+		/// </summary>
+		public static DependencyProperty IsDefaultShadowEnabledProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsDefaultShadowEnabled),
+				typeof(bool),
+				typeof(FlyoutPresenter),
+				new FrameworkPropertyMetadata(BoolBoxes.True));
+
 		public FlyoutPresenter()
 		{
 			DefaultStyleKey = typeof(FlyoutPresenter);

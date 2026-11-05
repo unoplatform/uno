@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Controls;
 #endif
 public partial class FlyoutPresenter : global::Microsoft.UI.Xaml.Controls.ContentControl
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static global::Microsoft.UI.Xaml.DependencyProperty IsDefaultShadowEnabledProperty { get; } =
 	Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -15,7 +15,7 @@ public partial class FlyoutPresenter : global::Microsoft.UI.Xaml.Controls.Conten
 		typeof(global::Microsoft.UI.Xaml.Controls.FlyoutPresenter),
 		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public bool IsDefaultShadowEnabled
 	{

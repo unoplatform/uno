@@ -216,6 +216,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				typeof(FlyoutBase),
 				new FrameworkPropertyMetadata(BoolBoxes.True));
 
+		// MUX Reference DependencyProperty.cpp, CDependencyProperty::GetDefaultValue, tag winui3/release/2.5.1, commit ba3a8d59e
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+		{
+			if (property == ShouldConstrainToRootBoundsProperty)
+			{
+				// MenuFlyouts aren't constrained by default.
+				defaultValue = this is MenuFlyout ? BoolBoxes.False : BoolBoxes.True;
+				return true;
+			}
+
+			return base.GetDefaultValue2(property, out defaultValue);
+		}
+
 		#region Placement
 
 		/// <summary>

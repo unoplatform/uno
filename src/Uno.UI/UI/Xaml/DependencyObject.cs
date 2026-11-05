@@ -48,6 +48,18 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		internal void SetValue(DependencyProperty dp, bool value) => SetValueInternal(dp, Uno.UI.Helpers.Boxes.Boxer.Box(value));
 
+		/// <summary>
+		/// Provide an instance-specific default value for the specified property
+		/// </summary>
+		/// <remarks>
+		/// In general, it is best do define the property default value using <see cref="PropertyMetadata"/>.
+		/// </remarks>
+		internal virtual bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+		{
+			defaultValue = null;
+			return false;
+		}
+
 		public void ClearValue(DependencyProperty dp) => ClearValueInternal(dp);
 
 		public object ReadLocalValue(DependencyProperty dp) => ReadLocalValueInternal(dp);

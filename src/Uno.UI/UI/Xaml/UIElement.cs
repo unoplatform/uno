@@ -227,13 +227,7 @@ namespace Microsoft.UI.Xaml
 				&& method.DeclaringType != typeof(Control);
 		}
 
-		/// <summary>
-		/// Provide an instance-specific default value for the specified property
-		/// </summary>
-		/// <remarks>
-		/// In general, it is best do define the property default value using <see cref="PropertyMetadata"/>.
-		/// </remarks>
-		internal virtual bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
 		{
 			if (property == KeyboardAcceleratorsProperty)
 			{
@@ -241,8 +235,7 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			defaultValue = null;
-			return false;
+			return base.GetDefaultValue2(property, out defaultValue);
 		}
 
 		/// <summary>

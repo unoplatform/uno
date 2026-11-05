@@ -579,7 +579,7 @@ namespace Microsoft.UI.Xaml
 
 		internal object GetDefaultValue(DependencyObject referenceObject, Type forType)
 		{
-			if ((referenceObject as UIElement)?.GetDefaultValue2(this, out var defaultValue) == true)
+			if (referenceObject?.GetDefaultValue2(this, out var defaultValue) == true)
 			{
 				return defaultValue;
 			}
