@@ -1125,7 +1125,11 @@ internal partial class InputManager
 						=> VisualTreeHelper.HitTest(
 							args.CurrentPoint.Position,
 							hitTestRoot,
-							VisualTreeHelper.DefaultGetTestability.Except(elementToDisableHitTestingOn!),
+							// CUIElementHitTestDisabler on the popup root only turns off its light dismiss layer:
+							// the open popups below the topmost one remain targets, e.g. a parent flyout.
+							elementToDisableHitTestingOn is PopupRoot
+								? VisualTreeHelper.DefaultGetTestability.ExceptSelf(elementToDisableHitTestingOn)
+								: VisualTreeHelper.DefaultGetTestability.Except(elementToDisableHitTestingOn!),
 							isStale, entryPoint, entryLine, reason);
 
 					bool hitTestAgain = true;

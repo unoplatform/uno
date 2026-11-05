@@ -603,7 +603,7 @@ namespace Microsoft.UI.Xaml.Media
 				}
 
 				// The popup root takes the hit here: the popups below this light dismiss layer are out of reach.
-				if (popupRoot?.IsLightDismissLayerBelowChild(child.Current!) == true)
+				if (popupRoot?.IsLightDismissLayerBelowChild(child.Current!) == true && elementHitTestVisibility == HitTestability.Visible)
 				{
 					break;
 				}
