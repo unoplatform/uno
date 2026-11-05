@@ -263,6 +263,12 @@ Formatting now follows the user's regional settings rather than the language lis
   first. Apps that want .NET formatting to follow the app language, for example after setting
   `PrimaryLanguageOverride`, should set `CultureInfo.CurrentCulture` (and
   `DefaultThreadCurrentCulture`) themselves after the `Application` constructor runs.
+  On Android, iOS and macOS, when the device's 12/24-hour setting isn't its locale's own clock,
+  `CurrentCulture` also takes that locale's time formats for the device's clock, which .NET leaves
+  out (on Windows, .NET reads a customized time format itself). Uno reads the setting at startup; a
+  culture the app sets doesn't get them. `CultureInfo.CurrentCulture.Clone()` keeps them, but
+  `new CultureInfo(CultureInfo.CurrentCulture.Name)` doesn't, while on Windows `new CultureInfo`
+  with the user's own locale keeps the customization.
 - **`Windows.Globalization` no longer reads `CurrentCulture` either.** `Calendar` (its names,
   default clock and calendar system, which `DateTimeFormatter` and `TimePicker` use for their
   defaults) and `CurrencyFormatter` follow the app languages, as in WinRT. An app that set
