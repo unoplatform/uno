@@ -940,8 +940,7 @@ partial class Popup
 		return physicalBounds;
 	}
 
-	// CUIElement::TransformToVisual(nullptr). Uno's doesn't follow every transform a visual has, such as Translation, and a
-	// popup's window has to be where the visual draws.
+	// CUIElement::TransformToVisual(nullptr), which on Skia is this same matrix: a popup's window has to be where the visual draws.
 	private static Rect TransformToRoot(UIElement element, Rect rect)
 		=> rect.TryTransformBounds(element.Visual.TotalMatrix, out var bounds) ? bounds : default;
 
