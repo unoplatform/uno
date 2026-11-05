@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -12,6 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
+using static Uno.UI.RuntimeTests.Helpers.LeakTestHelper;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -300,35 +300,6 @@ public class Given_CommandCanExecuteChanged
 			case MenuFlyoutItem item:
 				item.Command = command;
 				break;
-		}
-	}
-
-	// Collects at least 3 times, pumping the dispatcher in between so the removals posted by finalizers run.
-	private static async Task CollectAsync(List<WeakReference> refs, Func<bool>? until = null)
-	{
-		until ??= () => !refs.Any(r => r.IsAlive);
-		var sw = Stopwatch.StartNew();
-		var timeout = TimeSpan.FromSeconds(10);
-		var minIterations = 3;
-
-		while (minIterations-- > 0 || (!until() && sw.Elapsed < timeout))
-		{
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-			GC.Collect(2);
-
-			// Some platforms need a yield before weak references are cleared, as in Given_BindingMemoryLeak.
-#if __SKIA__
-			if (OperatingSystem.IsBrowser() || OperatingSystem.IsLinux() || OperatingSystem.IsIOS() || OperatingSystem.IsAndroid())
-#endif
-			{
-				await Task.Yield();
-				GC.Collect(2);
-				GC.WaitForPendingFinalizers();
-				GC.Collect(2);
-			}
-
-			await WindowHelper.WaitForIdle();
 		}
 	}
 

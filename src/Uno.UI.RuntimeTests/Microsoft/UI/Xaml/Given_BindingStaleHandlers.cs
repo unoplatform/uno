@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -14,6 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
+using static Uno.UI.RuntimeTests.Helpers.LeakTestHelper;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -213,34 +213,6 @@ public class Given_BindingStaleHandlers
 
 		await WindowHelper.WaitForIdle();
 		return refs;
-	}
-
-	// Collects at least 3 times, pumping the dispatcher in between so the removals posted by finalizers run.
-	private static async Task CollectAsync(List<WeakReference> refs, Func<bool>? until = null)
-	{
-		until ??= () => !refs.Any(r => r.IsAlive);
-		var sw = Stopwatch.StartNew();
-		var minIterations = 3;
-
-		while (minIterations-- > 0 || (!until() && sw.Elapsed < TimeSpan.FromSeconds(10)))
-		{
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-			GC.Collect(2);
-
-			// Some platforms need a yield before weak references are cleared, as in Given_BindingMemoryLeak.
-#if __SKIA__
-			if (OperatingSystem.IsBrowser() || OperatingSystem.IsLinux() || OperatingSystem.IsIOS() || OperatingSystem.IsAndroid())
-#endif
-			{
-				await Task.Yield();
-				GC.Collect(2);
-				GC.WaitForPendingFinalizers();
-				GC.Collect(2);
-			}
-
-			await WindowHelper.WaitForIdle();
-		}
 	}
 
 	// Raises over its live handler list, like a source with a custom add/remove: removing a handler mid-raise throws.
