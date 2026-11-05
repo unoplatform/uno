@@ -59,8 +59,9 @@ stages:
   - template: build/.azure-devops-build-native.yml
     parameters:
       XAML_FLAVOR_BUILD: WinUI
-      macOSImageName: '$(macOSVMImage)'
- 
+      # The flat-rate pool: this build does not need Xcode 27.
+      macOSImageName: 'macOS-26'
+
 
 - stage: binaries_build_winui
   displayName: Build - Managed Binaries
