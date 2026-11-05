@@ -220,22 +220,20 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			var hasPopupPanelParent = OwnerPanel.FindFirstParent<PopupPanel>() != null;
+			var closestPopup = Microsoft.UI.Xaml.Controls.Primitives.Popup.GetClosestPopupAncestor(OwnerPanel);
 			var hasListViewParent = OwnerPanel.FindFirstParent<ListViewBase>() != null;
-			IsInsidePopup = hasPopupPanelParent && !hasListViewParent;
+			IsInsidePopup = closestPopup is not null && !hasListViewParent;
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Calling {GetMethodTag()} hasPopupPanelParent={hasPopupPanelParent} hasListViewParent={hasListViewParent}");
+				this.Log().LogDebug($"Calling {GetMethodTag()} closestPopup={closestPopup} hasListViewParent={hasListViewParent}");
 			}
 
 			if (IsInsidePopup)
 			{
 				// The items-control may not exist in the direct visual-tree,
 				// if it is defined within a popup/flyout, as in the case of ComboBox.
-				ItemsControl = OwnerPanel
-					.FindFirstParent<PopupPanel>()?.Popup
-					?.FindFirstParent<ItemsControl>();
+				ItemsControl = closestPopup?.FindFirstParent<ItemsControl>();
 
 				// If measure has already happened when ItemsControl was null, it should be invalidated.
 				OwnerPanel.InvalidateMeasure();

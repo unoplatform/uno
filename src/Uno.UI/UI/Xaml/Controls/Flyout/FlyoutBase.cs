@@ -79,8 +79,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			if (_popup == null)
 			{
-				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
-
 				var child = CreatePresenter();
 
 				if (child is FlyoutPresenter flyoutPresenter)
@@ -103,9 +101,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				m_tpPresenter = child;
 				PreparePresenter(child);
 
-				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
-
-				InitializePopupPanel();
+				ReevaluateIsOverlayVisible();
 
 				// The popup deliberately carries no DataContext (WinUI parity): a flyout has none, and forwarding the
 				// owner's DataContext onto the kept-alive popup leaks it. The placement target's DataContext is set on
@@ -153,11 +149,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		protected virtual void InitializePopupPanel()
-		{
-			InitializePopupPanelPartial();
-		}
-
 		private protected bool IsLightDismissOverlayEnabled
 		{
 			get => _isLightDismissEnabled;
@@ -168,11 +159,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				if (_popup != null)
 				{
 					_popup.IsLightDismissEnabled = value;
+					ReevaluateIsOverlayVisible();
 				}
 			}
 		}
-
-		partial void InitializePopupPanelPartial();
 
 		public bool IsOpen
 		{
@@ -272,26 +262,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			typeof(FlyoutBase),
 			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
 
-
-		/// <summary>
-		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.
-		/// </summary>
-		internal Brush LightDismissOverlayBackground
-		{
-			get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
-			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
-		}
-
-		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
-			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(FlyoutBase), new FrameworkPropertyMetadata(null, (s, e) => ((FlyoutBase)s).OnLightDismissOverlayBackgroundChanged(e)));
-
-		private void OnLightDismissOverlayBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-			if (_popup is Popup winUIPopup)
-			{
-				winUIPopup.LightDismissOverlayBackground = (Brush)e.NewValue;
-			}
-		}
 
 		public DependencyObject OverlayInputPassThroughElement
 		{
@@ -592,10 +562,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					}
 
 					var spParent = VisualTreeHelper.GetParent(spCurrent);
-					// Uno: an open Popup's Child is visually hosted in the uno-internal PopupPanel under
-					// PopupRoot — WinUI parents Popup.Child directly to PopupRoot — so WinUI's
-					// "parent is PopupRoot" check maps to the PopupPanel (PopupRoot kept for safety).
-					if (spParent is PopupPanel or PopupRoot)
+					if (spParent is PopupRoot)
 					{
 						// If the target is in a Popup and the Popup is in the Visual Tree, we want to inherit the theme
 						// from that Popup's parent. Otherwise we will get the App's theme, which might not be what
@@ -642,8 +609,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			// Walk up from the focused element (WinUI: FlyoutBase_partial.cpp lines 2394-2420).
-			// GetUIElementAdjustedParentInternal handles the popup jump (PopupPanel -> Popup),
-			// so this walk correctly finds Popup ancestors.
 			var currentElement = focusedElement;
 			Popup popupAncestor = null;
 			bool popupRootExists = false;

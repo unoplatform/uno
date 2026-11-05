@@ -4,6 +4,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
@@ -701,6 +702,71 @@ partial class FlyoutBase
 		{
 			popup.ShouldConstrainToRootBounds = (bool)args.NewValue;
 		}
+		else if (args.Property == LightDismissOverlayModeProperty && _popup is not null)
+		{
+			ReevaluateIsOverlayVisible();
+		}
+	}
+
+	private void ReevaluateIsOverlayVisible()
+	{
+		bool isOverlayVisible = LightDismissOverlayHelper.IsOverlayVisibleForMode(LightDismissOverlayMode);
+
+		bool isLightDismissEnabled = _popup.IsLightDismissEnabled;
+
+		// Some modes of flyout configure their popup as not light-dismissible;
+		// for those cases don't allow the overlay to be visible.
+		isOverlayVisible &= isLightDismissEnabled;
+
+		if (isOverlayVisible)
+		{
+			_popup.LightDismissOverlayMode = LightDismissOverlayMode.On;
+
+			// Configure the overlay with the correct theme brush.
+			string themeBrush;
+			if (this is MenuFlyout)
+			{
+				themeBrush = "MenuFlyoutLightDismissOverlayBackground";
+			}
+			else if (this is DatePickerFlyout)
+			{
+				themeBrush = "DatePickerLightDismissOverlayBackground";
+			}
+			else if (this is TimePickerFlyout)
+			{
+				themeBrush = "TimePickerLightDismissOverlayBackground";
+			}
+			else
+			{
+				// CalendarDatePicker doesn't have it's own flyout type, so we check for whether
+				// the placement target has a templated parent that is a CalendarDatePicker.
+				if (Target?.GetTemplatedParent() is CalendarDatePicker)
+				{
+					themeBrush = "CalendarDatePickerLightDismissOverlayBackground";
+				}
+				else
+				{
+					themeBrush = "FlyoutLightDismissOverlayBackground";
+				}
+			}
+
+			// Hook up our brush to the popup's overlay using theme resources.
+			_popup.SetOverlayThemeBrush(themeBrush);
+		}
+		else
+		{
+			_popup.LightDismissOverlayMode = LightDismissOverlayMode.Off;
+		}
+	}
+
+	internal static void CloseOpenFlyout(FlyoutBase parentFlyoutCore)
+	{
+		// TODO Uno: FlyoutMetadata. The open flyouts are a flat list, in which a child comes after its parent.
+		var openFlyout = parentFlyoutCore is null
+			? _openFlyouts.FirstOrDefault()
+			: _openFlyouts.SkipWhile(f => f != parentFlyoutCore).Skip(1).FirstOrDefault();
+
+		openFlyout?.Hide();
 	}
 
 	// Associates this flyout with the correct XamlRoot for its context, or returns an error

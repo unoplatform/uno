@@ -246,7 +246,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		var provider = GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true));
 		if (provider is { IsInvalidated: false })
 		{
-			// PopupPanel and similar visual proxies expose a peer owned by another UIElement.
+			// Visual proxies can expose a peer owned by another UIElement.
 			// Keep the visual element as an alias so subtree removal can invalidate the provider.
 			_providers.AddOrUpdate(element, provider);
 		}
@@ -325,10 +325,6 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// Fast path: already have a provider keyed by this exact peer.
 		if (TryGetLiveProvider(resolvedPeer, out var existingByPeer))
 		{
-			if (resolvedPeer.TryGetProviderOwner(out var existingOwner) && existingOwner is Popup popup)
-			{
-				RegisterPopupPanelAlias(popup, existingByPeer);
-			}
 			return existingByPeer;
 		}
 
@@ -433,21 +429,6 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 
 		_providers.AddOrUpdate(owner, provider);
-
-		// PopupPanel exposes its Popup's automation peer, so UIA navigation creates the provider
-		// from the Popup owner rather than from the visual panel that enters and leaves PopupRoot.
-		if (owner is Popup popup)
-		{
-			RegisterPopupPanelAlias(popup, provider);
-		}
-	}
-
-	private void RegisterPopupPanelAlias(Popup popup, Win32RawElementProvider provider)
-	{
-		if (!provider.IsInvalidated && popup.PopupPanel is { } popupPanel)
-		{
-			_providers.AddOrUpdate(popupPanel, provider);
-		}
 	}
 
 	private bool TryGetLiveProvider(UIElement element, [NotNullWhen(true)] out Win32RawElementProvider? provider)
@@ -753,8 +734,13 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				var current = stack.Pop();
 				var provider = TryGetExistingProviderForElement(current);
 
-				// Some visual elements expose a peer owned by another element. PopupPanel, for example,
-				// returns its Popup's peer, so the provider is keyed by Popup rather than PopupPanel.
+				// A popup's provider goes with the child leaving the popup root: the popup itself never enters or leaves it.
+				if (current is FrameworkElement { LogicalParentOverride: Popup popup }
+					&& TryGetExistingProviderForElement(popup) is { } popupProvider)
+				{
+					popupProvider.Invalidate();
+				}
+
 				if (provider is not null)
 				{
 					// Invalidate (mirrors WinUI's CUIAWrapper::Invalidate): clears the

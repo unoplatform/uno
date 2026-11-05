@@ -683,17 +683,12 @@ namespace Microsoft.UI.Xaml
 				args.CanBubbleNatively = false;
 			}
 
-			UIElement parent = null;
-			if (this is not PopupPanel || this.GetParent() is PopupRoot)
+			var parent = this.GetParent() as UIElement;
+
+			// The route has reached the root of a popup's subtree, and the popup closed during the event. WinUI raises the event along
+			// a route built upfront. The root still has to hear of it: it clears global state, e.g. the pointer capture on pointer up (cf. InputManager).
+			if (parent is null && this is FrameworkElement { LogicalParentOverride: Popup })
 			{
-				// Sometimes, a PopupPanel will be a parent of an element's template (e.g. ComboBox)
-				// and the parent will not be PopupRoot. In that case, we shouldn't propagate to the element
-				parent = this.GetParent() as UIElement;
-			}
-			else
-			{
-				// Make sure that the visual tree root element still gets notified that the event has reached the top of the tree
-				// This is important to ensure to clear any relevant global state, e.g. for pointers to clear capture on pointer up (cf. InputManager).
 				parent = this.XamlRoot?.VisualTree.RootElement;
 			}
 

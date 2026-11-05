@@ -141,10 +141,8 @@ partial class ComboBox
 		//get_ValidationCommand(&command));
 		//pEditableTextPartAsTextBox->put_ValidationCommand(command.Get()));
 
-		if (m_tpPopupPart is not null)
-		{
-			m_tpPopupPart.OverlayInputPassThroughElement = this;
-		}
+		// TODO Uno: m_tpPopupPart.OverlayInputPassThroughElement = this. The popup is light dismiss enabled as m_tpElementOutsidePopup is
+		// absent, so a press on the drop down arrow would both dismiss the popup through the pass-through and reopen it through the arrow.
 
 		m_isEditModeConfigured = true;
 	}
@@ -154,11 +152,6 @@ partial class ComboBox
 		if (!m_isEditModeConfigured || m_tpEditableTextPart is null)
 		{
 			return;
-		}
-
-		if (m_tpPopupPart is not null)
-		{
-			m_tpPopupPart.OverlayInputPassThroughElement = null;
 		}
 
 		var pEditableTextPartAsTextBox = m_tpEditableTextPart;
@@ -615,6 +608,11 @@ partial class ComboBox
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		base.OnPropertyChanged2(args);
+
+		if (args.Property == LightDismissOverlayModeProperty && m_tpPopupPart is not null)
+		{
+			ReevaluateIsOverlayVisible();
+		}
 
 		// TODO Uno: Only IsEditable logic for now.
 		if (args.Property == IsDropDownOpenProperty)
@@ -3469,7 +3467,7 @@ partial class ComboBox
 		// we won't center the item if drop down is closed (see protection bellow).
 		m_bShouldCenterSelectedItem |= bCenterSelectedItem;
 
-		// TODO Uno: m_tpElementOutsidePopup is absent, as the light dismiss layer is the PopupPanel's background.
+		// TODO Uno: m_tpElementOutsidePopup is absent, as the popup is light dismiss enabled instead (see ComboBox.custom.cs).
 		if (m_tpPopupPart is null || m_tpElementPopupChild is null || m_tpContentPresenterPart is null)
 		{
 			return;
@@ -3754,6 +3752,32 @@ partial class ComboBox
 	private void SetClosingAnimationDirection() { }
 
 	private void ResetCarouselPanelState() { }
+
+	private void ReevaluateIsOverlayVisible()
+	{
+		bool isOverlayVisible = LightDismissOverlayHelper.IsOverlayVisibleForMode(LightDismissOverlayMode);
+
+		if (isOverlayVisible != m_isOverlayVisible)
+		{
+			m_isOverlayVisible = isOverlayVisible;
+
+			if (m_isOverlayVisible)
+			{
+				// Normally, the overlay is only shown for light-dismiss popups, but for controls that roll their own
+				// light-dismiss logic (and therefore configure their popup's to not be light-dismiss) we still want
+				// to re-use the popup's overlay code.
+				m_tpPopupPart!.DisableOverlayIsLightDismissCheck = true;
+				m_tpPopupPart.LightDismissOverlayMode = LightDismissOverlayMode.On;
+
+				// Set the appropriate brush resource to use for the overlay.
+				m_tpPopupPart.SetOverlayThemeBrush("ComboBoxLightDismissOverlayBackground");
+			}
+			else
+			{
+				m_tpPopupPart!.LightDismissOverlayMode = LightDismissOverlayMode.Off;
+			}
+		}
+	}
 
 	private void PlayOverlayClosingAnimation() { }
 

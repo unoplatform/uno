@@ -581,7 +581,7 @@ namespace SamplesApp
 				// builder.AddFilter("Uno.UI.Runtime.", LogLevel.Trace);
 
 				// builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );
+				// builder.AddFilter("Microsoft.UI.Xaml.Controls.Primitives.PopupRoot", LogLevel.Debug );
 
 				// Generic Xaml events
 				// builder.AddFilter("Microsoft.UI.Xaml", LogLevel.Debug );

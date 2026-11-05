@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using Windows.System;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Shapes;
 using Windows.UI.ViewManagement;
 using Windows.UI.Core;
 using DirectUI;
@@ -26,6 +27,8 @@ namespace Microsoft.UI.Xaml.Controls
 		ContentDialog : ContentControl, IBackButtonListener
 	{
 		internal readonly Popup _popup;
+		private Popup m_tpSmokeLayerPopup;
+		private Rectangle m_tpSmokeLayer;
 		private TaskCompletionSource<ContentDialogResult> _tcs;
 		private readonly SerialDisposable _subscriptions = new SerialDisposable();
 		private readonly SerialDisposable _templateSubscriptions = new SerialDisposable();
@@ -54,12 +57,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_popup = new Popup()
 			{
 				IsContentDialog = true,
-				LightDismissOverlayMode = LightDismissOverlayMode.On,
 			};
-
-			ResourceResolver.ApplyResource(_popup, Popup.LightDismissOverlayBackgroundProperty, "SystemControlPageBackgroundMediumAltMediumBrush", isThemeResourceExtension: true, isHotReloadSupported: true);
-
-			_popup.PopupPanel = new ContentDialogPopupPanel(this);
 
 			var thisRef = (this as IWeakReferenceProvider).WeakReference;
 			_popup.Opened += (s, e) =>
@@ -206,6 +204,12 @@ namespace Microsoft.UI.Xaml.Controls
 					m_isShowing = false;
 					_popup.IsOpen = false;
 					_popup.Child = null;
+
+					if (m_tpSmokeLayerPopup is not null)
+					{
+						m_tpSmokeLayerPopup.IsOpen = false;
+					}
+
 					UpdateVisualState();
 					Closed?.Invoke(this, new ContentDialogClosedEventArgs(result));
 
@@ -309,8 +313,8 @@ namespace Microsoft.UI.Xaml.Controls
 				_popup.Child = this;
 
 				m_isShowing = true;
-				_popup.IsOpen = true;
-				_popup.IsLightDismissEnabled = false;
+				PrepareSmokeLayer();
+				DeferredOpenPopup();
 
 				_tcs = new TaskCompletionSource<ContentDialogResult>();
 
@@ -401,16 +405,57 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 
-			d.Add(_popup.PopupPanel.RegisterDisposablePropertyChangedCallback(VisibilityProperty, OnPopupPanelVisibilityChanged));
-
 			_subscriptions.Disposable = d;
 		}
 
-		private void OnPopupPanelVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+		// MUX Reference ContentDialog_Partial.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+		private void PrepareSmokeLayer()
 		{
-			if (_popup.PopupPanel.Visibility == Visibility.Visible)
+			// Prepare a second popup to show a semi-transparent
+			// smoke layer behind the dialog.
+			m_tpSmokeLayerPopup ??= new Popup();
+
+			if (m_tpSmokeLayer is null)
 			{
-				SetDialogFocus();
+				m_tpSmokeLayer = new Rectangle();
+
+				// TODO Uno: The smoke layer isn't a template part yet (m_isSmokeLayerATemplatePart).
+				ResourceResolver.ApplyResource(m_tpSmokeLayer, Shape.FillProperty, "SystemControlPageBackgroundMediumAltMediumBrush", isThemeResourceExtension: true, isHotReloadSupported: true);
+				m_tpSmokeLayerPopup.Child = m_tpSmokeLayer;
+			}
+
+			SizeSmokeLayer();
+		}
+
+		private void SizeSmokeLayer()
+		{
+			if (m_tpSmokeLayer is not null && XamlRoot is { } xamlRoot)
+			{
+				var windowBounds = xamlRoot.Size;
+				m_tpSmokeLayer.Width = windowBounds.Width;
+				m_tpSmokeLayer.Height = windowBounds.Height;
+			}
+		}
+
+		private void DeferredOpenPopup()
+		{
+			// Since opening the popups is deferred by a tick to allow layout transitions to play
+			// correctly, we could hit a situation where a dialog is shown and then immediately
+			// hidden within the same tick.  In this scenario, we don't want to open the popups
+			// after the dialog has been hidden so make sure the dialog is still showing before
+			// actually opening them.
+			if (m_isShowing)
+			{
+				var tree = XamlRoot?.VisualTree;
+
+				if (m_tpSmokeLayerPopup is not null)
+				{
+					m_tpSmokeLayerPopup.SetAssociatedVisualTree(tree);
+					m_tpSmokeLayerPopup.IsOpen = true;
+				}
+
+				_popup.SetAssociatedVisualTree(tree);
+				_popup.IsOpen = true;
 			}
 		}
 

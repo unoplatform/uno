@@ -434,11 +434,9 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		return application;
 	}
 
-	// Raw elements, and the PopupPanel wrapping popup content (announced only as a
-	// generic "Popup"), get no node: their children attach to the nearest published parent.
+	// Raw elements get no node: their children attach to the nearest published parent.
 	private static bool IsFlattened(UIElement element)
-		=> AutomationProperties.GetAccessibilityView(element) == AccessibilityView.Raw
-			|| element is Microsoft.UI.Xaml.Controls.Primitives.PopupPanel;
+		=> AutomationProperties.GetAccessibilityView(element) == AccessibilityView.Raw;
 
 	private void BuildNodeRecursive(AtspiNode parent, UIElement child)
 	{

@@ -85,6 +85,8 @@ namespace Microsoft.UI.Xaml.Input
 		/// </summary>
 		private XYFocus _xyFocus = new XYFocus();
 
+		internal XYFocus XYFocus => _xyFocus;
+
 		/// <summary>
 		/// This is a leftover from Silverlight times :-) .
 		/// When the platform cannot support tabbing out of plugin, we will act as if
@@ -280,7 +282,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// </summary>
 		/// <param name="useReverseDirection">Should be reverse direction?</param>
 		/// <returns>Focusable element or null.</returns>
-		private DependencyObject? GetFirstFocusableElementFromRoot(bool useReverseDirection)
+		internal DependencyObject? GetFirstFocusableElementFromRoot(bool useReverseDirection)
 		{
 			DependencyObject? pFocusableElement = null;
 

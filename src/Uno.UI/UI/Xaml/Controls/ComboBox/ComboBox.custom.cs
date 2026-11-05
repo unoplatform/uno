@@ -28,7 +28,7 @@ public partial class ComboBox : Selector
 	private TextBox? m_tpEditableTextPart;
 	private ContentPresenter? m_tpContentPresenterPart;
 
-	private IPopup? _popup;
+	private Popup? _popup;
 	private Popup? m_tpPopupPart;
 	private Border? _popupBorder;
 
@@ -52,7 +52,6 @@ public partial class ComboBox : Selector
 
 	public ComboBox()
 	{
-		ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 		DefaultStyleKey = typeof(ComboBox);
 
@@ -78,8 +77,8 @@ public partial class ComboBox : Selector
 
 		base.OnApplyTemplate();
 
-		_popup = this.GetTemplateChild("Popup") as IPopup;
-		m_tpPopupPart = _popup as Popup;
+		_popup = this.GetTemplateChild("Popup") as Popup;
+		m_tpPopupPart = _popup;
 		_popupBorder = this.GetTemplateChild("PopupBorder") as Border;
 		_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
 		m_tpContentPresenterPart = _contentPresenter;
@@ -108,7 +107,7 @@ public partial class ComboBox : Selector
 
 			popup.IsLightDismissEnabled = true;
 
-			popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
+			ReevaluateIsOverlayVisible();
 		}
 
 
@@ -478,14 +477,6 @@ public partial class ComboBox : Selector
 	[GeneratedDependencyProperty(DefaultValue = false)]
 	public static DependencyProperty IsPopupFullscreenProperty { get; } = CreateIsPopupFullscreenProperty();
 
-	/// <summary>
-	/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.
-	/// </summary>
-	internal Brush LightDismissOverlayBackground
-	{
-		get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
-		set { SetValue(LightDismissOverlayBackgroundProperty, value); }
-	}
 
 	internal void ScrollIntoView(object item, ScrollIntoViewAlignment alignment = ScrollIntoViewAlignment.Default)
 	{
@@ -551,14 +542,4 @@ public partial class ComboBox : Selector
 		}
 	}
 
-	internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
-		DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new FrameworkPropertyMetadata(null, (s, e) => ((ComboBox)s).OnLightDismissOverlayBackgroundChanged(e)));
-
-	private void OnLightDismissOverlayBackgroundChanged(DependencyPropertyChangedEventArgs e)
-	{
-		if (_popup is Popup winUIPopup)
-		{
-			winUIPopup.LightDismissOverlayBackground = (Brush)e.NewValue;
-		}
-	}
 }

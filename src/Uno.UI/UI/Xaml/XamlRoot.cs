@@ -108,15 +108,6 @@ public sealed partial class XamlRoot
 		}
 	}
 
-	internal IDisposable OpenPopup(Microsoft.UI.Xaml.Controls.Primitives.Popup popup)
-	{
-		if (VisualTree.PopupRoot == null)
-		{
-			throw new InvalidOperationException("PopupRoot is not initialized yet.");
-		}
-
-		return VisualTree.PopupRoot.OpenPopup(popup);
-	}
 
 	private FocusManager? _focusManager;
 

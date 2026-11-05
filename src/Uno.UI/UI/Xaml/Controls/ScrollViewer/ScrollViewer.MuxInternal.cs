@@ -190,10 +190,9 @@ namespace Microsoft.UI.Xaml.Controls
 				if (pPopupRoot is not null)
 				{
 					pPopup = pPopupRoot.GetTopmostPopup(PopupRoot.PopupFilter.LightDismissOnly);
-					// Uno-specific: We don't yet have GetSavedFocusState()
-					if (pPopup is not null && FocusSelection.ShouldUpdateFocus(pPopup.Child, pPopup.FocusState/*.GetSavedFocusState()*/) && pPopup.IsForFlyout)
+					if (pPopup is not null && FocusSelection.ShouldUpdateFocus(pPopup.Child, pPopup.GetSavedFocusState()) && pPopup.IsFlyout)
 					{
-						bool wasFocusUpdated = pPopup.Focus(FocusState.Pointer, false /*animateIfBringIntoView*/);
+						bool wasFocusUpdated = pPopup!.Focus(FocusState.Pointer, false /*animateIfBringIntoView*/);
 						return wasFocusUpdated;
 					}
 				}

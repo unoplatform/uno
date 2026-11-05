@@ -37,11 +37,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		protected virtual bool ShouldShowConfirmationButtons() => throw new InvalidOperationException();
 
-		protected override void InitializePopupPanel()
-		{
-			// -- UNO SPECIFIC --
-			// Pickers need neither the light dismiss overlay pass-through of the FlyoutBasePopupPanel, so the Popup creates a plain panel.
-		}
 	}
 
 }

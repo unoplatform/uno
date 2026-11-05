@@ -6,13 +6,65 @@
 
 using System;
 using DirectUI;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
+using Uno.UI;
+using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation;
+using _WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class Popup
 {
+	// Initializes a new instance of the Popup class.
+	public Popup()
+	{
+		KeyDown += OnKeyDown;
+	}
+
+	// TODO Uno: Popup::~Popup: Uno doesn't use finalizers. ClearWindowCaches runs when the popup closes instead:
+	// the handlers do nothing for a closed popup, and they must not keep the popup alive through the window.
+	private void ClearWindowCaches()
+	{
+		UnregisterForXamlRootChangedEvents();
+		UnregisterForWindowActivatedEvents();
+	}
+
+	private void CacheContentPositionInfo()
+	{
+		// use changes in xaml root size or screen position to detect orientation/size changed for light dismiss.
+		if (XamlRoot is { } xamlRoot)
+		{
+			var currentXamlRootSize = xamlRoot.Size;
+			m_previousXamlRootWidth = currentXamlRootSize.Width;
+			m_previousXamlRootHeight = currentXamlRootSize.Height;
+		}
+	}
+
+	bool IBackButtonListener.OnBackButtonPressed()
+	{
+		var handled = false;
+		var shouldDismiss = ShouldDismiss(DismissalTriggerFlags.BackPress);
+		if (shouldDismiss)
+		{
+			IsOpen = false;
+			handled = true;
+		}
+
+		return handled;
+	}
+
+	// callback function that is called when the core popup class "Close" function is called
+	private void OnClosed()
+	{
+		BackButtonIntegration.UnregisterListener(this);
+
+		ClearWindowCaches();
+	}
+
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 #if HAS_UNO
@@ -21,23 +73,27 @@ partial class Popup
 		{
 			PropagateFocusProperties();
 		}
-
-		// TODO Uno: The child is parented to the PopupPanel, so that is where it inherits the popup's flow direction from.
-		if (args.Property == FlowDirectionProperty && PopupPanel is { } popupPanel)
-		{
-			popupPanel.FlowDirection = (FlowDirection)args.NewValue;
-		}
 #endif
 
 		base.OnPropertyChanged2(args);
+
+		OnPropertyChangedCore(args);
 
 		if (args.Property == IsOpenProperty)
 		{
 			if ((bool)args.NewValue) //is now open
 			{
-#if HAS_UNO
-				m_everOpened = true;
-#endif
+				//set up back button support if necessary
+				if (DXamlCore.Current.BackButtonSupported)
+				{
+					BackButtonIntegration.RegisterListener(this);
+				}
+
+				//light-dismiss: register for XamlRoot.Changed events, first storing
+				//the current content bounds to avoid immediately closing
+				CacheContentPositionInfo();
+				RegisterForXamlRootChangedEvents();
+				RegisterForWindowActivatedEvents();
 
 				// If we haven't already attached event handlers for the placement target's LayoutUpdated event
 				// and the child's Loaded and SizeChanged events, let's do so now.
@@ -129,6 +185,220 @@ partial class Popup
 				throw new InvalidOperationException("ShouldConstrainToRootBounds cannot be changed after the popup has been opened.");
 			}
 		}
+	}
+
+	// TODO Uno: Popup::NotifyOfDataContextChange: the Child property has ValueInheritsDataContext, and the child inherits from its logical parent.
+
+	// Create PopupAutomationPeer to represent the Popup.
+	protected override AutomationPeer OnCreateAutomationPeer() => new PopupAutomationPeer(this);
+
+	// TODO Uno: Popup::GetChildrenCount and Popup::GetChild serve DisconnectVisualChildrenRecursive, which Uno doesn't have.
+
+	private bool IsAssociatedWithXamlIsland() => XamlRoot?.HostWindow is null;
+
+	// Called on both activation and de-activation
+	private void OnWindowActivated(object sender, _WindowActivatedEventArgs args)
+	{
+		if (args.WindowActivationState == WindowActivationState.Deactivated)
+		{
+			OnXamlLostFocus();
+		}
+	}
+
+	// Common focus lost handler when host is an island or a CoreWindow.  In the  island case, this is called
+	// when the island's focus is lost.  In the CoreWindow case, this is called when CoreWindow's activation is lost.
+	private void OnXamlLostFocus()
+	{
+		if (FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated)
+		{
+			return;
+		}
+
+		var spChild = Child;
+
+		// We don't want to dismiss open light dismiss popups that do not have children. This is to keep compatability of Win 8
+		// applications.
+		var shouldDismiss = ShouldDismiss(DismissalTriggerFlags.WindowDeactivated);
+		if (shouldDismiss && spChild is not null)
+		{
+			// Dismiss the popup if window gets deactivated and the currently
+			// active component is not within the popup.  If the popup is
+			// associated with a flyout, we'll close that instead to allow
+			// anything like closing animations and cleanup to execute first.
+			if (GetClosestFlyoutAncestor(this) is { } flyout)
+			{
+				flyout.Hide();
+			}
+			else
+			{
+				CloseDirect();
+			}
+		}
+	}
+
+	// TODO Uno: Popup::OnDisconnectVisualChildren: Uno has no DisconnectVisualChildrenRecursive walk.
+
+	// Popup::GetNextTabStopOverride, GetPreviousTabStopOverride
+	internal override DependencyObject? GetNextTabStopOverride() => GetTabStop(true /*isForward*/);
+
+	internal override DependencyObject? GetPreviousTabStopOverride() => GetTabStop(false /*isForward*/);
+
+	private DependencyObject GetTabStop(bool isForward)
+	{
+		DependencyObject? pTabStopNativeDO = null;
+
+		if (m_fIsLightDismiss)
+		{
+			if (Child is { } spChild)
+			{
+				var focusManager = Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(this);
+
+				if (focusManager is not null && FocusProperties.CanHaveFocusableChildren(spChild))
+				{
+					pTabStopNativeDO = isForward
+						? focusManager.GetFirstFocusableElement(spChild)
+						: focusManager.GetLastFocusableElement(spChild);
+				}
+				else if (spChild.IsTabStop && FocusProperties.IsFocusable(spChild))
+				{
+					pTabStopNativeDO = spChild;
+				}
+			}
+		}
+
+		return pTabStopNativeDO ?? this;
+	}
+
+	// Programmatic call to light-dismiss.
+	// If it was opened as a light-dismiss Popup, the Popup will close and restore
+	// focus to the control that had focus when the Popup was opened using focusStateAfterClosing.
+	// If it was opened as a normal Popup, the Popup will simply close.
+	internal void LightDismiss(FocusState focusStateAfterClosing)
+	{
+		global::System.Diagnostics.Debug.Assert(focusStateAfterClosing != FocusState.Unfocused);
+		global::System.Diagnostics.Debug.Assert(ShouldDismiss(DismissalTriggerFlags.CoreLightDismiss));
+
+		m_focusStateAfterClosing = focusStateAfterClosing;
+
+		CloseDirect();
+	}
+
+	private void OnXamlRootChanged(XamlRoot pSender, XamlRootChangedEventArgs pArgs)
+	{
+		var currentXamlRootSize = pSender.Size;
+		if (currentXamlRootSize.Width != m_previousXamlRootWidth ||
+			currentXamlRootSize.Height != m_previousXamlRootHeight)
+		{
+			var shouldDismiss = ShouldDismiss(DismissalTriggerFlags.WindowSizeChange);
+			if (shouldDismiss)
+			{
+				CloseDirect();
+			}
+		}
+
+		m_previousXamlRootWidth = currentXamlRootSize.Width;
+		m_previousXamlRootHeight = currentXamlRootSize.Height;
+	}
+
+	internal void OnIslandLostFocusImpl() => OnXamlLostFocus();
+
+	internal void SetDismissalTriggerFlags(DismissalTriggerFlags flags)
+	{
+		if (flags != m_dismissalTriggerFlags)
+		{
+			var isLightDismissEnabled = IsLightDismissEnabled;
+
+			if ((DismissalTriggerFlags.CoreLightDismiss & flags) != 0 && !isLightDismissEnabled)
+			{
+				IsLightDismissEnabled = true;
+			}
+			else if ((DismissalTriggerFlags.CoreLightDismiss & flags) == 0 && isLightDismissEnabled)
+			{
+				IsLightDismissEnabled = false;
+			}
+
+			m_dismissalTriggerFlags = flags;
+		}
+	}
+
+	// Popup::Close
+	private void CloseDirect()
+	{
+		//  Don't use put_IsOpen(FALSE) to close the popup, because app may have
+		//  set IsOpen to a binding, and put_IsOpen will clear that binding. Instead,
+		//  set the core property directly.
+		// TODO Uno: SetValueCore(fSetEffectiveValueOnly) has no equivalent yet.
+		IsOpen = false;
+	}
+
+	// Based on a combination of any special lightDismissFlags and the state of the core IsLightDismissEnabled property
+	// determine whether the supplied reason should result in dismissing the popup
+	private bool ShouldDismiss(DismissalTriggerFlags reason)
+	{
+		bool returnValue = false;
+
+		// No special flags have been set. Defer to IsLightDismissEnabled
+		if (m_dismissalTriggerFlags == DismissalTriggerFlags.None)
+		{
+			returnValue = IsLightDismissEnabled;
+		}
+		else
+		{
+			returnValue = ((reason & m_dismissalTriggerFlags) != 0);
+		}
+
+		// During a drag and drop operation, the current window might lose
+		// focus. If that happens, we don't want to close the popup because it could
+		// be the source or the target of the dnd operation.
+		if (returnValue && reason == DismissalTriggerFlags.WindowDeactivated)
+		{
+			returnValue = !DXamlCore.IsWinRTDndOperationInProgress();
+		}
+
+		return returnValue;
+	}
+
+	private void RegisterForXamlRootChangedEvents()
+	{
+		if (m_xamlRootChangedEventHandler.Disposable is null && XamlRoot is { } xamlRoot)
+		{
+			xamlRoot.Changed += OnXamlRootChanged;
+			m_xamlRootChangedEventHandler.Disposable = Disposable.Create(() => xamlRoot.Changed -= OnXamlRootChanged);
+		}
+	}
+
+	private void UnregisterForXamlRootChangedEvents() => m_xamlRootChangedEventHandler.Disposable = null;
+
+	private void RegisterForWindowActivatedEvents()
+	{
+		if (IsAssociatedWithXamlIsland())
+		{
+			// If the popup is associated with an island, we don't need to attach to Window activation.
+			// This is because the only action taken by a window (de)activation state change is to dismiss
+			// the popup via OnXamlLostFocus. The island codepath will call OnXamlLostFocus for us.
+			return;
+		}
+
+		// Determine the window that this UIElement belongs to and subscribe to Activated events if valid
+		if (m_windowActivatedHandler.Disposable is null && XamlRoot?.HostWindow is { } window)
+		{
+			window.Activated += OnWindowActivated;
+			m_windowActivatedHandler.Disposable = Disposable.Create(() => window.Activated -= OnWindowActivated);
+		}
+	}
+
+	private void UnregisterForWindowActivatedEvents() => m_windowActivatedHandler.Disposable = null;
+
+	internal void SetDefaultAutomationName(string automationName) => m_defaultAutomationName = automationName;
+
+	// TODO Uno: Popup::TruncateAutomationName is only called by the windowed popup's UIA window (Stage D).
+
+	internal bool GetShouldUIAPeerExposeWindowPattern() => IsLightDismissEnabled || IsContentDialog || IsSubMenu;
+
+	internal void SetOwner(DependencyObject? owner)
+	{
+		WeakReferencePool.ReturnWeakReference(this, m_wrOwner);
+		m_wrOwner = owner is not null ? WeakReferencePool.RentWeakReference(this, owner) : null;
 	}
 
 	private void AttachPlacementTargetLayoutUpdated(FrameworkElement placementTarget)
@@ -419,13 +689,7 @@ partial class Popup
 			!DoubleUtil.AreClose(m_calculatedVOffset, originalCalculatedVOffset) ||
 			placementTargetPopupMoved)
 		{
-			// TODO Uno: Each popup has its own host panel here, and a moved parent popup has to be arranged too.
-			PopupPanel?.InvalidateArrange();
-
-			if (placementTargetPopupMoved)
-			{
-				placementTargetPopupCore?.PopupPanel?.InvalidateArrange();
-			}
+			GetAdjustedPopupRoot()?.InvalidateArrange();
 		}
 	}
 

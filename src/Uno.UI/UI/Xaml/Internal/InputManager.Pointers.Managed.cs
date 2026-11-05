@@ -174,7 +174,6 @@ internal partial class InputManager
 				_directManipulations.ClearForFatalError();
 				_gestureRecognizers.ClearForFataError();
 				PointerCapture.ClearForFatalError();
-				_reRouted = null;
 			}
 			catch { }
 		}
@@ -233,32 +232,6 @@ internal partial class InputManager
 			{
 				Dispose();
 				var result = UIElement.EndPointerEventDispatch();
-
-				// Once this dispatching has been removed from the _current dispatch (i.e. dispatch is effectively completed),
-				// we re-dispatch the event to the requested target (if any)
-				// Note: We create a new PointerRoutedEventArgs with a new OriginalSource == reRouted.To
-				if (_manager._reRouted is { } reRouted)
-				{
-					_manager._reRouted = null;
-
-					// Note: Here we are not validating the current result.VisualTreeAltered nor we perform a new hit test as we should if `true`
-					// This is valid only because the single element that is able to re-route the event is the PopupRoot, which is already at the top of the visual tree.
-					// When the PopupRoot performs the HitTest, the visual tree is already updated.
-					if (Event == Pressed)
-					{
-						// Make sure to have a logical state regarding current over check use to determine if events are relevant or not
-						// Note: That check should be removed for managed only events, but too massive in the context of current PR.
-						result += _manager.Raise(
-							Enter,
-							new VisualTreeHelper.Branch(reRouted.From, reRouted.To),
-							new PointerRoutedEventArgs(reRouted.Args.CoreArgs, reRouted.To) { CanBubbleNatively = false });
-					}
-
-					result += _manager.Raise(
-						Event,
-						new VisualTreeHelper.Branch(reRouted.From, reRouted.To),
-						new PointerRoutedEventArgs(reRouted.Args.CoreArgs, reRouted.To) { CanBubbleNatively = false });
-				}
 
 				return result;
 			}
@@ -452,7 +425,16 @@ internal partial class InputManager
 				return;
 			}
 
-			if (!HitTestOrRoot(args, out var originalSource))
+			if (args.CurrentPoint.Properties.IsRightButtonPressed)
+			{
+				_rightButtonPointerId = args.CurrentPoint.PointerId;
+			}
+
+			_isPointerDownHitTest = true;
+			var hasTree = HitTestOrRoot(args, out var hitTestSource);
+			_isPointerDownHitTest = false;
+
+			if (!hasTree || hitTestSource is not { } originalSource)
 			{
 				TraceIgnoredAsNoTree(args);
 				return;
@@ -521,6 +503,11 @@ internal partial class InputManager
 			var isOutOfWindow = (PointerDeviceType)args.CurrentPoint.Pointer.Type is PointerDeviceType.Touch
 				? !HitTest(args, out var originalSource) // No need to find the stale branch for touch as we will flush the over state on the whole tree
 				: !HitTest(args, _isOver, out originalSource, out overStaleBranch);
+			if (_rightButtonPointerId == args.CurrentPoint.PointerId)
+			{
+				_rightButtonPointerId = null;
+			}
+
 			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
 			if (originalSource is null) // Note: Theoretically impossible for the Release, but for safety
 			{
@@ -1058,10 +1045,159 @@ internal partial class InputManager
 			// in that element's local space and the hit-test is scoped to its subtree.
 			// SearchDownForTopMostElementAt propagates the searchRoot to GetTransform
 			// so all coordinate transforms are relative to that element.
-			return VisualTreeHelper.HitTest(
+			var hitTestRoot = args.RelativeRoot as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
+
+			var result = VisualTreeHelper.HitTest(
 				args.CurrentPoint.Position,
-				args.RelativeRoot as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement,
+				hitTestRoot,
 				null, isStale, entryPoint, entryLine, reason);
+
+			return HitTestWithLightDismissAwareness(result, args, hitTestRoot, isStale, entryPoint, entryLine, reason);
+		}
+
+		// The pointer that has the right button down, which passes through the light-dismiss layer until it's released.
+		private uint? _rightButtonPointerId;
+		private bool _isPointerDownHitTest;
+
+		private bool ShouldEventAlwaysPassThroughPopupLightDismissLayer(PointerEventArgs args)
+			=> args.CurrentPoint.Properties.IsRightButtonPressed || _rightButtonPointerId == args.CurrentPoint.PointerId;
+
+		// MUX Reference PointerInputProcessor.cpp, HitTestWithLightDismissAwareness, tag winui3/release/2.5.1, commit ba3a8d59e
+		// When the topmost light-dismissable popup is a flyout,
+		// we allow pointer events to pass through the light-dismiss layer
+		// in three different scenarios:
+		//
+		// 1. Right-clicks always pass through the light-dismiss layer;
+		//
+		// 2. Drag-and-drop events always pass through the light-dismiss layer;
+		//
+		// 3. All other pointer events pass through the light-dismiss layer
+		//    if they are over a UI element that the flyout has designated
+		//    as an element that pointer events can reach through the light-dismiss layer.
+		//
+		private (UIElement? element, VisualTreeHelper.Branch? stale) HitTestWithLightDismissAwareness(
+			(UIElement? element, VisualTreeHelper.Branch? stale) contact,
+			PointerEventArgs args,
+			UIElement? hitTestRoot,
+			StalePredicate? isStale,
+			string entryPoint,
+			int entryLine,
+			string? reason)
+		{
+			if (contact.element is not { } contactDO)
+			{
+				return contact;
+			}
+
+
+			var popupRoot = contactDO as PopupRoot;
+			Popup? popup;
+			UIElement? elementToDisableHitTestingOn;
+
+			if (popupRoot is not null)
+			{
+				popup = popupRoot.GetTopmostPopup(PopupRoot.PopupFilter.LightDismissOnly);
+				elementToDisableHitTestingOn = popupRoot;
+			}
+			else
+			{
+				popup = Popup.GetClosestPopupAncestor(contactDO);
+
+				// Uno: the hit test walks the popup's child, and not the popup.
+				elementToDisableHitTestingOn = popup?.Child;
+			}
+
+			var overlayInputPassThroughElementNoRef = popup?.GetOverlayInputPassThroughElement();
+
+			// If this popup isn't light dismiss but has an overlay input pass-through element,
+			// then we'll need to handle that separately, as the popup root being returned as a
+			// hit-tested element only happens for light-dismiss popups.
+			if (popup is not null
+				&& (popupRoot is not null || (overlayInputPassThroughElementNoRef is not null && !popup.IsFlyout && !popup.IsLightDismiss)))
+			{
+				if (popup.IsFlyout || overlayInputPassThroughElementNoRef is not null)
+				{
+					(UIElement? element, VisualTreeHelper.Branch? stale) HitTestWithoutPopup()
+						=> VisualTreeHelper.HitTest(
+							args.CurrentPoint.Position,
+							hitTestRoot,
+							VisualTreeHelper.DefaultGetTestability.Except(elementToDisableHitTestingOn!),
+							isStale, entryPoint, entryLine, reason);
+
+					bool hitTestAgain = true;
+					bool shouldEventPassThroughLightDismissLayer = ShouldEventAlwaysPassThroughPopupLightDismissLayer(args);
+
+					// If the event shouldn't always pass through the light-dismiss overlay,
+					// then we need to check to see if the pointer is currently over the
+					// pass-through element, if one exists.  If one does, and the pointer is over it,
+					// then we'll pass the event through.  Otherwise, we won't.
+					if (!shouldEventPassThroughLightDismissLayer)
+					{
+						if (overlayInputPassThroughElementNoRef is not null)
+						{
+							// If the app specified that the overlay input pass-through element is the root visual,
+							// then we want to always allow the event to pass through the light-dismiss layer.
+							// This is needed because setting the root visual as the pass-through element implies that
+							// you want all input to go through the light-dismiss layer, but since popups don't have
+							// the root visual as their ancestor in the visual tree, the test for ancestry will fail.
+							if (_inputManager.ContentRoot.VisualTree.PublicRootVisual == overlayInputPassThroughElementNoRef)
+							{
+								shouldEventPassThroughLightDismissLayer = true;
+							}
+							else
+							{
+								var subtreeHit = HitTestWithoutPopup();
+
+								if (subtreeHit.element is { } subtreeHitTestDO
+									&& (overlayInputPassThroughElementNoRef == subtreeHitTestDO || overlayInputPassThroughElementNoRef.IsAncestorOf(subtreeHitTestDO)))
+								{
+									// If the popup in question is a flyout with a button placement target that this hit-test
+									// result is a part of, then we want to prevent that button's flyout from being opened by this input, since
+									// that would cause the flyout to close and then immediately be reopened.
+									if (popup.AssociatedFlyout?.Target is { } placementTargetNoRef
+										&& (placementTargetNoRef == subtreeHitTestDO || placementTargetNoRef.IsAncestorOf(subtreeHitTestDO))
+										&& placementTargetNoRef is Button placementTargetAsButtonNoRef)
+									{
+										placementTargetAsButtonNoRef.SuppressFlyoutOpening();
+									}
+
+									contact = subtreeHit;
+									shouldEventPassThroughLightDismissLayer = true;
+									hitTestAgain = false;
+								}
+							}
+						}
+					}
+
+					if (shouldEventPassThroughLightDismissLayer)
+					{
+						if (hitTestAgain)
+						{
+							contact = HitTestWithoutPopup();
+						}
+
+						// Pointer-down messages should close the topmost flyout.
+						// The others can pass through the light-dismiss layer, but should leave it open.
+						if (_isPointerDownHitTest)
+						{
+							if (popup.IsFlyout)
+							{
+								// If the input hit a flyout, then we'll want to close child popups of that flyout
+								// instead of closing all flyouts.  Otherwise, we'll close all flyouts.
+								// If we have a chain of open flyouts, then closing the root flyout will close
+								// all its nested children.
+								FlyoutBase.CloseOpenFlyout(Popup.GetClosestPopupAncestor(contact.element)?.AssociatedFlyout);
+							}
+							else if (popupRoot is not null)
+							{
+								popupRoot.CloseTopmostPopup(FocusState.Pointer, PopupRoot.PopupFilter.LightDismissOnly);
+							}
+						}
+					}
+				}
+			}
+
+			return contact;
 		}
 
 		private delegate void RaisePointerEventArgs(UIElement element, PointerRoutedEventArgs args, BubblingContext ctx);

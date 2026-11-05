@@ -134,6 +134,8 @@ namespace Microsoft.UI.Xaml
 			return true;
 		}
 
+		internal AutomationPeer? GetExistingAutomationPeer() => _uiElementAutomationPeer;
+
 		internal AutomationPeer? GetOrCreateAutomationPeer()
 		{
 			bool isPopupOpen = true;
@@ -410,39 +412,49 @@ namespace Microsoft.UI.Xaml
 		/// <returns>UIElement or null.</returns>
 		internal UIElement? GetUIElementAdjustedParentInternal(bool publicParentsOnly = true, bool useRealParentForClosedParentedPopups = false)
 		{
-			//TODO Uno: Currently we use a very simplified version, original checks for public parents only
-			//and adjusts for popup hierarchy.
-			var parentDO = VisualTreeHelper.GetParent(this);
-			while (parentDO != null)
+			// TODO Uno: XamlIslandRoot check; publicParentsOnly is not honored.
+			UIElement? pParent = null;
+			for (var parentDO = VisualTreeHelper.GetParent(this); parentDO is not null; parentDO = VisualTreeHelper.GetParent(parentDO))
 			{
 				if (parentDO is UIElement uiElement)
 				{
-					// WinUI: uielement.cpp lines 2501-2517
-					// If the immediate parent is the popup hosting panel, the element is a
-					// Popup's child — jump to the Popup itself.
-					// In WinUI, Popup.Child is parented directly to PopupRoot.
-					// In Uno, Popup.Child is parented to PopupPanel (which is inside PopupRoot).
-					// PopupPanel.Popup provides the equivalent of WinUI's GetLogicalParentNoRef().
-					if (uiElement is PopupPanel popupPanel)
-					{
-						return popupPanel.Popup;
-					}
-
-					// If the parent is PopupRoot and this is a PopupPanel, jump to the owning Popup.
-					if (uiElement is PopupRoot && this is PopupPanel selfPanel)
-					{
-						return selfPanel.Popup;
-					}
-
-					return uiElement;
-				}
-				else
-				{
-					parentDO = VisualTreeHelper.GetParent(parentDO);
+					pParent = uiElement;
+					break;
 				}
 			}
 
-			return null;
+			// If the immediate parent is the popup root it means this element is a
+			// Popup's child, so we want to jump to the logical parent (the Popup).
+			// The only elements visually parented to the PopupRoot are Popup.Child and TransitionRoots.
+			if (pParent is PopupRoot && this is FrameworkElement { LogicalParentOverride: Popup logicalParentPopup })
+			{
+				pParent = logicalParentPopup;
+			}
+
+			// If this element is a parent-less Popup or an open nested Popup inside a closed ancestor,
+			// fallback to treating the PopupRoot as its visual parent since the Popup isn't in a live tree.
+			//
+			// The exception is if we're walking up the tree to gather the rendering context for a redirected
+			// walk and that this is the first step of the walk (see GetRedirectionTransformsAndParentCompNode).
+			// In that case, if the first step comes to a closed parented popup, we allow the walk to continue
+			// from the closed popup.
+			//
+			//  - Open parented popups are active and have a parent. The walk continues from the popup's parent.
+			//
+			//  - Closed parented popups aren't active but still have a parent. The walk continues from the
+			//    popup's parent if closed popups are allowed. Otherwise the walk continues from the popup root.
+			//
+			//  - Parentless popups aren't active and have no parent, regardless of whether or not they are open.
+			//    The walk continues from the popup root, because the popup by definition does not have a parent.
+			//
+			if (!IsActiveInVisualTree
+				&& this is Popup
+				&& (pParent is null || !useRealParentForClosedParentedPopups))
+			{
+				pParent = VisualTree.GetPopupRootForElement(this);
+			}
+
+			return pParent;
 			////if (GetTypeIndex() == KnownTypeIndex::XamlIsland)
 			////{
 			////	// When an element is in a XamlIsland, we treat the XamlIsland as the root of the tree.

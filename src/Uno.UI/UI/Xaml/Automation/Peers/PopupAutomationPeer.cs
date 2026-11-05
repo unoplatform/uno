@@ -127,13 +127,5 @@ public partial class PopupAutomationPeer : FrameworkElementAutomationPeer, IWind
 	// Mirrors WinUI's Popup::GetShouldUIAPeerExposeWindowPattern: expose Window pattern only when the popup is
 	// a light-dismiss surface, ContentDialog, or submenu. Plain non-dismiss popups stay as a Window
 	// control-type without the IWindowProvider pattern.
-	private bool ShouldExposeWindowPattern()
-	{
-		if (GetPopup() is not { } popup)
-		{
-			return false;
-		}
-
-		return popup.IsLightDismissEnabled || popup.IsContentDialog || popup.IsSubMenu;
-	}
+	private bool ShouldExposeWindowPattern() => GetPopup() is { } popup && popup.GetShouldUIAPeerExposeWindowPattern();
 }

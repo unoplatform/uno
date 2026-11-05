@@ -177,31 +177,21 @@ partial class AutomationPeer
 	/// </summary>
 	private static AutomationPeer? GetPopupAssociatedAutomationPeer(UIElement element)
 	{
-		// Walk up the visual tree to find if we're inside a Popup's panel
+		// Walk up the visual tree to find if we're inside a Popup
 		DependencyObject? current = element;
 		while (current is not null)
 		{
 			var parent = VisualTreeHelper.GetParent(current);
 
-			// If parent is a PopupPanel, get the Popup and find its logical parent
-			if (parent is PopupPanel popupPanel)
-			{
-				var popup = popupPanel.Popup;
-				if (popup is not null)
-				{
-					// Get the parent of the Popup in the logical tree
-					var popupParent = VisualTreeHelper.GetParent(popup) as UIElement;
-					if (popupParent is not null)
-					{
-						return popupParent.GetOrCreateAutomationPeer();
-					}
-				}
-				return null;
-			}
-
-			// If we hit the root, stop
 			if (parent is PopupRoot)
 			{
+				// The subtree root's logical parent is the Popup: get the parent of the Popup
+				if (current is FrameworkElement { LogicalParentOverride: Popup popup }
+					&& VisualTreeHelper.GetParent(popup) is UIElement popupParent)
+				{
+					return popupParent.GetOrCreateAutomationPeer();
+				}
+
 				return null;
 			}
 

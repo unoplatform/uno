@@ -152,7 +152,7 @@ namespace Microsoft.UI.Xaml.Controls
 					this.FindFirstParent<ItemsControl>() ??
 					// The items-control may not exist in the direct visual-tree,
 					// if it is defined within a popup/flyout, as in the case of ComboBox.
-					this.FindFirstParent<PopupPanel>()?.Popup?.FindFirstParent<ItemsControl>();
+					Microsoft.UI.Xaml.Controls.Primitives.Popup.GetClosestPopupAncestor(this)?.FindFirstParent<ItemsControl>();
 
 				itemsControl?.SetItemsPresenter(this);
 			}

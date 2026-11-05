@@ -1,13 +1,22 @@
-using Uno.UI.Xaml.Controls;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference Popup.h, tag winui3/release/2.5.1, commit ba3a8d59e
+
+#nullable enable
+
+using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public partial class Popup
+partial class Popup
 {
-	private DismissalTriggerFlags m_dismissalTriggerFlags;
-
+	private UIElement? m_pChild;
+	private bool m_fIsOpen;
 	private bool m_fIsLightDismiss;
-	private bool m_shouldTakeFocus = true;
+	private bool m_fMadeChildNamescopeOwner;
+	private bool m_everOpened;
 
 	// Adjustments made to the offset by a popup placed relative to this one, to bring itself into view.
 	internal float m_hAdjustment;
@@ -17,24 +26,63 @@ public partial class Popup
 	internal float m_calculatedHOffset;
 	internal float m_calculatedVOffset;
 
-	private bool m_everOpened;
+	private PopupPlacementMode m_actualPlacement;
 
-	internal bool WasEverOpened => m_everOpened;
+	// Pointer to element that has focus before the popup is opened
+	private ManagedWeakReference? m_pPreviousFocusWeakRef;
+	internal FocusState m_focusStateAfterClosing = FocusState.Unfocused;
+	private FocusState m_savedFocusState = FocusState.Unfocused;
+	private bool m_shouldTakeFocus = true;
+	private XYFocus.Manifolds m_savedXYFocusManifolds = new();
 
-	// TODO Uno: windowed popups are not implemented yet.
-	internal static bool DoesPlatformSupportWindowedPopup() => false;
+	private ManagedWeakReference? m_associatedFlyoutWeakRef;
 
-	private void SetIsWindowedIfNeeded()
-	{
-		// TODO Uno: windowed popups are not implemented yet.
-	}
+	private Rectangle? m_overlayElement;
+	private bool m_isOverlayVisible;
+	private bool m_wasOpenedDuringEngagement;
+
+	// True when the popup is closing but kept visible for an implicit hide animation.
+	private bool m_closeIsPending;
+	private bool m_isClosing;
+	private bool m_isUnloading;
+
+	internal bool IsSubMenu { get; set; }
+
+	internal bool IsContentDialog { get; set; }
 
 	internal bool IsFlyout => AssociatedFlyout is not null;
 
-	// TODO Uno: Windowed popups are not implemented yet, so no popup leaves the root bounds.
-	internal bool IsWindowed => false;
+	internal FlyoutBase? AssociatedFlyout
+	{
+		get => m_associatedFlyoutWeakRef?.Target as FlyoutBase;
+		set
+		{
+			WeakReferencePool.ReturnWeakReference(this, m_associatedFlyoutWeakRef);
+			m_associatedFlyoutWeakRef = WeakReferencePool.RentWeakReference(this, value);
+		}
+	}
 
-	internal global::Windows.Foundation.Rect GetWindowedPopupMoveAndResizeRect() => default;
+	internal bool IsOpenInternal => m_fIsOpen;
+
+	internal bool WasEverOpened => m_everOpened;
+
+	internal bool WasOpenedDuringEngagement => m_wasOpenedDuringEngagement;
+
+	internal void SetOpenedDuringEngagement(bool value) => m_wasOpenedDuringEngagement = value;
+
+	internal bool IsSelfOrAncestorLightDismiss => m_fIsLightDismiss || IsSubMenu;
+
+	// Whether the popup currently acts as a light-dismiss surface, which IsLightDismissEnabled alone doesn't tell.
+	internal bool IsLightDismiss => m_fIsLightDismiss;
+
+	// m_disableOverlayIsLightDismissCheck (Popup.DisableOverlayIsLightDismissCheck)
+	internal bool DisableOverlayIsLightDismissCheck { get; set; }
+
+	internal bool IsUnloading => m_isUnloading;
+
+	internal bool IsWindowed => false; // TODO Uno: Stage D, !!m_isWindowed.
+
+	internal FrameworkElement? OverlayElement => m_overlayElement;
 
 	internal void SetShouldTakeFocus(bool value) => m_shouldTakeFocus = value;
 
@@ -45,4 +93,6 @@ public partial class Popup
 		IsVisible() &&
 		IsEnabledInternal() &&
 		AreAllAncestorsVisible();
+
+	internal global::Windows.Foundation.Rect GetWindowedPopupMoveAndResizeRect() => default;
 }

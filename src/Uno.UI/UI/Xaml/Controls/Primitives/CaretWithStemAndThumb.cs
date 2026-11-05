@@ -98,7 +98,7 @@ internal sealed class CaretWithStemAndThumb : Grid
 			IsLightDismissEnabled = false,
 			XamlRoot = xamlRoot
 		};
-		_popup.PopupPanel.Visual.ZIndex = VisualTree.TextBoxTouchKnobPopupZIndex;
+		Visual.ZIndex = VisualTree.TextBoxTouchKnobPopupZIndex;
 
 		if (RenderTransform is not MatrixTransform matrixTransform)
 		{

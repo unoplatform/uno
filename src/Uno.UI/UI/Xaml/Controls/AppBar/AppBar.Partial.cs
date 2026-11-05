@@ -75,6 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		FrameworkElement? m_overlayElement;
 		SerialDisposable m_overlayElementPointerPressedEventHandler = new SerialDisposable();
+		PopupRoot? m_overlayLayoutTransitionElementPopupRoot;
 
 		WeakReference<DependencyObject>? m_savedFocusedElementWeakRef;
 		FocusState m_savedFocusState;
@@ -398,11 +399,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_Mode == AppBarMode.Inline)
 			{
-				//// If we're in a popup that is light-dismissable, then we don't want to set up
-				//// a light-dismiss layer - the popup will have its own light-dismiss layer,
-				//// and it can interfere with ours.
-				var popupAncestor = this.FindFirstParent<Popup>();
-				if (popupAncestor == null || (popupAncestor.IsLightDismissEnabled || popupAncestor.IsSubMenu))
+				// If we're in a popup that is light-dismissable, then we don't want to set up
+				// a light-dismiss layer - the popup will have its own light-dismiss layer,
+				// and it can interfere with ours.
+				var popupAncestor = Popup.GetClosestPopupAncestor(this);
+				// TODO Uno: A CommandBarFlyoutCommandBar sits in a flyout which may be transient, and has to stay reachable: no LTEs here.
+				if ((popupAncestor == null || !popupAncestor.IsSelfOrAncestorLightDismiss) && this is not CommandBarFlyoutCommandBar)
 				{
 					if (!m_isInOverlayState)
 					{
@@ -485,8 +487,8 @@ namespace Microsoft.UI.Xaml.Controls
 				// Only restore focus if this AppBar isn't in a flyout - if it is,
 				// then focus will be restored when the flyout closes.
 				// We'll interfere with that if we restore focus before that time.
-				var popupAncestor = this.FindFirstParent<Popup>();
-				if (popupAncestor == null || !(popupAncestor.PopupPanel is FlyoutBasePopupPanel))
+				var popupAncestor = Popup.GetClosestPopupAncestor(this);
+				if (popupAncestor == null || !popupAncestor.IsFlyout)
 				{
 					RestoreSavedFocus();
 				}
@@ -739,6 +741,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var isSticky = IsSticky;
 				m_overlayElement.IsHitTestVisible = !isSticky;
+			}
+
+			if (m_overlayLayoutTransitionElement is { } overlayLayoutTransitionElement)
+			{
+				overlayLayoutTransitionElement.IsHitTestVisible = !IsSticky;
 			}
 		}
 
@@ -1302,6 +1309,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			//CreateLTEs();
+			CreateOverlayLayoutTransitionElement();
 
 			// Update the animations to target the newly created overlay element LTE.
 			if (m_isOverlayVisible)
@@ -1319,6 +1327,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			//DestroyLTEs();
 
+			DestroyOverlayLayoutTransitionElement();
+
 			// Remove our light-dismiss element from our layout root panel.
 			if (m_tpLayoutRoot is { })
 			{
@@ -1332,6 +1342,42 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			m_isInOverlayState = false;
+		}
+
+		// TODO Uno: Layout transition elements aren't implemented. This stands in for the LTE of the overlay element: it covers
+		// the window from the popup root's transition layer, below the popups. WinUI raises the app bar above it with a second LTE,
+		// which is missing here: a press on the bar itself dismisses it.
+		private void CreateOverlayLayoutTransitionElement()
+		{
+			if (m_overlayElement is Rectangle overlayRectangle && VisualTree.GetPopupRootForElement(this) is { } popupRoot)
+			{
+				var transitionElement = new Rectangle
+				{
+					Fill = overlayRectangle.Fill,
+					IsHitTestVisible = overlayRectangle.IsHitTestVisible,
+				};
+				transitionElement.PointerPressed += OnOverlayElementPointerPressed;
+
+				m_overlayLayoutTransitionElement = transitionElement;
+				m_overlayLayoutTransitionElementPopupRoot = popupRoot;
+				popupRoot.AddTransitionElement(transitionElement);
+
+				if (m_isOverlayVisible)
+				{
+					UpdateTargetForOverlayAnimations();
+				}
+			}
+		}
+
+		private void DestroyOverlayLayoutTransitionElement()
+		{
+			if (m_overlayLayoutTransitionElement is Rectangle transitionElement)
+			{
+				transitionElement.PointerPressed -= OnOverlayElementPointerPressed;
+				m_overlayLayoutTransitionElementPopupRoot?.RemoveTransitionElement(transitionElement);
+				m_overlayLayoutTransitionElement = null;
+				m_overlayLayoutTransitionElementPopupRoot = null;
+			}
 		}
 
 		//AppBar::CreateLTEs()

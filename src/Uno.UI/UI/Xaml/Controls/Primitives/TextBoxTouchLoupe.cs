@@ -78,7 +78,7 @@ internal sealed class TextBoxTouchLoupe
 				IsLightDismissEnabled = false,
 				XamlRoot = xamlRoot
 			};
-			_popup.PopupPanel.Visual.ZIndex = VisualTree.TextBoxTouchKnobPopupZIndex;
+			_frame.Visual.ZIndex = VisualTree.TextBoxTouchKnobPopupZIndex;
 		}
 
 		Move(xamlRoot, localCaret, toRoot);

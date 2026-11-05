@@ -108,7 +108,7 @@ namespace Microsoft.UI.Xaml
 #if SUPPORTS_RTL
 		internal Matrix3x2 GetFlowDirectionTransform()
 		{
-			var inMirroredSubtree = ShouldMirrorVisual();
+			GetShouldFlipRTL(out var inMirroredSubtree, out var shouldFlipRTLInPlace);
 
 			// Text surfaces lay their own content out for right-to-left: the engines emit glyphs in
 			// visual order and align the lines themselves, so the element-level flip would mirror
@@ -118,36 +118,59 @@ namespace Microsoft.UI.Xaml
 				and (TextBlock or RichTextBlock or RichTextBlockOverflow);
 
 			return inMirroredSubtree ^ isMirroredTextSurface
-				? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f)
+				? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, shouldFlipRTLInPlace ? (float)RenderSize.Width : 0.0f, 0.0f)
 				: Matrix3x2.Identity;
 		}
 
-		private bool ShouldMirrorVisual()
+		// MUX Reference uielement.cpp, CUIElement::GetShouldFlipRTL, tag winui3/release/2.5.1, commit ba3a8d59e
+		// Returns whether this element should flip the flow direction and whether the flip should be done in-place.
+		private void GetShouldFlipRTL(out bool pShouldFlipRTL, out bool pShouldFlipRTLInPlace)
 		{
+			pShouldFlipRTL = false;
+			pShouldFlipRTLInPlace = true;
+
 			if (this is not FrameworkElement fe)
 			{
-				return false;
+				return;
 			}
 
-			var parent = VisualTreeHelper.GetParent(this);
-			while (parent is not null)
+			var pParent = GetUIElementAdjustedParentInternal(false /*fPublicParentsOnly*/);
+			while (pParent is not null and not FrameworkElement)
 			{
-				if (parent is FrameworkElement feParent)
-				{
-					// The popup panel covers the whole window and positions its child in absolute coordinates, so it never mirrors itself;
-					// popup content mirrors relative to those absolute (left-to-right) coordinates.
-					if (feParent is PopupPanel)
-					{
-						return fe.FlowDirection == FlowDirection.RightToLeft;
-					}
-
-					return fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection;
-				}
-
-				parent = VisualTreeHelper.GetParent(parent);
+				pParent = pParent.GetUIElementAdjustedParentInternal(false /*fPublicParentsOnly*/);
 			}
 
-			return false;
+			var pParentAsPopup = pParent as Popup;
+
+			var isParentlessPopup = !IsActiveInVisualTree && this is Popup;
+			var isParentAParentlessPopup = pParentAsPopup is { IsActiveInVisualTree: false };
+			var isRightToLeft = fe.FlowDirection == FlowDirection.RightToLeft;
+			var myRTLMatchesParentRTL = pParent is not FrameworkElement feParent || (feParent.FlowDirection == FlowDirection.RightToLeft) == isRightToLeft;
+			var IsParentAnRTLParentlessPopup = isParentAParentlessPopup && pParentAsPopup!.FlowDirection == FlowDirection.RightToLeft;
+
+			//
+			// If the flow direction changed between the parent and this element, push a transform to horizontally
+			// flip this element.  The transform adjusts for the width of the element, with one exception...
+			//
+			// Parentless popups are treated specially here.  The flow direction is handled by the parentless Popup's
+			// child.  Parentless Popups aren't layed out so they just flip their content, but since the flip is
+			// handled by their child adjusting for the child's width now would be incorrect since the flow
+			// direction logically changed above the child.
+			//
+			// TODO: Merge: Why don't parentless popups handle the flip? Why does the child have to do it?
+			//
+			pShouldFlipRTL =
+				// If this is a parentless popup, do nothing about RTL. The child will handle RTL.
+				!isParentlessPopup
+				&& (
+					// This isn't a parentless popup and the RTL doesn't match the parent's RTL. Flip.
+					!myRTLMatchesParentRTL
+					// This isn't a parentless popup but this is the child of a parentless popup. Handle the parent's RTL.
+					|| IsParentAnRTLParentlessPopup
+					);
+
+			// Parentless popups don't flip their content in place.
+			pShouldFlipRTLInPlace = !isParentAParentlessPopup;
 		}
 #endif
 

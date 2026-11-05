@@ -248,6 +248,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Uno - omitted code related to display regions, which aren't currently supported
 
+			// GetContentLayoutBoundsForElement: the dialog stays within the visible bounds.
+			// When a Popup has no parent it does not flip in place for RTL mode.
+			var visibleBounds = XamlRoot.VisualTree.VisibleBounds;
+			xOffset = visibleBounds.X + (flowDirection == FlowDirection.LeftToRight ? 0 : visibleBounds.Width);
+			yOffset = visibleBounds.Y;
+
 			// When the ContentDialog is in the visual tree, the popup offset has added
 			// to it the top-left point of where layout measured and arranged it to.
 			// Since we want ContentDialog to be an overlay, we need to subtract off that

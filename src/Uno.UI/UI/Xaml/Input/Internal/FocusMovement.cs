@@ -57,6 +57,7 @@ namespace Uno.UI.Xaml.Input
 			ForceBringIntoView = copy.ForceBringIntoView;
 			AnimateIfBringIntoView = copy.AnimateIfBringIntoView;
 			IsProcessingTab = copy.IsProcessingTab;
+			IsForLightDismiss = copy.IsForLightDismiss;
 			IsShiftPressed = copy.IsShiftPressed;
 			CanCancel = copy.CanCancel;
 			CanDepartFocus = copy.CanDepartFocus;
@@ -105,6 +106,8 @@ namespace Uno.UI.Xaml.Input
 		/// Gets or sets a value indicating whether tab key press is being processed.
 		/// </summary>
 		internal bool IsProcessingTab { get; set; }
+
+		internal bool IsForLightDismiss { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether shift key is pressed.

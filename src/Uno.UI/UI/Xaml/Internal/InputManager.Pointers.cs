@@ -72,31 +72,6 @@ partial class InputManager
 				handledEventsToo: true);
 		}
 
-		#region Re-routing (Flyout.OverlayInputPassThroughElement)
-		private ReRouted? _reRouted; // Note: On non managed pointers, only the pointer down can be re-routed.
-		private readonly record struct ReRouted(PointerRoutedEventArgs Args, UIElement From, UIElement To);
-
-		/// <summary>
-		/// Re-route the given event args (cf. <see cref="FlyoutBase.OverlayInputPassThroughElement"/>).
-		/// </summary>
-		public void ReRoute(PointerRoutedEventArgs routedArgs, UIElement from, UIElement to)
-		{
-#if UNO_HAS_MANAGED_POINTERS
-			if (Current != routedArgs)
-			{
-				throw new InvalidOperationException("Cannot reroute a pointer event args that is not currently being dispatched.");
-			}
-#endif
-
-			if (_reRouted is not null)
-			{
-				throw new InvalidOperationException("Pointer event args can be re-routed only once per bubbling.");
-			}
-
-			_reRouted = new ReRouted(routedArgs, from, to);
-		}
-		#endregion
-
 		#region Uno specific root element pointer handling
 		// Code below is listening to some pointer events at the root level of the app
 		// to be able to complete the support of pointers events sequences.
@@ -107,32 +82,6 @@ partial class InputManager
 
 		internal void ProcessPointerDown(PointerRoutedEventArgs args)
 		{
-#if !UNO_HAS_MANAGED_POINTERS
-			if (_reRouted is { } reRouted)
-			{
-				_reRouted = null;
-				if (reRouted.Args == args)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-						this.Log().Debug($"Re-routing pointer event from {reRouted.From.GetDebugName()} to {reRouted.To.GetDebugName()}");
-
-					// Make sure to change the OriginalSource to reflect the updated target.
-					args.OriginalSource = reRouted.To;
-
-					// First make sure to have a logical state regarding current over check use to determine if events are relevant or not.
-					args.Reset(canBubbleNatively: false);
-					reRouted.To.OnPointerEnter(args);
-
-					// Raise the event to the target
-					args.Reset(canBubbleNatively: false);
-					reRouted.To.OnPointerDown(args);
-
-					args.Handled = true; // Make sure the event is flagged as handled so it won't be bubbled by native code to us again from the FlyoutPopupPanel.
-					return; // The event already came back to us (due to reRouted.To.OnPointerDown(args)).
-				}
-			}
-#endif
-
 			if (!args.Handled && args.GetCurrentPoint(null).Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonPressed)
 			{
 				_canUnFocusOnNextLeftPointerRelease = true;

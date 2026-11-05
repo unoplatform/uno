@@ -207,7 +207,7 @@ namespace Microsoft.UI.Xaml.Media
 			}
 
 			return GetOpenPopups(xamlRoot.VisualTree)
-				.Where(p => p.IsForFlyout)
+				.Where(p => p.IsFlyout)
 				.ToList()
 				.AsReadOnly();
 		}
@@ -241,12 +241,6 @@ namespace Microsoft.UI.Xaml.Media
 			if (realParent is null && reference is _ViewGroup uiElement)
 			{
 				return uiElement.GetVisualTreeParent() as DependencyObject;
-			}
-
-			if (realParent is PopupPanel)
-			{
-				// Skip the popup panel and go to PopupRoot instead.
-				realParent = GetParent(realParent);
 			}
 
 			return realParent;
@@ -531,8 +525,16 @@ namespace Microsoft.UI.Xaml.Media
 				.GetEnumerator();
 #endif
 
+			var popupRoot = element as PopupRoot;
+
 			while (child.MoveNext())
 			{
+				// CPopupRoot::BoundsTestChildrenImpl tests the open popups rather than the children.
+				if (popupRoot is not null && !popupRoot.ShouldHitTestChild(child.Current!))
+				{
+					continue;
+				}
+
 				var childResult = SearchDownForTopMostElementAt(root, testPosition, child.Current!, getVisibility, isChildStale);
 
 				// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
@@ -598,6 +600,12 @@ namespace Microsoft.UI.Xaml.Media
 
 					TRACE($"> found child: {childResult.element.GetDebugName()} | stale branch: {stale?.ToString() ?? "-- none --"}");
 					return (childResult.element, stale);
+				}
+
+				// The popup root takes the hit here: the popups below this light dismiss layer are out of reach.
+				if (popupRoot?.IsLightDismissLayerBelowChild(child.Current!) == true)
+				{
+					break;
 				}
 			}
 

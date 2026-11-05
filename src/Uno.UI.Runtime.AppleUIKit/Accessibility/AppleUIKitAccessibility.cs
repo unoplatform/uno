@@ -2799,8 +2799,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		=> ReferenceEquals(owner.XamlRoot, _xamlRoot) &&
 			(owner is Popup popup
 				? popup.IsOpen &&
-					popup.PopupPanel is { IsLoaded: true } panel &&
-					ReferenceEquals(panel.XamlRoot, _xamlRoot)
+					popup.Child is FrameworkElement { IsLoaded: true } child &&
+					ReferenceEquals(child.XamlRoot, _xamlRoot)
 				: owner is not FrameworkElement { IsLoaded: false }) &&
 			!IsBlockedByActiveModal(owner);
 

@@ -147,6 +147,13 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 			return;
 		}
 
+		// The popup root's peer, a light dismiss button when there is one, has no children: its visual children belong to the popups.
+		if (element is PopupRoot popupRoot)
+		{
+			GetPopupRootAutomationPeerChildren(popupRoot, children);
+			return;
+		}
+
 		var childCount = element.GetChildren().Count;
 		if (childCount > 0)
 		{
@@ -162,12 +169,30 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 					if (spChildAP != null)
 					{
 						children.Add(spChildAP);
+
+						if (spChild is PopupRoot childPopupRoot)
+						{
+							GetPopupRootAutomationPeerChildren(childPopupRoot, children);
+						}
 					}
 					else
 					{
 						GetAutomationPeerChildren(spChild, children, depth + 1);
 					}
 				}
+			}
+		}
+	}
+
+	private static void GetPopupRootAutomationPeerChildren(PopupRoot popupRoot, List<AutomationPeer> children)
+	{
+		// Oldest first, as the popups are rendered.
+		var openPopups = popupRoot.GetOpenPopups();
+		for (var index = openPopups.Count - 1; index >= 0; index--)
+		{
+			if (openPopups[index].GetOrCreateAutomationPeer() is { } popupPeer)
+			{
+				children.Add(popupPeer);
 			}
 		}
 	}

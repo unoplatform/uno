@@ -1,27 +1,897 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// Popup.h, Popup.cpp
+// MUX Reference Popup.cpp (CPopup) and components/elements/Popup.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+
+#nullable enable
 
 using DirectUI;
-using Uno.UI.Xaml.Controls;
-using static Uno.UI.FeatureConfiguration;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
+using Uno.UI.Dispatching;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
+using Windows.System;
+using static Microsoft.UI.Xaml.Controls._Tracing;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public partial class Popup
+partial class Popup
 {
-	internal virtual void OnClosing(ref bool cancel)
+	// TODO Uno: CPopup::~CPopup, EnsureBridgeClosed, EnsureTransitionTarget, CleanupDeviceRelatedResourcesRecursive: Stage D, or no Skia equivalent.
+
+	// CPopup::SetValue(Popup_IsOpen)
+	partial void OnIsOpenChangedPartial(bool oldIsOpen, bool newIsOpen)
 	{
-		// If this popup is associated with a flyout, then give it a chance to cancel closing.
-		if (AssociatedFlyout is { } flyout)
+		bool fPrevIsOpen = m_fIsOpen;
+
+		m_fIsOpen = newIsOpen;
+
+		if (fPrevIsOpen != m_fIsOpen)
 		{
-			cancel = flyout.Hide(canCancel: true);
+			if (m_pChild is not null)
+			{
+				// TODO Uno: if (GetStandardNameScopeOwner() == NULL): the namescope owner model is in the open namescope PRs (specs/058).
+				if (m_fIsOpen)
+				{
+					AddChildAsNamescopeOwner();
+				}
+				else if (ShouldRemoveChildAsNamescopeOwner())
+				{
+					RemoveChildAsNamescopeOwner();
+				}
+
+				// Open or Close the popup
+				if (m_fIsOpen)
+				{
+					Open();
+				}
+				else
+				{
+					Close();
+				}
+			}
+
+			RaisePopupEvent(m_fIsOpen);
 		}
 	}
 
-	internal static Popup GetClosestPopupAncestor(UIElement pChild)
+	// CPopup::SetValue(Popup_HorizontalOffset, Popup_VerticalOffset)
+	private void OnOffsetChanged()
 	{
-		UIElement pNode = pChild;
+		//mark layout and render dirty is popup placement properties have changed
+		if (m_pChild is not null && m_fIsOpen)
+		{
+			GetAdjustedPopupRoot()?.InvalidateArrange();
+
+			// Re-position the window for a windowed popup because the offsets have changed
+			// TODO Uno: Stage D, PositionAndSizeWindowForWindowedPopup().
+		}
+	}
+
+	// CPopup::OnPropertyChanged, called from Popup_Partial's OnPropertyChanged2.
+	private void OnPropertyChangedCore(DependencyPropertyChangedEventArgs args)
+	{
+		if (args.Property == ChildProperty ||
+			args.Property == IsLightDismissEnabledProperty ||
+			args.Property == LightDismissOverlayModeProperty)
+		{
+			ReevaluateIsOverlayVisible();
+		}
+	}
+
+	internal static bool IsElementOrParentEngaged(DependencyObject? element)
+	{
+		var pElement = element;
+
+		while (pElement is not null)
+		{
+			if (pElement is Control { IsFocusEngaged: true })
+			{
+				return true;
+			}
+			else if (pElement is Popup { WasOpenedDuringEngagement: true })
+			{
+				// If the element lives in a popup that was opened during engagement, we should still consider the element
+				// engaged, although it may live in different root from the actual engaged element
+
+				return true;
+			}
+
+			if (pElement is UIElement elementCast)
+			{
+				pElement = elementCast.GetUIElementAdjustedParentInternal(true /*public parents only*/);
+			}
+			else
+			{
+				pElement = pElement.GetParent() as DependencyObject;
+			}
+		}
+
+		return false;
+	}
+
+	/// <summary>
+	/// Adds child to the visual tree and itself to the open popup list maintained by popup root.
+	/// </summary>
+	internal void Open()
+	{
+		MUX_ASSERT(m_fIsOpen);
+
+#if HAS_UNO
+		EnsureXamlRootForOpen();
+#endif
+
+		var pPopupRoot = GetAdjustedPopupRoot();
+
+		// When an app is running in an islands-only context, there are times where we can't find
+		// a popup root for a given popup.  For example, if an app creates a popup in code and
+		// calls Open, we don't know which island it's associated with -- we just fail out here.
+		// TODO Uno: WinUI raises ERROR_POPUP_XAMLROOT_NOT_SET here.
+		if (pPopupRoot is null && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("The popup can't open: it has no XamlRoot.");
+		}
+
+		// If it's been requested that this popup be windowed,
+		// then we'll set it to be so at this point before opening.
+		SetIsWindowedIfNeeded();
+
+		m_everOpened = true;
+
+		// TODO Uno: Stage D, SetAssociatedIsland. A XamlIslandRoot-hosted popup remembers its island here.
+
+		m_savedFocusState = FocusState.Unfocused;
+
+		if (pPopupRoot is not null)
+		{
+			var pChild = m_pChild!;
+
+			// TODO Uno: m_pChild->SetAssociated, m_enteredTreeCounter and CTransition::CancelTransitions have no
+			// equivalent yet: Uno has neither the association flag nor layout transitions.
+
+			// Cancel animations before flushing pending operations. Canceling an animation requires access to the comp node,
+			// which can be destroyed when we finish closing the popup during flush.
+			// TODO Uno: CancelHideAnimationToPrepareForShow(): needs implicit Hide animations on UIElement.
+
+			FlushPendingKeepVisibleOperations();
+
+			// Create window and ContentIsland for windowed popups. Do this before adding the child to the tree. If the child has a
+			// ScrollViewer in its subtree, then the ScrollViewer will look for this windowed popup's IslandInputSite to use for
+			// DManip, and the IslandInputSite comes from the popup window bridge's ContentIsland.
+			if (IsWindowed)
+			{
+				// TODO Uno: Stage D, EnsureWindowForWindowedPopup(), EnsureDCompResourcesForWindowedPopup().
+			}
+
+			// Initial phase of popup addition to open popup list: just add the popup to the m_pOpenPopups list and add-ref it.
+			// This phase is performed *before* the AddChild call just below so that CUIElement::EnterImpl for any
+			// ScrollViewer finds the correct IslandInputSite to hand off to DManip through GetElementIslandInputSite().
+			pPopupRoot.StartAdditionToOpenPopupList(this);
+
+#if HAS_UNO
+			// When a popup is reused across different windows (e.g., shared TextCommandBarFlyout), its child may retain stale
+			// VisualTreeCache entries from the previous window. WinUI does this in CDependencyObject::EnterImpl.
+			if (pPopupRoot.GetVisualTree() is { } targetTree)
+			{
+				EnsureVisualTreeOnSubtree(pChild, targetTree);
+			}
+
+			// The popup root renders and hit tests the child through the popup's transform chain.
+			UpdateVisualTransformParent(pPopupRoot);
+			pChild.Visual.TransformParent = Visual;
+#endif
+
+			try
+			{
+				pPopupRoot.Children.Add(pChild);
+			}
+			catch
+			{
+				// Undo the addition performed by the StartAdditionToOpenPopupList call above.
+				pPopupRoot.UndoAdditionToOpenPopupList(this);
+				throw;
+			}
+
+			if (m_isOverlayVisible)
+			{
+				AddOverlayElementToPopupRoot();
+			}
+
+			// Final phase of popup addition to open popup list: peg managed peer, updates themes and rendering trees.
+			pPopupRoot.CompleteAdditionToOpenPopupList(this);
+
+			if (IsWindowed)
+			{
+				// TODO Uno: Stage D, ShowWindowForWindowedPopup().
+			}
+
+			// TODO Uno: StartComposition(), m_wasMarkedAsRedirectionElementOnOpen: no redirection in Uno's visual tree.
+
+			var pFocusManager = VisualTree.GetFocusManagerForElement(this);
+			DependencyObject? pFocusedElement = null;
+			if (pFocusManager is not null)
+			{
+				pFocusedElement = pFocusManager.FocusedElement;
+
+				if (pFocusedElement is not null)
+				{
+					m_wasOpenedDuringEngagement = IsElementOrParentEngaged(pFocusedElement);
+				}
+			}
+
+			if (IsLightDismissEnabled || IsFlyout)
+			{
+				if (IsLightDismissEnabled)
+				{
+					m_fIsLightDismiss = true;
+
+					// Mark the PopupRoot as dirty to redraw the light dismiss layer.
+					pPopupRoot.UpdateHitTest();
+				}
+
+				ManagedWeakReference? pFocusedElementWeakRef = null;
+				if (pFocusedElement is not null && pFocusManager is not null)
+				{
+					pFocusedElementWeakRef = WeakReferencePool.RentWeakReference(this, pFocusedElement);
+					m_savedFocusState = pFocusManager.GetRealFocusStateForFocusedElement();
+				}
+
+				m_pPreviousFocusWeakRef = null;
+
+				// We still want to save the previous focus element and the focus state. That is why we are
+				// only checking for our state flag at the last step of taking focus.
+				//Only set focus if the child element does not have AllowFocusOnInteraction set to false
+				if (m_shouldTakeFocus && FocusSelection.ShouldUpdateFocus(pChild, m_savedFocusState))
+				{
+					// TODO Uno: InitialFocusSIPSuspender(pFocusManager).
+					Focus(FocusState.Programmatic);
+				}
+
+				m_pPreviousFocusWeakRef = pFocusedElementWeakRef;
+
+				if (pFocusManager is not null)
+				{
+					m_savedXYFocusManifolds = pFocusManager.XYFocus.ResetManifolds();
+				}
+			}
+
+			//
+			// Opening - Dirties (Render | Bounds)
+			//
+			// TODO Uno: InvalidateChildBounds(): Uno computes hit-test bounds during the walk, there's nothing to invalidate.
+
+			m_isUnloading = false;
+		}
+
+		// Ensure compNode if the public root is canvas. Here is for the case
+		// that parentless popups are set shadow before they are opened
+		// TODO Uno: EnsureRootCanvasCompNode() has no equivalent; SystemBackdrop connection is Stage D.
+	}
+
+	internal void ForceCloseForTreeReset()
+	{
+		// CPopupRoot::CloseAllPopupsForTreeReset should have cleared out all its unloading children and called
+		// FlushPendingKeepVisibleOperations on them before getting here, but CPopupRoot's unloading children
+		// are the children of popups. The popup itself can still be pending, and needs to be cleaned up here.
+		//
+		// Note that a popup child's FlushPendingKeepVisibleOperations can call into the popup if the popup had
+		// removed the child and placed it in m_unloadingChild, but if the popup itself was closed, then the
+		// child is still in m_pChild and FlushPendingKeepVisibleOperations will not propagate up to the popup.
+		MUX_ASSERT(m_fIsOpen || (!m_fIsOpen && m_closeIsPending));
+
+		if (m_fIsOpen)
+		{
+			m_fIsOpen = false;
+			Close(true /* forceClose */);
+
+#if HAS_UNO
+			// The field and the property are one and the same in WinUI: this doesn't reach Close() again.
+			IsOpen = false;
+#endif
+		}
+		else
+		{
+			FlushPendingKeepVisibleOperations();
+		}
+	}
+
+	/// <summary>
+	/// Remove child from the visual tree and itself from the open popup list maintained by popup root.
+	/// </summary>
+	internal void Close(bool forceCloseforTreeReset = false)
+	{
+		//Fix bug: 16797776, reentrancy to Close() may occur in
+		//some rare cases
+		if (m_isClosing)
+		{
+			return;
+		}
+
+		m_isClosing = true;
+		try
+		{
+			CloseCore(forceCloseforTreeReset);
+		}
+		finally
+		{
+			m_isClosing = false;
+		}
+	}
+
+	private void CloseCore(bool forceCloseforTreeReset)
+	{
+		bool wasFocused = false;
+		var pChild = m_pChild!;
+
+		// TODO Uno: if (!m_isImplicitClose) RequestKeepAliveForHiddenEventHandlersInSubtree(this): needs UIElement.Hidden.
+
+		// TODO Uno: !forceCloseforTreeReset && ComputeKeepVisible() needs implicit Hide animations and UIElement.Hidden.
+		bool keepVisible = false;
+
+		// Can't close an unloading popup. The pending close should be completed first, then the popup should be opened again.
+		MUX_ASSERT(!m_isUnloading);
+
+		// Implicit hide animation notes:
+		// If we detect an implicit hide animation in this subtree, we need to do a number of things
+		// to properly play the animation.  Those things are controlled by the keepVisible flag.
+		// When the animation completes, we'll finish closing in FlushPendingKeepVisibleOperations();
+		if (keepVisible)
+		{
+			m_closeIsPending = true;
+		}
+
+		// TODO Uno: Stage D, SystemBackdrop::InvokeOnTargetDisconnectedFromCore, DiscardContentExternalBackdropLink.
+
+		var pPopupRoot = GetAdjustedPopupRoot();
+		if (pPopupRoot is not null)
+		{
+			// normally we would get a live leave, in the case of a popup closing or opening, we do not do that.
+			// TODO Uno: CTransition::CancelTransitions(m_pChild), m_leftTreeCounter: no layout transitions.
+
+			// Note: even in keepVisible scenarios, we take the child out of the popup root's child collection. That's okay,
+			// because the popup root renders and hit tests via its list of open popups, and not via its child collection.
+			//
+			// If the child has KeepVisible requirements, then this will keep it visible via CUIElementCollection.
+			pPopupRoot.Children.Remove(pChild);
+
+#if HAS_UNO
+			pChild.Visual.TransformParent = null;
+			Visual.TransformParent = null;
+#endif
+
+			// set the association flag, visual link is no longer present
+			// TODO Uno: no association flag.
+
+			// For windowed popups, the LTE for the Unload transition caused by the RemoveChild() will be clipped to
+			// the Jupiter window, although the popup's window's content is not clipped. This causes an ugly flicker
+			// where the clipped LTE is drawn followed by the unclipped popup window's content. Fix this by canceling
+			// the Unload transition.
+			// TODO Uno: no layout transitions.
+
+			// RemoveFromOpenPopupList() will release the last reference to this Popup and will unpeg its managed peer.
+			// This will cause problems if there are unloading transitions, since render walk will call GetLogicalParentNoRef()
+			// on the child which will return an invalid pointer to this popup.
+			// Thus, we need to keep this popup alive until the child finishes unloading.
+			// TODO Uno: UC_ReleaseParentPopup: no unloading storage.
+
+			if (m_isOverlayVisible)
+			{
+				RemoveOverlayElementFromPopupRoot();
+			}
+
+			if (keepVisible)
+			{
+				// Keep this popup in the opened list, but mark it as unloading. It will continue to render.
+				m_isUnloading = true;
+			}
+			else
+			{
+				pPopupRoot.RemoveFromOpenPopupList(this);
+			}
+
+			m_wasOpenedDuringEngagement = false;
+
+			// If the Popup was marked for composition upon opening, unmark is when it closes.
+			// This handles parentless Popups that were opened and closed without ever entering the tree.
+			// TODO Uno: StopComposition(): no redirection in Uno's visual tree.
+
+			// calls the OnClosed callback function for the Popup_Partial class
+			// this was done to invoke a reverse change in the close property
+			OnClosed();
+		}
+
+		// The Popup needs to be removed from the scene, since it will no longer be walked.
+		// TODO Uno: LeavePCScene(): Uno's render walk follows the visual tree, the child already left it.
+
+		if (pPopupRoot is not null && !keepVisible)
+		{
+			// Hide the popup, but only after LeavePCScene is called. This is because HideWindowForWindowedPopup
+			// calls ReleaseDCompResourcesForWindowedPopup which would remove visuals from the tree that LeavePCScene
+			// needs to access.
+			// TODO Uno: Stage D, HideWindowForWindowedPopup().
+		}
+
+		var pFocusManager = VisualTree.GetFocusManagerForElement(this);
+
+		if (m_fIsLightDismiss || IsFlyout)
+		{
+			// If this popup still contains focus, or if nothing now has focus, try to return focus to the item
+			// that was focused before opening the light-dismiss-enabled popup. If that fails, try to clear FocusManager's focus.
+			if (pFocusManager is not null &&
+				(pFocusManager.FocusedElement is null ||
+				 pFocusManager.FocusedElement == this ||
+				 HasFocusedElementAsChild()))
+			{
+				// Determine the FocusState we should use.
+				var focusState = m_focusStateAfterClosing;
+				if (focusState == FocusState.Unfocused)
+				{
+					// The popup was not light-dismissed, so use the saved FocusState.
+					focusState = m_savedFocusState;
+
+					if (focusState == FocusState.Unfocused)
+					{
+						focusState = FocusState.Programmatic;
+					}
+				}
+
+				// #1. Try to focus the previously focused element that we stored a weakref to.
+				if (m_pPreviousFocusWeakRef is not null)
+				{
+					var pPreviousFocus = m_pPreviousFocusWeakRef.Target as DependencyObject;
+					if (pPreviousFocus is not null && FocusProperties.IsFocusable(pPreviousFocus))
+					{
+						if (pPreviousFocus is UIElement previousFocusElement)
+						{
+							// Scenario where proofing menu is light-dismissed and focus is going back to floatie: change focusState to keyboard since the previously focused floatie
+							// child element has AllowFocusOnInteraction set to false
+							if (focusState == FocusState.Pointer && Internal.TextControlFlyoutHelper.IsElementChildOfOpenedFlyout(previousFocusElement))
+							{
+								focusState = FocusState.Keyboard;
+							}
+
+							var movement = new FocusMovement(pPreviousFocus, FocusNavigationDirection.None, focusState) { IsForLightDismiss = true };
+							wasFocused = pFocusManager.SetFocusedElement(movement).WasMoved;
+						}
+						else if (FocusableHelper.IsFocusableDO(pPreviousFocus))
+						{
+							var movement = new FocusMovement(pPreviousFocus, FocusNavigationDirection.None, focusState) { IsForLightDismiss = true };
+							wasFocused = pFocusManager.SetFocusedElement(movement).WasMoved;
+						}
+					}
+				}
+
+				// #2. Try to focus the first focusable element
+				if (!wasFocused)
+				{
+					var pFirstFocusableElement = pFocusManager.GetFirstFocusableElementFromRoot(false);
+					if (pFirstFocusableElement is not null)
+					{
+						// TODO Uno: InitialFocusSIPSuspender(pFocusManager).
+						var movement = new FocusMovement(pFirstFocusableElement, FocusNavigationDirection.None, focusState) { IsForLightDismiss = true };
+						wasFocused = pFocusManager.SetFocusedElement(movement).WasMoved;
+					}
+				}
+
+				// #3. Clear focus, so the CPopup doesn't keep focus.
+				if (!wasFocused)
+				{
+					pFocusManager.ClearFocus();
+				}
+
+				pFocusManager.XYFocus.SetManifolds(m_savedXYFocusManifolds);
+				m_savedXYFocusManifolds.Reset();
+			}
+
+			m_focusStateAfterClosing = FocusState.Unfocused;
+			m_fIsLightDismiss = false;
+			m_savedFocusState = FocusState.Unfocused;
+
+			// Mark the PopupRoot as dirty to clear the light dismiss layer, if necessary.
+			pPopupRoot?.UpdateHitTest();
+		}
+
+		//
+		// Closing - Dirties (Render | Bounds)
+		//
+		// TODO Uno: InvalidateChildBounds(): Uno computes hit-test bounds during the walk, there's nothing to invalidate.
+
+		// The PopupAutomationPeer will be null from calling UIElement::GetOrCreateAutomationPeer() if Popup
+		// is the closed state and the existing PopupAutomationPeer will invalidate the owner from
+		// CUIElement::OnCreateAutomationPeer() that shouldn't be referenced from other AutomationPeer.
+		// The below calling SetAPParent(null) ensures the disconnect the relationship between PopupAutomationPeer
+		// and Popup child's AutomationPeer when Popup is closed.
+		{
+			var pChildAP = pChild.GetExistingAutomationPeer();
+
+			if (pChildAP is not null && pChildAP.HasParent())
+			{
+				pChildAP.SetParent(null);
+			}
+		}
+	}
+
+	// TODO Uno: WindowedPopupHasFocus(): Stage D. SkipRenderForLayoutTransition(): no layout transitions.
+
+	internal void FlushPendingKeepVisibleOperations()
+	{
+		// TODO Uno: __super::FlushPendingKeepVisibleOperations() needs implicit Hide animations on UIElement.
+
+		// This popup could have been kept visible because of Visibility="Collapsed", in which case there's no pending
+		// close operation and there's nothing to do.
+		if (m_closeIsPending)
+		{
+			var popupRoot = GetAdjustedPopupRoot();
+			MUX_ASSERT(popupRoot is not null);
+
+			popupRoot?.RemoveFromOpenPopupList(this);
+			m_closeIsPending = false;
+
+			// TODO Uno: LeavePCScene(), StopComposition(), and Stage D's HideWindowForWindowedPopup().
+		}
+	}
+
+	//static
+	internal static bool DoesPlatformSupportWindowedPopup() => false; // TODO Uno: Stage D.
+
+	private void SetIsWindowedIfNeeded()
+	{
+		// TODO Uno: Stage D, MeetsRenderingRequirementsForWindowedPopup() and SetIsWindowed().
+	}
+
+	// TODO Uno: Stage D ports lines 1058-2455: SetPointerCapture, ReleasePointerCapture, HasPointerCapture,
+	// EnsureWindowForWindowedPopup, GetIslandInputSite, EnsureDCompResourcesForWindowedPopup, Show/HideWindowForWindowedPopup,
+	// Reposition, PositionAndSizeWindowForWindowedPopup, GetPhysicalBounds and friends.
+
+	internal void ClearLastPointerPointForReplay()
+	{
+		// TODO Uno: Stage D.
+	}
+
+	internal bool ReplayPointerUpdate() => false; // TODO Uno: Stage D, needs WindowedPopupInputSiteAdapter.
+
+	private PopupRoot? GetAdjustedPopupRoot()
+		=> XamlRoot?.VisualTree.PopupRoot ?? VisualTree.GetPopupRootForElement(this);
+
+#if HAS_UNO
+	private void EnsureXamlRootForOpen()
+	{
+		var xamlRoot = XamlRoot ?? m_pChild?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot?.XamlRoot;
+
+		if (xamlRoot != XamlRoot)
+		{
+			XamlRoot = xamlRoot;
+		}
+	}
+
+	/// <summary>
+	/// Recursively ensures the <paramref name="element"/> and all its visual children
+	/// have their <see cref="UIElement.VisualTreeCache"/> set to <paramref name="targetTree"/>.
+	/// Short-circuits when a subtree already has the correct value.
+	/// </summary>
+	private static void EnsureVisualTreeOnSubtree(UIElement element, VisualTree targetTree)
+	{
+		if (element.GetVisualTree() == targetTree)
+		{
+			return;
+		}
+
+		element.SetVisualTree(targetTree);
+
+		var count = VisualTreeHelper.GetChildrenCount(element);
+		for (var i = 0; i < count; i++)
+		{
+			if (VisualTreeHelper.GetChild(element, i) is UIElement child)
+			{
+				EnsureVisualTreeOnSubtree(child, targetTree);
+			}
+		}
+	}
+
+	// A popup outside the live tree has no real ancestors to follow: GetUIElementAdjustedParentInternal treats the
+	// popup root as its parent.
+	private void UpdateVisualTransformParent(PopupRoot? popupRoot)
+		=> Visual.TransformParent = IsActiveInVisualTree ? null : popupRoot?.Visual;
+#endif
+
+	// CPopup::Child
+	partial void OnChildChangedPartial(UIElement oldChild, UIElement newChild)
+	{
+		// TODO Uno: EnsureLayoutTransitionStorage for m_pChildTransitions: ChildTransitions isn't implemented.
+		RemoveChild();
+		SetChild(newChild);
+	}
+
+	/// <summary>
+	/// Adds the popup's child to the visual and logical trees and enters it in the right namescope
+	/// </summary>
+	private void SetChild(UIElement? pChild)
+	{
+		if (pChild is not null)
+		{
+			// TODO Uno: WinUI raises AG_E_MANAGED_ELEMENT_ASSOCIATED if pChild->IsAssociated(), then SetAssociated(true, this).
+			// In Uno, UIElement.AddChild moves the child out of its current parent when the popup opens.
+
+			// In this case we have a very specific scenario.
+			// We have a Popup with ChildTransitions that react to an Unload trigger.
+			// We have a non-null child and the Popup is opened.
+			// Then we close the Popup and the transition starts playing.
+			// While it plays, we set the child of the Popup to null and then we reset it to the same non-null child
+			// we had before (for reference, ContentDialog follows this code path when hidden and re-shown).
+			// TODO Uno: ClearUCRemoveLogicalParentFlag(pChild): no layout transitions.
+		}
+
+		// Set the property value
+		MUX_ASSERT(m_pChild is null);
+
+		m_pChild = pChild;
+
+		if (m_pChild is not null)
+		{
+			// TODO Uno: if (GetStandardNameScopeOwner() == NULL), else m_pChild->Enter(GetStandardNameScopeOwner(), enterParams):
+			// the namescope owner model is in the open namescope PRs (specs/058).
+			if (m_fIsOpen)
+			{
+				//if popup does not have a namescope owner, then make the child its own
+				//namescope owner. this ensures the name resolution works within the popup tree.
+				AddChildAsNamescopeOwner();
+			}
+
+			//add to the logical tree
+			AddLogicalChild(m_pChild);
+
+			if (m_fIsOpen)
+			{
+				var pPopupRoot = GetAdjustedPopupRoot();
+
+				// Bug 74739: Detect nested popup in a template scenario. This popup is being created
+				// as part of template expansion and the template parent is in a
+				// popup. Defer opening this popup till currently open popups have been measured.
+				// Attempt to open it here will fail; popup root children collection is locked for layout.
+				if (pPopupRoot is { IsOnMeasureStack: true })
+				{
+					pPopupRoot.AddToDeferredOpenPopupList(this);
+				}
+				else
+				{
+					Open();
+				}
+			}
+
+			// TODO Uno: m_pChild->SetRequiresComposition(ProjectedShadowDefaultReceiver): no projected shadows.
+		}
+
+		// Maintain a managed ref on the child to prevent it from being GC'd when the popup is not open.
+		// Uno: the Child dependency property holds it.
+	}
+
+	/// <summary>
+	/// Removes the popup's child from the visual and logical trees and does namescope changes
+	/// </summary>
+	private void RemoveChild()
+	{
+		if (m_pChild is not null)
+		{
+			if (ShouldRemoveChildAsNamescopeOwner())
+			{
+				RemoveChildAsNamescopeOwner();
+			}
+
+			// TODO Uno: else m_pChild->Leave(m_pChild->GetStandardNameScopeOwner(), leaveParams): the namescope PRs.
+
+			// notice how we FIRST close and only then remove logical child.
+			// this allows us to use the logical parent as a lookup for transitions.
+			if (m_fIsOpen)
+			{
+				// We're currently removing the child, and the popup shouldn't raise a UIE.Hidden event, so don't call
+				// RequestKeepAlive expecting a UIE.Hidden to be raised.
+				// TODO Uno: ImplicitCloseGuard: needs UIElement.Hidden.
+				Close();
+			}
+
+			// TODO Uno: m_unloadingChild, UC_RemoveLogicalParent: needs ComputeKeepVisible and unloading storage.
+
+			RemoveLogicalChild(m_pChild);
+
+			//reset the property value reference
+			m_pChild = null;
+		}
+	}
+
+	private void AddLogicalChild(UIElement child)
+	{
+		if (child is FrameworkElement childAsFE)
+		{
+			childAsFE.SetLogicalParent(this);
+			childAsFE.RefreshInheritanceParent();
+		}
+
+#if HAS_UNO
+		PropagateFocusProperties();
+#endif
+	}
+
+	private void RemoveLogicalChild(UIElement child)
+	{
+		if (child is FrameworkElement childAsFE && childAsFE.LogicalParentOverride == this)
+		{
+			childAsFE.SetLogicalParent(null);
+			childAsFE.RefreshInheritanceParent();
+		}
+
+#if HAS_UNO
+		if (child is DependencyObject provider &&
+			provider.DataContextPropertyInternal is { } dataContextProperty &&
+			provider.ReadLocalValue(dataContextProperty) != DependencyProperty.UnsetValue)
+		{
+			provider.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
+			provider.ClearValue(AllowFocusWhenDisabledProperty, DependencyPropertyValuePrecedences.Local);
+		}
+#endif
+	}
+
+#if HAS_UNO
+	private void PropagateFocusProperties()
+	{
+		if (Child is DependencyObject provider)
+		{
+			provider.SetValue(AllowFocusOnInteractionProperty, Uno.UI.Helpers.Boxes.Boxer.Box(AllowFocusOnInteraction), DependencyPropertyValuePrecedences.Local);
+			provider.SetValue(AllowFocusWhenDisabledProperty, Uno.UI.Helpers.Boxes.Boxer.Box(AllowFocusWhenDisabled), DependencyPropertyValuePrecedences.Local);
+		}
+	}
+#endif
+
+	// TODO Uno: ClearUCRemoveLogicalParentFlag: no layout transitions. UpdateTranslationFromContentRoot: Stage D.
+
+	// Causes the object and its "children" to enter scope. For popup, it calls the base class
+	// implementation. Popup's child is entered into popup's namescope if there is one.
+	internal override void EnterImpl(EnterParams @params, int depth)
+	{
+		base.EnterImpl(@params, depth);
+
+		// If the Popup is entering the live tree, ensure that it is marked for composition.
+		// If the Popup was already opened (i.e. a 'parentless Popup') then there's no need to mark it again.
+		// TODO Uno: StartComposition(): no redirection in Uno's visual tree.
+
+		// TODO Uno: this is the Enter call to register names. if we made the child a namescope owner earlier,
+		// then reverse that since the child will now enter popup's namescope (the namescope PRs).
+
+#if HAS_UNO
+		// A parentless popup opened and then moved into the live tree starts following its real ancestors.
+		if (@params.IsLive && m_fIsOpen)
+		{
+			Visual.TransformParent = null;
+		}
+#endif
+	}
+
+	// Causes the object and its properties to leave scope. For popup, it calls the base class
+	// implementation. If Popup is leaving a namescope, then the child leaves that namescope
+	// as well and becomes a namescope owner.
+	internal override void LeaveImpl(LeaveParams @params)
+	{
+		// If the Popup was marked for composition, unmark is when it leaves.
+		// This is safe because the Popup cannot be rendered again in this state, since it will also Close() here.
+		// TODO Uno: StopComposition(): no redirection in Uno's visual tree.
+
+		base.LeaveImpl(@params);
+
+		// If we're leaving the live tree, close the popup
+		if (@params.IsLive && m_fIsOpen)
+		{
+			var popupRoot = GetAdjustedPopupRoot();
+			if (popupRoot is { ShouldDeferClosePopups: true })
+			{
+				popupRoot.DeferClosePopup(this);
+			}
+			else
+			{
+				// We're cleaning up unloading storage, and UIE.Hidden has already been raised. Don't call RequestKeepAlive
+				// expecting another UIE.Hidden to be raised.
+				// TODO Uno: ImplicitCloseGuard: needs UIElement.Hidden.
+				IsOpen = false;
+			}
+		}
+
+		// TODO Uno: m_pChild->Leave(pNamescopeOwner, params): the namescope PRs.
+	}
+
+	// TODO Uno: StartComposition, StopComposition: no redirection in Uno's visual tree.
+
+	/// <summary>
+	/// Returns a value indicating whether or not the currently focused element is a child of this Popup.
+	/// </summary>
+	private bool HasFocusedElementAsChild()
+	{
+		bool hasFocusedElementAsChild = false;
+
+		var pFocusManager = VisualTree.GetFocusManagerForElement(this);
+
+		if (pFocusManager is not null)
+		{
+			if (pFocusManager.FocusedElement is UIElement pFocusedElement)
+			{
+				bool focusedElementIsChildOfThisPopup = false;
+
+				if (m_pChild is not null && pFocusedElement != m_pChild)
+				{
+					focusedElementIsChildOfThisPopup = m_pChild.IsAncestorOf(pFocusedElement);
+				}
+
+				hasFocusedElementAsChild = pFocusedElement == m_pChild || focusedElementIsChildOfThisPopup;
+			}
+		}
+
+		return hasFocusedElementAsChild;
+	}
+
+	// Helper method to add child as a namescope owner. This will be done when popup
+	// does not have a namescope owner. It ensures that name resolution works in the
+	// popup tree even when popup is created in ether.
+	private void AddChildAsNamescopeOwner()
+	{
+		// TODO Uno: The namescope owner model is in the open namescope PRs (specs/058). FindName walks the visual tree meanwhile.
+		// if (m_pChild && !m_pChild->IsStandardNameScopeOwner())
+		// {
+		//     m_pChild->SetIsStandardNameScopeOwner(TRUE);
+		//     m_pChild->SetIsStandardNameScopeMember(TRUE);
+		//     GetContext()->GetNameScopeRoot().EnsureNameScope(m_pChild, nullptr);
+		//     m_pChild->Enter(m_pChild, enterParams);
+		//     m_fMadeChildNamescopeOwner = TRUE;
+		// }
+	}
+
+	// Helper method to remove popup's child as a namescope owner. This will be done when
+	// popup gets a namescope owner. Popup's child should enter the namescope of popup's
+	// namescope owner.
+	private void RemoveChildAsNamescopeOwner()
+	{
+		// TODO Uno: The namescope owner model is in the open namescope PRs (specs/058).
+		// m_pChild->Leave(m_pChild, leaveParams);
+		// GetContext()->RemoveNameScope(m_pChild, Jupiter::NameScoping::NameScopeType::StandardNameScope);
+		// m_pChild->SetIsStandardNameScopeOwner(FALSE);
+		// m_pChild->SetIsStandardNameScopeMember(FALSE);
+		m_fMadeChildNamescopeOwner = false;
+	}
+
+	// Returns TRUE if m_bMadeChildNamescopeOwner is set to TRUE
+	private bool ShouldRemoveChildAsNamescopeOwner() => m_fMadeChildNamescopeOwner;
+
+	// helper method to raise Popup.Opened and Closed events
+	private void RaisePopupEvent(bool isOpened)
+	{
+		// TODO: Add EventManager.RaiseEvent method and use it here.
+		if (isOpened)
+		{
+			NativeDispatcher.Main.Enqueue(() => Opened?.Invoke(this, true), NativeDispatcherPriority.Normal);
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(() => Closed?.Invoke(this, false), NativeDispatcherPriority.Normal);
+		}
+	}
+
+	// TODO Uno: AsyncRelease, ReleaseOverride, AddEventListener, RemoveEventListener: reference counting, Uno has the GC.
+	// TODO Uno: UpdateImplicitStyle, PreChildrenPrintVirtual, MarkInheritedPropertyDirty: no equivalents.
+
+	// BoundsTestInternal, BoundsTestPopup, BoundsTestChildren, GenerateChildOuterBounds: Uno hit tests the popup's child as a
+	// child of the popup root, see PopupRoot.ShouldHitTestChild.
+
+	// TODO Uno: LeavePCSceneSubgraph, LeavePCScene: Uno's render walk follows the visual tree.
+
+	/// <summary>
+	/// Returns the closest Popup ancestor or NULL if one does not exist.
+	/// </summary>
+	internal static Popup? GetClosestPopupAncestor(UIElement? pChild)
+	{
+		var pNode = pChild;
 
 		while (pNode is not null)
 		{
@@ -36,9 +906,9 @@ public partial class Popup
 		return null;
 	}
 
-	internal static FlyoutBase GetClosestFlyoutAncestor(UIElement pUIElement)
+	internal static FlyoutBase? GetClosestFlyoutAncestor(UIElement? pUIElement)
 	{
-		UIElement pNode = pUIElement;
+		var pNode = pUIElement;
 
 		while (pNode is not null)
 		{
@@ -56,44 +926,232 @@ public partial class Popup
 		return null;
 	}
 
-	// Based on a combination of any special lightDismissFlags and the state of the core IsLightDismissEnabled property
-	// determine whether the supplied reason should result in dismissing the popup
-	private bool ShouldDismiss(DismissalTriggerFlags reason)
+	// The ESC key closes the topmost light-dismiss-enabled popup.
+	// This handles the case where ESC is pressed while the CPopup has focus.  This does not handle the routed case
+	// where some child of a light-dismiss-enabled popup has focus, since its events route to CPopupRoot.
+	private void OnKeyDown(object sender, KeyRoutedEventArgs pEventArgs)
 	{
-		bool returnValue = false;
-
-		// No special flags have been set. Defer to IsLightDismissEnabled
-		if (m_dismissalTriggerFlags == DismissalTriggerFlags.None)
-		{
-			returnValue = IsLightDismissEnabled;
-		}
-		else
-		{
-
-			returnValue = ((reason & m_dismissalTriggerFlags) != 0);
-		}
-
-		// During a drag and drop operation, the current window might lose
-		// focus. If that happens, we don't want to close the popup because it could
-		// be the source or the target of the dnd operation.
-		if (returnValue && reason == DismissalTriggerFlags.WindowDeactivated)
-		{
-			returnValue = !DXamlCore.IsWinRTDndOperationInProgress();
-		}
-
-		return returnValue;
+		// We will dismiss popup on key down for RTM apps. This is to accommodate IME behavior. IME has some logic
+		// tied to ESC key press (such as closing suggestions menu etc) which gets invoked OnKeyDown and they handle that event
+		// For light dismiss popups we do not  want ESC key to dismiss the popup if this logic gets executed, which happens in on key down.
+		ClosePopupOnKeyEventIfNecessary(pEventArgs);
 	}
 
-	bool IBackButtonListener.OnBackButtonPressed()
+	// TODO Uno: NWPropagateDirtyFlag: no dirty flags.
+
+	internal FocusState GetSavedFocusState()
+		=> m_pPreviousFocusWeakRef is not null ? m_savedFocusState : FocusState.Unfocused;
+
+	/// <summary>
+	/// Should PopupRoot notify this popup of app's theme change?
+	/// </summary>
+	internal bool ShouldPopupRootNotifyThemeChange()
 	{
-		var handled = false;
-		var shouldDismiss = ShouldDismiss(DismissalTriggerFlags.BackPress);
-		if (shouldDismiss)
+		// An AppBar gets theme change notification from its owner page.
+		// A parented popup gets theme change notification from its parent.
+		// TODO Uno: no ApplicationBarService (IsApplicationBarService()).
+		return this.GetParentInternal(false) is null;
+	}
+
+	// TODO Uno: RecursiveInvalidateFontSize: no equivalent.
+
+	/// <summary>
+	/// Notify element and its subtree that theme has changed
+	/// </summary>
+	internal override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
+	{
+		// Notify base class that theme has changed
+		base.NotifyThemeChangedCore(theme, forceRefresh);
+
+		// Recursively notify element subtree that theme has changed
+		if (m_pChild is not null)
 		{
+			m_pChild.NotifyThemeChanged(theme, forceRefresh);
+		}
+
+		if (m_overlayElement is not null)
+		{
+			// Set the overlay to match the child's theme.  If there is no child,
+			// then match the popup's theme.
+			var overlayTheme = m_pChild is not null ? m_pChild.GetTheme() : GetTheme();
+			m_overlayElement.NotifyThemeChanged(overlayTheme, forceRefresh);
+		}
+	}
+
+	internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
+	{
+		base.UpdateThemeBindings(updateReason);
+
+		// Uno: resource update reasons other than the theme don't go through NotifyThemeChangedCore.
+		Application.PropagateResourcesChanged(Child, updateReason);
+	}
+
+	private void ClosePopupOnKeyEventIfNecessary(KeyRoutedEventArgs eventArgs)
+	{
+		if (eventArgs.Key == VirtualKey.Escape)
+		{
+			eventArgs.Handled = true;
+
+			// Give the popup an opportunity to cancel closing.
+			var cancel = false;
+			OnClosing(ref cancel);
+			if (cancel)
+			{
+				return;
+			}
+
+			m_focusStateAfterClosing = FocusState.Keyboard;
 			IsOpen = false;
-			handled = true;
+		}
+	}
+
+	internal virtual void OnClosing(ref bool cancel)
+	{
+		cancel = false;
+
+		// If this popup is associated with a flyout, then give it a chance to cancel closing.
+		if (AssociatedFlyout is { } flyout)
+		{
+			cancel = flyout.Hide(canCancel: true);
+		}
+	}
+
+	// TODO Uno: ReferenceTrackerWalkCore: reference tracking, Uno has the GC.
+
+	private void ReevaluateIsOverlayVisible()
+	{
+		bool isOverlayVisible = LightDismissOverlayHelper.IsOverlayVisibleForMode(LightDismissOverlayMode);
+
+		// If we don't have a child, then don't show an overlay.
+		isOverlayVisible &= m_pChild is not null;
+
+		// Only enable the overlay if the popup is light-dismiss enabled, unless this check is
+		// otherwise disabled.
+		isOverlayVisible &= IsLightDismissEnabled || DisableOverlayIsLightDismissCheck;
+
+		// Only take action if the value has changed.
+		if (isOverlayVisible != m_isOverlayVisible)
+		{
+			m_isOverlayVisible = isOverlayVisible;
+
+			if (m_isOverlayVisible)
+			{
+				SetOverlayElement(new Rectangle());
+			}
+			else
+			{
+				RemoveOverlayElement();
+			}
+		}
+	}
+
+	private void SetOverlayElement(Rectangle overlayElement)
+	{
+		MUX_ASSERT(m_isOverlayVisible);
+		MUX_ASSERT(overlayElement is not null);
+		MUX_ASSERT(m_overlayElement is null);
+
+		m_overlayElement = overlayElement;
+
+#if HAS_UNO
+		Microsoft.UI.Xaml.Automation.AutomationProperties.SetAccessibilityView(m_overlayElement!, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView.Raw);
+#endif
+
+		SetOverlayThemeBrush("PopupLightDismissOverlayBackground");
+
+		// The overlay element doesn't host any content, so we don't really care about
+		// name resolution, so just make itself its own namescope owner.
+		// TODO Uno: The namescope owner model is in the open namescope PRs (specs/058).
+
+		m_overlayElement!.SetLogicalParent(this);
+
+		if (m_fIsOpen)
+		{
+			AddOverlayElementToPopupRoot();
+		}
+	}
+
+	private void RemoveOverlayElement()
+	{
+		MUX_ASSERT(m_overlayElement is not null);
+
+		// TODO Uno: The namescope owner model is in the open namescope PRs (specs/058).
+
+		if (m_fIsOpen)
+		{
+			RemoveOverlayElementFromPopupRoot();
 		}
 
-		return handled;
+		m_overlayElement!.SetLogicalParent(null);
+
+		m_overlayElement = null;
 	}
+
+	private void AddOverlayElementToPopupRoot()
+	{
+		MUX_ASSERT(m_fIsOpen);
+		MUX_ASSERT(m_overlayElement is not null);
+		MUX_ASSERT(m_pChild is not null);
+
+		var popupRoot = GetAdjustedPopupRoot();
+		MUX_ASSERT(popupRoot is not null);
+
+		if (popupRoot is null)
+		{
+			return;
+		}
+
+		var indexOfChild = popupRoot.Children.IndexOf(m_pChild!);
+
+		if (indexOfChild >= 0)
+		{
+			popupRoot.Children.Insert(indexOfChild, m_overlayElement!);
+		}
+
+		// Set the overlay to match the child's theme.  If there is no child,
+		// then match the popup's theme.
+		var overlayTheme = m_pChild is not null ? m_pChild.GetTheme() : GetTheme();
+		m_overlayElement!.NotifyThemeChanged(overlayTheme, false /*fForceRefresh*/);
+	}
+
+	private void RemoveOverlayElementFromPopupRoot()
+	{
+		MUX_ASSERT(m_overlayElement is not null);
+
+		var popupRoot = GetAdjustedPopupRoot();
+		MUX_ASSERT(popupRoot is not null);
+
+		popupRoot?.Children.Remove(m_overlayElement!);
+	}
+
+	internal void SetOverlayThemeBrush(string brushKey)
+	{
+		if (m_overlayElement is null)
+		{
+			return;
+		}
+
+		ResourceResolver.ApplyResource(m_overlayElement, Shape.FillProperty, brushKey, isThemeResourceExtension: true, isHotReloadSupported: true);
+	}
+
+	internal DependencyObject? GetOverlayInputPassThroughElement()
+	{
+		if (IsFlyout)
+		{
+			return AssociatedFlyout?.OverlayInputPassThroughElement;
+		}
+
+		return OverlayInputPassThroughElement;
+	}
+
+	internal void SetAssociatedVisualTree(VisualTree? tree)
+	{
+		tree?.AttachElement(this);
+	}
+
+	// TODO Uno: SetAssociatedIsland, OnContentAutomationProviderRequested, SetCachedStandardNamescopeOwner,
+	// GetSystemBackdrop, SetSystemBackdrop: Stage D.
+
+	// components/elements/Popup.cpp
+	// TODO Uno: CancelHideAnimationToPrepareForShow, GetPopupOfUnloadingChild, RemoveUnloadingChild: need implicit Hide animations.
 }
