@@ -384,6 +384,21 @@ internal static partial class X11Helper
 	public static partial int XUnmapWindow(IntPtr display, IntPtr window);
 
 	[LibraryImport(libX11)]
+	public static partial int XMoveResizeWindow(IntPtr display, IntPtr window, int x, int y, uint width, uint height);
+
+	[LibraryImport(libX11)]
+	public unsafe static partial int XConfigureWindow(IntPtr display, IntPtr window, uint value_mask, XWindowChanges* changes);
+
+	[LibraryImport(libX11)]
+	public static partial int XGetInputFocus(IntPtr display, out IntPtr focus_return, out int revert_to_return);
+
+	[LibraryImport(libXInput)]
+	public unsafe static partial int XIGrabDevice(IntPtr display, int deviceid, IntPtr grab_window, IntPtr time, IntPtr cursor, int grab_mode, int paired_device_mode, int owner_events, XIEventMask* mask);
+
+	[LibraryImport(libXInput)]
+	public static partial int XIUngrabDevice(IntPtr display, int deviceid, IntPtr time);
+
+	[LibraryImport(libX11)]
 	public static partial int XPending(IntPtr display);
 
 	[LibraryImport(libX11)]

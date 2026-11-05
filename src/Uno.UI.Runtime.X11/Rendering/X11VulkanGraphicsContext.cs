@@ -19,7 +19,7 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 	private bool _skipPresent;
 	private int _width, _height;
 
-	public X11VulkanGraphicsContext(X11Window x11Window)
+	public X11VulkanGraphicsContext(X11Window x11Window, bool transparent = false)
 	{
 		if (!X11VulkanSurfaceFactory.IsVulkanAvailable())
 		{
@@ -36,10 +36,21 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 
 		var factory = new X11VulkanSurfaceFactory(display);
 		_vk = new VulkanContext();
-		_vk.Initialize(factory, window, _width, _height);
+		if (transparent)
+		{
+			_vk.InitializeDevice(factory);
+			_vk.InitializeSurface(window, _width, _height, premultipliedAlpha: true);
+		}
+		else
+		{
+			_vk.Initialize(factory, window, _width, _height);
+		}
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
+
+	/// <summary>False when the last frame was dropped for a resized swapchain.</summary>
+	internal bool PresentedLastFrame { get; private set; } = true;
 
 	// The Vulkan render image is stable across frames (resized only on change), so it keeps the previous frame's
 	// pixels — the compositor can repaint only the damaged region.
@@ -89,10 +100,12 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 		if (_skipPresent)
 		{
 			_skipPresent = false;
+			PresentedLastFrame = false;
 		}
 		else
 		{
 			_vk.BlitAndPresent();
+			PresentedLastFrame = true;
 		}
 
 		_frameLock.Dispose();

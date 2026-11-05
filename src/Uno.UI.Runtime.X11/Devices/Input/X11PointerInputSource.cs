@@ -27,6 +27,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 
 	private readonly X11XamlRootHost _host;
 	private CoreCursor _pointerCursor;
+	private CursorFontShape _cursorShape = CursorFontShape.XC_arrow;
 	private PointerPointProperties? _previousPointerPointProperties;
 
 	public X11PointerInputSource(IXamlRootHost host)
@@ -75,12 +76,24 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 				_ => CursorFontShape.XC_arrow // including CoreCursorType.Custom
 			};
 
+			_cursorShape = shape;
+
 			using var lockDiposable = X11Helper.XLock(_host.TopX11Window.Display);
 
-			var cursor = XLib.XCreateFontCursor(_host.TopX11Window.Display, shape);
-			_ = XLib.XDefineCursor(_host.TopX11Window.Display, _host.TopX11Window.Window, cursor);
-			_ = XLib.XFreeCursor(_host.TopX11Window.Display, cursor);
+			ApplyCursor(_host.TopX11Window.Window);
+			_host.ForEachPopupWindow(ApplyCursor);
 		}
+	}
+
+	// Popups' windows too: the cursor is per window, and the pointer can be over one of those.
+	internal void ApplyCursor(IntPtr window)
+	{
+		var display = _host.TopX11Window.Display;
+		using var lockDiposable = X11Helper.XLock(display);
+
+		var cursor = XLib.XCreateFontCursor(display, _cursorShape);
+		_ = XLib.XDefineCursor(display, window, cursor);
+		_ = XLib.XFreeCursor(display, cursor);
 	}
 
 	public Point PointerPosition => _mousePosition;

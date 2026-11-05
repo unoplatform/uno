@@ -96,6 +96,8 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), _ => new X11NativeWindowFactoryExtension());
 
+		ApiExtensibility.Register(typeof(IWindowedPopupExtension), _ => X11WindowedPopupExtension.Instance);
+
 		ApiExtensibility.Register(typeof(ILauncherExtension), o => new LinuxLauncherExtension(o));
 
 		ApiExtensibility.Register(typeof(IClipboardExtension), _ => X11ClipboardExtension.Instance);

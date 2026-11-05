@@ -95,6 +95,9 @@ internal partial class X11PointerInputSource
 	private readonly Dictionary<int, Dictionary<int, double>> _valuatorValues = new(); // device id -> valuator number -> value
 	private readonly Dictionary<int, DeviceInfo> _deviceInfoCache = new(); // device id -> device info
 
+	/// <summary>The master pointer holding a mouse button down. Guarded by the top connection's lock.</summary>
+	internal int? PressedMouseDevice { get; private set; }
+
 	// Excerpt from https://www.x.org/releases/X11R7.7/doc/inputproto/XI2proto.txt
 	// [[multitouch-device-modes]]
 	// Touch device modes
@@ -338,8 +341,11 @@ internal partial class X11PointerInputSource
 
 		var modifiers = X11XamlRootHost.XModifierMaskToVirtualKeyModifiers((XModifierMask)(data.mods.Base & 0xffff));
 
-		return new PointerEventArgs(point, modifiers) { Handled = data.EventWindow != _host.TopX11Window.Window };
+		return new PointerEventArgs(point, modifiers) { Handled = !IsOwnWindow(data.EventWindow) };
 	}
+
+	// A popup's window is part of this source, unlike a hosted native window.
+	private bool IsOwnWindow(IntPtr window) => window == _host.TopX11Window.Window || _host.IsPopupWindow(window);
 
 	// This method is comment-free. See the very similar (but more involved) implementation of
 	// CreatePointerEventArgsFromDeviceEvent for comments.
@@ -351,7 +357,15 @@ internal partial class X11PointerInputSource
 			mask |= data.buttons.Mask[i] << (BitsPerByte * i);
 		}
 
-		// No need to translate coords. We only receive Leave/Enter on the uno window
+		// We only receive Leave/Enter on the uno window and on its popups' windows, which report in the coordinates of the former.
+		var eventX = data.event_x;
+		var eventY = data.event_y;
+		if (data.EventWindow != _host.TopX11Window.Window
+			&& XLib.XTranslateCoordinates(display, data.EventWindow, _host.TopX11Window.Window, (int)Math.Floor(eventX), (int)Math.Floor(eventY), out var translatedX, out var translatedY, out _))
+		{
+			eventX = translatedX;
+			eventY = translatedY;
+		}
 
 		var properties = new PointerPointProperties
 		{
@@ -375,8 +389,8 @@ internal partial class X11PointerInputSource
 			timestamp: timestampInMicroseconds,
 			PointerDevice.For(pointerType),
 			(uint)data.deviceid, // master device id, must match the id used for button/motion events
-			new Point(data.event_x / scale, data.event_y / scale),
-			new Point(data.event_x / scale, data.event_y / scale),
+			new Point(eventX / scale, eventY / scale),
+			new Point(eventX / scale, eventY / scale),
 			properties.HasPressedButton,
 			properties.SetUpdateKindFromPrevious(_previousPointerPointProperties)
 		);
@@ -385,7 +399,7 @@ internal partial class X11PointerInputSource
 
 		var modifiers = X11XamlRootHost.XModifierMaskToVirtualKeyModifiers((XModifierMask)(data.mods.Base & 0xffff));
 
-		return new PointerEventArgs(point, modifiers) { Handled = data.EventWindow != _host!.TopX11Window.Window };
+		return new PointerEventArgs(point, modifiers) { Handled = !IsOwnWindow(data.EventWindow) };
 	}
 
 	// Note about removing devices: the server emits a ButtonRelease if a device is removed
@@ -583,6 +597,7 @@ internal partial class X11PointerInputSource
 					}
 
 					var args = CreatePointerEventArgsFromDeviceEvent(display, data);
+					TrackPressedMouseDevice(evtype, data, args);
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
 						this.Log().Trace($"Created event args: {args}");
@@ -637,6 +652,21 @@ internal partial class X11PointerInputSource
 					this.Log().Error($"XI2 ERROR: received an unexpected {evtype} event");
 				}
 				break;
+		}
+	}
+
+	// This thread ends a popup's grab with the last button, so a stuck UI thread can't keep the whole desktop's pointer.
+	private void TrackPressedMouseDevice(XiEventType evtype, XIDeviceEvent data, PointerEventArgs args)
+	{
+		if (evtype is XiEventType.XI_ButtonPress && args.CurrentPoint.Properties.MouseWheelDelta == 0)
+		{
+			PressedMouseDevice = data.deviceid;
+			_host.QueueRestackPopupSitesForPress();
+		}
+		else if (evtype is XiEventType.XI_ButtonRelease && !args.CurrentPoint.Properties.HasPressedButton)
+		{
+			PressedMouseDevice = null;
+			_host.ReleasePopupPointerCaptures();
 		}
 	}
 
