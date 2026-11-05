@@ -195,11 +195,13 @@ public partial class Given_RichEditBox
 			await WindowHelper.WaitForIdle();
 			parsed = GetMathLayout(richEditBox, out _);
 			story = richEditBox.Document.GetRange(0, int.MaxValue).Text;
-			var @base = parsed.GetRectForIndex(story.IndexOf("\U0001D465", StringComparison.Ordinal));
-			var subscript = parsed.GetRectForIndex(story.IndexOf("\U0001D456", StringComparison.Ordinal));
-			var superscript = parsed.GetRectForIndex(story.IndexOf('2'));
-			Assert.IsTrue(superscript.Y < @base.Y);
-			Assert.IsTrue(subscript.Y > @base.Y);
+			// Compare baselines, not box tops: a math font with a tall line box (Noto Sans Math)
+			// puts the base's top above a raised, scaled-down script's top.
+			var @base = parsed.GetBaselineForIndex(story.IndexOf("\U0001D465", StringComparison.Ordinal));
+			var subscript = parsed.GetBaselineForIndex(story.IndexOf("\U0001D456", StringComparison.Ordinal));
+			var superscript = parsed.GetBaselineForIndex(story.IndexOf('2'));
+			Assert.IsLessThan(@base, superscript);
+			Assert.IsGreaterThan(@base, subscript);
 		}
 		finally
 		{
@@ -263,10 +265,11 @@ public partial class Given_RichEditBox
 			{
 				AssertBounded(rect);
 			}
-			Assert.IsTrue(preSup.Y < baseRect.Y);
-			Assert.IsTrue(preSub.Y > baseRect.Y);
-			Assert.IsTrue(postSup.Y < baseRect.Y);
-			Assert.IsTrue(postSub.Y > baseRect.Y);
+			var baseline = parsed.GetBaselineForIndex(story.IndexOf("\U0001D447", StringComparison.Ordinal));
+			Assert.IsLessThan(baseline, parsed.GetBaselineForIndex(story.IndexOf('3')), "pre-superscript");
+			Assert.IsGreaterThan(baseline, parsed.GetBaselineForIndex(story.IndexOf("\U0001D457", StringComparison.Ordinal)), "pre-subscript");
+			Assert.IsLessThan(baseline, parsed.GetBaselineForIndex(story.IndexOf('2')), "post-superscript");
+			Assert.IsGreaterThan(baseline, parsed.GetBaselineForIndex(story.IndexOf("\U0001D456", StringComparison.Ordinal)), "post-subscript");
 		}
 		finally
 		{

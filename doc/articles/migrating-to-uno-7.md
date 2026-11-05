@@ -143,16 +143,18 @@ rather than in `FinishedLaunching`'s launch options. See
 | `Skia` Uno Feature no longer implied on Windows (WinAppSDK) | `Skia` is still implied on every Uno Platform target of an app that lists no renderer feature (`WebGpu` counts as one), but a Windows head now gets it only when `UnoFeatures` lists it. Without it, the Windows head no longer references `SkiaSharp.Views.WinUI`, `Uno.WinUI.Graphics2DSK` or, with the `Toolkit` feature, `Uno.Toolkit.Skia.WinUI`. If shared code uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), `SKXamlCanvas` or Toolkit Skia controls such as `ShadowContainer` on Windows, add `Skia` to `UnoFeatures` (a legacy `SkiaRenderer` entry counts as `Skia` in an app). |
 | `Skia` Uno Feature no longer implied on libraries | The renderer is the app's choice, so a library no longer gets the implied `Skia` feature, and a legacy `SkiaRenderer` entry is ignored there. Its package no longer depends on `Uno.WinUI.Composition.Skia` and `Uno.WinUI.Graphics2DSK`, nor through them on SkiaSharp. A library that uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), the `SkiaExtensions` conversions or Toolkit Skia controls such as `ShadowContainer` adds `Skia` to `UnoFeatures`; the build reports [UNOB0030](xref:Build.Solution.error-codes#unob0030-the-skiarenderer-uno-feature-is-ignored-in-a-library) while a library still lists `SkiaRenderer`. Apps using the `Uno.Sdk` are unchanged. A project is an app when its project file sets `OutputType` to `Exe` or `WinExe`, or sets `IsUnoHead` to `true`; a target framework where it doesn't, or an `OutputType` set later, for example in `Directory.Build.targets`, is built as a library. A head that doesn't take the `Uno.Sdk` implicit packages, and got `Uno.WinUI.Composition.Skia` only through such a library, references it itself; otherwise it fails at startup with *No drawing backend could be resolved*. |
 | `Uno.WinUI.Lottie` package and `Lottie` Uno Feature removed | `AnimatedVisualPlayer`, `LottieVisualSource` and `ThemableLottieVisualSource` are part of `Uno.WinUI`, and the Skottie renderer now comes with the Skia renderer, so Lottie needs no package. Remove any explicit `PackageReference` to `Uno.WinUI.Lottie`; it receives no 7.0 builds. The `Lottie` feature is ignored if still listed: it never added a Lottie package on Windows, so a Windows head still references [`CommunityToolkit.WinUI.Lottie`](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie) itself. See [Lottie](xref:Uno.Features.Lottie). |
+| `Prism` Uno Feature removed | The `Uno.Sdk` no longer references Prism. The Prism packages published so far (`Prism.Uno.WinUI` 9.0.537 and earlier) were built against Uno Platform 5 and don't build with 7.0. Remove `Prism` from `UnoFeatures`, and add a `PackageReference` to `Prism.DryIoc.Uno.WinUI` in the app (or `Prism.Uno.WinUI` in a library), with a Prism release built for Uno Platform 7.0. The build reports [UNOB0035](xref:Build.Solution.error-codes#unob0035-the-prism-uno-feature-is-no-longer-supported) while `UnoFeatures` still lists `Prism`, and the `PrismVersion` property is silently ignored. A `Navigation` entry next to `Prism` now references `Uno.Extensions.Navigation`, which the `Prism` feature used to leave out. |
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
-| `Microsoft.Web.WebView2` WebView backend removed (Windows) | `WebView2Aot` is now the only backend. Remove any `Environment.SetEnvironmentVariable("UNO_WEBVIEW2_BACKEND", "microsoft.web.webview2")` call — the variable is still read, but any value other than `webview2aot` now only logs a warning and `WebView2Aot` is used regardless. The `UnoUseWebView2WPF` opt-in is removed with it — it kept the `Microsoft.Web.WebView2.Wpf` reference for the WPF host, which is gone. Set `<UnoDisableWebView2Workarounds>true</UnoDisableWebView2Workarounds>` instead if you need to keep that reference (it also turns off the package-alias workaround for `Microsoft.Web.WebView2.Core`). |
-| `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
+| `Microsoft.Web.WebView2` WebView backend removed (Windows) | `WebView2Aot` is now the only backend. Remove any `Environment.SetEnvironmentVariable("UNO_WEBVIEW2_BACKEND", "microsoft.web.webview2")` call — the variable is still read, but any value other than `webview2aot` now only logs a warning and `WebView2Aot` is used regardless. The `UnoUseWebView2WPF` opt-in is removed with it — it kept the `Microsoft.Web.WebView2.Wpf` reference for the WPF host, which is gone. Set `<UnoDisableWebView2Workarounds>true</UnoDisableWebView2Workarounds>` instead if your own `Microsoft.Web.WebView2` reference needs that assembly (it also turns off the package-alias workaround for `Microsoft.Web.WebView2.Core`). |
+| `webview` Uno Feature only brings the native WebView2 loader (Desktop) | The implicit `Microsoft.Web.WebView2` reference is now `IncludeAssets="native"`: it ships `WebView2Loader.dll`, which the `WebView2Aot` backend needs, but no longer the managed `Microsoft.Web.WebView2.Core`/`.WinForms` assemblies and their XML docs, and no longer the `mswebview2` extern alias. The `UnoWebView2Aliases` property is removed and is silently ignored if still set. If your own code uses the `Microsoft.Web.WebView2` managed API, add an explicit `PackageReference` with `Aliases` (for example `<PackageReference Include="Microsoft.Web.WebView2" Aliases="mswebview2" />`); the Uno SDK applies that alias to `Microsoft.Web.WebView2.Core` so it doesn't clash with Uno's own `Microsoft.Web.WebView2.Core` types. |
+| `Uno.WinUI` no longer ships `net*-android/ios/tvos/maccatalyst` UI assemblies | The package's `lib` folder holds only `netX.0` (the Skia build, used by every target framework except the WinAppSDK one) and `netX.0-windows10.0.19041.0`. Your projects keep their platform target frameworks; they all compile against the `netX.0` assemblies. Libraries built against 6.x are binary-incompatible, so recompile all of them against 7.0 and remove native bootstrap. See [Platform targeting in multi-targeted libraries](#platform-targeting-in-multi-targeted-libraries) for which target frameworks a library keeps. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 | `Xamarin.AndroidX.Legacy.Support.V4` no longer injected (Android) | The `Uno.Sdk` added it to every Android app head. It is the AndroidX wrapper for the Android Support Library v4, whose job was bridging pre-AndroidX *view* code — with the native Android Views renderer gone, nothing needs it. Ten packages leave the graph: `Legacy.Support.V4`, `Legacy.Support.Core.UI`, `Legacy.Support.Core.Utils`, `AsyncLayoutInflater`, `LocalBroadcastManager`, `Media`, `Print`, `SlidingPaneLayout`, `Window` and its `Window.*Core*` companions. Nothing changes version. `AndroidX.Window` still arrives with the `foldable` feature. If *your own* code uses any of these, add an explicit `PackageReference`. The `AndroidXLegacySupportV4Version` property is removed and is silently ignored if still set. |
 | `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly. Do **not** add an explicit `PackageReference` to `SkiaSharp.Views.Uno.WinUI`: every published build was compiled against Uno Platform 6.x assemblies that 7.0 no longer ships, so the app throws `FileNotFoundException` from `SkiaSharp.Views.Windows.GlobalStaticResources.Initialize()` at startup. |
 | Runtime hosts no longer carry SkiaSharp or HarfBuzz native assets | The browser host linked `libSkiaSharp.a` into every WebAssembly head, so a WebGPU-only app shipped about 6 MB of Skia it never used, and every `Uno.WinUI.Runtime.*` host referenced HarfBuzzSharp whichever font provider the app used. The native libraries now come with the head: with the `Uno.Sdk`, nothing changes, because it references the `HarfBuzzSharp.NativeAssets.*` package for each target, and the `SkiaSharp.NativeAssets.*` package when the `Skia` feature is on. Listing `WebGpu` without `Skia` turns `Skia` off, so an app that uses SkiaSharp itself, or links native code against SkiaSharp's native library, lists `Skia;WebGpu`. A head that doesn't use the `Uno.Sdk` adds those `PackageReference`s itself, for every target it builds. |
 | `Microsoft.Windows.Compatibility` no longer referenced implicitly (WebAssembly) | The `Uno.Sdk` added this .NET Framework porting meta-package to every WebAssembly executable, pulling in 56 extra packages — 47% of a blank app's restore graph — including 21 RID-specific native packages for a target that has no RIDs. It arrived as a .NET 5 migration workaround and nothing in Uno Platform uses it. Most of what it provides is Windows-only and throws `PlatformNotSupportedException` in a browser regardless. If *your own* code uses one of its assemblies, add an explicit `PackageReference` to that specific package — the ones that genuinely work in a browser are `System.ServiceModel.*`, `System.ServiceModel.Syndication`, `System.Runtime.Caching`, `System.IO.Packaging`, `System.Configuration.ConfigurationManager`, `System.ComponentModel.Composition`, `System.CodeDom`, `System.Reflection.Context` and `System.Security.Cryptography.Pkcs`/`.Xml` — or reference `Microsoft.Windows.Compatibility` itself. The `WindowsCompatibilityVersion` MSBuild property is removed with it; specify a version on your own `PackageReference`. |
 | `LibVLCSharp` no longer referenced implicitly | `Uno.WinUI.Runtime.X11` — which every desktop head references implicitly — carried a `LibVLCSharp` dependency it never used, so the managed assembly landed in every desktop app's output. It now arrives only with the `MediaPlayerElement` (or `MediaElement`) feature, through `Uno.WinUI.MediaPlayer.X11` / `Uno.WinUI.MediaPlayer.Win32`, which have always declared it themselves. `MediaPlayerElement` is unaffected — it already required that feature. If *your own* code uses `LibVLCSharp` types directly, add an explicit `PackageReference`. |
-| Windows App SDK default moved from 1.7 to 2.5.1 | Windows heads now build against Windows App SDK 2.5.1, the version the `Uno.Sdk` pins, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.5 or later from the **Stable release** section — installed. A Windows head can't stay on 1.x: `Uno.WinUI` requires `Microsoft.WindowsAppSDK` 2.4.0 or later, so a `<WinAppSdkVersion>` set to a 1.x version is a package downgrade that NuGet rejects. |
+| Windows App SDK minimum raised from 1.x to 2.4.0 | Windows heads now build against Windows App SDK 2.x, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.4.0 or later from the **Stable release** section — installed. `Uno.WinUI` 7.0 requires `Microsoft.WindowsAppSDK` 2.4.0 or later (and `Microsoft.Windows.SDK.BuildTools` 10.0.28000.2526 or later) for its Windows target frameworks, so a Windows head cannot stay on 1.x: pinning `<WinAppSdkVersion>` to a 1.x version fails restore with `NU1605`. Use 2.4.0 or later. |
 | `Uno.UI.Toolkit` types moved to the `Uno.UI.*` namespaces | The old name was routinely confused with the separate Uno Toolkit (`Uno.Toolkit.UI`). Each type now sits in the namespace it belongs to — see [the mapping table below](#unouitoolkit-types-move-to-the-unoui-namespaces). Type names and behavior are unchanged. `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers` and `Uno.UI.Maps` are unaffected — only the `Uno.UI.Toolkit*` namespaces moved. |
 | [`Uno.UI.HotDesign`](xref:Uno.HotDesign.Overview), `Uno.UI.App.Mcp` ([MCP support](xref:Uno.Features.Uno.MCPs)) and [`Uno.WinUI.DevServer`](xref:Uno.DevServer) no longer resolve implicitly in Release builds | These development-time packages were nominally "excluded" from Release restores via `Exclude="all" IncludeAssets="None"`, which never actually worked — `Exclude` is not a package-id filter and `IncludeAssets="None"` still resolves, downloads and audits the whole closure. The implicit references are now genuinely absent when `$(Optimize) == 'true'`; an explicit `PackageReference` with a version that you add yourself is still honored in every configuration. If your project restores with `packages.lock.json` and `RestoreLockedMode=true`, give each configuration its own lock file (`<NuGetLockFilePath>packages.$(Configuration).lock.json</NuGetLockFilePath>`), regenerate both after upgrading, and restore the matching configuration before any `--no-restore` build — a single lock file no longer satisfies both Debug and Release. `UnoDisableHotDesign` and `UnoDisableMCPSupport` still suppress their respective implicit package reference in any configuration; `Uno.WinUI.DevServer` has no such switch, since it is gated by `$(Optimize)` alone. |
 | `Uno.HotTesting.Reactive` referenced implicitly by MVUX in non-optimized builds | Projects using the `MVUX` feature, class libraries included, now restore MVUX feed mocks when `$(Optimize)` is not `true`, so the Debug/Release lock-file and `--no-restore` guidance of the `Uno.UI.HotDesign` row applies to them too. Code using its types must only compile in non-optimized builds. Set `UnoDisableHotTesting` to `true` to opt out; see [MVUX feed mocks](xref:Uno.Features.Uno.Sdk#mvux-feed-mocks-in-non-optimized-builds). |
@@ -191,6 +193,25 @@ XAML declarations follow the same mapping, for example
 `xmlns:toolkit="using:Uno.UI.Toolkit"` becomes `xmlns:uuxc="using:Uno.UI.Xaml.Controls"` for
 `ElevatedView` and the `CommandBar`/`SplitView` extensions, or
 `xmlns:uub="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`.
+
+In C#, replace `using Uno.UI.Toolkit;` with the namespace from the table. Be careful with
+`using Uno.UI.Xaml.Controls;`: that namespace also contains the Uno-specific `ScrollViewer`,
+`ComboBox` and `ScrollContentPresenter` attached-property holders, so importing it next to
+`Microsoft.UI.Xaml.Controls` makes those three names ambiguous (`CS0104`). Import it only in
+files that don't use those controls, or pin the names to the WinUI controls with aliases. This
+matters most for global usings:
+
+```xml
+<ItemGroup>
+  <Using Include="Uno.UI.Xaml.Controls" />
+  <Using Include="Microsoft.UI.Xaml.Controls.ScrollViewer" Alias="ScrollViewer" />
+  <Using Include="Microsoft.UI.Xaml.Controls.ComboBox" Alias="ComboBox" />
+  <Using Include="Microsoft.UI.Xaml.Controls.ScrollContentPresenter" Alias="ScrollContentPresenter" />
+</ItemGroup>
+```
+
+The Uno holders stay reachable by their full name, for example
+`Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty`.
 
 The assembly that holds these types is renamed too, from `Uno.UI.Toolkit` to `Uno.UI.Extras`. It
 still ships in the `Uno.WinUI` package, so package references don't change, but anything that names
@@ -280,6 +301,18 @@ What this means for an upgrade:
 - Nothing to do if your libraries already ship a `netX.0` asset. It is still the asset used by the
   `net10.0-desktop` and `net10.0-browserwasm` heads, and workarounds built for the 6.x behavior keep working.
 
+Which target frameworks should a library keep? `Uno.WinUI` shipping only `netX.0` and
+`netX.0-windows10.0.19041.0` does not mean a library can drop its other targets:
+
+- A library without platform-specific code (no `#if __ANDROID__`, `__IOS__`, `__WASM__` or `__DESKTOP__`, and no
+  `android:`, `ios:`, `wasm:` or `desktop:` XAML prefixes) only needs `netX.0`, plus
+  `netX.0-windows10.0.19041.0` if it supports WinAppSDK.
+- A library with platform-specific code keeps the matching `-android`, `-ios`, `-tvos`, `-browserwasm` or
+  `-desktop` target. Each one compiles with its own symbols and XAML prefixes, and a head with that target framework
+  uses that asset rather than the `netX.0` one.
+- Dropping a platform target framework does not break consumers, since their heads fall back to the `netX.0` asset,
+  but that platform's `#if` blocks and conditional XAML no longer apply in the library.
+
 > [!NOTE]
 > `*.skia.cs` means "compiled by Uno Platform rather than by WinUI". It does not name a drawing backend: `Uno.UI`
 > is compiled once and resolves its backend at run time.
@@ -304,9 +337,8 @@ Rewrite the markup:
 | `xamarin:`, and `legacy:` listed in `mc:Ignorable` | drop the prefix |
 
 The removed names stay valid as ordinary aliases of a `using:` namespace, and are not reported then. In particular,
-`xmlns:legacy="using:Uno.UI.Controls.Legacy"` names a live namespace (for instance
-`Uno.UI.Controls.Legacy.ProgressRing`): keep that prefix, since dropping it switches `legacy:ProgressRing` to the
-WinUI `ProgressRing`.
+`xmlns:legacy="using:Uno.UI.Controls.Legacy"` names a live namespace (it still holds the `Grid` extensions): keep that
+prefix if you use it. `legacy:ProgressRing` no longer exists, see "Public API removed".
 
 #### Removed file suffixes
 
@@ -469,6 +501,11 @@ own target framework, the library's calls included.
 
 ### Public API removed
 
+- **`Uno.UI.Controls.Legacy.ProgressRing`:** the ellipse-based ring, its `DefaultWuxProgressRingStyle`
+  style and `Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings` are removed. It only existed to
+  contrast with the native ring on Android and iOS, which are gone. Use `Microsoft.UI.Xaml.Controls.ProgressRing`
+  (drop the `legacy:` prefix); it needs no extra package. Its default size is 32x32 instead of 20x20, so set
+  `Width` and `Height` explicitly if your layout relied on the smaller ring.
 - **Native base classes / identity:** `BindableView` (and `Bindable*` widget wrappers),
   `BindableUIView` (and `BindableUI*`). `UIElement` no longer inherits a native
   `View`/`UIView`/DOM element. Remove casts to `Android.Views.View` / `UIKit.UIView`;
@@ -666,6 +703,15 @@ own target framework, the library's calls included.
       var child = VisualTreeHelper.GetChild(parent, i);
   }
   ```
+
+- **`Control.GetTemplateChild` is no longer public.** Uno declared it `public`; WinUI declares
+  it `protected internal`, and 7.0 now matches. Calling it on a control from outside a `Control`
+  subclass, for example `autoSuggestBox.GetTemplateChild("SuggestionsContainer")` from a page or
+  a helper, no longer compiles. Move the call into a subclass of the control, or find the
+  template part from outside by walking the control's visual tree with `VisualTreeHelper` (as
+  above) and matching `FrameworkElement.Name`. If an extension method named `GetTemplateChild`
+  is in scope, the call now binds to that method instead, so the build fails with an error about
+  its parameters (such as `CS7036`) rather than about accessibility.
 
 - **`INativeWebViewProvider` moved to `Uno.Web.WebView2.Core`.** It is Uno-only, so it no longer
   sits in the WinUI `Microsoft.Web.WebView2.Core` namespace. Code that refers to it by name, such
@@ -999,14 +1045,34 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   `FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = false` before building the host.
   See [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
+List selection scrolling was also realigned with WinUI:
+
+- **A new selection is brought into view only while the list has focus.** `ListView` and
+  `GridView` used to scroll to every newly selected item. Now, as on WinUI, setting
+  `SelectedItem` or `SelectedIndex` from code on a list that doesn't have focus leaves the
+  scroll position alone, and a focused list scrolls only as far as needed to show the item.
+  Clicking or keyboard navigation still brings the item into view, since they focus the list.
+  In `Multiple` mode only the first selection is brought into view. Call
+  `ScrollIntoView(item)` after selecting if you need the old behavior.
+
 Independently of rendering, `Uno.WinUI.MSAL`'s `WithUnoHelpers()` changed on WebAssembly:
 
-- **`WithUnoHelpers()` no longer wires an interactive web UI on WebAssembly.** The WASM-only
-  flavor of `Uno.UI.MSAL` that provided it was removed; `PublicClientApplicationBuilder
-  .WithUnoHelpers()` and `AcquireTokenInteractiveParameterBuilder.WithUnoHelpers()` are now
-  no-ops there, same as they always were on WinUI. Interactive sign-in on WebAssembly needs
-  your own `WithCustomWebUi(...)` (and `WithHttpClientFactory(...)` if needed) — see
-  [MSAL: WebAssembly](xref:Uno.Interop.MSAL#webassembly).
+- **`WithUnoHelpers()` signs in through `WebAuthenticationBroker` on WebAssembly.** The WASM-only
+  flavor of `Uno.UI.MSAL` was removed, and its helpers now ship in the main assembly.
+  `PublicClientApplicationBuilder.WithUnoHelpers()` still sets a browser-compatible
+  `HttpClient` factory, and `AcquireTokenInteractiveParameterBuilder.WithUnoHelpers()` sets a
+  web UI that uses the [`WebAuthenticationBroker`](xref:Uno.Features.WAB) popup, configured
+  through `WinRTFeatureConfiguration.WebAuthenticationBroker`. Both replace a
+  `WithHttpClientFactory(...)` or `WithCustomWebUi(...)` called before them, so call your own
+  after `WithUnoHelpers()` — see [MSAL: WebAssembly](xref:Uno.Interop.MSAL#webassembly).
+
+On WebAssembly, `WebAuthenticationBroker.AuthenticateAsync()` changed how it ends:
+
+- **A timeout returns `ErrorHttp` instead of `UserCancel`.** When
+  `WinRTFeatureConfiguration.WebAuthenticationBroker.AuthenticationTimeout` elapses, the result is
+  `WebAuthenticationStatus.ErrorHttp` with `ResponseErrorDetail` 408, so it can be told apart
+  from the user closing the popup. Canceling the operation now also closes the popup or
+  `<iframe>`, and the `<iframe>` mode now honors the timeout.
 
 On Android, retargeted drawables now keep their file extension in their resource name:
 
@@ -1021,6 +1087,25 @@ On Android, retargeted drawables now keep their file extension in their resource
   `ms-appx:///`.** A lookup for `ms-appx:///foo.png` now searches for the drawable `foo_png`, not
   `foo`. Move images you load by URI into `Assets` so Uno packages them, or reference the native
   drawable directly (`Resource.Drawable.foo`).
+
+Dependency properties registered without a default value now follow WinUI:
+
+- **Custom value types default to `null`.** `DependencyProperty.Register` with no metadata, or
+  with a `null` `DefaultValue`, used to synthesize the zero value of any value type. It now does
+  what WinUI does: `int`, `long`, `float`, `double`, `bool`, `TimeSpan`, `DateTimeOffset`,
+  `Point`, `Size`, `Rect`, `Color`, `Thickness`, `CornerRadius` and the enums of WinUI's XAML
+  metadata (`Visibility`, `Orientation`, `FontStyle`, `VirtualKey`, ...) get their zero value,
+  `GridLength` gets `1*`, and every other value type (your own structs and enums, `DateTime`,
+  `Guid`, `decimal`, `Duration`, `Matrix`, `Vector2`, ...) gets `null`, so a
+  `(MyEnum)GetValue(...)` wrapper on such a property throws until a value is set. Pass the
+  default explicitly, for example `new PropertyMetadata(MyEnum.None)`. Code that already runs
+  on Windows is unaffected, since it needed the explicit default there. The WinUI documentation
+  says a value type gets "the default of the type", but the WinAppSDK runtime does that only for
+  the types above; the table was measured on it. `SetValue(null)` on such a property is now
+  stored rather than rejected with an `InvalidOperationException`, and `ClearValue`, or a
+  binding that produces `null`, leaves it `null` too. With Debug logging enabled for
+  `Microsoft.UI.Xaml.DependencyProperty`, every registration that gets a `null` default is
+  listed at startup.
 
 ### `SystemBackdrop` no longer rewrites your content's backgrounds
 
@@ -1353,6 +1438,11 @@ recompile against 7.0 rather than swapping assemblies in place.
   + ((IObservableVector<SwipeItem>)items).VectorChanged += OnItemsChanged;
   ```
 
+- **`Windows.Storage.ThumbnailMode` is removed.** WinRT has no such type, and it made
+  `ThumbnailMode` ambiguous (`CS0104`) in any file importing both `Windows.Storage` and
+  `Windows.Storage.FileProperties`. Use `Windows.Storage.FileProperties.ThumbnailMode`, as in
+  WinUI.
+
 ### Uno-only implicit conversions and static fields removed
 
 Uno exposed a few C# shortcuts that WinUI doesn't have. Code using them compiled on Uno heads but
@@ -1490,7 +1580,7 @@ To port a custom source, move the work as follows:
   type it could not find in `using:Uno.UI.Controls.Legacy` to the `Microsoft.UI.Xaml.Controls` type of the
   same name, a leftover of the native legacy lists removed in 7.0, so this markup already produced the
   regular controls. Use `ListView` and `GridView` from the default namespace. Types that do exist in that
-  namespace, such as `legacy:ProgressRing`, are unaffected.
+  namespace are unaffected.
 
 - **Binding an attached property whose owner type cannot be found is a build error.** For
   `u:ListViewBaseCommand.Command="{Binding OpenItem}"` where `ListViewBaseCommand` does not

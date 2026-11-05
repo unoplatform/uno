@@ -598,8 +598,12 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				double GetAnimatedHorizontalOffset() => Math.Round(-visual.AnchorPoint.X + centeringOffsetX);
-				double GetAnimatedVerticalOffset() => Math.Round(-visual.AnchorPoint.Y + centeringOffsetY);
+				// The pixel it is drawn at can be past a fractional target, e.g. 907 before a final 906.67, or behind the
+				// fractional offset last reported: kept between the two, the reported offsets never move back.
+				var start = ScrollOffsets;
+				double GetAnimatedHorizontalOffset() => Between(Math.Round(-visual.AnchorPoint.X + centeringOffsetX), start.X, horizontalOffset);
+				double GetAnimatedVerticalOffset() => Between(Math.Round(-visual.AnchorPoint.Y + centeringOffsetY), start.Y, verticalOffset);
+				static double Between(double value, double from, double to) => Math.Clamp(value, Math.Min(from, to), Math.Max(from, to));
 
 				scrollAnimation.Stopped += OnStopped;
 

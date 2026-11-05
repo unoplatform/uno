@@ -1342,7 +1342,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // https://github.com/unoplatform/uno-private/issues/1297, flaky on Skia WASM #9080
 		public Task When_ComboBox_ScrollIntoView_SelectedIndex() => When_ComboBox_ScrollIntoView_Selection(viaIndex: true);
 
-		private async Task When_ComboBox_ScrollIntoView_Selection(bool viaIndex)
+		[TestMethod]
+		[Ignore("The dropdown doesn't bring the selected item into view when it opens. https://github.com/unoplatform/uno/issues/25835")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25835")]
+		public Task When_ComboBox_Opened_With_Selection_ScrollIntoView() => When_ComboBox_ScrollIntoView_Selection(viaIndex: true, selectBeforeOpening: true);
+
+		private async Task When_ComboBox_ScrollIntoView_Selection(bool viaIndex, bool selectBeforeOpening = false)
 		{
 			var source = ( // 12x20=240 items, enough to overflow
 				from a in "qwerasdfzxcv"
@@ -1357,6 +1362,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var popup = sut.FindFirstDescendantOrThrow<Popup>("Popup");
 
+			if (selectBeforeOpening)
+			{
+				SetSelection();
+				await UITestHelper.WaitForIdle();
+			}
+
 			// open the popup
 			sut.IsDropDownOpen = true;
 			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to open");
@@ -1364,16 +1375,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// wait until the dropdown panel is ready
 			await UITestHelper.WaitFor(() => sut.ItemsPanelRoot is { }, timeoutMS: 2000, "timed out waiting on the ItemsPanelRoot");
 
-			// set selection
-			if (viaIndex)
+			if (!selectBeforeOpening)
 			{
-				sut.SelectedIndex = source.Length - 3;
-			}
-			else
-			{
-				sut.SelectedItem = source[^3];
+				SetSelection();
 			}
 			await UITestHelper.WaitForIdle();
+
+			void SetSelection()
+			{
+				if (viaIndex)
+				{
+					sut.SelectedIndex = source.Length - 3;
+				}
+				else
+				{
+					sut.SelectedItem = source[^3];
+				}
+			}
 
 			// sanity check
 			Assert.AreEqual(source.Length - 3, sut.SelectedIndex, "SelectedIndex should be the 3rd last");

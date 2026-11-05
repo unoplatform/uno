@@ -264,16 +264,15 @@ namespace Uno.UI.Runtime
 			}
 		}
 
-		public void VSync()
+		/// <returns>False if the device doesn't support waiting for vsync, which is common on virtual framebuffers.</returns>
+		public bool VSync()
 		{
 			if (_fd <= 0)
 			{
 				throw new ObjectDisposedException("FrameBufferDevice");
 			}
 
-#pragma warning disable CA1806 // Do not ignore method results
-			Libc.ioctl(_fd, FbIoCtl.FBIO_WAITFORVSYNC, null);
-#pragma warning restore CA1806 // Do not ignore method results
+			return Libc.ioctl(_fd, FbIoCtl.FBIO_WAITFORVSYNC, null) != -1;
 		}
 
 		public void Dispose()

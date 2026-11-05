@@ -17,6 +17,9 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.MSAL;
 using Uno.UI.Samples.Controls;
 using Prompt = Microsoft.Identity.Client.Prompt;
+#if __WASM__
+using Uno;
+#endif
 #if !DISABLE_GRAPH
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
@@ -32,7 +35,6 @@ namespace UITests.Msal
 	, IAuthenticationProvider
 #endif
 	{
-#if !DISABLE_GRAPH
 		private const string CLIENT_ID = "03c890e9-d868-4d90-9c0a-919eff5b4d27";
 		private const string TENANT_ID = "a297d6c0-b635-41a3-b1e3-558efe71e413";
 
@@ -62,37 +64,62 @@ namespace UITests.Msal
 		private readonly string[] SCOPES = new[] { "https://graph.microsoft.com/User.Read", "https://graph.microsoft.com/email", "https://graph.microsoft.com/profile" };
 
 		private readonly IPublicClientApplication _app;
-#endif
+		private CancellationTokenSource _signInCts;
 
 		public MsalLoginAndGraph()
 		{
 			this.InitializeComponent();
 
-#if !DISABLE_GRAPH
 			_app = PublicClientApplicationBuilder
 				.Create(CLIENT_ID)
 				.WithTenantId(TENANT_ID)
 				.WithRedirectUri(RedirectUri)
 				.WithUnoHelpers()
 				.Build();
-#endif
 		}
 
-		private
-#if !DISABLE_GRAPH
-			async
-#endif
-			void SignIn(object sender, RoutedEventArgs e)
+		private async void SignIn(object sender, RoutedEventArgs e)
 		{
-#if !DISABLE_GRAPH
-			var result = await _app.AcquireTokenInteractive(SCOPES)
-				.WithPrompt(Prompt.SelectAccount)
-				.WithUnoHelpers()
-				.ExecuteAsync();
-
-			tokenBox.Text = result.AccessToken;
+			_signInCts?.Cancel();
+			var cts = _signInCts = new CancellationTokenSource();
+#if __WASM__
+			var originalTimeout = WinRTFeatureConfiguration.WebAuthenticationBroker.AuthenticationTimeout;
+			if (shortTimeout.IsChecked == true)
+			{
+				WinRTFeatureConfiguration.WebAuthenticationBroker.AuthenticationTimeout = TimeSpan.FromSeconds(5);
+			}
 #endif
+
+			try
+			{
+				status.Text = "Signing in...";
+
+				var result = await _app.AcquireTokenInteractive(SCOPES)
+					.WithPrompt(Prompt.SelectAccount)
+					.WithUnoHelpers()
+					.ExecuteAsync(cts.Token);
+
+				tokenBox.Text = result.AccessToken;
+				status.Text = "Signed in";
+			}
+			catch (MsalException ex)
+			{
+				status.Text = $"{ex.GetType().Name} ({ex.ErrorCode}): {ex.Message}";
+			}
+			catch (Exception ex)
+			{
+				status.Text = $"{ex.GetType().Name}: {ex.Message}";
+			}
+			finally
+			{
+#if __WASM__
+				WinRTFeatureConfiguration.WebAuthenticationBroker.AuthenticationTimeout = originalTimeout;
+#endif
+			}
 		}
+
+		private void CancelSignIn(object sender, RoutedEventArgs e)
+			=> _signInCts?.Cancel();
 
 		private
 #if !DISABLE_GRAPH
