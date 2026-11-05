@@ -102,9 +102,8 @@ internal class ObservableVector<T> : IObservableVector<T>, IObservableVector, IL
 	{
 		if (value is T typedValue)
 		{
-			var ret = ((IList)this).Add(typedValue);
-			RaiseVectorChanged(CollectionChange.ItemInserted, _list.Count - 1);
-			return ret;
+			Add(typedValue);
+			return _list.Count - 1;
 		}
 		else
 		{

@@ -44,11 +44,13 @@ namespace Uno.Storage.Internal
 				{
 					if (cursor.MoveToFirst())
 					{
-						int size = 0;
+						long size = 0;
 						var sizeColumnIndex = cursor.GetColumnIndex(DocumentsContract.Document.ColumnSize);
-						if (includeSize && sizeColumnIndex >= 0)
+
+						// A provider that doesn't know the size leaves it null. The size is then 0, as DocumentFile.Length() gives.
+						if (includeSize && sizeColumnIndex >= 0 && !cursor.IsNull(sizeColumnIndex))
 						{
-							size = cursor.GetInt(sizeColumnIndex);
+							size = cursor.GetLong(sizeColumnIndex);
 						}
 						var lastModified = DateTimeOffset.MinValue;
 						var lastModifiedIndex = cursor.GetColumnIndex(DocumentsContract.Document.ColumnLastModified);
