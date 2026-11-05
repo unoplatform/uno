@@ -109,6 +109,7 @@ public partial class Given_MediaPlayerElement
 
 		// Setting the source stops the player and then starts it again. Anything the stop leaves to the
 		// thread pool must not overtake the start, which a saturated pool would otherwise guarantee.
+		// Only the Win32 backend defers Stop to the pool, so only there does this exercise that race.
 		var release = SaturateThreadPool();
 		try
 		{
@@ -127,22 +128,49 @@ public partial class Given_MediaPlayerElement
 		);
 	}
 
+	[TestMethod]
+	// WASM (HTML5) and macOS (AVPlayer) don't use the LibVLC extension this covers.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Disposed_While_Stop_Is_Queued_Then_Queued_Commands_Do_Not_Reach_The_Player()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var player = new Windows.Media.Playback.MediaPlayer();
+
+		var release = SaturateThreadPool();
+		try
+		{
+			player.Source = MediaSource.CreateFromUri(TestVideoUrl);
+			player.Dispose();
+		}
+		finally
+		{
+			release.Set();
+		}
+
+		// A queued Play reaching the released native player takes the whole test process down.
+		await Task.Delay(TimeSpan.FromSeconds(2));
+		await WindowHelper.WaitForIdle();
+	}
+
 	private static ManualResetEventSlim SaturateThreadPool()
 	{
 		ManualResetEventSlim release = new();
-		var blockers = ThreadPool.ThreadCount + Environment.ProcessorCount * 4;
-		for (var i = 0; i < blockers; i++)
+		for (var round = 0; round < 10 && ThreadPool.PendingWorkItemCount == 0; round++)
 		{
-			ThreadPool.QueueUserWorkItem(static gate => ((ManualResetEventSlim)gate!).Wait(), release);
-		}
+			var blockers = ThreadPool.ThreadCount + Environment.ProcessorCount * 4;
+			for (var i = 0; i < blockers; i++)
+			{
+				ThreadPool.QueueUserWorkItem(static gate => ((ManualResetEventSlim)gate!).Wait(), release);
+			}
 
-		// Sleeping, not awaiting: timers need the pool, and this only has to let the idle threads pick up work.
-		Thread.Sleep(100);
+			// Sleeping, not awaiting: timers need the pool, and this only has to let the idle threads pick up work.
+			Thread.Sleep(100);
+		}
 
 		if (ThreadPool.PendingWorkItemCount == 0)
 		{
 			release.Set();
-			Assert.Inconclusive("Could not saturate the thread pool.");
+			Assert.Fail("Could not saturate the thread pool, so this run would not exercise the race.");
 		}
 
 		return release;
