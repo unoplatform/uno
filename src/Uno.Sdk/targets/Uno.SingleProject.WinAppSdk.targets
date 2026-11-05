@@ -11,8 +11,6 @@
 
 	<PropertyGroup Condition=" '$(IsUnoHead)' == 'true' ">
 		<OutputType>WinExe</OutputType>
-		<!-- Bundles the WinAppSDK binaries -->
-		<WindowsAppSDKSelfContained Condition="$(WindowsAppSDKSelfContained) == ''">true</WindowsAppSDKSelfContained>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -29,6 +27,11 @@
 	<PropertyGroup Condition="$(WindowsPackageType) == ''">
 		<WindowsPackageType Condition="'$(WindowsPackageType)'=='' and Exists('$(WindowsAppxManifestPath)')">MSIX</WindowsPackageType>
 		<WindowsPackageType Condition="'$(WindowsPackageType)'==''">None</WindowsPackageType>
+	</PropertyGroup>
+
+	<!-- An MSIX declares the Windows App Runtime as a framework dependency. An unpackaged head has no such dependency, so it bundles the runtime. -->
+	<PropertyGroup Condition=" '$(IsUnoHead)' == 'true' AND '$(WindowsPackageType)' != 'MSIX' ">
+		<WindowsAppSDKSelfContained Condition="$(WindowsAppSDKSelfContained) == ''">true</WindowsAppSDKSelfContained>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(WindowsPackageType)' == 'MSIX'">
