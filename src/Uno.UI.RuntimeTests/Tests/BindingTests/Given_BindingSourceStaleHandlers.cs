@@ -50,6 +50,26 @@ public class Given_BindingSourceStaleHandlers
 		Assert.AreEqual(baseline, vm.Items.CollectionChangedCount, "CollectionChanged handlers of collected bindings are still on the collection.");
 	}
 
+	// The binding that the collection's handler kept alive also kept its PropertyChanged subscriptions alive:
+	// on the view model (for Items) and on the collection (for the indexer). Requires PropertyChanged
+	// handlers of collected bindings to be removed (BindingPath.SubscribeToNotifyPropertyChanged).
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Indexer_Path_Elements_Collected_Then_PropertyChanged_Handlers_Removed()
+	{
+		var vm = new CountingViewModel();
+		var vmBaseline = vm.SubscriberCount;
+		var itemsBaseline = vm.Items.PropertyChangedCount;
+
+		var refs = await CreateBoundAsync(vm, IndexerPath, loaded: true);
+		Assert.AreEqual(vmBaseline + Count, vm.SubscriberCount, "Each binding should subscribe once to the view model.");
+
+		await CollectAsync(refs, () => vm.SubscriberCount == vmBaseline && vm.Items.PropertyChangedCount == itemsBaseline);
+		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The bound elements were not collected.");
+		Assert.AreEqual(vmBaseline, vm.SubscriberCount, "PropertyChanged handlers of collected bindings are still on the view model.");
+		Assert.AreEqual(itemsBaseline, vm.Items.PropertyChangedCount, "PropertyChanged handlers of collected bindings are still on the collection.");
+	}
+
 	// The handler of a collected binding must not remove itself during the raise: LiveCollection raises over its live
 	// handler list, which throws if it changes, where ObservableCollection's multicast delegate wouldn't notice.
 	[TestMethod]
@@ -255,6 +275,23 @@ public class Given_BindingSourceStaleHandlers
 		source.Tag = "changed"; // must not reach a collected binding
 	}
 
+	// {x:Bind Mode=OneWay} goes through the same BindingPath as {Binding}. Requires PropertyChanged
+	// handlers of collected bindings to be removed (BindingPath.SubscribeToNotifyPropertyChanged).
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_XBind_OneWay_Elements_Collected_Then_PropertyChanged_Handlers_Removed()
+	{
+		var vm = new CountingViewModel();
+		var baseline = vm.SubscriberCount;
+
+		var refs = await CreateXBoundAsync(vm);
+		Assert.AreEqual(baseline + 2 * Count, vm.SubscriberCount, "Each x:Bind should subscribe once.");
+
+		await CollectAsync(refs, () => vm.SubscriberCount == baseline);
+		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The x:Bind controls were not collected.");
+		Assert.AreEqual(baseline, vm.SubscriberCount, "PropertyChanged handlers of collected x:Bind bindings are still on the source.");
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static async Task<List<WeakReference>> CreateBoundAsync(CountingViewModel vm, string path, bool loaded)
 	{
@@ -288,6 +325,25 @@ public class Given_BindingSourceStaleHandlers
 		}
 
 		await ShowAndRemoveAsync(panel, loaded);
+		return refs;
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static async Task<List<WeakReference>> CreateXBoundAsync(CountingViewModel vm)
+	{
+		var refs = new List<WeakReference>();
+		var panel = new StackPanel();
+		var controls = new List<XBindOneWayLeakControl>();
+		for (var i = 0; i < Count; i++)
+		{
+			var control = new XBindOneWayLeakControl(vm);
+			panel.Children.Add(control);
+			controls.Add(control);
+			refs.Add(new WeakReference(control));
+		}
+
+		await ShowAndRemoveAsync(panel, loaded: true);
+		Assert.IsTrue(controls.All(c => c.ShownName == vm.Name), "The x:Bind bindings were not applied.");
 		return refs;
 	}
 
