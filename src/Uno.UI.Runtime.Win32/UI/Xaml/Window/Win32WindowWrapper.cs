@@ -557,8 +557,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	internal GraphicsContextKind GraphicsContextKind => _context.Kind;
 
+	// An element without a peer of its own, like a Border, leaves the answer to the root, which hit tests into the popup.
 	internal Win32RawElementProvider? GetAccessibilityProvider(UIElement? element)
-		=> element is not null ? _accessibility?.GetOrCreateProvider(element) : null;
+		=> (element is not null ? _accessibility?.GetOrCreateProvider(element) : null) ?? _accessibility?.RootProvider;
 
 	private void NotifyPopupSitesOfBoundsChange()
 	{

@@ -170,6 +170,14 @@ public partial class CompositionTarget
 			}
 		}
 
+		void IWindowedPopupContent.OnSiteClosed()
+		{
+			if (_popup.TryGetTarget(out var popup))
+			{
+				popup.OnWindowedPopupSiteClosed();
+			}
+		}
+
 		UIElement? IWindowedPopupContent.AutomationRoot => _popup.TryGetTarget(out var popup) ? popup.Child : null;
 	}
 }

@@ -303,8 +303,13 @@ namespace Microsoft.UI.Xaml
 
 					UpdateShadow();
 					InvalidateArrange();
+					OnTranslationChanged();
 				}
 			}
+		}
+
+		private protected virtual void OnTranslationChanged()
+		{
 		}
 
 		public Shadow Shadow

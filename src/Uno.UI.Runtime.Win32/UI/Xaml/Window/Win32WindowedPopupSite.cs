@@ -381,6 +381,9 @@ internal sealed class Win32WindowedPopupSite : IWindowedPopupSite
 		}
 
 		_context?.Dispose();
+
+		// Not from inside the destruction of this window and its owner: closing a popup runs app code.
+		NativeDispatcher.Main.Enqueue(_content.OnSiteClosed, NativeDispatcherPriority.High);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
@@ -438,11 +441,7 @@ internal sealed class Win32WindowedPopupSite : IWindowedPopupSite
 				_owner.OnPointer(msg, wParam, _owner.Hwnd);
 				return new LRESULT(0);
 			case PInvoke.WM_POINTERCAPTURECHANGED:
-				// The owner taking the capture over from this window is how capture works here: it isn't a loss.
-				if ((nint)lParam.Value != _owner.Hwnd.Value)
-				{
-					_owner.OnPointerCaptureChanged(wParam);
-				}
+				_owner.OnPointerCaptureChanged(wParam);
 				return new LRESULT(0);
 			case PInvoke.WM_SETCURSOR:
 				_owner.ApplyPointerCursor();

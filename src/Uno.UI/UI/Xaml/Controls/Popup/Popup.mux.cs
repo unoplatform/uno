@@ -700,6 +700,16 @@ partial class Popup
 		return true;
 	}
 
+	// frameworkClosedCallback: "When the bridge unexpectedly closes we should probably do more cleanup".
+	// TODO Uno: WinUI's tree reset closes the popup when its island goes away. A site's owner window dying goes the same way here.
+	internal void OnWindowedPopupSiteClosed()
+	{
+		if (m_fIsOpen)
+		{
+			ForceCloseForTreeReset();
+		}
+	}
+
 	private void EnsureBridgeClosed()
 	{
 		if (m_windowedPopupWindow is { } window)
@@ -1144,11 +1154,10 @@ partial class Popup
 
 	// MUX Reference DXamlCore.cpp, CalculateAvailableMonitorRect
 	// Calculate the available monitor bounds that is the screen Dips.
-	internal static Rect CalculateAvailableMonitorRect(UIElement targetElement, Point targetPointClientLogical)
+	internal static Rect CalculateAvailableMonitorRect(XamlRoot? xamlRoot, Point targetPointClientLogical)
 	{
 		var availableMonitorRectClientLogicalResult = default(Rect);
 
-		var xamlRoot = targetElement.XamlRoot;
 		if (xamlRoot is null || GetWindowedPopupExtension() is not { } extension)
 		{
 			return availableMonitorRectClientLogicalResult;
@@ -1267,7 +1276,21 @@ partial class Popup
 	// A popup outside the live tree has no real ancestors to follow: GetUIElementAdjustedParentInternal treats the
 	// popup root as its parent.
 	private void UpdateVisualTransformParent(PopupRoot? popupRoot)
-		=> Visual.TransformParent = IsActiveInVisualTree ? null : popupRoot?.Visual;
+	{
+		Visual.TransformParent = IsActiveInVisualTree ? null : popupRoot?.Visual;
+		ApplyTranslationWithoutArrange();
+	}
+
+	// A popup outside the live tree is never arranged, and arranging is what gives an element its Translation.
+	private void ApplyTranslationWithoutArrange()
+	{
+		if (!IsActiveInVisualTree)
+		{
+			Visual.ArrangeOffset = Translation;
+		}
+	}
+
+	private protected override void OnTranslationChanged() => ApplyTranslationWithoutArrange();
 #endif
 
 	// CPopup::Child

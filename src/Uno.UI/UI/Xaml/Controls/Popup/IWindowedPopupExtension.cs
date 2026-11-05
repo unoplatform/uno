@@ -72,6 +72,9 @@ internal interface IWindowedPopupContent
 	/// <summary>The owner window moved or was resized, so the popup's window must follow it.</summary>
 	void OnOwnerBoundsChanged();
 
+	/// <summary>The window is gone, along with its owner.</summary>
+	void OnSiteClosed();
+
 	/// <summary>The element whose automation peer answers for the window.</summary>
 	UIElement? AutomationRoot { get; }
 }

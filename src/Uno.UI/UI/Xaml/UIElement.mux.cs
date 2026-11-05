@@ -896,7 +896,9 @@ namespace Microsoft.UI.Xaml
 
 				// Clip to the window viewport too: the composition tree roots at an infinite clip,
 				// so off-window content (e.g. a Popup/Flyout) is otherwise reported as on-screen.
-				if (XamlRoot?.Size is { Width: > 0, Height: > 0 } viewport)
+				// Except for a windowed popup's content, which isn't limited to the window.
+				if (XamlRoot?.Size is { Width: > 0, Height: > 0 } viewport
+					&& Microsoft.UI.Xaml.Controls.Primitives.PopupRoot.GetOpenPopupForElement(this) is not { IsWindowed: true })
 				{
 					left = Math.Max(left, 0);
 					top = Math.Max(top, 0);

@@ -115,4 +115,8 @@ partial class Popup
 		m_windowedPopupMoveAndResizeRect.Height);
 
 	internal global::Windows.Foundation.Point GetTranslationFromMainWindow() => m_offsetFromMainWindow;
+
+	internal global::Uno.UI.Xaml.Controls.IWindowedPopupSite? WindowedPopupSite => m_windowedPopupWindow?.Site;
+
+	internal static global::Windows.Graphics.PointInt32 GetScreenOffsetForTesting(XamlRoot xamlRoot) => GetWindowedPopupExtension()?.GetScreenOffset(xamlRoot) ?? default;
 }
