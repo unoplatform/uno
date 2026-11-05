@@ -1102,6 +1102,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
 		public async Task When_Pending_ToolTip_Opened_And_Closed_By_App_Then_Still_Opens_Automatically()
 		{
 			// As in WinUI, closing releases a tooltip from the service only if the service opened it: the app opening and
@@ -1119,12 +1120,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				mouse.MoveTo(owner.GetAbsoluteBounds().GetCenter());
 				await TestServices.WindowHelper.WaitForIdle();
 				Assert.IsFalse(toolTip.IsOpen, "premise: the tooltip is still waiting to open");
+#if HAS_UNO
+				Assert.AreSame(toolTip, ToolTipService.CurrentToolTipForTesting, "premise: the service holds the pending tooltip");
+#endif
 
+				// Back to back, so the show delay cannot elapse while the app holds the tooltip open.
 				toolTip.IsOpen = true;
-				await TestServices.WindowHelper.WaitForIdle();
 				toolTip.IsOpen = false;
-				await TestServices.WindowHelper.WaitForIdle();
 
+#if HAS_UNO
+				Assert.AreSame(toolTip, ToolTipService.CurrentToolTipForTesting, "The app closing the tooltip cancelled the pending automatic open.");
+#endif
 				await UITestHelper.WaitFor(() => toolTip.IsOpen, timeoutMS: 5000, message: "The hovered tooltip did not open after the app opened and closed it.");
 			}
 			finally
@@ -1139,9 +1145,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
 		public async Task When_Automatic_ToolTip_Reopened_By_App_Then_ShowDuration_Does_Not_Close_It()
 		{
-			// Once the app has closed the automatic tooltip, the service has let go of it: a reopen is the app's to close.
+			// Once the app has closed the automatic tooltip, the service has let go of it, so its show-duration timer must not
+			// close the app's reopen.
 			var owner = new Button { Content = "Hover me", Width = 100, Height = 50 };
 			var toolTip = new ToolTip { Content = "ToolTip content" };
 			ToolTipService.SetToolTip(owner, toolTip);
