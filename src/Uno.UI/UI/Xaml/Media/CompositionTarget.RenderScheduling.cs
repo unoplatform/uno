@@ -73,6 +73,18 @@ public partial class CompositionTarget
 	private bool _renderRequestedAfterAheadOfTimePaint; // only set or read under _renderingStateGate
 	private bool _shouldEnqueueRenderOnNextNativePlatformFrameRequested = true; // only set from the UI thread, only reset from the rendering/gpu thread
 
+	// Every host answers a request with a frame, so a request left unanswered is a host bug that would otherwise
+	// leave the app silently frozen. Written from the rendering thread, read from the UI thread.
+	private long _lastNativeFrameTimestamp = Stopwatch.GetTimestamp();
+	private long _lastStalledRenderLogTimestamp;
+	private int _stalledRenderReports;
+
+	private const int StalledRenderReportMs = 2000;
+	private const int StalledRenderReportIntervalMs = 5000;
+
+	/// <summary>Reports per stall, so a window the host legitimately stopped drawing (minimized) doesn't log forever.</summary>
+	private const int MaxStalledRenderReports = 3;
+
 	private bool RenderRequested
 	{
 		get => _renderRequested;
@@ -115,6 +127,37 @@ public partial class CompositionTarget
 		else
 		{
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} found no need to invalidate render.");
+			ReportIfRenderRequestStalled();
+		}
+	}
+
+	/// <summary>
+	/// Logs a render request the host has left unanswered. Only reports: re-asking or re-arming the handshake would
+	/// queue a second render for a frame that is merely slow.
+	/// </summary>
+	private void ReportIfRenderRequestStalled()
+	{
+		var sinceFrameMs = (long)Stopwatch.GetElapsedTime(Interlocked.Read(ref _lastNativeFrameTimestamp)).TotalMilliseconds;
+		if (sinceFrameMs < StalledRenderReportMs || _stalledRenderReports >= MaxStalledRenderReports)
+		{
+			return;
+		}
+
+		var lastLog = Interlocked.Read(ref _lastStalledRenderLogTimestamp);
+		if (lastLog != 0 && Stopwatch.GetElapsedTime(lastLog).TotalMilliseconds < StalledRenderReportIntervalMs)
+		{
+			return;
+		}
+
+		Interlocked.Exchange(ref _lastStalledRenderLogTimestamp, Stopwatch.GetTimestamp());
+		_stalledRenderReports++;
+
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn(
+				$"CompositionTarget#{GetHashCode()}: a render request has been outstanding for {sinceFrameMs}ms with no "
+				+ $"frame from the host (renderRequested={_renderRequested}, renderedAheadOfTime={_renderedAheadOfTime}, "
+				+ $"requestedAfterAheadOfTimePaint={_renderRequestedAfterAheadOfTimePaint}).");
 		}
 	}
 
@@ -197,6 +240,9 @@ public partial class CompositionTarget
 	internal IGeometry OnNativePlatformFrameRequested(ISwapChain swapChain, global::System.Numerics.Matrix4x4? rootTransform = null, Action<IDrawingSession>? overlay = null)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
+
+		Interlocked.Exchange(ref _lastNativeFrameTimestamp, Stopwatch.GetTimestamp());
+		_stalledRenderReports = 0;
 
 		if (Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, false))
 		{
