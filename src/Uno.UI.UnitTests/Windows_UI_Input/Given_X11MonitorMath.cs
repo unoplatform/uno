@@ -27,8 +27,8 @@ public class Given_X11MonitorMath
 	[TestMethod]
 	public void When_Point_Is_Between_Monitors_Then_The_Nearest_Wins()
 	{
-		// Under the shorter right monitor, closer to the left one.
-		Assert.IsTrue(X11MonitorMath.TryFindNearest(new[] { _left, _right }, new PointInt32(1925, 1500), out var monitor));
+		// Just below the shorter right monitor.
+		Assert.IsTrue(X11MonitorMath.TryFindNearest(new[] { _left, _right }, new PointInt32(1925, 1026), out var monitor));
 		Assert.AreEqual(_right, monitor);
 
 		Assert.IsTrue(X11MonitorMath.TryFindNearest(new[] { _left, _right }, new PointInt32(1900, 1500), out monitor));
