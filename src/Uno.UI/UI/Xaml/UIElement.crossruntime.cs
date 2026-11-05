@@ -123,7 +123,10 @@ namespace Microsoft.UI.Xaml
 		private void OnChildRemoved(UIElement child)
 		{
 			child.Shutdown();
-			(child as DependencyObject)?.ClearInheritedDataContext();
+			if (child is not FrameworkElement { LogicalParentOverride: Microsoft.UI.Xaml.Controls.Primitives.Popup })
+			{
+				(child as DependencyObject)?.ClearInheritedDataContext();
+			}
 
 			var leaveParams = new LeaveParams(IsActiveInVisualTree);
 			child.Leave(leaveParams);

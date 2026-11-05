@@ -273,6 +273,10 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal DependencyObject LogicalParentOverride { get; set; }
 
+		// WinUI: inherited properties follow the logical parent (GetInheritanceParentInternal). A popup's child has the
+		// popup root as its actual parent while open, and no parent otherwise.
+		private protected override DependencyObject InheritanceParentOverride => LogicalParentOverride as Microsoft.UI.Xaml.Controls.Primitives.Popup;
+
 		/// <summary>
 		/// Provides the managed visual parent of the element. This property can be overriden for specific
 		/// scenarios, for example in case of SelectorItem, where actual parent is null, but visual parent

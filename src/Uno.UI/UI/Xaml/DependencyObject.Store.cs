@@ -169,7 +169,7 @@ namespace Microsoft.UI.Xaml
 
 					InheritedProperties = null;
 
-					if (value is DependencyObject parentProvider)
+					if ((InheritanceParentOverride ?? value as DependencyObject) is { } parentProvider)
 					{
 						TryRegisterInheritedProperties(parentProvider);
 					}
@@ -1407,6 +1407,20 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// The object inherited properties come from when it isn't <see cref="Parent"/>.
+		/// </summary>
+		private protected virtual DependencyObject? InheritanceParentOverride => null;
+
+		/// <summary>
+		/// Picks up a changed <see cref="InheritanceParentOverride"/>.
+		/// </summary>
+		internal void RefreshInheritanceParent()
+		{
+			InheritedProperties = null;
+			TryRegisterInheritedProperties(force: true);
+		}
+
 		private void TryRegisterInheritedProperties(DependencyObject? parentProvider = null, bool force = false)
 		{
 			if (
@@ -1425,7 +1439,7 @@ namespace Microsoft.UI.Xaml
 				)
 			)
 			{
-				if (parentProvider == null && Parent is DependencyObject p)
+				if (parentProvider == null && (InheritanceParentOverride ?? Parent as DependencyObject) is { } p)
 				{
 					parentProvider = p;
 				}
