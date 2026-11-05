@@ -10,6 +10,10 @@
 		<!-- iOS heads link through the package's own wiring (Uno.WinUI.Composition.WebGpu.targets), pointed at the
 		     per-RID layout _ProvisionWgpuNativeIos lays out here, the same one the package ships. -->
 		<UnoWebGpuIosLibDir Condition="'$(UnoWebGpuIosLibDir)' == ''">$(WgpuNativeCacheDir)ios-rid\</UnoWebGpuIosLibDir>
+		<_WgpuNativeReleaseUrl>https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/</_WgpuNativeReleaseUrl>
+		<!-- Not DownloadFile: its Retries only covers 500 and 408, so one GitHub 502/503/504 would fail the build.
+		     Run it with IgnoreStandardErrorWarningFormat: Exec otherwise fails on curl's retry messages, even after a retry succeeds. -->
+		<_WgpuDownload>curl --fail --silent --show-error --location --retry 5 --retry-delay 5</_WgpuDownload>
 	</PropertyGroup>
 
 	<!-- The Apple mobile SDKs (Xamarin.MacDev.Tasks) register their own "Unzip" task with different parameters,
@@ -89,9 +93,8 @@
 			<_WgpuStageDir>$(WgpuNativeCacheDir)stage\$([System.Guid]::NewGuid().ToString('N'))\</_WgpuStageDir>
 		</PropertyGroup>
 		<MakeDir Directories="$(_WgpuStageDir)" Condition="'$(_WgpuNeedsFetch)' == 'true'" />
-		<DownloadFile Condition="'$(_WgpuNeedsFetch)' == 'true'"
-			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/$(_WgpuAsset)"
-			DestinationFolder="$(_WgpuStageDir)" Retries="3" />
+		<Exec IgnoreStandardErrorWarningFormat="true" Condition="'$(_WgpuNeedsFetch)' == 'true'"
+			Command="$(_WgpuDownload) -o &quot;$(_WgpuStageDir)$(_WgpuAsset)&quot; &quot;$(_WgpuNativeReleaseUrl)$(_WgpuAsset)&quot;" />
 		<Microsoft.Build.Tasks.Unzip Condition="'$(_WgpuNeedsFetch)' == 'true'"
 			SourceFiles="$(_WgpuStageDir)$(_WgpuAsset)" DestinationFolder="$(_WgpuStageDir)" />
 		<ItemGroup Condition="'$(_WgpuNeedsFetch)' == 'true'">
@@ -130,9 +133,8 @@
 			<_WgpuPackRid Include="iossimulator-x64"><Asset>wgpu-ios-x86_64-simulator-release.zip</Asset><Native>libwgpu_native.a</Native></_WgpuPackRid>
 		</ItemGroup>
 		<MakeDir Directories="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\" />
-		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\%(_WgpuPackRid.Asset)')"
-			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/%(_WgpuPackRid.Asset)"
-			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\" Retries="3" />
+		<Exec IgnoreStandardErrorWarningFormat="true" Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\%(_WgpuPackRid.Asset)')"
+			Command="$(_WgpuDownload) -o &quot;$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\%(_WgpuPackRid.Asset)&quot; &quot;$(_WgpuNativeReleaseUrl)%(_WgpuPackRid.Asset)&quot;" />
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\lib\%(_WgpuPackRid.Native)')"
 			SourceFiles="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\%(_WgpuPackRid.Asset)"
 			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\" />
@@ -163,9 +165,8 @@
 			<_WgpuDesktopRid Include="osx-arm64"><Asset>wgpu-macos-aarch64-release.zip</Asset><Native>libwgpu_native.dylib</Native><Name>libwebgpu.dylib</Name></_WgpuDesktopRid>
 		</ItemGroup>
 		<MakeDir Directories="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" />
-		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)')"
-			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/%(_WgpuDesktopRid.Asset)"
-			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" Retries="3" />
+		<Exec IgnoreStandardErrorWarningFormat="true" Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)')"
+			Command="$(_WgpuDownload) -o &quot;$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)&quot; &quot;$(_WgpuNativeReleaseUrl)%(_WgpuDesktopRid.Asset)&quot;" />
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\lib\%(_WgpuDesktopRid.Native)')"
 			SourceFiles="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)"
 			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" />
@@ -212,9 +213,8 @@
 			<_WgpuAndroidAbi Include="i686"><Abi>x86</Abi></_WgpuAndroidAbi>
 		</ItemGroup>
 		<MakeDir Directories="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" />
-		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip')"
-			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip"
-			DestinationFolder="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" Retries="3" />
+		<Exec IgnoreStandardErrorWarningFormat="true" Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip')"
+			Command="$(_WgpuDownload) -o &quot;$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip&quot; &quot;$(_WgpuNativeReleaseUrl)wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip&quot;" />
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so')"
 			SourceFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip"
 			DestinationFolder="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" />
@@ -257,9 +257,8 @@
 			<_WgpuIosDir>$(WgpuNativeCacheDir)ios\$(_WgpuIosSlice)\</_WgpuIosDir>
 		</PropertyGroup>
 		<MakeDir Directories="$(_WgpuIosDir)" />
-		<DownloadFile Condition="!Exists('$(_WgpuIosDir)$(_WgpuIosZip)')"
-			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/$(_WgpuIosZip)"
-			DestinationFolder="$(_WgpuIosDir)" Retries="3" />
+		<Exec IgnoreStandardErrorWarningFormat="true" Condition="!Exists('$(_WgpuIosDir)$(_WgpuIosZip)')"
+			Command="$(_WgpuDownload) -o &quot;$(_WgpuIosDir)$(_WgpuIosZip)&quot; &quot;$(_WgpuNativeReleaseUrl)$(_WgpuIosZip)&quot;" />
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(_WgpuIosDir)lib\libwgpu_native.a')"
 			SourceFiles="$(_WgpuIosDir)$(_WgpuIosZip)" DestinationFolder="$(_WgpuIosDir)" />
 
