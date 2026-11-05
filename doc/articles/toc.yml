@@ -117,6 +117,8 @@
         href: xref:Uno.Workshop.Counter.CSharp.MVUX
       - name: C# Markup + MVVM
         href: xref:Uno.Workshop.Counter.CSharp.MVVM
+      - name: Reactor
+        href: xref:Uno.Workshop.Counter.Reactor
       - name: Hot Design
         href: xref:Uno.HotDesign.GetStarted.CounterTutorial
     - name: Simple Calc

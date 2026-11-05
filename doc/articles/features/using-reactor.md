@@ -100,5 +100,6 @@ dotnet watch --property:TargetFrameworks=net10.0-desktop
 
 ## Next steps
 
+- Build a complete app step by step with the [Counter tutorial](xref:Uno.Workshop.Counter.Reactor).
 - For the controls and features supported on each platform, see the [Reactor on Uno Platform README](https://github.com/unoplatform/uno.microsoft-ui-reactor/blob/uno/src/Reactor.Uno/README.md).
 - To learn more about components, hooks and the element factories, see the [Microsoft.UI.Reactor repository](https://github.com/microsoft/microsoft-ui-reactor).
