@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using DirectUI;
@@ -150,6 +150,13 @@ namespace Microsoft.UI.Xaml.Controls
 				XamlRoot = XamlRoot.GetForElement(_owner);
 				Popup.XamlRoot = XamlRoot.GetForElement(_owner);
 			}
+
+			// Propagate FlowDirection from placement target to popup
+			if (isOpen && GetOwnerFrameworkElement() is { } flowDirectionSource)
+			{
+				Popup.FlowDirection = flowDirectionSource.FlowDirection;
+			}
+
 			Popup.IsOpen = isOpen;
 			if (isOpen && IsEnabled)
 			{
@@ -453,11 +460,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (spTarget != null)
 			{
-				// UNO TODO
-				//        xaml::FlowDirection targetFlowDirection = xaml::FlowDirection_LeftToRight;
-				//spTarget->get_FlowDirection(&targetFlowDirection);
-				//bIsRTL = targetFlowDirection == xaml::FlowDirection_RightToLeft;
-				bIsRTL = false;
+				bIsRTL = spTarget.FlowDirection == FlowDirection.RightToLeft;
 
 				// We should not do placement if the target is no longer in the live tree.
 				if (!spTarget.IsLoaded)
@@ -586,11 +589,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_Debug.Assert(spTarget != null, "pTarget expected to be non-null in ToolTip_Partial::PerformPlacement()");
 			if (spTarget != null)
 			{
-				// UNO TODO
-				//	        xaml::FlowDirection targetFlowDirection = xaml::FlowDirection_LeftToRight;
-
-				//spTarget->get_FlowDirection(&targetFlowDirection);
-				//bIsRTL = targetFlowDirection == xaml::FlowDirection_RightToLeft;
+				bIsRTL = spTarget.FlowDirection == FlowDirection.RightToLeft;
 
 				// We should not do placement if the target is no longer in the live tree.
 				if (!spTarget.IsLoaded)
@@ -668,13 +667,12 @@ namespace Microsoft.UI.Xaml.Controls
 				var targetTopLeft = default(Point);
 				targetTopLeft = Target.TransformToVisual(null).TransformPoint(targetTopLeft);
 
-				//// UNO TODO
-				//      // targetTopLeft.X should be the left edge of the target, so adjust for RTL by
-				//      // subtracting the width of the target.
-				//      if (bIsRTL)
-				//      {
-				//          targetTopLeft.X -= targetActualWidth;
-				//      }
+				// targetTopLeft.X should be the left edge of the target, so adjust for RTL by
+				// subtracting the width of the target.
+				if (bIsRTL)
+				{
+					targetTopLeft.X -= Target.ActualWidth;
+				}
 
 				rcDockTo.X = targetTopLeft.X;
 				rcDockTo.Y = targetTopLeft.Y;
@@ -721,19 +719,18 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			// UNO TODO
-			//// Reverse Left/Right palacement for RTL, because the target is flipped.
-			//if (bIsRTL)
-			//{
-			//    if (placement == PlacementMode.Right)
-			//    {
-			//        placement = PlacementMode.Left;
-			//    }
-			//    else if (placement == PlacementMode.Left)
-			//    {
-			//        placement = PlacementMode.Right;
-			//    }
-			//}
+			// Reverse Left/Right palacement for RTL, because the target is flipped.
+			if (bIsRTL)
+			{
+				if (placement == PlacementMode.Right)
+				{
+					placement = PlacementMode.Left;
+				}
+				else if (placement == PlacementMode.Left)
+				{
+					placement = PlacementMode.Right;
+				}
+			}
 
 			// To honor horizontal/vertical offset, inflate the placement target by these offsets before calling into
 			// the Windows popup positioning logic.
