@@ -123,6 +123,25 @@ namespace Microsoft.UI.Xaml
 
 		#endregion
 
+		/// <summary>
+		/// Gets or sets localization/globalization language information that applies to a FrameworkElement.
+		/// </summary>
+		public string Language
+		{
+			get => (string)GetValue(LanguageProperty);
+			set => SetValue(LanguageProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the Language dependency property.
+		/// </summary>
+		public static DependencyProperty LanguageProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Language),
+				typeof(string),
+				typeof(FrameworkElement),
+				new FrameworkPropertyMetadata(default(string), FrameworkPropertyMetadataOptions.Inherits));
+
 		#region FlowDirection Dependency Property
 #if !SUPPORTS_RTL
 		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
