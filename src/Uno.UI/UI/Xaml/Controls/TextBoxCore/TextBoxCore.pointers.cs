@@ -255,7 +255,7 @@ internal sealed partial class TextBoxCore
 			// mouse multi-tap path) so a touch double-tap can select a word on release.
 			var textPoint = ToTouchTextPoint(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position);
 			CountTouchPress(currentPoint, textPoint, GetCharacterIndexAt(textPoint), onHandle: false);
-			_selectionFlyoutOpenAtPress = SelectionFlyout?.IsOpen == true;
+			_selectionFlyoutOpenAtPress = IsSelectionFlyoutOpenAtPress();
 			_iosHoldFired = false;
 			_touchPressPointer = args.Pointer;
 			if (TouchSelectionConvention == TouchTextSelectionConvention.iOS)
@@ -428,6 +428,11 @@ internal sealed partial class TextBoxCore
 			{
 				QueueDeferredTouchFlyout(args.GetCurrentPoint(Owner).Position, forSelection: true);
 			}
+			return;
+		}
+		else if (_selectionFlyoutOpenAtPress && IsInSelection(displayBlockPoint))
+		{
+			// The press dismissed the flyout on its way through the light-dismiss layer: the selection it was showing for stays.
 			return;
 		}
 		else

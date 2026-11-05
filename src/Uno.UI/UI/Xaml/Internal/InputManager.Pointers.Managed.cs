@@ -430,6 +430,7 @@ internal partial class InputManager
 				_rightButtonPointerId = args.CurrentPoint.PointerId;
 			}
 
+			FlyoutClosedByCurrentPress = null;
 			_isPointerDownHitTest = true;
 			var hasTree = HitTestOrRoot(args, out var hitTestSource);
 			_isPointerDownHitTest = false;
@@ -1059,6 +1060,9 @@ internal partial class InputManager
 		private uint? _rightButtonPointerId;
 		private bool _isPointerDownHitTest;
 
+		// Uno: TextBoxCore's touch menu toggles on a tap. It has to tell that its menu was open when the press that closed it reached it.
+		internal FlyoutBase? FlyoutClosedByCurrentPress { get; private set; }
+
 		private bool ShouldEventAlwaysPassThroughPopupLightDismissLayer(PointerEventArgs args)
 			=> args.CurrentPoint.Properties.IsRightButtonPressed || _rightButtonPointerId == args.CurrentPoint.PointerId;
 
@@ -1186,7 +1190,7 @@ internal partial class InputManager
 								// instead of closing all flyouts.  Otherwise, we'll close all flyouts.
 								// If we have a chain of open flyouts, then closing the root flyout will close
 								// all its nested children.
-								FlyoutBase.CloseOpenFlyout(Popup.GetClosestPopupAncestor(contact.element)?.AssociatedFlyout);
+								FlyoutClosedByCurrentPress = FlyoutBase.CloseOpenFlyout(Popup.GetClosestPopupAncestor(contact.element)?.AssociatedFlyout);
 							}
 							else if (popupRoot is not null)
 							{

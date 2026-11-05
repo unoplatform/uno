@@ -777,7 +777,7 @@ partial class FlyoutBase
 		}
 	}
 
-	internal static void CloseOpenFlyout(FlyoutBase parentFlyoutCore)
+	internal static FlyoutBase CloseOpenFlyout(FlyoutBase parentFlyoutCore)
 	{
 		// TODO Uno: FlyoutMetadata. The open flyouts are a flat list, in which a child comes after its parent.
 		var openFlyout = parentFlyoutCore is null
@@ -785,6 +785,8 @@ partial class FlyoutBase
 			: _openFlyouts.SkipWhile(f => f != parentFlyoutCore).Skip(1).FirstOrDefault();
 
 		openFlyout?.Hide();
+
+		return openFlyout;
 	}
 
 	// Associates this flyout with the correct XamlRoot for its context, or returns an error

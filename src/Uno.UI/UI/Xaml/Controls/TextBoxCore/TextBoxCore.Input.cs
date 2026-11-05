@@ -1844,10 +1844,15 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		UpdateCaretLoupe(isEndGripper ? SelectionStart + SelectionLength : SelectionStart);
 	}
 
+	// The press that hits the light-dismiss layer closes the flyout before reaching the text box.
+	private bool IsSelectionFlyoutOpenAtPress()
+		=> SelectionFlyout is { } flyout
+			&& (flyout.IsOpen || Uno.UI.Xaml.Core.VisualTree.GetContentRootForElement(flyout)?.InputManager.Pointers.FlyoutClosedByCurrentPress == flyout);
+
 	void ITextSelectionGripperHost.OnGripperPressed()
 	{
 		// A tap on a handle toggles the menu, like a tap on the selection (see OnGripperTapped).
-		_selectionFlyoutOpenAtPress = SelectionFlyout?.IsOpen == true;
+		_selectionFlyoutOpenAtPress = IsSelectionFlyoutOpenAtPress();
 		// A handle press is a new touch too: drop a menu still waiting on the previous tap.
 		CancelDeferredTouchFlyout();
 		DismissSelectionFlyoutForPointerPress();
