@@ -11,6 +11,11 @@ public partial class Popup
 
 	internal bool IsFlyout => AssociatedFlyout is not null;
 
+	// TODO Uno: Windowed popups are not implemented yet, so no popup leaves the root bounds.
+	internal bool IsWindowed => false;
+
+	internal global::Windows.Foundation.Rect GetWindowedPopupMoveAndResizeRect() => default;
+
 	internal void SetShouldTakeFocus(bool value) => m_shouldTakeFocus = value;
 
 	// We don't check IsActive() because we want the focus logic to also work with unrooted popups,
