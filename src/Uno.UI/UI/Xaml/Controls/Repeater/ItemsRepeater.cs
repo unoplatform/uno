@@ -700,6 +700,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Uno-specific: holds the repeater weakly, like WinUI's raw-'this' delegate, since a repeater that never loads
 		// never unloads to remove it. Static so the handler cannot capture the repeater.
+		// A dead repeater's handler is only removed on the view's next raise.
 		private static IDisposable SubscribeToItemsSourceView(ItemsSourceView view, ItemsRepeater repeater)
 		{
 			var weakRepeater = new WeakReference<ItemsRepeater>(repeater);
