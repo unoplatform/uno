@@ -22,7 +22,7 @@ namespace UITests.Microsoft_UI_Windowing;
 		"Each window the user can see raises AppWindow.Closing, front to back, then Window.Closed; a cancelled Closing cancels the quit and leaves the remaining windows open. " +
 		"Once they are closed the app exits, whatever the shutdown mode: OnExplicitShutdown only keeps it running after its last window is closed, and a later Quit still ends it. " +
 		"Quit is refused while a file picker or a sheet is open. A logout, restart or shutdown ends the app without AppWindow.Closing or Window.Closed. " +
-		"Application.Current.Exit() exits without raising AppWindow.Closing. " +
+		"Application.Current.Exit() closes every window as WinUI does, raising Window.Closed but not AppWindow.Closing, then exits. " +
 		"Run the app from a terminal: the events are also written to the console, which outlives the windows.")]
 public sealed partial class AppWindow_QuitClosesWindows : Page
 {
