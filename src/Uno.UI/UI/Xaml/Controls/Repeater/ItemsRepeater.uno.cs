@@ -13,6 +13,8 @@
 //   the subscription teardown on Unload is still required to avoid leaks through the default
 //   StackLayout; the only difference on enhanced-lifecycle is that the OnLoaded re-layout
 //   pass is no longer forced.
+// - SubscribeToItemsSourceView holds the repeater weakly, like WinUI's raw-'this' delegate,
+//   since a repeater that never loads never unloads to remove its data-source subscription.
 
 using System;
 using System.Collections.Generic;
@@ -87,6 +89,7 @@ partial class ItemsRepeater : IPanel
 
 	// Uno-specific: holds the repeater weakly, like WinUI's raw-'this' delegate, since a repeater that never loads
 	// never unloads to remove it. Static so the handler cannot capture the repeater.
+	// A dead repeater's handler is only removed on the view's next raise.
 	private static IDisposable SubscribeToItemsSourceView(ItemsSourceView view, ItemsRepeater repeater)
 	{
 		var weakRepeater = new WeakReference<ItemsRepeater>(repeater);
