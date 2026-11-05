@@ -4,7 +4,7 @@ name: macOS CI spike
 
 on:
   push:
-    branches: [ 'spike/macos-gha' ]
+    branches: [ 'spike/macos-gha', 'dev/mazi/macos-gha-spike' ]
   workflow_dispatch:
 
 permissions:
