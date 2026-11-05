@@ -8291,6 +8291,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				doubleTap: true,
 				flick: true);
 
+		// Focus moved into the selection flyout comes back when it closes. That flyout is transient, so unlike the
+		// context flyout it must not cost the TextBox its handles.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Touch_Selection_Flyout_Takes_Focus_And_Closes_Keeps_Thumbs()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 280,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android,
+			};
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var center = SUT.GetAbsoluteBoundsRect().GetCenter();
+			finger.Press(center);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			finger.Press(center);
+			finger.Release();
+
+			await WindowHelper.WaitFor(() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, message: "the double-tap should select the word and show both thumbs");
+			await WindowHelper.WaitFor(() => SUT.SelectionFlyout?.IsOpen == true, message: "the double-tap should open the selection flyout");
+			await WindowHelper.WaitForIdle();
+
+			if (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+					.FirstOrDefault(p => p.Child?.FindVisualChildByType<CommandBarFlyoutCommandBar>() is not null) is not { } flyoutPopup)
+			{
+				Assert.Fail("the selection flyout's popup should be open");
+				return;
+			}
+			Assert.IsTrue(flyoutPopup.Focus(FocusState.Programmatic), "the flyout's popup should take focus");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(FocusState.Unfocused, SUT.FocusState, "focus should have moved into the flyout");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "the selection flyout taking focus should keep the handles");
+
+			SUT.SelectionFlyout.Hide();
+			await WindowHelper.WaitFor(() => SUT.SelectionFlyout.IsOpen != true, message: "the selection flyout should close");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreNotEqual(FocusState.Unfocused, SUT.FocusState, "closing the flyout should hand focus back to the TextBox");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "focus coming back from the selection flyout should keep the handles");
+		}
+
 		// The grippers live in a popup that no ScrollViewer clips, so they used to keep painting at their old screen
 		// position (over the app's status/nav bar) once the TextBox scrolled out of the viewport. They are now culled
 		// against the TextBox's ancestor-clipped bounds. This is what made removing the scroll lock safe, so it has
