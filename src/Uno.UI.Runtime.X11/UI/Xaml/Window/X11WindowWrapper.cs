@@ -162,17 +162,26 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		var window = _host.RootX11Window.Window;
 		using var lockDiposable = X11Helper.XLock(display);
 
-		// If the window manager adds decorations, usually that is implemented by wrapping
-		// the window in another slightly bigger window that includes the decorations. In that case,
-		// XGetWindowAttributes will give us x and y offsets relative to this slightly bigger window,
-		// not relative to the root window.
+		// If the window manager adds decorations, usually that is implemented by wrapping the window in
+		// another slightly bigger window that includes the decorations, and the size given here includes them.
+		// That window belongs to the window manager, which only resizes what's inside it on request:
+		// it gets asked to resize the app's window, and adjusts its own to fit.
 		_ = XLib.XQueryTree(display, window, out var root, out var parent, out var children, out _);
 		_ = XLib.XQueryTree(display, parent, out _, out var parentParent, out var children2, out _);
 		_ = XLib.XFree(children);
 		_ = XLib.XFree(children2);
 
-		var windowToResize = parentParent == root ? parent : window;
-		_ = XLib.XResizeWindow(display, windowToResize, size.Width, size.Height);
+		var frame = parentParent == root ? parent : window;
+		XWindowAttributes clientAttributes = default;
+		XWindowAttributes frameAttributes = default;
+		_ = XLib.XGetWindowAttributes(display, window, ref clientAttributes);
+		_ = XLib.XGetWindowAttributes(display, frame, ref frameAttributes);
+
+		_ = XLib.XResizeWindow(
+			display,
+			window,
+			Math.Max(size.Width - (frameAttributes.width - clientAttributes.width), 1),
+			Math.Max(size.Height - (frameAttributes.height - clientAttributes.height), 1));
 		XLib.XSync(display, false);
 	}
 
@@ -278,11 +287,11 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		// (0, 0) is inside the window's own X border, while a move places its outer corner. Without a reparenting
 		// frame this reads the client window, whose border is 0.
 		Position = new PointInt32 { X = rootx - windowAttrs.border_width, Y = rooty - windowAttrs.border_width };
-		var fullSize = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
-		SetSizes(fullSize, fullSize);
-
 		XWindowAttributes windowAttrs2 = default;
 		_ = XLib.XGetWindowAttributes(display, window, ref windowAttrs2);
+
+		var fullSize = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
+		SetSizes(fullSize, new SizeInt32 { Width = windowAttrs2.width, Height = windowAttrs2.height });
 
 		var scale = _xamlRoot.RasterizationScale;
 		var newWindowSize = new Size(windowAttrs2.width / scale, windowAttrs2.height / scale);
