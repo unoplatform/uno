@@ -79,11 +79,11 @@ These verbs combine tool calls on the CLI side:
 - `app assert <find parameters> [--state tok,..] [--absent] [--count N]` runs `find`, then checks the result:
   - `--state`: each token must appear in the `{...}` state group of every match that `find` returned. A `!tok` token must not appear.
   - `--absent`: passes when nothing matched.
-  - `--count N`: passes when exactly N elements matched. Without `--absent`, an assert also fails when nothing matched, so `--count 0` never passes: use `--absent` to check that an element is gone.
+  - `--count N`: passes when exactly N elements matched, so `--count 0` passes when nothing matched.
 
-  It prints the find result, then `assert: pass` or `assert: fail (<reason>)`.
+  Without `--absent` or `--count`, an assert fails when nothing matched. It prints the find result, then `assert: pass` or `assert: fail (<reason>)`.
 
-  `--count` compares the total number of matches, but `--state` only checks the matches listed in the find result, which holds 20 lines by default. To check the state of more matches, raise the limit with `--maxResults` (up to 100). Run `app tools --json` to see whether your App MCP version offers it.
+  `--count` compares the total number of matches, but `--state` can only check the matches listed in the find result: 20 by default. When more elements matched than were listed, a `--state` assert fails rather than pass on matches it never saw. Raise the limit with `--maxResults` (up to 100), or narrow the search.
 
 ## Parameters
 

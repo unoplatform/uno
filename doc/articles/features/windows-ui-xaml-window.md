@@ -114,15 +114,20 @@ if (MainWindow.AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter
 These properties allow you to set the maximum dimensions for the window. When set, the window cannot be resized beyond these values by the user. This is useful for constraining the window size to fit specific design requirements or to prevent the window from becoming too large for the content to display properly.
 
 > [!NOTE]
-> On macOS (net10.0-desktop), `PreferredMinimumWidth`, `PreferredMinimumHeight`, `PreferredMaximumWidth` and `PreferredMaximumHeight` are applied in points (logical pixels) to the whole window frame, including the title bar, while `AppWindow.Resize` takes physical pixels and sizes the area below the title bar. On a display with a scale factor other than 1, the same number therefore means a different size: on a Retina display (scale factor 2), `Resize` with a width of `2048` gives a window 1024 points wide, but `PreferredMinimumWidth = 2048` requires at least 2048 points. To use both together on macOS, divide the preferred values by the window's scale factor (for example `XamlRoot.RasterizationScale`), and allow for the title bar height in the minimum and maximum heights.
-
-> [!NOTE]
 > If your app uses Uno Navigation, set the sizing options before you start the Host (see the code below). This makes sure the window appears as expected.
 
 ```csharp
 // Set the window size here
 Host = await builder.NavigateAsync<Shell>();
 ```
+
+> [!NOTE]
+> On macOS (net10.0-desktop), window sizes don't yet follow WinUI ([#26110](https://github.com/unoplatform/uno/issues/26110)):
+>
+> * `PreferredMinimumWidth`, `PreferredMinimumHeight`, `PreferredMaximumWidth` and `PreferredMaximumHeight` are applied in points (logical pixels) to the whole window, title bar included. In WinUI, they are physical pixels.
+> * `AppWindow.Resize` takes physical pixels, as in WinUI, but sizes the area below the title bar rather than the whole window.
+>
+> Until this is fixed, give the preferred sizes in points on macOS, and include the title bar in the minimum and maximum heights.
 
 ## Enumerating windows
 
