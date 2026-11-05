@@ -215,14 +215,21 @@ bool uno_application_is_bundled(void)
 }
 
 static bool application_exit_requested;
+// a quit answered `NSTerminateLater`, waiting for `Application.Exit()`
+static bool application_termination_deferred;
 
 void uno_application_quit(void)
 {
 #if DEBUG
-    NSLog(@"uno_application_quit");
+    NSLog(@"uno_application_quit deferred: %s", application_termination_deferred ? "true" : "false");
 #endif
     application_exit_requested = true;
     NSApplication *app = [NSApplication sharedApplication];
+    if (application_termination_deferred) {
+        application_termination_deferred = false;
+        [app replyToApplicationShouldTerminate:YES];
+        return;
+    }
     [app terminate:app];
 }
 
@@ -259,7 +266,14 @@ void uno_application_quit(void)
         return NSTerminateCancel;
     }
 
-    return [self applicationShouldTerminateAfterLastWindowClosed:sender] ? NSTerminateNow : NSTerminateCancel;
+    if ([self applicationShouldTerminateAfterLastWindowClosed:sender]) {
+        return NSTerminateNow;
+    }
+
+    // `OnExplicitShutdown`: the quit waits until the application calls `Application.Exit()`, rather than being
+    // cancelled, so a logout or a restart goes ahead once the application has ended
+    application_termination_deferred = true;
+    return NSTerminateLater;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
