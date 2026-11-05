@@ -12,7 +12,7 @@ internal record class _Dotnet(string Moniker, ReferenceAssemblies ReferenceAssem
 		"net11.0",
 		new PackageIdentity(
 			"Microsoft.NETCore.App.Ref",
-			"11.0.0-rc.2.26504.105"),
+			"11.0.0-rc.3.26522.148"),
 		Path.Combine("ref", "net11.0")
 	);
 
