@@ -915,6 +915,10 @@ re-baseline visual tests:
 
 - **Rendering:** gradients, corner radii, shadows/elevation, and anti-aliasing render via
   Skia — minor pixel differences are possible.
+- **Popups and flyouts:** the internal `PopupPanel` is gone, and an open `Popup.Child` sits directly under the
+  `PopupRoot` as in WinUI: `VisualTreeHelper.GetParent` returns it, and it's `null` while closed. `NativePopupBase` is
+  removed. A popup without a `Child` no longer appears in `VisualTreeHelper.GetOpenPopupsForXamlRoot`. Light-dismiss
+  popups now close when the window deactivates or its size changes rather than on any activation change or `XamlRoot.Changed`.
 - **Popups and flyouts:** placement is a port of WinUI's. A `Popup.Child` is measured with
   infinite constraints and arranged at the popup's offsets, and a flyout writes its placement
   into those offsets, so it now keeps a 4 px margin from its target and stays within the

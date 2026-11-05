@@ -3804,6 +3804,8 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.X11" reason="Assembly renamed Uno.UI.Runtime.Skia.X11 -> Uno.UI.Runtime.X11 (breaking changes for 7.0)" />
 	  </Assemblies>
 	  <Types>
+		  <!-- PopupPanel and the legacy popup wrappers went with the port of CPopup: the child sits directly under PopupRoot. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.NativePopupBase" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
 		  <!-- Uno-only Android host types moved out of the WinUI namespaces into the host namespace; WinUI has no counterpart. -->
 		  <Member fullName="Microsoft.UI.Xaml.ApplicationActivity" reason="Moved Uno-only ApplicationActivity to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NativeApplication" reason="Moved Uno-only NativeApplication to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
@@ -4115,7 +4117,10 @@
 		  <!-- Android head aligned on UnoPlatformHostBuilder: NativeApplication is now abstract with a CreateHost() override, replacing the AppBuilder delegate ctor. AndroidHost is now internal and built via UseAndroid(). -->
 		  <Member fullName="Microsoft.UI.Xaml.NativeApplication/AppBuilder" reason="Android head now overrides CreateHost() instead of passing an AppBuilder delegate (breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Runtime.Skia.Android.AndroidHost" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
-		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>/<Methods> below). -->
+		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.Popup::PopupPanelProperty()" reason="Removed with the WinUI Popup port; no WinUI equivalent" />/<Methods>
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.InitializePopupPanel()" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.Popup.get_PopupPanelProperty()" reason="Removed with the WinUI Popup port; no WinUI equivalent" /> below). -->
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
 		  <!-- WASM DOM renderer removal: the DOM-interop event payload type is unraisable now that its only producer (UIElementWasmExtensions) is gone. -->
 		  <Member fullName="Uno.Extensions.HtmlCustomEventArgs" reason="Removed with the WebAssembly DOM renderer and its HTML interop surface (breaking changes for 7.0, uno#8339)" />
