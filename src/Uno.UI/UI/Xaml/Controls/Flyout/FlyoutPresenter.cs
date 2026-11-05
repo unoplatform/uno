@@ -93,7 +93,14 @@ namespace Microsoft.UI.Xaml.Controls
 				spInnerScrollViewer.m_isFocusableOnFlyoutScrollViewer = true;
 			}
 
-			// TODO Uno: ApplyElevationEffect has no equivalent, the shadow comes from the template.
+			// Apply a shadow
+			// Deliverable 19819460: Allow LTEs to target Popup.Child when Popup is windowed
+			// ThemeTransition can't be applied to child of a windowed popup, we are targeting grandchild in FlyoutBase_partial.
+			// Shadows need to be on the same element to work right, so we are applying shadows to grandchild too.
+			if (IsDefaultShadowEnabled && VisualTreeHelper.GetChildrenCount(this) > 0 && VisualTreeHelper.GetChild(this, 0) is UIElement spChildAsUIE)
+			{
+				DirectUI.ElevationHelper.ApplyElevationEffect(spChildAsUIE);
+			}
 		}
 
 		private void CleanupTemplateParts()
