@@ -4,7 +4,8 @@ using Windows.Globalization;
 
 namespace Uno.UI.Runtime.MacOS;
 
-// Reads the current locale through CoreFoundation, which, unlike .NET's culture, carries the 24-hour time setting.
+// Reads locales through CoreFoundation: the current one, which, unlike .NET's culture, carries the 24-hour time setting,
+// and others by name.
 internal sealed partial class MacOSDeviceClockExtension : IDeviceClockExtension
 {
 	private const string CoreFoundation = "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation";
@@ -26,23 +27,31 @@ internal sealed partial class MacOSDeviceClockExtension : IDeviceClockExtension
 		}
 	}
 
-	public unsafe string? GetHourFormat()
+	public string? GetFormatFromTemplate(string template, string? localeTag)
 	{
-		var locale = CFLocaleCopyCurrent();
-		var template = IntPtr.Zero;
+		var identifier = localeTag is null ? IntPtr.Zero : CreateString(localeTag);
+		var locale = localeTag is null ? CFLocaleCopyCurrent() : CFLocaleCreate(IntPtr.Zero, identifier);
+		var cfTemplate = CreateString(template);
 		var format = IntPtr.Zero;
 		try
 		{
-			var j = 'j';
-			template = CFStringCreateWithCharacters(IntPtr.Zero, &j, 1);
-			format = CFDateFormatterCreateDateFormatFromTemplate(IntPtr.Zero, template, 0, locale);
+			format = CFDateFormatterCreateDateFormatFromTemplate(IntPtr.Zero, cfTemplate, 0, locale);
 			return ToString(format);
 		}
 		finally
 		{
 			Release(format);
-			Release(template);
+			Release(cfTemplate);
 			Release(locale);
+			Release(identifier);
+		}
+	}
+
+	private static unsafe IntPtr CreateString(string value)
+	{
+		fixed (char* chars = value)
+		{
+			return CFStringCreateWithCharacters(IntPtr.Zero, chars, value.Length);
 		}
 	}
 
@@ -80,6 +89,9 @@ internal sealed partial class MacOSDeviceClockExtension : IDeviceClockExtension
 
 	[LibraryImport(CoreFoundation)]
 	private static partial IntPtr CFLocaleCopyCurrent();
+
+	[LibraryImport(CoreFoundation)]
+	private static partial IntPtr CFLocaleCreate(IntPtr allocator, IntPtr localeIdentifier);
 
 	[LibraryImport(CoreFoundation)]
 	private static partial IntPtr CFLocaleGetIdentifier(IntPtr locale);

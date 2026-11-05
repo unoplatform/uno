@@ -111,7 +111,8 @@ public static partial class ApplicationLanguages
 		}
 	}
 
-	// Null when CurrentCulture stays: the app set it, or the runtime's pick reflects the user's format preferences.
+	// Null when CurrentCulture stays: the app set it, or the runtime's pick already reflects the user's format
+	// preferences, clock included.
 	internal static CultureInfo? GetFormatCulture(CultureInfo uiCulture, CultureInfo current, CultureInfo runtimeDefault)
 	{
 		// Until the app sets one, CurrentCulture is the runtime's read-only user default itself (InstalledUICulture),
@@ -124,11 +125,15 @@ public static partial class ApplicationLanguages
 #if __ANDROID__
 		// The runtime drops the locale's -u- extensions, which carry the Android 14 regional preferences
 		// (first day of week...), so format with the system locale itself.
-		return ManifestLanguages.Count > 0 ? CreateCulture(ManifestLanguages[0]) : null;
+		var culture = ManifestLanguages.Count > 0 ? CreateCulture(ManifestLanguages[0]) : current;
 #else
 		// No user locale (e.g. LANG unset or C on Linux): format in the app language rather than invariant.
-		return current.Name.Length == 0 && !InvariantCulture ? uiCulture : null;
+		var culture = current.Name.Length == 0 && !InvariantCulture ? uiCulture : current;
 #endif
+
+		// The runtime also leaves out the 12/24-hour setting of Android, iOS and macOS.
+		culture = DeviceClock.FitToClock(culture);
+		return ReferenceEquals(culture, current) ? null : culture;
 	}
 
 #if !__IOS__ && !__TVOS__

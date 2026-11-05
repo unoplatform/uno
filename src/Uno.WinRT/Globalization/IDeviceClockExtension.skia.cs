@@ -10,7 +10,8 @@ internal interface IDeviceClockExtension
 	string? GetLocaleTag();
 
 	/// <summary>
-	/// The device's ICU date format for its preferred hour (the "j" template), which carries its 12/24-hour setting.
+	/// The ICU date format for a template in a locale, or in the device's own locale when null. The device's own format
+	/// for the "j" template, its preferred hour, carries its 12/24-hour setting.
 	/// </summary>
-	string? GetHourFormat();
+	string? GetFormatFromTemplate(string template, string? localeTag);
 }

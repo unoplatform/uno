@@ -17,4 +17,12 @@ partial class DeviceClock
 	// The "j" template asks for the locale's own hour, which the 24-Hour Time switch overrides.
 	static partial void ReadPlatform24Hour(ref bool? is24Hour)
 		=> is24Hour = IsTwentyFourHourPattern(NSDateFormatter.GetDateFormatFromTemplate("j", 0, NSLocale.CurrentLocale));
+
+	// The locale's patterns for the clock, which the H or h of the template forces.
+	static partial void ReadPlatformTimePatterns(string localeTag, bool is24Hour, ref string? shortPattern, ref string? longPattern)
+	{
+		using var locale = new NSLocale(localeTag);
+		shortPattern = NSDateFormatter.GetDateFormatFromTemplate(is24Hour ? "Hmm" : "hmm", 0, locale);
+		longPattern = NSDateFormatter.GetDateFormatFromTemplate(is24Hour ? "Hmmss" : "hmmss", 0, locale);
+	}
 }
