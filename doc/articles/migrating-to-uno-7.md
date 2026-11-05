@@ -920,6 +920,11 @@ re-baseline visual tests:
   removed. A popup without a `Child` no longer appears in `VisualTreeHelper.GetOpenPopupsForXamlRoot`. Opening a popup that can't
   find its `XamlRoot` throws, as in WinUI, including `IsOpen="True"` on a popup parsed before it is in the tree. Light-dismiss
   popups now close when the window deactivates or its size changes rather than on any activation change or `XamlRoot.Changed`.
+- **Popups and flyouts:** on Windows desktop, popups can now leave the window, as in WinUI. `MenuFlyout`, `ComboBox`,
+  `CommandBarFlyout`, `AutoSuggestBox`, `ToolTip`, and any `Popup` or `Flyout` with `ShouldConstrainToRootBounds="False"`
+  get a window of their own and are placed against the monitor rather than against your window. Set
+  `ShouldConstrainToRootBounds="True"` on a popup or flyout to keep it inside the window. X11, macOS, WebAssembly, Android
+  and iOS keep every popup inside the window for now.
 - **Popups and flyouts:** placement is a port of WinUI's. A `Popup.Child` is measured with
   infinite constraints and arranged at the popup's offsets, and a flyout writes its placement
   into those offsets, so it now keeps a 4 px margin from its target and stays within the
