@@ -403,22 +403,28 @@ void uno_window_close(NSWindow *window)
     [window performClose:nil];
 }
 
-bool uno_windows_close_all(void)
+bool uno_windows_close_for_quit(void)
 {
 #if DEBUG
-    NSLog(@"uno_windows_close_all %lu", (unsigned long)windows.count);
+    NSLog(@"uno_windows_close_for_quit %lu", (unsigned long)windows.count);
 #endif
-    // front to back, so the order does not depend on the set and the window in front is asked first;
-    // hidden windows are not in `orderedWindows`, so they come last. A copy, since a window leaves `windows` as it closes.
-    NSMutableArray<NSWindow*> *ordered = [NSMutableArray arrayWithCapacity:windows.count];
-    for (NSWindow *window in [NSApp orderedWindows]) {
-        if ([windows containsObject:window]) {
-            [ordered addObject:window];
-        }
+    // as `performClose:`, which refuses while a sheet is attached
+    if (NSApp.modalWindow != nil) {
+        return false;
     }
-    for (NSWindow *window in windows) {
-        if (![ordered containsObject:window]) {
-            [ordered addObject:window];
+
+    // front to back, so the window in front is asked first; a copy, since a window leaves `windows` as it closes.
+    // A hidden window has no close button for the user, so it is not asked: the application's exit ends it.
+    NSMutableOrderedSet<NSWindow*> *ordered = [NSMutableOrderedSet orderedSetWithArray:NSApp.orderedWindows];
+    [ordered intersectSet:windows];
+    [ordered unionSet:windows];
+    [ordered filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSWindow *window, NSDictionary *bindings) {
+        return window.isVisible || window.isMiniaturized;
+    }]];
+
+    for (NSWindow *window in ordered) {
+        if (window.attachedSheet != nil) {
+            return false;
         }
     }
 
