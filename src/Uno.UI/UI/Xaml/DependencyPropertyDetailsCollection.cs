@@ -16,6 +16,7 @@ namespace Microsoft.UI.Xaml
 		private readonly ManagedWeakReference _ownerReference;
 		private object? _hardOwnerReference;
 		private readonly DependencyProperty _dataContextProperty;
+		private readonly bool _hasWeakInheritedDataContext;
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
 
 		private readonly static ArrayPool<short> _offsetsPool = ArrayPool<short>.Shared;
@@ -31,13 +32,17 @@ namespace Microsoft.UI.Xaml
 		private object? Owner => _hardOwnerReference ?? _ownerReference.Target;
 
 		/// <summary>
-		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
+		/// Creates an instance for the DependencyObject that <paramref name="ownerReference"/> points to.
 		/// </summary>
-		public DependencyPropertyDetailsCollection(ManagedWeakReference ownerReference, DependencyProperty dataContextProperty)
+		/// <param name="ownerReference">A weak reference to the owner of the properties.</param>
+		/// <param name="dataContextProperty">The owner's DataContext property.</param>
+		/// <param name="hasWeakInheritedDataContext">Hold the DataContext set at Inheritance precedence without owning it.</param>
+		public DependencyPropertyDetailsCollection(ManagedWeakReference ownerReference, DependencyProperty dataContextProperty, bool hasWeakInheritedDataContext)
 		{
 			_ownerReference = ownerReference;
 
 			_dataContextProperty = dataContextProperty;
+			_hasWeakInheritedDataContext = hasWeakInheritedDataContext;
 
 			_entries = _empty;
 		}
@@ -187,7 +192,9 @@ namespace Microsoft.UI.Xaml
 
 				if (propertyEntry == null)
 				{
-					propertyEntry = new DependencyPropertyDetails(property, property == _dataContextProperty);
+					var isDataContext = property == _dataContextProperty;
+					var hasWeakInheritedStorage = isDataContext && _hasWeakInheritedDataContext;
+					propertyEntry = new DependencyPropertyDetails(property, isDataContext, hasWeakInheritedStorage);
 				}
 
 				return propertyEntry;
