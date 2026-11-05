@@ -365,6 +365,12 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
+			/// <summary>
+			/// Re-reads the value of this indexer item after the collection it indexes into has changed.
+			/// </summary>
+			internal void OnCollectionChanged()
+				=> OnPropertyChanged(DependencyProperty.UnsetValue, GetSourceValue(), shouldRaiseValueChanged: true);
+
 			private void RaiseValueChanged(object? newValue)
 			{
 				Path?.OnValueChanged(newValue);

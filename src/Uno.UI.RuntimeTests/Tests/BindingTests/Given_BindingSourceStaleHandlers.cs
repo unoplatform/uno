@@ -104,6 +104,120 @@ public class Given_BindingSourceStaleHandlers
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Indexer_Path_Stale_Handlers_Removed_Then_Live_Binding_Still_Updates()
+	{
+		var vm = new CountingViewModel();
+		var baseline = vm.Items.CollectionChangedCount;
+
+		var live = new TextBlock { DataContext = vm };
+		live.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(IndexerPath) });
+		Assert.AreEqual("first", live.Text);
+
+		var refs = await CreateBoundAsync(vm, IndexerPath, loaded: false);
+		await CollectAsync(refs, () => vm.Items.CollectionChangedCount == baseline + 1);
+
+		vm.Items[0] = "second";
+		Assert.AreEqual("second", live.Text);
+
+		vm.Items.Insert(0, "third");
+		Assert.AreEqual("third", live.Text, "The live binding stopped following its collection.");
+		Assert.AreEqual(baseline + 1, vm.Items.CollectionChangedCount, "Only the live binding should still be subscribed.");
+		GC.KeepAlive(live);
+	}
+
+	// The indexer re-reads its value on CollectionChanged, including when the index goes out of range.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Indexer_Path_Collection_Emptied_Then_Refilled_Then_Live_Binding_Follows()
+	{
+		var vm = new CountingViewModel();
+		var live = new TextBlock { DataContext = vm };
+		live.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(IndexerPath) });
+		Assert.AreEqual("first", live.Text);
+
+		vm.Items.Clear(); // Reset, index now out of range
+		vm.Items.Add("second");
+		Assert.AreEqual("second", live.Text);
+
+		vm.Items.RemoveAt(0); // Remove, index out of range again
+		vm.Items.Add("third");
+		Assert.AreEqual("third", live.Text);
+
+		await WindowHelper.WaitForIdle();
+		GC.KeepAlive(live);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Indexer_Path_Collection_Replaced_Then_Live_Binding_Follows_New_Collection()
+	{
+		var vm = new CountingViewModel();
+		var original = vm.Items;
+		var live = new TextBlock { DataContext = vm };
+		live.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(IndexerPath) });
+
+		vm.Items = new CountingCollection { "replaced" };
+		Assert.AreEqual("replaced", live.Text);
+
+		vm.Items[0] = "changed";
+		Assert.AreEqual("changed", live.Text, "The binding doesn't follow the new collection.");
+
+		original[0] = "stale";
+		Assert.AreEqual("changed", live.Text, "The binding still follows the replaced collection.");
+
+		await WindowHelper.WaitForIdle();
+		GC.KeepAlive(live);
+	}
+
+	// The indexer's new value must reach the rest of the path, not only a target bound to the indexer itself.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Longer_Indexer_Path_Collection_Changes_Then_Live_Binding_Follows()
+	{
+		var vm = new CountingViewModel();
+		var live = new TextBlock { DataContext = vm };
+		live.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(IndexerPath + ".Length") });
+		Assert.AreEqual("5", live.Text); // "first"
+
+		vm.Items[0] = "abc";
+		Assert.AreEqual("3", live.Text);
+
+		vm.Items.Insert(0, "ab");
+		Assert.AreEqual("2", live.Text);
+
+		await WindowHelper.WaitForIdle();
+		GC.KeepAlive(live);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_XBind_Indexer_Path_Collection_Changes_Then_Follows()
+	{
+		var vm = new CountingViewModel();
+		var control = new XBindIndexerControl(vm);
+		try
+		{
+			WindowHelper.WindowContent = control;
+			await WindowHelper.WaitForLoaded(control);
+			Assert.AreEqual("first", control.ItemText.Text);
+			Assert.AreEqual("5", control.LengthText.Text);
+
+			vm.Items[0] = "abc";
+			Assert.AreEqual("abc", control.ItemText.Text);
+			Assert.AreEqual("3", control.LengthText.Text);
+
+			vm.Items.Insert(0, "ab");
+			Assert.AreEqual("ab", control.ItemText.Text);
+			Assert.AreEqual("2", control.LengthText.Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Indexer_Path_Binding_Cleared_Then_CollectionChanged_Handler_Removed()
 	{
 		var vm = new CountingViewModel();
