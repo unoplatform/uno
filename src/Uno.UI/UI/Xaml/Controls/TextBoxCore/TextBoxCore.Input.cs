@@ -599,7 +599,14 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 		if (focusState != FocusState.Unfocused)
 		{
-			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			// Like TextBoxBase.cpp OnGotFocus: focus coming back from a text flyout isn't a new focus session. Only the
+			// context flyout hides the thumbs (below), so any still showing came through a transient selection flyout.
+			if (!_forceFocusedVisualState
+				|| CaretMode is not (CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing))
+			{
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			}
+
 			RequestPlatformTextInput(focusState);
 			UpdateCanPasteClipboardContent();
 			Clipboard.ContentChanged += OnClipboardContentChanged;
