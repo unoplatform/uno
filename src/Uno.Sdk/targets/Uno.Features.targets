@@ -53,6 +53,18 @@
 				 Text="The Prism Uno Feature is no longer supported, and the Uno.Sdk no longer references Prism. Remove it from UnoFeatures and add a PackageReference to Prism.DryIoc.Uno.WinUI (in an app) or Prism.Uno.WinUI (in a library), with a Prism version built for Uno Platform 7.0. (See https://aka.platform.uno/UNOB0035)" />
 	</Target>
 
+	<!-- The MauiEmbedding feature used to be the native embedding through Uno.Extensions (now MauiNativeEmbedding). -->
+	<Target Name="_UnoWarnMauiEmbeddingRenamed"
+			BeforeTargets="CoreCompile"
+			Condition="'$(DesignTimeBuild)' != 'true' and $(UnoFeatures.Contains(';mauiembedding;')) and !$(UnoFeatures.Contains(';mauinativeembedding;'))">
+		<ItemGroup>
+			<_UnoNativeMauiReference Include="@(PackageReference)" Condition="$([System.String]::Copy('%(Identity)').StartsWith('Uno.Extensions.Maui'))" />
+		</ItemGroup>
+		<Warning Condition="'@(_UnoNativeMauiReference)' != ''" Code="UNOB0036"
+				 HelpLink="https://aka.platform.uno/UNOB0036"
+				 Text="The MauiEmbedding Uno Feature now selects Uno.Maui.Embedding, and this project references Uno.Extensions.Maui packages. If it relied on the native embedding of Uno.Extensions, replace MauiEmbedding with MauiNativeEmbedding in UnoFeatures." />
+	</Target>
+
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauinativeembedding;'))">
 		<UseMaui>true</UseMaui>
 	</PropertyGroup>
@@ -70,7 +82,7 @@
 		  project that is not a Windows one, and its assemblies clash with Uno's): PrunePackageReference with a version above any real one. A net*-windows head uses the real Windows App SDK.
 	-->
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';retarget;'))">
-		<AssetTargetFallback>$(AssetTargetFallback);net10.0-windows10.0.19041.0;net10.0-windows10.0.19041;net10.0-windows;net9.0-windows10.0.19041.0;net9.0-windows10.0.19041;net8.0-windows10.0.19041.0;net8.0-windows10.0.19041;net8.0-windows10.0.17763.0;net7.0-windows10.0.19041.0;net6.0-windows10.0.19041.0</AssetTargetFallback>
+		<AssetTargetFallback>$(AssetTargetFallback);net11.0-windows10.0.19041.0;net11.0-windows10.0.19041;net11.0-windows;net10.0-windows10.0.19041.0;net10.0-windows10.0.19041;net10.0-windows;net9.0-windows10.0.19041.0;net9.0-windows10.0.19041;net8.0-windows10.0.19041.0;net8.0-windows10.0.19041;net8.0-windows10.0.17763.0;net7.0-windows10.0.19041.0;net6.0-windows10.0.19041.0</AssetTargetFallback>
 	</PropertyGroup>
 	<ItemGroup Condition="$(UnoFeatures.Contains(';retarget;')) And !$(TargetFramework.Contains('-windows'))">
 		<PrunePackageReference Include="Microsoft.WindowsAppSDK" Version="99.0.0" />
@@ -90,10 +102,10 @@
 
 	<!--
 		MauiEmbedding: MAUI controls and libraries run on Uno through Uno.Maui.Embedding / Uno.Maui.Handlers (on top of Retarget, which it implies).
-		- MAUI itself must be the version the rewrite rules are written for, not the one of the mauinativeembedding feature (override with MauiVersion).
+		- MAUI itself must be the version the rewrite rules are written for, not the one of the mauinativeembedding feature (override with MauiVersion). Not applied when mauinativeembedding is also listed.
 		- UseMaui stays off: the project is an Uno project, not a MAUI one (the package turns off MAUI's global usings and default XAML items by itself).
 	-->
-	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;')) And !$(UnoFeatures.Contains(';mauinativeembedding;'))">
 		<MauiVersion Condition="'$(MauiVersion)' == ''">10.0.101</MauiVersion>
 	</PropertyGroup>
 
