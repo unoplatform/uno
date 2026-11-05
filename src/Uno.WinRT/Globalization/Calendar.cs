@@ -69,7 +69,7 @@ namespace Windows.Globalization
 
 		// Like Windows, decide from the culture's time format ('h' is a 12-hour clock, 'H' a 24-hour one),
 		// not from its formatted output, whose AM/PM designator varies by culture ("p.m.", "오후", ...).
-		private static string GetCultureClock(CultureInfo culture)
+		internal static string GetCultureClock(CultureInfo culture)
 		{
 			var format = culture.DateTimeFormat;
 			var hourSpecifier = FindHourSpecifier(format.LongTimePattern) ?? FindHourSpecifier(format.ShortTimePattern);

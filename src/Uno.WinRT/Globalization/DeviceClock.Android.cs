@@ -17,6 +17,15 @@ partial class DeviceClock
 	static partial void ReadPlatform24Hour(ref bool? is24Hour)
 		=> is24Hour = DateFormat.Is24HourFormat(GetContext());
 
+	// The locale's patterns for the clock: the short one with the skeletons of Android's own DateFormat.getTimeFormat,
+	// the long one with ICU's medium time skeleton.
+	static partial void ReadPlatformTimePatterns(string localeTag, bool is24Hour, ref string? shortPattern, ref string? longPattern)
+	{
+		using var locale = Java.Util.Locale.ForLanguageTag(localeTag);
+		shortPattern = DateFormat.GetBestDateTimePattern(locale, is24Hour ? "Hm" : "hm");
+		longPattern = DateFormat.GetBestDateTimePattern(locale, is24Hour ? "Hmmss" : "hmmss");
+	}
+
 	// Below API 33, AppCompat applies an app language to activities only.
 	private static Context GetContext()
 		=> ContextHelper.TryGetCurrent(out var context) && context is not null ? context : ContextHelper.ApplicationContext;
