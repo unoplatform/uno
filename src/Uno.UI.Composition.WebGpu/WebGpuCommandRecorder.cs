@@ -86,11 +86,13 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		_m.M44 += dx * _m.M14 + dy * _m.M24;
 	}
 
+	// Exact on purpose: a near miss takes the full multiply, while a tolerance would drop a small scale or skew.
 	private static bool IsTranslation2D(in Matrix4x4 m)
 		=> m.M11 == 1 && m.M12 == 0 && m.M13 == 0 && m.M14 == 0
 		&& m.M21 == 0 && m.M22 == 1 && m.M23 == 0 && m.M24 == 0
 		&& m.M31 == 0 && m.M32 == 0 && m.M33 == 1 && m.M34 == 0
 		&& m.M43 == 0 && m.M44 == 1;
+
 	public void Scale(float sx, float sy) => _m = Matrix4x4.CreateScale(sx, sy, 1) * _m;
 	// Returns the PRE-push depth, matching SKCanvas.Save(): RestoreToCount(count) pops entries while Count > count,
 	// so it must be handed the depth to restore *to* (before this save). Returning the post-push count made
