@@ -59,7 +59,17 @@ internal partial class InputManager : IInputInjectorTarget
 
 	//TODO Uno: Set along with user input - this needs to be adjusted soon
 	// InputDeviceCache::Init: start with a good default for Xbox, will re-establish this when first user input comes in
-	internal InputDeviceType LastInputDeviceType { get; set; } = XboxUtility.IsOnXbox() ? InputDeviceType.GamepadOrRemote : InputDeviceType.None;
+	internal InputDeviceType LastInputDeviceType
+	{
+		get => _lastInputDeviceType;
+		set
+		{
+			_lastInputDeviceType = value;
+			m_uiaFocusSinceLastInput = false;
+		}
+	}
+
+	private InputDeviceType _lastInputDeviceType = XboxUtility.IsOnXbox() ? InputDeviceType.GamepadOrRemote : InputDeviceType.None;
 
 	internal FocusInputDeviceKind LastFocusInputDeviceKind =>
 		LastInputDeviceType switch

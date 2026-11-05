@@ -48,7 +48,12 @@ partial class InputManager
 
 	#endregion
 
-	internal bool GetWasUIAFocusSetSinceLastInput() => false; // TODO Uno: Not implemented yet.
+	// MUX Reference InputDeviceCache.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+	private bool m_uiaFocusSinceLastInput;
+
+	internal void OnSetFocusFromUIA() => m_uiaFocusSinceLastInput = true;
+
+	internal bool GetWasUIAFocusSetSinceLastInput() => m_uiaFocusSinceLastInput;
 
 	internal partial class PointerManager
 	{

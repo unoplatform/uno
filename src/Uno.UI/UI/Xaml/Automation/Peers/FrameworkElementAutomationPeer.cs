@@ -375,6 +375,8 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	{
 		if (Owner is Control control)
 		{
+			Uno.UI.Xaml.Core.VisualTree.GetContentRootForElement(control)?.InputManager.OnSetFocusFromUIA();
+
 			control.Focus(FocusState.Programmatic);
 		}
 	}
