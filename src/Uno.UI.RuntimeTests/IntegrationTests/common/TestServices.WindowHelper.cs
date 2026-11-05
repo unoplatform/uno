@@ -172,6 +172,8 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForIdle()
 			{
+				await WaitForPendingWindowSize();
+
 				var start = Stopwatch.GetTimestamp();
 
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
@@ -460,6 +462,25 @@ namespace Private.Infrastructure
 			internal static void VerifyTestCleanup() { }
 
 			private static global::Windows.Graphics.SizeInt32? _sizeBeforeOverride;
+			private static Size? _pendingWindowSize;
+
+			// On X11 a resize is a request to the window manager, which answers when it gets to it.
+			private static async Task WaitForPendingWindowSize()
+			{
+				if (_pendingWindowSize is not { } size || CurrentTestWindow?.Content?.XamlRoot is not { } xamlRoot)
+				{
+					return;
+				}
+
+				_pendingWindowSize = null;
+
+				var start = Stopwatch.GetTimestamp();
+				while ((Math.Abs(xamlRoot.Size.Width - size.Width) > 1 || Math.Abs(xamlRoot.Size.Height - size.Height) > 1)
+					&& Stopwatch.GetElapsedTime(start).TotalSeconds < 3)
+				{
+					await Task.Delay(10);
+				}
+			}
 
 			/// <summary>
 			/// Resizes the client area of the window, for the tests that own the window: the size of an embedded
@@ -477,6 +498,7 @@ namespace Private.Infrastructure
 				}
 
 				_sizeBeforeOverride ??= appWindow.Size;
+				_pendingWindowSize = size;
 
 				var scale = xamlRoot.RasterizationScale;
 				appWindow.Resize(new global::Windows.Graphics.SizeInt32(
@@ -490,6 +512,7 @@ namespace Private.Infrastructure
 				if (_sizeBeforeOverride is { } size)
 				{
 					_sizeBeforeOverride = null;
+					_pendingWindowSize = null;
 					CurrentTestWindow?.AppWindow?.Resize(size);
 				}
 			}

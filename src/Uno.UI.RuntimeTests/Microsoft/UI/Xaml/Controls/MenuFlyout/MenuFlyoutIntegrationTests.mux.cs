@@ -2202,14 +2202,14 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Windowed popups: the X11 and macOS hosts come later.
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task ValidatePopupWindowedPosition()
 	{
 		await ValidatePopupWindowedPosition(true /* expectWindowedPopup */);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32)] // Upstream: TestPass:ExcludeOn Desktop, it tests popup positions within a window, which doesn't apply with windowed popups.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: TestPass:ExcludeOn Desktop, it tests popup positions within a window, which doesn't apply with windowed popups.
 	public async Task ValidatePopupWindowedPositionInSimulatedHolographic()
 	{
 		// TODO Uno: there is no HolographicOverride in the test services.
@@ -2217,7 +2217,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Windowed popups: the X11 and macOS hosts come later.
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task ValidateWindowedPositionNearMonitorEdge()
 	{
 		try
@@ -2350,7 +2350,7 @@ public class MenuFlyoutIntegrationTests
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32)] // Upstream: TestPass:ExcludeOn Desktop, windowed popups make this test moot.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: TestPass:ExcludeOn Desktop, windowed popups make this test moot.
 	public async Task ValidateSubMenuPositionWithinWindow()
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
@@ -5723,7 +5723,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Windowed popups: the X11 and macOS hosts come later.
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task ValidatePopupWindowedScrollingWithMouse()
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
@@ -7086,7 +7086,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Windowed popups: the X11 and macOS hosts come later.
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task ValidateShowAtMonitorEdge()
 	{
 		await ValidateShowAtMonitorEdge(1.0f /*scaleFactor*/);

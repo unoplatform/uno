@@ -157,7 +157,7 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Upstream: windowed popups are a desktop concept
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
 	public async Task WindowedPopupHasForcedBackground()
 	{
 		Popup popup = null;
@@ -439,7 +439,7 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Upstream: windowed popups are a desktop concept
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
 	public async Task WindowedPopupsMoveWithAncestorChain()
 	{
 		Canvas popupAncestor = null;
@@ -635,7 +635,7 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Upstream: windowed popups are a desktop concept
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
 	public async Task InlinePopupInWindowedPopup()
 	{
 		Popup windowedPopup = null;
@@ -880,7 +880,7 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Upstream: windowed popups are a desktop concept
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
 	public async Task WindowedPopupTabOrder()
 	{
 		await PopupTabOrder(true);
@@ -1223,7 +1223,7 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Upstream: windowed popups are a desktop concept
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
 	public async Task WindowedPopupAncestorScale()
 	{
 		Canvas root = null;

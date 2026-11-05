@@ -23,11 +23,11 @@ using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives;
 
-// Windows have to be real, and only the Win32 host has windowed popups for now.
+// Windows have to be real: the desktop hosts have windowed popups.
 [TestClass]
 [RunsOnUIThread]
 [RequiresFullWindow]
-[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 public class Given_Popup_Windowed
 {
 	private const int ContentSize = 200;

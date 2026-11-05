@@ -681,7 +681,7 @@ public class PopupIntegrationTests
 
 	// Verify windowed popup's open and close
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupOpenAndClose()
 	{
 		await WindowedPopupOpenAndCloseHelper();
@@ -696,7 +696,7 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupParentCanvasCompNode()
 	{
 		Popup popup = null;
@@ -1039,28 +1039,28 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupHWNDBounds1UR()
 	{
 		await WindowedPopupHWNDBounds1Helper(false, false);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupHWNDBounds1PR()
 	{
 		await WindowedPopupHWNDBounds1Helper(true, false);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupHWNDBounds1UC()
 	{
 		await WindowedPopupHWNDBounds1Helper(false, true);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupHWNDBounds1PC()
 	{
 		await WindowedPopupHWNDBounds1Helper(true, true);
@@ -1148,28 +1148,28 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupHWNDBounds2UR()
 	{
 		await WindowedPopupHWNDBounds2Helper(false, false);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupHWNDBounds2PR()
 	{
 		await WindowedPopupHWNDBounds2Helper(true, false);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupHWNDBounds2UC()
 	{
 		await WindowedPopupHWNDBounds2Helper(false, true);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupHWNDBounds2PC()
 	{
 		await WindowedPopupHWNDBounds2Helper(true, true);
@@ -1285,7 +1285,7 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupHWNDBoundsNested()
 	{
 		Popup popup = null;
@@ -1359,7 +1359,7 @@ public class PopupIntegrationTests
 
 	//  Verify Input in windowed popup's content
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupInput()
 	{
 		// Create windowed popup and open it
@@ -1510,14 +1510,14 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupPointerInputCoords()
 	{
 		await WindowedPopupPointerInputCoordsHelper(false/*isRTL*/);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupPointerInputCoordsRTL()
 	{
 		await WindowedPopupPointerInputCoordsHelper(true/*isRTL*/);
@@ -1660,7 +1660,7 @@ public class PopupIntegrationTests
 
 	// Verify windowed popup's UIA tree
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupUIATree()
 	{
 		// Create windowed popup and open it
@@ -1798,14 +1798,14 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupRTL()
 	{
 		await PopupRTLHelper(true);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Windowed popups: the X11 and macOS hosts come later.
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task PopupRTL()
 	{
 		await PopupRTLHelper(false);
@@ -1879,7 +1879,7 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopupMoveSize()
 	{
 		Popup popup = null;
@@ -1931,7 +1931,7 @@ public class PopupIntegrationTests
 
 	// Upstream: Ignore (TODO: Move windowed popups to lifted input).
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task WindowedPopup3DRequirements()
 	{
 		StackPanel rootPanel = null;
