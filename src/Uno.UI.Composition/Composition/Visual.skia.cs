@@ -212,7 +212,38 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Nothing this visual or its subtree paints may reach the frame. Kept in one place so the paint
 	/// walks below cannot drift apart on which suppression reasons they honor.
 	/// </summary>
-	private bool IsRenderSuppressed => Opacity == 0f || !IsVisible || IsArrangePending;
+	private bool IsRenderSuppressed => Opacity == 0f || !IsVisible || IsArrangePending || IsTransformParentChainHidden;
+
+	// An open popup's child is drawn under the popup root, but it renders as part of the popup: MUX Reference Popup.cpp.
+	private bool IsTransformParentChainHidden
+	{
+		get
+		{
+			for (var visual = _transformParent; visual is not null; visual = visual._transformParent ?? visual.Parent)
+			{
+				if (visual.Opacity == 0f || !visual.IsVisible)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	private float TransformParentChainOpacity
+	{
+		get
+		{
+			var opacity = 1f;
+			for (var visual = _transformParent; visual is not null; visual = visual._transformParent ?? visual.Parent)
+			{
+				opacity *= visual.Opacity;
+			}
+
+			return opacity;
+		}
+	}
 
 	/// <summary>
 	/// When true, this visual guarantees that everything <em>it itself</em> paints stays inside
@@ -1373,6 +1404,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private void CreateLocalSession(in PaintingSession parentSession, out PaintingSession session)
 	{
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
+
+		if (_transformParent is not null)
+		{
+			opacity *= TransformParentChainOpacity;
+		}
 
 		// MUX Reference hwwalk.cpp, ShouldOverrideRenderOpacity.
 		if (IsHighContrastOpacityOverrideActive && opacity > 0 && opacity < 1.0f)
