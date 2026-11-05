@@ -27,6 +27,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls;
 // Not ported: VerifyUIAFocusEntersFlyoutWithContentControl (needs UIA focus-change events).
 
 [TestClass]
+[RequiresFullWindow] // The upstream tests expect window-absolute coordinates.
 public class FlyoutAutomationIntegrationTests
 {
 	private const string s_automationName = "TestFlyoutName";

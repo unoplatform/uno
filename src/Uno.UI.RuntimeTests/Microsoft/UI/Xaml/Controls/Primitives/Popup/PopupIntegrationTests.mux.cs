@@ -38,6 +38,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls.Primitives;
 // - Upstream Events are auto-reset; Uno's Event is not, so repeated waits on the same event call Reset().
 // - SetWindowSizeOverride is a no-op in the Uno test infrastructure, so the 400x400 window is not enforced.
 [TestClass]
+[RequiresFullWindow] // The upstream tests expect window-absolute coordinates.
 public class PopupIntegrationTests
 {
 	[TestCleanup]

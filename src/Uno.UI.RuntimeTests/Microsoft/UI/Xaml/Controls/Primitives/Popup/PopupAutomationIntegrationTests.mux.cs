@@ -31,6 +31,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls.Primitives;
 //   VerifyParentlessPopupAutomationTree_FrameAP, VerifyOpenPopupPreservesMainTree (need a window-level UIA root that
 //   parents the open popups), VerifyPopupButtonAutomationPropertyChangedEvent (needs mock UIA clients listening).
 [TestClass]
+[RequiresFullWindow] // The upstream tests expect window-absolute coordinates.
 public class PopupAutomationIntegrationTests
 {
 	private const string s_automationName = "TestPopupName";

@@ -34,6 +34,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls;
 // - Windowed state is asserted through the internal test hook Popup.IsWindowed.
 
 [TestClass]
+[RequiresFullWindow] // The upstream tests expect window-absolute coordinates.
 public class FlyoutIntegrationTests
 {
 	[TestCleanup]

@@ -451,7 +451,40 @@ namespace Private.Infrastructure
 			internal static void ShutdownXaml() { }
 			internal static void VerifyTestCleanup() { }
 
-			internal static void SetWindowSizeOverride(object p) { }
+			private static global::Windows.Graphics.SizeInt32? _sizeBeforeOverride;
+
+			/// <summary>
+			/// Resizes the client area of the window, for the tests that own the window: the size of an embedded
+			/// test root is up to the test runner. The harness restores the window after a full-window test.
+			/// </summary>
+			internal static void SetWindowSizeOverride(Size size)
+			{
+#if HAS_UNO
+				if (!UseActualWindowRoot
+					|| !(OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+					|| CurrentTestWindow?.AppWindow is not { } appWindow
+					|| CurrentTestWindow.Content?.XamlRoot is not { } xamlRoot)
+				{
+					return;
+				}
+
+				_sizeBeforeOverride ??= appWindow.Size;
+
+				var scale = xamlRoot.RasterizationScale;
+				appWindow.Resize(new global::Windows.Graphics.SizeInt32(
+					(int)Math.Round(size.Width * scale) + appWindow.Size.Width - appWindow.ClientSize.Width,
+					(int)Math.Round(size.Height * scale) + appWindow.Size.Height - appWindow.ClientSize.Height));
+#endif
+			}
+
+			internal static void ResetWindowSizeOverride()
+			{
+				if (_sizeBeforeOverride is { } size)
+				{
+					_sizeBeforeOverride = null;
+					CurrentTestWindow?.AppWindow?.Resize(size);
+				}
+			}
 
 			private static readonly TimeSpan FiveMinutes = TimeSpan.FromMinutes(5);
 

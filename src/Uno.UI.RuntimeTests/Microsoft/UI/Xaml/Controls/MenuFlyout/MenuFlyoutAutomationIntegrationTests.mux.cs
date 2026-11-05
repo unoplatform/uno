@@ -29,6 +29,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls;
 // The windowed popup synchronization (TEMP_WaitForOpenWindowedPopup) is a UIA client concern and is dropped.
 
 [TestClass]
+[RequiresFullWindow] // The upstream tests expect window-absolute coordinates.
 public class MenuFlyoutAutomationIntegrationTests
 {
 	private const string s_automationName = "TestMenuFlyoutName";

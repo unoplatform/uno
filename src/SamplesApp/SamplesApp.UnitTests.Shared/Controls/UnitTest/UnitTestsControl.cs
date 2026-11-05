@@ -923,6 +923,7 @@ namespace Uno.UI.Samples.Tests
 											ApplicationView.GetForCurrentView().ExitFullScreenMode();
 #endif
 											Private.Infrastructure.TestServices.WindowHelper.RestoreOriginalWindowContent();
+											Private.Infrastructure.TestServices.WindowHelper.ResetWindowSizeOverride();
 											Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = false;
 										});
 									});

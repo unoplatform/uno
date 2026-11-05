@@ -23,6 +23,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls;
 // Not yet supported tests: ValidateUIElementTree
 
 [TestClass]
+[RequiresFullWindow] // The upstream tests expect window-absolute coordinates.
 public class MenuFlyoutIntegrationTests
 {
 	private string m_menuCommandParam1;

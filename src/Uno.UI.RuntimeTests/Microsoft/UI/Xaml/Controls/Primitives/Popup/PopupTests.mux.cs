@@ -39,6 +39,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls.Primitives;
 //   rounded corner clip, surfaces of RasterizationScale) cannot be observed from the public tree. They are
 //   noted in comments where the test still ports the rest of the scenario.
 [TestClass]
+[RequiresFullWindow] // The upstream tests expect window-absolute coordinates.
 public class PopupTests
 {
 	private const int E_UNEXPECTED = unchecked((int)0x8000FFFF);
