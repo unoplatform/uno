@@ -42,6 +42,19 @@ The Uno Platform App MCP may fail to start in Claude/Codex/Copilot CLI when it i
 
 To fix this issue, change directories to a folder that contains the `.sln` or `.slnx` file of your project — or, for solution-less projects, the folder containing the `global.json` file that declares your `Uno.Sdk` version.
 
+## A cloud environment setup script fails with exit code 100
+
+A [setup script](https://code.claude.com/docs/en/cloud-environments#setup-scripts) that installs the .NET SDK can fail before it reaches the install:
+
+```text
+E: Failed to fetch https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu/dists/noble/InRelease  403  Forbidden
+E: The repository 'https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble InRelease' is no longer signed.
+```
+
+The base image carries third-party PPAs served from `ppa.launchpadcontent.net`, which is not on the default network allowlist. `apt-get update` exits 100 when any repository fails to refresh, and a setup script that exits non-zero stops the session from starting, so the failure happens before the .NET SDK install runs.
+
+Disable those repository files before updating, and make the update non-fatal. See [Using Claude Code in a cloud environment](xref:Uno.GetStarted.AI.Claude) for the full script.
+
 ## Diagnosing Dev Server issues
 
 > [!TIP]
