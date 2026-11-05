@@ -117,6 +117,8 @@
         href: xref:Uno.Workshop.Counter.CSharp.MVUX
       - name: C# Markup + MVVM
         href: xref:Uno.Workshop.Counter.CSharp.MVVM
+      - name: Reactor
+        href: xref:Uno.Workshop.Counter.Reactor
       - name: Hot Design
         href: xref:Uno.HotDesign.GetStarted.CounterTutorial
     - name: Simple Calc
@@ -201,6 +203,8 @@
         href: xref:Uno.Features.Uno.Sdk
       - name: UI Markup
         href: xref:uno.development.using.markup
+      - name: Using Reactor
+        href: xref:Uno.Features.Reactor
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
       - name: Implicit XAML Namespaces
