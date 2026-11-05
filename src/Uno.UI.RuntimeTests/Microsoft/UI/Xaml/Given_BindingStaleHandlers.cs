@@ -109,6 +109,42 @@ public class Given_BindingStaleHandlers
 		Assert.AreEqual("", element.Text);
 	}
 
+	// The common case: a page and its view model become unreachable together. The source must not wait for the binding's
+	// cleanup to be finalized and dispatched before it can be collected.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Element_And_Source_Dropped_Together_Then_Source_Collected_Without_Dispatcher()
+	{
+		await WindowHelper.WaitForIdle();
+		var (elementRef, sourceRef) = CreateBoundToOwnSource();
+
+		// Don't yield to the dispatcher here: the source must not depend on queued work to be collected.
+		for (var i = 0; i < 10 && sourceRef.IsAlive; i++)
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+		}
+
+		if (elementRef.IsAlive)
+		{
+			Assert.Inconclusive("The element was not collected without yielding on this platform.");
+		}
+
+		Assert.IsFalse(sourceRef.IsAlive, "The source is kept alive by the cleanup of a binding that died with it.");
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static (WeakReference element, WeakReference source) CreateBoundToOwnSource()
+	{
+		var vm = new CountingViewModel { Name = "a" };
+		var element = new TextBlock { DataContext = vm };
+		element.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(nameof(CountingViewModel.Name)) });
+		Assert.AreEqual("a", element.Text);
+
+		// Tracks resurrection: a short weak reference is cleared even while finalization still keeps the source alive.
+		return (new WeakReference(element), new WeakReference(vm, trackResurrection: true));
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static async Task<List<WeakReference>> CreateBoundAsync(CountingViewModel vm, bool loaded)
 	{
