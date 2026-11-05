@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 #nullable enable
 
@@ -49,6 +49,8 @@ namespace Microsoft.UI.Xaml.Controls
 		protected double m_minimalHeight;
 
 		AppBarMode m_Mode;
+
+		internal AppBarMode GetMode() => m_Mode;
 
 		// Owner, if this AppBar is owned by a Page using TopAppBar/BottomAppBar.
 		WeakReference<Page>? m_wpOwner;

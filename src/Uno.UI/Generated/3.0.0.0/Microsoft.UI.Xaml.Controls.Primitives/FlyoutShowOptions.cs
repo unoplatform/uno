@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 #endif
 public partial class FlyoutShowOptions
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Windows.Foundation.Rect? ExclusionRect
 	{

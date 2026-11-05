@@ -31,7 +31,7 @@ public partial class FlyoutBase : global::Microsoft.UI.Xaml.DependencyObject
 	// Skipping already declared property LightDismissOverlayModeProperty
 	// Skipping already declared property OverlayInputPassThroughElementProperty
 	// Skipping already declared property PlacementProperty
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static global::Microsoft.UI.Xaml.DependencyProperty ShouldConstrainToRootBoundsProperty { get; } =
 	Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -87,7 +87,7 @@ public partial class FlyoutBase : global::Microsoft.UI.Xaml.DependencyObject
 	}
 #endif
 	// Skipping already declared property InputDevicePrefersPrimaryCommands
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public bool IsConstrainedToRootBounds
 	{
@@ -101,7 +101,7 @@ public partial class FlyoutBase : global::Microsoft.UI.Xaml.DependencyObject
 	// Skipping already declared property LightDismissOverlayMode
 	// Skipping already declared property OverlayInputPassThroughElement
 	// Skipping already declared property Placement
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public bool ShouldConstrainToRootBounds
 	{

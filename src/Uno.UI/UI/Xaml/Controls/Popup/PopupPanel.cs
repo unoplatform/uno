@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,6 +34,7 @@ internal partial class PopupPanel : Panel
 
 	protected Size _lastMeasuredSize;
 
+	// MUX Reference CPopupRoot::MeasureOverride, core\core\elements\Popup.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 	protected override Size MeasureOverride(Size availableSize)
 	{
 		// Usually this check is achieved by the parent, but as this Panel
@@ -51,42 +52,20 @@ internal partial class PopupPanel : Panel
 			return availableSize;
 		}
 
-		if (!isOpen || Popup.CustomLayouter == null)
-		{
-			_lastMeasuredSize = MeasureElement(child, availableSize);
-		}
-		else
-		{
-			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
-			visibleBounds.Width = Math.Min(availableSize.Width, visibleBounds.Width);
-			visibleBounds.Height = Math.Min(availableSize.Height, visibleBounds.Height);
-
-			_lastMeasuredSize = Popup.CustomLayouter.Measure(availableSize, visibleBounds.Size);
-		}
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().LogDebug($"Measured PopupPanel #={GetHashCode()} ({(Popup.CustomLayouter == null ? "" : "**using custom layouter**")}) DC={Popup.DataContext} child={child} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} availableSize={availableSize} measured={_lastMeasuredSize}");
-		}
+		_lastMeasuredSize = MeasureElement(child, isOpen ? new Size(double.PositiveInfinity, double.PositiveInfinity) : availableSize);
 
 		// Note that we return the availableSize and not the _lastMeasuredSize. This is because this
 		// Panel always take the whole screen for the dismiss layer, but it's content will not.
 		return availableSize;
 	}
 
+	// MUX Reference CPopupRoot::ArrangeOverride, core\core\elements\Popup.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		// Note: Here finalSize is expected to be the be the size of the window
-
-		var size = _lastMeasuredSize;
-
-		// Usually this check is achieved by the parent, but as this Panel
-		// is injected at the root (it's a subView of the Window), we make sure
-		// to enforce it here.
 		var isOpen = Visibility != Visibility.Collapsed;
 		if (!isOpen)
 		{
-			size = finalSize = default;
+			finalSize = default;
 		}
 
 		var child = this.GetChildren().FirstOrDefault();
@@ -98,97 +77,42 @@ internal partial class PopupPanel : Panel
 		if (!isOpen)
 		{
 			ArrangeElement(child, default);
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} **closed** DC={Popup.DataContext} child={child} finalSize={finalSize}");
-			}
+			return finalSize;
 		}
-		else if (Popup.CustomLayouter == null)
+
+		var popup = Popup;
+		var x = popup.HorizontalOffset + popup.m_hAdjustment + popup.m_calculatedHOffset;
+		var y = popup.VerticalOffset + popup.m_vAdjustment + popup.m_calculatedVOffset;
+
+		// TODO Uno: The child is not a visual child of the popup, so the offsets are applied to the popup's location
+		// here. In WinUI the composition tree does it, and it mirrors them under a right-to-left ancestor as well.
+		var isParented = popup.GetParent() is not null;
+		var popupLocation = isParented ? popup.TransformToVisual(null).TransformPoint(default) : default;
+		var isParentedRtl = isParented && popup.FlowDirection == FlowDirection.RightToLeft;
+
+		var left = popupLocation.X + (isParentedRtl ? -x : x);
+		var top = popupLocation.Y + y;
+
+		// CUIElement::GetShouldFlipRTL: the right-to-left child of a parentless popup is not flipped in place,
+		// and the same goes for the content of a mirrored parent. The offset is the child's right edge.
+		var childSize = child.DesiredSize;
+		if (isParentedRtl || (!isParented && child is FrameworkElement { FlowDirection: FlowDirection.RightToLeft }))
 		{
-			// Gets the location of the popup (or its Anchor) in the VisualTree, so we will align Top/Left with it
-			// Note: we do not prevent overflow of the popup on any side as UWP does not!
-			//		 (And actually it also lets the view appear out of the window ...)
-			Point anchorLocation = default;
-			if (Popup.PlacementTarget is { } anchor)
-			{
-				anchorLocation = anchor.TransformToVisual(this).TransformPoint(default);
-			}
-			else
-			{
-				anchorLocation = Popup.TransformToVisual(null).TransformPoint(default);
-			}
-
-			var finalFrame = new Rect(
-				anchorLocation.X + (float)Popup.HorizontalOffset,
-				anchorLocation.Y + (float)Popup.VerticalOffset,
-				size.Width,
-				size.Height);
-
-			// TODO: For now, the layouting logic for managed DatePickerFlyout or TimePickerFlyout does not correctly work
-			// against the placement target approach.
-			var isFlyoutManagedDatePicker =
-				(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
-				;
-
-			if ((!isFlyoutManagedDatePicker
-				 || !MathHelpers.DoesRectContainRect(GetVisibleBounds(), finalFrame) // if the finalFrame spills out of the window, always use PlacementArrangeOverride
-				) && Popup.PlacementTarget is not null
-			   )
-			{
-				return PlacementArrangeOverride(Popup, finalSize);
-			}
-
-			ArrangeElement(child, finalFrame);
-
-			// Temporary workaround to avoid layout cycle on iOS. This block was added specifically for a bug on Android's
-			// MenuFlyout so, for now, we restrict to to only Android
-			// This can be re-evaluated and removed after https://github.com/unoplatform/uno/pull/18261 merges
-			var updatedFinalFrame = new Rect(
-				anchorLocation.X + (float)Popup.HorizontalOffset,
-				anchorLocation.Y + (float)Popup.VerticalOffset,
-				size.Width,
-				size.Height);
-
-			if (updatedFinalFrame != finalFrame)
-			{
-				// Workraround:
-				// The HorizontalOffset is updated to the correct value in CascadingMenuHelper.OnPresenterSizeChanged
-				// This update appears to be happening *during* ArrangeElement which was already passed wrong finalFrame.
-				// We re-arrange with the new updated finalFrame.
-				// Note: This might be a lifecycle issue, so this workaround needs to be revised in the future and deleted if possible.
-				// See MenuFlyoutSubItem_Placement sample.
-				ArrangeElement(child, updatedFinalFrame);
-			}
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} DC={Popup.DataContext} child={child} popupLocation={anchorLocation} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} finalSize={finalSize} childFrame={finalFrame}");
-			}
+			left -= childSize.Width;
 		}
-		else
+
+		ArrangeElement(child, new Rect(left, top, childSize.Width, childSize.Height));
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			// Defer to the popup owner the responsibility to place the popup (e.g. ComboBox)
-
-			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
-
-			visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
-			visibleBounds.Height = Math.Min(finalSize.Height, visibleBounds.Height);
-
-			Popup.CustomLayouter.Arrange(
-				finalSize,
-				visibleBounds,
-				_lastMeasuredSize
-			);
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} **using custom layouter** DC={Popup.DataContext} child={child} finalSize={finalSize}");
-			}
+			this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} DC={Popup.DataContext} child={child} popupLocation={popupLocation} offset={x},{y} finalSize={finalSize}");
 		}
 
 		return finalSize;
 	}
+
+	private void XamlRootChanged(object sender, XamlRootChangedEventArgs e)
+		=> InvalidateMeasure();
 
 	private protected override void OnLoaded()
 	{

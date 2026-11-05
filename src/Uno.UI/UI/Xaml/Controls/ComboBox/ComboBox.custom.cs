@@ -1,4 +1,4 @@
-﻿// This contains Uno-specific logic for ComboBox. Ideally, it will be possible to remove when we port further portions
+// This contains Uno-specific logic for ComboBox. Ideally, it will be possible to remove when we port further portions
 // of the control from WinUI
 
 #nullable enable
@@ -78,11 +78,6 @@ public partial class ComboBox : Selector
 
 		base.OnApplyTemplate();
 
-		if (_popup is Popup oldPopup)
-		{
-			oldPopup.CustomLayouter = null;
-		}
-
 		_popup = this.GetTemplateChild("Popup") as IPopup;
 		m_tpPopupPart = _popup as Popup;
 		_popupBorder = this.GetTemplateChild("PopupBorder") as Border;
@@ -110,8 +105,6 @@ public partial class ComboBox : Selector
 				popup.Closed += OnPopupClosed;
 			}
 #endif
-
-			popup.CustomLayouter = new DropDownLayouter(this, popup);
 
 			popup.IsLightDismissEnabled = true;
 
@@ -153,8 +146,17 @@ public partial class ComboBox : Selector
 		//Initialize header visibility
 		UpdateHeaderPresenterVisibility();
 
+		m_tpBackgroundPart = this.GetTemplateChild("Background") as Border;
 		m_tpElementPopupChild = m_tpPopupPart?.Child as FrameworkElement;
 		SetupElementPopupChild();
+
+		// MUX Reference ComboBox_Partial.cpp, SetupElementPopup
+		m_tpElementPopupContent = null;
+		if (m_tpElementPopupChild is Border { Child: ScrollViewer { Content: FrameworkElement popupContentAsFE } })
+		{
+			m_tpElementPopupContent = popupContentAsFE;
+			popupContentMargin = popupContentAsFE.Margin;
+		}
 
 		if (IsEditable)
 		{
@@ -557,230 +559,6 @@ public partial class ComboBox : Selector
 		if (_popup is Popup winUIPopup)
 		{
 			winUIPopup.LightDismissOverlayBackground = (Brush)e.NewValue;
-		}
-	}
-
-	private class DropDownLayouter : Popup.IDynamicPopupLayouter
-	{
-		private ManagedWeakReference _combo;
-		private ManagedWeakReference _popup;
-
-		private ComboBox? Combo => _combo.Target as ComboBox;
-		private Popup? Popup => _popup.Target as Popup;
-
-		public DropDownLayouter(ComboBox combo, Popup popup)
-		{
-			_combo = (combo as IWeakReferenceProvider).WeakReference;
-			_popup = (popup as IWeakReferenceProvider).WeakReference;
-		}
-
-		/// <inheritdoc />
-		public Size Measure(Size available, Size visibleSize)
-		{
-			var popup = Popup;
-			var combo = Combo;
-
-			if (!(popup?.Child is FrameworkElement child) || combo == null)
-			{
-				return new Size();
-			}
-
-			// Inject layouting constraints
-			// Note: Even if this is ugly (as we should never alter properties of a random child like this),
-			//		 it's how UWP behaves (but it does that only if the child is a Border, otherwise everything is messed up).
-			//		 It sets (at least) those properties :
-			//			MinWidth
-			//			MinHeight
-			//			MaxWidth
-			//			MaxHeight
-
-			if (combo.IsPopupFullscreen)
-			{
-				// In full screen mode, we want the popup to stretch horizontally, so we set MinWidth and MaxWidth to the available width.
-				// However, we don't want it to stretch vertically.
-				// We want the height to exactly show all the items, i.e, combo.ActualHeight * combo.Items.Count. However, we want to limit that by
-				// both MaxDropDownHeight and visible height (quite similar to non-fullscreen mode).
-				// This also allows the child to set MinHeight and provide a VerticalAlignment
-				var maxHeight = Math.Min(visibleSize.Height, Math.Min(combo.MaxDropDownHeight, combo.ActualHeight * combo.Items.Count));
-
-				child.MinWidth = available.Width;
-				child.MaxWidth = available.Width;
-				child.MinHeight = combo.ActualHeight;
-				child.MaxHeight = maxHeight;
-			}
-			else
-			{
-				// Set the popup child as max 9 x the height of the combo
-				// (UWP seams to actually limiting to 9 visible items ... which is not necessarily the 9 x the combo height)
-				var maxHeight = Math.Min(visibleSize.Height, Math.Min(combo.MaxDropDownHeight, combo.ActualHeight * _itemsToShow));
-
-				child.MinHeight = combo.ActualHeight;
-				child.MinWidth = combo.ActualWidth;
-				child.MaxHeight = maxHeight;
-				child.MaxWidth = visibleSize.Width;
-
-				if (UsesManagedLayouting)
-				// This is a breaking change for Android/iOS in some specialized cases (see ComboBox_VisibleBounds sample), and
-				// since the layouting on those platforms is not yet as aligned with UWP as on WASM/Skia, and in particular
-				// virtualizing panels aren't used in the ComboBox yet (#556 and #1133), we skip it for now
-				{
-#pragma warning disable CS0162 // Unreachable code detected
-					child.HorizontalAlignment = HorizontalAlignment.Left;
-					child.VerticalAlignment = VerticalAlignment.Top;
-#pragma warning restore CS0162 // Unreachable code detected
-				}
-			}
-
-			child.Measure(visibleSize);
-
-			return child.DesiredSize;
-		}
-
-		private const int _itemsToShow = 9;
-
-		/// <inheritdoc />
-		public void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize)
-		{
-			var popup = Popup;
-			var combo = Combo;
-
-			if (!(popup?.Child is FrameworkElement child) || combo == null)
-			{
-				return;
-			}
-
-			if (combo.IsPopupFullscreen)
-			{
-				Point getChildLocation()
-				{
-					switch (child.VerticalAlignment)
-					{
-						default:
-						case VerticalAlignment.Top:
-							return new Point();
-						case VerticalAlignment.Bottom:
-							return new Point(0, finalSize.Height - child.DesiredSize.Height);
-					}
-				}
-
-				var childSize = new Size(finalSize.Width, Math.Min(finalSize.Height, child.DesiredSize.Height));
-				var finalRect = new Rect(getChildLocation(), childSize);
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"FullScreen Layout for dropdown (desired: {desiredSize} / available: {finalSize} / visible: {visibleBounds} / finalRect: {finalRect} )");
-				}
-
-				child.Arrange(finalRect);
-
-				return;
-			}
-
-			var comboRect = combo.GetAbsoluteBoundsRect();
-			var frame = new Rect(comboRect.Location, desiredSize.AtMost(visibleBounds.Size));
-
-			// On windows, the popup is Y-aligned accordingly to the selected item in order to keep
-			// the selected at the same place no matter if the drop down is open or not.
-			// For instance if selected is:
-			//  * the first option: The drop-down appears below the combobox
-			//  * the last option: The dop-down appears above the combobox
-			// However this would requires us to determine the actual location of the SelectedItem container's
-			// which might not be ready at this point (we could try a 2-pass arrange), and to scroll into view to make it visible.
-			// So for now we only rely on the SelectedIndex and make a highly improvable vertical alignment based on it.
-
-			var itemsCount = combo.NumberOfItems;
-			var selectedIndex = combo.SelectedIndex;
-			if (selectedIndex < 0 && itemsCount > 0)
-			{
-				selectedIndex = itemsCount / 2;
-			}
-
-			var unoPlacement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(combo);
-			var winUIPlacement = popup.DesiredPlacement;
-
-			if (combo.IsEditable)
-			{
-				unoPlacement = DropDownPlacement.Below;
-
-				if (comboRect.Bottom + frame.Height > visibleBounds.Bottom)
-				{
-					unoPlacement = DropDownPlacement.Above;
-				}
-			}
-
-			if (unoPlacement == DropDownPlacement.Auto)
-			{
-				// If the Uno placement is Auto, we use the WinUI placement
-				unoPlacement = winUIPlacement switch
-				{
-					PopupPlacementMode.Auto => DropDownPlacement.Auto,
-					PopupPlacementMode.Bottom => DropDownPlacement.Below,
-					PopupPlacementMode.Top => DropDownPlacement.Above,
-					_ => DropDownPlacement.Centered
-				};
-			}
-
-			var stickyThreshold = Math.Max(1, Math.Min(4, (itemsCount / 2) - 1));
-			switch (unoPlacement)
-			{
-				case DropDownPlacement.Below:
-					frame.Y = comboRect.Bottom;
-					break;
-				case DropDownPlacement.Auto when selectedIndex >= 0 && selectedIndex < stickyThreshold:
-					frame.Y = comboRect.Top;
-					break;
-				case DropDownPlacement.Above:
-					frame.Y = comboRect.Top - frame.Height;
-					break;
-				case DropDownPlacement.Auto when
-						selectedIndex >= 0 && selectedIndex >= itemsCount - stickyThreshold
-						// As we don't scroll into view to the selected item, this case seems awkward if the selected item
-						// is not directly visible (i.e. without scrolling) when the drop-down appears.
-						// So if we detect that we should had to scroll to make it visible, we don't try to appear above!
-						&& (itemsCount <= _itemsToShow && frame.Height < (combo.ActualHeight * _itemsToShow) - 3):
-					frame.Y = comboRect.Bottom - frame.Height;
-					break;
-				case DropDownPlacement.Centered:
-				case DropDownPlacement.Auto: // For now we don't support other alignments than top/bottom/center, but on UWP auto can also be 2/3 - 1/3
-				default:
-					// Try to appear centered
-					frame.Y = comboRect.Top - (frame.Height / 2.0) + (comboRect.Height / 2.0);
-					break;
-			}
-
-			frame.X += popup.HorizontalOffset;
-			frame.Y += popup.VerticalOffset;
-
-			// Make sure that the popup does not appears out of the viewport
-			if (frame.Left < visibleBounds.Left)
-			{
-				frame.X = visibleBounds.X;
-			}
-			else if (frame.Right > visibleBounds.Width)
-			{
-				// On UWP, the popup is just aligned to the right on the window if it overflows on right
-				// Note: frame.Width is already at most visibleBounds.Width
-				frame.X = visibleBounds.Width - frame.Width;
-			}
-			if (frame.Top < visibleBounds.Top)
-			{
-				frame.Y = visibleBounds.Y;
-			}
-			else if (frame.Bottom > visibleBounds.Height)
-			{
-				// On UWP, the popup always let 1 px free at the bottom
-				// Note: frame.Height is already at most visibleBounds.Height
-				frame.Y = visibleBounds.Height - frame.Height - 1;
-			}
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"Layout the combo's dropdown at {frame} (desired: {desiredSize} / available: {finalSize} / visible: {visibleBounds} / selected: {selectedIndex} of {itemsCount})");
-			}
-
-			child.Arrange(frame);
-
-			combo.m_bPopupHasBeenArrangedOnce = true;
 		}
 	}
 }

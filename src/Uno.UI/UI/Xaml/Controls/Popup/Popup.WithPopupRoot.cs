@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -55,6 +55,7 @@ public partial class Popup
 				// child controls can be IsFocusable, which depends on all ancestors (including PopupPanel)
 				// being visible
 				PopupPanel.Visibility = Visibility.Visible;
+				PopupPanel.FlowDirection = FlowDirection;
 
 				var currentXamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot?.XamlRoot;
 

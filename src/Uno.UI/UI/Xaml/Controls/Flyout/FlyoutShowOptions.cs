@@ -1,4 +1,4 @@
-﻿using Windows.Foundation;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -18,6 +18,11 @@ public partial class FlyoutShowOptions
 	/// Gets or sets the position where the flyout opens.
 	/// </summary>
 	public Point? Position { get; set; }
+
+	/// <summary>
+	/// Gets or sets a rectangular area that the flyout tries to not overlap.
+	/// </summary>
+	public Rect? ExclusionRect { get; set; }
 
 	/// <summary>
 	/// Gets or sets a value that indicates where the flyout is placed in relation to its target element.

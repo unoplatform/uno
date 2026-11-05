@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference dxaml\xcp\dxaml\lib\MenuFlyout_Partial.cpp, tag winui3/release/1.5.4, commit 98a60c8
 
@@ -107,10 +107,9 @@ Cleanup:
 		return presenter;
 	}
 
-	private protected override void ShowAtCore(FrameworkElement pPlacementTarget, FlyoutShowOptions showOptions)
+	private protected override void ShowAtCore(FrameworkElement pPlacementTarget, out bool openDelayed)
 	{
-		// TODO Uno: OpenDelayed is not available yet
-		// openDelayed = false;
+		openDelayed = false;
 
 		if (m_openWindowed)
 		{
@@ -124,7 +123,7 @@ Cleanup:
 		var placementTarget = pPlacementTarget;
 		CacheInputDeviceTypeUsedToOpen(placementTarget);
 
-		base.ShowAtCore(pPlacementTarget, showOptions);
+		base.ShowAtCore(pPlacementTarget, out openDelayed);
 	}
 
 	// Raise Opening event.

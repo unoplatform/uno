@@ -22,7 +22,7 @@ public partial class Popup : global::Microsoft.UI.Xaml.FrameworkElement
 	// Skipping already declared property IsOpenProperty
 	// Skipping already declared property LightDismissOverlayModeProperty
 	// Skipping already declared property PlacementTargetProperty
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static global::Microsoft.UI.Xaml.DependencyProperty ShouldConstrainToRootBoundsProperty { get; } =
 	Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -57,7 +57,7 @@ public partial class Popup : global::Microsoft.UI.Xaml.FrameworkElement
 #endif
 	// Skipping already declared property DesiredPlacement
 	// Skipping already declared property HorizontalOffset
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public bool IsConstrainedToRootBounds
 	{
@@ -71,7 +71,7 @@ public partial class Popup : global::Microsoft.UI.Xaml.FrameworkElement
 	// Skipping already declared property IsOpen
 	// Skipping already declared property LightDismissOverlayMode
 	// Skipping already declared property PlacementTarget
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public bool ShouldConstrainToRootBounds
 	{

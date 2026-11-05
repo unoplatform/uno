@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference dxaml\xcp\dxaml\lib\CascadingMenuHelper.cpp, tag winui3/release/1.7.1, commit 5f27a786ac96c
 
@@ -652,7 +652,6 @@ internal partial class CascadingMenuHelper
 
 		// Get the available window rect
 		Rect availableWindowRect = FlyoutBase.CalculateAvailableWindowRect(
-			true /* isMenuFlyout */,
 			popup,
 			null /* placementTarget */,
 			true /* hasTargetPosition */,

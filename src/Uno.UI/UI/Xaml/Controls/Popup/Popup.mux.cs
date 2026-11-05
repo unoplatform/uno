@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // Popup.h, Popup.cpp
 
@@ -17,6 +17,23 @@ public partial class Popup
 		{
 			cancel = flyout.Hide(canCancel: true);
 		}
+	}
+
+	internal static Popup GetClosestPopupAncestor(UIElement pChild)
+	{
+		UIElement pNode = pChild;
+
+		while (pNode is not null)
+		{
+			if (pNode is Popup popup)
+			{
+				return popup;
+			}
+
+			pNode = pNode.GetUIElementAdjustedParentInternal(false);
+		}
+
+		return null;
 	}
 
 	internal static FlyoutBase GetClosestFlyoutAncestor(UIElement pUIElement)

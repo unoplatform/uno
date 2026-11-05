@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.System;
@@ -154,10 +154,10 @@ public partial class Popup
 	partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel);
 
 	partial void OnVerticalOffsetChangedPartial(double oldVerticalOffset, double newVerticalOffset) =>
-		PopupPanel?.InvalidateMeasure();
+		PopupPanel?.InvalidateArrange();
 
 	partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset) =>
-		PopupPanel?.InvalidateMeasure();
+		PopupPanel?.InvalidateArrange();
 
 	// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (lines 3666-3687).
 	// Popup's Child is reparented to PopupRoot's visual tree, so the normal PropagateThemeToChildren walk
@@ -224,7 +224,7 @@ public partial class Popup
 			typeof(Popup),
 			new FrameworkPropertyMetadata(
 				default(FrameworkElement),
-				FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext
+				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext
 			));
 
 	/// <summary>
@@ -244,7 +244,31 @@ public partial class Popup
 			nameof(DesiredPlacement),
 			typeof(PopupPlacementMode),
 			typeof(Popup),
-			new FrameworkPropertyMetadata(PopupPlacementMode.Auto, FrameworkPropertyMetadataOptions.AffectsArrange));
+			new FrameworkPropertyMetadata(PopupPlacementMode.Auto));
+
+	/// <summary>
+	/// Gets a value that indicates whether the popup is constrained to the bounds of its XAML root.
+	/// </summary>
+	public bool IsConstrainedToRootBounds => GetIsConstrainedToRootBounds();
+
+	/// <summary>
+	/// Gets or sets a value that indicates whether the popup should be shown within the bounds of the XAML root.
+	/// </summary>
+	public bool ShouldConstrainToRootBounds
+	{
+		get => (bool)GetValue(ShouldConstrainToRootBoundsProperty);
+		set => SetValue(ShouldConstrainToRootBoundsProperty, Boxer.Box(value));
+	}
+
+	/// <summary>
+	/// Identifies the ShouldConstrainToRootBounds dependency property.
+	/// </summary>
+	public static DependencyProperty ShouldConstrainToRootBoundsProperty { get; } =
+		DependencyProperty.Register(
+			nameof(ShouldConstrainToRootBounds),
+			typeof(bool),
+			typeof(Popup),
+			new FrameworkPropertyMetadata(BoolBoxes.True));
 
 	internal DependencyObject OverlayInputPassThroughElement
 	{

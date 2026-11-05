@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -266,8 +266,9 @@ namespace Uno.UI
 			public static bool PreventLightDismissOnWindowDeactivated { get; set; }
 
 			/// <summary>
-			/// By default, popups are constrained by the visible bounds on native renderer, but unconstrained on Skia renderer.
+			/// This flag no longer has any effect: as in WinUI, a flyout is placed within the visible bounds.
 			/// </summary>
+			[Obsolete("This flag no longer has any effect: as in WinUI, a flyout is placed within the visible bounds.")]
 			public static bool ConstrainByVisibleBounds { get; set; }
 #if !__SKIA__
 				= true;

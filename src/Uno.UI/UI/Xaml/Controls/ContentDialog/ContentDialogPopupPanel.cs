@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -24,8 +24,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			if (Visibility == Visibility.Collapsed)
+			{
+				availableSize = default;
+			}
+
 			var actualAvailableSize = CalculateDialogAvailableSize(availableSize);
-			return base.MeasureOverride(actualAvailableSize);
+
+			foreach (var child in Children)
+			{
+				_lastMeasuredSize = MeasureElement(child, actualAvailableSize);
+			}
+
+			return actualAvailableSize;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -29,11 +29,7 @@ internal partial class FlyoutBasePopupPanel : PopupPanel
 		Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
 	}
 
-	protected override bool FullPlacementRequested => _flyout.EffectivePlacement == FlyoutPlacementMode.Full;
-
-	internal override FlyoutBase Flyout => _flyout;
-
-	protected override int PopupPlacementTargetMargin => 5;
+	private FlyoutBase Flyout => _flyout;
 
 	private protected override void OnPointerPressedDismissed(PointerRoutedEventArgs args)
 	{

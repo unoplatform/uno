@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference src\dxaml\xcp\dxaml\lib\ComboBox_Partial.h, tag winui3/release/1.6.1, commit f31293f
 
@@ -114,6 +114,13 @@ partial class ComboBox
 	private int m_searchResultIndex = -1;
 
 	private bool ShouldMoveFocusToTextBox => m_shouldMoveFocusToTextBox;
+
+	private int m_MaxNumberOfItemsThatCanBeShown = 9;
+	private int m_MaxNumberOfItemsThatCanBeShownOnOneSide = 4;
+
+	private Thickness popupContentMargin;
+
+	private Border m_tpBackgroundPart;
 
 	private bool IsSmallFormFactor => false; // TODO Uno: This is currently not supported.
 

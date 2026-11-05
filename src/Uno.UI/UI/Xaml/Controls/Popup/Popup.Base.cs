@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DirectUI;
 using Uno.UI;
 using Uno.UI.DataBinding;
@@ -22,28 +22,12 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 	public event EventHandler<object> Opened;
 
 	/// <summary>
-	/// Defines a custom layouter which overrides the default placement logic of the <see cref="PopupPanel"/>
-	/// </summary>
-	internal IDynamicPopupLayouter CustomLayouter { get; set; }
-
-	/// <summary>
 	/// Controls whether the Popup should propagate its own DataContext to its Child.
 	///
 	/// This is particularly useful when the child is a direct dependency of an entered UIElement
 	/// while the popup is not (e.g. ToolTip created through ToolTipService)
 	/// </summary>
 	internal bool PropagatesDataContextToChild { get; set; } = true;
-
-	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
-	{
-		if (args.Property == AllowFocusOnInteractionProperty ||
-			args.Property == AllowFocusWhenDisabledProperty)
-		{
-			PropagateFocusProperties();
-		}
-
-		base.OnPropertyChanged2(args);
-	}
 
 	private protected override void OnUnloaded()
 	{
@@ -67,6 +51,10 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 		// As the Child is NOT part of the visual tree, it does not have to be arranged,
 		// but we need to manually propagate Translation
 		PopupPanel.Translation = Translation;
+
+		// The panel arranges the child at this popup's location, which the composition tree takes care of in WinUI.
+		PopupPanel.InvalidateArrange();
+
 		return finalSize;
 	}
 
@@ -202,29 +190,6 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 			provider.SetValue(AllowFocusOnInteractionProperty, Boxer.Box(AllowFocusOnInteraction), DependencyPropertyValuePrecedences.Local);
 			provider.SetValue(AllowFocusWhenDisabledProperty, Boxer.Box(AllowFocusWhenDisabled), DependencyPropertyValuePrecedences.Local);
 		}
-	}
-
-	/// <summary>
-	/// A layouter responsible to layout the content of a popup at the right place
-	/// </summary>
-	internal interface IDynamicPopupLayouter
-	{
-		/// <summary>
-		/// Measure the content of the popup
-		/// </summary>
-		/// <param name="available">The available size to place to render the popup. This is expected to be the screen size.</param>
-		/// <param name="visibleSize">The size of the visible bounds of the window. This is expected to be AtMost the available.</param>
-		/// <returns>The desired size to render the content</returns>
-		Size Measure(Size available, Size visibleSize);
-
-		/// <summary>
-		/// Render the content of the popup at its final location
-		/// </summary>
-		/// <param name="finalSize">The final size available to render the view. This is expected to be the screen size.</param>
-		/// <param name="visibleBounds">The frame of the visible bounds of the window. This is expected to be AtMost the finalSize.</param>
-		/// <param name="desiredSize">The size at which the content expect to be rendered. This is the result of the last <see cref="Measure"/>.</param>
-		/// <param name="upperLeftOffset">Coordinate system adjustment, applied to the resulting frame computed from the popup content</param>
-		void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize);
 	}
 
 	partial void OnIsLightDismissEnabledChangedPartial(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)

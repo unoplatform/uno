@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference src\dxaml\xcp\dxaml\lib\ComboBox_Partial.cpp, tag winui3/release/1.6.1, commit f31293f
 
@@ -3164,9 +3164,585 @@ partial class ComboBox
 	}
 
 
-#if HAS_UNO // Not ported yet
-	private void ArrangePopup(bool value) { }
+	// Provides the behavior for the Arrange pass of layout.  Classes can override
+	// this method to define their own Arrange pass behavior.
+	protected override Size ArrangeOverride(Size finalSize)
+	{
+		// Call base ArrangeOverride
+		var returnValue = base.ArrangeOverride(finalSize);
+		if (!IsSmallFormFactor)
+		{
+			// Don't center the selected item for Editable mode.
+			ArrangePopup(!IsEditable);
+		}
 
+		return returnValue;
+	}
+
+	private void GetItemLayoutHeight(int index, out double itemHeight)
+	{
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "GetItemLayoutHeight is not used in small form factor mode");
+
+		itemHeight = 0.0;
+		var spUIElement = ContainerFromIndex(index) as UIElement;
+
+		if (spUIElement is null)
+		{
+			// Get the first child from the carousel panel and then it will also
+			// apply the visual state properly with the input mode.
+			// TODO Uno: There is no CarouselPanel here, the first realized item of the items panel stands in for it.
+			spUIElement = (ItemsPanelRoot as Panel)?.Children is { Count: > 0 } children ? children[0] : null;
+		}
+
+		if (spUIElement is null)
+		{
+			// TODO Uno: The CarouselPanel always has a realized child. Nothing is realized here before the first measure,
+			// so the ComboBox height stands in until OnElementPopupChildSizeChanged arranges the popup again.
+			itemHeight = ActualHeight;
+			return;
+		}
+
+		Size desiredSize = default;
+
+		if (spUIElement.Visibility == Visibility.Visible)
+		{
+			if (spUIElement is ComboBoxItem spIComboBoxItem)
+			{
+				// The ComboBoxItem's UpdateVisualState() must be called to ensure that the item
+				// is in the correct visual state when we try to determine its size.
+				spIComboBoxItem.UpdateVisualState(false /* bUseTransitions */);
+			}
+
+			desiredSize = spUIElement.DesiredSize;
+
+			if (desiredSize.Height == 0)
+			{
+				// This item seems not measured yet and the result is not accurate.
+				spUIElement.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+				desiredSize = spUIElement.DesiredSize;
+			}
+		}
+
+		itemHeight = desiredSize.Height;
+	}
+
+	private void GetNonPannablePopupLayout(
+		int centerItemIndex,
+		uint itemCount,
+		double cbY,
+		double cbHeight,
+		Thickness cbPopupContentMargin,
+		Size rootWindowSize,
+		out double popupY,
+		ref double popupMaxHeight,
+		out double offset)
+	{
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "GetNonPannablePopupLayout is not used in small form factor mode");
+
+		if ((int)itemCount < centerItemIndex || centerItemIndex < 0) // CenterItem is out of bounds
+		{
+			centerItemIndex = (int)itemCount / 2;
+		}
+
+		if (itemCount == 0)
+		{
+			popupY = cbY;
+			popupMaxHeight = cbHeight;
+			offset = 0;
+			return;
+		}
+
+		// Layout centerItem on faceplate
+		GetItemLayoutHeight(centerItemIndex, out double currentItemHeight);
+
+		// If the comboBox button appears outside of the bounds of the Window, try to position the
+		// popup as if the box is within the bounds of the window by faking the .Y location.
+		if ((cbY + cbHeight) >= rootWindowSize.Height)
+		{
+			cbY = rootWindowSize.Height - cbHeight;
+		}
+
+		double calculatedLayoutLocationAbove = cbY + cbHeight / 2 - currentItemHeight / 2 - cbPopupContentMargin.Top;
+		double layoutLocationAbove = Math.Max(calculatedLayoutLocationAbove, 0);
+		double upperLimit = Math.Max(cbY + cbHeight / 2 - popupMaxHeight / 2, 0);
+		double calculatedLayoutLocationBelow = layoutLocationAbove + currentItemHeight + cbPopupContentMargin.Top + cbPopupContentMargin.Bottom;
+		double layoutLocationBelow = Math.Min(calculatedLayoutLocationBelow, rootWindowSize.Height);
+		double lowerLimit = Math.Min(upperLimit + popupMaxHeight, rootWindowSize.Height);
+		int itemIndexAbove = centerItemIndex - 1;
+		int itemIndexBelow = centerItemIndex + 1;
+		int totalItemsLayed = 1;
+		int maxNumberOfItemsAllowedOnOneSide = Math.Min(m_MaxNumberOfItemsThatCanBeShownOnOneSide, (int)itemCount);
+		int maxNumberOfItemsAllowed = Math.Min(m_MaxNumberOfItemsThatCanBeShown, (int)itemCount);
+
+		// Compensate the missing amount height between calculatedLayoutLocationBelow and layoutLocationBelow on layoutLocationAbove
+		// that ensures both the top and bottom margin is applied properly into the calculating popupMaxHeight.
+		if (calculatedLayoutLocationBelow > rootWindowSize.Height)
+		{
+			layoutLocationAbove = Math.Max(layoutLocationAbove - calculatedLayoutLocationBelow + rootWindowSize.Height, 0);
+		}
+
+		// Layout Items above, itemIndexAbove = centerItemIndex - 1
+		//      itemIndexAbove >= 0, layoutLocationAbove - nextItemSize > 0, totalItemsLayed <= m_MaxNumberOfItemsThatCanBeShownOnOneSide
+		if (itemIndexAbove >= 0)
+		{
+			GetItemLayoutHeight(itemIndexAbove, out currentItemHeight);
+
+			while (itemIndexAbove >= 0
+				&& layoutLocationAbove - currentItemHeight >= upperLimit
+				&& totalItemsLayed < maxNumberOfItemsAllowedOnOneSide)
+			{
+				layoutLocationAbove -= currentItemHeight;
+				totalItemsLayed++;
+				itemIndexAbove--;
+				if (itemIndexAbove >= 0)
+				{
+					GetItemLayoutHeight(itemIndexAbove, out currentItemHeight);
+				}
+			}
+		}
+
+		// Layout items below, itemIndexBelow = centerItemIndex + 1
+		//      itemIndexBelow < itemCount, layoutLocationBelow + nextItemSize < rootWindowSize.Height, totalItemsLayed <= maxallowed
+		if (itemIndexBelow < (int)itemCount)
+		{
+			GetItemLayoutHeight(itemIndexBelow, out currentItemHeight);
+
+			while (itemIndexBelow < (int)itemCount
+				&& layoutLocationBelow + currentItemHeight < lowerLimit
+				&& layoutLocationBelow - layoutLocationAbove < popupMaxHeight
+				&& totalItemsLayed < maxNumberOfItemsAllowed)
+			{
+				layoutLocationBelow += currentItemHeight;
+				totalItemsLayed++;
+				itemIndexBelow++;
+				if (itemIndexBelow < (int)itemCount)
+				{
+					GetItemLayoutHeight(itemIndexBelow, out currentItemHeight);
+				}
+			}
+		}
+
+		// Try filling in more items if there are more items, the items fit, and we didn't put more than the max allowed.
+		if (itemIndexAbove >= 0 || itemIndexBelow < (int)itemCount)
+		{
+			bool isAbove = itemIndexAbove >= 0;
+			int currentItemIndex = isAbove ? itemIndexAbove : itemIndexBelow;
+			GetItemLayoutHeight(currentItemIndex, out currentItemHeight);
+
+			// Make sure the current item can fit below or above the popup.
+			while (layoutLocationBelow - layoutLocationAbove + currentItemHeight <= popupMaxHeight
+				&& (layoutLocationBelow + currentItemHeight < rootWindowSize.Height || layoutLocationAbove - currentItemHeight >= 0)
+				&& totalItemsLayed < maxNumberOfItemsAllowed)
+			{
+				if (isAbove)
+				{
+					itemIndexAbove--;
+				}
+				else
+				{
+					itemIndexBelow++;
+				}
+
+				if (layoutLocationAbove - currentItemHeight <= 0)
+				{
+					layoutLocationBelow += currentItemHeight;
+				}
+				else
+				{
+					layoutLocationAbove -= currentItemHeight;
+				}
+
+				totalItemsLayed++;
+				if (itemIndexAbove >= 0 || itemIndexBelow < (int)itemCount)
+				{
+					isAbove = itemIndexAbove >= 0;
+					currentItemIndex = isAbove ? itemIndexAbove : itemIndexBelow;
+					GetItemLayoutHeight(currentItemIndex, out currentItemHeight);
+				}
+			}
+		}
+
+		offset = itemIndexAbove + 1;
+		popupY = layoutLocationAbove;
+		popupMaxHeight = layoutLocationBelow - layoutLocationAbove;
+	}
+
+	private void GetEditableComboBoxPopupLayout(
+		uint itemCount,
+		double cbY,
+		double cbHeight,
+		Thickness cbPopupContentMargin,
+		Size rootWindowSize,
+		out double popupY,
+		out double popupMaxHeight)
+	{
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "GetNonPannablePopupLayout is not used in small form factor mode");
+
+		if (m_tpEditableTextPart is not null)
+		{
+			cbHeight = Math.Max(cbHeight, m_tpEditableTextPart.ActualHeight);
+		}
+
+		if (itemCount == 0)
+		{
+			popupY = cbY;
+			popupMaxHeight = cbHeight;
+			return;
+		}
+
+		double calculatedLayoutLocationAbove = cbY + cbHeight + m_candidateWindowBoundsRect.Height;
+		double layoutLocationAbove = Math.Max(calculatedLayoutLocationAbove, 0.0);
+		double layoutLocationBelow = layoutLocationAbove + cbPopupContentMargin.Top + cbPopupContentMargin.Bottom;
+		uint currentIndex = 0;
+		uint totalItemsLayed = 0;
+		uint maxNumberOfItemsAllowed = (uint)Math.Min(m_MaxNumberOfItemsThatCanBeShown, (int)itemCount);
+
+		while (currentIndex < itemCount && totalItemsLayed < maxNumberOfItemsAllowed)
+		{
+			GetItemLayoutHeight((int)currentIndex, out double currentItemHeight);
+
+			layoutLocationBelow += currentItemHeight;
+			totalItemsLayed++;
+			currentIndex++;
+		}
+
+		popupY = layoutLocationAbove;
+		popupMaxHeight = layoutLocationBelow - layoutLocationAbove;
+
+		m_openedUp = false;
+
+		// If the popup overflows the available window height see if we can open it above.
+		if (popupY + popupMaxHeight > rootWindowSize.Height)
+		{
+			if (cbY - popupMaxHeight >= 0)
+			{
+				// Move popup above the ComboBox.
+				popupY = Math.Max(cbY - popupMaxHeight, 0.0);
+				m_openedUp = true;
+			}
+		}
+	}
+
+	// TODO Uno: Stands in for CarouselPanel::GetMeasureDeltaForVisualsBetweenPopupAndCarouselPanel.
+	private double GetMeasureDeltaForVisualsBetweenPopupAndItemsPanel()
+	{
+		double delta = 0.0;
+		var current = (ItemsPanelRoot as FrameworkElement)?.GetParent() as FrameworkElement;
+
+		while (current is not null)
+		{
+			delta += current.Margin.Top + current.Margin.Bottom;
+
+			if (current is Border border)
+			{
+				delta += border.BorderThickness.Top + border.BorderThickness.Bottom + border.Padding.Top + border.Padding.Bottom;
+			}
+			else if (current is Control control)
+			{
+				delta += control.BorderThickness.Top + control.BorderThickness.Bottom + control.Padding.Top + control.Padding.Bottom;
+			}
+
+			if (current == m_tpElementPopupChild)
+			{
+				break;
+			}
+
+			current = current.GetParent() as FrameworkElement;
+		}
+
+		return delta;
+	}
+
+	private void ArrangePopup(bool bCenterSelectedItem)
+	{
+		var p00 = new Point(0, 0);
+		var p10 = new Point(1, 0);
+		var p01 = new Point(0, 1);
+		var p00local = new Point(0, 0);
+		double offset = 0;
+
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "ArrangePopup is not used in small form factor mode");
+
+		bool isEditable = IsEditable;
+
+		// If we get request to Arrange popup with bCenterSelectedItem being set
+		// we won't center the item if drop down is closed (see protection bellow).
+		m_bShouldCenterSelectedItem |= bCenterSelectedItem;
+
+		// TODO Uno: m_tpElementOutsidePopup is absent, as the light dismiss layer is the PopupPanel's background.
+		if (m_tpPopupPart is null || m_tpElementPopupChild is null || m_tpContentPresenterPart is null)
+		{
+			return;
+		}
+
+		if (!IsDropDownOpen)
+		{
+			return;
+		}
+
+		var spGt = ((UIElement)m_tpBackgroundPart ?? this).TransformToVisual(null);
+
+		//
+		// Take the origin (0, 0), the X axis [1, 0], and the Y axis [0, 1] through the transformer. The transformed origin
+		// shows the translation applied by the tranformer. The transformed X and Y axes will contain the scale and rotation.
+		//
+		// Note: If there's a projection somewhere between the ComboBox and the root, then the transform can't be captured
+		// by just a 2D matrix. In that case, we approximate it by the local scale applied near (0, 0).
+		//
+		var p00t = spGt.TransformPoint(p00);
+		var p10t = spGt.TransformPoint(p10);
+		var p01t = spGt.TransformPoint(p01);
+
+		// Get current window size
+		Rect rootRect = XamlRoot?.VisualTree.VisibleBounds ?? default;
+
+		var rootWindowSize = new Size(rootRect.Width, rootRect.Height);
+		if (rootWindowSize.Height == 0 || rootWindowSize.Width == 0)
+		{
+			return;
+		}
+
+		double cbX = p00t.X - rootRect.X;
+		double cbY = p00t.Y - rootRect.Y;
+		double zoomFactor = 1.0;
+
+		var flowDirection = FlowDirection;
+
+		// TODO Uno: NOT PORTED - HandleRotateTransformOnParentForPopupPlacement (ComboBox_Partial.cpp lines 5556-5664).
+		float scaleX = (float)Math.Sqrt((p10t.X - p00t.X) * (p10t.X - p00t.X) + (p10t.Y - p00t.Y) * (p10t.Y - p00t.Y));
+		float scaleY = (float)Math.Sqrt((p01t.X - p00t.X) * (p01t.X - p00t.X) + (p01t.Y - p00t.Y) * (p01t.Y - p00t.Y));
+
+		var scaledRootWindowSize = new Size(rootWindowSize.Width / scaleX, rootWindowSize.Height / scaleY);
+
+		double actualHeight = m_tpBackgroundPart?.ActualHeight ?? ActualHeight;
+		double actualWidth = m_tpBackgroundPart?.ActualWidth ?? ActualWidth;
+
+		double cbHeight = actualHeight * zoomFactor;
+		double cbWidth = actualWidth * zoomFactor;
+
+		double scaledCBX = cbX / scaleX;
+		double scaledCBY = cbY / scaleY;
+
+		if (cbHeight == 0 || cbWidth == 0)
+		{
+			return;
+		}
+
+		double childWidth = m_tpElementPopupChild.ActualWidth;
+		double childHeight = m_tpElementPopupChild.ActualHeight;
+
+		// TODO Uno: The popup child is not wrapped in m_tpElementPopupChildCanvas, so its margin doesn't have to move to the popup's offsets.
+
+		childWidth *= zoomFactor;
+		childHeight *= zoomFactor;
+
+		double popupMaxHeight = MaxDropDownHeight;
+		if (double.IsInfinity(popupMaxHeight) || double.IsNaN(popupMaxHeight))
+		{
+			popupMaxHeight = scaledRootWindowSize.Height;
+		}
+
+		childWidth = Math.Min(childWidth, scaledRootWindowSize.Width);
+		childHeight = Math.Min(childHeight, popupMaxHeight);
+		childWidth = Math.Max(cbWidth, childWidth);
+
+		// We prefer to align the popup box with the left edge of the combobox.  If it will fit.
+		double popupX = 0.0;
+
+		// Popup X position must be within the available visible bounds area
+		if (p00t.X < rootRect.X)
+		{
+			popupX = rootRect.X - p00t.X;
+		}
+
+		if (flowDirection == FlowDirection.LeftToRight)
+		{
+			if (scaledRootWindowSize.Width < scaledCBX + childWidth)
+			{
+				// Since it doesn't fit when strictly left aligned, we shift it to the left until it does fit.
+				popupX = scaledRootWindowSize.Width - (childWidth + scaledCBX);
+			}
+		}
+		else
+		{
+			if (0 > scaledCBX - childWidth)
+			{
+				popupX = scaledCBX - childWidth;
+			}
+		}
+
+		uint itemCount = (uint)Items.Count;
+		int selectedIndex = SelectedIndex;
+
+		double popupY = 0.0;
+		SetIsPopupPannable(); // update the value of m_bIsPopupPannable as appropriate
+
+		// TODO Uno: NOT PORTED - the pannable (carousel) layout with GetPannablePopupLayout, as m_bIsPopupPannable is never set.
+
+		// Set ComboBox Content Margin to the value defined in the template which is 7px by default.
+		if (m_tpElementPopupContent is not null)
+		{
+			m_tpElementPopupContent.Margin = popupContentMargin;
+		}
+
+		if (isEditable)
+		{
+			GetEditableComboBoxPopupLayout(itemCount, scaledCBY, cbHeight, popupContentMargin, scaledRootWindowSize, out popupY, out popupMaxHeight);
+		}
+		else
+		{
+			// Get popupY. We already have calculated that popup will fit in available space.
+			GetNonPannablePopupLayout(selectedIndex, itemCount, scaledCBY, cbHeight, popupContentMargin, scaledRootWindowSize, out popupY, ref popupMaxHeight, out offset);
+		}
+
+		double minWidth = cbWidth / zoomFactor;
+
+		m_tpElementPopupChild.MinWidth = minWidth;
+		m_tpElementPopupChild.MaxWidth = Math.Max(minWidth, scaledRootWindowSize.Width / zoomFactor);
+
+		m_tpElementPopupChild.MinHeight = cbHeight / zoomFactor;
+
+		double margin = GetMeasureDeltaForVisualsBetweenPopupAndItemsPanel();
+
+		// Do not apply the popup content margin top and bottom again that is already
+		// calculated in above GetNonPannablePopupLayout() method
+		popupMaxHeight += (margin - (popupContentMargin.Top + popupContentMargin.Bottom));
+
+		// Ensures the popup isn't overflow to the available window height
+		// Don't do this check for Editable mode, if popup doesn't fit here we already tried to open it
+		// above the ComboBox, and we don't want to occlude the TextBox.
+		if (popupY + popupMaxHeight > scaledRootWindowSize.Height)
+		{
+			// Move Popup Y position not to overflow to the bottom of the available window height
+			popupY = Math.Max(popupY - (popupY + popupMaxHeight - scaledRootWindowSize.Height), 0);
+		}
+
+		m_tpElementPopupChild.MaxHeight = Math.Max(0, popupMaxHeight / zoomFactor);
+
+		m_tpElementPopupChild.HorizontalAlignment = HorizontalAlignment.Left;
+		m_tpElementPopupChild.VerticalAlignment = VerticalAlignment.Top;
+
+#if HAS_UNO
+		ApplyUnoPopupLayoutOverrides(ref popupX, ref popupY, scaledCBX, scaledCBY, cbHeight, scaledRootWindowSize);
+#endif
+
+		if (m_tpBackgroundPart is not null)
+		{
+			p00local = m_tpBackgroundPart.TransformToVisual(this).TransformPoint(p00);
+		}
+
+		// set the top left corner for combobox's items list
+		double popupLeft = popupX / zoomFactor + p00local.X;
+		double popupTop = (popupY - scaledCBY) / zoomFactor + p00local.Y;
+
+		// If layout rounding is enabled, snap popup's child's offsets to device pixels, or they will render at sub pixel boundaries.
+		if (UseLayoutRounding)
+		{
+			popupTop = LayoutRound(new Size(0, popupTop)).Height;
+			popupLeft = LayoutRound(new Size(popupLeft, 0)).Width;
+		}
+
+#if HAS_UNO
+		// A popup part placed through PlacementTarget and DesiredPlacement keeps the offsets the app gave it,
+		// as Popup.SetPositionFromPlacement positions it.
+		if (m_tpPopupPart.PlacementTarget is null || m_tpPopupPart.DesiredPlacement == PopupPlacementMode.Auto)
+#endif
+		{
+			m_tpPopupPart.VerticalOffset = popupTop;
+			m_tpPopupPart.HorizontalOffset = popupLeft;
+		}
+
+		// set templatesettings to communicate to animations
+		popupMaxHeight = Math.Min(popupMaxHeight, childHeight);
+
+		if (popupMaxHeight > 0 && cbHeight > 0)
+		{
+			// TODO Uno: The ComboBoxTemplateSettings values for the SplitOpenThemeAnimation are not set.
+
+			// In case of the first ArrangePopup() by changing the input device type,
+			// the item height isn't ready yet by applying the different visual style on the each item according to the input device type.
+			// UpdateVisualState() will be skipped not to call SplitOpenThemeAnimation here that can apply the incorrect OpenedLength/ClosedLength
+			// by having the incorrect items height. But UpdateVisualState() will be applied the next coming ArrangePopup().
+			if (m_previousInputDeviceTypeUsedToOpen != InputDeviceType.None &&
+				m_previousInputDeviceTypeUsedToOpen != m_inputDeviceTypeUsedToOpen)
+			{
+				m_bPopupHasBeenArrangedOnce = false;
+			}
+
+			// In the case where we are first opening the popup, it renders with initial height CarouselPanel::m_InitialMeasureHeight
+			// (see OnIsDropDownOpenChanged()).  In the case where its max height ends up being greater than this value, the
+			// SplitOpenThemeAnimation would get called with the wrong OpenedLength/ClosedLength values in this first ArrangePopup() pass.
+			// Luckily, we can rely on the fact that ArrangePopup() will be called again in OnElementPopupChildSizeChanged()
+			// (if not before that as a second call to ArrangeOverride() as part of the current layout pass), and
+			// go to the "Opened" state once we have the correct values set on our ComboBoxTemplateSettings.
+			if (m_bPopupHasBeenArrangedOnce)
+			{
+				UpdateVisualState(true);
+			}
+			else
+			{
+				m_bPopupHasBeenArrangedOnce = true;
+			}
+		}
+
+		// Set the vertical offset to the centered position for  the selected item before SetFocusedItem().
+		// SetFocusedItem() shouldn't call for the bring into view if the selected item is
+		// already center position with the proper offset setting. Otherwise, there will be a
+		// layout cycling issue between reset the offset between SetVerticalOffsetOnCarouselPanel()
+		// and SetFocusedItem().
+		m_bShouldCenterSelectedItem = false;
+	}
+
+#if HAS_UNO
+	// The Uno-only IsPopupFullscreen and DropDownPreferredPlacement (and the popup part's DesiredPlacement, which the old
+	// layouter honored) override the WinUI layout computed in ArrangePopup.
+	private void ApplyUnoPopupLayoutOverrides(ref double popupX, ref double popupY, double cbX, double cbY, double cbHeight, Size rootWindowSize)
+	{
+		var child = m_tpElementPopupChild;
+
+		if (IsPopupFullscreen)
+		{
+			// In full screen mode, we want the popup to stretch horizontally, so we set MinWidth and MaxWidth to the available width.
+			// However, we don't want it to stretch vertically.
+			child.MinWidth = rootWindowSize.Width;
+			child.MaxWidth = rootWindowSize.Width;
+			child.VerticalAlignment = VerticalAlignment.Top;
+
+			popupX = -cbX;
+			popupY = 0;
+			return;
+		}
+
+		var unoPlacement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(this);
+
+		if (unoPlacement == Uno.UI.Xaml.Controls.DropDownPlacement.Auto)
+		{
+			unoPlacement = m_tpPopupPart!.DesiredPlacement switch
+			{
+				PopupPlacementMode.Auto => Uno.UI.Xaml.Controls.DropDownPlacement.Auto,
+				PopupPlacementMode.Bottom => Uno.UI.Xaml.Controls.DropDownPlacement.Below,
+				PopupPlacementMode.Top => Uno.UI.Xaml.Controls.DropDownPlacement.Above,
+				_ => Uno.UI.Xaml.Controls.DropDownPlacement.Centered
+			};
+		}
+
+		if (IsEditable || unoPlacement == Uno.UI.Xaml.Controls.DropDownPlacement.Auto)
+		{
+			return;
+		}
+
+		var height = child.ActualHeight;
+
+		popupY = unoPlacement switch
+		{
+			Uno.UI.Xaml.Controls.DropDownPlacement.Below => cbY + cbHeight,
+			Uno.UI.Xaml.Controls.DropDownPlacement.Above => cbY - height,
+			_ => cbY + cbHeight / 2 - height / 2,
+		};
+	}
+#endif
+
+#if HAS_UNO // Not ported yet
 	private void EnsurePresenterReadyForFullMode() { }
 
 	private void EnsurePresenterReadyForInlineMode() { }

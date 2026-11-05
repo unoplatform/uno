@@ -1,4 +1,4 @@
-﻿using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -8,6 +8,26 @@ public partial class Popup
 
 	private bool m_fIsLightDismiss;
 	private bool m_shouldTakeFocus = true;
+
+	// Adjustments made to the offset by a popup placed relative to this one, to bring itself into view.
+	internal float m_hAdjustment;
+	internal float m_vAdjustment;
+
+	// Offsets calculated by SetPositionFromPlacement.
+	internal float m_calculatedHOffset;
+	internal float m_calculatedVOffset;
+
+	private bool m_everOpened;
+
+	internal bool WasEverOpened => m_everOpened;
+
+	// TODO Uno: windowed popups are not implemented yet.
+	internal static bool DoesPlatformSupportWindowedPopup() => false;
+
+	private void SetIsWindowedIfNeeded()
+	{
+		// TODO Uno: windowed popups are not implemented yet.
+	}
 
 	internal bool IsFlyout => AssociatedFlyout is not null;
 
