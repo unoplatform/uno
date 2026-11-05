@@ -626,7 +626,6 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
 		{
 			IsSoftwareKeyboardSuppressed = false;
-			_isKeyboardRequestedByTap = false;
 			EndImeSession();
 			TrySetCurrentlyTyping(false);
 			EndCaretLoupe();
@@ -646,13 +645,15 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	}
 
 	private bool _isPlatformTextInputRequestPending;
+	private bool _isPendingPlatformTextInputFromTap;
 
 	// A TextBox focused while a pointer release is processed can lose the focus before the release completes (e.g. a ScrollViewer focuses
 	// its first TextBox before a Tapped handler moves the focus away, like in WinUI). Opening the soft keyboard right away would flash it.
-	private void RequestPlatformTextInput(FocusState focusState)
+	private void RequestPlatformTextInput(FocusState focusState, bool fromTap = false)
 	{
 		if (_isPlatformTextInputRequestPending)
 		{
+			_isPendingPlatformTextInputFromTap |= fromTap;
 			return;
 		}
 
@@ -660,6 +661,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		if (Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnPointerReleaseCompleted) is true)
 		{
 			_isPlatformTextInputRequestPending = true;
+			_isPendingPlatformTextInputFromTap = fromTap;
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug("Platform text input deferred until the pointer release has completed.");
@@ -669,15 +671,17 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		}
 #endif
 
-		StartPlatformTextInput(focusState);
+		StartPlatformTextInput(focusState, fromTap);
 	}
 
 	private void OnPointerReleaseCompleted()
 	{
+		var fromTap = _isPendingPlatformTextInputFromTap;
 		_isPlatformTextInputRequestPending = false;
+		_isPendingPlatformTextInputFromTap = false;
 		if (FocusState is not FocusState.Unfocused and var focusState)
 		{
-			StartPlatformTextInput(focusState);
+			StartPlatformTextInput(focusState, fromTap);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -693,12 +697,11 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 			return;
 		}
 
-		// A tap opens the keyboard a programmatic focus kept hidden, as in WinUI. The focus origin can't tell: tapping the focused
-		// box leaves it programmatic.
+		// A tap opens the keyboard a programmatic focus kept hidden, as WinUI does from OnTappedCore. The focus origin can't
+		// tell: refocusing the focused box only updates it when the coerced focus state changes, so it stays programmatic.
 		if (IsSoftwareKeyboardSuppressed)
 		{
-			_isKeyboardRequestedByTap = true;
-			RequestPlatformTextInput(FocusState);
+			RequestPlatformTextInput(FocusState, fromTap: true);
 			return;
 		}
 
@@ -725,12 +728,10 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	/// </summary>
 	internal bool IsSoftwareKeyboardSuppressed { get; private set; }
 
-	private bool _isKeyboardRequestedByTap;
-
-	private void StartPlatformTextInput(FocusState focusState)
+	private void StartPlatformTextInput(FocusState focusState, bool fromTap = false)
 	{
 		// FocusState is coerced to the last input device: the focus request's own state tells whether it was programmatic.
-		var origin = _isKeyboardRequestedByTap
+		var origin = fromTap
 			? FocusState.Pointer
 			: VisualTree.GetFocusManagerForElement(Owner)?.GetRealFocusStateForFocusedElement() ?? focusState;
 		IsSoftwareKeyboardSuppressed = _host.PreventKeyboardDisplayOnProgrammaticFocus && origin == FocusState.Programmatic;

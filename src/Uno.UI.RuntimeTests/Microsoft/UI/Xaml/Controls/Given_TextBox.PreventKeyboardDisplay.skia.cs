@@ -82,6 +82,42 @@ public class Given_TextBox_PreventKeyboardDisplay
 		}
 	}
 
+	// The tap only counts for the keyboard request it makes: a later programmatic focus of the same box keeps the keyboard
+	// hidden again.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // The injected touch doesn't reach the TextBox on the Android emulator
+	public async Task When_Tapped_Then_Later_Programmatic_Focus_Suppresses_Keyboard_Again()
+	{
+		var extension = new RecordingExtension();
+		using var scope = ImeSessionCoordinator.SetExtensionFactoryForTesting(_ => extension);
+		var textBox = new TextBox { Width = 200, PreventKeyboardDisplayOnProgrammaticFocus = true };
+		try
+		{
+			await UITestHelper.Load(textBox);
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic));
+			await WindowHelper.WaitForIdle();
+
+			using var finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
+			finger.Tap(textBox.TransformToVisual(null).TransformPoint(new Point(textBox.ActualWidth / 2, textBox.ActualHeight / 2)));
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(textBox.Core.IsSoftwareKeyboardSuppressed, "Pre-condition: the tap shows the keyboard");
+
+			// With the keyboard as the last input device, the programmatic focus changes the box's coerced focus state, which
+			// restarts its text input without the box losing the focus.
+			await WindowHelper.SetLastInputMethod(Uno.UI.Xaml.Input.InputDeviceType.Keyboard, textBox.XamlRoot);
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(FocusState.Keyboard, textBox.FocusState, "Pre-condition: the focus state changed, restarting the text input");
+
+			Assert.IsTrue(extension.LastActivation.IsSoftwareKeyboardSuppressed);
+			Assert.IsTrue(textBox.Core.IsSoftwareKeyboardSuppressed);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	[TestMethod]
 	public async Task When_PasswordBox_Programmatically_Focused_Then_Keyboard_Suppressed()
 	{
