@@ -201,6 +201,8 @@
         href: xref:Uno.Features.Uno.Sdk
       - name: UI Markup
         href: xref:uno.development.using.markup
+      - name: Using Reactor
+        href: xref:Uno.Features.Reactor
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
       - name: Implicit XAML Namespaces
