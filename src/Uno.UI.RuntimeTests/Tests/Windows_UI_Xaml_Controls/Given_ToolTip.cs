@@ -670,6 +670,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await UITestHelper.WaitForIdle();
 			}
 		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_Pending_ToolTip_Opened_By_App_Then_ShowDuration_Does_Not_Close_It()
+		{
+			// As in WinUI, the service does not take over a ToolTip the app opened during the show delay.
+			var owner = new Button { Content = "Owner", Width = 120, Height = 40 };
+			var toolTip = new ToolTip { Content = "ToolTip" };
+			ToolTipService.SetToolTip(owner, toolTip);
+			await UITestHelper.Load(owner);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				mouse.MoveTo(owner.GetAbsoluteBoundsRect().GetCenter());
+				await UITestHelper.WaitForIdle();
+				Assert.IsFalse(toolTip.IsOpen, "premise: the ToolTip is still waiting to open");
+				Assert.AreSame(toolTip, ToolTipService.CurrentToolTipForTesting, "premise: the service holds the pending ToolTip");
+
+				toolTip.IsOpen = true;
+
+				await UITestHelper.WaitFor(
+					() => ToolTipService.CurrentToolTipForTesting is null,
+					timeoutMS: FeatureConfiguration.ToolTip.ShowDelay + 2000,
+					message: "The service kept a ToolTip the app opened during the show delay.");
+				await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDuration + 500));
+				Assert.IsTrue(toolTip.IsOpen, "The automatic ShowDuration timer closed a ToolTip the app opened.");
+			}
+			finally
+			{
+				toolTip.IsOpen = false;
+				mouse.MoveBy(0, 200);
+				await UITestHelper.WaitForIdle();
+			}
+		}
 #endif
 
 		// ---------------------------------------------------------------------------
