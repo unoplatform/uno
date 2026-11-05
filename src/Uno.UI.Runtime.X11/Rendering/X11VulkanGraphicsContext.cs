@@ -14,7 +14,14 @@ namespace Uno.UI.Runtime.X11;
 /// </summary>
 internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext
 {
+	// Popups render on one instance and device: a window for each is a device for each otherwise, and a process only
+	// gets so many. Its surfaces go through a connection of its own, which outlives any popup's. UI thread only.
+	private static VulkanContext? _sharedPopupDevice;
+	private static IntPtr _sharedPopupDeviceDisplay;
+	private static int _sharedPopupDeviceUsers;
+
 	private readonly VulkanContext _vk;
+	private readonly bool _usesSharedDevice;
 	private IDisposable? _frameLock;
 	private bool _skipPresent;
 	private int _width, _height;
@@ -34,18 +41,67 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 		_width = Math.Max(attributes.width, 1);
 		_height = Math.Max(attributes.height, 1);
 
-		var factory = new X11VulkanSurfaceFactory(display);
-		_vk = new VulkanContext();
 		if (transparent)
 		{
-			_vk.InitializeDevice(factory);
-			_vk.InitializeSurface(window, _width, _height, premultipliedAlpha: true);
+			var device = AcquireSharedPopupDevice();
+			try
+			{
+				_vk = VulkanContext.ForSharedDevice(device);
+				_vk.InitializeSurface(window, _width, _height, premultipliedAlpha: true);
+				_usesSharedDevice = true;
+			}
+			catch
+			{
+				_vk?.Dispose();
+				ReleaseSharedPopupDevice();
+				throw;
+			}
 		}
 		else
 		{
-			_vk.Initialize(factory, window, _width, _height);
+			_vk = new VulkanContext();
+			_vk.Initialize(new X11VulkanSurfaceFactory(display), window, _width, _height);
 		}
 	}
+
+	private static VulkanContext AcquireSharedPopupDevice()
+	{
+		if (_sharedPopupDevice is null)
+		{
+			_sharedPopupDeviceDisplay = XLib.XOpenDisplay(IntPtr.Zero);
+			VulkanContext device = new();
+			try
+			{
+				device.InitializeDevice(new X11VulkanSurfaceFactory(_sharedPopupDeviceDisplay));
+			}
+			catch
+			{
+				device.Dispose();
+				_ = XLib.XCloseDisplay(_sharedPopupDeviceDisplay);
+				_sharedPopupDeviceDisplay = IntPtr.Zero;
+				throw;
+			}
+
+			_sharedPopupDevice = device;
+		}
+
+		_sharedPopupDeviceUsers++;
+		return _sharedPopupDevice;
+	}
+
+	private static void ReleaseSharedPopupDevice()
+	{
+		if (--_sharedPopupDeviceUsers == 0)
+		{
+			_sharedPopupDevice?.Dispose();
+			_sharedPopupDevice = null;
+			_ = XLib.XCloseDisplay(_sharedPopupDeviceDisplay);
+			_sharedPopupDeviceDisplay = IntPtr.Zero;
+		}
+	}
+
+	/// <summary>Holds the device for a teardown: other windows may be rendering on the same one.</summary>
+	internal IDisposable LockDevice() => _vk.Lock();
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
 
@@ -117,5 +173,10 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 		_frameLock?.Dispose();
 		_frameLock = null;
 		_vk.Dispose();
+
+		if (_usesSharedDevice)
+		{
+			ReleaseSharedPopupDevice();
+		}
 	}
 }

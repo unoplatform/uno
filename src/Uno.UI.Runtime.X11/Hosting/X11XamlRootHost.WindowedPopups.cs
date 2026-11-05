@@ -165,6 +165,28 @@ internal partial class X11XamlRootHost
 		return current;
 	}
 
+	/// <summary>A GL driver's libraries are torn down at exit, under whatever thread is still drawing with them.</summary>
+	internal static void StopRenderingForProcessExit()
+	{
+		X11XamlRootHost[] hosts;
+		lock (_x11WindowToXamlRootHostMutex)
+		{
+			hosts = [.. _x11WindowToXamlRootHost.Values];
+		}
+
+		foreach (var host in hosts)
+		{
+			foreach (var site in host._popupSitesByWindow.Values)
+			{
+				site.StopRenderThread();
+			}
+
+			host._renderLoopRunning = false;
+			host._renderRequested.Set();
+			host._renderThread.Join(TimeSpan.FromSeconds(2));
+		}
+	}
+
 	private void ClosePopupSites()
 	{
 		foreach (var site in _popupSites.ToArray())

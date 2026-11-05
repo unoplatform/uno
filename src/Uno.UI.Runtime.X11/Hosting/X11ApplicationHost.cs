@@ -98,6 +98,8 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 
 		ApiExtensibility.Register(typeof(IWindowedPopupExtension), _ => X11WindowedPopupExtension.Instance);
 
+		AppDomain.CurrentDomain.ProcessExit += static (_, _) => X11XamlRootHost.StopRenderingForProcessExit();
+
 		ApiExtensibility.Register(typeof(ILauncherExtension), o => new LinuxLauncherExtension(o));
 
 		ApiExtensibility.Register(typeof(IClipboardExtension), _ => X11ClipboardExtension.Instance);

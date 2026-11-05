@@ -50,6 +50,7 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 	private int? _capturedDevice; // Guarded by the owner's top connection lock.
 	private int _disposed;
 	private volatile bool _isClosed;
+	private volatile bool _isRenderThreadStopping;
 
 	private X11WindowedPopupSite(X11XamlRootHost owner, IWindowedPopupContent content, IntPtr display)
 	{
@@ -208,7 +209,7 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 		{
 			lock (_renderGate)
 			{
-				while (!_renderRequested && !_isClosed)
+				while (!_renderRequested && !_isRenderThreadStopping)
 				{
 					Monitor.Wait(_renderGate);
 				}
@@ -216,7 +217,7 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 				_renderRequested = false;
 			}
 
-			if (_isClosed)
+			if (_isRenderThreadStopping)
 			{
 				return;
 			}
@@ -499,6 +500,18 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 		_ = XLib.XFlush(_display);
 	}
 
+	internal bool StopRenderThread()
+	{
+		_isRenderThreadStopping = true;
+
+		lock (_renderGate)
+		{
+			Monitor.PulseAll(_renderGate);
+		}
+
+		return _renderThread is not { } thread || thread.Join(TimeSpan.FromSeconds(5));
+	}
+
 	public void Dispose()
 	{
 		if (Interlocked.Exchange(ref _disposed, 1) != 0)
@@ -514,13 +527,8 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 		_isClosed = true;
 		_owner.RemovePopupSite(this);
 
-		lock (_renderGate)
-		{
-			Monitor.PulseAll(_renderGate);
-		}
-
 		// The thread is the sole user of the context, so it has to stop first.
-		if (_renderThread is { } thread && !thread.Join(TimeSpan.FromSeconds(5)))
+		if (!StopRenderThread())
 		{
 			this.LogError()?.Error("A popup window's render thread didn't stop, so its graphics are left behind.");
 			return;
@@ -530,7 +538,11 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 		{
 			// The backend's GPU resources can only go while their context is current.
 			(_context as IX11GpuTeardownContext)?.MakeCurrentForTeardown();
-			(_renderer as IDisposable)?.Dispose();
+			using (_context is X11VulkanGraphicsContext vulkan ? vulkan.LockDevice() : null)
+			{
+				(_renderer as IDisposable)?.Dispose();
+			}
+
 			_context.Dispose();
 
 			NativeDispatcher.Main.Enqueue(_content.OnSiteClosed, NativeDispatcherPriority.High);
