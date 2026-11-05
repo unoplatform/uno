@@ -161,7 +161,7 @@ public class PopupIntegrationTests
 			var rootPanel = (StackPanel)XamlReader.Load(
 				"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' x:Name='LayoutRoot' Background='Red' Width='500' Height='700' > \r\n" +
 				"  <Button x:Name='button1' Content='test button' /> \r\n" +
-				"  <Popup x:Name='popup1' VerticalOffset='1' HorizontalOffset='1' DataContext='true' IsOpen='{Binding}' Height='200' Width='500' IsLightDismissEnabled='true'> \r\n" +
+				"  <Popup x:Name='popup1' VerticalOffset='1' HorizontalOffset='1' IsOpen='{Binding}' Height='200' Width='500' IsLightDismissEnabled='true'> \r\n" +
 				"      <StackPanel Background='SlateBlue' Height='200' Width='500'> \r\n" +
 				"          <TextBlock Text='popup1(no light dismiss)'></TextBlock> \r\n" +
 				"      </StackPanel> \r\n" +
@@ -184,11 +184,13 @@ public class PopupIntegrationTests
 			});
 
 			// Verify initial state.
-			VERIFY_IS_TRUE(popup1.IsOpen);
 			VERIFY_IS_TRUE(popup1.IsLightDismissEnabled);
 			VERIFY_IS_NOT_NULL(popup1.GetBindingExpression(Popup.IsOpenProperty));
 
 			TestServices.WindowHelper.WindowContent = rootPanel;
+			// Uno: as a desktop host, the popup finds no popup root while being parsed (ERROR_POPUP_XAMLROOT_NOT_SET).
+			popup1.DataContext = true;
+			VERIFY_IS_TRUE(popup1.IsOpen);
 		});
 
 		await popupLoadedEvent.WaitForDefault();
@@ -608,7 +610,7 @@ public class PopupIntegrationTests
 		{
 			var rootPanel = (StackPanel)XamlReader.Load(
 				"<StackPanel HorizontalAlignment='Center' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' x:Name='LayoutRoot' Background='Red' Width='500' Height='700' > \r\n" +
-				" <Popup x:Name='popup1' IsOpen='True' IsLightDismissEnabled='True'> \r\n" +
+				" <Popup x:Name='popup1' IsLightDismissEnabled='True'> \r\n" +
 				"      <StackPanel> \r\n" +
 				"          <Button x:Name='button1' Background='Green' Width='100' Height='100'/> \r\n" +
 				"      </StackPanel> \r\n" +
@@ -618,6 +620,8 @@ public class PopupIntegrationTests
 			popup1 = (Popup)rootPanel.FindName("popup1");
 			VERIFY_IS_NOT_NULL(popup1);
 			TestServices.WindowHelper.WindowContent = rootPanel;
+			// Uno: as a desktop host, the popup finds no popup root while being parsed (ERROR_POPUP_XAMLROOT_NOT_SET).
+			popup1.IsOpen = true;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -648,7 +652,7 @@ public class PopupIntegrationTests
 		{
 			var rootPanel = (StackPanel)XamlReader.Load(
 				"<StackPanel HorizontalAlignment='Center' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' x:Name='LayoutRoot' Background='Red' Width='500' Height='700' > \r\n" +
-				" <Popup x:Name='popup1' IsOpen='True' IsLightDismissEnabled='True'> \r\n" +
+				" <Popup x:Name='popup1' IsLightDismissEnabled='True'> \r\n" +
 				"      <Button x:Name='button1' Background='Green' Width='100' Height='100'/> \r\n" +
 				"  </Popup> \r\n" +
 				"</StackPanel>");
@@ -659,6 +663,8 @@ public class PopupIntegrationTests
 
 			VERIFY_IS_TRUE(popup1.Child == button1);
 			TestServices.WindowHelper.WindowContent = rootPanel;
+			// Uno: as a desktop host, the popup finds no popup root while being parsed (ERROR_POPUP_XAMLROOT_NOT_SET).
+			popup1.IsOpen = true;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 

@@ -357,6 +357,7 @@ public class PopupTests
 
 		Popup popup;
 		popup = new Popup();
+		popup.XamlRoot = TestServices.WindowHelper.XamlRoot; // Uno: as a desktop host, a parentless popup needs one.
 		popup.Child = canvas;
 		return popup;
 	}
