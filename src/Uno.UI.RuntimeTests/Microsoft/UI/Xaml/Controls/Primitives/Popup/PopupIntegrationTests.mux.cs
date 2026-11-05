@@ -262,7 +262,7 @@ public class PopupIntegrationTests
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: IncludeOnlyOn Desktop, mouse injection is unreliable on OneCore
-	[Ignore("Pending Popup port")]
+	[Ignore("Uno has no CCoreServices::RequestReplayPreviousPointerUpdate: opening a popup under a still pointer raises no PointerEntered, so the replay this test is about never starts.")]
 	public async Task ReplayPointerUpdate_PopupClosedDuringReplay_DoesNotCrash()
 	{
 		// Original 2-popup repro (popupA + popupB).  Snapshot fits within the inline
@@ -273,7 +273,7 @@ public class PopupIntegrationTests
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: IncludeOnlyOn Desktop, mouse injection is unreliable on OneCore
-	[Ignore("Pending Popup port")]
+	[Ignore("Uno has no CCoreServices::RequestReplayPreviousPointerUpdate: opening a popup under a still pointer raises no PointerEntered, so the replay this test is about never starts.")]
 	public async Task ReplayPointerUpdate_PopupClosedDuringReplay_WithManyOpenPopups_DoesNotCrash()
 	{
 		// 5 extra dummy popups + popupA + popupB = 7 total open popups when

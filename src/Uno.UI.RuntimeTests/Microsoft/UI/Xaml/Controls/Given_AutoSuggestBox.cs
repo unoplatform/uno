@@ -1182,6 +1182,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = rootGrid;
 				await WindowHelper.WaitForIdle();
 
+#if HAS_UNO
+				// These are about the room in the window: a windowed popup goes by its monitor (AutoSuggestBox_Partial.cpp:2056).
+				((Popup)SUT.GetTemplateChild("SuggestionsPopup")).ShouldConstrainToRootBounds = true;
+#endif
+
 				SUT.Focus(FocusState.Programmatic);
 				SUT.Text = "1";
 				await WindowHelper.WaitForIdle();
@@ -1272,6 +1277,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Child = SUT
 			};
 			await WindowHelper.WaitForIdle();
+
+			// This is about the room in the window: a windowed popup goes by its monitor (AutoSuggestBox_Partial.cpp:2056).
+			((Popup)SUT.GetTemplateChild("SuggestionsPopup")).ShouldConstrainToRootBounds = true;
 
 			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 			SUT.Focus(FocusState.Programmatic);

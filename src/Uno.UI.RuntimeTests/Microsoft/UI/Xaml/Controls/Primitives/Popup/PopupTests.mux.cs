@@ -1012,7 +1012,7 @@ public class PopupTests
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
-	[Ignore("Pending Popup port")]
+	[Ignore("Popup.SystemBackdrop isn't implemented: a DWM backdrop covers the whole HWND, shadow gutter included, and Win32 has no ContentExternalBackdropLink to fit it to the presenter.")]
 	public async Task SystemBackdropRoundedCorners()
 	{
 		Canvas root = null;

@@ -178,6 +178,35 @@ public class Given_Popup_Windowed
 	}
 
 	[TestMethod]
+	public async Task When_Past_The_Window_Then_Effective_Viewport_Is_Not_Limited_By_It()
+	{
+		var root = new Grid();
+		await UITestHelper.Load(root);
+
+		var xamlRoot = root.XamlRoot!;
+		var inner = new Border { Width = 50, Height = 50 };
+		var content = new Grid { Width = ContentSize, Height = ContentSize };
+		content.Children.Add(inner);
+
+		Rect? viewport = null;
+		inner.EffectiveViewportChanged += (_, e) => viewport = e.EffectiveViewport;
+
+		var popup = CreatePopup(content, xamlRoot, xamlRoot.Size.Width + 100, 20);
+		try
+		{
+			popup.IsOpen = true;
+			await TestServices.WindowHelper.WaitForLoaded(inner);
+			await UITestHelper.WaitFor(() => viewport is not null);
+
+			Assert.IsTrue(viewport!.Value.Width > 0 && viewport.Value.Height > 0, $"The viewport {viewport} shouldn't be empty past the window.");
+		}
+		finally
+		{
+			popup.IsOpen = false;
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Pressed_Outside_Then_Light_Dismisses()
 	{
 		var root = new Grid() { Background = new SolidColorBrush(Colors.Blue) };

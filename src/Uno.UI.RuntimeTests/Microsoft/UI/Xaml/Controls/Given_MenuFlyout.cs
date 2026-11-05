@@ -385,7 +385,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var subItemBounds = subItem.GetAbsoluteBounds();
 				var subSubItemBounds = ((MenuFlyoutSubItem)subItem.Items.Single()).GetAbsoluteBounds();
 
-				var difference = subItemBounds.X - subSubItemBounds.Right;
+				// MUX Reference CascadingMenuHelper.cpp: where the menu has a window of its own, its monitor decides,
+				// and that may well have the room to its right.
+				var difference = Microsoft.UI.Xaml.Controls.Primitives.Popup.DoesPlatformSupportWindowedPopup() && subSubItemBounds.X >= subItemBounds.Right - 5
+					? subSubItemBounds.X - subItemBounds.Right
+					: subItemBounds.X - subSubItemBounds.Right;
 				Assert.IsLessThanOrEqualTo(5d, Math.Abs(difference));
 
 			}
