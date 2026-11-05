@@ -58,7 +58,7 @@ internal static class WeakCanExecuteChangedSubscription
 				SubscriptionCleanup.Run(
 					() => command.CanExecuteChanged -= OnCanExecuteChanged,
 					typeof(WeakCanExecuteChangedSubscription),
-					$"a CanExecuteChanged subscription from {command.GetType()}");
+					"a CanExecuteChanged subscription");
 			}
 		}
 	}
