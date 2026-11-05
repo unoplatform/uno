@@ -1046,7 +1046,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				flyout1.Hide();
 				await TestServices.WindowHelper.WaitForIdle();
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
+#if HAS_UNO
+				// FlyoutBase_partial.cpp: HideImpl hides the child chain top-down and OnPresenterUnloaded raises Closed per presenter, as each unloads.
+				// No Closing is raised again: OnPresenterUnloaded detaches the placement target's Unloaded handler before it runs.
 				var expected =
 				"""
 				closing1 True True True True True True True True True True False
@@ -1054,42 +1056,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				closing3 True True True True True True True True True True False
 				closing4 True True True True True True True True True True False
 				closing5 True True True True True True True True True True False
-				closed1 False False False False False 
-				closing3 False False False False False  False
-				closing4 False False False False False  False
-				closing5 False False False False False  False
-				closed2 False False False False False 
-				closing4 False False False False False  False
-				closing5 False False False False False  False
-				closed3 False False False False False 
-				closing5 False False False False False  False
-				closed4 False False False False False 
 				closed5 False False False False False 
-
-				""";
-#elif HAS_UNO
-				var expected =
-				"""
-				closing1 True True True True True True True True True True False
-				closing2 True True True True True True True True True True False
-				closing3 True True True True True True True True True True False
-				closing4 True True True True True True True True True True False
-				closing5 True True True True True True True True True True False
-				closed1 False False False False False 
-				closing2 False False False False False  False
-				closing3 False False False False False  False
-				closing4 False False False False False  False
-				closing5 False False False False False  False
-				closed2 False False False False False 
-				closing3 False False False False False  False
-				closing4 False False False False False  False
-				closing5 False False False False False  False
-				closed3 False False False False False 
-				closing4 False False False False False  False
-				closing5 False False False False False  False
 				closed4 False False False False False 
-				closing5 False False False False False  False
-				closed5 False False False False False 
+				closed3 False False False False False 
+				closed2 False False False False False 
+				closed1 False False False False False 
 
 				""";
 #else

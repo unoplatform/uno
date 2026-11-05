@@ -290,6 +290,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
 
 #if HAS_UNO // FlyoutBase.OpenFlyouts also includes native popups like NativeDatePickerFlyout
+			// FlyoutBase_partial.cpp: the metadata lets go of the flyout in OnPresenterUnloaded, once the presenter has unloaded.
+			await TestServices.WindowHelper.WaitForIdle();
 			openFlyoutsCount = FlyoutBase.OpenFlyouts.Count;
 			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
 #endif

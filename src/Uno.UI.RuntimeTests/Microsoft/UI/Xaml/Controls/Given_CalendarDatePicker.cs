@@ -29,7 +29,9 @@ public class Given_CalendarDatePicker
 		var root = (Grid)SUT.FindName("Root");
 		var flyout = (Flyout)FlyoutBase.GetAttachedFlyout(root);
 		flyout.XamlRoot = SUT.XamlRoot;
-		flyout.Open();
+
+		// FlyoutBase_partial.cpp, Open: parameters should be validated and cached prior to calling it, which ShowAt does.
+		flyout.ShowAt(root);
 
 		await WindowHelper.WaitForIdle();
 		var calendarView = (CalendarView)flyout.Content;
