@@ -3,6 +3,7 @@
 // MUX Reference FlyoutBase_partial.h, tag winui3/release/2.5.1, commit ba3a8d59e
 
 using Uno.Disposables;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 
@@ -10,7 +11,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class FlyoutBase
 {
+	internal enum InputPaneState
+	{
+		InputPaneHidden,
+		InputPaneShowing,
+	}
+
 	private const FlyoutPlacementMode g_defaultPlacementMode = FlyoutPlacementMode.Top;
+
+	// Offsets for PopupThemeTransition
+	private const double g_entranceThemeOffset = 50.0;
 
 	// Margin between FlyoutBase and window's edge, AppBar and placement target.
 	internal const float FlyoutMargin = 4;
@@ -45,11 +55,17 @@ partial class FlyoutBase
 	// Indicates if the flyout should use the PickerFlyoutThemeTransition.
 	private bool m_usePickerFlyoutTheme;
 
+	// Allows us to remember the height of the InputPane even after it has dismissed.
+	private double m_cachedInputPaneHeight;
+
 	// Placement target and placement mode saved while the flyout is open
 	private MajorPlacementMode m_majorPlacementMode = GetMajorPlacementFromPlacement(g_defaultPlacementMode);
 	private PreferredJustification m_preferredJustification = PreferredJustification.Center;
 
 	private Control m_tpPresenter;
+
+	private FlyoutBase m_tpParentFlyout;
+	private FlyoutMetadata m_childFlyoutMetadata;
 
 	// Set the target position to show the flyout at the specified position
 	private bool m_isTargetPositionSet;
@@ -57,17 +73,31 @@ partial class FlyoutBase
 	// when there is not enough space to place the presenter, we'll resize it. default is true.
 	private bool m_allowPresenterResizing = true;
 
+	// Indicates if we've overridden the value of the FlyoutPresenter's requested theme.
+	private bool m_isFlyoutPresenterRequestedThemeOverridden;
+
 	private Point m_targetPoint;
 	private Rect m_exclusionRect = DirectUI.RectUtil.CreateEmptyRect();
 	private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
+	// Old values of the target position properties to tell whether we should no-op
+	// upon being told to re-show a flyout.
+	private bool m_wasTargetPositionSet;
+	private Point m_lastTargetPoint;
+
+	private bool m_isLightDismissOverlayEnabled = true;
+
 	private bool m_shouldTakeFocus = true;
+	private bool m_shouldHideIfPointerMovesAway;
 	private bool m_shouldOverlayPassThroughAllInput;
 	private bool m_ownsOverlayInputPassThroughElement;
 	private bool m_isPositionedForDateTimePicker;
 
 	private bool m_hasPlacementOverride;
 	private FlyoutPlacementMode m_placementOverride = FlyoutPlacementMode.Top;
+
+	private bool m_isRootVisualPointerMovedAttached;
+	private ManagedWeakReference m_wrRootVisual;
 
 	private bool m_openingCanceled;
 

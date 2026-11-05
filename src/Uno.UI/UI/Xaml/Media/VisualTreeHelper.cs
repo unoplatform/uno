@@ -222,7 +222,7 @@ namespace Microsoft.UI.Xaml.Media
 			return GetOpenPopups(xamlRoot.VisualTree);
 		}
 
-		private static IReadOnlyList<Popup> GetOpenPopups(VisualTree visualTree)
+		internal static IReadOnlyList<Popup> GetOpenPopups(VisualTree visualTree)
 		{
 			if (visualTree?.PopupRoot is not { } popupRoot)
 			{

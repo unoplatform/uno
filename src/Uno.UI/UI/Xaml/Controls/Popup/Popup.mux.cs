@@ -1012,7 +1012,7 @@ partial class Popup
 		// If this popup is associated with a flyout, then give it a chance to cancel closing.
 		if (AssociatedFlyout is { } flyout)
 		{
-			cancel = flyout.Hide(canCancel: true);
+			FlyoutBase.OnClosingStatic(flyout, ref cancel);
 		}
 	}
 

@@ -32,7 +32,7 @@ partial class NativeTimePickerFlyout : TimePickerFlyout
 
 		ShowTimePicker();
 
-		AddToOpenFlyouts();
+		SetOpenNativeFlyout();
 	}
 
 	private void SaveInitialTime() => _initialTime = Time;
@@ -91,10 +91,11 @@ partial class NativeTimePickerFlyout : TimePickerFlyout
 	{
 		if (!_programmaticallyDismissed)
 		{
-			Hide(canCancel: false);
-			RemoveFromOpenFlyouts();
+			ClosePopup();
 		}
 	}
+
+	private protected override void ClosePopup() => OnPresenterUnloaded();
 
 	private protected override void OnClosed()
 	{

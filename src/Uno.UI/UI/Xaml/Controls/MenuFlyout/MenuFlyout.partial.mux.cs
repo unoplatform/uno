@@ -381,8 +381,7 @@ Cleanup:
 
 			bool isSubMenu = value is not null;
 
-			// TODO:MZ: Needed?
-			// m_tpPopup.IsSubMenu = isSubMenu;
+			_popup.IsSubMenu = isSubMenu;
 			if (menuFlyoutPresenter is { })
 			{
 				menuFlyoutPresenter.IsSubPresenter = isSubMenu;

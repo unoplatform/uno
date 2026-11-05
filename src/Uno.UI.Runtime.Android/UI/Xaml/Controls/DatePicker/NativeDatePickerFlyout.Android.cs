@@ -98,7 +98,7 @@ public
 		_dialog.DismissEvent += OnDismiss;
 		_dialog.Show();
 
-		AddToOpenFlyouts();
+		SetOpenNativeFlyout();
 	}
 
 	private void OnDateChanged(DependencyObject sender, DependencyProperty dp)
@@ -111,10 +111,11 @@ public
 	{
 		if (!_programmaticallyDismissed)
 		{
-			Hide(canCancel: false);
-			RemoveFromOpenFlyouts();
+			ClosePopup();
 		}
 	}
+
+	private protected override void ClosePopup() => OnPresenterUnloaded();
 
 	private protected override void OnClosed()
 	{
