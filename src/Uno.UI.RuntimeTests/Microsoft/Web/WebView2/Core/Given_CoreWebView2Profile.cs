@@ -14,10 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_Web_WebView2_Core;
 public class Given_CoreWebView2Profile
 {
 	private static readonly TimeSpan ClearBrowsingDataTimeout = TimeSpan.FromSeconds(30);
-
-	// The Win32 WebView2 constructor blocks the UI thread in a nested pump while the environment and
-	// controller are created; that cold start outlasts the 1s default on CI.
-	private const int LoadTimeoutMS = 10_000;
+	private const int BrowserOperationTimeoutMS = 30_000;
 
 	/// <summary>
 	/// Undoes the footprint <see cref="CreateCoreWebView2Async"/> leaves in the visual tree.
@@ -150,6 +147,91 @@ public class Given_CoreWebView2Profile
 		await clearing.AsTask().WaitAsync(ClearBrowsingDataTimeout);
 	}
 
+	[TestMethod]
+	public async Task When_Browser_Is_Starting_Then_Layout_Is_Not_Blocked()
+	{
+		var webView = new WebView2 { Width = 200, Height = 200 };
+		var border = new Border { Child = webView };
+		var initialization = webView.EnsureCoreWebView2Async().AsTask();
+		bool? initializedWhenLoaded = null;
+		webView.Loaded += (_, _) => initializedWhenLoaded = initialization.IsCompleted;
+
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+
+		// The browser only reports back through a message, which can't be handled during the layout pass that
+		// loads the control, unless that pass is itself stuck pumping messages until the browser is up.
+		Assert.IsFalse(initializedWhenLoaded);
+
+		await initialization;
+		Assert.AreNotEqual(0u, webView.CoreWebView2.BrowserProcessId);
+	}
+
+	[TestMethod]
+	public async Task When_CoreWebView2Initialized_Then_Native_WebView_Is_Available()
+	{
+		var webView = new WebView2 { Width = 200, Height = 200 };
+		uint browserProcessId = 0;
+		webView.CoreWebView2Initialized += (sender, args) =>
+		{
+			Assert.IsNull(args.Exception);
+			browserProcessId = sender.CoreWebView2.BrowserProcessId;
+		};
+
+		TestServices.WindowHelper.WindowContent = new Border { Child = webView };
+		await webView.EnsureCoreWebView2Async();
+		await TestServices.WindowHelper.WaitFor(() => browserProcessId != 0);
+	}
+
+	[TestMethod]
+	public async Task When_Navigated_Before_Browser_Started_Then_Mappings_And_Source_Are_Applied()
+	{
+		var folder = Directory.CreateTempSubdirectory("UnoWebView2Test").FullName;
+		try
+		{
+			await File.WriteAllTextAsync(Path.Combine(folder, "index.html"), "<html><head><title>mapped</title></head></html>");
+
+			var webView = new WebView2 { Width = 200, Height = 200 };
+			var border = new Border { Child = webView };
+			var navigated = false;
+			webView.NavigationCompleted += (_, args) => navigated = args.IsSuccess;
+
+			TestServices.WindowHelper.WindowContent = border;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+
+			webView.CoreWebView2.SetVirtualHostNameToFolderMapping("unotest.example", folder, CoreWebView2HostResourceAccessKind.Allow);
+			webView.CoreWebView2.Navigate("http://unotest.example/index.html");
+
+			await webView.EnsureCoreWebView2Async();
+			await TestServices.WindowHelper.WaitFor(() => navigated, BrowserOperationTimeoutMS);
+
+			Assert.AreEqual("\"mapped\"", await webView.ExecuteScriptAsync("document.title"));
+		}
+		finally
+		{
+			Directory.Delete(folder, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Arranged_Before_Browser_Started_Then_Viewport_Matches()
+	{
+		var webView = new WebView2 { Width = 200, Height = 100 };
+		var border = new Border { Child = webView };
+		var navigated = false;
+		webView.NavigationCompleted += (_, _) => navigated = true;
+
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+
+		webView.NavigateToString("<html></html>");
+		await webView.EnsureCoreWebView2Async();
+		await TestServices.WindowHelper.WaitFor(() => navigated, BrowserOperationTimeoutMS);
+
+		Assert.AreEqual("200", await webView.ExecuteScriptAsync("window.innerWidth"));
+		Assert.AreEqual("100", await webView.ExecuteScriptAsync("window.innerHeight"));
+	}
+
 	/// <remarks>
 	/// The WebView2 this loads is removed by <see cref="Cleanup"/>.
 	/// </remarks>
@@ -160,7 +242,7 @@ public class Given_CoreWebView2Profile
 		border.Child = webView;
 
 		TestServices.WindowHelper.WindowContent = border;
-		await TestServices.WindowHelper.WaitForLoaded(border, timeoutMS: LoadTimeoutMS);
+		await TestServices.WindowHelper.WaitForLoaded(border);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await webView.EnsureCoreWebView2Async();
