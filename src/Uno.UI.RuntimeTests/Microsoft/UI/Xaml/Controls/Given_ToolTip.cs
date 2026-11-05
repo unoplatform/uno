@@ -1098,6 +1098,83 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Pending_ToolTip_Opened_And_Closed_By_App_Then_Still_Opens_Automatically()
+		{
+			// As in WinUI, closing releases a tooltip from the service only if the service opened it: the app opening and
+			// closing the tooltip during the show delay does not cancel the pending automatic open.
+			var owner = new Button { Content = "Hover me", Width = 100, Height = 50 };
+			var toolTip = new ToolTip { Content = "ToolTip content" };
+			ToolTipService.SetToolTip(owner, toolTip);
+			await UITestHelper.Load(owner);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				mouse.MoveTo(owner.GetAbsoluteBounds().GetCenter());
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsFalse(toolTip.IsOpen, "premise: the tooltip is still waiting to open");
+
+				toolTip.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+				toolTip.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				await UITestHelper.WaitFor(() => toolTip.IsOpen, timeoutMS: 5000, message: "The hovered tooltip did not open after the app opened and closed it.");
+			}
+			finally
+			{
+				mouse.MoveTo(new Windows.Foundation.Point(0, 0));
+				CloseOpenPopups();
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Automatic_ToolTip_Reopened_By_App_Then_ShowDuration_Does_Not_Close_It()
+		{
+			// Once the app has closed the automatic tooltip, the service has let go of it: a reopen is the app's to close.
+			var owner = new Button { Content = "Hover me", Width = 100, Height = 50 };
+			var toolTip = new ToolTip { Content = "ToolTip content" };
+			ToolTipService.SetToolTip(owner, toolTip);
+			await UITestHelper.Load(owner);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				mouse.MoveTo(owner.GetAbsoluteBounds().GetCenter());
+				await UITestHelper.WaitFor(() => toolTip.IsOpen, timeoutMS: 5000, message: "The automatic tooltip did not open on hover.");
+
+				toolTip.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+				toolTip.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsTrue(toolTip.IsOpen, "premise: the app reopened the tooltip");
+
+#if HAS_UNO
+				// WinUI has no show-duration close; Uno's closes the automatic tooltip after ShowDuration.
+				await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDuration + 500));
+#endif
+				Assert.IsTrue(toolTip.IsOpen, "The service's show-duration timer closed a tooltip the app reopened.");
+			}
+			finally
+			{
+				mouse.MoveTo(new Windows.Foundation.Point(0, 0));
+				CloseOpenPopups();
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
 		private static async Task<WeakReference> HoverToolTipOwnerThenClosePopup(ContentControl root, Mouse mouse)
 		{
 			var owner = new Button { Content = "Hover me", Width = 100, Height = 50 };
