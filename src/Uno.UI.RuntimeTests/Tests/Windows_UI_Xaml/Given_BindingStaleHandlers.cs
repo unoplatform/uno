@@ -154,6 +154,41 @@ public class Given_BindingStaleHandlers
 		Assert.AreEqual(propertyBaseline, vm.SubscriberCount, "PropertyChanged handlers of collected bindings are still on the source.");
 	}
 
+	// A nested path subscribes once per segment: every segment's handler must go away.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Nested_Path_Bound_Elements_Collected_Then_Handlers_Removed()
+	{
+		var vm = new NestedViewModel(); // outlives the elements, and never raises
+		var parentBaseline = vm.SubscriberCount;
+		var childBaseline = vm.Child.SubscriberCount;
+
+		var refs = CreateNestedBound(vm);
+		Assert.AreEqual(parentBaseline + Count, vm.SubscriberCount, "Each binding should subscribe to the parent once.");
+		Assert.AreEqual(childBaseline + Count, vm.Child.SubscriberCount, "Each binding should subscribe to the child once.");
+
+		await CollectAsync(refs, () => vm.SubscriberCount == parentBaseline && vm.Child.SubscriberCount == childBaseline);
+
+		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The bound elements were not collected.");
+		Assert.AreEqual(parentBaseline, vm.SubscriberCount, "Handlers of collected bindings are still on the parent.");
+		Assert.AreEqual(childBaseline, vm.Child.SubscriberCount, "Handlers of collected bindings are still on the child.");
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static List<WeakReference> CreateNestedBound(NestedViewModel vm)
+	{
+		var refs = new List<WeakReference>();
+		for (var i = 0; i < Count; i++)
+		{
+			var element = new TextBlock { DataContext = vm };
+			element.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("Child.Name") });
+			Assert.AreEqual("child", element.Text);
+			refs.Add(new WeakReference(element));
+		}
+
+		return refs;
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static List<WeakReference> CreateIndexerBound(IndexedViewModel vm)
 	{
@@ -241,6 +276,21 @@ public class Given_BindingStaleHandlers
 					handler(this, args);
 				}
 			}
+		}
+	}
+
+	private sealed class NestedViewModel : INotifyPropertyChanged
+	{
+		private readonly List<PropertyChangedEventHandler> _handlers = new();
+
+		public int SubscriberCount => _handlers.Count;
+
+		public CountingViewModel Child { get; } = new() { Name = "child" };
+
+		public event PropertyChangedEventHandler? PropertyChanged
+		{
+			add => _handlers.Add(value!);
+			remove => _handlers.Remove(value!);
 		}
 	}
 

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation.Collections;
 using static Private.Infrastructure.TestServices;
 using static Uno.UI.RuntimeTests.Helpers.LeakTestHelper;
 
@@ -174,6 +175,93 @@ public class Given_ItemsRepeater_Leak
 		}
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
+#endif
+	public async Task When_Repeater_Collected_And_Source_Raised_Then_Subscription_Removed()
+	{
+		var source = new CountingCollection { "a", "b" };
+		var refs = CreateNeverLoaded(() => source);
+		await WindowHelper.WaitForIdle();
+
+		// Don't yield to the dispatcher here, so the raise reaches the handlers of the collected repeaters.
+		for (var i = 0; i < 10 && refs.Any(r => r.IsAlive); i++)
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+		}
+		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The repeaters were not collected.");
+
+		source.Add("c");
+		await CollectAsync(refs, () => source.SubscriberCount == 0);
+
+		Assert.AreEqual(0, source.SubscriberCount, "A raise to collected repeaters kept their subscriptions on the items source.");
+	}
+
+	// Each kind of observable source has its own subscription: all of them must go away with a view nobody references,
+	// like the throwaway views NavigationView creates to inspect its items.
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(SourceKind.CollectionChanged)]
+	[DataRow(SourceKind.ObservableVector)]
+#if HAS_UNO
+	[DataRow(SourceKind.UntypedObservableVector)]
+#endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
+#endif
+	public async Task When_ItemsSourceView_Dropped_Then_Subscription_Removed_From_Source(SourceKind kind)
+	{
+		var (source, subscriberCount) = CreateCountingSource(kind);
+		CreateItemsSourceViews(source);
+		Assert.AreEqual(Count, subscriberCount(), "Each view should subscribe to the source once.");
+
+		await CollectAsync(new List<WeakReference>(), () => subscriberCount() == 0);
+
+		Assert.AreEqual(0, subscriberCount(), "Subscriptions of collected views are still on the source.");
+		GC.KeepAlive(source);
+	}
+
+	public enum SourceKind
+	{
+		CollectionChanged,
+		ObservableVector,
+		UntypedObservableVector,
+	}
+
+	private static (object source, Func<int> subscriberCount) CreateCountingSource(SourceKind kind)
+	{
+		switch (kind)
+		{
+			case SourceKind.CollectionChanged:
+				var collection = new CountingCollection { "a", "b" };
+				return (collection, () => collection.SubscriberCount);
+			case SourceKind.ObservableVector:
+				var vector = new CountingObservableVector { "a", "b" };
+				return (vector, () => vector.SubscriberCount);
+#if HAS_UNO
+			case SourceKind.UntypedObservableVector:
+				var untypedVector = new CountingUntypedObservableVector { "a", "b" };
+				return (untypedVector, () => untypedVector.SubscriberCount);
+#endif
+			default:
+				throw new ArgumentOutOfRangeException(nameof(kind));
+		}
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static void CreateItemsSourceViews(object source)
+	{
+		for (var i = 0; i < Count; i++)
+		{
+			_ = new ItemsSourceView(source);
+		}
+	}
+
 	private static int CountRealized(ItemsRepeater repeater)
 		=> Enumerable.Range(0, Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(repeater))
 			.Select(i => Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(repeater, i))
@@ -220,6 +308,34 @@ public class Given_ItemsRepeater_Leak
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static bool IsLoaded(WeakReference reference) => reference.Target is FrameworkElement { IsLoaded: true };
+#endif
+
+	private sealed class CountingObservableVector : List<object>, IObservableVector<object>
+	{
+		private readonly List<VectorChangedEventHandler<object>> _handlers = new();
+
+		public int SubscriberCount => _handlers.Count;
+
+		public event VectorChangedEventHandler<object>? VectorChanged
+		{
+			add => _handlers.Add(value!);
+			remove => _handlers.Remove(value!);
+		}
+	}
+
+#if HAS_UNO
+	private sealed class CountingUntypedObservableVector : List<object>, IObservableVector
+	{
+		private readonly List<VectorChangedEventHandler> _handlers = new();
+
+		public int SubscriberCount => _handlers.Count;
+
+		public event VectorChangedEventHandler? UntypedVectorChanged
+		{
+			add => _handlers.Add(value!);
+			remove => _handlers.Remove(value!);
+		}
+	}
 #endif
 
 	// Raises over its live handler list: removing a handler mid-raise would throw.
