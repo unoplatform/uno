@@ -19,6 +19,7 @@ jobs:
         _VariantName: 'Skia'
 
   pool:
+    name: 'GitHub-hosted Agents'
     vmImage: ${{ parameters.vmImage }}
 
   variables:
