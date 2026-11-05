@@ -345,7 +345,7 @@ To stop the Uno.Sdk from adding it at all, set `UnoDisableHotTesting` to `true`.
 
 ### UNOB0030: The SkiaRenderer Uno Feature is ignored in a library
 
-Starting with Uno Platform 7.0, the renderer is chosen by the app, not by its libraries. In an app, the legacy `SkiaRenderer` feature is still mapped to `Skia`. In a library it is ignored, so the library doesn't make SkiaSharp a dependency of every app that uses it, including apps that render with WebGPU only.
+Starting with Uno Platform 7.0, the renderer is chosen by the app, not by its libraries. On the Uno Platform targets of an app, the legacy `SkiaRenderer` feature is still mapped to `Skia`. In a library it is ignored, so the library doesn't make SkiaSharp a dependency of every app that uses it, including apps that render with WebGPU only.
 
 To fix this:
 
