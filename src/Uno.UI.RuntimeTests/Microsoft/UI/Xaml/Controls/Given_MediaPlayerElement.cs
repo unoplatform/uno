@@ -93,6 +93,62 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
+	// WASM (HTML5) never leaves Opening so Paused is unreachable; macOS (AVPlayer) times out at load.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Source_Set_While_ThreadPool_Busy_Media_Still_Opens()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = false,
+			Width = 100,
+		};
+		WindowHelper.WindowContent = sut;
+		await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
+		await WindowHelper.WaitFor(() => sut.MediaPlayer is not null);
+
+		// Setting the source stops the player and then starts it again. Anything the stop leaves to the
+		// thread pool must not overtake the start, which a saturated pool would otherwise guarantee.
+		var release = SaturateThreadPool();
+		try
+		{
+			sut.Source = MediaSource.CreateFromUri(TestVideoUrl);
+		}
+		finally
+		{
+			release.Set();
+		}
+
+		await WaitForMediaLoaded(sut);
+		await WindowHelper.WaitFor(
+			condition: () => sut.MediaPlayer?.PlaybackSession?.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Paused,
+			timeoutMS: PlaybackTimeoutMS,
+			message: "Timeout waiting for the media player to enter Paused state."
+		);
+	}
+
+	private static ManualResetEventSlim SaturateThreadPool()
+	{
+		ManualResetEventSlim release = new();
+		var blockers = ThreadPool.ThreadCount + Environment.ProcessorCount * 4;
+		for (var i = 0; i < blockers; i++)
+		{
+			ThreadPool.QueueUserWorkItem(static gate => ((ManualResetEventSlim)gate!).Wait(), release);
+		}
+
+		// Sleeping, not awaiting: timers need the pool, and this only has to let the idle threads pick up work.
+		Thread.Sleep(100);
+
+		if (ThreadPool.PendingWorkItemCount == 0)
+		{
+			release.Set();
+			Assert.Inconclusive("Could not saturate the thread pool.");
+		}
+
+		return release;
+	}
+
+	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
 	// The macOS (AVPlayer) and WASM (HTML5) backends never leave Opening, so the Paused wait below times out.
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
