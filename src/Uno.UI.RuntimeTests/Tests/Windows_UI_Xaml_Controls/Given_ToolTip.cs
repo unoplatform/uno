@@ -534,6 +534,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("OwnerRemoved")]
 		[DataRow("Click")]
 		[DataRow("IsOpen")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
 		public async Task When_ToolTip_Closed_And_Owner_Removed_Then_Owner_Not_Rooted(string closedBy)
 		{
 			var host = new StackPanel { Width = 300, Height = 300 };
@@ -599,6 +600,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
 		public async Task When_Automatic_ToolTip_Reopened_By_App_Then_ShowDuration_Does_Not_Close_It()
 		{
 			var owner = new Button { Content = "Owner", Width = 120, Height = 40 };
@@ -636,6 +638,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
 		public async Task When_Pending_ToolTip_Opened_And_Closed_By_App_Then_Still_Opens_Automatically()
 		{
 			var owner = new Button { Content = "Owner", Width = 120, Height = 40 };
@@ -650,14 +653,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				mouse.MoveTo(owner.GetAbsoluteBoundsRect().GetCenter());
 				await UITestHelper.WaitForIdle();
+				Assert.IsFalse(toolTip.IsOpen, "premise: the ToolTip is still waiting to open");
+				Assert.AreSame(toolTip, ToolTipService.CurrentToolTipForTesting, "premise: the service holds the pending ToolTip");
 
+				// Back to back, so the show delay cannot elapse while the app holds the ToolTip open.
 				toolTip.IsOpen = true;
-				await UITestHelper.WaitForIdle();
 				toolTip.IsOpen = false;
-				await UITestHelper.WaitForIdle();
 
-				await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
-				Assert.IsTrue(toolTip.IsOpen, "The hovered ToolTip did not open after the app opened and closed it.");
+				Assert.AreSame(toolTip, ToolTipService.CurrentToolTipForTesting, "The app closing the ToolTip cancelled the pending automatic open.");
+				await UITestHelper.WaitFor(() => toolTip.IsOpen, timeoutMS: 5000, message: "The hovered ToolTip did not open after the app opened and closed it.");
 			}
 			finally
 			{
