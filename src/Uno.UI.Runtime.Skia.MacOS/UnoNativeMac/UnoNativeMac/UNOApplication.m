@@ -216,6 +216,29 @@ bool uno_application_is_bundled(void)
 
 static bool application_exit_requested;
 
+static bool is_session_ending(void)
+{
+    NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
+    if (event.eventClass != kCoreEventClass || event.eventID != kAEQuitApplication) {
+        return false;
+    }
+    OSType reason = [event attributeDescriptorForKeyword:kAEQuitReason].typeCodeValue;
+#if DEBUG
+    NSLog(@"is_session_ending quit reason: '%@'", NSFileTypeForHFSTypeCode(reason));
+#endif
+    switch (reason) {
+        case kAELogOut:
+        case kAEReallyLogOut:
+        case kAEShowRestartDialog:
+        case kAERestart:
+        case kAEShowShutdownDialog:
+        case kAEShutDown:
+            return true;
+        default:
+            return false;
+    }
+}
+
 void uno_application_quit(void)
 {
 #if DEBUG
@@ -253,13 +276,15 @@ void uno_application_quit(void)
         return NSTerminateNow;
     }
 
-    // Any other quit (Cmd+Q, the application menu, the Dock, a logout) closes the windows as the user would, so
-    // `AppWindow.Closing` can cancel it and `Closed` runs; then `DispatcherShutdownMode` decides, as after the last window
-    if (!uno_windows_close_all()) {
-        return NSTerminateCancel;
+    // The end of a session (logout, restart, shutdown) is not refused, as on Windows: it ends the application without
+    // `AppWindow.Closing` or `Closed`
+    if (is_session_ending()) {
+        return NSTerminateNow;
     }
 
-    return [self applicationShouldTerminateAfterLastWindowClosed:sender] ? NSTerminateNow : NSTerminateCancel;
+    // Any other quit (Cmd+Q, the application menu, the Dock) closes the windows as the user would, so `AppWindow.Closing`
+    // can cancel it; once they are closed the application exits, as a quit is not a window close for `DispatcherShutdownMode`
+    return uno_windows_close_for_quit() ? NSTerminateNow : NSTerminateCancel;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
