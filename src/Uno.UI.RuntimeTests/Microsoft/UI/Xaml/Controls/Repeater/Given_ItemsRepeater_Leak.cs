@@ -56,7 +56,7 @@ public class Given_ItemsRepeater_Leak
 		GC.KeepAlive(view);
 	}
 
-#if HAS_UNO // DataTemplate(Func<>) is Uno-only
+#if HAS_UNO // DataTemplate(owner, factory) is Uno-only
 	[TestMethod]
 	[RunsOnUIThread]
 	[DataRow(false)]
@@ -202,7 +202,7 @@ public class Given_ItemsRepeater_Leak
 		var repeater = new ItemsRepeater
 		{
 			ItemsSource = source,
-			ItemTemplate = new DataTemplate(() => new TextBlock { Tag = screen }),
+			ItemTemplate = new DataTemplate(null, (_, _) => new TextBlock { Tag = screen }),
 		};
 		screen.Children.Add(new Button
 		{
