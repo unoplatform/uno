@@ -25,7 +25,30 @@ internal class MacOSCoreApplicationExtension : ICoreApplicationExtension
 
 	public bool CanExit => true;
 
-	public void Exit() => NativeUno.uno_application_quit();
+	// As WinUI's FrameworkApplication::ExitImpl: every window closes as with Window.Close(), raising Window.Closed but not
+	// AppWindow.Closing; the application then exits, unless a window stayed open (Closed handled) with OnLastWindowClose.
+	public void Exit()
+	{
+		foreach (var window in ApplicationHelper.WindowsInternal.ToArray())
+		{
+			try
+			{
+				window.Close();
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Closing a window for Application.Exit() failed; the other windows still close.", e);
+				}
+			}
+		}
+
+		if (ApplicationHelper.WindowsInternal.Count == 0 || Application.Current?.DispatcherShutdownMode == DispatcherShutdownMode.OnExplicitShutdown)
+		{
+			NativeUno.uno_application_quit();
+		}
+	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	// System.Boolean is not blittable / https://learn.microsoft.com/en-us/dotnet/framework/interop/blittable-and-non-blittable-types
