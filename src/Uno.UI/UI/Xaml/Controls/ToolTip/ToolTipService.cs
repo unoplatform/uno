@@ -147,6 +147,14 @@ public partial class ToolTipService
 
 		if (m_CurrentToolTip is { } toolTip)
 		{
+			if (toolTip.IsOpen)
+			{
+				// The app opened it during the show delay. As in WinUI (OpenAutomaticToolTip), the service does not take over a
+				// ToolTip it did not open.
+				m_CurrentToolTip = null;
+				return;
+			}
+
 			toolTip.m_inputMode = s_lastEnterInputMode;
 
 			s_bOpeningAutomaticToolTip = true;
