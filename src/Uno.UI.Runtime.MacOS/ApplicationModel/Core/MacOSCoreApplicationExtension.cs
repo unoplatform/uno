@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
 using Uno.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.MacOS;
 
@@ -32,5 +33,16 @@ internal class MacOSCoreApplicationExtension : ICoreApplicationExtension
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static int AppShouldTerminateAfterLastWindowClosed()
-		=> Application.Current?.DispatcherShutdownMode == DispatcherShutdownMode.OnExplicitShutdown ? 0 : 1;
+	{
+		if (Application.Current?.DispatcherShutdownMode != DispatcherShutdownMode.OnExplicitShutdown)
+		{
+			return 1;
+		}
+
+		if (typeof(MacOSCoreApplicationExtension).Log().IsEnabled(LogLevel.Debug))
+		{
+			typeof(MacOSCoreApplicationExtension).Log().Debug("The last window closed; with OnExplicitShutdown, the application keeps running until Application.Exit().");
+		}
+		return 0;
+	}
 }
