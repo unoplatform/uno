@@ -12,6 +12,7 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.Graphics.OpenGL;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace Uno.UI.Runtime.Win32;
 
@@ -78,7 +79,8 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 	public Func<string, nint> GetProcAddress => Win32NativeOpenGLWrapper.GetProcAddressStatic;
 
-	public static unsafe Win32OpenGLGraphicsContext? TryCreate(HWND hwnd)
+	/// <param name="transparent">The window is composited with per-pixel alpha, so its framebuffer needs an alpha channel.</param>
+	public static unsafe Win32OpenGLGraphicsContext? TryCreate(HWND hwnd, bool transparent = false)
 	{
 		var hdc = PInvoke.GetDC(hwnd);
 		if (hdc == IntPtr.Zero)
@@ -92,7 +94,8 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 		{
 			nSize = (ushort)Marshal.SizeOf<PIXELFORMATDESCRIPTOR>(),
 			nVersion = 1,
-			dwFlags = PFD_FLAGS.PFD_DRAW_TO_WINDOW | PFD_FLAGS.PFD_SUPPORT_OPENGL | PFD_FLAGS.PFD_DOUBLEBUFFER,
+			dwFlags = PFD_FLAGS.PFD_DRAW_TO_WINDOW | PFD_FLAGS.PFD_SUPPORT_OPENGL | PFD_FLAGS.PFD_DOUBLEBUFFER
+				| (transparent ? PFD_FLAGS.PFD_SUPPORT_COMPOSITION : 0),
 			iPixelType = PFD_PIXEL_TYPE.PFD_TYPE_RGBA,
 			cColorBits = 32,
 			cRedBits = 8,
@@ -160,6 +163,19 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 			_ = PInvoke.wglMakeCurrent(default, HGLRC.Null);
 			ReleaseGlContext(hwnd, hdc, glContext);
 			return null;
+		}
+
+		if (transparent)
+		{
+			int alphaBits = default;
+			PInvoke.glGetIntegerv(/* GL_ALPHA_BITS */ 0x0D55, ref alphaBits);
+			if (alphaBits == 0)
+			{
+				typeof(Win32OpenGLGraphicsContext).LogInfo()?.Info("The pixel format has no alpha channel, so OpenGL can't draw this transparent window.");
+				_ = PInvoke.wglMakeCurrent(default, HGLRC.Null);
+				ReleaseGlContext(hwnd, hdc, glContext);
+				return null;
+			}
 		}
 
 		var followRefreshRate = FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate;
@@ -322,6 +338,7 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedContext, IWin32PresentReporting
 {
 	private readonly HWND _hwnd;
+	private readonly bool _layered;
 	private readonly Win32RenderPacer _pacer;
 
 	private HBITMAP _hBitmap;
@@ -329,9 +346,11 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 	private int _width;
 	private int _height;
 
-	public Win32SoftwareGraphicsContext(HWND hwnd)
+	/// <param name="layered">The window is a <c>WS_EX_LAYERED</c> one, presented with its per-pixel alpha.</param>
+	public Win32SoftwareGraphicsContext(HWND hwnd, bool layered = false)
 	{
 		_hwnd = hwnd;
+		_layered = layered;
 		// BitBlt returns instantly, so the loop is paced here: to the display refresh when
 		// SetFrameRateAsScreenRefreshRate is on, otherwise to the configured FrameRate.
 		_pacer = new Win32RenderPacer(
@@ -435,8 +454,10 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 			return;
 		}
 
-		var success2 = PInvoke.BitBlt(paintDc, 0, 0, _width, _height, bitmapDc, 0, 0, ROP_CODE.SRCCOPY);
-		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.BitBlt)} failed: {Win32Helper.GetErrorMessage()}"); }
+		var success2 = _layered
+			? UpdateLayeredWindowFromDib(paintDc, bitmapDc)
+			: (bool)PInvoke.BitBlt(paintDc, 0, 0, _width, _height, bitmapDc, 0, 0, ROP_CODE.SRCCOPY);
+		if (!success2) { this.LogError()?.Error($"Presenting the window's frame failed: {Win32Helper.GetErrorMessage()}"); }
 		_presented = success2;
 
 		// BitBlt returns instantly, so block until the compositor's next vsync to pace the loop.
@@ -444,6 +465,27 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 	}
 
 	public void UpdateRefreshRate(double fps) => _pacer.UpdateTargetFps(fps);
+
+	private unsafe bool UpdateLayeredWindowFromDib(HDC screenDc, HDC bitmapDc)
+	{
+		// A size change makes this call send WM_WINDOWPOSCHANGED to the UI thread, which can be waiting for this thread.
+		// The frame belongs to a size the window has moved on from, and the next one will match.
+		if (!PInvoke.GetClientRect(_hwnd, out var client) || client.Width != _width || client.Height != _height)
+		{
+			return false;
+		}
+
+		var size = new global::Windows.Win32.Foundation.SIZE(_width, _height);
+		var source = default(System.Drawing.Point);
+		var blend = new BLENDFUNCTION
+		{
+			BlendOp = /* AC_SRC_OVER */ 0,
+			SourceConstantAlpha = 255,
+			AlphaFormat = /* AC_SRC_ALPHA */ 1,
+		};
+
+		return PInvoke.UpdateLayeredWindow(_hwnd, screenDc, null, &size, bitmapDc, &source, new COLORREF(0), &blend, UPDATE_LAYERED_WINDOW_FLAGS.ULW_ALPHA);
+	}
 
 	public void Dispose()
 	{

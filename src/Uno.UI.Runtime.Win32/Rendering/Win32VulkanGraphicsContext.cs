@@ -40,7 +40,7 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 
 	public bool PresentedLastFrame => _presented;
 
-	public Win32VulkanGraphicsContext(HWND hwnd)
+	public Win32VulkanGraphicsContext(HWND hwnd, bool transparent = false)
 	{
 		// Taken before anything can throw: this is the first kind the first window negotiates, so no later step
 		// would release the device.
@@ -67,7 +67,7 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 		try
 		{
 			vk = VulkanContext.ForSharedDevice(device);
-			vk.InitializeSurface(hwnd.Value, _width, _height);
+			vk.InitializeSurface(hwnd.Value, _width, _height, premultipliedAlpha: transparent);
 
 			// Created last so a declined negotiation (a throw above) doesn't leave a timer behind.
 			_pacer = new Win32RenderPacer(

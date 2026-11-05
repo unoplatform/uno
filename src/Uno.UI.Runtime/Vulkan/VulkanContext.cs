@@ -18,6 +18,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	private IVulkanInstance? _instance;
 	private VulkanDevice? _device;
 	private VulkanDisplay? _display;
+	private bool _premultipliedAlpha;
 	private VulkanImage? _renderImage;
 	private VulkanInstanceApi? _instanceApi;
 	private VulkanDeviceApi? _deviceApi;
@@ -180,7 +181,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	/// image. Requires <see cref="InitializeDevice"/> to have succeeded; may be called again with a new
 	/// window after <see cref="DisposeSurfaceResources"/>. Throws when the device cannot present to the window.
 	/// </summary>
-	public void InitializeSurface(IntPtr nativeWindowHandle, int width, int height)
+	public void InitializeSurface(IntPtr nativeWindowHandle, int width, int height, bool premultipliedAlpha = false)
 	{
 		if (_device == null || _factory == null)
 		{
@@ -199,7 +200,8 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		using (_device.Lock())
 		{
 			var platformSurface = new DirectVulkanSurface(nativeWindowHandle, new global::Windows.Graphics.SizeInt32(width, height), _factory);
-			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
+			_display = VulkanDisplay.CreateDisplay(this, platformSurface, premultipliedAlpha);
+			_premultipliedAlpha = premultipliedAlpha;
 			CreateRenderImage(width, height);
 		}
 	}
@@ -257,7 +259,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			_display.Dispose();
 
 			var platformSurface = new DirectVulkanSurface(_nativeWindowHandle, new global::Windows.Graphics.SizeInt32(width, height), _factory);
-			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
+			_display = VulkanDisplay.CreateDisplay(this, platformSurface, _premultipliedAlpha);
 			CreateRenderImage(width, height);
 			// _cachedSkSurface will be lazily recreated on next EnsureCachedSurface
 		}

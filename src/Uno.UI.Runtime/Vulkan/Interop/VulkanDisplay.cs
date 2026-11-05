@@ -19,14 +19,16 @@ internal class VulkanDisplay : IDisposable
 	private VkSwapchainKHR _swapchain;
 	private VkExtent2D _swapchainExtent;
 	private readonly IVulkanKhrSurfacePlatformSurface _platformSurface;
+	private readonly bool _premultipliedAlpha;
 	private VkImage[] _swapchainImages = Array.Empty<VkImage>();
 	private VkImageView[] _swapchainImageViews = Array.Empty<VkImageView>();
 	public VulkanCommandBufferPool CommandBufferPool { get; private set; }
 	public global::Windows.Graphics.SizeInt32 Size { get; private set; }
 
 	private VulkanDisplay(IVulkanPlatformGraphicsContext context, VulkanKhrSurface surface, VkSwapchainKHR swapchain,
-		VkExtent2D swapchainExtent, IVulkanKhrSurfacePlatformSurface platformSurface)
+		VkExtent2D swapchainExtent, IVulkanKhrSurfacePlatformSurface platformSurface, bool premultipliedAlpha)
 	{
+		_premultipliedAlpha = premultipliedAlpha;
 		_context = context;
 		_surface = surface;
 		_swapchain = swapchain;
@@ -48,13 +50,19 @@ internal class VulkanDisplay : IDisposable
 	}
 
 	private static unsafe VkSwapchainKHR CreateSwapchain(IVulkanPlatformGraphicsContext context,
-		VulkanKhrSurface surface, out VkExtent2D swapchainExtent, VulkanDisplay? oldDisplay = null)
+		VulkanKhrSurface surface, out VkExtent2D swapchainExtent, bool premultipliedAlpha, VulkanDisplay? oldDisplay = null)
 	{
 		while (!surface.CanSurfacePresent())
 			Thread.Sleep(16);
 		context.InstanceApi.GetPhysicalDeviceSurfaceCapabilitiesKHR(context.PhysicalDeviceHandle,
 				surface.Handle, out var capabilities)
 			.ThrowOnError("vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
+
+		if (premultipliedAlpha && (capabilities.supportedCompositeAlpha & VkCompositeAlphaFlagsKHR.VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR) == 0)
+		{
+			throw new VulkanException($"The surface can't composite premultiplied alpha (supported: {capabilities.supportedCompositeAlpha}).");
+		}
+
 		uint presentModesCount = 0;
 		context.InstanceApi.GetPhysicalDeviceSurfacePresentModesKHR(context.PhysicalDeviceHandle,
 				surface.Handle, ref presentModesCount, null)
@@ -122,7 +130,9 @@ internal class VulkanDisplay : IDisposable
 			preTransform = supportsIdentityTransform && isRotated
 				? VkSurfaceTransformFlagsKHR.VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR
 				: capabilities.currentTransform,
-			compositeAlpha = VkCompositeAlphaFlagsKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+			compositeAlpha = premultipliedAlpha
+				? VkCompositeAlphaFlagsKHR.VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR
+				: VkCompositeAlphaFlagsKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 			presentMode = presentMode,
 			clipped = 1,
 			oldSwapchain = oldDisplay?._swapchain ?? default
@@ -140,11 +150,11 @@ internal class VulkanDisplay : IDisposable
 		_swapchain = default;
 	}
 
-	internal static VulkanDisplay CreateDisplay(IVulkanPlatformGraphicsContext context, IVulkanKhrSurfacePlatformSurface surface)
+	internal static VulkanDisplay CreateDisplay(IVulkanPlatformGraphicsContext context, IVulkanKhrSurfacePlatformSurface surface, bool premultipliedAlpha = false)
 	{
 		var khrSurface = new VulkanKhrSurface(context, surface);
-		var swapchain = CreateSwapchain(context, khrSurface, out var extent);
-		return new VulkanDisplay(context, khrSurface, swapchain, extent, surface);
+		var swapchain = CreateSwapchain(context, khrSurface, out var extent, premultipliedAlpha);
+		return new VulkanDisplay(context, khrSurface, swapchain, extent, surface, premultipliedAlpha);
 	}
 
 	private void DestroyCurrentImageViews()
@@ -201,7 +211,7 @@ internal class VulkanDisplay : IDisposable
 			return;
 		}
 		_context.DeviceApi.DeviceWaitIdle(_context.DeviceHandle);
-		_swapchain = CreateSwapchain(_context, _surface, out var extent, this);
+		_swapchain = CreateSwapchain(_context, _surface, out var extent, _premultipliedAlpha, this);
 		_swapchainExtent = extent;
 		CreateSwapchainImages();
 	}
@@ -223,7 +233,7 @@ internal class VulkanDisplay : IDisposable
 	{
 		_context.DeviceApi.DeviceWaitIdle(_context.DeviceHandle);
 		DestroyCurrentImageViews();
-		_swapchain = CreateSwapchain(_context, _surface!, out var extent, this);
+		_swapchain = CreateSwapchain(_context, _surface!, out var extent, _premultipliedAlpha, this);
 		_swapchainExtent = extent;
 		CreateSwapchainImages();
 	}
