@@ -617,9 +617,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 						PostPaintingClipStep(this, in childSession);
 						// No culling inside the recording — it survives ancestor moves, so it must be complete.
 						RenderChildrenStep(this, childSession, applyChildOptimization, cullRect: default, clipChanged, clipBounds);
-						renderData = recording.Finish();
 					}
 
+					renderData = recording.Finish();
 					_shadowFallbackContent?.Dispose();
 					// A descendant can invalidate mid-render (see RenderChildrenStep) — don't cache a stale record.
 					if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
@@ -691,8 +691,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 					var recording = CreateRecording(session.Session.Factory);
 					_factory.CreateInstance(visual, recording, session.Opacity, session.Damage, out var recorderSession);
-					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-					visual.Paint(in recorderSession);
+					using (recorderSession)
+					{
+						// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
+						visual.Paint(in recorderSession);
+					}
 
 					visual._content?.Dispose();
 					visual._content = recording.Finish();
