@@ -54,7 +54,6 @@ partial class Popup
 	private global::Windows.Graphics.RectInt32 m_windowedPopupMoveAndResizeRect;
 	private global::Windows.Graphics.PointInt32 m_rootOffsetPhysical;
 	private global::Windows.Foundation.Point m_offsetFromMainWindow;
-	private global::Windows.UI.Core.PointerEventArgs? m_lastPointerUpdateForReplay;
 
 	internal bool IsSubMenu { get; set; }
 

@@ -442,7 +442,7 @@ partial class PopupRoot
 	// TODO Uno: LeavePCSceneSubgraph, CleanupDeviceRelatedResourcesRecursive, CleanupAndLeaveSubgraphHelper,
 	// PrintChildren, ClearPrintDirtyFlagOnOpenPopups, GetTransitionsForChildElementNoAddRef, ComputeDepthInOpenPopups: no equivalents.
 	// GenerateChildOuterBounds: Uno computes hit-test bounds during the walk.
-	// EffectiveViewportWalkToChild: Stage D, a windowed popup isn't limited to the island's viewport.
+	// EffectiveViewportWalkToChild: FrameworkElement.GetEffectiveViewport, on Visual.HasOwnSurface.
 	// HitTestPopups: VisualTreeHelper.FindElementsInHostCoordinates walks the root.
 
 	internal bool CloseTopmostPopup(FocusState focusStateAfterClosing, PopupFilter filter)

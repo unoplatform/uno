@@ -239,6 +239,15 @@ namespace Microsoft.UI.Xaml
 				return new ViewportInfo(this, slot, Rect.Infinite);
 			}
 
+#if __SKIA__
+			// MUX Reference Popup.cpp, CPopupRoot::EffectiveViewportWalkToChild:
+			// Windowed popups aren't limited to the bounds of the main Xaml island.
+			if (Visual.HasOwnSurface)
+			{
+				return new ViewportInfo(this, Rect.Infinite, Rect.Infinite);
+			}
+#endif
+
 			if (IsScrollPort)
 			{
 				var viewport = parentViewport.Clip;

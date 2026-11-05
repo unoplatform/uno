@@ -767,20 +767,13 @@ partial class Popup
 
 	internal void Reposition() => PositionAndSizeWindowForWindowedPopup();
 
-	internal void ClearLastPointerPointForReplay() => m_lastPointerUpdateForReplay = null;
-
-	internal bool ReplayPointerUpdate()
+	// TODO Uno: WindowedPopupInputSiteAdapter's replay. A popup's window hands its input to the owner's pointer source, so
+	// there is no cached point per popup, and nothing asks for a replay: Uno has no CCoreServices::RequestReplayPreviousPointerUpdate.
+	internal void ClearLastPointerPointForReplay()
 	{
-		// MUX Reference WindowedPopupInputSiteAdapter.cpp, ReplayPointerUpdate
-		if (m_lastPointerUpdateForReplay is { } previousPointerEventArgs)
-		{
-			XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.InjectPointerUpdated(previousPointerEventArgs);
-
-			return true;
-		}
-
-		return false;
 	}
+
+	internal bool ReplayPointerUpdate() => false;
 
 	// Position windowed popup's window
 	private void PositionAndSizeWindowForWindowedPopup()

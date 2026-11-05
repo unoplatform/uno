@@ -172,7 +172,8 @@ public partial class CompositionTarget
 
 		void IWindowedPopupContent.OnSiteClosed()
 		{
-			if (_popup.TryGetTarget(out var popup))
+			// A popup replaces its window when it moves to another root. The old one closing isn't about the popup anymore.
+			if (_popup.TryGetTarget(out var popup) && ReferenceEquals(popup.WindowedPopupSite, Site))
 			{
 				popup.OnWindowedPopupSiteClosed();
 			}
