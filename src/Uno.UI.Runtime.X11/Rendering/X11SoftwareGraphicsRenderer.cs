@@ -46,12 +46,6 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 
 		var nativeElementClipPath = compositionTarget.OnNativePlatformFrameRequested(_context);
 		ApplyAirspaceClip(nativeElementClipPath);
-
-		if (_context is X11VulkanGraphicsContext { DroppedLastFrame: true })
-		{
-			// Dropped for having been recorded at the previous size; the next one is drawn at the new size.
-			_host.InvalidateRender();
-		}
 	}
 
 	// Shapes the top render window to the Uno-visible region (the clip path), leaving the native-element holes
