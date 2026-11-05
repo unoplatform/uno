@@ -27,11 +27,13 @@ public class MenuFlyoutIntegrationTests
 {
 	private string m_menuCommandParam1;
 	private string m_menuCommandParam2;
+	private string m_menuCommandParam3;
 
 	public MenuFlyoutIntegrationTests()
 	{
 		m_menuCommandParam1 = "MenuItem1Command";
 		m_menuCommandParam2 = "ToggleMenuItemCommand";
+		m_menuCommandParam3 = "SplitMenuItemCommand";
 	}
 
 	[TestMethod]
@@ -45,6 +47,20 @@ public class MenuFlyoutIntegrationTests
 		{
 			Assert.Fail($"Failed to instantiate MenuFlyout: {ex}");
 		}
+	}
+
+	[TestMethod]
+	[Ignore("Not applicable: pins the projected shadow rendering mode (RuntimeEnabledFeature ForceProjectedShadowsOnByDefault), which does not exist in Uno; also ignored upstream")]
+	public void CanMenuFlyoutOpenCloseProjectedShadow()
+	{
+		// Verify the MenuFlyout open and close, projected shadow mode.
+	}
+
+	[TestMethod]
+	[Ignore("Not applicable: pins the DComp drop shadow mode, which does not exist in Uno; also ignored upstream (TODO 36060166)")]
+	public void CanMenuFlyoutOpenCloseDropShadow()
+	{
+		// Verify the MenuFlyout open and close, drop shadow mode.
 	}
 
 	[TestMethod]
@@ -435,6 +451,71 @@ public class MenuFlyoutIntegrationTests
 		{
 			toggleMenuItem.Command = null;
 			toggleMenuItem.CommandParameter = null;
+		});
+	}
+
+	[TestMethod]
+	public async Task CanClickSplitMenuFlyoutItem()
+	{
+		SplitMenuFlyoutItem splitMenuItem = null;
+
+		var splitMenuItemClickEvent = new Event();
+		var clickRegistration = CreateSafeEventRegistration<SplitMenuFlyoutItem, RoutedEventHandler>(nameof(SplitMenuFlyoutItem.Click));
+
+		var menuFlyout = await CreateMenuFlyoutWithSplitItems();
+		VERIFY_IS_NOT_NULL(menuFlyout);
+
+		var target = await FlyoutHelper.CreateTarget(
+			50 /*width*/, 50 /*height*/,
+			ThicknessHelper.FromUniformLength(10),
+			HorizontalAlignment.Right,
+			VerticalAlignment.Top);
+		VERIFY_IS_NOT_NULL(target);
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = new Grid();
+			rootPanel.Children.Add(target);
+			VERIFY_IS_NOT_NULL(rootPanel);
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			splitMenuItem = menuFlyout.Items[3] as SplitMenuFlyoutItem;
+			VERIFY_IS_NOT_NULL(splitMenuItem);
+
+			var commandExecute = (object param) =>
+			{
+				LOG_OUTPUT("CanClickSplitMenuFlyoutItem: Process the delegate!");
+			};
+
+			var splitMenuItemCommand = new MenuCommand(commandExecute, true /*canExecute*/, m_menuCommandParam3);
+			splitMenuItem.Command = splitMenuItemCommand;
+			splitMenuItem.CommandParameter = m_menuCommandParam3;
+
+			clickRegistration.Attach(splitMenuItem, (s, e) =>
+			{
+				splitMenuItemClickEvent.Set();
+			});
+		});
+
+		LOG_OUTPUT("CanClickSplitMenuFlyoutItem: Execute the ShowAt.");
+		await FlyoutHelper.OpenFlyout(menuFlyout, target, FlyoutOpenMethod.Programmatic_ShowAt);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("SplitMenuItem Tap operation to execute menu item command.");
+		TestServices.InputHelper.Tap(splitMenuItem);
+		await splitMenuItemClickEvent.WaitForDefault();
+
+		await RunOnUIThread(() =>
+		{
+			splitMenuItem.Command = null;
+			splitMenuItem.CommandParameter = null;
 		});
 	}
 
@@ -1338,6 +1419,51 @@ public class MenuFlyoutIntegrationTests
 		return menuFlyout;
 	}
 
+	private async Task<MenuFlyout> CreateMenuFlyoutWithSplitItems()
+	{
+		MenuFlyout menuFlyout = null;
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = new MenuFlyout();
+
+			var item1 = new MenuFlyoutItem();
+			item1.Text = "Menu Item 1";
+			item1.Tag = "MFI1";
+			menuFlyout.Items.Add(item1);
+
+			var item2 = new MenuFlyoutItem();
+			item2.Text = "Menu Item 2";
+			item2.Tag = "MFI2";
+			item2.IsEnabled = false;
+			menuFlyout.Items.Add(item2);
+
+			var item3 = new MenuFlyoutSeparator();
+			item3.Tag = "MFS1";
+			menuFlyout.Items.Add(item3);
+
+			var splitItem = new SplitMenuFlyoutItem();
+			splitItem.Text = "Split Menu Item 1";
+			splitItem.Tag = "SMFI1";
+			splitItem.Width = 250;
+
+			var splitItemSubItem1 = new MenuFlyoutItem();
+			splitItemSubItem1.Text = "SubItem 1.1";
+			splitItemSubItem1.Tag = "SMFISI1";
+
+			var splitItemSubItem2 = new MenuFlyoutItem();
+			splitItemSubItem2.Text = "SubItem 1.2";
+			splitItemSubItem2.Tag = "SMFISI2";
+
+			splitItem.Items.Add(splitItemSubItem1);
+			splitItem.Items.Add(splitItemSubItem2);
+
+			menuFlyout.Items.Add(splitItem);
+		});
+
+		return menuFlyout;
+	}
+
 	[TestMethod]
 	public async Task ValidateOnlyOneSubMenuItemIsOpenAtATimeByTouch()
 	{
@@ -1398,6 +1524,65 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
+	public async Task ValidateOnlyOneSplitMenuItemIsOpenAtATimeByTouch()
+	{
+		Button button1 = null;
+		IList<MenuFlyoutItemBase> items = null;
+		SplitMenuFlyoutItem splitItem = null;
+
+		Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+		MenuFlyout menuFlyout = null;
+
+		var splitItem1LostFocusEvent = new Event();
+		var splitItem1LostFocusRegistration = CreateSafeEventRegistration<SplitMenuFlyoutItem, RoutedEventHandler>(nameof(SplitMenuFlyoutItem.LostFocus));
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = (MenuFlyout)(XamlReader.Load(
+				"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+				"    <SplitMenuFlyoutItem x:Name='splitItem1' Text='Split menu item 1'>" +
+				"        <MenuFlyoutItem>Menu item 1.1</MenuFlyoutItem>" +
+				"        <MenuFlyoutItem>Menu item 1.2</MenuFlyoutItem>" +
+				"    </SplitMenuFlyoutItem>" +
+				"    <SplitMenuFlyoutItem x:Name='splitItem2' Text='Split menu item 2'>" +
+				"        <MenuFlyoutItem>Menu item 2.1</MenuFlyoutItem>" +
+				"        <MenuFlyoutItem>Menu item 2.2</MenuFlyoutItem>" +
+				"    </SplitMenuFlyoutItem>" +
+				"</MenuFlyout>"));
+
+			button1 = (Button)(rootPanel.FindName("button1"));
+		});
+
+		await ShowMenuFlyout(menuFlyout, button1, -50, 50);
+
+		await RunOnUIThread(() =>
+		{
+			items = menuFlyout.Items;
+		});
+
+		// Get split menu item 1, set up event registration, and tap on its secondary part
+		await RunOnUIThread(() =>
+		{
+			splitItem = items[0] as SplitMenuFlyoutItem;
+			splitItem1LostFocusRegistration.Attach(splitItem, (s, e) =>
+			{
+				splitItem1LostFocusEvent.Set();
+			});
+		});
+		await TapSplitMenuItemSecondary(splitItem);
+
+		// Tap split menu item 2's secondary part and verify that splitItem1 is closed
+		await RunOnUIThread(() =>
+		{
+			splitItem = items[1] as SplitMenuFlyoutItem;
+		});
+		await TapSplitMenuItemSecondary(splitItem);
+		await splitItem1LostFocusEvent.WaitForDefault();
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
 	public async Task ValidateSubMenuItemByGamepad()
 	{
 		await PerformValidateSubMenuItem(InputMethod.Gamepad);
@@ -1428,6 +1613,30 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
+	public async Task ValidateSplitMenuItemByGamepad()
+	{
+		await PerformValidateSplitMenuItem(InputMethod.Gamepad);
+	}
+
+	[TestMethod]
+	public async Task ValidateSplitMenuItemByKeyboard()
+	{
+		await PerformValidateSplitMenuItem(InputMethod.Keyboard);
+	}
+
+	[TestMethod]
+	public async Task ValidateSplitMenuItemByMouse()
+	{
+		await PerformValidateSplitMenuItem(InputMethod.Mouse);
+	}
+
+	[TestMethod]
+	public async Task ValidateSplitMenuItemByTouch()
+	{
+		await PerformValidateSplitMenuItem(InputMethod.Touch);
+	}
+
+	[TestMethod]
 	public async Task ValidateTraverseMenuFlyoutItemsByGamepad()
 	{
 		await PerformValidateTraverseMenuFlyoutItems(InputMethod.Gamepad, true);
@@ -1439,6 +1648,21 @@ public class MenuFlyoutIntegrationTests
 	{
 		await PerformValidateTraverseMenuFlyoutItems(InputMethod.Keyboard, true);
 		await PerformValidateTraverseMenuFlyoutItems(InputMethod.Keyboard, false);
+	}
+
+	[TestMethod]
+	public async Task ValidateTraverseSplitMenuFlyoutItemsByGamepad()
+	{
+		await PerformValidateTraverseSplitMenuFlyoutItems(InputMethod.Gamepad, true);
+		await PerformValidateTraverseSplitMenuFlyoutItems(InputMethod.Gamepad, false);
+	}
+
+	[TestMethod]
+	[Ignore("Pending Popup port")]
+	public async Task ValidateTraverseSplitMenuFlyoutItemsByKeyboard()
+	{
+		await PerformValidateTraverseSplitMenuFlyoutItems(InputMethod.Keyboard, true);
+		await PerformValidateTraverseSplitMenuFlyoutItems(InputMethod.Keyboard, false);
 	}
 
 	[TestMethod]
@@ -1472,6 +1696,40 @@ public class MenuFlyoutIntegrationTests
 
 		await ShowMenuFlyout(menuFlyout, button1, -50, 50);
 		await NavigateSubMenu(menuFlyout, button1, InputDevice.Keyboard);
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	public async Task ValidateSplitMenuItemInPage()
+	{
+		Button button1 = null;
+
+		Page page = null;
+		Canvas rootPanel = null;
+		MenuFlyout menuFlyout = await CreateSplitMenuFlyoutItemsFromXaml();
+
+		var loadedEvent = new Event();
+		var loadedRegistration = CreateSafeEventRegistration<Page, RoutedEventHandler>("Loaded");
+
+		await RunOnUIThread(() =>
+		{
+			page = TestServices.WindowHelper.SetupSimulatedAppPage();
+			rootPanel = (Canvas)(XamlReader.Load(
+			 "<Canvas Background='RoyalBlue' " +
+			 " xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+			 "    <Button x:Name='button1' Content='Button' Width='100' Height='50' Canvas.Left='50' Canvas.Top='50' />" +
+			 "</Canvas>"));
+			button1 = (Button)(rootPanel.FindName("button1"));
+
+			page.Content = rootPanel;
+			loadedRegistration.Attach(page, (s, e) => { loadedEvent.Set(); });
+		});
+
+		await loadedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await ShowMenuFlyout(menuFlyout, button1, -50, 50);
+		await NavigateSplitMenu(menuFlyout, button1, InputDevice.Keyboard);
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
 
@@ -1644,6 +1902,304 @@ public class MenuFlyoutIntegrationTests
 			LOG_OUTPUT("SubMenuFlyout bounds left=%f top=%f width=%f height=%f", subMenu2tBounds.Left, subMenu2tBounds.Top, subMenu2tBounds.Width, subMenu2tBounds.Height);
 		});
 		VERIFY_IS_TRUE(subMenu1tBounds.Left <= subMenu2tBounds.Left);
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	public async Task ValidateSplitMenuItemPosition()
+	{
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(1024, 768));
+
+		IList<MenuFlyoutItemBase> items = null;
+		IList<MenuFlyoutItemBase> subItems = null;
+		SplitMenuFlyoutItem splitItem = null;
+		Rect windowBounds = default;
+		Rect menuFlyoutBounds = default;
+		Rect subMenu1tBounds = default;
+		Rect subMenu2tBounds = default;
+
+		Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+		MenuFlyout menuFlyout = null;
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = (MenuFlyout)(XamlReader.Load(
+				"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+				"    <MenuFlyoutItem>item1</MenuFlyoutItem>" +
+				"    <MenuFlyoutSeparator/>" +
+				"    <SplitMenuFlyoutItem x:Name='splitItem1' Text='split item4'>" +
+				"        <MenuFlyoutItem>item1</MenuFlyoutItem>" +
+				"        <MenuFlyoutSeparator/>" +
+				"        <SplitMenuFlyoutItem  x:Name='splitItem2' Text='splitItem2'>" +
+				"            <MenuFlyoutItem>item1</MenuFlyoutItem>" +
+				"            <MenuFlyoutSeparator/>" +
+				"            <SplitMenuFlyoutItem x:Name='splitItem3' Text='splititem3'/>" +
+				"        </SplitMenuFlyoutItem>" +
+				"    </SplitMenuFlyoutItem>" +
+				"</MenuFlyout>"));
+
+			windowBounds = TestServices.WindowHelper.WindowBounds;
+
+			LOG_OUTPUT("Windows bounds left=%f top=%f width=%f height=%f", windowBounds.Left, windowBounds.Top, windowBounds.Width, windowBounds.Height);
+		});
+
+		await ShowMenuFlyout(menuFlyout, null, windowBounds.Width / 4, 50);
+
+		var presenter = await GetCurrentPresenter();
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("MenuFlyout bounds left=%f top=%f width=%f height=%f", menuFlyoutBounds.Left, menuFlyoutBounds.Top, menuFlyoutBounds.Width, menuFlyoutBounds.Height);
+		});
+
+		await RunOnUIThread(() =>
+		{
+			items = menuFlyout.Items;
+			// SplitMenuFlyoutItem is at index 2 (after item1 and separator)
+			splitItem = items[2] as SplitMenuFlyoutItem;
+		});
+
+		VERIFY_IS_NOT_NULL(splitItem);
+		await TapSplitMenuItemSecondary(splitItem);
+
+		// Verify the split menu1 position that it must be positioned to the right side of the MenuFlyout.
+		presenter = await GetCurrentPresenter();
+		await RunOnUIThread(async () =>
+		{
+			subMenu1tBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("SplitMenuFlyout bounds left=%f top=%f width=%f height=%f", subMenu1tBounds.Left, subMenu1tBounds.Top, subMenu1tBounds.Width, subMenu1tBounds.Height);
+		});
+		VERIFY_IS_TRUE(menuFlyoutBounds.Left < subMenu1tBounds.Left);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			subItems = splitItem.Items;
+			// Nested SplitMenuFlyoutItem is at index 2 (after item1 and separator)
+			splitItem = subItems[2] as SplitMenuFlyoutItem;
+		});
+
+		VERIFY_IS_NOT_NULL(splitItem);
+		await TapSplitMenuItemSecondary(splitItem);
+
+		// Verify the split menu2 position that it must be positioned to the right side of the split menu1 flyout.
+		presenter = await GetCurrentPresenter();
+		await RunOnUIThread(async () =>
+		{
+			subMenu2tBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("SplitMenuFlyout2 bounds left=%f top=%f width=%f height=%f", subMenu2tBounds.Left, subMenu2tBounds.Top, subMenu2tBounds.Width, subMenu2tBounds.Height);
+		});
+		VERIFY_IS_TRUE(subMenu1tBounds.Left <= subMenu2tBounds.Left);
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	[Ignore("Pending Popup port")]
+	public async Task ValidateNestedSubMenuItemPosition()
+	{
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(1024, 768));
+
+		Rect windowBounds = default;
+		Rect menuFlyoutBounds = default;
+		Rect subMenuBounds = default;
+
+		Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+		MenuFlyout menuFlyout = null;
+		MenuFlyoutSubItem subItem = null;
+		IList<MenuFlyoutItemBase> items = null;
+		IList<MenuFlyoutItemBase> subItems = null;
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = (MenuFlyout)(XamlReader.Load(
+				"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+				"    <MenuFlyoutSubItem x:Name='item1' Text='item1'>" +
+				"        <MenuFlyoutSubItem x:Name='item11' Text='item11'>" +
+				"            <MenuFlyoutItem x:Name='item111'>item111</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item112'>item112</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item113'>item113</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item114'>item114</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item115'>item115</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item116'>item116</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item117'>item117</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item118'>item118</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item119'>item119</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11A'>item11A</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11B'>item11B</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11C'>item11C</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11D'>item11D</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11E'>item11E</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11F'>item11F</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11G'>item11G</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11H'>item11H</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11I'>item11I</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11H'>item11J</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11I'>item11K</MenuFlyoutItem>" +
+				"        </MenuFlyoutSubItem>" +
+				"    </MenuFlyoutSubItem>" +
+				"    <MenuFlyoutItem x:Name='item2'>item2</MenuFlyoutItem>" +
+				"    <MenuFlyoutItem x:Name='item3'>item3</MenuFlyoutItem>" +
+				"</MenuFlyout>"));
+
+			windowBounds = TestServices.WindowHelper.WindowBounds;
+
+			LOG_OUTPUT("Windows bounds left=%f top=%f width=%f height=%f", windowBounds.Left, windowBounds.Top, windowBounds.Width, windowBounds.Height);
+			VERIFY_IS_TRUE(windowBounds.Width == 1024);
+			VERIFY_IS_TRUE(windowBounds.Height == 768);
+		});
+
+		await ShowMenuFlyout(menuFlyout, null, windowBounds.Width / 4, windowBounds.Height);
+
+		var presenter = await GetCurrentPresenter();
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("MenuFlyout bounds left=%f top=%f width=%f height=%f", menuFlyoutBounds.Left, menuFlyoutBounds.Top, menuFlyoutBounds.Width, menuFlyoutBounds.Height);
+		});
+
+		await RunOnUIThread(() =>
+		{
+			items = menuFlyout.Items;
+		});
+
+		subItem = await GetSubItem(items, 0);
+		await TapSubMenuItem(subItem);
+
+		presenter = await GetCurrentPresenter();
+
+		await RunOnUIThread(async () =>
+		{
+			subMenuBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("SubMenuFlyout bounds left=%f top=%f width=%f height=%f", subMenuBounds.Left, subMenuBounds.Top, subMenuBounds.Width, subMenuBounds.Height);
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			subItems = subItem.Items;
+		});
+
+		await TapSubMenuItem(await GetSubItem(subItems, 0));
+
+		presenter = await GetCurrentPresenter();
+		await RunOnUIThread(async () =>
+		{
+			subMenuBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("SubMenuFlyout bounds left=%f top=%f width=%f height=%f", subMenuBounds.Left, subMenuBounds.Top, subMenuBounds.Width, subMenuBounds.Height);
+		});
+		// Verify the sub menu is positioned towards the top of the window and not the bottom.
+		VERIFY_IS_TRUE(subMenuBounds.Top <= 0);
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	[Ignore("Pending Popup port")]
+	public async Task ValidateNestedSplitMenuItemPosition()
+	{
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(1024, 768));
+
+		Rect windowBounds = default;
+		Rect menuFlyoutBounds = default;
+		Rect splitMenuBounds = default;
+
+		Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitItem = null;
+		IList<MenuFlyoutItemBase> items = null;
+		IList<MenuFlyoutItemBase> subItems = null;
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = (MenuFlyout)(XamlReader.Load(
+				"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+				"    <SplitMenuFlyoutItem x:Name='item1' Text='item1'>" +
+				"        <SplitMenuFlyoutItem x:Name='item11' Text='item11'>" +
+				"            <MenuFlyoutItem x:Name='item111'>item111</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item112'>item112</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item113'>item113</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item114'>item114</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item115'>item115</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item116'>item116</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item117'>item117</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item118'>item118</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item119'>item119</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11A'>item11A</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11B'>item11B</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11C'>item11C</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11D'>item11D</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11E'>item11E</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11F'>item11F</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11G'>item11G</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11H'>item11H</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11I'>item11I</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11J'>item11J</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem x:Name='item11K'>item11K</MenuFlyoutItem>" +
+				"        </SplitMenuFlyoutItem>" +
+				"    </SplitMenuFlyoutItem>" +
+				"    <MenuFlyoutItem x:Name='item2'>item2</MenuFlyoutItem>" +
+				"    <MenuFlyoutItem x:Name='item3'>item3</MenuFlyoutItem>" +
+				"</MenuFlyout>"));
+
+			windowBounds = TestServices.WindowHelper.WindowBounds;
+
+			LOG_OUTPUT("Windows bounds left=%f top=%f width=%f height=%f", windowBounds.Left, windowBounds.Top, windowBounds.Width, windowBounds.Height);
+			VERIFY_IS_TRUE(windowBounds.Width == 1024);
+			VERIFY_IS_TRUE(windowBounds.Height == 768);
+		});
+
+		await ShowMenuFlyout(menuFlyout, null, windowBounds.Width / 4, windowBounds.Height);
+
+		var presenter = await GetCurrentPresenter();
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("MenuFlyout bounds left=%f top=%f width=%f height=%f", menuFlyoutBounds.Left, menuFlyoutBounds.Top, menuFlyoutBounds.Width, menuFlyoutBounds.Height);
+		});
+
+		await RunOnUIThread(() =>
+		{
+			items = menuFlyout.Items;
+			splitItem = items[0] as SplitMenuFlyoutItem;
+		});
+
+		VERIFY_IS_NOT_NULL(splitItem);
+		await TapSplitMenuItemSecondary(splitItem);
+
+		presenter = await GetCurrentPresenter();
+
+		await RunOnUIThread(async () =>
+		{
+			splitMenuBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("SplitMenuFlyout bounds left=%f top=%f width=%f height=%f", splitMenuBounds.Left, splitMenuBounds.Top, splitMenuBounds.Width, splitMenuBounds.Height);
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			subItems = splitItem.Items;
+			splitItem = subItems[0] as SplitMenuFlyoutItem;
+		});
+
+		VERIFY_IS_NOT_NULL(splitItem);
+		await TapSplitMenuItemSecondary(splitItem);
+
+		presenter = await GetCurrentPresenter();
+		await RunOnUIThread(async () =>
+		{
+			splitMenuBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("SplitMenuFlyout bounds left=%f top=%f width=%f height=%f", splitMenuBounds.Left, splitMenuBounds.Top, splitMenuBounds.Width, splitMenuBounds.Height);
+		});
+		// Verify the split menu is positioned towards the top of the window and not the bottom.
+		VERIFY_IS_TRUE(splitMenuBounds.Top <= 0);
 
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
@@ -2006,6 +2562,65 @@ public class MenuFlyoutIntegrationTests
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
 
+	private async Task PerformValidateSplitMenuItem(InputMethod inputMethod)
+	{
+		Button button1 = null;
+		IList<MenuFlyoutItemBase> items = null;
+		SplitMenuFlyoutItem splitItem = null;
+
+		Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+		MenuFlyout menuFlyout = await CreateSplitMenuFlyoutItemsFromXaml();
+
+		await RunOnUIThread(() =>
+		{
+			button1 = (Button)(rootPanel.FindName("button1"));
+		});
+
+		await ShowMenuFlyout(menuFlyout, button1, -50, 50);
+
+		await RunOnUIThread(() =>
+		{
+			items = menuFlyout.Items;
+			// Get the second SplitMenuFlyoutItem (index 6) which has a submenu
+			// Structure: MenuFlyoutItem(0), MenuFlyoutItem(1), Separator(2), ToggleMenuFlyoutItem(3),
+			// Separator(4), SplitMenuFlyoutItem(5), SplitMenuFlyoutItem with submenu(6)
+			splitItem = (SplitMenuFlyoutItem)(items[6]);
+		});
+
+		switch (inputMethod)
+		{
+			case InputMethod.Touch:
+				// Tap the secondary button to open submenu
+				await TapSplitMenuItemSecondary(splitItem);
+				break;
+			case InputMethod.Mouse:
+				// Move to and click the secondary button to open submenu
+				await MoveToSplitMenuItemSecondary(splitItem);
+				break;
+			case InputMethod.Keyboard:
+				await NavigateSplitMenu(menuFlyout, button1, InputDevice.Keyboard);
+				break;
+			case InputMethod.Gamepad:
+				await NavigateSplitMenu(menuFlyout, button1, InputDevice.Gamepad);
+				break;
+		}
+
+		if (inputMethod == InputMethod.Mouse)
+		{
+			var presenter = await GetCurrentPresenter();
+
+			// Mouse over on the split menu presenter and out of sub menu
+			Private.Infrastructure.TestServices.InputHelper.MoveMouse(presenter);
+			Private.Infrastructure.TestServices.InputHelper.MoveMouse(new Point(0, 400));
+
+			// Mouse over on the main menu presenter and out of main menu flyout to close it
+			Private.Infrastructure.TestServices.InputHelper.MoveMouse(splitItem);
+			Private.Infrastructure.TestServices.InputHelper.MoveMouse(new Point(0, 400));
+		}
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
 	private async Task PerformValidateTraverseMenuFlyoutItems(InputMethod inputMethod, bool goDownFirst)
 	{
 		Button button = null;
@@ -2115,6 +2730,181 @@ public class MenuFlyoutIntegrationTests
 		}
 
 		// Go in the opposite direction, for the length of the list + 1.
+		for (uint i = 0; i < itemsSize + 1; i++)
+		{
+			if (goDownFirst)
+			{
+				await CommonInputHelper.Up(inputDevice);
+			}
+			else
+			{
+				await CommonInputHelper.Down(inputDevice);
+			}
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		LOG_OUTPUT("Expected focus sequence: %s", expectedFocusSequence);
+		LOG_OUTPUT("Actual focus sequence: %s", focusSequence);
+		VERIFY_ARE_EQUAL(focusSequence, expectedFocusSequence);
+
+		await CommonInputHelper.Cancel(inputDevice);
+	}
+
+	private async Task PerformValidateTraverseSplitMenuFlyoutItems(InputMethod inputMethod, bool goDownFirst)
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = await CreateMenuFlyoutWithSplitItems();
+		IList<MenuFlyoutItemBase> items = null;
+		int itemsSize = 0;
+
+		var loadedEvent = new Event();
+		var gotFocusEvent = new Event();
+		var loadedRegistration = CreateSafeEventRegistration<Grid, RoutedEventHandler>("Loaded");
+		var buttonGotFocusRegistration = CreateSafeEventRegistration<Button, RoutedEventHandler>("GotFocus");
+
+		RoutedEventHandler gotFocusHandler = null;
+		List<SafeEventRegistration<Control, RoutedEventHandler>> gotFocusRegistrations = new();
+
+		// When a MenuFlyout with SplitMenuFlyoutItems is opened, the first focusable element will receive focus.
+		// SplitMenuFlyoutItem has two focusable parts: primary button and secondary button.
+		// When navigating down focus moves to a SplitMenuFlyoutItem's Primary Button first, then to its Secondary Button.
+		// When navigating up, focus moves to a SplitMenuFlyoutItem's Secondary Button first, then to its Primary Button.
+		// And then on the next navigation it moves to the next or previous menu items respectively.
+		// Primary button is tagged as SMFI1-P, and secondary button is tagged as SMFI1-S.
+		//
+		// For a list with items: MFI1 (focusable), MFI2 (disabled), MFS1 (separator), SMFI1 (split item with 2 parts)
+		// The focusable items are: MFI1, SMFI1-P, SMFI1-S (3 focusable elements)
+		//
+		// For keyboard (which allows wrapping):
+		// - Going down from MFI1 -> SMFI1-P -> SMFI1-S -> (wrap) MFI1 -> ...
+		// - Going up from MFI1 -> SMFI1-S -> SMFI1-P -> (wrap) MFI1 -> ...
+		//
+		// For gamepad/remote (no wrapping):
+		// - Starting at MFI1, going down: MFI1 -> SMFI1-P -> SMFI1-S (stops)
+		// - Starting at MFI1, going up: MFI1 (stops, no wrap)
+		string expectedFocusSequence =
+			inputMethod == InputMethod.Keyboard ?
+				(goDownFirst ? "[MFI1][SMFI1-P][SMFI1-S][MFI1][SMFI1-P][SMFI1-S][SMFI1-P][MFI1][SMFI1-S][SMFI1-P][MFI1]" :
+							   "[MFI1][SMFI1-S][SMFI1-P][MFI1][SMFI1-S][SMFI1-P][SMFI1-S][MFI1][SMFI1-P][SMFI1-S][MFI1]") :
+				(goDownFirst ? "[MFI1][SMFI1-P][SMFI1-S][SMFI1-P][MFI1]" : "[MFI1][SMFI1-P][SMFI1-S]");
+		string focusSequence = "";
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+			 """
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Button Content="Initial focus button" />
+				<Button x:Name="button" Content="Button" Width="100" Height="50"/>
+			</Grid>
+			"""));
+			TestServices.WindowHelper.WindowContent = rootPanel;
+
+			button = (Button)(rootPanel.FindName("button"));
+			button.Flyout = menuFlyout;
+
+			items = menuFlyout.Items;
+			itemsSize = items.Count;
+
+			gotFocusHandler = new RoutedEventHandler((object sender, RoutedEventArgs args) =>
+			{
+				var tag = ((FrameworkElement)(sender)).Tag;
+				if (tag != null)
+				{
+					focusSequence += "[" + tag.ToString() + "]";
+				}
+			});
+
+			// Using itemsSize-1 to skip the last SplitMenuFlyoutItem which has sub parts.
+			// And we want to assign focus handlers to those parts and not the complete control.
+			for (int i = 0; i < itemsSize - 1; i++)
+			{
+				var item = (Control)(items[i]);
+				var gotFocusRegistration = CreateSafeEventRegistration<Control, RoutedEventHandler>("GotFocus");
+				gotFocusRegistration.Attach(item, gotFocusHandler);
+				gotFocusRegistrations.Add(gotFocusRegistration);
+			}
+
+			loadedRegistration.Attach(rootPanel, (s, e) => { loadedEvent.Set(); });
+			buttonGotFocusRegistration.Attach(button, (s, e) => { gotFocusEvent.Set(); });
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+		});
+
+		await loadedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			button.Focus(FocusState.Keyboard);
+		});
+
+		await gotFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		InputDevice inputDevice = InputDevice.Gamepad;
+		switch (inputMethod)
+		{
+			case InputMethod.Gamepad:
+				inputDevice = InputDevice.Gamepad;
+				break;
+			case InputMethod.Keyboard:
+				inputDevice = InputDevice.Keyboard;
+				break;
+		}
+
+		await CommonInputHelper.Accept(inputDevice);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// After the menu is opened, find and register focus handlers for split item buttons
+		await RunOnUIThread(() =>
+		{
+			var item = (Control)(items[itemsSize - 1]);
+			var splitItem = item as SplitMenuFlyoutItem;
+			if (splitItem != null)
+			{
+				// Now that the menu is shown, the visual tree should be loaded
+				// splitItem->ApplyTemplate();
+				// splitItem->UpdateLayout();
+
+				// Find the primary button (usually named "PrimaryButton" or similar)
+				var primaryButton = TreeHelper.GetVisualChildByName(splitItem, "PrimaryButton") as Button;
+				if (primaryButton != null)
+				{
+					primaryButton.Tag = splitItem.Tag + "-P";
+					var primaryGotFocusRegistration = CreateSafeEventRegistration<Control, RoutedEventHandler>("GotFocus");
+					primaryGotFocusRegistration.Attach(primaryButton, gotFocusHandler);
+					gotFocusRegistrations.Add(primaryGotFocusRegistration);
+				}
+
+				// Find the secondary button (usually named "SecondaryButton" or similar)
+				var secondaryButton = TreeHelper.GetVisualChildByName(splitItem, "SecondaryButton") as Button;
+				if (secondaryButton != null)
+				{
+					secondaryButton.Tag = splitItem.Tag + "-S";
+					var secondaryGotFocusRegistration = CreateSafeEventRegistration<Control, RoutedEventHandler>("GotFocus");
+					secondaryGotFocusRegistration.Attach(secondaryButton, gotFocusHandler);
+					gotFocusRegistrations.Add(secondaryGotFocusRegistration);
+				}
+			}
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Go in one direction, for the length of itemsSize + 1.
+		for (uint i = 0; i < itemsSize + 1; i++)
+		{
+			if (goDownFirst)
+			{
+				await CommonInputHelper.Down(inputDevice);
+			}
+			else
+			{
+				await CommonInputHelper.Up(inputDevice);
+			}
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		// Go in the opposite direction, for the length of itemsSize + 1.
 		for (uint i = 0; i < itemsSize + 1; i++)
 		{
 			if (goDownFirst)
@@ -2275,6 +3065,201 @@ public class MenuFlyoutIntegrationTests
 		await lostFocusEvent.WaitForDefault();
 
 		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	private async Task TapSplitMenuItemPrimary(SplitMenuFlyoutItem splitItem)
+	{
+		MenuFlyoutPresenter menuFlyoutPresenter = null;
+
+		var lostFocusEvent = new Event();
+		var lostFocusRegistration = CreateSafeEventRegistration<MenuFlyoutPresenter, RoutedEventHandler>(nameof(MenuFlyoutPresenter.LostFocus));
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutPresenter = await GetCurrentPresenter();
+
+			lostFocusRegistration.Attach(
+				menuFlyoutPresenter,
+				(s, e) =>
+				{
+					lostFocusEvent.Set();
+				});
+		});
+
+		// Tap on the left side (primary button area) - approximately 35% from the left, 50% from the top
+		await global::Uno.UI.RuntimeTests.MUX.Helpers.InputHelper.TapAtPercent(splitItem, 0.35f, 0.5f);
+
+		await lostFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	private async Task TapSplitMenuItemSecondary(SplitMenuFlyoutItem splitItem)
+	{
+		MenuFlyoutPresenter menuFlyoutPresenter = null;
+		Button secondaryButton = null;
+
+		var lostFocusEvent = new Event();
+		var lostFocusRegistration = CreateSafeEventRegistration<MenuFlyoutPresenter, RoutedEventHandler>(nameof(MenuFlyoutPresenter.LostFocus));
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutPresenter = await GetCurrentPresenter();
+
+			lostFocusRegistration.Attach(
+				menuFlyoutPresenter,
+				(s, e) =>
+				{
+					lostFocusEvent.Set();
+				});
+
+			// Find the secondary button in the visual tree
+			secondaryButton = TreeHelper.GetVisualChildByName(splitItem, "SecondaryButton") as Button;
+			VERIFY_IS_NOT_NULL(secondaryButton);
+		});
+
+		// Tap on the secondary button
+		TestServices.InputHelper.Tap(secondaryButton);
+
+		await lostFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	private async Task MoveToSplitMenuItemPrimary(SplitMenuFlyoutItem splitItem)
+	{
+		MenuFlyoutPresenter menuFlyoutPresenter = null;
+
+		var lostFocusEvent = new Event();
+		var lostFocusRegistration = CreateSafeEventRegistration<MenuFlyoutPresenter, RoutedEventHandler>(nameof(MenuFlyoutPresenter.LostFocus));
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutPresenter = await GetCurrentPresenter();
+
+			lostFocusRegistration.Attach(
+				menuFlyoutPresenter,
+				(s, e) =>
+				{
+					lostFocusEvent.Set();
+				});
+		});
+
+		// Move to and click on the left side (primary button area) - approximately 35% from the left
+		var primaryPosition = await global::Uno.UI.RuntimeTests.MUX.Helpers.InputHelper.GetElementPosition(splitItem, 0.35f, 0.5f);
+
+		Private.Infrastructure.TestServices.InputHelper.MoveMouse(primaryPosition);
+		Private.Infrastructure.TestServices.InputHelper.LeftMouseClick(splitItem);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await lostFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	private async Task MoveToSplitMenuItemSecondary(SplitMenuFlyoutItem splitItem)
+	{
+		MenuFlyoutPresenter menuFlyoutPresenter = null;
+		Button secondaryButton = null;
+
+		var lostFocusEvent = new Event();
+		var lostFocusRegistration = CreateSafeEventRegistration<MenuFlyoutPresenter, RoutedEventHandler>(nameof(MenuFlyoutPresenter.LostFocus));
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutPresenter = await GetCurrentPresenter();
+
+			lostFocusRegistration.Attach(
+				menuFlyoutPresenter,
+				(s, e) =>
+				{
+					lostFocusEvent.Set();
+				});
+
+			// Find the secondary button in the visual tree
+			secondaryButton = TreeHelper.GetVisualChildByName(splitItem, "SecondaryButton") as Button;
+			VERIFY_IS_NOT_NULL(secondaryButton);
+		});
+
+		// Move to and click on the secondary button
+		Private.Infrastructure.TestServices.InputHelper.MoveMouse(secondaryButton);
+		Private.Infrastructure.TestServices.InputHelper.LeftMouseClick(secondaryButton);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await lostFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	// Navigate in and out of split menu flyout item's submenu using both directional and Space/Escape keys.
+	// Also test Gamepad functionality (using the internal Gamepad -> kb mapping).
+	// This method assumes the MenuFlyout is created with CreateSplitMenuFlyoutItemsFromXaml which contains
+	// SplitMenuFlyoutItem controls with submenus. It navigates to a SplitMenuFlyoutItem and tests
+	// expanding/collapsing its submenu using keyboard/gamepad inputs.
+	private async Task NavigateSplitMenu(
+		MenuFlyout menuFlyout,
+		Button button,
+		InputDevice device)
+	{
+		MenuFlyoutPresenter menuFlyoutPresenter = null;
+
+		var lostFocusEvent = new Event();
+		var lostFocusRegistration = CreateSafeEventRegistration<MenuFlyoutPresenter, RoutedEventHandler>(nameof(MenuFlyoutPresenter.LostFocus));
+
+		var menuFlyoutClosedEvent = new Event();
+		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutPresenter = await GetCurrentPresenter();
+
+			lostFocusRegistration.Attach(
+				menuFlyoutPresenter,
+				(s, e) =>
+				{
+					lostFocusEvent.Set();
+				});
+
+			closedRegistration.Attach(
+				menuFlyout,
+				(s, e) =>
+				{
+					menuFlyoutClosedEvent.Set();
+				});
+		});
+
+		// Navigate down to a SplitMenuFlyoutItem that has a submenu
+		// The exact number of Down presses will depend on the menu structure from CreateSplitMenuFlyoutItemsFromXaml
+		// Typical structure: MenuFlyoutItem, MenuFlyoutItem, Separator, ToggleMenuFlyoutItem, Separator,
+		// SplitMenuFlyoutItem (no submenu), SplitMenuFlyoutItem (with submenu)
+		// Navigate to the SplitMenuFlyoutItem with submenu (around 6-7 down presses)
+		for (int i = 0; i < 6; i++)
+		{
+			await CommonInputHelper.Down(device);
+		}
+
+		// Expand/collapse the submenu using right and left.
+		await CommonInputHelper.Right(device);
+		await CommonInputHelper.Down(device);
+		await CommonInputHelper.Left(device);
+
+		await lostFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Expand/collapse the submenu using accept and cancel.
+		await CommonInputHelper.Accept(device);
+		await CommonInputHelper.Down(device);
+		await CommonInputHelper.Cancel(device);
+
+		await lostFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Close the top-level menu (which will close the MenuFlyout itself)
+		await CommonInputHelper.Cancel(device);
+
+		await menuFlyoutClosedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Opened flyout expected by caller
+		await ShowMenuFlyout(menuFlyout, button, -50, 50);
 	}
 
 	private async Task<MenuFlyoutSubItem> GetSubItem(IList<MenuFlyoutItemBase> items)
@@ -2709,6 +3694,40 @@ public class MenuFlyoutIntegrationTests
 	//	}
 	//}
 
+	private async Task<MenuFlyout> CreateSplitMenuFlyoutItemsFromXaml()
+	{
+		MenuFlyout menuFlyout = null;
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = (MenuFlyout)(XamlReader.Load(
+				"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+				"    <MenuFlyoutItem>Menu item 1</MenuFlyoutItem>" +
+				"    <MenuFlyoutItem>Menu item 2</MenuFlyoutItem>" +
+				"    <MenuFlyoutSeparator/>" +
+				"    <ToggleMenuFlyoutItem IsChecked='True'>Toggle item 3</ToggleMenuFlyoutItem>" +
+				"    <MenuFlyoutSeparator/>" +
+				"    <SplitMenuFlyoutItem x:Name='splitItem1' Text='Split item 4' />" +
+				"    <SplitMenuFlyoutItem x:Name='splitItem2' Text='Split item 5'>" +
+				"        <MenuFlyoutItem>Menu item 2.1</MenuFlyoutItem>" +
+				"        <MenuFlyoutItem>Menu item 2.2</MenuFlyoutItem>" +
+				"        <MenuFlyoutSeparator/>" +
+				"        <ToggleMenuFlyoutItem IsChecked='True'>Toggle item 2.3</ToggleMenuFlyoutItem>" +
+				"        <MenuFlyoutSeparator/>" +
+				"        <MenuFlyoutSubItem x:Name='subItem1' Text='Menu sub item 2.4'>" +
+				"            <MenuFlyoutItem>Menu item 3.1</MenuFlyoutItem>" +
+				"            <MenuFlyoutItem>Menu item 3.2</MenuFlyoutItem>" +
+				"            <MenuFlyoutSeparator/>" +
+				"            <ToggleMenuFlyoutItem IsChecked='True'>Toggle item 3.3</ToggleMenuFlyoutItem>" +
+				"            <MenuFlyoutSeparator/>" +
+				"        </MenuFlyoutSubItem>" +
+				"    </SplitMenuFlyoutItem>" +
+				"</MenuFlyout>"));
+		});
+
+		return menuFlyout;
+	}
+
 	private async Task<MenuFlyout> CreateMenuFlyoutSubItemsFromXaml()
 	{
 		MenuFlyout menuFlyout = null;
@@ -2911,6 +3930,99 @@ public class MenuFlyoutIntegrationTests
 	//	await FlyoutHelper.HideFlyout(menuFlyout);
 	//}
 
+	[TestMethod]
+	[Ignore("Pending Popup port")]
+	public async Task ValidateRTLSplitMenuItemPosition()
+	{
+		IList<MenuFlyoutItemBase> items = null;
+		IList<MenuFlyoutItemBase> subItems = null;
+		SplitMenuFlyoutItem splitItem = null;
+		Rect windowBounds = default;
+		Rect menuFlyoutBounds = default;
+		Rect subMenu1Bounds = default;
+		Rect subMenu2Bounds = default;
+
+		Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+		MenuFlyout menuFlyout = null;
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = (MenuFlyout)(XamlReader.Load(
+				"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+				"    <MenuFlyoutItem>item1</MenuFlyoutItem>" +
+				"    <MenuFlyoutSeparator/>" +
+				"    <SplitMenuFlyoutItem x:Name='splitItem1' Text='splititem1'>" +
+				"        <MenuFlyoutItem>item1</MenuFlyoutItem>" +
+				"        <MenuFlyoutSeparator/>" +
+				"        <SplitMenuFlyoutItem x:Name='splitItem2' Text='splitItem2' FlowDirection='RightToLeft'>" +
+				"            <MenuFlyoutItem>item1</MenuFlyoutItem>" +
+				"            <MenuFlyoutSeparator/>" +
+				"            <SplitMenuFlyoutItem x:Name='splitItem3' Text='splititem3' FlowDirection='RightToLeft'/>" +
+				"        </SplitMenuFlyoutItem>" +
+				"    </SplitMenuFlyoutItem>" +
+				"</MenuFlyout>"));
+
+			windowBounds = TestServices.WindowHelper.WindowBounds;
+			LOG_OUTPUT("Windows bounds left=%f top=%f width=%f height=%f", windowBounds.Left, windowBounds.Top, windowBounds.Width, windowBounds.Height);
+		});
+
+		await ShowMenuFlyout(menuFlyout, null, 50, 100);
+
+		var presenter = await GetCurrentPresenter();
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("MenuFlyout bounds left=%f top=%f width=%f height=%f", menuFlyoutBounds.Left, menuFlyoutBounds.Top, menuFlyoutBounds.Width, menuFlyoutBounds.Height);
+		});
+
+		await RunOnUIThread(() =>
+		{
+			items = menuFlyout.Items;
+		});
+
+		// Find the SplitMenuFlyoutItem (last item)
+		await RunOnUIThread(() =>
+		{
+			splitItem = items[items.Count - 1] as SplitMenuFlyoutItem;
+		});
+		await TapSplitMenuItemSecondary(splitItem);
+
+		presenter = await GetCurrentPresenter();
+		await RunOnUIThread(async () =>
+		{
+			subMenu1Bounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("SplitMenuFlyout bounds left=%f top=%f width=%f height=%f", subMenu1Bounds.Left, subMenu1Bounds.Top, subMenu1Bounds.Width, subMenu1Bounds.Height);
+		});
+
+		VERIFY_IS_TRUE(menuFlyoutBounds.Left < subMenu1Bounds.Left);
+
+		await RunOnUIThread(() =>
+		{
+			subItems = splitItem.Items;
+		});
+
+		// Find the nested SplitMenuFlyoutItem (last item in subItems)
+		SplitMenuFlyoutItem splitItem2 = null;
+		await RunOnUIThread(() =>
+		{
+			splitItem2 = subItems[subItems.Count - 1] as SplitMenuFlyoutItem;
+		});
+		await TapSplitMenuItemSecondary(splitItem2);
+
+		presenter = await GetCurrentPresenter();
+		await RunOnUIThread(async () =>
+		{
+			subMenu2Bounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+			LOG_OUTPUT("SplitMenuFlyout RTL bounds left=%f top=%f width=%f height=%f", subMenu2Bounds.Left, subMenu2Bounds.Top, subMenu2Bounds.Width, subMenu2Bounds.Height);
+		});
+
+		VERIFY_IS_TRUE(subMenu2Bounds.Left < subMenu1Bounds.Left);
+		VERIFY_IS_TRUE(subMenu1Bounds.Left < subMenu2Bounds.Left + subMenu2Bounds.Width);
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
 	//[TestMethod] public async Task ValidateSubMenuItemProperties()
 	//{
 
@@ -3042,6 +4154,114 @@ public class MenuFlyoutIntegrationTests
 
 	//	await menuFlyoutClosedEvent.WaitForDefault();
 	//}
+
+	[TestMethod]
+	[Ignore("Pending Popup port")]
+	public async Task ValidateSplitMenuItemProperties()
+	{
+		// Keeping it similar to ValidateSuMenuItemProperties.
+		// TestServices.ErrorHandlingHelper.IgnoreLeaksForTest();
+
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		IList<MenuFlyoutItemBase> items = null;
+
+		var menuFlyoutOpenedEvent = new Event();
+		var menuFlyoutClosedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"      x:Name='root' Background='SlateBlue' >" +
+				"  <Button x:Name='button' Content='button.flyout' VerticalAlignment='Center' HorizontalAlignment='Center' " +
+				"          RequestedTheme='light' FlowDirection='LeftToRight' Language='En-UK' IsTextScaleFactorEnabled='true' >" +
+				"    <Button.Flyout> " +
+				"      <MenuFlyout Placement='Bottom'> " +
+				"        <MenuFlyoutItem Text='Item 1' /> " +
+				"        <MenuFlyoutItem Text='Item 2' /> " +
+				"        <MenuFlyoutSeparator Width='300' /> " +
+				"        <ToggleMenuFlyoutItem Text='Toggle Item3' IsChecked='True' /> " +
+				"        <MenuFlyoutSeparator Width='300' /> " +
+				"        <SplitMenuFlyoutItem x:Name='splitItem1' Text='Split item 4'>" +
+				"          <MenuFlyoutItem>Menu item 2.1</MenuFlyoutItem>" +
+				"          <MenuFlyoutItem>Menu item 2.2</MenuFlyoutItem>" +
+				"          <MenuFlyoutSeparator/>" +
+				"          <ToggleMenuFlyoutItem IsChecked='True'>Toggle item 2.3</ToggleMenuFlyoutItem>" +
+				"         </SplitMenuFlyoutItem>" +
+				"      </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"  </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+
+			// Set the DataContext to button from the root panel
+			button.DataContext = rootPanel;
+
+			// Set the MenuFlyout presenter style
+			var style = new Style(typeof(MenuFlyoutPresenter));
+			style.Setters.Add(new Setter(MenuFlyoutPresenter.TagProperty, "presenter_style"));
+			menuFlyout.MenuFlyoutPresenterStyle = style;
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
+
+			closedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutClosedEvent.Set();
+			});
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			items = menuFlyout.Items;
+		});
+
+		SplitMenuFlyoutItem splitItem = null;
+		await RunOnUIThread(() =>
+		{
+			// SplitMenuFlyoutItem is at index 5 (after 2 items, separator, toggle item, separator)
+			splitItem = items[5] as SplitMenuFlyoutItem;
+		});
+		VERIFY_IS_NOT_NULL(splitItem);
+		await TapSplitMenuItemSecondary(splitItem);
+
+		var subPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_TRUE(subPresenter.RequestedTheme == ElementTheme.Light);
+			VERIFY_IS_TRUE(subPresenter.FlowDirection == FlowDirection.LeftToRight);
+			VERIFY_IS_TRUE(subPresenter.Language == "En-UK");
+			VERIFY_IS_TRUE(subPresenter.IsTextScaleFactorEnabled);
+
+			VERIFY_IS_NOT_NULL(subPresenter.DataContext);
+
+			var tag = subPresenter.GetValue(MenuFlyoutPresenter.TagProperty);
+			VERIFY_IS_NOT_NULL(tag);
+			VERIFY_ARE_EQUAL("presenter_style", tag.ToString());
+		});
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
+
+		await menuFlyoutClosedEvent.WaitForDefault();
+	}
 
 	//[TestMethod] public async Task ValidateThatLayoutTransitionsDoRun()
 	//{
@@ -3244,6 +4464,46 @@ public class MenuFlyoutIntegrationTests
 				   "        </MenuFlyoutSubItem>" +
 				   "    </MenuFlyoutSubItem>" +
 				   "    <MenuFlyoutSeparator/>" +
+				   "    <SplitMenuFlyoutItem x:Name='splitItem1' Text='Split menu item 2'>" +
+				   "        <MenuFlyoutItem>Split item 4.1</MenuFlyoutItem>" +
+				   "        <MenuFlyoutItem>Split item 4.2</MenuFlyoutItem>" +
+				   "        <MenuFlyoutSeparator/>" +
+				   "        <ToggleMenuFlyoutItem IsChecked='True'>Toggle split item 4.3</ToggleMenuFlyoutItem>" +
+				   "        <MenuFlyoutSeparator/>" +
+				   "        <SplitMenuFlyoutItem x:Name='splitItem2' Text='Split sub item 4.4'>" +
+				   "            <MenuFlyoutItem>Split item 5.1</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.2</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.3</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.4</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.5</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.6</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.7</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.8</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.9</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.10</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.11</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.12</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.13</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.14</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.15</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.16</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.17</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.18</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.19</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.20</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.21</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.22</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.23</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.24</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.25</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.26</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.27</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.28</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.29</MenuFlyoutItem>" +
+				   "            <MenuFlyoutItem>Split item 5.30</MenuFlyoutItem>" +
+				   "        </SplitMenuFlyoutItem>" +
+				   "    </SplitMenuFlyoutItem>" +
+				   "    <MenuFlyoutSeparator/>" +
 				   "    <MenuFlyoutItem>Menu item 2</MenuFlyoutItem>" +
 				   "    <MenuFlyoutItem>Menu item 3</MenuFlyoutItem>" +
 				   "    <MenuFlyoutSeparator/>" +
@@ -3370,6 +4630,103 @@ public class MenuFlyoutIntegrationTests
 		{
 			scrollViewer = (ScrollViewer)(TreeHelper.GetVisualChildByName(subPresenter2, "MenuFlyoutPresenterScrollViewer"));
 			LOG_OUTPUT("Scrollable Height=%f", scrollViewer.ScrollableHeight);
+		});
+		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0);
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	public async Task ValidateSplitMenuItemWithLongItems()
+	{
+		Rect splitItemBounds = default;
+		Rect subPresenterBounds = default;
+		Button button1 = null;
+		SplitMenuFlyoutItem splitItem = null;
+		IList<MenuFlyoutItemBase> items = null;
+		IList<MenuFlyoutItemBase> subItems = null;
+		ScrollViewer scrollViewer = null;
+
+		Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+		MenuFlyout menuFlyout = await CreateMenuFlyoutLongItemsFromXaml();
+
+		await RunOnUIThread(() =>
+		{
+			rootPanel.RequestedTheme = ElementTheme.Light;
+			button1 = (Button)(rootPanel.FindName("button1"));
+		});
+
+		// Set the mouse operation for showing the ScrollBar on the long menu items
+		TestServices.InputHelper.LeftMouseClick(button1);
+
+		// Show the long main MenuFlyout
+		await ShowMenuFlyout(menuFlyout, button1, 200, 50);
+
+		var subPresenter = await GetCurrentPresenter();
+
+		await RunOnUIThread(() =>
+		{
+			scrollViewer = (ScrollViewer)(TreeHelper.GetVisualChildByName(subPresenter, "MenuFlyoutPresenterScrollViewer"));
+			LOG_OUTPUT("Scrollable Height=%f", scrollViewer.ScrollableHeight);
+		});
+
+		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0);
+
+		await RunOnUIThread(() =>
+		{
+			items = menuFlyout.Items;
+			// The SplitMenuFlyoutItem with submenu is at index 4 (after Menu item 0, separator, MenuFlyoutSubItem, separator)
+			splitItem = items[4] as SplitMenuFlyoutItem;
+		});
+
+		VERIFY_IS_NOT_NULL(splitItem);
+		await MoveToSplitMenuItemSecondary(splitItem);
+
+		subPresenter = await GetCurrentPresenter();
+
+		await RunOnUIThread(async () =>
+		{
+			splitItemBounds = await ControlHelper.GetBounds((FrameworkElement)(splitItem));
+			LOG_OUTPUT("SplitMenuFlyoutItem bounds left=%f top=%f width=%f height=%f", splitItemBounds.Left, splitItemBounds.Top, splitItemBounds.Width, splitItemBounds.Height);
+		});
+
+		// Move the mouse to the boundary of split menu item then move to the sub presenter
+		Private.Infrastructure.TestServices.InputHelper.MoveMouse(new Point(splitItemBounds.Left + splitItemBounds.Width, splitItemBounds.Top + splitItemBounds.Height / 2));
+		Private.Infrastructure.TestServices.InputHelper.MoveMouse(new Point(splitItemBounds.Left + splitItemBounds.Width + 100, splitItemBounds.Top + splitItemBounds.Height / 2));
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Verify the sub presenter
+		VERIFY_IS_TRUE(subPresenter == await GetCurrentPresenter());
+
+		// Get the sub items to invoke the nested split menu sub presenter
+		SplitMenuFlyoutItem nestedSplitItem = null;
+		await RunOnUIThread(() =>
+		{
+			subItems = splitItem.Items;
+			// The nested SplitMenuFlyoutItem with submenu is the last item in the collection
+			nestedSplitItem = subItems[subItems.Count - 1] as SplitMenuFlyoutItem;
+		});
+
+		VERIFY_IS_NOT_NULL(nestedSplitItem);
+
+		// Show the nested split menu sub presenter
+		await TapSplitMenuItemSecondary(nestedSplitItem);
+
+		var subPresenter2 = await GetCurrentPresenter();
+
+		await RunOnUIThread(async () =>
+		{
+			subPresenterBounds = await ControlHelper.GetBounds((FrameworkElement)(subPresenter2));
+			LOG_OUTPUT("Nested SplitMenuFlyoutItem SubPresenter bounds left=%f top=%f width=%f height=%f", subPresenterBounds.Left, subPresenterBounds.Top, subPresenterBounds.Width, subPresenterBounds.Height);
+		});
+
+		Private.Infrastructure.TestServices.InputHelper.MoveMouse(new Point(subPresenterBounds.Left + subPresenterBounds.Width / 2, subPresenterBounds.Top + subPresenterBounds.Height / 2));
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			scrollViewer = (ScrollViewer)(TreeHelper.GetVisualChildByName(subPresenter2, "MenuFlyoutPresenterScrollViewer"));
+			LOG_OUTPUT("Nested Scrollable Height=%f", scrollViewer.ScrollableHeight);
 		});
 		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0);
 
@@ -4845,6 +6202,89 @@ public class MenuFlyoutIntegrationTests
 	//	await FlyoutHelper.HideFlyout(menuFlyout);
 	//}
 
+	[TestMethod]
+	public async Task ValidateSplitMenuItemInternalKeyboardTraversal()
+	{
+		Button button1 = null;
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitItem = null;
+		Button primaryButton = null;
+		Button secondaryButton = null;
+		IList<MenuFlyoutItemBase> items = null;
+
+		Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+		menuFlyout = await CreateSplitMenuFlyoutItemsFromXaml();
+		VERIFY_IS_NOT_NULL(menuFlyout);
+
+		await RunOnUIThread(() =>
+		{
+			button1 = (Button)(rootPanel.FindName("button1"));
+			items = menuFlyout.Items;
+			splitItem = (SplitMenuFlyoutItem)(items[6]);
+			VERIFY_IS_NOT_NULL(splitItem);
+		});
+
+		await ShowMenuFlyout(menuFlyout, button1, -50, 50);
+
+		// Navigate down to the split item with submenu (index 6)
+		// Need to navigate through: Item(0), Item(1), Toggle(3), Split(5)-Primary, Split(5)-Secondary, Split(6)-Primary
+		LOG_OUTPUT("Navigate to split menu item with submenu.");
+		for (int i = 0; i < 5; i++)
+		{
+			await CommonInputHelper.Down(InputDevice.Keyboard);
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		await RunOnUIThread(() =>
+		{
+			primaryButton = (Button)(TreeHelper.GetVisualChildByName(splitItem, "PrimaryButton"));
+			secondaryButton = (Button)(TreeHelper.GetVisualChildByName(splitItem, "SecondaryButton"));
+			VERIFY_IS_NOT_NULL(primaryButton);
+			VERIFY_IS_NOT_NULL(secondaryButton);
+		});
+
+		// Test 1: Verify focus is on primary button
+		LOG_OUTPUT("Test 1: Verify focus is on primary button.");
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_TRUE(primaryButton.FocusState != FocusState.Unfocused);
+		});
+
+		// Test 2: Press Right to move focus from primary to secondary
+		LOG_OUTPUT("Test 2: Press Right to move focus to secondary button.");
+		var secondaryGotFocusEvent = new Event();
+		var secondaryGotFocusRegistration = CreateSafeEventRegistration<Button, RoutedEventHandler>("GotFocus");
+		secondaryGotFocusRegistration.Attach(secondaryButton, (s, e) => { secondaryGotFocusEvent.Set(); });
+
+		await CommonInputHelper.Right(InputDevice.Keyboard);
+		await secondaryGotFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_TRUE(secondaryButton.FocusState != FocusState.Unfocused);
+			VERIFY_IS_TRUE(primaryButton.FocusState == FocusState.Unfocused);
+		});
+
+		// Test 3: Press Left to move focus from secondary back to primary
+		LOG_OUTPUT("Test 3: Press Left to move focus back to primary button.");
+		var primaryGotFocusEvent = new Event();
+		var primaryGotFocusRegistration = CreateSafeEventRegistration<Button, RoutedEventHandler>("GotFocus");
+		primaryGotFocusRegistration.Attach(primaryButton, (s, e) => { primaryGotFocusEvent.Set(); });
+
+		await CommonInputHelper.Left(InputDevice.Keyboard);
+		await primaryGotFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_TRUE(primaryButton.FocusState != FocusState.Unfocused);
+			VERIFY_IS_TRUE(secondaryButton.FocusState == FocusState.Unfocused);
+		});
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
 	//[TestMethod] public async Task ValidateFocusedItemDownAndUpAfterOverrideFocusItem()
 	//{
 
@@ -5500,6 +6940,121 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
+	public async Task ValidateSettingKeyboardAcceleratorCreatesDefaultSplitItemKeyboardAcceleratorText()
+	{
+		await RunOnUIThread(() =>
+		{
+			var item = new SplitMenuFlyoutItem();
+
+			var keyboardAccelerator = new KeyboardAccelerator();
+			keyboardAccelerator.Key = Windows.System.VirtualKey.A;
+			keyboardAccelerator.Modifiers = Windows.System.VirtualKeyModifiers.Control;
+			item.KeyboardAccelerators.Add(keyboardAccelerator);
+
+			string expectedKeyboardAcceleratorText = "Ctrl+A";
+
+			LOG_OUTPUT("Expected keyboard accelerator text: \"%s\"", expectedKeyboardAcceleratorText);
+			LOG_OUTPUT("Actual keyboard accelerator text:   \"%s\"", item.KeyboardAcceleratorTextOverride);
+			VERIFY_IS_TRUE(string.CompareOrdinal(expectedKeyboardAcceleratorText, item.KeyboardAcceleratorTextOverride) == 0);
+		});
+	}
+
+	[TestMethod]
+	public async Task ValidateSettingKeyboardAcceleratorDoesNotOverrideSplitItemCustomKeyboardAcceleratorText()
+	{
+		await RunOnUIThread(() =>
+		{
+			var item = new SplitMenuFlyoutItem();
+
+			string customKeyboardAcceleratorText = "Custom keyboard accelerator text";
+			item.KeyboardAcceleratorTextOverride = customKeyboardAcceleratorText;
+
+			var keyboardAccelerator = new KeyboardAccelerator();
+			keyboardAccelerator.Key = Windows.System.VirtualKey.A;
+			keyboardAccelerator.Modifiers = Windows.System.VirtualKeyModifiers.Control;
+			item.KeyboardAccelerators.Add(keyboardAccelerator);
+
+			LOG_OUTPUT("Expected keyboard accelerator text: \"%s\"", customKeyboardAcceleratorText);
+			LOG_OUTPUT("Actual keyboard accelerator text:   \"%s\"", item.KeyboardAcceleratorTextOverride);
+			VERIFY_IS_TRUE(string.CompareOrdinal(customKeyboardAcceleratorText, item.KeyboardAcceleratorTextOverride) == 0);
+		});
+	}
+
+	[TestMethod]
+	public async Task ValidateKeyboardAcceleratorTextHiddenInSplitMenuItem()
+	{
+		Grid rootGrid = null;
+		MenuFlyout menuFlyout = null;
+
+		var loadedEvent = new Event();
+		var menuFlyoutOpenedEvent = new Event();
+		var menuFlyoutClosedEvent = new Event();
+
+		var loadedRegistration = CreateSafeEventRegistration<Grid, RoutedEventHandler>(nameof(Grid.Loaded));
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
+
+		await RunOnUIThread(() =>
+		{
+			rootGrid = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"  x:Name='root' Background='SlateBlue'> " +
+				"  <FlyoutBase.AttachedFlyout> " +
+				"    <MenuFlyout> " +
+				"      <SplitMenuFlyoutItem Icon='AddFriend' Text='Split Item 1'> " +
+				"          <SplitMenuFlyoutItem.KeyboardAccelerators> " +
+				"              <KeyboardAccelerator Key='F10' Modifiers='Control' /> " +
+				"          </SplitMenuFlyoutItem.KeyboardAccelerators> " +
+				"          <MenuFlyoutItem Text='Sub Item 1.1'/> " +
+				"      </SplitMenuFlyoutItem> " +
+				"    </MenuFlyout> " +
+				"  </FlyoutBase.AttachedFlyout> " +
+				"</Grid>"));
+
+			loadedRegistration.Attach(rootGrid, (s, e) => { loadedEvent.Set(); });
+
+			menuFlyout = (MenuFlyout)(MenuFlyout.GetAttachedFlyout(rootGrid));
+			VERIFY_IS_NOT_NULL(menuFlyout);
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				LOG_OUTPUT("MenuFlyout.Opened event raised");
+				menuFlyoutOpenedEvent.Set();
+			});
+
+			closedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				LOG_OUTPUT("MenuFlyout.Closed event raised");
+				menuFlyoutClosedEvent.Set();
+			});
+
+			TestServices.WindowHelper.WindowContent = rootGrid;
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+		await loadedEvent.WaitForDefault();
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.ShowAt(rootGrid);
+		});
+
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var keyboardAcceleratorTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(menuFlyout.Items[0], "KeyboardAcceleratorTextBlock"));
+			VERIFY_IS_NULL(keyboardAcceleratorTextBlock);
+
+			menuFlyout.Hide();
+		});
+
+		await menuFlyoutClosedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
 	public async Task ValidateDefaultKeyboardAcceleratorTextPopulatesFully()
 	{
 		Grid rootGrid = null;
@@ -5628,6 +7183,30 @@ public class MenuFlyoutIntegrationTests
 	//		ToggleMenuFlyoutItem.TextProperty,
 	//		ToggleMenuFlyoutItem.IconProperty);
 	//}
+
+	[TestMethod]
+	[Ignore("Blocked: CommandHelper (ValidateSettingUICommandSetsProperties<T>) is not ported yet")]
+	public void ValidateSettingUICommandSetsSplitProperties()
+	{
+#if false // TODO Uno: needs a port of CommandHelper.ValidateSettingUICommandSetsProperties<T>
+		CommandHelper.ValidateSettingUICommandSetsProperties<SplitMenuFlyoutItem>(
+			SplitMenuFlyoutItem.CommandProperty,
+			SplitMenuFlyoutItem.TextProperty,
+			SplitMenuFlyoutItem.IconProperty);
+#endif
+	}
+
+	[TestMethod]
+	[Ignore("Blocked: CommandHelper (ValidateSettingUICommandDoesNotOverwriteProperties<T>) is not ported yet")]
+	public void ValidateSettingUICommandDoesNotOverwriteSplitProperties()
+	{
+#if false // TODO Uno: needs a port of CommandHelper.ValidateSettingUICommandDoesNotOverwriteProperties<T>
+		CommandHelper.ValidateSettingUICommandDoesNotOverwriteProperties<SplitMenuFlyoutItem>(
+			SplitMenuFlyoutItem.CommandProperty,
+			SplitMenuFlyoutItem.TextProperty,
+			SplitMenuFlyoutItem.IconProperty);
+#endif
+	}
 
 	//[TestMethod] public async Task ValidateMenuFlyoutTouchPositionForExclusionRect()
 	//{
@@ -6007,11 +7586,1128 @@ public class MenuFlyoutIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 
+	[TestMethod]
+	public async Task VerifyMenuFlyoutResizesWhenItemsChangeWhileOpen()
+	{
+		MenuFlyout flyout = null;
+		MenuFlyoutSubItem subItem = null;
+		SplitMenuFlyoutItem splitItem = null;
+		Button flyoutTarget = null;
+
+		var openedEvent = new Event();
+		var closedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
+
+		await RunOnUIThread(() =>
+		{
+			flyout = new MenuFlyout();
+			flyout.Placement = FlyoutPlacementMode.Right;
+
+			var item = new MenuFlyoutItem();
+			item.Text = "Item 1";
+			flyout.Items.Add(item);
+
+			subItem = new MenuFlyoutSubItem();
+			subItem.Text = "Sub item 2";
+			flyout.Items.Add(subItem);
+
+			item = new MenuFlyoutItem();
+			item.Text = "Item 2.1";
+			subItem.Items.Add(item);
+
+			splitItem = new SplitMenuFlyoutItem();
+			splitItem.Text = "Split item 3";
+			flyout.Items.Add(splitItem);
+
+			item = new MenuFlyoutItem();
+			item.Text = "Item 3.1";
+			splitItem.Items.Add(item);
+
+			openedRegistration.Attach(flyout, (s, e) =>
+			{
+				LOG_OUTPUT("MenuFlyout opened.");
+				openedEvent.Set();
+			});
+
+			closedRegistration.Attach(flyout, (s, e) =>
+			{
+				LOG_OUTPUT("MenuFlyout closed.");
+				closedEvent.Set();
+			});
+
+			flyoutTarget = new Button();
+			flyoutTarget.Content = "Click for flyout";
+			flyoutTarget.HorizontalAlignment = HorizontalAlignment.Left;
+			flyoutTarget.VerticalAlignment = VerticalAlignment.Center;
+			flyoutTarget.Flyout = flyout;
+
+			var rootPanel = new Grid();
+			rootPanel.Children.Add(flyoutTarget);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Click on the button to show the MenuFlyout.");
+		TestServices.InputHelper.LeftMouseClick(flyoutTarget);
+
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		FrameworkElement presenter = null;
+		Rect originalBounds = default;
+
+		await RunOnUIThread(async () =>
+		{
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.WindowContent.XamlRoot);
+
+			LOG_OUTPUT("There should be one popup for the MenuFlyout.");
+			VERIFY_ARE_EQUAL(1, popups.Count);
+
+			var flyoutPopup = popups[0];
+			presenter = (FrameworkElement)(flyoutPopup.Child);
+			originalBounds = await ControlHelper.GetBounds(presenter);
+
+			LOG_OUTPUT("Adding another MenuFlyoutItem to the MenuFlyout.");
+
+			var item = new MenuFlyoutItem();
+			item.Text = "Item 3";
+			flyout.Items.Add(item);
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			var newBounds = await ControlHelper.GetBounds(presenter);
+
+			VERIFY_IS_GREATER_THAN(newBounds.Height, originalBounds.Height);
+		});
+
+		LOG_OUTPUT("Move to the sub item to show the sub-menu.");
+		await OpenSubItemWithMouse(subItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.WindowContent.XamlRoot);
+
+			LOG_OUTPUT("There should be two popups: one for the MenuFlyout, and one for its sub-menu.");
+			VERIFY_ARE_EQUAL(2, popups.Count);
+
+			var flyoutSubMenuPopup = popups[0];
+			presenter = (FrameworkElement)(flyoutSubMenuPopup.Child);
+			originalBounds = await ControlHelper.GetBounds(presenter);
+
+			LOG_OUTPUT("Adding another MenuFlyoutItem to the MenuFlyoutSubItem.");
+
+			var item = new MenuFlyoutItem();
+			item.Text = "Item 2.2";
+			subItem.Items.Add(item);
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			var newBounds = await ControlHelper.GetBounds(presenter);
+
+			VERIFY_IS_GREATER_THAN(newBounds.Height, originalBounds.Height);
+		});
+
+		LOG_OUTPUT("Close the flyout after testing sub menu item.");
+		await FlyoutHelper.HideFlyout(flyout);
+		await closedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Reopen the flyout to test split menu item.");
+		closedEvent.Reset();
+		openedEvent.Reset();
+		TestServices.InputHelper.LeftMouseClick(flyoutTarget);
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Tap the split item secondary part to show the split item sub-menu.");
+		await TapSplitMenuItemSecondary(splitItem);
+
+		await RunOnUIThread(async () =>
+		{
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.WindowContent.XamlRoot);
+
+			LOG_OUTPUT("There should be two popups: one for the MenuFlyout, and one for the split item's sub-menu.");
+			VERIFY_ARE_EQUAL(2, popups.Count);
+
+			var flyoutSplitItemSubMenuPopup = popups[0];
+			presenter = (FrameworkElement)(flyoutSplitItemSubMenuPopup.Child);
+			originalBounds = await ControlHelper.GetBounds(presenter);
+
+			LOG_OUTPUT("Adding another MenuFlyoutItem to the SplitMenuFlyoutItem.");
+
+			var item = new MenuFlyoutItem();
+			item.Text = "Item 3.2";
+			splitItem.Items.Add(item);
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			var newBounds = await ControlHelper.GetBounds(presenter);
+
+			VERIFY_IS_GREATER_THAN(newBounds.Height, originalBounds.Height);
+		});
+
+		LOG_OUTPUT("Click on the button again to hide the MenuFlyout.");
+		TestServices.InputHelper.LeftMouseClick(flyoutTarget);
+
+		await closedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
 	private KeyboardAccelerator CreateKeyboardAccelerator(Windows.System.VirtualKey key, Windows.System.VirtualKeyModifiers modifiers)
 	{
 		var keyboardAccelerator = new KeyboardAccelerator();
 		keyboardAccelerator.Key = key;
 		keyboardAccelerator.Modifiers = modifiers;
 		return keyboardAccelerator;
+	}
+
+	[TestMethod]
+	public async Task ValidateSplitMenuItemSubMenuPresenterStyleFromXaml()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitItem = null;
+
+		var menuFlyoutOpenedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"      x:Name='root' Background='SlateBlue' >" +
+				"  <Button x:Name='button' Content='Test Button' VerticalAlignment='Center' HorizontalAlignment='Center' >" +
+				"    <Button.Flyout> " +
+				"      <MenuFlyout> " +
+				"        <SplitMenuFlyoutItem x:Name='splitItem1' Text='Split Item with Custom Style'>" +
+				"          <SplitMenuFlyoutItem.SubMenuPresenterStyle>" +
+				"            <Style TargetType='MenuFlyoutPresenter'>" +
+				"              <Setter Property='Tag' Value='CustomSubMenuStyle' />" +
+				"              <Setter Property='Background' Value='LightBlue' />" +
+				"            </Style>" +
+				"          </SplitMenuFlyoutItem.SubMenuPresenterStyle>" +
+				"          <MenuFlyoutItem Text='Sub Item 1' />" +
+				"          <MenuFlyoutItem Text='Sub Item 2' />" +
+				"          <MenuFlyoutSeparator />" +
+				"          <ToggleMenuFlyoutItem Text='Sub Toggle Item' IsChecked='True' />" +
+				"        </SplitMenuFlyoutItem>" +
+				"      </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"  </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			splitItem = (SplitMenuFlyoutItem)(rootPanel.FindName("splitItem1"));
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Open the main MenuFlyout");
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Tap the secondary button of SplitMenuFlyoutItem to open submenu");
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Verify that the custom SubMenuPresenterStyle is applied");
+		var subPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_NOT_NULL(subPresenter);
+
+			// Verify the custom Tag value from the style
+			var tag = subPresenter.GetValue(MenuFlyoutPresenter.TagProperty);
+			VERIFY_IS_NOT_NULL(tag);
+			VERIFY_ARE_EQUAL("CustomSubMenuStyle", tag.ToString());
+
+			// Verify the custom Background color
+			var background = subPresenter.Background;
+			VERIFY_IS_NOT_NULL(background);
+			var solidColorBrush = background as SolidColorBrush;
+			VERIFY_IS_NOT_NULL(solidColorBrush);
+
+			var lightBlue = global::Microsoft.UI.Colors.LightBlue;
+			VERIFY_ARE_EQUAL(lightBlue.A, solidColorBrush.Color.A);
+			VERIFY_ARE_EQUAL(lightBlue.R, solidColorBrush.Color.R);
+			VERIFY_ARE_EQUAL(lightBlue.G, solidColorBrush.Color.G);
+			VERIFY_ARE_EQUAL(lightBlue.B, solidColorBrush.Color.B);
+		});
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
+	}
+
+	[TestMethod]
+	public async Task ValidateCanChangeSplitMenuItemSubMenuPresenterStyleAtRuntime()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitItem = null;
+
+		var menuFlyoutOpenedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"      x:Name='root' Background='SlateBlue' >" +
+				"  <Button x:Name='button' Content='Test Button' VerticalAlignment='Center' HorizontalAlignment='Center' >" +
+				"    <Button.Flyout> " +
+				"      <MenuFlyout> " +
+				"        <SplitMenuFlyoutItem x:Name='splitItem1' Text='Split Item Runtime Style'>" +
+				"          <SplitMenuFlyoutItem.SubMenuPresenterStyle>" +
+				"            <Style TargetType='MenuFlyoutPresenter'>" +
+				"              <Setter Property='Tag' Value='InitialSubMenuStyle' />" +
+				"              <Setter Property='Background' Value='LightGreen' />" +
+				"            </Style>" +
+				"          </SplitMenuFlyoutItem.SubMenuPresenterStyle>" +
+				"          <MenuFlyoutItem Text='Sub Item 1' />" +
+				"          <MenuFlyoutItem Text='Sub Item 2' />" +
+				"          <MenuFlyoutSeparator />" +
+				"          <ToggleMenuFlyoutItem Text='Sub Toggle Item' IsChecked='True' />" +
+				"        </SplitMenuFlyoutItem>" +
+				"      </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"  </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			splitItem = (SplitMenuFlyoutItem)(rootPanel.FindName("splitItem1"));
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Step 1: Test initial style from XAML");
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var subPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_NOT_NULL(subPresenter);
+
+			// Verify initial style
+			var tag = subPresenter.GetValue(MenuFlyoutPresenter.TagProperty);
+			VERIFY_IS_NOT_NULL(tag);
+			VERIFY_ARE_EQUAL("InitialSubMenuStyle", tag.ToString());
+		});
+
+		// Close the menu
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Step 2: Change SubMenuPresenterStyle at runtime");
+		await RunOnUIThread(() =>
+		{
+			var newStyle = new Style(typeof(MenuFlyoutPresenter));
+			newStyle.Setters.Add(new Setter(MenuFlyoutPresenter.TagProperty, "RuntimeModifiedStyle"));
+			newStyle.Setters.Add(new Setter(MenuFlyoutPresenter.BackgroundProperty, new SolidColorBrush(global::Microsoft.UI.Colors.LightCoral)));
+
+			splitItem.SubMenuPresenterStyle = newStyle;
+		});
+
+		// Reopen and test the modified style
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		subPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_NOT_NULL(subPresenter);
+
+			// Verify the modified style
+			var tag = subPresenter.GetValue(MenuFlyoutPresenter.TagProperty);
+			VERIFY_IS_NOT_NULL(tag);
+			VERIFY_ARE_EQUAL("RuntimeModifiedStyle", tag.ToString());
+
+			var background = subPresenter.Background;
+			VERIFY_IS_NOT_NULL(background);
+			var solidColorBrush = background as SolidColorBrush;
+			VERIFY_IS_NOT_NULL(solidColorBrush);
+
+			var lightCoral = global::Microsoft.UI.Colors.LightCoral;
+			VERIFY_ARE_EQUAL(lightCoral.A, solidColorBrush.Color.A);
+			VERIFY_ARE_EQUAL(lightCoral.R, solidColorBrush.Color.R);
+			VERIFY_ARE_EQUAL(lightCoral.G, solidColorBrush.Color.G);
+			VERIFY_ARE_EQUAL(lightCoral.B, solidColorBrush.Color.B);
+		});
+
+		// Close the menu
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Step 3: Clear SubMenuPresenterStyle (set to null)");
+		await RunOnUIThread(() =>
+		{
+			splitItem.SubMenuPresenterStyle = null;
+		});
+
+		// Reopen and test that default style is used
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		subPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_NOT_NULL(subPresenter);
+
+			// Verify that the custom Tag is no longer set (should be null for default style)
+			var tag = subPresenter.GetValue(MenuFlyoutPresenter.TagProperty);
+			// For default/cleared style, the Tag should be either null or not set to our custom values
+			if (tag != null)
+			{
+				string tagString = tag.ToString();
+				VERIFY_ARE_NOT_EQUAL("InitialSubMenuStyle", tagString);
+				VERIFY_ARE_NOT_EQUAL("RuntimeModifiedStyle", tagString);
+			}
+
+			// The background should revert to default theme background (not our custom colors)
+			var background = subPresenter.Background;
+			if (background != null)
+			{
+				var solidColorBrush = background as SolidColorBrush;
+				if (solidColorBrush != null)
+				{
+					// Should not be our custom colors anymore
+					var lightGreen = global::Microsoft.UI.Colors.LightGreen;
+					var lightCoral = global::Microsoft.UI.Colors.LightCoral;
+					VERIFY_IS_FALSE(
+						(lightGreen.A == solidColorBrush.Color.A && lightGreen.R == solidColorBrush.Color.R &&
+						 lightGreen.G == solidColorBrush.Color.G && lightGreen.B == solidColorBrush.Color.B) ||
+						(lightCoral.A == solidColorBrush.Color.A && lightCoral.R == solidColorBrush.Color.R &&
+						 lightCoral.G == solidColorBrush.Color.G && lightCoral.B == solidColorBrush.Color.B)
+					);
+				}
+			}
+		});
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
+	}
+
+	[TestMethod]
+	public async Task ValidateSplitMenuItemSubMenuPresenterStyleWithItemsWrapGrid()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitItem = null;
+
+		var menuFlyoutOpenedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"      x:Name='root' Background='SlateBlue' >" +
+				"  <Button x:Name='button' Content='Test Button' VerticalAlignment='Center' HorizontalAlignment='Center' >" +
+				"    <Button.Flyout> " +
+				"      <MenuFlyout> " +
+				"        <SplitMenuFlyoutItem x:Name='splitItem1' Text='Split Item with WrapGrid Panel'>" +
+				"          <SplitMenuFlyoutItem.SubMenuPresenterStyle>" +
+				"            <Style TargetType='MenuFlyoutPresenter'>" +
+				"              <Setter Property='Tag' Value='WrapGridPanelStyle' />" +
+				"              <Setter Property='ItemsPanel'>" +
+				"                <Setter.Value>" +
+				"                  <ItemsPanelTemplate>" +
+				"                    <ItemsWrapGrid Orientation='Horizontal' MaximumRowsOrColumns='2' />" +
+				"                  </ItemsPanelTemplate>" +
+				"                </Setter.Value>" +
+				"              </Setter>" +
+				"            </Style>" +
+				"          </SplitMenuFlyoutItem.SubMenuPresenterStyle>" +
+				"          <MenuFlyoutItem Text='Item 1' />" +
+				"          <MenuFlyoutItem Text='Item 2' />" +
+				"          <MenuFlyoutItem Text='Item 3' />" +
+				"          <MenuFlyoutItem Text='Item 4' />" +
+				"          <ToggleMenuFlyoutItem Text='Toggle Item' IsChecked='True' />" +
+				"        </SplitMenuFlyoutItem>" +
+				"      </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"  </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			splitItem = (SplitMenuFlyoutItem)(rootPanel.FindName("splitItem1"));
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Open the main MenuFlyout");
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Tap the secondary button of SplitMenuFlyoutItem to open submenu with ItemsWrapGrid");
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Verify that the submenu with ItemsWrapGrid panel is displayed correctly");
+		var subPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_NOT_NULL(subPresenter);
+
+			// Verify the custom Tag value from the style
+			var tag = subPresenter.GetValue(MenuFlyoutPresenter.TagProperty);
+			VERIFY_IS_NOT_NULL(tag);
+			VERIFY_ARE_EQUAL("WrapGridPanelStyle", tag.ToString());
+
+			// Find the actual panel in the visual tree (the ItemsWrapGrid should be a child of ItemsPresenter)
+			var itemsPresenter = TreeHelper.GetVisualChildByType<ItemsPresenter>(subPresenter);
+			VERIFY_IS_NOT_NULL(itemsPresenter);
+
+			// The actual panel is a child of the ItemsPresenter
+			var panel = TreeHelper.GetVisualChildByType<ItemsWrapGrid>(itemsPresenter);
+			VERIFY_IS_NOT_NULL(panel);
+
+			// Verify the WrapGrid properties are set correctly
+			VERIFY_ARE_EQUAL(Orientation.Horizontal, panel.Orientation);
+			VERIFY_ARE_EQUAL(2, panel.MaximumRowsOrColumns);
+
+			// Verify that menu items are actually displayed (should have child elements)
+			var children = panel.Children;
+			VERIFY_IS_NOT_NULL(children);
+			VERIFY_IS_GREATER_THAN(children.Count, 0);
+
+			LOG_OUTPUT("Successfully verified ItemsWrapGrid panel with %d child items", children.Count);
+		});
+
+		// Close the menu
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Step 2: Clear SubMenuPresenterStyle and verify default ItemsPanel");
+		await RunOnUIThread(() =>
+		{
+			splitItem.SubMenuPresenterStyle = null;
+		});
+
+		// Reopen and test that default ItemsPanel (StackPanel) is used
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Verify that the default ItemsPanel (StackPanel) is restored");
+		subPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_NOT_NULL(subPresenter);
+
+			// Verify that the custom Tag is no longer set
+			var tag = subPresenter.GetValue(MenuFlyoutPresenter.TagProperty);
+			if (tag != null)
+			{
+				string tagString = tag.ToString();
+				VERIFY_ARE_NOT_EQUAL("WrapGridPanelStyle", tagString);
+			}
+
+			// Find the actual panel in the visual tree - should now be the default StackPanel
+			var itemsPresenter = TreeHelper.GetVisualChildByType<ItemsPresenter>(subPresenter);
+			VERIFY_IS_NOT_NULL(itemsPresenter);
+
+			// The default panel should be a StackPanel, not an ItemsWrapGrid
+			var wrapGridPanel = TreeHelper.GetVisualChildByType<ItemsWrapGrid>(itemsPresenter);
+			VERIFY_IS_NULL(wrapGridPanel); // Should not find ItemsWrapGrid anymore
+
+			var stackPanel = TreeHelper.GetVisualChildByType<StackPanel>(itemsPresenter);
+			VERIFY_IS_NOT_NULL(stackPanel); // Should find the default StackPanel
+
+			// Verify the StackPanel has the default Vertical orientation
+			VERIFY_ARE_EQUAL(Orientation.Vertical, stackPanel.Orientation);
+
+			// Verify that menu items are still displayed (should have child elements)
+			var children = stackPanel.Children;
+			VERIFY_IS_NOT_NULL(children);
+			VERIFY_IS_GREATER_THAN(children.Count, 0);
+
+			LOG_OUTPUT("Successfully verified default StackPanel with %d child items", children.Count);
+		});
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
+	}
+
+	private async Task<Grid> SetupRootPanelForSubMenuItemStyleTests()
+	{
+		Grid rootPanel = null;
+
+		await RunOnUIThread(() =>
+		{
+			rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"      x:Name='root' Background='SlateBlue' >" +
+				"  <Grid.Resources>" +
+				"    <Style x:Key='TestMenuItemStyle' TargetType='MenuFlyoutItem'>" +
+				"      <Setter Property='Tag' Value='TestStyleTag' />" +
+				"      <Setter Property='Foreground' Value='LightBlue' />" +
+				"    </Style>" +
+				"  </Grid.Resources>" +
+				"  <Button x:Name='button' Content='Test Button' VerticalAlignment='Center' HorizontalAlignment='Center' >" +
+				"    <Button.Flyout> " +
+				"      <MenuFlyout> " +
+				"        <SplitMenuFlyoutItem x:Name='splitItem1' Text='Split Item with SubMenuItemStyle'>" +
+				"          <SplitMenuFlyoutItem.SubMenuItemStyle>" +
+				"            <Style TargetType='MenuFlyoutItem'>" +
+				"              <Setter Property='Tag' Value='SubMenuItemStyleTag' />" +
+				"              <Setter Property='Foreground' Value='LightGreen' />" +
+				"            </Style>" +
+				"          </SplitMenuFlyoutItem.SubMenuItemStyle>" +
+				"          <MenuFlyoutItem Text='Sub Item 1' />" +
+				"          <MenuFlyoutItem Text='Sub Item 2' />" +
+				"          <MenuFlyoutItem Text='Sub Item 3' />" +
+				"        </SplitMenuFlyoutItem>" +
+				"      </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"  </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		return rootPanel;
+	}
+
+	[TestMethod]
+	[Ignore("Pending Popup port")]
+	public async Task ValidateSplitMenuItemSubMenuItemStyleFromXaml()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitItem = null;
+
+		var menuFlyoutOpenedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+
+		Grid rootPanel = await SetupRootPanelForSubMenuItemStyleTests();
+
+		await RunOnUIThread(() =>
+		{
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			splitItem = (SplitMenuFlyoutItem)(rootPanel.FindName("splitItem1"));
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Open the main MenuFlyout");
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Tap the secondary button of SplitMenuFlyoutItem to open submenu");
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Verify that SubMenuItemStyle is applied to all sub menu items");
+		await RunOnUIThread(() =>
+		{
+			var items = splitItem.Items;
+			VERIFY_ARE_EQUAL(3, items.Count);
+
+			for (int i = 0; i < items.Count; ++i)
+			{
+				var item = items[i];
+				var menuItem = item as MenuFlyoutItem;
+				VERIFY_IS_NOT_NULL(menuItem);
+
+				// Verify the Tag is set from the SubMenuItemStyle
+				var tag = menuItem.GetValue(MenuFlyoutItem.TagProperty);
+				VERIFY_IS_NOT_NULL(tag);
+				VERIFY_ARE_EQUAL("SubMenuItemStyleTag", tag.ToString());
+
+				// Verify the Foreground color is set from the SubMenuItemStyle
+				var foreground = menuItem.Foreground;
+				VERIFY_IS_NOT_NULL(foreground);
+				var solidColorBrush = foreground as SolidColorBrush;
+				VERIFY_IS_NOT_NULL(solidColorBrush);
+
+				var lightGreen = global::Microsoft.UI.Colors.LightGreen;
+				VERIFY_ARE_EQUAL(lightGreen.A, solidColorBrush.Color.A);
+				VERIFY_ARE_EQUAL(lightGreen.R, solidColorBrush.Color.R);
+				VERIFY_ARE_EQUAL(lightGreen.G, solidColorBrush.Color.G);
+				VERIFY_ARE_EQUAL(lightGreen.B, solidColorBrush.Color.B);
+			}
+		});
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
+	}
+
+	[TestMethod]
+	[Ignore("Pending Popup port")]
+	public async Task ValidateSplitMenuItemSubMenuItemStyleWithLocalStyles()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitItem = null;
+
+		var menuFlyoutOpenedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"      x:Name='root' Background='SlateBlue' >" +
+				"  <Button x:Name='button' Content='Test Button' VerticalAlignment='Center' HorizontalAlignment='Center' >" +
+				"    <Button.Flyout> " +
+				"      <MenuFlyout> " +
+				"        <SplitMenuFlyoutItem x:Name='splitItem1' Text='Split Item with Mixed Styles'>" +
+				"          <SplitMenuFlyoutItem.SubMenuItemStyle>" +
+				"            <Style TargetType='MenuFlyoutItem'>" +
+				"              <Setter Property='Tag' Value='SubMenuItemStyleTag' />" +
+				"              <Setter Property='Foreground' Value='LightGreen' />" +
+				"            </Style>" +
+				"          </SplitMenuFlyoutItem.SubMenuItemStyle>" +
+				"          <MenuFlyoutItem Text='Sub Item 1' />" +
+				"          <MenuFlyoutItem Text='Sub Item 2' />" +
+				"          <MenuFlyoutItem Text='Sub Item 3' >" +
+				"            <MenuFlyoutItem.Style>" +
+				"              <Style TargetType='MenuFlyoutItem'>" +
+				"                <Setter Property='Tag' Value='LocalStyleTag' />" +
+				"                <Setter Property='Foreground' Value='LightCoral' />" +
+				"              </Style>" +
+				"            </MenuFlyoutItem.Style>" +
+				"          </MenuFlyoutItem>" +
+				"        </SplitMenuFlyoutItem>" +
+				"      </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"  </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			splitItem = (SplitMenuFlyoutItem)(rootPanel.FindName("splitItem1"));
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Open the main MenuFlyout");
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Tap the secondary button of SplitMenuFlyoutItem to open submenu");
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Verify mixed styles: SubMenuItemStyle applied where no local style, local style preserved where set");
+		await RunOnUIThread(() =>
+		{
+			var items = splitItem.Items;
+			VERIFY_ARE_EQUAL(3, items.Count);
+
+			for (int i = 0; i < items.Count; ++i)
+			{
+				var menuItem = items[i] as MenuFlyoutItem;
+				VERIFY_IS_NOT_NULL(menuItem);
+				var tagString = menuItem.GetValue(MenuFlyoutItem.TagProperty);
+				VERIFY_IS_NOT_NULL(tagString);
+				VERIFY_ARE_EQUAL(i < 2 ? "SubMenuItemStyleTag" : "LocalStyleTag", tagString.ToString());
+			}
+		});
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
+	}
+
+	[TestMethod]
+	[Ignore("Pending Popup port")]
+	public async Task ValidateCanChangeSplitMenuItemSubMenuItemStyle()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitItem = null;
+
+		var menuFlyoutOpenedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"      x:Name='root' Background='SlateBlue' >" +
+				"  <Button x:Name='button' Content='Test Button' VerticalAlignment='Center' HorizontalAlignment='Center' >" +
+				"    <Button.Flyout> " +
+				"      <MenuFlyout> " +
+				"        <SplitMenuFlyoutItem x:Name='splitItem1' Text='Split Item Runtime Style Changes'>" +
+				"          <MenuFlyoutItem Text='Sub Item 1' />" +
+				"          <MenuFlyoutItem Text='Sub Item 2' />" +
+				"        </SplitMenuFlyoutItem>" +
+				"      </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"  </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			splitItem = (SplitMenuFlyoutItem)(rootPanel.FindName("splitItem1"));
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Step 1: Apply SubMenuItemStyle at runtime");
+		await RunOnUIThread(() =>
+		{
+			var initialStyle = new Style(typeof(MenuFlyoutItem));
+			initialStyle.Setters.Add(new Setter(MenuFlyoutItem.TagProperty, "InitialStyleTag"));
+			initialStyle.Setters.Add(new Setter(MenuFlyoutItem.ForegroundProperty, new SolidColorBrush(global::Microsoft.UI.Colors.LightCoral)));
+
+			splitItem.SubMenuItemStyle = initialStyle;
+		});
+
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var items = splitItem.Items;
+			for (int i = 0; i < items.Count; ++i)
+			{
+				var item = items[i] as MenuFlyoutItem;
+				var tag = item.GetValue(MenuFlyoutItem.TagProperty);
+				VERIFY_IS_NOT_NULL(tag);
+				VERIFY_ARE_EQUAL("InitialStyleTag", tag.ToString());
+			}
+			menuFlyout.Hide();
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Step 2: Change SubMenuItemStyle to different style");
+		await RunOnUIThread(() =>
+		{
+			var modifiedStyle = new Style(typeof(MenuFlyoutItem));
+			modifiedStyle.Setters.Add(new Setter(MenuFlyoutItem.TagProperty, "ModifiedStyleTag"));
+			modifiedStyle.Setters.Add(new Setter(MenuFlyoutItem.ForegroundProperty, new SolidColorBrush(global::Microsoft.UI.Colors.LightBlue)));
+
+			splitItem.SubMenuItemStyle = modifiedStyle;
+		});
+
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var items = splitItem.Items;
+			for (int i = 0; i < items.Count; ++i)
+			{
+				var item = items[i] as MenuFlyoutItem;
+				var tag = item.GetValue(MenuFlyoutItem.TagProperty);
+				VERIFY_IS_NOT_NULL(tag);
+				VERIFY_ARE_EQUAL("ModifiedStyleTag", tag.ToString());
+			}
+			menuFlyout.Hide();
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Step 3: Clear SubMenuItemStyle");
+		await RunOnUIThread(() =>
+		{
+			splitItem.SubMenuItemStyle = null;
+		});
+
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var items = splitItem.Items;
+			for (int i = 0; i < items.Count; ++i)
+			{
+				var item = items[i] as MenuFlyoutItem;
+				var tag = item.GetValue(MenuFlyoutItem.TagProperty);
+				// Tag should be null or not our custom values after clearing style
+				if (tag != null)
+				{
+					string tagString = tag.ToString();
+					VERIFY_ARE_NOT_EQUAL("InitialStyleTag", tagString);
+					VERIFY_ARE_NOT_EQUAL("ModifiedStyleTag", tagString);
+				}
+			}
+			menuFlyout.Hide();
+		});
+	}
+
+	[TestMethod]
+	[Ignore("Pending Popup port")]
+	public async Task ValidateSplitMenuItemSubMenuItemStyleWithDynamicItems()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitItem = null;
+
+		var menuFlyoutOpenedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+
+		Grid rootPanel = await SetupRootPanelForSubMenuItemStyleTests();
+
+		await RunOnUIThread(() =>
+		{
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			splitItem = (SplitMenuFlyoutItem)(rootPanel.FindName("splitItem1"));
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Step 1: Add new item without local style - should get SubMenuItemStyle");
+		await RunOnUIThread(() =>
+		{
+			var newItem = new MenuFlyoutItem();
+			newItem.Text = "Added Item Without Style";
+			splitItem.Items.Add(newItem);
+		});
+
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var items = splitItem.Items;
+			VERIFY_ARE_EQUAL(4, items.Count);
+
+			// All items should have the SubMenuItemStyle
+			for (int i = 0; i < items.Count; ++i)
+			{
+				var item = items[i] as MenuFlyoutItem;
+				var tag = item.GetValue(MenuFlyoutItem.TagProperty);
+				VERIFY_IS_NOT_NULL(tag);
+				VERIFY_ARE_EQUAL("SubMenuItemStyleTag", tag.ToString());
+			}
+			menuFlyout.Hide();
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Step 2: Add new item with local style - should preserve local style");
+		await RunOnUIThread(() =>
+		{
+			var localStyle = new Style(typeof(MenuFlyoutItem));
+			localStyle.Setters.Add(new Setter(MenuFlyoutItem.TagProperty, "LocalStyleTag"));
+			localStyle.Setters.Add(new Setter(MenuFlyoutItem.ForegroundProperty, new SolidColorBrush(global::Microsoft.UI.Colors.Red)));
+
+			var newItemWithStyle = new MenuFlyoutItem();
+			newItemWithStyle.Text = "Added Item With Local Style";
+			newItemWithStyle.Style = localStyle;
+			splitItem.Items.Add(newItemWithStyle);
+		});
+
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var items = splitItem.Items;
+			VERIFY_ARE_EQUAL(5, items.Count);
+
+			// First four items should have SubMenuItemStyle
+			for (int i = 0; i < 4; ++i)
+			{
+				var item = items[i] as MenuFlyoutItem;
+				var tag = item.GetValue(MenuFlyoutItem.TagProperty);
+				VERIFY_IS_NOT_NULL(tag);
+				VERIFY_ARE_EQUAL("SubMenuItemStyleTag", tag.ToString());
+			}
+
+			// Third item should preserve its local style
+			var item5 = items[4] as MenuFlyoutItem;
+			var tag5 = item5.GetValue(MenuFlyoutItem.TagProperty);
+			VERIFY_IS_NOT_NULL(tag5);
+			VERIFY_ARE_EQUAL("LocalStyleTag", tag5.ToString());
+
+			menuFlyout.Hide();
+		});
+	}
+
+	[TestMethod]
+	public async Task ValidateSplitMenuItemSubMenuItemStyleTypeCompatibility()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitItem = null;
+
+		var menuFlyoutOpenedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+
+		Grid rootPanel = await SetupRootPanelForSubMenuItemStyleTests();
+
+		await RunOnUIThread(() =>
+		{
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			splitItem = (SplitMenuFlyoutItem)(rootPanel.FindName("splitItem1"));
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Step 1: Verify initial setup - SubMenuItemStyle applies to normal MenuFlyoutItem");
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var items = splitItem.Items;
+			VERIFY_ARE_EQUAL(3, items.Count);
+
+			menuFlyout.Hide();
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Step 2: Add ToggleMenuFlyoutItem with local style - should work correctly");
+		await RunOnUIThread(() =>
+		{
+			var toggleLocalStyle = new Style(typeof(ToggleMenuFlyoutItem));
+			toggleLocalStyle.Setters.Add(new Setter(ToggleMenuFlyoutItem.TagProperty, "ToggleLocalStyleTag"));
+
+			var toggleItemWithStyle = new ToggleMenuFlyoutItem();
+			toggleItemWithStyle.Text = "Toggle Item With Local Style";
+			toggleItemWithStyle.Style = toggleLocalStyle;
+			splitItem.Items.Add(toggleItemWithStyle);
+		});
+
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var items = splitItem.Items;
+			VERIFY_ARE_EQUAL(4, items.Count);
+
+			// Second item should have its local style preserved
+			var toggleItem = items[3] as ToggleMenuFlyoutItem;
+			VERIFY_IS_NOT_NULL(toggleItem);
+			var tag = toggleItem.GetValue(ToggleMenuFlyoutItem.TagProperty);
+			VERIFY_IS_NOT_NULL(tag);
+			VERIFY_ARE_EQUAL("ToggleLocalStyleTag", tag.ToString());
+
+			menuFlyout.Hide();
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 	}
 }
