@@ -426,15 +426,23 @@ namespace Uno.UI.Runtime
 				// point, and an unconditional write would discard it with nothing left to ask again.
 				while (true)
 				{
-					if (Interlocked.CompareExchange(ref _flipState, FlipIdle, FlipInFlight) == FlipInFlight)
+					switch (Volatile.Read(ref _flipState))
 					{
-						return;
-					}
-
-					if (Interlocked.CompareExchange(ref _flipState, FlipInFlight, FlipInFlightWithPending) == FlipInFlightWithPending)
-					{
-						DrawAndFlip();
-						return;
+						case FlipInFlight:
+							if (Interlocked.CompareExchange(ref _flipState, FlipIdle, FlipInFlight) == FlipInFlight)
+							{
+								return;
+							}
+							break;
+						case FlipInFlightWithPending:
+							if (Interlocked.CompareExchange(ref _flipState, FlipInFlight, FlipInFlightWithPending) == FlipInFlightWithPending)
+							{
+								DrawAndFlip();
+								return;
+							}
+							break;
+						default:
+							throw new InvalidOperationException("A page flip completed while no flip was in flight.");
 					}
 				}
 			}
