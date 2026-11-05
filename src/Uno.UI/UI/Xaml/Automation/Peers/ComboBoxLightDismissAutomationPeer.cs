@@ -39,7 +39,6 @@ internal partial class ComboBoxLightDismissAutomationPeer : FrameworkElementAuto
 	/// </summary>
 	public void Invoke()
 	{
-		// TODO Uno: ComboBoxLightDismiss element does not exist in Uno yet.
-		// When implemented, this should call AutomationClick on the light-dismiss element.
+		(Owner as Microsoft.UI.Xaml.Controls.Primitives.ComboBoxLightDismiss)?.AutomationClick();
 	}
 }

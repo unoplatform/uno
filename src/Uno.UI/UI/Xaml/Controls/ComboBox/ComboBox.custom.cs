@@ -105,7 +105,11 @@ public partial class ComboBox : Selector
 			}
 #endif
 
-			popup.IsLightDismissEnabled = true;
+			// For the most part ComboBox implements its own light dismiss logic, but it doesn't handle window size changes.
+			// We use Popup's light dismiss logic for window size changes.
+			popup.SetDismissalTriggerFlags(DismissalTriggerFlags.WindowSizeChange);
+
+			// TODO Uno: Stage D, ComboBoxes should always use a windowed popup to break out of the bounds of the main island/window.
 
 			ReevaluateIsOverlayVisible();
 		}
@@ -147,7 +151,15 @@ public partial class ComboBox : Selector
 
 		m_tpBackgroundPart = this.GetTemplateChild("Background") as Border;
 		m_tpElementPopupChild = m_tpPopupPart?.Child as FrameworkElement;
+		m_tpElementOutsidePopup = null;
+		if (m_tpPopupPart is not null)
+		{
+			m_tpElementOutsidePopup = new ComboBoxLightDismiss();
+			m_tpElementOutsidePopup.SetOwner(this);
+		}
+		SetupElementOutsidePopupChild();
 		SetupElementPopupChild();
+		SetupElementPopupChildCanvas();
 
 		// MUX Reference ComboBox_Partial.cpp, SetupElementPopup
 		m_tpElementPopupContent = null;

@@ -4,6 +4,7 @@
 
 // The file is not ported completely, some methods are still missing!
 
+using Microsoft.UI.Xaml.Controls.Primitives;
 using System;
 using DirectUI;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -99,6 +100,7 @@ partial class ComboBox
 	private TextBlock m_tpEditableContentPresenterTextBlock;
 	private ComboBoxItem m_tpSwappedOutComboBoxItem;
 	private Canvas m_tpElementPopupChildCanvas;
+	private ComboBoxLightDismiss m_tpElementOutsidePopup;
 
 	private Storyboard m_tpClosedStoryboard;
 	private DependencyObject m_tpGeneratedContainerForContentPresenter;

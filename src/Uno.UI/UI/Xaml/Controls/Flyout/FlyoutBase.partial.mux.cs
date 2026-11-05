@@ -1235,7 +1235,7 @@ partial class FlyoutBase
 
 		spPresenterAsFE.Language = placementTarget.Language;
 
-		// TODO Uno: FrameworkElement.IsTextScaleFactorEnabledInternal has no equivalent.
+		spPresenterAsFE.IsTextScaleFactorEnabled = GetIsTextScaleFactorEnabledInternal(placementTarget);
 
 		var allowFocusOnInteraction = AllowFocusOnInteraction;
 
@@ -1279,6 +1279,16 @@ partial class FlyoutBase
 
 		ForwardThemeToPresenter();
 	}
+
+	// TODO Uno: FrameworkElement::get_IsTextScaleFactorEnabledInternal is virtual in WinUI, the property isn't on FrameworkElement.
+	private static bool GetIsTextScaleFactorEnabledInternal(FrameworkElement element) => element switch
+	{
+		Control control => control.IsTextScaleFactorEnabled,
+		TextBlock textBlock => textBlock.IsTextScaleFactorEnabled,
+		RichTextBlock richTextBlock => richTextBlock.IsTextScaleFactorEnabled,
+		ContentPresenter contentPresenter => contentPresenter.IsTextScaleFactorEnabled,
+		_ => true,
+	};
 
 	private void ForwardThemeToPresenter()
 	{
@@ -3145,8 +3155,7 @@ partial class FlyoutBase
 			return false;
 		}
 
-		// TODO Uno: ComboBoxLightDismiss (ComboBox's m_tpElementOutsidePopup) has no equivalent.
-		return false;
+		return panelChildren[0] is ComboBoxLightDismiss;
 	}
 
 	private protected bool IsLightDismissOverlayEnabled

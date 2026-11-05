@@ -43,7 +43,7 @@ partial class ComboBox
 		m_tpElementPopupChild = null;
 		m_tpEmptyContent = null;
 		m_tpElementPopupChildCanvas = null;
-		//m_tpElementOutsidePopup = null;
+		m_tpElementOutsidePopup = null;
 
 		//if (m_tpFlyoutButtonPart)
 		//{
@@ -141,8 +141,10 @@ partial class ComboBox
 		//get_ValidationCommand(&command));
 		//pEditableTextPartAsTextBox->put_ValidationCommand(command.Get()));
 
-		// TODO Uno: m_tpPopupPart.OverlayInputPassThroughElement = this. The popup is light dismiss enabled as m_tpElementOutsidePopup is
-		// absent, so a press on the drop down arrow would both dismiss the popup through the pass-through and reopen it through the arrow.
+		if (m_tpPopupPart is not null)
+		{
+			m_tpPopupPart.OverlayInputPassThroughElement = this;
+		}
 
 		m_isEditModeConfigured = true;
 	}
@@ -201,6 +203,59 @@ partial class ComboBox
 		m_isEditModeConfigured = false;
 	}
 
+	private void SetupElementPopupChildCanvas()
+	{
+		if (m_tpElementPopupChildCanvas is not null && m_tpElementOutsidePopup is not null)
+		{
+			m_tpPopupPart!.Child = m_tpElementPopupChildCanvas;
+
+			//
+			// In the case of windowed popups, we don't want to put up a giant transparent window over the entire desktop
+			// holding the light dismiss element, because that will block clicks targeted at the host app (in the case
+			// of islands), clicks on other apps, or clicks meant to resize the window.
+			//
+			// Conveniently, the CComboBoxLightDismiss element is a Canvas, and its MeasureOverride reports 0x0 as the
+			// desired size (see CCanvas::MeasureOverride). Windowed popups look at desired size when sizing the island,
+			// so it will ignore the giant CComboBoxLightDismiss element. We then end up with a small island for the
+			// ComboBox popup as desired.
+			//
+			// When it comes time to hit test, a click over the Xaml island will pass the point through the Xaml tree,
+			// where it will hit the giant CComboBoxLightDismiss canvas under the popup root.
+			//
+			m_tpElementPopupChildCanvas.Children.Add(m_tpElementOutsidePopup);
+
+			m_tpElementPopupChildCanvas.Children.Add(m_tpElementPopupChild);
+		}
+	}
+
+	private void SetupElementOutsidePopupChild()
+	{
+		if (m_tpElementOutsidePopup is not null)
+		{
+			m_tpElementOutsidePopup.Background = new SolidColorBrush(global::Windows.UI.Color.FromArgb(0, 255, 255, 255));
+			m_tpElementOutsidePopup.PointerPressed += OnElementOutsidePopupPointerPressed;
+		}
+	}
+
+	private void OnElementOutsidePopupPointerPressed(object pSender, PointerRoutedEventArgs pArgs)
+	{
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementOutsidePopupPointerPressed is not used in small form factor mode");
+
+		var spPointerPoint = pArgs.GetCurrentPoint(this);
+		var bIsLeftButtonPressed = spPointerPoint.Properties.IsLeftButtonPressed;
+
+		if (bIsLeftButtonPressed)
+		{
+			m_isClosingDueToCancel = true;
+			IsDropDownOpen = false;
+
+			// TODO Uno: WinUI keeps the focus on a press that lands on nothing focusable. Handled keeps InputManager's
+			// unfocus-on-release, which isn't a WinUI thing, from dropping it once this element has left the tree.
+			pArgs.Handled = true;
+			VisualTree.GetContentRootForElement(this)?.InputManager.Pointers.NotifyFocusChanged();
+		}
+	}
+
 	private void SetupElementPopupChild()
 	{
 		if (m_tpElementPopupChild is null)
@@ -208,6 +263,8 @@ partial class ComboBox
 			m_tpElementPopupChildCanvas = null;
 			return;
 		}
+
+		m_tpElementPopupChildCanvas = new Canvas();
 
 		// Wire up CharacterReceived in our child so that we can handle typeahead if it's enabled.
 		// We know we can do this here, as with the other events, because we explicitly create m_tpElementPopupChild in SetupElementPopup.
@@ -855,7 +912,19 @@ partial class ComboBox
 		}
 	}
 
-	private void OnIsSelectionActiveChanged() => UpdateVisualState();
+	private void OnIsSelectionActiveChanged()
+	{
+		UpdateVisualState();
+
+#if HAS_UNO
+		// TODO Uno: The item takes the focus from OnElementPopupChildLoaded, before its GotFocus has reached this control
+		// to update IsSelectionActive, which the item's Selected and SelectedUnfocused states depend on.
+		if (IsDropDownOpen && ContainerFromIndex(SelectedIndex) is ComboBoxItem selectedItem)
+		{
+			selectedItem.ChangeVisualStateInternal(true);
+		}
+#endif
+	}
 
 	private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 	{
@@ -2419,6 +2488,15 @@ partial class ComboBox
 		object pSender,
 		RoutedEventArgs pArgs)
 	{
+#if HAS_UNO
+		// TODO Uno: The CarouselPanel always has a realized child for OnOpen's SetFocusedItem. The items panel here may only
+		// realize the containers in the first measure after the popup opens, dropping the focus OnOpen has set.
+		if (IsDropDownOpen && !IsEditable && !HasFocus() && Items.Count > 0)
+		{
+			SetFocusedItem(Math.Max(SelectedIndex, 0), false /*shouldScrollIntoView*/, true /*forceFocus*/, FocusState.Programmatic, false);
+		}
+#endif
+
 		// Ensure searched item gets selected when the popup opens.
 		if (IsEditable)
 		{
@@ -3467,8 +3545,7 @@ partial class ComboBox
 		// we won't center the item if drop down is closed (see protection bellow).
 		m_bShouldCenterSelectedItem |= bCenterSelectedItem;
 
-		// TODO Uno: m_tpElementOutsidePopup is absent, as the popup is light dismiss enabled instead (see ComboBox.custom.cs).
-		if (m_tpPopupPart is null || m_tpElementPopupChild is null || m_tpContentPresenterPart is null)
+		if (m_tpPopupPart is null || m_tpElementPopupChild is null || m_tpContentPresenterPart is null || m_tpElementOutsidePopup is null)
 		{
 			return;
 		}
@@ -3529,7 +3606,18 @@ partial class ComboBox
 		double childWidth = m_tpElementPopupChild.ActualWidth;
 		double childHeight = m_tpElementPopupChild.ActualHeight;
 
-		// TODO Uno: The popup child is not wrapped in m_tpElementPopupChildCanvas, so its margin doesn't have to move to the popup's offsets.
+		// In ActualBounds mode, the bound size is determined by ActualWidth&ActualHeight of popup child, so we need to explicitly set width&height on canvas here.
+		// If popup border has negative margins, content will be pushed out of island bounds, so we need to increase the bound size to include the out of scope content.
+		// We don't really need to worry about positive margins since they will be completely transparent and safe to clip.
+		var borderMargin = m_tpElementPopupChild.Margin;
+
+		var canvasWidth = childWidth;
+		var canvasHeight = childHeight;
+		canvasWidth -= Math.Min(0, borderMargin.Left + borderMargin.Right);
+		canvasHeight -= Math.Min(0, borderMargin.Top + borderMargin.Bottom);
+
+		m_tpElementPopupChildCanvas.Width = canvasWidth;
+		m_tpElementPopupChildCanvas.Height = canvasHeight;
 
 		childWidth *= zoomFactor;
 		childHeight *= zoomFactor;
@@ -3593,6 +3681,9 @@ partial class ComboBox
 			GetNonPannablePopupLayout(selectedIndex, itemCount, scaledCBY, cbHeight, popupContentMargin, scaledRootWindowSize, out popupY, ref popupMaxHeight, out offset);
 		}
 
+		m_tpElementOutsidePopup.Width = rootWindowSize.Width;
+		m_tpElementOutsidePopup.Height = rootWindowSize.Height;
+
 		double minWidth = cbWidth / zoomFactor;
 
 		m_tpElementPopupChild.MinWidth = minWidth;
@@ -3646,9 +3737,46 @@ partial class ComboBox
 		if (m_tpPopupPart.PlacementTarget is null || m_tpPopupPart.DesiredPlacement == PopupPlacementMode.Auto)
 #endif
 		{
-			m_tpPopupPart.VerticalOffset = popupTop;
-			m_tpPopupPart.HorizontalOffset = popupLeft;
+			// In ActualBounds mode, the position of the island does not include Popup.Child.Margin, move margin values to popup's offset properties instead.
+			double verticalOffset = popupTop + borderMargin.Top;
+			double horizontalOffset = popupLeft + borderMargin.Left;
+			m_tpPopupPart.VerticalOffset = verticalOffset;
+			m_tpPopupPart.HorizontalOffset = horizontalOffset;
+
+			//
+			// Transform the invisible canvas to the coordinate space origin.
+			// -horizontal/verticalOffset gets us to the ComboBox's origin;
+			// -p00t.X/Y then gets us to the top-left corner of the app window.
+			//
+			m_tpElementOutsidePopup.RenderTransform = new TranslateTransform
+			{
+				X = -horizontalOffset - p00t.X,
+				Y = -verticalOffset - p00t.Y,
+			};
+
+			// PopupBorder has a negative {0,-1,0,-1} margin, that will push the content out of the island bounds.
+			// We do an extra check to set opposite values on canvas margin to compensate the negatives.
+			if (borderMargin.Top < 0)
+			{
+				Canvas.SetTop(m_tpElementPopupChild, -borderMargin.Top);
+			}
+			if (borderMargin.Left < 0)
+			{
+				Canvas.SetLeft(m_tpElementPopupChild, -borderMargin.Left);
+			}
 		}
+#if HAS_UNO
+		else
+		{
+			// Popup.SetPositionFromPlacement owns the offsets of this popup, so the canvas is taken back to the window's origin from where it is.
+			var popupOrigin = m_tpElementPopupChildCanvas.TransformToVisual(null).TransformPoint(default);
+			m_tpElementOutsidePopup.RenderTransform = new TranslateTransform
+			{
+				X = -popupOrigin.X,
+				Y = -popupOrigin.Y,
+			};
+		}
+#endif
 
 		// set templatesettings to communicate to animations
 		popupMaxHeight = Math.Min(popupMaxHeight, childHeight);
