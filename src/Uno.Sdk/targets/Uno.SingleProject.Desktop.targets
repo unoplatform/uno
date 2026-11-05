@@ -63,15 +63,18 @@
 	</Target>
 
 	<!--
-		The Win32 host references WebView2Aot (and through it DirectNAot) for its WebView2 support. Without the
-		`webview` feature, or a direct Microsoft.Web.WebView2 reference, nothing creates a WebView, and trimming spends
-		minutes, or hangs, analyzing their deep COM interface chains, so their assets are left out. Set
-		`UnoIncludeWebView2Aot` to keep them.
+		The Win32 host references WebView2Aot (and through it DirectNAot) for its WebView2 support. A WebView needs
+		WebView2Loader.dll from Microsoft.Web.WebView2, which the `webview` feature, a direct reference or a transitive
+		one deploys. Without it nothing can create a WebView, and trimming spends minutes, or hangs, analyzing their
+		deep COM interface chains, so their assets are left out. Set `UnoIncludeWebView2Aot` to keep them.
 	-->
 	<Target Name="_UnoRemoveUnusedWebView2Aot"
 			AfterTargets="ResolvePackageAssets"
-			Condition=" '$(IsUnoHead)' == 'true' AND !$(UnoFeatures.Contains(';webview;')) AND '$(UnoIncludeWebView2Aot)' != 'true' ">
-		<ItemGroup Condition=" '@(PackageReference->WithMetadataValue('Identity', 'Microsoft.Web.WebView2'))' == '' ">
+			Condition=" '$(IsUnoHead)' == 'true' AND '$(UnoIncludeWebView2Aot)' != 'true' ">
+		<ItemGroup>
+			<_UnoWebView2LoaderAsset Include="@(NativeCopyLocalItems);@(RuntimeTargetsCopyLocalItems)" Condition="'%(NuGetPackageId)' == 'Microsoft.Web.WebView2'" />
+		</ItemGroup>
+		<ItemGroup Condition=" '@(_UnoWebView2LoaderAsset)' == '' ">
 			<RuntimeCopyLocalItems Remove="@(RuntimeCopyLocalItems)" Condition="'%(NuGetPackageId)' == 'WebView2Aot' OR '%(NuGetPackageId)' == 'DirectNAot' OR '%(NuGetPackageId)' == 'DirectNAot.Extensions'" />
 			<NativeCopyLocalItems Remove="@(NativeCopyLocalItems)" Condition="'%(NuGetPackageId)' == 'WebView2Aot' OR '%(NuGetPackageId)' == 'DirectNAot' OR '%(NuGetPackageId)' == 'DirectNAot.Extensions'" />
 			<RuntimeTargetsCopyLocalItems Remove="@(RuntimeTargetsCopyLocalItems)" Condition="'%(NuGetPackageId)' == 'WebView2Aot' OR '%(NuGetPackageId)' == 'DirectNAot' OR '%(NuGetPackageId)' == 'DirectNAot.Extensions'" />
