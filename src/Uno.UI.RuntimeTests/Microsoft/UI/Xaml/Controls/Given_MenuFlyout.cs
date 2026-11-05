@@ -41,6 +41,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_MenuFlyout
 	{
+		private partial class DerivedMenuFlyout : MenuFlyout
+		{
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_ShouldConstrainToRootBounds_Default_Is_Per_Type()
+		{
+			Assert.IsFalse(new MenuFlyout().ShouldConstrainToRootBounds);
+			Assert.IsFalse(new DerivedMenuFlyout().ShouldConstrainToRootBounds);
+			Assert.IsTrue(new Flyout().ShouldConstrainToRootBounds);
+			Assert.IsTrue(new Popup().ShouldConstrainToRootBounds);
+
+			// The setter wins over the per-type default, and clearing it goes back to the default.
+			var menuFlyout = new MenuFlyout { ShouldConstrainToRootBounds = true };
+			Assert.IsTrue(menuFlyout.ShouldConstrainToRootBounds);
+			menuFlyout.ClearValue(FlyoutBase.ShouldConstrainToRootBoundsProperty);
+			Assert.IsFalse(menuFlyout.ShouldConstrainToRootBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_IsDefaultShadowEnabled_Default_Is_True()
+		{
+			Assert.IsTrue(new FlyoutPresenter().IsDefaultShadowEnabled);
+			Assert.IsTrue(new MenuFlyoutPresenter().IsDefaultShadowEnabled);
+		}
+
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Toggle_IsEnabled_Via_Binding()
