@@ -332,7 +332,7 @@ void uno_application_quit(void)
         return NSTerminateCancel;
     }
 
-    // `Application.Exit()` ends the application without asking its windows, as on WinUI
+    // `Application.Exit()` closed the windows itself, raising `Closed` but not `AppWindow.Closing`, as on WinUI
     if (application_exit_requested) {
         return NSTerminateNow;
     }
