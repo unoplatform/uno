@@ -14,6 +14,8 @@
 		<!-- Not DownloadFile: its Retries only covers 500 and 408, so one GitHub 502/503/504 would fail the build.
 		     Run it with IgnoreStandardErrorWarningFormat: Exec otherwise fails on curl's retry messages, even after a retry succeeds. -->
 		<_WgpuDownload>curl --fail --silent --show-error --location --retry 5 --retry-delay 5</_WgpuDownload>
+		<!-- Exec passes its command through unchanged, so a \ in curl's output path would become part of the file name off Windows. -->
+		<_WgpuCacheDirForCurl>$(WgpuNativeCacheDir.Replace('\', '/'))</_WgpuCacheDirForCurl>
 	</PropertyGroup>
 
 	<!-- The Apple mobile SDKs (Xamarin.MacDev.Tasks) register their own "Unzip" task with different parameters,
@@ -94,7 +96,7 @@
 		</PropertyGroup>
 		<MakeDir Directories="$(_WgpuStageDir)" Condition="'$(_WgpuNeedsFetch)' == 'true'" />
 		<Exec IgnoreStandardErrorWarningFormat="true" Condition="'$(_WgpuNeedsFetch)' == 'true'"
-			Command="$(_WgpuDownload) -o &quot;$(_WgpuStageDir)$(_WgpuAsset)&quot; &quot;$(_WgpuNativeReleaseUrl)$(_WgpuAsset)&quot;" />
+			Command="$(_WgpuDownload) -o &quot;$(_WgpuStageDir.Replace('\', '/'))$(_WgpuAsset)&quot; &quot;$(_WgpuNativeReleaseUrl)$(_WgpuAsset)&quot;" />
 		<Microsoft.Build.Tasks.Unzip Condition="'$(_WgpuNeedsFetch)' == 'true'"
 			SourceFiles="$(_WgpuStageDir)$(_WgpuAsset)" DestinationFolder="$(_WgpuStageDir)" />
 		<ItemGroup Condition="'$(_WgpuNeedsFetch)' == 'true'">
@@ -134,7 +136,7 @@
 		</ItemGroup>
 		<MakeDir Directories="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\" />
 		<Exec IgnoreStandardErrorWarningFormat="true" Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\%(_WgpuPackRid.Asset)')"
-			Command="$(_WgpuDownload) -o &quot;$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\%(_WgpuPackRid.Asset)&quot; &quot;$(_WgpuNativeReleaseUrl)%(_WgpuPackRid.Asset)&quot;" />
+			Command="$(_WgpuDownload) -o &quot;$(_WgpuCacheDirForCurl)pack/%(_WgpuPackRid.Identity)/%(_WgpuPackRid.Asset)&quot; &quot;$(_WgpuNativeReleaseUrl)%(_WgpuPackRid.Asset)&quot;" />
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\lib\%(_WgpuPackRid.Native)')"
 			SourceFiles="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\%(_WgpuPackRid.Asset)"
 			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\" />
@@ -166,7 +168,7 @@
 		</ItemGroup>
 		<MakeDir Directories="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" />
 		<Exec IgnoreStandardErrorWarningFormat="true" Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)')"
-			Command="$(_WgpuDownload) -o &quot;$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)&quot; &quot;$(_WgpuNativeReleaseUrl)%(_WgpuDesktopRid.Asset)&quot;" />
+			Command="$(_WgpuDownload) -o &quot;$(_WgpuCacheDirForCurl)pack/%(_WgpuDesktopRid.Identity)/%(_WgpuDesktopRid.Asset)&quot; &quot;$(_WgpuNativeReleaseUrl)%(_WgpuDesktopRid.Asset)&quot;" />
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\lib\%(_WgpuDesktopRid.Native)')"
 			SourceFiles="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)"
 			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" />
@@ -214,7 +216,7 @@
 		</ItemGroup>
 		<MakeDir Directories="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" />
 		<Exec IgnoreStandardErrorWarningFormat="true" Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip')"
-			Command="$(_WgpuDownload) -o &quot;$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip&quot; &quot;$(_WgpuNativeReleaseUrl)wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip&quot;" />
+			Command="$(_WgpuDownload) -o &quot;$(_WgpuCacheDirForCurl)android/%(_WgpuAndroidAbi.Identity)/wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip&quot; &quot;$(_WgpuNativeReleaseUrl)wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip&quot;" />
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so')"
 			SourceFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip"
 			DestinationFolder="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" />
@@ -258,7 +260,7 @@
 		</PropertyGroup>
 		<MakeDir Directories="$(_WgpuIosDir)" />
 		<Exec IgnoreStandardErrorWarningFormat="true" Condition="!Exists('$(_WgpuIosDir)$(_WgpuIosZip)')"
-			Command="$(_WgpuDownload) -o &quot;$(_WgpuIosDir)$(_WgpuIosZip)&quot; &quot;$(_WgpuNativeReleaseUrl)$(_WgpuIosZip)&quot;" />
+			Command="$(_WgpuDownload) -o &quot;$(_WgpuIosDir.Replace('\', '/'))$(_WgpuIosZip)&quot; &quot;$(_WgpuNativeReleaseUrl)$(_WgpuIosZip)&quot;" />
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(_WgpuIosDir)lib\libwgpu_native.a')"
 			SourceFiles="$(_WgpuIosDir)$(_WgpuIosZip)" DestinationFolder="$(_WgpuIosDir)" />
 
