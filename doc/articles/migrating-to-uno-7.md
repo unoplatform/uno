@@ -124,7 +124,8 @@ home-screen shortcut, and foreground and background methods. For an app without 
 Platform forwards them to the application delegate, so a custom `UnoUIApplicationDelegate` keeps
 receiving them. The activation the app was launched with then arrives that way after `OnLaunched`,
 rather than in `FinishedLaunching`'s launch options. See
-[Scene lifecycle](xref:Uno.Features.CustomizingUIApplicationDelegate#scene-lifecycle).
+[Scene lifecycle](xref:Uno.Features.CustomizingUIApplicationDelegate#scene-lifecycle), and for how
+the app reads that activation, [Activation is read from `AppInstance`](#activation-is-read-from-appinstance).
 
 ### Packages
 
@@ -930,21 +931,23 @@ only one, so only apps that changed one of them see a difference:
 
 | Removed flag | Behavior apps now get |
 | --- | --- |
-| `FeatureConfiguration.FrameworkElement.UseLegacyHitTest` | A non-null `Background` makes a `Panel`, `Border` or `ContentPresenter` hit-testable, but not other elements such as a `Control`. |
+| `FeatureConfiguration.FrameworkElement.UseLegacyHitTest` | A non-null `Background` or `BorderBrush` makes a `Panel`, `Border`, `ContentPresenter` or `ScrollPresenter` hit-testable, but not other elements such as a `Control`. |
 | `FeatureConfiguration.Popup.EnableLightDismissByDefault` | `Popup.IsLightDismissEnabled` defaults to `false`. Set it to `true` on each popup that should close when the user taps outside it. |
 | `FeatureConfiguration.VisualState.ApplySettersBeforeTransition` | A `VisualState`'s `Setters` are applied when its `VisualTransition` storyboard ends, not when the state change starts. |
 | `FeatureConfiguration.Binding.IgnoreINPCSameReferences` | A `PropertyChanged` notification re-evaluates the binding path even when the property returns the same reference. |
 | `FeatureConfiguration.DataTemplateSelector.UseLegacyTemplateSelectorOverload` | When `SelectTemplateCore(object)` returns `null`, `SelectTemplateCore(object, DependencyObject)` is called with the container. |
-| `FeatureConfiguration.ManipulationRoutedEventArgs.IsAbsolutePositionEnabled` | `Position` in `ManipulationStarted`, `ManipulationDelta` and `ManipulationCompleted` is relative to the element handling the manipulation, not to the window. |
+| `FeatureConfiguration.ManipulationRoutedEventArgs.IsAbsolutePositionEnabled` | `Position` in `ManipulationStarted`, `ManipulationDelta` and `ManipulationCompleted` is relative to the manipulation's `Container`, not to the window. |
 | `FeatureConfiguration.UIElement.DisablePointersSpecificEventPrevention` | When a gesture event such as `Tapped` bubbles up from a child, an ancestor only stops recognizing that same gesture for the pointer, instead of ending all of its gesture recognition. |
 | `FeatureConfiguration.UIElement.UseInvalidateMeasurePath` / `UseInvalidateArrangePath` | Layout always re-measures and re-arranges only the elements on an invalidated path. To turn this off for one subtree, use `FrameworkElementHelper.SetUseMeasurePathDisabled` / `SetUseArrangePathDisabled`. |
-| `FeatureConfiguration.Control.UseLegacyLazyApplyTemplate` / `UseDeferredOnApplyTemplate` | No change on Skia. In 6.x only the native renderers read them; every target now uses the Skia control lifecycle, which applies the template as WinUI does. |
 
 The following flags are also removed. Their readers were removed earlier (with the native renderers,
 or when a control was rewritten), or they could not be set, so removing them does not change behavior on
 any currently-supported target:
 
 - `FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent`.
+- `FeatureConfiguration.Control.UseLegacyLazyApplyTemplate` and `.UseDeferredOnApplyTemplate`. In 6.x
+  only the native renderers read them; the Skia control lifecycle, which every target now uses, applies
+  the template as WinUI does.
 - `FeatureConfiguration.UIElement.ShowClippingBounds`, documented as iOS-only and no longer read.
 - `FeatureConfiguration.Timeline.DefaultsStartingValueFromAnimatedValue`, which had no setter. An
   animation without `From` still starts from the current animated value.
@@ -954,8 +957,10 @@ any currently-supported target:
   `.InterpretForceTouchAsRightTap` (iOS/tvOS).
 
 `FeatureConfiguration.ProgressRing.ProgressRingAsset` and `.DeterminateProgressRingAsset` are also
-removed. In 6.x they were still read: they named the Lottie file a `ProgressRing` played when its
-`IndeterminateSource` or `DeterminateSource` was not set. Without them, such a ring plays the built-in
+removed. In 6.x they were still read when the app referenced `Uno.UI.Lottie`: they named the Lottie file
+a `ProgressRing` played when its `IndeterminateSource` or `DeterminateSource` was not set. Without
+`Uno.UI.Lottie`, 6.x showed a placeholder (`UNOX0001`) instead, so those apps see no change here. With
+it, a ring that sets neither source now plays the built-in
 WinUI animation, so an app that pointed them at its own animation sets `ProgressRing.IndeterminateSource`
 / `.DeterminateSource` instead, for example in an implicit `ProgressRing` style.
 
@@ -1042,8 +1047,9 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   fallback, use `.UseX11(b => b.DisableRenderingBackends(X11RenderingBackend.Vulkan))` or
   `.UseWin32(b => b.DisableRenderingBackends(Win32RenderingBackend.Vulkan))`. To select only
   OpenGL, use `ForceRenderingBackend` with the matching `OpenGL` enum value; a forced backend
-  does not fall back if it cannot be created. The desktop `UseVulkanOnX11` and
-  `UseVulkanOnWin32` feature flags are no longer available. On Android, use
+  does not fall back if it cannot be created. The desktop `UseVulkanOnX11`,
+  `UseVulkanOnWin32`, `UseOpenGLOnX11`, `UseOpenGLOnWin32` and `PreferGLESOverGLOnX11` feature
+  flags are no longer available. On Android, use
   `.UseAndroid(b => b.UseVulkan(false))` or set
   `FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = false` before building the host.
   See [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
@@ -1498,12 +1504,29 @@ WinUI types is unaffected.
   `new Timeline()` and `new ObjectKeyFrame()` no longer compile. Construct a concrete animation or
   key frame (`DoubleAnimation`, `DiscreteObjectKeyFrame`, …) instead.
 - **Templates can no longer be built from a factory delegate.** The `Func<View>` constructors of
-  `DataTemplate`, `ControlTemplate`, `ItemsPanelTemplate` and `FrameworkTemplate` are removed, and their
-  `(object owner, FrameworkTemplateBuilder factory)` constructors are no longer public; WinUI has none of them.
-  `MarkupHelper.CreateDataTemplate` and its `ControlTemplate` and `ItemsPanelTemplate` siblings are
-  `[EditorBrowsable(Never)]` helpers for XAML-generated code, not a replacement to call by hand. Declare the
-  template in XAML, load it at runtime with `XamlReader.Load`, as in WinUI, or use the template extensions of
-  [C# Markup](xref:Uno.Extensions.Markup.Overview) (`.ItemTemplate<T>(item => …)`):
+  `DataTemplate`, `ControlTemplate`, `ItemsPanelTemplate` and `FrameworkTemplate` are removed, and so are
+  their public builder-delegate constructors, `(object owner, FrameworkTemplateBuilder factory)` and
+  `(object owner, NewFrameworkTemplateBuilder factory)`; WinUI has none of them. `NewFrameworkTemplateBuilder`
+  is removed, and `FrameworkTemplateBuilder` moved from `Microsoft.UI.Xaml` to `Uno.UI`, with a new
+  `(object owner, TemplateMaterializationSettings settings)` signature, as an `[EditorBrowsable(Never)]`
+  delegate for XAML-generated code. `MarkupHelper.CreateDataTemplate` and its `ControlTemplate` and
+  `ItemsPanelTemplate` siblings are `[EditorBrowsable(Never)]` helpers for that code too, not a replacement
+  to call by hand. Instead, as in WinUI, either declare the template in XAML with an `x:Key` and look it up
+  by that key:
+
+  ```xml
+  <Page.Resources>
+      <DataTemplate x:Key="MyTemplate">
+          <TextBlock Text="{Binding Name}" />
+      </DataTemplate>
+  </Page.Resources>
+  ```
+
+  ```csharp
+  var template = (DataTemplate)Resources["MyTemplate"];
+  ```
+
+  or, for a template whose markup is only known at runtime, load it with `XamlReader.Load`:
 
   ```csharp
   var template = (DataTemplate)XamlReader.Load(
@@ -1514,9 +1537,6 @@ WinUI types is unaffected.
       """);
   ```
 
-- **`Control.GetTemplateChild` is `protected`**, as in WinUI. Call it from your control's
-  `OnApplyTemplate` override; code outside the control that reached into its template should
-  have the control expose what it needs instead.
 - **`Shape` has a `protected` constructor**, as in WinUI. It was already abstract, so only
   derived classes calling `base()` see the change, and they keep compiling.
 - **Types WinUI never lets you construct lose their implicit public constructor.** This covers
