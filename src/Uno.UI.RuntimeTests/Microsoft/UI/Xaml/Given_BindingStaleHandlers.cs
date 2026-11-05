@@ -114,7 +114,6 @@ public class Given_BindingStaleHandlers
 	// The common case: a page and its view model become unreachable together. The source must not wait for the binding's
 	// cleanup to be finalized and dispatched before it can be collected.
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Element_And_Source_Dropped_Together_Then_Source_Collected_Without_Dispatcher()
 	{
 		await WindowHelper.WaitForIdle();
@@ -137,7 +136,6 @@ public class Given_BindingStaleHandlers
 
 	// An indexer path also listens to the collection's CollectionChanged: that handler must not outlive the binding either.
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Indexer_Bound_Elements_Collected_Then_Handlers_Removed()
 	{
 		var vm = new IndexedViewModel(); // outlives the elements, and never raises
@@ -156,7 +154,6 @@ public class Given_BindingStaleHandlers
 
 	// A nested path subscribes once per segment: every segment's handler must go away.
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Nested_Path_Bound_Elements_Collected_Then_Handlers_Removed()
 	{
 		var vm = new NestedViewModel(); // outlives the elements, and never raises
