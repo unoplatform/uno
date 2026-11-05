@@ -915,6 +915,12 @@ re-baseline visual tests:
 
 - **Rendering:** gradients, corner radii, shadows/elevation, and anti-aliasing render via
   Skia — minor pixel differences are possible.
+- **Popups and flyouts:** placement is a port of WinUI's. A `Popup.Child` is measured with
+  infinite constraints and arranged at the popup's offsets, and a flyout writes its placement
+  into those offsets, so it now keeps a 4 px margin from its target and stays within the
+  visible bounds. A `Popup` with a `PlacementTarget` and `DesiredPlacement="Auto"` no longer
+  fills the window. `FeatureConfiguration.Popup.ConstrainByVisibleBounds` is obsolete and has
+  no effect.
 - **Text:** measurement, line-breaking, bidi, kerning, and `MaxLines` go through
   HarfBuzz + SkiaSharp instead of `StaticLayout`/UIKit text/DOM — possible layout shifts
   in text-dense UI.

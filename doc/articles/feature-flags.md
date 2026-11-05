@@ -57,7 +57,7 @@ Set `Uno.UI.FeatureConfiguration.InputValidation.IsEnabled` to `true` at startup
 
 ### Constraining by visible bounds
 
-By default we don't constrain popups by the visible bounds of the application view, so a popup can flow below the system UI (e.g. mobile device status bar or navigation bar). The `ConstrainByVisibleBounds` property allows you to control this behavior. Please note that in case the property is set to `false` (which is the default), you are responsible for ensuring the content of your popups has appropriate padding around its content. This can be achieved using the [`SafeArea` control in Uno Toolkit](xref:Toolkit.Controls.SafeArea).
+`FeatureConfiguration.Popup.ConstrainByVisibleBounds` is obsolete and has no effect. As in WinUI, a flyout is placed within the visible bounds of the application view, and a `Popup` is only positioned by its offsets or its `PlacementTarget` and `DesiredPlacement`.
 
 ### Prevent light dismiss on window deactivation
 
