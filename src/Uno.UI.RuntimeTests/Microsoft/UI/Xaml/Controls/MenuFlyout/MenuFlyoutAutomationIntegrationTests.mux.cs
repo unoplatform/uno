@@ -127,7 +127,6 @@ public class MenuFlyoutAutomationIntegrationTests
 
 	[TestMethod]
 	[Description("Verify AutomationProperties for MenuFlyout.")]
-	[Ignore("Pending Popup port")]
 	public async Task VerifyAutomationProperties()
 	{
 		Button button1 = null;
@@ -438,7 +437,6 @@ public class MenuFlyoutAutomationIntegrationTests
 
 	[TestMethod]
 	[Description("Verify that MenuFlyout items are read when visible, and not when they are collapsed.")]
-	[Ignore("Pending Popup port")]
 	public async Task VerifyItemIsNotReadWhenCollapsed()
 	{
 		Button button1 = null;
@@ -549,7 +547,6 @@ public class MenuFlyoutAutomationIntegrationTests
 
 	[TestMethod]
 	[Description("Validates that MenuFlyoutSeparators are excluded when determing position in set and size of set.")]
-	[Ignore("Pending Popup port")]
 	public async Task DoesSizeOfSetAndPositionInSetExcludeSeparatorsAndCollapsedItems()
 	{
 		Button button = null;
@@ -659,7 +656,6 @@ public class MenuFlyoutAutomationIntegrationTests
 
 	[TestMethod]
 	[Description("Verify that the app author can set the PositionInSet and SizeOfSet AutomationProperties to override the default values.")]
-	[Ignore("Pending Popup port")]
 	public async Task VerifySizeAndPositionInSetCanBeOverridden()
 	{
 		// Verify that the app author can set the PositionInSet and SizeOfSet AutomationProperties to override the

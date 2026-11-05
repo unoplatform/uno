@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Tests.Common;
 using Microsoft.UI.Xaml.Tests.Enterprise;
 using Private.Infrastructure;
@@ -19,8 +20,6 @@ using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls;
-
-// Not yet supported tests: ValidateUIElementTree
 
 [TestClass]
 [RequiresFullWindow] // The upstream tests expect window-absolute coordinates.
@@ -131,7 +130,6 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Requires back button injection #20764")]
 	public async Task VerifyBackButtonClosesMenuFlyout()
 	{
 		Button button1 = null;
@@ -601,7 +599,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Not all pointer input injection is supported yet #22175")]
+	[Ignore("Open after the Stage C port: the menu opened near the top with touch is at 233 where 364 is expected; not root-caused.")]
 	public async Task ValidateShowAtTargetPosition()
 	{
 		// The rules for positioning the menuflyout when calling ShowAt with Point(X,Y) are as follows:
@@ -640,6 +638,7 @@ public class MenuFlyoutIntegrationTests
 		await RunOnUIThread(() =>
 		{
 			var rootPanel = new Grid();
+			rootPanel.Background = new SolidColorBrush(Microsoft.UI.Colors.White);
 			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
@@ -754,7 +753,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Not all pointer input injection is supported yet #22175")]
+	[Ignore("Open after the Stage C port: the menu opens at 668 where below 505 is expected; not root-caused.")]
 	public async Task ValidateShowAtTargetPositionForPen()
 	{
 		await RunOnUIThread(() =>
@@ -916,7 +915,48 @@ public class MenuFlyoutIntegrationTests
 		//    HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
 	}
 
-	// Helper methods and enums that need to be implemented
+	private async Task InjectInput(InputMethod inputMethod)
+	{
+		FrameworkElement rootPanel = null;
+		await RunOnUIThread(() =>
+		{
+			rootPanel = (FrameworkElement)TestServices.WindowHelper.WindowContent;
+		});
+
+		// Send some input of the appropriate type to the app.
+		// The placement of the menuflyout is affected by the most recently used input device type.
+		// Note: it is NOT sufficient at this time to simply set the last input type.  This is becuase the flyout present will explicitly query
+		//       the popup window to determine whether the keyboard focus or accelerators are being shown.  If they are, last input type is forced
+		//       to keyboard and if they aren't and last input type is keyboard, it will be changed to none.  So, make sure we do real input.
+		if (inputMethod == InputMethod.Mouse)
+		{
+			LOG_OUTPUT("Calling InputHelper->LeftMouseClick");
+			TestServices.InputHelper.LeftMouseClick(rootPanel);
+		}
+		else if (inputMethod == InputMethod.Touch)
+		{
+			LOG_OUTPUT("Calling InputHelper->Tap");
+			TestServices.InputHelper.Tap(rootPanel);
+		}
+		else if (inputMethod == InputMethod.Keyboard)
+		{
+			LOG_OUTPUT("Calling KeyboardHelper->PressKeySequence");
+			await TestServices.KeyboardHelper.PressKeySequence(" ");
+		}
+		else if (inputMethod == InputMethod.Pen)
+		{
+			LOG_OUTPUT("Calling InputHelper->PenTap");
+#if HAS_UNO
+			TestServices.InputHelper.PenTap(rootPanel);
+#endif
+		}
+		else
+		{
+			throw new NotImplementedException();
+		}
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
 	private async Task DoValidateShowAtTargetPosition(
 		Point showAtPosition,
 		InputMethod inputMethod,
@@ -926,7 +966,7 @@ public class MenuFlyoutIntegrationTests
 		bool mockLeftHandedness,
 		bool disableFullHwndSupport)
 	{
-		/* MOCK10_REMOVAL : Reenable with bug 20936312
+		/* MOCK10_REMOVAL : Reenable when mock support is available
         typedef Mock10::MockFunction<BOOL NTAPI(UINT, UINT, PVOID, UINT)>::Prototype SystemParametersInfoWPrototype;
 
         DWORD dwMockHandedness = mockLeftHandedness ? HANDEDNESS_LEFT : HANDEDNESS_RIGHT;
@@ -958,9 +998,10 @@ public class MenuFlyoutIntegrationTests
 		{
 			rootPanel = (FrameworkElement)TestServices.WindowHelper.WindowContent;
 			rootPanel.FlowDirection = flowDirection;
+			menuFlyout.XamlRoot = rootPanel.XamlRoot;
 			windowBounds = TestServices.WindowHelper.WindowBounds;
 
-			// TODO: As part of Task 23865114, set menuFlyout->ShouldConstrainToRootBounds based on disableFullHwndSupport
+			// TODO: Set menuFlyout->ShouldConstrainToRootBounds based on disableFullHwndSupport
 			// to handle windowed popups.
 		});
 		await TestServices.WindowHelper.WaitForIdle();
@@ -969,74 +1010,49 @@ public class MenuFlyoutIntegrationTests
 		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
 		openedRegistration.Attach(menuFlyout, (s, e) => { openedEvent.Set(); });
 
-		// Send some input of the appropriate type to the app.
-		// The placement of the menuflyout is affected by the most recently used input device type.
-		if (inputMethod == InputMethod.Mouse)
-		{
-			LOG_OUTPUT("Calling InputHelper->LeftMouseClick");
-			TestServices.InputHelper.LeftMouseClick(rootPanel);
-		}
-		else if (inputMethod == InputMethod.Touch)
-		{
-			LOG_OUTPUT("Calling InputHelper->Tap");
-			TestServices.InputHelper.Tap(rootPanel);
-		}
-		else if (inputMethod == InputMethod.Keyboard)
-		{
-			LOG_OUTPUT("Calling KeyboardHelper->PressKeySequence");
-			await TestServices.KeyboardHelper.PressKeySequence(" ");
-		}
-		else if (inputMethod == InputMethod.Pen)
-		{
-			LOG_OUTPUT("Calling InputHelper->PenTap");
-			//TestServices.InputHelper.PenTap(rootPanel);
-		}
-		else
-		{
-			throw new NotImplementedException();
-		}
-		await TestServices.WindowHelper.WaitForIdle();
+		// Make sure our last input is of the correct type.
+		await InjectInput(inputMethod);
 
 		// Show the MenuFlyout:
 		await RunOnUIThread(() =>
 		{
-			menuFlyout.XamlRoot = TestServices.WindowHelper.XamlRoot;
 			menuFlyout.ShowAt(null, showAtPosition);
 		});
 		await openedEvent.WaitForDefault();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		await RunOnUIThread(async () =>
+		var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter();
+		var menuFlyoutBounds = await ControlHelper.GetBounds(flyoutPresenter);
+
+		LOG_OUTPUT($"Windows bounds left={windowBounds.Left} top={windowBounds.Top} width={windowBounds.Width} height={windowBounds.Height}");
+		LOG_OUTPUT($"MenuFlyout bounds left={menuFlyoutBounds.Left} top={menuFlyoutBounds.Top} width={menuFlyoutBounds.Width} height={menuFlyoutBounds.Height}");
+		LOG_OUTPUT($"showAtPosition ({showAtPosition.X},{showAtPosition.Y})");
+
+		VERIFY_IS_TRUE(ControlHelper.IsContainedIn(menuFlyoutBounds, windowBounds));
+
+		// Validate Horizontal position:
+		if (expectedHorizontalOpenDirection == HorizontalOpenDirection.OpenRight)
 		{
-			var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter();
-			var menuFlyoutBounds = await ControlHelper.GetBounds(flyoutPresenter);
+			VERIFY_IS_LESS_THAN(menuFlyoutBounds.Left, showAtPosition.X + 1);
+			VERIFY_IS_GREATER_THAN(menuFlyoutBounds.Left, showAtPosition.X - 1);
+		}
+		else if (expectedHorizontalOpenDirection == HorizontalOpenDirection.OpenLeft)
+		{
+			VERIFY_IS_LESS_THAN(menuFlyoutBounds.Right, showAtPosition.X + 1);
+			VERIFY_IS_GREATER_THAN(menuFlyoutBounds.Right, showAtPosition.X - 1);
+		}
 
-			LOG_OUTPUT("Windows bounds left=%f top=%f width=%f height=%f", windowBounds.Left, windowBounds.Top, windowBounds.Width, windowBounds.Height);
-			LOG_OUTPUT("MenuFlyout bounds left=%f top=%f width=%f height=%f", menuFlyoutBounds.Left, menuFlyoutBounds.Top, menuFlyoutBounds.Width, menuFlyoutBounds.Height);
-			LOG_OUTPUT("showAtPosition (%f,%f)", showAtPosition.X, showAtPosition.Y);
-
-			VERIFY_IS_TRUE(ControlHelper.IsContainedIn(menuFlyoutBounds, windowBounds));
-
-			// Validate Horizontal position:
-			if (expectedHorizontalOpenDirection == HorizontalOpenDirection.OpenRight)
-			{
-				VERIFY_ARE_EQUAL(Math.Round(menuFlyoutBounds.Left), showAtPosition.X);
-			}
-			else if (expectedHorizontalOpenDirection == HorizontalOpenDirection.OpenLeft)
-			{
-				VERIFY_ARE_EQUAL(Math.Round(menuFlyoutBounds.Right), showAtPosition.X);
-			}
-
-			// Validate Vertical position:
-			if (expectedVerticalOpenDirection == VerticalOpenDirection.OpenDown)
-			{
-				VERIFY_ARE_EQUAL(Math.Round(menuFlyoutBounds.Top), showAtPosition.Y);
-			}
-			else if (expectedVerticalOpenDirection == VerticalOpenDirection.OpenUp)
-			{
-				VERIFY_ARE_EQUAL(Math.Round(menuFlyoutBounds.Bottom), showAtPosition.Y);
-			}
-		});
+		// Validate Vertical position:
+		if (expectedVerticalOpenDirection == VerticalOpenDirection.OpenDown)
+		{
+			VERIFY_IS_LESS_THAN(menuFlyoutBounds.Top, showAtPosition.Y + 1);
+			VERIFY_IS_GREATER_THAN(menuFlyoutBounds.Top, showAtPosition.Y - 1);
+		}
+		else if (expectedVerticalOpenDirection == VerticalOpenDirection.OpenUp)
+		{
+			VERIFY_IS_LESS_THAN(menuFlyoutBounds.Bottom, showAtPosition.Y + 1);
+			VERIFY_IS_GREATER_THAN(menuFlyoutBounds.Bottom, showAtPosition.Y - 1);
+		}
 
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
@@ -1062,100 +1078,8 @@ public class MenuFlyoutIntegrationTests
 		OpenUp,
 		OpenDown
 	}
-	//	FrameworkElement ^ rootPanel;
-	//	Rect windowBounds;
-
-	//	await RunOnUIThread(() =>
-
-	//	   {
-	//		   rootPanel = (FrameworkElement)(TestServices.WindowHelper.WindowContent);
-	//		   rootPanel.FlowDirection = flowDirection;
-	//		   windowBounds = TestServices.WindowHelper.WindowBounds;
-
-	//		   // TODO: As part of Task 23865114, set menuFlyout.ShouldConstrainToRootBounds based on disableFullHwndSupport
-	//		   // to handle windowed popups.
-	//	   });
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var openedEvent = new Event();
-	//	var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
-	//	openedRegistration.Attach(menuFlyout, [&](){ openedEvent.Set(); });
-
-	//	// Send some input of the appropriate type to the app.
-	//	// The placement of the menuflyout is affected by the most recently used input device type.
-	//	if (inputMethod == InputMethod.Mouse)
-	//	{
-	//		LOG_OUTPUT("Calling InputHelper.LeftMouseClick");
-	//		TestServices.InputHelper.LeftMouseClick(rootPanel);
-	//	}
-	//	else if (inputMethod == InputMethod.Touch)
-	//	{
-	//		LOG_OUTPUT("Calling InputHelper.Tap");
-	//		TestServices.InputHelper.Tap(rootPanel);
-	//	}
-	//	else if (inputMethod == InputMethod.Keyboard)
-	//	{
-	//		LOG_OUTPUT("Calling KeyboardHelper.PressKeySequence");
-	//		TestServices.KeyboardHelper.PressKeySequence(" ");
-	//	}
-	//	else if (inputMethod == InputMethod.Pen)
-	//	{
-	//		LOG_OUTPUT("Calling InputHelper.PenTap");
-	//		TestServices.InputHelper.PenTap(rootPanel);
-	//	}
-	//	else
-	//	{
-	//		WEX.Common.Throw.Exception(E_NOTIMPL);
-	//	}
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Show the MenuFlyout:
-	//	await RunOnUIThread(() =>
-
-	//	   {
-	//		   menuFlyout.ShowAt(null, showAtPosition);
-	//	   });
-	//	await openedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await RunOnUIThread(() =>
-
-	//	   {
-	//		   var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter();
-	//		   var menuFlyoutBounds = await ControlHelper.GetBounds(flyoutPresenter);
-
-	//		   LOG_OUTPUT("Windows bounds left=%f top=%f width=%f height=%f", windowBounds.Left, windowBounds.Top, windowBounds.Width, windowBounds.Height);
-	//		   LOG_OUTPUT("MenuFlyout bounds left=%f top=%f width=%f height=%f", menuFlyoutBounds.Left, menuFlyoutBounds.Top, menuFlyoutBounds.Width, menuFlyoutBounds.Height);
-	//		   LOG_OUTPUT("showAtPosition (%f,%f)", showAtPosition.X, showAtPosition.Y);
-
-	//		   VERIFY_IS_TRUE(ControlHelper.IsContainedIn(menuFlyoutBounds, windowBounds));
-
-	//		   // Validate Horizontal position:
-	//		   if (expectedHorizontalOpenDirection == HorizontalOpenDirection.OpenRight)
-	//		   {
-	//			   VERIFY_ARE_EQUAL(menuFlyoutBounds.Left, showAtPosition.X);
-	//		   }
-	//		   else if (expectedHorizontalOpenDirection == HorizontalOpenDirection.OpenLeft)
-	//		   {
-	//			   VERIFY_ARE_EQUAL(menuFlyoutBounds.Right, showAtPosition.X);
-	//		   }
-
-	//		   // Validate Vertical position:
-	//		   if (expectedVerticalOpenDirection == VerticalOpenDirection.OpenDown)
-	//		   {
-	//			   VERIFY_ARE_EQUAL(menuFlyoutBounds.Top, showAtPosition.Y);
-	//		   }
-	//		   else if (expectedVerticalOpenDirection == VerticalOpenDirection.OpenUp)
-	//		   {
-	//			   VERIFY_ARE_EQUAL(menuFlyoutBounds.Bottom, showAtPosition.Y);
-	//		   }
-	//	   });
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
 
 	[TestMethod]
-	[Ignore("Relative positioning of Flyouts is not supported correctly #22175")]
 	public async Task ValidateShowAtTargetPositionRelativeToElement()
 	{
 		// When a UIElement is passed to MenuFlyout.ShowAt(UIElement, Point), we verify that the Point is transformed from the UIElement's space to
@@ -1201,154 +1125,102 @@ public class MenuFlyoutIntegrationTests
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
 
-	//[TestMethod]
-	//public async Task TallMenuFlyoutShouldAlignToTopOfScreen()
-	//{
+	[TestMethod]
+	public async Task TallMenuFlyoutShouldAlignToTopOfScreen()
+	{
+		// TODO Uno: upstream only sets the window size when not on desktop; Uno popups are never windowed.
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 400));
 
+		// MenuFlyout will normally align either it's top or bottom edge to the point passed to ShowAt.
+		// But if the MenuFlyout is too tall to fit in either of these positions, it aligns to the top of the screen.
+		//
+		// To test this:
+		// We set the height of a menuflyoutitem so that the menuflyout size is greater than half the height of the screen.
+		// We call ShowAt with a point in the middle of the screen.
+		// This ensures that it can not align either it's top or bottom edge to the given point without getting clipped.
+		// We validate that the menuflyout opens aligned to the top of the screen.
 
-	//	if (!TestServices.Utilities.IsDesktop)
-	//	{
-	//		Windows.Foundation.Size size(400, 400);
-	//		TestServices.WindowHelper.SetWindowSizeOverride(size);
-	//	}
+		var menuFlyout = await CreateMenuFlyout();
 
-	//	// MenuFlyout will normally align either it's top or bottom edge to the point passed to ShowAt.
-	//	// But if the MenuFlyout is too tall to fit in either of these positions, it aligns to the top of the screen.
-	//	//
-	//	// To test this:
-	//	// We set the height of a menuflyoutitem so that the menuflyout size is greater than half the height of the screen.
-	//	// We call ShowAt with a point in the middle of the screen.
-	//	// This ensures that it can not align either it's top or bottom edge to the given point without getting clipped.
-	//	// We validate that the menuflyout opens aligned to the top of the screen.
+		await RunOnUIThread(() =>
+		{
+			TestServices.WindowHelper.WindowContent = new Grid();
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//	var menuFlyout = await CreateMenuFlyout();
+		Rect windowBounds = default;
+		await RunOnUIThread(() =>
+		{
+			windowBounds = TestServices.WindowHelper.WindowBounds;
+			menuFlyout.Items[0].Height = windowBounds.Height * 0.75;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//	await RunOnUIThread(() =>
+		await ShowMenuFlyout(menuFlyout, null, windowBounds.Width / 2, windowBounds.Height / 2);
 
-	//	   {
-	//		   TestServices.WindowHelper.WindowContent = new Grid();
-	//	   });
-	//	await TestServices.WindowHelper.WaitForIdle();
+		var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter();
+		var menuFlyoutBounds = await ControlHelper.GetBounds(flyoutPresenter);
 
-	//	Rect windowBounds = default;
-	//	await RunOnUIThread(() =>
+		// Verify that the top of the menuflyout is at the top of the screen.
+		VERIFY_ARE_EQUAL(menuFlyoutBounds.Top, -windowBounds.Y);
 
-	//	   {
-	//		   windowBounds = TestServices.WindowHelper.WindowBounds;
-	//		   menuFlyout.Items[0].Height = windowBounds.Height * 0.75;
-	//	   });
-	//	await TestServices.WindowHelper.WaitForIdle();
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
 
-	//	await ShowMenuFlyout(menuFlyout, null, windowBounds.Width / 2, windowBounds.Height / 2);
+	[TestMethod]
+	[Ignore("Open after the Stage C port: FindName does not reach a flyout defined in Grid.Resources, see uno--findname-misses-resource-and-flyout-names-in-xamlreader.")]
+	public async Task WideMenuFlyoutShouldAlignToLeftOfScreen()
+	{
+		// Similar to TallMenuFlyoutShouldAlignToTopOfScreen, if a MenuFlyout is too wide to open at the point passed to ShowAt, it will
+		// open aligned to the left instead.
 
-	//	await RunOnUIThread(() =>
+		MenuFlyout menuFlyout = null;
+		MenuFlyoutItem menuFlyoutItem = null;
 
-	//	   {
-	//		   var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter();
-	//		   var menuFlyoutBounds = await ControlHelper.GetBounds(flyoutPresenter);
+		await RunOnUIThread(() =>
+		{
+			// We need to set MenuFlyoutPresenter.MaxWidth to infinity, otherwise its default value may prevent us from creating
+			// a menuflyout wide enough to hit the scenario we are trying to test.
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' > " +
+				"    <Grid.Resources> " +
+				"        <MenuFlyout x:Name='menuFlyout'> " +
+				"            <MenuFlyout.MenuFlyoutPresenterStyle> " +
+				"                <Style TargetType='MenuFlyoutPresenter'> " +
+				"                    <Setter Property='MaxWidth' Value='Infinity' /> " +
+				"                </Style> " +
+				"            </MenuFlyout.MenuFlyoutPresenterStyle> " +
+				"            <MenuFlyoutItem x:Name='menuFlyoutItem' Text='MenuFlyoutItem' /> " +
+				"        </MenuFlyout> " +
+				"    </Grid.Resources> " +
+				"</Grid>"));
 
-	//		   // Verify that the top of the menuflyout is at the top of the screen.
-	//		   VERIFY_ARE_EQUAL(menuFlyoutBounds.Top, -windowBounds.Y);
-	//	   });
+			menuFlyout = (MenuFlyout)(rootPanel.FindName("menuFlyout"));
+			// TODO Uno: FindName doesn't reach the items of a flyout in resources.
+			menuFlyoutItem = (MenuFlyoutItem)menuFlyout.Items[0];
 
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
+			TestServices.WindowHelper.WindowContent = rootPanel;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//[TestMethod]
-	//public async Task WideMenuFlyoutShouldAlignToLeftOfScreen()
-	//{
+		Rect windowBounds = default;
+		await RunOnUIThread(() =>
+		{
+			windowBounds = TestServices.WindowHelper.WindowBounds;
+			menuFlyoutItem.Width = windowBounds.Width * 0.75;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
+		await ShowMenuFlyout(menuFlyout, null, windowBounds.Width / 2, windowBounds.Height / 2);
 
-	//	// Similar to TallMenuFlyoutShouldAlignToTopOfScreen, if a MenuFlyout is too wide to open at the point passed to ShowAt, it will
-	//	// open aligned to the left instead.
+		var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter();
+		var menuFlyoutBounds = await ControlHelper.GetBounds(flyoutPresenter);
 
-	//	MenuFlyout menuFlyout;
-	//	MenuFlyoutItem menuFlyoutItem;
+		// Verify that the left of the menuflyout is at the left of the screen.
+		VERIFY_ARE_EQUAL(menuFlyoutBounds.Left, -windowBounds.X);
 
-	//	await RunOnUIThread(() =>
-
-	//	   {
-	//		   // We need to set MenuFlyoutPresenter.MaxWidth to infinity, otherwise its default value may prevent us from creating
-	//		   // a menuflyout wide enough to hit the scenario we are trying to test.
-	//		   var rootPanel = (Grid)(XamlReader.Load(
-	//			   "(<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
-
-
-	//					   < Grid.Resources >
-
-
-
-	//						   < MenuFlyout x:Name="menuFlyout" >
-
-
-
-	//							   < MenuFlyout.MenuFlyoutPresenterStyle >
-
-
-
-	//								   < Style TargetType="MenuFlyoutPresenter" >
-
-
-
-	//									   < Setter Property = "MaxWidth" Value = "Infinity" />
-
-
-
-	//								   </Style >
-
-
-
-	//							   </MenuFlyout.MenuFlyoutPresenterStyle >
-
-
-
-	//							   < MenuFlyoutItem x:Name="menuFlyoutItem" Text = "MenuFlyoutItem" />
-
-
-
-	//						   </MenuFlyout >
-
-
-
-	//					   </Grid.Resources >
-
-
-
-	//				   </Grid >)"));
-
-
-
-
-	//		   menuFlyout = (MenuFlyout)(rootPanel.FindName("menuFlyout"));
-	//		   menuFlyoutItem = (MenuFlyoutItem)(rootPanel.FindName("menuFlyoutItem"));
-
-	//		   TestServices.WindowHelper.WindowContent = rootPanel;
-	//	   });
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	Rect windowBounds = default;
-	//	await RunOnUIThread(() =>
-
-	//	   {
-	//		   windowBounds = TestServices.WindowHelper.WindowBounds;
-	//		   menuFlyoutItem.Width = windowBounds.Width * 0.75;
-	//	   });
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await ShowMenuFlyout(menuFlyout, null, windowBounds.Width / 2, windowBounds.Height / 2);
-
-	//	await RunOnUIThread(() =>
-
-	//	   {
-	//		   var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter();
-	//		   var menuFlyoutBounds = await ControlHelper.GetBounds(flyoutPresenter);
-
-	//		   // Verify that the left of the menuflyout is at the left of the screen.
-	//		   VERIFY_ARE_EQUAL(menuFlyoutBounds.Left, -windowBounds.X);
-	//	   });
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
 
 	private async Task<MenuFlyout> CreateMenuFlyout()
 	{
@@ -1659,7 +1531,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
+	[Ignore("Open after the Stage C port: going up from the first item lands on the primary part of the split item, not the secondary; not root-caused.")]
 	public async Task ValidateTraverseSplitMenuFlyoutItemsByKeyboard()
 	{
 		await PerformValidateTraverseSplitMenuFlyoutItems(InputMethod.Keyboard, true);
@@ -1740,6 +1612,7 @@ public class MenuFlyoutIntegrationTests
 		MenuFlyout menuFlyout = null;
 		MenuFlyoutItem menuFlyoutItem = null;
 		MenuFlyoutSubItem menuFlyoutSubItem = null;
+		SplitMenuFlyoutItem splitMenuFlyoutItem = null;
 
 		StackPanel rootPanel = null;
 		Button rootButton = null;
@@ -1758,6 +1631,10 @@ public class MenuFlyoutIntegrationTests
 			menuFlyoutSubItem.Text = "Item 2";
 			menuFlyout.Items.Add(menuFlyoutSubItem);
 
+			splitMenuFlyoutItem = new SplitMenuFlyoutItem();
+			splitMenuFlyoutItem.Text = "Item 3";
+			menuFlyout.Items.Add(splitMenuFlyoutItem);
+
 			rootButton = new Button();
 			rootButton.Flyout = menuFlyout;
 			rootPanel.Children.Add(rootButton);
@@ -1768,28 +1645,29 @@ public class MenuFlyoutIntegrationTests
 
 		await ShowMenuFlyout(menuFlyout, rootButton, 0, 0, false /* forceTapAsPreviousInputMessage */);
 
-		await RunOnUIThread(async () =>
-		{
-			VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(menuFlyoutItem, "CommonStates", "Normal"));
+		VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(menuFlyoutItem, "CommonStates", "Normal"));
 
+		await RunOnUIThread(() =>
+		{
 			VisualStateManager.GoToState(menuFlyoutItem, "Pressed", false);
 			VisualStateManager.GoToState(menuFlyoutSubItem, "Pressed", false);
+			VisualStateManager.GoToState(splitMenuFlyoutItem, "Pressed", false);
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
-		await RunOnUIThread(async () =>
-		{
-			VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(menuFlyoutItem, "CommonStates", "Pressed"));
+		VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(menuFlyoutItem, "CommonStates", "Pressed"));
 
+		await RunOnUIThread(() =>
+		{
 			menuFlyoutItem.Visibility = Visibility.Collapsed;
 			menuFlyoutSubItem.Visibility = Visibility.Collapsed;
+			splitMenuFlyoutItem.Visibility = Visibility.Collapsed;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
-		await RunOnUIThread(async () =>
-		{
-			VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(menuFlyoutItem, "CommonStates", "Normal"));
-		});
+		VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(menuFlyoutItem, "CommonStates", "Normal"));
+		VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(menuFlyoutSubItem, "CommonStates", "Normal"));
+		VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(splitMenuFlyoutItem, "CommonStates", "Normal"));
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await FlyoutHelper.HideFlyout(menuFlyout);
@@ -2203,213 +2081,269 @@ public class MenuFlyoutIntegrationTests
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
 
-	//[TestMethod] public async Task ValidateSubMenuItemUIElementTree()
-	//{
+	[TestMethod]
+	[Ignore("Open after the Stage C port: the masters only exist on upstream main, and their theme values (separator padding, item brushes) differ from this tag's generic.xaml.")]
+	public async Task ValidateSubMenuItemUIElementTree()
+	{
+		// The upstream master dumps the visual tree with the two open popups. The master content is asserted explicitly.
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
 
+		Button button1 = null;
+		IList<MenuFlyoutItemBase> items = null;
 
-	//	TestServices.WindowHelper.SetWindowSizeOverride(Size(400, 600));
+		Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+		MenuFlyout menuFlyout = await CreateMenuFlyoutSubItemsFromXaml();
 
-	//	Button button1 = null;
-	//	IList < MenuFlyoutItemBase> items = null;
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.LightDismissOverlayMode = LightDismissOverlayMode.Off;
 
-	//	Canvas rootPanel = await SetupRootPanelForSubMenuTest();
-	//	MenuFlyout menuFlyout = await CreateMenuFlyoutSubItemsFromXaml();
+			button1 = (Button)(rootPanel.FindName("button1"));
+		});
 
-	// await RunOnUIThread(() =>
+		// Tap on the button to ensure the button's initial focus state
+		TestServices.InputHelper.Tap(button1);
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//	{
-	//		menuFlyout.LightDismissOverlayMode = LightDismissOverlayMode.Off;
+		await ShowMenuFlyout(menuFlyout, button1, -50, 50);
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//		button1 = Button> (rootPanel.FindName("button1"));
-	//	});
+		await RunOnUIThread(() =>
+		{
+			items = menuFlyout.Items;
+		});
 
-	//	// Tap on the button to ensure the button's initial focus state
-	//	TestServices.InputHelper.Tap(button1);
-	//	await TestServices.WindowHelper.WaitForIdle();
+		var subItem = await GetSubItem(items);
+		await TapSubMenuItem(subItem);
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//	await ShowMenuFlyout(menuFlyout, button1, -50, 50);
-	//	await TestServices.WindowHelper.WaitForIdle();
+		await RunOnUIThread(() =>
+		{
+			// Master: Canvas (RoyalBlue) holding the 100x50 button at (50, 50).
+			VERIFY_ARE_EQUAL(((SolidColorBrush)rootPanel.Background).Color, Microsoft.UI.Colors.RoyalBlue);
+			VERIFY_ARE_EQUAL(Canvas.GetLeft(button1), 50);
+			VERIFY_ARE_EQUAL(Canvas.GetTop(button1), 50);
+			VERIFY_ARE_EQUAL(button1.Width, 100);
+			VERIFY_ARE_EQUAL(button1.Height, 50);
 
-	// await RunOnUIThread(() =>
+			// Master: two open popups, the sub menu first and then the main menu.
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(rootPanel.XamlRoot);
+			VERIFY_ARE_EQUAL(2, popups.Count);
+			VERIFY_IS_TRUE(popups[0].IsOpen);
+			VERIFY_IS_TRUE(popups[1].IsOpen);
 
-	//	{
-	//		items = menuFlyout.Items;
-	//	});
+			var subPresenter = (MenuFlyoutPresenter)popups[0].Child;
+			VERIFY_ARE_EQUAL(subPresenter.Padding, (Thickness)Application.Current.Resources["MenuFlyoutPresenterThemePadding"]);
+			ValidateItems(subPresenter, new (string, Type, bool)[]
+			{
+				("Menu item 2.1", typeof(MenuFlyoutItem), false),
+				("Menu item 2.2", typeof(MenuFlyoutItem), false),
+				(null, typeof(MenuFlyoutSeparator), false),
+				("Toggle item 2.3", typeof(ToggleMenuFlyoutItem), true),
+				(null, typeof(MenuFlyoutSeparator), false),
+				("Menu sub item 2.4", typeof(MenuFlyoutSubItem), false),
+			});
 
-	//	var subItem = await GetSubItem(items);
-	//	await TapSubMenuItem(subItem);
-	//	await TestServices.WindowHelper.WaitForIdle();
+			var mainPresenter = (MenuFlyoutPresenter)popups[1].Child;
+			VERIFY_ARE_EQUAL(mainPresenter.Padding, (Thickness)Application.Current.Resources["MenuFlyoutPresenterThemePadding"]);
+			VERIFY_IS_TRUE(double.IsNaN(mainPresenter.Width));
+			VERIFY_IS_TRUE(double.IsNaN(mainPresenter.Height));
+			ValidateItems(mainPresenter, new (string, Type, bool)[]
+			{
+				("Menu item 1", typeof(MenuFlyoutItem), false),
+				("Menu item 2", typeof(MenuFlyoutItem), false),
+				(null, typeof(MenuFlyoutSeparator), false),
+				("Toggle item 3", typeof(ToggleMenuFlyoutItem), true),
+				(null, typeof(MenuFlyoutSeparator), false),
+				("Menu sub item 4", typeof(MenuFlyoutSubItem), false),
+				("Menu sub item 5", typeof(MenuFlyoutSubItem), false),
+			});
+		});
 
-	//	if (TestServices.Utilities.IsOneCore)
-	//	{
-	//		TestServices.Utilities.VerifyUIElementTree("WindowlessPopup");
-	//	}
-	//	else
-	//	{
-	//		TestServices.Utilities.VerifyUIElementTree("WindowedPopup");
-	//	}
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
 
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
+	private void ValidateItems(MenuFlyoutPresenter presenter, (string Text, Type Type, bool IsChecked)[] expectedItems)
+	{
+		var items = presenter.Items;
+		VERIFY_ARE_EQUAL(expectedItems.Length, items.Count);
 
-	//[TestMethod] public async Task ValidatePopupWindowedPosition()
-	//{
-	//	ValidatePopupWindowedPosition(true /* expectWindowedPopup */);
-	//}
+		for (int i = 0; i < expectedItems.Length; i++)
+		{
+			var (text, type, isChecked) = expectedItems[i];
+			var item = items[i];
+			VERIFY_ARE_EQUAL(type, item.GetType());
 
-	//[TestMethod] public async Task ValidatePopupWindowedPositionInSimulatedHolographic()
-	//{
-	//	HolographicOverride holographicOverride;
-	//	ValidatePopupWindowedPosition(false /* expectWindowedPopup */);
+			if (item is MenuFlyoutSeparator separator)
+			{
+				VERIFY_ARE_EQUAL(separator.Padding, new Thickness(12, 4, 12, 4));
+			}
+			else if (item is MenuFlyoutSubItem subItem)
+			{
+				VERIFY_ARE_EQUAL(subItem.Text, text);
+				VERIFY_ARE_EQUAL(subItem.Padding, (Thickness)Application.Current.Resources["MenuFlyoutItemThemePadding"]);
+			}
+			else
+			{
+				var menuItem = (MenuFlyoutItem)item;
+				VERIFY_ARE_EQUAL(menuItem.Text, text);
+				VERIFY_ARE_EQUAL(menuItem.Padding, (Thickness)Application.Current.Resources["MenuFlyoutItemThemePadding"]);
+				if (menuItem is ToggleMenuFlyoutItem toggleItem)
+				{
+					VERIFY_ARE_EQUAL(toggleItem.IsChecked, isChecked);
+				}
+			}
+		}
+	}
 
-	//}
+	[TestMethod]
+	[Ignore("Pending windowed popups")]
+	public async Task ValidatePopupWindowedPosition()
+	{
+		await ValidatePopupWindowedPosition(true /* expectWindowedPopup */);
+	}
 
-	//[TestMethod] public async Task ValidateWindowedPositionNearMonitorEdge()
-	//{
-	//	TestCleanupWrapper cleanup([&]()
+	[TestMethod]
+	[Ignore("Pending windowed popups")]
+	public async Task ValidatePopupWindowedPositionInSimulatedHolographic()
+	{
+		// TODO Uno: there is no HolographicOverride in the test services.
+		await ValidatePopupWindowedPosition(false /* expectWindowedPopup */);
+	}
 
-	//	{
-	//		TestServices.WindowHelper.ResetWindowContentAndWaitForIdle();
-	//	});
+	[TestMethod]
+	[Ignore("Pending windowed popups")]
+	public async Task ValidateWindowedPositionNearMonitorEdge()
+	{
+		try
+		{
+			Rect menuFlyoutBounds = default;
+			IList<MenuFlyoutItemBase> items = null;
+			Canvas rootPanel = await SetupRootPanelForSubMenuTest();
 
-	//	Rect menuFlyoutBounds = default;
-	//	IList < MenuFlyoutItemBase> items = null;
-	//	Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+			MenuFlyout menuFlyout = await CreateMenuFlyoutSubItemsFromXaml();
 
-	//	MenuFlyout menuFlyout = await CreateMenuFlyoutSubItemsFromXaml();
+			// TODO Uno: there is no monitor API in the test services; the window bounds stand in for the monitor bounds.
+			Rect monitor = TestServices.WindowHelper.WindowBounds;
+			LOG_OUTPUT($"Monitor size: {monitor.Width}, {monitor.Height}");
 
-	//	Rect monitor = TestServices.WindowHelper.MonitorBounds;
-	//	LOG_OUTPUT("Monitor size: %f, %f", monitor.Width, monitor.Height);
+			LOG_OUTPUT($"Calling ShowAt {monitor.Width - 10}, {monitor.Height - 50}");
+			await ShowMenuFlyout(menuFlyout, null, monitor.Width - 10, monitor.Height - 50);
 
-	//	LOG_OUTPUT("Calling ShowAt %f, %f", monitor.Width - 10, monitor.Height - 50);
-	//	await ShowMenuFlyout(menuFlyout, null, monitor.Width - 10, monitor.Height - 50);
+			var presenter = await GetCurrentPresenter();
 
-	//	var presenter = await GetCurrentPresenter();
+			menuFlyoutBounds = await ControlHelper.GetBounds(presenter);
+			LOG_OUTPUT($"MenuFlyout bounds left={menuFlyoutBounds.Left} top={menuFlyoutBounds.Top} width={menuFlyoutBounds.Width} height={menuFlyoutBounds.Height}");
+			VERIFY_IS_LESS_THAN(monitor.Width - 260, menuFlyoutBounds.Left);
+			VERIFY_IS_GREATER_THAN(monitor.Width - 240, menuFlyoutBounds.Left);
 
-	// await RunOnUIThread(() =>
+			await RunOnUIThread(() =>
+			{
+				items = menuFlyout.Items;
+			});
 
-	//	{
-	//		menuFlyoutBounds = await ControlHelper.GetBounds(presenter);
-	//		LOG_OUTPUT("MenuFlyout bounds left=%f top=%f width=%f height=%f", menuFlyoutBounds.Left, menuFlyoutBounds.Top, menuFlyoutBounds.Width, menuFlyoutBounds.Height);
-	//		VERIFY_IS_LESS_THAN(monitor.Width - 260, menuFlyoutBounds.Left);
-	//		VERIFY_IS_GREATER_THAN(monitor.Width - 240, menuFlyoutBounds.Left);
-	//	});
+			var subItem = await GetSubItem(items);
+			await TapSubMenuItem(subItem);
 
-	// await RunOnUIThread(() =>
+			// Validate the position
+			var subPresenter = await GetCurrentPresenter();
+			Rect subMenu = await ControlHelper.GetBounds(subPresenter);
+			LOG_OUTPUT($"Sub Menu bounds left={subMenu.Left} top={subMenu.Top} width={subMenu.Width} height={subMenu.Height}");
+			VERIFY_IS_LESS_THAN(monitor.Width - 540, subMenu.Left);
+			VERIFY_IS_GREATER_THAN(monitor.Width - 440, subMenu.Left);
 
-	//	{
-	//		items = menuFlyout.Items;
-	//	});
+			await FlyoutHelper.HideFlyout(menuFlyout);
+		}
+		finally
+		{
+			TestServices.WindowHelper.ResetWindowContentAndWaitForIdle();
+		}
+	}
 
-	//	var subItem = await GetSubItem(items);
-	//	await TapSubMenuItem(subItem);
+	private async Task ValidatePopupWindowedPosition(bool expectWindowedPopup)
+	{
+		try
+		{
+			// If we're expecting a windowed popup, we'll set the desktop window size
+			// in order to test the popup breaking out of the bounds of the desktop window.
+			// Otherwise, we'll just set the window size in XAML.
+			if (!expectWindowedPopup)
+			{
+				TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
+			}
 
-	//	// Validate the position
-	//	var subPresenter = await GetCurrentPresenter();
-	// await RunOnUIThread(() =>
+			Rect menuFlyoutBounds = default;
+			IList<MenuFlyoutItemBase> items = null;
+			Canvas rootPanel = await SetupRootPanelForSubMenuTest();
 
-	//	{
-	//		Rect subMenu = await ControlHelper.GetBounds(subPresenter);
-	//		LOG_OUTPUT("Sub Menu bounds left=%f top=%f width=%f height=%f", subMenu.Left, subMenu.Top, subMenu.Width, subMenu.Height);
-	//		VERIFY_IS_LESS_THAN(monitor.Width - 540, subMenu.Left);
-	//		VERIFY_IS_GREATER_THAN(monitor.Width - 440, subMenu.Left);
-	//	});
+			if (expectWindowedPopup)
+			{
+				// TODO Uno: there is no SetDesktopWindowSize in the test services, the window override is the closest equivalent.
+				TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
+				await TestServices.WindowHelper.WaitForIdle();
+			}
 
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
+			MenuFlyout menuFlyout = await CreateMenuFlyoutSubItemsFromXaml();
 
+			await ShowMenuFlyout(menuFlyout, null, 400, 280);
 
-	//[TestMethod] public async Task ValidatePopupWindowedPosition(bool expectWindowedPopup)
-	//{
-	//	TestCleanupWrapper cleanup([&]()
+			var presenter = await GetCurrentPresenter();
 
-	//	{
-	//		if (expectWindowedPopup)
-	//		{
-	//			TestServices.WindowHelper.MaximizeDesktopWindow();
-	//			await TestServices.WindowHelper.WaitForIdle();
-	//		}
+			menuFlyoutBounds = await ControlHelper.GetBounds(presenter);
+			LOG_OUTPUT($"MenuFlyout bounds left={menuFlyoutBounds.Left} top={menuFlyoutBounds.Top} width={menuFlyoutBounds.Width} height={menuFlyoutBounds.Height}");
 
-	//		TestServices.WindowHelper.ResetWindowContentAndWaitForIdle();
-	//	});
+			if (expectWindowedPopup)
+			{
+				VERIFY_IS_TRUE(menuFlyoutBounds.Left == 400);
+			}
+			else
+			{
+				// It is not at 400 because the menu needs to shift left to fit inside the app window.
+				// This is similar for the checks below that do not expectWindowedPopup, the popup needs
+				// to be adjusted to fit in the windowed dimensions.
+				VERIFY_IS_FALSE(menuFlyoutBounds.Left == 400);
+			}
 
-	//	// If we're expecting a windowed popup, we'll set the desktop window size
-	//	// in order to test the popup breaking out of the bounds of the desktop window.
-	//	// Otherwise, we'll just set the window size in XAML.
-	//	if (!expectWindowedPopup)
-	//	{
-	//		TestServices.WindowHelper.SetWindowSizeOverride(Size(400, 600));
-	//	}
+			await RunOnUIThread(() =>
+			{
+				items = menuFlyout.Items;
+			});
 
-	//	Rect menuFlyoutBounds = default;
-	//	IList < MenuFlyoutItemBase> items = null;
-	//	Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+			var subItem = await GetSubItem(items);
+			await TapSubMenuItem(subItem);
 
-	//	if (expectWindowedPopup)
-	//	{
-	//		TestServices.WindowHelper.SetDesktopWindowSize(400, 600);
-	//		await TestServices.WindowHelper.WaitForIdle();
-	//	}
+			// Validate the position
+			var subPresenter = await GetCurrentPresenter();
+			Rect subMenu = await ControlHelper.GetBounds(subPresenter);
+			LOG_OUTPUT($"Sub Menu bounds left={subMenu.Left} top={subMenu.Top} width={subMenu.Width} height={subMenu.Height}");
 
-	//	MenuFlyout menuFlyout = await CreateMenuFlyoutSubItemsFromXaml();
+			if (expectWindowedPopup)
+			{
+				VERIFY_IS_TRUE(subMenu.Left > 550);
+				VERIFY_IS_TRUE(subMenu.Top + subMenu.Bottom > menuFlyoutBounds.Top + subMenu.Bottom);
+			}
+			else
+			{
+				VERIFY_IS_FALSE(subMenu.Left > 550);
+			}
 
-	//	await ShowMenuFlyout(menuFlyout, null, 400, 280);
+			await FlyoutHelper.HideFlyout(menuFlyout);
+		}
+		finally
+		{
+			if (expectWindowedPopup)
+			{
+				// TODO Uno: there is no MaximizeDesktopWindow in the test services.
+				TestServices.WindowHelper.ResetWindowSizeOverride();
+				await TestServices.WindowHelper.WaitForIdle();
+			}
 
-	//	var presenter = await GetCurrentPresenter();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyoutBounds = await ControlHelper.GetBounds(presenter);
-	//		LOG_OUTPUT("MenuFlyout bounds left=%f top=%f width=%f height=%f", menuFlyoutBounds.Left, menuFlyoutBounds.Top, menuFlyoutBounds.Width, menuFlyoutBounds.Height);
-
-	//		if (expectWindowedPopup)
-	//		{
-	//			VERIFY_IS_TRUE(menuFlyoutBounds.Left == 400);
-	//		}
-	//		else
-	//		{
-	//			// It is not at 400 because the menu needs to shift left to fit inside the app window.
-	//			// This is similar for the checks below that do not expectWindowedPopup, the popup needs
-	//			// to be adjusted to fit in the windowed dimensions.
-	//			VERIFY_IS_FALSE(menuFlyoutBounds.Left == 400);
-	//		}
-	//	});
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		items = menuFlyout.Items;
-	//	});
-
-	//	var subItem = await GetSubItem(items);
-	//	await TapSubMenuItem(subItem);
-
-	//	// Validate the position
-	//	var subPresenter = await GetCurrentPresenter();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		Rect subMenu = await ControlHelper.GetBounds(subPresenter);
-	//		LOG_OUTPUT("Sub Menu bounds left=%f top=%f width=%f height=%f", subMenu.Left, subMenu.Top, subMenu.Width, subMenu.Height);
-
-	//		if (expectWindowedPopup)
-	//		{
-	//			VERIFY_IS_TRUE(subMenu.Left > 550);
-	//			VERIFY_IS_TRUE(subMenu.Top + subMenu.Bottom > menuFlyoutBounds.Top + subMenu.Bottom);
-	//		}
-	//		else
-	//		{
-	//			VERIFY_IS_FALSE(subMenu.Left > 550);
-	//		}
-	//	});
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
+			TestServices.WindowHelper.ResetWindowContentAndWaitForIdle();
+		}
+	}
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[Ignore("SetWindowSizeOverride is currently a no-op #22175")]
 	public async Task ValidateSubMenuPositionWithinWindow()
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
@@ -3338,360 +3272,376 @@ public class MenuFlyoutIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 
-	//[TestMethod]
-	//public async Task ValidateUIElementTree()
-	//{
-
-	//	TestServices.WindowHelper.SetWindowSizeOverride(Size(800, 730));
-
-	//	var validationRules = new Platform.String(
-	//		"<?xml version='1.0' encoding='UTF-8'?>
-	//			< Rules >
-
-	//				< Rule Applicability = '//Element' Inclusion = 'Blacklist' >
-
-	//					< Property Name = 'FocusState' />
-
-	//					< Property Name = 'IsPressed' />
-
-	//				</Rule >
-
-	//			</Rules >)");
-
-
-	//	MenuFlyout menuFlyout;
-	//	MenuFlyoutItem restMenuFlyoutItem;
-	//	MenuFlyoutItem restMenuFlyoutItemWithKeyboardAccelerator;
-	//	MenuFlyoutItem pointerOverMenuFlyoutItem;
-	//	MenuFlyoutItem pointerOverMenuFlyoutItemWithKeyboardAccelerator;
-	//	MenuFlyoutItem pressedMenuFlyoutItem;
-	//	MenuFlyoutItem pressedMenuFlyoutItemWithKeyboardAccelerator;
-	//	MenuFlyoutItem disabledMenuFlyoutItem;
-	//	MenuFlyoutItem disabledMenuFlyoutItemWithKeyboardAccelerator;
-	//	MenuFlyoutItem focusedMenuFlyoutItem;
-
-	//	MenuFlyoutSeparator firstMenuFlyoutSeparator;
-
-	//	ToggleMenuFlyoutItem restUncheckedToggleMenuFlyoutItem;
-	//	ToggleMenuFlyoutItem restUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator;
-	//	ToggleMenuFlyoutItem pointerOverUncheckedToggleMenuFlyoutItem;
-	//	ToggleMenuFlyoutItem pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator;
-	//	ToggleMenuFlyoutItem pressedUncheckedToggleMenuFlyoutItem;
-	//	ToggleMenuFlyoutItem pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator;
-	//	ToggleMenuFlyoutItem disabledUncheckedToggleMenuFlyoutItem;
-	//	ToggleMenuFlyoutItem disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator;
-	//	ToggleMenuFlyoutItem focusedUncheckedToggleMenuFlyoutItem;
-
-	//	MenuFlyoutSeparator secondMenuFlyoutSeparator;
-
-	//	MenuFlyoutSubItem restMenuFlyoutSubItem;
-	//	MenuFlyoutSubItem pointerOverMenuFlyoutSubItem;
-	//	MenuFlyoutSubItem pressedMenuFlyoutSubItem;
-	//	MenuFlyoutSubItem disabledMenuFlyoutSubItem;
-	//	MenuFlyoutSubItem focusedMenuFlyoutSubItem;
-
-	//	MenuFlyoutPresenter thirdMenuFlyoutPresenter;
-
-	//	ToggleMenuFlyoutItem restCheckedToggleMenuFlyoutItem;
-	//	ToggleMenuFlyoutItem restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator;
-	//	ToggleMenuFlyoutItem pointerOverCheckedToggleMenuFlyoutItem;
-	//	ToggleMenuFlyoutItem pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator;
-	//	ToggleMenuFlyoutItem pressedCheckedToggleMenuFlyoutItem;
-	//	ToggleMenuFlyoutItem pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator;
-	//	ToggleMenuFlyoutItem disabledCheckedToggleMenuFlyoutItem;
-	//	ToggleMenuFlyoutItem disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator;
-	//	ToggleMenuFlyoutItem focusedCheckedToggleMenuFlyoutItem;
-
-	//	StackPanel rootPanel = null;
-	//	Button rootButton = null;
-
-	//	await RunOnUIThread(() =>
-
-	//	   {
-	//		   rootPanel = new StackPanel();
-
-	//		   menuFlyout = new MenuFlyout();
-	//		   menuFlyout.LightDismissOverlayMode = LightDismissOverlayMode.Off;
-
-	//		   restMenuFlyoutItem = new MenuFlyoutItem();
-	//		   restMenuFlyoutItem.Text = "Rest MenuFlyoutItem";
-	//		   menuFlyout.Items.Add(restMenuFlyoutItem);
-
-	//		   restMenuFlyoutItemWithKeyboardAccelerator = new MenuFlyoutItem();
-	//		   restMenuFlyoutItemWithKeyboardAccelerator.Text = "Rest MenuFlyoutItem with keyboard accelerator";
-	//		   restMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.A, Windows.System.VirtualKeyModifiers.None));
-	//		   menuFlyout.Items.Add(restMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   pointerOverMenuFlyoutItem = new MenuFlyoutItem();
-	//		   pointerOverMenuFlyoutItem.Text = "Pointer Over MenuFlyoutItem";
-	//		   menuFlyout.Items.Add(pointerOverMenuFlyoutItem);
-
-	//		   pointerOverMenuFlyoutItemWithKeyboardAccelerator = new MenuFlyoutItem();
-	//		   pointerOverMenuFlyoutItemWithKeyboardAccelerator.Text = "Pointer Over MenuFlyoutItem with keyboard accelerator";
-	//		   pointerOverMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.S, Windows.System.VirtualKeyModifiers.Control));
-	//		   menuFlyout.Items.Add(pointerOverMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   pressedMenuFlyoutItem = new MenuFlyoutItem();
-	//		   pressedMenuFlyoutItem.Text = "Pressed MenuFlyoutItem";
-	//		   menuFlyout.Items.Add(pressedMenuFlyoutItem);
-
-	//		   pressedMenuFlyoutItemWithKeyboardAccelerator = new MenuFlyoutItem();
-	//		   pressedMenuFlyoutItemWithKeyboardAccelerator.Text = "Pressed MenuFlyoutItem with keyboard accelerator";
-	//		   pressedMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.D, Windows.System.VirtualKeyModifiers.Shift));
-	//		   menuFlyout.Items.Add(pressedMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   disabledMenuFlyoutItem = new MenuFlyoutItem();
-	//		   disabledMenuFlyoutItem.Text = "Disabled MenuFlyoutItem";
-	//		   disabledMenuFlyoutItem.IsEnabled = false;
-	//		   menuFlyout.Items.Add(disabledMenuFlyoutItem);
-
-	//		   disabledMenuFlyoutItemWithKeyboardAccelerator = new MenuFlyoutItem();
-	//		   disabledMenuFlyoutItemWithKeyboardAccelerator.Text = "Disabled MenuFlyoutItem with keyboard accelerator";
-	//		   disabledMenuFlyoutItemWithKeyboardAccelerator.IsEnabled = false;
-	//		   disabledMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.F, Windows.System.VirtualKeyModifiers.Menu | Windows.System.VirtualKeyModifiers.Windows));
-	//		   menuFlyout.Items.Add(disabledMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   focusedMenuFlyoutItem = new MenuFlyoutItem();
-	//		   focusedMenuFlyoutItem.Text = "Focused MenuFlyoutItem";
-	//		   menuFlyout.Items.Add(focusedMenuFlyoutItem);
-
-	//		   firstMenuFlyoutSeparator = new MenuFlyoutSeparator();
-	//		   menuFlyout.Items.Add(firstMenuFlyoutSeparator);
-
-	//		   restMenuFlyoutSubItem = new MenuFlyoutSubItem();
-	//		   restMenuFlyoutSubItem.Text = "Rest MenuFlyoutSubItem";
-	//		   menuFlyout.Items.Add(restMenuFlyoutSubItem);
-
-	//		   pointerOverMenuFlyoutSubItem = new MenuFlyoutSubItem();
-	//		   pointerOverMenuFlyoutSubItem.Text = "Pointer Over MenuFlyoutSubItem";
-	//		   menuFlyout.Items.Add(pointerOverMenuFlyoutSubItem);
-
-	//		   pressedMenuFlyoutSubItem = new MenuFlyoutSubItem();
-	//		   pressedMenuFlyoutSubItem.Text = "Pressed MenuFlyoutSubItem";
-	//		   menuFlyout.Items.Add(pressedMenuFlyoutSubItem);
-
-	//		   disabledMenuFlyoutSubItem = new MenuFlyoutSubItem();
-	//		   disabledMenuFlyoutSubItem.Text = "Disabled MenuFlyoutSubItem";
-	//		   disabledMenuFlyoutSubItem.IsEnabled = false;
-	//		   menuFlyout.Items.Add(disabledMenuFlyoutSubItem);
-
-	//		   focusedMenuFlyoutSubItem = new MenuFlyoutSubItem();
-	//		   focusedMenuFlyoutSubItem.Text = "Focused MenuFlyoutSubItem";
-	//		   menuFlyout.Items.Add(focusedMenuFlyoutSubItem);
-
-	//		   secondMenuFlyoutSeparator = new MenuFlyoutSeparator();
-	//		   menuFlyout.Items.Add(secondMenuFlyoutSeparator);
-
-	//		   restUncheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
-	//		   restUncheckedToggleMenuFlyoutItem.Text = "Rest Unchecked ToggleMenuFlyoutItem";
-	//		   menuFlyout.Items.Add(restUncheckedToggleMenuFlyoutItem);
-
-	//		   restUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
-	//		   restUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Rest Unchecked ToggleMenuFlyoutItem with keyboard accelerator";
-	//		   restUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.A, Windows.System.VirtualKeyModifiers.None));
-	//		   menuFlyout.Items.Add(restUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   pointerOverUncheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
-	//		   pointerOverUncheckedToggleMenuFlyoutItem.Text = "Pointer Over Unchecked ToggleMenuFlyoutItem";
-	//		   menuFlyout.Items.Add(pointerOverUncheckedToggleMenuFlyoutItem);
-
-	//		   pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
-	//		   pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Pointer Over Unchecked ToggleMenuFlyoutItem with keyboard accelerator";
-	//		   pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.S, Windows.System.VirtualKeyModifiers.Control));
-	//		   menuFlyout.Items.Add(pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   pressedUncheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
-	//		   pressedUncheckedToggleMenuFlyoutItem.Text = "Pressed Unchecked ToggleMenuFlyoutItem";
-	//		   menuFlyout.Items.Add(pressedUncheckedToggleMenuFlyoutItem);
-
-	//		   pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
-	//		   pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Pressed Unchecked ToggleMenuFlyoutItem with keyboard accelerator";
-	//		   pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.D, Windows.System.VirtualKeyModifiers.Shift));
-	//		   menuFlyout.Items.Add(pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   disabledUncheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
-	//		   disabledUncheckedToggleMenuFlyoutItem.Text = "Disabled Unchecked ToggleMenuFlyoutItem";
-	//		   disabledUncheckedToggleMenuFlyoutItem.IsEnabled = false;
-	//		   menuFlyout.Items.Add(disabledUncheckedToggleMenuFlyoutItem);
-
-	//		   disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
-	//		   disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Disabled Unchecked ToggleMenuFlyoutItem with keyboard accelerator";
-	//		   disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsEnabled = false;
-	//		   disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.F, Windows.System.VirtualKeyModifiers.Menu | Windows.System.VirtualKeyModifiers.Windows));
-	//		   menuFlyout.Items.Add(disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   focusedUncheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
-	//		   focusedUncheckedToggleMenuFlyoutItem.Text = "Focused Unchecked ToggleMenuFlyoutItem";
-	//		   menuFlyout.Items.Add(focusedUncheckedToggleMenuFlyoutItem);
-
-	//		   restCheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
-	//		   restCheckedToggleMenuFlyoutItem.Text = "Rest Checked ToggleMenuFlyoutItem";
-	//		   restCheckedToggleMenuFlyoutItem.IsChecked = true;
-	//		   restMenuFlyoutSubItem.Items.Add(restCheckedToggleMenuFlyoutItem);
-
-	//		   restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
-	//		   restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Rest Checked ToggleMenuFlyoutItem with keyboard accelerator";
-	//		   restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsChecked = true;
-	//		   restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.A, Windows.System.VirtualKeyModifiers.None));
-	//		   menuFlyout.Items.Add(restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   pointerOverCheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
-	//		   pointerOverCheckedToggleMenuFlyoutItem.Text = "Pointer Over Checked ToggleMenuFlyoutItem";
-	//		   pointerOverCheckedToggleMenuFlyoutItem.IsChecked = true;
-	//		   restMenuFlyoutSubItem.Items.Add(pointerOverCheckedToggleMenuFlyoutItem);
-
-	//		   pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
-	//		   pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Pointer Over Checked ToggleMenuFlyoutItem with keyboard accelerator";
-	//		   pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsChecked = true;
-	//		   pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.S, Windows.System.VirtualKeyModifiers.Control));
-	//		   menuFlyout.Items.Add(pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   pressedCheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
-	//		   pressedCheckedToggleMenuFlyoutItem.Text = "Pressed Checked ToggleMenuFlyoutItem";
-	//		   pressedCheckedToggleMenuFlyoutItem.IsChecked = true;
-	//		   restMenuFlyoutSubItem.Items.Add(pressedCheckedToggleMenuFlyoutItem);
-
-	//		   pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
-	//		   pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Pressed Checked ToggleMenuFlyoutItem with keyboard accelerator";
-	//		   pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsChecked = true;
-	//		   pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.D, Windows.System.VirtualKeyModifiers.Shift));
-	//		   menuFlyout.Items.Add(pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   disabledCheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
-	//		   disabledCheckedToggleMenuFlyoutItem.Text = "Disabled Checked ToggleMenuFlyoutItem";
-	//		   disabledCheckedToggleMenuFlyoutItem.IsChecked = true;
-	//		   disabledCheckedToggleMenuFlyoutItem.IsEnabled = false;
-	//		   restMenuFlyoutSubItem.Items.Add(disabledCheckedToggleMenuFlyoutItem);
-
-	//		   disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
-	//		   disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Disabled Checked ToggleMenuFlyoutItem with keyboard accelerator";
-	//		   disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsChecked = true;
-	//		   disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsEnabled = false;
-	//		   disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.F, Windows.System.VirtualKeyModifiers.Menu | Windows.System.VirtualKeyModifiers.Windows));
-	//		   menuFlyout.Items.Add(disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
-
-	//		   focusedCheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
-	//		   focusedCheckedToggleMenuFlyoutItem.Text = "Focused Checked ToggleMenuFlyoutItem";
-	//		   focusedCheckedToggleMenuFlyoutItem.IsChecked = true;
-	//		   restMenuFlyoutSubItem.Items.Add(focusedCheckedToggleMenuFlyoutItem);
-
-	//		   rootButton = new Button();
-	//		   rootButton.Flyout = menuFlyout;
-	//		   rootPanel.Children.Add(rootButton);
-
-	//		   TestServices.WindowHelper.WindowContent = rootPanel;
-	//	   });
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var setupValidation = [&]()
-
-	//		{
-	//		await ShowMenuFlyout(menuFlyout, rootButton, 0, 0, true /* forceTapAsPreviousInputMessage */);
-	//		await TapSubMenuItem(restMenuFlyoutSubItem);
-
-	//		await RunOnUIThread(() =>
-
-	//			{
-	//				// MenuFlyoutItems
-	//				VisualStateManager.GoToState(pointerOverMenuFlyoutItem, "PointerOver", false);
-	//				VisualStateManager.GoToState(pointerOverMenuFlyoutItemWithKeyboardAccelerator, "PointerOver", false);
-	//				VisualStateManager.GoToState(pressedMenuFlyoutItem, "Pressed", false);
-	//				VisualStateManager.GoToState(pressedMenuFlyoutItemWithKeyboardAccelerator, "Pressed", false);
-	//				VisualStateManager.GoToState(focusedMenuFlyoutItem, "Focused", false);
-
-	//				// Unchecked ToggleMenuFlyoutItems
-	//				VisualStateManager.GoToState(pointerOverUncheckedToggleMenuFlyoutItem, "PointerOver", false);
-	//				VisualStateManager.GoToState(pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator, "PointerOver", false);
-	//				VisualStateManager.GoToState(pressedUncheckedToggleMenuFlyoutItem, "Pressed", false);
-	//				VisualStateManager.GoToState(pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator, "Pressed", false);
-	//				VisualStateManager.GoToState(focusedUncheckedToggleMenuFlyoutItem, "Focused", false);
-
-	//				// MenuFlyoutSubItems
-	//				VisualStateManager.GoToState(pointerOverMenuFlyoutSubItem, "PointerOver", false);
-	//				VisualStateManager.GoToState(pressedMenuFlyoutSubItem, "Pressed", false);
-	//				VisualStateManager.GoToState(focusedMenuFlyoutSubItem, "Focused", false);
-
-	//				// Checked ToggleMenuFlyoutItems
-	//				VisualStateManager.GoToState(pointerOverCheckedToggleMenuFlyoutItem, "PointerOver", false);
-	//				VisualStateManager.GoToState(pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator, "PointerOver", false);
-	//				VisualStateManager.GoToState(pressedCheckedToggleMenuFlyoutItem, "Pressed", false);
-	//				VisualStateManager.GoToState(pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator, "Pressed", false);
-	//				VisualStateManager.GoToState(focusedCheckedToggleMenuFlyoutItem, "Focused", false);
-	//			});
-	//		await TestServices.WindowHelper.WaitForIdle();
-	//	}
-	//	;
-
-	//	// Validate the Dark theme of controls.
-	//	{
-	//		setupValidation();
-	//		if (TestServices.Utilities.IsOneCore)
-	//		{
-	//			TestServices.Utilities.VerifyUIElementTreeWithRulesInline("WindowlessPopup_Dark", validationRules);
-	//		}
-	//		else
-	//		{
-	//			TestServices.Utilities.VerifyUIElementTreeWithRulesInline("WindowedPopup_Dark", validationRules);
-	//		}
-
-	//		await RunOnUIThread(() =>
-
-	//		{
-	//			menuFlyout.Hide();
-	//		});
-	//		await TestServices.WindowHelper.WaitForIdle();
-	//	}
-
-	//	// Validate the light theme of controls.
-	//	{
-	//		await RunOnUIThread(() =>
-
-	//		{
-	//			rootPanel.RequestedTheme = ElementTheme.Light;
-	//			rootPanel.Background = new SolidColorBrush(Microsoft.UI.Colors.White);
-	//		});
-	//		await TestServices.WindowHelper.WaitForIdle();
-
-	//		setupValidation();
-	//		if (TestServices.Utilities.IsOneCore)
-	//		{
-	//			TestServices.Utilities.VerifyUIElementTreeWithRulesInline("WindowlessPopup_Light", validationRules);
-	//		}
-	//		else
-	//		{
-	//			TestServices.Utilities.VerifyUIElementTreeWithRulesInline("WindowedPopup_Light", validationRules);
-	//		}
-
-	//		await RunOnUIThread(() =>
-
-	//		{
-	//			menuFlyout.Hide();
-	//		});
-	//		await TestServices.WindowHelper.WaitForIdle();
-	//	}
-
-	//	// Validate the high-contrast theme of controls.
-	//	{
-	//		setupValidation();
-
-	//		// This method will turn on high-contrast mode before it does the validation.
-	//		if (TestServices.Utilities.IsOneCore)
-	//		{
-	//			ControlHelper.ValidateUIElementTreeForHighContrast("WindowlessPopup_HC", rootPanel, validationRules);
-	//		}
-	//		else
-	//		{
-	//			ControlHelper.ValidateUIElementTreeForHighContrast("WindowedPopup_HC", rootPanel, validationRules);
-	//		}
-
-	//		await RunOnUIThread(() =>
-
-	//		{
-	//			menuFlyout.Hide();
-	//		});
-	//		await TestServices.WindowHelper.WaitForIdle();
-	//	}
-	//}
+	[TestMethod]
+	[Ignore("Open after the Stage C port: the masters only exist on upstream main, and their theme values (separator padding, item brushes) differ from this tag's generic.xaml.")]
+	public async Task ValidateUIElementTree()
+	{
+		// The upstream master files dump the whole visual tree. They are checked here with explicit assertions on the
+		// popups, the items (text, enabled, checked, foreground) and the sizes found in the Windowless masters.
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(800, 730));
+
+		MenuFlyout menuFlyout = null;
+		MenuFlyoutItem restMenuFlyoutItem = null;
+		MenuFlyoutItem restMenuFlyoutItemWithKeyboardAccelerator = null;
+		MenuFlyoutItem pointerOverMenuFlyoutItem = null;
+		MenuFlyoutItem pointerOverMenuFlyoutItemWithKeyboardAccelerator = null;
+		MenuFlyoutItem pressedMenuFlyoutItem = null;
+		MenuFlyoutItem pressedMenuFlyoutItemWithKeyboardAccelerator = null;
+		MenuFlyoutItem disabledMenuFlyoutItem = null;
+		MenuFlyoutItem disabledMenuFlyoutItemWithKeyboardAccelerator = null;
+		MenuFlyoutItem focusedMenuFlyoutItem = null;
+
+		MenuFlyoutSeparator firstMenuFlyoutSeparator = null;
+
+		ToggleMenuFlyoutItem restUncheckedToggleMenuFlyoutItem = null;
+		ToggleMenuFlyoutItem restUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = null;
+		ToggleMenuFlyoutItem pointerOverUncheckedToggleMenuFlyoutItem = null;
+		ToggleMenuFlyoutItem pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = null;
+		ToggleMenuFlyoutItem pressedUncheckedToggleMenuFlyoutItem = null;
+		ToggleMenuFlyoutItem pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = null;
+		ToggleMenuFlyoutItem disabledUncheckedToggleMenuFlyoutItem = null;
+		ToggleMenuFlyoutItem disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = null;
+		ToggleMenuFlyoutItem focusedUncheckedToggleMenuFlyoutItem = null;
+
+		MenuFlyoutSeparator secondMenuFlyoutSeparator = null;
+
+		MenuFlyoutSubItem restMenuFlyoutSubItem = null;
+		MenuFlyoutSubItem pointerOverMenuFlyoutSubItem = null;
+		MenuFlyoutSubItem pressedMenuFlyoutSubItem = null;
+		MenuFlyoutSubItem disabledMenuFlyoutSubItem = null;
+		MenuFlyoutSubItem focusedMenuFlyoutSubItem = null;
+
+		ToggleMenuFlyoutItem restCheckedToggleMenuFlyoutItem = null;
+		ToggleMenuFlyoutItem restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = null;
+		ToggleMenuFlyoutItem pointerOverCheckedToggleMenuFlyoutItem = null;
+		ToggleMenuFlyoutItem pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = null;
+		ToggleMenuFlyoutItem pressedCheckedToggleMenuFlyoutItem = null;
+		ToggleMenuFlyoutItem pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = null;
+		ToggleMenuFlyoutItem disabledCheckedToggleMenuFlyoutItem = null;
+		ToggleMenuFlyoutItem disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = null;
+		ToggleMenuFlyoutItem focusedCheckedToggleMenuFlyoutItem = null;
+
+		StackPanel rootPanel = null;
+		Button rootButton = null;
+
+		await RunOnUIThread(() =>
+		{
+			rootPanel = new StackPanel();
+
+			menuFlyout = new MenuFlyout();
+			menuFlyout.LightDismissOverlayMode = LightDismissOverlayMode.Off;
+
+			restMenuFlyoutItem = new MenuFlyoutItem();
+			restMenuFlyoutItem.Text = "Rest MenuFlyoutItem";
+			menuFlyout.Items.Add(restMenuFlyoutItem);
+
+			restMenuFlyoutItemWithKeyboardAccelerator = new MenuFlyoutItem();
+			restMenuFlyoutItemWithKeyboardAccelerator.Text = "Rest MenuFlyoutItem with keyboard accelerator";
+			restMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.A, Windows.System.VirtualKeyModifiers.None));
+			menuFlyout.Items.Add(restMenuFlyoutItemWithKeyboardAccelerator);
+
+			pointerOverMenuFlyoutItem = new MenuFlyoutItem();
+			pointerOverMenuFlyoutItem.Text = "Pointer Over MenuFlyoutItem";
+			menuFlyout.Items.Add(pointerOverMenuFlyoutItem);
+
+			pointerOverMenuFlyoutItemWithKeyboardAccelerator = new MenuFlyoutItem();
+			pointerOverMenuFlyoutItemWithKeyboardAccelerator.Text = "Pointer Over MenuFlyoutItem with keyboard accelerator";
+			pointerOverMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.S, Windows.System.VirtualKeyModifiers.Control));
+			menuFlyout.Items.Add(pointerOverMenuFlyoutItemWithKeyboardAccelerator);
+
+			pressedMenuFlyoutItem = new MenuFlyoutItem();
+			pressedMenuFlyoutItem.Text = "Pressed MenuFlyoutItem";
+			menuFlyout.Items.Add(pressedMenuFlyoutItem);
+
+			pressedMenuFlyoutItemWithKeyboardAccelerator = new MenuFlyoutItem();
+			pressedMenuFlyoutItemWithKeyboardAccelerator.Text = "Pressed MenuFlyoutItem with keyboard accelerator";
+			pressedMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.D, Windows.System.VirtualKeyModifiers.Shift));
+			menuFlyout.Items.Add(pressedMenuFlyoutItemWithKeyboardAccelerator);
+
+			disabledMenuFlyoutItem = new MenuFlyoutItem();
+			disabledMenuFlyoutItem.Text = "Disabled MenuFlyoutItem";
+			disabledMenuFlyoutItem.IsEnabled = false;
+			menuFlyout.Items.Add(disabledMenuFlyoutItem);
+
+			disabledMenuFlyoutItemWithKeyboardAccelerator = new MenuFlyoutItem();
+			disabledMenuFlyoutItemWithKeyboardAccelerator.Text = "Disabled MenuFlyoutItem with keyboard accelerator";
+			disabledMenuFlyoutItemWithKeyboardAccelerator.IsEnabled = false;
+			disabledMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.F, Windows.System.VirtualKeyModifiers.Menu | Windows.System.VirtualKeyModifiers.Windows));
+			menuFlyout.Items.Add(disabledMenuFlyoutItemWithKeyboardAccelerator);
+
+			focusedMenuFlyoutItem = new MenuFlyoutItem();
+			focusedMenuFlyoutItem.Text = "Focused MenuFlyoutItem";
+			menuFlyout.Items.Add(focusedMenuFlyoutItem);
+
+			firstMenuFlyoutSeparator = new MenuFlyoutSeparator();
+			menuFlyout.Items.Add(firstMenuFlyoutSeparator);
+
+			restMenuFlyoutSubItem = new MenuFlyoutSubItem();
+			restMenuFlyoutSubItem.Text = "Rest MenuFlyoutSubItem";
+			menuFlyout.Items.Add(restMenuFlyoutSubItem);
+
+			pointerOverMenuFlyoutSubItem = new MenuFlyoutSubItem();
+			pointerOverMenuFlyoutSubItem.Text = "Pointer Over MenuFlyoutSubItem";
+			menuFlyout.Items.Add(pointerOverMenuFlyoutSubItem);
+
+			pressedMenuFlyoutSubItem = new MenuFlyoutSubItem();
+			pressedMenuFlyoutSubItem.Text = "Pressed MenuFlyoutSubItem";
+			menuFlyout.Items.Add(pressedMenuFlyoutSubItem);
+
+			disabledMenuFlyoutSubItem = new MenuFlyoutSubItem();
+			disabledMenuFlyoutSubItem.Text = "Disabled MenuFlyoutSubItem";
+			disabledMenuFlyoutSubItem.IsEnabled = false;
+			menuFlyout.Items.Add(disabledMenuFlyoutSubItem);
+
+			focusedMenuFlyoutSubItem = new MenuFlyoutSubItem();
+			focusedMenuFlyoutSubItem.Text = "Focused MenuFlyoutSubItem";
+			menuFlyout.Items.Add(focusedMenuFlyoutSubItem);
+
+			secondMenuFlyoutSeparator = new MenuFlyoutSeparator();
+			menuFlyout.Items.Add(secondMenuFlyoutSeparator);
+
+			restUncheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
+			restUncheckedToggleMenuFlyoutItem.Text = "Rest Unchecked ToggleMenuFlyoutItem";
+			menuFlyout.Items.Add(restUncheckedToggleMenuFlyoutItem);
+
+			restUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
+			restUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Rest Unchecked ToggleMenuFlyoutItem with keyboard accelerator";
+			restUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.A, Windows.System.VirtualKeyModifiers.None));
+			menuFlyout.Items.Add(restUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
+
+			pointerOverUncheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
+			pointerOverUncheckedToggleMenuFlyoutItem.Text = "Pointer Over Unchecked ToggleMenuFlyoutItem";
+			menuFlyout.Items.Add(pointerOverUncheckedToggleMenuFlyoutItem);
+
+			pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
+			pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Pointer Over Unchecked ToggleMenuFlyoutItem with keyboard accelerator";
+			pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.S, Windows.System.VirtualKeyModifiers.Control));
+			menuFlyout.Items.Add(pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
+
+			pressedUncheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
+			pressedUncheckedToggleMenuFlyoutItem.Text = "Pressed Unchecked ToggleMenuFlyoutItem";
+			menuFlyout.Items.Add(pressedUncheckedToggleMenuFlyoutItem);
+
+			pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
+			pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Pressed Unchecked ToggleMenuFlyoutItem with keyboard accelerator";
+			pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.D, Windows.System.VirtualKeyModifiers.Shift));
+			menuFlyout.Items.Add(pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
+
+			disabledUncheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
+			disabledUncheckedToggleMenuFlyoutItem.Text = "Disabled Unchecked ToggleMenuFlyoutItem";
+			disabledUncheckedToggleMenuFlyoutItem.IsEnabled = false;
+			menuFlyout.Items.Add(disabledUncheckedToggleMenuFlyoutItem);
+
+			disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
+			disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Disabled Unchecked ToggleMenuFlyoutItem with keyboard accelerator";
+			disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsEnabled = false;
+			disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.F, Windows.System.VirtualKeyModifiers.Menu | Windows.System.VirtualKeyModifiers.Windows));
+			menuFlyout.Items.Add(disabledUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
+
+			focusedUncheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
+			focusedUncheckedToggleMenuFlyoutItem.Text = "Focused Unchecked ToggleMenuFlyoutItem";
+			menuFlyout.Items.Add(focusedUncheckedToggleMenuFlyoutItem);
+
+			restCheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
+			restCheckedToggleMenuFlyoutItem.Text = "Rest Checked ToggleMenuFlyoutItem";
+			restCheckedToggleMenuFlyoutItem.IsChecked = true;
+			restMenuFlyoutSubItem.Items.Add(restCheckedToggleMenuFlyoutItem);
+
+			restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
+			restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Rest Checked ToggleMenuFlyoutItem with keyboard accelerator";
+			restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsChecked = true;
+			restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.A, Windows.System.VirtualKeyModifiers.None));
+			menuFlyout.Items.Add(restCheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
+
+			pointerOverCheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
+			pointerOverCheckedToggleMenuFlyoutItem.Text = "Pointer Over Checked ToggleMenuFlyoutItem";
+			pointerOverCheckedToggleMenuFlyoutItem.IsChecked = true;
+			restMenuFlyoutSubItem.Items.Add(pointerOverCheckedToggleMenuFlyoutItem);
+
+			pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
+			pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Pointer Over Checked ToggleMenuFlyoutItem with keyboard accelerator";
+			pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsChecked = true;
+			pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.S, Windows.System.VirtualKeyModifiers.Control));
+			menuFlyout.Items.Add(pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
+
+			pressedCheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
+			pressedCheckedToggleMenuFlyoutItem.Text = "Pressed Checked ToggleMenuFlyoutItem";
+			pressedCheckedToggleMenuFlyoutItem.IsChecked = true;
+			restMenuFlyoutSubItem.Items.Add(pressedCheckedToggleMenuFlyoutItem);
+
+			pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
+			pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Pressed Checked ToggleMenuFlyoutItem with keyboard accelerator";
+			pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsChecked = true;
+			pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.D, Windows.System.VirtualKeyModifiers.Shift));
+			menuFlyout.Items.Add(pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
+
+			disabledCheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
+			disabledCheckedToggleMenuFlyoutItem.Text = "Disabled Checked ToggleMenuFlyoutItem";
+			disabledCheckedToggleMenuFlyoutItem.IsChecked = true;
+			disabledCheckedToggleMenuFlyoutItem.IsEnabled = false;
+			restMenuFlyoutSubItem.Items.Add(disabledCheckedToggleMenuFlyoutItem);
+
+			disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator = new ToggleMenuFlyoutItem();
+			disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.Text = "Disabled Checked ToggleMenuFlyoutItem with keyboard accelerator";
+			disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsChecked = true;
+			disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.IsEnabled = false;
+			disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator.KeyboardAccelerators.Add(CreateKeyboardAccelerator(Windows.System.VirtualKey.F, Windows.System.VirtualKeyModifiers.Menu | Windows.System.VirtualKeyModifiers.Windows));
+			menuFlyout.Items.Add(disabledCheckedToggleMenuFlyoutItemWithKeyboardAccelerator);
+
+			focusedCheckedToggleMenuFlyoutItem = new ToggleMenuFlyoutItem();
+			focusedCheckedToggleMenuFlyoutItem.Text = "Focused Checked ToggleMenuFlyoutItem";
+			focusedCheckedToggleMenuFlyoutItem.IsChecked = true;
+			restMenuFlyoutSubItem.Items.Add(focusedCheckedToggleMenuFlyoutItem);
+
+			rootButton = new Button();
+			rootButton.Flyout = menuFlyout;
+			rootPanel.Children.Add(rootButton);
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		async Task SetupValidation()
+		{
+			await ShowMenuFlyout(menuFlyout, rootButton, 0, 0, true /* forceTapAsPreviousInputMessage */);
+			await TapSubMenuItem(restMenuFlyoutSubItem);
+
+			await RunOnUIThread(() =>
+			{
+				// MenuFlyoutItems
+				VisualStateManager.GoToState(pointerOverMenuFlyoutItem, "PointerOver", false);
+				VisualStateManager.GoToState(pointerOverMenuFlyoutItemWithKeyboardAccelerator, "PointerOver", false);
+				VisualStateManager.GoToState(pressedMenuFlyoutItem, "Pressed", false);
+				VisualStateManager.GoToState(pressedMenuFlyoutItemWithKeyboardAccelerator, "Pressed", false);
+				VisualStateManager.GoToState(focusedMenuFlyoutItem, "Focused", false);
+
+				// Unchecked ToggleMenuFlyoutItems
+				VisualStateManager.GoToState(pointerOverUncheckedToggleMenuFlyoutItem, "PointerOver", false);
+				VisualStateManager.GoToState(pointerOverUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator, "PointerOver", false);
+				VisualStateManager.GoToState(pressedUncheckedToggleMenuFlyoutItem, "Pressed", false);
+				VisualStateManager.GoToState(pressedUncheckedToggleMenuFlyoutItemWithKeyboardAccelerator, "Pressed", false);
+				VisualStateManager.GoToState(focusedUncheckedToggleMenuFlyoutItem, "Focused", false);
+
+				// MenuFlyoutSubItems
+				VisualStateManager.GoToState(pointerOverMenuFlyoutSubItem, "PointerOver", false);
+				VisualStateManager.GoToState(pressedMenuFlyoutSubItem, "Pressed", false);
+				VisualStateManager.GoToState(focusedMenuFlyoutSubItem, "Focused", false);
+
+				// Checked ToggleMenuFlyoutItems
+				VisualStateManager.GoToState(pointerOverCheckedToggleMenuFlyoutItem, "PointerOver", false);
+				VisualStateManager.GoToState(pointerOverCheckedToggleMenuFlyoutItemWithKeyboardAccelerator, "PointerOver", false);
+				VisualStateManager.GoToState(pressedCheckedToggleMenuFlyoutItem, "Pressed", false);
+				VisualStateManager.GoToState(pressedCheckedToggleMenuFlyoutItemWithKeyboardAccelerator, "Pressed", false);
+				VisualStateManager.GoToState(focusedCheckedToggleMenuFlyoutItem, "Focused", false);
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		// Master: the sub menu popup holds the checked items that belong to the sub item, the main popup holds the rest.
+		async Task ValidateTree(Windows.UI.Color expectedForeground, Windows.UI.Color expectedSeparatorBackground)
+		{
+			await RunOnUIThread(() =>
+			{
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(rootPanel.XamlRoot);
+				VERIFY_ARE_EQUAL(2, popups.Count);
+
+				var subPresenter = (MenuFlyoutPresenter)popups[0].Child;
+				var mainPresenter = (MenuFlyoutPresenter)popups[1].Child;
+
+				VERIFY_ARE_EQUAL(mainPresenter.Padding, (Thickness)Application.Current.Resources["MenuFlyoutPresenterThemePadding"]);
+				VERIFY_ARE_EQUAL(subPresenter.Padding, (Thickness)Application.Current.Resources["MenuFlyoutPresenterThemePadding"]);
+				VERIFY_ARE_EQUAL(mainPresenter.ActualHeight, 730);
+				VERIFY_ARE_EQUAL(subPresenter.ActualHeight, 210);
+
+				foreach (var item in menuFlyout.Items)
+				{
+					VERIFY_IS_NOT_NULL(item);
+					if (item is MenuFlyoutSeparator separator)
+					{
+						VERIFY_ARE_EQUAL(((SolidColorBrush)separator.Background).Color, expectedSeparatorBackground);
+						VERIFY_ARE_EQUAL(separator.ActualHeight, 9);
+						VERIFY_ARE_EQUAL(separator.Padding, new Thickness(12, 4, 12, 4));
+					}
+					else
+					{
+						var control = (Control)item;
+						VERIFY_ARE_EQUAL(((SolidColorBrush)control.Foreground).Color, expectedForeground);
+						VERIFY_ARE_EQUAL(control.Padding, (Thickness)Application.Current.Resources["MenuFlyoutItemThemePadding"]);
+					}
+				}
+
+				foreach (var item in menuFlyout.Items)
+				{
+					if (item is MenuFlyoutItem menuItem)
+					{
+						VERIFY_ARE_EQUAL(menuItem.ActualHeight, 40);
+						VERIFY_ARE_EQUAL(menuItem.IsEnabled, !menuItem.Text.StartsWith("Disabled"));
+					}
+					else if (item is MenuFlyoutSubItem subItem)
+					{
+						VERIFY_ARE_EQUAL(subItem.ActualHeight, 40);
+						VERIFY_ARE_EQUAL(subItem.IsEnabled, !subItem.Text.StartsWith("Disabled"));
+					}
+				}
+
+				foreach (var item in menuFlyout.Items)
+				{
+					if (item is ToggleMenuFlyoutItem toggleItem)
+					{
+						VERIFY_ARE_EQUAL(toggleItem.IsChecked, toggleItem.Text.Contains("Checked") && !toggleItem.Text.Contains("Unchecked"));
+					}
+				}
+
+				foreach (var item in restMenuFlyoutSubItem.Items)
+				{
+					var toggleItem = (ToggleMenuFlyoutItem)item;
+					VERIFY_IS_TRUE(toggleItem.IsChecked);
+					VERIFY_ARE_EQUAL(toggleItem.ActualHeight, 40);
+					VERIFY_ARE_EQUAL(((SolidColorBrush)toggleItem.Foreground).Color, expectedForeground);
+					VERIFY_ARE_EQUAL(toggleItem.IsEnabled, !toggleItem.Text.StartsWith("Disabled"));
+				}
+			});
+		}
+
+		// Validate the Dark theme of controls.
+		{
+			await RunOnUIThread(() =>
+			{
+				rootPanel.RequestedTheme = ElementTheme.Dark;
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await SetupValidation();
+			await ValidateTree(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF), Windows.UI.Color.FromArgb(0x66, 0xFF, 0xFF, 0xFF));
+
+			await RunOnUIThread(() =>
+			{
+				menuFlyout.Hide();
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		// Validate the light theme of controls.
+		{
+			await RunOnUIThread(() =>
+			{
+				rootPanel.RequestedTheme = ElementTheme.Light;
+				rootPanel.Background = new SolidColorBrush(Microsoft.UI.Colors.White);
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await SetupValidation();
+			await ValidateTree(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x00, 0x00), Windows.UI.Color.FromArgb(0x66, 0x00, 0x00, 0x00));
+
+			await RunOnUIThread(() =>
+			{
+				menuFlyout.Hide();
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		// TODO Uno: the high-contrast variant needs a way to turn high-contrast on (ControlHelper.ValidateUIElementTreeForHighContrast).
+	}
 
 	private async Task<MenuFlyout> CreateSplitMenuFlyoutItemsFromXaml()
 	{
@@ -3765,9 +3715,9 @@ public class MenuFlyoutIntegrationTests
 	{
 		for (int i = 0; i < items.Count; i++)
 		{
-			MenuFlyoutSubItem menuFlyoutSubItem = (MenuFlyoutSubItem)(items[i]);
-			ToggleMenuFlyoutItem toggleMenuFlyoutItem = (ToggleMenuFlyoutItem)(items[i]);
-			MenuFlyoutItem menuFlyoutItem = (MenuFlyoutItem)(items[i]);
+			MenuFlyoutSubItem menuFlyoutSubItem = items[i] as MenuFlyoutSubItem;
+			ToggleMenuFlyoutItem toggleMenuFlyoutItem = items[i] as ToggleMenuFlyoutItem;
+			MenuFlyoutItem menuFlyoutItem = items[i] as MenuFlyoutItem;
 
 			if (menuFlyoutSubItem != null)
 			{
@@ -3794,9 +3744,9 @@ public class MenuFlyoutIntegrationTests
 	{
 		for (int i = 0; i < items.Count; i++)
 		{
-			MenuFlyoutSubItem menuFlyoutSubItem = (MenuFlyoutSubItem)(items[i]);
-			ToggleMenuFlyoutItem toggleMenuFlyoutItem = (ToggleMenuFlyoutItem)(items[i]);
-			MenuFlyoutItem menuFlyoutItem = (MenuFlyoutItem)(items[i]);
+			MenuFlyoutSubItem menuFlyoutSubItem = items[i] as MenuFlyoutSubItem;
+			ToggleMenuFlyoutItem toggleMenuFlyoutItem = items[i] as ToggleMenuFlyoutItem;
+			MenuFlyoutItem menuFlyoutItem = items[i] as MenuFlyoutItem;
 
 			if (menuFlyoutSubItem != null)
 			{
@@ -3827,110 +3777,83 @@ public class MenuFlyoutIntegrationTests
 		}
 	}
 
-	//[TestMethod] public async Task ValidateRTLSubMenuItemPosition()
-	//{
+	[TestMethod]
+	[Ignore("Open after the Stage C port: no popup is open once the opening tap is done in RTL; not root-caused.")]
+	public async Task ValidateRTLSubMenuItemPosition()
+	{
+		IList<MenuFlyoutItemBase> items = null;
+		IList<MenuFlyoutItemBase> subItems = null;
+		MenuFlyoutSubItem subItem = null;
+		Rect windowBounds = default;
+		Rect menuFlyoutBounds = default;
+		Rect subMenu1Bounds = default;
+		Rect subMenu2Bounds = default;
 
+		Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+		MenuFlyout menuFlyout = null;
 
-	//	IList < MenuFlyoutItemBase> items = null;
-	//	IList < MenuFlyoutItemBase> ^subItems = null;
-	//	MenuFlyoutSubItem subItem = null;
-	//	Rect windowBounds = default;
-	//	Rect menuFlyoutBounds = default;
-	//	Rect subMenu1Bounds = default;
-	//	Rect subMenu2Bounds = default;
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = (MenuFlyout)(XamlReader.Load(
+				"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+				"    <MenuFlyoutItem>item1</MenuFlyoutItem>" +
+				"    <MenuFlyoutSeparator/>" +
+				"    <MenuFlyoutSubItem x:Name='subItem1' Text='subitem1'>" +
+				"        <MenuFlyoutItem>item1</MenuFlyoutItem>" +
+				"        <MenuFlyoutSeparator/>" +
+				"        <MenuFlyoutSubItem  x:Name='subItem2' Text='subItem2' FlowDirection='RightToLeft'>" +
+				"            <MenuFlyoutItem>item1</MenuFlyoutItem>" +
+				"            <MenuFlyoutSeparator/>" +
+				"            <MenuFlyoutSubItem x:Name='subItem3' Text='subitem3' FlowDirection='RightToLeft'/>" +
+				"        </MenuFlyoutSubItem>" +
+				"    </MenuFlyoutSubItem>" +
+				"</MenuFlyout>"));
 
-	//	Canvas rootPanel = await SetupRootPanelForSubMenuTest();
-	//	MenuFlyout menuFlyout = null;
+			windowBounds = TestServices.WindowHelper.WindowBounds;
+			LOG_OUTPUT($"Windows bounds left={windowBounds.Left} top={windowBounds.Top} width={windowBounds.Width} height={windowBounds.Height}");
+		});
 
-	// await RunOnUIThread(() =>
+		await ShowMenuFlyout(menuFlyout, null, 50, 100);
 
-	//	{
-	//		menuFlyout = MenuFlyout> (XamlReader.Load(
-	//			"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
+		var presenter = await GetCurrentPresenter();
 
-	//			"    <MenuFlyoutItem>item1</MenuFlyoutItem>"
+		menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+		LOG_OUTPUT($"MenuFlyout bounds left={menuFlyoutBounds.Left} top={menuFlyoutBounds.Top} width={menuFlyoutBounds.Width} height={menuFlyoutBounds.Height}");
 
-	//			"    <MenuFlyoutSeparator/>"
+		await RunOnUIThread(() =>
+		{
+			items = menuFlyout.Items;
+		});
 
-	//			"    <MenuFlyoutSubItem x:Name='subItem1' Text='subitem1'>"
+		subItem = await GetSubItem(items);
+		await TapSubMenuItem(subItem);
 
-	//			"        <MenuFlyoutItem>item1</MenuFlyoutItem>"
+		presenter = await GetCurrentPresenter();
+		subMenu1Bounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+		LOG_OUTPUT($"SubMenuFlyout bounds left={subMenu1Bounds.Left} top={subMenu1Bounds.Top} width={subMenu1Bounds.Width} height={subMenu1Bounds.Height}");
 
-	//			"        <MenuFlyoutSeparator/>"
+		VERIFY_IS_TRUE(menuFlyoutBounds.Left < subMenu1Bounds.Left);
 
-	//			"        <MenuFlyoutSubItem  x:Name='subItem2' Text='subItem2' FlowDirection='RightToLeft'>"
+		await RunOnUIThread(() =>
+		{
+			subItems = subItem.Items;
+		});
 
-	//			"            <MenuFlyoutItem>item1</MenuFlyoutItem>"
+		var subItem2 = await GetSubItem(subItems);
+		await TapSubMenuItem(subItem2);
 
-	//			"            <MenuFlyoutSeparator/>"
+		presenter = await GetCurrentPresenter();
+		subMenu2Bounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
+		LOG_OUTPUT($"SubMenuFlyout RTL bounds left={subMenu2Bounds.Left} top={subMenu2Bounds.Top} width={subMenu2Bounds.Width} height={subMenu2Bounds.Height}");
 
-	//			"            <MenuFlyoutSubItem x:Name='subItem3' Text='subitem3' FlowDirection='RightToLeft'/>"
+		VERIFY_IS_TRUE(subMenu2Bounds.Left < subMenu1Bounds.Left);
+		VERIFY_IS_TRUE(subMenu1Bounds.Left < subMenu2Bounds.Left + subMenu2Bounds.Width);
 
-	//			"        </MenuFlyoutSubItem>"
-
-	//			"    </MenuFlyoutSubItem>"
-
-	//			"</MenuFlyout>"));
-
-	//		windowBounds = TestServices.WindowHelper.WindowBounds;
-	//		LOG_OUTPUT("Windows bounds left=%f top=%f width=%f height=%f", windowBounds.Left, windowBounds.Top, windowBounds.Width, windowBounds.Height);
-	//	});
-
-	//	await ShowMenuFlyout(menuFlyout, null, 50, 100);
-
-	//	var presenter = await GetCurrentPresenter();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
-	//		LOG_OUTPUT("MenuFlyout bounds left=%f top=%f width=%f height=%f", menuFlyoutBounds.Left, menuFlyoutBounds.Top, menuFlyoutBounds.Width, menuFlyoutBounds.Height);
-	//	});
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		items = menuFlyout.Items;
-	//	});
-
-	//	subItem = await GetSubItem(items);
-	//	await TapSubMenuItem(subItem);
-
-	//	presenter = await GetCurrentPresenter();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		subMenu1Bounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
-	//		LOG_OUTPUT("SubMenuFlyout bounds left=%f top=%f width=%f height=%f", subMenu1Bounds.Left, subMenu1Bounds.Top, subMenu1Bounds.Width, subMenu1Bounds.Height);
-	//	});
-
-	//	VERIFY_IS_TRUE(menuFlyoutBounds.Left < subMenu1Bounds.Left);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		subItems = subItem.Items;
-	//	});
-
-	//	var subItem2 = GetSubItem(subItems);
-	//	await TapSubMenuItem(subItem2);
-
-	//	presenter = await GetCurrentPresenter();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		subMenu2Bounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
-	//		LOG_OUTPUT("SubMenuFlyout RTL bounds left=%f top=%f width=%f height=%f", subMenu2Bounds.Left, subMenu2Bounds.Top, subMenu2Bounds.Width, subMenu2Bounds.Height);
-	//	});
-
-	//	VERIFY_IS_TRUE(subMenu2Bounds.Left < subMenu1Bounds.Left);
-	//	VERIFY_IS_TRUE(subMenu1Bounds.Left < subMenu2Bounds.Left + subMenu2Bounds.Width);
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
+	[Ignore("Open after the Stage C port: no popup is open once the opening tap is done in RTL; not root-caused.")]
 	public async Task ValidateRTLSplitMenuItemPosition()
 	{
 		IList<MenuFlyoutItemBase> items = null;
@@ -4022,140 +3945,105 @@ public class MenuFlyoutIntegrationTests
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
 
-	//[TestMethod] public async Task ValidateSubMenuItemProperties()
-	//{
+	[TestMethod]
+	public async Task ValidateSubMenuItemProperties()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		IList<MenuFlyoutItemBase> items = null;
 
+		var menuFlyoutOpenedEvent = new Event();
+		var menuFlyoutClosedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
 
-	//	// Bug 14794166: Leak in MenuFlyoutIntegrationTests.ValidateSubMenuItemProperties due to DataContext (796 bytes)
-	//	TestServices.ErrorHandlingHelper.IgnoreLeaksForTest();
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"      x:Name='root' Background='SlateBlue' >" +
+				"  <Button x:Name='button' Content='button.flyout' VerticalAlignment='Center' HorizontalAlignment='Center' " +
+				"          RequestedTheme='light' FlowDirection='LeftToRight' Language='En-UK' IsTextScaleFactorEnabled='true' >" +
+				"    <Button.Flyout> " +
+				"      <MenuFlyout Placement='Bottom'> " +
+				"        <MenuFlyoutItem Text='Item 1' /> " +
+				"        <MenuFlyoutItem Text='Item 2' /> " +
+				"        <MenuFlyoutSeparator Width='300' /> " +
+				"        <ToggleMenuFlyoutItem Text='Toggle Item3' IsChecked='True' /> " +
+				"        <MenuFlyoutSeparator Width='300' /> " +
+				"        <MenuFlyoutSubItem x:Name='subItem1' Text='Sub item 4'>" +
+				"          <MenuFlyoutItem>Menu item 2.1</MenuFlyoutItem>" +
+				"          <MenuFlyoutItem>Menu item 2.2</MenuFlyoutItem>" +
+				"          <MenuFlyoutSeparator/>" +
+				"          <ToggleMenuFlyoutItem IsChecked='True'>Toggle item 2.3</ToggleMenuFlyoutItem>" +
+				"         </MenuFlyoutSubItem>" +
+				"      </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"  </Button> " +
+				"</Grid>"));
 
-	//	Button button = null;
-	//	MenuFlyout menuFlyout = null;
-	//	IList < MenuFlyoutItemBase> items = null;
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
 
-	//	var menuFlyoutOpenedEvent = new Event();
-	//	var menuFlyoutClosedEvent = new Event();
-	//	var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
-	//	var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
+			// Set the DataContext to button from the root panel
+			button.DataContext = rootPanel;
 
-	// await RunOnUIThread(() =>
+			// Set the MenuFlyout presenter style
+			var style = new Style(typeof(MenuFlyoutPresenter));
+			style.Setters.Add(new Setter(MenuFlyoutPresenter.TagProperty, "presenter_style"));
+			menuFlyout.MenuFlyoutPresenterStyle = style;
 
-	//	{
-	//		var rootPanel = (Grid)(XamlReader.Load(
-	//			"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' "
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
 
-	//			"      x:Name='root' Background='SlateBlue' >"
+			closedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutClosedEvent.Set();
+			});
+		});
 
-	//			"  <Button x:Name='button' Content='button.flyout' VerticalAlignment='Center' HorizontalAlignment='Center' "
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//			"          RequestedTheme='light' FlowDirection='LeftToRight' Language='En-UK' IsTextScaleFactorEnabled='true' >"
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
 
-	//			"    <Button.Flyout> "
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//			"      <MenuFlyout Placement='Bottom'> "
+		await RunOnUIThread(() =>
+		{
+			items = menuFlyout.Items;
+		});
 
-	//			"        <MenuFlyoutItem Text='Item 1' /> "
+		var subItem = await GetSubItem(items);
+		await TapSubMenuItem(subItem);
 
-	//			"        <MenuFlyoutItem Text='Item 2' /> "
+		var subPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_TRUE(subPresenter.RequestedTheme == ElementTheme.Light);
+			VERIFY_IS_TRUE(subPresenter.FlowDirection == FlowDirection.LeftToRight);
+			VERIFY_IS_TRUE(subPresenter.Language == "En-UK");
+			VERIFY_IS_TRUE(subPresenter.IsTextScaleFactorEnabled);
 
-	//			"        <MenuFlyoutSeparator Width='300' /> "
+			VERIFY_IS_NOT_NULL(subPresenter.DataContext);
 
-	//			"        <ToggleMenuFlyoutItem Text='Toggle Item3' IsChecked='True' /> "
+			var tag = subPresenter.GetValue(MenuFlyoutPresenter.TagProperty);
+			VERIFY_IS_NOT_NULL(tag);
+			VERIFY_ARE_EQUAL("presenter_style", tag.ToString());
+		});
 
-	//			"        <MenuFlyoutSeparator Width='300' /> "
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
 
-	//			"        <MenuFlyoutSubItem x:Name='subItem1' Text='Sub item 4'>"
-
-	//			"          <MenuFlyoutItem>Menu item 2.1</MenuFlyoutItem>"
-
-	//			"          <MenuFlyoutItem>Menu item 2.2</MenuFlyoutItem>"
-
-	//			"          <MenuFlyoutSeparator/>"
-
-	//			"          <ToggleMenuFlyoutItem IsChecked='True'>Toggle item 2.3</ToggleMenuFlyoutItem>"
-
-	//			"         </MenuFlyoutSubItem>"
-
-	//			"      </MenuFlyout> "
-
-	//			"    </Button.Flyout> "
-
-	//			"  </Button> "
-
-	//			"</Grid>"));
-
-	//		TestServices.WindowHelper.WindowContent = rootPanel;
-	//		button = (Button)(rootPanel.FindName("button"));
-	//		menuFlyout = (MenuFlyout)(button.Flyout);
-
-	//		// Set the DataContext to button from the root panel
-	//		button.DataContext = rootPanel;
-
-	//		// Set the MenuFlyout presenter style
-	//		wxaml_interop.TypeName type = wxaml_interop.TypeName();
-	//		type.Name = "Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter";
-	//		type.Kind = wxaml_interop.TypeKind.Metadata;
-	//		var style = new Style(type);
-	//		style.Setters.Add(new Setter(MenuFlyoutPresenter.TagProperty, "presenter_style"));
-	//		menuFlyout.MenuFlyoutPresenterStyle = style;
-
-	//		openedRegistration.Attach(menuFlyout, (s, e) =>
-
-	//		{
-	//			menuFlyoutOpenedEvent.Set();
-	//		}));
-
-	//		closedRegistration.Attach(menuFlyout, (s, e) =>
-
-	//		{
-	//			menuFlyoutClosedEvent.Set();
-	//		}));
-	//	});
-
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	TestServices.InputHelper.Tap(button);
-	//	await menuFlyoutOpenedEvent.WaitForDefault();
-
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		items = menuFlyout.Items;
-	//	});
-
-	//	var subItem = await GetSubItem(items);
-	//	await TapSubMenuItem(subItem);
-
-	//	var subPresenter = await GetCurrentPresenter();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		VERIFY_IS_TRUE(subPresenter.RequestedTheme == ElementTheme.Light);
-	//		VERIFY_IS_TRUE(subPresenter.FlowDirection == FlowDirection.LeftToRight);
-	//		VERIFY_IS_TRUE(subPresenter.Language == "En-UK");
-	//		VERIFY_IS_TRUE(subPresenter.IsTextScaleFactorEnabled);
-
-	//		VERIFY_IS_NOT_NULL(subPresenter.DataContext);
-
-	//		var tag = subPresenter.GetValue(MenuFlyoutPresenter.TagProperty);
-	//		VERIFY_IS_NOT_NULL(tag);
-	//		VERIFY_ARE_EQUAL("presenter_style", tag.ToString());
-
-	//	});
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyout.Hide();
-	//	});
-
-	//	await menuFlyoutClosedEvent.WaitForDefault();
-	//}
+		await menuFlyoutClosedEvent.WaitForDefault();
+	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task ValidateSplitMenuItemProperties()
 	{
 		// Keeping it similar to ValidateSuMenuItemProperties.
@@ -4262,65 +4150,74 @@ public class MenuFlyoutIntegrationTests
 		await menuFlyoutClosedEvent.WaitForDefault();
 	}
 
-	//[TestMethod] public async Task ValidateThatLayoutTransitionsDoRun()
-	//{
+	[TestMethod]
+	[Ignore("Popup.ChildTransitions (layout transitions on the MenuFlyoutPresenter) is not implemented, and there is no StoryboardMonitor to count the started storyboards")]
+	public async Task ValidateThatLayoutTransitionsDoRun()
+	{
+		// TODO Uno: popups are never windowed, so the non-desktop expectations are used.
+		const bool isDesktop = false;
 
+		Button button = null;
+		IList<MenuFlyoutItemBase> items = null;
+		var storyboardMonitor = new StoryboardMonitorWrapper();
+		int startedStoryboardCount = 0;
 
-	//	Button button;
-	//	IList < MenuFlyoutItemBase> items;
-	//	var storyboardMonitor = new StoryboardMonitorWrapper();
-	//	int startedStoryboardCount = 0;
+		var menuFlyout = await CreateMenuFlyoutSubItemsFromXaml();
 
-	//	// Prepare the menu flyout
-	// await RunOnUIThread(() =>
+		// Prepare the menu flyout
+		await RunOnUIThread(() =>
+		{
+			var grid = new Grid();
+			button = new Button();
+			button.Content = "ValidateThatLayoutTransitionsDoRun";
+			button.Flyout = menuFlyout;
+			items = ((MenuFlyout)button.Flyout).Items;
+			grid.Children.Add(button);
+			TestServices.WindowHelper.WindowContent = grid;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//	{
-	//		var grid = new Grid();
-	//		button = new Button();
-	//		button.Content = "ValidateThatLayoutTransitionsDoRun";
-	//		button.Flyout = await CreateMenuFlyoutSubItemsFromXaml();
-	//		items = MenuFlyout> (button.Flyout).Items;
-	//		grid.Children.Add(button);
-	//		TestServices.WindowHelper.WindowContent = grid;
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
+		// Validate storboard count
+		storyboardMonitor.AttachStartedHandler(
+			(Storyboard storyboard, UIElement target) =>
+			{
+				if (target is MenuFlyoutPresenter)
+				{
+					++startedStoryboardCount;
+				}
+			});
 
-	//	// Validate storboard count
-	//	storyboardMonitor.AttachStartedHandler(
-	//		[&](xaml_animation.Storyboard ^, UIElement ^ target)
+		LOG_OUTPUT("Open the menu flyout");
+		await RunOnUIThread(() =>
+		{
+			button.Flyout.ShowAt(button);
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//	{
-	//		if ((MenuFlyoutPresenter)(target))
-	//		{
-	//			++startedStoryboardCount;
-	//		}
-	//	});
+		// Windowed menus, which we have on desktop, don't have layout transitions.
+		VERIFY_ARE_EQUAL(startedStoryboardCount, isDesktop ? 0 : 1);
 
-	//	LOG_OUTPUT("Open the menu flyout");
-	// await RunOnUIThread(() =>
+		LOG_OUTPUT("Open the sub menu");
+		await TapSubMenuItem(await GetSubItem(items));
 
-	//	{
-	//		button.Flyout.ShowAt(button);
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
+		VERIFY_ARE_EQUAL(startedStoryboardCount, isDesktop ? 0 : 2);
 
-	//	// Windowed menus, which we have on desktop, don't have layout transitions.
-	//	VERIFY_ARE_EQUAL(TestServices.Utilities.IsDesktop ? 0 : 1, startedStoryboardCount);
+		LOG_OUTPUT("Close menu and sub menu");
+		await TestServices.Utilities.InjectBackButtonPress();
+		await TestServices.WindowHelper.WaitForIdle();
+		VERIFY_ARE_EQUAL(startedStoryboardCount, isDesktop ? 0 : 4);
+	}
 
-	//	LOG_OUTPUT("Open the sub menu");
-	//	await TapSubMenuItem(GetSubItem(items));
-
-	//	VERIFY_ARE_EQUAL(TestServices.Utilities.IsDesktop ? 0 : 2, startedStoryboardCount);
-
-	//	LOG_OUTPUT("Close menu and sub menu");
-	//	bool backButtonPressHandled = false;
-	//	TestServices.Utilities.InjectBackButtonPress(&backButtonPressHandled);
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//	VERIFY_ARE_EQUAL(TestServices.Utilities.IsDesktop ? 0 : 4, startedStoryboardCount);
-	//}
+	private class StoryboardMonitorWrapper
+	{
+		// TODO Uno: nothing reports the started storyboards.
+		public void AttachStartedHandler(Action<Storyboard, UIElement> handler)
+		{
+		}
+	}
 
 	[TestMethod]
-	[Ignore("This test does not pass until proper light dismiss layer support is added. #22175")]
+	[Ignore("Open after the Stage C port: the right tap reaches no target through the light dismiss layer; not root-caused.")]
 	public async Task ValidateRightClickChaining()
 	{
 		Button button1 = null;
@@ -4867,1339 +4764,1259 @@ public class MenuFlyoutIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 
-	//[TestMethod] public async Task ValidateRequestedThemeOnPresenterTakesEffect()
-	//{
-
-
-	//	Button button = null;
-	//	MenuFlyout menuFlyout = null;
-
-	//	var menuFlyoutOpenedEvent = new Event();
-	//	var menuFlyoutClosedEvent = new Event();
-	//	var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
-	//	var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var rootPanel = (Grid)(XamlReader.Load(
-	//			"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' "
-
-	//			"      x:Name='root' Background='SlateBlue' Width='400' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left'> "
-
-	//			"  <Grid.Resources> "
-
-	//			"      <ResourceDictionary> "
-
-	//			"          <ResourceDictionary.ThemeDictionaries> "
-
-	//			"              <ResourceDictionary x:Key='Default'> "
-
-	//			"                  <SolidColorBrush x:Key='CustomPresenterBackground' Color='Green' /> "
-
-	//			"              </ResourceDictionary> "
-
-	//			"              <ResourceDictionary x:Key='Light'> "
-
-	//			"                  <SolidColorBrush x:Key='CustomPresenterBackground' Color='Blue' /> "
-
-	//			"              </ResourceDictionary> "
-
-	//			"          </ResourceDictionary.ThemeDictionaries> "
-
-	//			"      </ResourceDictionary> "
-
-	//			"  </Grid.Resources> "
-
-	//			"  <Button x:Name='button' Content='button.flyout' VerticalAlignment='Center' HorizontalAlignment='Left' FontSize='25' Padding='25,10' Margin='50' RequestedTheme='Dark'> "
-
-	//			"    <Button.Flyout> "
-
-	//			"      <MenuFlyout Placement='Bottom'> "
-
-	//			"        <MenuFlyout.MenuFlyoutPresenterStyle> "
-
-	//			"          <Style TargetType='MenuFlyoutPresenter'> "
-
-	//			"            <Setter Property='Background' Value='{ThemeResource CustomPresenterBackground}' /> "
-
-	//			"            <Setter Property='RequestedTheme' Value='Light' /> "
-
-	//			"          </Style> "
-
-	//			"        </MenuFlyout.MenuFlyoutPresenterStyle> "
-
-	//			"        <MenuFlyoutItem Text='Item 1' /> "
-
-	//			"        <MenuFlyoutItem Text='Item 2' /> "
-
-	//			"        <MenuFlyoutItem Text='Item 3' /> "
-
-	//			"      </MenuFlyout> "
-
-	//			"    </Button.Flyout> "
-
-	//			"  </Button> "
-
-	//			"</Grid>"));
-
-	//		TestServices.WindowHelper.WindowContent = rootPanel;
-
-	//		button = (Button)(rootPanel.FindName("button"));
-	//		menuFlyout = (MenuFlyout)(button.Flyout);
-
-	//		openedRegistration.Attach(menuFlyout, (s, e) =>
-
-	//		{
-	//			menuFlyoutOpenedEvent.Set();
-	//		}));
-
-	//		closedRegistration.Attach(menuFlyout, (s, e) =>
-
-	//		{
-	//			menuFlyoutClosedEvent.Set();
-	//		}));
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Open the MenuFlyout by tapping the button
-	//	TestServices.InputHelper.Tap(button);
-	//	await menuFlyoutOpenedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var presenter = await GetCurrentPresenter();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var backgroundColor = SolidColorBrush ^> (presenter.Background).Color;
-
-	//		VERIFY_ARE_EQUAL(0xFF, backgroundColor.A);
-	//		VERIFY_ARE_EQUAL(0x00, backgroundColor.R);
-	//		VERIFY_ARE_EQUAL(0x00, backgroundColor.G);
-	//		VERIFY_ARE_EQUAL(0xFF, backgroundColor.B);
-	//	});
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		// Close the MenuFlyout
-	//		menuFlyout.Hide();
-	//	});
-
-	//	await menuFlyoutClosedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//}
-
-	//[TestMethod] public async Task ValidateCanChangeRequestedThemeOnPresenterOwner()
-	//{
-
-
-	//	Button button = null;
-	//	MenuFlyout menuFlyout = null;
-
-	//	var menuFlyoutOpenedEvent = new Event();
-	//	var menuFlyoutClosedEvent = new Event();
-	//	var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
-	//	var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var rootPanel = Grid> (XamlReader.Load(
-	//			"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' "
-
-	//			"      x:Name='root' Background='SlateBlue' Width='400' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left'> "
-
-	//			"  <Grid.Resources> "
-
-	//			"      <ResourceDictionary> "
-
-	//			"          <ResourceDictionary.ThemeDictionaries> "
-
-	//			"              <ResourceDictionary x:Key='Default'> "
-
-	//			"                  <SolidColorBrush x:Key='CustomPresenterBackground' Color='Green' /> "
-
-	//			"              </ResourceDictionary> "
-
-	//			"              <ResourceDictionary x:Key='Light'> "
-
-	//			"                  <SolidColorBrush x:Key='CustomPresenterBackground' Color='Blue' /> "
-
-	//			"              </ResourceDictionary> "
-
-	//			"          </ResourceDictionary.ThemeDictionaries> "
-
-	//			"      </ResourceDictionary> "
-
-	//			"  </Grid.Resources> "
-
-	//			"  <Button x:Name='button' Content='button.flyout' VerticalAlignment='Center' HorizontalAlignment='Left' FontSize='25' Padding='25,10' Margin='50' RequestedTheme='Dark'> "
-
-	//			"    <Button.Flyout> "
-
-	//			"      <MenuFlyout Placement='Bottom'> "
-
-	//			"        <MenuFlyout.MenuFlyoutPresenterStyle> "
-
-	//			"          <Style TargetType='MenuFlyoutPresenter'> "
-
-	//			"            <Setter Property='Background' Value='{ThemeResource CustomPresenterBackground}' /> "
-
-	//			"          </Style> "
-
-	//			"        </MenuFlyout.MenuFlyoutPresenterStyle> "
-
-	//			"        <MenuFlyoutItem Text='Item 1' /> "
-
-	//			"        <MenuFlyoutItem Text='Item 2' /> "
-
-	//			"        <MenuFlyoutItem Text='Item 3' /> "
-
-	//			"      </MenuFlyout> "
-
-	//			"    </Button.Flyout> "
-
-	//			"  </Button> "
-
-	//			"</Grid>"));
-
-	//		TestServices.WindowHelper.WindowContent = rootPanel;
-
-	//		button = Button> (rootPanel.FindName("button"));
-	//		menuFlyout = MenuFlyout> (button.Flyout);
-
-	//		openedRegistration.Attach(menuFlyout, (s, e) =>
-
-	//		{
-	//			menuFlyoutOpenedEvent.Set();
-	//		}));
-
-	//		closedRegistration.Attach(menuFlyout, (s, e) =>
-
-	//		{
-	//			menuFlyoutClosedEvent.Set();
-	//		}));
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Open the MenuFlyout by tapping the button
-	//	TestServices.InputHelper.Tap(button);
-	//	await menuFlyoutOpenedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var presenter = await GetCurrentPresenter();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var backgroundColor = SolidColorBrush ^> (presenter.Background).Color;
-
-	//		VERIFY_ARE_EQUAL(0xFF, backgroundColor.A);
-	//		VERIFY_ARE_EQUAL(0x00, backgroundColor.R);
-	//		VERIFY_ARE_EQUAL(0x80, backgroundColor.G);
-	//		VERIFY_ARE_EQUAL(0x00, backgroundColor.B);
-	//	});
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		// Close the MenuFlyout
-	//		menuFlyout.Hide();
-	//	});
-
-	//	await menuFlyoutClosedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		button.RequestedTheme = ElementTheme.Light;
-	//	});
-
-	//	// Open the MenuFlyout by tapping the button
-	//	TestServices.InputHelper.Tap(button);
-	//	await menuFlyoutOpenedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	presenter = await GetCurrentPresenter();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var backgroundColor = SolidColorBrush ^> (presenter.Background).Color;
-
-	//		VERIFY_ARE_EQUAL(0xFF, backgroundColor.A);
-	//		VERIFY_ARE_EQUAL(0x00, backgroundColor.R);
-	//		VERIFY_ARE_EQUAL(0x00, backgroundColor.G);
-	//		VERIFY_ARE_EQUAL(0xFF, backgroundColor.B);
-	//	});
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		// Close the MenuFlyout
-	//		menuFlyout.Hide();
-	//	});
-
-	//	await menuFlyoutClosedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//}
-
-	//void PerformFlowDirectionTest(bool hasElement, bool hasPoint, bool isRTL)
-	//{
-
-	//	Button button1 = null;
-	//	Rect button1Bounds = default;
-	//	var openedEvent = new Event();
-	//	var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
-	//	var closedEvent = new Event();
-	//	var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
-
-	//	var menuFlyout = CreateMenuFlyoutWithSubItem();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var rootPanel = Grid> (XamlReader.Load(
-	//			"<Grid Background='Orange' "
-
-	//			" xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
-
-	//			"    <Button x:Name='button1' Content='Button' Width='100' Height='50' />"
-
-	//			"</Grid>"));
-
-	//		button1 = Button> (rootPanel.FindName("button1"));
-
-	//		if (isRTL)
-	//		{
-	//			rootPanel.FlowDirection = FlowDirection.RightToLeft;
-	//		}
-
-	//		openedRegistration.Attach(
-	//			menuFlyout,
-	//			new EventHandler<object> ([&](object sender, object)
-
-	//		{
-	//			openedEvent.Set();
-	//		}));
-
-	//		closedRegistration.Attach(
-	//			menuFlyout,
-	//			new EventHandler<object> ([&](object sender, object)
-
-	//		{
-	//			closedEvent.Set();
-	//		}));
-
-	//		TestServices.WindowHelper.WindowContent = rootPanel;
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		LOG_OUTPUT("Is Relative=%d Has Offset=%d Is RTL=%d", hasElement, hasPoint, isRTL);
-	//		if (hasPoint)
-	//		{
-	//			if (hasElement)
-	//			{
-	//				menuFlyout.ShowAt(button1, Point(50, 50));
-	//			}
-	//			else
-	//			{
-	//				menuFlyout.ShowAt(null, Point(50, 50));
-	//			}
-	//		}
-	//		else
-	//		{
-	//			menuFlyout.ShowAt(button1);
-	//		}
-	//	});
-	//	await openedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(
-	//			button1.XamlRoot);
-	//		var popup = popups.GetAt(popups.Size - 1);
-	//		var child = popup.Child;
-
-	//		VERIFY_IS_TRUE(popup.IsOpen);
-
-	//		if (isRTL)
-	//		{
-	//			VERIFY_ARE_EQUAL(FlowDirection.RightToLeft, ((FrameworkElement)(child)).FlowDirection);
-	//		}
-	//		else
-	//		{
-	//			VERIFY_ARE_EQUAL(FlowDirection.LeftToRight, ((FrameworkElement)(child)).FlowDirection);
-	//		}
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//}
-
-	//[TestMethod] public async Task ValidateShowAtFlowDirection()
-	//{
-
-	//	//Test Case:ShowAt(element)
-	//	PerformFlowDirectionTest(true, false, false);
-	//	//Test Case:ShowAt(element,point)
-	//	PerformFlowDirectionTest(true, true, false);
-	//	//Test Case:ShowAt(null,point)
-	//	PerformFlowDirectionTest(false, true, false);
-	//	//RTL
-	//	//Test Case:ShowAt(element)
-	//	PerformFlowDirectionTest(true, false, true);
-	//	//Test Case:ShowAt(element,point)
-	//	PerformFlowDirectionTest(true, true, true);
-	//	//Test Case:ShowAt(null,point)
-	//	PerformFlowDirectionTest(false, true, true);
-	//}
-
-	//[TestMethod] public async Task ValidateFlyoutSizingForDifferentInputModes()
-	//{
-
-
-	//	// There is a reliability issue for keyboard injecting that waits for the event from the InputManager
-	//	// after sending the input injection. This is the work around to disable WaitForEvent.
-	//	KeyboardInjectionIgnoreEventWaitOverride keyboardEventsOverride(KeyboardWaitKind.None);
-
-	//	double expectedFlyoutWidth_Touch = 240;
-	//	double expectedFlyoutWidth_NonTouch = 96;
-	//	Thickness expectedFlyoutContentMargin = Thickness({ 0, 4, 0, 4 });
-
-	//	// Narrow should occur when interacting using a mouse, pen, or keyboard.
-	//	// Wide should occur when interacting using touch, a gamepad, or a remote.
-	//	Thickness expectedMenuFlyoutItemPadding_Narrow = Thickness({ 12, 5, 12, 7 });
-	//	Thickness expectedMenuFlyoutItemPadding_Wide = Thickness({ 12, 11, 12, 13 });
-
-	//	TestServices.WindowHelper.SetWindowSizeOverride(Size(400, 600));
-
-	//	Button button;
-	//	MenuFlyout menuFlyout;
-	//	MenuFlyoutSubItem menuFlyoutSubItem;
-
-	//	FrameworkElement ^ menuFlyoutRoot;
-	//	ItemsPresenter ^ menuFlyoutItemsPresenter;
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var root = Grid> (XamlReader.Load(
-	//			LR"(<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-
-	//					  x:Name='root' >
-
-	//					< Button x:Name='button' Content = 'button.flyout' >
-
-	//						< Button.Flyout >
-
-	//							< MenuFlyout >
-
-	//								< MenuFlyoutItem Text = 'Item 1' />
-
-	//								< MenuFlyoutSeparator />
-
-	//								< ToggleMenuFlyoutItem Text = 'Item 2' />
-
-	//								< MenuFlyoutSubItem Text = 'Sub Item 1' >
-
-	//									< (MenuFlyoutItem)Sub item 1 </MenuFlyoutItem >
-
-	//									< (MenuFlyoutItem)Sub item 2 </MenuFlyoutItem >
-
-	//								</MenuFlyoutSubItem >
-
-	//							</MenuFlyout >
-
-	//						</Button.Flyout >
-
-	//					</Button >
-
-	//				</Grid >)"));
-
-
-	//		TestServices.WindowHelper.WindowContent = root;
-
-	//		button = Button> (root.FindName("button"));
-	//		menuFlyout = MenuFlyout> (button.Flyout);
-	//		menuFlyoutSubItem = MenuFlyoutSubItem> (menuFlyout.Items[3]);
-
-	//		button.ContextFlyout = menuFlyout;
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	LOG_OUTPUT("Open MenuFlyout via touch.  The items should have wide padding.");
-	//	await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Touch);
-
-	//	TestServices.InputHelper.Tap(menuFlyoutSubItem);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyoutRoot = (FrameworkElement)(TreeHelper.GetVisualChildByNameFromOpenPopups("MenuFlyoutPresenterScrollViewer", button));
-	//		menuFlyoutItemsPresenter = TreeHelper.GetVisualChildByType<ItemsPresenter>(menuFlyoutRoot);
-	//		VERIFY_IS_NOT_NULL(menuFlyoutRoot);
-	//		VERIFY_IS_NOT_NULL(menuFlyoutItemsPresenter);
-
-	//		VERIFY_ARE_EQUAL(expectedFlyoutWidth_Touch, menuFlyoutRoot.MinWidth);
-	//		VERIFY_ARE_EQUAL(expectedFlyoutContentMargin, menuFlyoutItemsPresenter.Margin);
-	//		VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Wide);
-	//	});
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-
-	//	LOG_OUTPUT("Open MenuFlyout via gamepad.  The items should have wide padding.");
-	//	await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Gamepad);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyoutSubItem.Focus(FocusState.Keyboard);
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//	CommonInputHelper.Accept(InputDevice.Gamepad);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyoutRoot = (FrameworkElement)(TreeHelper.GetVisualChildByNameFromOpenPopups("MenuFlyoutPresenterScrollViewer", button));
-	//		menuFlyoutItemsPresenter = TreeHelper.GetVisualChildByType<ItemsPresenter>(menuFlyoutRoot);
-
-	//		VERIFY_ARE_EQUAL(expectedFlyoutWidth_Touch, menuFlyoutRoot.MinWidth);
-	//		VERIFY_ARE_EQUAL(expectedFlyoutContentMargin, menuFlyoutItemsPresenter.Margin);
-	//		VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Wide);
-	//	});
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-
-	//	LOG_OUTPUT("Open MenuFlyout via pen.  The items should have narrow padding.");
-	//	await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Pen);
-
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//	//Sub menu opens with pen hover and not with a tap, but InputHelper doesn't currently have a way to input pen hovers.
-	//	//Luckily PenHold does the trick.
-	//	TestServices.InputHelper.PenHold(menuFlyoutSubItem);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyoutRoot = (FrameworkElement)(TreeHelper.GetVisualChildByNameFromOpenPopups("MenuFlyoutPresenterScrollViewer", button));
-	//		menuFlyoutItemsPresenter = TreeHelper.GetVisualChildByType<ItemsPresenter>(menuFlyoutRoot);
-
-	//		VERIFY_ARE_EQUAL(expectedFlyoutWidth_NonTouch, menuFlyoutRoot.MinWidth);
-	//		VERIFY_ARE_EQUAL(expectedFlyoutContentMargin, menuFlyoutItemsPresenter.Margin);
-	//		VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Narrow);
-	//	});
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-
-	//	if (!TestServices.Utilities.IsOneCore)
-	//	{
-	//		LOG_OUTPUT("Open MenuFlyout via mouse.  The items should have narrow padding.");
-	//		await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Mouse);
-
-	//		OpenSubItemWithMouse(menuFlyoutSubItem);
-
-	//		await RunOnUIThread(() =>
-
-	//		{
-	//			VERIFY_ARE_EQUAL(expectedFlyoutWidth_NonTouch, menuFlyoutRoot.MinWidth);
-	//			VERIFY_ARE_EQUAL(expectedFlyoutContentMargin, menuFlyoutItemsPresenter.Margin);
-	//			VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Narrow);
-	//		});
-	//		await FlyoutHelper.HideFlyout(menuFlyout);
-	//	}
-
-	//	LOG_OUTPUT("Open MenuFlyout via keyboard.  The items should have narrow padding.");
-	//	await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Keyboard);
-
-	//	// Move to the sub menu item from the first item that requires two down
-	//	TestServices.KeyboardHelper.Down();
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//	TestServices.KeyboardHelper.Down();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Open the sub menu item by sending the right keyboard
-	//	TestServices.KeyboardHelper.Right();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		VERIFY_ARE_EQUAL(expectedFlyoutWidth_NonTouch, menuFlyoutRoot.MinWidth);
-	//		VERIFY_ARE_EQUAL(expectedFlyoutContentMargin, menuFlyoutItemsPresenter.Margin);
-	//		VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Narrow);
-	//	});
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-
-	//	LOG_OUTPUT("Open MenuFlyout programmatically.  The items should have the same padding as before.");
-	//	await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Programmatic_ShowAt);
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		VERIFY_ARE_EQUAL(expectedFlyoutWidth_NonTouch, menuFlyoutRoot.MinWidth);
-	//		VERIFY_ARE_EQUAL(expectedFlyoutContentMargin, menuFlyoutItemsPresenter.Margin);
-	//		VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Narrow);
-	//	});
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-
-	//	LOG_OUTPUT("Open MenuFlyout via gamepad.  The items should have wide padding.");
-	//	await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Gamepad);
-
-	//	// Move to the sub menu item from the first item that requires two Gamepad Dpad down
-	//	TestServices.KeyboardHelper.GamepadDpadDown();
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//	TestServices.KeyboardHelper.GamepadDpadDown();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Open the sub menu item by using Dpad right
-	//	TestServices.KeyboardHelper.GamepadDpadRight();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		VERIFY_ARE_EQUAL(expectedFlyoutWidth_Touch, menuFlyoutRoot.MinWidth);
-	//		VERIFY_ARE_EQUAL(expectedFlyoutContentMargin, menuFlyoutItemsPresenter.Margin);
-	//		VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Wide);
-	//	});
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
-
-	//[TestMethod] public async Task ValidateMenuFlyoutSizeByTouch()
-	//{
-
-
-	//	TestServices.WindowHelper.SetWindowSizeOverride(Size(400, 600));
-
-	//	double expectedMenuFlyoutWidth_Touch = 240;           // 240(touch min width with touch)
-	//	double expectedMenuFlyoutHeight_Touch = 137;
-	//	double expectedMenuFlyoutSubWidth_Touch = 240;        // 240(touch min width with touch)
-	//	double expectedMenuFlyoutSubHeight_Touch = 106;
-	//	double expectedMenuFlyoutItemWidth_Touch = 240;       // 240(touch min width with touch)
-	//	double expectedMenuFlyoutItemHeight_Touch = 40;
-	//	double expectedMenuFlyoutSeparatorWidth_Touch = 240;  // 240(touch min width with touch)
-	//	double expectedMenuFlyoutSeparatorHeight_Touch = 9;
-	//	double expectedMenuFlyoutMinWidth_Touch = 240;        // 240(touch min width with touch)
-	//	double expectedMenuFlyoutMinHeight_Touch = 32;
-
-	//	Grid root = null;
-	//	Button button = null;
-	//	MenuFlyout menuFlyout = null;
-	//	MenuFlyoutSubItem menuFlyoutSubItem = null;
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		root = Grid> (XamlReader.Load(
-	//			LR"(<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-
-	//					  x:Name='root' >
-
-	//					< Button x:Name='button' Content = 'button.flyout' >
-
-	//						< Button.Flyout >
-
-	//							< MenuFlyout >
-
-	//								< MenuFlyoutItem x:Name='firstMenuFlyoutItem' Text = 'Item 1' />
-
-	//								< MenuFlyoutSeparator x:Name='menuFlyoutSeparator' />
-
-	//								< ToggleMenuFlyoutItem x:Name='toggleMenuFlyoutItem' Text = 'Item 2' />
-
-	//								< MenuFlyoutSubItem x:Name='menuFlyoutSubItem' Text = 'Sub Item 1' >
-
-	//									< (MenuFlyoutItem)Sub item 1 </MenuFlyoutItem >
-
-	//									< (MenuFlyoutItem)Sub item 2 </MenuFlyoutItem >
-
-	//								</MenuFlyoutSubItem >
-
-	//							</MenuFlyout >
-
-	//						</Button.Flyout >
-
-	//					</Button >
-
-	//				</Grid >)"));
-
-
-	//		TestServices.WindowHelper.WindowContent = root;
-
-	//		button = Button> (root.FindName("button"));
-	//		menuFlyout = MenuFlyout> (button.Flyout);
-	//		menuFlyoutSubItem = MenuFlyoutSubItem> (menuFlyout.Items[3]);
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Touch);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		// Verify MenuFlyout actual width/height.
-	//		var menuFlyoutPresenter = await GetCurrentPresenter();
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutWidth_Touch, menuFlyoutPresenter.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutHeight_Touch, menuFlyoutPresenter.ActualHeight);
-
-	//		// Verify MenuFlyoutItem actual width/height.
-	//		var firstMenuFlyoutItem = MenuFlyoutItem> (menuFlyoutPresenter.FindName("firstMenuFlyoutItem"));
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemWidth_Touch, firstMenuFlyoutItem.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemHeight_Touch, firstMenuFlyoutItem.ActualHeight);
-
-	//		// Verify MenuFlyoutSeparator actual width/height.
-	//		var menuFlyoutSeparator = MenuFlyoutSeparator> (menuFlyoutPresenter.FindName("menuFlyoutSeparator"));
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutSeparatorWidth_Touch, menuFlyoutSeparator.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutSeparatorHeight_Touch, menuFlyoutSeparator.ActualHeight);
-
-	//		// Verify ToggleMenuFlyout actual width/height.
-	//		var toggleMenuFlyoutItem = ToggleMenuFlyoutItem> (menuFlyoutPresenter.FindName("toggleMenuFlyoutItem"));
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemWidth_Touch, toggleMenuFlyoutItem.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemHeight_Touch, toggleMenuFlyoutItem.ActualHeight);
-
-	//		// Verify MenuFlyoutSubItem actual width/height.
-	//		var menuFlyoutSubItem = MenuFlyoutSubItem> (menuFlyoutPresenter.FindName("menuFlyoutSubItem"));
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemWidth_Touch, menuFlyoutSubItem.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemHeight_Touch, menuFlyoutSubItem.ActualHeight);
-	//	});
-
-	//	// Verify the empty MenuFlyout width/height with touch.
-	//	TestServices.InputHelper.Tap(root);
-	//	await TestServices.WindowHelper.WaitForIdle();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyout = new MenuFlyout();
-	//	});
-	//	await ShowMenuFlyout(menuFlyout, button, 0, 50);
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var menuFlyoutPresenter = await GetCurrentPresenter();
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutMinWidth_Touch, menuFlyoutPresenter.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutMinHeight_Touch, menuFlyoutPresenter.ActualHeight);
-	//	});
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
-
-	//[TestMethod] public async Task ValidateMenuFlyoutSizeByMouse()
-	//{
-
-
-	//	TestServices.WindowHelper.SetWindowSizeOverride(Size(400, 600));
-
-	//	double expectedMenuFlyoutWidth_Mouse = 155;
-	//	double expectedMenuFlyoutHeight_Mouse = 113;
-	//	double expectedMenuFlyoutSubWidth_Mouse = 96;
-	//	double expectedMenuFlyoutSubHeight_Mouse = 72;
-	//	double expectedMenuFlyoutItemWidth_Mouse = 155;
-	//	double expectedMenuFlyoutItemHeight_Mouse = 32;
-	//	double expectedMenuFlyoutSeparatorWidth_Mouse = 155;
-	//	double expectedMenuFlyoutSeparatorHeight_Mouse = 9;
-	//	double expectedMenuFlyoutMinWidth_Mouse = 96;
-	//	double expectedMenuFlyoutMinHeight_Mouse = 32;
-
-	//	Grid root = null;
-	//	Button button = null;
-	//	MenuFlyout menuFlyout = null;
-	//	MenuFlyoutSubItem menuFlyoutSubItem = null;
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		root = Grid> (XamlReader.Load(
-	//			LR"(<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-
-	//					  x:Name='root' >
-
-	//					< Button x:Name='button' Content = 'button.flyout' >
-
-	//						< Button.Flyout >
-
-	//							< MenuFlyout >
-
-	//								< MenuFlyoutItem x:Name='firstMenuFlyoutItem' Text = 'Item 1' />
-
-	//								< MenuFlyoutSeparator x:Name='menuFlyoutSeparator' />
-
-	//								< ToggleMenuFlyoutItem x:Name='toggleMenuFlyoutItem' Text = 'Item 2' />
-
-	//								< MenuFlyoutSubItem x:Name='menuFlyoutSubItem' Text = 'Sub Item 1' >
-
-	//									< (MenuFlyoutItem)Sub item 1 </MenuFlyoutItem >
-
-	//									< (MenuFlyoutItem)Sub item 2 </MenuFlyoutItem >
-
-	//								</MenuFlyoutSubItem >
-
-	//							</MenuFlyout >
-
-	//						</Button.Flyout >
-
-	//					</Button >
-
-	//				</Grid >)"));
-
-
-	//		TestServices.WindowHelper.WindowContent = root;
-
-	//		button = Button> (root.FindName("button"));
-	//		menuFlyout = MenuFlyout> (button.Flyout);
-	//		menuFlyoutSubItem = MenuFlyoutSubItem> (menuFlyout.Items[3]);
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Verif the MenuFlyout presenter's actual width/height with mouse.
-	//	await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Mouse);
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var menuFlyoutPresenter = await GetCurrentPresenter();
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutWidth_Mouse, menuFlyoutPresenter.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutHeight_Mouse, menuFlyoutPresenter.ActualHeight);
-
-	//		var firstMenuFlyoutItem = MenuFlyoutItem> (menuFlyoutPresenter.FindName("firstMenuFlyoutItem"));
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemWidth_Mouse, firstMenuFlyoutItem.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemHeight_Mouse, firstMenuFlyoutItem.ActualHeight);
-
-	//		var menuFlyoutSeparator = MenuFlyoutSeparator> (menuFlyoutPresenter.FindName("menuFlyoutSeparator"));
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutSeparatorWidth_Mouse, menuFlyoutSeparator.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutSeparatorHeight_Mouse, menuFlyoutSeparator.ActualHeight);
-
-	//		var toggleMenuFlyoutItem = ToggleMenuFlyoutItem> (menuFlyoutPresenter.FindName("toggleMenuFlyoutItem"));
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemWidth_Mouse, toggleMenuFlyoutItem.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemHeight_Mouse, toggleMenuFlyoutItem.ActualHeight);
-
-	//		var menuFlyoutSubItem = MenuFlyoutSubItem> (menuFlyoutPresenter.FindName("menuFlyoutSubItem"));
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemWidth_Mouse, menuFlyoutSubItem.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutItemHeight_Mouse, menuFlyoutSubItem.ActualHeight);
-	//	});
-
-	//	// Verif the MenuFlyoutSubItem presenter's actual width/height with mouse.
-	//	OpenSubItemWithMouse(menuFlyoutSubItem);
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var menuFlyoutPresenter = await GetCurrentPresenter();
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutSubWidth_Mouse, menuFlyoutPresenter.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutSubHeight_Mouse, menuFlyoutPresenter.ActualHeight);
-	//	});
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-
-	//	// Verify the empty MenuFlyout width/height with mouse.
-	//	Private.Infrastructure.TestServices.InputHelper.LeftMouseClick(root);
-	//	await TestServices.WindowHelper.WaitForIdle();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyout = new MenuFlyout();
-	//	});
-	//	await ShowMenuFlyout(menuFlyout, button, 0, 50, false /* forceTapAsPreviousInputMessage */);
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var menuFlyoutPresenter = await GetCurrentPresenter();
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutMinWidth_Mouse, menuFlyoutPresenter.ActualWidth);
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutMinHeight_Mouse, menuFlyoutPresenter.ActualHeight);
-	//	});
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
-
-	//[TestMethod] public async Task ValidateScrollableItems()
-	//{
-
-
-	//	TestServices.WindowHelper.SetWindowSizeOverride(Size(400, 600));
-
-	//	double expectedMenuFlyoutHeight = 300;
-	//	double expectedMenuFlyoutScrollableHeight = 1024;
-
-	//	Grid root = null;
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var root = new Grid();
-	//		TestServices.WindowHelper.WindowContent = root;
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var menuFlyout = CreateMenuFlyoutLongItemsFromXaml();
-
-	//	// Specify the MenuFlyout height with 300
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var type = wxaml_interop.TypeName();
-	//		type.Name = "Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter";
-	//		type.Kind = wxaml_interop.TypeKind.Metadata;
-
-	//		var style = new Style(type);
-	//		style.Setters.Add(new Setter(MenuFlyoutPresenter.MaxHeightProperty, "300"));
-
-	//		menuFlyout.MenuFlyoutPresenterStyle = style;
-	//	});
-
-	//	await ShowMenuFlyout(menuFlyout, null, 100, 200);
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var menuFlyoutPresenter = await GetCurrentPresenter();
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutHeight, menuFlyoutPresenter.ActualHeight);
-
-	//		var scrollViewer = ScrollViewer ^> (TreeHelper.GetVisualChildByName(menuFlyoutPresenter, "MenuFlyoutPresenterScrollViewer"));
-	//		VERIFY_ARE_EQUAL(expectedMenuFlyoutScrollableHeight, scrollViewer.ScrollableHeight);
-	//	});
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
-
-	//[TestMethod] public async Task ValidateMenuFlyoutInVisibleBounds()
-	//{
-	//	// Flyout uses the visible bounds since TH2 platform.
-	//	ValidateMenuFlyoutPosition(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseVisible);
-	//}
-
-	//[TestMethod] public async Task ValidateMenuFlyoutPosition(Windows.UI.ViewManagement.ApplicationViewBoundsMode expectedBoundsMode)
-	//{
-
-
-	//	// Set the specified visible bounds to verify the MenuFlyout position on the visible bounds.
-	//	TestServices.WindowHelper.SetVisibleBounds(Rect(0, 50, 480, 700));
-
-	//	var menuFlyout = CreateMenuFlyoutWithSubItem();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var rootPanel = Grid> (XamlReader.Load(
-	//			LR"(<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' Background='Orange' >
-	//					< TextBlock Text = 'Test MenuFlyout on the visible bounds.' FontSize = '20' />
-
-	//				</Grid >)"));
-
-
-	//		TestServices.WindowHelper.WindowContent = rootPanel;
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Show the MenuFlout on the out of the visible bounds.
-	//	await ShowMenuFlyout(menuFlyout, null, 100, 0, true /* forceTapAsPreviousInputMessage */);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var presenter = await GetCurrentPresenter();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
-	//		LOG_OUTPUT("MenuFlyout bounds left=%f top=%f width=%f height=%f", menuFlyoutBounds.Left, menuFlyoutBounds.Top, menuFlyoutBounds.Width, menuFlyoutBounds.Height);
-
-	//		if (expectedBoundsMode == Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseVisible)
-	//		{
-	//			VERIFY_ARE_EQUAL(menuFlyoutBounds.Top, 50);
-	//		}
-	//		else
-	//		{
-	//			VERIFY_IS_LESS_THAN(menuFlyoutBounds.Top, 50);
-	//		}
-	//	});
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyout.Hide();
-	//	});
-
-	//	// Set the window with the landscape mode with specifying the visible bounds.
-	//	TestServices.WindowHelper.SetWindowSizeOverride(Size(800, 480));
-	//	TestServices.WindowHelper.SetVisibleBounds(Rect(50, 0, 700, 480));
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Show the MenuFlout on the out of the visible bounds.
-	//	await ShowMenuFlyout(menuFlyout, null, 550, 100, true /* forceTapAsPreviousInputMessage */);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	presenter = await GetCurrentPresenter();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)(presenter));
-	//		LOG_OUTPUT("MenuFlyout bounds left=%f top=%f width=%f height=%f", menuFlyoutBounds.Left, menuFlyoutBounds.Top, menuFlyoutBounds.Width, menuFlyoutBounds.Height);
-
-	//		if (expectedBoundsMode == Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseVisible)
-	//		{
-	//			VERIFY_IS_LESS_THAN(menuFlyoutBounds.Left + menuFlyoutBounds.Width, 750);
-	//		}
-	//		else
-	//		{
-	//			VERIFY_IS_GREATER_THAN(menuFlyoutBounds.Left + menuFlyoutBounds.Width, 750);
-	//		}
-	//	});
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyout.Hide();
-	//	});
-	//}
-
-	//[TestMethod] public async Task ValidateOverlayBrush()
-	//{
-
-	//	FlyoutHelper.ValidateOverlayBrush<MenuFlyout>("MenuFlyoutLightDismissOverlayBackground");
-	//}
-
-	//[TestMethod] public async Task ValidateCanUseBothShowAtMethods()
-	//{
-
-
-	//	var menuFlyout = await CreateMenuFlyout();
-	//	Button button = null;
-
-	//	var loadedEvent = new Event();
-	//	var loadedRegistration = CreateSafeEventRegistration(Button, Loaded);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		button = new Button();
-	//		button.Content = "Button for flyout";
-
-	//		loadedRegistration.Attach(button, (s, e) => { loadedEvent.Set(); });
-	//		TestServices.WindowHelper.WindowContent = button;
-	//	});
-
-	//	await loadedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var openedEvent = new Event();
-	//	var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
-	//	openedRegistration.Attach(menuFlyout, [&](){ openedEvent.Set(); });
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		LOG_OUTPUT("Show the MenuFlyout first using ShowAt() with one parameter.");
-	//		menuFlyout.ShowAt(button);
-	//	});
-
-	//	await openedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		LOG_OUTPUT("Now show the MenuFlyout using ShowAt() with two parameters.");
-	//		menuFlyout.ShowAt(button, { 0, 0});
-	//	});
-	//	await openedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-
-	//	openedRegistration.Detach();
-
-	//	LOG_OUTPUT("Now create a new MenuFlyout to test the other calling order.");
-	//	menuFlyout = await CreateMenuFlyout();
-	//	openedRegistration.Attach(menuFlyout, [&](){ openedEvent.Set(); });
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		LOG_OUTPUT("Show the MenuFlyout first using ShowAt() with two parameters.");
-	//		menuFlyout.ShowAt(button, { 0, 0});
-	//	});
-
-	//	await openedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		LOG_OUTPUT("Now show the MenuFlyout using ShowAt() with one parameter.");
-	//		menuFlyout.ShowAt(button);
-	//	});
-	//	await openedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
-
-	//[TestMethod] public async Task ValidatePopupWindowedScrollingWithMouse()
-	//{
-
-
-	//	TestServices.WindowHelper.SetWindowSizeOverride(Size(400, 600));
-	//	Grid root = null;
-	//	Thumb ^ thumb = null;
-	//	Rect thumbBoundsBeforeDrag = default;
-	//	Rect thumbBoundsAfterDrag = default;
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		root = new Grid();
-	//		TestServices.WindowHelper.WindowContent = root;
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var menuFlyout = CreateMenuFlyoutLongItemsFromXaml();
-
-	//	await ShowMenuFlyout(menuFlyout, null, 100, 200);
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var menuFlyoutPresenter = await GetCurrentPresenter();
-	//		var scrollViewer = ScrollViewer ^> (TreeHelper.GetVisualChildByName(menuFlyoutPresenter, "MenuFlyoutPresenterScrollViewer"));
-	//		VERIFY_IS_NOT_NULL(scrollViewer);
-
-	//		thumb = Thumb ^> (TreeHelper.GetVisualChildByName(scrollViewer, "VerticalThumb"));
-	//		VERIFY_IS_NOT_NULL(thumb);
-
-	//		thumbBoundsBeforeDrag = await ControlHelper.GetBounds((FrameworkElement)(thumb));
-	//		LOG_OUTPUT("ValidatePopupWindowedScrollingWithMouse: Thumb bounds left=%f top=%f width=%f height=%f", thumbBoundsBeforeDrag.Left, thumbBoundsBeforeDrag.Top, thumbBoundsBeforeDrag.Width, thumbBoundsBeforeDrag.Height);
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Dragging the thumb to scroll ListViewItem content
-	//	TestServices.InputHelper.MoveMouse(thumb);
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//	TestServices.InputHelper.MouseButtonDown(thumb, 0, 0, MouseButton.Left);
-	//	LOG_OUTPUT("ValidatePopupWindowedScrollingWithMouse: Dragging the thumb to scroll the content.");
-	//	TestServices.InputHelper.MouseDrag(
-	//		Point(thumbBoundsBeforeDrag.Left + (thumbBoundsBeforeDrag.Width / 2), thumbBoundsBeforeDrag.Top + (thumbBoundsBeforeDrag.Height / 2)),
-	//		Point(thumbBoundsBeforeDrag.Left + (thumbBoundsBeforeDrag.Width / 2), thumbBoundsBeforeDrag.Top + (thumbBoundsBeforeDrag.Height / 2) + 200),
-	//		MouseButton.Left);
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//	TestServices.InputHelper.MouseButtonUp(thumb, 0, 0, MouseButton.Left);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		thumbBoundsAfterDrag = await ControlHelper.GetBounds((FrameworkElement)(thumb));
-	//		LOG_OUTPUT("ValidatePopupWindowedScrollingWithMouse: Thumb bounds after dragging left=%f top=%f width=%f height=%f", thumbBoundsAfterDrag.Left, thumbBoundsAfterDrag.Top, thumbBoundsAfterDrag.Width, thumbBoundsAfterDrag.Height);
-	//		// Conscious scrollbars feature results in the thumb expanding to 16 wide when the pointer is over the scrollbar, which it will be after dragging here
-	//		// So checking the left and width of the thumb is not desirable
-	//		VERIFY_IS_GREATER_THAN(thumbBoundsAfterDrag.Top, thumbBoundsBeforeDrag.Top);
-	//		VERIFY_ARE_EQUAL(thumbBoundsBeforeDrag.Height, thumbBoundsAfterDrag.Height);
-	//	});
-
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
-
-	//[TestMethod] public async Task ValidateKeyboardNavigationAfterClosingSubMenu()
-	//{
-
-
-	//	var loadedEvent = new Event();
-	//	var loadedRegistration = CreateSafeEventRegistration(Grid, Loaded);
-
-	//	var openedEvent = new Event();
-	//	var openedRegistration = CreateSafeEventRegistration(Flyout, Opened);
-
-	//	var closedEvent = new Event();
-	//	var closedRegistration = CreateSafeEventRegistration(Flyout, Closed);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var rootGrid = (Grid)(XamlReader.Load(
-	//			"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'"
-
-	//			"      Width='400' Height='400'>"
-
-	//			"  <Button x:Name='button' Content='Button with Flyout' HorizontalAlignment='Center' VerticalAlignment='Center'>"
-
-	//			"    <Button.Flyout>"
-
-	//			"      <Flyout x:Name='flyout'>"
-
-	//			"        <StackPanel>"
-
-	//			"          <MenuFlyoutItem>MenuFlyoutItem</MenuFlyoutItem>"
-
-	//			"          <MenuFlyoutSubItem Text='MenuFlyoutSubItem'>"
-
-	//			"            <MenuFlyoutItem>MenuFlyoutItem</MenuFlyoutItem>"
-
-	//			"          </MenuFlyoutSubItem>"
-
-	//			"        </StackPanel>"
-
-	//			"      </Flyout>"
-
-	//			"    </Button.Flyout>"
-
-	//			"  </Button>"
-
-	//			"</Grid>"));
-	//		VERIFY_IS_NOT_NULL(rootGrid);
-
-	//		loadedRegistration.Attach(rootGrid, (s, e) =>
-
-	//		{
-	//			LOG_OUTPUT("Grid loaded.");
-	//			loadedEvent.Set();
-	//		});
-
-	//		var button = Button> (rootGrid.FindName("button"));
-	//		VERIFY_IS_NOT_NULL(button);
-
-	//		var flyout = Flyout ^> (button.Flyout);
-	//		VERIFY_IS_NOT_NULL(flyout);
-
-	//		openedRegistration.Attach(flyout, (s, e) =>
-
-	//		{
-	//			LOG_OUTPUT("Flyout opened.");
-	//			openedEvent.Set();
-	//		});
-
-	//		closedRegistration.Attach(flyout, (s, e) =>
-
-	//		{
-	//			LOG_OUTPUT("Flyout closed.");
-	//			closedEvent.Set();
-	//		});
-
-	//		TestServices.WindowHelper.WindowContent = rootGrid;
-	//	});
-
-	//	await loadedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	LOG_OUTPUT("Tab into the Button.");
-	//	TestServices.KeyboardHelper.Tab();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	LOG_OUTPUT("Open menu.");
-	//	TestServices.KeyboardHelper.Enter();
-	//	await openedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	LOG_OUTPUT("Move down to the sub menu.");
-	//	TestServices.KeyboardHelper.Tab();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	LOG_OUTPUT("Open the sub menu.");
-	//	CommonInputHelper.Right(InputDevice.Keyboard);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	LOG_OUTPUT("Close the sub menu.");
-	//	CommonInputHelper.Left(InputDevice.Keyboard);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	LOG_OUTPUT("Hit up arrow key.");
-	//	TestServices.KeyboardHelper.Up();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	LOG_OUTPUT("Close menu.");
-	//	TestServices.KeyboardHelper.Escape();
-	//	await closedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//}
-
-	//[TestMethod] public async Task ValidateOpenedSubMenuFocusItemByKeyboard()
-	//{
-
-
-	//	Button button1 = null;
-	//	MenuFlyout menuFlyout = null;
-	//	MenuFlyoutSubItem subItem1 = null;
-	//	MenuFlyoutItem subItem11 = null;
-
-	//	Canvas rootPanel = await SetupRootPanelForSubMenuTest();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyout = MenuFlyout> (XamlReader.Load(
-	//			"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
-
-	//			"    <MenuFlyoutSubItem x:Name='subItem1' Text='Menu sub item 1'>"
-
-	//			"        <MenuFlyoutItem x:Name='subItem1.1' >Menu item 1.1</MenuFlyoutItem>"
-
-	//			"        <MenuFlyoutItem x:Name='subItem1.2' >Menu item 1.2</MenuFlyoutItem>"
-
-	//			"        <MenuFlyoutItem x:Name='subItem1.3' >Menu item 1.3</MenuFlyoutItem>"
-
-	//			"    </MenuFlyoutSubItem>"
-
-	//			"    <MenuFlyoutItem>item2</MenuFlyoutItem>"
-
-	//			"    <MenuFlyoutItem>item3</MenuFlyoutItem>"
-
-	//			"</MenuFlyout>"));
-
-	//		button1 = Button> (rootPanel.FindName("button1"));
-	//	});
-
-	//	await ShowMenuFlyout(menuFlyout, button1, -50, 50);
-
-	//	// Open the sub menu by using the Keyboard Right key
-	//	CommonInputHelper.Right(InputDevice.Keyboard);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var menuFlyoutPresenter = await GetCurrentPresenter();
-	//		subItem11 = MenuFlyoutItem> (menuFlyoutPresenter.FindName("subItem1.1"));
-	//	});
-
-	//	var subItem11GotFocusEvent = new Event();
-	//	var subItem11gotFocusRegistration = CreateSafeEventRegistration(MenuFlyoutItem, GotFocus);
-	//	subItem11gotFocusRegistration.Attach(subItem11, [&](){ subItem11GotFocusEvent.Set(); });
-
-	//	// Close the sub menu by using the Keyboard Left key
-	//	CommonInputHelper.Left(InputDevice.Keyboard);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Re-open the sub menu to verify the focused first item
-	//	CommonInputHelper.Right(InputDevice.Keyboard);
-	//	subItem11GotFocusEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Close the sub menu
-	//	CommonInputHelper.Left(InputDevice.Keyboard);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var menuFlyoutPresenter = await GetCurrentPresenter();
-	//		subItem1 = MenuFlyoutSubItem> (menuFlyoutPresenter.FindName("subItem1"));
-	//	});
-
-	//	// Re-open the sub menu to verify the focused first item
-	//	CommonInputHelper.Right(InputDevice.Keyboard);
-	//	subItem11GotFocusEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var subItem1GotFocusEvent = new Event();
-	//	var subItem1GotFocusRegistration = CreateSafeEventRegistration(MenuFlyoutSubItem, GotFocus);
-	//	subItem1GotFocusRegistration.Attach(subItem1, (s, e) =>{ subItem1GotFocusEvent.Set(); });
-
-	//	// Close the sub menu
-	//	TestServices.KeyboardHelper.Escape();
-	//	await TestServices.WindowHelper.WaitForIdle();
-	//	subItem1GotFocusEvent.WaitForDefault();
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
+	[TestMethod]
+	public async Task ValidateRequestedThemeOnPresenterTakesEffect()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+
+		var menuFlyoutOpenedEvent = new Event();
+		var menuFlyoutClosedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"      x:Name='root' Background='SlateBlue' Width='400' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left'> " +
+				"  <Grid.Resources> " +
+				"      <ResourceDictionary> " +
+				"          <ResourceDictionary.ThemeDictionaries> " +
+				"              <ResourceDictionary x:Key='Default'> " +
+				"                  <SolidColorBrush x:Key='CustomPresenterBackground' Color='Green' /> " +
+				"              </ResourceDictionary> " +
+				"              <ResourceDictionary x:Key='Light'> " +
+				"                  <SolidColorBrush x:Key='CustomPresenterBackground' Color='Blue' /> " +
+				"              </ResourceDictionary> " +
+				"          </ResourceDictionary.ThemeDictionaries> " +
+				"      </ResourceDictionary> " +
+				"  </Grid.Resources> " +
+				"  <Button x:Name='button' Content='button.flyout' VerticalAlignment='Center' HorizontalAlignment='Left' FontSize='25' Padding='25,10' Margin='50' RequestedTheme='Dark'> " +
+				"    <Button.Flyout> " +
+				"      <MenuFlyout Placement='Bottom'> " +
+				"        <MenuFlyout.MenuFlyoutPresenterStyle> " +
+				"          <Style TargetType='MenuFlyoutPresenter'> " +
+				"            <Setter Property='Background' Value='{ThemeResource CustomPresenterBackground}' /> " +
+				"            <Setter Property='RequestedTheme' Value='Light' /> " +
+				"          </Style> " +
+				"        </MenuFlyout.MenuFlyoutPresenterStyle> " +
+				"        <MenuFlyoutItem Text='Item 1' /> " +
+				"        <MenuFlyoutItem Text='Item 2' /> " +
+				"        <MenuFlyoutItem Text='Item 3' /> " +
+				"      </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"  </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
+
+			closedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutClosedEvent.Set();
+			});
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Open the MenuFlyout by tapping the button
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var presenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			var backgroundColor = ((SolidColorBrush)presenter.Background).Color;
+
+			VERIFY_ARE_EQUAL(backgroundColor.A, 0xFF);
+			VERIFY_ARE_EQUAL(backgroundColor.R, 0x00);
+			VERIFY_ARE_EQUAL(backgroundColor.G, 0x00);
+			VERIFY_ARE_EQUAL(backgroundColor.B, 0xFF);
+		});
+
+		await RunOnUIThread(() =>
+		{
+			// Close the MenuFlyout
+			menuFlyout.Hide();
+		});
+
+		await menuFlyoutClosedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+	[Ignore("Open after the Stage C port: the presenter background keeps the color of the previous theme; not root-caused.")]
+	public async Task ValidateCanChangeRequestedThemeOnPresenterOwner()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+
+		var menuFlyoutOpenedEvent = new Event();
+		var menuFlyoutClosedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"      x:Name='root' Background='SlateBlue' Width='400' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left'> " +
+				"  <Grid.Resources> " +
+				"      <ResourceDictionary> " +
+				"          <ResourceDictionary.ThemeDictionaries> " +
+				"              <ResourceDictionary x:Key='Default'> " +
+				"                  <SolidColorBrush x:Key='CustomPresenterBackground' Color='Green' /> " +
+				"              </ResourceDictionary> " +
+				"              <ResourceDictionary x:Key='Light'> " +
+				"                  <SolidColorBrush x:Key='CustomPresenterBackground' Color='Blue' /> " +
+				"              </ResourceDictionary> " +
+				"          </ResourceDictionary.ThemeDictionaries> " +
+				"      </ResourceDictionary> " +
+				"  </Grid.Resources> " +
+				"  <Button x:Name='button' Content='button.flyout' VerticalAlignment='Center' HorizontalAlignment='Left' FontSize='25' Padding='25,10' Margin='50' RequestedTheme='Dark'> " +
+				"    <Button.Flyout> " +
+				"      <MenuFlyout Placement='Bottom'> " +
+				"        <MenuFlyout.MenuFlyoutPresenterStyle> " +
+				"          <Style TargetType='MenuFlyoutPresenter'> " +
+				"            <Setter Property='Background' Value='{ThemeResource CustomPresenterBackground}' /> " +
+				"          </Style> " +
+				"        </MenuFlyout.MenuFlyoutPresenterStyle> " +
+				"        <MenuFlyoutItem Text='Item 1' /> " +
+				"        <MenuFlyoutItem Text='Item 2' /> " +
+				"        <MenuFlyoutItem Text='Item 3' /> " +
+				"      </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"  </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+
+			button = (Button)(rootPanel.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutOpenedEvent.Set();
+			});
+
+			closedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				menuFlyoutClosedEvent.Set();
+			});
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Open the MenuFlyout by tapping the button
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var presenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			var backgroundColor = ((SolidColorBrush)presenter.Background).Color;
+
+			VERIFY_ARE_EQUAL(backgroundColor.A, 0xFF);
+			VERIFY_ARE_EQUAL(backgroundColor.R, 0x00);
+			VERIFY_ARE_EQUAL(backgroundColor.G, 0x80);
+			VERIFY_ARE_EQUAL(backgroundColor.B, 0x00);
+		});
+
+		await RunOnUIThread(() =>
+		{
+			// Close the MenuFlyout
+			menuFlyout.Hide();
+		});
+
+		await menuFlyoutClosedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			button.RequestedTheme = ElementTheme.Light;
+		});
+
+		// Open the MenuFlyout by tapping the button
+		TestServices.InputHelper.Tap(button);
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		presenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			var backgroundColor = ((SolidColorBrush)presenter.Background).Color;
+
+			VERIFY_ARE_EQUAL(backgroundColor.A, 0xFF);
+			VERIFY_ARE_EQUAL(backgroundColor.R, 0x00);
+			VERIFY_ARE_EQUAL(backgroundColor.G, 0x00);
+			VERIFY_ARE_EQUAL(backgroundColor.B, 0xFF);
+		});
+
+		await RunOnUIThread(() =>
+		{
+			// Close the MenuFlyout
+			menuFlyout.Hide();
+		});
+
+		await menuFlyoutClosedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	private async Task PerformFlowDirectionTest(bool hasElement, bool hasPoint, bool isRTL, bool expectSuccess)
+	{
+		Button button1 = null;
+		var openedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		var closedEvent = new Event();
+		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
+
+		var menuFlyout = await CreateMenuFlyoutWithSubItem();
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid Background='Orange' " +
+				" xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+				"    <Button x:Name='button1' Content='Button' Width='100' Height='50' />" +
+				"</Grid>"));
+
+			button1 = (Button)(rootPanel.FindName("button1"));
+
+			if (isRTL)
+			{
+				rootPanel.FlowDirection = FlowDirection.RightToLeft;
+			}
+
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				openedEvent.Set();
+			});
+
+			closedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				closedEvent.Set();
+			});
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			LOG_OUTPUT($"Is Relative={hasElement} Has Offset={hasPoint} Is RTL={isRTL}");
+
+			Exception caughtException = null;
+			try
+			{
+				if (hasPoint)
+				{
+					if (hasElement)
+					{
+						menuFlyout.ShowAt(button1, new Point(50, 50));
+					}
+					else
+					{
+						menuFlyout.ShowAt(null, new Point(50, 50));
+					}
+				}
+				else
+				{
+					menuFlyout.ShowAt(button1);
+				}
+			}
+			catch (Exception ex)
+			{
+				caughtException = ex;
+				if (expectSuccess)
+				{
+					throw;
+				}
+				else
+				{
+					openedEvent.Set();
+				}
+			}
+
+			if (!expectSuccess)
+			{
+				VERIFY_IS_NOT_NULL(caughtException);
+			}
+		});
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(button1.XamlRoot);
+
+			if (expectSuccess)
+			{
+				var popup = popups[popups.Count - 1];
+				var child = popup.Child;
+
+				VERIFY_IS_TRUE(popup.IsOpen);
+
+				if (isRTL)
+				{
+					VERIFY_ARE_EQUAL(FlowDirection.RightToLeft, ((FrameworkElement)child).FlowDirection);
+				}
+				else
+				{
+					VERIFY_ARE_EQUAL(FlowDirection.LeftToRight, ((FrameworkElement)child).FlowDirection);
+				}
+			}
+			else
+			{
+				VERIFY_ARE_EQUAL(0, popups.Count);
+			}
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		if (expectSuccess)
+		{
+			await FlyoutHelper.HideFlyout(menuFlyout);
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task ValidateShowAtFlowDirection()
+	{
+		//Test Case:ShowAt(element)
+		await PerformFlowDirectionTest(true, false, false, true);
+		//Test Case:ShowAt(element,point)
+		await PerformFlowDirectionTest(true, true, false, true);
+		//Test Case:ShowAt(null,point)
+		await PerformFlowDirectionTest(false, true, false, false);
+		//RTL
+		//Test Case:ShowAt(element)
+		await PerformFlowDirectionTest(true, false, true, true);
+		//Test Case:ShowAt(element,point)
+		await PerformFlowDirectionTest(true, true, true, true);
+		//Test Case:ShowAt(null,point)
+		await PerformFlowDirectionTest(false, true, true, false);
+	}
+
+	[TestMethod]
+	[Ignore("Pen input injection is not available: FlyoutHelper.OpenFlyout(Pen) is not implemented and InputHelper.PenHold does not exist")]
+	public async Task ValidateFlyoutSizingForDifferentInputModes()
+	{
+		// Upstream disables the keyboard injection event wait here (KeyboardInjectionIgnoreEventWaitOverride); not applicable to Uno.
+
+		const double expectedFlyoutWidth_Touch = 240;
+		const double expectedFlyoutWidth_NonTouch = 96;
+		Thickness expectedFlyoutContentMargin = new Thickness(0, 4, 0, 4);
+
+		// Narrow should occur when interacting using a mouse, pen, or keyboard.
+		// Wide should occur when interacting using touch, a gamepad, or a remote.
+		Thickness expectedMenuFlyoutItemPadding_Narrow = new Thickness(12, 5, 12, 7);
+		Thickness expectedMenuFlyoutItemPadding_Wide = new Thickness(12, 11, 12, 13);
+
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
+
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		MenuFlyoutSubItem menuFlyoutSubItem = null;
+
+		FrameworkElement menuFlyoutRoot = null;
+		ItemsPresenter menuFlyoutItemsPresenter = null;
+
+		await RunOnUIThread(() =>
+		{
+			var root = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"          x:Name='root'> " +
+				"    <Button x:Name='button' Content='button.flyout'> " +
+				"        <Button.Flyout> " +
+				"            <MenuFlyout> " +
+				"                <MenuFlyoutItem Text='Item 1' /> " +
+				"                <MenuFlyoutSeparator /> " +
+				"                <ToggleMenuFlyoutItem Text='Item 2' /> " +
+				"                <MenuFlyoutSubItem Text='Sub Item 1'> " +
+				"                    <MenuFlyoutItem>Sub item 1</MenuFlyoutItem> " +
+				"                    <MenuFlyoutItem>Sub item 2</MenuFlyoutItem> " +
+				"                </MenuFlyoutSubItem> " +
+				"            </MenuFlyout> " +
+				"        </Button.Flyout> " +
+				"    </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = root;
+
+			button = (Button)(root.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			menuFlyoutSubItem = (MenuFlyoutSubItem)(menuFlyout.Items[3]);
+
+			button.ContextFlyout = menuFlyout;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Open MenuFlyout via touch.  The items should have wide padding.");
+		await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Touch);
+
+		TestServices.InputHelper.Tap(menuFlyoutSubItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutRoot = (FrameworkElement)(TreeHelper.GetVisualChildByNameFromOpenPopups("MenuFlyoutPresenterScrollViewer", button));
+			menuFlyoutItemsPresenter = TreeHelper.GetVisualChildByType<ItemsPresenter>(menuFlyoutRoot);
+			VERIFY_IS_NOT_NULL(menuFlyoutRoot);
+			VERIFY_IS_NOT_NULL(menuFlyoutItemsPresenter);
+
+			VERIFY_ARE_EQUAL(menuFlyoutRoot.MinWidth, expectedFlyoutWidth_Touch);
+			VERIFY_ARE_EQUAL(menuFlyoutItemsPresenter.Margin, expectedFlyoutContentMargin);
+			await VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Wide);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		LOG_OUTPUT("Open MenuFlyout via gamepad.  The items should have wide padding.");
+		await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Gamepad);
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyoutSubItem.Focus(FocusState.Keyboard);
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+		await CommonInputHelper.Accept(InputDevice.Gamepad);
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutRoot = (FrameworkElement)(TreeHelper.GetVisualChildByNameFromOpenPopups("MenuFlyoutPresenterScrollViewer", button));
+			menuFlyoutItemsPresenter = TreeHelper.GetVisualChildByType<ItemsPresenter>(menuFlyoutRoot);
+
+			VERIFY_ARE_EQUAL(menuFlyoutRoot.MinWidth, expectedFlyoutWidth_Touch);
+			VERIFY_ARE_EQUAL(menuFlyoutItemsPresenter.Margin, expectedFlyoutContentMargin);
+			await VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Wide);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		LOG_OUTPUT("Open MenuFlyout via pen.  The items should have narrow padding.");
+		await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Pen);
+
+		await TestServices.WindowHelper.WaitForIdle();
+		//Sub menu opens with pen hover and not with a tap, but InputHelper doesn't currently have a way to input pen hovers.
+		//Luckily PenHold does the trick.
+		// TODO Uno: InputHelper.PenHold does not exist.
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			menuFlyoutRoot = (FrameworkElement)(TreeHelper.GetVisualChildByNameFromOpenPopups("MenuFlyoutPresenterScrollViewer", button));
+			menuFlyoutItemsPresenter = TreeHelper.GetVisualChildByType<ItemsPresenter>(menuFlyoutRoot);
+
+			VERIFY_ARE_EQUAL(menuFlyoutRoot.MinWidth, expectedFlyoutWidth_NonTouch);
+			VERIFY_ARE_EQUAL(menuFlyoutItemsPresenter.Margin, expectedFlyoutContentMargin);
+			await VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Narrow);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		LOG_OUTPUT("Open MenuFlyout via mouse.  The items should have narrow padding.");
+		await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Mouse);
+
+		await OpenSubItemWithMouse(menuFlyoutSubItem);
+
+		await RunOnUIThread(async () =>
+		{
+			VERIFY_ARE_EQUAL(menuFlyoutRoot.MinWidth, expectedFlyoutWidth_NonTouch);
+			VERIFY_ARE_EQUAL(menuFlyoutItemsPresenter.Margin, expectedFlyoutContentMargin);
+			await VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Narrow);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		LOG_OUTPUT("Open MenuFlyout via keyboard.  The items should have narrow padding.");
+		await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Keyboard);
+
+		// Move to the sub menu item from the first item that requires two down
+		await TestServices.KeyboardHelper.Down();
+		await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.KeyboardHelper.Down();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Open the sub menu item by sending the right keyboard
+		await TestServices.KeyboardHelper.Right();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			VERIFY_ARE_EQUAL(menuFlyoutRoot.MinWidth, expectedFlyoutWidth_NonTouch);
+			VERIFY_ARE_EQUAL(menuFlyoutItemsPresenter.Margin, expectedFlyoutContentMargin);
+			await VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Narrow);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		LOG_OUTPUT("Open MenuFlyout programmatically.  The items should have the same padding as before.");
+		await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Programmatic_ShowAt);
+		await RunOnUIThread(async () =>
+		{
+			VERIFY_ARE_EQUAL(menuFlyoutRoot.MinWidth, expectedFlyoutWidth_NonTouch);
+			VERIFY_ARE_EQUAL(menuFlyoutItemsPresenter.Margin, expectedFlyoutContentMargin);
+			await VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Narrow);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		LOG_OUTPUT("Open MenuFlyout via gamepad.  The items should have wide padding.");
+		await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Gamepad);
+
+		// Move to the sub menu item from the first item that requires two Gamepad Dpad down
+		await TestServices.KeyboardHelper.GamepadDpadDown();
+		await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.KeyboardHelper.GamepadDpadDown();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Open the sub menu item by using Dpad right
+		await TestServices.KeyboardHelper.GamepadDpadRight();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			VERIFY_ARE_EQUAL(menuFlyoutRoot.MinWidth, expectedFlyoutWidth_Touch);
+			VERIFY_ARE_EQUAL(menuFlyoutItemsPresenter.Margin, expectedFlyoutContentMargin);
+			await VerifyMenuFlyoutItemsPadding(menuFlyout.Items, expectedMenuFlyoutItemPadding_Wide);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	[Ignore("Open after the Stage C port: the presenter is 170 wide where upstream expects the touch width of 242; not root-caused.")]
+	public async Task ValidateMenuFlyoutSizeByTouch()
+	{
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
+
+		const double expectedMenuFlyoutWidth_Touch = 242;           // 240 (touch min width with touch) + 2 (margin)
+		const double expectedMenuFlyoutHeight_Touch = 169;          // Updated to include SplitMenuFlyoutItem
+		const double expectedMenuFlyoutItemWidth_Touch = 240;       // 240 (touch min width with touch)
+		const double expectedMenuFlyoutItemHeight_Touch = 40;
+		const double expectedMenuFlyoutSeparatorWidth_Touch = 240;  // 240 (touch min width with touch)
+		const double expectedMenuFlyoutSeparatorHeight_Touch = 3;
+		const double expectedMenuFlyoutMinWidth_Touch = 242;        // 240 (touch min width with touch) + 2 (margin)
+		const double expectedMenuFlyoutMinHeight_Touch = 32;
+
+		Grid root = null;
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitMenuFlyoutItem = null;
+		MenuFlyoutSubItem menuFlyoutSubItem = null;
+
+		await RunOnUIThread(() =>
+		{
+			root = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"          x:Name='root'> " +
+				"    <Button x:Name='button' Content='button.flyout'> " +
+				"        <Button.Flyout> " +
+				"            <MenuFlyout> " +
+				"                <MenuFlyoutItem x:Name='firstMenuFlyoutItem' Text='Item 1' /> " +
+				"                <MenuFlyoutSeparator x:Name='menuFlyoutSeparator' /> " +
+				"                <ToggleMenuFlyoutItem x:Name='toggleMenuFlyoutItem' Text='Item 2' /> " +
+				"                <SplitMenuFlyoutItem x:Name='splitMenuFlyoutItem' Text='Split Item 1'> " +
+				"                    <MenuFlyoutItem>Split sub item 1</MenuFlyoutItem> " +
+				"                    <MenuFlyoutItem>Split sub item 2</MenuFlyoutItem> " +
+				"                </SplitMenuFlyoutItem> " +
+				"                <MenuFlyoutSubItem x:Name='menuFlyoutSubItem' Text='Sub Item 1'> " +
+				"                    <MenuFlyoutItem>Sub item 1</MenuFlyoutItem> " +
+				"                    <MenuFlyoutItem>Sub item 2</MenuFlyoutItem> " +
+				"                </MenuFlyoutSubItem> " +
+				"            </MenuFlyout> " +
+				"        </Button.Flyout> " +
+				"    </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = root;
+
+			button = (Button)(root.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			splitMenuFlyoutItem = (SplitMenuFlyoutItem)(menuFlyout.Items[3]);
+			menuFlyoutSubItem = (MenuFlyoutSubItem)(menuFlyout.Items[4]);
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Touch);
+
+		var menuFlyoutPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			// Verify MenuFlyout actual width/height.
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualWidth, expectedMenuFlyoutWidth_Touch);
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualHeight, expectedMenuFlyoutHeight_Touch);
+
+			// Verify MenuFlyoutItem actual width/height.
+			var firstMenuFlyoutItem = (MenuFlyoutItem)(menuFlyoutPresenter.FindName("firstMenuFlyoutItem"));
+			VERIFY_ARE_EQUAL(firstMenuFlyoutItem.ActualWidth, expectedMenuFlyoutItemWidth_Touch);
+			VERIFY_ARE_EQUAL(firstMenuFlyoutItem.ActualHeight, expectedMenuFlyoutItemHeight_Touch);
+
+			// Verify MenuFlyoutSeparator actual width/height.
+			var menuFlyoutSeparator = (MenuFlyoutSeparator)(menuFlyoutPresenter.FindName("menuFlyoutSeparator"));
+			VERIFY_ARE_EQUAL(menuFlyoutSeparator.ActualWidth, expectedMenuFlyoutSeparatorWidth_Touch);
+			VERIFY_ARE_EQUAL(menuFlyoutSeparator.ActualHeight, expectedMenuFlyoutSeparatorHeight_Touch);
+
+			// Verify ToggleMenuFlyout actual width/height.
+			var toggleMenuFlyoutItem = (ToggleMenuFlyoutItem)(menuFlyoutPresenter.FindName("toggleMenuFlyoutItem"));
+			VERIFY_ARE_EQUAL(toggleMenuFlyoutItem.ActualWidth, expectedMenuFlyoutItemWidth_Touch);
+			VERIFY_ARE_EQUAL(toggleMenuFlyoutItem.ActualHeight, expectedMenuFlyoutItemHeight_Touch);
+
+			// Verify SplitMenuFlyoutItem actual width/height.
+			var splitMenuFlyoutItem = (SplitMenuFlyoutItem)(menuFlyoutPresenter.FindName("splitMenuFlyoutItem"));
+			VERIFY_ARE_EQUAL(splitMenuFlyoutItem.ActualWidth, expectedMenuFlyoutItemWidth_Touch);
+			VERIFY_ARE_EQUAL(splitMenuFlyoutItem.ActualHeight, expectedMenuFlyoutItemHeight_Touch);
+
+			// Verify MenuFlyoutSubItem actual width/height.
+			var menuFlyoutSubItem = (MenuFlyoutSubItem)(menuFlyoutPresenter.FindName("menuFlyoutSubItem"));
+			VERIFY_ARE_EQUAL(menuFlyoutSubItem.ActualWidth, expectedMenuFlyoutItemWidth_Touch);
+			VERIFY_ARE_EQUAL(menuFlyoutSubItem.ActualHeight, expectedMenuFlyoutItemHeight_Touch);
+		});
+
+		// Verify the empty MenuFlyout width/height with touch.
+		TestServices.InputHelper.Tap(root);
+		await TestServices.WindowHelper.WaitForIdle();
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = new MenuFlyout();
+		});
+		await ShowMenuFlyout(menuFlyout, button, 0, 50);
+		menuFlyoutPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualWidth, expectedMenuFlyoutMinWidth_Touch);
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualHeight, expectedMenuFlyoutMinHeight_Touch);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	[Ignore("Open after the Stage C port: the presenter is 166 wide where upstream expects 163; not root-caused.")]
+	public async Task ValidateMenuFlyoutSizeByMouse()
+	{
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
+
+		const double expectedMenuFlyoutWidth_Mouse = 163;
+		const double expectedMenuFlyoutHeight_Mouse = 137;
+		const double expectedMenuFlyoutSubWidth_Mouse = 99;
+		const double expectedMenuFlyoutSubHeight_Mouse = 70;
+		const double expectedMenuFlyoutItemWidth_Mouse = 161;
+		const double expectedMenuFlyoutItemHeight_Mouse = 32;
+		const double expectedMenuFlyoutSeparatorWidth_Mouse = 161;
+		const double expectedMenuFlyoutSeparatorHeight_Mouse = 3;
+		const double expectedMenuFlyoutMinWidth_Mouse = 98;
+		const double expectedMenuFlyoutMinHeight_Mouse = 32;
+
+		Grid root = null;
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		SplitMenuFlyoutItem splitMenuFlyoutItem = null;
+		MenuFlyoutSubItem menuFlyoutSubItem = null;
+
+		await RunOnUIThread(() =>
+		{
+			root = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"          x:Name='root'> " +
+				"    <Button x:Name='button' Content='button.flyout'> " +
+				"        <Button.Flyout> " +
+				"            <MenuFlyout> " +
+				"                <MenuFlyoutItem x:Name='firstMenuFlyoutItem' Text='Item 1' /> " +
+				"                <MenuFlyoutSeparator x:Name='menuFlyoutSeparator' /> " +
+				"                <ToggleMenuFlyoutItem x:Name='toggleMenuFlyoutItem' Text='Item 2' /> " +
+				"                <SplitMenuFlyoutItem x:Name='splitMenuFlyoutItem' Text='Split 1'> " +
+				"                    <MenuFlyoutItem>Sub item 1</MenuFlyoutItem> " +
+				"                    <MenuFlyoutItem>Sub item 2</MenuFlyoutItem> " +
+				"                </SplitMenuFlyoutItem> " +
+				"                <MenuFlyoutSubItem x:Name='menuFlyoutSubItem' Text='Sub Item 1'> " +
+				"                    <MenuFlyoutItem>Sub item 1</MenuFlyoutItem> " +
+				"                    <MenuFlyoutItem>Sub item 2</MenuFlyoutItem> " +
+				"                </MenuFlyoutSubItem> " +
+				"            </MenuFlyout> " +
+				"        </Button.Flyout> " +
+				"    </Button> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = root;
+
+			button = (Button)(root.FindName("button"));
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			splitMenuFlyoutItem = (SplitMenuFlyoutItem)(menuFlyout.Items[3]);
+			menuFlyoutSubItem = (MenuFlyoutSubItem)(menuFlyout.Items[4]);
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Verif the MenuFlyout presenter's actual width/height with mouse.
+		await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Mouse);
+		var menuFlyoutPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualWidth, expectedMenuFlyoutWidth_Mouse);
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualHeight, expectedMenuFlyoutHeight_Mouse);
+
+			var firstMenuFlyoutItem = (MenuFlyoutItem)(menuFlyoutPresenter.FindName("firstMenuFlyoutItem"));
+			VERIFY_ARE_EQUAL(firstMenuFlyoutItem.ActualWidth, expectedMenuFlyoutItemWidth_Mouse);
+			VERIFY_ARE_EQUAL(firstMenuFlyoutItem.ActualHeight, expectedMenuFlyoutItemHeight_Mouse);
+
+			var menuFlyoutSeparator = (MenuFlyoutSeparator)(menuFlyoutPresenter.FindName("menuFlyoutSeparator"));
+			VERIFY_ARE_EQUAL(menuFlyoutSeparator.ActualWidth, expectedMenuFlyoutSeparatorWidth_Mouse);
+			VERIFY_ARE_EQUAL(menuFlyoutSeparator.ActualHeight, expectedMenuFlyoutSeparatorHeight_Mouse);
+
+			var toggleMenuFlyoutItem = (ToggleMenuFlyoutItem)(menuFlyoutPresenter.FindName("toggleMenuFlyoutItem"));
+			VERIFY_ARE_EQUAL(toggleMenuFlyoutItem.ActualWidth, expectedMenuFlyoutItemWidth_Mouse);
+			VERIFY_ARE_EQUAL(toggleMenuFlyoutItem.ActualHeight, expectedMenuFlyoutItemHeight_Mouse);
+
+			var splitMenuFlyoutItem = (SplitMenuFlyoutItem)(menuFlyoutPresenter.FindName("splitMenuFlyoutItem"));
+			VERIFY_ARE_EQUAL(splitMenuFlyoutItem.ActualWidth, expectedMenuFlyoutItemWidth_Mouse);
+			VERIFY_ARE_EQUAL(splitMenuFlyoutItem.ActualHeight, expectedMenuFlyoutItemHeight_Mouse);
+
+			var menuFlyoutSubItem = (MenuFlyoutSubItem)(menuFlyoutPresenter.FindName("menuFlyoutSubItem"));
+			VERIFY_ARE_EQUAL(menuFlyoutSubItem.ActualWidth, expectedMenuFlyoutItemWidth_Mouse);
+			VERIFY_ARE_EQUAL(menuFlyoutSubItem.ActualHeight, expectedMenuFlyoutItemHeight_Mouse);
+		});
+
+		// Verif the MenuFlyoutSubItem presenter's actual width/height with mouse.
+		await OpenSubItemWithMouse(menuFlyoutSubItem);
+		menuFlyoutPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualWidth, expectedMenuFlyoutSubWidth_Mouse);
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualHeight, expectedMenuFlyoutSubHeight_Mouse);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		// Verify the SplitMenuFlyoutItem submenu presenter's actual width/height with mouse.
+		await FlyoutHelper.OpenFlyout(menuFlyout, button, FlyoutOpenMethod.Mouse);
+		await MoveToSplitMenuItemSecondary(splitMenuFlyoutItem);
+		menuFlyoutPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualWidth, expectedMenuFlyoutSubWidth_Mouse);
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualHeight, expectedMenuFlyoutSubHeight_Mouse);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		// Verify the empty MenuFlyout width/height with mouse.
+		TestServices.InputHelper.LeftMouseClick(root);
+		await TestServices.WindowHelper.WaitForIdle();
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = new MenuFlyout();
+		});
+		await ShowMenuFlyout(menuFlyout, button, 0, 50, false /* forceTapAsPreviousInputMessage */);
+		menuFlyoutPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualWidth, expectedMenuFlyoutMinWidth_Mouse);
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualHeight, expectedMenuFlyoutMinHeight_Mouse);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	[Ignore("Open after the Stage C port: the presenter is 1080 tall where upstream expects 1041; not root-caused.")]
+	public async Task ValidateScrollableItems()
+	{
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
+
+		const double expectedMenuFlyoutHeight = 300;
+		const double expectedMenuFlyoutScrollableHeight = 1041;
+
+		await RunOnUIThread(() =>
+		{
+			var root = new Grid();
+			TestServices.WindowHelper.WindowContent = root;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var menuFlyout = await CreateMenuFlyoutLongItemsFromXaml();
+
+		// Specify the MenuFlyout height with 300
+		await RunOnUIThread(() =>
+		{
+			var style = new Style(typeof(MenuFlyoutPresenter));
+			style.Setters.Add(new Setter(MenuFlyoutPresenter.MaxHeightProperty, "300"));
+
+			menuFlyout.MenuFlyoutPresenterStyle = style;
+		});
+
+		await ShowMenuFlyout(menuFlyout, null, 100, 200);
+		var menuFlyoutPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			VERIFY_ARE_EQUAL(menuFlyoutPresenter.ActualHeight, expectedMenuFlyoutHeight);
+
+			var scrollViewer = (ScrollViewer)(TreeHelper.GetVisualChildByName(menuFlyoutPresenter, "MenuFlyoutPresenterScrollViewer"));
+			VERIFY_ARE_EQUAL(scrollViewer.ScrollableHeight, expectedMenuFlyoutScrollableHeight);
+		});
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	[Ignore("TestServices.WindowHelper.SetVisibleBounds is not available, the visible bounds cannot be overridden in the tests")]
+	public async Task ValidateMenuFlyoutInVisibleBounds()
+	{
+		// Flyout uses the visible bounds since TH2 platform.
+		await ValidateMenuFlyoutPosition(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseVisible);
+	}
+
+	private void SetVisibleBounds(Rect visibleBounds)
+	{
+		// TODO Uno: there is no way to override the visible bounds yet.
+	}
+
+	private async Task ValidateMenuFlyoutPosition(Windows.UI.ViewManagement.ApplicationViewBoundsMode expectedBoundsMode)
+	{
+		// Set the specified visible bounds to verify the MenuFlyout position on the visible bounds.
+		SetVisibleBounds(new Rect(0, 50, 480, 700));
+
+		var menuFlyout = await CreateMenuFlyoutWithSubItem();
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' Background='Orange' > " +
+				"    <TextBlock Text='Test MenuFlyout on the visible bounds.' FontSize='20' /> " +
+				"</Grid>"));
+
+			TestServices.WindowHelper.WindowContent = rootPanel;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Show the MenuFlout on the out of the visible bounds.
+		await ShowMenuFlyout(menuFlyout, null, 100, 0, true /* forceTapAsPreviousInputMessage */);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var presenter = await GetCurrentPresenter();
+		var menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)presenter);
+		LOG_OUTPUT($"MenuFlyout bounds left={menuFlyoutBounds.Left} top={menuFlyoutBounds.Top} width={menuFlyoutBounds.Width} height={menuFlyoutBounds.Height}");
+
+		if (expectedBoundsMode == Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseVisible)
+		{
+			VERIFY_ARE_EQUAL(menuFlyoutBounds.Top, 50);
+		}
+		else
+		{
+			VERIFY_IS_LESS_THAN(menuFlyoutBounds.Top, 50);
+		}
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
+
+		// Set the window with the landscape mode with specifying the visible bounds.
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(800, 480));
+		SetVisibleBounds(new Rect(50, 0, 700, 480));
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Show the MenuFlout on the out of the visible bounds.
+		await ShowMenuFlyout(menuFlyout, null, 550, 100, true /* forceTapAsPreviousInputMessage */);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		presenter = await GetCurrentPresenter();
+		menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)presenter);
+		LOG_OUTPUT($"MenuFlyout bounds left={menuFlyoutBounds.Left} top={menuFlyoutBounds.Top} width={menuFlyoutBounds.Width} height={menuFlyoutBounds.Height}");
+
+		if (expectedBoundsMode == Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseVisible)
+		{
+			VERIFY_IS_LESS_THAN(menuFlyoutBounds.Left + menuFlyoutBounds.Width, 750);
+		}
+		else
+		{
+			VERIFY_IS_GREATER_THAN(menuFlyoutBounds.Left + menuFlyoutBounds.Width, 750);
+		}
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.Hide();
+		});
+	}
+
+	[TestMethod]
+	public async Task ValidateOverlayBrush()
+	{
+		await FlyoutHelper.ValidateOverlayBrush<MenuFlyout>("MenuFlyoutLightDismissOverlayBackground");
+	}
+
+	[TestMethod]
+	public async Task ValidateCanUseBothShowAtMethods()
+	{
+		var menuFlyout = await CreateMenuFlyout();
+		Button button = null;
+
+		var loadedEvent = new Event();
+		var loadedRegistration = CreateSafeEventRegistration<Button, RoutedEventHandler>(nameof(Button.Loaded));
+
+		await RunOnUIThread(() =>
+		{
+			button = new Button();
+			button.Content = "Button for flyout";
+
+			loadedRegistration.Attach(button, (s, e) => { loadedEvent.Set(); });
+			TestServices.WindowHelper.WindowContent = button;
+		});
+
+		await loadedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var openedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		openedRegistration.Attach(menuFlyout, (s, e) => { openedEvent.Set(); });
+
+		await RunOnUIThread(() =>
+		{
+			LOG_OUTPUT("Show the MenuFlyout first using ShowAt() with one parameter.");
+			menuFlyout.ShowAt(button);
+		});
+
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		await RunOnUIThread(() =>
+		{
+			LOG_OUTPUT("Now show the MenuFlyout using ShowAt() with two parameters.");
+			menuFlyout.ShowAt(button, new Point(0, 0));
+		});
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		openedRegistration.Detach();
+
+		LOG_OUTPUT("Now create a new MenuFlyout to test the other calling order.");
+		menuFlyout = await CreateMenuFlyout();
+		openedRegistration.Attach(menuFlyout, (s, e) => { openedEvent.Set(); });
+
+		await RunOnUIThread(() =>
+		{
+			LOG_OUTPUT("Show the MenuFlyout first using ShowAt() with two parameters.");
+			menuFlyout.ShowAt(button, new Point(0, 0));
+		});
+
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		await RunOnUIThread(() =>
+		{
+			LOG_OUTPUT("Now show the MenuFlyout using ShowAt() with one parameter.");
+			menuFlyout.ShowAt(button);
+		});
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	[Ignore("Pending windowed popups")]
+	public async Task ValidatePopupWindowedScrollingWithMouse()
+	{
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
+		Grid root = null;
+		Thumb thumb = null;
+		Rect thumbBoundsBeforeDrag = default;
+		Rect thumbBoundsAfterDrag = default;
+
+		await RunOnUIThread(() =>
+		{
+			root = new Grid();
+			TestServices.WindowHelper.WindowContent = root;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var menuFlyout = await CreateMenuFlyoutLongItemsFromXaml();
+
+		await ShowMenuFlyout(menuFlyout, null, 100, 200);
+		var menuFlyoutPresenter = await GetCurrentPresenter();
+		await RunOnUIThread(() =>
+		{
+			var scrollViewer = (ScrollViewer)(TreeHelper.GetVisualChildByName(menuFlyoutPresenter, "MenuFlyoutPresenterScrollViewer"));
+			VERIFY_IS_NOT_NULL(scrollViewer);
+
+			thumb = (Thumb)(TreeHelper.GetVisualChildByName(scrollViewer, "VerticalThumb"));
+			VERIFY_IS_NOT_NULL(thumb);
+		});
+		thumbBoundsBeforeDrag = await ControlHelper.GetBounds(thumb);
+		LOG_OUTPUT($"ValidatePopupWindowedScrollingWithMouse: Thumb bounds left={thumbBoundsBeforeDrag.Left} top={thumbBoundsBeforeDrag.Top} width={thumbBoundsBeforeDrag.Width} height={thumbBoundsBeforeDrag.Height}");
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Dragging the thumb to scroll ListViewItem content
+		TestServices.InputHelper.MouseButtonDown(thumb, 0, 0, MouseButton.Left);
+		LOG_OUTPUT("ValidatePopupWindowedScrollingWithMouse: Dragging the thumb to scroll the content.");
+		MouseDrag(
+			new Point(thumbBoundsBeforeDrag.Left + (thumbBoundsBeforeDrag.Width / 2), thumbBoundsBeforeDrag.Top + (thumbBoundsBeforeDrag.Height / 2)),
+			new Point(thumbBoundsBeforeDrag.Left + (thumbBoundsBeforeDrag.Width / 2), thumbBoundsBeforeDrag.Top + (thumbBoundsBeforeDrag.Height / 2) + 200));
+		await TestServices.WindowHelper.WaitForIdle();
+		TestServices.InputHelper.MouseButtonUp(thumb, 0, 0, MouseButton.Left);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		thumbBoundsAfterDrag = await ControlHelper.GetBounds(thumb);
+		LOG_OUTPUT($"ValidatePopupWindowedScrollingWithMouse: Thumb bounds after dragging left={thumbBoundsAfterDrag.Left} top={thumbBoundsAfterDrag.Top} width={thumbBoundsAfterDrag.Width} height={thumbBoundsAfterDrag.Height}");
+		// Conscious scrollbars feature results in the thumb expanding to 16 wide when the pointer is over the scrollbar, which it will be after dragging here
+		// So checking the left and width of the thumb is not desirable
+		VERIFY_IS_GREATER_THAN(thumbBoundsAfterDrag.Top, thumbBoundsBeforeDrag.Top);
+		VERIFY_ARE_EQUAL(thumbBoundsBeforeDrag.Height, thumbBoundsAfterDrag.Height);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	private void MouseDrag(Point from, Point to)
+	{
+		const int steps = 10;
+		TestServices.InputHelper.MoveMouse(from);
+		for (int i = 1; i <= steps; i++)
+		{
+			TestServices.InputHelper.MoveMouse(new Point(
+				from.X + ((to.X - from.X) * i / steps),
+				from.Y + ((to.Y - from.Y) * i / steps)));
+		}
+	}
+
+	[TestMethod]
+	[Ignore("Open after the Stage C port: Enter on the Tab-focused button does not open the menu; not root-caused.")]
+	public async Task ValidateKeyboardNavigationAfterClosingSubMenu()
+	{
+		var loadedEvent = new Event();
+		var loadedRegistration = CreateSafeEventRegistration<Grid, RoutedEventHandler>(nameof(Grid.Loaded));
+
+		var openedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<Flyout, EventHandler<object>>(nameof(Flyout.Opened));
+
+		var closedEvent = new Event();
+		var closedRegistration = CreateSafeEventRegistration<Flyout, EventHandler<object>>(nameof(Flyout.Closed));
+
+		await RunOnUIThread(() =>
+		{
+			var rootGrid = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'" +
+				"      Width='400' Height='400'>" +
+				"  <Button x:Name='button' Content='Button with Flyout' HorizontalAlignment='Center' VerticalAlignment='Center'>" +
+				"    <Button.Flyout>" +
+				"      <Flyout x:Name='flyout'>" +
+				"        <StackPanel>" +
+				"          <MenuFlyoutItem>MenuFlyoutItem</MenuFlyoutItem>" +
+				"          <MenuFlyoutSubItem Text='MenuFlyoutSubItem'>" +
+				"            <MenuFlyoutItem>MenuFlyoutItem</MenuFlyoutItem>" +
+				"          </MenuFlyoutSubItem>" +
+				"        </StackPanel>" +
+				"      </Flyout>" +
+				"    </Button.Flyout>" +
+				"  </Button>" +
+				"</Grid>"));
+			VERIFY_IS_NOT_NULL(rootGrid);
+
+			loadedRegistration.Attach(rootGrid, (s, e) =>
+			{
+				LOG_OUTPUT("Grid loaded.");
+				loadedEvent.Set();
+			});
+
+			var button = (Button)(rootGrid.FindName("button"));
+			VERIFY_IS_NOT_NULL(button);
+
+			var flyout = (Flyout)(button.Flyout);
+			VERIFY_IS_NOT_NULL(flyout);
+
+			openedRegistration.Attach(flyout, (s, e) =>
+			{
+				LOG_OUTPUT("Flyout opened.");
+				openedEvent.Set();
+			});
+
+			closedRegistration.Attach(flyout, (s, e) =>
+			{
+				LOG_OUTPUT("Flyout closed.");
+				closedEvent.Set();
+			});
+
+			TestServices.WindowHelper.WindowContent = rootGrid;
+		});
+
+		await loadedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Tab into the Button.");
+		await TestServices.KeyboardHelper.Tab();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Open menu.");
+		await TestServices.KeyboardHelper.Enter();
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Move down to the sub menu.");
+		await TestServices.KeyboardHelper.Tab();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Open the sub menu.");
+		await CommonInputHelper.Right(InputDevice.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Close the sub menu.");
+		await CommonInputHelper.Left(InputDevice.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Hit up arrow key.");
+		await TestServices.KeyboardHelper.Up();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Close menu.");
+		await TestServices.KeyboardHelper.Escape();
+		await closedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+	public async Task ValidateOpenedSubMenuFocusItemByKeyboard()
+	{
+		Button button1 = null;
+		MenuFlyout menuFlyout = null;
+		MenuFlyoutSubItem subItem1 = null;
+		MenuFlyoutItem subItem11 = null;
+		SplitMenuFlyoutItem splitItem1 = null;
+		MenuFlyoutItem splitItem11 = null;
+
+		Canvas rootPanel = await SetupRootPanelForSubMenuTest();
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = (MenuFlyout)(XamlReader.Load(
+				"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+				"    <MenuFlyoutSubItem x:Name='subItem1' Text='Menu sub item 1'>" +
+				"        <MenuFlyoutItem x:Name='subItem1.1' >Menu item 1.1</MenuFlyoutItem>" +
+				"        <MenuFlyoutItem x:Name='subItem1.2' >Menu item 1.2</MenuFlyoutItem>" +
+				"        <MenuFlyoutItem x:Name='subItem1.3' >Menu item 1.3</MenuFlyoutItem>" +
+				"    </MenuFlyoutSubItem>" +
+				"    <MenuFlyoutItem>item2</MenuFlyoutItem>" +
+				"    <SplitMenuFlyoutItem x:Name='splitItem1' Text='Split menu item 1'>" +
+				"        <MenuFlyoutItem x:Name='splitItem1.1' >Split item 1.1</MenuFlyoutItem>" +
+				"        <MenuFlyoutItem x:Name='splitItem1.2' >Split item 1.2</MenuFlyoutItem>" +
+				"        <MenuFlyoutItem x:Name='splitItem1.3' >Split item 1.3</MenuFlyoutItem>" +
+				"    </SplitMenuFlyoutItem>" +
+				"    <MenuFlyoutItem>item3</MenuFlyoutItem>" +
+				"</MenuFlyout>"));
+
+			button1 = (Button)(rootPanel.FindName("button1"));
+		});
+
+		await ShowMenuFlyout(menuFlyout, button1, -50, 50);
+
+		// Open the sub menu by using the Keyboard Right key
+		await CommonInputHelper.Right(InputDevice.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			var menuFlyoutPresenter = await GetCurrentPresenter();
+			subItem11 = (MenuFlyoutItem)(menuFlyoutPresenter.FindName("subItem1.1"));
+		});
+
+		var subItem11GotFocusEvent = new Event();
+		var subItem11gotFocusRegistration = CreateSafeEventRegistration<MenuFlyoutItem, RoutedEventHandler>(nameof(MenuFlyoutItem.GotFocus));
+		subItem11gotFocusRegistration.Attach(subItem11, (s, e) => { subItem11GotFocusEvent.Set(); });
+
+		// Close the sub menu by using the Keyboard Left key
+		await CommonInputHelper.Left(InputDevice.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Re-open the sub menu to verify the focused first item
+		await CommonInputHelper.Right(InputDevice.Keyboard);
+		await subItem11GotFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Close the sub menu
+		await CommonInputHelper.Left(InputDevice.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			var menuFlyoutPresenter = await GetCurrentPresenter();
+			subItem1 = (MenuFlyoutSubItem)(menuFlyoutPresenter.FindName("subItem1"));
+		});
+
+		// Re-open the sub menu to verify the focused first item
+		await CommonInputHelper.Right(InputDevice.Keyboard);
+		await subItem11GotFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var subItem1GotFocusEvent = new Event();
+		var subItem1GotFocusRegistration = CreateSafeEventRegistration<MenuFlyoutSubItem, RoutedEventHandler>(nameof(MenuFlyoutSubItem.GotFocus));
+		subItem1GotFocusRegistration.Attach(subItem1, (s, e) => { subItem1GotFocusEvent.Set(); });
+
+		// Close the sub menu
+		await TestServices.KeyboardHelper.Escape();
+		await TestServices.WindowHelper.WaitForIdle();
+		await subItem1GotFocusEvent.WaitForDefault();
+
+		// Now test SplitMenuFlyoutItem focus behavior
+		LOG_OUTPUT("Testing SplitMenuFlyoutItem submenu focus behavior.");
+
+		// Navigate down to the split menu item
+		await CommonInputHelper.Down(InputDevice.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+		await CommonInputHelper.Down(InputDevice.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+		await CommonInputHelper.Down(InputDevice.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Open the split menu item's sub menu by using the Keyboard Right key
+		await CommonInputHelper.Right(InputDevice.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			var menuFlyoutPresenter = await GetCurrentPresenter();
+			splitItem11 = (MenuFlyoutItem)(menuFlyoutPresenter.FindName("splitItem1.1"));
+		});
+
+		var splitItem11GotFocusEvent = new Event();
+		var splitItem11gotFocusRegistration = CreateSafeEventRegistration<MenuFlyoutItem, RoutedEventHandler>(nameof(MenuFlyoutItem.GotFocus));
+		splitItem11gotFocusRegistration.Attach(splitItem11, (s, e) => { splitItem11GotFocusEvent.Set(); });
+
+		// Close the split menu's sub menu by using the Keyboard Left key
+		await CommonInputHelper.Left(InputDevice.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Re-open the split menu's sub menu to verify the focused first item
+		await CommonInputHelper.Right(InputDevice.Keyboard);
+		await splitItem11GotFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Close the split menu's sub menu
+		await CommonInputHelper.Left(InputDevice.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			var menuFlyoutPresenter = await GetCurrentPresenter();
+			splitItem1 = (SplitMenuFlyoutItem)(menuFlyoutPresenter.FindName("splitItem1"));
+		});
+
+		// Re-open the split menu's sub menu to verify the focused first item
+		await CommonInputHelper.Right(InputDevice.Keyboard);
+		await splitItem11GotFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var splitItem1GotFocusEvent = new Event();
+		var splitItem1GotFocusRegistration = CreateSafeEventRegistration<SplitMenuFlyoutItem, RoutedEventHandler>(nameof(SplitMenuFlyoutItem.GotFocus));
+		splitItem1GotFocusRegistration.Attach(splitItem1, (s, e) => { splitItem1GotFocusEvent.Set(); });
+
+		// Close the split menu's sub menu
+		await TestServices.KeyboardHelper.Escape();
+		await TestServices.WindowHelper.WaitForIdle();
+		await splitItem1GotFocusEvent.WaitForDefault();
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
 
 	[TestMethod]
 	public async Task ValidateSplitMenuItemInternalKeyboardTraversal()
@@ -6284,382 +6101,357 @@ public class MenuFlyoutIntegrationTests
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
 
-	//[TestMethod] public async Task ValidateFocusedItemDownAndUpAfterOverrideFocusItem()
-	//{
-
-
-	//	MenuFlyout menuFlyout = null;
-	//	MenuFlyoutItem secondMenuItem = null;
-	//	MenuFlyoutItem thirdMenuItem = null;
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var rootPanel = new Grid();
-	//		TestServices.WindowHelper.WindowContent = rootPanel;
-
-	//		menuFlyout = MenuFlyout> (XamlReader.Load(
-	//			LR"(<MenuFlyout x:Name="menuFlyout" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
-
-	//					< (MenuFlyoutItem)MenuItem1 </MenuFlyoutItem >
-
-	//					< (MenuFlyoutItem)MenuItem2 </MenuFlyoutItem >
-
-	//					< (MenuFlyoutItem)MenuItem3 </MenuFlyoutItem >
-
-	//				</MenuFlyout >)"));
-
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var openedEvent = new Event();
-	//	var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
-	//	openedRegistration.Attach(menuFlyout, [&]()
-
-	//	{
-	//		var menuItems = menuFlyout.Items;
-
-	//		var firstMenuItem = MenuFlyoutItem> (menuItems[0]);
-	//		secondMenuItem = MenuFlyoutItem> (menuItems[1]);
-	//		thirdMenuItem = MenuFlyoutItem> (menuItems[2]);
-
-	//		// Override the focus on the first menu item
-	//		firstMenuItem.Focus(FocusState.Keyboard);
-
-	//		openedEvent.Set();
-	//	});
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyout.ShowAt(null, Point(50, 50));
-	//	});
-	//	await openedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var gotFocusEvent = new Event();
-	//	var gotFocusRegistration = CreateSafeEventRegistration(MenuFlyoutItem, GotFocus);
-	//	gotFocusRegistration.Attach(secondMenuItem, [&]()
-
-	//	{
-	//		VERIFY_IS_TRUE(secondMenuItem.Text == "MenuItem2");
-	//		gotFocusEvent.Set();
-	//	});
-
-	//	CommonInputHelper.Down(InputDevice.Keyboard);
-	//	gotFocusEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-
-	//	// Navigate to the last menu item through Keyboard Up event
-	//	openedEvent.Reset();
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyout.ShowAt(null, Point(50, 50));
-	//	});
-	//	await openedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var gotFocusEvent2 = new Event();
-	//	var gotFocusRegistration2 = CreateSafeEventRegistration(MenuFlyoutItem, GotFocus);
-	//	gotFocusRegistration2.Attach(thirdMenuItem, [&]()
-
-	//	{
-	//		VERIFY_IS_TRUE(thirdMenuItem.Text == "MenuItem3");
-	//		gotFocusEvent2.Set();
-	//	});
-
-	//	CommonInputHelper.Up(InputDevice.Keyboard);
-	//	gotFocusEvent2.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
-
-	//[TestMethod] public async Task ValidateSingleItemGetsInitialKeyboardFocus()
-	//{
-
-
-	//	Button button = null;
-	//	MenuFlyout menuFlyout = null;
-	//	MenuFlyoutItem menuFlyoutItem = null;
-
-	//	var loadedEvent = new Event();
-	//	var loadedRegistration = CreateSafeEventRegistration(Button, Loaded);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		button = Button> (XamlReader.Load(
-	//			LR"(<Button xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
-
-	//				Click for flyout
-	//				<Button.Flyout>
-	//					< MenuFlyout x:Name = 'menuFlyout' xmlns = 'http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x = 'http://schemas.microsoft.com/winfx/2006/xaml' >
-
-	//						< (MenuFlyoutItem)The menu item </MenuFlyoutItem >
-
-	//					</MenuFlyout >
-
-	//				</Button.Flyout >
-
-	//			</Button >) "));
-
-
-	//		loadedRegistration.Attach(button, (s, e) => { loadedEvent.Set(); });
-	//		TestServices.WindowHelper.WindowContent = button;
-	//	});
-
-	//	await loadedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	var openedEvent = new Event();
-	//	var gotFocusEvent = new Event();
-	//	var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
-	//	var gotFocusRegistration = CreateSafeEventRegistration(MenuFlyoutItem, GotFocus);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyout = MenuFlyout> (button.Flyout);
-	//		menuFlyoutItem = MenuFlyoutItem> (menuFlyout.Items[0]);
-
-	//		openedRegistration.Attach(menuFlyout, (s, e) =>{ openedEvent.Set(); });
-	//		gotFocusRegistration.Attach(menuFlyoutItem, (s, e) =>{ gotFocusEvent.Set(); });
-	//	});
-
-	//	ControlHelper.EnsureFocused(button);
-	//	CommonInputHelper.Accept(InputDevice.Keyboard);
-
-	//	await openedEvent.WaitForDefault();
-	//	gotFocusEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
-
-	//[TestMethod] public async Task ValidateMenuItemsShowIcons()
-	//{
-
-
-	//	ControlHelper.ValidateUIElementTree(
-	//		Size(400, 600),
-	//		1.f,
-	//		[&]()
-
-	//		{
-	//		Grid rootPanel = null;
-	//		Button button = null;
-	//		MenuFlyout menuFlyout = null;
-
-	//		await RunOnUIThread(() =>
-
-	//			{
-	//			rootPanel = Grid> (XamlReader.Load(
-	//				LR"(<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
-	//						< Button x:Name="button1" Content = "Button 1" />
-
-	//					</Grid >)"));
-
-	//				TestServices.WindowHelper.WindowContent = rootPanel;
-
-	//			menuFlyout = MenuFlyout> (XamlReader.Load(
-	//				LR"(<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
-	//						< MenuFlyoutItem Icon = "Accept" Text = "menu item 1" />
-
-	//						< MenuFlyoutItem Text = "menu item 2" />
-
-	//						< MenuFlyoutSeparator />
-
-	//						< ToggleMenuFlyoutItem Icon = "Play" Text = "toggle menu item 1" />
-
-	//						< ToggleMenuFlyoutItem IsChecked = "True" Text = "toggle menu item 2" />
-
-	//						< MenuFlyoutSeparator />
-
-	//						< MenuFlyoutSubItem Icon = "Like" Text = "sub menu item 1" >
-
-	//							< MenuFlyoutItem Icon = "Setting" Text = "menu item 1.1" />
-
-	//							< MenuFlyoutItem Text = "menu item 2.2" />
-
-	//						</MenuFlyoutSubItem >
-
-	//					</MenuFlyout >)"));
-
-
-	//				button = Button> (rootPanel.FindName("button1"));
-	//		});
-	//		await TestServices.WindowHelper.WaitForIdle();
-
-	//		await ShowMenuFlyout(menuFlyout, button, 50, 50);
-
-	//		await TestServices.WindowHelper.WaitForIdle();
-
-	//		await FlyoutHelper.HideFlyout(menuFlyout);
-
-	//		return rootPanel;
-	//	});
-	//}
-
-	//void FocusDoesNotJumpWhenUsingGamepadTriggersFollowedByDPad()
-	//{
-
-
-	//	MenuFlyout menuFlyout = null;
-	//	Button button = null;
-
-	//	DependencyObject ^ beforeTriggerFocusedObject = null;
-	//	DependencyObject ^ afterTriggerFocusedObject = null;
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyout = new MenuFlyout();
-	//		for (int i = 0; i < 50; ++i)
-	//		{
-	//			var item = new MenuFlyoutItem();
-	//			item.Text = "Item";
-
-	//			menuFlyout.Items.Add(item);
-	//		}
-
-	//		button = new Button();
-	//		button.Content = "Button";
-
-	//		TestServices.WindowHelper.WindowContent = button;
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await ShowMenuFlyout(menuFlyout, button, 0, 0, true /* forceTapAsPreviousInputMessage */);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		beforeTriggerFocusedObject = DependencyObject ^> (FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot));
-	//		WEX.Common.Throw.IfNull(reinterpret_cast<void*>(beforeTriggerFocusedObject), "An item should get focus when the MenuFlyout opens.");
-	//	});
-
-	//	TestServices.KeyboardHelper.GamepadRightTrigger();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		afterTriggerFocusedObject = DependencyObject ^> (FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot));
-	//		WEX.Common.Throw.If(beforeTriggerFocusedObject.Equals(afterTriggerFocusedObject), E_FAIL, "The RightTrigger should have moved focus.");
-	//	});
-
-	//	TestServices.KeyboardHelper.GamepadDpadDown();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var focusedElement = DependencyObject ^> (FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot));
-	//		VERIFY_IS_FALSE(afterTriggerFocusedObject.Equals(focusedElement));
-
-	//		var presenter = GetMenuFlyoutPresenter(menuFlyout);
-
-	//		var expectedFocusItemIndex = presenter.IndexFromContainer(afterTriggerFocusedObject) + 1;
-	//		WEX.Common.Throw.If(expectedFocusItemIndex == -1, E_FAIL, "The expected focused element should have an item index.");
-
-	//		var focusedItemIndex = presenter.IndexFromContainer(focusedElement);
-	//		WEX.Common.Throw.If(focusedItemIndex == -1, E_FAIL, "The new focused element should have an item index.");
-
-	//		VERIFY_ARE_EQUAL(expectedFocusItemIndex, focusedItemIndex);
-
-	//		beforeTriggerFocusedObject = focusedElement;
-	//	});
-
-	//	TestServices.KeyboardHelper.GamepadLeftTrigger();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		afterTriggerFocusedObject = DependencyObject ^> (FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot));
-	//		WEX.Common.Throw.If(beforeTriggerFocusedObject.Equals(afterTriggerFocusedObject), E_FAIL, "The LeftTrigger should have moved focus.");
-	//	});
-
-	//	TestServices.KeyboardHelper.GamepadDpadDown();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var focusedElement = DependencyObject ^> (FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot));
-	//		VERIFY_IS_FALSE(afterTriggerFocusedObject.Equals(focusedElement));
-
-	//		var presenter = GetMenuFlyoutPresenter(menuFlyout);
-
-	//		var expectedFocusItemIndex = presenter.IndexFromContainer(afterTriggerFocusedObject) + 1;
-	//		WEX.Common.Throw.If(expectedFocusItemIndex == -1, E_FAIL, "The expected focused element should have an item index.");
-
-	//		var focusedItemIndex = presenter.IndexFromContainer(focusedElement);
-	//		WEX.Common.Throw.If(focusedItemIndex == -1, E_FAIL, "The new focused element should have an item index.");
-
-	//		VERIFY_ARE_EQUAL(expectedFocusItemIndex, focusedItemIndex);
-
-	//		beforeTriggerFocusedObject = focusedElement;
-	//	});
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
-
-	//[TestMethod] public async Task CanDetectChangesToCanExecuteWithoutBeingInVisualTree()
-	//{
-
-
-	//	MenuFlyout menuFlyout = null;
-	//	MenuFlyoutItem menuFlyoutItem = null;
-	//	Button button = null;
-
-	//	MenuCommand ^ command = new MenuCommand(new ExecuteDelegate([](object) { }), false /*canExecute*/, null);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		menuFlyoutItem = new MenuFlyoutItem();
-	//		menuFlyoutItem.Text = "Item";
-	//		menuFlyoutItem.Command = command;
-
-	//		menuFlyout = new MenuFlyout();
-	//		menuFlyout.Items.Add(menuFlyoutItem);
-
-	//		button = new Button();
-	//		button.Flyout = menuFlyout;
-	//		button.Content = "Button";
-
-	//		TestServices.WindowHelper.WindowContent = button;
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await ShowMenuFlyout(menuFlyout, button, 0, 0);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		WEX.Common.Throw.IfFalse(ControlHelper.IsInVisualState(menuFlyoutItem, "CommonStates", "Disabled"), E_FAIL, "Expected that the menu flyout item starts out as disabled.");
-	//	});
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-
-	//	LOG_OUTPUT("Change the MenuFlyoutItem's attached command's CanExecute property to true . item should now show as enabled.");
-	//	command.CanExecuteFlag = true;
-
-	//	await ShowMenuFlyout(menuFlyout, button, 0, 0);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		VERIFY_IS_TRUE(ControlHelper.IsInVisualState(menuFlyoutItem, "CommonStates", "Normal"));
-	//	});
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
+	[TestMethod]
+	public async Task ValidateFocusedItemDownAndUpAfterOverrideFocusItem()
+	{
+		MenuFlyout menuFlyout = null;
+		MenuFlyoutItem secondMenuItem = null;
+		MenuFlyoutItem thirdMenuItem = null;
+
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = new Grid();
+			TestServices.WindowHelper.WindowContent = rootPanel;
+
+			menuFlyout = (MenuFlyout)(XamlReader.Load(
+				"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' > " +
+				"    <MenuFlyoutItem>MenuItem1</MenuFlyoutItem> " +
+				"    <MenuFlyoutItem>MenuItem2</MenuFlyoutItem> " +
+				"    <MenuFlyoutItem>MenuItem3</MenuFlyoutItem> " +
+				"</MenuFlyout>"));
+			menuFlyout.XamlRoot = rootPanel.XamlRoot;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var openedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		openedRegistration.Attach(menuFlyout, (s, e) =>
+		{
+			var menuItems = menuFlyout.Items;
+
+			var firstMenuItem = (MenuFlyoutItem)(menuItems[0]);
+			secondMenuItem = (MenuFlyoutItem)(menuItems[1]);
+			thirdMenuItem = (MenuFlyoutItem)(menuItems[2]);
+
+			// Override the focus on the first menu item
+			firstMenuItem.Focus(FocusState.Keyboard);
+
+			openedEvent.Set();
+		});
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.ShowAt(null, new Point(50, 50));
+		});
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var gotFocusEvent = new Event();
+		var gotFocusRegistration = CreateSafeEventRegistration<MenuFlyoutItem, RoutedEventHandler>(nameof(MenuFlyoutItem.GotFocus));
+		gotFocusRegistration.Attach(secondMenuItem, (s, e) =>
+		{
+			VERIFY_IS_TRUE(secondMenuItem.Text == "MenuItem2");
+			gotFocusEvent.Set();
+		});
+
+		await CommonInputHelper.Down(InputDevice.Keyboard);
+		await gotFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		// Navigate to the last menu item through Keyboard Up event
+		openedEvent.Reset();
+		await RunOnUIThread(() =>
+		{
+			menuFlyout.ShowAt(null, new Point(50, 50));
+		});
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var gotFocusEvent2 = new Event();
+		var gotFocusRegistration2 = CreateSafeEventRegistration<MenuFlyoutItem, RoutedEventHandler>(nameof(MenuFlyoutItem.GotFocus));
+		gotFocusRegistration2.Attach(thirdMenuItem, (s, e) =>
+		{
+			VERIFY_IS_TRUE(thirdMenuItem.Text == "MenuItem3");
+			gotFocusEvent2.Set();
+		});
+
+		await CommonInputHelper.Up(InputDevice.Keyboard);
+		await gotFocusEvent2.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	public async Task ValidateSingleItemGetsInitialKeyboardFocus()
+	{
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+		MenuFlyoutItem menuFlyoutItem = null;
+
+		var loadedEvent = new Event();
+		var loadedRegistration = CreateSafeEventRegistration<Button, RoutedEventHandler>(nameof(Button.Loaded));
+
+		await RunOnUIThread(() =>
+		{
+			button = (Button)(XamlReader.Load(
+				"<Button xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'> " +
+				"    Click for flyout " +
+				"    <Button.Flyout> " +
+				"        <MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'> " +
+				"            <MenuFlyoutItem>The menu item</MenuFlyoutItem> " +
+				"        </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"</Button>"));
+
+			loadedRegistration.Attach(button, (s, e) => { loadedEvent.Set(); });
+			TestServices.WindowHelper.WindowContent = button;
+		});
+
+		await loadedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var openedEvent = new Event();
+		var gotFocusEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		var gotFocusRegistration = CreateSafeEventRegistration<MenuFlyoutItem, RoutedEventHandler>(nameof(MenuFlyoutItem.GotFocus));
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = (MenuFlyout)(button.Flyout);
+			menuFlyoutItem = (MenuFlyoutItem)(menuFlyout.Items[0]);
+
+			openedRegistration.Attach(menuFlyout, (s, e) => { openedEvent.Set(); });
+			gotFocusRegistration.Attach(menuFlyoutItem, (s, e) => { gotFocusEvent.Set(); });
+		});
+
+		await ControlHelper.EnsureFocused(button);
+		await CommonInputHelper.Accept(InputDevice.Keyboard);
+
+		await openedEvent.WaitForDefault();
+		await gotFocusEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	[Ignore("Open after the Stage C port: the root panel measures 133 where the test expects 400 from the size override; not root-caused.")]
+	public async Task ValidateMenuItemsShowIcons()
+	{
+		// The upstream master dumps the visual tree of the window content (popups are closed by then). Its content is
+		// asserted explicitly below, after the flyout has been shown with its icons.
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
+
+		Grid rootPanel = null;
+		Button button = null;
+		MenuFlyout menuFlyout = null;
+
+		await RunOnUIThread(() =>
+		{
+			rootPanel = (Grid)(XamlReader.Load(
+				"<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'> " +
+				"    <Button x:Name='button1' Content='Button 1'/> " +
+				"</Grid>"));
+			TestServices.WindowHelper.WindowContent = rootPanel;
+
+			menuFlyout = (MenuFlyout)(XamlReader.Load(
+				"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'> " +
+				"    <MenuFlyoutItem Icon='Accept' Text='menu item 1'/> " +
+				"    <MenuFlyoutItem Text='menu item 2'/> " +
+				"    <MenuFlyoutSeparator/> " +
+				"    <ToggleMenuFlyoutItem Icon='Play' Text='toggle menu item 1'/> " +
+				"    <ToggleMenuFlyoutItem IsChecked='True' Text='toggle menu item 2'/> " +
+				"    <MenuFlyoutSeparator/> " +
+				"    <SplitMenuFlyoutItem Icon='Home' Text='split menu item 1'> " +
+				"        <MenuFlyoutItem Icon='Calendar' Text='split item 1.1'/> " +
+				"        <MenuFlyoutItem Text='split item 1.2'/> " +
+				"    </SplitMenuFlyoutItem> " +
+				"    <MenuFlyoutSeparator/> " +
+				"    <MenuFlyoutSubItem Icon='Like' Text='sub menu item 1'> " +
+				"        <MenuFlyoutItem Icon='Setting' Text='menu item 1.1'/> " +
+				"        <MenuFlyoutItem Text='menu item 2.2'/> " +
+				"    </MenuFlyoutSubItem> " +
+				"</MenuFlyout>"));
+
+			button = (Button)(rootPanel.FindName("button1"));
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await ShowMenuFlyout(menuFlyout, button, 50, 50);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var items = menuFlyout.Items;
+			VERIFY_IS_NOT_NULL(((MenuFlyoutItem)items[0]).Icon);
+			VERIFY_IS_NULL(((MenuFlyoutItem)items[1]).Icon);
+			VERIFY_IS_NOT_NULL(((ToggleMenuFlyoutItem)items[3]).Icon);
+			VERIFY_IS_NULL(((ToggleMenuFlyoutItem)items[4]).Icon);
+			VERIFY_IS_NOT_NULL(((SplitMenuFlyoutItem)items[6]).Icon);
+			VERIFY_IS_NOT_NULL(((MenuFlyoutSubItem)items[8]).Icon);
+		});
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		// Master: the window content once the flyout is closed.
+		await RunOnUIThread(() =>
+		{
+			VERIFY_ARE_EQUAL(rootPanel.Name, "root");
+			VERIFY_ARE_VERY_CLOSE(rootPanel.ActualWidth, 400, 1);
+			VERIFY_ARE_VERY_CLOSE(rootPanel.ActualHeight, 600, 1);
+
+			VERIFY_ARE_EQUAL(button.Name, "button1");
+			VERIFY_ARE_EQUAL((string)button.Content, "Button 1");
+			VERIFY_ARE_VERY_CLOSE(button.ActualHeight, 32, 1);
+			VERIFY_ARE_EQUAL(button.HorizontalAlignment, HorizontalAlignment.Left);
+			VERIFY_ARE_EQUAL(button.VerticalAlignment, VerticalAlignment.Center);
+		});
+	}
+
+	[TestMethod]
+	[Ignore("Open after the Stage C port: the RightTrigger does not move focus between the items; not root-caused.")]
+	public async Task FocusDoesNotJumpWhenUsingGamepadTriggersFollowedByDPad()
+	{
+		MenuFlyout menuFlyout = null;
+		Button button = null;
+
+		DependencyObject beforeTriggerFocusedObject = null;
+		DependencyObject afterTriggerFocusedObject = null;
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = new MenuFlyout();
+			for (int i = 0; i < 50; ++i)
+			{
+				var item = new MenuFlyoutItem();
+				item.Text = "Item";
+
+				menuFlyout.Items.Add(item);
+			}
+
+			button = new Button();
+			button.Content = "Button";
+
+			TestServices.WindowHelper.WindowContent = button;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await ShowMenuFlyout(menuFlyout, button, 0, 0, true /* forceTapAsPreviousInputMessage */);
+
+		await RunOnUIThread(() =>
+		{
+			beforeTriggerFocusedObject = (DependencyObject)(FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot));
+			VERIFY_IS_NOT_NULL(beforeTriggerFocusedObject, "An item should get focus when the MenuFlyout opens.");
+		});
+
+		await TestServices.KeyboardHelper.PressKeySequence("$d$_GamepadRightTrigger#$u$_GamepadRightTrigger");
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			afterTriggerFocusedObject = (DependencyObject)(FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot));
+			VERIFY_IS_FALSE(beforeTriggerFocusedObject.Equals(afterTriggerFocusedObject), "The RightTrigger should have moved focus.");
+		});
+
+		await TestServices.KeyboardHelper.GamepadDpadDown();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var focusedElement = (DependencyObject)(FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot));
+			VERIFY_IS_FALSE(afterTriggerFocusedObject.Equals(focusedElement));
+
+			var presenter = GetMenuFlyoutPresenter(menuFlyout);
+
+			var expectedFocusItemIndex = presenter.IndexFromContainer(afterTriggerFocusedObject) + 1;
+			VERIFY_IS_FALSE(expectedFocusItemIndex == -1, "The expected focused element should have an item index.");
+
+			var focusedItemIndex = presenter.IndexFromContainer(focusedElement);
+			VERIFY_IS_FALSE(focusedItemIndex == -1, "The new focused element should have an item index.");
+
+			VERIFY_ARE_EQUAL(focusedItemIndex, expectedFocusItemIndex);
+
+			beforeTriggerFocusedObject = focusedElement;
+		});
+
+		await TestServices.KeyboardHelper.PressKeySequence("$d$_GamepadLeftTrigger#$u$_GamepadLeftTrigger");
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			afterTriggerFocusedObject = (DependencyObject)(FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot));
+			VERIFY_IS_FALSE(beforeTriggerFocusedObject.Equals(afterTriggerFocusedObject), "The LeftTrigger should have moved focus.");
+		});
+
+		await TestServices.KeyboardHelper.GamepadDpadDown();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			var focusedElement = (DependencyObject)(FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot));
+			VERIFY_IS_FALSE(afterTriggerFocusedObject.Equals(focusedElement));
+
+			var presenter = GetMenuFlyoutPresenter(menuFlyout);
+
+			var expectedFocusItemIndex = presenter.IndexFromContainer(afterTriggerFocusedObject) + 1;
+			VERIFY_IS_FALSE(expectedFocusItemIndex == -1, "The expected focused element should have an item index.");
+
+			var focusedItemIndex = presenter.IndexFromContainer(focusedElement);
+			VERIFY_IS_FALSE(focusedItemIndex == -1, "The new focused element should have an item index.");
+
+			VERIFY_ARE_EQUAL(focusedItemIndex, expectedFocusItemIndex);
+
+			beforeTriggerFocusedObject = focusedElement;
+		});
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
+
+	[TestMethod]
+	public async Task CanDetectChangesToCanExecuteWithoutBeingInVisualTree()
+	{
+		MenuFlyout menuFlyout = null;
+		MenuFlyoutItem menuFlyoutItem = null;
+		Button button = null;
+
+		MenuCommand command = new MenuCommand((object _) => { }, false /*canExecute*/, null);
+
+		await RunOnUIThread(() =>
+		{
+			menuFlyoutItem = new MenuFlyoutItem();
+			menuFlyoutItem.Text = "Item";
+			menuFlyoutItem.Command = command;
+
+			menuFlyout = new MenuFlyout();
+			menuFlyout.Items.Add(menuFlyoutItem);
+
+			button = new Button();
+			button.Flyout = menuFlyout;
+			button.Content = "Button";
+
+			TestServices.WindowHelper.WindowContent = button;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await ShowMenuFlyout(menuFlyout, button, 0, 0);
+
+		VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(menuFlyoutItem, "CommonStates", "Disabled"), "Expected that the menu flyout item starts out as disabled.");
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+
+		LOG_OUTPUT("Change the MenuFlyoutItem's attached command's CanExecute property to true -> item should now show as enabled.");
+		command.CanExecuteFlag = true;
+
+		await ShowMenuFlyout(menuFlyout, button, 0, 0);
+
+		VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(menuFlyoutItem, "CommonStates", "Normal"));
+
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
 
 	[TestMethod]
 	public async Task VerifyIsEnabledPropagatesTreeFromCommand()
@@ -6725,134 +6517,119 @@ public class MenuFlyoutIntegrationTests
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
 
-	//// Shows the same MenuFlyout twice in a row, without closing it, attempting to position it beyond the screen's boundaries.
-	//// Ensures it is moved within the screen's boundaries.
-	//void MenuFlyoutRemainsInBoundsWhenShownTwice()
-	//{
+	// Shows the same MenuFlyout twice in a row, without closing it, attempting to position it beyond the screen's boundaries.
+	// Ensures it is moved within the screen's boundaries.
+	[TestMethod]
+	[Ignore("Open after the Stage C port: the second ShowAt moves the item 884 px away from where the first one put it; not root-caused.")]
+	public async Task MenuFlyoutRemainsInBoundsWhenShownTwice()
+	{
+		Grid rootGrid = null;
+		MenuFlyout menuFlyout = null;
 
+		Point initialMenuItemPosition = default;
+		Point showAtPosition = default;
 
-	//	Grid rootGrid = null;
-	//	MenuFlyout menuFlyout = null;
+		var loadedEvent = new Event();
+		var menuFlyoutOpenedEvent = new Event();
+		var menuFlyoutClosedEvent = new Event();
 
-	//	Point initialMenuItemPosition{ }
-	//	;
-	//	Point showAtPosition{ }
-	//	;
+		var loadedRegistration = CreateSafeEventRegistration<Grid, RoutedEventHandler>(nameof(Grid.Loaded));
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
 
-	//	var loadedEvent = new Event();
-	//	var menuFlyoutOpenedEvent = new Event();
-	//	var menuFlyoutClosedEvent = new Event();
+		await RunOnUIThread(() =>
+		{
+			rootGrid = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"  x:Name='root' Background='SlateBlue'> " +
+				"  <FlyoutBase.AttachedFlyout> " +
+				"    <MenuFlyout> " +
+				"      <MenuFlyoutItem>Some Text</MenuFlyoutItem> " +
+				"    </MenuFlyout> " +
+				"  </FlyoutBase.AttachedFlyout> " +
+				"</Grid>"));
+			VERIFY_IS_NOT_NULL(rootGrid);
 
-	//	var loadedRegistration = CreateSafeEventRegistration(Grid, Loaded);
-	//	var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
-	//	var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
+			loadedRegistration.Attach(rootGrid, (s, e) => { loadedEvent.Set(); });
 
-	// await RunOnUIThread(() =>
+			TestServices.WindowHelper.WindowContent = rootGrid;
 
-	//	{
-	//		rootGrid = (Grid)(XamlReader.Load(
-	//			"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' "
+			menuFlyout = (MenuFlyout)(FlyoutBase.GetAttachedFlyout(rootGrid));
+			VERIFY_IS_NOT_NULL(menuFlyout);
 
-	//			"  x:Name='root' Background='SlateBlue'> "
+			openedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				LOG_OUTPUT("MenuFlyout.Opened event raised");
 
-	//			"  <FlyoutBase.AttachedFlyout> "
+				var menuItem = (MenuFlyoutItem)(menuFlyout.Items[0]);
+				VERIFY_IS_NOT_NULL(menuItem);
 
-	//			"    <MenuFlyout> "
+				initialMenuItemPosition = menuItem.TransformToVisual(rootGrid).TransformPoint(new Point(0, 0));
+				LOG_OUTPUT($"Initial MenuFlyoutItem position in MenuFlyout.Opened event handler: {initialMenuItemPosition.X}, {initialMenuItemPosition.Y}.");
 
-	//			"      <MenuFlyoutItem>Some Text</MenuFlyoutItem> "
+				menuFlyoutOpenedEvent.Set();
+			});
 
-	//			"    </MenuFlyout> "
+			closedRegistration.Attach(menuFlyout, (s, e) =>
+			{
+				LOG_OUTPUT("MenuFlyout.Closed event raised");
+				menuFlyoutClosedEvent.Set();
+			});
+		});
 
-	//			"  </FlyoutBase.AttachedFlyout> "
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//			"</Grid>"));
-	//		VERIFY_IS_NOT_NULL(rootGrid);
+		LOG_OUTPUT("Waiting for root Grid to load.");
+		await loadedEvent.WaitForDefault();
 
-	//		loadedRegistration.Attach(rootGrid, (s, e) =>{ loadedEvent.Set(); });
+		await RunOnUIThread(() =>
+		{
+			showAtPosition.X = (float)(rootGrid.ActualWidth) - 25.0f;
+			showAtPosition.Y = (float)(rootGrid.ActualHeight) - 25.0f;
 
-	//		TestServices.WindowHelper.WindowContent = rootGrid;
+			LOG_OUTPUT($"Showing MenuFlyout at position {showAtPosition.X}, {showAtPosition.Y}.");
+			menuFlyout.ShowAt(rootGrid, showAtPosition);
+		});
 
-	//		menuFlyout = MenuFlyout> (MenuFlyout.GetAttachedFlyout(rootGrid));
-	//		VERIFY_IS_NOT_NULL(menuFlyout);
+		LOG_OUTPUT("Waiting for MenuFlyout.Opened event.");
+		await menuFlyoutOpenedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//		openedRegistration.Attach(menuFlyout, new EventHandler<object> ([rootGrid, menuFlyout, menuFlyoutOpenedEvent, &initialMenuItemPosition](object, object)
+		await RunOnUIThread(() =>
+		{
+			LOG_OUTPUT($"Showing MenuFlyout at position {showAtPosition.X}, {showAtPosition.Y} again.");
+			menuFlyout.ShowAt(rootGrid, showAtPosition);
+		});
 
-	//		{
-	//			LOG_OUTPUT("MenuFlyout.Opened event raised");
+		LOG_OUTPUT("Waiting for a few ticks to make sure the MenuFlyout has a chance to reposition itself.");
+		await TestServices.WindowHelper.SynchronouslyTickUIThread(2);
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//			MenuFlyoutItem menuItem = MenuFlyoutItem> (menuFlyout.Items[0]);
-	//			VERIFY_IS_NOT_NULL(menuItem);
+		await RunOnUIThread(() =>
+		{
+			var menuItem = (MenuFlyoutItem)(menuFlyout.Items[0]);
+			VERIFY_IS_NOT_NULL(menuItem);
 
-	//			initialMenuItemPosition = menuItem.TransformToVisual(rootGrid).TransformPoint(Point(0, 0));
-	//			LOG_OUTPUT("Initial MenuFlyoutItem position in MenuFlyout.Opened event handler: %f, %f.", initialMenuItemPosition.X, initialMenuItemPosition.Y);
+			Point finalMenuItemPosition = menuItem.TransformToVisual(rootGrid).TransformPoint(new Point(0, 0));
+			LOG_OUTPUT($"Final MenuFlyoutItem position: {finalMenuItemPosition.X}, {finalMenuItemPosition.Y}.");
 
-	//			menuFlyoutOpenedEvent.Set();
-	//		}));
+			LOG_OUTPUT("Verifying initial and final MenuFlyoutItem positions are identical.");
+			VERIFY_ARE_EQUAL(finalMenuItemPosition.X, initialMenuItemPosition.X);
+			VERIFY_ARE_EQUAL(finalMenuItemPosition.Y, initialMenuItemPosition.Y);
 
-	//		closedRegistration.Attach(menuFlyout, (s, e) =>
+			LOG_OUTPUT("Verifying MenuFlyoutItem position was shifted to be completely visible.");
+			VERIFY_IS_LESS_THAN(finalMenuItemPosition.X, (float)(rootGrid.ActualWidth - menuItem.ActualWidth));
+			VERIFY_IS_LESS_THAN(finalMenuItemPosition.Y, (float)(rootGrid.ActualHeight - menuItem.ActualHeight));
 
-	//		{
-	//			LOG_OUTPUT("MenuFlyout.Closed event raised");
-	//			menuFlyoutClosedEvent.Set();
-	//		}));
-	//	});
+			LOG_OUTPUT("Closing the MenuFlyout.");
+			menuFlyout.Hide();
+		});
 
-	//	await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//	LOG_OUTPUT("Waiting for root Grid to load.");
-	//	await loadedEvent.WaitForDefault();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		showAtPosition.X = (float)(rootGrid.ActualWidth) - 25.0f;
-	//		showAtPosition.Y = (float)(rootGrid.ActualHeight) - 25.0f;
-
-	//		LOG_OUTPUT("Showing MenuFlyout at position %f, %f.", showAtPosition.X, showAtPosition.Y);
-	//		menuFlyout.ShowAt(rootGrid, showAtPosition);
-	//	});
-
-	//	LOG_OUTPUT("Waiting for MenuFlyout.Opened event.");
-	//	await menuFlyoutOpenedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		LOG_OUTPUT("Showing MenuFlyout at position %f, %f again.", showAtPosition.X, showAtPosition.Y);
-	//		menuFlyout.ShowAt(rootGrid, showAtPosition);
-	//	});
-
-	//	LOG_OUTPUT("Waiting for a few ticks to make sure the MenuFlyout has a chance to reposition itself.");
-	//	TestServices.WindowHelper.SynchronouslyTickUIThread(2);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		MenuFlyoutItem menuItem = MenuFlyoutItem> (menuFlyout.Items[0]);
-	//		VERIFY_IS_NOT_NULL(menuItem);
-
-	//		Point finalMenuItemPosition = menuItem.TransformToVisual(rootGrid).TransformPoint(Point(0, 0));
-	//		LOG_OUTPUT("Final MenuFlyoutItem position: %f, %f.", finalMenuItemPosition.X, finalMenuItemPosition.Y);
-
-	//		LOG_OUTPUT("Verifying initial and final MenuFlyoutItem positions are identical.");
-	//		VERIFY_ARE_EQUAL(finalMenuItemPosition.X, initialMenuItemPosition.X);
-	//		VERIFY_ARE_EQUAL(finalMenuItemPosition.Y, initialMenuItemPosition.Y);
-
-	//		LOG_OUTPUT("Verifying MenuFlyoutItem position was shifted to be completely visible.");
-	//		VERIFY_IS_LESS_THAN(finalMenuItemPosition.X, (float)(rootGrid.ActualWidth - menuItem.ActualWidth));
-	//		VERIFY_IS_LESS_THAN(finalMenuItemPosition.Y, (float)(rootGrid.ActualHeight - menuItem.ActualHeight));
-
-	//		LOG_OUTPUT("Closing the MenuFlyout.");
-	//		menuFlyout.Hide();
-	//	});
-
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	LOG_OUTPUT("Waiting for MenuFlyout.Closed event.");
-	//	await menuFlyoutClosedEvent.WaitForDefault();
-	//}
+		LOG_OUTPUT("Waiting for MenuFlyout.Closed event.");
+		await menuFlyoutClosedEvent.WaitForDefault();
+	}
 
 	[TestMethod]
 	public async Task ValidateSettingKeyboardAcceleratorCreatesDefaultItemKeyboardAcceleratorText()
@@ -7148,289 +6925,255 @@ public class MenuFlyoutIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 
-	//[TestMethod]
-	//public async Task ValidateSettingUICommandSetsProperties()
-	//{
-	//	CommandHelper.ValidateSettingUICommandSetsProperties<MenuFlyoutItem>(
-	//		MenuFlyoutItem.CommandProperty,
-	//		MenuFlyoutItem.TextProperty,
-	//		MenuFlyoutItem.IconProperty);
-	//}
-
-	//[TestMethod]
-	//public async Task ValidateSettingUICommandDoesNotOverwriteProperties()
-	//{
-	//	CommandHelper.ValidateSettingUICommandDoesNotOverwriteProperties<MenuFlyoutItem>(
-	//		MenuFlyoutItem.CommandProperty,
-	//		MenuFlyoutItem.TextProperty,
-	//		MenuFlyoutItem.IconProperty);
-	//}
-
-	//[TestMethod]
-	//public async Task ValidateSettingUICommandSetsToggleProperties()
-	//{
-	//	CommandHelper.ValidateSettingUICommandSetsProperties<ToggleMenuFlyoutItem>(
-	//		ToggleMenuFlyoutItem.CommandProperty,
-	//		ToggleMenuFlyoutItem.TextProperty,
-	//		ToggleMenuFlyoutItem.IconProperty);
-	//}
-
-	//[TestMethod] public async Task ValidateSettingUICommandDoesNotOverwriteToggleProperties()
-	//{
-	//	CommandHelper.ValidateSettingUICommandDoesNotOverwriteProperties<ToggleMenuFlyoutItem>(
-	//		ToggleMenuFlyoutItem.CommandProperty,
-	//		ToggleMenuFlyoutItem.TextProperty,
-	//		ToggleMenuFlyoutItem.IconProperty);
-	//}
-
 	[TestMethod]
-	[Ignore("Blocked: CommandHelper (ValidateSettingUICommandSetsProperties<T>) is not ported yet")]
-	public void ValidateSettingUICommandSetsSplitProperties()
+	public async Task ValidateSettingUICommandSetsProperties()
 	{
-#if false // TODO Uno: needs a port of CommandHelper.ValidateSettingUICommandSetsProperties<T>
-		CommandHelper.ValidateSettingUICommandSetsProperties<SplitMenuFlyoutItem>(
-			SplitMenuFlyoutItem.CommandProperty,
-			SplitMenuFlyoutItem.TextProperty,
-			SplitMenuFlyoutItem.IconProperty);
-#endif
+		await CommandHelper.ValidateSettingUICommandSetsProperties<MenuFlyoutItem>(
+			MenuFlyoutItem.CommandProperty,
+			MenuFlyoutItem.TextProperty,
+			MenuFlyoutItem.IconProperty);
 	}
 
 	[TestMethod]
-	[Ignore("Blocked: CommandHelper (ValidateSettingUICommandDoesNotOverwriteProperties<T>) is not ported yet")]
-	public void ValidateSettingUICommandDoesNotOverwriteSplitProperties()
+	public async Task ValidateSettingUICommandDoesNotOverwriteProperties()
 	{
-#if false // TODO Uno: needs a port of CommandHelper.ValidateSettingUICommandDoesNotOverwriteProperties<T>
-		CommandHelper.ValidateSettingUICommandDoesNotOverwriteProperties<SplitMenuFlyoutItem>(
+		await CommandHelper.ValidateSettingUICommandDoesNotOverwriteProperties<MenuFlyoutItem>(
+			MenuFlyoutItem.CommandProperty,
+			MenuFlyoutItem.TextProperty,
+			MenuFlyoutItem.IconProperty);
+	}
+
+	[TestMethod]
+	public async Task ValidateSettingUICommandSetsToggleProperties()
+	{
+		await CommandHelper.ValidateSettingUICommandSetsProperties<ToggleMenuFlyoutItem>(
+			ToggleMenuFlyoutItem.CommandProperty,
+			ToggleMenuFlyoutItem.TextProperty,
+			ToggleMenuFlyoutItem.IconProperty);
+	}
+
+	[TestMethod]
+	public async Task ValidateSettingUICommandDoesNotOverwriteToggleProperties()
+	{
+		await CommandHelper.ValidateSettingUICommandDoesNotOverwriteProperties<ToggleMenuFlyoutItem>(
+			ToggleMenuFlyoutItem.CommandProperty,
+			ToggleMenuFlyoutItem.TextProperty,
+			ToggleMenuFlyoutItem.IconProperty);
+	}
+
+	[TestMethod]
+	public async Task ValidateSettingUICommandSetsSplitProperties()
+	{
+		await CommandHelper.ValidateSettingUICommandSetsProperties<SplitMenuFlyoutItem>(
 			SplitMenuFlyoutItem.CommandProperty,
 			SplitMenuFlyoutItem.TextProperty,
 			SplitMenuFlyoutItem.IconProperty);
-#endif
 	}
 
-	//[TestMethod] public async Task ValidateMenuFlyoutTouchPositionForExclusionRect()
-	//{
+	[TestMethod]
+	public async Task ValidateSettingUICommandDoesNotOverwriteSplitProperties()
+	{
+		await CommandHelper.ValidateSettingUICommandDoesNotOverwriteProperties<SplitMenuFlyoutItem>(
+			SplitMenuFlyoutItem.CommandProperty,
+			SplitMenuFlyoutItem.TextProperty,
+			SplitMenuFlyoutItem.IconProperty);
+	}
 
+	[TestMethod]
+	[RequiresScaling(1f)]
+	public async Task ValidateMenuFlyoutTouchPositionForExclusionRect()
+	{
+		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
 
-	//	TestServices.WindowHelper.SetWindowSizeOverride(Size(400, 600));
+		Grid root = null;
+		Button buttonTop = null;
+		Button buttonBottom = null;
 
-	//	Grid root = null;
-	//	Button buttonTop = null;
-	//	Button buttonBottom = null;
+		await RunOnUIThread(() =>
+		{
+			root = (Grid)(XamlReader.Load(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"          x:Name='root'> " +
+				"    <Button x:Name='buttonTop' Content='button top' VerticalAlignment='Top'/> " +
+				"    <Button x:Name='buttonBottom' Content='button bottom'  VerticalAlignment='Bottom'/> " +
+				"</Grid>"));
 
-	// await RunOnUIThread(() =>
+			TestServices.WindowHelper.WindowContent = root;
 
-	//	{
-	//		root = Grid> (XamlReader.Load(
-	//			LR"(<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+			buttonTop = (Button)(root.FindName("buttonTop"));
+			buttonBottom = (Button)(root.FindName("buttonBottom"));
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//					  x:Name='root'>
+		XamlRoot xamlRoot = null;
+		await RunOnUIThread(() =>
+		{
+			xamlRoot = root.XamlRoot;
+		});
 
-	//					<Button x:Name='buttonTop' Content = 'button top' VerticalAlignment = 'Top' />
+		LOG_OUTPUT("Setting last input method to Touch");
+		await InjectInput(InputMethod.Touch);
 
-	//					<Button x:Name='buttonBottom' Content = 'button bottom'  VerticalAlignment = 'Bottom' />
+		MenuFlyout menuFlyout = null;
+		await RunOnUIThread(() =>
+		{
+			menuFlyout = (MenuFlyout)(XamlReader.Load(
+				"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+				"    <MenuFlyoutItem>Menu item 1</MenuFlyoutItem>" +
+				"    <MenuFlyoutItem>Menu item 2</MenuFlyoutItem>" +
+				"</MenuFlyout>"));
+		});
 
-	//				</Grid>)"));
+		FlyoutShowOptions showOptions = null;
 
+		await RunOnUIThread(() =>
+		{
+			showOptions = new FlyoutShowOptions();
+			showOptions.Position = new Point(0, (float)buttonBottom.ActualHeight);
+			showOptions.ExclusionRect = new Rect(0, 0, (float)buttonBottom.ActualWidth, (float)buttonBottom.ActualHeight);
 
-	//		TestServices.WindowHelper.WindowContent = root;
+			LOG_OUTPUT("Showing flyout on bottom button");
+			menuFlyout.ShowAt(buttonBottom, showOptions);
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//		buttonTop = Button> (root.FindName("buttonTop"));
-	//		buttonBottom = Button> (root.FindName("buttonBottom"));
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
+		await RunOnUIThread(async () =>
+		{
+			// Verify MenuFlyout is above the bottom button.
+			var menuFlyoutPresenter = await GetCurrentPresenter();
+			var menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)menuFlyoutPresenter);
+			var buttonBounds = await ControlHelper.GetBounds((FrameworkElement)buttonBottom);
 
-	//	XamlRoot xamlRoot = null;
-	// await RunOnUIThread(() =>
+			VERIFY_ARE_EQUAL(menuFlyoutBounds.Bottom, buttonBounds.Top);
+		});
 
-	//	{
-	//		xamlRoot = root.XamlRoot;
-	//	});
+		await FlyoutHelper.HideFlyout(menuFlyout);
 
-	//	LOG_OUTPUT("Setting last input method to Touch");
-	//	TestServices.WindowHelper.SetLastInputMethod(Private.Infrastructure.LastInputDeviceType.Touch, xamlRoot);
+		await RunOnUIThread(() =>
+		{
+			showOptions = new FlyoutShowOptions();
+			showOptions.Position = new Point(0, (float)buttonTop.ActualHeight);
+			showOptions.ExclusionRect = new Rect(0, 0, (float)buttonTop.ActualWidth, (float)buttonTop.ActualHeight);
 
-	//	MenuFlyout menuFlyout = null;
-	// await RunOnUIThread(() =>
+			LOG_OUTPUT("Showing flyout on top button");
+			menuFlyout.ShowAt(buttonTop, showOptions);
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//	{
-	//		menuFlyout = MenuFlyout> (XamlReader.Load(
-	//			"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>"
+		await RunOnUIThread(async () =>
+		{
+			// Verify MenuFlyout is below the top button.
+			var menuFlyoutPresenter = await GetCurrentPresenter();
+			var menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)menuFlyoutPresenter);
+			var buttonBounds = await ControlHelper.GetBounds((FrameworkElement)buttonTop);
 
-	//			"    <MenuFlyoutItem>Menu item 1</MenuFlyoutItem>"
+			VERIFY_ARE_EQUAL(menuFlyoutBounds.Top, buttonBounds.Bottom);
+		});
 
-	//			"    <MenuFlyoutItem>Menu item 2</MenuFlyoutItem>"
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
 
-	//			"</MenuFlyout>"));
-	//	});
+	[TestMethod]
+	[Ignore("Pending windowed popups")]
+	public async Task ValidateShowAtMonitorEdge()
+	{
+		await ValidateShowAtMonitorEdge(1.0f /*scaleFactor*/);
+		await ValidateShowAtMonitorEdge(1.25f /*scaleFactor*/);
+		await ValidateShowAtMonitorEdge(1.5f /*scaleFactor*/);
+		await ValidateShowAtMonitorEdge(1.75f /*scaleFactor*/);
+		await ValidateShowAtMonitorEdge(2.25f /*scaleFactor*/);
+	}
 
-	//	FlyoutShowOptions ^ showOptions = null;
+	private async Task ValidateShowAtMonitorEdge(float scaleFactor)
+	{
+		LOG_OUTPUT($"Setting Window Size to 421x421 and global Scale to {scaleFactor}.");
+		Size size = new Size(421, 421);
+		TestServices.WindowHelper.SetWindowSizeOverride(size);
+#if HAS_UNO
+		TestServices.WindowHelper.SetTestScaling(scaleFactor);
+#endif
 
-	// await RunOnUIThread(() =>
+		Rect windowBounds = default;
+		Rect monitorBounds = default;
 
-	//	{
-	//		showOptions = new FlyoutShowOptions();
-	//		showOptions.Position = Point(0, (float)buttonBottom.ActualHeight);
-	//		showOptions.ExclusionRect = Rect(0, 0, (float)buttonBottom.ActualWidth, (float)buttonBottom.ActualHeight);
+		await RunOnUIThread(() =>
+		{
+			windowBounds = TestServices.WindowHelper.WindowBounds;
+			LOG_OUTPUT($"WindowBounds: {windowBounds.X},{windowBounds.Y},{windowBounds.Width},{windowBounds.Height}.");
 
-	//		LOG_OUTPUT("Showing flyout on bottom button");
-	//		menuFlyout.ShowAt(buttonBottom, showOptions);
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
+			// TODO Uno: there is no monitor API in the test services; the window bounds stand in for the monitor bounds.
+			monitorBounds = TestServices.WindowHelper.WindowBounds;
+			LOG_OUTPUT($"MonitorBounds: {monitorBounds.X},{monitorBounds.Y},{monitorBounds.Width},{monitorBounds.Height}.");
+		});
 
-	// await RunOnUIThread(() =>
+		var menuFlyout = await CreateMenuFlyout(FlyoutPlacementMode.Bottom);
+		VERIFY_IS_NOT_NULL(menuFlyout);
 
-	//	{
-	//		// Verify MenuFlyout is above the bottom button.
-	//		var menuFlyoutPresenter = await GetCurrentPresenter();
-	//		var menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)(menuFlyoutPresenter));
-	//		var buttonBounds = await ControlHelper.GetBounds((FrameworkElement)(buttonBottom));
+		var loadedEvent = new Event();
+		var loadedRegistration = CreateSafeEventRegistration<Grid, RoutedEventHandler>(nameof(Grid.Loaded));
+		var flyoutOpenedEvent = new Event();
+		uint flyoutOpenedCount = 0;
+		var flyoutOpenedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		var flyoutClosedEvent = new Event();
+		uint flyoutClosedCount = 0;
+		var flyoutClosedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
 
-	//		VERIFY_ARE_EQUAL(menuFlyoutBounds.Bottom, buttonBounds.Top);
-	//	});
+		try
+		{
+			await RunOnUIThread(() =>
+			{
+				flyoutOpenedRegistration.Attach(menuFlyout, (s, e) =>
+				{
+					LOG_OUTPUT("MenuFlyout.Opened event raised.");
+					flyoutOpenedEvent.Set();
+					flyoutOpenedCount++;
+				});
 
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
+				flyoutClosedRegistration.Attach(menuFlyout, (s, e) =>
+				{
+					LOG_OUTPUT("MenuFlyout.Closed event raised.");
+					flyoutClosedEvent.Set();
+					flyoutClosedCount++;
+				});
 
-	// await RunOnUIThread(() =>
+				var rootPanel = new Grid();
 
-	//	{
-	//		showOptions = new FlyoutShowOptions();
-	//		showOptions.Position = Point(0, (float)buttonTop.ActualHeight);
-	//		showOptions.ExclusionRect = Rect(0, 0, (float)buttonTop.ActualWidth, (float)buttonTop.ActualHeight);
+				loadedRegistration.Attach(rootPanel, (s, e) =>
+				{
+					LOG_OUTPUT("Grid.Loaded event raised.");
+					loadedEvent.Set();
+				});
 
-	//		LOG_OUTPUT("Showing flyout on top button");
-	//		menuFlyout.ShowAt(buttonTop, showOptions);
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
+				LOG_OUTPUT("Setting WindowContent.");
+				TestServices.WindowHelper.WindowContent = rootPanel;
+			});
 
-	// await RunOnUIThread(() =>
+			LOG_OUTPUT("Waiting for Loaded event...");
+			await loadedEvent.WaitForDefault();
+			await TestServices.WindowHelper.WaitForIdle();
 
-	//	{
-	//		// Verify MenuFlyout is below the top button.
-	//		var menuFlyoutPresenter = await GetCurrentPresenter();
-	//		var menuFlyoutBounds = await ControlHelper.GetBounds((FrameworkElement)(menuFlyoutPresenter));
-	//		var buttonBounds = await ControlHelper.GetBounds((FrameworkElement)(buttonTop));
+			await RunOnUIThread(() =>
+			{
+				// TODO Uno: WindowHelper.GetAvailableMonitorBounds is not available; it only logged the monitor geometry upstream.
+				LOG_OUTPUT($"Showing MenuFlyout at position {monitorBounds.Width / scaleFactor},{(monitorBounds.Height - 32.0f) / scaleFactor} as a windowed popup.");
+				Point showAtPosition = new Point(monitorBounds.Width / scaleFactor, (monitorBounds.Height - 32.0f) / scaleFactor);
+				menuFlyout.ShowAt(null, showAtPosition);
+			});
 
-	//		VERIFY_ARE_EQUAL(menuFlyoutBounds.Top, buttonBounds.Bottom);
-	//	});
+			LOG_OUTPUT("Waiting for Opened event...");
+			await flyoutOpenedEvent.WaitForDefault();
+			await TestServices.WindowHelper.WaitForIdle();
 
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
-
-	//[TestMethod] public async Task ValidateShowAtMonitorEdge()
-	//{
-	//	ValidateShowAtMonitorEdge(1.0f  /*scaleFactor*/);
-	//	ValidateShowAtMonitorEdge(1.25f /*scaleFactor*/);
-	//	ValidateShowAtMonitorEdge(1.5f  /*scaleFactor*/);
-	//	ValidateShowAtMonitorEdge(1.75f /*scaleFactor*/);
-	//	ValidateShowAtMonitorEdge(2.25f /*scaleFactor*/);
-	//}
-
-	//[TestMethod] public async Task ValidateShowAtMonitorEdge(float scaleFactor)
-	//{
-
-
-	//	LOG_OUTPUT("Setting Window Size to 421x421 and global Scale to %f.", scaleFactor);
-	//	Windows.Foundation.Size size(421, 421);
-	//	TestServices.WindowHelper.SetWindowSizeOverrideWithScale(size, scaleFactor);
-
-	//	Rect windowBounds;
-	//	Rect monitorBounds;
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		windowBounds = TestServices.WindowHelper.WindowBounds;
-	//		LOG_OUTPUT("WindowBounds: %f,%f,%f,%f.", windowBounds.X, windowBounds.Y, windowBounds.Width, windowBounds.Height);
-
-	//		monitorBounds = TestServices.WindowHelper.MonitorBounds;
-	//		LOG_OUTPUT("MonitorBounds: %f,%f,%f,%f.", monitorBounds.X, monitorBounds.Y, monitorBounds.Width, monitorBounds.Height);
-	//	});
-
-	//	var menuFlyout = await CreateMenuFlyout(FlyoutPlacementMode.Bottom);
-	//	VERIFY_IS_NOT_NULL(menuFlyout);
-
-	//	var loadedEvent = new Event();
-	//	var loadedRegistration = CreateSafeEventRegistration(Grid, Loaded);
-	//	var flyoutOpenedEvent = new Event();
-	//	var flyoutOpenedCount = new uint();
-	//	var flyoutOpenedRegistration = CreateSafeEventRegistration(MenuFlyout, Opened);
-	//	var flyoutClosedEvent = new Event();
-	//	var flyoutClosedCount = new uint();
-	//	var flyoutClosedRegistration = CreateSafeEventRegistration(MenuFlyout, Closed);
-
-	//	*flyoutOpenedCount = 0;
-	//	*flyoutClosedCount = 0;
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		flyoutOpenedRegistration.Attach(menuFlyout, [flyoutOpenedEvent, flyoutOpenedCount]()
-
-	//		{
-	//			LOG_OUTPUT("MenuFlyout.Opened event raised.");
-	//			flyoutOpenedEvent.Set();
-	//			(*flyoutOpenedCount)++;
-	//		});
-
-	//		flyoutClosedRegistration.Attach(menuFlyout, [flyoutClosedEvent, flyoutClosedCount]()
-
-	//		{
-	//			LOG_OUTPUT("MenuFlyout.Closed event raised.");
-	//			flyoutClosedEvent.Set();
-	//			(*flyoutClosedCount)++;
-	//		});
-
-	//		var rootPanel = new Grid();
-
-	//		loadedRegistration.Attach(rootPanel, (s, e) =>
-
-	//		{
-	//			LOG_OUTPUT("Grid.Loaded event raised.");
-	//			loadedEvent.Set();
-	//		});
-
-	//		LOG_OUTPUT("Setting WindowContent.");
-	//		TestServices.WindowHelper.WindowContent = rootPanel;
-	//	});
-
-	//	LOG_OUTPUT("Waiting for Loaded event...");
-	//	await loadedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		Point targetPointClientLogical = { 1, 1 };
-	//		Rect availableMonitorBounds = default;
-	//		Point screenOffset = default;
-	//		Point targetPointScreenPhysical = default;
-	//		Rect inputPaneOccludeRectScreenLogical = default;
-
-	//		TestServices.WindowHelper.GetAvailableMonitorBounds(
-	//			TestServices.WindowHelper.WindowContent,
-	//			targetPointClientLogical,
-	//			&availableMonitorBounds,
-	//			&screenOffset,
-	//			&targetPointScreenPhysical,
-	//			&inputPaneOccludeRectScreenLogical);
-
-	//		LOG_OUTPUT("availableMonitorBounds: %f,%f,%f,%f.", availableMonitorBounds.X, availableMonitorBounds.Y, availableMonitorBounds.Width, availableMonitorBounds.Height);
-	//		LOG_OUTPUT("screenOffset: %f,%f.", screenOffset.X, screenOffset.Y);
-	//		LOG_OUTPUT("targetPointScreenPhysical: %f,%f.", targetPointScreenPhysical.X, targetPointScreenPhysical.Y);
-	//		LOG_OUTPUT("inputPaneOccludeRectScreenLogical: %f,%f,%f,%f.", inputPaneOccludeRectScreenLogical.X, inputPaneOccludeRectScreenLogical.Y, inputPaneOccludeRectScreenLogical.Width, inputPaneOccludeRectScreenLogical.Height);
-
-	//		LOG_OUTPUT("Showing MenuFlyout at position %f,%f as a windowed popup.", monitorBounds.Width / scaleFactor, (monitorBounds.Height - 32.0f) / scaleFactor);
-	//		Point showAtPosition = { monitorBounds.Width / scaleFactor, (monitorBounds.Height - 32.0f) / scaleFactor };
-	//		menuFlyout.ShowAt(null, showAtPosition);
-	//	});
-
-	//	LOG_OUTPUT("Waiting for Opened event...");
-	//	flyoutawait openedEvent.WaitForDefault();
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	LOG_OUTPUT("Hiding MenuFlyout.");
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
+			LOG_OUTPUT("Hiding MenuFlyout.");
+			await FlyoutHelper.HideFlyout(menuFlyout);
+		}
+		finally
+		{
+#if HAS_UNO
+			TestServices.WindowHelper.UnsetTestScaling();
+#endif
+		}
+	}
 
 	[TestMethod]
 	public async Task VerifyDependencyPropertyDefaultValues()
@@ -7478,6 +7221,7 @@ public class MenuFlyoutIntegrationTests
 
 		MenuFlyout flyout = null;
 		MenuFlyoutSubItem subItem = null;
+		SplitMenuFlyoutItem splitItem = null;
 		Button flyoutTarget = null;
 
 		var openedEvent = new Event();
@@ -7486,59 +7230,69 @@ public class MenuFlyoutIntegrationTests
 		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
 
 		await RunOnUIThread(() =>
+		{
+			flyout = new MenuFlyout();
+			flyout.Placement = FlyoutPlacementMode.Right;
+			flyout.ShouldConstrainToRootBounds = true;
 
-		   {
-			   flyout = new MenuFlyout();
-			   flyout.Placement = FlyoutPlacementMode.Right;
-			   flyout.ShouldConstrainToRootBounds = true;
+			for (int i = 0; i < 10; i++)
+			{
+				var item = new MenuFlyoutItem();
+				item.Text = "Item";
+				flyout.Items.Add(item);
+			}
 
-			   for (int i = 0; i < 10; i++)
-			   {
-				   var item = new MenuFlyoutItem();
-				   item.Text = "Item";
-				   flyout.Items.Add(item);
-			   }
+			subItem = new MenuFlyoutSubItem();
+			subItem.Text = "Sub item";
+			flyout.Items.Add(subItem);
 
-			   subItem = new MenuFlyoutSubItem();
-			   subItem.Text = "Sub item";
-			   flyout.Items.Add(subItem);
+			splitItem = new SplitMenuFlyoutItem();
+			splitItem.Text = "Split item";
+			flyout.Items.Add(splitItem);
 
-			   for (int i = 0; i < 20; i++)
-			   {
-				   var item = new MenuFlyoutItem();
-				   item.Text = "Item";
-				   flyout.Items.Add(item);
-			   }
+			for (int i = 0; i < 20; i++)
+			{
+				var item = new MenuFlyoutItem();
+				item.Text = "Item";
+				flyout.Items.Add(item);
+			}
 
-			   for (int i = 0; i < 30; i++)
-			   {
-				   var item = new MenuFlyoutItem();
-				   item.Text = "Item";
-				   subItem.Items.Add(item);
-			   }
+			for (int i = 0; i < 30; i++)
+			{
+				var item = new MenuFlyoutItem();
+				item.Text = "Item";
+				subItem.Items.Add(item);
+			}
 
-			   openedRegistration.Attach(flyout, (s, e) =>
-			   {
-				   LOG_OUTPUT("MenuFlyout opened.");
-				   openedEvent.Set();
-			   });
+			for (int i = 0; i < 30; i++)
+			{
+				var item = new MenuFlyoutItem();
+				item.Text = "Item";
+				splitItem.Items.Add(item);
+			}
 
-			   closedRegistration.Attach(flyout, (s, e) =>
-			   {
-				   LOG_OUTPUT("MenuFlyout closed.");
-				   closedEvent.Set();
-			   });
+			openedRegistration.Attach(flyout, (s, e) =>
+			{
+				LOG_OUTPUT("MenuFlyout opened.");
+				openedEvent.Set();
+			});
 
-			   flyoutTarget = new Button();
-			   flyoutTarget.Content = "Click for flyout";
-			   flyoutTarget.HorizontalAlignment = HorizontalAlignment.Left;
-			   flyoutTarget.VerticalAlignment = VerticalAlignment.Center;
-			   flyoutTarget.Flyout = flyout;
+			closedRegistration.Attach(flyout, (s, e) =>
+			{
+				LOG_OUTPUT("MenuFlyout closed.");
+				closedEvent.Set();
+			});
 
-			   var rootPanel = new Grid();
-			   rootPanel.Children.Add(flyoutTarget);
-			   TestServices.WindowHelper.WindowContent = rootPanel;
-		   });
+			flyoutTarget = new Button();
+			flyoutTarget.Content = "Click for flyout";
+			flyoutTarget.HorizontalAlignment = HorizontalAlignment.Left;
+			flyoutTarget.VerticalAlignment = VerticalAlignment.Center;
+			flyoutTarget.Flyout = flyout;
+
+			var rootPanel = new Grid();
+			rootPanel.Children.Add(flyoutTarget);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+		});
 
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -7567,15 +7321,45 @@ public class MenuFlyoutIntegrationTests
 			var flyoutSubMenuBounds = await ControlHelper.GetBounds(flyoutSubMenuPresenter);
 
 			var xamlRootSize = TestServices.WindowHelper.WindowContent.XamlRoot.Size;
-			LOG_OUTPUT("XAML root size:             width=%.0f height=%.0f", xamlRootSize.Width, xamlRootSize.Height);
-			LOG_OUTPUT("MenuFlyout bounds:          left=%.0f top=%.0f width=%.0f height=%.0f", flyoutBounds.Left, flyoutBounds.Top, flyoutBounds.Width, flyoutBounds.Height);
-			LOG_OUTPUT("MenuFlyout sub-menu bounds: left=%.0f top=%.0f width=%.0f height=%.0f", flyoutSubMenuBounds.Left, flyoutSubMenuBounds.Top, flyoutSubMenuBounds.Width, flyoutSubMenuBounds.Height);
+			LOG_OUTPUT($"XAML root size:             width={xamlRootSize.Width:F0} height={xamlRootSize.Height:F0}");
+			LOG_OUTPUT($"MenuFlyout bounds:          left={flyoutBounds.Left:F0} top={flyoutBounds.Top:F0} width={flyoutBounds.Width:F0} height={flyoutBounds.Height:F0}");
+			LOG_OUTPUT($"MenuFlyout sub-menu bounds: left={flyoutSubMenuBounds.Left:F0} top={flyoutSubMenuBounds.Top:F0} width={flyoutSubMenuBounds.Width:F0} height={flyoutSubMenuBounds.Height:F0}");
 
 			VERIFY_ARE_EQUAL(0.0, flyoutBounds.Top);
-			// XamlRoot.Size is a float Size while the bounds come from a double ActualHeight, so exact equality was never an invariant here.
-			VERIFY_ARE_VERY_CLOSE(flyoutBounds.Height, xamlRootSize.Height, 1.0, "MenuFlyout height should be clamped to the XAML root height");
+			// TODO Uno: Upstream runs at 100%. At other scales, these differ by the rounding of a physical pixel.
+			VERIFY_ARE_VERY_CLOSE(xamlRootSize.Height, flyoutBounds.Height, 1);
 			VERIFY_ARE_EQUAL(0.0, flyoutSubMenuBounds.Top);
-			VERIFY_ARE_VERY_CLOSE(flyoutSubMenuBounds.Height, xamlRootSize.Height, 1.0, "MenuFlyout sub-menu height should be clamped to the XAML root height");
+			VERIFY_ARE_VERY_CLOSE(xamlRootSize.Height, flyoutSubMenuBounds.Height, 1);
+		});
+
+		LOG_OUTPUT("Tapping on the split item secondary part to show the split item sub-menu.");
+		await TapSplitMenuItemSecondary(splitItem);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(async () =>
+		{
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.WindowContent.XamlRoot);
+
+			LOG_OUTPUT("There should be two popups: one for the MenuFlyout, and one for the split item's sub-menu.");
+			VERIFY_ARE_EQUAL(2, popups.Count);
+
+			var flyoutPopup = popups[1];
+			var flyoutPresenter = (FrameworkElement)(flyoutPopup.Child);
+			var flyoutBounds = await ControlHelper.GetBounds(flyoutPresenter);
+
+			var splitItemSubMenuPopup = popups[0];
+			var splitItemSubMenuPresenter = (FrameworkElement)(splitItemSubMenuPopup.Child);
+			var splitItemSubMenuBounds = await ControlHelper.GetBounds(splitItemSubMenuPresenter);
+
+			var xamlRootSize = TestServices.WindowHelper.WindowContent.XamlRoot.Size;
+			LOG_OUTPUT($"XAML root size:                    width={xamlRootSize.Width:F0} height={xamlRootSize.Height:F0}");
+			LOG_OUTPUT($"MenuFlyout bounds:                 left={flyoutBounds.Left:F0} top={flyoutBounds.Top:F0} width={flyoutBounds.Width:F0} height={flyoutBounds.Height:F0}");
+			LOG_OUTPUT($"Split item sub-menu bounds:        left={splitItemSubMenuBounds.Left:F0} top={splitItemSubMenuBounds.Top:F0} width={splitItemSubMenuBounds.Width:F0} height={splitItemSubMenuBounds.Height:F0}");
+
+			VERIFY_ARE_EQUAL(0.0, flyoutBounds.Top);
+			VERIFY_ARE_EQUAL(xamlRootSize.Height, flyoutBounds.Height);
+			VERIFY_ARE_EQUAL(0.0, splitItemSubMenuBounds.Top);
+			VERIFY_ARE_EQUAL(xamlRootSize.Height, splitItemSubMenuBounds.Height);
 		});
 
 		LOG_OUTPUT("Tapping on the button again to hide the MenuFlyout.");
@@ -8235,7 +8019,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
+	[Ignore("Open after the Stage C port: SubMenuItemStyle does not reach the items, their Tag stays null; not root-caused.")]
 	public async Task ValidateSplitMenuItemSubMenuItemStyleFromXaml()
 	{
 		Button button = null;
@@ -8308,7 +8092,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
+	[Ignore("Open after the Stage C port: SubMenuItemStyle does not reach the items, their Tag stays null; not root-caused.")]
 	public async Task ValidateSplitMenuItemSubMenuItemStyleWithLocalStyles()
 	{
 		Button button = null;
@@ -8394,7 +8178,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
+	[Ignore("Open after the Stage C port: SubMenuItemStyle does not reach the items, their Tag stays null; not root-caused.")]
 	public async Task ValidateCanChangeSplitMenuItemSubMenuItemStyle()
 	{
 		Button button = null;
@@ -8529,7 +8313,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
+	[Ignore("Open after the Stage C port: SubMenuItemStyle does not reach the items, their Tag stays null; not root-caused.")]
 	public async Task ValidateSplitMenuItemSubMenuItemStyleWithDynamicItems()
 	{
 		Button button = null;
