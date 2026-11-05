@@ -3,6 +3,7 @@
 // MUX Reference FlyoutIntegrationTests.cpp, commit bac7a9c33
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -2943,8 +2944,9 @@ public class FlyoutIntegrationTests
 				"</Grid>"));
 
 			rectangle = (Rectangle)(root.FindName("Rectangle"));
-			flyout = (Flyout)(root.FindName("Flyout"));
-			flyoutGrid = (Grid)(root.FindName("FlyoutGrid"));
+			// TODO Uno: FindName can't reach flyouts until the namescope work lands (uno--findname-misses-resource-and-flyout-names-in-xamlreader).
+			flyout = (Flyout)rectangle.ContextFlyout;
+			flyoutGrid = (Grid)flyout.Content;
 
 			loadedEventRegistration.Attach(root, (s, e) => { loadedEvent.Set(); });
 			TestServices.WindowHelper.WindowContent = root;
@@ -3034,11 +3036,13 @@ public class FlyoutIntegrationTests
 				"</Grid>"));
 
 			rectangle = (Rectangle)(root.FindName("Rectangle"));
-			flyout = (Flyout)(root.FindName("Flyout"));
-			innerRectangle1 = (Rectangle)(root.FindName("InnerRectangle1"));
-			innerRectangle2 = (Rectangle)(root.FindName("InnerRectangle2"));
-			innerFlyout1 = (Flyout)(root.FindName("InnerFlyout1"));
-			innerFlyout2 = (Flyout)(root.FindName("InnerFlyout2"));
+			// TODO Uno: FindName can't reach flyouts until the namescope work lands (uno--findname-misses-resource-and-flyout-names-in-xamlreader).
+			flyout = (Flyout)rectangle.ContextFlyout;
+			var flyoutPanel = (StackPanel)flyout.Content;
+			innerRectangle1 = (Rectangle)flyoutPanel.Children[0];
+			innerRectangle2 = (Rectangle)flyoutPanel.Children[1];
+			innerFlyout1 = (Flyout)innerRectangle1.ContextFlyout;
+			innerFlyout2 = (Flyout)innerRectangle2.ContextFlyout;
 
 			mainFlyoutOpenedRegistration.Attach(flyout, (s, e) => { mainFlyoutIsOpen = true; });
 			mainFlyoutClosedRegistration.Attach(flyout, (s, e) => { mainFlyoutIsOpen = false; });
@@ -3122,7 +3126,8 @@ public class FlyoutIntegrationTests
 
 			textBox = (TextBox)(root.FindName("TextBox"));
 			flyoutButton = (Button)(root.FindName("FlyoutButton"));
-			flyout = (Flyout)(root.FindName("Flyout"));
+			// TODO Uno: FindName can't reach flyouts until the namescope work lands (uno--findname-misses-resource-and-flyout-names-in-xamlreader).
+			flyout = (Flyout)flyoutButton.Flyout;
 
 			flyoutClosedRegistration.Attach(flyout, (s, e) => { flyoutClosedEvent.Set(); });
 
@@ -3204,8 +3209,9 @@ public class FlyoutIntegrationTests
 
 			flyoutButton = (Button)(rootPanel.FindName("flyoutButton"));
 			dummyButton = (Button)(rootPanel.FindName("dummyButton"));
-			buttonInFlyout = (Button)(rootPanel.FindName("buttonInFlyout"));
-			flyout = (Flyout)(rootPanel.FindName("flyout"));
+			// TODO Uno: FindName can't reach flyouts until the namescope work lands (uno--findname-misses-resource-and-flyout-names-in-xamlreader).
+			flyout = (Flyout)flyoutButton.Flyout;
+			buttonInFlyout = (Button)flyout.Content;
 
 			loadedEventRegistration.Attach(rootPanel, (s, e) => { loadedEvent.Set(); });
 			passThroughClickEventRegistration.Attach(dummyButton, (s, e) => { clickEvent.Set(); });
@@ -3478,7 +3484,8 @@ public class FlyoutIntegrationTests
 
 			TestServices.WindowHelper.WindowContent = rootPanel;
 
-			flyout = (Flyout)(rootPanel.FindName("flyout"));
+			// TODO Uno: FindName can't reach flyouts until the namescope work lands (uno--findname-misses-resource-and-flyout-names-in-xamlreader).
+			flyout = rootPanel.Resources.Values.OfType<Flyout>().First();
 			targetButton = (Button)(rootPanel.FindName("targetButton"));
 		});
 
@@ -3523,7 +3530,8 @@ public class FlyoutIntegrationTests
 
 			TestServices.WindowHelper.WindowContent = rootPanel;
 
-			flyout = (Flyout)(rootPanel.FindName("flyout"));
+			// TODO Uno: FindName can't reach flyouts until the namescope work lands (uno--findname-misses-resource-and-flyout-names-in-xamlreader).
+			flyout = rootPanel.Resources.Values.OfType<Flyout>().First();
 			focusButton = (Button)(rootPanel.FindName("focusButton"));
 			targetButton = (Button)(rootPanel.FindName("targetButton"));
 		});
@@ -3583,7 +3591,8 @@ public class FlyoutIntegrationTests
 
 			TestServices.WindowHelper.WindowContent = rootPanel;
 
-			flyout = (Flyout)(rootPanel.FindName("flyout"));
+			// TODO Uno: FindName can't reach flyouts until the namescope work lands (uno--findname-misses-resource-and-flyout-names-in-xamlreader).
+			flyout = rootPanel.Resources.Values.OfType<Flyout>().First();
 			clickHandlerButton = (Button)(rootPanel.FindName("clickHandlerButton"));
 			targetButton = (Button)(rootPanel.FindName("targetButton"));
 
@@ -3642,8 +3651,9 @@ public class FlyoutIntegrationTests
 
 			TestServices.WindowHelper.WindowContent = rootPanel;
 
-			flyout = (Flyout)(rootPanel.FindName("flyout"));
 			targetButton = (Button)(rootPanel.FindName("targetButton"));
+			// TODO Uno: FindName can't reach flyouts until the namescope work lands (uno--findname-misses-resource-and-flyout-names-in-xamlreader).
+			flyout = (Flyout)targetButton.Flyout;
 
 			flyoutOpenedRegistration.Attach(flyout, (s, e) =>
 			{
@@ -3743,7 +3753,8 @@ public class FlyoutIntegrationTests
 			TestServices.WindowHelper.WindowContent = rootPanel;
 
 			rectangle = (Rectangle)(rootPanel.FindName("rectangle"));
-			flyout = (Flyout)(rootPanel.FindName("flyout"));
+			// TODO Uno: FindName can't reach flyouts until the namescope work lands (uno--findname-misses-resource-and-flyout-names-in-xamlreader).
+			flyout = (Flyout)rectangle.ContextFlyout;
 
 			flyoutOpenedRegistration.Attach(flyout, (s, e) =>
 			{
@@ -4230,7 +4241,8 @@ public class FlyoutIntegrationTests
 			textBlockWithoutContextFlyout = (TextBlock)(root.FindName("textBlockWithoutContextFlyout"));
 			textBlockWithTextSelection = (TextBlock)(root.FindName("textBlockWithTextSelection"));
 
-			flyout1 = (Flyout)(root.FindName("flyout1"));
+			// TODO Uno: FindName can't reach flyouts until the namescope work lands (uno--findname-misses-resource-and-flyout-names-in-xamlreader).
+			flyout1 = (Flyout)textBlockWithContextFlyout.ContextFlyout;
 			defaultTextBlockContextFlyout = textBlockWithoutContextFlyout.ContextFlyout;
 
 			VERIFY_ARE_EQUAL(defaultTextBlockContextFlyout, textBlockWithTextSelection.ContextFlyout, "TextBlocks should share same default ContextFlyout");
@@ -4391,7 +4403,8 @@ public class FlyoutIntegrationTests
 			TestServices.WindowHelper.WindowContent = rootPanel;
 
 			button = (Button)(rootPanel.FindName("button"));
-			flyout = (Flyout)(rootPanel.FindName("flyout"));
+			// TODO Uno: FindName can't reach flyouts until the namescope work lands (uno--findname-misses-resource-and-flyout-names-in-xamlreader).
+			flyout = rootPanel.Resources.Values.OfType<Flyout>().First();
 		});
 
 		await TestServices.WindowHelper.WaitForIdle();

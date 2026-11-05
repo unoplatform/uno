@@ -249,31 +249,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			popup.IsOpen = false;
 		}
 
-#if HAS_UNO // PopupPanel is Uno-specific
-		[TestMethod]
-		public async Task When_Child_Visual_Parents_Do_Not_Include_PopupPanel()
+[TestMethod]
+		public async Task When_Child_Visual_Parent_Is_PopupRoot()
 		{
 			var popup = await LoadAndOpenPopupWithButtonAsync();
-			bool found = SearchPopupChildAscendants(popup, element => element is PopupPanel, VisualTreeHelper.GetParent);
 
-			Assert.IsFalse(found);
+			var visualParent = VisualTreeHelper.GetParent(popup.Child);
+
+			Assert.AreEqual("PopupRoot", visualParent.GetType().Name);
 
 			// Should not throw
 			popup.IsOpen = false;
 		}
-
-		[TestMethod]
-		public async Task When_Child_Logical_Parents_Do_Not_Include_PopupPanel()
-		{
-			var popup = await LoadAndOpenPopupWithButtonAsync();
-			bool found = SearchPopupChildAscendants(popup, element => element is PopupPanel, element => (element as FrameworkElement)?.Parent);
-
-			Assert.IsFalse(found);
-
-			// Should not throw
-			popup.IsOpen = false;
-		}
-#endif
 
 		private async Task<Popup> LoadAndOpenPopupWithButtonAsync()
 		{

@@ -23,8 +23,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 // Windows_UI_Input.PointersTests.HitTest_LightDismiss: real pointer-tap hit-testing for the
 // light-dismiss layer (Popup / Flyout / ComboBox dropdown).
 //
-// Reconstructed inline rather than loaded via RunAsync: a Popup/Flyout's Child is reparented to a
-// PopupPanel under the root's PopupRoot layer (a sibling of the window content), so elements inside
+// Reconstructed inline rather than loaded via RunAsync: a Popup/Flyout's Child is reparented to the
+// root's PopupRoot layer (a sibling of the window content), so elements inside
 // an (open) popup are NOT reachable by descending from WindowHelper.WindowContent — the App.Marked/
 // App.Query shim used by RunAsync-based tests can't find them. Holding direct C# references to the
 // popups and their content sidesteps that entirely, and lets each scenario use small, deliberately

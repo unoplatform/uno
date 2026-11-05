@@ -52,10 +52,7 @@ namespace Private.Infrastructure
 			}
 
 #if !WINAPPSDK
-			internal static FrameworkElement GetPopupOverlayElement(Popup popup)
-			{
-				return null;
-			}
+			internal static FrameworkElement GetPopupOverlayElement(Popup popup) => popup.OverlayElement;
 #endif
 		}
 

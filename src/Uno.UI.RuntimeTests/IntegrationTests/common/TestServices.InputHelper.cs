@@ -55,7 +55,7 @@ namespace Private.Infrastructure
 				EnsureInputInjectorSupported();
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
-					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
 					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
 					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
 					mouse.MoveTo(center);
@@ -74,7 +74,7 @@ namespace Private.Infrastructure
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
-					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
 					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
 					finger.Press(center);
 				});
@@ -127,7 +127,7 @@ namespace Private.Infrastructure
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					using var finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
-					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
 					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
 
 					const uint steps = 10;
@@ -150,7 +150,7 @@ namespace Private.Infrastructure
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
-					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
 					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
 					mouse.Press(center);
 					mouse.Release();
@@ -207,7 +207,7 @@ namespace Private.Infrastructure
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
-					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
 					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
 					var target = new Point(center.X + dx, center.Y + dy);
 
@@ -261,7 +261,7 @@ namespace Private.Infrastructure
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					using var pen = InputInjector.TryCreate()?.GetPen() ?? throw new InvalidOperationException("Failed to create pen");
-					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
 					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
 					pen.Tap(center);
 				});

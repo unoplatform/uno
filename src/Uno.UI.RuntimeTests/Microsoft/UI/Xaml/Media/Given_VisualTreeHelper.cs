@@ -46,7 +46,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void OpenPopups_Popups_Unique()
 		{
-			var popup = new Popup();
+			// CPopup::SetValue(Popup_IsOpen): a popup without a child doesn't join the open popups.
+			var popup = new Popup { Child = new Border() };
 			popup.XamlRoot = WindowHelper.XamlRoot;
 			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 			popup.IsOpen = true;
@@ -59,7 +60,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void OpenPopups_Popups_Include_Instance()
 		{
-			var popup = new Popup();
+			// CPopup::SetValue(Popup_IsOpen): a popup without a child doesn't join the open popups.
+			var popup = new Popup { Child = new Border() };
 			popup.XamlRoot = WindowHelper.XamlRoot;
 			popup.IsOpen = true;
 			CollectionAssert.Contains(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ToArray(), popup);
