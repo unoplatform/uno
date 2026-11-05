@@ -191,7 +191,7 @@ public partial class ItemsSourceView
 		}
 	}
 
-	// Uno-specific: referenced by the source only, so it must not reference the view.
+	// Uno-specific: referenced by the source, so it must hold the view only weakly.
 	private sealed class SourceSubscription : IDisposable
 	{
 		private readonly WeakReference<ItemsSourceView> _owner;
