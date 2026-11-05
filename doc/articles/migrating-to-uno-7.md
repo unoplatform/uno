@@ -326,9 +326,8 @@ Rewrite the markup:
 | `xamarin:`, and `legacy:` listed in `mc:Ignorable` | drop the prefix |
 
 The removed names stay valid as ordinary aliases of a `using:` namespace, and are not reported then. In particular,
-`xmlns:legacy="using:Uno.UI.Controls.Legacy"` names a live namespace (for instance
-`Uno.UI.Controls.Legacy.ProgressRing`): keep that prefix, since dropping it switches `legacy:ProgressRing` to the
-WinUI `ProgressRing`.
+`xmlns:legacy="using:Uno.UI.Controls.Legacy"` names a live namespace (it still holds the `Grid` extensions): keep that
+prefix if you use it. `legacy:ProgressRing` no longer exists, see "Public API removed".
 
 #### Removed file suffixes
 
@@ -491,6 +490,11 @@ own target framework, the library's calls included.
 
 ### Public API removed
 
+- **`Uno.UI.Controls.Legacy.ProgressRing`:** the ellipse-based ring, its `DefaultWuxProgressRingStyle`
+  style and `Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings` are removed. It only existed to
+  contrast with the native ring on Android and iOS, which are gone. Use `Microsoft.UI.Xaml.Controls.ProgressRing`
+  (drop the `legacy:` prefix); it needs no extra package. Its default size is 32x32 instead of 20x20, so set
+  `Width` and `Height` explicitly if your layout relied on the smaller ring.
 - **Native base classes / identity:** `BindableView` (and `Bindable*` widget wrappers),
   `BindableUIView` (and `BindableUI*`). `UIElement` no longer inherits a native
   `View`/`UIView`/DOM element. Remove casts to `Android.Views.View` / `UIKit.UIView`;
@@ -1486,7 +1490,7 @@ To port a custom source, move the work as follows:
   type it could not find in `using:Uno.UI.Controls.Legacy` to the `Microsoft.UI.Xaml.Controls` type of the
   same name, a leftover of the native legacy lists removed in 7.0, so this markup already produced the
   regular controls. Use `ListView` and `GridView` from the default namespace. Types that do exist in that
-  namespace, such as `legacy:ProgressRing`, are unaffected.
+  namespace are unaffected.
 
 - **Binding an attached property whose owner type cannot be found is a build error.** For
   `u:ListViewBaseCommand.Command="{Binding OpenItem}"` where `ListViewBaseCommand` does not
