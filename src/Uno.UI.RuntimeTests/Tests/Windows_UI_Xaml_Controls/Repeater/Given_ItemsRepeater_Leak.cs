@@ -25,7 +25,6 @@ public class Given_ItemsRepeater_Leak
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif
@@ -42,7 +41,6 @@ public class Given_ItemsRepeater_Leak
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif
@@ -99,7 +97,6 @@ public class Given_ItemsRepeater_Leak
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif
@@ -116,7 +113,6 @@ public class Given_ItemsRepeater_Leak
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif

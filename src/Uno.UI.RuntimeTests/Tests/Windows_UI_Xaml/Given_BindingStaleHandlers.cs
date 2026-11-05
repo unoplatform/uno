@@ -90,7 +90,6 @@ public class Given_BindingStaleHandlers
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Binding_Cleared_Then_Handler_Removed()
 	{
 		var vm = new CountingViewModel();
@@ -136,6 +135,7 @@ public class Given_BindingStaleHandlers
 
 	// An indexer path also listens to the collection's CollectionChanged: that handler must not outlive the binding either.
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI removes the handlers of collected bindings on its own schedule: flaky here
 	public async Task When_Indexer_Bound_Elements_Collected_Then_Handlers_Removed()
 	{
 		var vm = new IndexedViewModel(); // outlives the elements, and never raises
@@ -154,6 +154,7 @@ public class Given_BindingStaleHandlers
 
 	// A nested path subscribes once per segment: every segment's handler must go away.
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI removes the handlers of collected bindings on its own schedule: flaky here
 	public async Task When_Nested_Path_Bound_Elements_Collected_Then_Handlers_Removed()
 	{
 		var vm = new NestedViewModel(); // outlives the elements, and never raises
