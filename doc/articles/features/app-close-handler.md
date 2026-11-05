@@ -45,7 +45,9 @@ On macOS, quitting the app with <kbd>Cmd</kbd>+<kbd>Q</kbd>, the application men
 - Once the windows are closed, the app exits, whatever `Application.DispatcherShutdownMode` is. `OnExplicitShutdown` keeps the app running only after its last window is closed, and a later quit still ends it.
 - The quit is refused while a file picker or a sheet is open.
 
-A logout, restart or shutdown ends the app without raising `AppWindow.Closing` or `Window.Closed`, as on Windows. `Application.Current.Exit()` ends the app without raising `AppWindow.Closing`.
+A logout, restart or shutdown ends the app without raising `AppWindow.Closing` or `Window.Closed`, as on Windows.
+
+As on WinUI, `Application.Current.Exit()` closes every window as `Window.Close()` does, raising `Window.Closed` but not `AppWindow.Closing`, and then ends the app. A `Window.Closed` handler that sets `args.Handled = true` keeps its window open, and with `OnLastWindowClose` that window keeps the app running.
 
 > [!NOTE]
 > `AppWindow.Closing` does not tell a quit from a click on the window's close button. An app that cancels `Closing` to hide its window instead of closing it also cancels the quit, so it needs its own way to exit, such as a menu item that calls `Application.Current.Exit()`.
