@@ -62,6 +62,14 @@
 
 	</Target>
 
+	<!-- These packages carry their PDBs as native assets, which DebugType doesn't reach, and a RID-specific build copies them. -->
+	<Target Name="_UnoRemoveNativePdbs" AfterTargets="ResolvePackageAssets">
+		<ItemGroup>
+			<NativeCopyLocalItems Remove="@(NativeCopyLocalItems)"
+				Condition="'%(Extension)' == '.pdb' And ($([System.String]::Copy('%(NuGetPackageId)').StartsWith('SkiaSharp.NativeAssets.')) Or $([System.String]::Copy('%(NuGetPackageId)').StartsWith('HarfBuzzSharp.NativeAssets.')))" />
+		</ItemGroup>
+	</Target>
+
 	<!--
 		An explicit `Microsoft.Web.WebView2` reference pulls in the WPF-specific
 		Microsoft.Web.WebView2.Wpf reference even on a plain (non-WPF) desktop head; strip it
