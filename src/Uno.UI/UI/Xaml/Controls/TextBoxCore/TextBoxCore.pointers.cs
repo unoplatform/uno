@@ -38,6 +38,7 @@ internal sealed partial class TextBoxCore
 	// Whether the selection flyout was open when the current touch went down. The press dismisses it, so the
 	// release needs this for a tap on the iOS caret to toggle the flyout rather than always re-open it.
 	private bool _selectionFlyoutOpenAtPress;
+	private bool _flyoutClosedByPress;
 	// Max distance, in DIPs, between a tap and the caret for the tap to count as "on the caret" (iOS).
 	private const double CaretTapTolerance = 12;
 	// On iOS, a tap that may be followed by another (on the caret, or a double-tap) opens the flyout only once the
@@ -256,6 +257,7 @@ internal sealed partial class TextBoxCore
 			var textPoint = ToTouchTextPoint(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position);
 			CountTouchPress(currentPoint, textPoint, GetCharacterIndexAt(textPoint), onHandle: false);
 			_selectionFlyoutOpenAtPress = IsSelectionFlyoutOpenAtPress();
+			_flyoutClosedByPress = Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.FlyoutClosedByCurrentPress is not null;
 			_iosHoldFired = false;
 			_touchPressPointer = args.Pointer;
 			if (TouchSelectionConvention == TouchTextSelectionConvention.iOS)
@@ -430,7 +432,7 @@ internal sealed partial class TextBoxCore
 			}
 			return;
 		}
-		else if (_selectionFlyoutOpenAtPress && IsInSelection(displayBlockPoint))
+		else if (_flyoutClosedByPress && IsAtOrInSelection(displayBlockPoint))
 		{
 			// The press dismissed the flyout on its way through the light-dismiss layer: the selection it was showing for stays.
 			return;
@@ -566,6 +568,18 @@ internal sealed partial class TextBoxCore
 		return Math.Abs(displayBlockPoint.X - caretRect.Left) <= CaretTapTolerance
 			&& displayBlockPoint.Y >= caretRect.Top - CaretTapTolerance
 			&& displayBlockPoint.Y <= caretRect.Bottom + CaretTapTolerance;
+	}
+
+	// Past the end of the text, a tap lands right behind a selection reaching there.
+	private bool IsAtOrInSelection(Point displayBlockPoint)
+	{
+		if (SelectionLength == 0)
+		{
+			return false;
+		}
+
+		var index = TextBoxView.DisplayBlock.ParsedText.GetIndexAt(displayBlockPoint, false, true);
+		return index >= SelectionStart && index <= SelectionStart + SelectionLength;
 	}
 
 	private bool IsInSelection(Point displayBlockPoint)
