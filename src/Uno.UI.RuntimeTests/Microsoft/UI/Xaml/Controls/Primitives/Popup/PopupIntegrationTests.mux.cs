@@ -910,7 +910,6 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task PopupSizeIncreaseDoesntChangePosition()
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 400));

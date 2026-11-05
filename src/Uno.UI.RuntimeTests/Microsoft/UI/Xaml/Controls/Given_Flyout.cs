@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -547,7 +547,113 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if HAS_UNO // For macOS, see https://github.com/unoplatform/uno/issues/626 
+		// Expected bounds relative to the 100x100 target, from upstream's ValidateFlyoutPlacementMode table.
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(FlyoutPlacementMode.Top, 25, -54)]
+		[DataRow(FlyoutPlacementMode.TopEdgeAlignedLeft, 0, -54)]
+		[DataRow(FlyoutPlacementMode.TopEdgeAlignedRight, 50, -54)]
+		[DataRow(FlyoutPlacementMode.Bottom, 25, 104)]
+		[DataRow(FlyoutPlacementMode.BottomEdgeAlignedLeft, 0, 104)]
+		[DataRow(FlyoutPlacementMode.BottomEdgeAlignedRight, 50, 104)]
+		[DataRow(FlyoutPlacementMode.Left, -54, 25)]
+		[DataRow(FlyoutPlacementMode.LeftEdgeAlignedTop, -54, 0)]
+		[DataRow(FlyoutPlacementMode.LeftEdgeAlignedBottom, -54, 50)]
+		[DataRow(FlyoutPlacementMode.Right, 104, 25)]
+		[DataRow(FlyoutPlacementMode.RightEdgeAlignedTop, 104, 0)]
+		[DataRow(FlyoutPlacementMode.RightEdgeAlignedBottom, 104, 50)]
+		public async Task When_Placement_Is_Offset_Based(FlyoutPlacementMode placement, double x, double y)
+			=> await AssertPlacement(placement, null, x, y);
+
+		// Expected bounds relative to the target, from upstream's ValidateFlyoutPlacementModeAtPointWithExclusionRect table.
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(FlyoutPlacementMode.Top, 25, -60)]
+		[DataRow(FlyoutPlacementMode.TopEdgeAlignedLeft, 50, -60)]
+		[DataRow(FlyoutPlacementMode.TopEdgeAlignedRight, 0, -60)]
+		[DataRow(FlyoutPlacementMode.Bottom, 25, 110)]
+		[DataRow(FlyoutPlacementMode.BottomEdgeAlignedLeft, 50, 110)]
+		[DataRow(FlyoutPlacementMode.BottomEdgeAlignedRight, 0, 110)]
+		[DataRow(FlyoutPlacementMode.Left, -60, 0)]
+		[DataRow(FlyoutPlacementMode.LeftEdgeAlignedTop, -60, 25)]
+		[DataRow(FlyoutPlacementMode.LeftEdgeAlignedBottom, -60, -25)]
+		[DataRow(FlyoutPlacementMode.Right, 110, 0)]
+		[DataRow(FlyoutPlacementMode.RightEdgeAlignedTop, 110, 25)]
+		[DataRow(FlyoutPlacementMode.RightEdgeAlignedBottom, 110, -25)]
+		public async Task When_Placement_At_Point_With_ExclusionRect(FlyoutPlacementMode placement, double x, double y)
+		{
+			var options = new FlyoutShowOptions
+			{
+				Position = new Windows.Foundation.Point(50, 25),
+				ExclusionRect = new Windows.Foundation.Rect(-10, -10, 120, 120),
+			};
+
+			await AssertPlacement(placement, options, x, y);
+		}
+
+		// FlyoutBase_partial.cpp:1811: Left and Right swap their meaning in right-to-left.
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(FlyoutPlacementMode.Left, 104)]
+		[DataRow(FlyoutPlacementMode.Right, -54)]
+		public async Task When_Placement_RightToLeft(FlyoutPlacementMode placement, double x)
+			=> await AssertPlacement(placement, null, x, 25, FlowDirection.RightToLeft);
+
+		private static async Task AssertPlacement(FlyoutPlacementMode placement, FlyoutShowOptions options, double x, double y, FlowDirection flowDirection = FlowDirection.LeftToRight)
+		{
+			var target = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Margin = new Thickness(100),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				FlowDirection = flowDirection,
+				Background = new SolidColorBrush(Colors.Red),
+			};
+
+			var presenterStyle = new Style(typeof(FlyoutPresenter));
+			presenterStyle.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(0)));
+			presenterStyle.Setters.Add(new Setter(Control.PaddingProperty, new Thickness(0)));
+			presenterStyle.Setters.Add(new Setter(FrameworkElement.MinWidthProperty, 0d));
+			presenterStyle.Setters.Add(new Setter(FrameworkElement.MinHeightProperty, 0d));
+
+			var content = new Border { Width = 50, Height = 50 };
+			var flyout = new Flyout { Placement = placement, Content = content, FlyoutPresenterStyle = presenterStyle };
+
+			TestServices.WindowHelper.WindowContent = new Grid { Children = { target } };
+			await TestServices.WindowHelper.WaitForLoaded(target);
+
+			try
+			{
+				if (options is null)
+				{
+					flyout.ShowAt(target);
+				}
+				else
+				{
+					options.Placement = placement;
+					flyout.ShowAt(target, options);
+				}
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var presenter = (FrameworkElement)VisualTreeHelper.GetOpenPopupsForXamlRoot(target.XamlRoot)[0].Child;
+				var presenterBounds = presenter.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, presenter.ActualWidth, presenter.ActualHeight));
+				var targetBounds = target.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, target.ActualWidth, target.ActualHeight));
+
+				Assert.AreEqual(x, presenterBounds.X - targetBounds.X, 1, $"{presenterBounds} for {targetBounds}");
+				Assert.AreEqual(y, presenterBounds.Y - targetBounds.Y, 1, $"{presenterBounds} for {targetBounds}");
+				Assert.AreEqual(50, presenterBounds.Width, 1);
+				Assert.AreEqual(50, presenterBounds.Height, 1);
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+#if HAS_UNO // For macOS, see https://github.com/unoplatform/uno/issues/626
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Test_Flyout_Binding()

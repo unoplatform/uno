@@ -256,7 +256,6 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task ParentedPopup_RTLSubtreeInLTRTreeWUC()
 	{
 		Popup popup = await MakeRTLPopupInLTRTree();

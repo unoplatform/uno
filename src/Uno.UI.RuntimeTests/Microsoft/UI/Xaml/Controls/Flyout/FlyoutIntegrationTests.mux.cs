@@ -792,7 +792,6 @@ public class FlyoutIntegrationTests
 	// page's AppBar to unload, which could then result in immediately
 	// dismissing the Flyout (because its placement target (the AppBar) unloaded).
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that an open flyout is hidden when its placement target is unloaded")]
 	public async Task ValidateDismissOnPlacementTargetUnloaded()
 	{
@@ -4279,7 +4278,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Verify that a flyout opened near the left side of the screen with FlyoutPlacementMode = LeftEdgeAlignedTop is nudged back into view.")]
 	public async Task VerifyFlyoutOpenedOffTheLeftSideOfTheScreenIsKeptInView()
 	{

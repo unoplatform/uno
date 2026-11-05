@@ -339,57 +339,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			popup.IsOpen = false;
 		}
 
-#if HAS_UNO // FeatureConfiguration is Uno-only
+		// Popup_Partial.cpp:1012 only places a popup whose DesiredPlacement is not Auto, and CPopupRoot::MeasureOverride
+		// (Popup.cpp:4255) measures the child with an infinite constraint, so a stretched child without content has no size.
 		[TestMethod]
-		[CombinatorialData]
-		public async Task When_ConstrainedByVisibleBounds(bool constrain)
+		public async Task When_Auto_Placement_With_PlacementTarget()
 		{
-			var constrainedPreviously = FeatureConfiguration.Popup.ConstrainByVisibleBounds;
-			var visibleBoundsDisposable = ScreenHelper.OverrideVisibleBounds(new Thickness(100, 100, 100, 100), false);
+			var content = new Border
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				VerticalAlignment = VerticalAlignment.Stretch,
+			};
+			var popup = new Popup
+			{
+				Child = content
+			};
+
+			popup.DesiredPlacement = PopupPlacementMode.Auto;
+			popup.PlacementTarget = (FrameworkElement)WindowHelper.XamlRoot.Content;
+			popup.XamlRoot = WindowHelper.XamlRoot;
+
 			try
 			{
-				FeatureConfiguration.Popup.ConstrainByVisibleBounds = constrain;
-
-				var content = new Border
-				{
-					Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
-					HorizontalAlignment = HorizontalAlignment.Stretch,
-					VerticalAlignment = VerticalAlignment.Stretch,
-				};
-				var popup = new Popup
-				{
-					Child = content
-				};
-
-				popup.DesiredPlacement = PopupPlacementMode.Auto;
-				popup.PlacementTarget = (FrameworkElement)WindowHelper.XamlRoot.Content;
-				popup.XamlRoot = WindowHelper.XamlRoot;
-
 				popup.IsOpen = true;
+				await WindowHelper.WaitForIdle();
 
-				await WindowHelper.WaitForLoaded(content);
-
-				var xamlRoot = WindowHelper.XamlRoot;
-
-				if (constrain)
-				{
-					var constrainedHeight = xamlRoot.VisualTree.VisibleBounds.Height;
-					var constrainedWidth = xamlRoot.VisualTree.VisibleBounds.Width;
-					Assert.AreEqual(constrainedHeight, content.ActualHeight);
-					Assert.AreEqual(constrainedWidth, content.ActualWidth);
-				}
-				else
-				{
-					var unconstrainedHeight = xamlRoot.VisualTree.Size.Height;
-					var unconstrainedWidth = xamlRoot.VisualTree.Size.Width;
-					Assert.AreEqual(unconstrainedHeight, content.ActualHeight);
-					Assert.AreEqual(unconstrainedWidth, content.ActualWidth);
-				}
+				Assert.AreEqual(0, content.ActualWidth);
+				Assert.AreEqual(0, content.ActualHeight);
 			}
 			finally
 			{
+				popup.IsOpen = false;
+			}
+		}
+
+#if HAS_UNO // ScreenHelper is Uno-only
+		// FlyoutBase_partial.cpp:2868 takes the available rect of a full flyout from the visible bounds.
+		[TestMethod]
+		public async Task When_Full_Flyout_With_Reduced_Visible_Bounds()
+		{
+			var visibleBoundsDisposable = ScreenHelper.OverrideVisibleBounds(new Thickness(100, 100, 100, 100), false);
+			var target = new Border { Width = 50, Height = 50 };
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForLoaded(target);
+
+			var flyout = new Flyout { Placement = FlyoutPlacementMode.Full, Content = new Border { Width = 10, Height = 10 } };
+
+			try
+			{
+				flyout.ShowAt(target);
+				await WindowHelper.WaitForIdle();
+
+				var presenter = (FrameworkElement)VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)[0].Child;
+				var bounds = presenter.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, presenter.ActualWidth, presenter.ActualHeight));
+				var visibleBounds = WindowHelper.XamlRoot.VisualTree.VisibleBounds;
+
+				Assert.IsTrue(bounds.Left >= visibleBounds.Left - 1, $"{bounds} in {visibleBounds}");
+				Assert.IsTrue(bounds.Top >= visibleBounds.Top - 1, $"{bounds} in {visibleBounds}");
+				Assert.IsTrue(bounds.Right <= visibleBounds.Right + 1, $"{bounds} in {visibleBounds}");
+				Assert.IsTrue(bounds.Bottom <= visibleBounds.Bottom + 1, $"{bounds} in {visibleBounds}");
+			}
+			finally
+			{
+				flyout.Hide();
 				visibleBoundsDisposable?.Dispose();
-				FeatureConfiguration.Popup.ConstrainByVisibleBounds = constrainedPreviously;
 			}
 		}
 #endif
