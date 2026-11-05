@@ -415,6 +415,32 @@ internal static partial class NativeUno
 	internal static partial void uno_window_move(nint window, double x, double y);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_popup_window_create(nint owner);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_popup_window_destroy(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_popup_window_show(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_popup_window_hide(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_popup_window_is_visible(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_popup_window_set_frame(nint window, double x, double y, double width, double height);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_popup_window_get_frame(nint window, out double x, out double y, out double width, out double height);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_screen_get_bounds(double x, double y, out double monitorX, out double monitorY, out double monitorWidth, out double monitorHeight, out double workX, out double workY, out double workWidth, out double workHeight);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_window_resize(nint window, double width, double height);
 

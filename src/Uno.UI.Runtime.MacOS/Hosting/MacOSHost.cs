@@ -42,6 +42,7 @@ public class MacOSHost : UnoPlatformHost, IApplicationHost
 	static MacOSHost()
 	{
 		MacOSWindowHost.Register();
+		ApiExtensibility.Register(typeof(Uno.UI.Xaml.Controls.IWindowedPopupExtension), _ => MacOSWindowedPopupExtension.Instance);
 
 		MacOSAnalyticsInfoExtension.Register();
 		MacOSApplicationViewExtension.Register();

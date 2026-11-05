@@ -2099,3 +2099,169 @@ NSOperatingSystemVersion _osVersion;
 }
 
 @end
+
+// Reports its mouse events in the coordinates of its owner, whose input processing takes them.
+@interface UNOPopupWindow : UNOWindow
+@property (weak) NSWindow *popupOwner;
+@end
+
+@implementation UNOPopupWindow
+
+- (BOOL)canBecomeKeyWindow {
+    return NO;
+}
+
+- (BOOL)canBecomeMainWindow {
+    return NO;
+}
+
+- (TitleBarEventRoute)routeTitleBarEvent:(NSEvent *)event {
+    return TitleBarEventRouteDefault;
+}
+
+- (BOOL)getPositionFrom:(NSEvent*)event x:(CGFloat*)px y:(CGFloat *)py {
+    NSWindow *owner = self.popupOwner;
+    if (owner == nil) {
+        return NO;
+    }
+
+    NSPoint local = [owner convertPointFromScreen:[self convertPointToScreen:event.locationInWindow]];
+    *px = local.x;
+    *py = owner.contentView.frame.size.height - local.y;
+    return YES;
+}
+
+@end
+
+NSWindow* uno_popup_window_create(NSWindow *owner)
+{
+    CGRect size = NSMakeRect(0, 0, 1, 1);
+    UNOPopupWindow *window = [[UNOPopupWindow alloc] initWithContentRect:size
+                                                               styleMask:NSWindowStyleMaskBorderless
+                                                                 backing:NSBackingStoreBuffered
+                                                                   defer:NO];
+    window.popupOwner = owner;
+    window.opaque = NO;
+    window.backgroundColor = NSColor.clearColor;
+    // The content draws its own shadow into the window's gutter.
+    window.hasShadow = NO;
+    window.hidesOnDeactivate = NO;
+    window.animationBehavior = NSWindowAnimationBehaviorNone;
+    window.collectionBehavior = NSWindowCollectionBehaviorTransient | NSWindowCollectionBehaviorFullScreenAuxiliary;
+    window.acceptsMouseMovedEvents = YES;
+
+    NSViewController *vc = [[NSViewController alloc] init];
+    NSView *container = [[NSView alloc] initWithFrame:size];
+    container.autoresizesSubviews = YES;
+    container.wantsLayer = YES;
+
+    id device = uno_application_get_metal_device();
+    if (device) {
+        UNOMetalFlippedView *v = [[UNOMetalFlippedView alloc] initWithFrame:size device:device];
+        v.paused = YES;
+        v.enableSetNeedsDisplay = NO;
+        v.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+        v.clearColor = MTLClearColorMake(0, 0, 0, 0);
+        v.layer.opaque = NO;
+        window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
+        v.delegate = window.metalViewDelegate;
+        window.renderingView = v;
+    } else {
+        UNOSoftView *v = [[UNOSoftView alloc] initWithFrame:size];
+        v.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+        window.renderingView = v;
+    }
+
+    // Mouse moves only reach the key window on their own, and this one never is.
+    [window.renderingView addTrackingArea:[[NSTrackingArea alloc] initWithRect:NSZeroRect
+                                                                       options:NSTrackingMouseMoved | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways | NSTrackingInVisibleRect
+                                                                         owner:window
+                                                                      userInfo:nil]];
+
+    [container addSubview:window.renderingView];
+    vc.view = container;
+    window.contentViewController = vc;
+
+    [windows addObject:window];
+    [window orderOut:nil];
+
+    return window;
+}
+
+void uno_popup_window_destroy(NSWindow *window)
+{
+    uno_popup_window_hide(window);
+    // A popup's window closes along with what uses it, without going through the close callbacks of a main window.
+    window.delegate = nil;
+    [windows removeObject:(UNOWindow*)window];
+}
+
+void uno_popup_window_show(NSWindow *window)
+{
+    NSWindow *owner = ((UNOPopupWindow*)window).popupOwner;
+    if (owner != nil) {
+        window.level = owner.level;
+        // Keeps it above the owner, on its space, and moves it along. The same level lets other apps' windows cover both.
+        [owner addChildWindow:window ordered:NSWindowAbove];
+    }
+    [window orderFront:nil];
+}
+
+void uno_popup_window_hide(NSWindow *window)
+{
+    [((UNOPopupWindow*)window).popupOwner removeChildWindow:window];
+    [window orderOut:nil];
+}
+
+bool uno_popup_window_is_visible(NSWindow *window)
+{
+    return window.visible;
+}
+
+void uno_popup_window_set_frame(NSWindow *window, double x, double y, double width, double height)
+{
+    [window setFrame:NSMakeRect(x, uno_desktop_top() - y - height, width, height) display:NO];
+}
+
+void uno_popup_window_get_frame(NSWindow *window, double *x, double *y, double *width, double *height)
+{
+    NSPoint topLeft = uno_window_top_left(window);
+    *x = topLeft.x;
+    *y = topLeft.y;
+    *width = NSWidth(window.frame);
+    *height = NSHeight(window.frame);
+}
+
+bool uno_screen_get_bounds(double x, double y, double *monitorX, double *monitorY, double *monitorWidth, double *monitorHeight, double *workX, double *workY, double *workWidth, double *workHeight)
+{
+    NSPoint point = NSMakePoint(x, uno_desktop_top() - y);
+    NSScreen *nearest = nil;
+    CGFloat nearestDistance = CGFLOAT_MAX;
+    for (NSScreen *screen in NSScreen.screens) {
+        NSRect frame = screen.frame;
+        CGFloat dx = MAX(MAX(NSMinX(frame) - point.x, 0), point.x - NSMaxX(frame));
+        CGFloat dy = MAX(MAX(NSMinY(frame) - point.y, 0), point.y - NSMaxY(frame));
+        CGFloat distance = dx * dx + dy * dy;
+        if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearest = screen;
+        }
+    }
+
+    if (nearest == nil) {
+        return false;
+    }
+
+    NSRect frame = nearest.frame;
+    *monitorX = NSMinX(frame);
+    *monitorY = uno_desktop_top() - NSMaxY(frame);
+    *monitorWidth = NSWidth(frame);
+    *monitorHeight = NSHeight(frame);
+
+    NSRect visible = nearest.visibleFrame;
+    *workX = NSMinX(visible);
+    *workY = uno_desktop_top() - NSMaxY(visible);
+    *workWidth = NSWidth(visible);
+    *workHeight = NSHeight(visible);
+    return true;
+}

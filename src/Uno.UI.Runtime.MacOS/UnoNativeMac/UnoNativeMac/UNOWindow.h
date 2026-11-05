@@ -83,6 +83,17 @@ void uno_window_activate(NSWindow *window);
 void uno_window_invalidate(NSWindow *window);
 void uno_window_close(NSWindow *window);
 void uno_window_move(NSWindow *window, double x, double y);
+
+/// A popup's window: a borderless, clear child of `owner`, which never becomes key or main.
+/// Coordinates are points from the top-left of the primary screen.
+NSWindow* uno_popup_window_create(NSWindow *owner);
+void uno_popup_window_destroy(NSWindow *window);
+void uno_popup_window_show(NSWindow *window);
+void uno_popup_window_hide(NSWindow *window);
+bool uno_popup_window_is_visible(NSWindow *window);
+void uno_popup_window_set_frame(NSWindow *window, double x, double y, double width, double height);
+void uno_popup_window_get_frame(NSWindow *window, double *x, double *y, double *width, double *height);
+bool uno_screen_get_bounds(double x, double y, double *monitorX, double *monitorY, double *monitorWidth, double *monitorHeight, double *workX, double *workY, double *workWidth, double *workHeight);
 bool uno_window_resize(NSWindow *window, double width, double height);
 
 void uno_window_get_position(NSWindow *window, double *x, double *y);

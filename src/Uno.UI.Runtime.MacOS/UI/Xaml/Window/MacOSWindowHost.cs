@@ -33,7 +33,7 @@ using CharacterReceivedEventArgs = global::Windows.UI.Core.CharacterReceivedEven
 
 namespace Uno.UI.Runtime.MacOS;
 
-internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource, IAccessibilityOwner
+internal partial class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource, IAccessibilityOwner
 {
 	private readonly FrameRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly MacOSWindowNative _nativeWindow;
@@ -513,6 +513,12 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	{
 		try
 		{
+			if (_popupSitesByHandle.TryGetValue(handle, out var popupSite))
+			{
+				popupSite.SoftDraw(width, height, data, rowBytes, size);
+				return;
+			}
+
 			var window = GetWindowHost(handle);
 			window?.SoftDraw(width, height, data, rowBytes, size);
 		}
@@ -529,8 +535,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		if (window is not null)
 		{
 			window.UpdateWindowSize(width, height);
+			window.NotifyPopupSitesOfBounds();
 		}
-		else if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
+		else if (!_popupSitesByHandle.ContainsKey(handle) && typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
 		{
 			// _initializationCompleted takes care of some legit cases where this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
 			typeof(MacOSWindowHost).Log().Warn($"MacOSWindowHost.Resize could not map 0x{handle:X} with an NSWindow");
@@ -544,6 +551,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		if (window is not null)
 		{
 			window.PositionChanged?.Invoke(window, new PointInt32((int)x, (int)y));
+			window.NotifyPopupSitesOfBounds();
 		}
 		// the first event occurs before the managed side is ready to handle it
 		// this special case is handled inside MacOSWindowWrapper constructor
@@ -765,7 +773,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	{
 		try
 		{
-			var window = GetWindowHost(handle);
+			// A popup's window reports in the coordinates of its owner.
+			var window = _popupSitesByHandle.TryGetValue(handle, out var popupSite) ? popupSite.Owner : GetWindowHost(handle);
 			if (window is null)
 			{
 				return 0; // unhandled
@@ -943,6 +952,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			var window = GetWindowHost(handle);
 			if (window is not null)
 			{
+				window.ClosePopupSites();
+
 				// Stop the render thread before tearing down the native window / graphics context.
 				window._metalRenderThread?.Dispose();
 				window._metalRenderThread = null;
