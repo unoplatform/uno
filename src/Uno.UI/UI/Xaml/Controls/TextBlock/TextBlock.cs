@@ -48,6 +48,9 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Inlines))]
 	public partial class TextBlock : FrameworkElement, IThemeChangeAware, IBlock, UnicodeText.IFontCacheUpdateListener, ITextSelectionGripperHost
 	{
+		// MUX Reference TextBlock_Partial.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+		internal override string GetPlainText() => Text;
+
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
 		private IDisposable _foregroundBrushChangedSubscription;

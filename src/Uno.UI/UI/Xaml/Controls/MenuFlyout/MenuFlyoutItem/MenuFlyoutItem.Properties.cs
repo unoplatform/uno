@@ -111,7 +111,7 @@ partial class MenuFlyoutItem : MenuFlyoutItemBase
 			name: nameof(Text),
 			propertyType: typeof(string),
 			ownerType: typeof(MenuFlyoutItem),
-			typeMetadata: new FrameworkPropertyMetadata(default(string)));
+			typeMetadata: new FrameworkPropertyMetadata(string.Empty));
 
 	internal bool PreventDismissOnPointer { get; set; }
 
