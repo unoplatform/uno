@@ -467,22 +467,30 @@ namespace Uno.UI.DataBinding
 				return null;
 			}
 
+			// Uno-specific: a collection that outlives the binding must not keep it alive, so the handler holds the item weakly.
+			var weakBindingItem = new WeakReference<BindingItem>(bindingItem);
 			NotifyCollectionChangedEventHandler handler = (s, args) =>
 			{
-				BindingItem tail = bindingItem;
+				if (!weakBindingItem.TryGetTarget(out var item))
+				{
+					return;
+				}
+
+				BindingItem tail = item;
 				while (tail.Next != null)
 				{
 					tail = tail.Next;
 				}
-				tail.Path?.OnValueChanged(bindingItem.Value);
+				tail.Path?.OnValueChanged(item.Value);
 			};
 
 			notify.CollectionChanged += handler;
 
-			return Disposable.Create(() =>
-			{
-				notify.CollectionChanged -= handler;
-			});
+			return new WeakSourceSubscription<INotifyCollectionChanged>(
+				notify,
+				source => source.CollectionChanged -= handler,
+				onDisposed: null,
+				"the CollectionChanged handler of a collected binding");
 		}
 
 		/// <summary>

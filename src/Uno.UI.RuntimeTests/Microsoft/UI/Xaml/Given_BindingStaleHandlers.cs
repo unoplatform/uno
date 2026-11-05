@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -133,6 +135,40 @@ public class Given_BindingStaleHandlers
 		Assert.IsFalse(sourceRef.IsAlive, "The source is kept alive by the cleanup of a binding that died with it.");
 	}
 
+	// An indexer path also listens to the collection's CollectionChanged: that handler must not outlive the binding either.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Indexer_Bound_Elements_Collected_Then_Handlers_Removed()
+	{
+		var vm = new IndexedViewModel(); // outlives the elements, and never raises
+		var propertyBaseline = vm.SubscriberCount;
+		var collectionBaseline = vm.Items.CollectionChangedSubscriberCount;
+
+		var refs = CreateIndexerBound(vm);
+		Assert.AreEqual(collectionBaseline + Count, vm.Items.CollectionChangedSubscriberCount, "Each binding should listen to the collection once.");
+
+		await CollectAsync(refs, () => vm.Items.CollectionChangedSubscriberCount == collectionBaseline && vm.SubscriberCount == propertyBaseline);
+
+		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The bound elements were not collected.");
+		Assert.AreEqual(collectionBaseline, vm.Items.CollectionChangedSubscriberCount, "CollectionChanged handlers of collected bindings are still on the collection.");
+		Assert.AreEqual(propertyBaseline, vm.SubscriberCount, "PropertyChanged handlers of collected bindings are still on the source.");
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static List<WeakReference> CreateIndexerBound(IndexedViewModel vm)
+	{
+		var refs = new List<WeakReference>();
+		for (var i = 0; i < Count; i++)
+		{
+			var element = new TextBlock { DataContext = vm };
+			element.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("Items[0]") });
+			Assert.AreEqual("first", element.Text);
+			refs.Add(new WeakReference(element));
+		}
+
+		return refs;
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static (WeakReference element, WeakReference source) CreateBoundToOwnSource()
 	{
@@ -232,6 +268,42 @@ public class Given_BindingStaleHandlers
 				{
 					handler(this, args);
 				}
+			}
+		}
+	}
+
+	private sealed class IndexedViewModel : INotifyPropertyChanged
+	{
+		private readonly List<PropertyChangedEventHandler> _handlers = new();
+
+		public int SubscriberCount => _handlers.Count;
+
+		public CountingObservableCollection Items { get; } = new() { "first" };
+
+		public event PropertyChangedEventHandler? PropertyChanged
+		{
+			add => _handlers.Add(value!);
+			remove => _handlers.Remove(value!);
+		}
+	}
+
+	private sealed class CountingObservableCollection : ObservableCollection<string>
+	{
+		private int _collectionChangedSubscriberCount;
+
+		public int CollectionChangedSubscriberCount => _collectionChangedSubscriberCount;
+
+		public override event NotifyCollectionChangedEventHandler? CollectionChanged
+		{
+			add
+			{
+				base.CollectionChanged += value;
+				_collectionChangedSubscriberCount++;
+			}
+			remove
+			{
+				base.CollectionChanged -= value;
+				_collectionChangedSubscriberCount--;
 			}
 		}
 	}
