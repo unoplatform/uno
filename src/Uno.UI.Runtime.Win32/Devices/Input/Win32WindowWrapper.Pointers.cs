@@ -143,7 +143,9 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 		return Win32PointerCoordinateMath.ComputeClientLogical((screenPx.X, screenPx.Y), (clientPx.X, clientPx.Y), preciseScreenPx, scale);
 	}
 
-	private void OnPointerCaptureChanged(WPARAM wParam)
+	internal void ApplyPointerCursor() => SetCursor(PointerCursor);
+
+	internal void OnPointerCaptureChanged(WPARAM wParam)
 	{
 		var pointerId = ReadCommonWParamInfo(wParam, out _, out var pointerType, out var position, out var rawPosition);
 

@@ -4,7 +4,13 @@
 
 #nullable enable
 
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using DirectUI;
+using Uno.Foundation.Extensibility;
+using Uno.UI.Xaml.Controls;
+using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
@@ -16,6 +22,8 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
+using Microsoft.UI.Composition;
+using Windows.Graphics;
 using Windows.System;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
@@ -24,7 +32,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class Popup
 {
-	// TODO Uno: CPopup::~CPopup, EnsureBridgeClosed, EnsureTransitionTarget, CleanupDeviceRelatedResourcesRecursive: Stage D, or no Skia equivalent.
+	// TODO Uno: CPopup::~CPopup is WindowedPopupWindow's finalizer. EnsureTransitionTarget, CleanupDeviceRelatedResourcesRecursive: no Skia equivalent.
 
 	// CPopup::SetValue(Popup_IsOpen)
 	partial void OnIsOpenChangedPartial(bool oldIsOpen, bool newIsOpen)
@@ -71,7 +79,7 @@ partial class Popup
 			GetAdjustedPopupRoot()?.InvalidateArrange();
 
 			// Re-position the window for a windowed popup because the offsets have changed
-			// TODO Uno: Stage D, PositionAndSizeWindowForWindowedPopup().
+			PositionAndSizeWindowForWindowedPopup();
 		}
 	}
 
@@ -145,7 +153,7 @@ partial class Popup
 
 		m_everOpened = true;
 
-		// TODO Uno: Stage D, SetAssociatedIsland. A XamlIslandRoot-hosted popup remembers its island here.
+		// TODO Uno: SetAssociatedIsland. A popup's XamlRoot is its association, and EnsureWindowForWindowedPopup compares it.
 
 		m_savedFocusState = FocusState.Unfocused;
 
@@ -167,7 +175,15 @@ partial class Popup
 			// DManip, and the IslandInputSite comes from the popup window bridge's ContentIsland.
 			if (IsWindowed)
 			{
-				// TODO Uno: Stage D, EnsureWindowForWindowedPopup(), EnsureDCompResourcesForWindowedPopup().
+				// TODO Uno: EnsureDCompResourcesForWindowedPopup(): a window's graphics are set up along with the window.
+
+				// If the window was not created, early-out.
+				// TODO Uno: WinUI leaves the popup closed, as its window can only fail when the island is closing.
+				// Here it can also fail for lack of a transparent surface, so the popup opens inside the main window.
+				if (!EnsureWindowForWindowedPopup())
+				{
+					m_isWindowed = false;
+				}
 			}
 
 			// Initial phase of popup addition to open popup list: just add the popup to the m_pOpenPopups list and add-ref it.
@@ -186,6 +202,10 @@ partial class Popup
 			// The popup root renders and hit tests the child through the popup's transform chain.
 			UpdateVisualTransformParent(pPopupRoot);
 			pChild.Visual.TransformParent = Visual;
+
+			// A windowed popup's visuals go to its window (hwwalk.cpp, HWWindowedPopupCompTreeNode). So do those of an inline
+			// popup nested in one, or the windowed popup would cover them (HWCompTreeNodeWinRT.cpp:3471).
+			pChild.Visual.HasOwnSurface = IsWindowed || GetFirstAncestorPopup(windowedPopupOnly: true) is not null;
 #endif
 
 			try
@@ -209,7 +229,7 @@ partial class Popup
 
 			if (IsWindowed)
 			{
-				// TODO Uno: Stage D, ShowWindowForWindowedPopup().
+				ShowWindowForWindowedPopup();
 			}
 
 			// TODO Uno: StartComposition(), m_wasMarkedAsRedirectionElementOnOpen: no redirection in Uno's visual tree.
@@ -272,7 +292,7 @@ partial class Popup
 
 		// Ensure compNode if the public root is canvas. Here is for the case
 		// that parentless popups are set shadow before they are opened
-		// TODO Uno: EnsureRootCanvasCompNode() has no equivalent; SystemBackdrop connection is Stage D.
+		// TODO Uno: EnsureRootCanvasCompNode() has no equivalent; Popup.SystemBackdrop has none either, see ApplyRootRoundedCornerClipToSystemBackdrop.
 	}
 
 	internal void ForceCloseForTreeReset()
@@ -347,7 +367,7 @@ partial class Popup
 			m_closeIsPending = true;
 		}
 
-		// TODO Uno: Stage D, SystemBackdrop::InvokeOnTargetDisconnectedFromCore, DiscardContentExternalBackdropLink.
+		// TODO Uno: SystemBackdrop::InvokeOnTargetDisconnectedFromCore, DiscardContentExternalBackdropLink, see ApplyRootRoundedCornerClipToSystemBackdrop.
 
 		var pPopupRoot = GetAdjustedPopupRoot();
 		if (pPopupRoot is not null)
@@ -363,6 +383,7 @@ partial class Popup
 
 #if HAS_UNO
 			pChild.Visual.TransformParent = null;
+			pChild.Visual.HasOwnSurface = false;
 			Visual.TransformParent = null;
 #endif
 
@@ -415,7 +436,7 @@ partial class Popup
 			// Hide the popup, but only after LeavePCScene is called. This is because HideWindowForWindowedPopup
 			// calls ReleaseDCompResourcesForWindowedPopup which would remove visuals from the tree that LeavePCScene
 			// needs to access.
-			// TODO Uno: Stage D, HideWindowForWindowedPopup().
+			HideWindowForWindowedPopup();
 		}
 
 		var pFocusManager = VisualTree.GetFocusManagerForElement(this);
@@ -518,7 +539,13 @@ partial class Popup
 		}
 	}
 
-	// TODO Uno: WindowedPopupHasFocus(): Stage D. SkipRenderForLayoutTransition(): no layout transitions.
+	internal bool WindowedPopupHasFocus()
+	{
+		MUX_ASSERT(IsWindowed);
+		return m_windowedPopupWindow?.Site.HasFocus ?? false;
+	}
+
+	// TODO Uno: SkipRenderForLayoutTransition(): no layout transitions.
 
 	internal void FlushPendingKeepVisibleOperations()
 	{
@@ -534,28 +561,670 @@ partial class Popup
 			popupRoot?.RemoveFromOpenPopupList(this);
 			m_closeIsPending = false;
 
-			// TODO Uno: LeavePCScene(), StopComposition(), and Stage D's HideWindowForWindowedPopup().
+			// TODO Uno: LeavePCScene(), StopComposition().
+
+			HideWindowForWindowedPopup();
 		}
 	}
 
 	//static
-	internal static bool DoesPlatformSupportWindowedPopup() => false; // TODO Uno: Stage D.
+	internal static bool DoesPlatformSupportWindowedPopup()
+	{
+		// CoreWindowSiteBridge doesn't support creating a PopupSiteBridge, which means we can't implement windowed popups
+		// in UWPs. Note that only some tests run in UWP mode. WinUI 3 only runs in islands mode out in the wild.
+		// TODO Uno: the equivalent is a host registering IWindowedPopupExtension.
+		return GetWindowedPopupExtension() is not null;
+	}
+
+	private static IWindowedPopupExtension? s_windowedPopupExtension;
+
+	private static IWindowedPopupExtension? GetWindowedPopupExtension()
+	{
+		if (s_windowedPopupExtension is null)
+		{
+			ApiExtensibility.CreateInstance<IWindowedPopupExtension>(typeof(Popup), out s_windowedPopupExtension);
+		}
+
+		return s_windowedPopupExtension;
+	}
 
 	private void SetIsWindowedIfNeeded()
 	{
-		// TODO Uno: Stage D, MeetsRenderingRequirementsForWindowedPopup() and SetIsWindowed().
+		var value = ShouldConstrainToRootBounds;
+
+		if (!value || IsWindowed)
+		{
+			// Before making the popup windowed, run a set of tests that determine if we can correctly compute
+			// the bounds for the popup's island.  If these requirements aren't met, don't actually make it windowed.
+			// Note that these requirements are re-evaluated every time the popup is opened, so it's possible for
+			// the popup to toggle between windowed/non-windowed due to these requirements.  However it's not possible
+			// for an app to toggle the popup between windowed/non-windowed via the ShouldConstrainToRootBounds property
+			// (see enforcement of this in Popup::OnPropertyChanged2()).
+			if (MeetsRenderingRequirementsForWindowedPopup())
+			{
+				if (!IsWindowed)
+				{
+					SetIsWindowed();
+				}
+			}
+			else
+			{
+				m_isWindowed = false;
+			}
+		}
 	}
 
-	// TODO Uno: Stage D ports lines 1058-2455: SetPointerCapture, ReleasePointerCapture, HasPointerCapture,
-	// EnsureWindowForWindowedPopup, GetIslandInputSite, EnsureDCompResourcesForWindowedPopup, Show/HideWindowForWindowedPopup,
-	// Reposition, PositionAndSizeWindowForWindowedPopup, GetPhysicalBounds and friends.
-
-	internal void ClearLastPointerPointForReplay()
+	// Set popup to use a window, so its content is not clipped to the Jupiter window.
+	internal void SetIsWindowed()
 	{
-		// TODO Uno: Stage D.
+		MUX_ASSERT(!m_isWindowed);
+
+		// Ignore on unsupported platforms, so controls can use CPopup::IsWindowed to determine whether to
+		// fall back to non-windowed placement.
+		if (DoesPlatformSupportWindowedPopup())
+		{
+			// TODO Uno: an unknown root is settled when the popup opens: EnsureWindowForWindowedPopup falls back to in-window.
+			if ((XamlRoot ?? m_pChild?.XamlRoot) is not { } xamlRoot || GetWindowedPopupExtension()!.IsSupported(xamlRoot))
+			{
+				m_isWindowed = true;
+			}
+		}
 	}
 
-	internal bool ReplayPointerUpdate() => false; // TODO Uno: Stage D, needs WindowedPopupInputSiteAdapter.
+	internal void SetPointerCapture() => m_windowedPopupWindow?.Site.SetPointerCapture();
+
+	internal void ReleasePointerCapture() => m_windowedPopupWindow?.Site.ReleasePointerCapture();
+
+	internal bool WindowHasPointerCapture()
+	{
+		if (m_windowedPopupWindow is { } window)
+		{
+			return window.Site.HasPointerCapture;
+		}
+
+		return false;
+	}
+
+	// Create windowed popup's window, if it doesn't exist
+	private bool EnsureWindowForWindowedPopup()
+	{
+		MUX_ASSERT(IsWindowed);
+
+		//
+		// It's possible this windowed popup has moved between islands since it last closed. Xaml uses a shared context
+		// menu for all TextBoxes, for example, so we need to check that this windowed popup is still anchored to the same
+		// island. If not, release all the window-related resources and re-create them.
+		//
+		var xamlRoot = XamlRoot;
+
+		if (!ReferenceEquals(m_previousXamlRoot, xamlRoot))
+		{
+			// The PopupWindowSiteBridge needs to be explicitly IClosable::Close()ed, otherwise it will leak. This is because
+			// the bridge's underlying hwnd has a ref count on it, and until we destroy that hwnd (via IClosable::Close)) the
+			// bridge will always be kept alive.
+			// Bug 43723959 - Remove this once the underlying problem is fixed
+			EnsureBridgeClosed();
+
+			m_previousXamlRoot = xamlRoot;
+		}
+
+		// The window can be gone without the popup knowing, when its owner closed.
+		if (m_windowedPopupWindow is { Site.IsClosed: true })
+		{
+			EnsureBridgeClosed();
+		}
+
+		if (m_windowedPopupWindow is null)
+		{
+			if (xamlRoot is null || GetWindowedPopupExtension() is not { } extension)
+			{
+				return false;
+			}
+
+			// TODO Uno: PopupAnchor_ParentIsland, "Turn on anchoring for the popup so that it follows the top level window":
+			// the host owns this, by calling IWindowedPopupContent.OnOwnerBoundsChanged.
+			Microsoft.UI.Xaml.Media.CompositionTarget.WindowedPopupSurface surface = new(this);
+			if (extension.TryCreateSite(xamlRoot, surface) is not { } site)
+			{
+				return false;
+			}
+
+			surface.Site = site;
+			m_windowedPopupWindow = new(site, surface);
+
+			// Force an update of the input offset to make sure it is initialized to something and
+			// propogated to the inputsite adapter.
+			UpdateTranslationFromContentRoot(default, forceUpdate: true);
+		}
+
+		return true;
+	}
+
+	private void EnsureBridgeClosed()
+	{
+		if (m_windowedPopupWindow is { } window)
+		{
+			m_windowedPopupWindow = null;
+			window.Close();
+		}
+	}
+
+	// TODO Uno: GetIslandInputSite, EnsureContentExternalBackdropLink, DiscardContentExternalBackdropLink,
+	// GetWindowedPopupRootVisualScaleCompensation, GetPreviousPointerPoint: no input sites, nor a ContentIsland with a
+	// rasterization scale of its own.
+
+	internal bool GetShouldShowKeyboardCues()
+	{
+		// TODO Uno: IInputFocusController3.ShouldShowKeyboardCues is about the island's input focus controller, which has no
+		// equivalent, and FlyoutBase only asks in a XamlIslandRoot.
+		return false;
+	}
+
+	// Show windowed popup's window
+	private void ShowWindowForWindowedPopup()
+	{
+		if (m_windowedPopupWindow is not { } window)
+		{
+			return;
+		}
+
+		XamlRoot?.VisualTree.ContentRoot.CompositionTarget.AddWindowedPopupSurface(window.Surface);
+		window.Site.Show();
+	}
+
+	// Hide windowed popup's window
+	private void HideWindowForWindowedPopup()
+	{
+		if (m_windowedPopupWindow is { } window)
+		{
+			window.Site.Hide();
+
+			// In case this popup has a cached point, closes, then opens again, we don't want it to replay that cached
+			// point. When the parent island for this popup gets a pointer message, it'll clear the cached point on all
+			// _open_ popups. Since this popup is closed, it won't be cleared, so make sure it's not caching a point while
+			// it's closed.
+			ClearLastPointerPointForReplay();
+
+			// ReleaseDCompResourcesForWindowedPopup
+			XamlRoot?.VisualTree.ContentRoot.CompositionTarget.RemoveWindowedPopupSurface(window.Surface);
+			window.Surface.DropFrame();
+
+			// Note: We don't close or reset the bridge here. ScrollViewers in the popup subtree have already cached the popup
+			// bridge's input hwnd for DManip. We don't currently have a code path for those elements to reset the input hwnd
+			// and pick up a new one.
+		}
+	}
+
+	internal void Reposition() => PositionAndSizeWindowForWindowedPopup();
+
+	internal void ClearLastPointerPointForReplay() => m_lastPointerUpdateForReplay = null;
+
+	internal bool ReplayPointerUpdate()
+	{
+		// MUX Reference WindowedPopupInputSiteAdapter.cpp, ReplayPointerUpdate
+		if (m_lastPointerUpdateForReplay is { } previousPointerEventArgs)
+		{
+			XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.InjectPointerUpdated(previousPointerEventArgs);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	// Position windowed popup's window
+	private void PositionAndSizeWindowForWindowedPopup()
+	{
+		// Ignore if not windowed
+		if (m_windowedPopupWindow is not { } window)
+		{
+			return;
+		}
+
+		// It's possible for Reposition to be called on a Popup after it's been closed, or no longer has a child set.  No-op in these cases as well.
+		if (!m_fIsOpen || m_pChild is null || window.Site.IsClosed || XamlRoot is not { } xamlRoot)
+		{
+			return;
+		}
+
+		// Popup child's bounds may have changed and the popup's window needs to be
+		// sized to the new bounds.
+		// TODO Uno: InvalidateChildBounds(), EnsureOuterBounds(): Uno computes bounds during the walk.
+
+		// Get popup's bounds relative to the CoreWindow or Win32 app bounds
+		// Note: The returned popupBoundsPhysical will have the plateau zoom scale applied
+		var popupBoundsPhysical = GetPhysicalBounds(this, out var scaleX, out var scaleY);
+
+		// Find the offset to the root in physical pixels.  This is either XAML's main CoreWindow,
+		// or the associated XamlIslandRoot.
+		var rootOffsetPhysical = GetWindowedPopupExtension()!.GetScreenOffset(xamlRoot);
+		m_rootOffsetPhysical = rootOffsetPhysical;
+
+		// Compute Popup window's position
+		var popupWindowLeft = XcpCeiling(popupBoundsPhysical.X);
+		var popupWindowTop = XcpCeiling(popupBoundsPhysical.Y);
+
+		// Note - even if IsRightToLeft() is true, no further adjustments to popupWindowLeft are necessary. The
+		// GetPhysicalBounds() call earlier already returned the LTWH rect, so we have the location of the left edge
+		// even though the origin refers to the top-right.
+
+		popupWindowLeft += rootOffsetPhysical.X;
+		popupWindowTop += rootOffsetPhysical.Y;
+
+		var popupWindowWidth = XcpCeiling(popupBoundsPhysical.Width);
+		var popupWindowHeight = XcpCeiling(popupBoundsPhysical.Height);
+
+		RectInt32 contentBounds = new(popupWindowLeft, popupWindowTop, popupWindowWidth, popupWindowHeight);
+
+		if (!ShouldPopupRendersDropShadow())
+		{
+			// Set position and size of popup's window. Increase size enough to show sub pixel positioned content.
+
+			m_windowedPopupMoveAndResizeRect = contentBounds;
+
+			// TODO Uno: PauseNewDispatch around MoveAndResize. It guards against a third party's window hook pumping messages
+			// from WM_WINDOWPOSCHANGED, and a pump here only runs what the host's message loop would. No test shows a problem.
+			window.Site.MoveAndResize(m_windowedPopupMoveAndResizeRect, contentBounds);
+		}
+
+		//
+		// We need to put some more transforms in the tree to make sure the popup content renders at the correct x/y location.
+		//
+		// TODO Uno: the undo transform and the RTL flip of the original aren't needed. WinUI gives the popup's subtree a tree
+		// of Visuals of its own, inside the bridge which carries the popup's offset, so the popup's transforms count twice
+		// unless they're undone. Here Visual.TransformParent makes a-b-p-c the total matrix of the popup's child, in root
+		// coordinates, and CompositionTarget.WindowedPopupSurface cuts the window's rectangle out of those. It is what
+		// the "undo" arrives at. Scales from ancestors and the RTL flip are part of that matrix as well.
+		//
+		_ = scaleX;
+		_ = scaleY;
+
+		AdjustWindowedPopupBoundsForDropShadow(new Rect(popupWindowLeft, popupWindowTop, popupWindowWidth, popupWindowHeight), contentBounds);
+
+		// The system backdrop visual is placed based on the MoveAndResize rect. Update it as well.
+		ApplyRootRoundedCornerClipToSystemBackdrop();
+
+		// Tell the windowed popup inputsite adapter the offset of the popup window from the content
+		// root. We do this by using the position passed to MoveAndSize (either earlier in this function
+		// or updated by AdjustWindowedPopupBoundsForDropShadow), converted to island coords in dips.
+		UpdateTranslationFromContentRoot(new global::Windows.Foundation.Point(
+			PhysicalPixelsToDips(m_windowedPopupMoveAndResizeRect.X - rootOffsetPhysical.X),
+			PhysicalPixelsToDips(m_windowedPopupMoveAndResizeRect.Y - rootOffsetPhysical.Y)));
+
+		// TODO Uno: "Play the MenuPopupThemeTransition, if we have one": no secret transition target, no layout transitions.
+
+		// Note: The Shadow is drawn by HWCompTreeNodeWinRT. There's no work needed aside from the offset adjustment that's already happening.
+	}
+
+	//
+	// If there is a ContentExternalBackdropLink drawing a system backdrop, and this popup has a rounded corner clip on it,
+	// then we also need to put a rounded corner clip on the system backdrop Visual. Otherwise its square corners will be
+	// visible behind the translucent shadows in the four corners.
+	//
+	// TODO Uno: there is no Popup.SystemBackdrop to clip. A DWM system backdrop covers the whole HWND, gutter included, and
+	// Win32 has no equivalent of a ContentExternalBackdropLink's placement visual, so the backdrop can't be fitted to the
+	// presenter under the shadow. Flyouts draw their acrylic fallback instead.
+	//
+	private void ApplyRootRoundedCornerClipToSystemBackdrop()
+	{
+	}
+
+	private Rect GetPhysicalBounds(UIElement element, out float scaleX, out float scaleY)
+	{
+		Rect physicalBounds;
+		var elementForBounds = element;
+		var elementForPosition = element;
+		Rect oneByOneTransformed = new(0, 0, 1, 1);
+
+		// RuntimeEnabledFeature::WindowedPopupActualBoundsMode is off by default, and nothing turns it on.
+		const bool useActualBounds = false;
+
+		if (element is Popup popup)
+		{
+			elementForBounds = popup.m_pChild!;
+			elementForPosition = popup.m_pChild!;
+		}
+
+		_ = useActualBounds;
+
+		// The current policy is to compute the bounds of the bridge according to the following:
+		// 1) The size of the bridge is based on Popup.Child's unclipped desired size, if set.
+		// 2) The position of the bridge is based on Popup.Child's position.
+		// This policy has caused numerous bugs and will be harder for public customers to understand.
+		// If we can convert all controls to adhere to the "UseActualBounds" policy above, we can delete this code path.
+		if (elementForBounds.m_unclippedDesiredSize is { Width: > 0, Height: > 0 } unclippedDesiredSize)
+		{
+			physicalBounds = TransformToRoot(elementForPosition, new Rect(0, 0, unclippedDesiredSize.Width, unclippedDesiredSize.Height));
+			physicalBounds = DipsToPhysicalPixelsRect(physicalBounds);
+
+			oneByOneTransformed = TransformToRoot(elementForPosition, oneByOneTransformed);
+		}
+		else
+		{
+			physicalBounds = GetGlobalBounds(elementForBounds);
+			physicalBounds = DipsToPhysicalPixelsRect(physicalBounds);
+		}
+
+		// Note: These assume that the transform was axis-aligned. We don't support windowed popups with rotations above them.
+		scaleX = (float)oneByOneTransformed.Width;
+		scaleY = (float)oneByOneTransformed.Height;
+
+		// In addition to the contents in the windowed popup, also union in all the non-windowed popups that are nested
+		// inside this windowed popup's. They must live in the same island as the windowed popup so that they won't be
+		// covered by the windowed popup, and their bounds weren't included when we bounded the popup. See
+		// CUIElement::GenerateChildOuterBounds - we explicitly exclude popups from bounds calculations.
+		var popupRoot = GetAdjustedPopupRoot();
+		if (popupRoot is not null)
+		{
+			foreach (var openPopup in popupRoot.GetOpenPopups())
+			{
+				// We're looking for a non-windowed pop nested directly inside this windowed popup. If there are multiple
+				// layers of windowed popups nested inside each other, then the non-windowed popup should live in the
+				// innermost windowed popup's island.
+				if (!openPopup.IsWindowed)
+				{
+					var ancestorWindowedPopup = openPopup.GetFirstAncestorPopup(windowedPopupOnly: true);
+					if (ancestorWindowedPopup == this && openPopup.m_pChild is { } nestedChild)
+					{
+						var popupBounds = GetGlobalBounds(nestedChild);
+						popupBounds = DipsToPhysicalPixelsRect(popupBounds);
+						physicalBounds = RectHelper.Union(physicalBounds, popupBounds);
+					}
+				}
+			}
+		}
+
+		return physicalBounds;
+	}
+
+	// CUIElement::TransformToVisual(nullptr). Uno's doesn't follow every transform a visual has, such as Translation, and a
+	// popup's window has to be where the visual draws.
+	private static Rect TransformToRoot(UIElement element, Rect rect)
+		=> rect.TryTransformBounds(element.Visual.TotalMatrix, out var bounds) ? bounds : default;
+
+	// CUIElement::GetGlobalBounds(ignoreClipping: true) and AdjustBoundingRectToRoot: the bounds of an element and its
+	// subtree in root coordinates. A Canvas has a size of zero, and its children outside of it.
+	private static Rect GetGlobalBounds(UIElement element)
+	{
+		var bounds = TransformToRoot(element, new Rect(0, 0, element.ActualSize.X, element.ActualSize.Y));
+
+		foreach (var child in VisualTreeHelper.GetChildren(element))
+		{
+			if (child is UIElement { Visibility: Visibility.Visible } childElement)
+			{
+				var childBounds = GetGlobalBounds(childElement);
+				if (childBounds is { Width: > 0, Height: > 0 })
+				{
+					bounds = bounds is { Width: > 0, Height: > 0 } ? RectHelper.Union(bounds, childBounds) : childBounds;
+				}
+			}
+		}
+
+		return bounds;
+	}
+
+	// Note: The inflated region will eat clicks on the shadow, rather than have the clicks go through and land on the
+	// stuff (e.g. Xaml content in the main tree or content in other windows) under it.
+	// TODO Uno: only where the host can't see through its window: it passes the gutter on where it's able to, see
+	// Win32WindowedPopupSite. WinUI's own island has no such choice, and what it eats is forwarded to the owner here anyway.
+	private void AdjustWindowedPopupBoundsForDropShadow(Rect popupWindowBounds, RectInt32 contentBounds)
+	{
+		MUX_ASSERT(m_windowedPopupWindow is { Site.IsClosed: false });
+		if (ShouldPopupRendersDropShadow())
+		{
+			var expandedBounds = popupWindowBounds;
+			var insets = GetInsetsForDropShadow();
+			var scale = GetEffectiveRootScale();
+
+			expandedBounds.X -= (FlowDirection == FlowDirection.RightToLeft ? insets.Right : insets.Left) * scale;
+			expandedBounds.Y -= insets.Top * scale;
+			expandedBounds.Width += (insets.Left + insets.Right) * scale;
+			expandedBounds.Height += (insets.Bottom + insets.Top) * scale;
+
+			m_windowedPopupMoveAndResizeRect = new RectInt32(
+				XcpFloor(expandedBounds.X),
+				XcpFloor(expandedBounds.Y),
+				XcpCeiling(expandedBounds.Width),
+				XcpCeiling(expandedBounds.Height));
+
+			// TODO Uno: PauseNewDispatch, see PositionAndSizeWindowForWindowedPopup.
+			m_windowedPopupWindow!.Site.MoveAndResize(m_windowedPopupMoveAndResizeRect, contentBounds);
+		}
+	}
+
+	// Physical positions come out of a chain of float matrices, which puts a whole pixel a rounding error away.
+	private static int XcpCeiling(double value) => (int)Math.Ceiling(value - 0.001);
+
+	private static int XcpFloor(double value) => (int)Math.Floor(value + 0.001);
+
+	// CThemeShadow::IsDropShadowMode
+	private static bool ShouldPopupRendersDropShadow() => true;
+
+	private Thickness GetInsetsForDropShadow()
+	{
+		// MUX Reference ThemeShadow.cpp, GetInsetsForWindowedPopup. Small for a ToolTip, Medium otherwise.
+		var shadowInsets = IsToolTip
+			? new Thickness(4, 1, 4, 8)
+			: new Thickness(10, 2, 10, 18);
+
+		//
+		// Round the insets according to the root scale. We do this for a couple of reasons:
+		//
+		//   1. These insets get multiplied by the root scale in AdjustWindowedPopupBoundsForDropShadow.
+		//      Rounding them here allows us to calculate integer offsets for the bridge.
+		//
+		//   2. These insets also factor into the offsets that we set on the island root visual at the end of
+		//      PositionAndSizeWindowForWindowedPopup. Those offsets also get multiplied by the root scale,
+		//      and we want integers at the end. Otherwise the content in the windowed popup get placed at
+		//      a fractional offset, which produces blurry content.
+		//
+		// We use ceiling to make sure we don't shrink the gutters and clip the shadow.
+		//
+		var scale = GetEffectiveRootScale();
+		if (scale != 1.0)
+		{
+			shadowInsets.Top = Math.Ceiling(shadowInsets.Top * scale) / scale;
+			shadowInsets.Bottom = Math.Ceiling(shadowInsets.Bottom * scale) / scale;
+			shadowInsets.Left = Math.Ceiling(shadowInsets.Left * scale) / scale;
+			shadowInsets.Right = Math.Ceiling(shadowInsets.Right * scale) / scale;
+		}
+
+		return shadowInsets;
+	}
+
+	private static bool IsElementScaleOrTranslationOnly(UIElement uielement)
+	{
+		// CUIElement::GetLocalTransform4x4
+		if (uielement.Projection is { })
+		{
+			// TODO Uno: visuals don't carry a projection in their matrix. Upstream looks at the resulting matrix, so an
+			// identity projection stays windowed there, and not here. Transform3D is a stub.
+			return false;
+		}
+
+		var m = uielement.Visual.LocalMatrix;
+		return m is { M12: 0, M13: 0, M14: 0, M21: 0, M23: 0, M24: 0, M31: 0, M32: 0, M34: 0, M44: 1 };
+	}
+
+	private bool MeetsRenderingRequirementsForWindowedPopup()
+	{
+		// Currently, popups can only be windowed if the bounds for the island are of the "simple, rectangular" form.
+		// This means only scales/translates for everything from Popup.Child up to the root.
+		var isParentedPopup = IsActiveInVisualTree;
+		if (isParentedPopup)
+		{
+			// First, check Popup.Child for scales/translates.
+			// Note importantly that at the time this function is called, Popup.Child isn't parented to PopupRoot yet,
+			// so we must not rely on GetUIElementAdjustedParentInternal() to hop from Popup.Child to Popup.
+			// Hence, we check Popup.Child explicitly here, outside the loop below.
+			if (m_pChild is not null && !IsElementScaleOrTranslationOnly(m_pChild))
+			{
+				return false;
+			}
+
+			// Next, check Popup and its ancestors.
+			for (UIElement? current = this;
+				 current is not null;
+				 current = current.GetUIElementAdjustedParentInternal(false))
+			{
+				if (!IsElementScaleOrTranslationOnly(current))
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// TODO Uno: SetRootVisualForWindowedPopupWindow, AddAdditionalVisualForWindowedPopupWindow,
+	// RemoveAdditionalVisualForWindowedPopupWindow, EnsureWindowedPopupRootVisualTree: the render walk's part, which here is
+	// CompositionTarget.WindowedPopupSurface reading TryGetWindowedFrame, and Visual.HasOwnSurface taking the visuals out
+	// of the main window's walk.
+
+	/// <summary>
+	/// What the window of this popup shows: its rectangle relative to the content root, in physical pixels, the scale, and the
+	/// visuals to render, in z-order: the popup's child, then the inline popups nested in it.
+	/// </summary>
+	internal bool TryGetWindowedFrame(out RectInt32 bounds, out float scale, out List<Composition.Visual> visuals)
+	{
+		bounds = default;
+		scale = GetEffectiveRootScale();
+		visuals = null!;
+
+		if (m_pChild is not { } child || m_windowedPopupMoveAndResizeRect is { Width: <= 0 } or { Height: <= 0 })
+		{
+			return false;
+		}
+
+		bounds = new RectInt32(
+			m_windowedPopupMoveAndResizeRect.X - m_rootOffsetPhysical.X,
+			m_windowedPopupMoveAndResizeRect.Y - m_rootOffsetPhysical.Y,
+			m_windowedPopupMoveAndResizeRect.Width,
+			m_windowedPopupMoveAndResizeRect.Height);
+
+		visuals = new() { child.Visual };
+
+		if (GetAdjustedPopupRoot() is { } popupRoot)
+		{
+			// The most recently opened comes first.
+			var openPopups = popupRoot.GetOpenPopups();
+			for (var i = openPopups.Count - 1; i >= 0; i--)
+			{
+				var openPopup = openPopups[i];
+				if (!openPopup.IsWindowed && openPopup.m_pChild is { } nestedChild && openPopup.GetFirstAncestorPopup(windowedPopupOnly: true) == this)
+				{
+					visuals.Add(nestedChild.Visual);
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// TODO Uno: EnsureUIAWindow, CUIAHostWindow: the host answers WM_GETOBJECT with the peer of IWindowedPopupContent.AutomationRoot,
+	// from the owner's automation tree. It transforms against the owner window, as CUIAWindow::m_transformWindow does.
+
+	// TODO Uno: GetPopupPositioningWindow: only serves TextBoxBase's IME and native-window coordinates, which are the owner's here.
+
+	// Converts between logical and physical pixels
+	private float GetEffectiveRootScale() => (float)(XamlRoot?.RasterizationScale ?? 1.0);
+
+	// Convert DIPs to Physical Pixels
+	private float DipsToPhysicalPixels(float dips) => dips * GetEffectiveRootScale();
+
+	private Rect DipsToPhysicalPixelsRect(Rect rect) => new(
+		DipsToPhysicalPixels((float)rect.X),
+		DipsToPhysicalPixels((float)rect.Y),
+		DipsToPhysicalPixels((float)rect.Width),
+		DipsToPhysicalPixels((float)rect.Height));
+
+	// Convert Physical Pixels to DIPs
+	private float PhysicalPixelsToDips(float physicalPixels) => physicalPixels / GetEffectiveRootScale();
+
+	// MUX Reference DXamlCore.cpp, CalculateAvailableMonitorRect
+	// Calculate the available monitor bounds that is the screen Dips.
+	internal static Rect CalculateAvailableMonitorRect(UIElement targetElement, Point targetPointClientLogical)
+	{
+		var availableMonitorRectClientLogicalResult = default(Rect);
+
+		var xamlRoot = targetElement.XamlRoot;
+		if (xamlRoot is null || GetWindowedPopupExtension() is not { } extension)
+		{
+			return availableMonitorRectClientLogicalResult;
+		}
+
+		var screenOffsetTemp = extension.GetScreenOffset(xamlRoot);
+
+		var scale = (float)xamlRoot.RasterizationScale;
+		MUX_ASSERT(scale != 0.0f);
+
+		// VisualTree::ClientLogicalToScreenPhysical
+		PointInt32 targetPointScreenPhysicalTemp = new(
+			(int)Math.Round(targetPointClientLogical.X * scale) + screenOffsetTemp.X,
+			(int)Math.Round(targetPointClientLogical.Y * scale) + screenOffsetTemp.Y);
+
+		// Get the monitor from the nearest target rect
+		if (extension.TryGetMonitorBounds(targetPointScreenPhysicalTemp, out var rcMonitor, out var rcWork))
+		{
+			// TODO Uno: GetInputPaneOccludeRect, which subtracts an input pane: desktops only get here, without one.
+			// TODO Uno: VisualTree::ShouldConstrainPopupsToWorkArea, which is DesktopWindowXamlSource's and always true otherwise.
+			Rect availableMonitorRectScreenLogical = new(
+				rcWork.X / scale,
+				rcWork.Y / scale,
+				rcWork.Width / scale,
+				rcWork.Height / scale);
+			_ = rcMonitor;
+
+			availableMonitorRectClientLogicalResult = new Rect(
+				availableMonitorRectScreenLogical.X - (screenOffsetTemp.X / scale),
+				availableMonitorRectScreenLogical.Y - (screenOffsetTemp.Y / scale),
+				availableMonitorRectScreenLogical.Width,
+				availableMonitorRectScreenLogical.Height);
+		}
+
+		return availableMonitorRectClientLogicalResult;
+	}
+
+	private Popup? GetFirstAncestorPopup(bool windowedPopupOnly)
+	{
+		// MUX Reference dependencyobject.cpp, GetFirstAncestorPopup
+		for (var ancestor = GetUIElementAdjustedParentInternal(false);
+			 ancestor is not null;
+			 ancestor = ancestor.GetUIElementAdjustedParentInternal(false))
+		{
+			if (ancestor is Popup popup && (!windowedPopupOnly || popup.IsWindowed))
+			{
+				return popup;
+			}
+		}
+
+		return null;
+	}
+
+	/// <summary>
+	/// Owns a popup's window for as long as the popup needs it, so a popup that's no longer referenced takes it along.
+	/// </summary>
+	private sealed class WindowedPopupWindow(IWindowedPopupSite site, Microsoft.UI.Xaml.Media.CompositionTarget.WindowedPopupSurface surface)
+	{
+		private int _closed;
+
+		public IWindowedPopupSite Site { get; } = site;
+
+		public Microsoft.UI.Xaml.Media.CompositionTarget.WindowedPopupSurface Surface { get; } = surface;
+
+		public void Close()
+		{
+			if (Interlocked.Exchange(ref _closed, 1) == 0)
+			{
+				GC.SuppressFinalize(this);
+				Site.Dispose();
+			}
+		}
+
+		// The window belongs to the UI thread.
+		~WindowedPopupWindow() => NativeDispatcher.Main.Enqueue(Close);
+	}
 
 	private PopupRoot? GetAdjustedPopupRoot()
 		=> XamlRoot?.VisualTree.PopupRoot ?? VisualTree.GetPopupRootForElement(this);
@@ -748,7 +1417,22 @@ partial class Popup
 	}
 #endif
 
-	// TODO Uno: ClearUCRemoveLogicalParentFlag: no layout transitions. UpdateTranslationFromContentRoot: Stage D.
+	// TODO Uno: ClearUCRemoveLogicalParentFlag: no layout transitions.
+
+	// Update the translation that should be applied to windowed popup input
+	// so that it can be applied in the coordinate space of the popup's
+	// content root.
+	// TODO Uno: only the offset is kept, for GetTranslationFromMainWindow. The window forwards its input in the content
+	// root's coordinates, so there is no pointer point transform to feed.
+	private void UpdateTranslationFromContentRoot(global::Windows.Foundation.Point offset, bool forceUpdate = false)
+	{
+		if (m_offsetFromMainWindow.X != offset.X ||
+			m_offsetFromMainWindow.Y != offset.Y ||
+			forceUpdate)
+		{
+			m_offsetFromMainWindow = offset;
+		}
+	}
 
 	// Causes the object and its "children" to enter scope. For popup, it calls the base class
 	// implementation. Popup's child is entered into popup's namescope if there is one.
@@ -1150,7 +1834,7 @@ partial class Popup
 	}
 
 	// TODO Uno: SetAssociatedIsland, OnContentAutomationProviderRequested, SetCachedStandardNamescopeOwner,
-	// GetSystemBackdrop, SetSystemBackdrop: Stage D.
+	// TODO Uno: GetSystemBackdrop, SetSystemBackdrop, see ApplyRootRoundedCornerClipToSystemBackdrop.
 
 	// components/elements/Popup.cpp
 	// TODO Uno: CancelHideAnimationToPrepareForShow, GetPopupOfUnloadingChild, RemoveUnloadingChild: need implicit Hide animations.

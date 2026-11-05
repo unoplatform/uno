@@ -54,6 +54,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
 	private readonly HWND _hwnd;
+	private readonly List<Win32WindowedPopupSite> _popupSites = new();
+
+	internal HWND Hwnd => _hwnd;
 
 	// The negotiated backend's drawing factory, so native-element hosting composes clip geometry through the
 	// same factory the renderer uses (rather than the global DrawingFactory.Current).
@@ -324,11 +327,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
 				UpdateWindowState(wParam);
+				NotifyPopupSitesOfBoundsChange();
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
+				NotifyPopupSitesOfBoundsChange();
 				// No present here: the DWM backing surface survives the move, and the OS
 				// invalidates any region needing repaint via WM_PAINT.
 				return new LRESULT(0);
@@ -546,9 +551,34 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 	}
 
+	internal void AddPopupSite(Win32WindowedPopupSite site) => _popupSites.Add(site);
+
+	internal void RemovePopupSite(Win32WindowedPopupSite site) => _popupSites.Remove(site);
+
+	internal GraphicsContextKind GraphicsContextKind => _context.Kind;
+
+	internal Win32RawElementProvider? GetAccessibilityProvider(UIElement? element)
+		=> element is not null ? _accessibility?.GetOrCreateProvider(element) : null;
+
+	private void NotifyPopupSitesOfBoundsChange()
+	{
+		for (var i = _popupSites.Count - 1; i >= 0 && i < _popupSites.Count; i--)
+		{
+			_popupSites[i].OnOwnerBoundsChanged();
+		}
+	}
+
 	private void OnWmDestroy()
 	{
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
+
+		// Windows destroys owned windows along with their owner, but they're the first in line for the device this window
+		// is about to release.
+		for (var i = _popupSites.Count - 1; i >= 0 && i < _popupSites.Count; i--)
+		{
+			_popupSites[i].Dispose();
+		}
+
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
 		if (_window is not null)
 		{

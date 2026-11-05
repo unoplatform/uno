@@ -46,6 +46,16 @@ partial class Popup
 	private bool m_isClosing;
 	private bool m_isUnloading;
 
+	private bool m_isWindowed;
+
+	// Stands in for m_desktopPopupSiteBridge and m_popupWindowBridge.
+	private WindowedPopupWindow? m_windowedPopupWindow;
+	private XamlRoot? m_previousXamlRoot;
+	private global::Windows.Graphics.RectInt32 m_windowedPopupMoveAndResizeRect;
+	private global::Windows.Graphics.PointInt32 m_rootOffsetPhysical;
+	private global::Windows.Foundation.Point m_offsetFromMainWindow;
+	private global::Windows.UI.Core.PointerEventArgs? m_lastPointerUpdateForReplay;
+
 	internal bool IsSubMenu { get; set; }
 
 	internal bool IsContentDialog { get; set; }
@@ -80,7 +90,9 @@ partial class Popup
 
 	internal bool IsUnloading => m_isUnloading;
 
-	internal bool IsWindowed => false; // TODO Uno: Stage D, !!m_isWindowed.
+	internal bool IsWindowed => m_isWindowed;
+
+	internal bool IsToolTip => m_pChild is ToolTip;
 
 	internal FrameworkElement? OverlayElement => m_overlayElement;
 
@@ -94,5 +106,13 @@ partial class Popup
 		IsEnabledInternal() &&
 		AreAllAncestorsVisible();
 
-	internal global::Windows.Foundation.Rect GetWindowedPopupMoveAndResizeRect() => default;
+	// Uno: relative to the content root, while WinUI's is in screen coordinates. The rest of the contract is WinUI's:
+	// physical pixels, drop shadow gutters included.
+	internal global::Windows.Foundation.Rect GetWindowedPopupMoveAndResizeRect() => new(
+		m_windowedPopupMoveAndResizeRect.X - m_rootOffsetPhysical.X,
+		m_windowedPopupMoveAndResizeRect.Y - m_rootOffsetPhysical.Y,
+		m_windowedPopupMoveAndResizeRect.Width,
+		m_windowedPopupMoveAndResizeRect.Height);
+
+	internal global::Windows.Foundation.Point GetTranslationFromMainWindow() => m_offsetFromMainWindow;
 }

@@ -372,7 +372,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	// TotalMatrix without the parent's: this visual's own transform and position within its parent.
-	private protected Matrix4x4 LocalMatrix
+	internal Matrix4x4 LocalMatrix
 	{
 		get
 		{
@@ -557,7 +557,55 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 
 			// Live (non-recorded) walk: leaf culling is armed and narrows at each rect-shaped clip below.
-			Render(session, applyChildOptimization: true, cullRect: InfiniteClipRect, inheritedClipBounds: InfiniteClipRect);
+			Render(session, applyChildOptimization: true, cullRect: InfiniteClipRect, inheritedClipBounds: InfiniteClipRect, isSurfaceRoot: true);
+		}
+	}
+
+	/// <summary>
+	/// This visual draws on a surface of its own (a windowed popup's window), so its parent's walks leave its subtree out.
+	/// </summary>
+	internal bool HasOwnSurface
+	{
+		get => (_flags & VisualFlags.HasOwnSurface) != 0;
+		set
+		{
+			if (HasOwnSurface != value)
+			{
+				if (value)
+				{
+					if (CompositionTarget is { } target)
+					{
+						ContributeRemovalDamage(target);
+					}
+
+					_flags |= VisualFlags.HasOwnSurface;
+				}
+				else
+				{
+					_flags &= ~VisualFlags.HasOwnSurface;
+				}
+
+				InvalidateParentChildrenPicture(false);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Renders this visual's subtree at its place in the root coordinate space. Damage isn't tracked: the surface repaints whole.
+	/// </summary>
+	internal void RenderOwnSurface(IDrawingSession drawingSession)
+	{
+		_factory.CreateInstance(this, drawingSession, opacity: 1.0f, damage: null, out var session);
+
+		using (session)
+		{
+			// The walk starts at this visual's own transform, which is relative to its parent.
+			if (Parent is { } parent)
+			{
+				drawingSession.Concat(parent.TotalMatrix);
+			}
+
+			Render(session, applyChildOptimization: true, cullRect: InfiniteClipRect, inheritedClipBounds: InfiniteClipRect, isSurfaceRoot: true);
 		}
 	}
 
@@ -593,8 +641,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <param name="cullRect">Root-space AABB of the ancestors' rect-shaped clips; a leaf provably outside it is
 	/// skipped. <c>default</c> (empty) disables culling — recordings must contain the full subtree, since they are
 	/// replayed under other transforms later (e.g. after a scroll).</param>
-	private void Render(in PaintingSession parentSession, bool applyChildOptimization = true, Rect cullRect = default, bool ancestorClipChanged = false, Rect inheritedClipBounds = default)
+	private void Render(in PaintingSession parentSession, bool applyChildOptimization = true, Rect cullRect = default, bool ancestorClipChanged = false, Rect inheritedClipBounds = default, bool isSurfaceRoot = false)
 	{
+		if ((_flags & VisualFlags.HasOwnSurface) != 0 && !isSurfaceRoot)
+		{
+			return;
+		}
+
+
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
 			? new string(' ', depth * 2)
@@ -879,7 +933,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	internal IGeometry GetNativeViewPathAndZOrder(IGeometry clipFromParent, IGeometry clipPath, List<Visual> nativeVisualsInZOrder)
 	{
-		if (this is { Opacity: 0 } or { IsVisible: false } || clipFromParent.IsEmpty)
+		// A native element can't follow its content to another window: it stays out of the frame.
+		if (this is { Opacity: 0 } or { IsVisible: false } || clipFromParent.IsEmpty || HasOwnSurface)
 		{
 			return clipPath;
 		}
@@ -1464,5 +1519,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// Unlike ChildrenSKPictureInvalid this is NOT set by the matrix-dirty cascade of a pure ancestor move
 		// (e.g. scrolling): shadow caches are local-space, so only relative changes inside the subtree matter.
 		ShadowCacheInvalid = 64,
+
+		// The subtree draws on a surface of its own, see HasOwnSurface.
+		HasOwnSurface = 128,
 	}
 }

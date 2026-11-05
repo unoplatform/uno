@@ -12,7 +12,7 @@ internal partial class Win32WindowWrapper
 	/// records pictures and signals presents; this thread acquires the context's target, renders, and presents
 	/// (SwapBuffers/BitBlt/swapchain present — may block for VSync).
 	/// </summary>
-	private sealed class RenderThread : IDisposable
+	internal sealed class RenderThread : IDisposable
 	{
 		private readonly Thread _thread;
 		private readonly AutoResetEvent _frameSignal = new(false);

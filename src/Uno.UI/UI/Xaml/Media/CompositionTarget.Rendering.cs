@@ -327,6 +327,11 @@ public partial class CompositionTarget
 				rootElement.Visual,
 				FrameRenderingOptions.invertNativeElementClipPath,
 				frameDamage);
+
+			if (_windowedPopupSurfaces is { } windowedPopupSurfaces && !Compositor.SkipVisualTreePainting)
+			{
+				RecordWindowedPopupSurfaces(windowedPopupSurfaces);
+			}
 		}
 		finally
 		{

@@ -180,7 +180,11 @@ partial class PopupRoot
 				// the Unload transition.
 				if (pPopup.IsWindowed)
 				{
-					// TODO Uno: Stage D, ApplyRootRoundedCornerClipToSystemBackdrop().
+					// TODO Uno: no layout transitions to cancel, nor a system backdrop to update.
+
+					// The render walk moves the window in WinUI, when the comp node's properties are pushed (HWCompNodeWinRT.cpp:706).
+					// CompositionTarget.WindowedPopupSurface does that too, but the window's bounds are known from here.
+					pPopup.Reposition();
 				}
 			}
 		}

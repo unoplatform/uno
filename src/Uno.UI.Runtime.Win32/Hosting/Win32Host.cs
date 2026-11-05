@@ -61,6 +61,7 @@ public class Win32Host : UnoPlatformHost, IApplicationHost
 
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => new Win32CoreApplicationExtension());
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), _ => new Win32NativeWindowFactoryExtension());
+		ApiExtensibility.Register(typeof(IWindowedPopupExtension), _ => Win32WindowedPopupExtension.Instance);
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource),
 			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource),
