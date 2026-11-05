@@ -1,7 +1,12 @@
 #nullable enable
 
+using System;
+using System.Collections;
 using System.Numerics;
+using System.Reflection;
+using Microsoft.UI.Composition;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Composition.WebGpu;
 
 namespace Uno.UI.Tests.CompositionTests;
@@ -109,6 +114,65 @@ public class Given_WebGpuCommandRecorder
 		Assert.AreEqual(Matrix4x4.CreateTranslation(1, 2, 0), second.TotalMatrix);
 		Assert.AreEqual(2, third.SaveCount);
 	}
+
+	[TestMethod]
+	public void When_Saves_Balanced_Before_Finish_Then_Stack_Is_Pooled()
+	{
+		ClearStackPool();
+		var recorder = new WebGpuCommandRecorder(null!);
+		recorder.Save();
+		recorder.Restore();
+
+		recorder.Finish();
+
+		Assert.AreEqual(1, PooledStackCount);
+	}
+
+	[TestMethod]
+	public void When_Finished_With_Open_Save_Then_Stack_Is_Not_Pooled()
+	{
+		ClearStackPool();
+		var recorder = new WebGpuCommandRecorder(null!);
+		recorder.Save();
+
+		recorder.Finish();
+
+		Assert.AreEqual(0, PooledStackCount);
+	}
+
+	[TestMethod]
+	public void When_Visual_Records_Its_Paint_Then_Stack_Is_Pooled()
+	{
+		var factory = DispatchProxy.Create<IDrawingFactory, RecordingFactory>();
+		var root = new WebGpuCommandRecorder(factory);
+		var compositor = Compositor.GetSharedCompositor();
+		var visual = compositor.CreateContainerVisual();
+		visual.Size = new Vector2(10, 10);
+		// A childless visual that paints nothing is culled before it records.
+		visual.Children.InsertAtTop(compositor.CreateContainerVisual());
+		ClearStackPool();
+
+		visual.RenderRootVisual(root, offsetOverride: null);
+
+		Assert.IsNotNull(visual.RecordedContentForTesting);
+		// The root session is balanced but not finished, so it still holds its own stack.
+		Assert.AreEqual(1, PooledStackCount);
+	}
+
+	public class RecordingFactory : DispatchProxy
+	{
+		protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
+			=> targetMethod?.Name == nameof(IDrawingFactory.CreateRecording)
+				? new WebGpuCommandRecorder((IDrawingFactory)(object)this)
+				: throw new NotSupportedException(targetMethod?.Name);
+	}
+
+	private static FieldInfo StackPoolField
+		=> typeof(WebGpuCommandRecorder).GetField("_stackPool", BindingFlags.NonPublic | BindingFlags.Static)!;
+
+	private static int PooledStackCount => StackPoolField.GetValue(null) is ICollection pool ? pool.Count : 0;
+
+	private static void ClearStackPool() => StackPoolField.SetValue(null, null);
 
 	private static void AssertClose(Matrix4x4 expected, Matrix4x4 actual)
 	{
