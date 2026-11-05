@@ -30,18 +30,13 @@ public partial class FlyoutPresenterAutomationPeer : FrameworkElementAutomationP
 
 	protected override string GetAutomationIdCore()
 	{
-		//TODO (DOTI): FlyoutPresenterOwner?.Name doesn't seem to be supported on some platforms
-#if __SKIA__
 		var id = base.GetAutomationIdCore();
-		if (!string.IsNullOrEmpty(id))
+		if (string.IsNullOrEmpty(id))
 		{
-			return id;
+			return FlyoutPresenterOwner?.GetOwnerName() ?? string.Empty;
 		}
 
-		return FlyoutPresenterOwner?.Name.ToString() ?? string.Empty;
-#else
-		return base.GetAutomationIdCore();
-#endif
+		return id;
 	}
 
 	public void Invoke()
@@ -52,9 +47,5 @@ public partial class FlyoutPresenterAutomationPeer : FrameworkElementAutomationP
 	private FlyoutPresenter? FlyoutPresenterOwner => Owner as FlyoutPresenter;
 
 	private FlyoutBase? TryGetOwningFlyout()
-		// FlyoutPresenter is created via `new FlyoutPresenter()` (not from a
-		// ControlTemplate), so TemplatedParent isn't reliable. Use the explicit
-		// back-reference set by FlyoutBase.EnsurePopupCreated instead — mirrors
-		// WinUI's FlyoutPresenter::GetOwnerFlyout / m_wrFlyout pattern.
 		=> FlyoutPresenterOwner?.GetOwnerFlyout();
 }

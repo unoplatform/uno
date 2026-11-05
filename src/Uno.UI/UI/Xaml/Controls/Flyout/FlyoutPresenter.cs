@@ -13,10 +13,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FlyoutPresenter : ContentControl
 	{
-		// MUX Reference: FlyoutPresenter.h m_wrFlyout — weak back-reference to the
-		// owning FlyoutBase so the presenter and its automation peer can resolve the
-		// flyout's AutomationProperties.Name and Name properties (matches
-		// FlyoutPresenter_partial.cpp GetPlainText / GetOwnerName).
 		private ManagedWeakReference _wrFlyout;
 
 		/// <summary>
@@ -43,7 +39,6 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(FlyoutPresenter);
 		}
 
-		// MUX Reference: FlyoutPresenter_partial.cpp put_Flyout (lines 26-32).
 		internal void SetOwnerFlyout(FlyoutBase flyout)
 		{
 			WeakReferencePool.ReturnWeakReference(this, _wrFlyout);
@@ -56,30 +51,77 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override AutomationPeer OnCreateAutomationPeer()
 			=> new FlyoutPresenterAutomationPeer(this);
 
-		// MUX Reference: FlyoutPresenter_partial.cpp GetPlainText (lines 103-135).
-		// When the owning Flyout has AutomationProperties.Name set, use it as the
-		// presenter's plain text so FrameworkElementAutomationPeer.GetNameCore picks
-		// it up (matches WinUI behavior).
+		// MUX Reference FlyoutPresenter_partial.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 		internal override string GetPlainText()
 		{
+			// If an automation name is set on the owner flyout, we'll use that as our plain text.
+			// Otherwise, we'll report the default plain text.
 			if (GetOwnerFlyout() is { } ownerFlyout
 				&& AutomationProperties.GetName(ownerFlyout) is { Length: > 0 } automationName)
 			{
 				return automationName;
 			}
 
-			return base.GetPlainText();
+			// If we have no title, we'll fall back to the default implementation,
+			// which retrieves our content as plain text (e.g., if our content is a string,
+			// it returns that; if our content is a TextBlock, it returns its Text value, etc.)
+			// If we get the plain text from the content, then we want to truncate it,
+			// in case the resulting automation name is very long.
+			return Popup.TruncateAutomationName(base.GetPlainText());
 		}
 
 		protected override void OnApplyTemplate()
 		{
+			CleanupTemplateParts();
+
 			base.OnApplyTemplate();
 
 			var spInnerScrollViewer = GetTemplateChild<ScrollViewer>("ScrollViewer");
+			//
+			// Block calling SetPtrValue() temporary by failing DRT ImmersiveColorMediumCppFlyout.
+			//
+			//IFC(SetPtrValue(m_tpInnerScrollViewer, spInnerScrollViewer));
+			//if (m_tpInnerScrollViewer)
+			//{
+			//    m_tpInnerScrollViewer.Cast<ScrollViewer>()->m_isFocusableOnFlyoutScrollViewer = TRUE;
+			//}
+			//
+			// The below code must be removed when SetPtrValue is called.
+			//
 			if (spInnerScrollViewer is { })
 			{
 				spInnerScrollViewer.m_isFocusableOnFlyoutScrollViewer = true;
 			}
+
+			// TODO Uno: ApplyElevationEffect has no equivalent, the shadow comes from the template.
+		}
+
+		private void CleanupTemplateParts()
+		{
+			// m_tpInnerScrollViewer is never set at this tag, see OnApplyTemplate.
+		}
+
+		// TODO Uno: WinUI returns the owning flyout's DependencyObject_Name, which isn't stored on a DependencyObject in Uno.
+		internal string GetOwnerName() => string.Empty;
+
+		internal DependencyObject GetTargetIfOpenedAsTransient()
+		{
+			var ownerFlyout = GetOwnerFlyout();
+
+			if (ownerFlyout is null)
+			{
+				return null;
+			}
+
+			var showMode = ownerFlyout.ShowMode;
+
+			if (showMode == FlyoutShowMode.Auto ||
+				showMode == FlyoutShowMode.Standard)
+			{
+				return null;
+			}
+
+			return ownerFlyout.Target;
 		}
 
 

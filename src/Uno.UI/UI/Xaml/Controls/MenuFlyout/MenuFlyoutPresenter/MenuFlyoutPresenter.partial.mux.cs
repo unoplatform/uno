@@ -590,22 +590,18 @@ partial class MenuFlyoutPresenter : IMenuPresenter
 			automationName = AutomationProperties.GetName(ownerFlyout);
 		}
 
-		if (automationName != null)
+		if (!string.IsNullOrEmpty(automationName))
 		{
 			return automationName;
 		}
 		else
 		{
-#if HAS_UNO // TODO Uno: We don't support this path yet.
 			// If we have no title, we'll fall back to the default implementation,
 			// which retrieves our content as plain text (e.g., if our content is a string,
 			// it returns that; if our content is a TextBlock, it returns its Text value, etc.)
-			// MenuFlyoutPresenterGenerated.GetPlainText(strPlainText);
-
 			// If we get the plain text from the content, then we want to truncate it,
 			// in case the resulting automation name is very long.
-			// Popup.TruncateAutomationName(strPlainText);
-#endif
+			automationName = Popup.TruncateAutomationName(base.GetPlainText());
 		}
 
 		return automationName;

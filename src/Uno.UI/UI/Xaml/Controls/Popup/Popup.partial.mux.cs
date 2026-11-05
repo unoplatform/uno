@@ -391,7 +391,53 @@ partial class Popup
 
 	internal void SetDefaultAutomationName(string automationName) => m_defaultAutomationName = automationName;
 
-	// TODO Uno: Popup::TruncateAutomationName is only called by the windowed popup's UIA window (Stage D).
+	internal static string? TruncateAutomationName(string? stringToTruncate)
+	{
+		if (stringToTruncate is null)
+		{
+			return null;
+		}
+
+		// First we'll figure out whether we need to truncate at all.
+		// We'll iterate through the raw buffer and verify if we have
+		// a newline character, or more than twenty words.
+		int wordCount = 0;
+		bool isInSpace = true;
+		bool shouldTruncate = false;
+		int truncatePosition = 0;
+		int lastWordEndPosition = 0;
+
+		for (int i = 0; i < stringToTruncate.Length; i++)
+		{
+			if (stringToTruncate[i] == '\n' || stringToTruncate[i] == '\r')
+			{
+				shouldTruncate = true;
+				truncatePosition = i;
+				break;
+			}
+
+			if (isInSpace && !char.IsWhiteSpace(stringToTruncate[i]))
+			{
+				isInSpace = false;
+				wordCount++;
+
+				if (wordCount > 20)
+				{
+					shouldTruncate = true;
+					truncatePosition = lastWordEndPosition;
+					break;
+				}
+			}
+			else if (!isInSpace && char.IsWhiteSpace(stringToTruncate[i]))
+			{
+				isInSpace = true;
+				lastWordEndPosition = i;
+			}
+		}
+
+		// If we don't need to truncate the string, then we'll just copy it.
+		return shouldTruncate ? stringToTruncate.Substring(0, truncatePosition) + "..." : stringToTruncate;
+	}
 
 	internal bool GetShouldUIAPeerExposeWindowPattern() => IsLightDismissEnabled || IsContentDialog || IsSubMenu;
 

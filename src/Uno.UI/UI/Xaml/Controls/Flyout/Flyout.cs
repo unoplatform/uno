@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Uno.Disposables;
-using System.Text;
-using Uno.Extensions;
-using Uno.UI.DataBinding;
-using Uno.UI.Extensions;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Controls;
-
-using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -28,30 +18,8 @@ namespace Microsoft.UI.Xaml.Controls
 				"FlyoutPresenterStyle",
 				typeof(Style),
 				typeof(Flyout),
-				new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure, OnFlyoutPresenterStyleChanged));
+				new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
-		private static void OnFlyoutPresenterStyleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var flyout = dependencyObject as Flyout;
-			if (flyout._presenter != null)
-			{
-				flyout.SetPresenterStyle();
-			}
-		}
-
-		private void SetPresenterStyle()
-		{
-			if (FlyoutPresenterStyle != null)
-			{
-				_presenter.Style = FlyoutPresenterStyle;
-			}
-			else
-			{
-				_presenter.ClearValue(FrameworkElement.StyleProperty);
-			}
-		}
-
-		#region Content DependencyProperty
 		public UIElement Content
 		{
 			get { return (UIElement)this.GetValue(ContentProperty); }
@@ -63,48 +31,10 @@ namespace Microsoft.UI.Xaml.Controls
 				"Content",
 				typeof(UIElement),
 				typeof(Flyout),
-				new FrameworkPropertyMetadata(default(UIElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
-		private FlyoutPresenter _presenter;
-
-		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var flyout = dependencyObject as Flyout;
-
-			if (flyout._presenter != null)
-			{
-				flyout._presenter.Content = args.NewValue;
-			}
-
-			flyout.SynchronizeNamescope();
-
-			if (args.OldValue is DependencyObject oldDO)
-			{
-				oldDO.ClearValue(NameScope.NameScopeProperty);
-			}
-		}
-
-		private void SynchronizeNamescope()
-		{
-			if (NameScope.GetNameScope(this) is { } scope && Content is DependencyObject content)
-			{
-				NameScope.SetNameScope(content, scope);
-			}
-		}
-		#endregion
+				new FrameworkPropertyMetadata(default(UIElement), FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public Flyout()
 		{
-		}
-
-		protected override Control CreatePresenter()
-		{
-			_presenter = new FlyoutPresenter();
-			SetPresenterStyle();
-			_presenter.Content = Content;
-
-			SynchronizeNamescope();
-
-			return _presenter;
 		}
 	}
 }

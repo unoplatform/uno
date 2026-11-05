@@ -685,6 +685,16 @@ namespace Microsoft.UI.Xaml
 
 			var parent = this.GetParent() as UIElement;
 
+			// If we're a flyout presenter that's been opened in transitive mode,
+			// we want to route keyboard and character events from there up to the flyout's target
+			// in order to allow users to interact with both the flyout and the target
+			// with the keyboard so the flyout doesn't get in the user's way.
+			// MUX Reference eventmgr.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+			if ((routedEvent.IsKeyEvent || routedEvent == CharacterReceivedEvent) && this is FlyoutPresenter flyoutPresenter && flyoutPresenter.GetTargetIfOpenedAsTransient() is UIElement transientTarget)
+			{
+				parent = transientTarget;
+			}
+
 			// The route has reached the root of a popup's subtree, and the popup closed during the event. WinUI raises the event along
 			// a route built upfront. The root still has to hear of it: it clears global state, e.g. the pointer capture on pointer up (cf. InputManager).
 			if (parent is null && this is FrameworkElement { LogicalParentOverride: Popup })
