@@ -166,6 +166,27 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
+		{
+			var isOpen = IsOpen;
+			if (isOpen)
+			{
+				var popup = _popup;
+
+				var isEnabled = IsEnabled;
+				if (isEnabled)
+				{
+					PerformPlacementInternal();
+				}
+
+				// Make the ToolTip visible if IsEnabled=True, or hidden otherwise.
+				if (popup is not null)
+				{
+					popup.Opacity = isEnabled ? 1 : 0;
+				}
+			}
+		}
+
 		private void AttachToPopup()
 		{
 			if (Parent == null)
