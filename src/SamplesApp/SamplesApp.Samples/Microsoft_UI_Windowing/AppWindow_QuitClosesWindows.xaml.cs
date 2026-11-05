@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SamplesApp;
@@ -18,33 +19,34 @@ namespace UITests.Microsoft_UI_Windowing;
 	IgnoreInSnapshotTests = true,
 	Description =
 		"macOS: quit the app with Cmd+Q, the application menu's Quit or the Dock's Quit. " +
-		"Each window raises AppWindow.Closing, front to back, then Window.Closed; a cancelled Closing cancels the quit and leaves the remaining windows open. " +
-		"Once every window is closed, OnLastWindowClose exits and OnExplicitShutdown keeps the process running until Application.Current.Exit(). " +
+		"Each window the user can see raises AppWindow.Closing, front to back, then Window.Closed; a cancelled Closing cancels the quit and leaves the remaining windows open. " +
+		"Once they are closed the app exits, whatever the shutdown mode: OnExplicitShutdown only keeps it running after its last window is closed, and a later Quit still ends it. " +
+		"Quit is refused while a file picker or a sheet is open. A logout, restart or shutdown ends the app without AppWindow.Closing or Window.Closed. " +
 		"Application.Current.Exit() exits without raising AppWindow.Closing. " +
 		"Run the app from a terminal: the events are also written to the console, which outlives the windows.")]
 public sealed partial class AppWindow_QuitClosesWindows : Page
 {
 	private static AppWindow_QuitClosesWindows? _current;
-	private static bool _cancelMainClosing;
-	private static bool _mainWindowHooked;
 	private static int _secondaryWindowCount;
+
+	private readonly DispatcherShutdownMode _initialShutdownMode = Application.Current.DispatcherShutdownMode;
+	private Window? _mainWindow;
+	private bool _mainWindowClosed;
 
 	public AppWindow_QuitClosesWindows()
 	{
 		this.InitializeComponent();
 
 		_current = this;
-		Loaded += (_, _) => _current = this;
-		Unloaded += (_, _) => _current = _current == this ? null : _current;
+		Loaded += OnLoaded;
+		Unloaded += OnUnloaded;
 
-		CancelMainClosingCheckBox.IsChecked = _cancelMainClosing;
 		if (!SupportsMultipleWindows)
 		{
 			OpenSecondaryWindowButton.IsEnabled = false;
 			OpenCancellingSecondaryWindowButton.IsEnabled = false;
 		}
 
-		HookMainWindow();
 		UpdateCurrentMode();
 	}
 
@@ -55,25 +57,50 @@ public sealed partial class AppWindow_QuitClosesWindows : Page
 		true;
 #endif
 
-	// Once per process: the main window outlives this page, and its Closed is raised after the page may be unloaded.
-	private static void HookMainWindow()
+	// Hooked while the page is shown, so leaving it leaves the main window as it was; Closed is raised before Unloaded.
+	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
-		if (_mainWindowHooked || App.MainWindow is not { } main)
+		_current = this;
+		if (_mainWindow is null && App.MainWindow is { } main)
 		{
-			return;
+			_mainWindow = main;
+			main.AppWindow.Closing += OnMainWindowClosing;
+			main.Closed += OnMainWindowClosed;
 		}
-
-		_mainWindowHooked = true;
-		main.AppWindow.Closing += (_, args) =>
-		{
-			args.Cancel = _cancelMainClosing;
-			Log($"main window: AppWindow.Closing (Cancel = {args.Cancel})");
-		};
-		main.Closed += (_, _) => Log("main window: Window.Closed");
 	}
 
-	private void OnCancelMainClosingChanged(object sender, RoutedEventArgs e)
-		=> _cancelMainClosing = CancelMainClosingCheckBox.IsChecked == true;
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		if (_current == this)
+		{
+			_current = null;
+		}
+
+		if (_mainWindow is { } main)
+		{
+			main.AppWindow.Closing -= OnMainWindowClosing;
+			main.Closed -= OnMainWindowClosed;
+			_mainWindow = null;
+		}
+
+		// Leaving the sample restores the mode; closing its window must not, or OnExplicitShutdown would end the app.
+		if (!_mainWindowClosed)
+		{
+			Application.Current.DispatcherShutdownMode = _initialShutdownMode;
+		}
+	}
+
+	private void OnMainWindowClosing(AppWindow sender, AppWindowClosingEventArgs args)
+	{
+		args.Cancel = CancelMainClosingCheckBox.IsChecked == true;
+		Log($"main window: AppWindow.Closing (Cancel = {args.Cancel})");
+	}
+
+	private void OnMainWindowClosed(object sender, WindowEventArgs args)
+	{
+		_mainWindowClosed = true;
+		Log("main window: Window.Closed");
+	}
 
 	private void OnSetOnLastWindowClose(object sender, RoutedEventArgs e)
 	{
