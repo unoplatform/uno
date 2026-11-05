@@ -282,7 +282,6 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task ParentedPopup_RTLSubtreeInLTRTreeWUC_AnimatedOffset()
 	{
 		Popup popup = await MakeRTLPopupInLTRTree();
@@ -292,7 +291,7 @@ public class PopupTests
 		{
 			popup.IsOpen = true;
 
-			DoubleAnimation da = MakeDoubleAnimation(popup, "(Canvas.Left)");
+			DoubleAnimation da = MakeDoubleAnimation(popup, "(Microsoft.UI.Xaml.Controls:Canvas.Left)");
 			da.From = 75.0;
 			da.To = 75.0;
 
@@ -302,6 +301,7 @@ public class PopupTests
 		});
 
 		await TestServices.WindowHelper.SynchronouslyTickUIThread(2);
+		await TestServices.WindowHelper.WaitForIdle();
 
 		// Upstream: VerifyMockDCompOutput(NoComparison). The master pins the popup content at an animated
 		// offset of (75, 50) in Canvas3 (200x200, RTL), i.e. mirrored to x = 200 - 75 - 100 = 25.
@@ -317,7 +317,7 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
+	[Ignore("Uno has no hand-off visual: ElementCompositionPreview gives the element's own visual, whose Offset is the layout offset under the RTL mirroring, not a visual composed above it.")]
 	public async Task ParentedPopup_RTLSubtreeInLTRTreeWUC_HandoffVisual()
 	{
 		Popup popup = await MakeRTLPopupInLTRTree();
@@ -1360,7 +1360,7 @@ public class PopupTests
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: needs a secondary window with a XAML island
 	[Description("Closes the window when it has a popup open to confirm it doesn't crash.")]
-	[Ignore("Pending Popup port")]
+	[Ignore("Open after the Stage C port: Shift+F10 injected in a second window never raises TextBox.ContextMenuOpening; not root-caused.")]
 	public async Task CloseWindowWithPopupOpen()
 	{
 		Window window1 = null;

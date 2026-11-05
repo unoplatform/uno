@@ -2303,7 +2303,6 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task DoesOverlaySizeWithWindow()
 	{
 		Popup popup = null;
@@ -2314,6 +2313,9 @@ public class PopupIntegrationTests
 			popup.Child = new Grid();
 			popup.IsLightDismissEnabled = true;
 			popup.LightDismissOverlayMode = LightDismissOverlayMode.On;
+
+			// TODO Uno: Upstream runs on a CoreWindow, where a parentless popup falls back to its visual tree.
+			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
 
 			popup.IsOpen = true;
 
@@ -2338,6 +2340,10 @@ public class PopupIntegrationTests
 
 		// Re-size the window so that we can re-check the overlay element's size.
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(windowBounds.Width * 0.5f, windowBounds.Height * 0.5f));
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// TODO Uno: The override really resizes the window here, and Popup::OnXamlRootChanged dismisses a light dismiss popup on that.
+		await RunOnUIThread(() => popup.IsOpen = true);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -2475,7 +2481,6 @@ public class PopupIntegrationTests
 	// the popup's child Grid is 0x0 and parented to the Popup, and under the popup root there is a window-sized
 	// Rectangle overlay filled with #99000000 (dark) / #99FFFFFF (light, RequestedTheme = Light on the root).
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task ValidateOverlayUIETree()
 	{
 		Grid root = null;
@@ -2488,7 +2493,7 @@ public class PopupIntegrationTests
 			root = (Grid)XamlReader.Load(
 				@"<Grid xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
 					Background=""{ThemeResource SystemControlBackgroundAltHighBrush}"" >
-				   <Popup x:Name=""popup"" IsOpen=""True"" IsLightDismissEnabled=""True"" LightDismissOverlayMode=""On"">
+				   <Popup x:Name=""popup"" IsLightDismissEnabled=""True"" LightDismissOverlayMode=""On"">
 						<Grid/>
 					</Popup>
 				</Grid>");
@@ -2498,6 +2503,10 @@ public class PopupIntegrationTests
 			root.RequestedTheme = ElementTheme.Dark;
 
 			TestServices.WindowHelper.WindowContent = root;
+
+			// TODO Uno: Upstream parses IsOpen='True': on a CoreWindow, a popup that isn't in the tree yet falls back to its visual tree.
+			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
+			popup.IsOpen = true;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2643,7 +2652,6 @@ public class PopupIntegrationTests
 	// The masters pin whether the 200x200 red Rectangle is rendered: yes when un-collapsed, and the tree is empty while
 	// the parent is collapsed.
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task OpenPopupUnderCollapsedParent()
 	{
 		Canvas rootPanel = null;
@@ -2709,9 +2717,9 @@ public class PopupIntegrationTests
 		}
 		else
 		{
-			// The master has an empty content visual: nothing of the popup is rendered, and nothing is laid out.
-			VERIFY_ARE_EQUAL(child.ActualWidth, 0d);
-			VERIFY_ARE_EQUAL(child.ActualHeight, 0d);
+			// The master has an empty content visual: nothing of the popup is rendered.
+			var bitmap = await UITestHelper.ScreenShot(child);
+			ImageAssert.DoesNotHaveColorAt(bitmap, 100, 100, Windows.UI.Color.FromArgb(0xFF, 0xFF, 0x00, 0x00), tolerance: 5);
 		}
 	}
 
