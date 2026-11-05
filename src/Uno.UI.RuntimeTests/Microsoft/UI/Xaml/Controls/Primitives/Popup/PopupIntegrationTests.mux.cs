@@ -259,8 +259,8 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: IncludeOnlyOn Desktop, mouse injection is unreliable on OneCore
+	[Ignore("Pending Popup port")]
 	public async Task ReplayPointerUpdate_PopupClosedDuringReplay_DoesNotCrash()
 	{
 		// Original 2-popup repro (popupA + popupB).  Snapshot fits within the inline
@@ -270,8 +270,8 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: IncludeOnlyOn Desktop, mouse injection is unreliable on OneCore
+	[Ignore("Pending Popup port")]
 	public async Task ReplayPointerUpdate_PopupClosedDuringReplay_WithManyOpenPopups_DoesNotCrash()
 	{
 		// 5 extra dummy popups + popupA + popupB = 7 total open popups when
@@ -452,7 +452,6 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task PopupTabStop()
 	{
 		Button button1 = null;
@@ -538,7 +537,6 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task DoNotSetDefaultFocusOnPhoneWhenPopupIsClosed()
 	{
 		Button button1 = null;
@@ -770,7 +768,6 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task TallPopupPlacedRelativeToAnotherPopupIsBroughtInView()
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 400));
@@ -2087,7 +2084,6 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task ValidateLightDismissOverlayMode()
 	{
 		LOG_OUTPUT("Validate that the default is Off and light-dismissible there is no overlay element.");
@@ -2157,7 +2153,6 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task ValidateDefaultOverlayBrush()
 	{
 		await RunOnUIThread(() =>
@@ -2182,7 +2177,6 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task ValidateOverlayTreePlacement()
 	{
 		Popup testPopup = null;
@@ -2247,7 +2241,6 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task CanChangeLightDismissOverlayModeWhileOpen()
 	{
 		Popup popup = null;
@@ -2258,6 +2251,7 @@ public class PopupIntegrationTests
 			popup.Child = new Grid();
 			popup.IsLightDismissEnabled = true;
 			popup.LightDismissOverlayMode = LightDismissOverlayMode.Off;
+			popup.XamlRoot = TestServices.WindowHelper.XamlRoot; // Uno: no CoreWindow to fall back on.
 
 			popup.IsOpen = true;
 
@@ -2353,7 +2347,6 @@ public class PopupIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task CanSetChildWhileOpenWithOverlayEnabled()
 	{
 		Popup popup = null;
@@ -2394,7 +2387,6 @@ public class PopupIntegrationTests
 	// Upstream compares the DComp tree. The masters pin the overlay: a window-sized sprite filled with 60% black in
 	// the dark theme, 60% white in the light theme and navy (0, 0, 127) in high contrast.
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task ValidateOverlayDCompTree()
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 400));

@@ -512,7 +512,6 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task RasterizationScale()
 	{
 		Popup belowRasterizationScale = null;
@@ -874,7 +873,6 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task InlinePopupTabOrder()
 	{
 		await PopupTabOrder(false);
@@ -1013,8 +1011,8 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: windowed popups are a desktop concept
+	[Ignore("Pending Popup port")]
 	public async Task SystemBackdropRoundedCorners()
 	{
 		Canvas root = null;
@@ -1305,7 +1303,6 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task NoXamlRoot()
 	{
 		Canvas root = null;
@@ -1360,9 +1357,9 @@ public class PopupTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: needs a secondary window with a XAML island
 	[Description("Closes the window when it has a popup open to confirm it doesn't crash.")]
+	[Ignore("Pending Popup port")]
 	public async Task CloseWindowWithPopupOpen()
 	{
 		Window window1 = null;

@@ -1999,7 +1999,6 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task ValidateNestedSubMenuItemPosition()
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(1024, 768));
@@ -2101,7 +2100,6 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	public async Task ValidateNestedSplitMenuItemPosition()
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(1024, 768));

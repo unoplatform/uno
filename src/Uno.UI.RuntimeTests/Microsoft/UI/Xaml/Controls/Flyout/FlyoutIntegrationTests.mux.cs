@@ -222,7 +222,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Verify the Flyout dependency property default values.")]
 	public async Task VerifyDependencyPropertyDefaultValues()
 	{
@@ -326,8 +325,8 @@ public class FlyoutIntegrationTests
 	// Uno has no master-file comparison, so ValidateUIETreeWorker asserts what those masters pin explicitly.
 	// Brush/color values that depend on the WinUI theme resources version are intentionally not pinned.
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates the UI element tree of an open Flyout")]
+	[Ignore("Pending Popup port")]
 	public async Task ValidateUIElementTree()
 	{
 		await ValidateUIETreeWorker(Theme.Dark, "Dark");
@@ -512,8 +511,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Certain properties, including FlowDirection and RequestedTheme should get forwarded from the target to the presenter")]
+	[Ignore("Pending Popup port")]
 	public async Task VerifyTargetPropertiesForwardedToPresenter()
 	{
 		Button button = null;
@@ -962,8 +961,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Verify the nested Popups open and close.")]
+	[Ignore("Pending Popup port")]
 	public async Task CanPopupNestedInFlyoutOpenClose()
 	{
 		Button button = null;
@@ -1027,7 +1026,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that setting FlowDirection to RTL causes a flyout positioned on the left to appear on the right, and vice versa.")]
 	public async Task ValidateRTLReversesHorizontalPlacementModes()
 	{
@@ -1090,7 +1088,7 @@ public class FlyoutIntegrationTests
 			var flyoutPresenter = FlyoutHelper.GetFlyoutPresenter(flyout);
 			var flyoutPosition = flyoutPresenter.TransformToVisual(null).TransformPoint(new Point((float)flyoutPresenter.ActualWidth, 0));
 
-			VERIFY_ARE_EQUAL(rightFlyoutPosition.X, flyoutPosition.X);
+			VERIFY_ARE_VERY_CLOSE(rightFlyoutPosition.X, flyoutPosition.X, 0.01, "X"); // Uno: layout rounding works with doubles.
 			VERIFY_ARE_EQUAL(rightFlyoutPosition.Y, flyoutPosition.Y);
 		});
 
@@ -1279,8 +1277,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that opening a flyout using press-and-hold only opens it once.")]
+	[Ignore("Pending Popup port")]
 	public async Task ValidatePressAndHoldOnlyOpensOnce()
 	{
 		var flyout = await FlyoutHelper.CreateDefaultFlyout(FlyoutPlacementMode.Left);
@@ -1637,8 +1635,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that opening a child Flyout while one of its sibling flyouts is open, closes the sibling and opens the child instead.")]
+	[Ignore("Pending Popup port")]
 	public async Task CanOpenChildFlyoutWithOpenSibling()
 	{
 		Button parentButton = null;
@@ -1727,8 +1725,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that a child flyout can be re-opened with a new placement target.")]
+	[Ignore("Pending Popup port")]
 	public async Task CanReopenChildFlyoutWithNewPlacementTarget()
 	{
 		Button parentButton = null;
@@ -1892,8 +1890,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that opening a new root flyout (not the child of an already open flyout) closes an already open flyout chain.")]
+	[Ignore("Pending Popup port")]
 	public async Task DoesFlyoutChainCloseWhenOpeningNewRootFlyout()
 	{
 		Button parentButton = null;
@@ -1977,8 +1975,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that a child flyout unloads when its placement target unloads.")]
+	[Ignore("Pending Popup port")]
 	public async Task DoesChildFlyoutCloseWhenPlacementTargetUnloads()
 	{
 		Button parentButton = null;
@@ -2235,7 +2233,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that right-clicking will dismiss an open chain of flyouts and invoke the handler on the next hit-testable element.")]
 	public async Task DoesChainRightClickWithChildFlyouts()
 	{
@@ -2409,7 +2406,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that it is possible to cancel closing a child flyout.")]
 	public async Task CanCancelChildClosing()
 	{
@@ -2499,7 +2495,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates the behavior of the LightDismissOverlayMode property.")]
 	public async Task ValidateLightDismissOverlayMode()
 	{
@@ -2554,8 +2549,8 @@ public class FlyoutIntegrationTests
 
 	// Upstream is ignored: "Validates that setting LightDismissOverlayMode to Auto on Xbox causes the popup overlay to get configured to On."
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that setting LightDismissOverlayMode to Auto on Xbox causes the popup overlay to get configured to On.")]
+	[Ignore("Pending Popup port")]
 	public async Task DoesAutoLightDismissOverlayModeCreateOverlayOnXbox()
 	{
 		Flyout flyout = null;
@@ -2601,7 +2596,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that the brush used for the Overlay matches the 'FlyoutLightDismissOverlayBackground' resource.")]
 	public async Task ValidateOverlayBrush()
 	{
@@ -2609,7 +2603,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that designating an element as the light-dismiss pass-through element in XAML allows pointer events to route to it through the light-dismiss layer.")]
 	public async Task ValidatePointerEventsCanBeRoutedThroughLightDismissLayerSetInXaml()
 	{
@@ -2652,7 +2645,6 @@ public class FlyoutIntegrationTests
 
 	// Upstream is ignored: "[DCPPTest] Xaml tests are failing because Xaml no longer applies the plateau scale".
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that designating an element as the light-dismiss pass-through element in XAML allows pointer events to route to it through the light-dismiss layer in HiDpi.")]
 	public async Task ValidatePointerEventsCanBeRoutedThroughLightDismissLayerHiDpi()
 	{
@@ -2670,7 +2662,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that designating an element as the light-dismiss pass-through element in code-behind allows pointer events to route to it through the light-dismiss layer.")]
 	public async Task ValidatePointerEventsCanBeRoutedThroughLightDismissLayerManuallySet()
 	{
@@ -2830,8 +2821,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that OnPresenterLoaded being raised without ShowAt having first been called does not crash the app.")]
+	[Ignore("Pending Popup port")]
 	public async Task ValidatePresenterLoadedWithoutShowAtDoesNotCrash()
 	{
 		Button flyoutTarget = null;
@@ -2915,7 +2906,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that the position of the flyout is as set in onOpening method for the first time.")]
 	public async Task ValidateFlyoutTakesThePositionItsSetToTheFirstTime()
 	{
@@ -2983,8 +2973,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates if a flyout is opened from another flyout, we can right-click on the original flyout to open a third flyout without that right-click hiding the original flyout.")]
+	[Ignore("Pending Popup port")]
 	public async Task ValidateRightClickCanHideOneFlyoutWithoutHidingAllFlyouts()
 	{
 		Rectangle rectangle = null;
@@ -3099,7 +3089,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that a flyout closes when it loses focus.")]
 	public async Task ValidateLosingFocusClosesFlyout()
 	{
@@ -3160,8 +3149,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Verify that focus moves into a Flyout when opened with UIA when AllowFocusOnInteraction=false on the target.")]
+	[Ignore("Pending Popup port")]
 	public async Task VerifyFlyoutTakesFocusWithAllowFocusOnInteractionFalseWithUIA()
 	{
 		// We want to test the scenario where:
@@ -3272,8 +3261,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that each value of FlyoutPlacementMode has the effect that we expect it to.")]
+	[Ignore("Pending Popup port")]
 	public async Task ValidateFlyoutPlacementMode()
 	{
 		Button button;
@@ -3329,8 +3318,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that each value of FlyoutPlacementMode when opened at a set point has the effect that we expect it to.")]
+	[Ignore("Pending Popup port")]
 	public async Task ValidateFlyoutPlacementModeAtPoint()
 	{
 		Button button;
@@ -3393,8 +3382,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that each value of FlyoutPlacementMode when opened at a set point with an exclusion rect has the effect that we expect it to.")]
+	[Ignore("Pending Popup port")]
 	public async Task ValidateFlyoutPlacementModeAtPointWithExclusionRect()
 	{
 		Button button;
@@ -3459,7 +3448,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that FlyoutShowMode can be set from XAML.")]
 	public async Task ValidateFlyoutShowMode()
 	{
@@ -3503,7 +3491,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that a flyout opened as transient does not take keyboard focus when it opens.")]
 	public async Task ValidateTransientFlyoutDoesNotTakeFocus()
 	{
@@ -3559,8 +3546,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that a flyout opened as transient allows input to pass through its light-dismiss layer.")]
+	[Ignore("Pending Popup port")]
 	public async Task ValidateTransientFlyoutLightDismissLayerAllowsInputToPassThrough()
 	{
 		Flyout flyout = null;
@@ -3620,8 +3607,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that FlyoutShowMode=TransientWithDismissOnPointerMoveAway dismisses properly.")]
+	[Ignore("Pending Popup port")]
 	public async Task ValidateFlyoutTransientWithDismissOnPointerMoveAway()
 	{
 		Flyout flyout = null;
@@ -3719,7 +3706,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that opening a ContextFlyout with the right mouse button causes it to be placed at the mouse cursor, not just on the UI element it's attached to.")]
 	public async Task ValidateContextFlyoutPlacedAtMouse()
 	{
@@ -3828,8 +3814,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that InputDevicePrefersPrimaryCommands correctly reports whether or not the flyout was opened with an input device that wants more primary commands.")]
+	[Ignore("Pending Popup port")]
 	public async Task VerifyInputDevicePrefersPrimaryCommands()
 	{
 		Flyout flyout = await FlyoutHelper.CreateDefaultFlyout(FlyoutPlacementMode.Bottom);
@@ -3900,8 +3886,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Validates that a hyperlink in a flyout taking focus does not close that flyout.")]
+	[Ignore("Pending Popup port")]
 	public async Task ValidateHyperlinkTakingFocusDoesNotCloseFlyout()
 	{
 		var target = await FlyoutHelper.CreateTarget(
@@ -4091,8 +4077,8 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Verify that ShowAt can be called multiple times in a row with different targets.")]
+	[Ignore("Pending Popup port")]
 	public async Task ValidateImmediateRetargeting()
 	{
 		Flyout flyout = null;
@@ -4205,7 +4191,6 @@ public class FlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Verify that a ContextFlyout on a TextBlock can be shown.")]
 	public async Task VerifyContextFlyoutOnTextBlock()
 	{
@@ -4415,8 +4400,8 @@ public class FlyoutIntegrationTests
 	// PerfOptIn=true is set via Data:PerfOptIn upstream (WindowHelper::InitializeXamlCore reads it during TestSetup and sets the override).
 	// Uno has no PerfOptIn override, so this runs the same body as the Off variant.
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Verify that keyboard accelerators on a custom default TextBlock ContextFlyout work with PerfOptIn enabled.")]
+	[Ignore("Pending Popup port")]
 	public async Task VerifyAppResourceOverrideContextFlyoutAcceleratorsPerfOptInOn()
 	{
 		await VerifyAppResourceOverrideContextFlyoutAcceleratorsHelper();
@@ -4424,8 +4409,8 @@ public class FlyoutIntegrationTests
 
 	// PerfOptIn=false is set via Data:PerfOptIn upstream.
 	[TestMethod]
-	[Ignore("Pending Popup port")]
 	[Description("Verify that keyboard accelerators on a custom default TextBlock ContextFlyout work with PerfOptIn disabled.")]
+	[Ignore("Pending Popup port")]
 	public async Task VerifyAppResourceOverrideContextFlyoutAcceleratorsPerfOptInOff()
 	{
 		await VerifyAppResourceOverrideContextFlyoutAcceleratorsHelper();
