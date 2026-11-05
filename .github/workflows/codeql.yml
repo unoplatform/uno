@@ -84,7 +84,7 @@ jobs:
         cp build/ci/net11/_global.json global.json
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@9a946fdbd5fb07b82b2f5a4466058b876ab72bb2 # v3
+      uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v3
       with:
         global-json-file: global.json
       env:

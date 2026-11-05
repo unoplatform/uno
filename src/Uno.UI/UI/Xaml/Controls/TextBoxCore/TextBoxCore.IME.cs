@@ -66,6 +66,18 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 	void IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
 	{
+		if (IsNativeEchoOfCurrentSelection(selectionStart, selectionLength)
+			&& IsNativeEchoOfCurrentText(text))
+		{
+			// ProcessTextInput is skipped, so clear what its finally would have.
+			if (!_isInputModifyingText)
+			{
+				_platformTextApplyInProgress = false;
+			}
+
+			return;
+		}
+
 		// Pending so the text change itself lands the caret here instead of passing through 0.
 		SetPendingSelection(selectionStart, selectionLength);
 		ProcessTextInput(text);
@@ -73,7 +85,38 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 	}
 
 	void IImeSessionHost.SelectFromNative(int selectionStart, int selectionLength)
-		=> Select(selectionStart, selectionLength);
+	{
+		if (!IsNativeEchoOfCurrentSelection(selectionStart, selectionLength))
+		{
+			Select(selectionStart, selectionLength);
+		}
+	}
+
+	// Native selections are normalized and can't tell which end the caret is on, so re-applying an echo
+	// of the current range would flip a backward selection forward.
+	private bool IsNativeEchoOfCurrentSelection(int selectionStart, int selectionLength)
+		=> selectionStart == _selection.start && selectionLength == _selection.length;
+
+	// Native text reports line breaks as '\n'; compares without allocating a normalized copy per keystroke.
+	private bool IsNativeEchoOfCurrentText(string text)
+	{
+		var current = Text;
+		if (text.Length != current.Length)
+		{
+			return false;
+		}
+
+		for (var i = 0; i < current.Length; i++)
+		{
+			var c = current[i] == '\r' ? '\n' : current[i];
+			if (c != text[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 	bool IImeSessionHost.RaisePaste()
 	{

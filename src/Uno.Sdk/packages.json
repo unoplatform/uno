@@ -121,7 +121,7 @@
 	},
 	{
 		"group": "SvgSkia",
-		"version": "3.0.6",
+		"version": "5.2.3",
 		"packages": [
 			"Svg.Skia"
 		]
@@ -154,7 +154,7 @@
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net11.0": "11.0.0-rc.2.26504.105"
+			"net11.0": "11.0.0-rc.3.26522.148"
 		}
 	},
 	{
@@ -170,15 +170,6 @@
 		"version": "8.4.2",
 		"packages": [
 			"CommunityToolkit.Mvvm"
-		]
-	},
-	{
-		"group": "Prism",
-		"version": "9.0.537",
-		"packages": [
-			"Prism.DryIoc.Uno.WinUI",
-			"Prism.Uno.WinUI",
-			"Prism.Uno.WinUI.Markup"
 		]
 	},
 	{

@@ -69,13 +69,15 @@ public class Given_MobileMultiWindowAccessibility
 		GetAndClearEvents(root);
 
 		panel.Children.Add(new Button { Content = "Added" });
-		await TestServices.WindowHelper.WaitForIdle();
 
-		Assert.IsTrue(
-			GetAndClearEvents(root).Any(record =>
+		// The Android adapter records it from a main-looper message that the view system's sync barriers can hold back past
+		// WaitForIdle, so poll for the record.
+		await TestServices.WindowHelper.WaitFor(
+			() => GetAndClearEvents(root).Any(record =>
 				record.Kind is AccessibilityNativeEventKind.StructureChanged
 					or AccessibilityNativeEventKind.NodeInvalidated),
-			"Tree changes must be observable through the owning XamlRoot's event accessor.");
+			timeoutMS: 5000,
+			message: "Tree changes must be observable through the owning XamlRoot's event accessor.");
 	}
 
 	[TestMethod]
