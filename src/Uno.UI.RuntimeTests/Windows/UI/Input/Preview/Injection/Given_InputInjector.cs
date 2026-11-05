@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Windows.UI;
@@ -196,7 +197,13 @@ public class Given_InputInjector
 		mouse.MoveTo(left, steps: 5);
 		mouse.MoveTo(right, steps: 5);
 
-		await WaitForIdle();
+		// On WinUI the injected input goes through the OS and can arrive after WaitForIdle returns. Don't poll with
+		// WaitFor: Win32 only retrieves input when no posted message is waiting, and its idle loop always has one queued.
+		var waited = Stopwatch.StartNew();
+		while (movedCount == 0 && waited.ElapsedMilliseconds < 5000)
+		{
+			await Task.Delay(20);
+		}
 
 		Assert.AreNotEqual(0, movedCount, "PointerMoved should have been raised");
 	}
