@@ -199,7 +199,7 @@ public class Win32Host : UnoPlatformHost, IApplicationHost
 			{
 				Win32EventLoop.RunOnce();
 
-				// Surfaced from Run like an exception on any other thread, so it terminates the process.
+				// Rethrown from Run so the startup failure reaches Main and terminates the process.
 				startupFailure?.Throw();
 
 				if (_allWindowsClosed && !Win32EventLoop.HasMessages())

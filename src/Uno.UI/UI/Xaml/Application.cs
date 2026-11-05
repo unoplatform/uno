@@ -418,7 +418,7 @@ namespace Microsoft.UI.Xaml
 				}
 				catch (Exception e)
 				{
-					if (!RaiseUnhandledException(e))
+					if (!RaiseRecoverableUnhandledException(e))
 					{
 						throw;
 					}
@@ -473,13 +473,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
-
-		/// <summary>
-		/// Raises <see cref="UnhandledException"/> as WinUI does for an exception the app code left unhandled.
-		/// </summary>
-		/// <returns>Whether a handler set <see cref="UnhandledExceptionEventArgs.Handled"/>; if not, the caller rethrows.</returns>
-		private bool RaiseUnhandledException(Exception e)
+		/// <returns>Whether a handler set <see cref="UnhandledExceptionEventArgs.Handled"/>.</returns>
+		internal bool RaiseRecoverableUnhandledException(Exception e)
 		{
 			var args = new UnhandledExceptionEventArgs(e, false);
 			UnhandledException?.Invoke(this, args);
