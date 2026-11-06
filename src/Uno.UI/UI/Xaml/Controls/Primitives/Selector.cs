@@ -43,7 +43,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(SelectedIndex),
 				typeof(int),
 				typeof(Selector),
-				new FrameworkPropertyMetadata(IntBoxes.NegativeOne));
+				new FrameworkPropertyMetadata(IntBoxes.NegativeOne, coerceValueCallback: CoerceSelectedIndex));
+
+		// Explicitly setting -1 drops a pending index even when SelectedIndex already is -1. Uno raises no
+		// property change for that set, so OnSelectedIndexChanged cannot do it.
+		private static object CoerceSelectedIndex(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
+		{
+			if (dependencyObject is Selector selector &&
+				baseValue is -1 &&
+				selector.IsSelectionReentrancyAllowed() &&
+				!selector.IsInit())
+			{
+				selector.m_selectedIndexValueSetBeforeItemsAvailable = -1;
+			}
+
+			return baseValue;
+		}
 
 		public string SelectedValuePath
 		{
