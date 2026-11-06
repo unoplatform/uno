@@ -22,7 +22,22 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
-		public DependencyObject? LoadContent() => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent: null);
+		public DependencyObject? LoadContent()
+		{
+			if (_queriedContent is { } queriedContent)
+			{
+				_queriedContent = null;
+				return queriedContent;
+			}
+
+			return ((IFrameworkTemplateInternal)this).LoadContent(templatedParent: null);
+		}
+
+		private DependencyObject? _queriedContent;
+
+		// CDataTemplate::QueryContentNoRef in WinUI: expands once for inspection and the next LoadContent reuses that instance.
+		internal DependencyObject? QueryContentNoRef()
+			=> _queriedContent ??= ((IFrameworkTemplateInternal)this).LoadContent(templatedParent: null);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public DependencyObject? LoadContent(DependencyObject templatedParent) => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent);

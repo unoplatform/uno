@@ -1,17 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#nullable enable
+
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class GroupStyle
 	{
-		public DataTemplate HeaderTemplate { get; set; }
+		private DataTemplate? _headerTemplate;
+		private DataTemplateSelector? _headerTemplateSelector;
+		private Style? _headerContainerStyle;
+		private bool _hidesIfEmpty;
 
-		public DataTemplateSelector HeaderTemplateSelector { get; set; }
+		public DataTemplate? HeaderTemplate
+		{
+			get => _headerTemplate;
+			set => Set(ref _headerTemplate, value);
+		}
 
-		public Style HeaderContainerStyle { get; set; }
+		public DataTemplateSelector? HeaderTemplateSelector
+		{
+			get => _headerTemplateSelector;
+			set => Set(ref _headerTemplateSelector, value);
+		}
 
-		public bool HidesIfEmpty { get; set; }
+		public Style? HeaderContainerStyle
+		{
+			get => _headerContainerStyle;
+			set => Set(ref _headerContainerStyle, value);
+		}
+
+		public bool HidesIfEmpty
+		{
+			get => _hidesIfEmpty;
+			set => Set(ref _hidesIfEmpty, value);
+		}
+
+		public event PropertyChangedEventHandler? PropertyChanged;
+
+		private void Set<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+		{
+			if (!Equals(field, value))
+			{
+				field = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
 	}
 }
