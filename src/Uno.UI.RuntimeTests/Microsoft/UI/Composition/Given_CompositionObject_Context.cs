@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
@@ -91,36 +92,52 @@ public class Given_CompositionObject_Context
 	public async Task When_Shared_SolidColorBrush_Consumers_Unloaded_Then_ContextEntries_Do_Not_Accumulate()
 	{
 		var brush = new SolidColorBrush(Colors.Red);
-		var host = new Grid { Width = 200, Height = 50 };
+		var host = new StackPanel { Orientation = Orientation.Horizontal, Width = 200, Height = 50 };
 		TestServices.WindowHelper.WindowContent = host;
-		await TestServices.WindowHelper.WaitForLoaded(host);
-
-		var dead = new List<WeakReference>();
-		var maxSurvivors = 0;
-		for (var i = 0; i < 100; i++)
+		try
 		{
-			dead.AddRange(AddXamlConsumers(host, brush));
-			await TestServices.WindowHelper.WaitForIdle();
-			host.Children.Clear();
+			await TestServices.WindowHelper.WaitForLoaded(host);
 
-			if (i % 10 == 9)
+			var dead = new List<WeakReference>();
+			var maxSurvivors = 0;
+			for (var i = 0; i < 100; i++)
 			{
+				dead.AddRange(AddXamlConsumers(host, brush));
 				await TestServices.WindowHelper.WaitForIdle();
-				maxSurvivors = Math.Max(maxSurvivors, await CollectAsync(dead));
+				host.Children.Clear();
+
+				if (i % 10 == 9)
+				{
+					await TestServices.WindowHelper.WaitForIdle();
+					maxSurvivors = Math.Max(maxSurvivors, await CollectAsync(dead));
+				}
 			}
+
+			var survivors = await CollectUntilCollectedAsync(dead);
+
+			// One more consumer, so that AddContext gets a chance to sweep what was collected last.
+			AddXamlConsumers(host, brush);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var compositionBrush = brush.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
+
+			// Each Border with a Background adds 2 entries (BorderVisual.BackgroundBrush and its background shape's FillBrush)
+			// and each Rectangle adds 1. Before the fix: ~300 entries, all but the last 3 dead.
+			AssertBounded(compositionBrush.ContextEntriesCount, 100 + 4 * maxSurvivors, maxSurvivors, survivors, dead.Count);
+			Assert.IsTrue(compositionBrush.ContextEntriesCount >= 3, $"The live Border and Rectangle lost their entries: {compositionBrush.ContextEntriesCount}");
+
+			// The live consumers must still pick up a change of the brush after the sweep.
+			brush.Color = Colors.Blue;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var screenshot = await UITestHelper.ScreenShot(host);
+			ImageAssert.HasColorAt(screenshot, 10, 25, Colors.Blue, tolerance: 5); // Border
+			ImageAssert.HasColorAt(screenshot, 30, 25, Colors.Blue, tolerance: 5); // Rectangle
 		}
-
-		var survivors = await CollectUntilCollectedAsync(dead);
-
-		// One more consumer, so that AddContext gets a chance to sweep what was collected last.
-		AddXamlConsumers(host, brush);
-		await TestServices.WindowHelper.WaitForIdle();
-
-		var compositionBrush = brush.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
-
-		// Each Border with a Background adds 2 entries (BorderVisual.BackgroundBrush and its background shape's FillBrush)
-		// and each Rectangle adds 1. Before the fix: ~300 entries, all but the last 3 dead.
-		AssertBounded(compositionBrush.ContextEntriesCount, 100 + 4 * maxSurvivors, maxSurvivors, survivors, dead.Count);
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
