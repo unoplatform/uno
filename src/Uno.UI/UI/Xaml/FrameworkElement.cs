@@ -249,9 +249,21 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets the parent of this FrameworkElement in the object tree.
 		/// </summary>
-		public new DependencyObject Parent =>
-			LogicalParentOverride ??
-			((DependencyObject)this).Parent as DependencyObject;
+		public new DependencyObject Parent
+		{
+			get
+			{
+				if (LogicalParentOverride is { } logicalParent)
+				{
+					return logicalParent;
+				}
+
+				var parent = ((DependencyObject)this).Parent as DependencyObject;
+
+				// MUX Reference FrameworkElement.cpp, GetLogicalParentNoRef: panel inside itemspresenter is not the logical parent of its visual children.
+				return parent is Panel panel && ((DependencyObject)panel).Parent is ItemsPresenter ? null : parent;
+			}
+		}
 
 		internal bool HasParent() => Parent != null;
 
