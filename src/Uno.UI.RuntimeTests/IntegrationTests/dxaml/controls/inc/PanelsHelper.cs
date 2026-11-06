@@ -7,6 +7,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using static Private.Infrastructure.TestServices;
 using System;
 
@@ -91,59 +93,57 @@ internal static class PanelsHelper
 		return itemsVector.ToArray();
 	}
 
-	//template<class TItemsControl, class TPanel>
-	//       static TItemsControl^ CreateItemsControlWithPanel(Platform::String^ xamlPanelProperties = L"")
-	//{
-	//	TItemsControl ^ itemsControl = nullptr;
+	internal static async Task<TItemsControl> CreateItemsControlWithPanel<TItemsControl, TPanel>(string xamlPanelProperties = "")
+		where TItemsControl : ItemsControl, new()
+	{
+		TItemsControl itemsControl = null;
 
-	//	await RunOnUIThread(()
-	//	{
-	//		LOG_OUTPUT("Creating a %s with a %s as its panel.", GetClassName<TItemsControl>().Data(), GetClassName<TPanel>().Data());
+		await RunOnUIThread(() =>
+		{
+			LOG_OUTPUT("Creating a %s with a %s as its panel.", typeof(TItemsControl).Name, typeof(TPanel).Name);
 
-	//		itemsControl = ref new TItemsControl();
-	//		itemsControl.Width = 300;
-	//		itemsControl.Height = 300;
+			itemsControl = new TItemsControl();
+			itemsControl.Width = 300;
+			itemsControl.Height = 300;
 
-	//		itemsControl.ItemsPanel =
-	//			dynamic_cast < ItemsPanelTemplate ^> (XamlReader::Load(
-	//				L"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><" + GetClassName<TPanel>() + L" " + xamlPanelProperties + "/></ItemsPanelTemplate>"));
+			itemsControl.ItemsPanel =
+				(ItemsPanelTemplate)XamlReader.Load(
+					"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><" + typeof(TPanel).Name + " " + xamlPanelProperties + "/></ItemsPanelTemplate>");
 
-	//		ApplyContainerStyle<TItemsControl>(itemsControl);
-	//	});
+			ApplyContainerStyle(itemsControl);
+		});
 
-	//	return itemsControl;
-	//}
+		return itemsControl;
+	}
 
-	//template<class TItemsControl, class TPanel>
-	//       static TItemsControl^ AddItemsControlWithPanel(int numItemsToAdd, Platform::String^ xamlPanelProperties = L"")
-	//{
-	//	TItemsControl ^ itemsControl = CreateItemsControlWithPanel<TItemsControl, TPanel>(xamlPanelProperties);
-	//	auto panelContent = CreateDefaultPanelContent(numItemsToAdd);
-	//	auto loadedRegistration = CreateSafeEventRegistration(xaml_controls::ItemsControl, Loaded);
-	//	auto loadedEvent = std::make_shared<Event>();
+	internal static async Task<TItemsControl> AddItemsControlWithPanel<TItemsControl, TPanel>(int numItemsToAdd, string xamlPanelProperties = "")
+		where TItemsControl : ItemsControl, new()
+	{
+		TItemsControl itemsControl = await CreateItemsControlWithPanel<TItemsControl, TPanel>(xamlPanelProperties);
+		var panelContent = await CreateDefaultPanelContent(numItemsToAdd);
+		var loadedRegistration = CreateSafeEventRegistration<ItemsControl, RoutedEventHandler>("Loaded");
+		var loadedEvent = new Event();
 
-	//	RunOnUIThread([&]()
+		await RunOnUIThread(() =>
+		{
+			LOG_OUTPUT("Adding the %s to the visual tree with %d items.", typeof(TItemsControl).Name, numItemsToAdd);
 
-	//		{
-	//		LOG_OUTPUT("Adding the %s to the visual tree with %d items.", GetClassName<TItemsControl>().Data(), numItemsToAdd);
+			itemsControl.ItemsSource = panelContent;
 
-	//		itemsControl.ItemsSource = panelContent;
+			loadedRegistration.Attach(itemsControl, (sender, e) =>
+			{
+				loadedEvent.Set();
+			});
 
-	//		loadedRegistration.Attach(itemsControl, ref new xaml::RoutedEventHandler([loadedEvent](Platform::Object ^ sender, xaml::RoutedEventArgs ^ e)
+			TestServices.WindowHelper.WindowContent = itemsControl;
+		});
 
-	//			{
-	//			loadedEvent.Set();
-	//		}));
+		LOG_OUTPUT("Waiting for %s to be loaded...", typeof(TItemsControl).Name);
+		await loadedEvent.WaitForDefault();
+		LOG_OUTPUT("%s loaded.", typeof(TItemsControl).Name);
 
-	//		TestServices::WindowHelper.WindowContent = itemsControl;
-	//	});
-
-	//	LOG_OUTPUT("Waiting for %s to be loaded...", GetClassName<TItemsControl>().Data());
-	//	loadedEvent.WaitForDefault();
-	//	LOG_OUTPUT("%s loaded.", GetClassName<TItemsControl>().Data());
-
-	//	return itemsControl;
-	//}
+		return itemsControl;
+	}
 
 	internal static async Task VerifyItemPositions(Panel panel, IList<Point> expectedPositions)
 	{
@@ -164,24 +164,24 @@ internal static class PanelsHelper
 		});
 	}
 
-	//internal static void VerifyItemPositions(ItemsControl itemsControl, IList<Point> expectedPositions)
-	//{
-	//	await RunOnUIThread(() =>
-	//	{
-	//		VERIFY_IS_LESS_THAN_OR_EQUAL(expectedPositions.Size, itemsControl.Items.Size);
+	internal static async Task VerifyItemPositions(ItemsControl itemsControl, IList<Point> expectedPositions)
+	{
+		await RunOnUIThread(() =>
+		{
+			VERIFY_IS_LESS_THAN_OR_EQUAL(expectedPositions.Count, itemsControl.Items.Count);
 
-	//		for (unsigned int i = 0; i < expectedPositions.Size; i++)
-	//		{
-	//			auto container = dynamic_cast < UIElement ^> (itemsControl.ContainerFromIndex(i));
-	//			auto transform = container.TransformToVisual(itemsControl);
-	//			wf::Point actualPosition = transform.TransformPoint(wf::Point(0, 0));
-	//			wf::Point expectedPosition = expectedPositions.GetAt(i);
+			for (int i = 0; i < expectedPositions.Count; i++)
+			{
+				var container = (UIElement)itemsControl.ContainerFromIndex(i);
+				var transform = container.TransformToVisual(itemsControl);
+				Point actualPosition = transform.TransformPoint(new Point(0, 0));
+				Point expectedPosition = expectedPositions[i];
 
-	//			VERIFY_ARE_EQUAL(Round(expectedPosition.X), Round(actualPosition.X));
-	//			VERIFY_ARE_EQUAL(Round(expectedPosition.Y), Round(actualPosition.Y));
-	//		}
-	//	});
-	//}
+				VERIFY_ARE_EQUAL(Round(expectedPosition.X), Round(actualPosition.X));
+				VERIFY_ARE_EQUAL(Round(expectedPosition.Y), Round(actualPosition.Y));
+			}
+		});
+	}
 
 	internal static async Task VerifyPanelDesiredSize(Panel panel, double expectedWidth, double expectedHeight)
 	{
@@ -196,34 +196,28 @@ internal static class PanelsHelper
 	// rounding would expect 112 for a child centred at 112.5 that layout places at 113.
 	private static int Round(double value) => (int)Math.Floor(value + 0.5);
 
-	//template<class TItemsControl>
-	//       static void ApplyContainerStyle(TItemsControl^ itemsControl);
-
-	//template<>
-	//	static void ApplyContainerStyle<xaml_controls::ItemsControl>(xaml_controls::ItemsControl^ itemsControl)
-	//{
-	//	// There's no container style to apply for ItemsControls, so there's nothing for us to do here.
-	//	// This implementation exists because the method that calls this is called for ItemsControls,
-	//	// so we need to provide this implementation.
-	//}
-
-	//template<>
-	//	static void ApplyContainerStyle<xaml_controls::ListView>(xaml_controls::ListView^ itemsControl)
-	//{
-	//	itemsControl.ItemContainerStyle =
-	//		(Style)XamlReader.Load(
-	//			@"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='ListViewItem'>
-	//			    <Setter Property='Margin' Value='0'/>
-	//			    <Setter Property='BorderThickness' Value='0'/>
-	//			    <Setter Property='Template'>
-	//			        <Setter.Value>
-	//			            <ControlTemplate TargetType='ListViewItem'>
-	//			                <ListViewItemPresenter
-	//			                    PointerOverBackgroundMargin='0'
-	//			                    ContentMargin='0' />
-	//			            </ControlTemplate>
-	//			        </Setter.Value>
-	//			    </Setter>
-	//			</Style>");
-	//}
+	private static void ApplyContainerStyle(ItemsControl itemsControl)
+	{
+		// There's no container style to apply for ItemsControls, so there's nothing for us to do here.
+		if (itemsControl is ListView listView)
+		{
+			listView.ItemContainerStyle =
+				(Style)XamlReader.Load(
+					"""
+					<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='ListViewItem'>
+					    <Setter Property='Margin' Value='0'/>
+					    <Setter Property='BorderThickness' Value='0'/>
+					    <Setter Property='Template'>
+					        <Setter.Value>
+					            <ControlTemplate TargetType='ListViewItem'>
+					                <ListViewItemPresenter
+					                    PointerOverBackgroundMargin='0'
+					                    ContentMargin='0' />
+					            </ControlTemplate>
+					        </Setter.Value>
+					    </Setter>
+					</Style>
+					""");
+		}
+	}
 }
