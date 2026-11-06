@@ -53,6 +53,9 @@ namespace Microsoft.UI.Xaml
 		private HashtableEx ChildrenBindableMap => _childrenBindableMap ??= new HashtableEx(DependencyPropertyComparer.Default);
 		private List<object?> ChildrenBindable => _childrenBindable ??= new List<object?>();
 
+		// On the CHILD side: how many _childrenBindable slots (on any owner) hold this instance.
+		private int _bindableHolderCount;
+
 		// Mentor mechanism (models WinUI's SetParentForInheritanceContextOnly / GetMentor):
 		// On the CHILD side: weak ref to owning FrameworkElement (the mentor).
 		private ManagedWeakReference? _mentorRef;
@@ -700,7 +703,14 @@ namespace Microsoft.UI.Xaml
 					// Drop the DataContext this owner pushed into the released child, so the child does not keep
 					// it alive. Skip a child that has its own parent (it inherits from there) or that already
 					// holds a different DataContext (e.g. it was handed to another owner first).
-					if (oldStore.Parent is null
+					// Skip it too while another slot, on this owner or another one, still holds the child.
+					if (oldStore._bindableHolderCount > 0)
+					{
+						oldStore._bindableHolderCount--;
+					}
+
+					if (oldStore._bindableHolderCount == 0
+						&& oldStore.Parent is null
 						&& ReferenceEquals(oldStore.GetValue(oldStore._dataContextProperty), GetValue(_dataContextProperty)))
 					{
 						oldStore.ClearInheritedDataContext();
@@ -708,6 +718,10 @@ namespace Microsoft.UI.Xaml
 				}
 
 				ChildrenBindable[index] = newValue;
+				if (newValue is IDependencyObjectStoreProvider { Store: var newChildStore })
+				{
+					newChildStore._bindableHolderCount++;
+				}
 				if (newValue is IMultiParentShareableDependencyObject &&
 					newValue is IDependencyObjectStoreProvider { Store: { _inheritanceContextEnabled: true } newStore })
 				{
