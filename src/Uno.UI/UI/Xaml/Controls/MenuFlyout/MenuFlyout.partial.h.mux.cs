@@ -19,7 +19,7 @@ partial class MenuFlyout
 
 	private ManagedWeakReference m_wrParentMenu;
 
-	private bool m_openWindowed; // TODO Uno specific: Always false in Uno for now.
+	private bool m_openWindowed = true;
 
 	private bool m_itemsSourceRefreshPending;
 }

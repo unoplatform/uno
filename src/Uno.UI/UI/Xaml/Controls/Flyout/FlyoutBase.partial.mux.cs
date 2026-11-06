@@ -761,6 +761,8 @@ partial class FlyoutBase
 	/// <param name="placementTarget">The element to use as the flyout's placement target.</param>
 	public void ShowAt(FrameworkElement placementTarget)
 	{
+		OnShowAtWithoutOptions();
+
 		EnsureAssociatedXamlRoot(placementTarget);
 
 		FlyoutShowOptions showOptions = new();
@@ -940,6 +942,8 @@ partial class FlyoutBase
 			m_openingWindowedInProgress = false;
 		}
 	}
+
+	private protected virtual void OnShowAtWithoutOptions() { }
 
 	private protected virtual void ShowAtCore(FrameworkElement pPlacementTarget, out bool openDelayed)
 	{
@@ -1816,13 +1820,13 @@ partial class FlyoutBase
 			}
 		}
 
-		RaiseOpenedEvent();
-
 		// TODO Uno: A reopened presenter that keeps its size raises no SizeChanged, as its size survives closing.
 		if (_popup?.IsOpen == true && !m_presenterResized)
 		{
 			PerformPlacement(GetPresenterSize());
 		}
+
+		RaiseOpenedEvent();
 	}
 
 	private void OnPopupClosed(object sender, object e) => OnPresenterUnloaded();

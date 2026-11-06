@@ -306,11 +306,8 @@ Cleanup:
 	private void UpdatePresenterVisualState(MajorPlacementMode placement) => UpdatePresenterVisualState(placement, true);
 #endif
 
-	//internal override void ShowAt(FrameworkElement placementTarget)
-	//{
-	//	m_openWindowed = false;
-	//	ShowAtCore(placementTarget, new FlyoutShowOptions());
-	//}
+	// TODO Uno: WinUI overrides IFlyoutBase::ShowAt and calls ShowAtCore from there. FlyoutBase.ShowAt isn't virtual here.
+	private protected override void OnShowAtWithoutOptions() => m_openWindowed = false;
 
 	/// <summary>
 	/// Shows the flyout placed at the specified offset in relation to the specified target element.
