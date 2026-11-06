@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Tests.Enterprise;
 using static Private.Infrastructure.TestServices;
 using System;
+using System.Linq;
 
 namespace Microsoft.UI.Xaml.Tests.Common;
 
@@ -140,6 +141,7 @@ internal static class PanelsHelper
 
 		LOG_OUTPUT("Waiting for %s to be loaded...", typeof(TItemsControl).Name);
 		await loadedEvent.WaitForDefault();
+		await WindowHelper.WaitForIdle();
 		LOG_OUTPUT("%s loaded.", typeof(TItemsControl).Name);
 
 		return itemsControl;
