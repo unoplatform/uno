@@ -403,6 +403,41 @@ void uno_window_close(NSWindow *window)
     [window performClose:nil];
 }
 
+bool uno_windows_close_for_quit(void)
+{
+#if DEBUG
+    NSLog(@"uno_windows_close_for_quit %lu", (unsigned long)windows.count);
+#endif
+    // as `performClose:`, which refuses while a sheet is attached
+    if (NSApp.modalWindow != nil) {
+        return false;
+    }
+
+    // front to back, so the window in front is asked first; a copy, since a window leaves `windows` as it closes.
+    // A hidden window has no close button for the user, so it is not asked: the application's exit ends it.
+    NSMutableOrderedSet<NSWindow*> *ordered = [NSMutableOrderedSet orderedSetWithArray:NSApp.orderedWindows];
+    [ordered intersectSet:windows];
+    [ordered unionSet:windows];
+    [ordered filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSWindow *window, NSDictionary *bindings) {
+        return window.isVisible || window.isMiniaturized;
+    }]];
+
+    for (NSWindow *window in ordered) {
+        if (window.attachedSheet != nil) {
+            return false;
+        }
+    }
+
+    for (NSWindow *window in ordered) {
+        id<NSWindowDelegate> delegate = window.delegate;
+        if ([delegate respondsToSelector:@selector(windowShouldClose:)] && ![delegate windowShouldClose:window]) {
+            return false;
+        }
+        [window close];
+    }
+    return true;
+}
+
 void uno_window_move(NSWindow *window, double x, double y)
 {
 #if DEBUG

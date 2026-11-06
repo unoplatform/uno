@@ -67,6 +67,9 @@ NSWindow* uno_window_create(double width, double height);
 void uno_window_activate(NSWindow *window);
 void uno_window_invalidate(NSWindow *window);
 void uno_window_close(NSWindow *window);
+// Closes the windows the user can see, front to back, as the user would; false, with the remaining windows left open,
+// when one cancels its close or a modal panel or sheet is up.
+bool uno_windows_close_for_quit(void);
 void uno_window_move(NSWindow *window, double x, double y);
 bool uno_window_resize(NSWindow *window, double width, double height);
 

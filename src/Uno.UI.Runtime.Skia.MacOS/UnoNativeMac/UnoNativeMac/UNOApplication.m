@@ -3,6 +3,7 @@
 //
 
 #import "UNOApplication.h"
+#import "UNOWindow.h"
 
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
@@ -213,11 +214,37 @@ bool uno_application_is_bundled(void)
     return NSRunningApplication.currentApplication.bundleIdentifier != nil;
 }
 
+static bool application_exit_requested;
+
+static bool is_session_ending(void)
+{
+    NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
+    if (event.eventClass != kCoreEventClass || event.eventID != kAEQuitApplication) {
+        return false;
+    }
+    OSType reason = [event attributeDescriptorForKeyword:kAEQuitReason].typeCodeValue;
+#if DEBUG
+    NSLog(@"is_session_ending quit reason: '%@'", NSFileTypeForHFSTypeCode(reason));
+#endif
+    switch (reason) {
+        case kAELogOut:
+        case kAEReallyLogOut:
+        case kAEShowRestartDialog:
+        case kAERestart:
+        case kAEShowShutdownDialog:
+        case kAEShutDown:
+            return true;
+        default:
+            return false;
+    }
+}
+
 void uno_application_quit(void)
 {
 #if DEBUG
     NSLog(@"uno_application_quit");
 #endif
+    application_exit_requested = true;
     NSApplication *app = [NSApplication sharedApplication];
     [app terminate:app];
 }
@@ -240,7 +267,24 @@ void uno_application_quit(void)
     NSLog(@"UNOApplicationDelegate.applicationShouldTerminate %@", sender);
 #endif
     // Check if the application can exit (ICoreApplicationExtension.CanExit)
-    return uno_get_application_can_exit_callback()() ? NSTerminateNow : NSTerminateCancel;
+    if (!uno_get_application_can_exit_callback()()) {
+        return NSTerminateCancel;
+    }
+
+    // `Application.Exit()` closed the windows itself, raising `Closed` but not `AppWindow.Closing`, as on WinUI
+    if (application_exit_requested) {
+        return NSTerminateNow;
+    }
+
+    // The end of a session (logout, restart, shutdown) is not refused, as on Windows: it ends the application without
+    // `AppWindow.Closing` or `Closed`
+    if (is_session_ending()) {
+        return NSTerminateNow;
+    }
+
+    // Any other quit (Cmd+Q, the application menu, the Dock) closes the windows as the user would, so `AppWindow.Closing`
+    // can cancel it; once they are closed the application exits, as a quit is not a window close for `DispatcherShutdownMode`
+    return uno_windows_close_for_quit() ? NSTerminateNow : NSTerminateCancel;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
