@@ -71,3 +71,7 @@ These keep independently ported files call-compatible. Follow them mechanically.
 ## Status
 
 Tracked in commit history. Open items and deliberate gaps are listed here as they come up.
+
+- `CarouselPanel` derives from `ModernCollectionBasePanel` with the stacking strategy (`CacheLength` 0.5) and does not carousel. WinUI's `OrientedVirtualizingPanel`/`CarouselPanel` need `IScrollInfo` and a working `ItemContainerGenerator`. `ComboBox` centers the selected item itself when it opens.
+- `VirtualizingStackPanel` and `WrapGrid` stay unimplemented. `FlipView` keeps its `StackPanel`.
+- `ItemsPresenter.OnApplyTemplate` (allowed panel types, `CarouselPanel` for `ComboBox` only) stays compiled out, so Uno does not reject a misplaced panel.
