@@ -756,14 +756,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				owner.DataContext = "VM1";
 
 				SUT.IsOpen = true;
-				await TestServices.WindowHelper.WaitForIdle();
+				// WinUI binds the content some time after IsOpen is set, and idling doesn't always outlast that.
+				await TestServices.WindowHelper.WaitFor(
+					() => content.Text == "VM1",
+					timeoutMS: 3000,
+					message: "The content never received the DataContext on the first open.");
 				Assert.AreEqual("VM1", SUT.DataContext);
-				Assert.AreEqual("VM1", content.Text);
 
 				SUT.IsOpen = false;
 				await TestServices.WindowHelper.WaitForIdle();
 				Assert.AreEqual("VM1", SUT.DataContext, "The DataContext was lost on close.");
-				Assert.AreEqual("VM1", content.Text);
+				Assert.AreEqual("VM1", content.Text, "The content lost the DataContext on close.");
 
 				owner.DataContext = "VM2";
 				await TestServices.WindowHelper.WaitForIdle();
@@ -772,13 +775,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.IsOpen = true;
 				await TestServices.WindowHelper.WaitForIdle();
 				owner.DataContext = "VM3";
-				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitFor(
+					() => content.Text == "VM3",
+					timeoutMS: 3000,
+					message: "The content never received the DataContext on the second open.");
 				Assert.AreEqual("VM3", SUT.DataContext);
 
 				SUT.IsOpen = false;
 				await TestServices.WindowHelper.WaitForIdle();
 				Assert.AreEqual("VM3", SUT.DataContext, "The DataContext was lost on the second close.");
-				Assert.AreEqual("VM3", content.Text);
+				Assert.AreEqual("VM3", content.Text, "The content lost the DataContext on the second close.");
 			}
 			finally
 			{
