@@ -49,6 +49,14 @@ partial class App
 
 		var argsPairs = ParseArgs(args);
 
+#if HAS_UNO
+		// Off by default on macOS until validated: the runtime tests are what validates it.
+		if (OperatingSystem.IsMacOS())
+		{
+			global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = true;
+		}
+#endif
+
 		var runtimeTestResultFilePath = argsPairs.GetValueOrDefault(
 			"--runtime-tests",
 			// Used to autostart the runtime tests for iOS/Android Runtime tests

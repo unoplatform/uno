@@ -26,6 +26,16 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls;
 [RequiresFullWindow] // The upstream tests expect window-absolute coordinates.
 public class MenuFlyoutIntegrationTests
 {
+#if HAS_UNO
+	private bool? _useWindowedPopups;
+
+	[TestInitialize]
+	public void SaveWindowedPopups() => _useWindowedPopups = global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups;
+
+	[TestCleanup]
+	public void RestoreWindowedPopups() => global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = _useWindowedPopups;
+#endif
+
 	private string m_menuCommandParam1;
 	private string m_menuCommandParam2;
 	private string m_menuCommandParam3;
@@ -1003,8 +1013,8 @@ public class MenuFlyoutIntegrationTests
 			// TODO: Set menuFlyout->ShouldConstrainToRootBounds based on disableFullHwndSupport
 			// to handle windowed popups.
 #if HAS_UNO
-			// Uno: this asserts against the window, which upstream's harness has fill the screen.
-			menuFlyout.ShouldConstrainToRootBounds = true;
+			// Uno: this asserts against the window, which upstream's harness has fill the screen. The property alone won't do: ShowAt with options makes a MenuFlyout windowed regardless.
+			global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = false;
 #endif
 		});
 		await TestServices.WindowHelper.WaitForIdle();
@@ -1207,8 +1217,8 @@ public class MenuFlyoutIntegrationTests
 			menuFlyout = (MenuFlyout)rootPanel.Resources["menuFlyout"];
 			menuFlyoutItem = (MenuFlyoutItem)menuFlyout.Items[0];
 #if HAS_UNO
-			// Uno: this asserts against the window, which upstream's harness has fill the screen.
-			menuFlyout.ShouldConstrainToRootBounds = true;
+			// Uno: this asserts against the window, which upstream's harness has fill the screen. The property alone won't do: ShowAt with options makes a MenuFlyout windowed regardless.
+			global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = false;
 #endif
 
 			TestServices.WindowHelper.WindowContent = rootPanel;
@@ -3347,7 +3357,7 @@ public class MenuFlyoutIntegrationTests
 			menuFlyout.LightDismissOverlayMode = LightDismissOverlayMode.Off;
 #if HAS_UNO
 			// Uno: the sizes below come from the Windowless masters.
-			menuFlyout.ShouldConstrainToRootBounds = true;
+			global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = false;
 #endif
 
 			restMenuFlyoutItem = new MenuFlyoutItem();
@@ -4479,7 +4489,7 @@ public class MenuFlyoutIntegrationTests
 			button1 = (Button)(rootPanel.FindName("button1"));
 #if HAS_UNO
 			// Uno: the test window is what's smaller than the sub menus here, where upstream has a small test monitor.
-			menuFlyout.ShouldConstrainToRootBounds = true;
+			global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = false;
 #endif
 		});
 
@@ -4876,7 +4886,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("A presenter style's {ThemeResource} from the opener's Resources keeps its first value when the opener's RequestedTheme changes, uno--flyout-presenter-style-themeresource-not-refreshed.")]
+	[Ignore("A presenter style's {ThemeResource} from the opener's Resources keeps its first value when the opener's RequestedTheme changes.")]
 	public async Task ValidateCanChangeRequestedThemeOnPresenterOwner()
 	{
 		Button button = null;
@@ -5585,22 +5595,46 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("TestServices.WindowHelper.SetVisibleBounds is not available, the visible bounds cannot be overridden in the tests")]
 	public async Task ValidateMenuFlyoutInVisibleBounds()
 	{
-		// Flyout uses the visible bounds since TH2 platform.
-		await ValidateMenuFlyoutPosition(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseVisible);
+		try
+		{
+#if HAS_UNO
+			global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = false;
+#endif
+			// Flyout uses the visible bounds since TH2 platform.
+			await ValidateMenuFlyoutPosition(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseVisible);
+		}
+		finally
+		{
+			_visibleBoundsOverride?.Dispose();
+			_visibleBoundsOverride = null;
+		}
 	}
 
-	private void SetVisibleBounds(Rect visibleBounds)
+	private IDisposable _visibleBoundsOverride;
+
+	private async Task SetVisibleBounds(Rect visibleBounds)
 	{
-		// TODO Uno: there is no way to override the visible bounds yet.
+		await RunOnUIThread(() =>
+		{
+			_visibleBoundsOverride?.Dispose();
+
+			var windowBounds = Window.Current.Bounds;
+			_visibleBoundsOverride = ScreenHelper.OverrideVisibleBounds(
+				new Thickness(
+					visibleBounds.Left,
+					visibleBounds.Top,
+					windowBounds.Width - visibleBounds.Right,
+					windowBounds.Height - visibleBounds.Bottom),
+				skipIfHasNativeUnsafeArea: false);
+		});
 	}
 
 	private async Task ValidateMenuFlyoutPosition(Windows.UI.ViewManagement.ApplicationViewBoundsMode expectedBoundsMode)
 	{
 		// Set the specified visible bounds to verify the MenuFlyout position on the visible bounds.
-		SetVisibleBounds(new Rect(0, 50, 480, 700));
+		await SetVisibleBounds(new Rect(0, 50, 480, 700));
 
 		var menuFlyout = await CreateMenuFlyoutWithSubItem();
 
@@ -5639,7 +5673,7 @@ public class MenuFlyoutIntegrationTests
 
 		// Set the window with the landscape mode with specifying the visible bounds.
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(800, 480));
-		SetVisibleBounds(new Rect(50, 0, 700, 480));
+		await SetVisibleBounds(new Rect(50, 0, 700, 480));
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// Show the MenuFlout on the out of the visible bounds.
@@ -6357,7 +6391,7 @@ public class MenuFlyoutIntegrationTests
 			menuFlyout = new MenuFlyout();
 #if HAS_UNO
 			// Uno: a page has to stay under half of the items, as on upstream's small test monitor.
-			menuFlyout.ShouldConstrainToRootBounds = true;
+			global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = false;
 #endif
 			for (int i = 0; i < 50; ++i)
 			{
@@ -6611,8 +6645,8 @@ public class MenuFlyoutIntegrationTests
 			menuFlyout = (MenuFlyout)(FlyoutBase.GetAttachedFlyout(rootGrid));
 			VERIFY_IS_NOT_NULL(menuFlyout);
 #if HAS_UNO
-			// Uno: this asserts against the window, which upstream's harness has fill the screen.
-			menuFlyout.ShouldConstrainToRootBounds = true;
+			// Uno: this asserts against the window, which upstream's harness has fill the screen. The property alone won't do: ShowAt with options makes a MenuFlyout windowed regardless.
+			global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = false;
 #endif
 
 			openedRegistration.Attach(menuFlyout, (s, e) =>
@@ -7092,7 +7126,7 @@ public class MenuFlyoutIntegrationTests
 
 #if HAS_UNO
 		// Uno: upstream's test window starts at the top of its monitor, and a windowed menu goes above the button when the monitor has room.
-		await RunOnUIThread(() => menuFlyout.ShouldConstrainToRootBounds = true);
+		global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = false;
 #endif
 
 		FlyoutShowOptions showOptions = null;
@@ -7306,7 +7340,7 @@ public class MenuFlyoutIntegrationTests
 		{
 			flyout = new MenuFlyout();
 			flyout.Placement = FlyoutPlacementMode.Right;
-			flyout.ShouldConstrainToRootBounds = true;
+			global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = false;
 
 			for (int i = 0; i < 10; i++)
 			{

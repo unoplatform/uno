@@ -1143,6 +1143,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			return new WeakReference(owner);
 		}
 
+		[TestMethod]
+		public async Task When_Target_Is_RightToLeft_Placement_Right_Opens_On_Left()
+		{
+			var target = new Border { Width = 50, Height = 30, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Background = new SolidColorBrush(Colors.Red) };
+			var SUT = new ToolTip { Content = new Border { Width = 60, Height = 20 }, Placement = PlacementMode.Right };
+			ToolTipService.SetToolTip(target, SUT);
+			var root = new Grid { Width = 600, Height = 300, FlowDirection = FlowDirection.RightToLeft, Children = { target } };
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = root;
+				await TestServices.WindowHelper.WaitForLoaded(target);
+
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitFor(() => SUT.IsOpen && SUT.ActualWidth > 0);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var targetBounds = target.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, target.ActualWidth, target.ActualHeight));
+				var tipBounds = SUT.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
+
+				Assert.IsLessThanOrEqualTo(targetBounds.Left + 1, tipBounds.Right, $"Tooltip {tipBounds} should sit left of the RTL target {targetBounds}");
+			}
+			finally
+			{
+				SUT.IsOpen = false;
+			}
+		}
+
 		private static void CloseOpenPopups()
 		{
 			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);

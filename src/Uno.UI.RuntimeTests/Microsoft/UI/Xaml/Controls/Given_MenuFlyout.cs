@@ -352,6 +352,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Content = "Open flyout",
 				Flyout = new MenuFlyout()
 				{
+					ShouldConstrainToRootBounds = true,
 					Items =
 					{
 						new MenuFlyoutSubItem()
@@ -385,12 +386,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var subItemBounds = subItem.GetAbsoluteBounds();
 				var subSubItemBounds = ((MenuFlyoutSubItem)subItem.Items.Single()).GetAbsoluteBounds();
 
-				// MUX Reference CascadingMenuHelper.cpp: where the menu has a window of its own, its monitor decides,
-				// and that may well have the room to its right.
-				var difference = Microsoft.UI.Xaml.Controls.Primitives.Popup.DoesPlatformSupportWindowedPopup() && subSubItemBounds.X >= subItemBounds.Right - 5
-					? subSubItemBounds.X - subItemBounds.Right
-					: subItemBounds.X - subSubItemBounds.Right;
-				Assert.IsLessThanOrEqualTo(5d, Math.Abs(difference));
+				var flippedLeft = Math.Abs(subItemBounds.X - subSubItemBounds.Right) <= 5;
+				var openedRight = Math.Abs(subSubItemBounds.X - subItemBounds.Right) <= 5;
+
+				if (Microsoft.UI.Xaml.Controls.Primitives.Popup.DoesPlatformSupportWindowedPopup())
+				{
+					// MUX Reference CascadingMenuHelper.cpp: where the menu has a window of its own, its monitor decides,
+					// and that may well have the room to its right.
+					Assert.IsTrue(flippedLeft || openedRight, $"Sub menu at {subSubItemBounds} is not adjacent to {subItemBounds}");
+				}
+				else
+				{
+					Assert.IsTrue(flippedLeft, $"Sub menu at {subSubItemBounds} did not flip to the left of {subItemBounds}");
+				}
 
 			}
 			finally

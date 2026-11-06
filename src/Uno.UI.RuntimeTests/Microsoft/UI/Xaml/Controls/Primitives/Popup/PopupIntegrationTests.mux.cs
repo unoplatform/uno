@@ -262,6 +262,7 @@ public class PopupIntegrationTests
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: IncludeOnlyOn Desktop, mouse injection is unreliable on OneCore
+	// TODO Uno: no CCoreServices::RequestReplayPreviousPointerUpdate, so a tree change under a still pointer replays no pointer update.
 	[Ignore("Uno has no CCoreServices::RequestReplayPreviousPointerUpdate: opening a popup under a still pointer raises no PointerEntered, so the replay this test is about never starts.")]
 	public async Task ReplayPointerUpdate_PopupClosedDuringReplay_DoesNotCrash()
 	{
@@ -273,6 +274,7 @@ public class PopupIntegrationTests
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: IncludeOnlyOn Desktop, mouse injection is unreliable on OneCore
+	// TODO Uno: no CCoreServices::RequestReplayPreviousPointerUpdate, so a tree change under a still pointer replays no pointer update.
 	[Ignore("Uno has no CCoreServices::RequestReplayPreviousPointerUpdate: opening a popup under a still pointer raises no PointerEntered, so the replay this test is about never starts.")]
 	public async Task ReplayPointerUpdate_PopupClosedDuringReplay_WithManyOpenPopups_DoesNotCrash()
 	{
@@ -731,7 +733,7 @@ public class PopupIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison); master HwndLeft=105 HwndTop=136 (-23 host offset) 120x120.
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, 105, 113, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, 105, 113, 120, 120);
 	}
 
 	[TestMethod]
@@ -1128,7 +1130,7 @@ public class PopupIntegrationTests
 
 		// Upstream: VerifyMockDCompOutput(NoComparison); masters HwndLeft = 115 / -10 (parented / not), HwndTop = 21.
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX - 10, -2, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, baseX - 10, -2, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1136,7 +1138,7 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "2"); masters HwndLeft = 125 / 0, HwndTop = 31.
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX, 8, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, baseX, 8, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1144,7 +1146,7 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "3"); masters HwndLeft = 145 / 20, HwndTop = 51.
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
 	}
 
 	[TestMethod]
@@ -1237,7 +1239,7 @@ public class PopupIntegrationTests
 
 		// Upstream: VerifyMockDCompOutput(NoComparison); masters HwndLeft = 115 / -10 (parented / not), HwndTop = 21.
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX - 10, -2, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, baseX - 10, -2, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1246,7 +1248,7 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "2"); masters HwndLeft = 125 / 0, HwndTop = 31.
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX, 8, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, baseX, 8, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1254,7 +1256,7 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "3"); masters HwndLeft = 145 / 20, HwndTop = 51.
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1265,7 +1267,7 @@ public class PopupIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "4"); the master is identical to step 3: a windowed
 		// popup is not clipped by its parent.
-		PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1276,11 +1278,11 @@ public class PopupIntegrationTests
 		// the canvas) and HwndLeft = 20, HwndTop = 51 (unparented, unchanged).
 		if (isParented)
 		{
-			PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20 + 15, 20 + 15 + 8, 120, 120);
+			await PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20 + 15, 20 + 15 + 8, 120, 120);
 		}
 		else
 		{
-			PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
+			await PopupHelper.VerifyWindowedPopupRect(popup, baseX + 20, 28, 120, 120);
 		}
 	}
 
@@ -1324,7 +1326,7 @@ public class PopupIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison); master HwndLeft = -10, HwndTop = 21, 170x170 (150 + gutters).
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, -10, -2, 170, 170);
+		await PopupHelper.VerifyWindowedPopupRect(popup, -10, -2, 170, 170);
 
 		await RunOnUIThread(() =>
 		{
@@ -1335,8 +1337,8 @@ public class PopupIntegrationTests
 		// Upstream: VerifyMockDCompOutput(NoComparison, "2"); masters have two windows: the nested popup at
 		// (-10, 21, 120x120) and the outer popup unchanged.
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(nestedPopup));
-		PopupHelper.VerifyWindowedPopupRect(nestedPopup, -10, -2, 120, 120);
-		PopupHelper.VerifyWindowedPopupRect(popup, -10, -2, 170, 170);
+		await PopupHelper.VerifyWindowedPopupRect(nestedPopup, -10, -2, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, -10, -2, 170, 170);
 
 		await RunOnUIThread(() =>
 		{
@@ -1344,8 +1346,8 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "3"); both windows move to (10, 41).
-		PopupHelper.VerifyWindowedPopupRect(nestedPopup, 10, 18, 120, 120);
-		PopupHelper.VerifyWindowedPopupRect(popup, 10, 18, 170, 170);
+		await PopupHelper.VerifyWindowedPopupRect(nestedPopup, 10, 18, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, 10, 18, 170, 170);
 
 		await RunOnUIThread(() =>
 		{
@@ -1353,8 +1355,8 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "4"); nested moves to (40, 71), outer stays at (10, 41).
-		PopupHelper.VerifyWindowedPopupRect(nestedPopup, 40, 48, 120, 120);
-		PopupHelper.VerifyWindowedPopupRect(popup, 10, 18, 170, 170);
+		await PopupHelper.VerifyWindowedPopupRect(nestedPopup, 40, 48, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, 10, 18, 170, 170);
 	}
 
 	//  Verify Input in windowed popup's content
@@ -1874,7 +1876,7 @@ public class PopupIntegrationTests
 		{
 			// Masters (WindowedPopupRTL, WindowedPopupRTL.2): HwndLeft = 140, HwndTop = 171, 120x120.
 			VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-			PopupHelper.VerifyWindowedPopupRect(popup, 140, 148, 120, 120);
+			await PopupHelper.VerifyWindowedPopupRect(popup, 140, 148, 120, 120);
 		}
 	}
 
@@ -1914,7 +1916,7 @@ public class PopupIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison); master HwndLeft = 0, HwndTop = 31, 120x120.
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, 0, 8, 120, 120);
+		await PopupHelper.VerifyWindowedPopupRect(popup, 0, 8, 120, 120);
 
 		await RunOnUIThread(() =>
 		{
@@ -1926,7 +1928,7 @@ public class PopupIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		// Upstream: VerifyMockDCompOutput(NoComparison, "2"); master HwndLeft = 10, HwndTop = 41, 220x220.
-		PopupHelper.VerifyWindowedPopupRect(popup, 10, 18, 220, 220);
+		await PopupHelper.VerifyWindowedPopupRect(popup, 10, 18, 220, 220);
 	}
 
 	// Upstream: Ignore (TODO: Move windowed popups to lifted input).
@@ -2616,7 +2618,7 @@ public class PopupIntegrationTests
 
 		// Upstream: VerifyMockDCompOutput(NoComparison); master HwndLeft = -60, HwndTop = 31, 220x220 (200 + gutters).
 		VERIFY_IS_TRUE(PopupHelper.IsWindowed(popup));
-		PopupHelper.VerifyWindowedPopupRect(popup, -60, 8, 220, 220);
+		await PopupHelper.VerifyWindowedPopupRect(popup, -60, 8, 220, 220);
 
 		await RunOnUIThread(() =>
 		{

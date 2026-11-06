@@ -249,7 +249,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			popup.IsOpen = false;
 		}
 
-[TestMethod]
+		[TestMethod]
 		public async Task When_Child_Visual_Parent_Is_PopupRoot()
 		{
 			var popup = await LoadAndOpenPopupWithButtonAsync();
@@ -351,6 +351,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				popup.IsOpen = true;
 				await WindowHelper.WaitForIdle();
 
+				Assert.IsTrue(popup.IsOpen);
+				Assert.AreEqual("PopupRoot", VisualTreeHelper.GetParent(content)?.GetType().Name);
+				Assert.IsTrue(content.IsLoaded);
 				Assert.AreEqual(0, content.ActualWidth);
 				Assert.AreEqual(0, content.ActualHeight);
 			}

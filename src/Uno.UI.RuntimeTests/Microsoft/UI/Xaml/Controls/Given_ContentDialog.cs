@@ -842,6 +842,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 		}
 
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_ShowAsync_UnconstrainedPopup()
+		{
+			var SUT = new MyContentDialog
+			{
+				Content = new Grid(),
+				PrimaryButtonText = "YES",
+			};
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			try
+			{
+				_ = SUT.ShowAsync(ContentDialogPlacement.UnconstrainedPopup);
+				await WindowHelper.WaitFor(() => Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count > 0);
+
+				var popup = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).First();
+				Assert.IsFalse(popup.ShouldConstrainToRootBounds);
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+
 		private static async Task ShowDialog(MyContentDialog dialog, string expectedFocusedButtonContent = null)
 		{
 			_ = dialog.ShowAsync();

@@ -38,7 +38,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				{
 					Width = PopupWidth,
 					CornerRadius = new CornerRadius(8),
-					Background = new SolidColorBrush(Colors.WhiteSmoke),
+					Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"],
 					Translation = new global::System.Numerics.Vector3(0, 0, 32),
 					Shadow = new ThemeShadow(),
 					Child = content,

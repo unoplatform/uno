@@ -32,38 +32,109 @@ public class Given_Popup_Windowed
 {
 	private const int ContentSize = 200;
 
-	// Off by default on macOS, whose native side only runs here.
-	[TestInitialize]
-	public void Setup()
-	{
-		if (OperatingSystem.IsMacOS())
-		{
-			FeatureConfiguration.Popup.UseWindowedPopups = true;
-		}
-	}
-
-	[TestCleanup]
-	public void Cleanup() => FeatureConfiguration.Popup.UseWindowedPopups = null;
-
 	[TestMethod]
 	public async Task When_Windowed_Popups_Disabled_Then_Popup_Stays_In_Window()
 	{
 		var target = new Button { Content = "Target" };
 		await UITestHelper.Load(target);
 
+		var previous = FeatureConfiguration.Popup.UseWindowedPopups;
 		FeatureConfiguration.Popup.UseWindowedPopups = false;
+		try
+		{
+			var content = CreateContent();
+			var popup = CreatePopup(content, target.XamlRoot!, 10, 10);
+			popup.IsOpen = true;
+			await TestServices.WindowHelper.WaitForLoaded(content);
 
-		var content = CreateContent();
-		var popup = CreatePopup(content, target.XamlRoot!, 10, 10);
-		popup.IsOpen = true;
-		await TestServices.WindowHelper.WaitForLoaded(content);
+			Assert.IsFalse(popup.IsWindowed);
+			Assert.IsNull(popup.WindowedPopupSite);
 
-		Assert.IsFalse(popup.IsWindowed);
-		Assert.IsNull(popup.WindowedPopupSite);
-
-		popup.IsOpen = false;
-		await TestServices.WindowHelper.WaitForIdle();
+			popup.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			FeatureConfiguration.Popup.UseWindowedPopups = previous;
+		}
 	}
+
+	[TestMethod]
+	[DataRow(false, false)]
+	[DataRow(true, true)]
+	public async Task When_MenuFlyout_Constrained_Then_Only_ShowAt_With_Point_Is_Windowed(bool withPoint, bool expectedWindowed)
+	{
+		var target = new Button { Content = "Target" };
+		await UITestHelper.Load(target);
+
+		// MenuFlyout::ShowAtCore: m_openWindowed is true unless the overload without options cleared it.
+		var flyout = new MenuFlyout { ShouldConstrainToRootBounds = true };
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
+		var opened = false;
+		flyout.Opened += (_, _) => opened = true;
+		if (withPoint)
+		{
+			flyout.ShowAt(target, new Point(5, 5));
+		}
+		else
+		{
+			flyout.ShowAt(target);
+		}
+
+		try
+		{
+			await UITestHelper.WaitFor(() => opened, timeoutMS: 3000);
+			Assert.AreEqual(expectedWindowed, flyout.IsWindowedPopup());
+		}
+		finally
+		{
+			flyout.Hide();
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Flyout_Reopens_At_Same_Size_Then_Opened_Sees_Placement()
+	{
+		var left = new Button { Content = "Left", HorizontalAlignment = HorizontalAlignment.Left };
+		var right = new Button { Content = "Right", HorizontalAlignment = HorizontalAlignment.Right };
+		var grid = new Grid { Width = 500, Height = 100 };
+		grid.Children.Add(left);
+		grid.Children.Add(right);
+		await UITestHelper.Load(grid);
+
+		var content = new Border { Width = 50, Height = 20 };
+		var flyout = new Flyout { Content = content, ShouldConstrainToRootBounds = true, Placement = FlyoutPlacementMode.Bottom };
+		double xAtOpened = 0;
+		var openedCount = 0;
+		flyout.Opened += (_, _) =>
+		{
+			xAtOpened = content.TransformToVisual(null).TransformPoint(default).X;
+			openedCount++;
+		};
+
+		flyout.ShowAt(left);
+		await UITestHelper.WaitFor(() => openedCount == 1, timeoutMS: 3000);
+		var firstX = xAtOpened;
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		flyout.ShowAt(right);
+		await UITestHelper.WaitFor(() => openedCount == 2, timeoutMS: 3000);
+		try
+		{
+			Assert.IsTrue(xAtOpened > firstX + 100, $"Opened saw the flyout at {xAtOpened}, as placed for the previous target at {firstX}.");
+		}
+		finally
+		{
+			flyout.Hide();
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public void When_No_Language_Set_Then_Empty()
+		=> Assert.AreEqual(string.Empty, new Border().Language);
 
 	[TestMethod]
 	public async Task When_Owner_Repaints_Then_Unchanged_Popup_Is_Not_Rerecorded()
@@ -592,8 +663,8 @@ public class Given_Popup_Windowed
 
 		public PointInt32 GetScreenOffset(XamlRoot xamlRoot) => inner.GetScreenOffset(xamlRoot);
 
-		public bool TryGetMonitorBounds(PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea)
-			=> inner.TryGetMonitorBounds(screenPoint, out monitor, out workArea);
+		public bool TryGetMonitorBounds(XamlRoot xamlRoot, PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea)
+			=> inner.TryGetMonitorBounds(xamlRoot, screenPoint, out monitor, out workArea);
 	}
 
 	[TestMethod]
