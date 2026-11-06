@@ -53,7 +53,7 @@ public partial class ItemIndexRange
 	}
 
 	// returns true if the two ranges are identical
-	private static bool AreItemIndexRangesEqual(
+	internal static bool AreItemIndexRangesEqual(
 		ItemIndexRange range1,
 		ItemIndexRange range2)
 	{

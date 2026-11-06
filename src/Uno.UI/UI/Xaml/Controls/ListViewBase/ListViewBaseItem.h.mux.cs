@@ -10,6 +10,9 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ListViewBaseItem
 {
+	// UIAutomation Property: whether or not this element is currently grabbed (i.e. being dragged).
+	private bool m_fDragIsGrabbed;
+
 #if false
 	// The ZIndex used by ListViewBaseItem during user interaction.
 	// Note that ZIndex==1 is used by opaque headers which should be above rest items but below dragged one
@@ -106,9 +109,6 @@ partial class ListViewBaseItem
 	private bool m_isHolding;
 
 #if false
-	// UIAutomation Property: whether or not this element is currently grabbed (i.e. being dragged).
-	private bool m_fDragIsGrabbed;
-
 	// If this is TRUE, this ListViewBaseItem is in a selection hint visual state.
 	private bool m_inSelectionHintState;
 

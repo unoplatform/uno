@@ -41,6 +41,8 @@ namespace DirectUI
 				{
 					_isDrainScheduled = false;
 
+					DXamlCore.Current.GetBudgetManager().StoreFrameTime();
+
 					if (BuildTrees())
 					{
 						ScheduleDrain();

@@ -54,7 +54,7 @@ public partial class ItemsPresenter : global::Microsoft.UI.Xaml.FrameworkElement
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.HeaderTransitions.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.Padding.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.Padding.set
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public event global::System.EventHandler<object> HorizontalSnapPointsChanged
 	{
@@ -70,7 +70,7 @@ public partial class ItemsPresenter : global::Microsoft.UI.Xaml.FrameworkElement
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public event global::System.EventHandler<object> VerticalSnapPointsChanged
 	{

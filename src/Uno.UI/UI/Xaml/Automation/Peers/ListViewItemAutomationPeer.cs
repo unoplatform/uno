@@ -3,6 +3,7 @@
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class ListViewItemAutomationPeer : FrameworkElementAutomationPeer
+	, Provider.IDragProvider
 	{
 		private ItemInvokeAdapter _invokeAdapter;
 
@@ -11,9 +12,25 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 
 		protected override object GetPatternCore(PatternInterface patternInterface)
-			=> patternInterface == PatternInterface.Invoke && ListViewBaseItemAutomationPeer.ShouldSupportInvokePattern(Owner)
+		{
+			if (patternInterface == PatternInterface.Drag)
+			{
+				return ListViewBaseItemAutomationPeer.ShouldSupportDragPattern(Owner) ? this : null;
+			}
+
+			return patternInterface == PatternInterface.Invoke && ListViewBaseItemAutomationPeer.ShouldSupportInvokePattern(Owner)
 				? _invokeAdapter ??= new ItemInvokeAdapter(this)
 				: base.GetPatternCore(patternInterface);
+		}
+
+		// IDragProvider
+		public bool IsGrabbed => ListViewBaseItemAutomationPeer.GetIsGrabbed(Owner);
+
+		public string DropEffect => ListViewBaseItemAutomationPeer.GetDropEffect();
+
+		public string[] DropEffects => ListViewBaseItemAutomationPeer.GetDropEffects();
+
+		public Provider.IRawElementProviderSimple[] GetGrabbedItems() => ListViewBaseItemAutomationPeer.GetGrabbedItems(Owner);
 
 		protected override string GetClassNameCore()
 		{
