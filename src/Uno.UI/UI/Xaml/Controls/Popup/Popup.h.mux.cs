@@ -117,5 +117,10 @@ partial class Popup
 
 	internal global::Uno.UI.Xaml.Controls.IWindowedPopupSite? WindowedPopupSite => m_windowedPopupWindow?.Site;
 
+	// A popup that opens in-window for lack of a window stays there until it closes.
+	private bool m_windowCreationFailed;
+
+	internal event global::System.EventHandler? ForceClosed;
+
 	internal static global::Windows.Graphics.PointInt32 GetScreenOffsetForTesting(XamlRoot xamlRoot) => GetWindowedPopupExtension()?.GetScreenOffset(xamlRoot) ?? default;
 }

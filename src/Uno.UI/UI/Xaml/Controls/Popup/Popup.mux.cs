@@ -183,6 +183,7 @@ partial class Popup
 				if (!EnsureWindowForWindowedPopup())
 				{
 					m_isWindowed = false;
+					m_windowCreationFailed = true;
 				}
 			}
 
@@ -314,6 +315,9 @@ partial class Popup
 #if HAS_UNO
 			// The field and the property are one and the same in WinUI: this doesn't reach Close() again.
 			IsOpen = false;
+
+			// As in WinUI, this close raises no Closed. There, a flyout still learns of it from its presenter's Unloaded.
+			NativeDispatcher.Main.Enqueue(() => ForceClosed?.Invoke(this, EventArgs.Empty), NativeDispatcherPriority.Normal);
 #endif
 		}
 		else
@@ -347,6 +351,8 @@ partial class Popup
 
 	private void CloseCore(bool forceCloseforTreeReset)
 	{
+		m_windowCreationFailed = false;
+
 		bool wasFocused = false;
 		var pChild = m_pChild!;
 
@@ -578,6 +584,12 @@ partial class Popup
 
 	private static IWindowedPopupExtension? s_windowedPopupExtension;
 
+	internal static IWindowedPopupExtension? WindowedPopupExtensionForTesting
+	{
+		get => GetWindowedPopupExtension();
+		set => s_windowedPopupExtension = value;
+	}
+
 	internal static bool GetIsRightHandedFromWindowedPopupExtension() => GetWindowedPopupExtension()?.IsRightHanded ?? false;
 
 	private static IWindowedPopupExtension? GetWindowedPopupExtension()
@@ -623,7 +635,7 @@ partial class Popup
 
 		// Ignore on unsupported platforms, so controls can use CPopup::IsWindowed to determine whether to
 		// fall back to non-windowed placement.
-		if (DoesPlatformSupportWindowedPopup())
+		if (DoesPlatformSupportWindowedPopup() && !m_windowCreationFailed)
 		{
 			// TODO Uno: an unknown root is settled when the popup opens: EnsureWindowForWindowedPopup falls back to in-window.
 			if ((XamlRoot ?? m_pChild?.XamlRoot) is not { } xamlRoot || GetWindowedPopupExtension()!.IsSupported(xamlRoot))
