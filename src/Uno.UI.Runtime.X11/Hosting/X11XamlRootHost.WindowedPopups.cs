@@ -31,6 +31,7 @@ internal partial class X11XamlRootHost
 
 	private readonly Lock _clientScreenOriginGate = new();
 	private PointInt32? _clientScreenOrigin;
+	private long _clientScreenOriginTimestamp;
 	private int _clientScreenOriginVersion;
 
 	internal GraphicsContextKind GraphicsContextKind { get; private set; }
@@ -48,7 +49,8 @@ internal partial class X11XamlRootHost
 		int version;
 		lock (_clientScreenOriginGate)
 		{
-			if (_clientScreenOrigin is { } cached)
+			// Not every window manager is sure to report a move, so an answer doesn't stay forever.
+			if (_clientScreenOrigin is { } cached && global::System.Diagnostics.Stopwatch.GetElapsedTime(_clientScreenOriginTimestamp).TotalSeconds < 1)
 			{
 				return cached;
 			}
@@ -70,6 +72,7 @@ internal partial class X11XamlRootHost
 			if (version == _clientScreenOriginVersion)
 			{
 				_clientScreenOrigin = origin;
+				_clientScreenOriginTimestamp = global::System.Diagnostics.Stopwatch.GetTimestamp();
 			}
 		}
 

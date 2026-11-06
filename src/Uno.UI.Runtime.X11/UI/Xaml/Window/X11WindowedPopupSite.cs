@@ -30,7 +30,7 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 	private const uint CWStackMode = 1 << 6;
 	private const int XIGrabModeAsync = 1;
 
-	private static readonly bool _isPointerGrabDisabled = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("UNO_X11_DISABLE_POPUP_GRAB"));
+	private static readonly bool _isPointerGrabDisabled = Environment.GetEnvironmentVariable("UNO_X11_DISABLE_POPUP_GRAB") == "1";
 
 	private readonly X11XamlRootHost _owner;
 	private readonly IWindowedPopupContent _content;
@@ -565,8 +565,12 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 			{
 				// It may still be drawing on the window and its connection, so the window can only go out of sight.
 				this.LogError()?.Error("A popup window's render thread didn't stop, so its graphics are left behind.");
+				// The stuck thread may hold this site's connection's lock, so this goes through the owner's.
 				_isShown = false;
-				ApplyMapState();
+				var ownerDisplay = _owner.TopX11Window.Display;
+				using var ownerLock = X11Helper.XLock(ownerDisplay);
+				_ = X11Helper.XUnmapWindow(ownerDisplay, Window);
+				_ = XLib.XFlush(ownerDisplay);
 			}
 		}
 	}
