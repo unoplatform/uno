@@ -1325,6 +1325,13 @@ namespace Microsoft.UI.Xaml.Controls
 				? GetDisplayMemberTemplate()
 				: null;
 
+			// A panel-hosted container is already live, so setting its ContentTemplate below applies its control template
+			// right away. Give it the final style first, or it materializes the default template for nothing.
+			if (CustomItemsHost is not null && ItemContainerStyle is not null)
+			{
+				ApplyItemContainerStyle(element, item);
+			}
+
 			void SetContent(UIElement container, DependencyProperty contentProperty)
 			{
 				var displayMemberPath = DisplayMemberPath;
