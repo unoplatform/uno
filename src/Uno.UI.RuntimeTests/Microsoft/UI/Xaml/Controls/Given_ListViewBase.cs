@@ -371,6 +371,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SelectorItem si = null;
 			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
 
+			Assert.IsNull(si.Parent);
 			var parent = VisualTreeHelper.GetParent(si);
 			while (parent is not null && parent is not ListView listView)
 			{
@@ -406,6 +407,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SelectorItem si = null;
 			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
 
+			Assert.IsNull(si.Parent);
 			var parent = Uno.UI.Extensions.DependencyObjectExtensions.GetParentInternal(si, false);
 			while (parent is not null && parent is not ListView listView)
 			{
@@ -1907,12 +1909,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForIdle();
 
-ScrollTo(list, 1000000); // Scroll to end
+			ScrollTo(list, 1000000); // Scroll to end
 			await Task.Delay(200);
 
 			await WindowHelper.WaitForIdle();
 
-materialized.Should().BeLessThanOrEqualTo(GetMaterializedBound(list, itemsPerViewport: 1));
+			materialized.Should().BeLessThanOrEqualTo(GetMaterializedBound(list, itemsPerViewport: 1));
 		}
 
 		[TestMethod]
@@ -2356,20 +2358,27 @@ materialized.Should().BeLessThanOrEqualTo(GetMaterializedBound(list, itemsPerVie
 			await AdvanceAutomation("Scrolled2");
 
 			// The panel's cache only reaches both sides of the viewport once scrolled, so the counts settle here.
-			var expectedTemplateCreationCount = GetTemplateCreationCount();
-			var expectedContainerCreationCount = GetContainerCreationCount();
+			var templateCreationCount = GetTemplateCreationCount();
+			var containerCreationCount = GetContainerCreationCount();
+			var templateBindCount = GetTemplateBindCount();
+
 			await AdvanceAutomation("Added above");
 
-			Assert.IsLessThanOrEqualTo(expectedTemplateCreationCount + 1, GetTemplateCreationCount());
-			Assert.IsLessThanOrEqualTo(expectedContainerCreationCount + 1, GetContainerCreationCount());
+			// The new item lands in the cache above the viewport: it needs a container, and the recycle queue is empty.
+			Assert.AreEqual(templateCreationCount + 1, GetTemplateCreationCount());
+			Assert.AreEqual(containerCreationCount + 1, GetContainerCreationCount());
+			Assert.AreEqual(templateBindCount + 1, GetTemplateBindCount());
 
 			await AdvanceAutomation("Removed above");
 
-			Assert.IsLessThanOrEqualTo(expectedTemplateCreationCount + 1, GetTemplateCreationCount());
-			Assert.IsLessThanOrEqualTo(expectedContainerCreationCount + 1, GetContainerCreationCount());
+			// Nothing new is created, and the item coming back into the cache below is the only one to bind.
+			Assert.AreEqual(templateCreationCount + 1, GetTemplateCreationCount());
+			Assert.AreEqual(containerCreationCount + 1, GetContainerCreationCount());
+			Assert.AreEqual(templateBindCount + 2, GetTemplateBindCount());
 
 			int GetTemplateCreationCount() => int.Parse(((TextBlock)SUT.FindName("CreationCountText")).Text);
-				int GetContainerCreationCount() => int.Parse(((TextBlock)SUT.FindName("CreationCount2Text")).Text);
+			int GetTemplateBindCount() => int.Parse(((TextBlock)SUT.FindName("BindCountText")).Text);
+			int GetContainerCreationCount() => int.Parse(((TextBlock)SUT.FindName("CreationCount2Text")).Text);
 
 			async Task AdvanceAutomation(string automationStep)
 			{
@@ -2594,18 +2603,21 @@ materialized.Should().BeLessThanOrEqualTo(GetMaterializedBound(list, itemsPerVie
 
 				await WindowHelper.WaitForIdle();
 
-				// Where the viewport hits an end of the list, all the cache is on its other side.
-				var evpScaling = ((ItemsStackPanel)list.ItemsPanelRoot).CacheLength;
+				// The cache is split between both sides of the viewport, and goes to the other side at an end of the list.
+				var evpScaling = ((ItemsStackPanel)list.ItemsPanelRoot).CacheLength / 2;
 
 				var offset = scroll.VerticalOffset;
 				var max = scroll.ExtentHeight;
 				var vp = scroll.ViewportHeight;
 
-				var evpStart = Math.Clamp(offset - vp * evpScaling, 0, max);
-				var evpEnd = Math.Clamp(offset + vp + vp * evpScaling, 0, max);
+				var evpStart = offset - vp * evpScaling;
+				var evpEnd = offset + vp + vp * evpScaling;
+				evpEnd = Math.Clamp(evpEnd + Math.Max(0, -evpStart), 0, max);
+				evpStart = Math.Clamp(evpStart - Math.Max(0, offset + vp + vp * evpScaling - max), 0, max);
 
-				var firstIndex = (int)Math.Round(evpStart / ElementHeight, 0, MidpointRounding.ToNegativeInfinity);
-				var lastIndex = (int)Math.Round(evpEnd / ElementHeight, 0, MidpointRounding.ToPositiveInfinity) - 1;
+				var firstIndex = Math.Max(0, (int)Math.Round(evpStart / ElementHeight, 0, MidpointRounding.ToPositiveInfinity) - 1);
+				// A line touching the end of the window is realized too.
+				var lastIndex = (int)Math.Round(evpEnd / ElementHeight, 0, MidpointRounding.ToNegativeInfinity);
 				var itemsInEVP = Enumerable.Range(firstIndex, lastIndex - firstIndex + 1).ToArray();
 				var newItemsInEVP = itemsInEVP.Except(previouslyMaterializedItems).ToArray();
 
@@ -2618,8 +2630,7 @@ materialized.Should().BeLessThanOrEqualTo(GetMaterializedBound(list, itemsPerVie
 				previouslyMaterializedItems = itemsInEVP;
 
 				materialized.Should().BeLessThanOrEqualTo(expectedMaterialized, $"[{context}] materialized {materialized}");
-				// The panel also rebinds a few rows when the cache window trims and refills around the viewport.
-				dataContextChanged.Should().BeLessThanOrEqualTo(expectedDCChanged + expectedDCChanged / 5 + 1, $"[{context}] dataContextChanged {dataContextChanged}");
+				dataContextChanged.Should().BeLessThanOrEqualTo(expectedDCChanged, $"[{context}] dataContextChanged {dataContextChanged}");
 			}
 
 			await ScrollAndValidate("initial state", null);
@@ -3981,6 +3992,9 @@ materialized.Should().BeLessThanOrEqualTo(GetMaterializedBound(list, itemsPerVie
 
 			model.Items.RemoveAt(INDEX_TO_DELETE);
 
+			// ListViewBase defers the clear of a recycled container, as a prepare usually follows at once.
+			await WindowHelper.WaitForIdle();
+
 			// Ensure the container has properly been cleaned
 			// up after being removed.
 			Assert.IsNull(container.Content);
@@ -4815,7 +4829,7 @@ materialized.Should().BeLessThanOrEqualTo(GetMaterializedBound(list, itemsPerVie
 			await UITestHelper.WaitFor(
 				() =>
 				{
-if (lv.ContainerFromIndex(50) is not ContentControl)
+					if (lv.ContainerFromIndex(50) is not ContentControl)
 					{
 						return false;
 					}
@@ -6128,10 +6142,10 @@ if (lv.ContainerFromIndex(50) is not ContentControl)
 
 	public partial class Given_ListViewBase // helpers
 	{
-		// ItemsStackPanel realizes the viewport and CacheLength viewports around it. Scrolling can realize a second such window
-		// before the first one is recycled, and only a list materialized as a whole goes over that.
+		// ItemsStackPanel realizes the viewport and CacheLength viewports around it. On top of that: the probe load of the
+		// template, a line touching each edge of the window, and the line an animated scroll realizes before it recycles one.
 		private static int GetMaterializedBound(ListViewBase list, int itemsPerViewport)
-			=> (int)(2 * (1 + ((ItemsStackPanel)list.ItemsPanelRoot).CacheLength) * itemsPerViewport);
+			=> (int)((1 + ((ItemsStackPanel)list.ItemsPanelRoot).CacheLength) * itemsPerViewport) + 4;
 
 		private static void RaiseKeyDownOnFocused(ListViewBase list, VirtualKey key, VirtualKeyModifiers modifiers)
 		{
