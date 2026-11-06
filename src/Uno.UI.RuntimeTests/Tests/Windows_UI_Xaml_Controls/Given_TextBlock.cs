@@ -2475,6 +2475,131 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				ImageAssert.DoesNotHaveColorInRectangle(screenshot, rightHalf, Colors.Red);
 			}
 		}
+
+		[TestMethod]
+		public async Task When_Run_Starts_With_NoBreakSpace_Then_Line_Does_Not_Break_Before_It()
+		{
+			// The no-break space glues "X" (an icon glyph, say) to the next word, even though they are in different Runs.
+			// The first Run is the longest, so the X and the word glued to it fit on a line of their own.
+			var SUT = new TextBlock
+			{
+				Inlines =
+				{
+					new Run { Text = "word0 word1 " },
+					new Run { Text = "X" },
+					new Run { Text = "\u00A0word2" },
+				}
+			};
+			var xIndex = SUT.Text.IndexOf('X');
+
+			await UITestHelper.Load(SUT);
+
+			// Room for "word0 word1 X" but not for the word glued to the X.
+			SUT.Width = SUT.ParsedText.GetRectForIndex(xIndex).Right + 2;
+			SUT.TextWrapping = TextWrapping.Wrap;
+			await UITestHelper.WaitForIdle();
+
+			var xLine = SUT.ParsedText.GetLineAt(xIndex);
+			Assert.AreEqual(1, xLine.lineIndex, "The X should move to the next line with the word glued to it.");
+			Assert.AreEqual(xIndex, xLine.start);
+			Assert.AreEqual(1, SUT.ParsedText.GetLineAt(SUT.Text.Length - 1).lineIndex);
+		}
+
+		[TestMethod]
+		public async Task When_Word_Spans_Runs_Then_It_Wraps_As_A_Whole()
+		{
+			var SUT = new TextBlock
+			{
+				Inlines =
+				{
+					new Run { Text = "lead foo" },
+					new Run { Text = "bar", FontWeight = FontWeights.Bold },
+				}
+			};
+			var fooIndex = SUT.Text.IndexOf("foo", StringComparison.Ordinal);
+
+			await UITestHelper.Load(SUT);
+
+			// A single pixel short of fitting everything on one line.
+			SUT.Width = SUT.ParsedText.GetRectForIndex(SUT.Text.Length).X - 1;
+			SUT.TextWrapping = TextWrapping.Wrap;
+			await UITestHelper.WaitForIdle();
+
+			var fooLine = SUT.ParsedText.GetLineAt(fooIndex);
+			Assert.AreEqual(1, fooLine.lineIndex, "\"foobar\" should move to the next line as a whole.");
+			Assert.AreEqual(fooIndex, fooLine.start);
+		}
+
+		[TestMethod]
+		public async Task When_Word_Spans_Runs_Then_WordEllipsis_Trims_It_Like_A_Single_Run()
+		{
+			var oneRun = new TextBlock { Text = "lead foobarbaz" };
+			var twoRuns = new TextBlock
+			{
+				Inlines =
+				{
+					new Run { Text = "lead foo" },
+					new Run { Text = "barbaz" },
+				}
+			};
+
+			await UITestHelper.Load(new StackPanel { Children = { oneRun, twoRuns } });
+
+			var fooEnd = twoRuns.ParsedText.GetRectForIndex("lead foo".Length).X;
+
+			// A single pixel short of fitting, so the last word has to go.
+			var width = oneRun.ParsedText.GetRectForIndex(oneRun.Text.Length).X - 1;
+			foreach (var textBlock in new[] { oneRun, twoRuns })
+			{
+				textBlock.Width = width;
+				textBlock.TextTrimming = TextTrimming.WordEllipsis;
+			}
+			await UITestHelper.WaitForIdle();
+
+			// The line ends after the ellipsis.
+			var oneRunEnd = oneRun.ParsedText.GetRectForIndex(oneRun.Text.Length).X;
+			Assert.IsTrue(oneRunEnd < fooEnd, $"\"foobarbaz\" should be trimmed as a whole ({oneRunEnd} vs {fooEnd}).");
+			Assert.AreEqual(oneRunEnd, twoRuns.ParsedText.GetRectForIndex(twoRuns.Text.Length).X, 0.5);
+		}
+
+		[TestMethod]
+		[DataRow(@"a|LB|b", 2, 2)]
+		[DataRow(@"a\r\nb", 2, 3)]
+		[DataRow(@"a|\r\nb", 2, 3)]
+		[DataRow(@"a\r|b", 2, 2)]
+		[DataRow(@"a\n|LB|b", 3, 2)]
+		[DataRow(@"a|LB|\nb", 3, 2)]
+		[DataRow(@"a\r\n|LB|b", 3, 3)]
+		public async Task When_Line_Breaks_Meet_At_Inline_Boundaries(string inlines, int expectedLineCount, int expectedFirstLineLength)
+		{
+			// The line counts were measured on WinUI. Inlines are separated by "|", and "LB" is a LineBreak.
+			var SUT = new TextBlock();
+			foreach (var inline in inlines.Split('|'))
+			{
+				SUT.Inlines.Add(inline == "LB" ? new LineBreak() : new Run { Text = inline.Replace(@"\r", "\r").Replace(@"\n", "\n") });
+			}
+
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual(expectedLineCount - 1, SUT.ParsedText.GetLineAt(SUT.Text.IndexOf('b')).lineIndex);
+			Assert.AreEqual(expectedFirstLineLength, SUT.ParsedText.GetLineAt(0).length);
+		}
+
+		[TestMethod]
+		[DataRow(@"ab\r\ncd", 2)]
+		[DataRow(@"ab\ncd\r\n", 2)]
+		public async Task When_Point_Is_Past_The_End_Of_A_Line_Then_Index_Is_Before_Its_Line_Break(string text, int expectedIndex)
+		{
+			var SUT = new TextBlock { Text = text.Replace(@"\r", "\r").Replace(@"\n", "\n") };
+
+			await UITestHelper.Load(SUT);
+
+			// To the right of the first line, where a touch tap on the TextBlock hit-tests this way.
+			var firstLine = SUT.ParsedText.GetRectForIndex(0);
+			var index = SUT.ParsedText.GetIndexAt(new Point(SUT.ActualWidth + 10, firstLine.Height / 2), ignoreEndingNewLine: true, extendedSelection: true);
+
+			Assert.AreEqual(expectedIndex, index);
+		}
 #endif
 	}
 }
