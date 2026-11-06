@@ -484,9 +484,10 @@ namespace Uno.UI.DataBinding
 
 			notify.CollectionChanged += handler;
 
-			return new WeakSourceSubscription<INotifyCollectionChanged>(
+			return new WeakSourceSubscription<INotifyCollectionChanged, NotifyCollectionChangedEventHandler>(
 				notify,
-				source => source.CollectionChanged -= handler,
+				handler,
+				static (source, handler) => source.CollectionChanged -= handler,
 				onDisposed: null,
 				typeof(BindingPath),
 				"the CollectionChanged handler of a collected binding");
@@ -529,11 +530,11 @@ namespace Uno.UI.DataBinding
 
 				notify.PropertyChanged += handler;
 
-				// The lambdas below must not capture 'notify': the subscription holds the source weakly.
-				return new WeakSourceSubscription<INotifyPropertyChanged>(
+				return new WeakSourceSubscription<INotifyPropertyChanged, (PropertyChangedEventHandler Handler, ManagedWeakReference Target)>(
 					notify,
-					source => source.PropertyChanged -= handler,
-					() => Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, newValueActionWeak),
+					(handler, newValueActionWeak),
+					static (source, state) => source.PropertyChanged -= state.Handler,
+					static state => Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, state.Target),
 					typeof(BindingPath),
 					"the PropertyChanged handler of a collected binding");
 			}
