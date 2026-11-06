@@ -134,6 +134,7 @@ public partial class Given_ListViewItemPresenter
 			ItemContainerStyle = style,
 			SelectionMode = ListViewSelectionMode.Single,
 			ItemsSource = new[] { "Item 0" },
+			ItemContainerTransitions = null, // Keeps the pixels free of the entrance transition.
 		};
 		var button = new Button { Content = "Other" };
 		var root = new StackPanel { Background = new SolidColorBrush(Colors.White), Children = { grid, button } };

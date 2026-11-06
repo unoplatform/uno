@@ -430,6 +430,9 @@ public partial class Given_ListViewItemPresenter
 		var restingX = indicatorBounds.X + indicatorBounds.Width / 2;
 		var slidX = restingX - 7;
 
+		// Let the entrance transition finish.
+		await Task.Delay(800);
+
 		var before = await UITestHelper.ScreenShot(root);
 		ImageAssert.HasColorAt(before, (float)restingX, (float)centerY, Microsoft.UI.Colors.Red, tolerance: 5);
 		ImageAssert.DoesNotHaveColorAt(before, (float)slidX, (float)centerY, Microsoft.UI.Colors.Red, tolerance: 5);
