@@ -382,6 +382,20 @@ Uno Platform 7.0 removed the Mac Catalyst target framework, and the native macOS
 
 To fix this, move anything still needed to `Platforms/Desktop/`, and delete the folder. Code that should only run on macOS goes in an `OperatingSystem.IsMacOS()` check there. See [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7#mac-catalyst-is-removed) for the other migration steps.
 
+### UNOB0034: Lottie XAML on WinAppSDK needs the CommunityToolkit.WinUI.Lottie package
+
+`AnimatedVisualPlayer`, `LottieVisualSource` and `ThemableLottieVisualSource` are built into Uno Platform, so the Uno Platform targets need no package for them. On Windows (WinAppSDK), `LottieVisualSource` and `ThemableLottieVisualSource` come from the [CommunityToolkit.WinUI.Lottie](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie) NuGet package instead, which the Uno.Sdk doesn't reference. The Uno.Sdk reports this warning on the Windows target for each XAML file that declares the `using:CommunityToolkit.WinUI.Lottie` namespace while no reference to that package resolves. Without it, the build only fails with the XAML compiler's `WMC0001: Unknown type 'LottieVisualSource'`.
+
+To fix this, reference the package for the Windows target framework:
+
+```xml
+<ItemGroup Condition="$(TargetFramework.Contains('windows10'))">
+    <PackageReference Include="CommunityToolkit.WinUI.Lottie" />
+</ItemGroup>
+```
+
+With [central package management](https://learn.microsoft.com/nuget/consume-packages/central-package-management), add its version to `Directory.Packages.props`, for example `<PackageVersion Include="CommunityToolkit.WinUI.Lottie" Version="8.2.250604" />`. Otherwise, set the `Version` on the `PackageReference`.
+
 ### UNOB0035: The Prism Uno Feature is no longer supported
 
 Starting with Uno Platform 7.0, the `Uno.Sdk` no longer references [Prism](https://github.com/PrismLibrary/Prism). The `Prism` feature is ignored if still listed in `UnoFeatures`, and the build reports this warning. Without a Prism reference of its own, the project then fails to compile wherever it uses Prism types.
@@ -491,6 +505,28 @@ Uno Platform 7.0 names every conditional XAML prefix after a target framework, a
 | `xamarin`, `legacy` listed in `mc:Ignorable` | Drop the prefix from the markup using it |
 
 The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7#removed-xaml-prefixes).
+
+### UXAML0008
+
+**An `[assembly: ApiExtension]` registration names a type the application cannot access**
+
+The application registers the `[assembly: ApiExtension]` declarations of every assembly it references, in its own generated code. A registration whose extended, extension or owner type is not accessible from the application, typically because it is `internal`, cannot be emitted there, so it is skipped and reported instead of failing the build with `CS0122`.
+
+The warning is raised in the application, but the fix belongs in the library that declares the attribute: make the types it names `public`.
+
+```diff
+  [assembly: ApiExtension(typeof(IMyExtension), typeof(MyExtension))]
+
+- internal interface IMyExtension
++ public interface IMyExtension
+  {
+  }
+
+- internal sealed class MyExtension : IMyExtension
++ public sealed class MyExtension : IMyExtension
+```
+
+Until the library is updated, the skipped extension is not registered, so `ApiExtensibility.CreateInstance` finds no implementation for it.
 
 ## VS Code Errors
 

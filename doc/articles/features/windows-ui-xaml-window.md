@@ -151,9 +151,12 @@ var nativeWindow = Uno.UI.Xaml.WindowHelper.GetNativeWindow(MainWindow);
 
 The `nativeWindow` is an `object`, so you need to cast it to the specific type on the given platform. See the table below:
 
-|                                |   Skia+GTK   |               Skia+X11                |        Skia+WPF         |       iOS        |        Android        |       macOS       | WebAssembly |
-| ------------------------------ | :----------: | :-----------------------------------: | :---------------------: | :--------------: | :-------------------: | :---------------: | :---------: |
-| `WindowHelper.GetNativeWindow` | `Gtk.Window` | `Uno.UI.Runtime.X11NativeWindow` | `System.Windows.Window` | `UIKit.UIWindow` | `Android.View.Window` | `AppKit.NSWindow` |   `null`    |
+|                                |                       Win32                       |                         X11                         |     macOS      | Linux framebuffer |   iOS and tvOS   |        Android         | WebAssembly |
+| ------------------------------ | :-----------------------------------------------: | :-------------------------------------------------: | :------------: | :---------------: | :--------------: | :--------------------: | :---------: |
+| `WindowHelper.GetNativeWindow` | `Uno.UI.NativeElementHosting.Win32NativeWindow` | `Uno.UI.NativeElementHosting.X11NativeWindow` | internal type | `null` | `UIKit.UIWindow` | `Android.Views.Window` |   `null`    |
+
+`Win32NativeWindow.Hwnd` is the window handle, and `X11NativeWindow.WindowId` is the X11 window ID. On macOS the
+returned object is internal to the host, so there is no public type to cast it to.
 
 ## Avoiding `Window.Current`
 

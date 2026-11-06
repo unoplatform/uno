@@ -46,14 +46,7 @@ public partial class TextBox : global::Microsoft.UI.Xaml.Controls.Control
 	// Skipping already declared property MaxLengthProperty
 	// Skipping already declared property PlaceholderForegroundProperty
 	// Skipping already declared property PlaceholderTextProperty
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Controls.TextBox),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
+	// Skipping already declared property PreventKeyboardDisplayOnProgrammaticFocusProperty
 	// Skipping already declared property ProofingMenuFlyoutProperty
 	// Skipping already declared property SelectionFlyoutProperty
 	// Skipping already declared property SelectionHighlightColorProperty
@@ -133,20 +126,7 @@ public partial class TextBox : global::Microsoft.UI.Xaml.Controls.Control
 	// Skipping already declared property MaxLength
 	// Skipping already declared property PlaceholderForeground
 	// Skipping already declared property PlaceholderText
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool PreventKeyboardDisplayOnProgrammaticFocus
-	{
-		get
-		{
-			return (bool)this.GetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty);
-		}
-		set
-		{
-			this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
+	// Skipping already declared property PreventKeyboardDisplayOnProgrammaticFocus
 	// Skipping already declared property ProofingMenuFlyout
 	// Skipping already declared property SelectedText
 	// Skipping already declared property SelectionFlyout

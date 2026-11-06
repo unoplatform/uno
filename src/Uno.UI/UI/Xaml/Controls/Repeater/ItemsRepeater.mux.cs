@@ -571,12 +571,10 @@ partial class ItemsRepeater
 
 		if (newValue != null)
 		{
-			newValue.CollectionChanged += OnItemsSourceViewChanged;
 #if HAS_UNO
-			_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-			{
-				newValue.CollectionChanged -= OnItemsSourceViewChanged;
-			});
+			_dataSourceSubscriptionsRevoker.Disposable = SubscribeToItemsSourceView(newValue, this);
+#else
+			newValue.CollectionChanged += OnItemsSourceViewChanged;
 #endif
 		}
 
