@@ -217,7 +217,7 @@ public class Given_InputPane
 			await WaitForAboveOcclusion(first, occludedTop);
 			Assert.IsTrue(GetBottom(second) > occludedTop, "Test setup: the second TextBox must still be behind the keyboard.");
 
-			Assert.IsTrue(second.Focus(FocusState.Programmatic), "Second TextBox failed to take focus.");
+			await MoveFocusKeepingOcclusion(second, inputPane, occludedTop);
 
 			await WaitForAboveOcclusion(second, occludedTop);
 		}
@@ -309,8 +309,7 @@ public class Given_InputPane
 
 			var textBox = (TextBox)autoSuggestBox.GetTemplateChild("TextBox");
 			textBox.PreventKeyboardDisplayOnProgrammaticFocus = true;
-			Assert.IsTrue(textBox.Focus(FocusState.Programmatic), "AutoSuggestBox failed to take focus.");
-			await WindowHelper.WaitForIdle();
+			await MoveFocusKeepingOcclusion(textBox, inputPane, occludedTop);
 			Assert.IsTrue(GetTop(textBox) > 0 && GetBottom(textBox) < occludedTop, "Test setup: the AutoSuggestBox must be visible above the keyboard.");
 
 			// Setting the items once the template is applied refreshes and places the list, as typing would.
@@ -953,6 +952,17 @@ public class Given_InputPane
 		{
 			WindowHelper.WindowContent = null;
 		}
+	}
+
+	// On iOS, moving the first responder swaps the suppressed field's empty input view, and UIKit reports that
+	// over the simulated occlusion. Setting the same rect again does nothing where the occlusion survived.
+	private static async Task MoveFocusKeepingOcclusion(Control field, InputPane inputPane, double occludedTop)
+	{
+		Assert.IsTrue(field.Focus(FocusState.Programmatic), $"{field} failed to take focus.");
+		await WindowHelper.WaitForIdle();
+
+		OccludeBelow(inputPane, occludedTop);
+		await WindowHelper.WaitForIdle();
 	}
 
 	// The element must end fully visible above the keyboard, without being moved further than the
