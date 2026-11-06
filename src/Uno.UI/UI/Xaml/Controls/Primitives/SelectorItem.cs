@@ -458,7 +458,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					if (!IsListViewBaseItemHold(args))
 					{
 						update = ManipulationUpdateKind.Clicked;
-						Selector?.OnItemClicked(this, args.KeyModifiers);
+						DoTapInteraction(args.KeyModifiers);
 					}
 				}
 
@@ -466,6 +466,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				UpdateCommonStatesWithoutNeedsLayout(true, (PointerDeviceType)args.Pointer.PointerDeviceType, update);
 			}
 		}
+
+		private protected virtual void DoTapInteraction(global::Windows.System.VirtualKeyModifiers eventModifiers) => Selector?.OnItemClicked(this, eventModifiers);
 
 		// WinUI's ListViewBaseItem runs its tap interaction (ItemClick and selection) only when a Tapped follows (ListViewBaseItem_Partial.cpp, OnPointerReleased),
 		// while a touch or pen hold is followed by a RightTapped. ListBoxItem and ComboBoxItem still select on a hold.
@@ -507,18 +509,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				ChangeVisualState(true);
 			}
 
-			// MUX Reference ListViewBaseItem_Partial.cpp, ComboBoxItem_Partial.cpp and FlipViewItem_Partial.cpp: inform the parent selector.
-			Selector?.ItemFocused(this);
+			// MUX Reference ComboBoxItem_Partial.cpp and FlipViewItem_Partial.cpp: inform the parent selector.
+			if (!IsListViewBaseItem)
+			{
+				Selector?.ItemFocused(this);
+			}
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)
 		{
 			base.OnLostFocus(e);
 
-			Selector?.ItemUnfocused(this);
-
 			if (!IsListViewBaseItem)
 			{
+				Selector?.ItemUnfocused(this);
 				ChangeVisualState(true);
 			}
 		}
