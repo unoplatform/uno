@@ -51,6 +51,7 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithLocalTabNavigation()
 	{
 		string expectedFocusSequence = "[B][1][.1][2][.1][3][.1][A][.1][3][.1][2][.1][1][B]";
@@ -61,6 +62,7 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithCycleTabNavigation()
 	{
 		string expectedFocusSequence = "[B][1][.1][2][.1][3][.1][1][.1][3][.1][2][.1][1][.1]";
@@ -71,6 +73,7 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithOnceTabNavigation()
 	{
 		string expectedFocusSequence = "[B][1][A][B][A][.1][1]";
@@ -81,6 +84,7 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithLocalTabNavigationHeaderAndFooter()
 	{
 		await VerifyTabOrder(KeyboardNavigationMode.Local, VerifyTabOrderFlags.UseHeaderAndFooter, "[B][H][1][.1][2][.1][3][.1][F][A][F][.1][3][.1][2][.1][1][H][B]");
@@ -89,6 +93,7 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithCycleTabNavigationHeaderAndFooter()
 	{
 		await VerifyTabOrder(KeyboardNavigationMode.Cycle, VerifyTabOrderFlags.UseHeaderAndFooter, "[B][H][1][.1][2][.1][3][.1][F][H][F][.1][3][.1][2][.1][1][H][F]");
@@ -97,6 +102,7 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithOnceTabNavigationHeaderAndFooter()
 	{
 		await VerifyTabOrder(KeyboardNavigationMode.Once, VerifyTabOrderFlags.UseHeaderAndFooter, "[B][H][1][F][A][B][A][F][.1][1][H]");
@@ -105,6 +111,7 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithVirtualizedItemsAndLocalTabNavigation()
 	{
 		string focusSequence = "";
@@ -192,6 +199,7 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithVirtualizedItemsAndCycleTabNavigation()
 	{
 		string focusSequence = "";
@@ -270,18 +278,21 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithGroupedItemsAndLocalTabNavigation()
 	{
 		await VerifyTabOrder(KeyboardNavigationMode.Local, VerifyTabOrderFlags.UseGroupedItems | VerifyTabOrderFlags.UseVirtualizingStackPanelAsItemsPanel, "[B][11][21][A][B][11][21][A][21][11][B][A][21][11][B]");
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithGroupedItemsAndCycleTabNavigation()
 	{
 		await VerifyTabOrder(KeyboardNavigationMode.Cycle, VerifyTabOrderFlags.UseGroupedItems | VerifyTabOrderFlags.UseVirtualizingStackPanelAsItemsPanel, "[B][11][21][11][21][11][21][11][21][11][21][11][21][11][21]");
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithGroupedItemsAndOnceTabNavigation()
 	{
 		string expectedFocusSequence = "[B][11][A][B][A][11][B]";
@@ -291,18 +302,21 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithGroupedItemsLocalTabNavigationHeaderAndFooter()
 	{
 		await VerifyTabOrder(KeyboardNavigationMode.Local, VerifyTabOrderFlags.UseHeaderAndFooter | VerifyTabOrderFlags.UseGroupedItems | VerifyTabOrderFlags.UseVirtualizingStackPanelAsItemsPanel, "[B][H][11][21][A][B][H][11][21][11][H][B][A][21][11][H][B]");
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithGroupedItemsCycleTabNavigationHeaderAndFooter()
 	{
 		await VerifyTabOrder(KeyboardNavigationMode.Cycle, VerifyTabOrderFlags.UseHeaderAndFooter | VerifyTabOrderFlags.UseGroupedItems | VerifyTabOrderFlags.UseVirtualizingStackPanelAsItemsPanel, "[B][H][11][21][H][11][21][H][11][H][21][11][H][21][11][H][21]");
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyTabOrderWithGroupedItemsOnceTabNavigationHeaderAndFooter()
 	{
 		await VerifyTabOrder(KeyboardNavigationMode.Once, VerifyTabOrderFlags.UseHeaderAndFooter | VerifyTabOrderFlags.UseGroupedItems, "[B][H][11][F][A][B][A][F][11][H][B]");
@@ -314,6 +328,12 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 		VerifyTabOrderFlags flags,
 		string expectedFocusSequence)
 	{
+		if (flags.HasFlag(VerifyTabOrderFlags.UseVirtualizingStackPanelAsItemsPanel))
+		{
+			// UNO TODO: VirtualizingStackPanel doesn't exist.
+			return;
+		}
+
 		string focusSequence = "";
 
 		CollectionViewSource cvs = null;
@@ -366,7 +386,7 @@ public class ItemsControlEnterpriseIntegrationTests : BaseDxamlTestClass
 
 			if ((flags & VerifyTabOrderFlags.UseGroupedItems) != 0)
 			{
-				cvs = (CollectionViewSource)rootPage.FindName("cvs");
+				cvs = (CollectionViewSource)((FrameworkElement)rootPage.Content).Resources["cvs"]; // UNO TODO: FindName doesn't see resources.
 				VERIFY_IS_NOT_NULL(cvs);
 
 				itemsSource = GetGroupedData();

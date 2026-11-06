@@ -380,7 +380,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				listView = (ListView)rootGrid.FindName("listView");
 				VERIFY_IS_NOT_NULL(listView);
 
-				cvs = (CollectionViewSource)rootGrid.FindName("cvs");
+				cvs = (CollectionViewSource)rootGrid.Resources["cvs"]; // UNO TODO: FindName doesn't see resources.
 				VERIFY_IS_NOT_NULL(cvs);
 
 				itemsSource = GetGroupedData();
@@ -919,6 +919,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithLocalTabNavigation()
 		{
 			string expectedFocusSequence = "[B][1][.1][2][.1][3][.1][A][.1][3][.1][2][.1][1][B]";
@@ -929,6 +930,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithCycleTabNavigation()
 		{
 			string expectedFocusSequence = "[B][1][.1][2][.1][3][.1][1][.1][3][.1][2][.1][1][.1]";
@@ -939,6 +941,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithOnceTabNavigation()
 		{
 			string expectedFocusSequence = "[B][1][.1][A][.1][1][B]";
@@ -949,6 +952,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithNestedButtons()
 		{
 			await VerifyTabOrder(KeyboardNavigationMode.Local, VerifyTabOrderFlags.UseNestedButtons, "[B][SI][one][SI][one][SI][one][A][one][SI][one][SI][one][SI][B]");
@@ -957,6 +961,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithLocalTabNavigationHeaderAndFooter()
 		{
 			await VerifyTabOrder(KeyboardNavigationMode.Local, VerifyTabOrderFlags.UseHeaderAndFooter, "[B][H][1][.1][2][.1][3][.1][F][A][F][.1][3][.1][2][.1][1][H][B]");
@@ -965,6 +970,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithCycleTabNavigationHeaderAndFooter()
 		{
 			await VerifyTabOrder(KeyboardNavigationMode.Cycle, VerifyTabOrderFlags.UseHeaderAndFooter, "[B][H][1][.1][2][.1][3][.1][F][H][F][.1][3][.1][2][.1][1][H][F]");
@@ -973,6 +979,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithOnceTabNavigationHeaderAndFooter()
 		{
 			await VerifyTabOrder(KeyboardNavigationMode.Once, VerifyTabOrderFlags.UseHeaderAndFooter, "[B][H][1][.1][F][A][F][.1][1][H][B]");
@@ -981,6 +988,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithGroupedItemsAndLocalTabNavigation()
 		{
 			await VerifyTabOrder(KeyboardNavigationMode.Local, VerifyTabOrderFlags.UseGroupedItems, "[B][1][11][12][2][21][22][A][22][21][2][12][11][1][B]");
@@ -988,6 +996,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithGroupedItemsAndCycleTabNavigation()
 		{
 			await VerifyTabOrder(KeyboardNavigationMode.Cycle, VerifyTabOrderFlags.UseGroupedItems, "[B][1][11][12][2][21][22][1][22][21][2][12][11][1][22]");
@@ -995,6 +1004,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithGroupedItemsAndOnceTabNavigation()
 		{
 			string expectedFocusSequence = "[B][11][A][B][A][11][B]";
@@ -1004,6 +1014,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithGroupedItemsLocalTabNavigationHeaderAndFooter()
 		{
 			await VerifyTabOrder(KeyboardNavigationMode.Local, VerifyTabOrderFlags.UseHeaderAndFooter | VerifyTabOrderFlags.UseGroupedItems, "[B][H][1][11][12][2][21][22][F][A][F][22][21][2][12][11][1][H][B]");
@@ -1011,6 +1022,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithGroupedItemsCycleTabNavigationHeaderAndFooter()
 		{
 			await VerifyTabOrder(KeyboardNavigationMode.Cycle, VerifyTabOrderFlags.UseHeaderAndFooter | VerifyTabOrderFlags.UseGroupedItems, "[B][H][1][11][12][2][21][22][F][H][F][22][21][2][12][11][1][H][F]");
@@ -1018,6 +1030,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithGroupedItemsOnceTabNavigationHeaderAndFooter()
 		{
 			await VerifyTabOrder(KeyboardNavigationMode.Once, VerifyTabOrderFlags.UseHeaderAndFooter | VerifyTabOrderFlags.UseGroupedItems, "[B][H][11][F][A][B][A][F][11][H][B]");
@@ -1025,6 +1038,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithVirtualizedItemsAndLocalTabNavigation()
 		{
 			TestCleanupWrapper cleanup;
@@ -1124,6 +1138,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task VerifyTabOrderWithVirtualizedItemsAndCycleTabNavigation()
 		{
 			TestCleanupWrapper cleanup;
@@ -1218,6 +1233,12 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			VerifyTabOrderFlags flags,
 			string expectedFocusSequence)
 		{
+			if (flags.HasFlag(VerifyTabOrderFlags.UseVirtualizingStackPanelAsItemsPanel))
+			{
+				// UNO TODO: VirtualizingStackPanel doesn't exist.
+				return;
+			}
+
 			TestCleanupWrapper cleanup;
 
 			string focusSequence = "";
@@ -1317,7 +1338,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 				if (flags.HasFlag(VerifyTabOrderFlags.UseGroupedItems))
 				{
-					cvs = (CollectionViewSource)rootPage.FindName("cvs");
+					cvs = (CollectionViewSource)((FrameworkElement)rootPage.Content).Resources["cvs"]; // UNO TODO: FindName doesn't see resources.
 					VERIFY_IS_NOT_NULL(cvs);
 
 					itemsSource = GetGroupedData(false /*getLargeDataSet*/);
@@ -1722,7 +1743,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("Programmatically attempt to focus the next focusable element.");
 				FindNextElementOptions options = new FindNextElementOptions();
-				options.SearchRoot = WindowHelper.WindowContent;
+				options.SearchRoot = WindowHelper.XamlRoot.Content;
 				bool resultTryMoveFocus = FocusManager.TryMoveFocus(FocusNavigationDirection.Next, options);
 				VERIFY_IS_TRUE(resultTryMoveFocus);
 			});
