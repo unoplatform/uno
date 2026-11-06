@@ -199,7 +199,7 @@ namespace Microsoft.UI.Xaml.Controls
 						container.PrepareForRecycle();
 					}
 
-					if (container.Parent is Panel parent)
+					if (((DependencyObject)container).Parent is Panel parent)
 					{
 						parent.Children.Remove(container);
 					}
@@ -229,7 +229,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private void DiscardContainer(FrameworkElement container)
 		{
-			if (container.Parent is Panel parent)
+			if (((DependencyObject)container).Parent is Panel parent)
 			{
 				// Clear the container's Content and DataContext
 				ItemsControl?.CleanUpContainer(container);
