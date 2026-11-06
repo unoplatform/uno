@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.Helpers;
@@ -2599,6 +2600,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var index = SUT.ParsedText.GetIndexAt(new Point(SUT.ActualWidth + 10, firstLine.Height / 2), ignoreEndingNewLine: true, extendedSelection: true);
 
 			Assert.AreEqual(expectedIndex, index);
+		}
+
+		[TestMethod]
+		[DataRow("ja-JP")]
+		[DataRow("ko-KR")]
+		[DataRow("en-US")]
+		public async Task When_UI_Culture_Changes_Then_Lines_Do_Not_Break_Before_Small_Kana(string culture)
+		{
+			// WinUI applies the same line-break rules in every language and never breaks before a small kana such as
+			// "ャ", which ICU's Japanese and Korean rules allow.
+			var SUT = new TextBlock { Text = "日本のキャッシュ" };
+			var smallKanaIndex = SUT.Text.IndexOf('ャ');
+
+			await UITestHelper.Load(SUT);
+
+			// Room for "日本のキ" but not for the "ャ" after it, so the line has to break before the "キ".
+			var smallKana = SUT.ParsedText.GetRectForIndex(smallKanaIndex);
+			SUT.Width = smallKana.X + smallKana.Width / 2;
+			SUT.TextWrapping = TextWrapping.Wrap;
+
+			var uiCulture = CultureInfo.CurrentUICulture;
+			try
+			{
+				CultureInfo.CurrentUICulture = new CultureInfo(culture);
+
+				// CurrentUICulture follows the async flow, so the culture set here doesn't reach the layout passes the
+				// dispatcher runs later. Lay out right here instead.
+				SUT.UpdateLayout();
+			}
+			finally
+			{
+				CultureInfo.CurrentUICulture = uiCulture;
+			}
+
+			var line = SUT.ParsedText.GetLineAt(smallKanaIndex);
+			Assert.AreEqual(1, line.lineIndex);
+			Assert.AreEqual(smallKanaIndex - 1, line.start);
 		}
 #endif
 	}

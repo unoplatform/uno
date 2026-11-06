@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -1506,7 +1505,10 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static unsafe void AppendBoundaries(int boundaryType, string text, int outputBaseOffset, List<int> list)
 	{
-		fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+		// WinUI applies the same line-break rules in every language, and ICU's root rules match them, so ICU gets the
+		// root locale: an empty string (NULL would mean the OS default). The UTF-16 UI culture name passed here before
+		// reached ICU as a one-letter name, which resolved to root as well.
+		fixed (byte* locale = "\0"u8)
 		{
 			fixed (char* textPtr = &text.GetPinnableReference())
 			{
