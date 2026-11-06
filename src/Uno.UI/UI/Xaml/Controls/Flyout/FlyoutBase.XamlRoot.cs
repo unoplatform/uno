@@ -15,6 +15,20 @@ public partial class FlyoutBase
 	public XamlRoot? XamlRoot
 	{
 		get => XamlRoot.GetForElement(this);
-		set => XamlRoot.SetForElement(this, XamlRoot, value);
+		set
+		{
+			var xamlRoot = XamlRoot.GetForElement(this);
+			if (value == xamlRoot)
+			{
+				return;
+			}
+
+			if (xamlRoot is not null)
+			{
+				throw new InvalidOperationException("Cannot change XamlRoot when it is not null.");
+			}
+
+			XamlRoot.SetForElement(this, xamlRoot, value);
+		}
 	}
 }
