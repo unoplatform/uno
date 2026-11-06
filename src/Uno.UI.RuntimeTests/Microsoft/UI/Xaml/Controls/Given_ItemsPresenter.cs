@@ -82,14 +82,14 @@ public class Given_ItemsPresenter
 			100,
 			150
 		}, Epsilon);
-		
+
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			100,
 			150,
 			200
 		}, Epsilon);
-		
+
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			75,
