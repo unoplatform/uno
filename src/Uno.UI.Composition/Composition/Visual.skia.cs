@@ -57,6 +57,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private (Matrix4x4 matrix, Matrix4x4 localMatrix) _totalMatrix = (Matrix4x4.Identity, Matrix4x4.Identity);
 	private Visual? _transformParent;
 	private List<Visual>? _transformChildren;
+
+	// Unlike ChildrenSKPictureInvalid, which a backdrop raises again on every render.
+	private bool _subtreeChangedSinceRender;
 	// Opaque per-visual retained state owned by the rendering backend (Skia: an SKPicture). _content is
 	// this visual's own painted content; _childrenContent is a collapsed subtree cache.
 	private IRenderRecord? _content;
@@ -259,6 +262,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	// this is for effect brushes that apply an effect on an already-drawn area, so these need to be painted every frame.
 	internal virtual bool RequiresRepaintOnEveryFrame => false;
+
+	/// <summary>Whether <see cref="RequiresRepaintOnEveryFrame"/> is only about the content under this visual. Otherwise it may show content from elsewhere.</summary>
+	internal virtual bool RepaintsOnlyForBackdrop => false;
 
 	/// <summary>
 	/// The visual this visual is positioned against instead of its parent, for an element drawn away from its logical
@@ -463,6 +469,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	internal void InvalidateParentChildrenPicture(bool includeSelf)
 	{
+		for (var changed = includeSelf ? this : Parent; changed is not null && !changed._subtreeChangedSinceRender; changed = changed.Parent)
+		{
+			changed._subtreeChangedSinceRender = true;
+		}
+
+		InvalidateChildrenPictures(includeSelf);
+	}
+
+	private void InvalidateChildrenPictures(bool includeSelf)
+	{
 		var parent = includeSelf ? this : Parent;
 		while (parent is not null && (parent._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
@@ -594,7 +610,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <summary>Whether this visual's content or anything in its subtree changed since it was last rendered.</summary>
-	internal bool HasPendingRender => RequiresRepaintOnEveryFrame || (_flags & (VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid)) != 0;
+	internal bool HasPendingRender => _subtreeChangedSinceRender || (_flags & VisualFlags.PaintDirty) != 0 || (RequiresRepaintOnEveryFrame && !RepaintsOnlyForBackdrop);
 
 	/// <summary>What a recording of this visual took from its transform parents, which don't invalidate it when they change.</summary>
 	internal (float opacity, bool isHidden) TransformParentChainState => _transformParent is null ? (1f, false) : (TransformParentChainOpacity, IsTransformParentChainHidden);
@@ -656,6 +672,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			return;
 		}
+
+		// Also for a suppressed subtree: a flag left behind would stop the next change from reaching the surface root.
+		_subtreeChangedSinceRender = false;
 
 
 #if TRACE_COMPOSITION
@@ -815,7 +834,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #endif
 			if (visual.RequiresRepaintOnEveryFrame)
 			{
-				visual.InvalidateParentChildrenPicture(includeSelf: false);
+				// A backdrop only changes along with what's drawn under it, which reports that itself.
+				if (visual.RepaintsOnlyForBackdrop)
+				{
+					visual.InvalidateChildrenPictures(includeSelf: false);
+				}
+				else
+				{
+					visual.InvalidateParentChildrenPicture(includeSelf: false);
+				}
+
 				// Repaint-every-frame content (e.g. an effect brush over already-drawn area): paint directly, uncached.
 				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clipChanged, clipBounds);
 				visual.Paint(session);

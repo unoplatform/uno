@@ -30,5 +30,7 @@ internal partial class CompositionBrushWrapper : CompositionBrush
 		=> _wrappedBrush?.PrepareForOffscreenRasterization(factory, bounds, scale);
 
 	internal override bool RequiresRepaintOnEveryFrame => WrappedBrush?.RequiresRepaintOnEveryFrame ?? false;
+
+	internal override bool RepaintsOnlyForBackdrop => WrappedBrush?.RepaintsOnlyForBackdrop ?? false;
 	internal override float DamageRegionSamplingMargin => WrappedBrush?.DamageRegionSamplingMargin ?? 0;
 }

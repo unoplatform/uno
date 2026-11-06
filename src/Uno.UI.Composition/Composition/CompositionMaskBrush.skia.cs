@@ -9,6 +9,8 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionMaskBrush : CompositionBrush
 	{
 		internal override bool RequiresRepaintOnEveryFrame => Source is not null && Mask is not null && (Source.RequiresRepaintOnEveryFrame || Mask.RequiresRepaintOnEveryFrame);
+
+		internal override bool RepaintsOnlyForBackdrop => (Source is not { RequiresRepaintOnEveryFrame: true } || Source.RepaintsOnlyForBackdrop) && (Mask is not { RequiresRepaintOnEveryFrame: true } || Mask.RepaintsOnlyForBackdrop);
 		internal override float DamageRegionSamplingMargin => global::System.Math.Max(Source?.DamageRegionSamplingMargin ?? 0, Mask?.DamageRegionSamplingMargin ?? 0);
 
 		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)

@@ -21,6 +21,8 @@ namespace Microsoft.UI.Composition
 
 		internal override bool RequiresRepaintOnEveryFrame => Brush?.RequiresRepaintOnEveryFrame ?? false;
 
+		internal override bool RepaintsOnlyForBackdrop => Brush?.RepaintsOnlyForBackdrop ?? false;
+
 		internal override float DamageRegionSamplingMargin => Brush?.DamageRegionSamplingMargin ?? 0;
 
 		private protected override bool TryAddShadowPaths(List<(IGeometry path, float alpha)> output)

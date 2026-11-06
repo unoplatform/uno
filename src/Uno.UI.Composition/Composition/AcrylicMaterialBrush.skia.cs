@@ -51,6 +51,8 @@ internal class AcrylicMaterialBrush : CompositionBrush
 	// A translucent acrylic filters the live backdrop, so it must repaint every frame; an opaque one is static.
 	internal override bool RequiresRepaintOnEveryFrame => !_isOpaque;
 
+	internal override bool RepaintsOnlyForBackdrop => true;
+
 	// The blur reaches BlurPadding beyond the painted bounds, so the damage region must be grown to match.
 	internal override float DamageRegionSamplingMargin => _isOpaque ? 0 : BlurPadding;
 

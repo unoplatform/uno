@@ -27,6 +27,8 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
 
+	internal override bool RepaintsOnlyForBackdrop => true;
+
 	private float _backdropBlurSigma;
 
 	internal override float DamageRegionSamplingMargin => HasBackdropBrushInput ? _backdropBlurSigma * 3f : 0f;

@@ -72,6 +72,8 @@ namespace Microsoft.UI.Composition
 
 		internal virtual bool RequiresRepaintOnEveryFrame => false;
 
+		internal virtual bool RepaintsOnlyForBackdrop => false;
+
 		internal virtual float DamageRegionSamplingMargin => 0;
 	}
 }
