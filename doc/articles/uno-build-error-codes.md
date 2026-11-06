@@ -500,6 +500,28 @@ Uno Platform 7.0 names every conditional XAML prefix after a target framework, a
 
 The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7#removed-xaml-prefixes).
 
+### UXAML0008
+
+**An `[assembly: ApiExtension]` registration names a type the application cannot access**
+
+The application registers the `[assembly: ApiExtension]` declarations of every assembly it references, in its own generated code. A registration whose extended, extension or owner type is not accessible from the application, typically because it is `internal`, cannot be emitted there, so it is skipped and reported instead of failing the build with `CS0122`.
+
+The warning is raised in the application, but the fix belongs in the library that declares the attribute: make the types it names `public`.
+
+```diff
+  [assembly: ApiExtension(typeof(IMyExtension), typeof(MyExtension))]
+
+- internal interface IMyExtension
++ public interface IMyExtension
+  {
+  }
+
+- internal sealed class MyExtension : IMyExtension
++ public sealed class MyExtension : IMyExtension
+```
+
+Until the library is updated, the skipped extension is not registered, so `ApiExtensibility.CreateInstance` finds no implementation for it.
+
 ## VS Code Errors
 
 ### UVSC0001
