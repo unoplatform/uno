@@ -45,7 +45,11 @@ namespace Private.Infrastructure
 				EnsureInputInjectorSupported();
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
+#if WINAPPSDK
 					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+#else
+					var mouse = s_buttonDownMouse ?? InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+#endif
 					mouse.MoveTo(position);
 				});
 			}
@@ -55,8 +59,7 @@ namespace Private.Infrastructure
 				EnsureInputInjectorSupported();
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
-					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
-					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
+					var center = element.TransformToVisual(null).TransformPoint(new Point(element.RenderSize.Width / 2, element.RenderSize.Height / 2));
 					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
 					mouse.MoveTo(center);
 				});
@@ -74,8 +77,7 @@ namespace Private.Infrastructure
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
-					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
-					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
+					var center = element.TransformToVisual(null).TransformPoint(new Point(element.RenderSize.Width / 2, element.RenderSize.Height / 2));
 					finger.Press(center);
 				});
 
@@ -127,8 +129,7 @@ namespace Private.Infrastructure
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					using var finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
-					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
-					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
+					var center = element.TransformToVisual(null).TransformPoint(new Point(element.RenderSize.Width / 2, element.RenderSize.Height / 2));
 
 					const uint steps = 10;
 					var durationInMilliseconds = Math.Sqrt((double)relX * relX + (double)relY * relY) / velocityFactor;
@@ -150,8 +151,7 @@ namespace Private.Infrastructure
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
-					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
-					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
+					var center = element.TransformToVisual(null).TransformPoint(new Point(element.RenderSize.Width / 2, element.RenderSize.Height / 2));
 					mouse.Press(center);
 					mouse.Release();
 				});
@@ -201,14 +201,21 @@ namespace Private.Infrastructure
 				});
 			}
 
+#if !WINAPPSDK
+			// Pressed buttons live in the injector, so a press, its release and the moves between them have to share one.
+			private static Mouse s_buttonDownMouse;
+#endif
+
 			internal static void MouseButtonDown(FrameworkElement element, int dx, int dy, MouseButton button)
 			{
 				EnsureInputInjectorSupported();
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
-					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
-					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
+#if !WINAPPSDK
+					s_buttonDownMouse = mouse;
+#endif
+					var center = element.TransformToVisual(null).TransformPoint(new Point(element.RenderSize.Width / 2, element.RenderSize.Height / 2));
 					var target = new Point(center.X + dx, center.Y + dy);
 
 					mouse.MoveTo(target);
@@ -235,7 +242,12 @@ namespace Private.Infrastructure
 				EnsureInputInjectorSupported();
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
+#if WINAPPSDK
 					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+#else
+					var mouse = s_buttonDownMouse ?? InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+					s_buttonDownMouse = null;
+#endif
 
 					switch (button)
 					{
@@ -261,8 +273,7 @@ namespace Private.Infrastructure
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					using var pen = InputInjector.TryCreate()?.GetPen() ?? throw new InvalidOperationException("Failed to create pen");
-					var topLeft = element.TransformToVisual(null).TransformPoint(new Point(0, 0));
-					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
+					var center = element.TransformToVisual(null).TransformPoint(new Point(element.RenderSize.Width / 2, element.RenderSize.Height / 2));
 					pen.Tap(center);
 				});
 			}

@@ -139,7 +139,9 @@ namespace Private.Infrastructure
 					return;
 				}
 
-				element ??= FocusManager.GetFocusedElement(WindowHelper.XamlRoot) as UIElement;
+				// Like the keyboard input path: without a focused element, keys go to the root.
+				element ??= FocusManager.GetFocusedElement(WindowHelper.XamlRoot) as UIElement
+					?? VisualTree.GetContentRootForElement(WindowHelper.WindowContent)?.VisualTree.RootElement;
 				if (element is null)
 				{
 					return;
@@ -185,6 +187,14 @@ namespace Private.Infrastructure
 							if (!keyArgs.Handled)
 							{
 								await RaiseOnElementDispatcherAsync(element, mainEvent, keyArgs);
+							}
+
+							if (keyDownCodePos == 0 && !keyArgs.Handled)
+							{
+								// The keyboard input path processes context menu keys after an unhandled KeyDown.
+								var modifiers = activeModifiers;
+								await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+									VisualTree.GetContentRootForElement(element)?.InputManager.ContextMenuProcessor.ProcessContextRequestOnKeyboardInput(element, vKey, modifiers));
 							}
 						}
 

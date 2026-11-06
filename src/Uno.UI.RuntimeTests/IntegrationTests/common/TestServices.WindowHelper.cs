@@ -500,7 +500,8 @@ namespace Private.Infrastructure
 				_sizeBeforeOverride ??= appWindow.Size;
 				_pendingWindowSize = size;
 
-				var scale = xamlRoot.RasterizationScale;
+				// The real scale of the window: a test scaling override doesn't resize it.
+				var scale = xamlRoot.Size.Width > 0 ? appWindow.ClientSize.Width / xamlRoot.Size.Width : xamlRoot.RasterizationScale;
 				appWindow.Resize(new global::Windows.Graphics.SizeInt32(
 					(int)Math.Round(size.Width * scale) + appWindow.Size.Width - appWindow.ClientSize.Width,
 					(int)Math.Round(size.Height * scale) + appWindow.Size.Height - appWindow.ClientSize.Height));
