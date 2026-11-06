@@ -124,7 +124,12 @@ internal class LoadMoreItemsOperation
 
 	internal void Start() => OnStart();
 
-	internal void Cancel() => m_operation.Cancel();
+	// TODO Uno: AsyncBase::Cancel fires no completion, only FireCompletion does. Uno's operation raises Completed when canceled.
+	internal void Cancel()
+	{
+		m_operation.Completed = null;
+		m_operation.Cancel();
+	}
 
 	internal void Close() => OnClose();
 
@@ -207,7 +212,7 @@ internal class LoadMoreItemsOperation
 			switch (status)
 			{
 				case AsyncStatus.Canceled:
-					Cancel();
+					m_operation.Cancel();
 					break;
 				case AsyncStatus.Error:
 					m_completion.TrySetException(new InvalidOperationException("LoadMoreItemsAsync failed."));
