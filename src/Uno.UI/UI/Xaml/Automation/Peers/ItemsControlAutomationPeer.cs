@@ -444,11 +444,28 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 	private void GetModernItemsControlChildrenChildrenHelper(IList<ItemAutomationPeer> pNewChildrenCollection)
 	{
-		// Minimal shim implementation: the real implementation relies on internal panel indices
-		// and item-container mappings that are platform-specific. For Uno's purposes, keep
-		// this as a no-op to avoid changing runtime behavior while satisfying compile.
-		if (pNewChildrenCollection == null) return;
-		// No-op: callers will continue with fallback logic when necessary.
+		if (Owner is not ItemsControl owner || owner.ItemsPanelRoot is not ModernCollectionBasePanel modernPanel)
+		{
+			return;
+		}
+
+		var firstCacheIndex = modernPanel.FirstCacheIndexBase;
+		var lastCacheIndex = modernPanel.LastCacheIndexBase;
+
+		if (firstCacheIndex >= 0 && lastCacheIndex >= 0)
+		{
+			for (var indexContainer = firstCacheIndex; indexContainer <= lastCacheIndex; ++indexContainer)
+			{
+				if (modernPanel.ContainerFromIndex(indexContainer) is UIElement itemContainer
+					&& owner.ItemFromContainer(itemContainer) is { } item
+					&& GetOrCreateRealizedItemPeer(itemContainer, item) is { } itemPeer
+					&& itemPeer.GetContainerPeer() is { } containerPeer)
+				{
+					containerPeer.EventsSource = itemPeer;
+					pNewChildrenCollection.Add(itemPeer);
+				}
+			}
+		}
 	}
 
 	private IList<AutomationPeer> GetItemsControlChildrenChildren()
