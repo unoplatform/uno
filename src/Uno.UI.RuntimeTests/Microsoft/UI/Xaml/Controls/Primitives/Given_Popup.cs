@@ -333,6 +333,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			popup.IsOpen = false;
 		}
 
+#if __SKIA__
+		[TestMethod]
+		public void When_Visual_Is_TransformParent_Of_Many_Then_All_Follow_It()
+		{
+			// Every parentless popup transforms against the popup root's visual.
+			var compositor = Microsoft.UI.Composition.Compositor.GetSharedCompositor();
+			var parent = compositor.CreateContainerVisual();
+			var first = compositor.CreateContainerVisual();
+			var second = compositor.CreateContainerVisual();
+			first.TransformParent = parent;
+			second.TransformParent = parent;
+			_ = first.TotalMatrix;
+			_ = second.TotalMatrix;
+
+			parent.Offset = new System.Numerics.Vector3(10, 20, 0);
+
+			Assert.AreEqual(10f, first.TotalMatrix.M41);
+			Assert.AreEqual(10f, second.TotalMatrix.M41);
+
+			second.TransformParent = null;
+			parent.Offset = new System.Numerics.Vector3(30, 20, 0);
+
+			Assert.AreEqual(30f, first.TotalMatrix.M41);
+			Assert.AreEqual(0f, second.TotalMatrix.M41);
+		}
+#endif
+
 		// Popup_Partial.cpp:1012 only places a popup whose DesiredPlacement is not Auto, and CPopupRoot::MeasureOverride
 		// (Popup.cpp:4255) measures the child with an infinite constraint, so a stretched child without content has no size.
 		[TestMethod]
