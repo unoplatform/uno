@@ -57,6 +57,8 @@ Set `Uno.UI.FeatureConfiguration.InputValidation.IsEnabled` to `true` at startup
 
 ### Constraining by visible bounds
 
+`FeatureConfiguration.Popup.UseWindowedPopups` decides whether a popup can get a window of its own on a desktop host: `false` keeps every popup inside its window, `true` allows it where the host supports it, and `null`, the default, leaves it to the host: on for Windows and X11, off for macOS, where it hasn't been validated yet. Set it before the first popup opens. See [Popup](xref:Uno.Controls.Popup).
+
 `FeatureConfiguration.Popup.ConstrainByVisibleBounds` is obsolete and has no effect. As in WinUI, a flyout is placed within the visible bounds of the application view, and a `Popup` is only positioned by its offsets or its `PlacementTarget` and `DesiredPlacement`.
 
 ### Prevent light dismiss on window deactivation

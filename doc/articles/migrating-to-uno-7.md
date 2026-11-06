@@ -927,8 +927,10 @@ re-baseline visual tests:
   `FlyoutShowOptions`, as context menus are, still gets a window, as in WinUI), or
   `FeatureConfiguration.Popup.UseWindowedPopups = false` to keep all of them inside, including `ComboBox` and `ToolTip`. It's off by
   default on macOS, where `true` turns it on. WebAssembly, Android and iOS keep every popup inside the window for now.
-- **Popups and flyouts:** the public `Popup.PopupPanelProperty` and `FlyoutBase.InitializePopupPanel` are removed, with no
-  WinUI equivalent.
+- **Popups and flyouts:** the public `Popup.PopupPanelProperty` and the protected virtual `FlyoutBase.InitializePopupPanel` are
+  removed, with no WinUI equivalent, so a flyout subclass overriding it needs to drop the override. `DesiredPlacement` set on a
+  `ComboBox`'s popup template part no longer affects the drop-down.
+- **`FrameworkElement.Language`** is now implemented, inherits down the tree, and defaults to the app's top language, as in WinUI.
 - **Popups and flyouts:** placement is a port of WinUI's. A `Popup.Child` is measured with
   infinite constraints and arranged at the popup's offsets, and a flyout writes its placement
   into those offsets, so it now keeps a 4 px margin from its target and stays within the

@@ -26,6 +26,7 @@ Some limits apply to a popup with a window of its own:
 - On a monitor with another scale than your window's, its content keeps your window's scale, as in WinUI.
 - On X11, transparency needs a running compositor. Without one, the window is cut to the popup's rectangle: there is no drop shadow, and rounded corners show dark pixels.
 - On X11, the window is override-redirect, so the window manager doesn't know of it. It follows your window's move, focus and minimize, but raising your window without focusing it, or a window manager's own workspace switch that doesn't unmap your window, can leave it out of step until the next focus change.
+- On X11, a press on the popup grabs the pointer until release, as a menu does. The grab is skipped under a managed debugger, because a grab held at a breakpoint locks the desktop. Set the environment variable `UNO_X11_DISABLE_POPUP_GRAB=1` to skip it under a native debugger too.
 - On X11, a popup is dismissed by a press in another app's window because that takes the focus from your window. A press on a desktop that takes no focus doesn't dismiss it.
 - On macOS, the shadow's gutter takes pointer input where it overlaps another app's window. On X11 and Windows it's passed through where possible.
 - Native elements, and drag and drop onto the popup from outside the app, aren't supported in a popup's window on X11.

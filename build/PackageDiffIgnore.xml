@@ -5337,6 +5337,7 @@
 		  <!-- Removed with the WinUI Popup port (paired with the <Properties> entry above). -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.Popup.get_PopupPanelProperty()" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.InitializePopupPanel()" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.PickerFlyoutBase.InitializePopupPanel()" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.Popup.MeasureOverride(Windows.Foundation.Size availableSize)" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.Popup.ArrangeOverride(Windows.Foundation.Size finalSize)" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Popup.OnDataContextChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Removed with the WinUI Popup port; no WinUI equivalent" />

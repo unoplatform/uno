@@ -49,18 +49,18 @@ partial class App
 
 		var argsPairs = ParseArgs(args);
 
-#if HAS_UNO
-		// Off by default on macOS until validated: the runtime tests are what validates it.
-		if (OperatingSystem.IsMacOS())
-		{
-			global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = true;
-		}
-#endif
-
 		var runtimeTestResultFilePath = argsPairs.GetValueOrDefault(
 			"--runtime-tests",
 			// Used to autostart the runtime tests for iOS/Android Runtime tests
 			Environment.GetEnvironmentVariable("UITEST_RUNTIME_AUTOSTART_RESULT_FILE") ?? "");
+
+#if HAS_UNO
+		// Off by default on macOS until validated: the runtime tests are what validates it.
+		if (OperatingSystem.IsMacOS() && !string.IsNullOrEmpty(runtimeTestResultFilePath))
+		{
+			global::Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups = true;
+		}
+#endif
 
 		if (argsPairs.TryGetValue("--runtime-tests-group", out var runtimeTestGroup))
 		{
