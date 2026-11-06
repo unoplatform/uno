@@ -590,6 +590,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
+	/// <summary>Whether this visual's content or anything in its subtree changed since it was last rendered.</summary>
+	internal bool HasPendingRender => (_flags & (VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid)) != 0;
+
 	/// <summary>
 	/// Renders this visual's subtree at its place in the root coordinate space. Damage isn't tracked: the surface repaints whole.
 	/// </summary>

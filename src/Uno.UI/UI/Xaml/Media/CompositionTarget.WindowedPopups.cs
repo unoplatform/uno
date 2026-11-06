@@ -53,7 +53,42 @@ public partial class CompositionTarget
 		private readonly WeakReference<Popup> _popup = new(popup);
 		private (FrameHold frame, RectInt32 bounds, float scale)? _frame;
 
+		private readonly List<Visual> _visuals = new();
+		private readonly List<(Visual visual, Matrix4x4 matrix, float opacity, bool isVisible)> _recordedVisuals = new();
+		private RectInt32 _recordedBounds;
+		private float _recordedScale;
+		private bool _hasRecorded;
+
 		internal IWindowedPopupSite? Site { get; set; }
+
+		internal int RecordedFrameCount { get; private set; }
+
+		// The owner asks for a frame whenever anything in its window changes. Most of those have nothing for this surface.
+		private bool IsRecordingCurrent(RectInt32 bounds, float scale)
+		{
+			if (!_hasRecorded || scale != _recordedScale || !bounds.Equals(_recordedBounds) || _visuals.Count != _recordedVisuals.Count)
+			{
+				return false;
+			}
+
+			for (var i = 0; i < _visuals.Count; i++)
+			{
+				var visual = _visuals[i];
+				var recorded = _recordedVisuals[i];
+
+				// A surface root's own matrix, opacity and visibility invalidate its parent, which it isn't recorded through.
+				if (visual.HasPendingRender
+					|| !ReferenceEquals(visual, recorded.visual)
+					|| visual.TotalMatrix != recorded.matrix
+					|| visual.Opacity != recorded.opacity
+					|| visual.IsVisible != recorded.isVisible)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
 
 		internal void Record(IDrawingFactory factory)
 		{
@@ -64,16 +99,24 @@ public partial class CompositionTarget
 
 			popup.Reposition();
 
-			if (!popup.TryGetWindowedFrame(out var bounds, out var scale, out var visuals))
+			_visuals.Clear();
+			if (!popup.TryGetWindowedFrame(out var bounds, out var scale, _visuals) || IsRecordingCurrent(bounds, scale))
 			{
 				return;
 			}
 
 			var recording = factory.CreateRecording();
-			foreach (var visual in visuals)
+			_recordedVisuals.Clear();
+			foreach (var visual in _visuals)
 			{
+				_recordedVisuals.Add((visual, visual.TotalMatrix, visual.Opacity, visual.IsVisible));
 				visual.RenderOwnSurface(recording);
 			}
+
+			_recordedBounds = bounds;
+			_recordedScale = scale;
+			_hasRecorded = true;
+			RecordedFrameCount++;
 
 			var hold = new FrameHold(recording.Finish());
 			(FrameHold frame, RectInt32 bounds, float scale)? previous;
@@ -89,6 +132,9 @@ public partial class CompositionTarget
 
 		internal void DropFrame()
 		{
+			_hasRecorded = false;
+			_recordedVisuals.Clear();
+
 			(FrameHold frame, RectInt32 bounds, float scale)? previous;
 			lock (_frameGate)
 			{
