@@ -747,6 +747,7 @@ partial class Popup
 		if (m_windowedPopupWindow is { } window)
 		{
 			XamlRoot?.VisualTree.ContentRoot.CompositionTarget.RemoveWindowedPopupSurface(window.Surface);
+			window.Surface.DropFrame();
 		}
 
 		EnsureBridgeClosed();
@@ -766,6 +767,9 @@ partial class Popup
 					}
 				}
 			}
+
+			// It was placed against the monitor.
+			AssociatedFlyout?.PlaceAfterLosingWindow();
 		}
 
 		static void MoveVisualInsideWindow(UIElement element)

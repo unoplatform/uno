@@ -1442,6 +1442,8 @@ partial class FlyoutBase
 		m_lastTargetPoint = m_targetPoint;
 	}
 
+	internal void PlaceAfterLosingWindow() => PerformPlacement(GetPresenterSize());
+
 	private void PerformPlacement(
 		Size presenterSize,
 		double bottomAppBarVerticalCorrection = 0.0,

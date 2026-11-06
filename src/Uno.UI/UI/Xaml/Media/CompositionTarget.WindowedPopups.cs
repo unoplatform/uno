@@ -50,7 +50,8 @@ public partial class CompositionTarget
 	/// </summary>
 	internal sealed class WindowedPopupSurface(Popup popup) : IWindowedPopupContent
 	{
-		private static readonly TimeSpan _firstFrameTimeout = TimeSpan.FromSeconds(2);
+		// Generous, as a popup that times out stays in-window for good: a first frame can be slow on a software renderer.
+		private static readonly TimeSpan _firstFrameTimeout = TimeSpan.FromSeconds(5);
 
 		private readonly Lock _frameGate = new();
 
