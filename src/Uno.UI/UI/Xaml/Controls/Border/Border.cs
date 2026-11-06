@@ -129,6 +129,9 @@ public partial class Border : FrameworkElement
 		set => this.SetValue(ChildTransitionsProperty, value);
 	}
 
+	// Child of border should get the Child transitions of its parent (this border).
+	internal override TransitionCollection GetTransitionsForChildElementNoAddRef(UIElement child) => ChildTransitions;
+
 	// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
 	public static DependencyProperty ChildTransitionsProperty { get; } =
 		DependencyProperty.Register("ChildTransitions", typeof(TransitionCollection), typeof(Border), new FrameworkPropertyMetadata(null));

@@ -158,6 +158,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		set { this.SetValue(ContentTransitionsProperty, value); }
 	}
 
+	// Child of contentpresenter should get the Child transitions of its parent
+	// (this cp). Note that cp will more eagerly unload its elements.
+	internal override TransitionCollection GetTransitionsForChildElementNoAddRef(UIElement child) => ContentTransitions;
+
 	public static DependencyProperty ContentTransitionsProperty { get; } =
 		DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentPresenter), new FrameworkPropertyMetadata(null, OnContentTransitionsChanged));
 
