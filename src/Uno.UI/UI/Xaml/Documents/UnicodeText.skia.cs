@@ -150,8 +150,6 @@ internal readonly partial struct UnicodeText : IParsedText
 			var inlineStart = stringBuilder.Length;
 			stringBuilder.Append(inlineText);
 
-			AppendBoundaries( /* Line */ 2, inlineText, inlineStart, lineOpportunityBreaks);
-
 			var currentFontDetails = inline.FontInfo;
 			int currentScript = 0;
 			for (var i = 0; i < inlineText.Length; i += char.IsSurrogate(inlineText, i) ? 2 : 1)
@@ -219,6 +217,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			_bidiBreaks = [];
 			return;
 		}
+
+		// Line breaking is a document-level operation. Computing boundaries per inline can split a
+		// CRLF pair when character formatting changes between its two code units.
+		AppendBoundaries(/* Line */ 2, _text, 0, lineOpportunityBreaks);
 
 		_bidiBreaks = new List<(int end, FlowDirection direction)>();
 		var embeddingLevels = ArrayPool<byte>.Shared.Rent(_text.Length);
