@@ -12,6 +12,7 @@ using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Threading;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -89,8 +90,19 @@ namespace Microsoft.UI.Xaml
 			{
 				OnLaunched(new LaunchActivatedEventArgs());
 			}
+
+			// After the launch, as the app configures logging as it starts.
+			UnoUISceneDelegate.LogLifeCycle();
+
 			return true;
 		}
+
+		// Implementing this opts the app into the scene life cycle even without a scene manifest.
+		public override UISceneConfiguration GetConfiguration(UIApplication application, UISceneSession connectingSceneSession, UISceneConnectionOptions options) =>
+			UnoUISceneDelegate.GetConfiguration(connectingSceneSession);
+
+		public override bool RespondsToSelector(Selector sel) =>
+			!UnoUISceneDelegate.IsHiddenSelector(sel) && base.RespondsToSelector(sel);
 
 		public override bool ContinueUserActivity(UIApplication application, NSUserActivity userActivity, UIApplicationRestorationHandler completionHandler) =>
 			TryHandleUniversalLinkFromUserActivity(userActivity);

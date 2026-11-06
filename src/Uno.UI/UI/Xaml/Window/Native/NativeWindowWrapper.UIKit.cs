@@ -57,6 +57,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		if (MUXWindow.ContentHostOverride is null)
 		{
 			NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+			UnoUISceneDelegate.SetAppWindow(_nativeWindow);
 		}
 
 		SubscribeBackgroundNotifications();
@@ -79,7 +80,15 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal RootViewController MainController => _mainController;
 
-	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
+	internal void OnNativeVisibilityChanged(bool visible)
+	{
+		// The scene enters the foreground as it connects, before the window is shown: Show() must still raise
+		// the first VisibilityChanged.
+		if (WasShown || !UnoUISceneDelegate.UsesSceneLifecycle)
+		{
+			IsVisible = visible;
+		}
+	}
 
 	internal void OnNativeClosed() => RaiseClosing(); // TODO: Handle closing cancellation when multiwindow is supported #13847
 
@@ -174,10 +183,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	{
 		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
 		{
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
+			ObserveScene(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
+			ObserveScene(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
+			ObserveScene(UIScene.DidActivateNotification, OnActivated);
+			ObserveScene(UIScene.WillDeactivateNotification, OnDeactivated);
 		}
 		else
 		{
@@ -187,6 +196,16 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillResignActiveNotification, OnDeactivated);
 		}
 	}
+
+	private void ObserveScene(NSString name, Action<NSNotification> handler)
+		=> NSNotificationCenter.DefaultCenter.AddObserver(name, notification =>
+		{
+			// Only the scene hosting this window drives it, not another of the app's scenes such as an external display.
+			if (UnoUISceneDelegate.IsNotificationForWindow(notification, _nativeWindow))
+			{
+				handler(notification);
+			}
+		});
 
 	private void OnEnteredBackground(NSNotification notification)
 	{
