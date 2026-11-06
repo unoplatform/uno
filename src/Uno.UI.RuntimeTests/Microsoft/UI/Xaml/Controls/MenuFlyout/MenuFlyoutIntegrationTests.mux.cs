@@ -763,6 +763,8 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
+	// Uno: its "right handed (default)" cases read SPI_GETHANDEDNESS. Other hosts have no such setting, and get the left-handed fallback.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task ValidateShowAtTargetPositionForPen()
 	{
 		await RunOnUIThread(() =>

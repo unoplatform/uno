@@ -842,6 +842,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 		}
 
+#if !WINAPPSDK // Uno only.
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_ShowAsync_UnconstrainedPopup()
@@ -866,6 +867,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Hide();
 			}
 		}
+#endif
 
 		private static async Task ShowDialog(MyContentDialog dialog, string expectedFocusedButtonContent = null)
 		{

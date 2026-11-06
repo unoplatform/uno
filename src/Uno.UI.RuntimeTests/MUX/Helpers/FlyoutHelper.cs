@@ -257,8 +257,12 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			await RunOnUIThread(async () =>
 			{
 				var injector = Windows.UI.Input.Preview.Injection.InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+#if !WINAPPSDK
 				using var pen = injector.GetPen();
 				await Uno.UI.RuntimeTests.Helpers.InjectedPointerHoldExtensions.Hold(pen, center);
+#else
+				throw new NotSupportedException("Needs Uno's injected pen helpers.");
+#endif
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
@@ -278,7 +282,11 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 				throw new InvalidOperationException("Expected exactly one open Popup.");
 			}
 
+#if !WINAPPSDK
 			return TestServices.Utilities.GetPopupOverlayElement(popups[0]);
+#else
+			throw new NotSupportedException("Needs access to the popup's overlay element.");
+#endif
 		}
 
 		public static async Task ValidateOverlayBrush<

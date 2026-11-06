@@ -20,6 +20,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 	[RunsOnUIThread]
 	public class Given_Popup
 	{
+#if WINAPPSDK
+		// WinUI's popup root has no public type: it projects as its base.
+		private const string PopupRootTypeName = "Canvas";
+#else
+		private const string PopupRootTypeName = "PopupRoot";
+#endif
+
 		[TestMethod]
 		public async Task Check_Can_Reach_Main_Visual_Tree()
 		{
@@ -256,7 +263,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			var visualParent = VisualTreeHelper.GetParent(popup.Child);
 
-			Assert.AreEqual("PopupRoot", visualParent.GetType().Name);
+			Assert.AreEqual(PopupRootTypeName, visualParent.GetType().Name);
 
 			// Should not throw
 			popup.IsOpen = false;
@@ -352,7 +359,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				await WindowHelper.WaitForIdle();
 
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual("PopupRoot", VisualTreeHelper.GetParent(content)?.GetType().Name);
+				Assert.AreEqual(PopupRootTypeName, VisualTreeHelper.GetParent(content)?.GetType().Name);
 				Assert.IsTrue(content.IsLoaded);
 				Assert.AreEqual(0, content.ActualWidth);
 				Assert.AreEqual(0, content.ActualHeight);

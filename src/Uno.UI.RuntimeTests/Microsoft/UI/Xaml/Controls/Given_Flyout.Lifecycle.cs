@@ -1,3 +1,4 @@
+#if !WINAPPSDK // Uses Uno internals.
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -379,3 +380,4 @@ public class Given_Flyout_Lifecycle
 		}
 	}
 }
+#endif

@@ -622,6 +622,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var content = new Border { Width = 50, Height = 50 };
 			var flyout = new Flyout { Placement = placement, Content = content, FlyoutPresenterStyle = presenterStyle };
+			var opened = false;
+			flyout.Opened += (_, _) => opened = true;
 
 			TestServices.WindowHelper.WindowContent = new Grid { Children = { target } };
 			await TestServices.WindowHelper.WaitForLoaded(target);
@@ -638,6 +640,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					flyout.ShowAt(target, options);
 				}
 
+				// Opened comes after placement. Until then WinUI keeps the presenter off-screen.
+				await TestServices.WindowHelper.WaitFor(() => opened);
 				await TestServices.WindowHelper.WaitForIdle();
 
 				var presenter = (FrameworkElement)VisualTreeHelper.GetOpenPopupsForXamlRoot(target.XamlRoot)[0].Child;
