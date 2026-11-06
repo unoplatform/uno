@@ -1402,7 +1402,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			return 0;
 		}
-		return line is null ? TrailingCRLFCount(_text, _text.Length) : TrailingCRLFCount(_text, line.Value.end);
+		return GetHardLineBreakLengthEndingAt(_text, line?.end ?? _text.Length);
 	}
 
 	private float GetAlignmentOffsetForLine(Line? line)
@@ -1560,20 +1560,25 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static float AdvanceToPixels(float xAdvance, FontDetails details) => xAdvance * details.TextScale.textScaleX;
 
-	private static int TrailingCRLFCount(string str, int end)
+	private static int GetHardLineBreakLengthEndingAt(string text, int end)
 	{
-		if (str is [.., '\r', '\n'])
-		{
-			return 2;
-		}
-		else if (str[end - 1] == '\r' || str[end - 1] == '\n')
-		{
-			return 1;
-		}
-		else
+		if (end <= 0 || end > text.Length)
 		{
 			return 0;
 		}
+
+		if (end >= 2 && text[end - 2] == '\r' && text[end - 1] == '\n')
+		{
+			return 2;
+		}
+
+		var value = text[end - 1];
+		if (value == '\r' && end < text.Length && text[end] == '\n')
+		{
+			return 0;
+		}
+
+		return value is '\n' or '\v' or '\f' or '\r' or '\u0085' or '\u2028' or '\u2029' ? 1 : 0;
 	}
 
 	private static bool IsLineBreak(string text, int indexAfterLineBreakOpportunity)
