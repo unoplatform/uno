@@ -1140,6 +1140,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		private bool IsResourcesProperty(PropertyInfo propertyInfo)
 			=> propertyInfo.Name == "Resources" && propertyInfo.PropertyType == typeof(ResourceDictionary);
 
+		private string? _pendingBindingSourceResource;
+
 		private void ProcessBindingMarkupNode(object instance, object? rootInstance, XamlMemberDefinition member)
 		{
 			var binding = BuildBindingExpression(instance, rootInstance, member);
@@ -1150,7 +1152,21 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				if (dependencyProperty != null)
 				{
-					provider.SetBindingInternal(dependencyProperty, binding);
+					if (_pendingBindingSourceResource is { } sourceResourceName)
+					{
+						_pendingBindingSourceResource = null;
+
+						// The expression takes the source when it's created, and the resource can only be resolved once the tree is built.
+						_postActions.Enqueue(() =>
+						{
+							binding.Source = ResolveStaticResource(instance, sourceResourceName);
+							provider.SetBindingInternal(dependencyProperty, binding);
+						});
+					}
+					else
+					{
+						provider.SetBindingInternal(dependencyProperty, binding);
+					}
 				}
 				else if (TypeResolver.GetPropertyByName(member.Owner.Type, member.Member.Name) is PropertyInfo propertyInfo)
 				{
@@ -1276,6 +1292,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 					case nameof(Binding.ConverterParameter):
 						binding.ConverterParameter = bindingProperty.Value?.ToString();
+						break;
+
+					case nameof(Binding.Source) when instance is not null
+						&& bindingProperty.Objects.FirstOrDefault() is { Type.Name: "StaticResource" } sourceResource:
+						_pendingBindingSourceResource = sourceResource.Members.FirstOrDefault()?.Value?.ToString();
 						break;
 
 					case nameof(Binding.Converter):
