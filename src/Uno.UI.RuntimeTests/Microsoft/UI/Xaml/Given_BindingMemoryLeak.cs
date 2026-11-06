@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Microsoft.UI;
@@ -22,6 +24,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 	public class Given_BindingMemoryLeak
 	{
+		[TestCleanup]
+		public void Cleanup()
+		{
+			// A failed test must not leave its tree rooted for retries and later tests.
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
 		[TestMethod]
 		public async Task When_xBind_View_Removed_Then_Collected()
 		{
@@ -110,6 +119,115 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			root.Content = null;
 
 			await AssertCollectedAsync(viewRef, vmRef);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_BrushShared_SingleOwner_Removed_Then_Owner_And_ViewModel_Collected()
+		{
+			// A long-lived brush (e.g. a static field) applied to one element at a time must not retain the
+			// last element it was applied to, nor the DataContext it inherited from it.
+			var sharedBrush = new SolidColorBrush(Colors.Red);
+
+			var root = new ContentControl();
+			TestServices.WindowHelper.WindowContent = root;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var (viewRef, vmRef) = CreateSingleOwnerSharedBrushView(root, sharedBrush);
+			await TestServices.WindowHelper.WaitForLoaded((FrameworkElement)root.Content);
+
+			root.Content = null;
+
+			await AssertCollectedAsync(viewRef, vmRef);
+			GC.KeepAlive(sharedBrush);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_TransitionsShared_Removed_Then_ViewModel_Collected()
+		{
+			// A TransitionCollection shared through a Style setter is pushed the owner's DataContext; it must
+			// not retain that DataContext once the owner is gone.
+			var sharedTransitions = new TransitionCollection { new AddDeleteThemeTransition() };
+			var style = new Style(typeof(Border));
+			style.Setters.Add(new Setter(UIElement.TransitionsProperty, sharedTransitions));
+
+			var root = new ContentControl();
+			TestServices.WindowHelper.WindowContent = root;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var (viewRef, vmRef) = CreateStyledView(root, style);
+			await TestServices.WindowHelper.WaitForLoaded((FrameworkElement)root.Content);
+
+			root.Content = null;
+
+			await AssertCollectedAsync(viewRef, vmRef);
+			GC.KeepAlive(sharedTransitions);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_InputScopeShared_Removed_Then_ViewModel_Collected()
+		{
+			// A plain DependencyObject value (no bindings of its own) shared across TextBoxes inherits the
+			// owner's DataContext; it must not retain it once the owner is gone.
+			var sharedScope = new InputScope { Names = { new InputScopeName(InputScopeNameValue.Number) } };
+
+			var root = new ContentControl();
+			TestServices.WindowHelper.WindowContent = root;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var (viewRef, vmRef) = CreateSharedInputScopeView(root, sharedScope);
+			await TestServices.WindowHelper.WaitForLoaded((FrameworkElement)root.Content);
+
+			root.Content = null;
+
+			await AssertCollectedAsync(viewRef, vmRef);
+			GC.KeepAlive(sharedScope);
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		private static (WeakReference viewRef, WeakReference vmRef) CreateSingleOwnerSharedBrushView(ContentControl root, Brush sharedBrush)
+		{
+			var vm = new BindingLeak_ViewModel { Text = "Single owner shared brush test" };
+
+			var owner = new Border { Background = sharedBrush, Width = 50, Height = 50 };
+			var panel = new StackPanel { Width = 100, Height = 100, DataContext = vm };
+			panel.Children.Add(owner);
+
+			root.Content = panel;
+
+			return (new WeakReference(owner), new WeakReference(vm));
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		private static (WeakReference viewRef, WeakReference vmRef) CreateStyledView(ContentControl root, Style style)
+		{
+			var vm = new BindingLeak_ViewModel { Text = "Styled shared value test" };
+
+			var owner = new Border { Style = style, Width = 50, Height = 50 };
+			var panel = new StackPanel { Width = 100, Height = 100 };
+			panel.Children.Add(owner);
+			panel.DataContext = vm;
+
+			root.Content = panel;
+
+			return (new WeakReference(owner), new WeakReference(vm));
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		private static (WeakReference viewRef, WeakReference vmRef) CreateSharedInputScopeView(ContentControl root, InputScope sharedScope)
+		{
+			var vm = new BindingLeak_ViewModel { Text = "Shared input scope test" };
+
+			var owner = new TextBox { InputScope = sharedScope, Width = 50, Height = 50 };
+			var panel = new StackPanel { Width = 100, Height = 100 };
+			panel.Children.Add(owner);
+			panel.DataContext = vm;
+
+			root.Content = panel;
+
+			return (new WeakReference(owner), new WeakReference(vm));
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]

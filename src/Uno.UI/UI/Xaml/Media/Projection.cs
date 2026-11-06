@@ -2,6 +2,7 @@
 using System;
 using System.Numerics;
 using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Media;
 
@@ -19,10 +20,18 @@ public partial class Projection : DependencyObject, IMultiParentShareableDepende
 	{
 	}
 
+	private WeakEventHelper.WeakEventCollection _changedHandlers;
+
 	/// <summary>
-	/// Event raised when any property affecting the projection changes.
+	/// Registers a handler notified when any property affecting the projection changes, without keeping the
+	/// handler's target alive: a projection shared through a Style setter outlives the elements it is applied to.
 	/// </summary>
-	internal event EventHandler Changed;
+	/// <returns>A disposable that keeps the registration alive; dispose it to unregister.</returns>
+	internal IDisposable RegisterChanged(EventHandler handler)
+		=> WeakEventHelper.RegisterEvent(
+			_changedHandlers ??= new(),
+			handler,
+			(h, s, e) => (h as EventHandler)?.Invoke(s, (EventArgs)e));
 
 	/// <summary>
 	/// Gets or sets the UIElement that owns this projection.
@@ -41,11 +50,11 @@ public partial class Projection : DependencyObject, IMultiParentShareableDepende
 	internal virtual Matrix4x4 GetProjectionMatrix(Size elementSize) => Matrix4x4.Identity;
 
 	/// <summary>
-	/// Raises the Changed event.
+	/// Notifies the handlers registered through <see cref="RegisterChanged"/>.
 	/// </summary>
 	private protected void OnPropertyChanged()
 	{
-		Changed?.Invoke(this, EventArgs.Empty);
+		_changedHandlers?.Invoke(this, EventArgs.Empty);
 	}
 }
 #endif
