@@ -29,6 +29,8 @@ This is enforced at **build time** (the `UXAML0006` diagnostic) and at **run tim
 rejected whether or not the prefix is used, so unused `clr-namespace:` declarations must also be
 removed — the only exemption is a prefix listed in `mc:Ignorable` on the root element.
 
+See also: [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7.Libraries#removed-xaml-prefixes).
+
 ### `legacy:ListView` and `legacy:GridView` no longer compile
 
 The XAML generator used to resolve any
@@ -36,6 +38,8 @@ type it could not find in `using:Uno.UI.Controls.Legacy` to the `Microsoft.UI.Xa
 same name, a leftover of the native legacy lists removed in 7.0, so this markup already produced the
 regular controls. Use `ListView` and `GridView` from the default namespace. Types that do exist in that
 namespace are unaffected.
+
+See also: [`Uno.UI.Controls.Legacy.ProgressRing`](xref:Uno.Development.MigratingToUno7.RemovedApis#unouicontrolslegacyprogressring), [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7.Libraries#removed-xaml-prefixes).
 
 ### Binding an attached property whose owner type cannot be found is a build error
 
@@ -45,6 +49,8 @@ resolve, the XAML generator used to bind `Command` by name on the `ListView` its
 markup silently hit an unrelated property of that name, or nothing at all. It now reports
 `UXAML0001`, as it already did for a literal value. Reference the assembly that declares the
 owner type, fix the `using:` namespace, or remove the attribute.
+
+See also: [`ListViewBase.ItemClickCommand`](xref:Uno.Development.MigratingToUno7.RemovedApis#listviewbaseitemclickcommand-and-listviewbasecommand).
 
 ## Relative URIs
 
@@ -104,6 +110,8 @@ Two divergences from WinUI remain here, both deliberate:
   asset path and so carries the assembly prefix a library's own svg assets need; the `ms-resource`
   form resolves only against the application root.
 
+See also: [`bundle://` image scheme removed](xref:Uno.Development.MigratingToUno7.Packages#bundle-image-scheme-removed-iostvos), [Android drawables](xref:Uno.Development.MigratingToUno7.Behavior#android-drawables).
+
 ## Fluent styles and resources
 
 ### The `XamlDefault*` styles are removed
@@ -135,6 +143,8 @@ keyed WinUI equivalent: drop the `BasedOn`, or copy the style.
 - <Style x:Key="MyButton" TargetType="Button" BasedOn="{StaticResource XamlDefaultButton}">
 + <Style x:Key="MyButton" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
 ```
+
+See also: [Native default styles](xref:Uno.Development.MigratingToUno7.RemovedApis#native-default-styles).
 
 ### Styles that WinUI ships in `XamlControlsResources` now come only from there
 
@@ -174,7 +184,17 @@ unaffected, since it resolves the URI internally:
 The `_v2` suffix was an Uno-only artifact of the Fluent V1/V2 split; with V1 removed there is one
 theme-resources dictionary, under the name WinUI itself uses.
 
+See also: [`Uno.UI.FluentTheme.v2` merged](xref:Uno.Development.MigratingToUno7.Packages#unouifluentthemev2-assembly-merged-into-unouifluenttheme), [Fluent Design resource-version types](xref:Uno.Development.MigratingToUno7.RemovedApis#fluent-design-resource-version-types).
+
 ### `ContentDialog`'s light-dismiss overlay
 
 `ContentDialog`'s light-dismiss overlay now uses `SystemControlPageBackgroundMediumAltMediumBrush`,
 matching WinUI, so overriding `ContentDialogLightDismissOverlayBackground` no longer changes it.
+
+## Related pages
+
+- [Libraries and conditional code](xref:Uno.Development.MigratingToUno7.Libraries) for conditional prefixes such as `skia:`.
+- [Removed public APIs](xref:Uno.Development.MigratingToUno7.RemovedApis) for removed types used from XAML.
+- [Packages and Uno Features](xref:Uno.Development.MigratingToUno7.Packages) for the Fluent theme assemblies.
+- [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from an error or symptom to its fix.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.

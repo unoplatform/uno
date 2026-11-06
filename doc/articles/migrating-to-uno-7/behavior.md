@@ -30,6 +30,8 @@ re-baseline visual tests:
 - **Animation timing:** Skia interpolation replaces `CABasicAnimation` — standard easing
   matches; exotic timing may not.
 
+See also: [Rendering is Skia everywhere](xref:Uno.Development.MigratingToUno7.ProjectSetup#rendering-is-skia-everywhere).
+
 ## Rendering backend and drawing libraries
 
 ### Vulkan is the default rendering backend
@@ -52,6 +54,8 @@ flags are no longer available. On Android, use
 `FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = false` before building the host.
 See [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
+See also: [Android head uses the host builder](xref:Uno.Development.MigratingToUno7.AppStartup#android-head-uses-the-host-builder).
+
 ### SkiaSharp 4 is the default
 
 The Uno.Sdk now resolves the whole SkiaSharp package group —
@@ -63,6 +67,8 @@ long-deprecated APIs into errors, most visibly the text APIs that moved from `SK
 `SKFont`. If you pin SkiaSharp packages yourself, move **all** of them — managed and
 native-asset alike — to the same 4.x version, since a managed/native mismatch fails at
 runtime rather than at build time.
+
+See also: [`SkiaSharp.Views.Uno.WinUI`](xref:Uno.Development.MigratingToUno7.Packages#skiasharpviewsunowinui-no-longer-referenced-implicitly), [SkiaSharp and HarfBuzz native assets](xref:Uno.Development.MigratingToUno7.Packages#runtime-hosts-no-longer-carry-skiasharp-or-harfbuzz-native-assets).
 
 ### `GLCanvasElement` subclasses compile against Silk.NET.OpenGL 2.23
 
@@ -78,6 +84,8 @@ so code using those types needs updating — for example, `gl.CullFace` takes a 
 ## Manipulation and gestures
 
 Independently of rendering, manipulation recognition was realigned with WinUI.
+
+See also: [Cross-platform compatibility flags](xref:Uno.Development.MigratingToUno7.FeatureFlags#cross-platform-compatibility-flags).
 
 ### No `ManipulationDelta` immediately after `ManipulationStarted`
 
@@ -107,6 +115,8 @@ tap should handle `Holding` or `RightTapped` instead. To get the earlier behavio
 `true`). That does not bring back the browser's own long-press text selection and callout on the
 WebAssembly host page, which 7.0 turns off. See [Feature flags](xref:Uno.Development.FeatureFlags#touch-and-pen-holds).
 
+See also: [`ListViewBase.ItemClickCommand`](xref:Uno.Development.MigratingToUno7.RemovedApis#listviewbaseitemclickcommand-and-listviewbasecommand).
+
 ## Controls and lists
 
 ### `ContentControl` subclasses without a `ControlTemplate`
@@ -120,6 +130,8 @@ control now renders nothing. Give it a default style with a `Template`, or leave
 
 List selection scrolling was also realigned with WinUI.
 
+See also: [`UserControl` derives from `Control`](xref:Uno.Development.MigratingToUno7.WinUIParity#usercontrol-derives-from-control-not-contentcontrol).
+
 ### A new selection is brought into view only while the list has focus
 
 `ListView` and
@@ -129,6 +141,8 @@ scroll position alone, and a focused list scrolls only as far as needed to show 
 Clicking or keyboard navigation still brings the item into view, since they focus the list.
 In `Multiple` mode only the first selection is brought into view. Call
 `ScrollIntoView(item)` after selecting if you need the old behavior.
+
+See also: [`ListViewBase.ItemClickCommand`](xref:Uno.Development.MigratingToUno7.RemovedApis#listviewbaseitemclickcommand-and-listviewbasecommand).
 
 ## `SystemBackdrop` no longer rewrites your content's backgrounds
 
@@ -157,6 +171,8 @@ content is left exactly as you set it.
   re-resolving on a theme change. They now update correctly.
 - Reading `Background` back after setting a backdrop returns your own brush again.
 
+See also: [`Background` is no longer on `FrameworkElement`](xref:Uno.Development.MigratingToUno7.WinUIParity#background-is-no-longer-on-frameworkelement).
+
 ## Dependency property defaults
 
 Dependency properties registered without a default value now follow WinUI.
@@ -179,6 +195,8 @@ stored rather than rejected with an `InvalidOperationException`, and `ClearValue
 binding that produces `null`, leaves it `null` too. With Debug logging enabled for
 `Microsoft.UI.Xaml.DependencyProperty`, every registration that gets a `null` default is
 listed at startup.
+
+See also: [`DependencyObject` is a class](xref:Uno.Development.MigratingToUno7.WinUIParity#dependencyobject-is-a-class-not-an-interface), [`DependencyPropertyValuePrecedences`](xref:Uno.Development.MigratingToUno7.RemovedApis#dependencypropertyvalueprecedences-members-changed).
 
 ## Authentication on WebAssembly
 
@@ -219,8 +237,20 @@ uses the generated ids changes accordingly: `Resource.Drawable.Assets_logo` beco
 the filename with its extension (for example, `FindResourceId("logo.png")`); `FindResourceId("logo")`
 no longer resolves. XAML and code that load images through `ms-appx:///` URIs or relative paths are unaffected.
 
+See also: [`bundle://` image scheme removed](xref:Uno.Development.MigratingToUno7.Packages#bundle-image-scheme-removed-iostvos).
+
 ### Drawables you add under `Platforms/Android/Resources/drawable` no longer resolve through `ms-appx:///`
 
 A lookup for `ms-appx:///foo.png` now searches for the drawable `foo_png`, not
 `foo`. Move images you load by URI into `Assets` so Uno packages them, or reference the native
 drawable directly (`Resource.Drawable.foo`).
+
+See also: [Relative URIs in XAML](xref:Uno.Development.MigratingToUno7.Xaml#relative-uris).
+
+## Related pages
+
+- [Removed feature flags](xref:Uno.Development.MigratingToUno7.FeatureFlags) if your app set a flag that kept the old behavior.
+- [WinUI API alignment](xref:Uno.Development.MigratingToUno7.WinUIParity) for changes the compiler does report.
+- [App startup, activation and platform state](xref:Uno.Development.MigratingToUno7.AppStartup) for iOS settings and activation.
+- [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from an error or symptom to its fix.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.

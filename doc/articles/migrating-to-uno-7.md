@@ -152,11 +152,11 @@ Rendering now goes through Skia on every target, and Vulkan is the default on An
 
 - Apps that **opted out** of the Skia renderer on mobile by omitting
   `<UnoFeatures>skiarenderer</UnoFeatures>` and relying on native rendering.
-- Apps that used the **native WebAssembly DOM** renderer (`Uno.WinUI.WebAssembly`).
+- Apps that used the **native WebAssembly DOM** renderer (`Uno.WinUI.WebAssembly`). See the [details](xref:Uno.Development.MigratingToUno7.Packages#unowinuiwebassembly-package-removed-and-the-older-unowinuiruntimewebassembly).
 - Code that referenced native rendering types, native element hosting, or native-only
-  `FeatureConfiguration` flags (see below).
-- Apps that still build a **Mac Catalyst** (`net*-maccatalyst`) head.
-- Apps and libraries that still target **.NET 9** (`net9.0-*`).
+  `FeatureConfiguration` flags (see [Removed public APIs](xref:Uno.Development.MigratingToUno7.RemovedApis) and [Removed feature flags](xref:Uno.Development.MigratingToUno7.FeatureFlags)).
+- Apps that still build a **Mac Catalyst** (`net*-maccatalyst`) head. See the [details](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed).
+- Apps and libraries that still target **.NET 9** (`net9.0-*`). See the [details](xref:Uno.Development.MigratingToUno7.ProjectSetup#net-9-is-no-longer-supported).
 
 Apps already running on Skia on every target need only recompile against 7.0 and remove
 native bootstrap/heads.

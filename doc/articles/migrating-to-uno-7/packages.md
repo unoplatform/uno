@@ -34,9 +34,13 @@ Use `Uno.WinUI.Runtime.WebAssembly.Browser`. The UI renders to a canvas; there i
 > alongside the Skia browser head raises the `UNOB0017` build diagnostic. Removing the
 > explicit reference resolves it.
 
+See also: [Native element hosting](xref:Uno.Development.MigratingToUno7.RemovedApis#native-element-hosting), [WebAssembly interop](xref:Uno.Development.MigratingToUno7.RemovedApis#webassembly-interop).
+
 ### `Uno.WinUI.Skia.X11`, `Uno.WinUI.Skia.MacOS`, and `Uno.WinUI.Skia.Linux.FrameBuffer` bootstrapper packages removed
 
 These were empty meta-packages that only redirected to the real head. With the `Uno.SDK`, remove the reference — the matching `Uno.WinUI.Runtime.*` head is referenced implicitly for executable heads. For a hand-rolled (non-`Uno.SDK`) head, replace it with the corresponding `Uno.WinUI.Runtime.<variant>` package.
+
+See also: [The `Uno.Sdk` is required for applications](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-unosdk-is-required-for-applications).
 
 ### `Uno.UI.BindingHelper.Android` assembly removed
 
@@ -50,9 +54,13 @@ The Fluent Design **V1** styles were deleted several releases ago and the assemb
 
 With V1 gone there is a single set of Fluent styles, so the two assemblies were collapsed into one. All the styles ship in `Uno.UI.FluentTheme`; both assemblies come from the `Uno.WinUI` package, so no reference changes. Only a direct reference to the `Uno.UI.FluentTheme.v2` assembly, or to `XamlControlsResourcesV2`, needs updating.
 
+See also: [The Fluent theme-resources dictionary](xref:Uno.Development.MigratingToUno7.Xaml#the-fluent-theme-resources-dictionary-is-now-themeresourcesxaml).
+
 ### `Uno.WinUI.Lottie` package and `Lottie` Uno Feature removed
 
 `AnimatedVisualPlayer`, `LottieVisualSource` and `ThemableLottieVisualSource` are part of `Uno.WinUI`, and the Skottie renderer now comes with the Skia renderer, so Lottie needs no package. Remove any explicit `PackageReference` to `Uno.WinUI.Lottie`; it receives no 7.0 builds. The `Lottie` feature is ignored if still listed: it never added a Lottie package on Windows, so a project that also targets Windows still references [`CommunityToolkit.WinUI.Lottie`](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie) for that target itself, and the build reports [UNOB0034](xref:Build.Solution.error-codes#unob0034-lottie-xaml-on-winappsdk-needs-the-communitytoolkitwinuilottie-package) when it doesn't. See [Lottie](xref:Uno.Features.Lottie).
+
+See also: [Custom `IAnimatedVisualSource` implementations](xref:Uno.Development.MigratingToUno7.RemovedApis#custom-ianimatedvisualsource-implementations), [`ProgressRing` asset flags](xref:Uno.Development.MigratingToUno7.FeatureFlags#progressringprogressringasset-and-determinateprogressringasset).
 
 ### `Uno.UI.Maps` AddIn removed
 
@@ -65,6 +73,8 @@ The package's `lib` folder holds only `netX.0` (the Skia build, used by every ta
 ### Runtime hosts no longer carry SkiaSharp or HarfBuzz native assets
 
 The browser host linked `libSkiaSharp.a` into every WebAssembly head, so a WebGPU-only app shipped about 6 MB of Skia it never used, and every `Uno.WinUI.Runtime.*` host referenced HarfBuzzSharp whichever font provider the app used. The native libraries now come with the head: with the `Uno.Sdk`, nothing changes, because it references the `HarfBuzzSharp.NativeAssets.*` package for each target, and the `SkiaSharp.NativeAssets.*` package when the `Skia` feature is on. Listing `WebGpu` without `Skia` turns `Skia` off, so an app that uses SkiaSharp itself, or links native code against SkiaSharp's native library, lists `Skia;WebGpu`. A head that doesn't use the `Uno.Sdk` adds those `PackageReference`s itself, for every target it builds.
+
+See also: [SkiaSharp 4 is the default](xref:Uno.Development.MigratingToUno7.Behavior#skiasharp-4-is-the-default).
 
 ### `Uno.UI.Toolkit` types moved to the `Uno.UI.*` namespaces
 
@@ -84,6 +94,8 @@ The old name was routinely confused with the separate Uno Toolkit (`Uno.Toolkit.
 ### `Skia` Uno Feature no longer implied on libraries
 
 The renderer is the app's choice, so a library no longer gets the implied `Skia` feature, and a legacy `SkiaRenderer` entry is ignored there. Its package no longer depends on `Uno.WinUI.Composition.Skia` and `Uno.WinUI.Graphics2DSK`, nor through them on SkiaSharp. A library that uses [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), the `SkiaExtensions` conversions or Toolkit Skia controls such as `ShadowContainer` adds `Skia` to `UnoFeatures`; the build reports [UNOB0030](xref:Build.Solution.error-codes#unob0030-the-skiarenderer-uno-feature-is-ignored-in-a-library) while a library still lists `SkiaRenderer`. Apps using the `Uno.Sdk` are unchanged. A project is an app when its project file sets `OutputType` to `Exe` or `WinExe`, or sets `IsUnoHead` to `true`; a target framework where it doesn't, or an `OutputType` set later, for example in `Directory.Build.targets`, is built as a library. A head that doesn't take the `Uno.Sdk` implicit packages, and got `Uno.WinUI.Composition.Skia` only through such a library, references it itself; otherwise it fails at startup with *No drawing backend could be resolved*.
+
+See also: [Which target frameworks should a library keep](xref:Uno.Development.MigratingToUno7.Libraries#which-target-frameworks-should-a-library-keep).
 
 ### `Prism` Uno Feature removed
 
@@ -111,6 +123,8 @@ If *your own* code uses AndroidX, add explicit `PackageReference`s.
 
 The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly. Do **not** add an explicit `PackageReference` to `SkiaSharp.Views.Uno.WinUI`: every published build was compiled against Uno Platform 6.x assemblies that 7.0 no longer ships, so the app throws `FileNotFoundException` from `SkiaSharp.Views.Windows.GlobalStaticResources.Initialize()` at startup.
 
+See also: [SkiaSharp 4 is the default](xref:Uno.Development.MigratingToUno7.Behavior#skiasharp-4-is-the-default).
+
 ### `Microsoft.Windows.Compatibility` no longer referenced implicitly (WebAssembly)
 
 The `Uno.Sdk` added this .NET Framework porting meta-package to every WebAssembly executable, pulling in 56 extra packages — 47% of a blank app's restore graph — including 21 RID-specific native packages for a target that has no RIDs. It arrived as a .NET 5 migration workaround and nothing in Uno Platform uses it. Most of what it provides is Windows-only and throws `PlatformNotSupportedException` in a browser regardless. If *your own* code uses one of its assemblies, add an explicit `PackageReference` to that specific package — the ones that genuinely work in a browser are `System.ServiceModel.*`, `System.ServiceModel.Syndication`, `System.Runtime.Caching`, `System.IO.Packaging`, `System.Configuration.ConfigurationManager`, `System.ComponentModel.Composition`, `System.CodeDom`, `System.Reflection.Context` and `System.Security.Cryptography.Pkcs`/`.Xml` — or reference `Microsoft.Windows.Compatibility` itself. The `WindowsCompatibilityVersion` MSBuild property is removed with it; specify a version on your own `PackageReference`.
@@ -135,15 +149,21 @@ These development-time packages were nominally "excluded" from Release restores 
 
 Windows heads now build against Windows App SDK 2.x, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.4.0 or later from the **Stable release** section — installed. `Uno.WinUI` 7.0 requires `Microsoft.WindowsAppSDK` 2.4.0 or later (and `Microsoft.Windows.SDK.BuildTools` 10.0.28000.2526 or later) for its Windows target frameworks, so a Windows head cannot stay on 1.x: pinning `<WinAppSdkVersion>` to a 1.x version fails restore with `NU1605`. Use 2.4.0 or later.
 
+See also: [Minimum OS versions raised](xref:Uno.Development.MigratingToUno7.ProjectSetup#minimum-os-versions-raised).
+
 ### `Microsoft.Web.WebView2` WebView backend removed (Windows)
 
 `WebView2Aot` is now the only backend. Remove any `Environment.SetEnvironmentVariable("UNO_WEBVIEW2_BACKEND", "microsoft.web.webview2")` call — the variable is still read, but any value other than `webview2aot` now only logs a warning and `WebView2Aot` is used regardless. The `UnoUseWebView2WPF` opt-in is removed with it — it kept the `Microsoft.Web.WebView2.Wpf` reference for the WPF host, which is gone. Set `<UnoDisableWebView2Workarounds>true</UnoDisableWebView2Workarounds>` instead if your own `Microsoft.Web.WebView2` reference needs that assembly (it also turns off the package-alias workaround for `Microsoft.Web.WebView2.Core`).
+
+See also: [`INativeWebViewProvider` moved](xref:Uno.Development.MigratingToUno7.RemovedApis#inativewebviewprovider-moved-to-unowebwebview2core).
 
 ## Build properties and asset schemes
 
 ### `bundle://` image scheme removed (iOS/tvOS)
 
 The native UIKit bundle-resource loader is gone with the native rendering layer. Use `ms-appx:///` assets instead — see [Working with assets](xref:Uno.Features.Assets).
+
+See also: [Relative URIs in XAML](xref:Uno.Development.MigratingToUno7.Xaml#relative-uris), [Retargeted drawables](xref:Uno.Development.MigratingToUno7.Behavior#retargeted-drawables-are-renamed).
 
 ### `UnoDragDropExternalSupport` trimming property removed
 
@@ -152,3 +172,11 @@ It could only trim the native WebAssembly drag-and-drop implementation, which is
 ### `UnoEnableAlcAppSupport` is now a trimming switch (default `false`)
 
 Trimmed builds now stub `Application.HasSecondaryApps` to `false`, dropping the ALC-aware resource resolution that secondary `Application` instances in their own `AssemblyLoadContext` depend on. Set `<UnoEnableAlcAppSupport>true</UnoEnableAlcAppSupport>` if your app hosts other Uno apps in separate ALCs.
+
+## Related pages
+
+- [Namespace, assembly and host renames](xref:Uno.Development.MigratingToUno7.Renames) for the assemblies and namespaces renamed along with the packages.
+- [Project format, target frameworks and OS versions](xref:Uno.Development.MigratingToUno7.ProjectSetup) for target frameworks and the `Uno.Sdk`.
+- [Libraries and conditional code](xref:Uno.Development.MigratingToUno7.Libraries) if you publish a package.
+- [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from an error or symptom to its fix.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.

@@ -58,3 +58,9 @@ Part of [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7). E
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
 for the full Android/iOS/WebAssembly Skia bootstrapping steps.
+
+## Related pages
+
+- [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from an error or symptom to its fix.
+- [Behavior changes to re-test](xref:Uno.Development.MigratingToUno7.Behavior) for what to re-test.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.

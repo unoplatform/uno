@@ -135,3 +135,10 @@ Each row is a literal string to search for across your C#, XAML and MSBuild file
 | `SystemBackdrop` | [`SystemBackdrop`](xref:Uno.Development.MigratingToUno7.Behavior#systembackdrop-no-longer-rewrites-your-contents-backgrounds) |
 | `Resource.Drawable`, `FindResourceId` | [Retargeted drawables](xref:Uno.Development.MigratingToUno7.Behavior#retargeted-drawables-are-renamed) |
 | `WithUnoHelpers`, `WebAuthenticationBroker` | [Authentication on WebAssembly](xref:Uno.Development.MigratingToUno7.Behavior#authentication-on-webassembly) |
+
+## Related pages
+
+- [Full checklist](xref:Uno.Development.MigratingToUno7.Checklist) for every migration task in one list.
+- [Removed public APIs](xref:Uno.Development.MigratingToUno7.RemovedApis) for removed types and members.
+- [Behavior changes to re-test](xref:Uno.Development.MigratingToUno7.Behavior) for what to re-test.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.
