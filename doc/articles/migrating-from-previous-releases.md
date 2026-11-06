@@ -10,8 +10,7 @@ To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.De
 
 Uno Platform 7.0 is the Skia-unification major release: Skia is the rendering engine on every
 target, the native Android, iOS/UIKit and WebAssembly DOM renderers are retired, and the public
-API surface is realigned with WinUI. It carries the breaking changes deferred since 2022, so
-plan for a recompile of every Uno-dependent library rather than a drop-in package bump.
+API surface is realigned with WinUI.
 
 **[Follow the "Migrating to Uno Platform 7.0" guide](xref:Uno.Development.MigratingToUno7)**
 for the upgrade steps. It links to the removed APIs, type-hierarchy changes, behavioral changes and the full migration checklist.
