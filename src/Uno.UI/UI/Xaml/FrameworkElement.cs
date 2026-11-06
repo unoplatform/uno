@@ -142,6 +142,19 @@ namespace Microsoft.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.Inherits));
 
+		// MUX Reference xcpcore.cpp: the default is the app's top language.
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+		{
+			if (property == LanguageProperty)
+			{
+				var languages = global::Windows.Globalization.ApplicationLanguages.Languages;
+				defaultValue = languages.Count > 0 ? languages[0] : "en-US";
+				return true;
+			}
+
+			return base.GetDefaultValue2(property, out defaultValue);
+		}
+
 		#region FlowDirection Dependency Property
 #if !SUPPORTS_RTL
 		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
