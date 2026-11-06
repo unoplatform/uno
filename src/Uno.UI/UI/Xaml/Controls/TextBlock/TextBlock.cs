@@ -218,6 +218,11 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateHyperlinks(removed, inserted);
 			}
 
+			if (!_skipInlinesChangedTextSetter && _inlines is { Count: > 0 })
+			{
+				_hasComplexContent = true;
+			}
+
 			OnInlinesChangedPartial();
 			InvalidateTextBlock();
 		}
@@ -361,6 +366,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected virtual void OnTextChanged(string oldValue, string newValue)
 		{
+			_hasComplexContent = false;
 			UpdateInlines(newValue);
 
 #if __SKIA__
@@ -1461,11 +1467,6 @@ namespace Microsoft.UI.Xaml.Controls
 			AreAllAncestorsVisible();
 
 		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
-		private bool IsTextTrimmable =>
-			TextTrimming != TextTrimming.None ||
-			MaxLines != 0;
-
-		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
 		partial void UpdateIsTextTrimmed();
 
 		// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
@@ -1481,7 +1482,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private Action? _selectionHighlightColorChanged;
 		private IDisposable? _selectionHighlightBrushChangedSubscription;
 		private readonly VirtualKeyModifiers _platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
-		private Size _lastInlinesArrangeWithPadding;
+		private double _lastInlinesArrangeWidth;
+
+		// FastPathOptOutConditions::HasComplexContent: Inlines were changed directly, not through Text.
+		private bool _hasComplexContent;
 		private readonly Dictionary<TextHighlighter, IDisposable> _textHighlighterDisposables = new();
 
 		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
@@ -1813,7 +1817,7 @@ namespace Microsoft.UI.Xaml.Controls
 				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
 			}
 
-			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
+			_lastInlinesArrangeWidth = arrangedSize.Width;
 
 			var result = base.ArrangeOverride(finalSize);
 			UpdateIsTextTrimmed();
@@ -2088,10 +2092,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void UpdateIsTextTrimmed()
 		{
-			IsTextTrimmed = IsTextTrimmable && (
-				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
-				_lastInlinesArrangeWithPadding.Height > ActualHeight
-			);
+			// CTextBlock::ResolveTextMode: only plain text without Clip or CharacterSpacing goes through DWrite.
+			var usesDWriteLayout = !_hasComplexContent && CharacterSpacing == 0 && TextTrimming != TextTrimming.Clip;
+
+			IsTextTrimmed = ParsedText is UnicodeText text && (usesDWriteLayout
+				? text.IsLastLineTrimmed
+				: text.HasTrimmedLine || (TextTrimming == TextTrimming.Clip && _textLayoutWidth < (GetUseLayoutRounding() ? LayoutRound(_lastInlinesArrangeWidth) : _lastInlinesArrangeWidth)));
 		}
 
 		/// <summary>
