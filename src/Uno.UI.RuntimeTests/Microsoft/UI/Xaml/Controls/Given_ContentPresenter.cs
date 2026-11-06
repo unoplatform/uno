@@ -26,6 +26,85 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public partial class Given_ContentPresenter
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26081")]
+	public async Task When_UIElement_Content_Replaced_And_Unloaded_Runs_Layout()
+	{
+		var previous = new Border { Width = 50, Height = 20 };
+		var SUT = new ContentPresenter { Content = previous };
+		await UITestHelper.Load(SUT);
+
+		previous.Unloaded += (_, _) => SUT.UpdateLayout();
+		SUT.InvalidateMeasure();
+
+		var content = new Border { Width = 60, Height = 20 };
+		SUT.Content = content;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(SUT));
+		Assert.AreEqual(content, VisualTreeHelper.GetChild(SUT, 0));
+		Assert.AreEqual(60, content.ActualWidth);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26081")]
+	public void When_UIElement_Content_And_Not_In_Live_Tree_Then_Parented_By_Measure()
+	{
+		var content = new Border { Width = 50, Height = 20 };
+		var SUT = new ContentPresenter { Content = content };
+
+		Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(SUT));
+
+		SUT.Measure(new Size(100, 100));
+
+		Assert.AreEqual(content, VisualTreeHelper.GetChild(SUT, 0));
+		Assert.AreEqual(50, SUT.DesiredSize.Width);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26081")]
+	public async Task When_UIElement_Content_Under_Collapsed_Ancestor_Then_Presented_Once_Visible()
+	{
+		var SUT = new ContentPresenter();
+		var host = new Border { Child = SUT };
+		await UITestHelper.Load(host);
+
+		host.Visibility = Visibility.Collapsed;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var content = new Border { Width = 50, Height = 20 };
+		SUT.Content = content;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		host.Visibility = Visibility.Visible;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(content, VisualTreeHelper.GetChild(SUT, 0));
+		Assert.AreEqual(50, content.ActualWidth);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26081")]
+	[DataRow(true)]
+	[DataRow(false)]
+	public async Task When_UIElement_Content_Shared_With_Presenter_Under_Collapsed_Ancestor_Then_Visible_Presenter_Wins(bool hiddenSetLast)
+	{
+		var visible = new ContentPresenter();
+		var hidden = new ContentPresenter();
+		var root = new StackPanel { Children = { visible, new Border { Child = hidden } } };
+		await UITestHelper.Load(root);
+
+		((FrameworkElement)root.Children[1]).Visibility = Visibility.Collapsed;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var content = new Border { Width = 50, Height = 20 };
+		(hiddenSetLast ? visible : hidden).Content = content;
+		(hiddenSetLast ? hidden : visible).Content = content;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(visible, VisualTreeHelper.GetParent(content));
+		Assert.AreEqual(50, content.ActualWidth);
+	}
+	[TestMethod]
 	public async Task When_Padding_Set_In_SizeChanged()
 	{
 		var SUT = new ContentPresenter()

@@ -442,9 +442,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				rootItem = new MeasureCountingElement(50);
 				parentItem = new MeasureCountingElement(60);
 				lastItem = new MeasureCountingElement(500);
-				SetItemContent((BreadcrumbBarItem)repeater.TryGetElement(1), rootItem, isLastItem: false);
-				SetItemContent((BreadcrumbBarItem)repeater.TryGetElement(2), parentItem, isLastItem: false);
-				SetItemContent((BreadcrumbBarItem)repeater.TryGetElement(3), lastItem, isLastItem: true);
+				((BreadcrumbBarItem)repeater.TryGetElement(1)).Content = rootItem;
+				((BreadcrumbBarItem)repeater.TryGetElement(2)).Content = parentItem;
+				((BreadcrumbBarItem)repeater.TryGetElement(3)).Content = lastItem;
 				Content.UpdateLayout();
 				Verify.IsGreaterThan(lastItem.MeasureCount, 0, "The content must be part of the layout.");
 
@@ -831,7 +831,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				ellipsis.Width = 0;
 				firstItem.Width = 10;
 				lastItem.Width = 0;
-				SetItemContent(oversizedItem, new MeasureCountingElement(500, 20), isLastItem: false);
+				oversizedItem.ContentTemplate = null;
+				oversizedItem.Content = new MeasureCountingElement(500, 20);
 				Content.UpdateLayout();
 
 				Verify.IsTrue(firstItem.DesiredSize.Width + oversizedItem.DesiredSize.Width <= 200);
@@ -871,7 +872,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				var lastItem = (BreadcrumbBarItem)repeater.TryGetElement(2);
 				var content = new MeasureCountingElement(500, 8);
 				ancestor.Width = 40;
-				SetItemContent(lastItem, content, isLastItem: true);
+				lastItem.ContentTemplate = null;
+				lastItem.Content = content;
 				Content.UpdateLayout();
 
 				double measuredWidth = content.DesiredSize.Width;
@@ -891,7 +893,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				var freshRepeater = (ItemsRepeater)freshBreadcrumb.FindVisualChildByName("PART_ItemsRepeater");
 				((BreadcrumbBarItem)freshRepeater.TryGetElement(1)).Width = 40;
 				var freshLastItem = (BreadcrumbBarItem)freshRepeater.TryGetElement(2);
-				SetItemContent(freshLastItem, new MeasureCountingElement(measuredWidth, 8), isLastItem: true);
+				freshLastItem.ContentTemplate = null;
+				freshLastItem.Content = new MeasureCountingElement(measuredWidth, 8);
 				Content.UpdateLayout();
 
 				Verify.AreEqual(LayoutInformation.GetLayoutSlot((FrameworkElement)freshRepeater.TryGetElement(0)).Width,
@@ -936,15 +939,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Verify.AreEqual(freshBreadcrumb.DesiredSize, breadcrumb.DesiredSize,
 					"Cached and fresh Viewbox content should have the same layout.");
 			});
-		}
-
-		// The template binds Content to two presenters, and a UIElement can only have one parent,
-		// so assign directly to the presenter that is shown.
-		private static void SetItemContent(BreadcrumbBarItem item, UIElement content, bool isLastItem)
-		{
-			var presenter = (ContentPresenter)item.FindVisualChildByName(isLastItem ? "PART_LastItemContentPresenter" : "PART_ItemContentPresenter");
-			presenter.ContentTemplate = null;
-			presenter.Content = content;
 		}
 
 		private static BreadcrumbBar CreateScalingBreadcrumb(double size)
