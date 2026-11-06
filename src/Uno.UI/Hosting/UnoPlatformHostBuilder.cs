@@ -109,6 +109,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	// explicitly. Resolved by assembly-qualified name so no assembly reference is required. Every backend and add-in
 	// assembly has one public static *Backend entry class, and each default comes from the same Create* factory an
 	// app registers explicitly, so the two paths can't diverge.
+	private const string SkiaAssemblyName = "Uno.UI.Composition.Skia";
 	private const string SkiaBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackend, Uno.UI.Composition.Skia";
 	private const string WebGpuBackendTypeName = "Uno.UI.Composition.WebGpu.WebGpuBackend, Uno.UI.Composition.WebGpu";
 	private const string ManagedBackendTypeName = "Uno.UI.Composition.Managed.ManagedBackend, Uno.UI.Composition.Managed";
@@ -171,6 +172,23 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		}
 	}
 
+	// A head that registered only non-Skia backends (e.g. WebGPU alone) is SkiaSharp-free, even if a package such as
+	// Hot Design brings the Skia assembly along without its native library. No backend yet means no such choice.
+	internal static bool AllowsSkiaDefaults(IReadOnlyList<Drawing.IGraphicsProvider> backends)
+	{
+		foreach (var backend in backends)
+		{
+			if (backend.GetType().Assembly.GetName().Name == SkiaAssemblyName)
+			{
+				return true;
+			}
+		}
+
+		return backends.Count == 0;
+	}
+
+	private static bool SkiaDefaultsAllowed => AllowsSkiaDefaults(Drawing.GraphicsRegistry.Backends);
+
 	private static void TryLightUpGraphicsBackend()
 	{
 		// A head that declared its own backend (e.g. WebGPU) owns this seam — even while it initializes asynchronously —
@@ -211,10 +229,12 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		// The managed engine is the fallback for a SkiaSharp-free head. It reads the system fonts, so it needs a
-		// bundled default passed in where those cannot be enumerated (iOS, WASM) - such a head registers its own.
-		var fontProvider = InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
-				?.GetMethod("CreateFontProvider", FactoryFlags, Type.EmptyTypes))
+		// The managed engine is the fallback for a SkiaSharp-free head. It reads the system fonts; where those cannot
+		// be enumerated (iOS, WASM), text stays blank until the app's default font loads.
+		var fontProvider = (SkiaDefaultsAllowed
+				? InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+					?.GetMethod("CreateFontProvider", FactoryFlags, Type.EmptyTypes))
+				: null)
 			?? InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateFontProvider", FactoryFlags, Type.EmptyTypes));
 		if (fontProvider is not null)
@@ -230,8 +250,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var decoder = InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
-				?.GetMethod("CreateImageDecoder", FactoryFlags, Type.EmptyTypes))
+		var decoder = (SkiaDefaultsAllowed
+				? InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+					?.GetMethod("CreateImageDecoder", FactoryFlags, Type.EmptyTypes))
+				: null)
 			?? InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateImageDecoder", FactoryFlags, Type.EmptyTypes));
 		if (decoder is not null)
@@ -247,8 +269,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var geometryFactory = InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
-				?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes))
+		var geometryFactory = (SkiaDefaultsAllowed
+				? InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+					?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes))
+				: null)
 			?? InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes));
 		if (geometryFactory is not null)
@@ -264,8 +288,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var renderer = InvokeFactory<Drawing.ISvgRenderer>(static () => Type.GetType(SvgAddInBackendTypeName, throwOnError: false)
-				?.GetMethod("CreateSvgRenderer", FactoryFlags, Type.EmptyTypes))
+		var renderer = (SkiaDefaultsAllowed
+				? InvokeFactory<Drawing.ISvgRenderer>(static () => Type.GetType(SvgAddInBackendTypeName, throwOnError: false)
+					?.GetMethod("CreateSvgRenderer", FactoryFlags, Type.EmptyTypes))
+				: null)
 			?? InvokeFactory<Drawing.ISvgRenderer>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateSvgRenderer", FactoryFlags, Type.EmptyTypes));
 		if (renderer is not null)
@@ -281,8 +307,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var renderer = InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
-				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes))
+		var renderer = (SkiaDefaultsAllowed
+				? InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+					?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes))
+				: null)
 			?? InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes));
 		if (renderer is not null)
