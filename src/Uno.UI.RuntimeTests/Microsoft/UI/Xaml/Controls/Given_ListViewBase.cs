@@ -1282,28 +1282,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			selected.Add(items[1]);
 			await AssertSelected();
 
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
 
 			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
 			await AssertSelected();
 
-			await KeyboardHelper.Down(list);
-			await KeyboardHelper.Down(list);
+			await KeyboardHelper.Down();
+			await KeyboardHelper.Down();
 
 			await AssertSelected();
 
-			await KeyboardHelper.Space(list);
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			await KeyboardHelper.Space();
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
 
 			selected.AddRange(items.Where((_, i) => i is >= 5 and <= 8).ToList());
 			await AssertSelected();
 
-			await KeyboardHelper.Down(list);
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
+			await KeyboardHelper.Down();
+			RaiseKeyDownOnFocused(list, VirtualKey.Up, VirtualKeyModifiers.Shift);
+			RaiseKeyDownOnFocused(list, VirtualKey.Up, VirtualKeyModifiers.Shift);
 
 			items.Where((_, i) => i is >= 7 and <= 8).ForEach(item => selected.Remove(item));
 			await AssertSelected();
@@ -1424,44 +1424,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			selected.Add(items[1]);
 			await AssertSelected();
 
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
 
 			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
 			await AssertSelected();
 
-			await KeyboardHelper.Down(list);
+			await KeyboardHelper.Down();
 
 			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
 			selected.Add(items[4]);
 			await AssertSelected();
 
-			await KeyboardHelper.Down(list);
+			await KeyboardHelper.Down();
 
 			selected.Remove(items[4]);
 			selected.Add(items[5]);
 			await AssertSelected();
 
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Control));
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Control);
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Control);
+			RaiseKeyDownOnFocused(list, VirtualKey.Space, VirtualKeyModifiers.Control);
 
 			selected.Add(items[7]);
 			await AssertSelected();
 
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Shift));
+			RaiseKeyDownOnFocused(list, VirtualKey.Up, VirtualKeyModifiers.Control);
+			RaiseKeyDownOnFocused(list, VirtualKey.Up, VirtualKeyModifiers.Control);
+			RaiseKeyDownOnFocused(list, VirtualKey.Up, VirtualKeyModifiers.Control);
+			RaiseKeyDownOnFocused(list, VirtualKey.Space, VirtualKeyModifiers.Shift);
 
 			selected.AddRange(items.Where((_, i) => i is >= 4 and < 7 && i != 5).ToList());
 			await AssertSelected();
 
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Shift));
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Control);
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Control);
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Control);
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Control);
+			RaiseKeyDownOnFocused(list, VirtualKey.Space, VirtualKeyModifiers.Shift);
 
 			items.Where((_, i) => i is >= 4 and < 7).ForEach(item => selected.Remove(item));
 			selected.Add(items[8]);
@@ -1502,8 +1502,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			selected.Add(items[1]);
 			await AssertSelected();
 
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
 
 			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
 			await AssertSelected();
@@ -1513,7 +1513,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			selected.Add(items[6]);
 			await AssertSelected();
 
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
 
 			selected.Remove(items[6]);
 			selected.AddRange(items.Where((_, i) => i is >= 1 and <= 4).ToList());
@@ -1560,8 +1560,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			selected.Add(items[1]);
 			await AssertSelected();
 
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
-			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
+			RaiseKeyDownOnFocused(list, VirtualKey.Down, VirtualKeyModifiers.Shift);
 
 			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
 			await AssertSelected();
@@ -2865,17 +2865,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(items[0], list.ItemFromContainer(items[0]));
 				Assert.AreEqual(0, list.IndexFromContainer(items[0]));
 
-				// Test added container/index/item
-#if HAS_UNO
-				// UWP returns null/-1 here, which differs from "the same"
-				// situation in case of collection change. For simplicity
-				// we return the correct values here too. It should not have
-				// any adverse impact.
-				Assert.AreEqual(addedItem, list.ContainerFromItem(addedItem));
-				Assert.AreEqual(addedItem, list.ContainerFromIndex(1));
-				Assert.AreEqual(addedItem, list.ItemFromContainer(addedItem));
-				Assert.AreEqual(1, list.IndexFromContainer(addedItem));
-#endif
+				// Test added container/index/item: the panel doesn't know about it yet.
+				Assert.IsNull(list.ContainerFromItem(addedItem));
+				Assert.IsNull(list.ItemFromContainer(addedItem));
+				Assert.AreEqual(-1, list.IndexFromContainer(addedItem));
 
 				// Test container/index/item right after added
 				Assert.AreEqual(items[2], list.ContainerFromItem(items[2]));
@@ -2988,17 +2981,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNull(list.ItemFromContainer(items[1]));
 				Assert.AreEqual(-1, list.IndexFromContainer(items[1]));
 
-				// Test container/index/item from new source
-#if HAS_UNO
-				// UWP returns null/-1 here, which differs from "the same"
-				// situation in case of collection change. For simplicity
-				// we return the correct values here too. It should not have
-				// any adverse impact.
-				Assert.AreEqual(newItems[1], list.ContainerFromItem(newItems[1]));
-				Assert.AreEqual(newItems[1], list.ContainerFromIndex(1));
-				Assert.AreEqual(newItems[1], list.ItemFromContainer(newItems[1]));
-				Assert.AreEqual(1, list.IndexFromContainer(newItems[1]));
-#endif
+				// Test container/index/item from new source: the panel doesn't know about them yet.
+				Assert.IsNull(list.ContainerFromItem(newItems[1]));
+				Assert.IsNull(list.ContainerFromIndex(1));
+				Assert.IsNull(list.ItemFromContainer(newItems[1]));
+				Assert.AreEqual(-1, list.IndexFromContainer(newItems[1]));
 			};
 
 			list.ItemsSource = newItems;
@@ -4048,6 +4035,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			item1.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle(); // ListViewBase learns which item has focus from its async GotFocus.
 			var success = FocusManager.TryMoveFocus(
 				FocusNavigationDirection.Next,
 				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
@@ -4085,6 +4073,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			item2.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle(); // ListViewBase learns which item has focus from its async GotFocus.
 			var success = FocusManager.TryMoveFocus(
 				FocusNavigationDirection.Previous,
 				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
@@ -6308,6 +6297,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public partial class Given_ListViewBase // helpers
 	{
+		private static void RaiseKeyDownOnFocused(ListViewBase list, VirtualKey key, VirtualKeyModifiers modifiers)
+		{
+			var focused = (UIElement)FocusManager.GetFocusedElement(list.XamlRoot);
+			focused.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(focused, key, modifiers));
+		}
+
 		private static async Task FocusContainer(ListViewBase lv, int index)
 		{
 			var container = (Control)lv.ContainerFromIndex(index);
