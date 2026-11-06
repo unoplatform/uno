@@ -132,9 +132,6 @@ public class Given_Popup_Windowed
 		}
 	}
 
-	[TestMethod]
-	public void When_No_Language_Set_Then_Empty()
-		=> Assert.AreEqual(string.Empty, new Border().Language);
 
 	[TestMethod]
 	public async Task When_Owner_Repaints_Then_Unchanged_Popup_Is_Not_Rerecorded()
@@ -157,7 +154,7 @@ public class Given_Popup_Windowed
 			for (var i = 0; i < 5; i++)
 			{
 				other.Opacity = i % 2 == 0 ? 0.5 : 1;
-				await TestServices.WindowHelper.WaitForIdle();
+				await UITestHelper.WaitForRender();
 			}
 
 			Assert.AreEqual(before, popup.WindowedPopupRecordedFrameCount);
@@ -169,6 +166,110 @@ public class Given_Popup_Windowed
 		{
 			popup.IsOpen = false;
 			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Ancestor_Opacity_Changes_Then_Popup_Is_Rerecorded()
+	{
+		var content = CreateContent();
+		var grid = new Grid { Width = 100, Height = 100 };
+		var popup = new Popup { Child = content, ShouldConstrainToRootBounds = false };
+		grid.Children.Add(popup);
+		await UITestHelper.Load(grid);
+		popup.IsOpen = true;
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			await WaitForWindow(popup);
+			await UITestHelper.WaitForRender();
+
+			var before = popup.WindowedPopupRecordedFrameCount;
+			grid.Opacity = 0.2;
+
+			await UITestHelper.WaitFor(() => popup.WindowedPopupRecordedFrameCount > before, timeoutMS: 3000);
+		}
+		finally
+		{
+			popup.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+	private static async Task<IWindowedPopupSite> OpenAndCloseUnreferencedPopup(XamlRoot xamlRoot)
+	{
+		var content = CreateContent();
+		var popup = CreatePopup(content, xamlRoot, 10, 10);
+		popup.IsOpen = true;
+		await TestServices.WindowHelper.WaitForLoaded(content);
+		var site = await WaitForWindow(popup);
+		popup.IsOpen = false;
+		await TestServices.WindowHelper.WaitForIdle();
+		return site;
+	}
+
+	[TestMethod]
+	public async Task When_Popup_Is_Collected_Then_Its_Window_Is_Released()
+	{
+		var target = new Button { Content = "Target" };
+		await UITestHelper.Load(target);
+
+		var site = await OpenAndCloseUnreferencedPopup(target.XamlRoot!);
+		Assert.IsFalse(site.IsClosed);
+
+		await UITestHelper.WaitFor(
+			() =>
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				return site.IsClosed;
+			},
+			timeoutMS: 5000);
+	}
+
+	[TestMethod]
+	public async Task When_Window_Never_Shows_Then_Popup_Moves_In_Window_And_Stays_There()
+	{
+		var real = Popup.WindowedPopupExtensionForTesting!;
+		var site = new StalledSite();
+		var extension = new FailingExtension(real, site);
+		Popup.WindowedPopupExtensionForTesting = extension;
+		try
+		{
+			var target = new Button { Content = "Target" };
+			await UITestHelper.Load(target);
+
+			var content = CreateContent();
+			var popup = CreatePopup(content, target.XamlRoot!, 10, 10);
+			var closed = false;
+			popup.Closed += (_, _) => closed = true;
+			popup.IsOpen = true;
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			Assert.IsTrue(popup.IsWindowed);
+
+			await UITestHelper.WaitFor(() => !popup.IsWindowed, timeoutMS: 5000);
+
+			Assert.IsTrue(popup.IsOpen, "The popup should stay open, inside its window.");
+			Assert.IsFalse(closed);
+			Assert.IsTrue(site.IsClosed, "The window that never showed should be gone.");
+			Assert.IsFalse(content.Visual.HasOwnSurface);
+
+			popup.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(closed);
+
+			popup.IsOpen = true;
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			Assert.IsFalse(popup.IsWindowed, "Reopening shouldn't wait for a window again.");
+			Assert.AreEqual(1, extension.CreatedSites);
+
+			popup.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			Popup.WindowedPopupExtensionForTesting = real;
 		}
 	}
 
@@ -646,9 +747,41 @@ public class Given_Popup_Windowed
 		}
 	}
 
-	// A host's site that fails to set up its graphics tells its content it closed, then gives up.
-	private sealed class FailingExtension(IWindowedPopupExtension inner) : IWindowedPopupExtension
+	// A window whose render thread hung: it takes every request and never presents.
+	private sealed class StalledSite : IWindowedPopupSite
 	{
+		public bool IsClosed { get; private set; }
+
+		public bool HasFocus => false;
+
+		public bool HasPointerCapture => false;
+
+		public RectInt32 ScreenBounds => default;
+
+		public bool IsVisible => false;
+
+		public bool IsShown => false;
+
+		public void MoveAndResize(RectInt32 rect, RectInt32 contentBounds) { }
+
+		public void Show() { }
+
+		public void Hide() { }
+
+		public void SetPointerCapture() { }
+
+		public void ReleasePointerCapture() { }
+
+		public void InvalidateRender() { }
+
+		public void Dispose() => IsClosed = true;
+	}
+
+	// A host's site that fails to set up its graphics tells its content it closed, then gives up.
+	private sealed class FailingExtension(IWindowedPopupExtension inner, IWindowedPopupSite? site = null) : IWindowedPopupExtension
+	{
+		public int CreatedSites { get; private set; }
+
 		public bool IsRightHanded => inner.IsRightHanded;
 
 		public bool IsEnabledByDefault => true;
@@ -657,6 +790,12 @@ public class Given_Popup_Windowed
 
 		public IWindowedPopupSite? TryCreateSite(XamlRoot xamlRoot, IWindowedPopupContent content)
 		{
+			if (site is not null)
+			{
+				CreatedSites++;
+				return site;
+			}
+
 			content.OnSiteClosed();
 			return null;
 		}

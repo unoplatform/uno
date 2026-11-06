@@ -52,6 +52,42 @@ public class Given_MenuFlyout_Windowing
 		return height;
 	}
 
+	// FlyoutBase::ShowAtWithOptions forwards the flow direction to the popup. MenuFlyout::ShowAt goes straight to ShowAtCore.
+	[TestMethod]
+	[DataRow(false, FlowDirection.LeftToRight)]
+	[DataRow(true, FlowDirection.RightToLeft)]
+	public async Task When_Target_RightToLeft_Then_Popup_Follows_Only_With_Options(bool withPoint, FlowDirection expected)
+	{
+		var target = new Button { Content = "Target" };
+		var root = new Grid { FlowDirection = FlowDirection.RightToLeft };
+		root.Children.Add(target);
+		await UITestHelper.Load(root);
+
+		var flyout = new MenuFlyout();
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
+		var opened = false;
+		flyout.Opened += (_, _) => opened = true;
+		if (withPoint)
+		{
+			flyout.ShowAt(target, new Point(5, 5));
+		}
+		else
+		{
+			flyout.ShowAt(target);
+		}
+
+		await TestServices.WindowHelper.WaitFor(() => opened);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(target.XamlRoot)[0];
+		var actual = popup.FlowDirection;
+
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(expected, actual);
+	}
+
 	[TestMethod]
 	public async Task When_Constrained_And_ShowAt_Without_Options_Then_Stays_In_Root()
 	{

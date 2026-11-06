@@ -33,6 +33,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public partial class Given_FrameworkElement
 	{
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_No_Language_Set_Then_Top_App_Language()
+			=> Assert.AreEqual(global::Windows.Globalization.ApplicationLanguages.Languages[0], new Border().Language);
+
 #if __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]

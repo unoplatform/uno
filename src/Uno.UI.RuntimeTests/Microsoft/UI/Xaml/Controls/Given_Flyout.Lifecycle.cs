@@ -280,7 +280,7 @@ public class Given_Flyout_Lifecycle
 				await TestServices.WindowHelper.WaitForIdle();
 
 				Assert.AreEqual(FlowDirection.RightToLeft, flyout.GetPresenter().FlowDirection);
-				Assert.AreEqual(FlowDirection.RightToLeft, flyout._popup.FlowDirection);
+				Assert.AreEqual(flyout is MenuFlyout ? FlowDirection.LeftToRight : FlowDirection.RightToLeft, flyout._popup.FlowDirection); // See Given_MenuFlyout_Windowing.
 			}
 			finally
 			{
