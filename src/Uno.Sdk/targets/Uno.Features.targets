@@ -45,6 +45,13 @@
 			   Text="The Reactor Uno Feature is not supported on the WinAppSDK target ($(TargetFramework)): Reactor on Uno Platform runs on the Uno Platform targets only. Remove the Windows target framework from this project. (See https://aka.platform.uno/UNOB0031)" />
 	</Target>
 
+	<!-- Hot Design doesn't support Reactor apps yet, so a Reactor app's Debug build leaves Uno.UI.HotDesign out: its
+	     source generator and its dependencies (Toolkit, Themes, MVVM). Hot Reload and the App MCP don't need it.
+	     A project that sets UnoDisableHotDesign to false keeps it. -->
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';reactor;')) and '$(UnoDisableHotDesign)' == ''">
+		<UnoDisableHotDesign>true</UnoDisableHotDesign>
+	</PropertyGroup>
+
 	<Target Name="_UnoWarnPrismFeatureRemoved"
 			BeforeTargets="CoreCompile"
 			Condition="'$(DesignTimeBuild)' != 'true' and '$(_UnoPrismFeatureRemoved)' == 'true'">
