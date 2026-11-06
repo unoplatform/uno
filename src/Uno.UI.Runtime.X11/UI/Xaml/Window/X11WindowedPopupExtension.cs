@@ -36,6 +36,9 @@ internal sealed class X11WindowedPopupExtension : IWindowedPopupExtension
 	public PointInt32 GetScreenOffset(XamlRoot xamlRoot)
 		=> GetOwner(xamlRoot) is { Closed.IsCompleted: false } owner ? owner.GetClientScreenOrigin() : default;
 
+	// There's no system setting: WinUI's failure case, the left-handed menu.
+	public bool IsRightHanded => false;
+
 	public bool TryGetMonitorBounds(PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea)
 	{
 		monitor = default;

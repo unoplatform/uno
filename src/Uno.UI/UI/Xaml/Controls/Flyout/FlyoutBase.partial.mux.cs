@@ -2502,8 +2502,8 @@ partial class FlyoutBase
 		return areWindowedPopupsSupported && (isPopupWindowed || m_openingWindowedInProgress);
 	}
 
-	// TODO Uno: Missing Uno equivalent of SystemParametersInfo(SPI_GETHANDEDNESS), which falls back to a left-handed menu when it fails.
-	private static bool IsRightHandedHandedness() => false;
+	// TODO Uno: Only hosts with a windowed popup extension have SystemParametersInfo(SPI_GETHANDEDNESS). The others get the fallback for when it fails, a left-handed menu.
+	private static bool IsRightHandedHandedness() => Popup.GetIsRightHandedFromWindowedPopupExtension();
 
 	private Rect UpdateTargetPosition(
 		Rect availableWindowRect,

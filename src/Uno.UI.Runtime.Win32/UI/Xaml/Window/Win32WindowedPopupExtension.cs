@@ -8,6 +8,7 @@ using Windows.Graphics;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace Uno.UI.Runtime.Win32;
 
@@ -33,6 +34,19 @@ internal sealed class Win32WindowedPopupExtension : IWindowedPopupExtension
 
 		var origin = default(System.Drawing.Point);
 		return PInvoke.ClientToScreen(owner.Hwnd, ref origin) ? new PointInt32(origin.X, origin.Y) : default;
+	}
+
+	public unsafe bool IsRightHanded
+	{
+		get
+		{
+			const uint SPI_GETHANDEDNESS = 0x1024;
+			const uint HANDEDNESS_RIGHT = 1;
+
+			uint handedness = 0;
+			return PInvoke.SystemParametersInfo((SYSTEM_PARAMETERS_INFO_ACTION)SPI_GETHANDEDNESS, 0, &handedness, 0)
+				&& handedness == HANDEDNESS_RIGHT;
+		}
 	}
 
 	public bool TryGetMonitorBounds(PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea)

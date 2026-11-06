@@ -23,6 +23,9 @@ internal interface IWindowedPopupExtension
 
 	/// <summary>The monitor nearest to a screen point.</summary>
 	bool TryGetMonitorBounds(PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea);
+
+	/// <summary>SPI_GETHANDEDNESS: whether the user is right-handed, which opens a pen's menu to the left of the pen.</summary>
+	bool IsRightHanded { get; }
 }
 
 /// <summary>

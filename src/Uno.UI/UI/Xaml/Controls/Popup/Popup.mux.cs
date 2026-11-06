@@ -578,6 +578,8 @@ partial class Popup
 
 	private static IWindowedPopupExtension? s_windowedPopupExtension;
 
+	internal static bool GetIsRightHandedFromWindowedPopupExtension() => GetWindowedPopupExtension()?.IsRightHanded ?? false;
+
 	private static IWindowedPopupExtension? GetWindowedPopupExtension()
 	{
 		if (s_windowedPopupExtension is null)
