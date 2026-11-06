@@ -84,6 +84,14 @@ stages:
       renderer: 'Skia Threads'
       testResultLabel: '-threads'
       crossOriginIsolated: true
+      # The agents have no GPU and threading has no software fallback: Chrome's SwiftShader provides WebGL,
+      # which it no longer does by default (removed in Chrome 130+).
+      chromeFlags: '--enable-unsafe-swiftshader'
+      # SwiftShader renders on the CPU, so the suite is sharded like the WebGPU lane to fit the run timeout.
+      testGroups: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      browserSize: '1280x800'
+      resultsTimeoutMinutes: 55
+      jobTimeoutInMinutes: 75
 
 - stage: runtime_tests_skia_android
   displayName: Tests - Android
