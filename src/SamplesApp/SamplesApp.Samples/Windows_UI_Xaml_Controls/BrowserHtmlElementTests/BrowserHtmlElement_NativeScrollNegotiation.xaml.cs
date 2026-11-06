@@ -3,7 +3,8 @@
 using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-#if HAS_UNO
+// Same guard as its uses: BrowserHtmlElement only exists on Skia, not on the native heads.
+#if __SKIA__
 using Uno.UI.NativeElementHosting;
 #endif
 using Uno.UI.Samples.Controls;
