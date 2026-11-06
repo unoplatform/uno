@@ -1,6 +1,7 @@
 #if HAS_UNO
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -132,6 +133,37 @@ public class Given_Popup_Windowed
 		}
 	}
 
+
+	[TestMethod]
+	public async Task When_Windowed_Popups_Disabled_Between_Opens_Then_Popup_Reopens_In_Window()
+	{
+		var target = new Button { Content = "Target" };
+		await UITestHelper.Load(target);
+
+		var content = CreateContent();
+		var popup = CreatePopup(content, target.XamlRoot!, 10, 10);
+		popup.IsOpen = true;
+		await TestServices.WindowHelper.WaitForLoaded(content);
+		await WaitForWindow(popup);
+		popup.IsOpen = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var previous = FeatureConfiguration.Popup.UseWindowedPopups;
+		FeatureConfiguration.Popup.UseWindowedPopups = false;
+		try
+		{
+			popup.IsOpen = true;
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			Assert.IsFalse(popup.IsWindowed);
+
+			popup.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			FeatureConfiguration.Popup.UseWindowedPopups = previous;
+		}
+	}
 
 	[TestMethod]
 	public async Task When_Owner_Repaints_Then_Unchanged_Popup_Is_Not_Rerecorded()
@@ -408,6 +440,8 @@ public class Given_Popup_Windowed
 		var target = new Button { Content = "Target" };
 		await UITestHelper.Load(target);
 
+		// A collected popup also releases its window, which isn't what this is about.
+		List<Popup> popups = new();
 		IWindowedPopupSite? first = null;
 		Popup? last = null;
 		IWindowedPopupSite? lastSite = null;
@@ -418,6 +452,7 @@ public class Given_Popup_Windowed
 			popup.IsOpen = true;
 			await TestServices.WindowHelper.WaitForLoaded(content);
 			var site = await WaitForWindow(popup);
+			popups.Add(popup);
 			first ??= site;
 			last = popup;
 			lastSite = site;
@@ -428,6 +463,7 @@ public class Given_Popup_Windowed
 		await UITestHelper.WaitFor(() => first!.IsClosed, timeoutMS: 3000);
 		Assert.IsFalse(lastSite!.IsClosed);
 		Assert.AreSame(lastSite, last!.WindowedPopupSite);
+		GC.KeepAlive(popups);
 	}
 
 	private static async Task<IWindowedPopupSite> WaitForWindow(Popup popup)

@@ -367,6 +367,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			};
 
+			// With a window of its own, the monitor decides, and that may have room to the right.
+			var useWindowedPopups = FeatureConfiguration.Popup.UseWindowedPopups;
+			using var restore = Uno.Disposables.Disposable.Create(() => FeatureConfiguration.Popup.UseWindowedPopups = useWindowedPopups);
+			FeatureConfiguration.Popup.UseWindowedPopups = false;
+
 			WindowHelper.WindowContent = button;
 			await WindowHelper.WaitForLoaded(button);
 			button.AutomationPeerClick();
@@ -387,18 +392,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var subSubItemBounds = ((MenuFlyoutSubItem)subItem.Items.Single()).GetAbsoluteBounds();
 
 				var flippedLeft = Math.Abs(subItemBounds.X - subSubItemBounds.Right) <= 5;
-				var openedRight = Math.Abs(subSubItemBounds.X - subItemBounds.Right) <= 5;
 
-				if (Microsoft.UI.Xaml.Controls.Primitives.Popup.DoesPlatformSupportWindowedPopup())
-				{
-					// MUX Reference CascadingMenuHelper.cpp: where the menu has a window of its own, its monitor decides,
-					// and that may well have the room to its right.
-					Assert.IsTrue(flippedLeft || openedRight, $"Sub menu at {subSubItemBounds} is not adjacent to {subItemBounds}");
-				}
-				else
-				{
-					Assert.IsTrue(flippedLeft, $"Sub menu at {subSubItemBounds} did not flip to the left of {subItemBounds}");
-				}
+				Assert.IsTrue(flippedLeft, $"Sub menu at {subSubItemBounds} did not flip to the left of {subItemBounds}");
 
 			}
 			finally
