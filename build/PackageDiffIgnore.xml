@@ -4117,10 +4117,7 @@
 		  <!-- Android head aligned on UnoPlatformHostBuilder: NativeApplication is now abstract with a CreateHost() override, replacing the AppBuilder delegate ctor. AndroidHost is now internal and built via UseAndroid(). -->
 		  <Member fullName="Microsoft.UI.Xaml.NativeApplication/AppBuilder" reason="Android head now overrides CreateHost() instead of passing an AppBuilder delegate (breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Runtime.Skia.Android.AndroidHost" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
-		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>
-		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.Popup::PopupPanelProperty()" reason="Removed with the WinUI Popup port; no WinUI equivalent" />/<Methods>
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.InitializePopupPanel()" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
-		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.Popup.get_PopupPanelProperty()" reason="Removed with the WinUI Popup port; no WinUI equivalent" /> below). -->
+		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>/<Methods> below). -->
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
 		  <!-- WASM DOM renderer removal: the DOM-interop event payload type is unraisable now that its only producer (UIElementWasmExtensions) is gone. -->
 		  <Member fullName="Uno.Extensions.HtmlCustomEventArgs" reason="Removed with the WebAssembly DOM renderer and its HTML interop surface (breaking changes for 7.0, uno#8339)" />
@@ -4612,6 +4609,9 @@
 		  <!-- BC41: legacy Windows.UI.Input.PointerPoint variant dropped and Windows.UI.Core.PointerEventArgs.CurrentPoint retyped to Microsoft.UI.Input.PointerPoint (getters paired in <Methods> below). -->
 		  <Member fullName="Windows.Devices.Input.PointerDeviceType Windows.UI.Input.PointerPoint::PointerDeviceType()" reason="Dropped legacy Windows.UI.Input.PointerPoint variant (BC41, breaking changes for 7.0)" />
 		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs::CurrentPoint()" reason="Retyped Windows.UI.Core.PointerEventArgs.CurrentPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
+
+		  <!-- Removed with the WinUI Popup port. Accessors paired in <Methods> below. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.Popup::PopupPanelProperty()" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
 
 		  <!-- PrimaryLanguageOverride no longer applies the culture in its setter (restart-to-apply, as on WinUI), so the opt-out flag is gone. Accessors paired in <Methods> below. -->
 		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/ApplicationLanguages::UseLegacyPrimaryLanguageOverride()" reason="Removed ApplicationLanguages.UseLegacyPrimaryLanguageOverride legacy flag; PrimaryLanguageOverride is always restart-to-apply (BC50, breaking changes for 7.0)" />
@@ -5333,6 +5333,13 @@
 		  <!-- Navigation ctor/setters hidden to match WinUI. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs..ctor(Microsoft.UI.Xaml.Navigation.NavigationMode navigationMode, Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo navigationTransitionInfo, System.Object parameter, System.Type sourcePageType)" reason="Hid NavigatingCancelEventArgs ctor to match WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.PageStackEntry.set_SourcePageType(System.Type value)" reason="Removed PageStackEntry.SourcePageType setter to match WinUI (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Removed with the WinUI Popup port (paired with the <Properties> entry above). -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.Popup.get_PopupPanelProperty()" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.InitializePopupPanel()" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.Popup.MeasureOverride(Windows.Foundation.Size availableSize)" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.Popup.ArrangeOverride(Windows.Foundation.Size finalSize)" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Popup.OnDataContextChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Removed with the WinUI Popup port; no WinUI equivalent" />
 
 		  <!-- WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrimaryLanguageOverride accessors (paired with the <Properties> entry above). -->
 		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/ApplicationLanguages.get_UseLegacyPrimaryLanguageOverride()" reason="Removed ApplicationLanguages.UseLegacyPrimaryLanguageOverride legacy flag (BC50, breaking changes for 7.0)" />
