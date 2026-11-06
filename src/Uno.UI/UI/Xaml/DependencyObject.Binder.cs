@@ -547,12 +547,8 @@ namespace Microsoft.UI.Xaml
 
 				if (newValueAsProvider is not null && IsDataContextIsolatedValue(newValueAsProvider))
 				{
-					// FrameworkTemplate and Style have no DataContext in WinUI (they refuse inherited values,
-					// see the DependencyObject constructor) and are typically shared, e.g. a {StaticResource}
-					// from an app-lifetime ResourceDictionary. There is nothing to propagate, so do not track
-					// them as bindable children (which would also AssociateParent a Style with this owner);
-					// just release any previous child for this property. This mirrors the exclusion on the
-					// mentor path below.
+					// Nothing to propagate (their stores refuse a DataContext, see the constructor): don't track
+					// them, so a shared Style isn't associated with this owner either. Mirrors the mentor path below.
 					SetChildrenBindableValue(propertyDetails, null);
 				}
 				else if (propertyDetails.HasValueInherits)
@@ -588,7 +584,7 @@ namespace Microsoft.UI.Xaml
 			else
 			{
 				// For ValueDoesNotInheritDataContext properties, establish a weak mentor link
-				// instead of using _childrenBindable (which calls AssociateParent with a strong ref).
+				// instead of using _childrenBindable (which pushes this owner's DataContext into the value).
 				// This matches WinUI's SetParentForInheritanceContextOnly behavior where
 				// non-FrameworkElement property values get a weak ref to the owning element.
 				// Exclude FrameworkTemplate (DataTemplate, ControlTemplate) and IMultiParentShareableDependencyObject
@@ -599,7 +595,7 @@ namespace Microsoft.UI.Xaml
 				// the mentor before show.
 				if (newValue is DependencyObject newProvider
 					&& newProvider is not UIElement
-					&& newProvider is not FrameworkTemplate
+					&& !IsDataContextIsolatedValue(newProvider)
 					&& newProvider is not Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase
 					&& newProvider is not IMultiParentShareableDependencyObject)
 				{
