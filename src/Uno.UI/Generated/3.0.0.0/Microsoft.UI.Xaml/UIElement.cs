@@ -7,14 +7,7 @@ namespace Microsoft.UI.Xaml;
 #endif
 public partial class UIElement : global::Microsoft.UI.Xaml.DependencyObject, global::Microsoft.UI.Composition.IAnimationObject, global::Microsoft.UI.Composition.IVisualElement, global::Microsoft.UI.Composition.IVisualElement2
 {
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty AccessKeyProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(AccessKey), typeof(string),
-		typeof(global::Microsoft.UI.Xaml.UIElement),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
+	// Skipping already declared property AccessKeyProperty
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static global::Microsoft.UI.Xaml.DependencyProperty AccessKeyScopeOwnerProperty { get; } =
@@ -199,20 +192,7 @@ public partial class UIElement : global::Microsoft.UI.Xaml.DependencyObject, glo
 	// Skipping already declared property XYFocusRightProperty
 	// Skipping already declared property XYFocusUpNavigationStrategyProperty
 	// Skipping already declared property XYFocusUpProperty
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public string AccessKey
-	{
-		get
-		{
-			return (string)this.GetValue(AccessKeyProperty);
-		}
-		set
-		{
-			this.SetValue(AccessKeyProperty, value);
-		}
-	}
-#endif
+	// Skipping already declared property AccessKey
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Microsoft.UI.Xaml.DependencyObject AccessKeyScopeOwner

@@ -894,6 +894,20 @@ namespace Microsoft.UI.Xaml
 
 		internal const int MaxLayoutIterations = 250;
 
+		[global::Uno.NotImplemented("__SKIA__")]
+		public string AccessKey
+		{
+			get => (string)this.GetValue(AccessKeyProperty);
+			set => this.SetValue(AccessKeyProperty, value);
+		}
+
+		[global::Uno.NotImplemented("__SKIA__")]
+		public static DependencyProperty AccessKeyProperty { get; } =
+			DependencyProperty.Register(
+				nameof(AccessKey), typeof(string),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(string.Empty));
+
 		public void UpdateLayout()
 		{
 			if (_isInUpdateLayout || _isLayoutingVisualTreeRoot)
