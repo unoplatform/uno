@@ -627,6 +627,68 @@ public partial class Given_ContentPresenter
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25919")]
+	public async Task When_ContentControl_ContentTemplate_Not_Forwarded_Then_No_Placeholder()
+	{
+		var item = new ToStringRecordingItem();
+		var SUT = new ContentControl
+		{
+			Template = XamlHelper.LoadXaml<ControlTemplate>("""
+				<ControlTemplate TargetType="ContentControl">
+					<ContentPresenter Content="{TemplateBinding Content}" />
+				</ControlTemplate>
+				"""),
+			ContentTemplate = XamlHelper.LoadXaml<DataTemplate>("""
+				<DataTemplate>
+					<Border Width="50" Height="50" />
+				</DataTemplate>
+				"""),
+			Content = item,
+		};
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsNotNull(SUT.ContentTemplateRoot, "The template was not materialized.");
+		Assert.AreEqual(0, item.ToStringCalls, $"The item was rendered as text: {item.LastStack}");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25919")]
+	public async Task When_ListView_ItemTemplate_Not_Forwarded_Then_No_Placeholder()
+	{
+		var item = new ToStringRecordingItem();
+		var SUT = new ListView
+		{
+			ItemContainerStyle = XamlHelper.LoadXaml<Style>("""
+				<Style TargetType="ListViewItem">
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="ListViewItem">
+								<ContentPresenter Content="{TemplateBinding Content}" />
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+				"""),
+			ItemTemplate = XamlHelper.LoadXaml<DataTemplate>("""
+				<DataTemplate>
+					<Border Width="50" Height="50" />
+				</DataTemplate>
+				"""),
+			ItemsSource = new[] { item },
+		};
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsNotNull(((ListViewItem)SUT.ContainerFromIndex(0)).ContentTemplateRoot, "The template was not materialized.");
+		Assert.AreEqual(0, item.ToStringCalls, $"The item was rendered as text: {item.LastStack}");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25919")]
 	public async Task When_ListViewItem_No_Template_Then_Placeholder_Text()
 	{
 		var item = new ToStringRecordingItem();
