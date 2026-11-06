@@ -15,12 +15,14 @@
 //   pass is no longer forced.
 // - SubscribeToItemsSourceView holds the repeater weakly, like WinUI's raw-'this' delegate,
 //   since a repeater that never loads never unloads to remove its data-source subscription.
+//   The handler is removed once the repeater is collected.
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -87,27 +89,26 @@ partial class ItemsRepeater : IPanel
 		}
 	}
 
-	// Uno-specific: holds the repeater weakly, like WinUI's raw-'this' delegate, since a repeater that never loads
-	// never unloads to remove it. Static so the handler cannot capture the repeater.
-	// A dead repeater's handler is only removed on the view's next raise.
+	// Static so the handler cannot capture the repeater. Only the repeater references the returned subscription, whose
+	// finalizer removes the handler from a view that outlives it (see the file header).
 	private static IDisposable SubscribeToItemsSourceView(ItemsSourceView view, ItemsRepeater repeater)
 	{
 		var weakRepeater = new WeakReference<ItemsRepeater>(repeater);
-		NotifyCollectionChangedEventHandler handler = null;
-		handler = (sender, args) =>
+		NotifyCollectionChangedEventHandler handler = (sender, args) =>
 		{
 			if (weakRepeater.TryGetTarget(out var target))
 			{
 				target.OnItemsSourceViewChanged(sender, args);
 			}
-			else
-			{
-				// ItemsSourceView raises over a snapshot of its handlers, so removing this one here is safe.
-				view.CollectionChanged -= handler;
-			}
 		};
 
 		view.CollectionChanged += handler;
-		return Disposable.Create(() => view.CollectionChanged -= handler);
+		return new WeakSourceSubscription<ItemsSourceView, NotifyCollectionChangedEventHandler>(
+			view,
+			handler,
+			static (v, h) => v.CollectionChanged -= h,
+			onDisposed: null,
+			typeof(ItemsRepeater),
+			"an ItemsSourceView subscription");
 	}
 }
