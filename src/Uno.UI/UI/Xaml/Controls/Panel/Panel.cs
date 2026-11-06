@@ -162,6 +162,15 @@ public partial class Panel : FrameworkElement, IPanel
 		}
 	}
 
+	// MUX Reference Panel_Partial.cpp, GetFirstFocusableElementOverride: an items host defers to its ListViewBase.
+	// ListViewBase::GetFocusableElement is called rather than its override so that the header and footer still get their turn.
+	internal override DependencyObject GetFirstFocusableElementOverride()
+		=> IsItemsHost && ItemsOwner is ListViewBase listViewBase ? listViewBase.GetFocusableElement(false /* isBackward */) : null;
+
+	// MUX Reference Panel_Partial.cpp, GetLastFocusableElementOverride
+	internal override DependencyObject GetLastFocusableElementOverride()
+		=> IsItemsHost && ItemsOwner is ListViewBase listViewBase ? listViewBase.GetFocusableElement(true /* isBackward */) : null;
+
 	internal void SetItemsOwner(ItemsControl itemsOwner)
 	{
 		ItemsOwner = itemsOwner;

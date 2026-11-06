@@ -827,17 +827,15 @@ partial class ItemsControl : IGeneratorHost
 			// This only needs to be done for modern panels as VirtualizingStackPanel and StackPanel do run into unrealized items.
 			if (shouldCustomizeTabNavigation)
 			{
-#if !HAS_UNO // TODO Uno: FocusManager does not track IsMovingFocusToNextTabStop / IsMovingFocusToPreviousTabStop.
-				var focusManager = VisualTree.GetFocusManagerForElement(this);
+				var focusManager = Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(this);
 
 				Debug.Assert(focusManager is not null);
 
-				if ((!isBackward && focusManager.IsMovingFocusToNextTabStop()) || (isBackward && focusManager.IsMovingFocusToPreviousTabStop()))
+				if (focusManager is not null && ((!isBackward && focusManager.IsMovingFocusToNextTabStop()) || (isBackward && focusManager.IsMovingFocusToPreviousTabStop())))
 				{
 					// The FocusManager is processing the Tab key to actually navigate to an element (as opposed to only accessing a tab stop).
 					scrollIntoViewAndPrepareContainer = true;
 				}
-#endif
 			}
 
 			GroupItem groupItem = null;
