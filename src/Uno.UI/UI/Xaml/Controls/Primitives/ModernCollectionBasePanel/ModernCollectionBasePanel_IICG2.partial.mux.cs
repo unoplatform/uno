@@ -338,10 +338,8 @@ public abstract partial class ModernCollectionBasePanel
 				}
 			}
 
-#if !HAS_UNO // TODO Uno: no CUIElement entering/leaving state.
 			// to avoid re-parenting we should mark the recycled container that it did't leave the tree in current layout cycle.
-			CoreImports.UIElement_SetIsLeaving(spContainer, false);
-#endif
+			CoreImports.UIElement_SetIsLeaving(spContainer!, false);
 
 			// make sure it has a valid virtualizationinformation section.
 			spContainer!.InitVirtualizationInformation();
@@ -718,9 +716,7 @@ public abstract partial class ModernCollectionBasePanel
 		{
 			global::System.Diagnostics.Debug.Assert(GetElementIsGenerated(spContainer));
 
-#if !HAS_UNO // TODO Uno: no CUIElement transition state to cancel.
 			CoreImports.UIElement_CancelTransition(spContainer);
-#endif
 
 			m_recycleQueue.Add(new WeakReference<UIElement>(spContainer));
 
@@ -1343,10 +1339,8 @@ public abstract partial class ModernCollectionBasePanel
 
 				if (m_containerManager.IsValidContainerIndexWithinBounds(m_containerManager.GetValidContainerIndexFromItemIndex(nIndex)))
 				{
-#if !HAS_UNO // TODO Uno: no CUIElement transition state.
 					bool isTransitioning = false;
-					TransitionTrigger trigger = TransitionTrigger.Layout;
-#endif
+					Microsoft.UI.Xaml.Media.Animation.TransitionTrigger trigger = Microsoft.UI.Xaml.Media.Animation.TransitionTrigger.Layout;
 					int validIndex = m_containerManager.GetValidContainerIndexFromItemIndex(nIndex);
 					UIElement? spOldContainer = m_containerManager.GetContainerAtValidIndex(validIndex);
 
@@ -1369,28 +1363,21 @@ public abstract partial class ModernCollectionBasePanel
 					m_containerManager.RemoveFromValidContainers(validIndex, true /* isForItemRemoval */);
 					if (spOldContainer is not null)
 					{
-#if !HAS_UNO // TODO Uno: no CUIElement transition state, so no unload transition is ever running.
 						CoreImports.UIElement_GetHasTransition(spOldContainer, out isTransitioning, out trigger);
-						if (!isTransitioning || trigger != TransitionTrigger.Unload)
-#endif
+						if (!isTransitioning || trigger != Microsoft.UI.Xaml.Media.Animation.TransitionTrigger.Unload)
 						{
 							// unloading queue is needed only for callback from transition completion routine.
 							FinishUnlinkingContainer(spOldContainer, false /* useUnloadingQueue */);
 						}
-#if !HAS_UNO
 						else
 						{
 							DeferredModernPanelUnlinkActionPayload spPayload = new();
 
 							spPayload.InitializePayload(this);
 
-							spOldContainer.SetValueInternal(
-								MetadataAPI.GetDependencyPropertyByIndex(KnownPropertyIndex.ItemContainerGenerator_DeferredUnlinkingPayload), spPayload, /* fAllowReadOnly */ true);
-
-							CoreImports.UIElement_SetDeferUnlinkContainer(spOldContainer);
+							CoreImports.UIElement_SetDeferUnlinkContainer(spOldContainer, spPayload);
 							m_unloadingElements.Add(spOldContainer);
 						}
-#endif
 					}
 #if DEBUG
 					m_debugIsInTemporaryInvalidState = false;

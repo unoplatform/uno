@@ -750,7 +750,55 @@ partial class ListViewBaseItem
 	// TODO Uno: OnNoSelectionHintStoryboardCompleted / OnNoReorderHintStoryboardCompleted / UpdateTopmost /
 	// MakeTopmost / ClearTopmost (LBI:1516-1595) are live for Grid-rooted templates (e.g. ListViewItemExpanded) but not ported.
 
-	// TODO Uno: GetCurrentTransitionContext / IsCollectionMutatingFast / GetDropOffsetToRoot (LBI:1597-1931) not ported.
+	// determines if this element should be transitioned using the passed in transition
+	DirectUI.ThemeTransitionContext DirectUI.ITransitionContextProvider.GetCurrentTransitionContext(int layoutTickId)
+	{
+		var pReturnValue = DirectUI.ThemeTransitionContext.None;
+		var handled = false;
+
+		if (Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(this) is DirectUI.IChildTransitionContextProvider spContextProviderPanel)
+		{
+			pReturnValue =spContextProviderPanel.GetChildTransitionContext(this, layoutTickId);
+			handled = true;
+		}
+
+		if (!handled)
+		{
+			if (ItemsControl.ItemsControlFromItemContainer(this) is { } spIItemsControl)
+			{
+				pReturnValue = spIItemsControl.GetCurrentTransitionContext(layoutTickId);
+			}
+			else
+			{
+				// In case of Reset, by default we will return ContentTransition
+				// There is bug that in case of reset, the parent ListView is null, and we can get correct transition from
+				// the Parent
+				// bug: 103077
+				pReturnValue = DirectUI.ThemeTransitionContext.ContentTransition;
+			}
+		}
+
+		// in the case where the list view is in live reorder mode
+		// we want to simulate the add theme transition
+		// this will include portalling
+		if (pReturnValue == DirectUI.ThemeTransitionContext.None)
+		{
+			var spListView = GetParentListView();
+
+			if (spListView is not null && spListView.IsInLiveReorder())
+			{
+				pReturnValue = DirectUI.ThemeTransitionContext.SingleAddGrid;
+			}
+		}
+
+		return pReturnValue;
+	}
+
+	// determines if mutations are going fast
+	bool DirectUI.ITransitionContextProvider.IsCollectionMutatingFast()
+		=> Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(this) is DirectUI.IChildTransitionContextProvider spContextProviderPanel && spContextProviderPanel.IsCollectionMutatingFast();
+
+	// TODO Uno: GetDropOffsetToRoot (LBI:1678-1931) not ported.
 
 	// Clears flags related to ongoing pointer input in response to a manipulation starting
 	// or container recycle.

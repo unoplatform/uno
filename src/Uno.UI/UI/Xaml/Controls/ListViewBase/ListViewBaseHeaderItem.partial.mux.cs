@@ -216,7 +216,7 @@ partial class ListViewBaseHeaderItem
 	}
 
 	// determines if this element should be transitioned using the passed in transition
-	internal ThemeTransitionContext GetCurrentTransitionContext(int layoutTickId)
+	ThemeTransitionContext ITransitionContextProvider.GetCurrentTransitionContext(int layoutTickId)
 	{
 		var spParentAsDO = VisualTreeHelper.GetParent(this);
 		if (spParentAsDO is IChildTransitionContextProvider spContextProviderPanel)
@@ -228,7 +228,7 @@ partial class ListViewBaseHeaderItem
 	}
 
 	// determines if mutations are going fast
-	internal bool IsCollectionMutatingFast()
+	bool ITransitionContextProvider.IsCollectionMutatingFast()
 	{
 		var spParentAsDO = VisualTreeHelper.GetParent(this);
 		if (spParentAsDO is IChildTransitionContextProvider spContextProviderPanel)

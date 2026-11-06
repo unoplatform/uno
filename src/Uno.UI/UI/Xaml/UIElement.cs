@@ -627,14 +627,17 @@ namespace Microsoft.UI.Xaml
 
 #if __SKIA__
 			Matrix3x2 from2To;
+			var hasLayoutTransitions = Microsoft.UI.Xaml.Media.Animation.Transition.ElementsWithTransitionStoryboards > 0;
+			var fromTotal = hasLayoutTransitions ? Microsoft.UI.Xaml.Media.Animation.Transition.GetTotalMatrixWithoutLayoutTransitions(from) : from.Visual.TotalMatrix;
 			if (to is null || to == from.XamlRoot?.VisualTree.RootElement)
 			{
-				from2To = from.Visual.TotalMatrix.ToMatrix3x2();
+				from2To = fromTotal.ToMatrix3x2();
 			}
 			else
 			{
-				Matrix4x4.Invert(to.Visual.TotalMatrix /* root2To */, out var to2Root);
-				from2To = (from.Visual.TotalMatrix /* root2from */ * to2Root).ToMatrix3x2();
+				var toTotal = hasLayoutTransitions ? Microsoft.UI.Xaml.Media.Animation.Transition.GetTotalMatrixWithoutLayoutTransitions(to) : to.Visual.TotalMatrix;
+				Matrix4x4.Invert(toTotal /* root2To */, out var to2Root);
+				from2To = (fromTotal /* root2from */ * to2Root).ToMatrix3x2();
 			}
 
 			if (from.Log().IsEnabled(LogLevel.Trace))
@@ -1753,6 +1756,22 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return false;
+		}
+
+		// An unloading child leaves the collection and layout, but keeps its parent and visual until its transition completes.
+		internal void RemoveChildKeepingVisual(UIElement child)
+		{
+			if (_children.Remove(child))
+			{
+				TrackStubChild(child, -1);
+				InvalidateMeasure();
+			}
+		}
+
+		internal void RemoveKeptVisualChild(UIElement child)
+		{
+			UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(this, child);
+			InnerRemoveChild(child);
 		}
 
 		internal UIElement ReplaceChild(int index, UIElement child)

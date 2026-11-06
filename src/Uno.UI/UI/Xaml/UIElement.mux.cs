@@ -1670,6 +1670,13 @@ namespace Microsoft.UI.Xaml
 			}
 			// --------- UNO Specific END ---------
 
+			// no matter what, if we are leaving the live tree and we have a transition active, we should stop it
+			if (@params.IsLive && m_pLayoutTransitionStorage is { } layoutTransitionStorage)
+			{
+				layoutTransitionStorage.UnregisterElementForTransitions(this);     // kills unrealized transitions in the layout manager, very unlikely
+				Microsoft.UI.Xaml.Media.Animation.Transition.CancelTransitions(this);  // kills currently running animations, quite likely.
+			}
+
 			//var core = this.GetContext();
 			//var isParentEnabled = @params.CoercedIsEnabled;
 			//bool alreadyCanceledTransitions = false;

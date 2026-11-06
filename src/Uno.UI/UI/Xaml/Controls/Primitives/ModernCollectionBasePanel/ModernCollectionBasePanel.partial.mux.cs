@@ -664,9 +664,7 @@ public abstract partial class ModernCollectionBasePanel
 			// however, this does not mean they have to be in the valid part.
 			if (shouldEnter)
 			{
-#if !HAS_UNO // TODO Uno: no core layout transition state on UIElement.
-				CoreImports.UIElement_SetIsEntering(spSpecialElement, true);
-#endif
+				CoreImports.UIElement_SetIsEntering(spSpecialElement!, true);
 			}
 
 			spSpecialElement.Measure(measureSize);
@@ -1942,17 +1940,15 @@ public abstract partial class ModernCollectionBasePanel
 					adjustedVisibleWindow,
 					finalSize);
 
-#if !HAS_UNO // TODO Uno: no core layout transition state on UIElement.
 				// make sure transitions do not play.
 				CoreImports.UIElement_SetIsEntering(spCurrentElement, false);
 
 				CoreImports.UIElement_SetCurrentTransitionLocation(
 					spCurrentElement,
-					arrangedBounds.X,
-					arrangedBounds.Y,
-					arrangedBounds.Width,
-					arrangedBounds.Height);
-#endif
+					(float)arrangedBounds.X,
+					(float)arrangedBounds.Y,
+					(float)arrangedBounds.Width,
+					(float)arrangedBounds.Height);
 
 				spCurrentElement.Arrange(arrangedBounds);
 			}
@@ -2195,20 +2191,19 @@ public abstract partial class ModernCollectionBasePanel
 					lastCacheIndex = dataIndex;
 				}
 
-#if !HAS_UNO // TODO Uno: no core layout transition state on UIElement.
-				if (!insideVisibleWindow)
+				// TODO Uno: gated on the storage so that a panel without transitions skips this.
+				if (!insideVisibleWindow && spCurrentElement.m_pLayoutTransitionStorage is not null)
 				{
 					// We don't play transitions only if the container isn't in the visible window
 					// and didn't use to in the previous layout pass either.
 					var container = spCurrentElement;
-					var currentOffset = container.GetLayoutStorage().m_offset;
-					var currentSize = container.GetLayoutStorage().m_size;
+					var currentSlot = container.LayoutSlotWithMarginsAndAlignments;
 					bool wasInsideVisibleWindow =
-						currentSize.width != 0.0f &&
-						currentSize.height != 0.0f &&
+						currentSlot.Width != 0.0f &&
+						currentSlot.Height != 0.0f &&
 						!RectUtil.AreDisjoint(
 							adjustedVisibleWindow,
-							new Rect(currentOffset.x, currentOffset.y, currentSize.width, currentSize.height));
+							currentSlot);
 
 					if (wasInsideVisibleWindow == false)
 					{
@@ -2218,13 +2213,12 @@ public abstract partial class ModernCollectionBasePanel
 
 						CoreImports.UIElement_SetCurrentTransitionLocation(
 							spCurrentElement,
-							arrangedBounds.X,
-							arrangedBounds.Y,
-							arrangedBounds.Width,
-							arrangedBounds.Height);
+							(float)arrangedBounds.X,
+							(float)arrangedBounds.Y,
+							(float)arrangedBounds.Width,
+							(float)arrangedBounds.Height);
 					}
 				}
-#endif
 
 				// query the host for arrange bounds
 				// during LiveReorder, containers already have a bound to go to
