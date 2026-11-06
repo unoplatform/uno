@@ -155,7 +155,10 @@ public partial class Given_MediaPlayerElement
 	private static ManualResetEventSlim SaturateThreadPool()
 	{
 		ManualResetEventSlim release = new();
-		for (var round = 0; round < 10 && ThreadPool.PendingWorkItemCount == 0; round++)
+		var round = 0;
+
+		// Always queue a batch: work that is already pending may finish long before the Stop this has to delay.
+		do
 		{
 			var blockers = ThreadPool.ThreadCount + Environment.ProcessorCount * 4;
 			for (var i = 0; i < blockers; i++)
@@ -166,6 +169,7 @@ public partial class Given_MediaPlayerElement
 			// Sleeping, not awaiting: timers need the pool, and this only has to let the idle threads pick up work.
 			Thread.Sleep(100);
 		}
+		while (++round < 10 && ThreadPool.PendingWorkItemCount == 0);
 
 		if (ThreadPool.PendingWorkItemCount == 0)
 		{
