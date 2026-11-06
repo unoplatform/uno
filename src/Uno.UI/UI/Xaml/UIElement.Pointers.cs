@@ -877,7 +877,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		[ThreadStatic]
-		private static uint? _lastDragStartFrameId; // Null until the first drag: 0 is a valid FrameId.
+		private static (global::Windows.Devices.Input.PointerIdentifier Pointer, uint FrameId)? _lastDragStart; // Frame ids are only comparable for the same pointer.
 
 		private void OnDragStarting(DraggingEventArgs args)
 		{
@@ -890,12 +890,12 @@ namespace Microsoft.UI.Xaml
 				// But: (1.) on UWP only the top-most draggable element starts the drag operation;
 				// (2.) as CoreDragDropManager.AreConcurrentOperationsEnabled is false by default, the parent would cancel the drag of its child
 				// So here we allow only one "starting" per "FrameId".
-				|| args.Pointer.FrameId <= _lastDragStartFrameId)
+				|| (_lastDragStart is { } last && last.Pointer == args.Pointer.Pointer && args.Pointer.FrameId <= last.FrameId))
 			{
 				return;
 			}
 
-			_lastDragStartFrameId = args.Pointer.FrameId;
+			_lastDragStart = (args.Pointer.Pointer, args.Pointer.FrameId);
 
 			// Note: We do not provide the _pendingRaisedEvent.args since it has probably not been updated yet,
 			//		 but as we are in the handler of an event from the gesture recognizer,
