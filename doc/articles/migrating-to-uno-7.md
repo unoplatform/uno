@@ -25,14 +25,46 @@ WebAssembly all remain supported — they now all render with Skia. The one exce
 
 ## TL;DR
 
-If your app is already a single `Sdk="Uno.Sdk"` project on .NET 10 or later, [the steps below](#upgrade-step-by-step) are likely all you need:
+If your app is already a single `Sdk="Uno.Sdk"` project on .NET 10 or later, this is likely all you need. [The steps below](#upgrade-step-by-step) cover each item in more detail.
+
+**Every app:**
 
 1. Bump `Uno.Sdk` in `global.json`.
-2. Remove the `net9.0-*` and `net*-maccatalyst` targets.
-3. Update the two Android head classes.
-4. On iOS and tvOS, migrate saved settings at startup.
-5. Update and rebuild every library the app depends on.
-6. Build, fix what the compiler reports, and re-test on your devices.
+2. Update and rebuild every library the app depends on.
+3. If you target Android, update the two head classes. Every Android app needs this, usually in `Platforms/Android/MainActivity.Android.cs` and `Platforms/Android/Main.Android.cs`:
+
+   ```diff
+   - public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
+   + public class MainActivity : Uno.UI.Runtime.Android.ApplicationActivity
+   ```
+
+   ```diff
+   + using Uno.UI.Hosting;
+   +
+   - public class Application : Microsoft.UI.Xaml.NativeApplication
+   + public class Application : Uno.UI.Runtime.Android.NativeApplication
+     {
+         public Application(IntPtr javaReference, JniHandleOwnership transfer)
+   -         : base(() => new App(), javaReference, transfer)
+   +         : base(javaReference, transfer)
+         {
+         }
+   +
+   +     protected override UnoPlatformHost CreateHost() =>
+   +         UnoPlatformHostBuilder.Create()
+   +             .App(() => new App())
+   +             .UseAndroid()
+   +             .Build();
+     }
+   ```
+
+4. Check that the [new minimum versions](xref:Uno.Development.MigratingToUno7.ProjectSetup#minimum-os-versions-raised) suit your users: iOS and tvOS 15.0, Android API 24 and WinAppSDK `10.0.19041.0`. These apply by default, with no build error. On Windows, packaged apps also need the [Windows App Runtime 2.4.0 or later](xref:Uno.Development.MigratingToUno7.Packages#windows-app-sdk-minimum-raised-from-1x-to-240) on your users' machines.
+5. Build, fix what the compiler reports, and re-test on your devices.
+
+**Only if it applies to your app:**
+
+- Remove [`net9.0-*`](xref:Uno.Development.MigratingToUno7.ProjectSetup#net-9-is-no-longer-supported) and [`net*-maccatalyst`](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed) targets.
+- On iOS and tvOS, [migrate saved settings at startup](xref:Uno.Development.MigratingToUno7.AppStartup#application-settings-on-ios-and-tvos) if you use `LocalSettings` or `RoamingSettings`.
 
 Everything else lives on [linked pages](#the-rest-of-the-guide) you only need to open when something applies to you.
 
@@ -65,18 +97,19 @@ In the `global.json` at the root of your solution, set `Uno.Sdk` to the latest 7
 
 This drives the versions of all Uno Platform packages. In Visual Studio, restart the IDE when the banner asks you to. See [How to upgrade Uno Platform NuGet Packages](xref:Uno.Development.UpgradeUnoNuget).
 
-### 3. Update your target frameworks
+### 3. Update your target frameworks and check minimum versions
 
 In `<TargetFrameworks>`, in every project:
 
 - Change `net9.0-*` to `net10.0-*` or later. 7.0 has no `net9.0` assets. See [Upgrading from .NET 9 to .NET 10](xref:Uno.Development.MigratingFromNet9ToNet10).
 - Remove `net*-maccatalyst`. macOS is served by `net10.0-desktop`, so add that if you don't have it. See [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed) for what else to move.
 
-Only if your project sets them explicitly, also raise these:
+7.0 also [raises the default minimum OS versions](xref:Uno.Development.MigratingToUno7.ProjectSetup#minimum-os-versions-raised), with no build error, so check that they suit your users:
 
-- `SupportedOSPlatformVersion` to 15.0 on iOS and tvOS, and 24 on Android.
-- `TargetPlatformMinVersion` to 10.0.19041.0 on WinAppSDK.
-- `WinAppSdkVersion` to 2.4.0 or later. On Windows, this also [changes the runtime your users need](xref:Uno.Development.MigratingToUno7.Packages#windows-app-sdk-minimum-raised-from-1x-to-240).
+- iOS and tvOS 15.0, and Android API 24. A head that pins a lower `SupportedOSPlatformVersion` keeps it, but that combination is no longer tested, so raise it.
+- WinAppSDK `10.0.19041.0`. The same goes for a head that pins a lower `TargetPlatformMinVersion`.
+
+Windows heads now build against Windows App SDK 2.x, so [packaged apps need the Windows App Runtime 2.4.0 or later](xref:Uno.Development.MigratingToUno7.Packages#windows-app-sdk-minimum-raised-from-1x-to-240) on your users' machines. If you pin `WinAppSdkVersion` to 1.x, restore fails until you raise it to 2.4.0 or later.
 
 ### 4. Clean up `UnoFeatures`
 
@@ -89,32 +122,9 @@ Your code may use a package that used to arrive implicitly, such as AndroidX or 
 
 ### 5. Update the Android head
 
-Skip this if you don't target Android. Otherwise, every app needs this edit, usually in `Platforms/Android/Main.Android.cs` and `Platforms/Android/MainActivity.Android.cs`:
+Skip this if you don't target Android. Otherwise, make [the edit shown in the TL;DR](#tldr). Keep anything else your classes contain, such as their attributes or a static constructor.
 
-```diff
-- public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
-+ public class MainActivity : Uno.UI.Runtime.Android.ApplicationActivity
-```
-
-```diff
-+ using Uno.UI.Hosting;
-+
-- public class Application : Microsoft.UI.Xaml.NativeApplication
-+ public class Application : Uno.UI.Runtime.Android.NativeApplication
-  {
-      public Application(IntPtr javaReference, JniHandleOwnership transfer)
--         : base(() => new App(), javaReference, transfer)
-+         : base(javaReference, transfer)
-      {
-      }
-+
-+     protected override UnoPlatformHost CreateHost() =>
-+         UnoPlatformHostBuilder.Create()
-+             .App(() => new App())
-+             .UseAndroid()
-+             .Build();
-  }
-```
+If your `Application` class calls `ConfigureUniversalImageLoader()`, which apps created with the native renderer do, also delete that call, the method and its `using Com.Nostra13.Universalimageloader.Core;`. [Skia handles image loading internally](xref:Uno.Development.MigratingToUno7.Packages#unouniversalimageloader-no-longer-injected-android).
 
 See [Android head uses the host builder](xref:Uno.Development.MigratingToUno7.AppStartup#android-head-uses-the-host-builder) for details.
 
