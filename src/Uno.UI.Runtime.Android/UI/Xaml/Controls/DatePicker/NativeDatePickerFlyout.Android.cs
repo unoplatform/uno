@@ -20,7 +20,6 @@ public
 #endif
 	partial class NativeDatePickerFlyout : DatePickerFlyout, INativeDatePickerFlyout
 {
-	private bool _programmaticallyDismissed;
 	private DatePickerDialog _dialog;
 
 	public static DependencyProperty UseNativeMinMaxDatesProperty { get; } = DependencyProperty.Register(
@@ -109,7 +108,8 @@ public
 
 	private void OnDismiss(object sender, EventArgs e)
 	{
-		if (!_programmaticallyDismissed)
+		// Android reports a dismissal later, so this can be about a dialog we closed, or one that a new dialog already replaced.
+		if (ReferenceEquals(sender, _dialog))
 		{
 			ClosePopup();
 		}
@@ -119,10 +119,10 @@ public
 
 	private protected override void OnClosed()
 	{
-		_programmaticallyDismissed = true;
-		_dialog?.Dismiss();
+		var dialog = _dialog;
+		_dialog = null;
+		dialog?.Dismiss();
 		base.OnClosed();
-		_programmaticallyDismissed = false;
 	}
 
 	private void OnDateSet(object sender, DatePickerDialog.DateSetEventArgs e)

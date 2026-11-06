@@ -13,7 +13,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class NativeTimePickerFlyout : TimePickerFlyout
 {
-	private bool _programmaticallyDismissed;
 	private UnoTimePickerDialog _dialog;
 	private TimeSpan _initialTime;
 
@@ -52,7 +51,7 @@ partial class NativeTimePickerFlyout : TimePickerFlyout
 		var oldTime = Time;
 		if (Time.Hours != hourOfDay || Time.Minutes != minutes)
 		{
-			if (_dialog.IsInSpinnerMode)
+			if (_dialog is { IsInSpinnerMode: true })
 			{
 				minutes = minutes * MinuteIncrement;
 			}
@@ -89,7 +88,8 @@ partial class NativeTimePickerFlyout : TimePickerFlyout
 
 	private void OnDismiss(object sender, EventArgs e)
 	{
-		if (!_programmaticallyDismissed)
+		// Android reports a dismissal later, so this can be about a dialog we closed, or one that a new dialog already replaced.
+		if (ReferenceEquals(sender, _dialog))
 		{
 			ClosePopup();
 		}
@@ -99,10 +99,10 @@ partial class NativeTimePickerFlyout : TimePickerFlyout
 
 	private protected override void OnClosed()
 	{
-		_programmaticallyDismissed = true;
-		_dialog?.Dismiss();
+		var dialog = _dialog;
+		_dialog = null;
+		dialog?.Dismiss();
 		base.OnClosed();
-		_programmaticallyDismissed = false;
 	}
 
 	//partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime) { }
