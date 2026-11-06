@@ -396,6 +396,7 @@ namespace Microsoft.UI.Xaml
 			finally
 			{
 				_isLayoutingVisualTreeRoot = false;
+				unchecked { LayoutTick++; }
 			}
 		}
 

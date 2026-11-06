@@ -59,6 +59,17 @@ namespace Microsoft.UI.Xaml.Controls
 			_owner.MoveChildTo((int)oldIndex, (int)newIndex);
 		}
 
+		// MUX Reference UIElementCollection.cpp: position is the slot to insert before, counted before the removal.
+		// Unlike Move, this neither invalidates measure nor raises a collection change.
+		internal void MoveInternal(int index, int position)
+		{
+			var newIndex = index < position ? position - 1 : position;
+			if (newIndex != index)
+			{
+				MoveCore((uint)index, (uint)newIndex);
+			}
+		}
+
 		private View RemoveAtCore(int index)
 		{
 			var item = _owner._children.ElementAtOrDefault(index);

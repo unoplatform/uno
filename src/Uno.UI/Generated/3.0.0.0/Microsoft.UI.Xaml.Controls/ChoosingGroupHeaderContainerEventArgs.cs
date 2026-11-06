@@ -2,12 +2,12 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class ChoosingGroupHeaderContainerEventArgs
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public object Group
 	{
@@ -17,7 +17,7 @@ public partial class ChoosingGroupHeaderContainerEventArgs
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Microsoft.UI.Xaml.Controls.ListViewBaseHeaderItem GroupHeaderContainer
 	{
@@ -31,7 +31,7 @@ public partial class ChoosingGroupHeaderContainerEventArgs
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public int GroupIndex
 	{
@@ -41,7 +41,7 @@ public partial class ChoosingGroupHeaderContainerEventArgs
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public ChoosingGroupHeaderContainerEventArgs()
 	{
