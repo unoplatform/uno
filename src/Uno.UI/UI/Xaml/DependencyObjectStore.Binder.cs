@@ -40,12 +40,13 @@ namespace Microsoft.UI.Xaml
 
 		// See note in AssociateParent(object). Weak, like the mentor link: a shared value (Brush, Transition, ...)
 		// held by a single owner must not keep that owner alive after it is removed.
-		private WeakReference? _associatedParentRef;
+		// Borrows the owner's own weak self-reference (never returned to the pool), so associating allocates nothing.
+		private ManagedWeakReference? _associatedParentRef;
 
 		private object? AssociatedParent
 		{
 			get => _associatedParentRef?.Target;
-			set => _associatedParentRef = value is null ? null : new WeakReference(value);
+			set => _associatedParentRef = (value as IWeakReferenceProvider)?.WeakReference;
 		}
 
 		private HashtableEx? _childrenBindableMap; // maps DependencyProperty to _childrenBindable[index]
