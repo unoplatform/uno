@@ -3,7 +3,6 @@
 
 // MUX Reference ItemsStackPanel_Partial.h, tag winui3/release/2.5.1, commit ba3a8d59e6d
 
-#if LISTVIEW_PORT_CUTOVER
 
 #nullable enable
 
@@ -54,4 +53,3 @@ public partial class ItemsStackPanel : ModernCollectionBasePanel, IOrientedPanel
 	private ItemsUpdatingScrollMode m_itemsUpdatingScrollMode;
 }
 
-#endif

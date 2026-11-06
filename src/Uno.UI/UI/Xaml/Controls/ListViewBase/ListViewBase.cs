@@ -753,6 +753,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
 		{
+			if (ItemsPanelRoot is DirectUI.ICustomGeneratorItemsHost)
+			{
+				base.OnItemsSourceSingleCollectionChanged(sender, args, section);
+				return;
+			}
+
 			if (RefreshOnCollectionChanged)
 			{
 				completeRefresh();
@@ -1010,6 +1016,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)
 		{
+			if (ItemsPanelRoot is DirectUI.ICustomGeneratorItemsHost)
+			{
+				ObserveCollectionChanged();
+				base.OnItemsSourceGroupsChanged(sender, args);
+				return;
+			}
+
 			if (RefreshOnCollectionChanged)
 			{
 				Refresh();

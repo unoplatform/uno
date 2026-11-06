@@ -2,9 +2,10 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
+#if false // The hand-written partial derives from ModernCollectionBasePanel.
 public partial class ItemsWrapGrid : global::Microsoft.UI.Xaml.Controls.Panel
 {
 	// Skipping already declared property AreStickyGroupHeadersEnabledProperty
@@ -125,3 +126,4 @@ public partial class ItemsWrapGrid : global::Microsoft.UI.Xaml.Controls.Panel
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.Orientation.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ScrollingDirection.get
 }
+#endif

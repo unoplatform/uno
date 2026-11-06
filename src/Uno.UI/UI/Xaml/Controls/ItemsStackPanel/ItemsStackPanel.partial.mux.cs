@@ -9,7 +9,6 @@
 
 // MUX Reference ItemsStackPanel_Partial.cpp, tag winui3/release/2.5.1, commit ba3a8d59e6d
 
-#if LISTVIEW_PORT_CUTOVER
 
 #nullable enable
 
@@ -215,6 +214,7 @@ public partial class ItemsStackPanel
 
 	// Physical Orientation override
 	Orientation IOrientedPanel.PhysicalOrientation => ((IOrientedPanel)this).LogicalOrientation;
+
+	internal override Orientation? PhysicalOrientation => Orientation;
 }
 
-#endif
