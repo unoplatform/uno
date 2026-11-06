@@ -959,13 +959,13 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				listView1 = (ListView)rootPanel.FindName("listView1");
 				VERIFY_IS_NOT_NULL(listView1);
 
-				listViewItem1 = (ListViewItem)rootPanel.FindName("listViewItem1");
+				listViewItem1 = (ListViewItem)listView1.Items[0]; // UNO TODO: FindName doesn't see items which aren't realized yet.
 				VERIFY_IS_NOT_NULL(listViewItem1);
 
 				gridView1 = (GridView)rootPanel.FindName("gridView1");
 				VERIFY_IS_NOT_NULL(gridView1);
 
-				gridViewItem1 = (GridViewItem)rootPanel.FindName("gridViewItem1");
+				gridViewItem1 = (GridViewItem)gridView1.Items[0]; // UNO TODO: FindName doesn't see items which aren't realized yet.
 				VERIFY_IS_NOT_NULL(gridViewItem1);
 
 				cmbListViewSelectionMode = (ComboBox)rootPanel.FindName("cmbListViewSelectionMode");
