@@ -5,6 +5,7 @@ namespace Microsoft.UI.Xaml.Controls;
 #if false
 [global::Uno.NotImplemented]
 #endif
+#if false // The hand-written partial derives from ModernCollectionBasePanel.
 public partial class ItemsStackPanel : global::Microsoft.UI.Xaml.Controls.Panel
 {
 	// Skipping already declared property AreStickyGroupHeadersEnabledProperty
@@ -108,3 +109,4 @@ public partial class ItemsStackPanel : global::Microsoft.UI.Xaml.Controls.Panel
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.Orientation.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.ScrollingDirection.get
 }
+#endif

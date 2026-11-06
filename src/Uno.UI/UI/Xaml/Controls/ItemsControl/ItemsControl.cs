@@ -640,6 +640,13 @@ namespace Microsoft.UI.Xaml.Controls
 			Items.SetItemsSource(UnwrapItemsSource() as IEnumerable);
 			ObserveCollectionChanged();
 			TryObserveCollectionViewSource(e.NewValue);
+
+			// The panel observes the collection groups of the source it was registered with.
+			if (CustomItemsHost is { } customItemsHost)
+			{
+				customItemsHost.RegisterItemsHost(this);
+				customItemsHost.Refresh();
+			}
 		}
 
 		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
@@ -918,7 +925,16 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceSingleCollectionChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}");
 			}
-			UpdateItems(args);
+
+			if (CustomItemsHost is { } customItemsHost)
+			{
+				NotifyCustomItemsHost(customItemsHost, args, section);
+			}
+			else
+			{
+				UpdateItems(args);
+			}
+
 			(CachedAutomationPeer as ItemsControlAutomationPeer)?.OnItemsChanged(args);
 		}
 
@@ -931,7 +947,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceGroupsChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}, NoOfGroups={NumberOfGroups}");
 			}
-			UpdateItems(args);
+
+			// A custom items host observes the collection groups itself.
+			if (CustomItemsHost is null)
+			{
+				UpdateItems(args);
+			}
+
 			(CachedAutomationPeer as ItemsControlAutomationPeer)?.OnItemsChanged(args);
 		}
 
@@ -977,7 +999,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Remove items from the previous ItemsPanelRoot to ensure they can be safely added to the new one
-			if (ShouldItemsControlManageChildren)
+			if (CustomItemsHost is { } previousCustomItemsHost)
+			{
+				previousCustomItemsHost.DisconnectItemsHost();
+			}
+			else if (ShouldItemsControlManageChildren)
 			{
 				ItemsPanelRoot?.Children.Clear();
 			}
@@ -995,6 +1021,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			ItemsPanelRoot?.SetItemsOwner(this);
 			ItemsPresenter.SetItemsPanel(InternalItemsPanelRoot);
+
+			InitializeItemContainerGenerator();
 
 			OnItemsPanelRootPrepared();
 
@@ -1024,6 +1052,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected virtual void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
+			if (CustomItemsHost is { } customItemsHost)
+			{
+				NotifyCustomItemsHost(customItemsHost, args, section: 0);
+				return;
+			}
+
 			if (ItemsPanelRoot == null
 				|| !ShouldItemsControlManageChildren
 				)
@@ -1428,6 +1462,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public object ItemFromContainer(DependencyObject container)
 		{
+			if (ItemContainerMapping is { } mapping)
+			{
+				return mapping.ItemFromContainer(container);
+			}
+
 			var index = IndexFromContainer(container);
 
 			if (index > -1)
@@ -1453,6 +1492,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public DependencyObject ContainerFromItem(object item)
 		{
+			if (ItemContainerMapping is { } mapping)
+			{
+				return mapping.ContainerFromItem(item);
+			}
+
 			if (IsItemItsOwnContainer(item))
 			{
 				// Verify whether the item is actually present.
@@ -1475,6 +1519,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public int IndexFromContainer(DependencyObject container)
 		{
+			if (ItemContainerMapping is { } mapping)
+			{
+				return mapping.IndexFromContainer(container);
+			}
+
 			var index = IndexFromContainerInner(container);
 			if (index < 0)
 			{
@@ -1501,6 +1550,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public DependencyObject ContainerFromIndex(int index)
 		{
+			if (ItemContainerMapping is { } mapping)
+			{
+				return mapping.ContainerFromIndex(index);
+			}
+
 			var item = ItemFromIndex(index);
 			if (IsItemItsOwnContainer(item))
 			{
@@ -1588,6 +1642,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal protected virtual IEnumerable<DependencyObject> GetItemsPanelChildren()
 		{
+			// The children of a custom items host also hold group headers and elements waiting to be recycled.
+			if (CustomItemsHost is not null)
+			{
+				return ItemsPanelRoot.Children
+					.Where(child => child.GetVirtualizationInformationOrNull() is { IsRealized: true, IsHeader: false });
+			}
+
 			return ItemsPanelRoot?.Children.OfType<DependencyObject>() ?? Enumerable.Empty<DependencyObject>();
 		}
 
