@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	internal struct EstimationReference
 	{
-		//Microsoft.UI.Xaml.Controls.ElementType ElementType { get; set; }
-		//int ElementIndex { get; set; }
-		//Windows.Foundation.Rect ElementBounds { get; set; }
+		internal ElementType ElementType { get; set; }
+		internal int ElementIndex { get; set; }
+		internal Rect ElementBounds { get; set; }
 	};
 }
