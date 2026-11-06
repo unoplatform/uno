@@ -903,17 +903,6 @@ partial class ComboBox
 		IsSelectionBoxHighlighted = value;
 	}
 
-#if HAS_UNO
-	private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
-	{
-		// With virtualization, the base.UpdateItems won't handle the updates
-		// (because ShouldItemsControlManageChildren is false), so we make an
-		// explicit call to Refresh here instead.
-		base.UpdateItems(args);
-		Refresh();
-	}
-#endif
-
 	private void OnOpen()
 	{
 		// TODO Uno: BackButton support
@@ -991,6 +980,10 @@ partial class ComboBox
 		// This does not change the behavior for keyboard/touch/mouse users since interacting
 		// with the control using any of those input methods would have set focus to it anyway.
 		// This only affects opening the ComboBox programmatically, which is what narrator does.
+#if HAS_UNO
+		_focusItemWhenItemsHostAvailable = ItemsPanelRoot is null;
+#endif
+
 		if (IsEditable)
 		{
 			// Ensure focus is in TextBox when popup opens.
@@ -1006,6 +999,9 @@ partial class ComboBox
 			// give focus to or select the first item to ensure that keyboarding can function normally.
 			if (selectedItemIndex >= 0)
 			{
+#if HAS_UNO
+				CenterSelectedItem(selectedItemIndex);
+#endif
 				SetFocusedItem(selectedItemIndex, m_bShouldCenterSelectedItem /*shouldScrollIntoView*/, true /*forceFocus*/, FocusState.Programmatic, false);
 			}
 			else
@@ -1864,16 +1860,15 @@ partial class ComboBox
 					}
 					else
 					{
-						// TODO Uno: Support ScrollIntoView
-						//ScrollIntoView(
-						//	newFocusedIndex,
-						//	false /*isGroupItemIndex*/,
-						//	false /*isHeader*/,
-						//	false /*isFooter*/,
-						//	false /*isFromPublicAPI*/,
-						//	true  /*ensureContainerRealized*/,
-						//	false /*animateIfBringIntoView*/,
-						//	ScrollIntoViewAlignment.Default);
+						ScrollIntoView(
+							(uint)newFocusedIndex,
+							false /*isGroupItemIndex*/,
+							false /*isHeader*/,
+							false /*isFooter*/,
+							false /*isFromPublicAPI*/,
+							true  /*ensureContainerRealized*/,
+							false /*animateIfBringIntoView*/,
+							ScrollIntoViewAlignment.Default);
 					}
 				}
 				else
@@ -2444,16 +2439,15 @@ partial class ComboBox
 
 			if (currentSelectedIndex >= 0)
 			{
-				// TODO Uno: Implement ScrollIntoView in Selector
-				//ScrollIntoView(
-				//	currentSelectedIndex,
-				//	false /*isGroupItemIndex*/,
-				//	false /*isHeader*/,
-				//	false /*isFooter*/,
-				//	false /*isFromPublicAPI*/,
-				//	true  /*ensureContainerRealized*/,
-				//	false /*animateIfBringIntoView*/,
-				//	ScrollIntoViewAlignment.Default);
+				ScrollIntoView(
+					(uint)currentSelectedIndex,
+					false /*isGroupItemIndex*/,
+					false /*isHeader*/,
+					false /*isFooter*/,
+					false /*isFromPublicAPI*/,
+					true  /*ensureContainerRealized*/,
+					false /*animateIfBringIntoView*/,
+					ScrollIntoViewAlignment.Default);
 			}
 		}
 	}
@@ -2646,16 +2640,15 @@ partial class ComboBox
 			{
 				if (isDropDownOpen)
 				{
-					// UNO TODO:
-					//ScrollIntoView(
-					//	foundIndex,
-					//	false /*isGroupItemIndex*/,
-					//	false /*isHeader*/,
-					//	false /*isFooter*/,
-					//	false /*isFromPublicAPI*/,
-					//	true  /*ensureContainerRealized*/,
-					//	false /*animateIfBringIntoView*/,
-					//	ScrollIntoViewAlignment.Default);
+					ScrollIntoView(
+						(uint)foundIndex,
+						false /*isGroupItemIndex*/,
+						false /*isHeader*/,
+						false /*isFooter*/,
+						false /*isFromPublicAPI*/,
+						true  /*ensureContainerRealized*/,
+						false /*animateIfBringIntoView*/,
+						ScrollIntoViewAlignment.Default);
 				}
 			}
 		}

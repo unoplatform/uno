@@ -1186,7 +1186,7 @@ partial class Selector
 
 					SetFocusedItem(newIndex,
 						/*shouldScrollIntoView*/
-						spPanel is not IVirtualizingPanel
+						spPanel is not VirtualizingPanel
 						&& spPanel is not ModernCollectionBasePanel);
 				}
 			}
@@ -2704,8 +2704,9 @@ partial class Selector
 		}
 		while (reevaluateContainerRect);
 
-		// TODO Uno: VirtualizingStackPanel has no IsVirtualizing attached property, an IVirtualizingPanel always virtualizes.
-		isThinkingInLogicalUnits = spPanel is IVirtualizingPanel;
+#if !HAS_UNO // TODO Uno: no panel thinks in logical units: VirtualizingStackPanel is not implemented, and modern panels returned above.
+		isThinkingInLogicalUnits = VirtualizingStackPanel.GetIsVirtualizing(this) && spPanel is VirtualizingPanel;
+#endif
 
 		// offset is not supported for legacy panels.
 		global::System.Diagnostics.Debug.Assert(offset == 0.0 || !isThinkingInLogicalUnits);
@@ -2732,10 +2733,8 @@ partial class Selector
 				}
 			}
 
-#if !HAS_UNO // TODO Uno: ItemsPresenter has no ScrollIntoView, the legacy layouter scrolls by item.
+#if !HAS_UNO // TODO Uno: ItemsPresenter has no ScrollIntoView.
 			spItemsPresenter.ScrollIntoView(index, isGroupItemIndex, isHeader, ensureContainerRealized /*forceSynchronous*/, pixelOffset, alignment);
-#else
-			VirtualizingPanel?.GetLayouter().ScrollIntoView(ItemFromIndex((int)index), alignment);
 #endif
 		}
 		else if (!isThinkingInLogicalUnits)

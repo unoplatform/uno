@@ -12,8 +12,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class Selector : ItemsControl
 	{
-		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
-
 		public event SelectionChangedEventHandler SelectionChanged;
 
 		/// <summary>

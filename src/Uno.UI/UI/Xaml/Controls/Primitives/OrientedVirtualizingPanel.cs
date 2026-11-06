@@ -9,10 +9,7 @@ public partial class OrientedVirtualizingPanel
 	{
 	}
 
-	private protected override VirtualizingPanelLayout GetLayouterCore()
-	{
-		throw new NotSupportedException(
-			$"{GetType().Name} is not supported in Uno Platform yet. " +
-			"Use a non-virtualized panel (e.g. ItemsStackPanel) instead.");
-	}
+	internal override Orientation? PhysicalOrientation => throw new NotSupportedException(
+		$"{GetType().Name} is not supported in Uno Platform yet. " +
+		"Use a non-virtualized panel (e.g. ItemsStackPanel) instead.");
 }
