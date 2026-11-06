@@ -179,13 +179,12 @@ internal static class CommandHelper
 
 		LOG_OUTPUT("Expected access key: \"\"");
 		LOG_OUTPUT($"Actual access key: \"{control.AccessKey}\"");
-		// TODO Uno: AccessKey and AutomationProperties.HelpText default to null, where WinUI's default is empty.
-		VERIFY_IS_TRUE(string.CompareOrdinal("", control.AccessKey ?? "") == 0);
+		VERIFY_IS_TRUE(string.CompareOrdinal("", control.AccessKey) == 0);
 
 		string helpText = AutomationProperties.GetHelpText(control);
 		LOG_OUTPUT("Expected help text: \"\"");
 		LOG_OUTPUT($"Actual help text: \"{helpText}\"");
-		VERIFY_IS_TRUE(string.CompareOrdinal("", helpText ?? "") == 0);
+		VERIFY_IS_TRUE(string.CompareOrdinal("", helpText) == 0);
 
 		VERIFY_IS_NULL(ToolTipService.GetToolTip(control));
 	}

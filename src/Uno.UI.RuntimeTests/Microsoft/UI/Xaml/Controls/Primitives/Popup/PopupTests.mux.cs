@@ -1358,7 +1358,6 @@ public class PopupTests
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Upstream: needs a secondary window with a XAML island
 	[Description("Closes the window when it has a popup open to confirm it doesn't crash.")]
-	[Ignore("Open after the Stage C port: Shift+F10 injected in a second window never raises TextBox.ContextMenuOpening; not root-caused.")]
 	public async Task CloseWindowWithPopupOpen()
 	{
 		Window window1 = null;
