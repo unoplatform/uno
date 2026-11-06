@@ -222,6 +222,14 @@ namespace Microsoft.UI.Xaml
 
 			_dataContextProperty = dataContextProperty;
 
+			// FrameworkTemplate and Style have no DataContext in WinUI and are usually shared (resources), so their
+			// store must never cache an inherited DataContext, whichever path (bindable child, collection item,
+			// parent propagation) delivers it: the shared instance would keep that DataContext alive.
+			if (IsDataContextIsolatedValue(originalObject))
+			{
+				_inheritanceContextEnabled = false;
+			}
+
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 			TemplatedParentScope.UpdateTemplatedParentIfNeeded(originalObject as DependencyObject, store: this);
 #endif
