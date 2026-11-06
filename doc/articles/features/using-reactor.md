@@ -156,6 +156,8 @@ There is no XAML and no `App.xaml` in a Reactor project.
 
 When you run the app from an IDE with the Uno Platform extension, [Hot Reload](xref:Uno.Features.HotReload) applies your changes to a component's `Render()` method while the app is running, and the values held by `UseState` are kept. This works on desktop, WebAssembly, Android and iOS, and needs no Reactor-specific setup.
 
+[Hot Design](xref:Uno.HotDesign.Overview) doesn't support Reactor apps yet, so the `Reactor` feature leaves its package out of Debug builds. Hot Reload doesn't need it.
+
 From the command line, run the desktop target with `dotnet watch`. A project from the template lists several target frameworks, so override the list with the one to run:
 
 ```dotnetcli

@@ -12,6 +12,7 @@ public class Given_UnoSdkReactorFeature
 {
 	private const string Windows = "net10.0-windows10.0.19041.0";
 	private const string Package = "Uno.Microsoft.UI.Reactor";
+	private const string HotDesignPackage = "Uno.UI.HotDesign";
 
 	[TestMethod]
 	[DataRow("net10.0-desktop")]
@@ -29,6 +30,16 @@ public class Given_UnoSdkReactorFeature
 	public void When_Reactor_Is_Not_Listed_Or_Targets_Windows_Then_The_Package_Is_Not_Referenced(string features, string targetFramework)
 	{
 		Evaluate(features, targetFramework).Should().NotContain(Package);
+	}
+
+	// Hot Design doesn't support Reactor apps yet: the feature leaves it out unless the project asks for it.
+	[TestMethod]
+	[DataRow("Reactor", "", false)]
+	[DataRow("Reactor", "false", true)]
+	[DataRow("", "", true)]
+	public void When_Reactor_Is_Listed_Then_Hot_Design_Is_Left_Out(string features, string disableHotDesign, bool expected)
+	{
+		Evaluate(features, "net10.0-desktop", disableHotDesign).Contains(HotDesignPackage).Should().Be(expected);
 	}
 
 	[TestMethod]
@@ -51,9 +62,9 @@ public class Given_UnoSdkReactorFeature
 		}
 	}
 
-	private static string[] Evaluate(string features, string targetFramework)
+	private static string[] Evaluate(string features, string targetFramework, string disableHotDesign = "")
 	{
-		var result = RunProject(features, targetFramework, ["-getItem:PackageReference"]);
+		var result = RunProject(features, targetFramework, ["-getItem:PackageReference"], disableHotDesign);
 		result.ExitCode.Should().Be(0, result.Output);
 
 		JsonDocument json;
@@ -75,7 +86,7 @@ public class Given_UnoSdkReactorFeature
 		}
 	}
 
-	private static DotnetMSBuild.Result RunProject(string features, string targetFramework, string[] arguments)
+	private static DotnetMSBuild.Result RunProject(string features, string targetFramework, string[] arguments, string disableHotDesign = "")
 	{
 		var directory = Directory.CreateTempSubdirectory("uno-sdk-reactor-").FullName;
 		try
@@ -88,6 +99,7 @@ public class Given_UnoSdkReactorFeature
 						<OutputType>Exe</OutputType>
 						<UnoSingleProject>true</UnoSingleProject>
 						<UnoFeatures>{features}</UnoFeatures>
+						<UnoDisableHotDesign>{disableHotDesign}</UnoDisableHotDesign>
 					</PropertyGroup>
 					<Import Project="{RepositoryPaths.Get("src", "Uno.Sdk", "targets", "Uno.Common.targets")}" />
 					<Target Name="CoreCompile" />
