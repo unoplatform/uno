@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Drops <see cref="AssociatedParent"/> — and any DataContext it propagated into this store —
 		/// when the parent is owned by an unloading collectible ALC, is an unloaded
-		/// <see cref="FrameworkElement"/>, or is orphaned from the content-root coordinator, so a
+		/// <see cref="FrameworkElement"/>, is orphaned from the content-root coordinator, or was already collected, so a
 		/// host-lifetime resource cannot pin a secondary app's ALC. A live host element re-associates
 		/// on its next value assignment.
 		/// </summary>
@@ -50,6 +50,12 @@ namespace Microsoft.UI.Xaml
 					|| (parent is FrameworkElement orphanCandidate && IsOrphanedFromContentRoots(orphanCandidate))))
 			{
 				AssociatedParent = null;
+				associationCleared = true;
+			}
+			else if (_associatedParentRef is not null && AssociatedParent is null)
+			{
+				// The weakly held parent was already collected: drop the DataContext it propagated, as above.
+				_associatedParentRef = null;
 				associationCleared = true;
 			}
 
