@@ -162,8 +162,6 @@ In a Debug build, [Hot Reload](xref:Uno.Features.HotReload) applies your changes
 Known issues:
 
 - **Rider with the debugger attached** doesn't update a Reactor app, on any target. Run the app without the debugger.
-- **Uno reports each edit as failed**, in the IDE's Hot Reload status, although the app shows the change. Reactor doesn't register its window with Uno's Hot Reload yet.
-- **The Uno App MCP doesn't see a Reactor app**, so an AI agent can't inspect or drive it.
 - **Hot Design doesn't support Reactor apps.** Don't call `UseStudio()`: Hot Reload doesn't need it.
 
 For the workarounds and the support of each IDE and target, see [Hot Reload](https://github.com/unoplatform/uno.microsoft-ui-reactor/blob/uno/src/Reactor.Uno/README.md#hot-reload) in the Reactor on Uno Platform README.
