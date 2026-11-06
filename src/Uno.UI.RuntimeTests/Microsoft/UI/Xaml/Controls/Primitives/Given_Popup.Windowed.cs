@@ -406,6 +406,98 @@ public class Given_Popup_Windowed
 	}
 
 	[TestMethod]
+	public async Task When_Tree_Reset_Closes_Open_Flyout_Then_Other_Flyouts_Still_Open()
+	{
+		var secondary = new Window();
+		var secondaryButton = new Button { Content = "Target" };
+		secondary.Content = secondaryButton;
+		secondary.Activate();
+		await TestServices.WindowHelper.WaitForLoaded(secondaryButton);
+
+		var flyout = new Flyout { Content = new Border { Width = 50, Height = 50 } };
+		var closedCount = 0;
+		flyout.Closed += (_, _) => closedCount++;
+		var opened = false;
+		flyout.Opened += (_, _) => opened = true;
+		flyout.ShowAt(secondaryButton);
+		await UITestHelper.WaitFor(() => opened, timeoutMS: 3000);
+
+		// What a window closing does. Going through Close alone, the window deactivating usually light-dismisses the flyout first.
+		secondaryButton.XamlRoot!.VisualTree.PopupRoot!.CloseAllPopupsForTreeReset();
+		secondary.Close();
+		await UITestHelper.WaitFor(() => closedCount > 0, timeoutMS: 3000);
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual(1, closedCount);
+
+		var button = new Button { Content = "Target" };
+		await UITestHelper.Load(button);
+
+		var other = new Flyout { Content = new Border { Width = 50, Height = 50 } };
+		var otherOpened = false;
+		other.Opened += (_, _) => otherOpened = true;
+		other.ShowAt(button);
+		try
+		{
+			await UITestHelper.WaitFor(() => otherOpened, timeoutMS: 3000);
+		}
+		finally
+		{
+			other.Hide();
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Window_Creation_Fails_Then_Popup_Stays_Open_In_Window()
+	{
+		var real = Popup.WindowedPopupExtensionForTesting!;
+		Popup.WindowedPopupExtensionForTesting = new FailingExtension(real);
+		try
+		{
+			var target = new Button { Content = "Target" };
+			await UITestHelper.Load(target);
+
+			var content = CreateContent();
+			var popup = CreatePopup(content, target.XamlRoot!, 10, 10);
+			popup.PlacementTarget = target;
+			popup.DesiredPlacement = PopupPlacementMode.Bottom;
+			popup.IsOpen = true;
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(popup.IsOpen, "The window failing must not close the popup.");
+			Assert.IsNull(popup.WindowedPopupSite);
+			Assert.IsFalse(popup.IsWindowed, "Placement must not make it windowed again while it's open.");
+
+			popup.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			Popup.WindowedPopupExtensionForTesting = real;
+		}
+	}
+
+	// A host's site that fails to set up its graphics tells its content it closed, then gives up.
+	private sealed class FailingExtension(IWindowedPopupExtension inner) : IWindowedPopupExtension
+	{
+		public bool IsRightHanded => inner.IsRightHanded;
+
+		public bool IsSupported(XamlRoot xamlRoot) => inner.IsSupported(xamlRoot);
+
+		public IWindowedPopupSite? TryCreateSite(XamlRoot xamlRoot, IWindowedPopupContent content)
+		{
+			content.OnSiteClosed();
+			return null;
+		}
+
+		public PointInt32 GetScreenOffset(XamlRoot xamlRoot) => inner.GetScreenOffset(xamlRoot);
+
+		public bool TryGetMonitorBounds(PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea)
+			=> inner.TryGetMonitorBounds(screenPoint, out monitor, out workArea);
+	}
+
+	[TestMethod]
 	public async Task When_Owner_Closes_Then_Window_Is_Destroyed()
 	{
 		var secondary = new Window();
