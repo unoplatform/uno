@@ -14,6 +14,7 @@ internal class AsyncOperation<TResult> : IAsyncOperation<TResult>, IAsyncOperati
 	private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 	private AsyncOperationCompletedHandler<TResult>? _onCompleted;
 	private AsyncStatus _status;
+	private TResult? _result;
 
 	public AsyncOperation(FuncAsync<AsyncOperation<TResult>, TResult> taskBuilder)
 	{
@@ -58,8 +59,9 @@ internal class AsyncOperation<TResult> : IAsyncOperation<TResult>, IAsyncOperati
 	public void Close()
 		=> _cts.Cancel();
 
+	// A Completed handler runs before Task completes, so Task.Result would deadlock there.
 	public TResult GetResults()
-		=> Task.Result;
+		=> Status == AsyncStatus.Completed ? _result! : Task.Result;
 
 	private async Task<TResult> BuildTaskAsync(FuncAsync<AsyncOperation<TResult>, TResult> taskBuilder)
 	{
@@ -67,9 +69,9 @@ internal class AsyncOperation<TResult> : IAsyncOperation<TResult>, IAsyncOperati
 
 		try
 		{
-			var result = await taskBuilder(_cts.Token, this);
+			_result = await taskBuilder(_cts.Token, this);
 			Status = AsyncStatus.Completed;
-			return result;
+			return _result;
 		}
 		catch (OperationCanceledException)
 		{
