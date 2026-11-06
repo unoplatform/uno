@@ -27,14 +27,15 @@ namespace Microsoft.UI.Xaml
 	public partial class DependencyObject
 	{
 
-		// See note in AssociateParent(object). Weak, like the mentor link: a shared value (Brush, Transition, ...)
+		// See note in AssociateParent(DependencyObject). Weak, like the mentor link: a shared value (Brush, Transition, ...)
 		// held by a single owner must not keep that owner alive after it is removed.
-		private WeakReference? _associatedParentRef;
+		// Borrows the owner's own SelfWeakReference (never returned to the pool), so associating allocates nothing.
+		private ManagedWeakReference? _associatedParentRef;
 
-		private object? AssociatedParent
+		private DependencyObject? AssociatedParent
 		{
-			get => _associatedParentRef?.Target;
-			set => _associatedParentRef = value is null ? null : new WeakReference(value);
+			get => _associatedParentRef?.Target as DependencyObject;
+			set => _associatedParentRef = value?.SelfWeakReference;
 		}
 
 		private HashtableEx? _childrenBindableMap; // maps DependencyProperty to _childrenBindable[index]
@@ -734,7 +735,7 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
-		private void AssociateParent(object? parent)
+		private void AssociateParent(DependencyObject? parent)
 		{
 			if (parent == null) return;
 			if (!_inheritanceContextEnabled) return;
@@ -764,7 +765,7 @@ namespace Microsoft.UI.Xaml
 				AssociatedParent = null;
 			}
 		}
-		private void UnassociateParent(object? parent)
+		private void UnassociateParent(DependencyObject? parent)
 		{
 			if (parent == null) return;
 			if (!_inheritanceContextEnabled) return;
