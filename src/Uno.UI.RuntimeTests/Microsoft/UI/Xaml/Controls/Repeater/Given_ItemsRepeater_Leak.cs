@@ -252,6 +252,33 @@ public class Given_ItemsRepeater_Leak
 		Assert.IsFalse(sourceRef.IsAlive, "The items source is kept alive by the cleanup of a view that died with it.");
 	}
 
+	// A view that outlives its repeaters, e.g. one a view model exposes, and rarely raises: every rebuilt page must not
+	// leave a handler on it.
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Counts the handlers of Uno's ItemsSourceView
+#if RUNTIME_NATIVE_AOT
+	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
+#endif
+	public async Task When_Repeaters_Collected_Then_Handlers_Removed_From_Shared_ItemsSourceView_Without_Raise()
+	{
+		var view = new ItemsSourceView(new ObservableCollection<string> { "a", "b" });
+		var baseline = CountHandlers(view);
+		var refs = CreateNeverLoaded(() => view);
+		Assert.AreEqual(baseline + Count, CountHandlers(view));
+
+		await CollectAsync(refs, () => CountHandlers(view) == baseline);
+
+		Assert.AreEqual(baseline, CountHandlers(view), "Handlers of collected repeaters are still on the shared ItemsSourceView.");
+	}
+
+	private static int CountHandlers(ItemsSourceView view)
+#if HAS_UNO
+		=> (typeof(ItemsSourceView).GetField(nameof(ItemsSourceView.CollectionChanged), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(view) as Delegate)?.GetInvocationList().Length ?? 0;
+#else
+		=> throw new NotSupportedException("WinUI's ItemsSourceView doesn't expose its handlers.");
+#endif
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static (WeakReference repeater, WeakReference source) CreateNeverLoadedWithOwnSource()
 	{
