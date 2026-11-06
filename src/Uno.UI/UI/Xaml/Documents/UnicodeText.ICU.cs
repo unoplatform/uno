@@ -322,8 +322,6 @@ internal readonly partial struct UnicodeText
 
 			public readonly IntPtr[] Iterators = new IntPtr[3];
 
-			public string? LocaleName;
-
 			~BreakIteratorCache() => Close();
 
 			public void Close()
@@ -345,7 +343,7 @@ internal readonly partial struct UnicodeText
 		/// text length, so where ubrk_setText is available this thread's iterator is re-pointed instead.
 		/// The caller must close the iterator only when <paramref name="isCached"/> is false.
 		/// </summary>
-		public static IntPtr GetBreakIterator(int boundaryType, string localeName, IntPtr locale, IntPtr text, int textLength, out bool isCached)
+		public static IntPtr GetBreakIterator(int boundaryType, IntPtr locale, IntPtr text, int textLength, out bool isCached)
 		{
 			if (!_setTextResolved)
 			{
@@ -361,12 +359,6 @@ internal readonly partial struct UnicodeText
 
 			isCached = true;
 			var cache = _breakIterators ??= new();
-			if (!string.Equals(cache.LocaleName, localeName, StringComparison.Ordinal))
-			{
-				cache.Close();
-				cache.LocaleName = localeName;
-			}
-
 			var iterator = cache.Iterators[boundaryType];
 			if (iterator == IntPtr.Zero)
 			{
@@ -402,8 +394,7 @@ internal readonly partial struct UnicodeText
 			}
 			else if (status < 0 && typeof(ICU).LogTrace() is { } log)
 			{
-				// ICU has a very low bar for what it considers a "warning" (ubrk_open warns on every call), so only
-				// marshal the name once something is listening.
+				// ICU has a very low bar for what it considers a "warning", so only marshal the name once something is listening.
 				var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(status));
 				log.Trace($"{typeof(T).Name} raised a warning code: {errorString}");
 			}

@@ -89,7 +89,7 @@ public class Given_UnicodeText_BreakIterator
 		long allocated;
 		try
 		{
-			// U_USING_DEFAULT_WARNING, which ubrk_open reports on every call.
+			// U_USING_DEFAULT_WARNING.
 			const int warning = -127;
 			checkErrorCode(warning);
 
