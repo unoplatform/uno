@@ -37,17 +37,20 @@ namespace DirectUI
 			if (!_isDrainScheduled)
 			{
 				_isDrainScheduled = true;
+				var isEnqueuing = true;
 				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Low, () =>
 				{
 					_isDrainScheduled = false;
 
 					DXamlCore.Current.GetBudgetManager().StoreFrameTime();
 
-					if (BuildTrees())
+					// A dispatcher running this inline has no tick between passes: rescheduling would recurse forever.
+					if (BuildTrees() && !isEnqueuing)
 					{
 						ScheduleDrain();
 					}
 				});
+				isEnqueuing = false;
 			}
 		}
 
