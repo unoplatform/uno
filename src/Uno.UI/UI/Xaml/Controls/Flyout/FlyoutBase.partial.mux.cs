@@ -1166,6 +1166,7 @@ partial class FlyoutBase
 			// TODO Uno: WinUI closes from the presenter's Unloaded, raised asynchronously and even if Loaded wasn't raised.
 			// Uno raises it synchronously in Popup.Close and only after Loaded. Popup.Closed has the timing of WinUI's Unloaded.
 			spPopup.Closed += OnPopupClosed;
+			spPopup.ForceClosed += OnPopupClosed;
 
 			m_tpPresenter = spPresenter;
 
