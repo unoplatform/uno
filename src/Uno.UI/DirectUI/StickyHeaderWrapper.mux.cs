@@ -15,6 +15,8 @@ namespace DirectUI;
 
 internal sealed partial class StickyHeaderWrapper
 {
+	private const int StickyHeaderZIndex = 1;
+
 	internal StickyHeaderWrapper(Rect desiredBounds, double groupBottom, double panelOffset, double pannableExtent)
 	{
 #if !HAS_UNO // TODO Uno: no layout transition element parent.
@@ -50,6 +52,7 @@ internal sealed partial class StickyHeaderWrapper
 			if (spTargetElement is not null)
 			{
 				spTargetElement.RenderTransform = null;
+				spTargetElement.ClearValue(Canvas.ZIndexProperty);
 #if !HAS_UNO // TODO Uno: no layout transition element.
 				pNativeTarget = spTargetElement.GetHandle();
 #endif
@@ -140,6 +143,9 @@ internal sealed partial class StickyHeaderWrapper
 		// See notes in ParametricCurve.cpp - CSecondaryContentRelationship::UpdateDependencyProperties().
 		spHeaderTransform = new CompositeTransform();
 		pHeader.RenderTransform = spHeaderTransform;
+
+		// TODO Uno: no layout transition element lifts the header above the panel's items, so its z-order does that.
+		Canvas.SetZIndex(pHeader, StickyHeaderZIndex);
 
 		GetEffectiveDimensions(out effectiveTop, out effectiveBottom);
 

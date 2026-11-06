@@ -27,6 +27,9 @@ public abstract partial class ModernCollectionBasePanel
 
 	private readonly List<ItemClippingCurveSegment> m_itemClippingCurveSegments = new();
 	private bool m_hasItemClippingCurve;
+	private RectangleGeometry? m_itemClippingGeometry;
+	private List<UIElement> m_stickyClippedContainers = new();
+	private List<UIElement> m_previousStickyClippedContainers = new();
 #endif
 
 	// Configure or update the sticky behavior of a header
@@ -258,7 +261,14 @@ public abstract partial class ModernCollectionBasePanel
 
 		global::System.Diagnostics.Debug.Assert(m_cacheManager.IsGrouping());
 
+#if HAS_UNO
+		// TODO Uno: WinUI clips the panel and draws the sticky header outside of that clip through a layout transition element.
+		// Uno has no such element, so a panel clip would hide the header too: the geometry only computes the curve, and
+		// UpdateItemClippingTransform clips the few containers under the header instead.
+		spClip = m_itemClippingGeometry;
+#else
 		spClip = Clip as RectangleGeometry;
+#endif
 
 		// Ensure the clip is created and populated
 		if (spClip is null)
@@ -266,7 +276,11 @@ public abstract partial class ModernCollectionBasePanel
 			updateClipAnimation = true;
 
 			spClip = new RectangleGeometry();
+#if HAS_UNO
+			m_itemClippingGeometry = spClip;
+#else
 			Clip = spClip;
+#endif
 		}
 
 		spClip.Rect = clipRect;
@@ -493,7 +507,50 @@ public abstract partial class ModernCollectionBasePanel
 		{
 			m_tpItemClippingTransform.TranslateX = 0;
 			m_tpItemClippingTransform.TranslateY = -curveValue;
+
+			ClipContainersUnderStickyHeader(-curveValue, verticalOffset - m_currentHeaderHeight);
 		}
+	}
+
+	// Clips what the panel clip would have hidden: the part of a visible container that sits above the clip top, i.e. under the sticky header.
+	private void ClipContainersUnderStickyHeader(double clipTop, double visibleTop)
+	{
+		(m_stickyClippedContainers, m_previousStickyClippedContainers) = (m_previousStickyClippedContainers, m_stickyClippedContainers);
+		m_stickyClippedContainers.Clear();
+
+		var validCount = m_containerManager.GetValidContainerCount();
+		for (int validIndex = 0; validIndex < validCount; ++validIndex)
+		{
+			if (m_containerManager.GetContainerAtValidIndex(validIndex) is not { } container)
+			{
+				continue;
+			}
+
+			var bounds = GetBoundsFromElement(container);
+			if (bounds.Y >= clipTop)
+			{
+				break;
+			}
+
+			if (bounds.Y + bounds.Height > visibleTop)
+			{
+				var visual = container.Visual;
+				var clip = visual.TransitionClip as Microsoft.UI.Composition.InsetClip ?? visual.Compositor.CreateInsetClip();
+				clip.TopInset = (float)(clipTop - bounds.Y);
+				visual.TransitionClip = clip;
+				m_stickyClippedContainers.Add(container);
+			}
+		}
+
+		foreach (var container in m_previousStickyClippedContainers)
+		{
+			if (!m_stickyClippedContainers.Contains(container) && container.TransitionTarget is not { HasClipAnimation: true })
+			{
+				container.Visual.TransitionClip = null;
+			}
+		}
+
+		m_previousStickyClippedContainers.Clear();
 	}
 #endif
 
@@ -524,6 +581,12 @@ public abstract partial class ModernCollectionBasePanel
 #if HAS_UNO
 		m_itemClippingCurveSegments.Clear();
 		m_hasItemClippingCurve = false;
+		m_itemClippingGeometry = null;
+		foreach (var container in m_stickyClippedContainers)
+		{
+			container.Visual.TransitionClip = null;
+		}
+		m_stickyClippedContainers.Clear();
 #else
 		if (m_tpItemClippingRelationship is not null)
 		{
