@@ -499,8 +499,28 @@ namespace Uno.UI.DataBinding
 
 				var newValueActionWeak = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(null, propertyChangedValueHandler);
 
-				System.ComponentModel.PropertyChangedEventHandler handler = (s, args) =>
+				System.ComponentModel.PropertyChangedEventHandler? handler = null;
+				handler = (s, args) =>
 				{
+					// An earlier handler of this same raise rebound the target: the disposable already detached
+					// this one, and the source's in-flight invocation list is calling an obsolete callback.
+					if (dataContextReference.IsDisposed)
+					{
+						return;
+					}
+
+					// Nothing disposes the subscription when the binding target is collected, so drop it on the
+					// first raise after the value handler has gone (self-purging weak event, as in WPF).
+					if (!newValueActionWeak.TryGetTarget<IPropertyChangedValueHandler>(out var valueHandler))
+					{
+						if (dataContextReference.TryGetTarget<System.ComponentModel.INotifyPropertyChanged>(out var deadSource))
+						{
+							deadSource.PropertyChanged -= handler;
+						}
+
+						return;
+					}
+
 					if (args.PropertyName == propertyName || string.IsNullOrEmpty(args.PropertyName))
 					{
 						if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -508,11 +528,7 @@ namespace Uno.UI.DataBinding
 							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{dataContextReference.Target?.GetType()}]");
 						}
 
-						if (!newValueActionWeak.IsDisposed
-						&& newValueActionWeak.Target is IPropertyChangedValueHandler handler)
-						{
-							handler.NewValue();
-						}
+						valueHandler.NewValue();
 					}
 				};
 
