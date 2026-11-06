@@ -140,7 +140,7 @@ namespace Microsoft.UI.Xaml
 				nameof(Language),
 				typeof(string),
 				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(default(string), FrameworkPropertyMetadataOptions.Inherits));
+				new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.Inherits));
 
 		#region FlowDirection Dependency Property
 #if !SUPPORTS_RTL

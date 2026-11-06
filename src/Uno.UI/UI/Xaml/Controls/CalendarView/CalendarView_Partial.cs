@@ -1023,7 +1023,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			spCalendarLanguages = new List<string>();
 
-			if (language is { }) // UNO
+			if (!string.IsNullOrEmpty(language)) // UNO
 			{
 				spCalendarLanguages.Add(language);
 			}
