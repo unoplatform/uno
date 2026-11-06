@@ -14,6 +14,7 @@ using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
+[RequiresScaling(1f)]
 [TestClass]
 [PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public class Given_ItemsPresenter
@@ -64,18 +65,10 @@ public class Given_ItemsPresenter
 		var item1 = (FrameworkElement)panel.Children[0];
 		var item2 = (FrameworkElement)panel.Children[1];
 
-		// WinUI numbers
-		// LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(3, 3, 150, 200), Epsilon);
-		// LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 150, 200), Epsilon);
-		// ip.DesiredSize.Should().Be(new Size(150, 200), Epsilon);
-		// LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(50, 50, 50, 150), Epsilon);
-		// LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 50, 50), Epsilon);
-		// LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(0, 50, 50, 50), Epsilon);
-
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(3, 3, 150, 250), Epsilon);
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 150, 250), Epsilon);
-		ip.DesiredSize.Should().Be(new Size(150, 250), Epsilon);
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(50, 50, 50, 200), Epsilon);
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(3, 3, 150, 200), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 150, 200), Epsilon);
+		ip.DesiredSize.Should().Be(new Size(150, 200), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(50, 50, 50, 150), Epsilon);
 		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 50, 50), Epsilon);
 		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(0, 50, 50, 50), Epsilon);
 
@@ -83,47 +76,25 @@ public class Given_ItemsPresenter
 		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).Should().BeNull();
 
-		// WinUI numbers
-		// ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
-		// {
-		// 	50,
-		// 	100,
-		// 	150
-		// }, Epsilon);
-		//
-		// ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
-		// {
-		// 	100,
-		// 	150,
-		// 	200
-		// }, Epsilon);
-		//
-		// ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
-		// {
-		// 	75,
-		// 	125,
-		// 	175
-		// }, Epsilon);
-
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
-		{
-			0,
-			50,
-			100
-		}, Epsilon);
-
-		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			50,
 			100,
 			150
 		}, Epsilon);
-
+		
+		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
+		{
+			100,
+			150,
+			200
+		}, Epsilon);
+		
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
-			25,
 			75,
-			125
+			125,
+			175
 		}, Epsilon);
 	}
 
@@ -189,7 +160,7 @@ public class Given_ItemsPresenter
 
 		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 290, 290), Epsilon);
 		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 290, 290), Epsilon);
-		ip.DesiredSize.Should().Be(new Size(236, 288), Epsilon);
+		ip.DesiredSize.Should().Be(new Size(236, 228), Epsilon);
 		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(100, 100, 90, 20), Epsilon);
 		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(100, 270, 90, 20), Epsilon);
 		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(100, 120, 90, 150), Epsilon);
@@ -713,7 +684,7 @@ public class Given_ItemsPresenter
 		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 590), Epsilon);
 		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 590), Epsilon);
 		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 496), Epsilon);
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(496, 0, 0, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(default(Rect), Epsilon);
 		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 358, 496), Epsilon);
 		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 438), Epsilon);
 		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 438), Epsilon);
@@ -810,7 +781,7 @@ public class Given_ItemsPresenter
 
 		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 590), Epsilon);
 		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 590), Epsilon);
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 0, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(default(Rect), Epsilon);
 		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(398, 0, 98, 496), Epsilon);
 		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 0, 398, 496), Epsilon);
 		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 438), Epsilon);
