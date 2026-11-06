@@ -93,8 +93,27 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			Reset();
 
+			// Active is set before the play, which is deferred to the next tick on Skia. It has to be:
+			// the parent Storyboard must see this child as running, and Pause() ignores a non-Active
+			// timeline, so a Begin(); Pause(); pair would otherwise silently start the animation anyway.
+			// Pause/Resume/Seek all tolerate a null _frameScheduler for that window.
 			State = TimelineState.Active;
 
+			Play();
+		}
+
+		/// <summary>
+		/// Starts the animation. On Skia, defers scheduler creation to the first rendering tick so
+		/// keyframe binding values are read after layout (matching WinUI where keyframe values are
+		/// read at tick time, not at Begin time).
+		/// </summary>
+		private void Play()
+		{
+			PlayDeferred();
+		}
+
+		private void PlayImmediate()
+		{
 			// MUX Reference: CAnimation::GetAnimationBaseValue / ReadBaseValuesFromTargetOrHandoff
 			// Ensure keyframe theme resources are resolved with the target element's
 			// effective theme before playback begins. This is needed because keyframe
@@ -124,6 +143,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				);
 			}
 
+			CancelDeferredPlay();
 			// We explicitly call the Stop of the _frameScheduler before the Reset dispose it,
 			// so the EndReason will be Stopped instead of Aborted.
 			_frameScheduler?.Stop();
@@ -149,7 +169,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			State = TimelineState.Active;
-			_frameScheduler!.Resume();
+
+			if (_frameScheduler is null)
+			{
+				// Paused before the deferred play created the scheduler: nothing has been played yet,
+				// so resuming means (re)starting the play. Play() is a no-op if one is already pending.
+				Play();
+				return;
+			}
+
+			_frameScheduler.Resume();
 		}
 
 		void ITimeline.Pause()
@@ -169,7 +198,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			State = TimelineState.Paused;
-			_frameScheduler!.Pause();
+
+			// The scheduler does not exist yet while the play is deferred to the next tick.
+			// Resume() picks the play back up in that case.
+			_frameScheduler?.Pause();
 		}
 
 		void ITimeline.Seek(TimeSpan offset)
@@ -185,18 +217,26 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
+			CancelDeferredPlay();
 			// Set value to last keytime and set state to filling
 			_frameScheduler?.Dispose();
 			_frameScheduler = null;
 
-			var fillFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).Last();
+			// Read the final value directly from the last keyframe (not cached).
+			// This matches WinUI's tick-based value reading and supports the
+			// Begin(); SkipToFill(); pattern used by AppBar.UpdateTemplateSettings().
+			var fillFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault();
+			if (fillFrame is not null)
+			{
+				SetValue(fillFrame.Value);
+			}
 
-			SetValue(fillFrame.Value);
 			State = TimelineState.Stopped;
 		}
 
 		void ITimeline.Deactivate()
 		{
+			CancelDeferredPlay();
 			Reset();
 		}
 
