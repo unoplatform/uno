@@ -885,17 +885,15 @@ partial class ListViewBase
 		// In those cases, that item must be realized and prepared first and selected as the focusable element.
 		if (!isGrouping && shouldCustomizeTabNavigation)
 		{
-#if !HAS_UNO // TODO Uno: FocusManager does not track IsMovingFocusToNextTabStop / IsMovingFocusToPreviousTabStop.
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
 
 			global::System.Diagnostics.Debug.Assert(focusManager is not null);
 
-			if ((!isBackward && focusManager.IsMovingFocusToNextTabStop()) || (isBackward && focusManager.IsMovingFocusToPreviousTabStop()))
+			if (focusManager is not null && ((!isBackward && focusManager.IsMovingFocusToNextTabStop()) || (isBackward && focusManager.IsMovingFocusToPreviousTabStop())))
 			{
 				// The FocusManager is processing the Tab key to actually navigate to an element (as opposed to only accessing a tab stop).
 				scrollIntoViewAndPrepareContainer = true;
 			}
-#endif
 		}
 
 		// If neither focused item nor focused group exists, retrieve GroupItem for last focused item, if grouping.
@@ -2580,8 +2578,8 @@ partial class ListViewBase
 			{
 				bool isFocusable = false;
 
-				var itemMapping = (ItemsPanelRoot as ICustomGeneratorItemsHost)?.GetItemContainerMapping();
-				isFocusable = IsItemFocusable(itemMapping!, (uint)focusIndex, true /*unrealizedItemsAssumedFocusable*/);
+				var itemMapping = GetItemContainerMapping();
+				isFocusable = IsItemFocusable(itemMapping, (uint)focusIndex, true /*unrealizedItemsAssumedFocusable*/);
 
 				if (isFocusable)
 				{

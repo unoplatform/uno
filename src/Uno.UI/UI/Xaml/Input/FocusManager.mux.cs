@@ -695,15 +695,37 @@ namespace Microsoft.UI.Xaml.Input
 		/// </summary>
 		/// <param name="isReverseDirection">Is shift pressed?</param>
 		/// <returns>Value indicating whether the request was handled.</returns>
+		// MUX Reference focusmgr.h, IsMovingFocusToNextTabStop/IsMovingFocusToPreviousTabStop
+		private bool m_isMovingFocusToNextTabStop;
+		private bool m_isMovingFocusToPreviousTabStop;
+
+		internal bool IsMovingFocusToNextTabStop() => m_isMovingFocusToNextTabStop;
+
+		internal bool IsMovingFocusToPreviousTabStop() => m_isMovingFocusToPreviousTabStop;
+
+		private void SetIsMovingFocusToTabStop(bool isReverseDirection, bool value)
+		{
+			if (isReverseDirection)
+			{
+				m_isMovingFocusToPreviousTabStop = value;
+			}
+			else
+			{
+				m_isMovingFocusToNextTabStop = value;
+			}
+		}
+
 		internal bool ProcessTabStop(bool isReverseDirection)
 		{
 			var bHandled = false;
+			SetIsMovingFocusToTabStop(isReverseDirection, true);
 
 			DependencyObject? spNewTabStop;
 
 			// Get the new tab stoppable element.
 			bool queryOnly = false;
 			spNewTabStop = ProcessTabStopInternal(isReverseDirection, queryOnly);
+			SetIsMovingFocusToTabStop(isReverseDirection, false);
 
 			var navigationDirection = (isReverseDirection == true) ?
 				FocusNavigationDirection.Previous : FocusNavigationDirection.Next;
@@ -2416,7 +2438,22 @@ namespace Microsoft.UI.Xaml.Input
 
 				// Get the move candidate element according to next/previous navigation direction.
 				//TODO:MZ: The original code checks FAILED status
-				nextFocusedElement = ProcessTabStopInternal(bPressedShift, findFocusOptions.QueryOnly);
+				if (findFocusOptions.QueryOnly)
+				{
+					nextFocusedElement = ProcessTabStopInternal(bPressedShift, queryOnly: true);
+				}
+				else
+				{
+					SetIsMovingFocusToTabStop(bPressedShift, true);
+					try
+					{
+						nextFocusedElement = ProcessTabStopInternal(bPressedShift, queryOnly: false);
+					}
+					finally
+					{
+						SetIsMovingFocusToTabStop(bPressedShift, false);
+					}
+				}
 				if (nextFocusedElement == null)
 				{
 					return null;
