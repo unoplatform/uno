@@ -54,6 +54,11 @@ namespace UITests.Shared.Windows_UI_Composition
 
 				ReportStatus();
 			}
+			catch (Exception ex)
+			{
+				// async void click handler: an escaping exception would take down the app.
+				StatusText.Text = $"Run failed: {ex}";
+			}
 			finally
 			{
 				RunButton.IsEnabled = true;
