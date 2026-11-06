@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Extensions;
 using System.Text.RegularExpressions;
@@ -519,6 +520,233 @@ public partial class Given_ContentPresenter
 		}
 
 		Assert.IsFalse(reference.IsAlive);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25919")]
+	[DataRow("ListView", false)]
+	[DataRow("ListView", true)]
+	[DataRow("GridView", false)]
+	[DataRow("GridView", true)]
+	[DataRow("FlipView", false)]
+	[DataRow("ComboBox", false)]
+	[DataRow("ItemsControl", false)]
+	public async Task When_ItemTemplateSelector_Then_No_Placeholder(string kind, bool customContainerTemplate)
+	{
+		var item = new ToStringRecordingItem();
+		var selector = new RecordingSelector();
+
+		ItemsControl SUT = kind switch
+		{
+			"ListView" => new ListView(),
+			"GridView" => new GridView(),
+			"FlipView" => new FlipView { Width = 200, Height = 200 },
+			"ComboBox" => new ComboBox(),
+			_ => new ItemsControl(),
+		};
+		SUT.ItemTemplateSelector = selector;
+		SUT.ItemsSource = new[] { item };
+
+		if (customContainerTemplate)
+		{
+			SUT.ItemContainerStyle = LoadBareContainerStyle(kind == "ListView" ? "ListViewItem" : "GridViewItem");
+		}
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		if (SUT is ComboBox comboBox)
+		{
+			comboBox.IsDropDownOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		var root = SUT.ContainerFromIndex(0) is ContentControl container
+			? container.ContentTemplateRoot
+			: VisualTreeUtils.FindVisualChildByType<Border>(SUT);
+
+		Assert.IsNotNull(root, "The selected template was not materialized.");
+		Assert.AreEqual(0, item.ToStringCalls, $"The item was rendered as text: {item.LastStack}");
+
+		// An ItemsControl's own presenter gets its selector before its Content: #25444.
+		if (kind != "ItemsControl")
+		{
+			Assert.AreEqual(0, selector.NullItemCalls, "The selector was asked about a null item.");
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25919")]
+	[DataRow("Content=\"{TemplateBinding Content}\" ContentTemplate=\"{TemplateBinding ContentTemplate}\"")]
+	[DataRow("Content=\"{TemplateBinding Content}\"")]
+	[DataRow("ContentTemplate=\"{TemplateBinding ContentTemplate}\"")]
+	[DataRow("")]
+	[DataRow("Content=\"{TemplateBinding Content}\" ContentTemplateSelector=\"{TemplateBinding ContentTemplateSelector}\"")]
+	public async Task When_ContentControl_Selector_Then_No_Placeholder(string attributes)
+	{
+		var item = new ToStringRecordingItem();
+		var selector = new RecordingSelector();
+
+		var SUT = new ContentControl
+		{
+			Template = XamlHelper.LoadXaml<ControlTemplate>($$"""
+				<ControlTemplate TargetType="ContentControl">
+					<ContentPresenter {{attributes}} />
+				</ControlTemplate>
+				"""),
+			ContentTemplateSelector = selector,
+			Content = item,
+		};
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsNotNull(SUT.ContentTemplateRoot, "The selected template was not materialized.");
+		Assert.AreEqual(0, item.ToStringCalls, $"The item was rendered as text: {item.LastStack}");
+		Assert.AreEqual(0, selector.NullItemCalls, "The selector was asked about a null item.");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25919")]
+	public async Task When_Stock_ContentControl_Selector_Then_No_Placeholder()
+	{
+		var item = new ToStringRecordingItem();
+		var selector = new RecordingSelector();
+		var SUT = new ContentControl { ContentTemplateSelector = selector, Content = item };
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsNotNull(SUT.ContentTemplateRoot, "The selected template was not materialized.");
+		Assert.AreEqual(0, item.ToStringCalls, $"The item was rendered as text: {item.LastStack}");
+		Assert.AreEqual(0, selector.NullItemCalls, "The selector was asked about a null item.");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25919")]
+	public async Task When_ListViewItem_No_Template_Then_Placeholder_Text()
+	{
+		var item = new ToStringRecordingItem();
+		var SUT = new ListView { ItemsSource = new[] { item } };
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var presenter = VisualTreeUtils.FindVisualChildByType<ContentPresenter>((ListViewItem)SUT.ContainerFromIndex(0));
+		var textBlock = VisualTreeUtils.FindVisualChildByType<ImplicitTextBlock>(presenter);
+
+		Assert.AreEqual(nameof(ToStringRecordingItem), textBlock.Text);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25919")]
+	public async Task When_Content_Has_Own_Binding_Then_Not_Replaced_By_Hookup()
+	{
+		var SUT = new ContentControl
+		{
+			Template = XamlHelper.LoadXaml<ControlTemplate>("""
+				<ControlTemplate TargetType="ContentControl">
+					<ContentPresenter Content="{Binding}" />
+				</ControlTemplate>
+				"""),
+			Content = "from parent",
+			DataContext = "from data context",
+		};
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var presenter = VisualTreeUtils.FindVisualChildByType<ContentPresenter>(SUT);
+		Assert.AreEqual("from data context", presenter.Content);
+		Assert.AreEqual("from data context", VisualTreeUtils.FindVisualChildByType<ImplicitTextBlock>(presenter).Text);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25919")]
+	public async Task When_Implicit_Hookup_And_Null_Content_Then_No_Visuals()
+	{
+		var SUT = new ContentControl
+		{
+			Template = XamlHelper.LoadXaml<ControlTemplate>("""
+				<ControlTemplate TargetType="ContentControl">
+					<ContentPresenter />
+				</ControlTemplate>
+				"""),
+		};
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var presenter = VisualTreeUtils.FindVisualChildByType<ContentPresenter>(SUT);
+		Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(presenter));
+
+		SUT.Content = "text";
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual("text", VisualTreeUtils.FindVisualChildByType<ImplicitTextBlock>(presenter).Text);
+	}
+
+	private static Style LoadBareContainerStyle(string targetType)
+		=> XamlHelper.LoadXaml<Style>($$"""
+			<Style TargetType="{{targetType}}">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{{targetType}}">
+							<ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			""");
+
+	private sealed class ToStringRecordingItem
+	{
+		public int ToStringCalls { get; private set; }
+
+		public string LastStack { get; private set; }
+
+		public override string ToString()
+		{
+			var stack = Environment.StackTrace;
+
+			// Selector items legitimately use the text of their item as their automation name.
+			if (!stack.Contains("GetPlainText"))
+			{
+				ToStringCalls++;
+				LastStack = stack;
+			}
+
+			return nameof(ToStringRecordingItem);
+		}
+	}
+
+	private sealed partial class RecordingSelector : DataTemplateSelector
+	{
+		private readonly DataTemplate _template = XamlHelper.LoadXaml<DataTemplate>("""
+			<DataTemplate>
+				<Border Width="50" Height="50" />
+			</DataTemplate>
+			""");
+
+		public int NullItemCalls { get; private set; }
+
+		protected override DataTemplate SelectTemplateCore(object item)
+		{
+			if (item is null)
+			{
+				NullItemCalls++;
+				return null;
+			}
+
+			return _template;
+		}
+
+		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
 	}
 
 	public class AlignmentTestConfiguration
