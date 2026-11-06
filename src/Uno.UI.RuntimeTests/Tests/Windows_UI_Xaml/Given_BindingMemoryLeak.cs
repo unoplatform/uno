@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Windows.UI;
 
@@ -209,31 +209,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		private static async Task AssertCollectedAsync(WeakReference viewRef, WeakReference vmRef)
 		{
-			var sw = Stopwatch.StartNew();
-			var timeout = TimeSpan.FromSeconds(10);
-
-			while (sw.Elapsed < timeout && (viewRef.IsAlive || vmRef.IsAlive))
-			{
-				GC.Collect(2);
-				GC.WaitForPendingFinalizers();
-				GC.Collect(2);
-
-				// Platform-specific GC quirk: some platforms need a Task.Yield()
-				// to allow async continuations and weak reference cleanup
-#if __SKIA__
-				if (OperatingSystem.IsBrowser() || OperatingSystem.IsLinux() || OperatingSystem.IsIOS() || OperatingSystem.IsAndroid())
-#endif
-				{
-					await Task.Yield();
-					GC.Collect(2);
-					GC.WaitForPendingFinalizers();
-					GC.Collect(2);
-				}
-
-				// Waiting for idle is required for collection of
-				// DispatcherConditionalDisposable to be executed
-				await TestServices.WindowHelper.WaitForIdle();
-			}
+			await LeakTestHelper.CollectAsync([viewRef, vmRef]);
 
 			Assert.IsFalse(viewRef.IsAlive, "View should have been garbage collected after removal from visual tree.");
 			Assert.IsFalse(vmRef.IsAlive, "ViewModel should have been garbage collected after View removal from visual tree.");
