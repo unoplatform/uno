@@ -42,6 +42,8 @@ What this means for an upgrade:
 - Nothing to do if your libraries already ship a `netX.0` asset. It is still the asset used by the
   `net10.0-desktop` and `net10.0-browserwasm` heads, and workarounds built for the 6.x behavior keep working.
 
+See also: [`Uno.WinUI` no longer ships platform UI assemblies](xref:Uno.Development.MigratingToUno7.Packages#unowinui-no-longer-ships-net-androidiostvosmaccatalyst-ui-assemblies), [`Skia` Uno Feature on libraries](xref:Uno.Development.MigratingToUno7.Packages#skia-uno-feature-no-longer-implied-on-libraries).
+
 ### Which target frameworks should a library keep
 
 Which target frameworks should a library keep? `Uno.WinUI` shipping only `netX.0` and
@@ -83,6 +85,8 @@ The removed names stay valid as ordinary aliases of a `using:` namespace, and ar
 `xmlns:legacy="using:Uno.UI.Controls.Legacy"` names a live namespace (it still holds the `Grid` extensions): keep that
 prefix if you use it. `legacy:ProgressRing` no longer exists, see [`Uno.UI.Controls.Legacy.ProgressRing`](xref:Uno.Development.MigratingToUno7.RemovedApis#unouicontrolslegacyprogressring).
 
+See also: [XAML and default styles](xref:Uno.Development.MigratingToUno7.Xaml).
+
 ### Removed file suffixes
 
 These suffixes no longer have a rule, so a file using one compiles for every target framework, the WinAppSDK one
@@ -105,6 +109,8 @@ They read as a compile-time host discriminator but could never be one: the SDK r
 package together, so all of them were defined at once in a `netX.0-desktop` head. Use
 `OperatingSystem.IsWindows()` / `IsLinux()` / `IsMacOS()`, which is the only check that can be correct for a
 target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are kept, see below.
+
+See also: [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed).
 
 ### Preprocessor symbols no longer depend on the project shape
 
@@ -171,6 +177,8 @@ Consequences worth knowing about:
   items, so `build_property.UnoRuntimeIdentifier` and its two siblings read as empty. Detect the platform from the
   target framework instead.
 
+See also: [The `Uno.Sdk` is required for applications](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-unosdk-is-required-for-applications).
+
 ### Cross-runtime libraries
 
 A cross-runtime library — one that packs a desktop and a browser build of itself into `uno-runtime/` — now
@@ -201,3 +209,11 @@ Most libraries need neither. A library that targets plain `net10.0` or `net11.0`
 browser-specific code sets no `UnoRuntimeVariant` and packs no `uno-runtime` folder: it compiles against the
 platform-neutral assemblies in `lib/`, and the application head deploys the runtime implementations matching its
 own target framework, the library's calls included.
+
+## Related pages
+
+- [Packages and Uno Features](xref:Uno.Development.MigratingToUno7.Packages) for what your package depends on.
+- [XAML and default styles](xref:Uno.Development.MigratingToUno7.Xaml) for other XAML changes.
+- [Project format, target frameworks and OS versions](xref:Uno.Development.MigratingToUno7.ProjectSetup) for target frameworks.
+- [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from an error or symptom to its fix.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.
