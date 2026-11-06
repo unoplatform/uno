@@ -14,7 +14,7 @@ iOS, WebAssembly and on the Win32, X11 and macOS desktop hosts.
 > of the visual tree by inheritance; they are **embedded** as the content of a
 > `ContentControl` and composited by the Skia host. If you are upgrading an app that placed
 > native views directly in panels, see
-> [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
+> [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7.RemovedApis#native-element-hosting).
 
 ## Adding JavaScript views in WebAssembly
 

@@ -58,7 +58,7 @@ On **macOS**, **Linux**, and **Windows**, using the `netX.0-desktop` target fram
 However, when using **WinAppSDK**, the **native WinUI rendering engine** is always used, since that target is not provided by Uno Platform.
 
 > [!NOTE]
-> **Mac Catalyst** is not supported. It was dropped from the templates in Uno Platform 6.0 and the `net*-maccatalyst` target framework was removed entirely in 7.0 — use `netX.0-desktop`, which runs on macOS using Skia for rendering. See the [7.0 migration guide](xref:Uno.Development.MigratingToUno7).
+> **Mac Catalyst** is not supported. It was dropped from the templates in Uno Platform 6.0 and the `net*-maccatalyst` target framework was removed entirely in 7.0 — use `netX.0-desktop`, which runs on macOS using Skia for rendering. See the [7.0 migration guide](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed).
 
 You can find more details in [Using the Skia Desktop](xref:Uno.Skia.Desktop).
 

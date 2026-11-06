@@ -257,7 +257,7 @@ To suppress it:
 
 This application head references packages that ship their implementation under `uno-runtime/` — such as `Uno.WinRT` and `Uno.Foundation` — but no Uno Platform runtime host package was detected (each `Uno.WinUI.Runtime.*` package declares itself by setting the `UnoHasRuntimeHost` MSBuild property), so the reference assemblies would be deployed and every call into them would throw `NotImplementedException` at runtime.
 
-The usual cause is an explicit reference to a `Uno.WinUI.Runtime.Skia.*` host package, which predates the 7.0 rename and does not declare the runtime host. Those ids receive no 7.0 builds, so replace each one with its renamed `Uno.WinUI.Runtime.*` id (`Uno.WinUI.Runtime.Skia.Headless` becomes `Uno.WinUI.Runtime.Headless`; see the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for the full mapping), then align every `Uno.*` package version and restore again.
+The usual cause is an explicit reference to a `Uno.WinUI.Runtime.Skia.*` host package, which predates the 7.0 rename and does not declare the runtime host. Those ids receive no 7.0 builds, so replace each one with its renamed `Uno.WinUI.Runtime.*` id (`Uno.WinUI.Runtime.Skia.Headless` becomes `Uno.WinUI.Runtime.Headless`; see the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7.Packages#unowinuiruntimeskia-host-packages-renamed-to-unowinuiruntime) for the full mapping), then align every `Uno.*` package version and restore again.
 
 When such an older runtime host is detected, this is reported as an error. Otherwise it is a warning, since an executable project that is not an application, such as a test project, can legitimately run against the reference assemblies.
 
@@ -293,7 +293,7 @@ Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs`
 | `*.iOSmacOS.cs` | `*.iOS.cs`. It named the native macOS target, which was removed in 7.0 |
 | `*.reference.cs` | Delete the file, or fold it into a `*.crossruntime.cs` file. It was gated on a build flavor that an application never selected, so it compiled for no target framework |
 
-`*.skia.cs` is still recognized, but it now compiles for every target framework except the WinAppSDK one, not only for `netX.0-desktop`. See [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7) for the other changes.
+`*.skia.cs` is still recognized, but it now compiles for every target framework except the WinAppSDK one, not only for `netX.0-desktop`. See [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7.Libraries#platform-targeting-in-multi-targeted-libraries) for the other changes.
 
 ### UNOB0029: Uno Platform application projects must use the Uno.Sdk
 
@@ -380,7 +380,7 @@ To fix this, set `OutputType` in the project file or in `Directory.Build.props`,
 
 Uno Platform 7.0 removed the Mac Catalyst target framework, and the native macOS target was removed before it; macOS is served by the `desktop` target framework instead. Projects created with older templates can still contain a `Platforms/MacCatalyst/` or `Platforms/MacOS/` folder (or a `MacCatalyst/` or `MacOS/` folder at the project root). The Uno.Sdk leaves their files out of every target framework and reports this warning, since none of them can use that code.
 
-To fix this, move anything still needed to `Platforms/Desktop/`, and delete the folder. Code that should only run on macOS goes in an `OperatingSystem.IsMacOS()` check there. See [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7#mac-catalyst-is-removed) for the other migration steps.
+To fix this, move anything still needed to `Platforms/Desktop/`, and delete the folder. Code that should only run on macOS goes in an `OperatingSystem.IsMacOS()` check there. See [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed) for the other migration steps.
 
 ### UNOB0034: Lottie XAML on WinAppSDK needs the CommunityToolkit.WinUI.Lottie package
 
@@ -498,7 +498,7 @@ Uno Platform 7.0 names every conditional XAML prefix after a target framework, a
 | `not_mux` | Remove it with the markup using it. It dates from UWP support and never applied |
 | `xamarin`, `legacy` listed in `mc:Ignorable` | Drop the prefix from the markup using it |
 
-The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7#removed-xaml-prefixes).
+The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7.Libraries#removed-xaml-prefixes).
 
 ## VS Code Errors
 
