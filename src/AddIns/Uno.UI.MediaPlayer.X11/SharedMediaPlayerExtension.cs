@@ -441,8 +441,8 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 
 				_isDisposed = true;
 
-				// A call that is already running holds the native player, so releasing it waits its turn. Commands still
-				// queued see _isDisposed and do nothing.
+				// A queued call that is already running holds the native player, so releasing it waits its turn. Commands still
+				// queued see _isDisposed and do nothing. Inline calls aren't tracked: Uno makes them on the UI thread.
 				if (!_pendingStop.IsCompleted)
 				{
 					QueueOnPendingStop(() => VlcPlayer.Dispose());
