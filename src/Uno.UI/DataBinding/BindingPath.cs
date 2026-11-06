@@ -487,7 +487,7 @@ namespace Uno.UI.DataBinding
 				static (source, handler) => source.CollectionChanged -= handler,
 				onDisposed: null,
 				typeof(BindingPath),
-				"the CollectionChanged handler of a collected binding");
+				"a binding's CollectionChanged handler");
 		}
 
 		/// <summary>
@@ -533,7 +533,7 @@ namespace Uno.UI.DataBinding
 					static (source, state) => source.PropertyChanged -= state.Handler,
 					static state => Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, state.Target),
 					typeof(BindingPath),
-					"the PropertyChanged handler of a collected binding");
+					"a binding's PropertyChanged handler");
 			}
 
 			return null;
