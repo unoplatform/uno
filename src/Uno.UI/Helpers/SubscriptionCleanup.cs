@@ -36,6 +36,22 @@ internal static class SubscriptionCleanup
 		}
 	}
 
+	/// <summary>Runs <paramref name="unsubscribe"/>, logging rather than throwing if the event source fails.</summary>
+	internal static void Run<TSource, TState>(Action<TSource, TState> unsubscribe, TSource source, TState state, Type logOwner, string subscription)
+	{
+		try
+		{
+			unsubscribe(source, state);
+		}
+		catch (Exception e)
+		{
+			if (logOwner.Log().IsEnabled(LogLevel.Error))
+			{
+				logOwner.Log().Error($"Failed to remove {subscription}", e);
+			}
+		}
+	}
+
 	/// <summary>
 	/// Queues <paramref name="unsubscribe"/> on the UI thread, since an event source isn't required to be thread-safe.
 	/// Never throws, so it can be called from a finalizer.

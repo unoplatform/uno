@@ -51,7 +51,7 @@ internal sealed class WeakSourceSubscription<TSource, TState> : IDisposable
 		{
 			if (source is not null)
 			{
-				_unsubscribe(source, _state);
+				SubscriptionCleanup.Run(_unsubscribe, source, _state, _logOwner, _description);
 			}
 
 			_onDisposed?.Invoke(_state);
