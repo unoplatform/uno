@@ -229,6 +229,39 @@ public class Given_ItemsRepeater_Leak
 		}
 	}
 
+	// The common case: a page and its view model become unreachable together. The items source must not wait for the
+	// removal of the subscription of a view that died with it, queued to the dispatcher, before it can be collected.
+	[TestMethod]
+	[RunsOnUIThread]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
+#endif
+	public async Task When_Repeater_And_Source_Dropped_Together_Then_Source_Collected_Without_Dispatcher()
+	{
+		var (repeaterRef, sourceRef) = CreateNeverLoadedWithOwnSource();
+		await WindowHelper.WaitForIdle(); // lets go of work the repeater queued when it was created
+
+		// Don't yield to the dispatcher here: the source must not depend on queued work to be collected.
+		CollectWithoutDispatcher([sourceRef]);
+
+		if (repeaterRef.IsAlive)
+		{
+			Assert.Inconclusive("The repeater was not collected without yielding on this platform.");
+		}
+
+		Assert.IsFalse(sourceRef.IsAlive, "The items source is kept alive by the cleanup of a view that died with it.");
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static (WeakReference repeater, WeakReference source) CreateNeverLoadedWithOwnSource()
+	{
+		var source = new ObservableCollection<string> { "a", "b" };
+		var repeater = new ItemsRepeater { ItemsSource = source };
+
+		// Tracks resurrection: a short weak reference is cleared even while finalization still keeps the source alive.
+		return (new WeakReference(repeater), new WeakReference(source, trackResurrection: true));
+	}
+
 	private static int CountRealized(ItemsRepeater repeater)
 		=> Enumerable.Range(0, Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(repeater))
 			.Select(i => Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(repeater, i))
