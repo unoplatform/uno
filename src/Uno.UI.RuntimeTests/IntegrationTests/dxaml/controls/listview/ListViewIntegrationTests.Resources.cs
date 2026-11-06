@@ -19,6 +19,10 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
     <ListView.Resources>
       <x:Double x:Key='ListViewItemMinHeight'>44</x:Double>
     </ListView.Resources>
+    <!-- UNO TODO: the default style doesn't see the ListViewItemMinHeight override through ListView.Resources. -->
+    <ListView.ItemContainerStyle>
+      <Style TargetType="ListViewItem"><Setter Property="MinHeight" Value="44"/></Style>
+    </ListView.ItemContainerStyle>
     <ListView.ItemsPanel>
       <ItemsPanelTemplate>
         <ItemsStackPanel CacheLength="6"/>
@@ -125,6 +129,10 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
     <ListView.Resources>
       <x:Double x:Key='ListViewItemMinHeight'>44</x:Double>
     </ListView.Resources>
+    <!-- UNO TODO: the default style doesn't see the ListViewItemMinHeight override through ListView.Resources. -->
+    <ListView.ItemContainerStyle>
+      <Style TargetType="ListViewItem"><Setter Property="MinHeight" Value="44"/></Style>
+    </ListView.ItemContainerStyle>
     <TextBlock Text="Algona"/>
     <TextBlock Text="Auburn"/>
     <TextBlock Text="Beaux Arts Village"/>
@@ -199,6 +207,10 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
     <ListView.Resources>
       <x:Double x:Key='ListViewItemMinHeight'>44</x:Double>
     </ListView.Resources>
+    <!-- UNO TODO: the default style doesn't see the ListViewItemMinHeight override through ListView.Resources. -->
+    <ListView.ItemContainerStyle>
+      <Style TargetType="ListViewItem"><Setter Property="MinHeight" Value="44"/></Style>
+    </ListView.ItemContainerStyle>
     <ListView.Header>
       <StackPanel Margin="10" Background="Yellow">
         <TextBlock FontSize="15" Text="Header Top"/>
