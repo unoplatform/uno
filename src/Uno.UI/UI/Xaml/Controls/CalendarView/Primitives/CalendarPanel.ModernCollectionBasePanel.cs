@@ -507,6 +507,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		int ILayoutDataInfoProvider.GetTotalGroupCount()
 			=> ContainerManager.TotalGroupCount;
+
+		// CalendarPanel is never grouped.
+		void ILayoutDataInfoProvider.GetGroupInformationFromItemIndex(int itemIndex, out int indexOfGroup, out int indexInsideGroup, out int itemCountInGroup)
+		{
+			indexOfGroup = -1;
+			indexInsideGroup = -1;
+			itemCountInGroup = 0;
+		}
+
+		void ILayoutDataInfoProvider.GetGroupInformationFromGroupIndex(int groupIndex, out int startItemIndex, out int itemCountInGroup)
+		{
+			startItemIndex = -1;
+			itemCountInGroup = 0;
+		}
 		#endregion
 
 		#region Panel / base class (i.e. ModernCollectionBasePanel) implementation (Measure/Arrange)
