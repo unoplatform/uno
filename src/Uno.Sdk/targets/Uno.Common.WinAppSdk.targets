@@ -18,7 +18,20 @@
 
 		<!-- Opt out of legacy VCLibs/UniversalCRT.Debug SDK framework package references added by Microsoft.WinUI.AppX.targets. -->
 		<WinUISDKReferences Condition=" '$(WinUISDKReferences)' == '' ">false</WinUISDKReferences>
+
+		<!-- Uno's Windows assemblies are built against the .87 Windows SDK projection (WinRT.Runtime 2.3). The .NET 10 SDK
+		     defaults to .57 (WinRT.Runtime 2.2), which fails with CS1705. A minimum never lowers a newer SDK's default. -->
+		<WindowsSdkPackageMinimumRevision Condition=" '$(WindowsSdkPackageMinimumRevision)' == '' ">87</WindowsSdkPackageMinimumRevision>
 	</PropertyGroup>
+
+	<!--
+		The .NET SDK validates the Windows platform version of the target framework against a list that it ships (NETSDK1140),
+		and that list can be older than the Windows SDK projection that WindowsSdkPackageVersion selects (see dotnet/sdk#55834).
+		Accept the platform version of the target framework, like it's done for the desktop and browserwasm targets.
+	-->
+	<ItemGroup Condition=" '$(TargetPlatformVersion)' != '' ">
+		<SdkSupportedTargetPlatformVersion Include="$(TargetPlatformVersion)" />
+	</ItemGroup>
 
 	<PropertyGroup Condition=" $(_IsExecutable) == 'true' ">
 		<!-- Set EnableMsixTooling to true only for executables - setting this on class libraries prevents assets from being correctly copied to windows target -->

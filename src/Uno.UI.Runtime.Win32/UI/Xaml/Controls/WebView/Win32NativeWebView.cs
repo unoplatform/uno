@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,6 +34,20 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 			typeof(Win32Host).LogWarn()?.Warn($"`UNO_WEBVIEW2_BACKEND={backend}` is not supported. The Microsoft.Web.WebView2 backend was removed in Uno Platform 7.0; `webview2aot` is the only backend and is used regardless.");
 		}
 
-		return new Win32NativeAotWebView(owner, contentPresenter);
+		try
+		{
+			return CreateAotWebView(contentPresenter);
+		}
+		catch (FileNotFoundException e) when (e.FileName is { } name && (name.StartsWith("WebView2,", StringComparison.Ordinal) || name.StartsWith("DirectN", StringComparison.Ordinal)))
+		{
+			throw new InvalidOperationException(
+				"WebView2 support was left out of this app because WebView2Loader.dll isn't deployed. "
+				+ "Enable the `WebView` UnoFeature, or reference Microsoft.Web.WebView2.",
+				e);
+		}
 	}
+
+	// Separate so that loading WebView2Aot or DirectN fails when this is called, inside the catch above.
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private Win32NativeAotWebView CreateAotWebView(ContentPresenter contentPresenter) => new(owner, contentPresenter);
 }

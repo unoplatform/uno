@@ -35,6 +35,9 @@ Attempting to create an `SKCanvasElement` instance when `IsSupportedOnCurrentPla
 
 For a complete example that showcases how to work with `SKCanvasElement`, see [this sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SKCanvasElementShowcase) in the Uno.Samples repository
 
+> [!NOTE]
+> This sample targets Uno Platform 6.2.29, which predates Uno Platform 7.0. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7) to update it.
+
 ## WinAppSDK Specifics
 
 When using the SKCanvasElement and running on WinAppSDK, make sure to create an `x64` or `ARM64` configuration:

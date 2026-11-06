@@ -102,7 +102,9 @@ internal partial class NativeWebView : ICleanableNativeWebView
 
 		var uriString = string.IsNullOrEmpty(absoluteUrl) ? NativeMethods.GetAttribute(_elementId, "src") : absoluteUrl;
 		Uri uri = CoreWebView2.BlankUri;
-		if (!string.IsNullOrEmpty(uriString))
+
+		// As in WinUI, a NavigateToString page is reported as about:blank, rather than as the iframe's about:srcdoc.
+		if (!string.IsNullOrEmpty(uriString) && uriString != "about:srcdoc")
 		{
 			uri = new Uri(uriString);
 		}
@@ -169,7 +171,7 @@ internal partial class NativeWebView : ICleanableNativeWebView
 
 	public void ProcessNavigation(string html)
 	{
-		ScheduleNavigationStarting(null, () => NativeMethods.SetAttribute(_elementId, "srcdoc", html));
+		ScheduleNavigationStarting(null, () => NativeMethods.NavigateToString(_elementId, html));
 		OnNavigationCompleted(this, null);
 	}
 
@@ -197,7 +199,9 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	{
 		_elementIdToNativeWebView.TryAdd(_elementId, this);
 		NativeMethods.SetupEvents(_elementId);
-		DispatchLoadEvent(_elementId, null);
+
+		// The frame may already show a document, as after a reparent, so report its URL rather than the src attribute's.
+		DispatchLoadEvent(_elementId, NativeMethods.GetCurrentUrl(_elementId));
 	}
 
 	public void OnUnloaded()

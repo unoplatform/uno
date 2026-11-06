@@ -13,6 +13,16 @@ public class Given_Win32PointerCoordinateMath
 	private const double Tolerance = 0.01;
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25264")]
+	[DataRow(2_147_483, 2_147_483_000L)]
+	[DataRow(2_147_484, 2_147_484_000L)]
+	[DataRow(-1, 4_294_967_295_000L)]
+	public void When_MessageTime_Then_ConvertsWithoutSignedOverflow(int messageTime, long expected)
+	{
+		Assert.AreEqual((ulong)expected, Win32PointerCoordinateMath.ToTimestampInMicroseconds(messageTime));
+	}
+
+	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24716")]
 	public void When_Mouse_Then_ClientPixelsAreDividedByScale()
 	{
