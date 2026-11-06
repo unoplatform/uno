@@ -640,7 +640,7 @@ partial class Popup
 
 		// Ignore on unsupported platforms, so controls can use CPopup::IsWindowed to determine whether to
 		// fall back to non-windowed placement.
-		if (DoesPlatformSupportWindowedPopup() && !m_windowCreationFailed)
+		if (DoesPlatformSupportWindowedPopup() && !m_windowCreationFailed && !m_windowNeverShown)
 		{
 			// TODO Uno: an unknown root is settled when the popup opens: EnsureWindowForWindowedPopup falls back to in-window.
 			if ((XamlRoot ?? m_pChild?.XamlRoot) is not { } xamlRoot || GetWindowedPopupExtension()!.IsSupported(xamlRoot))
@@ -739,6 +739,43 @@ partial class Popup
 		}
 	}
 
+	// TODO Uno: WinUI has no such case. A window that never presents would leave an open popup invisible.
+	internal void OnWindowedPopupNeverShown()
+	{
+		m_windowNeverShown = true;
+
+		if (m_windowedPopupWindow is { } window)
+		{
+			XamlRoot?.VisualTree.ContentRoot.CompositionTarget.RemoveWindowedPopupSurface(window.Surface);
+		}
+
+		EnsureBridgeClosed();
+		m_isWindowed = false;
+
+		if (m_fIsOpen && m_pChild is { } child)
+		{
+			MoveVisualInsideWindow(child);
+
+			if (GetAdjustedPopupRoot() is { } popupRoot)
+			{
+				foreach (var openPopup in popupRoot.GetOpenPopups())
+				{
+					if (!openPopup.IsWindowed && openPopup.m_pChild is { } nestedChild && openPopup.GetFirstAncestorPopup(windowedPopupOnly: true) is null)
+					{
+						MoveVisualInsideWindow(nestedChild);
+					}
+				}
+			}
+		}
+
+		static void MoveVisualInsideWindow(UIElement element)
+		{
+			element.Visual.HasOwnSurface = false;
+			element.Visual.InvalidatePaint();
+			element.Visual.CompositionTarget?.RequestNewFrame();
+		}
+	}
+
 	private const int MaxHiddenWindows = 8;
 	private static readonly List<WeakReference<Popup>> s_popupsWithHiddenWindow = new();
 
@@ -747,13 +784,29 @@ partial class Popup
 		StopTrackingHiddenWindow();
 		s_popupsWithHiddenWindow.Add(new(this));
 
+		if (s_popupsWithHiddenWindow.Count > MaxHiddenWindows)
+		{
+			// Closing a window can take a while, and this popup is still closing.
+			NativeDispatcher.Main.Enqueue(CloseOldestHiddenWindows, NativeDispatcherPriority.Low);
+		}
+	}
+
+	private static void CloseOldestHiddenWindows()
+	{
 		while (s_popupsWithHiddenWindow.Count > MaxHiddenWindows)
 		{
 			var oldest = s_popupsWithHiddenWindow[0];
 			s_popupsWithHiddenWindow.RemoveAt(0);
 			if (oldest.TryGetTarget(out var popup))
 			{
-				popup.EnsureBridgeClosed();
+				try
+				{
+					popup.EnsureBridgeClosed();
+				}
+				catch (Exception e)
+				{
+					typeof(Popup).LogWarn()?.Warn($"Closing a hidden popup window failed: {e.Message}");
+				}
 			}
 		}
 	}
@@ -972,7 +1025,7 @@ partial class Popup
 		// covered by the windowed popup, and their bounds weren't included when we bounded the popup. See
 		// CUIElement::GenerateChildOuterBounds - we explicitly exclude popups from bounds calculations.
 		var popupRoot = GetAdjustedPopupRoot();
-		if (popupRoot is not null)
+		if (popupRoot is not null && popupRoot.HasMultipleOpenPopups)
 		{
 			foreach (var openPopup in popupRoot.GetOpenPopups())
 			{
@@ -1161,7 +1214,7 @@ partial class Popup
 
 		visuals.Add(child.Visual);
 
-		if (GetAdjustedPopupRoot() is { } popupRoot)
+		if (GetAdjustedPopupRoot() is { HasMultipleOpenPopups: true } popupRoot)
 		{
 			// The most recently opened comes first.
 			var openPopups = popupRoot.GetOpenPopups();

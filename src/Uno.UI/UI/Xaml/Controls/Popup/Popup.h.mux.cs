@@ -120,6 +120,9 @@ partial class Popup
 	// A popup that opens in-window for lack of a window stays there until it closes.
 	private bool m_windowCreationFailed;
 
+	// Reopening would leave it invisible for as long again.
+	private bool m_windowNeverShown;
+
 	internal event global::System.EventHandler? ForceClosed;
 
 	internal int WindowedPopupRecordedFrameCount => m_windowedPopupWindow?.Surface.RecordedFrameCount ?? 0;

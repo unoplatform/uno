@@ -59,7 +59,7 @@ public partial class CompositionTarget
 		private (FrameHold frame, RectInt32 bounds, float scale)? _frame;
 
 		private readonly List<Visual> _visuals = new();
-		private readonly List<(Visual visual, Matrix4x4 matrix, float opacity, bool isVisible)> _recordedVisuals = new();
+		private readonly List<(Visual visual, Matrix4x4 matrix, float opacity, bool isVisible, (float opacity, bool isHidden) chain)> _recordedVisuals = new();
 		private RectInt32 _recordedBounds;
 		private float _recordedScale;
 		private bool _hasRecorded;
@@ -87,13 +87,17 @@ public partial class CompositionTarget
 
 		private void OnFirstFrameTimeout(IWindowedPopupSite site, int watch)
 		{
-			if (watch != _firstFrameWatch || site.IsShown || site.IsClosed)
+			// Stepping through code freezes the render thread too.
+			if (watch != _firstFrameWatch || site.IsShown || site.IsClosed || global::System.Diagnostics.Debugger.IsAttached)
 			{
 				return;
 			}
 
-			this.LogWarn()?.Warn($"A popup's window didn't present its first frame within {_firstFrameTimeout.TotalSeconds} seconds, so the popup is closed instead of staying open and invisible.");
-			((IWindowedPopupContent)this).OnSiteClosed();
+			this.LogWarn()?.Warn($"A popup's window didn't present its first frame within {_firstFrameTimeout.TotalSeconds} seconds, so the popup moves inside its window.");
+			if (_popup.TryGetTarget(out var popup) && ReferenceEquals(popup.WindowedPopupSite, site))
+			{
+				popup.OnWindowedPopupNeverShown();
+			}
 		}
 
 		// The owner asks for a frame whenever anything in its window changes. Most of those have nothing for this surface.
@@ -114,7 +118,8 @@ public partial class CompositionTarget
 					|| !ReferenceEquals(visual, recorded.visual)
 					|| visual.TotalMatrix != recorded.matrix
 					|| visual.Opacity != recorded.opacity
-					|| visual.IsVisible != recorded.isVisible)
+					|| visual.IsVisible != recorded.isVisible
+					|| visual.TransformParentChainState != recorded.chain)
 				{
 					return false;
 				}
@@ -142,7 +147,7 @@ public partial class CompositionTarget
 			_recordedVisuals.Clear();
 			foreach (var visual in _visuals)
 			{
-				_recordedVisuals.Add((visual, visual.TotalMatrix, visual.Opacity, visual.IsVisible));
+				_recordedVisuals.Add((visual, visual.TotalMatrix, visual.Opacity, visual.IsVisible, visual.TransformParentChainState));
 				visual.RenderOwnSurface(recording);
 			}
 
@@ -175,6 +180,7 @@ public partial class CompositionTarget
 			_firstFrameWatch++;
 			_hasRecorded = false;
 			_recordedVisuals.Clear();
+			_visuals.Clear();
 
 			(FrameHold frame, RectInt32 bounds, float scale)? previous;
 			lock (_frameGate)

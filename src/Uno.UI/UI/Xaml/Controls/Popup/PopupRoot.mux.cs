@@ -357,6 +357,9 @@ partial class PopupRoot
 	/// <summary>
 	/// Gets all open popups, rooted and unrooted.
 	/// </summary>
+	// Spares the frame loop a list when a popup is alone, and so has nothing nested in it.
+	internal bool HasMultipleOpenPopups => m_pOpenPopups.Count > 1;
+
 	internal IReadOnlyList<Popup> GetOpenPopups() => GetOpenPopupList(includeUnloadingPopups: false);
 
 	internal List<Popup> GetOpenPopupList(bool includeUnloadingPopups)
