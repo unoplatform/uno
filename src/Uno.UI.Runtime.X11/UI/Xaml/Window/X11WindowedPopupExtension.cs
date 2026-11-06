@@ -24,6 +24,8 @@ internal sealed class X11WindowedPopupExtension : IWindowedPopupExtension
 
 	private static X11XamlRootHost? GetOwner(XamlRoot xamlRoot) => XamlRootMap.GetHostForRoot(xamlRoot) as X11XamlRootHost;
 
+	public bool IsEnabledByDefault => true;
+
 	public bool IsSupported(XamlRoot xamlRoot)
 		// A popup window's frames replay on a context of its own: only the Skia kinds have recordings that can.
 		=> GetOwner(xamlRoot) is { Closed.IsCompleted: false, GraphicsContextKind: GraphicsContextKind.Vulkan or GraphicsContextKind.OpenGL or GraphicsContextKind.OpenGLES or GraphicsContextKind.Software } owner

@@ -147,11 +147,9 @@ internal sealed class Win32WindowedPopupSite : IWindowedPopupSite
 	private bool TryInitializeGraphics()
 	{
 		// Negotiation walks the app's backend order, this only answers for the owner's kind and the software fallback.
-		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateContext(kind));
-
 		try
 		{
-			var init = GraphicsRegistry.Initialize();
+			var init = GraphicsRegistry.Initialize(kind => Task.FromResult(CreateContext(kind)));
 			_context = init.Context;
 			_renderer = init.Renderer;
 		}

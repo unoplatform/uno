@@ -122,5 +122,7 @@ partial class Popup
 
 	internal event global::System.EventHandler? ForceClosed;
 
+	internal int WindowedPopupRecordedFrameCount => m_windowedPopupWindow?.Surface.RecordedFrameCount ?? 0;
+
 	internal static global::Windows.Graphics.PointInt32 GetScreenOffsetForTesting(XamlRoot xamlRoot) => GetWindowedPopupExtension()?.GetScreenOffset(xamlRoot) ?? default;
 }

@@ -266,6 +266,14 @@ namespace Uno.UI
 			public static bool PreventLightDismissOnWindowDeactivated { get; set; }
 
 			/// <summary>
+			/// Whether a popup can get a window of its own on a desktop host, as in WinUI. When false, every popup stays inside
+			/// its window, including those of controls which don't constrain to the root bounds, such as <c>ComboBox</c>.
+			/// When null, the host decides: on for Windows and X11, off for macOS, where this hasn't been validated yet.
+			/// Set it before the first popup opens.
+			/// </summary>
+			public static bool? UseWindowedPopups { get; set; }
+
+			/// <summary>
 			/// This flag no longer has any effect: as in WinUI, a flyout is placed within the visible bounds.
 			/// </summary>
 			[Obsolete("This flag no longer has any effect: as in WinUI, a flyout is placed within the visible bounds.")]

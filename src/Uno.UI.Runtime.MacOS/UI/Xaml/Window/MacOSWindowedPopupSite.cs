@@ -70,9 +70,7 @@ internal sealed class MacOSWindowedPopupSite : IWindowedPopupSite
 
 	private void Initialize()
 	{
-		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateContext(kind));
-
-		var init = GraphicsRegistry.Initialize();
+		var init = GraphicsRegistry.Initialize(kind => Task.FromResult(CreateContext(kind)));
 		_context = init.Context;
 		_renderer = init.Renderer;
 

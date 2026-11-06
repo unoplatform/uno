@@ -182,11 +182,22 @@ internal static class GraphicsRegistry
 		=> InitializeAsync().GetAwaiter().GetResult();
 
 	/// <summary>
+	/// Negotiates with a factory of the caller's, leaving <see cref="ContextFactory"/> alone: for a surface that isn't a host window.
+	/// </summary>
+	public static GraphicsInitialization Initialize(GraphicsContextFactory factory)
+		=> InitializeAsync(factory).GetAwaiter().GetResult();
+
+	/// <summary>
 	/// Negotiates a backend + context: for each registered backend (registration order) and each context kind it
 	/// accepts (the backend's own order), asks the host <see cref="ContextFactory"/> for a window+context. The first
 	/// non-null context wins and its drawing factory is installed as <see cref="DrawingFactory.Current"/>.
 	/// </summary>
-	public static async Task<GraphicsInitialization> InitializeAsync()
+	public static Task<GraphicsInitialization> InitializeAsync()
+		=> InitializeAsync(ContextFactory
+			?? throw new InvalidOperationException(
+				"No host graphics context factory set. The host must set GraphicsRegistry.ContextFactory before initializing."));
+
+	private static async Task<GraphicsInitialization> InitializeAsync(GraphicsContextFactory factory)
 	{
 		IReadOnlyList<IGraphicsProvider> backends;
 		lock (_gate)
@@ -201,10 +212,6 @@ internal static class GraphicsRegistry
 			throw new InvalidOperationException(
 				"No graphics backend registered. Call GraphicsRegistry.Register(...) during app initialization.");
 		}
-
-		var factory = ContextFactory
-			?? throw new InvalidOperationException(
-				"No host graphics context factory set. The host must set GraphicsRegistry.ContextFactory before initializing.");
 
 		var attempts = new StringBuilder();
 		foreach (var (backend, kind, isDisabled) in EnumerateCandidates(backends, DisabledContextKinds))

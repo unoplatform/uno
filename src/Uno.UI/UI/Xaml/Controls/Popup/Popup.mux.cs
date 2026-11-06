@@ -579,7 +579,7 @@ partial class Popup
 		// CoreWindowSiteBridge doesn't support creating a PopupSiteBridge, which means we can't implement windowed popups
 		// in UWPs. Note that only some tests run in UWP mode. WinUI 3 only runs in islands mode out in the wild.
 		// TODO Uno: the equivalent is a host registering IWindowedPopupExtension.
-		return GetWindowedPopupExtension() is not null;
+		return GetWindowedPopupExtension() is { } extension && (Uno.UI.FeatureConfiguration.Popup.UseWindowedPopups ?? extension.IsEnabledByDefault);
 	}
 
 	private static IWindowedPopupExtension? s_windowedPopupExtension;
@@ -682,6 +682,8 @@ partial class Popup
 			m_previousXamlRoot = xamlRoot;
 		}
 
+		StopTrackingHiddenWindow();
+
 		// The window can be gone without the popup knowing, when its owner closed.
 		if (m_windowedPopupWindow is { Site.IsClosed: true })
 		{
@@ -723,6 +725,28 @@ partial class Popup
 			ForceCloseForTreeReset();
 		}
 	}
+
+	private const int MaxHiddenWindows = 8;
+	private static readonly List<WeakReference<Popup>> s_popupsWithHiddenWindow = new();
+
+	private void TrackHiddenWindow()
+	{
+		StopTrackingHiddenWindow();
+		s_popupsWithHiddenWindow.Add(new(this));
+
+		while (s_popupsWithHiddenWindow.Count > MaxHiddenWindows)
+		{
+			var oldest = s_popupsWithHiddenWindow[0];
+			s_popupsWithHiddenWindow.RemoveAt(0);
+			if (oldest.TryGetTarget(out var popup))
+			{
+				popup.EnsureBridgeClosed();
+			}
+		}
+	}
+
+	private void StopTrackingHiddenWindow()
+		=> s_popupsWithHiddenWindow.RemoveAll(reference => !reference.TryGetTarget(out var popup) || popup == this);
 
 	private void EnsureBridgeClosed()
 	{
@@ -776,6 +800,9 @@ partial class Popup
 			// Note: We don't close or reset the bridge here. ScrollViewers in the popup subtree have already cached the popup
 			// bridge's input hwnd for DManip. We don't currently have a code path for those elements to reset the input hwnd
 			// and pick up a new one.
+			// TODO Uno: Uno has no such cache, and a hidden window costs a render thread, GPU memory and on X11 a connection,
+			// of which a server has about 256. So only the most recently used stay.
+			TrackHiddenWindow();
 		}
 	}
 
@@ -1102,11 +1129,10 @@ partial class Popup
 	/// What the window of this popup shows: its rectangle relative to the content root, in physical pixels, the scale, and the
 	/// visuals to render, in z-order: the popup's child, then the inline popups nested in it.
 	/// </summary>
-	internal bool TryGetWindowedFrame(out RectInt32 bounds, out float scale, out List<Composition.Visual> visuals)
+	internal bool TryGetWindowedFrame(out RectInt32 bounds, out float scale, List<Composition.Visual> visuals)
 	{
 		bounds = default;
 		scale = GetEffectiveRootScale();
-		visuals = null!;
 
 		if (m_pChild is not { } child || m_windowedPopupMoveAndResizeRect is { Width: <= 0 } or { Height: <= 0 })
 		{
@@ -1119,7 +1145,7 @@ partial class Popup
 			m_windowedPopupMoveAndResizeRect.Width,
 			m_windowedPopupMoveAndResizeRect.Height);
 
-		visuals = new() { child.Visual };
+		visuals.Add(child.Visual);
 
 		if (GetAdjustedPopupRoot() is { } popupRoot)
 		{

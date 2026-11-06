@@ -12,6 +12,9 @@ namespace Uno.UI.Xaml.Controls;
 /// </summary>
 internal interface IWindowedPopupExtension
 {
+	/// <summary>Whether popups get windows unless the app's <c>FeatureConfiguration.Popup.UseWindowedPopups</c> says otherwise.</summary>
+	bool IsEnabledByDefault { get; }
+
 	/// <summary>Whether popups of this window can get a window of their own, given the window's rendering backend.</summary>
 	bool IsSupported(XamlRoot xamlRoot);
 

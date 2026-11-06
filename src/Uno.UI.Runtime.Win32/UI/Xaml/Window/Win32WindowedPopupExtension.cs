@@ -18,6 +18,8 @@ internal sealed class Win32WindowedPopupExtension : IWindowedPopupExtension
 
 	private static Win32WindowWrapper? GetOwner(XamlRoot xamlRoot) => XamlRootMap.GetHostForRoot(xamlRoot) as Win32WindowWrapper;
 
+	public bool IsEnabledByDefault => true;
+
 	public bool IsSupported(XamlRoot xamlRoot)
 		// A popup window's frames replay on a context of its own: only the Skia kinds have recordings that can.
 		=> GetOwner(xamlRoot) is { GraphicsContextKind: GraphicsContextKind.Vulkan or GraphicsContextKind.OpenGL or GraphicsContextKind.Software };

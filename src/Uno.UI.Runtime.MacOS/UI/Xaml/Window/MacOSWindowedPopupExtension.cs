@@ -22,6 +22,9 @@ internal sealed class MacOSWindowedPopupExtension : IWindowedPopupExtension
 
 	private static MacOSWindowHost? GetOwner(XamlRoot xamlRoot) => XamlRootMap.GetHostForRoot(xamlRoot) as MacOSWindowHost;
 
+	// The native side hasn't been run on a real Mac yet.
+	public bool IsEnabledByDefault => false;
+
 	public bool IsSupported(XamlRoot xamlRoot)
 		// A popup window's frames replay on a context of its own: only the Skia kinds have recordings that can.
 		=> _hasNativeSupport.Value && GetOwner(xamlRoot) is { GraphicsContextKind: GraphicsContextKind.Metal or GraphicsContextKind.Software };
