@@ -449,6 +449,13 @@ namespace Microsoft.UI.Xaml
 					ClearLayoutFlags(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
 
 					LayoutArrangeCoreCount++;
+
+					var layoutTransitionStorage = m_pLayoutTransitionStorage;
+					if (layoutTransitionStorage is not null)
+					{
+						Microsoft.UI.Xaml.Media.Animation.Transition.OnLayoutChanging(this, layoutTransitionStorage);
+					}
+
 					ArrangeCore(finalRect);
 
 					// WinUI calls InvalidateViewport() here (CUIElement::ArrangeInternal) and walks it after layout.
@@ -456,6 +463,11 @@ namespace Microsoft.UI.Xaml
 					OnViewportUpdated();
 
 					SetLayoutFlags(LayoutFlag.FirstArrangeDone);
+
+					if (layoutTransitionStorage is not null)
+					{
+						Microsoft.UI.Xaml.Media.Animation.Transition.OnLayoutChanged(this, layoutTransitionStorage);
+					}
 
 					break;
 				}

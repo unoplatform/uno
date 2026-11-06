@@ -53,6 +53,23 @@ public partial class Panel : FrameworkElement, IPanel
 
 	partial void OnLoadedPartial();
 
+	// CPanel::GetTransitionsForChildElementNoAddRef
+	// TODO Uno: only ModernCollectionBasePanel runs layout transitions. Panel.ChildrenTransitions stays inert on other panels.
+	internal virtual TransitionCollection GetTransitionsForChildElementNoAddRef(UIElement pChild) => null;
+
+	internal virtual void OnChildEntered(UIElement child) { }
+
+	// CUIElementCollection::LeaveImpl: the leave walk doesn't reach unloading children, so they are finished here.
+	internal override void LeaveImpl(LeaveParams @params)
+	{
+		base.LeaveImpl(@params);
+
+		if (@params.IsLive)
+		{
+			_children.RemoveAllUnloadingChildren();
+		}
+	}
+
 	private protected override void OnUnloaded()
 	{
 		base.OnUnloaded();

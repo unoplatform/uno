@@ -11,6 +11,9 @@ partial class UIElement
 {
 	private TransitionTarget? _transitionTarget;
 
+	// Only children of a panel with transitions have this, everything else skips the layout transition logic on a null check.
+	internal LayoutTransitionStorage? m_pLayoutTransitionStorage;
+
 	/// <summary>
 	/// The internal theme-animation layer (XamlOM UIElement.TransitionTarget). Null unless explicitly assigned.
 	/// </summary>

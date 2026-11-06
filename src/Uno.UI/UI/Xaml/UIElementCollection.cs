@@ -26,13 +26,18 @@ namespace Microsoft.UI.Xaml.Controls
 			item.SetParent(_owner);
 
 			InsertCore(index, item);
+			OnChildEntered(item);
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
 		}
 
 		public void RemoveAt(int index)
 		{
-			var item = RemoveAtCore(index);
-			item.SetParent(null);
+			var item = GetAtIndexCore(index);
+			if (!UnloadElement(item))
+			{
+				RemoveAtCore(index);
+				item.SetParent(null);
+			}
 
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
 		}
@@ -62,11 +67,14 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 			AddCore(item);
+			OnChildEntered(item);
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
 		}
 
 		public void Clear()
 		{
+			RemoveAllUnloadingChildren();
+
 			var items = ClearCore();
 
 			var hasItems = false;
@@ -112,6 +120,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (item != null)
 			{
+				if (item.m_pLayoutTransitionStorage is not null && ContainsCore(item) && UnloadElement(item))
+				{
+					OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
+					return true;
+				}
+
 				item.SetParent(null);
 
 				var removed = RemoveCore(item);
