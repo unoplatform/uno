@@ -61,6 +61,12 @@ namespace UITests.Shared.Windows_UI_Xaml.Resources
 				StatusText.Text = sb.ToString();
 				Console.WriteLine("[SharedTemplateDataContextLeak] " + sb.ToString());
 			}
+			catch (Exception ex)
+			{
+				// async void: report instead of crashing the SamplesApp.
+				StatusText.Text = $"RESULT: ERROR {ex.GetType().Name}: {ex.Message}";
+				Console.WriteLine("[SharedTemplateDataContextLeak] " + StatusText.Text);
+			}
 			finally
 			{
 				RunButton.IsEnabled = true;
