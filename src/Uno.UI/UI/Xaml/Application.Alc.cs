@@ -545,8 +545,8 @@ partial class Application
 #endif
 
 		// Shared resources (theme brushes etc.) first consumed by a secondary-ALC element record
-		// it as their InheritanceContext parent (DependencyObjectStore._associatedParent); nothing
-		// clears that association on unload, so host-lifetime resources pin the collectible ALC.
+		// it as their InheritanceContext parent (DependencyObjectStore.AssociatedParent, held weakly) and can cache
+		// its DataContext; nothing clears that on unload, so host-lifetime resources can pin the collectible ALC.
 		// Sweep every dictionary reachable from the host application and the master theme set.
 		RunCleanupStep(nameof(ClearCollectibleResourceAssociations), ClearCollectibleResourceAssociations);
 
