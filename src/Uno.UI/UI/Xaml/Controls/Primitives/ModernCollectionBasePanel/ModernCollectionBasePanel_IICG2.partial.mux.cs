@@ -171,6 +171,10 @@ public abstract partial class ModernCollectionBasePanel
 			if (isOwnContainer) // Is the item a container in its own right?
 			{
 				spContainer = (UIElement)spItem!;
+#if HAS_UNO
+				// TODO Uno: ItemsControlFromItemContainer reads the owner from a property the host sets here instead of walking the parents.
+				spIHost.GetContainerForItem(spItem!, null);
+#endif
 				spContainer.InitVirtualizationInformation();
 				SetElementIsGenerated(spContainer, false);
 			}
