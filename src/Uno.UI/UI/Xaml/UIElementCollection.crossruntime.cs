@@ -12,9 +12,58 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly UIElement _owner;
 
+		// CUIElementCollection::m_pUnloadingStorage: removed children kept visually alive by an unload transition.
+		private List<View> m_pUnloadingStorage;
+
 		internal UIElementCollection(UIElement view)
 		{
 			_owner = view;
+		}
+
+		private void OnChildEntered(View item)
+		{
+			if (_owner is Panel panel)
+			{
+				panel.OnChildEntered(item);
+			}
+		}
+
+		private bool UnloadElement(View pRemove)
+			=> pRemove.m_pLayoutTransitionStorage is not null && Microsoft.UI.Xaml.Media.Animation.Transition.UnloadElement(this, pRemove);
+
+		internal void AddUnloadingElement(View pRemove)
+		{
+			(m_pUnloadingStorage ??= new()).Add(pRemove);
+			_owner.RemoveChildKeepingVisual(pRemove);
+		}
+
+		// MUX Reference UIElementCollection.cpp (CUIElementCollection::RemoveUnloadedElement), tag winui3/release/2.5.1, commit ba3a8d59e6d
+		internal void RemoveUnloadedElement(View pTarget)
+		{
+			if (m_pUnloadingStorage is null || !m_pUnloadingStorage.Remove(pTarget))
+			{
+				return;
+			}
+
+			_owner.RemoveKeptVisualChild(pTarget);
+
+			if (pTarget.m_pLayoutTransitionStorage is { m_deferredUnlinkingPayload: { } spPayload } pStorage)
+			{
+				pStorage.m_deferredUnlinkingPayload = null;
+				spPayload.Execute(pTarget);
+			}
+		}
+
+		// CUIElementCollection::RemoveAllUnloadingChildren
+		internal void RemoveAllUnloadingChildren()
+		{
+			if (m_pUnloadingStorage is { Count: > 0 })
+			{
+				foreach (var child in m_pUnloadingStorage.ToArray())
+				{
+					Microsoft.UI.Xaml.Media.Animation.Transition.CancelTransitions(child);
+				}
+			}
 		}
 
 		private void AddCore(View item)

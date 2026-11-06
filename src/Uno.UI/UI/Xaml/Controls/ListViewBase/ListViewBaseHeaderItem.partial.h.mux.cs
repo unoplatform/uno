@@ -10,7 +10,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-partial class ListViewBaseHeaderItem : ILayoutTransitionStoryboardNotification
+partial class ListViewBaseHeaderItem : ILayoutTransitionStoryboardNotification, ITransitionContextProvider
 {
 	private WeakReference<ListViewBase>? m_wrParentListViewBase;
 	private Rect m_rectGroupBoundsCache;

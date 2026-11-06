@@ -148,6 +148,9 @@ namespace Uno.UI.Xaml.Core
 				UpdateLayoutAndRaiseLoaded();
 			}
 
+			// xcpcore.cpp: realizes the layout transitions registered by this frame's layout, before the record, and advances the layout counter.
+			Microsoft.UI.Xaml.Media.Animation.Transition.OnFrameLayoutCompleted();
+
 			// Loaded has been raised for what this pass brought back into the tree: release the undisplayed images now due.
 			PendingImageReleases.OnLayoutPassCompleted();
 

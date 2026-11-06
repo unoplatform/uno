@@ -63,6 +63,65 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		#endregion
 
 
+		// MUX Reference LayoutTransition_partial.cpp, tag winui3/release/2.5.1, commit ba3a8d59e6d
+		internal override bool ParticipatesInTransition(UIElement element, TransitionTrigger transitionTrigger)
+			=> transitionTrigger == TransitionTrigger.Load;
+
+		internal override void CreateStoryboard(
+			UIElement element,
+			global::Windows.Foundation.Rect start,
+			global::Windows.Foundation.Rect destination,
+			TransitionTrigger transitionTrigger,
+			IList<Storyboard> storyboards,
+			out TransitionParent parentForTransition)
+		{
+			parentForTransition = TransitionParent.ParentToCommonParent;
+
+			global::Windows.Foundation.Point sourceoffset = new(FromHorizontalOffset, FromVerticalOffset);
+			global::Windows.Foundation.Point destoffset = new(0, 0);
+
+			var shouldRun = transitionTrigger == TransitionTrigger.Load;
+			var didCheck = false;
+			var context = global::DirectUI.ThemeTransitionContext.None;
+
+			if (shouldRun)
+			{
+				GetTransitionContext(element, out didCheck, out context);
+			}
+			if (didCheck)
+			{
+				shouldRun &= context == global::DirectUI.ThemeTransitionContext.Entrance;
+			}
+			else
+			{
+				// if there was no context, we will only react to a true xaml::TransitionTrigger_Load
+				shouldRun = transitionTrigger == TransitionTrigger.Load;
+			}
+
+			if (!shouldRun)
+			{
+				return;
+			}
+
+			Storyboard spSB = new();
+
+			ThemeGenerator.AddTimelinesForThemeAnimation(ThemeGenerator.TAS_ENTERPAGE, ThemeGenerator.TA_ENTERPAGE_TARGET, element, false, sourceoffset, destoffset, 0, spSB.Children);
+
+			storyboards.Add(spSB);
+
+			SetTransitionParentForStickyHeaders(element, ref parentForTransition);
+		}
+
+		internal override bool GetIsStaggeringEnabled() => IsStaggeringEnabled;
+
+		// ThemeGenerator::GetStaggerFunction(TAS_ENTERPAGE, TA_ENTERPAGE_TARGET), PVL values dumped from Windows build 29698.
+		internal override bool GetStaggerFunction(out double delay, out double delayReduce)
+		{
+			delay = 35;
+			delayReduce = 1;
+			return true;
+		}
+
 		private void AttachOpacityAnimation(Storyboard storyBoard, IFrameworkElement element, TimeSpan beginTime)
 		{
 			var startingOpacity = element.Opacity;
