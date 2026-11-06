@@ -1261,12 +1261,12 @@ namespace Microsoft.UI.Xaml.Controls
 					// This way, if the contentControl contains a ContentPresenter with a template/selector, changing
 					// the content doesn't cause the selector to reevaluate (or the template to respond to changes).
 					// When_TemplateSelector_And_List_Reloaded asserts against this.
-					if (keepTemplate)
+					if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
 					{
-					}
-					else if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
-					{
-						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateProperty);
+						if (!keepTemplate)
+						{
+							ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateProperty);
+						}
 					}
 					else if (contentControl.ContentTemplateSelector is { } cts && cts == ItemTemplateSelector)
 					{
