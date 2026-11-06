@@ -563,6 +563,8 @@ partial class ListViewBase
 	// Handles when a key is pressed down on the ListViewBase.
 	protected override void OnKeyDown(KeyRoutedEventArgs pArgs)
 	{
+		using var modifiersScope = SetCurrentInputModifiers(pArgs.KeyboardModifiers);
+
 #if !HAS_UNO // LVB_DEBUG
 		// TODO Uno: gps->DebugTrace has no equivalent.
 		IGNOREHR(gps->DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, L"LVB(%s)[0x%p]: OnKeyDown.", ctl::is<xaml_controls::IGridView>(this) ? L"GV" : L"LV", this));

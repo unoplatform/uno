@@ -557,8 +557,35 @@ partial class ListViewBaseItem
 		}
 	}
 
-	// TODO Uno: DoTapInteraction (LBI:1163-1196) - OnItemPrimary/SecondaryInteractionGesture not ported;
-	// click/selection stay on SelectorItem (_canRaiseClickOnPointerRelease, Selector.OnItemClicked).
+	// Call our ListViewBase's Primary or Secondary interaction gesture, depending on whether or not the
+	// control key is pressed.
+	// TODO Uno: Called by SelectorItem when it raises the click instead of the pending tap list (LBI:858-903).
+	private protected override void DoTapInteraction(VirtualKeyModifiers eventModifiers)
+	{
+		var spListView = GetParentListView();
+
+		if (spListView is not null)
+		{
+			using (spListView.SetCurrentInputModifiers(eventModifiers))
+			{
+				// A regular click is considered a primary input gesture
+				// (equivalent to a tap) but Ctrl+Click is a secondary input
+				// gesture so we check modifiers to
+				// determine how to route the interaction notification
+
+				if ((eventModifiers & VirtualKeyModifiers.Control) == 0)
+				{
+					spListView.OnItemPrimaryInteractionGesture(this, false);
+				}
+				else
+				{
+					spListView.OnItemSecondaryInteractionGesture(this, false);
+				}
+			}
+		}
+
+		ChangeVisualState(true);
+	}
 
 	// Called when a pointer makes a right-tap gesture on a ListViewBaseItem.
 	protected override void OnRightTapped(RightTappedRoutedEventArgs pArgs)
@@ -575,7 +602,7 @@ partial class ListViewBaseItem
 
 			if (spListView is not null)
 			{
-				// TODO Uno: ListViewBase.FocusItem(FocusState.Programmatic, this) not ported.
+				spListView.FocusItem(FocusState.Programmatic, this);
 				pArgs.Handled = isHandled;
 			}
 		}
@@ -649,7 +676,14 @@ partial class ListViewBaseItem
 		// Just inform the parent selector that we got focus.
 		if (spListView is not null)
 		{
-			// TODO Uno: ListViewBase.ItemFocused/ItemUnfocused not ported; SelectorItem.OnGotFocus sets FocusedIndexContainerItem.
+			if (hasFocus)
+			{
+				spListView.ItemFocused(this);
+			}
+			else
+			{
+				spListView.ItemUnfocused(this);
+			}
 		}
 
 		ChangeVisualState(true);
@@ -832,6 +866,7 @@ partial class ListViewBaseItem
 		{
 			// get the released key
 			var originalKey = pArgs.OriginalKey;
+			var modifiers = pArgs.KeyboardModifiers;
 
 			switch (originalKey)
 			{
@@ -848,7 +883,34 @@ partial class ListViewBaseItem
 				case VirtualKey.Up:
 				case VirtualKey.Down:
 					{
-						// TODO Uno: Alt+Shift+Arrow keyboard reorder (LBI:2100-2130, OnKeyboardReorder) not ported.
+						if (spListView is not null &&
+							(modifiers & VirtualKeyModifiers.Menu) != 0 &&
+							(modifiers & VirtualKeyModifiers.Control) == 0 &&
+							(modifiers & VirtualKeyModifiers.Shift) != 0
+							)
+						{
+							var flowDirection = FlowDirection;
+							var panelOrientation = spListView.GetPanelOrientation();
+							ListViewBase.KeyboardReorderDirection keyboardReorderDirection;
+
+							if (flowDirection == FlowDirection.RightToLeft &&
+								panelOrientation == Orientation.Horizontal)
+							{
+								// When the ListView is using a horizontal panel in RTL mode, the Left/Up keys are treated like Right/Down and vice-versa.
+								keyboardReorderDirection = (originalKey == VirtualKey.Left || originalKey == VirtualKey.Up) ?
+									ListViewBase.KeyboardReorderDirection.KeyboardReorderDirection_ToHigherIndex :
+									ListViewBase.KeyboardReorderDirection.KeyboardReorderDirection_ToLowerIndex;
+							}
+							else
+							{
+								keyboardReorderDirection = (originalKey == VirtualKey.Left || originalKey == VirtualKey.Up) ?
+									ListViewBase.KeyboardReorderDirection.KeyboardReorderDirection_ToLowerIndex :
+									ListViewBase.KeyboardReorderDirection.KeyboardReorderDirection_ToHigherIndex;
+							}
+
+							OnKeyboardReorder(keyboardReorderDirection);
+							isHandled = true;
+						}
 						break;
 					}
 			}
@@ -858,7 +920,7 @@ partial class ListViewBaseItem
 		// instead of an item ListView will just forward the event back to the ScrollView.
 		if (!isHandled && spListView is not null)
 		{
-			// TODO Uno: ListViewBase.SetHandleKeyDownArgsFromItem not ported.
+			spListView.SetHandleKeyDownArgsFromItem(true);
 		}
 
 		if (isHandled)
@@ -900,7 +962,7 @@ partial class ListViewBaseItem
 						{
 							if (spListView is not null)
 							{
-								// TODO Uno: ListViewBase.OnItemPrimaryInteractionGesture(this, isKeyboardInput: true) not ported.
+								isHandled = spListView.OnItemPrimaryInteractionGesture(this, true /* isKeyboardInput */);
 							}
 
 							break;
@@ -928,7 +990,10 @@ partial class ListViewBaseItem
 		}
 	}
 
-	// TODO Uno: OnKeyboardReorder / QueryFor / GoToStateWithFallback / GetLogicalParentForAPProtected (LBI:2217-2352) not ported here.
+	// Helper method to call the parent ListViewBase's OnKeyboardReorder.
+	private void OnKeyboardReorder(ListViewBase.KeyboardReorderDirection direction) => GetParentListView()?.OnKeyboardReorder(direction, this);
+
+	// TODO Uno: QueryFor / GoToStateWithFallback / GetLogicalParentForAPProtected (LBI:2235-2352) not ported here.
 
 	// MUX Reference ListViewBaseItem_Partial.cpp, GetDragIsGrabbed/SetDragIsGrabbed
 	// UIAutomation Property: Return whether or not the current item is the primary drag item.
