@@ -611,6 +611,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			_appliedTemplate = true;
 			OnApplyTemplate();
 		}
+
+		PresentDeferredContent();
 	}
 
 	protected override void OnApplyTemplate()
@@ -1030,7 +1032,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 		{
 			_dataTemplateUsedLastUpdate = dataTemplate;
-			ContentTemplateRoot = dataTemplate?.LoadContentCached(this) ?? Content as View;
+			ContentTemplateRoot = dataTemplate?.LoadContentCached(this) ?? GetContentViewToPresent();
 			if (ContentTemplateRoot != null)
 			{
 				IsUsingDefaultTemplate = false;
@@ -1046,13 +1048,30 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			SetContentTemplateRootToPlaceholder();
 		}
 
-		if (ContentTemplateRoot == null && Content is View contentView && dataTemplate == null)
+		if (ContentTemplateRoot == null && dataTemplate == null && GetContentViewToPresent() is { } contentView)
 		{
 			// No template and Content is a View, set it directly as root
-			ContentTemplateRoot = contentView as View;
+			ContentTemplateRoot = contentView;
 		}
 
 		IsUsingDefaultTemplate = ContentTemplateRoot is ImplicitTextBlock;
+	}
+
+	private View GetContentViewToPresent()
+	{
+		if (Content is not View contentView)
+		{
+			return null;
+		}
+
+		if (!CanBeMeasured(this))
+		{
+			// ApplyTemplate presents it, should layout ever reach this presenter.
+			InvalidateMeasure();
+			return null;
+		}
+
+		return contentView;
 	}
 
 	private void SetContentTemplateRootToPlaceholder()
