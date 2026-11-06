@@ -36,7 +36,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_No_Language_Set_Then_Top_App_Language()
-			=> Assert.AreEqual(global::Windows.Globalization.ApplicationLanguages.Languages[0], new Border().Language);
+		{
+			var language = global::Windows.Globalization.ApplicationLanguages.Languages[0];
+			Assert.AreEqual(language, new Border().Language);
+			Assert.AreEqual(language, new DatePicker().Language);
+		}
 
 #if __SKIA__
 		[TestMethod]

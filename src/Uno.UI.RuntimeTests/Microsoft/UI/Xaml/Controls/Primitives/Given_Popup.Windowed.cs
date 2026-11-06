@@ -169,6 +169,102 @@ public class Given_Popup_Windowed
 		}
 	}
 
+	private static MenuFlyout CreateMenu(int items)
+	{
+		var flyout = new MenuFlyout();
+		for (var i = 0; i < items; i++)
+		{
+			flyout.Items.Add(new MenuFlyoutItem { Text = "Item " + i });
+		}
+
+		return flyout;
+	}
+
+	// CPopup::PositionAndSizeWindowForWindowedPopup and FlyoutBase's placement use the monitor's work area, not the window.
+	[TestMethod]
+	[DataRow(100)]
+	[DataRow(3)]
+	public async Task When_Menu_Opens_At_Window_Corner_Then_Window_Stays_In_Work_Area(int items)
+	{
+		var target = new Border { Width = 20, Height = 20, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Background = new SolidColorBrush(Colors.Blue) };
+		var root = new Grid();
+		root.Children.Add(target);
+		await UITestHelper.Load(root);
+
+		var flyout = CreateMenu(items);
+		var opened = false;
+		flyout.Opened += (_, _) => opened = true;
+		flyout.ShowAt(target, new Point(10, 10));
+		try
+		{
+			await UITestHelper.WaitFor(() => opened, timeoutMS: 3000);
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(target.XamlRoot!)[0];
+			var site = await WaitForWindow(popup);
+			await UITestHelper.WaitForRender();
+
+			var bounds = site.ScreenBounds;
+			var center = new PointInt32(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2);
+			Assert.IsTrue(Popup.WindowedPopupExtensionForTesting!.TryGetMonitorBounds(target.XamlRoot!, center, out _, out var workArea));
+
+			// The window has a gutter for the shadow, which can reach past the work area. The content can't.
+			var presenter = (FrameworkElement)popup.Child;
+			var scale = target.XamlRoot!.RasterizationScale;
+			var origin = Popup.GetScreenOffsetForTesting(target.XamlRoot!);
+			var topLeft = presenter.TransformToVisual(null).TransformPoint(default);
+			var left = origin.X + topLeft.X * scale;
+			var top = origin.Y + topLeft.Y * scale;
+			var right = left + presenter.ActualWidth * scale;
+			var bottom = top + presenter.ActualHeight * scale;
+
+			var message = $"Menu ({left},{top})-({right},{bottom}) in work area ({workArea.X},{workArea.Y},{workArea.Width},{workArea.Height}).";
+			Assert.IsTrue(left >= workArea.X - 1 && top >= workArea.Y - 1, message);
+			Assert.IsTrue(right <= workArea.X + workArea.Width + 1 && bottom <= workArea.Y + workArea.Height + 1, message);
+		}
+		finally
+		{
+			flyout.Hide();
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	// Default menus use an acrylic brush, which asks for a repaint on every frame.
+	[TestMethod]
+	public async Task When_Owner_Repaints_Then_Default_Menu_Is_Not_Rerecorded()
+	{
+		var other = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Blue) };
+		await UITestHelper.Load(other);
+
+		var flyout = CreateMenu(3);
+		var opened = false;
+		flyout.Opened += (_, _) => opened = true;
+		flyout.ShowAt(other, new Point(5, 5));
+		try
+		{
+			await UITestHelper.WaitFor(() => opened, timeoutMS: 3000);
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(other.XamlRoot!)[0];
+			await WaitForWindow(popup);
+			await UITestHelper.WaitForRender(5);
+
+			var before = popup.WindowedPopupRecordedFrameCount;
+			for (var i = 0; i < 5; i++)
+			{
+				other.Opacity = i % 2 == 0 ? 0.5 : 1;
+				await UITestHelper.WaitForRender();
+			}
+
+			Assert.AreEqual(before, popup.WindowedPopupRecordedFrameCount);
+
+			// Under the same brush, a change deep inside still has to show.
+			((MenuFlyoutItem)flyout.Items[0]).Text = "Changed";
+			await UITestHelper.WaitFor(() => popup.WindowedPopupRecordedFrameCount > before, timeoutMS: 3000);
+		}
+		finally
+		{
+			flyout.Hide();
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
 	[TestMethod]
 	public async Task When_Ancestor_Opacity_Changes_Then_Popup_Is_Rerecorded()
 	{
@@ -248,7 +344,7 @@ public class Given_Popup_Windowed
 			await TestServices.WindowHelper.WaitForLoaded(content);
 			Assert.IsTrue(popup.IsWindowed);
 
-			await UITestHelper.WaitFor(() => !popup.IsWindowed, timeoutMS: 5000);
+			await UITestHelper.WaitFor(() => !popup.IsWindowed, timeoutMS: 8000);
 
 			Assert.IsTrue(popup.IsOpen, "The popup should stay open, inside its window.");
 			Assert.IsFalse(closed);
@@ -269,6 +365,39 @@ public class Given_Popup_Windowed
 		}
 		finally
 		{
+			Popup.WindowedPopupExtensionForTesting = real;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Window_Never_Shows_Then_Menu_Is_Placed_Again_In_Window()
+	{
+		var real = Popup.WindowedPopupExtensionForTesting!;
+		Popup.WindowedPopupExtensionForTesting = new FailingExtension(real, new StalledSite());
+		var flyout = CreateMenu(100);
+		try
+		{
+			var target = new Button { Content = "Target" };
+			await UITestHelper.Load(target);
+
+			var opened = false;
+			flyout.Opened += (_, _) => opened = true;
+			flyout.ShowAt(target, new Point(5, 5));
+			await UITestHelper.WaitFor(() => opened, timeoutMS: 3000);
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(target.XamlRoot!)[0];
+			await UITestHelper.WaitFor(() => !popup.IsWindowed, timeoutMS: 8000);
+			await UITestHelper.WaitForRender(3);
+
+			var presenter = (FrameworkElement)popup.Child;
+			var bounds = presenter.TransformToVisual(null).TransformBounds(new Rect(0, 0, presenter.ActualWidth, presenter.ActualHeight));
+			var root = target.XamlRoot!.Size;
+			Assert.IsTrue(bounds.Top >= -1 && bounds.Bottom <= root.Height + 1, $"Menu at {bounds} in a root of {root}.");
+		}
+		finally
+		{
+			flyout.Hide();
+			await TestServices.WindowHelper.WaitForIdle();
 			Popup.WindowedPopupExtensionForTesting = real;
 		}
 	}

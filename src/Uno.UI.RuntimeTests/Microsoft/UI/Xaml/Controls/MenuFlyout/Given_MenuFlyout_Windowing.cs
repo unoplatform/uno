@@ -89,6 +89,36 @@ public class Given_MenuFlyout_Windowing
 	}
 
 	[TestMethod]
+	public async Task When_Target_RightToLeft_And_ShowAt_Without_Options_Then_Menu_Is_Centered_Above()
+	{
+		var target = new Button { Content = "Target", Width = 100, Height = 40, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+		var root = new Grid { FlowDirection = FlowDirection.RightToLeft };
+		root.Children.Add(target);
+		await UITestHelper.Load(root);
+
+		var flyout = new MenuFlyout();
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
+		var opened = false;
+		flyout.Opened += (_, _) => opened = true;
+		flyout.ShowAt(target);
+
+		await TestServices.WindowHelper.WaitFor(() => opened);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var presenter = (FrameworkElement)VisualTreeHelper.GetOpenPopupsForXamlRoot(target.XamlRoot)[0].Child;
+		var presenterBounds = presenter.TransformToVisual(root).TransformBounds(new Rect(0, 0, presenter.ActualWidth, presenter.ActualHeight));
+		var targetBounds = target.TransformToVisual(root).TransformBounds(new Rect(0, 0, target.ActualWidth, target.ActualHeight));
+
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// On real WinUI: presenter 0.67,-50,98.67,46 against target 0,0,100,40.
+		var message = $"presenter={presenterBounds} target={targetBounds}";
+		Assert.AreEqual(targetBounds.X + targetBounds.Width / 2, presenterBounds.X + presenterBounds.Width / 2, 1, message);
+		Assert.IsTrue(presenterBounds.Bottom <= targetBounds.Top, message);
+	}
+
+	[TestMethod]
 	public async Task When_Constrained_And_ShowAt_Without_Options_Then_Stays_In_Root()
 	{
 		var height = await OpenTallMenu(withPoint: false);
