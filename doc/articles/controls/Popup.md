@@ -12,8 +12,10 @@ As in WinUI, a popup with `ShouldConstrainToRootBounds="False"` isn't limited to
 |---|---|
 | Windows desktop (Vulkan, OpenGL, software rendering) | Yes |
 | Linux (X11; Vulkan, OpenGL, OpenGL ES, software rendering) | Yes. Requires XInput 2.2 and the Shape extension |
-| macOS (Metal, software rendering) | Yes |
+| macOS (Metal, software rendering) | Off by default, and not validated yet. Set `FeatureConfiguration.Popup.UseWindowedPopups = true` to try it |
 | WebAssembly, Android, iOS | No: they stay inside the window |
+
+To keep every popup inside its window, including those of `ComboBox` and `ToolTip`, set `FeatureConfiguration.Popup.UseWindowedPopups = false` before the first popup opens.
 
 The window never takes the focus or activation from your window: the keyboard stays on your window, and pointer input over the popup goes through your window's input handling. It follows your window when that moves, and closes with it.
 
