@@ -6,7 +6,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Uno.UI.Helpers;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Interop;
 using _IBindableIterable = System.Collections.IEnumerable;
@@ -28,7 +27,7 @@ public partial class ItemsSourceView
 	private readonly IReadOnlyList<object> m_vectorView;
 	private readonly IKeyIndexMapping m_uniqueIdMaping;
 
-	private SourceSubscription _collectionChangedListener;
+	private IDisposable _collectionChangedListener;
 
 	public ItemsSourceView(object source)
 	{
@@ -79,14 +78,8 @@ public partial class ItemsSourceView
 		m_uniqueIdMaping = source as IKeyIndexMapping;
 	}
 
-	~ItemsSourceView()
-	{
-		// Uno-specific
-		if (_collectionChangedListener is { } listener)
-		{
-			SubscriptionCleanup.EnqueueFromFinalizer(listener.Dispose, typeof(ItemsSourceView), "an items source subscription");
-		}
-	}
+	// Uno-specific: no finalizer. WinUI's destructor calls UnListenToCollectionChanges(); here the subscription removes
+	// itself once this view is collected (see ItemsSourceView.uno.cs).
 
 	#region IDataSourceOverrides
 	private protected int GetSizeCore()
@@ -159,34 +152,29 @@ public partial class ItemsSourceView
 			MUX_ASSERT(m_vector is not null);
 		}
 
-		// Uno-specific: like WinUI's raw-'this' delegate, the source must not keep this view alive, so it only gets a
-		// subscription holding this view weakly (removed by the finalizer). The lambdas below must not capture 'this'.
-		var subscription = new SourceSubscription(this);
+		// Uno-specific: the source references a forwarder that holds this view weakly (see ItemsSourceView.uno.cs).
+		var forwarder = new SourceForwarder(this);
 
 		switch (vector)
 		{
 			case INotifyCollectionChanged incc:
-				subscription.Unsubscribe = () => incc.CollectionChanged -= subscription.OnCollectionChanged;
-				incc.CollectionChanged += subscription.OnCollectionChanged;
-				_collectionChangedListener = subscription;
+				incc.CollectionChanged += forwarder.OnCollectionChanged;
+				_collectionChangedListener = Track(incc, forwarder, static (source, f) => source.CollectionChanged -= f.OnCollectionChanged);
 				break;
 
 			case IBindableObservableVector bindableObservableVector:
-				subscription.Unsubscribe = () => bindableObservableVector.VectorChanged -= subscription.OnBindableVectorChanged;
-				bindableObservableVector.VectorChanged += subscription.OnBindableVectorChanged;
-				_collectionChangedListener = subscription;
+				bindableObservableVector.VectorChanged += forwarder.OnBindableVectorChanged;
+				_collectionChangedListener = Track(bindableObservableVector, forwarder, static (source, f) => source.VectorChanged -= f.OnBindableVectorChanged);
 				break;
 
 			case IObservableVector<object> observableVector:
-				subscription.Unsubscribe = () => observableVector.VectorChanged -= subscription.OnVectorChanged;
-				observableVector.VectorChanged += subscription.OnVectorChanged;
-				_collectionChangedListener = subscription;
+				observableVector.VectorChanged += forwarder.OnVectorChanged;
+				_collectionChangedListener = Track(observableVector, forwarder, static (source, f) => source.VectorChanged -= f.OnVectorChanged);
 				break;
 
 			case IObservableVector observableVectorUntyped:
-				subscription.Unsubscribe = () => observableVectorUntyped.UntypedVectorChanged -= subscription.OnUntypedVectorChanged;
-				observableVectorUntyped.UntypedVectorChanged += subscription.OnUntypedVectorChanged;
-				_collectionChangedListener = subscription;
+				observableVectorUntyped.UntypedVectorChanged += forwarder.OnUntypedVectorChanged;
+				_collectionChangedListener = Track(observableVectorUntyped, forwarder, static (source, f) => source.UntypedVectorChanged -= f.OnUntypedVectorChanged);
 				break;
 		}
 	}
