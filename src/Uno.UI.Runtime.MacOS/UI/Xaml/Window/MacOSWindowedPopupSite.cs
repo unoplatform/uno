@@ -53,6 +53,7 @@ internal sealed class MacOSWindowedPopupSite : IWindowedPopupSite
 			var window = NativeUno.uno_popup_window_create(owner.NativeHandle);
 			if (window == 0)
 			{
+				typeof(MacOSWindowedPopupSite).LogWarn()?.Warn("A popup can't get a window, so it stays in its main window: the native window wasn't created.");
 				return null;
 			}
 
@@ -210,6 +211,8 @@ internal sealed class MacOSWindowedPopupSite : IWindowedPopupSite
 
 	public bool IsVisible => !_isClosed && NativeUno.uno_popup_window_is_visible(_window);
 
+	public bool IsShown => _isShown;
+
 	public void MoveAndResize(RectInt32 rect, RectInt32 contentBounds)
 	{
 		if (_isClosed || rect.Equals(_bounds))
@@ -282,18 +285,36 @@ internal sealed class MacOSWindowedPopupSite : IWindowedPopupSite
 			Monitor.PulseAll(_renderGate);
 		}
 
-		// The thread is the sole user of the context, so it has to stop first.
-		if (_renderThread is { } thread && !thread.Join(TimeSpan.FromSeconds(5)))
+		try
 		{
-			this.LogError()?.Error("A popup window's render thread didn't stop, so its graphics are left behind.");
-			return;
+			// The thread is the sole user of the context, so it has to stop first.
+			if (_renderThread is { } thread && !thread.Join(TimeSpan.FromSeconds(5)))
+			{
+				// It may still be drawing on the window, which can only go out of sight.
+				this.LogError()?.Error("A popup window's render thread didn't stop, so its graphics are left behind.");
+				NativeUno.uno_popup_window_hide(_window);
+				return;
+			}
+
+			try
+			{
+				try
+				{
+					(_renderer as IDisposable)?.Dispose();
+				}
+				finally
+				{
+					_context?.Dispose();
+				}
+			}
+			finally
+			{
+				NativeUno.uno_popup_window_destroy(_window);
+			}
 		}
-
-		(_renderer as IDisposable)?.Dispose();
-		_context?.Dispose();
-
-		NativeUno.uno_popup_window_destroy(_window);
-
-		NativeDispatcher.Main.Enqueue(_content.OnSiteClosed, NativeDispatcherPriority.High);
+		finally
+		{
+			NativeDispatcher.Main.Enqueue(_content.OnSiteClosed, NativeDispatcherPriority.High);
+		}
 	}
 }

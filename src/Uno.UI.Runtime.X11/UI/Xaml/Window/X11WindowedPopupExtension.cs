@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
-using Uno.UI.Composition.Drawing;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Windows.Graphics;
@@ -18,19 +17,55 @@ internal sealed class X11WindowedPopupExtension : IWindowedPopupExtension
 	private const string NET_CURRENT_DESKTOP = "_NET_CURRENT_DESKTOP";
 
 	private static readonly Lazy<IntPtr> _queryDisplay = new(() => XLib.XOpenDisplay(IntPtr.Zero));
+	private const long MonitorCacheLifetimeMilliseconds = 1000;
+
 	private static bool? _isShapeAvailable;
+	private static bool _hasLoggedUnsupported;
+
+	// Asked about on every layout of an open popup. No RandR event is selected, hence the lifetime.
+	private static volatile MonitorCache? _monitorCache;
+
+	private sealed record MonitorCache(List<RectInt32> Monitors, List<RectInt32> WorkAreas, RectInt32 Screen, long Timestamp);
 
 	internal static X11WindowedPopupExtension Instance { get; } = new();
+
+	internal static void InvalidateMonitorCache() => _monitorCache = null;
 
 	private static X11XamlRootHost? GetOwner(XamlRoot xamlRoot) => XamlRootMap.GetHostForRoot(xamlRoot) as X11XamlRootHost;
 
 	public bool IsEnabledByDefault => true;
 
 	public bool IsSupported(XamlRoot xamlRoot)
-		// A popup window's frames replay on a context of its own: only the Skia kinds have recordings that can.
-		=> GetOwner(xamlRoot) is { Closed.IsCompleted: false, GraphicsContextKind: GraphicsContextKind.Vulkan or GraphicsContextKind.OpenGL or GraphicsContextKind.OpenGLES or GraphicsContextKind.Software } owner
-			&& owner.IsXI2Available
-			&& IsShapeAvailable();
+	{
+		if (GetOwner(xamlRoot) is not { Closed.IsCompleted: false } owner)
+		{
+			return false;
+		}
+
+		if (!WindowedPopupGraphics.CanReplayOnOwnContext(owner.GraphicsContextKind))
+		{
+			LogUnsupported($"{owner.GraphicsContextKind} frames can't be replayed on a popup's window");
+			return false;
+		}
+
+		if (!owner.IsXI2Available)
+		{
+			LogUnsupported("XInput 2.2 isn't available");
+			return false;
+		}
+
+		return IsShapeAvailable();
+	}
+
+	// Every popup asks on every open.
+	private void LogUnsupported(string reason)
+	{
+		if (!_hasLoggedUnsupported)
+		{
+			_hasLoggedUnsupported = true;
+			this.LogWarn()?.Warn($"Popups stay inside their window: {reason}.");
+		}
+	}
 
 	public IWindowedPopupSite? TryCreateSite(XamlRoot xamlRoot, IWindowedPopupContent content)
 		=> GetOwner(xamlRoot) is { } owner ? X11WindowedPopupSite.TryCreate(owner, content) : null;
@@ -41,7 +76,7 @@ internal sealed class X11WindowedPopupExtension : IWindowedPopupExtension
 	// There's no system setting: WinUI's failure case, the left-handed menu.
 	public bool IsRightHanded => false;
 
-	public bool TryGetMonitorBounds(PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea)
+	public bool TryGetMonitorBounds(XamlRoot xamlRoot, PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea)
 	{
 		monitor = default;
 		workArea = default;
@@ -54,18 +89,19 @@ internal sealed class X11WindowedPopupExtension : IWindowedPopupExtension
 
 		try
 		{
-			using var lockDisposable = X11Helper.XLock(display);
-
-			var root = XLib.XDefaultRootWindow(display);
-			if (!X11MonitorMath.TryFindNearest(GetMonitors(display, root), screenPoint, out monitor))
+			var cache = _monitorCache;
+			if (cache is null || Environment.TickCount64 - cache.Timestamp > MonitorCacheLifetimeMilliseconds)
 			{
-				// No RandR, or no active CRTC: the screen is the only monitor there is.
-				XWindowAttributes attributes = default;
-				_ = XLib.XGetWindowAttributes(display, root, ref attributes);
-				monitor = new RectInt32(0, 0, attributes.width, attributes.height);
+				_monitorCache = cache = QueryMonitors(display);
 			}
 
-			workArea = X11MonitorMath.GetWorkArea(monitor, GetWorkAreas(display, root));
+			if (!X11MonitorMath.TryFindNearest(cache.Monitors, screenPoint, out monitor))
+			{
+				// No RandR, or no active CRTC: the screen is the only monitor there is.
+				monitor = cache.Screen;
+			}
+
+			workArea = X11MonitorMath.GetWorkArea(monitor, cache.WorkAreas);
 			return true;
 		}
 		catch (Exception e) when (e is DllNotFoundException or EntryPointNotFoundException)
@@ -73,6 +109,21 @@ internal sealed class X11WindowedPopupExtension : IWindowedPopupExtension
 			this.LogWarn()?.Warn($"The monitors can't be queried: {e.Message}");
 			return false;
 		}
+	}
+
+	private static MonitorCache QueryMonitors(IntPtr display)
+	{
+		using var lockDisposable = X11Helper.XLock(display);
+
+		var root = XLib.XDefaultRootWindow(display);
+		XWindowAttributes attributes = default;
+		_ = XLib.XGetWindowAttributes(display, root, ref attributes);
+
+		return new MonitorCache(
+			GetMonitors(display, root),
+			GetWorkAreas(display, root),
+			new RectInt32(0, 0, attributes.width, attributes.height),
+			Environment.TickCount64);
 	}
 
 	private static bool IsShapeAvailable()
@@ -153,7 +204,8 @@ internal sealed class X11WindowedPopupExtension : IWindowedPopupExtension
 	{
 		List<RectInt32> workAreas = new();
 
-		var desktop = ReadCardinals(display, root, NET_CURRENT_DESKTOP) is { Length: > 0 } current ? (int)current[0] : 0;
+		// A window manager can publish -1 when no desktop is current.
+		var desktop = ReadCardinals(display, root, NET_CURRENT_DESKTOP) is { Length: > 0 } current ? Math.Max((int)current[0], 0) : 0;
 
 		// Mutter publishes one per monitor. _NET_WORKAREA has one per desktop, spanning every monitor.
 		var perMonitor = ReadCardinals(display, root, "_GTK_WORKAREAS_D" + desktop.ToString(CultureInfo.InvariantCulture));
@@ -164,7 +216,7 @@ internal sealed class X11WindowedPopupExtension : IWindowedPopupExtension
 				workAreas.Add(new RectInt32((int)perMonitor[i], (int)perMonitor[i + 1], (int)perMonitor[i + 2], (int)perMonitor[i + 3]));
 			}
 		}
-		else if (ReadCardinals(display, root, NET_WORKAREA) is { } perDesktop && perDesktop.Length >= (desktop + 1) * 4)
+		else if (ReadCardinals(display, root, NET_WORKAREA) is { } perDesktop && desktop < perDesktop.Length / 4)
 		{
 			var i = desktop * 4;
 			workAreas.Add(new RectInt32((int)perDesktop[i], (int)perDesktop[i + 1], (int)perDesktop[i + 2], (int)perDesktop[i + 3]));

@@ -69,6 +69,11 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 		if (_sharedPopupDevice is null)
 		{
 			_sharedPopupDeviceDisplay = XLib.XOpenDisplay(IntPtr.Zero);
+			if (_sharedPopupDeviceDisplay == IntPtr.Zero)
+			{
+				throw new InvalidOperationException("XOpenDisplay failed for the popups' Vulkan device.");
+			}
+
 			VulkanContext device = new();
 			try
 			{
@@ -153,30 +158,42 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 			return;
 		}
 
-		if (_skipPresent)
+		try
 		{
-			_skipPresent = false;
-			PresentedLastFrame = false;
+			if (_skipPresent)
+			{
+				_skipPresent = false;
+				PresentedLastFrame = false;
+			}
+			else
+			{
+				_vk.BlitAndPresent();
+				PresentedLastFrame = true;
+			}
 		}
-		else
+		finally
 		{
-			_vk.BlitAndPresent();
-			PresentedLastFrame = true;
+			// Popups share this lock, so a frame that throws must not keep it.
+			_frameLock.Dispose();
+			_frameLock = null;
 		}
-
-		_frameLock.Dispose();
-		_frameLock = null;
 	}
 
 	public void Dispose()
 	{
 		_frameLock?.Dispose();
 		_frameLock = null;
-		_vk.Dispose();
 
-		if (_usesSharedDevice)
+		try
 		{
-			ReleaseSharedPopupDevice();
+			_vk.Dispose();
+		}
+		finally
+		{
+			if (_usesSharedDevice)
+			{
+				ReleaseSharedPopupDevice();
+			}
 		}
 	}
 }

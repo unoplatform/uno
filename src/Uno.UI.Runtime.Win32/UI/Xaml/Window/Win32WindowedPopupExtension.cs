@@ -1,7 +1,6 @@
 #nullable enable
 
 using Microsoft.UI.Xaml;
-using Uno.UI.Composition.Drawing;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Windows.Graphics;
@@ -21,8 +20,7 @@ internal sealed class Win32WindowedPopupExtension : IWindowedPopupExtension
 	public bool IsEnabledByDefault => true;
 
 	public bool IsSupported(XamlRoot xamlRoot)
-		// A popup window's frames replay on a context of its own: only the Skia kinds have recordings that can.
-		=> GetOwner(xamlRoot) is { GraphicsContextKind: GraphicsContextKind.Vulkan or GraphicsContextKind.OpenGL or GraphicsContextKind.Software };
+		=> GetOwner(xamlRoot) is { } owner && WindowedPopupGraphics.CanReplayOnOwnContext(owner.GraphicsContextKind);
 
 	public IWindowedPopupSite? TryCreateSite(XamlRoot xamlRoot, IWindowedPopupContent content)
 		=> GetOwner(xamlRoot) is { } owner ? Win32WindowedPopupSite.TryCreate(owner, content) : null;
@@ -51,7 +49,7 @@ internal sealed class Win32WindowedPopupExtension : IWindowedPopupExtension
 		}
 	}
 
-	public bool TryGetMonitorBounds(PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea)
+	public bool TryGetMonitorBounds(XamlRoot xamlRoot, PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea)
 	{
 		monitor = default;
 		workArea = default;

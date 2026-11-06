@@ -24,11 +24,18 @@ internal interface IWindowedPopupExtension
 	/// <summary>The screen position of the top-left of the content root of <paramref name="xamlRoot"/>.</summary>
 	PointInt32 GetScreenOffset(XamlRoot xamlRoot);
 
-	/// <summary>The monitor nearest to a screen point.</summary>
-	bool TryGetMonitorBounds(PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea);
+	/// <summary>The monitor nearest to a screen point, both in the physical pixels of the window of <paramref name="xamlRoot"/>.</summary>
+	bool TryGetMonitorBounds(XamlRoot xamlRoot, PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea);
 
 	/// <summary>SPI_GETHANDEDNESS: whether the user is right-handed, which opens a pen's menu to the left of the pen.</summary>
 	bool IsRightHanded { get; }
+}
+
+internal static class WindowedPopupGraphics
+{
+	/// <summary>A popup window's frames replay on a context of its own: only the Skia kinds have recordings that can.</summary>
+	internal static bool CanReplayOnOwnContext(GraphicsContextKind kind)
+		=> kind is GraphicsContextKind.OpenGL or GraphicsContextKind.OpenGLES or GraphicsContextKind.Vulkan or GraphicsContextKind.Metal or GraphicsContextKind.Software;
 }
 
 /// <summary>
@@ -48,6 +55,9 @@ internal interface IWindowedPopupSite : global::System.IDisposable
 	RectInt32 ScreenBounds { get; }
 
 	bool IsVisible { get; }
+
+	/// <summary>The first frame since <see cref="Show"/> was presented, and the window was asked to show it.</summary>
+	bool IsShown { get; }
 
 	/// <param name="rect">The window, gutter included.</param>
 	/// <param name="contentBounds">The part of the window which takes input where the host can't tell from the pixels.</param>

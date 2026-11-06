@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
+using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Windows.Graphics;
@@ -24,6 +26,13 @@ internal partial class X11XamlRootHost
 	// In stacking order. UI thread only.
 	private readonly List<X11WindowedPopupSite> _popupSites = new();
 
+	// The exit hook only knows the open hosts, and a closed host's sites can still be waiting for the UI thread.
+	private static readonly ConcurrentDictionary<X11WindowedPopupSite, byte> _livePopupSites = new();
+
+	private readonly Lock _clientScreenOriginGate = new();
+	private PointInt32? _clientScreenOrigin;
+	private int _clientScreenOriginVersion;
+
 	internal GraphicsContextKind GraphicsContextKind { get; private set; }
 
 	internal bool IsXI2Available => GetXI2Details(TopX11Window.Display).version >= XIVersion.XI2_2;
@@ -33,13 +42,48 @@ internal partial class X11XamlRootHost
 
 	internal bool IsPopupWindow(IntPtr window) => _popupSitesByWindow.ContainsKey(window);
 
+	// Popups ask on every frame, and each answer from the server is a round trip.
 	internal PointInt32 GetClientScreenOrigin()
 	{
-		var display = TopX11Window.Display;
-		using var lockDisposable = X11Helper.XLock(display);
+		int version;
+		lock (_clientScreenOriginGate)
+		{
+			if (_clientScreenOrigin is { } cached)
+			{
+				return cached;
+			}
 
-		_ = XLib.XTranslateCoordinates(display, TopX11Window.Window, XLib.XDefaultRootWindow(display), 0, 0, out var x, out var y, out _);
-		return new PointInt32(x, y);
+			version = _clientScreenOriginVersion;
+		}
+
+		var display = TopX11Window.Display;
+		PointInt32 origin;
+		using (X11Helper.XLock(display))
+		{
+			_ = XLib.XTranslateCoordinates(display, TopX11Window.Window, XLib.XDefaultRootWindow(display), 0, 0, out var x, out var y, out _);
+			origin = new PointInt32(x, y);
+		}
+
+		lock (_clientScreenOriginGate)
+		{
+			// The window may have moved during the round trip, which makes this answer one to not keep.
+			if (version == _clientScreenOriginVersion)
+			{
+				_clientScreenOrigin = origin;
+			}
+		}
+
+		return origin;
+	}
+
+	// ICCCM 4.1.5: a window manager moving a client's frame sends the client a synthetic ConfigureNotify.
+	private void InvalidateClientScreenOrigin()
+	{
+		lock (_clientScreenOriginGate)
+		{
+			_clientScreenOriginVersion++;
+			_clientScreenOrigin = null;
+		}
 	}
 
 	internal void AddPopupSite(X11WindowedPopupSite site)
@@ -55,10 +99,12 @@ internal partial class X11XamlRootHost
 
 		_popupSitesByWindow[site.Window] = site;
 		_popupSites.Add(site);
+		_livePopupSites[site] = 0;
 	}
 
 	internal void RemovePopupSite(X11WindowedPopupSite site)
 	{
+		_livePopupSites.TryRemove(site, out _);
 		_popupSites.Remove(site);
 
 		foreach (var (window, candidate) in _popupSitesByWindow)
@@ -103,11 +149,16 @@ internal partial class X11XamlRootHost
 			return;
 		}
 
-		var sibling = GetOwnerFrame();
+		// A hidden window is stacked when it's shown, and the frame takes a round trip per level of the tree.
+		IntPtr? sibling = null;
 		foreach (var site in _popupSites)
 		{
-			site.StackAbove(sibling);
-			sibling = site.Window;
+			if (site.IsShown)
+			{
+				sibling ??= GetOwnerFrame();
+				site.StackAbove(sibling.Value);
+				sibling = site.Window;
+			}
 		}
 	}
 
@@ -168,6 +219,11 @@ internal partial class X11XamlRootHost
 	/// <summary>A GL driver's libraries are torn down at exit, under whatever thread is still drawing with them.</summary>
 	internal static void StopRenderingForProcessExit()
 	{
+		foreach (var site in _livePopupSites.Keys)
+		{
+			site.StopRenderThread();
+		}
+
 		X11XamlRootHost[] hosts;
 		lock (_x11WindowToXamlRootHostMutex)
 		{
@@ -176,11 +232,6 @@ internal partial class X11XamlRootHost
 
 		foreach (var host in hosts)
 		{
-			foreach (var site in host._popupSitesByWindow.Values)
-			{
-				site.StopRenderThread();
-			}
-
 			host._renderLoopRunning = false;
 			host._renderRequested.Set();
 			host._renderThread.Join(TimeSpan.FromSeconds(2));
@@ -191,7 +242,14 @@ internal partial class X11XamlRootHost
 	{
 		foreach (var site in _popupSites.ToArray())
 		{
-			site.Dispose();
+			try
+			{
+				site.Dispose();
+			}
+			catch (Exception e)
+			{
+				this.LogError()?.Error("Failed to tear down a popup window.", e);
+			}
 		}
 	}
 }

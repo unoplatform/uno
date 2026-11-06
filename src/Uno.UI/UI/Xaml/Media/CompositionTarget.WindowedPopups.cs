@@ -4,9 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Controls;
 using Windows.Graphics;
 
@@ -47,6 +50,8 @@ public partial class CompositionTarget
 	/// </summary>
 	internal sealed class WindowedPopupSurface(Popup popup) : IWindowedPopupContent
 	{
+		private static readonly TimeSpan _firstFrameTimeout = TimeSpan.FromSeconds(2);
+
 		private readonly Lock _frameGate = new();
 
 		// The site lives in the host's window list, and must not keep a closed popup alive.
@@ -58,10 +63,38 @@ public partial class CompositionTarget
 		private RectInt32 _recordedBounds;
 		private float _recordedScale;
 		private bool _hasRecorded;
+		private bool _isWaitingForFirstFrame;
+		private int _firstFrameWatch;
 
 		internal IWindowedPopupSite? Site { get; set; }
 
 		internal int RecordedFrameCount { get; private set; }
+
+		internal void OnShowRequested()
+		{
+			_isWaitingForFirstFrame = true;
+			_firstFrameWatch++;
+		}
+
+		// A popup with nothing to show never records a frame and is fine, so the clock starts with the first frame the site gets.
+		private void StartFirstFrameWatch(IWindowedPopupSite site)
+		{
+			var watch = _firstFrameWatch;
+			_ = Task.Delay(_firstFrameTimeout).ContinueWith(
+				_ => NativeDispatcher.Main.Enqueue(() => OnFirstFrameTimeout(site, watch)),
+				TaskScheduler.Default);
+		}
+
+		private void OnFirstFrameTimeout(IWindowedPopupSite site, int watch)
+		{
+			if (watch != _firstFrameWatch || site.IsShown || site.IsClosed)
+			{
+				return;
+			}
+
+			this.LogWarn()?.Warn($"A popup's window didn't present its first frame within {_firstFrameTimeout.TotalSeconds} seconds, so the popup is closed instead of staying open and invisible.");
+			((IWindowedPopupContent)this).OnSiteClosed();
+		}
 
 		// The owner asks for a frame whenever anything in its window changes. Most of those have nothing for this surface.
 		private bool IsRecordingCurrent(RectInt32 bounds, float scale)
@@ -128,10 +161,18 @@ public partial class CompositionTarget
 
 			previous?.frame.OnPipelineReleased();
 			site.InvalidateRender();
+
+			if (_isWaitingForFirstFrame)
+			{
+				_isWaitingForFirstFrame = false;
+				StartFirstFrameWatch(site);
+			}
 		}
 
 		internal void DropFrame()
 		{
+			_isWaitingForFirstFrame = false;
+			_firstFrameWatch++;
 			_hasRecorded = false;
 			_recordedVisuals.Clear();
 
@@ -181,28 +222,33 @@ public partial class CompositionTarget
 			}
 			finally
 			{
-				swapChain.Present();
-
-				// The frame stays, so a surface that couldn't show it (a just-resized swapchain) or that was only just
-				// shown can present it again.
-				if (borrowed is { } returned)
+				try
 				{
-					var dispose = false;
-					lock (_frameGate)
+					swapChain.Present();
+				}
+				finally
+				{
+					// The frame stays, so a surface that couldn't show it (a just-resized swapchain) or that was only just
+					// shown can present it again.
+					if (borrowed is { } returned)
 					{
-						if (_frame is null)
+						var dispose = false;
+						lock (_frameGate)
 						{
-							_frame = returned;
+							if (_frame is null)
+							{
+								_frame = returned;
+							}
+							else
+							{
+								dispose = true;
+							}
 						}
-						else
-						{
-							dispose = true;
-						}
-					}
 
-					if (dispose)
-					{
-						returned.frame.OnPipelineReleased();
+						if (dispose)
+						{
+							returned.frame.OnPipelineReleased();
+						}
 					}
 				}
 			}

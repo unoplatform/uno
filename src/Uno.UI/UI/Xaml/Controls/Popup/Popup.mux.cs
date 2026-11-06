@@ -144,7 +144,7 @@ partial class Popup
 		if (pPopupRoot is null)
 		{
 			// ERROR_POPUP_XAMLROOT_NOT_SET, E_UNEXPECTED
-			throw new global::System.Runtime.InteropServices.COMException("Popup.XamlRoot must be set before the popup can be opened.", unchecked((int)0x8000FFFF));
+			throw new global::System.Runtime.InteropServices.COMException("Popup.XamlRoot must be set before the popup can be opened: add the popup to the visual tree, or set its XamlRoot.", unchecked((int)0x8000FFFF));
 		}
 
 		// If it's been requested that this popup be windowed,
@@ -184,6 +184,11 @@ partial class Popup
 				{
 					m_isWindowed = false;
 					m_windowCreationFailed = true;
+
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn("A popup couldn't get a window of its own, so it opens inside its main window and is clipped to it.");
+					}
 				}
 			}
 
@@ -642,8 +647,16 @@ partial class Popup
 			{
 				m_isWindowed = true;
 			}
+			else if (!s_hasLoggedWindowedPopupsUnsupported && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				// Every popup asks on every open.
+				s_hasLoggedWindowedPopupsUnsupported = true;
+				this.Log().Warn("This window can't give popups a window of their own, so they stay inside it and are clipped to it.");
+			}
 		}
 	}
+
+	private static bool s_hasLoggedWindowedPopupsUnsupported;
 
 	internal void SetPointerCapture() => m_windowedPopupWindow?.Site.SetPointerCapture();
 
@@ -778,6 +791,7 @@ partial class Popup
 
 		XamlRoot?.VisualTree.ContentRoot.CompositionTarget.AddWindowedPopupSurface(window.Surface);
 		window.Site.Show();
+		window.Surface.OnShowRequested();
 	}
 
 	// Hide windowed popup's window
@@ -1206,7 +1220,7 @@ partial class Popup
 			(int)Math.Round(targetPointClientLogical.Y * scale) + screenOffsetTemp.Y);
 
 		// Get the monitor from the nearest target rect
-		if (extension.TryGetMonitorBounds(targetPointScreenPhysicalTemp, out var rcMonitor, out var rcWork))
+		if (extension.TryGetMonitorBounds(xamlRoot, targetPointScreenPhysicalTemp, out var rcMonitor, out var rcWork))
 		{
 			// TODO Uno: GetInputPaneOccludeRect, which subtracts an input pane: desktops only get here, without one.
 			// TODO Uno: VisualTree::ShouldConstrainPopupsToWorkArea, which is DesktopWindowXamlSource's and always true otherwise.

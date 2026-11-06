@@ -155,6 +155,8 @@ internal partial class X11XamlRootHost
 					switch (@event.type)
 					{
 						case XEventName.PropertyNotify:
+							// The work areas and the current desktop are all properties of the root window.
+							X11WindowedPopupExtension.InvalidateMonitorCache();
 							if (@event.PropertyEvent.atom == X11Helper.GetAtom(x11Window.Display, X11Helper.RESOURCE_MANAGER))
 							{
 								if (this.Log().IsEnabled(LogLevel.Debug))
@@ -197,6 +199,7 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						case XEventName.ConfigureNotify:
+							InvalidateClientScreenOrigin();
 							RaiseConfigureCallback();
 							break;
 						// A keyboard grab, such as a window manager's shortcut, doesn't move the focus.
@@ -280,6 +283,7 @@ internal partial class X11XamlRootHost
 							{
 								this.Log().Debug($"Window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is mapped.");
 							}
+							InvalidateClientScreenOrigin();
 							QueueOwnerMappedForPopups(true);
 							break;
 						case XEventName.UnmapNotify:
@@ -290,6 +294,7 @@ internal partial class X11XamlRootHost
 							QueueOwnerMappedForPopups(false);
 							break;
 						case XEventName.ReparentNotify:
+							InvalidateClientScreenOrigin();
 							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
 								this.Log().Debug($"Window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)} was reparented to parent window {@event.ReparentEvent.parent.ToString("X", CultureInfo.InvariantCulture)}.");

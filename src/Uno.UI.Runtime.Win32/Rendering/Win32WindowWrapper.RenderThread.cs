@@ -82,14 +82,24 @@ internal partial class Win32WindowWrapper
 		/// The caller must dispose the context only after this returns — once the thread, the sole
 		/// user of that resource, is guaranteed stopped.
 		/// </summary>
-		public void Dispose()
+		public void Dispose() => TryStop(Timeout.InfiniteTimeSpan);
+
+		/// <summary>
+		/// <see cref="Dispose"/> for a window whose destruction can't wait for long. False when the thread is still running,
+		/// in which case the caller must leave the context alone: the thread may still be using it.
+		/// </summary>
+		internal bool TryStop(TimeSpan timeout)
 		{
 			_disposed = true;
 			_frameSignal.Set(); // Wake the loop if it's parked in WaitOne
-			_thread.Join();
+			if (!_thread.Join(timeout))
+			{
+				return false;
+			}
 
 			_frameSignal.Dispose();
 			_presentedEvent.Dispose();
+			return true;
 		}
 	}
 }

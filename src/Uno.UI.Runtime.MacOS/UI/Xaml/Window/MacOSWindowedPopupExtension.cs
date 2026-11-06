@@ -4,7 +4,6 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
-using Uno.UI.Composition.Drawing;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Windows.Graphics;
@@ -15,9 +14,6 @@ internal sealed class MacOSWindowedPopupExtension : IWindowedPopupExtension
 {
 	private static readonly Lazy<bool> _hasNativeSupport = new(ProbeNativeSupport);
 
-	// A monitor is asked about in the physical pixels of the window that's placing a popup, right after asking for its offset.
-	private double _lastOwnerScale = 1;
-
 	internal static MacOSWindowedPopupExtension Instance { get; } = new();
 
 	private static MacOSWindowHost? GetOwner(XamlRoot xamlRoot) => XamlRootMap.GetHostForRoot(xamlRoot) as MacOSWindowHost;
@@ -26,8 +22,7 @@ internal sealed class MacOSWindowedPopupExtension : IWindowedPopupExtension
 	public bool IsEnabledByDefault => false;
 
 	public bool IsSupported(XamlRoot xamlRoot)
-		// A popup window's frames replay on a context of its own: only the Skia kinds have recordings that can.
-		=> _hasNativeSupport.Value && GetOwner(xamlRoot) is { GraphicsContextKind: GraphicsContextKind.Metal or GraphicsContextKind.Software };
+		=> _hasNativeSupport.Value && GetOwner(xamlRoot) is { } owner && WindowedPopupGraphics.CanReplayOnOwnContext(owner.GraphicsContextKind);
 
 	public IWindowedPopupSite? TryCreateSite(XamlRoot xamlRoot, IWindowedPopupContent content)
 		=> GetOwner(xamlRoot) is { } owner ? MacOSWindowedPopupSite.TryCreate(owner, content) : null;
@@ -39,7 +34,7 @@ internal sealed class MacOSWindowedPopupExtension : IWindowedPopupExtension
 			return default;
 		}
 
-		var scale = _lastOwnerScale = owner.RasterizationScale;
+		var scale = owner.RasterizationScale;
 		NativeUno.uno_window_convert_local_to_screen(owner.NativeHandle, 0, 0, out var x, out var y);
 		return new PointInt32((int)Math.Round(x * scale), (int)Math.Round(y * scale));
 	}
@@ -47,14 +42,18 @@ internal sealed class MacOSWindowedPopupExtension : IWindowedPopupExtension
 	// There's no system setting: WinUI's failure case, the left-handed menu.
 	public bool IsRightHanded => false;
 
-	public bool TryGetMonitorBounds(PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea)
+	public bool TryGetMonitorBounds(XamlRoot xamlRoot, PointInt32 screenPoint, out RectInt32 monitor, out RectInt32 workArea)
 	{
 		monitor = default;
 		workArea = default;
 
-		var scale = _lastOwnerScale;
-		if (!_hasNativeSupport.Value
-			|| !NativeUno.uno_screen_get_bounds(
+		if (!_hasNativeSupport.Value || GetOwner(xamlRoot) is not { } owner)
+		{
+			return false;
+		}
+
+		var scale = owner.RasterizationScale;
+		if (!NativeUno.uno_screen_get_bounds(
 				screenPoint.X / scale,
 				screenPoint.Y / scale,
 				out var mx, out var my, out var mw, out var mh,
@@ -85,7 +84,7 @@ internal sealed class MacOSWindowedPopupExtension : IWindowedPopupExtension
 		}
 		catch (Exception e)
 		{
-			typeof(MacOSWindowedPopupExtension).LogDebug()?.Debug($"Probing for windowed popups failed: {e.Message}");
+			typeof(MacOSWindowedPopupExtension).LogWarn()?.Warn($"Probing for windowed popups failed: {e.Message}");
 		}
 
 		typeof(MacOSWindowedPopupExtension).LogWarn()?.Warn("libUnoNativeMac has no support for windowed popups, so popups stay inside their window.");

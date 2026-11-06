@@ -40,14 +40,17 @@ internal sealed class Win32WindowedPopupSite : IWindowedPopupSite
 	private const int MA_NOACTIVATE = 3;
 	private const int PA_NOACTIVATE = 3;
 	private const int HTCLIENT = 1;
+	private const uint WM_NCCREATE = 0x0081;
 	private const uint WM_NCDESTROY = 0x0082;
 	private const int HTTRANSPARENT = -1;
+
+	private static readonly TimeSpan _renderThreadStopTimeout = TimeSpan.FromSeconds(5);
 
 	// lpfnWndProc must stay reachable for as long as the class is registered.
 	private static readonly WNDCLASSEXW _windowClass;
 	private static readonly Dictionary<HWND, Win32WindowedPopupSite> _hwndToSite = new();
 
-	// The first WndProc calls happen inside CreateWindowEx, before the HWND is known.
+	// WM_NCCREATE comes from inside CreateWindowEx, before the HWND is known.
 	private static Win32WindowedPopupSite? _siteForNextCreateWindow;
 
 	private readonly Win32WindowWrapper _owner;
@@ -301,6 +304,8 @@ internal sealed class Win32WindowedPopupSite : IWindowedPopupSite
 
 	public bool IsVisible => !_isClosed && PInvoke.IsWindowVisible(_hwnd);
 
+	public bool IsShown => _isShown;
+
 	public void MoveAndResize(RectInt32 rect, RectInt32 contentBounds)
 	{
 		_contentBounds = contentBounds;
@@ -368,20 +373,43 @@ internal sealed class Win32WindowedPopupSite : IWindowedPopupSite
 		_isClosed = true;
 		_owner.RemovePopupSite(this);
 
-		// The thread is the sole user of the context, so it has to stop first.
-		_renderThread?.Dispose();
-		_renderThread = null;
-
-		// Every Vulkan window shares one device and queue, and the GRContext's teardown waits on that queue.
-		using (_context is Win32VulkanGraphicsContext vulkan ? vulkan.LockDevice() : null)
+		try
 		{
-			(_renderer as IDisposable)?.Dispose();
+			Win32UIAutomationInterop.FlushUiaBridgeEventTable(_hwnd.Value);
+			ReleaseGraphics();
+		}
+		finally
+		{
+			// Not from inside the destruction of this window and its owner: closing a popup runs app code.
+			NativeDispatcher.Main.Enqueue(_content.OnSiteClosed, NativeDispatcherPriority.High);
+		}
+	}
+
+	private void ReleaseGraphics()
+	{
+		// The thread is the sole user of the context, so it has to stop first.
+		if (_renderThread is { } thread)
+		{
+			_renderThread = null;
+			if (!thread.TryStop(_renderThreadStopTimeout))
+			{
+				this.LogError()?.Error("A popup window's render thread didn't stop, so its graphics are left behind.");
+				return;
+			}
 		}
 
-		_context?.Dispose();
-
-		// Not from inside the destruction of this window and its owner: closing a popup runs app code.
-		NativeDispatcher.Main.Enqueue(_content.OnSiteClosed, NativeDispatcherPriority.High);
+		try
+		{
+			// Every Vulkan window shares one device and queue, and the GRContext's teardown waits on that queue.
+			using (_context is Win32VulkanGraphicsContext vulkan ? vulkan.LockDevice() : null)
+			{
+				(_renderer as IDisposable)?.Dispose();
+			}
+		}
+		finally
+		{
+			_context?.Dispose();
+		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
@@ -389,11 +417,13 @@ internal sealed class Win32WindowedPopupSite : IWindowedPopupSite
 	{
 		try
 		{
-			if (_siteForNextCreateWindow is { } site)
+			if (msg == WM_NCCREATE && _siteForNextCreateWindow is { } creating)
 			{
-				_hwndToSite[hwnd] = site;
+				_siteForNextCreateWindow = null;
+				_hwndToSite[hwnd] = creating;
 			}
-			else if (!_hwndToSite.TryGetValue(hwnd, out site))
+
+			if (!_hwndToSite.TryGetValue(hwnd, out var site))
 			{
 				return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 			}

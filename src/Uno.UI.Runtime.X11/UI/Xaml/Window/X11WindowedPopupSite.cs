@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +29,8 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 	private const uint CWSibling = 1 << 5;
 	private const uint CWStackMode = 1 << 6;
 	private const int XIGrabModeAsync = 1;
+
+	private static readonly bool _isPointerGrabDisabled = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("UNO_X11_DISABLE_POPUP_GRAB"));
 
 	private readonly X11XamlRootHost _owner;
 	private readonly IWindowedPopupContent _content;
@@ -71,6 +74,7 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 			var display = XLib.XOpenDisplay(IntPtr.Zero);
 			if (display == IntPtr.Zero)
 			{
+				typeof(X11WindowedPopupSite).LogWarn()?.Warn("A popup can't get a window, so it stays in its main window: XOpenDisplay failed.");
 				return null;
 			}
 
@@ -330,6 +334,8 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 
 	public bool IsVisible => !_isClosed && GetAttributes().map_state == MapState.IsViewable;
 
+	public bool IsShown => _isShown;
+
 	private XWindowAttributes GetAttributes()
 	{
 		using var lockDisposable = X11Helper.XLock(_display);
@@ -416,6 +422,12 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 	/// </remarks>
 	public unsafe void SetPointerCapture()
 	{
+		// An XI2 grab outlives the process being stopped, so a breakpoint would lock up the whole desktop's pointer.
+		if (Debugger.IsAttached || _isPointerGrabDisabled)
+		{
+			return;
+		}
+
 		var display = _owner.TopX11Window.Display;
 		using var lockDisposable = X11Helper.XLock(display);
 
@@ -441,7 +453,7 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 		}
 		else
 		{
-			this.LogDebug()?.Debug($"{nameof(X11Helper.XIGrabDevice)} failed: {status}");
+			this.LogWarn()?.Warn($"A popup window can't capture the pointer, {nameof(X11Helper.XIGrabDevice)} failed: {status}");
 		}
 	}
 
@@ -517,40 +529,82 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 			return;
 		}
 
-		if (_window is not null)
-		{
-			ReleasePointerCapture();
-		}
-
 		_isClosed = true;
 		_owner.RemovePopupSite(this);
 
-		// The thread is the sole user of the context, so it has to stop first.
-		if (!StopRenderThread())
+		try
 		{
-			this.LogError()?.Error("A popup window's render thread didn't stop, so its graphics are left behind.");
-			return;
+			TearDown();
 		}
-
-		if (_renderer is not null)
+		finally
 		{
-			// The backend's GPU resources can only go while their context is current.
-			(_context as IX11GpuTeardownContext)?.MakeCurrentForTeardown();
-			using (_context is X11VulkanGraphicsContext vulkan ? vulkan.LockDevice() : null)
+			if (_renderer is not null)
 			{
-				(_renderer as IDisposable)?.Dispose();
+				NativeDispatcher.Main.Enqueue(_content.OnSiteClosed, NativeDispatcherPriority.High);
 			}
-
-			_context.Dispose();
-
-			NativeDispatcher.Main.Enqueue(_content.OnSiteClosed, NativeDispatcherPriority.High);
 		}
+	}
 
-		DestroyWindow();
-
-		using (X11Helper.XLock(_display))
+	private void TearDown()
+	{
+		try
 		{
-			_ = XLib.XCloseDisplay(_display);
+			if (_window is not null)
+			{
+				ReleasePointerCapture();
+			}
+		}
+		finally
+		{
+			// The thread is the sole user of the context, so it has to stop first.
+			if (StopRenderThread())
+			{
+				ReleaseGraphicsAndWindow();
+			}
+			else
+			{
+				// It may still be drawing on the window and its connection, so the window can only go out of sight.
+				this.LogError()?.Error("A popup window's render thread didn't stop, so its graphics are left behind.");
+				_isShown = false;
+				ApplyMapState();
+			}
+		}
+	}
+
+	private void ReleaseGraphicsAndWindow()
+	{
+		try
+		{
+			if (_renderer is not null)
+			{
+				try
+				{
+					// The backend's GPU resources can only go while their context is current.
+					(_context as IX11GpuTeardownContext)?.MakeCurrentForTeardown();
+					using (_context is X11VulkanGraphicsContext vulkan ? vulkan.LockDevice() : null)
+					{
+						(_renderer as IDisposable)?.Dispose();
+					}
+				}
+				finally
+				{
+					_context.Dispose();
+				}
+			}
+		}
+		finally
+		{
+			try
+			{
+				DestroyWindow();
+			}
+			finally
+			{
+				using (X11Helper.XLock(_display))
+				{
+					_ = XLib.XCloseDisplay(_display);
+				}
+			}
 		}
 	}
 }

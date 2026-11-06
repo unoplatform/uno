@@ -596,7 +596,23 @@ internal partial class X11PointerInputSource
 						this.Log().Trace($"Received {data}");
 					}
 
-					var args = CreatePointerEventArgsFromDeviceEvent(display, data);
+					PointerEventArgs args;
+					var hasArgs = false;
+					try
+					{
+						args = CreatePointerEventArgsFromDeviceEvent(display, data);
+						hasArgs = true;
+					}
+					finally
+					{
+						// Without the args there's no telling if a button is still held, and a grab must not outlive the last one.
+						if (!hasArgs && evtype is XiEventType.XI_ButtonRelease)
+						{
+							PressedMouseDevice = null;
+							_host.ReleasePopupPointerCaptures();
+						}
+					}
+
 					TrackPressedMouseDevice(evtype, data, args);
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
