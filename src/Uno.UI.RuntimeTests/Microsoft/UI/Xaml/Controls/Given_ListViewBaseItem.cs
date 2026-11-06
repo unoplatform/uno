@@ -534,10 +534,14 @@ public class Given_ListViewBaseItem
 	public async Task When_Reordering_Over_Dragged_Item_Center_AutoPans()
 	{
 #if HAS_UNO
-		var (list, item, _) = await Setup(itemsSource: Enumerable.Range(0, 20).Select(i => (object)$"Item {i}").ToArray());
+		var (list, _, _) = await Setup(itemsSource: Enumerable.Range(0, 20).Select(i => (object)$"Item {i}").ToArray());
 		list.AllowDrop = true;
 		list.CanDragItems = true;
 		list.CanReorderItems = true;
+
+		// The dragged container stays in its slot during a reorder, so it's only under the pointer in the
+		// edge-scroll band when it starts there: this one is the last line of the viewport.
+		var item = (ListViewItem)list.ContainerFromIndex(4);
 		// Uno raises drag events only on elements that set AllowDrop themselves.
 		item.AllowDrop = true;
 		await WindowHelper.WaitForIdle();
@@ -545,7 +549,12 @@ public class Given_ListViewBaseItem
 		var swallowedByItem = 0;
 		item.AddHandler(UIElement.DragOverEvent, new DragEventHandler((_, e) =>
 		{
-			itemDragOvers++;
+			var position = e.GetPosition(item);
+			if (position.Y > 0 && position.Y < item.ActualHeight)
+			{
+				itemDragOvers++;
+			}
+
 			if (e.Handled || list.IsDragOverItem(item))
 			{
 				swallowedByItem++;
@@ -556,26 +565,25 @@ public class Given_ListViewBaseItem
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
 		using var mouse = injector.GetMouse();
 
-		// 30 px above the bottom edge: inside the edge-scroll band.
+		// 30 px above the bottom edge: inside the edge-scroll band, and the center of the dragged item.
 		var listTop = list.TransformToVisual(null).TransformPoint(default);
-		var target = new Point(Center(item).X, listTop.Y + list.ActualHeight - 30);
+		var center = Center(item);
+		Assert.AreEqual(listTop.Y + list.ActualHeight - 30, center.Y, 1, "The dragged item must be in the edge-scroll band.");
 
-		mouse.Press(Center(item));
+		mouse.Press(center);
 		await WindowHelper.WaitForIdle();
 		try
 		{
-			mouse.MoveTo(target, 16);
+			// Only sideways: enough to start the drag while staying over the center of the dragged item.
+			mouse.MoveTo(new Point(center.X + 20, center.Y), 4);
 			await WindowHelper.WaitForIdle();
-			await Task.Delay(100);
-			for (var i = 1; i <= 3; i++)
-			{
-				mouse.MoveTo(new Point(target.X, target.Y + i), 1);
-				await WindowHelper.WaitForIdle();
-			}
+			mouse.MoveTo(new Point(center.X + 24, center.Y), 2);
+			await WindowHelper.WaitForIdle();
 
+			Assert.IsTrue(itemDragOvers > 0, "The dragged container must receive DragOver under the pointer for the test to be meaningful.");
 			Assert.AreEqual(0, swallowedByItem, "The dragged container must not handle the reorder DragOver.");
 
-			await UITestHelper.WaitFor(() => scroller.VerticalOffset > 0, timeoutMS: 3000, message: "Edge auto-pan must start while the pointer is over the dragged item.");
+			await UITestHelper.WaitFor(() => scroller.VerticalOffset > 0, timeoutMS: 3000, message: "Edge auto-pan must start while the pointer is over the dragged container.");
 		}
 		finally
 		{

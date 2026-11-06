@@ -1244,7 +1244,18 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// MUX Reference ItemsControl_Partial.cpp, ClearContainerForItemOverride: a recycled container keeps its
 					// template, and with it its content, unless the item is a FrameworkElement that has to leave it.
+					// The clear is deferred (ListViewBase.ClearContainerForItemOverride), as a prepare usually follows at once.
 					var keepTemplate = CustomItemsHost is not null && item is not FrameworkElement;
+
+					if (keepTemplate)
+					{
+						if (contentControl.ContentTemplateSelector is { } itemTemplateSelector && itemTemplateSelector == ItemTemplateSelector)
+						{
+							contentControl.ClearValue(ContentControl.ContentTemplateSelectorProperty);
+						}
+
+						return;
+					}
 
 					static void ClearPropertyWhenNoExpression(ContentControl target, DependencyProperty property)
 					{
@@ -1263,10 +1274,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// When_TemplateSelector_And_List_Reloaded asserts against this.
 					if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
 					{
-						if (!keepTemplate)
-						{
-							ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateProperty);
-						}
+						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateProperty);
 					}
 					else if (contentControl.ContentTemplateSelector is { } cts && cts == ItemTemplateSelector)
 					{
