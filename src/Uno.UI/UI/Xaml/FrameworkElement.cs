@@ -433,7 +433,11 @@ namespace Microsoft.UI.Xaml
 				_isParsing = false;
 				ResourceResolver.PopSourceFromScope();
 			}
+
+			OnCreationComplete();
 		}
+
+		private protected virtual void OnCreationComplete() { }
 
 		#region Style DependencyProperty
 
