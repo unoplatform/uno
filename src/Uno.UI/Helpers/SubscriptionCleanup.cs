@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Threading;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
@@ -25,8 +26,10 @@ internal interface IQueuedRemoval
 internal static class SubscriptionCleanup
 {
 	// A collected page can release thousands of subscriptions at once: remove them in batches, at Low priority, so they
-	// neither flood the dispatcher with one item each nor hold back rendering.
+	// neither flood the dispatcher with one item each nor hold back rendering. A removal copies the source's whole
+	// handler list, so a batch also stops after a few milliseconds on a source with thousands of handlers.
 	private const int MaxRemovalsPerBatch = 256;
+	private static readonly long MaxTicksPerBatch = Stopwatch.Frequency * 3 / 1000;
 
 	private static readonly ConcurrentQueue<PendingRemoval> _pendingRemovals = new();
 	private static int _isBatchScheduled;
@@ -117,9 +120,12 @@ internal static class SubscriptionCleanup
 		Volatile.Write(ref _isBatchScheduled, 0);
 
 		var removed = 0;
+		var start = Stopwatch.GetTimestamp();
 		try
 		{
-			while (removed < MaxRemovalsPerBatch && _pendingRemovals.TryDequeue(out var removal))
+			while (removed < MaxRemovalsPerBatch
+				&& Stopwatch.GetTimestamp() - start < MaxTicksPerBatch
+				&& _pendingRemovals.TryDequeue(out var removal))
 			{
 				removal.Removal.Remove(removal.Source);
 				removed++;
