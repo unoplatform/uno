@@ -3319,6 +3319,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_ItemsSource_Move()
 		{
 			var list = new ListView

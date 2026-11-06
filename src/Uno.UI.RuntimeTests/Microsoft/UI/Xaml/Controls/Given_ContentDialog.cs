@@ -207,8 +207,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
+		[RequiresFullWindow]
 		public async Task When_DefaultButton_Not_Set()
 		{
+			using var lightTheme = ThemeHelper.UseApplicationLightTheme();
+
 			var SUT = new MyContentDialog
 			{
 				Title = "Dialog title",
@@ -240,8 +243,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
+		[RequiresFullWindow]
 		public async Task When_DefaultButton_Set()
 		{
+			using var lightTheme = ThemeHelper.UseApplicationLightTheme();
+
 			var SUT = new MyContentDialog
 			{
 				Title = "Dialog title",

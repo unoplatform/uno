@@ -28,6 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_ListView_Parent_Unstretched()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -61,6 +62,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_ListView_Parent_Unstretched_Scrolled()
 		{
 			var source = Enumerable.Range(0, 50).ToArray();
@@ -99,6 +101,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_Item_Margins()
 		{
 			var SUT = new ListView
@@ -316,6 +319,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_ItemsSource_INCC_StartEmpty_AddOne()
 		{
 			var source = new ObservableCollection<string>();
@@ -338,6 +342,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_ItemsSource_INCC_StartTwo_RemoveOne()
 		{
 			var source = new ObservableCollection<string>(new[] { "Apple", "Banana" });
