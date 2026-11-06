@@ -5,28 +5,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 #if false
 [global::Uno.NotImplemented]
 #endif
-public partial class CarouselPanel : global::Microsoft.UI.Xaml.Controls.VirtualizingPanel, global::Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
+public partial class CarouselPanel : global::Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
 {
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool AreHorizontalSnapPointsRegular
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "AreHorizontalSnapPointsRegular");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool AreVerticalSnapPointsRegular
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "AreVerticalSnapPointsRegular");
-		}
-	}
-#endif
+// Skipping already declared property AreHorizontalSnapPointsRegular
+// Skipping already declared property AreVerticalSnapPointsRegular
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public bool CanHorizontallyScroll
@@ -236,20 +218,8 @@ public partial class CarouselPanel : global::Microsoft.UI.Xaml.Controls.Virtuali
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "MakeVisible(UIElement visual, Rect rectangle)");
 	}
 #endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints(global::Microsoft.UI.Xaml.Controls.Orientation orientation, global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public float GetRegularSnapPoints(global::Microsoft.UI.Xaml.Controls.Orientation orientation, global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, out float offset)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset)");
-	}
-#endif
+// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.GetIrregularSnapPoints
+// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.GetRegularSnapPoints
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.HorizontalSnapPointsChanged.add
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.HorizontalSnapPointsChanged.remove
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.VerticalSnapPointsChanged.add
@@ -268,37 +238,7 @@ public partial class CarouselPanel : global::Microsoft.UI.Xaml.Controls.Virtuali
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.VerticalOffset.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.ViewportHeight.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.ViewportWidth.get
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public event global::System.EventHandler<object> HorizontalSnapPointsChanged
-	{
-		[global::Uno.NotImplemented("__SKIA__")]
-		add
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "event HorizontalSnapPointsChanged");
-		}
-		[global::Uno.NotImplemented("__SKIA__")]
-		remove
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "event HorizontalSnapPointsChanged");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public event global::System.EventHandler<object> VerticalSnapPointsChanged
-	{
-		[global::Uno.NotImplemented("__SKIA__")]
-		add
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "event VerticalSnapPointsChanged");
-		}
-		[global::Uno.NotImplemented("__SKIA__")]
-		remove
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "event VerticalSnapPointsChanged");
-		}
-	}
-#endif
+// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.HorizontalSnapPointsChanged
+// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.VerticalSnapPointsChanged
 	// Processing: Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
 }

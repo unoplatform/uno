@@ -1178,15 +1178,15 @@ namespace Microsoft.UI.Xaml.Controls
 		double GetDesiredItemWidth()
 		{
 			Panel spPanel;
-			IVirtualizingPanel spVirtualizingPanel;
+			VirtualizingPanel spVirtualizingPanel;
 			double width = 0.0;
 
 			spPanel = ItemsPanelRoot;
-			spVirtualizingPanel = spPanel as IVirtualizingPanel;
+			spVirtualizingPanel = spPanel as VirtualizingPanel;
 
 			if (spVirtualizingPanel != null)
 			{
-				width = LayoutInformation.GetAvailableSize(spVirtualizingPanel as VirtualizingPanel).Width;
+				width = LayoutInformation.GetAvailableSize(spVirtualizingPanel).Width;
 			}
 
 			double pWidth;
@@ -1213,16 +1213,16 @@ namespace Microsoft.UI.Xaml.Controls
 		double GetDesiredItemHeight()
 		{
 			Panel spPanel;
-			IVirtualizingPanel spVirtualizingPanel;
+			VirtualizingPanel spVirtualizingPanel;
 			double height = 0.0;
 
 			spPanel = ItemsPanelRoot;
 
-			spVirtualizingPanel = spPanel as IVirtualizingPanel;
+			spVirtualizingPanel = spPanel as VirtualizingPanel;
 
 			if (spVirtualizingPanel != null)
 			{
-				height = LayoutInformation.GetAvailableSize(spVirtualizingPanel as VirtualizingPanel).Height;
+				height = LayoutInformation.GetAvailableSize(spVirtualizingPanel).Height;
 			}
 
 			double pHeight;

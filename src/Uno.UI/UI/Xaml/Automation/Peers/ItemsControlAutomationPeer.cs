@@ -155,7 +155,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 				listBox.ScrollIntoView(peer.Item);
 				break;
 			case ComboBox comboBox:
-				comboBox.ScrollIntoView(peer.Item);
+				comboBox.ScrollIntoViewInternal(peer.Item, false /*isHeader*/, false /*isFooter*/, true /*isFromPublicAPI*/, ScrollIntoViewAlignment.Default);
 				break;
 		}
 	}
@@ -604,9 +604,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 					else
 					{
 						// Standard Panel without grouping (StackPanel, etc.)
-						IList<UIElement> containers = spItemsHostPanel is IVirtualizingPanel
-							? OrderByItemIndex(spItemsControl, spItemsFromItemsHostPanel)
-							: spItemsFromItemsHostPanel;
+						IList<UIElement> containers = spItemsFromItemsHostPanel;
 						for (int i = 0; i < nCount; i++)
 						{
 							var spItemContainer = containers[i] as FrameworkElement;
@@ -651,27 +649,6 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 		_lastChildPeerOccurrences = childOccurrences;
 		return children;
-	}
-
-	// WinUI walks a virtualizing (ModernCollectionBasePanel) host in item order. Uno's virtualizing panels aren't one,
-	// and recycling reorders their Children, so a screen reader would otherwise traverse scrolled rows out of order.
-	private static List<UIElement> OrderByItemIndex(ItemsControl itemsControl, IList<UIElement> containers)
-	{
-		var keyed = new List<(int Index, UIElement Container)>(containers.Count);
-		foreach (var container in containers)
-		{
-			keyed.Add((itemsControl.IndexFromContainer(container), container));
-		}
-
-		keyed.Sort(static (x, y) => x.Index.CompareTo(y.Index));
-
-		var ordered = new List<UIElement>(keyed.Count);
-		foreach (var (_, container) in keyed)
-		{
-			ordered.Add(container);
-		}
-
-		return ordered;
 	}
 
 	internal void OnItemsChanged(NotifyCollectionChangedEventArgs args)

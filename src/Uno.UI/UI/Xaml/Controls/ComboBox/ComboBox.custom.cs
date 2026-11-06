@@ -4,6 +4,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Specialized;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -485,68 +486,77 @@ public partial class ComboBox : Selector
 		set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 	}
 
-	internal void ScrollIntoView(object item, ScrollIntoViewAlignment alignment = ScrollIntoViewAlignment.Default)
-	{
-		if (ItemsPanelRoot is null)
-		{
-			// Not ready.
-			return;
-		}
+	// The ItemsPresenter, and so the items panel, only show up once the popup has loaded, after OnOpen on the first opening.
+	private bool _focusItemWhenItemsHostAvailable;
 
-		if (ContainerFromItem(item) is UIElement element)
+	private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
+	{
+		base.UpdateItems(args);
+
+		if (_focusItemWhenItemsHostAvailable && ItemsPanelRoot is not null)
 		{
-			// The container we want to jump to is already materialized, so just jump to it.
-			// This means we're in a non-virtualizing panel or in a virtualizing panel where the container we want is materialized for some reason (e.g. partially in view)
-			ScrollIntoViewFastPath(element, alignment);
-		}
-		else if (VirtualizingPanel?.GetLayouter() is { } layouter)
-		{
-			layouter.ScrollIntoView(item, alignment);
+			_focusItemWhenItemsHostAvailable = false;
+
+			// The panel has to be measured to scroll, and the scrolled-to container arranged to take focus.
+			var panel = ItemsPanelRoot;
+			void OnNextLayout(Action action)
+			{
+				EventHandler<object>? handler = null;
+				handler = (_, _) =>
+				{
+					panel.LayoutUpdated -= handler;
+
+					if (IsDropDownOpen && GetItemCount() > 0)
+					{
+						action();
+					}
+				};
+				panel.LayoutUpdated += handler;
+			}
+
+			void FocusOpeningItem()
+			{
+				// An editable ComboBox keeps focus in its TextBox.
+				if (!IsEditable)
+				{
+					SetFocusedItem(Math.Max(SelectedIndex, 0), false /*shouldScrollIntoView*/, true /*forceFocus*/, FocusState.Programmatic, false);
+				}
+			}
+
+			OnNextLayout(() =>
+			{
+				if (panel is ModernCollectionBasePanel)
+				{
+					CenterSelectedItem(Math.Max(SelectedIndex, 0));
+					OnNextLayout(FocusOpeningItem);
+				}
+				else
+				{
+					FocusOpeningItem();
+				}
+			});
 		}
 	}
 
-	private void ScrollIntoViewFastPath(UIElement element, ScrollIntoViewAlignment alignment)
+	// WinUI's CarouselPanel and ArrangePopup center the selected item. Uno's panel only stacks, so scroll to it explicitly.
+	private void CenterSelectedItem(int index)
 	{
-		if (ScrollViewer is { } sv && sv.Presenter is { } presenter)
+		if (ItemsPanelRoot is not ModernCollectionBasePanel panel || m_tpScrollViewer is not { } scrollViewer)
 		{
-			var offsetXY = element.TransformToVisual(presenter).TransformPoint(
-#if __SKIA__ // Skia correctly doesn't include the offsets in TransformToVisual
-				new Point(presenter.HorizontalOffset, presenter.VerticalOffset)
-#else
-				Point.Zero
-#endif
-				);
-
-			var orientation = ItemsPanelRoot?.PhysicalOrientation ?? Orientation.Vertical;
-
-			var (elementOffset, elementLength, presenterOffset, presenterViewportLength) =
-				orientation is Orientation.Vertical
-					? (offsetXY.Y, element.ActualSize.Y, presenter.VerticalOffset, presenter.ViewportHeight)
-					: (offsetXY.X, element.ActualSize.X, presenter.HorizontalOffset, presenter.ViewportWidth);
-
-			if (presenterOffset <= elementOffset && elementOffset + elementLength <= presenterOffset + presenterViewportLength)
-			{
-				// if the element is within the visible viewport, do nothing.
-				return;
-			}
-
-			// If we use the above offset directly, the item we want to jump to will be the start of the viewport, i.e. leading.
-			// For the default alignment, we move the element to either of the viewport ends (i.e. to the top or the bottom of the
-			// viewport. To move to the bottom, we scroll one "viewport page" less. This brings the element's start right after the
-			// viewport's length ends we then scroll again by elementLength so that the end of the element is the end of the viewport.
-			var newOffset = alignment is ScrollIntoViewAlignment.Default && presenterOffset < elementOffset
-				? elementOffset - presenterViewportLength + elementLength
-				: elementOffset;
-
-			if (orientation is Orientation.Vertical)
-			{
-				sv.ScrollToVerticalOffset(newOffset);
-			}
-			else
-			{
-				sv.ScrollToHorizontalOffset(newOffset);
-			}
+			return;
 		}
+
+		var itemHeight = panel.Children.Count > 0 ? panel.Children[0].DesiredSize.Height : 0;
+		ScrollIntoView(
+			(uint)index,
+			false /*isGroupItemIndex*/,
+			false /*isHeader*/,
+			false /*isFooter*/,
+			false /*isFromPublicAPI*/,
+			true /*ensureContainerRealized*/,
+			false /*animateIfBringIntoView*/,
+			ScrollIntoViewAlignment.Leading,
+			(itemHeight - scrollViewer.ViewportHeight) / 2);
 	}
 
 	internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
