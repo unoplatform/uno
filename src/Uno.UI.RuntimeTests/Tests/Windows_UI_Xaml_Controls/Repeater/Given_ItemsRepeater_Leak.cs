@@ -193,6 +193,38 @@ public class Given_ItemsRepeater_Leak
 		GC.KeepAlive(source);
 	}
 
+	// As on WinUI, the source doesn't keep a view alive, even one with a subscriber: once nothing else references the
+	// view, it is collected and its subscriber stops receiving the source's changes.
+	[TestMethod]
+	[RunsOnUIThread]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
+#endif
+	public async Task When_Subscribed_ItemsSourceView_Dropped_Then_Collected_And_Subscriber_No_Longer_Notified()
+	{
+		var source = new CountingCollection { "a", "b" };
+		var baseline = source.SubscriberCount;
+		var notified = 0;
+		var viewRef = CreateSubscribedItemsSourceView(source, () => notified++);
+		Assert.AreEqual(baseline + 1, source.SubscriberCount, "The view should subscribe to the source once.");
+
+		await CollectAsync([viewRef], () => !viewRef.IsAlive && source.SubscriberCount == baseline);
+
+		Assert.IsFalse(viewRef.IsAlive, "A view with a subscriber is kept alive by its source.");
+		Assert.AreEqual(baseline, source.SubscriberCount, "The subscription of the collected view is still on the source.");
+
+		source.Add("c");
+		Assert.AreEqual(0, notified, "The subscriber of a collected view was notified of a change of the source.");
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static WeakReference CreateSubscribedItemsSourceView(CountingCollection source, Action onChanged)
+	{
+		var view = new ItemsSourceView(source);
+		view.CollectionChanged += (_, _) => onChanged();
+		return new WeakReference(view);
+	}
+
 	public enum SourceKind
 	{
 		CollectionChanged,
