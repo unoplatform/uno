@@ -37,6 +37,23 @@ public partial class PasswordBox
 
 	#endregion
 
+	#region PreventKeyboardDisplayOnProgrammaticFocus DependencyProperty
+
+	public bool PreventKeyboardDisplayOnProgrammaticFocus
+	{
+		get => (bool)GetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty);
+		set => SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, value);
+	}
+
+	public static DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
+		DependencyProperty.Register(
+			nameof(PreventKeyboardDisplayOnProgrammaticFocus),
+			typeof(bool),
+			typeof(PasswordBox),
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False));
+
+	#endregion
+
 	#region CanPasteClipboardContent DependencyProperty
 
 	public bool CanPasteClipboardContent => (bool)GetValue(CanPasteClipboardContentProperty);

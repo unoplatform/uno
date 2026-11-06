@@ -127,7 +127,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 	private static void InitializeIme() => ImeSessionCoordinator.Initialize();
 
-	private void StartImeSession()
+	private void StartImeSession(FocusState focusState)
 	{
 		// Don't route IME composition events to PasswordBox — password text
 		// must not be processed as composition text, even if the extension
@@ -138,7 +138,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 			return;
 		}
 
-		ImeSessionCoordinator.StartSession(this);
+		ImeSessionCoordinator.StartSession(this, new ImeSessionActivation(focusState, IsSoftwareKeyboardSuppressed));
 
 		// Geometry tracking costs a LayoutUpdated subscription, so only the TextBox with a live session pays it.
 		_imeGeometryTrackingRequested = true;
