@@ -923,7 +923,8 @@ re-baseline visual tests:
 - **Popups and flyouts:** on Windows desktop and Linux (X11), popups can now leave the window, as in WinUI. `MenuFlyout`, `ComboBox`,
   `CommandBarFlyout`, `AutoSuggestBox`, `ToolTip`, and any `Popup` or `Flyout` with `ShouldConstrainToRootBounds="False"`
   get a window of their own and are placed against the monitor rather than against your window. Set
-  `ShouldConstrainToRootBounds="True"` on a popup or flyout to keep it inside the window, or
+  `ShouldConstrainToRootBounds="True"` on a popup or flyout to keep it inside the window (a `MenuFlyout` opened with a point or
+  `FlyoutShowOptions`, as context menus are, still gets a window, as in WinUI), or
   `FeatureConfiguration.Popup.UseWindowedPopups = false` to keep all of them inside, including `ComboBox` and `ToolTip`. It's off by
   default on macOS, where `true` turns it on. WebAssembly, Android and iOS keep every popup inside the window for now.
 - **Popups and flyouts:** the public `Popup.PopupPanelProperty` and `FlyoutBase.InitializePopupPanel` are removed, with no
