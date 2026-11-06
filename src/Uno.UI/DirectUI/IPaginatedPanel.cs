@@ -1,0 +1,17 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference IPaginatedPanel.g.h, tag winui3/release/2.5.1, commit ba3a8d59e6d
+
+#nullable enable
+
+using Microsoft.UI.Xaml.Controls;
+
+namespace DirectUI;
+
+// TODO Uno: WinUI passes the IScrollInfo of the ItemsPresenter; Uno has none, so the ScrollViewer is passed directly.
+internal interface IPaginatedPanel
+{
+	int GetLastItemIndexInViewport(ScrollViewer scrollViewer);
+
+	double GetItemsPerPage(ScrollViewer scrollViewer);
+}
