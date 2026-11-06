@@ -1017,7 +1017,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected void AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
 		{
-			if (view.Parent == null)
+			if (((DependencyObject)view).Parent == null)
 			{
 				//Freshly-created view
 				OwnerPanel.Children.Add(view);
