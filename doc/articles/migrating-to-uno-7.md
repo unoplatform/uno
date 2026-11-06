@@ -105,6 +105,11 @@ targets. These are the values the `Uno.Sdk` applies when a head does not set
 The Android Wear floor is unchanged at API 26, and no minimum OS version is enforced
 for the `net*-desktop` and `net*-browserwasm` targets.
 
+An Android head whose `AndroidManifest.xml` still sets `<uses-sdk android:minSdkVersion="21" />`
+now fails to build with `XA1036` (`minSdkVersion '21' does not match the $(SupportedOSPlatformVersion)
+value '24.0'`). Remove the `minSdkVersion` attribute, so the value comes from
+`SupportedOSPlatformVersion`, or raise it to 24.
+
 A head that sets these properties explicitly keeps its own value, so an app can still
 target lower versions where the underlying SDK allows it — but those combinations are no
 longer tested by Uno Platform.
@@ -193,7 +198,10 @@ are unchanged, and there is **no** forwarding shim: the old namespaces stop reso
 XAML declarations follow the same mapping, for example
 `xmlns:toolkit="using:Uno.UI.Toolkit"` becomes `xmlns:uuxc="using:Uno.UI.Xaml.Controls"` for
 `ElevatedView` and the `CommandBar`/`SplitView` extensions, or
-`xmlns:uub="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`.
+`xmlns:uub="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`. A page using both now needs both
+declarations. The build reports every remaining `using:Uno.UI.Toolkit` declaration as
+[UXAML0009](xref:Build.Solution.error-codes), which lists where each type went. Without it, the
+types the page uses are only reported as not found (`UXAML0001`).
 
 In C#, replace `using Uno.UI.Toolkit;` with the namespace from the table. Be careful with
 `using Uno.UI.Xaml.Controls;`: that namespace also contains the Uno-specific `ScrollViewer`,
@@ -1545,6 +1553,23 @@ WinUI types is unaffected.
 - **`ObjectKeyFrameCollection` has a public constructor**, as in WinUI.
 - **`XamlLight.CompositionLight` is `protected`**, as in WinUI. Set it from your `XamlLight`
   subclass.
+- **`DoubleKeyFrame`, `ObjectKeyFrame`, `Timeline` and `AutomationPeer` have `protected`
+  constructors**, as in WinUI. Construct a concrete type instead: `DiscreteObjectKeyFrame`,
+  `LinearDoubleKeyFrame`, `DoubleAnimation`, or an automation peer such as
+  `FrameworkElementAutomationPeer`.
+- **`ColorPickerSliderAutomationPeer` has a public constructor**, as in WinUI.
+
+### Member accessibility (WinUI parity)
+
+Two members that Uno exposed publicly are now `protected`, as in WinUI:
+
+- **`Control.GetTemplateChild`** can only be called from the control itself or a subclass. Code
+  that reached into another control's template now fails to compile. Expose what you need from
+  a subclass, or walk the visual tree with `VisualTreeHelper` once the template is applied. If
+  an extension method named `GetTemplateChild` is in scope, the call may bind to it instead and
+  report an unrelated error, such as `CS7036` about a missing argument.
+- **`NonVirtualizingLayoutContext.ChildrenCore`** is only reachable from a context subclass.
+  Read the public `Children` property instead.
 
 ### Custom `IAnimatedVisualSource` implementations
 
@@ -1966,6 +1991,8 @@ recommended and templated form. Windows App SDK heads are likewise unaffected.
 26. Retarget any `net9.0-*` head or library to `net10.0-*`: 7.0 ships no `net9.0` assets.
 27. Replace `ItemClickCommand` / `Command` on `ListView` and `GridView` with an `ItemClick` handler or
    the Uno Toolkit `CommandExtensions.Command` attached property.
+28. Remove a `minSdkVersion` below 24 from the Android `AndroidManifest.xml`, and replace calls to
+   another control's `GetTemplateChild` — it is `protected` now, as in WinUI.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
 for the full Android/iOS/WebAssembly Skia bootstrapping steps.

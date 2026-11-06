@@ -464,7 +464,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Records a <c>clr-namespace:</c> declaration, or one using a removed conditional prefix, for later
+		/// Records a <c>clr-namespace:</c> declaration, or one using a removed conditional prefix or namespace, for later
 		/// validation. Reporting is deferred because the reader yields namespace nodes before the element's
 		/// <c>mc:Ignorable</c> attribute is read.
 		/// </summary>
@@ -472,7 +472,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (reader.Namespace is { } declaration
 				&& (XamlNamespaceValidation.IsClrNamespace(declaration.Namespace)
-					|| XamlNamespaceValidation.IsRemovedConditionalPrefix(declaration.Prefix, declaration.Namespace)))
+					|| XamlNamespaceValidation.IsRemovedConditionalPrefix(declaration.Prefix, declaration.Namespace)
+					|| XamlNamespaceValidation.IsRemovedToolkitNamespace(declaration.Namespace)))
 			{
 				ctx.TrackNamespaceDeclaration(declaration.Prefix, declaration.Namespace, reader.LineNumber, reader.LinePosition);
 			}
