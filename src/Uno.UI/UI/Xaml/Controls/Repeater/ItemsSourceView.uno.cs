@@ -10,15 +10,25 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ItemsSourceView
 {
-	// Uno-specific: referenced by the source, so it must hold the view only weakly.
-	private sealed class SourceSubscription : IDisposable
+	// Like WinUI's raw-'this' delegates, the source must not keep this view alive: it references a forwarder holding this
+	// view weakly. Only this view references the returned subscription, whose finalizer removes the forwarder from the
+	// source once this view is collected, unless the source died too.
+	private static IDisposable Track<TSource>(TSource source, SourceForwarder forwarder, Action<TSource, SourceForwarder> unsubscribe)
+		where TSource : class
+		=> new WeakSourceSubscription<TSource, SourceForwarder>(
+			source,
+			forwarder,
+			unsubscribe,
+			onDisposed: null,
+			typeof(ItemsSourceView),
+			"an items source subscription");
+
+	// Referenced by the source, so it must hold the view only weakly.
+	private sealed class SourceForwarder
 	{
 		private readonly WeakReference<ItemsSourceView> _owner;
-		private Action _unsubscribe;
 
-		public SourceSubscription(ItemsSourceView owner) => _owner = new WeakReference<ItemsSourceView>(owner);
-
-		public Action Unsubscribe { set => _unsubscribe = value; }
+		public SourceForwarder(ItemsSourceView owner) => _owner = new WeakReference<ItemsSourceView>(owner);
 
 		// Not unsubscribed here once the view is dead: a source may raise over its live handler list.
 		public void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -50,14 +60,6 @@ partial class ItemsSourceView
 			if (_owner.TryGetTarget(out var owner))
 			{
 				owner.OnUntypedVectorChanged(sender, e);
-			}
-		}
-
-		public void Dispose()
-		{
-			if (global::System.Threading.Interlocked.Exchange(ref _unsubscribe, null) is { } unsubscribe)
-			{
-				SubscriptionCleanup.Run(unsubscribe, typeof(ItemsSourceView), "an items source subscription");
 			}
 		}
 	}
