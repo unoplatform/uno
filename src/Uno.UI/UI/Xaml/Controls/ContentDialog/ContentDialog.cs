@@ -83,8 +83,11 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ContentDialog);
 		}
 
-		private void XamlRootChanged(object sender, XamlRootChangedEventArgs e) =>
+		private void XamlRootChanged(object sender, XamlRootChangedEventArgs e)
+		{
+			SizeSmokeLayer();
 			UpdateSizeProperties();
+		}
 
 		private void UpdateSizeProperties()
 		{
