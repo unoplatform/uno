@@ -116,7 +116,7 @@ public class Given_ItemsRepeater_Leak
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif
-	public async Task When_Repeater_Collected_Then_Raising_CollectionChanged_Is_Safe()
+	public async Task When_Repeater_Collected_Then_Raising_CollectionChanged_Is_Safe_And_Subscription_Removed()
 	{
 		var source = new CountingCollection { "a", "b" };
 		var refs = CreateNeverLoaded(() => source);
@@ -131,7 +131,9 @@ public class Given_ItemsRepeater_Leak
 		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The repeaters were not collected.");
 
 		source.Add("c"); // raises to the handlers of collected repeaters
-		await WindowHelper.WaitForIdle();
+		await CollectAsync(refs, () => source.SubscriberCount == 0);
+
+		Assert.AreEqual(0, source.SubscriberCount, "A raise to collected repeaters kept their subscriptions on the items source.");
 	}
 
 	[TestMethod]
@@ -169,31 +171,6 @@ public class Given_ItemsRepeater_Leak
 		{
 			WindowHelper.WindowContent = null;
 		}
-	}
-
-	[TestMethod]
-	[RunsOnUIThread]
-#if RUNTIME_NATIVE_AOT
-	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
-#endif
-	public async Task When_Repeater_Collected_And_Source_Raised_Then_Subscription_Removed()
-	{
-		var source = new CountingCollection { "a", "b" };
-		var refs = CreateNeverLoaded(() => source);
-		await WindowHelper.WaitForIdle();
-
-		// Don't yield to the dispatcher here, so the raise reaches the handlers of the collected repeaters.
-		for (var i = 0; i < 10 && refs.Any(r => r.IsAlive); i++)
-		{
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-		}
-		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The repeaters were not collected.");
-
-		source.Add("c");
-		await CollectAsync(refs, () => source.SubscriberCount == 0);
-
-		Assert.AreEqual(0, source.SubscriberCount, "A raise to collected repeaters kept their subscriptions on the items source.");
 	}
 
 	// Each kind of observable source has its own subscription: all of them must go away with a view nobody references,
