@@ -45,7 +45,9 @@ public class Given_BindingStaleHandlers
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI removes the handlers of collected bindings on its own schedule: flaky here
+	// NativeWinUI: WinUI removes the handlers of collected bindings on its own schedule: flaky here.
+	// SkiaWasm: stale stack slots can keep the elements alive, see the WASM branch below.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Raised_Before_Handlers_Removed_Then_Safe()
 	{
 		var vm = new CountingViewModel();
@@ -53,7 +55,27 @@ public class Given_BindingStaleHandlers
 		var refs = await CreateBoundAsync(vm, loaded: false);
 
 		// Don't yield to the dispatcher here: it would remove the handlers before the raise.
-		CollectWithoutDispatcher(refs);
+		if (OperatingSystem.IsBrowser())
+		{
+			// The test is excluded on WASM: no shape of this collection was reliable there. The Mono interpreter scans
+			// stack slots conservatively and doesn't zero a frame's temporaries, so the pointers left behind by
+			// creating the elements keep all of them alive whenever a scanned slot lands on them. Every change to the
+			// frames on the stack moves that, so the outcome depends on code layout, not on the binding:
+			// - CollectWithoutDispatcher(refs), the shared helper: 5 of 5 alive, deterministic, alone and with the other leak tests.
+			// - This inline loop behind the OperatingSystem.IsBrowser() branch: passes alone, 5 of 5 alive with the other leak tests.
+			// - The same loop inline with no branch: passed alone, with the other leak tests and on CI, by layout luck only.
+			// Before re-enabling it on WASM, check it with the other leak tests (Given_BindingStaleHandlers and
+			// Given_ItemsRepeater_Leak), not only alone.
+			for (var i = 0; i < 10 && refs.Any(r => r.IsAlive); i++)
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+			}
+		}
+		else
+		{
+			CollectWithoutDispatcher(refs);
+		}
 		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The bound elements were not collected.");
 
 		vm.Name = "changed"; // raises over the live handler list: removing a handler mid-raise would throw
