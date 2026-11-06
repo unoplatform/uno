@@ -3652,8 +3652,8 @@ public class MenuFlyoutIntegrationTests
 			await TestServices.WindowHelper.WaitForIdle();
 
 			await SetupValidation();
-			// Same here, with 0x66000000.
-			await ValidateTree(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x00, 0x00), Windows.UI.Color.FromArgb(0x0F, 0x00, 0x00, 0x00));
+			// Same here, with 0xFF000000 and 0x66000000 on plain generic.xaml.
+			await ValidateTree(Windows.UI.Color.FromArgb(0xE4, 0x00, 0x00, 0x00), Windows.UI.Color.FromArgb(0x0F, 0x00, 0x00, 0x00));
 
 			await RunOnUIThread(() =>
 			{
@@ -4171,10 +4171,10 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
-	[Ignore("Popup.ChildTransitions (layout transitions on the MenuFlyoutPresenter) is not implemented, and there is no StoryboardMonitor to count the started storyboards")]
+	[Ignore("Needs layout transition elements (CLayoutTransitionElement) for Popup.ChildTransitions on the MenuFlyoutPresenter, and a StoryboardMonitor to count the started storyboards")]
 	public async Task ValidateThatLayoutTransitionsDoRun()
 	{
-		// TODO Uno: popups are never windowed, so the non-desktop expectations are used.
+		// TODO Uno: the non-desktop expectations are used, see the Ignore above.
 		const bool isDesktop = false;
 
 		Button button = null;
@@ -7400,6 +7400,7 @@ public class MenuFlyoutIntegrationTests
 
 			VERIFY_ARE_EQUAL(0.0, flyoutBounds.Top);
 			// TODO Uno: Upstream runs at 100%. At other scales, these differ by the rounding of a physical pixel.
+			// Uno: at a fractional display scale, the menu's height rounds to whole pixels and the root's doesn't.
 			VERIFY_ARE_VERY_CLOSE(xamlRootSize.Height, flyoutBounds.Height, 1);
 			VERIFY_ARE_EQUAL(0.0, flyoutSubMenuBounds.Top);
 			VERIFY_ARE_VERY_CLOSE(xamlRootSize.Height, flyoutSubMenuBounds.Height, 1);

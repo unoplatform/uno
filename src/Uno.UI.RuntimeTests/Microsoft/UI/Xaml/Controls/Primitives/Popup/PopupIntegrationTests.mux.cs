@@ -2326,7 +2326,7 @@ public class PopupIntegrationTests
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(windowBounds.Width * 0.5f, windowBounds.Height * 0.5f));
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// TODO Uno: The override really resizes the window here, and Popup::OnXamlRootChanged dismisses a light dismiss popup on that.
+		// TODO Uno: The override really resizes the window here, so Popup::OnXamlRootChanged dismisses a light dismiss popup. Upstream's test hook overrides the size without that.
 		await RunOnUIThread(() => popup.IsOpen = true);
 		await TestServices.WindowHelper.WaitForIdle();
 

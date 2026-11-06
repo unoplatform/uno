@@ -4491,6 +4491,7 @@ public class FlyoutIntegrationTests
 			await TestServices.WindowHelper.WaitForIdle();
 #if HAS_UNO
 			// Flyout.Enter recovers the visual tree from the owner to fix microsoft-ui-xaml#11025, so this upstream limitation doesn't apply.
+			// TODO Uno: it can't be asserted either: an earlier test's collection stays in the live accelerators, and may take the key.
 			clickEvent.Reset();
 #else
 			VERIFY_IS_FALSE(clickEvent.HasFired(), "Accelerator should not fire when flyout has never been opened - accelerators are on the wrong ContentRoot (known limitation)");
