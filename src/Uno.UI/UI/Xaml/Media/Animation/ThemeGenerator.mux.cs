@@ -423,16 +423,18 @@ partial class ThemeGenerator
 		AddTimelinesForThemeAnimation(storyboardID, targetID, pSupplier);
 	}
 
+	// Uno-specific: takes the target, as Uno resolves "(UIElement.TransitionTarget)" paths when the timelines are created.
 	internal static void AddTimelinesForThemeAnimation(
 		int storyboardID,
 		int targetID,
+		DependencyObject? pTarget,
 		bool onlyGenerateSteadyState,
 		Point startOffset,
 		Point destinationOffset,
 		long additionalTime,
 		IList<Timeline> timelineCollection)
 	{
-		ThemeGeneratorHelper pSupplier = new(startOffset, destinationOffset, null, null, onlyGenerateSteadyState, timelineCollection);
+		ThemeGeneratorHelper pSupplier = new(startOffset, destinationOffset, null, pTarget, onlyGenerateSteadyState, timelineCollection);
 		pSupplier.Initialize();
 		pSupplier.SetAdditionalTime(additionalTime);
 

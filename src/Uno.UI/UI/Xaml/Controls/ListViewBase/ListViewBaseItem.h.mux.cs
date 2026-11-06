@@ -8,7 +8,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-partial class ListViewBaseItem
+partial class ListViewBaseItem : DirectUI.ITransitionContextProvider
 {
 	// UIAutomation Property: whether or not this element is currently grabbed (i.e. being dragged).
 	private bool m_fDragIsGrabbed;

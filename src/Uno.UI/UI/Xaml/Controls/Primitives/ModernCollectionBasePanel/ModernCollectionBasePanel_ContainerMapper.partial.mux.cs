@@ -719,9 +719,7 @@ public abstract partial class ModernCollectionBasePanel
 					spChildren.RemoveAt(foundIndex);
 
 					// to avoid re-parenting we should mark NonGeneratedElement that it did't leave the tree in current layout cycle.
-#if !HAS_UNO // TODO Uno: no CUIElement entering/leaving state.
 					CoreImports.UIElement_SetIsLeaving(spElement, false);
-#endif
 				}
 
 				// For all cases, disable rendering Chrome on once it's not within valid range.
@@ -778,9 +776,7 @@ public abstract partial class ModernCollectionBasePanel
 				else
 				{
 					((UIElementCollection)spChildren).MoveInternal(foundIndex, destinationChildIndex);
-#if !HAS_UNO // TODO Uno: no CUIElement entering/leaving state.
 					CoreImports.UIElement_SetIsEntering(spElement, true);
-#endif
 				}
 				currentMap.Insert(childCollectionIterator, index);
 			}

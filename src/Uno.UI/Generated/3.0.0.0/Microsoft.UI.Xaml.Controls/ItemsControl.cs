@@ -19,7 +19,7 @@ public partial class ItemsControl : global::Microsoft.UI.Xaml.Controls.Control, 
 	// Skipping already declared property IsGroupingProperty
 	// Skipping already declared property ItemContainerStyleProperty
 	// Skipping already declared property ItemContainerStyleSelectorProperty
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static global::Microsoft.UI.Xaml.DependencyProperty ItemContainerTransitionsProperty { get; } =
 	Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -60,7 +60,7 @@ public partial class ItemsControl : global::Microsoft.UI.Xaml.Controls.Control, 
 #endif
 	// Skipping already declared property ItemContainerStyle
 	// Skipping already declared property ItemContainerStyleSelector
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection ItemContainerTransitions
 	{

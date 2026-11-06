@@ -871,51 +871,47 @@ public abstract partial class ModernCollectionBasePanel
 		VirtualizationInformation? virtualizationInformation;
 		virtualizationInformation = GetVirtualizationInformationFromElement(element);
 
-#if !HAS_UNO // TODO Uno: no core layout transition storage or current transition location.
-		CUIElement pTarget = (CUIElement)element.GetHandle();
+		var pTarget = element;
 
 		// Ignore newly realized elements.
-		if (pTarget.m_enteredTreeCounter != 0 &&
-			pTarget.HasLayoutStorage())
+		if (pTarget.m_pLayoutTransitionStorage is { } transitionStorage &&
+			transitionStorage.m_enteredTreeCounter != 0 &&
+			pTarget.IsFirstArrangeDone)
 		{
 			// finalRect includes Margin of the element.
 			// We sould use m_offset and m_size to provide right element size to transition location context.
-			var currentOffset = pTarget.GetLayoutStorage().m_offset;
-			var currentSize = pTarget.GetLayoutStorage().m_size;
+			var slot = pTarget.LayoutSlotWithMarginsAndAlignments;
+			var currentOffset = new Point(slot.X, slot.Y);
 
 			if (layoutOrientation == Orientation.Horizontal)
 			{
-				currentOffset.x += viewportShift;
+				currentOffset.X += viewportShift;
 			}
 			else
 			{
-				currentOffset.y += viewportShift;
+				currentOffset.Y += viewportShift;
 			}
 
 			bool hasTransitions = false;
-			CoreImports.UIElement_GetHasTransition(pTarget, out hasTransitions, null);
+			CoreImports.UIElement_GetHasTransition(pTarget, out hasTransitions, out _);
 			if (hasTransitions)
 			{
 				// pTarget is fading out (being unloaded). It's too late to set its current
 				// transition location with CoreImports::UIElement_SetCurrentTransitionLocation. We need
 				// to update m_transformStart so that it gets picked up by the transition system.
-				LayoutTransitionStorage transitionStorage = pTarget.GetLayoutTransitionStorage();
-				global::System.Diagnostics.Debug.Assert(transitionStorage is not null);
-				transitionStorage.m_transformStart.SetDx(currentOffset.x);
-				transitionStorage.m_transformStart.SetDy(currentOffset.y);
+				transitionStorage.m_transformStart = currentOffset;
 			}
 			else
 			{
 				element.InvalidateArrange();
 				CoreImports.UIElement_SetCurrentTransitionLocation(
 					pTarget,
-					currentOffset.x,
-					currentOffset.y,
-					currentSize.width,
-					currentSize.height);
+					(float)currentOffset.X,
+					(float)currentOffset.Y,
+					(float)slot.Width,
+					(float)slot.Height);
 			}
 		}
-#endif
 	}
 
 	// Returns the first visible element's type, index and offset relative to the top.

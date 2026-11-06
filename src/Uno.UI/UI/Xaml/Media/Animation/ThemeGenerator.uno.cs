@@ -51,11 +51,13 @@ partial class ThemeGenerator
 	// Only the storyboards the ListViewBaseItem chrome uses are present.
 	private const uint TimingFunctionLinear = 1;
 	private const uint TimingFunctionDecelerate = 4;
+	private const uint TimingFunctionDeleteScale = 6;
 
 	private static readonly Dictionary<uint, (Point cp2, Point cp3)> s_timingFunctions = new()
 	{
 		[TimingFunctionLinear] = (new Point(0, 0), new Point(1, 1)),
 		[TimingFunctionDecelerate] = (new Point(0.1f, 0.9f), new Point(0.2f, 1f)),
+		[TimingFunctionDeleteScale] = (new Point(0.11f, 0.5f), new Point(0.24f, 0.96f)),
 	};
 
 	private static readonly Dictionary<(int storyboardID, int targetID), ThemeAnimationTransform[]> s_transforms = new()
@@ -92,6 +94,64 @@ partial class ThemeGenerator
 		[(TAS_DRAGBETWEENLEAVE, TA_DRAGBETWEENLEAVE_AFFECTED)] =
 		[
 			new() { eTransformType = ThemeAnimationTransformType.Translate2D, dwTimingFunctionId = TimingFunctionDecelerate, dwDurationTime = 200, eFlags = ThemeAnimationTransformFlags.TargetValuesUser },
+		],
+		// Layout transitions, dumped from Windows build 29698.
+		[(TAS_REPOSITION, TA_REPOSITION_TARGET)] =
+		[
+			new() { eTransformType = ThemeAnimationTransformType.Translate2D, dwTimingFunctionId = TimingFunctionDecelerate, dwDurationTime = 367, eFlags = ThemeAnimationTransformFlags.TargetValuesUser },
+		],
+		[(TAS_ADDTOGRID, TA_ADDTOGRID_ADDED)] =
+		[
+			new()
+			{
+				eTransformType = ThemeAnimationTransformType.Scale2D, dwTimingFunctionId = TimingFunctionDecelerate, dwStartTime = 166, dwDurationTime = 333,
+				eFlags = ThemeAnimationTransformFlags.HasInitialValues | ThemeAnimationTransformFlags.HasOriginValues,
+				rX = 1f, rY = 1f, rInitialX = 0.9f, rInitialY = 0.9f, rOriginX = 0.5f, rOriginY = 0.5f,
+			},
+			new()
+			{
+				eTransformType = ThemeAnimationTransformType.Opacity, dwTimingFunctionId = TimingFunctionLinear, dwStartTime = 166, dwDurationTime = 333,
+				eFlags = ThemeAnimationTransformFlags.HasInitialValues, rOpacity = 1f, rInitialOpacity = 0f,
+			},
+		],
+		[(TAS_ADDTOGRID, TA_ADDTOGRID_AFFECTED)] =
+		[
+			new() { eTransformType = ThemeAnimationTransformType.Translate2D, dwTimingFunctionId = TimingFunctionDecelerate, dwDurationTime = 400, eFlags = ThemeAnimationTransformFlags.TargetValuesUser },
+		],
+		[(TAS_DELETEFROMGRID, TA_DELETEFROMGRID_DELETED)] =
+		[
+			new()
+			{
+				eTransformType = ThemeAnimationTransformType.Scale2D, dwTimingFunctionId = TimingFunctionDeleteScale, dwDurationTime = 100,
+				eFlags = ThemeAnimationTransformFlags.HasOriginValues, rX = 0.9f, rY = 0.9f, rOriginX = 0.5f, rOriginY = 0.5f,
+			},
+			new() { eTransformType = ThemeAnimationTransformType.Opacity, dwTimingFunctionId = TimingFunctionLinear, dwDurationTime = 100, rOpacity = 0f },
+		],
+		[(TAS_DELETEFROMGRID, TA_DELETEFROMGRID_REMAINING)] =
+		[
+			new() { eTransformType = ThemeAnimationTransformType.Translate2D, dwTimingFunctionId = TimingFunctionDecelerate, dwDurationTime = 333, eFlags = ThemeAnimationTransformFlags.TargetValuesUser },
+		],
+		[(TAS_TRANSITIONCONTENT, TA_TRANSITIONCONTENT_INCOMING)] =
+		[
+			new() { eTransformType = ThemeAnimationTransformType.Translate2D, dwTimingFunctionId = TimingFunctionDecelerate, dwDurationTime = 500, eFlags = ThemeAnimationTransformFlags.TargetValuesUser },
+			new()
+			{
+				eTransformType = ThemeAnimationTransformType.Opacity, dwTimingFunctionId = TimingFunctionDecelerate, dwStartTime = 50, dwDurationTime = 170,
+				eFlags = ThemeAnimationTransformFlags.HasInitialValues, rOpacity = 1f, rInitialOpacity = 0f,
+			},
+		],
+		[(TAS_TRANSITIONCONTENT, TA_TRANSITIONCONTENT_OUTGOING)] =
+		[
+			new() { eTransformType = ThemeAnimationTransformType.Opacity, dwTimingFunctionId = TimingFunctionLinear, dwDurationTime = 50, rOpacity = 0f },
+		],
+		[(TAS_ENTERPAGE, TA_ENTERPAGE_TARGET)] =
+		[
+			new() { eTransformType = ThemeAnimationTransformType.Translate2D, dwTimingFunctionId = TimingFunctionDecelerate, dwDurationTime = 667, eFlags = ThemeAnimationTransformFlags.TargetValuesUser },
+			new()
+			{
+				eTransformType = ThemeAnimationTransformType.Opacity, dwTimingFunctionId = TimingFunctionDecelerate, dwDurationTime = 667,
+				eFlags = ThemeAnimationTransformFlags.HasInitialValues, rOpacity = 1f, rInitialOpacity = 0f,
+			},
 		],
 	};
 }

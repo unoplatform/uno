@@ -335,6 +335,23 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnItemContainerStyleChanged(Style oldItemContainerStyle, Style newItemContainerStyle) => Refresh();
 		#endregion
 
+		#region ItemContainerTransitions DependencyProperty
+		public global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection ItemContainerTransitions
+		{
+			get => (global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection)GetValue(ItemContainerTransitionsProperty);
+			set => SetValue(ItemContainerTransitionsProperty, value);
+		}
+
+		public static DependencyProperty ItemContainerTransitionsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(ItemContainerTransitions),
+				typeof(global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection),
+				typeof(ItemsControl),
+				new FrameworkPropertyMetadata(
+					default(global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection),
+					propertyChangedCallback: (o, e) => ((o as ItemsControl)?.ItemsPanelRoot as ModernCollectionBasePanel)?.EnsureChildrenLayoutTransitionStorage()));
+		#endregion
+
 		#region ItemContainerStyleSelector DependencyProperty
 		public StyleSelector ItemContainerStyleSelector
 		{
