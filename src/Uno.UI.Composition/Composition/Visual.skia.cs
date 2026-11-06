@@ -56,7 +56,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _zIndex;
 	private (Matrix4x4 matrix, Matrix4x4 localMatrix) _totalMatrix = (Matrix4x4.Identity, Matrix4x4.Identity);
 	private Visual? _transformParent;
-	private Visual? _transformChild;
+	private List<Visual>? _transformChildren;
 	// Opaque per-visual retained state owned by the rendering backend (Skia: an SKPicture). _content is
 	// this visual's own painted content; _childrenContent is a collapsed subtree cache.
 	private IRenderRecord? _content;
@@ -271,16 +271,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			if (_transformParent != value)
 			{
-				if (_transformParent is { } previous && previous._transformChild == this)
-				{
-					previous._transformChild = null;
-				}
+				_transformParent?._transformChildren?.Remove(this);
 
 				_transformParent = value;
 
 				if (value is not null)
 				{
-					value._transformChild = this;
+					(value._transformChildren ??= new()).Add(this);
 				}
 
 				SetMatrixDirty();
@@ -311,7 +308,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// Not a pure ancestor move for that visual: its place within its actual parent changes.
 		if (!matrixDirty)
 		{
-			_transformChild?.SetMatrixDirty();
+			if (_transformChildren is { } transformChildren)
+			{
+				foreach (var transformChild in transformChildren)
+				{
+					transformChild.SetMatrixDirty();
+				}
+			}
 		}
 
 		return !matrixDirty;
