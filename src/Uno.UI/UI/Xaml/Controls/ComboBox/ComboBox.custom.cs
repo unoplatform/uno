@@ -455,6 +455,16 @@ public partial class ComboBox : Selector
 		item.Focus(FocusState.Keyboard);
 
 		SetFocusedIndex(index);
+
+		// Same as the ported PopupKeyDown, which this path bypasses.
+		if (SelectionChangedTrigger == ComboBoxSelectionChangedTrigger.Always)
+		{
+			SelectedIndex = index;
+		}
+		else
+		{
+			OverrideSelectedIndexForVisualStates(index);
+		}
 		return true;
 	}
 
