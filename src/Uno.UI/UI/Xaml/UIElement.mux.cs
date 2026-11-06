@@ -51,7 +51,27 @@ namespace Microsoft.UI.Xaml
 		/// If true focusmgr does not set the focus on children or the element. Notice that this flag only and only
 		/// regulates the focusmanager tab behavior.
 		/// </summary>
-		internal bool SkipFocusSubtree { get; set; }
+		internal bool SkipFocusSubtree
+		{
+			get => _skipFocusSubtreeOffScreenPosition || _skipFocusSubtreeOther;
+			set => _skipFocusSubtreeOther = value;
+		}
+
+		private bool _skipFocusSubtreeOffScreenPosition;
+		private bool _skipFocusSubtreeOther;
+
+		// MUX Reference uielement.h
+		internal void SetSkipFocusSubtree(bool skipFocusSubtree, bool forOffScreenPosition = false)
+		{
+			if (forOffScreenPosition)
+			{
+				_skipFocusSubtreeOffScreenPosition = skipFocusSubtree;
+			}
+			else
+			{
+				_skipFocusSubtreeOther = skipFocusSubtree;
+			}
+		}
 
 		internal bool IsGamepadFocusCandidate { get; set; } = true;
 

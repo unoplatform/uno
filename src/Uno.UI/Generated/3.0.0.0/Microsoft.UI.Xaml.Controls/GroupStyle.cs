@@ -71,7 +71,7 @@ public partial class GroupStyle : global::System.ComponentModel.INotifyPropertyC
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HidesIfEmpty.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Panel.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Panel.set
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged
 	{
