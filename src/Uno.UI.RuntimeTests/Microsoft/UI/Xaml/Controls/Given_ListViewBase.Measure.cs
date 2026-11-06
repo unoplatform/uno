@@ -28,6 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_ListView_Parent_Unstretched()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -61,6 +62,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_ListView_Parent_Unstretched_Scrolled()
 		{
 			var source = Enumerable.Range(0, 50).ToArray();
@@ -99,6 +101,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_Item_Margins()
 		{
 			var SUT = new ListView
@@ -316,6 +319,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_ItemsSource_INCC_StartEmpty_AddOne()
 		{
 			var source = new ObservableCollection<string>();
@@ -338,6 +342,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_ItemsSource_INCC_StartTwo_RemoveOne()
 		{
 			var source = new ObservableCollection<string>(new[] { "Apple", "Banana" });
@@ -360,14 +365,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Move_Then_SetSelectedIndex_No_Blank_Above()
 		{
-			const string Data = "Alfa,Bravo,Charlie,Delta,Echo,Foxtrot,Golf,Hotel,India,Juliett,Kilo,Lima,Mike,November,Oscar,Papa,Quebec,Romeo,Sierra,Tango,Uniform,Victor,Whiskey,X-ray,Yankee,Zulu";
 			const double ViewportHeight = 200;
 			const double LineHeight = 29; // FixedSizeItemTemplate Height
 
-			var items = new ObservableCollection<string>(Data
-				.Split(',')
-				// must fill beyond the extended viewport: 1(base vp) + 0.5(extended vp)
-				.Take(1 + (int)Math.Round(1.5 * ViewportHeight / LineHeight, MidpointRounding.ToPositiveInfinity))
+			var items = new ObservableCollection<string>(Enumerable
+				// must fill beyond the realized window: the viewport and ItemsStackPanel's default CacheLength of 4 viewports
+				.Range(0, 1 + (int)Math.Round(5 * ViewportHeight / LineHeight, MidpointRounding.ToPositiveInfinity))
+				.Select(i => $"Item {i}")
 			);
 			var SUT = new ListView
 			{
