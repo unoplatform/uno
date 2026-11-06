@@ -742,7 +742,7 @@ partial class FlyoutBase
 
 	// Associates this flyout with the correct XamlRoot for its context, or returns an error
 	// if the context is ambiguous.
-	private void EnsureAssociatedXamlRoot(DependencyObject placementTarget)
+	private protected void EnsureAssociatedXamlRoot(DependencyObject placementTarget)
 	{
 		VisualTree visualTree = VisualTree.GetUniqueVisualTreeNoRef(
 			this,
@@ -759,10 +759,11 @@ partial class FlyoutBase
 	/// Shows the flyout placed in relation to the specified element.
 	/// </summary>
 	/// <param name="placementTarget">The element to use as the flyout's placement target.</param>
-	public void ShowAt(FrameworkElement placementTarget)
-	{
-		OnShowAtWithoutOptions();
+	public void ShowAt(FrameworkElement placementTarget) => ShowAtWithoutOptions(placementTarget);
 
+	// TODO Uno: IFlyoutBase::ShowAt, which MenuFlyout overrides in WinUI.
+	private protected virtual void ShowAtWithoutOptions(FrameworkElement placementTarget)
+	{
 		EnsureAssociatedXamlRoot(placementTarget);
 
 		FlyoutShowOptions showOptions = new();
@@ -942,8 +943,6 @@ partial class FlyoutBase
 			m_openingWindowedInProgress = false;
 		}
 	}
-
-	private protected virtual void OnShowAtWithoutOptions() { }
 
 	private protected virtual void ShowAtCore(FrameworkElement pPlacementTarget, out bool openDelayed)
 	{
