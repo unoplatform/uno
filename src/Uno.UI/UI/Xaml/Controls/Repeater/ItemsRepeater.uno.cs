@@ -73,9 +73,8 @@ partial class ItemsRepeater : IPanel
 		_layoutSubscriptionsRevoker.Disposable = null;
 		_dataSourceSubscriptionsRevoker.Disposable = null;
 
-		// Uno specific: TransitionManager subscribes a strong .NET delegate to the provider's
-		// TransitionCompleted and holds the repeater through m_owner, so a shared or externally
-		// retained provider would keep the unloaded repeater alive. Paired with ReattachToProvider above.
+		// Uno specific: removes the provider's TransitionCompleted handler right away rather than once the repeater
+		// is collected (see TransitionManager.uno.cs). Paired with ReattachToProvider above.
 		m_transitionManager.DetachFromProvider();
 
 		if (m_itemsSourceView is not null)
