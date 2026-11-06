@@ -95,65 +95,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			AddHandler(PointerCaptureLostEvent, _onPointerExitedOrCanceled, handledEventsToo: true);
 		}
 
-		/// <summary>
-		/// ContainerContentChanging arguments held back until this container has its template,
-		/// see <see cref="ListViewBase.ContainerPreparedForItem"/>.
-		/// </summary>
-		internal (object Item, int Index)? PendingContainerContentChanging { get; set; }
-
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
 
 			UpdateVisualStates(useTransitions: IsLoaded);
-		}
-
-		private protected override void OnContentTemplateRootChanged()
-		{
-			base.OnContentTemplateRootChanged();
-
-			// The materialized item template is what ContainerContentChanging handlers work with.
-			// The root can be reported while this container's own template is still being loaded,
-			// before it is attached: that report is picked up by the measure that follows.
-			if (ContentTemplateRoot is not null && TemplatedRoot is not null)
-			{
-				RaisePendingContainerContentChanging();
-			}
-		}
-
-		protected override global::Windows.Foundation.Size MeasureOverride(global::Windows.Foundation.Size availableSize)
-		{
-			// The template is applied right before this measure.
-			if (ContentTemplateRoot is not null)
-			{
-				RaisePendingContainerContentChanging();
-			}
-
-			// Fallback for a template that never reports a root (no ContentPresenter, or Template is null).
-			// Not raised here: a ContentPresenter without explicit Content/ContentTemplate bindings only gets
-			// them on its Loaded, after this measure, so give it until the queued callback to report.
-			if (PendingContainerContentChanging is not null && !_pendingContainerContentChangingFallbackQueued)
-			{
-				_pendingContainerContentChangingFallbackQueued = true;
-				_ = DispatcherQueue.TryEnqueue(() =>
-				{
-					_pendingContainerContentChangingFallbackQueued = false;
-					RaisePendingContainerContentChanging();
-				});
-			}
-
-			return base.MeasureOverride(availableSize);
-		}
-
-		private bool _pendingContainerContentChangingFallbackQueued;
-
-		private void RaisePendingContainerContentChanging()
-		{
-			if (PendingContainerContentChanging is { } pending)
-			{
-				PendingContainerContentChanging = null;
-				(ItemsControl.ItemsControlFromItemContainer(this) as ListViewBase)?.RaiseContainerContentChanging(pending.Item, this, pending.Index);
-			}
 		}
 
 		private protected Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
@@ -561,43 +507,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				ChangeVisualState(true);
 			}
 
-			if (Selector is ListViewBase lvb)
-			{
-				var index = lvb.IndexFromContainer(this);
-				lvb.FocusedIndexContainerItem = (index, this, lvb.ItemFromIndex(index));
-			}
-
-			NotifySelectorOfFocusChange(e);
+			// MUX Reference ListViewBaseItem_Partial.cpp, ComboBoxItem_Partial.cpp and FlipViewItem_Partial.cpp: inform the parent selector.
+			Selector?.ItemFocused(this);
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)
 		{
 			base.OnLostFocus(e);
 
+			Selector?.ItemUnfocused(this);
+
 			if (!IsListViewBaseItem)
 			{
 				ChangeVisualState(true);
-			}
-
-			NotifySelectorOfFocusChange(e);
-		}
-
-		// Like the FocusChanged of WinUI's SelectorItem subclasses; only ListViewBaseItem also reports focus changes inside its content.
-		private void NotifySelectorOfFocusChange(RoutedEventArgs e)
-		{
-			if (Selector is not { } selector
-				|| (!IsListViewBaseItem && e.OriginalSource != this))
-			{
-				return;
-			}
-
-			if (HasFocus())
-			{
-				selector.ItemFocused(this);
-			}
-			else
-			{
-				selector.ItemUnfocused(this);
 			}
 		}
 
@@ -628,8 +550,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			bool bUseTransitions)
 		{
 			// DataVirtualization state group
-			// TODO Uno: no data placeholders (m_isPlaceholder / m_isUIPlaceholder), so always DataAvailable.
-			GoToState(bUseTransitions, "DataAvailable");
+			GoToState(bUseTransitions, m_isPlaceholder || m_isUIPlaceholder ? "DataPlaceholder" : "DataAvailable");
 		}
 	}
 }

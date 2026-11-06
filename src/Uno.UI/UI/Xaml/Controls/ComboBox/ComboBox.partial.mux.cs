@@ -744,8 +744,8 @@ partial class ComboBox
 	private protected override void OnSelectionChanged(
 		int oldSelectedIndex,
 		int newSelectedIndex,
-		object pOldSelectedItem,
-		object pNewSelectedItem,
+		object? pOldSelectedItem,
+		object? pNewSelectedItem,
 		bool animateIfBringIntoView = false,
 		FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None)
 	{

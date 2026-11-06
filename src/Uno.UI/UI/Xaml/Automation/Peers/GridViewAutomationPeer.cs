@@ -22,6 +22,8 @@ public partial class GridViewAutomationPeer : ListViewBaseAutomationPeer
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.List;
 
+	protected override ItemAutomationPeer OnCreateItemAutomationPeer(object item)
+		=> new GridViewItemDataAutomationPeer(item, this);
 
 	//_Check_return_ HRESULT GridViewAutomationPeer::OnCreateItemAutomationPeerImpl(_In_ IInspectable* item, _Outptr_ xaml_automation_peers::IItemAutomationPeer** returnValue)
 	//{

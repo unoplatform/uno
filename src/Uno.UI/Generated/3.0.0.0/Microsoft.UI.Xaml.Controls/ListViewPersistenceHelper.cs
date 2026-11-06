@@ -2,24 +2,24 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class ListViewPersistenceHelper
 {
-#if __SKIA__
+#if false
 	internal ListViewPersistenceHelper()
 	{
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static string GetRelativeScrollPosition(global::Microsoft.UI.Xaml.Controls.ListViewBase listViewBase, global::Microsoft.UI.Xaml.Controls.ListViewItemToKeyHandler itemToKeyHandler)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper", "GetRelativeScrollPosition(ListViewBase listViewBase, ListViewItemToKeyHandler itemToKeyHandler)");
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static global::Windows.Foundation.IAsyncAction SetRelativeScrollPositionAsync(global::Microsoft.UI.Xaml.Controls.ListViewBase listViewBase, string relativeScrollPosition, global::Microsoft.UI.Xaml.Controls.ListViewKeyToItemHandler keyToItemHandler)
 	{

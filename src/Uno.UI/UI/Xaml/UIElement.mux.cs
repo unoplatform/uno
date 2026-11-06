@@ -603,7 +603,7 @@ namespace Microsoft.UI.Xaml
 			_animateIfBringIntoView = true;
 		}
 
-		internal bool FocusImpl(FocusState focusState) =>
+		internal virtual bool FocusImpl(FocusState focusState) =>
 			FocusWithDirection(focusState, FocusNavigationDirection.None);
 
 		internal bool FocusWithDirection(FocusState focusState, FocusNavigationDirection focusNavigationDirection)

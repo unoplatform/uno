@@ -107,9 +107,7 @@ namespace Microsoft.UI.Xaml
 			if (_buildTreeArgs is null)
 			{
 				_buildTreeArgs = new ContainerContentChangingEventArgs();
-#if !HAS_UNO // TODO Uno: ContainerContentChangingEventArgs has no container backpointer yet.
 				_buildTreeArgs.RegisterBackpointerToContainer(_owner);
-#endif
 			}
 
 			return _buildTreeArgs;

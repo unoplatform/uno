@@ -310,10 +310,6 @@ namespace Microsoft.UI.Xaml.Controls
 				unappliedDelta -= scrollIncrement;
 				unappliedDelta = Max(0, unappliedDelta);
 				UpdateLayout(extentAdjustment: sign * -unappliedDelta, isScroll: true);
-
-#if __SKIA__
-				(ItemsControl as ListViewBase)?.TryLoadMoreItems(LastVisibleIndex);
-#endif
 			}
 
 			ArrangeElements(_availableSize, ViewportSize);
