@@ -39,6 +39,13 @@ partial class ListViewBase
 		}
 	}
 
+	internal override void ContainerClearedForItem(object item, Primitives.SelectorItem itemContainer)
+	{
+		ClearContainerForDragDrop(itemContainer);
+
+		base.ContainerClearedForItem(item, itemContainer);
+	}
+
 	// To call when CanDragItems or CanReorderItems changes.
 	internal void UpdateContainersForDragDrop()
 	{
