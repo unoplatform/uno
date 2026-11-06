@@ -127,6 +127,7 @@ stages:
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
     vmMacImage: '$(macOSVMImage)'
+    vmMacArm64Image: '$(macOSArm64VMImage)'
     vmLinuxImage: '$(linuxVMImage)'
     vmLinuxPool: '$(linuxScaledPool)'
     poolName: '$(windowsScaledPool)'
