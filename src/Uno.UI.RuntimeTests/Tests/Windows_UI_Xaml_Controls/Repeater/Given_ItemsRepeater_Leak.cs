@@ -123,11 +123,7 @@ public class Given_ItemsRepeater_Leak
 		await WindowHelper.WaitForIdle(); // lets go of work the repeaters queued when they were created
 
 		// Don't yield to the dispatcher here: it would remove the subscriptions of the collected repeaters before the raise.
-		for (var i = 0; i < 10 && refs.Any(r => r.IsAlive); i++)
-		{
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-		}
+		CollectWithoutDispatcher(refs);
 		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The repeaters were not collected.");
 
 		source.Add("c"); // raises to the handlers of collected repeaters
