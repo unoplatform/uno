@@ -114,10 +114,7 @@ partial class ItemsControl : IGeneratorHost
 			case NotifyCollectionChangedAction.Replace when args.NewItems is { Count: 1 }:
 				Notify(CollectionChange.ItemChanged, ToFlatIndex(args.NewStartingIndex));
 				break;
-			case NotifyCollectionChangedAction.Move when args.NewItems is { Count: 1 }:
-				Notify(CollectionChange.ItemRemoved, ToFlatIndex(args.OldStartingIndex));
-				Notify(CollectionChange.ItemInserted, ToFlatIndex(args.NewStartingIndex));
-				break;
+			// MUX Reference BindableObservableVectorWrapper.cpp, ProcessCollectionChange: Move is raised as a Reset.
 			default:
 				Notify(CollectionChange.Reset, 0);
 				break;
