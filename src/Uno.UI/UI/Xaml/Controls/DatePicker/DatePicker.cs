@@ -1076,8 +1076,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return true;
 			}
 
-			pValue = null;
-			return false;
+			return base.GetDefaultValue2(pDP, out pValue);
 		}
 
 		// Reacts to the changes in string typed properties. Reverts the property value to the last valid value,
