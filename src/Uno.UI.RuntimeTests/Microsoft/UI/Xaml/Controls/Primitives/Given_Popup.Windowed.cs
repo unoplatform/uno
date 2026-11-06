@@ -32,6 +32,103 @@ public class Given_Popup_Windowed
 {
 	private const int ContentSize = 200;
 
+	// Off by default on macOS, whose native side only runs here.
+	[TestInitialize]
+	public void Setup()
+	{
+		if (OperatingSystem.IsMacOS())
+		{
+			FeatureConfiguration.Popup.UseWindowedPopups = true;
+		}
+	}
+
+	[TestCleanup]
+	public void Cleanup() => FeatureConfiguration.Popup.UseWindowedPopups = null;
+
+	[TestMethod]
+	public async Task When_Windowed_Popups_Disabled_Then_Popup_Stays_In_Window()
+	{
+		var target = new Button { Content = "Target" };
+		await UITestHelper.Load(target);
+
+		FeatureConfiguration.Popup.UseWindowedPopups = false;
+
+		var content = CreateContent();
+		var popup = CreatePopup(content, target.XamlRoot!, 10, 10);
+		popup.IsOpen = true;
+		await TestServices.WindowHelper.WaitForLoaded(content);
+
+		Assert.IsFalse(popup.IsWindowed);
+		Assert.IsNull(popup.WindowedPopupSite);
+
+		popup.IsOpen = false;
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+	public async Task When_Owner_Repaints_Then_Unchanged_Popup_Is_Not_Rerecorded()
+	{
+		var other = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Blue) };
+		await UITestHelper.Load(other);
+
+		var content = CreateContent();
+		var popup = CreatePopup(content, other.XamlRoot!, 10, 10);
+		popup.IsOpen = true;
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			await WaitForWindow(popup);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var before = popup.WindowedPopupRecordedFrameCount;
+			Assert.IsTrue(before > 0);
+
+			for (var i = 0; i < 5; i++)
+			{
+				other.Opacity = i % 2 == 0 ? 0.5 : 1;
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual(before, popup.WindowedPopupRecordedFrameCount);
+
+			content.Background = new SolidColorBrush(Colors.Green);
+			await UITestHelper.WaitFor(() => popup.WindowedPopupRecordedFrameCount > before, timeoutMS: 3000);
+		}
+		finally
+		{
+			popup.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Many_Popups_Close_Then_Oldest_Windows_Are_Released()
+	{
+		var target = new Button { Content = "Target" };
+		await UITestHelper.Load(target);
+
+		IWindowedPopupSite? first = null;
+		Popup? last = null;
+		IWindowedPopupSite? lastSite = null;
+		for (var i = 0; i < 10; i++)
+		{
+			var content = CreateContent();
+			var popup = CreatePopup(content, target.XamlRoot!, 10, 10);
+			popup.IsOpen = true;
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			var site = await WaitForWindow(popup);
+			first ??= site;
+			last = popup;
+			lastSite = site;
+			popup.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		await UITestHelper.WaitFor(() => first!.IsClosed, timeoutMS: 3000);
+		Assert.IsFalse(lastSite!.IsClosed);
+		Assert.AreSame(lastSite, last!.WindowedPopupSite);
+	}
+
 	private static async Task<IWindowedPopupSite> WaitForWindow(Popup popup)
 	{
 		var site = popup.WindowedPopupSite;
@@ -482,6 +579,8 @@ public class Given_Popup_Windowed
 	private sealed class FailingExtension(IWindowedPopupExtension inner) : IWindowedPopupExtension
 	{
 		public bool IsRightHanded => inner.IsRightHanded;
+
+		public bool IsEnabledByDefault => true;
 
 		public bool IsSupported(XamlRoot xamlRoot) => inner.IsSupported(xamlRoot);
 
