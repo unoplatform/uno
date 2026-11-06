@@ -446,6 +446,16 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				var availableSize = unpaddedSize;
+				if (view == _itemsPanel && view is ModernCollectionBasePanel modernPanel)
+				{
+					// MUX Reference ItemsPresenter_Partial.cpp: the panel needs its origin before it computes its window.
+					var margin = Margin;
+					var headerSize = HeaderContentControl?.DesiredSize ?? default;
+					modernPanel.SetOriginFromItemsPresenter(new Point(
+						padding.Left + margin.Left + (isHorizontal ? headerSize.Width : 0),
+						padding.Top + margin.Top + (isHorizontal ? 0 : headerSize.Height)));
+				}
+
 				if (view != _itemsPanel)
 				{
 					// On Windows, every child gets an infinite length along the orientation dimension

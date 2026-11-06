@@ -3,7 +3,6 @@
 
 // MUX Reference ItemsWrapGrid_Partial.h, tag winui3/release/2.5.1, commit ba3a8d59e6d
 
-#if LISTVIEW_PORT_CUTOVER
 
 #nullable enable
 
@@ -30,7 +29,10 @@ public partial class ItemsWrapGrid : ModernCollectionBasePanel, IOrientedPanel
 	}
 
 	// a wrapgrid is able to portal (AddDeleteTransition)
-	internal override bool IsPortallingSupported() => true;
+	// TODO Uno: there is no portalling transition base on Uno, so nothing reads this yet.
+	internal bool IsPortallingSupported() => true;
+
+	internal override Orientation? PhysicalOrientation => Orientation;
 
 	public int FirstCacheIndex => FirstCacheIndexBase;
 	public int FirstVisibleIndex => FirstVisibleIndexBase;
@@ -39,4 +41,3 @@ public partial class ItemsWrapGrid : ModernCollectionBasePanel, IOrientedPanel
 	public PanelScrollingDirection ScrollingDirection => PanningDirectionBase;
 }
 
-#endif
