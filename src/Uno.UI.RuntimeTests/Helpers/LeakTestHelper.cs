@@ -42,4 +42,17 @@ internal static class LeakTestHelper
 			await WindowHelper.WaitForIdle();
 		}
 	}
+
+	/// <summary>
+	/// Collects until <paramref name="refs"/> are collected, at most 10 times, without yielding: removals that finalizers
+	/// post to the dispatcher stay pending. Some platforms need a yield to clear weak references, so callers check the result.
+	/// </summary>
+	public static void CollectWithoutDispatcher(IEnumerable<WeakReference> refs)
+	{
+		for (var i = 0; i < 10 && refs.Any(r => r.IsAlive); i++)
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+		}
+	}
 }

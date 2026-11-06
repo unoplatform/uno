@@ -53,11 +53,7 @@ public class Given_BindingStaleHandlers
 		var refs = await CreateBoundAsync(vm, loaded: false);
 
 		// Don't yield to the dispatcher here: it would remove the handlers before the raise.
-		for (var i = 0; i < 10 && refs.Any(r => r.IsAlive); i++)
-		{
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-		}
+		CollectWithoutDispatcher(refs);
 		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The bound elements were not collected.");
 
 		vm.Name = "changed"; // raises over the live handler list: removing a handler mid-raise would throw
@@ -119,11 +115,7 @@ public class Given_BindingStaleHandlers
 		var (elementRef, sourceRef) = CreateBoundToOwnSource();
 
 		// Don't yield to the dispatcher here: the source must not depend on queued work to be collected.
-		for (var i = 0; i < 10 && sourceRef.IsAlive; i++)
-		{
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-		}
+		CollectWithoutDispatcher([sourceRef]);
 
 		if (elementRef.IsAlive)
 		{
