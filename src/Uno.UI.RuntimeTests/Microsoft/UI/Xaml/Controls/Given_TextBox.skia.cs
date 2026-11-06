@@ -2070,23 +2070,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		[RequiresScaling(1f)]
 		public async Task When_Pointer_Tap()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2108,7 +2100,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
@@ -2155,8 +2147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 350,
-				Text = "Hello world          ",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world          "
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2223,23 +2214,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		[RequiresScaling(1f)]
 		public async Task When_Pointer_RightClick_No_Selection()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2261,7 +2244,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
@@ -2316,23 +2299,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		[RequiresScaling(1f)]
 		public async Task When_Pointer_Hold_Drag()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2353,82 +2328,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 
 			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(8, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[RequiresScaling(1f)]
+		public async Task When_Pointer_Hold_Drag_OutOfBounds()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(0, 50);
+			mouse.MoveBy(-150, 0);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(9, SUT.SelectionLength);
 		}
 
 		[TestMethod]
-		public async Task When_Pointer_Hold_Drag_OutOfBounds()
-		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
-			using var _ = new TextBoxFeatureConfigDisposable();
-
-			var SUT = new TextBox
-			{
-				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
-			};
-
-			WindowHelper.WindowContent = SUT;
-
-			await WindowHelper.WaitForIdle();
-			await WindowHelper.WaitForLoaded(SUT);
-
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
-
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var mouse = injector.GetMouse();
-
-			var bounds = SUT.GetAbsoluteBounds();
-			mouse.MoveTo(bounds.GetCenter());
-			await WindowHelper.WaitForIdle();
-
-			mouse.Press();
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(10, SUT.SelectionStart);
-			Assert.AreEqual(0, SUT.SelectionLength);
-
-			mouse.MoveBy(0, 50);
-			mouse.MoveBy(-150, 0);
-
-			Assert.AreEqual(0, SUT.SelectionStart);
-			Assert.AreEqual(10, SUT.SelectionLength);
-		}
-
-		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		[RequiresScaling(1f)]
 		public async Task When_LongText_Pointer_Hold_Drag_OutOfBounds()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "This should be a lot longer than the width of the TextBox.",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "This should be a lot longer than the width of the TextBox."
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2449,7 +2408,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(0, 50);
@@ -2457,14 +2416,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, SUT.SelectionStart);
-			Assert.AreEqual(10, SUT.SelectionLength);
+			Assert.AreEqual(9, SUT.SelectionLength);
 
 			mouse.MoveBy(0, 50);
 			mouse.MoveBy(600, 0);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
-			Assert.AreEqual(SUT.Text.Length - 10, SUT.SelectionLength);
+			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length - 9, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -2608,23 +2567,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		[RequiresScaling(1f)]
 		public async Task When_Typing_While_Pointer_Held()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2645,14 +2596,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
 			await WindowHelper.WaitForIdle();
@@ -2665,7 +2616,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("Hello world", SUT.Text);
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -2679,23 +2630,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(VirtualKey.Delete, VirtualKeyModifiers.None)]
 		[DataRow(VirtualKey.A, VirtualKeyModifiers.Control)]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		[RequiresScaling(1f)]
 		public async Task When_Move_Caret_While_Pointer_Held(VirtualKey key, VirtualKeyModifiers modifiers)
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			var handled = false;
@@ -2719,14 +2662,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, modifiers));
 			await WindowHelper.WaitForIdle();
@@ -2734,27 +2677,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(handled);
 			Assert.AreEqual("Hello world", SUT.Text);
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_Cut_While_Pointer_Held()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2775,19 +2710,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.X, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("Hd", SUT.Text);
+			Assert.AreEqual("Hld", SUT.Text);
 
 			Assert.AreEqual(1, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
@@ -2796,7 +2731,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(1, SUT.SelectionLength);
+			Assert.AreEqual(2, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -2828,8 +2763,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2850,14 +2784,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
@@ -2875,23 +2809,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		[RequiresScaling(1f)]
 		public async Task When_Escape_While_Pointer_Held()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2912,14 +2838,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
@@ -2928,7 +2854,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			// We're pretty much "not pressed" at all at this point, even if we're technically still holding the mouse
 			// so we can actually type stuff in!
@@ -2936,7 +2862,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.None, unicodeKey: 'a'));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("Had", SUT.Text);
+			Assert.AreEqual("Hald", SUT.Text);
 			Assert.AreEqual(2, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
@@ -4006,24 +3932,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Fails in Skia UIKit CI - https://github.com/unoplatform/uno-private/issues/808
+		[RequiresScaling(1f)]
 		public async Task When_Multiline_Pointer_Tap()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 250,
 				AcceptsReturn = true,
-				Text = "Lorem\ripsum dolor sit\ramet consectetur\radipiscing",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Lorem\ripsum dolor sit\ramet consectetur\radipiscing"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -4055,7 +3973,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(17, SUT.SelectionStart);
+			Assert.AreEqual(16, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
