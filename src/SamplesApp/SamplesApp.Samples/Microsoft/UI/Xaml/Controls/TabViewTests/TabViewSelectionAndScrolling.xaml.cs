@@ -81,7 +81,6 @@ public sealed partial class TabViewSelectionAndScrolling : Page
 		}
 		if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
 		if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
-		if (x is ItemsStackPanel isp) yield return $"Layouter={FormatObject((isp as IVirtualizingPanel)?.GetLayouter())}";
 		if (x is ScrollViewer sv)
 		{
 			yield return $"Offset=({sv.HorizontalOffset},{sv.VerticalOffset}), Viewport=({sv.ViewportHeight},{sv.ViewportWidth}), Extent=({sv.ExtentHeight},{sv.ExtentWidth})";

@@ -73,6 +73,8 @@ namespace Uno.WinAppSDKSyncGenerator
 			BaseXamlNamespace + ".Controls.Primitives.GridViewItemPresenter",
 			BaseXamlNamespace + ".Controls.Primitives.ListViewItemTemplateSettings",
 			BaseXamlNamespace + ".Controls.Primitives.GridViewItemTemplateSettings",
+			// Uno hosts CarouselPanel on ModernCollectionBasePanel; it has no OrientedVirtualizingPanel-based port.
+			BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
 			// Uno's RelativeSource is not a DependencyObject and carries Mode as a plain property.
 			BaseXamlNamespace + ".Data.RelativeSource",
 			// Uno's WebView2 derives from Control to reuse templating; WinUI derives from FrameworkElement.
