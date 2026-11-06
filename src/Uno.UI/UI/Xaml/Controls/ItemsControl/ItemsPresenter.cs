@@ -25,6 +25,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal ContentControl HeaderContentControl { get; private set; }
 
+		// TODO Uno: replaced by the ItemsPresenter_Partial.cpp port.
+		internal Size GetHeaderSize() => HeaderContentControl?.DesiredSize ?? default;
+
+		internal void LoadFooter(bool updateLayout) { }
+
+		internal void DelayLoadFooter(Rect? futureViewportRect, bool updateLayout) { }
+
 		private Orientation Orientation =>
 				(Panel as Panel)?.PhysicalOrientation ?? Orientation.Horizontal;
 

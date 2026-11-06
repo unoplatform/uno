@@ -2,12 +2,12 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class ChoosingItemContainerEventArgs
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public bool IsContainerPrepared
 	{
@@ -21,7 +21,7 @@ public partial class ChoosingItemContainerEventArgs
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public object Item
 	{
@@ -31,7 +31,7 @@ public partial class ChoosingItemContainerEventArgs
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Microsoft.UI.Xaml.Controls.Primitives.SelectorItem ItemContainer
 	{
@@ -45,7 +45,7 @@ public partial class ChoosingItemContainerEventArgs
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public int ItemIndex
 	{
@@ -55,7 +55,7 @@ public partial class ChoosingItemContainerEventArgs
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public ChoosingItemContainerEventArgs()
 	{
