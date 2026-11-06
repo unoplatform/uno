@@ -15,7 +15,7 @@ namespace Uno.UI.Helpers;
 /// Pass static lambdas: they get everything they need through <typeparamref name="TState"/>, and a capture of the
 /// source would keep it alive.
 /// </remarks>
-internal sealed class WeakSourceSubscription<TSource, TState> : IDisposable
+internal sealed class WeakSourceSubscription<TSource, TState> : IDisposable, IQueuedRemoval
 	where TSource : class
 {
 	private readonly TState _state;
@@ -62,11 +62,16 @@ internal sealed class WeakSourceSubscription<TSource, TState> : IDisposable
 	{
 		if (TakeSource(out var source) && source is not null)
 		{
-			var unsubscribe = _unsubscribe;
-			var state = _state;
-			SubscriptionCleanup.EnqueueFromFinalizer(() => unsubscribe(source, state), _logOwner, _description);
+			SubscriptionCleanup.EnqueueFromFinalizer(this, source);
 		}
 	}
+
+	Type IQueuedRemoval.LogOwner => _logOwner;
+
+	string IQueuedRemoval.Description => _description;
+
+	void IQueuedRemoval.Remove(object source)
+		=> SubscriptionCleanup.Run(_unsubscribe, (TSource)source, _state, _logOwner, _description);
 
 	// Frees the handle exactly once: returns false if it was already taken.
 	private bool TakeSource(out TSource? source)
