@@ -55,19 +55,38 @@ internal static class SubscriptionCleanup
 	/// </summary>
 	internal static void EnqueueFromFinalizer(IQueuedRemoval removal, object source)
 	{
+		// An exception escaping a finalizer terminates the process, even one thrown by the logger.
 		try
 		{
 			_pendingRemovals.Enqueue(new PendingRemoval(removal, source));
-			ScheduleBatch();
 		}
 		catch (Exception e)
 		{
-			// An exception escaping a finalizer terminates the process, even one thrown by the logger.
 			try
 			{
 				if (removal.LogOwner.Log().IsEnabled(LogLevel.Error))
 				{
-					removal.LogOwner.Log().Error($"Failed to schedule the removal of {removal.Description} from a {source.GetType()}", e);
+					removal.LogOwner.Log().Error($"Failed to queue the removal of {removal.Description} from a {source.GetType()}", e);
+				}
+			}
+			catch
+			{
+			}
+
+			return;
+		}
+
+		try
+		{
+			ScheduleBatch();
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				if (typeof(SubscriptionCleanup).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(SubscriptionCleanup).Log().Warn("Failed to schedule the queued subscription removals: they run with the next one scheduled", e);
 				}
 			}
 			catch
@@ -97,22 +116,34 @@ internal static class SubscriptionCleanup
 		// Cleared before dequeuing, so that a removal queued meanwhile schedules another batch instead of being missed.
 		Volatile.Write(ref _isBatchScheduled, 0);
 
-		for (var i = 0; i < MaxRemovalsPerBatch && _pendingRemovals.TryDequeue(out var removal); i++)
+		var removed = 0;
+		try
 		{
-			removal.Removal.Remove(removal.Source);
-		}
-
-		if (!_pendingRemovals.IsEmpty)
-		{
-			try
+			while (removed < MaxRemovalsPerBatch && _pendingRemovals.TryDequeue(out var removal))
 			{
-				ScheduleBatch();
+				removal.Removal.Remove(removal.Source);
+				removed++;
 			}
-			catch (Exception e)
+		}
+		finally
+		{
+			if (typeof(SubscriptionCleanup).Log().IsEnabled(LogLevel.Debug))
 			{
-				if (typeof(SubscriptionCleanup).Log().IsEnabled(LogLevel.Error))
+				typeof(SubscriptionCleanup).Log().Debug($"Removed {removed} subscriptions of collected subscribers, {_pendingRemovals.Count} still queued");
+			}
+
+			if (!_pendingRemovals.IsEmpty)
+			{
+				try
 				{
-					typeof(SubscriptionCleanup).Log().Error("Failed to schedule the next batch of subscription removals", e);
+					ScheduleBatch();
+				}
+				catch (Exception e)
+				{
+					if (typeof(SubscriptionCleanup).Log().IsEnabled(LogLevel.Warning))
+					{
+						typeof(SubscriptionCleanup).Log().Warn("Failed to schedule the queued subscription removals: they run with the next one scheduled", e);
+					}
 				}
 			}
 		}
