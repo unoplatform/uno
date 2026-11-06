@@ -506,6 +506,141 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
+		// DisablePresenterResizing is internal, and CalendarDatePicker is the only control that calls it, as in WinUI.
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Resizing_Disabled_And_Taller_Than_Window_Then_Kept_Inside_Window()
+		{
+			var target = new Border { Width = 120, Height = 30, Background = new SolidColorBrush(Colors.Red) };
+			TestServices.WindowHelper.WindowContent = target;
+			await TestServices.WindowHelper.WaitForLoaded(target);
+
+			var (flyout, lastItem) = CreateTallFlyout();
+			flyout.DisablePresenterResizing();
+
+			try
+			{
+				flyout.ShowAt(target);
+
+				await TestServices.WindowHelper.WaitForLoaded(lastItem);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// Without resizing, the presenter isn't made smaller to fit next to its target. As in WinUI, it is kept within the available
+				// area, covering its target. WinUI measures popup content without a limit; Uno measures it within the window, so it scrolls.
+				var presenter = lastItem.FindFirstParent<FlyoutPresenter>();
+				var visibleBounds = TestServices.WindowHelper.XamlRoot.VisualTree.VisibleBounds;
+				NumberAssert.GreaterOrEqual(presenter.ActualHeight, visibleBounds.Height - 1);
+				VerifyWithin(LayoutInformation.GetLayoutSlot(presenter), visibleBounds);
+				VerifyArrangedAtMeasuredSize(presenter);
+
+				var scrollViewer = presenter.FindFirstChild<ScrollViewer>();
+				Assert.IsTrue(
+					scrollViewer.ExtentHeight > scrollViewer.ViewportHeight + 1,
+					$"The content should scroll (extent {scrollViewer.ExtentHeight}, viewport {scrollViewer.ViewportHeight}).");
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_CalendarDatePicker_Fits_On_No_Side_Then_Kept_Inside_Window()
+		{
+			// The calendar fits neither below the picker, beside it, nor above it, where there is no room at all.
+			var xamlRoot = TestServices.WindowHelper.XamlRoot;
+			var picker = new CalendarDatePicker
+			{
+				Width = xamlRoot.Size.Width,
+				Height = xamlRoot.Size.Height - 100,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+			TestServices.WindowHelper.WindowContent = picker;
+			await TestServices.WindowHelper.WaitForLoaded(picker);
+
+			try
+			{
+				picker.IsCalendarOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot).FirstOrDefault(p => p.Child is FlyoutPresenter);
+				Assert.IsNotNull(popup, "The calendar's flyout should be open.");
+				var presenter = (FlyoutPresenter)popup.Child;
+				await TestServices.WindowHelper.WaitForLoaded(presenter);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var visibleBounds = xamlRoot.VisualTree.VisibleBounds;
+				if (presenter.ActualHeight > visibleBounds.Height)
+				{
+					Assert.Inconclusive($"The visible area ({visibleBounds.Height} tall) is shorter than the calendar ({presenter.ActualHeight} tall).");
+				}
+
+				// As in WinUI, the calendar isn't made smaller to fit the room below the picker. WinUI's calendar flyout isn't constrained to the
+				// window, so it's placed within the monitor; a WinUI flyout constrained to the window is moved up into it, covering the picker.
+				Assert.IsFalse(popup.AssociatedFlyout.CanResizePresenter);
+				NumberAssert.Greater(presenter.ActualHeight, 100);
+				VerifyArrangedAtMeasuredSize(presenter);
+				VerifyWithin(presenter.GetOnScreenBounds(), visibleBounds);
+			}
+			finally
+			{
+				picker.IsCalendarOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A flyout whose presenter has no maximum height and whose content is half again as tall as the window.
+		private static (Flyout Flyout, FrameworkElement LastItem) CreateTallFlyout()
+		{
+			const double ItemHeight = 40;
+			var itemCount = (int)Math.Ceiling(TestServices.WindowHelper.XamlRoot.Size.Height * 1.5 / ItemHeight);
+			var panel = new StackPanel();
+
+			for (var i = 0; i < itemCount; i++)
+			{
+				panel.Children.Add(new Border
+				{
+					Width = 100,
+					Height = ItemHeight,
+					Background = new SolidColorBrush(i % 2 == 0 ? Colors.Green : Colors.Blue),
+				});
+			}
+
+			var flyout = new Flyout
+			{
+				Content = panel,
+				FlyoutPresenterStyle = new Style
+				{
+					TargetType = typeof(FlyoutPresenter),
+					Setters = { new Setter(FrameworkElement.MaxHeightProperty, double.PositiveInfinity) },
+				},
+			};
+
+			return (flyout, (FrameworkElement)panel.Children[itemCount - 1]);
+		}
+
+		// Checks that the bounds are within the area, give or take a physical pixel of rounding.
+		private static void VerifyWithin(Rect bounds, Rect area)
+		{
+			var tolerance = 1 / TestServices.WindowHelper.XamlRoot.RasterizationScale;
+			NumberAssert.GreaterOrEqual(bounds.Top, area.Top - tolerance);
+			NumberAssert.GreaterOrEqual(bounds.Left, area.Left - tolerance);
+			NumberAssert.LessOrEqual(bounds.Bottom, area.Bottom + tolerance);
+			NumberAssert.LessOrEqual(bounds.Right, area.Right + tolerance);
+		}
+
+		// A presenter measured larger than the size it is arranged at is cut off instead of scrolling.
+		private static void VerifyArrangedAtMeasuredSize(FrameworkElement presenter)
+		{
+			var slot = LayoutInformation.GetLayoutSlot(presenter);
+			Assert.AreEqual(slot.Height, presenter.ActualHeight, delta: 1, $"Height arranged in slot {slot}");
+			Assert.AreEqual(slot.Width, presenter.ActualWidth, delta: 1, $"Width arranged in slot {slot}");
+		}
+#endif
+
 		// "Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?"
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
