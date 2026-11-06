@@ -3812,30 +3812,13 @@ partial class ComboBox
 	}
 
 #if HAS_UNO
-	private double? _preFullscreenMinWidth;
-	private double? _preFullscreenMaxWidth;
-
 	// The Uno-only IsPopupFullscreen and DropDownPreferredPlacement override the WinUI layout computed in ArrangePopup.
 	private void ApplyUnoPopupLayoutOverrides(ref double popupX, ref double popupY, double cbX, double cbY, double cbHeight, Size rootWindowSize)
 	{
 		var child = m_tpElementPopupChild;
 
-		if (!IsPopupFullscreen)
+		if (IsPopupFullscreen)
 		{
-			if (_preFullscreenMinWidth is { } minWidth && _preFullscreenMaxWidth is { } maxWidth)
-			{
-				child.MinWidth = minWidth;
-				child.MaxWidth = maxWidth;
-			}
-
-			_preFullscreenMinWidth = null;
-			_preFullscreenMaxWidth = null;
-		}
-		else
-		{
-			_preFullscreenMinWidth ??= child.MinWidth;
-			_preFullscreenMaxWidth ??= child.MaxWidth;
-
 			// In full screen mode, we want the popup to stretch horizontally, so we set MinWidth and MaxWidth to the available width.
 			// However, we don't want it to stretch vertically.
 			child.MinWidth = rootWindowSize.Width;
