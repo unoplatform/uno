@@ -384,6 +384,9 @@ public abstract partial class ModernCollectionBasePanel
 			// Temporarily hold it so that lookups will work during during preparation.
 			m_containerManager.HoldForPrepare(spContainer, ElementType.ItemContainer, indexInItemCollection);
 
+#if HAS_UNO
+			spContainer.SetValue(ItemsControl.IndexForItemContainerProperty, Uno.UI.Helpers.Boxes.Boxer.Box(indexInItemCollection));
+#endif
 			spIHost.PrepareItemContainer(spContainer, spItem);
 
 			// after a prepare we are guaranteeing that we are going to raise the ContainerContentChanging event

@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void TryLoadMoreItems()
 		{
-			if (VirtualizingPanel.GetLayouter() is { } layouter)
+			if (VirtualizingPanel?.GetLayouter() is { } layouter)
 			{
 				TryLoadMoreItems(layouter.LastVisibleIndex);
 			}
