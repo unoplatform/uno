@@ -158,6 +158,12 @@ partial class MenuFlyoutPresenter : IMenuPresenter
 				var spSubItem = spItemAsDependencyObject as Control;
 				if (spSubItem != null)
 				{
+					// If this is a SplitMenuFlyoutItem and we're navigating upward, set the flag
+					if (deltaIndex == -1 && spSubItem is SplitMenuFlyoutItem spSplitItem)
+					{
+						spSplitItem.SetFocusComingFromUpwardNavigation();
+					}
+
 					spSubItem.Focus(focusState);
 
 					m_iFocusedIndex = index;
@@ -194,6 +200,13 @@ partial class MenuFlyoutPresenter : IMenuPresenter
 		var spMenuFlyoutItemBase = pElement as MenuFlyoutItemBase;
 
 		spMenuFlyoutItemBase?.SetParentMenuFlyoutPresenter(this);
+
+		// TODO Uno: ApplyItemContainerStyle clears a style set from the items control when there's no ItemContainerStyle,
+		// and here it runs after SplitMenuFlyoutItem applied its SubMenuItemStyle.
+		if (spMenuFlyoutItemBase is not null && (this as IMenuPresenter).Owner is SplitMenuFlyoutItem spSplitItem)
+		{
+			spSplitItem.ApplySubMenuItemStyleToItem(spMenuFlyoutItemBase);
+		}
 	}
 
 	protected override void ClearContainerForItemOverride(
@@ -695,8 +708,9 @@ partial class MenuFlyoutPresenter : IMenuPresenter
 				(ownerFlyout.InputDeviceTypeUsedToOpen == Uno.UI.Xaml.Input.InputDeviceType.Touch || ownerFlyout.InputDeviceTypeUsedToOpen == Uno.UI.Xaml.Input.InputDeviceType.GamepadOrRemote)
 					? "FlyoutThemeTouchMinWidth" : "FlyoutThemeMinWidth"
 			);
-			var visibleBounds = this.LayoutSlotWithMarginsAndAlignments;
-			// DXamlCore.GetCurrent().GetVisibleContentBoundsForElement(GetHandle(), &visibleBounds);
+			// TODO Uno: GetVisibleContentBoundsForElement. A flyout opens before its presenter has a XamlRoot.
+			var xamlRoot = XamlRoot ?? ownerFlyout.XamlRoot ?? ownerFlyout.Target?.XamlRoot;
+			var visibleBounds = xamlRoot?.VisualTree.VisibleBounds ?? default;
 
 			templateSettingsConcrete.FlyoutContentMinWidth = Math.Min(visibleBounds.Width, flyoutContentMinWidth);
 		}

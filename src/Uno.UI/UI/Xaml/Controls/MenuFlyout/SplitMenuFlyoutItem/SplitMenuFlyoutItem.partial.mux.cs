@@ -839,6 +839,8 @@ partial class SplitMenuFlyoutItem
 		}
 	}
 
+	internal void ApplySubMenuItemStyleToItem(MenuFlyoutItemBase pItem) => ApplySubMenuItemStyleToItem(pItem, SubMenuItemStyle);
+
 	private void ApplySubMenuItemStyleToItems()
 	{
 		// Get the SubMenuItemStyle
