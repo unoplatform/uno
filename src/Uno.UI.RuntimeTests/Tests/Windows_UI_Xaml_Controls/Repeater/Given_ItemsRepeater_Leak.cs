@@ -60,7 +60,7 @@ public class Given_ItemsRepeater_Leak
 	[RunsOnUIThread]
 	[DataRow(false)]
 	[DataRow(true)]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // The screen is built with DataTemplate(owner, factory), which is Uno-only
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif
@@ -136,7 +136,7 @@ public class Given_ItemsRepeater_Leak
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // On WinUI, the added item isn't realized yet when the test checks it
 	public async Task When_Loaded_Then_Source_Changes_Are_Applied()
 	{
 		var source = new ObservableCollection<string> { "a", "b" };
