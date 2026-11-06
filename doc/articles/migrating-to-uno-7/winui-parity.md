@@ -15,6 +15,8 @@ Part of [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 7.0 realigns several types to their WinUI base classes. Most code is unaffected — the
 change only breaks code that used the Uno-only members leaked by the wrong base.
 
+See also: [`ContentControl` subclasses without a `ControlTemplate`](xref:Uno.Development.MigratingToUno7.Behavior#contentcontrol-subclasses-without-a-controltemplate).
+
 ### `DependencyObject` is a class, not an interface
 
 Uno declared it as an interface so that
@@ -28,6 +30,8 @@ class as it is in WinUI. Two consequences:
 - A type can no longer inherit some *other* base class and pick up `DependencyObject`
   alongside it. That only ever worked because it was an interface, and WinUI never allowed
   it. Such a type has to be reworked to derive from `DependencyObject` (or a type that does).
+
+See also: [Custom value types default to `null`](xref:Uno.Development.MigratingToUno7.Behavior#custom-value-types-default-to-null).
 
 ### `UserControl` derives from `Control`, not `ContentControl`
 
@@ -133,6 +137,8 @@ likewise moves — reference the DP on its declaring type (`Control.BackgroundPr
 `Panel.BackgroundProperty`, …). The protected `OnBackgroundChanged` override moved with
 it and is no longer part of the public surface.
 
+See also: [`SystemBackdrop` no longer rewrites your backgrounds](xref:Uno.Development.MigratingToUno7.Behavior#systembackdrop-no-longer-rewrites-your-contents-backgrounds).
+
 ### `DataContext` is on `FrameworkElement` only
 
 Uno's source generator emitted
@@ -199,6 +205,8 @@ took a `UIElement` in Uno; WinUI takes a `FrameworkElement`, and 7.0 now matches
 A few WinRT members were projected differently by Uno than by WinUI's own C# projection. 7.0
 aligns them. Most call sites stay source-compatible, but the underlying signatures change, so
 recompile against 7.0 rather than swapping assemblies in place.
+
+See also: [Uno-only implicit conversions](xref:Uno.Development.MigratingToUno7.RemovedApis#uno-only-implicit-conversions-and-static-fields-removed).
 
 ### `Thickness` and `CornerRadius` members are properties, not fields
 
@@ -378,6 +386,8 @@ WinUI.
 Constructors now have the accessibility WinUI gives them. Code that only constructs the concrete
 WinUI types is unaffected.
 
+See also: [Collection initializers](xref:Uno.Development.MigratingToUno7.RemovedApis#collection-initializers-on-panels-border-and-scrollviewer-removed).
+
 ### Base classes are no longer directly constructible
 
 `Control`, `Panel`, `ButtonBase`,
@@ -449,3 +459,11 @@ members, or get the instance from the framework.
 
 `XamlLight.CompositionLight` is `protected`, as in WinUI. Set it from your `XamlLight`
 subclass.
+
+## Related pages
+
+- [Removed public APIs](xref:Uno.Development.MigratingToUno7.RemovedApis) if the member is gone altogether.
+- [Behavior changes to re-test](xref:Uno.Development.MigratingToUno7.Behavior) for changes that compile but act differently.
+- [XAML and default styles](xref:Uno.Development.MigratingToUno7.Xaml) for changes in markup.
+- [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from an error or symptom to its fix.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.

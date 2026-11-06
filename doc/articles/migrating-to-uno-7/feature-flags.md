@@ -45,6 +45,8 @@ Skia/WinUI behavior:
 `WebView2.IsInspectable` is also removed; it was an obsolete alias, so switch to
 `WebView2.EnableDevTools` instead.
 
+See also: [Native rendering types and helpers](xref:Uno.Development.MigratingToUno7.RemovedApis#native-rendering-types-and-helpers).
+
 ## Flags whose removal can change behavior
 
 ### `ApplicationLanguages.UseLegacyPrimaryLanguageOverride`
@@ -119,6 +121,8 @@ only one, so only apps that changed one of them see a difference:
 | `FeatureConfiguration.UIElement.DisablePointersSpecificEventPrevention` | When a gesture event such as `Tapped` bubbles up from a child, an ancestor only stops recognizing that same gesture for the pointer, instead of ending all of its gesture recognition. |
 | `FeatureConfiguration.UIElement.UseInvalidateMeasurePath` / `UseInvalidateArrangePath` | Layout always re-measures and re-arranges only the elements on an invalidated path. To turn this off for one subtree, use `FrameworkElementHelper.SetUseMeasurePathDisabled` / `SetUseArrangePathDisabled`. |
 
+See also: [Manipulation and gestures](xref:Uno.Development.MigratingToUno7.Behavior#manipulation-and-gestures).
+
 ### `ProgressRing.ProgressRingAsset` and `DeterminateProgressRingAsset`
 
 `FeatureConfiguration.ProgressRing.ProgressRingAsset` and `.DeterminateProgressRingAsset` are also
@@ -128,6 +132,8 @@ a `ProgressRing` played when its `IndeterminateSource` or `DeterminateSource` wa
 it, a ring that sets neither source now plays the built-in
 WinUI animation, so an app that pointed them at its own animation sets `ProgressRing.IndeterminateSource`
 / `.DeterminateSource` instead, for example in an implicit `ProgressRing` style.
+
+See also: [`Uno.WinUI.Lottie` package](xref:Uno.Development.MigratingToUno7.Packages#unowinuilottie-package-and-lottie-uno-feature-removed), [`Uno.UI.Controls.Legacy.ProgressRing`](xref:Uno.Development.MigratingToUno7.RemovedApis#unouicontrolslegacyprogressring).
 
 ### `Font.FallbackService`
 
@@ -154,3 +160,11 @@ any currently-supported target:
   handling is always enabled.
 - `WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap` (Android) and
   `.InterpretForceTouchAsRightTap` (iOS/tvOS).
+
+## Related pages
+
+- [Behavior changes to re-test](xref:Uno.Development.MigratingToUno7.Behavior) for what to re-test once a flag is gone.
+- [Removed public APIs](xref:Uno.Development.MigratingToUno7.RemovedApis) for removed types and members.
+- [App startup, activation and platform state](xref:Uno.Development.MigratingToUno7.AppStartup) for Android and iOS app state.
+- [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from an error or symptom to its fix.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.

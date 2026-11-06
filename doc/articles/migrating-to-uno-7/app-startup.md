@@ -54,6 +54,8 @@ Two related behavior changes:
 
 See [Customizing the `Application` class on Android](xref:Uno.Features.CustomizingAndroidApplication).
 
+See also: [Runtime host renames](xref:Uno.Development.MigratingToUno7.Renames#runtime-host-renames), [Vulkan on Android](xref:Uno.Development.MigratingToUno7.Behavior#vulkan-is-the-default-rendering-backend).
+
 ## Activation is read from `AppInstance`
 
 **`Application.OnActivated` is removed.** It is not part of the shipping WinUI 3 surface —
@@ -155,6 +157,8 @@ which also skipped the `EnteredBackground` that precedes `Suspending`. Save stat
 `Application` surface either, and nothing in Uno Platform's rendering depends on the value an app sets.
 Delete the assignment; there is no replacement to move to.
 
+See also: [`Window` events](xref:Uno.Development.MigratingToUno7.RemovedApis#window-events).
+
 ## UIKit scene lifecycle on iOS and tvOS
 
 Apps built with Xcode 27 and its version 27 SDKs must use the UIKit scene lifecycle, whatever
@@ -172,6 +176,8 @@ receiving them. The activation the app was launched with then arrives that way a
 rather than in `FinishedLaunching`'s launch options. See
 [Scene lifecycle](xref:Uno.Features.CustomizingUIApplicationDelegate#scene-lifecycle), and for how
 the app reads that activation, [Activation is read from `AppInstance`](#activation-is-read-from-appinstance).
+
+See also: [Minimum OS versions raised](xref:Uno.Development.MigratingToUno7.ProjectSetup#minimum-os-versions-raised).
 
 ## Application settings on iOS and tvOS
 
@@ -251,3 +257,11 @@ process-wide statics, so the ambient Android context APIs changed shape:
   delegates it used were removed with it.
 - **`Uno.UI.OnSystemUiVisibilityChangeListener` is now `internal`.** It is constructed by the host
   with the activity that owns the window; app code had no way to supply one.
+
+## Related pages
+
+- [Namespace, assembly and host renames](xref:Uno.Development.MigratingToUno7.Renames) for the renamed host types.
+- [Project format, target frameworks and OS versions](xref:Uno.Development.MigratingToUno7.ProjectSetup) for minimum OS versions.
+- [Behavior changes to re-test](xref:Uno.Development.MigratingToUno7.Behavior) for what to re-test on devices.
+- [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from an error or symptom to its fix.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.

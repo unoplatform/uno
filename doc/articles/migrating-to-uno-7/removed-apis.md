@@ -20,6 +20,8 @@ Part of [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 use `UIElement.Visual` (Composition) and reach platform APIs via the
 `Uno.UI.Runtime.*` hosts and `Uno.Foundation`.
 
+See also: [Rendering is Skia everywhere](xref:Uno.Development.MigratingToUno7.ProjectSetup#rendering-is-skia-everywhere).
+
 ### Native element hosting
 
 `Uno.UI.Runtime.WebAssembly.HtmlElementAttribute`,
@@ -44,6 +46,8 @@ for the removed HTML interop. On desktop it is a `Win32NativeWindow` or `X11Nati
 native view cannot be a `Panel` child, only content. See
 [Embedding Native Elements in Skia Apps](xref:Uno.Skia.Embedding.Native). Use `WebView2`
 for full HTML documents.
+
+See also: [`Uno.WinUI.WebAssembly` package removed](xref:Uno.Development.MigratingToUno7.Packages#unowinuiwebassembly-package-removed-and-the-older-unowinuiruntimewebassembly).
 
 ### Native control / host types
 
@@ -79,6 +83,8 @@ attributes; style the `MenuFlyoutItem` directly for a destructive look.
 `UICommand.IsDestructive` is **not** removed — it still drives the native iOS
 `MessageDialog` — but its Uno Platform wrapper is ([see below](#unouitoolkit-members-that-only-ever-ran-on-native-targets)); set the property directly.
 
+See also: [`Uno.UI.Toolkit` types](xref:Uno.Development.MigratingToUno7.Renames#unouitoolkit-types-move-to-the-unoui-namespaces).
+
 ### Native default styles
 
 the whole `Generic.Native.xaml` dictionary is gone, so the
@@ -94,6 +100,8 @@ and the control falls back to the WinUI default style it already used when no na
 was registered. `Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter` goes
 with them.
 
+See also: [The `XamlDefault*` styles are removed](xref:Uno.Development.MigratingToUno7.Xaml#the-xamldefault-styles-are-removed).
+
 ### Native-style declaration
 
 the `not_win:IsNativeStyle="True"` attribute on a `Style` is no
@@ -104,6 +112,8 @@ attribute. The Uno-only
 `isNative` parameter; it is `[EditorBrowsable(Never)]` and normally only called from
 XAML-generated code, so rebuilding regenerates the correct call.
 
+See also: [Styles from `XamlControlsResources`](xref:Uno.Development.MigratingToUno7.Xaml#styles-that-winui-ships-in-xamlcontrolsresources-now-come-only-from-there).
+
 ### `Uno.UI.Controls.Legacy.ProgressRing`
 
 the ellipse-based ring, its `DefaultWuxProgressRingStyle`
@@ -111,6 +121,8 @@ style and `Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings` are r
 contrast with the native ring on Android and iOS, which are gone. Use `Microsoft.UI.Xaml.Controls.ProgressRing`
 (drop the `legacy:` prefix); it needs no extra package. Its default size is 32x32 instead of 20x20, so set
 `Width` and `Height` explicitly if your layout relied on the smaller ring.
+
+See also: [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7.Libraries#removed-xaml-prefixes), [`ProgressRing` asset flags](xref:Uno.Development.MigratingToUno7.FeatureFlags#progressringprogressringasset-and-determinateprogressringasset).
 
 ### `Uno.UI.Toolkit` members that only ever ran on native targets
 
@@ -124,6 +136,8 @@ contrast with the native ring on Android and iOS, which are gone. Use `Microsoft
 + uic.IsDestructive = true;
 ```
 
+See also: [`Uno.UI.Toolkit` types](xref:Uno.Development.MigratingToUno7.Renames#unouitoolkit-types-move-to-the-unoui-namespaces).
+
 ### Composition
 
 `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android
@@ -135,6 +149,8 @@ native render thread.
 `Uno.Foundation.NSObjectExtensions.ValidateDispose`,
 deprecated since Uno 5.x. Remove the call from your `NSObject`/`UIView` `Dispose`
 overrides — Skia does not host native views, so there is nothing to validate.
+
+See also: [Native-only flags](xref:Uno.Development.MigratingToUno7.FeatureFlags#native-only-flags-delete-the-call).
 
 ## WebAssembly interop
 
@@ -184,6 +200,8 @@ now fails the XAML build:
 The `Uno.UI.FluentTheme.v1` assembly is removed along with these types, and
 `Uno.UI.FluentTheme.v2` is merged into `Uno.UI.FluentTheme` — see [Packages and Uno Features](xref:Uno.Development.MigratingToUno7.Packages#unouifluentthemev1-assembly-removed).
 
+See also: [The Fluent theme-resources dictionary](xref:Uno.Development.MigratingToUno7.Xaml#the-fluent-theme-resources-dictionary-is-now-themeresourcesxaml).
+
 ## `Window` events
 
 ### `Window` event handler delegates
@@ -201,6 +219,8 @@ explicitly breaks:
 - window.SizeChanged += new WindowSizeChangedEventHandler(OnSizeChanged);
 + window.SizeChanged += OnSizeChanged;
 ```
+
+See also: [App lifecycle events](xref:Uno.Development.MigratingToUno7.AppStartup#app-lifecycle-events-move-to-coreapplication).
 
 ### `Window.VisibilityChanged` now carries `Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs`
 
@@ -245,6 +265,8 @@ With [XAML Behaviors](https://github.com/microsoft/XamlBehaviors), use an
 `CommandParameter`, the action passes the `ItemClickEventArgs` to the command, so read
 `ClickedItem` from it or convert it with an `InputConverter`.
 
+See also: [A touch or pen hold is no longer a tap](xref:Uno.Development.MigratingToUno7.Behavior#a-touch-or-pen-hold-is-no-longer-a-tap), [Binding an attached property](xref:Uno.Development.MigratingToUno7.Xaml#binding-an-attached-property-whose-owner-type-cannot-be-found-is-a-build-error).
+
 ### `VisualTreeHelper.GetChildren` is no longer public
 
 It does not exist in WinUI.
@@ -285,6 +307,8 @@ precedence, was cleaned up to mirror WinUI's `BaseValueSource`:
 
 `Coercion`, `Animations`, `Local`, `Inheritance` and `DefaultValue` are unchanged.
 
+See also: [Custom value types default to `null`](xref:Uno.Development.MigratingToUno7.Behavior#custom-value-types-default-to-null).
+
 ### `Uno.Extensions.UriExtensions.IsLocalResource` is renamed to `IsMsAppx`
 
 Same behavior —
@@ -302,6 +326,8 @@ It is Uno-only, so it no longer
 sits in the WinUI `Microsoft.Web.WebView2.Core` namespace. Code that refers to it by name, such
 as `typeof(INativeWebViewProvider)` in an `ApiExtensibility` registration, needs
 `using Uno.Web.WebView2.Core;`.
+
+See also: [`Microsoft.Web.WebView2` backend removed](xref:Uno.Development.MigratingToUno7.Packages#microsoftwebwebview2-webview-backend-removed-windows).
 
 ### `PrettyPrint` / `ViewExtensions.TreeGraph` are no longer public on WinAppSDK
 
@@ -342,6 +368,8 @@ XAML is unaffected: `Background="Red"`, `Width="Auto"`, `Icon="Add"` and `{Bindi
 keep working. Implicit conversions that WinUI's own C# projection also has (`Duration` and
 `KeyTime` from `TimeSpan`, `GridLength.Auto`, `Duration.Forever`, …) are kept.
 
+See also: [WinRT projection alignment](xref:Uno.Development.MigratingToUno7.WinUIParity#winrt-projection-alignment).
+
 ## Collection initializers on panels, `Border` and `ScrollViewer` removed
 
 Uno's `FrameworkElement` and `ContentControl` implemented `IEnumerable`, and `Border`, `Panel` and
@@ -356,6 +384,8 @@ is now a compile error. Set the content property instead:
 | `new ScrollViewer { content }` | `new ScrollViewer { Content = content }` |
 
 XAML is unaffected.
+
+See also: [Base classes are no longer directly constructible](xref:Uno.Development.MigratingToUno7.WinUIParity#base-classes-are-no-longer-directly-constructible).
 
 ## Custom `IAnimatedVisualSource` implementations
 
@@ -389,3 +419,13 @@ To port a custom source, move the work as follows:
 | `Load()` / `Unload()` | Do the work in `TryCreateAnimatedVisual`; release with the returned `IAnimatedVisual`. |
 | `Play` / `Stop` / `Pause` / `Resume` / `SetProgress` | Drop them — `AnimatedVisualPlayer` drives the composition animation. |
 | `Measure(availableSize)` | Report the natural size as `IAnimatedVisual.Size`; the player measures from it. |
+
+See also: [`Uno.WinUI.Lottie` package](xref:Uno.Development.MigratingToUno7.Packages#unowinuilottie-package-and-lottie-uno-feature-removed).
+
+## Related pages
+
+- [WinUI API alignment](xref:Uno.Development.MigratingToUno7.WinUIParity) if the member still exists but moved or changed shape.
+- [Removed feature flags](xref:Uno.Development.MigratingToUno7.FeatureFlags) for removed `FeatureConfiguration` flags.
+- [XAML and default styles](xref:Uno.Development.MigratingToUno7.Xaml) for removed styles and XAML forms.
+- [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from an error or symptom to its fix.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.

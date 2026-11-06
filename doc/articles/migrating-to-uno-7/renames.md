@@ -65,6 +65,8 @@ The other Uno Platform-specific namespaces keep their names, so code using
 `DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
 `ColorExtensions` / `ImageHelper` (`Uno.Helpers`) needs no change.
 
+See also: [`Uno.UI.Toolkit` members removed](xref:Uno.Development.MigratingToUno7.RemovedApis#unouitoolkit-members-that-only-ever-ran-on-native-targets), [Packages and Uno Features](xref:Uno.Development.MigratingToUno7.Packages#unouitoolkit-types-moved-to-the-unoui-namespaces).
+
 ## Runtime host renames
 
 The platform hosts no longer depend on SkiaSharp, so "Skia" is dropped from their assembly, namespace
@@ -108,6 +110,8 @@ public class Application : Uno.UI.Runtime.Android.NativeApplication
 
 A XAML-defined `NativePage` needs its `xmlns` pointed at `using:Uno.UI.Runtime.Android`.
 
+See also: [Host package renames](xref:Uno.Development.MigratingToUno7.Packages#unowinuiruntimeskia-host-packages-renamed-to-unowinuiruntime), [Android head uses the host builder](xref:Uno.Development.MigratingToUno7.AppStartup#android-head-uses-the-host-builder).
+
 ## MRT Core moves to the `Uno.WinRT` package
 
 The MRT Core surface — the `Microsoft.Windows.ApplicationModel.Resources` namespace — now lives in
@@ -147,3 +151,13 @@ The older WinRT loader — `Windows.ApplicationModel.Resources.ResourceLoader`, 
 `Microsoft.` prefix — did **not** change assemblies; only the `Microsoft.Windows.*` MRT Core
 surface moved. It does still need the same assembly-qualified-name update, because the WinRT
 assembly it has always lived in is itself renamed `Uno` → `Uno.WinRT` in 7.0.
+
+See also: [Upgrade step 7: update your libraries and rebuild](xref:Uno.Development.MigratingToUno7#7-update-your-libraries-and-rebuild).
+
+## Related pages
+
+- [Packages and Uno Features](xref:Uno.Development.MigratingToUno7.Packages) for the renamed packages.
+- [App startup, activation and platform state](xref:Uno.Development.MigratingToUno7.AppStartup) for the rest of the Android head changes.
+- [Libraries and conditional code](xref:Uno.Development.MigratingToUno7.Libraries) if your library still targets the old names.
+- [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from an error or symptom to its fix.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.

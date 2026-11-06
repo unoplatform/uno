@@ -40,6 +40,8 @@ guide to convert an app. Once converted, the Uno Platform package versions are d
 `Uno.WinUI` package from a `Microsoft.NET.Sdk` project, although `Sdk="Uno.Sdk"` is the
 recommended and templated form. Windows App SDK heads are likewise unaffected.
 
+See also: [Packages and Uno Features](xref:Uno.Development.MigratingToUno7.Packages), [Which target frameworks should a library keep](xref:Uno.Development.MigratingToUno7.Libraries#which-target-frameworks-should-a-library-keep).
+
 ## Templates and project heads
 
 New apps are a single `Sdk="Uno.Sdk"` project in which every target framework renders with Skia.
@@ -47,6 +49,8 @@ An existing app that still has separate head projects (`*.Mobile`, `*.Wasm`, `*.
 keep them, even as Skia heads: application projects must use the `Uno.Sdk`, so convert it to a single
 project as described in [The `Uno.Sdk` is required for applications](#the-unosdk-is-required-for-applications),
 and remove native bootstrap code.
+
+See also: [Android head uses the host builder](xref:Uno.Development.MigratingToUno7.AppStartup#android-head-uses-the-host-builder).
 
 ## Rendering is Skia everywhere
 
@@ -65,12 +69,16 @@ If your project was created before Uno Platform 6.0 and still selects a renderer
 the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6) first to move to the
 Uno.SDK single-project model.
 
+See also: [Rendering differences](xref:Uno.Development.MigratingToUno7.Behavior#rendering-differences).
+
 ## .NET 9 is no longer supported
 
 Uno Platform 7.0 ships `net10.0` and `net11.0` assets only. The `net9.0` assets that 6.x shipped are
 removed, so a head or library that still targets `net9.0-*` fails to restore against 7.0 with
 `NU1202`. Retarget it to `net10.0-*` (or `net11.0-*`) before upgrading. See
 [.NET version support](xref:Uno.Development.NetVersionSupport) for the supported versions.
+
+See also: [Which target frameworks should a library keep](xref:Uno.Development.MigratingToUno7.Libraries#which-target-frameworks-should-a-library-keep).
 
 ## Mac Catalyst is removed
 
@@ -100,6 +108,8 @@ conditions on `IsMacCatalyst`, and put anything they guarded that macOS still ne
 (for example `Condition="$(IsAndroid) or $(IsIOSOrCatalyst)"`) now fails with
 `MSB4100` instead of silently evaluating to `false`, since the property is undefined.
 
+See also: [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7.Libraries#platform-targeting-in-multi-targeted-libraries), [Removed preprocessor symbols](xref:Uno.Development.MigratingToUno7.Libraries#removed-preprocessor-symbols).
+
 ## Minimum OS versions raised
 
 Uno Platform 7.0 raises the default minimum OS version on the mobile and WinAppSDK
@@ -120,6 +130,8 @@ A head that sets these properties explicitly keeps its own value, so an app can 
 target lower versions where the underlying SDK allows it — but those combinations are no
 longer tested by Uno Platform.
 
+See also: [UIKit scene lifecycle on iOS and tvOS](xref:Uno.Development.MigratingToUno7.AppStartup#uikit-scene-lifecycle-on-ios-and-tvos), [Windows App SDK minimum](xref:Uno.Development.MigratingToUno7.Packages#windows-app-sdk-minimum-raised-from-1x-to-240).
+
 ## iOS Hot Restart is not supported
 
 Visual Studio iOS Hot Restart, which deployed to a device connected to a Windows PC without a Mac, is not
@@ -136,3 +148,11 @@ The Uno.Sdk no longer reads `UnoSplashScreenColor`; it is ignored and reported a
 Rename it to `UnoSplashScreenBackgroundColor`, and use `BackgroundColor` instead of `Color` on hand-written
 `UnoSplashScreen` items. WebAssembly apps that never set a splash color now get a loader that follows the
 browser theme instead of white. See [Splash screen](xref:Uno.Development.SplashScreen).
+
+## Related pages
+
+- [Packages and Uno Features](xref:Uno.Development.MigratingToUno7.Packages) for what the `Uno.Sdk` references for you.
+- [Libraries and conditional code](xref:Uno.Development.MigratingToUno7.Libraries) if the project is a library.
+- [App startup, activation and platform state](xref:Uno.Development.MigratingToUno7.AppStartup) for the Android head and iOS lifecycle changes.
+- [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from an error or symptom to its fix.
+- [Upgrade steps](xref:Uno.Development.MigratingToUno7) to return to the main path.
