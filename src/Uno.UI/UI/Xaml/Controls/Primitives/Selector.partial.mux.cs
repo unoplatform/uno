@@ -3202,7 +3202,11 @@ partial class Selector
 			// For ListView it is important to check if the focus is coming from outside due to issues in scenarios with header and group header.
 			// Since we do not support those scenarios with the rest of the selectors, every time we are asked for first focusable element
 			// we can give out the last focused element.
+#if HAS_UNO // ContainerFromIndex also returns items that are their own container, realized or not (e.g. in a closed ComboBox popup).
+			return ContainerFromIndex((int)GetLastFocusedIndex()) is UIElement { IsInLiveTree: true } container ? container : null;
+#else
 			return ContainerFromIndex((int)GetLastFocusedIndex());
+#endif
 		}
 
 		return null;
