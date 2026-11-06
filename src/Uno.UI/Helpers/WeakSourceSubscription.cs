@@ -11,19 +11,31 @@ namespace Uno.UI.Helpers;
 /// handler on the source: the finalizer removes it. The source is held by a raw weak handle (no finalizer of its own,
 /// unlike a pooled ManagedWeakReference), so a source that dies with the subscriber is collected at once and needs no removal.
 /// </summary>
-internal sealed class WeakSourceSubscription<TSource> : IDisposable
+/// <remarks>
+/// Pass static lambdas: they get everything they need through <typeparamref name="TState"/>, and a capture of the
+/// source would keep it alive.
+/// </remarks>
+internal sealed class WeakSourceSubscription<TSource, TState> : IDisposable
 	where TSource : class
 {
-	private readonly Action<TSource> _unsubscribe;
-	private readonly Action? _onDisposed;
+	private readonly TState _state;
+	private readonly Action<TSource, TState> _unsubscribe;
+	private readonly Action<TState>? _onDisposed;
 	private readonly Type _logOwner;
 	private readonly string _description;
 	private IntPtr _source;
 
-	/// <param name="unsubscribe">Must not capture <paramref name="source"/>.</param>
+	/// <param name="state">Must not reference <paramref name="source"/>.</param>
 	/// <param name="onDisposed">Runs on an explicit Dispose only, not from the finalizer.</param>
-	public WeakSourceSubscription(TSource source, Action<TSource> unsubscribe, Action? onDisposed, Type logOwner, string description)
+	public WeakSourceSubscription(
+		TSource source,
+		TState state,
+		Action<TSource, TState> unsubscribe,
+		Action<TState>? onDisposed,
+		Type logOwner,
+		string description)
 	{
+		_state = state;
 		_unsubscribe = unsubscribe;
 		_onDisposed = onDisposed;
 		_logOwner = logOwner;
@@ -39,10 +51,10 @@ internal sealed class WeakSourceSubscription<TSource> : IDisposable
 		{
 			if (source is not null)
 			{
-				_unsubscribe(source);
+				_unsubscribe(source, _state);
 			}
 
-			_onDisposed?.Invoke();
+			_onDisposed?.Invoke(_state);
 		}
 	}
 
@@ -51,7 +63,8 @@ internal sealed class WeakSourceSubscription<TSource> : IDisposable
 		if (TakeSource(out var source) && source is not null)
 		{
 			var unsubscribe = _unsubscribe;
-			SubscriptionCleanup.EnqueueFromFinalizer(() => unsubscribe(source), _logOwner, _description);
+			var state = _state;
+			SubscriptionCleanup.EnqueueFromFinalizer(() => unsubscribe(source, state), _logOwner, _description);
 		}
 	}
 
