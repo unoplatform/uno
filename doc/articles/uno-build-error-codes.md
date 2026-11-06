@@ -406,9 +406,12 @@ To fix this, remove `Prism` from `UnoFeatures`, and reference Prism's packages d
 
 ### UNOB0036: MauiEmbedding now selects Uno.Maui.Embedding
 
-The `MauiEmbedding` Uno Feature used to select the native embedding of MAUI controls through Uno.Extensions (`Uno.Extensions.Maui.*`). That feature is now named `MauiNativeEmbedding`, and `MauiEmbedding` selects `Uno.Maui.Embedding` and `Uno.Maui.Handlers`. The build reports this warning when `MauiEmbedding` is listed without `MauiNativeEmbedding` and the project references an `Uno.Extensions.Maui` package.
+The `MauiEmbedding` Uno Feature used to select the native embedding of MAUI controls through Uno.Extensions (`Uno.Extensions.Maui.*`). That feature is now named `MauiNativeEmbedding`, and `MauiEmbedding` selects `Uno.Maui.Embedding` and `Uno.Maui.Handlers`. The build reports this warning when `MauiEmbedding` is listed without `MauiNativeEmbedding` and either:
 
-To fix this, if the project relies on the native embedding of Uno.Extensions, replace `MauiEmbedding` with `MauiNativeEmbedding` in `UnoFeatures`. If it intends to use `Uno.Maui.Embedding`, remove the `Uno.Extensions.Maui` package references.
+- the project references an `Uno.Extensions.Maui` package, or
+- the target framework is Android, iOS, Mac Catalyst or Windows App SDK. `Uno.Maui.Embedding` embeds MAUI views on the desktop and WebAssembly targets only, while the native embedding also ran on these targets. Apps created from a template that lists `MauiEmbedding` for all targets get the warning on these targets.
+
+To fix this, if the project relies on the native embedding of Uno.Extensions, replace `MauiEmbedding` with `MauiNativeEmbedding` in `UnoFeatures`. If it intends to use `Uno.Maui.Embedding`, remove the `Uno.Extensions.Maui` package references. On the Android, iOS, Mac Catalyst and Windows App SDK targets, an app that keeps these targets but does not need MAUI views on them can add `UNOB0036` to `NoWarn`.
 
 ## Compiler Errors
 

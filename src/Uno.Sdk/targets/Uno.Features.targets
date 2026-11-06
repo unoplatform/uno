@@ -53,16 +53,26 @@
 				 Text="The Prism Uno Feature is no longer supported, and the Uno.Sdk no longer references Prism. Remove it from UnoFeatures and add a PackageReference to Prism.DryIoc.Uno.WinUI (in an app) or Prism.Uno.WinUI (in a library), with a Prism version built for Uno Platform 7.0. (See https://aka.platform.uno/UNOB0035)" />
 	</Target>
 
-	<!-- The MauiEmbedding feature used to be the native embedding through Uno.Extensions (now MauiNativeEmbedding). -->
+	<!--
+		The MauiEmbedding feature used to be the native embedding through Uno.Extensions (now MauiNativeEmbedding). An app that relied on it either references Uno.Extensions.Maui packages itself,
+		or was created from a template that lists MauiEmbedding for all its targets: Uno.Maui.Embedding embeds MAUI views on the Skia desktop and WebAssembly targets only, so such an app is told
+		on its Android, iOS, Mac Catalyst and Windows App SDK targets, where the native embedding did run.
+	-->
 	<Target Name="_UnoWarnMauiEmbeddingRenamed"
 			BeforeTargets="CoreCompile"
 			Condition="'$(DesignTimeBuild)' != 'true' and $(UnoFeatures.Contains(';mauiembedding;')) and !$(UnoFeatures.Contains(';mauinativeembedding;'))">
+		<PropertyGroup>
+			<_UnoMauiEmbeddingPlatform>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_UnoMauiEmbeddingPlatform>
+		</PropertyGroup>
 		<ItemGroup>
 			<_UnoNativeMauiReference Include="@(PackageReference)" Condition="$([System.String]::Copy('%(Identity)').StartsWith('Uno.Extensions.Maui'))" />
 		</ItemGroup>
 		<Warning Condition="'@(_UnoNativeMauiReference)' != ''" Code="UNOB0036"
 				 HelpLink="https://aka.platform.uno/UNOB0036"
 				 Text="The MauiEmbedding Uno Feature now selects Uno.Maui.Embedding, and this project references Uno.Extensions.Maui packages. If it relied on the native embedding of Uno.Extensions, replace MauiEmbedding with MauiNativeEmbedding in UnoFeatures." />
+		<Warning Condition="'@(_UnoNativeMauiReference)' == '' and ('$(_UnoMauiEmbeddingPlatform)' == 'android' or '$(_UnoMauiEmbeddingPlatform)' == 'ios' or '$(_UnoMauiEmbeddingPlatform)' == 'maccatalyst' or '$(_UnoMauiEmbeddingPlatform)' == 'windows')" Code="UNOB0036"
+				 HelpLink="https://aka.platform.uno/UNOB0036"
+				 Text="The MauiEmbedding Uno Feature now selects Uno.Maui.Embedding, which embeds MAUI views on the desktop and WebAssembly targets only, not on $(TargetFramework). If this app relied on the native embedding of Uno.Extensions on this target, replace MauiEmbedding with MauiNativeEmbedding in UnoFeatures." />
 	</Target>
 
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauinativeembedding;'))">
