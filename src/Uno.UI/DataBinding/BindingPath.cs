@@ -18,8 +18,6 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading;
 using Uno.UI.Helpers;
 
 namespace Uno.UI.DataBinding
@@ -490,6 +488,7 @@ namespace Uno.UI.DataBinding
 				notify,
 				source => source.CollectionChanged -= handler,
 				onDisposed: null,
+				typeof(BindingPath),
 				"the CollectionChanged handler of a collected binding");
 		}
 
@@ -535,72 +534,11 @@ namespace Uno.UI.DataBinding
 					notify,
 					source => source.PropertyChanged -= handler,
 					() => Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, newValueActionWeak),
+					typeof(BindingPath),
 					"the PropertyChanged handler of a collected binding");
 			}
 
 			return null;
-		}
-
-		// Uno-specific: held by the binding only, so a binding dropped without being disposed doesn't leave its handler on
-		// the source: the finalizer removes it. The source is held by a raw weak handle (no finalizer of its own, unlike a
-		// pooled ManagedWeakReference), so a source that dies with the binding is collected at once and needs no removal.
-		private sealed class WeakSourceSubscription<TSource> : IDisposable
-			where TSource : class
-		{
-			private readonly Action<TSource> _unsubscribe;
-			private readonly Action? _onDisposed;
-			private readonly string _description;
-			private IntPtr _source;
-
-			/// <param name="unsubscribe">Must not capture <paramref name="source"/>.</param>
-			/// <param name="onDisposed">Runs on an explicit Dispose only, not from the finalizer.</param>
-			public WeakSourceSubscription(TSource source, Action<TSource> unsubscribe, Action? onDisposed, string description)
-			{
-				_unsubscribe = unsubscribe;
-				_onDisposed = onDisposed;
-				_description = description;
-				_source = GCHandle.ToIntPtr(GCHandle.Alloc(source, GCHandleType.Weak));
-			}
-
-			public void Dispose()
-			{
-				GC.SuppressFinalize(this);
-
-				if (TakeSource(out var source))
-				{
-					if (source is not null)
-					{
-						_unsubscribe(source);
-					}
-
-					_onDisposed?.Invoke();
-				}
-			}
-
-			~WeakSourceSubscription()
-			{
-				if (TakeSource(out var source) && source is not null)
-				{
-					var unsubscribe = _unsubscribe;
-					SubscriptionCleanup.EnqueueFromFinalizer(() => unsubscribe(source), typeof(BindingPath), _description);
-				}
-			}
-
-			// Frees the handle exactly once: returns false if it was already taken.
-			private bool TakeSource(out TSource? source)
-			{
-				var pointer = Interlocked.Exchange(ref _source, IntPtr.Zero);
-				if (pointer == IntPtr.Zero)
-				{
-					source = null;
-					return false;
-				}
-
-				var handle = GCHandle.FromIntPtr(pointer);
-				source = handle.Target as TSource;
-				handle.Free();
-				return true;
-			}
 		}
 
 		internal bool OnlyLeafNodeNull()
