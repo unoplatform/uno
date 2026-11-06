@@ -3017,23 +3017,6 @@ partial class ComboBox
 		//	"RequiredHeaderPresenter",
 		//	(header is not null || headerTemplate is not null) && IsValueRequired(this),
 		//	m_requiredHeaderContentPresenterPart);
-
-#if HAS_UNO // TODO:MZ: Validate if this is still needed!
-		if (m_tpHeaderContentPresenterPart is not null)
-		{
-			// On Windows, all interactions involving the HeaderContentPresenter don't seem to affect the ComboBox.
-			// For example, hovering/pressing doesn't trigger the PointOver/Pressed visual states. Tapping on it doesn't open the drop down.
-			// This is true even if the Background of the root of ComboBox's template (which contains the HeaderContentPresenter) is set.
-			// Interaction with any other part of the control (including the root) triggers the corresponding visual states and actions.
-			// It doesn't seem like the HeaderContentPresenter consumes (Handled = true) events because they are properly routed to the ComboBox.
-
-			// My guess is that ComboBox checks whether the OriginalSource of Pointer events is a child of HeaderContentPresenter.
-
-			// Because routed events are not implemented yet, the easy workaround is to prevent HeaderContentPresenter from being hit.
-			// This only works if the background of the root of ComboBox's template is null (which is the case by default).
-			m_tpHeaderContentPresenterPart.IsHitTestVisible = false;
-		}
-#endif
 	}
 
 	private bool IsEventSourceTarget(RoutedEventArgs args)
@@ -3829,14 +3812,30 @@ partial class ComboBox
 	}
 
 #if HAS_UNO
-	// The Uno-only IsPopupFullscreen and DropDownPreferredPlacement (and the popup part's DesiredPlacement, which the old
-	// layouter honored) override the WinUI layout computed in ArrangePopup.
+	private double? _preFullscreenMinWidth;
+	private double? _preFullscreenMaxWidth;
+
+	// The Uno-only IsPopupFullscreen and DropDownPreferredPlacement override the WinUI layout computed in ArrangePopup.
 	private void ApplyUnoPopupLayoutOverrides(ref double popupX, ref double popupY, double cbX, double cbY, double cbHeight, Size rootWindowSize)
 	{
 		var child = m_tpElementPopupChild;
 
-		if (IsPopupFullscreen)
+		if (!IsPopupFullscreen)
 		{
+			if (_preFullscreenMinWidth is { } minWidth && _preFullscreenMaxWidth is { } maxWidth)
+			{
+				child.MinWidth = minWidth;
+				child.MaxWidth = maxWidth;
+			}
+
+			_preFullscreenMinWidth = null;
+			_preFullscreenMaxWidth = null;
+		}
+		else
+		{
+			_preFullscreenMinWidth ??= child.MinWidth;
+			_preFullscreenMaxWidth ??= child.MaxWidth;
+
 			// In full screen mode, we want the popup to stretch horizontally, so we set MinWidth and MaxWidth to the available width.
 			// However, we don't want it to stretch vertically.
 			child.MinWidth = rootWindowSize.Width;
@@ -3849,17 +3848,6 @@ partial class ComboBox
 		}
 
 		var unoPlacement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(this);
-
-		if (unoPlacement == Uno.UI.Xaml.Controls.DropDownPlacement.Auto)
-		{
-			unoPlacement = m_tpPopupPart!.DesiredPlacement switch
-			{
-				PopupPlacementMode.Auto => Uno.UI.Xaml.Controls.DropDownPlacement.Auto,
-				PopupPlacementMode.Bottom => Uno.UI.Xaml.Controls.DropDownPlacement.Below,
-				PopupPlacementMode.Top => Uno.UI.Xaml.Controls.DropDownPlacement.Above,
-				_ => Uno.UI.Xaml.Controls.DropDownPlacement.Centered
-			};
-		}
 
 		if (IsEditable || unoPlacement == Uno.UI.Xaml.Controls.DropDownPlacement.Auto)
 		{

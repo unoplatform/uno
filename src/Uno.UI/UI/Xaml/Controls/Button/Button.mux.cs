@@ -33,8 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 				flyout.Leave(null, @params);
 			}
 		}
-		// TODO Uno: Uncomment this code and all commented out code related to this field once we know where
-		// to call SuppressFlyoutOpening method.
+
 		private bool _suppressFlyoutOpening;
 
 		/// <summary>

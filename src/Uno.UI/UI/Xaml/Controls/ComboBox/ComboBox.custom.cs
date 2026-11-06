@@ -88,15 +88,6 @@ public partial class ComboBox : Selector
 
 		if (_popup is Popup popup)
 		{
-			////TODO Uno specific: Ensures popup does not take focus when opened.
-			////This can be removed when the actual ComboBox code is fully ported
-			////from WinUI.
-			//if (_popupBorder is { } border)
-			//{
-			//	border.AllowFocusOnInteraction = false;
-			//	border.Child 
-			//}
-
 #if HAS_UNO
 			if (IsLoaded)
 			{
