@@ -149,6 +149,14 @@ partial class Popup
 
 		// If it's been requested that this popup be windowed,
 		// then we'll set it to be so at this point before opening.
+#if HAS_UNO
+		// FeatureConfiguration.Popup.UseWindowedPopups may have changed since it last opened.
+		if (m_isWindowed && !DoesPlatformSupportWindowedPopup())
+		{
+			m_isWindowed = false;
+		}
+#endif
+
 		SetIsWindowedIfNeeded();
 
 		m_everOpened = true;
@@ -647,11 +655,11 @@ partial class Popup
 			{
 				m_isWindowed = true;
 			}
-			else if (!s_hasLoggedWindowedPopupsUnsupported && this.Log().IsEnabled(LogLevel.Warning))
+			else if (!s_hasLoggedWindowedPopupsUnsupported && this.Log().IsEnabled(LogLevel.Information))
 			{
-				// Every popup asks on every open.
+				// Every popup asks on every open. The host warns about why.
 				s_hasLoggedWindowedPopupsUnsupported = true;
-				this.Log().Warn("This window can't give popups a window of their own, so they stay inside it and are clipped to it.");
+				this.Log().Info("This window can't give popups a window of their own, so they stay inside it and are clipped to it.");
 			}
 		}
 	}
@@ -738,85 +746,6 @@ partial class Popup
 			ForceCloseForTreeReset();
 		}
 	}
-
-	// TODO Uno: WinUI has no such case. A window that never presents would leave an open popup invisible.
-	internal void OnWindowedPopupNeverShown()
-	{
-		m_windowNeverShown = true;
-
-		if (m_windowedPopupWindow is { } window)
-		{
-			XamlRoot?.VisualTree.ContentRoot.CompositionTarget.RemoveWindowedPopupSurface(window.Surface);
-			window.Surface.DropFrame();
-		}
-
-		EnsureBridgeClosed();
-		m_isWindowed = false;
-
-		if (m_fIsOpen && m_pChild is { } child)
-		{
-			MoveVisualInsideWindow(child);
-
-			if (GetAdjustedPopupRoot() is { } popupRoot)
-			{
-				foreach (var openPopup in popupRoot.GetOpenPopups())
-				{
-					if (!openPopup.IsWindowed && openPopup.m_pChild is { } nestedChild && openPopup.GetFirstAncestorPopup(windowedPopupOnly: true) is null)
-					{
-						MoveVisualInsideWindow(nestedChild);
-					}
-				}
-			}
-
-			// It was placed against the monitor.
-			AssociatedFlyout?.PlaceAfterLosingWindow();
-		}
-
-		static void MoveVisualInsideWindow(UIElement element)
-		{
-			element.Visual.HasOwnSurface = false;
-			element.Visual.InvalidatePaint();
-			element.Visual.CompositionTarget?.RequestNewFrame();
-		}
-	}
-
-	private const int MaxHiddenWindows = 8;
-	private static readonly List<WeakReference<Popup>> s_popupsWithHiddenWindow = new();
-
-	private void TrackHiddenWindow()
-	{
-		StopTrackingHiddenWindow();
-		s_popupsWithHiddenWindow.Add(new(this));
-
-		if (s_popupsWithHiddenWindow.Count > MaxHiddenWindows)
-		{
-			// Closing a window can take a while, and this popup is still closing.
-			NativeDispatcher.Main.Enqueue(CloseOldestHiddenWindows, NativeDispatcherPriority.Low);
-		}
-	}
-
-	private static void CloseOldestHiddenWindows()
-	{
-		while (s_popupsWithHiddenWindow.Count > MaxHiddenWindows)
-		{
-			var oldest = s_popupsWithHiddenWindow[0];
-			s_popupsWithHiddenWindow.RemoveAt(0);
-			if (oldest.TryGetTarget(out var popup))
-			{
-				try
-				{
-					popup.EnsureBridgeClosed();
-				}
-				catch (Exception e)
-				{
-					typeof(Popup).LogWarn()?.Warn($"Closing a hidden popup window failed: {e.Message}");
-				}
-			}
-		}
-	}
-
-	private void StopTrackingHiddenWindow()
-		=> s_popupsWithHiddenWindow.RemoveAll(reference => !reference.TryGetTarget(out var popup) || popup == this);
 
 	private void EnsureBridgeClosed()
 	{
