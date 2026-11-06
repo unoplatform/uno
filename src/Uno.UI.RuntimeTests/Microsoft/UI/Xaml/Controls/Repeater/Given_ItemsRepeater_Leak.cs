@@ -325,6 +325,40 @@ public class Given_ItemsRepeater_Leak
 			.OfType<UIElement>()
 			.Count(e => e.Visibility == Visibility.Visible && repeater.GetElementIndex(e) >= 0);
 
+	// A repeater that never loads never unloads to detach from its transition provider: a provider that outlives it,
+	// e.g. one shared through a resource, must not keep it alive either.
+	[TestMethod]
+	[RunsOnUIThread]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
+#endif
+	public async Task When_Never_Loaded_Then_Not_Rooted_By_Shared_ItemTransitionProvider()
+	{
+		var provider = new TestTransitionProvider(); // outlives the repeaters
+		var refs = CreateNeverLoadedWithTransitionProvider(provider);
+
+		await CollectAsync(refs);
+
+		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "A never-loaded ItemsRepeater is still rooted by its ItemTransitionProvider.");
+		GC.KeepAlive(provider);
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static List<WeakReference> CreateNeverLoadedWithTransitionProvider(ItemCollectionTransitionProvider provider)
+	{
+		var refs = new List<WeakReference>();
+		for (var i = 0; i < Count; i++)
+		{
+			refs.Add(new WeakReference(new ItemsRepeater { ItemsSource = new[] { "a", "b" }, ItemTransitionProvider = provider }));
+		}
+
+		return refs;
+	}
+
+	private sealed class TestTransitionProvider : ItemCollectionTransitionProvider
+	{
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static List<WeakReference> CreateNeverLoaded(Func<object> source)
 	{
