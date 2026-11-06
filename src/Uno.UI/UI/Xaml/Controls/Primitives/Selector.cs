@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using DirectUI;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
-using Uno.Disposables;
-using Uno.Extensions;
-using Uno.Extensions.Specialized;
-using Uno.UI.DataBinding;
-using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.Helpers.Boxes;
-using Uno.UI.Xaml.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
 
@@ -20,260 +12,26 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class Selector : ItemsControl
 	{
-		private protected ScrollViewer m_tpScrollViewer;
-		private protected bool _changingSelectedIndex;
-		private protected bool _isUpdatingSelection;
-
-		// The order at which the XAML properties are set on Selector should not matter.
-		// SelectedItem might be set before ItemsSource is set, in which case the SelectedItem
-		// value in m_itemPendingSelection until ItemsSource is set.
-		private protected object m_itemPendingSelection;
-
 		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
 
-		private protected int m_iFocusedIndex;
-
-		private protected bool m_skipScrollIntoView;
-
 		public event SelectionChangedEventHandler SelectionChanged;
-
-		private readonly SerialDisposable _collectionViewSubscription = new SerialDisposable();
-		/// <summary>
-		/// The path defined by <see cref="SelectedValuePath"/>, if it is set, otherwise null. This may be reused multiple times for
-		/// checking <see cref="SelectedValue"/> candidates.
-		/// </summary>
-		private BindingPath _selectedValueBindingPath;
-		private bool _disableRaiseSelectionChanged;
-		//private int m_lastFocusedIndex;
-
-		//private bool m_inCollectionChange;
-
-		/// <summary>
-		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
-		/// </summary>
-		internal virtual bool IsSingleSelection => true;
 
 		/// <summary>
 		/// Templates for which it's known that the template root doesn't qualify as a container.
 		/// </summary>
 		private readonly HashSet<DataTemplate> _itemTemplatesThatArentContainers = new HashSet<DataTemplate>();
 
-		public Selector()
-		{
-
-		}
-
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
-		{
-			base.OnPropertyChanged2(args);
-
-			if (args.Property == SelectedItemProperty)
-			{
-				OnSelectedItemChanged(args.OldValue, args.NewValue, updateItemSelectedState: true);
-			}
-			else if (args.Property == SelectedIndexProperty)
-			{
-				OnSelectedIndexChanged((int)args.OldValue, (int)args.NewValue);
-			}
-		}
-
-		protected override void OnApplyTemplate()
-		{
-			base.OnApplyTemplate();
-			m_tpScrollViewer = GetTemplateChild<ScrollViewer>("ScrollViewer");
-			if (m_tpScrollViewer is { })
-			{
-				m_tpScrollViewer.TemplatedParentHandlesScrolling = true;
-			}
-		}
-
 		public static DependencyProperty SelectedItemProperty { get; } =
-		DependencyProperty.Register(
-			"SelectedItem",
-			typeof(object),
-			typeof(Selector),
-			new FrameworkPropertyMetadata(defaultValue: null)
-		);
+			DependencyProperty.Register(
+				"SelectedItem",
+				typeof(object),
+				typeof(Selector),
+				new FrameworkPropertyMetadata(defaultValue: null));
 
 		public object SelectedItem
 		{
 			get => this.GetValue(SelectedItemProperty);
 			set => this.SetValue(SelectedItemProperty, value);
-		}
-
-		internal void OnSelectorItemIsSelectedChanged(SelectorItem container, bool oldIsSelected, bool newIsSelected)
-		{
-			var item = ItemFromContainer(container);
-
-			ChangeSelectedItem(item, oldIsSelected, newIsSelected);
-		}
-
-		internal virtual void ChangeSelectedItem(object item, bool oldIsSelected, bool newIsSelected)
-		{
-			if (ReferenceEquals(SelectedItem, item) && !newIsSelected)
-			{
-				SelectedItem = null;
-			}
-			else if (!ReferenceEquals(SelectedItem, item) && newIsSelected)
-			{
-				SelectedItem = item;
-			}
-		}
-
-		internal virtual void OnSelectedItemChanged(object oldSelectedItem, object selectedItem, bool updateItemSelectedState)
-		{
-			var wasSelectionUnset = oldSelectedItem == null && (!GetItems()?.Contains(null) ?? false);
-			var isSelectionUnset = false;
-			var items = GetItems();
-			if ((!items?.Contains(selectedItem) ?? false) && !AreCustomValuesAllowed())
-			{
-				if (selectedItem == null)
-				{
-					isSelectionUnset = true;
-				}
-				else
-				{
-					if (ItemsSource is null)
-					{
-						m_itemPendingSelection = selectedItem;
-					}
-
-					var selectionToReset = items?.Contains(oldSelectedItem) ?? false ?
-						oldSelectedItem
-						// Note: in this scenario (previous SelectedItem no longer in collection either), Windows still leaves it at the
-						// previous value. We don't try to reproduce this behaviour, amongst other reasons because under Uno's DP system
-						// this would push an invalid value back through any 2-way binding.
-						: null;
-					try
-					{
-						_disableRaiseSelectionChanged = true;
-
-						//Prevent SelectedItem being set to an invalid value
-						SelectedItem = selectionToReset;
-					}
-					finally
-					{
-						_disableRaiseSelectionChanged = false;
-					}
-
-					return;
-				}
-			}
-
-			var shouldRaiseSelectionChanged = !_isUpdatingSelection;
-			_isUpdatingSelection = true;
-
-			// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting
-			// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies
-			// on user interactions setting SelectedIndex which then sets SelectedItem.)
-			if (SelectedIndex == -1 && selectedItem == null)
-			{
-				isSelectionUnset = true;
-			}
-
-			if (!_changingSelectedIndex)
-			{
-				var newIndex = IndexFromItem(selectedItem);
-				if (SelectedIndex != newIndex)
-				{
-					SelectedIndex = newIndex;
-				}
-			}
-
-			OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
-
-			UpdateSelectedValue();
-
-			if (updateItemSelectedState && !_changingSelectedIndex)
-			{
-				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
-				TryUpdateSelectorItemIsSelected(selectedItem, true);
-			}
-
-			if (SelectedIndex != -1 && IsInLiveTree)
-			{
-				ScrollSelectionIntoView();
-			}
-
-			_isUpdatingSelection = false;
-
-			if (shouldRaiseSelectionChanged)
-			{
-				// Setting SelectedIndex above will have already invoked the SelectionChanged.
-				InvokeSelectionChanged(
-					wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
-					isSelectionUnset ? Array.Empty<object>() : new[] { selectedItem }
-				);
-			}
-		}
-
-		private void ScrollSelectionIntoView()
-		{
-			if (SelectedIndex == -1 || !IsInLiveTree) return;
-
-			if (this is ListViewBase lvb)
-			{
-				lvb.ScrollIntoView(SelectedItem);
-			}
-			else if (this is ComboBox cb)
-			{
-				cb.ScrollIntoView(SelectedItem);
-			}
-		}
-
-		internal void TryUpdateSelectorItemIsSelected(object item, bool isSelected)
-		{
-			if (item is SelectorItem si)
-			{
-				si.IsSelected = isSelected;
-			}
-			else if (ContainerFromItem(item) is SelectorItem si2)
-			{
-				si2.IsSelected = isSelected;
-			}
-		}
-
-		internal bool DisableRaiseSelectionChanged
-		{
-			get => _disableRaiseSelectionChanged;
-			set => _disableRaiseSelectionChanged = value;
-		}
-
-		private void UpdateSelectedValue()
-		{
-			if (!SelectedValuePath.IsNullOrEmpty())
-			{
-				if (_selectedValueBindingPath?.Path != SelectedValuePath)
-				{
-					_selectedValueBindingPath = new Uno.UI.DataBinding.BindingPath(SelectedValuePath, null);
-				}
-			}
-			else
-			{
-				_selectedValueBindingPath = null;
-			}
-
-
-			if (_selectedValueBindingPath != null)
-			{
-				_selectedValueBindingPath.DataContext = SelectedItem;
-				SelectedValue = _selectedValueBindingPath.Value;
-			}
-			else
-			{
-				SelectedValue = SelectedItem;
-			}
-		}
-
-
-		partial void OnSelectedItemChangedPartial(object oldSelectedItem, object selectedItem);
-
-		internal void InvokeSelectionChanged(object[] removedItems, object[] addedItems)
-		{
-			if (!_disableRaiseSelectionChanged)
-			{
-				SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, removedItems, addedItems));
-			}
 		}
 
 		public int SelectedIndex
@@ -287,96 +45,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(SelectedIndex),
 				typeof(int),
 				typeof(Selector),
-				new FrameworkPropertyMetadata(IntBoxes.NegativeOne, coerceValueCallback: CoerceSelectedIndex));
-
-		private int _uncoercedSelectedIndex = -1;
-
-		private static object CoerceSelectedIndex(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
-		{
-			if (baseValue is not int desiredIndex)
-			{
-				return IntBoxes.NegativeOne;
-			}
-
-			var owner = (Selector)dependencyObject;
-			if (desiredIndex == -1)
-			{
-				owner._uncoercedSelectedIndex = -1;
-				return IntBoxes.NegativeOne;
-			}
-
-			var itemCount = owner.NumberOfItems;
-			if (itemCount > 0)
-			{
-				// Some items already exist.
-				// We validate bounds and throw if index differs from uncoerced.
-				if (desiredIndex < -1 || desiredIndex >= itemCount)
-				{
-					if (desiredIndex != owner._uncoercedSelectedIndex)
-					{
-						throw new ArgumentException(
-							nameof(baseValue),
-							"SelectedIndex cannot be set to invalid value when items are present");
-					}
-					else
-					{
-						// Ignore change.
-						return IntBoxes.NegativeOne;
-					}
-				}
-				owner._uncoercedSelectedIndex = -1;
-				return Boxer.Box(desiredIndex);
-			}
-			else
-			{
-				// No items exist, store uncoerced and set to -1;
-				owner._uncoercedSelectedIndex = desiredIndex;
-				return IntBoxes.NegativeOne;
-			}
-		}
-
-		internal virtual void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
-		{
-			try
-			{
-				var wasAlreadyUpdatingSelection = _isUpdatingSelection;
-
-				_changingSelectedIndex = true;
-				var shouldRaiseSelectionChanged = !_isUpdatingSelection;
-				_isUpdatingSelection = true;
-				var oldSelectedItem = SelectedItem;
-				var newSelectedItem = ItemFromIndex(newSelectedIndex);
-
-				if (ItemsSource is ICollectionView collectionView)
-				{
-					collectionView.MoveCurrentToPosition(newSelectedIndex);
-					//TODO: we should check if CurrentPosition actually changes, and set SelectedIndex back if not.
-				}
-				if (!object.ReferenceEquals(oldSelectedItem, newSelectedItem) && !wasAlreadyUpdatingSelection)
-				{
-					SelectedItem = newSelectedItem;
-				}
-
-				SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
-
-				OnSelectionChanged(oldSelectedIndex, newSelectedIndex, oldSelectedItem, newSelectedItem);
-
-				if (!wasAlreadyUpdatingSelection)
-				{
-					_isUpdatingSelection = false;
-				}
-				if (shouldRaiseSelectionChanged)
-				{
-					InvokeSelectionChanged(
-						oldSelectedIndex == -1 ? Array.Empty<object>() : new[] { oldSelectedItem },
-						newSelectedIndex == -1 ? Array.Empty<object>() : new[] { newSelectedItem });
-				}
-			}
-			finally
-			{
-				_changingSelectedIndex = false;
-			}
-		}
+				new FrameworkPropertyMetadata(IntBoxes.NegativeOne));
 
 		public string SelectedValuePath
 		{
@@ -385,12 +54,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty SelectedValuePathProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			name: nameof(SelectedValuePath),
-			propertyType: typeof(string),
-			ownerType: typeof(Selector),
-			typeMetadata: new FrameworkPropertyMetadata("", propertyChangedCallback: (s, e) => (s as Selector)?.UpdateSelectedValue())
-		);
+			Microsoft.UI.Xaml.DependencyProperty.Register(
+				name: nameof(SelectedValuePath),
+				propertyType: typeof(string),
+				ownerType: typeof(Selector),
+				typeMetadata: new FrameworkPropertyMetadata(""));
 
 		public object SelectedValue
 		{
@@ -399,33 +67,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty SelectedValueProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			name: nameof(SelectedValue),
-			propertyType: typeof(object),
-			ownerType: typeof(Selector),
-			typeMetadata: new FrameworkPropertyMetadata(null, (s, e) => (s as Selector).OnSelectedValueChanged(e.OldValue, e.NewValue), SelectedValueCoerce)
-		);
-
-		private void OnSelectedValueChanged(object oldValue, object newValue)
-		{
-			if (_changingSelectedIndex)
-			{
-				return;
-			}
-
-			var (indexOfItemWithValue, itemWithValue) = FindIndexOfItemWithValue(newValue);
-			SelectedIndex = indexOfItemWithValue;
-		}
-
-		private static object SelectedValueCoerce(DependencyObject snd, object baseValue, DependencyPropertyValuePrecedences _)
-		{
-			var selector = (Selector)snd;
-			if (selector?._selectedValueBindingPath != null)
-			{
-				return baseValue; // Setting the SelectedValue won't update the index when a _path is used.
-			}
-			return (selector.GetItems()?.Contains(baseValue) ?? false) || selector.AreCustomValuesAllowed() ? baseValue : null;
-		}
+			Microsoft.UI.Xaml.DependencyProperty.Register(
+				name: nameof(SelectedValue),
+				propertyType: typeof(object),
+				ownerType: typeof(Selector),
+				typeMetadata: new FrameworkPropertyMetadata(defaultValue: null));
 
 		public bool? IsSynchronizedWithCurrentItem
 		{
@@ -438,288 +84,193 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(IsSynchronizedWithCurrentItem),
 				typeof(bool?),
 				typeof(Selector),
-				new FrameworkPropertyMetadata(
-					default(bool?),
-					propertyChangedCallback: (s, e) => (s as Selector)?.IsSynchronizedWithCurrentItemChanged((bool?)e.OldValue, (bool?)e.NewValue)));
+				new FrameworkPropertyMetadata(default(bool?)));
 
-		private void IsSynchronizedWithCurrentItemChanged(bool? oldValue, bool? newValue)
+		public bool IsSelectionActive
 		{
-			if (newValue == true)
-			{
-				throw new ArgumentOutOfRangeException("True is not a supported value for this property");
-			}
-
-			TrySubscribeToCurrentChanged();
+			get => (bool)GetValue(IsSelectionActiveProperty);
+			set => SetValue(IsSelectionActiveProperty, value);
 		}
+
+		internal static DependencyProperty IsSelectionActiveProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsSelectionActive),
+				typeof(bool),
+				typeof(Selector),
+				new FrameworkPropertyMetadata(BoolBoxes.False));
+
+		internal ISelectionInfo DataSourceAsSelectionInfo
+		{
+			get => m_tpDataSourceAsSelectionInfo;
+			set => m_tpDataSourceAsSelectionInfo = value;
+		}
+
+		// Whether or not this Selector allows multiple selection
+		internal virtual bool CanSelectMultiple => false;
 
 		/// <summary>
-		/// The selected index as an <see cref="Uno.UI.IndexPath"/> of (group, group position), where group=0 if the source is ungrouped.
+		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
 		/// </summary>
-		private Uno.UI.IndexPath? SelectedIndexPath { get; set; }
-
-		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnItemsSourceChanged(e);
-			TrySubscribeToCurrentChanged();
-			Refresh();
-
-			if (e.NewValue is { } && m_itemPendingSelection is { })
-			{
-				bool itemFound;
-
-				var items = GetItems();
-
-				// Check if we're trying to restore a value that's not in the collection.
-				itemFound = items.IndexOf(m_itemPendingSelection) != -1;
-				if (itemFound)
-				{
-					SelectedItem = m_itemPendingSelection;
-				}
-
-				m_itemPendingSelection = null;
-			}
-		}
-
-		private void TrySubscribeToCurrentChanged()
-		{
-			var trackCurrentItem = IsSynchronizedWithCurrentItem ?? true;
-
-			if (ItemsSource is ICollectionView collectionView && trackCurrentItem)
-			{
-				// This is a workaround to support the use of EventRegistrationTokenTable in consumer code. EventRegistrationTokenTable
-				// currently has a bug on Xamarin that prevents instance methods subscribed directly from ever being unsubscribed.
-				EventHandler<object> currentChangedHandler = OnCollectionViewCurrentChanged;
-				_collectionViewSubscription.Disposable = Disposable.Create(() => collectionView.CurrentChanged -= currentChangedHandler);
-				collectionView.CurrentChanged += currentChangedHandler;
-				SelectedIndex = collectionView.CurrentPosition;
-			}
-			else
-			{
-				_collectionViewSubscription.Disposable = null;
-
-				if (IsSynchronizedWithCurrentItem is { } value && !value)
-				{
-					ResetIndexIfNeeded();
-				}
-			}
-		}
-
-		private void OnCollectionViewCurrentChanged(object sender, object e)
-		{
-			if (IsSingleSelection)
-			{
-				if (ItemsSource is ICollectionView collectionView)
-				{
-					SelectedIndex = collectionView.CurrentPosition;
-				}
-			}
-		}
-
-		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
-		{
-			base.PrepareContainerForItemOverride(element, item);
-
-			if (element is SelectorItem selectorItem)
-			{
-				selectorItem.IsSelected = IsSelected(IndexFromContainer(element));
-			}
-
-			var newIndex = IndexFromContainer(element);
-
-			if (newIndex == GetFocusedIndex())
-			{
-				SetFocusedItem(newIndex, false);
-			}
-		}
-
-		internal virtual bool IsSelected(int index)
-		{
-			return SelectedIndex == index;
-		}
+		internal virtual bool IsSingleSelection => true;
 
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs c, int section)
 		{
-			// Get SelectedIndex before calling base, as a quick workaround for side-effect in FlipView.Android that changes the SelectedIndex, to avoid incrementing it twice
-			var selectedIndexToSet = SelectedIndex;
-			base.OnItemsSourceSingleCollectionChanged(sender, c, section);
+			var isItemsHostNotified = false;
+
+			void NotifyItemsHost()
+			{
+				if (!isItemsHostNotified)
+				{
+					isItemsHostNotified = true;
+					base.OnItemsSourceSingleCollectionChanged(sender, c, section);
+				}
+			}
+
+			var changes = ToVectorChanges(c, section);
+
+			ProcessItemsChanges(changes, NotifyItemsHost);
+		}
+
+		// Flat vector changes for a collection change of one section, as WinUI's ItemCollection raises them.
+		internal List<IVectorChangedEventArgs> ToVectorChanges(NotifyCollectionChangedEventArgs c, int section)
+		{
+			int ToFlatIndex(int indexInSection) =>
+				IsGrouping ? GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(indexInSection, section)) : indexInSection;
+
+			List<IVectorChangedEventArgs> changes = new();
 			switch (c.Action)
 			{
-				case NotifyCollectionChangedAction.Add:
-
-					//Advance SelectedIndex if items are being inserted before it
-					var newIndex = GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(c.NewStartingIndex, section));
-					if (selectedIndexToSet >= newIndex)
+				case NotifyCollectionChangedAction.Add when c.NewStartingIndex >= 0:
+					for (var i = 0; i < c.NewItems.Count; i++)
 					{
-						selectedIndexToSet += c.NewItems.Count;
-						SelectedIndex = Math.Min(NumberOfItems - 1, selectedIndexToSet);
+						changes.Add(new VectorChangedEventArgs(CollectionChange.ItemInserted, (uint)ToFlatIndex(c.NewStartingIndex + i)));
 					}
 					break;
-				case NotifyCollectionChangedAction.Remove:
+				case NotifyCollectionChangedAction.Remove when c.OldStartingIndex >= 0:
+					for (var i = 0; i < c.OldItems.Count; i++)
 					{
-						var oldIndex = GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(c.OldStartingIndex, section));
-						if (selectedIndexToSet >= oldIndex && selectedIndexToSet < oldIndex + c.OldItems.Count)
-						{
-							//Deset if selected item is being removed
-							ResetIndexIfNeeded();
-						}
-						else if (selectedIndexToSet >= oldIndex + c.OldItems.Count)
-						{
-							//Decrement SelectedIndex if items are removed before it
-							selectedIndexToSet -= c.OldItems.Count;
-							SelectedIndex = Math.Max(-1, selectedIndexToSet);
-						}
+						changes.Add(new VectorChangedEventArgs(CollectionChange.ItemRemoved, (uint)ToFlatIndex(c.OldStartingIndex)));
 					}
 					break;
-				case NotifyCollectionChangedAction.Replace:
+				case NotifyCollectionChangedAction.Replace when c.NewStartingIndex >= 0:
+					for (var i = 0; i < c.NewItems.Count; i++)
 					{
-						var oldIndex = GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(c.OldStartingIndex, section));
-						if (selectedIndexToSet >= oldIndex && selectedIndexToSet < oldIndex + c.OldItems.Count)
-						{
-							//Deset if selected item is being replaced
-							ResetIndexIfNeeded();
-						}
+						changes.Add(new VectorChangedEventArgs(CollectionChange.ItemChanged, (uint)ToFlatIndex(c.NewStartingIndex + i)));
 					}
 					break;
-				case NotifyCollectionChangedAction.Move:
-				case NotifyCollectionChangedAction.Reset:
-					if (SelectedIndexPath?.Section == section)
+				case NotifyCollectionChangedAction.Move when c.NewItems is not null && c.OldStartingIndex >= 0 && c.NewStartingIndex >= 0:
+					for (var i = 0; i < c.NewItems.Count; i++)
 					{
-						var item = ItemFromIndex(SelectedIndex);
-						if (item == null || !item.Equals(SelectedItem))
-						{
-							// If selected item and index no longer coincide, unselect the selection
-							ResetIndexIfNeeded();
-						}
+						changes.Add(new VectorChangedEventArgs(CollectionChange.ItemRemoved, (uint)ToFlatIndex(c.OldStartingIndex)));
 					}
+					for (var i = 0; i < c.NewItems.Count; i++)
+					{
+						changes.Add(new VectorChangedEventArgs(CollectionChange.ItemInserted, (uint)ToFlatIndex(c.NewStartingIndex + i)));
+					}
+					break;
+				default:
+					changes.Add(new VectorChangedEventArgs(CollectionChange.Reset, 0));
 					break;
 			}
 
-			OnItemsChanged(c);
+			return changes;
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs c)
 		{
-			base.OnItemsSourceGroupsChanged(sender, c);
+			var isItemsHostNotified = false;
 
-			if (SelectedIndexPath == null)
+			void NotifyItemsHost()
 			{
-				return;
+				if (!isItemsHostNotified)
+				{
+					isItemsHostNotified = true;
+					base.OnItemsSourceGroupsChanged(sender, c);
+				}
 			}
-			var selectedIndexPath = SelectedIndexPath.Value;
 
+			int FirstFlatIndexOfGroup(int groupIndex)
+			{
+				var flatIndex = 0;
+				for (var i = 0; i < groupIndex; i++)
+				{
+					flatIndex += GetGroupCount(i);
+				}
+				return flatIndex;
+			}
+
+			bool TryAddRemovedGroups(List<IVectorChangedEventArgs> target)
+			{
+				var flatIndex = FirstFlatIndexOfGroup(c.OldStartingIndex);
+				foreach (var group in c.OldItems)
+				{
+					if (group is not ICollectionViewGroup { GroupItems: { } groupItems })
+					{
+						return false;
+					}
+
+					for (var i = 0; i < groupItems.Count; i++)
+					{
+						target.Add(new VectorChangedEventArgs(CollectionChange.ItemRemoved, (uint)flatIndex));
+					}
+				}
+				return true;
+			}
+
+			void AddInsertedGroups(List<IVectorChangedEventArgs> target)
+			{
+				var flatIndex = FirstFlatIndexOfGroup(c.NewStartingIndex);
+				for (var groupIndex = c.NewStartingIndex; groupIndex < c.NewStartingIndex + c.NewItems.Count; groupIndex++)
+				{
+					for (var i = 0; i < GetGroupCount(groupIndex); i++)
+					{
+						target.Add(new VectorChangedEventArgs(CollectionChange.ItemInserted, (uint)flatIndex++));
+					}
+				}
+			}
+
+			// The items of a group move with it, while WinUI's grouped view raises one flat change per item.
+			List<IVectorChangedEventArgs> changes = new();
+			var isReset = false;
 			switch (c.Action)
 			{
-				case NotifyCollectionChangedAction.Add:
-					var newIndexPath = Uno.UI.IndexPath.FromRowSection(row: 0, section: c.NewStartingIndex);
-					if (selectedIndexPath >= newIndexPath)
+				case NotifyCollectionChangedAction.Add when c.NewStartingIndex >= 0:
+					AddInsertedGroups(changes);
+					break;
+				case NotifyCollectionChangedAction.Remove when c.OldStartingIndex >= 0:
+					isReset = !TryAddRemovedGroups(changes);
+					break;
+				case NotifyCollectionChangedAction.Replace when c.NewStartingIndex >= 0 && c.OldStartingIndex >= 0:
+					isReset = !TryAddRemovedGroups(changes);
+					if (!isReset)
 					{
-						//Advance SelectedIndex if groups are being inserted before it
-						var newSelectedIndex = SelectedIndex;
-						for (int i = c.NewStartingIndex; i < c.NewStartingIndex + c.NewItems.Count; i++)
-						{
-							newSelectedIndex += GetGroupCount(i);
-						}
-						SelectedIndex = newSelectedIndex;
+						AddInsertedGroups(changes);
 					}
 					break;
-				case NotifyCollectionChangedAction.Remove:
-					{
-						var oldIndexPath = Uno.UI.IndexPath.FromRowSection(row: 0, section: c.OldStartingIndex);
-						var oldIndexPathLast = Uno.UI.IndexPath.FromRowSection(row: int.MaxValue, section: c.OldStartingIndex + c.OldItems.Count);
-						if (selectedIndexPath >= oldIndexPath && selectedIndexPath < oldIndexPathLast)
-						{
-							//Deset if selected item is in group being removed
-							ResetIndexIfNeeded();
-						}
-						else if (selectedIndexPath >= oldIndexPathLast)
-						{
-							//Decrement SelectedIndex if groups are removed before it
-							var newSelectedIndex = SelectedIndex;
-							for (int i = c.OldStartingIndex; i < c.OldStartingIndex + c.OldItems.Count; i++)
-							{
-								newSelectedIndex -= GetGroupCount(i);
-							}
-							SelectedIndex = newSelectedIndex;
-						}
-					}
-					break;
-				case NotifyCollectionChangedAction.Replace:
-					{
-						var oldIndexPath = Uno.UI.IndexPath.FromRowSection(row: 0, section: c.OldStartingIndex);
-						var oldIndexPathLast = Uno.UI.IndexPath.FromRowSection(row: int.MaxValue, section: c.OldStartingIndex + c.OldItems.Count);
-						if (selectedIndexPath >= oldIndexPath && selectedIndexPath < oldIndexPathLast)
-						{
-							//Deset if selected item is in group being replaced
-							ResetIndexIfNeeded();
-						}
-					}
-					break;
-				case NotifyCollectionChangedAction.Reset:
-					ResetIndexIfNeeded();
+				default:
+					isReset = true;
 					break;
 			}
+
+			if (isReset)
+			{
+				changes.Clear();
+				changes.Add(new VectorChangedEventArgs(CollectionChange.Reset, 0));
+			}
+
+			ProcessItemsChanges(changes, NotifyItemsHost);
 		}
 
-		internal void OnItemClicked(SelectorItem selectorItem, VirtualKeyModifiers modifiers) => OnItemClicked(IndexFromContainer(selectorItem), modifiers);
-
-		internal virtual void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
+		// Stands in for the NotifyOfSourceChanged and OnItemsChanged calls that WinUI's ItemCollection makes for each change.
+		private void ProcessItemsChanges(List<IVectorChangedEventArgs> changes, Action notifyItemsHost)
 		{
-			if (ItemsSource is ICollectionView collectionView)
+			foreach (var change in changes)
 			{
-				//NOTE: Windows seems to call MoveCurrentTo(item); we set position instead to have expected behavior when you have duplicate items in the list.
-				collectionView.MoveCurrentToPosition(clickedIndex);
-
-				// The CollectionView may have intercepted the change
-				clickedIndex = collectionView.CurrentPosition;
+				NotifyOfSourceChanged(change, notifyItemsHost);
+				OnItemsChanged(change, notifyItemsHost);
 			}
 
-			SelectedIndex = clickedIndex;
-		}
-
-		private void OnItemsChanged(NotifyCollectionChangedEventArgs e)
-		{
-			if (
-				// When ItemsSource is set, we get collection changes from it directly (and it's not possible to directly modify Items)
-				ItemsSource == null
-			)
-			{
-				var iVCE = e.ToVectorChangedEventArgs();
-
-				if (iVCE.CollectionChange == CollectionChange.ItemChanged
-					|| (iVCE.CollectionChange == CollectionChange.ItemInserted && iVCE.Index < Items.Count))
-				{
-					var item = Items[(int)iVCE.Index];
-
-					if (item is SelectorItem selectorItem && selectorItem.IsSelected)
-					{
-						ChangeSelectedItem(selectorItem, false, true);
-					}
-				}
-				//Prevent SelectedIndex been >= Items.Count
-				var sItem = ItemFromIndex(SelectedIndex);
-
-				if (sItem == null || !sItem.Equals(SelectedItem))
-				{
-					ResetIndexIfNeeded();
-				}
-			}
-
-			if (_uncoercedSelectedIndex > -1 && _uncoercedSelectedIndex < NumberOfItems)
-			{
-				SelectedIndex = _uncoercedSelectedIndex;
-			}
-		}
-
-		/// <summary>
-		/// Sets SelectedIndex to -1 if not already set to this value.
-		/// This is needed to ensure Selector code does not clear the uncoerced value.
-		/// </summary>
-		private void ResetIndexIfNeeded()
-		{
-			if (SelectedIndex != -1)
-			{
-				SelectedIndex = -1;
-			}
+			notifyItemsHost();
 		}
 
 		// Check if the root of the resolved item template qualifies as a container, and if so return it as the container.
@@ -755,36 +306,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return null;
 		}
 
-		/// Finds the index of the first item with a given property path value.
-		(int Index, object ItemWithValue) FindIndexOfItemWithValue(object value)
-		{
-			var nCount = NumberOfItems;
-
-			for (int cnt = 0; cnt < nCount; cnt++)
-			{
-				var item = GetItemFromIndex(cnt);
-				var itemValue = GetSelectedValue(item);
-				if (Equals(value, itemValue))
-				{
-					return (cnt, itemValue);
-				}
-			}
-
-			return (-1, null);
-		}
-
-		/// Returns the selected value of an item using a path.
-		object GetSelectedValue(object pItem)
-		{
-			if (_selectedValueBindingPath == null || pItem == null)
-			{
-				return pItem;
-			}
-
-			_selectedValueBindingPath.DataContext = pItem;
-			return _selectedValueBindingPath.Value;
-		}
-
 		private protected override void Refresh()
 		{
 			base.Refresh();
@@ -792,205 +313,68 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			RefreshPartial();
 		}
 
-		public bool IsSelectionActive
-		{
-			get => (bool)GetValue(IsSelectionActiveProperty);
-			set => SetValue(IsSelectionActiveProperty, value);
-		}
-
-		internal static DependencyProperty IsSelectionActiveProperty { get; } =
-			DependencyProperty.Register(
-				nameof(IsSelectionActive),
-				typeof(bool),
-				typeof(Selector),
-				new FrameworkPropertyMetadata(BoolBoxes.False));
-
-		// This method returns a value indicating whether the object is selectable.
-		private protected bool IsSelectableHelper(object obj)
-		{
-			if (obj is Control control)
-			{
-				return control.IsEnabled && control.Visibility != Visibility.Collapsed &&
-					(control.IsTabStop || FocusProperties.CanHaveFocusableChildren(control));
-			}
-			else if (obj is UIElement uiElement)
-			{
-				return uiElement.Visibility != Visibility.Collapsed;
-			}
-
-			return true;
-		}
-
-
-		protected virtual (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations()
-		{
-			// TODO Uno: This implementation is simplified, should be ported from WinUI
-			var panel = ItemsPanelRoot;
-
-			var logicalOrientation = Orientation.Vertical;
-			var physicalOrientation = Orientation.Vertical;
-
-			if (panel is StackPanel sp)
-			{
-				logicalOrientation = sp.Orientation;
-				physicalOrientation = logicalOrientation;
-			}
-			else if (panel is IOrientedPanel orientedPanel)
-			{
-				logicalOrientation = orientedPanel.LogicalOrientation;
-				physicalOrientation = orientedPanel.PhysicalOrientation;
-			}
-
-			return (physicalOrientation, logicalOrientation);
-		}
-
-		private protected void SetFocusedItem(
-			int index,
-			bool shouldScrollIntoView,
-			bool animateIfBringIntoView = false,
-			FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None,
-			Uno.UI.Xaml.Input.InputActivationBehavior inputActivationBehavior = Uno.UI.Xaml.Input.InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
-		{
-
-			FocusState focusState = FocusState.Programmatic;
-
-			var hasFocus = HasFocus();
-			if (hasFocus)
-			{
-				var spFocused = this.GetFocusedElement();
-				var spFocusedAsElement = spFocused as UIElement;
-				if (spFocusedAsElement is { })
-				{
-					focusState = spFocusedAsElement.FocusState;
-					global::System.Diagnostics.Debug.Assert(FocusState.Unfocused != focusState, "FocusState_Unfocused unexpected since spFocusedAsElement is focused");
-				}
-			}
-
-			SetFocusedItem(index, shouldScrollIntoView, false /*forceFocus*/, focusState, animateIfBringIntoView, focusNavigationDirection, inputActivationBehavior);
-		}
-
-		private protected void SetFocusedItem(
-			int index,
-			bool shouldScrollIntoView,
-			bool forceFocus,
-			FocusState focusState,
-			bool animateIfBringIntoView,
-			FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None,
-			Uno.UI.Xaml.Input.InputActivationBehavior inputActivationBehavior = Uno.UI.Xaml.Input.InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
-		{
-
-			bool bFocused = false;
-			bool shouldFocus = false;
-
-			var spItems = Items;
-			var nCount = spItems?.Size;
-
-			if (index < 0 || nCount <= index)
-			{
-				index = -1;
-			}
-
-			if (index >= 0)
-			{
-				SetLastFocusedIndex(index);
-			}
-
-			if (!forceFocus)
-			{
-				shouldFocus = HasFocus();
-			}
-			else
-			{
-				shouldFocus = true;
-			}
-
-			if (shouldFocus)
-			{
-				SetFocusedIndex(index);
-			}
-
-			if (GetFocusedIndex() == -1)
-			{
-				if (shouldFocus)
-				{
-					// Since none of our child items have the focus, put the focus back on the main list box.
-					//
-					// This will happen e.g. when the focused item is being removed but is still in the visual tree at the time of this call.
-					// Note that this call may fail e.g. if IsTabStop is false, which is OK; it will just set focus
-					// to the next focusable element (or clear focus if none is found).
-					bFocused = Focus(focusState);
-				}
-
-				return;
-			}
-
-			//if (shouldScrollIntoView)
-			//{
-			//	shouldScrollIntoView = CanScrollIntoView();
-			//}
-
-			//if (shouldScrollIntoView)
-			//{
-			//	ScrollIntoView(
-			//		index,
-			//		isGroupItemIndex: false,
-			//		isHeader: false,
-			//		isFooter: false,
-			//		isFromPublicAPI: false,
-			//		ensureContainerRealized: true,
-			//		animateIfBringIntoView,
-			//		ScrollIntoViewAlignment.Default);
-			//}
-
-			if (shouldFocus)
-			{
-				var spContainer = ContainerFromIndex(index);
-
-				if (spContainer is SelectorItem spSelectorItem)
-				{
-					spSelectorItem.FocusSelfOrChild(focusState, animateIfBringIntoView, out bFocused, focusNavigationDirection, inputActivationBehavior);
-				}
-			}
-		}
-
-#if false
-		private void ScrollIntoView(int index, bool isGroupItemIndex, bool isHeader, bool isFooter, bool isFromPublicAPI, bool ensureContainerRealized, bool animateIfBringIntoView, ScrollIntoViewAlignment @default)
-		{
-
-		}
-#endif
-
-#if false
-		bool CanScrollIntoView()
-		{
-			Panel spPanel;
-			bool isItemsHostInvalid = false;
-			bool isInLiveTree = false;
-
-			spPanel = ItemsPanelRoot;
-
-			if (spPanel != null)
-			{
-				//isItemsHostInvalid = IsItemsHostInvalid;
-
-				if (!isItemsHostInvalid)
-				{
-					//isInLiveTree = IsInLiveTree();
-					isInLiveTree = true;
-				}
-			}
-
-			return !isItemsHostInvalid && isInLiveTree && !m_skipScrollIntoView && !m_inCollectionChange;
-		}
-#endif
-
 		partial void RefreshPartial();
-
 
 		/// <summary>
 		/// Is the managed implementation for virtualized lists (ItemsStackPanel, ItemsWrapGrid, CarouselPanel etc) used on this platform?
 		/// </summary>
 		internal const bool UsesManagedLayouting =
 			true;
+
+#if HAS_UNO
+		// Forwarders for callers of the former Selector, which predates the port.
+		// TODO Uno: remove what the ComboBox, FlipView and ListViewBase ports stop calling.
+
+		private protected int m_iFocusedIndex => GetFocusedIndex();
+
+		// Get the ItemsHost's orientations. FlipView overrides it to report its fixed orientation.
+		protected virtual (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations()
+		{
+			GetPanelOrientations(ItemsPanelRoot, out var physicalOrientation, out var logicalOrientation);
+
+			return (physicalOrientation, logicalOrientation);
+		}
+
+		// Called on every change of the property, reentrant ones included: ComboBox has to update its content presenter.
+		internal virtual void OnSelectedItemChanged(object oldSelectedItem, object selectedItem, bool updateItemSelectedState) =>
+			OnSelectedItemChanged(oldSelectedItem, selectedItem);
+
+		internal void TryUpdateSelectorItemIsSelected(object item, bool isSelected)
+		{
+			if (item is SelectorItem si)
+			{
+				si.IsSelected = isSelected;
+			}
+			else if (ContainerFromItem(item) is SelectorItem si2)
+			{
+				si2.IsSelected = isSelected;
+			}
+		}
+
+		internal virtual bool IsSelected(int index) => IsIndexSelected(index);
+
+		internal void OnItemClicked(SelectorItem selectorItem, VirtualKeyModifiers modifiers) => OnItemClicked(IndexFromContainer(selectorItem), modifiers);
+
+		internal virtual void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers) => SelectedIndex = clickedIndex;
+
+		// SelectorItem's caller.
+		internal void NotifyListItemSelected(SelectorItem pSelectorItem, bool oldValue, bool bIsSelected) =>
+			NotifyListItemSelected(pSelectorItem, bIsSelected);
+
+		internal void MakeSingleSelection(int index, bool animateIfBringIntoView, object selectedItem, FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None) =>
+			MakeSingleSelection((uint)index, animateIfBringIntoView, selectedItem, focusNavigationDirection);
+
+		internal void AutomationPeerAddToSelection(int index, object item)
+		{
+			AutomationPeerAddToSelection((uint)index, item);
+		}
+
+		internal void AutomationPeerRemoveFromSelection(int index, object item)
+		{
+			AutomationPeerRemoveFromSelection((uint)index, item);
+		}
+
+		internal bool AutomationPeerIsSelected(int index, object item) => index >= 0 ? IsSelected(index) : AutomationPeerIsSelected(item);
+#endif
 	}
 }

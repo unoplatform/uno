@@ -34,13 +34,24 @@ public partial class GridViewItemDataAutomationPeer : SelectorItemAutomationPeer
 			return;
 		}
 
-		// Try to get the container for this item
+		// If the ListView's ScrollViewer can scroll, a scroll into view is sufficient to bring it into view. If
+		// it is not (nested scroll viewer case), then a bring into view which bubbles up the tree
+		// is required to bring the item into view.
+		if (gridView.IsScrollable())
+		{
+			base.ScrollIntoView();
+			return;
+		}
+
+		// bring into view
 		var container = GetContainer() as UIElement;
 		if (container is not null)
 		{
+			var size = container.RenderSize;
 			container.StartBringIntoView(new BringIntoViewOptions
 			{
 				AnimationDesired = false,
+				TargetRect = new global::Windows.Foundation.Rect(0, 0, size.Width, size.Height),
 			});
 		}
 	}

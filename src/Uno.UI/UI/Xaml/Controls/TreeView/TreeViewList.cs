@@ -424,7 +424,7 @@ public partial class TreeViewList : ListView
 	protected override AutomationPeer OnCreateAutomationPeer() =>
 		new TreeViewListAutomationPeer(this);
 
-	internal string GetDropTargetDropEffect()
+	internal new string GetDropTargetDropEffect()
 	{
 		if (string.IsNullOrEmpty(m_dropTargetDropEffectString))
 		{

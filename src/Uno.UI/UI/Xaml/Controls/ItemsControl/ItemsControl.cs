@@ -1022,7 +1022,10 @@ namespace Microsoft.UI.Xaml.Controls
 			ItemsPanelRoot?.SetItemsOwner(this);
 			ItemsPresenter.SetItemsPanel(InternalItemsPanelRoot);
 
-			InitializeItemContainerGenerator();
+			if (CustomItemsHost is not null)
+			{
+				OnItemsHostAvailable();
+			}
 
 			OnItemsPanelRootPrepared();
 

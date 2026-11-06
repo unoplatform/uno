@@ -20,4 +20,7 @@ public partial class ListViewAutomationPeer : ListViewBaseAutomationPeer
 	protected override string GetClassNameCore() => nameof(ListView);
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.List;
+
+	protected override ItemAutomationPeer OnCreateItemAutomationPeer(object item)
+		=> new ListViewItemDataAutomationPeer(item, this);
 }

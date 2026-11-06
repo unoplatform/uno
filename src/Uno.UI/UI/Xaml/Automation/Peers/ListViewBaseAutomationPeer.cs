@@ -29,35 +29,33 @@ public partial class ListViewBaseAutomationPeer : SelectorAutomationPeer, IDropT
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
 		var owner = ListViewBaseOwner;
-		var baseChildrenEnumerable = base.GetChildrenCore();
-		IList<AutomationPeer> baseChildrenList;
+		List<AutomationPeer> spAPChildren = new();
+		ContentControl? spHeaderContainer = null;
+		ContentControl? spFooterContainer = null;
 
-		if (baseChildrenEnumerable is IList<AutomationPeer> list)
+		if (owner?.ItemsPresenter is ItemsPresenter spItemsPresenter)
 		{
-			baseChildrenList = list;
-		}
-		else
-		{
-			baseChildrenList = new List<AutomationPeer>(baseChildrenEnumerable ?? Array.Empty<AutomationPeer>());
+			spHeaderContainer = spItemsPresenter.HeaderContentControl;
+			spFooterContainer = spItemsPresenter.FooterContentControl;
 		}
 
-		if (owner?.ItemsPresenter is not ItemsPresenter presenter)
+		if (spHeaderContainer is not null)
 		{
-			return new List<AutomationPeer>(baseChildrenList);
+			spAPChildren.AddRange(GetAutomationPeersForChildrenOfElement(spHeaderContainer));
 		}
 
-		var header = presenter.HeaderContentControl;
-		var footer = presenter.FooterContentControl;
-		if (header is null && footer is null)
+		var itemsControlChildren = base.GetChildrenCore();
+		if (itemsControlChildren is not null)
 		{
-			return new List<AutomationPeer>(baseChildrenList);
+			spAPChildren.AddRange(itemsControlChildren);
 		}
 
-		var children = new List<AutomationPeer>(baseChildrenList.Count + (header is null ? 0 : 1) + (footer is null ? 0 : 1));
-		AddPeerForElement(header, children);
-		children.AddRange(baseChildrenList);
-		AddPeerForElement(footer, children);
-		return children;
+		if (spFooterContainer is not null)
+		{
+			spAPChildren.AddRange(GetAutomationPeersForChildrenOfElement(spFooterContainer));
+		}
+
+		return spAPChildren;
 	}
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
@@ -74,39 +72,9 @@ public partial class ListViewBaseAutomationPeer : SelectorAutomationPeer, IDropT
 		return base.IsOffscreenCore();
 	}
 
-	private void AddPeerForElement(FrameworkElement? element, List<AutomationPeer> children)
-	{
-		if (element is null)
-		{
-			return;
-		}
+	private string GetDropEffect() => ListViewBaseOwner?.GetDropTargetDropEffect() ?? string.Empty;
 
-		var peer = FrameworkElementAutomationPeer.CreatePeerForElement(element);
-		if (peer != null)
-		{
-			children.Add(peer);
-		}
-	}
-
-	private string GetDropEffect()
-	{
-		if (ListViewBaseOwner is IDropTargetProvider provider)
-		{
-			return provider.DropEffect;
-		}
-
-		return string.Empty;
-	}
-
-	private string[] GetDropEffects()
-	{
-		if (ListViewBaseOwner is IDropTargetProvider provider)
-		{
-			return provider.DropEffects ?? s_emptyDropEffects;
-		}
-
-		return s_emptyDropEffects;
-	}
+	private string[] GetDropEffects() => ListViewBaseOwner?.GetDropTargetDropEffects() ?? s_emptyDropEffects;
 
 	private ListViewBase? ListViewBaseOwner => Owner as ListViewBase;
 }
