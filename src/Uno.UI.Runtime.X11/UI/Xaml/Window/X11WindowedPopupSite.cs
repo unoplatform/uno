@@ -32,6 +32,10 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 
 	private static readonly bool _isPointerGrabDisabled = Environment.GetEnvironmentVariable("UNO_X11_DISABLE_POPUP_GRAB") == "1";
 
+	private bool _hasRenderThreadExited;
+	private bool _isStopAbandoned;
+	private int _isAbandonedStopReleased;
+
 	private readonly X11XamlRootHost _owner;
 	private readonly IWindowedPopupContent _content;
 	private readonly IntPtr _display;
@@ -206,6 +210,38 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 	}
 
 	private void RenderLoop()
+	{
+		try
+		{
+			RunRenderLoop();
+		}
+		finally
+		{
+			// A stop that timed out left the context to this thread, and each connection counts against the server's limit.
+			Volatile.Write(ref _hasRenderThreadExited, true);
+			if (Volatile.Read(ref _isStopAbandoned))
+			{
+				ReleaseAfterAbandonedStop();
+			}
+		}
+	}
+
+	private void ReleaseAfterAbandonedStop()
+	{
+		if (Interlocked.Exchange(ref _isAbandonedStopReleased, 1) == 0)
+		{
+			try
+			{
+				ReleaseGraphicsAndWindow();
+			}
+			catch (Exception e)
+			{
+				this.LogError()?.Error("Failed to release a popup window after its render thread stopped late.", e);
+			}
+		}
+	}
+
+	private void RunRenderLoop()
 	{
 		while (true)
 		{
@@ -564,7 +600,13 @@ internal sealed class X11WindowedPopupSite : IWindowedPopupSite
 			else
 			{
 				// It may still be drawing on the window and its connection, so the window can only go out of sight.
-				this.LogError()?.Error("A popup window's render thread didn't stop, so its graphics are left behind.");
+				this.LogError()?.Error("A popup window's render thread didn't stop in time, so its graphics stay until it does.");
+				Volatile.Write(ref _isStopAbandoned, true);
+				if (Volatile.Read(ref _hasRenderThreadExited))
+				{
+					ReleaseAfterAbandonedStop();
+				}
+
 				// The stuck thread may hold this site's connection's lock, so this goes through the owner's.
 				_isShown = false;
 				var ownerDisplay = _owner.TopX11Window.Display;

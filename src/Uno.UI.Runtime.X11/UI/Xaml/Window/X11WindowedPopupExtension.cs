@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.UI.Xaml;
@@ -29,7 +30,13 @@ internal sealed class X11WindowedPopupExtension : IWindowedPopupExtension
 
 	internal static X11WindowedPopupExtension Instance { get; } = new();
 
-	internal static void InvalidateMonitorCache() => _monitorCache = null;
+	private static int _monitorCacheVersion;
+
+	internal static void InvalidateMonitorCache()
+	{
+		Interlocked.Increment(ref _monitorCacheVersion);
+		_monitorCache = null;
+	}
 
 	private static X11XamlRootHost? GetOwner(XamlRoot xamlRoot) => XamlRootMap.GetHostForRoot(xamlRoot) as X11XamlRootHost;
 
@@ -92,7 +99,13 @@ internal sealed class X11WindowedPopupExtension : IWindowedPopupExtension
 			var cache = _monitorCache;
 			if (cache is null || Environment.TickCount64 - cache.Timestamp > MonitorCacheLifetimeMilliseconds)
 			{
-				_monitorCache = cache = QueryMonitors(display);
+				// The monitors may change during the round trip, which makes this answer one to not keep.
+				var version = Volatile.Read(ref _monitorCacheVersion);
+				cache = QueryMonitors(display);
+				if (version == Volatile.Read(ref _monitorCacheVersion))
+				{
+					_monitorCache = cache;
+				}
 			}
 
 			if (!X11MonitorMath.TryFindNearest(cache.Monitors, screenPoint, out monitor))
