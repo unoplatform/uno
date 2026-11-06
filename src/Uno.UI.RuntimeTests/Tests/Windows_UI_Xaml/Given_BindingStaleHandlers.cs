@@ -30,7 +30,7 @@ public class Given_BindingStaleHandlers
 	[TestMethod]
 	[DataRow(false)]
 	[DataRow(true)]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI removes the handlers of collected bindings on its own schedule, and the loaded case doesn't load within the test's wait
 	public async Task When_Bound_Elements_Collected_Then_Handlers_Removed(bool loaded)
 	{
 		var vm = new CountingViewModel(); // outlives the elements, and never raises
@@ -45,7 +45,7 @@ public class Given_BindingStaleHandlers
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI removes the handlers of collected bindings on its own schedule: flaky here
 	public async Task When_Raised_Before_Handlers_Removed_Then_Safe()
 	{
 		var vm = new CountingViewModel();
@@ -67,7 +67,7 @@ public class Given_BindingStaleHandlers
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI removes the handlers of collected bindings on its own schedule: flaky here
 	public async Task When_Stale_Handlers_Removed_Then_Live_Binding_Still_Updates()
 	{
 		var vm = new CountingViewModel { Name = "first" };
