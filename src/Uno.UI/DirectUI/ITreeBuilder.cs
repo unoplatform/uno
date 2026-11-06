@@ -10,5 +10,7 @@ namespace DirectUI
 		public bool IsRegisteredForCallbacks { get; set; }
 
 		public bool BuildTree();
+
+		public void ShutDownDeferredWork() { }
 	}
 }
