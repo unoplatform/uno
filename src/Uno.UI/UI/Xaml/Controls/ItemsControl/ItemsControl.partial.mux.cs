@@ -25,7 +25,21 @@ partial class ItemsControl : IGeneratorHost
 
 	private IItemContainerMapping ItemContainerMapping => CustomItemsHost?.GetItemContainerMapping();
 
-	internal IItemContainerMapping GetItemContainerMapping() => ItemContainerMapping;
+	// WinUI's m_tpMapping falls back to the ItemContainerGenerator for a plain panel.
+	internal IItemContainerMapping GetItemContainerMapping() => ItemContainerMapping ?? (m_generatorMapping ??= new ItemsControlContainerMapping(this));
+
+	private ItemsControlContainerMapping m_generatorMapping;
+
+	private sealed class ItemsControlContainerMapping(ItemsControl owner) : IItemContainerMapping
+	{
+		public object ItemFromContainer(DependencyObject container) => owner.ItemFromContainer(container);
+
+		public DependencyObject ContainerFromItem(object item) => owner.ContainerFromItem(item);
+
+		public int IndexFromContainer(DependencyObject container) => owner.IndexFromContainer(container);
+
+		public DependencyObject ContainerFromIndex(int index) => owner.ContainerFromIndex(index);
+	}
 
 	// This code gets called from Automation Provider e.g. ItemAutomationPeer and must not be called from any
 	// internal APIs in the control itself. It basically returns the Container for the DataItem in case it exist.
