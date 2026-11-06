@@ -8,6 +8,17 @@ using Uno.UI.Dispatching;
 
 namespace Uno.UI.Helpers;
 
+/// <summary>A subscription whose removal from its source can be queued by <see cref="SubscriptionCleanup.EnqueueFromFinalizer"/>.</summary>
+internal interface IQueuedRemoval
+{
+	Type LogOwner { get; }
+
+	string Description { get; }
+
+	/// <summary>Removes the subscription from <paramref name="source"/>. Must not throw.</summary>
+	void Remove(object source);
+}
+
 /// <summary>
 /// Removes event subscriptions that hold their subscriber weakly, once the subscriber is gone.
 /// </summary>
@@ -21,23 +32,8 @@ internal static class SubscriptionCleanup
 	private static int _isBatchScheduled;
 
 	/// <summary>Runs <paramref name="unsubscribe"/>, logging rather than throwing if the event source fails.</summary>
-	internal static void Run(Action unsubscribe, Type logOwner, string subscription)
-	{
-		try
-		{
-			unsubscribe();
-		}
-		catch (Exception e)
-		{
-			if (logOwner.Log().IsEnabled(LogLevel.Error))
-			{
-				logOwner.Log().Error($"Failed to remove {subscription}", e);
-			}
-		}
-	}
-
-	/// <summary>Runs <paramref name="unsubscribe"/>, logging rather than throwing if the event source fails.</summary>
 	internal static void Run<TSource, TState>(Action<TSource, TState> unsubscribe, TSource source, TState state, Type logOwner, string subscription)
+		where TSource : class
 	{
 		try
 		{
@@ -47,20 +43,21 @@ internal static class SubscriptionCleanup
 		{
 			if (logOwner.Log().IsEnabled(LogLevel.Error))
 			{
-				logOwner.Log().Error($"Failed to remove {subscription}", e);
+				logOwner.Log().Error($"Failed to remove {subscription} from a {source.GetType()}", e);
 			}
 		}
 	}
 
 	/// <summary>
-	/// Queues <paramref name="unsubscribe"/> on the UI thread, since an event source isn't required to be thread-safe.
-	/// Never throws, so it can be called from a finalizer.
+	/// Queues the removal of <paramref name="removal"/> from <paramref name="source"/> on the UI thread, since an event
+	/// source isn't required to be thread-safe. Never throws, so it can be called from a finalizer, which can pass its
+	/// own object rather than allocate a callback: the queue keeps it until the removal runs.
 	/// </summary>
-	internal static void EnqueueFromFinalizer(Action unsubscribe, Type logOwner, string subscription)
+	internal static void EnqueueFromFinalizer(IQueuedRemoval removal, object source)
 	{
 		try
 		{
-			_pendingRemovals.Enqueue(new PendingRemoval(unsubscribe, logOwner, subscription));
+			_pendingRemovals.Enqueue(new PendingRemoval(removal, source));
 			ScheduleBatch();
 		}
 		catch (Exception e)
@@ -68,9 +65,9 @@ internal static class SubscriptionCleanup
 			// An exception escaping a finalizer terminates the process, even one thrown by the logger.
 			try
 			{
-				if (logOwner.Log().IsEnabled(LogLevel.Error))
+				if (removal.LogOwner.Log().IsEnabled(LogLevel.Error))
 				{
-					logOwner.Log().Error($"Failed to schedule the removal of {subscription}", e);
+					removal.LogOwner.Log().Error($"Failed to schedule the removal of {removal.Description} from a {source.GetType()}", e);
 				}
 			}
 			catch
@@ -102,7 +99,7 @@ internal static class SubscriptionCleanup
 
 		for (var i = 0; i < MaxRemovalsPerBatch && _pendingRemovals.TryDequeue(out var removal); i++)
 		{
-			Run(removal.Unsubscribe, removal.LogOwner, removal.Subscription);
+			removal.Removal.Remove(removal.Source);
 		}
 
 		if (!_pendingRemovals.IsEmpty)
@@ -121,5 +118,5 @@ internal static class SubscriptionCleanup
 		}
 	}
 
-	private readonly record struct PendingRemoval(Action Unsubscribe, Type LogOwner, string Subscription);
+	private readonly record struct PendingRemoval(IQueuedRemoval Removal, object Source);
 }
