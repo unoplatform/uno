@@ -617,8 +617,12 @@ namespace Microsoft.UI.Xaml.Controls
 			return remainder == 0 ? itemsPerLine : remainder;
 		}
 
+		private DataTemplate m_displayMemberTemplate;
+
 		partial void OnDisplayMemberPathChangedPartial(string oldDisplayMemberPath, string newDisplayMemberPath)
 		{
+			m_displayMemberTemplate = null;
+
 			if (string.IsNullOrEmpty(oldDisplayMemberPath) && string.IsNullOrEmpty(newDisplayMemberPath))
 			{
 				return; // nothing
@@ -678,8 +682,14 @@ namespace Microsoft.UI.Xaml.Controls
 					CollectionViewSource.ViewProperty,
 					(s, e) =>
 					{
+						Items.SetItemsSource(UnwrapItemsSource() as IEnumerable);
 						ObserveCollectionChanged();
-						UpdateItems(null);
+
+						if (CustomItemsHost is { } customItemsHost)
+						{
+							customItemsHost.RegisterItemsHost(this);
+							customItemsHost.Refresh();
+						}
 					}
 				);
 			}
@@ -1232,6 +1242,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (!isOwnContainer)
 				{
+					// MUX Reference ItemsControl_Partial.cpp, ClearContainerForItemOverride: a recycled container keeps its
+					// template, and with it its content, unless the item is a FrameworkElement that has to leave it.
+					var keepTemplate = CustomItemsHost is not null && item is not FrameworkElement;
+
 					static void ClearPropertyWhenNoExpression(ContentControl target, DependencyProperty property)
 					{
 						// We must not clear the properties of the container if a binding expression
@@ -1247,7 +1261,10 @@ namespace Microsoft.UI.Xaml.Controls
 					// This way, if the contentControl contains a ContentPresenter with a template/selector, changing
 					// the content doesn't cause the selector to reevaluate (or the template to respond to changes).
 					// When_TemplateSelector_And_List_Reloaded asserts against this.
-					if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
+					if (keepTemplate)
+					{
+					}
+					else if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
 					{
 						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateProperty);
 					}
@@ -1302,10 +1319,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var isOwnContainer = ReferenceEquals(element, item);
 
+			// MUX Reference ItemsControl_Partial.cpp, PrepareContainerForItemOverride: the display member template expands to a
+			// TextBlock bound to the path. ListViewBase sets the container's Content to the item itself (SetupContainerContentChangingAfterPrepare).
+			var displayMemberTemplate = CustomItemsHost is not null && item is not UIElement && ItemTemplate is null && ItemTemplateSelector is null
+				? GetDisplayMemberTemplate()
+				: null;
+
 			void SetContent(UIElement container, DependencyProperty contentProperty)
 			{
 				var displayMemberPath = DisplayMemberPath;
-				if (string.IsNullOrEmpty(displayMemberPath))
+				if (string.IsNullOrEmpty(displayMemberPath) || displayMemberTemplate is not null)
 				{
 					container.SetValue(contentProperty, item);
 				}
@@ -1342,7 +1365,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (!containerAsContentControl.IsContainerFromTemplateRoot)
 					{
-						containerAsContentControl.ContentTemplate = ItemTemplate;
+						containerAsContentControl.ContentTemplate = displayMemberTemplate ?? ItemTemplate;
 						containerAsContentControl.ContentTemplateSelector = ItemTemplateSelector;
 					}
 
@@ -1362,6 +1385,21 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			ApplyItemContainerStyle(element, item);
+		}
+
+		private DataTemplate GetDisplayMemberTemplate()
+		{
+			if (string.IsNullOrEmpty(DisplayMemberPath))
+			{
+				return null;
+			}
+
+			return m_displayMemberTemplate ??= new DataTemplate(null, (_, _) =>
+			{
+				var textBlock = new TextBlock();
+				textBlock.SetBinding(TextBlock.TextProperty, new Binding { Path = DisplayMemberPath });
+				return textBlock;
+			});
 		}
 
 		/// <summary>
@@ -1735,7 +1773,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void ChangeSelectorItemsVisualState(bool useTransitions)
 		{
-			foreach (var child in GetItemsPanelChildren())
+			// MUX Reference ItemsControl_Partial.cpp, ChangeSelectorItemsVisualState: every child of the panel, recycled ones included.
+			var children = ItemsPanelRoot?.Children.OfType<DependencyObject>() ?? GetItemsPanelChildren();
+
+			foreach (var child in children)
 			{
 				if (child is SelectorItem selectorItem)
 				{

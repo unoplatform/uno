@@ -158,16 +158,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						changes.Add(new VectorChangedEventArgs(CollectionChange.ItemChanged, (uint)ToFlatIndex(c.NewStartingIndex + i)));
 					}
 					break;
-				case NotifyCollectionChangedAction.Move when c.NewItems is not null && c.OldStartingIndex >= 0 && c.NewStartingIndex >= 0:
-					for (var i = 0; i < c.NewItems.Count; i++)
-					{
-						changes.Add(new VectorChangedEventArgs(CollectionChange.ItemRemoved, (uint)ToFlatIndex(c.OldStartingIndex)));
-					}
-					for (var i = 0; i < c.NewItems.Count; i++)
-					{
-						changes.Add(new VectorChangedEventArgs(CollectionChange.ItemInserted, (uint)ToFlatIndex(c.NewStartingIndex + i)));
-					}
-					break;
+				// MUX Reference BindableObservableVectorWrapper.cpp, ProcessCollectionChange: Move is raised as a Reset.
 				default:
 					changes.Add(new VectorChangedEventArgs(CollectionChange.Reset, 0));
 					break;

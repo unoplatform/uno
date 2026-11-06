@@ -157,6 +157,11 @@ partial class ListViewBase
 		{
 			OnIsSelectionActiveChanged();
 		}
+		else if (args.Property == CanDragItemsProperty || args.Property == CanReorderItemsProperty || args.Property == AllowDropProperty)
+		{
+			// TODO Uno: Uno starts item drags through UIElement.CanDrag, see ListViewBase_Reorder.uno.cs.
+			UpdateContainersForDragDrop();
+		}
 		else if (args.Property == ShowsScrollingPlaceholdersProperty)
 		{
 			// Recalculate local field.
@@ -229,6 +234,9 @@ partial class ListViewBase
 				// Will call UpdateVisualState for us.
 				base.PrepareContainerForItemOverride(element, item);
 			}
+
+			// TODO Uno: Uno starts item drags through UIElement.CanDrag, see ListViewBase_Reorder.uno.cs.
+			PrepareContainerForDragDrop((UIElement)element);
 		}
 	}
 
