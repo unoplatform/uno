@@ -166,7 +166,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 
 #if CAN_ASSERT_IMAGE
 #if IS_RUNTIME_UI_TESTS
-			async ValueTask<RawBitmap> Screenshot(string name) => await UITestHelper.ScreenShot((TreeView)App.Query(tv).Single().Element);
+			async ValueTask<RawBitmap> Screenshot(string name)
+			{
+				await Task.Delay(800); // Let the item transitions finish.
+				return await UITestHelper.ScreenShot((TreeView)App.Query(tv).Single().Element);
+			}
 #else
 			async ValueTask<FileInfo> Screenshot(string name) => await App.TakeScreenshotAsync(name);
 #endif
