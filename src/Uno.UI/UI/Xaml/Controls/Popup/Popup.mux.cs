@@ -166,7 +166,7 @@ partial class Popup
 
 			// Cancel animations before flushing pending operations. Canceling an animation requires access to the comp node,
 			// which can be destroyed when we finish closing the popup during flush.
-			// TODO Uno: CancelHideAnimationToPrepareForShow(): needs implicit Hide animations on UIElement.
+			// TODO Uno: CancelHideAnimationToPrepareForShow(): needs UIElement.ShowHide implicit animations, UIElement.Hidden and CUIElement::ComputeKeepVisible.
 
 			FlushPendingKeepVisibleOperations();
 

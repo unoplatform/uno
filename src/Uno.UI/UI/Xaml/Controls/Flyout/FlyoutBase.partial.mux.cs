@@ -1584,8 +1584,9 @@ partial class FlyoutBase
 		// TODO Uno: Presenter's Unloaded, see OnPopupClosed in EnsurePopupAndPresenter.
 	}
 
-	// TODO Uno: Popup.ChildTransitions, PopupThemeTransition and PickerFlyoutThemeTransition are not implemented,
-	// so a flyout opens without its entrance transition.
+	// TODO Uno: a flyout opens without its entrance transition. WinUI's needs layout transition elements (CLayoutTransitionElement),
+	// which render a child at a transition's offset, for Popup.ChildTransitions, PopupThemeTransition and PickerFlyoutThemeTransition.
+	// Uno's Transition only starts a storyboard on the element's Loaded.
 	private protected virtual void PreparePopupTheme(
 		Popup pPopup,
 		MajorPlacementMode placementMode,
