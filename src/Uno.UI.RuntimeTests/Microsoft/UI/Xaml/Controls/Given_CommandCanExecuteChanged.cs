@@ -248,6 +248,39 @@ public class Given_CommandCanExecuteChanged
 		Assert.IsFalse(((Control)control).IsEnabled);
 	}
 
+	// The common case: a page and its view model become unreachable together. The command must not wait for the removal
+	// of a subscription of a button that died with it, queued to the dispatcher, before it can be collected.
+	[TestMethod]
+	[RunsOnUIThread]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
+#endif
+	public async Task When_Owner_And_Command_Dropped_Together_Then_Command_Collected_Without_Dispatcher()
+	{
+		await WindowHelper.WaitForIdle();
+		var (ownerRef, commandRef) = CreateWithOwnCommand();
+
+		// Don't yield to the dispatcher here: the command must not depend on queued work to be collected.
+		CollectWithoutDispatcher([commandRef]);
+
+		if (ownerRef.IsAlive)
+		{
+			Assert.Inconclusive("The button was not collected without yielding on this platform.");
+		}
+
+		Assert.IsFalse(commandRef.IsAlive, "The command is kept alive by the cleanup of a button that died with it.");
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static (WeakReference owner, WeakReference command) CreateWithOwnCommand()
+	{
+		var command = new TestCommand();
+		var button = new Button { Command = command, DataContext = new object() };
+
+		// Tracks resurrection: a short weak reference is cleared even while finalization still keeps the command alive.
+		return (new WeakReference(button), new WeakReference(command, trackResurrection: true));
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static List<WeakReference> CreateNeverLoaded(string controlType, ICommand command)
 	{
