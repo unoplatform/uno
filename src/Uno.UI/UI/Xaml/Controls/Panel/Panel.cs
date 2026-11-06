@@ -37,6 +37,9 @@ public partial class Panel : FrameworkElement, IPanel
 
 	public BrushTransition BackgroundTransition { get; set; }
 
+	// CPanel::m_isIgnoringTransitions in WinUI.
+	internal bool IsIgnoringTransitions { get; set; }
+
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 
 	private protected override void OnLoaded()

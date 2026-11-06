@@ -10,6 +10,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// Exposes the data items in the collection of Items in GridView types to UI Automation.
 /// </summary>
 public partial class GridViewItemAutomationPeer : FrameworkElementAutomationPeer
+	, Provider.IDragProvider
 {
 	private ItemInvokeAdapter _invokeAdapter;
 
@@ -19,9 +20,25 @@ public partial class GridViewItemAutomationPeer : FrameworkElementAutomationPeer
 	}
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
-		=> patternInterface == PatternInterface.Invoke && ListViewBaseItemAutomationPeer.ShouldSupportInvokePattern(Owner)
+	{
+		if (patternInterface == PatternInterface.Drag)
+		{
+			return ListViewBaseItemAutomationPeer.ShouldSupportDragPattern(Owner) ? this : null;
+		}
+
+		return patternInterface == PatternInterface.Invoke && ListViewBaseItemAutomationPeer.ShouldSupportInvokePattern(Owner)
 			? _invokeAdapter ??= new ItemInvokeAdapter(this)
 			: base.GetPatternCore(patternInterface);
+	}
+
+	// IDragProvider
+	public bool IsGrabbed => ListViewBaseItemAutomationPeer.GetIsGrabbed(Owner);
+
+	public string DropEffect => ListViewBaseItemAutomationPeer.GetDropEffect();
+
+	public string[] DropEffects => ListViewBaseItemAutomationPeer.GetDropEffects();
+
+	public Provider.IRawElementProviderSimple[] GetGrabbedItems() => ListViewBaseItemAutomationPeer.GetGrabbedItems(Owner);
 
 	protected override string GetClassNameCore() => nameof(GridViewItem);
 

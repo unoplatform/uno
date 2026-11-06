@@ -6,6 +6,8 @@
 
 using System;
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI;
@@ -926,7 +928,60 @@ partial class ListViewBaseItem
 		}
 	}
 
-	// TODO Uno: OnKeyboardReorder / QueryFor / Get+SetDragIsGrabbed / GoToStateWithFallback / GetLogicalParentForAPProtected (LBI:2217-2352) not ported here.
+	// TODO Uno: OnKeyboardReorder / QueryFor / GoToStateWithFallback / GetLogicalParentForAPProtected (LBI:2217-2352) not ported here.
+
+	// MUX Reference ListViewBaseItem_Partial.cpp, GetDragIsGrabbed/SetDragIsGrabbed
+	// UIAutomation Property: Return whether or not the current item is the primary drag item.
+	internal bool GetDragIsGrabbed() => m_fDragIsGrabbed;
+
+	// UIAutomation Property: Set whether or not the current item is the primary drag item.
+	internal void SetDragIsGrabbed(bool newValue)
+	{
+		bool oldValue = m_fDragIsGrabbed;
+
+		m_fDragIsGrabbed = newValue;
+
+		var spAP = GetOrCreateAutomationPeer();
+		if (spAP is not null && AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged) && oldValue != newValue)
+		{
+			spAP.RaisePropertyChangedEvent(DragPatternIdentifiers.IsGrabbedProperty, oldValue, newValue);
+		}
+	}
+
+	// MUX Reference ListViewBaseItem_Partial.cpp, IsInBottomHalfForExternalReorder
+	// Returns TRUE if the dragPoint is in the topHalf of the item
+	internal bool IsInBottomHalfForExternalReorder(Point dragPoint, Orientation panelOrientation)
+	{
+		double size;
+		double location;
+		bool result = false;
+
+		// depending on the orientation of the panel, we look at either the height or width
+		if (panelOrientation == Orientation.Vertical)
+		{
+			location = dragPoint.Y;
+			size = ActualHeight;
+		}
+		else
+		{
+			location = dragPoint.X;
+			size = ActualWidth;
+		}
+
+		// we only care about the case when the item has moved out of view
+		// that means the pointer location should be before the item
+		if (location < 0)
+		{
+			location += size;
+
+			if (location > size / 4)
+			{
+				result = true;
+			}
+		}
+
+		return result;
+	}
 
 	// MUX Reference ListViewBaseItem_Partial.cpp, lines 2354-2381
 	// Uno-specific: a type test instead of WinUI's exact chrome type index, so presenter subclasses (e.g. RevealListViewItemPresenter) get the chrome as in WinUI.

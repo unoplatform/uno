@@ -12,7 +12,7 @@ public partial class ContainerContentChangingEventArgs
 	// Skipping already declared property Item
 	// Skipping already declared property ItemContainer
 	// Skipping already declared property ItemIndex
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public uint Phase
 	{
@@ -24,14 +24,14 @@ public partial class ContainerContentChangingEventArgs
 #endif
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public void RegisterUpdateCallback(global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ListViewBase, global::Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs> callback)
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs", "RegisterUpdateCallback(TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> callback)");
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public void RegisterUpdateCallback(uint callbackPhase, global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ListViewBase, global::Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs> callback)
 	{

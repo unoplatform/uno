@@ -27,7 +27,7 @@ internal sealed class ItemInvokeAdapter : IInvokeProvider
 	public void Invoke()
 	{
 		if (_automationPeerWeakRef.TryGetTarget(out var automationPeer) &&
-			automationPeer.Owner is SelectorItem listViewBaseItem &&
+			automationPeer.Owner is ListViewBaseItem listViewBaseItem &&
 			ItemsControl.ItemsControlFromItemContainer(listViewBaseItem) is ListViewBase parentListViewBase)
 		{
 			// Notify that UIAutomation has invoked action on ListViewBaseItem

@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal ContainerContentChangingEventArgs(object item, SelectorItem itemContainer, int itemIndex)
 		{
 			Item = item;
-			ItemContainer = itemContainer;
+			RegisterBackpointerToContainer(itemContainer);
 			ItemIndex = itemIndex;
 		}
 
@@ -33,21 +33,21 @@ namespace Microsoft.UI.Xaml.Controls
 		/// of the ListViewBase and is not being used to visualize a data item.
 		/// </summary>
 		/// <remarks>Currently always false in Uno.</remarks>
-		public bool InRecycleQueue { get; }
+		public bool InRecycleQueue { get; internal set; }
 
 		/// <summary>
 		/// Gets the data item associated with this container.
 		/// </summary>
-		public object Item { get; }
+		public object Item { get; internal set; }
 
 		/// <summary>
 		/// Gets the UI container used to display the current data item.
 		/// </summary>
-		public SelectorItem ItemContainer { get; }
+		public SelectorItem ItemContainer => (SelectorItem)m_pContainerBackPointer!;
 
 		/// <summary>
 		/// Gets the index in the ItemsSource of the data item associated with this container.
 		/// </summary>
-		public int ItemIndex { get; }
+		public int ItemIndex { get; internal set; }
 	}
 }

@@ -30,12 +30,28 @@ internal partial class ListViewBaseItemAutomationPeer : FrameworkElementAutomati
 			}
 		}
 
-		// TODO Uno: IDragProvider support is not yet implemented.
-		// Original C++ also supports PatternInterface_Drag when CanDragItems is true
-		// on the parent ListViewBase.
-
+		// TODO Uno: this class is not the base of the public peers. ListViewItemAutomationPeer and
+		// GridViewItemAutomationPeer implement IDragProvider with the helpers below.
 		return base.GetPatternCore(patternInterface);
 	}
+
+	// IDragProvider -----------------------------------------------------------------------------------------------------------------
+	internal static bool ShouldSupportDragPattern(UIElement owner)
+		=> (owner as ListViewBaseItem)?.GetParentListView() is { CanDragItems: true };
+
+	internal static bool GetIsGrabbed(UIElement owner)
+		=> owner is ListViewBaseItem item && item.GetDragIsGrabbed();
+
+	// In the future the effect text should be updated based on what is possible to do with this item.
+	internal static string GetDropEffect()
+		=> DirectUI.DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_DRAG_MOVE");
+
+	// In the future the list of effect should be updated based on what is possible to do with this item.
+	internal static string[] GetDropEffects()
+		=> new[] { GetDropEffect() };
+
+	internal static Provider.IRawElementProviderSimple[] GetGrabbedItems(UIElement owner)
+		=> (owner as ListViewBaseItem)?.GetParentListView()?.GetDragGrabbedItems() ?? global::System.Array.Empty<Provider.IRawElementProviderSimple>();
 
 	// Shared with ListViewItemAutomationPeer and GridViewItemAutomationPeer, whose public base can't be this internal class.
 	internal static bool ShouldSupportInvokePattern(UIElement owner)

@@ -224,12 +224,10 @@ public abstract partial class ModernCollectionBasePanel
 			m_strongHost!.SetIsGrouping(m_cachedIsGrouped);
 
 			spItemsControl = m_strongHost as ItemsControl;
-#if LISTVIEW_PORT_CUTOVER
 			if (spItemsControl is not null)
 			{
 				m_spContainerRecyclingContext = spItemsControl.GetRecyclingContext();
 			}
-#endif
 			m_recyclingItemIndex = unchecked((uint)-1);
 		}
 

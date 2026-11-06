@@ -94,7 +94,7 @@ public partial class ItemsControl : global::Microsoft.UI.Xaml.Controls.Control, 
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemTemplateSelectorProperty.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsPanelProperty.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsSourceProperty.get
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Microsoft.UI.Xaml.DependencyObject GroupHeaderContainerFromItemContainer(global::Microsoft.UI.Xaml.DependencyObject itemContainer)
 	{

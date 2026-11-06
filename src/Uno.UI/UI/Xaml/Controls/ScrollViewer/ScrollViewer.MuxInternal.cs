@@ -18,6 +18,49 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private IDisposable? _directManipulationHandlerSubscription;
 
+		// MUX Reference ScrollViewer_Partial.cpp, IsContentScrollable, tag winui3/release/2.5.1
+		// Determine if content can be scrolled.
+		// It can, if for either dimension scrolling is enabled AND content size is greater than size of viewport.
+		internal void IsContentScrollable(
+			bool ignoreScrollMode,
+			bool ignoreScrollBarVisibility,
+			out bool isContentHorizontallyScrollable,
+			out bool isContentVerticallyScrollable)
+		{
+			isContentHorizontallyScrollable = false;
+			isContentVerticallyScrollable = false;
+
+			if (IsEnabled)
+			{
+				// TODO Uno: no IScrollInfo, the viewport and extent always come from the ScrollViewer itself.
+				// TODO Uno: GetEffective*ScrollMode is not ported, Auto counts as enabled.
+				double minOffset = 0.0;
+
+				var horizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+				var verticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+
+				if (!ignoreScrollBarVisibility)
+				{
+					horizontalScrollBarVisibility = HorizontalScrollBarVisibility;
+					verticalScrollBarVisibility = VerticalScrollBarVisibility;
+				}
+
+				if ((ignoreScrollMode || VerticalScrollMode != ScrollMode.Disabled) &&
+					(ignoreScrollBarVisibility || verticalScrollBarVisibility != ScrollBarVisibility.Disabled) &&
+					(ExtentHeight - minOffset) > ViewportHeight)
+				{
+					isContentVerticallyScrollable = true;
+				}
+
+				if ((ignoreScrollMode || HorizontalScrollMode != ScrollMode.Disabled) &&
+					(ignoreScrollBarVisibility || horizontalScrollBarVisibility != ScrollBarVisibility.Disabled) &&
+					(ExtentWidth - minOffset) > ViewportWidth)
+				{
+					isContentHorizontallyScrollable = true;
+				}
+			}
+		}
+
 		private bool m_isPointerLeftButtonPressed;
 
 		internal bool m_templatedParentHandlesMouseButton;

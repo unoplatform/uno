@@ -76,5 +76,27 @@ namespace Microsoft.UI.Xaml
 		public void SetBinding(DependencyProperty dp, BindingBase binding)
 			=> SetBindingInternal(dp, binding);
 
+
+		// MUX Reference FrameworkElement_partial.cpp, ClipPointToElementBounds, tag winui3/release/2.5.1
+		// Clips the given point (which is relative to the specified FrameworkElement)
+		// to the bounds of this FrameworkElement.
+		internal void ClipPointToElementBounds(FrameworkElement pElementPointRelativeTo, ref Point pPoint)
+		{
+			// Get the transforms and sizes we need.
+			var spToBoundsElement = pElementPointRelativeTo.TransformToVisual(this);
+			var spFromBoundsElement = TransformToVisual(pElementPointRelativeTo);
+			double boundsItemWidth = ActualWidth;
+			double boundsItemHeight = ActualHeight;
+
+			// Transform point to bounds element.
+			var pointRelativeToBoundsElement = spToBoundsElement.TransformPoint(pPoint);
+
+			// Clip
+			pointRelativeToBoundsElement.X = global::System.Math.Max(0, global::System.Math.Min((float)boundsItemWidth, pointRelativeToBoundsElement.X));
+			pointRelativeToBoundsElement.Y = global::System.Math.Max(0, global::System.Math.Min((float)boundsItemHeight, pointRelativeToBoundsElement.Y));
+
+			// Transform back to source element.
+			pPoint = spFromBoundsElement.TransformPoint(pointRelativeToBoundsElement);
+		}
 	}
 }
