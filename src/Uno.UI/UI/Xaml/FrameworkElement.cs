@@ -595,8 +595,15 @@ namespace Microsoft.UI.Xaml
 		internal virtual
 			bool HasFocus()
 		{
-			var focused = VisualTree.GetFocusManagerForElement(this)?.FocusedElement;
-			return focused is not null && (focused == this || this.IsAncestorOf(focused));
+			// MUX Reference FrameworkElement_partial.cpp, FrameworkElement::HasFocus: walk up the visual tree to see if you, or one of your visual children, have the focus.
+			DependencyObject current = VisualTree.GetFocusManagerForElement(this)?.FocusedElement;
+
+			while (current is not null && current != this)
+			{
+				current = VisualTreeHelper.GetParent(current);
+			}
+
+			return current == this;
 		}
 
 		/// <summary>
