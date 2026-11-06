@@ -18,4 +18,4 @@ uid: Uno.Controls.Frame
 ```
 
 > [!NOTE]
-> Before Uno Platform 7.0, `Frame` on Android, iOS and WebAssembly kept every back-stack page in memory unless `FeatureConfiguration.Frame.UseWinUIBehavior` was set to `true`. That mode and the flag have been removed; see [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
+> Before Uno Platform 7.0, `Frame` on Android, iOS and WebAssembly kept every back-stack page in memory unless `FeatureConfiguration.Frame.UseWinUIBehavior` was set to `true`. That mode and the flag have been removed; see [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7.FeatureFlags#frameusewinuibehavior-and-pageispoolingenabled).
