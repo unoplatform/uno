@@ -55,12 +55,11 @@ public class Given_ItemsRepeater_Leak
 		GC.KeepAlive(view);
 	}
 
-#if HAS_UNO // DataTemplate(Func<>) is Uno-only
 	[TestMethod]
 	[RunsOnUIThread]
 	[DataRow(false)]
 	[DataRow(true)]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // The screen is built with DataTemplate(owner, factory), which is Uno-only
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // The screen is built with DataTemplate(Func<>), which is Uno-only
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif
@@ -93,7 +92,6 @@ public class Given_ItemsRepeater_Leak
 			WindowHelper.WindowContent = null;
 		}
 	}
-#endif
 
 	[TestMethod]
 	[RunsOnUIThread]
@@ -339,10 +337,10 @@ public class Given_ItemsRepeater_Leak
 		return refs;
 	}
 
-#if HAS_UNO
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static WeakReference CreateScreenWithFlyout(IEnumerable source, bool show)
 	{
+#if HAS_UNO
 		var screen = new Grid();
 
 		// Like the code generated for x:Bind in a page, the item template references the page that declares it.
@@ -363,11 +361,13 @@ public class Given_ItemsRepeater_Leak
 		}
 
 		return new WeakReference(screen);
+#else
+		throw new NotSupportedException("DataTemplate(Func<>) is Uno-only.");
+#endif
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static bool IsLoaded(WeakReference reference) => reference.Target is FrameworkElement { IsLoaded: true };
-#endif
 
 	private sealed class CountingObservableVector : List<object>, IObservableVector<object>
 	{
