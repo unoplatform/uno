@@ -849,6 +849,9 @@ public partial class ListViewBase
 				// let's do the work now
 				base.ClearContainerForItemOverride(container, item!);
 
+				// TODO Uno: Prepare sets the DataContext of the container, which would hold on to the item.
+				container.SetValue(DataContextProperty, null);
+
 				if (toClearIndex == 0)
 				{
 					// UINT
