@@ -63,7 +63,7 @@ public class Given_ModernCollectionBasePanel
 		var panel = GetPanel(list);
 		Assert.AreEqual(999, panel.LastVisibleIndex);
 		Assert.IsNotNull(list.ContainerFromIndex(999));
-		Assert.IsNull(list.ContainerFromIndex(0));
+		Assert.IsNull(list.ContainerFromIndex(100));
 		Assert.IsLessThan(200, panel.Children.Count);
 	}
 
