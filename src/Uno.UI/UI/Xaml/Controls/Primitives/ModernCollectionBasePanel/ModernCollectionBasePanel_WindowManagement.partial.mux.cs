@@ -673,6 +673,11 @@ public abstract partial class ModernCollectionBasePanel
 	// (instead of waiting for an event to tell us of a window).
 	// This method gets a window from the ScrollViewer's offset, if possible. If a ScrollViewer isn't
 	// available, we go with a default window.
+	// TODO Uno: WinUI always finds its RootScrollViewer, whose viewport is the window. Uno has none, so an
+	// ItemsControl without a ScrollViewer in its template uses what it's given, or the window if that's unbounded.
+	private static double GetVisibleLengthWithoutScrollViewer(double availableLength, double? windowLength)
+		=> !double.IsInfinity(availableLength) ? availableLength : windowLength ?? 0;
+
 	private void PrimeVisibleWindow(bool allowTrackingOnViewportSizeChange = false)
 	{
 		Rect ourVisibleWindow = default;
@@ -707,13 +712,13 @@ public abstract partial class ModernCollectionBasePanel
 			switch (panningOrientation)
 			{
 				case Orientation.Horizontal:
-					ourVisibleWindow.Width = 0;
+					ourVisibleWindow.Width = GetVisibleLengthWithoutScrollViewer(m_windowState.lastAvailableSize.Width, XamlRoot?.Size.Width);
 					ourVisibleWindow.Height = m_windowState.lastAvailableSize.Height;
 					break;
 
 				case Orientation.Vertical:
 					ourVisibleWindow.Width = m_windowState.lastAvailableSize.Width;
-					ourVisibleWindow.Height = 0;
+					ourVisibleWindow.Height = GetVisibleLengthWithoutScrollViewer(m_windowState.lastAvailableSize.Height, XamlRoot?.Size.Height);
 					break;
 
 				default:
@@ -723,7 +728,8 @@ public abstract partial class ModernCollectionBasePanel
 					break;
 			}
 
-			m_windowState.validWindowCalculation = false;
+			// TODO Uno: see GetVisibleLengthWithoutScrollViewer.
+			m_windowState.validWindowCalculation = IsInLiveTree;
 		}
 
 		if (allowTrackingOnViewportSizeChange)
