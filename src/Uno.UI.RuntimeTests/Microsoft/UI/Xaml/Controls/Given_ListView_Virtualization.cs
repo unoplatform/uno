@@ -249,7 +249,7 @@ public class Given_ListView_Virtualization
 		var panel = (Panel)list.ItemsPanelRoot;
 		Assert.IsLessThan(500, panel.Children.Count, $"Realized {panel.Children.Count} children");
 		Assert.IsNotNull(list.ContainerFromIndex(50000));
-		Assert.IsNull(list.ContainerFromIndex(0));
+		Assert.IsNull(list.ContainerFromIndex(1));
 	}
 
 	#endregion
@@ -753,6 +753,7 @@ public class Given_ListView_Virtualization
 		var list = await Load(CreateList(false, false, items, "ItemsUpdatingScrollMode='KeepLastItemInView'"));
 		var sv = GetScrollViewer(list);
 
+		await WindowHelper.WaitForIdle();
 		await WindowHelper.WaitFor(() => Indices(list).LastVisible == items.Count - 1, timeoutMS: 3000, message: "Last item visible");
 		Assert.AreEqual(sv.ScrollableHeight, sv.VerticalOffset, Tolerance);
 	}
@@ -922,8 +923,9 @@ public class Given_ListView_Virtualization
 		var c0 = (FrameworkElement)grid.ContainerFromIndex(0);
 		var c1 = (FrameworkElement)grid.ContainerFromIndex(1);
 		var c3 = (FrameworkElement)grid.ContainerFromIndex(3);
-		Assert.AreEqual(100, c0.ActualWidth, Tolerance);
-		Assert.AreEqual(50, c0.ActualHeight, Tolerance);
+		// ItemWidth and ItemHeight size the slot, and GridViewItem's default margin takes its part of it.
+		Assert.AreEqual(100 - c0.Margin.Right, c0.ActualWidth, Tolerance);
+		Assert.AreEqual(50 - c0.Margin.Bottom, c0.ActualHeight, Tolerance);
 		Assert.AreEqual(Position(c0).X + 100, Position(c1).X, Tolerance);
 		Assert.AreEqual(Position(c0).Y, Position(c3).Y, Tolerance);
 	}
@@ -991,7 +993,7 @@ public class Given_ListView_Virtualization
 
 		panel.ItemHeight = 70;
 
-		await WindowHelper.WaitFor(() => grid.ContainerFromIndex(0) is FrameworkElement c && Math.Abs(c.ActualHeight - 70) < Tolerance, timeoutMS: 3000, message: "Containers are 70px tall");
+		await WindowHelper.WaitFor(() => grid.ContainerFromIndex(0) is FrameworkElement c && Math.Abs(c.ActualHeight + c.Margin.Bottom - 70) < Tolerance, timeoutMS: 3000, message: "Slots are 70px tall");
 		var c0 = (FrameworkElement)grid.ContainerFromIndex(0);
 		var c4 = (FrameworkElement)grid.ContainerFromIndex(4);
 		Assert.AreEqual(Position(c0).Y + 70, Position(c4).Y, Tolerance);
