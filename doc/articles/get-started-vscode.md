@@ -9,7 +9,6 @@ This guide will walk you through the setup process for building apps with Uno Pl
 See these sections for information about using Uno Platform with:
 
 - [Codespaces](features/working-with-codespaces.md)
-- [Ona](features/working-with-gitpod.md)
 
 ## Prerequisites
 
