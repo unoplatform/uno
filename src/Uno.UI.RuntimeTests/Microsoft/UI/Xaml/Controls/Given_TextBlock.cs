@@ -1262,6 +1262,223 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsEmpty(states, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
 		}
 
+		private const string TrimmingLongText = "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore";
+		private const string TrimmingLongTextThenShort = TrimmingLongText + "\nHi";
+		private const string TrimmingShortTextThenLong = "Hi\n" + TrimmingLongText;
+		private const string TrimmingThreeShortLines = "a\nb\nc";
+		private const string TrimmingLongWord = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+
+		private static async Task<(TextBlock sut, Border container, List<bool> states)> LoadTrimmingSut(string text, TextTrimming trimming)
+		{
+			var sut = new TextBlock { Text = text, TextTrimming = trimming };
+			var container = new Border { Width = 100, Child = sut };
+			var states = new List<bool>();
+			sut.IsTextTrimmedChanged += (s, e) => states.Add(sut.IsTextTrimmed);
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle();
+
+			return (sut, container, states);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(TextTrimming.CharacterEllipsis)]
+		[DataRow(TextTrimming.WordEllipsis)]
+		public async Task When_TextTrimming_Ellipsis_Narrow(TextTrimming trimming)
+		{
+			var (sut, _, states) = await LoadTrimmingSut(TrimmingLongText, trimming);
+
+			Assert.IsTrue(sut.IsTextTrimmed);
+			CollectionAssert.AreEqual(new[] { true }, states);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(TextTrimming.CharacterEllipsis)]
+		[DataRow(TextTrimming.WordEllipsis)]
+		[DataRow(TextTrimming.Clip)]
+		public async Task When_TextTrimming_Text_Fits(TextTrimming trimming)
+		{
+			var (sut, _, states) = await LoadTrimmingSut("Hi", trimming);
+
+			Assert.IsFalse(sut.IsTextTrimmed);
+			Assert.IsEmpty(states);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(TextTrimming.CharacterEllipsis)]
+		[DataRow(TextTrimming.WordEllipsis)]
+		[DataRow(TextTrimming.Clip)]
+		public async Task When_TextTrimming_Container_Grows(TextTrimming trimming)
+		{
+			var (sut, container, states) = await LoadTrimmingSut(TrimmingLongText, trimming);
+			Assert.IsTrue(sut.IsTextTrimmed);
+
+			container.Width = 2000;
+			sut.UpdateLayout();
+
+			Assert.IsFalse(sut.IsTextTrimmed);
+			await WindowHelper.WaitFor(() => states.Count == 2); // WinUI raises the event asynchronously
+			CollectionAssert.AreEqual(new[] { true, false }, states);
+
+			container.Width = 100;
+			sut.UpdateLayout();
+
+			Assert.IsTrue(sut.IsTextTrimmed);
+			await WindowHelper.WaitFor(() => states.Count == 3);
+			CollectionAssert.AreEqual(new[] { true, false, true }, states);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(TextTrimming.CharacterEllipsis)]
+		[DataRow(TextTrimming.WordEllipsis)]
+		[DataRow(TextTrimming.Clip)]
+		public async Task When_TextTrimming_Text_Shortens(TextTrimming trimming)
+		{
+			var (sut, _, states) = await LoadTrimmingSut(TrimmingLongText, trimming);
+			Assert.IsTrue(sut.IsTextTrimmed);
+
+			sut.Text = "Hi";
+			sut.UpdateLayout();
+
+			Assert.IsFalse(sut.IsTextTrimmed);
+			await WindowHelper.WaitFor(() => states.Count == 2); // WinUI raises the event asynchronously
+			CollectionAssert.AreEqual(new[] { true, false }, states);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimming_Text_Becomes_Empty()
+		{
+			var (sut, _, states) = await LoadTrimmingSut(TrimmingLongText, TextTrimming.CharacterEllipsis);
+			Assert.IsTrue(sut.IsTextTrimmed);
+
+			sut.Text = "";
+			sut.UpdateLayout();
+
+			Assert.IsFalse(sut.IsTextTrimmed);
+			await WindowHelper.WaitFor(() => states.Count == 2); // WinUI raises the event asynchronously
+			CollectionAssert.AreEqual(new[] { true, false }, states);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimming_Clip_Overflows_Only_With_Margin()
+		{
+			var sut = new TextBlock { Text = "Hello", TextTrimming = TextTrimming.Clip };
+			var container = new Border { Child = sut, HorizontalAlignment = HorizontalAlignment.Left };
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(sut.IsTextTrimmed);
+
+			// The text alone fits the container, but not once the margin is taken out of it.
+			container.Width = Math.Ceiling(sut.ActualWidth) + 2;
+			sut.Margin = new Thickness(0, 0, 10, 0);
+			sut.UpdateLayout();
+
+			Assert.IsTrue(sut.IsTextTrimmed);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(TextTrimming.CharacterEllipsis)]
+		[DataRow(TextTrimming.Clip)]
+		public async Task When_TextTrimming_Inlines_Replaced_By_Text(TextTrimming trimming)
+		{
+			// Back on plain text, the last line's state decides again rather than any line's.
+			var sut = new TextBlock { TextTrimming = trimming };
+			sut.Inlines.Add(new Run { Text = TrimmingLongText });
+			sut.Inlines.Add(new LineBreak());
+			sut.Inlines.Add(new Run { Text = "Hi" });
+			var container = new Border { Width = 100, Child = sut };
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(sut.IsTextTrimmed);
+
+			sut.Text = TrimmingLongText + "!\nHi";
+			sut.UpdateLayout();
+
+			Assert.AreEqual(trimming == TextTrimming.Clip, sut.IsTextTrimmed);
+		}
+
+		// Plain text on WinUI uses DWrite, where only the last line's isTrimmed counts, lines hidden by MaxLines or the
+		// height included. Inlines, CharacterSpacing and Clip use the block layout, where any collapsed line counts.
+		[TestMethod]
+		[RunsOnUIThread]
+		// Plain text, ellipsis
+		[DataRow(TrimmingLongTextThenShort, TextTrimming.CharacterEllipsis, TextWrapping.NoWrap, 0, double.NaN, false, 0, false)]
+		[DataRow(TrimmingShortTextThenLong, TextTrimming.CharacterEllipsis, TextWrapping.NoWrap, 0, double.NaN, false, 0, true)]
+		[DataRow(TrimmingLongText, TextTrimming.CharacterEllipsis, TextWrapping.Wrap, 0, double.NaN, false, 0, false)]
+		[DataRow(TrimmingLongText, TextTrimming.CharacterEllipsis, TextWrapping.Wrap, 2, double.NaN, false, 0, true)]
+		[DataRow(TrimmingLongText, TextTrimming.WordEllipsis, TextWrapping.Wrap, 2, double.NaN, false, 0, true)]
+		[DataRow(TrimmingLongText, TextTrimming.CharacterEllipsis, TextWrapping.Wrap, 0, 30d, false, 0, true)]
+		[DataRow("a b", TextTrimming.CharacterEllipsis, TextWrapping.Wrap, 1, double.NaN, false, 0, false)]
+		[DataRow("Hi", TextTrimming.CharacterEllipsis, TextWrapping.NoWrap, 0, 5d, false, 0, false)]
+		[DataRow(TrimmingLongWord, TextTrimming.CharacterEllipsis, TextWrapping.Wrap, 0, double.NaN, false, 0, false)]
+		[DataRow(TrimmingLongWord, TextTrimming.CharacterEllipsis, TextWrapping.WrapWholeWords, 0, double.NaN, false, 0, true)]
+		[DataRow(TrimmingThreeShortLines, TextTrimming.CharacterEllipsis, TextWrapping.NoWrap, 2, double.NaN, false, 0, true)]
+		// Plain text, no trimming: only MaxLines trims
+		[DataRow(TrimmingLongText, TextTrimming.None, TextWrapping.NoWrap, 0, double.NaN, false, 0, false)]
+		[DataRow(TrimmingLongText, TextTrimming.None, TextWrapping.NoWrap, 1, double.NaN, false, 0, false)]
+		[DataRow(TrimmingLongText, TextTrimming.None, TextWrapping.Wrap, 0, 30d, false, 0, false)]
+		[DataRow(TrimmingLongText, TextTrimming.None, TextWrapping.Wrap, 2, double.NaN, false, 0, true)]
+		[DataRow(TrimmingThreeShortLines, TextTrimming.None, TextWrapping.NoWrap, 2, double.NaN, false, 0, true)]
+		// Block layout: inlines or CharacterSpacing
+		[DataRow(TrimmingLongTextThenShort, TextTrimming.CharacterEllipsis, TextWrapping.NoWrap, 0, double.NaN, true, 0, true)]
+		[DataRow(TrimmingLongTextThenShort, TextTrimming.CharacterEllipsis, TextWrapping.NoWrap, 0, double.NaN, false, 100, true)]
+		[DataRow(TrimmingLongText, TextTrimming.CharacterEllipsis, TextWrapping.Wrap, 2, double.NaN, true, 0, true)]
+		[DataRow(TrimmingLongText, TextTrimming.None, TextWrapping.Wrap, 2, double.NaN, true, 0, false)]
+		[DataRow(TrimmingLongText, TextTrimming.None, TextWrapping.Wrap, 2, double.NaN, false, 100, false)]
+		// Block layout: Clip
+		[DataRow(TrimmingLongText, TextTrimming.Clip, TextWrapping.NoWrap, 0, double.NaN, false, 0, true)]
+		[DataRow(TrimmingLongText, TextTrimming.Clip, TextWrapping.Wrap, 0, double.NaN, false, 0, false)]
+		[DataRow(TrimmingLongText, TextTrimming.Clip, TextWrapping.Wrap, 2, double.NaN, false, 0, true)]
+		[DataRow(TrimmingLongText, TextTrimming.Clip, TextWrapping.Wrap, 0, 30d, false, 0, true)]
+		[DataRow(TrimmingLongTextThenShort, TextTrimming.Clip, TextWrapping.NoWrap, 0, double.NaN, false, 0, true)]
+		[DataRow("Hi", TextTrimming.Clip, TextWrapping.NoWrap, 0, 5d, false, 0, false)]
+		public async Task When_TextTrimming_Matrix(string text, TextTrimming trimming, TextWrapping wrapping, int maxLines, double height, bool useInlines, int characterSpacing, bool expected)
+		{
+			var sut = new TextBlock
+			{
+				TextTrimming = trimming,
+				TextWrapping = wrapping,
+				MaxLines = maxLines,
+				CharacterSpacing = characterSpacing,
+			};
+
+			if (useInlines)
+			{
+				var parts = text.Split('\n');
+				for (var i = 0; i < parts.Length; i++)
+				{
+					if (i > 0)
+					{
+						sut.Inlines.Add(new LineBreak());
+					}
+					sut.Inlines.Add(new Run { Text = parts[i] });
+				}
+			}
+			else
+			{
+				sut.Text = text;
+			}
+
+			var container = new Border { Width = 100, Height = height, Child = sut };
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(expected, sut.IsTextTrimmed);
+		}
+
 		[TestMethod]
 		public async Task When_Padding()
 		{
