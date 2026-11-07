@@ -22,12 +22,17 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			Clear();
 		}
 
+		/// <summary>
+		/// Clears all existing custom UI overrides.
+		/// </summary>
 		public void Clear()
 		{
 			IsGlyphVisible = true;
 			IsContentVisible = true;
 			IsCaptionVisible = true;
 			Caption = string.Empty;
+			Content = null;
+			ContentAnchor = default;
 		}
 	}
 }
