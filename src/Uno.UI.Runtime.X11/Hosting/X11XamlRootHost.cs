@@ -127,13 +127,13 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 		// Note: the timing of XamlRootMap.Register is very fragile. It needs to be early enough
 		// so things like UpdateWindowPropertiesFromPackage can read the DPI, but also late enough so that
 		// the X11Window is "initialized".
+		// The frame pacer must exist before XamlRootMap.Register, which asks the new host for any frame already
+		// requested, and before UpdateWindowPropertiesFromPackage: reading the DPI creates the DisplayInformation
+		// extension, whose UpdateDetails reports the screen refresh rate through UpdateRenderTimerFps.
+		_framePacer = CreateFramePacer();
+
 		_windowToHost[winUIWindow] = this;
 		XamlRootMap.Register(xamlRoot, this);
-
-		// The frame pacer must exist before UpdateWindowPropertiesFromPackage: reading the DPI
-		// creates the DisplayInformation extension, whose UpdateDetails reports the screen
-		// refresh rate through UpdateRenderTimerFps.
-		_framePacer = CreateFramePacer();
 
 		UpdateWindowPropertiesFromPackage();
 

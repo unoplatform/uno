@@ -93,7 +93,18 @@ internal partial class X11XamlRootHost
 
 		while (true)
 		{
-			var ret = X11Helper.poll(fds, 1, 1000); // timeout every second to see if the window is closed
+			int ret;
+			if (HasQueuedEvents(x11Window.Display))
+			{
+				// Another thread's round trip on this display (the render thread's, every frame) can read events into
+				// Xlib's queue, where poll never sees them: they would wait for the next unrelated event on the socket.
+				ret = 1;
+				fds[0].revents = X11Helper.POLLIN;
+			}
+			else
+			{
+				ret = X11Helper.poll(fds, 1, 1000); // timeout every second to see if the window is closed
+			}
 
 			if (Closed.IsCompleted)
 			{
@@ -125,6 +136,14 @@ internal partial class X11XamlRootHost
 			else if ((fds[0].revents & X11Helper.POLLIN) == 0)
 			{
 				continue;
+			}
+
+			static bool HasQueuedEvents(IntPtr display)
+			{
+				using (X11Helper.XLock(display))
+				{
+					return X11Helper.XPending(display) > 0;
+				}
 			}
 
 			// Only hold the lock when fetching the next event
