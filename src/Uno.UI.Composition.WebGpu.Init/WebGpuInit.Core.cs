@@ -346,7 +346,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnDeviceLost(DeviceLostReason reason, byte* message, void* userdata)
-		=> System.Console.Error.WriteLine($"[webgpu] device lost ({reason}): {Text(message)}");
+		=> System.Console.Error.WriteLine($"[webgpu] device lost ({reason}): {Text(message)}. Rendering has stopped and is not recovered.");
 
 	private static string DescribeAdapter(Adapter* adapter, out AdapterType type, out BackendType backend)
 	{
