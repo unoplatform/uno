@@ -594,25 +594,18 @@ public sealed class TestIdeClient : IDisposable
 		_rpcClient = JsonRpc.Attach(_pipeClient);
 	}
 
-	public async Task SendToDevServerAsync(Uno.UI.RemoteControl.Messaging.IdeChannel.IdeMessage envelope, CancellationToken ct)
+	public async Task SendToDevServerAsync(Uno.UI.RemoteControl.Messaging.IdeChannel.IdeMessage message, CancellationToken ct)
 	{
-		try
+		await EnsureConnectedAsync(ct);
+		if (_rpcClient is null)
 		{
-			await EnsureConnectedAsync(ct);
-			if (_rpcClient is null)
-			{
-				// not connected
-				return;
-			}
+			throw new InvalidOperationException("The dev server was started without an IDE channel.");
+		}
 
-			// IIdeChannelServer.SendToDevServerAsync accepts an IdeMessageEnvelope and a CancellationToken
-			// Call the method by name using JsonRpc
-			await _rpcClient.InvokeWithParameterObjectAsync("SendToDevServerAsync", new object[] { envelope, ct });
-		}
-		catch (Exception ex)
-		{
-			// Best-effort logging into helper output
-			try { _helper?.ConsoleOutput.Contains(ex.Message); } catch { }
-		}
+		// IIdeChannelServer.SendToDevServerAsync takes the message wrapped in an IdeMessageEnvelope.
+		await _rpcClient.InvokeWithCancellationAsync(
+			"SendToDevServerAsync",
+			[Uno.UI.RemoteControl.Host.IdeChannel.IdeMessageSerializer.Serialize(message)],
+			ct);
 	}
 }

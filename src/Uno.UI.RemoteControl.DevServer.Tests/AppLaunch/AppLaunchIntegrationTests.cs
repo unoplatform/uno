@@ -165,7 +165,6 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 	}
 
 	[TestMethod]
-	[Ignore]
 	public async Task WhenRegisteredAndRuntimeConnects_SuccessEventEmitted_UsingIdeChannel()
 	{
 		// PRE-ARRANGE: Create a solution file
@@ -215,7 +214,92 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			AssertHasEvent(events, "uno/dev-server/app-launch/launched");
 			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
 
+			// The connection must be paired with the launch the IDE registered.
+			AssertEventHasProperty(
+				events,
+				"uno/dev-server/app-launch/connected",
+				"WasIdeInitiated",
+				"True");
+
 			helper.ConsoleOutput.Length.Should().BeGreaterThan(0, "Dev server should produce some output");
+		}
+		finally
+		{
+			await helper.StopAsync(CT);
+			DeleteIfExists(filePath);
+
+			TestContext.WriteLine("Dev Server Output:");
+			TestContext.WriteLine(helper.ConsoleOutput);
+		}
+	}
+
+	[TestMethod]
+	public async Task WhenRegisteredUsingIdeChannelAfterConnectionsCameAndWent_LaunchRegisteredOnce()
+	{
+		// PRE-ARRANGE: Create a solution file
+		var solution = SolutionHelper;
+		await solution.CreateSolutionFileAsync();
+
+		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_idechannel_once"));
+		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile, enableIdeChannel: true);
+
+		try
+		{
+			// ARRANGE
+			var started = await helper.StartAsync(CT);
+			helper.EnsureStarted();
+
+			var asm = typeof(AppLaunchIntegrationTests).Assembly;
+			var mvid = ApplicationInfoHelper.GetMvid(asm);
+			var platform = ApplicationInfoHelper.GetTargetPlatform(asm);
+			var isDebug = Debugger.IsAttached;
+
+			// The IDE stays connected for the whole session, as Visual Studio does.
+			using var ide = helper.CreateIdeChannelClient();
+			await ide.EnsureConnectedAsync(CT);
+
+			// ACT - STEP 1: Earlier debug sessions connect and disconnect
+			for (var i = 0; i < 3; i++)
+			{
+				var earlierClient = RemoteControlClient.Initialize(
+					typeof(AppLaunchIntegrationTests),
+					[new ServerEndpointAttribute("localhost", helper.Port)],
+					_serverProcessorAssembly,
+					autoRegisterAppIdentity: false);
+
+				await WaitForClientConnectionAsync(earlierClient, TimeSpan.FromSeconds(10));
+				await earlierClient.DisposeAsync();
+			}
+
+			// ACT - STEP 2: The IDE announces one launch, then the application connects
+			await ide.SendToDevServerAsync(new AppLaunchRegisterIdeMessage(mvid, platform, isDebug, "UnitTestIDE", "unit-plugin"), CT);
+
+			var rcClient = RemoteControlClient.Initialize(
+				typeof(AppLaunchIntegrationTests),
+				[new ServerEndpointAttribute("localhost", helper.Port)],
+				_serverProcessorAssembly,
+				autoRegisterAppIdentity: true);
+
+			await WaitForClientConnectionAsync(rcClient, TimeSpan.FromSeconds(10));
+
+			// ACT - STEP 3: Stop and gather telemetry events
+			await Task.Delay(1500, CT);
+			await helper.AttemptGracefulShutdownAsync(CT);
+
+			// ASSERT
+			var events = ParseTelemetryFileIfExists(filePath);
+			started.Should().BeTrue();
+			WriteEventsList(events);
+
+			events
+				.Count(e => e.Json.RootElement.TryGetProperty("EventName", out var n) && n.GetString() == "uno/dev-server/app-launch/launched")
+				.Should().Be(1, "one launch was announced, whatever the number of earlier connections");
+
+			AssertEventHasProperty(
+				events,
+				"uno/dev-server/app-launch/connected",
+				"WasIdeInitiated",
+				"True");
 		}
 		finally
 		{

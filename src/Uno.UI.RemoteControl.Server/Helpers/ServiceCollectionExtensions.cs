@@ -137,6 +137,11 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		/// <summary>
 		/// Registers the core devserver services required to run <see cref="RemoteControlServer"/>.
 		/// </summary>
+		/// <remarks>
+		/// Launches announced by the IDE also need exactly one <see cref="AppLaunch.AppLaunchIdeMessageHandler"/> per IDE
+		/// channel, resolved at startup. Don't register a second one here when the channel comes from another container:
+		/// the Host creates its handler in its global provider, and a second handler registers each launch twice.
+		/// </remarks>
 		public static IServiceCollection AddRemoteControlServerCore(this IServiceCollection services)
 		{
 			services.AddScoped<IRemoteControlProcessorFactory, DefaultRemoteControlProcessorFactory>();
