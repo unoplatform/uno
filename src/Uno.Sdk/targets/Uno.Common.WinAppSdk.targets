@@ -110,6 +110,14 @@
 	<Import Project="Uno.SingleProject.WinAppSdk.targets"
 			Condition=" $(_IsUnoSingleProject) == 'true' " />
 
+	<!-- The SkiaSharp and ANGLE native packages carry their PDBs as native assets: 226 MB against 17 MB of DLLs. -->
+	<Target Name="_UnoRemoveSkiaNativePdbs" AfterTargets="ResolvePackageAssets">
+		<ItemGroup>
+			<NativeCopyLocalItems Remove="@(NativeCopyLocalItems)"
+				Condition="'%(Extension)' == '.pdb' And $([System.String]::Copy('%(NuGetPackageId)').StartsWith('SkiaSharp.NativeAssets.'))" />
+		</ItemGroup>
+	</Target>
+
 	<Target Name="_UnoValidateWinAppSDK3548"
 			BeforeTargets="BeforeBuild" 
 			Condition="
