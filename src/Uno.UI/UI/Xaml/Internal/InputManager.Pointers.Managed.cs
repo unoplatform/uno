@@ -905,7 +905,7 @@ internal partial class InputManager
 				}
 
 				// #1.1 - Refresh OriginalSource
-				if (isOriginalSourceStale)
+				if (isOriginalSourceStale && !IsStillHitTarget(originalSource))
 				{
 					HitTestOrRoot(args.CoreArgs, out originalSource!, reason: "after_leave_with_capture", entryPoint, entryLine);
 					isOriginalSourceStale = false;
@@ -946,7 +946,7 @@ internal partial class InputManager
 				}
 
 				// #1.1 - Refresh OriginalSource
-				if (isOriginalSourceStale)
+				if (isOriginalSourceStale && !IsStillHitTarget(originalSource))
 				{
 					HitTestOrRoot(args.CoreArgs, out originalSource!, reason: "after_leave", entryPoint, entryLine);
 					isOriginalSourceStale = false;
@@ -959,7 +959,7 @@ internal partial class InputManager
 			}
 
 			// #2.1 - Refresh OriginalSource
-			if (isOriginalSourceStale && needsNonStaleOriginalSource)
+			if (isOriginalSourceStale && needsNonStaleOriginalSource && !IsStillHitTarget(originalSource))
 			{
 				HitTestOrRoot(args.CoreArgs, out originalSource!, reason: "after_enter", entryPoint, entryLine);
 			}
@@ -969,6 +969,11 @@ internal partial class InputManager
 
 		#region Helpers
 
+		// The tree is flagged as altered when an element is removed, collapsed or recycled. A source that is still live and
+		// hit-test visible is kept, as WinUI dispatches all the events of an input from a single hit test.
+		private static bool IsStillHitTarget(UIElement originalSource)
+			=> originalSource.IsActiveInVisualTree && originalSource.GetHitTestVisibility() == HitTestability.Visible;
+
 		private void HitTestIfStale(
 			PointerEventDispatchResult result,
 			PointerRoutedEventArgs args,
@@ -977,7 +982,7 @@ internal partial class InputManager
 			[CallerMemberName] string entryPoint = "",
 			[CallerLineNumber] int entryLine = -1)
 		{
-			if (result is { VisualTreeAltered: true })
+			if (result is { VisualTreeAltered: true } && !IsStillHitTarget(originalSource))
 			{
 				// The visual tree has been modified in a way that requires performing a new hit test.
 				// Note: we mute the nullable annotation for the originalSource as at this point it's impossible to return null.
