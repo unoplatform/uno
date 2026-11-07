@@ -58,6 +58,11 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	public bool IsRunning => _devServerProcess != null && !_devServerProcess.HasExited;
 
 	/// <summary>
+	/// Gets the exit code of the dev server process once it has exited on its own, or null while it is running or after it was stopped.
+	/// </summary>
+	public int? ExitCode => _devServerProcess is { HasExited: true } process ? process.ExitCode : null;
+
+	/// <summary>
 	/// Gets the IDE channel ID if available from environment variables.
 	/// </summary>
 	public Guid? IdeChannelId
