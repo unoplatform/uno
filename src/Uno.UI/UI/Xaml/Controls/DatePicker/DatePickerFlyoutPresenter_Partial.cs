@@ -74,6 +74,12 @@ namespace Microsoft.UI.Xaml.Controls
 		//	spInnerInstance.DefaultStyleKey = typeof(DatePickerFlyoutPresenter);
 		//}
 
+		// UNO: WinUI registers the name of an element created in code in its template namescope when it enters the tree
+		// (CFrameworkElement::EnterImpl). Do it here so the template's ElementName bindings to the selectors resolve
+		// (e.g. MonochromaticOverlayPresenter.SourceElement).
+		private void RegisterTemplateName(FrameworkElement element)
+			=> (TemplatedRoot is DependencyObject root ? NameScope.GetNameScope(root) : null)?.RegisterName(element.Name, element);
+
 		protected override void OnApplyTemplate()
 		{
 			//Control spControlProtected;
@@ -298,6 +304,7 @@ namespace Microsoft.UI.Xaml.Controls
 				spLSAsControl.HorizontalContentAlignment = HorizontalAlignment.Left;
 				spLSAsControl.Padding = monthPadding;
 				spMonthPicker.Name = "MonthLoopingSelector";
+				RegisterTemplateName(spMonthPicker);
 				if (_tpFirstPickerHost != null)
 				{
 					//_tpFirstPickerHost.Child = spLSAsUI;
@@ -329,6 +336,7 @@ namespace Microsoft.UI.Xaml.Controls
 				spLSAsControl.HorizontalContentAlignment = HorizontalAlignment.Center;
 				spLSAsControl.Padding = itemPadding;
 				spLSAsControl.Name = "DayLoopingSelector";
+				RegisterTemplateName(spDayPicker);
 				if (_tpSecondPickerHost != null)
 				{
 					//_tpSecondPickerHost.Child = spLSAsUI;
@@ -362,6 +370,7 @@ namespace Microsoft.UI.Xaml.Controls
 				spLSAsControl.HorizontalContentAlignment = HorizontalAlignment.Center;
 				spLSAsControl.Padding = itemPadding;
 				spLSAsControl.Name = "YearLoopingSelector";
+				RegisterTemplateName(spYearPicker);
 				// The MUX source guards this assignment with _tpSecondPickerHost, which is a typo
 				// (the year picker is hosted by the third host); checking _tpThirdPickerHost avoids
 				// an NRE / mis-attachment if a template provides the third host without the second.

@@ -22,5 +22,20 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	public CompositionBrush? GetSourceParameter(string name) => _sourceParameters.TryGetValue(name, out var result) ? result : null;
 
-	public void SetSourceParameter(string name, CompositionBrush source) => _sourceParameters[name] = source;
+	public void SetSourceParameter(string name, CompositionBrush source)
+	{
+		var previous = GetSourceParameter(name);
+		if (ReferenceEquals(previous, source))
+		{
+			return;
+		}
+
+		// Track the source so that its own changes (e.g. a VisualSurface's SourceOffset) re-render this brush.
+		OnCompositionPropertyChanged(previous, source, name);
+		_sourceParameters[name] = source;
+		OnSourceParametersChanged();
+		OnPropertyChanged(name, false);
+	}
+
+	partial void OnSourceParametersChanged();
 }

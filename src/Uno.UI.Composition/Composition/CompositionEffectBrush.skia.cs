@@ -18,6 +18,8 @@ public partial class CompositionEffectBrush : CompositionBrush
 	private IEffectFilter? _filter;
 	private EffectNode? _tree;
 	private bool _hasBackdropBrushInput;
+	// Set when a source parameter (or one of its sub-properties) changed since the graph was parsed.
+	private bool _sourcesChanged;
 
 	internal bool HasBackdropBrushInput
 	{
@@ -25,7 +27,37 @@ public partial class CompositionEffectBrush : CompositionBrush
 		private set => SetProperty(ref _hasBackdropBrushInput, value);
 	}
 
-	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
+	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput || HasLiveSourceInput;
+
+	// A source whose content changes without notifying us (e.g. a CompositionVisualSurface of a scrolling visual,
+	// as used by MonochromaticOverlayPresenter) must be re-rasterized on every paint, like a live VisualSurface in WinUI.
+	private bool HasLiveSourceInput
+	{
+		get
+		{
+			foreach (var source in _sourceParameters.Values)
+			{
+				if (source is not CompositionBackdropBrush && source.RequiresRepaintOnEveryFrame)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	partial void OnSourceParametersChanged() => _sourcesChanged = true;
+
+	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+	{
+		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+
+		if (isSubPropertyChange)
+		{
+			_sourcesChanged = true;
+		}
+	}
 
 	private float _backdropBlurSigma;
 
@@ -33,6 +65,22 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 	{
+		// A live source is redrawn every frame anyway. When the graph is just a colour matrix over it, paint it straight
+		// through that matrix at device resolution: an offscreen texture of it would be resampled onto the device
+		// pixels, which blurs text at any fractional scale.
+		if (HasLiveSourceInput
+			&& TryGetWebGpuEffectRecipe(out var liveSource, out var isBackdrop, out var liveSolid, out var liveMatrix)
+			&& liveSource is { } live && !isBackdrop && liveSolid is null)
+		{
+			using var liveFilter = session.Factory.CreateColorMatrixColorFilter(liveMatrix);
+			var liveCount = session.Save();
+			session.ClipRect(bounds);
+			session.SaveLayer(liveFilter);
+			live.TryPaint(session, opacity, bounds);
+			session.RestoreToCount(liveCount);
+			return true;
+		}
+
 		UpdateFilter(session.Factory, bounds, GetRasterizationScale(session));
 		if (_filter is { } filter)
 		{
@@ -83,7 +131,8 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	// The cached graph is reusable only for the same region, at the same resolution, on the same backend device.
 	private bool IsGraphCurrent(IDrawingFactory factory, Rect bounds, Vector2 scale)
-		=> _filter is not null && _currentBounds == bounds && _currentScale == scale && ReferenceEquals(_currentFactory, factory);
+		=> _filter is not null && !_sourcesChanged && !HasLiveSourceInput
+			&& _currentBounds == bounds && _currentScale == scale && ReferenceEquals(_currentFactory, factory);
 
 	private void UpdateFilter(IDrawingFactory factory, Rect bounds, Vector2 scale)
 	{
@@ -125,6 +174,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 		_currentBounds = bounds;
 		_currentScale = scale;
 		_currentFactory = factory;
+		_sourcesChanged = false;
 	}
 
 	private static float GetMaxBlurSigma(EffectNode node)

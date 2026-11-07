@@ -135,9 +135,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
-		// Validates the workaround for missing support of MonochromaticOverlayPresenter in Uno
 		[TestMethod]
-		public async Task When_MonochromaticOverlayPresenter_Workaround()
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14353")]
+		public async Task When_Flyout_Opened_Highlight_Shows_Selected_Value()
 		{
 			var timePicker = new TimePicker();
 			timePicker.UseNativeStyle = false;
@@ -147,19 +147,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 
-			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
-			var timePickerFlyoutPresenter = popup?.Child as TimePickerFlyoutPresenter;
-			Assert.IsNotNull(timePickerFlyoutPresenter);
-
-			var presenters = VisualTreeUtils.FindVisualChildrenByType<MonochromaticOverlayPresenter>(timePickerFlyoutPresenter);
-			foreach (var presenter in presenters)
+			try
 			{
-				Assert.AreEqual(0, presenter.Opacity);
-			}
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
+				var timePickerFlyoutPresenter = popup?.Child as TimePickerFlyoutPresenter;
+				Assert.IsNotNull(timePickerFlyoutPresenter);
 
-			var highlightRect = VisualTreeUtils.FindVisualChildByName(timePickerFlyoutPresenter, "HighlightRect") as Grid;
-			Assert.IsNotNull(highlightRect);
-			Assert.AreEqual(0.5, highlightRect.Opacity);
+				var selector = VisualTreeUtils.FindVisualChildByType<LoopingSelector>(timePickerFlyoutPresenter);
+				Assert.IsNotNull(selector);
+
+				await Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.Given_MonochromaticOverlayPresenter.AssertHighlightTracksSelection(timePickerFlyoutPresenter, selector);
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			}
 		}
 #endif
 

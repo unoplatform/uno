@@ -1,0 +1,262 @@
+<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.MonochromaticOverlayPresenterTests.MonochromaticOverlayPresenter_Playground"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <Grid
+            Padding="16"
+            ColumnSpacing="24"
+            RowSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Preview  -->
+            <StackPanel Spacing="8">
+                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Preview" />
+                <TextBlock
+                    MaxWidth="360"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="The presenter (outlined) redraws the source under it in ReplacementColor, keeping the source's alpha. Move or scroll the source: the overlay follows it live."
+                    TextWrapping="Wrap" />
+
+                <Grid
+                    x:Name="PreviewHost"
+                    Width="360"
+                    Height="240"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8">
+
+                    <!--  The SourceElement: everything inside it is what the presenter recolors.  -->
+                    <Grid x:Name="SourceRoot">
+                        <Grid x:Name="SourceContent">
+                            <Grid.RenderTransform>
+                                <TranslateTransform x:Name="SourceTranslate" />
+                            </Grid.RenderTransform>
+
+                            <StackPanel
+                                x:Name="TextContent"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Spacing="4">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontSize="28"
+                                    FontWeight="SemiBold"
+                                    Text="Uno Platform" />
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontSize="16"
+                                    Text="MonochromaticOverlayPresenter" />
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                    Text="Colored text becomes the replacement color too" />
+                            </StackPanel>
+
+                            <StackPanel
+                                x:Name="IconsContent"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Spacing="16"
+                                Visibility="Collapsed">
+                                <FontIcon
+                                    FontSize="40"
+                                    Foreground="Orange"
+                                    Glyph="&#xE734;" />
+                                <FontIcon
+                                    FontSize="40"
+                                    Foreground="SeaGreen"
+                                    Glyph="&#xE909;" />
+                                <FontIcon
+                                    FontSize="40"
+                                    Foreground="SteelBlue"
+                                    Glyph="&#xE753;" />
+                                <FontIcon
+                                    FontSize="40"
+                                    Foreground="Crimson"
+                                    Glyph="&#xEB51;" />
+                            </StackPanel>
+
+                            <Grid x:Name="ShapesContent" Visibility="Collapsed">
+                                <Rectangle Margin="24,40">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Offset="0" Color="#00FF4500" />
+                                            <GradientStop Offset="1" Color="#FFFF4500" />
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <Ellipse
+                                    Width="90"
+                                    Height="90"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Fill="#806A5ACD"
+                                    Stroke="DarkSlateBlue"
+                                    StrokeThickness="6" />
+                            </Grid>
+
+                            <ScrollViewer
+                                x:Name="ListContent"
+                                VerticalScrollBarVisibility="Auto"
+                                Visibility="Collapsed">
+                                <ItemsControl x:Name="ListItems">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Height="40" Padding="16,0">
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    FontSize="18"
+                                                    Text="{Binding}" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                    </Grid>
+
+                    <primitives:MonochromaticOverlayPresenter
+                        x:Name="Overlay"
+                        Width="260"
+                        Height="36"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        CornerRadius="4"
+                        IsHitTestVisible="False"
+                        ReplacementColor="White"
+                        SourceElement="{Binding ElementName=SourceRoot}" />
+
+                    <!--  Outline of the presenter's bounds, so the recolored region is visible even with no background.  -->
+                    <Border
+                        x:Name="OverlayOutline"
+                        Width="{Binding Width, ElementName=Overlay}"
+                        Height="{Binding Height, ElementName=Overlay}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        BorderBrush="{ThemeResource AccentFillColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        IsHitTestVisible="False" />
+                </Grid>
+
+                <TextBlock
+                    x:Name="StatusText"
+                    FontFamily="Consolas"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+
+            <!--  Options  -->
+            <StackPanel
+                Grid.Column="1"
+                MinWidth="260"
+                MaxWidth="360"
+                HorizontalAlignment="Left"
+                Spacing="12">
+                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Options" />
+
+                <ComboBox
+                    x:Name="SourceKindCombo"
+                    HorizontalAlignment="Stretch"
+                    Header="Source content"
+                    SelectedIndex="0"
+                    SelectionChanged="OnSourceKindChanged">
+                    <x:String>Text</x:String>
+                    <x:String>Icons</x:String>
+                    <x:String>Shapes and gradient (alpha)</x:String>
+                    <x:String>Scrolling list</x:String>
+                </ComboBox>
+
+                <StackPanel Spacing="4">
+                    <TextBlock Text="ReplacementColor" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <ComboBox
+                            x:Name="ReplacementColorCombo"
+                            MinWidth="150"
+                            SelectedIndex="0"
+                            SelectionChanged="OnReplacementColorPresetChanged">
+                            <x:String>White</x:String>
+                            <x:String>Black</x:String>
+                            <x:String>Red</x:String>
+                            <x:String>Gold</x:String>
+                            <x:String>Transparent (identity)</x:String>
+                        </ComboBox>
+                        <Button Content="Custom...">
+                            <Button.Flyout>
+                                <Flyout>
+                                    <ColorPicker
+                                        x:Name="CustomColorPicker"
+                                        ColorChanged="OnCustomColorChanged"
+                                        IsAlphaEnabled="True"
+                                        IsMoreButtonVisible="False" />
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+
+                <ComboBox
+                    x:Name="OverlayBackgroundCombo"
+                    HorizontalAlignment="Stretch"
+                    Header="Presenter background"
+                    SelectedIndex="1"
+                    SelectionChanged="OnOverlayBackgroundChanged">
+                    <x:String>None</x:String>
+                    <x:String>Accent</x:String>
+                    <x:String>Dark</x:String>
+                    <x:String>Light blue</x:String>
+                </ComboBox>
+
+                <Slider
+                    x:Name="OverlayWidthSlider"
+                    Header="Presenter width"
+                    Maximum="360"
+                    Minimum="20"
+                    ValueChanged="OnOverlaySizeChanged"
+                    Value="260" />
+                <Slider
+                    x:Name="OverlayHeightSlider"
+                    Header="Presenter height"
+                    Maximum="240"
+                    Minimum="10"
+                    ValueChanged="OnOverlaySizeChanged"
+                    Value="36" />
+
+                <Slider
+                    x:Name="SourceOffsetXSlider"
+                    Header="Source offset X"
+                    Maximum="150"
+                    Minimum="-150"
+                    ValueChanged="OnSourceOffsetChanged"
+                    Value="0" />
+                <Slider
+                    x:Name="SourceOffsetYSlider"
+                    Header="Source offset Y"
+                    Maximum="100"
+                    Minimum="-100"
+                    ValueChanged="OnSourceOffsetChanged"
+                    Value="0" />
+
+                <ToggleSwitch
+                    x:Name="AnimateToggle"
+                    Header="Animate the source"
+                    OffContent="Off"
+                    OnContent="On"
+                    Toggled="OnAnimateToggled" />
+
+                <Button Click="OnResetClick" Content="Reset" />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>
