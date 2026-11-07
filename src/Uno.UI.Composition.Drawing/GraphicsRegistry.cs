@@ -93,6 +93,17 @@ internal static class GraphicsRegistry
 		}
 	}
 
+	internal static IReadOnlyList<IGraphicsProvider> Backends
+	{
+		get
+		{
+			lock (_gate)
+			{
+				return _backends;
+			}
+		}
+	}
+
 	/// <summary>
 	/// True once the app has declared a graphics backend through the host builder (<see cref="Register"/>), so the
 	/// implicit Skia auto-registration stays out of the seams a declared backend owns — even while that backend is
