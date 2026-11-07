@@ -2125,6 +2125,9 @@
 		  <Member fullName="Uno.UI.FluentTheme.v2" reason="Merged the Uno.UI.FluentTheme.v2 assembly into Uno.UI.FluentTheme; the v2 suffix was an artifact of the removed Fluent V1/V2 split (BC71, breaking changes for 7.0)" />
 	  </Assemblies>
 	  <Types>
+		  <!-- Legacy ListView layouter removed; ModernCollectionBasePanel replaces it. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout/RelativeHeaderPlacement" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
 		  <!-- Fluent V1 public surface, removed with the Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1" reason="Removed XamlControlsResourcesV1; it sourced an empty V1 dictionary and had no consumers (BC71, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FluentTheme.v1.GlobalStaticResources" reason="Generated with the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" />
@@ -2898,6 +2901,10 @@
 		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.(Border|ContentPresenter|Control|ItemsPresenter))::IsSimpleLayout\(\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Properties>
 	  <Methods>
+		  <!-- Legacy ListView layouter accessor, paired with the <Types> entries above. CarouselPanel inherits its layout overrides from ModernCollectionBasePanel. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout Microsoft.UI.Xaml.Controls.VirtualizingPanel.GetLayouter()" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.MeasureOverride(Windows.Foundation.Size availableSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.ArrangeOverride(Windows.Foundation.Size finalSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources.get_ControlsResourcesVersion()" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.XamlControlsResources.set_ControlsResourcesVersion(Microsoft.UI.Xaml.Controls.ControlsResourcesVersion value)" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
@@ -3803,6 +3810,9 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.X11" reason="Assembly renamed Uno.UI.Runtime.Skia.X11 -> Uno.UI.Runtime.X11 (breaking changes for 7.0)" />
 	  </Assemblies>
 	  <Types>
+		  <!-- Legacy ListView layouter removed; ModernCollectionBasePanel replaces it. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout/RelativeHeaderPlacement" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
 		  <!-- Uno-only Android host types moved out of the WinUI namespaces into the host namespace; WinUI has no counterpart. -->
 		  <Member fullName="Microsoft.UI.Xaml.ApplicationActivity" reason="Moved Uno-only ApplicationActivity to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NativeApplication" reason="Moved Uno-only NativeApplication to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
@@ -4644,6 +4654,10 @@
 		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.(Border|ContentPresenter|Control|ItemsPresenter))::IsSimpleLayout\(\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Properties>
 	  <Methods>
+		  <!-- Legacy ListView layouter accessor, paired with the <Types> entries above. CarouselPanel inherits its layout overrides from ModernCollectionBasePanel. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout Microsoft.UI.Xaml.Controls.VirtualizingPanel.GetLayouter()" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.MeasureOverride(Windows.Foundation.Size availableSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.ArrangeOverride(Windows.Foundation.Size finalSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources.get_ControlsResourcesVersion()" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.XamlControlsResources.set_ControlsResourcesVersion(Microsoft.UI.Xaml.Controls.ControlsResourcesVersion value)" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />

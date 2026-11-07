@@ -264,13 +264,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;";
 				new PropertyDefinition("Orientation", "Orientation", "Orientation.Vertical"),
 				new PropertyDefinition("MaximumRowsOrColumns", "int", "-1"),
 			}),
-			new ClassDefinition("VirtualizingPanelLayout", "true", "public", new[]
-			{
-				new PropertyDefinition("AreStickyGroupHeadersEnabled", "bool", "true"),
-				new PropertyDefinition("GroupHeaderPlacement", "GroupHeaderPlacement", "GroupHeaderPlacement.Top"),
-				new PropertyDefinition("GroupPadding", "Thickness", "default(Thickness)"),
-				new PropertyDefinition("CacheLength", "double", "4.0"),
-			}),
 			new ClassDefinition("DatePickerSelector", "true", "public", new[]
 			{
 				new PropertyDefinition("Date", "DateTimeOffset", "DateTimeOffset.MinValue"),
