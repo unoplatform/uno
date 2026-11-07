@@ -6,6 +6,9 @@ public partial class AnalyticsVersionInfo
 {
 	partial void Initialize()
 	{
-		DeviceFamily = $"{Environment.OSVersion.Platform}.{AnalyticsInfo.DeviceForm}";
+		DeviceFamily = GetDeviceFamily(
+			OperatingSystem.IsWindows(),
+			Environment.OSVersion.Platform,
+			AnalyticsInfo.DeviceForm);
 	}
 }
