@@ -21,7 +21,7 @@ This page lists supported .NET versions and [C# language versions](https://learn
 
 ### Notes
 
-- In Uno Platform 7.0, support for .NET 9 has been removed. Retarget `net9.0-*` projects to `net10.0-*` before upgrading. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
+- In Uno Platform 7.0, support for .NET 9 has been removed. Retarget `net9.0-*` projects to `net10.0-*` before upgrading. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7.ProjectSetup#net-9-is-no-longer-supported).
 
 # [**Uno Platform 6.4 to 6.x**](#tab/uno64)
 
