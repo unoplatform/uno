@@ -262,6 +262,9 @@ public class Given_ItemsRepeater_Leak
 	// The common case: a page and its view model become unreachable together. The items source must not wait for the
 	// removal of the subscription of a view that died with it, queued to the dispatcher, before it can be collected.
 	[TestMethod]
+	// 6.x only: the owner's DependencyObjectStore has a finalizer (master removed it), so the store keeps what it references
+	// alive until finalizers run. Single-threaded WASM runs them only from the event loop, and the mobile runtimes fail too.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaMobile)]
 	[RunsOnUIThread]
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
