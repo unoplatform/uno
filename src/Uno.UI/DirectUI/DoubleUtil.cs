@@ -138,7 +138,7 @@ namespace DirectUI
 			}
 
 			// This computes (|value1-value2| / (|value1| + |value2| + 10.0)) < Epsilon
-			epsilon = (Math.Abs(value1) + Math.Abs(value2) + 10.0) * double.Epsilon;
+			epsilon = (Math.Abs(value1) + Math.Abs(value2) + 10.0) * Epsilon;
 			delta = value1 - value2;
 
 			return (-epsilon < delta) && (epsilon > delta);
@@ -180,7 +180,7 @@ namespace DirectUI
 		// 0), but this is faster.
 		public static bool IsZero(double value)
 		{
-			return Math.Abs(value) < 10.0 * double.Epsilon;
+			return Math.Abs(value) < 10.0 * Epsilon;
 		}
 
 		// Returns whether or not the first double is less than the second double.  That
