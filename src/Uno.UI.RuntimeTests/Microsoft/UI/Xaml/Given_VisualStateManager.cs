@@ -24,6 +24,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 public partial class Given_VisualStateManager
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24881")]
+	public async Task When_GetVisualStateGroups_Without_Groups_Can_Add()
+	{
+		var grid = new Grid();
+		var groups = VisualStateManager.GetVisualStateGroups(grid);
+
+		var group = new VisualStateGroup();
+		var state = new VisualState { Name = "Foo" };
+		group.States.Add(state);
+		groups.Add(group);
+
+		Assert.AreSame(groups, VisualStateManager.GetVisualStateGroups(grid));
+		Assert.AreEqual(1, VisualStateManager.GetVisualStateGroups(grid).Count);
+		Assert.AreSame(group, VisualStateManager.GetVisualStateGroups(grid)[0]);
+		Assert.AreEqual(0, VisualStateManager.GetVisualStateGroups(new Grid()).Count);
+
+		var control = new UserControl { Content = grid };
+		await UITestHelper.Load(control, c => c.IsLoaded);
+
+		Assert.IsTrue(VisualStateManager.GoToState(control, "Foo", false));
+		Assert.AreSame(state, group.CurrentState);
+	}
+
+	[TestMethod]
 	public async Task When_Transition_Modifies_SubProperty_Of_Property_Set_By_Previous_State()
 	{
 		var root = new When_Transition_Modifies_SubProperty();
