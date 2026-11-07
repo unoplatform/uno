@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ItemsControl : IGeneratorHost
 {
-	private ICustomGeneratorItemsHost CustomItemsHost => ItemsPanelRoot as ICustomGeneratorItemsHost;
+	private protected ICustomGeneratorItemsHost CustomItemsHost => ItemsPanelRoot as ICustomGeneratorItemsHost;
 
 	private IItemContainerMapping ItemContainerMapping => CustomItemsHost?.GetItemContainerMapping();
 
@@ -80,6 +80,28 @@ partial class ItemsControl : IGeneratorHost
 
 	// TODO Uno: the source is observed through INotifyCollectionChanged and has already changed here, so a
 	// batched change can't be replayed one item at a time; it becomes a reset. WinUI's source raises one change per item.
+	private protected void NotifyCustomItemsHost(ICustomGeneratorItemsHost host, IVectorChangedEventArgs e)
+	{
+		UpdateTickContextCounters();
+		switch (e.CollectionChange)
+		{
+			case CollectionChange.Reset:
+				m_resetItemsThisLayoutTick = true;
+				// load should no longer come into play:
+				m_loadedTick = 0;
+				break;
+			case CollectionChange.ItemInserted:
+				m_elementCountAddedThisLayoutTick += 1;
+				break;
+			case CollectionChange.ItemRemoved:
+				m_elementCountRemovedThisLayoutTick += 1;
+				break;
+		}
+
+		host.NotifyOfItemsChanging(e);
+		host.NotifyOfItemsChanged(e);
+	}
+
 	private void NotifyCustomItemsHost(ICustomGeneratorItemsHost host, NotifyCollectionChangedEventArgs args, int section)
 	{
 		if (args is null)
@@ -94,28 +116,8 @@ partial class ItemsControl : IGeneratorHost
 		int ToFlatIndex(int indexInSection) =>
 			IsGrouping ? GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(indexInSection, section)) : indexInSection;
 
-		void Notify(CollectionChange change, int index)
-		{
-			UpdateTickContextCounters();
-			switch (change)
-			{
-				case CollectionChange.Reset:
-					m_resetItemsThisLayoutTick = true;
-					// load should no longer come into play:
-					m_loadedTick = 0;
-					break;
-				case CollectionChange.ItemInserted:
-					m_elementCountAddedThisLayoutTick += 1;
-					break;
-				case CollectionChange.ItemRemoved:
-					m_elementCountRemovedThisLayoutTick += 1;
-					break;
-			}
-
-			IVectorChangedEventArgs e = new VectorChangedEventArgs(change, (uint)index);
-			host.NotifyOfItemsChanging(e);
-			host.NotifyOfItemsChanged(e);
-		}
+		void Notify(CollectionChange change, int index) =>
+			NotifyCustomItemsHost(host, new VectorChangedEventArgs(change, (uint)index));
 
 		switch (args.Action)
 		{
@@ -130,7 +132,8 @@ partial class ItemsControl : IGeneratorHost
 				break;
 			// MUX Reference BindableObservableVectorWrapper.cpp, ProcessCollectionChange: Move is raised as a Reset.
 			default:
-				Notify(CollectionChange.Reset, 0);
+				// MUX Reference ModernCollectionBasePanel_IICG2_Partial.cpp, NotifyOfItemsChanged: a grouped Reset carries the group.
+				Notify(CollectionChange.Reset, IsGrouping ? section : 0);
 				break;
 		}
 	}

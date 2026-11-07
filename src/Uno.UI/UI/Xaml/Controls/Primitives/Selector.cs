@@ -183,6 +183,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs c)
 		{
 			var isItemsHostNotified = false;
+			List<IVectorChangedEventArgs> changes = new();
 
 			void NotifyItemsHost()
 			{
@@ -190,6 +191,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				{
 					isItemsHostNotified = true;
 					base.OnItemsSourceGroupsChanged(sender, c);
+
+					// WinUI's grouped view raises flat changes on top of the group change the panel observes,
+					// and the items of an added group from high to low index (ModernCollectionBasePanel::OnItemAdded).
+					if (CustomItemsHost is { } customItemsHost)
+					{
+						var isGroupAdded = c.Action == NotifyCollectionChangedAction.Add;
+						for (var i = 0; i < changes.Count; i++)
+						{
+							NotifyCustomItemsHost(customItemsHost, changes[isGroupAdded ? changes.Count - 1 - i : i]);
+						}
+					}
 				}
 			}
 
@@ -234,7 +246,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			// The items of a group move with it, while WinUI's grouped view raises one flat change per item.
-			List<IVectorChangedEventArgs> changes = new();
 			var isReset = false;
 			switch (c.Action)
 			{
