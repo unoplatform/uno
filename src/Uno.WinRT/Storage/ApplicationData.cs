@@ -5,6 +5,7 @@
 #pragma warning disable 114 // new keyword hiding
 #pragma warning disable 67 // new keyword hiding
 using System;
+using System.IO;
 using Uno;
 
 namespace Windows.Storage;
@@ -116,23 +117,15 @@ public sealed partial class ApplicationData
 	[Uno.NotImplemented]
 	public event Foundation.TypedEventHandler<ApplicationData, object>? DataChanged;
 
-	private static StorageFolder CreateStorageFolder(string folder)
-	{
-		try
-		{
-			return new StorageFolder(folder);
-		}
-		catch (Exception e)
-		{
-			throw new InvalidOperationException(
-				$"The creation of the StorageFolder \'{folder}\' failed. It may have been initialized too early, see for more information: https://aka.platform.uno/application-data",
-				e);
-		}
-	}
+	private static StorageFolder CreateStorageFolder(string folder) => CreateStorageFolder(string.Empty, folder);
 
-#if !__SKIA__
 	private static StorageFolder CreateStorageFolder(string name, string folder)
 	{
+#if !__NETSTD_REFERENCE__ // The Reference getters return an empty path.
+		// On WinUI the system creates the app data folders, so the app never gets one that doesn't exist.
+		Directory.CreateDirectory(folder);
+#endif
+
 		try
 		{
 			return new StorageFolder(name, folder);
@@ -144,6 +137,5 @@ public sealed partial class ApplicationData
 				e);
 		}
 	}
-#endif
 }
 #endif
