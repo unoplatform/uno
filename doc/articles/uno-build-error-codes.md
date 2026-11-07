@@ -345,7 +345,7 @@ To stop the Uno.Sdk from adding it at all, set `UnoDisableHotTesting` to `true`.
 
 ### UNOB0030: The SkiaRenderer Uno Feature is ignored in a library
 
-Starting with Uno Platform 7.0, the renderer is chosen by the app, not by its libraries. In an app, the legacy `SkiaRenderer` feature is still mapped to `Skia`. In a library it is ignored, so the library doesn't make SkiaSharp a dependency of every app that uses it, including apps that render with WebGPU only.
+Starting with Uno Platform 7.0, the renderer is chosen by the app, not by its libraries. On the Uno Platform targets of an app, the legacy `SkiaRenderer` feature is still mapped to `Skia`. In a library it is ignored, so the library doesn't make SkiaSharp a dependency of every app that uses it, including apps that render with WebGPU only.
 
 To fix this:
 
@@ -403,6 +403,15 @@ Starting with Uno Platform 7.0, the `Uno.Sdk` no longer references [Prism](https
 The Prism packages published so far (`Prism.Uno.WinUI` 9.0.537 and earlier) were built against Uno Platform 5 and don't build with Uno Platform 7.0.
 
 To fix this, remove `Prism` from `UnoFeatures`, and reference Prism's packages directly, using a Prism release built for Uno Platform 7.0: add a `PackageReference` to `Prism.DryIoc.Uno.WinUI` in an app, or to `Prism.Uno.WinUI` in a library, and to `Prism.Uno.WinUI.Markup` if the project uses C# Markup. When the solution uses Central Package Management, as the Uno Platform templates do, the version goes in `Directory.Packages.props`. The `PrismVersion` property no longer has any effect and can be removed.
+
+### UNOB0036: MauiEmbedding now selects Uno.Maui.Embedding
+
+The `MauiEmbedding` Uno Feature used to select the native embedding of MAUI controls through Uno.Extensions (`Uno.Extensions.Maui.*`). That feature is now named `MauiNativeEmbedding`, and `MauiEmbedding` selects `Uno.Maui.Embedding` and `Uno.Maui.Handlers`. The build reports this warning when `MauiEmbedding` is listed without `MauiNativeEmbedding` and either:
+
+- the project references an `Uno.Extensions.Maui` package, or
+- the target framework is Android, iOS, Mac Catalyst or Windows App SDK. `Uno.Maui.Embedding` embeds MAUI views on the desktop and WebAssembly targets only, while the native embedding also ran on these targets. Apps created from a template that lists `MauiEmbedding` for all targets get the warning on these targets.
+
+To fix this, if the project relies on the native embedding of Uno.Extensions, replace `MauiEmbedding` with `MauiNativeEmbedding` in `UnoFeatures`. If it intends to use `Uno.Maui.Embedding`, remove the `Uno.Extensions.Maui` package references. On the Android, iOS, Mac Catalyst and Windows App SDK targets, an app that keeps these targets but does not need MAUI views on them can add `UNOB0036` to `NoWarn`.
 
 ## Compiler Errors
 
