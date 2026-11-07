@@ -84,6 +84,177 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 #endif
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow("aria-describedby")]
+		[DataRow("aria-controls")]
+		[DataRow("aria-flowto")]
+		[DataRow("aria-labelledby")]
+		public async Task When_Related_Target_Is_Collapsed_Then_IdRef_Tracks_Its_Visibility(string attribute)
+		{
+#if HAS_UNO
+			var (source, target) = CreateRelation(attribute);
+			var panel = new StackPanel { Children = { source, target } };
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				EnableAccessibilityThroughDom();
+				var targetId = GetSemanticElementId(target);
+				await UITestHelper.WaitFor(
+					() => SemanticElementExists(target) && GetSemanticAttribute(source, attribute) == targetId,
+					timeoutMS: 5000,
+					message: $"{attribute} must resolve a visible target.");
+
+				var isLabelledBy = attribute == "aria-labelledby";
+				if (isLabelledBy)
+				{
+					Assert.IsFalse(SemanticElementHasAttribute(source, "aria-label"), "aria-labelledby must suppress the competing aria-label.");
+				}
+
+				target.Visibility = Visibility.Collapsed;
+				await UITestHelper.WaitFor(
+					() => !SemanticElementExists(target) && !SemanticElementHasAttribute(source, attribute),
+					timeoutMS: 5000,
+					message: $"{attribute} must not reference a collapsed target.");
+
+				if (isLabelledBy)
+				{
+					await UITestHelper.WaitFor(
+						() => GetSemanticAttribute(source, "aria-label") == "Related target",
+						timeoutMS: 5000,
+						message: "The peer name must be restored as aria-label once the labeller leaves the tree.");
+				}
+
+				target.Visibility = Visibility.Visible;
+				await UITestHelper.WaitFor(
+					() => SemanticElementExists(target) && GetSemanticAttribute(source, attribute) == targetId,
+					timeoutMS: 5000,
+					message: $"{attribute} must be restored when the target becomes visible again.");
+
+				if (isLabelledBy)
+				{
+					Assert.IsFalse(SemanticElementHasAttribute(source, "aria-label"), "aria-label must be suppressed again once the labeller is shown.");
+				}
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+				await UITestHelper.WaitForIdle();
+			}
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow("aria-describedby")]
+		[DataRow("aria-controls")]
+		[DataRow("aria-flowto")]
+		[DataRow("aria-labelledby")]
+		public async Task When_Related_Target_Starts_Collapsed_Then_IdRef_Appears_When_Shown(string attribute)
+		{
+#if HAS_UNO
+			var (source, target) = CreateRelation(attribute);
+			target.Visibility = Visibility.Collapsed;
+			var panel = new StackPanel { Children = { source, target } };
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(source), timeoutMS: 5000, message: "Timed out waiting for the source's semantic node.");
+				await UITestHelper.WaitForIdle();
+
+				Assert.IsFalse(SemanticElementHasAttribute(source, attribute), $"{attribute} must not reference a collapsed target.");
+
+				target.Visibility = Visibility.Visible;
+				await UITestHelper.WaitFor(
+					() => SemanticElementExists(target) && GetSemanticAttribute(source, attribute) == GetSemanticElementId(target),
+					timeoutMS: 5000,
+					message: $"{attribute} must appear once a target that started collapsed is shown.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+				await UITestHelper.WaitForIdle();
+			}
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow("aria-describedby")]
+		[DataRow("aria-labelledby")]
+		public async Task When_Source_Configured_Detached_Then_Attached_Same_Turn_Relation_Is_Emitted(string attribute)
+		{
+#if HAS_UNO
+			var (source, target) = CreateRelation(attribute);
+			var panel = new StackPanel { Children = { target } };
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(target), timeoutMS: 5000, message: "Timed out waiting for the target's semantic node.");
+
+				// Re-apply the relation while the source is detached, then attach it in the same UI turn.
+				switch (attribute)
+				{
+					case "aria-describedby":
+						AutomationProperties.GetDescribedBy(source).Clear();
+						AutomationProperties.GetDescribedBy(source).Add(target);
+						break;
+					default:
+						AutomationProperties.SetLabeledBy(source, null);
+						AutomationProperties.SetLabeledBy(source, target);
+						break;
+				}
+				panel.Children.Insert(0, source);
+
+				await UITestHelper.WaitFor(
+					() => SemanticElementExists(source) && GetSemanticAttribute(source, attribute) == GetSemanticElementId(target),
+					timeoutMS: 5000,
+					message: $"{attribute} must be emitted for a source configured while detached and attached in the same turn.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+				await UITestHelper.WaitForIdle();
+			}
+#endif
+		}
+
+#if HAS_UNO
+		private static (FrameworkElement Source, TextBlock Target) CreateRelation(string attribute)
+		{
+			var target = new TextBlock { Text = "Related target" };
+			AutomationProperties.SetName(target, "Related target");
+			FrameworkElement source = attribute == "aria-labelledby"
+				? new TextBox()
+				: new Button { Content = "Relation source" };
+			switch (attribute)
+			{
+				case "aria-describedby":
+					AutomationProperties.GetDescribedBy(source).Add(target);
+					break;
+				case "aria-controls":
+					AutomationProperties.GetControlledPeers(source).Add(target);
+					break;
+				case "aria-flowto":
+					AutomationProperties.GetFlowsTo(source).Add(target);
+					break;
+				default:
+					AutomationProperties.SetLabeledBy(source, target);
+					break;
+			}
+
+			return (source, target);
+		}
+#endif
+
 #if HAS_UNO
 		[TestCleanup]
 		public void Cleanup()
