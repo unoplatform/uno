@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,9 +8,11 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.DevTools.Input;
 using Windows.Foundation;
+using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -227,6 +230,76 @@ public class Given_ListView_StickyHeaders
 			await ScrollTo(scrollViewer, offset);
 			Assert.AreEqual(0, GetBounds(header, root).Y, 1, $"At offset {offset}");
 		}
+	}
+
+	// The drawn position of the header relative to the viewport, sampled on each frame until the motion ends.
+	private static async Task<List<double>> SampleStuckHeader(ListView list, ScrollViewer sv, ListViewBaseHeaderItem header, Func<Task> startMotion)
+	{
+		List<double> tops = new();
+
+		void OnRendering(object sender, object args)
+		{
+			if (sv.VerticalOffset < list.ActualHeight)
+			{
+				return;
+			}
+
+			tops.Add(header.Visual.TotalMatrix.Translation.Y - sv.Visual.TotalMatrix.Translation.Y);
+		}
+
+		CompositionTarget.Rendering += OnRendering;
+		try
+		{
+			await startMotion();
+			await WindowHelper.WaitFor(() => !sv.IsInManipulation);
+			await WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			CompositionTarget.Rendering -= OnRendering;
+		}
+
+		return tops;
+	}
+
+	[TestMethod]
+	public async Task When_Animated_ChangeView_Then_Sticky_Header_Tracks_Without_Lag()
+	{
+		var (list, sv, _) = await LoadList();
+		double groupHeight = HeaderHeight + ItemsPerGroup * ItemHeight;
+		await ScrollTo(sv, list.ActualHeight + 10);
+		var header = GetHeader(list, 0);
+
+		var tops = await SampleStuckHeader(list, sv, header, () =>
+		{
+			sv.ChangeView(null, groupHeight - HeaderHeight - 10, null, disableAnimation: false);
+			return Task.CompletedTask;
+		});
+
+		Assert.IsGreaterThan(5, tops.Count, "Motion spans several frames");
+		Assert.IsTrue(tops.All(top => Math.Abs(top) <= 1), $"The sticky header lagged: {string.Join(", ", tops.Distinct())}");
+	}
+
+	[TestMethod]
+	public async Task When_Mouse_Wheel_Then_Sticky_Header_Tracks_Without_Lag()
+	{
+		var (list, sv, _) = await LoadList();
+		await ScrollTo(sv, list.ActualHeight + 10);
+		var header = GetHeader(list, 0);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		mouse.MoveTo(list.GetAbsoluteBounds().GetCenter());
+		await WindowHelper.WaitForIdle();
+
+		var tops = await SampleStuckHeader(list, sv, header, () =>
+		{
+			mouse.WheelDown();
+			return Task.CompletedTask;
+		});
+
+		Assert.IsGreaterThan(0, tops.Count, "The wheel scrolled");
+		Assert.IsTrue(tops.All(top => Math.Abs(top) <= 1), $"The sticky header lagged: {string.Join(", ", tops.Distinct())}");
 	}
 
 	private static ScrollViewer FindScrollViewer(DependencyObject root)

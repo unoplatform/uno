@@ -192,16 +192,64 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					isItemsHostNotified = true;
 					base.OnItemsSourceGroupsChanged(sender, c);
 
-					// WinUI's grouped view raises flat changes on top of the group change the panel observes,
-					// and the items of an added group from high to low index (ModernCollectionBasePanel::OnItemAdded).
-					if (CustomItemsHost is { } customItemsHost)
+					if (CustomItemsHost is ModernCollectionBasePanel panel)
 					{
-						var isGroupAdded = c.Action == NotifyCollectionChangedAction.Add;
-						for (var i = 0; i < changes.Count; i++)
-						{
-							NotifyCustomItemsHost(customItemsHost, changes[isGroupAdded ? changes.Count - 1 - i : i]);
-						}
+						NotifyPanelOfGroupChange(panel);
 					}
+				}
+			}
+
+			// MUX Reference GroupedDataCollectionView_Partial.cpp, ProcessGroupChange and NotifyOfGroupChange:
+			// a removed group raises its items, high to low, ahead of the group. An added group raises them after it.
+			void NotifyPanelOfGroupChange(ModernCollectionBasePanel panel)
+			{
+				void NotifyGroup(CollectionChange change, int index) =>
+					panel.NotifyOfGroupsChanged(null!, new VectorChangedEventArgs(change, (uint)index));
+
+				void NotifyItems(CollectionChange change, int groupIndex, int count)
+				{
+					var firstItem = FirstFlatIndexOfGroup(groupIndex);
+					for (var i = count - 1; i >= 0; i--)
+					{
+						NotifyCustomItemsHost(panel, new VectorChangedEventArgs(change, (uint)(firstItem + i)));
+					}
+				}
+
+				static int GroupSize(object group) => group is ICollectionViewGroup { GroupItems: { } items } ? items.Count : 0;
+
+				if (changes is [{ CollectionChange: CollectionChange.Reset }] || changes.Count == 0 && c.Action is not (NotifyCollectionChangedAction.Add or NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace))
+				{
+					NotifyGroup(CollectionChange.Reset, 0);
+					NotifyCustomItemsHost(panel, new VectorChangedEventArgs(CollectionChange.Reset, 0));
+					return;
+				}
+
+				switch (c.Action)
+				{
+					case NotifyCollectionChangedAction.Add:
+						for (var i = 0; i < c.NewItems.Count; i++)
+						{
+							NotifyGroup(CollectionChange.ItemInserted, c.NewStartingIndex + i);
+							NotifyItems(CollectionChange.ItemInserted, c.NewStartingIndex + i, GetGroupCount(c.NewStartingIndex + i));
+						}
+						break;
+
+					case NotifyCollectionChangedAction.Remove:
+						for (var i = c.OldItems.Count - 1; i >= 0; i--)
+						{
+							NotifyItems(CollectionChange.ItemRemoved, c.OldStartingIndex + i, GroupSize(c.OldItems[i]));
+							NotifyGroup(CollectionChange.ItemRemoved, c.OldStartingIndex + i);
+						}
+						break;
+
+					case NotifyCollectionChangedAction.Replace:
+						for (var i = 0; i < c.NewItems.Count; i++)
+						{
+							NotifyItems(CollectionChange.ItemRemoved, c.NewStartingIndex + i, GroupSize(c.OldItems[i]));
+							NotifyGroup(CollectionChange.ItemChanged, c.NewStartingIndex + i);
+							NotifyItems(CollectionChange.ItemInserted, c.NewStartingIndex + i, GetGroupCount(c.NewStartingIndex + i));
+						}
+						break;
 				}
 			}
 
