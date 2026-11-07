@@ -1789,11 +1789,20 @@ public abstract partial class ModernCollectionBasePanel
 					break;
 			}
 
-			handled = spScrollViewer.ChangeViewWithOptionalAnimation(
-				spHorizontalOffsetReference,
-				spVerticalOffsetReference,
-				null  /*pZoomFactor*/,
-				!animate /*disableAnimation*/);
+			// TODO Uno: The extent of this layout pass is not published yet, and a plain ChangeView would clamp to the
+			// previous one. WinUI coerces the offset during layout, so the request has to outlive the extent update.
+			if (animate)
+			{
+				handled = spScrollViewer.ChangeViewWithOptionalAnimation(
+					spHorizontalOffsetReference,
+					spVerticalOffsetReference,
+					null  /*pZoomFactor*/,
+					false /*disableAnimation*/);
+			}
+			else
+			{
+				spScrollViewer.ChangeViewForLayoutAdjustment(spHorizontalOffsetReference, spVerticalOffsetReference, disableAnimation: true);
+			}
 
 			issued = true;
 		}
