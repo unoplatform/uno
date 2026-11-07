@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation;
@@ -89,7 +90,7 @@ public partial class Gamepad
 	}
 
 	[JSExport]
-	internal static int DispatchGamepadAdded(int id)
+	internal static void DispatchGamepadAdded(int id)
 	{
 		Gamepad gamepad;
 		lock (_gamepadCache)
@@ -101,11 +102,18 @@ public partial class Gamepad
 			}
 		}
 		_gamepadAddedWrapper.Event?.Invoke(null, gamepad);
-		return 0;
 	}
 
 	[JSExport]
-	internal static int DispatchGamepadRemoved(int id)
+	internal static Task DispatchGamepadAddedAsync(int id)
+	{
+		DispatchGamepadAdded(id);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
+	internal static void DispatchGamepadRemoved(int id)
 	{
 		Gamepad gamepad;
 		lock (_gamepadCache)
@@ -117,7 +125,14 @@ public partial class Gamepad
 			}
 		}
 		_gamepadAddedWrapper.Event?.Invoke(null, gamepad);
-		return 0;
+	}
+
+	[JSExport]
+	internal static Task DispatchGamepadRemovedAsync(int id)
+	{
+		DispatchGamepadRemoved(id);
+
+		return Task.CompletedTask;
 	}
 
 	private bool IsButtonPressed(ref double[] buttons, int index) =>

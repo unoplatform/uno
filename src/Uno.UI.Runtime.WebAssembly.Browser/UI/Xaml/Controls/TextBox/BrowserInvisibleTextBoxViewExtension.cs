@@ -1,5 +1,6 @@
-using System.Runtime.InteropServices.JavaScript;
 using System;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -86,6 +87,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	});
 
 	[JSExport]
+	private static Task OnInputTextChangedAsync(string text, int selectionStart, int selectionLength)
+	{
+		OnInputTextChanged(text, selectionStart, selectionLength);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnNativePaste(string clipboardText) => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
@@ -100,6 +109,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 				break;
 		}
 	});
+
+	[JSExport]
+	private static Task OnNativePasteAsync(string clipboardText)
+	{
+		OnNativePaste(clipboardText);
+
+		return Task.CompletedTask;
+	}
 
 	[JSExport]
 	private static int GetNativePasteSourceLimit()
@@ -123,6 +140,10 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
+	private static Task<int> GetNativePasteSourceLimitAsync()
+		=> Task.FromResult(GetNativePasteSourceLimit());
+
+	[JSExport]
 	private static void OnSelectionChanged(int selectionStart, int selectionLength) => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
@@ -137,6 +158,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 				break;
 		}
 	});
+
+	[JSExport]
+	private static Task OnSelectionChangedAsync(int selectionStart, int selectionLength)
+	{
+		OnSelectionChanged(selectionStart, selectionLength);
+
+		return Task.CompletedTask;
+	}
 
 	[JSExport]
 	private static void OnNativeBlur()
@@ -171,6 +200,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
+	private static Task OnNativeBlurAsync()
+	{
+		OnNativeBlur();
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnEnterKeyPressed() => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
@@ -184,6 +221,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			control.RaiseEvent(UIElement.KeyUpEvent, keyArgs);
 		}
 	});
+
+	[JSExport]
+	private static Task OnEnterKeyPressedAsync()
+	{
+		OnEnterKeyPressed();
+
+		return Task.CompletedTask;
+	}
 
 	// The "overlay layer" is the DOM, which is always present.
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;

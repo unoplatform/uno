@@ -44,7 +44,7 @@ namespace Windows.Devices.Midi
 		}
 
 		[JSExport]
-		internal static int DispatchMessage(string managedId, string serializedMessage, double timestamp)
+		internal static void DispatchMessage(string managedId, string serializedMessage, double timestamp)
 		{
 #if DEBUG
 			Debug.WriteLine($"Message arrived {managedId}, {serializedMessage}, {timestamp}");
@@ -70,8 +70,14 @@ namespace Windows.Devices.Midi
 			}
 
 			port.OnMessageReceived(message, 0, message.Length, managedTimestamp);
+		}
 
-			return 0;
+		[JSExport]
+		internal static Task DispatchMessageAsync(string managedId, string serializedMessage, double timestamp)
+		{
+			DispatchMessage(managedId, serializedMessage, timestamp);
+
+			return Task.CompletedTask;
 		}
 
 		partial void DisposeNative()

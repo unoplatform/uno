@@ -5,6 +5,10 @@ parameters:
   vmLinuxPool: ''
   XAML_FLAVOR_BUILD: ''
   jobName: 'Skia_Browser_Runtime_Tests_Build'
+  # The build job (.azure-devops-tests-webassembly-build.yml) whose artifact is tested.
+  buildJobName: 'Skia_Tests_Build_Browser'
+  # Serves the app with the COOP/COEP headers that SharedArrayBuffer (WebAssembly threading) requires.
+  crossOriginIsolated: false
   # Names the job and its test run; the job name is concatenated with the matrix group name.
   renderer: 'Skia'
   testResultLabel: ''
@@ -36,7 +40,7 @@ jobs:
     pool:
       vmImage: ${{ parameters.vmLinuxImage }}
 
-  dependsOn: Skia_Tests_Build_Browser
+  dependsOn: ${{ parameters.buildJobName }}
   ${{ if ne(parameters.condition, '') }}:
     condition: ${{ parameters.condition }}
 
@@ -48,7 +52,7 @@ jobs:
           UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ length(parameters.testGroups) }}
 
   variables:
-    SamplesAppArtifactName: $[ dependencies.Skia_Tests_Build_Browser.outputs['set_samples_artifact.SamplesAppArtifactName'] ]
+    SamplesAppArtifactName: $[ dependencies.${{ parameters.buildJobName }}.outputs['set_samples_artifact.SamplesAppArtifactName'] ]
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
@@ -110,6 +114,7 @@ jobs:
       UNO_TEST_CHROME_FLAGS: ${{ parameters.chromeFlags }}
       UNO_TEST_BROWSER_SIZE: ${{ parameters.browserSize }}
       UNO_TEST_RESULTS_TIMEOUT_MINUTES: ${{ parameters.resultsTimeoutMinutes }}
+      UNO_TEST_CROSS_ORIGIN_ISOLATED: ${{ lower(parameters.crossOriginIsolated) }}
 
   - task: PublishTestResults@2
     condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))

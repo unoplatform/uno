@@ -61,6 +61,11 @@
 		private static nextSelectionEnd: number;
 		private static nextSelectionDirection: "forward" | "backward" | "none";
 
+		// Single ordered chain for all JS→managed text interop in MT mode.
+		// Guarantees callbacks reach managed code in the exact order the browser dispatched the events.
+		// Not used in ST mode.
+		private static interopQueue: Promise<any> = Promise.resolve();
+
 		// Android soft keyboards report all key events with keyCode 229 ("Unidentified").
 		// Text changes are synced via the oninput handler instead.
 		private static readonly ANDROID_IME_KEYCODE = 229;
@@ -75,6 +80,16 @@
 			BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(source);
 		}
 
+		public static onNativePasteAsync(source: string): void {
+			BrowserInvisibleTextBoxViewExtension.initialize();
+			BrowserInvisibleTextBoxViewExtension.enqueue(async () => {
+				const sourceLimit = await BrowserInvisibleTextBoxViewExtension._exports.GetNativePasteSourceLimitAsync();
+
+				await BrowserInvisibleTextBoxViewExtension._exports.OnNativePasteAsync(
+					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+			});
+		}
+
 		public static initialize() {
 			if (BrowserInvisibleTextBoxViewExtension._exports == undefined) {
 				const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
@@ -84,32 +99,80 @@
 
 				BrowserInvisibleTextBoxViewExtension.installTrailingClickGuard();
 
-				document.onselectionchange = () => {
-					let input = document.activeElement;
-					if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
-						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
-						try {
+				if (WebAssemblyThreading.isThreadingEnabled()) {
+					document.onselectionchange = () => {
+						const input = document.activeElement;
+
+						if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
 							const restoresSelection = BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange
 								&& BrowserInvisibleTextBoxViewExtension.isAssignedValueCaret(input);
 							BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
-							if (restoresSelection) {
-								input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
-							}
-							else {
-								if (input.selectionDirection == "backward") {
-									BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
-								} else {
-									BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionStart, input.selectionEnd - input.selectionStart);
-								}
+							if (!restoresSelection) {
+								// Snapshot direction + positions before any later setSelectionRange can flip them.
+								const backward = input.selectionDirection == "backward";
+								const start = backward ? input.selectionEnd : input.selectionStart;
+								const length = backward
+									? input.selectionStart - input.selectionEnd
+									: input.selectionEnd - input.selectionStart;
+								BrowserInvisibleTextBoxViewExtension.enqueue(async () => {
+									BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
+									try {
+										await BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChangedAsync(start, length);
+									}
+									finally {
+										BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+									}
+								});
 							}
 						}
-						finally {
-							// Left set, it would keep every later caret move from reaching the input.
-							BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+					}
+				} else {
+					document.onselectionchange = () => {
+						let input = document.activeElement;
+						if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
+							BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
+							try {
+								const restoresSelection = BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange
+									&& BrowserInvisibleTextBoxViewExtension.isAssignedValueCaret(input);
+								BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
+								if (restoresSelection) {
+									input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
+								}
+								else {
+									if (input.selectionDirection == "backward") {
+										BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
+									} else {
+										BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionStart, input.selectionEnd - input.selectionStart);
+									}
+								}
+							}
+							finally {
+								// Left set, it would keep every later caret move from reaching the input.
+								BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+							}
 						}
 					}
 				}
 			}
+		}
+
+		public static enqueue(work: () => any): void {
+			// catch() keeps the chain alive if one notification rejects.
+			BrowserInvisibleTextBoxViewExtension.interopQueue =
+				BrowserInvisibleTextBoxViewExtension.interopQueue.then(work).catch(() => { });
+		}
+
+		// The MT counterpart of runSyncingFromNative: the managed side runs later, so the flag is held across the awaited call.
+		private static enqueueSyncingFromNative(work: () => Promise<any>): void {
+			BrowserInvisibleTextBoxViewExtension.enqueue(async () => {
+				BrowserInvisibleTextBoxViewExtension.isSyncingFromNative = true;
+				try {
+					await work();
+				}
+				finally {
+					BrowserInvisibleTextBoxViewExtension.isSyncingFromNative = false;
+				}
+			});
 		}
 
 		// Assigning the value moves the caret to its end, which the pending restore undoes. Chrome fires no
@@ -238,34 +301,59 @@
 				});
 			};
 
-			input.onpaste = ev => {
-				const source = ev.clipboardData.getData("text");
-				const sourceLimit = BrowserInvisibleTextBoxViewExtension._exports.GetNativePasteSourceLimit();
-				BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(
-					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
-				ev.preventDefault();
-			};
-
-			// C# drives focus one-way (StartEntry/EndEntry call focus()/blur()), so a blur the
-			// browser initiates on its own — e.g. tapping outside, or the touch-synthesized
-			// mousedown in issue 1 — is otherwise invisible to the FocusManager and LostFocus
-			// never fires. Report only those; managed-initiated blurs set suppressBlurNotification.
-			input.addEventListener("blur", () => {
-				if (BrowserInvisibleTextBoxViewExtension.suppressBlurNotification) {
-					return;
-				}
-				BrowserInvisibleTextBoxViewExtension._exports.OnNativeBlur();
-			});
-
-			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
-			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" or "insertParagraph" instead.
-			input.addEventListener("beforeinput", (ev: InputEvent) => {
-				if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				input.onpaste = ev => {
 					ev.preventDefault();
 
-					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
-				}
-			});
+					BrowserInvisibleTextBoxViewExtension.onNativePasteAsync(ev.clipboardData.getData("text"));
+				};
+
+				input.addEventListener("blur", () => {
+					if (BrowserInvisibleTextBoxViewExtension.suppressBlurNotification) {
+						return;
+					}
+
+					BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnNativeBlurAsync());
+				});
+
+				// See below.
+				input.addEventListener("beforeinput", (ev: InputEvent) => {
+					if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+						ev.preventDefault();
+
+						BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressedAsync());
+					}
+				});
+			} else {
+				input.onpaste = ev => {
+					const source = ev.clipboardData.getData("text");
+					const sourceLimit = BrowserInvisibleTextBoxViewExtension._exports.GetNativePasteSourceLimit();
+					BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(
+						source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+					ev.preventDefault();
+				};
+
+				// C# drives focus one-way (StartEntry/EndEntry call focus()/blur()), so a blur the
+				// browser initiates on its own — e.g. tapping outside, or the touch-synthesized
+				// mousedown in issue 1 — is otherwise invisible to the FocusManager and LostFocus
+				// never fires. Report only those; managed-initiated blurs set suppressBlurNotification.
+				input.addEventListener("blur", () => {
+					if (BrowserInvisibleTextBoxViewExtension.suppressBlurNotification) {
+						return;
+					}
+					BrowserInvisibleTextBoxViewExtension._exports.OnNativeBlur();
+				});
+
+				// Handle Enter key from Android virtual keyboards which don't fire keydown events.
+				// Android keyboards typically fire beforeinput with inputType "insertLineBreak" or "insertParagraph" instead.
+				input.addEventListener("beforeinput", (ev: InputEvent) => {
+					if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+						ev.preventDefault();
+
+						BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+					}
+				});
+			}
 
 			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(input, acceptsReturn);
 
@@ -309,8 +397,13 @@
 					const textDiffers = BrowserInvisibleTextBoxViewExtension.pendingText !== null;
 					BrowserInvisibleTextBoxViewExtension.resetComposition();
 					if (wasReported) {
-						if (ev.data.length > 0) {
-							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
+						const data = ev.data;
+						if (WebAssemblyThreading.isThreadingEnabled()) {
+							BrowserInvisibleTextBoxViewExtension.enqueueSyncingFromNative(() => data.length > 0
+								? BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompletedAsync(data)
+								: BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceledAsync());
+						} else if (data.length > 0) {
+							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(data);
 						} else {
 							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
 						}
@@ -348,12 +441,22 @@
 			const start = candidates.find(s => s >= 0 && value.startsWith(text, s)) ?? Math.min(known, value.length);
 			BrowserInvisibleTextBoxViewExtension.compositionStart = start;
 
-			if (!BrowserInvisibleTextBoxViewExtension.isCompositionReported) {
-				BrowserInvisibleTextBoxViewExtension.isCompositionReported = true;
-				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
-			}
+			const starts = !BrowserInvisibleTextBoxViewExtension.isCompositionReported;
+			BrowserInvisibleTextBoxViewExtension.isCompositionReported = true;
 			const cursorPosition = Math.max(0, Math.min(caret - start, text.length));
-			BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(text, cursorPosition, start);
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				BrowserInvisibleTextBoxViewExtension.enqueueSyncingFromNative(async () => {
+					if (starts) {
+						await BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStartedAsync();
+					}
+					await BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdatedAsync(text, cursorPosition, start);
+				});
+			} else {
+				if (starts) {
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
+				}
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(text, cursorPosition, start);
+			}
 		}
 
 		// Marks a TextBox update made in response to the input, whose echo back to the input must not be applied.
@@ -375,10 +478,22 @@
 
 		private static syncTextFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
 			BrowserInvisibleTextBoxViewExtension.syncedValue = input.value;
-			if (input.selectionDirection == "backward") {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
+			const backward = input.selectionDirection == "backward";
+			const start = backward ? input.selectionEnd : input.selectionStart;
+			const length = backward ? input.selectionStart - input.selectionEnd : input.selectionEnd - input.selectionStart;
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				const value = input.value;
+				BrowserInvisibleTextBoxViewExtension.enqueueSyncingFromNative(async () => {
+					BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
+					try {
+						await BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChangedAsync(value, start, length);
+					}
+					finally {
+						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+					}
+				});
 			} else {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, start, length);
 			}
 		}
 
@@ -473,7 +588,11 @@
 					ev.preventDefault();
 					// OnEnterKeyPressed raises both KeyDown and KeyUp: the document listener must not raise another KeyUp.
 					ev.stopPropagation();
-					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+					if (WebAssemblyThreading.isThreadingEnabled()) {
+						BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressedAsync());
+					} else {
+						BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+					}
 				}
 
 				if (ev.key === "Enter" || ev.keyCode === 13) {

@@ -93,6 +93,14 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	}
 
 	[JSExport]
+	private static Task OnCompositionStartedAsync()
+	{
+		OnCompositionStarted();
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnCompositionUpdated(string text, int cursorPosition, int compositionStart)
 	{
 		if (!Instance._isComposing)
@@ -100,6 +108,14 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 			return;
 		}
 		BrowserInvisibleTextBoxViewExtension.RunFromNative(() => Instance.CompositionUpdated?.Invoke(Instance, new ImeCompositionEventArgs(text, cursorPosition, textAlreadyApplied: true, compositionStart: compositionStart)));
+	}
+
+	[JSExport]
+	private static Task OnCompositionUpdatedAsync(string text, int cursorPosition, int compositionStart)
+	{
+		OnCompositionUpdated(text, cursorPosition, compositionStart);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -118,15 +134,11 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	}
 
 	[JSExport]
-	private static void OnCompositionEnded()
+	private static Task OnCompositionCompletedAsync(string text)
 	{
-		if (!Instance._isComposing)
-		{
-			return;
-		}
+		OnCompositionCompleted(text);
 
-		Instance._isComposing = false;
-		BrowserInvisibleTextBoxViewExtension.RunFromNative(static () => Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty));
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -143,5 +155,13 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 			Instance.CompositionCanceled?.Invoke(Instance, new ImeCompositionEventArgs(string.Empty, textAlreadyApplied: true));
 			Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);
 		});
+	}
+
+	[JSExport]
+	private static Task OnCompositionCanceledAsync()
+	{
+		OnCompositionCanceled();
+
+		return Task.CompletedTask;
 	}
 }

@@ -870,22 +870,7 @@ namespace Microsoft.UI.Xaml
 					}
 				}
 
-				// Force a schedule to let the dotnet exports be initialized properly
-				var launch = new TaskCompletionSource();
-				currentApp.DeferredLaunch = launch.Task;
-				DispatcherQueue.Main.TryEnqueue(() =>
-				{
-					try
-					{
-						currentApp.PrepareOnLaunched();
-						launch.SetResult();
-					}
-					catch (Exception e)
-					{
-						typeof(Application).LogError()?.Error("OnLaunched failed", e);
-						launch.SetException(e);
-					}
-				});
+				currentApp.PrepareOnLaunched();
 			}
 			else
 			{
@@ -898,12 +883,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal Task FontPreloadTask { get; private set; }
-
-		/// <summary>
-		/// On the browser, where <see cref="OnLaunched"/> runs after <see cref="Start(Func{ApplicationInitializationCallbackParams, Application})"/>
-		/// returns: completes once it has run, or faults with what it threw, so the host can surface the failure.
-		/// </summary>
-		internal Task? DeferredLaunch { get; private set; }
 
 		private void PrepareOnLaunched()
 		{

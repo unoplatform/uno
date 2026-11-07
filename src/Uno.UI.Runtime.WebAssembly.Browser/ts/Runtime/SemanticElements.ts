@@ -622,9 +622,13 @@ namespace Uno.UI.Runtime {
 
 			element.addEventListener('paste', (event: ClipboardEvent) => {
 				const source = event.clipboardData?.getData('text') ?? '';
-				const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
-				BrowserInvisibleTextBoxViewExtension.onNativePaste(
-					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+				if (WebAssemblyThreading.isThreadingEnabled()) {
+					BrowserInvisibleTextBoxViewExtension.onNativePasteAsync(source);
+				} else {
+					const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
+					BrowserInvisibleTextBoxViewExtension.onNativePaste(
+						source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+				}
 				event.preventDefault();
 			});
 
