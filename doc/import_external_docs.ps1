@@ -20,7 +20,7 @@ $external_docs = @{
     "uno.uitest"         = @{ ref="94d027295b779e28064aebf99aeaee2b393ad558" }  #latest master commit
     "uno.extensions"     = @{ ref="495be3d2cd1c9e5d1d8a806f0818a887e6beee7a" }  #latest release/stable/7.4 branch commit
     "workshops"          = @{ ref="3515c29e03dea36cf2206d797d1bf9f8620370e3" }  #latest master commit
-    "uno.samples"        = @{ ref="2283eab9e108dee79a8424c7761ef4d7f64983f3" }  #master commit of 2026-08-27 (later commits add samples on Uno Platform 7.0 dev builds)
+    "uno.samples"        = @{ ref="2283eab9e108dee79a8424c7761ef4d7f64983f3" }  #master commit of 2026-08-26 (later commits add samples on Uno Platform 7.0 dev builds)
     "uno.chefs"          = @{ ref="d3591606dae2e5f4892ab4872a8dd94c2fc9e211" }  #latest main commit
     "hd-docs"            = @{ ref="ae6345c445ec1e30a0602f1b90d0e3868dce75cd"; dest="studio/Hot Design" } #main commit matching the uno.hotdesign release/stable/1.23 docs
     "studio-docs"        = @{ ref="830e1b87432ae9e21ac4a3fc9b021d67ec5925f3" }  #main commit matching the studio.live release/stable/3.3 docs
