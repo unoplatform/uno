@@ -110,6 +110,7 @@
 		<Compile Remove="Microsoft\UI\Composition\Given_ContainerVisual.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Controls\Given_Image.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Controls\Given_SKCanvasElement.skia.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Controls\Given_SkottieLottieRenderer.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Controls\Given_TextBlock.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Documents\Given_GlyphRunRenderer.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Media\Given_AcrylicBrush.cs" />
