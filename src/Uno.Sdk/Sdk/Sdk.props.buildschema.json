@@ -141,6 +141,14 @@
 			"description": "Provides an explicit override for the version of .NET MAUI to use with MAUI Embedding.",
 			"type": "nuget-version"
 		},
+		"UnoMauiVersion": {
+			"description": "Provides an explicit override for the version of Uno.Maui.Embedding and Uno.Maui.Handlers to use with the MauiEmbedding feature.",
+			"type": "nuget-version"
+		},
+		"UnoRetargetVersion": {
+			"description": "Provides an explicit override for the version of Uno.WinUI.Retarget to use with the Retarget feature.",
+			"type": "nuget-version"
+		},
 		"UnoExtensionsVersion": {
 			"description": "Provides an explicit override for the version of Uno Extensions to use.",
 			"type": "nuget-version"
@@ -553,9 +561,17 @@
 					"description": "Adds support for Logging using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-logging"
 				},
-				"MauiEmbedding": {
-					"description": "Adds support for embedding Maui controls in Uno.",
+				"MauiNativeEmbedding": {
+					"description": "Adds support for embedding Maui controls in Uno with the native embedding of Uno.Extensions (formerly MauiEmbedding).",
 					"helpUrl": "https://aka.platform.uno/feature-maui-embedding"
+				},
+				"MauiEmbedding": {
+					"description": "Adds support for running .NET MAUI controls and libraries on Uno with Uno.Maui.Embedding and Uno.Maui.Handlers.",
+					"helpUrl": "https://aka.platform.uno/feature-maui-handlers"
+				},
+				"Retarget": {
+					"description": "Runs Windows App SDK / WinUI 3 NuGet packages on Uno by rewriting their Windows builds with Uno.WinUI.Retarget.",
+					"helpUrl": "https://aka.platform.uno/feature-retarget"
 				},
 				"MVUX": {
 					"description": "Adds support for MVUX.",
