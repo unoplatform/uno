@@ -86,9 +86,10 @@
 	<Target Name="_ProvisionEmdawnWebGpu" BeforeTargets="_GenerateManagedToNative;_WasmCompileNativeSources;Build"
 			Inputs="$(MSBuildThisFileFullPath)" Outputs="$(EmdawnPkgDir)webgpu\src\library_webgpu.js">
 		<MakeDir Directories="$(EmdawnCacheDir)" />
-		<DownloadFile Condition="!Exists('$(EmdawnCacheDir)emdawnwebgpu_pkg-$(EmdawnTag).zip')"
-			SourceUrl="https://github.com/google/dawn/releases/download/$(EmdawnTag)/emdawnwebgpu_pkg-$(EmdawnTag).zip"
-			DestinationFolder="$(EmdawnCacheDir)" Retries="3" />
+		<!-- Not DownloadFile: its Retries only covers 500 and 408, so one GitHub 502/503/504 would fail the build.
+		     IgnoreStandardErrorWarningFormat: Exec otherwise fails on curl's retry messages, even after a retry succeeds. -->
+		<Exec IgnoreStandardErrorWarningFormat="true" Condition="!Exists('$(EmdawnCacheDir)emdawnwebgpu_pkg-$(EmdawnTag).zip')"
+			Command="curl --fail --silent --show-error --location --retry 5 --retry-delay 5 -o &quot;$(EmdawnCacheDir.Replace('\', '/'))emdawnwebgpu_pkg-$(EmdawnTag).zip&quot; &quot;https://github.com/google/dawn/releases/download/$(EmdawnTag)/emdawnwebgpu_pkg-$(EmdawnTag).zip&quot;" />
 		<Unzip Condition="!Exists('$(EmdawnPkgDir)emdawnwebgpu.port.py')"
 			SourceFiles="$(EmdawnCacheDir)emdawnwebgpu_pkg-$(EmdawnTag).zip" DestinationFolder="$(EmdawnCacheDir)" />
 		<PatchEmdawnLibraryJs File="$(EmdawnPkgDir)webgpu\src\library_webgpu.js" />
