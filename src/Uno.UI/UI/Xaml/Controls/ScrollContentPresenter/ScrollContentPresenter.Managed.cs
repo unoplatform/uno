@@ -688,6 +688,13 @@ namespace Microsoft.UI.Xaml.Controls
 			Set(options: new ScrollOptions(DisableAnimation: true, IsTouch: true, IsIntermediate: false));
 		}
 
+		internal void StopInertialManipulation()
+		{
+			CompleteTouchInertia();
+			StopFling();
+			StopWheelMotion();
+		}
+
 		/// <summary>
 		/// Ends the manipulation a coast was holding. Cleared before completing so the completion that follows
 		/// does not publish a final offset over the one the caller is about to set.
