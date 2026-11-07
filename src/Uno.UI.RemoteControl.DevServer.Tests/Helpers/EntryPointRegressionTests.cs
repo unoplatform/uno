@@ -60,6 +60,24 @@ public class EntryPointRegressionTests
 	}
 
 	[TestMethod]
+	[Description("The VS extension awaits an IAsyncDisposable flavor when the loaded EntryPoint exposes one and falls " +
+		"back to IDisposable for older DevServer packages. All three contracts must stay on the class.")]
+	public void EntryPoint_ExposesAsyncAndSyncDispose()
+	{
+		var source = ReadEntryPointSource();
+
+		var declaration = source.Split('\n').Single(line => line.Contains("public partial class EntryPoint :"));
+		declaration.Should().Contain("IDisposable");
+		declaration.Should().Contain(" IAsyncDisposable");
+		declaration.Should().Contain("VsThreading.IAsyncDisposable");
+
+		source.Should().Contain("using VsThreading = Microsoft.VisualStudio.Threading;");
+		source.Should().Contain("public void Dispose()");
+		source.Should().Contain("public ValueTask DisposeAsync()");
+		source.Should().Contain("Task VsThreading.IAsyncDisposable.DisposeAsync()");
+	}
+
+	[TestMethod]
 	[Description("EnsureServerAsync must consult DevServerHostDiscovery before spawning a host. " +
 		"Without this call, the legacy in-process spawn races with the CLI-driven launch flow " +
 		"(uno.studio VS extension, future VS Code / Rider plugins) and the user ends up with two " +
