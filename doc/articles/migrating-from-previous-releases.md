@@ -6,6 +6,15 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.Development.UpgradeUnoNuget).
 
+## Uno Platform 7.1
+
+### `MaxLength` limits only user input
+
+`MaxLength` on `TextBox` and `PasswordBox` now limits only user input, as on WinUI:
+
+- **Text set from code is kept whole.** Before, a `Text` or `Password` value longer than `MaxLength`, set from code or through a binding, was rejected and the box kept its previous text; with a two-way binding, the next edit could then write that previous text into the new source. Now the value is kept whole, and a `PasswordBox` masks all of it. The user still can't type or paste past `MaxLength`, and can now delete from text that is over it. Code that relied on `MaxLength` to reject the values it sets should check their length itself.
+- **UI Automation refuses an over-long value.** Setting a value longer than `MaxLength` through the Value pattern now fails with an error and leaves the text unchanged, as on WinUI; a value that fits is applied like text set from code.
+
 ## Uno Platform 7.0
 
 Uno Platform 7.0 is the Skia-unification major release: Skia is the rendering engine on every

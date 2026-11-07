@@ -205,7 +205,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 			if (AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxesMap.TryGetValue(virtualId, out var textBox))
 			{
 				var autofillValue = (AutofillValue)values.ValueAt(i)!;
-				textBox.Text = autofillValue.TextValue ?? string.Empty;
+				textBox.ApplyAutofill(autofillValue.TextValue ?? string.Empty);
 			}
 		}
 	}

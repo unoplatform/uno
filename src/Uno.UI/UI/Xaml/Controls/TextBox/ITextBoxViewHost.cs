@@ -65,7 +65,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Runs the host's text-input pipeline (BeforeTextChanging, TextChanging, DP coercion, etc.)
 		/// on <paramref name="newText"/> and returns the resulting (possibly modified) text.
 		/// </summary>
-		string ProcessTextInput(string newText, int selectionStart, int selectionLength);
+		/// <param name="applied">Whether the host applied the text: it can refuse it, as MaxLength does.</param>
+		string ProcessTextInput(string newText, int selectionStart, int selectionLength, out bool applied);
 
 		/// <summary>Forces an immediate layout pass on the host.</summary>
 		void UpdateLayout();

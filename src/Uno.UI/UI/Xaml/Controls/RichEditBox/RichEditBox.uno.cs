@@ -410,9 +410,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void ITextBoxViewHost.UpdateLayout() => UpdateLayout();
 
-		string ITextBoxViewHost.ProcessTextInput(string newText, int selectionStart, int selectionLength)
+		string ITextBoxViewHost.ProcessTextInput(string newText, int selectionStart, int selectionLength, out bool applied)
 		{
-			TryUpdateTextFromNative(newText, selectionStart, selectionLength);
+			applied = TryUpdateTextFromNative(newText, selectionStart, selectionLength);
 			return GetPlainTextContent();
 		}
 

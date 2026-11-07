@@ -1227,7 +1227,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	/// <summary>
 	/// Called when text is input in a text box.
-	/// Routes to the IValueProvider.SetValue() method on the automation peer.
+	/// Routes RichEditBox, TextBox and PasswordBox input to their own accessibility input, and other controls to the
+	/// IValueProvider.SetValue() method on the automation peer.
 	/// </summary>
 	[JSExport]
 	public static void OnTextInput(
@@ -1257,10 +1258,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			if (owner is ITextBoxHost { Core: { } core })
 			{
-				var maxLength = value?.Length ?? 0;
-				selectionStart = Math.Max(0, Math.Min(selectionStart, maxLength));
-				selectionEnd = Math.Max(selectionStart, Math.Min(selectionEnd, maxLength));
-				core.SetPendingSelection(selectionStart, selectionEnd - selectionStart);
+				// The browser's input events are typing, IME, dictation or autocorrect: user input, not a value set from code.
+				if (!core.ApplyAccessibilityTextInput(value, selectionStart, selectionEnd))
+				{
+					// Nothing changed in the TextBox, so nothing else shows the semantic element its text again.
+					@this.SyncTextBoxValueAndSelection(core);
+				}
+
+				return;
 			}
 
 			var peer = owner.GetOrCreateAutomationPeer();

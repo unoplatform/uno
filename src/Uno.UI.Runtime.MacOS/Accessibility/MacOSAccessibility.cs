@@ -272,13 +272,17 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	// The bits of the native set-text callback's flags (UNOAccessibility.h).
+	private const int NativeSetTextSelectionIsBackward = 1;
+	private const int NativeSetTextIsValueSet = 2;
+
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnNativeSetText(
 		nint handle,
 		nint valuePtr,
 		int selectionStart,
 		int selectionEnd,
-		int selectionIsBackward)
+		int flags)
 	{
 		if (handle == nint.Zero || valuePtr == nint.Zero)
 		{
@@ -297,15 +301,33 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 						value,
 						selectionStart,
 						selectionEnd,
-						selectionIsBackward != 0);
+						(flags & NativeSetTextSelectionIsBackward) != 0);
+				}
+				else if ((flags & NativeSetTextIsValueSet) == 0 && owner is ITextBoxHost { Core: { } core })
+				{
+					// A selected-text replacement, such as dictation, is user input, so MaxLength applies.
+					if (!core.ApplyAccessibilityTextInput(value, selectionStart, selectionEnd))
+					{
+						ResyncNativeText(owner);
+					}
 				}
 				else
 				{
+					// Setting the whole value is like UI Automation's SetValue: the peer refuses a value longer than MaxLength.
 					var peer = owner.GetOrCreateAutomationPeer();
 					if (peer?.GetPattern(PatternInterface.Value) is IValueProvider valueProvider &&
 						!valueProvider.IsReadOnly)
 					{
-						valueProvider.SetValue(value);
+						try
+						{
+							valueProvider.SetValue(value);
+						}
+						catch (InvalidOperationException) when (owner is ITextBoxHost)
+						{
+							ResyncNativeText(owner);
+							return;
+						}
+
 						if (owner is TextBox textBox)
 						{
 							var start = Math.Clamp(selectionStart, 0, textBox.Text.Length);
@@ -321,6 +343,10 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			ApplicationExtensions.RaiseRecoverableUnhandledExceptionOrLog(Application.Current, e, typeof(MacOSAccessibility));
 		}
 	}
+
+	// After a refused edit, shows the native element the text again through the shared text sync, which hides a password.
+	private static void ResyncNativeText(UIElement owner)
+		=> (AccessibilityRouter.Resolve(owner) as MacOSAccessibility)?.ResyncTextValue(owner);
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnNativeSetSelection(
