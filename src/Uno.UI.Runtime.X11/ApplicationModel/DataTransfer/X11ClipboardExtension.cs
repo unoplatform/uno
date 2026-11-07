@@ -652,7 +652,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (formats.FirstOrDefault(f => TextFormats.ContainsKey(f.name)) is var f2 && f2.atom != IntPtr.Zero)
 		{
-			dataPackage.SetText(WaitForText(x11Window, f2.atom, selectionAtom));
+			if (WaitForText(x11Window, f2.atom, selectionAtom) is { } text)
+			{
+				dataPackage.SetText(text);
+			}
 		}
 
 		if (formats.FirstOrDefault(f => f.name == "text/uri-list") is var f3 && f3.atom != IntPtr.Zero)
@@ -966,7 +969,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (nitems == IntPtr.Zero)
 		{
-			return null;
+			return Array.Empty<byte>();
 		}
 
 		var data = new byte[(int)nitems * (actualFormat / 8)];
@@ -984,7 +987,8 @@ internal class X11ClipboardExtension : IClipboardExtension
 			{
 				_logger.Trace($"{nameof(WaitForText)}: found acceptable text format, using encoding {enc}");
 			}
-			return enc.GetString(WaitForBytes(x11Window, format, selection));
+			var bytes = WaitForBytes(x11Window, format, selection);
+			return bytes is null ? null : enc.GetString(bytes);
 		}
 
 		return null;
