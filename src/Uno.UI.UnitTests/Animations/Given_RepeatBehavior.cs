@@ -81,6 +81,25 @@ namespace Uno.UI.Tests.Animations
 			Assert.AreEqual("Forever", ((IFormattable)RepeatBehavior.Forever).ToString("F2", CultureInfo.InvariantCulture));
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25248")]
+		public void When_ToString_Matches_WinUI()
+		{
+			var previousCulture = CultureInfo.CurrentCulture;
+			try
+			{
+				CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+
+				Assert.AreEqual("2,5x", new RepeatBehavior(2.5).ToString());
+				Assert.AreEqual("00:00:01.5000000", new RepeatBehavior(TimeSpan.FromSeconds(1.5)).ToString());
+				Assert.AreEqual("00:00:01.5000000", ((IFormattable)new RepeatBehavior(TimeSpan.FromSeconds(1.5))).ToString(null, CultureInfo.InvariantCulture));
+			}
+			finally
+			{
+				CultureInfo.CurrentCulture = previousCulture;
+			}
+		}
+
 		public static IEnumerable<object[]> GetParsingTestData()
 		{
 			object[] SafeGuard(string raw, RepeatBehavior expected) => new object[] { raw, expected };
