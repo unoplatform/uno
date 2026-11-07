@@ -29,9 +29,7 @@
 
 				var chunk = await streamReader.read();
 				while (!chunk.done && chunk.value) {
-					for (var i = 0; i < chunk.value.length; i++) {
-						Module.HEAPU8[targetArrayPointer + offset + totalRead + i] = chunk.value[i];
-					}
+					Module.HEAPU8.set(chunk.value, targetArrayPointer + offset + totalRead);
 					totalRead += chunk.value.length;
 
 					chunk = await streamReader.read();
