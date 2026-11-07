@@ -228,6 +228,16 @@ public partial class CompositionTarget
 	/// <summary>Sequence number of the frame most recently recorded by <see cref="Render"/>; UI thread only.</summary>
 	internal long LastRecordedSequence => _recordSequence;
 
+	/// <summary>
+	/// The damage carried by the frame <see cref="Render"/> last recorded, in root coordinates and free of overlaps,
+	/// or null when nothing was damaged. Runtime tests read it from <see cref="FrameRendered"/> to budget how much
+	/// of the window each frame repaints. Only the reference is kept, so it costs nothing per frame.
+	/// </summary>
+	internal Rect[]? LastRecordedDamage { get; private set; }
+
+	/// <summary>The root bounds <see cref="LastRecordedDamage"/> was clamped to.</summary>
+	internal Rect LastRecordedFrameRect { get; private set; }
+
 	private static event EventHandler<object>? _rendering;
 
 	public static event EventHandler<object>? Rendering
@@ -373,7 +383,10 @@ public partial class CompositionTarget
 
 			frameDamage.ClampTo(frameRect);
 
-			_lastRenderedFrame = (new FrameHold(frame) { Sequence = ++_recordSequence }, path, frameDamage.Detach(damageScale));
+			var damage = frameDamage.Detach(damageScale);
+			_lastRenderedFrame = (new FrameHold(frame) { Sequence = ++_recordSequence }, path, damage);
+			LastRecordedDamage = damage;
+			LastRecordedFrameRect = frameRect;
 		}
 
 		_fpsHelper.OnFrameRecorded();
