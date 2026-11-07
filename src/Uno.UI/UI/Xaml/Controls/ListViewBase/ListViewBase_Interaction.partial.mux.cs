@@ -729,10 +729,7 @@ partial class ListViewBase
 #endif
 				if (animateIfBringIntoView && m_tpScrollViewer is not null && m_tpScrollViewer.IsInManipulation)
 				{
-#if !HAS_UNO
-					// TODO Uno: ScrollViewer.StopInertialManipulation does not exist.
 					m_tpScrollViewer.StopInertialManipulation();
-#endif
 				}
 
 				{
@@ -862,15 +859,11 @@ partial class ListViewBase
 				{
 					var scrollViewer = m_tpScrollViewer;
 
-#if !HAS_UNO
-					// TODO Uno: ScrollViewer.GetGamepadNavigationCandidate does not exist.
-					scrollViewer->GetGamepadNavigationCandidate(
-						XboxUtility::GetPageNavigationDirection(originalKey),
+					spCandidate = scrollViewer.GetGamepadNavigationCandidate(
+						FocusHelper.GetPageNavigationDirection(originalKey),
 						true /* isPageNavigation */,
 						2 /* numPagesLookAhead */,
-						verticalViewportPadding /* verticalViewportPadding */,
-						&spCandidate);
-#endif
+						verticalViewportPadding /* verticalViewportPadding */);
 
 					// if the candidate we get is the currently focused element, we do not
 					// want to set focus/scroll again and handle the key. We should let the key
@@ -979,10 +972,7 @@ partial class ListViewBase
 								var focusUpdated = false;
 
 								var svAsControl = (Control)m_tpScrollViewer;
-#if !HAS_UNO
-								// TODO Uno: Control.DoesElementOverlapViewport does not exist.
-								svAsControl->DoesElementOverlapViewport(spCandidateAsUI.Get(), overlapsViewport);
-#endif
+								overlapsViewport = svAsControl.DoesElementOverlapViewport(spCandidateAsUI);
 
 								if (overlapsViewport)
 								{
@@ -1071,20 +1061,14 @@ partial class ListViewBase
 				// or moves focus based on the focusable content in that direction if it is scrollable.
 				if (spCandidate is not null)
 				{
-#if !HAS_UNO
-					// TODO Uno: ScrollViewer.ProcessGamepadNavigation does not exist.
-					m_tpScrollViewer->ProcessGamepadNavigation(key, originalKey, isHandled);
-#endif
+					isHandled = m_tpScrollViewer.ProcessGamepadNavigation(key, originalKey);
 				}
 				else
 				{
 					var viewportScrollPercent = is2DPageNavigation ? 1.0f : 0.5f;
 
-#if !HAS_UNO
-					// TODO Uno: ScrollViewer.ScrollForFocusNavigation does not exist.
 					//If the Candidate returned was null, the list is likely blank, we need to process this key for Scroll
-					m_tpScrollViewer->ScrollForFocusNavigation(key, gamepadDirection, viewportScrollPercent, &isHandled);
-#endif
+					isHandled = m_tpScrollViewer.ScrollForFocusNavigation(key, gamepadDirection, viewportScrollPercent);
 				}
 			}
 		}

@@ -1777,6 +1777,13 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			if (FocusHelper.IsGamepadNavigationDirection(args.OriginalKey) ||
+				FocusHelper.IsGamepadPageNavigationDirection(args.OriginalKey))
+			{
+				args.Handled = ProcessGamepadNavigation(key, args.OriginalKey);
+				return;
+			}
+
 			// Handle Ctrl+Plus/Minus for zoom
 			if (ZoomMode == ZoomMode.Enabled)
 			{
