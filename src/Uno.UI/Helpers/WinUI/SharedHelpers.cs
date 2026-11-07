@@ -45,11 +45,12 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static bool IsSystemDll() => false;
 
-		public static bool IsAnimationsEnabled()
-		{
-			UISettings uiSettings = new UISettings();
-			return uiSettings.AnimationsEnabled;
-		}
+		private static readonly UISettings s_uiSettings = new();
+
+		// Lets tests turn animations off, as UISettings.AnimationsEnabled follows the OS.
+		internal static bool? AnimationsEnabledOverride { get; set; }
+
+		public static bool IsAnimationsEnabled() => AnimationsEnabledOverride ?? s_uiSettings.AnimationsEnabled;
 
 		public static bool IsInDesignMode()
 		{

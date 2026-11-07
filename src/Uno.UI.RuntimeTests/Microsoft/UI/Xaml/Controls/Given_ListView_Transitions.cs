@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -402,6 +403,170 @@ public class Given_ListView_Transitions
 
 		Assert.IsLessThan(0.3f, samples.Min(s => s.Opacity));
 		AssertAtRest(added);
+	}
+
+	[TestMethod]
+	public async Task When_Animations_Disabled_Then_No_Transition_Plays()
+	{
+		// MUX Reference LayoutTransition.cpp, RegisterElementForTransitions: nothing registers while animations are off.
+		global::Uno.UI.Helpers.WinUI.SharedHelpers.AnimationsEnabledOverride = false;
+		try
+		{
+			var (list, items, _) = await LoadList(
+				Transitions(new EntranceThemeTransition(), new AddDeleteThemeTransition()),
+				settle: false);
+
+			var first = (UIElement)list.ContainerFromIndex(0);
+			var neighbour = (UIElement)list.ContainerFromIndex(1);
+			AssertAtRest(first);
+			AssertAtRest(neighbour);
+
+			items.Insert(0, "New");
+			await WindowHelper.WaitForIdle();
+
+			foreach (var (opacity, offsetY, _) in await Sample((UIElement)list.ContainerFromIndex(1), TimeSpan.FromMilliseconds(200)))
+			{
+				Assert.AreEqual(1f, opacity);
+				Assert.AreEqual(0f, offsetY);
+			}
+
+			var removed = (UIElement)list.ContainerFromIndex(0);
+			var panel = list.ItemsPanelRoot;
+			items.RemoveAt(0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1f, removed.Visual.Opacity, "A removed container does not fade out");
+			Assert.AreEqual(items.Count, list.Items.Count);
+			Assert.IsNull(list.ContainerFromItem("New"));
+			Assert.IsNotNull(panel);
+		}
+		finally
+		{
+			global::Uno.UI.Helpers.WinUI.SharedHelpers.AnimationsEnabledOverride = null;
+		}
+	}
+
+	private sealed class TransitionGroup : ObservableCollection<string>
+	{
+		public string Key { get; set; }
+
+		public override string ToString() => Key;
+	}
+
+	private static async Task<(ListView List, ScrollViewer ScrollViewer, List<TransitionGroup> Groups)> LoadGroupedList(
+		TransitionCollection transitions,
+		bool settle = true)
+	{
+		List<TransitionGroup> groups = new();
+		for (var g = 0; g < 5; g++)
+		{
+			TransitionGroup group = new() { Key = $"Group {g}" };
+			foreach (var i in Enumerable.Range(0, 8))
+			{
+				group.Add($"G{g}I{i}");
+			}
+
+			groups.Add(group);
+		}
+
+		CollectionViewSource source = new() { IsSourceGrouped = true, Source = groups };
+
+		ListView list = new()
+		{
+			Height = 300,
+			Width = 200,
+			ItemTemplate = Template,
+			ItemContainerTransitions = transitions,
+			ItemsSource = source.View,
+		};
+		list.GroupStyle.Add(new GroupStyle
+		{
+			HeaderTemplate = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><TextBlock Text='{Binding Key}' Height='40' /></DataTemplate>"),
+		});
+
+		WindowHelper.WindowContent = list;
+		await WindowHelper.WaitForLoaded(list);
+		await WindowHelper.WaitForIdle();
+
+		if (settle)
+		{
+			await Task.Delay(AnimationsDone);
+		}
+
+		return (list, FindScrollViewer(list), groups);
+	}
+
+	private static ListViewBaseHeaderItem RealizedHeader(ListView list, string key) =>
+		((Panel)list.ItemsPanelRoot).Children
+			.OfType<ListViewBaseHeaderItem>()
+			.First(h => h.GetVirtualizationInformationOrNull() is { IsRealized: true } && h.Content?.ToString() == key);
+
+	[TestMethod]
+	public async Task When_Grouped_First_Load_Then_Headers_And_Items_Animate()
+	{
+		var (list, _, _) = await LoadGroupedList(Transitions(new EntranceThemeTransition()), settle: false);
+
+		var header = RealizedHeader(list, "Group 0");
+		var item = (UIElement)list.ContainerFromIndex(0);
+		var headerSamples = await Sample(header, TimeSpan.FromMilliseconds(120));
+		var itemSamples = await Sample(item, AnimationsDone);
+
+		Assert.IsTrue(headerSamples.Any(s => s.OffsetY != 0 || s.Opacity < 1), "The header takes part in the entrance");
+		Assert.IsTrue(itemSamples.Any(s => s.OffsetY != 0 || s.Opacity < 1), "The item takes part in the entrance");
+		AssertAtRest(header);
+		AssertAtRest(item);
+	}
+
+	[TestMethod]
+	public async Task When_Grouped_Item_Added_Then_Next_Header_Moves_And_Rests()
+	{
+		var (list, _, groups) = await LoadGroupedList(Transitions(new AddDeleteThemeTransition()));
+		var next = RealizedHeader(list, "Group 1");
+		double before = next.TransformToVisual(list).TransformPoint(default).Y;
+
+		groups[0].Insert(0, "New");
+		await WindowHelper.WaitForIdle();
+
+		var samples = await Sample(next, AnimationsDone);
+
+		Assert.IsTrue(samples.Any(s => s.OffsetY != 0), "The next group's header slides");
+		AssertAtRest(next);
+		Assert.IsGreaterThan(before, next.TransformToVisual(list).TransformPoint(default).Y);
+	}
+
+	[TestMethod]
+	public async Task When_Grouped_Sticky_Header_Above_Change_Then_Stays_At_Top()
+	{
+		// MUX Reference LayoutTransition_partial.cpp: a sticky header's transition offsets go through CoerceStickyHeaderOffsets.
+		var (list, sv, groups) = await LoadGroupedList(Transitions(new AddDeleteThemeTransition()));
+
+		sv.ChangeView(null, 700, null, disableAnimation: true);
+		await WindowHelper.WaitForIdle();
+		await Task.Delay(AnimationsDone);
+
+		var stickyKey = ((Panel)list.ItemsPanelRoot).Children
+			.OfType<ListViewBaseHeaderItem>()
+			.Where(h => h.GetVirtualizationInformationOrNull() is { IsRealized: true })
+			.OrderBy(h => h.TransformToVisual(sv).TransformPoint(default).Y)
+			.Last(h => h.TransformToVisual(sv).TransformPoint(default).Y <= 1)
+			.Content.ToString();
+		var sticky = RealizedHeader(list, stickyKey);
+
+		groups[0].Insert(0, "New");
+
+		List<double> drawnTops = new();
+		var stopwatch = Stopwatch.StartNew();
+		while (stopwatch.Elapsed < AnimationsDone)
+		{
+			var total = sticky.Visual.TotalMatrix;
+			var origin = sv.Visual.TotalMatrix;
+			drawnTops.Add(total.Translation.Y - origin.Translation.Y);
+			await Task.Delay(16);
+		}
+
+		Assert.AreEqual(0, sticky.TransformToVisual(sv).TransformPoint(default).Y, 1, "Sticky at the top after the change");
+		Assert.IsTrue(drawnTops.All(top => Math.Abs(top) <= 1), $"The sticky header jumped while the change animated: {string.Join(", ", drawnTops.Distinct())}");
 	}
 
 	private static ScrollViewer FindScrollViewer(DependencyObject root)
