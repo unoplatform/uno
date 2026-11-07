@@ -17,7 +17,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// asserting so the scene can be bisected: UNO_IDLE_PROBE selects which half is on screen (acrylic, scrollbar,
 	/// both, neither). Prints once a second to stdout.
 	/// </summary>
-	[Sample("Performance", Name = "IdleFrameProbe", Description = "Diagnostic: counts rendered frames on a static scene. UNO_IDLE_PROBE=acrylic|scrollbar|both|none picks the content.")]
+	[Sample("Performance", Name = "IdleFrameProbe", Description = "Diagnostic: counts rendered frames on a static scene. UNO_IDLE_PROBE=acrylic|scrollbar|both|none picks the content.", IgnoreInSnapshotTests = true)]
 	public sealed class IdleFrameProbe : Page
 	{
 		private int _frames;

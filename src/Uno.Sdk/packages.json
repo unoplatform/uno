@@ -310,6 +310,21 @@
 		}
 	},
 	{
+		"group": "UnoMaui",
+		"version": "0.1.0-dev.1",
+		"packages": [
+			"Uno.Maui.Embedding",
+			"Uno.Maui.Handlers"
+		]
+	},
+	{
+		"group": "UnoRetarget",
+		"version": "0.1.0-dev.1",
+		"packages": [
+			"Uno.WinUI.Retarget"
+		]
+	},
+	{
 		"group": "MauiCompatibility",
 		"version": "10.0.90",
 		"packages": [
