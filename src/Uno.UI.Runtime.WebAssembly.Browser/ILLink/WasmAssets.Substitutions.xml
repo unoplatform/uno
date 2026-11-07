@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<linker>
+	<!-- Uno.Wasm.Bootstrap extracts these into the app's package folder at build time; nothing reads them at runtime. -->
+	<assembly fullname="Uno.UI.Runtime.WebAssembly.Browser">
+		<resource name="Uno.UI.Runtime.WebAssembly.Browser.WasmScripts.Uno.Runtime.Wasm.js" action="remove" />
+		<resource name="Uno.UI.Runtime.WebAssembly.Browser.WasmCSS.uno.css" action="remove" />
+	</assembly>
+</linker>
