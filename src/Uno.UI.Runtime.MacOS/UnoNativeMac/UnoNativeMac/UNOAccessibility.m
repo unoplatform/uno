@@ -342,7 +342,7 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 			NSString *text = [stringValue copy];
 			[self uno_dispatchManagedAction:^(intptr_t handle) {
 				if (g_setTextCallback) {
-					g_setTextCallback(handle, [text UTF8String], (int32_t)caret, (int32_t)caret, 0);
+					g_setTextCallback(handle, [text UTF8String], (int32_t)caret, (int32_t)caret, UNO_ACCESSIBILITY_SET_TEXT_IS_VALUE_SET);
 				}
 			}];
 		}
