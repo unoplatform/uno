@@ -53,6 +53,9 @@
 		<!-- WinUI keeps the old head's name, which is deliberately absent from the Uno.UI.Extras /
 		     Uno.Foundation IVT lists — that is what avoids the duplicate-type collision there. -->
 		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
+		<!-- WinUI runtime tests are the parity oracle, so they must run on the referenced Windows App SDK.
+		     A framework-dependent MSIX binds to the newest runtime on the machine instead. -->
+		<WindowsAppSDKSelfContained Condition="'$(_Platform)' == 'windows'">true</WindowsAppSDKSelfContained>
 
 		<!--
 		Every non-WinUI TFM renders with Skia, so the runtime variant is Generic on all of them, and this
