@@ -71,7 +71,7 @@ namespace Uno.Utils {
 			const nav = navigator as NavigatorClipboard;
 			if (nav.clipboard) {
 				return nav.clipboard.readText().catch(reason => {
-					console.error(`Failed to read from clipboard: ${reason}`);
+					Clipboard.logReadFailure("Failed to read from clipboard", reason);
 					return "";
 				});
 			}
@@ -83,8 +83,15 @@ namespace Uno.Utils {
 			// are no try blocks in the stack frames above.
 			const nav = navigator as NavigatorClipboard;
 			if (nav.clipboard && nav.clipboard.read) {
+				let items: ClipboardItem[];
 				try {
-					const items = await nav.clipboard.read();
+					items = await nav.clipboard.read();
+				} catch (reason) {
+					Clipboard.logReadFailure("Failed to read HTML from clipboard", reason);
+					return "";
+				}
+
+				try {
 					for (const item of items) {
 						if (item.types.includes('text/html')) {
 							const blob = await item.getType('text/html');
@@ -106,8 +113,15 @@ namespace Uno.Utils {
 			// are no try blocks in the stack frames above.
 			const nav = navigator as NavigatorClipboard;
 			if (nav.clipboard && nav.clipboard.read) {
+				let items: ClipboardItem[];
 				try {
-					const items = await nav.clipboard.read();
+					items = await nav.clipboard.read();
+				} catch (reason) {
+					Clipboard.logReadFailure("Failed to read image from clipboard", reason);
+					return "";
+				}
+
+				try {
 					for (const item of items) {
 						const imageType = item.types.find(t => t.startsWith('image/'));
 						if (imageType) {
@@ -139,6 +153,16 @@ namespace Uno.Utils {
 				}
 			}
 			return Promise.resolve("");
+		}
+
+		// A read the browser refuses (no permission or user activation, page not focused, blocked by the
+		// permissions policy) is an expected outcome and is logged at debug level; any other failure is an error.
+		private static logReadFailure(message: string, reason: unknown) {
+			if (reason instanceof DOMException && reason.name === "NotAllowedError") {
+				console.debug(`${message}: ${reason}`);
+			} else {
+				console.error(`${message}: ${reason}`);
+			}
 		}
 
 		public static async setImage(base64: string, mimeType: string): Promise<void> {

@@ -28,6 +28,7 @@ uid: Uno.Features.Clipboard
 * `SetContent` and `GetContent` APIs currently support textual data on all platforms. On Android, they also support URI and HTML formats, but the clipboard can hold only one item. Setting multiple items at once does not work reliably.
 * `ContentChanged` event can observe clipboard changes only when the application is in the foreground. On macOS, the `ContentChanged` event checks for clipboard changes by polling the current `NSPasteboard` change count in 1-second intervals. The polling starts only after the first subscriber attaches to the `ContentChanged` event and stops after the last subscriber unsubscribes.
 * `Flush` operation has an empty implementation. In contrast to WinUI, on other platforms, data automatically remains in the clipboard even after the application is closed.
+* On WebAssembly, the browser can refuse clipboard reads (no permission, page not focused, no user activation, blocked by the page's permissions policy). Uno Platform logs those refusals at debug level.
 
 ## Examples
 
