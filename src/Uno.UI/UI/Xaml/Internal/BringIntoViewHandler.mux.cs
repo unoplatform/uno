@@ -117,16 +117,24 @@ internal static class BringIntoViewHandler
 			out var innermostHorizontalScrollableScrollerWidth,
 			out var innermostVerticalScrollableScrollerHeight);
 
+		var rectBeforePadding = rectFocusedElement;
+
 		GetFocusedElementBoundingRectForPadding(
 			innermostHorizontalScrollableScrollerWidth,
 			innermostVerticalScrollableScrollerHeight,
 			focusVisualMargin,
 			ref rectFocusedElement);
 
-		// Transform focused element's rect from global to local, because BringIntoView takes local coordinates
-		return globalTransform.Inverse is { } inverse
-			? inverse.TransformBounds(rectFocusedElement)
-			: localBounds;
+		// Transform the padding from global to local, because BringIntoView takes local coordinates.
+		// TODO Uno: The source inverts the whole rect, which here accumulates float error in the resulting offset.
+		var scaleX = localBounds.Width > 0 ? rectBeforePadding.Width / localBounds.Width : 1.0;
+		var scaleY = localBounds.Height > 0 ? rectBeforePadding.Height / localBounds.Height : 1.0;
+
+		return new Rect(
+			(rectFocusedElement.X - rectBeforePadding.X) / scaleX,
+			(rectFocusedElement.Y - rectBeforePadding.Y) / scaleY,
+			localBounds.Width + (rectFocusedElement.Width - rectBeforePadding.Width) / scaleX,
+			localBounds.Height + (rectFocusedElement.Height - rectBeforePadding.Height) / scaleY);
 	}
 
 	// Potentially expands the bounding rectangle for the focused element to land away from the scroller edges.
