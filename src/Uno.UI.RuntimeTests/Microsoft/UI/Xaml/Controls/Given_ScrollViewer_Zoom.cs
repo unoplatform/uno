@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -5,6 +6,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Microsoft.UI;
 using Windows.UI;
+#if HAS_UNO
+using Uno.Extensions;
+using Uno.UI.DevTools.Input;
+using Uno.UI.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.System;
+using Windows.UI.Input.Preview.Injection;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -48,9 +57,8 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
-	// WinUI (CI WinAppSDK leg): flaky, ZoomFactor sometimes reaches the requested 2.0.
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-	public async Task When_ZoomMode_Disabled_ZoomFactor_Stays_1()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24988")]
+	public async Task When_ZoomMode_Disabled_ChangeView_Still_Zooms()
 	{
 		var content = new Border
 		{
@@ -71,12 +79,12 @@ public class Given_ScrollViewer_Zoom
 		await TestServices.WindowHelper.WaitForLoaded(sut);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// Try to change zoom when disabled
+		// ZoomMode only blocks user zoom; programmatic ChangeView still applies the zoom factor.
+		// WinUI applies the zoom asynchronously, so WaitForIdle alone can return before ZoomFactor changes.
 		sut.ChangeView(null, null, 2.0f, disableAnimation: true);
-		await TestServices.WindowHelper.WaitForIdle();
+		await WaitForZoomFactor(sut, 2.0f);
 
-		// Zoom should remain at 1.0 when ZoomMode is Disabled
-		Assert.AreEqual(1.0f, sut.ZoomFactor, 0.01f, "Zoom factor should stay 1.0 when ZoomMode is Disabled");
+		Assert.AreEqual(2.0f, sut.ZoomFactor, 0.01f, "ChangeView should zoom even when ZoomMode is Disabled");
 	}
 
 	[TestMethod]
@@ -187,8 +195,7 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
-	// WinUI keeps the current ZoomFactor when ZoomMode becomes Disabled; Uno resets it to 1.
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24988")]
 	public async Task When_ZoomMode_Changed_At_Runtime()
 	{
 		var content = new Border
@@ -214,17 +221,101 @@ public class Given_ScrollViewer_Zoom
 
 		// Zoom to 2x while enabled
 		sut.ChangeView(null, null, 2.0f, disableAnimation: true);
-		await TestServices.WindowHelper.WaitForIdle();
+		await WaitForZoomFactor(sut, 2.0f);
 		Assert.AreEqual(2.0f, sut.ZoomFactor, 0.01f, "Zoom should be 2.0 when enabled");
 
-		// Disable zoom mode - current zoom should reset to 1
+		// Disabling ZoomMode only blocks user zoom; the current zoom is kept
 		sut.ZoomMode = ZoomMode.Disabled;
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// When ZoomMode is Disabled, min and max are both set to 1,
-		// which should clamp the current zoom to 1
-		Assert.AreEqual(1.0f, sut.ZoomFactor, 0.01f, "Zoom should reset to 1.0 when ZoomMode is Disabled");
+		Assert.AreEqual(2.0f, sut.ZoomFactor, 0.01f, "Zoom should stay 2.0 when ZoomMode becomes Disabled");
 	}
+
+#if HAS_UNO
+	// With ZoomMode Disabled, Min/MaxZoomFactor are no longer pinned to 1, so the ZoomMode checks in the
+	// Ctrl+wheel and Ctrl+Plus handlers are what keep the user from zooming. The Enabled rows show that the
+	// injected input does zoom, so the Disabled rows cannot pass just because the input was lost.
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24988")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[DataRow(ZoomMode.Enabled)]
+	[DataRow(ZoomMode.Disabled)]
+	public async Task When_Ctrl_Wheel_Zooms_Only_When_ZoomMode_Enabled(ZoomMode zoomMode)
+	{
+		var sut = await CreateLoadedZoomableScrollViewer(zoomMode);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		mouse.MoveTo(sut.GetAbsoluteBounds().GetCenter());
+		mouse.Wheel(120, VirtualKeyModifiers.Control);
+
+		await AssertUserZoom(sut, zoomMode, "Ctrl+wheel");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24988")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[DataRow(ZoomMode.Enabled)]
+	[DataRow(ZoomMode.Disabled)]
+	public async Task When_Ctrl_Plus_Zooms_Only_When_ZoomMode_Enabled(ZoomMode zoomMode)
+	{
+		var sut = await CreateLoadedZoomableScrollViewer(zoomMode);
+
+		await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_+#$u$_+#$u$_ctrl", sut);
+
+		await AssertUserZoom(sut, zoomMode, "Ctrl+Plus");
+	}
+
+	private static async Task<ScrollViewer> CreateLoadedZoomableScrollViewer(ZoomMode zoomMode)
+	{
+		var sut = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			ZoomMode = zoomMode,
+			MinZoomFactor = 0.5f,
+			MaxZoomFactor = 4.0f,
+			Content = new Border
+			{
+				Width = 500,
+				Height = 500,
+				Background = new SolidColorBrush(Colors.Teal)
+			}
+		};
+
+		TestServices.WindowHelper.WindowContent = sut;
+		await TestServices.WindowHelper.WaitForLoaded(sut);
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual(1.0f, sut.ZoomFactor, 0.001f, "Initial zoom factor should be 1.0");
+
+		return sut;
+	}
+
+	private static async Task AssertUserZoom(ScrollViewer sut, ZoomMode zoomMode, string input)
+	{
+		if (zoomMode == ZoomMode.Enabled)
+		{
+			await TestServices.WindowHelper.WaitFor(
+				() => sut.ZoomFactor > 1.05f,
+				timeoutMS: 2000,
+				message: $"{input} should zoom in when ZoomMode is Enabled");
+		}
+		else
+		{
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			Assert.AreEqual(1.0f, sut.ZoomFactor, 0.001f, $"{input} should not zoom when ZoomMode is Disabled");
+		}
+	}
+#endif
+
+	private static async Task WaitForZoomFactor(ScrollViewer sut, float expected)
+		=> await TestServices.WindowHelper.WaitFor(
+			() => Math.Abs(sut.ZoomFactor - expected) < 0.01f,
+			timeoutMS: 2000,
+			message: $"ZoomFactor did not reach {expected}");
 
 	[TestMethod]
 	// WinUI: the zoomed extent/offsets are not reflected yet after ChangeView and WaitForIdle (reads the pre-zoom values).
