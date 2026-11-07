@@ -164,7 +164,7 @@ internal partial class X11XamlRootHost
 								QueueAction(this, () =>
 								{
 									_displayInformationExtension?.UpdateDetails();
-									_wrapper.RasterizationScale = (float)(_displayInformationExtension?.RawPixelsPerViewPixel ?? 1.0f);
+									_wrapper.UpdateRasterizationScale((float)(_displayInformationExtension?.RawPixelsPerViewPixel ?? 1.0f));
 								});
 							}
 							break;

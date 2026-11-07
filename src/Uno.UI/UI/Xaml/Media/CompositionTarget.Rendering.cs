@@ -504,6 +504,11 @@ public partial class CompositionTarget
 			var target = swapChain.AcquireRenderTarget(
 				(int)Math.Round(xamlRootBounds.Width * rasterizationScale),
 				(int)Math.Round(xamlRootBounds.Height * rasterizationScale));
+			if (target is null)
+			{
+				ReturnFrame(lastRenderedFrame);
+				return lastRenderedFrame.nativeElementClipPath;
+			}
 			var resized = _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
 			if (resized)
 			{
@@ -530,22 +535,23 @@ public partial class CompositionTarget
 			// and it is applied after the present opens, so damage is skipped while one is set.
 			var useDamage = damageEligible && !overlayEnabled && !_forceFullRepaint && !drawsOutsideDamage && rootTransform is null;
 
-			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			var presentedUnchanged = false;
-			using (var present = BeginPresent(renderer, target, useDamage ? ToDevicePixels(lastRenderedFrame.damage!, rasterizationScale) : default))
-			{
-				// Detach returns null both for "nothing was damaged" and for "no damage information", but a frame
-				// is only ever recorded with tracking on, so on an unresized frame null means nothing changed. The
-				// target still holds the previous frame, so the clear+replay is skipped rather than repainted whole.
-				// Not under an overlay: it has to land on a fresh frame, or it blends into its last copy.
-				var nothingChanged = !resized
-					&& lastRenderedFrame.damage is null
-					&& preservesContents
-					&& !overlayEnabled
-					&& !_forceFullRepaint
-					&& !drawsOutsideDamage;
-				presentedUnchanged = nothingChanged;
+			// Detach returns null both for "nothing was damaged" and for "no damage information", but a frame
+			// is only ever recorded with tracking on, so on an unresized frame null means nothing changed. The
+			// target still holds the previous frame, so the clear+replay is skipped rather than repainted whole.
+			// Not under an overlay: it has to land on a fresh frame, or it blends into its last copy.
+			var nothingChanged = !resized
+				&& lastRenderedFrame.damage is null
+				&& preservesContents
+				&& !overlayEnabled
+				&& !_forceFullRepaint
+				&& !drawsOutsideDamage;
+			var deviceDamage = useDamage ? ToDevicePixels(lastRenderedFrame.damage!, rasterizationScale) : null;
+			swapChain.SetPresentDamage(nothingChanged ? [] : deviceDamage);
 
+			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
+			var presentedUnchanged = nothingChanged;
+			using (var present = BeginPresent(renderer, target, deviceDamage))
+			{
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();
 				// A host may impose an outermost transform (e.g. framebuffer display orientation) that must wrap
@@ -628,6 +634,14 @@ public partial class CompositionTarget
 			}
 			else
 			{
+				// A frame returned unpresented (skipped draw) still owes its damage; fold it into the newer frame.
+				if (frame.damage is { Length: > 0 } skippedDamage)
+				{
+					var newer = _lastRenderedFrame.Value;
+					newer.damage = newer.damage is { Length: > 0 } newerDamage ? [.. newerDamage, .. skippedDamage] : skippedDamage;
+					_lastRenderedFrame = newer;
+				}
+
 				// The damage is a plain rect array now; only the frame holds unmanaged state.
 				frameToDelete = frame.frame;
 			}
