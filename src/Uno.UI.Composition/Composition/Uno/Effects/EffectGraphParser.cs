@@ -92,6 +92,8 @@ internal static class EffectGraphParser
 
 		var texture = factory.RenderOffscreen(width, height, session =>
 		{
+			// The offscreen session carries the whole scale; the frame's present scale is already in it.
+			using var _ = CompositionBrush.SetPresentScale(1f);
 			session.Scale(effective.X, effective.Y);
 
 			// The source paints in region-space; translate so the region's origin maps to the offscreen origin.

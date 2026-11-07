@@ -156,6 +156,8 @@ public partial class CompositionTarget
 	private Size _lastCanvasSize = Size.Empty;
 	private static IGeometry? _lastNativeClipPath;
 	private float _lastRasterizationScale = 1;
+	// The present scale the last frame was recorded for (UI thread). Zero until the first frame records.
+	private float _lastRecordedRasterizationScale;
 	private static IGeometry? _lastScaledNativeClipPath;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
@@ -318,8 +320,25 @@ public partial class CompositionTarget
 			: null;
 		IGeometry path;
 		List<Visual> nativeVisualsInZOrder;
+		// The present applies the display scale after recording, so the recording never carries it: content that
+		// rasterizes offscreen while recording (effect, nine-grid) is told it, or it is baked at 1x and magnified.
+		// Recordings that baked such content at the previous scale are redone when it changes.
+		float recordScale;
+		lock (_xamlRootBoundsGate)
+		{
+			recordScale = _xamlRootRasterizationScale;
+		}
+		if (recordScale != _lastRecordedRasterizationScale)
+		{
+			if (_lastRecordedRasterizationScale != 0)
+			{
+				rootElement.Visual.InvalidatePaintRecursive();
+			}
+			_lastRecordedRasterizationScale = recordScale;
+		}
 		try
 		{
+			using var presentScale = CompositionBrush.SetPresentScale(recordScale);
 			(path, nativeVisualsInZOrder) = FrameRenderHelper.RecordFrame(
 				recording,
 				(float)bounds.Width,

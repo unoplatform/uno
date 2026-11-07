@@ -306,6 +306,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 				return factory.RenderOffscreen(render.TargetWidth, render.TargetHeight, session =>
 				{
+					// This session carries the bitmap's own scale, not a window's present scale.
+					using var _ = global::Microsoft.UI.Composition.CompositionBrush.SetPresentScale(1f);
 					session.Save();
 					session.Scale(scaleX, scaleY);
 					visual.RenderRootVisual(session, offsetOverride: Vector2.Zero);
