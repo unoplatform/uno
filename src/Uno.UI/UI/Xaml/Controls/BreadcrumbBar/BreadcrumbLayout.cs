@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbLayout.cpp, tag winui3/release/1.5.3, commit 2a60e27
+// MUX Reference BreadcrumbLayout.cpp, branch main, commit e3c555a53
 
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Uno.UI.DataBinding;
@@ -28,45 +29,103 @@ internal partial class BreadcrumbLayout : NonVirtualizingLayout
 		return context.Children[index];
 	}
 
-	// Measuring is performed in a single step, every element is measured, including the ellipsis
-	// item, but the total amount of space needed is only composed of the non-ellipsis breadcrumbs
+	// Measure ancestors naturally, then measure the last item in the larger of the
+	// inline and overflow slots. Choose the visible suffix from these final sizes.
 	protected internal override Size MeasureOverride(NonVirtualizingLayoutContext context, Size availableSize)
 	{
-		m_availableSize = availableSize;
+		var children = context.Children;
+		int itemCount = children.Count;
 
-		Size accumulatedCrumbsSize = new Size(0, 0);
+		// Preparing a new last item can change the previous last item's template.
+		UIElement? lastItem = itemCount > 1 ? children[itemCount - 1] : null;
 
-		for (int i = 0; i < GetItemCount(context); ++i)
+		// Keep ancestor measure constraints stable across resizes, including repeated zero-width layouts.
+		Size naturalSize = new Size(
+			availableSize.Width > 0 ? float.PositiveInfinity : 0,
+			availableSize.Height);
+		int oversizedAncestor = -1;
+		float ancestorsWidth = 0f;
+		float ellipsisWidth = 0f;
+
+		// The first item is the overflow button; its measured width is the cost of hiding ancestors.
+		m_ellipsisButton = itemCount > 0 ? children[0] : null;
+
+		if (m_ellipsisButton is not null)
 		{
-			var breadcrumbItem = (BreadcrumbBarItem)GetElementAt(context, i);
-			breadcrumbItem.Measure(availableSize);
+			m_ellipsisButton.Measure(availableSize);
+			ellipsisWidth = (float)m_ellipsisButton.DesiredSize.Width;
+		}
 
-			if (i != 0)
+		for (int i = 1; i < itemCount - 1; ++i)
+		{
+			var item = children[i];
+			item.Measure(naturalSize);
+			var desiredSize = item.DesiredSize;
+			ancestorsWidth += (float)Math.Min(desiredSize.Width, availableSize.Width);
+
+			if (desiredSize.Width > availableSize.Width)
 			{
-				accumulatedCrumbsSize.Width += breadcrumbItem.DesiredSize.Width;
-				accumulatedCrumbsSize.Height = Math.Max(accumulatedCrumbsSize.Height, breadcrumbItem.DesiredSize.Height);
+				oversizedAncestor = i;
 			}
 		}
 
-		// Save a reference to the ellipsis button to avoid querying for it multiple times
-		if (GetItemCount(context) > 0)
+		// Leave the last item measured at the same constraint used to decide overflow.
+		// If its desired size does not change, the visibility decision stays valid too.
+		float lastItemWidth = (float)Math.Max(0.0, availableSize.Width - Math.Min(ancestorsWidth, ellipsisWidth));
+		Size lastItemSize = default;
+
+		if (lastItem is not null)
 		{
-			if (GetElementAt(context, 0) is BreadcrumbBarItem ellipsisButton)
+			lastItem.Measure(new Size(lastItemWidth, availableSize.Height));
+			lastItemSize = lastItem.DesiredSize;
+		}
+
+		m_ellipsisIsRendered = ancestorsWidth > ellipsisWidth &&
+			ancestorsWidth + lastItemSize.Width > availableSize.Width;
+		m_firstRenderedItemIndexAfterEllipsis = itemCount > 0 ? (uint)(itemCount - 1) : 0u;
+		bool constrainedAncestor = false;
+
+		if (m_ellipsisIsRendered)
+		{
+			m_firstRenderedItemIndexAfterEllipsis = (uint)GetFirstBreadcrumbBarItemToArrange(children, availableSize, ref constrainedAncestor);
+		}
+		else if (oversizedAncestor >= 0)
+		{
+			// An oversized ancestor can still be visible alongside zero-width items.
+			children[oversizedAncestor].Measure(availableSize);
+			constrainedAncestor = true;
+		}
+
+		if (constrainedAncestor)
+		{
+			ancestorsWidth = 0;
+
+			for (int i = 1; i < itemCount - 1; ++i)
 			{
-				m_ellipsisButton = ellipsisButton;
+				ancestorsWidth += (float)Math.Min(children[i].DesiredSize.Width, availableSize.Width);
+			}
+
+			float updatedWidth = (float)Math.Max(0.0, availableSize.Width - Math.Min(ancestorsWidth, ellipsisWidth));
+
+			if (updatedWidth != lastItemWidth)
+			{
+				lastItem!.Measure(new Size(updatedWidth, availableSize.Height));
+				lastItemSize = lastItem.DesiredSize;
+			}
+
+			m_ellipsisIsRendered = ancestorsWidth > ellipsisWidth &&
+				ancestorsWidth + lastItemSize.Width > availableSize.Width;
+
+			if (!m_ellipsisIsRendered)
+			{
+				m_firstRenderedItemIndexAfterEllipsis = (uint)(itemCount - 1);
 			}
 		}
 
-		if (accumulatedCrumbsSize.Width > availableSize.Width)
-		{
-			m_ellipsisIsRendered = true;
-		}
-		else
-		{
-			m_ellipsisIsRendered = false;
-		}
-
-		return accumulatedCrumbsSize;
+		// Width constraints can also reduce height (for example, in a Viewbox).
+		// Only the final sizes of visible items should reserve vertical space.
+		int firstItemToRender = m_ellipsisIsRendered ? (int)m_firstRenderedItemIndexAfterEllipsis : 1;
+		return new Size(ancestorsWidth + lastItemSize.Width, GetBreadcrumbBarItemsHeight(children, firstItemToRender));
 	}
 
 	private void ArrangeItem(UIElement breadcrumbItem, ref float accumulatedWidths, float maxElementHeight)
@@ -96,26 +155,41 @@ internal partial class BreadcrumbLayout : NonVirtualizingLayout
 		HideItem(element);
 	}
 
-	private int GetFirstBreadcrumbBarItemToArrange(NonVirtualizingLayoutContext context)
+	private int GetFirstBreadcrumbBarItemToArrange(
+		IReadOnlyList<UIElement> children,
+		Size availableSize,
+		ref bool constrainedAncestor)
 	{
-		int itemCount = GetItemCount(context);
-		float accumLength = (float)GetElementAt(context, itemCount - 1).DesiredSize.Width +
+		int itemCount = children.Count;
+		float accumLength = (float)children[itemCount - 1].DesiredSize.Width +
 			(float)(m_ellipsisButton?.DesiredSize.Width ?? 0.0);
 
-		for (int i = itemCount - 2; i >= 0; --i)
+		for (int i = itemCount - 2; i >= 1; --i)
 		{
-			float newAccumLength = accumLength + (float)GetElementAt(context, i).DesiredSize.Width;
-			if (newAccumLength > m_availableSize.Width)
+			var item = children[i];
+			float itemWidth = (float)item.DesiredSize.Width;
+
+			if (accumLength == 0 && itemWidth > availableSize.Width)
+			{
+				item.Measure(availableSize);
+				itemWidth = (float)item.DesiredSize.Width;
+				constrainedAncestor = true;
+			}
+
+			float newAccumLength = accumLength + (float)Math.Min(itemWidth, availableSize.Width);
+
+			if (newAccumLength > availableSize.Width)
 			{
 				return i + 1;
 			}
+
 			accumLength = newAccumLength;
 		}
 
-		return 0;
+		return 1;
 	}
 
-	private float GetBreadcrumbBarItemsHeight(NonVirtualizingLayoutContext context, int firstItemToRender)
+	private float GetBreadcrumbBarItemsHeight(IReadOnlyList<UIElement> children, int firstItemToRender)
 	{
 		float maxElementHeight = 0f;
 
@@ -124,9 +198,11 @@ internal partial class BreadcrumbLayout : NonVirtualizingLayout
 			maxElementHeight = (float)(m_ellipsisButton?.DesiredSize.Height ?? 0.0);
 		}
 
-		for (int i = firstItemToRender; i < GetItemCount(context); ++i)
+		int itemCount = children.Count;
+
+		for (int i = firstItemToRender; i < itemCount; ++i)
 		{
-			maxElementHeight = (float)Math.Max(maxElementHeight, GetElementAt(context, i).DesiredSize.Height);
+			maxElementHeight = (float)Math.Max(maxElementHeight, children[i].DesiredSize.Height);
 		}
 
 		return maxElementHeight;
@@ -137,21 +213,18 @@ internal partial class BreadcrumbLayout : NonVirtualizingLayout
 	protected internal override Size ArrangeOverride(NonVirtualizingLayoutContext context, Size finalSize)
 	{
 		int itemCount = GetItemCount(context);
-		int firstElementToRender = 0;
-		m_firstRenderedItemIndexAfterEllipsis = (uint)(itemCount - 1);
+		int firstElementToRender = 1;
 		m_visibleItemsCount = 0;
 
-		// If the ellipsis must be drawn, then we find the index (x) of the first element to be rendered, any element with
-		// a lower index than x will be hidden (except for the ellipsis button) and every element after x (including x) will
-		// be drawn. At the very least, the ellipis and the last item will be rendered
+		// Use the visible suffix selected during measure. At least the ellipsis and
+		// the last item are rendered when the leading items overflow.
 		if (m_ellipsisIsRendered)
 		{
-			firstElementToRender = GetFirstBreadcrumbBarItemToArrange(context);
-			m_firstRenderedItemIndexAfterEllipsis = (uint)firstElementToRender;
+			firstElementToRender = (int)m_firstRenderedItemIndexAfterEllipsis;
 		}
 
 		float accumulatedWidths = 0f;
-		float maxElementHeight = GetBreadcrumbBarItemsHeight(context, firstElementToRender);
+		float maxElementHeight = GetBreadcrumbBarItemsHeight(context.Children, firstElementToRender);
 
 		// If there is at least one element, we may render the ellipsis item
 		if (itemCount > 0)
