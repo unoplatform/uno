@@ -406,7 +406,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[CombinatorialData]
 		public async Task When_Scrolled_IsExpanded_Should_Be_Preserved(bool bindIsExpanded)
 		{
-			var itemsSource = Enumerable.Range(0, 8).Select(i =>
+			// Enough roots for the first one to leave the cache window (CacheLength 4, so 2 viewports on each side).
+			var itemsSource = Enumerable.Range(0, 80).Select(i =>
 				new TestTreeNodeModel($"Root{i}", false, false)
 					{
 						new TestTreeNodeModel($"Root{i} Child 1", false, false)
@@ -439,13 +440,14 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			await UITestHelper.Load(treeView);
 
+			// The panel keeps a pinned, special item at index 0 (MeasureSpecialElements), so use one that gets recycled.
 			if (bindIsExpanded)
 			{
-				itemsSource[0].IsExpanded = true;
+				itemsSource[1].IsExpanded = true;
 			}
 			else
 			{
-				((TreeViewItem)treeView.ContainerFromItem(itemsSource[0])).IsExpanded = true;
+				((TreeViewItem)treeView.ContainerFromItem(itemsSource[1])).IsExpanded = true;
 			}
 
 			await WindowHelper.WaitForIdle();
@@ -479,7 +481,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 				.Select(item => treeView.ContainerFromItem(item))
 				.OfType<TreeViewItem>()
 				.Count(c => c.IsExpanded));
-			Assert.IsTrue(((TreeViewItem)treeView.ContainerFromItem(itemsSource[0])).IsExpanded);
+			Assert.IsTrue(((TreeViewItem)treeView.ContainerFromItem(itemsSource[1])).IsExpanded);
 		}
 #endif
 
@@ -508,17 +510,21 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			await UITestHelper.Load(treeView);
 
-			Assert.AreEqual(2, treeView.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+			// The panel keeps a recycled container as its child, in the recycle queue, so count the realized ones.
+			int GetRealizedCount() => treeView.FindVisualChildByType<ItemsStackPanel>().Children
+				.Count(c => c.GetVirtualizationInformationOrNull() is { IsRealized: true });
+
+			Assert.AreEqual(2, GetRealizedCount());
 
 			treeView.RootNodes[0].IsExpanded = false;
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, treeView.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+			Assert.AreEqual(1, GetRealizedCount());
 
 			treeView.RootNodes[0].IsExpanded = true;
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(2, treeView.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+			Assert.AreEqual(2, GetRealizedCount());
 		}
 
 #if HAS_UNO
