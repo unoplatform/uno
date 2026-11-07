@@ -152,7 +152,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(Stretch),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: Stretch.None, // Note: this is overriden in ctor for Rectangle and Ellipse
+				defaultValue: Stretch.None, // Note: Rectangle and Ellipse default to Fill, see DependencyProperty.GetDefaultValue
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
