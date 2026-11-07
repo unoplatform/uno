@@ -26,7 +26,8 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 	private readonly InputInjector _input;
 
 #if !HAS_UNO
-	private Point _currentPosition;
+	// Window-relative DIPs, the space callers pass to MoveTo. Unset until the first move.
+	private Point? _currentPosition;
 	private bool _leftPressed;
 	private bool _rightPressed;
 	private bool _middlePressed;
@@ -36,17 +37,13 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 	public Mouse(InputInjector input)
 	{
 		_input = input;
-#if !HAS_UNO
-		GetCursorPos(out var pt);
-		_currentPosition = new Point(pt.X, pt.Y);
-#endif
 	}
 
 	private Point Current =>
 #if HAS_UNO
 		_input.Mouse.Position;
 #else
-		_currentPosition;
+		_currentPosition ?? GetCursorWindowPosition();
 #endif
 
 	public void Press(Point position)
@@ -228,9 +225,8 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 		// On WinAppSDK, use absolute coordinates with screen-space conversion.
 		// The Absolute flag requires coordinates normalized to 0-65535 range.
 		var normalizedTarget = ToNormalizedScreenCoordinates(x, y);
-		var normalizedFrom = _currentPosition.X == 0 && _currentPosition.Y == 0
-			? normalizedTarget
-			: ToNormalizedScreenCoordinates(_currentPosition.X, _currentPosition.Y);
+		var from = Current;
+		var normalizedFrom = ToNormalizedScreenCoordinates(from.X, from.Y);
 
 		steps ??= (uint)Math.Min(Math.Max(Math.Abs(normalizedTarget.X - normalizedFrom.X), Math.Abs(normalizedTarget.Y - normalizedFrom.Y)) / 100, 512);
 		stepOffsetInMilliseconds ??= 1;
@@ -387,14 +383,29 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 #if !HAS_UNO
 	internal static Microsoft.UI.Xaml.Window? TestServices_WindowHelper_CurrentTestWindow { get; set; }
 
+	private static (POINT Origin, double Scale) GetClientOriginAndScale()
+	{
+		POINT origin = new();
+		ClientToScreen(WinRT.Interop.WindowNative.GetWindowHandle(TestServices_WindowHelper_CurrentTestWindow), ref origin);
+
+		return (origin, TestServices_WindowHelper_CurrentTestWindow?.Content.XamlRoot.RasterizationScale ?? 1);
+	}
+
+	private static Point GetCursorWindowPosition()
+	{
+		GetCursorPos(out var cursor);
+		var (origin, scale) = GetClientOriginAndScale();
+
+		return new Point((cursor.X - origin.X) / scale, (cursor.Y - origin.Y) / scale);
+	}
+
 	private static Point ToNormalizedScreenCoordinates(double x, double y)
 	{
-		RECT rect = new();
-		GetWindowRect(WinRT.Interop.WindowNative.GetWindowHandle(TestServices_WindowHelper_CurrentTestWindow), ref rect);
-		var scale = TestServices_WindowHelper_CurrentTestWindow?.Content.XamlRoot.RasterizationScale ?? 1;
+		var (origin, scale) = GetClientOriginAndScale();
 
-		var screenX = (rect.Left + x) * scale;
-		var screenY = (rect.Top + y) * scale;
+		// XAML coordinates start at the client area and are in DIPs, while the window's origin is in physical pixels.
+		var screenX = origin.X + x * scale;
+		var screenY = origin.Y + y * scale;
 
 		var screenWidth = GetSystemMetrics(SM_CXSCREEN);
 		var screenHeight = GetSystemMetrics(SM_CYSCREEN);
@@ -416,22 +427,13 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 
 	[LibraryImport("user32.dll", SetLastError = true)]
 	[return: MarshalAs(UnmanagedType.Bool)]
-	private static partial bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
+	private static partial bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
 
 	[StructLayout(LayoutKind.Sequential)]
 	private struct POINT
 	{
 		public int X;
 		public int Y;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	private struct RECT
-	{
-		public int Left;
-		public int Top;
-		public int Right;
-		public int Bottom;
 	}
 #endif
 }
