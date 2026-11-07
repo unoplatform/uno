@@ -1327,6 +1327,7 @@ namespace Microsoft.UI.Xaml
 				//if ((GetIsLayoutElement() || GetIsParentLayoutElement()))
 				{
 					SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
+					OnMeasureInvalidated(); // Uno-specific: see UIElement.OnMeasureInvalidated
 				}
 				//else
 				//{
