@@ -212,14 +212,15 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
       <Style TargetType="ListViewItem"><Setter Property="MinHeight" Value="44"/></Style>
     </ListView.ItemContainerStyle>
     <ListView.Header>
-      <StackPanel Margin="10" Background="Yellow">
+      <!-- UNO TODO: Height pins the text-measured height of WinUI's Segoe UI, which the expected offsets depend on. -->
+      <StackPanel Margin="10" Height="72" Background="Yellow">
         <TextBlock FontSize="15" Text="Header Top"/>
         <TextBox FontSize="15" Text="Header Middle"/>
         <TextBlock FontSize="15" Text="Header Bottom"/>
       </StackPanel>
     </ListView.Header>
     <ListView.Footer>
-      <StackPanel Margin="10" Background="Orange">
+      <StackPanel Margin="10" Height="72" Background="Orange">
         <TextBlock FontSize="15" Text="Footer Top"/>
         <TextBox FontSize="15" Text="Footer Middle"/>
         <TextBlock FontSize="15" Text="Footer Bottom"/>

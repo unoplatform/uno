@@ -39,7 +39,15 @@ public class GridViewIntegrationTests : BaseDxamlTestClass
 		WindowHelper.VerifyTestCleanup();
 	}
 
+	// WinUI's WaitForIdle also waits for DirectManipulation, which runs the animated view changes.
+	private static async Task WaitForScrollViewerIdle(ScrollViewer scrollViewer)
+	{
+		await WindowHelper.WaitFor(() => !scrollViewer.IsInManipulation);
+		await WindowHelper.WaitForIdle();
+	}
+
 	[TestMethod]
+	[RequiresScaling(1f)]
 	public async Task AnimateItemIntoViewWithGamepad()
 	{
 		WindowHelper.SetWindowSizeOverride(new global::Windows.Foundation.Size(400, 400));
@@ -117,6 +125,7 @@ public class GridViewIntegrationTests : BaseDxamlTestClass
 		}
 
 		await WindowHelper.WaitForIdle();
+		await WaitForScrollViewerIdle(scrollViewer);
 
 		await RunOnUIThread(() =>
 		{
@@ -137,6 +146,7 @@ public class GridViewIntegrationTests : BaseDxamlTestClass
 		}
 
 		await WindowHelper.WaitForIdle();
+		await WaitForScrollViewerIdle(scrollViewer);
 
 		await RunOnUIThread(() =>
 		{
@@ -560,8 +570,10 @@ public class GridViewIntegrationTests : BaseDxamlTestClass
 		      </ItemsPanelTemplate>
 		    </GridView.ItemsPanel>
 		    <GridView.Header>
+		      <!-- UNO TODO: Width pins the text-measured width of WinUI's Segoe UI, which the expected offsets depend on. -->
 		      <StackPanel
 		        Margin="10"
+		        Width="116"
 		        Background="Cyan"
 		        VerticalAlignment="Center">
 		        <TextBlock FontSize="15" Text="Header Top"/>

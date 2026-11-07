@@ -65,6 +65,13 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			WindowHelper.VerifyTestCleanup();
 		}
 
+		// WinUI's WaitForIdle also waits for DirectManipulation, which runs the animated view changes.
+		private static async Task WaitForScrollViewerIdle(ScrollViewer scrollViewer)
+		{
+			await WindowHelper.WaitFor(() => !scrollViewer.IsInManipulation);
+			await WindowHelper.WaitForIdle();
+		}
+
 		//
 		// Test Cases
 		//
@@ -129,6 +136,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			}
 
 			await WindowHelper.WaitForIdle();
+			await WaitForScrollViewerIdle(scrollViewer);
 
 			await RunOnUIThread(() =>
 			{
@@ -149,6 +157,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			}
 
 			await WindowHelper.WaitForIdle();
+			await WaitForScrollViewerIdle(scrollViewer);
 
 			await RunOnUIThread(() =>
 			{
@@ -342,6 +351,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task AnimateItemIntoViewProgrammatically()
 		{
 			TestCleanupWrapper cleanup;
@@ -436,6 +446,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			await WindowHelper.SynchronouslyTickUIThread(2);
 			await WindowHelper.WaitForIdle();
+			await WaitForScrollViewerIdle(scrollViewer);
 
 			await RunOnUIThread(() =>
 			{
@@ -452,6 +463,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			await WindowHelper.SynchronouslyTickUIThread(2);
 			await WindowHelper.WaitForIdle();
+			await WaitForScrollViewerIdle(scrollViewer);
 
 			await RunOnUIThread(() =>
 			{
@@ -468,6 +480,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			await WindowHelper.SynchronouslyTickUIThread(2);
 			await WindowHelper.WaitForIdle();
+			await WaitForScrollViewerIdle(scrollViewer);
 
 			await RunOnUIThread(() =>
 			{
@@ -487,6 +500,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			await WindowHelper.SynchronouslyTickUIThread(2);
 			await WindowHelper.WaitForIdle();
+			await WaitForScrollViewerIdle(scrollViewer);
 
 			await RunOnUIThread(() =>
 			{
@@ -699,7 +713,8 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			});
 
 			// Let the ChangeView operation start in inertia mode.
-			await inertiaEvent.WaitForDefault();
+			// TODO Uno: ScrollViewer.ViewChanging is not raised, so the motion is observed on the ScrollViewer.
+			await WindowHelper.WaitFor(() => scrollViewer.IsInManipulation);
 
 			LOG_OUTPUT("Moving up once with the gamepad.");
 			await CommonInputHelper.Up(InputDevice.Gamepad);
