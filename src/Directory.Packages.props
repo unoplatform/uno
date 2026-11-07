@@ -8,7 +8,7 @@
 		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
 		<MSTestVersion>4.2.1</MSTestVersion>
 		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
-		<SkiaSharpVersion>4.151.1</SkiaSharpVersion>
+		<SkiaSharpVersion>4.156.0-rc.1.26553.11</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>14.2.1.1</HarfbuzzSharpVersion>
 		<UnoICUVersion>77.3.2</UnoICUVersion>
 		<!-- Uno.icu-tvos was introduced after that line and only ships 77.4.0-dev.1, which in turn
