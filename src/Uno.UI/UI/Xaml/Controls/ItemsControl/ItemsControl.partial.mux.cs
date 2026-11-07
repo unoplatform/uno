@@ -176,6 +176,9 @@ partial class ItemsControl : IGeneratorHost
 	{
 		var virtualizationInformation = (container as UIElement)?.GetVirtualizationInformationOrNull();
 
+		// A container from the root of the item template skips GetContainerForItem.
+		EnsureContainerItemsControlProperty(container);
+
 		PreProcessContentPreparation(container, item);
 
 		if (virtualizationInformation is null || !virtualizationInformation.MaySkipPreparation)
@@ -203,7 +206,7 @@ partial class ItemsControl : IGeneratorHost
 
 	void IGeneratorHost.ClearContainerForItem(DependencyObject container, object item)
 	{
-		CleanUpContainer(container);
+		CleanUpContainer(container, item);
 
 		if ((container as UIElement)?.GetVirtualizationInformationOrNull() is { } virtualizationInformation)
 		{
