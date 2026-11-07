@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -280,6 +282,26 @@ public class Given_CalendarView
 			offsets.Zip(offsets.Skip(1)).All(x => x.Second >= x.First),
 			$"should never rewind back: (v-offsets: {string.Join(", ", offsets)})"
 		);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24884")]
+	public async Task When_GetPattern_Unsupported_Pattern()
+	{
+		var calendarView = new CalendarView();
+		await UITestHelper.Load(calendarView);
+
+		var peer = FrameworkElementAutomationPeer.CreatePeerForElement(calendarView);
+		Assert.IsNotNull(peer);
+
+		Assert.IsNull(peer.GetPattern(PatternInterface.Invoke));
+		Assert.IsNull(peer.GetPattern(PatternInterface.GridItem));
+		Assert.IsInstanceOfType<IScrollItemProvider>(peer.GetPattern(PatternInterface.ScrollItem));
+
+		Assert.AreSame(peer, peer.GetPattern(PatternInterface.Table));
+		Assert.AreSame(peer, peer.GetPattern(PatternInterface.Grid));
+		Assert.AreSame(peer, peer.GetPattern(PatternInterface.Value));
+		Assert.AreSame(peer, peer.GetPattern(PatternInterface.Selection));
 	}
 
 	[TestMethod]
