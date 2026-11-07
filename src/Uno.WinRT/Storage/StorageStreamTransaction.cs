@@ -15,6 +15,9 @@ namespace Windows.Storage
 {
 	public sealed partial class StorageStreamTransaction : IDisposable
 	{
+		/// <summary>The suffix added to the file's name for the temporary file that the changes are written to.</summary>
+		internal const string TempFileSuffix = ".tmp";
+
 		private readonly object _gate;
 		private readonly StorageFile _file;
 
@@ -54,7 +57,7 @@ namespace Windows.Storage
 				}
 
 				CloseFiles();
-				File.Replace(_file.Path + ".tmp", _file.Path, null);
+				File.Replace(_file.Path + TempFileSuffix, _file.Path, null);
 				OpenFiles();
 			}
 		}
@@ -63,7 +66,7 @@ namespace Windows.Storage
 		{
 			FileStream src, dst;
 			_fileLock = src = File.Open(_file.Path, FileMode.Open, FileAccess.Read, FileShare.None);
-			_tempFile = dst = File.Open(_file.Path + ".tmp", FileMode.Create, FileAccess.Write, FileShare.None);
+			_tempFile = dst = File.Open(_file.Path + TempFileSuffix, FileMode.Create, FileAccess.Write, FileShare.None);
 
 			// First we make sure to clone the content of the current file in the temp file,
 			// so user can seek to append content.
@@ -100,7 +103,7 @@ namespace Windows.Storage
 
 				try
 				{
-					File.Delete(_file.Path + ".tmp");
+					File.Delete(_file.Path + TempFileSuffix);
 				}
 				catch (Exception e)
 				{
