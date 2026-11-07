@@ -25,14 +25,14 @@ partial class MenuFlyout
 #if HAS_UNO // Uno specific: recover VisualTree from parent (see Flyout.mux.cs Enter for rationale).
 			visualTree ??= (element.GetParent() as DependencyObject)?.GetVisualTree();
 #endif
-			parameters = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
+			parameters = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree, Depth = 0 };
 			//params.fSkipNameRegistration = true;
 			//params.fUseLayoutRounding = false;
 			//params.fCoercedIsEnabled = false;
 
 			foreach (MenuFlyoutItemBase item in items)
 			{
-				item.Enter(parameters, 0);
+				item.EnterTree(null, parameters);
 			}
 		}
 	}
@@ -59,20 +59,20 @@ partial class MenuFlyout
 
 			foreach (MenuFlyoutItemBase item in items)
 			{
-				item.Leave(parameters);
+				item.LeaveTree(null, parameters);
 			}
 		}
 	}
 
-	internal override void Enter(DependencyObject namescopeOwner, EnterParams parameters)
+	internal override void PropagateKeyboardAcceleratorEnter(DependencyObject namescopeOwner, EnterParams parameters)
 	{
-		base.Enter(namescopeOwner, parameters);
+		base.PropagateKeyboardAcceleratorEnter(namescopeOwner, parameters);
 		KeyboardAcceleratorFlyoutItemEnter(this, namescopeOwner, MenuFlyout.ItemsProperty, parameters);
 	}
 
-	internal override void Leave(DependencyObject namescopeOwner, LeaveParams parameters)
+	internal override void PropagateKeyboardAcceleratorLeave(DependencyObject namescopeOwner, LeaveParams parameters)
 	{
-		base.Leave(namescopeOwner, parameters);
+		base.PropagateKeyboardAcceleratorLeave(namescopeOwner, parameters);
 		KeyboardAcceleratorFlyoutItemLeave(this, namescopeOwner, MenuFlyout.ItemsProperty, parameters);
 	}
 }
