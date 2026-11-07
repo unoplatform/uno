@@ -1,13 +1,16 @@
 #nullable enable
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.Disposables;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
 namespace Uno.UI.RuntimeTests.Tests;
@@ -81,6 +84,41 @@ public class Given_Win32DragDrop
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25863")]
+	public async Task When_Bitmap_Drop_Read_After_Medium_Released()
+	{
+		// DragEnter releases every STGMEDIUM it reads before it returns, but apps read the bitmap later, in DragOver or Drop.
+		var dib = CreateDib(width: 2, height: 3);
+		var handle = CreateHGlobal(dib);
+		var package = new DataPackage();
+		IntPtr freeResult;
+		try
+		{
+			ReadContentIntoPackage(package, "CF_DIB", handle);
+		}
+		finally
+		{
+			// What ReleaseStgMedium does for an HGLOBAL medium without pUnkForRelease.
+			freeResult = GlobalFree(handle);
+		}
+		Assert.AreEqual(IntPtr.Zero, freeResult, "GlobalFree failed.");
+
+		var reference = await package.GetView().GetBitmapAsync();
+		using var stream = (await reference.OpenReadAsync()).AsStreamForRead();
+		using var bmp = new MemoryStream();
+		await stream.CopyToAsync(bmp);
+
+		var bytes = bmp.ToArray();
+		const int FileHeaderSize = 14; // BITMAPFILEHEADER
+		Assert.AreEqual(FileHeaderSize + dib.Length, bytes.Length);
+		Assert.AreEqual((byte)'B', bytes[0]);
+		Assert.AreEqual((byte)'M', bytes[1]);
+		Assert.AreEqual((uint)bytes.Length, BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(2))); // bfSize
+		Assert.AreEqual(54u, BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(10))); // bfOffBits: both headers, no color table
+		CollectionAssert.AreEqual(dib, bytes[FileHeaderSize..]);
+	}
+
 	private static IntPtr CreateHDrop(string[] paths)
 	{
 		const int DropFilesHeaderSize = 20;
@@ -111,6 +149,71 @@ public class Given_Win32DragDrop
 		Assert.IsNotNull(toHglobal);
 		return (List<string>?)method.Invoke(null, new[] { toHglobal.Invoke(null, new object[] { handle }) });
 	}
+
+	private static byte[] CreateDib(int width, int height)
+	{
+		const int HeaderSize = 40; // BITMAPINFOHEADER
+		var dib = new byte[HeaderSize + width * height * 4];
+		BinaryPrimitives.WriteInt32LittleEndian(dib.AsSpan(0), HeaderSize); // biSize
+		BinaryPrimitives.WriteInt32LittleEndian(dib.AsSpan(4), width);
+		BinaryPrimitives.WriteInt32LittleEndian(dib.AsSpan(8), height);
+		BinaryPrimitives.WriteUInt16LittleEndian(dib.AsSpan(12), 1); // biPlanes
+		BinaryPrimitives.WriteUInt16LittleEndian(dib.AsSpan(14), 32); // biBitCount
+		BinaryPrimitives.WriteInt32LittleEndian(dib.AsSpan(16), 0); // biCompression = BI_RGB
+		BinaryPrimitives.WriteInt32LittleEndian(dib.AsSpan(20), width * height * 4); // biSizeImage
+		for (var i = HeaderSize; i < dib.Length; i++)
+		{
+			dib[i] = (byte)(i * 7);
+		}
+		return dib;
+	}
+
+	private static IntPtr CreateHGlobal(byte[] data)
+	{
+		var handle = GlobalAlloc(0x0002 /* GMEM_MOVEABLE */, (nuint)data.Length);
+		Assert.AreNotEqual(IntPtr.Zero, handle);
+		var memory = GlobalLock(handle);
+		if (memory == IntPtr.Zero)
+		{
+			var error = Marshal.GetLastWin32Error();
+			GlobalFree(handle);
+			Assert.Fail($"GlobalLock failed with error {error}.");
+		}
+		try
+		{
+			Marshal.Copy(data, 0, memory, data.Length);
+		}
+		finally
+		{
+			GlobalUnlock(handle);
+		}
+		return handle;
+	}
+
+	private static void ReadContentIntoPackage(DataPackage package, string formatName, IntPtr handle)
+	{
+		var type = Type.GetType("Uno.UI.Runtime.Win32.Win32ClipboardExtension, Uno.UI.Runtime.Win32", throwOnError: true)!;
+		var method = type.GetMethod("ReadContentIntoPackage", BindingFlags.Static | BindingFlags.NonPublic);
+		Assert.IsNotNull(method);
+		var parameters = method.GetParameters(); // (DataPackage, IEnumerable<CLIPBOARD_FORMAT>, Func<CLIPBOARD_FORMAT, HGLOBAL?>)
+		Assert.HasCount(3, parameters);
+		var formatType = parameters[1].ParameterType.GetGenericArguments()[0];
+		var handleType = parameters[2].ParameterType.GetGenericArguments()[1];
+		var hglobalType = Nullable.GetUnderlyingType(handleType);
+		Assert.IsNotNull(hglobalType, "The data getter is expected to return HGLOBAL?.");
+		var toHglobal = hglobalType.GetMethod("op_Explicit", new[] { typeof(IntPtr) });
+		Assert.IsNotNull(toHglobal);
+
+		var formats = Array.CreateInstance(formatType, 1);
+		formats.SetValue(Enum.Parse(formatType, formatName), 0);
+		var dataGetter = typeof(Given_Win32DragDrop)
+			.GetMethod(nameof(ConstantGetter), BindingFlags.Static | BindingFlags.NonPublic)!
+			.MakeGenericMethod(formatType, handleType)
+			.Invoke(null, new[] { toHglobal.Invoke(null, new object[] { handle }) });
+		method.Invoke(null, new[] { package, formats, dataGetter });
+	}
+
+	private static Func<TFormat, THandle> ConstantGetter<TFormat, THandle>(THandle handle) => _ => handle;
 
 	[DllImport("kernel32.dll", SetLastError = true)]
 	private static extern IntPtr GlobalAlloc(uint flags, nuint bytes);
