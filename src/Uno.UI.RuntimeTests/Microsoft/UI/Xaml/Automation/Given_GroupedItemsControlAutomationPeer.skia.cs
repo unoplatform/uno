@@ -30,7 +30,9 @@ public class Given_GroupedItemsControlAutomationPeer
 		var secondGroup = new ObservableCollection<object> { shared, otherGroupSurvivor };
 		var groups = new ObservableCollection<ObservableCollection<object>> { firstGroup, secondGroup };
 		var source = new CollectionViewSource { IsSourceGrouped = true, Source = groups };
+		// Without a GroupStyle the panel lays the items out as non-grouped (CacheManager::GuaranteeCache).
 		var listView = new ListView { ItemsSource = source.View, Width = 320, Height = 400 };
+		listView.GroupStyle.Add(new GroupStyle());
 
 		try
 		{
