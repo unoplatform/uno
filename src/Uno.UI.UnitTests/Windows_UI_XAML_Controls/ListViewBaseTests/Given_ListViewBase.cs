@@ -29,7 +29,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var panel = new StackPanel();
 
-			var SUT = new ListViewBase()
+			var SUT = new ListView()
 			{
 				Style = null,
 				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
@@ -50,11 +50,11 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			SUT.SelectionMode = ListViewSelectionMode.Multiple;
 
-			SUT.OnItemClicked(0, VirtualKeyModifiers.None);
+			SUT.OnItemPrimaryInteractionGesture((ListViewBaseItem)SUT.ContainerFromIndex(0), isKeyboardInput: false);
 
 			Assert.HasCount(1, SUT.SelectedItems);
 
-			SUT.OnItemClicked(1, VirtualKeyModifiers.None);
+			SUT.OnItemPrimaryInteractionGesture((ListViewBaseItem)SUT.ContainerFromIndex(1), isKeyboardInput: false);
 
 			Assert.HasCount(2, SUT.SelectedItems);
 		}
@@ -390,7 +390,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			SUT.SelectedItem = source[0];
 
-			Assert.IsNull(SUT.SelectedValue);
+			// MUX Reference Selector_Partial.cpp, OnSelectionChanged: without a path, the value is the item.
+			Assert.AreEqual(source[0], SUT.SelectedValue);
 			Assert.HasCount(1, selectionChanged);
 			Assert.AreEqual(source[0], selectionChanged[0].AddedItems[0]);
 			Assert.IsEmpty(selectionChanged[0].RemovedItems);
@@ -820,7 +821,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			source[0] = "5";
 			// Data template is not recreated because of pooling
-			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 4 : 8, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 4 : 7, count);
 			// The item container style is reapplied (not cached)
 			Assert.AreEqual(5, containerCount);
 		}
