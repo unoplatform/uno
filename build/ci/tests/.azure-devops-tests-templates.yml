@@ -105,6 +105,10 @@ jobs:
     NuGetAuditMode: direct
 
   steps:
+  - template: ../templates/mac-rerun-limit.yml
+
+  - checkout: self
+
   - task: DownloadBuildArtifacts@0
     inputs:
       artifactName: 'nuget-packages'
@@ -153,7 +157,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
       ArtifactName: template-tests-macos-logs
