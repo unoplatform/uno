@@ -1681,8 +1681,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				var contentProperty = TypeResolver.FindContentProperty(type);
 				var unknownContent = xamlObjectDefinition.Members.FirstOrDefault(IsNestedChildNode);
 				var initializationMember = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "_Initialization");
+				var isConvertibleTextContent = _genericConvertibles.Contains(type) && unknownContent?.Value is string;
 
 				if (contentProperty == null &&
+					!isConvertibleTextContent &&
 					xamlObjectDefinition.Type.Name is not ("ResourceDictionary" or "DataTemplate" or "ItemsPanelTemplate" or "ControlTemplate"))
 				{
 					if (xamlObjectDefinition.Members.Any(m => IsNestedChildNode(m)))
@@ -1699,7 +1701,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					// Skip, always valid
 				}
-				else if (_genericConvertibles.Contains(type) && unknownContent?.Value is string otherContentValue)
+				else if (isConvertibleTextContent)
 				{
 					_ = XamlBindingHelper.ConvertValue(type, unknownContent?.Value);
 				}
