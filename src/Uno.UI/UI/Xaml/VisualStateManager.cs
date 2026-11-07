@@ -291,11 +291,17 @@ namespace Microsoft.UI.Xaml
 
 		private static (VisualStateGroup, VisualState) GetValidGroupAndState(string stateName, IList<VisualStateGroup> groups)
 		{
+			// As in WinUI, an empty name never resolves to an unnamed state.
+			if (string.IsNullOrEmpty(stateName))
+			{
+				return (null, null);
+			}
+
 			foreach (var group in groups)
 			{
 				foreach (var state in group.States)
 				{
-					if (state.Name?.Equals(stateName) ?? false)
+					if (state.Name == stateName)
 					{
 						return (group, state);
 					}
