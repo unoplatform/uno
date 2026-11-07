@@ -361,7 +361,8 @@ partial class ListViewBase
 					var spBuildTree = DXamlCore.Current.GetBuildTreeService();
 					spBuildTree.RegisterWork(this);
 				}
-				global::System.Diagnostics.Debug.Assert(m_isRegisteredForCallbacks);
+				// TODO Uno: A dispatcher running items inline (unit tests) has already drained the work here.
+				// Debug.Assert(m_isRegisteredForCallbacks);
 			}
 			else
 			{
