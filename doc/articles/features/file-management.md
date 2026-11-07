@@ -11,12 +11,12 @@ File management allows shared reading and writing of files across all Uno Platfo
 
 ## Supported features
 
-| Feature             | WinUI     | Android | iOS     | Web (WASM) | macOS   | Linux (Skia) | WPF (Skia) |
-|---------------------|-----------|---------|---------|------------|---------|--------------|------------|
-| `StorageFile`       | ✔         | ✔       | ✔       | ✔          | ✔       | ✔            | ✔          |
-| `StorageFolder`     | ✔         | ✔       | ✔       | ✔          | ✔       | ✔            | ✔          |
-| `CachedFileManager` | ✔         | partial | partial | partial    | partial | partial      | partial    |
-| `StorageFileHelper` | ✔         | ✔       | ✔       | ✔          | ✔       | ✔            | ✔          |
+| Feature             | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|---------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `StorageFile`       | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `StorageFolder`     | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `CachedFileManager` | ✔               | partial               | partial           | partial                    | partial               | partial             | partial                            | partial                 |
+| `StorageFileHelper` | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
 
 ## Overview
 
