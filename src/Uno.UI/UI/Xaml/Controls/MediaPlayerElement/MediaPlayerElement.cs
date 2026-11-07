@@ -63,6 +63,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					mpe.MediaPlayer.Source = source;
 				}
+				else
+				{
+					// As in WinUI, setting Source creates the default player; OnMediaPlayerChanged gives it the source.
+					mpe.MediaPlayer = new global::Windows.Media.Playback.MediaPlayer();
+				}
 
 				if (source == null)
 				{
@@ -393,8 +398,10 @@ namespace Microsoft.UI.Xaml.Controls
 			if (MediaPlayer == null)
 			{
 				MediaPlayer = new global::Windows.Media.Playback.MediaPlayer();
-				_mediaPlayerPresenter?.ApplyStretch();
 			}
+
+			// The player usually exists before the template (Source set earlier), so the new presenter still needs the stretch.
+			_mediaPlayerPresenter?.ApplyStretch();
 
 			// For video content, show the poster source until it is ready to be displayed.
 			ShowPosterImage(true);
