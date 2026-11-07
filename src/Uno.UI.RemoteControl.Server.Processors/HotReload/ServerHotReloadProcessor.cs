@@ -49,6 +49,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private readonly IRemoteControlServer _remoteControlServer;
 		private readonly ITelemetry _telemetry;
 		private readonly HotReloadTracker _tracker;
+		private readonly HotReloadOutcomeTelemetry _outcomeTelemetry;
 		private readonly WorkspaceGatedFileUpdater _fileUpdater;
 		private readonly HotReloadWorkspaceRegistry _workspaceRegistry;
 
@@ -58,6 +59,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			_telemetry = telemetry;
 			_workspaceRegistry = workspaceRegistry;
 			_tracker = new(async (status, ct) => await _remoteControlServer.SendFrame(new HotReloadStatusMessage(status)), ct => RequestHotReloadToIde(), _reporter);
+			_outcomeTelemetry = new(_tracker, _telemetry);
 
 			// Update requests are gated on the workspace lifecycle: queued while the baseline is being
 			// captured, pass-through when hot reload is IDE-driven (no workspace), failed with an explicit
@@ -198,12 +200,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		#region Hot-reload state
-		public enum HotReloadEventSource
-		{
-			IDE,
-			DevServer
-		}
-
 		private async ValueTask Notify(HotReloadEvent evt, HotReloadEventSource source = HotReloadEventSource.DevServer)
 		{
 			var properties = new Dictionary<string, string>
@@ -252,28 +248,28 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 					// Pending hot-reload events
 					case HotReloadEvent.ProcessingFiles:
-						await _tracker.EnsureHotReloadStarted();
+						await StartOrContinueHotReload(source);
 						_telemetry.TrackEvent("notify-processing-files", properties, measurements);
 						break;
 
 					case HotReloadEvent.Completed:
-						await (await _tracker.StartOrContinueHotReload()).DeferComplete(HotReloadOperationResult.Success);
-						_telemetry.TrackEvent("notify-completed", properties, measurements);
+						await (await StartOrContinueHotReload(source)).DeferComplete(HotReloadOperationResult.Success);
+						_telemetry.TrackEvent(HotReloadOutcomeEvents.Completed, properties, measurements);
 						break;
 
 					case HotReloadEvent.NoChanges:
-						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadOperationResult.NoChanges);
-						_telemetry.TrackEvent("notify-no-changes", properties, measurements);
+						await (await StartOrContinueHotReload(source)).Complete(HotReloadOperationResult.NoChanges);
+						_telemetry.TrackEvent(HotReloadOutcomeEvents.NoChanges, properties, measurements);
 						break;
 
 					case HotReloadEvent.Failed:
-						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadOperationResult.Failed);
-						_telemetry.TrackEvent("notify-failed", properties, measurements);
+						await (await StartOrContinueHotReload(source)).Complete(HotReloadOperationResult.Failed);
+						_telemetry.TrackEvent(HotReloadOutcomeEvents.Failed, properties, measurements);
 						break;
 
 					case HotReloadEvent.RudeEdit:
-						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadOperationResult.RudeEdit);
-						_telemetry.TrackEvent("notify-rude-edit", properties, measurements);
+						await (await StartOrContinueHotReload(source)).Complete(HotReloadOperationResult.RudeEdit);
+						_telemetry.TrackEvent(HotReloadOutcomeEvents.RudeEdit, properties, measurements);
 						break;
 				}
 
@@ -290,6 +286,36 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				};
 				_telemetry.TrackEvent("notify-error", errorProperties, measurements);
 				throw;
+			}
+		}
+
+		// An operation an IDE notification starts, continues or completes is the IDE's to report (Source=IDE).
+		private async ValueTask<HotReloadOperation> StartOrContinueHotReload(HotReloadEventSource source)
+		{
+			var operation = await _tracker.StartOrContinueHotReload();
+			if (source is HotReloadEventSource.IDE)
+			{
+				_outcomeTelemetry.SkipReportedByIde(operation);
+			}
+
+			return operation;
+		}
+
+		/// <summary>
+		/// Reports the outcome of the hot reloads applied from the dev-server's workspace, for as long as it lives.
+		/// An app built inside Visual Studio reaches that workspace only when UnoHotReloadMode=MetadataUpdates forces it,
+		/// and Visual Studio then applies and reports the hot reload too (Source=IDE): its outcomes are left to Visual Studio.
+		/// </summary>
+		private void AttachOutcomeTelemetry(CancellationToken workspaceToken)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Hot reload outcome telemetry: {(_isRunningInsideVisualStudio ? "left to Visual Studio, which built the app" : "reported by the dev-server")}.");
+			}
+
+			if (!_isRunningInsideVisualStudio)
+			{
+				_outcomeTelemetry.Attach(workspaceToken);
 			}
 		}
 		#endregion
@@ -483,8 +509,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			_workspaceRegistry.Unregister(this);
 			_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Disposed);
-			_ct.Cancel();
+			// The workspace first: its teardown stops the outcome telemetry before cancelling the in-flight update requests.
 			_workspace?.Ct.Cancel();
+			_ct.Cancel();
 		}
 
 		/// <summary>

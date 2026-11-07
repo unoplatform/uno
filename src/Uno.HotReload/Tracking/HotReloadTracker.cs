@@ -54,6 +54,16 @@ public sealed class HotReloadTracker(
 	/// </remarks>
 	public HotReloadOperation? Last { get; private set; }
 
+	/// <summary>
+	/// Raised once for each operation when it completes, with its <see cref="HotReloadOperation.Result"/> and
+	/// <see cref="HotReloadOperation.CompletionTime"/> set. Operations aborted by a newer one are raised too.
+	/// </summary>
+	/// <remarks>
+	/// Raised on the thread that completes the operation, after its waiters are released; an aborted predecessor is
+	/// raised before the operation that aborted it. An exception thrown by a handler is reported, not propagated.
+	/// </remarks>
+	internal event EventHandler<HotReloadOperation>? OperationCompleted;
+
 	public async ValueTask SetStateAsync(HotReloadState state)
 	{
 		_globalState = state;
@@ -82,6 +92,18 @@ public sealed class HotReloadTracker(
 	internal void ReportError(string message) => _reporter.Error(message);
 
 	internal void ReportWarn(string message) => _reporter.Warn(message);
+
+	internal void OnOperationCompleted(HotReloadOperation operation)
+	{
+		try
+		{
+			OperationCompleted?.Invoke(this, operation);
+		}
+		catch (Exception ex)
+		{
+			_reporter.Error($"Hot-reload operation {operation.Id} completion handler failed: {ex}");
+		}
+	}
 
 	public async ValueTask<HotReloadOperation> StartHotReload(ImmutableHashSet<string>? files)
 	{

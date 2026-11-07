@@ -120,6 +120,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					var manager = await HotReloadManager.CreateAsync(LoadSolutionFromDisk, configureServer.MetadataUpdateCapabilities, new DelegateHotReloadHandler(SendUpdates), _tracker, ct);
 					ct.Register(() => manager.Dispose());
 
+					AttachOutcomeTelemetry(ct);
+
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });
 					await Notify(HotReloadEvent.Ready);
 
