@@ -88,10 +88,10 @@ internal partial class InputManager : IInputInjectorTarget
 			var target = focusedElement as UIElement
 				?? FocusableHelper.GetContainingFrameworkElementIfFocusable(focusedElement);
 
-			target?.StartBringIntoView(new BringIntoViewOptions
+			if (target is not null)
 			{
-				AnimationDesired = animateIfBringIntoView
-			});
+				BringIntoViewHandler.EnsureFocusedElementBringIntoView(target, animateIfBringIntoView);
+			}
 		}
 	}
 
