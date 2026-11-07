@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using EnvDTE80;
@@ -23,10 +22,10 @@ namespace Uno.UI.RemoteControl.VS;
 
 public partial class EntryPoint : IDisposable
 {
-	private const string DesktopTargetFrameworkIdentifier = "desktop";
+	private const string DesktopTargetFrameworkIdentifier = ActiveFrameworkReloadPolicy.DesktopTargetFrameworkIdentifier;
 	private const string CompatibleTargetFrameworkProfileKey = "compatibleTargetFramework";
-	private const string Windows10TargetFrameworkIdentifier = "windows10";
-	private const string WasmTargetFrameworkIdentifier = "browserwasm";
+	private const string Windows10TargetFrameworkIdentifier = ActiveFrameworkReloadPolicy.Windows10TargetFrameworkIdentifier;
+	private const string WasmTargetFrameworkIdentifier = ActiveFrameworkReloadPolicy.WasmTargetFrameworkIdentifier;
 	private const string UnoSelectedTargetFrameworkProperty = "_UnoSelectedTargetFramework";
 	private CancellationTokenSource? _wasmProjectReloadTask;
 	private Stopwatch _lastProfileOperation = new Stopwatch();
@@ -35,17 +34,17 @@ public partial class EntryPoint : IDisposable
 	private bool _pendingRequestedChanged;
 	private bool _isFirstProfileTfmChange = true;
 
-	private async Task OnDebugFrameworkChangedAsync(string? previousFramework, string newFramework, bool forceReload = false)
+	private async Task OnDebugFrameworkChangedAsync(string? previousFramework, string newFramework, bool isSelectedFrameworkUnset = false)
 	{
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
 		// In this case, a new TargetFramework was selected. We need to file a matching launch profile, if any.
-		if (GetTargetFrameworkIdentifier(newFramework) is { } targetFrameworkIdentifier && _debuggerObserver is not null)
+		if (ActiveFrameworkReloadPolicy.GetTargetFrameworkIdentifier(newFramework) is { } targetFrameworkIdentifier && _debuggerObserver is not null)
 		{
 			var isFirstProfileTfmChange = _isFirstProfileTfmChange;
 			_isFirstProfileTfmChange = false;
 
-			_debugAction?.Invoke($"OnDebugFrameworkChangedAsync({previousFramework}, {newFramework}, {targetFrameworkIdentifier}, forceReload: {forceReload}, isFirstProfileTfmChange:{isFirstProfileTfmChange})");
+			_debugAction?.Invoke($"OnDebugFrameworkChangedAsync({previousFramework}, {newFramework}, {targetFrameworkIdentifier}, isSelectedFrameworkUnset: {isSelectedFrameworkUnset}, isFirstProfileTfmChange:{isFirstProfileTfmChange})");
 
 			// Always synchronize the selected target, the reported value
 			// is the right one.
@@ -65,7 +64,7 @@ public partial class EntryPoint : IDisposable
 			_pendingRequestedChanged = false;
 			_lastTargetOperation.Restart();
 
-			if (!isFirstProfileTfmChange && !forceReload && string.IsNullOrEmpty(previousFramework))
+			if (!isFirstProfileTfmChange && !isSelectedFrameworkUnset && string.IsNullOrEmpty(previousFramework))
 			{
 				// The first change after a reload is always the active target. This happens
 				// when going to/from desktop/wasm for VS issues.
@@ -112,7 +111,7 @@ public partial class EntryPoint : IDisposable
 				}
 			}
 
-			await TryReloadTargetAsync(previousFramework, newFramework, targetFrameworkIdentifier, forceReload);
+			await TryReloadTargetAsync(previousFramework, newFramework, isSelectedFrameworkUnset);
 		}
 	}
 
@@ -179,7 +178,7 @@ public partial class EntryPoint : IDisposable
 			=> targetFrameworks.FirstOrDefault(f => f.IndexOf("-" + identifier, StringComparison.OrdinalIgnoreCase) != -1);
 	}
 
-	private async Task TryReloadTargetAsync(string? previousFramework, string newFramework, string targetFrameworkIdentifier, bool forceReload)
+	private async Task TryReloadTargetAsync(string? previousFramework, string newFramework, bool isSelectedFrameworkUnset)
 	{
 		if (_wasmProjectReloadTask is not null)
 		{
@@ -191,31 +190,7 @@ public partial class EntryPoint : IDisposable
 		try
 		{
 			if (await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects
-				&&
-				(
-					forceReload
-					||
-					(
-						previousFramework is not null
-						&& GetTargetFrameworkIdentifier(previousFramework) is { } previousTargetFrameworkIdentifier
-						&& (
-							(
-								// 17.12 or later properly supports having their TFM anywhere in the
-								// TFMs lists, except Wasm.
-								GetVisualStudioReleaseVersion() >= new Version(17, 12)
-								&& (
-									previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier
-									|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier))
-
-							|| (
-								// 17.11 or earlier needs reloading most TFMs
-								GetVisualStudioReleaseVersion() < new Version(17, 12)
-								&& (previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier
-									|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier))
-						)
-					)
-				)
-			)
+				&& ActiveFrameworkReloadPolicy.RequiresReload(previousFramework, newFramework, GetVisualStudioReleaseVersion(), isSelectedFrameworkUnset))
 			{
 				var startupProjectUniqueName = startupProjects[0].UniqueName;
 				var userFilePath = startupProjects[0].FileName + ".user";
@@ -308,16 +283,6 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private string? GetTargetFrameworkIdentifier(string newFramework)
-	{
-		var regex = new Regex(@"net(\d+\.\d+)-(?<tfi>\w+)(\d+\.\d+\.\d+)?");
-		var match = regex.Match(newFramework);
-
-		return match.Success
-			? match.Groups["tfi"].Value
-			: null;
-	}
-
 	private async Task<bool> HasUnoTargetFrameworkInStartupProjectAsync()
 	{
 		if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is not IVsSolution solution
@@ -359,8 +324,7 @@ public partial class EntryPoint : IDisposable
 			return true;
 		}
 
-		// The UnoSelectedTargetFrameworkProperty is not defined, we need to reload the
-		// project so it can be set.
+		// The UnoSelectedTargetFrameworkProperty is not defined, it has to be set.
 		return false;
 	}
 
