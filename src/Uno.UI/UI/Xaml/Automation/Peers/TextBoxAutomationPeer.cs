@@ -58,6 +58,9 @@ public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, Pro
 
 	public bool IsReadOnly => ((TextBox)Owner).IsReadOnly;
 
+	internal void RaiseIsReadOnlyPropertyChangedEvent(bool oldValue, bool newValue)
+		=> RaisePropertyChangedEvent(ValuePatternIdentifiers.IsReadOnlyProperty, oldValue, newValue);
+
 	public void SetValue(string value)
 	{
 		if (IsReadOnly)
