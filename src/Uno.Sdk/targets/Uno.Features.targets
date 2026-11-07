@@ -22,9 +22,6 @@
 		<UnoFeatures Condition="'$(IsUnoHead)' == 'true'">$(UnoFeatures.Replace(';skiarenderer;', ';skia;'))</UnoFeatures>
 		<UnoFeatures Condition="'$(IsUnoHead)' != 'true'">$(UnoFeatures.Replace(';skiarenderer;', ';'))</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And !$(TargetFramework.Contains('windows10')) And '$(IsUnoHead)' == 'true'">$(UnoFeatures)skia;</UnoFeatures>
-		<!-- WebGpuCanvasElement draws only with the WebGPU backend, so 'webgpucanvas' brings it in. It is added after
-		     the renderer default above, so in an app it adds WebGPU next to Skia rather than replacing it. -->
-		<UnoFeatures Condition="$(UnoFeatures.Contains(';webgpucanvas;')) And !$(UnoFeatures.Contains(';webgpu;')) And !$(TargetFramework.Contains('windows10'))">$(UnoFeatures)webgpu;</UnoFeatures>
 	</PropertyGroup>
 
 	<Target Name="_UnoWarnLibrarySkiaRendererIgnored"
