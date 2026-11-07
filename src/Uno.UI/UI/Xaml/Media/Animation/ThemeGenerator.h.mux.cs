@@ -139,6 +139,19 @@ internal static partial class ThemeGenerator
 	internal const int TA_DRAGBETWEENENTER_AFFECTED = 1;
 	internal const int TAS_DRAGBETWEENLEAVE = 28;
 	internal const int TA_DRAGBETWEENLEAVE_AFFECTED = 1;
+	internal const int TAS_REPOSITION = 3;
+	internal const int TA_REPOSITION_TARGET = 1;
+	internal const int TAS_ADDTOGRID = 8;
+	internal const int TA_ADDTOGRID_ADDED = 1;
+	internal const int TA_ADDTOGRID_AFFECTED = 2;
+	internal const int TAS_DELETEFROMGRID = 9;
+	internal const int TA_DELETEFROMGRID_DELETED = 1;
+	internal const int TA_DELETEFROMGRID_REMAINING = 2;
+	internal const int TAS_TRANSITIONCONTENT = 24;
+	internal const int TA_TRANSITIONCONTENT_INCOMING = 1;
+	internal const int TA_TRANSITIONCONTENT_OUTGOING = 2;
+	internal const int TAS_ENTERPAGE = 32;
+	internal const int TA_ENTERPAGE_TARGET = 1;
 
-	// TODO Uno: GetStaggerFunction is not ported (no PVLStaggerFunction, no caller in the item chrome).
+	// TODO Uno: GetStaggerFunction is not ported, each Transition returns its PVL stagger values through Transition.GetStaggerFunction.
 }

@@ -483,6 +483,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			Assert.IsNotNull(border);
 			var containerX = border.GetAbsoluteBoundsRect().X;
+
+			// Let the entrance transition finish.
+			await Task.Delay(800);
 			var screenshot = await UITestHelper.ScreenShot(tv);
 
 			var tvi = sp.FindFirstDescendant<TreeViewItem>();

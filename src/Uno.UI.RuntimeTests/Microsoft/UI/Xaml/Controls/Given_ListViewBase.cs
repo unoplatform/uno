@@ -3498,7 +3498,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0));
 
 			Assert.IsTrue(SUT.Items.Remove(item), "Failed to remove item from ListView.");
-			Assert.IsNull(item.Parent, "The item is still attached to a parent after being removed from ListView.");
+
+			// Its container stays alive for the delete transition.
+			await WindowHelper.WaitFor(() => item.Parent is null, message: "The item is still attached to a parent after being removed from ListView.");
 		}
 
 		[TestMethod]
@@ -3996,8 +3998,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			// Ensure the container has properly been cleaned
-			// up after being removed.
-			Assert.IsNull(container.Content);
+			// up after being removed, which the delete transition defers.
+			await WindowHelper.WaitFor(() => container.Content is null);
 
 			Assert.IsNull(container.GetBindingExpression(ContentControl.ContentProperty));
 
@@ -5028,9 +5030,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
-			// Keep the baseline free of hover, and let the first-pass MultiSelectDisabled storyboard (333 ms content slide) finish.
+			// Keep the baseline free of hover, and let the first-pass MultiSelectDisabled storyboard (333 ms content slide) and the entrance transition (667 ms) finish.
 			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { X = SUT.GetAbsoluteBoundsRect().Right + 100 });
-			await Task.Delay(500);
+			await Task.Delay(800);
 			await WindowHelper.WaitForIdle();
 
 			// Make screenshot of the initial state
@@ -5163,6 +5165,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var textBlocks = SUT.FindFirstDescendant<ItemsStackPanel>().Children
+				.Where(c => SUT.IndexFromContainer(c) >= 0) // A container recycled after its delete transition sits in the garbage section.
 				.Select(c => c.FindFirstDescendant<TextBlock>())
 				.OrderBy(c => c.GetAbsoluteBoundsRect().Y)
 				.ToList();
@@ -5571,6 +5574,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Height = 400,
 				ItemsSource = source,
 				ItemTemplate = FixedSizeItemTemplate,
+				ItemContainerTransitions = null, // A container fading out on AddDeleteThemeTransition can't be reused, by design.
 			};
 
 			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });
@@ -5606,6 +5610,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CanReorderItems = true,
 				ItemsSource = source,
 				ItemTemplate = FixedSizeItemTemplate,
+				ItemContainerTransitions = null, // A container fading out on AddDeleteThemeTransition can't be reused, by design.
 			};
 
 			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });

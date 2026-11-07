@@ -146,6 +146,9 @@ namespace Uno.UI.Xaml.Core
 				UpdateLayoutAndRaiseLoaded();
 			}
 
+			// xcpcore.cpp: realizes the layout transitions registered by this frame's layout, before the record, and advances the layout counter.
+			Microsoft.UI.Xaml.Media.Animation.Transition.OnFrameLayoutCompleted();
+
 #if __SKIA__
 			foreach (var window in ApplicationHelper.WindowsInternal)
 			{
