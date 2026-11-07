@@ -9,7 +9,9 @@ Uno Platform can surface the validation errors of your view model on the control
 The feature depends on `INotifyDataErrorInfo` and nothing else: no base class, attribute set or MVVM framework is required. It is opt-in, both application-wide and per control.
 
 > [!NOTE]
-> Input validation is an Uno Platform feature. WinUI has no public equivalent, so on Windows App SDK the `Validation` attached properties described below compile but have no effect. Your markup stays portable.
+> Input validation is an Uno Platform feature. WinUI has no public equivalent, so on Windows App SDK the `Validation` attached properties and the `InputValidationMode`, `InputValidationKind` and `InputValidationError` types compile but have no effect. Your XAML markup stays portable.
+>
+> The rest of the C# API described below exists only in Uno Platform, and does not compile on Windows App SDK: `Uno.UI.FeatureConfiguration.InputValidation` (including `ValidationProperties`), `InputValidationPropertyAttribute` and `Control.UpdateValidationStates()`. Guard code that uses them with `#if HAS_UNO`, as the samples on this page do.
 
 <!-- -->
 
@@ -34,7 +36,9 @@ Errors are only read from the binding on the validated property. A control has a
     ```csharp
     public App()
     {
+    #if HAS_UNO
         Uno.UI.FeatureConfiguration.InputValidation.IsEnabled = true;
+    #endif
 
         this.InitializeComponent();
     }
@@ -115,7 +119,7 @@ public class SignUpViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
 How the errors reach the control:
 
 - **The errors come from the last object in the binding path.** For `{Binding Customer.Name}`, `Customer` must implement `INotifyDataErrorInfo`, and its errors for `Name` are used. If `Customer` is replaced, the control follows the new instance.
-- **`{Binding}` and `{x:Bind}` are both supported.** An `{x:Bind}` to a function with several arguments has no single source property, and is not validated.
+- **`{Binding}` and `{x:Bind}` are both supported.** An `{x:Bind}` is only validated with `Mode=OneWay` or `Mode=TwoWay`: in its default `OneTime` mode, it doesn't observe its source, and is never validated. An `{x:Bind}` to a function with several arguments has no single source property, and is not validated either.
 - **Each error is converted to text.** The control exposes every object returned by `GetErrors` as an `InputValidationError`, whose `ErrorMessage` is the object's `ToString()`. Return strings, or objects whose `ToString()` is the message to display.
 - **`ErrorsChanged` may be raised from any thread.** The control updates on the UI thread.
 - **The current errors are read when the binding resolves its source**, so errors that exist before the page loads are displayed right away.
@@ -294,7 +298,9 @@ The validated property of a control type is resolved once and cached. It can be 
 **With an attribute on your own control.** Apply `InputValidationPropertyAttribute`, from the `Uno.UI.Xaml.Controls` namespace, with the name of the dependency property to validate:
 
 ```csharp
+#if HAS_UNO
 [Uno.UI.Xaml.Controls.InputValidationProperty(nameof(Value))]
+#endif
 public partial class RatingControl : Control
 {
     public static DependencyProperty ValueProperty { get; } = DependencyProperty.Register(
@@ -313,6 +319,7 @@ The attribute is inherited: a class deriving from `TextBox` validates `Text` wit
 **With a registration**, for a control you can't modify, or to change the property of a built-in control. Write to `FeatureConfiguration.InputValidation.ValidationProperties` at startup, before the controls concerned are bound:
 
 ```csharp
+#if HAS_UNO
 // Validate a third-party control
 FeatureConfiguration.InputValidation.ValidationProperties[typeof(ThirdPartyEntry)] = ThirdPartyEntry.TextProperty;
 
@@ -321,6 +328,7 @@ FeatureConfiguration.InputValidation.ValidationProperties[typeof(ComboBox)] = Se
 
 // Opt a type out of the property it would otherwise inherit
 FeatureConfiguration.InputValidation.ValidationProperties[typeof(SearchTextBox)] = null;
+#endif
 ```
 
 A registration applies to every instance of the type, and replaces the validated property rather than adding one. A registration made after a control is bound only takes effect the next time the property is bound. `ValidationProperties.Remove(type)` returns a type to its attribute. Access the map from the UI thread.
