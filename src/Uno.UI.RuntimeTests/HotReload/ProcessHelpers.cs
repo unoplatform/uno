@@ -59,27 +59,69 @@ internal class ProcessHelpers
 		}
 	}
 
-	public static async Task<Process> RunProcess(
-		CancellationToken ct,
-		string executable,
-		List<string> parameters,
-		string workingDirectory,
-		string logPrefix,
-		bool waitForExit,
-		Dictionary<string, string>? environmentVariables = null)
+	/// <summary>
+	/// Waits for <paramref name="process"/> to exit, killing it and everything it spawned when
+	/// <paramref name="ct"/> fires first.
+	/// </summary>
+	/// <remarks>
+	/// Merely abandoning the wait is not enough: the orphaned app keeps holding its dev-server
+	/// connection and goes on competing with the attempt that follows.
+	/// </remarks>
+	public static async Task WaitForExitAsync(Process process, string logPrefix, CancellationToken ct)
 	{
-		var process = StartProcess(executable, parameters, workingDirectory, logPrefix, environmentVariables);
-
 #if HAS_UNO
 		typeof(ProcessHelpers).Log().Debug(logPrefix + $" waiting for process exit");
 #endif
 
-		if (waitForExit)
+		try
 		{
-			await process.WaitForExitAsync();
+			await process.WaitForExitAsync(ct);
+		}
+		catch (OperationCanceledException)
+		{
+#if HAS_UNO
+			typeof(Given_HotReloadWorkspace).Log().Error(logPrefix + " wait was cancelled before the process exited, killing it");
+#endif
+			KillProcessTree(process);
+
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Kills <paramref name="process"/> and its children, tolerating a process that already exited.
+	/// </summary>
+	public static void KillProcessTree(Process? process)
+	{
+		if (process is null)
+		{
+			return;
 		}
 
-		return process;
+		try
+		{
+			if (!process.HasExited)
+			{
+				// The app is started through "dotnet run", so killing the launcher alone would
+				// leave the app itself running.
+				process.Kill(entireProcessTree: true);
+
+				// Synchronous on purpose: this also runs from the synchronous [TestCleanup], and the next
+				// attempt must not start while the old app still holds its dev-server connection.
+				if (!process.WaitForExit(10_000))
+				{
+					typeof(Given_HotReloadWorkspace).Log().Error(
+						"A killed process tree was still alive after 10s; the next attempt may fight it for the dev-server port.");
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			// The process may exit on its own between the check and the kill.
+#if HAS_UNO
+			typeof(Given_HotReloadWorkspace).Log().Warn($"Failed to kill process ({e.Message})");
+#endif
+		}
 	}
 
 	public static Process StartProcess(
@@ -120,13 +162,13 @@ internal class ProcessHelpers
 		// hookup the event handlers to capture the data that is received
 		process.OutputDataReceived += (sender, args) =>
 		{
-			var logMessage = $"[{DateTime.Now}] " + logPrefix + ": " + args.Data ?? "<Empty>";
+			var logMessage = $"[{DateTime.UtcNow:O}] {logPrefix}: {args.Data ?? "<Empty>"}";
 			output?.AppendLine(logMessage);
 			typeof(Given_HotReloadWorkspace).Log().Debug(logMessage);
 		};
 		process.ErrorDataReceived += (sender, args) =>
 		{
-			var logMessage = $"[{DateTime.Now}] " + logPrefix + ": " + args.Data ?? "<Empty>";
+			var logMessage = $"[{DateTime.UtcNow:O}] {logPrefix}: {args.Data ?? "<Empty>"}";
 			output?.AppendLine(logMessage);
 			typeof(Given_HotReloadWorkspace).Log().Error(logMessage);
 		};
