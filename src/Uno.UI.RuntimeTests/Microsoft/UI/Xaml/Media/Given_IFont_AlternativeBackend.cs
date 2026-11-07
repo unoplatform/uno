@@ -85,6 +85,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			}
 		}
 
+		// HarfBuzz reports y_offset y-up, while GlyphRun offsets are y-down, so an acute that GPOS raises above
+		// the base letter must come back with a negative Y from both backends.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25289")]
+		public void When_Shaping_Combining_Mark_Then_Raised_Mark_Has_Negative_Y_Offset()
+		{
+			const float size = 64f;
+			const string text = "X́";
+
+			foreach (var candidate in EnumerateTypefaces())
+			{
+				if (candidate is null)
+				{
+					continue;
+				}
+
+				using (candidate)
+				{
+					using var skFont = new SKFont(candidate, size);
+					var skiaRun = new SkiaFont(skFont).Shape(text, TextDirection.LeftToRight);
+
+					// Only fonts whose GPOS moves the mark vertically exercise the conversion.
+					if (skiaRun.Count != 2 || skiaRun.Offsets[1].Y == 0)
+					{
+						continue;
+					}
+
+					Console.WriteLine($"[MarkOffset] using font '{candidate.FamilyName}', skia mark offset={skiaRun.Offsets[1]}");
+					Assert.IsTrue(skiaRun.Offsets[1].Y < 0, $"SkiaFont pushed the acute down: {skiaRun.Offsets[1]}");
+
+					var data = ReadFontBytes(candidate, out var ttcIndex);
+					if (data is not null && ManagedFont.TryCreate(data, ttcIndex, size, out var managed))
+					{
+						var managedRun = managed.Shape(text, TextDirection.LeftToRight);
+						Assert.AreEqual(2, managedRun.Count);
+						Assert.AreEqual(skiaRun.Offsets[1].Y, managedRun.Offsets[1].Y, 0.5, "ManagedFont and SkiaFont disagree on the mark offset");
+					}
+
+					return;
+				}
+			}
+
+			Assert.Inconclusive("No font with vertical GPOS mark positioning for X + U+0301 in this environment.");
+		}
+
 		// Extracts the monochrome outline from a run of (here, non-colour) glyphs; disposes any colour-layer geometry.
 		// The outline comes back GLYPH-LOCAL and cache-owned (GlyphOutlineRef), which is what these bounds
 		// comparisons want: every glyph here is positioned at the origin, so local and placed bounds coincide.

@@ -122,7 +122,7 @@ public readonly record struct GlyphRun
 	/// <summary>Glyph indices into the font.</summary>
 	public ushort[] Glyphs { get; }
 
-	/// <summary>Per-glyph pen offset (pixels) applied on top of the running advance when placing the glyph.</summary>
+	/// <summary>Per-glyph pen offset (pixels, y-down) applied on top of the running advance when placing the glyph.</summary>
 	public Vector2[] Offsets { get; }
 
 	/// <summary>Per-glyph horizontal advance in pixels.</summary>
