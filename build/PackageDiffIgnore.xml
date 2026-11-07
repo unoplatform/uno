@@ -3467,6 +3467,14 @@
 		  <!-- Interop helper whose only purpose was marshalling IJSObject arguments; removed with the IJSObject mechanism. -->
 		  <Member fullName="System.String Uno.Foundation.WebAssemblyRuntime.InvokeJSWithInterop(System.FormattableString formattable)" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 
+		  <!-- Legacy WASM interop whose JavaScript (AsyncInteropHelper, MonoSupport) shipped only with the DOM heads removed in 7.0; it could no longer run. -->
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode, System.Threading.CancellationToken ct)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncResult(System.Int64 handle, System.String result)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncError(System.Int64 handle, System.String error)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+
 		  <!-- ColorKeyFrameCollection shadow-block accessors/methods (paired with the <Properties> entry above); base DependencyObjectCollection<T> still satisfies IList<ColorKeyFrame>. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.ColorKeyFrameCollection(::|\.)(get_Size|GetEnumerator|Add|Clear|Contains|CopyTo|Remove|get_Count|set_Count|get_IsReadOnly|set_IsReadOnly|IndexOf|Insert|RemoveAt|get_Item|set_Item)\(.*\)" reason="Removed ColorKeyFrameCollection binary-compat shadow members; provided by base DependencyObjectCollection&lt;T&gt; (BC67, breaking changes for 7.0)" isRegex="true" />
 
@@ -5216,6 +5224,14 @@
 
 		  <!-- Interop helper whose only purpose was marshalling IJSObject arguments; removed with the IJSObject mechanism. -->
 		  <Member fullName="System.String Uno.Foundation.WebAssemblyRuntime.InvokeJSWithInterop(System.FormattableString formattable)" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
+
+		  <!-- Legacy WASM interop whose JavaScript (AsyncInteropHelper, MonoSupport) shipped only with the DOM heads removed in 7.0; it could no longer run. -->
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode, System.Threading.CancellationToken ct)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncResult(System.Int64 handle, System.String result)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncError(System.Int64 handle, System.String error)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
 
 		  <!-- ColorKeyFrameCollection shadow-block accessors/methods (paired with the <Properties> entry above); base DependencyObjectCollection<T> still satisfies IList<ColorKeyFrame>. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.ColorKeyFrameCollection(::|\.)(get_Size|GetEnumerator|Add|Clear|Contains|CopyTo|Remove|get_Count|set_Count|get_IsReadOnly|set_IsReadOnly|IndexOf|Insert|RemoveAt|get_Item|set_Item)\(.*\)" reason="Removed ColorKeyFrameCollection binary-compat shadow members; provided by base DependencyObjectCollection&lt;T&gt; (BC67, breaking changes for 7.0)" isRegex="true" />
