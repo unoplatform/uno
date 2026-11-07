@@ -131,6 +131,9 @@ public class Given_BindingStaleHandlers
 	// The common case: a page and its view model become unreachable together. The source must not wait for the binding's
 	// cleanup to be finalized and dispatched before it can be collected.
 	[TestMethod]
+	// 6.x only: the owner's DependencyObjectStore has a finalizer (master removed it), so the store keeps what it references
+	// alive until finalizers run. Single-threaded WASM runs them only from the event loop, and the mobile runtimes fail too.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaMobile)]
 	public async Task When_Element_And_Source_Dropped_Together_Then_Source_Collected_Without_Dispatcher()
 	{
 		await WindowHelper.WaitForIdle();
