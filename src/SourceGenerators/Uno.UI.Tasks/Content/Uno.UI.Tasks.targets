@@ -251,6 +251,16 @@
 		Condition="'$(IsUnoHead)'=='true'"
 		BeforeTargets="BuildDist;PrepareForILLink">
 
+		<!--
+			Without declared languages, keep the ones the app ships strings for (and its default language), as WinUI
+			does for a packaged app: framework strings in other cultures could never be shown, yet ship in Uno.UI.
+		-->
+		<ItemGroup Condition="'@(UnoSupportedLanguage)'=='' and '$(UnoInferSupportedLanguages)'!='false'">
+			<_UnoInferredSupportedLanguage Include="%(GeneratedFiles.Language)" Condition="'%(GeneratedFiles.UnoResourceTarget)'=='Uno' and '%(GeneratedFiles.Language)'!=''" />
+			<_UnoInferredSupportedLanguage Include="$(DefaultLanguage)" Condition="'@(_UnoInferredSupportedLanguage)'!='' and '$(DefaultLanguage)'!=''" />
+			<UnoSupportedLanguage Include="@(_UnoInferredSupportedLanguage->Distinct())" />
+		</ItemGroup>
+
 		<UpriFeaturesGeneratorTask_v0
 			Languages="@(UnoSupportedLanguage)">
 			<Output TaskParameter="OutputFeatures" ItemName="_UpriOutputFeatures" />
