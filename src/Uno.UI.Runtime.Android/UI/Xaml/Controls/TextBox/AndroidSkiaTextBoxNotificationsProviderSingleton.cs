@@ -32,7 +32,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 		if (GetTextInputPlugin(textBox.Owner.XamlRoot) is { } textInputPlugin)
 		{
-			if (CouldRequireKeyboard(textBox.Owner))
+			if (CouldRequireKeyboard(textBox.Owner) && !textBox.IsSoftwareKeyboardSuppressed)
 			{
 				textInputPlugin.ShowTextInput(textBox);
 			}

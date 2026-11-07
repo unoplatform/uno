@@ -58,3 +58,8 @@ one diff. No specific file paths from the change that triggered it.
 - **Lens:** skeptic, quality, contract, jerome
 - **Lesson:** `typeof(Owner<T>)` flowing into a `[DynamicallyAccessedMembers]` parameter is a known type the trimmer can mark, so it does not warn IL2087 even though `T` is unannotated; only a bare generic parameter (`typeof(T)`, `typeof(TOwner)`) does. Four lenses reported the generic-owner shape as a residual warning and the fix as overclaiming its issue; a consumer library compiled with `IsAotCompatible` against the built assembly showed that shape clean and only the bare-parameter owner warning.
 - **Apply:** Before reporting an IL2087 residual, distinguish `typeof(T)` from `typeof(Owner<T>)`. When the claim is about a consumer's trim warnings, compile a small `IsAotCompatible` probe against the built assembly and count, rather than reasoning from the annotations alone.
+
+## 2026-11-05 — Assert.Inconclusive is not a flake guard
+- **Lens:** all
+- **Lesson:** For a GC-dependent runtime test that could flake under conservative GC (WASM, mobile), the panel proposed bailing out with `Assert.Inconclusive` when collection fails, citing existing tests that do it. Nothing in CI or triage watches inconclusive results: they are absent from the failure list and the console never prints them, so the test silently stops testing on that platform.
+- **Apply:** Never suggest `Assert.Inconclusive` (or an existing test that uses it) as the way to absorb a flaky precondition. Make the assert robust instead, e.g. derive the expected value from what was measured (count the surviving `WeakReference`s) with a floor that fails visibly, or gate the test explicitly with `[PlatformCondition]`.
