@@ -108,8 +108,9 @@ public class Given_ListView_Grouping
 	private static Rect Bounds(FrameworkElement element) =>
 		element.TransformToVisual(null).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
 
+	// The panel keeps recycled headers as its children, so only the realized ones count.
 	private static List<ListViewBaseHeaderItem> Headers(ListViewBase list) =>
-		((Panel)list.ItemsPanelRoot).Children.OfType<ListViewBaseHeaderItem>().OrderBy(h => Bounds(h).Y).ThenBy(h => Bounds(h).X).ToList();
+		((Panel)list.ItemsPanelRoot).Children.OfType<ListViewBaseHeaderItem>().Where(h => h.GetVirtualizationInformationOrNull() is { IsRealized: true }).OrderBy(h => Bounds(h).Y).ThenBy(h => Bounds(h).X).ToList();
 
 	private static List<string> HeaderKeys(ListViewBase list) =>
 		Headers(list).Select(h => ((Group)h.Content).Key).OrderBy(k => int.Parse(k.Substring(1))).ToList();
@@ -214,7 +215,7 @@ public class Given_ListView_Grouping
 		var first = Bounds(Item(list, 0));
 		var last = Bounds(Item(list, 4));
 		var h1 = Bounds(HeaderOf(list, "G1"));
-		Assert.AreEqual(h0.Bottom, first.Top, Tolerance);
+		Assert.AreEqual(h0.Bottom + HeaderOf(list, "G0").Margin.Bottom, first.Top, Tolerance);
 		Assert.AreEqual(last.Bottom, h1.Top, Tolerance);
 	}
 
@@ -236,7 +237,7 @@ public class Given_ListView_Grouping
 
 		Assert.IsLessThan(100, Headers(list).Count, "Headers realized after scrolling");
 		Assert.IsLessThan(300, panel.Children.Count, "Children realized after scrolling");
-		Assert.IsNull(list.ContainerFromIndex(0));
+		Assert.IsNull(list.ContainerFromIndex(1));
 		Assert.IsFalse(Headers(list).Any(h => ((Group)h.Content).Key == "G0"), "Header of G0 should be recycled");
 	}
 
@@ -357,7 +358,7 @@ public class Given_ListView_Grouping
 
 		var g0 = Bounds(HeaderOf(list, "G0"));
 		var g1 = Bounds(HeaderOf(list, "G1"));
-		Assert.AreEqual(g1.Top, g0.Bottom, Tolerance, "The next header pushes the sticky one up");
+		Assert.AreEqual(g1.Top, g0.Bottom + HeaderOf(list, "G0").Margin.Bottom, Tolerance, "The next header pushes the sticky one up");
 		Assert.IsGreaterThan(Bounds(sv).Top, g1.Top);
 	}
 
@@ -470,7 +471,7 @@ public class Given_ListView_Grouping
 		await WindowHelper.WaitForIdle();
 		await WindowHelper.WaitForIdle();
 		Assert.AreEqual(sv.ScrollableHeight, sv.VerticalOffset, Tolerance, "Leading on the last item clamps to the end");
-		Assert.IsNull(list.ContainerFromIndex(0));
+		Assert.IsNull(list.ContainerFromIndex(1));
 
 		list.ScrollIntoView(groups[0][0]);
 		await WindowHelper.WaitFor(() => list.ContainerFromIndex(0) is not null, timeoutMS: 3000, message: "First item realized");
@@ -585,11 +586,11 @@ public class Given_ListView_Grouping
 		var i9 = Bounds(Item(grid, 9));
 		var j0 = Bounds(Item(grid, 10));
 
-		Assert.AreEqual(h0.Bottom, i0.Top, Tolerance, "First row starts under the header");
+		Assert.AreEqual(h0.Bottom + HeaderOf(grid, "G0").Margin.Bottom, i0.Top, Tolerance, "First row starts under the header");
 		Assert.AreEqual(i0.Top, i3.Top, Tolerance, "Four items of 100px fit in 450px");
-		Assert.AreEqual(i0.Bottom, i4.Top, Tolerance, "Fifth item wraps");
-		Assert.AreEqual(i9.Bottom, h1.Top, Tolerance, "Next header starts below the last row of the previous group");
-		Assert.AreEqual(h1.Bottom, j0.Top, Tolerance, "Next group items start under their header");
+		Assert.AreEqual(i0.Bottom + Item(grid, 0).Margin.Bottom, i4.Top, Tolerance, "Fifth item wraps");
+		Assert.AreEqual(i9.Bottom + Item(grid, 9).Margin.Bottom, h1.Top, Tolerance, "Next header starts below the last row of the previous group");
+		Assert.AreEqual(h1.Bottom + HeaderOf(grid, "G1").Margin.Bottom, j0.Top, Tolerance, "Next group items start under their header");
 		AssertRealizedMatchesGroups(grid, groups);
 	}
 

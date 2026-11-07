@@ -438,7 +438,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("Requires WinUI visual tree masters")]
+		[Ignore("The ported XAML is not this test's: the C++ test's XAML still has to be brought over.")]
 		[Description("Validates that the textblock reflows in multiple selection mode.")]
 		public async Task ValidateMultiLineTextBlock()
 		{
@@ -483,8 +483,8 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("Requires WinUI visual tree masters")]
 		[Description("Validates that the checkmark supports RTL situations.")]
+		[Ignore("The ported XAML is not this test's: the C++ test's XAML still has to be brought over.")]
 		public async Task ValidateRTLSupportForCheckMark()
 		{
 			// MockDComp should be injected and detached per test, since it keeps information like the surfaces
@@ -1047,7 +1047,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("Requires WinUI visual tree masters")]
 		[Description("Validates that not setting a pointerover brush retains the existing brush.")]
 		public async Task ValidateChromeNoPointerOverBrush()
 		{
@@ -1129,7 +1128,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("Requires WinUI visual tree masters")]
 		[Description("Validates that setting a selected brush works properly.")]
 		public async Task ValidateSelectedForegroundBrush()
 		{
@@ -1221,7 +1219,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("Requires WinUI visual tree masters")]
 		[Description("Validates that changing the CheckMode property functions properly.")]
 		public async Task ValidateChangeCheckMode()
 		{
@@ -1628,7 +1625,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("Requires WinUI visual tree masters")]
 		[Description("Validates that changing the theme updates the multiselect checkbox.")]
 		public async Task VerifyChangeThemeInMultiSelect()
 		{
@@ -2316,7 +2312,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		""";
 
 		[TestMethod]
-		[Ignore("Requires WinUI visual tree masters")]
 		[Description("Validates the ListViewItem's FocusVisual* properties respond to theme changes.")]
 		public async Task ValidateListViewItemFocusPropertyThemeChange()
 		{
@@ -2383,7 +2378,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("Requires WinUI visual tree masters")]
 		[Description("Validates the GridViewItem's FocusVisual* properties respond to theme changes.")]
 		public async Task ValidateGridViewItemFocusPropertyThemeChange()
 		{
