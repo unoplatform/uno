@@ -515,7 +515,7 @@ public partial class ListViewBaseTests
 
 	private static UIElement GetInnerMostTarget(FrameworkElement target)
 	{
-		GeneralTransform transform = target.TransformToVisual(TestServices.WindowHelper.WindowContent);
+		GeneralTransform transform = target.TransformToVisual(null);
 		Rect bounds = transform.TransformBounds(new Rect(0, 0, target.ActualWidth, target.ActualHeight));
 		Point center = new(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2);
 
