@@ -106,15 +106,14 @@ WM_IME_ENDCOMPOSITION
 WM_IME_COMPOSITION
 
 // Structs
-BITMAP
 DATADIR
 BITMAPFILEHEADER
 BROWSEINFOW
 CLIPBOARD_FORMAT
-ICONINFO
 IDataObject
 IDataObjectAsyncCapability
 IDropSource
+IDropTargetHelper
 IEnumUnknown
 IFileOpenDialog
 IFileSaveDialog
@@ -128,8 +127,6 @@ MARGINS
 STGC
 
 // Enums
-BI_COMPRESSION
-DI_FLAGS
 DWM_WINDOW_CORNER_PREFERENCE
 IME_COMPOSITION_STRING
 NOTIFY_IME_ACTION
@@ -170,7 +167,6 @@ DragQueryFile
 DeleteDC
 DeleteObject
 DestroyIcon
-DrawIconEx
 DwmSetWindowAttribute
 DwmIsCompositionEnabled
 DwmExtendFrameIntoClientArea
@@ -205,9 +201,7 @@ GetDC
 GetDeviceCaps
 GetDpiForWindow
 GetDpiForMonitor
-GetIconInfo
 GetKeyState
-GetObject
 GetMessage
 GetMessageTime
 GetMonitorInfo
