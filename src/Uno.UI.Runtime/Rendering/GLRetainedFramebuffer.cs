@@ -36,6 +36,7 @@ internal sealed class GLRetainedFramebuffer : IDisposable
 	private const uint GL_FRAMEBUFFER_COMPLETE = 0x8CD5;
 	private const uint GL_COLOR_BUFFER_BIT = 0x4000;
 	private const uint GL_VERSION = 0x1F02;
+	private const uint GL_SCISSOR_TEST = 0x0C11;
 
 	private delegate void GenDel(int n, uint[] ids);
 	private delegate void DeleteDel(int n, uint[] ids);
@@ -48,6 +49,7 @@ internal sealed class GLRetainedFramebuffer : IDisposable
 	private delegate uint CheckFramebufferStatusDel(uint target);
 	private delegate void BlitFramebufferDel(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, uint mask, uint filter);
 	private delegate IntPtr GetStringDel(uint name);
+	private delegate void DisableDel(uint capability);
 
 	private GenDel? _genFramebuffers;
 	private DeleteDel? _deleteFramebuffers;
@@ -65,6 +67,7 @@ internal sealed class GLRetainedFramebuffer : IDisposable
 	private FramebufferRenderbufferDel? _framebufferRenderbuffer;
 	private CheckFramebufferStatusDel? _checkFramebufferStatus;
 	private BlitFramebufferDel? _blitFramebuffer;
+	private DisableDel? _disable;
 
 	private uint _framebuffer;
 	private uint _texture;
@@ -111,6 +114,7 @@ internal sealed class GLRetainedFramebuffer : IDisposable
 		_framebufferRenderbuffer = Load<FramebufferRenderbufferDel>("glFramebufferRenderbuffer");
 		_checkFramebufferStatus = Load<CheckFramebufferStatusDel>("glCheckFramebufferStatus");
 		_blitFramebuffer = Load<BlitFramebufferDel>("glBlitFramebuffer");
+		_disable = Load<DisableDel>("glDisable");
 
 		// A loader may hand back an entry point the current context cannot actually run (eglGetProcAddress is not
 		// required to return null for one), so the version is the authority on whether blitting exists at all.
@@ -122,7 +126,7 @@ internal sealed class GLRetainedFramebuffer : IDisposable
 			&& _texImage2D is not null && _texParameteri is not null && _framebufferTexture2D is not null
 			&& _genRenderbuffers is not null && _deleteRenderbuffers is not null && _bindRenderbuffer is not null
 			&& _renderbufferStorage is not null && _framebufferRenderbuffer is not null
-			&& _checkFramebufferStatus is not null && _blitFramebuffer is not null;
+			&& _checkFramebufferStatus is not null && _blitFramebuffer is not null && _disable is not null;
 
 		if (!IsSupported)
 		{
@@ -232,6 +236,9 @@ internal sealed class GLRetainedFramebuffer : IDisposable
 			return;
 		}
 
+		// The blit is clipped by the scissor test, which the backend leaves enabled around the damage it last painted.
+		// Only that region would reach the default framebuffer, whose other pixels are whatever the swap left there.
+		_disable!(GL_SCISSOR_TEST);
 		_bindFramebuffer!(GL_READ_FRAMEBUFFER, _framebuffer);
 		_bindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		// Same size and both bottom-left origin, so a 1:1 copy needs no filtering.

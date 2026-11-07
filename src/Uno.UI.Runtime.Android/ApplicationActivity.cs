@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -44,6 +45,7 @@ namespace Uno.UI.Runtime.Android
 		private InputPane _inputPane;
 
 		private bool _started;
+		private bool _resumed;
 		private bool _isContentViewSet;
 
 		private NativeWindowWrapper? _wrapper;
@@ -90,8 +92,10 @@ namespace Uno.UI.Runtime.Android
 		/// still runs OnPause/OnStop after its replacement resumed, and forwarding those would
 		/// deactivate and background the window the replacement now drives.
 		/// </summary>
-		private protected override bool IsDrivingWindow
-			=> _wrapper is null || ReferenceEquals(_wrapper.CurrentActivity, this);
+		private protected override bool IsDrivingWindow => DrivesWindow;
+
+		/// <inheritdoc cref="IsDrivingWindow"/>
+		internal bool DrivesWindow => _wrapper is null || ReferenceEquals(_wrapper.CurrentActivity, this);
 
 		internal RelativeLayout RelativeLayout { get; private set; } = null!;
 
@@ -365,13 +369,11 @@ namespace Uno.UI.Runtime.Android
 
 				// A XamlRoot host registered before OnStart can only attach its accessibility adapter
 				// once this activity's render view exists.
-				foreach (var pair in XamlRootMap.Enumerate())
-				{
-					if (pair.Value is AndroidSkiaXamlRootHost androidHost && ReferenceEquals(androidHost.Activity, this))
-					{
-						androidHost.TryConfigureHelper();
-					}
-				}
+				ConfigureAccessibilityHelpers();
+			}
+			else
+			{
+				TryReclaimWindow();
 			}
 
 			// The window was handed over in OnCreate, before this render view existed; state bound to
@@ -384,14 +386,84 @@ namespace Uno.UI.Runtime.Android
 			if (!_isContentViewSet && Wrapper.Window is { RootElement: not null } existingWindow)
 			{
 				EnsureContentView();
-
-				if (existingWindow.RootElement.XamlRoot is { } xamlRoot && _nativeLayerHost is { } nativeLayerHost)
-				{
-					AndroidSkiaNativeElementHostingExtension.AdoptNativeElements(xamlRoot, nativeLayerHost);
-				}
+				AdoptNativeElements(existingWindow);
 
 				existingWindow.Activate();
 				InvalidateRender();
+			}
+		}
+
+		/// <summary>
+		/// Called from the render thread once this activity's render view has negotiated a renderer. Any record the
+		/// window attempted while it had none (between a takeover and the new surface) was skipped.
+		/// </summary>
+		internal void OnRendererAvailable()
+			=> NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (DrivesWindow && RootElement?.Visual.CompositionTarget is Uno.UI.Composition.ICompositionTarget compositionTarget)
+				{
+					// The skipped record already cleared the target's request, so a frame alone would record nothing.
+					compositionTarget.RequestNewFrame();
+					// A request still latched for the previous view absorbs the one above without asking this one.
+					InvalidateRender();
+				}
+			});
+
+		/// <summary>
+		/// Takes the window back from a copy of this activity that an intent stacked on top in the standard launch
+		/// mode, once that copy is finishing, rather than let the window close with it. Runs from OnStart, and from
+		/// OnResume for a copy finished before this activity was stopped. Once resumed, it also takes the window from
+		/// a copy that is not, such as one left in another task when the user switched back here through Recents.
+		/// </summary>
+		private void TryReclaimWindow(bool resuming = false)
+		{
+			if (!_started || _wrapper is not { CurrentActivity: { } owner } wrapper || ReferenceEquals(owner, this))
+			{
+				return;
+			}
+
+			if (owner.IsFinishing || (resuming && !owner._resumed))
+			{
+				TakeWindow(wrapper);
+			}
+		}
+
+		private void TakeWindow(NativeWindowWrapper wrapper)
+		{
+			wrapper.CurrentActivity = this;
+			ConfigureAccessibilityHelpers();
+			AdoptNativeElements(wrapper.Window);
+			InvalidateRender();
+		}
+
+		/// <summary>
+		/// The most recently active copy of this activity, other than this one, still alive and sharing <paramref name="wrapper"/>.
+		/// </summary>
+		private ApplicationActivity? FindLiveSibling(NativeWindowWrapper wrapper)
+			=> Instances.Values
+				.OfType<ApplicationActivity>()
+				.Where(activity => !ReferenceEquals(activity, this)
+					&& ReferenceEquals(activity._wrapper, wrapper)
+					&& !activity.IsDestroyed
+					&& !activity.IsFinishing)
+				.MaxBy(activity => activity.LastActivation);
+
+		private void ConfigureAccessibilityHelpers()
+		{
+			foreach (var pair in XamlRootMap.Enumerate())
+			{
+				if (pair.Value is AndroidSkiaXamlRootHost androidHost && ReferenceEquals(androidHost.Activity, this))
+				{
+					androidHost.TryConfigureHelper();
+				}
+			}
+		}
+
+		private void AdoptNativeElements(Microsoft.UI.Xaml.Window? window)
+		{
+			if (window?.RootElement?.XamlRoot is { } xamlRoot && _nativeLayerHost is { } nativeLayerHost)
+			{
+				AndroidSkiaNativeElementHostingExtension.AdoptNativeElements(xamlRoot, nativeLayerHost);
 			}
 		}
 
@@ -550,6 +622,9 @@ namespace Uno.UI.Runtime.Android
 
 		protected override void OnResume()
 		{
+			_resumed = true;
+			TryReclaimWindow(resuming: true);
+
 			base.OnResume();
 
 			RaiseConfigurationChanges();
@@ -569,6 +644,7 @@ namespace Uno.UI.Runtime.Android
 
 		protected override void OnPause()
 		{
+			_resumed = false;
 			base.OnPause();
 
 			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
@@ -622,9 +698,18 @@ namespace Uno.UI.Runtime.Android
 			// StartActivity/Finish restart idiom the successor has already taken the wrapper.
 			if (IsFinishing && _wrapper is { } wrapper && ReferenceEquals(wrapper.CurrentActivity, this))
 			{
-				wrapper.OnNativeClosed();
-				wrapper.XamlRootHost?.Dispose();
-				wrapper.XamlRootHost = null;
+				// A copy still alive that did not reclaim the window first, such as one in another task that won't
+				// come back to the foreground, takes it over rather than let it close.
+				if (FindLiveSibling(wrapper) is { } sibling)
+				{
+					sibling.TakeWindow(wrapper);
+				}
+				else
+				{
+					wrapper.OnNativeClosed();
+					wrapper.XamlRootHost?.Dispose();
+					wrapper.XamlRootHost = null;
+				}
 			}
 		}
 
