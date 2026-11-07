@@ -38,6 +38,16 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private bool _hasUnmaterializedItems;
 
+		/// <summary>
+		/// Bumped by any mutation that can change which implicit style a lookup resolves to. Callers use 0
+		/// for "not captured", so a wrap-around to 0 only costs them a redundant lookup.
+		/// </summary>
+		internal static uint ImplicitStyleScopeVersion { get; private set; } = 1;
+
+		internal static void InvalidateImplicitStyleScope() => ImplicitStyleScopeVersion++;
+
+		private bool IsThemeDictionariesContainer => _parent is { } parent && ReferenceEquals(parent._themeDictionaries, this);
+
 		public ResourceDictionary() : this(0)
 		{
 		}
@@ -58,6 +68,9 @@ namespace Microsoft.UI.Xaml
 						oldDict._parent = null;
 					}
 				}
+
+				InvalidateImplicitStyleScope();
+
 				if (e.NewItems != null)
 				{
 					foreach (ResourceDictionary newDict in e.NewItems)
@@ -247,6 +260,11 @@ namespace Microsoft.UI.Xaml
 
 			// MUX: CResourceDictionary::RemoveKey invalidates the theme walk cache for this key.
 			Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache.RemoveCacheEntry(keyToRemove);
+
+			if (keyToRemove.TypeKey is not null || IsThemeDictionariesContainer)
+			{
+				InvalidateImplicitStyleScope();
+			}
 #if __SKIA__
 			if (_values.TryGetValue(keyToRemove, out var value))
 			{
@@ -275,6 +293,7 @@ namespace Microsoft.UI.Xaml
 		public void Clear()
 		{
 			_values.Clear();
+			InvalidateImplicitStyleScope();
 			ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -492,6 +511,12 @@ namespace Microsoft.UI.Xaml
 			// MUX: CResourceDictionary::AddKey invalidates the theme walk cache for this key
 			// because a new resource can shadow entries from other dictionaries in the lookup chain.
 			Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache.RemoveCacheEntry(resourceKey);
+
+			// MUX: CResourceDictionary::Add notifies the subtree of a new implicit style (NotifyImplicitStyleChanged).
+			if (resourceKey.TypeKey is not null || value is ResourceDictionary || IsThemeDictionariesContainer)
+			{
+				InvalidateImplicitStyleScope();
+			}
 
 			if (value is WeakResourceInitializer lazyResourceInitializer)
 			{
@@ -918,6 +943,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void CopyFrom(ResourceDictionary source)
 		{
+			InvalidateImplicitStyleScope();
 			_values.Clear();
 			_mergedDictionaries.Clear();
 			_themeDictionaries?.Clear();
