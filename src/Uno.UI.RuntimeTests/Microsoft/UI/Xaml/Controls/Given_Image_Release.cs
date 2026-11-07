@@ -1014,6 +1014,43 @@ public class Given_Image_Release
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25547")]
+	// A WebGPU texture is a copy of the decoded pixels, which counts as well.
+	[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)]
+	public async Task When_Drawn_Image_Waits_Then_Its_Pixels_Count_Once()
+	{
+		// The texture a drawn image keeps shares its decoded pixels, so a limit of exactly their size is enough to keep it.
+		using var _ = DisableBitmapImageCache();
+		using var limit = SetMaxUndisplayedImageBytes(long.MaxValue);
+		using var delay = SetReleaseDelay(TimeSpan.FromSeconds(10));
+
+		try
+		{
+			var panel = new StackPanel();
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+
+			var bitmap = new BitmapImage(new Uri(AssetUri));
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			await AddAndWaitForOpened(panel, image);
+			var surface = GetSurface(bitmap);
+			await WindowHelper.WaitFor(() => surface.HasTexture, 5000, "Pre-condition: the image is drawn, so its surface holds a texture");
+
+			var size = surface.Size!.Value;
+			var pixelBytes = (long)size.X * (long)size.Y * 4;
+			FeatureConfiguration.Image.MaxUndisplayedImageBytes = pixelBytes;
+			panel.Children.Remove(image);
+			var counted = surface.DecodedByteCount;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(surface.Image, $"An image within the limit keeps its pixels ({counted} bytes counted, {pixelBytes} allowed)");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
 	public void When_Many_Images_Wait_Then_Each_Starts_Its_Wait_At_Once()
