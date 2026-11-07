@@ -302,6 +302,7 @@ public partial class ListViewBase : Selector, ITreeBuilder, IBackButtonListener,
 	// flag indicating that an item or group header was focused before. If this is false
 	// that means that items/group headers never got focus so far.
 	private bool m_wasItemOrGroupHeaderFocused;
+	private bool m_isIncrementalLoadCheckPending;
 
 	private bool m_focusableElementForModernPanelReentrancyGuard;
 

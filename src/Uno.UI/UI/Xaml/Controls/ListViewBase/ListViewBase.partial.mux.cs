@@ -803,6 +803,22 @@ partial class ListViewBase
 	private void OnScrollHostOffsetsChanged()
 	{
 		ProcessDataVirtualizationScrollOffsets();
+
+		// TODO Uno: The offsets change ahead of the layout that realizes the new window, while the
+		// check walks the realized containers. WinUI publishes them once that layout is done.
+		if (m_scrollHostOffsetChangeAction == ScrollHostOffsetChangeAction.ScrollHostOffsetChangeAction_IncrementalEdgeTrigger &&
+			!m_isIncrementalLoadCheckPending)
+		{
+			m_isIncrementalLoadCheckPending = true;
+			_ = DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+			{
+				m_isIncrementalLoadCheckPending = false;
+				if (IsInLiveTree)
+				{
+					ProcessDataVirtualizationScrollOffsets();
+				}
+			});
+		}
 	}
 
 	internal override Point GetDropOffsetToRoot() => m_lastReorderPosition;
