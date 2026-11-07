@@ -1239,7 +1239,7 @@ internal static partial class SemanticElementFactory
 	/// Determines whether an <see cref="AutomationProperties.ItemStatusProperty"/> value
 	/// represents a busy / in-progress state that should surface as <c>aria-busy="true"</c>.
 	/// </summary>
-	private static bool IsBusyStatus(string? itemStatus)
+	internal static bool IsBusyStatus(string? itemStatus)
 	{
 		if (string.IsNullOrWhiteSpace(itemStatus))
 		{

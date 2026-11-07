@@ -533,6 +533,31 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		OnAccessibilityViewChanged(element, oldValue, newValue);
 	}
 
+	public void NotifyOwnerPropertyChanged(
+		UIElement element,
+		AutomationProperty automationProperty,
+		object oldValue,
+		object newValue)
+	{
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		OnOwnerPropertyChanged(element, automationProperty, oldValue, newValue);
+	}
+
+	/// <summary>
+	/// An attached automation property changed on an element without an automation peer.
+	/// </summary>
+	protected virtual void OnOwnerPropertyChanged(
+		UIElement element,
+		AutomationProperty automationProperty,
+		object oldValue,
+		object newValue)
+	{
+	}
+
 	public virtual void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 	{
 		if (_isDisposed || !IsAccessibilityEnabled)

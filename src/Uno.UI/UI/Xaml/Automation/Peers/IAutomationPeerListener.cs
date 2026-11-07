@@ -22,6 +22,18 @@ internal interface IAutomationPeerListener
 	}
 
 	/// <summary>
+	/// Raised for an attached automation property change on an element that has no automation peer.
+	/// Bridges that expose such elements anyway (e.g. a live region on a plain panel) use it to stay in sync.
+	/// </summary>
+	void NotifyOwnerPropertyChanged(
+		global::Microsoft.UI.Xaml.UIElement element,
+		AutomationProperty automationProperty,
+		object oldValue,
+		object newValue)
+	{
+	}
+
+	/// <summary>
 	/// Mirrors WinUI's <c>CAutomationPeer::InvalidatePeer</c>: re-evaluate the peer's
 	/// automatic properties (IsEnabled/IsOffscreen/Name/ItemStatus) and raise
 	/// PropertyChanged for any that changed. Unlike WinUI, platform implementations that
