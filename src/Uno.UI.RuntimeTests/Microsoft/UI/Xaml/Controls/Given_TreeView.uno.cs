@@ -297,6 +297,16 @@ public class Given_TreeView
 			// select and wait for the selection BringIntoView to occur. The container realization
 			// after the BringIntoView can exceed the default 1s timeout on slower runtimes (e.g. WASM).
 			var node = flattened.First(x => x.Name == $"{c}A");
+
+			// The node of a child only exists once its parent's container is realized, and that parent can be
+			// past the cache window (CacheLength 4, so 2 viewports on each side).
+			var parent = flattened.First(x => x.Name == $"{c}");
+			var viewModel = SUT.ListControl.ListViewModel;
+			var parentIndex = Enumerable.Range(0, viewModel.Count).First(i => viewModel[i] == parent);
+			SUT.FindVisualChildByType<ScrollViewer>().ChangeView(null, parentIndex * 50, null, disableAnimation: true);
+			await TestServices.WindowHelper.WaitFor(() => SUT.ContainerFromItem(parent) is { }, timeoutMS: 5000);
+			await TestServices.WindowHelper.WaitForIdle();
+
 			SUT.SelectedItem = node;
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => SUT.ContainerFromItem(node) is { }, timeoutMS: 5000);
