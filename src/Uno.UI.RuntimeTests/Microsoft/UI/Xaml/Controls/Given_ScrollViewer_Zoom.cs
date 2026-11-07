@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -41,11 +42,15 @@ public class Given_ScrollViewer_Zoom
 
 		// Change to zoom factor 2.0
 		var result = sut.ChangeView(null, null, 2.0f, disableAnimation: true);
-		await TestServices.WindowHelper.WaitForIdle();
+		await WaitForZoomFactor(sut, 2.0f);
 
 		Assert.IsTrue(result, "ChangeView should return true");
 		Assert.AreEqual(2.0f, sut.ZoomFactor, 0.01f, "Zoom factor should be 2.0 after ChangeView");
 	}
+
+	// WinUI applies the zoom through DirectManipulation, which can report it after WaitForIdle returns.
+	private static async Task WaitForZoomFactor(ScrollViewer sut, float expected)
+		=> await TestServices.WindowHelper.WaitFor(() => MathF.Abs(sut.ZoomFactor - expected) <= 0.01f, timeoutMS: 5000, message: $"ZoomFactor should reach {expected}");
 
 	[TestMethod]
 	// WinUI (CI WinAppSDK leg): flaky, ZoomFactor sometimes reaches the requested 2.0.
@@ -105,7 +110,7 @@ public class Given_ScrollViewer_Zoom
 
 		// Try to zoom below minimum
 		sut.ChangeView(null, null, 0.1f, disableAnimation: true);
-		await TestServices.WindowHelper.WaitForIdle();
+		await WaitForZoomFactor(sut, 0.5f);
 
 		// Zoom should be clamped to minimum
 		Assert.AreEqual(0.5f, sut.ZoomFactor, 0.01f, "Zoom factor should be clamped to MinZoomFactor");
@@ -137,7 +142,7 @@ public class Given_ScrollViewer_Zoom
 
 		// Try to zoom above maximum
 		sut.ChangeView(null, null, 10.0f, disableAnimation: true);
-		await TestServices.WindowHelper.WaitForIdle();
+		await WaitForZoomFactor(sut, 4.0f);
 
 		// Zoom should be clamped to maximum
 		Assert.AreEqual(4.0f, sut.ZoomFactor, 0.01f, "Zoom factor should be clamped to MaxZoomFactor");
