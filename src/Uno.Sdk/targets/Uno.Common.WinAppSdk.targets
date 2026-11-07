@@ -110,6 +110,14 @@
 	<Import Project="Uno.SingleProject.WinAppSdk.targets"
 			Condition=" $(_IsUnoSingleProject) == 'true' " />
 
+	<!-- The SkiaSharp and ANGLE native packages carry their PDBs as native assets: 226 MB against 17 MB of DLLs. -->
+	<Target Name="_UnoRemoveSkiaNativePdbs" AfterTargets="ResolvePackageAssets">
+		<ItemGroup>
+			<NativeCopyLocalItems Remove="@(NativeCopyLocalItems)"
+				Condition="'%(Extension)' == '.pdb' And $([System.String]::Copy('%(NuGetPackageId)').StartsWith('SkiaSharp.NativeAssets.'))" />
+		</ItemGroup>
+	</Target>
+
 	<Target Name="_UnoValidateWinAppSDK3548"
 			BeforeTargets="BeforeBuild" 
 			Condition="
@@ -122,6 +130,26 @@
 		<Error Code="UNOB0008"
 				HelpLink="https://aka.platform.uno/UNOB0008"
 				Text="Building a WinUI class library with dotnet build is not supported when XAML files are present. Use `msbuild` instead." />
+	</Target>
+
+	<!-- Lottie is built into Uno.WinUI, but WinAppSDK takes LottieVisualSource from CommunityToolkit.WinUI.Lottie, which
+	     nothing references for the app. Name the package instead of leaving only the XAML compiler's WMC0001. -->
+	<Target Name="_UnoValidateLottieWinAppSdk"
+			BeforeTargets="MarkupCompilePass1"
+			DependsOnTargets="ResolveAssemblyReferences"
+			Condition="'$(DesignTimeBuild)' != 'true' AND ('@(Page)' != '' OR '@(ApplicationDefinition)' != '')">
+		<ItemGroup>
+			<_UnoLottieReference Include="@(ReferencePath)" Condition="'%(Filename)' == 'CommunityToolkit.WinUI.Lottie'" />
+			<_UnoLottieXamlCandidate Include="@(Page);@(ApplicationDefinition)" Condition="'@(_UnoLottieReference)' == ''" />
+			<_UnoLottieXaml Include="@(_UnoLottieXamlCandidate)"
+							Condition="Exists('%(FullPath)') AND $([System.IO.File]::ReadAllText('%(FullPath)').Contains('using:CommunityToolkit.WinUI.Lottie'))" />
+		</ItemGroup>
+
+		<Warning Code="UNOB0034"
+				 HelpLink="https://aka.platform.uno/UNOB0034"
+				 File="%(_UnoLottieXaml.Identity)"
+				 Condition="'@(_UnoLottieXaml)' != ''"
+				 Text="This XAML uses the CommunityToolkit.WinUI.Lottie namespace, which on WinAppSDK ($(TargetFramework)) comes from the CommunityToolkit.WinUI.Lottie NuGet package. Lottie is built into Uno Platform on the other targets, but not on Windows: add a PackageReference to CommunityToolkit.WinUI.Lottie for the Windows target framework. (See https://aka.platform.uno/UNOB0034)" />
 	</Target>
 
 	<Import Project="Uno.UI.SourceGenerators.WinAppSdk.props" />

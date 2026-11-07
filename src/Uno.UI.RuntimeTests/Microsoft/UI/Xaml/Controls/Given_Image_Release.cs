@@ -398,8 +398,8 @@ public class Given_Image_Release
 	public async Task When_Shared_Source_Outlives_Unloaded_Images_Then_Images_Collected(SharedSource kind)
 	{
 		// An icon kept in a static field or an app resource outlives the Images that show it: it must not keep them alive,
-		// with everything they reference, once they left the tree. Two share it, as icons are: a source with a single owner
-		// keeps that owner as its inheritance context parent (DependencyObject._associatedParent).
+		// with everything they reference, once they left the tree. Two share it, as icons are (a single owner is only held
+		// weakly, as its inheritance context parent: DependencyObject.AssociatedParent).
 		using var cache = kind == SharedSource.CachedUri ? EnableBitmapImageCache() : null;
 		var source = await CreateSharedSourceAsync(kind);
 

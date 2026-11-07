@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.DataBinding
 {
@@ -464,22 +465,32 @@ namespace Uno.UI.DataBinding
 				return null;
 			}
 
+			// Uno-specific: a collection that outlives the binding must not keep it alive, so the handler holds the item weakly.
+			var weakBindingItem = new WeakReference<BindingItem>(bindingItem);
 			NotifyCollectionChangedEventHandler handler = (s, args) =>
 			{
-				BindingItem tail = bindingItem;
+				if (!weakBindingItem.TryGetTarget(out var item))
+				{
+					return;
+				}
+
+				BindingItem tail = item;
 				while (tail.Next != null)
 				{
 					tail = tail.Next;
 				}
-				tail.Path?.OnValueChanged(bindingItem.Value);
+				tail.Path?.OnValueChanged(item.Value);
 			};
 
 			notify.CollectionChanged += handler;
 
-			return Disposable.Create(() =>
-			{
-				notify.CollectionChanged -= handler;
-			});
+			return new WeakSourceSubscription<INotifyCollectionChanged, NotifyCollectionChangedEventHandler>(
+				notify,
+				handler,
+				static (source, handler) => source.CollectionChanged -= handler,
+				onDisposed: null,
+				typeof(BindingPath),
+				"a binding's CollectionChanged handler");
 		}
 
 		/// <summary>
@@ -505,7 +516,8 @@ namespace Uno.UI.DataBinding
 					{
 						if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
-							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{dataContextReference.Target?.GetType()}]");
+							var target = dataContextReference.IsDisposed ? null : dataContextReference.Target;
+							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{target?.GetType()}]");
 						}
 
 						if (!newValueActionWeak.IsDisposed
@@ -518,20 +530,13 @@ namespace Uno.UI.DataBinding
 
 				notify.PropertyChanged += handler;
 
-				return Disposable.Create(() =>
-				{
-					// This weak reference ensure that the closure will not link
-					// the caller and the callee, in the same way "newValueActionWeak"
-					// does not link the callee to the caller.
-					var that = dataContextReference.Target as System.ComponentModel.INotifyPropertyChanged;
-
-					if (that != null)
-					{
-						that.PropertyChanged -= handler;
-					}
-
-					Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, newValueActionWeak);
-				});
+				return new WeakSourceSubscription<INotifyPropertyChanged, (PropertyChangedEventHandler Handler, ManagedWeakReference Target)>(
+					notify,
+					(handler, newValueActionWeak),
+					static (source, state) => source.PropertyChanged -= state.Handler,
+					static state => Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, state.Target),
+					typeof(BindingPath),
+					"a binding's PropertyChanged handler");
 			}
 
 			return null;

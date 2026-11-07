@@ -756,14 +756,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				owner.DataContext = "VM1";
 
 				SUT.IsOpen = true;
-				await TestServices.WindowHelper.WaitForIdle();
+				// WinUI binds the content some time after IsOpen is set, and idling doesn't always outlast that.
+				await TestServices.WindowHelper.WaitFor(
+					() => content.Text == "VM1",
+					timeoutMS: 3000,
+					message: "The content never received the DataContext on the first open.");
 				Assert.AreEqual("VM1", SUT.DataContext);
-				Assert.AreEqual("VM1", content.Text);
 
 				SUT.IsOpen = false;
 				await TestServices.WindowHelper.WaitForIdle();
 				Assert.AreEqual("VM1", SUT.DataContext, "The DataContext was lost on close.");
-				Assert.AreEqual("VM1", content.Text);
+				Assert.AreEqual("VM1", content.Text, "The content lost the DataContext on close.");
 
 				owner.DataContext = "VM2";
 				await TestServices.WindowHelper.WaitForIdle();
@@ -772,13 +775,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.IsOpen = true;
 				await TestServices.WindowHelper.WaitForIdle();
 				owner.DataContext = "VM3";
-				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitFor(
+					() => content.Text == "VM3",
+					timeoutMS: 3000,
+					message: "The content never received the DataContext on the second open.");
 				Assert.AreEqual("VM3", SUT.DataContext);
 
 				SUT.IsOpen = false;
 				await TestServices.WindowHelper.WaitForIdle();
 				Assert.AreEqual("VM3", SUT.DataContext, "The DataContext was lost on the second close.");
-				Assert.AreEqual("VM3", content.Text);
+				Assert.AreEqual("VM3", content.Text, "The content lost the DataContext on the second close.");
 			}
 			finally
 			{
@@ -1089,6 +1095,135 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await TestServices.WindowHelper.WaitForIdle();
 
 				Assert.IsTrue(await TestHelper.TryWaitUntilCollected(ownerRef), "The owner of a tooltip that never opened was not collected.");
+			}
+			finally
+			{
+				mouse.MoveTo(new Windows.Foundation.Point(0, 0));
+				CloseOpenPopups();
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_Pending_ToolTip_Opened_And_Closed_By_App_Then_Still_Opens_Automatically()
+		{
+			// As in WinUI, closing releases a tooltip from the service only if the service opened it: the app opening and
+			// closing the tooltip during the show delay does not cancel the pending automatic open.
+			var owner = new Button { Content = "Hover me", Width = 100, Height = 50 };
+			var toolTip = new ToolTip { Content = "ToolTip content" };
+			ToolTipService.SetToolTip(owner, toolTip);
+			await UITestHelper.Load(owner);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				mouse.MoveTo(owner.GetAbsoluteBounds().GetCenter());
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsFalse(toolTip.IsOpen, "premise: the tooltip is still waiting to open");
+#if HAS_UNO
+				Assert.AreSame(toolTip, ToolTipService.CurrentToolTipForTesting, "premise: the service holds the pending tooltip");
+#endif
+
+				// Back to back, so the show delay cannot elapse while the app holds the tooltip open.
+				toolTip.IsOpen = true;
+				toolTip.IsOpen = false;
+
+#if HAS_UNO
+				Assert.AreSame(toolTip, ToolTipService.CurrentToolTipForTesting, "The app closing the tooltip cancelled the pending automatic open.");
+#endif
+				await UITestHelper.WaitFor(() => toolTip.IsOpen, timeoutMS: 5000, message: "The hovered tooltip did not open after the app opened and closed it.");
+			}
+			finally
+			{
+				mouse.MoveTo(new Windows.Foundation.Point(0, 0));
+				CloseOpenPopups();
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_Automatic_ToolTip_Reopened_By_App_Then_ShowDuration_Does_Not_Close_It()
+		{
+			// Once the app has closed the automatic tooltip, the service has let go of it, so its show-duration timer must not
+			// close the app's reopen.
+			var owner = new Button { Content = "Hover me", Width = 100, Height = 50 };
+			var toolTip = new ToolTip { Content = "ToolTip content" };
+			ToolTipService.SetToolTip(owner, toolTip);
+			await UITestHelper.Load(owner);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				mouse.MoveTo(owner.GetAbsoluteBounds().GetCenter());
+				await UITestHelper.WaitFor(() => toolTip.IsOpen, timeoutMS: 5000, message: "The automatic tooltip did not open on hover.");
+
+				toolTip.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+				toolTip.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsTrue(toolTip.IsOpen, "premise: the app reopened the tooltip");
+
+#if HAS_UNO
+				// WinUI has no show-duration close; Uno's closes the automatic tooltip after ShowDuration.
+				await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDuration + 500));
+#endif
+				Assert.IsTrue(toolTip.IsOpen, "The service's show-duration timer closed a tooltip the app reopened.");
+			}
+			finally
+			{
+				mouse.MoveTo(new Windows.Foundation.Point(0, 0));
+				CloseOpenPopups();
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_Pending_ToolTip_Opened_By_App_Then_ShowDuration_Does_Not_Close_It()
+		{
+			// As in WinUI, the service does not take over a tooltip the app opened during the show delay.
+			var owner = new Button { Content = "Hover me", Width = 100, Height = 50 };
+			var toolTip = new ToolTip { Content = "ToolTip content" };
+			ToolTipService.SetToolTip(owner, toolTip);
+			await UITestHelper.Load(owner);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				mouse.MoveTo(owner.GetAbsoluteBounds().GetCenter());
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsFalse(toolTip.IsOpen, "premise: the tooltip is still waiting to open");
+#if HAS_UNO
+				Assert.AreSame(toolTip, ToolTipService.CurrentToolTipForTesting, "premise: the service holds the pending tooltip");
+#endif
+
+				toolTip.IsOpen = true;
+
+#if HAS_UNO
+				await UITestHelper.WaitFor(
+					() => ToolTipService.CurrentToolTipForTesting is null,
+					timeoutMS: FeatureConfiguration.ToolTip.ShowDelay + 2000,
+					message: "The service kept a tooltip the app opened during the show delay.");
+				await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDuration + 500));
+#endif
+				Assert.IsTrue(toolTip.IsOpen, "The service's show-duration timer closed a tooltip the app opened.");
 			}
 			finally
 			{
