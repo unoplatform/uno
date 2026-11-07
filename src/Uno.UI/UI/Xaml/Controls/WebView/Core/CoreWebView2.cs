@@ -27,10 +27,12 @@ public partial class CoreWebView2
 	internal static readonly Uri BlankUri = new Uri(BlankUrl);
 
 	private readonly Dictionary<string, string> _hostToFolderMap = new();
+	private readonly Dictionary<string, CoreWebView2HostResourceAccessKind> _hostToAccessKindMap = new();
 	private readonly IWebView _owner;
 
 	private bool _scrollEnabled = true;
 	private INativeWebView? _nativeWebView;
+	private INativeWebView? _initializingNativeWebView;
 	private ISupportsWebResourceRequested? _webResourceRequestedSupport;
 	private readonly List<WebResourceRequestedFilter> _webResourceRequestedFilters = new();
 	internal long _navigationId;
@@ -103,7 +105,9 @@ public partial class CoreWebView2
 		}
 		else
 		{
-			_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
+			var normalizedHostName = hostName.ToLowerInvariant();
+			_hostToFolderMap.Add(normalizedHostName, folderPath);
+			_hostToAccessKindMap[normalizedHostName] = accessKind;
 		}
 	}
 
@@ -164,18 +168,25 @@ public partial class CoreWebView2
 	public void Reload() => _nativeWebView?.Reload();
 
 	public IAsyncOperation<string?> ExecuteScriptAsync(string javaScript) =>
-		AsyncOperation.FromTask(ct =>
+		AsyncOperation.FromTask(async ct =>
 		{
+			await WaitForInitializingNativeWebViewAsync();
+
 			if (_nativeWebView is null)
 			{
-				return Task.FromResult<string?>(null);
+				return null;
 			}
 
-			return _nativeWebView.ExecuteScriptAsync(javaScript, ct);
+			return await _nativeWebView.ExecuteScriptAsync(javaScript, ct);
 		});
+
+	private Task WaitForInitializingNativeWebViewAsync()
+		=> _initializingNativeWebView is null ? Task.CompletedTask : _nativeWebViewInitializedTcs.Task;
 
 	internal async Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken ct)
 	{
+		await WaitForInitializingNativeWebViewAsync();
+
 		if (_nativeWebView is null)
 		{
 			return null;
@@ -187,7 +198,52 @@ public partial class CoreWebView2
 	internal void OnOwnerApplyTemplate()
 	{
 		DetachWebResourceRequestedSupport();
-		_nativeWebView = GetNativeWebViewFromTemplate();
+
+		var nativeWebView = GetNativeWebViewFromTemplate();
+		if (nativeWebView is IAsyncInitializedNativeWebView asyncInitialized)
+		{
+			_nativeWebView = null;
+			_initializingNativeWebView = nativeWebView;
+			_ = InitializeNativeWebViewAsync(nativeWebView, asyncInitialized);
+		}
+		else
+		{
+			_initializingNativeWebView = null;
+			OnNativeWebViewAvailable(nativeWebView);
+		}
+	}
+
+	private async Task InitializeNativeWebViewAsync(INativeWebView nativeWebView, IAsyncInitializedNativeWebView asyncInitialized)
+	{
+		try
+		{
+			await asyncInitialized.InitializeAsync();
+		}
+		catch (Exception e)
+		{
+			this.Log().LogError("Failed to initialize the native WebView.", e);
+
+			if (_initializingNativeWebView == nativeWebView)
+			{
+				_initializingNativeWebView = null;
+				_nativeWebViewInitializedTcs.TrySetException(e);
+			}
+
+			return;
+		}
+
+		// A template applied in the meantime has replaced this instance.
+		if (_initializingNativeWebView == nativeWebView)
+		{
+			_initializingNativeWebView = null;
+			OnNativeWebViewAvailable(nativeWebView);
+		}
+	}
+
+	private void OnNativeWebViewAvailable(INativeWebView? nativeWebView)
+	{
+		_nativeWebView = nativeWebView;
+		ApplyDeferredVirtualHostMappings();
 		AttachWebResourceRequestedSupport();
 
 		// Signal that native WebView is now initialized
@@ -347,6 +403,20 @@ public partial class CoreWebView2
 		}
 
 		return true;
+	}
+
+	private void ApplyDeferredVirtualHostMappings()
+	{
+		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
+		{
+			foreach (var (hostName, folderPath) in _hostToFolderMap)
+			{
+				supportsVirtualHostMapping.SetVirtualHostNameToFolderMapping(hostName, folderPath, _hostToAccessKindMap[hostName]);
+			}
+
+			_hostToFolderMap.Clear();
+			_hostToAccessKindMap.Clear();
+		}
 	}
 
 	private void UpdateFromInternalSource()
