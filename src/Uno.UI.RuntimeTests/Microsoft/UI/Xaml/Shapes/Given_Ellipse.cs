@@ -108,5 +108,36 @@ public class Given_Ellipse
 		}
 		Assert.IsTrue(partial <= 1, $"{partial} partially covered pixels across the edge at 4x; the ring must be one device pixel wide");
 	}
+
+	// A curved stroke must be antialiased like a fill: its inner and outer edges cross pixels all round the circle,
+	// so a hard-edged stroke leaves almost no partially covered pixel, an antialiased one hundreds of them.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Stroke_Is_Antialiased()
+	{
+		var grid = new Grid
+		{
+			Width = 120,
+			Height = 120,
+			Background = new SolidColorBrush(Colors.White),
+			Children = { new Ellipse { Width = 100, Height = 100, Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 4 } },
+		};
+
+		await UITestHelper.Load(grid);
+		var screenshot = await UITestHelper.ScreenShot(grid);
+
+		var bitmap = screenshot.Bitmap;
+		var pixels = (await bitmap.GetPixelsAsync()).ToArray();
+		var partial = 0;
+		for (var i = 0; i < pixels.Length; i += 4)
+		{
+			var r = pixels[i + 2];   // BGRA
+			if (r > 40 && r < 215) { partial++; }
+		}
+
+		// Each edge of a 100px circle crosses about 300 pixels; scaled by the screenshot's density.
+		var expected = (int)(200 * screenshot.ImplicitScaling);
+		Assert.IsTrue(partial >= expected, $"Only {partial} partially covered pixels on the stroke (expected at least {expected}): its edges are not antialiased");
+	}
 }
 #endif
