@@ -61,6 +61,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	/// <summary>This visual's own recorded content, so tests can tell a re-record from a replay.</summary>
 	internal IRenderRecord? RecordedContentForTesting => _content;
+
+	/// <summary>The cached picture this visual's subtree is replayed from instead of being walked, if collapsed.</summary>
+	internal IRenderRecord? ChildrenContentForTesting => _childrenContent;
+
+	/// <summary>The subtree recording the non-analytic drop-shadow fallback replays, if this visual took that path.</summary>
+	internal IRenderRecord? ShadowFallbackContentForTesting => _shadowFallbackContent;
 	private IRenderRecord? _childrenContent;
 	// Placement bookkeeping for _childrenContent: the recording is local-space and survives ancestor moves,
 	// but a replay under a changed matrix must still damage the screen area the subtree left and now covers

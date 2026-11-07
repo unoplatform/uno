@@ -243,6 +243,14 @@ namespace Microsoft.UI.Xaml
 			_originalObjectType = effectiveOwner.GetType();
 			_dataContextProperty = effectiveOwner is FrameworkElement ? FrameworkElement.DataContextProperty : null;
 
+			// FrameworkTemplate and Style have no DataContext in WinUI and are usually shared (resources), so they
+			// must never cache an inherited DataContext, whichever path (bindable child, collection item, parent
+			// propagation) delivers it: the shared instance would keep that DataContext alive.
+			if (IsDataContextIsolatedValue(effectiveOwner))
+			{
+				_inheritanceContextEnabled = false;
+			}
+
 			__InitializeBinder();
 
 			if (_trace.IsEnabled)
@@ -1372,7 +1380,9 @@ namespace Microsoft.UI.Xaml
 			// FrameworkElement's value and it cascades to its bindable children — without storing a DataContext on it.
 			if (_dataContextProperty is null && parentProperty.UniqueId == _parentDataContextProperty.UniqueId)
 			{
-				ApplyDataContext(newValue == DependencyProperty.UnsetValue ? null : newValue);
+				// Same inheritance-context gate as SetInheritedDataContext: a store that opted out (FrameworkTemplate,
+				// Style, a value shared by several owners) must not cache the parent's DataContext either.
+				ApplyDataContext(!_inheritanceContextEnabled || newValue == DependencyProperty.UnsetValue ? null : newValue);
 				return;
 			}
 

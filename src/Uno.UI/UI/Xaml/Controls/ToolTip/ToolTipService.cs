@@ -27,6 +27,8 @@ public partial class ToolTipService
 
 	private static AutomaticToolTipInputMode s_lastEnterInputMode = AutomaticToolTipInputMode.Mouse;
 
+	internal static bool s_bOpeningAutomaticToolTip;
+
 	private static void RegisterToolTip(
 		DependencyObject owner,
 		FrameworkElement container,
@@ -143,10 +145,27 @@ public partial class ToolTipService
 	{
 		m_OpenTimer.Stop();
 
-		if (m_CurrentToolTip is { })
+		if (m_CurrentToolTip is { } toolTip)
 		{
-			m_CurrentToolTip.m_inputMode = s_lastEnterInputMode;
-			m_CurrentToolTip.IsOpen = true;
+			if (toolTip.IsOpen)
+			{
+				// The app opened it during the show delay. As in WinUI (OpenAutomaticToolTip), the service does not take over a
+				// ToolTip it did not open.
+				m_CurrentToolTip = null;
+				return;
+			}
+
+			toolTip.m_inputMode = s_lastEnterInputMode;
+
+			s_bOpeningAutomaticToolTip = true;
+			try
+			{
+				toolTip.IsOpen = true;
+			}
+			finally
+			{
+				s_bOpeningAutomaticToolTip = false;
+			}
 		}
 
 		if (m_CloseTimer is null)
@@ -326,7 +345,7 @@ public partial class ToolTipService
 	}
 
 	/// <summary>
-	/// Called by a <see cref="ToolTip"/> when it closes, whichever path closed it: the service, the app, or its popup closing.
+	/// Called by a <see cref="ToolTip"/> the service opened when it closes, whichever path closed it: the service, the app, or its popup closing.
 	/// </summary>
 	internal static void OnToolTipClosed(ToolTip toolTip)
 	{
