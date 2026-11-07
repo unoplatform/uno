@@ -632,8 +632,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				pdpTarget = ContentPresenter.ContentTemplateSelectorProperty;
 				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
 				var store = ((DependencyObject)this);
-				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
-					!store.IsPropertyTemplateBound(pdpTarget))
+				if (CanHookUpToTemplatedParent(pdpTarget))
 				{
 					DependencyProperty pdpSource = ContentControl.ContentTemplateSelectorProperty;
 					global::System.Diagnostics.Debug.Assert(pdpSource is { });
@@ -644,8 +643,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 				pdpTarget = ContentPresenter.ContentTemplateProperty;
 				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
-				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
-					!store.IsPropertyTemplateBound(pdpTarget))
+				if (CanHookUpToTemplatedParent(pdpTarget))
 				{
 					DependencyProperty pdpSource = ContentControl.ContentTemplateProperty;
 					global::System.Diagnostics.Debug.Assert(pdpSource is { });
@@ -656,8 +654,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 				pdpTarget = ContentPresenter.ContentProperty;
 				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
-				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
-					!store.IsPropertyTemplateBound(pdpTarget))
+				if (CanHookUpToTemplatedParent(pdpTarget))
 				{
 					DependencyProperty pdpSource = ContentControl.ContentProperty;
 					global::System.Diagnostics.Debug.Assert(pdpSource is { });
@@ -987,7 +984,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 		//ContentTemplate/ContentTemplateSelector will only be applied to a control with no Template, normally the innermost element
-		var dataTemplate = this.ResolveContentTemplate();
+		var dataTemplate = this.ResolveContentTemplate() ?? ResolveTemplateFromPendingSelectorHookUp();
 
 		// Subscribe to template updates so presenter can refresh when factory changes (when feature is activated)
 		if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
@@ -1030,6 +1027,37 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		IsUsingDefaultTemplate = ContentTemplateRoot is ImplicitTextBlock;
 	}
+
+	/// <summary>
+	/// <see cref="OnApplyTemplate"/> only hooks the templated parent's ContentTemplateSelector up once loaded, while the
+	/// content can arrive as soon as the template is materialized. Resolve what that hook-up will provide, like WinUI does
+	/// before creating the content, rather than materializing the placeholder meanwhile.
+	/// </summary>
+	private DataTemplate ResolveTemplateFromPendingSelectorHookUp()
+	{
+		if (_appliedTemplate
+			|| IsNativeHost
+			|| Content is null
+			|| ContentTemplateSelector is not null
+			|| GetTemplatedParent() is not ContentControl { ContentTemplateSelector: { } selector } templatedParent
+			|| !CanHookUpToTemplatedParent(ContentTemplateSelectorProperty))
+		{
+			return null;
+		}
+
+		// Once hooked up too, the templated parent's ContentTemplate takes precedence over its selector.
+		if (templatedParent.ContentTemplate is not null && CanHookUpToTemplatedParent(ContentTemplateProperty))
+		{
+			return null;
+		}
+
+		return DataTemplateHelper.ResolveTemplate(null, selector, Content, this);
+	}
+
+	// MUX: IsPropertyDefault(pdpTarget) && !IsPropertyTemplateBound(pdpTarget) in CContentPresenter::ApplyTemplate.
+	private bool CanHookUpToTemplatedParent(DependencyProperty property)
+		=> this.GetCurrentHighestValuePrecedence(property) == DependencyPropertyValuePrecedences.DefaultValue
+			&& !this.IsPropertyTemplateBound(property);
 
 	private void SetContentTemplateRootToPlaceholder()
 	{
