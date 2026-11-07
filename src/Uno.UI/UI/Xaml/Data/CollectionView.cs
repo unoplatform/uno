@@ -124,7 +124,7 @@ namespace Microsoft.UI.Xaml.Data
 				}
 				else
 				{
-					return AsEnumerable.ElementAt(CurrentPosition); //TODO: should use logic from ItemsControl for caching and utilizing group counts
+					return CurrentPosition >= 0 && CurrentPosition < Count ? AsEnumerable.ElementAt(CurrentPosition) : null; //TODO: should use logic from ItemsControl for caching and utilizing group counts
 				}
 			}
 		}
@@ -231,7 +231,7 @@ namespace Microsoft.UI.Xaml.Data
 
 		void ICollection<object>.Clear() => (_collection as IList ?? throw new NotSupportedException()).Clear();
 
-		public bool Contains(object item) => _collection?.Contains(item) ?? false;
+		public bool Contains(object item) => (_isGrouped ? AsEnumerable : _collection)?.Contains(item) ?? false;
 
 		void ICollection<object>.CopyTo(object[] array, int arrayIndex)
 		{
@@ -278,7 +278,7 @@ namespace Microsoft.UI.Xaml.Data
 			return (_collection as IEnumerable<object>)?.GetEnumerator();
 		}
 
-		public int IndexOf(object item) => _collection.IndexOf(item);
+		public int IndexOf(object item) => (_isGrouped ? AsEnumerable : _collection).IndexOf(item);
 
 		void IList<object>.Insert(int index, object item) => (_collection as IList ?? throw new NotSupportedException()).Insert(index, item);
 
