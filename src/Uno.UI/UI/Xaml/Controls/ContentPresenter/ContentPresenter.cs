@@ -48,6 +48,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	private bool _firstLoadResetDone;
 	private View _contentTemplateRoot;
 	private bool _appliedTemplate;
+	private bool _isApplyingTemplatedParentBindings;
 
 	/// <summary>
 	/// Will be set to either the result of ContentTemplateSelector or to ContentTemplate, depending on which is used
@@ -600,6 +601,30 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	{
 		base.OnApplyTemplate();
 
+		ApplyTemplatedParentBindings();
+	}
+
+	private protected override void OnCreationComplete()
+	{
+		ApplyTemplatedParentBindings();
+
+		// Content that arrived while parsing has not produced its placeholder yet.
+		if (ContentTemplateRoot is null && Content is not null)
+		{
+			SetUpdateTemplate();
+		}
+	}
+
+	/// <summary>
+	/// Hooks up the properties left unset by the template to the templated parent.
+	/// </summary>
+	/// <remarks>
+	/// MUX: First half of CContentPresenter::ApplyTemplate. WinUI runs it right before expanding the visuals,
+	/// which Uno does eagerly, so it has to be done as soon as the presenter is parsed, or Content would be
+	/// presented without the parent's ContentTemplateSelector.
+	/// </remarks>
+	private void ApplyTemplatedParentBindings()
+	{
 		// Applying the template will not delete existing visuals. This will be done conditionally
 		// when the template is invalidated.
 		// Uno specific: since we don't call this early enough, we have to comment out the condition
@@ -612,58 +637,63 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			if (pTemplatedParent != null
 				)
 			{
-				// bool needsRefresh = false;
+				bool needsRefresh = false;
 				DependencyProperty pdpTarget;
 
-				// By default Content and ContentTemplate are template are bound.
-				// If no template binding exists already then hook them up now
-				// pdpTarget = GetPropertyByIndexInline(KnownPropertyIndex::ContentPresenter_SelectedContentTemplate);
-				// IFCEXPECT(pdpTarget);
-				// if (IsPropertyDefault(pdpTarget) && !IsPropertyTemplateBound(pdpTarget))
-				// {
-				// 	const CDependencyProperty* pdpSource = pTemplatedParent->GetPropertyByIndexInline(KnownPropertyIndex::ContentControl_SelectedContentTemplate);
-				// 	IFCEXPECT(pdpSource);
-				//
-				// 	IFC(SetTemplateBinding(pdpTarget, pdpSource));
-				// 	needsRefresh = true;
-				// }
-
-				// UNO Specific: SelectedContentTemplate is not implemented, we hook ContentTemplateSelector instead
-				pdpTarget = ContentPresenter.ContentTemplateSelectorProperty;
-				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
-				var store = ((DependencyObject)this);
-				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
-					!store.IsPropertyTemplateBound(pdpTarget))
+				// Uno specific: refresh once all bindings are set, so the selector can't see a Content yet to be bound.
+				_isApplyingTemplatedParentBindings = true;
+				try
 				{
-					DependencyProperty pdpSource = ContentControl.ContentTemplateSelectorProperty;
-					global::System.Diagnostics.Debug.Assert(pdpSource is { });
+					// By default Content and ContentTemplate are template are bound.
+					// If no template binding exists already then hook them up now
+					// pdpTarget = GetPropertyByIndexInline(KnownPropertyIndex::ContentPresenter_SelectedContentTemplate);
+					// IFCEXPECT(pdpTarget);
+					// if (IsPropertyDefault(pdpTarget) && !IsPropertyTemplateBound(pdpTarget))
+					// {
+					// 	const CDependencyProperty* pdpSource = pTemplatedParent->GetPropertyByIndexInline(KnownPropertyIndex::ContentControl_SelectedContentTemplate);
+					// 	IFCEXPECT(pdpSource);
+					//
+					// 	IFC(SetTemplateBinding(pdpTarget, pdpSource));
+					// 	needsRefresh = true;
+					// }
 
-					store.SetTemplateBinding(pdpTarget, pdpSource);
-					// needsRefresh = true;
+					// UNO Specific: SelectedContentTemplate is not implemented, we hook ContentTemplateSelector instead
+					pdpTarget = ContentPresenter.ContentTemplateSelectorProperty;
+					global::System.Diagnostics.Debug.Assert(pdpTarget is { });
+					if (CanBindToTemplatedParent(pdpTarget))
+					{
+						DependencyProperty pdpSource = ContentControl.ContentTemplateSelectorProperty;
+						global::System.Diagnostics.Debug.Assert(pdpSource is { });
+
+						((DependencyObject)this).SetTemplateBinding(pdpTarget, pdpSource);
+						needsRefresh = true;
+					}
+
+					pdpTarget = ContentPresenter.ContentTemplateProperty;
+					global::System.Diagnostics.Debug.Assert(pdpTarget is { });
+					if (CanBindToTemplatedParent(pdpTarget))
+					{
+						DependencyProperty pdpSource = ContentControl.ContentTemplateProperty;
+						global::System.Diagnostics.Debug.Assert(pdpSource is { });
+
+						((DependencyObject)this).SetTemplateBinding(pdpTarget, pdpSource);
+						needsRefresh = true;
+					}
+
+					pdpTarget = ContentPresenter.ContentProperty;
+					global::System.Diagnostics.Debug.Assert(pdpTarget is { });
+					if (CanBindToTemplatedParent(pdpTarget))
+					{
+						DependencyProperty pdpSource = ContentControl.ContentProperty;
+						global::System.Diagnostics.Debug.Assert(pdpSource is { });
+
+						((DependencyObject)this).SetTemplateBinding(pdpTarget, pdpSource);
+						needsRefresh = true;
+					}
 				}
-
-				pdpTarget = ContentPresenter.ContentTemplateProperty;
-				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
-				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
-					!store.IsPropertyTemplateBound(pdpTarget))
+				finally
 				{
-					DependencyProperty pdpSource = ContentControl.ContentTemplateProperty;
-					global::System.Diagnostics.Debug.Assert(pdpSource is { });
-
-					store.SetTemplateBinding(pdpTarget, pdpSource);
-					// needsRefresh = true;
-				}
-
-				pdpTarget = ContentPresenter.ContentProperty;
-				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
-				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
-					!store.IsPropertyTemplateBound(pdpTarget))
-				{
-					DependencyProperty pdpSource = ContentControl.ContentProperty;
-					global::System.Diagnostics.Debug.Assert(pdpSource is { });
-
-					store.SetTemplateBinding(pdpTarget, pdpSource);
-					// needsRefresh = true;
+					_isApplyingTemplatedParentBindings = false;
 				}
 
 				// Uno specific: uno bindings don't work this way
@@ -673,9 +703,18 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				// {
 				// 	IFC(pTemplatedParent->RefreshTemplateBindings(TemplateBindingsRefreshType::All));
 				// }
+				if (needsRefresh)
+				{
+					SetUpdateTemplate();
+				}
 			}
 		}
 	}
+
+	// Uno specific: a pending {Binding} is still at its default value at this point, and must not be replaced.
+	private bool CanBindToTemplatedParent(DependencyProperty property)
+		=> ((DependencyObject)this).GetCurrentHighestValuePrecedence(property) == DependencyPropertyValuePrecedences.DefaultValue
+			&& GetBindingExpression(property) is null;
 
 	protected virtual void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 	{
@@ -1013,9 +1052,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			}
 		}
 
+		// WinUI creates no visuals while parsing. Waiting also leaves the hookup with the templated parent a chance to run.
 		if (Content != null
 			&& !(Content is View)
 			&& ContentTemplateRoot == null
+			&& !IsParsing
 		)
 		{
 			// Use basic default root for non-View Content if no template is supplied
@@ -1248,6 +1289,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void SetUpdateTemplate()
 	{
+		if (_isApplyingTemplatedParentBindings)
+		{
+			return;
+		}
+
 		UpdateContentTemplateRoot();
 		SetUpdateTemplatePartial();
 	}
