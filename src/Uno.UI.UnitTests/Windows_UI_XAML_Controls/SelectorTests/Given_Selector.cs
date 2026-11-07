@@ -56,13 +56,20 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			SUT.SelectedIndex = 0;
 			Assert.AreEqual(items[0], SUT.SelectedValue);
 
+			// MUX Reference Selector_Partial.cpp, OnSelectedValuePathChanged: the value stays, and the item matching it is
+			// looked up with the new path. That finds none here, and clearing the selection keeps the value.
 			SUT.SelectedValuePath = "Item1";
 
-			Assert.AreEqual(items[0].Item1, SUT.SelectedValue);
+			Assert.AreEqual(items[0], SUT.SelectedValue);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedIndex = 1;
+
+			Assert.AreEqual(items[1].Item1, SUT.SelectedValue);
 
 			SUT.SelectedValuePath = "";
 
-			Assert.AreEqual(items[0], SUT.SelectedValue);
+			Assert.AreEqual(items[1].Item1, SUT.SelectedValue);
 		}
 
 		[TestMethod]
@@ -79,6 +86,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			//Assert.IsNull(SUT.SelectedValue);
 
 			SUT.SelectedValuePath = "Item2";
+			SUT.SelectedIndex = 0;
 			Assert.AreEqual(1, SUT.SelectedValue);
 		}
 

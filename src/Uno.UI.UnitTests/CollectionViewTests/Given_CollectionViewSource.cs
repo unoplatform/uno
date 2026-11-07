@@ -309,7 +309,8 @@ namespace Uno.UI.Tests.CollectionViewTests
 		[TestMethod]
 		public void When_IsSynchronizedWithCurrentItem_Is_True()
 		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ListView() { IsSynchronizedWithCurrentItem = true });
+			// MUX Reference Selector_Partial.cpp, OnIsSynchronizedWithCurrentItemChanged: fails with E_INVALIDARG.
+			Assert.ThrowsExactly<ArgumentException>(() => new ListView() { IsSynchronizedWithCurrentItem = true });
 		}
 	}
 }

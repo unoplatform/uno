@@ -158,7 +158,8 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 			=> item is MyCustomItemContainer;
 	}
 
-	public class MyCustomItemContainer : SelectorItem
+	// MUX Reference ListViewBase_Partial.cpp, PrepareContainerForItemOverride: only a ListViewBaseItem gets prepared.
+	public class MyCustomItemContainer : ListViewItem
 	{
 		public int MyValue
 		{
