@@ -937,6 +937,39 @@ namespace Uno.UI.Runtime {
 		}
 
 		/**
+		 * Updates aria-rowcount/aria-colcount on a grid; a count of 0 (unknown) omits the attribute.
+		 */
+		public static updateGridCounts(handle: number, rowCount: number, colCount: number): void {
+			const element = document.getElementById(`uno-semantics-${handle}`);
+			if (element) {
+				SemanticElements.setOrRemoveCount(element, 'aria-rowcount', rowCount);
+				SemanticElements.setOrRemoveCount(element, 'aria-colcount', colCount);
+			}
+		}
+
+		private static setOrRemoveCount(element: HTMLElement, attribute: string, count: number): void {
+			if (count > 0) {
+				element.setAttribute(attribute, String(count));
+			} else {
+				element.removeAttribute(attribute);
+			}
+		}
+
+		/**
+		 * Updates aria-sort on a column header; an empty value removes it.
+		 */
+		public static updateAriaSort(handle: number, sort: string): void {
+			const element = document.getElementById(`uno-semantics-${handle}`);
+			if (element) {
+				if (sort) {
+					element.setAttribute('aria-sort', sort);
+				} else {
+					element.removeAttribute('aria-sort');
+				}
+			}
+		}
+
+		/**
 		 * Updates the selected state of a list item element.
 		 */
 		public static updateSelectionState(handle: number, selected: boolean): void {

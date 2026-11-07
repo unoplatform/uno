@@ -198,6 +198,28 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private readonly Dictionary<IntPtr, RelationshipState> _relationshipPeers = new();
 	private bool _relationshipRefreshQueued;
 
+	/// <summary>
+	/// Grid and column-header nodes whose aria-rowcount/aria-colcount and aria-sort are read from
+	/// their peers. A grid's peer (e.g. the Community Toolkit DataGrid's) raises no event when its
+	/// item count, columns or sort change, so these are re-read after the tree under it changes.
+	/// </summary>
+	private readonly Dictionary<IntPtr, GridState> _grids = new();
+	private readonly Dictionary<IntPtr, ColumnHeaderState> _columnHeaders = new();
+	private bool _gridRefreshQueued;
+
+	private sealed class GridState(AutomationPeer peer, int rowCount, int columnCount)
+	{
+		public WeakReference<AutomationPeer> Peer { get; } = new(peer);
+		public int RowCount { get; set; } = rowCount;
+		public int ColumnCount { get; set; } = columnCount;
+	}
+
+	private sealed class ColumnHeaderState(AutomationPeer peer, string? sort)
+	{
+		public WeakReference<AutomationPeer> Peer { get; } = new(peer);
+		public string? Sort { get; set; } = sort;
+	}
+
 	private sealed class RelationshipState
 	{
 		public RelationshipState(AutomationPeer peer) => Peer = new WeakReference<AutomationPeer>(peer);
@@ -491,6 +513,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				DrainPendingLabelledBy();
 				QueueRelationshipRefresh();
+				QueueGridRefresh();
 			}
 		}
 	}
@@ -524,6 +547,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			var childHandle = child.Visual.Handle;
 			_pendingLabelledBy.RemoveAll(entry => entry.Handle == childHandle);
 			_relationshipPeers.Remove(childHandle);
+			_grids.Remove(childHandle);
+			_columnHeaders.Remove(childHandle);
 			if (_semanticParentMap.TryGetValue(childHandle, out var semanticParent))
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
@@ -536,6 +561,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				_genericPathHandles.Remove(childHandle);
 			}
 			QueueRelationshipRefresh();
+			QueueGridRefresh();
 		}
 		catch (Exception ex)
 		{
@@ -1094,6 +1120,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		@this._pendingLabelledBy.Clear();
 		@this._relationshipPeers.Clear();
 		@this._relationshipRefreshQueued = false;
+		@this._grids.Clear();
+		@this._columnHeaders.Clear();
+		@this._gridRefreshQueued = false;
 		@this._onChildAddedDepth = 0;
 		@this._rootElementHandle = IntPtr.Zero;
 		@this._focusSearchRoot = null;
@@ -1653,6 +1682,93 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				_relationshipPeers.Remove(handle);
 			}
+		}
+	}
+
+	internal void TrackGrid(AutomationPeer peer, IntPtr handle, int rowCount, int columnCount)
+		=> _grids[handle] = new GridState(peer, rowCount, columnCount);
+
+	internal void TrackColumnHeader(AutomationPeer peer, IntPtr handle, string? sort)
+		=> _columnHeaders[handle] = new ColumnHeaderState(peer, sort);
+
+	private void QueueGridRefresh()
+	{
+		if (!_isAccessibilityEnabled || IsDisposed || _gridRefreshQueued || (_grids.Count == 0 && _columnHeaders.Count == 0))
+		{
+			return;
+		}
+
+		_gridRefreshQueued = true;
+		NativeDispatcher.Main.Enqueue(RefreshGrids, NativeDispatcherPriority.Normal);
+	}
+
+	private void RefreshGrids()
+	{
+		_gridRefreshQueued = false;
+		if (!_isAccessibilityEnabled || IsDisposed)
+		{
+			return;
+		}
+
+		foreach (var (handle, state) in _grids.ToArray())
+		{
+			if (!HasSemanticElement(handle) || !state.Peer.TryGetTarget(out var peer))
+			{
+				_grids.Remove(handle);
+				continue;
+			}
+
+			if (peer.GetPattern(PatternInterface.Grid) is IGridProvider grid
+				&& (grid.RowCount != state.RowCount || grid.ColumnCount != state.ColumnCount))
+			{
+				state.RowCount = grid.RowCount;
+				state.ColumnCount = grid.ColumnCount;
+				NativeMethods.UpdateGridCounts(handle, state.RowCount, state.ColumnCount);
+			}
+		}
+
+		foreach (var handle in _columnHeaders.Keys.ToArray())
+		{
+			UpdateColumnHeaderSort(handle);
+		}
+	}
+
+	private bool IsInTrackedGrid(UIElement element)
+	{
+		if (_grids.Count == 0)
+		{
+			return false;
+		}
+
+		for (var current = element; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (_grids.ContainsKey(current.Visual.Handle))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private void UpdateColumnHeaderSort(IntPtr handle)
+	{
+		if (!_columnHeaders.TryGetValue(handle, out var state))
+		{
+			return;
+		}
+
+		if (!HasSemanticElement(handle) || !state.Peer.TryGetTarget(out var peer))
+		{
+			_columnHeaders.Remove(handle);
+			return;
+		}
+
+		var sort = SemanticElementFactory.GetSortDirection(peer);
+		if (sort != state.Sort)
+		{
+			state.Sort = sort;
+			NativeMethods.UpdateAriaSort(handle, sort ?? string.Empty);
 		}
 	}
 
@@ -2511,6 +2627,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 			OnAutomationNameChanged(element, peer, (string)newValue);
 
+			// A grid that rebinds its rows in place (e.g. after a sort) raises no structural change,
+			// but its cells' names change, so re-read the grid's counts and sort state.
+			if (IsInTrackedGrid(element))
+			{
+				QueueGridRefresh();
+			}
+
 			// When the accessible name changes on a live region element, trigger
 			// the announcement. In WinUI3, the OS UIA framework monitors content
 			// changes on live regions automatically. We replicate that here.
@@ -2531,7 +2654,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				this.Log().Trace($"[A11y] PROP CHANGE: HelpText handle={element.Visual.Handle} element={element.GetType().Name} new='{newValue}'");
 			}
-			NativeMethods.UpdateAriaDescription(element.Visual.Handle, (string)newValue);
+			var handle = element.Visual.Handle;
+			var isSortHelpText = _columnHeaders.ContainsKey(handle) && SemanticElementFactory.GetSortFromHelpText(newValue as string) is not null;
+			NativeMethods.UpdateAriaDescription(handle, isSortHelpText ? string.Empty : (string)newValue);
+			UpdateColumnHeaderSort(handle);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.LandmarkTypeProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -2761,6 +2887,55 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 			NativeMethods.UpdateAriaInvalid(element.Visual.Handle, invalid);
 		}
+		else if ((automationProperty == AutomationElementIdentifiers.LiveSettingProperty ||
+			automationProperty == AutomationElementIdentifiers.ItemStatusProperty) &&
+			TryGetPeerOwner(peer, out element))
+		{
+			OnOwnerPropertyChanged(element, automationProperty, oldValue, newValue);
+		}
+	}
+
+	protected override void OnOwnerPropertyChanged(UIElement element, AutomationProperty automationProperty, object oldValue, object newValue)
+	{
+		if (automationProperty == AutomationElementIdentifiers.LiveSettingProperty)
+		{
+			OnLiveSettingChanged(element, oldValue as AutomationLiveSetting? ?? AutomationLiveSetting.Off, newValue as AutomationLiveSetting? ?? AutomationLiveSetting.Off);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.ItemStatusProperty)
+		{
+			NativeMethods.UpdateAriaBusy(element.Visual.Handle, SemanticElementFactory.IsBusyStatus(newValue as string));
+			UpdateColumnHeaderSort(element.Visual.Handle);
+		}
+	}
+
+	private void OnLiveSettingChanged(UIElement element, AutomationLiveSetting oldValue, AutomationLiveSetting newValue)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"[A11y] PROP CHANGE: LiveSetting handle={element.Visual.Handle} element={element.GetType().Name} old={oldValue} new={newValue}");
+		}
+
+		var ariaLive = newValue switch
+		{
+			AutomationLiveSetting.Assertive => "assertive",
+			AutomationLiveSetting.Polite => "polite",
+			_ => "",
+		};
+
+		// Turning a live region on or off re-creates the node only when that changes whether the element is
+		// semantic, or for text elements whose creation path depends on it (they leave the bare-text path).
+		var changesNode = (oldValue == AutomationLiveSetting.Off) != (newValue == AutomationLiveSetting.Off)
+			&& (element is TextBlock or RichTextBlock or RichTextBlockOverflow
+				|| HasSemanticElement(element.Visual.Handle) != IsSemanticElement(element));
+
+		if (changesNode)
+		{
+			ReAddSemanticElement(element);
+		}
+		else
+		{
+			NativeMethods.UpdateAriaLive(element.Visual.Handle, ariaLive);
+		}
 	}
 
 	public override void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
@@ -2919,6 +3094,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		UIElement element,
 		AccessibilityView oldValue,
 		AccessibilityView newValue)
+		=> ReAddSemanticElement(element);
+
+	private void ReAddSemanticElement(UIElement element)
 	{
 		var parent = element.GetParent() as UIElement
 			?? element.GetParentInternal(publicParentOnly: false) as UIElement;
@@ -2931,10 +3109,120 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		var children = parent.GetChildren();
-		var index = children.IndexOf(element);
+		var semanticParentHandle = FindSemanticParent(parent);
+		var semanticParent = FindAncestorByHandle(parent, semanticParentHandle);
+		var anchorHandle = semanticParent is not null
+			? FindNextSemanticSibling(semanticParent, semanticParentHandle, element)
+			: IntPtr.Zero;
+		var focused = element.XamlRoot is { } xamlRoot ? FocusManager.GetFocusedElement(xamlRoot) as UIElement : null;
+		var focusInSubtree = focused is not null && IsSelfOrDescendant(focused, element);
+
 		OnChildRemoved(parent, element);
-		OnChildAdded(parent, element, index >= 0 ? index : null);
+		OnChildAdded(parent, element, null);
+
+		// The subtree was appended under its semantic parent: move its top-level nodes back to their
+		// reading-order position, i.e. before the next semantic sibling in the flattened tree.
+		if (anchorHandle != IntPtr.Zero)
+		{
+			foreach (var handle in GetTopLevelSemanticHandles(element, semanticParentHandle))
+			{
+				NativeMethods.MoveSemanticElementBefore(handle, anchorHandle);
+			}
+		}
+
+		// Re-creating (or moving) the nodes drops browser focus while XAML focus is unchanged, so no GotFocus restores it.
+		if (focusInSubtree && ResolveToSemanticHandle(focused!) is var focusHandle && focusHandle != IntPtr.Zero)
+		{
+			NativeMethods.FocusSemanticElement(focusHandle);
+		}
+	}
+
+	private static UIElement? FindAncestorByHandle(UIElement start, IntPtr handle)
+	{
+		for (var current = start; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (current.Visual.Handle == handle)
+			{
+				return current;
+			}
+		}
+
+		return null;
+	}
+
+	private static bool IsSelfOrDescendant(UIElement element, UIElement ancestor)
+	{
+		for (var current = element; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (current == ancestor)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	// The first node after `element` (in visual order) that is a direct DOM child of the semantic parent.
+	private IntPtr FindNextSemanticSibling(UIElement semanticParent, IntPtr semanticParentHandle, UIElement element)
+	{
+		var passed = false;
+		var result = IntPtr.Zero;
+
+		bool Visit(UIElement node)
+		{
+			foreach (var child in node.GetChildren())
+			{
+				if (child == element)
+				{
+					passed = true;
+					continue;
+				}
+
+				if (_semanticParentMap.TryGetValue(child.Visual.Handle, out var p) && p == semanticParentHandle)
+				{
+					if (passed)
+					{
+						result = child.Visual.Handle;
+						return true;
+					}
+
+					continue;
+				}
+
+				if (Visit(child))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		Visit(semanticParent);
+		return result;
+	}
+
+	private List<IntPtr> GetTopLevelSemanticHandles(UIElement element, IntPtr semanticParentHandle)
+	{
+		var handles = new List<IntPtr>();
+
+		void Visit(UIElement node)
+		{
+			if (_semanticParentMap.TryGetValue(node.Visual.Handle, out var p) && p == semanticParentHandle)
+			{
+				handles.Add(node.Visual.Handle);
+				return;
+			}
+
+			foreach (var child in node.GetChildren())
+			{
+				Visit(child);
+			}
+		}
+
+		Visit(element);
+		return handles;
 	}
 
 	private void RebuildSemanticTree(UIElement rootElement)
@@ -2950,6 +3238,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		_genericPathHandles.Clear();
 		_pendingLabelledBy.Clear();
 		_relationshipPeers.Clear();
+		_grids.Clear();
+		_columnHeaders.Clear();
 
 		_isCreatingAOM = true;
 		try
@@ -3156,6 +3446,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaLive")]
 		internal static partial void UpdateAriaLive(IntPtr handle, string ariaLive);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaBusy")]
+		internal static partial void UpdateAriaBusy(IntPtr handle, bool busy);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.moveSemanticElementBefore")]
+		internal static partial void MoveSemanticElementBefore(IntPtr handle, IntPtr anchorHandle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateGridCounts")]
+		internal static partial void UpdateGridCounts(IntPtr handle, int rowCount, int columnCount);
+
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateAriaSort")]
+		internal static partial void UpdateAriaSort(IntPtr handle, string sort);
 
 		// ===== Relationship Attributes =====
 
