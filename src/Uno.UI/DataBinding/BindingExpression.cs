@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Controls;
@@ -272,7 +271,7 @@ namespace Microsoft.UI.Xaml.Data
 						value,
 						_bindingPath.ValueType,
 						ParentBinding.ConverterParameter,
-						GetCurrentCulture()
+						ParentBinding.ConverterLanguage
 					);
 				}
 
@@ -906,13 +905,11 @@ namespace Microsoft.UI.Xaml.Data
 			}
 		}
 
-		private string GetCurrentCulture() => CultureInfo.CurrentCulture.ToString();
-
 		private object ConvertValue(object value)
 		{
 			if (ParentBinding.Converter != null)
 			{
-				return ParentBinding.Converter.Convert(value, _boundPropertyType, ParentBinding.ConverterParameter, GetCurrentCulture());
+				return ParentBinding.Converter.Convert(value, _boundPropertyType, ParentBinding.ConverterParameter, ParentBinding.ConverterLanguage);
 			}
 			else
 			{
