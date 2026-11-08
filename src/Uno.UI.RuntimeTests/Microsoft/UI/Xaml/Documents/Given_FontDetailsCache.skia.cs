@@ -192,7 +192,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		private static WeakReference RequestFontAndTrack(float size)
-			=> new(FontDetailsCache.GetFont(null, size, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal).details);
+			=> new(FontDetailsCache.GetFont(null, size, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal).details.FontHandle);
 
 		private static async Task<IFont> LoadAssetFont()
 		{
