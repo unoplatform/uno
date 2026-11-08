@@ -325,6 +325,34 @@ public class Given_Window
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public void When_Probing_Vulkan_Devices_Then_Software_Comes_Last_In_Loader_Order()
+	{
+		var getProbeOrder = Type.GetType("Uno.UI.Runtime.Vulkan.Interop.VulkanDevice, Uno.UI.Runtime", throwOnError: true)!
+			.GetMethod("GetProbeOrder", BindingFlags.Static | BindingFlags.NonPublic)!;
+		var typeEnum = getProbeOrder.GetParameters()[0].ParameterType.GetElementType()!;
+
+		// Loader order: software last, otherwise untouched, and a lone software device still gets probed.
+		CollectionAssert.AreEqual(new[] { 1, 2, 0 }, Order(false, "CPU", "INTEGRATED_GPU", "DISCRETE_GPU"));
+		CollectionAssert.AreEqual(new[] { 0, 1 }, Order(false, "DISCRETE_GPU", "INTEGRATED_GPU"));
+		CollectionAssert.AreEqual(new[] { 0 }, Order(false, "CPU"));
+
+		// Discrete first, for the platforms that ask for it.
+		CollectionAssert.AreEqual(new[] { 1, 0, 2 }, Order(true, "INTEGRATED_GPU", "DISCRETE_GPU", "CPU"));
+
+		int[] Order(bool preferDiscrete, params string[] names)
+		{
+			var types = Array.CreateInstance(typeEnum, names.Length);
+			for (var i = 0; i < names.Length; i++)
+			{
+				types.SetValue(Enum.Parse(typeEnum, "VK_PHYSICAL_DEVICE_TYPE_" + names[i]), i);
+			}
+
+			return (int[])getProbeOrder.Invoke(null, [types, preferDiscrete])!;
+		}
+	}
+
+	[TestMethod]
 	[RunsOnUIThread]
 	[DataRow(ElementTheme.Dark, (byte)0x20)]
 	[DataRow(ElementTheme.Light, (byte)0xF3)]
