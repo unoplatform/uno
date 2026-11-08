@@ -320,8 +320,7 @@ partial class TableView
 			var cell = target.Anchor;
 			var bounds = cell.TransformToVisual(candidate.Anchor).TransformBounds(
 				new Rect(0.0, 0.0, (float)cell.ActualWidth, (float)cell.ActualHeight));
-			// TODO Uno: FlyoutShowOptions.ExclusionRect is missing.
-			// options.ExclusionRect(bounds);
+			options.ExclusionRect = bounds;
 			options.Position = new Point(bounds.X, bounds.Y + bounds.Height);
 		}
 
