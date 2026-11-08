@@ -326,8 +326,16 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			return;
 		}
 
-		ReemitDescendantPositions(scrollSource);
+		OnScrollSourceViewChanged(scrollSource);
 	}
+
+	/// <summary>
+	/// Called when a subscribed ScrollViewer / ScrollPresenter changed its view. Platforms that position
+	/// nodes in screen coordinates re-emit every descendant; platforms that nest nodes in a native
+	/// scroller can narrow it to the nodes that actually moved.
+	/// </summary>
+	protected virtual void OnScrollSourceViewChanged(UIElement scrollSource)
+		=> ReemitDescendantPositions(scrollSource);
 
 	// Called on the UI thread from the scroll notification path only; the shared stack is
 	// reused to avoid per-scroll allocations and is not safe for re-entrant use.

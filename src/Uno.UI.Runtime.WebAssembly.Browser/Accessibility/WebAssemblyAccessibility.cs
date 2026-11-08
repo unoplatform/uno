@@ -175,6 +175,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// "parent handle not found in DOM" errors.
 	/// </summary>
 	private readonly Dictionary<IntPtr, IntPtr> _semanticParentMap = new();
+
+	// Zoom factor each semantic scroll port's descendants were last positioned at (see OnScrollSourceViewChanged).
+	private readonly ConditionalWeakTable<UIElement, StrongBox<float>> _scrollPortZoomFactors = new();
+	private readonly Stack<UIElement> _scrollPortReemitStack = new();
+
 	/// <summary>
 	/// Handles of elements pruned from the AOM because they were Visibility=Collapsed at build/add
 	/// time (T058). When such an element later becomes visible, OnSizeOrOffsetChanged re-emits it —
@@ -772,6 +777,50 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	/// <summary>
+	/// The semantic element of a scroll port is a native scroller that applies the scroll offset itself, and
+	/// every semantic element inside it is positioned relative to its semantic parent in content coordinates
+	/// (see <see cref="GetRectInSemanticParent"/>), so a scroll moves none of them: only the native offsets
+	/// follow, and positions are recomputed only when the zoom changes.
+	/// </summary>
+	protected override void OnScrollSourceViewChanged(UIElement scrollSource)
+	{
+		var scrollPort = scrollSource is ScrollViewer { Presenter: UIElement presenter } ? presenter : scrollSource;
+		if (scrollPort is not IScrollPortGeometry port || !_semanticParentMap.ContainsKey(scrollPort.Visual.Handle))
+		{
+			// Without a semantic scroller, the descendants are positioned relative to a semantic element
+			// above the scroll port, so they all moved.
+			base.OnScrollSourceViewChanged(scrollSource);
+			return;
+		}
+
+		UpdateNativeScrollOffsets(scrollPort);
+
+		var zoomFactor = port.ZoomFactor;
+		if (_scrollPortZoomFactors.TryGetValue(scrollPort, out var positionedZoomFactor) && positionedZoomFactor.Value == zoomFactor)
+		{
+			return;
+		}
+
+		_scrollPortZoomFactors.AddOrUpdate(scrollPort, new StrongBox<float>(zoomFactor));
+
+		_scrollPortReemitStack.Clear();
+		_scrollPortReemitStack.Push(scrollPort);
+		while (_scrollPortReemitStack.Count > 0)
+		{
+			foreach (var child in _scrollPortReemitStack.Pop().GetChildren())
+			{
+				// Elements without a semantic element have nothing to position.
+				if (_semanticParentMap.ContainsKey(child.Visual.Handle))
+				{
+					OnSizeOrOffsetChanged(child.Visual);
+				}
+
+				_scrollPortReemitStack.Push(child);
+			}
+		}
+	}
+
 	protected override void OnSizeOrOffsetChanged(Visual visual)
 	{
 		if (IsAccessibilityEnabled && visual is ContainerVisual containerVisual)
@@ -1090,6 +1139,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		@this._semanticParentMap.Clear();
 		@this._prunedHandles.Clear();
+		@this._scrollPortZoomFactors.Clear();
 		@this._genericPathHandles.Clear();
 		@this._pendingLabelledBy.Clear();
 		@this._relationshipPeers.Clear();
@@ -2223,6 +2273,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		if (result)
 		{
 			UpdateNativeScrollOffsets(child);
+
+			// Its semantic children are positioned at the current zoom from here on.
+			if (child is IScrollPortGeometry port)
+			{
+				_scrollPortZoomFactors.AddOrUpdate(child, new StrongBox<float>(port.ZoomFactor));
+			}
 		}
 
 		if (!result && this.Log().IsEnabled(LogLevel.Error))
@@ -2979,6 +3035,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		NativeMethods.RemoveSemanticElement(IntPtr.Zero, _rootElementHandle);
 		_semanticParentMap.Clear();
 		_prunedHandles.Clear();
+		_scrollPortZoomFactors.Clear();
 		_genericPathHandles.Clear();
 		_pendingLabelledBy.Clear();
 		_relationshipPeers.Clear();
