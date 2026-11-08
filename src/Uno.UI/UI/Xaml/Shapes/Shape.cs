@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(Brush),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: SolidColorBrushHelper.Transparent,
+				defaultValue: null,
 				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnFillChanged((Brush)e.OldValue, (Brush)e.NewValue)
 			)
