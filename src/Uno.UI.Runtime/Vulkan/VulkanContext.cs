@@ -306,7 +306,10 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		RenderImageHasContent = true;
 
 		// Try to acquire next swapchain image without retrying.
-		var acquireResult = _display.TryAcquireNextImage();
+		// Acquiring from a null swapchain crashes in the driver, so a failed recovery is picked up again instead.
+		var acquireResult = _display.IsSwapchainMissing
+			? (int)VkResult.VK_ERROR_SURFACE_LOST_KHR
+			: _display.TryAcquireNextImage();
 		if (acquireResult != 0) // VK_SUCCESS = 0
 		{
 			// Swapchain out of date — recreate it now.

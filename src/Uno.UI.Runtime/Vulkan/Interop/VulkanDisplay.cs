@@ -37,6 +37,11 @@ internal class VulkanDisplay : IDisposable
 		CreateSwapchainImages();
 	}
 
+	/// <summary>
+	/// Whether a failed <see cref="RecreateSurface"/> left no swapchain to acquire from.
+	/// </summary>
+	public bool IsSwapchainMissing => _swapchain.Handle == 0;
+
 	internal VkSurfaceFormatKHR SurfaceFormat
 	{
 		get
