@@ -168,7 +168,9 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 
 		var abox = new nint[1];
 		var ah = GCHandle.Alloc(abox);
-		var aopts = new RequestAdapterOptions { PowerPreference = PowerPreference.HighPerformance, CompatibleSurface = surface };
+		// Windows already lists adapters by the app's GPU preference, which is what WinUI's device follows.
+		var powerPreference = OperatingSystem.IsWindows() ? PowerPreference.Undefined : PowerPreference.HighPerformance;
+		var aopts = new RequestAdapterOptions { PowerPreference = powerPreference, CompatibleSurface = surface };
 		Api.InstanceRequestAdapter(Inst, &aopts, new PfnRequestAdapterCallback(&OnAdapter), (void*)GCHandle.ToIntPtr(ah));
 		for (int i = 0; i < 1000 && abox[0] == 0; i++) { Api.InstanceProcessEvents(Inst); }
 		Adapter = (Adapter*)abox[0];
