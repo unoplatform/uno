@@ -35,7 +35,7 @@ public class Given_BindingSourceStaleHandlers
 	[TestMethod]
 	[DataRow(false)]
 	[DataRow(true)]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI removes the handlers of collected bindings on its own schedule: flaky here
 	public async Task When_Indexer_Path_Elements_Collected_Then_CollectionChanged_Handlers_Removed(bool loaded)
 	{
 		var vm = new CountingViewModel(); // outlives the elements, and never raises
@@ -53,7 +53,7 @@ public class Given_BindingSourceStaleHandlers
 	// on the view model (for Items) and on the collection (for the indexer). Requires PropertyChanged
 	// handlers of collected bindings to be removed (BindingPath.SubscribeToNotifyPropertyChanged).
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI removes the handlers of collected bindings on its own schedule: flaky here
 	public async Task When_Indexer_Path_Elements_Collected_Then_PropertyChanged_Handlers_Removed()
 	{
 		var vm = new CountingViewModel();
@@ -72,6 +72,7 @@ public class Given_BindingSourceStaleHandlers
 	// The handler of a collected binding must not remove itself during the raise: LiveCollection raises over its live
 	// handler list, which throws if it changes, where ObservableCollection's multicast delegate wouldn't notice.
 	[TestMethod]
+	// NativeWinUI: WinUI removes the handlers of collected bindings on its own schedule: flaky here.
 	// SkiaWasm: stale stack slots can keep the elements alive, as in Given_BindingStaleHandlers.When_Raised_Before_Handlers_Removed_Then_Safe.
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Indexer_Path_Collection_Raises_After_Collection_Then_Safe()
@@ -98,7 +99,6 @@ public class Given_BindingSourceStaleHandlers
 
 	// The subscription is made by the indexer on the collection it indexes into, so it follows a replaced collection.
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Indexer_Path_Collection_Replaced_Then_Handler_Moves_To_New_Collection()
 	{
 		var vm = new CountingViewModel();
@@ -119,7 +119,7 @@ public class Given_BindingSourceStaleHandlers
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI removes the handlers of collected bindings on its own schedule: flaky here
 	public async Task When_Indexer_Path_Stale_Handlers_Removed_Then_Live_Binding_Still_Updates()
 	{
 		var vm = new CountingViewModel();
@@ -143,7 +143,6 @@ public class Given_BindingSourceStaleHandlers
 
 	// The indexer re-reads its value on CollectionChanged, including when the index goes out of range.
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Indexer_Path_Collection_Emptied_Then_Refilled_Then_Live_Binding_Follows()
 	{
 		var vm = new CountingViewModel();
@@ -164,7 +163,6 @@ public class Given_BindingSourceStaleHandlers
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Indexer_Path_Collection_Replaced_Then_Live_Binding_Follows_New_Collection()
 	{
 		var vm = new CountingViewModel();
@@ -187,7 +185,6 @@ public class Given_BindingSourceStaleHandlers
 
 	// The indexer's new value must reach the rest of the path, not only a target bound to the indexer itself.
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Longer_Indexer_Path_Collection_Changes_Then_Live_Binding_Follows()
 	{
 		var vm = new CountingViewModel();
@@ -206,7 +203,6 @@ public class Given_BindingSourceStaleHandlers
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_XBind_Indexer_Path_Collection_Changes_Then_Follows()
 	{
 		var vm = new CountingViewModel();
@@ -233,7 +229,6 @@ public class Given_BindingSourceStaleHandlers
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Indexer_Path_Binding_Cleared_Then_CollectionChanged_Handler_Removed()
 	{
 		var vm = new CountingViewModel();
@@ -255,7 +250,7 @@ public class Given_BindingSourceStaleHandlers
 	[TestMethod]
 	[DataRow(false)]
 	[DataRow(true)]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Reads Uno's property-changed callbacks
 	public async Task When_DependencyObject_Source_Elements_Collected_Then_Callbacks_Removed(bool loaded)
 	{
 		var source = new Border { Tag = "tag" }; // outlives the elements
@@ -274,7 +269,7 @@ public class Given_BindingSourceStaleHandlers
 	// {x:Bind Mode=OneWay} goes through the same BindingPath as {Binding}. Requires PropertyChanged
 	// handlers of collected bindings to be removed (BindingPath.SubscribeToNotifyPropertyChanged).
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI removes the handlers of collected bindings on its own schedule: flaky here
 	public async Task When_XBind_OneWay_Elements_Collected_Then_PropertyChanged_Handlers_Removed()
 	{
 		var vm = new CountingViewModel();
