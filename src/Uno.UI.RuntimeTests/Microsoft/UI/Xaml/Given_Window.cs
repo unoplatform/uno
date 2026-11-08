@@ -320,6 +320,42 @@ public class Given_Window
 	}
 
 	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public void When_WebGpu_Then_Adapter_Is_DXGIs_First_Hardware_Adapter()
+	{
+		const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
+
+		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
+		var context = wrapper.GetType().GetField("_context", Private)!.GetValue(wrapper);
+		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "WebGpu")
+		{
+			Assert.Inconclusive("The window did not negotiate a WebGPU context.");
+		}
+
+		var device = context.GetType().GetField("_device", Private)!.GetValue(context)!;
+		if ((bool)device.GetType().GetProperty("IsSoftwareVulkan")!.GetValue(device)!)
+		{
+			Assert.Inconclusive("The adapter rasterizes on the CPU, which DXGI doesn't list as hardware.");
+		}
+
+		var adapterInfo = context.GetType().GetProperty("AdapterInfo", Private)!.GetValue(context)!;
+		var expected = GetFirstHardwareAdapter()!.Value;
+
+		// wgpu's OpenGL backend reports only a name.
+		var vendorId = (uint)adapterInfo.GetType().GetProperty("VendorId")!.GetValue(adapterInfo)!;
+		if (vendorId != 0)
+		{
+			Assert.AreEqual(expected.VendorId, vendorId);
+			Assert.AreEqual(expected.DeviceId, (uint)adapterInfo.GetType().GetProperty("DeviceId")!.GetValue(adapterInfo)!);
+		}
+		else
+		{
+			StringAssert.StartsWith((string)adapterInfo.GetType().GetProperty("Name")!.GetValue(adapterInfo)!, expected.Description);
+		}
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	[DataRow(0x8086u, 0xA7A0u, null, true, DisplayName = "Same ids")]
 	[DataRow(0x8086u, 0x1234u, null, false, DisplayName = "Another device of the vendor")]
