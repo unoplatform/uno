@@ -1369,6 +1369,13 @@ internal sealed unsafe partial class WebGpuFrame
 		return b;
 	}
 
+	// Targets hold premultiplied colour, and Colors.Transparent is #00FFFFFF: its channels can't be stored as they are.
+	private static Color ToPremultiplied(WColor color)
+	{
+		var alpha = color.A / 255.0;
+		return new Color { R = color.R / 255.0 * alpha, G = color.G / 255.0 * alpha, B = color.B / 255.0 * alpha, A = alpha };
+	}
+
 	// Encodes builds into one pass on the target, each under its own basis and scissor bound. Everything the pass
 	// samples -- masks, the frame's layer sheets -- is encoded first.
 	internal void EncodePass(WebGpuRenderSurface target, WColor? clear, bool load, IReadOnlyList<PassBuild> builds, bool depth = false)
@@ -1382,7 +1389,7 @@ internal sealed unsafe partial class WebGpuFrame
 			View = target.View,
 			LoadOp = load ? LoadOp.Load : LoadOp.Clear,
 			StoreOp = StoreOp.Store,
-			ClearValue = clear.HasValue ? new Color { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
+			ClearValue = clear.HasValue ? ToPremultiplied(clear.Value) : default,
 		};
 		var depthView = depth ? _d.Pool.Rent(target.Width, target.Height, 1, TextureUsage.RenderAttachment, WebGpuDevice.DepthFormat) : null;
 		var da = new RenderPassDepthStencilAttachment
