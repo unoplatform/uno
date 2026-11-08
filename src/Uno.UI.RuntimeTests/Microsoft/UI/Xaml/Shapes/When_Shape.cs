@@ -977,13 +977,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			Assert.IsNull(existingEllipse.Fill);
 		}
 
-#if HAS_UNO
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("Only skia accurately hittests shapes")]
-#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Fill_Null_Or_Transparent_HitTesting()
 		{
+#if HAS_UNO
 			var noFillNoStroke = new Rectangle { Name = "NoFillNoStroke", Width = 40, Height = 40 };
 			var transparentFill = new Rectangle { Name = "TransparentFill", Width = 40, Height = 40, Fill = new SolidColorBrush(Colors.Transparent) };
 			var strokeOnly = new Rectangle { Name = "StrokeOnly", Width = 40, Height = 40, Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 2 };
@@ -1008,8 +1006,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			Assert.AreEqual("TransparentFill", HitName(Center(transparentFill)));
 			Assert.AreEqual("Root", HitName(Center(strokeOnly)), "A null Fill interior must not be hit.");
 			Assert.AreEqual("StrokeOnly", HitName(TopEdge(strokeOnly)), "The stroke itself must be hit.");
-		}
+#else
+			await Task.CompletedTask;
 #endif
+		}
 
 #if HAS_UNO
 		[TestMethod]
