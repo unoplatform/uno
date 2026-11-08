@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -16,6 +15,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
+using static Uno.UI.RuntimeTests.Helpers.LeakTestHelper;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -72,7 +72,8 @@ public class Given_BindingSourceStaleHandlers
 	// The handler of a collected binding must not remove itself during the raise: LiveCollection raises over its live
 	// handler list, which throws if it changes, where ObservableCollection's multicast delegate wouldn't notice.
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	// SkiaWasm: stale stack slots can keep the elements alive, as in Given_BindingStaleHandlers.When_Raised_Before_Handlers_Removed_Then_Safe.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Indexer_Path_Collection_Raises_After_Collection_Then_Safe()
 	{
 		var vm = new CountingViewModel();
@@ -86,11 +87,7 @@ public class Given_BindingSourceStaleHandlers
 			await WindowHelper.WaitForIdle();
 		}
 
-		for (var i = 0; i < 10 && refs.Any(r => r.IsAlive); i++)
-		{
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-		}
+		CollectWithoutDispatcher(refs);
 		Assert.AreEqual(0, refs.Count(r => r.IsAlive), "The bound elements were not collected.");
 
 		vm.LiveItems[0] = "changed"; // reaches the handlers of the collected bindings
@@ -387,34 +384,6 @@ public class Given_BindingSourceStaleHandlers
 #else
 		throw new NotSupportedException("The property-changed callbacks are read from Uno internals.");
 #endif
-	}
-
-	// Collects at least 3 times, pumping the dispatcher in between so the removals posted by finalizers run.
-	private static async Task CollectAsync(List<WeakReference> refs, Func<bool>? until = null)
-	{
-		until ??= () => !refs.Any(r => r.IsAlive);
-		var sw = Stopwatch.StartNew();
-		var minIterations = 3;
-
-		while (minIterations-- > 0 || (!until() && sw.Elapsed < TimeSpan.FromSeconds(10)))
-		{
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-			GC.Collect(2);
-
-			// Some platforms need a yield before weak references are cleared, as in Given_BindingMemoryLeak.
-#if __SKIA__
-			if (OperatingSystem.IsBrowser() || OperatingSystem.IsLinux() || OperatingSystem.IsIOS() || OperatingSystem.IsAndroid())
-#endif
-			{
-				await Task.Yield();
-				GC.Collect(2);
-				GC.WaitForPendingFinalizers();
-				GC.Collect(2);
-			}
-
-			await WindowHelper.WaitForIdle();
-		}
 	}
 
 	public sealed class CountingViewModel : INotifyPropertyChanged
