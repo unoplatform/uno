@@ -46,6 +46,10 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	private readonly NotificationAnnouncementChannel _politeNotificationChannel = new();
 	private readonly NotificationAnnouncementChannel _assertiveNotificationChannel = new();
 
+	private HashSet<UIElement>? _pendingAutomaticPropertyOwners;
+	private HashSet<UIElement>? _spareAutomaticPropertyOwners;
+	private bool _isAutomaticPropertyCheckScheduled;
+
 	private sealed class NotificationAnnouncementChannel
 	{
 		internal Queue<PendingNotificationAnnouncement> Pending { get; } = new();
@@ -368,9 +372,57 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		// Use CachedAutomationPeer to avoid creating peers eagerly on every layout pass,
 		// which would prevent elements from being garbage collected.
 		if (visual is ContainerVisual containerVisual
-			&& containerVisual.Owner?.Target is UIElement owner)
+			&& containerVisual.Owner?.Target is UIElement owner
+			&& owner.CachedAutomationPeer is not null)
 		{
-			owner.CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+			QueueAutomaticPropertyChanges(owner);
+		}
+	}
+
+	// A visual's Offset, ArrangeOffset, Size and IsVisible each report a change, often several times in one layout
+	// pass, so the moved owners are collected and checked once after layout, as WinUI checks the invalidated
+	// elements at the end of CLayoutManager::UpdateLayout.
+	private void QueueAutomaticPropertyChanges(UIElement owner)
+	{
+		(_pendingAutomaticPropertyOwners ??= new HashSet<UIElement>(ReferenceEqualityComparer.Instance)).Add(owner);
+		if (!_isAutomaticPropertyCheckScheduled)
+		{
+			_isAutomaticPropertyCheckScheduled = owner.DispatcherQueue.TryEnqueue(
+				Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+				CheckAutomaticPropertyChanges);
+		}
+	}
+
+	// MUX Reference LayoutManager.cpp, CLayoutManager::UpdateLayout / CheckUiaPropertyChanges:
+	// UIAutomation needs to fire update events for each element. Don't do it if nobody is listening.
+	private void CheckAutomaticPropertyChanges()
+	{
+		_isAutomaticPropertyCheckScheduled = false;
+		var owners = _pendingAutomaticPropertyOwners;
+		if (owners is null || owners.Count == 0)
+		{
+			return;
+		}
+
+		_pendingAutomaticPropertyOwners = _spareAutomaticPropertyOwners;
+		_spareAutomaticPropertyOwners = null;
+
+		try
+		{
+			if (_isDisposed || !ListenerExistsHelper(AutomationEvents.PropertyChanged))
+			{
+				return;
+			}
+
+			foreach (var owner in owners)
+			{
+				owner.CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+			}
+		}
+		finally
+		{
+			owners.Clear();
+			_spareAutomaticPropertyOwners = owners;
 		}
 	}
 
