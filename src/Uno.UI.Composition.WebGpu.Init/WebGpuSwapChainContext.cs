@@ -132,6 +132,8 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 	/// </summary>
 	internal bool LastPresentSucceeded { get; private set; }
 
+	internal WebGpuAdapterInfo AdapterInfo => _device.AdapterInfo;
+
 	// A rendered frame the window has not shown yet. The offscreen keeps it, so the next present blits it again
 	// rather than leaving the window behind until something else changes.
 	private bool _presentOwed;

@@ -63,6 +63,9 @@ internal static class WebGpuContext
 	}
 }
 
+/// <summary>What the adapter under the device reports about itself. The ids are 0 when its backend doesn't report them.</summary>
+internal readonly record struct WebGpuAdapterInfo(uint VendorId, uint DeviceId, string Name, bool IsD3D12);
+
 /// <summary>
 /// The Uno-provided WebGPU device BRING-UP (the host "GPU-API half"): creates instance/adapter/device/queue and owns
 /// the present-blit sampler.
@@ -78,6 +81,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	public readonly TextureFormat ColorFormat;
 	/// <summary>A Vulkan adapter that rasterizes on the CPU (SwiftShader, lavapipe), so one frame can take seconds.</summary>
 	public bool IsSoftwareVulkan { get; private set; }
+	public WebGpuAdapterInfo AdapterInfo { get; private set; }
 	public Sampler* Smp;                     // present-blit sampler (used by the swapchain/browser contexts)
 	public JSObject JsDeviceObject;          // browser only: the live JS GPUDevice, for textures created in JS
 
@@ -194,6 +198,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		CreatePresentSampler();
 		System.Console.WriteLine($"[webgpu] init device — {DescribeAdapter(Adapter, out var adapterType, out var backend)} colorFormat={ColorFormat}");
 		IsSoftwareVulkan = adapterType == AdapterType.Cpu && backend == BackendType.Vulkan;
+		AdapterInfo = ReadAdapterInfo(Adapter);
 	}
 
 	private WebGpuInitDevice(TextureFormat colorFormat, Instance* inst, Device* dev)
@@ -355,6 +360,13 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		type = info.AdapterType;
 		backend = info.BackendType;
 		return $"adapter='{Text(info.Name)}' backend={info.BackendType} type={info.AdapterType}";
+	}
+
+	private static WebGpuAdapterInfo ReadAdapterInfo(Adapter* adapter)
+	{
+		AdapterProperties info = default;
+		Api.AdapterGetProperties(adapter, &info);
+		return new(info.VendorID, info.DeviceID, Text(info.Name), info.BackendType == BackendType.D3D12);
 	}
 
 	private static string Text(byte* text)

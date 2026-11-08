@@ -1059,9 +1059,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		};
 
 	/// <summary>
-	/// Every window shares one Vulkan device, so a window can end up on a display another adapter drives: the app was
+	/// A GPU context renders on one adapter, so a window can end up on a display another adapter drives: the app was
 	/// assigned another GPU, the window was dragged across, or its screen was unplugged. That swapchain loses the alpha
-	/// DWM needs, so the window paints its fallback rather than black until it's back on the device's adapter.
+	/// DWM needs, so the window paints its fallback rather than black until it's back on the context's adapter.
 	/// </summary>
 	private void UpdateCanRevealBackdrop(bool displaysChanged = false)
 	{
@@ -1078,7 +1078,16 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		_backdropMonitor = monitor;
 
-		var canReveal = _context is not Win32VulkanGraphicsContext vulkan || vulkan.PresentsDirectlyTo(_hwnd);
+		var canReveal = _context switch
+		{
+			IWin32AdapterBoundContext context => context.PresentsDirectlyTo(_hwnd),
+			// wgpu's D3D12 swapchain drops the alpha even on the display's own adapter.
+			Uno.UI.Composition.WebGpu.WebGpuSwapChainContext { AdapterInfo: var adapter }
+				=> !adapter.IsD3D12
+					&& (Win32DisplayAdapter.FromWindow(_hwnd) is not { } display || display.Matches(adapter.VendorId, adapter.DeviceId, adapter.Name)),
+			_ => true,
+		};
+
 		if (canReveal != _canRevealBackdrop)
 		{
 			_canRevealBackdrop = canReveal;

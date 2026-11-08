@@ -34,12 +34,21 @@ internal interface IWin32PresentReporting
 }
 
 /// <summary>
+/// Implemented by contexts rendering on a GPU. DWM only receives the alpha a system backdrop needs from a context
+/// running on the adapter that drives the window's display.
+/// </summary>
+internal interface IWin32AdapterBoundContext
+{
+	bool PresentsDirectlyTo(HWND hwnd);
+}
+
+/// <summary>
 /// Backend-neutral OpenGL <see cref="ISwapChain"/> for Win32: owns the WGL context + <c>SwapBuffers</c>.
 /// <see cref="AcquireRenderTarget"/> makes the context current and hands the backend an <see cref="IGLRenderTarget"/>;
 /// <see cref="Present"/> swaps and releases current. Returns <see langword="null"/> on failure so negotiation
 /// falls through to the software context.
 /// </summary>
-internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContext, IWin32PresentReporting, IGLDeviceContext
+internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContext, IWin32PresentReporting, IGLDeviceContext, IWin32AdapterBoundContext
 {
 	[UnmanagedFunctionPointer(CallingConvention.Winapi)]
 	private delegate int WglSwapIntervalEXT(int interval);
@@ -50,16 +59,37 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 	// Non-null only when honoring a fixed FrameRate (SetFrameRateAsScreenRefreshRate = false); otherwise
 	// wglSwapInterval(1) blocks SwapBuffers at the display refresh and paces the loop.
 	private readonly Win32RenderPacer? _pacer;
+	private readonly string? _vendor;
+	private readonly string? _renderer;
 
-	private Win32OpenGLGraphicsContext(HWND hwnd, HDC hdc, HGLRC glContext, Win32RenderPacer? pacer)
+	private Win32OpenGLGraphicsContext(HWND hwnd, HDC hdc, HGLRC glContext, Win32RenderPacer? pacer, string? vendor, string? renderer)
 	{
 		_hwnd = hwnd;
 		_hdc = hdc;
 		_glContext = glContext;
 		_pacer = pacer;
+		_vendor = vendor;
+		_renderer = renderer;
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGL;
+
+	/// <summary>Assumed true when the display's adapter is unknown.</summary>
+	public bool PresentsDirectlyTo(HWND hwnd)
+		=> Win32DisplayAdapter.FromWindow(hwnd) is not { } display
+			|| display.Matches(GetPciVendorId(_vendor), 0, _renderer);
+
+	private static uint GetPciVendorId(string? glVendor)
+		=> glVendor switch
+		{
+			not null when glVendor.Contains("NVIDIA", StringComparison.OrdinalIgnoreCase) => 0x10DE,
+			not null when glVendor.Contains("Intel", StringComparison.OrdinalIgnoreCase) => 0x8086,
+			not null when glVendor.Contains("AMD", StringComparison.OrdinalIgnoreCase) || glVendor.Contains("ATI ", StringComparison.OrdinalIgnoreCase) => 0x1002,
+			_ => 0,
+		};
+
+	private static unsafe string? GetGlString(uint name)
+		=> PInvoke.glGetString(name) is var value && value is null ? null : Marshal.PtrToStringUTF8((IntPtr)value);
 
 	// SwapBuffers leaves the default framebuffer undefined, so the frame is composed into a retained FBO this host
 	// owns and blitted over at present; that copy is what carries the previous frame forward.
@@ -162,6 +192,9 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 			return null;
 		}
 
+		var vendor = GetGlString(/* GL_VENDOR */ 0x1F00);
+		var renderer = GetGlString(/* GL_RENDERER */ 0x1F01);
+
 		var followRefreshRate = FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate;
 		// Swap interval 1 blocks SwapBuffers at the refresh; for a fixed FrameRate use 0 and let
 		// the timer pace the loop instead.
@@ -177,7 +210,7 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 		var pacer = followRefreshRate
 			? null
 			: new Win32RenderPacer(FeatureConfiguration.CompositionTarget.FrameRate, followRefreshRate: false);
-		return new Win32OpenGLGraphicsContext(hwnd, hdc, glContext, pacer);
+		return new Win32OpenGLGraphicsContext(hwnd, hdc, glContext, pacer, vendor, renderer);
 	}
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
